@@ -655,7 +655,7 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await expect(row.locator("[data-label='Articles'] .main-text")).toHaveText("1");
     });
 
-    test("55. primary action มีปุ่ม 'จัดเรียง Category' และ 'เพิ่มหมวดหมู่'", async ({ page }) => {
+    test("55. primary action มีปุ่ม 'Reorder Categories' และ 'Add Category'", async ({ page }) => {
       await goToCategories(page);
       await expect(page.locator("[data-category-order-open]")).toBeVisible();
       await expect(page.locator("[data-category-add]")).toBeVisible();
@@ -726,12 +726,12 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
   // ==================== K. CATEGORIES — ROW MENU / DETAIL MODAL ====================
 
   test.describe("Categories — row menu / detail modal", () => {
-    test("62. row menu ของ Active category ที่มี articles (CAT-001) มี View detail, แก้ไขหมวดหมู่ (ไม่มี Set inactive/Delete)", async ({ page }) => {
+    test("62. row menu ของ Active category ที่มี articles (CAT-001) มี View detail, Edit Category (ไม่มี Set inactive/Delete)", async ({ page }) => {
       await goToCategories(page);
       await openCategoryRowMenu(page, "CAT-001");
       const menu = page.locator(".asset-row[data-category-card='CAT-001'] .row-menu-list");
       await expect(menu.locator("button", { hasText: "View detail" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "แก้ไขหมวดหมู่" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "Edit Category" })).toBeVisible();
       await expect(menu.locator("button", { hasText: "Set inactive" })).toHaveCount(0);
       await expect(menu.locator("button", { hasText: "Delete category" })).toHaveCount(0);
     });
@@ -757,7 +757,7 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await page.locator(".asset-row[data-category-card='CAT-001'] .row-menu-list [data-category-open='CAT-001']").click();
       await page.waitForTimeout(300);
       await expect(page.locator("#user-action-modal")).toHaveClass(/show/);
-      await expect(page.locator("#user-action-modal-title")).toHaveText("รายละเอียดหมวดหมู่");
+      await expect(page.locator("#user-action-modal-title")).toHaveText("Category Detail");
     });
 
     test("66. category detail modal แสดง name, URL, status, description, article count", async ({ page }) => {
@@ -785,12 +785,12 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
   // ==================== L. CATEGORIES — ADD / EDIT MODAL ====================
 
   test.describe("Categories — add / edit modal", () => {
-    test("68. กด 'เพิ่มหมวดหมู่' เปิด create modal", async ({ page }) => {
+    test("68. กด 'Add Category' เปิด create modal", async ({ page }) => {
       await goToCategories(page);
       await page.locator("[data-category-add]").click();
       await page.waitForTimeout(300);
       await expect(page.locator("#user-action-modal")).toHaveClass(/show/);
-      await expect(page.locator("#user-action-modal-title")).toHaveText("เพิ่มหมวดหมู่");
+      await expect(page.locator("#user-action-modal-title")).toHaveText("Add Category");
     });
 
     test("69. create modal มี field name, slug, status, description", async ({ page }) => {
@@ -812,12 +812,12 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await expect(form.locator("[data-user-action-modal-close]")).toBeVisible();
     });
 
-    test("71. กด 'แก้ไขหมวดหมู่' เปิด edit modal พร้อมข้อมูลเดิม", async ({ page }) => {
+    test("71. กด 'Edit Category' เปิด edit modal พร้อมข้อมูลเดิม", async ({ page }) => {
       await goToCategories(page);
       await openCategoryRowMenu(page, "CAT-001");
       await page.locator(".asset-row[data-category-card='CAT-001'] .row-menu-list [data-category-edit='CAT-001']").click();
       await page.waitForTimeout(300);
-      await expect(page.locator("#user-action-modal-title")).toHaveText("แก้ไขหมวดหมู่");
+      await expect(page.locator("#user-action-modal-title")).toHaveText("Edit Category");
       const form = page.locator("[data-category-form]");
       await expect(form.locator("[name='name']")).toHaveValue("Buying Guide");
       await expect(form.locator("[name='slug']")).toHaveValue("buying-guide");

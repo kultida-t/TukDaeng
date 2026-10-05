@@ -1,0 +1,23 @@
+AIL-018 + AIL-019 — Credential Security Contracts (Finalized)
+== AIL-018 — Self-Service Account Contract
+My Account entry จาก sidebar profile box — self-only boundary
+Edit Name: required + trim + ไม่เกิน 100 ตัวอักษร + no-op + stale guard
+Audit ADMIN_PROFILE_UPDATE — ไม่มี password/token ใน log
+Change Password: Current + New + Confirm — ไม่มี OTP ไม่บังคับ re-login
+Password policy ≥12 ตัวอักษร + 4 ประเภทอักขระ + new ≠ current
+Verify current + rate limit (policy 15 นาที / prototype simulate 60 วินาที)
+เปลี่ยนรหัสสำเร็จ revoke session อื่น — current session คงอยู่
+Active Sessions: metadata mask IP + per-session revoke (ยกเว้น current)
+Logout All Devices: revoke ทุก session รวม current → กลับหน้า Login
+Session Expired gate: idle 8h / max 24h / revoke ข้ามเครื่อง → re-login
+Audit ADMIN_PASSWORD_CHANGE + ADMIN_SESSION_REVOKE(ALL)
+== AIL-019 — Password Recovery Contract
+Forgot Password: generic response anti-enumeration ทุก outcome
+Eligibility: Active + failed-login Locked เท่านั้น — อื่น ๆ ปฏิเสธ
+Reset token: RST-xxxxx + hash storage + TTL 30 นาที + one-time
+Token lifecycle: supersede เมื่อขอใหม่ + revision guard + consume-on-use
+Cooldown 60 วินาที + quota 5 ครั้ง/24h นับเฉพาะ committed issuance
+Reset form: New + Confirm (ไม่มี current) + masked email เท่านั้น
+Atomic commit: password + token consume + clear failed-login lock + revoke all sessions
+Safe states: invalid/expired/used/superseded — account-blocked รวม invalid กัน enumeration
+Delivery DLV-ACCT-*-PWD-* + audit ADMIN_PASSWORD_RESET_* ไม่มี secret

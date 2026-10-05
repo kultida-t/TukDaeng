@@ -1,0 +1,11 @@
+AIL-031 — Doc Sync: contract notes ตรง implementation (commit 9184a71)
+== แก้ไขใน requirement log + deliverables export (docs follow implementation)
+Audit Contract — ADMIN_SESSION_REVOKE_ALL: risk High → Medium (ตาม impl + qa-bo-019d)
+Logout All Devices — ตัดข้อความ info "ออกจากระบบทุกอุปกรณ์แล้ว": impl redirect กลับ Login form เปล่า
+Change Password — wrong current ไม่สร้าง audit ต่อครั้ง: audit เฉพาะครบ limit (failure_code=RATE_LIMITED)
+Resolution เพิ่มเติม — rate limit: policy คง 15 นาที, prototype simulate cooldown 60 วินาที
+== ไฟล์/ที่เก็บที่แก้
+deliverables/AIL-014-requirement-amended.md — เพิ่ม Discussion entry AIL-031
+Requirement bf08de1f (Kanban) — discussion log 2 entries
+== Boundary
+แก้เฉพาะเอกสาร — ไม่แตะ prototype / tests / protected screens

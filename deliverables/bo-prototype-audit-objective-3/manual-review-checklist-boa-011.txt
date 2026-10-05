@@ -1,0 +1,12 @@
+BOA-011 — Sidebar Structure Options (8 checks)
+== ขั้นตอนตรวจทุกรายการ
+เปิด sidebar และ drill-in บนหน้าจอจริง เทียบตัวเลือก/กฎที่เสนอกับพฤติกรรมปัจจุบัน → ตรวจทุก viewport (390, 768, 1280, 1440px)
+== Checklist
+01 เปิด sidebar → เทียบ 3 ทางเลือกที่ออกแบบกับ mental model, usage frequency, workflow adjacency, permission และ submenu density — PASS
+02 เทียบ grouping ของ Option B กับเมนูจริง → งานประจำ / ข้อมูลและข้อมูลเชิงลึก / บริการและกำกับดูแล ครอบทุกเมนู — PASS
+03 เช็ค mapping: Market Data, Market Demand, Option Master → กลุ่มข้อมูลและข้อมูลเชิงลึก และ Account Deletion → กลุ่มบริการและกำกับดูแล — PASS
+04 เปิด Market Data > Dashboard → ชื่อซ้ำกับ Dashboard หลัก → เสนอ rename เป็น Market Overview — PASS
+05 เทียบ roleMenuAccess กับเมนูที่ renderNav แสดง → กฎ none = ไม่แสดงเมนู, limited = เฉพาะ submenu ที่เข้าถึงได้ และ route/API ยังต้องตรวจสิทธิ์ — PASS
+06 กด drill-in DEL-033 → U-1104 → ปลายทางต้องเป็นเจ้าของ active menu ขณะที่ Back กลับบริบทต้นทาง — PASS
+07 อ่านผลแยก quick wins / product decisions / protected impact → ส่งต่อ BOA-013–BOA-015 — PASS
+08 Manual QA ครบทุก viewport ไม่มีไฟล์หรือ protected screen ถูกแก้ — PASS

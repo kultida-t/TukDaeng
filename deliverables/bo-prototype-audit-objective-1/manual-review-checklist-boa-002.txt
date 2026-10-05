@@ -1,0 +1,11 @@
+BOA-002 — Prototype vs Module Map & Phase Scope (7 checks)
+== ขั้นตอนตรวจทุกรายการ
+เปิด prototype เทียบ README_MODULE_INDEX, BO_MASTER_BASELINE และ module spec → จัด Covered / Intentionally Deferred / Product Decision / Missing
+== Checklist
+01 เปิด sidebar ทุกกลุ่มเทียบ baseline → Phase 1 entry point ครบทุก module — PASS
+02 หา entry ของ Directory / Reports & Analytics / Broadcast / System Templates / Chat moderation → ไม่เปิดใน Phase 1 — PASS (Deferred)
+03 หา Offer write actions → ไม่เปิดใน Phase 1 — PASS (Deferred)
+04 สำรวจทุกเมนู/ลิงก์ → ไม่พบ future module ถูกเปิดโดยไม่ตั้งใจ — PASS
+05 เทียบ Market Data กับ baseline → baseline เขียน management แต่ spec/prototype เป็น read-only — บันทึก doc inconsistency
+06 เทียบ Admin Settings Phase 1 กับ baseline → baseline รวม security/system/retention/export แต่ spec ระบุ deferred — บันทึก doc inconsistency
+07 เทียบ Audit Log กับ baseline → baseline กล่าวถึง export แต่ spec/prototype เป็น Phase 2 — บันทึก doc inconsistency

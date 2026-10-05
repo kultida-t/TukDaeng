@@ -1,0 +1,12 @@
+import { chromium } from '@playwright/test';
+console.log('Testing Playwright launch...');
+const browser = await chromium.launch();
+console.log('Playwright Chromium launched successfully!');
+const page = await browser.newPage();
+console.log('Page created!');
+await page.setContent('<h1>Hello World</h1>');
+console.log('Content set!');
+await page.pdf({ path: 'deliverables/test.pdf' });
+console.log('PDF generated!');
+await browser.close();
+console.log('SUCCESS!');

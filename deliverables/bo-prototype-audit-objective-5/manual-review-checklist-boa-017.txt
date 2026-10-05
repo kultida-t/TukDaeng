@@ -1,0 +1,11 @@
+BOA-017 — Manual QA Checklist (7 checks)
+== ขั้นตอนตรวจทุกรายการ
+เปิด checklist เคสต่อเคสที่สร้างจาก Findings Register 27 รายการ + Remediation Roadmap + ผล BOA-016 → ตรวจว่าทำตามได้บนหน้าจอจริงทุก viewport
+== Checklist
+01 เปิด checklist กลุ่ม confirmed evidence → findings ที่ยืนยันแล้วจาก BOA-001–016 ไม่ถูกบังคับ retest — PASS
+02 เปิด checklist กลุ่ม post-remediation retest → เคสมีขั้นกด/ผลที่คาดครบ — PASS
+03 เปิด checklist กลุ่ม BOA-018 checks → เคส final acceptance มีครบ — PASS
+04 เปิด checklist กลุ่ม fixture gap → เคสที่ตรวจไม่ได้ถูกทำเครื่องหมาย Not testable / future coverage — PASS
+05 เปิด checklist กลุ่ม Product decision → เคสรอ decision ระบุ approval gate — PASS
+06 สุ่มอ่านเคส → มีข้อมูลทดสอบ, ขั้นกด, จำนวนครั้ง, expected ครบ happy path, blocked/error, edge, regression — PASS
+07 ตรวจทุกเคส → ระบุ viewport 390, 768, 1280, 1440px ครบ — PASS

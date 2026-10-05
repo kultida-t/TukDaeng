@@ -1,0 +1,13 @@
+Objective 2 — Cross-Module UI Consistency
+== Components
+ตรวจ header, breadcrumb, back และ button hierarchy
+ตรวจ search, filter, sort, reset และ pagination
+ตรวจ table, mobile card, badge, chip, modal และ responsive
+== Confirmed Findings
+ยืนยัน dropdown clipping ข้าม module
+ยืนยัน Categories modal title และ Cancel → Confirm contract
+ยืนยัน modal close policy และ focus trap/restore focus gap
+ยืนยัน empty-after-filter copy contract
+== Verification
+Manual QA ผ่านที่ 390, 768, 1280 และ 1440px
+ไม่มี protected screen ถูกแก้

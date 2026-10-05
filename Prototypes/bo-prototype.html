@@ -102,6 +102,21 @@
        ห้าม pin height บน #invite-screen เพราะ grid auto-rows จะถูกบีบให้พอดี container
        จน content overflow ทะลุ panel โดยไม่มี padding คุ้ม (mobile clipping defect) */
     body.invite-mode { overflow-y: auto; }
+    /* forgot-mode: public forgot-password screen — additive overlay state เดียวกับ invite-mode */
+    body.forgot-mode #login-screen { display: none; }
+    body.forgot-mode #invite-screen { display: none; }
+    body.forgot-mode .app { display: none; }
+    body:not(.forgot-mode) #forgot-screen { display: none; }
+    body.forgot-mode #forgot-screen { display: grid; }
+    body.forgot-mode { overflow-y: auto; }
+    /* reset-mode: public reset-password screen — additive overlay state เดียวกับ invite-mode/forgot-mode */
+    body.reset-mode #login-screen { display: none; }
+    body.reset-mode #invite-screen { display: none; }
+    body.reset-mode #forgot-screen { display: none; }
+    body.reset-mode .app { display: none; }
+    body:not(.reset-mode) #reset-screen { display: none; }
+    body.reset-mode #reset-screen { display: grid; }
+    body.reset-mode { overflow-y: auto; }
 
     .login-screen {
       min-height: 100vh;
@@ -120,7 +135,9 @@
       order: 2;
     }
     .login-visual,
-    .invite-visual {
+    .invite-visual,
+    .forgot-visual,
+    .reset-visual {
       position: relative;
       overflow: hidden;
       order: 1;
@@ -129,7 +146,9 @@
         url("./assets/login-watch-hero.png") center / cover no-repeat;
     }
     .login-visual::after,
-    .invite-visual::after {
+    .invite-visual::after,
+    .forgot-visual::after,
+    .reset-visual::after {
       content: "BACK OFFICE";
       position: absolute;
       right: 36px;
@@ -140,14 +159,18 @@
       color: rgba(255, 255, 255, .16);
     }
     .login-brand,
-    .invite-brand {
+    .invite-brand,
+    .forgot-brand,
+    .reset-brand {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 42px;
     }
     .login-brand > div,
-    .invite-brand > div {
+    .invite-brand > div,
+    .forgot-brand > div,
+    .reset-brand > div {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -156,7 +179,9 @@
       min-height: 44px;
     }
     .login-brand small,
-    .invite-brand small {
+    .invite-brand small,
+    .forgot-brand small,
+    .reset-brand small {
       display: block;
       color: #8198b7;
       font-size: 10px;
@@ -207,9 +232,11 @@
       color: #fff;
       padding: 9px 10px;
     }
-    /* Login เท่านั้น — เว้นขอบด้านข้างของ controls ใน scenario panel ไม่ให้ชิดกรอบ;
+    /* Login/Forgot เท่านั้น — เว้นขอบด้านข้างของ controls ใน scenario panel ไม่ให้ชิดกรอบ;
        อย่าใส่ใน .prototype-tools ตรง ๆ เพราะ user-action-prototype-tools (modal หลายจอ) inherit ไปด้วย */
-    #login-screen .prototype-tools {
+    #login-screen .prototype-tools,
+    #forgot-screen .prototype-tools,
+    #reset-screen .prototype-tools {
       padding: 18px 10px 0;
     }
     .user-action-prototype-tools {
@@ -337,6 +364,10 @@
       width: max-content;
     }
     .forgot-link:hover { color: #fff; }
+    /* back link บนสุดของ forgot panel — ทางออกชัดเจนก่อน title */
+    .forgot-back { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 22px; }
+    /* เพิ่มระยะหายใจระหว่างช่องอีเมลกับปุ่มส่ง (เฉพาะ forgot form — ไม่แตะ login form เดิม) */
+    #forgot-form .btn.primary { margin-top: 8px; }
     .login-form .btn.primary {
       width: 100%;
       justify-content: center;
@@ -375,8 +406,17 @@
       line-height: 1.5;
     }
     .auth-error.show { display: block; }
+    /* AIL-026 — failed-login lockout display (additive) */
+    .auth-error strong { color: #fff; font-weight: 600; }
+    .auth-error .auth-lockout-hint { display: inline-block; margin-top: 2px; opacity: .85; }
+    .auth-error.is-info {
+      border-color: rgba(173, 193, 221, .42);
+      background: rgba(12, 33, 58, .72);
+      color: #cbd8e9;
+    }
     /* Accept Invitation screen — reuse login visual language, style เฉพาะส่วนใหม่ */
-    .invite-context {
+    .invite-context,
+    .reset-context {
       max-width: 360px;
       margin: 0 0 18px;
       padding: 14px 16px;
@@ -386,16 +426,20 @@
       display: grid;
       gap: 10px;
     }
-    .invite-context-row {
+    .invite-context-row,
+    .reset-context-row {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       gap: 16px;
       font-size: 12px;
     }
-    .invite-context-row span { color: #8fa4c0; }
-    .invite-context-row strong { color: #fff; font-weight: 600; text-align: right; }
-    .invite-policy {
+    .invite-context-row span,
+    .reset-context-row span { color: #8fa4c0; }
+    .invite-context-row strong,
+    .reset-context-row strong { color: #fff; font-weight: 600; text-align: right; }
+    .invite-policy,
+    .reset-policy {
       list-style: none;
       margin: 4px 0 8px;
       padding: 0;
@@ -404,8 +448,10 @@
       font-size: 12px;
       color: #8fa4c0;
     }
-    .invite-policy li { display: flex; align-items: center; gap: 8px; }
-    .invite-policy li::before {
+    .invite-policy li,
+    .reset-policy li { display: flex; align-items: center; gap: 8px; }
+    .invite-policy li::before,
+    .reset-policy li::before {
       content: "";
       width: 8px;
       height: 8px;
@@ -413,9 +459,13 @@
       background: rgba(143, 164, 192, .4);
       flex-shrink: 0;
     }
-    .invite-policy li[data-pass="true"] { color: #8fe3b4; }
-    .invite-policy li[data-pass="true"]::before { background: #2fbf71; }
-    .invite-hint {
+    .invite-policy li[data-pass="true"],
+    .reset-policy li[data-pass="true"] { color: #8fe3b4; }
+    .invite-policy li[data-pass="true"]::before,
+    .reset-policy li[data-pass="true"]::before { background: #2fbf71; }
+    .invite-hint,
+    .forgot-hint,
+    .reset-hint {
       max-width: 360px;
       /* secondary note อยู่ใต้ CTA ทุก state — 18px = rhythm เดียวกับ .login-footnote (text ใต้ปุ่ม) */
       margin: 18px 0 0;
@@ -423,46 +473,96 @@
       font-size: 12px;
       line-height: 1.55;
     }
-    #invite-screen .btn.primary {
+    #invite-screen .btn.primary,
+    #forgot-screen .btn.primary,
+    #reset-screen .btn.primary {
       max-width: 360px;
       width: 100%;
       justify-content: center;
       text-align: center;
     }
+    /* ปลด cap 360px ให้ปุ่มส่งกว้างเท่าช่องอีเมลที่ mobile (ต้องอยู่หลัง #forgot-screen .btn.primary เพราะ specificity เท่ากัน) */
+    #forgot-screen #forgot-form .btn.primary,
+    #reset-screen #reset-form .btn.primary { max-width: none; }
     #invite-screen .auth-error { margin: 0 0 16px; }
     /* form-level error อยู่ใต้ CTA — separation ชัดเจน (ID selector ชนะ rule .auth-error ด้านบน) */
     #invite-screen #invite-error { margin: 16px 0 0; }
+    #forgot-screen .auth-error { margin: 0 0 16px; }
+    #reset-screen .auth-error { margin: 0 0 16px; }
+    /* recovery banner ต่อจาก title โดยตรง (ไม่มี login-copy เว้นระยะเหมือน form state) — คืน breathing room */
+    #reset-screen .auth-error[data-reset-failure] { margin-top: 24px; }
+    /* form-level error อยู่ใต้ CTA — เดียวกับ #invite-error */
+    #reset-screen #reset-error { margin: 16px 0 0; }
     /* AIL-009: safe recovery actions — grid เดียวกับ context panel; ghost ใช้โทนปุ่ม ghost บน dark auth panel */
-    .invite-recovery-actions {
+    .invite-recovery-actions,
+    .forgot-actions,
+    .reset-actions {
       max-width: 360px;
       display: grid;
       gap: 10px;
     }
-    .invite-recovery-actions .btn {
+    .invite-recovery-actions .btn,
+    .forgot-actions .btn,
+    .reset-actions .btn {
       width: 100%;
       justify-content: center;
       text-align: center;
     }
-    #invite-screen .btn.ghost {
+    #invite-screen .btn.ghost,
+    #forgot-screen .btn.ghost,
+    #reset-screen .btn.ghost {
       color: #dbe8ff;
       border-color: rgba(219, 232, 255, .78);
       background: transparent;
     }
-    #invite-screen .btn.ghost:hover {
+    #invite-screen .btn.ghost:hover,
+    #forgot-screen .btn.ghost:hover,
+    #reset-screen .btn.ghost:hover {
       color: #fff;
       border-color: #fff;
       background: rgba(255, 255, 255, .08);
     }
     /* field-level validation — pattern เดียวกับ .article-field-error แต่โทนสีสำหรับ dark auth panel */
-    .invite-field-error {
+    .invite-field-error,
+    .forgot-field-error,
+    .reset-field-error {
       display: none;
       color: #ff8b95;
       font-size: 12px;
       font-weight: 600;
       line-height: 1.45;
     }
-    .invite-field-error.show { display: block; }
-    #invite-screen input[aria-invalid="true"] {
+    .invite-field-error.show,
+    .forgot-field-error.show,
+    .reset-field-error.show { display: block; }
+    /* forgot/reset accepted — success banner (forgot = generic response ห้ามเปิดเผยผลลัพธ์จริง) */
+    .forgot-accepted,
+    .reset-accepted {
+      max-width: 360px;
+      margin: 0 0 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(143, 227, 180, .4);
+      border-radius: 7px;
+      background: rgba(31, 125, 77, .18);
+      color: #bfeed4;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    /* reset validating — neutral pending banner ระหว่าง resolve token (โทน info ไม่ใช่ success) */
+    .reset-validating {
+      max-width: 360px;
+      margin: 0 0 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(173, 193, 221, .32);
+      border-radius: 7px;
+      background: rgba(12, 33, 58, .55);
+      color: #c7d6ec;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    #invite-screen input[aria-invalid="true"],
+    #forgot-screen input[aria-invalid="true"],
+    #reset-screen input[aria-invalid="true"] {
       border-color: rgba(255, 139, 149, .72);
       box-shadow: 0 0 0 3px rgba(214, 0, 18, .18);
     }
@@ -626,7 +726,7 @@
       margin: 8px 0 0;
       padding: 8px 12px;
       display: grid;
-      grid-template-columns: 24px minmax(0, 1fr) 18px;
+      grid-template-columns: 24px minmax(0, 1fr);
       gap: 10px;
       align-items: center;
       /* AIL-020: .admin-box เป็น button entry ไป My Account — normalize เหมือน .logout-box */
@@ -641,12 +741,19 @@
     }
     .admin-box:hover { color: #fff; background: rgba(36, 61, 96, .58); }
     .admin-box:focus-visible { outline: 2px solid rgba(122, 162, 208, .8); outline-offset: 2px; }
-    .admin-box-chevron {
-      display: grid;
-      place-items: center;
-      color: #88a0bf;
+    /* BOR-006: shared focus ring — สีเดียวกับ .field:focus border (#b8c6d8) แทน browser default outline สีดำ */
+    :is(button, a[href], [role="button"], summary, input, select, textarea, [contenteditable]):focus-visible {
+      outline: 2px solid #b8c6d8;
+      outline-offset: 2px;
     }
-    .admin-box-chevron svg { width: 18px; height: 18px; }
+    #user-action-modal [tabindex]:focus-visible,
+    .user-row:focus-visible,
+    #page-title:focus-visible {
+      outline: 2px solid #b8c6d8;
+      outline-offset: 2px;
+    }
+    /* restore กลับ row ที่คลิก — แสดงเหมือน hover (#f8fbff) + ring เดียวกัน ไม่ใช่กรอบดำ */
+    .user-row:focus-visible { background: #f8fbff; }
     .avatar {
       width: 24px;
       height: 24px;
@@ -1460,7 +1567,7 @@
       overflow: visible;
     }
     body.asset-list-mode .layout > .panel {
-      overflow: hidden;
+      overflow: visible;
     }
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .main {
       overflow-x: hidden;
@@ -1519,12 +1626,12 @@
     body.offer-list-mode .layout > .panel {
       border-color: #d7e2f0;
       box-shadow: none;
-      overflow: hidden;
+      overflow: visible;
     }
     body.article-list-mode .layout > .panel,
     body.category-list-mode .layout > .panel,
     body.reported-board-mode .layout > .panel {
-      overflow: hidden;
+      overflow: visible;
     }
     body.article-list-mode .main,
     body.category-list-mode .main,
@@ -2015,11 +2122,11 @@
       margin-bottom: 10px;
     }
     /* WA-PTO-002b: ยกเลิก panel overrides จาก body.watch-alert-mode ใน list mode
-       ให้ panel ใช้ค่า default เหมือน Option Master (มี box-shadow, overflow:hidden, border-color ปกติ) */
+       ให้ panel ใช้ค่า default เหมือน Option Master list (มี box-shadow, overflow:visible, border-color ปกติ) */
     body.watch-alert-mode.watch-alert-list-mode .layout > .panel {
       border-color: var(--line);
       box-shadow: var(--shadow);
-      overflow: hidden;
+      overflow: visible;
     }
     body.watch-alert-list-mode #table {
       overflow-x: auto;
@@ -2499,7 +2606,7 @@
       overflow-x: hidden;
     }
     body.market-list-mode:not(.market-dashboard-mode) .layout > .panel {
-      overflow: hidden;
+      overflow: visible;
     }
     body.market-list-mode:not(.market-dashboard-mode) #table {
       max-width: 100%;
@@ -2752,7 +2859,7 @@
     }
     /* BO-MKT-FIX-001: ปรับ padding และ min-width ของ panel-head ให้ตรงกับ asset-row.head
        ในตาราง Recently Updated Brands เพื่อให้เส้นคั่นยาวเท่ากันทุก viewport
-       scope เฉพาะ Market Data > Dashboard เพื่อไม่กระทบ protected screens อื่น */
+       scope เฉพาะ Market Data > Market Overview เพื่อไม่กระทบ protected screens อื่น */
     body.market-list-mode.market-dashboard-mode .market-dashboard-table .panel-head {
       padding-left: 20px;
       padding-right: 20px;
@@ -5806,7 +5913,7 @@
     .board-report-phone-preview .article-fo-subheading {
       font-weight: 800;
     }
-    .board-report-phone-preview-close {
+    .board-report-phone-preview .board-report-phone-preview-close {
       position: absolute;
       z-index: 4;
       top: 6px;
@@ -5836,7 +5943,7 @@
       .modal.user-action-modal.board-report-phone-preview-modal {
         transform: translateX(-30px);
       }
-      .board-report-phone-preview-close {
+      .board-report-phone-preview .board-report-phone-preview-close {
         top: 12px;
         right: 24px;
         border-color: transparent;
@@ -7048,6 +7155,10 @@
       display: grid;
       gap: 2px;
     }
+    /* BOR-004: dropdown ใน filter bar สั้นลง — เมนูมี scrollbar ในตัวอยู่แล้ว ไม่จำเป็นต้องยาวชิดขอบล่างจอ */
+    .filters .custom-select-menu {
+      max-height: min(220px, 30vh);
+    }
     .custom-select-option {
       min-height: 30px;
       border: 0;
@@ -7281,13 +7392,13 @@
       overflow-x: hidden;
     }
     body.user-accounts-mode:not(.user-detail-mode) .layout > .panel {
-      overflow: hidden;
+      overflow: visible;
     }
     body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) .main {
       overflow-x: hidden;
     }
     body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) .layout > .panel {
-      overflow: hidden;
+      overflow: visible;
     }
     body.user-accounts-mode:not(.user-detail-mode) #table {
       max-width: 100%;
@@ -12263,6 +12374,37 @@
         flex: 0 0 auto;
         justify-content: flex-start;
       }
+      /* BOR-004: wa-alert-filter-bar 7 tracks (min ~1020px) ล้น panel เมื่อ viewport <1366 — flex-wrap: filter 4 ตัวแถวบนเต็มกว้าง / sort + date range ยืดเต็มที่ + reset ต่อท้าย แถวล่าง */
+      body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar > .user-advanced-filter {
+        flex: 1 1 21%;
+        min-width: 0;
+      }
+      body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar > .wa-alert-date-range {
+        flex: 3 1 44%;
+      }
+      body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar > .filter-reset {
+        flex: 0 0 42px;
+      }
+      /* BOR-004: audit-filter-bar — flex-wrap เดียวกับ wa-alert: search/module/risk แถวบนเต็มกว้าง / sort + date range + reset แถวล่าง (ดึง date input ออกจากขอบจอ) */
+      body.audit-log-mode .audit-filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      body.audit-log-mode .audit-filter-bar > .search,
+      body.audit-log-mode .audit-filter-bar > .user-advanced-filter {
+        flex: 1 1 30%;
+        min-width: 0;
+      }
+      body.audit-log-mode .audit-filter-bar > .audit-date-range {
+        flex: 2 1 45%;
+      }
+      body.audit-log-mode .audit-filter-bar > .filter-reset {
+        flex: 0 0 42px;
+      }
     }
 
     @media (max-width: 1180px) {
@@ -12285,13 +12427,17 @@
         width: min(100%, 390px);
       }
       .login-visual,
-      .invite-visual {
+      .invite-visual,
+      .forgot-visual,
+      .reset-visual {
         order: 1;
         min-height: clamp(170px, 34svh, 250px);
         background-position: center 48%;
       }
       .login-visual::after,
-      .invite-visual::after {
+      .invite-visual::after,
+      .forgot-visual::after,
+      .reset-visual::after {
         right: max(24px, calc((100vw - 390px) / 2));
         bottom: 18px;
         font-size: clamp(42px, 12vw, 72px);
@@ -12430,7 +12576,8 @@
         min-width: 0;
       }
       /* AL-000: Audit Log tablet filter bar — search + 3 filters + reset บรรทัดเดียว (match Delivery Logs)
-         AL-004: เพิ่ม date range column ก่อน reset */
+         AL-004: เพิ่ม date range column ก่อน reset
+         BOR-004: ถูก override ด้วย flex-wrap ที่ block 761–1365 ข้างบน — เก็บไว้เป็น fallback */
       body.audit-log-mode .audit-filter-bar {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) minmax(230px, .8fr) 42px;
       }
@@ -12544,7 +12691,7 @@
       body.article-list-mode .layout > .panel,
       body.category-list-mode .layout > .panel,
       body.reported-board-mode .layout > .panel {
-        overflow: hidden;
+        overflow: visible;
       }
       body.article-list-mode #table,
       body.category-list-mode #table,
@@ -12581,7 +12728,7 @@
         overflow-x: hidden;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .layout > .panel {
-        overflow: hidden;
+        overflow: visible;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table {
         max-width: 100%;
@@ -12652,7 +12799,8 @@
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) 42px;
       }
       /* AL-000: Audit Log small tablet — search + 3 filters + reset บรรทัดเดียว (match Delivery Logs)
-         AL-004: เพิ่ม date range column ก่อน reset */
+         AL-004: เพิ่ม date range column ก่อน reset
+         BOR-004: ถูก override ด้วย flex-wrap ที่ block 761–1365 — เก็บไว้เป็น fallback */
       body.audit-log-mode .audit-filter-bar {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) minmax(210px, .7fr) 42px;
       }
@@ -12999,11 +13147,15 @@
       .mobile-header .brand-name { font-size: 19px; }
       .mobile-header small { font-size: 9px; }
       .login-visual,
-      .invite-visual {
+      .invite-visual,
+      .forgot-visual,
+      .reset-visual {
         min-height: clamp(150px, 32svh, 210px);
       }
       .login-visual::after,
-      .invite-visual::after {
+      .invite-visual::after,
+      .forgot-visual::after,
+      .reset-visual::after {
         right: 18px;
         bottom: 14px;
         font-size: clamp(38px, 13vw, 58px);
@@ -13013,20 +13165,28 @@
         padding: 34px 18px 44px;
       }
       .login-brand,
-      .invite-brand {
+      .invite-brand,
+      .forgot-brand,
+      .reset-brand {
         gap: 11px;
         margin-bottom: 34px;
       }
       .login-brand .brand-mark,
-      .invite-brand .brand-mark {
+      .invite-brand .brand-mark,
+      .forgot-brand .brand-mark,
+      .reset-brand .brand-mark {
         width: 42px;
         height: 42px;
         border-radius: 9px;
       }
       .login-brand .brand-name,
-      .invite-brand .brand-name { font-size: 24px; }
+      .invite-brand .brand-name,
+      .forgot-brand .brand-name,
+      .reset-brand .brand-name { font-size: 24px; }
       .login-brand small,
-      .invite-brand small {
+      .invite-brand small,
+      .forgot-brand small,
+      .reset-brand small {
         margin-top: 0;
         letter-spacing: .2em;
       }
@@ -14364,7 +14524,7 @@
         background: transparent;
       }
       body.user-list-mode:not(.reported-board-mode) .layout > .panel {
-        overflow: hidden;
+        overflow: visible;
       }
       body.user-list-mode:not(.reported-board-mode) #table {
         border-radius: 0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px);
@@ -16937,6 +17097,14 @@
 
     /* ===== My Account (AIL-020) — self-service page, entry จาก .admin-box =====
        scope เฉพาะ body.my-account-mode เพื่อไม่กระทบ module/protected screens อื่น */
+    /* entry active state — เหมือน .nav-item.active เมื่ออยู่หน้า My Account
+       (อยู่นอก navGroups แต่ entry ต้องแสดงสถานะเหมือนเมนูเดี่ยวอื่น) */
+    body.my-account-mode .admin-box {
+      background: var(--active);
+      color: #fff;
+      box-shadow: inset 4px 0 0 var(--brand), 0 7px 16px rgba(0, 0, 0, .18);
+    }
+    body.my-account-mode .admin-box small { color: #b9c9de; }
     body.my-account-mode #table {
       padding: 0;
       background: transparent;
@@ -17068,6 +17236,12 @@
     /* ===== My Account — Change Password =====
        security actions + password modal; scope เฉพาะ body.my-account-mode
        และ .my-account-password-modal เพื่อไม่กระทบ module/protected screens อื่น */
+    /* security actions strip — ไม่มีเส้นคั่นบน ให้อ่านเป็น action footer ของ Account Summary
+       section เดียวกัน (credential scope) เหมือน logout-all ที่อยู่ท้าย Active Sessions */
+    body.my-account-mode .my-account-security-actions {
+      border-top: 0;
+      padding-top: 0;
+    }
     /* Change Password modal — 3-field form (error/required-mark ใช้ base .article-field-*) */
     .modal.user-action-modal.my-account-password-modal {
       width: min(560px, 100%);
@@ -17226,6 +17400,14 @@
       border: 1px dashed var(--line);
       border-radius: 8px;
       text-align: center;
+    }
+    /* Logout All Devices entry — ท้าย Active Sessions section (warning tone เพราะรวม current session)
+       ระยะเหนือปุ่ม: grid gap 14px + margin 4px = 18px เท่ากับ gap เหนือปุ่มเปลี่ยนรหัสผ่าน */
+    body.my-account-mode .my-account-sessions-footer {
+      margin-top: 4px;
+    }
+    body.my-account-mode .my-account-sessions-footer .user-detail-action-btn {
+      white-space: nowrap;
     }
     /* mobile: meta stack เป็นลิสต์ทีละบรรทัด (ไม่ตัดกลางประโยค) + action ชิดมุมขวาบนแถว title */
     @media (max-width: 760px) {
@@ -17554,6 +17736,7 @@
           <select id="auth-scenario">
             <option value="success">Email + Password success</option>
             <option value="bad-password">Invalid credentials</option>
+            <option value="lockout-expired">Lockout expired — ล็อกหมดอายุแล้ว (จำลอง)</option>
           </select>
         </label>
         <label>
@@ -17591,6 +17774,36 @@
     <div class="invite-visual" aria-hidden="true"></div>
   </section>
 
+  <!-- Forgot Password — public self-service recovery request (generic response, ไม่เปิดเผย account/eligibility) -->
+  <section class="login-screen forgot-screen" id="forgot-screen" aria-label="Forgot password">
+    <div class="login-panel">
+      <div class="forgot-brand">
+        <img class="brand-mark" src="./assets/tukdaeng-app-icon.png" alt="Tuk Daeng" />
+        <div>
+          <strong class="brand-name">Tuk Daeng</strong>
+          <small>Back Office</small>
+        </div>
+      </div>
+      <div class="forgot-content" id="forgot-content" aria-live="polite"></div>
+    </div>
+    <div class="forgot-visual" aria-hidden="true"></div>
+  </section>
+
+  <!-- Reset Password — public token-consumption flow (one-time link, recovery context ไม่สร้าง session) -->
+  <section class="login-screen reset-screen" id="reset-screen" aria-label="Reset password">
+    <div class="login-panel">
+      <div class="reset-brand">
+        <img class="brand-mark" src="./assets/tukdaeng-app-icon.png" alt="Tuk Daeng" />
+        <div>
+          <strong class="brand-name">Tuk Daeng</strong>
+          <small>Back Office</small>
+        </div>
+      </div>
+      <div class="reset-content" id="reset-content" aria-live="polite"></div>
+    </div>
+    <div class="reset-visual" aria-hidden="true"></div>
+  </section>
+
   <div class="app">
     <button class="sidebar-backdrop" type="button" id="sidebar-backdrop" aria-label="Close navigation"></button>
     <aside class="sidebar" aria-label="Back Office navigation">
@@ -17611,7 +17824,6 @@
       <button class="admin-box" type="button" id="my-account-entry" aria-label="เปิด My Account" title="My Account">
         <span class="avatar" id="admin-avatar">ผู</span>
         <span class="admin-profile-text"><strong id="admin-username">ผู้ดูแลระบบ</strong><small id="admin-role">Super Admin</small></span>
-        <span class="admin-box-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
       </button>
       </div>
     </aside>
@@ -17751,7 +17963,7 @@
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets", "Reported Comments"] },
         { id: "offers", label: "Offer Management", icon: "offer" },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
-        { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync History"] },
+        { id: "market", label: "Market Data", icon: "market", subs: ["Market Overview", "Brands & Models", "Sync History"] },
         { id: "option-master", label: "Option Master", icon: "option" },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
@@ -19086,7 +19298,7 @@
       {
         module: "Market Data", moduleKey: "market",
         perms: [
-          { key: "market.dashboard.view", sub: "Dashboard", name: "ดู Market Dashboard",
+          { key: "market.dashboard.view", sub: "Market Overview", name: "ดู Market Overview",
             levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", asset_operations: "view", market_analyst: "view" } },
           { key: "market.catalog.view", sub: "Brands & Models", name: "ดู Brands & Models",
             levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", asset_operations: "view", market_analyst: "view" } },
@@ -20299,7 +20511,7 @@
         return { type: "module", module: "content", sub: activeSub || "Articles", displaySub: activeSub || "Articles" };
       }
       if (activeModule === "market") {
-        return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
+        return { type: "module", module: "market", sub: activeSub || "Market Overview", displaySub: activeSub || "Market Overview" };
       }
       if (activeModule === "watch-alerts") {
         if (document.body.classList.contains("watch-alert-detail-mode") && activeRow?.id) {
@@ -20402,7 +20614,7 @@
       if (activeModule === "assets") return { type: "module", module: "assets", sub: activeSub === "Reported Assets" ? "Reported Assets" : activeSub === "Reported Comments" ? "Reported Comments" : "Asset List", displaySub: activeSub === "Reported Assets" ? "Reported Assets" : activeSub === "Reported Comments" ? "Reported Comments" : "Asset List" };
       if (activeModule === "offers") return { type: "module", module: "offers", sub: "", displaySub: "" };
       if (activeModule === "content") return { type: "module", module: "content", sub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles", displaySub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles" };
-      if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
+      if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Market Overview", displaySub: activeSub || "Market Overview" };
       if (activeModule === "watch-alerts") return { type: "module", module: "watch-alerts", sub: activeSub || "Demand Overview", displaySub: activeSub || "Demand Overview" };
       if (activeModule === "settings") return { type: "module", module: "settings", sub: activeSub || "Policy & Versioning", displaySub: activeSub || "Policy & Versioning" };
       if (activeModule === "deletions") return { type: "module", module: "deletions", sub: "Deletion Requests", displaySub: "Deletion Requests" };
@@ -20532,6 +20744,8 @@
     // AIL-020: My Account — demo state สลับผ่าน Prototype scenario; "ready" = แสดงข้อมูลปกติ
     let myAccountViewState = "ready";
     let myAccountViewStateTimer = null;
+    // AIL-023b: session validity watch — interval ขณะอยู่หน้า My Account (self-clearing)
+    let myAccountSessionWatchTimer = null;
     // Change Password — rate-limit simulation (current password ผิดครบ 5 ครั้ง → cooldown 60 วินาที)
     // cooldown คงอยู่ข้ามการปิด/เปิด modal; timer หยุดเองเมื่อ modal ไม่อยู่ใน DOM
     let myAccountPwFailCount = 0;
@@ -20542,6 +20756,8 @@
     const MY_ACCOUNT_PW_COOLDOWN_MS = 60000;
     // Active Sessions — snapshot (sessionId + account revision) ของ revoke target ระหว่างเปิด confirm modal
     let myAccountSessionRevokeTarget = null;
+    // Logout All Devices — revision snapshot ระหว่างเปิด confirm modal (revoke ทุก session รวม current)
+    let myAccountLogoutAllSnapshot = null;
     // Create Custom Role — ค่าที่ validate ผ่านแล้วระหว่างรอ confirmation (ย้อนกลับ = คงค่าเดิม)
     let pendingRoleCreateData = null;
     let pendingRoleEditData = null;
@@ -21100,6 +21316,12 @@
       // ADM-PTO-001: Admin Accounts list state reset
       adminAccountListPage = 1;
       adminAccountFilterOpen = false;
+      // AIL-023b: login ใหม่ = session context ใหม่ — demo state ของ My Account ต้องกลับ ready
+      // (session-expired ที่ค้างจาก session เก่าต้องไม่ติดมาหลัง re-login)
+      myAccountViewState = "ready";
+      window.clearTimeout(myAccountViewStateTimer);
+      window.clearInterval(myAccountSessionWatchTimer);
+      myAccountSessionWatchTimer = null;
       roleListPage = 1;
       roleListFilterOpen = false;
       activeRoleId = "";
@@ -21118,7 +21340,7 @@
 
     // BO-UX-001: Helpers for per-list filter state persistence
     function getMarketListKey(sub) {
-      if (sub === "Dashboard") return "market-dashboard";
+      if (sub === "Market Overview") return "market-dashboard";
       if (sub === "Brands & Models") return "market-catalog";
       if (sub === "Sync History") return "market-sync";
       return "market-queue";
@@ -21154,7 +21376,7 @@
           if (document.querySelector("#market-model-search")) return "market-brand-detail";
           return "market-catalog";
         }
-        return getMarketListKey(activeSub || "Dashboard");
+        return getMarketListKey(activeSub || "Market Overview");
       }
       return null;
     }
@@ -21243,6 +21465,8 @@
       // AIL-020: เคลียร์ demo state ของหน้า My Account เช่นกัน
       myAccountViewState = "ready";
       window.clearTimeout(myAccountViewStateTimer);
+      window.clearInterval(myAccountSessionWatchTimer);
+      myAccountSessionWatchTimer = null;
     }
 
     function renderNav() {
@@ -22294,7 +22518,7 @@
       const comments = getAssetBoComments(asset);
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
-        <div class="user-action-page asset-detail-related-modal">
+        <div class="user-action-page asset-detail-related-modal" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Comments</h2>
@@ -22323,7 +22547,7 @@
       const coverImage = uploadedImages[selectedIndex];
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
-        <div class="user-action-page">
+        <div class="user-action-page" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">${asset.id} : ${asset.name}</h2>
@@ -22711,8 +22935,8 @@
                 </label>
                 ${renderAssetReportCloseImpactNote()}
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-asset-report-status-confirm="${status}" data-asset-id="${asset.id}">ยืนยัน</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-asset-report-status-confirm="${status}" data-asset-id="${asset.id}">ยืนยัน</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -22730,8 +22954,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     function updateAssetReportStatus(asset, status) {
@@ -22905,7 +23129,7 @@
       const note = isConsignment ? consignment.note : purchase.note;
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
-        <div class="user-action-page asset-detail-related-modal">
+        <div class="user-action-page asset-detail-related-modal" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">${isConsignment ? "Consignment Details" : "Purchase History"}</h2>
@@ -22990,7 +23214,7 @@
       const saleRecord = getAssetSoldSaleRecord(asset, detail);
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
-        <div class="user-action-page">
+        <div class="user-action-page" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Sale History</h2>
@@ -23835,8 +24059,8 @@
                 ${renderAssetHideEmailNote(asset)}
                 ${renderAssetHideEmailPreview(asset, defaultReason)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage || "Audit requirement"}</strong><br>
@@ -23894,8 +24118,8 @@
                 ${renderAssetDeletePostEmailNote(asset)}
                 ${renderAssetDeletePostEmailPreview(asset, defaultReason)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn danger user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn danger user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage || "Audit requirement"}</strong><br>
@@ -23953,8 +24177,8 @@
                 ${renderAssetRestoreVisibilityEmailNote(asset)}
                 ${renderAssetRestoreVisibilityEmailPreview(asset, defaultReason)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn primary user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn primary user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage || "Audit requirement"}</strong><br>
@@ -24595,7 +24819,7 @@
         <div class="option-confirm-row"><span class="option-confirm-label">${label}</span><span class="option-confirm-value">${value}</span></div>
       `;
       modalBody.innerHTML = `
-        <div class="user-action-head">
+        <div class="user-action-head" data-modal-dismissible>
           <div>
             <h2 id="user-action-modal-title">${row.id}</h2>
             <p>${row.name}</p>
@@ -24649,7 +24873,7 @@
         <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">After</span><span class="audit-detail-diff-value after">${e.after}</span></div>
       </div>`;
       modalBody.innerHTML = `
-        <div class="audit-detail-drawer-content">
+        <div class="audit-detail-drawer-content" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <span class="audit-detail-eyebrow">Audit Log Detail</span>
@@ -26173,6 +26397,11 @@
       return m[1] ? decodeURIComponent(m[1]) : null;
     }
 
+    // forgot-password route — bo-prototype.html#forgot-password เทียบเท่า public /bo/forgot-password
+    function getForgotRouteFromLocation() {
+      return /^#forgot-password$/.test(window.location.hash || "");
+    }
+
     function enterInviteMode(token) {
       inviteActivation.token = token;
       inviteActivation.submitting = false;
@@ -26442,6 +26671,1114 @@
         updateInvitePasswordPolicy();
         // พิมพ์แก้ field ไหนเคลียร์ error ของ field นั้น — re-validate เต็มอีกครั้งตอน submit
         setInviteFieldError(event.target.id, `${event.target.id}-error`, "");
+      }
+    });
+
+    // ===== Forgot Password — public self-service recovery request =====
+    // generic response contract: ทุก outcome หลังผ่าน validation ต้อง render เหมือนกัน
+    // ทุกประการ — ห้ามเปิดเผย account existence / eligibility / throttle / delivery status
+    // audit/delivery สร้างเฉพาะเคสที่ contract กำหนด (eligible → RST + DLV + audit;
+    // resolvable-but-blocked → audit Failed; unknown email → ไม่สร้างอะไรเลย)
+
+    const PASSWORD_RESET_COOLDOWN_MS = 60 * 1000;
+    const PASSWORD_RESET_QUOTA_LIMIT = 5;
+    const PASSWORD_RESET_QUOTA_WINDOW_MS = 24 * 60 * 60 * 1000;
+    const PASSWORD_RESET_TOKEN_TTL_MS = 30 * 60 * 1000;
+    const FORGOT_ACCEPTED_MESSAGE = "ระบบจะส่งลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียน";
+
+    const passwordResetData = {
+      sequence: 0,
+      requests: [],        // committed issuance records — RST-xxxxx
+      issuanceLog: {},     // normalizedEmail -> [committed issuance epoch ms] (cooldown 60s + quota 5/24h)
+      idempotencyKeys: {}, // submit key -> requestId/marker (กัน double-submit สร้าง record ซ้ำ)
+      deliveryAttempts: []
+    };
+
+    // lock_reason แยกจาก status — map แยกเพื่อไม่แตะ Admin Accounts mock data
+    // (ADM-007 lock จาก failed login = eligible; Locked อื่น default = security/admin block)
+    const passwordRecoveryLockReason = { "ADM-007": "failed_login" };
+
+    // opaque token fixture registry — raw token -> { requestId, tokenRevision }
+    // raw token อยู่เฉพาะที่นี่เพื่อให้ Reset Password flow resolve ได้; request record เก็บแค่ hash
+    const passwordResetTokenFixtures = new Map();
+
+    const forgotPassword = {
+      state: "idle",       // idle | ready | submitting | accepted | error
+      scenario: "sent",    // prototype scenario select — sent | delivery-failed | delivery-retry | cooldown | quota | system-error
+      email: "",
+      submitKey: null,
+      submitting: false
+    };
+
+    function normalizePasswordResetEmail(email) {
+      return String(email || "").trim().toLowerCase();
+    }
+
+    function findAdminAccountByEmail(normalized) {
+      return adminAccountData.accounts.find(a => normalizePasswordResetEmail(a.email) === normalized) || null;
+    }
+
+    // eligibility ตอน issue — resolve token ตอน consume ต้องตรวจซ้ำอีกครั้ง (reset flow งานถัดไป)
+    function isPasswordRecoveryEligible(acc) {
+      if (!acc) return false;
+      if (acc.status === "Active") return true;
+      if (acc.status === "Locked") return (passwordRecoveryLockReason[acc.id] || "security_admin") === "failed_login";
+      return false;
+    }
+
+    function nextPasswordResetRequestId() {
+      passwordResetData.sequence += 1;
+      return `RST-${String(passwordResetData.sequence).padStart(5, "0")}`;
+    }
+
+    // production: opaque CSPRNG ≥256 bits — prototype mint token แล้วเก็บเฉพาะ hash stand-in บน record
+    function mintPasswordResetToken(requestId, tokenRevision) {
+      const rawToken = `sim-rst-${Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, "0")).join("")}`;
+      const tokenHash = `rst-hash-${Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, "0")).join("")}`;
+      passwordResetTokenFixtures.set(rawToken, { requestId, tokenRevision });
+      return tokenHash;
+    }
+
+    function getPasswordResetDeliveryId(adminId, attemptSequence = 1) {
+      const seq = String(adminId || "ADM-000").replace(/^ADM-/, "");
+      return `DLV-ACCT-${seq}-PWD-${String(attemptSequence).padStart(3, "0")}`;
+    }
+
+    function pushPasswordResetAudit(acc, payload = {}) {
+      const maxNum = auditLogData.events.reduce((max, e) => {
+        const m = /^AUD-(\d+)$/.exec(e.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
+      auditLogData.events.unshift({
+        id: auditId,
+        createdAt: formatBangkokTimestamp(),
+        actor: acc?.fullName || "Admin",
+        actorType: "Admin",
+        action: payload.action || "Password reset requested",
+        eventType: payload.eventType || "ADMIN_PASSWORD_RESET_REQUEST",
+        module: "Settings",
+        risk: payload.risk || "Medium",
+        before: payload.before || "-",
+        after: payload.after || "-",
+        reason: payload.reason || "",
+        reference: payload.reference || acc?.id || "—",
+        note: payload.note || "",
+        result: payload.result || "Success",
+        failureCode: payload.failureCode || null,
+        targetAdminId: acc?.id || null,
+        correlationId: payload.correlationId || null
+      });
+      return auditId;
+    }
+
+    function pushPasswordResetDelivery(acc, request, status, correlationId) {
+      if (!moduleData.settings) return null;
+      const attemptSequence = passwordResetData.deliveryAttempts.filter(a => a.targetAdminId === acc.id).length + 1;
+      const deliveryId = getPasswordResetDeliveryId(acc.id, attemptSequence);
+      const maskedEmail = maskAdminInvitationEmail(acc.email);
+      passwordResetData.deliveryAttempts.push({
+        id: deliveryId,
+        requestId: request.id,
+        targetAdminId: acc.id,
+        channel: "Email",
+        status,
+        attemptedAt: new Date().toISOString(),
+        recipientMasked: maskedEmail,
+        attemptSequence,
+        correlationId
+      });
+      const detail = status === "Sent"
+        ? `ส่งลิงก์ตั้งรหัสผ่านใหม่ให้ ${acc.id} (${maskedEmail}) — ลิงก์ใช้ได้ 30 นาที`
+        : status === "Retry"
+          ? `ส่งอีเมลไม่สำเร็จชั่วคราว (rate limit) — อยู่ในคิว Retry · request ${request.id} ยังใช้ได้`
+          : `ส่งอีเมลไม่สำเร็จ (mailbox unavailable) — request ${request.id} ยังใช้ได้ 30 นาที`;
+      const adminNote = status === "Sent"
+        ? `ลิงก์ใช้งานได้ครั้งเดียวภายใน 30 นาที · Audit linked ${request.auditRef || "—"}`
+        : status === "Retry"
+          ? `ระบบจะลองส่งใหม่อีกครั้งอัตโนมัติ · Audit linked ${request.auditRef || "—"}`
+          : `ระบบบันทึกความล้มเหลวของการส่ง · Audit linked ${request.auditRef || "—"}`;
+      const tags = ["Email", "PasswordReset", "Lifecycle", "Audit linked"];
+      if (status === "Retry") tags.push("Retry queued");
+      moduleData.settings.rows.unshift(item(
+        deliveryId,
+        "Password reset email",
+        `${request.id} / ${maskedEmail} (${acc.id})`,
+        "Delivery",
+        "สูง",
+        status,
+        detail,
+        tags,
+        adminNote
+      ));
+      return deliveryId;
+    }
+
+    // demo seeding — สร้าง issuance record ย้อนหลังจริง (terminal state) ให้ throttle check ทำงานผ่าน code path เดิม
+    function seedPasswordResetIssuance(acc, count, oldestAgeMs) {
+      const now = Date.now();
+      const normalized = normalizePasswordResetEmail(acc.email);
+      const log = passwordResetData.issuanceLog[normalized] || (passwordResetData.issuanceLog[normalized] = []);
+      for (let i = 0; i < count; i += 1) {
+        const ts = now - oldestAgeMs - i * 60e3;
+        const requestId = nextPasswordResetRequestId();
+        passwordResetData.requests.push({
+          id: requestId,
+          targetAdminId: acc.id,
+          emailNormalized: normalized,
+          status: "Expired",
+          issuedAt: new Date(ts).toISOString(),
+          expiresAt: new Date(ts + PASSWORD_RESET_TOKEN_TTL_MS).toISOString(),
+          tokenRevision: 0,
+          tokenHash: `rst-hash-seeded-${requestId}`,
+          auditRef: null,
+          deliveryRef: null,
+          correlationId: `COR-${requestId}`
+        });
+        log.push(ts);
+      }
+    }
+
+    // POST /api/bo/password-recovery/requests — simulated issuance path
+    // คืน { ok: true } เสมอสำหรับทุก outcome ที่ผ่าน validation — caller render generic accepted
+    function processPasswordResetRequest(normalizedEmail, submitKey) {
+      if (submitKey && passwordResetData.idempotencyKeys[submitKey]) {
+        return { ok: true, deduped: true };
+      }
+      const acc = findAdminAccountByEmail(normalizedEmail);
+      // unknown email → no-op เงียบเต็มรูปแบบ (ไม่มี request/audit/delivery)
+      if (!acc) {
+        if (submitKey) passwordResetData.idempotencyKeys[submitKey] = "noop";
+        return { ok: true };
+      }
+      const blockedContext = {
+        action: "Password reset requested",
+        eventType: "ADMIN_PASSWORD_RESET_REQUEST",
+        reference: acc.id,
+        after: "Request blocked"
+      };
+      if (!isPasswordRecoveryEligible(acc)) {
+        const failureCode = acc.status === "Locked" ? "LOCK_REASON_BLOCKED" : "ACCOUNT_INELIGIBLE";
+        pushPasswordResetAudit(acc, {
+          ...blockedContext,
+          result: "Failed",
+          failureCode,
+          reason: "คำขอรีเซ็ตรหัสผ่านถูกบล็อกตาม policy — ไม่มีการออก token",
+          note: `Password reset request ของ ${acc.id} ถูกปฏิเสธ — response ฝั่งผู้ใช้เป็น generic เหมือน success`
+        });
+        if (submitKey) passwordResetData.idempotencyKeys[submitKey] = "blocked";
+        return { ok: true };
+      }
+      const now = Date.now();
+      const log = (passwordResetData.issuanceLog[normalizedEmail] || []).filter(ts => now - ts < PASSWORD_RESET_QUOTA_WINDOW_MS);
+      passwordResetData.issuanceLog[normalizedEmail] = log;
+      const lastIssuance = log[log.length - 1];
+      if (lastIssuance !== undefined && now - lastIssuance < PASSWORD_RESET_COOLDOWN_MS) {
+        pushPasswordResetAudit(acc, {
+          ...blockedContext,
+          result: "Failed",
+          failureCode: "COOLDOWN_ACTIVE",
+          reason: "คำขอถี่กว่า cooldown 60 วินาที — token เดิมยังใช้งานได้",
+          note: `Password reset request ของ ${acc.id} โดน throttle — ไม่ออก token ใหม่`
+        });
+        if (submitKey) passwordResetData.idempotencyKeys[submitKey] = "throttled";
+        return { ok: true };
+      }
+      if (log.length >= PASSWORD_RESET_QUOTA_LIMIT) {
+        pushPasswordResetAudit(acc, {
+          ...blockedContext,
+          result: "Failed",
+          failureCode: "QUOTA_EXCEEDED",
+          reason: "เกิน quota 5 ครั้งใน 24 ชม. — token เดิมยังใช้งานได้",
+          note: `Password reset request ของ ${acc.id} เกิน quota — ไม่ออก token ใหม่`
+        });
+        if (submitKey) passwordResetData.idempotencyKeys[submitKey] = "throttled";
+        return { ok: true };
+      }
+      // commit issuance — request ใหม่ supersede Pending เดิมของ account
+      const prevPending = passwordResetData.requests.find(r => r.targetAdminId === acc.id && r.status === "Pending");
+      const tokenRevision = ((prevPending?.tokenRevision) || 0) + 1;
+      const requestId = nextPasswordResetRequestId();
+      const correlationId = `COR-${requestId}`;
+      const tokenHash = mintPasswordResetToken(requestId, tokenRevision);
+      const request = {
+        id: requestId,
+        targetAdminId: acc.id,
+        emailNormalized: normalizedEmail,
+        status: "Pending",
+        issuedAt: new Date(now).toISOString(),
+        expiresAt: new Date(now + PASSWORD_RESET_TOKEN_TTL_MS).toISOString(),
+        tokenRevision,
+        tokenHash,
+        auditRef: null,
+        deliveryRef: null,
+        correlationId,
+        supersedesRequestId: prevPending?.id || null
+      };
+      if (prevPending) {
+        prevPending.status = "Superseded";
+        prevPending.supersededAt = new Date(now).toISOString();
+      }
+      passwordResetData.requests.push(request);
+      log.push(now);
+      if (submitKey) passwordResetData.idempotencyKeys[submitKey] = requestId;
+      request.auditRef = pushPasswordResetAudit(acc, {
+        action: "Password reset requested",
+        eventType: "ADMIN_PASSWORD_RESET_REQUEST",
+        reference: requestId,
+        after: "Request accepted",
+        reason: "ผู้ใช้ขอลิงก์ตั้งรหัสผ่านใหม่ผ่านหน้า Login",
+        note: `ออก reset token ${requestId} ให้ ${acc.id} — หมดอายุ 30 นาที${prevPending ? ` · supersede ${prevPending.id}` : ""}`,
+        correlationId
+      });
+      const deliveryStatus = forgotPassword.scenario === "delivery-failed" ? "Failed"
+        : forgotPassword.scenario === "delivery-retry" ? "Retry" : "Sent";
+      request.deliveryRef = pushPasswordResetDelivery(acc, request, deliveryStatus, correlationId);
+      pushPasswordResetAudit(acc, {
+        action: "Password reset email delivery",
+        eventType: "ADMIN_PASSWORD_RESET_DELIVERY_ATTEMPT",
+        risk: "Low",
+        reference: request.deliveryRef || requestId,
+        after: deliveryStatus,
+        result: deliveryStatus === "Failed" ? "Failed" : deliveryStatus === "Retry" ? "Partial" : "Success",
+        note: `ส่งลิงก์ตั้งรหัสผ่านใหม่ของ ${requestId} ไปยัง ${maskAdminInvitationEmail(acc.email)}`,
+        correlationId
+      });
+      return { ok: true, requestId };
+    }
+
+    function setForgotFieldError(message) {
+      const input = document.getElementById("forgot-email");
+      const node = document.getElementById("forgot-email-error");
+      const hasError = Boolean(message);
+      if (node) {
+        node.textContent = message || "";
+        node.classList.toggle("show", hasError);
+      }
+      if (input) {
+        input.setAttribute("aria-invalid", hasError ? "true" : "false");
+        if (hasError) input.setAttribute("aria-errormessage", "forgot-email-error");
+        else input.removeAttribute("aria-errormessage");
+      }
+    }
+
+    function renderForgotScreen() {
+      const container = document.querySelector("#forgot-content");
+      const screen = document.querySelector("#forgot-screen");
+      if (!container || !screen) return;
+      screen.dataset.forgotState = forgotPassword.state;
+      if (forgotPassword.state === "accepted") {
+        container.innerHTML = `
+          <h1 class="login-title">CHECK YOUR<br>EMAIL</h1>
+          <p class="login-copy">ระบบรับคำขอแล้ว</p>
+          <div class="forgot-accepted" data-forgot-accepted role="status">${FORGOT_ACCEPTED_MESSAGE}</div>
+          <div class="forgot-actions">
+            <button class="btn primary" type="button" data-forgot-exit>กลับไปหน้า Login</button>
+          </div>
+          <p class="forgot-hint">ลิงก์ใช้ได้ครั้งเดียว มีอายุ 30 นาที — ไม่ได้รับอีเมลติดต่อผู้ดูแลระบบ</p>
+        `;
+        container.querySelector("[data-forgot-exit]")?.focus();
+        return;
+      }
+      if (forgotPassword.state === "error") {
+        container.innerHTML = `
+          <h1 class="login-title">FORGOT<br>PASSWORD</h1>
+          <p class="login-copy">ขอลิงก์ตั้งรหัสผ่านใหม่</p>
+          <div class="auth-error show" data-forgot-error="system" role="alert">ระบบขัดข้อง กรุณาลองใหม่</div>
+          <div class="forgot-actions">
+            <button class="btn primary" type="button" data-forgot-retry>ลองอีกครั้ง</button>
+            <button class="btn ghost" type="button" data-forgot-exit>กลับไปหน้า Login</button>
+          </div>
+        `;
+        container.querySelector("[data-forgot-retry]")?.focus();
+        return;
+      }
+      const submitting = forgotPassword.state === "submitting";
+      container.innerHTML = `
+        <button class="forgot-link forgot-back" type="button" data-forgot-exit>← กลับไปหน้า Login</button>
+        <h1 class="login-title">FORGOT<br>PASSWORD</h1>
+        <p class="login-copy">กรอกอีเมลของคุณเพื่อรับลิงก์ตั้งรหัสผ่านใหม่</p>
+        <form class="login-form" id="forgot-form" novalidate>
+          <label>
+            Email
+            <input id="forgot-email" type="email" autocomplete="username" placeholder="อีเมลที่ใช้เข้าสู่ระบบ" ${submitting ? "disabled" : ""} />
+            <span class="forgot-field-error" id="forgot-email-error" role="alert"></span>
+          </label>
+          <button class="btn primary" type="submit" id="forgot-submit" ${submitting ? "disabled" : ""}>${submitting ? "กำลังส่ง…" : "ส่งลิงก์ตั้งรหัสผ่านใหม่"}</button>
+        </form>
+        <details class="prototype-tools forgot-tools">
+          <summary>Prototype scenario</summary>
+          <label>
+            Password recovery flow
+            <select id="forgot-scenario">
+              <option value="sent">ส่งอีเมลสำเร็จ (Sent)</option>
+              <option value="delivery-failed">อีเมลส่งไม่สำเร็จ (Failed)</option>
+              <option value="delivery-retry">อีเมลอยู่ในคิว Retry</option>
+              <option value="cooldown">ขอถี่เกิน cooldown 60 วินาที</option>
+              <option value="quota">เกิน quota 5 ครั้งต่อ 24 ชม.</option>
+              <option value="system-error">ระบบขัดข้อง (System error)</option>
+            </select>
+          </label>
+          <label>
+            Reset link flow (จำลองคลิกลิงก์จากอีเมล)
+            <select id="forgot-reset-scenario">
+              <option value="">— เลือกเคสทดสอบ —</option>
+              <option value="active">Reset — ลิงก์ใช้ได้ (Active)</option>
+              <option value="locked">Reset — ลิงก์ใช้ได้ (Locked: failed login)</option>
+              <option value="expired">Reset — ลิงก์หมดอายุ</option>
+              <option value="used">Reset — ลิงก์ใช้แล้ว</option>
+              <option value="superseded">Reset — ลิงก์ถูกแทนที่</option>
+              <option value="ineligible">Reset — บัญชีไม่พร้อม (Suspended)</option>
+              <option value="invalid">Reset — token ไม่ถูกต้อง</option>
+            </select>
+          </label>
+        </details>
+      `;
+      const emailInput = document.querySelector("#forgot-email");
+      if (emailInput) emailInput.value = forgotPassword.email;
+      const scenarioSelect = document.querySelector("#forgot-scenario");
+      if (scenarioSelect) scenarioSelect.value = forgotPassword.scenario;
+      if (!submitting) emailInput?.focus();
+    }
+
+    function submitForgotPassword() {
+      if (forgotPassword.state !== "ready" && forgotPassword.state !== "error") return;
+      if (forgotPassword.submitting) return;
+      const emailInput = document.querySelector("#forgot-email");
+      const normalized = normalizePasswordResetEmail(emailInput?.value);
+      const emailError = !normalized
+        ? "กรุณากรอกอีเมล"
+        : (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized) ? "รูปแบบอีเมลไม่ถูกต้อง" : "");
+      setForgotFieldError(emailError);
+      if (emailError) {
+        emailInput?.focus();
+        return;
+      }
+      forgotPassword.submitting = true;
+      forgotPassword.state = "submitting";
+      forgotPassword.email = normalized;
+      renderForgotScreen();
+      const submitKey = `fp-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      forgotPassword.submitKey = submitKey;
+      setTimeout(() => {
+        let result;
+        if (forgotPassword.scenario === "system-error") {
+          result = { ok: false, code: "system_error" };
+        } else {
+          const acc = findAdminAccountByEmail(normalized);
+          // scenario seeding ทำให้ throttle check จริงทำงาน — ไม่ใช่ force UI outcome
+          if (acc && forgotPassword.scenario === "cooldown") seedPasswordResetIssuance(acc, 1, 0);
+          if (acc && forgotPassword.scenario === "quota") seedPasswordResetIssuance(acc, PASSWORD_RESET_QUOTA_LIMIT, 3600e3);
+          result = processPasswordResetRequest(normalized, submitKey);
+        }
+        forgotPassword.submitting = false;
+        if (!result.ok) {
+          forgotPassword.state = "error";
+        } else {
+          forgotPassword.state = "accepted";
+          forgotPassword.scenario = "sent";
+        }
+        renderForgotScreen();
+      }, 500);
+    }
+
+    function enterForgotMode() {
+      if (!document.body.classList.contains("logged-out")) return;
+      forgotPassword.state = "ready";
+      forgotPassword.submitting = false;
+      forgotPassword.submitKey = null;
+      forgotPassword.email = "";
+      forgotPassword.scenario = "sent";
+      document.body.classList.add("forgot-mode");
+      showAuthError("");
+      setAuthState("");
+      renderForgotScreen();
+    }
+
+    function exitForgotMode() {
+      forgotPassword.state = "idle";
+      forgotPassword.submitting = false;
+      forgotPassword.submitKey = null;
+      forgotPassword.email = "";
+      forgotPassword.scenario = "sent";
+      document.body.classList.remove("forgot-mode");
+      if (document.body.classList.contains("logged-out")) {
+        showLoginForm();
+        document.querySelector("#login-email")?.focus();
+      }
+    }
+
+    document.addEventListener("submit", event => {
+      if (event.target && event.target.id === "forgot-form") {
+        event.preventDefault();
+        submitForgotPassword();
+      }
+    });
+    document.addEventListener("click", event => {
+      if (event.target.closest("[data-forgot-exit]")) {
+        exitForgotMode();
+        return;
+      }
+      if (event.target.closest("[data-forgot-retry]")) {
+        // retry กลับไป ready — ส่งคำขอใหม่ทั้งชุด (ไม่ใช่ resume ที่ค้าง)
+        if (forgotPassword.state === "error") {
+          forgotPassword.state = "ready";
+          renderForgotScreen();
+        }
+      }
+    });
+    document.addEventListener("change", event => {
+      if (event.target && event.target.id === "forgot-scenario") {
+        forgotPassword.scenario = event.target.value || "sent";
+      }
+    });
+    document.addEventListener("input", event => {
+      if (event.target && event.target.id === "forgot-email") {
+        setForgotFieldError("");
+      }
+    });
+
+    // ===== Reset Password — public recovery flow (consume one-time token) =====
+    // contract: AIL-019 Password Recovery Contract — route /bo/reset-password#token=<opaque>
+    // token lifecycle: opaque, 30min TTL, single-use, hash-only บน request record
+    // eligible: Active + Locked(failed_login) เท่านั้น — commit แบบ atomic:
+    // password update + token consume + clear failed-login lock + revoke ทุก session → Login
+    // recovery context ไม่สร้าง authenticated session; raw token อยู่ใน memory เท่านั้น
+
+    const resetPassword = {
+      token: null,          // raw token — memory only, ห้าม render/log/audit
+      state: "idle",        // idle | validating | form | invalid | success
+      failureCode: null,
+      requestId: null,
+      accountId: null,
+      tokenRevision: null,   // snapshot ตอนเปิด form — stale guard ตอน commit
+      accountRevision: null,
+      submitting: false,
+      scenario: "commit-ok"  // prototype scenario select — commit-ok | commit-failed
+    };
+
+    const resetPasswordFailureLabels = {
+      invalid_token: "ลิงก์ไม่ถูกต้องหรือข้อมูลไม่ครบถ้วน",
+      stale_revision: "ลิงก์นี้ไม่ตรงกับคำขอฉบับล่าสุด — ถูกแทนที่แล้ว",
+      already_used: "ลิงก์นี้ถูกใช้งานแล้ว — ลิงก์ตั้งรหัสผ่านใช้ได้ครั้งเดียว",
+      superseded: "ลิงก์นี้ถูกแทนที่ด้วยคำขอฉบับใหม่แล้ว",
+      expired: "ลิงก์ตั้งรหัสผ่านหมดอายุแล้ว (ใช้ได้ภายใน 30 นาที)",
+      not_allowed: "ลิงก์ไม่ได้อยู่ในสถานะที่ใช้งานได้",
+      account_ineligible: "บัญชีนี้ไม่ได้อยู่ในสถานะที่ตั้งรหัสผ่านใหม่ได้",
+      lock_reason_blocked: "บัญชีถูกล็อกด้วยเหตุที่ต้องให้ผู้ดูแลระบบปลดล็อก",
+      stale_request: "ข้อมูลคำขอเปลี่ยนไประหว่างใช้งาน — กรุณาเปิดลิงก์ใหม่อีกครั้ง",
+      duplicate_submit: "กำลังดำเนินการอยู่ — กรุณารอสักครู่",
+      commit_failed: "ตั้งรหัสผ่านใหม่ไม่สำเร็จ — ไม่มีข้อมูลบางส่วนถูกบันทึก กรุณาลองใหม่อีกครั้ง"
+    };
+
+    // safe recovery states — เดียวกับ inviteRecoveryStates: terminal = exit/new-request channel;
+    // transient = re-resolve action (refresh server context ไม่ใช่ blind retry)
+    // label ฝั่ง user generic — ห้ามเปิดเผย account existence/lock reason/token internals
+    const resetRecoveryStates = {
+      invalid: {
+        codes: ["invalid_token", "not_allowed"],
+        title: "LINK NOT VALID",
+        message: "ลิงก์ไม่ถูกต้องหรือใช้งานไม่ได้ กรุณาขอลิงก์ใหม่",
+        action: "กลับไปหน้า Login",
+        forgot: "ขอลิงก์ตั้งรหัสผ่านใหม่",
+        hint: "ลิงก์ตั้งรหัสผ่านใช้ได้ครั้งเดียวและมีอายุ 30 นาที"
+      },
+      used: {
+        codes: ["already_used"],
+        title: "LINK ALREADY USED",
+        message: "ลิงก์นี้ถูกใช้งานแล้ว",
+        action: "กลับไปหน้า Login"
+      },
+      expired: {
+        codes: ["expired"],
+        title: "LINK EXPIRED",
+        message: "ลิงก์นี้หมดอายุแล้ว กรุณาขอลิงก์ใหม่",
+        action: "กลับไปหน้า Login",
+        forgot: "ขอลิงก์ตั้งรหัสผ่านใหม่",
+        hint: "ลิงก์ใหม่มีอายุใช้งาน 30 นาที"
+      },
+      superseded: {
+        codes: ["superseded", "stale_revision"],
+        title: "LINK REPLACED",
+        message: "ลิงก์นี้ถูกแทนที่ด้วยลิงก์ฉบับใหม่แล้ว",
+        action: "กลับไปหน้า Login",
+        hint: "เปิดลิงก์จากอีเมลฉบับล่าสุดเท่านั้น"
+      },
+      unavailable: {
+        codes: ["account_ineligible", "lock_reason_blocked"],
+        title: "RESET UNAVAILABLE",
+        message: "ไม่สามารถใช้ลิงก์นี้ได้ กรุณาติดต่อผู้ดูแลระบบ",
+        action: "กลับไปหน้า Login"
+      },
+      transient: {
+        codes: ["stale_request", "commit_failed", "duplicate_submit"],
+        title: "RESET NOT COMPLETED",
+        message: "เกิดข้อผิดพลาดชั่วคราว กรุณาลองใหม่อีกครั้ง",
+        action: "กลับไปหน้า Login",
+        retry: "ลองอีกครั้ง",
+        hint: "หากยังใช้ไม่ได้ ขอลิงก์ใหม่จากหน้า Login"
+      }
+    };
+
+    function getResetRecoveryState(failureCode) {
+      for (const [kind, def] of Object.entries(resetRecoveryStates)) {
+        if (def.codes.includes(failureCode)) return { kind, ...def };
+      }
+      return { kind: "invalid", ...resetRecoveryStates.invalid };
+    }
+
+    // reset-password route — bo-prototype.html#reset-token=<opaque> เทียบเท่า public /bo/reset-password#token=
+    function getResetTokenFromLocation() {
+      const m = /^#reset-token=(.*)$/.exec(window.location.hash || "");
+      if (!m) return undefined;
+      return m[1] ? decodeURIComponent(m[1]) : null;
+    }
+
+    // reverse lookup raw token ของ request — ใช้เฉพาะ manual QA scenario tool เท่านั้น
+    function getPasswordResetLinkToken(request) {
+      if (!request) return "";
+      const tokenRevision = request.tokenRevision || 1;
+      for (const [token, ref] of passwordResetTokenFixtures) {
+        if (ref.requestId === request.id && ref.tokenRevision === tokenRevision) return token;
+      }
+      return "";
+    }
+
+    // resolve + validate จาก state ล่าสุดทุกครั้ง (render และ commit ใช้ตัวเดียวกัน — server-authoritative revalidation)
+    // token ที่ resolve target ไม่ได้คืน invalid_token โดยไม่มี request/acc — ห้าม audit สร้าง target reference
+    function resolveAdminPasswordReset(token) {
+      const linkRef = passwordResetTokenFixtures.get(String(token || ""));
+      if (!linkRef) return { ok: false, code: "invalid_token" };
+      const request = passwordResetData.requests.find(r => r.id === linkRef.requestId);
+      if (!request) return { ok: false, code: "invalid_token" };
+      const acc = adminAccountData.accounts.find(a => a.id === request.targetAdminId);
+      if (!acc) return { ok: false, code: "invalid_token" };
+      if (linkRef.tokenRevision !== (request.tokenRevision || 1)) {
+        return { ok: false, code: "stale_revision", request, acc };
+      }
+      if (request.status === "Used") return { ok: false, code: "already_used", request, acc };
+      if (request.status === "Superseded") return { ok: false, code: "superseded", request, acc };
+      if (request.status === "Expired" || new Date(request.expiresAt).getTime() <= Date.now()) {
+        return { ok: false, code: "expired", request, acc };
+      }
+      if (request.status !== "Pending") return { ok: false, code: "not_allowed", request, acc };
+      // Locked ต้องเป็น failed-login lock เท่านั้น — security/admin lock ไม่ผ่าน reset
+      if (acc.status === "Locked" && (passwordRecoveryLockReason[acc.id] || "security_admin") !== "failed_login") {
+        return { ok: false, code: "lock_reason_blocked", request, acc };
+      }
+      if (!isPasswordRecoveryEligible(acc)) return { ok: false, code: "account_ineligible", request, acc };
+      if (normalizePasswordResetEmail(acc.email) !== request.emailNormalized) {
+        return { ok: false, code: "account_ineligible", request, acc };
+      }
+      return { ok: true, request, acc };
+    }
+
+    // commit token ครั้งเดียวแบบ atomic — re-validate จาก state ล่าสุดทุกครั้งก่อน mutate
+    // rollback ครบทุก store ถ้า mutation ใดล้มเหลว (pattern เดียวกับ commitAdminInvitationActivation)
+    function commitAdminPasswordReset(newPassword) {
+      if (resetPassword.submitting) return { ok: false, code: "duplicate_submit" };
+      const check = resolveAdminPasswordReset(resetPassword.token);
+      if (!check.ok) {
+        // attempt ที่ resolve target ได้แต่ถูก block ต้อง audit (result Failed + failureCode)
+        if (check.request && check.acc) {
+          pushPasswordResetAudit(check.acc, {
+            action: "Password reset commit",
+            eventType: "ADMIN_PASSWORD_RESET_COMMIT",
+            risk: "High",
+            reference: check.request.id,
+            result: "Failed",
+            failureCode: check.code.toUpperCase(),
+            before: `${check.request.id} (${check.request.status})`,
+            after: `${check.request.id} (${check.request.status})`,
+            reason: `ตั้งรหัสผ่านใหม่ถูกบล็อก — ${resetPasswordFailureLabels[check.code] || check.code}`,
+            correlationId: check.request.correlationId
+          });
+        }
+        return { ok: false, code: check.code };
+      }
+      const { request, acc } = check;
+      // stale check กับ snapshot ตอนเปิดหน้า — revision ต้องตรง state ที่ผู้ใช้เห็นล่าสุด
+      if ((resetPassword.tokenRevision != null && resetPassword.tokenRevision !== (request.tokenRevision || 1))
+          || (resetPassword.accountRevision != null && resetPassword.accountRevision !== (acc.revision ?? 0))) {
+        pushPasswordResetAudit(acc, {
+          action: "Password reset commit",
+          eventType: "ADMIN_PASSWORD_RESET_COMMIT",
+          risk: "High",
+          reference: request.id,
+          result: "Failed",
+          failureCode: "STALE_REQUEST",
+          before: `${request.id} (${request.status})`,
+          after: `${request.id} (${request.status})`,
+          reason: "ตั้งรหัสผ่านใหม่ถูกบล็อก — ข้อมูลคำขอเปลี่ยนไประหว่างใช้งาน (stale)",
+          correlationId: request.correlationId
+        });
+        return { ok: false, code: "stale_request" };
+      }
+      resetPassword.submitting = true;
+      const now = new Date();
+      const wasFailedLoginLocked = acc.status === "Locked";
+      const beforeAccStatus = acc.status;
+      const beforeRevision = acc.revision;
+      const beforeSessionRevision = acc.sessionRevision;
+      const beforeLastAction = acc.lastAction;
+      const hadLockReason = Object.prototype.hasOwnProperty.call(passwordRecoveryLockReason, acc.id);
+      const beforeLockReason = passwordRecoveryLockReason[acc.id];
+      // AIL-026: clear failed-attempt counter อยู่ใน atomic boundary เดียวกัน
+      const hadAttempts = Object.prototype.hasOwnProperty.call(loginAttemptData, acc.id);
+      const beforeAttempts = hadAttempts ? { ...loginAttemptData[acc.id] } : null;
+      const credExisted = Object.prototype.hasOwnProperty.call(adminCredentialStore, acc.id);
+      const beforeCredential = credExisted ? adminCredentialStore[acc.id].password : null;
+      const registry = adminSessionData[acc.id];
+      const sessionSnapshot = registry
+        ? registry.sessions.map(s => ({ session: s, status: s.status, revokedAt: s.revokedAt, revokedReason: s.revokedReason }))
+        : [];
+      const auditLength = auditLogData.events.length;
+      const detailExisted = !!adminAccountData.detail[acc.id];
+      const detail = adminAccountData.detail[acc.id] || (adminAccountData.detail[acc.id] = {});
+      if (!detail.activity) detail.activity = [];
+      if (!detail.auditRefs) detail.auditRefs = [];
+      const activityLength = detail.activity.length;
+      const auditRefsLength = detail.auditRefs.length;
+      try {
+        if (resetPassword.scenario === "commit-failed") {
+          // QA simulation เท่านั้น — commit ล้มเหลว → rollback ครบทุก store
+          throw new Error("จำลอง commit ล้มเหลว");
+        }
+        request.status = "Used";
+        request.usedAt = now.toISOString();
+        // mock credential store — production เขียน password hash ผ่าน auth service เท่านั้น
+        // ห้าม log/audit/serialize ค่านี้ออกไป (เหมือน Change Password)
+        adminCredentialStore[acc.id] = { password: newPassword };
+        if (wasFailedLoginLocked) {
+          // eligible lock เดียวที่ reset ปลดได้ = failed-login lock — clear lock marker
+          // + failed-attempt counter (AIL-026)
+          acc.status = "Active";
+          delete passwordRecoveryLockReason[acc.id];
+          delete loginAttemptData[acc.id];
+          acc.lastAction = "Active — ตั้งรหัสผ่านใหม่สำเร็จ (ปลดล็อก failed login)";
+        } else {
+          acc.lastAction = "ตั้งรหัสผ่านใหม่ผ่านลิงก์ reset";
+        }
+        acc.revision = (beforeRevision || 0) + 1;
+        // revoke ทุก session ที่มีอยู่ — sessionRevision bump = epoch invalidation (คุม session ที่ไม่มีใน registry ด้วย)
+        acc.sessionRevision = (beforeSessionRevision || 0) + 1;
+        let revokedCount = 0;
+        if (registry) {
+          registry.sessions.forEach(session => {
+            if (session.status !== "Active") return;
+            session.status = "Revoked";
+            session.revokedAt = formatBangkokTimestamp();
+            session.revokedReason = "ตั้งรหัสผ่านใหม่ — ออกจากระบบทุกอุปกรณ์ตาม recovery policy";
+            revokedCount += 1;
+          });
+        }
+        const auditId = pushPasswordResetAudit(acc, {
+          action: "Password reset completed",
+          eventType: "ADMIN_PASSWORD_RESET_COMMIT",
+          risk: "High",
+          reference: request.id,
+          before: `${request.id} (Pending)`,
+          after: `${request.id} (Used)`,
+          reason: "ผู้ใช้ตั้งรหัสผ่านใหม่ผ่านลิงก์ reset สำเร็จ",
+          note: `บัญชี ${acc.id} ตั้งรหัสผ่านใหม่ — token revision ${request.tokenRevision} ถูก consume · revoke ${revokedCount} session${revokedCount === 1 ? "" : "s"}${wasFailedLoginLocked ? " · ปลดล็อก failed login (Locked → Active)" : ""}`,
+          correlationId: request.correlationId
+        });
+        if (!auditId) throw new Error("ไม่สามารถสร้าง Audit reference ได้");
+        detail.activity.unshift({
+          at: formatAdminAccountActivityTime(now),
+          action: "Password reset",
+          reference: request.id,
+          note: `ตั้งรหัสผ่านใหม่ผ่านลิงก์ reset — ลิงก์ใช้ครบครั้งเดียว · ออกจากระบบทุกอุปกรณ์${wasFailedLoginLocked ? " · ปลดล็อก failed login" : ""}`
+        });
+        detail.auditRefs.unshift(auditId);
+      } catch (error) {
+        request.status = "Pending";
+        delete request.usedAt;
+        if (credExisted) adminCredentialStore[acc.id].password = beforeCredential;
+        else delete adminCredentialStore[acc.id];
+        acc.status = beforeAccStatus;
+        acc.revision = beforeRevision;
+        acc.sessionRevision = beforeSessionRevision;
+        acc.lastAction = beforeLastAction;
+        if (hadLockReason) passwordRecoveryLockReason[acc.id] = beforeLockReason;
+        else delete passwordRecoveryLockReason[acc.id];
+        if (hadAttempts) loginAttemptData[acc.id] = beforeAttempts;
+        else delete loginAttemptData[acc.id];
+        sessionSnapshot.forEach(({ session, status, revokedAt, revokedReason }) => {
+          session.status = status;
+          session.revokedAt = revokedAt;
+          session.revokedReason = revokedReason;
+        });
+        auditLogData.events.splice(0, auditLogData.events.length - auditLength);
+        detail.activity.splice(0, detail.activity.length - activityLength);
+        detail.auditRefs.splice(0, detail.auditRefs.length - auditRefsLength);
+        if (!detailExisted) delete adminAccountData.detail[acc.id];
+        resetPassword.submitting = false;
+        return { ok: false, code: "commit_failed" };
+      }
+      return { ok: true, code: "committed", requestId: request.id };
+    }
+
+    function enterResetMode(token) {
+      resetPassword.token = token;
+      resetPassword.submitting = false;
+      resetPassword.state = "validating";
+      resetPassword.failureCode = null;
+      resetPassword.requestId = null;
+      resetPassword.accountId = null;
+      resetPassword.tokenRevision = null;
+      resetPassword.accountRevision = null;
+      document.body.classList.remove("invite-mode", "forgot-mode");
+      document.body.classList.add("reset-mode");
+      showAuthError("");
+      setAuthState("");
+      renderResetScreen();
+      // จำลอง server-side token validation แบบ async — resolve จาก live state เสมอ ไม่ cache
+      window.setTimeout(() => {
+        if (!document.body.classList.contains("reset-mode") || resetPassword.state !== "validating") return;
+        const check = resolveAdminPasswordReset(resetPassword.token);
+        if (!check.ok) {
+          // resolvable แต่ถูก block → audit accept attempt (result Failed) เหมือน invitation accept
+          // unresolvable (invalid_token) → ไม่ audit เพราะไม่มี target reference ที่ปลอดภัย
+          if (check.request && check.acc) {
+            pushPasswordResetAudit(check.acc, {
+              action: "Password reset link opened",
+              eventType: "ADMIN_PASSWORD_RESET_TOKEN_ACCEPT",
+              reference: check.request.id,
+              result: "Failed",
+              failureCode: check.code.toUpperCase(),
+              before: `${check.request.id} (${check.request.status})`,
+              after: `${check.request.id} (${check.request.status})`,
+              reason: `เปิดลิงก์ตั้งรหัสผ่านถูกบล็อก — ${resetPasswordFailureLabels[check.code] || check.code}`,
+              correlationId: check.request.correlationId
+            });
+          }
+          resetPassword.state = "invalid";
+          resetPassword.failureCode = check.code;
+        } else {
+          // accept ครั้งแรกของ request นี้ → audit ADMIN_PASSWORD_RESET_TOKEN_ACCEPT (reopen ไม่ซ้ำ)
+          if (!check.request.acceptedAt) {
+            const acceptAuditId = pushPasswordResetAudit(check.acc, {
+              action: "Password reset link opened",
+              eventType: "ADMIN_PASSWORD_RESET_TOKEN_ACCEPT",
+              reference: check.request.id,
+              before: `${check.request.id} (${check.request.status})`,
+              after: `${check.request.id} (${check.request.status})`,
+              reason: `ผู้ใช้เปิดลิงก์ตั้งรหัสผ่าน — ${maskAdminInvitationEmail(check.acc.email)}`,
+              note: `ลิงก์ ${check.request.id} ใช้งานได้ — รอตั้งรหัสผ่านใหม่`,
+              correlationId: check.request.correlationId
+            });
+            check.request.acceptedAt = new Date().toISOString();
+            check.request.acceptAuditRef = acceptAuditId;
+          }
+          resetPassword.state = "form";
+          resetPassword.failureCode = null;
+          resetPassword.requestId = check.request.id;
+          resetPassword.accountId = check.acc.id;
+          resetPassword.tokenRevision = check.request.tokenRevision || 1;
+          resetPassword.accountRevision = check.acc.revision ?? 0;
+        }
+        renderResetScreen();
+      }, 300);
+    }
+
+    function exitResetMode() {
+      resetPassword.token = null;
+      resetPassword.state = "idle";
+      resetPassword.failureCode = null;
+      resetPassword.requestId = null;
+      resetPassword.accountId = null;
+      resetPassword.tokenRevision = null;
+      resetPassword.accountRevision = null;
+      resetPassword.submitting = false;
+      resetPassword.scenario = "commit-ok";
+      document.body.classList.remove("reset-mode");
+      if (document.body.classList.contains("logged-out")) {
+        showLoginForm();
+        document.querySelector("#login-email")?.focus();
+      }
+    }
+
+    function updateResetPasswordPolicy() {
+      const password = document.querySelector("#reset-password")?.value || "";
+      const confirm = document.querySelector("#reset-password-confirm")?.value || "";
+      const results = {
+        length: password.length >= 12,
+        upper: /[A-Z]/.test(password),
+        lower: /[a-z]/.test(password),
+        digit: /[0-9]/.test(password),
+        special: /[^A-Za-z0-9]/.test(password),
+        match: password.length > 0 && password === confirm
+      };
+      document.querySelectorAll("#reset-policy [data-reset-rule]").forEach(item => {
+        item.dataset.pass = results[item.dataset.resetRule] ? "true" : "false";
+      });
+      return results;
+    }
+
+    function setResetError(message) {
+      const el = document.querySelector("#reset-error");
+      if (!el) return;
+      el.textContent = message || "";
+      el.classList.toggle("show", !!message);
+    }
+
+    // field-level error — pattern เดียวกับ setInviteFieldError (aria-invalid + aria-errormessage)
+    function setResetFieldError(inputId, errorId, message) {
+      const input = document.getElementById(inputId);
+      const node = document.getElementById(errorId);
+      const hasError = Boolean(message);
+      if (node) {
+        node.textContent = message || "";
+        node.classList.toggle("show", hasError);
+      }
+      if (input) {
+        input.setAttribute("aria-invalid", hasError ? "true" : "false");
+        if (hasError) input.setAttribute("aria-errormessage", errorId);
+        else input.removeAttribute("aria-errormessage");
+      }
+    }
+
+    function renderResetScreen() {
+      const container = document.querySelector("#reset-content");
+      const screen = document.querySelector("#reset-screen");
+      if (!container || !screen) return;
+      screen.dataset.resetState = resetPassword.state;
+      if (resetPassword.state === "validating") {
+        container.innerHTML = `
+          <h1 class="login-title">RESET<br>PASSWORD</h1>
+          <p class="login-copy">ตั้งรหัสผ่านใหม่ผ่านลิงก์ครั้งเดียว</p>
+          <div class="reset-validating" data-reset-validating role="status">กำลังตรวจสอบลิงก์ กรุณารอสักครู่…</div>
+        `;
+        return;
+      }
+      if (resetPassword.state === "invalid") {
+        // safe recovery state — per-state title/message/recovery channel ที่ปลอดภัย
+        // data-reset-recovery = recovery class; data-reset-failure = code เดิมสำหรับ QA/audit trace
+        const recovery = getResetRecoveryState(resetPassword.failureCode);
+        container.innerHTML = `
+          <h1 class="login-title">${recovery.title}</h1>
+          <div class="auth-error show" data-reset-failure="${resetPassword.failureCode || "invalid_token"}" data-reset-recovery="${recovery.kind}" role="alert">${recovery.message}</div>
+          <div class="reset-actions">
+            ${recovery.retry ? `<button class="btn primary" type="button" data-reset-retry>${recovery.retry}</button>` : ""}
+            ${recovery.forgot ? `<button class="btn ${recovery.retry ? "ghost" : "primary"}" type="button" data-reset-forgot>${recovery.forgot}</button>` : ""}
+            <button class="btn ${recovery.retry || recovery.forgot ? "ghost" : "primary"}" type="button" data-reset-exit>${recovery.action}</button>
+          </div>
+          ${recovery.hint ? `<p class="reset-hint">${recovery.hint}</p>` : ""}
+        `;
+        // keyboard/focus flow — primary recovery action ได้ focus ทันที
+        (container.querySelector("[data-reset-retry]")
+          || container.querySelector("[data-reset-forgot]")
+          || container.querySelector("[data-reset-exit]"))?.focus();
+        return;
+      }
+      if (resetPassword.state === "success") {
+        container.innerHTML = `
+          <h1 class="login-title">PASSWORD<br>UPDATED</h1>
+          <p class="login-copy">ตั้งรหัสผ่านใหม่เรียบร้อยแล้ว</p>
+          <div class="reset-accepted" data-reset-success role="status">กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่</div>
+          <div class="reset-actions">
+            <button class="btn primary" type="button" data-reset-exit>กลับไปหน้า Login</button>
+          </div>
+        `;
+        container.querySelector("[data-reset-exit]")?.focus();
+        return;
+      }
+      const request = passwordResetData.requests.find(r => r.id === resetPassword.requestId);
+      const acc = request && adminAccountData.accounts.find(a => a.id === request.targetAdminId);
+      const maskedEmail = acc ? maskAdminInvitationEmail(acc.email) : "—";
+      container.innerHTML = `
+        <h1 class="login-title">RESET<br>PASSWORD</h1>
+        <p class="login-copy">ลิงก์นี้ใช้ได้ครั้งเดียวภายใน 30 นาที<br>กรุณาตั้งรหัสผ่านใหม่สำหรับบัญชีของคุณ</p>
+        <div class="reset-context" data-reset-context>
+          <div class="reset-context-row"><span>อีเมล</span><strong data-reset-field="email">${maskedEmail}</strong></div>
+        </div>
+        <form class="login-form" id="reset-form" novalidate>
+          <label>
+            รหัสผ่านใหม่
+            <span class="password-field">
+              <input id="reset-password" type="password" autocomplete="new-password" placeholder="ตั้งรหัสผ่านใหม่" />
+              <button class="password-toggle" type="button" id="reset-password-toggle" aria-label="Show password" title="Show password"></button>
+            </span>
+            <span class="reset-field-error" id="reset-password-error" role="alert"></span>
+          </label>
+          <label>
+            ยืนยันรหัสผ่าน
+            <span class="password-field">
+              <input id="reset-password-confirm" type="password" autocomplete="new-password" placeholder="ยืนยันรหัสผ่านอีกครั้ง" />
+              <button class="password-toggle" type="button" id="reset-password-confirm-toggle" aria-label="Show password" title="Show password"></button>
+            </span>
+            <span class="reset-field-error" id="reset-password-confirm-error" role="alert"></span>
+          </label>
+          <ul class="reset-policy" id="reset-policy">
+            <li data-reset-rule="length">อย่างน้อย 12 ตัวอักษร</li>
+            <li data-reset-rule="upper">มีตัวพิมพ์ใหญ่ (A–Z)</li>
+            <li data-reset-rule="lower">มีตัวพิมพ์เล็ก (a–z)</li>
+            <li data-reset-rule="digit">มีตัวเลข (0–9)</li>
+            <li data-reset-rule="special">มีอักขระพิเศษ</li>
+          </ul>
+          <button class="btn primary" type="submit" id="reset-submit">ตั้งรหัสผ่านใหม่</button>
+        </form>
+        <div class="auth-error" id="reset-error" role="alert"></div>
+        <details class="prototype-tools reset-tools">
+          <summary>Prototype scenario</summary>
+          <label>
+            Reset commit flow
+            <select id="reset-scenario">
+              <option value="commit-ok">บันทึกสำเร็จ (Commit)</option>
+              <option value="commit-failed">ระบบขัดข้องตอนบันทึก (Rollback)</option>
+            </select>
+          </label>
+        </details>
+      `;
+      document.querySelector("#reset-password-toggle").innerHTML = iconSvg.eye;
+      document.querySelector("#reset-password-confirm-toggle").innerHTML = iconSvg.eye;
+      const scenarioSelect = document.querySelector("#reset-scenario");
+      if (scenarioSelect) scenarioSelect.value = resetPassword.scenario;
+      updateResetPasswordPolicy();
+      document.querySelector("#reset-password")?.focus();
+    }
+
+    function submitResetPassword() {
+      if (resetPassword.state !== "form" || resetPassword.submitting) return;
+      const passwordInput = document.querySelector("#reset-password");
+      const confirmInput = document.querySelector("#reset-password-confirm");
+      const password = passwordInput ? passwordInput.value : "";
+      const confirm = confirmInput ? confirmInput.value : "";
+      const results = updateResetPasswordPolicy();
+      const policyPass = ["length", "upper", "lower", "digit", "special"].every(key => results[key]);
+      // field-level validation — required/policy/mismatch ผูกกับ field ของตัวเอง
+      // #reset-error (form-level) สงวนไว้สำหรับ lifecycle/system error ที่ผูก field ไม่ได้เท่านั้น
+      const passwordError = !password
+        ? "กรุณากรอกรหัสผ่านใหม่"
+        : (!policyPass ? "รหัสผ่านยังไม่ตรงตามเงื่อนไข" : "");
+      const confirmError = !confirm
+        ? "กรุณายืนยันรหัสผ่าน"
+        : (policyPass && confirm !== password ? "รหัสผ่านไม่ตรงกัน" : "");
+      setResetFieldError("reset-password", "reset-password-error", passwordError);
+      setResetFieldError("reset-password-confirm", "reset-password-confirm-error", confirmError);
+      setResetError("");
+      if (passwordError) {
+        passwordInput?.focus();
+        return;
+      }
+      if (confirmError) {
+        confirmInput?.focus();
+        return;
+      }
+      const submitBtn = document.querySelector("#reset-submit");
+      if (submitBtn) submitBtn.disabled = true;
+      const result = commitAdminPasswordReset(password);
+      // เคลียร์ค่าออกจาก field ทันที — password ห้ามค้างใน DOM/state/diagnostics
+      if (passwordInput) passwordInput.value = "";
+      if (confirmInput) confirmInput.value = "";
+      if (!result.ok) {
+        resetPassword.state = "invalid";
+        resetPassword.failureCode = result.code;
+      } else {
+        resetPassword.state = "success";
+      }
+      renderResetScreen();
+    }
+
+    // manual QA helper — seed reset request แบบตรง (จำลองลิงก์ที่อีเมลส่งออกไปแล้ว)
+    // ข้าม throttle/delivery issuance path — record shape เดียวกับ processPasswordResetRequest
+    function seedPasswordResetLinkFixture(acc, overrides = {}) {
+      const requestId = nextPasswordResetRequestId();
+      const now = Date.now();
+      const tokenRevision = 1;
+      const tokenHash = mintPasswordResetToken(requestId, tokenRevision);
+      const request = {
+        id: requestId,
+        targetAdminId: acc.id,
+        emailNormalized: normalizePasswordResetEmail(acc.email),
+        status: "Pending",
+        issuedAt: new Date(now).toISOString(),
+        expiresAt: new Date(now + PASSWORD_RESET_TOKEN_TTL_MS).toISOString(),
+        tokenRevision,
+        tokenHash,
+        auditRef: null,
+        deliveryRef: null,
+        correlationId: `COR-${requestId}`
+      };
+      Object.assign(request, overrides);
+      passwordResetData.requests.push(request);
+      return request;
+    }
+
+    // dev shortcut บน Forgot screen — seed state แล้ว navigate #reset-token= เส้นทางเดียวกับลิงก์จริง
+    function handleForgotResetScenario(value) {
+      if (value === "invalid") {
+        window.location.hash = "reset-token=sim-rst-invalid";
+        return;
+      }
+      const acc = adminAccountData.accounts.find(a =>
+        a.id === (value === "locked" ? "ADM-007" : value === "ineligible" ? "ADM-006" : "ADM-010"));
+      if (!acc) return;
+      const overrides = {};
+      if (value === "expired") overrides.expiresAt = new Date(Date.now() - 60e3).toISOString();
+      if (value === "used") {
+        overrides.status = "Used";
+        overrides.usedAt = new Date(Date.now() - 5 * 60e3).toISOString();
+      }
+      if (value === "superseded") {
+        overrides.status = "Superseded";
+        overrides.supersededAt = new Date(Date.now() - 2 * 60e3).toISOString();
+      }
+      const request = seedPasswordResetLinkFixture(acc, overrides);
+      const token = getPasswordResetLinkToken(request) || "sim-rst-invalid";
+      window.location.hash = `reset-token=${token}`;
+    }
+
+    document.addEventListener("submit", event => {
+      if (event.target && event.target.id === "reset-form") {
+        event.preventDefault();
+        submitResetPassword();
+      }
+    });
+    document.addEventListener("click", event => {
+      if (event.target.closest("[data-reset-exit]")) {
+        exitResetMode();
+        return;
+      }
+      if (event.target.closest("[data-reset-retry]")) {
+        // transient recovery — re-resolve server state ใหม่เสมอ (ไม่ใช่ blind retry):
+        // ลิงก์ที่ยัง valid กลับ form; state ที่เปลี่ยนไปแล้วแสดง terminal recovery ตามจริง
+        if (resetPassword.token != null) enterResetMode(resetPassword.token);
+        return;
+      }
+      if (event.target.closest("[data-reset-forgot]")) {
+        // recovery channel — ขอลิงก์ใหม่ผ่าน forgot flow เดิม (request ใหม่ supersede เดิมตาม contract)
+        exitResetMode();
+        if (document.body.classList.contains("logged-out")) enterForgotMode();
+        return;
+      }
+      const toggle = event.target.closest("#reset-password-toggle, #reset-password-confirm-toggle");
+      if (toggle) {
+        const input = document.querySelector(toggle.id === "reset-password-toggle" ? "#reset-password" : "#reset-password-confirm");
+        if (!input) return;
+        const willShow = input.type === "password";
+        input.type = willShow ? "text" : "password";
+        toggle.innerHTML = willShow ? iconSvg.eyeOff : iconSvg.eye;
+        toggle.setAttribute("aria-label", willShow ? "Hide password" : "Show password");
+        toggle.setAttribute("title", willShow ? "Hide password" : "Show password");
+      }
+    });
+    document.addEventListener("change", event => {
+      if (event.target && event.target.id === "reset-scenario") {
+        resetPassword.scenario = event.target.value || "commit-ok";
+      }
+      if (event.target && event.target.id === "forgot-reset-scenario") {
+        const value = event.target.value;
+        event.target.value = "";
+        if (value) handleForgotResetScenario(value);
+      }
+    });
+    document.addEventListener("input", event => {
+      if (event.target && (event.target.id === "reset-password" || event.target.id === "reset-password-confirm")) {
+        updateResetPasswordPolicy();
+        // พิมพ์แก้ field ไหนเคลียร์ error ของ field นั้น — re-validate เต็มอีกครั้งตอน submit
+        setResetFieldError(event.target.id, `${event.target.id}-error`, "");
       }
     });
 
@@ -26928,8 +28265,8 @@
                 </label>
                 ${renderAdminAccountActionImpactNote(acc, action)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn ${getAdminAccountActionConfirmClass(config)}" type="button" data-admin-account-action-confirm="${action}" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยัน</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                  <button class="user-detail-action-btn ${getAdminAccountActionConfirmClass(config)}" type="button" data-admin-account-action-confirm="${action}" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยัน</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -26940,8 +28277,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     // ADM-PTO-001: Change Role modal — pattern renderAdminAccountActionModal + before/after diff
@@ -27010,8 +28347,8 @@
                   <p><strong>เปลี่ยนสิทธิ:</strong> <span data-admin-role-diff data-admin-role-from="${acc.role}">${acc.role} → —</span></p>
                 </div>
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-admin-account-change-role-confirm="true" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยันเปลี่ยน Role</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-admin-account-change-role-confirm="true" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยันเปลี่ยน Role</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -27022,8 +28359,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     let adminAccountInviteRoleSnapshot = {};
@@ -27780,6 +29117,9 @@
 
       activeModule = "deletions";
       activeSub = "";
+      // BOR-008 (Contract A.4): accordion ตาม active module — deletions ไม่มี sub
+      // ต้อง clear expandedMenus กัน sub ของต้นทาง (เช่น users) ค้างเปิดตอน back กลับ
+      syncExpandedNavForModule("deletions");
       activeRow = { id: req.id };
       document.body.classList.add("deletion-detail-mode");
       document.body.classList.remove("deletion-list-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "watch-alert-detail-mode");
@@ -29082,9 +30422,98 @@
       });
     }
 
+    // BOR-006: shared focus management สำหรับ shared modal ทุก surface (Contract C — initial focus / focus trap / restore focus)
+    let userActionModalOpener = null;
+    // element ที่โต้ตอบล่าสุดขณะ modal ปิด (pointerdown/Enter/Space) — ใช้เป็น opener สำรองเมื่อ activeElement ค้างที่ body
+    // เช่น row ที่เป็น div (focus ไม่ได้) เปิด detail modal — restore จะกลับ row เดิมได้แทนที่จะ fallback ไป page heading ทันที
+    let userActionModalLastTrigger = null;
+    const USER_ACTION_MODAL_FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), summary, [contenteditable]:not([contenteditable="false"]), [tabindex]:not([tabindex="-1"])';
+    const USER_ACTION_MODAL_EDITABLE = 'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([disabled]):not([readonly]), textarea:not([disabled]):not([readonly]), select:not([disabled]), [contenteditable]:not([contenteditable="false"])';
+    const USER_ACTION_MODAL_FOCUSABLE_INCLUDING_OFFSCREEN = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), summary, [contenteditable]:not([contenteditable="false"]), [tabindex]';
+
+    function isUserActionModalTargetVisible(el) {
+      if (!el || el.getClientRects().length === 0 || el.closest("[hidden]")) return false;
+      // ลูกของ <details> ที่ปิดอยู่ไม่อยู่ใน tab order (ยกเว้น summary ตัวแรก) — getClientRects ยังคืนค่าใน Chromium จึงเช็คเอง
+      const closedDetails = el.closest("details:not([open])");
+      if (closedDetails && el !== closedDetails.querySelector(":scope > summary")) return false;
+      return true;
+    }
+
+    function getUserActionModalFocusableElements() {
+      const modal = document.querySelector("#user-action-modal");
+      if (!modal?.classList.contains("show")) return [];
+      return Array.from(modal.querySelectorAll(USER_ACTION_MODAL_FOCUSABLE)).filter(isUserActionModalTargetVisible);
+    }
+
+    function focusUserActionModalInitialTarget(modal) {
+      const body = modal.querySelector("#user-action-modal-body");
+      const card = modal.querySelector(".user-action-modal");
+      if (!body || !card) return;
+      const closeControls = getUserActionModalFocusableElements().filter(el => el.hasAttribute("data-user-action-modal-close"));
+      const isReadOnlySurface = card.classList.contains("audit-log-detail-modal")
+        || card.classList.contains("market-reference-drawer")
+        || Boolean(body.querySelector("[data-modal-dismissible]"));
+      let target = null;
+      if (isReadOnlySurface) {
+        // Contract C.1: read-only/drawer → focus ปุ่ม Close (X)
+        target = closeControls[0] || null;
+      } else if (body.querySelector("button.warning, button.danger")) {
+        // Contract C.1: confirmation/destructive → focus ปุ่มที่ destructive น้อยสุด (ยกเลิก)
+        // ยกเว้น type-to-confirm: confirm disabled รอพิมพ์ชื่อ → input คือ gate → focus input (เจตนาเดียวกับ group-delete ที่ focus() เอง)
+        const confirmGatedByInput = body.querySelector("button.warning[disabled], button.danger[disabled]");
+        target = (confirmGatedByInput ? Array.from(body.querySelectorAll(USER_ACTION_MODAL_EDITABLE)).find(isUserActionModalTargetVisible) : null)
+          || closeControls[closeControls.length - 1] || null;
+      } else {
+        // Contract C.1: form modal → focus ฟิลด์แรกที่กรอกได้
+        target = Array.from(body.querySelectorAll(USER_ACTION_MODAL_EDITABLE)).find(isUserActionModalTargetVisible) || null;
+      }
+      // fallback: ปุ่มปิดตัวสุดท้าย → heading → card (ตามลำดับ Contract C.1)
+      if (!target) target = closeControls[closeControls.length - 1] || null;
+      if (!target) target = body.querySelector("h1, h2, h3") || card;
+      if (target && !target.matches(USER_ACTION_MODAL_FOCUSABLE_INCLUDING_OFFSCREEN)) target.tabIndex = -1;
+      // BOR-006a: ไม่ส่ง focusVisible — ring/tooltip แสดงเฉพาะ keyboard flow ตาม :focus-visible heuristic;
+      // focus placement คงเดิม (a11y) แต่ mouse-opened modal ไม่มี ring ค้างบนปุ่ม
+      target?.focus({ preventScroll: true });
+    }
+
+    function scheduleUserActionModalFocusRestore() {
+      const opener = userActionModalOpener;
+      userActionModalOpener = null;
+      window.requestAnimationFrame(() => {
+        const modal = document.querySelector("#user-action-modal");
+        // modal ใหม่เปิดแทนแล้ว → focus เป็นของ modal ใหม่ (drawer closing animation ยังถือว่ากำลังปิด)
+        if (modal?.classList.contains("show")
+          && !modal.classList.contains("market-reference-drawer-closing")
+          && !modal.classList.contains("audit-log-drawer-closing")) return;
+        // Contract C.3: restore กลับ opener; opener หายจาก DOM/unfocusable → fallback main content heading
+        let target = null;
+        if (opener?.isConnected && !opener.disabled) {
+          // opener ที่ focus ได้เอง → ใช้เลย; ถ้าเป็น cell/text ใน row ที่ focus ไม่ได้ → ปีนขึ้นไปหา row/interactive container ใกล้สุด
+          target = opener.matches(USER_ACTION_MODAL_FOCUSABLE_INCLUDING_OFFSCREEN) ? opener
+            : opener.closest('button, a[href], input, select, textarea, summary, [contenteditable], [tabindex], tr, [role="row"], [role="button"], .user-row');
+        }
+        if (!target || !target.isConnected || target.disabled || !isUserActionModalTargetVisible(target)) {
+          target = document.querySelector("#page-title");
+          if (!isUserActionModalTargetVisible(target)) target = null;
+        }
+        if (target && !target.matches(USER_ACTION_MODAL_FOCUSABLE_INCLUDING_OFFSCREEN)) target.tabIndex = -1;
+        // BOR-006a: ไม่ส่ง focusVisible — ring แสดงเฉพาะเมื่อปิดด้วยคีย์บอร์ด (ESC/Enter); mouse close ไม่มี ring ค้างบน opener
+        target?.focus({ preventScroll: true });
+      });
+    }
+
     function showUserActionModal(lockMainScroll = false) {
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
+      // BOR-006: จับ opener เฉพาะ transition closed→open — modal ที่เปิดซ้อน/ re-render state เดิมคง opener แรกไว้
+      if (!modal.classList.contains("show")) {
+        const opener = document.activeElement;
+        userActionModalOpener = opener && opener !== document.body && opener !== document.documentElement && !modal.contains(opener) ? opener : null;
+        // opener สำรอง: activeElement ค้างที่ body เมื่อเปิดจาก element ที่ focus ไม่ได้ (เช่น row div) — ใช้ pointerdown/Enter ล่าสุดแทน
+        if (!userActionModalOpener && userActionModalLastTrigger && !modal.contains(userActionModalLastTrigger)) {
+          userActionModalOpener = userActionModalLastTrigger;
+        }
+      }
       closeRowMenus();
       applyModalHeadingFonts(modal);
       modal.classList.remove("market-reference-drawer-closing", "market-reference-drawer-open", "audit-log-drawer-closing", "audit-log-drawer-open");
@@ -29100,11 +30529,17 @@
         });
       }
       document.body.classList.toggle("asset-action-modal-open", lockMainScroll);
+      // BOR-006: initial focus ตาม Contract C.1 — per-modal .focus() ที่รันหลัง show() ยัง override ได้ตามเดิม
+      focusUserActionModalInitialTarget(modal);
     }
 
     function closeUserActionModal() {
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
+      // BOR-006: restore focus กลับ opener ทุก close path (X/ยกเลิก/backdrop/ESC/success) — trap release อัตโนมัติเมื่อ .show ถูกถอด
+      // drawer closing path เรียกซ้ำได้ → guard ด้วย closing class กัน schedule ซ้อน
+      const isDrawerClosing = modal.classList.contains("market-reference-drawer-closing") || modal.classList.contains("audit-log-drawer-closing");
+      if (modal.classList.contains("show") && !isDrawerClosing) scheduleUserActionModalFocusRestore();
       const modalCard = modal.querySelector(".user-action-modal");
       const isMarketReferenceDrawer = modalCard?.classList.contains("market-reference-drawer");
       const isAuditLogDrawer = modalCard?.classList.contains("audit-log-detail-modal");
@@ -29280,8 +30715,8 @@
                 ${getAccountStatusEmailNote(user, action)}
                 ${renderAccountStatusEmailPreview(user, action, defaultPublicReason, defaultSuspendUntil)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" data-report-context="${activeReportContextId || ""}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" data-report-context="${activeReportContextId || ""}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -29299,8 +30734,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     function syncExpandedNavForModule(moduleId, subLabel = "") {
@@ -29630,8 +31065,8 @@
                 ${renderDeletionActionEmailNote(req)}
                 ${renderDeletionActionEmailPreview(req, action, config.reasons?.[0] || "")}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn ${getDeletionActionConfirmClass(config)}" type="button" data-deletion-action-confirm="${action}" data-deletion-id="${req.id}" ${completed ? "disabled" : ""}>${DELETION_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                  <button class="user-detail-action-btn ${getDeletionActionConfirmClass(config)}" type="button" data-deletion-action-confirm="${action}" data-deletion-id="${req.id}" ${completed ? "disabled" : ""}>${DELETION_ACTION_CONFIRM_LABEL}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -29642,8 +31077,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     function confirmDeletionAction(req, action) {
@@ -29735,6 +31170,9 @@
 
     function openAccountDeletionRequest(user, subLabel = "") {
       const deletionId = user?.support?.startsWith("DEL-") ? user.support : "";
+      // BOR-008 (Contract B.2/B.3): entity deep link ลง Request Detail ต้อง push
+      // source context ก่อนเปลี่ยนหน้า — back กลับต้นทาง (เช่น User Detail U-1104)
+      pushBackNavigationContext();
       renderModule("deletions", subLabel, subLabel);
       if (deletionId) {
         // DEL-PTO-004: drill-in จาก User Management → เปิด Request Detail ตรง (เจตนาคือดูคำขอนี้ ไม่ใช่เบราว์ list)
@@ -29955,8 +31393,8 @@
                 </label>
                 ${renderReportCloseImpactNote()}
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-report-status-confirm="${status}" data-report-id="${report.id}">ยืนยัน</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-report-status-confirm="${status}" data-report-id="${report.id}">ยืนยัน</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -29974,8 +31412,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     function updateReportStatus(report, status) {
@@ -30190,7 +31628,12 @@
       const fullEmail = getUserFullEmail(user);
       document.body.classList.add("user-detail-mode");
       document.body.classList.remove("user-list-mode");
+      // BOR-008 (Contract A.1/A.4): destination-owned active state — User Detail
+      // belongs to users/User Accounts even when opened cross-module (e.g. DEL-033
+      // → U-1104); source context stays in backNavigationStack for Back (B.3).
+      activeModule = "users";
       activeSub = "User Accounts";
+      syncExpandedNavForModule("users", "User Accounts");
       activeRow = user;
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id}`;
       document.querySelector("#page-title").textContent = "User Detail";
@@ -30451,7 +31894,7 @@
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
       document.body.classList.toggle("market-list-mode", id === "market");
-      document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Dashboard") === "Dashboard");
+      document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Market Overview") === "Market Overview");
       document.body.classList.toggle("watch-alert-mode", id === "watch-alerts");
       document.body.classList.toggle("watch-alert-overview-mode", id === "watch-alerts" && ((subLabel || "Demand Overview") === "Demand Overview" || subLabel === "Search Insights"));
       document.body.classList.toggle("watch-alert-list-mode", id === "watch-alerts" && (subLabel === "Watch Alert List" || subLabel === "Alert List"));
@@ -30485,7 +31928,7 @@
         return;
       }
       if (id === "market") {
-        renderMarketData(subLabel || "Dashboard");
+        renderMarketData(subLabel || "Market Overview");
         updateActiveNav();
         return;
       }
@@ -30581,15 +32024,15 @@
       if (isCategoryList) {
         activeRow = null;
         setPageActions(`
-          <button class="btn" type="button" data-category-order-open aria-label="จัดเรียง Category บน FO Board">${iconSvg.sort}<span>จัดเรียง Category</span></button>
-          <button class="btn" type="button" data-category-add aria-label="เพิ่มหมวดหมู่">${iconSvg.plus}<span>เพิ่มหมวดหมู่</span></button>
+          <button class="btn" type="button" data-category-order-open aria-label="Reorder Categories on FO Board">${iconSvg.sort}<span>Reorder Categories</span></button>
+          <button class="btn" type="button" data-category-add aria-label="Add Category">${iconSvg.plus}<span>Add Category</span></button>
         `);
         document.querySelector("#crumb").textContent = `${data.crumb} / Categories`;
         document.querySelector("#page-title").textContent = "Categories";
         document.querySelector("#page-meta").textContent = "";
         document.querySelector("#panel-title").textContent = "CATEGORY LIST";
         document.querySelector("#panel-subtitle").textContent = "";
-        document.querySelector("#primary-action").textContent = "เพิ่มหมวดหมู่";
+        document.querySelector("#primary-action").textContent = "Add Category";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-category-filter-toggle aria-expanded="${categoryFilterOpen}">${iconSvg.filter}<span>${categoryFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
           <button class="btn" type="button" data-category-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
@@ -32492,15 +33935,19 @@
 
     // mock session registry สำหรับ Active Sessions — self-only (key ด้วย admin id)
     // sessionRevision = session epoch ตอนสร้าง: Change Password bump acc.sessionRevision
-    // ทำให้ session อื่นหมดอายุทันที (เทียบใน isMyAccountSessionActive) — current session คงอยู่เสมอ
+    // ทำให้ session อื่นหมดอายุทันที (เทียบใน isMyAccountSessionActive) — current session
+    // ไม่ได้รับการยกเว้น: epoch ถูก refresh เฉพาะเมื่อเครื่องนี้เป็นคนเปลี่ยนรหัสเอง
+    // แต่ bump จากอุปกรณ์อื่นทำ current stale → session-expired (AIL-023b)
+    // signedInTs/lastActiveTs = epoch ms สำหรับ idle 8h / max 24h policy (spec 01§8)
+    // — anchor กับ Date.now() ตอน init เพื่อให้ baseline valid เสมอเมื่อเปิด prototype
     // ipMasked ถูก mask ที่ data level — ห้ามเก็บ/แสดง full IP หรือ session token
     const adminSessionData = {
       "ADM-010": {
         currentSessionId: "SES-90001",
         sessions: [
-          { id: "SES-90001", deviceType: "desktop", device: "Windows PC", browser: "Chrome", location: "กรุงเทพมหานคร, ประเทศไทย", ipMasked: "203.150.98.xx", signedInAt: "09 Sep 2026 09:12", lastActiveAt: "กำลังใช้งาน", sessionRevision: 0, status: "Active" },
-          { id: "SES-90002", deviceType: "mobile", device: "iPhone 15 Pro", browser: "Safari", location: "กรุงเทพมหานคร, ประเทศไทย", ipMasked: "171.96.34.xx", signedInAt: "08 Sep 2026 21:40", lastActiveAt: "09 Sep 2026 08:47", sessionRevision: 0, status: "Active" },
-          { id: "SES-90003", deviceType: "tablet", device: "iPad Air", browser: "Safari", location: "เชียงใหม่, ประเทศไทย", ipMasked: "49.228.71.xx", signedInAt: "06 Sep 2026 19:05", lastActiveAt: "08 Sep 2026 22:15", sessionRevision: 0, status: "Active" }
+          { id: "SES-90001", deviceType: "desktop", device: "Windows PC", browser: "Chrome", location: "กรุงเทพมหานคร, ประเทศไทย", ipMasked: "203.150.98.xx", signedInAt: "09 Sep 2026 09:12", lastActiveAt: "กำลังใช้งาน", sessionRevision: 0, status: "Active", signedInTs: Date.now() - 2 * 3600e3, lastActiveTs: Date.now() - 60e3 },
+          { id: "SES-90002", deviceType: "mobile", device: "iPhone 15 Pro", browser: "Safari", location: "กรุงเทพมหานคร, ประเทศไทย", ipMasked: "171.96.34.xx", signedInAt: "08 Sep 2026 21:40", lastActiveAt: "09 Sep 2026 08:47", sessionRevision: 0, status: "Active", signedInTs: Date.now() - 18 * 3600e3, lastActiveTs: Date.now() - 3 * 3600e3 },
+          { id: "SES-90003", deviceType: "tablet", device: "iPad Air", browser: "Safari", location: "เชียงใหม่, ประเทศไทย", ipMasked: "49.228.71.xx", signedInAt: "06 Sep 2026 19:05", lastActiveAt: "08 Sep 2026 22:15", sessionRevision: 0, status: "Active", signedInTs: Date.now() - 20 * 3600e3, lastActiveTs: Date.now() - 5 * 3600e3 }
         ]
       }
     };
@@ -32550,8 +33997,8 @@
       return `
         <div class="my-account-state-block" data-my-account-state="session-expired">
           ${renderMyAccountStateIcon()}
-          <strong class="empty-title">Session หมดอายุ กรุณาเข้าสู่ระบบใหม่</strong>
-          <p class="empty-subtitle">เพื่อความปลอดภัยของบัญชี กรุณาเข้าสู่ระบบอีกครั้งเพื่อใช้งาน My Account ต่อ</p>
+          <strong class="empty-title">Session หมดอายุ</strong>
+          <p class="empty-subtitle">เพื่อความปลอดภัยของบัญชี กรุณาเข้าสู่ระบบอีกครั้ง</p>
           <div class="user-detail-actions my-account-state-actions">
             <button type="button" class="user-detail-action-btn" data-my-account-action="return-login">กลับไปหน้า Login</button>
           </div>
@@ -32656,8 +34103,11 @@
       setPageActions("");
 
       let bodyHtml;
-      if (!acc || !myAccountHasAccess()) {
-        // self account ไม่เจอ หรือ status ไม่ใช่ Active → session expired (contract §2.2/§7.2)
+      // sweep session ที่หมดอายุตามเวลาก่อนประเมิน validity (idle 8h / max 24h — spec 01§8)
+      sweepMyAccountExpiredSessions(acc);
+      if (!acc || !myAccountHasAccess() || !isMyAccountCurrentSessionValid(acc)) {
+        // self account ไม่เจอ / status ไม่ใช่ Active / current session หมดอายุ ถูก revoke
+        // จากอุปกรณ์อื่น หรือ sessionRevision stale → session expired (contract §2.2/§6/§7.2)
         myAccountViewState = "session-expired";
         bodyHtml = `<div class="user-detail-page report-detail-page">${renderMyAccountSessionExpiredState()}</div>`;
       } else if (myAccountViewState === "loading") {
@@ -32669,6 +34119,8 @@
         bodyHtml = `<div class="user-detail-page report-detail-page">${renderMyAccountSessionExpiredState()}</div>`;
       } else {
         myAccountViewState = "ready";
+        // watch session validity ขณะแสดงหน้า — flip เป็น expired เมื่อ session invalid
+        startMyAccountSessionWatch();
         // shell + section ตาม established BO detail-page pattern (Admin Account Detail) — ไม่มี detail head เพราะ identity fields อยู่ใน tiles แล้ว
         bodyHtml = `
           <div class="user-detail-page report-detail-page my-account-page" data-my-account-page>
@@ -32732,8 +34184,9 @@
 
       const acc = findSelfAdminAccount();
 
-      // stale / session-expired check — revision + identity + Active status (contract §4.3)
-      if (!acc || acc.id !== auth?.admin?.accountId || acc.revision !== getMyAccountRevision() || acc.status !== "Active") {
+      // stale / session-expired check — revision + identity + Active status + current session validity (contract §4.3/§6)
+      sweepMyAccountExpiredSessions(acc);
+      if (!acc || acc.id !== auth?.admin?.accountId || acc.revision !== getMyAccountRevision() || acc.status !== "Active" || !isMyAccountCurrentSessionValid(acc)) {
         closeUserActionModal();
         showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนแก้ไขอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
         renderMyAccountPage();
@@ -32993,8 +34446,10 @@
       if (confirmError) { confirmInput.focus(); return; }
 
       const acc = findSelfAdminAccount();
-      // boundary + stale check ตอน commit — self identity + Active status + revision snapshot ตอนเปิด modal
-      if (!acc || acc.id !== auth?.admin?.accountId || acc.status !== "Active" || acc.revision !== myAccountPwRevisionSnapshot) {
+      // boundary + stale check ตอน commit — self identity + Active status + revision snapshot
+      // ตอนเปิด modal + current session validity (expire/revoke ระหว่างเปิด modal → reject)
+      sweepMyAccountExpiredSessions(acc);
+      if (!acc || acc.id !== auth?.admin?.accountId || acc.status !== "Active" || acc.revision !== myAccountPwRevisionSnapshot || !isMyAccountCurrentSessionValid(acc)) {
         closeUserActionModal();
         showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนแก้ไขอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
         renderMyAccountPage();
@@ -33024,10 +34479,14 @@
         return;
       }
 
-      // commit — อัปเดต mock credential + bump revision; revoke session อื่น = sessionRevision เปลี่ยน (current session คงอยู่)
+      // commit — อัปเดต mock credential + bump revision; revoke session อื่น = sessionRevision เปลี่ยน
       cred.password = next;
       acc.revision = (acc.revision || 0) + 1;
       acc.sessionRevision = (acc.sessionRevision || 0) + 1;
+      // refresh security context ของ session นี้ — เครื่องที่เปลี่ยนเองไม่ถูก revoke ตาม (contract §3)
+      const pwRegistry = adminSessionData[acc.id];
+      const pwCurrent = pwRegistry?.sessions.find((s) => s.id === pwRegistry.currentSessionId);
+      if (pwCurrent) pwCurrent.sessionRevision = acc.sessionRevision;
       acc.lastAction = "เปลี่ยนรหัสผ่านผ่าน My Account";
       myAccountPwFailCount = 0;
       myAccountPwRevisionSnapshot = acc.revision;
@@ -33074,8 +34533,12 @@
 
     // ===== My Account — Active Sessions (self-only) =====
     // list/revoke เฉพาะ session ของตัวเอง — identity เดียวกับ My Account (auth.admin.accountId)
-    // session "active" เมื่อ status Active และยังอยู่ใน sessionRevision epoch ปัจจุบัน
-    // (เปลี่ยนรหัสผ่าน = bump epoch → session อื่นหมดอายุ) — current session คงอยู่จนกว่าจะ logout
+    // session "active" เมื่อ status Active + อยู่ใน sessionRevision epoch ปัจจุบัน +
+    // ยังไม่เกิน idle 8h / max 24h (spec 01§8) — ไม่ยกเว้น current session: revoke จาก
+    // อุปกรณ์อื่น / epoch bump ภายนอก / idle เกิน policy ทำ session นี้หมดอายุเช่นกัน (AIL-023b)
+    const MY_ACCOUNT_SESSION_IDLE_MS = 8 * 3600e3;
+    const MY_ACCOUNT_SESSION_MAX_MS = 24 * 3600e3;
+
     function getMyAccountSessions(acc) {
       return adminSessionData[acc?.id]?.sessions || [];
     }
@@ -33086,8 +34549,94 @@
 
     function isMyAccountSessionActive(acc, session) {
       if (!session || session.status !== "Active") return false;
-      if (isMyAccountCurrentSession(acc, session)) return true;
-      return (session.sessionRevision ?? 0) === (acc?.sessionRevision ?? 0);
+      if ((session.sessionRevision ?? 0) !== (acc?.sessionRevision ?? 0)) return false;
+      const now = Date.now();
+      if (session.lastActiveTs && now - session.lastActiveTs > MY_ACCOUNT_SESSION_IDLE_MS) return false;
+      if (session.signedInTs && now - session.signedInTs > MY_ACCOUNT_SESSION_MAX_MS) return false;
+      return true;
+    }
+
+    // current session validity — gate หลักของ My Account: session ต้อง valid ตาม rule
+    // เดียวกับ session อื่น (contract §6 — invalid session block ใน request ถัดไป)
+    function isMyAccountCurrentSessionValid(acc) {
+      const registry = adminSessionData[acc?.id];
+      const current = registry?.sessions.find((s) => s.id === registry.currentSessionId);
+      return isMyAccountSessionActive(acc, current);
+    }
+
+    // lazy expiry sweep — session ที่ idle/age เกิน policy ถูก flip เป็น Expired ให้ registry
+    // ตรงกับผล valid (production = system job; prototype ตรวจตอน render/commit)
+    // epoch-stale ไม่ถูก sweep — sessionRevision mismatch คือ invalid เฉย ๆ ไม่เปลี่ยน status
+    function sweepMyAccountExpiredSessions(acc) {
+      const registry = adminSessionData[acc?.id];
+      if (!registry) return;
+      const now = Date.now();
+      registry.sessions.forEach((s) => {
+        if (s.status !== "Active") return;
+        const idleExpired = s.lastActiveTs && now - s.lastActiveTs > MY_ACCOUNT_SESSION_IDLE_MS;
+        const maxExpired = s.signedInTs && now - s.signedInTs > MY_ACCOUNT_SESSION_MAX_MS;
+        if (idleExpired || maxExpired) {
+          s.status = "Expired";
+          s.expiredAt = formatBangkokTimestamp();
+          s.expiredReason = idleExpired ? "Idle timeout" : "Max session lifetime";
+        }
+      });
+    }
+
+    // system-triggered expiry transition — session หมดอายุ/invalid ระหว่างใช้งาน:
+    // ปิด modal ที่ค้าง + เคลียร์ snapshot แล้ว gate หน้าเป็น session-expired
+    // (แยกจาก user-initiated logout — user ไม่ได้กดออกเอง)
+    function transitionMyAccountToSessionExpired() {
+      myAccountSessionRevokeTarget = null;
+      myAccountLogoutAllSnapshot = null;
+      closeUserActionModal();
+      myAccountViewState = "session-expired";
+      renderMyAccountPage();
+    }
+
+    // watch เบา ๆ ขณะอยู่หน้า My Account — จำลอง server-side invalidation ที่ผู้ใช้เห็น
+    // โดยไม่ต้องรอ click ถัดไป; pause เมื่อ modal เปิด (commit guard เช็คตอนกดยืนยันอยู่แล้ว)
+    // และหยุดตัวเองเมื่อออกจากหน้า My Account
+    function startMyAccountSessionWatch() {
+      window.clearInterval(myAccountSessionWatchTimer);
+      myAccountSessionWatchTimer = window.setInterval(() => {
+        if (!document.body.classList.contains("my-account-mode") || document.body.classList.contains("logged-out")) {
+          window.clearInterval(myAccountSessionWatchTimer);
+          myAccountSessionWatchTimer = null;
+          return;
+        }
+        if (myAccountViewState === "session-expired") return;
+        if (document.querySelector("#user-action-modal.show")) return;
+        const acc = findSelfAdminAccount();
+        if (acc && !isMyAccountCurrentSessionValid(acc)) {
+          transitionMyAccountToSessionExpired();
+        }
+      }, 1200);
+    }
+
+    // login ใหม่หลัง session teardown (เช่น Logout All) = ระบบออก session ใหม่บนอุปกรณ์ที่ login
+    // — lazy issuance: current session เดิมใน registry ไม่ active แล้ว → ออก entry ใหม่จาก device เดิม
+    function ensureMyAccountCurrentSession(acc) {
+      const registry = adminSessionData[acc?.id];
+      if (!registry) return;
+      const existing = registry.sessions.find((s) => s.id === registry.currentSessionId);
+      if (existing && isMyAccountSessionActive(acc, existing)) return;
+      const fresh = {
+        id: `SES-${String(90000 + registry.sessions.length + 1)}`,
+        deviceType: existing?.deviceType || "desktop",
+        device: existing?.device || "This device",
+        browser: existing?.browser || "—",
+        location: existing?.location || "—",
+        ipMasked: existing?.ipMasked || "—",
+        signedInAt: formatAdminAccountActivityTime(),
+        signedInTs: Date.now(),
+        lastActiveAt: "กำลังใช้งาน",
+        lastActiveTs: Date.now(),
+        sessionRevision: acc?.sessionRevision ?? 0,
+        status: "Active"
+      };
+      registry.sessions.push(fresh);
+      registry.currentSessionId = fresh.id;
     }
 
     function renderMyAccountSessionIcon(session) {
@@ -33123,6 +34672,7 @@
 
     function renderMyAccountSessionsSection(acc) {
       // current session ขึ้นก่อนเสมอ; session ที่ revoke แล้ว/หมดอายุจาก sessionRevision ไม่แสดงใน list
+      ensureMyAccountCurrentSession(acc);
       const sessions = getMyAccountSessions(acc)
         .filter((s) => isMyAccountSessionActive(acc, s))
         .sort((a, b) => Number(isMyAccountCurrentSession(acc, b)) - Number(isMyAccountCurrentSession(acc, a)));
@@ -33134,6 +34684,9 @@
             ? sessions.map((s) => renderMyAccountSessionRow(acc, s)).join("")
             : '<div class="my-account-session-empty">ไม่มี session ที่ใช้งานอยู่</div>'}
         </div>
+        ${sessions.length ? `<div class="user-detail-actions my-account-sessions-footer">
+          <button type="button" class="user-detail-action-btn warning" data-my-account-action="logout-all">ออกจากระบบทุกอุปกรณ์</button>
+        </div>` : ""}
       </div>`;
     }
 
@@ -33141,7 +34694,7 @@
       const acc = findSelfAdminAccount();
       if (!acc) return;
       const session = getMyAccountSessions(acc).find((s) => s.id === sessionId);
-      // guard ฝั่ง action: current session ออกจากระบบด้วยปุ่ม Logout เดิมเท่านั้น (Logout All = AIL-023a)
+      // guard ฝั่ง action: current session ออกจากระบบผ่านปุ่ม Logout / ออกจากระบบทุกอุปกรณ์ เท่านั้น
       if (!session || !isMyAccountSessionActive(acc, session) || isMyAccountCurrentSession(acc, session)) {
         showToast("Session นี้ไม่ได้ใช้งานแล้ว — รายการถูกอัปเดต", "My Account", "warning");
         renderMyAccountPage();
@@ -33222,7 +34775,9 @@
         return;
       }
       // boundary + stale check — self identity + Active + revision snapshot ตอนเปิด modal
-      if (acc.id !== auth?.admin?.accountId || acc.status !== "Active" || acc.revision !== target.revision) {
+      // + current session validity (expire/revoke จากอุปกรณ์อื่นระหว่างเปิด modal → reject)
+      sweepMyAccountExpiredSessions(acc);
+      if (acc.id !== auth?.admin?.accountId || acc.status !== "Active" || acc.revision !== target.revision || !isMyAccountCurrentSessionValid(acc)) {
         myAccountSessionRevokeTarget = null;
         closeUserActionModal();
         showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนดำเนินการอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
@@ -33269,6 +34824,164 @@
         reason: "",
         reference: acc.id || "—",
         note: `${session.location} · IP ${session.ipMasked} · ใช้งานล่าสุด ${session.lastActiveAt}`,
+        result: "Success",
+        targetAdminId: acc.id,
+        accountRevision: acc.revision ?? null
+      });
+      return auditId;
+    }
+
+    // ===== My Account — Logout All Devices (self-only) =====
+    // revoke ทุก session ที่ใช้งานอยู่รวม current → session teardown → กลับหน้า Login
+    // confirm modal ใช้ pattern/variant เดียวกับ Revoke Session (my-account-session-modal)
+
+    function openMyAccountLogoutAllModal() {
+      const acc = findSelfAdminAccount();
+      if (!acc) return;
+      const sessions = getMyAccountSessions(acc).filter((s) => isMyAccountSessionActive(acc, s));
+      // guard ฝั่ง action: ไม่มี session ที่ใช้งานอยู่ → ไม่เปิด modal
+      if (!sessions.length) {
+        showToast("ไม่มี session ที่ใช้งานอยู่ — รายการถูกอัปเดต", "My Account", "warning");
+        renderMyAccountPage();
+        return;
+      }
+      const current = sessions.find((s) => isMyAccountCurrentSession(acc, s));
+      // snapshot revision ตอนเปิด modal — stale guard ตอน commit เดียวกับ revoke session
+      myAccountLogoutAllSnapshot = { revision: acc.revision ?? 0 };
+      const card = document.querySelector("#user-action-modal .user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!card || !modalBody) return;
+      card.classList.remove(
+        "wide",
+        "plan-modal",
+        "transfer-modal",
+        "profile-modal",
+        "create-modal",
+        "edit-modal",
+        "audit-modal",
+        "create-user-modal",
+        "deactivate-role-modal",
+        "reactivate-role-modal",
+        "delete-role-modal",
+        "suspend-admin-modal",
+        "archive-admin-modal",
+        "reactivate-admin-modal",
+        "admin-invite-modal",
+        "admin-invite-reminder-modal",
+        "admin-invite-link-modal",
+        "admin-invite-revoke-modal",
+        "my-account-name-modal",
+        "my-account-password-modal",
+        "my-account-session-modal"
+      );
+      card.classList.add("my-account-session-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-page my-account-logout-all-modal-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Logout All Devices</h2>
+              <p>ยืนยันการออกจากระบบทุกอุปกรณ์ — รวมอุปกรณ์ที่กำลังใช้งานนี้</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <div class="user-action-target">
+                  <div>
+                    <strong>${sessions.length} session${sessions.length > 1 ? "s" : ""} ที่ใช้งานอยู่</strong>
+                    ${current ? `<div class="my-account-session-meta my-account-session-meta-list">
+                      <span>อุปกรณ์นี้ · ${escMyAccount(current.device)} · ${escMyAccount(current.browser)}</span>
+                      <span>${escMyAccount(current.location)} · IP ${escMyAccount(current.ipMasked)}</span>
+                    </div>` : ""}
+                  </div>
+                  <span class="pill green">Active</span>
+                </div>
+                <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+                  <p><strong>ผลกระทบ:</strong> ทุกอุปกรณ์รวมเครื่องนี้จะถูกออกจากระบบทันที และกลับไปหน้า Login</p>
+                </div>
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn" type="button" data-my-account-action="cancel-logout-all">ยกเลิก</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-my-account-action="confirm-logout-all">ออกจากระบบทุกอุปกรณ์</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      showUserActionModal(true);
+    }
+
+    function confirmMyAccountLogoutAll() {
+      const acc = findSelfAdminAccount();
+      const snapshot = myAccountLogoutAllSnapshot;
+      if (!acc || !snapshot) {
+        closeUserActionModal();
+        return;
+      }
+      // boundary + stale check — self identity + Active + revision snapshot ตอนเปิด modal
+      if (acc.id !== auth?.admin?.accountId || acc.status !== "Active" || acc.revision !== snapshot.revision) {
+        myAccountLogoutAllSnapshot = null;
+        closeUserActionModal();
+        showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนดำเนินการอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
+        renderMyAccountPage();
+        return;
+      }
+      sweepMyAccountExpiredSessions(acc);
+      const sessions = getMyAccountSessions(acc).filter((s) => isMyAccountSessionActive(acc, s));
+      if (!sessions.length) {
+        myAccountLogoutAllSnapshot = null;
+        closeUserActionModal();
+        showToast("ไม่มี session ที่ใช้งานอยู่แล้ว — รายการถูกอัปเดต", "My Account", "warning");
+        renderMyAccountPage();
+        return;
+      }
+      // current session ถูก revoke/expire จากอุปกรณ์อื่นระหว่างเปิด modal → reject + gate expired
+      // (เช็คหลัง empty-case — ถ้าทุก session ตายแล้วให้ warning "ไม่มี session" แทน)
+      if (!isMyAccountCurrentSessionValid(acc)) {
+        myAccountLogoutAllSnapshot = null;
+        closeUserActionModal();
+        showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนดำเนินการอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
+        renderMyAccountPage();
+        return;
+      }
+      const revokedCount = sessions.length;
+      sessions.forEach((s) => {
+        s.status = "Revoked";
+        s.revokedAt = formatBangkokTimestamp();
+        s.revokedReason = "ออกจากระบบทุกอุปกรณ์โดยผู้ใช้ผ่าน My Account";
+      });
+      acc.lastAction = "ออกจากระบบทุกอุปกรณ์ผ่าน My Account";
+      myAccountLogoutAllSnapshot = null;
+      myAccountSessionRevokeTarget = null;
+      addMyAccountLogoutAllAuditEvent(acc, revokedCount);
+      closeUserActionModal();
+      // simulated session teardown — เส้นทางเดียวกับปุ่ม Logout: logged-out + login form
+      // ไม่ show toast — การกลับหน้า Login คือ feedback ของ flow อยู่แล้ว (toast-stack อยู่นอก .app จะลอยทับ login)
+      document.querySelector("#logout-btn")?.click();
+    }
+
+    function addMyAccountLogoutAllAuditEvent(acc, revokedCount) {
+      // security audit — เก็บเฉพาะจำนวน/aggregate ห้ามลง token/credential/full IP
+      const maxNum = auditLogData.events.reduce((max, e) => {
+        const m = /^AUD-(\d+)$/.exec(e.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
+      auditLogData.events.unshift({
+        id: auditId,
+        createdAt: formatBangkokTimestamp(),
+        actor: (auth.admin && auth.admin.username) || acc.email || "Admin",
+        actorType: "Admin",
+        action: "Logout All Devices",
+        eventType: "ADMIN_SESSION_REVOKE_ALL",
+        module: "My Account",
+        risk: "Medium",
+        before: `${revokedCount} active sessions (incl. current)`,
+        after: "All sessions revoked",
+        reason: "",
+        reference: acc.id || "—",
+        note: `ออกจากระบบทุกอุปกรณ์ผ่าน My Account — revoke ${revokedCount} sessions รวม current session`,
         result: "Success",
         targetAdminId: acc.id,
         accountRevision: acc.revision ?? null
@@ -33850,7 +35563,7 @@
       modalCard?.classList.add("article-preview-modal");
       const previewVersionLabel = form.querySelector(".policy-metadata .detail-tile:nth-child(2) strong")?.textContent || "Draft";
       modalBody.innerHTML = `
-        <div class="user-action-page policy-editor-preview-content">
+        <div class="user-action-page policy-editor-preview-content" data-modal-dismissible>
           <div class="user-action-head">
             <div class="policy-preview-title-row">
               <h2 id="user-action-modal-title">Preview — ${policy.typeLabel}</h2>
@@ -33951,7 +35664,7 @@
       modalCard?.classList.remove("article-editor-confirm-modal", "category-editor-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal");
       modalCard?.classList.add("article-preview-modal", "policy-version-view-modal");
       modalBody.innerHTML = `
-        <div class="user-action-layout article-preview-modal-content policy-version-view-content">
+        <div class="user-action-layout article-preview-modal-content policy-version-view-content" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">${policy.typeLabel} — ${version.version}</h2>
@@ -34185,7 +35898,7 @@
           }).join("")
         : `<div class="support-preview-empty">ไม่มีช่องทางที่เปิดใช้งาน</div>`;
       return `
-        <div class="user-action-page support-center-preview-content">
+        <div class="user-action-page support-center-preview-content" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Preview</h2>
@@ -34418,6 +36131,8 @@
       // AIL-020: "my-account" likewise — rendered via renderModule from .admin-box entry.
       if (!moduleData[moduleId] && moduleId !== "dashboard" && moduleId !== "settings" && moduleId !== "my-account") return;
       const targetSubLabel = subLabel || (moduleId !== "dashboard" ? defaultSubByModule[moduleId] || "" : "");
+      // Contract B.6: cross-module jump = context ใหม่ — reset back stack เหมือน sidebar nav
+      resetBackNavigation();
       resetListFilterPanelsForNavigation(moduleId, targetSubLabel);
       renderModule(moduleId, targetSubLabel, targetSubLabel);
       scrollMainToTop();
@@ -34576,7 +36291,7 @@
     }
 
     function renderMarketSummaryCards(subLabel) {
-      if (subLabel === "Dashboard") {
+      if (subLabel === "Market Overview") {
         const marketMetrics = getMarketMetricCards();
         const metrics = [
           { label: "Total Brands", value: marketMetrics.brands, trend: "ข้อมูลจาก Brand catalog" },
@@ -34623,7 +36338,7 @@
         return;
       }
       const marketMetrics = getMarketMetricCards();
-      const stats = subLabel === "Dashboard"
+      const stats = subLabel === "Market Overview"
         ? [["Total Brands", marketMetrics.brands, "From Brand catalog"], ["Total Models", marketMetrics.models, "From Model catalog"], ["Total References", marketMetrics.references, "From Reference catalog"], ["Last Sync", marketMetrics.lastSyncRelative, marketMetrics.lastSyncTimestamp]]
         : subLabel === "Sync History"
           ? [["Log Entries Today", "5", "Backend sync history from The Watch API"], ["Completed", "3", "Latest cache is in use"], ["Running", "1", "Omega reference"], ["Failed", "1", "Existing cache kept"]]
@@ -34638,7 +36353,7 @@
     }
 
     function setupMarketFilters(subLabel) {
-      if (subLabel === "Dashboard") {
+      if (subLabel === "Market Overview") {
         document.querySelector(".filters").innerHTML = "";
         return;
       }
@@ -35800,7 +37515,7 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(renderPageBackButton('data-market-back="catalog"', "Back to Brands"));
+      setPageActions(renderPageBackButton('data-market-back="catalog"', "กลับไป Brands"));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
@@ -35835,7 +37550,7 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`));
+      setPageActions(renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `กลับไป ${brand.name}`));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name} / ${model.name.replace(`${brand.name} `, "")}`;
       document.querySelector("#page-title").textContent = model.name.replace(`${brand.name} `, "");
       document.querySelector("#page-meta").textContent = "";
@@ -35882,7 +37597,7 @@
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.add("market-reference-drawer");
       modalBody.innerHTML = `
-        <div class="market-reference-drawer-content">
+        <div class="market-reference-drawer-content" data-modal-dismissible>
           <div class="market-drawer-head">
             <div>
               <span>${brand.name.toUpperCase()}</span>
@@ -36012,7 +37727,7 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(renderPageBackButton("data-market-back", `Back to ${pageLabel}`));
+      setPageActions(renderPageBackButton("data-market-back", `กลับไป ${pageLabel}`));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${pageLabel} / ${row.id}`;
       document.querySelector("#page-title").textContent = getMarketSyncTitleLabel(row);
       document.querySelector("#page-meta").textContent = "";
@@ -36110,10 +37825,10 @@
               </div>
               ${shouldShowSyncProgress ? renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1) : ""}
               <div class="user-detail-actions user-action-footer">
-                ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Start Sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button>` : ""}
+                ${state === "confirm" ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button><button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Start Sync</button>` : ""}
                 ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>Syncing...</button>` : ""}
-                ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync History</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
-                ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry Failed Datasets</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
+                ${isSuccess ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button><button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync History</button>` : ""}
+                ${isError ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button><button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry Failed Datasets</button>` : ""}
               </div>
               ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list failed</strong><br><span>The source API returned a rate limit. Existing catalog data was not changed.</span></div>` : ""}
               ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync completed</strong><br><span>Refreshed ${job.brands.toLocaleString()} brands, ${job.models.toLocaleString()} models and ${job.references.toLocaleString()} references at ${jobDisplayTimestamp}. Audit was saved.</span></div>` : ""}
@@ -36169,8 +37884,8 @@
       if (!marketCatalogData.syncLogs.some(log => log.id === newLog.id)) marketCatalogData.syncLogs.unshift(newLog);
       if (activeModule === "market" && activeSub === "Brands & Models") renderMarketCatalogRows();
       job.status = "success";
-      if (activeModule === "market" && activeSub === "Dashboard") {
-        renderMarketSummaryCards("Dashboard");
+      if (activeModule === "market" && activeSub === "Market Overview") {
+        renderMarketSummaryCards("Market Overview");
         renderMarketDashboard();
       }
       renderMarketSyncModal("success");
@@ -36190,8 +37905,8 @@
         models: marketMetricTotals.models,
         references: marketMetricTotals.references
       };
-      if (activeModule === "market" && activeSub === "Dashboard") {
-        renderMarketSummaryCards("Dashboard");
+      if (activeModule === "market" && activeSub === "Market Overview") {
+        renderMarketSummaryCards("Market Overview");
         renderMarketDashboard();
       }
       renderMarketSyncModal("running", scenario);
@@ -36203,7 +37918,7 @@
       marketSyncTimer = null;
       if (scenario === "rate_limit") {
         activeMarketSyncJob.status = "error";
-        if (activeModule === "market" && activeSub === "Dashboard") renderMarketSummaryCards("Dashboard");
+        if (activeModule === "market" && activeSub === "Market Overview") renderMarketSummaryCards("Market Overview");
         renderMarketSyncModal("error", scenario);
         return;
       }
@@ -36217,7 +37932,7 @@
     }
 
     function renderMarketCards(subLabel) {
-      const cards = subLabel === "Dashboard"
+      const cards = subLabel === "Market Overview"
         ? []
         : [["Brand-first workflow", "Admins start from brands, drill into models, then open references to review detail and price data."], ["API source", "Data comes from The Watch API through backend sync for Brand, Model and Reference catalog."], ["Read-only", "Add, edit, delete and provider master-data overrides are not available."]];
       document.querySelector("#cards").innerHTML = cards.map(card => `
@@ -36442,7 +38157,7 @@
           : `<div class="detail-empty">ไม่มีข้อมูล</div>`;
         const modalBody = document.querySelector("#user-action-modal-body");
         modalBody.innerHTML = `
-          <div class="user-action-page wa-criteria-modal">
+          <div class="user-action-page wa-criteria-modal" data-modal-dismissible>
             <div class="user-action-head">
               <div>
                 <h2 id="user-action-modal-title">${titleHtml}</h2>
@@ -36747,7 +38462,7 @@
           : `<div class="detail-empty">ไม่มีข้อมูล</div>`;
         const modalBody = document.querySelector("#user-action-modal-body");
         modalBody.innerHTML = `
-          <div class="user-action-page wa-criteria-modal">
+          <div class="user-action-page wa-criteria-modal" data-modal-dismissible>
             <div class="user-action-head">
               <div>
                 <h2 id="user-action-modal-title">${esc(meta.title)}</h2>
@@ -37567,9 +39282,9 @@
       scrollMainToTop();
     }
 
-    function renderMarketData(subLabel = "Dashboard") {
+    function renderMarketData(subLabel = "Market Overview") {
       activeModule = "market";
-      const nextSub = subLabel || "Dashboard";
+      const nextSub = subLabel || "Market Overview";
       if (marketFilterSub !== nextSub) {
         marketFilterOpen = false;
         marketFilterSub = nextSub;
@@ -37578,10 +39293,10 @@
       const pageLabel = activeSub;
       activeRow = null;
       document.body.classList.add("market-list-mode");
-      document.body.classList.toggle("market-dashboard-mode", activeSub === "Dashboard");
+      document.body.classList.toggle("market-dashboard-mode", activeSub === "Market Overview");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions("");
-      document.querySelector("#user-panel-filter-actions").innerHTML = (activeSub === "Dashboard" || activeSub === "Brands & Models") ? "" : `
+      document.querySelector("#user-panel-filter-actions").innerHTML = (activeSub === "Market Overview" || activeSub === "Brands & Models") ? "" : `
         <button class="btn user-filter-toggle" type="button" data-market-filter-toggle aria-expanded="${marketFilterOpen}">${iconSvg.filter}<span>${marketFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
         <button class="btn" type="button" data-market-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
       `;
@@ -37590,7 +39305,7 @@
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").innerHTML = subLabel === "Brands & Models"
         ? `All Brands <span class="panel-title-count">[${getMarketMetricCards().brands}]</span>`
-        : subLabel === "Dashboard"
+        : subLabel === "Market Overview"
           ? "Recently Updated Brands"
           : subLabel === "Sync History"
             ? "Sync Run History"
@@ -37602,8 +39317,8 @@
       renderMarketCards(subLabel);
       document.querySelector("#detail").innerHTML = "";
       // BO-UX-001: restore saved filter values when returning from Market detail pages
-      restoreListFilterState(getMarketListKey(subLabel || "Dashboard"));
-      if (subLabel === "Dashboard") {
+      restoreListFilterState(getMarketListKey(subLabel || "Market Overview"));
+      if (subLabel === "Market Overview") {
         renderMarketDashboard();
       } else if (subLabel === "Brands & Models") {
         renderMarketCatalogRows();
@@ -37652,7 +39367,7 @@
         return;
       }
       if (activeModule === "market") {
-        if ((activeSub || "Dashboard") === "Dashboard") renderMarketDashboard();
+        if ((activeSub || "Market Overview") === "Market Overview") renderMarketDashboard();
         else if (activeSub === "Brands & Models") renderMarketCatalogRows();
         else renderMarketQueueRows(activeSub);
         return;
@@ -38090,7 +39805,7 @@
       modalBody.innerHTML = `
         <div class="user-action-head">
           <div>
-            <h2 id="user-action-modal-title">จัดเรียง Category</h2>
+            <h2 id="user-action-modal-title">Reorder Categories</h2>
             <p>ลากเพื่อปรับลำดับการแสดงผลบน Tuk Daeng Board</p>
           </div>
           <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
@@ -38184,7 +39899,7 @@
           <summary aria-label="Category actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-category-open="${category.id}">View detail</button>
-            <button type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
+            <button type="button" data-category-edit="${category.id}">Edit Category</button>
             ${category.status === "Active"
               ? canDeactivate
                 ? `<button type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
@@ -38656,7 +40371,7 @@
         ? `<span class="pill green">Active</span>`
         : `<span class="pill gray">Inactive</span>`;
       modalBody.innerHTML = `
-        <div class="user-action-layout">
+        <div class="user-action-layout" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Option Detail</h2>
@@ -38677,7 +40392,6 @@
             <div class="option-confirm-row"><span class="option-confirm-label">Updated</span><span class="option-confirm-value">${escapeOptionField(option.updated_at || "-")}</span></div>
           </div>
           <div class="user-detail-actions">
-            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>
             <button class="user-detail-action-btn" type="button" data-option-audit-open="${option.id}">ดู Audit Log</button>
             <button class="user-detail-action-btn primary" type="button" data-option-edit="${option.id}">Edit</button>
           </div>
@@ -40088,7 +41802,7 @@
         ? `<span class="pill green">Active</span>`
         : `<span class="pill gray">Inactive</span>`;
       modalBody.innerHTML = `
-        <div class="user-action-head">
+        <div class="user-action-head" data-modal-dismissible>
           <div>
             <h2 id="user-action-modal-title">Audit Log</h2>
             <p>${escapeOptionField(g.group_id)} (${escapeOptionField(g.group)}) — ${escapeOptionField(g.display_name_en)}</p>
@@ -40322,7 +42036,7 @@
         ? `<span class="pill green">Active</span>`
         : `<span class="pill gray">Inactive</span>`;
       modalBody.innerHTML = `
-        <div class="user-action-head">
+        <div class="user-action-head" data-modal-dismissible>
           <div>
             <h2 id="user-action-modal-title">Audit Log</h2>
             <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
@@ -40430,10 +42144,10 @@
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-order-modal");
       modalCard.classList.add("category-editor-modal");
       modalBody.innerHTML = `
-        <div class="user-action-layout">
+        <div class="user-action-layout" data-modal-dismissible>
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">รายละเอียดหมวดหมู่</h2>
+              <h2 id="user-action-modal-title">Category Detail</h2>
               <p>ข้อมูลหมวดหมู่และการเลือกใช้ในบทความ</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
@@ -40459,7 +42173,7 @@
               </div>
             </section>
             <div class="user-detail-actions">
-              <button class="user-detail-action-btn" type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
+              <button class="user-detail-action-btn" type="button" data-category-edit="${category.id}">Edit Category</button>
             ${category.status === "Active"
                 ? canDeactivate
                   ? `<button class="user-detail-action-btn warning" type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
@@ -40492,7 +42206,7 @@
         <div class="user-action-layout">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">${isEdit ? "แก้ไขหมวดหมู่" : "เพิ่มหมวดหมู่"}</h2>
+              <h2 id="user-action-modal-title">${isEdit ? "Edit Category" : "Add Category"}</h2>
               <p>${isEdit ? "แก้ไขข้อมูลหมวดหมู่และการเลือกใช้ในบทความ" : "สร้างหมวดหมู่สำหรับบอร์ดบทความ"}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
@@ -40676,7 +42390,7 @@
       modalCard.classList.remove("article-preview-modal", "category-editor-modal");
       modalCard.classList.add("article-editor-confirm-modal");
       modalBody.innerHTML = `
-        <div class="article-editor-confirm-page">
+        <div class="article-editor-confirm-page" data-modal-dismissible>
           <div class="article-editor-confirm-icon cancel" aria-hidden="true">
             <span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -41493,7 +43207,7 @@
       modalCard.classList.remove("category-editor-modal", "article-editor-confirm-modal", "article-preview-modal");
       modalCard.classList.add("article-editor-confirm-modal");
       modalBody.innerHTML = `
-        <div class="article-editor-confirm-page">
+        <div class="article-editor-confirm-page" data-modal-dismissible>
           <div class="article-editor-confirm-icon cancel" aria-hidden="true">
             <span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -41522,7 +43236,7 @@
         modalCard.classList.remove("category-editor-modal", "article-editor-confirm-modal", "article-preview-modal");
         modalCard.classList.add("article-preview-modal");
         modalBody.innerHTML = `
-          <div class="user-action-layout article-preview-modal-content">
+          <div class="user-action-layout article-preview-modal-content" data-modal-dismissible>
             <div class="user-action-head">
               <div>
                 <h2 id="user-action-modal-title">Preview article</h2>
@@ -43136,8 +44850,8 @@
                   <p><strong>ผลกระทบ:</strong> ${config.detail} และบันทึก audit log ของ Reported Articles${action === "archive-article" ? " พร้อมอัปเดตสถานะบทความหลักเป็น Archived เพื่อไม่ให้แสดงบน FO" : ""}</p>
                 </div>
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-board-report-action-confirm="${action}" data-board-report-id="${report.id}">${config.confirm}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-board-report-action-confirm="${action}" data-board-report-id="${report.id}">${config.confirm}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -43155,8 +44869,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     function applyBoardReportAction(report, action) {
@@ -43218,7 +44932,7 @@
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-order-modal", "category-editor-modal");
       modalCard.classList.add("board-report-phone-preview-modal");
       modalBody.innerHTML = `
-        <div class="board-report-phone-preview">
+        <div class="board-report-phone-preview" data-modal-dismissible>
           <h2 class="board-report-phone-preview-title" id="user-action-modal-title">Preview article ${escapeArticleField(report.id)} ${escapeArticleField(report.articleId)}</h2>
           <button class="btn user-action-close board-report-phone-preview-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           ${renderArticleFoPreview(article)}
@@ -43755,8 +45469,8 @@
                 ${renderReportedCommentActionEmailNote(reportCase, action)}
                 ${renderReportedCommentActionEmailPreview(reportCase, action, defaultReason)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn ${config.confirmClass} user-action-confirm" type="button" data-reported-comment-action-confirm="${action}" data-report-id="${reportCase.id}">${config.button}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn ${config.confirmClass} user-action-confirm" type="button" data-reported-comment-action-confirm="${action}" data-report-id="${reportCase.id}">${config.button}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage || "Audit requirement"}</strong><br>
@@ -44826,10 +46540,12 @@
         return;
       }
 
-      // AL-001: Audit Log detail modal — คลิก backdrop ปิด modal (scoped to audit-log-detail-modal)
+      // AL-001 + BOR-005: คลิก backdrop ปิดเฉพาะ read-only modal — audit drawer canonical + surfaces ที่ opt-in ด้วย [data-modal-dismissible]
       if (event.target.id === "user-action-modal") {
-        const auditModalCard = event.target.querySelector(".user-action-modal.audit-log-detail-modal");
-        if (auditModalCard) {
+        const isDismissibleModal = event.target.querySelector(".user-action-modal.audit-log-detail-modal")
+          || event.target.querySelector("#user-action-modal-body [data-modal-dismissible]");
+        if (isDismissibleModal) {
+          // BOR-006: closeUserActionModal restore focus กลับ opener แล้ว (ไม่ต้อง blur แยก)
           closeUserActionModal();
           return;
         }
@@ -44951,7 +46667,7 @@
           return;
         }
         if (["market-status-filter", "market-brand-filter"].includes(hiddenInput.id) && activeModule === "market") {
-          if (activeSub === "Brands & Models" || activeSub === "Dashboard") marketCatalogPage = 1;
+          if (activeSub === "Brands & Models" || activeSub === "Market Overview") marketCatalogPage = 1;
           saveCurrentListFilterState();
           renderRows();
           return;
@@ -45106,10 +46822,12 @@
         jumpToModule("market", "Sync History");
         return;
       }
-      // Watch Alert mini table row click → Alert List (read-only drill-in; Alert Detail จะต่อใน WA-PTO-003)
+      // Watch Alert mini table row click → Alert Detail (read-only drill-in — entity deep link ตาม Contract B.1)
+      // push source context (Demand Overview) ไว้ก่อน เพื่อให้ Back กลับต้นทางตาม Contract B.2/B.3
       const waAlertRow = event.target.closest("[data-wa-alert-row]");
       if (waAlertRow) {
-        jumpToModule("watch-alerts", "Alert List");
+        pushBackNavigationContext();
+        renderWatchAlertDetail(waAlertRow.dataset.waAlertRow);
         return;
       }
       const moduleJump = event.target.closest("[data-module-jump], [data-jump]");
@@ -45214,7 +46932,7 @@
         } else if (target === "brand") {
           renderMarketBrandDetailPage(marketBackButton.dataset.marketBrandId || activeMarketBrandId);
         } else {
-          renderMarketData(activeSub || "Dashboard");
+          renderMarketData(activeSub || "Market Overview");
         }
         updateActiveNav();
         scrollMainToTop();
@@ -45222,7 +46940,7 @@
       }
       const marketResetButton = event.target.closest("[data-market-reset]");
       if (marketResetButton && activeModule === "market") {
-        clearListFilterState(getMarketListKey(activeSub || "Dashboard"));
+        clearListFilterState(getMarketListKey(activeSub || "Market Overview"));
         const search = document.querySelector("#market-search");
         const status = document.querySelector("#market-status-filter");
         const brand = document.querySelector("#market-brand-filter");
@@ -45236,7 +46954,7 @@
           setCustomSelectValue("market-brand-filter", "");
         }
         const renderResetMarketRows = () => {
-          if ((activeSub || "Dashboard") === "Dashboard") {
+          if ((activeSub || "Market Overview") === "Market Overview") {
             marketDashboardPage = 1;
             renderMarketDashboard();
           } else if (activeSub === "Brands & Models") {
@@ -46898,6 +48616,13 @@
           closeUserActionModal();
         } else if (action === "confirm-revoke-session") {
           confirmMyAccountSessionRevoke();
+        } else if (action === "logout-all") {
+          openMyAccountLogoutAllModal();
+        } else if (action === "cancel-logout-all") {
+          myAccountLogoutAllSnapshot = null;
+          closeUserActionModal();
+        } else if (action === "confirm-logout-all") {
+          confirmMyAccountLogoutAll();
         } else if (action === "retry") {
           // simulate reload: loading → ready (เหมือน data-role-retry pattern)
           myAccountViewState = "loading";
@@ -46908,6 +48633,8 @@
             simulateMyAccountReload();
           }, 700);
         } else if (action === "return-login") {
+          // session-expired redirect — teardown เดียวกับ logout; copy บน expired block
+          // อธิบายสาเหตุแล้ว จึงกลับหน้า Login เปล่า ๆ ไม่ฝากข้อความเพิ่ม
           document.querySelector("#logout-btn")?.click();
         }
         return;
@@ -47396,6 +49123,10 @@
       const error = document.querySelector("#auth-error");
       error.textContent = message;
       error.classList.toggle("show", Boolean(message));
+      // AIL-026: เคลียร์ lockout marker/timer เมื่อ error ถูก reset จาก flow อื่น
+      delete error.dataset.lockout;
+      error.classList.remove("is-info");
+      stopLoginLockoutTimer();
     }
 
     function setAuthState(message) {
@@ -47416,12 +49147,31 @@
       auth.admin.accountId = "ADM-010";
       auth.scenario = document.querySelector("#auth-scenario").value;
 
+      // ===== AIL-026: account status gate ก่อนตรวจ credentials =====
+      // resolve account จาก email (normalize เดียวกับ recovery) — unknown email
+      // ไม่ block (generic invalid ทีหลัง) เพื่อไม่เปิดเผย account existence
+      const loginAccount = findAdminAccountByEmail(normalizePasswordResetEmail(auth.email));
+      const loginBlock = loginAccount ? evaluateLoginBlock(loginAccount, auth.scenario) : null;
+      if (loginBlock) {
+        renderLoginBlock(loginAccount, loginBlock);
+        return;
+      }
+
       if (auth.scenario === "bad-password") {
+        // AIL-026: นับ failed attempt ต่อ account ที่ resolve ได้ — ครบ 5 ครั้งล็อก 15 นาที
+        if (loginAccount) {
+          const lockedNow = recordFailedLoginAttempt(loginAccount);
+          if (lockedNow) {
+            renderLoginBlock(loginAccount, getLoginLockState(loginAccount));
+            return;
+          }
+        }
         showAuthError("Invalid credentials. The system does not reveal whether email or password is incorrect.");
         setAuthState("");
         return;
       }
 
+      clearLoginAttempts(loginAccount);
       completeLogin();
     }
 
@@ -47431,8 +49181,204 @@
       setAuthState("");
       updateAdminProfileFooter();
       resetSessionViewState();
+      // AIL-023b: login = session issuance — ออก session ใหม่ให้อุปกรณ์นี้เมื่อของเดิม
+      // ถูก revoke/expire/stale (no-op ถ้า current session ยัง valid)
+      ensureMyAccountCurrentSession(findSelfAdminAccount());
       renderModule("dashboard");
       scrollMainToTop();
+    }
+
+    // ===== Failed Login Lockout — Login-side display + attempt tracking (AIL-026) =====
+    // contract: spec 01 §9/§14 + 16 §10 (login พลาด 5 ครั้ง → lock 15 นาที)
+    //   + AIL-019 §7/§12 (lockout message generic — ไม่เปิดเผย lock reason
+    //   และไม่บอกว่า Reset Password จะปลด lock; forgot link เป็น self-service path)
+    // - failed-login lock ปลดเองได้: รอครบ 15 นาที (lazy expiry) หรือ Reset Password
+    //   (commit ฝั่ง AIL-025 เคลียร์ status/reason/attempts ให้แล้ว)
+    // - security/admin lock ปลดได้เฉพาะ authorized Unlock (Settings > Admin Accounts)
+    // - ทั้งหมดเป็น in-memory simulation — ไม่ใช่ security enforcement จริง;
+    //   lockedUntil ถูก re-check จาก state ทุก submit (server-authoritative pattern)
+
+    const LOGIN_FAILED_ATTEMPT_LIMIT = 5;
+    const LOGIN_LOCKOUT_MS = 15 * 60 * 1000;
+
+    // mock login-attempt store — key ด้วย admin id (แยกจาก account/lock_reason เดิม)
+    // ADM-007 seed ตรงกับ fixture เดิม: Locked จาก failed login — anchor เวลาตอน init
+    // เพื่อให้ demo เห็นเวลาคงเหลือ ~15 นาทีเสมอเมื่อเปิด prototype
+    const loginAttemptData = {
+      "ADM-007": { failedAttempts: LOGIN_FAILED_ATTEMPT_LIMIT, lockedUntil: Date.now() + LOGIN_LOCKOUT_MS }
+    };
+
+    let loginLockoutTimer = null;
+
+    function stopLoginLockoutTimer() {
+      if (loginLockoutTimer) {
+        window.clearInterval(loginLockoutTimer);
+        loginLockoutTimer = null;
+      }
+    }
+
+    function getLoginLockState(acc) {
+      // lock reason แยกจาก status — เดียวกับ recovery eligibility (ไม่แตะ Admin Accounts mock)
+      if (!acc || acc.status !== "Locked") return null;
+      const reason = passwordRecoveryLockReason[acc.id] || "security_admin";
+      if (reason !== "failed_login") return { kind: "security_admin" };
+      const lockedUntil = loginAttemptData[acc.id]?.lockedUntil || 0;
+      if (lockedUntil <= Date.now()) return { kind: "failed_login", expired: true };
+      return { kind: "failed_login", lockedUntil };
+    }
+
+    function releaseFailedLoginLock(acc) {
+      // lazy unlock ตอน lock หมดอายุ — routine expiry: telemetry เท่านั้น ไม่สร้าง audit
+      // (pattern เดียวกับ routine token expiry ของ AIL-018/019)
+      acc.status = "Active";
+      delete passwordRecoveryLockReason[acc.id];
+      delete loginAttemptData[acc.id];
+      acc.revision = (acc.revision || 0) + 1;
+      acc.lastAction = "Active — lockout หมดอายุ (15 นาทีครบ)";
+    }
+
+    function pushLoginAudit(acc, payload = {}) {
+      const maxNum = auditLogData.events.reduce((max, e) => {
+        const m = /^AUD-(\d+)$/.exec(e.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
+      auditLogData.events.unshift({
+        id: auditId,
+        createdAt: formatBangkokTimestamp(),
+        actor: acc?.fullName || "Admin",
+        actorType: acc ? "Admin" : "System",
+        action: payload.action || "Admin login",
+        eventType: payload.eventType || "ADMIN_LOGIN",
+        module: "Settings",
+        risk: payload.risk || "Medium",
+        before: payload.before || "-",
+        after: payload.after || "-",
+        reason: payload.reason || "",
+        reference: payload.reference || acc?.id || "—",
+        note: payload.note || "",
+        result: payload.result || "Success",
+        failureCode: payload.failureCode || null,
+        targetAdminId: acc?.id || null,
+        correlationId: payload.correlationId || null
+      });
+      return auditId;
+    }
+
+    // กำหนดว่า account ถูก block จาก login หรือไม่ — คืน block descriptor หรือ null
+    // scenario "lockout-expired" = QA simulation ที่ย้อน lockedUntil ให้ expiry path จริงทำงาน
+    function evaluateLoginBlock(acc, scenario) {
+      if (acc.status === "Locked") {
+        if (scenario === "lockout-expired"
+            && (passwordRecoveryLockReason[acc.id] || "") === "failed_login"
+            && loginAttemptData[acc.id]) {
+          loginAttemptData[acc.id].lockedUntil = Date.now() - 1000;
+        }
+        const lock = getLoginLockState(acc);
+        if (lock && lock.kind === "failed_login" && lock.expired) {
+          releaseFailedLoginLock(acc);
+          return null; // lock หมดอายุแล้ว → login flow ปกติต่อ
+        }
+        if (lock) {
+          pushLoginAudit(acc, {
+            eventType: "ADMIN_LOGIN_FAILED",
+            result: "Failed",
+            failureCode: lock.kind === "failed_login" ? "ACCOUNT_LOCKED" : "LOCK_REASON_BLOCKED",
+            reason: "เข้าสู่ระบบถูกบล็อก — บัญชีอยู่ในสถานะ Locked",
+            note: `Login attempt ของ ${acc.id} ถูก block — lock kind: ${lock.kind}`
+          });
+          return lock;
+        }
+      }
+      if (acc.status === "Suspended" || acc.status === "Archived" || acc.status === "Invited") {
+        pushLoginAudit(acc, {
+          eventType: "ADMIN_LOGIN_FAILED",
+          result: "Failed",
+          failureCode: "ACCOUNT_UNAVAILABLE",
+          reason: "เข้าสู่ระบบถูกบล็อก — บัญชีไม่พร้อมใช้งาน",
+          note: `Login attempt ของ ${acc.id} ถูก block — status: ${acc.status}`
+        });
+        return { kind: "unavailable" };
+      }
+      return null;
+    }
+
+    function formatLoginLockoutRemaining(lockedUntil) {
+      const totalSec = Math.max(0, Math.ceil((lockedUntil - Date.now()) / 1000));
+      const minutes = Math.floor(totalSec / 60);
+      const seconds = totalSec % 60;
+      return minutes > 0 ? `${minutes} นาที ${seconds} วินาที` : `${seconds} วินาที`;
+    }
+
+    // render lockout/block state ลง #auth-error — display เดียวกับ login error
+    // data-lockout attribute ให้ QA/manual แยกชนิด lock ได้ชัดเจน
+    function renderLoginBlock(acc, block) {
+      const error = document.querySelector("#auth-error");
+      stopLoginLockoutTimer();
+      setAuthState("");
+      error.dataset.lockout = block.kind;
+      if (block.kind === "failed_login") {
+        error.innerHTML = `บัญชีถูกล็อกชั่วคราว กรุณาลองใหม่ในอีก <strong data-lockout-countdown>${formatLoginLockoutRemaining(block.lockedUntil)}</strong><br><span class="auth-lockout-hint">หากลืมรหัสผ่าน สามารถขอลิงก์ตั้งรหัสผ่านใหม่ได้ที่ "ลืมรหัสผ่าน?"</span>`;
+        error.classList.add("show");
+        loginLockoutTimer = window.setInterval(() => {
+          const countdown = document.querySelector("[data-lockout-countdown]");
+          const lock = getLoginLockState(acc);
+          if (!countdown || !lock || lock.kind !== "failed_login") {
+            stopLoginLockoutTimer();
+            return;
+          }
+          if (lock.expired) {
+            // ครบ 15 นาทีแล้ว — ปลดล็อกตาม state จริง ไม่ใช่แค่ countdown ถึง 0
+            releaseFailedLoginLock(acc);
+            stopLoginLockoutTimer();
+            error.dataset.lockout = "expired";
+            error.classList.add("is-info");
+            error.textContent = "ช่วงเวลาล็อกสิ้นสุดแล้ว สามารถเข้าสู่ระบบได้ตามปกติ";
+            return;
+          }
+          countdown.textContent = formatLoginLockoutRemaining(lock.lockedUntil);
+        }, 1000);
+        return;
+      }
+      // security_admin / unavailable — generic: ไม่เปิดเผย lock reason หรือช่องทางปลดล็อก
+      error.textContent = "ไม่สามารถเข้าสู่ระบบได้ กรุณาติดต่อผู้ดูแลระบบ";
+      error.classList.add("show");
+    }
+
+    // นับ failed attempt หลัง credential ผิด — ครบ 5 ครั้ง lock account 15 นาที
+    // + audit ทั้ง failed attempt และ lock event (spec 01 §13)
+    function recordFailedLoginAttempt(acc) {
+      const entry = loginAttemptData[acc.id] || (loginAttemptData[acc.id] = { failedAttempts: 0, lockedUntil: 0 });
+      entry.failedAttempts += 1;
+      pushLoginAudit(acc, {
+        eventType: "ADMIN_LOGIN_FAILED",
+        result: "Failed",
+        failureCode: "INVALID_CREDENTIALS",
+        reason: "เข้าสู่ระบบไม่สำเร็จ — credentials ไม่ถูกต้อง",
+        note: `Failed login attempt ${entry.failedAttempts}/${LOGIN_FAILED_ATTEMPT_LIMIT} ของ ${acc.id}`,
+        risk: "Low"
+      });
+      if (entry.failedAttempts < LOGIN_FAILED_ATTEMPT_LIMIT) return false;
+      entry.lockedUntil = Date.now() + LOGIN_LOCKOUT_MS;
+      acc.status = "Locked";
+      passwordRecoveryLockReason[acc.id] = "failed_login";
+      acc.revision = (acc.revision || 0) + 1;
+      acc.lastAction = "Locked จาก failed login 5 ครั้ง — รอ unlock หรือครบ 15 นาที";
+      pushLoginAudit(acc, {
+        action: "Lock Admin (failed login)",
+        eventType: "ADMIN_LOGIN_LOCKED",
+        risk: "Medium",
+        before: "Active",
+        after: "Locked",
+        reason: `failed login ${LOGIN_FAILED_ATTEMPT_LIMIT} ครั้ง`,
+        note: "รอ unlock หรือครบ 15 นาที"
+      });
+      return true;
+    }
+
+    // login สำเร็จ → เคลียร์ failed-attempt counter ของ account นั้น
+    function clearLoginAttempts(acc) {
+      if (acc) delete loginAttemptData[acc.id];
     }
 
     let activeArticlePickerInput = null;
@@ -47655,7 +49601,7 @@
         renderRows();
       }
       if (event.target.matches("#market-search")) {
-        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Dashboard")) marketCatalogPage = 1;
+        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Market Overview")) marketCatalogPage = 1;
         saveCurrentListFilterState();
         renderRows();
       }
@@ -48069,7 +50015,7 @@
         return;
       }
       if (event.target.matches("#market-status-filter, #market-brand-filter")) {
-        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Dashboard")) marketCatalogPage = 1;
+        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Market Overview")) marketCatalogPage = 1;
         saveCurrentListFilterState();
         renderRows();
         return;
@@ -48209,6 +50155,35 @@
       setNavOpen(!document.body.classList.contains("nav-open"));
     });
     document.querySelector("#sidebar-backdrop").addEventListener("click", () => setNavOpen(false));
+    // BOR-006: จับ element ที่โต้ตอบล่าสุดขณะ modal ปิด (pointerdown + Enter/Space) — opener สำรองของ restore focus (Contract C.3)
+    document.addEventListener("pointerdown", event => {
+      const modal = document.querySelector("#user-action-modal");
+      if (!modal?.classList.contains("show")) userActionModalLastTrigger = event.target;
+    }, true);
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const modal = document.querySelector("#user-action-modal");
+      if (!modal?.classList.contains("show")) userActionModalLastTrigger = event.target;
+    }, true);
+    // BOR-006: focus trap — Tab/Shift+Tab วนเฉพาะ focusable elements ใน shared modal จนกว่าจะปิด (Contract C.2)
+    // trap release อัตโนมัติเมื่อ .show ถูกถอดทุก close path (C.5) และไม่ดัก ESC — ESC ตาม close policy ของ Contract B (C.4)
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Tab") return;
+      const modal = document.querySelector("#user-action-modal");
+      if (!modal?.classList.contains("show")) return;
+      const focusable = getUserActionModalFocusableElements();
+      if (!focusable.length) {
+        event.preventDefault();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey ? (!modal.contains(active) || active === first) : (!modal.contains(active) || active === last)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      }
+    });
     document.addEventListener("keydown", event => {
       if (event.target.matches("[data-calendar-only]")) {
         const allowedKeys = ["Tab", "Shift", "Escape"];
@@ -48221,9 +50196,12 @@
       if (event.key === "Escape") {
         const userActionModal = document.querySelector("#user-action-modal");
         if (userActionModal?.classList.contains("show")) {
-          // AL-001: Audit Log detail modal — ESC ปิด modal (scoped to audit-log-detail-modal)
-          const auditModalCard = userActionModal.querySelector(".user-action-modal.audit-log-detail-modal");
-          if (auditModalCard) {
+          // AL-001 + BOR-005: ESC ปิดเฉพาะ read-only modal — audit drawer canonical + surfaces ที่ opt-in ด้วย [data-modal-dismissible]
+          // modal ที่ไม่ opt-in: ESC ไม่ทำอะไรและไม่ตกไปปิด nav ใน event เดียวกัน (Contract B ข้อ 2)
+          const isDismissibleModal = userActionModal.querySelector(".user-action-modal.audit-log-detail-modal")
+            || userActionModal.querySelector("#user-action-modal-body [data-modal-dismissible]");
+          if (isDismissibleModal) {
+            // BOR-006: closeUserActionModal restore focus กลับ opener แล้ว (ไม่ต้อง blur แยก)
             closeUserActionModal();
             return;
           }
@@ -48281,8 +50259,7 @@
       submitLogin();
     });
     document.querySelector("#forgot-password-btn").addEventListener("click", () => {
-      showAuthError("");
-      setAuthState("");
+      enterForgotMode();
     });
     document.querySelector("#auth-scenario").addEventListener("change", () => {
       const scenario = document.querySelector("#auth-scenario").value;
@@ -48332,18 +50309,39 @@
     window.setInterval(updateDashboardMeta, 60000);
     // recipient activation route: bo-prototype.html#token=<opaque> — equivalent ของ /bo/accept-invitation#token=...
     // capture token เข้า memory แล้ว strip fragment ออกจาก address bar/history ตาม §10.1
+    const initialResetToken = getResetTokenFromLocation();
     const initialInviteToken = getInviteTokenFromLocation();
-    if (initialInviteToken !== undefined) {
+    if (initialResetToken !== undefined) {
+      // reset-password route — capture token เข้า memory แล้ว strip fragment เหมือน invitation
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+      enterResetMode(initialResetToken);
+    } else if (initialInviteToken !== undefined) {
       history.replaceState(null, "", window.location.pathname + window.location.search);
       enterInviteMode(initialInviteToken);
+    } else if (getForgotRouteFromLocation()) {
+      // forgot-password route — public entry เดียวกับปุ่มลืมรหัสผ่านบนหน้า Login
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+      enterForgotMode();
     } else {
       showLoginForm();
     }
     window.addEventListener("hashchange", () => {
+      const resetToken = getResetTokenFromLocation();
+      if (resetToken !== undefined) {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+        enterResetMode(resetToken);
+        return;
+      }
       const inviteToken = getInviteTokenFromLocation();
-      if (inviteToken === undefined) return;
-      history.replaceState(null, "", window.location.pathname + window.location.search);
-      enterInviteMode(inviteToken);
+      if (inviteToken !== undefined) {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+        enterInviteMode(inviteToken);
+        return;
+      }
+      if (getForgotRouteFromLocation()) {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+        enterForgotMode();
+      }
     });
   </script>
 </body>

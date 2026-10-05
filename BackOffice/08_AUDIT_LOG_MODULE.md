@@ -184,6 +184,30 @@ Baseline entity types:
 - Permission/access update
 - System setting update
 
+### Admin Identity Lifecycle Audit Contract
+
+Admin identity lifecycle ใช้ event, result และ reference เดียวกันตลอด Invitation, Authentication, My Account และ Session Management เพื่อให้ trace กลับไปยัง Admin Detail, Audit Log และ Delivery Logs ได้โดยไม่สร้าง event ซ้ำจาก action เดียวกัน:
+
+| Event | Action / Module | Risk | Result และ payload ที่อนุญาต |
+| --- | --- | --- | --- |
+| `ADMIN_INVITATION_CREATE` | Create Invitation / Admin Accounts | ตาม approved invitation risk policy | Success/Failed; reference เป็น `ADM-xxx` และ correlation เชื่อม invitation/outbox/delivery โดยไม่เก็บ raw token; `ADMIN_ACCOUNT_INVITE` เป็น legacy alias เท่านั้นและห้าม emit ซ้ำ |
+| `ADMIN_INVITATION_RESEND` / `ADMIN_INVITATION_REISSUE` / `ADMIN_INVITATION_CANCEL` / `ADMIN_INVITATION_EXPIRE` | Invitation lifecycle / Admin Accounts | ตาม approved invitation risk policy | เก็บ invitation revision, actor/target, result, reason/failure code และ correlation ที่ไม่เปิดเผย token |
+| `ADMIN_INVITATION_ACCEPT` / `ADMIN_INVITATION_ACTIVATE` | Invitation lifecycle / Authentication | ตาม approved invitation risk policy | เก็บ safe token state/revision และ target reference; malformed/unknown token ที่ resolve target ไม่ได้เข้า security telemetry แทน target audit |
+| `ADMIN_INVITATION_DELIVERY_ATTEMPT` | Invitation delivery / Admin Accounts | ตาม approved delivery risk policy | เก็บ provider result, delivery reference และ retryable category; ห้ามเก็บ provider credential หรือ message secret |
+| `ADMIN_PROFILE_UPDATE` | Update Profile / My Account | Low | Success; before/after เฉพาะชื่อที่ผ่าน policy และ reference เป็น self `ADM-xxx` |
+| `ADMIN_PASSWORD_CHANGE` | Change Password / My Account | High | Success หรือ Failed เฉพาะเมื่อครบ rate limit พร้อม `failure_code=RATE_LIMITED`; summary ต้องไม่มี password material |
+| `ADMIN_SESSION_REVOKE` | Revoke Session / My Account | Medium | Success; note ใช้ masked session reference เท่านั้น |
+| `ADMIN_SESSION_REVOKE_ALL` | Logout All Devices / My Account | Medium | Success; aggregate event เดียวต่อ action พร้อมจำนวน session โดยไม่บันทึก session id/token รายตัว |
+
+กติกา Change Password ตาม accepted implementation และหลักฐาน E2E:
+
+- Wrong current password แต่ละครั้งแสดง field error และเพิ่ม counter เท่านั้น ไม่สร้าง audit event ต่อครั้ง
+- เมื่อผิดครบ 5 ครั้งติดจึงสร้าง `ADMIN_PASSWORD_CHANGE` result `Failed` พร้อม `failure_code=RATE_LIMITED` หนึ่ง event; production block 15 นาที ส่วน prototype simulation ใช้ 60 วินาที
+- Boundary rejection เช่น stale revision, account ไม่ Active หรือไม่ใช่ self ต้อง reject โดยไม่ mutate และไม่สร้าง audit event
+- Logout All Devices สำเร็จแล้วกลับ Login form เปล่า; feedback หลัง redirect ไม่ใช่ audit payload และไม่เพิ่ม event อีกตัว
+
+ทุก multi-step workflow ต้องใช้ correlation/reference เดียวกันกับ source entity และ Delivery Log ที่เกี่ยวข้อง. Audit payload ห้ามมี plaintext password, password hash, OTP, raw/hashed invitation token, raw/hashed reset token, raw session token, provider credential หรือ idempotency secret. Routine session expiry ไม่สร้าง event เพิ่ม; expiry จาก admin action trace ผ่าน event ของ action ต้นทางอยู่แล้ว
+
 ### Export / Import
 
 - CSV/Excel export start/finish/fail
@@ -345,6 +369,8 @@ Audit Log ต้องใช้ app shell, navigation, breakpoint, list toolbar,
 | AC-BO-AUDIT-013 | Date range filter กรอง event ตามช่วงวันที่ และ picker sync min/max ให้ from ≤ to เสมอ |
 | AC-BO-AUDIT-014 | Reference pill ใน detail drawer jump ไป entity detail ตาม prefix (ADM/DEL/AST/ART/RCO/U-) หรือ fallback กรอง Audit Log ด้วย ref + toast |
 | AC-BO-AUDIT-015 | Audit ref link จาก Account Deletion > History & Actions และ Admin Accounts > History & Actions กระโดดมา Audit Log กรองด้วย event id + toast ยืนยัน — jump-in เริ่มจาก filter state สะอาดเสมอและ nav active ที่ Settings > Audit Log |
+| AC-BO-AUDIT-016 | Admin identity lifecycle ใช้ canonical event/risk/result ตาม contract: wrong-current ไม่ audit ต่อครั้ง, ครบ limit จึงมี `RATE_LIMITED` หนึ่ง event, boundary rejection ไม่ mutate/ไม่ audit และ `ADMIN_SESSION_REVOKE_ALL` เป็น aggregate risk Medium หนึ่ง event |
+| AC-BO-AUDIT-017 | Audit/Delivery trace ใช้ correlation/reference เดียวกันและห้ามบันทึก password, OTP, raw/hashed invitation/reset token, raw session token, provider credential หรือ secret |
 
 ## 17. Open Decisions
 

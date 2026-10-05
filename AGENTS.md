@@ -5,6 +5,7 @@
 The following prototype screens are confirmed and locked as of 2026-07-19. They must not be modified unless the user explicitly requests changes to the named protected screen or flow:
 
 - Login
+- Admin Identity Lifecycle, including Admin Invitation/Activation, Login, Forgot/Reset Password, My Account/Edit Name, Change Password, Active Sessions, individual session revoke, Logout All Devices, session-expired handling, and Audit/Delivery trace, confirmed and locked as of 2026-09-28. The current Login phase is Email + Password → BO with no Login OTP/MFA/2FA. `ADMIN_SESSION_REVOKE_ALL` is one aggregate risk `Medium` event; Logout All Devices returns to an empty Login form; wrong-current Change Password attempts are not audited individually and create one `RATE_LIMITED` event at the limit; production cooldown is 15 minutes while the protected prototype simulation is 60 seconds.
 - Dashboard, including the Dashboard menu entry, active state, routing, cards, metrics, and links from Dashboard content
 - User Management > User List, including the User Management menu entry, User List submenu/active state, user detail views/panels, and every confirmation modal, lock/confirm state, or action flow opened from the User List screen
 - User Management > Reported Users and Report Detail, including report lists/queues, report detail views/panels, report status actions, user actions opened from report context, confirmation modals, lock/confirm states, audit/result states, breadcrumbs, routing, and navigation state
@@ -27,6 +28,7 @@ The following prototype screens are confirmed and locked as of 2026-07-19. They 
 When working on other screens:
 
 - Do not edit files that belong to the protected screens.
+- Treat the complete Admin Identity Lifecycle lock as protected across auth-adjacent screens, My Account, Admin Accounts invitation context/actions, session state, Audit Log, Delivery Logs, routes, mock data, helpers, shared components, and responsive behavior. Do not reintroduce Login OTP/MFA/2FA into the current phase or change the locked AIL-031 corrections without explicit approval.
 - Treat every Settings > Roles & Permissions menu, route, Role List/Detail screen, Custom Role action flow, permission safeguard, audit integration, mock data, helper, CSS path, responsive rule, and navigation behavior in `Prototypes/bo-prototype.html` as protected.
 - Do not modify shared components, styles, routes, layout shells, navigation, state logic, mock data, or assets in a way that changes the protected screens or their menu behavior.
 - If a required change may affect a protected screen, stop and ask for approval before editing.
@@ -42,6 +44,10 @@ UI copy, labels, error messages, and documentation for TukDaeng are primarily in
 - Write code comments in the same language as neighboring comments in the file; if the file has no comments yet, prefer Thai for user-facing intent and English for purely technical notes.
 - Keep technical terms, product names, file names, screen names, statuses, commands, and code identifiers in English when that is clearer or already the convention in the file.
 - Match the tone and register of nearby copy so new text blends in rather than standing out.
+
+## Response Style
+
+ตอบผู้ใช้เป็นภาษาไทยแบบอ่านเข้าใจง่าย — ใช้ประโยคสั้น ภาษาคนคุยกัน เลี่ยงศัพท์เทคนิคหรือศัพท์ยุ่งยากเท่าที่ทำได้ ถ้าจำเป็นต้องใช้ให้แปะคำอธิบายสั้น ๆ ในวงเล็บ เวลาสรุปแผน/งาน ให้แยกหัวข้อสั้น ๆ อธิบายว่า "ทำอะไร เพื่ออะไร ผลกับผู้ใช้/หน้าจอเป็นยังไง" ไม่ใช่แค่รายการเทคนิค เทอมเฉพาะที่ repo ใช้ประจำ (เช่น screen/file/status/task id) ยังใช้ภาษาอังกฤษได้ แต่เรื่องรอบตัวให้เป็นภาษาไทยธรรมดา
 
 ## Code Comment Task Reference Rule
 
@@ -70,6 +76,21 @@ Use Thai as the default language for Kanban task descriptions and related task d
 
 When a Kanban task involves editing files, do not move the task to `done` immediately after implementation or verification. Keep the task in `in_progress` and wait for explicit user confirmation that the result is accepted. Only move the task to `done` after the user confirms the edited result is OK.
 
+## Manual Review Checklist Rule
+
+ถ้างานมีการแก้ prototype หรือหน้าจอใด ๆ ต้องส่งรายการทดสอบ manual ให้ผู้ใช้ตรวจ **ก่อน** ถามว่าปิด task ได้ไหม — ห้ามขอแค่ "รีวิวหน้าจอหน่อย" โดยไม่มีลิสต์ว่าต้องกด/กรอกอะไร กฎนี้บังคับทุกครั้งที่งานแตะ UI ไม่ว่าจะเรียก work-summary skill หรือไม่
+
+Checklist ต้องเรียงเป็นเคสละขั้นและมีอย่างน้อย:
+
+- เลขเคส + ชื่อเคส ครบทุกพฤติกรรมที่เปลี่ยน/เพิ่มใน scope ของงาน
+- ข้อมูลทดสอบจริงที่กรอก/เลือกได้เลย (email, account id, scenario option, ค่าที่พิมพ์) — ห้ามบอกแค่ "กรอกข้อมูล"
+- ขั้นกดตามลำดับ (เปิดเมนูไหน เลือกอะไร กดปุ่มไหน กี่ครั้ง)
+- ผลที่คาดต่อเคส — ข้อความที่ต้องแสดง, element ที่ต้องมี/ไม่มี (เช่น "ไม่มี countdown"), state ที่ต้องเปลี่ยน
+- ครอบคลุม happy path, blocked/error path, edge cases, fixture ที่เกี่ยวข้อง และเคส regression ว่าของเดิมไม่พัง
+- ระบุ viewport/ขนาดหน้าจอที่ต้องเช็คถ้างานเกี่ยวกับ responsive
+
+เมื่อผู้ใช้ตรวจครบและยืนยันผลแล้วจึง commit/ปิด task ได้ — ถ้าผู้ใช้พบจุดผิด แก้แล้วส่ง checklist ชุดเดิม (หรือเคสที่แก้) ให้ตรวจซ้ำ
+
 ## Kanban Time Tracking Rule
 
 ห้ามเรียก `log_time` ด้วยมือเพื่อบวกเวลาเข้า task โดยเด็ดขาด — ระบบ kanban มี auto-timer ที่บันทึกเวลาอัตโนมัติเมื่อย้าย task เข้า/ออก `in_progress` การเรียก `log_time` ด้วยมือจะทำให้ `hours_spent` สูงกว่าเวลาจริง (double-count) กฎนี้บังคับเสมอ ไม่มีข้อยกเว้น
@@ -97,8 +118,6 @@ When showing work hours in summaries or reports, display in `X ชม. Y นา�
 
 ## Fun Work Blog Style (blog ขำๆ จากงานประจำวัน)
 
-## Fun Work Blog Style (blog ขำๆ จากงานประจำวัน)
-
 When the user asks for a fun blog from the day's work (e.g. "เขียน blog ขำๆ", "blog ขำๆ จากที่ทำงานวันนี้"), write it in the "หนูขี้เม้า" persona — the same voice as the kanban tea/gossip entries:
 
 - Narrate in first person as "หนู" (the little assistant), telling the story of the day's work like juicy gossip — playful, whiny-but-cute, with natural Thai particles (เนาะ, เนี่ย, แหละ, ค่ะ/ครับ) and 555/emojis where they land naturally.
@@ -106,3 +125,23 @@ When the user asks for a fun blog from the day's work (e.g. "เขียน blo
 - Weave real numbers from the kanban (hours, task counts, feedback points, test results) into the story as punchlines, not as a data table. Self-deprecating irony about the day's work is welcome.
 - End with a short sign-off plus a teaser for the next episode (e.g. "แล้วพรุ่งนี้เข้าเบิ่งกันต่อนะคะ ... 🐹🌙").
 - Source facts from `get_session_context` / `get_time_summary` (kanban-tukdaeng) so the story stays true to what actually happened.
+
+## Skill Template Fidelity Rule
+
+ก่อนสร้างผลลัพธ์ที่ต้องตาม template ของ skill (เช่น work-summary copy block, submission-evidence copy block, mission plan copy block) **ต้องอ่าน SKILL.md ของ skill นั้นให้ครบทั้งไฟล์ทุกครั้ง** — โดยเฉพาะหลัง conversation ถูกสรุป/compacted หรือเมื่ออ่านไฟล์ครั้งแรกแล้ว output ถูก truncate ให้กลับไปอ่าน offset ที่เหลือจนจบก่อนเสมอ ห้ามประดิษฐ์หรือเดา format จากความจำ ถ้า template ใน skill มีหลาย case/mode (final, progress/handoff, report-only, Case A/B/C) ให้เลือก case ที่ตรงสถานการณ์และปฏิบัติตามกฎของ template นั้นทุกข้อ (field ที่ต้องมี/ห้ามมี, plain text vs markdown, เวลา, verbatim labels จาก mission baseline)
+
+## Natural Work Summary Language Rule (ภาษาคนทำงานจริงในสรุปงาน)
+
+ห้ามแปลคำอังกฤษตรงตัวแบบแข็งทื่อ (literal translation) โดยเฉพาะคำที่เกี่ยวกับ UI/หน้าจอ ให้ใช้ภาษาคนทำงานจริงที่อธิบายผลลัพธ์ที่ตาเห็น:
+- ห้ามเขียน "สแกนองค์ประกอบ UI" / "สแกน element" → ให้ใช้ **"ตรวจข้อความและปุ่มบนหน้าจอ"** หรือ **"ตรวจจุดแสดงผลบนหน้าจอ"**
+- ห้ามเขียน "สแกน inventory" → ให้ใช้ **"ตรวจรายการปุ่มและข้อความ"** หรือ **"กวาดตรวจข้อความบนหน้าจอ"**
+- ห้ามเขียน "ห่อตัว" (wrap), "สแตก" (stack), "ยุบ" (collapse)
+- มุ่งเน้นสิ่งที่คนใช้งาน/แอดมินเห็นจริงบนจอ เช่น "ปุ่ม", "ข้อความ", "ช่องค้นหา", "หัวข้อ", "หน้าต่างแจ้งเตือน (modal)"
+- ใช้ภาษานี้เสมอใน Work Summary, Session Note, Copy Block และการสื่อสารสรุปงานทั้งหมด
+
+## Task Evidence & Checklist Content Rule (หลักฐานและ Checklist ต้องอิงผลงานจริง)
+
+ห้ามใส่ขั้นตอนเชิงระบบหรือ workflow mechanics ลงใน checklist, ภาพหลักฐาน (evidence card), หรือ session summary เด็ดขาด:
+- ห้ามใส่: "ดึง kanban context", "ย้าย task เข้า in_progress", "บันทึก session note", "อ่านเอกสาร..."
+- หลักฐานและ checklist ต้องแสดงเฉพาะ **ผลงานที่ทำจริง (Actual Work Results)** เท่านั้น เช่น สิ่งที่ตรวจพบ, จุดที่ผ่าน/ไม่ผ่าน, สถิติตัวเลขจริง, หรือข้อสรุปทางเทคนิค
+- ถ้า task ใดเป็นงานเอกสาร/ตรวจอย่างเดียวที่ไม่มีหน้าจอเปลี่ยน ให้เน้นไฟล์เอกสารผลลัพธ์จริง (Markdown report) เป็นหลักฐานหลัก และหากมีการสรุปเป็นการ์ดภาพ ให้แสดงเฉพาะผลการตรวจสอบจริงเท่านั้น ห้ามประดิษฐ์ขั้นตอนระบบมาใส่

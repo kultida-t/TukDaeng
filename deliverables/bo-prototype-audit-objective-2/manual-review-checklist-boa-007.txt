@@ -1,0 +1,9 @@
+BOA-007 — Table, Mobile Card, Badge & Chip (5 checks)
+== ขั้นตอนตรวจทุกรายการ
+ตรวจ row/card ตัวแทนทุก module รวม text ยาวและหลาย tags → ทุก viewport (390, 768, 1280, 1440px)
+== Checklist
+01 เปิด list desktop → column/action ครบเทียบ spec — PASS
+02 resize ≤760px → table แปลงเป็น mobile card ครบ metadata — PASS
+03 หา row ที่ text ยาว/หลาย tags → truncate ellipsis ถูก ไม่ล้น — PASS
+04 เทียบ badge/chip ข้าม module → semantic/สี ตรง standard — PASS
+05 เทียบ row action กับ mobile card action → action parity ครบ — PASS

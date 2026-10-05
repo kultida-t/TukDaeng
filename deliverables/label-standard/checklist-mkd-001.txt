@@ -1,0 +1,18 @@
+MKD-001 — ผลการตรวจสอบ Label ของ Market Data เทียบ Canonical Table
+== ผลการตรวจสอบบนหน้าจอ Market Data (81 จุด)
+ตรวจพบจุดที่ต้องปรับแก้บนหน้าจอจริงทั้งหมด 21 จุด:
+- ปุ่มใน Market Sync Modal: 7 จุด (Cancel, Close, Start Sync, Syncing..., View Sync History, Retry Failed Datasets) [D1 & D12]
+- ปุ่มดูรายละเอียดในตาราง: 3 จุด (View 2 จุด, Detail 1 จุด) [D2]
+- ปุ่มดูประวัติในหน้ารายละเอียด: 1 จุด (Audit trail) [D3]
+- aria-label ปุ่มย้อนกลับและปุ่มในตาราง: 4 จุด (ปรับให้ตรงกับปลายทางภาษาไทย) [D11 & Rule 4]
+- placeholder ในช่องค้นหา: 2 จุด (Search ... ในหน้ารายละเอียด Model และ Reference)
+- empty state ในตาราง: 5 จุด (เสนอใช้คำกลาง "ไม่พบข้อมูล" 4 ตาราง + ประวัติ Audit 1 จุด)
+== จุดที่ถูกต้องตามมาตรฐานแล้ว
+- ชื่อเมนูและเมนูย่อย: Market Data, Market Overview, Brands & Models, Sync History (Structure EN)
+- Breadcrumb และชื่อหน้า: โครงสร้างภาษาอังกฤษครบถ้วน
+- Status pill: Completed, Failed, Running, Ready, Syncing ฯลฯ
+- ปุ่มปิด (X) ใน modal: aria-label="ปิด" ทุกจุด
+- กล่องสถานะซิงก์ในหน้า Overview และปุ่มรีเซ็ตค่าทั้งหมด: ภาษาไทยถูกต้อง
+== ความปลอดภัยต่อหน้าจอล็อก (Protected Screen)
+- ไฟล์ bo-prototype.html ไม่มีการแก้ไขใดๆ (Read-only Audit 100%)
+- จัดทำ Audit Report ใน deliverables/label-standard/market-data-label-audit-report.md

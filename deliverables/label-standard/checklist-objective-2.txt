@@ -1,0 +1,11 @@
+Mission 1 — Objective 2: Standard & Series Handoff (PVR-003, PVR-004)
+== ขั้นตอนตรวจ
+เสนอ draft แก้กฎภาษาให้อนุมัติก่อนแก้เอกสารตาม protected gate
+เทียบกฎใหม่กับ canonical label table ว่าสอดคล้อง
+ตรวจ checklist และ direction note ว่าใช้ต่อใน mission ถัดไปได้
+== เคสที่ตรวจ
+BO_UI_UX_STANDARD.md แทนกฎเดิมด้วยกติกา 2 ชั้น โครง English / เนื้อหาไทย
+กฎบังคับ ปุ่มต้องใช้ canonical label table เท่านั้น พร้อม locked exceptions
+contract เดิมครบ (alias, breadcrumb, back button) ไม่แตะหน้าจออื่น
+manual-review-checklist.md ครอบ 5 กลุ่ม A–E (ภาษา/ปุ่ม/protected/responsive/evidence)
+series-direction-note.md ครบสิ่งที่ยืนยัน เหตุผล artifacts open items และ guidance

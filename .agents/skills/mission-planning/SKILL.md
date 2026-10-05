@@ -39,15 +39,22 @@ Workflow สำหรับ **วางแผนการทำงานรา�
 
 ### กติกา Mission → Objective → Feature → Task และ Work Log (บังคับ)
 
+- **ตอบคำถามโครงสร้าง Mission จาก record เท่านั้น** — เมื่อผู้ใช้ถามว่า Mission มีเป้าหมาย/Feature/Task อะไรบ้าง ให้เรียก `get_mission` (หรือ `get_task`) แล้วตอบตาม baseline จริง โดยแสดงชื่อ Objective/Feature เป็น label ตามที่ล็อกไว้ (เช่น `Feature: My Account`) ห้ามตอบจากความจำ/context หรือเขียนเป็นคำอธิบายพฤติกรรมแทนชื่อ Feature
 - **Mission** คือภาพรวมและ baseline ของงานทั้งก้อน
 - **Objective** คือผลลัพธ์หลักของ Mission
 - **Feature** คือผลลัพธ์ย่อยที่อยู่ใต้ Objective ใช้เป็นหน่วยเลือกตอนลง work log และต้องคงอยู่เพื่อวัด Planning Accuracy
 - **Task** คือหน่วยงานปฏิบัติที่แตกละเอียดเพื่อทำจริง ผู้ใช้สั่งทำทีละ Task และทุก Task ต้อง map กับ Objective และ Feature ที่จะใช้ลง work log
 - หนึ่ง Feature map กับหลาย Task ได้ และหนึ่ง Feature มี work log ได้หลายรายการ โดยแต่ละ log เกิดจาก Task ที่ปิดพร้อมสรุปแล้ว ไม่ใช่ log ความคืบหน้าย่อยระหว่างทำ Task เดียว
 - Workflow: วาง Mission และ Feature → แตก Task ที่ต้องทำจริง → ทำทีละ Task → สรุปและปิด Task → เตรียม work log ของ Task โดยเลือก Objective และ Feature ที่ map ไว้
+- **วางเป้าหมายให้ตรงกับ "หนึ่งชุดหลักฐานส่งตรวจ" (Continuous Evidence Planning)** — ฟอร์มส่งตรวจรับคิดหลักฐานต่อ 1 เป้าหมาย (ไฟล์แนบ + คำอธิบาย) ดังนั้นเป้าหมายที่ผลิตหลักฐานคนละประเภท (เอกสาร spec vs ภาพหน้าจอ UI vs test/verification) ควรเป็นเป้าหมายแยกกัน; และต้องกำหนด **Evidence Plan** ประจำแต่ละ Objective ตั้งแต่ตอนวางแผน เพื่อให้ระหว่างทำแต่ละ Task สามารถเก็บหลักฐานคู่ขนานแบบ Real-time ได้ทันที:
+  - *เป้าหมาย UI/Prototype:* วางแผนแคปภาพ Before (1440/390px) ก่อนแก้โค้ด และภาพ After (1440/390px) หลังแก้โค้ดที่ผู้ใช้ยืนยันคอนเฟิร์มว่าโอเคผ่านเรียบร้อย
+  - *เป้าหมาย Test/Verification:* วางแผนไฟล์ `.spec.js` เป้าหมาย และกำหนดชื่อไฟล์บันทึก Raw runner output ดิบ (`test-results.txt`) จาก runner engine จริง
+  - *เป้าหมาย Document/Acceptance:* วางแผน checklist file `.txt`, เรนเดอร์ Checklist Card PNG และ Git commit hashes ของเอกสารที่แก้
+  - เป้าหมายล้วน UI ให้แยกตามฝั่งผู้ใช้/flow (เช่น ฝั่ง admin กับฝั่งผู้รับ) ไม่ใช่รวมทุกจอไว้เป้าหมายเดียว; และอย่าแตกเป้าหมายยิบย่อยจน submission กระจายเป็นรายการที่บอกอะไรไม่ได้ — 1 เป้าหมายมี 1 Task ได้ถ้า deliverable เป็นคนละชนิด
 - หลังเริ่ม Mission ห้ามลบ Objective หรือ Feature จาก baseline หาก Task ไม่จำเป็นต้องทำแล้ว ให้บันทึกเป็น Scope Change/ยกเลิกพร้อมเหตุผล และคง Feature ไว้เพื่อให้ความแม่นยำของแผนไม่หายไป
 - หลีกเลี่ยงการลบ Task หลังเริ่มทำ ให้ใช้สถานะยกเลิกหรือบันทึกเหตุผลแทน ทั้งนี้ Task ที่ยกเลิกไม่ลบ Feature หรือ work log ที่เกี่ยวข้อง
 - ประเมินเวลาตามเวลา AI ทำงานเป็นหลัก รวมเวลา AI วิเคราะห์ สร้าง แก้ และตรวจรับตามขอบเขตงาน
+- **วางแผนให้ตอบโจทย์การประเมินผลงาน (Evaluation Alignment):** ทุกหน่วยงานต้อง map เป็น Kanban task ที่จับเวลาได้ — ชั่วโมงถูกนับในระบบประเมินเฉพาะงานที่อยู่ใน task ที่ `in_progress` (งานนอก task = ชั่วโมงไม่เข้าระบบ); task size ต้องอยู่ในเกณฑ์หมวดเพื่อรักษา Planning Accuracy; และทุกเป้าหมายต้องออกแบบให้ผลิต "ชุดหลักฐานที่ reviewer ตรวจได้" (ภาพ/ไฟล์/log ตาม `submission-evidence`) — เป้าหมายที่ทำเสร็จแต่ไม่มีหลักฐานพร้อมตรวจจะค้างรอ review
 - ใช้ copy block เฉพาะ Mission Plan, Mission Plan Summary, Session Handoff, Work Summary และ Task Summary ที่ผู้ใช้ต้องนำไปวางระบบอื่น; คำตอบคุยงานทั่วไปตอบตามปกติ
 
 ### กฎการตั้งชื่อ Objective และ Feature (Naming Rules — บังคับ)
@@ -119,10 +126,11 @@ Task ที่เกี่ยวข้องได้ 1 task หรือหล�
 ล็อก Approved Mission Baseline
 ↓
 สร้าง Mission Plan Summary Copy Block สำหรับ Work Log
++ สร้าง Mission + execution Tasks ใน Kanban (todo เท่านั้น)
 + สร้าง/อัปเดต Session Handoff สำหรับ Agent
 ↓
 แสดงสอง artifact แยกกัน แล้วจบ Planning Session
-(ห้ามเริ่ม implementation อัตโนมัติ)
+(execution เริ่มใน session ใหม่เท่านั้น)
 ```
 
 **กฎเหล็ก:**
@@ -266,10 +274,14 @@ Dependency: <รายการ หรือ ไม่มี>
 - **Mission** = แผนงานระดับหนึ่ง (ไม่ใช่ task เล็ก ๆ 1 อัน)
 - **จำนวนวัน:** ขั้นต่ำ **1 วัน** ไม่เกิน **5 วัน** ต่อ Mission
 - ถ้างานดูจะเกิน 5 วัน → แบ่งเป็นหลาย Mission
-- **เป้าหมายย่อย (Objectives):** แบ่ง Mission ออกเป็นเป้าหมายย่อย 2-5 ข้อ แต่ละเป้าหมายเป็นผลลัพธ์หลักของ Mission และ map กับ Feature/Task ที่ใช้ลง work log ได้
+- **เป้าหมายย่อย (Objectives):** แบ่ง Mission ออกเป็นเป้าหมายย่อย **1-5 ข้อตามความเหมาะสม** — Mission เล็กหรือส่งมอบผลลัพธ์เดียวมีเป้าหมายเดียวได้ ไม่ต้องฝืนแตกหลายข้อ; แยกเป้าหมายเมื่อ deliverable/ประเภทหลักฐานต่างกัน (ดู Continuous Evidence Planning) และอย่าแตกยิบย่อยเกินความจำเป็น แต่ละเป้าหมายเป็นผลลัพธ์หลักของ Mission และ map กับ Feature/Task ที่ใช้ลง work log ได้
 
 > **การวางแผน Mission เป็นขั้นตอนก่อนสร้าง Mission ไม่ใช่ Objective บังคับของทุก Mission:**
-> ให้คุยความต้องการ กำหนด scope, Acceptance Criteria และ mapping กับ Kanban ก่อนสร้างแผนได้ แต่ไม่ต้องสร้าง Objective ชื่อ "เป้าหมายการวางแผน mission" หรือบังคับสร้าง planning task แยก เว้นแต่ผู้ใช้ระบุว่าต้องการนับงานวางแผนเป็น deliverable ของ Mission
+> ให้คุยความต้องการ กำหนด scope, Acceptance Criteria และ mapping กับ Kanban ก่อนสร้างแผนได้ แต่ไม่ต้องสร้าง Objective ชื่อ "เป้าหมายการวางแผน mission"
+>
+> **Planning Task กับ Mission Objective เป็นคนละเรื่อง:** ถ้าผู้ใช้กำหนดให้วางแผนผ่าน Planning Task (เช่น `M3P-001`) หรือมี standing workflow ให้เก็บเวลางานวางแผน ต้องสร้าง Planning Task **ก่อนเริ่มอ่าน context เชิงงาน/วิเคราะห์/ร่างแผน** แล้วใช้ workflow ปกติ `create_task → move_task(in_progress) → วางแผน → รอผู้ใช้อนุมัติ baseline → move_task(done)` Planning Task ไม่ถูกนับเป็น Objective/Feature/execution task ของ Mission แต่ยังเป็นงานจริงที่ต้องจับเวลาด้วย auto-timer
+>
+> **ห้ามปิด Planning Task จาก `todo → done` โดยตรง** เว้นแต่ผู้ใช้สั่งชัดเจนว่าไม่ต้องจับเวลา Planning Task กรณีพบคำสั่งว่า “ห้ามเริ่ม timer / ห้ามย้าย Task เป็น in_progress ก่อน approval” ให้ตีความว่าใช้กับ **Mission execution task** เท่านั้น ไม่ใช้กับ Planning Task ที่มีไว้รองรับงานวางแผนรอบนั้น หากถ้อยคำยังคลุมเครือ ให้แยกคำว่า Planning Task กับ execution task ให้ชัดก่อนลงมือ ห้ามปล่อยให้งานวางแผนเกิดนอก `in_progress`
 >
 > Objective ของ Mission ต้องเป็นผลลัพธ์ที่ส่งมอบจริง เช่น ปรับหน้ารายการ, สร้าง detail, เพิ่ม filter, sync spec หรือ QA ไม่ใช่งานบริหารแผนที่เกิดขึ้นก่อนเริ่ม Mission
 
@@ -828,14 +840,16 @@ Mission Planning Complete
 → User Approval
 → Approved Mission Baseline
 → Generate Mission Plan Summary Copy Block
+→ Create Mission + execution Tasks ใน Kanban (ทุก task = todo เท่านั้น)
 → Generate/Update Session Handoff
 → Display ทั้งสอง artifact แยกกัน
-→ End Planning Session
+→ End Planning Session (execution เริ่มใน session ใหม่เท่านั้น)
 ```
 
-- ห้ามเริ่ม implementation Task, ย้าย Task เป็น `in_progress` หรือเริ่ม timer โดยอัตโนมัติ
+- ห้ามเริ่ม **Mission execution task**, ย้าย execution task เป็น `in_progress` หรือเริ่ม execution timer โดยอัตโนมัติ กฎนี้ไม่ย้อนกลับไปห้าม Planning Task ที่ต้องอยู่ `in_progress` ระหว่างทำงานวางแผน และ Planning Task ควรถูกปิดหลัง baseline ได้รับ approval
 - ถ้าผู้ใช้ยังไม่อนุมัติ ให้แสดง Draft Mission Plan/ฉบับแก้ไขตาม workflow เดิม และยังไม่เรียก output ว่า Approved
-- หลังได้รับ approval ให้สร้างและแสดงทั้ง Mission Plan Summary และ Session Handoff ก่อนเสมอ แม้ผู้ใช้จะเลือกทำงานต่อใน session เดิม
+- หลังได้รับ approval ให้ทำตามลำดับนี้เท่านั้น: สร้าง Mission Plan Summary Copy Block → สร้าง Mission + execution tasks ใน Kanban (ทุก task = `todo` เท่านั้น, Category/Planned ครบตามกฎ Task Description) → สร้าง/อัปเดต Session Handoff → แสดงทั้งสอง artifact แยกกัน → จบ planning session
+- **Planning session ห้ามต่อเป็น execution ในตัว** — หลังจบ planning session การเริ่มทำ execution task ตัวแรก (`move_task` → `in_progress` + ลงมือจริง) ต้องเกิดใน **session ใหม่เท่านั้น** ไม่ทำต่อเนื่องใน session วางแผน เพื่อให้ session execute รับช่วงจาก Session Handoff/Kanban state ที่สะอาด เว้นแต่ผู้ใช้สั่งชัดเจนว่าให้ทำต่อใน session เดียวกัน
 - เมื่อมีทั้งสอง artifact ในคำตอบเดียวกัน ต้องแยก heading และ code block ชัดเจน ห้ามรวมเนื้อหาเป็น block เดียว
 - หากผู้ใช้ขอจบ session ให้บันทึก **Session Handoff** ผ่าน `save_session_note` เมื่อเครื่องมือพร้อม; การบันทึกนี้เป็น task/session context ภายใน Kanban ไม่ใช่การส่ง Work Log เข้า Core Portal
 
@@ -947,7 +961,7 @@ Session Handoff
 ```
 
 - ห้ามกำหนดให้ผู้ใช้ต้องนำ Mission Plan Summary Copy Block มาใช้แทน Session Handoff
-- ห้ามเริ่ม Task ถัดไปอัตโนมัติหลังสร้าง Summary/Handoff หรือหลังจบ planning session
+- ห้ามเริ่ม Task ถัดไปอัตโนมัติหลังสร้าง Summary/Handoff หรือหลังจบ planning session — execution ต้องเริ่มใน session ใหม่เสมอ (ผู้ใช้เปิด session ใหม่ + start task prompt) ไม่ทำต่อเนื่องใน session วางแผน เว้นแต่ผู้ใช้สั่งชัดเจน
 
 ### กฎสำคัญส่วนที่ 1
 
@@ -971,15 +985,16 @@ Session Handoff
 - ⚠️ **ห้ามแก้แผนหลัง start Mission โดยไม่มีเหตุผล** — เมื่อ Mission เริ่มดำเนินการแล้ว (มี task เป็น in_progress แล้ว) ห้ามแก้ไขเป้าหมาย/น้ำหนัก/ชั่วโมง ถ้าจำเป็นต้องแก้ ต้องระบุเหตุผลชัดเจน เช่น requirement เปลี่ยน / พบงานบล็อก / scope เปลี่ยน และต้องแจ้งผู้ใช้ก่อน
 - **คะแนนความแม่นยำในการวางแผน (Planning Accuracy Score):** ระบบประเมินความแม่นยำของแผนเทียบกับการทำจริง — ถ้าทำตรงตามแผนทุกเป้าหมาย (เวลาจริง = เวลาที่วางแผน ไม่มี task เกิน/ต่ำกว่าแผน) จะได้ **100 คะแนนเต็ม** ถ้าเบี่ยงเบือนจากแผน (task เกินเวลา, งานนอกแผนเกิดขึ้น, ต้องแก้แผนระหว่างทำ) คะแนนจะถูกหัก คะแนนนี้มีผลต่อการประเมินเกรดการทำงาน ดังนั้นต้องวางแผนให้แม่นยำที่สุดตั้งแต่ต้น และพยายามทำตรงตามแผน
 - ถ้าผู้ใช้ขอแก้ไข Mission/แผน → แก้ไขแล้วแสดง copy block ใหม่
-- หลังผู้ใช้อนุมัติ Mission Plan → สร้าง **Mission Plan Summary Copy Block** และ **Session Handoff** แยกกันตาม section 13; ถ้าผู้ใช้ต้องการจบ planning session ให้ persist Handoff แล้วหยุด
+- หลังผู้ใช้อนุมัติ Mission Plan → สร้าง **Mission Plan Summary Copy Block** → สร้าง Mission + execution tasks (`todo` เท่านั้น) → **Session Handoff** แยกกันตาม section 13 → persist Handoff แล้วจบ planning session; execution เริ่มใน session ใหม่เสมอ เว้นแต่ผู้ใช้สั่งให้ทำต่อชัดเจน
 - Mission Plan Summary ใช้สำหรับ Work Log และห้ามมี Kanban UUID/internal ID; Session Handoff ใช้สำหรับ Agent และคง internal IDs/technical context ได้
-- การสร้าง approval artifacts ไม่อนุญาตให้เริ่ม implementation, ย้าย Task เป็น `in_progress` หรือเริ่ม timer
+- การสร้าง approval artifacts ไม่อนุญาตให้เริ่ม implementation, ย้าย **Mission execution task** เป็น `in_progress` หรือเริ่ม execution timer; Planning Task ที่ใช้จับเวลางานวางแผนต้องถูกเริ่มไว้ก่อนหน้าและปิดหลัง approval ตาม workflow ของ Planning Task
 - ถ้ามีงานเพิ่มนอก Scope → แยกเป็นงานนอกขอบเขตและเสนอ Mission ใหม่
 - ⚠️ **Protected screens:** ถ้าแผนมีโอกาสกระทบ protected screens (ตาม `AGENTS.md` และ `PROTECTED_SCREENS.md`) ต้องระบุในเป้าหมายว่าจะตรวจสอบอย่างไร และต้องหยุดขออนุมัติก่อนแก้ ห้ามแก้ protected screens โดยไม่ได้รับอนุมัติจากผู้ใช้
 - **Kanban task style & Naming format:** ถ้าต้องสร้าง task ใหม่ในแผน (`create_task`) หรือแสดงใน Mission Plan / Summary / Kanban:
   - **ชื่อ Task ต้องอยู่ในรูปแบบ `<Task-Code> <Task Name>` เสมอ** เช่น `AIL-019 Design forgot/reset contract`, `RP-014 สร้าง flow ปิด Custom Role` โดยมีรหัส Task ที่คนอ่านเข้าใจง่ายนำหน้า ตามด้วยชื่อเนื้อหางานที่กระชับ
   - **ห้ามใช้เฉพาะ UUID / Internal ID ของระบบเป็นชื่อ Task เด็ดขาด** เพราะอ่านยากและไม่สื่อความหมาย
   - เขียนเนื้อหา Task เป็น complete execution brief ตามรูปแบบใน `AGENTS.md` (ภาษาไทย เก็บศัพท์เทคนิคภาษาอังกฤษ) และใช้ Kanban Completion Rule: ห้ามย้าย task ไป `done` จนกว่าผู้ใช้ยืนยันว่าผลลัพธ์ OK
+  - **Task Description ต้องมีบรรทัด Planned เสมอทุกหมวด:** `Category: <หมวด> | Planned: <X> ชม. (Category Max <Y> ชม.)` โดย Y = ค่า "ห้ามเกิน" ของหมวดนั้นจากตารางเวลามาตรฐาน — ห้ามใส่เฉพาะบางหมวด (เช่นเฉพาะ Testing) เพราะระบบเช็ก Time Ratio (เวลาจริงเทียบเป้าหมาย > 1.5 → ติด review) จาก Planned นี้; task ที่ไม่มี Planned เทียบ ratio ไม่ได้และเสี่ยงติด review เงียบ ๆ ตอนเวลาจริงเกิน — ประเมิน Planned ให้สมจริง ห้ามตั้งต่ำกว่าความเป็นจริงเพื่อให้ดู "ในงบ"
 - **Objective และ Feature ไม่ใช่ Task:** Objective เป็นผลลัพธ์หลัก, Feature เป็นผลลัพธ์ย่อย และ Task เป็นงานที่ใช้ลงมือทำ/ลง log — 1 Objective map กับหลาย Feature ได้ และ 1 Feature map กับหลาย Task ได้
 - **การตรวจสอบและแก้ไขอยู่ใน Feature:** วางแผนไว้ใน Feature เดียวกับงานหลัก ไม่ต้องสร้าง Task ตรวจสอบ/แก้ไขแยก เว้นแต่มีขนาดใหญ่หรือจำเป็นต้องติดตามเป็นงานอิสระ
 
@@ -1048,6 +1063,11 @@ mcp_call_tool(
 - งานที่ยังไม่มีหลักฐานหรือยังต้องตรวจเพิ่ม
 
 ถ้าไม่มี Evidence เพียงพอ ให้ใช้สถานะ **บางส่วน** หรือ **รอตรวจสอบ** แทน **เสร็จ**
+
+**Submission Evidence ต่อเป้าหมาย (บังคับเมื่อเป้าหมายเสร็จ):**
+- เมื่อเป้าหมายใดทำครบทุก Task แล้ว (สถานะ `เสร็จ`) ให้เตรียม **หลักฐานส่งตรวจรับด้วย AI** ของเป้าหมายนั้นตาม skill `submission-evidence` — ครอบการเลือกไฟล์แนบ/ภาพหน้าจอ, นโยบายช่อง URL, คำอธิบายภาษาเข้าใจง่าย และ copy block สำหรับฟอร์มส่งตรวจ
+- ใส่ชื่อไฟล์แนบ/แพ็กเกจหลักฐานไว้ในหัวข้อ "หลักฐาน" ของเป้าหมายนั้นในสรุปผล ด้วย — เพื่อให้ log มีหลักฐานพร้อมส่งครบทุกเป้าหมาย
+- เป้าหมายที่ยังไม่ครบห้ามสร้างหลักฐานแบบ "เสร็จ" — ระบุสถานะ `บางส่วน`/`รอตรวจสอบ` และบอกว่าหลักฐานจะจัดเมื่อเป้าหมายครบ
 
 #### 3. สรุปผลเป็นข้อ ๆ แยกตามเป้าหมาย + copy block
 
@@ -1248,6 +1268,10 @@ Mission: สร้างเอกสารและ prototype สำหรับ
 ## Checklist
 
 ### ส่วนที่ 1: วางแผน Mission
+- [ ] ถ้าผู้ใช้กำหนด Planning Task หรือ workflow ต้องจับเวลางานวางแผน: สร้าง Planning Task ก่อนเริ่มอ่าน context เชิงงาน/วิเคราะห์/ร่างแผน
+- [ ] ย้าย Planning Task เข้า `in_progress` เพื่อเริ่ม auto-timer ก่อนลงมือวางแผน และห้ามปิดจาก `todo → done` โดยตรง
+- [ ] แยก Planning Task ออกจาก Mission execution task ให้ชัด: ข้อห้ามเริ่ม task/timer ก่อน approval ใช้กับ execution task เท่านั้น
+- [ ] หลังผู้ใช้อนุมัติ baseline จึงปิด Planning Task; ห้ามใช้ `log_time` และให้ยึดเวลาจาก auto-timer
 - [ ] เรียก `mcp_list_tools` ของ `kanban-tukdaeng` เพื่อดูเครื่องมือทั้งหมด
 - [ ] เรียก `get_project_context` เพื่อ resume session
 - [ ] เรียก `get_board` เพื่อดู task ที่ค้าง/ทำอยู่
@@ -1284,9 +1308,11 @@ Mission: สร้างเอกสารและ prototype สำหรับ
 - [ ] ตรวจรูปแบบชั่วโมงใน Mission Plan Summary ว่าอ่านง่ายและไม่แสดงค่าซ้ำ เช่นใช้ `8 ชม.` หรือ `2 ชม. 30 นาที`
 - [ ] ตรวจวันที่ใน Mission Plan Summary ว่าเป็น human-readable date range เมื่อทำได้โดยไม่เปลี่ยนค่าจริง
 - [ ] ตรวจว่ารายการใน Mission Plan Summary ใช้ literal `- ` ภายใน `text` code block และไม่มี `*` หรือ rendered bullet `•`
+- [ ] หลัง approval สร้าง Mission + execution tasks ใน Kanban ด้วย status `todo` ทั้งหมด (Category/Planned ครบ) ก่อนสร้าง Session Handoff
 - [ ] สร้างหรืออัปเดต Session Handoff แยกอีก artifact โดยคง identifiers, technical context, current state, next task และ next-session instructions ครบ
-- [ ] ถ้าจบ planning session ให้บันทึก Session Handoff ด้วย `save_session_note` เมื่อเครื่องมือพร้อม และแสดง Summary/Handoff เป็นคนละ code block
-- [ ] ตรวจว่าไม่ได้เริ่ม implementation, ไม่ย้าย Task เป็น `in_progress` และไม่เริ่ม timer จาก approval workflow
+- [ ] บันทึก Session Handoff ด้วย `save_session_note` เมื่อเครื่องมือพร้อม และแสดง Summary/Handoff เป็นคนละ code block
+- [ ] จบ planning session หลังสร้าง Summary + tasks + Handoff ครบ — ห้ามเริ่ม execution ใน session เดียวกัน (execution เริ่ม session ใหม่เท่านั้น เว้นแต่ผู้ใช้สั่งชัดเจน)
+- [ ] ตรวจว่าไม่ได้เริ่ม implementation, ไม่ย้าย Mission execution task เป็น `in_progress` และไม่เริ่ม execution timer จาก approval workflow; Planning Task ถูกปิดหลัง approval ตาม workflow แล้ว
 - [ ] ⚠️ **ภาษาใน copy block** — ใช้ภาษาเข้าใจง่าย เปลี่ยนคำโค้ด/เทคนิคเป็นคำเข้าใจง่าย แต่คำเฉพาะ/ศัพท์ที่คุ้นเคย (breadcrumb, Alert, asset, spec, baseline, Kanban) เก็บไว้ได้ ไม่บังคับล้วนไทย ห้ามใช้ชื่อฟังก์ชัน/โค้ด
 - [ ] ⚠️ ห้ามส่ง log/อัปเดตระบบภายนอกใด ๆ
 

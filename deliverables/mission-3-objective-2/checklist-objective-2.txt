@@ -1,0 +1,14 @@
+Mission 3 Objective 2 — Full Protected Regression
+== Full Regression Run
+รันจาก inventory จริง 50 spec files บน desktop-1440
+วางแผนทั้งหมด 1,877 cases
+ผล 1,822 passed / 55 skipped / 0 failed / terminal exit code 0
+ใช้ external local server, workers=1, timeout 60 วินาที และ max-failures=1
+== Regression Triage
+ตรวจ reconciliation: 1,822 + 55 + 0 = 1,877 ครบ
+Project gating 55 / by-design นอก gating 0 / flake 0 / defect 0
+ทุก skip trace กลับ viewport/project guard ได้และไม่ใช่การหลบ assertion failure
+== Integrity
+ไม่ rerun โดยไม่จำเป็น และไม่แก้ prototype, tests, routes, mock data หรือ protected screens
+ล้าง test-results, playwright-report, .last-run.json และ debug.log แล้ว
+ผู้ใช้ตรวจรับ PASS ครบ AIL-036–AIL-037

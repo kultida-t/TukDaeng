@@ -1,0 +1,12 @@
+Objective 3 — Navigation & Information Architecture
+== Assessment
+ประเมิน mental model, frequency, adjacency, permission และ submenu density
+บันทึก DEL-033 → U-1104 active-sidebar inconsistency
+บันทึกชื่อ Market Overview เป็น recommendation
+== Options
+เปรียบเทียบ 3 ทางเลือกของ sidebar
+เลือก Option B — Workflow + Data Domains เป็น recommendation หลัก
+กำหนด permission visibility และ destination-owned active state
+กำหนด Back ให้รักษา source context
+== Boundary
+เป็น recommendation only และยังไม่แก้ protected navigation

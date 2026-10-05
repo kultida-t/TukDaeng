@@ -245,6 +245,9 @@ Keyword Search ต้องรองรับ:
 - Brand
 - Model
 - Reference Number
+- Specification snapshot text — ค่าที่ Owner save กับ Asset ของ Case Material, Movement, Dial Color และ Strap / Bracelet Type ทั้งค่าที่อ้าง option master และค่า free-text ที่ Owner กรอกผ่าน `ระบุเอง` (relation = `null`)
+
+Asset ที่เก็บ spec เป็น free-text (relation = `null`) ต้องค้นเจอผ่าน keyword บน snapshot text ได้เสมอ เพราะ keyword search เป็นช่องทางเดียวที่ค่า free-text ปรากฏใน Search ก่อนที่ Back Office จะ promote ค่านั้นเป็น option จริง
 
 Keyword ต้องรองรับ:
 
@@ -261,6 +264,8 @@ Autocomplete ต้องแสดงทุก entity ที่ `is_active=true`
 จำนวน listing เป็นข้อมูลอ้างอิงเท่านั้น ไม่ใช่เกณฑ์ตัด entity/option ออกจากรายการ — entity/option ที่มีจำนวน `0` (no current listing) ยังเลือกได้ เพื่อรองรับ Watch Alert use case ที่ผู้ซื้อหานาฬิกาตรงเงื่อนไขที่ต้องการ ไม่ว่าจะยังไม่มีรุ่นนั้นลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไข (เช่น ราคา/สภาพ/สี)
 
 Entity/option ที่ `is_active=false` (inactive market data หรือ deactivated option) ต้องไม่แสดงเป็นตัวเลือกใหม่ใน autocomplete
+
+ค่า free-text ที่ Owner กรอกผ่าน `ระบุเอง` และค่าใน suggestion pool ที่ยังไม่ได้ promote ต้องไม่แสดงใน autocomplete — autocomplete แสดงเฉพาะ entity/option ที่มีอยู่จริงและ `is_active=true` เท่านั้น
 
 ## Popular Filter / Popular Selection Rule
 
@@ -306,7 +311,8 @@ Filter data source rule:
 - Year of Production, Delivery Contents, Condition, Case Size, Movement, Dial Color และ Strap / Bracelet ใช้ข้อมูลที่ Owner save ไว้ใน Asset Specification
 - Condition, Delivery Contents, Case Material, Movement, Dial Color และ Strap / Bracelet option ต้องอ่านจาก internal option master เดียวกับ Add/Edit Asset
 - Provider/API specification ใช้ช่วย prefill ตอน Add/Edit Asset ได้ แต่ Search/Filter ต้องอิงค่าที่ถูก save กับ Asset จริง
-- ถ้า Asset ใช้ free-text Brand/Model/Reference ที่ไม่มี relation id ต้องยังค้นหา keyword จาก snapshot text ได้
+- ถ้า Asset ใช้ free-text Brand/Model/Reference หรือค่า spec free-text ที่ไม่มี relation id ต้องยังค้นหา keyword จาก snapshot text ได้
+- ค่า free-text spec (relation = `null`) และค่าใน suggestion pool ที่ยังไม่ได้ promote ต้องไม่เป็น filter option — option filter match ด้วย relation id เท่านั้น ดังนั้น Asset ที่เก็บ spec เป็น free-text จะไม่ถูก option filter จับจนกว่า Back Office promote/map alias แล้ว backfill relation id
 - จำนวน listing ที่แสดงข้างชื่อ entity/option ใน autocomplete/filter dropdown คำนวณจาก Asset สถานะ `Sale` ที่ User มีสิทธิ์เห็นและไม่ได้ถูก Block เท่านั้น (ไม่รวม Show, Hide, Sold, Deleted)
 
 ## Filter Visibility Rule
@@ -325,6 +331,7 @@ Filter option ต้องแสดงทุก entity/option ที่ `is_acti
 | no current listing | มีใน Market Data/Option Master (`is_active=true`) แต่ไม่มี Asset Sale ตอนนั้น | แสดง พร้อมจำนวน `(0)` ยังเลือกได้ |
 | inactive market data | Brand/Model/Reference ถูก deactivate ใน Market Data (`is_active=false`) | ไม่แสดงเป็นตัวเลือกใหม่ |
 | deactivated option | Option master ถูก deactivate (`is_active=false`) | ไม่แสดงเป็นตัวเลือกใหม่ |
+| free-text / suggested spec value | ค่าที่ Owner กรอกผ่าน `ระบุเอง` หรืออยู่ใน suggestion pool ยังไม่ใช่ option จริง | ไม่แสดงเป็น filter option/autocomplete จนกว่า Back Office promote เป็น option จริง |
 
 ## Filter Dependency Rule
 
@@ -679,11 +686,13 @@ Search Result ต้องรองรับ:
 | AC ID | Criteria |
 |---|---|
 | AC-SEARCH-008 | Search Keyword ต้องค้นหาจาก Brand, Model และ Reference Number ได้ |
+| AC-SEARCH-008A | Search Keyword ต้องค้นหาจาก specification snapshot text (Case Material, Movement, Dial Color, Strap / Bracelet) ได้ รวมถึงค่า free-text ที่ Owner กรอกผ่าน `ระบุเอง` (relation = `null`) |
 | AC-SEARCH-009 | Filter ต้องรองรับ Brand, Model, Price Range, Year of Production, Reference Number, Delivery Contents, Condition, Case Size, Movement, Dial Color และ Strap / Bracelet |
 | AC-SEARCH-009A | Filter option (Brand, Model, Reference, option master) ต้องแสดงทุก entity/option ที่ `is_active=true` พร้อมจำนวน Asset Sale ปัจจุบันข้างชื่อ แม้จำนวนเป็น `0` (no current listing) |
 | AC-SEARCH-009B | Entity/option ที่ `is_active=false` (inactive market data หรือ deactivated option) ต้องไม่แสดงเป็นตัวเลือกใหม่ใน filter |
 | AC-SEARCH-009C | หน้า Search และหน้า Filter ต้องแสดง Popular Filter/Popular Selection tags จากข้อมูล aggregate ตามหมวดที่เกี่ยวข้อง โดย user ยังเลือกจากรายการเต็มได้ |
 | AC-SEARCH-009D | Popular Filter ต้องไม่ตัดตัวเลือกอื่นออก ไม่เปลี่ยน Search/Filter logic และไม่เปิดเผยข้อมูลที่ระบุตัว user รายบุคคล |
+| AC-SEARCH-009E | ค่า free-text spec และค่า suggestion pool ที่ยังไม่ promote ต้องไม่แสดงเป็น filter option หรือ autocomplete — แสดงเฉพาะ entity/option `is_active=true` เท่านั้น |
 | AC-SEARCH-010 | Brand → Model ต้องเป็น Dependent Filter |
 | AC-SEARCH-010A | เมื่อเลือกหลาย Brand (เช่น Rolex + Omega) Model filter ต้องแสดงเฉพาะ Model ของ Brand ที่เลือกทั้งหมดรวมกัน |
 | AC-SEARCH-010B | ใน Model filter ที่กรองตาม Brand แล้ว ต้องแสดง Popular Model สูงสุด 10 อันดับแรกของ Brand ที่เลือก (context-aware aggregate) ก่อนรายการเต็ม โดยไม่ตัด Model อื่นออก |

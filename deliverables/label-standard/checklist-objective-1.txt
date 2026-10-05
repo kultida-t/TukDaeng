@@ -1,0 +1,13 @@
+Mission 1 — Objective 1: Canonical Label Registry (PVR-001, PVR-002)
+== ขั้นตอนตรวจ
+สแกน label ทั้งไฟล์ bo-prototype.html ด้วยสคริปต์ read-only
+จัดกลุ่ม inventory ตาม action พร้อมตำแหน่งอ้างอิง
+จัดทำ canonical label table จากผลสแกน
+ตัดสิน label ที่ต้องล็อกร่วมกันทีละข้อ
+== เคสที่ตรวจ
+สแกนได้ 1,847 entries ครบทุกประเภท (ปุ่ม 432 / title 188 / modal title 67 / field label 144)
+จัดกลุ่มได้ 16 action groups ทุก entry มีตำแหน่งอ้างอิงในไฟล์
+canonical label table ครอบ ~28 action families พร้อม variant และสถานะ
+deviations 15 ข้อ (D1–D15) บันทึกเป็นคิวรออนุมัติ ไม่แก้จอเอง
+decisions 6 ข้อล็อกครบ ตารางสถานะ Confirmed
+bo-prototype.html ไม่ถูกแก้ — scan read-only

@@ -1,0 +1,339 @@
+[
+  {
+    "type": "aria-only",
+    "line": 36323,
+    "aria": "${syncPercent}% Synced"
+  },
+  {
+    "type": "button",
+    "line": 36333,
+    "attrs": " class=\"btn market-sync-detail-link\" type=\"button\" data-market-sync-view-logs",
+    "content": "ดูรายละเอียดใน Sync History"
+  },
+  {
+    "type": "input",
+    "line": 36363,
+    "attrs": " class=\"field search\" id=\"market-search\" type=\"search\" placeholder=\"ค้นหา Brand, Model, Reference\" /"
+  },
+  {
+    "type": "input",
+    "line": 36373,
+    "attrs": " class=\"field search\" id=\"market-search\" type=\"search\" placeholder=\"ค้นหา Sync Job, Endpoint, Result\" /"
+  },
+  {
+    "type": "input",
+    "line": 36383,
+    "attrs": " class=\"field search\" id=\"market-search\" type=\"search\" placeholder=\"ค้นหา endpoint / โมเดล / เลขอ้างอิง\" /"
+  },
+  {
+    "type": "button",
+    "line": 36429,
+    "attrs": " class=\"panel-action market-arrow-action\" type=\"button\" data-market-brand=\"${brand.id}\" aria-label=\"View ${brand.name} models\"",
+    "content": "View"
+  },
+  {
+    "type": "button",
+    "line": 36446,
+    "attrs": " class=\"panel-action market-arrow-action\" type=\"button\" data-market-record=\"${row.id}\" aria-label=\"View sync log for ${getMarketSyncTitleLabel(row)}\"",
+    "content": "Detail"
+  },
+  {
+    "type": "button",
+    "line": 36591,
+    "attrs": " class=\"btn\" type=\"button\" disabled",
+    "content": "ก่อนหน้า"
+  },
+  {
+    "type": "button",
+    "line": 36592,
+    "attrs": " class=\"btn active\" type=\"button\"",
+    "content": "1"
+  },
+  {
+    "type": "button",
+    "line": 36593,
+    "attrs": " class=\"btn\" type=\"button\" disabled",
+    "content": "ถัดไป"
+  },
+  {
+    "type": "button",
+    "line": 36705,
+    "attrs": " class=\"panel-action market-arrow-action\" type=\"button\" data-market-model=\"${index}\" data-market-brand-id=\"${brand.id}\" aria-label=\"View ${model.name} references\"",
+    "content": "View"
+  },
+  {
+    "type": "h2",
+    "line": 36755,
+    "attrs": "",
+    "content": "${brand.name}"
+  },
+  {
+    "type": "h4",
+    "line": 36768,
+    "attrs": "",
+    "content": "Models & References"
+  },
+  {
+    "type": "h4",
+    "line": 36777,
+    "attrs": "",
+    "content": "Data Quality"
+  },
+  {
+    "type": "h4",
+    "line": 36781,
+    "attrs": "",
+    "content": "Sync Source"
+  },
+  {
+    "type": "h3",
+    "line": 36802,
+    "attrs": "",
+    "content": "Read-only API Record"
+  },
+  {
+    "type": "button",
+    "line": 36809,
+    "attrs": " class=\"user-detail-action-btn\" type=\"button\" data-market-management-action=\"audit\" data-market-scope=\"${scope}\" ${targetAttrs}",
+    "content": "Audit trail"
+  },
+  {
+    "type": "h3",
+    "line": 36819,
+    "attrs": "",
+    "content": "Downstream Impact"
+  },
+  {
+    "type": "h3",
+    "line": 36835,
+    "attrs": "",
+    "content": "Audit Trail"
+  },
+  {
+    "type": "link",
+    "line": 36942,
+    "attrs": " class=\"market-import-template-btn\" href=\"assets/templates/market-data-import-template.csv\" download=\"market-data-import-template.csv\"",
+    "content": "Download CSV Template"
+  },
+  {
+    "type": "input",
+    "line": 37127,
+    "attrs": " id=\"market-action-name\" class=\"field\" value=\"\" placeholder=\"เช่น Rolex\" /"
+  },
+  {
+    "type": "input",
+    "line": 37141,
+    "attrs": " id=\"market-action-name\" class=\"field\" value=\"\" placeholder=\"เช่น Submariner\" /"
+  },
+  {
+    "type": "input",
+    "line": 37145,
+    "attrs": " id=\"market-action-refs\" class=\"field\" value=\"\" placeholder=\"ถ้ามีหลายรายการให้คั่นด้วยเครื่องหมายจุลภาค\" /"
+  },
+  {
+    "type": "input",
+    "line": 37159,
+    "attrs": " id=\"market-action-name\" class=\"field\" value=\"\" placeholder=\"เช่น 126610LN\" /"
+  },
+  {
+    "type": "input",
+    "line": 37163,
+    "attrs": " id=\"market-action-year\" class=\"field\" value=\"\" placeholder=\"เช่น 2020-present\" /"
+  },
+  {
+    "type": "input",
+    "line": 37178,
+    "attrs": " id=\"market-action-name\" class=\"field\" type=\"file\" accept=\".csv,.xlsx\" /"
+  },
+  {
+    "type": "input",
+    "line": 37186,
+    "attrs": " id=\"market-action-name\" class=\"field\" value=\"${target.title}\" placeholder=\"ชื่อแบรนด์ รุ่น หรือ Reference\" /"
+  },
+  {
+    "type": "input",
+    "line": 37187,
+    "attrs": " id=\"market-action-source\" class=\"field\" value=\"แก้ไขโดยผู้ดูแล\" placeholder=\"Manual, Provider, Import\" /"
+  },
+  {
+    "type": "h2",
+    "line": 37214,
+    "attrs": " id=\"user-action-modal-title\"",
+    "content": "Read-only in Phase 1"
+  },
+  {
+    "type": "button",
+    "line": 37217,
+    "attrs": " class=\"btn user-action-close\" type=\"button\" data-user-action-modal-close aria-label=\"ปิด\"",
+    "content": "${iconSvg.close}"
+  },
+  {
+    "type": "h2",
+    "line": 37232,
+    "attrs": " id=\"user-action-modal-title\"",
+    "content": "Audit Trail"
+  },
+  {
+    "type": "button",
+    "line": 37235,
+    "attrs": " class=\"btn user-action-close\" type=\"button\" data-user-action-modal-close aria-label=\"ปิด\"",
+    "content": "${iconSvg.close}"
+  },
+  {
+    "type": "back-button-call",
+    "line": 37518,
+    "text": "setPageActions(renderPageBackButton('data-market-back=\"catalog\"', \"กลับไป Brands\"));"
+  },
+  {
+    "type": "input",
+    "line": 37528,
+    "attrs": " class=\"field search\" id=\"market-model-search\" type=\"search\" placeholder=\"Search ${brand.name} models\" /"
+  },
+  {
+    "type": "back-button-call",
+    "line": 37553,
+    "text": "setPageActions(renderPageBackButton(`data-market-back=\"brand\" data-market-brand-id=\"${brand.id}\"`, `กลับไป ${brand.name}`));"
+  },
+  {
+    "type": "input",
+    "line": 37563,
+    "attrs": " class=\"field search\" id=\"market-reference-search\" type=\"search\" placeholder=\"Search ${model.name} references\" /"
+  },
+  {
+    "type": "h2",
+    "line": 37604,
+    "attrs": " id=\"user-action-modal-title\"",
+    "content": "${modelShortName}"
+  },
+  {
+    "type": "button",
+    "line": 37607,
+    "attrs": " class=\"btn user-action-close\" type=\"button\" data-user-action-modal-close aria-label=\"ปิด\"",
+    "content": "${iconSvg.close}"
+  },
+  {
+    "type": "h2",
+    "line": 37649,
+    "attrs": "",
+    "content": "${row.title}"
+  },
+  {
+    "type": "h3",
+    "line": 37672,
+    "attrs": "",
+    "content": "Sync Summary"
+  },
+  {
+    "type": "h3",
+    "line": 37681,
+    "attrs": "",
+    "content": "Sync Status"
+  },
+  {
+    "type": "h3",
+    "line": 37689,
+    "attrs": "",
+    "content": "Sync Summary"
+  },
+  {
+    "type": "h3",
+    "line": 37697,
+    "attrs": "",
+    "content": "Sync Status"
+  },
+  {
+    "type": "h3",
+    "line": 37704,
+    "attrs": "",
+    "content": "Sync Summary"
+  },
+  {
+    "type": "h3",
+    "line": 37714,
+    "attrs": "",
+    "content": "Sync Status"
+  },
+  {
+    "type": "back-button-call",
+    "line": 37730,
+    "text": "setPageActions(renderPageBackButton(\"data-market-back\", `กลับไป ${pageLabel}`));"
+  },
+  {
+    "type": "h2",
+    "line": 37805,
+    "attrs": " id=\"user-action-modal-title\"",
+    "content": "Sync Market Data"
+  },
+  {
+    "type": "button",
+    "line": 37808,
+    "attrs": " class=\"btn user-action-close\" type=\"button\" data-user-action-modal-close aria-label=\"ปิด\"",
+    "content": "${iconSvg.close}"
+  },
+  {
+    "type": "button",
+    "line": 37828,
+    "attrs": " class=\"user-detail-action-btn\" type=\"button\" data-user-action-modal-close",
+    "content": "Cancel"
+  },
+  {
+    "type": "button",
+    "line": 37828,
+    "attrs": " class=\"user-detail-action-btn primary user-action-confirm\" type=\"button\" data-market-sync-run",
+    "content": "Start Sync"
+  },
+  {
+    "type": "button",
+    "line": 37829,
+    "attrs": " class=\"user-detail-action-btn primary user-action-confirm\" type=\"button\" disabled",
+    "content": "Syncing..."
+  },
+  {
+    "type": "button",
+    "line": 37830,
+    "attrs": " class=\"user-detail-action-btn\" type=\"button\" data-user-action-modal-close",
+    "content": "Close"
+  },
+  {
+    "type": "button",
+    "line": 37830,
+    "attrs": " class=\"user-detail-action-btn primary\" type=\"button\" data-market-sync-view-logs",
+    "content": "View Sync History"
+  },
+  {
+    "type": "button",
+    "line": 37831,
+    "attrs": " class=\"user-detail-action-btn\" type=\"button\" data-user-action-modal-close",
+    "content": "Close"
+  },
+  {
+    "type": "button",
+    "line": 37831,
+    "attrs": " class=\"user-detail-action-btn warning user-action-confirm\" type=\"button\" data-market-sync-retry",
+    "content": "Retry Failed Datasets"
+  },
+  {
+    "type": "h3",
+    "line": 37940,
+    "attrs": "",
+    "content": "${card[0]}"
+  },
+  {
+    "type": "h2",
+    "line": 37956,
+    "attrs": "",
+    "content": "Recently Updated Brands"
+  },
+  {
+    "type": "button",
+    "line": 39300,
+    "attrs": " class=\"btn user-filter-toggle\" type=\"button\" data-market-filter-toggle aria-expanded=\"${marketFilterOpen}\"",
+    "content": "${iconSvg.filter}<span>${marketFilterOpen ? \"ปิดตัวกรอง\" : \"เปิดตัวกรอง\"}</span>"
+  },
+  {
+    "type": "button",
+    "line": 39301,
+    "attrs": " class=\"btn\" type=\"button\" data-market-reset aria-label=\"รีเซ็ตค่าทั้งหมด\"",
+    "content": "${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span>"
+  }
+]

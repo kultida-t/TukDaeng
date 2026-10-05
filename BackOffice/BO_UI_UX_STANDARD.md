@@ -28,6 +28,9 @@
 - `06_MARKET_DATA_MODULE.md`
 - `09_OFFER_CHAT_MODULE.md`
 - `17_OPTION_MASTER_MODULE.md`
+- `../docs/bo-modal-empty-state-contract.md` — locked contract: modal action order, close policy, keyboard focus, empty-state copy (implemented ใน remediation mission `1e359966`)
+- `../docs/bo-navigation-naming-contract.md` — locked contract: sidebar active state, deep-link/back context, naming standard (implemented ใน mission เดียวกัน)
+- `../docs/bo-shared-remediation-coverage.md` — fix coverage + scope change register + implementation status
 
 ## Protected Screen Boundary
 
@@ -164,6 +167,7 @@ Side panel (รายละเอียดข้างตาราง) และ
 - Radius ประมาณ 7px
 - Select label ต้อง ellipsis ได้ ไม่ดัน layout
 - Reset icon button ใช้ขนาดประมาณ 42x48px เมื่ออยู่ใน filter grid
+- Filter dropdown ต้องไม่ถูกตัดขอบ panel — panel ของหน้ารายการต้องแสดงส่วนล้นได้ (overflow visible) และให้ตารางเลื่อนแนวนอนภายใน table container แยก ตาม pattern เดียวกันทุก list (ครอบ media query overrides ด้วย); filter bar ที่ล้นกรอบให้ wrap เป็นแถวแทนที่จะให้ control หลุดจอ
 
 Copy กลาง:
 
@@ -286,6 +290,32 @@ Offer Management V1 เป็น read-only ห้ามเพิ่ม write act
 - Header มี title, optional subtitle/context และ close button 38x38px
 - Footer/action area ชิดขวา และใช้ปุ่ม primary/secondary ที่ชัด
 - Long editor ไม่ควรอยู่ใน modal หากมี full page editor pattern แล้ว
+
+Modal action order (canonical — ตาม `../docs/bo-modal-empty-state-contract.md` Contract A):
+
+- Footer ที่มี 2 ปุ่มขึ้นไปเรียง **ยกเลิก/secondary ก่อน → ยืนยัน/primary ท้าย** (DOM order = visual order, LTR)
+- ปุ่มยกเลิกใช้ neutral/secondary style และต้องเป็น close action ของ modal
+- ปุ่ม confirm เลือก tone ตาม risk: primary (action ปกติ/สร้าง/เปิดใช้งาน), warning (ระวังแต่ย้อนกลับได้ เช่น suspend/deactivate/hide), danger (destructive/ไม่ย้อนกลับ)
+- Modal acknowledge ปุ่มเดียว (`รับทราบ`) ไม่บังคับเพิ่มปุ่มยกเลิก
+
+Modal close policy ตามประเภท (ตาม Contract B — opt-in ผ่าน marker `data-modal-dismissible`):
+
+| ประเภท modal | ปุ่ม Close (X) + ยกเลิก | Backdrop click | ESC |
+| --- | --- | --- | --- |
+| Read-only preview / detail / drawer | ✅ | ✅ | ✅ |
+| Form / confirmation / destructive | ✅ | ❌ | ❌ |
+| Locked long-running (เช่น Market Sync running) | ❌ ระหว่าง running | ❌ | ❌ |
+
+- Backdrop/ESC ใช้ได้เฉพาะ surface ที่ opt-in `data-modal-dismissible` เท่านั้น — ห้ามเปิดให้ form/confirm (กันข้อมูลสูญหาย)
+- ESC ต้องปิด modal ก่อนและไม่ fall-through ไปปิด sidebar ใน event เดียวกัน
+- Drawer/modal ที่กินเต็ม viewport บน mobile (≤460px) ไม่มี backdrop area → backdrop-close N/A โดยนิยาม
+
+Modal keyboard focus (ตาม Contract C — implemented ใน shared open/close functions):
+
+- Initial focus เมื่อเปิดตามประเภท: form → ฟิลด์แรกที่กรอกได้; confirmation/destructive → ปุ่มยกเลิก; read-only/drawer → ปุ่ม Close (X); type-to-confirm ที่ confirm disabled → ช่องพิมพ์ยืนยัน
+- Focus trap: Tab/Shift+Tab วนเฉพาะ focusable elements ใน modal และ release ทุก close path
+- Restore focus: ปิดแล้ว focus กลับ element ที่เปิด modal; opener หาย → fallback main content heading; opener ที่ focus ไม่ได้ตามปกติ (เช่น list row) restore ผ่าน last-interaction tracking
+- Focus ring และ tooltip แสดงเฉพาะ keyboard flow ตาม `:focus-visible` heuristic — เปิด/ปิดด้วยเมาส์ไม่โชว์ ring
 
 Confirmation modal:
 
@@ -575,6 +605,19 @@ Login form มี:
 - การลิงก์ไปยัง entity อื่นจากหน้า detail ให้วางลิงก์บน identifier ของ entity นั้น (เช่น Display Name, Asset ID) ไม่ใช้ปุ่มแยกใน section head — link ใช้กับการนำทาง, button ใช้กับ action ที่กระทบข้อมูล
 - Offer detail เปิด asset context แบบ read-only/drill-in ผ่านลิงก์ `Asset ID` ตาม prototype
 
+Navigation/active-state/naming contract (ตาม `../docs/bo-navigation-naming-contract.md`):
+
+- Sidebar active state ผูกกับปลายทางเสมอ (destination-owned) — detail page set active module/sub ของตัวเองก่อน render แม้เปิดมาจาก module อื่น (เช่น User Detail ที่เปิดจาก Account Deletion ต้อง active ที่ User Management / User Accounts และ accordion กางตาม module ปลายทาง); ต้นทางไม่หาย — เก็บไว้ใน back stack เพื่อ Back
+- Entity link ที่ระบุ entity เฉพาะ (ID/ชื่อ) ต้องเปิด entity detail โดยตรงพร้อม push source context (เช่น WAL-1440 row → Alert Detail, back กลับ Demand Overview) — เฉพาะ aggregate link เช่น `View All` เท่านั้นที่ลง list
+- Back action ต้องกลับ source context เดิมรวม cross-module chain (Request Detail ↔ User Detail) พร้อม filter/list state เท่าที่ flow รองรับ; jump ข้าม module (jumpToModule/data-module-jump) = context ใหม่ ต้อง reset back stack เหมือน sidebar nav
+- Label ของ sub/เมนู/back button ต้องใช้ canonical label จาก navGroups เดียวกัน — ห้ามใช้ alias (เช่น `"Alert List"` → ต้องเป็น `Watch Alert List`)
+- **Language layering (canonical label standard — source of truth อยู่ที่ `../docs/bo-canonical-label-table.md`):**
+  - ชั้นโครง (structure) = English: nav module/sub, page title, modal/drawer title (`<Entity> Detail` / `<Verb> <Entity>` / `Confirm <Verb> <Entity>`), breadcrumb nodes ระดับ module/sub/detail-type, detail head `<ID> : <Display Name>`, status/risk/channel pills และ technical keys (`Option Key`, `Group Key`, `Role ID`, `Event ID` ฯลฯ)
+  - ชั้นเนื้อหา (content) = ไทย: action buttons, field labels ทั่วไป, helper/empty/error copy, filter/search copy — ปุ่มทุกปุ่มต้องใช้ canonical label จากตาราง §2 ใน `bo-canonical-label-table.md` เท่านั้น (เช่น `ยืนยัน` / `ยกเลิก` / `ปิด` / `ดูรายละเอียด` / `แก้ไข` / `เพิ่ม <Entity>` / `สร้าง <Entity>` / `ลบ <Entity>`)
+  - ข้อยกเว้นที่ล็อกถาวร: nav section headers เป็นไทย (`การดำเนินงาน` / `งานตรวจสอบและบริการ` / `เครื่องมือ & รายงาน`), auth screens ใช้ English stylized (`FORGOT PASSWORD`, `ACTIVATE ACCOUNT`, `GO TO LOGIN`), sidebar `Logout`, Option Master `Back to Option Groups`
+  - Label เดิมบนจอที่ล็อกไว้ซึ่งไม่ตรง canonical = normalize candidates เท่านั้น — ห้ามแก้โดยไม่มี explicit approval ของ mission เฉพาะจอ; ถ้า canonical table ขัดกับ contract/label ที่เคย confirm ให้ชี้แจ้งก่อนแก้ทุกครั้ง
+- Breadcrumb format คง `<Section TH> / <Module EN> / [<Sub EN>] [/ <Detail type> / <ID>]`; back button canonical = `กลับไป <destination label>` (ข้อยกเว้นถาวรเดียว: Option Master `Back to Option Groups`); step-back ภายใน modal flow แยกใช้ `ย้อนกลับ` (ไม่ใช่ page back)
+
 ห้ามคลิกแล้วไม่เกิดผลโดยไม่มี disabled state หรือ unavailable explanation ที่ชัดเจน
 
 ## Loading Empty Error States
@@ -651,7 +694,8 @@ Manual QA สำหรับ module ที่นำมาตรฐานนี�
 - Row/card เปิด detail ถูก entity
 - Breadcrumb/back navigation กลับ context เดิม
 - Detail sections ไม่ซ้อน ไม่ตัดข้อมูลสำคัญ
-- Modal เปิด/ปิด/focus/scroll ได้
+- Modal เปิด/ปิด/focus/scroll ได้ — footer เรียง ยกเลิก→ยืนยัน, backdrop/ESC เฉพาะ dismissible surfaces
+- Modal keyboard flow: initial focus ตามประเภท, Tab/Shift+Tab trap ใน modal, ปิดแล้ว focus กลับ opener, ring โชว์เฉพาะ keyboard
 - Confirm modal มี target, impact, reason และ result state ที่ถูกต้อง
 - Permission-disabled action ไม่เปิด mutation flow
 - History/audit table อ่านได้บน desktop และ scroll ได้บน mobile

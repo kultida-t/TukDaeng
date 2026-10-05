@@ -117,7 +117,7 @@ test.describe("QA-BO-018: Mission 1 scoped UI/responsive/accessibility smoke (AI
 
   // ---------- 2. Invite Admin modal ----------
 
-  test("2. Invite Admin modal: ครบทุกฟิลด์ ไม่ overflow + error association + ปิดได้ไม่ focus trap", async ({ page }) => {
+  test("2. Invite Admin modal: ครบทุกฟิลด์ ไม่ overflow + error association + ปิดได้ (focus trap ไม่บล็อก close)", async ({ page }) => {
     await goToAdminAccounts(page);
     await page.locator("[data-admin-account-invite-open]").click();
     await page.waitForTimeout(300);
@@ -155,7 +155,7 @@ test.describe("QA-BO-018: Mission 1 scoped UI/responsive/accessibility smoke (AI
     await expect(modal.locator("[data-admin-invite-name-error]")).not.toHaveClass(/show/);
     await expect(modal.locator("#admin-account-invite-name")).toHaveAttribute("aria-invalid", "false");
 
-    // ปิดได้ด้วยปุ่ม ยกเลิก — ไม่มี focus trap (modal ออกจาก DOM state ปกติ)
+    // ปิดได้ด้วยปุ่ม ยกเลิก — focus trap (BOR-006) ไม่บล็อก close path ใด ๆ (modal ออกจาก DOM state ปกติ)
     await modal.locator("[data-user-action-modal-close]").last().click();
     await page.waitForTimeout(200);
     await expect(modal).not.toHaveClass(/show/);

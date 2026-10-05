@@ -1,0 +1,9 @@
+AIL-027–030 — Functional & Regression Verification
+== Functional Self-Service (qa-bo-023 · AIL-027)
+52/52 tests passed — My Account, Change Password, Sessions, Logout All, Session Expired cross-flow
+== Functional Password Recovery (qa-bo-024 · AIL-028)
+ผ่านทั้งหมด — forgot → reset → login, eligibility matrix, lockout interplay, audit/delivery trace
+== Scoped Regression (AIL-029a + triage AIL-029b)
+1,122 passed / 118 skipped (by design) / 0 failed — runtime ~28.9m — triage อนุมัติแล้ว
+== UI / Responsive / Accessibility Smoke (qa-bo-025 · AIL-030)
+68/68 passed — desktop-1440, desktop-1280, tablet-768, mobile-390

@@ -1,0 +1,11 @@
+BOA-018 — Protected Impact & Final Acceptance (7 checks)
+== ขั้นตอนตรวจทุกรายการ
+รัน git status/diff → ตรวจ artifact scope, finding traceability และ acceptance checklist
+== Checklist
+01 รัน git status/diff → สะอาด ไม่มี file/prototype mutation — PASS
+02 หา test artifacts → ไม่มี test-results, playwright-report, .last-run.json ค้าง — PASS
+03 เปิด Findings Register 27 รายการ + Roadmap → trace กลับ prototype/spec/task ครบ — PASS
+04 ตรวจ retest scope → แยก confirmed evidence ออกจาก post-remediation retest ชัดเจน — PASS
+05 ตรวจ task list → ไม่มี remediation/bug-fix task ถูกสร้างอัตโนมัติจาก finding — PASS
+06 เทียบ Acceptance Criteria ของ Mission → ครบทุกข้อ — PASS
+07 ตรวจ protected screens → ไม่มีหน้าไหนถูกแก้ — PASS

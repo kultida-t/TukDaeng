@@ -1,0 +1,538 @@
+﻿# TukDaeng Back Office Dev Implementation Checklist
+
+**Baseline:** `BO-PRD-v0.1`  
+**Date:** 2026-07-06  
+**Purpose:** Checklist ตั้งต้นสำหรับแตก ticket implementation ของ BO
+
+## Prototype Handoff Notes Capture
+
+Use this section while BA/UX is completing the BO prototype. Capture only notes that Dev will need later; do not create the full Dev Handoff Sheet until all prototype modules are stable.
+
+Guidelines:
+
+- Keep notes short and implementation-facing.
+- Put module-specific notes under the related module section in this checklist.
+- After all prototype modules are complete, consolidate these notes into `BO_DEV_HANDOFF.md` or separate module handoff files.
+- Each note should cover at least one of: data/API, route/filter, permission, loading/empty/error state, responsive QA, or FO sync impact.
+
+Recommended note format:
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | File, screen, or section in the prototype |
+| Spec Reference | Related PRD/spec/checklist source |
+| Data Needed | API fields, aggregate fields, or mock-data mapping Dev must replace |
+| Route / Drill-in | Target module/route and filter context |
+| State Handling | Loading, empty, error, partial error, stale, unauthorized |
+| Permission / Privacy | Permission enforcement, masked fields, hidden sections |
+| FO Sync Impact | Feed, Search, Profile, Notification, Watch Alert, or other FO impact |
+| Open Question | Product/Dev decision still needed |
+
+## 0. Foundation
+
+- [ ] ใช้ `00_GLOBAL_RULES_MODULE.md` เป็น baseline กลางเรื่อง responsive layout, admin access control, audit, status, privacy และ FO sync
+- [ ] สร้าง BO web app shell พร้อม authenticated layout, left navigation, top bar และ access-aware menu visibility
+- [ ] กำหนด shared status constants สำหรับ users, assets, articles, offers, comments, policy versions, alerts, notifications และ audit actions
+- [ ] ห้ามเพิ่ม `Guest / Unauthenticated` เป็น user status constant ของ BO; ให้ถือเป็น FO access state และใช้เฉพาะ public access/analytics context
+- [ ] ทำ shared table pattern: server pagination, search, filters, sort, column visibility ตามความเหมาะสม และ CSV/Excel export hook
+- [ ] ทำ shared confirmation modal สำหรับ destructive actions พร้อม reason input เมื่อจำเป็น
+- [ ] ทำ shared audit helper เพื่อกันไม่ให้ write action ข้าม audit logging
+- [ ] ตรวจ shared layout ที่ 375px, 768px, 1280px และ 1440px
+
+## 1. Auth And Permission
+
+- [ ] Admin login รองรับ email/password เท่านั้น
+- [ ] Failed login ครบ 5 ครั้ง lock account 15 นาที
+- [ ] Idle session หมดอายุหลัง 8 ชั่วโมง และ max session หลัง 24 ชั่วโมง
+- [ ] BO ใช้ account type เดียวคือ `Admin`; role templates เป็น permission presets เท่านั้น ไม่ใช่ separate BO account types
+- [ ] Seed baseline role templates: `Super Admin`, `Admin Manager`, `Operations Manager`, `Support Agent`, `Trust & Safety Moderator`, `Asset Operations`, `Content Editor`, `Content Publisher`
+- [ ] Permission model ต้องมี explicit permission keys สำหรับ module access, create/edit draft, publish/schedule/archive, moderation action, sensitive reveal, export, settings update และ audit visibility
+- [ ] Permission guard มีทั้ง route level และ action/API level
+- [ ] UI menu/action hiding เป็น UX เท่านั้น และต้องมี backend/service enforcement ซ้ำทุกครั้ง
+- [ ] BO reset password flow แยกจาก FO user reset password
+- [ ] Login, logout, failed login และ lockout events ต้อง audit-log
+
+## 2. Dashboard
+
+- [ ] แสดง new users วันนี้/สัปดาห์นี้/เดือนนี้
+- [ ] แสดง Active Users Today เป็น primary Dashboard KPI
+- [ ] แสดง asset count แยกตาม status
+- [ ] แสดง offer made/accepted/rejected counts
+- [ ] แสดง pending report count
+- [ ] แสดง queue summary พร้อม SLA risk สำหรับ pending reports
+- [ ] แสดง policy-based dashboard view ตาม permission ของ admin
+- [ ] Metric/queue card ต้อง drill-in ไป module ที่เกี่ยวข้องพร้อม filter
+- [ ] Dashboard ต้องรองรับ partial load error โดยไม่ล้มทั้งหน้า
+- [ ] Dashboard responsive order ตรง prototype: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels
+- [ ] แสดง active watch alert count
+- [ ] แสดง latest articles
+- [ ] แสดง top searched brands
+- [ ] แสดง recent activity feed
+- [ ] Dashboard header แสดง `Last updated` และไม่ต้องมี Date Range / Refresh / Export controls ตาม prototype ปัจจุบัน
+- [ ] Dashboard `New Users` และ `Active Users Today` ต้องนับเฉพาะ registered account/member activity และไม่รวม Guest public traffic
+- [ ] Dashboard prototype ต้องไม่เพิ่ม guest/public analytics KPI, card, panel, chart หรือ drill-in; metric ชุดนี้อยู่ใน Reports & Analytics เท่านั้น (Reports & Analytics เป็น Phase 2/future scope — ใน Phase 1 จึงไม่ต้องแสดง metric ชุดนี้เลย)
+
+### Dashboard Prototype Handoff Notes
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | `Prototypes/bo-prototype.html` > Dashboard default screen |
+| Spec Reference | `02_DASHBOARD_MODULE.md`, `BO_PRD.md` section 4.2, `PRD/DASHBOARD_UX_TEST_CASES.md` |
+| Data Needed | Dashboard snapshot API should provide `lastUpdated`, KPI metrics, KPI chips, work queues, recent activities, status panels, top searched brands, and drill-in metadata. |
+| Route / Drill-in | KPI cards, metric chips, Work Queue rows, Recent Activity rows, and Dashboard Panel rows must navigate to the related BO module/submodule with the equivalent filter context. |
+| State Handling | Dev must implement section-level loading, empty, partial error, full error, stale data warning, and unauthorized section hiding. Prototype currently uses mock data only. |
+| Permission / Privacy | Dashboard visibility must be policy-based. Hide module metrics/queues/activities if the Admin has no permission, and enforce permission again at destination routes/APIs. |
+| Responsive QA | Verify 375px, 768px, 1280px, and 1440px. Mobile/tablet navigation uses hamburger drawer; Dashboard order must remain Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels. |
+| FO Sync Impact | Dashboard signals come from FO-triggered data: reports, assets, offers, support, watch alerts, content, notifications, market/search activity, and account deletion. |
+| Open Question | Final API shape, cache/freshness interval, and exact route/filter parameter names should be confirmed when Dev starts BO implementation. |
+
+## 3. User Management
+
+- [ ] User list รองรับ search, filter ตาม status/auth method และ sort ตาม last active, date joined, report count, asset count ตาม Prototype
+- [ ] User profile แสดง account, auth method, profile, assets, activity, login history
+- [ ] User detail แสดง reported user context และ linked report history ตาม permission
+- [ ] Admin reset password ได้เฉพาะ email/password accounts
+- [ ] Apple/Google accounts reset password จาก BO ไม่ได้
+- [ ] Suspend, ban, unsuspend, unban และ Account Deletion handoff ต้อง enforce Admin Permission
+- [ ] Suspend/ban/status action และ Account Deletion handoff ต้องมี confirmation, reason และ audit before/after ตาม policy
+- [ ] User status changes ต้องส่งผลต่อ FO login/session/public behavior โดย `Suspended` และ `Banned` ต้อง revoke/block active session และ block login
+- [ ] V1 ไม่มี `Restricted` หรือ feature-level restriction; `>= 3 reports` เป็น priority review เท่านั้น ส่วน `>= 5 reports/reporters` หรือ high-risk evidence จึงเข้า `Suspended` ตาม policy
+- [ ] Suspend/ban ต้องส่ง email notification เป็น primary channel, in-app เป็น optional/secondary, และ delivery result ต้อง trace ผ่าน delivery log/audit ได้
+- [ ] User List ไม่แสดง Export โดยตรงใน Phase 1; export user data ต้องไปผ่าน system-level export ที่ควบคุม permission (ก่อนหน้านี้ระบุให้ผ่าน Reports/export แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงไม่มี export path สำหรับ user data)
+- [ ] User List, User Detail, status filter และ account action flow ต้องไม่แสดง Guest/Unauthenticated visitor
+- [ ] Mutation ทุกครั้งต้องเขียน audit log พร้อม before/after state
+
+### User Management Prototype Handoff Notes
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | `Prototypes/bo-prototype.html` > `User Management` > `User Accounts` and `Reported Users` submenu. |
+| Spec Reference | `03_USER_MANAGEMENT_MODULE.md` sections 4, 5, 8, 10, 12, 15, 16, 17, and 19; `08_AUDIT_LOG_MODULE.md`; `13_ACCOUNT_DELETION_MODULE.md`. |
+| Prototype / Spec Alignment | Prototype aligns with the Phase 1 spec for User List, User Detail, Reported Users, status/auth filters, sort modes, pagination, row action menu, reset-password eligibility, status-action confirmation views, Account Deletion routing, and no direct User List export. Production must add API-backed permission enforcement, masked/unmasked sensitive-field states, audit persistence, reason validation before mutation, and real FO sync/cache invalidation. |
+| Data Needed | Replace mock users with server-paginated API data: user id, display name, username, masked email, auth method, verification state, account status, joined date/rank, last active/rank, asset count, report count, support/deletion reference, latest activity, allowed actions, blocked actions, action note, and FO impact copy. Do not include Guest/Unauthenticated visitor rows because they are not account records. |
+| Route / Drill-in | Left nav route should support `User Management / User Accounts` and `User Management / Reported Users` as sibling routes. Dashboard `New Users`, `Active Users Today`, and reported-user queue cards drill into the correct route with date/status/report context encoded in query params. User row actions open User Detail view, reset-password action view, status-action view, resend-verification context, or Account Deletion route when status is `Deletion Requested`; User List must not archive/delete directly. |
+| Route / Filter | User List filters must map to query params/API fields for search, account status, auth method, sort mode, and page. Search covers display name, username, masked email, auth, verification state, account status, support/latest context, and internal user id/reference; phone/location are not primary searchable columns. Status filter is limited to `Pending Verification`, `Active`, `Suspended`, `Banned`, `Deletion Requested`, and `Deleted`; it must not include Guest/Unauthenticated. Report context is represented by report count/detail and the `Reported Users` submenu, not a separate User List filter in the current prototype. Reset clears search/filter/sort/page to defaults and should update query params. Logout/login must reset view state to Dashboard and must not keep expanded User Management submenu, active subroute, filter toggle state, custom select, query params, or pagination state. |
+| State Handling | Implement loading, empty, no-result, partial-error, unauthorized, stale, and API failure states for summary cards, table, user detail view, reset-password action view, status-action view, and reported-user detail. Pagination is 10 users per page after search/filter/sort. New or sparse accounts must render without broken layout when profile/assets/offers/reports/activity are empty. |
+| Permission / Privacy | BO has one `Admin` account type; enforce module/action permission at route, UI, API, and service level. UI hiding is not sufficient. Sensitive fields are masked by default in production, with reveal controlled by permission, business reason where required, and audit. Reset password is available only for Email accounts and blocked for Apple/Google/Pending Verification/Suspended/Banned/Deletion Requested/Deleted cases as specified by the prototype. Suspend, ban, restore, unban, resend verification, Account Deletion routing, sensitive reveal, and export each need separate permission keys. User List does not expose Export in Phase 1; export must route through system export with permission, scope control, expiry/background job, and audit (ก่อนหน้านี้ระบุให้ผ่าน Reports/export แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว). |
+| Account Status Actions | Suspend/ban/restore/unban must use confirmation with reason, `Status before action`, `After confirmation`, FO impact preview, and audit note before mutation. Prototype currently shows reason controls but does not validate them; production/API must reject missing required reason before saving. `Deletion Requested` users can be viewed and routed to Account Deletion/dependency review, but User List must not archive/delete directly. `Deleted` appears in the current prototype list/filter for historical review, but actions are limited to permitted historical detail and sensitive fields must stay masked/anonymized. |
+| Responsive QA | Verify 375px, 768px, 1280px, and 1440px against the prototype behavior. Desktop and wide desktop use the control-center layout: compact summary cards, top filter bar, dense table/list rows, row action menu, and structured detail/action views; do not introduce a persistent split list/detail layout for User Detail. Tablet/mobile use stacked card/list rows, hidden row headers, hamburger navigation, panel-header filter toggle, advanced filters expanding in the list area rather than a drawer/bottom sheet, reachable row action menu, and detail/action content that stacks without clipped Thai text. Also verify auth cycle on mobile: User List -> logout -> login returns to Dashboard with nav closed and no User Management submenu, query params, custom select, filter toggle, or pagination state retained. |
+| FO Sync Impact | Account status changes must update FO login/session behavior, account access, public profile visibility, and any dependent cache/indexes. Suspended and Banned must revoke/block active sessions and block login/action access until restore/unban; users should see the FO account-status state rather than entering the main app. V1 has no `Restricted`/feature-level account state. Pending Verification cannot use authenticated FO features; Deletion flow belongs to Account Deletion and may revoke sessions, hide profile/assets, and anonymize/archive according to dependency/grace-period policy. Suspend/ban must trigger email notification as the primary channel, with optional secondary in-app notification and delivery result traceable through Settings > Delivery Logs/Audit. Profile, Feed, Search, Asset Detail, Board, Notification, Watch Alert, Offer/Chat, Support, and Audit must consume the same account-state result consistently (ก่อนหน้านี้ระบุให้ Reports ด้วย แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว). Sync should define event name/payload, timing, retry behavior, stale-state handling, and admin-visible failure state. |
+| Open Question | Confirm final route names/query params, backend enum-to-Thai label mapping, exact permission keys for sensitive reveal/export/reset/resend-verification/status mutations, final FO sync event contract and cache invalidation timing, and production policy for how broadly `Deleted` historical rows should appear beyond the prototype review state. |
+
+## 4. Asset Management
+
+- [ ] Asset list รองรับ Sale, Show, Hide, Sold, flagged และ removed states
+- [ ] Implementation ต้องใช้ `Show` และ `Hide` ตาม FO เป็นหลัก และ normalize คำเก่าจาก legacy source ก่อนใช้งาน
+- [ ] Filters มี status, brand, owner, price range, flagged
+- [ ] เพิ่ม filter สำหรับ reported, ซ่อนถาวร, ลบโดยเจ้าของ, has consignment, created/updated date range
+- [ ] Asset detail แสดงข้อมูลที่จำเป็นต่อ review ครบ
+- [ ] Provenance, proof of payment, consignment และ sale history ต้องจำกัดตาม Admin access
+- [ ] Sensitive fields ต้อง mask เป็น default และ reveal ได้เฉพาะ admin access ที่มี permission
+- [ ] Reported asset ต้องเข้า moderation queue และไม่หายจาก FO ทันทีเว้นแต่มี policy ชัดเจน
+- [ ] Flag/unflag, ซ่อนชั่วคราว, ยกเลิกซ่อนชั่วคราว, ซ่อนถาวร และ force status change ต้องมี confirmation, reason และ update FO visibility rules
+- [ ] Status change ต้อง sync ผลไป Feed, Search, Profile, Asset Detail และ Watch Alert ตาม visibility matrix
+- [ ] Asset lifecycle ที่มี pending offers ต้อง sync ไป Offer policy: ซ่อนชั่วคราว/auto hidden -> `Paused`, review passed -> `Pending`, ซ่อนถาวร -> `Invalidated`, ลบโดยเจ้าของหรือ Sale/Show -> Hide -> `Cancelled`, Sold -> `Rejected`
+- [ ] Sold assets ยังใช้สำหรับ owner history และ admin review
+- [ ] Asset mutations ทุกครั้งต้องเขียน audit log พร้อม before/after state
+- [ ] Asset Management UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Asset Management Prototype Handoff Notes
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | `Prototypes/bo-prototype.html` > `Asset Management` > `Asset List`, `Asset Detail`, `Reported Assets`, and `Asset Report Detail`. |
+| Spec Reference | `04_ASSET_MANAGEMENT_MODULE.md` sections 3-16; `08_AUDIT_LOG_MODULE.md`; `09_OFFER_CHAT_MODULE.md`; `11_WATCH_ALERT_MODULE.md`; `../FrontOffice/02_FEED_MODULE.md`; `../FrontOffice/03_SEARCH_FILTER_MODULE.md`; `../FrontOffice/05_ASSET_DETAIL_MODULE.md`. |
+| Prototype / Spec Alignment | Prototype aligns with the Phase 1 Asset Management baseline for asset list/detail, canonical asset statuses `Sale`, `Show`, `Hide`, `Sold`, moderation states such as `Admin Hidden` / `Auto Hidden`, reported-asset queue, report detail, confirmation flows, before/after audit notes, FO impact messaging, and responsive operational layout. Production must add server/API permission enforcement, full sensitive-field masking/reveal workflow, required reason validation, persistent audit records, and real FO sync/cache invalidation. |
+| Data Needed | Replace mock asset rows with server-paginated API data: asset id, title, brand, model/reference, owner id/name/account status, status, moderation state, report count/report id, reporter count, report reason, priority, price or private-price state, created/updated timestamps, comment/favorite counts, uploaded images, technical specs, description, purchase/provenance proof, sale history, status history, moderation/audit history, allowed actions, blocked actions, and FO impact copy. |
+| Route / Drill-in | Left nav has sibling routes `Asset Management / Asset List` and `Asset Management / Reported Assets`. Asset row click or row action opens `Asset Detail` with breadcrumb `Asset Management / Asset List / {assetId}` and back to Asset List. Reported Assets row/action opens Asset Report Detail; `View Asset` opens the asset detail modal/context from the report. Dashboard asset KPI/status/report queue links should preserve equivalent route/filter context. |
+| Route / Filter | Asset List prototype filter set is search, asset status, brand, sort, page, and reset. Search covers Asset ID, asset title, owner, brand/model/reference-related text from the row/detail mapping. Status filter includes `Sale`, `Show`, `Hide`, `Sold`, `ซ่อนถาวร`, and `ลบโดยเจ้าของ`; production API must still support spec-level filters for moderation state, reported/flagged, owner, price range, consignment, provenance/proof permission state, and created/updated date range when Product asks to expose them. Reported Assets filters are search, report status `Pending`/`Cleared`, priority, sort by latest/reporters/waiting, page, and reset. Reset clears search/filter/sort/page and should update query params. Logout/login should return to Dashboard and must not retain Asset Management submenu, active subroute, filter toggle state, custom select, query params, selected asset/report, or pagination state. |
+| State Handling | Implement loading, empty, no-result, partial-error, unauthorized, stale-data, invalid-state, policy-blocked, sync-failed, permanent-hide/save-failed, audit-failed, session-expired, and unavailable states for Asset List, Asset Detail, Reported Assets, Asset Report Detail, action confirmations, image/proof sections, and audit/history panels. Prototype includes sample error scenarios in action/report confirmation flows but uses in-memory mutation only. |
+| Permission / Privacy | BO has one `Admin` account type; enforce module/action permission at route, UI, API, and service layers. Separate permission keys are needed for module view, detail view, reported queue view, sensitive reveal, purchase/provenance proof view, sale history view, force hide, restore temporary hide, permanent hide, close/clear report, export, and audit history. Sensitive purchase price/date/from, proof of payment, consignment contact/terms, owner contact, and sold history must be masked by default in production and reveal only by policy with audit. UI hiding is not sufficient, and direct URL/API access must be rejected server-side. |
+| Asset Actions | Prototype action availability follows current asset type and moderation state: Admin can force-hide public `Sale`/`Show` assets in active/reported/reviewing states, restore only temporarily hidden assets, and permanently hide public or temporarily hidden assets according to policy. `Hide` owner-only and `Sold` history states are not quick force-hide targets in V1. Confirmation flows must require reason/note before mutation in production, persist before/after asset status and report status, and close/clear related pending reports only for valid restore/permanent-hide outcomes. ลบโดยเจ้าของ is shown as retained BO record and has no standard moderation action. |
+| Responsive QA | Verify 375px, 768px, 1280px, and 1440px. Desktop/wide desktop use dense operational rows, summary cards, top filter controls, row action menus, and full Asset Detail layout with FO preview plus BO context. Tablet/mobile use stacked card rows, hidden table headers, hamburger navigation, filter toggle with advanced filters expanding in the list area, reachable row action menus, image galleries/thumbnails that do not overflow, and detail/report/action views that stack without clipped Thai text. |
+| FO Sync Impact | Asset visibility changes must update FO Feed, Search, Asset Detail/public deep links, Profile/Collection, Watch Alert matching/results, Board/comment references where applicable, Offer/Chat references, and Notifications/delivery context. `Sale` returns to Feed/Search/Watch Alert and may accept offers; `Show` stays profile/detail only and must not match Feed/Search/Watch Alert; `Hide`, `Sold`, `ลบโดยเจ้าของ`, `ซ่อนชั่วคราว`, and `ซ่อนถาวร` are not public marketplace results and do not accept new offers. Offer impact is fixed: ซ่อนชั่วคราว/auto hidden -> `Paused`, review passed -> `Pending`, ซ่อนถาวร -> `Invalidated`, ลบโดยเจ้าของ or owner Hide -> `Cancelled`, Sold -> `Rejected`. Sync contract must define event names, payload, timing, retry/idempotency, cache/index invalidation, admin-visible failure state, and audit correlation id. |
+| Open Question | Confirm final route names/query params, exact permission key names, whether spec-only filters become visible in V1 UI or remain API/report filters, sensitive reveal approval level, and final FO sync/cache invalidation SLA for moderation actions. Restore from ซ่อนถาวร is out of standard moderation flow; restore remains available only for temporary hide. |
+
+## 5. Content / Board
+
+- [ ] Article list รองรับ draft, scheduled, published, archived
+- [ ] Article editor รองรับ title, slug, excerpt, cover image, alt text, category, tags, author, read time, quote, body, related articles, SEO fields
+- [ ] Preview as FO ต้องเป็น admin-only และไม่เพิ่ม view count
+- [ ] Publish now และ schedule publish ต้องใช้เวลาแสดงผลตาม Asia/Bangkok
+- [ ] Archived articles ต้องหายจาก Board/search/category
+- [ ] FO Board Main ต้องใช้ Published Articles เท่านั้นสำหรับ Main Hero, Trending Now และ Journal Board preview; Phase 1 ไม่ใช้ Banner entity, Featured toggle หรือ Featured order
+- [ ] Eligible article query ต้องใช้ `status = Published`, `publishDateTime <= now` ตาม Asia/Bangkok, active category, required FO card fields ครบ และไม่เป็น archived/unpublished/deleted/policy-hidden
+- [ ] Automatic fallback ordering ต้องเป็น `publishDateTime DESC`, `updatedAt DESC`, `articleId DESC`
+- [ ] Main Hero ต้องเลือก eligible article ลำดับแรก และ reserve `articleId` ไม่ให้ซ้ำใน Trending Now หรือ Journal Board preview บน Board Main
+- [ ] Trending Now ต้องเลือกจาก eligible articles ที่ไม่ใช่ Main Hero; ถ้ามี trending score ให้ใช้ score ก่อนแล้ว fallback ordering, ถ้ายังไม่มี score ให้ใช้ latest remaining articles
+- [ ] Journal Board preview บน Board Main ต้องเลือกจาก eligible articles ที่ยังไม่ถูกใช้ใน Main Hero/Trending Now; ถ้าไม่มี remaining article ให้ซ่อน section preview
+- [ ] Journal Board View All ต้องเป็นหน้ารวม eligible Published Articles ทั้งหมด เรียงตาม fallback ordering และอนุญาตให้มีบทความเดียวกับ Hero/Trending ได้
+- [ ] Category hero/list ต้องดึงจาก eligible Published Articles ของ active category นั้น โดยใช้ fallback ordering และหลีกเลี่ยงการซ้ำภายในหน้าเดียวกัน
+- [ ] Category active/inactive ต้องส่งผลต่อ FO category sidebar
+- [ ] Banner management เป็น future scope เฉพาะ campaign/promotion/event/sponsor/external link/non-article deep link และไม่อยู่ใน Phase 1 Board Main
+- [ ] Report article จาก FO ต้องเข้า BO Reported Articles handoff และไม่ทำให้ article หายทันที
+- [ ] Publish/archive/category actions ต้อง audit-log พร้อม before/after state
+- [ ] Article editor และ preview ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+## 6. Market Data
+
+- [ ] Brand CRUD รองรับ EN/TH names, logo, country, founded year, official website, active status
+- [ ] Model CRUD รองรับ brand relation, reference numbers, specs, active status
+- [ ] Price index รองรับ brand/model/reference, min/max THB, source URL, updated date, history
+- [ ] Inactive brand/model ต้องหยุด Watch Alert trigger ใหม่ และไม่แสดงใน FO autocomplete/filter
+- [ ] Market data changes ต้อง audit-log
+- [ ] Reference number management ต้องผูก brand/model และใช้กับ Add Asset/Search/Price Index matching
+- [ ] The Watch API ต้องถูกเรียกจาก backend sync/cache เท่านั้น ห้าม FO client เรียกตรง
+- [ ] ข้อมูลจาก The Watch API ต้องถูกเก็บใน TukDaeng database ก่อน BO/FO ใช้งาน
+- [ ] BO ต้องรองรับ Admin เพิ่ม/แก้/override brand/model/reference/price index ตาม permission
+- [ ] ห้าม hard delete brand/model/reference/price index ที่เคยถูกใช้กับ asset, alert, price history หรือ audit แล้ว ให้ใช้ inactive/soft delete
+- [ ] Manual override ต้องไม่ถูก provider sync overwrite โดยไม่ผ่าน conflict review
+- [ ] เก็บ provider metadata: provider name, endpoint/source level, provider updated date, synced date, sync status
+- [ ] Provider price จาก The Watch API เป็น USD ต้องมี USD -> THB conversion metadata ก่อนใช้ใน FO
+- [ ] รองรับ provider error/rate limit/usage limit และ fallback ไป cached data ล่าสุด
+- [ ] Import ต้องมี dry-run validation, duplicate detection และ error report รายแถว
+- [ ] Market data sync/cache invalidation ต้องครอบคลุม Add Asset, Search Filter, Watch Alert และ Portfolio
+- [ ] Existing asset ต้องยังเก็บ historical brand/model/reference ได้แม้ master data ถูก inactive
+- [ ] Market Data UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Market Data Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | `Prototypes/bo-prototype.html` currently exposes Market Data as a shared operational list shell with submenu entry points for `Brands`, `Models`, `Price Index`, and `Import`. This aligns with the high-level module scope, but it is not yet a full CRUD/import workflow. |
+| Implementation Gap | Production still needs dedicated brand/model/reference/price-index forms, provider sync metadata, manual override conflict review, import dry-run validation, duplicate/error report rows, and server-side pagination. |
+| Permission / Audit | Create/update/activate/inactivate/import/export/provider-sync actions need separate permission keys and audit events with before/after values. UI hiding is not enough. |
+| FO Sync Impact | Market-data changes must invalidate FO Add Asset autocomplete, Search filters/autocomplete, Watch Alert criteria/matching, Portfolio valuation, and Watch Price surfaces. Inactive data must stop new FO selection and new Watch Alert triggers while preserving historical assets and alert history. |
+
+## 7. Directory
+
+- [ ] Postponed from Phase 1; do not expose BO Directory navigation, route, CRUD, import/export, publication control, map/contact/image fields, or FO sync behavior in the Phase 1 prototype/build.
+- [ ] Keep `07_DIRECTORY_MODULE.md` as future reference only until Product approves FO directory detail routes and confirms the taxonomy for Watch Shops, Accessories Shop, Repair Shop, Auction Center, Consignment Center, Authentication Center, and Community.
+- [ ] If Product reopens Directory later, restore the full item/category CRUD, publication, audit, map-provider, import, and responsive requirements from `07_DIRECTORY_MODULE.md`.
+
+### Directory Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | Directory has been removed from the Phase 1 BO prototype navigation because FO only has placeholder menu entries and no approved directory detail pages. |
+| Implementation Gap | No Phase 1 implementation. Future scope must restart from `07_DIRECTORY_MODULE.md` after FO route/detail scope is approved. |
+| Permission / Audit | No Phase 1 Directory permissions or audit events are required because Directory mutations are not exposed. |
+| FO Sync Impact | No Phase 1 FO Directory sync. Placeholder FO menu entries must not imply active BO Directory publication. |
+
+## 8. Audit Log
+
+- [ ] Audit log บันทึก admin ID, admin access, action type, target type, target ID, before value, after value, IP address, timestamp และ reason เมื่อมี
+- [ ] Audit log ต้อง immutable จาก admin UI ปกติ
+- [ ] เฉพาะ Admin ดู/export full audit log ได้
+- [ ] Audit log filter ได้ตาม admin, admin access, action, target, date range
+- [ ] Sensitive data reveal/export, provider sync, import/export และ background job ต้อง audit-log
+- [ ] Audit log ต้องมี correlation ID สำหรับ workflow/job ที่มีหลาย event
+- [ ] Audit export ต้อง audit ตัวเองและมี controlled access/expiry
+- [ ] Retention baseline อย่างน้อย 1 ปี
+- [ ] Audit Log UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Audit Log Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | Audit Log is reachable from Settings via the `Audit Log` submenu route and appears as a read/review surface in the shared prototype shell. This matches the navigation expectation, but production still needs a dedicated immutable audit list/detail implementation. |
+| Implementation Gap | Production must add server-side search/filter/sort/pagination, audit detail with before/after diff, correlation-id grouping, masked payload states, export workflow, and error/empty/loading states. |
+| Permission / Audit | Full audit visibility and export must be permission controlled. Audit export must create its own audit event and use controlled access/expiry. |
+| FO Sync Impact | Audit rows should trace BO actions that affect FO visibility, notifications, account access, content publication, marketplace/search state, Watch Alert triggers, and exports. |
+
+## 9. Offer Management
+
+- [ ] Offer list ต้องรองรับ search/filter/sort/pagination และ status `Pending`, `Paused`, `Accepted`, `Rejected`, `Cancelled`, `Invalidated`
+- [ ] Implementation ต้องใช้ `Rejected` ตาม FO เป็นหลัก และ normalize legacy `Declined` เป็น `Rejected`
+- [ ] FO button/action copy ต้องใช้ `Decline` ได้ แต่เมื่อกดแล้วต้องเปลี่ยน status เป็น `Rejected`
+- [ ] Offer detail ต้องแสดง asset summary, buyer, owner, offer timeline, related chat room, notification delivery และ audit events
+- [ ] Offer status timeline ต้องเก็บ actor/source, timestamp, before/after state และ reason เมื่อจำเป็น
+- [ ] Offer Management V1 ต้องเป็น read-only ไม่มี accept/decline/cancel/force-expire/invalidate action
+- [ ] Asset ลบโดยเจ้าของต้องทำให้ related offers เป็น `Cancelled` ตาม FO Offer policy
+- [ ] Owner เปลี่ยน asset จาก `Sale`/`Show` เป็น `Hide` ต้องทำให้ pending offers เป็น `Cancelled`
+- [ ] Asset sold ต้อง auto reject other pending offers เป็น `Rejected` ตาม FO Offer policy
+- [ ] Asset ถูก auto hidden จาก report หรือซ่อนชั่วคราวระหว่าง review ต้องทำให้ pending offers เป็น `Paused` และ FO ต้องไม่แสดง Accept/Decline
+- [ ] Review ผ่านและ asset กลับเป็น `Sale`/`Show` ต้องทำให้ `Paused` offers กลับเป็น `Pending`
+- [ ] Asset ถูกซ่อนถาวรจาก moderation ต้องทำให้ pending/paused offers เป็น `Invalidated`
+- [ ] `Show` asset ต้องรองรับ offer/contact เฉพาะ Asset Detail/Public Profile detail ตาม FO rule และไม่ขึ้น Feed/Search/Watch Alert
+- [ ] `Hide`, `Sold`, `ซ่อนถาวร`, `ลบโดยเจ้าของ` ต้องไม่รับ offer ใหม่
+- [ ] Related chat context ต้องเปิดแบบ read-only ตาม permission และ privacy masking
+- [ ] User report จาก chat ต้อง route ไป `User Management > Reported Users` พร้อม `Sources = Chat`
+- [ ] FO Delete Chat ต้องเป็น user-level visibility เท่านั้น ห้าม hard delete server record โดยไม่มี retention/audit policy
+- [ ] Blocked users ต้องส่งข้อความใหม่ไม่ได้ แต่ history เดิมยังอ่านได้ตาม FO read-only rule
+- [ ] Admin ห้าม edit user message หรือ offer price โดยตรง
+- [ ] Offer notification delivery ต้อง trace ได้ แต่ template/retry ดูที่ Settings > Delivery Logs (Phase 1); template/broadcast config เป็น Phase 2/future
+- [ ] Pending offer ต้องเป็น dependency สำหรับ block account deletion
+- [ ] Export offer history ต้องจำกัด permission และ audit export event
+- [ ] Offer Management UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Offer Management Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | The prototype exposes `Offer Management` with `Offer List` as a read-only overview for asset interest, buyer/seller, offer price, status, and related chat context. It removes chat-report/dispute queue wording; user reports from chat belong in `User Management > Reported Users`. |
+| Implementation Gap | Production still needs offer detail, buyer/owner/asset summaries, offer timeline, related chat read-only context, notification delivery, permission-gated export, and empty/loading/error states. |
+| Permission / Audit | Offer list/detail is read-only. Sensitive reveal, related-chat view, and offer export must be permission-gated and audit-logged. No V1 write action should appear in this module. |
+| FO Sync Impact | Offer status must reflect FO/system events: seller accept/decline, asset deleted or owner hide -> `Cancelled`, asset sold -> other pending offers `Rejected`, asset auto-hidden/temp-hidden -> `Paused`, review passed -> `Pending`, permanent hide -> `Invalidated`, notification delivery context, and account-deletion dependency checks. |
+
+## 11. Market Demand (Watch Alert)
+
+### Demand Overview
+- [ ] Demand Overview แสดง 4 KPI tiles: Active Alerts, Alerts with Matches, Unmet Demand, Notification Success Rate
+- [ ] Top Brands panel แสดง top 5 brands พร้อม drill-down ไป Model/Reference ใน modal
+- [ ] Price Range histogram แสดงการกระจายช่วงราคา
+- [ ] Trigger Trend แสดง 12 เดือนย้อนหลัง (สำเร็จ/ข้าม)
+- [ ] Frequently Triggered Alerts แสดง top 10
+- [ ] Demand Overview เป็น read-only ไม่มี admin action
+
+### Search Insights
+- [ ] Search Insights แสดง Popular Keywords, Popular Filters by Dimension, Popular Filter Combinations
+- [ ] No-result Searches แยกจาก Unmet Watch Alert
+- [ ] Search Funnel แสดง Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer
+- [ ] Search Insights เป็น aggregate only — ไม่มี user-identifying data
+
+### Watch Alert List & Detail
+- [ ] Watch Alert list ต้องรองรับ filter (Status/Notification/Trigger history/Match status/Last Triggered date range) + sort + pagination 10/page (read-only ไม่มี export ไม่มี search)
+- [ ] Alert detail ต้องแสดง Alert Summary, Owner, Criteria (structured chips), Matched Assets, Trigger & Notification History, User Action History
+- [ ] Criteria schema ต้องใช้ schema เดียวกับ Search Filter และทุก field ต้อง optional
+- [ ] Alert name ต้อง optional และรองรับ generated/default name
+- [ ] Watch Alert match ต้องใช้เฉพาะ asset status `Sale`
+- [ ] Watch Alert ต้องไม่ match `Show`, `Hide`, `Sold`, `ลบโดยเจ้าของ`, `Permanently Hidden`
+- [ ] Watch Alert notification destination ต้องเป็น `Watch Alert Result List` ห้ามเปิด Asset Detail โดยตรง
+- [ ] Trigger history ต้องเก็บ criteria snapshot, matched asset, trigger time, notification event และ exclusion reason ถ้ามี
+- [ ] Block relation ต้องเป็น exclusion context สำหรับ trigger/result review
+- [ ] Market data inactive dependency ต้องแสดง warning และหยุด new trigger ตาม policy แต่ไม่ลบ history เดิม
+- [ ] Market Demand BO เป็น read-only ทั้ง List และ Detail — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
+- [ ] Notification delivery trace ดูได้ที่ Settings > Delivery Logs (Phase 1); template/broadcast config เป็น Phase 2/future
+- [ ] Market Demand UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Market Demand Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | Prototype ล็อกแล้วสำหรับ Market Demand ทั้ง 3 หน้า (Demand Overview, Search Insights, Watch Alert List & Detail) ตาม `WatchAlert_Prototype_Blueprint.md` และ `11_WATCH_ALERT_MODULE.md` — read-only ทั้งระบบ |
+| Implementation Gap | Production still needs owner/criteria detail, optional/generated alert name handling, trigger-history snapshots, exclusion reasons, inactive market-data warnings, notification-delivery trace, Demand Overview aggregation, and Search Insights pipeline. |
+| Permission / Audit | Market Demand BO is read-only. Only sensitive-reveal and trigger-job-run audit events apply (see `11_WATCH_ALERT_MODULE.md` section 16). |
+| FO Sync Impact | Matching must remain Sale-only. `Show`, `Hide`, `Sold`, owner-deleted, permanently hidden, blocked relation, and inactive market-data cases must not generate new FO Watch Alert notifications. Notification destination must remain `Watch Alert Result List`. |
+
+## 12. Help & Support
+
+### Phase 1 — Policy & Versioning + Support Center
+
+- [ ] Policy & Versioning List แสดง policy 2 ตัว (Terms of Use, Privacy Policy) ครบคอลัมน์ ไม่มี summary cards/search/filter/pagination
+- [ ] Policy Detail แสดงเนื้อหา Published พร้อม language tabs TH/EN, metadata tiles, change summary และปุ่ม (แก้ไข Draft / สร้าง Draft, ดู Version History)
+- [ ] Policy Editor แสดง Draft metadata tiles, language tabs TH/EN, formatting toolbar (Bold/Italic/Underline/H2/UL/OL/Align/Insert Link), contenteditable canvas 2 ภาษา, change summary field และ actions (บันทึก Draft, Preview, Publish, ยกเลิก)
+- [ ] Policy Editor validation บังคับ content TH, content EN และ change summary ต้องไม่ว่าง
+- [ ] Policy Preview modal แสดงตัวอย่างเนื้อหา Draft 2 ภาษา พร้อม version pill
+- [ ] Policy Publish confirmation modal แสดง policy type, version, change summary และแจ้ง archive; หลังยืนยันต้อง archive เวอร์ชัน Published เดิม, ส่ง Draft เป็น Published, แสดง success toast และกลับไป Policy Detail
+- [ ] Policy Version History แสดงตารางทุกเวอร์ชัน พร้อม row click เปิด Version View modal และ action menu (แก้ไข Draft / ดูเวอร์ชัน / Restore เป็น Draft)
+- [ ] Policy Version View modal แสดงเนื้อหา 2 ภาษา read-only, metadata tiles, change summary และปุ่ม Restore (Archived) หรือ แก้ไข Draft (Draft)
+- [ ] Policy Restore confirmation modal แสดงยืนยันก่อนสร้าง Draft ใหม่จาก Archived; หลังยืนยันต้องสร้าง Draft ใหม่, แสดง success toast และเปิด Policy Editor
+- [ ] Support Center edit form แสดง channel list 5 ประเภท (LINE, Phone, Email, Facebook, Website) พร้อม toggle Active/Inactive, channel value, description TH/EN, status badge และ business hours section
+- [ ] Support Center validation บังคับ channel value (เมื่อ Active) + format validation ตาม channel type, business hours (required + format HH:MM - HH:MM), availability TH/EN (required)
+- [ ] Support Center Preview modal แสดง FO Help screen ใน phone frame พร้อม language toggle TH/EN, แสดงเฉพาะ channel Active, business hours, availability ตามภาษา และ empty state เมื่อไม่มี Active channel
+- [ ] Support Center Preview อ่านค่าจาก form แบบ live (รวมค่าที่ยังไม่ได้บันทึก)
+- [ ] Audit log บันทึก `POLICY_DRAFT_CREATE`, `POLICY_DRAFT_SAVE`, `POLICY_PUBLISH`, `POLICY_ARCHIVE`, `POLICY_RESTORE` และ `SUPPORT_CENTER_UPDATE` พร้อม payload ครบ
+- [ ] Help / Support UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Help & Support Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | Prototype ล็อกแล้วสำหรับ Settings > Policy & Versioning และ Settings > Support Center ตาม `12_HELP_SUPPORT_MODULE.md` — ไม่มี Tickets/Assignment/SLA ใน prototype ปัจจุบัน |
+| Implementation Gap | Production ต้องสร้าง Policy & Versioning flow (list, detail, editor, version history, modals) และ Support Center form + preview ตาม `12_HELP_SUPPORT_MODULE.md` |
+| Permission / Audit | Policy draft/publish/restore และ Support Center update ต้องมี permission check + audit log; Preview ไม่บันทึก audit |
+| FO Sync Impact | Policy content ส่งไป FO Settings ผ่าน API (แสดงเวอร์ชัน Published ตามภาษา); Support Center data ส่งไป FO Help screen (Active channels เท่านั้น) |
+
+## 13. Account Deletion Requests
+
+- [ ] Deletion request queue ต้องรองรับ search/filter ตาม Request ID, user, สถานะคำขอ, account status, grace period state และ requested date
+- [ ] Request detail ต้องแสดง user context, deletion timeline, dependency summary, Deletion Plan และ history & actions
+- [ ] หลัง FO Delete Account สำเร็จ account ต้องเข้าสู่ deactivated/login blocked state และ public profile/assets ต้องถูกซ่อนทันที (ไม่รอครบ 30 วัน)
+- [ ] ยกเลิก offer ที่ Pending และปิดรายงานอัตโนมัติเมื่อ FO confirm สำเร็จ พร้อมบันทึก audit — ไม่มี block ที่ต้องรอ Admin
+- [ ] Grace period ต้องใช้ baseline 30 วันและแสดง active / ending soon / expired
+- [ ] Dependency check ระหว่างช่วงรอลบบัญชีต้อง query dependency ล่าสุดจาก Offer Management, Asset และ Report modules เป็น system job พร้อมบันทึก audit
+- [ ] คืนบัญชี / ปฏิเสธคืนบัญชี ใช้ได้เฉพาะช่วง grace period 30 วัน ต้องมี confirmation, reason และ audit; คืนบัญชีต้อง sync account status กลับ `Active` และบันทึกใน Account Status History ของ User Management
+- [ ] ครบ grace period ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เป็น system job ไม่ใช่ manual action ของแอดมิน
+- [ ] Deletion Plan ต้องแยก hide, retain และ anonymize ต่อ entity ให้ชัด
+- [ ] Sensitive reveal, restore, reject restore และ export ต้องมี audit log; system actions (request create, session revoke, offer cancel auto, report close auto, dependency check, auto delete) ต้องบันทึก audit โดย system job
+- [ ] Account Deletion UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Account Deletion Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | Prototype ล็อกแล้วตาม `13_ACCOUNT_DELETION_MODULE.md` BO-13-v0.5 — Request List (7 คอลัมน์ + row menu, mobile card), Request Detail 5 sections (User Context / Deletion Timeline / Dependency Summary / Deletion Plan / History & Actions พร้อมคอลัมน์ ส่งอีเมล), modal คืนบัญชี + ปฏิเสธคืนบัญชี (มี email note + email preview), cross-module drill-in, Audit Log view และ Account Status History ของ User Management; lifecycle email 5 จุด sync กับ `14_NOTIFICATIONS_MODULE.md` BO-14-v0.2 section 9.3 |
+| Implementation Gap | Production needs API-backed permission enforcement, real FO sync (session revoke, hide profile/assets, auto-cancel offers, auto-close reports), system job สำหรับลบบัญชีอัตโนมัติเมื่อครบ grace period 30 วัน, audit persistence และ sensitive-data masking ตาม policy |
+| Permission / Audit | Restore, reject restore, sensitive reveal และ export ต้อง permission-gated และ audit-logged พร้อม before/after values และ reason; system actions บันทึก audit อัตโนมัติทุกครั้ง |
+| FO Sync Impact | Successful FO delete-account flow must revoke session/deactivate account, hide public profile/assets immediately, auto-cancel pending offers and auto-close open reports with audit, keep required records for retention, and auto-delete (archive + anonymize in one step) when the 30-day grace period ends; restore by admin syncs account status back to Active within the grace period. |
+
+## 14. Notifications
+
+> **สถานะ:** Notifications module ถูกแบ่งเป็น 2 phase — Delivery Logs ย้ายไป Settings ใน Phase 1 (ดู `16_ADMIN_SETTINGS_MODULE.md`) และ Broadcast/System Templates เลื่อนเป็น Phase 2/future (ดู `14_NOTIFICATIONS_MODULE.md`)
+
+### 14.1 Delivery Logs (Phase 1 — Settings > Delivery Logs)
+
+- [ ] Delivery Logs แสดงใต้ Settings ไม่มี Notifications menu entry ใน sidebar ใน Phase 1
+- [ ] Delivery log list แสดง Delivery ID, Event, Source, Recipient, Channel, Status, Detail พร้อม filter (search, status, channel, sort) และ pagination 10/page
+- [ ] Row click เปิด read-only detail modal (Source, Recipient, Channel, Status, Priority, Detail, Tags, Admin note)
+- [ ] Delivery log ต้องเก็บ queued/sent/delivered/opened/failed/skipped พร้อม failure reason (Phase 1 แสดง Sent/Retry; Phase 2 จะเพิ่ม status อื่น)
+- [ ] Retry failed delivery ต้องมี idempotency guard และ audit log (`NOTIFICATION_DELIVERY_RETRY`)
+- [ ] Export delivery log ต้องมี scope, reason และ audit (`NOTIFICATION_DELIVERY_EXPORT`)
+- [ ] Account Deletion lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ต้องส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่แสดงใน Settings > Delivery Logs และ trace กลับไปยัง History & Actions ของ Request Detail และ audit event ได้ ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3
+- [ ] อีเมล Account Deletion lifecycle ต้องเคารพกฎห้ามส่ง (ไม่ส่งซ้ำ, ไม่ส่งเมื่อคำขอจบแล้ว, อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields)
+- [ ] Delivery Logs UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### 14.2 Broadcast & System Templates (Phase 2 / Future scope — deferred)
+
+> **สถานะ:** เลื่อนเป็น Phase 2/future scope — ไม่มี Notifications menu entry ใน sidebar ใน Phase 1; Checklist ด้านล่างเก็บไว้เพื่ออ้างอิงเมื่อกลับมาทำใน Phase 2 ไม่ใช่งานที่ต้องทำใน Phase 1
+
+- [ ] Notification dashboard ต้องแสดง broadcast list, system trigger templates, delivery logs และ failed delivery summary
+- [ ] Broadcast ต้องรองรับ Draft, Pending Approval, Scheduled, Sending, Sent, Cancelled และ Failed
+- [ ] Broadcast ต้องมี title, body, optional image, channel, target audience, deep link, send now/schedule และ preview
+- [ ] Broadcast ที่ส่งถึงผู้ใช้จริงต้องผ่าน Admin approval
+- [ ] Generic Broadcast ห้ามแสดงใน FO Notification Center จนกว่า master decision เพิ่ม scope หรือ mapping ชัดเจน
+- [ ] System trigger ต้องรองรับ Like, Comment, Follow, New Offer, Offer Accepted, Offer Rejected, Offer Cancelled และ Watch Alert
+- [ ] FO Notification Center ต้องรองรับเฉพาะ Like, Comment, Follow, Offer และ Watch Alert ตาม V1 baseline
+- [ ] Chat / New Message ต้องไม่เข้า Notification Center และใช้ Chat badge/count เท่านั้น
+- [ ] Watch Alert notification destination ต้องเป็น Watch Alert Result List เท่านั้น
+- [ ] System template ต้องใช้ allowlist variables และห้ามใส่ sensitive data เช่น phone, email, LINE หรือ internal note
+- [ ] Disabled notification type ต้องไม่ส่ง notification ใหม่
+- [ ] Template update, type enable/disable, broadcast approve/send/cancel, retry และ export ต้องมี audit log
+
+### Notifications Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | Prototype ตัด Notifications menu entry ออกแล้ว และย้าย Delivery Logs เข้า Settings (NTF-RSTR-001/003); Dashboard links อัปเดตเป็น Settings / Delivery Logs (NTF-RSTR-004); Account Deletion lifecycle email delivery logs (`DLV-DEL-xxx`) แสดงใน Settings > Delivery Logs และ sync กับ History & Actions ของ Request Detail ตาม `14_NOTIFICATIONS_MODULE.md` BO-14-v0.3 section 9.3 |
+| Implementation Gap | Phase 1: production still needs delivery log detail, retry/idempotency, failed/skipped reason handling, and export. Phase 2: broadcast draft/approval/schedule/send/cancel, preview, system trigger template configuration. |
+| Permission / Audit | Phase 1: retry, sensitive reveal, and export require permission checks and audit. Phase 2: template update, type enable/disable, broadcast approve/send/cancel require permission checks and audit. |
+| FO Sync Impact | FO Notification Center V1 must remain limited to Like, Comment, Follow, Offer, and Watch Alert. Generic Broadcast must not appear in the FO in-app list until Product confirms scope. Watch Alert notification destination must remain `Watch Alert Result List`; Chat/New Message uses chat badge/count, not Notification Center. |
+
+## 15. Reports & Analytics (Phase 2 / Future scope — deferred)
+
+> **สถานะ:** เลื่อนเป็น Phase 2/future scope — prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor
+> Checklist ด้านล่างเก็บไว้เพื่ออ้างอิงเมื่อกลับมาทำใน Phase 2 ไม่ใช่งานที่ต้องทำใน Phase 1
+
+- [ ] Report catalog ต้องมี User, Asset, Offer, Chat, Content / Board, Asset Reported Comments, Search, Watch Alert, Notification และ Account Deletion reports (ไม่มี Support Report ใน Phase 1)
+- [ ] ทุก report ต้องรองรับ date range, filter, sort, policy-based visibility และ last updated
+- [ ] ทุก report ที่ export ได้ต้องรองรับ CSV และ Excel ตาม permission
+- [ ] Large export ต้องใช้ background job พร้อม status Queued / Processing / Completed / Failed / Expired / Cancelled
+- [ ] Sensitive data ต้อง mask เป็น default และ sensitive view/export ต้อง audit-log
+- [ ] User Report ต้องแสดง new users, DAU/MAU, auth method, account status และ deletion signals
+- [ ] User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics และต้องไม่ใช้ Guest เป็น account status/filter
+- [ ] User Report ต้องรองรับ explicit guest/public metrics ได้แก่ Guest Visitors, Public Asset Views, Public Article Views, Public Profile Views, Public Shares และ Guest-to-Signup Conversion เมื่อ tracking เปิดใช้
+- [ ] Asset Report ต้องใช้ status `Show` / `Hide` ตาม FO และไม่ใช้ legacy collection wording
+- [ ] Offer Report ต้องใช้ status `Rejected` ไม่ใช้ `Declined`
+- [ ] Chat Report ต้องจำกัด transcript export ตาม permission และ audit ทุกครั้ง
+- [ ] Search Report ต้องแสดง top searched keywords/brands/models, no-result searches และ save-as-watch-alert conversion ถ้ามี tracking
+- [ ] Watch Alert Report ต้องยืนยัน Sale-only match และ destination `Watch Alert Result List`
+- [ ] Notification Report ต้องแสดง queued/sent/delivered/opened/failed/skipped และ failure reason
+- [ ] Account Deletion Report ต้องแสดง restore/reject restore reason, grace period และ auto-delete completion (เก็บถาวร + ลบตัวตน ในขั้นเดียว)
+- [ ] Reports UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Reports & Analytics Prototype Handoff Notes (Phase 2 / Future scope)
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | Prototype ตัดเมนู Reports ออกชั่วคราว (Phase 2/future scope). ก่อนหน้านี้ prototype เคยมี `User`, `Asset`, `Offer`, `Search`, และ `Export Jobs` เป็น visible shell แต่ spec ต้องการ report catalog เต็ม: User, Asset, Offer, Chat, Content/Board, Asset Reported Comments, Search, Watch Alert, Notification, Account Deletion, และ Export Job/Access History (ไม่มี Support Report ใน Phase 1) — จะทำเมื่อกลับมาเปิด scope ใน Phase 2 |
+| Implementation Gap | Production still needs report catalog/detail views, date range/filter/sort controls, last-updated timestamps, chart/table fallbacks, CSV/Excel exports, background export job states, and sensitive report-access handling. |
+| Permission / Audit | Report access must be policy-based. Sensitive report views/exports require masking by default, explicit permission, reason where required, and audit events for request/complete/fail/download. |
+| FO Sync Impact | Reports must use canonical FO terms: asset `Show`/`Hide`, offer status `Rejected`, Watch Alert Sale-only matching and `Watch Alert Result List` destination, and guest/public analytics separated from registered-user metrics. ไม่มี Support Report/first-response SLA ใน Phase 1 |
+
+## 16. Admin Settings
+
+- [ ] Admin ทุก admin access ต้องเข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้
+- [ ] Admin ต้องจัดการ admin account lifecycle: invite, change Role assignment, suspend/reactivate, unlock, archive
+- [ ] Production Invite Admin ต้องสร้าง normalized unique account `Invited` + canonical invitation `Pending` + audit + transactional email outbox แบบ atomic โดยไม่มี temporary password; protected prototype in-memory invite เป็น UI/mock baseline ไม่ใช่ security enforcement
+- [ ] Invitation ใช้ CSPRNG one-time token อายุ 72 ชั่วโมง เก็บเฉพาะ approved hash/MAC + token revision; มี state `Pending/Used/Expired/Cancelled/Superseded`, มี active `Pending` ได้หนึ่ง record ต่อ target account และห้าม hard delete terminal history
+- [ ] Activation ต้อง revalidate token/expiry/account/email/Role/revisions ใน transaction, enforce initial password อย่างน้อย 12 ตัวพร้อม uppercase/lowercase/number/special และ compare-and-consume `Pending -> Used` พร้อม `Invited -> Active` + password hash + audit/outbox แบบ atomic; race/replay/stale/idempotent retry เปลี่ยน state ซ้ำไม่ได้
+- [ ] Valid invitation link เป็น possession verification สำหรับ activation; activation สำเร็จกลับ Login และ Login ใช้ email/password ตาม baseline ปัจจุบัน (ไม่มี Login OTP step)
+- [ ] Resend ใช้ cooldown 60 วินาที + 5 successful issuances/rolling 24h ต่อ target account, supersede token เดิม; Cancel คง account `Invited`; Reissue สร้าง revision ถัดไปหลัง Expired/Cancelled; hidden abuse thresholds ห้ามเปิดเผยหรือเปลี่ยน business quota
+- [ ] Invitation mutation enforce `settings.admin_accounts.manage` ใน UI/route/API/service พร้อม account/Role eligibility, expected revisions, idempotency/correlation และ server capability; unauthorized/stale/no-op request ต้องไม่เกิด partial mutation
+- [ ] ทุก invitation lifecycle action มี canonical audit event; ทุก email attempt มี Delivery Log `DLV-ACCT-<admin-sequence>-INV-<attempt-sequence>` ที่ trace invitation/Admin Detail/Audit ได้; provider failure คง account `Invited` และ invitation issuance พร้อม Failed/Retry state
+- [ ] Audit/Delivery/application log ห้ามมี raw/hashed token, password/password hash, OTP, destination email แบบไม่ mask, idempotency secret หรือ provider credential
+- [ ] ระบบต้องป้องกันการ suspend/archive/change Role ของ Admin active คนสุดท้ายและ account สุดท้ายที่คง admin recovery coverage
+- [ ] Settings submenu ต้องมี `Roles & Permissions` สำหรับ role templates และ module/action policy
+- [ ] Roles & Permissions policy ต้องกำหนด canonical permission taxonomy/level, baseline matrix ตาม 8 System Roles และ Phase 1 action catalog 40 keys; Role Detail แสดงเฉพาะ granted action names โดยไม่แสดง key/level แต่ enforcement ต้องใช้ explicit key ทั้ง UI/API/service
+- [ ] Phase ปัจจุบันสร้าง Custom Role แบบ `from_scratch` เท่านั้น ไม่มี `Copy`/`Clone`/`Duplicate` หรือ source-template selector และต้องเก็บ permission key แบบ explicit; ห้ามผูกสิทธิ์เฉพาะรายบุคคลกับ Admin account โดยตรง
+- [ ] Content role split ต้องรองรับ `Content Editor` สำหรับ draft authoring และ `Content Publisher` สำหรับ publish/schedule/archive/Reported Articles actions
+- [ ] Permission change ต้องมี confirmation, reason, before/after diff และ audit log
+- [ ] Production Change Role contract ต้อง enforce critical safeguards ที่ API/service และ UI เมื่อมี surface นั้น: ห้าม self-change, ห้ามเปลี่ยน master admin, ห้ามทำให้ไม่มี active `Super Admin`, ห้ามทำให้ไม่มี account ที่จัดการ role/admin recovery ได้, ห้าม assign Custom Role ที่ inactive/invalid และต้อง block role change ของ account status ที่ไม่อนุญาต; current protected Admin Accounts UI ยังคงเฉพาะ 8 System Roles
+- [ ] ทุกคำขอ Change Role ต้องเขียน `ADMIN_ACCOUNT_ROLE_CHANGE` ใน transaction เดียวกับ role persistence: เก็บ event/reference/correlation, immutable actor/target IDs + account revision, actor Role ID/revision, old/new Role ID/revision + name snapshot + permission diff, reason, safeguard outcome, result และเวลา; ถ้า audit write ไม่สำเร็จต้องไม่ commit role ใหม่ และต้องไม่เก็บ secret/token/password
+- [ ] การสร้าง/แก้ไข/ปิดใช้งาน/เปิดใช้งาน Custom Role ต้องเขียน `ROLE_CREATE`/`ROLE_UPDATE`/`ROLE_PERMISSION_UPDATE`/`ROLE_DEACTIVATE`/`ROLE_REACTIVATE` พร้อม before/after, audit context/reason ตาม flow, affected Admin accounts และ migration/rollback reference เมื่อมีผลกระทบ; Create ใช้ generated audit context ส่วน Edit/Deactivate/Reactivate บังคับ user-entered reason
+- [ ] System Role seed/baseline ต้องมี `ROLE_CREATE` history จาก `System` พร้อม `creation_mode=system_baseline`, source null, provenance `not_applicable` และ permission baseline เพื่อ trace จุดเริ่มต้นได้
+- [ ] Admin Account ต้องอ้าง Role ด้วย immutable `role_id` (ห้ามใช้ชื่อ Role เป็น foreign key); `role_key` immutable และ Change Role request ต้องมี `expected_target_account_revision`, `expected_current_role_id`, `expected_current_role_revision`, `expected_new_role_revision`; ทุก assign/edit/deactivate/reactivate ต้อง reject stale state และ same-role no-op
+- [ ] Relational constraint ต้องครบ: `roles.role_id` เป็น PK, normalized `role_key`/`display_name` unique, `admin_accounts.role_id` เป็น required FK สำหรับทุก account status, `role_permissions` ใช้ PK `(role_id, permission_key)`, source pair เป็น conditional self-reference และทุก relation ใช้ RESTRICT/no cascade delete
+- [ ] `permission_set` persist เฉพาะ granted key ที่ไม่ซ้ำด้วย level canonical `view/manage/approve/admin`; absence แปล `none`, ห้าม persist `none`, Custom Role ห้าม `admin`, unknown key/level และ dependency ที่ขาด `.view` ต้อง reject แบบ atomic
+- [ ] `active_admin_count` ต้อง derive จาก Admin status `Active` + `role_id`; ก่อน safeguard/deactivate ต้องคำนวณใหม่ใน transaction และห้ามใช้ client/cache เป็น source of truth
+- [ ] Deactivate impact ต้องคำนวณ `assigned_admin_count_by_status` ครบ Active/Invited/Locked/Suspended/Archived; Active/Invited ต้อง migrate, Locked/Suspended ต้องใช้ governed combined lifecycle + Role replacement หรือ block, Archived คง historical reference ได้
+- [ ] Custom Role ที่ยังมี assignment ใน lifecycle ต้องไม่ถูก deactivate หรือ silent reassign; governed migration ต้อง revalidate safeguards และ commit assignment + deactivate + audit แบบ atomic ส่วน reactivate ห้าม reassign account อัตโนมัติ
+- [ ] Batch migration ต้องเขียน `ADMIN_ACCOUNT_ROLE_CHANGE` ต่อ account และ `ROLE_DEACTIVATE` ต่อ Role ด้วย correlation เดียวกัน; ทุก event ต้องสำเร็จก่อน commit และ core result ห้ามเป็น `Partial`
+- [ ] Phase ปัจจุบันของ protected Admin Accounts selector ยังคง 8 System Roles; service/data model รองรับ Active Custom Role ตาม contract แต่การเปิด selector ต้องเป็นงานแยกที่ได้รับอนุมัติและผ่าน safeguard/regression
+- [ ] Invite request ต้องส่ง `role_id` + `expected_role_revision`; invite activation, unlock (manual/automatic), reactivate และ session authorization ต้อง block เมื่อ Role inactive/stale/invalid; การกู้คืนใช้ combined lifecycle + eligible Role replacement แบบ atomic และห้าม fallback เงียบ
+- [ ] บันทึก `creation_mode` และ `source_provenance_status` ตาม flow: current Create ใช้ `from_scratch` + source null + `not_applicable`; `derived/copied` เป็น schema reservation สำหรับ future/import compatibility และห้ามเปิดเป็น UI flow โดยไม่มี approved scope; legacy ที่พิสูจน์ source ไม่ได้ใช้ source null + `legacy_unknown` พร้อม migration audit และห้ามเดาจากชื่อหรือ permission similarity
+- [ ] Validate Custom Role ให้ตรง prototype: display name required/trim/≤64/case-insensitive unique, `role_key` required/≤64/`^[a-z0-9_]+$`/unique/immutable, description ≤512, มี granted permission อย่างน้อย 1 key และห้าม Custom Role ใช้ level `admin`
+- [ ] Create/Edit permission picker ใช้ checkbox action ไม่มี level selector; Create สร้าง record ใหม่ revision 1 โดยไม่ใช้ `expected_revision` ของ existing Role; Edit ต้องคง valid existing non-admin level, permission ใหม่/ระดับที่เพิ่มต้องไม่เกิน actor ceiling, missing `.view` dependency/unknown key/invalid level/tampered payload ต้อง reject แบบ atomic และ no-op/stale revision ต้อง block ก่อน persist
+- [ ] Edit รองรับ Custom Role ทั้ง Active/Inactive และต้องคง draft + reason เมื่อ stale revision ถูกปฏิเสธ; Deactivate ต้อง block assignment สถานะ Active/Invited/Locked/Suspended, Reactivate ต้อง validate และคง permission set เดิมโดยห้าม restore/reassign account อัตโนมัติ
+- [ ] Normalize prototype permission aliases `roles.view/manage` และ `admin_accounts.view/manage` เป็น canonical `settings.roles.*` / `settings.admin_accounts.*` ที่ adapter boundary; production persistence/audit/API ต้องใช้ canonical key เท่านั้นและ reject unknown/ambiguous alias
+- [ ] `roleMenuAccess` ระดับ `none/view/limited/manage` เป็น display-only module summary ของ protected Admin Detail; production ต้อง derive จาก canonical `permission_set` ผ่าน `role_id` และห้าม persist `limited` เป็น permission level
+- [ ] Roles & Permissions List/Detail ใช้ `settings.roles.view` สำหรับ read access และ `settings.roles.manage` สำหรับ mutation; ผู้มี view อย่างเดียวเห็น read-only และ action mutation ต้องไม่อยู่ใน DOM
+- [ ] `Admin access` ใน Auth contract ต้อง persist เป็น `role_id`; ห้ามเก็บชื่อ Role, free-text access label หรือ permission payload ซ้ำใน Admin Account
+- [ ] ใช้ prototype เป็น source of truth สำหรับ visual/interaction ที่ล็อก แต่ใช้ section 9.11 เป็น source of truth สำหรับ production persistence/service; ต้องทบทวน conformance matrix และห้ามลอก mock behavior ที่ระบุเป็น production hardening gap
+- [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
+- [ ] Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ
+- [ ] Export policy ต้องรองรับ CSV/Excel, background job, expiry, sensitive export reason และ audit
+- [ ] Feature flags ต้องแสดง FO/BO impact ก่อนบันทึก และ audit ทุกครั้ง
+- [ ] Integration settings ต้องแสดง metadata/status เท่านั้น และห้ามเปิดเผย secrets ใน BO UI
+- [ ] System defaults ต้องแสดง timezone `Asia/Bangkok`, currency THB, Thai-primary language, server pagination และ sensitive masking baseline
+- [ ] Settings change history ต้อง link ไป Audit Log detail ตาม permission
+- [ ] Admin Settings UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Admin Settings Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | Prototype Phase 1 แสดง `Admin Accounts`, `Roles & Permissions`, `Policy & Versioning`, `Support Center`, `Delivery Logs` และ route `Audit Log` ใต้ Settings. Admin lifecycle, Invite Admin, invitation context ใน Admin Detail, Resend/Cancel/Reissue (cooldown 60 วินาที + quota 5/rolling 24h), recipient invitation link (`#token=` capture/strip) + initial-password activation, safe recovery states (terminal/transient) และ Delivery/Audit trace (`DLV-ACCT-<seq>-INV-<seq>`/`AUD-xxxxx`), 8 System Roles, Custom Role create/edit/deactivate/reactivate, granted-permission accordion และ Role Audit History มี interaction/mock แล้ว — ทั้งหมดเป็น in-memory UI baseline ไม่ใช่ production enforcement; ไม่มี Copy/Clone/Duplicate หรือ source-template flow และ Security/Retention nav ถูกถอดเป็น deferred ตาม section 6.2. |
+| Implementation Gap | Production ยังต้องทำ invitation persistence/service enforcement ตาม `01_AUTHENTICATION_MODULE.md` section 10.1 และ `16_ADMIN_SETTINGS_MODULE.md` section 8.9 รวม canonical invitation record, token hash/revision, atomic activation, quota/cooldown, transactional outbox, Audit/Delivery trace; Role persistence ยังต้องทำตาม section 9.11: immutable `role_id` FK, normalized permission records, account/Role concurrency, activation/session guard, governed migration ทุก account status, atomic audit และ immutable Role revision history. Own-profile/Change/Forgot/Reset Password, Active Sessions, security/retention/export policies, feature flags, integration metadata และ settings change history อยู่นอก invitation contract นี้หรือยังเป็น future/deferred ตาม scope. |
+| Permission / Audit | ใช้ `settings.roles.view` สำหรับ read และ `settings.roles.manage` สำหรับ mutation. Permission changes, admin lifecycle actions, role-change safeguard blocks, security/retention/export policy changes, feature flags และ sensitive/export settings ต้องมี confirmation, reason ตาม rule, before/after diff และ audit; Role/Admin audit ต้องเก็บ immutable IDs/revisions ไม่ใช้ชื่อเป็น key. |
+| FO Sync Impact | Settings changes can alter BO access, FO/BO feature flags, retention/export behavior, public legal/support content, and security defaults. Changes must surface FO/BO impact before save and link history to Audit Log where permitted. |
+
+## 17. Option Master
+
+- [ ] Option Group List รองรับ search, status filter (ทั้งหมด/Active/Inactive), sort และ pagination
+- [ ] Option Group List มี Status column (Active/Inactive badge) และ action menu (View, Edit, Deactivate/Reactivate, Delete, ดู Audit Log)
+- [ ] Option Group List มีปุ่ม `เพิ่ม Group` และ `จัดเรียง` (Reorder Groups) ใน page actions; ปุ่ม `จัดเรียง` แสดงเฉพาะ active group ≥2
+- [ ] Option Detail แสดง option list table พร้อม panel title/subtitle, มีปุ่ม Add Option
+- [ ] Add/Edit Option modal: ฟอร์ม fields, Group Key/Option Key lock หลังสร้าง, validation, confirmation
+- [ ] Deactivate/Reactivate Option modal: reason selector, safeguard, System Option Deactivate Policy state (อนุญาตพร้อม reason + safeguard ≥1 active option เหลือในทุกกลุ่ม)
+- [ ] Delete Option modal: destructive, type-to-confirm ด้วย Option Key, safeguard ห้าม delete ถ้ามี asset ใช้ (`used_in_assets=false`), audit `OPTION_DELETE` ก่อน hard delete
+- [ ] Reorder Option modal: drag-and-drop + up/down fallback
+- [ ] Add/Edit Group modal: ฟอร์ม fields, Group Key lock, validation, confirmation
+- [ ] Deactivate/Reactivate Group modal: reason selector, safeguard ห้าม deactivate ถ้ามี asset ใช้ option ใน group
+- [ ] Delete Group modal: reason selector, type-to-confirm, safeguard (group Inactive + ไม่มี asset ใช้)
+- [ ] Group Audit Log view: read-only, แสดง action/timestamp/actor/reason/before-after diff
+- [ ] Reorder Groups: drag-and-drop + up/down fallback, เฉพาะ active groups ≥2, sort_order sequential
+- [ ] Key lock rule: key ล็อกตั้งแต่สร้าง ไม่ใช่หลังถูกใช้ใน asset
+- [ ] ตาราง `spec_option_groups`, `spec_options`, `spec_option_audit` มี field ครบ
+- [ ] Audit actions ครบ: `OPTION_ADD`, `OPTION_EDIT`, `OPTION_DEACTIVATE`, `OPTION_REACTIVATE`, `OPTION_DELETE`, `OPTION_REORDER`, `GROUP_CREATE`, `GROUP_EDIT`, `GROUP_DEACTIVATE`, `GROUP_REACTIVATE`, `GROUP_DELETE`, `GROUP_REORDER`
+- [ ] Seed data 6 groups พร้อมใช้งาน
+- [ ] FO Integration: Add/Edit Asset form, Search Filter, Watch Alert criteria ใช้ option จาก Option Master
+- [ ] Option Master UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Option Master Prototype Handoff Notes
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | `Prototypes/bo-prototype.html` > `Option Master` > `Option Group List` and `Option Detail`. |
+| Spec Reference | `17_OPTION_MASTER_MODULE.md` sections 5-22; `08_AUDIT_LOG_MODULE.md`; `06_MARKET_DATA_MODULE.md` section 15 (FO integration). |
+| Prototype / Spec Alignment | Prototype aligns with the Phase 1 Option Master baseline for Option Group List (table, status filter, action menu, page actions), Option Detail (option list table, Add Option), Add/Edit Option modal, Deactivate/Reactivate Option modal, Reorder Option modal, Add/Edit Group modal, Deactivate/Reactivate/Delete Group modal, Group Audit Log view, and Reorder Groups. Production must add server/API permission enforcement, persistent audit records, required reason validation, safeguard enforcement at service layer, and real FO sync/cache invalidation. |
+| Data Needed | Replace mock option groups/options with server-paginated API data: group id, Group Key, display_name_th/en, description, allows_multi_select, is_active, sort_order, option id, Option Key, display_name_th/en, is_active, sort_order, used_in_asset_count, audit history. |
+| Route / Drill-in | Left nav route `Option Master` opens Option Group List; row click opens Option Detail with breadcrumb `Option Master / {Group Key}` and back to Option Group List. Action menu opens related modal/view (Edit, Deactivate/Reactivate, Delete, Audit Log). |
+| Route / Filter | Option Group List filters: search, status (ทั้งหมด/Active/Inactive), sort, page, reset. Reset clears search/filter/sort/page and should update query params. Logout/login should return to Dashboard and must not retain Option Master submenu, active subroute, filter toggle state, custom select, query params, selected group/option, or pagination state. |
+| State Handling | Implement loading, empty, no-result, partial-error, unauthorized, stale-data, policy-blocked (safeguard), audit-failed, session-expired, and unavailable states for Option Group List, Option Detail, all modals, and Group Audit Log view. |
+| Permission / Audit | BO has one `Admin` account type; enforce module/action permission at route, UI, API, and service layers. Separate permission keys are needed for module view, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, audit log view, and export. All 12 audit action types must be logged with before/after values and reason. UI hiding is not sufficient, and direct URL/API access must be rejected server-side. |
+| Responsive QA | Verify 375px, 768px, 1280px, and 1440px against the prototype behavior. Desktop/wide desktop use dense operational rows, top filter controls, row action menus, and full Option Detail layout. Tablet/mobile use stacked card rows, hidden table headers, hamburger navigation, filter toggle with advanced filters expanding in the list area, reachable row action menus, and detail/modal views that stack without clipped Thai text. |
+| FO Sync Impact | Option changes must invalidate FO Add Asset form (control type, required rule, sort order), Search Filter (Filter Visibility Rule, Filter Dependency Rule, multi-select), Watch Alert criteria (schema เดียวกับ Search Filter, warning สำหรับ inactive option), and caching strategy. Deactivated option must trigger fallback behavior on all FO surfaces. Deleted option (used_in_assets=false only) is removed from the system permanently and must trigger cache invalidation so FO form/filter/Watch Alert no longer show it. |
+| Open Question | Confirm final route names/query params, exact permission key names, safeguard enforcement level (service vs API), final FO sync/cache invalidation SLA, and seed data versioning strategy. |
+
