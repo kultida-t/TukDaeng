@@ -1,7 +1,7 @@
 ﻿# 11 BO Market Demand & Watch Alert Module
 
-**Version:** `BO-11-v0.5`
-**Date:** 2026-09-04
+**Version:** `BO-11-v0.6`
+**Date:** 2026-10-05
 **Status:** สเปกปัจจุบัน
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Market Demand & Watch Alert |
 | Platform | Responsive Web Back Office |
-| Version | `BO-11-v0.5` |
+| Version | `BO-11-v0.6` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -357,6 +357,9 @@ Rules:
 - Brand -> Model dependency ต้องเหมือน Search
 - Criteria ที่อ้าง inactive brand/model/reference ต้องไม่หายจาก history แต่ต้องมี dependency warning
 - Criteria สามารถอ้าง brand/model/reference หรือ option master ที่มี no current listing (จำนวน Asset Sale = 0 ตอนสร้าง) ได้ — ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data (ดู `../FrontOffice/10_WATCH_ALERT_MODULE.md` No Current Listing vs Inactive Market Data Rule)
+- Option-based criteria (condition, delivery, case material, movement, dial color, strap/bracelet) match ด้วย relation id เท่านั้น — Asset ที่เก็บ spec เป็น free-text (relation `null` จาก flow `ระบุเอง` ใน `17_OPTION_MASTER_MODULE.md` section 22.2/23) ต้องไม่ match option criteria จนกว่า Back Office promote/map alias แล้ว backfill relation id
+- Keyword criteria เป็นช่องทางครอบคลุม free-text spec — keyword ต้อง match บน spec snapshot text รวมค่าที่ Owner กรอกผ่าน `ระบุเอง` ตาม `../FrontOffice/10_WATCH_ALERT_MODULE.md` Spec Option And Free-Text Criteria Rule
+- ค่า suggestion pool (`spec_option_suggestions` ใน `17_OPTION_MASTER_MODULE.md` section 23) ที่ยังไม่ promote ต้องไม่มีให้เลือกเป็น criteria — criteria อ้างได้เฉพาะ entity/option `is_active=true` เท่านั้น
 
 ## 10. Match And Trigger Rules
 
@@ -367,6 +370,12 @@ Match ต้องใช้ rule เดียวกับ FO Search:
 - ต้องไม่รวม asset ของ blocked user หรือคู่ที่ block กัน
 - ต้องไม่รวม `Show`, `Hide`, `Sold`, `ลบโดยเจ้าของ`, `ซ่อนถาวร`
 - Market data inactive ต้องหยุด new trigger ตาม policy แต่ยังเก็บ alert/history เดิม
+
+Backfill re-evaluation (Option Master curation):
+
+- เมื่อ Back Office promote suggestion เป็น option จริงหรือ map alias แล้ว backfill relation id ให้ Asset เดิม (ตาม `17_OPTION_MASTER_MODULE.md` section 23.4) ระบบต้อง re-run match evaluation ของ alert ที่เกี่ยวข้อง
+- Match ใหม่ที่เกิดจาก backfill ต้องผ่าน trigger + notification pipeline ปกติ และ dedup ด้วย (`alert_id`, `asset_id`) — ห้าม notify asset เดิมซ้ำใน alert เดียวกัน
+- Backfill อัปเดตเฉพาะ relation id — snapshot text ของ asset คงเดิม และ match rule ด้านบน (Sale only, visibility, block) ยังบังคับเหมือนเดิม
 
 Lifecycle impact:
 
@@ -388,6 +397,7 @@ BO ต้องแยกความแตกต่างระหว่าง 2
 | no current listing | entity/option `is_active=true` ใน Market Data/Option Master แต่ไม่มี Asset Sale ตอนนั้น | Alert ทำงานปกติ รอ match ในอนาคต ไม่มี warning | ไม่ต้อง flag เป็น inactive; นับเป็น unmet demand ปกติ |
 | inactive market data | Brand/Model/Reference ถูก deactivate ใน Market Data (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy | แสดง dependency warning ใน Alert List (Warning icon + filter Market data: Inactive dependency) และ Alert Detail (warning badge ข้าง field) |
 | deactivated option | Option master ถูก deactivate (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy | แสดง dependency warning เหมือน inactive market data |
+| free-text spec (`ระบุเอง`) | Owner กรอกค่า spec เอง ไม่มี relation id — ค่าอยู่ใน `spec_option_suggestions` รอ BO curate | ไม่ match option criteria เลย; match ได้เฉพาะผ่าน keyword criteria บน snapshot text จนกว่า promote/map alias + backfill | ไม่ใช่ option — ไม่แสดงใน criteria selector; demand วัดผ่าน Search Insights + suggestion usage count (section 15) |
 
 Alert ที่ criteria อ้าง entity/option ที่มี no current listing ตอนสร้าง ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data — ดู `../FrontOffice/10_WATCH_ALERT_MODULE.md` No Current Listing vs Inactive Market Data Rule สำหรับรายละเอียด
 
@@ -465,6 +475,7 @@ Analytics ขั้นต่ำ:
 - Search funnel: Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer เพื่อวัด conversion จาก search สู่ action
 - Average results per search เพื่อวัด quality ของ search result
 - Popular Filter tag impression/select สำหรับวัดการใช้งาน quick selection
+- Free-text spec demand signal — popular keyword และ no-result search ที่ตรง spec text เป็นแหล่งวัด demand ของค่าที่ยังไม่มีใน option master ใช้ร่วมกับ `spec_option_suggestions.usage_count` ใน `17_OPTION_MASTER_MODULE.md` section 23 เพื่อช่วย Admin จัดลำดับ curation
 
 ### Watch Alert Demand
 
@@ -475,6 +486,7 @@ Analytics ขั้นต่ำ:
 - Alert open rate
 - Trigger-to-open rate
 - Inactive market data dependency count
+- Suggestion pool demand — `usage_count` ของค่า free-text ที่ยังไม่ promote (reference `17_OPTION_MASTER_MODULE.md` section 23) แยกจาก option criteria demand; ค่า free-text ไม่นับเป็น option demand จนกว่า promote
 
 Analytics ต้องไม่ expose sensitive user data ให้ admin access ที่ไม่มี permission
 
@@ -557,6 +569,10 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 | AC-BO-WA-011A | Search Funnel แสดงเป็นรายการแนวตั้งรูปแบบเดียวกับ Asset Status โดยแต่ละแถวมี Step, ชื่อขั้น, จำนวนเหตุการณ์ และเปอร์เซ็นต์เทียบกับ Search Submit ครบทั้ง 4 ขั้น และไม่มี progress bar ซ้อนในแถว |
 | AC-BO-WA-012 | Demand Overview แยก Search demand, Watch Alert demand, Unmet Search Demand และ Unmet Watch Alert ได้ชัดเจน |
 | AC-BO-WA-013 | Demand Overview Top Criteria ใช้สี `#2b6cb0` เดียวกันสำหรับ indicator dot, progress bar และ percentage ในการ์ดหลัก, View All modal และ drill-down ระดับ Top Brands, Top Models และ Top References โดยใช้ความยาวแถบและค่าตัวเลขเป็นตัวสื่อสัดส่วน |
+| AC-BO-WA-014 | Option-based criteria match ด้วย relation id เท่านั้น — asset ที่เก็บ spec เป็น free-text (relation `null` จาก flow `ระบุเอง`) ต้องไม่ match option criteria จนกว่า BO promote/map alias แล้ว backfill และค่า suggestion ที่ยังไม่ promote ต้องไม่มีให้เลือกเป็น criteria |
+| AC-BO-WA-015 | Keyword criteria ต้อง match บน spec snapshot text รวม free-text spec ที่ Owner กรอกผ่าน `ระบุเอง` |
+| AC-BO-WA-016 | หลัง backfill relation id จาก promote/map alias ระบบต้อง re-run match evaluation ของ alert ที่เกี่ยวข้องและแจ้งเตือน match ใหม่โดย dedup ด้วย (`alert_id`, `asset_id`) |
+| AC-BO-WA-017 | Free-text spec (`ระบุเอง`) ต้องแยกจาก no current listing ในตาราง section 10.1 — demand ของ free-text วัดผ่าน Search Insights keyword/no-result signal และ `spec_option_suggestions.usage_count` ไม่ใช่ option demand |
 
 ## 20. Open Decisions
 

@@ -1,7 +1,7 @@
 # 17 BO Option Master Module
 
-**Version:** `BO-17-v0.13`  
-**Date:** 2026-08-26  
+**Version:** `BO-17-v0.14`  
+**Date:** 2026-10-05  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -729,6 +729,9 @@ Audit action types:
 | `GROUP_DELETE` | Delete group อย่างถาวร (destructive) | Before: group + option ทั้งหมดใน group; After: (deleted) |
 | `GROUP_CREATE` | สร้าง group ใหม่ | After: group ใหม่ทั้งหมด (group_id, Group Key, label, description, multi-select, status) |
 | `GROUP_REORDER` | เปลี่ยน sort_order ของ group ผ่าน Reorder Groups Modal (drag-and-drop หรือ up/down) | Before/After: sort_order เดิม/ใหม่ ของทุก group ที่เปลี่ยนลำดับในการ save ครั้งนั้น; บันทึกเฉพาะเมื่อลำดับเปลี่ยนจริง |
+| `OPTION_SUGGESTION_PROMOTE` | Promote suggestion เป็น option จริงผ่าน Suggestion queue | After: option ใหม่ทั้งหมด + suggestion status (`promoted`) + backfill summary (จำนวน asset ที่ผูก relation id) |
+| `OPTION_SUGGESTION_MAP_ALIAS` | Map suggestion เป็น alias ของ option เดิม | Before/After: alias list ของ option เป้าหมาย + suggestion status (`mapped`) + backfill summary (จำนวน asset ที่ผูก relation id) |
+| `OPTION_SUGGESTION_IGNORE` | Ignore suggestion ใน queue | Before: `pending`; After: `ignored` + resolution note |
 
 Minimum audit fields ตาม `00_GLOBAL_RULES_MODULE.md`:
 
@@ -757,6 +760,9 @@ Audit action group: เพิ่ม `Option Master` เป็น action group �
 - Group deactivate
 - Group reactivate
 - Group delete (destructive)
+- Suggestion promote (สร้าง option จริงจาก suggestion + backfill)
+- Suggestion map alias (ผูก suggestion เป็น alias ของ option เดิม + backfill)
+- Suggestion ignore (ปิด suggestion โดยไม่สร้าง option)
 
 หมายเหตุ policy สำหรับ group-level actions: การพยายาม deactivate/delete group ที่มี asset ใช้ option อยู่ จะถูก service layer reject โดยไม่บันทึก `GROUP_DEACTIVATE`/`GROUP_DELETE` audit เพราะ action ไม่สำเร็จ — ควรบันทึกเป็น security event ใน audit log กลางแทน ถ้ามีความพยายาม bypass safeguard ผ่าน API
 
@@ -868,6 +874,7 @@ CREATE TABLE spec_option_audit (
   action_type TEXT NOT NULL,
   option_id BIGINT NULL REFERENCES spec_options(id),
   group_id BIGINT NOT NULL REFERENCES spec_option_groups(group_id),
+  suggestion_id BIGINT NULL REFERENCES spec_option_suggestions(id),
   actor_admin_id BIGINT NOT NULL,
   before_value JSONB NULL,
   after_value JSONB NULL,
@@ -881,9 +888,10 @@ CREATE TABLE spec_option_audit (
 | Column | Type | Rule |
 | --- | --- | --- |
 | `id` | BIGSERIAL | PK |
-| `action_type` | TEXT | enum: `OPTION_ADD`, `OPTION_EDIT`, `OPTION_DEACTIVATE`, `OPTION_REACTIVATE`, `OPTION_DELETE`, `OPTION_REORDER`, `GROUP_CREATE`, `GROUP_EDIT`, `GROUP_DEACTIVATE`, `GROUP_REACTIVATE`, `GROUP_DELETE`, `GROUP_REORDER` |
+| `action_type` | TEXT | enum: `OPTION_ADD`, `OPTION_EDIT`, `OPTION_DEACTIVATE`, `OPTION_REACTIVATE`, `OPTION_DELETE`, `OPTION_REORDER`, `GROUP_CREATE`, `GROUP_EDIT`, `GROUP_DEACTIVATE`, `GROUP_REACTIVATE`, `GROUP_DELETE`, `GROUP_REORDER`, `OPTION_SUGGESTION_PROMOTE`, `OPTION_SUGGESTION_MAP_ALIAS`, `OPTION_SUGGESTION_IGNORE` |
 | `option_id` | BIGINT | FK → `spec_options.id`; **nullable** — `NULL` สำหรับ group-level actions (`GROUP_CREATE`, `GROUP_EDIT`, `GROUP_DEACTIVATE`, `GROUP_REACTIVATE`, `GROUP_DELETE`, `GROUP_REORDER`) ที่ไม่มี option เฉพาะ |
 | `group_id` | BIGINT | FK → `spec_option_groups.group_id` (denormalized สำหรับ query สะดวก); required ทุก action เพราะทุก action เกี่ยวข้องกับ group |
+| `suggestion_id` | BIGINT | FK → `spec_option_suggestions.id` (section 23); **nullable** — ใส่เฉพาะ action ประเภท `OPTION_SUGGESTION_*` เพื่อ trace กลับ suggestion ต้นทาง |
 | `actor_admin_id` | BIGINT | Admin ที่ทำ action |
 | `before_value` | JSONB | ค่าก่อนเปลี่ยน (JSON ของ field ที่เปลี่ยน); `NULL` สำหรับ `GROUP_CREATE` (สร้างใหม่); สำหรับ `GROUP_DELETE` เก็บ snapshot ของ group + option ทั้งหมดที่จะถูกลบ; สำหรับ `OPTION_DELETE` เก็บ snapshot ของ option ที่จะถูกลบ; สำหรับ `GROUP_REORDER` เก็บ sort_order เดิมของทุก group ที่เปลี่ยนลำดับ |
 | `after_value` | JSONB | ค่าหลังเปลี่ยน; `NULL` สำหรับ `GROUP_DELETE` และ `OPTION_DELETE` (deleted); สำหรับ `GROUP_CREATE` เก็บ group ใหม่ทั้งหมด; สำหรับ `GROUP_REORDER` เก็บ sort_order ใหม่ของทุก group ที่เปลี่ยนลำดับ |
@@ -907,7 +915,12 @@ spec_options 1───∞ watch_assets (dial_color_id)
 spec_options 1───∞ watch_assets (strap_bracelet_type_id)
 spec_options 1───∞ asset_delivery_items (option_id)
 spec_options 1───∞ spec_option_audit
+spec_options 1───∞ spec_option_aliases
+spec_option_groups 1───∞ spec_option_suggestions
+spec_option_suggestions 0..1───1 spec_options (resolved_option_id)
 ```
+
+ตาราง `spec_option_aliases` และ `spec_option_suggestions` รองรับ flow `ระบุเอง` free-text → suggestion pool → BO curation ดูรายละเอียดใน section 23
 
 FK columns ใน `watch_assets`:
 
@@ -1121,7 +1134,7 @@ Visual rules:
 - [ ] Responsive layout ตาม `00_GLOBAL_RULES_MODULE.md`
 - [ ] ตาราง `spec_option_groups`, `spec_options` และ `spec_option_audit` มี field ครบ
 - [ ] ความสัมพันธ์กับ `watch_assets` และ `asset_delivery_items` ระบุชัด พร้อม nullable rule
-- [ ] Audit table มี action_type ครบ 12 ตัว (6 option-level: ADD/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER + 6 group-level: CREATE/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER)
+- [ ] Audit table มี action_type ครบ 15 ตัว (6 option-level: ADD/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER + 6 group-level: CREATE/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER + 3 suggestion-level: OPTION_SUGGESTION_PROMOTE/MAP_ALIAS/IGNORE)
 - [ ] **Delete option (section 11.1) ระบุชัด: destructive, type-to-confirm ด้วย Option Key, safeguard ห้าม delete ถ้ามี asset ใช้ (`used_in_assets=false`), audit `OPTION_DELETE` ก่อน hard delete, ไม่สามารถย้อนกลับได้**
 - [ ] **Audit action ใหม่ `OPTION_DELETE` ระบุใน section 13, 16, 17.3**
 - [ ] Seed file schema ตรงกับ data model
@@ -1184,10 +1197,10 @@ Visual rules:
 | --- | --- | --- | --- |
 | `condition` | Single select | Required เมื่อ status = `Sale`; Optional เมื่อ status = `Show`/`Hide` | แสดงเฉพาะ active option; เรียงตาม `sort_order` |
 | `delivery` | Multi-select | Optional | แสดงเฉพาะ active option ใน group `delivery`; เลือกได้หลายค่า; ถ้าไม่เลือกเลยต้องไม่บันทึก `asset_delivery_items` row |
-| `case_material` | Single select | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order` |
-| `movement` | Single select | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order` |
-| `dial_color` | Single select | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order` |
-| `strap_bracelet_type` | Single select | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order` |
+| `case_material` | Single select + `ระบุเอง` | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order`; มีตัวเลือก `ระบุเอง` free-text เมื่อค่าที่ต้องการไม่มีในตัวเลือก |
+| `movement` | Single select + `ระบุเอง` | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order`; มีตัวเลือก `ระบุเอง` free-text เมื่อค่าที่ต้องการไม่มีในตัวเลือก |
+| `dial_color` | Single select + `ระบุเอง` | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order`; มีตัวเลือก `ระบุเอง` free-text เมื่อค่าที่ต้องการไม่มีในตัวเลือก |
+| `strap_bracelet_type` | Single select + `ระบุเอง` | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order`; มีตัวเลือก `ระบุเอง` free-text เมื่อค่าที่ต้องการไม่มีในตัวเลือก |
 
 กฎการแสดงผล:
 
@@ -1204,6 +1217,13 @@ Visual rules:
 - FO บันทึก snapshot text (`condition_snapshot`, `case_material_snapshot`, ฯลฯ) คู่กับ relation id เพื่อคง display history ตาม section 17.4
 - ถ้า Owner เว้นว่าง field ที่ optional ให้บันทึก relation id เป็น `null` และ snapshot text เป็น `null`/empty
 - ค่าที่ Owner save ต้องไม่ถูก provider sync overwrite ตาม `06_MARKET_DATA_MODULE.md` section 15
+
+กฎการบันทึกสำหรับ `ระบุเอง` (เฉพาะ 4 กลุ่ม `case_material`, `movement`, `dial_color`, `strap_bracelet_type` — `condition` และ `delivery` ไม่รองรับ `ระบุเอง` ต้องเป็น option ใน master เสมอ):
+
+- เมื่อ Owner เลือก `ระบุเอง` และพิมพ์ค่า ระบบต้อง normalize ก่อนประมวลผล (trim, collapse whitespace, case-insensitive compare)
+- ถ้าค่าที่ normalize แล้วตรงกับ option label หรือ alias ใน group เดียวกัน ต้องผูก relation id ของ option นั้นทันที ห้ามเก็บเป็น free-text ซ้ำ และไม่เขียน suggestion pool
+- ถ้าไม่ตรง option/alias ใด ให้บันทึก relation id เป็น `null` + snapshot text ของค่าที่พิมพ์ และ upsert ลง `spec_option_suggestions` (`usage_count` +1 ถ้ามี `normalized_text` เดียวกันใน group อยู่แล้ว) ตาม section 23
+- ค่า free-text ต้องไม่กลายเป็น option อัตโนมัติ — ต้องผ่าน Back Office curation (promote / map alias / ignore) ตาม section 23 เสมอ เพื่อคุมคุณภาพ vocabulary
 
 ### 22.3 FO Search Filter
 
@@ -1231,7 +1251,9 @@ Visual rules:
 
 - Search/Filter ต้องอิงค่าที่ถูก save กับ Asset จริง (relation id และ snapshot text) ไม่ใช่ option master active status
 - Asset ที่มี inactive option ยังปรากฏในผลลัพธ์ถ้าตรงเงื่อนไขอื่น แต่ inactive option ไม่แสดงเป็นตัวเลือก filter ใหม่
-- ถ้า asset ใช้ free-text spec ที่ไม่มี relation id ต้องยังค้นหา keyword จาก snapshot text ได้
+- Option filter match ด้วย relation id เท่านั้น — Asset ที่เก็บ spec เป็น free-text (relation `null`) จะไม่ถูก option filter จับ จนกว่า Back Office promote/map alias แล้ว backfill relation id ตาม section 23
+- ค่า free-text spec และค่าใน suggestion pool ที่ยังไม่ promote ต้องไม่แสดงเป็น filter option หรือ autocomplete — "ตัวเลือกครบ" หมายถึงครบเฉพาะ active option ใน master เท่านั้น (ตาม `03_SEARCH_FILTER_MODULE.md` Filter Visibility Rule แถว free-text / suggested spec value)
+- ถ้า asset ใช้ free-text spec ที่ไม่มี relation id ต้องยังค้นหา keyword จาก snapshot text ได้ ตาม `03_SEARCH_FILTER_MODULE.md` Search Keyword Rule ที่ครอบ spec snapshot text
 
 ### 22.4 FO Watch Alert Criteria
 
@@ -1249,6 +1271,13 @@ Visual rules:
 - ต้องแสดง warning ใน Watch Alert List / Edit Watch Alert ว่า criteria อ้างถึง option ที่ inactive แล้ว
 - ไม่ควร trigger match ใหม่ถ้า criteria อ้าง option ที่ inactive ตาม policy ใน `06_MARKET_DATA_MODULE.md` section 15 (Inactive หรือ unmapped market data)
 - Watch Alert เดิมที่อ้าง inactive option ต้องไม่ถูกลบโดยอัตโนมัติ เพราะ User อาจต้องการแก้ไข criteria หรือลบด้วยตัวเอง
+
+กฎสำหรับ spec option criteria และ free-text (ตาม `../FrontOffice/10_WATCH_ALERT_MODULE.md` Spec Option And Free-Text Criteria Rule):
+
+- Option-based criteria match ด้วย relation id เท่านั้น — Asset ที่เก็บ spec เป็น free-text (relation `null`) ต้องไม่ match option criteria จนกว่า Back Office promote/map alias แล้ว backfill relation id
+- Keyword criteria เป็นช่องทางครอบคลุม free-text spec — keyword ต้อง match บน snapshot text รวมค่าที่ Owner กรอกผ่าน `ระบุเอง`
+- ค่า suggestion pool ที่ยังไม่ promote ต้องไม่มีให้เลือกเป็น criteria — criteria อ้างได้เฉพาะ entity/option `is_active=true` เท่านั้น
+- เมื่อ Back Office promote suggestion เป็น option จริงหรือ map alias แล้ว backfill relation id ให้ Asset เดิม ระบบต้อง re-run match evaluation ของ alert ที่เกี่ยวข้อง และแจ้งเตือน match ใหม่ที่เกิดจาก backfill โดย dedup ด้วย (`alert_id`, `asset_id`) — ตาม section 23.4 และ `11_WATCH_ALERT_MODULE.md`
 
 ### 22.5 Caching Strategy For FO
 
@@ -1381,6 +1410,7 @@ FO ดึง option list จาก backend ผ่าน API ต่อไปน�
 - Owner ต้องแก้ไขค่าที่ prefill ได้ เพราะเรือนจริงอาจเปลี่ยนสาย มีอุปกรณ์ไม่ครบ หรือข้อมูล provider ไม่ครบ
 - ค่าที่ Owner save ต้องไม่ถูก provider sync overwrite ตาม `06_MARKET_DATA_MODULE.md` section 15
 - ถ้า reference ไม่มีข้อมูล spec บาง field ให้เว้นว่าง และไม่บังคับให้เลือก
+- ถ้า provider text ไม่ match กับ option/alias ใน option master ให้เว้นว่างเท่านั้น — ห้าม auto-save provider text เป็น free-text และห้ามเขียนลง suggestion pool เพราะ provider vocabulary ไม่ใช่ demand signal ของ Owner (free-text มีเฉพาะจากที่ Owner เลือก `ระบุเอง` พิมพ์เองตาม section 22.2)
 - Prefill ต้องไม่บันทึกอัตโนมัติ ต้องรอ Owner กด Save ใน Add/Edit Asset form
 - Prefill ทำเฉพาะตอนเลือก Reference ครั้งแรกใน Add Asset; ใน Edit Asset ถ้า Owner เปลี่ยน Reference ใหม่ ระบบอาจเสนอ prefill ใหม่ แต่ต้องไม่ overwrite ค่าที่ Owner แก้ไว้แล้วโดยไม่ได้รับการยืนยัน
 
@@ -1393,7 +1423,8 @@ Market Data และ Option Master เป็นสองระบบแยก�
 | ขอบเขต | Market Data เป็น provider catalog (brand, model, reference, price index); Option Master เป็น internal option master (condition, delivery, case_material, movement, dial_color, strap_bracelet_type) |
 | ข้อมูล provider | `watch_references.case_material` และ `watch_references.movement` เป็น text จาก provider ไม่ใช่ option master |
 | Mapping | ระบบต้อง map provider text กับ `spec_options` ได้ (ถ้า match) สำหรับ prefill ใน FO Add/Edit Asset |
-| ไม่ match | ถ้า provider text ไม่ match กับ option master ใด ให้เก็บเป็น free-text ใน `asset_specifications` และปล่อย relation id เป็น `null` |
+| ไม่ match | ถ้า provider text ไม่ match กับ option master ใด ให้เว้นว่างตาม section 22.8 — ไม่ auto-save เป็น free-text; ค่า free-text มีเฉพาะจากที่ Owner เลือก `ระบุเอง` พิมพ์เองเท่านั้น |
+| ปลายทางเก็บข้อมูล | Spec relation id + snapshot text (รวม free-text ที่ relation `null`) เก็บบน `watch_assets` ตาม section 17.4 เป็น canonical model — `asset_specifications` ใน `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md` เป็น recommended backend split เท่านั้น; ถ้า implementation ใช้ตารางแยก ต้องคง contract เดียวกัน (relation id nullable + snapshot text + free-text = relation `null` + snapshot) |
 | ไม่ overwrite | Provider sync ต้องไม่ overwrite option master; option master จัดการโดย Admin ผ่าน BO เท่านั้น |
 | ไม่ sync | Option Master ไม่เชื่อมกับ provider sync ตาม section 2 (อยู่นอกขอบเขต) |
 | BO Market Data | `06_MARKET_DATA_MODULE.md` ไม่จัดการ option master; section 15 ระบุชัดว่า internal option master เป็น option สำหรับ Asset form/search filter ไม่ใช่ provider catalog ที่ BO Market Data แก้ไขได้ใน Phase 1 |
@@ -1418,3 +1449,114 @@ Market Data และ Option Master เป็นสองระบบแยก�
 - [ ] Prefill behavior จาก Market Data reference ระบุชัด รวม Owner แก้ไขได้และไม่ถูก provider sync overwrite
 - [ ] Interaction ระหว่าง Market Data และ Option Master ระบุชัด รวม mapping rule และไม่ match handling
 - [ ] FO Integration ครอบคลุม Add/Edit Asset, Search Filter และ Watch Alert ครบทั้งสาม surface
+- [ ] `ระบุเอง` save rule ระบุชัด: normalize → dedup กับ option label/alias → match ผูก relation id / ไม่ match เก็บ relation `null` + snapshot text
+- [ ] Suggestion pool write path ระบุชัด: upsert `spec_option_suggestions`, dedup ด้วย `(group_id, normalized_text)`, `usage_count` + timestamps และห้าม auto-promote
+- [ ] Curation queue actions ระบุชัด: promote / map alias / ignore พร้อมผล backfill relation id, alert re-evaluation และ audit event `OPTION_SUGGESTION_*` ของแต่ละ action
+- [ ] Free-text spec ไม่แสดงใน filter option, autocomplete หรือ Watch Alert criteria จนกว่า promote แต่ search keyword ต้องเจอจาก snapshot text
+- [ ] Provider text ที่ไม่ match option ต้องเว้นว่างเท่านั้น ห้าม auto-save เป็น free-text หรือเขียนลง suggestion pool
+
+## 23. Spec Option Suggestion Pool And Curation Queue
+
+ส่วนนี้กำหนด data model และกฎของ suggestion pool — ค่า free-text ที่ Owner กรอกผ่าน `ระบุเอง` ใน FO Add/Edit Asset (ตาม section 22.2) ซึ่งต้องผ่าน Back Office curation ก่อนกลายเป็น option จริง
+
+หมายเหตุ scope: ส่วนนี้กำหนด data model, queue behavior และ audit contract เท่านั้น — Suggestion queue UI บน BO Option Master screen เป็น scope expansion แยก (prototype ปัจจุบันล็อกแล้ว ไม่มี queue UI) ต้องขยาย prototype เพิ่มก่อน implement ส่วน interface
+
+### 23.1 Table `spec_option_suggestions`
+
+เก็บค่า free-text ที่ Owner ส่งผ่าน `ระบุเอง` โดย dedup ด้วย `normalized_text` ภายใน group เดียวกัน
+
+```sql
+CREATE TABLE spec_option_suggestions (
+  id BIGSERIAL PRIMARY KEY,
+  group_id BIGINT NOT NULL REFERENCES spec_option_groups(group_id),
+  submitted_text TEXT NOT NULL,
+  normalized_text TEXT NOT NULL,
+  usage_count INTEGER NOT NULL DEFAULT 1,
+  status TEXT NOT NULL DEFAULT 'pending',
+  resolved_option_id BIGINT NULL REFERENCES spec_options(id),
+  resolved_by_admin_id BIGINT NULL,
+  resolved_at TIMESTAMPTZ NULL,
+  resolution_note TEXT NULL,
+  first_submitted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  last_submitted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (group_id, normalized_text)
+);
+```
+
+| Column | Type | Rule |
+| --- | --- | --- |
+| `id` | BIGSERIAL | PK |
+| `group_id` | BIGINT | FK → `spec_option_groups.group_id` — เฉพาะ 4 กลุ่มที่รองรับ `ระบุเอง` (`case_material`, `movement`, `dial_color`, `strap_bracelet_type`) |
+| `submitted_text` | TEXT | ข้อความดิบที่ Owner พิมพ์ล่าสุด (เก็บเพื่อ display ใน queue) |
+| `normalized_text` | TEXT | ค่าหลัง normalize (trim, collapse whitespace, lowercase) ใช้ dedup; unique ภายใน group |
+| `usage_count` | INTEGER | จำนวนครั้งที่ค่า normalized เดียวกันถูกส่ง — เพิ่มทุกครั้งที่มี save ใหม่ด้วยค่าเดิม (ไม่สร้าง row ซ้ำ) |
+| `status` | TEXT | enum: `pending` (รอ curate), `promoted` (สร้าง option จริงแล้ว), `mapped` (ผูกเป็น alias ของ option เดิม), `ignored` (ปิดโดยไม่สร้าง option) |
+| `resolved_option_id` | BIGINT | FK → `spec_options.id`; option ที่เกิดจาก promote หรือ option เป้าหมายของ map alias; `NULL` สำหรับ `pending`/`ignored` |
+| `resolved_by_admin_id` | BIGINT | Admin ที่ resolve; `NULL` สำหรับ `pending` |
+| `resolved_at` | TIMESTAMPTZ | เวลาที่ resolve; `NULL` สำหรับ `pending` |
+| `resolution_note` | TEXT | บันทึกของ Admin (optional; แนะนำใส่เหตุผลตอน ignore) |
+| `first_submitted_at` / `last_submitted_at` | TIMESTAMPTZ | เวลาที่ค่านี้ถูกส่งครั้งแรก/ล่าสุด — `last_submitted_at` อัปเดตทุกครั้งที่ `usage_count` เพิ่ม |
+
+### 23.2 Table `spec_option_aliases`
+
+เก็บ alias ของ option — ใช้โดย `ระบุเอง` dedup (section 22.2) และ provider prefill mapping (section 22.8/22.9) เพื่อให้ข้อความที่เขียนต่างกัน link กลับ option เดียวกันได้
+
+```sql
+CREATE TABLE spec_option_aliases (
+  id BIGSERIAL PRIMARY KEY,
+  option_id BIGINT NOT NULL REFERENCES spec_options(id),
+  alias_text TEXT NOT NULL,
+  normalized_alias TEXT NOT NULL,
+  source TEXT NOT NULL,
+  created_by_admin_id BIGINT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (option_id, normalized_alias)
+);
+```
+
+| Column | Type | Rule |
+| --- | --- | --- |
+| `id` | BIGSERIAL | PK |
+| `option_id` | BIGINT | FK → `spec_options.id` — option ที่ alias ชี้ไป |
+| `alias_text` | TEXT | ข้อความ alias สำหรับ display |
+| `normalized_alias` | TEXT | ค่าหลัง normalize — ต้อง unique ภายใน group เดียวกัน (enforce ที่ service layer เพราะ unique ข้าม table join ไม่ได้ด้วย constraint เดียว); ห้ามชนกับ `normalized_text` ของ option label หรือ alias อื่นใน group |
+| `source` | TEXT | ที่มาของ alias เช่น `suggestion_map` (เกิดจาก queue action), `admin` (Admin เพิ่มเอง), `seed` (ถ้ามีใน seed file) |
+| `created_by_admin_id` | BIGINT | Admin ที่สร้าง alias; `NULL` ถ้ามาจาก system/seed |
+| `created_at` | TIMESTAMPTZ | auto |
+
+กฎ alias:
+
+- Alias ไม่ใช่ option แยก — ไม่มี listing count ของตัวเอง ไม่แสดงใน FO dropdown/filter/criteria
+- เมื่อ `ระบุเอง` normalize แล้วตรง `normalized_alias` ต้องผูก relation id ของ option เจ้าของ alias ทันที (auto-link) ตาม section 22.2
+- การลบ alias ที่เคยถูก auto-link แล้วไม่แก้ asset เดิม — asset เก็บ relation id + snapshot ไว้แล้ว
+
+### 23.3 Write Path (FO `ระบุเอง` → Pool)
+
+เมื่อ Owner save spec field ด้วย `ระบุเอง`:
+
+1. Normalize ค่า (trim, collapse whitespace, case-insensitive compare)
+2. เช็คซ้ำกับ option label และ `spec_option_aliases.normalized_alias` ใน group เดียวกัน
+   - match → ผูก relation id ของ option นั้น ไม่เขียน suggestion pool
+3. ไม่ match → save asset ด้วย relation id `null` + snapshot text แล้ว upsert `spec_option_suggestions`:
+   - มี `normalized_text` เดียวกันใน group อยู่แล้ว → `usage_count` +1, อัปเดต `last_submitted_at` และ `submitted_text` ล่าสุด
+   - ไม่มี → insert row ใหม่ `status='pending'`, `usage_count=1`
+4. ค่าที่อยู่ใน `spec_option_suggestions` ต้องไม่แสดงใน FO dropdown, filter, autocomplete หรือ Watch Alert criteria ทุกกรณีจนกว่า status = `promoted`
+
+### 23.4 Curation Queue Actions
+
+Admin review suggestion ใน queue (ordered by `usage_count`/`last_submitted_at`) แล้วเลือก action หนึ่งในสาม:
+
+| Action | ผลลัพธ์ | Backfill | Audit |
+| --- | --- | --- | --- |
+| Promote | สร้าง option จริงใหม่ใน group (Admin กรอก `option_key`, `label_en`, `label_th`, `sort_order`) → suggestion status `promoted`, `resolved_option_id` = option ใหม่ | Backfill relation id ให้ทุก asset ที่เก็บ snapshot ตรง `normalized_text` ใน group นั้น | `OPTION_SUGGESTION_PROMOTE` (+ `OPTION_ADD` ของ option ใหม่ตามปกติ) |
+| Map alias | เลือก option เดิมใน group → สร้าง `spec_option_aliases` row ชี้ option นั้น → suggestion status `mapped`, `resolved_option_id` = option เดิม | Backfill relation id เหมือน promote + save ถัดไปด้วยข้อความเดิม auto-link ผ่าน alias ทันที | `OPTION_SUGGESTION_MAP_ALIAS` |
+| Ignore | suggestion status `ignored` + `resolution_note` — asset คงเป็น free-text search ได้ตามเดิม ไม่ auto-link | ไม่มี | `OPTION_SUGGESTION_IGNORE` |
+
+กฎ queue:
+
+- **ห้าม auto-promote** — `usage_count` สูงไม่ทำให้ค่ากลายเป็น option อัตโนมัติ ต้องผ่าน Admin action เสมอ เพื่อคุมคุณภาพ vocabulary
+- Backfill อัปเดตเฉพาะ relation id — snapshot text ของ asset คงเดิมตาม section 17.4 (Owner's text ไม่ถูกแก้)
+- หลัง backfill ต้อง re-run Watch Alert match evaluation ของ alert ที่เกี่ยวข้อง และแจ้งเตือน match ใหม่ที่เกิดจาก backfill โดย dedup ด้วย (`alert_id`, `asset_id`) ตาม section 22.4 และ `11_WATCH_ALERT_MODULE.md`
+- Suggestion ที่ `ignored` แล้วถ้ามีการส่งค่าเดิมเพิ่ม `usage_count` ยังนับต่อได้และ Admin เปิด resolve ใหม่ได้ — ignore ไม่ใช่การ block ถาวร
+- Suggestion ที่ resolved (`promoted`/`mapped`) ต้องไม่กลับเป็น `pending`
+- Queue action ต้องมี permission เทียบเท่าการจัดการ option (`OPTION_ADD`/`OPTION_EDIT` ระดับเดียวกัน) ตาม section 4

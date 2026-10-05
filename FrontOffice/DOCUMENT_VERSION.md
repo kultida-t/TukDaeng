@@ -1,7 +1,7 @@
 # TukDaeng Document Version
 
-**Current Baseline Version:** `FO-PRD-v1.7`
-**Release Date:** 2026-09-01
+**Current Baseline Version:** `FO-PRD-v1.8`
+**Release Date:** 2026-10-05
 **Branch:** `docs-frontoffice-spec-updates`  
 **Status:** Product-reviewed baseline update for Dev / QA / Figma
 
@@ -27,6 +27,12 @@ FO-PRD-vX.Y
 ---
 
 # 2. Current Baseline Scope
+
+`FO-PRD-v1.8` covers all of `FO-PRD-v1.7` and aligns spec fields (Case Material / Movement / Dial Color / Strap) with the Option Master free-text suggestion model approved in the scope discussion:
+
+- `04_ASSET_MANAGEMENT_MODULE.md`: เพิ่ม "Spec Option Free-Text Rule (`ระบุเอง`)" — 4 spec fields เป็น single-select จาก `spec_options` + `ระบุเอง` free-text; save rule = normalize + เช็คซ้ำ option/alias → ผูก relation id หรือเก็บ snapshot (relation `null`) + เขียน suggestion pool พร้อม usage count; free-text ห้าม auto-promote ต้องผ่าน BO curate; เพิ่ม snapshot fields ใน minimum asset fields, ปรับ validation matrix 4 แถว และเพิ่ม AC-ASSET-MGMT-007G/007H
+- `03_SEARCH_FILTER_MODULE.md`: ขยาย Search Keyword Rule ให้ครอบ spec snapshot text (รวม free-text) แก้ spec ที่ขัด BO-17 §22.3; เขียนชัดว่า free-text/suggested values ไม่ใช่ filter option หรือ autocomplete จนกว่า promote; เพิ่มแถว free-text ในตาราง Filter Visibility และเพิ่ม AC-SEARCH-008A/009E
+- `10_WATCH_ALERT_MODULE.md`: เพิ่ม "Spec Option And Free-Text Criteria Rule" — option criteria match เฉพาะ relation id, keyword criteria ครอบ free-text spec, suggested value ไม่ใช่ criteria, backfill → re-match + notify พร้อม dedup (`alert_id`, `asset_id`); เพิ่มแถว free-text spec value ในตาราง no current listing vs inactive และเพิ่ม AC-WA-016/017/018
 
 `FO-PRD-v1.7` covers all of `FO-PRD-v1.6` and locks the product decision that Market Comparison / Expected Profit are NOT added to Asset Detail (Portfolio / Assets Value only):
 
@@ -118,6 +124,7 @@ Baseline scope หลักยังครอบคลุม:
 
 | Version | Date | Summary | Key Files |
 | --- | --- | --- | --- |
+| `FO-PRD-v1.8` | 2026-10-05 | Aligns spec fields (Case Material / Movement / Dial Color / Strap) with the Option Master free-text suggestion model: adds Spec Option Free-Text Rule (`ระบุเอง` → normalize + dedup option/alias → relation id หรือ snapshot + suggestion pool พร้อม usage count; ห้าม auto-promote ต้องผ่าน BO curate) in `04_ASSET_MANAGEMENT_MODULE.md` พร้อม snapshot fields, validation matrix และ AC-ASSET-MGMT-007G/007H; expands `03_SEARCH_FILTER_MODULE.md` Search Keyword Rule ให้ครอบ spec snapshot text (รวม free-text) และเขียนชัดว่า free-text/suggested values ไม่ใช่ filter option/autocomplete จนกว่า promote พร้อม AC-SEARCH-008A/009E; adds `10_WATCH_ALERT_MODULE.md` Spec Option And Free-Text Criteria Rule (option criteria match relation id เท่านั้น, keyword criteria ครอบ free-text, backfill → re-match + notify พร้อม dedup (`alert_id`, `asset_id`)) พร้อมแถว free-text ในตาราง no current listing และ AC-WA-016/017/018 | `04_ASSET_MANAGEMENT_MODULE.md`, `03_SEARCH_FILTER_MODULE.md`, `10_WATCH_ALERT_MODULE.md` |
 | `FO-PRD-v1.7` | 2026-09-01 | Locks product decision that Market Comparison / Expected Profit are NOT added to Asset Detail (Portfolio / Assets Value only). Removes the "Pending Figma / Out of V1 Asset Detail Scope" section from `05_ASSET_DETAIL_MODULE.md` and replaces Price Analytics Rule with a clear statement that Asset Detail does not show these analytics. Removes AC-DETAIL-010A and AC-DETAIL-010B. Updates Figma Gap Checklist entries from "pending product decision" to "Resolved — Product decision: ไม่เพิ่ม". Updates `TukDaeng_Master_Product_Definition.md` Asset Detail Price Analytics section. Updates `14_PORTFOLIO_MODULE.md` Figma Gap and Market Comparison rule to state Portfolio-only. Updates `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md` to state Asset Detail does not show analytics. Updates `DEV_IMPLEMENTATION_CHECKLIST.md` to remove pending Asset Detail items and clarify Portfolio-only scope. Updates `QA_TEST_SCENARIO_CHECKLIST.md` to replace QA-DETAIL-005/006 with a single QA-DETAIL-005 that verifies Asset Detail does not show analytics; QA-PORT-008 clarified as Portfolio-only. | `05_ASSET_DETAIL_MODULE.md`, `TukDaeng_Master_Product_Definition.md`, `14_PORTFOLIO_MODULE.md`, `Figma_Gap_Checklist_Against_Master.md`, `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `QA_TEST_SCENARIO_CHECKLIST.md` |
 | `FO-PRD-v1.6` | 2026-09-01 | Clarifies that Market Comparison / Expected Profit are not part of V1 Asset Detail per current Figma (designed only in Portfolio / Assets Value). Moves Market Comparison / Expected Profit out of the main Price Analytics Rule in `05_ASSET_DETAIL_MODULE.md` into a new "Pending Figma / Out of V1 Asset Detail Scope" section that keeps the formulas and permissions for future use. Marks AC-DETAIL-010A and AC-DETAIL-010B as `(Pending Figma)`. Updates Figma Gap Checklist entries (Asset Detail section in `05_ASSET_DETAIL_MODULE.md` and `Figma_Gap_Checklist_Against_Master.md`) to state that current Figma has these analytics only in Portfolio / Assets Value and that adding them to Asset Detail requires product decision. Updates `14_PORTFOLIO_MODULE.md` Figma Gap and Market Comparison rule to note Asset Detail is pending. Updates `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md` to mark Asset Detail Market Comparison / Expected Profit as pending Figma / pending product decision. Updates `DEV_IMPLEMENTATION_CHECKLIST.md` Asset Detail items to pending; Portfolio items keep formulas with note that the same formulas apply to Asset Detail when Figma adds them. Updates `QA_TEST_SCENARIO_CHECKLIST.md` QA-DETAIL-005 and QA-DETAIL-006 to Pending Figma with notes; QA-PORT-008 notes Asset Detail is pending. | `05_ASSET_DETAIL_MODULE.md`, `14_PORTFOLIO_MODULE.md`, `Figma_Gap_Checklist_Against_Master.md`, `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `QA_TEST_SCENARIO_CHECKLIST.md` |
 | `FO-PRD-v1.5` | 2026-09-01 | Aligns Profile asset-card quick action `...` with Figma for Public / Visitor view. Changes AC-PROFILE-007C from prohibiting `...` to allowing it for `Sale` and `Show` only. Updates AC-PROFILE-007A to remove "เฉพาะ Owner view" qualifier. Updates AC-PROFILE-007I to include `Report asset` in Guest login-required actions. Adds Visitor quick action menu (`Share asset`, `Report asset`) with Guest policy (Share without Login, Report requires Login). Adds AC-PROFILE-007J, 007K, 007L, QA scenarios QA-PROFILE-002A-PUB, QA-PROFILE-002A-GUEST with negative test cases for `Hide`/`Sold`. Fixes QA-PROFILE-002B to include `Share asset` in Owner Sale/Show and split Show/Hide for AC-PROFILE-007B consistency. Fixes consistency: adds "เท่านั้น" to AC-PROFILE-007E, AC-PROFILE-007J and Share Asset rule. Adds DEV_IMPLEMENTATION_CHECKLIST items. Updates Figma Gap Checklist Profile section with Visitor `...` menu verification gap. Adds Visitor `...` menu tasks to FIGMA_UX_CLEANUP_TASK_BREAKDOWN. | `06_PROFILE_MODULE.md`, `TukDaeng_Master_Product_Definition.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `Figma_Gap_Checklist_Against_Master.md`, `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md` |
@@ -134,6 +141,6 @@ Baseline scope หลักยังครอบคลุม:
 When sending documents to Dev, include both:
 
 - Branch: `docs-frontoffice-spec-updates`
-- Version: `FO-PRD-v1.5`
+- Version: `FO-PRD-v1.8`
 
 If Dev reports a gap or builds against this baseline, ask them to cite the version number in their response.

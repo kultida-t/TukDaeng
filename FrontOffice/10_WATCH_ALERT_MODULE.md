@@ -216,6 +216,14 @@ Watch Alert List
 - Watch Alert criteria สามารถอ้าง Brand/Model/Reference หรือ option master ที่มี no current listing (จำนวน Asset Sale = 0 ตอนสร้าง) ได้ เพราะ Watch Alert ใช้หานาฬิกาที่ผู้ซื้อต้องการ ไม่ว่าจะยังไม่มีรุ่นที่ต้องการลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไขที่ต้องการ (เช่น ราคา/สภาพ/สี) — ดู `03_SEARCH_FILTER_MODULE.md` Filter Visibility Rule สำหรับรายละเอียด
 - Alert ที่ criteria อ้าง entity/option ที่มี no current listing ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data
 
+## Spec Option And Free-Text Criteria Rule
+
+- Option-based criteria (Condition, Case Material, Movement, Dial Color, Strap / Bracelet Type, Delivery Contents) match ด้วย relation id เท่านั้น — Asset ที่เก็บ spec เป็น free-text (relation = `null`) ต้องไม่ match option criteria
+- Keyword criteria เป็นช่องทางครอบคลุม free-text spec: keyword ต้อง match กับ snapshot text ที่ Owner save กับ Asset รวมถึงค่าที่กรอกผ่าน `ระบุเอง` (ตาม Search Keyword Rule ของ `03_SEARCH_FILTER_MODULE.md`)
+- Member ที่ต้องการติดตามค่า spec ที่ยังไม่มีใน option master ต้องใช้ keyword criteria จนกว่า Back Office promote ค่านั้นเป็น option จริง
+- ค่า suggestion pool ที่ยังไม่ promote ต้องไม่มีให้เลือกเป็น criteria — criteria อ้างได้เฉพาะ entity/option `is_active=true` เท่านั้น
+- เมื่อ Back Office promote suggestion เป็น option จริงหรือ map alias แล้ว backfill relation id ให้ Asset เดิม ระบบต้อง re-run match evaluation ของ alert ที่เกี่ยวข้อง และแจ้งเตือน match ใหม่ที่เกิดจาก backfill โดย dedup ด้วย (`alert_id`, `asset_id`) เพื่อไม่ให้ Asset ที่เคยแจ้งแล้วถูกแจ้งซ้ำ
+
 ## No Current Listing vs Inactive Market Data Rule
 
 ระบบต้องแยกความแตกต่างระหว่าง 2 สถานะนี้ให้ชัด เพราะกระทบ behavior ต่างกัน:
@@ -225,6 +233,7 @@ Watch Alert List
 | no current listing | entity/option `is_active=true` ใน Market Data/Option Master แต่ไม่มี Asset Sale ตอนนั้น | Alert ทำงานปกติ รอ match ในอนาคต ไม่มี warning |
 | inactive market data | Brand/Model/Reference ถูก deactivate ใน Market Data (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy และแสดง dependency warning |
 | deactivated option | Option master ถูก deactivate (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy และแสดง dependency warning |
+| free-text spec value | ค่าที่ Owner กรอกผ่าน `ระบุเอง` เก็บกับ Asset เป็น snapshot (relation = `null`) ไม่ใช่ option ใน master | Option criteria ไม่ match เลย; match ได้ผ่าน keyword criteria เท่านั้น จนกว่า Back Office promote/map alias แล้ว backfill relation id |
 
 ตัวอย่าง:
 
@@ -299,6 +308,7 @@ Watch Alert List
 | Filter Condition | Optional |
 | Notification Toggle | Optional |
 | Criteria | ต้องใช้ schema เดียวกับ Search Filter |
+| Keyword criteria | Optional; match บน snapshot text รวม free-text spec (relation = `null`) |
 | Delete | ต้อง Confirm ก่อนลบ |
 | Empty Alert Name | ต้องแสดง validation และไม่สร้าง Watch Alert |
 
@@ -469,6 +479,24 @@ Then ระบบต้องบันทึก Watch Alert ได้ และ�
 Given Watch Alert ที่ criteria อ้าง Brand/Model/Reference ที่ถูก deactivate ใน Market Data (`is_active=false`)  
 When ระบบตรวจสอบ criteria สำหรับ trigger ใหม่  
 Then ระบบต้องหยุด trigger match ใหม่ตาม policy และแสดง dependency warning แต่ยังเก็บ alert/history เดิมได้
+
+## AC-WA-016: Option Criteria Match Relation Id Only
+
+Given Asset เก็บ spec เป็น free-text (relation = `null`) และ Alert ใช้ option criteria ที่ค่าสอดคล้องกันเชิงข้อความ
+When ระบบคำนวณ Watch Alert
+Then Asset นั้นต้องไม่ match option criteria จนกว่า Back Office promote/map alias แล้ว backfill relation id
+
+## AC-WA-017: Keyword Criteria Covers Free-Text Spec
+
+Given Member ตั้ง Watch Alert ด้วย keyword criteria และ Asset เก็บ spec เป็น free-text ที่ตรง keyword
+When ระบบคำนวณ Watch Alert
+Then Asset นั้นต้อง match ได้ตาม snapshot text เหมือน keyword search
+
+## AC-WA-018: Backfill Re-Match With Dedup
+
+Given Back Office promote suggestion เป็น option จริงหรือ map alias แล้ว backfill relation id ให้ Asset เดิม
+When ระบบ re-run match evaluation
+Then match ใหม่จาก backfill ต้องแจ้งเตือนตาม Notification Rule และต้อง dedup ด้วย (`alert_id`, `asset_id`) เพื่อไม่ให้ Asset ที่เคยแจ้งแล้วถูกแจ้งซ้ำ
 
 ---
 

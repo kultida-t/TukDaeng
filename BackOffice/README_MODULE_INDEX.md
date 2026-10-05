@@ -72,7 +72,7 @@ Codex ต้องทำ 3 อย่าง:
 | 14 | `14_NOTIFICATIONS_MODULE.md` | Phase 1 delivery contract สำหรับ Admin invitation, Forgot/Reset Password และ Account Deletion lifecycle email; Broadcast/System Templates/notification reports เป็น Phase 2/future; Delivery Logs UI อยู่ใต้ Settings | 1 / 2 |
 | 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, offer, chat, content, asset reported comments, search, watch alert, notifications, account deletion (Phase 2 / future scope — deferred) | 2 |
 | 16 | `16_ADMIN_SETTINGS_MODULE.md` | My Account แบบ self-only จาก profile footer, admin account/invitation lifecycle, Roles & Permissions, security/system settings และ **Delivery Logs** แบบ read-only ใน Phase 1 | 1 |
-| 17 | `17_OPTION_MASTER_MODULE.md` | Internal option master management for FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit | 1 |
+| 17 | `17_OPTION_MASTER_MODULE.md` | Internal option master management for FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit; `ระบุเอง` free-text → suggestion pool + aliases + curation queue contract (data/behavior spec only, queue UI is scope expansion) | 1 |
 
 ## Final Handoff
 

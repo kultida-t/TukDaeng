@@ -314,6 +314,10 @@ Minimum asset fields:
 | `movement_id` | Optional option relation |
 | `dial_color_id` | Optional option relation |
 | `strap_bracelet_type_id` | Optional option relation |
+| `case_material_snapshot` | Required when Owner uses `ระบุเอง` free-text entry for Case Material |
+| `movement_snapshot` | Required when Owner uses `ระบุเอง` free-text entry for Movement |
+| `dial_color_snapshot` | Required when Owner uses `ระบุเอง` free-text entry for Dial Color |
+| `strap_bracelet_type_snapshot` | Required when Owner uses `ระบุเอง` free-text entry for Strap / Bracelet Type |
 
 Internal option groups ต้องรองรับอย่างน้อย:
 
@@ -329,6 +333,18 @@ Baseline seed files for implementation:
 - `../SeedData/asset-spec-options.csv`
 - `../SeedData/asset-spec-options.json`
 - `../SeedData/README.md`
+
+## Spec Option Free-Text Rule ("ระบุเอง")
+
+Case Material, Movement, Dial Color และ Strap / Bracelet Type ใช้ single-select จาก internal option master (`spec_options` ที่ Back Office Option Master เป็น single source of truth) แต่ต้องมีตัวเลือก `ระบุเอง` เมื่อค่าที่ Owner ต้องการไม่มีในตัวเลือก
+
+Save rule:
+
+- เมื่อ Owner เลือก `ระบุเอง` และพิมพ์ค่า ระบบต้อง normalize ค่าก่อนประมวลผล (trim, collapse whitespace, case-insensitive compare)
+- ถ้าค่าที่ normalize แล้วตรงกับ option label หรือ alias ที่มีอยู่ใน option master ต้องผูก relation id (`*_id`) ของ option นั้นทันที และห้ามเก็บเป็น free-text ซ้ำ
+- ถ้าไม่ตรง option/alias ใด ให้เก็บเป็น free-text snapshot กับ Asset โดย relation id เป็น `null` และเขียนค่านั้นลง suggestion pool พร้อม usage count (ดู `../BackOffice/17_OPTION_MASTER_MODULE.md` สำหรับ data model และ queue)
+- Free-text ต้องไม่กลายเป็น option อัตโนมัติ — ต้องผ่าน Back Office curation (promote / map alias / ignore) เสมอ เพื่อคุมคุณภาพ vocabulary
+- Asset ที่เก็บ spec เป็น free-text (relation `null`) ยังค้นหาได้ผ่าน keyword search บน snapshot text และแสดงค่าเดิมใน Asset Detail ตามปกติ แต่จะไม่ถูก option filter match จนกว่า Back Office promote/map alias แล้ว backfill relation id
 
 ## Required Field Matrix
 
@@ -364,10 +380,10 @@ Baseline seed files for implementation:
 | Scope of Delivery | Delivery items เฉพาะ Original Box / Original Paper | Optional | ถ้าเลือกต้องเป็น `original_box` หรือ `original_papers` จาก internal option master เท่านั้น; รองรับเลือกได้ 0-2 ค่า; ถ้าไม่มีตามสองตัวเลือกนี้ให้บันทึกเป็นค่าว่าง/null/empty array ตาม data contract; ห้ามบันทึกค่าอื่นหรือสร้าง label/id ปลอม เช่น Watch only, warranty card, receipt, certificate, manual, service paper, hang tag, extra link, extra strap |
 | Specifications | Case Size (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
 | Specifications | Thickness (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
-| Specifications | Case Material | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
-| Specifications | Movement | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
-| Specifications | Dial Color | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
-| Specifications | Strap / Bracelet Type | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
+| Specifications | Case Material | Optional | ต้องเป็น option ที่มีอยู่ใน internal option master หรือค่า `ระบุเอง` ตาม Spec Option Free-Text Rule; ถ้ากรอก free-text ต้อง trim, ห้าม whitespace-only และไม่เกินความยาวที่ระบบกำหนด; ถ้าค่าที่ normalize แล้วตรง option/alias ที่มีอยู่ต้องผูก relation id แทนการเก็บ free-text |
+| Specifications | Movement | Optional | ต้องเป็น option ที่มีอยู่ใน internal option master หรือค่า `ระบุเอง` ตาม Spec Option Free-Text Rule; ถ้ากรอก free-text ต้อง trim, ห้าม whitespace-only และไม่เกินความยาวที่ระบบกำหนด; ถ้าค่าที่ normalize แล้วตรง option/alias ที่มีอยู่ต้องผูก relation id แทนการเก็บ free-text |
+| Specifications | Dial Color | Optional | ต้องเป็น option ที่มีอยู่ใน internal option master หรือค่า `ระบุเอง` ตาม Spec Option Free-Text Rule; ถ้ากรอก free-text ต้อง trim, ห้าม whitespace-only และไม่เกินความยาวที่ระบบกำหนด; ถ้าค่าที่ normalize แล้วตรง option/alias ที่มีอยู่ต้องผูก relation id แทนการเก็บ free-text |
+| Specifications | Strap / Bracelet Type | Optional | ต้องเป็น option ที่มีอยู่ใน internal option master หรือค่า `ระบุเอง` ตาม Spec Option Free-Text Rule; ถ้ากรอก free-text ต้อง trim, ห้าม whitespace-only และไม่เกินความยาวที่ระบบกำหนด; ถ้าค่าที่ normalize แล้วตรง option/alias ที่มีอยู่ต้องผูก relation id แทนการเก็บ free-text |
 | Commerce & Curation | Asking Price (THB) | Optional for `Sale`, `Show`, `Hide` | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0, normalize comma/format, ห้ามค่าติดลบ/ตัวอักษร/ศูนย์ และต้องไม่เกิน max price ที่ระบบกำหนด; ถ้า `Sale` และเว้นว่าง buyer-facing surface ต้องแสดง `Price on request`; ถ้า `Show` หรือ `Hide` ห้ามแสดงราคาใน public FO surfaces |
 | Commerce & Curation | Description | Required for `Sale`; Optional for `Show`, `Hide` | เมื่อ required ต้องไม่ว่างและไม่ใช่ whitespace-only; เมื่อ optional แต่กรอกต้อง trim/sanitize, ห้าม whitespace-only, ห้าม HTML/script ที่ไม่ปลอดภัย และไม่เกินความยาวที่ระบบกำหนด; minimum 20 characters เป็น recommendation/quality hint ไม่ใช่ blocking validation เว้นแต่ product กำหนดเพิ่ม |
 | Status | Status | Required | Add/Edit เลือกได้เฉพาะ `Sale`, `Show`, `Hide`; ห้ามเลือก `Sold` ใน Add/Edit ปกติ; การเปลี่ยน status ต้อง revalidate required fields ตาม status ใหม่ก่อน save |
@@ -1098,6 +1114,8 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-007D | Status = Hide ต้อง require Photos และ Brand Name เท่านั้น ส่วน Model / Series, Condition, Price และ Description เป็น optional; Price ห้ามแสดงใน public FO surface |
 | AC-ASSET-MGMT-007E | BO/Admin view ต้องแสดง field `Price` เสมอ: มีราคาให้แสดงราคา ไม่มีราคาให้แสดง `-` |
 | AC-ASSET-MGMT-007F | Sold owner-facing view หากมี Price ต้องแสดงเป็นราคาขีดฆ่า; BO/Admin view แสดงราคาปกติ |
+| AC-ASSET-MGMT-007G | ฟิลด์ Case Material, Movement, Dial Color และ Strap / Bracelet Type ต้องรองรับตัวเลือก `ระบุเอง` เมื่อค่าที่ Owner ต้องการไม่มีใน internal option master |
+| AC-ASSET-MGMT-007H | ค่า `ระบุเอง` ที่ normalize แล้วตรง option/alias ที่มีอยู่ต้องถูกผูก relation id ทันที ห้ามเก็บเป็น free-text ซ้ำ; ถ้าไม่ตรงต้องเก็บเป็น snapshot โดย relation เป็น `null` และเขียนลง suggestion pool พร้อม usage count |
 | AC-ASSET-MGMT-008 | Add Asset ต้องมี provenance step ก่อน final Save / Upload โดยให้เลือก `Owner (Asset)` หรือ `Consignment` และข้อมูลทั้งสองแบบต้องเป็น private |
 | AC-ASSET-MGMT-008A | Provenance ต้องแยก `Owner (Asset)` purchase information ออกจาก `Consignment` consignor/terms information |
 | AC-ASSET-MGMT-008B | หากเลือก `Owner (Asset)` ต้อง require Purchase Price ก่อน Save และ optional field ที่ว่างต้องบันทึกเป็น empty/null โดยไม่สร้าง `N/A` |
