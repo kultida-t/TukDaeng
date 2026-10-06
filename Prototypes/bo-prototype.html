@@ -1622,6 +1622,7 @@
       width: 15px;
       height: 15px;
     }
+
     body.option-master-mode.option-suggestion-mode #table {
       overflow-x: auto;
       overflow-y: visible;
@@ -13524,12 +13525,7 @@
         justify-content: space-between;
         gap: 10px;
       }
-      body.option-master-mode.option-suggestion-mode .panel-head {
-        flex-wrap: wrap;
-      }
-      body.option-master-mode.option-suggestion-mode .panel-head .user-panel-filter-actions {
-        margin-left: auto;
-      }
+
       body.watch-alert-mode.watch-alert-list-mode .panel-head {
         align-items: center;
         flex-direction: row;
@@ -14466,6 +14462,25 @@
       body.option-master-mode.option-suggestion-mode .row-menu-list button {
         white-space: normal;
         overflow-wrap: anywhere;
+      }
+      /* OM-SQ-01: Suggestion Detail modal — ปุ่ม action 3 ปุ่ม stack เต็มความกว้างบน mobile
+         (scope เฉพาะ .option-suggestion-detail ไม่กระทบ .user-detail-actions ของ modal อื่น) */
+      body.option-master-mode.option-suggestion-mode .option-suggestion-detail .user-detail-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      body.option-master-mode.option-suggestion-mode .option-suggestion-detail .user-detail-action-btn {
+        width: 100%;
+      }
+      /* OM-SQ-01: Promote form — cell Status แคบกว่า toggle ทำให้เนื้อหาล้นชิดขอบ;
+         แยก Option ID/Status คนละบรรทัดเต็มกว้าง + เว้น padding เท่าช่อง input
+         scope เฉพาะ form ที่มี suggestion context ไม่แตะ Add/Edit Option modal ที่ lock */
+      body.option-master-mode.option-suggestion-mode .article-editor-form[data-option-suggestion]:not([data-option-suggestion=""]) label.option-field-option-id,
+      body.option-master-mode.option-suggestion-mode .article-editor-form[data-option-suggestion]:not([data-option-suggestion=""]) label.option-field-status {
+        grid-column: 1 / -1;
+      }
+      body.option-master-mode.option-suggestion-mode .article-editor-form[data-option-suggestion]:not([data-option-suggestion=""]) label.option-field-status .option-status-toggle-box {
+        padding: 13px 12px;
       }
       body.asset-list-mode .filters {
         grid-template-columns: 1fr;
@@ -40659,6 +40674,7 @@
       const resolvedOption = s.resolved_option_id ? getOptionById(s.resolved_option_id) : null;
       const history = Array.isArray(s.auditHistory) ? s.auditHistory : [];
       modalBody.innerHTML = `
+        <div class="option-suggestion-detail">
         <div class="user-action-head" data-modal-dismissible>
           <div>
             <h2 id="user-action-modal-title">Suggestion Detail</h2>
@@ -40707,6 +40723,7 @@
             <button class="user-detail-action-btn" type="button" data-option-suggestion-map="${s.id}">Map เป็น alias</button>
             <button class="user-detail-action-btn primary" type="button" data-option-suggestion-promote="${s.id}">Promote → Option ใหม่</button>
           ` : ""}
+        </div>
         </div>
       `;
       showUserActionModal(true);
