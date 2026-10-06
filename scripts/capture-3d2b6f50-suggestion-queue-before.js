@@ -64,5 +64,5 @@ async function capture(viewport, tag) {
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   await capture({ width: 1440, height: 900 }, "before-1440");
-  await capture({ width: 390, height: 844 }, "before-390");
+  await capture({ width: 393, height: 852 }, "before-393");
 })();

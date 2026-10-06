@@ -66,12 +66,12 @@ Login: กดเข้าสู่ระบบด้วยค่าเดิม 
 ขั้นกด: จาก queue กดเมนู Dashboard → กลับ Option Master
 ผลที่คาด: Dashboard แสดงปกติ ไม่มีตาราง suggestion ค้าง; กลับมาเห็น Group List (queue ถูก reset)
 
-เคส 17: Mobile 390px
-ขั้นกด: เปิด DevTools device 390px → Option Master → Suggestion Queue → กดปุ่มตัวกรอง → เปิด detail/promote modal
+เคส 17: Mobile 393px
+ขั้นกด: เปิด DevTools device 393px → Option Master → Suggestion Queue → กดปุ่มตัวกรอง → เปิด detail/promote modal
 ผลที่คาด: header ตารางซ่อน แถวกลายเป็น card (SUG-xxx เป็นหัว + tag status/group/usage + meta rows); ปุ่มตัวกรองเปิด/ปิด filter bar ได้; modal stack แนวตั้งไม่ล้นจอ; ตัวหนังสือไทยไม่ถูกตัด
 
 หมายเหตุ: mock data 8 records → pagination แสดง 1 หน้า (ออกแบบ 10/หน้า)
-ภาพประกอบ: screenshots/task-3d2b6f50-suggestion-queue/ (before-* / after-* ทั้ง 1440 และ 390)
+ภาพประกอบ: screenshots/task-3d2b6f50-suggestion-queue/ (before-* / after-* ทั้ง 1440 และ 393)
 Automated: scripts/check-3d2b6f50-suggestion-queue.js (34 เคส) + scripts/check-3d2b6f50-regression-mobile.js (20 เคส) — ผ่านครบ (raw output: test-results.txt)
 
 === ผลตรวจจริง (ผู้ใช้ตรวจหน้าจอ 06/10/2026) ===
