@@ -71,7 +71,7 @@ Login: กดเข้าสู่ระบบด้วยค่าเดิม 
 ผลที่คาด: header ตารางซ่อน แถวกลายเป็น card (SUG-xxx เป็นหัว + tag status/group/usage + meta rows); ปุ่มตัวกรองเปิด/ปิด filter bar ได้; modal stack แนวตั้งไม่ล้นจอ; ตัวหนังสือไทยไม่ถูกตัด
 
 หมายเหตุ: mock data 8 records → pagination แสดง 1 หน้า (ออกแบบ 10/หน้า)
-ภาพประกอบ: screenshots/task-3d2b6f50-suggestion-queue/ (before-1440/before-390, after-1440/after-440)
+ภาพประกอบ: screenshots/task-3d2b6f50-suggestion-queue/ (before-1440/before-390, after-1920/after-768/after-440)
 Automated: scripts/check-3d2b6f50-suggestion-queue.js (34 เคส) + scripts/check-3d2b6f50-regression-mobile.js (23 เคส) — ผ่านครบ (raw output: test-results.txt)
 
 === ผลตรวจจริง (ผู้ใช้ตรวจหน้าจอ 06/10/2026) ===
@@ -125,4 +125,4 @@ Automated: scripts/check-3d2b6f50-suggestion-queue.js (34 เคส) + scripts/c
 - revert Detail modal กลับเป็น 3 ปุ่มแถวเดียว + Status กลับแถวเดียวกับ Option ID (เดิมเคย stack แยกบรรทัด) (ผ่าน)
 - เปลี่ยน viewport mobile capture/test จาก 393×852 → 440×956 — ที่ 440 ทุกอย่างอยู่แถวเดียวพอดี (ผ่าน)
 
-ผลลัพธ์สุดท้าย: ผู้ใช้ยืนยันหน้าจอครบทุก state + recapture After ครบ 17 ภาพ (1440+440) → ปิด task
+ผลลัพธ์สุดท้าย: ผู้ใช้ยืนยันหน้าจอครบทุก state + recapture After ครบ 25 ภาพ (1920+768+440) → ปิด task

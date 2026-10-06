@@ -19,7 +19,7 @@ Promote/Map/Ignore สร้าง event OPTION_SUGGESTION_* ใน Audit Log
 ปุ่ม ดู Audit Log แสดงเฉพาะเมื่อมี event (pending ไม่แสดง)
 Audit jump กรองด้วยรหัส SUG-xxx ถูกต้อง
 == Responsive
-Desktop 1440: ตาราง + filter bar แถวเดียว
+Desktop 1920: ตาราง + filter bar แถวเดียว
 Tablet ~985: search + filter แถวเดียวตามแบบ User List
 Mobile 440: card + ตัวกรอง toggle + pill/tag ขนาด 12px เท่ากันทุกอัน
 == Regression

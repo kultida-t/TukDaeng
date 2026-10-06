@@ -1,5 +1,5 @@
 // Task 3d2b6f50 — Suggestion Queue UI (BO Option Master) — AFTER capture
-// capture: Option Group List (pending pill + queue action), Option Detail, Suggestion Queue, Suggestion Detail modal @1440/768/440
+// capture: Option Group List (pending pill + queue action), Option Detail, Suggestion Queue, Suggestion Detail modal @1920/768/440
 // headless:false เพื่อให้ scrollbar จริงถูกวาดลงภาพ (headless Chromium ใช้ overlay scrollbar ซ่อนเอง)
 // usage: node scripts/capture-3d2b6f50-suggestion-queue-after.js (server :8080)
 const { chromium } = require("@playwright/test");
@@ -103,7 +103,7 @@ async function closeAllModals(page) {
 
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
-  await capture({ width: 1440, height: 900 }, "after-1440");
+  await capture({ width: 1920, height: 1080 }, "after-1920");
   await capture({ width: 768, height: 1024 }, "after-768");
   await capture({ width: 440, height: 956 }, "after-440");
 })();
