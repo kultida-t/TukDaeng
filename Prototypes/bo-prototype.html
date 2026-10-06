@@ -40483,11 +40483,11 @@
     }
 
     // Panel title พร้อม info tooltip (pattern เดียวกับ Watch Alert / Demand Overview wa-panel-info)
-    function setOptionSuggestionPanelTitle(pendingCount) {
+    function setOptionSuggestionPanelTitle() {
       const tip = `ค่า "ระบุเอง" ที่ผู้ใช้ส่งจาก FO — curate เป็น option จริง, map เป็น alias หรือ ignore`;
       const tipAttr = tip.replace(/"/g, "&quot;");
       document.querySelector("#panel-title").innerHTML =
-        `Suggestions (${pendingCount} pending) <span class="wa-panel-info" tabindex="0" role="img" aria-label="${tipAttr}">${iconSvg.info}<span class="wa-panel-info-tip">${tip}</span></span>`;
+        `Suggestions <span class="wa-panel-info" tabindex="0" role="img" aria-label="${tipAttr}">${iconSvg.info}<span class="wa-panel-info-tip">${tip}</span></span>`;
     }
 
     function renderOptionSuggestionQueue(presetGroupId = "") {
