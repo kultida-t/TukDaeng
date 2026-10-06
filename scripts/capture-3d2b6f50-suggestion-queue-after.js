@@ -102,5 +102,6 @@ async function closeAllModals(page) {
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   await capture({ width: 1440, height: 900 }, "after-1440");
+  await capture({ width: 768, height: 1024 }, "after-768");
   await capture({ width: 440, height: 956 }, "after-440");
 })();
