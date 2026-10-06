@@ -1,5 +1,6 @@
 // Task 3d2b6f50 — Suggestion Queue UI (BO Option Master) — AFTER capture
-// capture: Option Group List (pending pill + queue action), Option Detail, Suggestion Queue, Suggestion Detail modal @1440/390
+// capture: Option Group List (pending pill + queue action), Option Detail, Suggestion Queue, Suggestion Detail modal @1440/768/440
+// headless:false เพื่อให้ scrollbar จริงถูกวาดลงภาพ (headless Chromium ใช้ overlay scrollbar ซ่อนเอง)
 // usage: node scripts/capture-3d2b6f50-suggestion-queue-after.js (server :8080)
 const { chromium } = require("@playwright/test");
 const path = require("path");
@@ -10,7 +11,8 @@ const OUT = path.join(__dirname, "..", "screenshots", "task-3d2b6f50-suggestion-
 
 async function login(page) {
   await page.goto(BASE);
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("domcontentloaded");
+  await page.waitForTimeout(800);
   const loginScreen = page.locator("#login-screen");
   if (await loginScreen.isVisible({ timeout: 1000 }).catch(() => false)) {
     await page.locator('#login-form button[type="submit"]').click();
@@ -34,7 +36,7 @@ async function shot(page, name) {
 }
 
 async function capture(viewport, tag) {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ headless: false });
   const page = await browser.newPage({ viewport });
   await login(page);
   await ensureNavOpen(page);
