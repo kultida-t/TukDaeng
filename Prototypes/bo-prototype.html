@@ -13368,13 +13368,17 @@
       body.category-list-mode .page-actions .btn[data-category-add] span {
         display: none;
       }
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-suggestion-queue-open] span:not(.option-queue-count) {
+        display: none;
+      }
       /* Custom tooltip สำหรับปุ่ม page action ที่เหลือ icon บน mobile (แทน native title ที่ชนขอบจอ) */
       body.option-master-mode.option-detail-mode .page-actions .btn[data-option-reorder-open],
       body.option-master-mode.option-detail-mode .page-actions .btn[data-option-add-open],
       body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-reorder-open],
       body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-add-open],
       body.category-list-mode .page-actions .btn[data-category-order-open],
-      body.category-list-mode .page-actions .btn[data-category-add] {
+      body.category-list-mode .page-actions .btn[data-category-add],
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-suggestion-queue-open] {
         position: relative;
       }
       body.option-master-mode.option-detail-mode .page-actions .btn[data-option-reorder-open]::after,
@@ -13382,7 +13386,8 @@
       body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-reorder-open]::after,
       body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-add-open]::after,
       body.category-list-mode .page-actions .btn[data-category-order-open]::after,
-      body.category-list-mode .page-actions .btn[data-category-add]::after {
+      body.category-list-mode .page-actions .btn[data-category-add]::after,
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-suggestion-queue-open]::after {
         content: attr(aria-label);
         position: absolute;
         top: calc(100% + 6px);
@@ -13414,7 +13419,9 @@
       body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-reorder-open]:focus-visible::after,
       body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-add-open]:focus-visible::after,
       body.category-list-mode .page-actions .btn[data-category-order-open]:focus-visible::after,
-      body.category-list-mode .page-actions .btn[data-category-add]:focus-visible::after {
+      body.category-list-mode .page-actions .btn[data-category-add]:focus-visible::after,
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-suggestion-queue-open]:hover::after,
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-suggestion-queue-open]:focus-visible::after {
         opacity: 1;
         visibility: visible;
       }
@@ -13516,6 +13523,12 @@
         flex-direction: row;
         justify-content: space-between;
         gap: 10px;
+      }
+      body.option-master-mode.option-suggestion-mode .panel-head {
+        flex-wrap: wrap;
+      }
+      body.option-master-mode.option-suggestion-mode .panel-head .user-panel-filter-actions {
+        margin-left: auto;
       }
       body.watch-alert-mode.watch-alert-list-mode .panel-head {
         align-items: center;

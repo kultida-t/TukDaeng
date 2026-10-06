@@ -47,7 +47,10 @@
   PASS dashboard: no option classes leak
   PASS group list again, queue flag reset
   PASS mobile: queue button exists
+  PASS mobile: no horizontal overflow (group list)
   PASS mobile: suggestion mode
+  PASS mobile: no horizontal overflow (queue)
+  PASS mobile: reset button within viewport
   PASS mobile: head hidden (card mode)
   PASS mobile: cards render
   PASS mobile: filter toggle visible
@@ -56,4 +59,4 @@
   PASS pending: audit button hidden
   PASS audit log filtered by SUG-006
 
-20 passed, 0 failed
+23 passed, 0 failed

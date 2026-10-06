@@ -97,9 +97,17 @@ async function gotoOptionMaster(page) {
   if (navOpen) { await mp.locator("#menu-toggle").click(); await mp.waitForTimeout(300); }
 
   ok("mobile: queue button exists", await mp.locator("[data-option-suggestion-queue-open]").count() === 1);
+  ok("mobile: no horizontal overflow (group list)", await mp.evaluate(() =>
+    document.documentElement.scrollWidth <= document.documentElement.clientWidth));
   await mp.locator("[data-option-suggestion-queue-open]").click();
   await mp.waitForTimeout(400);
   ok("mobile: suggestion mode", await mp.evaluate(() => document.body.classList.contains("option-suggestion-mode")));
+  ok("mobile: no horizontal overflow (queue)", await mp.evaluate(() =>
+    document.documentElement.scrollWidth <= document.documentElement.clientWidth));
+  ok("mobile: reset button within viewport", await mp.evaluate(() => {
+    const b = document.querySelector("[data-option-suggestion-reset]");
+    return b && b.getBoundingClientRect().right <= window.innerWidth;
+  }));
   ok("mobile: head hidden (card mode)", await mp.locator(".option-suggestion-table .asset-row.head").isHidden());
   ok("mobile: cards render", await mp.locator(".option-suggestion-table .asset-row:not(.head)").count() === 8);
   // filter toggle visible on mobile
