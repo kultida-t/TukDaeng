@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="th"><head><meta charset="utf-8"><title>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</title>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@600;700;800&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-@font-face { font-family: 'KanitLocal'; }
-:root { --red:#C8102E; --ink:#151515; --grey:#6b6b6b; --line:#e5e0da; --paper:#faf8f5; }
+:root { --red:#e50914; --ink:#08172e; --gold:#c5a059; --grey:#6b6b6b; --line:#e5e0da; --paper:#faf8f5; }
 * { margin:0; padding:0; box-sizing:border-box; }
 html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 body { font-family:'Sarabun','Noto Sans Thai','Segoe UI',Tahoma,sans-serif; color:var(--ink); background:#ddd; }
-h1,h2,.brand,.chno,.cov-brand,.cov-title,.figno { font-family:'Kanit','Sarabun',sans-serif; }
+h1,h2,.brand,.chno,.cov-brand,.cov-title,.figno { font-family:'Plus Jakarta Sans','Prompt','Sarabun',sans-serif; }
 .page { width:297mm; height:210mm; background:var(--paper); page-break-after:always; break-after:page;
         padding:9mm 13mm 7mm; display:flex; flex-direction:column; position:relative; overflow:hidden; }
 @media screen { .page { margin:8mm auto; box-shadow:0 4px 30px rgba(0,0,0,.25);} body{padding:8mm 0} }
@@ -23,35 +22,62 @@ h1,h2,.brand,.chno,.cov-brand,.cov-title,.figno { font-family:'Kanit','Sarabun',
 .pgnum::after { counter-increment:pg; content:counter(pg); }
 body { counter-reset: pg; }
 .lead { font-size:10pt; line-height:1.6; margin-bottom:3.5mm; max-width:270mm; }
-.figrow { display:flex; gap:5mm; margin-bottom:3.5mm; align-items:flex-start; }
+.figrow { display:flex; gap:var(--fgap,5mm); margin-bottom:3.5mm; align-items:flex-start; }
 .shot { flex:0 0 auto; }
-.phone { height:56mm; border:2.2px solid #222; border-radius:4mm; box-shadow:1.5mm 2.5mm 6mm rgba(0,0,0,.18); display:block; }
+.phone { height:var(--ph,56mm); border:2.2px solid #222; border-radius:4mm; box-shadow:1.5mm 2.5mm 6mm rgba(0,0,0,.18); display:block; }
 .phone.tall { height:62mm; }
-.shot figcaption { font-size:7.6pt; color:#3d3d3d; margin-top:1.8mm; width:29mm; line-height:1.35; }
+.shot figcaption { font-size:7.6pt; color:#3d3d3d; margin-top:1.8mm; width:var(--cw,29mm); line-height:1.35; }
+.page.fill .figrow { justify-content:space-between; }
+.page.center .figrow { justify-content:center; }
 .figno { display:inline-block; background:var(--ink); color:#fff; font-size:7pt; font-weight:600; padding:.5mm 1.8mm; margin-right:1.6mm; border-radius:1mm;}
 .chip { display:inline-block; font-size:6.5pt; font-weight:700; color:#fff; padding:.4mm 1.6mm; border-radius:1mm; margin-right:1.4mm; vertical-align:1px;}
 .chip-G{background:#777}.chip-M{background:#2f5fd0}.chip-O{background:#151515}.chip-B{background:#1a8a4a}.chip-S{background:#c05a10}
 .note { border-left:3.5px solid var(--red); background:#f6eaea; padding:2mm 3.5mm; font-size:9pt; line-height:1.55; margin:2.5mm 0; }
-.warn { border-left-color:#b8860b; background:#f8f1dd; }
-.steps { font-size:9.5pt; line-height:1.65; margin:0 0 3mm 5mm; }
-.steps li { margin-bottom:1mm; }
+.warn { border-left-color:var(--gold); background:#faf4e2; }
+.steps { list-style:none; counter-reset:st; margin:0; padding:2.5mm 4mm; display:grid;
+         grid-template-columns:1fr 1fr; column-gap:10mm; background:#f1eeea; border-radius:2mm; }
+.steps li { counter-increment:st; position:relative; padding:1mm 0 1mm 9.5mm; font-size:9.5pt; line-height:1.5; }
+.steps li::before { content:counter(st); position:absolute; left:0; top:1mm; width:6.5mm; height:6.5mm;
+                    background:var(--red); color:#fff; font-family:'Plus Jakarta Sans','Prompt',sans-serif;
+                    font-weight:700; font-size:9pt; display:flex; align-items:center; justify-content:center; border-radius:1mm; }
+.steps.cols3 { grid-template-columns:repeat(3,1fr); column-gap:8mm; }
+.infolist { list-style:none; margin:0 0 3.5mm; padding:2.5mm 4mm; background:#f1eeea; border-radius:2mm;
+            display:grid; grid-template-columns:1fr 1fr; column-gap:10mm; }
+.infolist li { position:relative; padding:1mm 0 1mm 5mm; font-size:9.5pt; line-height:1.5; }
+.infolist li::before { content:''; position:absolute; left:0; top:2.6mm; width:2.4mm; height:2.4mm;
+                       background:var(--red); border-radius:.6mm; }
+.lead.lchip { margin-bottom:1.8mm; }
+.lead.lchip .chip { font-size:8pt; padding:.8mm 2.4mm; margin-right:2.4mm; }
+.page.airy .lead:last-of-type { margin-bottom:6mm; }
+.page.airy .note { margin-top:6mm; }
+.page.vspread .pbody { display:flex; flex-direction:column; }
+.page.vspread .figrow { margin-top:auto; margin-bottom:auto; }
+.page.vspread .note { margin-bottom:4mm; }
+.page.vspread .steps + .figrow { margin-top:auto; padding-top:2mm; }
+.page.ph54 .phone{height:54mm}
+.page.ph52 .phone{height:52mm}
+.page.ph46 .phone{height:46mm}
 table.cmp { border-collapse:collapse; width:100%; font-size:9pt; margin-bottom:3.5mm; }
 .cmp th { background:var(--ink); color:#fff; text-align:left; padding:1.8mm 3mm; font-weight:600;}
 .cmp td { border:1px solid var(--line); padding:1.8mm 3mm; vertical-align:top; line-height:1.5;}
 .cmp tr:nth-child(even) td { background:#f1eeea; }
-table.toc { width:100%; border-collapse:collapse; font-size:11.5pt; }
-.toc td { padding:3mm 4mm; border-bottom:1px solid var(--line); }
+.cmp.persp th:first-child, .cmp.persp td:first-child { white-space:nowrap; }
+.tocwrap { display:flex; gap:10mm; margin-top:8mm; }
+.tocwrap .toc { flex:1; }
+table.toc { width:100%; border-collapse:collapse; font-size:10pt; }
+.toc td { padding:4mm 4mm; border-bottom:1px solid var(--line); }
+.toc .tpg { text-align:right; color:var(--grey); width:16mm; font-weight:600; white-space:nowrap; font-size:8.5pt; }
 .toc .tno { color:var(--red); font-weight:700; width:22mm; }
 .covwrap { display:flex; gap:5mm; }
 .covwrap .cov { flex:1; }
-table.cov { border-collapse:collapse; width:33%; font-size:7.2pt; }
-.cov td { border-bottom:1px solid #eee; padding:.9mm 1.6mm; }
+table.cov { border-collapse:collapse; width:33%; font-size:6.9pt; }
+.cov td { border-bottom:1px solid #eee; padding:.55mm 1.6mm; }
 .cov .grp td { background:var(--ink); color:#fff; font-weight:700; font-size:7.8pt; }
 .mono { font-family:Consolas,monospace; }
 .ok { color:#1a8a4a; font-weight:600; } .dim{ color:#999; font-size:7pt; }
 code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-size:9pt;}
 /* cover */
-.cover { background:#141210; color:#f4efe9; justify-content:space-between; padding:18mm 20mm; }
+.cover { background:var(--ink); color:#f4efe9; justify-content:space-between; padding:18mm 20mm; }
 .cov-rule { height:2px; background:var(--red); }
 .cov-brand { font-size:15pt; font-weight:800; letter-spacing:6px; color:var(--red); }
 .cov-title { font-size:44pt; font-weight:800; line-height:1.25; }
@@ -77,23 +103,23 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
     <div><h2>สารบัญ</h2><div class="en">Contents</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><table class="toc"><tr><td class="tno">บทที่ 0</td><td>วิธีใช้คู่มือนี้และมุมมองผู้ใช้</td></tr><tr><td class="tno">บทที่ 1</td><td>เริ่มต้นใช้งาน: สมัคร เข้าสู่ระบบ ลืมรหัสผ่าน</td></tr><tr><td class="tno">บทที่ 2</td><td>โหมดผู้เยี่ยมชม (Guest)</td></tr><tr><td class="tno">บทที่ 3</td><td>ฟีดสินทรัพย์</td></tr><tr><td class="tno">บทที่ 4</td><td>ค้นหา ตัวกรอง และเรียงลำดับ</td></tr><tr><td class="tno">บทที่ 5</td><td>หน้ารายละเอียดสินทรัพย์</td></tr><tr><td class="tno">บทที่ 6</td><td>จัดการสินทรัพย์ของฉัน (Owner)</td></tr><tr><td class="tno">บทที่ 7</td><td>ข้อเสนอซื้อ (Offer) ทั้งสองฝั่ง</td></tr><tr><td class="tno">บทที่ 8</td><td>แชท</td></tr><tr><td class="tno">บทที่ 9</td><td>โปรไฟล์และการติดตาม</td></tr><tr><td class="tno">บทที่ 10</td><td>ศูนย์การแจ้งเตือน</td></tr><tr><td class="tno">บทที่ 11</td><td>Watch Alert</td></tr><tr><td class="tno">บทที่ 12</td><td>กระดานข่าว (Board)</td></tr><tr><td class="tno">บทที่ 13</td><td>การตั้งค่าและบัญชี</td></tr><tr><td class="tno">บทที่ 14</td><td>สถานะพิเศษ ข้อผิดพลาด และข้อจำกัด</td></tr><tr><td class="tno">บทที่ 15</td><td>ภาคผนวก: รายงานความครอบคลุมภาพหน้าจอ</td></tr></table><div class="note">คู่มือนี้จัดพิมพ์ในแนวนอน (A4 Landscape) — ภาพหน้าจอทั้งหมดถ่ายจากแอปจริงบน Android (หน้าจอ 1080×2400) ด้วยบัญชีทดสอบ 2 บัญชีที่โต้ตอบกันจริง ไม่มีภาพจำลองหรือภาพที่สร้างขึ้นเอง</div></div>
+  <div class="pbody"><div class="tocwrap"><table class="toc"><tr><td class="tno">บทที่ 0</td><td>วิธีใช้คู่มือนี้และมุมมองผู้ใช้</td><td class="tpg">หน้า 2</td></tr><tr><td class="tno">บทที่ 1</td><td>เริ่มต้นใช้งาน: สมัคร เข้าสู่ระบบ ลืมรหัสผ่าน</td><td class="tpg">หน้า 3</td></tr><tr><td class="tno">บทที่ 2</td><td>โหมดผู้เยี่ยมชม (Guest)</td><td class="tpg">หน้า 7</td></tr><tr><td class="tno">บทที่ 3</td><td>ฟีดสินทรัพย์</td><td class="tpg">หน้า 9</td></tr><tr><td class="tno">บทที่ 4</td><td>ค้นหา ตัวกรอง และเรียงลำดับ</td><td class="tpg">หน้า 11</td></tr><tr><td class="tno">บทที่ 5</td><td>หน้ารายละเอียดสินทรัพย์</td><td class="tpg">หน้า 13</td></tr><tr><td class="tno">บทที่ 6</td><td>จัดการสินทรัพย์ของฉัน (Owner)</td><td class="tpg">หน้า 17</td></tr><tr><td class="tno">บทที่ 7</td><td>ข้อเสนอซื้อ (Offer) ทั้งสองฝั่ง</td><td class="tpg">หน้า 21</td></tr></table><table class="toc"><tr><td class="tno">บทที่ 8</td><td>แชท</td><td class="tpg">หน้า 24</td></tr><tr><td class="tno">บทที่ 9</td><td>โปรไฟล์และการติดตาม</td><td class="tpg">หน้า 26</td></tr><tr><td class="tno">บทที่ 10</td><td>การแจ้งเตือน</td><td class="tpg">หน้า 29</td></tr><tr><td class="tno">บทที่ 11</td><td>Watch Alert</td><td class="tpg">หน้า 31</td></tr><tr><td class="tno">บทที่ 12</td><td>กระดานข่าว (Board)</td><td class="tpg">หน้า 32</td></tr><tr><td class="tno">บทที่ 13</td><td>การตั้งค่าและบัญชี</td><td class="tpg">หน้า 34</td></tr><tr><td class="tno">บทที่ 14</td><td>สถานะพิเศษ ข้อผิดพลาด และข้อจำกัด</td><td class="tpg">หน้า 37</td></tr><tr><td class="tno">บทที่ 15</td><td>ภาคผนวก: รายงานความครอบคลุมภาพหน้าจอ</td><td class="tpg">หน้า 38</td></tr></table></div><div class="note">คู่มือนี้จัดพิมพ์ในแนวนอน (A4 Landscape) — ภาพหน้าจอทั้งหมดถ่ายจากแอปจริงบน Android (หน้าจอ 1080×2400)</div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
 </section><section class="page">
   <header class="phead">
     <div><h2>มุมมองผู้ใช้งานของแอป</h2><div class="en">Perspectives</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">แอป Univerza Tukdaeng เป็นแพลตฟอร์มซื้อขาย/จัดแสดงนาฬิกา ที่สิทธิ์การใช้งานเปลี่ยนตาม "มุมมอง" ของผู้ใช้ต่อรายการนั้น — คู่มือนี้จึงแท็กภาพทุกภาพด้วยมุมมอง เพื่อเปรียบเทียบความต่างให้ชัดเจน</p><table class="cmp">
+  <div class="pbody"><p class="lead">แอป Univerza Tukdaeng เป็นแพลตฟอร์มซื้อขาย/จัดแสดงนาฬิกา ที่สิทธิ์การใช้งานเปลี่ยนตาม "มุมมอง" ของผู้ใช้ต่อรายการนั้น — คู่มือนี้จึงแท็กภาพทุกภาพด้วยมุมมอง เพื่อเปรียบเทียบความต่างให้ชัดเจน</p><table class="cmp persp">
 <tr><th>มุมมอง</th><th>คือใคร</th><th>ทำอะไรได้บ้าง</th><th>ทำอะไรไม่ได้</th></tr>
 <tr><td><span class="chip chip-G">G</span> Guest</td><td>ยังไม่ได้เข้าสู่ระบบ</td><td>ดูฟีด ค้นหา เปิดรายละเอียดสินทรัพย์ อ่านบทความ ดูโปรไฟล์สาธารณะ</td><td>กดถูกใจ/คอมเมนต์/ติดตาม/เสนอราคา/แชท/สร้าง Watch Alert — ทุกอันขึ้นหน้าต่าง "เข้าสู่ระบบหรือสมัครสมาชิก"</td></tr>
 <tr><td><span class="chip chip-M">M</span> Member</td><td>สมาชิกที่ยืนยันอีเมลแล้ว</td><td>ทุกอย่างของ Guest + ถูกใจ คอมเมนต์ ติดตาม แชท เสนอราคา Watch Alert แจ้งเตือน เพิ่มสินทรัพย์</td><td>—</td></tr>
 <tr><td><span class="chip chip-O">O</span> Owner</td><td>Member เมื่อดู "สินทรัพย์ของตัวเอง"</td><td>แก้ไขรายการ เปลี่ยนสถานะ บันทึกการขาย แก้ที่มา ลบรายการ ดูมูลค่าสินทรัพย์รวม</td><td>ไม่มีปุ่ม เสนอราคา/ติดต่อผู้ขาย บนรายการตัวเอง</td></tr>
 <tr><td><span class="chip chip-B">B</span> Buyer</td><td>Member เมื่อส่งข้อเสนอรายการของคนอื่น</td><td>ส่งข้อเสนอพร้อมข้อความ เห็นสถานะการ์ดข้อเสนอในแชท</td><td>—</td></tr>
 <tr><td><span class="chip chip-S">S</span> Seller</td><td>Owner เมื่อมีคนเสนอราคารายการของตัวเอง</td><td>เห็นการ์ดข้อเสนอพร้อมปุ่ม ยอมรับ / ปฏิเสธ ในแชทและในการแจ้งเตือน</td><td>—</td></tr>
-</table><div class="note"><b>ข้อตกลงการอ่าน:</b> เลข "ภาพที่ n" เรียงตามลำดับการปรากฏ · ข้อความในกรอบสีแดงอ่อนคือข้อจำกัดที่ตรวจพบจริงหรือสถานะที่จัดทำเป็น "คำอธิบาย" แทนภาพหน้าจอ</div></div>
+</table><div class="note"><b>ข้อตกลงการอ่าน:</b> เลข "ภาพที่ n" เรียงตามลำดับการปรากฏ · ข้อความในกรอบสีแดงอ่อนคือข้อควรรู้หรือสถานะที่อธิบายเป็นข้อความแทนภาพหน้าจอ</div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill" style="--ph:110mm;--cw:47mm">
   <header class="phead"><div class="chno">บทที่ 01</div>
     <div><h2>เปิดแอปครั้งแรกและหน้าเลือกเข้าใช้</h2><div class="en">Onboarding</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
@@ -115,12 +141,12 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
   <figcaption><span class="figno">ภาพที่ 5</span><span class="chip chip-G">G</span>หน้าเลือกเข้าใช้ — "สำรวจนาฬิกา" = Guest</figcaption>
 </figure></div><ol class="steps"><li>แค่อยากดูนาฬิกา → แตะ <b>สำรวจนาฬิกา</b> เข้าโหมด Guest ได้ทันที</li><li>สมาชิกใหม่ → <b>สมัครสมาชิก</b> ด้วยอีเมล+รหัสผ่าน แล้วยืนยัน OTP</li><li>มีบัญชีแล้ว → <b>เข้าสู่ระบบ</b> ด้วยอีเมล+รหัสผ่าน หรือ Sign in with Google</li><li>หลังเข้าสู่ระบบจะเข้าสู่หน้าฟีดหลักของแอปทันที</li></ol></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill" style="--ph:110mm;--cw:50mm">
   <header class="phead"><div class="chno">บทที่ 01</div>
-    <div><h2>สมัครสมาชิกและเข้าสู่ระบบ</h2><div class="en">Sign Up &amp; Sign In</div></div>
+    <div><h2>สมัครสมาชิก</h2><div class="en">Sign Up</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead"><b>สมัครสมาชิก:</b> กรอกอีเมล รหัสผ่าน ยืนยันรหัสผ่าน ติ๊กยอมรับข้อกำหนด → ระบบส่ง <b>รหัส OTP 6 หลัก</b> ทางอีเมล (หมดอายุใน 30 นาที มีปุ่ม "ส่งรหัสใหม่") → ยืนยันสำเร็จเริ่มใช้งานได้ทันที</p><div class="figrow"><figure class="shot">
+  <div class="pbody"><ul class="infolist"><li><b>กรอกข้อมูล:</b> อีเมล / รหัสผ่าน / ยืนยันรหัสผ่าน / ติ๊กยอมรับข้อกำหนด</li><li><b>ยืนยันอีเมล:</b> ระบบส่ง <b>รหัส OTP 6 หลัก</b> ทางอีเมล — หมดอายุใน 30 นาที มีปุ่ม "ส่งรหัสใหม่"</li><li><b>เสร็จสิ้น:</b> ยืนยันสำเร็จเริ่มใช้งานได้ทันที</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/01-signup.png" alt="ฟอร์มสมัครสมาชิก (ว่าง)">
   <figcaption><span class="figno">ภาพที่ 6</span><span class="chip chip-G">G</span>ฟอร์มสมัครสมาชิก (ว่าง)</figcaption>
 </figure><figure class="shot">
@@ -132,23 +158,30 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/01-otp-success.png" alt="ยืนยันอีเมลสำเร็จ → เริ่มต้นใช้งาน">
   <figcaption><span class="figno">ภาพที่ 9</span><span class="chip chip-G">G</span>ยืนยันอีเมลสำเร็จ → เริ่มต้นใช้งาน</figcaption>
-</figure></div><p class="lead"><b>เข้าสู่ระบบ:</b> รองรับอีเมล+รหัสผ่าน และ Google — มี "จดจำอุปกรณ์นี้เป็นเวลา 30 วัน" และลิงก์ "ลืมรหัสผ่าน"</p><div class="figrow"><figure class="shot">
+</figure></div><ol class="steps"><li>กรอกอีเมล + รหัสผ่าน + ยืนยันรหัสผ่าน แล้วติ๊กยอมรับข้อกำหนด</li><li>ระบบส่ง OTP 6 หลักทางอีเมล → กรอกภายใน 30 นาที (กด "ส่งรหัสใหม่" ได้)</li><li>ยืนยันสำเร็จ → เข้าใช้งานเป็นสมาชิกได้ทันที</li></ol></div>
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+</section><section class="page center" style="--ph:118mm;--cw:62mm;--fgap:8mm">
+  <header class="phead"><div class="chno">บทที่ 01</div>
+    <div><h2>เข้าสู่ระบบ</h2><div class="en">Sign In</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+  <div class="pbody"><p class="lead"><b>เข้าสู่ระบบ:</b> รองรับอีเมล+รหัสผ่าน และ Google — มี "จดจำอุปกรณ์นี้เป็นเวลา 30 วัน" และลิงก์ "ลืมรหัสผ่าน"</p><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/01-signin.png" alt="หน้าเข้าสู่ระบบ">
   <figcaption><span class="figno">ภาพที่ 10</span><span class="chip chip-G">G</span>หน้าเข้าสู่ระบบ</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/01-signin-error.png" alt="อีเมล/รหัสผ่านไม่ถูกต้อง → แบนเนอร์แดง">
   <figcaption><span class="figno">ภาพที่ 11</span><span class="chip chip-G">G</span>อีเมล/รหัสผ่านไม่ถูกต้อง → แบนเนอร์แดง</figcaption>
 </figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/01-signin-wrongmethod.png" alt="บัญชี Google + รหัสผ่าน → ข้อความเดียวกัน (ไม่เปิดเผยวิธีที่ถูก)">
-  <figcaption><span class="figno">ภาพที่ 12</span><span class="chip chip-G">G</span>บัญชี Google + รหัสผ่าน → ข้อความเดียวกัน (ไม่เปิดเผยวิธีที่ถูก)</figcaption>
-</figure></div></div>
+  <img class="phone" src="../screenshots/user-manual/01-signin-wrongmethod.png" alt="บัญชีที่สมัครด้วย Google แต่ลองล็อกอินด้วยอีเมล+รหัสผ่าน → แบนเนอร์เดียวกับกรณีรหัสผ่านผิด">
+  <figcaption><span class="figno">ภาพที่ 12</span><span class="chip chip-G">G</span>บัญชีที่สมัครด้วย Google แต่ลองล็อกอินด้วยอีเมล+รหัสผ่าน → ขึ้นแบนเนอร์เดียวกับกรณีรหัสผ่านผิด</figcaption>
+</figure></div><ol class="steps"><li>เลือกวิธีเข้าสู่ระบบ: อีเมล+รหัสผ่าน หรือปุ่ม "Sign in with Google"</li><li>ใช้เครื่องส่วนตัว → ติ๊ก "จดจำอุปกรณ์นี้เป็นเวลา 30 วัน" จะได้ไม่ต้องล็อกอินบ่อย</li><li>ลืมรหัสผ่าน → แตะลิงก์ "ลืมรหัสผ่าน" เพื่อรับลิงก์รีเซ็ตทางอีเมล</li><li>ข้อมูลไม่ถูกต้อง → แสดงแบนเนอร์แดง โดยไม่เปิดเผยว่าอีเมลหรือรหัสผ่านที่ผิด</li></ol></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy" style="--ph:110mm;--cw:47mm">
   <header class="phead"><div class="chno">บทที่ 01</div>
-    <div><h2>ลืมรหัสผ่าน เซสชัน และออกจากระบบ</h2><div class="en">Password &amp; Session</div></div>
+    <div><h2>ลืมรหัสผ่าน เปลี่ยนรหัสผ่าน และออกจากระบบ</h2><div class="en">Password &amp; Sign Out</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead"><b>ลืมรหัสผ่าน:</b> กรอกอีเมล → ระบบส่งลิงก์รีเซ็ต (ขึ้นข้อความกลางๆ ไม่บอกว่าอีเมลมีจริงไหม) → ลิงก์หมดอายุใน 30 นาที → เปิดลิงก์ในอีเมลเพื่อตั้งรหัสผ่านใหม่ · <b>ออกจากระบบ</b> อยู่ในหน้าตั้งค่าและมีหน้าต่างยืนยัน</p><div class="figrow"><figure class="shot">
+  <div class="pbody"><p class="lead lchip"><span class="chip chip-G">G</span><b>ลืมรหัสผ่าน (ยังไม่ล็อกอิน):</b> กรอกอีเมล → ระบบส่งลิงก์รีเซ็ตทางอีเมล (ขึ้นข้อความกลางๆ ไม่บอกว่าอีเมลมีจริงไหม) → ลิงก์หมดอายุใน 30 นาที → เปิดลิงก์เพื่อตั้งรหัสผ่านใหม่</p><p class="lead lchip"><span class="chip chip-M">M</span><b>เปลี่ยนรหัสผ่าน (ล็อกอินแล้ว):</b> อยู่ในหน้าตั้งค่า — มีเฉพาะบัญชีที่สมัครด้วยอีเมล+รหัสผ่าน</p><p class="lead lchip"><span class="chip chip-M">M</span><b>ออกจากระบบ (ล็อกอินแล้ว):</b> อยู่ในหน้าตั้งค่าเช่นกัน — มีหน้าต่างยืนยันก่อนออก</p><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/01-forgot.png" alt="หน้าลืมรหัสผ่าน">
   <figcaption><span class="figno">ภาพที่ 13</span><span class="chip chip-G">G</span>หน้าลืมรหัสผ่าน</figcaption>
 </figure><figure class="shot">
@@ -165,12 +198,12 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
   <figcaption><span class="figno">ภาพที่ 17</span><span class="chip chip-M">M</span>ยืนยันออกจากระบบ</figcaption>
 </figure></div><div class="note"><b>สังเกต:</b> บัญชีที่สมัครด้วย Google/Apple <b>ไม่มีเมนู "เปลี่ยนรหัสผ่าน"</b> ในตั้งค่า เพราะไม่มีรหัสผ่านของแอป — เปลี่ยนได้ที่บัญชี Google โดยตรง</div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy" style="--ph:118mm;--cw:52mm">
   <header class="phead"><div class="chno">บทที่ 02</div>
     <div><h2>โหมดผู้เยี่ยมชม (ไม่ต้องเข้าสู่ระบบ)</h2><div class="en">Guest Mode</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">โหมด Guest เห็นเนื้อหาสาธารณะเกือบทั้งหมด — ฟีด ค้นหา รายละเอียดสินทรัพย์ กระดานข่าว — แต่ <b>ทุกการกระทำที่ต้องมีตัวตน</b> (ถูกใจ คอมเมนต์ ติดตาม เสนอราคา แชท แจ้งเตือน เพิ่มสินทรัพย์) จะถูกหน้าต่างเดียวกันบังทันที</p><div class="figrow"><figure class="shot">
+  <div class="pbody"><ul class="infolist"><li><b>เล่นได้โดยไม่ต้องล็อกอิน:</b> เลื่อนฟีด / ค้นหา / เปิดรายละเอียดสินทรัพย์ / อ่านกระดานข่าว</li><li><b>แตะการกระทำที่ต้องเข้าสู่ระบบ:</b> แอปแสดงหน้าต่างให้ล็อกอินหรือสมัครสมาชิกก่อนเสมอ (ดูหน้าถัดไป)</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/02-feed-guest.png" alt="ฟีดในโหมด Guest — เห็นการ์ดปกติ">
   <figcaption><span class="figno">ภาพที่ 18</span><span class="chip chip-G">G</span>ฟีดในโหมด Guest — เห็นการ์ดปกติ</figcaption>
 </figure><figure class="shot">
@@ -182,7 +215,14 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/12-board-guest.png" alt="Guest อ่านกระดานข่าวได้">
   <figcaption><span class="figno">ภาพที่ 21</span><span class="chip chip-G">G</span>Guest อ่านกระดานข่าวได้</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
+</figure></div><div class="note"><b>เล่นดูอิสระ:</b> ไม่ต้องสมัครก็สำรวจตลาดนาฬิกาในแอปได้ก่อน — เหมาะกับผู้ใช้ใหม่ที่อยากดูรูปแบบแอปก่อนตัดสินใจสมัคร</div></div>
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+</section><section class="page fill airy" style="--ph:104mm;--cw:47mm">
+  <header class="phead"><div class="chno">บทที่ 02</div>
+    <div><h2>สิ่งที่ Guest ทำไม่ได้ — ต้องเข้าสู่ระบบก่อน</h2><div class="en">Guest Mode: Sign-In Required</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+  <div class="pbody"><ul class="infolist"><li><b>การกระทำที่ต้องเข้าสู่ระบบก่อน:</b> ถูกใจ / คอมเมนต์ / ติดตาม / เสนอราคา / แชท / แจ้งเตือน / เพิ่มสินทรัพย์</li><li><b>ทุกครั้งที่แตะ:</b> แอปแสดงหน้าต่าง "เข้าสู่ระบบหรือสมัครสมาชิก" เหมือนกันทุกจุด</li><li><b>กด "ยังก่อน":</b> ปิดหน้าต่างและเล่นต่อในโหมด Guest ได้</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/00-login-required-feed.png" alt="หน้าต่าง "เข้าสู่ระบบหรือสมัครสมาชิก" — ปรากฏเหมือนกันทุกจุด">
   <figcaption><span class="figno">ภาพที่ 22</span><span class="chip chip-G">G</span>หน้าต่าง "เข้าสู่ระบบหรือสมัครสมาชิก" — ปรากฏเหมือนกันทุกจุด</figcaption>
 </figure><figure class="shot">
@@ -194,14 +234,14 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/09-noti-login.png" alt="แตะแท็บแจ้งเตือน → หน้าต่างเดียวกัน">
   <figcaption><span class="figno">ภาพที่ 25</span><span class="chip chip-G">G</span>แตะแท็บแจ้งเตือน → หน้าต่างเดียวกัน</figcaption>
-</figure></div><div class="note">ในคู่มือนี้ใช้ภาพหน้าต่างเดิมเป็นตัวแทนทุก trigger เพราะยืนยันแล้วว่า UI เหมือนกันทุกจุด — ปุ่ม "ยังก่อน" ปิดหน้าต่างและอยู่โหมด Guest ต่อได้</div></div>
+</figure></div><div class="note">ในคู่มือนี้ใช้ภาพหน้าต่างเดิมเป็นตัวแทนทุกจุด เพราะยืนยันแล้วว่าหน้าต่างนี้เหมือนกันทุกที่ — ปุ่ม "ยังก่อน" ปิดหน้าต่างและอยู่โหมด Guest ต่อได้</div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:88mm;--cw:41mm">
   <header class="phead"><div class="chno">บทที่ 03</div>
-    <div><h2>ฟีดสินทรัพย์</h2><div class="en">Asset Feed</div></div>
+    <div><h2>ฟีดสินทรัพย์: แท็บและการนำทาง</h2><div class="en">Asset Feed</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">ฟีดคือหน้าหลัก — แถบบนมีโลโก้ ปุ่ม <b>Watch Alert</b> ปุ่ม <b>+</b> (เพิ่มสินทรัพย์) และช่องค้นหา; แท็บสามอัน: <b>All</b> / <b>Following</b> / <b>Favorites</b> — เมนู … บนการ์ดเปลี่ยนตามว่ารายการนั้นเป็นของเราหรือของคนอื่น</p><div class="figrow"><figure class="shot">
+  <div class="pbody"><p class="lead">ฟีดคือหน้าหลักของแอป — โครงสร้างหน้าจอแบ่งเป็น 4 ส่วนหลัก</p><ul class="infolist"><li><b>แถบด้านบน:</b> โลโก้ Tuk Daeng · ปุ่ม Watch Alert · ปุ่ม + (เพิ่มสินทรัพย์) · ช่องค้นหา</li><li><b>แท็บ 3 อัน:</b> All (ทั้งหมด) / Following (ผู้ขายที่ติดตาม) / Favorites (รายการที่ถูกใจ)</li><li><b>แถบนำทางล่าง:</b> ฟีด · แชท · กระดานข่าว · แจ้งเตือน · โปรไฟล์ — ใช้สลับหน้าหลักทั้งแอป</li><li><b>แท็บที่ยังว่าง:</b> ถ้ายังไม่ได้ติดตามหรือถูกใจอะไรเลย แท็บนั้นจะแสดงหน้าว่างพร้อมข้อความชวนใช้งาน</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/02-feed-member.png" alt="ฟีดของ Member — การ์ดพร้อมเมนู … และปุ่ม Follow">
   <figcaption><span class="figno">ภาพที่ 26</span><span class="chip chip-M">M</span>ฟีดของ Member — การ์ดพร้อมเมนู … และปุ่ม Follow</figcaption>
 </figure><figure class="shot">
@@ -219,7 +259,14 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/02-feed-favorites.png" alt="แท็บ Favorites — รายการที่กดถูกใจ">
   <figcaption><span class="figno">ภาพที่ 31</span><span class="chip chip-M">M</span>แท็บ Favorites — รายการที่กดถูกใจ</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
+</figure></div></div>
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+</section><section class="page fill airy vspread" style="--ph:88mm;--cw:41mm">
+  <header class="phead"><div class="chno">บทที่ 03</div>
+    <div><h2>ฟีดสินทรัพย์: การกระทำบนการ์ด</h2><div class="en">Feed Actions &amp; Card Menu</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+  <div class="pbody"><ul class="infolist"><li><b>กดถูกใจ:</b> แตะหัวใจบนการ์ด → หัวใจเต็ม ยอดเพิ่ม และรายการเข้าแท็บ Favorites</li><li><b>เลื่อนจนสุดฟีด:</b> จะเจอข้อความ "คุณดูรายการทั้งหมดแล้ว"</li><li><b>เมนู … ของคนอื่น:</b> ซ่อน / แชร์ / บล็อก / รายงาน</li><li><b>เมนู … ของเรา (Owner):</b> แก้ไข / ที่มา / ขายแล้ว / สถานะ / แชร์ / ลบ</li><li><b>กด "ซ่อนสินทรัพย์นี้":</b> มีแถบ "เลิกทำ" ให้กู้คืนการ์ดกลับมาได้ทันที</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/02-feed-empty-favorites.png" alt="Favorites เมื่อยังไม่มีรายการที่ถูกใจ">
   <figcaption><span class="figno">ภาพที่ 32</span><span class="chip chip-M">M</span>Favorites เมื่อยังไม่มีรายการที่ถูกใจ</figcaption>
 </figure><figure class="shot">
@@ -239,12 +286,12 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
   <figcaption><span class="figno">ภาพที่ 37</span><span class="chip chip-M">M</span>กด "ซ่อนสินทรัพย์นี้" → แถบ "เลิกทำ" ให้กู้คืน</figcaption>
 </figure></div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:118mm;--cw:52mm">
   <header class="phead"><div class="chno">บทที่ 04</div>
-    <div><h2>ค้นหา ตัวกรอง และเรียงลำดับ</h2><div class="en">Search, Filter &amp; Sort</div></div>
+    <div><h2>ค้นหาและตัวกรอง</h2><div class="en">Search &amp; Filter</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">ค้นหาจากช่องค้นหาบนฟีด → พิมพ์คำแล้วกดยืนยัน → หน้าผลลัพธ์มีจำนวนผล ปุ่ม <b>ตัวกรอง</b> และไอคอนเรียงลำดับ — ไอคอนนาฬิกาบนหน้าผลใช้สร้าง Watch Alert จากเงื่อนไขนั้นได้</p><div class="figrow"><figure class="shot">
+  <div class="pbody"><ul class="infolist"><li><b>ค้นหา:</b> แตะช่องค้นหาบนฟีด → พิมพ์คำแล้วกดยืนยัน → เห็นหน้าผลลัพธ์พร้อมจำนวนผล</li><li><b>ตัวกรอง:</b> ปุ่มตัวกรองบนหน้าผล → แผ่นกรอง: แบรนด์ รุ่น ราคา ปี เลขอ้างอิง สภาพ</li><li><b>ตัวกรองผูกกัน:</b> เลือกแบรนด์แล้ว ช่องรุ่นจะเหลือเฉพาะรุ่นของแบรนด์นั้น</li><li><b>ใช้ตัวกรองแล้ว:</b> หน้าผลลัพธ์จะแสดงป้ายเงื่อนไขที่เลือกไว้ (เช่น ป้าย "Rolex" ใต้ช่องค้นหา) และปุ่มตัวกรองมีตัวเลขบอกว่าใช้อยู่กี่เงื่อนไข</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/03-search-result.png" alt="ผลการค้นหา "Rolex" — แสดงจำนวนผล">
   <figcaption><span class="figno">ภาพที่ 38</span><span class="chip chip-M">M</span>ผลการค้นหา "Rolex" — แสดงจำนวนผล</figcaption>
 </figure><figure class="shot">
@@ -254,9 +301,16 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
   <img class="phone" src="../screenshots/user-manual/03-filter-dependent.png" alt="ตัวกรองผูกกัน — เลือกแบรนด์แล้วเหลือเฉพาะรุ่นแบรนด์นั้น">
   <figcaption><span class="figno">ภาพที่ 40</span><span class="chip chip-M">M</span>ตัวกรองผูกกัน — เลือกแบรนด์แล้วเหลือเฉพาะรุ่นแบรนด์นั้น</figcaption>
 </figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/03-filter-applied.png" alt="ใช้ตัวกรองแล้ว — ชิป Rolex + ตัวเลขบนปุ่ม">
-  <figcaption><span class="figno">ภาพที่ 41</span><span class="chip chip-M">M</span>ใช้ตัวกรองแล้ว — ชิป Rolex + ตัวเลขบนปุ่ม</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/03-filter-applied.png" alt="ใช้ตัวกรองแล้ว — ป้าย Rolex + ตัวเลขบนปุ่ม">
+  <figcaption><span class="figno">ภาพที่ 41</span><span class="chip chip-M">M</span>ใช้ตัวกรองแล้ว — มีป้าย "Rolex" และปุ่มตัวกรองแสดงเลข (1)</figcaption>
+</figure></div></div>
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+</section><section class="page fill airy vspread" style="--ph:118mm;--cw:52mm">
+  <header class="phead"><div class="chno">บทที่ 04</div>
+    <div><h2>เรียงลำดับและสร้าง Watch Alert</h2><div class="en">Sort &amp; Watch Alert</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+  <div class="pbody"><ul class="infolist"><li><b>เรียงลำดับผลค้นหา:</b> แตะไอคอนเรียงลำดับบนหน้าผลการค้นหา → เลือกได้ ความเกี่ยวข้อง / ราคา / มาใหม่ล่าสุด</li><li><b>ค้นแล้วไม่เจอสินทรัพย์:</b> แสดงหน้าว่าง "ไม่พบข้อมูล" — ลองเปลี่ยนคำค้นหรือลดเงื่อนไขตัวกรอง</li><li><b>สร้าง Watch Alert:</b> แตะไอคอนนาฬิกาบนหน้าผลการค้นหา → ตั้งการแจ้งเตือนจากเงื่อนไขที่ค้นอยู่ได้ทันที</li><li><b>ค้นหาไม่สำเร็จ (เช่น เน็ตหลุด):</b> ขึ้น "กรุณาลองใหม่อีกครั้ง" พร้อมปุ่มลองใหม่</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/03-sort.png" alt="เรียงลำดับ: ความเกี่ยวข้อง / ราคา / ใหม่ล่าสุด">
   <figcaption><span class="figno">ภาพที่ 42</span><span class="chip chip-M">M</span>เรียงลำดับ: ความเกี่ยวข้อง / ราคา / ใหม่ล่าสุด</figcaption>
 </figure><figure class="shot">
@@ -268,19 +322,19 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/03-search-error.png" alt="ค้นหาขณะออฟไลน์ → "กรุณาลองใหม่อีกครั้ง" + ปุ่มลองใหม่">
   <figcaption><span class="figno">ภาพที่ 45</span><span class="chip chip-M">M</span>ค้นหาขณะออฟไลน์ → "กรุณาลองใหม่อีกครั้ง" + ปุ่มลองใหม่</figcaption>
-</figure></div><div class="note"><b>ข้อจำกัดที่ตรวจพบ:</b> ในเวอร์ชันนี้ช่องค้นหาไม่มีเมนูคำแนะนำ (autocomplete) ขณะพิมพ์ — พิมพ์คำแล้วกดยืนยันเพื่อดูผลเท่านั้น</div></div>
+</figure></div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:78mm;--cw:36mm">
   <header class="phead"><div class="chno">บทที่ 05</div>
     <div><h2>หน้ารายละเอียดสินทรัพย์แยกตามมุมมอง</h2><div class="en">Asset Detail — Perspectives</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">หน้ารายละเอียดสินทรัพย์เปลี่ยนตามมุมมอง: <b>Viewer</b> เห็นปุ่มเสนอราคา/ติดต่อผู้ขาย · <b>Owner</b> เห็นปุ่มแก้ไข/ทำเครื่องหมายว่าขายแล้ว และข้อมูลที่มาส่วนตัว · <b>Guest</b> เห็นทุกอย่างแต่กดไม่ได้</p><table class="cmp">
+  <div class="pbody"><p class="lead lchip"><span class="chip chip-M">M</span><b>Viewer (ดูของคนอื่น):</b> เห็นปุ่มเสนอราคา / ติดต่อผู้ขาย / ติดตาม</p><p class="lead lchip"><span class="chip chip-O">O</span><b>Owner (ของเรา):</b> เห็นปุ่มแก้ไข / ทำเครื่องหมายว่าขายแล้ว และข้อมูลที่มาส่วนตัว</p><p class="lead lchip"><span class="chip chip-G">G</span><b>Guest:</b> เห็นเนื้อหาทุกอย่าง แต่กดปุ่มไม่ได้ — เด้งหน้าต่างเข้าสู่ระบบ</p><table class="cmp">
 <tr><th>ส่วนบนหน้า</th><th>Guest</th><th>Viewer</th><th>Owner</th></tr>
-<tr><td>ปุ่มล่าง</td><td>เห็นแต่กด → login wall</td><td>เสนอราคา + ติดต่อผู้ขาย</td><td>แก้ไข + ทำเครื่องหมายว่าขายแล้ว</td></tr>
-<tr><td>แถวผู้ขาย + Follow</td><td>เห็น (กด→wall)</td><td>เห็น + กด Follow ได้</td><td>—</td></tr>
-<tr><td>ที่มาของสินทรัพย์/ราคาซื้อ</td><td>ไม่เห็น</td><td>ไม่เห็น</td><td>เห็น (ข้อมูลส่วนตัว)</td></tr>
-<tr><td>ถูกใจ / คอมเมนต์</td><td>ดูจำนวนได้ กดไม่ได้</td><td>ใช้งานได้เต็ม</td><td>ใช้งานได้เต็ม + ตอบกลับคอมเมนต์</td></tr>
+<tr><td>ปุ่มด้านล่างจอ</td><td>เห็นปุ่ม แต่กดแล้วเด้งหน้าต่างเข้าสู่ระบบ</td><td>ปุ่ม "เสนอราคา" + "ติดต่อผู้ขาย"</td><td>ปุ่ม "แก้ไข" + "ทำเครื่องหมายว่าขายแล้ว"</td></tr>
+<tr><td>แถวข้อมูลผู้ขายและปุ่มติดตาม</td><td>เห็น แต่กดติดตามไม่ได้</td><td>เห็นและกดติดตามได้</td><td>— (ของตัวเอง)</td></tr>
+<tr><td>ที่มาและราคาซื้อของสินทรัพย์</td><td>ไม่เห็น</td><td>ไม่เห็น</td><td>เห็น (ข้อมูลส่วนตัวของเจ้าของ)</td></tr>
+<tr><td>กดถูกใจ / แสดงความคิดเห็น</td><td>ดูจำนวนได้ แต่กดไม่ได้</td><td>ใช้งานได้เต็ม</td><td>ใช้งานได้เต็ม + ตอบกลับคอมเมนต์ได้</td></tr>
 </table><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/05-assetdetail-viewer.png" alt="Viewer: ป้าย SALE แดง + เสนอราคา/ติดต่อผู้ขาย + Follow">
   <figcaption><span class="figno">ภาพที่ 46</span><span class="chip chip-M">M</span>Viewer: ป้าย SALE แดง + เสนอราคา/ติดต่อผู้ขาย + Follow</figcaption>
@@ -298,12 +352,12 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
   <figcaption><span class="figno">ภาพที่ 50</span><span class="chip chip-M">M</span>แถบล่างของรายการ Show — เสนอราคา/ติดต่อผู้ขายเหมือนกัน</figcaption>
 </figure></div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:108mm;--cw:47mm">
   <header class="phead"><div class="chno">บทที่ 05</div>
-    <div><h2>แกลเลอรี ความคิดเห็น และการกระทำ</h2><div class="en">Gallery, Comments &amp; Actions</div></div>
+    <div><h2>แกลเลอรีและความคิดเห็น</h2><div class="en">Gallery &amp; Comments</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">แตะรูปสินทรัพย์เพื่อดูแกลเลอรีเต็มจอ (เลื่อนซ้ายขวาดูทุกรูป) — ส่วนความคิดเห็นอยู่ด้านล่าง รองรับการตอบกลับหนึ่งชั้น และลบ/รายงานคอมเมนต์ผ่านเมนู …</p><div class="figrow"><figure class="shot">
+  <div class="pbody"><ul class="infolist"><li><b>ดูรูปเต็มจอ:</b> แตะรูปสินทรัพย์ → เปิดแกลเลอรี เลื่อนซ้ายขวาดูทุกรูป</li><li><b>ซูมภาพ:</b> แตะภาพในแกลเลอรีเพื่อดูแบบเต็มจอ</li><li><b>ความคิดเห็น:</b> อยู่ด้านล่างหน้ารายละเอียด — เขียนคอมเมนต์ในช่องพิมพ์ได้ทันที</li><li><b>ตอบกลับ:</b> รองรับตอบกลับหนึ่งชั้น (คอมเมนต์ตอบจะเยื้องเข้า)</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/05-gallery-viewer.png" alt="แกลเลอรีเต็มจอ (เลื่อนดูทุกรูป)">
   <figcaption><span class="figno">ภาพที่ 51</span><span class="chip chip-M">M</span>แกลเลอรีเต็มจอ (เลื่อนดูทุกรูป)</figcaption>
 </figure><figure class="shot">
@@ -318,7 +372,14 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/11-comment.png" alt="คอมเมนต์ที่เพิ่งโพสต์ขึ้นแสดงทันที">
   <figcaption><span class="figno">ภาพที่ 55</span><span class="chip chip-M">M</span>คอมเมนต์ที่เพิ่งโพสต์ขึ้นแสดงทันที</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
+</figure></div></div>
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+</section><section class="page fill airy vspread" style="--ph:108mm;--cw:47mm">
+  <header class="phead"><div class="chno">บทที่ 05</div>
+    <div><h2>จัดการคอมเมนต์และรายงานโพสต์</h2><div class="en">Comment Actions &amp; Report</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+  <div class="pbody"><ul class="infolist"><li><b>ตอบกลับคอมเมนต์:</b> เจ้าของรายการตอบกลับได้ — คอมเมนต์ตอบจะเยื้องเข้าใต้ต้นฉบับ</li><li><b>เมนู … ของคอมเมนต์ตัวเอง:</b> ลบได้ — ยืนยันแล้วคอมเมนต์กลายเป็นแถบ "ถูกลบแล้ว"</li><li><b>รายงานโพสต์:</b> เมนู … บนรายการคนอื่น → เลือกเหตุผล + ใส่รายละเอียดส่งทีมงาน</li><li><b>ป้ายรายการ:</b> SALE (แดง) ตั้งขายอยู่ · SHOW (น้ำเงิน) แสดงเพื่ออวด</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/05-comment-reply.png" alt="เจ้าของรายการตอบกลับคอมเมนต์ (ย่อหน้าเยื้องเข้า)">
   <figcaption><span class="figno">ภาพที่ 56</span><span class="chip chip-O">O</span>เจ้าของรายการตอบกลับคอมเมนต์ (ย่อหน้าเยื้องเข้า)</figcaption>
 </figure><figure class="shot">
@@ -333,411 +394,517 @@ code { font-family:Consolas,monospace; background:#eee; padding:0 1.5mm; font-si
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/05-report-asset.png" alt="เมนู … → "รายงานโพสต์": เหตุผล + รายละเอียด">
   <figcaption><span class="figno">ภาพที่ 60</span><span class="chip chip-M">M</span>เมนู … → "รายงานโพสต์": เหตุผล + รายละเอียด</figcaption>
+</figure></div></div>
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+</section><section class="page center airy vspread" style="--ph:118mm;--cw:52mm">
+  <header class="phead"><div class="chno">บทที่ 05</div>
+    <div><h2>ถูกใจ แชร์ และเสนอราคา</h2><div class="en">Likes, Share &amp; Offer</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+  <div class="pbody"><ul class="infolist"><li><b>ดูรายชื่อคนถูกใจ:</b> แตะตัวเลขถูกใจใต้รูปสินทรัพย์ → เปิดหน้าต่าง "ถูกใจ" ค้นหาและกดติดตามผู้ใช้ได้</li><li><b>แชร์สินทรัพย์:</b> เมนู … → "แชร์" → เลือก LINE / Instagram / Facebook / คัดลอกลิงก์</li><li><b>เสนอราคา:</b> ปุ่ม "เสนอราคา" บนรายการที่ตั้งขาย (ป้าย SALE) — ขั้นตอนละเอียดดูบทที่ 7</li></ul><div class="figrow"><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/05-likes-sheet.jpg" alt="แตะยอดถูกใจ → หน้าต่าง "ถูกใจ" รายชื่อ + ปุ่มติดตาม">
+  <figcaption><span class="figno">ภาพที่ 61</span><span class="chip chip-M">M</span>แตะยอดถูกใจ → หน้าต่าง "ถูกใจ" — รายชื่อคนถูกใจ + ปุ่มติดตาม</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/05-share-sheet.jpg" alt="แชร์ → เมนูแชร์ของแอป: LINE / Instagram / Facebook / คัดลอกลิงก์">
+  <figcaption><span class="figno">ภาพที่ 62</span><span class="chip chip-M">M</span>แชร์ → เมนูแชร์ของแอป: LINE / Instagram / Facebook / คัดลอกลิงก์</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/05-offer-entry.png" alt="จุดเริ่มเสนอราคา — ปุ่ม "เสนอราคา" บนรายการ Sale">
-  <figcaption><span class="figno">ภาพที่ 61</span><span class="chip chip-M">M</span>จุดเริ่มเสนอราคา — ปุ่ม "เสนอราคา" บนรายการ Sale</figcaption>
-</figure></div><div class="note"><b>ข้อจำกัดที่ตรวจพบ:</b> ตัวเลขยอดถูกใจไม่ใช่ปุ่มในเวอร์ชันนี้ (ไม่มีหน้า "รายชื่อคนถูกใจ") · ปุ่มแชร์ไม่เปิดแผ่นแชร์ของระบบบนตัวจำลอง — ทั้งสองจุดเขียนอธิบายแทนภาพ</div></div>
+  <figcaption><span class="figno">ภาพที่ 63</span><span class="chip chip-M">M</span>จุดเริ่มเสนอราคา — ปุ่ม "เสนอราคา" บนรายการที่มีป้าย Sale</figcaption>
+</figure></div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:100mm;--cw:46mm">
   <header class="phead"><div class="chno">บทที่ 06</div>
     <div><h2>เพิ่มสินทรัพย์: ฟอร์มและการตรวจสอบ</h2><div class="en">Add Asset — Form</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
   <div class="pbody"><p class="lead">เพิ่มสินทรัพย์จากปุ่ม <b>+</b> บนฟีด — ฟอร์มบังคับกรอก: รูปภาพ (สูงสุด 10 รูป) แบรนด์ รุ่น ปี สภาพ สถานะ และที่มาของสินทรัพย์</p><ol class="steps"><li>แตะกล่อง "เพิ่มรูปภาพ" → เลือกรูปจากเครื่อง (เลือกได้หลายรูป) → ครอบ/หมุนภาพในแอป → เสร็จสิ้น</li><li>เลือก <b>แบรนด์</b> จากลิสต์ตัวอักษร → <b>รุ่น &amp; ซีรีส์</b> จะแสดงเฉพาะรุ่นของแบรนด์นั้น (มีตัวเลือก "อื่น ๆ / เพิ่มรุ่น")</li><li>เลือกปีจากตัวเลือกวันที่ (ปฏิทินไทย) → กรอกราคา (ระบบใส่ comma ให้อัตโนมัติ) คำอธิบาย และสภาพ</li><li>เลือกสถานะ <b>ขาย / แสดง / ซ่อน</b> → ขั้นที่มา: เป็นเจ้าของเอง (กรอกราคาซื้อ/วันที่ซื้อ) หรือฝากขาย</li><li>กดบันทึก → ยืนยัน "เพิ่มรายการนี้?" → อัปโหลด → สำเร็จ</li></ol><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-asset-form.png" alt="ฟอร์มเพิ่มสินทรัพย์ — แกลเลอรี 0/10 + ฟิลด์หลัก">
-  <figcaption><span class="figno">ภาพที่ 62</span><span class="chip chip-O">O</span>ฟอร์มเพิ่มสินทรัพย์ — แกลเลอรี 0/10 + ฟิลด์หลัก</figcaption>
+  <figcaption><span class="figno">ภาพที่ 64</span><span class="chip chip-O">O</span>ฟอร์มเพิ่มสินทรัพย์ — แกลเลอรี 0/10 + ฟิลด์หลัก</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-asset-images.png" alt="กล่องเพิ่มรูปภาพก่อนเลือกรูป">
-  <figcaption><span class="figno">ภาพที่ 63</span><span class="chip chip-O">O</span>กล่องเพิ่มรูปภาพก่อนเลือกรูป</figcaption>
+  <figcaption><span class="figno">ภาพที่ 65</span><span class="chip chip-O">O</span>กล่องเพิ่มรูปภาพก่อนเลือกรูป</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-asset-form2.png" alt="ฟอร์มส่วนล่าง — ราคา คำอธิบาย การขายและการจัดแสดง">
-  <figcaption><span class="figno">ภาพที่ 64</span><span class="chip chip-O">O</span>ฟอร์มส่วนล่าง — ราคา คำอธิบาย การขายและการจัดแสดง</figcaption>
+  <figcaption><span class="figno">ภาพที่ 66</span><span class="chip chip-O">O</span>ฟอร์มส่วนล่าง — ราคา คำอธิบาย การขายและการจัดแสดง</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-validation.png" alt="กดบันทึกโดยยังไม่ครบ → กรอบแดงทุกฟิลด์บังคับ">
-  <figcaption><span class="figno">ภาพที่ 65</span><span class="chip chip-O">O</span>กดบันทึกโดยยังไม่ครบ → กรอบแดงทุกฟิลด์บังคับ</figcaption>
+  <figcaption><span class="figno">ภาพที่ 67</span><span class="chip chip-O">O</span>กดบันทึกโดยยังไม่ครบ → กรอบแดงทุกฟิลด์บังคับ</figcaption>
 </figure></div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:88mm;--cw:41mm">
   <header class="phead"><div class="chno">บทที่ 06</div>
     <div><h2>เพิ่มสินทรัพย์: รูปภาพและตัวเลือก</h2><div class="en">Add Asset — Images &amp; Pickers</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">เลือกรูปจากเครื่องได้ทีละหลายรูป → ครอบ/หมุนในแอปทีละรูป → แกลเลอรีเติม (รูปแรกเป็นภาพหลัก) — ตัวเลือกแบรนด์/รุ่น/วันที่เป็นลิสต์มาตรฐานของระบบ</p><div class="figrow"><figure class="shot">
+  <div class="pbody"><ul class="infolist"><li><b>เลือกรูป:</b> แตะกล่อง "เพิ่มรูปภาพ" → เลือกรูปจากเครื่องได้ทีละหลายรูป</li><li><b>ครอบ/หมุน:</b> ปรับภาพในแอปทีละรูป — สลับรูปด้วยตัวเลขด้านบน</li><li><b>แกลเลอรี:</b> รูปที่เลือกเติมลงฟอร์ม (สูงสุด 10 รูป) — รูปแรกเป็นภาพหลัก</li><li><b>แบรนด์/รุ่น:</b> เลือกแบรนด์จากลิสต์มาตรฐาน → รุ่น &amp; ซีรีส์แสดงเฉพาะของแบรนด์นั้น (+ เพิ่มรุ่นเองได้)</li><li><b>วันที่ซื้อ:</b> เลือกจากปฏิทินภาษาไทยของระบบ</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-asset-picker.png" alt="ตัวเลือกรูปจากเครื่อง — เลือกได้ทีละหลายรูป">
-  <figcaption><span class="figno">ภาพที่ 66</span><span class="chip chip-O">O</span>ตัวเลือกรูปจากเครื่อง — เลือกได้ทีละหลายรูป</figcaption>
+  <figcaption><span class="figno">ภาพที่ 68</span><span class="chip chip-O">O</span>ตัวเลือกรูปจากเครื่อง — เลือกได้ทีละหลายรูป</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-asset-crop.png" alt="ครอบ/หมุนในแอป — สลับรูปด้วยตัวเลข 1/2">
-  <figcaption><span class="figno">ภาพที่ 67</span><span class="chip chip-O">O</span>ครอบ/หมุนในแอป — สลับรูปด้วยตัวเลข 1/2</figcaption>
+  <figcaption><span class="figno">ภาพที่ 69</span><span class="chip chip-O">O</span>ครอบ/หมุนในแอป — สลับรูปด้วยตัวเลข 1/2</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-asset-gallery-filled.png" alt="แกลเลอรีเติมแล้ว 2/10 รูป — รูปแรกเป็นภาพหลัก">
-  <figcaption><span class="figno">ภาพที่ 68</span><span class="chip chip-O">O</span>แกลเลอรีเติมแล้ว 2/10 รูป — รูปแรกเป็นภาพหลัก</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
+  <figcaption><span class="figno">ภาพที่ 70</span><span class="chip chip-O">O</span>แกลเลอรีเติมแล้ว 2/10 รูป — รูปแรกเป็นภาพหลัก</figcaption>
+</figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-brand-picker.png" alt="เลือกแบรนด์จากมาสเตอร์ลิสต์">
-  <figcaption><span class="figno">ภาพที่ 69</span><span class="chip chip-O">O</span>เลือกแบรนด์จากมาสเตอร์ลิสต์</figcaption>
+  <figcaption><span class="figno">ภาพที่ 71</span><span class="chip chip-O">O</span>เลือกแบรนด์จากมาสเตอร์ลิสต์</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-model-picker.png" alt="รุ่น &amp; ซีรีส์ — แสดงเฉพาะของแบรนด์ที่เลือก + เพิ่มรุ่นเองได้">
-  <figcaption><span class="figno">ภาพที่ 70</span><span class="chip chip-O">O</span>รุ่น &amp; ซีรีส์ — แสดงเฉพาะของแบรนด์ที่เลือก + เพิ่มรุ่นเองได้</figcaption>
+  <figcaption><span class="figno">ภาพที่ 72</span><span class="chip chip-O">O</span>รุ่น &amp; ซีรีส์ — แสดงเฉพาะของแบรนด์ที่เลือก + เพิ่มรุ่นเองได้</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-datepicker.png" alt="ตัวเลือกวันที่ซื้อ (ปฏิทินภาษาไทย)">
-  <figcaption><span class="figno">ภาพที่ 71</span><span class="chip chip-O">O</span>ตัวเลือกวันที่ซื้อ (ปฏิทินภาษาไทย)</figcaption>
+  <figcaption><span class="figno">ภาพที่ 73</span><span class="chip chip-O">O</span>ตัวเลือกวันที่ซื้อ (ปฏิทินภาษาไทย)</figcaption>
 </figure></div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:104mm;--cw:47mm">
   <header class="phead"><div class="chno">บทที่ 06</div>
     <div><h2>เพิ่มสินทรัพย์: ที่มาและการยืนยัน</h2><div class="en">Add Asset — Provenance &amp; Submit</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">สถานะรายการ: <b>ขาย</b> (แสดงในฟีดและเสนอราคาได้) · <b>แสดง</b> (โชว์ในคอลเลกชัน) · <b>ซ่อน</b> (ส่วนตัว คนอื่นไม่เห็น) — ขั้นสุดท้ายกรอกที่มาของสินทรัพย์แล้วยืนยัน</p><div class="figrow"><figure class="shot">
+  <div class="pbody"><ul class="infolist"><li><b>สถานะ "ขาย":</b> แสดงในฟีดและเปิดให้เสนอราคาได้</li><li><b>สถานะ "แสดง":</b> โชว์ในคอลเลกชันและเสนอราคาได้เหมือนกัน</li><li><b>สถานะ "ซ่อน":</b> ส่วนตัว — คนอื่นไม่เห็น</li><li><b>ขั้นสุดท้าย:</b> กรอกที่มาของสินทรัพย์ (ราคาซื้อ/วันที่ซื้อ/เอกสาร) → กดบันทึก → ยืนยัน</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-asset-status.png" alt="เลือกสถานะ: ขาย / แสดง / ซ่อน">
-  <figcaption><span class="figno">ภาพที่ 72</span><span class="chip chip-O">O</span>เลือกสถานะ: ขาย / แสดง / ซ่อน</figcaption>
+  <figcaption><span class="figno">ภาพที่ 74</span><span class="chip chip-O">O</span>เลือกสถานะ: ขาย / แสดง / ซ่อน</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-asset-provenance.png" alt="ขั้นที่มา — แท็บ เจ้าของ/ฝากขาย + ราคาซื้อ วันที่ซื้อ เอกสาร">
-  <figcaption><span class="figno">ภาพที่ 73</span><span class="chip chip-O">O</span>ขั้นที่มา — แท็บ เจ้าของ/ฝากขาย + ราคาซื้อ วันที่ซื้อ เอกสาร</figcaption>
+  <figcaption><span class="figno">ภาพที่ 75</span><span class="chip chip-O">O</span>ขั้นที่มา — แท็บ เจ้าของ/ฝากขาย + ราคาซื้อ วันที่ซื้อ เอกสาร</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-confirm.png" alt="ยืนยันก่อนบันทึก">
-  <figcaption><span class="figno">ภาพที่ 74</span><span class="chip chip-O">O</span>ยืนยันก่อนบันทึก</figcaption>
+  <figcaption><span class="figno">ภาพที่ 76</span><span class="chip chip-O">O</span>ยืนยันก่อนบันทึก</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-uploading.png" alt="กำลังอัปโหลดรายการ">
-  <figcaption><span class="figno">ภาพที่ 75</span><span class="chip chip-O">O</span>กำลังอัปโหลดรายการ</figcaption>
+  <figcaption><span class="figno">ภาพที่ 77</span><span class="chip chip-O">O</span>กำลังอัปโหลดรายการ</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-add-success.png" alt="สำเร็จ — "เพิ่มรายการแล้ว" + เปิดหน้ารายการโหมด Owner">
-  <figcaption><span class="figno">ภาพที่ 76</span><span class="chip chip-O">O</span>สำเร็จ — "เพิ่มรายการแล้ว" + เปิดหน้ารายการโหมด Owner</figcaption>
-</figure></div><div class="note">ข้อมูลที่มา (ราคาซื้อ/วันที่ซื้อ/เอกสาร) เป็น<b>ข้อมูลส่วนตัวของเจ้าของ</b> — ผู้ชมทั่วไปไม่เห็นส่วนนี้บนหน้ารายละเอียด</div></div>
+  <figcaption><span class="figno">ภาพที่ 78</span><span class="chip chip-O">O</span>สำเร็จ — "เพิ่มรายการแล้ว" + เปิดหน้ารายการโหมด Owner</figcaption>
+</figure></div><div class="note" style="margin-bottom:5mm">ข้อมูลที่มา (ราคาซื้อ/วันที่ซื้อ/เอกสาร) เป็น<b>ข้อมูลส่วนตัวของเจ้าของ</b> — ผู้ชมทั่วไปไม่เห็นส่วนนี้บนหน้ารายละเอียด</div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:88mm;--cw:41mm">
   <header class="phead"><div class="chno">บทที่ 06</div>
     <div><h2>แก้ไข เปลี่ยนสถานะ บันทึกการขาย และลบ</h2><div class="en">Manage &amp; Remove Asset</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">หลังมีรายการแล้ว Owner จัดการได้จากเมนู … บนการ์ดหรือหน้ารายละเอียด: แก้ไขข้อมูล แก้ที่มา เปลี่ยนสถานะ ทำเครื่องหมายว่าขายแล้ว (บันทึกการขาย) และลบรายการ</p><div class="figrow"><figure class="shot">
+  <div class="pbody"><ul class="infolist"><li><b>จุดเข้าจัดการ:</b> เมนู … บนการ์ดหรือหน้ารายละเอียดของรายการตัวเอง (Owner)</li><li><b>แก้ไขรายการ:</b> แก้ไขข้อมูล / แก้ที่มา / เปลี่ยนสถานะ</li><li><b>ปิดรายการ:</b> ทำเครื่องหมายว่าขายแล้ว (บันทึกการขาย) หรือลบรายการ</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-quickactions-owner.png" alt="เมนู … ของ Owner บนการ์ด">
-  <figcaption><span class="figno">ภาพที่ 77</span><span class="chip chip-O">O</span>เมนู … ของ Owner บนการ์ด</figcaption>
+  <figcaption><span class="figno">ภาพที่ 79</span><span class="chip chip-O">O</span>เมนู … ของ Owner บนการ์ด</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-edit-asset.png" alt="ฟอร์มแก้ไข — กรอกค่าเดิมไว้ให้ + ลิงก์ "ที่มาของสินค้า"">
-  <figcaption><span class="figno">ภาพที่ 78</span><span class="chip chip-O">O</span>ฟอร์มแก้ไข — กรอกค่าเดิมไว้ให้ + ลิงก์ "ที่มาของสินค้า"</figcaption>
+  <figcaption><span class="figno">ภาพที่ 80</span><span class="chip chip-O">O</span>ฟอร์มแก้ไข — กรอกค่าเดิมไว้ให้ + ลิงก์ "ที่มาของสินค้า"</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-edit-provenance.png" alt="หน้าที่มาของสินทรัพย์ (ดู/แก้ไข)">
-  <figcaption><span class="figno">ภาพที่ 79</span><span class="chip chip-O">O</span>หน้าที่มาของสินทรัพย์ (ดู/แก้ไข)</figcaption>
+  <figcaption><span class="figno">ภาพที่ 81</span><span class="chip chip-O">O</span>หน้าที่มาของสินทรัพย์ (ดู/แก้ไข)</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-change-status.png" alt="เปลี่ยนสถานะ — สถานะปัจจุบันถูกเลือกไว้">
-  <figcaption><span class="figno">ภาพที่ 80</span><span class="chip chip-O">O</span>เปลี่ยนสถานะ — สถานะปัจจุบันถูกเลือกไว้</figcaption>
+  <figcaption><span class="figno">ภาพที่ 82</span><span class="chip chip-O">O</span>เปลี่ยนสถานะ — สถานะปัจจุบันถูกเลือกไว้</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-sale-record.png" alt="บันทึกการขาย: วันที่ขาย ผู้ซื้อ ช่องทาง ราคา การชำระเงิน">
-  <figcaption><span class="figno">ภาพที่ 81</span><span class="chip chip-O">O</span>บันทึกการขาย: วันที่ขาย ผู้ซื้อ ช่องทาง ราคา การชำระเงิน</figcaption>
+  <figcaption><span class="figno">ภาพที่ 83</span><span class="chip chip-O">O</span>บันทึกการขาย: วันที่ขาย ผู้ซื้อ ช่องทาง ราคา การชำระเงิน</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/04-delete-confirm.png" alt="ยืนยันลบรายการ — ลบแล้วกู้คืนไม่ได้">
-  <figcaption><span class="figno">ภาพที่ 82</span><span class="chip chip-O">O</span>ยืนยันลบรายการ — ลบแล้วกู้คืนไม่ได้</figcaption>
-</figure></div><div class="note"><b>ข้อควรระวัง:</b> การลบรายการไม่มีทางย้อนกลับ · รายการที่ขายแล้วจะเข้า Sold และแก้ไขข้อมูลหลักไม่ได้ (ตามสเปก) — ในชุดภาพนี้เลือกยกเลิกไว้ก่อนยืนยันเพื่อรักษาข้อมูลทดสอบ</div></div>
+  <figcaption><span class="figno">ภาพที่ 84</span><span class="chip chip-O">O</span>ยืนยันลบรายการ — ลบแล้วกู้คืนไม่ได้</figcaption>
+</figure></div><div class="note" style="margin-bottom:5mm"><b>ข้อควรระวัง:</b> การลบรายการไม่มีทางย้อนกลับ · รายการที่ขายแล้วจะเข้าแท็บ Sold และแก้ไขข้อมูลหลักไม่ได้อีก</div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:110mm;--cw:50mm">
   <header class="phead"><div class="chno">บทที่ 07</div>
     <div><h2>เสนอราคา — ฝั่งผู้ซื้อ</h2><div class="en">Make an Offer</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">ผู้ซื้อกด <b>เสนอราคา</b> บนรายการคนอื่น → กรอกราคาที่เสนอ (บาท) + ข้อความถึงผู้ขาย (ไม่บังคับ สูงสุด 500 ตัวอักษร) → ส่ง → ข้อเสนอกลายเป็น "การ์ด" ในห้องแชทกับผู้ขายทันที — <b>Owner ไม่เห็นปุ่มเสนอราคาบนรายการตัวเอง</b></p><div class="figrow"><figure class="shot">
+  <div class="pbody"><ul class="infolist"><li><b>เริ่มเสนอราคา:</b> กดปุ่ม <b>เสนอราคา</b> บนรายการของคนอื่น</li><li><b>กรอกข้อเสนอ:</b> ราคาที่เสนอ (บาท) + ข้อความถึงผู้ขาย (ไม่บังคับ สูงสุด 500 ตัวอักษร)</li><li><b>หลังกดส่ง:</b> ข้อเสนอกลายเป็น "การ์ด" ในห้องแชทกับผู้ขายทันที</li><li><b>Owner รายการนั้น:</b> ไม่เห็นปุ่มเสนอราคาบนรายการตัวเอง</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/08-no-offer-owner.png" alt="Owner ดูรายการตัวเอง — แถบล่างเป็น แก้ไข/ขายแล้ว ไม่มีเสนอราคา">
-  <figcaption><span class="figno">ภาพที่ 83</span><span class="chip chip-O">O</span>Owner ดูรายการตัวเอง — แถบล่างเป็น แก้ไข/ขายแล้ว ไม่มีเสนอราคา</figcaption>
+  <figcaption><span class="figno">ภาพที่ 85</span><span class="chip chip-O">O</span>Owner ดูรายการตัวเอง — แถบล่างเป็น แก้ไข/ขายแล้ว ไม่มีเสนอราคา</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/08-make-offer.png" alt="ฟอร์มเสนอราคา — แสดงราคาตั้งเป็นอ้างอิง">
-  <figcaption><span class="figno">ภาพที่ 84</span><span class="chip chip-B">B</span>ฟอร์มเสนอราคา — แสดงราคาตั้งเป็นอ้างอิง</figcaption>
+  <figcaption><span class="figno">ภาพที่ 86</span><span class="chip chip-B">B</span>ฟอร์มเสนอราคา — แสดงราคาตั้งเป็นอ้างอิง</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/08-offer-sent.png" alt="ส่งข้อเสนอสำเร็จ → ปุ่ม "ไปที่แชท"">
-  <figcaption><span class="figno">ภาพที่ 85</span><span class="chip chip-B">B</span>ส่งข้อเสนอสำเร็จ → ปุ่ม "ไปที่แชท"</figcaption>
+  <figcaption><span class="figno">ภาพที่ 87</span><span class="chip chip-B">B</span>ส่งข้อเสนอสำเร็จ → ปุ่ม "ไปที่แชท"</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/07-offercard-buyer-pending.png" alt="การ์ดข้อเสนอในแชทฝั่งผู้ซื้อ — สถานะรอผู้ขายตอบ">
-  <figcaption><span class="figno">ภาพที่ 86</span><span class="chip chip-B">B</span>การ์ดข้อเสนอในแชทฝั่งผู้ซื้อ — สถานะรอผู้ขายตอบ</figcaption>
+  <figcaption><span class="figno">ภาพที่ 88</span><span class="chip chip-B">B</span>การ์ดข้อเสนอในแชทฝั่งผู้ซื้อ — สถานะรอผู้ขายตอบ</figcaption>
 </figure></div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:108mm;--cw:48mm">
+
   <header class="phead"><div class="chno">บทที่ 07</div>
-    <div><h2>ข้อเสนอ — ฝั่งผู้ขายและวงจรสถานะ</h2><div class="en">Offer Lifecycle</div></div>
+    <div><h2>ข้อเสนอ — ฝั่งผู้ขาย</h2><div class="en">Offers — Seller Side</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">ฝั่งผู้ขายได้รับ<b>การแจ้งเตือน</b>ที่กดตอบสนองได้ทันที (ปฏิเสธ / ตรวจสอบข้อเสนอ) และเห็นการ์ดข้อเสนอในแชทพร้อมปุ่ม <b>ยอมรับ / ปฏิเสธ</b> — การกดทั้งสองปุ่มมีผลทันที (ไม่มีหน้าต่างยืนยัน) แล้วระบบแจ้งผู้ซื้ออัตโนมัติ</p><div class="figrow"><figure class="shot">
+
+  <div class="pbody"><ul class="infolist"><li><b>แจ้งเตือนเข้า:</b> ผู้ขายกดตอบสนองจากการแจ้งเตือนได้ทันที (ปฏิเสธ / ตรวจสอบข้อเสนอ)</li><li><b>การ์ดข้อเสนอในแชท:</b> มีปุ่ม <b>ยอมรับ / ปฏิเสธ</b></li><li><b>ไม่มีหน้าต่างยืนยัน:</b> กดแล้วมีผลทันที ระบบแจ้งผู้ซื้ออัตโนมัติ</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/09-notifications.png" alt="ศูนย์แจ้งเตือนของผู้ขาย — การ์ดข้อเสนอพร้อมปุ่มปฏิเสธ/ตรวจสอบ">
-  <figcaption><span class="figno">ภาพที่ 87</span><span class="chip chip-S">S</span>ศูนย์แจ้งเตือนของผู้ขาย — การ์ดข้อเสนอพร้อมปุ่มปฏิเสธ/ตรวจสอบ</figcaption>
+  <figcaption><span class="figno">ภาพที่ 89</span><span class="chip chip-S">S</span>หน้าแจ้งเตือนของผู้ขาย — การ์ดข้อเสนอพร้อมปุ่มปฏิเสธ/ตรวจสอบ</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/07-offercard-pending.png" alt="การ์ดข้อเสนอที่รอตอบ — ปุ่ม ปฏิเสธ / ยอมรับ">
-  <figcaption><span class="figno">ภาพที่ 88</span><span class="chip chip-S">S</span>การ์ดข้อเสนอที่รอตอบ — ปุ่ม ปฏิเสธ / ยอมรับ</figcaption>
+  <figcaption><span class="figno">ภาพที่ 90</span><span class="chip chip-S">S</span>การ์ดข้อเสนอที่รอตอบ — ปุ่ม ปฏิเสธ / ยอมรับ</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/07-offercard-accepted-seller.png" alt="กดยอมรับ → "ยอมรับข้อเสนอแล้ว" + ราคาสีเขียว">
-  <figcaption><span class="figno">ภาพที่ 89</span><span class="chip chip-S">S</span>กดยอมรับ → "ยอมรับข้อเสนอแล้ว" + ราคาสีเขียว</figcaption>
+  <figcaption><span class="figno">ภาพที่ 91</span><span class="chip chip-S">S</span>กดยอมรับ → "ยอมรับข้อเสนอแล้ว" + ราคาสีเขียว</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/07-offercard-declined.png" alt="กดปฏิเสธ → "ปฏิเสธข้อเสนอแล้ว" + ราคาขีดฆ่า">
-  <figcaption><span class="figno">ภาพที่ 90</span><span class="chip chip-S">S</span>กดปฏิเสธ → "ปฏิเสธข้อเสนอแล้ว" + ราคาขีดฆ่า</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
+  <figcaption><span class="figno">ภาพที่ 92</span><span class="chip chip-S">S</span>กดปฏิเสธ → "ปฏิเสธข้อเสนอแล้ว" + ราคาขีดฆ่า</figcaption>
+</figure></div></div>
+
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+
+</section><section class="page center airy vspread" style="--ph:118mm;--cw:58mm">
+
+  <header class="phead"><div class="chno">บทที่ 07</div>
+    <div><h2>ข้อเสนอ — ผลลัพธ์และแท็บข้อเสนอ</h2><div class="en">Offers — Results & Tab</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+
+  <div class="pbody"><ul class="infolist"><li><b>ทั้งสองฝั่งเห็นผลเหมือนกัน:</b> การ์ดเดิมในแชทอัปเดตสถานะ — ยอมรับ = ราคาสีเขียว / ปฏิเสธ = ราคาขีดฆ่า + มีการแจ้งเตือนไปหาผู้ซื้อ</li><li><b>แท็บ "ข้อเสนอที่ได้รับ":</b> แสดงเฉพาะข้อเสนอที่ยังรอตอบ — ข้อเสนอที่ตอบแล้วจะหลุดจากแท็บนี้ เหลือไว้เป็นการ์ดในแชท</li><li><b>รายการถูกลบภายหลัง:</b> การ์ดข้อเสนอที่อ้างถึงจะแสดงเป็นการ์ดว่างไม่มีรูป</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/07-offercard-buyer-declined.png" alt="ผู้ซื้อเห็นการ์ดเดิมสถานะถูกปฏิเสธ + แจ้งเตือน "ปฏิเสธข้อเสนอของคุณ"">
-  <figcaption><span class="figno">ภาพที่ 91</span><span class="chip chip-B">B</span>ผู้ซื้อเห็นการ์ดเดิมสถานะถูกปฏิเสธ + แจ้งเตือน "ปฏิเสธข้อเสนอของคุณ"</figcaption>
+  <figcaption><span class="figno">ภาพที่ 93</span><span class="chip chip-B">B</span>ผู้ซื้อเห็นการ์ดเดิมสถานะถูกปฏิเสธ + แจ้งเตือน "ปฏิเสธข้อเสนอของคุณ"</figcaption>
 </figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/07-offercard-accepted.png" alt="ผู้ซื้อเห็นสถานะยอมรับ (การ์ดจากแชทจริง)">
-  <figcaption><span class="figno">ภาพที่ 92</span><span class="chip chip-B">B</span>ผู้ซื้อเห็นสถานะยอมรับ (การ์ดจากแชทจริง)</figcaption>
+  <img class="phone" src="../screenshots/user-manual/07-offercard-accepted.png" alt="ผู้ขายเห็นสถานะยอมรับ — ป้าย "ยอมรับข้อเสนอแล้ว" + การ์ดราคาสีเขียว">
+  <figcaption><span class="figno">ภาพที่ 94</span><span class="chip chip-S">S</span>ผู้ขายเห็นสถานะยอมรับ — ป้าย "ยอมรับข้อเสนอแล้ว" + การ์ดราคาสีเขียว</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/07-incoming-empty.png" alt="แท็บ "ข้อเสนอที่ได้รับ" — แสดงเฉพาะข้อเสนอที่ยังรอตอบ">
-  <figcaption><span class="figno">ภาพที่ 93</span><span class="chip chip-S">S</span>แท็บ "ข้อเสนอที่ได้รับ" — แสดงเฉพาะข้อเสนอที่ยังรอตอบ</figcaption>
-</figure></div><div class="note"><b>ที่พบจริง:</b> ข้อเสนอที่ถูกตอบแล้ว (ไม่ว่ายอมรับหรือปฏิเสธ) จะหลุดจากแท็บ "ข้อเสนอที่ได้รับ" เหลือไว้เป็นการ์ดในแชท · สถานะขั้นสูงอย่าง Paused/Invalidated เกิดจากการกำกับดูแลของระบบ (ไม่มีปุ่มให้ผู้ใช้กด) · การ์ดที่อ้างถึงรายการที่ถูกลบจะแสดงเป็นการ์ดว่างไม่มีรูป</div></div>
+  <figcaption><span class="figno">ภาพที่ 95</span><span class="chip chip-S">S</span>แท็บ "ข้อเสนอที่ได้รับ" — แสดงเฉพาะข้อเสนอที่ยังรอตอบ</figcaption>
+</figure></div></div>
+
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+
+</section><section class="page fill airy vspread" style="--ph:108mm;--cw:48mm">
+
   <header class="phead"><div class="chno">บทที่ 08</div>
-    <div><h2>แชทและการสื่อสารกับผู้ขาย</h2><div class="en">Chat</div></div>
+    <div><h2>แชท — เริ่มและส่งข้อความ</h2><div class="en">Chat — Start & Messages</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">แชทเริ่มจากปุ่ม <b>ติดต่อผู้ขาย</b> — ห้องแชทมีการ์ดอ้างอิงสินทรัพย์ด้านบนเสมอ รองรับข้อความ รูปภาพ และการ์ดข้อเสนอ; แถบล่างสลับ "ทั้งหมด" / "ข้อเสนอที่ได้รับ" (เฉพาะฝั่งที่ได้รับข้อเสนอ)</p><div class="figrow"><figure class="shot">
+
+  <div class="pbody"><ul class="infolist"><li><b>เริ่มแชท:</b> กดปุ่ม <b>ติดต่อผู้ขาย</b> บนรายการ → เปิดห้องใหม่พร้อมการ์ดอ้างอิงสินทรัพย์ด้านบนเสมอ</li><li><b>ยังไม่มีแชท:</b> แสดงหน้าว่าง "ไม่พบข้อมูล"</li><li><b>ส่งข้อความ:</b> รองรับข้อความ รูปภาพ และการ์ดข้อเสนอ — ข้อความของเราอยู่ฝั่งขวาเป็น bubble สีแดง มีเวลาและเครื่องหมายอ่านแล้วกำกับ</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/07-chat-empty.png" alt="แท็บแชทเมื่อยังไม่มีห้อง — "ไม่พบข้อมูล"">
-  <figcaption><span class="figno">ภาพที่ 94</span><span class="chip chip-M">M</span>แท็บแชทเมื่อยังไม่มีห้อง — "ไม่พบข้อมูล"</figcaption>
+  <figcaption><span class="figno">ภาพที่ 96</span><span class="chip chip-M">M</span>แท็บแชทเมื่อยังไม่มีห้อง — "ไม่พบข้อมูล"</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/07-chat-list.png" alt="รายการแชท — ห้องจริงพร้อมข้อความล่าสุดและเวลา">
-  <figcaption><span class="figno">ภาพที่ 95</span><span class="chip chip-M">M</span>รายการแชท — ห้องจริงพร้อมข้อความล่าสุดและเวลา</figcaption>
+  <figcaption><span class="figno">ภาพที่ 97</span><span class="chip chip-M">M</span>รายการแชท — ห้องจริงพร้อมข้อความล่าสุดและเวลา</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/07-chat-first.png" alt="ห้องใหม่ที่เพิ่งเปิดจาก "ติดต่อผู้ขาย" — การ์ดอ้างอิง + ช่องพิมพ์">
-  <figcaption><span class="figno">ภาพที่ 96</span><span class="chip chip-M">M</span>ห้องใหม่ที่เพิ่งเปิดจาก "ติดต่อผู้ขาย" — การ์ดอ้างอิง + ช่องพิมพ์</figcaption>
+  <figcaption><span class="figno">ภาพที่ 98</span><span class="chip chip-M">M</span>ห้องใหม่ที่เพิ่งเปิดจาก "ติดต่อผู้ขาย" — การ์ดอ้างอิง + ช่องพิมพ์</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/07-chat-assetref.png" alt="การ์ดอ้างอิงสินทรัพย์: รูป ชื่อ ราคา ป้ายสถานะ">
-  <figcaption><span class="figno">ภาพที่ 97</span><span class="chip chip-M">M</span>การ์ดอ้างอิงสินทรัพย์: รูป ชื่อ ราคา ป้ายสถานะ</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/07-chat-room.png" alt="ข้อความส่งแล้ว — ฟองขวา(แดง)คือเรา พร้อมเวลาและสถานะอ่าน">
-  <figcaption><span class="figno">ภาพที่ 98</span><span class="chip chip-M">M</span>ข้อความส่งแล้ว — ฟองขวา(แดง)คือเรา พร้อมเวลาและสถานะอ่าน</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/07-chat-menu.png" alt="เมนูห้อง …: ลบแชท / ปิดการแจ้งเตือน">
-  <figcaption><span class="figno">ภาพที่ 99</span><span class="chip chip-M">M</span>เมนูห้อง …: ลบแชท / ปิดการแจ้งเตือน</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/07-chat-mute.png" alt="ปิดการแจ้งเตือนห้อง — มีไอคอนรูดเสียงในลิสต์">
-  <figcaption><span class="figno">ภาพที่ 100</span><span class="chip chip-M">M</span>ปิดการแจ้งเตือนห้อง — มีไอคอนรูดเสียงในลิสต์</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/07-chat-delete.png" alt="ยืนยันลบแชท (ลบเฉพาะฝั่งเรา)">
-  <figcaption><span class="figno">ภาพที่ 101</span><span class="chip chip-M">M</span>ยืนยันลบแชท (ลบเฉพาะฝั่งเรา)</figcaption>
-</figure></div><div class="note">ปุ่มแนบรูป/กล้องอยู่ในช่องพิมพ์ — ในชุดภาพนี้เน้นการ์ดข้อเสนอเป็นหลัก; การ์ดอ้างอิงของรายการที่ถูกลบแล้วจะแสดงเป็นการ์ดว่างพร้อมชื่อ "-" (ดูภาพที่ บทข้อเสนอ)</div></div>
+  <figcaption><span class="figno">ภาพที่ 99</span><span class="chip chip-M">M</span>การ์ดอ้างอิงสินทรัพย์: รูป ชื่อ ราคา ป้ายสถานะ</figcaption>
+</figure></div></div>
+
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
-  <header class="phead"><div class="chno">บทที่ 09</div>
-    <div><h2>โปรไฟล์และการติดตาม</h2><div class="en">Profiles &amp; Follow</div></div>
+
+</section><section class="page fill airy vspread" style="--ph:104mm;--cw:47mm">
+
+  <header class="phead"><div class="chno">บทที่ 08</div>
+    <div><h2>แชท — เมนูห้องและการลบ</h2><div class="en">Chat — Room Menu & Delete</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">โปรไฟล์ของตัวเอง (Owner) แสดงสถิติ <b>Followers / Following / มูลค่าสินทรัพย์</b> และแท็บสินทรัพย์ <b>All / Sale / Show / Hide</b> — โปรไฟล์คนอื่น (Public) เห็นเฉพาะ All/Sale/Show เท่านั้น ไม่มี Hide/Sold และไม่มีมูลค่าสินทรัพย์</p><div class="figrow"><figure class="shot">
+
+  <div class="pbody"><ul class="infolist"><li><b>เมนูห้อง …:</b> ลบแชท / ปิดการแจ้งเตือน</li><li><b>ปิดการแจ้งเตือน:</b> ห้องที่ปิดจะมีไอคอนปิดเสียงกำกับในลิสต์แชท</li><li><b>ลบแชท:</b> ลบเฉพาะฝั่งเรา อีกฝั่งยังเห็นห้องอยู่</li><li><b>แถบล่าง:</b> สลับ "ทั้งหมด" / "ข้อเสนอที่ได้รับ" (เฉพาะฝั่งที่ได้รับข้อเสนอ)</li></ul><div class="figrow"><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/07-chat-room.png" alt="ข้อความส่งแล้ว — ฟองขวา(แดง)คือเรา พร้อมเวลาและสถานะอ่าน">
+  <figcaption><span class="figno">ภาพที่ 100</span><span class="chip chip-M">M</span>ข้อความส่งแล้ว — bubble สีแดงฝั่งขวาคือของเรา พร้อมเวลาและเครื่องหมายอ่านแล้ว</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/07-chat-menu.png" alt="เมนูห้อง …: ลบแชท / ปิดการแจ้งเตือน">
+  <figcaption><span class="figno">ภาพที่ 101</span><span class="chip chip-M">M</span>เมนูห้อง …: ลบแชท / ปิดการแจ้งเตือน</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/07-chat-mute.png" alt="ปิดการแจ้งเตือนห้อง — มีไอคอนรูดเสียงในลิสต์">
+  <figcaption><span class="figno">ภาพที่ 102</span><span class="chip chip-M">M</span>ปิดการแจ้งเตือนห้อง — มีไอคอนปิดเสียงกำกับในลิสต์</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/07-chat-delete.png" alt="ยืนยันลบแชท (ลบเฉพาะฝั่งเรา)">
+  <figcaption><span class="figno">ภาพที่ 103</span><span class="chip chip-M">M</span>ยืนยันลบแชท (ลบเฉพาะฝั่งเรา)</figcaption>
+</figure></div><div class="note"><b>หมายเหตุ:</b> ส่งรูปภาพได้จากปุ่มแนบรูป/กล้องในช่องพิมพ์ข้อความ · การ์ดอ้างอิงของรายการที่ถูกลบแล้วจะแสดงเป็นการ์ดว่างพร้อมชื่อ "-"</div></div>
+
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+
+</section><section class="page fill airy vspread" style="--ph:110mm;--cw:50mm">
+
+  <header class="phead"><div class="chno">บทที่ 09</div>
+    <div><h2>โปรไฟล์ของตัวเอง</h2><div class="en">Profile — Own</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+
+  <div class="pbody"><ul class="infolist"><li><b>สถิติ 3 ช่อง:</b> Followers / Following / มูลค่าสินทรัพย์</li><li><b>แท็บสินทรัพย์:</b> All / Sale / Show / Hide</li><li><b>บัญชีใหม่:</b> ทุกสถิติเป็น 0 และชื่อเริ่มต้นเป็น "ผู้ใช้ใหม่" (เปลี่ยนได้ในแก้ไขโปรไฟล์) · แท็บที่ยังไม่มีรายการแสดง "ไม่พบข้อมูล"</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-profile-owner.png" alt="โปรไฟล์ตัวเอง — สถิติ 3 ช่อง + แท็บสถานะสินทรัพย์">
-  <figcaption><span class="figno">ภาพที่ 102</span><span class="chip chip-O">O</span>โปรไฟล์ตัวเอง — สถิติ 3 ช่อง + แท็บสถานะสินทรัพย์</figcaption>
+  <figcaption><span class="figno">ภาพที่ 104</span><span class="chip chip-O">O</span>โปรไฟล์ตัวเอง — สถิติ 3 ช่อง + แท็บสถานะสินทรัพย์</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-owner-tab-all.png" alt="แท็บ All บนโปรไฟล์ตัวเอง — เห็นทุกสถานะ">
-  <figcaption><span class="figno">ภาพที่ 103</span><span class="chip chip-O">O</span>แท็บ All บนโปรไฟล์ตัวเอง — เห็นทุกสถานะ</figcaption>
+  <figcaption><span class="figno">ภาพที่ 105</span><span class="chip chip-O">O</span>แท็บ All บนโปรไฟล์ตัวเอง — เห็นทุกสถานะ</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-profile-empty.png" alt="โปรไฟล์บัญชีใหม่ — ทุกสถิติเป็น 0 + "ผู้ใช้ใหม่"">
-  <figcaption><span class="figno">ภาพที่ 104</span><span class="chip chip-O">O</span>โปรไฟล์บัญชีใหม่ — ทุกสถิติเป็น 0 + "ผู้ใช้ใหม่"</figcaption>
+  <figcaption><span class="figno">ภาพที่ 106</span><span class="chip chip-O">O</span>โปรไฟล์บัญชีใหม่ — ทุกสถิติเป็น 0 ชื่อเริ่มต้น "ผู้ใช้ใหม่"</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-tab-empty.png" alt="แท็บที่ยังไม่มีรายการ → "ไม่พบข้อมูล"">
-  <figcaption><span class="figno">ภาพที่ 105</span><span class="chip chip-O">O</span>แท็บที่ยังไม่มีรายการ → "ไม่พบข้อมูล"</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
+  <figcaption><span class="figno">ภาพที่ 107</span><span class="chip chip-O">O</span>แท็บที่ยังไม่มีรายการ → "ไม่พบข้อมูล"</figcaption>
+</figure></div></div>
+
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+
+</section><section class="page fill airy vspread" style="--ph:100mm;--cw:46mm">
+
+  <header class="phead"><div class="chno">บทที่ 09</div>
+    <div><h2>โปรไฟล์คนอื่นและการติดตาม</h2><div class="en">Profile — Public & Follow</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+
+  <div class="pbody"><ul class="infolist"><li><b>โปรไฟล์สาธารณะ:</b> เห็นเฉพาะแท็บ All / Sale / Show — ไม่มี Hide / Sold และไม่มีมูลค่าสินทรัพย์</li><li><b>กดติดตาม:</b> ปุ่มเปลี่ยนเป็น Following + ยอดผู้ติดตามเพิ่มทันที</li><li><b>เมนู … บนโปรไฟล์คนอื่น:</b> แชร์ / บล็อก / รายงาน</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-profile-public.png" alt="โปรไฟล์สาธารณะของผู้ขายคนอื่น — ปุ่ม Follow + ไม่มี Hide/Sold">
-  <figcaption><span class="figno">ภาพที่ 106</span><span class="chip chip-M">M</span>โปรไฟล์สาธารณะของผู้ขายคนอื่น — ปุ่ม Follow + ไม่มี Hide/Sold</figcaption>
+  <figcaption><span class="figno">ภาพที่ 108</span><span class="chip chip-M">M</span>โปรไฟล์สาธารณะของผู้ขายคนอื่น — ปุ่ม Follow + ไม่มี Hide/Sold</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-public-tab-all.png" alt="แท็บ All บนโปรไฟล์สาธารณะ">
-  <figcaption><span class="figno">ภาพที่ 107</span><span class="chip chip-M">M</span>แท็บ All บนโปรไฟล์สาธารณะ</figcaption>
+  <figcaption><span class="figno">ภาพที่ 109</span><span class="chip chip-M">M</span>แท็บ All บนโปรไฟล์สาธารณะ</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-follow.png" alt="กดติดตาม → ปุ่มเปลี่ยนเป็น Following + ยอดผู้ติดตามเพิ่ม">
-  <figcaption><span class="figno">ภาพที่ 108</span><span class="chip chip-M">M</span>กดติดตาม → ปุ่มเปลี่ยนเป็น Following + ยอดผู้ติดตามเพิ่ม</figcaption>
+  <figcaption><span class="figno">ภาพที่ 110</span><span class="chip chip-M">M</span>กดติดตาม → ปุ่มเปลี่ยนเป็น Following + ยอดผู้ติดตามเพิ่ม</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-public-menu.png" alt="เมนู … บนโปรไฟล์คนอื่น: แชร์ / บล็อก / รายงาน">
-  <figcaption><span class="figno">ภาพที่ 109</span><span class="chip chip-M">M</span>เมนู … บนโปรไฟล์คนอื่น: แชร์ / บล็อก / รายงาน</figcaption>
+  <figcaption><span class="figno">ภาพที่ 111</span><span class="chip chip-M">M</span>เมนู … บนโปรไฟล์คนอื่น: แชร์ / บล็อก / รายงาน</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-quickactions-visitor.png" alt="เมนู … บนการ์ดในโปรไฟล์คนอื่น">
-  <figcaption><span class="figno">ภาพที่ 110</span><span class="chip chip-M">M</span>เมนู … บนการ์ดในโปรไฟล์คนอื่น</figcaption>
+  <figcaption><span class="figno">ภาพที่ 112</span><span class="chip chip-M">M</span>เมนู … บนการ์ดในโปรไฟล์คนอื่น</figcaption>
 </figure></div></div>
+
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+
+</section><section class="page fill airy vspread" style="--ph:102mm;--cw:47mm">
   <header class="phead"><div class="chno">บทที่ 09</div>
     <div><h2>การจัดการโปรไฟล์ แชร์ และบล็อก</h2><div class="en">Profile Actions</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">เมนู … บนโปรไฟล์ตัวเองมี <b>แชร์โปรไฟล์ / ตั้งค่า</b> — ส่วนโปรไฟล์คนอื่นมี <b>แชร์ / บล็อก / รายงาน</b> · แก้ไขโปรไฟล์เปลี่ยนได้ชื่อผู้ใช้ เบอร์โทร LINE แต่อีเมลถูกล็อกหลังยืนยันแล้ว</p><div class="figrow"><figure class="shot">
+  <div class="pbody"><ul class="infolist"><li><b>เมนู … โปรไฟล์ตัวเอง:</b> แชร์โปรไฟล์ / ตั้งค่า</li><li><b>เมนู … โปรไฟล์คนอื่น:</b> แชร์ / บล็อก / รายงาน</li><li><b>แก้ไขโปรไฟล์:</b> เปลี่ยนชื่อผู้ใช้ เบอร์โทร LINE ได้ — อีเมลล็อกหลังยืนยันแล้ว</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-owner-menu.png" alt="เมนู … บนโปรไฟล์ตัวเอง: แชร์โปรไฟล์ / ตั้งค่า">
-  <figcaption><span class="figno">ภาพที่ 111</span><span class="chip chip-O">O</span>เมนู … บนโปรไฟล์ตัวเอง: แชร์โปรไฟล์ / ตั้งค่า</figcaption>
+  <figcaption><span class="figno">ภาพที่ 113</span><span class="chip chip-O">O</span>เมนู … บนโปรไฟล์ตัวเอง: แชร์โปรไฟล์ / ตั้งค่า</figcaption>
 </figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/06-profile-share.png" alt="แผ่นแชร์โปรไฟล์ — LINE / IG / FB / คัดลอกลิงก์">
-  <figcaption><span class="figno">ภาพที่ 112</span><span class="chip chip-O">O</span>แผ่นแชร์โปรไฟล์ — LINE / IG / FB / คัดลอกลิงก์</figcaption>
+  <img class="phone" src="../screenshots/user-manual/06-profile-share.png" alt="เมนูแชร์โปรไฟล์ — LINE / IG / FB / คัดลอกลิงก์">
+  <figcaption><span class="figno">ภาพที่ 114</span><span class="chip chip-O">O</span>เมนูแชร์โปรไฟล์ — LINE / IG / FB / คัดลอกลิงก์</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/06-edit-profile.png" alt="แก้ไขโปรไฟล์ — อีเมลล็อก (เปลี่ยนไม่ได้หลังยืนยัน)">
-  <figcaption><span class="figno">ภาพที่ 113</span><span class="chip chip-M">M</span>แก้ไขโปรไฟล์ — อีเมลล็อก (เปลี่ยนไม่ได้หลังยืนยัน)</figcaption>
+  <figcaption><span class="figno">ภาพที่ 115</span><span class="chip chip-M">M</span>แก้ไขโปรไฟล์ — อีเมลล็อก (เปลี่ยนไม่ได้หลังยืนยัน)</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/15-report-user.png" alt="รายงานผู้ใช้ — เหตุผล + รายละเอียดเพิ่มเติม">
-  <figcaption><span class="figno">ภาพที่ 114</span><span class="chip chip-M">M</span>รายงานผู้ใช้ — เหตุผล + รายละเอียดเพิ่มเติม</figcaption>
+  <figcaption><span class="figno">ภาพที่ 116</span><span class="chip chip-M">M</span>รายงานผู้ใช้ — เหตุผล + รายละเอียดเพิ่มเติม</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/15-block-user.png" alt="ยืนยันบล็อกผู้ใช้ — อธิบายผลของการบล็อก">
-  <figcaption><span class="figno">ภาพที่ 115</span><span class="chip chip-M">M</span>ยืนยันบล็อกผู้ใช้ — อธิบายผลของการบล็อก</figcaption>
-</figure></div><div class="note"><b>พอร์ตสินทรัพย์ (Portfolio):</b> ตามสเปก สถิติ "มูลค่าสินทรัพย์" บนโปรไฟล์ควรพาเข้าสู่แดชบอร์ดพอร์ต — แต่ในเวอร์ชันนี้ตัวเลขไม่ใช่ปุ่มและไม่มีเมนูแยก จึงแสดงเฉพาะตัวเลขรวมบนโปรไฟล์ (จัดเป็นความต่างระหว่างสเปกกับเวอร์ชันที่ทดสอบ) · <b>การบล็อก:</b> ในเวอร์ชันนี้ไม่มีเมนู "เลิกบล็อก" ในแอป จึงควรตัดสินใจก่อนยืนยันบล็อก</div></div>
+  <figcaption><span class="figno">ภาพที่ 117</span><span class="chip chip-M">M</span>ยืนยันบล็อกผู้ใช้ — อธิบายผลของการบล็อก</figcaption>
+</figure></div><div class="note"><b>มูลค่าสินทรัพย์:</b> ตัวเลขบนโปรไฟล์เป็นเพียงสถิติรวม แตะไม่ได้ ไม่มีหน้ารายละเอียดแยก<br><b>การบล็อก:</b> ไม่มีเมนู "เลิกบล็อก" ในแอป — ควรตัดสินใจให้แน่ใจก่อนยืนยันบล็อก</div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:96mm;--cw:44mm">
+
   <header class="phead"><div class="chno">บทที่ 10</div>
-    <div><h2>ศูนย์การแจ้งเตือน</h2><div class="en">Notification Center</div></div>
+    <div><h2>การแจ้งเตือน</h2><div class="en">Notification Center</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">ศูนย์แจ้งเตือนรวมทุกเหตุการณ์ — การ์ดแจ้งเตือนบางประเภทมี<b>ปุ่มกระทำในตัว</b> (ข้อเสนอ: ปฏิเสธ/ตรวจสอบ · ผู้ติดตามใหม่: ติดตามกลับ) และแตะแจ้งเตือนเพื่อกระโดดไปยังจุดปลายทาง</p><div class="figrow"><figure class="shot">
+
+  <div class="pbody"><ul class="infolist"><li><b>รวมทุกเหตุการณ์:</b> ข้อเสนอ / คอมเมนต์ / ติดตาม / ถูกใจ / Watch Alert อยู่ที่เดียว</li><li><b>ตอบได้จากการ์ดเลย:</b> ข้อเสนอ → ปฏิเสธ / ตรวจสอบ · ผู้ติดตามใหม่ → ติดตามกลับ</li><li><b>แบนเนอร์เรียลไทม์:</b> มีเหตุการณ์ใหม่ขณะใช้แอปอยู่ → แบนเนอร์เด้งด้านบน</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/09-notifications.png" alt="ศูนย์แจ้งเตือน — ข้อเสนอ / คอมเมนต์ / ติดตาม / ถูกใจ จริงทั้งหมด">
-  <figcaption><span class="figno">ภาพที่ 116</span><span class="chip chip-M">M</span>ศูนย์แจ้งเตือน — ข้อเสนอ / คอมเมนต์ / ติดตาม / ถูกใจ จริงทั้งหมด</figcaption>
+  <figcaption><span class="figno">ภาพที่ 118</span><span class="chip chip-M">M</span>หน้าแจ้งเตือน — ข้อเสนอ / คอมเมนต์ / ติดตาม / ถูกใจ จริงทั้งหมด</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/09-noti-declined.png" alt="แจ้งเตือนฝั่งผู้ซื้อ: "ปฏิเสธข้อเสนอของคุณ"">
-  <figcaption><span class="figno">ภาพที่ 117</span><span class="chip chip-B">B</span>แจ้งเตือนฝั่งผู้ซื้อ: "ปฏิเสธข้อเสนอของคุณ"</figcaption>
+  <figcaption><span class="figno">ภาพที่ 119</span><span class="chip chip-B">B</span>แจ้งเตือนฝั่งผู้ซื้อ: "ปฏิเสธข้อเสนอของคุณ"</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/09-noti-watchalert.png" alt="แจ้งเตือน Watch Alert: พบรายการใหม่ตรงเงื่อนไข">
-  <figcaption><span class="figno">ภาพที่ 118</span><span class="chip chip-M">M</span>แจ้งเตือน Watch Alert: พบรายการใหม่ตรงเงื่อนไข</figcaption>
+  <figcaption><span class="figno">ภาพที่ 120</span><span class="chip chip-M">M</span>แจ้งเตือน Watch Alert: พบรายการใหม่ตรงเงื่อนไข</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/09-noti-banner.png" alt="แบนเนอร์แจ้งเตือนแบบเรียลไทม์ขณะใช้แอปอยู่">
-  <figcaption><span class="figno">ภาพที่ 119</span><span class="chip chip-M">M</span>แบนเนอร์แจ้งเตือนแบบเรียลไทม์ขณะใช้แอปอยู่</figcaption>
+  <figcaption><span class="figno">ภาพที่ 121</span><span class="chip chip-M">M</span>แบนเนอร์แจ้งเตือนแบบเรียลไทม์ขณะใช้แอปอยู่</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/09-noti-destination.png" alt="แตะแจ้งเตือน → เปิดจุดปลายทาง (ผล Watch Alert)">
-  <figcaption><span class="figno">ภาพที่ 120</span><span class="chip chip-M">M</span>แตะแจ้งเตือน → เปิดจุดปลายทาง (ผล Watch Alert)</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
+  <figcaption><span class="figno">ภาพที่ 122</span><span class="chip chip-M">M</span>แตะแจ้งเตือน → เปิดหน้าที่เกี่ยวข้อง (ผล Watch Alert)</figcaption>
+</figure></div></div>
+
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+
+</section><section class="page center airy vspread" style="--ph:120mm;--cw:60mm">
+
+  <header class="phead"><div class="chno">บทที่ 10</div>
+    <div><h2>แจ้งเตือน — การตั้งค่า</h2><div class="en">Notifications — Settings</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+
+  <div class="pbody"><ul class="infolist"><li><b>แตะแจ้งเตือน:</b> เปิดหน้าที่เกี่ยวข้องทันที (เช่น หน้าผล Watch Alert)</li><li><b>ยังไม่มีแจ้งเตือน:</b> แสดงหน้าว่าง "ไม่พบข้อมูล"</li><li><b>ตั้งค่าการแจ้งเตือน:</b> สวิตช์แยก 5 ประเภท — บันทึกอัตโนมัติ</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/09-notifications-empty.png" alt="ยังไม่มีแจ้งเตือน → "ไม่พบข้อมูล"">
-  <figcaption><span class="figno">ภาพที่ 121</span><span class="chip chip-M">M</span>ยังไม่มีแจ้งเตือน → "ไม่พบข้อมูล"</figcaption>
+  <figcaption><span class="figno">ภาพที่ 123</span><span class="chip chip-M">M</span>ยังไม่มีแจ้งเตือน → "ไม่พบข้อมูล"</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/13-notification-settings.png" alt="ตั้งค่าการแจ้งเตือน — สวิตช์แยกตามประเภท (บันทึกอัตโนมัติ)">
-  <figcaption><span class="figno">ภาพที่ 122</span><span class="chip chip-M">M</span>ตั้งค่าการแจ้งเตือน — สวิตช์แยกตามประเภท (บันทึกอัตโนมัติ)</figcaption>
+  <figcaption><span class="figno">ภาพที่ 124</span><span class="chip chip-M">M</span>ตั้งค่าการแจ้งเตือน — สวิตช์แยกตามประเภท (บันทึกอัตโนมัติ)</figcaption>
 </figure></div></div>
+
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+
+</section><section class="page fill airy vspread" style="--ph:104mm;--cw:50mm">
   <header class="phead"><div class="chno">บทที่ 11</div>
     <div><h2>Watch Alert — เฝ้าดูรายการที่ตรงเงื่อนไข</h2><div class="en">Watch Alert</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">Watch Alert คือการตั้ง "เงื่อนไขค้นหาที่เฝ้าดู" — สร้างจากไอคอนนาฬิกาบนหน้าผลค้นหา ตั้งชื่อและสวิตช์แจ้งเตือน; เมื่อมีรายการใหม่เข้าเงื่อนไข ระบบส่งแจ้งเตือนและเปิดดูผลลัพธ์ได้</p><div class="figrow"><figure class="shot">
+  <div class="pbody"><ul class="infolist"><li><b>Watch Alert คือ:</b> การตั้ง "เงื่อนไขค้นหาที่เฝ้าดูนาฬิกาที่ต้องการ"</li><li><b>สร้างจาก:</b> ไอคอนนาฬิกาบนหน้าผลค้นหา — ตั้งชื่อและสวิตช์แจ้งเตือน</li><li><b>เมื่อมีรายการใหม่เข้าเงื่อนไข:</b> ระบบส่งแจ้งเตือนและเปิดดูผลลัพธ์ได้</li></ul><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/10-watchalert-create.png" alt="สร้าง Watch Alert — ตั้งชื่อ + สวิตช์แจ้งเตือน">
-  <figcaption><span class="figno">ภาพที่ 123</span><span class="chip chip-M">M</span>สร้าง Watch Alert — ตั้งชื่อ + สวิตช์แจ้งเตือน</figcaption>
+  <figcaption><span class="figno">ภาพที่ 125</span><span class="chip chip-M">M</span>สร้าง Watch Alert — ตั้งชื่อ + สวิตช์แจ้งเตือน</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/10-watchalert-created.png" alt="สร้างสำเร็จ — ลิงก์ไปหน้าจัดการ">
-  <figcaption><span class="figno">ภาพที่ 124</span><span class="chip chip-M">M</span>สร้างสำเร็จ — ลิงก์ไปหน้าจัดการ</figcaption>
+  <figcaption><span class="figno">ภาพที่ 126</span><span class="chip chip-M">M</span>สร้างสำเร็จ — ลิงก์ไปหน้าจัดการ</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/10-watchalert-list.png" alt="รายการเฝ้าดู — สวิตช์เปิด/ปิด + เปลี่ยนชื่อ + ลบ">
-  <figcaption><span class="figno">ภาพที่ 125</span><span class="chip chip-M">M</span>รายการเฝ้าดู — สวิตช์เปิด/ปิด + เปลี่ยนชื่อ + ลบ</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
+  <figcaption><span class="figno">ภาพที่ 127</span><span class="chip chip-M">M</span>รายการเฝ้าดู — สวิตช์เปิด/ปิด + เปลี่ยนชื่อ + ลบ</figcaption>
+</figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/10-watchalert-edit.png" alt="เปลี่ยนชื่อการแจ้งเตือน">
-  <figcaption><span class="figno">ภาพที่ 126</span><span class="chip chip-M">M</span>เปลี่ยนชื่อการแจ้งเตือน</figcaption>
+  <figcaption><span class="figno">ภาพที่ 128</span><span class="chip chip-M">M</span>เปลี่ยนชื่อการแจ้งเตือน</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/10-watchalert-delete.png" alt="ยืนยันลบ Watch Alert">
-  <figcaption><span class="figno">ภาพที่ 127</span><span class="chip chip-M">M</span>ยืนยันลบ Watch Alert</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/10-watchalert-result.png" alt="ผลลัพธ์ที่ตรงเงื่อนไข — เข้าจากการแจ้งเตือน">
-  <figcaption><span class="figno">ภาพที่ 128</span><span class="chip chip-M">M</span>ผลลัพธ์ที่ตรงเงื่อนไข — เข้าจากการแจ้งเตือน</figcaption>
-</figure></div><div class="note"><b>ข้อจำกัดที่ตรวจพบ:</b> ในเวอร์ชันนี้แถวรายการในหน้าลิสต์ไม่เปิดหน้าผลลัพธ์เมื่อแตะโดยตรง — วิธีเข้าดูผลที่ใช้ได้จริงคือผ่านการแจ้งเตือนที่ระบบส่งมา</div></div>
-  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
-  <header class="phead"><div class="chno">บทที่ 12</div>
-    <div><h2>กระดานข่าวและบทความ</h2><div class="en">News Board</div></div>
-    <div class="brand">TUK&nbsp;DAENG</div>
-  </header>
-  <div class="pbody"><p class="lead">กระดานข่าวเปิดให้อ่านทั้ง Guest และ Member — หน้าหลักมีบทความเด่น + กลุ่มหมวด; ไอคอนเมนูซ้ายบนเปิดลิ้นชักหมวดหมู่ (Journal Board / Watch Brands / Watch 101 ฯลฯ) และไอคอนแว่นขยายค้นหาบทความ</p><div class="figrow"><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/12-board.png" alt="หน้ากระดานข่าว — บทความเด่น + Trending">
-  <figcaption><span class="figno">ภาพที่ 129</span><span class="chip chip-M">M</span>หน้ากระดานข่าว — บทความเด่น + Trending</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/12-board-section-1.png" alt="เลื่อนลง — กลุ่มหมวดบทความ">
-  <figcaption><span class="figno">ภาพที่ 130</span><span class="chip chip-M">M</span>เลื่อนลง — กลุ่มหมวดบทความ</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/12-board-section-2.png" alt="กลุ่มหมวดส่วนล่างของหน้า Board">
-  <figcaption><span class="figno">ภาพที่ 131</span><span class="chip chip-M">M</span>กลุ่มหมวดส่วนล่างของหน้า Board</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/12-article-filter.png" alt="ลิ้นชักหมวดหมู่บทความ">
-  <figcaption><span class="figno">ภาพที่ 132</span><span class="chip chip-M">M</span>ลิ้นชักหมวดหมู่บทความ</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/12-board-brands.png" alt="หมวด Watch Brands — ลิสต์แบรนด์">
-  <figcaption><span class="figno">ภาพที่ 133</span><span class="chip chip-M">M</span>หมวด Watch Brands — ลิสต์แบรนด์</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/12-article-search.png" alt="ค้นหาบทความ — "5 ผลลัพธ์สำหรับ Rolex"">
-  <figcaption><span class="figno">ภาพที่ 134</span><span class="chip chip-M">M</span>ค้นหาบทความ — "5 ผลลัพธ์สำหรับ Rolex"</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/12-article-detail.png" alt="หน้าบทความ — รูปหลัก หัวข้อ เนื้อหา ยอดถูกใจ ปุ่มแชร์/เมนู">
-  <figcaption><span class="figno">ภาพที่ 135</span><span class="chip chip-M">M</span>หน้าบทความ — รูปหลัก หัวข้อ เนื้อหา ยอดถูกใจ ปุ่มแชร์/เมนู</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/12-article-like.png" alt="กดถูกใจบทความ (เฉพาะ member — guest ขึ้น login wall)">
-  <figcaption><span class="figno">ภาพที่ 136</span><span class="chip chip-M">M</span>กดถูกใจบทความ (เฉพาะ member — guest ขึ้น login wall)</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/12-article-menu.png" alt="เมนู … บนบทความ">
-  <figcaption><span class="figno">ภาพที่ 137</span><span class="chip chip-M">M</span>เมนู … บนบทความ</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/12-article-empty.png" alt="ค้นหาไม่พบ → "ไม่พบข้อมูล"">
-  <figcaption><span class="figno">ภาพที่ 138</span><span class="chip chip-M">M</span>ค้นหาไม่พบ → "ไม่พบข้อมูล"</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/12-article-report.png" alt="รายงานบทความ: เลือกเหตุผล + รายละเอียด">
-  <figcaption><span class="figno">ภาพที่ 139</span><span class="chip chip-M">M</span>รายงานบทความ: เลือกเหตุผล + รายละเอียด</figcaption>
-</figure></div><div class="note"><b>ข้อจำกัดที่ตรวจพบ:</b> ปุ่มแชร์บทความไม่เปิดแผ่นแชร์ของระบบบนตัวจำลอง — ฟังก์ชันแชร์จึงอธิบายเป็นข้อความ</div></div>
-  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
-  <header class="phead"><div class="chno">บทที่ 13</div>
-    <div><h2>การตั้งค่าและบัญชี</h2><div class="en">Settings</div></div>
-    <div class="brand">TUK&nbsp;DAENG</div>
-  </header>
-  <div class="pbody"><p class="lead">ตั้งค่าอยู่ที่เมนู … บนโปรไฟล์ตัวเอง — แบ่งกลุ่ม: บัญชี / แอปและสื่อ / ข้อมูลและการสนับสนุน / ออกจากระบบ</p><div class="figrow"><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/13-settings.png" alt="หน้าตั้งค่า — รายการทั้งหมด (บัญชี SSO ไม่มีเมนูเปลี่ยนรหัสผ่าน)">
-  <figcaption><span class="figno">ภาพที่ 140</span><span class="chip chip-M">M</span>หน้าตั้งค่า — รายการทั้งหมด (บัญชี SSO ไม่มีเมนูเปลี่ยนรหัสผ่าน)</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/13-edit-profile.png" alt="แก้ไขโปรไฟล์: ชื่อผู้ใช้ เบอร์โทร LINE — อีเมลล็อก">
-  <figcaption><span class="figno">ภาพที่ 141</span><span class="chip chip-M">M</span>แก้ไขโปรไฟล์: ชื่อผู้ใช้ เบอร์โทร LINE — อีเมลล็อก</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/13-about-account.png" alt="เกี่ยวกับบัญชี — รูป ชื่อ วันที่สมัคร + ลบบัญชี">
-  <figcaption><span class="figno">ภาพที่ 142</span><span class="chip chip-M">M</span>เกี่ยวกับบัญชี — รูป ชื่อ วันที่สมัคร + ลบบัญชี</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/13-language.png" alt="ภาษา — English / ไทย">
-  <figcaption><span class="figno">ภาพที่ 143</span><span class="chip chip-M">M</span>ภาษา — English / ไทย</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/13-theme.png" alt="ธีม — โหมดมืด / โหมดสว่าง">
-  <figcaption><span class="figno">ภาพที่ 144</span><span class="chip chip-M">M</span>ธีม — โหมดมืด / โหมดสว่าง</figcaption>
-</figure></div><div class="figrow"><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/13-notification-settings.png" alt="ตั้งค่าแจ้งเตือน 5 ประเภท">
-  <figcaption><span class="figno">ภาพที่ 145</span><span class="chip chip-M">M</span>ตั้งค่าแจ้งเตือน 5 ประเภท</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/13-help.png" alt="ช่วยเหลือ — ช่องทางติดต่อฝ่ายสนับสนุน">
-  <figcaption><span class="figno">ภาพที่ 146</span><span class="chip chip-M">M</span>ช่วยเหลือ — ช่องทางติดต่อฝ่ายสนับสนุน</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/13-privacy.png" alt="นโยบายความเป็นส่วนตัว (อ่านในแอป)">
-  <figcaption><span class="figno">ภาพที่ 147</span><span class="chip chip-M">M</span>นโยบายความเป็นส่วนตัว (อ่านในแอป)</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/13-terms.png" alt="ข้อกำหนดการใช้งาน">
-  <figcaption><span class="figno">ภาพที่ 148</span><span class="chip chip-M">M</span>ข้อกำหนดการใช้งาน</figcaption>
-</figure><figure class="shot">
-  <img class="phone" src="../screenshots/user-manual/13-about.png" alt="เกี่ยวกับแอป — เวอร์ชัน 1.0.1">
-  <figcaption><span class="figno">ภาพที่ 149</span><span class="chip chip-M">M</span>เกี่ยวกับแอป — เวอร์ชัน 1.0.1</figcaption>
+  <figcaption><span class="figno">ภาพที่ 129</span><span class="chip chip-M">M</span>ยืนยันลบ Watch Alert</figcaption>
 </figure></div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:88mm;--cw:41mm">
+
+  <header class="phead"><div class="chno">บทที่ 12</div>
+    <div><h2>กระดานข่าว — หน้าหลักและหมวดหมู่</h2><div class="en">Board — Home & Categories</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+
+  <div class="pbody"><ul class="infolist"><li><b>เปิดให้อ่าน:</b> ทั้ง Guest และ Member</li><li><b>หน้าหลัก:</b> บทความเด่น + Trending + กลุ่มหมวด</li><li><b>ไอคอนเมนูซ้ายบน:</b> เปิดเมนูหมวดหมู่ (Journal Board / Watch Brands / Watch 101 ฯลฯ)</li><li><b>ไอคอนแว่นขยาย:</b> ค้นหาบทความ — ไม่พบผลแสดง "ไม่พบข้อมูล"</li></ul><div class="figrow"><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/12-board.png" alt="หน้ากระดานข่าว — บทความเด่น + Trending">
+  <figcaption><span class="figno">ภาพที่ 130</span><span class="chip chip-M">M</span>หน้ากระดานข่าว — บทความเด่น + Trending</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/12-board-section-1.png" alt="เลื่อนลง — กลุ่มหมวดบทความ">
+  <figcaption><span class="figno">ภาพที่ 131</span><span class="chip chip-M">M</span>เลื่อนลง — กลุ่มหมวดบทความ</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/12-board-section-2.png" alt="กลุ่มหมวดส่วนล่างของหน้า Board">
+  <figcaption><span class="figno">ภาพที่ 132</span><span class="chip chip-M">M</span>กลุ่มหมวดส่วนล่างของหน้า Board</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/12-article-filter.png" alt="เมนูหมวดหมู่บทความ">
+  <figcaption><span class="figno">ภาพที่ 133</span><span class="chip chip-M">M</span>เมนูหมวดหมู่บทความ</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/12-board-brands.png" alt="หมวด Watch Brands — ลิสต์แบรนด์">
+  <figcaption><span class="figno">ภาพที่ 134</span><span class="chip chip-M">M</span>หมวด Watch Brands — ลิสต์แบรนด์</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/12-article-search.png" alt="ค้นหาบทความ — "5 ผลลัพธ์สำหรับ Rolex"">
+  <figcaption><span class="figno">ภาพที่ 135</span><span class="chip chip-M">M</span>ค้นหาบทความ — "5 ผลลัพธ์สำหรับ Rolex"</figcaption>
+</figure></div></div>
+
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+
+</section><section class="page fill airy vspread" style="--ph:104mm;--cw:47mm">
+
+  <header class="phead"><div class="chno">บทที่ 12</div>
+    <div><h2>กระดานข่าว — หน้าบทความ</h2><div class="en">Board — Article</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+
+  <div class="pbody"><ul class="infolist"><li><b>หน้าบทความ:</b> รูปหลัก หัวข้อ เนื้อหา ยอดถูกใจ และปุ่มแชร์ / เมนู …</li><li><b>กดถูกใจ:</b> เฉพาะ member — Guest จะเห็นหน้าต่างเข้าสู่ระบบ</li><li><b>เมนู … บนบทความ:</b> รายงานบทความ (เลือกเหตุผล + รายละเอียด)</li><li><b>แชร์บทความ:</b> เมนู … → "แชร์" → เลือก LINE / Instagram / Facebook / คัดลอกลิงก์</li></ul><div class="figrow"><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/12-article-detail.png" alt="หน้าบทความ — รูปหลัก หัวข้อ เนื้อหา ยอดถูกใจ ปุ่มแชร์/เมนู">
+  <figcaption><span class="figno">ภาพที่ 136</span><span class="chip chip-M">M</span>หน้าบทความ — รูปหลัก หัวข้อ เนื้อหา ยอดถูกใจ ปุ่มแชร์/เมนู</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/12-article-like.png" alt="กดถูกใจบทความ (เฉพาะ member — guest ขึ้น login wall)">
+  <figcaption><span class="figno">ภาพที่ 137</span><span class="chip chip-M">M</span>กดถูกใจบทความ (เฉพาะ member — guest ขึ้น login wall)</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/12-article-menu.png" alt="เมนู … บนบทความ">
+  <figcaption><span class="figno">ภาพที่ 138</span><span class="chip chip-M">M</span>เมนู … บนบทความ</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/12-article-empty.png" alt="ค้นหาไม่พบ → "ไม่พบข้อมูล"">
+  <figcaption><span class="figno">ภาพที่ 139</span><span class="chip chip-M">M</span>ค้นหาไม่พบ → "ไม่พบข้อมูล"</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/12-article-report.png" alt="รายงานบทความ: เลือกเหตุผล + รายละเอียด">
+  <figcaption><span class="figno">ภาพที่ 140</span><span class="chip chip-M">M</span>รายงานบทความ: เลือกเหตุผล + รายละเอียด</figcaption>
+</figure></div></div>
+
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+
+</section><section class="page fill airy vspread" style="--ph:100mm;--cw:46mm">
+
+  <header class="phead"><div class="chno">บทที่ 13</div>
+    <div><h2>การตั้งค่า — บัญชีและการแสดงผล</h2><div class="en">Settings — Account & Display</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+
+  <div class="pbody"><ul class="infolist"><li><b>หน้าตั้งค่า:</b> รวมทุกเมนู — แก้ไขโปรไฟล์ เกี่ยวกับบัญชี ภาษา ธีม แจ้งเตือน ช่วยเหลือ เอกสาร (บัญชี SSO ไม่มีเมนูเปลี่ยนรหัสผ่าน)</li><li><b>เกี่ยวกับบัญชี:</b> รูป ชื่อ วันที่สมัคร + ปุ่มลบบัญชี</li><li><b>ภาษา:</b> English / ไทย</li><li><b>ธีม:</b> โหมดมืด / โหมดสว่าง</li></ul><div class="figrow"><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/13-settings.png" alt="หน้าตั้งค่า — รายการทั้งหมด (บัญชี SSO ไม่มีเมนูเปลี่ยนรหัสผ่าน)">
+  <figcaption><span class="figno">ภาพที่ 141</span><span class="chip chip-M">M</span>หน้าตั้งค่า — รายการทั้งหมด (บัญชี SSO ไม่มีเมนูเปลี่ยนรหัสผ่าน)</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/13-edit-profile.png" alt="แก้ไขโปรไฟล์: ชื่อผู้ใช้ เบอร์โทร LINE — อีเมลล็อก">
+  <figcaption><span class="figno">ภาพที่ 142</span><span class="chip chip-M">M</span>แก้ไขโปรไฟล์: ชื่อผู้ใช้ เบอร์โทร LINE — อีเมลล็อก</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/13-about-account.png" alt="เกี่ยวกับบัญชี — รูป ชื่อ วันที่สมัคร + ลบบัญชี">
+  <figcaption><span class="figno">ภาพที่ 143</span><span class="chip chip-M">M</span>เกี่ยวกับบัญชี — รูป ชื่อ วันที่สมัคร + ลบบัญชี</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/13-language.png" alt="ภาษา — English / ไทย">
+  <figcaption><span class="figno">ภาพที่ 144</span><span class="chip chip-M">M</span>ภาษา — English / ไทย</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/13-theme.png" alt="ธีม — โหมดมืด / โหมดสว่าง">
+  <figcaption><span class="figno">ภาพที่ 145</span><span class="chip chip-M">M</span>ธีม — โหมดมืด / โหมดสว่าง</figcaption>
+</figure></div></div>
+
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+
+</section><section class="page fill airy vspread" style="--ph:100mm;--cw:46mm">
+
+  <header class="phead"><div class="chno">บทที่ 13</div>
+    <div><h2>การตั้งค่า — แจ้งเตือนและข้อมูลแอป</h2><div class="en">Settings — Notifications & Info</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+
+  <div class="pbody"><ul class="infolist"><li><b>ตั้งค่าแจ้งเตือน:</b> เข้าหน้าสวิตช์แจ้งเตือน (อธิบายในบทที่ 10)</li><li><b>ช่วยเหลือ:</b> ช่องทางติดต่อฝ่ายสนับสนุน</li><li><b>เอกสารในแอป:</b> นโยบายความเป็นส่วนตัว / ข้อกำหนดการใช้งาน / เกี่ยวกับแอป (เวอร์ชัน)</li></ul><div class="figrow"><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/13-notification-settings.png" alt="ตั้งค่าแจ้งเตือน — หน้าเดียวกับภาพที่ 124">
+  <figcaption><span class="figno">ภาพที่ 146</span><span class="chip chip-M">M</span>ตั้งค่าแจ้งเตือน — หน้าเดียวกับภาพที่ 124</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/13-help.png" alt="ช่วยเหลือ — ช่องทางติดต่อฝ่ายสนับสนุน">
+  <figcaption><span class="figno">ภาพที่ 147</span><span class="chip chip-M">M</span>ช่วยเหลือ — ช่องทางติดต่อฝ่ายสนับสนุน</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/13-privacy.png" alt="นโยบายความเป็นส่วนตัว (อ่านในแอป)">
+  <figcaption><span class="figno">ภาพที่ 148</span><span class="chip chip-M">M</span>นโยบายความเป็นส่วนตัว (อ่านในแอป)</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/13-terms.png" alt="ข้อกำหนดการใช้งาน">
+  <figcaption><span class="figno">ภาพที่ 149</span><span class="chip chip-M">M</span>ข้อกำหนดการใช้งาน</figcaption>
+</figure><figure class="shot">
+  <img class="phone" src="../screenshots/user-manual/13-about.png" alt="เกี่ยวกับแอป — เวอร์ชัน 1.0.1">
+  <figcaption><span class="figno">ภาพที่ 150</span><span class="chip chip-M">M</span>เกี่ยวกับแอป — เวอร์ชัน 1.0.1</figcaption>
+</figure></div></div>
+
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+
+</section><section class="page center airy vspread" style="--ph:126mm;--cw:64mm">
   <header class="phead"><div class="chno">บทที่ 13</div>
     <div><h2>การลบบัญชีและสถานะบัญชีพิเศษ</h2><div class="en">Account Deletion</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
   <div class="pbody"><p class="lead">การลบบัญชีอยู่ใน "เกี่ยวกับบัญชีของคุณ" — หน้าต่างยืนยันอธิบายผลกระทบ 4 ข้อก่อนลบ</p><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/13-delete-confirm.png" alt="ยืนยันลบบัญชี — อธิบายผลกระทบชัดเจน กด ยกเลิก เพื่อออก">
-  <figcaption><span class="figno">ภาพที่ 150</span><span class="chip chip-M">M</span>ยืนยันลบบัญชี — อธิบายผลกระทบชัดเจน กด ยกเลิก เพื่อออก</figcaption>
-</figure></div><div class="warn"><b>สถานะหลังลบบัญชี (อธิบายตามสเปก — ไม่ได้ทำลบจริง):</b> หลังยืนยัน ระบบเริ่มกระบวนการลบและมีช่วงผ่อนผัน (grace period) — หากเข้าสู่ระบบช่วงนี้จะเห็นสถานะ "บัญชีกำลังรอการลบ" และสามารถกู้คืนได้; เมื่อพ้นกำหนด บัญชีถูกลบถาวร</div><div class="warn"><b>บัญชีที่ถูกระงับ/แบน (อธิบายตามสเปก):</b> การระงับบัญชีทำโดยผู้ดูแลระบบฝั่ง Back Office เท่านั้น — ผู้ใช้ที่ถูกระงับจะเข้าสู่ระบบไม่ได้และเห็นข้อความแจ้งสถานะ</div></div>
+  <figcaption><span class="figno">ภาพที่ 151</span><span class="chip chip-M">M</span>ยืนยันลบบัญชี — อธิบายผลกระทบชัดเจน กด ยกเลิก เพื่อออก</figcaption>
+</figure></div><div class="note"><b>สถานะหลังลบบัญชี:</b> หลังยืนยัน ระบบเริ่มกระบวนการลบและมีช่วงผ่อนผัน (grace period) — หากเข้าสู่ระบบช่วงนี้จะเห็นสถานะ "บัญชีกำลังรอการลบ" และสามารถกู้คืนได้; เมื่อพ้นกำหนด บัญชีถูกลบถาวร<br><b>บัญชีที่ถูกระงับ/แบน:</b> การระงับบัญชีทำโดยผู้ดูแลระบบฝั่ง Back Office เท่านั้น — ผู้ใช้ที่ถูกระงับจะเข้าสู่ระบบไม่ได้และเห็นข้อความแจ้งสถานะ</div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
-</section><section class="page">
+</section><section class="page fill airy vspread" style="--ph:80mm;--cw:45mm">
   <header class="phead"><div class="chno">บทที่ 14</div>
     <div><h2>สถานะพิเศษ ข้อผิดพลาด และข้อจำกัด</h2><div class="en">Edge &amp; Error States</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
   <div class="pbody"><p class="lead">สถานะเครือข่าย/ข้อมูลที่ควรรู้จัก — แอปมีแบนเนอร์ออฟไลน์และหน้าจอลองใหม่ที่สอดคล้องกันทั้งระบบ</p><div class="figrow"><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/00-feed-loading.png" alt="โครงโหลด (skeleton) ขณะรอข้อมูล">
-  <figcaption><span class="figno">ภาพที่ 151</span><span class="chip chip-M">M</span>โครงโหลด (skeleton) ขณะรอข้อมูล</figcaption>
+  <figcaption><span class="figno">ภาพที่ 152</span><span class="chip chip-M">M</span>โครงโหลด (skeleton) ขณะรอข้อมูล</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/00-offline-cached.png" alt="ออฟไลน์ + แบนเนอร์ "คุณกำลังออฟไลน์" (ข้อมูลเก่ายังดูได้)">
-  <figcaption><span class="figno">ภาพที่ 152</span><span class="chip chip-M">M</span>ออฟไลน์ + แบนเนอร์ "คุณกำลังออฟไลน์" (ข้อมูลเก่ายังดูได้)</figcaption>
+  <figcaption><span class="figno">ภาพที่ 153</span><span class="chip chip-M">M</span>ออฟไลน์ + แบนเนอร์ "คุณกำลังออฟไลน์" (ข้อมูลเก่ายังดูได้)</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/03-search-error.png" alt="ทำรายการที่ต้องเครือข่ายขณะออฟไลน์ → "ลองใหม่อีกครั้ง"">
-  <figcaption><span class="figno">ภาพที่ 153</span><span class="chip chip-M">M</span>ทำรายการที่ต้องเครือข่ายขณะออฟไลน์ → "ลองใหม่อีกครั้ง"</figcaption>
+  <figcaption><span class="figno">ภาพที่ 154</span><span class="chip chip-M">M</span>ทำรายการที่ต้องเครือข่ายขณะออฟไลน์ → "ลองใหม่อีกครั้ง"</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/02-feed-imgfail.png" alt="รูปการ์ดโหลดไม่สำเร็จ → ช่องภาพว่างเทา">
-  <figcaption><span class="figno">ภาพที่ 154</span><span class="chip chip-M">M</span>รูปการ์ดโหลดไม่สำเร็จ → ช่องภาพว่างเทา</figcaption>
+  <figcaption><span class="figno">ภาพที่ 155</span><span class="chip chip-M">M</span>รูปการ์ดโหลดไม่สำเร็จ → ช่องภาพว่างเทา</figcaption>
 </figure><figure class="shot">
   <img class="phone" src="../screenshots/user-manual/07-offercard-assetunavail.png" alt="การ์ดข้อเสนอที่อ้างถึงรายการถูกลบ → การ์ดว่าง ชื่อ "-"">
-  <figcaption><span class="figno">ภาพที่ 155</span><span class="chip chip-M">M</span>การ์ดข้อเสนอที่อ้างถึงรายการถูกลบ → การ์ดว่าง ชื่อ "-"</figcaption>
+  <figcaption><span class="figno">ภาพที่ 156</span><span class="chip chip-M">M</span>การ์ดข้อเสนอที่อ้างถึงรายการถูกลบ → การ์ดว่าง ชื่อ "-"</figcaption>
 </figure></div><table class="cmp">
-<tr><th>สถานะ</th><th>พฤติกรรม (ตามสเปก/ที่ตรวจพบ)</th></tr>
+<tr><th>สถานะ</th><th>พฤติกรรมของแอป</th></tr>
 <tr><td>รายการถูกลบ/ไม่พร้อมใช้งาน</td><td>เปิดจากลิงก์เก่า → หน้าจอ "รายการนี้ไม่พร้อมใช้งานแล้ว" + ปุ่มย้อนกลับ</td></tr>
 <tr><td>เข้าถึงไม่ได้ (Hide/Sold ของคนอื่น)</td><td>deep link ไปยังรายการส่วนตัวของผู้อื่น → หน้าจอปฏิเสธการเข้าถึง</td></tr>
 <tr><td>ไม่พบผู้ใช้งาน / โปรไฟล์ถูกบล็อก</td><td>โปรไฟล์ที่ถูกลบ → "ไม่พบผู้ใช้งาน"; ถูกบล็อก → "ไม่สามารถเข้าถึงผู้ใช้งานนี้ได้"</td></tr>
-<tr><td>การบล็อกผู้ใช้</td><td>เมนู … บนโปรไฟล์ → บล็อกผู้ใช้ → ยืนยัน — ทั้งสองฝั่งมองไม่เห็นเนื้อหากัน (ในเวอร์ชันนี้ไม่มีเมนูเลิกบล็อกในแอป จึงควรตัดสินใจก่อนยืนยัน)</td></tr>
+<tr><td>การบล็อกผู้ใช้</td><td>เมนู … บนโปรไฟล์ → บล็อกผู้ใช้ → ยืนยัน — ทั้งสองฝั่งมองไม่เห็นเนื้อหากัน (ไม่มีเมนูเลิกบล็อกในแอป จึงควรตัดสินใจก่อนยืนยัน)</td></tr>
 <tr><td>ส่งข้อความไม่สำเร็จ</td><td>แชทขณะออฟไลน์ → ข้อความติดสถานะส่งไม่สำเร็จ กดลองส่งใหม่ได้</td></tr>
 </table></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
 </section><section class="page">
   <header class="phead"><div class="chno">บทที่ 15</div>
-    <div><h2>ภาคผนวก: ทะเบียนภาพหน้าจอทั้งหมด</h2><div class="en">Capture Coverage</div></div>
+    <div><h2>ภาคผนวก: ทะเบียนภาพหน้าจอทั้งหมด (1/2)</h2><div class="en">Capture Coverage</div></div>
     <div class="brand">TUK&nbsp;DAENG</div>
   </header>
-  <div class="pbody"><p class="lead">จับภาพหน้าจอจริงรวม <b>170 ไฟล์</b> — ตารางด้านล่างคือทะเบียนภาพทั้งหมดใน <code>screenshots/user-manual/</code> (รายละเอียดสถานะรายจุดอยู่ใน SCREEN_INVENTORY.md)</p><div class="covwrap"><table class="cov"><tr class="grp"><td colspan="2">โมดูล 00</td></tr><tr><td class="mono">00-aurora-app.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora-install.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora-retry.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora2.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora3.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora4.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora5.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-bottom-nav-member.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-emulator-test.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-entry.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-error-retry.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-feed-loading.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-home-mp.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-home.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-home2.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-home3.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-image-viewer.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-login-required-feed.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-offline-cached.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-onboarding-1.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-onboarding-2.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-onboarding-3.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-playstore.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-splash.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 01</td></tr><tr><td class="mono">01-forgot-filled.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-forgot-sent.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-forgot.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-otp-success.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-otp.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signin-error.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signin-wrongmethod.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signin.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signout-confirm.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signup-filled.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signup.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 02</td></tr><tr><td class="mono">02-feed-card.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-empty-favorites.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-empty-following.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-end.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-favorites.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-following.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">02-feed-guest.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-hide-undo.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-imgfail.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-member.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-menu-owner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-menu-viewer.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-tab-login.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr class="grp"><td colspan="2">โมดูล 03</td></tr><tr><td class="mono">03-create-watchalert.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">03-filter-applied.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-filter-dependent.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-filter.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-search-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-search-error.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-search-result-guest.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-search-result.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-sort.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr></table><table class="cov"><tr class="grp"><td colspan="2">โมดูล 04</td></tr><tr><td class="mono">04-add-asset-crop.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-form.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-form2.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-gallery-filled.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-images.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-picker.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-provenance.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-status.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-brand-picker.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-confirm.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-datepicker.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-model-picker.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-success.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-uploading.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-validation.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-change-status.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-delete-confirm.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-edit-asset.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-edit-provenance.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-sale-record.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 05</td></tr><tr><td class="mono">05-assetdetail-guest.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-assetdetail-owner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-assetdetail-viewer-liked.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-assetdetail-viewer-show.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-assetdetail-viewer.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-comment-actions.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-comment-delete.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-comment-deleted.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-comment-reply.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-comments-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-comments-sheet.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-gallery-viewer.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-guest-loginwall.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-offer-entry.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-report-asset.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 06</td></tr><tr><td class="mono">06-edit-profile.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-follow.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-owner-menu.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-owner-tab-all.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-profile-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-profile-owner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-profile-public.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-profile-share.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-public-menu.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-public-tab-all.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-quickactions-owner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-quickactions-visitor.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-tab-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 07</td></tr><tr><td class="mono">07-chat-assetref.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-delete.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-first.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-list.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-login.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-menu.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-mute.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-room.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-incoming-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr></table><table class="cov"><tr><td class="mono">07-offercard-accepted-seller.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-accepted.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-assetunavail.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-buyer-declined.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-buyer-pending.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-declined.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-pending.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 08</td></tr><tr><td class="mono">08-make-offer.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">08-no-offer-owner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">08-offer-sent.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">08-offer-show.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 09</td></tr><tr><td class="mono">09-noti-banner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-noti-declined.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-noti-destination.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-noti-login.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-noti-watchalert.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-notifications-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-notifications.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 10</td></tr><tr><td class="mono">10-watchalert-create.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">10-watchalert-created.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">10-watchalert-delete.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">10-watchalert-edit.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">10-watchalert-list.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">10-watchalert-result.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 11</td></tr><tr><td class="mono">11-comment.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">11-following-feed.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">11-like.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 12</td></tr><tr><td class="mono">12-article-detail.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-filter.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-like.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-menu.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-report.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-search.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-board-brands.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-board-guest.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-board-section-1.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-board-section-2.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-board.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 13</td></tr><tr><td class="mono">13-about-account.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-about.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-change-password.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-delete-confirm.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-edit-profile.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-help.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-language.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-notification-settings.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-privacy.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-settings.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-terms.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-theme.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 15</td></tr><tr><td class="mono">15-block-user.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">15-report-asset.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">15-report-user.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr></table></div></div>
+  <div class="pbody"><p class="lead">จับภาพหน้าจอจริงรวม <b>170 ไฟล์</b> — ทะเบียนภาพทั้งหมดใน <code>screenshots/user-manual/</code> ส่วนที่ 1 (ต่อในหน้าถัดไป; รายละเอียดสถานะรายจุดอยู่ใน SCREEN_INVENTORY.md)</p><div class="covwrap"><table class="cov"><tr class="grp"><td colspan="2">โมดูล 00</td></tr><tr><td class="mono">00-aurora-app.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora-install.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora-retry.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora2.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora3.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora4.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-aurora5.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-bottom-nav-member.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-emulator-test.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-entry.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-error-retry.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-feed-loading.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-home-mp.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-home.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-home2.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-home3.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-image-viewer.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-login-required-feed.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-offline-cached.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-onboarding-1.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-onboarding-2.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-onboarding-3.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">00-playstore.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">00-splash.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 01</td></tr><tr><td class="mono">01-forgot-filled.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-forgot-sent.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-forgot.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-otp-success.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr></table><table class="cov"><tr><td class="mono">01-otp.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signin-error.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signin-wrongmethod.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signin.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signout-confirm.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signup-filled.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">01-signup.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 02</td></tr><tr><td class="mono">02-feed-card.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-empty-favorites.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-empty-following.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-end.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-favorites.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-following.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">02-feed-guest.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-hide-undo.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-imgfail.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-member.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-menu-owner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-menu-viewer.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">02-feed-tab-login.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr class="grp"><td colspan="2">โมดูล 03</td></tr><tr><td class="mono">03-create-watchalert.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">03-filter-applied.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-filter-dependent.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-filter.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-search-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-search-error.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-search-result-guest.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-search-result.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">03-sort.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr></table><table class="cov"><tr class="grp"><td colspan="2">โมดูล 04</td></tr><tr><td class="mono">04-add-asset-crop.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-form.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-form2.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-gallery-filled.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-images.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-picker.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-provenance.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-asset-status.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-brand-picker.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-confirm.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-datepicker.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-model-picker.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-success.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-uploading.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-add-validation.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-change-status.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-delete-confirm.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-edit-asset.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-edit-provenance.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">04-sale-record.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 05</td></tr><tr><td class="mono">05-assetdetail-guest.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-assetdetail-owner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-assetdetail-viewer-liked.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-assetdetail-viewer-show.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-assetdetail-viewer.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-comment-actions.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-comment-delete.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-comment-deleted.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-comment-reply.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr></table></div></div>
+  <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
+</section><section class="page">
+  <header class="phead"><div class="chno">บทที่ 15</div>
+    <div><h2>ภาคผนวก: ทะเบียนภาพหน้าจอทั้งหมด (2/2)</h2><div class="en">Capture Coverage</div></div>
+    <div class="brand">TUK&nbsp;DAENG</div>
+  </header>
+  <div class="pbody"><p class="lead">ทะเบียนภาพหน้าจอทั้งหมด (ต่อ) — ส่วนที่ 2</p><div class="covwrap"><table class="cov"><tr><td class="mono">05-comments-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-comments-sheet.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-gallery-viewer.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-guest-loginwall.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-offer-entry.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-likes-sheet.jpg</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-share-sheet.jpg</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">05-report-asset.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 06</td></tr><tr><td class="mono">06-edit-profile.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-follow.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-owner-menu.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-owner-tab-all.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-profile-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-profile-owner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-profile-public.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-profile-share.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-public-menu.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-public-tab-all.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-quickactions-owner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-quickactions-visitor.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">06-tab-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 07</td></tr><tr><td class="mono">07-chat-assetref.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-delete.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-first.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-list.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-login.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-menu.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-mute.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-chat-room.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-incoming-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr></table><table class="cov"><tr><td class="mono">07-offercard-accepted-seller.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-accepted.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-assetunavail.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-buyer-declined.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-buyer-pending.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-declined.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">07-offercard-pending.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 08</td></tr><tr><td class="mono">08-make-offer.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">08-no-offer-owner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">08-offer-sent.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">08-offer-show.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 09</td></tr><tr><td class="mono">09-noti-banner.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-noti-declined.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-noti-destination.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-noti-login.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-noti-watchalert.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-notifications-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">09-notifications.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 10</td></tr><tr><td class="mono">10-watchalert-create.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">10-watchalert-created.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">10-watchalert-delete.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">10-watchalert-edit.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">10-watchalert-list.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">10-watchalert-result.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr class="grp"><td colspan="2">โมดูล 11</td></tr><tr><td class="mono">11-comment.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">11-following-feed.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">11-like.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr></table><table class="cov"><tr class="grp"><td colspan="2">โมดูล 12</td></tr><tr><td class="mono">12-article-detail.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-empty.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-filter.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-like.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-menu.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-report.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-article-search.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-board-brands.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-board-guest.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-board-section-1.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-board-section-2.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">12-board.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 13</td></tr><tr><td class="mono">13-about-account.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-about.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-change-password.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-delete-confirm.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-edit-profile.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-help.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-language.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-notification-settings.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-privacy.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-settings.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-terms.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">13-theme.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr class="grp"><td colspan="2">โมดูล 15</td></tr><tr><td class="mono">15-block-user.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr><tr><td class="mono">15-report-asset.png</td><td><span class="dim">ภาพประกอบ/สำรอง</span></td></tr><tr><td class="mono">15-report-user.png</td><td><span class="ok">ใช้ในคู่มือ</span></td></tr></table></div></div>
   <footer class="pfoot"><span>Univerza Tukdaeng — คู่มือการใช้งาน v1.0</span><span class="pgnum"></span></footer>
 </section>
-</body></html>
