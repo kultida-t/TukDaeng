@@ -8,7 +8,7 @@ Login: กดเข้าสู่ระบบด้วยค่าเดิม 
 
 เคส 2: Queue table — ค่าเริ่มต้น
 ขั้นกด: กดปุ่ม "Suggestion Queue"
-ผลที่คาด: breadcrumb "Option Master / Suggestion Queue"; panel "Suggestions (4 pending)"; ตาราง 8 แถวเรียง Usage มากไปน้อย (8, 6, 5, 4, 3, 2, 1, ...); status pill 4 สี Pending=amber, Promoted=เขียว, Mapped=teal, Ignored=เทา; ไม่มี pending badge ซ้ำในหน้า queue; ปุ่ม Suggestion Queue ไม่แสดงซ้ำ
+ผลที่คาด: breadcrumb "Option Master / Suggestion Queue"; panel "Suggestions" + ⓘ; ตาราง 8 แถวเรียง Usage มากไปน้อย (8, 6, 5, 4, 3, 2, 1, ...); status pill 4 สี Pending=amber, Promoted=เขียว, Mapped=teal, Ignored=เทา; ไม่มี pending badge ซ้ำในหน้า queue; ปุ่ม Suggestion Queue ไม่แสดงซ้ำ
 
 เคส 3: Search
 ขั้นกด: ในช่อง Search พิมพ์ "jubilee"
@@ -71,15 +71,15 @@ Login: กดเข้าสู่ระบบด้วยค่าเดิม 
 ผลที่คาด: header ตารางซ่อน แถวกลายเป็น card (SUG-xxx เป็นหัว + tag status/group/usage + meta rows); ปุ่มตัวกรองเปิด/ปิด filter bar ได้; modal stack แนวตั้งไม่ล้นจอ; ตัวหนังสือไทยไม่ถูกตัด
 
 หมายเหตุ: mock data 8 records → pagination แสดง 1 หน้า (ออกแบบ 10/หน้า)
-ภาพประกอบ: screenshots/task-3d2b6f50-suggestion-queue/ (before-* / after-* ทั้ง 1440 และ 440)
-Automated: scripts/check-3d2b6f50-suggestion-queue.js (34 เคส) + scripts/check-3d2b6f50-regression-mobile.js (20 เคส) — ผ่านครบ (raw output: test-results.txt)
+ภาพประกอบ: screenshots/task-3d2b6f50-suggestion-queue/ (before-1440/before-390, after-1440/after-440)
+Automated: scripts/check-3d2b6f50-suggestion-queue.js (34 เคส) + scripts/check-3d2b6f50-regression-mobile.js (23 เคส) — ผ่านครบ (raw output: test-results.txt)
 
 === ผลตรวจจริง (ผู้ใช้ตรวจหน้าจอ 06/10/2026) ===
 
 รอบตรวจ 1 — พบ 4 จุด → แก้แล้ว:
 - เข้า queue แต่ละครั้งข้อมูลต่างกัน + กดแถวที่มี pill เด้งสลับหน้า → root cause: queue restore filter state เก่า + pill ชิด Active ทำ hit target กำกวม → แก้ reset state เสมอตอนเข้า queue + แยก pill เป็นปุ่มชัดเจน (ผ่าน)
 - pill pending ไม่อยู่แนวเดียวกับ Active + ชิดเกิน → Status cell เป็น flex (ผ่าน)
-- ข้อความอธิบายใต้ title → ย้ายไป tooltip ⓘ หลัง "Suggestions (4 pending)" (ผ่าน)
+- ข้อความอธิบายใต้ title → ย้ายไป tooltip ⓘ หลัง "Suggestions" (ผ่าน)
 - font ตาราง queue ต่างจากตารางอื่น → เพิ่มเข้า selector 12px มาตรฐาน (ผ่าน)
 
 รอบตรวจ 2 — พบ 2 จุด → แก้แล้ว:
@@ -114,4 +114,15 @@ Automated: scripts/check-3d2b6f50-suggestion-queue.js (34 เคส) + scripts/c
 รอบตรวจ 8 — พบ 1 จุด → แก้แล้ว:
 - pill/tag ใน mobile card ตัวอักษรไม่เท่ากัน → เพิ่ม suggestion table เข้า rule compact-tag ของ Option Master (12px/27px เท่ากัน) (ผ่าน)
 
-ผลลัพธ์สุดท้าย: ผู้ใช้ยืนยัน "ตรวจหน้าจอเองหมดแล้ว" + recapture After ครบ 17 ภาพ → ปิด task
+รอบตรวจ 9 (mobile 390px จากภาพ capture) — พบ 2 จุด → แก้แล้ว:
+- title "OPTION MASTER" ถูกบีบ 3 บรรทัด + ปุ่มชิดขอบ → เพิ่มปุ่ม Suggestion Queue เข้า icon-only rule ของ mobile (badge pending คงอยู่ + tooltip) (ผ่าน)
+- ปุ่ม "รีเซ็ตค่าทั้งหมด" ตกขอบจอ → title ยาวอยู่แถวเดียวกับ controls (แก้สุดท้ายในรอบ 10); เพิ่มเคสเช็ก horizontal overflow + reset ใน viewport เข้า regression test (20→23 เคส) (ผ่าน)
+
+รอบตรวจ 10 — ผู้ใช้สั่งปรับ → ทำแล้ว:
+- ตัด "(4 pending)" ออกจาก panel title เหลือ "SUGGESTIONS" ทั้ง desktop/mobile — จำนวน pending เห็นจาก badge บนปุ่ม + pill ในกลุ่มอยู่แล้ว (ผ่าน)
+
+รอบตรวจ 11 — ผู้ใช้สั่ง revert + เปลี่ยน viewport → ทำแล้ว:
+- revert Detail modal กลับเป็น 3 ปุ่มแถวเดียว + Status กลับแถวเดียวกับ Option ID (เดิมเคย stack แยกบรรทัด) (ผ่าน)
+- เปลี่ยน viewport mobile capture/test จาก 393×852 → 440×956 — ที่ 440 ทุกอย่างอยู่แถวเดียวพอดี (ผ่าน)
+
+ผลลัพธ์สุดท้าย: ผู้ใช้ยืนยันหน้าจอครบทุก state + recapture After ครบ 17 ภาพ (1440+440) → ปิด task
