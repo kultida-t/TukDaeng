@@ -83,8 +83,8 @@ async function gotoOptionMaster(page) {
 
   await page.close();
 
-  // ===== Mobile 393 =====
-  const mp = await browser.newPage({ viewport: { width: 393, height: 852 } });
+  // ===== Mobile 440 =====
+  const mp = await browser.newPage({ viewport: { width: 440, height: 956 } });
   mp.on("pageerror", e => errors.push(e.message));
   await login(mp);
   // open nav on mobile

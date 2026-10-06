@@ -21,7 +21,7 @@ Audit jump กรองด้วยรหัส SUG-xxx ถูกต้อง
 == Responsive
 Desktop 1440: ตาราง + filter bar แถวเดียว
 Tablet ~985: search + filter แถวเดียวตามแบบ User List
-Mobile 393: card + ตัวกรอง toggle + pill/tag ขนาด 12px เท่ากันทุกอัน
+Mobile 440: card + ตัวกรอง toggle + pill/tag ขนาด 12px เท่ากันทุกอัน
 == Regression
 Option Group List / Detail เดิมไม่เปลี่ยน (locked screens)
 Add Option modal ปกติ ไม่มี suggestion context หลุด
