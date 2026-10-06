@@ -1605,6 +1605,28 @@
       overflow-y: visible;
       scrollbar-width: thin;
     }
+    /* Suggestion Queue: same scroll model as Option Detail */
+    body.option-master-mode.option-suggestion-mode .panel {
+      overflow: visible;
+    }
+    /* BO-17 §23.5: info tooltip หลัง panel title (pattern เดียวกับ wa-panel-info ใน Watch Alert/Demand Overview) */
+    body.option-master-mode.option-suggestion-mode .panel-head h2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    body.option-master-mode.option-suggestion-mode .panel-head h2 + #panel-subtitle:empty {
+      display: none;
+    }
+    body.option-master-mode.option-suggestion-mode .panel-head h2 .wa-panel-info svg {
+      width: 15px;
+      height: 15px;
+    }
+    body.option-master-mode.option-suggestion-mode #table {
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+    }
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
       min-width: 1132px;
     }
@@ -1612,16 +1634,22 @@
       min-width: 1132px;
     }
     body.option-master-mode #table .option-group-table {
-      min-width: 1420px;
+      min-width: 1482px;
     }
     body.option-master-mode #table .option-detail-table {
       min-width: 1200px;
+    }
+    body.option-master-mode #table .option-suggestion-table {
+      min-width: 1280px;
     }
     body.option-master-mode.option-group-list-mode #table > .footer-range {
       min-width: 1482px;
     }
     body.option-master-mode.option-detail-mode #table > .footer-range {
       min-width: 1200px;
+    }
+    body.option-master-mode.option-suggestion-mode #table > .footer-range {
+      min-width: 1280px;
     }
     body.offer-list-mode .layout > .panel {
       border-color: #d7e2f0;
@@ -1916,10 +1944,14 @@
       grid-template-columns: minmax(112px, .62fr) minmax(240px, 1.5fr) minmax(170px, .88fr) minmax(116px, .58fr) minmax(116px, .58fr) minmax(166px, .82fr) minmax(76px, .38fr);
     }
     .option-group-table .asset-row {
-      grid-template-columns: minmax(96px, .5fr) minmax(140px, .85fr) minmax(180px, 1.3fr) minmax(180px, 1.3fr) minmax(92px, .48fr) minmax(96px, .5fr) minmax(88px, .46fr) minmax(88px, .46fr) minmax(136px, .7fr) minmax(64px, .34fr);
+      grid-template-columns: minmax(96px, .5fr) minmax(140px, .85fr) minmax(180px, 1.3fr) minmax(180px, 1.3fr) minmax(92px, .48fr) minmax(96px, .5fr) minmax(88px, .46fr) minmax(150px, .78fr) minmax(136px, .7fr) minmax(64px, .34fr);
     }
     .option-detail-table .asset-row {
       grid-template-columns: minmax(96px, .42fr) minmax(120px, .56fr) minmax(170px, 1fr) minmax(170px, 1fr) minmax(72px, .32fr) minmax(76px, .34fr) minmax(92px, .42fr) minmax(124px, .58fr) minmax(76px, .36fr);
+    }
+    /* BO-17 §23: Suggestion Queue table — 9 columns (ID / Value / Group / Usage / First Seen / Last Seen / Status / Resolution / Action) */
+    .option-suggestion-table .asset-row {
+      grid-template-columns: minmax(92px, .44fr) minmax(190px, 1.1fr) minmax(130px, .72fr) minmax(60px, .3fr) minmax(118px, .62fr) minmax(118px, .62fr) minmax(92px, .46fr) minmax(150px, .84fr) minmax(64px, .34fr);
     }
     .reported-board-table .asset-row {
       grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
@@ -1966,7 +1998,8 @@
       top: auto;
       bottom: 38px;
     }
-    .option-detail-table .asset-row:nth-last-child(-n + 3) .row-menu-list {
+    .option-detail-table .asset-row:nth-last-child(-n + 3) .row-menu-list,
+    .option-suggestion-table .asset-row:nth-last-child(-n + 3) .row-menu-list {
       top: auto;
       bottom: 38px;
     }
@@ -2052,6 +2085,8 @@
     body.option-master-mode .option-group-table .asset-row:not(.head) .muted,
     body.option-master-mode .option-detail-table .asset-row:not(.head) .main-text,
     body.option-master-mode .option-detail-table .asset-row:not(.head) .muted,
+    body.option-master-mode .option-suggestion-table .asset-row:not(.head) .main-text,
+    body.option-master-mode .option-suggestion-table .asset-row:not(.head) .muted,
     body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .main-text,
     body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .muted,
     body.policy-version-history-mode .policy-version-table .asset-row:not(.head) .main-text,
@@ -2433,11 +2468,13 @@
     body.option-master-mode .user-filter-bar .user-advanced-filter {
       flex: 0 0 auto;
     }
-    body.option-group-list-mode .option-group-table .asset-row:not(.head) {
+    body.option-group-list-mode .option-group-table .asset-row:not(.head),
+    body.option-suggestion-mode .option-suggestion-table .asset-row:not(.head) {
       cursor: pointer;
     }
     body.option-master-mode .option-group-table .asset-row.head,
-    body.option-master-mode .option-detail-table .asset-row.head {
+    body.option-master-mode .option-detail-table .asset-row.head,
+    body.option-master-mode .option-suggestion-table .asset-row.head {
       min-height: 44px;
       padding: 12px 22px;
       column-gap: 24px;
@@ -2447,22 +2484,56 @@
       font-weight: 700;
     }
     body.option-master-mode .option-group-table .asset-row,
-    body.option-master-mode .option-detail-table .asset-row {
+    body.option-master-mode .option-detail-table .asset-row,
+    body.option-master-mode .option-suggestion-table .asset-row {
       column-gap: 24px;
       padding-left: 22px;
       padding-right: 22px;
     }
-    body.option-master-mode .option-detail-table .asset-row:not(.head) .user-row-actions {
+    body.option-master-mode .option-detail-table .asset-row:not(.head) .user-row-actions,
+    body.option-master-mode .option-suggestion-table .asset-row:not(.head) .user-row-actions {
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
       justify-content: flex-end;
     }
+    /* Pending pill inside Option Group List Status cell — entry point ไป Suggestion Queue (BO-17 §23)
+       แสดงแนวเดียวกับ status pill (flex row + gap) เพื่อให้เป็น hit target แยกชัดจาก row */
+    body.option-master-mode .option-group-table .asset-row:not(.head) > div[data-label="Status"] {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-content: center;
+      row-gap: 6px;
+    }
+    .option-suggestion-pill {
+      border: none;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+      min-height: 24px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .option-suggestion-pill:hover {
+      filter: brightness(.95);
+    }
+    .option-suggestion-pill:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+    .btn .option-queue-count {
+      margin-left: 4px;
+    }
     /* BO-OPT-006a-R1: System tag styling for Option Group List + Option Detail desktop
        (tag classes are mobile-only by default; scope to option-master-mode so the System
        column shows as a colored tag on desktop too, matching the mobile card appearance). */
     body.option-master-mode .option-group-table .asset-row .user-card-tag.asset-tag,
-    body.option-master-mode .option-detail-table .asset-row .user-card-tag.asset-tag {
+    body.option-master-mode .option-detail-table .asset-row .user-card-tag.asset-tag,
+    body.option-master-mode .option-suggestion-table .asset-row .user-card-tag.asset-tag {
       min-height: 24px;
       display: inline-flex;
       align-items: center;
@@ -5393,6 +5464,7 @@
        user-list including User Accounts, Reported Users/Assets/Comments, Account Deletion). */
     body.option-master-mode.option-detail-mode .row-menu-list,
     body.option-master-mode.option-group-list-mode .row-menu-list,
+    body.option-master-mode.option-suggestion-mode .row-menu-list,
     body.reported-board-mode .row-menu-list,
     body.article-list-mode .row-menu-list,
     body.category-list-mode .row-menu-list,
@@ -5405,6 +5477,7 @@
     }
     body.option-master-mode.option-detail-mode .row-menu-list.is-fixed,
     body.option-master-mode.option-group-list-mode .row-menu-list.is-fixed,
+    body.option-master-mode.option-suggestion-mode .row-menu-list.is-fixed,
     body.reported-board-mode .row-menu-list.is-fixed,
     body.article-list-mode .row-menu-list.is-fixed,
     body.category-list-mode .row-menu-list.is-fixed,
@@ -7159,6 +7232,10 @@
     .filters .custom-select-menu {
       max-height: min(220px, 30vh);
     }
+    /* BO-17 §23.5: dropdown ใน modal — จำกัดความสูงให้เหลือระยะห่างจากขอบล่าง modal */
+    .modal .custom-select-menu {
+      max-height: min(156px, 22vh);
+    }
     .custom-select-option {
       min-height: 30px;
       border: 0;
@@ -7206,6 +7283,50 @@
       grid-template-columns: minmax(260px, 1.65fr) minmax(138px, .82fr) 42px;
       align-items: stretch;
       gap: 8px;
+    }
+    /* Suggestion Queue: search + group + status + sort + reset (BO-17 §23)
+       — body.option-master-mode .user-filter-bar บังคับ flex อยู่ ต้อง override เป็น grid ให้ template ทำงาน */
+    body.option-master-mode .user-filter-bar.option-suggestion-filter-bar {
+      display: grid;
+      grid-template-columns: minmax(200px, 1.2fr) repeat(3, minmax(160px, 1fr)) 42px;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .user-filter-bar.option-suggestion-filter-bar .search,
+    .user-filter-bar.option-suggestion-filter-bar .custom-select,
+    .user-filter-bar.option-suggestion-filter-bar .custom-select-trigger,
+    .user-filter-bar.option-suggestion-filter-bar .filter-reset {
+      width: 100%;
+      height: 48px;
+      min-height: 48px;
+    }
+    .user-filter-bar.option-suggestion-filter-bar .custom-select-trigger {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    .user-filter-bar.option-suggestion-filter-bar .custom-select-trigger [data-custom-select-label] {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .user-filter-bar.option-suggestion-filter-bar .filter-reset {
+      width: 42px;
+      min-width: 42px;
+      padding: 0;
+      border-color: #cfdbea;
+      background: #fff;
+      justify-content: center;
+    }
+    .user-filter-bar.option-suggestion-filter-bar .filter-reset span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search,
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
@@ -12619,6 +12740,14 @@
         grid-column: auto;
         min-width: 0;
       }
+      /* Suggestion Queue tablet — search + 3 filters + reset บรรทัดเดียว (เหมือน User List) */
+      body.option-master-mode .user-filter-bar.option-suggestion-filter-bar {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
+      }
+      body.option-master-mode .user-filter-bar.option-suggestion-filter-bar .search {
+        grid-column: auto;
+        min-width: 0;
+      }
       body.offer-list-mode .offer-filter-bar .search {
         grid-column: auto;
       }
@@ -12749,7 +12878,7 @@
         scrollbar-width: thin;
       }
       body.option-master-mode.option-group-list-mode #table .option-group-table {
-        min-width: 1420px;
+        min-width: 1482px;
       }
       body.option-master-mode.option-group-list-mode #table > .footer-range {
         min-width: 1482px;
@@ -12830,6 +12959,9 @@
       .user-filter-bar.option-detail-filter-bar,
       .user-filter-bar.option-group-filter-bar {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) 42px;
+      }
+      body.option-master-mode .user-filter-bar.option-suggestion-filter-bar {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(132px, .5fr)) 42px;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode,
       .user-filter-bar.asset-mode {
@@ -13503,14 +13635,16 @@
       .user-filter-bar.content-mode,
       .user-filter-bar.category-mode,
       .user-filter-bar.option-detail-filter-bar,
-      .user-filter-bar.option-group-filter-bar {
+      .user-filter-bar.option-group-filter-bar,
+      .user-filter-bar.option-suggestion-filter-bar {
         grid-template-columns: 1fr;
       }
       body.article-list-mode .user-filter-bar.content-mode,
       body.reported-board-mode .user-filter-bar.content-mode,
       body.category-list-mode .user-filter-bar.category-mode,
       body.option-master-mode .user-filter-bar.option-detail-filter-bar,
-      body.option-master-mode .user-filter-bar.option-group-filter-bar {
+      body.option-master-mode .user-filter-bar.option-group-filter-bar,
+      body.option-master-mode .user-filter-bar.option-suggestion-filter-bar {
         grid-template-columns: 1fr;
       }
       body.offer-list-mode .offer-filter-bar {
@@ -14306,7 +14440,8 @@
         overflow-wrap: anywhere;
       }
       body.option-master-mode.option-detail-mode .row-menu-list,
-      body.option-master-mode.option-group-list-mode .row-menu-list {
+      body.option-master-mode.option-group-list-mode .row-menu-list,
+      body.option-master-mode.option-suggestion-mode .row-menu-list {
         left: auto;
         right: 0;
         width: min(196px, calc(100vw - 64px));
@@ -14314,7 +14449,8 @@
         max-width: calc(100vw - 64px);
       }
       body.option-master-mode.option-detail-mode .row-menu-list button,
-      body.option-master-mode.option-group-list-mode .row-menu-list button {
+      body.option-master-mode.option-group-list-mode .row-menu-list button,
+      body.option-master-mode.option-suggestion-mode .row-menu-list button {
         white-space: normal;
         overflow-wrap: anywhere;
       }
@@ -14488,7 +14624,8 @@
         overflow-x: hidden;
       }
       body.option-master-mode.option-group-list-mode #table .option-group-table,
-      body.option-master-mode.option-detail-mode #table .option-detail-table {
+      body.option-master-mode.option-detail-mode #table .option-detail-table,
+      body.option-master-mode.option-suggestion-mode #table .option-suggestion-table {
         grid-template-columns: 1fr;
         gap: 12px;
         min-width: 0;
@@ -14500,6 +14637,7 @@
       body.offer-list-mode #table > .footer-range,
       body.option-master-mode.option-group-list-mode #table > .footer-range,
       body.option-master-mode.option-detail-mode #table > .footer-range,
+      body.option-master-mode.option-suggestion-mode #table > .footer-range,
       body.policy-versioning-mode #table > .footer-range,
       body.policy-version-history-mode #table > .footer-range {
         min-width: 0;
@@ -14957,6 +15095,118 @@
         gap: 9px;
         width: 100%;
         padding-top: 0;
+      }
+      /* BO-17 §23: Suggestion Queue — mobile card transform เหมือน Option Group/Detail */
+      body.option-master-mode .option-suggestion-table .asset-row.head { display: none; }
+      body.option-master-mode .option-suggestion-table .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border: 1px solid #cfdbd2;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        overflow: visible;
+      }
+      body.option-master-mode .option-suggestion-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
+      body.option-master-mode .option-suggestion-table .asset-row:not(.head) > div[data-label]:first-child {
+        display: none;
+      }
+      body.option-master-mode .option-suggestion-table .asset-row:not(.head) > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+        justify-content: flex-end;
+        width: auto;
+        min-height: 30px;
+        padding-top: 0;
+      }
+      body.option-master-mode .option-suggestion-table .asset-row:not(.head) > .asset-cell-primary {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      body.option-master-mode .option-suggestion-table .asset-row:not(.head) > .asset-cell-primary .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      body.option-master-mode .option-suggestion-table .asset-row:not(.head) .desktop-user-name { display: none; }
+      body.option-master-mode .option-suggestion-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
+      body.option-master-mode .option-suggestion-table .asset-card-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        width: 100%;
+        padding-top: 0;
+      }
+      body.option-master-mode .option-suggestion-table .asset-card-tags .user-card-meta {
+        flex: 1 0 100%;
+        display: grid;
+        gap: 3px;
+        width: 100%;
+        margin-top: 8px;
+        padding-top: 11px;
+        border-top: 1px solid #edf2f7;
+      }
+      body.option-master-mode .option-suggestion-table .asset-card-tags .user-card-meta-item {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+        color: #34445b;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      body.option-master-mode .option-suggestion-table .asset-card-tags .user-card-meta-item span {
+        color: #485b75;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      body.option-master-mode .option-suggestion-table .asset-card-tags .user-card-meta-item strong {
+        color: #233a5c;
+        font-size: 12px;
+        font-weight: 400;
+        min-width: 0;
+        max-width: 62%;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body.option-master-mode .option-suggestion-table .asset-card-tags .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.option-master-mode .option-suggestion-table .asset-card-tags .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta {
         flex: 1 0 100%;
@@ -18522,7 +18772,9 @@
           { key: "aluminum", label_en: "Aluminum", label_th: "อะลูมิเนียม", description_en: "Aluminum case material", sort_order: 100, is_active: true, is_system: true, used_in_assets: false },
           { key: "tantalum", label_en: "Tantalum", label_th: "แทนทาลัม", description_en: "Tantalum case material", sort_order: 110, is_active: true, is_system: true, used_in_assets: false },
           { key: "two_tone", label_en: "Two-tone", label_th: "ทูโทน", description_en: "Two-tone or mixed metal case material", sort_order: 120, is_active: true, is_system: true, used_in_assets: true },
-          { key: "pvd_dlc", label_en: "PVD / DLC coated", label_th: "เคลือบ PVD / DLC", description_en: "Coated metal case material", sort_order: 130, is_active: true, is_system: true, used_in_assets: false }
+          { key: "pvd_dlc", label_en: "PVD / DLC coated", label_th: "เคลือบ PVD / DLC", description_en: "Coated metal case material", sort_order: 130, is_active: true, is_system: true, used_in_assets: false },
+          // SUG-005 "Titanium coated" → promoted เป็น custom option (BO-17 §23) — id ตรงกับ audit AUD-88301
+          { id: "OPT-066", key: "titanium_coated", label_en: "Titanium coated", label_th: "ไทเทเนียมเคลือบ", description_en: "Promoted from user suggestion SUG-005", sort_order: 140, is_active: true, is_system: false, used_in_assets: true, updated_at: "30 Sep 2026 14:10" }
         ]
       },
       {
@@ -18643,11 +18895,44 @@
       group.is_system = group.is_system !== undefined ? group.is_system : true;
       group.updated_at = group.is_active ? _optionSeedDate : "14 Jul 2026 11:00";
       group.options.forEach((option, idx) => {
-        _optionIdCounter += 1;
-        option.id = "OPT-" + String(_optionIdCounter).padStart(3, "0");
-        option.updated_at = option.is_system ? _optionSeedDate : "15 Jul 2026 14:30";
+        if (!option.id) {
+          _optionIdCounter += 1;
+          option.id = "OPT-" + String(_optionIdCounter).padStart(3, "0");
+        }
+        option.updated_at = option.updated_at || (option.is_system ? _optionSeedDate : "15 Jul 2026 14:30");
       });
     });
+
+    // ===== Spec Option Suggestion mock data (BO-17 §23 — Suggestion Queue curation) =====
+    // เฉพาะ 4 groups ที่รองรับ "ระบุเอง" ใน FO: OG-003 case_material, OG-004 movement,
+    // OG-005 dial_color, OG-006 strap_bracelet_type — unique key = (group_id, normalized_text)
+    // status: pending / promoted / mapped / ignored; *_ts = sortable timestamp rank
+    const optionSuggestions = [
+      { id: "SUG-001", group_id: "OG-003", submitted_text: "Two-tone gold/steel", normalized_text: "two-tone gold/steel", usage_count: 8, status: "pending", resolved_option_id: null, resolved_by: "", resolved_at: "", resolution_note: "", first_submitted_at: "18 Sep 2026 10:24", first_ts: 202609181024, last_submitted_at: "05 Oct 2026 19:40", last_ts: 202610051940, auditHistory: [] },
+      { id: "SUG-002", group_id: "OG-005", submitted_text: "Champagne Gold", normalized_text: "champagne gold", usage_count: 5, status: "pending", resolved_option_id: null, resolved_by: "", resolved_at: "", resolution_note: "", first_submitted_at: "21 Sep 2026 14:02", first_ts: 202609211402, last_submitted_at: "04 Oct 2026 22:10", last_ts: 202610042210, auditHistory: [] },
+      { id: "SUG-003", group_id: "OG-004", submitted_text: "Hand winding", normalized_text: "hand winding", usage_count: 3, status: "pending", resolved_option_id: null, resolved_by: "", resolved_at: "", resolution_note: "", first_submitted_at: "24 Sep 2026 09:11", first_ts: 202609240911, last_submitted_at: "03 Oct 2026 18:44", last_ts: 202610031844, auditHistory: [] },
+      { id: "SUG-004", group_id: "OG-006", submitted_text: "Jubilee bracelet", normalized_text: "jubilee bracelet", usage_count: 2, status: "pending", resolved_option_id: null, resolved_by: "", resolved_at: "", resolution_note: "", first_submitted_at: "30 Sep 2026 12:00", first_ts: 202609301200, last_submitted_at: "05 Oct 2026 08:31", last_ts: 202610050831, auditHistory: [] },
+      { id: "SUG-005", group_id: "OG-003", submitted_text: "Titanium coated", normalized_text: "titanium coated", usage_count: 6, status: "promoted", resolved_option_id: "OPT-066", resolved_by: "สมชาย รักงาน", resolved_at: "30 Sep 2026 14:10", resolution_note: "", first_submitted_at: "12 Sep 2026 11:20", first_ts: 202609121120, last_submitted_at: "29 Sep 2026 09:55", last_ts: 202609290955,
+        auditHistory: [
+          { action: "OPTION_SUGGESTION_PROMOTE", actor: "สมชาย รักงาน", actor_access: "Super Admin", before: [{ field: "Status", value: "Pending" }], after: [{ field: "Status", value: "Promoted" }, { field: "Resolved Option", value: "OPT-066 (titanium_coated)" }], reason: "", timestamp: "30 Sep 2026 14:10", auditRef: "AUD-88301" }
+        ] },
+      { id: "SUG-006", group_id: "OG-003", submitted_text: "PVD black", normalized_text: "pvd black", usage_count: 4, status: "mapped", resolved_option_id: "OPT-022", resolved_by: "สมชาย รักงาน", resolved_at: "28 Sep 2026 11:05", resolution_note: "normalize เข้า PVD / DLC coated เดิม", first_submitted_at: "15 Sep 2026 16:30", first_ts: 202609151630, last_submitted_at: "27 Sep 2026 20:12", last_ts: 202609272012,
+        auditHistory: [
+          { action: "OPTION_SUGGESTION_MAP_ALIAS", actor: "สมชาย รักงาน", actor_access: "Super Admin", before: [{ field: "Status", value: "Pending" }], after: [{ field: "Status", value: "Mapped" }, { field: "Alias Of", value: "OPT-022 (pvd_dlc)" }], reason: "normalize เข้า PVD / DLC coated เดิม", timestamp: "28 Sep 2026 11:05", auditRef: "AUD-88300" }
+        ] },
+      { id: "SUG-007", group_id: "OG-005", submitted_text: "ม่วงลาเวนเดอร์", normalized_text: "ม่วงลาเวนเดอร์", usage_count: 1, status: "ignored", resolved_option_id: null, resolved_by: "สมชาย รักงาน", resolved_at: "25 Sep 2026 16:30", resolution_note: "ค่าเฉพาะเจาะจงเกินไปสำหรับ vocabulary กลาง — ปล่อยเป็น free-text search", first_submitted_at: "25 Sep 2026 15:48", first_ts: 202609251548, last_submitted_at: "25 Sep 2026 15:48", last_ts: 202609251548,
+        auditHistory: [
+          { action: "OPTION_SUGGESTION_IGNORE", actor: "สมชาย รักงาน", actor_access: "Super Admin", before: [{ field: "Status", value: "Pending" }], after: [{ field: "Status", value: "Ignored" }], reason: "ค่าเฉพาะเจาะจงเกินไปสำหรับ vocabulary กลาง — ปล่อยเป็น free-text search", timestamp: "25 Sep 2026 16:30", auditRef: "AUD-88299" }
+        ] },
+      { id: "SUG-008", group_id: "OG-006", submitted_text: "สายโลหะแบบถัก", normalized_text: "สายโลหะแบบถัก", usage_count: 1, status: "ignored", resolved_option_id: null, resolved_by: "สมชาย รักงาน", resolved_at: "26 Sep 2026 09:15", resolution_note: "ข้อความคลุมเครือเกินไปสำหรับเป็น option — ปล่อยเป็น free-text", first_submitted_at: "22 Sep 2026 13:37", first_ts: 202609221337, last_submitted_at: "26 Sep 2026 08:02", last_ts: 202609260802,
+        auditHistory: [
+          { action: "OPTION_SUGGESTION_IGNORE", actor: "สมชาย รักงาน", actor_access: "Super Admin", before: [{ field: "Status", value: "Pending" }], after: [{ field: "Status", value: "Ignored" }], reason: "ข้อความคลุมเครือเกินไปสำหรับเป็น option — ปล่อยเป็น free-text", timestamp: "26 Sep 2026 09:15", auditRef: "AUD-88298" }
+        ] }
+    ];
+    // spec_option_aliases — alias ที่เกิดจาก action Map (§23.4) เพื่อให้ save รอบถัดไป auto-link อัตโนมัติ
+    const optionSuggestionAliases = [
+      { option_id: "OPT-022", alias_text: "PVD black", normalized_alias: "pvd black", source: "suggestion_map", suggestion_id: "SUG-006" }
+    ];
 
     // ===== Option Master audit infrastructure (BO-OPT-002d, section 16) =====
     const OPTION_AUDIT_ACTOR = "สมชาย รักงาน";
@@ -18748,6 +19033,28 @@
             ],
             reason: "",
             timestamp: "15 Jul 2026 10:15"
+          }
+        ];
+      }
+      // OPT-066 (titanium_coated): OPTION_ADD จากการ promote suggestion SUG-005 (BO-17 §23)
+      const promoted = findOpt("OPT-066");
+      if (promoted) {
+        promoted.auditHistory = [
+          {
+            action: "OPTION_ADD",
+            actor: "สมชาย รักงาน",
+            actor_access: "Super Admin",
+            before: [],
+            after: [
+              { field: "Option Key", value: "titanium_coated" },
+              { field: "Label (EN)", value: "Titanium coated" },
+              { field: "Label (TH)", value: "ไทเทเนียมเคลือบ" },
+              { field: "Sort Order", value: "140" },
+              { field: "Status", value: "Active" },
+              { field: "From Suggestion", value: "SUG-005" }
+            ],
+            reason: "",
+            timestamp: "30 Sep 2026 14:10"
           }
         ];
       }
@@ -19005,7 +19312,11 @@
         { id: "AUD-88211", createdAt: "20 Feb 2026 08:15 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Publisher", reference: "ADM-004", note: "เชิญเข้าทีม content", result: "Success" },
         { id: "AUD-88210", createdAt: "10 Feb 2026 13:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Trust & Safety Moderator", reference: "ADM-003", note: "เชิญเข้าทีม trust & safety", result: "Success" },
         { id: "AUD-88209", createdAt: "15 Jan 2026 10:30 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Super Admin", reference: "ADM-002", note: "เชิญเข้าทีม admin", result: "Success" },
-        { id: "AUD-88215", createdAt: "10 May 2025 09:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Editor", reference: "ADM-009", note: "เชิญเข้าทีม content", result: "Success" }
+        { id: "AUD-88215", createdAt: "10 May 2025 09:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Editor", reference: "ADM-009", note: "เชิญเข้าทีม content", result: "Success" },
+        { id: "AUD-88301", createdAt: "30 Sep 2026 14:10 GMT+7", actor: "สมชาย รักงาน", actorType: "Admin", action: "Promote Option Suggestion", eventType: "OPTION_SUGGESTION_PROMOTE", module: "Option Master", risk: "Medium", before: "Pending", after: "Promoted → OPT-066", reason: "", reference: "SUG-005", note: "สร้าง option titanium_coated ในกลุ่ม case_material + backfill relation id ให้ asset ที่ snapshot ตรงกัน", result: "Success" },
+        { id: "AUD-88300", createdAt: "28 Sep 2026 11:05 GMT+7", actor: "สมชาย รักงาน", actorType: "Admin", action: "Map Option Suggestion to Alias", eventType: "OPTION_SUGGESTION_MAP_ALIAS", module: "Option Master", risk: "Low", before: "Pending", after: "Mapped → OPT-022", reason: "normalize เข้า PVD / DLC coated เดิม", reference: "SUG-006", note: "สร้าง alias \"PVD black\" → pvd_dlc + backfill relation id", result: "Success" },
+        { id: "AUD-88299", createdAt: "25 Sep 2026 16:30 GMT+7", actor: "สมชาย รักงาน", actorType: "Admin", action: "Ignore Option Suggestion", eventType: "OPTION_SUGGESTION_IGNORE", module: "Option Master", risk: "Low", before: "Pending", after: "Ignored", reason: "ค่าเฉพาะเจาะจงเกินไปสำหรับ vocabulary กลาง", reference: "SUG-007", note: "คงเป็น free-text ค้นเจอผ่าน keyword — ไม่ backfill", result: "Success" },
+        { id: "AUD-88298", createdAt: "26 Sep 2026 09:15 GMT+7", actor: "สมชาย รักงาน", actorType: "Admin", action: "Ignore Option Suggestion", eventType: "OPTION_SUGGESTION_IGNORE", module: "Option Master", risk: "Low", before: "Pending", after: "Ignored", reason: "ข้อความคลุมเครือเกินไปสำหรับเป็น option", reference: "SUG-008", note: "คงเป็น free-text ค้นเจอผ่าน keyword — ไม่ backfill", result: "Success" }
       ]
     };
 
@@ -20768,6 +21079,10 @@
     let activeOptionGroup = "";
     let optionDetailFilterOpen = false;
     let optionGroupFilterOpen = false;
+    // BO-17 §23 — Suggestion Queue state (scope expansion ต่อจาก spec task c5f9ddae)
+    let optionSuggestionListPage = 1;
+    let optionSuggestionFilterOpen = false;
+    let optionSuggestionQueueActive = false;
     // BO-UX-001: Per-list filter state persistence — saves search term + custom-select
     // values so they can be restored when returning from a detail page to its list.
     // Cleared on cross-module/sub navigation (via resetListFilterPanelsForNavigation)
@@ -20785,6 +21100,7 @@
       "board-report-list": { searchId: "board-report-search", filterIds: ["board-report-status-filter", "board-report-priority-filter", "board-report-sort"] },
       "option-group-list": { searchId: "option-group-search", filterIds: ["option-group-status-filter"] },
       "option-detail": { searchId: "option-detail-search", filterIds: ["option-status-filter"] },
+      "option-suggestion-queue": { searchId: "option-suggestion-search", filterIds: ["option-suggestion-group-filter", "option-suggestion-status-filter", "option-suggestion-sort"] },
       "watch-alert-list": { searchId: "", filterIds: ["wa-alert-status-filter", "wa-alert-notif-filter", "wa-alert-trigger-filter", "wa-alert-zero-match-filter", "wa-alert-sort"], dateIds: ["wa-alert-last-triggered-from", "wa-alert-last-triggered-to"] },
       "market-dashboard": { searchId: "", filterIds: [] },
       "market-catalog": { searchId: "market-search", filterIds: [] },
@@ -20813,6 +21129,7 @@
     const articleListPageSize = 10;
     const optionGroupListPageSize = 10;
     const optionDetailPageSize = 10;
+    const optionSuggestionPageSize = 10;
     const ARTICLE_EDITOR_AUTHOR = "By TukDaeng";
     const ARTICLE_ADMIN_USERS = [
       "อรนุช แก้วใส",
@@ -21311,6 +21628,9 @@
       activeOptionGroup = "";
       optionDetailFilterOpen = false;
       optionGroupFilterOpen = false;
+      optionSuggestionListPage = 1;
+      optionSuggestionFilterOpen = false;
+      optionSuggestionQueueActive = false;
       watchAlertListPage = 1;
       watchAlertListFilterOpen = false;
       // ADM-PTO-001: Admin Accounts list state reset
@@ -21359,7 +21679,10 @@
         if (activeSub === "Reported Articles") return "board-report-list";
         return "article-list";
       }
-      if (activeModule === "option-master") return activeOptionGroup ? "option-detail" : "option-group-list";
+      if (activeModule === "option-master") {
+        if (optionSuggestionQueueActive) return "option-suggestion-queue";
+        return activeOptionGroup ? "option-detail" : "option-group-list";
+      }
       if (activeModule === "watch-alerts") return activeSub === "Watch Alert List" || activeSub === "Alert List" ? "watch-alert-list" : null;
       if (activeModule === "deletions") return "deletion-list";
       // AL-004: Audit Log (Settings > Audit Log / module audit)
@@ -21451,6 +21774,7 @@
       reportedCommentFilterOpen = false;
       optionDetailFilterOpen = false;
       optionGroupFilterOpen = false;
+      optionSuggestionFilterOpen = false;
       watchAlertListFilterOpen = false;
       deletionFilterOpen = false;
       auditLogFilterOpen = false;
@@ -21659,6 +21983,7 @@
         { value: "Account Deletion", label: "Account Deletion" },
         { value: "Reported Comments", label: "Reported Comments" },
         { value: "Offers", label: "Offers" },
+        { value: "Option Master", label: "Option Master" },
         { value: "Settings", label: "Settings" }
       ],
       auditRisk: [
@@ -24553,6 +24878,7 @@
         "Account Deletion": "purple",
         "Reported Comments": "amber",
         "Offers": "blue",
+        "Option Master": "teal",
         "Settings": "gray"
       };
       return `<span class="pill ${map[module] || "blue"}">${module}</span>`;
@@ -31875,7 +32201,7 @@
       // so they leaked into other modules navigated to via renderModule (e.g. Content
       // Management, Offer Management). renderOptionGroupList() re-adds them when id is
       // "option-master" (handled further below), so removing here is safe.
-      document.body.classList.remove("option-master-mode", "option-group-list-mode", "option-detail-mode");
+      document.body.classList.remove("option-master-mode", "option-group-list-mode", "option-detail-mode", "option-suggestion-mode");
       // HS-QA-001: Settings mode classes (Policy & Versioning, Support Center) were only ever
       // added by their own render functions, never removed by renderModule, so they leaked into
       // other modules (e.g. Dashboard) and hid .detail/.summary-grid/.cards via CSS. The
@@ -38955,7 +39281,7 @@
       // body class: keep watch-alert-mode, add watch-alert-detail-mode, remove list/overview modes
       document.body.classList.add("watch-alert-mode", "watch-alert-detail-mode");
       document.body.classList.remove("watch-alert-list-mode", "watch-alert-overview-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "option-master-mode", "option-group-list-mode", "option-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "option-master-mode", "option-group-list-mode", "option-detail-mode", "option-suggestion-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode");
 
       // breadcrumb + page header + back button
       document.querySelector("#crumb").textContent = `งานตรวจสอบและบริการ / Market Demand / Watch Alert List / ${alert.id}`;
@@ -39918,6 +40244,7 @@
       activeModule = "option-master";
       activeSub = "";
       activeOptionGroup = "";
+      optionSuggestionQueueActive = false;
       document.body.classList.remove(
         "dashboard-mode", "user-management-mode", "asset-list-mode", "offer-list-mode",
         "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode",
@@ -39925,10 +40252,12 @@
         "offer-detail-mode", "user-detail-mode"
       );
       document.body.classList.add("option-master-mode", "option-group-list-mode");
-      document.body.classList.remove("option-detail-mode");
+      document.body.classList.remove("option-detail-mode", "option-suggestion-mode");
       const activeGroupCountForReorder = optionMasterGroups.filter(g => g.is_active).length;
+      const pendingSuggestionCount = getPendingSuggestionCount();
       setPageActions(`
         ${activeGroupCountForReorder >= 2 ? `<button class="btn" type="button" data-option-group-reorder-open aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
+        <button class="btn" type="button" data-option-suggestion-queue-open aria-label="Suggestion Queue">${iconSvg.audit}<span>Suggestion Queue</span><span class="pill amber option-queue-count">${pendingSuggestionCount}</span></button>
         <button class="btn" type="button" data-option-group-add-open aria-label="เพิ่ม Group">${iconSvg.plus}<span>เพิ่ม Group</span></button>
       `);
       syncExpandedNavForModule("option-master", "");
@@ -39966,8 +40295,10 @@
     function refreshOptionGroupListPageActions() {
       if (!document.body.classList.contains("option-group-list-mode")) return;
       const activeGroupCount = optionMasterGroups.filter(g => g.is_active).length;
+      const pendingSuggestionCount = getPendingSuggestionCount();
       setPageActions(`
         ${activeGroupCount >= 2 ? `<button class="btn" type="button" data-option-group-reorder-open aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
+        <button class="btn" type="button" data-option-suggestion-queue-open aria-label="Suggestion Queue">${iconSvg.audit}<span>Suggestion Queue</span><span class="pill amber option-queue-count">${pendingSuggestionCount}</span></button>
         <button class="btn" type="button" data-option-group-add-open aria-label="เพิ่ม Group">${iconSvg.plus}<span>เพิ่ม Group</span></button>
       `);
     }
@@ -40021,6 +40352,7 @@
                 <div data-label="Label (EN)"><div class="main-text">${g.display_name_en}</div></div>
                 <div class="asset-card-tags">
                   ${statusPill}
+                  ${renderOptionPendingSuggestionPill(g.group_id)}
                   <span class="user-card-tag asset-tag tag-green">${active}/${total} active</span>
                   <span class="user-card-tag asset-tag tag-amber">${g.allows_multi_select ? "Multi-select" : "Single-select"}</span>
                   <span class="user-card-tag asset-tag ${g.is_system ? "tag-purple" : "tag-teal"}">${g.is_system ? "System" : "Custom"}</span>
@@ -40034,7 +40366,7 @@
                 <div data-label="Active Options"><div class="main-text">${active}/${total}</div></div>
                 <div data-label="Multi-select"><div class="main-text">${g.allows_multi_select ? "Yes" : "No"}</div></div>
                 <div data-label="System"><span class="user-card-tag asset-tag ${g.is_system ? "tag-purple" : "tag-teal"}">${g.is_system ? "System" : "Custom"}</span></div>
-                <div data-label="Status">${statusPill}</div>
+                <div data-label="Status">${statusPill}${renderOptionPendingSuggestionPill(g.group_id)}</div>
                 <div data-label="Updated"><div class="main-text">${g.updated_at || "-"}</div></div>
                 <div class="user-row-actions">
                   <details class="row-menu">
@@ -40060,6 +40392,477 @@
       `;
     }
 
+    // ===== Suggestion Queue (BO-17 §23) =====
+    // Groups ที่เปิดให้ผู้ใช้ "ระบุเอง" — suggestion pool ครอบเฉพาะกลุ่มเหล่านี้
+    const OPTION_SUGGESTION_SUPPORTED_KEYS = ["case_material", "movement", "dial_color", "strap_bracelet_type"];
+    function isOptionSuggestionSupportedGroup(groupId) {
+      const g = getOptionGroup(groupId);
+      return !!g && OPTION_SUGGESTION_SUPPORTED_KEYS.includes(g.group);
+    }
+    function getOptionSuggestionById(id) {
+      return optionSuggestions.find(s => s.id === id) || null;
+    }
+    function hasOptionSuggestionAuditEvent(suggestionId) {
+      return auditLogData.events.some(e => e.reference === suggestionId);
+    }
+    function getPendingSuggestionCount(groupId = "") {
+      return optionSuggestions.filter(s => s.status === "pending" && (!groupId || s.group_id === groupId)).length;
+    }
+    function getOptionSuggestionStatusMeta(status) {
+      const meta = {
+        pending: { label: "Pending", cls: "amber" },
+        promoted: { label: "Promoted", cls: "green" },
+        mapped: { label: "Mapped", cls: "teal" },
+        ignored: { label: "Ignored", cls: "gray" }
+      };
+      return meta[status] || { label: status || "-", cls: "gray" };
+    }
+    function getOptionSuggestionResolutionLabel(s) {
+      if (!s || s.status === "pending") return "—";
+      if (s.resolved_option_id) return `${s.resolved_option_id}`;
+      return "—";
+    }
+    // Pending badge ใน Status cell ของ Option Group List — entry point ไป queue ที่กรองด้วย group นั้น (BO-17 §23)
+    function renderOptionPendingSuggestionPill(groupId) {
+      if (!isOptionSuggestionSupportedGroup(groupId)) return "";
+      const count = getPendingSuggestionCount(groupId);
+      if (!count) return "";
+      return `<button class="pill amber option-suggestion-pill" type="button" data-option-suggestion-pill="${groupId}" title="${count} suggestion รอตัดสินในกลุ่มนี้">${count} pending</button>`;
+    }
+    function addOptionSuggestionAuditEntry(suggestion, entry) {
+      if (!suggestion) return;
+      if (!Array.isArray(suggestion.auditHistory)) suggestion.auditHistory = [];
+      suggestion.auditHistory.unshift({
+        action: entry.action,
+        actor: entry.actor || OPTION_AUDIT_ACTOR,
+        actor_access: entry.actor_access || OPTION_AUDIT_ACCESS,
+        before: entry.before || "",
+        after: entry.after || "",
+        reason: entry.reason || "",
+        timestamp: entry.timestamp || formatOptionTimestamp(new Date()),
+        auditRef: entry.auditRef || ""
+      });
+    }
+    // Global Audit Log event สำหรับ suggestion curation — reference = SUG-xxx (jump ไป Audit Log กรองด้วย ref)
+    function ensureOptionSuggestionAuditEvent(suggestion, payload = {}) {
+      const maxNum = auditLogData.events.reduce((max, e) => {
+        const m = /^AUD-(\d+)$/.exec(e.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
+      auditLogData.events.unshift({
+        id: auditId,
+        createdAt: formatBangkokTimestamp(),
+        actor: OPTION_AUDIT_ACTOR,
+        actorType: "Admin",
+        action: payload.actionLabel || "Option Suggestion",
+        eventType: payload.action,
+        module: "Option Master",
+        risk: payload.risk || "Low",
+        before: payload.before || "Pending",
+        after: payload.after || "",
+        reason: payload.reason || "",
+        reference: suggestion.id,
+        note: payload.note || "",
+        result: payload.result || "Success"
+      });
+      return auditId;
+    }
+
+    // Panel title พร้อม info tooltip (pattern เดียวกับ Watch Alert / Demand Overview wa-panel-info)
+    function setOptionSuggestionPanelTitle(pendingCount) {
+      const tip = `ค่า "ระบุเอง" ที่ผู้ใช้ส่งจาก FO — curate เป็น option จริง, map เป็น alias หรือ ignore`;
+      const tipAttr = tip.replace(/"/g, "&quot;");
+      document.querySelector("#panel-title").innerHTML =
+        `Suggestions (${pendingCount} pending) <span class="wa-panel-info" tabindex="0" role="img" aria-label="${tipAttr}">${iconSvg.info}<span class="wa-panel-info-tip">${tip}</span></span>`;
+    }
+
+    function renderOptionSuggestionQueue(presetGroupId = "") {
+      activeModule = "option-master";
+      activeSub = "";
+      activeOptionGroup = "";
+      optionSuggestionQueueActive = true;
+      document.body.classList.remove(
+        "dashboard-mode", "user-management-mode", "asset-list-mode", "offer-list-mode",
+        "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode",
+        "market-dashboard-mode", "user-list-mode", "user-accounts-mode", "asset-detail-mode",
+        "offer-detail-mode", "user-detail-mode", "option-detail-mode", "option-group-list-mode"
+      );
+      document.body.classList.add("option-master-mode", "option-suggestion-mode");
+      const pendingCount = getPendingSuggestionCount();
+      setPageActions(`
+        ${renderPageBackButton("data-back-option-groups", "Back to Option Groups")}
+      `);
+      syncExpandedNavForModule("option-master", "");
+      document.querySelector("#crumb").textContent = "การดำเนินงาน / Option Master / Suggestion Queue";
+      document.querySelector("#page-title").textContent = "Suggestion Queue";
+      document.querySelector("#page-meta").textContent = "";
+      setOptionSuggestionPanelTitle(pendingCount);
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = `
+        <button class="btn user-filter-toggle" type="button" data-option-suggestion-filter-toggle aria-expanded="${optionSuggestionFilterOpen}">${iconSvg.filter}<span>${optionSuggestionFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+        <button class="btn" type="button" data-option-suggestion-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+      `;
+      const groupOptions = [
+        { value: "", label: "ทุกกลุ่ม" },
+        ...OPTION_SUGGESTION_SUPPORTED_KEYS
+          .map(key => optionMasterGroups.find(g => g.group === key))
+          .filter(Boolean)
+          .map(g => ({ value: g.group_id, label: g.display_name_en }))
+      ];
+      document.querySelector(".filters").innerHTML = `
+        <div class="user-filter-bar option-suggestion-filter-bar" data-filter-open="${optionSuggestionFilterOpen}">
+          <input class="field search" id="option-suggestion-search" type="search" placeholder="Search suggestion" />
+          <div class="user-advanced-filter">${customSelect("option-suggestion-group-filter", "Filter group", groupOptions)}</div>
+          <div class="user-advanced-filter">${customSelect("option-suggestion-status-filter", "Filter status", [
+            { value: "", label: "ทุกสถานะ" },
+            { value: "pending", label: "Pending" },
+            { value: "promoted", label: "Promoted" },
+            { value: "mapped", label: "Mapped" },
+            { value: "ignored", label: "Ignored" }
+          ])}</div>
+          <div class="user-advanced-filter">${customSelect("option-suggestion-sort", "Sort", [
+            { value: "usage", label: "เรียงตาม Usage สูงสุด" },
+            { value: "latest", label: "เรียงตาม Last Seen ล่าสุด" },
+            { value: "oldest", label: "เรียงตาม Last Seen เก่าสุด" }
+          ], "usage")}</div>
+          ${resetFilterButton("data-option-suggestion-reset")}
+        </div>
+      `;
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      // เข้า queue ทุกครั้ง = เริ่มจากค่า default เสมอ (deterministic):
+      // ไม่ restore state เก่า เพราะทำให้ข้อมูลที่แสดงต่างกันในแต่ละครั้ง
+      // entry จาก pending pill ของ group = preset เฉพาะ group filter ที่กด
+      clearListFilterState("option-suggestion-queue");
+      optionSuggestionListPage = 1;
+      const suggestionSearchInput = document.querySelector("#option-suggestion-search");
+      if (suggestionSearchInput) suggestionSearchInput.value = "";
+      setCustomSelectValue("option-suggestion-group-filter", presetGroupId || "");
+      setCustomSelectValue("option-suggestion-status-filter", "");
+      setCustomSelectValue("option-suggestion-sort", "usage");
+      saveCurrentListFilterState();
+      renderOptionSuggestionRows();
+      updateActiveNav();
+    }
+
+    function renderOptionSuggestionRows() {
+      const q = (document.querySelector("#option-suggestion-search")?.value || "").trim().toLowerCase();
+      const groupFilter = document.querySelector("#option-suggestion-group-filter")?.value || "";
+      const statusFilter = document.querySelector("#option-suggestion-status-filter")?.value || "";
+      const sort = document.querySelector("#option-suggestion-sort")?.value || "usage";
+      const filtered = optionSuggestions.filter(s => {
+        const g = getOptionGroup(s.group_id);
+        const text = `${s.id} ${s.submitted_text} ${s.normalized_text} ${g ? `${g.group} ${g.display_name_en} ${g.display_name_th}` : ""}`.toLowerCase();
+        return (!q || text.includes(q))
+          && (!groupFilter || s.group_id === groupFilter)
+          && (!statusFilter || s.status === statusFilter);
+      }).sort((a, b) => {
+        if (sort === "latest") return b.last_ts - a.last_ts;
+        if (sort === "oldest") return a.last_ts - b.last_ts;
+        // default (§23.4): usage_count desc → last_submitted_at desc
+        return b.usage_count - a.usage_count || b.last_ts - a.last_ts;
+      });
+      const pageCount = Math.max(1, Math.ceil(filtered.length / optionSuggestionPageSize));
+      optionSuggestionListPage = Math.min(optionSuggestionListPage, pageCount);
+      const start = (optionSuggestionListPage - 1) * optionSuggestionPageSize;
+      const pageRows = filtered.slice(start, start + optionSuggestionPageSize);
+      const pendingCount = getPendingSuggestionCount();
+      setOptionSuggestionPanelTitle(pendingCount);
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table option-suggestion-table">
+          <div class="asset-row head"><div>Suggestion ID</div><div>Suggested Value</div><div>Group</div><div>Usage</div><div>First Seen</div><div>Last Seen</div><div>Status</div><div>Resolution</div><div>Action</div></div>
+          ${pageRows.map(s => {
+            const g = getOptionGroup(s.group_id);
+            const meta = getOptionSuggestionStatusMeta(s.status);
+            const statusPill = `<span class="pill ${meta.cls}">${meta.label}</span>`;
+            const groupLabel = g ? g.group : s.group_id;
+            const groupDisplay = g ? g.display_name_en : s.group_id;
+            const isPending = s.status === "pending";
+            const curateButtons = isPending ? `
+                    <button type="button" data-option-suggestion-promote="${s.id}">Promote → Option ใหม่</button>
+                    <button type="button" data-option-suggestion-map="${s.id}">Map เป็น alias</button>
+                    <button type="button" data-option-suggestion-ignore="${s.id}">Ignore</button>` : "";
+            return `
+              <div class="asset-row" data-option-suggestion-row="${s.id}" role="button" tabindex="0" aria-label="ดูรายละเอียด ${s.id}">
+                <div data-label="Suggestion ID"><div class="main-text">${s.id}</div></div>
+                <div class="asset-cell-primary" data-label="Suggested Value">
+                  <div class="main-text"><span class="desktop-user-name">${escapeOptionField(s.submitted_text)}</span><span class="mobile-user-card-title">${s.id}</span></div>
+                </div>
+                <div class="asset-card-tags">
+                  ${statusPill}
+                  <span class="user-card-tag asset-tag tag-slate">${escapeOptionField(groupLabel)}</span>
+                  <span class="user-card-tag asset-tag tag-amber">Usage ${s.usage_count}</span>
+                  <div class="user-card-meta">
+                    <div class="user-card-meta-item comment-field-meta"><span>Suggested Value</span><strong>${escapeOptionField(s.submitted_text)}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Group</span><strong>${escapeOptionField(groupDisplay)}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>First Seen</span><strong>${s.first_submitted_at || "-"}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Last Seen</span><strong>${s.last_submitted_at || "-"}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Resolution</span><strong>${escapeOptionField(getOptionSuggestionResolutionLabel(s))}</strong></div>
+                  </div>
+                </div>
+                <div data-label="Group"><div class="main-text">${escapeOptionField(groupLabel)}</div></div>
+                <div data-label="Usage"><div class="main-text">${s.usage_count}</div></div>
+                <div data-label="First Seen"><div class="main-text">${s.first_submitted_at || "-"}</div></div>
+                <div data-label="Last Seen"><div class="main-text">${s.last_submitted_at || "-"}</div></div>
+                <div data-label="Status">${statusPill}</div>
+                <div data-label="Resolution"><div class="main-text">${escapeOptionField(getOptionSuggestionResolutionLabel(s))}</div></div>
+                <div class="user-row-actions">
+                  <details class="row-menu">
+                    <summary aria-label="Suggestion actions">...</summary>
+                    <div class="row-menu-list">
+                      <button type="button" data-option-suggestion-view-action="${s.id}">ดูรายละเอียด</button>
+                      ${curateButtons}
+                      ${hasOptionSuggestionAuditEvent(s.id) ? `<button type="button" data-audit-ref="${s.id}">ดู Audit Log</button>` : ""}
+                    </div>
+                  </details>
+                </div>
+              </div>
+            `;
+          }).join("") || `<div class="detail-empty user-empty">ไม่พบ suggestion ที่ตรงกับเงื่อนไข</div>`}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${filtered.length ? `${start + 1}-${Math.min(start + optionSuggestionPageSize, filtered.length)}` : "0"} จาก ${filtered.length}</span>
+          ${renderPager(optionSuggestionListPage, pageCount, "data-option-suggestion-page")}
+        </div>
+      `;
+    }
+
+    // Suggestion detail (read-only) + audit history + curation actions เมื่อยัง pending
+    function openOptionSuggestionViewModal(suggestionId) {
+      const s = getOptionSuggestionById(suggestionId);
+      if (!s) return;
+      const g = getOptionGroup(s.group_id);
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-editor-modal");
+      modalCard.classList.add("option-audit-modal");
+      const meta = getOptionSuggestionStatusMeta(s.status);
+      const statusPill = `<span class="pill ${meta.cls}">${meta.label}</span>`;
+      const resolvedOption = s.resolved_option_id ? getOptionById(s.resolved_option_id) : null;
+      const history = Array.isArray(s.auditHistory) ? s.auditHistory : [];
+      modalBody.innerHTML = `
+        <div class="user-action-head" data-modal-dismissible>
+          <div>
+            <h2 id="user-action-modal-title">Suggestion Detail</h2>
+          </div>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+        </div>
+        <div class="option-audit-summary">
+          <div class="option-confirm-row"><span class="option-confirm-label">Suggestion ID</span><span class="option-confirm-value">${escapeOptionField(s.id)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Suggested Value</span><span class="option-confirm-value">${escapeOptionField(s.submitted_text)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Normalized</span><span class="option-confirm-value">${escapeOptionField(s.normalized_text)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Group</span><span class="option-confirm-value">${escapeOptionField(g ? `${g.display_name_en} (${g.group})` : s.group_id)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Usage Count</span><span class="option-confirm-value">${s.usage_count}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">First Seen</span><span class="option-confirm-value">${s.first_submitted_at || "-"}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Last Seen</span><span class="option-confirm-value">${s.last_submitted_at || "-"}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${statusPill}</span></div>
+          ${s.status !== "pending" ? `
+            <div class="option-confirm-row"><span class="option-confirm-label">Resolution</span><span class="option-confirm-value">${escapeOptionField(getOptionSuggestionResolutionLabel(s))}${resolvedOption ? ` (${escapeOptionField(resolvedOption.key)})` : ""}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Resolved By</span><span class="option-confirm-value">${escapeOptionField(s.resolved_by || "-")}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Resolved At</span><span class="option-confirm-value">${escapeOptionField(s.resolved_at || "-")}</span></div>
+            ${s.resolution_note ? `<div class="option-confirm-row"><span class="option-confirm-label">Note</span><span class="option-confirm-value">${escapeOptionField(s.resolution_note)}</span></div>` : ""}
+          ` : ""}
+        </div>
+        <div class="option-audit-list">
+          ${history.length ? history.map(entry => {
+            const entryMeta = OPTION_AUDIT_ACTION_META[entry.action] || { label: entry.action, cls: "edit" };
+            return `
+              <div class="option-audit-entry">
+                <div class="option-audit-entry-head">
+                  <span class="option-audit-action ${entryMeta.cls}"><span class="option-audit-dot"></span>${escapeOptionField(entryMeta.label)}</span>
+                  <span class="option-audit-time">${escapeOptionField(entry.timestamp || "-")}</span>
+                </div>
+                <div class="option-audit-meta">
+                  <div class="option-audit-meta-inline"><span class="option-audit-meta-label">Actor :</span> <span class="option-audit-meta-value">${escapeOptionField(entry.actor || "-")} (${escapeOptionField(entry.actor_access || "-")})</span></div>
+                  ${entry.reason ? `<div class="option-audit-meta-inline"><span class="option-audit-meta-label">Reason :</span> <span class="option-audit-meta-value">${escapeOptionField(entry.reason)}</span></div>` : ""}
+                  ${entry.auditRef ? `<div class="option-audit-meta-inline"><span class="option-audit-meta-label">Audit Ref :</span> <button class="history-audit-link" type="button" data-audit-ref="${escapeOptionField(entry.auditRef)}">${escapeOptionField(entry.auditRef)}</button></div>` : ""}
+                </div>
+                ${renderOptionAuditDiff(entry)}
+              </div>
+            `;
+          }).join("") : `<div class="option-audit-empty">ยังไม่มีประวัติ audit สำหรับ suggestion นี้</div>`}
+        </div>
+        <div class="user-detail-actions">
+          ${hasOptionSuggestionAuditEvent(s.id) ? `<button class="user-detail-action-btn" type="button" data-audit-ref="${s.id}">ดู Audit Log</button>` : ""}
+          ${s.status === "pending" ? `
+            <button class="user-detail-action-btn" type="button" data-option-suggestion-ignore="${s.id}">Ignore</button>
+            <button class="user-detail-action-btn" type="button" data-option-suggestion-map="${s.id}">Map เป็น alias</button>
+            <button class="user-detail-action-btn primary" type="button" data-option-suggestion-promote="${s.id}">Promote → Option ใหม่</button>
+          ` : ""}
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    // Map alias: เลือก option เดิมในกลุ่มเดียวกัน (§23.4) — alias ถูกเก็บเพื่อ auto-link save รอบถัดไป
+    function openOptionSuggestionMapModal(suggestionId) {
+      const s = getOptionSuggestionById(suggestionId);
+      if (!s || s.status !== "pending") return;
+      const g = getOptionGroup(s.group_id);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.add("option-editor-modal");
+      const targetOptions = [
+        { value: "", label: "เลือก option ที่จะ map" },
+        ...g.options.map(o => ({
+          value: o.id,
+          label: `${o.id} — ${o.label_en} (${o.key})${o.is_active ? "" : " · Inactive"}`
+        }))
+      ];
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Map Suggestion to Alias</h2>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+          </div>
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Suggestion ID</span><span class="option-confirm-value">${escapeOptionField(s.id)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Suggested Value</span><span class="option-confirm-value">${escapeOptionField(s.submitted_text)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Usage Count</span><span class="option-confirm-value">${s.usage_count}</span></div>
+          </div>
+          <div class="option-confirm-impact">
+            Asset ที่ใช้ค่านี้จะถูกผูกกับ option ที่เลือกโดยอัตโนมัติ
+          </div>
+          <div class="option-action-reason">
+            <label><span>Map เป็น alias ของ <span class="option-reason-required">*</span></span>
+              ${customSelect("option-suggestion-map-target", "Map target", targetOptions)}
+              <span class="article-field-error" data-option-suggestion-map-error></span>
+            </label>
+          </div>
+          <div class="option-action-reason">
+            <label><span>Note (ไม่บังคับ)</span>
+              <textarea data-option-suggestion-map-note rows="3" placeholder="เหตุผลที่ map เข้า option นี้" autocomplete="off"></textarea>
+            </label>
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn primary" type="button" data-option-suggestion-map-confirm="${s.id}">ยืนยัน Map</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function applyOptionSuggestionMap(suggestionId, optionId, note) {
+      const s = getOptionSuggestionById(suggestionId);
+      const option = getOptionById(optionId);
+      if (!s || !option || s.status !== "pending") return;
+      const auditRef = ensureOptionSuggestionAuditEvent(s, {
+        action: "OPTION_SUGGESTION_MAP_ALIAS",
+        actionLabel: "Map Option Suggestion to Alias",
+        risk: "Low",
+        before: "Pending",
+        after: `Mapped → ${option.id}`,
+        reason: note,
+        note: `สร้าง alias "${s.submitted_text}" → ${option.key} + backfill relation id`
+      });
+      optionSuggestionAliases.push({
+        option_id: option.id,
+        alias_text: s.submitted_text,
+        normalized_alias: s.normalized_text,
+        source: "suggestion_map",
+        suggestion_id: s.id
+      });
+      s.status = "mapped";
+      s.resolved_option_id = option.id;
+      s.resolved_by = OPTION_AUDIT_ACTOR;
+      s.resolved_at = formatOptionTimestamp(new Date());
+      s.resolution_note = note;
+      addOptionSuggestionAuditEntry(s, {
+        action: "OPTION_SUGGESTION_MAP_ALIAS",
+        before: [{ field: "Status", value: "Pending" }],
+        after: [{ field: "Status", value: "Mapped" }, { field: "Alias Of", value: `${option.id} (${option.key})` }],
+        reason: note,
+        auditRef
+      });
+      closeUserActionModal();
+      renderOptionSuggestionRows();
+      showSuccessToast(`Map "${s.submitted_text}" เป็น alias ของ ${option.id} (${option.key}) แล้ว`);
+    }
+
+    // Ignore: ต้องมี note เสมอ (§23.4) — suggestion คงเป็น free-text ค้นเจอผ่าน keyword ไม่ backfill
+    function openOptionSuggestionIgnoreModal(suggestionId) {
+      const s = getOptionSuggestionById(suggestionId);
+      if (!s || s.status !== "pending") return;
+      const g = getOptionGroup(s.group_id);
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.add("option-editor-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Ignore Suggestion</h2>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+          </div>
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Suggestion ID</span><span class="option-confirm-value">${escapeOptionField(s.id)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Suggested Value</span><span class="option-confirm-value">${escapeOptionField(s.submitted_text)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Group</span><span class="option-confirm-value">${escapeOptionField(g ? g.display_name_en : s.group_id)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Usage Count</span><span class="option-confirm-value">${s.usage_count}</span></div>
+          </div>
+          <div class="option-confirm-impact">
+            ค่านี้จะไม่กลายเป็น option หรือ alias — ผู้ใช้ยังค้นเจอได้ด้วย free-text search
+          </div>
+          <div class="option-action-reason">
+            <label><span>Note <span class="option-reason-required">*</span></span>
+              <textarea data-option-suggestion-ignore-note rows="3" placeholder="เหตุผลที่ไม่นำค่านี้เข้า vocabulary กลาง (บังคับ)" autocomplete="off"></textarea>
+              <span class="article-field-error" data-option-suggestion-ignore-error></span>
+            </label>
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn danger" type="button" data-option-suggestion-ignore-confirm="${s.id}">ยืนยัน Ignore</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function applyOptionSuggestionIgnore(suggestionId, note) {
+      const s = getOptionSuggestionById(suggestionId);
+      if (!s || s.status !== "pending") return;
+      const auditRef = ensureOptionSuggestionAuditEvent(s, {
+        action: "OPTION_SUGGESTION_IGNORE",
+        actionLabel: "Ignore Option Suggestion",
+        risk: "Low",
+        before: "Pending",
+        after: "Ignored",
+        reason: note,
+        note: "คงเป็น free-text ค้นเจอผ่าน keyword — ไม่ backfill"
+      });
+      s.status = "ignored";
+      s.resolved_option_id = null;
+      s.resolved_by = OPTION_AUDIT_ACTOR;
+      s.resolved_at = formatOptionTimestamp(new Date());
+      s.resolution_note = note;
+      addOptionSuggestionAuditEntry(s, {
+        action: "OPTION_SUGGESTION_IGNORE",
+        before: [{ field: "Status", value: "Pending" }],
+        after: [{ field: "Status", value: "Ignored" }],
+        reason: note,
+        auditRef
+      });
+      closeUserActionModal();
+      renderOptionSuggestionRows();
+      showSuccessToast(`Ignore suggestion ${s.id} แล้ว`);
+    }
+
     function renderOptionDetailPage(groupId) {
       const g = getOptionGroup(groupId);
       if (!g) {
@@ -40069,11 +40872,12 @@
       activeModule = "option-master";
       activeSub = "";
       activeOptionGroup = groupId;
+      optionSuggestionQueueActive = false;
       document.body.classList.remove(
         "dashboard-mode", "user-management-mode", "asset-list-mode", "offer-list-mode",
         "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode",
         "market-dashboard-mode", "user-list-mode", "user-accounts-mode", "asset-detail-mode",
-        "offer-detail-mode", "user-detail-mode", "option-group-list-mode"
+        "offer-detail-mode", "user-detail-mode", "option-group-list-mode", "option-suggestion-mode"
       );
       document.body.classList.add("option-master-mode", "option-detail-mode");
       const total = getOptionGroupTotalOptions(groupId);
@@ -40609,8 +41413,10 @@
       showSuccessToast(`เปิดใช้งาน option ${option.id} (${option.key}) แล้ว`);
     }
 
-    function openOptionAddModal(prevData = null) {
-      const g = getOptionGroup(activeOptionGroup);
+    function openOptionAddModal(prevData = null, suggestionId = "") {
+      // BO-17 §23: suggestionId → promote flow — resolve group จาก suggestion (queue ไม่มี activeOptionGroup)
+      const suggestion = suggestionId ? getOptionSuggestionById(suggestionId) : null;
+      const g = getOptionGroup(suggestion ? suggestion.group_id : activeOptionGroup);
       if (!g) return;
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
@@ -40623,12 +41429,17 @@
         <div class="user-action-layout">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">Add Option</h2>
-              <p>สร้าง option ใหม่ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
+              <h2 id="user-action-modal-title">${suggestion ? "Promote Suggestion" : "Add Option"}</h2>
+              <p>${suggestion ? `สร้าง option ใหม่จาก suggestion ${escapeOptionField(suggestion.id)} ในกลุ่ม ${escapeOptionField(g.display_name_en)}` : `สร้าง option ใหม่ในกลุ่ม ${escapeOptionField(g.display_name_en)}`}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
-          <form class="article-editor-form" data-option-form data-option-mode="add" data-option-group="${g.group_id}" novalidate>
+          ${suggestion ? `
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Suggestion</span><span class="option-confirm-value">${escapeOptionField(suggestion.id)} — "${escapeOptionField(suggestion.submitted_text)}"</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Usage Count</span><span class="option-confirm-value">${suggestion.usage_count} ครั้ง</span></div>
+          </div>` : ""}
+          <form class="article-editor-form" data-option-form data-option-mode="add" data-option-group="${g.group_id}" data-option-suggestion="${suggestion ? suggestion.id : ""}" novalidate>
             <section class="article-editor-section">
               <div class="article-editor-grid">
                 <label class="option-field-option-id"><span>Option ID</span>
@@ -40814,7 +41625,8 @@
     }
 
     function openOptionAddConfirmModal(data) {
-      const g = getOptionGroup(activeOptionGroup);
+      const promoteSuggestion = data._suggestionId ? getOptionSuggestionById(data._suggestionId) : null;
+      const g = getOptionGroup(promoteSuggestion ? promoteSuggestion.group_id : activeOptionGroup);
       if (!g) return;
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
@@ -40833,6 +41645,7 @@
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="option-confirm-summary">
+            ${promoteSuggestion ? `<div class="option-confirm-row"><span class="option-confirm-label">From Suggestion</span><span class="option-confirm-value">${escapeOptionField(promoteSuggestion.id)} — "${escapeOptionField(promoteSuggestion.submitted_text)}"</span></div>` : ""}
             <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${previewId}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Option Key</span><span class="option-confirm-value">${escapeOptionField(data.key)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(data.label_en)}</span></div>
@@ -40841,7 +41654,7 @@
             <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${data.is_active ? "Active" : "Inactive"}</span></div>
           </div>
           <div class="option-confirm-impact">
-            Option นี้จะปรากฏในฝั่ง FO (Add/Edit Asset form, Search Filter และ Watch Alert criteria) สำหรับกลุ่ม ${escapeOptionField(g.display_name_en)} ทันทีเมื่อ FO อ่าน option master ล่าสุด
+            Option นี้จะแสดงใน FO (Add/Edit Asset, Search Filter, Watch Alert) ของกลุ่ม ${escapeOptionField(g.display_name_en)} ทันที
           </div>
           <div class="user-detail-actions">
             <button class="user-detail-action-btn" type="button" data-option-add-back>ย้อนกลับ</button>
@@ -40903,7 +41716,8 @@
     }
 
     function applyOptionAdd(data) {
-      const g = getOptionGroup(activeOptionGroup);
+      const suggestion = data._suggestionId ? getOptionSuggestionById(data._suggestionId) : null;
+      const g = getOptionGroup(suggestion ? suggestion.group_id : activeOptionGroup);
       if (!g) return;
       const newOption = {
         id: getNextOptionId(),
@@ -40930,11 +41744,52 @@
           { field: "Status", value: data.is_active ? "Active" : "Inactive" }
         ]
       });
+      // BO-17 §23.4: promote — resolve suggestion + alias สำหรับ submitted text ที่ต่างจาก label + audit 2 ชั้น
+      if (suggestion && suggestion.status === "pending") {
+        const auditRef = ensureOptionSuggestionAuditEvent(suggestion, {
+          action: "OPTION_SUGGESTION_PROMOTE",
+          actionLabel: "Promote Option Suggestion",
+          risk: "Medium",
+          before: "Pending",
+          after: `Promoted → ${newOption.id}`,
+          reason: "",
+          note: `สร้าง option ${newOption.key} ในกลุ่ม ${g.group} + backfill relation id ให้ asset ที่ snapshot ตรงกัน`
+        });
+        suggestion.status = "promoted";
+        suggestion.resolved_option_id = newOption.id;
+        suggestion.resolved_by = OPTION_AUDIT_ACTOR;
+        suggestion.resolved_at = formatOptionTimestamp(new Date());
+        addOptionSuggestionAuditEntry(suggestion, {
+          action: "OPTION_SUGGESTION_PROMOTE",
+          before: [{ field: "Status", value: "Pending" }],
+          after: [
+            { field: "Status", value: "Promoted" },
+            { field: "Resolved Option", value: `${newOption.id} (${newOption.key})` }
+          ],
+          auditRef
+        });
+        if (suggestion.normalized_text && suggestion.normalized_text !== String(data.label_en || "").trim().toLowerCase()) {
+          optionSuggestionAliases.push({
+            option_id: newOption.id,
+            alias_text: suggestion.submitted_text,
+            normalized_alias: suggestion.normalized_text,
+            source: "suggestion_promote",
+            suggestion_id: suggestion.id
+          });
+        }
+      }
       closeUserActionModal();
-      optionDetailPage = 1;
-      renderOptionDetailRows();
-      refreshOptionDetailPageActions();
-      showSuccessToast(`${g.group}: สร้าง option "${newOption.id}" (${data.key}) แล้ว`);
+      if (suggestion && document.body.classList.contains("option-suggestion-mode")) {
+        optionSuggestionListPage = 1;
+        renderOptionSuggestionRows();
+      } else {
+        optionDetailPage = 1;
+        renderOptionDetailRows();
+        refreshOptionDetailPageActions();
+      }
+      showSuccessToast(suggestion
+        ? `${g.group}: promote ${suggestion.id} เป็น option "${newOption.id}" (${data.key}) แล้ว`
+        : `${g.group}: สร้าง option "${newOption.id}" (${data.key}) แล้ว`);
     }
 
     function applyOptionEdit(data, originalKey) {
@@ -41990,7 +42845,10 @@
       OPTION_EDIT: { label: "Option Edit", cls: "edit" },
       OPTION_DEACTIVATE: { label: "Option Deactivate", cls: "deactivate" },
       OPTION_REACTIVATE: { label: "Option Reactivate", cls: "reactivate" },
-      OPTION_REORDER: { label: "Option Reorder", cls: "reorder" }
+      OPTION_REORDER: { label: "Option Reorder", cls: "reorder" },
+      OPTION_SUGGESTION_PROMOTE: { label: "Suggestion Promote", cls: "add" },
+      OPTION_SUGGESTION_MAP_ALIAS: { label: "Suggestion Map Alias", cls: "edit" },
+      OPTION_SUGGESTION_IGNORE: { label: "Suggestion Ignore", cls: "deactivate" }
     };
     function renderOptionAuditDiff(entry) {
       const beforeArr = Array.isArray(entry.before) ? entry.before : [];
@@ -46304,7 +47162,7 @@
     // has overflow-x: auto (reported-board, article-list, category-list, asset-list).
     function shouldFixRowMenu() {
       const b = document.body;
-      if (b.classList.contains("option-master-mode") && (b.classList.contains("option-detail-mode") || b.classList.contains("option-group-list-mode"))) return true;
+      if (b.classList.contains("option-master-mode") && (b.classList.contains("option-detail-mode") || b.classList.contains("option-group-list-mode") || b.classList.contains("option-suggestion-mode"))) return true;
       if (b.classList.contains("reported-board-mode")) return true;
       if (b.classList.contains("article-list-mode")) return true;
       if (b.classList.contains("category-list-mode")) return true;
@@ -46684,6 +47542,13 @@
           renderOptionGroupListRows();
           return;
         }
+        // BO-17 §23: Suggestion Queue filter selects (group / status / sort)
+        if (["option-suggestion-group-filter", "option-suggestion-status-filter", "option-suggestion-sort"].includes(hiddenInput.id) && activeModule === "option-master" && optionSuggestionQueueActive) {
+          optionSuggestionListPage = 1;
+          saveCurrentListFilterState();
+          renderOptionSuggestionRows();
+          return;
+        }
         // WA-PTO-002b: Watch Alert List filter selects
         if (["wa-alert-status-filter", "wa-alert-notif-filter", "wa-alert-trigger-filter", "wa-alert-zero-match-filter", "wa-alert-sort"].includes(hiddenInput.id) && activeModule === "watch-alerts" && (activeSub === "Watch Alert List" || activeSub === "Alert List")) {
           watchAlertListPage = 1;
@@ -46915,6 +47780,7 @@
       }
       const backOptionGroups = event.target.closest("[data-back-option-groups]");
       if (backOptionGroups) {
+        saveCurrentListFilterState();
         renderOptionGroupList();
         scrollMainToTop();
         return;
@@ -47469,8 +48335,8 @@
         scrollMainToTop();
         return;
       }
-      const optionGroupRow = event.target.closest("[data-option-group]");
-      if (optionGroupRow && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+      const optionGroupRow = event.target.closest(".asset-row[data-option-group]");
+      if (optionGroupRow && !event.target.closest(".row-menu, button, a, input, select, textarea, [data-custom-select]")) {
         const groupId = optionGroupRow.dataset.optionGroup;
         optionDetailPage = 1;
         saveCurrentListFilterState();
@@ -47554,6 +48420,115 @@
         if (searchInput) searchInput.value = "";
         setCustomSelectValue("option-group-status-filter", "");
         renderOptionGroupListRows();
+        return;
+      }
+      // ===== Suggestion Queue handlers (BO-17 §23) =====
+      const optionSuggestionQueueOpen = event.target.closest("[data-option-suggestion-queue-open]");
+      if (optionSuggestionQueueOpen) {
+        saveCurrentListFilterState();
+        renderOptionSuggestionQueue();
+        scrollMainToTop();
+        return;
+      }
+      const optionSuggestionPill = event.target.closest("[data-option-suggestion-pill]");
+      if (optionSuggestionPill) {
+        saveCurrentListFilterState();
+        renderOptionSuggestionQueue(optionSuggestionPill.dataset.optionSuggestionPill);
+        scrollMainToTop();
+        return;
+      }
+      const optionSuggestionPageButton = event.target.closest("[data-option-suggestion-page]");
+      if (optionSuggestionPageButton) {
+        const target = optionSuggestionPageButton.dataset.optionSuggestionPage;
+        if (target === "prev") optionSuggestionListPage = Math.max(1, optionSuggestionListPage - 1);
+        else if (target === "next") optionSuggestionListPage += 1;
+        else optionSuggestionListPage = Number(target) || 1;
+        renderOptionSuggestionRows();
+        resetTableScrollPosition();
+        return;
+      }
+      const optionSuggestionFilterToggle = event.target.closest("[data-option-suggestion-filter-toggle]");
+      if (optionSuggestionFilterToggle) {
+        optionSuggestionFilterOpen = !optionSuggestionFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(optionSuggestionFilterOpen);
+        optionSuggestionFilterToggle.setAttribute("aria-expanded", String(optionSuggestionFilterOpen));
+        const label = optionSuggestionFilterToggle.querySelector("span");
+        if (label) label.textContent = optionSuggestionFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const optionSuggestionReset = event.target.closest("[data-option-suggestion-reset]");
+      if (optionSuggestionReset) {
+        optionSuggestionListPage = 1;
+        clearListFilterState("option-suggestion-queue");
+        const searchInput = document.querySelector("#option-suggestion-search");
+        if (searchInput) searchInput.value = "";
+        setCustomSelectValue("option-suggestion-group-filter", "");
+        setCustomSelectValue("option-suggestion-status-filter", "");
+        setCustomSelectValue("option-suggestion-sort", "usage");
+        renderOptionSuggestionRows();
+        return;
+      }
+      const optionSuggestionViewAction = event.target.closest("[data-option-suggestion-view-action]");
+      if (optionSuggestionViewAction) {
+        openOptionSuggestionViewModal(optionSuggestionViewAction.dataset.optionSuggestionViewAction);
+        closeRowMenus();
+        return;
+      }
+      const optionSuggestionPromote = event.target.closest("[data-option-suggestion-promote]");
+      if (optionSuggestionPromote) {
+        const sug = getOptionSuggestionById(optionSuggestionPromote.dataset.optionSuggestionPromote);
+        if (sug && sug.status === "pending") {
+          pendingOptionFormData = null;
+          openOptionAddModal(
+            { label_en: sug.submitted_text, key: slugifyOptionKey(sug.submitted_text) },
+            sug.id
+          );
+        }
+        closeRowMenus();
+        return;
+      }
+      const optionSuggestionMap = event.target.closest("[data-option-suggestion-map]");
+      if (optionSuggestionMap) {
+        openOptionSuggestionMapModal(optionSuggestionMap.dataset.optionSuggestionMap);
+        closeRowMenus();
+        return;
+      }
+      const optionSuggestionIgnore = event.target.closest("[data-option-suggestion-ignore]");
+      if (optionSuggestionIgnore) {
+        openOptionSuggestionIgnoreModal(optionSuggestionIgnore.dataset.optionSuggestionIgnore);
+        closeRowMenus();
+        return;
+      }
+      const optionSuggestionMapConfirm = event.target.closest("[data-option-suggestion-map-confirm]");
+      if (optionSuggestionMapConfirm) {
+        const targetOptionId = document.querySelector("#option-suggestion-map-target")?.value || "";
+        const errorEl = document.querySelector("[data-option-suggestion-map-error]");
+        if (!targetOptionId) {
+          if (errorEl) { errorEl.textContent = "กรุณาเลือก option ที่จะ map"; errorEl.classList.add("show"); }
+          return;
+        }
+        if (errorEl) { errorEl.textContent = ""; errorEl.classList.remove("show"); }
+        const note = document.querySelector("[data-option-suggestion-map-note]")?.value?.trim() || "";
+        applyOptionSuggestionMap(optionSuggestionMapConfirm.dataset.optionSuggestionMapConfirm, targetOptionId, note);
+        return;
+      }
+      const optionSuggestionIgnoreConfirm = event.target.closest("[data-option-suggestion-ignore-confirm]");
+      if (optionSuggestionIgnoreConfirm) {
+        const note = document.querySelector("[data-option-suggestion-ignore-note]")?.value?.trim() || "";
+        const errorEl = document.querySelector("[data-option-suggestion-ignore-error]");
+        if (!note) {
+          if (errorEl) { errorEl.textContent = "กรุณากรอกเหตุผลที่ ignore — จำเป็นสำหรับ audit trail"; errorEl.classList.add("show"); }
+          return;
+        }
+        if (errorEl) errorEl.classList.remove("show");
+        applyOptionSuggestionIgnore(optionSuggestionIgnoreConfirm.dataset.optionSuggestionIgnoreConfirm, note);
+        return;
+      }
+      // Suggestion row click → detail modal (not when clicking action menu/buttons)
+      const optionSuggestionRow = event.target.closest("[data-option-suggestion-row]");
+      if (optionSuggestionRow && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+        openOptionSuggestionViewModal(optionSuggestionRow.dataset.optionSuggestionRow);
         return;
       }
       const optionDetailPageButton = event.target.closest("[data-option-detail-page]");
@@ -47674,7 +48649,7 @@
       // Option Master confirmation modal buttons (BO-OPT-002b)
       const optionAddBack = event.target.closest("[data-option-add-back]");
       if (optionAddBack) {
-        if (pendingOptionFormData) openOptionAddModal(pendingOptionFormData);
+        if (pendingOptionFormData) openOptionAddModal(pendingOptionFormData, pendingOptionFormData._suggestionId || "");
         return;
       }
       const optionAddConfirm = event.target.closest("[data-option-add-confirm]");
@@ -49635,6 +50610,11 @@
         saveCurrentListFilterState();
         renderOptionDetailRows();
       }
+      if (event.target.matches("#option-suggestion-search")) {
+        optionSuggestionListPage = 1;
+        saveCurrentListFilterState();
+        renderOptionSuggestionRows();
+      }
       // WA-PTO-002b: Watch Alert List — date range inputs
       if (event.target.matches("#wa-alert-last-triggered-from, #wa-alert-last-triggered-to")) {
         watchAlertListPage = 1;
@@ -49844,6 +50824,7 @@
           openOptionEditConfirmModal(validated, pendingOptionOriginal);
         } else {
           pendingOptionFormData = validated;
+          pendingOptionFormData._suggestionId = optionForm.dataset.optionSuggestion || "";
           openOptionAddConfirmModal(validated);
         }
         return;

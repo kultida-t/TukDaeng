@@ -1,8 +1,8 @@
 # 17 BO Option Master Module
 
-**Version:** `BO-17-v0.14`  
+**Version:** `BO-17-v0.15`  
 **Date:** 2026-10-05  
-**Status:** สเปกปัจจุบัน  
+**Status:** สเปกปัจจุบัน — Suggestion Queue UI implemented ใน prototype (§23.5, task `3d2b6f50`)  
 **Platform:** Responsive Web Back Office
 
 ## UI Standards And Prototype Reference
@@ -1562,3 +1562,34 @@ Admin review suggestion ใน queue (ordered by `usage_count`/`last_submitted_a
 - Suggestion ที่ `ignored` แล้วถ้ามีการส่งค่าเดิมเพิ่ม `usage_count` ยังนับต่อได้และ Admin เปิด resolve ใหม่ได้ — ignore ไม่ใช่การ block ถาวร
 - Suggestion ที่ resolved (`promoted`/`mapped`) ต้องไม่กลับเป็น `pending`
 - Queue action ต้องมี permission เทียบเท่าการจัดการ option (`OPTION_ADD`/`OPTION_EDIT` ระดับเดียวกัน) ตาม section 4
+
+### 23.5 Curation Queue UI (Prototype — scope expansion task `3d2b6f50`)
+
+Suggestion Queue เป็น screen ภายใต้ Option Master เดิม — **ไม่เพิ่ม navigation submenu** (Option Master คง nav item เดี่ยวตาม locked structure)
+
+**Entry point**
+
+- Page action `Suggestion Queue` บน Option Group List พร้อม badge จำนวน pending รวมทุก group (`option-queue-count`)
+- Pending badge `N pending` (`option-suggestion-pill`) ใน Status cell ของ group row ที่รองรับ `ระบุเอง` — เปิด queue พร้อม group filter ตั้งค่าเป็นกลุ่มนั้น
+- ไม่เปลี่ยน column/พฤติกรรมเดิมของ Option Group List และ Option Detail
+
+**Queue screen**
+
+- Breadcrumb `การดำเนินงาน / Option Master / Suggestion Queue` — back button กลับ Option Group List และคง queue filter state
+- Combined queue รวม suggestion ของทุก supported group (`case_material`, `movement`, `dial_color`, `strap_bracelet_type`) ในตารางเดียว ตาม ordering contract `usage_count`/`last_submitted_at`
+- Columns: Suggestion ID, Suggested Value, Group, Usage, First Seen, Last Seen, Status (Pending/Promoted/Mapped/Ignored badge), Resolution, Action
+- Filter bar ตาม list pattern เดิม: เปิด/ปิดตัวกรอง toggle (mobile), search (Suggestion ID, suggested value, group), group filter, status filter, sort (`Usage สูงสุด` default / `ล่าสุดก่อน` / `เก่าสุดก่อน`), reset ทั้งหมด, pagination 10/page, filter state persistence เมื่อกลับมาจากหน้าอื่นใน module เดียวกัน, empty state
+- Row click เปิด Suggestion Detail modal (read-only summary + audit history + audit-ref jump ไป Audit Log); row action menu มี ดูรายละเอียด + Promote/Map/Ignore (เฉพาะ `pending`) + ดู Audit Log (กระโดด Audit Log กรองด้วย `SUG-xxx` — แสดงเฉพาะเมื่อ suggestion มี audit event แล้ว เช่นหลัง resolve)
+
+**Queue actions บน prototype**
+
+- **Promote** — reuse Add Option modal พร้อม suggestion context (Suggestion ID, submitted text, usage count) และ prefill `label_en`/`option_key` จาก submitted text; confirm modal เดิมแสดงแถว `From Suggestion`; เมื่อยืนยัน: สร้าง option ใน group ของ suggestion + audit `OPTION_ADD` บน option, `OPTION_SUGGESTION_PROMOTE` บน suggestion และ global Audit Log event (`reference` = `SUG-xxx`, risk Medium); ถ้า label สุดท้ายต่างจาก submitted text จะสร้าง `spec_option_aliases` row (`source=suggestion_promote`) ให้ค่าเดิม resolve เข้า option ใหม่ได้
+- **Map alias** — modal เลือก option เดิมใน group เดียวกัน (required) + note ไม่บังคับ; เมื่อยืนยัน: สร้าง `spec_option_aliases` row (`source=suggestion_map`) + status `mapped` + audit `OPTION_SUGGESTION_MAP_ALIAS` (risk Low)
+- **Ignore** — modal บังคับ note (แสดง field error เมื่อว่าง) + status `ignored` + audit `OPTION_SUGGESTION_IGNORE` (risk Low)
+- ทุก action เมื่อ resolve แล้ว refresh queue + success toast และ pending badge/queue count ใน Option Group List อัปเดตอัตโนมัติ
+
+**Responsive และ scope**
+
+- Desktop: table layout ตาม `option-suggestion-table`; <1181px: card rows (ซ่อน header row), filter toggle เปิด/ปิด advanced filters, row action menu แบบเดียวกับ Option Detail
+- `option-suggestion-mode` ใช้เฉพาะหน้า queue และถูกถอดเมื่อกลับ Option Group List / Option Detail หรือเปลี่ยน module — ไม่ leak ไป screen อื่น
+- Prototype ใช้ mock `optionSuggestions`/`optionSuggestionAliases` in-memory — backfill relation id และ Watch Alert re-evaluation เป็น production contract ตาม §23.4 ไม่ implement จริงใน prototype
