@@ -1,0 +1,128 @@
+MANUAL REVIEW CHECKLIST — Suggestion Queue UI (BO Option Master)
+Task: 3d2b6f50 | Prototype: Prototypes/bo-prototype.html | URL: http://localhost:8080/bo-prototype.html
+Login: กดเข้าสู่ระบบด้วยค่าเดิม → เมนู Option Master
+
+เคส 1: Entry point จาก Option Group List
+ขั้นกด: เปิด Option Master (เมนูซ้าย)
+ผลที่คาด: ปุ่ม "Suggestion Queue" อยู่แถบ page action ขวาบน มี badge เลข pending (4); ใน column Status ของ group ที่มี pending (case_material, movement, dial_color, strap_bracelet_type) มี pill pending สี amber; column อื่นของตารางเหมือนเดิมทุกอย่าง
+
+เคส 2: Queue table — ค่าเริ่มต้น
+ขั้นกด: กดปุ่ม "Suggestion Queue"
+ผลที่คาด: breadcrumb "Option Master / Suggestion Queue"; panel "Suggestions" + ⓘ; ตาราง 8 แถวเรียง Usage มากไปน้อย (8, 6, 5, 4, 3, 2, 1, ...); status pill 4 สี Pending=amber, Promoted=เขียว, Mapped=teal, Ignored=เทา; ไม่มี pending badge ซ้ำในหน้า queue; ปุ่ม Suggestion Queue ไม่แสดงซ้ำ
+
+เคส 3: Search
+ขั้นกด: ในช่อง Search พิมพ์ "jubilee"
+ผลที่คาด: เหลือแถวเดียว SUG-004 "Jubilee bracelet"
+
+เคส 4: Group filter
+ขั้นกด: Reset → dropdown Group เลือก "dial_color"
+ผลที่คาด: เหลือเฉพาะ SUG-002 "Champagne Gold"
+
+เคส 5: Status filter + Reset
+ขั้นกด: dropdown Status เลือก "Pending" → เหลือ 4 แถว pending; กดปุ่ม reset (icon หมุน)
+ผลที่คาด: search/group/status กลับค่าเริ่มต้น sort กลับ Usage สูงสุด แสดง 8 แถว
+
+เคส 6: Sort
+ขั้นกด: dropdown Sort เลือก "ล่าสุดก่อน" แล้ว "เก่าสุดก่อน"
+ผลที่คาด: ลำดับแถวเปลี่ยนตาม Last Seen ล่าสุด/เก่าสุด
+
+เคส 7: Empty state
+ขั้นกด: Search พิมพ์ "zzzzzz"
+ผลที่คาด: แสดง empty state (ไม่มีแถว/ตารางไม่พัง) pagination ไม่แสดงเลขหน้าค้าง
+
+เคส 8: Suggestion Detail modal
+ขั้นกด: Reset → กดที่แถว SUG-001 (หรือเมนู ... → ดูรายละเอียด)
+ผลที่คาด: modal รายละเอียดแสดง ID/ค่า/group/usage/first seen/last seen/status + ประวัติ audit ของ suggestion; ปุ่ม Promote/Map alias/Ignore แสดงเฉพาะรายการ pending
+
+เคส 9: Promote — เปิด modal + prefill
+ขั้นกด: จาก SUG-001 กด "Promote → Option ใหม่"
+ผลที่คาด: modal ชื่อ "Promote Suggestion"; แถบ context แสดง "SUG-001 — Two-tone gold/steel" + Usage 8 ครั้ง; Option Key เติม "two_tone_gold_steel"; Label (EN) เติม "Two-tone gold/steel"; Label (TH) ว่างรอกรอก; Option ID แสดง OPT-066
+
+เคส 10: Promote — validation + confirm + ผลลัพธ์
+ขั้นกด: กด "สร้าง Option" โดย Label (TH) ว่าง → ต้องถูกบล็อก; กรอก Label (TH) "ทูโทน ทอง/สตีล" → กดสร้าง → modal ยืนยันมีแถว "From Suggestion" → กดยืนยัน
+ผลที่คาด: กลับหน้า queue; SUG-001 เปลี่ยนเป็น Promoted สีเขียว Resolution=OPT-066; badge บนปุ่มเหลือ 3; เปิด Option Detail ของ case_material เห็น option ใหม่ OPT-066
+
+เคส 11: Map alias — บล็อก + สำเร็จ
+ขั้นกด: SUG-002 "Champagne Gold" (dial_color) → เมนู ... → Map alias → กดยืนยันโดยยังไม่เลือก option → ต้องถูกบล็อก; เลือก option ในกลุ่ม dial_color → ยืนยัน
+ผลที่คาด: dropdown เสนอเฉพาะ option ของ dial_color; หลังยืนยัน SUG-002 เป็น Mapped สี teal พร้อม Resolution=option ที่เลือก; badge เหลือ 2
+
+เคส 12: Ignore — บังคับ note
+ขั้นกด: SUG-003 "Hand winding" → เมนู ... → Ignore → กดยืนยันโดยไม่ใส่ note → ต้องถูกบล็อก; พิมพ์ note "ไม่ใช่ค่า movement ที่ถูกต้อง" → ยืนยัน
+ผลที่คาด: SUG-003 เป็น Ignored สีเทา; badge เหลือ 1
+
+เคส 13: Audit trail
+ขั้นกด: เปิด Settings > Audit Log → search "SUG-" หรือกด link ref จาก Suggestion Detail modal
+ผลที่คาด: เห็น event OPTION_SUGGESTION_PROMOTE / MAP_ALIAS / IGNORE + OPTION_ADD ของ option ใหม่; audit ref jump กรอง list ให้ถูกต้อง
+
+เคส 14: Back navigation + filter persistence
+ขั้นกด: ใน queue ตั้ง filter แล้วกดปุ่ม ← กลับ → กด Suggestion Queue ใหม่
+ผลที่คาด: กลับ Option Group List ถูกต้อง; เข้า queue ใหม่ filter เดิมถูก restore ตามพฤติกรรม list อื่น
+
+เคส 15: Regression — Option Master เดิมไม่พัง
+ขั้นกด: เปิด Option Detail ของกลุ่มใดก็ได้ → กด "เพิ่ม Option" → modal เปิดปกติ ไม่มีแถบ suggestion context; เปิด Group Audit Log จากเมนู ...
+ผลที่คาด: Add Option ปกติเหมือนเดิมทุกอย่าง; Audit Log เปิดได้; ไม่มี element ของ queue หลุดมา
+
+เคส 16: Mode leak check
+ขั้นกด: จาก queue กดเมนู Dashboard → กลับ Option Master
+ผลที่คาด: Dashboard แสดงปกติ ไม่มีตาราง suggestion ค้าง; กลับมาเห็น Group List (queue ถูก reset)
+
+เคส 17: Mobile 440px
+ขั้นกด: เปิด DevTools device 440px → Option Master → Suggestion Queue → กดปุ่มตัวกรอง → เปิด detail/promote modal
+ผลที่คาด: header ตารางซ่อน แถวกลายเป็น card (SUG-xxx เป็นหัว + tag status/group/usage + meta rows); ปุ่มตัวกรองเปิด/ปิด filter bar ได้; modal stack แนวตั้งไม่ล้นจอ; ตัวหนังสือไทยไม่ถูกตัด
+
+หมายเหตุ: mock data 8 records → pagination แสดง 1 หน้า (ออกแบบ 10/หน้า)
+ภาพประกอบ: screenshots/task-3d2b6f50-suggestion-queue/ (before-1440/before-390, after-1920/after-768/after-440)
+Automated: scripts/check-3d2b6f50-suggestion-queue.js (34 เคส) + scripts/check-3d2b6f50-regression-mobile.js (23 เคส) — ผ่านครบ (raw output: test-results.txt)
+
+=== ผลตรวจจริง (ผู้ใช้ตรวจหน้าจอ 06/10/2026) ===
+
+รอบตรวจ 1 — พบ 4 จุด → แก้แล้ว:
+- เข้า queue แต่ละครั้งข้อมูลต่างกัน + กดแถวที่มี pill เด้งสลับหน้า → root cause: queue restore filter state เก่า + pill ชิด Active ทำ hit target กำกวม → แก้ reset state เสมอตอนเข้า queue + แยก pill เป็นปุ่มชัดเจน (ผ่าน)
+- pill pending ไม่อยู่แนวเดียวกับ Active + ชิดเกิน → Status cell เป็น flex (ผ่าน)
+- ข้อความอธิบายใต้ title → ย้ายไป tooltip ⓘ หลัง "Suggestions" (ผ่าน)
+- font ตาราง queue ต่างจากตารางอื่น → เพิ่มเข้า selector 12px มาตรฐาน (ผ่าน)
+
+รอบตรวจ 2 — พบ 2 จุด → แก้แล้ว:
+- หัวข้อ Suggestions สูงกว่า Option Groups → inline-flex มี line-box descent + subtitle ว่างกินที่ → วัดเท่ากัน 58px (ผ่าน)
+- กดสลับ pill/ปุ่ม queue ข้อมูลไม่ครบ → deterministic entry: ปุ่ม=ครบ 8 แถวเสมอ, pill=เฉพาะ group นั้น (ผ่าน)
+
+รอบตรวจ 3 — พบ 3 จุด → แก้แล้ว:
+- subtitle "SUG-001 — ..." ซ้ำกับ summary rows → ลบออกจาก Detail/Map/Ignore modal (ผ่าน)
+- toggle status ใน Promote modal แล้วพื้นหลังเปลี่ยน → root cause: form modal มี attribute เดียวกับแถวตารางทำคลิกใน modal ไป trigger row click → จับเฉพาะแถวในตาราง (ผ่าน)
+- modal Map/Ignore layout ไม่ตรง modal อื่น → จัดโครงตามแบบ Deactivate Option (summary → impact → field → actions) (ผ่าน)
+
+รอบตรวจ 4 — พบ 4 จุด → แก้แล้ว:
+- SUG-005 อ้าง Promoted → OPT-066 แต่ไม่มี option จริง → เพิ่ม option titanium_coated (OPT-066) + audit OPTION_ADD ชี้กลับ SUG-005 (ผ่าน)
+- filter bar ไม่สมดุล (search กว้างบีบ select) → grid แถวเดียว search+3 select+reset (ผ่าน)
+- label "ทั้งหมด" ซ้ำ 2 filter → "ทุกกลุ่ม" / "ทุกสถานะ" (ผ่าน)
+- sort options ไม่สัมพันธ์กัน → "เรียงตาม Usage สูงสุด / เรียงตาม Last Seen ล่าสุด / เรียงตาม Last Seen เก่าสุด" ตามแบบ User List (ผ่าน)
+
+รอบตรวจ 5 — พบ 3 จุด → แก้แล้ว:
+- subtitle ใน Map/Ignore modal ซ้ำข้อมูลด้านล่าง → ลบออก (ผ่าน)
+- impact text ยาว → เกลาสั้นมาตรฐาน (ผ่าน)
+- validation error ไม่แสดง → error element ต้องมี class show เพิ่มให้ add/remove (ผ่าน)
+
+รอบตรวจ 6 — พบ 2 จุด → แก้แล้ว:
+- dropdown ใน modal ชิดขอบล่าง → ลด max-height ใน modal เหลือ ~156px มี gap 51px (ผ่าน)
+- impact text ใน confirm create ยาว → เกลาเป็น "Option นี้จะแสดงใน FO ... ทันที" (ผ่าน)
+
+รอบตรวจ 7 — พบ 3 จุด → แก้แล้ว:
+- tablet ~985px search+filter แยกบรรทัด → แถวเดียวตามแบบ User List (ผ่าน)
+- mobile เปิดตัวกรองแล้ว select เรียงแนวนอนตัดจอ → stack แนวตั้งเต็มความกว้าง (ผ่าน)
+- ปุ่ม "ดู Audit Log" ของ suggestion pending พาไปหน้าว่าง → แสดงเฉพาะเมื่อมี audit event แล้ว (ผ่าน)
+
+รอบตรวจ 8 — พบ 1 จุด → แก้แล้ว:
+- pill/tag ใน mobile card ตัวอักษรไม่เท่ากัน → เพิ่ม suggestion table เข้า rule compact-tag ของ Option Master (12px/27px เท่ากัน) (ผ่าน)
+
+รอบตรวจ 9 (mobile 390px จากภาพ capture) — พบ 2 จุด → แก้แล้ว:
+- title "OPTION MASTER" ถูกบีบ 3 บรรทัด + ปุ่มชิดขอบ → เพิ่มปุ่ม Suggestion Queue เข้า icon-only rule ของ mobile (badge pending คงอยู่ + tooltip) (ผ่าน)
+- ปุ่ม "รีเซ็ตค่าทั้งหมด" ตกขอบจอ → title ยาวอยู่แถวเดียวกับ controls (แก้สุดท้ายในรอบ 10); เพิ่มเคสเช็ก horizontal overflow + reset ใน viewport เข้า regression test (20→23 เคส) (ผ่าน)
+
+รอบตรวจ 10 — ผู้ใช้สั่งปรับ → ทำแล้ว:
+- ตัด "(4 pending)" ออกจาก panel title เหลือ "SUGGESTIONS" ทั้ง desktop/mobile — จำนวน pending เห็นจาก badge บนปุ่ม + pill ในกลุ่มอยู่แล้ว (ผ่าน)
+
+รอบตรวจ 11 — ผู้ใช้สั่ง revert + เปลี่ยน viewport → ทำแล้ว:
+- revert Detail modal กลับเป็น 3 ปุ่มแถวเดียว + Status กลับแถวเดียวกับ Option ID (เดิมเคย stack แยกบรรทัด) (ผ่าน)
+- เปลี่ยน viewport mobile capture/test จาก 393×852 → 440×956 — ที่ 440 ทุกอย่างอยู่แถวเดียวพอดี (ผ่าน)
+
+ผลลัพธ์สุดท้าย: ผู้ใช้ยืนยันหน้าจอครบทุก state + recapture After ครบ 25 ภาพ (1920+768+440) → ปิด task

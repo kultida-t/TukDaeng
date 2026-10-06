@@ -1,0 +1,62 @@
+  PASS queue button exists
+  PASS pending pills rendered (expect 4 groups w/ pending)
+  PASS suggestion mode on body
+  PASS queue rows = 8
+  PASS default sort = usage desc (SUG-001 first, usage 8)
+  PASS pending pills in queue hidden (not group list)
+  PASS has Pending
+  PASS has Promoted
+  PASS has Mapped
+  PASS has Ignored
+  PASS filter ignored → 2 rows
+  PASS reset → 8 rows
+  PASS search 'jubilee' → 1 row
+  PASS group OG-006 → 2 rows
+  PASS ignore w/o note blocked
+  PASS SUG-003 now Ignored
+  PASS SUG-003 has audit entry
+  PASS global audit event created
+  PASS map w/o target blocked
+  PASS SUG-002 now Mapped
+  PASS alias recorded
+  PASS global audit event for map
+  PASS promote modal title
+  PASS label_en prefilled
+  PASS key prefilled
+  PASS confirm modal shows suggestion row
+  PASS SUG-001 now Promoted
+  PASS new option created in OG-003
+  PASS OPTION_ADD audit on new option
+  PASS promote audit entry + global event
+  PASS back to group list
+  PASS OG-003 pill gone (0 pending)
+  PASS queue count badge updated
+  PASS only SUG-004 pending
+
+34 passed, 0 failed
+---REGRESSION/MOBILE---
+  PASS group list renders
+  PASS option detail renders
+  PASS add modal title = Add Option
+  PASS no suggestion context
+  PASS confirm modal (no suggestion row)
+  PASS option added to detail list
+  PASS still in detail mode
+  PASS audit modal opens
+  PASS back: group-list-mode only
+  PASS dashboard: no option classes leak
+  PASS group list again, queue flag reset
+  PASS mobile: queue button exists
+  PASS mobile: no horizontal overflow (group list)
+  PASS mobile: suggestion mode
+  PASS mobile: no horizontal overflow (queue)
+  PASS mobile: reset button within viewport
+  PASS mobile: head hidden (card mode)
+  PASS mobile: cards render
+  PASS mobile: filter toggle visible
+  PASS mobile: filter bar opens
+  PASS mobile: detail modal opens
+  PASS pending: audit button hidden
+  PASS audit log filtered by SUG-006
+
+23 passed, 0 failed

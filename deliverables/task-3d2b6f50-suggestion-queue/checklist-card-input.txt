@@ -1,0 +1,27 @@
+OM-SQ-01 — Suggestion Queue Manual Review (BO Option Master)
+== Entry & Navigation
+ปุ่ม Suggestion Queue + badge pending (4) บน page action
+Pill pending ในคอลัมน์ Status ของ 4 กลุ่ม → เข้า queue เฉพาะกลุ่มนั้น
+เข้า queue จากปุ่มหน้า แสดงครบ 8 แถวเสมอ (ไม่ติดตัวกรองเก่า)
+สลับเมนูอื่นแล้วกลับมา ไม่มี state ค้าง
+== Queue Table
+8 แถว mock ครบ 4 status: Pending / Promoted / Mapped / Ignored
+Sort: Usage สูงสุด / Last Seen ล่าสุด / เก่าสุด
+Search + filter กลุ่ม + filter สถานะ + Reset + pagination + empty state
+SUG-005 → OPT-066 ค้นเจอจริงในตาราง Case Material
+== Modals
+Promote: prefill + บังคับ Label TH + confirm → SUG เปลี่ยนเป็น Promoted + สร้าง option
+Map alias: เลือกได้เฉพาะ option ในกลุ่มเดียวกัน + validation แสดง error แดง
+Ignore: บังคับ note + validation แสดง error แดง
+Modal จัดโครงตามแบบ Deactivate Option, dropdown ไม่ชิดขอบ
+== Audit
+Promote/Map/Ignore สร้าง event OPTION_SUGGESTION_* ใน Audit Log
+ปุ่ม ดู Audit Log แสดงเฉพาะเมื่อมี event (pending ไม่แสดง)
+Audit jump กรองด้วยรหัส SUG-xxx ถูกต้อง
+== Responsive
+Desktop 1920: ตาราง + filter bar แถวเดียว
+Tablet ~985: search + filter แถวเดียวตามแบบ User List
+Mobile 440: card + ตัวกรอง toggle + pill/tag ขนาด 12px เท่ากันทุกอัน
+== Regression
+Option Group List / Detail เดิมไม่เปลี่ยน (locked screens)
+Add Option modal ปกติ ไม่มี suggestion context หลุด
