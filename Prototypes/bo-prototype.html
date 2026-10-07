@@ -16337,20 +16337,15 @@
         justify-self: start;
       }
       .user-detail-action-section .user-detail-actions {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
         width: 100%;
-        gap: 8px;
       }
       .user-detail-action-section .user-detail-action-btn {
-        width: 100%;
-        min-width: 0;
         min-height: 38px;
         justify-content: center;
-        padding: 7px 6px;
-        font-size: 11px;
+        padding: 7px 10px;
+        font-size: 12px;
         line-height: 1.25;
-        white-space: normal;
+        white-space: nowrap;
       }
       .report-meta {
         grid-template-columns: 1fr;
@@ -20309,8 +20304,8 @@
 
     function getAccountStatusDeliveryNote(action, user, suspendUntil = "") {
       if (!isAccountStatusEmailAction(action)) return "";
-      const accessNote = action === "Suspend" || action === "Ban" ? " · user signed out" : " · user access restored";
-      return `${accessNote} · notification email sent to ${getUserFullEmail(user)}${suspendUntil ? ` · suspension ends ${suspendUntil}` : ""}`;
+      const accessNote = action === "Suspend" || action === "Ban" ? " · ผู้ใช้ถูกออกจากระบบ" : " · คืนสิทธิ์เข้าใช้งานผู้ใช้";
+      return `${accessNote} · ส่งอีเมลแจ้งไปที่ ${getUserFullEmail(user)}${suspendUntil ? ` · สิ้นสุดระงับ ${suspendUntil}` : ""}`;
     }
 
     function ensureAccountStatusDeliveryLog(deliveryId, user, action, reportId = activeReportContextId) {
@@ -20354,7 +20349,7 @@
         entityType: "reported_user",
         entityId: report.id,
         sourceModule: report.source || "Reported Users",
-        detail: report.actionHistory || "No audit events recorded yet",
+        detail: report.actionHistory || "ยังไม่มีประวัติการดำเนินการ",
         before: null,
         after: { reportStatus: report.status, accountStatus: getReportAccountStatus(report) },
         reason: "นำเข้าจากประวัติเดิมของ prototype",
@@ -20398,7 +20393,7 @@
     }
 
     function formatReporterSubmissionTime(timestamp) {
-      if (!timestamp) return "Unknown time";
+      if (!timestamp) return "ไม่ทราบเวลา";
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       const date = new Date(timestamp);
       return `${String(date.getUTCDate()).padStart(2, "0")} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()} ${String(date.getUTCHours()).padStart(2, "0")}:${String(date.getUTCMinutes()).padStart(2, "0")}`;
@@ -21839,6 +21834,19 @@
       "Closed": "ปิดแล้ว"
     };
 
+    const userStatusPillLabels = {
+      "Active": "Active",
+      "Pending Verification": "Pending Verification",
+      "Suspended": "Suspended",
+      "Banned": "Banned",
+      "Deletion Requested": "Deletion Requested",
+      "Deleted": "Deleted",
+      "Anonymized": "Anonymized",
+      "Open": "Open",
+      "In Review": "In Review",
+      "Closed": "Closed"
+    };
+
     const reportPriorityLabels = {
       "สูง": "High",
       "กลาง": "Medium",
@@ -22157,7 +22165,7 @@
         "In Review": "amber",
         "Closed": "green"
       };
-      return `<span class="pill ${map[status] || "blue"}">${userStatusLabels[status] || status}</span>`;
+      return `<span class="pill ${map[status] || "blue"}">${userStatusPillLabels[status] || status}</span>`;
     }
 
     function userAuthPill(auth, label = auth) {
@@ -30021,11 +30029,11 @@
           id: `${user.id}-REGISTERED`,
           createdAt: getUserRegisteredAt(user),
           actor: "System",
-          action: "Account registered",
+          action: "ลงทะเบียนบัญชี",
           before: "-",
           after: user.status === "Pending Verification" ? "Pending Verification" : "Active",
           reference: user.verification || user.auth,
-          note: `User registered with ${provider}`
+          note: `สมัครด้วย ${provider}`
         }
       ];
       const statusRows = [];
@@ -30038,7 +30046,7 @@
               id: `${user.id}-${log.id}`,
               createdAt: log.createdAt,
               actor: log.actor || "System",
-              action: log.action === "REPORT_CREATED" ? "Report User" : getReportAuditActionLabel(log),
+              action: log.action === "REPORT_CREATED" ? "รายงานผู้ใช้" : getReportAuditActionLabel(log),
               before: log.before?.accountStatus || "-",
               after: log.after?.accountStatus || "-",
               reference: report.id,
@@ -30131,7 +30139,7 @@
         id: `UAH-${user.id}-${String(nextNumber).padStart(3, "0")}`,
         createdAt: formatBangkokTimestamp(),
         actor: "Somchai Admin",
-        action: "Admin action recorded",
+        action: "บันทึกการดำเนินการของ Admin",
         before: user.status,
         after: user.status,
         reference: activeReportContextId || user.support || "-",
@@ -30224,7 +30232,7 @@
     }
 
     function renderUserProfileImage(user, className = "profile-image") {
-      return `<div class="${className}"><img src="${getUserProfileImage(user)}" alt="${user.displayName} profile image"></div>`;
+      return `<div class="${className}"><img src="${getUserProfileImage(user)}" alt="รูปโปรไฟล์ ${user.displayName}"></div>`;
     }
 
     function getActivityTimeline(user) {
@@ -30267,7 +30275,7 @@
         return `
           <div class="report-brief">
             <div class="report-brief-head">
-              ${reports.map(item => `<button class="report-case" type="button" data-report-action="${item.id}" title="Open ${item.id}">${item.id}</button>`).join("")}
+              ${reports.map(item => `<button class="report-case" type="button" data-report-action="${item.id}" title="ดูรายละเอียด ${item.id}">${item.id}</button>`).join("")}
             </div>
             <p class="report-reason">${report.reason}</p>
             <div class="report-meta">
@@ -30349,7 +30357,7 @@
     }
 
     const userActionLabels = {
-      "Reset password": "Reset password",
+      "Reset password": "ส่งลิงก์ตั้งรหัสผ่านใหม่",
       Suspend: "ระงับบัญชีชั่วคราว",
       Ban: "ระงับบัญชีถาวร",
       Restore: "ยกเลิกระงับบัญชีชั่วคราว",
@@ -30396,6 +30404,7 @@
     const userActionConfig = {
       "Reset password": {
         title: "Reset Password Link",
+        historyLabel: "ส่งลิงก์ตั้งรหัสผ่านใหม่",
         crumb: "Reset Password",
         type: "reset",
         tone: "primary",
@@ -30411,7 +30420,8 @@
         ]
       },
       Suspend: {
-        title: "ระงับบัญชีชั่วคราว",
+        title: "Suspend Account",
+        historyLabel: "ระงับบัญชีชั่วคราว",
         crumb: "Suspend Account",
         type: "status",
         targetStatus: "Suspended",
@@ -30429,7 +30439,8 @@
         ]
       },
       Ban: {
-        title: "ระงับบัญชีถาวร",
+        title: "Ban User",
+        historyLabel: "ระงับบัญชีถาวร",
         crumb: "Ban User",
         type: "status",
         targetStatus: "Banned",
@@ -30447,8 +30458,9 @@
         ]
       },
       Restore: {
-        title: "ยกเลิกระงับบัญชีชั่วคราว",
-        crumb: "ยกเลิกระงับบัญชีชั่วคราว",
+        title: "Unsuspend Account",
+        historyLabel: "ยกเลิกระงับบัญชีชั่วคราว",
+        crumb: "Unsuspend Account",
         type: "status",
         targetStatus: "Active",
         tone: "primary",
@@ -30464,8 +30476,9 @@
         ]
       },
       "Unban user": {
-        title: "ยกเลิกระงับบัญชีถาวร",
-        crumb: "ยกเลิกระงับบัญชีถาวร",
+        title: "Unban User",
+        historyLabel: "ยกเลิกระงับบัญชีถาวร",
+        crumb: "Unban User",
         type: "status",
         targetStatus: "Active",
         tone: "primary",
@@ -30481,8 +30494,9 @@
         ]
       },
       "Resend verification context": {
-        title: "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
-        crumb: "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
+        title: "Resend Verification",
+        historyLabel: "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
+        crumb: "Resend Verification",
         type: "notice",
         tone: "primary",
         summary: "ส่งข้อมูลให้ผู้ใช้ยืนยันอีเมลอีกครั้ง โดยไม่เปลี่ยนสถานะบัญชี",
@@ -30516,7 +30530,7 @@
       return `
         <div class="detail-section user-detail-action-section">
           <div class="user-detail-actions">
-            ${actions.map(({ action, label }, index) => `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${user.id}" data-user-action-surface="detail">${label}</button>`).join("") || `<span class="chip">No available action</span>`}
+            ${actions.map(({ action, label }, index) => `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${user.id}" data-user-action-surface="detail">${label}</button>`).join("") || `<span class="chip">ไม่มี action บัญชีที่ทำได้</span>`}
           </div>
           <div class="warning-note action-feedback" id="user-action-feedback"></div>
         </div>
@@ -30563,10 +30577,10 @@
       if (action !== "Suspend" && action !== "Ban") return "";
       const fullEmail = getUserFullEmail(user);
       const providerNote = user.auth === "Apple" && fullEmail.includes("privaterelay.appleid.com")
-        ? "Apple private relay email"
+        ? "อีเมล Apple Private Relay"
         : user.auth === "Google"
-          ? "Google account email"
-          : "registered account email";
+          ? "อีเมลบัญชี Google"
+          : "อีเมลที่ลงทะเบียน";
       const emailActionLabel = action === "Suspend" ? "การระงับบัญชีชั่วคราว" : "การระงับบัญชีถาวร";
       return `
         <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
@@ -30968,7 +30982,7 @@
             detail: pendingReportActionAudit?.detail || "บันทึก action จาก Reported Users",
             before: { accountStatus: beforeStatus },
             after: { accountStatus: user.status },
-            reason: pendingReportActionAudit?.reason || "Admin confirmed action from report context",
+            reason: pendingReportActionAudit?.reason || "Admin ยืนยันการดำเนินการจากบริบทรายงาน",
             emailDelivery: pendingReportActionAudit?.emailDelivery || { status: "not_required" }
           });
           closeReportAfterAccountOutcome(report, user, pendingReportActionAudit?.accountAction, beforeReportStatus);
@@ -31108,7 +31122,7 @@
         : "";
       ensureAccountStatusDeliveryLog(statusActionDeliveryId, user, action, activeReportContextId);
       appendUserAccountStatusHistory(user, {
-        action: config.title,
+        action: config.historyLabel || config.title,
         before: beforeStatus,
         after: user.status,
         reference: activeReportContextId || user.support || "-",
@@ -31119,7 +31133,7 @@
       });
       pendingReportActionAudit = {
         accountAction: action,
-        actionLabel: config.title,
+        actionLabel: config.historyLabel || config.title,
         detail: `${actionNote || selectedReason || config.summary}${statusActionDeliveryNote}`,
         reason: selectedReason || config.reasonLabel,
         emailDelivery: isAccountStatusEmailAction(action)
@@ -31631,7 +31645,7 @@
       const actions = `${renderReportStatusActionButtons(report)}${renderReportAccountActionButtons(report)}`;
       return `
         <details class="row-menu">
-          <summary aria-label="เมนูรายงาน">...</summary>
+          <summary aria-label="Report actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-report-action="${report.id}">ดูรายละเอียด</button>
             ${actions}
@@ -31700,7 +31714,7 @@
         <div class="user-action-page">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">ยืนยันการปิดรายงาน</h2>
+              <h2 id="user-action-modal-title">Confirm Close Report</h2>
               <p>ใช้เมื่อผู้ดูแลตรวจหลักฐานต้นทางครบแล้ว และต้องการทำเครื่องหมายรายงานนี้ว่าเสร็จสิ้น</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
@@ -31908,7 +31922,7 @@
         <div class="panel-head">
           <div>
             <h2>User Detail</h2>
-            <p>${user.id} · contact data visible</p>
+            <p>${user.id} · ข้อมูลติดต่อแสดงครบ</p>
           </div>
         </div>
         <div class="detail-body">
@@ -32051,7 +32065,7 @@
       document.querySelector("#page-meta").textContent = "";
       setPageActions(renderPageBackButton("data-back-reported-users", "กลับไป Reported Users", "report-back-btn"));
       document.querySelector("#panel-title").textContent = report.user;
-      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.category} · reporter identity masked`;
+      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.category} · ปิดบังตัวตนผู้รายงาน`;
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
@@ -32079,7 +32093,7 @@
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
               <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
               <div class="detail-tile"><span>User</span><strong>${reportUser ? `<button class="link-btn" type="button" data-user-open="${reportUser.id}">${report.user}</button>` : report.user}</strong></div>
-              <div class="detail-tile"><span>Account Status</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
+              <div class="detail-tile"><span>Account Status</span><strong>${userStatusPillLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
             </div>
           </div>
 
@@ -32093,7 +32107,7 @@
             ${renderReportAuditHistoryTable(report)}
           </div>
 
-          ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> บัญชีอยู่ในกระบวนการลบบัญชี ห้าม delete/archive จากคิวนี้ ให้ไปจัดการที่ Account Deletion module</div>` : ""}
+          ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>เงื่อนไขการลบบัญชี:</strong> บัญชีอยู่ในกระบวนการลบบัญชี ห้าม delete/archive จากคิวนี้ ให้ไปจัดการที่ Account Deletion module</div>` : ""}
           ${renderReportDetailActionButtons(report)}
         </div>
       `;

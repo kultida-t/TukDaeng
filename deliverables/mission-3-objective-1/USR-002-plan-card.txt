@@ -1,0 +1,15 @@
+USR-002 — User Management Normalization Plan (Approved)
+== แผนที่จัดทำ
+Current→Proposed ครบทุก deviation จาก USR-001 audit
+แยกกลุ่ม CONFIRM / D15 titles / D16 deferred / decisions / mock-data
+side-effect guard: historyLabel ไทยแยกจาก EN modal titles
+== ผล approval (07/10/2026)
+ปุ่ม Reset password → ส่งลิงก์ตั้งรหัสผ่านใหม่ (+canonical row §2)
+Modal titles ×6 → EN (Suspend/Ban/Unsuspend/Unban/Resend/Confirm Close)
+Status pill → EN ตาม §3.3 (แยก pill map จาก label ไทย)
+Mock data EN คงเดิม · D16 deferred · crumb ไทย → EN
+== Compliance
+bo-prototype.html ไม่แก้ — approval gate ผ่านก่อน implement
+ไม่มี label นอก canonical table · ไม่แตะ technical/status keys
+== Deliverable
+USR-002-normalization-plan.txt — พร้อมส่งต่อ USR-003

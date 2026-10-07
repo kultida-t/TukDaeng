@@ -81,6 +81,7 @@
 | **Login / Logout** | `เข้าสู่ระบบ` / `ออกจากระบบ` / `ออกจากระบบทุกอุปกรณ์` | auth actions | `เข้าสู่ระบบ` (1), `ออกจากระบบ` (2), `ออกจากระบบทุกอุปกรณ์` (2) | ✅ canonical |
 | | | | `Logout` (sidebar button), `GO TO LOGIN`, `ACTIVATE ACCOUNT` | 🔒 locked exception (auth suite + sidebar English convention) |
 | **Send invite** | `ส่งคำเชิญ` / `ส่งคำเชิญใหม่` / `ส่งคำเชิญอีกครั้ง` | invitation actions | (1)/(2)/(2) — Admin Accounts locked | ✅ canonical family |
+| **Send reset password link** | `ส่งลิงก์ตั้งรหัสผ่านใหม่` | BO action ส่งลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนของผู้ใช้ (User Management — action จริงคือ "ส่งลิงก์" ไม่ใช่ reset ในจอ) | `Reset password` (User Mgmt action labels/menus) | ✅ canonical (เพิ่มจาก USR-002 DECISION-1, อนุมัติ 07/10/2026) — ✅ **Resolved USR-003 07/10** |
 | **Sync / Import (Market)** | `Start Sync` / `Syncing...` / `View Sync History` / `Download CSV Template` / `Retry Failed Datasets` | Market Data sync/import | ทั้งหมด English (Market Data locked) | 🔒 locked ปัจจุบัน — 🔶 ถ้า normalize จะเป็น `เริ่ม Sync`/`กำลัง Sync...`/`ดู Sync History`/`ดาวน์โหลด CSV Template`/`ลองใหม่เฉพาะชุดที่ล้มเหลว` (ตัดสินใจตอน mission Market Data) |
 | **Block editor (Article)** | `+ Add block` / `Move block up/down` / `Delete block` | article editor block controls | English ทั้งหมด (aria + button) | 🔒 locked — normalize เป็น `+ เพิ่ม block`/`เลื่อน block ขึ้น/ลง`/`ลบ block` ใน mission Content Mgmt |
 | **Language toggle** | `ภาษาไทย` / `English` | preview TH/EN toggle (Policy/Support) | — | ✅ canonical — ภาษาเขียนชื่อตัวเอง |
@@ -140,7 +141,7 @@ Status pills, risk pills, channel pills, role names, entity ID prefixes (`U-`/`A
 | D12 | Market Data sync/import suite English | 38164–38167 (sync modal), 37278 (CSV template — dead code, เลื่อน Phase 2), 36782 | ตามตาราง Sync/Import — ✅ **Resolved MKD-003 07/10** ยกเว้น `Download CSV Template` (ปัจจุบัน ~37279) เลื่อน Phase 2 ตามมติ |
 | D13 | Auth uppercase buttons `GO TO LOGIN`/`ACTIVATE ACCOUNT` + `Logout` sidebar | 26546/26588/17819 | 🔒 locked exception — ไม่ normalize |
 | D14 | `Publish`/`Preview`/`Edit Draft`/`Create Draft` English ใน Policy/Article editors | 35406/35049/35405/43907/35337 ฯลฯ | `เผยแพร่`/`ดูตัวอย่าง`/`แก้ไข Draft`/`สร้าง Draft` (confirmed §5.5) — locked |
-| D15 | Mixed-case/dynamic titles `${…}` 36 จุด + Thai modal titles | หลายจุด — ดู inventory §title-heading | ตรวจทีละจอตอน module mission |
+| D15 | Mixed-case/dynamic titles `${…}` 36 จุด + Thai modal titles | หลายจุด — ดู inventory §title-heading | ตรวจทีละจอตอน module mission — ✅ **User Mgmt modal titles resolved USR-003 07/10** (6 จุด → EN + `historyLabel` ไทยแยก ตาม §8.2); ที่เหลือ module อื่น รอ mission เฉพาะจอ |
 | D16 | Table header language ไม่สม่ำเสมอภายใน module — Brands/Models/References tables ใช้ EN (`Brand`/`Models`/`Action`) ขณะที่ Sync History record table ใช้ TH (`รายการข้อมูล`/`ผลลัพธ์`/`รายละเอียด`) | 36749 / 37028 / 37066 / 36900 | ตัดสินใจ convention หัวตารางกลาง (entity/system name = EN ได้ แต่หัวกิจกรรมอย่าง `Action`/`Detail` อาจควร TH) — รอ mission เฉพาะจอ |
 
 > ทุก deviation เป็น "candidate" เท่านั้น — **ห้ามแก้จอล็อกโดยอ้างตารางนี้โดยตรง** ต้องผ่าน mission เฉพาะจอ + approval ตาม protected policy เสมอ
@@ -219,6 +220,63 @@ Status pills, risk pills, channel pills, role names, entity ID prefixes (`U-`/`A
 3. **#13 shared helper `renderPageBackButton`: อนุมัติแก้เลยใน mission นี้** — `aria-label="Back"` → `aria-label="${label}"` ครอบทั้ง 21 callsites ทุก module (รวม `Back to Option Groups` locked exception ที่ label เป็น EN อยู่แล้ว mirror พอดี)
 4. **#12 `Download CSV Template`: เลื่อน Phase 2** — ไม่แตะ dead code ใน MKD-003 (scope แก้จริงเหลือ 23 จุด)
 4. `inventory.md`/`inventory.json` regenerate ได้ทุกครั้งด้วย `node Prototypes/scan-labels.mjs` — ตารางนี้เป็น source of truth ของ "เป้าหมาย", inventory เป็น "สภาพจริง"
+
+---
+
+## 8. Mission 3 — User Management Normalization Plan (**อนุมัติแล้ว 07/10/2026**)
+
+แผน normalize ของ module **User Management** (USR-002) — line refs อ้างไฟล์ ณ audit 07/10/2026; audit เต็ม: `deliverables/mission-3-objective-1/USR-001-label-audit.txt`, แผนเต็ม + decisions: `deliverables/mission-3-objective-1/USR-002-normalization-plan.txt` — **อนุมัติแล้ว 07/10/2026 → ดำเนินการแก้ `bo-prototype.html` ใน USR-003 ตาม scope นี้เท่านั้น**
+
+### 8.1 Content layer → ไทย (D-U01..D-U11)
+
+| # | ตำแหน่ง | ปัจจุบัน | Proposed |
+|---|---|---|---|
+| D-U01 | `userActionLabels["Reset password"]` ~30352 (row menu ~31827, detail btn ~30519/31627/31651, feedback ~30529) | `Reset password` | `ส่งลิงก์ตั้งรหัสผ่านใหม่` (canonical row §2 "Send reset password link") |
+| D-U02 | `renderUserDetailActions` empty chip ~30519 | `No available action` | `ไม่มี action บัญชีที่ทำได้` (ตรง sibling chip ~31654) |
+| D-U03 | `#panel-subtitle` User Detail side panel ~31911 | `{id} · contact data visible` | `{id} · ข้อมูลติดต่อแสดงครบ` |
+| D-U04 | `#panel-subtitle` Report Detail ~32054 | `{id} · {cat} · reporter identity masked` | `{id} · {cat} · ปิดบังตัวตนผู้รายงาน` |
+| D-U05 | warning-note prefix Report Detail ~32096 | `Deletion dependency:` | `เงื่อนไขการลบบัญชี:` |
+| D-U06 | Account Status History generated rows ~30024/30028/30041/30134 | `Account registered` / `User registered with {provider}` / `Report User` / `Admin action recorded` | `ลงทะเบียนบัญชี` / `สมัครด้วย {provider}` / `รายงานผู้ใช้` / `บันทึกการดำเนินการของ Admin` |
+| D-U07 | `getAccountStatusDeliveryNote` ~20310-20313 (→ history note ~31115, audit detail ~31123) | ` · user signed out` / ` · user access restored` / `notification email sent to {m}` / `suspension ends {d}` | ` · ผู้ใช้ถูกออกจากระบบ` / ` · คืนสิทธิ์เข้าใช้งานผู้ใช้` / `ส่งอีเมลแจ้งไปที่ {m}` / `สิ้นสุดระงับ {d}` |
+| D-U08 | `getAccountStatusEmailNote` provider note ~30565-30569 | `(Apple private relay email)` / `(Google account email)` / `(registered account email)` | `(อีเมล Apple Private Relay)` / `(อีเมลบัญชี Google)` / `(อีเมลที่ลงทะเบียน)` |
+| D-U09 | report-case button title ~30270 | `title="Open {RPU-xxx}"` | `title="ดูรายละเอียด {RPU-xxx}"` (mirror action `ดูรายละเอียด` §2) |
+| D-U10 | `renderUserProfileImage` alt ~30227 | `alt="{name} profile image"` | `alt="รูปโปรไฟล์ {name}"` |
+| D-U11 | fallback strings ~20401/20357/30971 | `Unknown time` / `No audit events recorded yet` / `Admin confirmed action from report context` | `ไม่ทราบเวลา` / `ยังไม่มีประวัติการดำเนินการ` / `Admin ยืนยันการดำเนินการจากบริบทรายงาน` |
+
+### 8.2 Structure layer → modal titles EN + `historyLabel` ไทยแยก (S-U01a..e, S-U02, DECISION-2)
+
+| # | ตำแหน่ง | ปัจจุบัน (ไทย) | Proposed EN | `historyLabel` ไทย (ใหม่) |
+|---|---|---|---|---|
+| S-U01a | `userActionConfig.Suspend.title` ~30414 | `ระงับบัญชีชั่วคราว` | `Suspend Account` | `ระงับบัญชีชั่วคราว` |
+| S-U01b | `userActionConfig.Ban.title` ~30432 | `ระงับบัญชีถาวร` | `Ban User` | `ระงับบัญชีถาวร` |
+| S-U01c | `userActionConfig.Restore.title` ~30450 | `ยกเลิกระงับบัญชีชั่วคราว` | `Unsuspend Account` ⚠️ ห้าม `Restore Account` — ชน Account Deletion modal | `ยกเลิกระงับบัญชีชั่วคราว` |
+| S-U01d | `userActionConfig["Unban user"].title` ~30467 | `ยกเลิกระงับบัญชีถาวร` | `Unban User` | `ยกเลิกระงับบัญชีถาวร` |
+| S-U01e | `userActionConfig["Resend verification context"].title` ~30484 | `ส่งข้อมูลยืนยันตัวตนอีกครั้ง` | `Resend Verification` | `ส่งข้อมูลยืนยันตัวตนอีกครั้ง` |
+| — | `userActionConfig["Reset password"].title` ~30398 | `Reset Password Link` | **คงเดิม** (EN compliant) | `ส่งลิงก์ตั้งรหัสผ่านใหม่` (ใหม่ — กัน history Action เป็น EN ตาม D-U06) |
+| S-U02 | `renderReportStatusConfirmModal` h2 ~31703 | `ยืนยันการปิดรายงาน` | `Confirm Close Report` (§3.2 ยกตัวอย่างไว้ตรง) | — |
+
+กลไก: เพิ่ม field `historyLabel` (ไทย) ให้ `userActionConfig` ทุก key แล้วเปลี่ยน `appendUserAccountStatusHistory` (~31111 `action:`) + `pendingReportActionAudit` (~31122 `actionLabel:`) มาใช้ `historyLabel` — Account Status History / report audit Action column ยังเป็นไทยตาม D-U06
+
+Dead `crumb` config ไทย 3 จุด (~30451/30468/30485) → EN ตาม title ใหม่ (อนุมัติ DECISION-2b — ไม่มี callsite, ไม่มีผลต่อ UI)
+
+### 8.3 Status pill → EN (O-U01, DECISION-3)
+
+- เพิ่ม pill label map EN แยก (`userStatusPillLabels`) — ใช้ใน `userStatusPill` (~22147) + tile `Account Status` (~32082)
+- `userStatusLabels` (ไทย) **คงไว้** สำหรับประโยค content ที่ ~31060/31671
+- filter option labels ~29829-29837 hardcode ไทยแยกอยู่แล้ว — ไม่กระทบ ไม่แตะ
+- pill EN: `Active` / `Pending Verification` / `Suspended` / `Banned` / `Deletion Requested` / `Deleted` / `Anonymized` / `Open` / `In Review` / `Closed`
+
+### 8.4 อื่น ๆ ที่อนุมัติ
+
+- O-U02: row-menu `aria-label="เมนูรายงาน"` ~31634 → `aria-label="Report actions"` (aria-only)
+
+### 8.5 ไม่แก้ (compliant / deferred / out of scope)
+
+- **D16 table headers — deferred** รอ central decision (ห้ามแตะ `<th>` และ `data-label` mobile mirror ทุกชุด)
+- **Mock data EN (M-U01..M-U10) — คงเดิม** ตาม DECISION-4 (data quirk, out of scope "ไม่เปลี่ยน data mock")
+- Structure EN เดิมที่ผ่าน: nav `User Management`, sub `User Accounts`/`Reported Users`, breadcrumb nodes EN, `Reset Password Link` modal title, report queue pill `Pending`/`Closed`, priority `High`/`Medium`/`Low`, auth pill `Email`/`Google`/`Apple`
+- ไม่แตะ technical/status keys, ID prefixes, audit event names, CSS/logic/route, เมนูอื่น
+- subtitle pattern เดียวกันของ module อื่น (`reporter identity masked` ที่ asset/article/comment report detail ~32123/45585/46420) รอ mission เฉพาะจอ
 
 ---
 

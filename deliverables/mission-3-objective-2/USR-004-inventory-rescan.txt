@@ -1,0 +1,123 @@
+USR-004 Inventory Re-scan & Manual Review Gate — User Management Label Normalization
+Mission 3 / Objective 2 — รัน scan + เทียบ baseline + ตรวจ checklist A–E วันที่ 07/10/2026
+
+== 1. Scan run ==
+Command: node Prototypes/scan-labels.mjs — รันผ่านไม่มี error (exit 0)
+Output: deliverables/label-standard/inventory.json + inventory.md (regenerated)
+
+== 2. Baseline vs new ==
+baseline (scan 07/10/2026 หลัง MKD-003): 1,926 entries
+new      (scan 07/10/2026 หลัง USR-003): 1,926 entries (delta 0)
+
+delta 0 ถูกต้องตามคาด — USR-003 เป็นการ swap label EN↔TH ในจุดเดิม
+(ไม่เพิ่ม/ลบ element); field historyLabel/userStatusPillLabels ที่เพิ่มเป็น
+config/js-label ไม่สร้าง UI entry ใหม่สุทธิ
+ไม่มี item หายนอกเหนือที่ USR-003 normalize (ตรวจ global diff:
+ของที่หายคือ EN labels ใน user scope + aria "เมนูรายงาน" เท่านั้น)
+
+== 3. User scope diff (fn: renderUser*/renderReportedUser*/userActionConfig) ==
+REMOVED (deviations ที่แก้แล้ว — หายครบจาก inventory/UI surface):
+- "Reset password" action label → ส่งลิงก์ตั้งรหัสผ่านใหม่ (canonical §2 row ใหม่)
+- "No available action" chip → ไม่มี action บัญชีที่ทำได้
+- "contact data visible" / "reporter identity masked" (user scope) →
+  ข้อมูลติดต่อแสดงครบ / ปิดบังตัวตนผู้รายงาน
+- "Deletion dependency:" → เงื่อนไขการลบบัญชี:
+- "Account registered" / "User registered with" / "Report User" /
+  "Admin action recorded" → TH ทั้ง 4 (history rows)
+- "user signed out" / "user access restored" / "notification email sent to" /
+  "suspension ends" → TH delivery notes
+- "(Apple private relay email)" / "(Google account email)" /
+  "(registered account email)" → TH provider notes
+- title="Open {RPU-xxx}" → title="ดูรายละเอียด {RPU-xxx}" (mirror action)
+- alt="{name} profile image" → alt="รูปโปรไฟล์ {name}"
+- "Unknown time" / "No audit events recorded yet" /
+  "Admin confirmed action from report context" → TH fallbacks
+- aria-label="เมนูรายงาน" → aria-label="Report actions" (O-U02)
+- modal titles TH: ระงับบัญชีชั่วคราว/ถาวร, ยกเลิกระงับบัญชีชั่วคราว/ถาวร,
+  ส่งข้อมูลยืนยันตัวตนอีกครั้ง, ยืนยันการปิดรายงาน (user scope)
+
+ADDED (canonical replacements / approved mechanism):
+- ส่งลิงก์ตั้งรหัสผ่านใหม่ (button + historyLabel + canonical §2 row)
+- Modal titles EN: Suspend Account / Ban User / Unsuspend Account /
+  Unban User / Resend Verification / Confirm Close Report
+- historyLabel (ไทย) ทุก userActionConfig — appendUserAccountStatusHistory +
+  pendingReportActionAudit ใช้ historyLabel → history Action ยังไทย (D-U06)
+- userStatusPillLabels EN map — userStatusPill + tile Account Status
+  render pill EN (Active/Pending Verification/Suspended/Banned/
+  Deletion Requested/Deleted/Anonymized/Open/In Review/Closed);
+  userStatusLabels (ไทย) คงไว้ให้ content sentences + filter options
+
+STILL PRESENT (ที่รู้แล้ว — ตามมติ/รอ decision):
+- D16 table headers — User List / Reported Users / Account Status History
+  head EN (31814 …), Reporter/Admin Action History ผสม TH+EN — deferred
+  รอ central decision (ห้ามแตะ th + data-label)
+- Mock data EN (M-U01..M-U09: foImpact/actionNote/joined/lastActive/
+  verification/contact/report.reason/waiting/category/actionHistory) —
+  คงเดิมตาม DECISION-4 (data quirk, out of scope "ไม่เปลี่ยน data mock");
+  M-U10 dead fields ยืนยันแล้วไม่มี render callsite
+- "Reset password" เหลือเฉพาะเป็น action KEY / mock allowed-blocked values /
+  aria-label ของ auth reset-screen (locked exception §1.3) — ไม่ใช่ UI label
+- Pattern เดียวกันของ module อื่น (รอ mission เฉพาะจอ):
+  · "reporter identity masked" ที่ asset 32137 / article 45599 / comment 46434
+  · "ยืนยันการปิดรายงาน" ที่ asset modal 23252 + board config 45662/46077
+  · "View Asset" 32151 ฯลฯ — deviation D2/D3 family ของ module อื่น
+- Test flow field-labels — prototype harness (§5.6 exempt)
+
+== 4. Working-tree diff verification (git diff bo-prototype.html) ==
+- Label hunks: ทุก hunk ตรง canonical §8 เป๊ะ — ไม่มีจุดแก้นอกแผน
+- CSS hunk 1 จุด (@media ≤760px): .user-detail-action-section
+  ลบ grid 3 คอลัมน์ → inherit flex บรรทัดเดียว + btn nowrap/padding ปรับ —
+  extra fix ที่ผู้ใช้สั่งและอนุมัติ (usr-003-checklist P2)
+- Internal keys/class/id/fn names/data-attrs คงเดิมทั้งหมด
+- Mock data / route / logic / module อื่น ไม่ถูกแตะ
+
+== 5. Manual Review Checklist (อิง usr-003-checklist.txt — ผู้ใช้ review ผ่าน 07/10) ==
+
+A. Language layering — PASS
+- Nav User Management + subs EN ตรง navGroups — ไม่แตะ
+- Page/modal titles EN — modal titles normalize เป็น EN <Verb> <Entity>
+  ครบ 6 จุด + Reset Password Link คงเดิม (compliant)
+- Detail head <ID> : <Name>, breadcrumb — ไม่แตะ
+- Action buttons ไทยตาม canonical §2 — D-U01 เพิ่ม row "Send reset
+  password link" → ส่งลิงก์ตั้งรหัสผ่านใหม่ ก่อนใช้ (ตามกฎ)
+- Field/helper/empty/fallback copy ไทย — D-U02..D-U11 ครบ
+- Status pills EN ตาม §3.3 (DECISION-3) — userStatusPill + tile Account Status
+- aria/title mirror visible (Rule 4) — title/alt/aria ครบ 3 จุด
+- Locked exceptions คงเดิม — auth suite, nav sections TH, harness
+
+B. Button/action correctness — PASS
+- Confirm modal: title EN (Confirm Close Report) + ปุ่ม ยกเลิก/ยืนยัน ไทย
+- Action compound ระงับบัญชีชั่วคราว/ถาวร + ยกเลิก… ไทยตาม allowed compound §2
+- Empty chip wording ตรง sibling (31668) — สม่ำเสมอใน module
+- Dead crumb config → EN (approved DECISION-2b, ไม่มีผลต่อ UI)
+
+C. Protected/contract compliance — PASS
+- User Management protected → มี approval §8 (07/10) ก่อนแก้ครบทุกจุด
+- ตรง navigation/naming contract; S-U01c ใช้ Unsuspend Account
+  (ไม่ชน Restore Account ของ Account Deletion — safeguard ตามแผน)
+- Internal keys ไม่ rename — "Reset password"/"Suspend"/"Restore"/
+  "Report User"/"Reported Users" ยังเป็น key ใน code paths
+- Diff = เฉพาะ approved §8 + CSS fix ที่อนุมัติ — ไม่มี scope creep
+
+D. Visual/responsive — PASS (อ้างหลักฐาน USR-003 ที่ผู้ใช้ตรวจแล้ว)
+- Mobile action buttons บรรทัดเดียว (extra fix @media ≤760px —
+  verify check-mobile-2btn.png / check-mobile-3btn.png + after/m03,m10)
+- ไม่มี text overlap/overflow ใน 18 checklist จุดทั้ง 3 viewports
+- Evidence viewport = repo standard 1920/768/440
+  (ต่างจาก task note 1440/390 — ผู้ใช้รับทราบแล้ว)
+
+E. Evidence — PASS
+- Screenshots before/after 42 PNG (screenshots/mission-3-objective-2/)
+  + check-mobile-2btn/3btn.png
+- usr-003-checklist.txt — manual review ผ่านครบ A–E 18 จุด + P1/P2 resolved
+- Canonical table อัปเดต: §2 เพิ่ม row "Send reset password link"
+  (Resolved USR-003 07/10) + §8 plan บันทึกครบ
+- inventory.json/md regenerate แล้ว (1,926 entries)
+
+== Verdict ==
+Scan reflect สถานะหลัง USR-003 ถูกต้อง — deviations ที่ normalize หายครบ
+ทั้ง content layer (D-U01..D-U11) + structure titles (S-U01a..e, S-U02) +
+pill EN (DECISION-3) + aria (O-U02); ไม่มี deviation ใหม่ใน user scope;
+ที่เหลือตรง known list (D16 deferred / mock EN ตาม DECISION-4 /
+pattern เดียวกันของ module อื่นรอ mission เฉพาะจอ)
+Checklist A–E ผ่านครบ — พร้อมส่งผู้ใช้ review ก่อนปิด task
