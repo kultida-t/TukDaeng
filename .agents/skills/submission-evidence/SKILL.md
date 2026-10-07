@@ -65,7 +65,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 |---|---|---|
 | **1. แก้ไข UI / Prototype (Bug Fix / Refactor)** | **ภาพหน้าจอ Before & After** (คู่ Desktop 1440 + Mobile 390) แคป Before ก่อนแตะโค้ด และ After ณ จุดที่ผู้ใช้ยืนยันคอนเฟิร์มว่าผ่าน | ภาพ Before/After แก้ Filter dropdown clipping, Modal button order, Focus trap |
 | **2. สร้าง UI ใหม่ (New Feature / New Screen)** | **ภาพหน้าจอทุก State สำคัญ** (Empty, Default, Modal, Result, Mobile 390) ครบทุก flow | precedent 10/10: "สร้าง Audit Log List และ Detail Modal" (4 รูป = list+detail × desktop+mobile), "เพิ่ม Search, Filter, Sort และ Date Range" (7 รูป) |
-| **3. Automated Test / QA / Regression** | **ไฟล์ `.spec.js` จริง** + **ผลรันจริงเป็น raw runner output** (`test-results.txt` ดิบจาก Playwright) + **ภาพ Checklist Card PNG** แยกตาม spec | precedent 10/10: "QA, Regression และ Protected Screen" (5 รูป checklist `qa-bo-014a/b/c/d` + raw output `1822 passed / 55 skipped`) |
+| **3. Automated Test / QA / Regression** | **ไฟล์ `.spec.js` จริง** + **ผลรันจริงเป็น raw runner output** (`test-results.txt` ดิบจาก Playwright) + **ภาพ Checklist Card PNG** แยกตาม spec + **ภาพ Playwright HTML Report (dashboard) หรือภาพ/screencast พฤติกรรม UI สำคัญที่ test ตรวจ** — raw log + checklist อย่างเดียวไม่พอ auditor เคยหักเพราะขาดหลักฐานภาพหน้าจอ | precedent 10/10: "QA, Regression และ Protected Screen" (5 รูป checklist `qa-bo-014a/b/c/d` + raw output `1822 passed / 55 skipped`) |
 | **4. Manual QA / Inspection (ไม่มีโค้ดแก้)** | **Checklist แยกราย task** (file + Checklist Card PNG คู่กัน 1 task = 1 ชุด) แสดงทุกเคส/viewport ที่ตรวจ + ภาพหน้าจอ findings (ถ้ามี) — **ต้องจด/บันทึก checklist ตั้งแต่ตอนตรวจจริง ไม่ reconstruct ทีหลังจาก log** | precedent 10/10: "BOA-017 Manual QA Checklist" (Checklist Card 18 รายการตรวจครบทุกจอ) |
 | **5. เอกสาร / Spec Sync / Baseline Lock** | **ไฟล์ `.md` จริง** ที่แก้ + **Git Commit Hash** ใน note + **ภาพ Checklist Card PNG** สรุปรายการไฟล์และเกณฑ์ | precedent 10/10: "Sync Audit Log Spec" แนบ `08_AUDIT_LOG_MODULE.md` + ภาพ checklist สรุป 5 Acceptance Criteria |
 | **6. Final Acceptance / Mission Closure** | **รายงาน Final Acceptance Review (.txt)** + **ภาพ Checklist Card PNG** สรุป Traceability, Verification Gates และ Verdict PASS | precedent 10/10: "Final Mission Acceptance" (Checklist Card สรุปทุก Gate ผ่าน 100%) |
@@ -110,6 +110,13 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 - ภาพ checklist card ต้องพอดีตัว card ไม่เหลือพื้นว่างด้านล่าง
 - **เนื้อหา checklist card เอาแค่ title + ขั้นตอนตรวจ + รายการเคสที่ check** — ห้ามใส่ meta/work log/ผลตรวจรับ/ข้อมูลอ้างอิงภายนอกลงใน card (หลักฐานคือผลตรวจจริงเท่านั้น)
 
+**Automation Run ต้องมีหลักฐานภาพประกอบเสมอ (Visual Companion Evidence):**
+- **Raw log อย่างเดียวไม่พอ** — auditor เคยหักคะแนนหลายรอบเมื่อส่งแค่ `test-results.txt` + checklist โดยไม่มีภาพ UI: ต้องแนบ **ภาพ Playwright HTML Report dashboard** (`npx playwright show-report` แล้ว capture) หรือภาพหน้าจอพฤติกรรมที่ test ตรวจ อย่างน้อย 1–2 ภาพต่อเป้าหมาย test
+- **Flow ที่มีพฤติกรรม dynamic** (countdown lockout, error live, focus trap, toast, async state) ให้แนบ **screencast สั้น ๆ** (เช่น Loom) หรือภาพเป็นลำดับขั้นตอน — ภาพเดียวพิสูจน์พฤติกรรมต่อเนื่องไม่ได้
+- **เก็บ Playwright artifacts** (`playwright-report/`, `test-results/` traces/videos) ไว้ใน repo หรือ package ให้ trace ย้อนหลังได้ — ห้ามลบทิ้งหลังรัน
+- **เคส skipped/blocked ทุกเคสต้องมี triage note** ระบุเหตุผล (project gating / environment / out of scope) และการ reconcile — ห้ามส่งผลรันที่มี skipped ลอย ๆ โดยไม่มีคำอธิบาย
+- **ถ้า scope ครอบ accessibility** (numerical contrast, focus trap, dialog role/aria-modal) ต้องมี direct assertion จริง (เช่น axe-core/playwright) — ถ้าทำไม่ได้ให้ระบุเป็น evidence limitation พร้อมเหตุผลในคำอธิบาย ห้ามปล่อยว่างให้ auditor ค้นเจอเอง
+
 ---
 
 ### 4. คัดชุดไฟล์สำหรับแนบ
@@ -120,6 +127,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 - **ภาพหน้าจอ:** แนบทุกรูปที่พิสูจน์พฤติกรรมต่างกันของเป้าหมาย ครบทั้ง desktop และ mobile
 - **แนบเฉพาะหลักฐานงานจริงราย task — ห้ามแนบไฟล์ภาพรวมเป้าหมาย:** summary card ระดับ objective, รายงานรวม, และไฟล์สรุปที่สร้างเพื่อทำหลักฐาน เก็บไว้ใน repo เป็น reference เท่านั้น ไม่ต้องแนบลงฟอร์ม
 - **ห้ามแนบเนื้อหาเดียวกันซ้ำสองรูปแบบ:** ถ้า `.txt` กับ `.png` มีเนื้อเดียวกัน ให้แนบเฉพาะ `.png` ที่ preview ได้ (เก็บ `.txt` เป็น source ใน repo) — ข้อยกเว้นคือเอกสาร/report ที่ `.txt` เป็นตัวงานจริงและ card เป็นแค่ตัวนำหน้า
+- **ไฟล์แนบต้องเปิด/preview ได้สะดวก:** PDF ใหญ่กว่า ~15MB ให้บีบอัด (compressed PDF) หรือส่งเป็น HTML ที่มี anchor links / print CSS แทน — ไฟล์ที่ reviewer เปิดไม่ได้หรือเปิดช้าถูกนับเป็น issue (เคยโดนหักจาก PDF ~75MB)
 
 ### Evidence Reconciliation Gate — บังคับก่อนส่ง
 
@@ -132,6 +140,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 5. ถ้า raw output ถูกล้างหรือไม่มีอยู่ ห้ามสร้างย้อนหลังหรือเรียก summary ว่า raw output ให้ระบุชัดว่าเป็น run summary และบอกแหล่งข้อมูล; rerun เพื่อเก็บ raw output ได้เฉพาะเมื่ออยู่ใน scope และได้รับอนุมัติ
 6. บันทึก evidence gap, assertion ที่ไม่มี, project gating และ limitation แยกจาก product defect; ห้ามใช้คำว่า zero issues หรือ claim ว่าตรวจครบในส่วนที่ไม่มีหลักฐานรองรับ
 7. ตรวจว่า task count, case count, passed/skipped/failed, exit code, run configuration และวันที่ในคำอธิบายตรงกับ Kanban และ artifacts ทุกจุด
+8. เคส skipped/blocked ทุกเคสต้องมี triage note (เหตุผล + การ reconcile) แนบเป็นไฟล์หรือระบุในคำอธิบาย — ห้ามส่งผลรันที่มี skipped โดยไม่อธิบาย
 
 ---
 
@@ -265,6 +274,7 @@ Feature: <ชื่อ Feature> → <Task code>
 - ⚠️ **ZERO VISUAL BUGS:** ตรวจภาพด้วยตา: ไม่มี focus ring ค้าง, ไม่มี layout ล้นบน mobile, ไม่มี Pagination แสดง 1/1 ในหน้า Empty, ไม่มี Typo ใน mockup
 - ⚠️ **TIME REASONABLENESS:** หากเวลาบันทึกสั้น (0.5 - 1.0 ชม.) สำหรับงานที่ดูเยอะ ต้องระบุ Methodology (เช่น Automated script, Sync from baseline) ในคำอธิบายเสมอ
 - ⚠️ **VISUAL EVIDENCE FIRST:** งานเอกสารและเทสต์ต้องมีภาพ Checklist Card สรุปเสมอ (อย่าแนบ text ล้วน)
+- ⚠️ **AUTOMATION LOG ≠ VISUAL PROOF:** เป้าหมาย test/QA ต้องมีภาพประกอบนอกเหนือ raw log — ภาพ Playwright HTML Report dashboard, ภาพหน้าจอ หรือ screencast ของพฤติกรรม UI สำคัญ (countdown, error live, focus); เก็บ artifacts (report/traces) ไว้ trace ย้อนหลัง; เคส skipped ทุกเคสต้องมี triage note; scope a11y ต้องมี direct assertion หรือบันทึกเป็น evidence limitation
 - ⚠️ **DUAL VIEWPORT:** งาน UI ต้องมีทั้ง Desktop (1440px) และ Mobile (390px) ทุกขั้นตอน
 - ⚠️ **ห้ามใส่ข้อมูลลับในหลักฐาน:** token จริง, รหัสผ่าน, secrets, hash ของ credential, ข้อมูลส่วนตัวผู้ใช้จริง
 - ⚠️ **ภาษาคำอธิบายเป็นภาษาคนทำงาน (NO BILINGUAL PARENTHESES / NO FLUFF):** ใช้คำทับศัพท์มาตรฐานตรงตัว (list, detail, modal, filter, dropdown, sidebar, breadcrumb, viewports, E2E, regression, triage) ไม่แปลไทยทางการ ห้ามใส่วงเล็บแปลสลับภาษา (เช่น ไม่เขียน "คัดกรอง (Triage)") และห้ามใช้คำสร้อยอารมณ์ (เช่น "ผ่านฉลุย", "อย่างเข้มงวด", "ราบรื่น")
@@ -286,6 +296,10 @@ Feature: <ชื่อ Feature> → <Task code>
 - [ ] **Test reconciliation: manifest ระบุทุก spec ที่รันจริง; ชื่อ/จำนวน spec ใน attachment และ external_url ครอบคลุม run inventory; ZIP ผ่านการตรวจรายชื่อและ hash เทียบ source**
 - [ ] **Runner-output authenticity: ยืนยันว่าไฟล์เป็น raw output จริง; ถ้าไม่มี ให้ติดป้าย run summary, ระบุแหล่งข้อมูล และห้ามอ้างว่าเป็น raw หรือสร้างย้อนหลัง**
 - [ ] **Caveat integrity: เปิดเผย evidence gap/ข้อจำกัดที่พบ และไม่เหมารวมว่าไม่มี issues เมื่อมี coverage gap ที่ทราบอยู่**
+- [ ] **Test evidence มีภาพประกอบ: เป้าหมาย automated test มีภาพ Playwright HTML Report หรือ screenshot/screencast ของพฤติกรรม UI สำคัญ — ไม่ใช่แค่ raw log + checklist**
+- [ ] **Skipped cases มี triage note: ทุกเคส skipped/blocked ระบุเหตุผลและการ reconcile แล้ว**
+- [ ] **Accessibility ครบ scope: ถ้าเป้าหมายมีขอบเขต a11y (contrast, focus trap, aria) มี direct assertion จริง หรือบันทึกเป็น evidence limitation ชัดเจนในคำอธิบาย**
+- [ ] **ไฟล์แนบเปิดได้: ไม่มีไฟล์ขนาดใหญ่เกินจน preview/เปิดไม่ได้ (PDF >15MB ต้องบีบอัดหรือใช้ HTML + anchor links)**
 - [ ] **Time Reasonableness: หากชั่วโมงงานสั้น ได้อธิบาย Methodology ในคำอธิบายเรียบร้อยแล้ว**
 - [ ] คำอธิบายเป็นภาษาคนทำงาน ตรงไปตรงมา ใช้ศัพท์มาตรฐานตรงตัว ไม่มีวงเล็บแปลไทยสลับอังกฤษ ไม่มีคำสร้อยอารมณ์ ("ผ่านฉลุย") ไม่มี `§` ไม่มีศัพท์โค้ดลอยๆ
 - [ ] หลังหลักฐานทุก Objective แสดง compact Mission Objective–Feature–Task เป็น `text` copy block เดียว

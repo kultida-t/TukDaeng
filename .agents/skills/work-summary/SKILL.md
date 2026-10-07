@@ -108,7 +108,7 @@ Workflow สำหรับจับเวลาและสรุปงาน�
 - ถ้าผู้ใช้ระบุแค่ชื่อ/คำค้น → เรียก `get_board` หรือ `get_project_context` เพื่อหา task ที่ตรง
 - ถ้าเป็น task ใหม่ที่ยังไม่มีใน kanban → ถามผู้ใช้ว่าต้องการสร้าง task ใหม่หรือไม่ ถ้าใช่ให้ใช้ `create_task` และ Description ต้องมีบรรทัด `Category: <หมวด> | Planned: <X> ชม. (Category Max <Y> ชม.)` เสมอ (Y = ค่า "ห้ามเกิน" ของหมวดจากตารางเวลามาตรฐาน) โดย `Planned` ต้องเป็นเวลาที่ประเมินตามงานจริง ไม่มี floor ขั้นต่ำ — ประเมินตามหลักเวลาจริงด้านล่าง; ถ้างานเล็กจนแทบไม่ใช้เวลาเลย ควรพิจารณารวมเข้ากับ task ที่เกี่ยวข้องแทนการสร้าง task แยก
 - ถ้า task ที่จะเริ่มไม่มีบรรทัด `Planned` ใน Description → แจ้งผู้ใช้และเสนอเติมผ่าน `update_task` ก่อนเริ่มจับเวลา เพื่อให้เช็ก Time Ratio (เวลาจริงเทียบเป้าหมาย > 1.5 → ติด review) ได้
-- ตรวจว่า task map กับ Mission/Objective ใน approved plan แล้ว — ต้องรู้หมายเลข `mission-<N>-objective-<M>` ก่อนเริ่มจับเวลา เพราะใช้ตั้งชื่อโฟลเดอร์หลักฐาน (`screenshots/`, `deliverables/`); ถ้ายังไม่ map ให้ยืนยัน mapping กับผู้ใช้ก่อน
+- ตรวจว่า task map กับ Mission/Objective ใน approved plan แล้ว — ต้องรู้หมายเลข `mission-<N>-objective-<M>` ก่อนเริ่มจับเวลา เพราะใช้ตั้งชื่อโฟลเดอร์หลักฐาน (`screenshots/`, `deliverables/`); ถ้ายังไม่ map ให้ยืนยัน mapping กับผู้ใช้ก่อน; **ถ้าเป็น task ที่ไม่มี mission จริง (standalone/maintenance/ad-hoc — ยืนยันกับผู้ใช้แล้ว) หลักฐานยังต้องเก็บตามปกติทุกขั้น** โดยใช้โฟลเดอร์ `screenshots/task-<TASK-CODE>/` และ `deliverables/task-<TASK-CODE>/` แทน `mission-<N>-objective-<M>` ทุกจุดใน skill นี้
 
 #### 2. ตรวจสอบ task อื่นที่อยู่ใน `in_progress` (สำคัญ)
 
@@ -200,6 +200,9 @@ mcp_call_tool(
    - ในขั้นตอน Verification ให้รันคำสั่งเทสต์จริงและ redirect stdout/stderr ดิบเข้าไฟล์ทันที เช่น:
      `npx playwright test tests/<target-spec>.spec.js > deliverables/mission-<N>-objective-<M>/test-results.txt 2>&1`
    - คัดลอกไฟล์ `.spec.js` หรือ bundle spec files เข้าโฟลเดอร์ `deliverables/mission-<N>-objective-<M>/`
+   - **เก็บหลักฐานภาพตอนรันจบทันที (ห้ามปล่อยให้ต้องรันใหม่ตอนส่งตรวจ):** เก็บ `playwright-report/` ไว้ และแคปภาพ HTML report dashboard (`npx playwright show-report` แล้ว capture) ลง `screenshots/mission-<N>-objective-<M>/`; ถ้า test ตรวจพฤติกรรม dynamic (countdown lockout, error live, focus trap, toast) ให้แคปภาพหน้าจอ flow นั้นหรืออัด screencast สั้น ๆ เก็บไว้ในรอบเดียวกัน — auditor เคยหักคะแนนเพราะส่งแค่ text log โดยไม่มีภาพ UI
+   - **เขียน triage note ของเคส skipped/blocked ตอนรันจบทันที** ระบุเหตุผลต่อเคสหรือต่อกลุ่ม (project gating / environment / out of scope) ลง `deliverables/mission-<N>-objective-<M>/<task-code>-triage.txt` — context เหตุผลอยู่ในหัวเฉพาะตอนรัน ทำย้อนหลังตอนส่งตรวจมักไม่ตรงกับผลจริง
+   - **ถ้า scope งานครอบ accessibility** (numerical contrast, focus trap, dialog role/aria-modal) ต้องรัน direct assertion จริงในรอบเดียวกัน (เช่น axe-core/playwright) หรือบันทึกเป็น evidence limitation ใน task note ทันทีพร้อมเหตุผล — ห้ามปล่อยว่างให้ auditor เจอเองตอนตรวจ
 4. **งาน Manual QA / Inspection (งานตรวจที่ไม่มีโค้ดแก้):**
    - บันทึกรายการเคสและ Viewports ที่ตรวจรับผ่านเป็น checklist text file ใน `deliverables/mission-<N>-objective-<M>/checklist-objective-<M>.txt`
    - เรนเดอร์เป็นภาพ Checklist Card PNG เก็บไว้ใน `screenshots/mission-<N>-objective-<M>/` ด้วย `scripts/render-checklist-card.js`
@@ -253,7 +256,7 @@ Final Summary ชุดนี้ต้องเป็นแหล่งเดี
 หลังสร้าง Final Summary แล้ว ต้องรวมหลักฐานของ task นั้นให้ครบและแนบไว้กับ task/note ว่าทำอะไรไปบ้าง — หลักฐานราย task ชุดนี้จะถูกดึงไปคัดเลือกและรวมเป็นหลักฐานส่งตรวจระดับเป้าหมายใน `submission-evidence` ภายหลัง:
 
 - **task ที่ผลลัพธ์เห็นบนหน้าจอ (UI/prototype/logic/data ที่สะท้อนบนจอ):** Manual Review Checklist ที่ผู้ใช้ตรวจจริงพร้อมผลรายเคส (ผ่าน / ไม่ผ่าน / พบอะไร + ผลแก้ไข) บันทึกเป็นไฟล์หลักฐาน + ภาพผลลัพธ์ที่ตรวจ + ภาพ Before/After (1440 + 390) ตาม 2.2
-- **task ที่มี test:** สรุป test list ออกมาเป็นไฟล์ — `.spec.js` ที่รัน, เคสที่เทสอะไรบ้าง, ผ่าน/ไม่ผ่าน, จำนวน passed/failed/skipped ตามผลจริง + raw runner output (`test-results.txt`)
+- **task ที่มี test:** สรุป test list ออกมาเป็นไฟล์ — `.spec.js` ที่รัน, เคสที่เทสอะไรบ้าง, ผ่าน/ไม่ผ่าน, จำนวน passed/failed/skipped ตามผลจริง + raw runner output (`test-results.txt`) + ภาพ HTML report dashboard หรือภาพ/screencast พฤติกรรม UI ที่ test ตรวจ (จาก 2.2) + triage note ของเคส skipped/blocked
 - **task เอกสาร/อื่น ๆ:** รายการไฟล์ที่แก้จริง + commit hash (ถ้ามี)
 - ทุก task ต้อง trace ได้ว่า "ทำอะไรไปบ้าง" — ระบุ path หลักฐานทั้งหมดไว้ใน Final Session Note/Copy Block ของ task นั้น และตั้งชื่อไฟล์หลักฐานให้ trace กลับถึง task ได้ (เช่น `<task-code>-checklist.txt`, `<task-code>-test-results.txt`) เพราะหลาย task แชร์โฟลเดอร์ `mission-<N>-objective-<M>/` เดียวกัน
 - ถ้าหลักฐานขาด (เช่น ลืมแคป Before) ให้แจ้งผู้ใช้และบันทึก evidence gap ตรง ๆ ห้ามสร้างหลักฐานย้อนหลังแบบเสแสร้ง
@@ -1465,7 +1468,7 @@ Task ID: TK-102
 ### สถานการณ์ที่ 1: เริ่มทำ task
 - [ ] ตรวจสอบ task ที่จะเริ่ม (ระบุ task_id หรือค้นหาจากชื่อ)
 - [ ] ตรวจว่า task มีบรรทัด `Category | Planned | Category Max` ใน Description — ถ้าสร้าง task ใหม่ต้องใส่เสมอทุกหมวด; ถ้า task เดิมไม่มี Planned ให้แจ้งผู้ใช้และเติมผ่าน `update_task` ก่อนเริ่มจับเวลา
-- [ ] ตรวจว่า task map กับ Mission/Objective ใน approved plan แล้ว (รู้หมายเลข `mission-<N>-objective-<M>` สำหรับโฟลเดอร์หลักฐาน) — ถ้ายังไม่ map ให้ยืนยัน mapping กับผู้ใช้ก่อนเริ่มจับเวลา
+- [ ] ตรวจว่า task map กับ Mission/Objective ใน approved plan แล้ว (รู้หมายเลข `mission-<N>-objective-<M>` สำหรับโฟลเดอร์หลักฐาน) — ถ้ายังไม่ map ให้ยืนยัน mapping กับผู้ใช้ก่อนเริ่มจับเวลา; task ที่ไม่มี mission (standalone) ใช้ `task-<TASK-CODE>` เป็นโฟลเดอร์หลักฐานแทน และยังต้อง capture/bundle หลักฐานตามปกติ
 - [ ] ถ้า task มีผลลัพธ์ที่เห็นบนหน้าจอ (UI/prototype/logic/data ที่สะท้อนบนจอ) → capture ภาพ Before (Desktop 1440 + Mobile 390) ลง `screenshots/mission-<N>-objective-<M>/before/` ก่อนแก้โค้ด
 - [ ] เรียก `get_board` เพื่อตรวจสอบ task อื่นที่อยู่ใน `in_progress`
 - [ ] ถ้ามี task อื่นใน `in_progress` → ถามผู้ใช้ว่าจะ pause task เดิมหรือทำต่อ
@@ -1482,7 +1485,7 @@ Task ID: TK-102
 - [ ] เรียก `get_task` หลังปิด เพื่ออ่าน Final Status + Activity Timeline + Actual Start + Actual End + Final `hours_spent`
 - [ ] **ไม่มี floor correction** — ใช้ Final `hours_spent` จากระบบตามจริง แม้จะต่ำกว่า 0.3 ชม. ก็ใช้ค่านั้น ห้ามปรับขึ้นเอง
 - [ ] สร้าง canonical Final Summary จากข้อมูลหลังปิด โดยมี Final Result, Work Completed, Decisions, Verification/Test Result, Actual Start/End, Final Actual Time, Issues/Fixes, Scope Changes, Open Items และ Next Step
-- [ ] รวม Task Evidence Bundle: checklist ผลตรวจรายเคส (ถ้ามี) + ภาพ Before/After / test list + raw output / ไฟล์+commit ที่แก้ — ตั้งชื่อไฟล์ trace ถึง task code และระบุ path ใน Final Session Note (หลักฐานขาด → บันทึก evidence gap ห้ามสร้างย้อนหลัง)
+- [ ] รวม Task Evidence Bundle: checklist ผลตรวจรายเคส (ถ้ามี) + ภาพ Before/After / test list + raw output + ภาพ HTML report หรือภาพ/screencast UI + triage note เคส skipped / ไฟล์+commit ที่แก้ — ตั้งชื่อไฟล์ trace ถึง task code และระบุ path ใน Final Session Note (หลักฐานขาด → บันทึก evidence gap ห้ามสร้างย้อนหลัง)
 - [ ] เรียก `save_session_note` ด้วย Final Summary ชุดเดียวกันเพื่อเก็บ Persistent Task History
 - [ ] ก่อนสร้าง Final Work Summary Copy Block ตรวจ Mission Mapping ที่บันทึกไว้จริง: ถ้ามีให้แสดง Objective → Feature → Task; ถ้าไม่มีให้เริ่มจาก Task และห้ามสร้าง Objective/Feature ขึ้นมาเอง
 - [ ] ตรวจว่า Objective/Feature labels ใน Copy Block เป็น verbatim จาก approved mission baseline (`get_mission` → Objectives) ไม่ใช่ paraphrase หรือ label จาก task description ล้วน ๆ; ถ้า task description เขียนไม่ตรงให้ใช้ชื่อจาก mission แล้วแจ้งผู้ใช้เสนอแก้ description

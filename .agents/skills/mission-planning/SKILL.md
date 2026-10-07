@@ -48,7 +48,7 @@ Workflow สำหรับ **วางแผนการทำงานรา�
 - Workflow: วาง Mission และ Feature → แตก Task ที่ต้องทำจริง → ทำทีละ Task → สรุปและปิด Task → เตรียม work log ของ Task โดยเลือก Objective และ Feature ที่ map ไว้
 - **วางเป้าหมายให้ตรงกับ "หนึ่งชุดหลักฐานส่งตรวจ" (Continuous Evidence Planning)** — ฟอร์มส่งตรวจรับคิดหลักฐานต่อ 1 เป้าหมาย (ไฟล์แนบ + คำอธิบาย) ดังนั้นเป้าหมายที่ผลิตหลักฐานคนละประเภท (เอกสาร spec vs ภาพหน้าจอ UI vs test/verification) ควรเป็นเป้าหมายแยกกัน; และต้องกำหนด **Evidence Plan** ประจำแต่ละ Objective ตั้งแต่ตอนวางแผน เพื่อให้ระหว่างทำแต่ละ Task สามารถเก็บหลักฐานคู่ขนานแบบ Real-time ได้ทันที:
   - *เป้าหมาย UI/Prototype:* วางแผนแคปภาพ Before (1440/390px) ก่อนแก้โค้ด และภาพ After (1440/390px) หลังแก้โค้ดที่ผู้ใช้ยืนยันคอนเฟิร์มว่าโอเคผ่านเรียบร้อย
-  - *เป้าหมาย Test/Verification:* วางแผนไฟล์ `.spec.js` เป้าหมาย และกำหนดชื่อไฟล์บันทึก Raw runner output ดิบ (`test-results.txt`) จาก runner engine จริง
+  - *เป้าหมาย Test/Verification:* วางแผนไฟล์ `.spec.js` เป้าหมาย และกำหนดชื่อไฟล์บันทึก Raw runner output ดิบ (`test-results.txt`) จาก runner engine จริง + **วางแผนหลักฐานภาพตั้งแต่ต้น** — เก็บ `playwright-report/` และแคปภาพ HTML report dashboard หลังรัน, ระบุ flow dynamic (countdown, error live, focus trap) ที่ต้องแคปภาพ/screencast ระหว่างเทสต์, เตรียม triage note สำหรับเคส skipped/blocked และตัดสินใจ scope accessibility ในแผน (ถ้าครอบ contrast/focus/aria ต้องวาง direct assertion เช่น axe-core ไว้ตั้งแต่ต้น)
   - *เป้าหมาย Document/Acceptance:* วางแผน checklist file `.txt`, เรนเดอร์ Checklist Card PNG และ Git commit hashes ของเอกสารที่แก้
   - เป้าหมายล้วน UI ให้แยกตามฝั่งผู้ใช้/flow (เช่น ฝั่ง admin กับฝั่งผู้รับ) ไม่ใช่รวมทุกจอไว้เป้าหมายเดียว; และอย่าแตกเป้าหมายยิบย่อยจน submission กระจายเป็นรายการที่บอกอะไรไม่ได้ — 1 เป้าหมายมี 1 Task ได้ถ้า deliverable เป็นคนละชนิด
 - หลังเริ่ม Mission ห้ามลบ Objective หรือ Feature จาก baseline หาก Task ไม่จำเป็นต้องทำแล้ว ให้บันทึกเป็น Scope Change/ยกเลิกพร้อมเหตุผล และคง Feature ไว้เพื่อให้ความแม่นยำของแผนไม่หายไป
@@ -1290,6 +1290,7 @@ Mission: สร้างเอกสารและ prototype สำหรับ
 - [ ] ตรวจว่าชื่อ Objective และ Feature เป็นชื่อ label สั้นตาม Naming Rules — ไม่มี scope/behavior/AC ยัดอยู่ในชื่อ และใช้ terminology ที่ทีมเข้าใจจริง
 - [ ] ตรวจว่าน้ำหนัก (Weight) ของทุกเป้าหมายรวมกัน **เท่ากับ 100%**
 - [ ] ระบุ Dependency, ลำดับงาน และ critical path ระหว่างเป้าหมาย
+- [ ] กำหนด **Evidence Plan** ต่อ Objective ตาม Continuous Evidence Planning — เป้าหมาย test ต้องวางไว้ตั้งแต่ต้น: raw output + HTML report capture + ภาพ/screencast flow dynamic + triage note เคส skipped + ตัดสินใจ scope accessibility
 - [ ] ประเมินเวลาแต่ละเป้าหมาย (1 วัน = 8 ชม.) — **เวลา = เวลา AI ทำงานเป็นหลัก** รวมการวิเคราะห์ สร้าง แก้ และตรวจรับตามขอบเขต
 - [ ] ระบุหมวดหมู่งานของแต่ละ task และประเมินเวลาตามตารางเวลามาตรฐาน (Documentation ≤ 0.5 ชม., Testing 1 ชม., Feature 2 ชม., ฯลฯ)
 - [ ] ถ้า task เกินค่า "ห้ามเกิน" ของหมวด → แตกเป็น subtask จนแต่ละ subtask อยู่ในเกณฑ์
