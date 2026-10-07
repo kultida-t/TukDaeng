@@ -1,0 +1,21 @@
+CTM-003a — Manual Review Articles + Article Editor + Block Editor (Passed 07/10/2026)
+== Articles list
+01 row menu ทุกแถว "ดูรายละเอียด / ดูตัวอย่าง / แก้ไขบทความ" + status action ตามสถานะ
+02 "ดูตัวอย่าง" เปิด preview modal ได้จริง (dead button "Preview as FO" เดิมถูก wire เข้า handler เดิม)
+03 toolbar/empty state/filter copy ไทยครบ
+== Article Detail
+04 tiles "จำนวน Likes / สร้างเมื่อ / อัปเดตล่าสุด" — คง "Article URL" เป็น EN ตาม DECISION-3
+05 ปุ่มท้ายจอ "แก้ไขบทความ / ดูตัวอย่าง / เก็บบทความเข้าคลัง"
+06 Change History คอลัมน์ Action ไทยผ่าน label map — stored key EN คงเดิม
+07 readonly Content Blocks: ชื่อ block + empty/error copy ไทยทั้งชุด
+== Article Editor + Block Editor
+08 field labels / block type labels / "เพิ่มบล็อก" / helper ไทยครบ — คง URL/Article URL EN
+09 inline help + upload controls + link validation copy ไทย
+== Modals + alerts
+10 confirm modal titles EN "Confirm <Verb> <Entity>" — Archive / Cancel Schedule / Delete Draft / Restore
+11 modal body ไทยคงเดิม + ปุ่ม "ยืนยัน / ยกเลิก / ปิด" ตาม canonical
+12 compact alert titles ไทย ("ไม่มีสิทธิ์ดำเนินการ" / "ดูตัวอย่างไม่สำเร็จ")
+== Guardrails
+13 aria/title mirror visible label — ไม่มี aria EN เหลือใน scope
+14 locked exceptions คงเดิม (nav EN, auth EN, sidebar, technical keys)
+15 auto-verify scripts/verify-ctm-003a.js ผ่าน 28/28 — 0 JS errors

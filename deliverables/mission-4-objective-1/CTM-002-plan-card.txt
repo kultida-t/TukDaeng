@@ -1,0 +1,19 @@
+CTM-002 — Content Management Normalization Plan (Approved)
+== แผนที่จัดทำ
+Current→Proposed ครบทุก deviation จาก CTM-001 audit (25 เนื้อหา + 13 titles)
+แยกกลุ่ม CONFIRM / D15 titles / D16 deferred / 8 decisions / mock-data
+แบ่ง scope: CTM-003a (Articles+Editor+Block) / CTM-003b (Categories+Reported Board)
+== ผล approval (07/10/2026)
+Archive wording → เก็บบทความเข้าคลัง (align action+reason+historyLabel)
+Block type labels → ไทยทั้งชุด · Field labels → ไทย (คง URL/Article URL)
+Preview as FO dead button → wire เข้า preview modal + label ดูตัวอย่าง
+article.actionHistory → เพิ่ม action label map ไทย + default notes ไทย
+Modal titles ×12 → EN Confirm <Verb> <Entity> + blocked → Cannot Deactivate Category
+Compact alert titles → ไทย (ไม่มีสิทธิ์ดำเนินการ/ดูตัวอย่างไม่สำเร็จ)
+CONFIRM batch ~20 จุด อนุมัติทั้งชุด · Mock data + FO preview คง EN · D16 deferred
+== Compliance
+bo-prototype.html ไม่แก้ — approval gate ผ่านก่อน implement
+canonical rows ใหม่ (ลบ Draft/ยกเลิกกำหนดเผยแพร่/เก็บบทความเข้าคลัง/block types)
+เพิ่มใน §2 ตอน CTM-003 — ไม่แตะ technical/status keys/CSS/logic/route
+== Deliverable
+CTM-002-normalization-plan.txt + canonical §9 — พร้อมส่งต่อ CTM-003a/003b

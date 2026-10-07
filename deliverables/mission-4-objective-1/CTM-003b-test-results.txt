@@ -1,0 +1,71 @@
+PASS toolbar: จัดเรียง Category label
+PASS toolbar: จัดเรียง aria TH
+PASS toolbar: เพิ่ม Category label
+PASS toolbar: เพิ่ม aria TH
+PASS hidden #primary-action TH
+PASS cat row menu TH — ดูรายละเอียด | แก้ไข Category | เปิดใช้งาน | ลบ Category
+PASS no EN residue cat menu
+PASS cat detail tile อัปเดตล่าสุด
+PASS cat detail buttons TH
+PASS reactivate title EN
+PASS delete title EN
+PASS blocked title EN
+PASS deactivate title EN
+PASS reorder modal title stays EN
+PASS add category modal title stays EN
+PASS board row menu TH — ดูรายละเอียด | ดูบทความ | ปิดรายงาน | แก้ไขบทความ | เก็บบทความเข้าคลัง
+PASS no EN residue board menu
+PASS board preview title stays EN — Preview article RPC-043 ART-043
+PASS detail subtitle TH
+PASS detail action labels TH
+PASS detail ดูบทความ btn + aria
+PASS close report title EN
+PASS close confirm btn ยืนยัน
+PASS close reasonLabel TH
+PASS archive title EN
+PASS archive confirm btn ยืนยัน
+PASS archive reasonLabel TH
+PASS history label เก็บบทความเข้าคลัง — เก็บบทความเข้าคลัง,เก็บบทความออกจากการแสดงผล
+PASS src: ปิดใช้งาน label (unreachable btn)
+PASS src: audit empty state TH
+PASS src: confirm ยืนยัน ×2
+PASS src: no scope EN residue
+PASS src: board subtitle TH
+PASS mobile tooltip works on list page — {"content":"\"เพิ่ม Category\"","opacity":"1"}
+PASS mobile tooltip hidden under modal — {"content":"none","opacity":"0"}
+PASS mobile preview close btn in viewport — x=316 y=30 w=40
+PASS mobile preview modal closable
+PASS no JS errors
+
+38/38 passed
+--- 003a regression ---
+PASS row menu labels TH — ดูรายละเอียด | ดูตัวอย่าง | แก้ไขบทความ | เก็บบทความเข้าคลัง
+PASS no EN residue in row menu
+PASS row-menu ดูตัวอย่าง opens preview modal — Preview article
+PASS preview section labels TH
+PASS detail tiles TH
+PASS detail buttons TH
+PASS change history action map TH — แก้ไขล่าสุด,แก้ไขล่าสุด,สร้างบทความ,สร้างบทความ,เก็บบทความเข้าคลัง
+PASS archive modal title EN
+PASS scheduled action label TH
+PASS cancel-schedule title EN
+PASS draft action label TH
+PASS delete-draft title EN
+PASS archived action label TH
+PASS restore title EN
+PASS editor: + เพิ่ม block
+PASS editor: block titles TH
+PASS editor: Preview → ดูตัวอย่าง
+PASS block picker options TH — ย่อหน้า|หัวข้อ H2|หัวข้อ H3|รายการแบบจุด|รายการแบบตัวเลข|ลิงก์|เส้นคั่น|รูปภาพ + คำบรรยาย|ข้อความอ้างอิง|ตารางเปรียบเทียบ
+PASS block control aria TH — เลื่อน block ขึ้น / ลบ block
+PASS save confirm title EN
+PASS permission denied title TH
+PASS edit cancel title EN
+PASS add cancel title EN
+PASS add create title EN
+PASS divider note TH (§E.1)
+PASS image-block alert TH (§E.2)
+PASS link validation msg TH (§E.3)
+PASS no JS errors
+
+28/28 passed

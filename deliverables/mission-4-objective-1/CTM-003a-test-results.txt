@@ -1,0 +1,30 @@
+PASS row menu labels TH — ดูรายละเอียด | ดูตัวอย่าง | แก้ไขบทความ | เก็บบทความเข้าคลัง
+PASS no EN residue in row menu
+PASS row-menu ดูตัวอย่าง opens preview modal — Preview article
+PASS preview section labels TH
+PASS detail tiles TH
+PASS detail buttons TH
+PASS change history action map TH — แก้ไขล่าสุด,แก้ไขล่าสุด,สร้างบทความ,สร้างบทความ,เก็บบทความเข้าคลัง
+PASS archive modal title EN
+PASS scheduled action label TH
+PASS cancel-schedule title EN
+PASS draft action label TH
+PASS delete-draft title EN
+PASS archived action label TH
+PASS restore title EN
+PASS editor: + เพิ่ม block
+PASS editor: block titles TH
+PASS editor: Preview → ดูตัวอย่าง
+PASS block picker options TH — ย่อหน้า|หัวข้อ H2|หัวข้อ H3|รายการแบบจุด|รายการแบบตัวเลข|ลิงก์|เส้นคั่น|รูปภาพ + คำบรรยาย|ข้อความอ้างอิง|ตารางเปรียบเทียบ
+PASS block control aria TH — เลื่อน block ขึ้น / ลบ block
+PASS save confirm title EN
+PASS permission denied title TH
+PASS edit cancel title EN
+PASS add cancel title EN
+PASS add create title EN
+PASS divider note TH (§E.1)
+PASS image-block alert TH (§E.2)
+PASS link validation msg TH (§E.3)
+PASS no JS errors
+
+28/28 passed

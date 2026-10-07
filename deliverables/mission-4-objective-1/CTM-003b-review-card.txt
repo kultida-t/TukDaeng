@@ -1,0 +1,21 @@
+CTM-003b — Manual Review Categories + Reported Board (Passed 07/10/2026)
+== Categories
+01 toolbar "จัดเรียง Category / เพิ่ม Category" + aria mirror ไทย
+02 row menu "ดูรายละเอียด / แก้ไข Category / เปิดใช้งาน / ลบ Category" ตามสถานะ
+03 detail tile "อัปเดตล่าสุด" + ปุ่มตามสถานะ (CAT-007 Inactive / CAT-001 Active)
+04 modal titles EN: Confirm Reactivate / Delete / Deactivate Category + blocked "Cannot Deactivate Category"
+05 Reorder Categories + Add/Edit Category modal titles คง EN ตามกฎชั้นโครง
+06 modal body ไทยคงเดิมทุกใบ (question/summary/ยกเลิก-ยืนยัน/รับทราบ)
+== Reported Board
+07 row menu "ดูรายละเอียด / ดูบทความ / ปิดรายงาน / แก้ไขบทความ / เก็บบทความเข้าคลัง"
+08 "ดูบทความ" เปิด preview modal เดิม — title คง EN structure
+09 panel-subtitle "ปิดบังตัวตนผู้รายงาน" + aria "ดูบทความ <id>"
+10 confirm modals "Confirm Close Report" / "Confirm Archive Article" + ปุ่ม "ยืนยัน" + reasonLabel ไทย
+11 Admin Action History คอลัมน์ Action "เก็บบทความเข้าคลัง" (align DECISION-1) — stored key ไม่เปลี่ยน
+== Side-effect guard
+12 modal title EN ไม่ถูก reuse เป็น history — historyAction แยกคงเดิม
+13 stored action keys EN คงเดิม — sort/filter/history ปกติ
+== Mobile bugs แก้ระหว่าง review
+14 tooltip ซ้อนทับ modal ที่เปิดอยู่ → ซ่อน pseudo-element ขณะ modal เปิด
+15 preview modal ล้นจอ mobile ปิดไม่ได้ → ปรับ mobile CSS ให้ fit viewport
+16 auto-verify scripts/verify-ctm-003b.js ผ่าน 38/38 — 0 JS errors

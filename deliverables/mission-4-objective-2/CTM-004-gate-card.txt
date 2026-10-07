@@ -1,0 +1,33 @@
+CTM-004 — Manual Review Checklist Gate A–E (Approved 07/10/2026)
+== Gate A — Language layering
+A1 nav module/sub = EN ตรง navGroups — ไม่มี alias
+A2 page/modal titles = EN noun phrase "Confirm <Verb> <Entity>" ครบ
+A3 detail head <ID> : <Display Name> + status pills EN คงเดิม
+A4 breadcrumb <Section TH> / <Module EN> / <Sub EN> คงเดิม
+A5 action buttons ไทยทั้งหมดตรง canonical §2 — 27 จุด normalize
+A6 field labels/helper/empty/error/filter copy ไทย
+A7 technical keys คง EN (URL/Article URL — DECISION-3)
+A8 aria/title mirror visible label
+A9 locked exceptions คงเดิม (nav sections ไทย / auth EN / sidebar)
+== Gate B — Button/action correctness
+B1 confirm primary = "ยืนยัน" เท่านั้น
+B2 cancel = "ยกเลิก" · close = "ปิด"
+B3 page back = "กลับไป Articles" / "กลับไป Reported Articles" + aria mirror
+B4 row action = "ดูรายละเอียด" · view entity = "ดูบทความ"
+B5 dead button wire เข้า preview modal · B6 link/button roles คงเดิม
+B7 blocked action มี explanation ("Cannot Deactivate Category")
+== Gate C — Protected/contract compliance
+C1 ทุกการแก้ผ่าน approval gate CTM-002 §G.1 (07/10/2026)
+C2 canonical table sync — rows ใหม่ §2 + resolution marks §4
+C3 internal keys ไม่ rename — stored action keys EN คงเดิม
+C4 deviation ใหม่ → บันทึกไม่แก้นอก scope
+== Gate D — Visual/responsive + spot-check
+D1 จอหลัก render ปกติ ไม่มี placeholder แตก (${…}/undefined/NaN)
+D2 label ไม่ล้นกรอบ — เทียบ screenshots 3 viewports (1920x1080/768x1024/440x956)
+D3 modal footer "ยกเลิก → ยืนยัน" ทุก confirm modal
+D4 mobile regressions ผ่าน (tooltip ไม่ซ้อน modal / preview modal ปิดได้)
+== Gate E — Evidence completeness
+E1 screenshots before/after ครบทุก surface (102 ต่อชุด + console-only แยก)
+E2 canonical §4 resolution marks อัปเดต · E3 inventory regenerated 1,926 entries
+E4 verify logs + spec เก็บครบ · Re-scan: deviation ใน scope = 0
+ผล: ผู้ใช้ตรวจจริงผ่านทุก Gate — APPROVED

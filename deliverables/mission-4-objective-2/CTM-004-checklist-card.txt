@@ -1,0 +1,118 @@
+CTM-004 Manual Review Checklist Gate — Content Management Label Normalization
+Mission 4 / Objective 2 — รอผู้ใช้ตรวจ 07/10/2026
+อ้างอิง: deliverables/label-standard/manual-review-checklist.md (Gate A–E)
+         + CTM-001 audit / CTM-002 plan §G.1 / canonical §9 / CTM-003a-003b reviews
+
+หลักฐานที่ใช้ตรวจ:
+- deliverables/mission-4-objective-2/CTM-004-inventory-rescan.txt (re-scan เทียบทุก deviation)
+- deliverables/label-standard/inventory.json + inventory.md (regenerated 07/10)
+- scripts/verify-ctm-003a.js 28/28 + verify-ctm-003b.js 38/38 (regression gate)
+- screenshots/mission-4-objective-1/before|after/ 204 PNG (102 ต่อชุด =
+  96 main + 6 console-only; 3 viewports: 1920x1080 / 768x1024 / 440x956
+  — standard; shots 07/08 blocked+deactivate อยู่ใน console-only/ ตาม
+  evidence rule)
+- จอจริง: localhost:4173 → Content Management
+
+====================================================================
+GATE A — Language layering
+====================================================================
+[ ] A1 nav module/sub = English ตรง navGroups (Content Management / Articles /
+    Categories / Reported Articles) — ไม่มี alias
+[ ] A2 page/modal titles = English noun phrase: "Confirm <Verb> <Entity>" ครบ
+    12 จุด + "Cannot Deactivate Category" + "Preview article"/"Reorder
+    Categories"/"Add·Edit Category"/"Category Detail" คง EN structure
+[ ] A3 detail head <ID> : <Display Name> + status pills EN คงเดิม (Draft/
+    Scheduled/Published/Archived, Active/Inactive, Pending/Closed, High/
+    Medium/Low)
+[ ] A4 breadcrumb <Section TH> / <Module EN> / <Sub EN> คงเดิม
+[ ] A5 action buttons ไทยทั้งหมดและตรง canonical §2 เท่านั้น — 27 จุด normalize
+    (ดูรายละเอียด/ดูตัวอย่าง/ดูบทความ/แก้ไขบทความ/แก้ไข Category/เพิ่ม Category/
+    จัดเรียง Category/เปิดใช้งาน/ปิดใช้งาน/ลบ Category/ลบ Draft/
+    ยกเลิกกำหนดเผยแพร่/เก็บบทความเข้าคลัง/คืนบทความ/+ เพิ่ม block/
+    block type ไทย 10 ค่า) — ไม่มีปุ่มประดิษฐ์นอกตาราง
+[ ] A6 field labels/helper/empty/error/filter copy ไทย (ยังไม่มีเนื้อหา/
+    บล็อกว่าง/ลิงก์ไม่ถูกต้อง/ยังไม่มีการดำเนินการจาก Admin/จำนวน Likes/
+    สร้างเมื่อ/อัปเดตล่าสุด/ข้อความลิงก์/ปิดบังตัวตนผู้รายงาน)
+[ ] A7 technical keys คง EN: URL/Article URL (DECISION-3) + ID/status keys ไม่แตะ
+[ ] A8 aria/title mirror visible label: toolbar aria ไทย, ดูบทความ <id>,
+    block control aria ไทย — ไม่มี aria EN คู่ visible ไทย (ยกเว้น convention
+    `X actions`/customSelect ที่ exempt)
+[ ] A9 locked exceptions คงเดิม: nav sections ไทย, auth EN, sidebar Logout,
+    scenario selectors/Test flow (§5.6), FO preview internals EN (O-C04)
+
+====================================================================
+GATE B — Button/action correctness
+====================================================================
+[ ] B1 confirm modal primary = "ยืนยัน" เท่านั้น (ปิดรายงาน/เก็บบทความเข้าคลัง —
+    before: ยืนยันปิดรายงาน/ยืนยัน Archive)
+[ ] B2 cancel = "ยกเลิก", close = "ปิด"/aria ปิด — ไม่มี Cancel/Close EN ใน scope
+[ ] B3 page back = "กลับไป Articles"/"กลับไป Reported Articles" + aria mirror
+[ ] B4 row action menu = "ดูรายละเอียด"; view entity = "ดูบทความ" เท่านั้น
+[ ] B5 dead button "Preview as FO" ถูก wire เข้า preview modal เดิม — คลิก
+    "ดูตัวอย่าง" ใน row menu เปิด modal ได้จริง (DECISION-4)
+[ ] B6 link = นำทาง / button = action — ไม่เปลี่ยนจากเดิม
+[ ] B7 disabled/blocked มี explanation: "Cannot Deactivate Category" blocked
+    modal + toast ไทย (ไม่สามารถปิดใช้งาน category ที่มีบทความอยู่ได้)
+
+====================================================================
+GATE C — Protected/contract compliance
+====================================================================
+[ ] C1 ทุกการแก้ผ่าน approval gate: CTM-002 §G.1 APPROVED 07/10/2026 ครบทุก
+    decision (D-1..D-8 + CONFIRM batch) ก่อน implement
+[ ] C2 canonical table sync: rows ใหม่ใน §2 (ลบ Draft/ยกเลิกกำหนดเผยแพร่/
+    เก็บบทความเข้าคลัง/block labels) + §9 plan record + §4 resolution marks —
+    เปิด docs/bo-canonical-label-table.md เทียบ
+[ ] C3 internal keys ไม่ rename: stored action keys EN ("Created"/"Archived"/
+    "Close Report"/"Archive Article") คงเดิม — render ผ่าน label map ไทย
+    (getArticleActionLabel/getBoardReportActionLabel); historyAction แยกจาก
+    modal title (side-effect guard ผ่าน ทั้ง 003a/003b)
+[ ] C4 deviation ใหม่ที่พบ → บันทึกไม่แก้ (ดู Open items ด้านล่าง)
+
+====================================================================
+GATE D — Visual/responsive + spot-check render
+====================================================================
+[ ] D1 Articles list / Article Detail / Article Editor / Categories /
+    Reported Articles — render ปกติ ไม่มี placeholder แตก (auto spot-check:
+    0 hits ${…}/undefined/NaN/[object Object], 0 JS errors — ตรวจยืนยันด้วยตา
+    บนจอจริง)
+[ ] D2 button label ไม่ล้นกรอบ — เทียบ screenshots after/ ทั้ง 3 viewports
+    (d01-d17 desktop 1920x1080, t01-t17 tablet 768x1024, m01-m17 mobile
+    440x956 — tooltip icon-only + cards)
+[ ] D3 modal footer order "ยกเลิก → ยืนยัน" ทุก confirm modal + keyboard/
+    backdrop close ตามเดิม
+[ ] D4 mobile regressions จาก 003b review ยังผ่าน: tooltip ไม่ซ้อน modal,
+    preview modal ปิดได้บน 390px (verify-003b 2 checks สุดท้าย)
+
+====================================================================
+GATE E — Evidence completeness
+====================================================================
+[ ] E1 screenshots before/after ครบทุก surface ที่เปลี่ยน label —
+    204 PNG (screenshots/mission-4-objective-1/; console-only/ แยกตาม
+    evidence rule)
+[ ] E2 §4 canonical table resolution marks อัปเดตแล้ว
+[ ] E3 inventory.md/json regenerated หลัง normalize (07/10) + เทียบผลใน
+    CTM-004-inventory-rescan.txt — deviation ใน scope = 0
+[ ] E4 verify scripts + regression log เก็บแล้ว (CTM-003b-test-results.txt +
+    re-run ล่าสุด 28/28 + 38/38)
+
+====================================================================
+OPEN ITEMS — บันทึกไว้ ไม่แก้ใน task นี้ (ตาม constraint + rescan §6)
+====================================================================
+[ ] O1 D16 table headers EN + data-label mirrors — รอ central decision
+[ ] O2 Download CSV Template — Phase 2 deferred
+[ ] O3 scenario selector labels EN — exempt §5.6 ถาวร
+[ ] O4 mock-data EN — DECISION-4/M-family คงเดิม
+[ ] O5 qa-bo-005-content-management.spec.js stale (~30 assertions ยังอ้าง
+    label EN ก่อน normalize → จะ FAIL ถ้ารัน) — ต้องตัดสินแยกว่าอัปเดต spec
+    หรือ supersede ด้วย verify-ctm-003a/003b (นอก scope CTM-004)
+[x] O6 viewport evidence standard — ✅ RESOLVED: recapture ทั้งชุดเป็น
+    1920x1080/768x1024/440x956 (before/ + after/ 102 PNG ต่อชุด, prefix
+    d/t/m; before จาก git HEAD) — capture scripts อัปเดต viewport list แล้ว
+
+====================================================================
+สถานะ: ✅ APPROVED — ผู้ใช้ยืนยันผ่าน 07/10/2026 ("ผ่านแล้ว")
+ผลรีวิวระหว่างทาง: ผู้ใช้ flag viewport ไม่ตรง evidence standard →
+recapture ทั้งชุดเป็น 1920x1080/768x1024/440x956 ก่อน approve + แยก
+console-only/ สำหรับ shots 07/08 ตาม evidence rule
+CTM-004 ปิด = task สุดท้ายของ Mission 4 → Objective 2 + Mission complete
+====================================================================
