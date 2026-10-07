@@ -1019,7 +1019,7 @@ Task: <TASK-CODE> <Task Name>
   3. **ระบุมาตรการความปลอดภัย (Security):** เช่น การ Mask ข้อมูลอีเมล, การเก็บเฉพาะ Token Hash, การห้ามลงข้อมูลลับใน Audit/Delivery Payload
   4. **ระบุสาเหตุและวิธีแก้เมื่อใช้เวลาเกิน (Improvement):** สรุปสาเหตุที่เกิน เช่น Scope กว้าง หรือมีเงื่อนไขหลายชั้น และระบุวิธีแก้ เช่น แยกฟังก์ชันตรวจเงื่อนไขตรงกลาง หรือแตก Subtask ย่อย
 - ใช้ข้อมูลจาก canonical Final Summary / Final Session Note เท่านั้น ห้ามเพิ่มงานที่ไม่ได้ทำจริง
-- Verification สำคัญ เช่น tests, validation, `git diff --check`, assertions, scope/protected-scope check และ user acceptance สามารถรวมใน `รายละเอียดงานที่ทำ` ได้
+- Verification ที่เป็นส่วนหนึ่งของงาน task จริง (เช่น task ตรวจรับ/QA gate — "ตรวจ checklist ครบ 5 หมวด", "เทียบ baseline ยืนยัน deviation หาย") เขียนเป็น bullet ได้; แต่ห้ามเขียนกลไกการรันเครื่องมือ ("re-run verify script ผ่าน X/X", "render checklist card") — นั่นเป็น evidence/verification mechanics ตามข้อ 23
 - หากสาระจาก Files Changed, Decisions, Problems/Resolutions, Scope Changes หรือ Verification สำคัญต่อความเข้าใจงาน ให้รวมไว้ในรายการ `รายละเอียดงานที่ทำ` โดยไม่สร้าง metadata section แยก
 - กรณี task เกินเกณฑ์หมวด ให้ใช้ **Case C**: คงกฎวิเคราะห์/ชี้แจง over-budget เดิมใน canonical summary และแสดง `รายละเอียดงานที่ทำ` แบบแยกสัดส่วน `<TASK-CODE>a/b/c [<Category ย่อย>] (ประมาณ X ชม.)` ตามด้วย sub-bullet — สัดส่วนและหมวดย่อยต้องตรงกับ canonical summary / สรุปราย task ห้ามย่อเป็นรายการแบนรายการเดียวจนสัดส่วนเวลาหาย; ส่วนบรรทัดเวลาทำงานให้ระบุ `(แผน X ชม. — เกินเพราะ <เหตุผล>)` ไว้กำกับ
 - ใช้ business-facing Task Code; ห้ามแสดง Full/Partial Kanban UUID, internal Task ID หรือ Database ID
@@ -1137,7 +1137,11 @@ Task ID: <task_id>
 
 22. **อ้าง requirement/spec/entity ด้วยชื่อที่คนอ่านเข้าใจ ไม่ใช่ ID ล้วน** — summary ที่ก๊อปไปลงระบบอื่นต้องอ่านรู้เรื่องโดยไม่ต้องเปิด kanban; ห้ามเขียน `requirement bf08de1f` หรือ `mission 18598f33` ลอย ๆ ให้ใช้ชื่อ เช่น `requirement "BO Admin Identity Lifecycle — Invitation, My Account และ Password Security"` หรือชื่อย่อที่ระบุตัวตนได้ — internal ID (kanban UUID, requirement id, mission id) เก็บไว้ใน session note/traceability เท่านั้น; Task Code แบบ business-facing (เช่น AIL-019) ยังใช้ได้ตามเดิมเพราะเป็นชื่อที่ทีมใช้เรียกกัน
 
-23. **"รายละเอียดงานที่ทำ" ต้องเป็นงานของ task เท่านั้น ห้ามใส่เรื่อง workflow/kanban mechanics** — เหตุการณ์อย่าง timer quirk, ค่า default ตอนสร้าง task, การย้าย column, การบันทึก note ไม่ใช่งานของ task และไม่ควรเป็น bullet; ถ้าเรื่องนั้นสำคัญต่อผู้ใช้ให้แจ้งแยกนอก copy block (เช่น หมายเหตุเวลา) — bullet ทุกข้อต้องตอบได้ว่า "งานชิ้นนี้ทำให้ task บรรลุเป้าหมายอย่างไร"
+23. **"รายละเอียดงานที่ทำ" ต้องเป็นงานของ task เท่านั้น ห้ามใส่เรื่อง workflow/evidence mechanics** — bullet ทุกข้อต้องตอบได้ว่า "งานชิ้นนี้ทำให้ task บรรลุเป้าหมายอย่างไร" เหตุการณ์ต่อไปนี้ **ไม่ใช่งานของ task** และห้ามเป็น bullet:
+    - workflow mechanics: timer quirk, ค่า default ตอนสร้าง task, การย้าย column, การบันทึก note, การ commit/push
+    - evidence packaging: การ "จัดเตรียม/แพ็กหลักฐาน" เช่น สร้าง report file, checklist card, capture screenshot, render preview — path หลักฐานอยู่ในส่วน Evidence ของ session note เท่านั้น
+    - verification mechanics ที่ไม่ใช่ขอบเขตการตรวจของ task เอง: เช่น "re-run verify script ผ่าน 12/12 ไม่มี error" — ผล verify อยู่ในส่วน Verification ของ session note; ถ้า task เป็นงานตรวจ/review อยู่แล้ว (เช่น QA gate task) ให้เขียนเป็นงานที่ตรวจจริง เช่น "ตรวจ manual review checklist ครบ 5 หมวด A–E ผ่านทั้งหมด" ไม่ใช่เล่ากลไกการรัน script ซ้ำ
+    ถ้าเรื่อง workflow สำคัญต่อผู้ใช้ให้แจ้งแยกนอก copy block (เช่น หมายเหตุเวลา)
 
 24. **ห้ามแปลตรงคำเทคนิค/ศัพท์ CSS-JS เป็นคำไทยที่ไม่มีใครใช้จริง — ให้บรรยาย "ผลที่ผู้อ่านเห็นบนหน้าจอ" แทน** — การแปลตรงเช่น "ห่อตัว" (wrap), "สแตก" (stack), "ยุบ" (collapse), "เลย์เอาต์แตก" ทำให้คนอ่านนึกภาพไม่ออก หลักคืออธิบายว่า "ผู้ใช้เห็นอะไรผิดปกติ" แล้วค่อยบอกทางแก้ เช่น
     - ผิด: `แก้ค่าอีเมลห่อตัวอ่านยาก` → ถูก: `แก้ปัญหาอีเมลยาวจนตกเป็นหลายบรรทัด`
@@ -1558,5 +1562,5 @@ Task ID: TK-102
 - [ ] **bullet ที่เล่าปัญหา/decision/gap ต้องระบุเนื้อหา** — บอก "ปัญหาอะไร + แก้/ตัดสินใจอะไร" ในตัว bullet (ห้ามเขียนแค่กระบวนการ เช่น "พบ gap 3 จุด → รายงานผู้ใช้" โดยไม่บอกว่า gap คืออะไร)
 - [ ] **4 มาตรฐานข้อมูลสำคัญใน `รายละเอียดงานที่ทำ`** — ตรวจว่ามี (1) ตัวเลขสถิติจริง (Test/Regression/Cooldown/Quota), (2) สาเหตุบั๊กที่แท้จริง (Root Cause), (3) มาตรการความปลอดภัย (Security), และ (4) สาเหตุ/วิธีแก้เมื่อเกินเวลา (Improvement) เมื่อเกี่ยวข้องกับ task นั้น
 - [ ] **อ้าง requirement/spec/entity ด้วยชื่อ ไม่ใช่ ID ล้วน** — ห้าม `bf08de1f`/`18598f33` ลอย ๆ; ใช้ชื่อที่อ่านรู้เรื่อง (internal ID เก็บไว้ใน session note; Task Code แบบ AIL-xxx ใช้ได้)
-- [ ] **"รายละเอียดงานที่ทำ" ต้องเป็นงานของ task เท่านั้น** — ห้ามใส่เรื่อง workflow/kanban mechanics (timer quirk, ค่า default ตอนสร้าง, การย้าย column); ถ้าสำคัญให้แจ้งแยกนอก copy block
+- [ ] **"รายละเอียดงานที่ทำ" ต้องเป็นงานของ task เท่านั้น** — ห้ามใส่ workflow/evidence mechanics (timer quirk, ค่า default ตอนสร้าง, การย้าย column, commit/push, การจัดเตรียมหลักฐาน/report/checklist card/screenshot, re-run verify script) — path หลักฐานอยู่ในส่วน Evidence ของ session note, ผล verify อยู่ในส่วน Verification; ถ้าสำคัญให้แจ้งแยกนอก copy block
 - [ ] **task ที่ยัง `in_progress`** ต้องระบุ "ปัจจุบัน: <now>" แทน "เวลาจบ" และใช้ "เวลาที่ผ่านไป" แทน "เวลาทำงาน" พร้อมระบุ "(ยังจับเวลาอยู่)"
