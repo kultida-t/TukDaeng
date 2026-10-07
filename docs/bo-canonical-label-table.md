@@ -45,19 +45,19 @@
 | | `Back to Option Groups` | — | Option Master back | 🔒 **locked exception ถาวร** (contract C.4) |
 | **Back — ขั้นใน flow/modal** | `ย้อนกลับ` | กลับไป step/ฟอร์มก่อนหน้า *ภายใน* modal flow (confirm → edit) — ไม่ใช่ page back | `ย้อนกลับ` (6, Option Master/Roles confirm modals) | ✅ canonical (แยกจาก `กลับไป <dest>` — ใช้เฉพาะ in-modal step back) |
 | **View detail — row/menu** | `ดูรายละเอียด` | row action menu / generic detail open | `ดูรายละเอียด` (13) canonical | ✅ canonical |
-| | | | `View`, `View detail`, `Detail` (6, Categories/Articles/Market) | 🔴 deviation — normalize ใน mission เฉพาะจอ |
+| | | | `View`, `View detail`, `Detail` (6, Categories/Articles/Market) | 🔴 deviation — ✅ Market MKD-003 / Articles CTM-003a / Categories CTM-003b resolved; เหลือ Offer รอ mission เฉพาะจอ |
 | **View — entity เฉพาะ** | `ดู <Entity>` | เปิด entity เฉพาะจาก context อื่น | `ดู Audit Log` (4), `ดู Version History` (1), `ดูเวอร์ชัน` (1) | ✅ canonical pattern `ดู <EN entity>` |
-| | | | `View Asset` (4), `View Article` (3), `View all comments` (2), `View sale history`, `View full sale record`, `View Sync History` (10) | 🔴 deviation → `ดู <Entity>` |
+| | | | `View Asset` (4), `View Article` (3), `View all comments` (2), `View sale history`, `View full sale record`, `View Sync History` (10) | 🔴 deviation → `ดู <Entity>` — ✅ board report `View Article`→`ดูบทความ` (+aria) resolved CTM-003b; ที่เหลือ module อื่น รอ mission เฉพาะจอ |
 | **Preview** | `ดูตัวอย่าง` | ดูตัวอย่างก่อน publish/save | `Preview` (3, Policy/Support/Article editor — locked) | ✅ canonical `ดูตัวอย่าง` (confirmed §5.5); EN เดิม = deviation D14 |
 | **Edit** | `แก้ไข` | edit action ทั่วไป | `แก้ไข` (5) canonical | ✅ canonical |
 | | `แก้ไข <X>` | edit entity/draft เฉพาะ | `แก้ไข Draft` (3), `แก้ไขบทความ` (1) | ✅ canonical pattern |
-| | | | `Edit` (2, My Account/Option view), `Edit Category` (2), `Edit article` (2) | 🔴 deviation → `แก้ไข`/`แก้ไข <X>` |
+| | | | `Edit` (2, My Account/Option view), `Edit Category` (2), `Edit article` (2) | 🔴 deviation → `แก้ไข`/`แก้ไข <X>` — ✅ `Edit article` CTM-003a / `Edit Category`→`แก้ไข Category` CTM-003b resolved; `Edit` ที่เหลือรอ mission เฉพาะจอ |
 | **Change — เปลี่ยนค่าเฉพาะ** | `เปลี่ยน <X>` | action ที่เปลี่ยนค่าเดียวไม่ใช่ edit form | `เปลี่ยน Role` (2), `เปลี่ยนรหัสผ่าน` (2) | ✅ canonical pattern |
 | **Add — เพิ่ม entity** | `เพิ่ม <Entity>` | primary add button | `เพิ่ม Group` (2), `เพิ่ม Option` (2), `เพิ่มลิงก์` (1) | ✅ canonical pattern |
-| | | | `Add admin` (1), `Add Category` (1), `+ Add block` (1) | 🔴 deviation → `เพิ่ม <Entity>` (locked จออยู่ — normalize ต่อจอ) |
+| | | | `Add admin` (1), `Add Category` (1), `+ Add block` (1) | 🔴 deviation → `เพิ่ม <Entity>` — ✅ `+ Add block` CTM-003a / `Add Category`→`เพิ่ม Category` (+aria/`#primary-action` mirror) CTM-003b resolved; `Add admin` รอ mission เฉพาะจอ |
 | **Create — สร้าง entity** | `สร้าง <Entity>` | create action ที่ผลลัพธ์เป็น entity ใหม่ (ต่างจากเพิ่ม = add row ใน list ที่มีอยู่) | `สร้างบทความ` (1), `สร้าง Custom Role` (3), `สร้าง Option` (1), `สร้าง Group` (1), `สร้าง Draft เวอร์ชันใหม่` (1) | ✅ canonical pattern — ⚠️ overlap `เพิ่ม`/`สร้าง` ให้ยึด convention ของจอเดิม: entry button=`เพิ่ม X`, submit ใน modal=`สร้าง X` |
-| **Delete** | `ลบ <Entity>` | delete action | `ลบ` (2), `ลบ Option` (1), `ลบ Group ถาวร` (1) | ✅ canonical pattern (`ถาวร` suffix เมื่อ permanent) |
-| | | | `Delete category` (1), `Delete block` (aria), `Delete draft` (1) | 🔴 deviation → `ลบ <Entity>` |
+| **Delete** | `ลบ <Entity>` | delete action | `ลบ` (2), `ลบ Option` (1), `ลบ Group ถาวร` (1), `ลบ Draft` (1, Articles — `Draft` = system term EN) | ✅ canonical pattern (`ถาวร` suffix เมื่อ permanent) |
+| | | | `Delete category` (1), `Delete block` (aria), `Delete draft` (1) | 🔴 deviation → `ลบ <Entity>` — `Delete draft`/`Delete block` ✅ Resolved CTM-003a; `Delete category`→`ลบ Category` ✅ Resolved CTM-003b |
 | **Suspend / Unsuspend** | `ระงับ` / `ยกเลิกการระงับ` | suspend account/entity | `ระงับ` (2), `ยกเลิกการระงับ` (2) | ✅ canonical |
 | | | | `ระงับชั่วคราว`, `ระงับบัญชีชั่วคราว`, `ระงับบัญชีถาวร`, `ยกเลิกระงับบัญชีชั่วคราว/ถาวร`, `Suspend Admin`, `Unlock Admin`, `Archive Admin` (js-label configs) | ✅ allowed compound: `ระงับ[บัญชี]<ชั่วคราว/ถาวร>` — action tile labels เป็น config ไม่ใช่ปุ่ม confirm |
 | **Deactivate / Reactivate** | `ปิดใช้งาน` / `เปิดใช้งาน` | enable/disable entity (role, option, category) | `ปิดใช้งาน` (4), `เปิดใช้งาน` (4) | ✅ canonical |
@@ -65,10 +65,11 @@
 | **Restore** | `คืน <X>` | restore entity (account/version/article) | `คืนบัญชี` (1) canonical pattern; `Restore`/`Restore เวอร์ชันนี้`/`Restore เป็น Draft`/`Restore Account`/`Restore article` (5+ English) | ✅ canonical `คืน <X>` (confirmed §5.1) — `Restore Account`→`คืนบัญชี`, `Restore เวอร์ชันนี้`→`คืนเวอร์ชันนี้`, `Restore เป็น Draft`→`คืนเป็น Draft`, `Restore article`→`คืนบทความ`; EN เดิม = deviation D9 |
 | **Reject** | `ปฏิเสธ <X>` | reject request/restore | `ปฏิเสธคืนบัญชี` (2), `Reject Restore` (1) | ✅ canonical `ปฏิเสธ <X>`; `Reject Restore` = deviation (Account Deletion config) |
 | **Unlock** | `ปลดล็อก` | unlock account | `ปลดล็อก` (2), `Unlock Admin` (config) | ✅ canonical |
-| **Archive** | `เก็บถาวร` | archive entity | `เก็บถาวร` (2), `Archive article`/`Archive Admin` (configs) | ✅ canonical |
+| **Archive** | `เก็บถาวร` | archive entity | `เก็บถาวร` (2), `Archive Admin` (config) | ✅ canonical |
+| | `เก็บบทความเข้าคลัง` | archive **บทความ** เฉพาะ (article status action + board report action/historyLabel) | `Archive article` (articles/board report configs → normalized) | ✅ allowed variant (CTM-002 DECISION-1) — ✅ Resolved CTM-003a ส่วน article + CTM-003b ส่วน board report (action label + map label `เก็บบทความ`→`เก็บบทความเข้าคลัง`) |
 | **Close report** | `ปิดรายงาน` | moderation close report | `ปิดรายงาน` (5 js-label) | ✅ canonical |
 | **Reorder** | `จัดเรียง` / `จัดเรียง <Entity>` | reorder modal open | `จัดเรียง` (4) | ✅ canonical |
-| | | | `Reorder Categories` / `Reorder Categories on FO Board` (2, Categories — locked) | 🔴 deviation → `จัดเรียง Category` (confirmed §5.2 — button=content layer ไทย แม้ modal title `Reorder Categories` เป็น EN structure) |
+| | | | `Reorder Categories` / `Reorder Categories on FO Board` (2, Categories — locked) | 🔴 deviation → `จัดเรียง Category` (confirmed §5.2 — button=content layer ไทย แม้ modal title `Reorder Categories` เป็น EN structure) — ✅ Resolved CTM-003b (label + aria `จัดเรียง Category บน FO Board`) |
 | **Reset filters** | `รีเซ็ตค่าทั้งหมด` | reset filter toolbar (icon button + aria) | `รีเซ็ตค่าทั้งหมด` (18) canonical — `filterCopy.resetAll` single source | ✅ canonical |
 | | `ล้างตัวกรอง` | inline clear link ใน empty/error state | `ล้างตัวกรอง` (1, Role list empty) | ✅ allowed variant เฉพาะ empty-state inline link |
 | **Sort labels** | `ล่าสุดก่อน` / `เก่าสุดก่อน` / `เรียงตาม<X>` | sort option labels | `filterCopy.latestFirst/oldestFirst`, `เรียงตามใช้งานล่าสุด`, `เรียงตามวันที่สมัครล่าสุด`, `ลำดับแสดงผล`, `จำนวน Article`, `Name A-Z`, `Title A-Z`, `เวลาเผยแพร่`, `อัปเดตล่าสุด` | ✅ canonical — sort option = ไทย เว้น key-based sort (`Name A-Z`/`Title A-Z` เป็น English ok เพราะอ้าง English key) |
@@ -83,7 +84,9 @@
 | **Send invite** | `ส่งคำเชิญ` / `ส่งคำเชิญใหม่` / `ส่งคำเชิญอีกครั้ง` | invitation actions | (1)/(2)/(2) — Admin Accounts locked | ✅ canonical family |
 | **Send reset password link** | `ส่งลิงก์ตั้งรหัสผ่านใหม่` | BO action ส่งลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนของผู้ใช้ (User Management — action จริงคือ "ส่งลิงก์" ไม่ใช่ reset ในจอ) | `Reset password` (User Mgmt action labels/menus) | ✅ canonical (เพิ่มจาก USR-002 DECISION-1, อนุมัติ 07/10/2026) — ✅ **Resolved USR-003 07/10** |
 | **Sync / Import (Market)** | `Start Sync` / `Syncing...` / `View Sync History` / `Download CSV Template` / `Retry Failed Datasets` | Market Data sync/import | ทั้งหมด English (Market Data locked) | 🔒 locked ปัจจุบัน — 🔶 ถ้า normalize จะเป็น `เริ่ม Sync`/`กำลัง Sync...`/`ดู Sync History`/`ดาวน์โหลด CSV Template`/`ลองใหม่เฉพาะชุดที่ล้มเหลว` (ตัดสินใจตอน mission Market Data) |
-| **Block editor (Article)** | `+ Add block` / `Move block up/down` / `Delete block` | article editor block controls | English ทั้งหมด (aria + button) | 🔒 locked — normalize เป็น `+ เพิ่ม block`/`เลื่อน block ขึ้น/ลง`/`ลบ block` ใน mission Content Mgmt |
+| **Block editor (Article)** | `+ เพิ่ม block` / `เลื่อน block ขึ้น` / `เลื่อน block ลง` / `ลบ block` | article editor block controls (button + aria icon-only) | EN เดิม `+ Add block`/`Move block up/down`/`Delete block` | ✅ canonical — ✅ Resolved CTM-003a |
+| **Block type labels (Article editor)** | `ย่อหน้า` / `หัวข้อ H2` / `หัวข้อ H3` / `รายการแบบจุด` / `รายการแบบตัวเลข` / `ลิงก์` / `เส้นคั่น` / `รูปภาพ + คำบรรยาย` / `ข้อความอ้างอิง` / `ตารางเปรียบเทียบ` | block type picker + block header + readonly title + aria (editor vocabulary set — ใช้ชุดนี้เท่านั้น) | EN เดิม Paragraph/Heading H2,H3/Bullet List/Numbered List/Hyperlink/Divider/Image + Caption/Quote/Comparison Table | ✅ canonical set (CTM-002 DECISION-2) — ✅ Resolved CTM-003a |
+| **Cancel publish schedule** | `ยกเลิกกำหนดเผยแพร่` | ยกเลิกการตั้งเวลาเผยแพร่บทความ (Scheduled → Draft) — action เฉพาะ ไม่ใช่ modal dismiss `ยกเลิก` | `Cancel schedule` (1, Articles → normalized) | ✅ canonical (เพิ่มจาก CTM-002, อนุมัติ 07/10/2026) — ✅ Resolved CTM-003a |
 | **Language toggle** | `ภาษาไทย` / `English` | preview TH/EN toggle (Policy/Support) | — | ✅ canonical — ภาษาเขียนชื่อตัวเอง |
 | **Show/hide password** | `แสดงรหัสผ่าน` / `ซ่อนรหัสผ่าน` | password visibility toggle (aria/title, สลับตาม state) | `Show password` (11) | ✅ canonical TH (confirmed §5.3); EN เดิม = deviation D10 |
 | **Publish / editor actions** | `เผยแพร่` / `ดูตัวอย่าง` / `แก้ไข Draft` / `สร้าง Draft` | publish & editor actions (Policy/Article) | `เผยแพร่` (1), `Publish` (1), `Preview` (3), `Edit Draft`/`Create Draft`/`สร้าง Draft เวอร์ชันใหม่`/`แก้ไข Draft` ปะปน | ✅ canonical TH + `Draft` คง system term EN (confirmed §5.5); EN buttons เดิม = deviation D14 |
@@ -128,20 +131,20 @@ Status pills, risk pills, channel pills, role names, entity ID prefixes (`U-`/`A
 | # | Deviation | Locations (ตัวอย่าง) | เป้าหมาย normalize |
 |---|---|---|---|
 | D1 | `Cancel`/`Close`/`×` English ใน Market Sync modal | 38164–38167 (เดิม 37828–37831) | `ยกเลิก`/`ปิด` — ✅ **Resolved MKD-003 07/10** (`Cancel`→`ยกเลิก`, `Close`→`ปิด` ×2; icon close มี `aria-label="ปิด"` อยู่แล้ว) |
-| D2 | `View`/`View detail`/`Detail` English row actions | 36765/37041/36782 (Market), 39901/43646 | `ดูรายละเอียด` — ✅ **Market resolved MKD-003 07/10** (3 จุด); ที่เหลือ module อื่น (Categories/Articles/Offer) รอ mission เฉพาะจอ |
-| D3 | `View Asset`/`View Article`/`View all comments`/`View sale history`/`View full sale record`/`View Sync History`/`Audit trail` | 31814/44477/45593/22503/24380/23185/38166 (Market), 37145 (Audit trail btn) | `ดู <Entity>` — ✅ **Market resolved MKD-003 07/10** (`View Sync History`→`ดู Sync History`, `Audit trail`→`ดู Audit Trail`); ที่เหลือ module อื่น รอ mission เฉพาะจอ |
-| D4 | `Edit`/`Edit Category`/`Edit article` | 34019/40396/39902/42176/43648/43751 | `แก้ไข`/`แก้ไข <X>` |
-| D5 | `Add admin`/`Add Category`/`+ Add block` | 27787/32028/42819 | `เพิ่ม <Entity>` |
-| D6 | `Delete category`/`Delete draft`/`Delete block` | 39910/43588/42793 | `ลบ <Entity>` |
-| D7 | `Reorder Categories` button | 32027 | `จัดเรียง` + entity (หรือ exception — §5.2) |
+| D2 | `View`/`View detail`/`Detail` English row actions | 36765/37041/36782 (Market), 39901/43646 | `ดูรายละเอียด` — ✅ **Market resolved MKD-003 07/10** (3 จุด); ✅ **Articles resolved CTM-003a 07/10** (article row menu); ✅ **Categories resolved CTM-003b 07/10** (category row menu); ที่เหลือ (Offer) รอ mission เฉพาะจอ |
+| D3 | `View Asset`/`View Article`/`View all comments`/`View sale history`/`View full sale record`/`View Sync History`/`Audit trail` | 31814/44477/45593/22503/24380/23185/38166 (Market), 37145 (Audit trail btn) | `ดู <Entity>` — ✅ **Market resolved MKD-003 07/10** (`View Sync History`→`ดู Sync History`, `Audit trail`→`ดู Audit Trail`); ✅ **board report `View Article`→`ดูบทความ` resolved CTM-003b 07/10** (row menu + detail btn + aria `ดูบทความ <id>`); ที่เหลือ module อื่น รอ mission เฉพาะจอ |
+| D4 | `Edit`/`Edit Category`/`Edit article` | 34019/40396/39902/42176/43648/43751 | `แก้ไข`/`แก้ไข <X>` — ✅ **`Edit article` resolved CTM-003a 07/10** → `แก้ไขบทความ` (row menu + detail btn); ✅ **`Edit Category`→`แก้ไข Category` resolved CTM-003b 07/10** (row menu + detail btn); `Edit` ที่เหลือรอ mission เฉพาะจอ |
+| D5 | `Add admin`/`Add Category`/`+ Add block` | 27787/32028/42819 | `เพิ่ม <Entity>` — ✅ **`+ Add block` resolved CTM-003a 07/10** → `+ เพิ่ม block`; ✅ **`Add Category`→`เพิ่ม Category` resolved CTM-003b 07/10** (toolbar btn + aria + `#primary-action` mirror) |
+| D6 | `Delete category`/`Delete draft`/`Delete block` | 39910/43588/42793 | `ลบ <Entity>` — ✅ **`Delete draft`/`Delete block` resolved CTM-003a 07/10** → `ลบ Draft`/aria `ลบ block`; ✅ **`Delete category`→`ลบ Category` resolved CTM-003b 07/10** |
+| D7 | `Reorder Categories` button | 32027 | `จัดเรียง` + entity — ✅ **Resolved CTM-003b 07/10** → `จัดเรียง Category` + aria `จัดเรียง Category บน FO Board` (modal title คง EN ตาม §5.2) |
 | D8 | `ย้อนกลับ` vs page-back `กลับไป <dest>` — ผสม semantics ถ้าพบ `ย้อนกลับ` บน page back | 33292/33492/40847/40897/41231/41292 (in-modal = ok) | ตรวจ semantics: in-modal=`ย้อนกลับ` ok, page-back ต้อง `กลับไป <dest>` |
-| D9 | `Reject Restore`/`Suspend Admin`/`Unlock Admin`/`Archive Admin`/`Restore Account`/`Restore article`/`Archive article` English action labels | 30840/28127/28159/28175/30821/43621/43610 | `ปฏิเสธ <X>`/`ระงับ`/`ปลดล็อก`/`เก็บถาวร`/`คืน <X>` (confirmed §5.1) |
+| D9 | `Reject Restore`/`Suspend Admin`/`Unlock Admin`/`Archive Admin`/`Restore Account`/`Restore article`/`Archive article` English action labels | 30840/28127/28159/28175/30821/43621/43610 | `ปฏิเสธ <X>`/`ระงับ`/`ปลดล็อก`/`เก็บถาวร`/`คืน <X>` (confirmed §5.1) — ✅ **`Restore article`→`คืนบทความ`, `Archive article`→`เก็บบทความเข้าคลัง` (article status action) resolved CTM-003a 07/10**; ✅ **board report `Archive article`→`เก็บบทความเข้าคลัง` resolved CTM-003b 07/10** |
 | D10 | `Show password` aria EN ทั้งที่ visible context TH | 17722/26569/26577/27601/27609/34363 | `แสดงรหัสผ่าน`/`ซ่อนรหัสผ่าน` (confirmed §5.3) |
 | D11 | `aria-label="Back"` EN บนปุ่มที่ visible เป็น `กลับไป …` | 20958 `renderPageBackButton` — **shared helper 21 callsites ทุก module** | aria mirror visible → `กลับไป <dest>` (confirmed §5.4) — ✅ **Resolved MKD-003 07/10** (`aria-label="${label}"` ครอบทุก callsite) |
 | D12 | Market Data sync/import suite English | 38164–38167 (sync modal), 37278 (CSV template — dead code, เลื่อน Phase 2), 36782 | ตามตาราง Sync/Import — ✅ **Resolved MKD-003 07/10** ยกเว้น `Download CSV Template` (ปัจจุบัน ~37279) เลื่อน Phase 2 ตามมติ |
 | D13 | Auth uppercase buttons `GO TO LOGIN`/`ACTIVATE ACCOUNT` + `Logout` sidebar | 26546/26588/17819 | 🔒 locked exception — ไม่ normalize |
-| D14 | `Publish`/`Preview`/`Edit Draft`/`Create Draft` English ใน Policy/Article editors | 35406/35049/35405/43907/35337 ฯลฯ | `เผยแพร่`/`ดูตัวอย่าง`/`แก้ไข Draft`/`สร้าง Draft` (confirmed §5.5) — locked |
-| D15 | Mixed-case/dynamic titles `${…}` 36 จุด + Thai modal titles | หลายจุด — ดู inventory §title-heading | ตรวจทีละจอตอน module mission — ✅ **User Mgmt modal titles resolved USR-003 07/10** (6 จุด → EN + `historyLabel` ไทยแยก ตาม §8.2); ที่เหลือ module อื่น รอ mission เฉพาะจอ |
+| D14 | `Publish`/`Preview`/`Edit Draft`/`Create Draft` English ใน Policy/Article editors | 35406/35049/35405/43907/35337 ฯลฯ | `เผยแพร่`/`ดูตัวอย่าง`/`แก้ไข Draft`/`สร้าง Draft` (confirmed §5.5) — ✅ **Article editor `Preview`/`Preview article`/`Preview as FO` resolved CTM-003a 07/10** → `ดูตัวอย่าง`; Policy จออื่น locked รอ mission เฉพาะจอ |
+| D15 | Mixed-case/dynamic titles `${…}` 36 จุด + Thai modal titles | หลายจุด — ดู inventory §title-heading | ตรวจทีละจอตอน module mission — ✅ **User Mgmt modal titles resolved USR-003 07/10** (6 จุด → EN + `historyLabel` ไทยแยก ตาม §8.2); ✅ **Articles modal titles resolved CTM-003a 07/10** (8 จุด → EN `Confirm <Verb> <Entity>` ตาม §9.3 — `actionHistory` ใช้ action key แยก + label map ไทย ไม่ reuse title); ✅ **Categories + Board Report modal titles resolved CTM-003b 07/10** (6 จุด → EN: `Confirm Deactivate/Reactivate/Delete Category`, `Confirm Close Report`, `Confirm Archive Article` + blocked h2 `Cannot Deactivate Category` — `historyAction` แยกอยู่แล้วไม่ reuse title); ที่เหลือ module อื่น รอ mission เฉพาะจอ |
 | D16 | Table header language ไม่สม่ำเสมอภายใน module — Brands/Models/References tables ใช้ EN (`Brand`/`Models`/`Action`) ขณะที่ Sync History record table ใช้ TH (`รายการข้อมูล`/`ผลลัพธ์`/`รายละเอียด`) | 36749 / 37028 / 37066 / 36900 | ตัดสินใจ convention หัวตารางกลาง (entity/system name = EN ได้ แต่หัวกิจกรรมอย่าง `Action`/`Detail` อาจควร TH) — รอ mission เฉพาะจอ |
 
 > ทุก deviation เป็น "candidate" เท่านั้น — **ห้ามแก้จอล็อกโดยอ้างตารางนี้โดยตรง** ต้องผ่าน mission เฉพาะจอ + approval ตาม protected policy เสมอ
@@ -277,6 +280,70 @@ Dead `crumb` config ไทย 3 จุด (~30451/30468/30485) → EN ตาม 
 - Structure EN เดิมที่ผ่าน: nav `User Management`, sub `User Accounts`/`Reported Users`, breadcrumb nodes EN, `Reset Password Link` modal title, report queue pill `Pending`/`Closed`, priority `High`/`Medium`/`Low`, auth pill `Email`/`Google`/`Apple`
 - ไม่แตะ technical/status keys, ID prefixes, audit event names, CSS/logic/route, เมนูอื่น
 - subtitle pattern เดียวกันของ module อื่น (`reporter identity masked` ที่ asset/article/comment report detail ~32123/45585/46420) รอ mission เฉพาะจอ
+
+---
+
+## 9. Mission 4 — Content Management Normalization Plan (**อนุมัติแล้ว 07/10/2026**)
+
+แผน normalize ของ module **Content Management** (CTM-002) — line refs อ้างไฟล์ ณ audit 07/10/2026; audit เต็ม: `deliverables/mission-4-objective-1/CTM-001-label-audit.txt`, แผนเต็ม + decisions: `deliverables/mission-4-objective-1/CTM-002-normalization-plan.txt` — **อนุมัติแล้ว 07/10/2026 → ดำเนินการแก้ `bo-prototype.html` ใน CTM-003a/003b ตาม scope นี้เท่านั้น**
+
+### 9.1 Content layer → ไทย — CTM-003a (Articles + Article Editor + Block Editor)
+
+| # | ตำแหน่ง | ปัจจุบัน | Proposed |
+|---|---|---|---|
+| D-C01 | article row menu 44529 | `View detail` | `ดูรายละเอียด` |
+| D-C02 | article row menu 44531 + detail btn 44634 | `Edit article` | `แก้ไขบทความ` |
+| D-C03 | detail btn 44635 + editor btn 44790 | `Preview article` / `Preview` | `ดูตัวอย่าง` |
+| D-C04 | article row menu 44530 | `Preview as FO` (dead button) | wire เข้า `data-article-preview-open` (48091) + `ดูตัวอย่าง` |
+| D-C05 | `getArticleStatusAction` 44471/44482/44493/44504 | `Delete draft` / `Cancel schedule` / `Archive article` / `Restore article` | `ลบ Draft` / `ยกเลิกกำหนดเผยแพร่` / `เก็บบทความเข้าคลัง` / `คืนบทความ` |
+| D-C06 | block editor 43702 | `+ Add block` | `+ เพิ่ม block` |
+| D-C07 | block controls aria 43674-43676 | `Move block up`/`Move block down`/`Delete block` | `เลื่อน block ขึ้น`/`เลื่อน block ลง`/`ลบ block` |
+| D-C08 | `articleBlockTypes` 43519-43528 (+render 43614/43672/43719/43666) | Paragraph/Heading H2,H3/Bullet List/Numbered List/Hyperlink/Divider/Image + Caption/Quote/Comparison Table | ไทย: ย่อหน้า/หัวข้อ H2/หัวข้อ H3/รายการแบบจุด/รายการแบบตัวเลข/ลิงก์/เส้นคั่น/รูปภาพ + คำบรรยาย/ข้อความอ้างอิง/ตารางเปรียบเทียบ |
+| D-C09 | readonly blocks empty/error 43714/43739/43743/43756 | `No content blocks`/`Empty block`/`Invalid link` | `ยังไม่มีเนื้อหา`/`บล็อกว่าง`/`ลิงก์ไม่ถูกต้อง` |
+| D-C14a | tiles 44620-44622, 44591/44728; block editor 43654/43657 | `Likes`/`Created At`/`Updated At`/`Link text`/`URL`/`Article URL` | `จำนวน Likes`/`สร้างเมื่อ`/`อัปเดตล่าสุด`/`ข้อความลิงก์` — คง `URL`/`Article URL` (technical term) |
+| D-C22 | `article.actionHistory` render 44455 | EN raw (`Created`/`Updated`/`Archived`/`Canceled schedule`/`Restored` + ค่าจาก board report path) | เพิ่ม action label map (pattern `getBoardReportActionLabel`) → สร้างบทความ/แก้ไขล่าสุด/เก็บบทความเข้าคลัง/ยกเลิกกำหนดเผยแพร่/นำกลับมาเผยแพร่ |
+| D-C23 | alt fallbacks 43621/43411/43415/44749/43641 | `Article image preview`/`Article cover`/`<title> - content image`/`Article cover preview`/`Article content image preview` | `ตัวอย่างรูปบทความ`/`รูป Cover บทความ`/`<title> - รูปในเนื้อหา`/`ตัวอย่างรูป Cover บทความ`/`ตัวอย่างรูปในเนื้อหาบทความ` |
+| D-C24 | preview annotations 43919/43934/43999/44003/43686 | `Preview hero article`/`Preview article detail` + aria EN | `ตัวอย่างบทความ Hero`/`ตัวอย่างรายละเอียดบทความ` + aria mirror ไทย |
+| D-C25 | `getArticleScenarioResult` titles 44058/44074 | `Permission denied`/`Preview failed` | `ไม่มีสิทธิ์ดำเนินการ`/`ดูตัวอย่างไม่สำเร็จ` (error copy ไทย ตาม precedent boardReportErrorSamples) |
+
+### 9.2 Content layer → ไทย — CTM-003b (Categories + Reported Board)
+
+| # | ตำแหน่ง | ปัจจุบัน | Proposed |
+|---|---|---|---|
+| D-C01 | category row menu 40252 | `View detail` | `ดูรายละเอียด` |
+| D-C02 | category row menu 40253 + detail btn 43059 | `Edit Category` | `แก้ไข Category` |
+| D-C10 | toolbar 32379 + hidden `#primary-action` 32386 | `Add Category` | `เพิ่ม Category` + aria mirror |
+| D-C11 | toolbar 32378 | `Reorder Categories` + aria `Reorder Categories on FO Board` | `จัดเรียง Category` + aria `จัดเรียง Category บน FO Board` (modal title EN คงเดิม) |
+| D-C12 | row menu 40256/40258 + detail modal 43062/43064 | `Set inactive`/`Set active` | `ปิดใช้งาน`/`เปิดใช้งาน` |
+| D-C13 | row menu 40261 | `Delete category` | `ลบ Category` |
+| D-C14b | cat detail tile 43050 | `Updated At` | `อัปเดตล่าสุด` |
+| D-C15 | row menu 45360 + detail btn + aria 45630 | `View Article` + aria `View article <id>` | `ดูบทความ` + aria `ดูบทความ <id>` |
+| D-C16 | `getBoardReportActions` 45325 | `Archive article` | `เก็บบทความเข้าคลัง` |
+| D-C17 | confirm labels 45664/45677 | `ยืนยันปิดรายงาน`/`ยืนยัน Archive` | `ยืนยัน` |
+| D-C18 | reasonLabel archive 45680 | `เหตุผลการ Archive article` | `เหตุผลการเก็บบทความเข้าคลัง` |
+| D-C19 | panel-subtitle Report Detail 45599 | `… · reporter identity masked` | `… · ปิดบังตัวตนผู้รายงาน` |
+| D-C20 | audit empty state 45448 | `No admin action recorded yet` | `ยังไม่มีการดำเนินการจาก Admin` |
+| D-C21 | `getBoardReportActionConfig`.note 45666/45679 (leak เข้า article.actionHistory) | `Admin closed the Board report after review.` / `Admin archived the Board article and closed the report.` | `Admin ปิดรายงาน Board หลังตรวจสอบ` / `Admin เก็บบทความเข้าคลังและปิดรายงาน` |
+
+### 9.3 Structure layer → modal titles EN (S-C01a..c, S-C02a..d, S-C03a..d, S-C04a..b, S-C05)
+
+13 จุด → EN ตาม §3.2: `Confirm Deactivate Category` / `Confirm Reactivate Category` / `Confirm Delete Category` / `Confirm Delete Draft` / `Confirm Cancel Schedule` / `Confirm Archive Article` (×2 — article status + board report) / `Confirm Restore Article` / `Confirm Cancel Edit` / `Confirm Save Article` / `Confirm Cancel Create Article` / `Confirm Create Article` / `Confirm Close Report` / `Cannot Deactivate Category` (blocked-modal h2 — นับเป็น structure title)
+
+### 9.4 Canonical rows ใหม่ที่ต้องเพิ่มใน §2 (ตอน implement)
+
+- `ลบ Draft` (Delete family — `Draft` = system term)
+- `ยกเลิกกำหนดเผยแพร่` (Cancel publish schedule — action ใหม่)
+- `เก็บบทความเข้าคลัง` (Archive variant — align board report map label เดิม `เก็บบทความ` ด้วย)
+- block type labels ไทย (editor vocabulary set — ดู D-C08)
+
+### 9.5 ไม่แก้ (compliant / deferred / out of scope)
+
+- **D16 table headers 6 ชุด + data-label mismatch 45512 — deferred** รอ central decision (ห้ามแตะ `<th>`/`data-label`)
+- **Mock data EN (M-C01..M-C09) — คงเดิม** ตาม DECISION-4 precedent
+- **FO preview internals EN (O-C04)** — simulated FO product surface
+- **Scenario selectors/options — exempt §5.6**
+- Status/priority pills EN, technical keys, ID prefixes — compliant ไม่แตะ
+- customSelect aria EN (O-C02), count chips (O-C06), panel casing (O-C07), dead fields (O-C08..O-C10), scenario label ผสม (O-C12), ไม่มี email preview (O-C13) — convention/บันทึกเท่านั้น
 
 ---
 
