@@ -89,6 +89,18 @@ Checklist ต้องเรียงเป็นเคสละขั้นแ�
 - ครอบคลุม happy path, blocked/error path, edge cases, fixture ที่เกี่ยวข้อง และเคส regression ว่าของเดิมไม่พัง
 - ระบุ viewport/ขนาดหน้าจอที่ต้องเช็คถ้างานเกี่ยวกับ responsive
 
+## Evidence Screenshot Viewports
+
+ขนาด viewport มาตรฐานสำหรับ capture หลักฐาน before/after ส่งตรวจ (screenshots/ และ deliverables ทุกชุด):
+
+- Desktop: **1920×1080** (prefix ไฟล์ `d`)
+- Tablet: **768×1024** (prefix `t`)
+- Mobile: **440×956** (prefix `m`)
+
+ใช้ชุดนี้ทุกครั้งที่แคปหลักฐานหน้าจอ — แยกจาก QA viewport checklist (390/768/1280/1440px) ที่ใช้เช็ค responsive ตาม docs/responsive-table-standard.md
+
+หลักฐานหลักต้องเป็นหน้าจอที่ผู้ใช้เข้าถึงได้จริงผ่าน UI เท่านั้น — surface ที่ไม่มี entry point บนจอ (dead-code render เปิดได้แค่ผ่าน console/`page.evaluate`) ให้แยกไว้ใน subfolder `console-only/` พร้อมอ้าง verification script เป็นหลักฐาน label แทน
+
 เมื่อผู้ใช้ตรวจครบและยืนยันผลแล้วจึง commit/ปิด task ได้ — ถ้าผู้ใช้พบจุดผิด แก้แล้วส่ง checklist ชุดเดิม (หรือเคสที่แก้) ให้ตรวจซ้ำ
 
 ## Kanban Time Tracking Rule

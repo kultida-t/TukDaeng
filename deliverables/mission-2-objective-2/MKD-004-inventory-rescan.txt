@@ -1,0 +1,81 @@
+MKD-004 Inventory Re-scan & Manual Review Gate — Market Data Label Normalization
+Mission 2 / Objective 2 — รัน scan + เทียบ baseline + ตรวจ checklist A–E วันที่ 07/10/2026
+
+== 1. Scan run ==
+Command: node Prototypes/scan-labels.mjs — รันผ่านไม่มี error
+Output: deliverables/label-standard/inventory.json + inventory.md (regenerated)
+
+== 2. Baseline vs new ==
+baseline (scan 02/10/2026): 1,847 entries
+new      (scan 07/10/2026): 1,926 entries (+79)
+
+delta +79 มาจาก 2 ส่วน (verify ด้วย git log/diff):
+- OM-SQ-01 Option Master Suggestion Queue (committed 06/10, 5 commits) — เพิ่ม modal/labels/buttons ชุดใหม่
+- MKD-003 Market Data normalization (uncommitted working tree, diff 47 บรรทัด) — เปลี่ยน label EN→TH
+ไม่มี item หายนอกเหนือที่ MKD-003 normalize (ตรวจ global diff: ของที่หายคือ market EN labels + aria="Back" เท่านั้น)
+
+== 3. Market scope diff (fn: market/brand/model/reference/sync) ==
+REMOVED (deviations ที่แก้แล้ว — หายครบ):
+- button View / Detail / Audit trail (row actions)
+- button Cancel / Start Sync / Syncing... / Close x2 / View Sync History / Retry Failed Datasets (sync modal)
+- a11y-attr "View ${brand.name} models" / "View sync log for ..."
+- a11y-attr "Back" (renderPageBackButton — shared helper, D11)
+
+ADDED (canonical replacements):
+- ดูรายละเอียด (+ aria ดูรายละเอียดโมเดล/เลขอ้างอิง/ประวัติการ Sync ${…})
+- ดู Audit Trail / ดู Sync History
+- ยกเลิก / เริ่ม Sync / กำลัง Sync... / ปิด x2 / ลองใหม่เฉพาะชุดที่ล้มเหลว
+- a11y-attr "${label}" (aria mirror visible — renderPageBackButton)
+
+STILL PRESENT (ที่รู้แล้ว — ตามมติ/รอ decision):
+- link "Download CSV Template" (37279) — #12 dead code เลื่อน Phase 2 (approved §7.4)
+- "Syncing..." Last Updated token (38300/38302) + "Syncing" status pill (38310/38317) — system status ชั้นโครง EN
+- D16 header inconsistency: Brands/Models tables head EN (Brand/Models/Action @36750, 37029) vs Sync History head TH (รายการข้อมูล/ผลลัพธ์/รายละเอียด @36901) — บันทึกไว้ §4 รอตัดสิน convention หัวตารางกลาง
+- Test flow field-labels — prototype harness (§5.6 exempt)
+- js-labels EN (sync job names, KPI tile keys, system terms) — ชั้นโครง EN ตามกฎ
+
+EN buttons ที่เหลือนอก market scope เป็น deviation ที่รู้แล้วของ module อื่น (D2/D3 family: View detail/View Article/View Asset/Edit/Delete category ฯลฯ) — รอ mission เฉพาะจอ ไม่ใช่ deviation ใหม่
+
+== 4. Auto-verify ==
+node scripts/verify-mkd-003.js — PASS 12/12 checks, JS errors: none (re-run 07/10)
+
+== 5. Manual Review Checklist (deliverables/label-standard/manual-review-checklist.md) ==
+
+A. Language layering — PASS
+- Nav Market Data + subs EN ตรง navGroups — ไม่แตะ
+- Page/modal titles EN (Sync Market Data, Audit Trail, Read-only in Phase 1) — ไม่แตะ
+- Detail head <ID> : <Name> + status pills — ไม่แตะ
+- Breadcrumb pattern — ไม่แตะ
+- Action buttons ไทยตาม canonical §2 — ครบ 9 ปุ่ม normalized (ยกเลิก/ปิด/เริ่ม Sync/กำลัง Sync.../ดู Sync History/ลองใหม่เฉพาะชุดที่ล้มเหลว/ดูรายละเอียด/ดู Audit Trail)
+- Field/helper/empty/filter copy ไทย — ไม่พบข้อมูล x5, ค้นหา Model/Reference ของ ${…}, ยังไม่มีประวัติ Audit สำหรับรายการนี้
+- Status pills/technical keys EN — Syncing/Completed/Failed/Running/Ready คงเดิม
+- aria mirror visible — aria-label="${label}" + TH aria บน row actions
+- Locked exceptions คงเดิม — nav sections TH, auth screens, Back to Option Groups (aria mirror EN label ตรงพอดี), Test flow harness
+
+B. Button/action correctness — PASS
+- Cancel=ยกเลิก, close/dismiss=ปิด — ไม่มี Cancel/Close/× EN ใน sync modal แล้ว
+- Page back กลับไป <dest> + aria mirror — shared helper แก้แล้ว
+- Row action ดูรายละเอียด ครบ 3 ตาราง (brands/models/sync history)
+- Link vs button คงเดิม — Download CSV Template ยังเป็น <a> link
+- Disabled state กำลัง Sync... มี meaning ชัด (running state)
+
+C. Protected/contract compliance — PASS
+- Market Data protected → มี approval §7 (07/10) ก่อนแก้ครบทุกจุด
+- ตรง bo-navigation-naming-contract + modal/empty-state contract (empty=ไม่พบข้อมูล ตาม Contract D)
+- Deviation บันทึก §4 — D16 เพิ่มตอน MKD-003, สถานะ D1/D2*/D3*/D11/D12 อัปเดต Resolved ใน MKD-004
+- Internal keys ไม่ rename — data-market-*, body.market-list-mode, fn names คงเดิม
+- Working-tree diff = เฉพาะ 23 จุด §7.1 + CSS market-list-mode + shared aria helper (approved) — ไม่มี scope creep
+
+D. Visual/responsive — PASS (อ้างหลักฐาน MKD-003 ที่ผู้ใช้ตรวจแล้ว)
+- ดูรายละเอียด ไม่ wrap — CSS nowrap + col 112px scoped body.market-list-mode (ตรวจ d02/d06/d09 ทั้ง 3 viewports)
+- Modal footer order ยกเลิก→เริ่ม Sync / ปิด→primary — ตาม modal contract
+- ไม่มีการแตะ select/filter ellipsis
+
+E. Evidence — PASS
+- Screenshots before/after 33 PNG + console-only 18 PNG (screenshots/mission-2-objective-2/) — มีอยู่แล้วจาก MKD-003
+- §4 deviation rows อัปเดตสถานะแล้ว (docs/bo-canonical-label-table.md)
+- inventory.json/md regenerate แล้ว (1,926 entries) + baseline snapshot เทียบใน report นี้
+
+== Verdict ==
+Scan reflect สถานะหลัง MKD-003 ถูกต้อง — deviations ที่ normalize หายครบ, ไม่มี deviation ใหม่ใน market scope, ที่เหลือตรงกับ known list (#12 deferred / Syncing... token / D16 pending)
+Checklist A–E ผ่านครบ — พร้อมส่งผู้ใช้ review ก่อนปิด task

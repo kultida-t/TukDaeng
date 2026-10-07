@@ -2716,7 +2716,7 @@
       text-align: right;
     }
     body.market-list-mode .market-table.market-record-table .asset-row {
-      grid-template-columns: minmax(270px, 1.1fr) minmax(180px, .72fr) minmax(120px, .48fr) minmax(132px, .52fr) minmax(180px, .72fr) minmax(320px, 1fr) 92px;
+      grid-template-columns: minmax(270px, 1.1fr) minmax(180px, .72fr) minmax(120px, .48fr) minmax(132px, .52fr) minmax(180px, .72fr) minmax(320px, 1fr) 112px;
       column-gap: 18px;
       align-items: center;
     }
@@ -2758,7 +2758,7 @@
       min-height: 66px;
     }
     body.market-list-mode .market-table.market-model-table .asset-row {
-      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 76px;
+      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 112px;
       column-gap: 22px;
       align-items: center;
       min-height: 66px;
@@ -2811,16 +2811,16 @@
       display: none;
     }
     body.market-list-mode .market-catalog-table .asset-row {
-      grid-template-columns: minmax(220px, 1fr) minmax(160px, .75fr) minmax(180px, .85fr) 76px;
+      grid-template-columns: minmax(220px, 1fr) minmax(160px, .75fr) minmax(180px, .85fr) 112px;
     }
     body.market-list-mode .market-model-table .asset-row {
-      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 76px;
+      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 112px;
     }
     body.market-list-mode .market-reference-list-table .asset-row {
       grid-template-columns: minmax(120px, .7fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(140px, .7fr) minmax(150px, .7fr);
     }
     body.market-list-mode .market-record-table .asset-row {
-      grid-template-columns: minmax(270px, 1.1fr) minmax(180px, .72fr) minmax(120px, .48fr) minmax(132px, .52fr) minmax(180px, .72fr) minmax(320px, 1fr) 92px;
+      grid-template-columns: minmax(270px, 1.1fr) minmax(180px, .72fr) minmax(120px, .48fr) minmax(132px, .52fr) minmax(180px, .72fr) minmax(320px, 1fr) 112px;
     }
     body.market-list-mode .market-arrow-action {
       min-width: 58px;
@@ -2828,8 +2828,9 @@
       padding: 0 12px;
       border-radius: 7px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 400;
       line-height: 1;
+      white-space: nowrap;
     }
     body.market-list-mode .market-catalog-table .asset-row > div:last-child,
     body.market-list-mode .market-model-table .asset-row > div:last-child {
@@ -20955,7 +20956,7 @@
 
     function renderPageBackButton(dataAttribute, label, className = "user-back-btn") {
       return `
-        <button class="btn ${className} page-back-btn" type="button" ${dataAttribute} aria-label="Back">
+        <button class="btn ${className} page-back-btn" type="button" ${dataAttribute} aria-label="${label}">
           <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
         </button>
       `;
@@ -36762,9 +36763,9 @@
               </div>
               <div data-label="Models"><div class="main-text">${modelCount.toLocaleString()} models</div></div>
               <div data-label="References"><div class="main-text">${referenceCount.toLocaleString()} references</div></div>
-              <div><button class="panel-action market-arrow-action" type="button" data-market-brand="${brand.id}" aria-label="View ${brand.name} models">View</button></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-brand="${brand.id}" aria-label="ดูรายละเอียดโมเดล ${brand.name}">ดูรายละเอียด</button></div>
             </div>
-          `}).join("") || `<div class="detail-empty user-empty">No brands found</div>`}
+          `}).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
@@ -36779,7 +36780,7 @@
     }
 
     function renderMarketSyncLogAction(row) {
-      return `<button class="panel-action market-arrow-action" type="button" data-market-record="${row.id}" aria-label="View sync log for ${getMarketSyncTitleLabel(row)}">Detail</button>`;
+      return `<button class="panel-action market-arrow-action" type="button" data-market-record="${row.id}" aria-label="ดูรายละเอียดประวัติการ Sync ${getMarketSyncTitleLabel(row)}">ดูรายละเอียด</button>`;
     }
 
     function getMarketSyncTitleLabel(row) {
@@ -36919,7 +36920,7 @@
             <div data-label="หมายเหตุ"><div class="main-text">${shouldShowMarketSyncIssue(row) ? getMarketSyncIssueLabel(row) : ""}</div></div>
             <div data-label="รายละเอียด">${renderMarketSyncLogAction(row)}</div>
           </div>
-        `).join("") || `<div class="detail-empty user-empty">No sync logs found</div>`}
+        `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span>
@@ -37038,9 +37039,9 @@
                 </div>
               </div>
               <div data-label="References"><div class="main-text">${summary.references} references</div></div>
-              <div><button class="panel-action market-arrow-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}" aria-label="View ${model.name} references">View</button></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}" aria-label="ดูรายละเอียดเลขอ้างอิง ${model.name}">ดูรายละเอียด</button></div>
             </div>
-          `}).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
+          `}).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
@@ -37073,7 +37074,7 @@
               <div data-label="Estimated Price"><div class="main-text market-price">${reference.price}</div></div>
               <div data-label="Last Updated"><div class="main-text">${reference.updated || "2026-08-05"}</div></div>
             </div>
-          `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
+          `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
@@ -37142,7 +37143,7 @@
           </div>
           <div class="module-note"><strong>Rule:</strong> Brand, model, reference, detail and price data come from API/backend sync only. BO can review source data and sync logs, but cannot add, edit, import, override or change status in Phase 1.</div>
           <div class="user-detail-actions">
-            <button class="user-detail-action-btn" type="button" data-market-management-action="audit" data-market-scope="${scope}" ${targetAttrs}>Audit trail</button>
+            <button class="user-detail-action-btn" type="button" data-market-management-action="audit" data-market-scope="${scope}" ${targetAttrs}>ดู Audit Trail</button>
           </div>
         </section>
       `;
@@ -37170,7 +37171,7 @@
         <section class="market-detail-section">
           <h3>Audit Trail</h3>
           <div class="timeline">
-            ${rows.map(row => `<div class="event"><strong>${row.action}</strong><br><span class="muted">${row.id} · ${row.actor} · ${row.time}</span><br>${row.before} -> ${row.after}<br><span class="muted">${row.reason}</span></div>`).join("") || `<div class="event">No audit events for this target yet</div>`}
+            ${rows.map(row => `<div class="event"><strong>${row.action}</strong><br><span class="muted">${row.id} · ${row.actor} · ${row.time}</span><br>${row.before} -> ${row.after}<br><span class="muted">${row.reason}</span></div>`).join("") || `<div class="event">ยังไม่มีประวัติ Audit สำหรับรายการนี้</div>`}
           </div>
         </section>
       `;
@@ -37834,7 +37835,7 @@
                     <div><div class="main-text">${reference.description}</div></div>
                     <div><span class="pill blue">${reference.price}</span></div>
                   </div>
-                `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
+                `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
               </div>
             </article>
           `).join("")}
@@ -37861,7 +37862,7 @@
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar market-catalog-filter-bar market-mode market-drilldown-filter-bar">
-          <input class="field search" id="market-model-search" type="search" placeholder="Search ${brand.name} models" />
+          <input class="field search" id="market-model-search" type="search" placeholder="ค้นหา Model ของ ${brand.name}" />
         </div>
       `;
       document.querySelector("#summary-grid").innerHTML = "";
@@ -37896,7 +37897,7 @@
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar market-catalog-filter-bar market-mode market-drilldown-filter-bar">
-          <input class="field search" id="market-reference-search" type="search" placeholder="Search ${model.name} references" />
+          <input class="field search" id="market-reference-search" type="search" placeholder="ค้นหา Reference ของ ${model.name}" />
         </div>
       `;
       document.querySelector("#summary-grid").innerHTML = "";
@@ -38161,10 +38162,10 @@
               </div>
               ${shouldShowSyncProgress ? renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1) : ""}
               <div class="user-detail-actions user-action-footer">
-                ${state === "confirm" ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button><button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Start Sync</button>` : ""}
-                ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>Syncing...</button>` : ""}
-                ${isSuccess ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button><button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync History</button>` : ""}
-                ${isError ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button><button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry Failed Datasets</button>` : ""}
+                ${state === "confirm" ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button><button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>เริ่ม Sync</button>` : ""}
+                ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>กำลัง Sync...</button>` : ""}
+                ${isSuccess ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button><button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>ดู Sync History</button>` : ""}
+                ${isError ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button><button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>ลองใหม่เฉพาะชุดที่ล้มเหลว</button>` : ""}
               </div>
               ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list failed</strong><br><span>The source API returned a rate limit. Existing catalog data was not changed.</span></div>` : ""}
               ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync completed</strong><br><span>Refreshed ${job.brands.toLocaleString()} brands, ${job.models.toLocaleString()} models and ${job.references.toLocaleString()} references at ${jobDisplayTimestamp}. Audit was saved.</span></div>` : ""}

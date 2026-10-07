@@ -1,0 +1,49 @@
+MKD-003 Manual Review Checklist — Market Data Label Normalization
+Mission 2 / Objective 2 — ตรวจจริงโดยผู้ใช้ แล้วอนุมัติปิด task 07/10/2026
+
+สถานที่หลักฐาน:
+- before/ + after/ — 33 PNG ต่อชุด (11 จุด user-reachable × 3 viewports: 1920x1080 / 768x1024 / 440x956)
+- console-only/ — 18 PNG ต่อชุด (6 dead-code surfaces: sync modal 4 states + audit modal 2 states — ไม่มีปุ่มเปิดบนจอ เปิดผ่าน page.evaluate เท่านั้น)
+- scripts/verify-mkd-003.js — auto-verify ผ่าน 11/11, ไม่มี JavaScript console error
+
+ผลตรวจรายเคส (เทียบ before/ vs after/ ชื่อไฟล์เดียวกัน):
+
+USER-REACHABLE (prefix d=desktop 1920x1080, t=tablet 768x1024, m=mobile 440x956)
+01 market-overview — context เฉย ๆ ไม่มี label แก้ — ผ่าน
+02 brands-list — ปุ่มท้ายแถว View → ดูรายละเอียด ทุกแถว — ผ่าน (รอบแรกพบ wrap 2 บรรทัด + font หนา → แก้แล้ว ดู issues ด้านล่าง)
+03 brands-empty — No brands found → ไม่พบข้อมูล (พิมพ์ zzz ในช่อง search) — ผ่าน
+04 brand-detail — placeholder Search X models → ค้นหา Model ของ X + back aria กลับไป Brands & Models — ผ่าน
+05 models-empty — No models found for this brand → ไม่พบข้อมูล — ผ่าน
+06 model-detail — placeholder Search X references → ค้นหา Reference ของ X — ผ่าน
+07 references-empty — No references found for this model → ไม่พบข้อมูล — ผ่าน
+08 reference-drawer — drawer ref 15500ST เปิดด้วย row click (labels TH อยู่แล้ว ไม่แก้) — ผ่าน
+09 sync-history — ปุ่มท้ายแถว Detail → ดูรายละเอียด — ผ่าน
+10 sync-history-empty — No sync logs found → ไม่พบข้อมูล — ผ่าน
+11 sync-detail — back button + breadcrumb — ผ่าน
+
+CONSOLE-ONLY (ไม่มี entry บนจอ — พิสูจน์ label ด้วย verify script เป็นหลัก)
+c01 sync-modal-confirm — Cancel→ยกเลิก / Start Sync→เริ่ม Sync — ผ่าน
+c02 sync-modal-running — Syncing...→กำลัง Sync... — ผ่าน
+c03 sync-modal-success — Close→ปิด / View Sync History→ดู Sync History — ผ่าน
+c04 sync-modal-error — Close→ปิด / Retry Failed Datasets→ลองใหม่เฉพาะชุดที่ล้มเหลว — ผ่าน
+c05 audit-modal — Audit Trail title + labels — ผ่าน
+c06 audit-modal-empty — No audit events for this target yet → ยังไม่มีประวัติ Audit สำหรับรายการนี้ — ผ่าน
+
+สิ่งที่ไม่ได้แตะ (ตามมติ §7):
+- #12 Download CSV Template (L37278) — dead code เลื่อน Phase 2
+- Syncing... ใน Last Updated token — system status ตาม §7.2
+- status pills / modal titles / nav / breadcrumb (EN structure) / mock data / logic
+
+ISSUES พบระหว่าง review และผลแก้ไข:
+1. ดูรายละเอียด wrap เป็น 2 บรรทัด + ฟ้อนต์หนากว่าคอลัมน์อื่น (ผู้ใช้พบใน d06)
+   → แก้ CSS เฉพาะ body.market-list-mode: ปุ่ม nowrap + font-weight 400, action column 76/92→112px ครบ 3 ตารางรวมกฎ duplicate ที่ specificity สูงกว่า — ยืนยันไม่กระทบ module อื่น, ผ่าน
+2. ขนาด viewport capture ผิดจาก standard (ใช้ 1440/390 convention เก่า)
+   → recapture ใหม่ที่ 1920x1080 / 768x1024 / 440x956 ทั้ง before (สร้างจาก git HEAD snapshot แล้วลบ) และ after — ผ่าน
+3. หลักฐานรวม dead-code surfaces (sync modal, audit modal) ที่ผู้ใช้เปิดเองไม่ได้
+   → แยกไป console-only/ subfolder, main set เหลือเฉพาะ user-reachable 11 จุด — ผ่าน
+4. พบหัวตาราง Sync History เป็น TH ขณะ Brands/Models/References เป็น EN (ไม่สม่ำเสมอภายใน module)
+   → ไม่แก้ (นอก scope §7.1) บันทึกเป็น deviation candidate D16 ใน docs/bo-canonical-label-table.md
+5. พบ Sync modal + Audit modal + ปุ่มดู Audit Trail เป็น dead-code entry (ไม่มี callsite เรียก render/open function)
+   → ไม่ wire เพิ่ม (product decision + นอก scope) ผู้ใช้ทราบและยอมรับว่าสถานะปัจจุบันโอเค
+
+สถานะ: ตรวจครบทุกเคส ผ่านทั้งหมด — ผู้ใช้อนุมัติ 07/10/2026 (ตอบ "โอเค" หลังตรวจชุด after/)

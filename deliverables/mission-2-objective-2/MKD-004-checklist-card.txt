@@ -1,0 +1,32 @@
+MKD-004 — Inventory Re-scan & Checklist Gate (Market Data)
+== Re-scan vs baseline
+scan รันผ่านไม่มี error — inventory.json/md regenerated
+entries 1,847 → 1,926 (+79 = OM-SQ-01 commits + MKD-003)
+deviations ที่ normalize หายครบ 9 ปุ่ม + 2 aria EN
+ไม่มี deviation ใหม่ใน Market Data scope
+== Known remaining (ตามมติ)
+Download CSV Template — dead code เลื่อน Phase 2
+Syncing... Last Updated token + Syncing pill — system status EN
+D16 header EN/TH ไม่สม่ำเสมอ — บันทึก §4 รอ decision
+== A. Language layering
+nav/title/detail head/breadcrumb EN structure คงเดิม
+action buttons ไทยตาม canonical §2 ครบ 9 จุด
+empty/helper/search copy ไทย
+status pills + system keys EN
+aria mirror visible ทุกจุด
+locked exceptions คงเดิม
+== B. Button correctness
+ยกเลิก/ปิด/ดูรายละเอียด/กลับไป <dest> ถูก family
+ไม่มี Cancel/Close/× EN ใน sync modal
+link vs button คงเดิม
+== C. Protected compliance
+แก้เฉพาะ 23 จุด approved §7.1 + shared aria helper
+internal keys/class คงเดิม ไม่มี scope creep
+§4 deviations อัปเดต Resolved
+== D. Visual / responsive
+ดูรายละเอียด บรรทัดเดียวทุก viewport (CSS scoped market-list-mode)
+modal footer order ตาม contract
+== E. Evidence
+before/after 33 PNG + console-only 18 PNG
+verify-mkd-003 PASS 12/12, JS errors none
+canonical table §4 อัปเดตแล้ว

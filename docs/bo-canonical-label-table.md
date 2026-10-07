@@ -3,7 +3,7 @@
 เอกสาร registry กลางสำหรับ label ทุกชนิดใน BO Prototype (Mission 1 — ล็อกมาตรฐาน Label/Button, task `PVR-002`)
 
 - Status: **Confirmed 02/10/2026** — canonical labels + §5 decisions ล็อกแล้ว (ยังไม่ bind กับงานแก้จอใด — การ normalize แต่ละจอต้องผ่าน mission เฉพาะจอ + approval)
-- Source inventory: `deliverables/label-standard/inventory.md` + `inventory.json` (สแกน `Prototypes/bo-prototype.html` ด้วย `Prototypes/scan-labels.mjs` — read-only, 1,847 entries)
+- Source inventory: `deliverables/label-standard/inventory.md` + `inventory.json` (สแกน `Prototypes/bo-prototype.html` ด้วย `Prototypes/scan-labels.mjs` — read-only, 1,926 entries — re-scan 07/10 หลัง MKD-003)
 - Supersedes/เสริม: naming rules ใน `BackOffice/BO_UI_UX_STANDARD.md` §Navigation and Context และ `docs/bo-navigation-naming-contract.md` Contract C
 - **เอกสารนี้ไม่ใช่คำสั่งแก้ protected screens** — ทุกจอที่ล็อกไว้คง label เดิมจนกว่า mission เฉพาะจอได้รับอนุมัติ normalize
 
@@ -126,9 +126,9 @@ Status pills, risk pills, channel pills, role names, entity ID prefixes (`U-`/`A
 
 | # | Deviation | Locations (ตัวอย่าง) | เป้าหมาย normalize |
 |---|---|---|---|
-| D1 | `Cancel`/`Close`/`×` English ใน Market Sync modal | 37828–37831 | `ยกเลิก`/`ปิด` |
-| D2 | `View`/`View detail`/`Detail` English row actions | 36429/36446/39901/43646 | `ดูรายละเอียด` |
-| D3 | `View Asset`/`View Article`/`View all comments`/`View sale history`/`View full sale record`/`View Sync History` | 31814/44477/45593/22503/24380/23185/37830 | `ดู <Entity>` |
+| D1 | `Cancel`/`Close`/`×` English ใน Market Sync modal | 38164–38167 (เดิม 37828–37831) | `ยกเลิก`/`ปิด` — ✅ **Resolved MKD-003 07/10** (`Cancel`→`ยกเลิก`, `Close`→`ปิด` ×2; icon close มี `aria-label="ปิด"` อยู่แล้ว) |
+| D2 | `View`/`View detail`/`Detail` English row actions | 36765/37041/36782 (Market), 39901/43646 | `ดูรายละเอียด` — ✅ **Market resolved MKD-003 07/10** (3 จุด); ที่เหลือ module อื่น (Categories/Articles/Offer) รอ mission เฉพาะจอ |
+| D3 | `View Asset`/`View Article`/`View all comments`/`View sale history`/`View full sale record`/`View Sync History`/`Audit trail` | 31814/44477/45593/22503/24380/23185/38166 (Market), 37145 (Audit trail btn) | `ดู <Entity>` — ✅ **Market resolved MKD-003 07/10** (`View Sync History`→`ดู Sync History`, `Audit trail`→`ดู Audit Trail`); ที่เหลือ module อื่น รอ mission เฉพาะจอ |
 | D4 | `Edit`/`Edit Category`/`Edit article` | 34019/40396/39902/42176/43648/43751 | `แก้ไข`/`แก้ไข <X>` |
 | D5 | `Add admin`/`Add Category`/`+ Add block` | 27787/32028/42819 | `เพิ่ม <Entity>` |
 | D6 | `Delete category`/`Delete draft`/`Delete block` | 39910/43588/42793 | `ลบ <Entity>` |
@@ -136,11 +136,12 @@ Status pills, risk pills, channel pills, role names, entity ID prefixes (`U-`/`A
 | D8 | `ย้อนกลับ` vs page-back `กลับไป <dest>` — ผสม semantics ถ้าพบ `ย้อนกลับ` บน page back | 33292/33492/40847/40897/41231/41292 (in-modal = ok) | ตรวจ semantics: in-modal=`ย้อนกลับ` ok, page-back ต้อง `กลับไป <dest>` |
 | D9 | `Reject Restore`/`Suspend Admin`/`Unlock Admin`/`Archive Admin`/`Restore Account`/`Restore article`/`Archive article` English action labels | 30840/28127/28159/28175/30821/43621/43610 | `ปฏิเสธ <X>`/`ระงับ`/`ปลดล็อก`/`เก็บถาวร`/`คืน <X>` (confirmed §5.1) |
 | D10 | `Show password` aria EN ทั้งที่ visible context TH | 17722/26569/26577/27601/27609/34363 | `แสดงรหัสผ่าน`/`ซ่อนรหัสผ่าน` (confirmed §5.3) |
-| D11 | `aria-label="Back"` EN บนปุ่มที่ visible เป็น `กลับไป …` | 20637 renderPageBackButton | aria mirror visible → `กลับไป <dest>` (confirmed §5.4) |
-| D12 | Market Data sync/import suite English | 37805–37875, 36942, 36446 | ตามตาราง Sync/Import (locked — mission เฉพาะจอ) |
+| D11 | `aria-label="Back"` EN บนปุ่มที่ visible เป็น `กลับไป …` | 20958 `renderPageBackButton` — **shared helper 21 callsites ทุก module** | aria mirror visible → `กลับไป <dest>` (confirmed §5.4) — ✅ **Resolved MKD-003 07/10** (`aria-label="${label}"` ครอบทุก callsite) |
+| D12 | Market Data sync/import suite English | 38164–38167 (sync modal), 37278 (CSV template — dead code, เลื่อน Phase 2), 36782 | ตามตาราง Sync/Import — ✅ **Resolved MKD-003 07/10** ยกเว้น `Download CSV Template` (ปัจจุบัน ~37279) เลื่อน Phase 2 ตามมติ |
 | D13 | Auth uppercase buttons `GO TO LOGIN`/`ACTIVATE ACCOUNT` + `Logout` sidebar | 26546/26588/17819 | 🔒 locked exception — ไม่ normalize |
 | D14 | `Publish`/`Preview`/`Edit Draft`/`Create Draft` English ใน Policy/Article editors | 35406/35049/35405/43907/35337 ฯลฯ | `เผยแพร่`/`ดูตัวอย่าง`/`แก้ไข Draft`/`สร้าง Draft` (confirmed §5.5) — locked |
 | D15 | Mixed-case/dynamic titles `${…}` 36 จุด + Thai modal titles | หลายจุด — ดู inventory §title-heading | ตรวจทีละจอตอน module mission |
+| D16 | Table header language ไม่สม่ำเสมอภายใน module — Brands/Models/References tables ใช้ EN (`Brand`/`Models`/`Action`) ขณะที่ Sync History record table ใช้ TH (`รายการข้อมูล`/`ผลลัพธ์`/`รายละเอียด`) | 36749 / 37028 / 37066 / 36900 | ตัดสินใจ convention หัวตารางกลาง (entity/system name = EN ได้ แต่หัวกิจกรรมอย่าง `Action`/`Detail` อาจควร TH) — รอ mission เฉพาะจอ |
 
 > ทุก deviation เป็น "candidate" เท่านั้น — **ห้ามแก้จอล็อกโดยอ้างตารางนี้โดยตรง** ต้องผ่าน mission เฉพาะจอ + approval ตาม protected policy เสมอ
 
@@ -166,6 +167,57 @@ Status pills, risk pills, channel pills, role names, entity ID prefixes (`U-`/`A
 1. งานสร้าง/แก้ปุ่มใหม่ → หา canonical row ใน §2 ก่อน; ไม่มี → เพิ่ม row + ทำเครื่องหมาย proposed แล้วใช้
 2. Module audit mission → เปรียบเทียบ label จริงกับตารางนี้; deviation ที่พบให้บันทึกใน §4 (เพิ่ม row) ไม่ใช่แก้ทันที
 3. ก่อน normalize จอใด → เช็ค protected status ใน `PROTECTED_SCREENS.md`/`AGENTS.md` + เทียบ contract ที่ confirm แล้ว (navigation/naming contract, modal contract) — ถ้าไม่ตรงต้องชี้แจ้งก่อนแก้
+
+---
+
+## 7. Mission 2 — Market Data Normalization Plan (**อนุมัติแล้ว 07/10/2026**)
+
+แผน normalize ของ module **Market Data** (MKD-002) — line refs อัปเดตตามไฟล์ปัจจุบัน 07/10/2026 (เลื่อนจาก audit 02/10); audit เต็ม: `deliverables/label-standard/market-data-label-audit-report.md` — **อนุมัติแล้ว 07/10/2026 → ดำเนินการแก้ `bo-prototype.html` ใน MKD-003 ได้ตาม scope นี้เท่านั้น**
+
+### 7.1 ตาราง Current vs Proposed (24 จุด)
+
+| # | บรรทัด | บริบท | ปัจจุบัน | Proposed | เหตุผล (กฎ 2 ชั้น / §2) |
+|---|---|---|---|---|---|
+| 1 | 38164 | Sync Modal — Confirm | `Cancel` | `ยกเลิก` | Cancel — modal secondary (D1) |
+| 2 | 38164 | Sync Modal — Confirm | `Start Sync` | `เริ่ม Sync` | Sync/Import (D12); `Sync` คง EN system term |
+| 3 | 38165 | Sync Modal — Running | `Syncing...` | `กำลัง Sync...` | Sync/Import (D12) |
+| 4 | 38166 | Sync Modal — Success | `Close` | `ปิด` | Close — dismiss result (D1) |
+| 5 | 38166 | Sync Modal — Success | `View Sync History` | `ดู Sync History` | `ดู <Entity>` (D3/D12) |
+| 6 | 38167 | Sync Modal — Error | `Close` | `ปิด` | Close — dismiss result (D1) |
+| 7 | 38167 | Sync Modal — Error | `Retry Failed Datasets` | `ลองใหม่เฉพาะชุดที่ล้มเหลว` | `ลองอีกครั้ง <X>` (D12) |
+| 8 | 36765 | Brands table — row action | `View` (+ aria `View ${brand.name} models`) | `ดูรายละเอียด` (+ aria `ดูรายละเอียดโมเดล ${brand.name}`) | `ดูรายละเอียด` (D2) + aria mirror (Rule 4) |
+| 9 | 37041 | Models table — row action | `View` (+ aria `View ${model.name} references`) | `ดูรายละเอียด` (+ aria `ดูรายละเอียดเลขอ้างอิง ${model.name}`) | เหมือน #8 |
+| 10 | 36782 | Sync History — row action | `Detail` (+ aria `View sync log for …`) | `ดูรายละเอียด` (+ aria `ดูรายละเอียดประวัติการ Sync …`) | เหมือน #8 |
+| 11 | 37145 | Reference detail — action btn | `Audit trail` | `ดู Audit Trail` | `ดู <Entity>` (D3) |
+| 12 | 37278 | `renderMarketImportGuide` — template link | `Download CSV Template` | `ดาวน์โหลด CSV Template` | D12 — **dead code Phase 2 — ตัดสินใจเลื่อนไว้ ไม่แก้ใน MKD-003** |
+| 13 | 20958 | `renderPageBackButton` — **shared helper 21 callsites ทุก module** | `aria-label="Back"` | `aria-label="${label}"` (mirror `กลับไป <dest>`) | D11/§5.4 — ⚠️ กระทบจอล็อกอื่น ต้อง approve แยก |
+| 14–16 | 37854 / 37889 / 38066 | Market back-btn callsites | (label param มีอยู่แล้ว) | ไม่แก้ callsite — ได้ผลจาก #13 | — |
+| 17 | 37864 | Brand Detail — search | `Search ${brand.name} models` | `ค้นหา Model ของ ${brand.name}` | `ค้นหา<field>` (content=TH) |
+| 18 | 37899 | Model Detail — search | `Search ${model.name} references` | `ค้นหา Reference ของ ${model.name}` | เหมือน #17 |
+| 19 | 36767 | Brands table — empty | `No brands found` | `ไม่พบข้อมูล` (แนวทาง A) | Contract D empty-state |
+| 20 | 36922 | Sync History — empty | `No sync logs found` | `ไม่พบข้อมูล` (แนวทาง A) | เหมือน #19 |
+| 21 | 37043 | Models table — empty | `No models found for this brand` | `ไม่พบข้อมูล` (แนวทาง A) | เหมือน #19 |
+| 22 | 37076 | References table — empty | `No references found for this model` | `ไม่พบข้อมูล` (แนวทาง A) | เหมือน #19 |
+| 23 | 37837 | Model detail — reference blocks empty | `No references found for this model` | `ไม่พบข้อมูล` (แนวทาง A) | เหมือน #19 — พบเพิ่มจาก re-scan 07/10 |
+| 24 | 37173 | Audit modal — empty | `No audit events for this target yet` | `ยังไม่มีประวัติ Audit สำหรับรายการนี้` | Contract D exception (business-specific) |
+
+### 7.2 ไม่แก้ (compliant / locked)
+
+- Structure EN: nav `Market Data`, sub `Market Overview`/`Brands & Models`/`Sync History`, breadcrumb, status pills (`Completed`/`Failed`/`Running`/`Ready`/`Syncing`…), modal titles (`Sync Market Data`, `Audit Trail`), `Last Updated` token `Syncing...` (38299/38301 — system status ตาม `06_MARKET_DATA_MODULE.md` §)
+- Content TH ที่ผ่านแล้ว: filter `ค้นหา Brand, Model, Reference` / `ค้นหา Sync Job, Endpoint, Result` / `ค้นหา endpoint / โมเดล / เลขอ้างอิง`, `เปิด/ปิดตัวกรอง`, `รีเซ็ตค่าทั้งหมด`, `ก่อนหน้า`/`ถัดไป`, `aria-label="ปิด"` close icons, active-sync banner copy
+
+### 7.3 Protected-screen impact
+
+- ขอบเขตแก้เฉพาะ **Market Data** ใน `Prototypes/bo-prototype.html` (หน้าจอล็อก — ต้อง approval ก่อน)
+- **#13 (`renderPageBackButton`) เป็น shared helper** — ถ้าแก้จะเปลี่ยน aria ของปุ่ม back ทั้ง 21 callsites ทุก module (ดีขึ้นตาม §5.4 แต่เกินขอบเขตจอเดียว) → ต้อง approve ชัดเจนเป็นรายข้อ
+- ไม่แตะ CSS/logic/mock data; ไม่เปลี่ยน status pills/system keys; ไม่แตะ module อื่น
+
+### 7.4 ผลการตัดสินใจ (อนุมัติ 07/10/2026)
+
+1. **แผนหลัก: อนุมัติทั้งหมด** — แก้ครบตามตาราง §7.1 ใน MKD-003
+2. **Empty states #19–23: แนวทาง A** — ใช้ `ไม่พบข้อมูล` ตาม Contract D (ทุกตาราง); เฉพาะ #24 audit modal ใช้ `ยังไม่มีประวัติ Audit สำหรับรายการนี้`
+3. **#13 shared helper `renderPageBackButton`: อนุมัติแก้เลยใน mission นี้** — `aria-label="Back"` → `aria-label="${label}"` ครอบทั้ง 21 callsites ทุก module (รวม `Back to Option Groups` locked exception ที่ label เป็น EN อยู่แล้ว mirror พอดี)
+4. **#12 `Download CSV Template`: เลื่อน Phase 2** — ไม่แตะ dead code ใน MKD-003 (scope แก้จริงเหลือ 23 จุด)
 4. `inventory.md`/`inventory.json` regenerate ได้ทุกครั้งด้วย `node Prototypes/scan-labels.mjs` — ตารางนี้เป็น source of truth ของ "เป้าหมาย", inventory เป็น "สภาพจริง"
 
 ---
