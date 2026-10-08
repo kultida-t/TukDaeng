@@ -1,0 +1,18 @@
+VGD-006 — Review Gate & ส่งมอบคลิป INTRO Final (Mission fa6c030e)
+== Technical Specs & Video Encoding
+Video Master 1080x1920 (9:16 Vertical) H.264 High Profile @ 30fps
+ความยาววิดีโอ 180.0 วินาที พอดีเป๊ะ (Total Frames: 5,400 frames)
+Audio Master 48kHz Stereo (Voiceover + BGM Lo-Fi -20dBFS Bed)
+Clean UI Presentation — ไม่มี Burn-in Subtitles บดบังหน้าจอแอปพลิเคชัน
+== Review Gate & Content Verification
+ภาพหน้าจอแอปคมชัด 100% จากแอป TukDaeng จริงบน Luxury Phone Frame
+สื่อแบรนด์ตึกแดงครบถ้วน: โลโก้ Splash + ป้าย SALE สีแดง / SHOW สีน้ำเงิน
+เสียงพากย์ Azure Neural TTS ไทยนุ่มนวล เป็นกันเอง จังหวะหายใจชัดเจน
+ฉากเจาะลึกมูลค่าทรัพย์สิน S15 (Profile Tap -> Portfolio Assets Value ฿7.38M)
+ฉากปิด End Card CTA 9:16 โลโก้ตึกแดง + ปุ่มดาวน์โหลด App Store & Play Store
+== Final Deliverables & Package
+dist/video-guides/INTRO-final.mp4 (ไฟล์มาสเตอร์วิดีโอ 17.8 MB)
+dist/video-guides/INTRO-master-audio.wav & INTRO-master-audio.mp3
+deliverables/INTRO-post-caption.md (แคปชันโซเชียลมีเดีย + Hashtags)
+assets/video-guides/intro/intro-subtitles.srt & .vtt (Closed Captions)
+deliverables/mission-fa6c030e-intro-acceptance-review.txt (รายงานตรวจรับสมบูรณ์)
