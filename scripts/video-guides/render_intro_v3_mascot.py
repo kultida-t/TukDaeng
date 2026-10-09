@@ -3,7 +3,7 @@ TukDaeng INTRO v3 - Mascot story "นาฬิกาของคุณปู่"
 Inputs : assets/video-guides/mascot/scene-01..10.png (AI generated 3D art) + real app screens
 Output : dist/video-guides/INTRO-v3-mascot.mp4 (+ INTRO-v3-mascot-timeline.json)
 """
-import asyncio, json, math, os, subprocess, sys
+import asyncio, json, math, os, subprocess, sys, time
 import edge_tts
 import numpy as np
 import soundfile as sf
@@ -45,11 +45,11 @@ SCENES = [
      ln("tick", [("แดง…", "soft"), ("อย่าเพิ่งเศร้านะ", "soft"), ("เราหาเรือนแบบเดียวกันได้ต่างหาก!", "happy")], gap=0.5)]),
  dict(img="scene-02.png", focus=(0.55, 0.45), lines=[
      ln("dang", [("แต่… ซื้อมือสองออนไลน์เนี่ย", "worry"), ("ผมกลัวโดนหลอกอ่ะ", "worry")], gap=0.45),
-     ln("tick", [("อืมม… เข้าใจเลย", "soft"), ("ใครๆ ก็กลัว", "soft"), ("แต่เดี๋ยวก่อนนะ", "happy")], gap=0.3)]),
+     ln("tick", [("ใช่… เข้าใจเลย", "soft"), ("ใครๆ ก็กลัว", "soft"), ("แต่เดี๋ยวก่อนนะ", "happy")], gap=0.3)]),
  dict(img="scene-03.png", focus=(0.55, 0.42), lines=[
      ln("tick", [("ติ๊กรู้จักแอปนึงนะ!", "excited"), ("แอปตึกแดงไง!", "excited"), ("ซื้อ ขาย โชว์ คุยกัน ครบจบในที่เดียว", "happy")], gap=0.4),
      ln("dang", [("ห๊ะ?", "gasp"), ("ว้าว! ตึกแดง ฟังดูน่าสนใจ", "excited")], gap=0.15)],
-     phone=dict(frm=0, shots=[S("s02_what_splash.png"), S("s03a_what_feed.png")], pos=(0.86, 0.52), tilt=-4)),
+     phone=dict(frm=0, shots=[U("00-onboarding-1.png"), S("s03a_what_feed.png")], pos=(0.86, 0.52), tilt=-4)),
  dict(img="scene-04.png", focus=(0.6, 0.45), lines=[
      ln("dang", [("แล้วต้องสมัครก่อนมั้ยเนี่ย", "worry")], gap=0.45),
      ln("tick", [("ไม่ต้องเลย!", "excited"), ("เปิดแอปมาก็ไถดูได้ทันที", "happy")], gap=0.12),
@@ -65,7 +65,7 @@ SCENES = [
      ln("dang", [("อ่า… สบายใจขึ้นเยอะเลย", "happy")], gap=0.2)],
      phone=dict(frm=0, shots=[S("s12_tour_make_offer.png"), S("s13a_tour_chatroom.png"), S("s13c_tour_offer_accepted.png")], pos=(0.585, 0.40), tilt=3, cue=(0.5, 0.85))),
  dict(img="scene-07.png", focus=(0.5, 0.5), lines=[
-     ln("dang", [("แต่รุ่นเดียวกับปู่เป๊ะๆ", "sad"), ("ยังไม่มีใครลงขายเลย…", "sad")], gap=0.5),
+     ln("dang", [("แต่รุ่นเดียวกับของปู่เลย", "sad"), ("ยังไม่มีใครลงขายเลย…", "sad")], gap=0.5),
      ln("tick", [("ไม่เป็นไรนะแดง", "soft"), ("เราตั้ง Watch Alert ไว้ไงล่ะ!", "excited"), ("ติ๊กจะเฝ้าให้เอง มีคนลงขายเมื่อไหร่ แจ้งเตือนทันที", "happy")], gap=0.4)],
      phone=dict(frm=1, shots=[U("10-watchalert-create.png"), S("s10_tour_watchalert_list.png")], pos=(0.13, 0.36), tilt=-4)),
  dict(img="scene-08.png", focus=(0.58, 0.5), lines=[
@@ -75,10 +75,10 @@ SCENES = [
  dict(img="scene-09.png", focus=(0.45, 0.5), lines=[
      ln("tick", [("เก็บไว้ในพอร์ตตัวเองเลย", "proud"), ("ดูมูลค่ารวม กำไร แล้วโชว์คอลเลกชันให้เพื่อนๆ ชมได้ด้วยนะ", "normal")], gap=0.45),
      ln("dang", [("เท่ชะมัด!", "proud"), ("เหมือนมีพิพิธภัณฑ์ส่วนตัวเลย", "happy")], gap=0.15)],
-     phone=dict(frm=0, shots=[S("s15_tour_profile_owner.png"), S("s15b_tour_assets_value.png"), U("06-assets-value-list.png")], pos=(0.85, 0.52), tilt=-3, cue=(0.50, 0.30))),
+     phone=dict(frm=0, shots=[S("s15_tour_profile_owner.png"), S("s15b_tour_assets_value.png"), U("06-assets-value-list.png")], pos=(0.85, 0.52), tilt=-3, cue=(0.80, 0.31))),
  dict(img="scene-10.png", focus=(0.5, 0.5), lines=[
      ln("dang", [("แล้วมาคุยเรื่องนาฬิกากันนะทุกคน!", "excited")], gap=0.45),
-     ln("tick", [("TukDaeng ตึกแดง", "happy"), ("โหลดได้แล้วที่ Google Play และ App Store นะ", "normal")], gap=0.3)]),
+     ln("tick", [("โหลดได้แล้วที่ กูเกิลเพลย์ และ แอปสโตร์ นะ", "happy")], gap=0.3)]),
 ]
 END_HOLD = 4.2
 XFADE = 0.55
@@ -98,25 +98,30 @@ EMO = {
     "proud": ("+3%", 4, "+8%", 0.16, "proud and impressed"),
     "sleepy": ("-18%", -8, "-30%", 0.25, "groggy, half asleep, mumbling"),
 }
-BASE_PITCH = {"dang": 0, "tick": 8}
+BASE_PITCH = {"dang": 0, "tick": 2}
 GEMINI_VOICES = {"dang": "Puck", "tick": "Leda"}
 
 
 def _beat_key(spk, text, emo):
     import hashlib
-    return hashlib.md5(f"{spk}|{text}|{emo}|{'g' if os.environ.get('GEMINI_API_KEY') else 'e'}".encode("utf-8")).hexdigest()[:12]
+    return hashlib.md5(f"{spk}|{text}|{emo}|child2|{'g' if os.environ.get('GEMINI_API_KEY') else 'e'}".encode("utf-8")).hexdigest()[:12]
 
 
 def gemini_beat(spk, text, emo, out_wav):
     import base64, requests, wave
     key = os.environ["GEMINI_API_KEY"]
-    prompt = f"Say the following Thai line {EMO[emo][4]}, like a real animated movie character, natural and expressive: {text}"
+    who = "a young man in his early twenties" if spk == "dang" else "a cute cheerful little child with a bright, sweet, high voice"
+    prompt = f"You are {who} in a Pixar-style animated movie. Say the following Thai line {EMO[emo][4]}, natural, expressive and not robotic: {text}"
     body = {"contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {"responseModalities": ["AUDIO"],
                                  "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": GEMINI_VOICES[spk]}}}}}
-    r = requests.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent",
-                      params={"key": key}, json=body, timeout=120)
-    r.raise_for_status()
+    r = None
+    for attempt in range(4):
+        r = requests.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent",
+                          params={"key": key}, json=body, timeout=180)
+        if r.ok and '"inlineData"' in r.text and "inlineData" in r.json().get("candidates",[{}])[0].get("content",{}).get("parts",[{}])[0]: break
+        time.sleep(min(45, 10 + attempt * 8))
+    if r is not None: r.raise_for_status()
     pcm = base64.b64decode(r.json()["candidates"][0]["content"]["parts"][0]["inlineData"]["data"])
     with wave.open(out_wav, "wb") as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
@@ -129,20 +134,25 @@ async def synth_all():
             k = _beat_key(l["spk"], text, emo)
             if os.path.exists(os.path.join(WORK, f"b{k}.wav")): continue
             raw = os.path.join(WORK, f"b{k}.raw")
+            gem = False
             if os.environ.get("GEMINI_API_KEY"):
-                gemini_beat(l["spk"], text, emo, raw + ".wav"); os.replace(raw + ".wav", raw)
-            else:
+                try:
+                    gemini_beat(l["spk"], text, emo, raw + ".wav"); os.replace(raw + ".wav", raw); gem = True
+                except Exception as e:
+                    print("gemini failed, edge fallback:", k, repr(e)[:80])
+            if not gem:
                 v, _ = VOICES[l["spk"]]
                 rate, pitch, vol = EMO[emo][0], BASE_PITCH[l["spk"]] + EMO[emo][1], EMO[emo][2]
                 await asyncio.sleep(0.8)
-                for attempt in range(14):
+                for attempt in range(4):
                     try:
-                        await edge_tts.Communicate(text, v, rate=rate, volume=vol, pitch=f"{pitch:+d}Hz").save(raw + ".tmp")
+                        await edge_tts.Communicate(text, v, rate=rate, volume=vol, pitch=(f"{pitch:+d}Hz" if attempt < 5 else "+0Hz")).save(raw + ".tmp")
                         os.replace(raw + ".tmp", raw); break
                     except edge_tts.exceptions.NoAudioReceived:
                         await asyncio.sleep(2 + attempt)
                         if attempt == 13: raise
-            subprocess.run([FFMPEG, "-y", "-loglevel", "error", "-i", raw, "-ar", str(SR), "-ac", "2", os.path.join(WORK, f"b{k}.wav")], check=True)
+            af = ["-af", "aresample=48000,asetrate=58560,aresample=48000,atempo=0.8197"] if (l["spk"] == "tick" and not gem) else []
+            subprocess.run([FFMPEG, "-y", "-loglevel", "error", "-i", raw, *af, "-ar", str(SR), "-ac", "2", os.path.join(WORK, f"b{k}.wav")], check=True)
 
 
 def load_voice(i):
@@ -195,7 +205,7 @@ def build_audio():
     P = lambda at, sig, g=1.0, pan=0.0: sfxl.place(fx, at, sig, g, pan)
     for si in range(len(SCENES)):
         a, b = sc_start[si], sc_end[si]
-        if si > 0: P(a - 0.1, whoosh(rng), 0.45)
+        if si > 0: P(a - 0.1, whoosh(rng), 0.25)
         if si == 0:
             P(a + 0.4, sfxl.wind(max(4, b - a)), 0.5); P(a + 0.9, sfxl.creak(), 0.8, -0.3)
         if si < 7:
@@ -210,19 +220,7 @@ def build_audio():
         if si == 9:
             for q in range(int((b - a) / 1.7)): P(a + 0.3 + q * 1.7, sfxl.tweet(2, 3400), 0.22, 0.5 - 0.5 * (q % 2))
     for i, (si, li, l) in enumerate(FLAT):
-        if l["spk"] == "tick": P(tl[i][0] - 0.16, sfxl.chirp(3000, 4600, 0.1), 0.5, 0.3)
-    for si, sc in enumerate(SCENES):
-        ph = sc.get("phone")
-        if not ph: continue
-        ps = tl[first_line[si] + ph["frm"]][0]
-        P(ps - 0.1, sfxl.phone_in(), 0.9)
-        shots = len(ph["shots"]); dur = sc_end[si] - ps
-        for q in range(1, shots): P(ps + q * dur / shots, sfxl.msg_pop() if si == 5 else (sfxl.coin() if si == 8 else sfxl.swipe(0.25)), 0.7)
-        if ph.get("cue"): P(ps + 0.6, sfxl.click(), 0.9)
-    P(tl[first_line[2]][0] + 1.8, sfxl.sparkle(), 0.5)
-    P(tl[first_line[7]][0] - 0.05, sfxl.notify(), 0.9)
-    P(tl[first_line[7] + 1][0] + 1.5, sfxl.party_pop(), 0.9); P(tl[first_line[7] + 1][0] + 1.6, sfxl.confetti(), 0.7)
-    P(tl[first_line[8]][0] + 0.1, sfxl.sparkle(), 0.45)
+        pass
     P(tl[first_line[9]][0], sfxl.cheer(3.2), 0.95); P(tl[first_line[9]][0] + 0.2, sfxl.clap_burst(18, 2.4), 0.8)
     sad = sfxl.make_sad_bgm(total + 1)[:n].astype(np.float64)
     up = make_bgm(total + 1)[:n].astype(np.float64)
