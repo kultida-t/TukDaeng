@@ -1,0 +1,522 @@
+{
+  "title": "Univerza Tukdaeng INTRO Voiceover Master",
+  "voice_engine": "Microsoft Azure Neural TTS (edge-tts)",
+  "voice_name": "th-TH-NiwatNeural",
+  "voice_tone": "อบอุ่น สุภาพ เป็นกันเอง ชัดถ้อยชัดคำ",
+  "total_video_duration_sec": 180.0,
+  "total_scenes": 20,
+  "total_words": 391,
+  "total_voice_duration_sec": 133.91,
+  "total_pause_duration_sec": 46.09,
+  "overall_script_wpm": 130.3,
+  "active_speech_wpm": 175.2,
+  "audio_specs": {
+    "format": "WAV",
+    "channels": 2,
+    "sample_rate_hz": 48000,
+    "bit_depth": 16,
+    "peak_level_dbfs": -1.0
+  },
+  "scenes": [
+    {
+      "scene_id": "S01",
+      "phase": "HOOK",
+      "scene_timecode": {
+        "start_sec": 0.0,
+        "end_sec": 8.0,
+        "duration_sec": 8.0
+      },
+      "voiceover": {
+        "text": "เคยเจอปัญหานี้ไหมครับ? อยากหานาฬิกาถูกใจสักเรือน หรืออยากปล่อยต่อเรือนที่มี แต่ไม่รู้จะไปโพสต์ที่ไหนที่ไว้ใจได้จริง ๆ",
+        "words_count": 24,
+        "rate": "+8%",
+        "voice_start_sec": 0.2,
+        "voice_end_sec": 7.976,
+        "voice_duration_sec": 7.776,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 0.024
+      },
+      "on_screen_subtitle": {
+        "text": "เคยเจอปัญหานี้ไหม?\nอยากซื้อขายนาฬิกา แต่ไม่รู้จะไปที่ไหนที่ไว้ใจได้",
+        "sub_start_sec": 0.1,
+        "sub_end_sec": 7.95,
+        "sub_duration_sec": 7.85
+      }
+    },
+    {
+      "scene_id": "S02",
+      "phase": "WHAT",
+      "scene_timecode": {
+        "start_sec": 8.0,
+        "end_sec": 16.0,
+        "duration_sec": 8.0
+      },
+      "voiceover": {
+        "text": "นี่คือ Univerza Tukdaeng หรือแอปตึกแดง แพลตฟอร์มที่รวมทุกเรื่องของคนรักนาฬิกาไว้ในที่เดียว",
+        "words_count": 15,
+        "rate": "+5%",
+        "voice_start_sec": 8.2,
+        "voice_end_sec": 13.84,
+        "voice_duration_sec": 5.64,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 2.16
+      },
+      "on_screen_subtitle": {
+        "text": "Univerza Tukdaeng (ตึกแดง)\nแพลตฟอร์มเพื่อคนรักนาฬิกาโดยเฉพาะ",
+        "sub_start_sec": 8.1,
+        "sub_end_sec": 15.85,
+        "sub_duration_sec": 7.75
+      }
+    },
+    {
+      "scene_id": "S03",
+      "phase": "WHAT",
+      "scene_timecode": {
+        "start_sec": 16.0,
+        "end_sec": 25.0,
+        "duration_sec": 9.0
+      },
+      "voiceover": {
+        "text": "ทั้งพื้นที่ซื้อขาย จัดแสดงคอลเลกชันส่วนตัว และคอมมูนิตี้แลกเปลี่ยนเรื่องราวนาฬิกาของพวกเราครับ",
+        "words_count": 18,
+        "rate": "+5%",
+        "voice_start_sec": 16.2,
+        "voice_end_sec": 22.152,
+        "voice_duration_sec": 5.952,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 2.848
+      },
+      "on_screen_subtitle": {
+        "text": "ซื้อขาย · จัดแสดงคอลเลกชัน · คอมมูนิตี้\nครบจบในที่เดียว",
+        "sub_start_sec": 16.1,
+        "sub_end_sec": 24.85,
+        "sub_duration_sec": 8.75
+      }
+    },
+    {
+      "scene_id": "S04",
+      "phase": "WHO",
+      "scene_timecode": {
+        "start_sec": 25.0,
+        "end_sec": 34.0,
+        "duration_sec": 9.0
+      },
+      "voiceover": {
+        "text": "ไม่ว่าคุณจะเป็นนักสะสมสายจริงจัง คนที่อยากปล่อยต่อเปลี่ยนเรือนใหม่ หรือคนที่กำลังมองหานาฬิกาเรือนแรก",
+        "words_count": 20,
+        "rate": "+5%",
+        "voice_start_sec": 25.2,
+        "voice_end_sec": 31.992,
+        "voice_duration_sec": 6.792,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 2.008
+      },
+      "on_screen_subtitle": {
+        "text": "ไม่ว่าจะเป็นนักสะสม ผู้ขาย\nหรือคนที่กำลังหาเรือนแรก",
+        "sub_start_sec": 25.1,
+        "sub_end_sec": 33.85,
+        "sub_duration_sec": 8.75
+      }
+    },
+    {
+      "scene_id": "S05",
+      "phase": "GUEST",
+      "scene_timecode": {
+        "start_sec": 34.0,
+        "end_sec": 45.0,
+        "duration_sec": 11.0
+      },
+      "voiceover": {
+        "text": "หรือแค่อยากเข้ามาดูคอลเลกชันสวย ๆ ก็เปิดแอปแล้วสำรวจได้ทันทีผ่าน Guest mode โดยยังไม่ต้องสมัครสมาชิกครับ",
+        "words_count": 21,
+        "rate": "+5%",
+        "voice_start_sec": 34.2,
+        "voice_end_sec": 41.112,
+        "voice_duration_sec": 6.912,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 3.888
+      },
+      "on_screen_subtitle": {
+        "text": "เปิดแอปแล้วส่องได้ทันที\nด้วย Guest mode ไม่ต้องสมัครสมาชิกก่อน",
+        "sub_start_sec": 34.1,
+        "sub_end_sec": 44.85,
+        "sub_duration_sec": 10.75
+      }
+    },
+    {
+      "scene_id": "S06",
+      "phase": "TOUR 1",
+      "scene_timecode": {
+        "start_sec": 45.0,
+        "end_sec": 54.0,
+        "duration_sec": 9.0
+      },
+      "voiceover": {
+        "text": "เริ่มจากแถบเมนูด้านล่าง มีครบทั้ง ฟีด, แชท, กระดานข่าว, การแจ้งเตือน และโปรไฟล์ บนหน้าฟีดจะรวมนาฬิกาที่น่าสนใจไว้ทั้งหมด",
+        "words_count": 25,
+        "rate": "+6%",
+        "voice_start_sec": 45.2,
+        "voice_end_sec": 53.552,
+        "voice_duration_sec": 8.352,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 0.448
+      },
+      "on_screen_subtitle": {
+        "text": "แถบนำทาง 5 เมนูหลัก\nฟีด · แชท · กระดานข่าว · แจ้งเตือน · โปรไฟล์",
+        "sub_start_sec": 45.1,
+        "sub_end_sec": 53.852,
+        "sub_duration_sec": 8.752
+      }
+    },
+    {
+      "scene_id": "S07",
+      "phase": "TOUR 1",
+      "scene_timecode": {
+        "start_sec": 54.0,
+        "end_sec": 65.0,
+        "duration_sec": 11.0
+      },
+      "voiceover": {
+        "text": "โดยมีทั้งป้าย SALE สีแดง สำหรับเรือนที่ลงขายพร้อมราคาชัดเจน และป้าย SHOW สีน้ำเงิน สำหรับเรือนที่เจ้าของนำมาโชว์คอลเลกชันส่วนตัวครับ",
+        "words_count": 21,
+        "rate": "+5%",
+        "voice_start_sec": 54.2,
+        "voice_end_sec": 62.624,
+        "voice_duration_sec": 8.424,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 2.376
+      },
+      "on_screen_subtitle": {
+        "text": "ป้าย SALE สีแดง = ลงขายระบุราคา\nป้าย SHOW สีน้ำเงิน = จัดแสดงโชว์คอลเลกชัน",
+        "sub_start_sec": 54.1,
+        "sub_end_sec": 64.85,
+        "sub_duration_sec": 10.75
+      }
+    },
+    {
+      "scene_id": "S08",
+      "phase": "TOUR 2",
+      "scene_timecode": {
+        "start_sec": 65.0,
+        "end_sec": 74.0,
+        "duration_sec": 9.0
+      },
+      "voiceover": {
+        "text": "อยากได้เรือนไหน ค้นหาได้แม่นยำมาก มีตัวกรองที่คัดสรรมาเพื่อนาฬิกาโดยเฉพาะ",
+        "words_count": 14,
+        "rate": "+5%",
+        "voice_start_sec": 65.2,
+        "voice_end_sec": 70.408,
+        "voice_duration_sec": 5.208,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 3.592
+      },
+      "on_screen_subtitle": {
+        "text": "ค้นหาแม่นยำ พร้อมระบุจำนวนเรือนที่พบ",
+        "sub_start_sec": 65.1,
+        "sub_end_sec": 73.85,
+        "sub_duration_sec": 8.75
+      }
+    },
+    {
+      "scene_id": "S09",
+      "phase": "TOUR 2",
+      "scene_timecode": {
+        "start_sec": 74.0,
+        "end_sec": 82.0,
+        "duration_sec": 8.0
+      },
+      "voiceover": {
+        "text": "เลือกแบรนด์ปุ๊บ รุ่นจะกรองให้ตรงรุ่นทันที พร้อมระบุช่วงราคา ปีที่ผลิต และสภาพเรือนได้ครบถ้วน",
+        "words_count": 20,
+        "rate": "+5%",
+        "voice_start_sec": 74.2,
+        "voice_end_sec": 80.488,
+        "voice_duration_sec": 6.288,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 1.512
+      },
+      "on_screen_subtitle": {
+        "text": "ตัวกรองตรงรุ่น แบรนด์ ช่วงราคา ปี สภาพเรือน",
+        "sub_start_sec": 74.1,
+        "sub_end_sec": 81.85,
+        "sub_duration_sec": 7.75
+      }
+    },
+    {
+      "scene_id": "S10",
+      "phase": "TOUR 3",
+      "scene_timecode": {
+        "start_sec": 82.0,
+        "end_sec": 91.0,
+        "duration_sec": 9.0
+      },
+      "voiceover": {
+        "text": "และถ้าคุณกำลังตามหาเรือนหายาก ระบบ Watch Alert จะเป็นผู้ช่วยส่วนตัว แค่ตั้งเงื่อนไขแบรนด์และงบที่ต้องการไว้",
+        "words_count": 21,
+        "rate": "+5%",
+        "voice_start_sec": 82.2,
+        "voice_end_sec": 88.752,
+        "voice_duration_sec": 6.552,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 2.248
+      },
+      "on_screen_subtitle": {
+        "text": "Watch Alert ผู้ช่วยเฝ้าหานาฬิกาในฝัน\nตั้งเงื่อนไขและงบประมาณไว้ล่วงหน้า",
+        "sub_start_sec": 82.1,
+        "sub_end_sec": 90.85,
+        "sub_duration_sec": 8.75
+      }
+    },
+    {
+      "scene_id": "S11",
+      "phase": "TOUR 3",
+      "scene_timecode": {
+        "start_sec": 91.0,
+        "end_sec": 99.0,
+        "duration_sec": 8.0
+      },
+      "voiceover": {
+        "text": "พอมีคนลงขายเรือนที่ตรงกันเมื่อไหร่ แอปจะแจ้งเตือนคุณทันที ไม่ต้องคอยนั่งเฝ้าหน้าจอตลอดเวลา",
+        "words_count": 19,
+        "rate": "+5%",
+        "voice_start_sec": 91.2,
+        "voice_end_sec": 97.632,
+        "voice_duration_sec": 6.432,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 1.368
+      },
+      "on_screen_subtitle": {
+        "text": "แจ้งเตือนทันทีเมื่อมีของตรงสเปกเข้ามา",
+        "sub_start_sec": 91.1,
+        "sub_end_sec": 98.85,
+        "sub_duration_sec": 7.75
+      }
+    },
+    {
+      "scene_id": "S12",
+      "phase": "TOUR 4",
+      "scene_timecode": {
+        "start_sec": 99.0,
+        "end_sec": 108.0,
+        "duration_sec": 9.0
+      },
+      "voiceover": {
+        "text": "เมื่อเจอเรือนที่ใช่ ก็กดเสนอราคาเพื่อต่อรองได้เลย ข้อเสนอจะถูกส่งเป็นการ์ดเข้าไปในห้องแชทกับเจ้าของเรือนโดยตรง",
+        "words_count": 21,
+        "rate": "+5%",
+        "voice_start_sec": 99.2,
+        "voice_end_sec": 105.968,
+        "voice_duration_sec": 6.768,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 2.032
+      },
+      "on_screen_subtitle": {
+        "text": "กดเสนอราคา (Make Offer)\nส่งการ์ดข้อเสนอเข้าห้องแชทโดยตรง",
+        "sub_start_sec": 99.1,
+        "sub_end_sec": 107.85,
+        "sub_duration_sec": 8.75
+      }
+    },
+    {
+      "scene_id": "S13",
+      "phase": "TOUR 4",
+      "scene_timecode": {
+        "start_sec": 108.0,
+        "end_sec": 117.0,
+        "duration_sec": 9.0
+      },
+      "voiceover": {
+        "text": "ให้ผู้ขายพิจารณากดยอมรับหรือปฏิเสธได้ทันที คุยจบ ต่อรองปลอดภัย และโปร่งใสในแชทเดียว",
+        "words_count": 17,
+        "rate": "+5%",
+        "voice_start_sec": 108.2,
+        "voice_end_sec": 114.776,
+        "voice_duration_sec": 6.576,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 2.224
+      },
+      "on_screen_subtitle": {
+        "text": "ตกลงราคากันในแชท ปลอดภัยและโปร่งใส\nกดยอมรับหรือปฏิเสธได้ทันที",
+        "sub_start_sec": 108.1,
+        "sub_end_sec": 116.85,
+        "sub_duration_sec": 8.75
+      }
+    },
+    {
+      "scene_id": "S14",
+      "phase": "TOUR 5",
+      "scene_timecode": {
+        "start_sec": 117.0,
+        "end_sec": 126.0,
+        "duration_sec": 9.0
+      },
+      "voiceover": {
+        "text": "นอกจากนี้ยังมี กระดานข่าว ที่รวบรวมบทความ เทรนด์ และสาระน่ารู้ของวงการนาฬิกาให้ติดตาม",
+        "words_count": 16,
+        "rate": "+5%",
+        "voice_start_sec": 117.2,
+        "voice_end_sec": 122.816,
+        "voice_duration_sec": 5.616,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 3.184
+      },
+      "on_screen_subtitle": {
+        "text": "กระดานข่าว บทความ สาระ และเทรนด์นาฬิกา",
+        "sub_start_sec": 117.1,
+        "sub_end_sec": 125.85,
+        "sub_duration_sec": 8.75
+      }
+    },
+    {
+      "scene_id": "S15",
+      "phase": "TOUR 5",
+      "scene_timecode": {
+        "start_sec": 126.0,
+        "end_sec": 135.0,
+        "duration_sec": 9.0
+      },
+      "voiceover": {
+        "text": "รวมถึงหน้า โปรไฟล์ ที่เป็นเสมือนตู้เซฟดิจิทัล ช่วยบันทึกประวัติและมูลค่ารวมของคอลเลกชันของคุณได้อย่างเป็นระเบียบครับ",
+        "words_count": 20,
+        "rate": "+5%",
+        "voice_start_sec": 126.2,
+        "voice_end_sec": 133.448,
+        "voice_duration_sec": 7.248,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 1.552
+      },
+      "on_screen_subtitle": {
+        "text": "โปรไฟล์ส่วนตัว บันทึกพอร์ตและมูลค่าคอลเลกชัน",
+        "sub_start_sec": 126.1,
+        "sub_end_sec": 134.85,
+        "sub_duration_sec": 8.75
+      }
+    },
+    {
+      "scene_id": "S16",
+      "phase": "WHY",
+      "scene_timecode": {
+        "start_sec": 135.0,
+        "end_sec": 145.0,
+        "duration_sec": 10.0
+      },
+      "voiceover": {
+        "text": "ทำไมต้องแอปตึกแดง? อย่างแรกคือ ออกแบบมาเพื่อคนรักนาฬิกาจริง ๆ รวมทั้งตลาด ตู้โชว์ และคอมมูนิตี้ไว้ในที่เดียว",
+        "words_count": 22,
+        "rate": "+5%",
+        "voice_start_sec": 135.2,
+        "voice_end_sec": 142.472,
+        "voice_duration_sec": 7.272,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 2.528
+      },
+      "on_screen_subtitle": {
+        "text": "1. ครบวงจรเพื่อคนรักนาฬิกาโดยเฉพาะ\nตลาด · ตู้โชว์ · คอมมูนิตี้",
+        "sub_start_sec": 135.1,
+        "sub_end_sec": 144.85,
+        "sub_duration_sec": 9.75
+      }
+    },
+    {
+      "scene_id": "S17",
+      "phase": "WHY",
+      "scene_timecode": {
+        "start_sec": 145.0,
+        "end_sec": 155.0,
+        "duration_sec": 10.0
+      },
+      "voiceover": {
+        "text": "อย่างที่สองคือ ซื้อขายต่อรองง่าย มีระบบเสนอราคาและการแจ้งเตือนที่ชัดเจน ปลอดภัย",
+        "words_count": 16,
+        "rate": "+5%",
+        "voice_start_sec": 145.2,
+        "voice_end_sec": 150.96,
+        "voice_duration_sec": 5.76,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 4.04
+      },
+      "on_screen_subtitle": {
+        "text": "2. ซื้อขายสบายใจ ระบบเสนอราคาชัดเจน ปลอดภัย",
+        "sub_start_sec": 145.1,
+        "sub_end_sec": 154.85,
+        "sub_duration_sec": 9.75
+      }
+    },
+    {
+      "scene_id": "S18",
+      "phase": "WHY",
+      "scene_timecode": {
+        "start_sec": 155.0,
+        "end_sec": 165.0,
+        "duration_sec": 10.0
+      },
+      "voiceover": {
+        "text": "และอย่างที่สามคือ เข้าถึงง่ายมาก ไม่ต้องสมัครก็ส่องได้ และพร้อมดูแลคอลเลกชันของคุณในระยะยาวครับ",
+        "words_count": 20,
+        "rate": "+5%",
+        "voice_start_sec": 155.2,
+        "voice_end_sec": 161.872,
+        "voice_duration_sec": 6.672,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 3.128
+      },
+      "on_screen_subtitle": {
+        "text": "3. เริ่มต้นง่าย ส่องได้ทันที พร้อมเติบโตไปกับพอร์ตคุณ",
+        "sub_start_sec": 155.1,
+        "sub_end_sec": 164.85,
+        "sub_duration_sec": 9.75
+      }
+    },
+    {
+      "scene_id": "S19",
+      "phase": "CTA",
+      "scene_timecode": {
+        "start_sec": 165.0,
+        "end_sec": 173.0,
+        "duration_sec": 8.0
+      },
+      "voiceover": {
+        "text": "ดาวน์โหลดแอป Univerza Tukdaeng ได้แล้ววันนี้ ค้นหาคำว่า TukDaeng ทั้งบน Google Play และ App Store โหลดฟรี",
+        "words_count": 22,
+        "rate": "+5%",
+        "voice_start_sec": 165.2,
+        "voice_end_sec": 171.92,
+        "voice_duration_sec": 6.72,
+        "lead_in_sec": 0.2,
+        "tail_gap_sec": 1.08
+      },
+      "on_screen_subtitle": {
+        "text": "ดาวน์โหลดได้แล้ววันนี้\nค้นหา \"TukDaeng\" บน Play Store & App Store",
+        "sub_start_sec": 165.1,
+        "sub_end_sec": 172.85,
+        "sub_duration_sec": 7.75
+      }
+    },
+    {
+      "scene_id": "S20",
+      "phase": "CTA",
+      "scene_timecode": {
+        "start_sec": 173.0,
+        "end_sec": 180.0,
+        "duration_sec": 7.0
+      },
+      "voiceover": {
+        "text": "แล้วมาเริ่มเปิดตู้โชว์นาฬิกาไปด้วยกันนะครับ ฝากกดติดตาม และรอชมคลิปสอนใช้งานแบบละเอียดในซีรีส์ถัดไปได้เลยครับ",
+        "words_count": 19,
+        "rate": "+22%",
+        "voice_start_sec": 173.05,
+        "voice_end_sec": 180.0,
+        "voice_duration_sec": 6.95,
+        "lead_in_sec": 0.05,
+        "tail_gap_sec": 0.0
+      },
+      "on_screen_subtitle": {
+        "text": "โหลดฟรี แล้วมาเปิดตู้โชว์นาฬิกาด้วยกัน\nกดติดตามเพื่อรอชมคลิปสอนใช้งานละเอียด",
+        "sub_start_sec": 173.1,
+        "sub_end_sec": 179.95,
+        "sub_duration_sec": 6.85
+      }
+    }
+  ]
+}

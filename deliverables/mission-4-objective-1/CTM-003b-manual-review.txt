@@ -1,0 +1,85 @@
+CTM-003b Manual Review Checklist — Categories + Reported Board Label Normalization
+Mission 4 / Objective 1 — รอผู้ใช้ตรวจ 07/10/2026
+วันที่ implement: 07/10/2026 — อ้างอิง CTM-002 plan §A.2/§B/§G.1 + canonical §9.2/9.3
+
+สถานที่หลักฐาน:
+- screenshots/mission-4-objective-1/before/ + after/ — 102 PNG ต่อชุด (34 surfaces × 3 viewports: Desktop 1920x1080 / Tablet 768x1024 / Mobile 440x956 — recaptured ตาม evidence standard 07/10/2026 ใน CTM-004; shots 07/08 blocked+deactivate แยกอยู่ใน console-only/ ตาม AGENTS.md evidence rule เพราะเปิดได้แค่ผ่าน render path ไม่มีปุ่มบนจอ)
+- scripts/capture-ctm-003b-category-board-labels.js — capture script (before|after)
+- scripts/verify-ctm-003b.js — auto-verify ผ่าน 38/38, ไม่มี JavaScript console error
+- regression: verify-ctm-003a.js ยังผ่าน 28/28 หลังแก้
+- ไฟล์ที่แก้: Prototypes/bo-prototype.html (labels/config เท่านั้น), docs/bo-canonical-label-table.md (§2/§4 resolution marks + typo fix §9.1)
+
+====================================================================
+A. จุดที่แก้ — ตรวจเทียบ before/ vs จอจริง (localhost:4173)
+====================================================================
+
+CATEGORY LIST (Content Management > Categories)
+[ ] 01 toolbar: "จัดเรียง Category" / "เพิ่ม Category" (before: Reorder Categories / Add Category — d01/m01)
+    — mobile แสดง icon + tooltip จาก aria → aria เปลี่ยนเป็น "จัดเรียง Category บน FO Board" / "เพิ่ม Category" (ตรวจผ่าน verify/DOM; hover tooltip บน desktop viewport ≤1180px จะเห็นข้อความไทย)
+[ ] 02 row menu CAT-007 (Inactive, 0 บทความ — เมนูครบ): "ดูรายละเอียด / แก้ไข Category / เปิดใช้งาน / ลบ Category"
+    (before: View detail / Edit Category / Set active / Delete category — d02/m02)
+    หมายเหตุ: row menu CAT-001..006 (Active มีบทความ) เหลือ "ดูรายละเอียด / แก้ไข Category" เท่านั้น ตาม logic เดิม (ปุ่ม deactivate ซ่อนเมื่อมีบทความผูกอยู่)
+
+CATEGORY DETAIL MODAL (row menu > ดูรายละเอียด)
+[ ] 03 CAT-007: tile "อัปเดตล่าสุด" (before: Updated At) + ปุ่ม "แก้ไข Category" / "เปิดใช้งาน" — d03/m03
+[ ] 04 CAT-001 (Active มีบทความ): ปุ่ม "แก้ไข Category" เท่านั้น (before: Edit Category — d05/m05)
+
+CATEGORY ACTION MODALS (titles TH → EN ตาม §3.2 + DECISION-7/8)
+[ ] 05 CAT-007 > เปิดใช้งาน → title "Confirm Reactivate Category" (before: ยืนยันการเปิดใช้งาน category — d04/m04)
+[ ] 06 CAT-007 > ลบ Category → title "Confirm Delete Category" (before: ยืนยันการลบ category — d06/m06)
+[ ] 07 blocked modal (CAT-001 deactivate — ปุ่มซ่อนใน UI เพราะมีบทความผูกอยู่, capture เปิดผ่าน render path เดียวกัน) → h2 "Cannot Deactivate Category" (before: ไม่สามารถปิดใช้งาน category — console-only/d07|t07|m07)
+[ ] 08 deactivate confirm (CAT-007 config — ไม่มีปุ่มใน UI เพราะ Inactive อยู่แล้ว, capture เปิดผ่าน render path) → "Confirm Deactivate Category" (before: ยืนยันการปิดใช้งาน category — console-only/d08|t08|m08)
+[ ] 09 body ของ modal ทุกใบยังเป็นไทยเหมือนเดิม (question/summary/ปุ่ม ยกเลิก-ยืนยัน/รับทราบ)
+
+STRUCTURE TITLES คง EN (evidence ไม่เปลี่ยน)
+[ ] 10 Reorder modal title คง "Reorder Categories" — d09/m09
+[ ] 11 Add/Edit Category editor modal title คง "Add Category" / "Edit Category" — d10/m10
+
+REPORTED ARTICLES LIST (Content Management > Reported Articles)
+[ ] 12 row menu RPC-043 (Pending): "ดูรายละเอียด / ดูบทความ / ปิดรายงาน / แก้ไขบทความ / เก็บบทความเข้าคลัง"
+    (before: View Article / Archive article — d12/m12)
+[ ] 13 "ดูบทความ" เปิด preview modal เดิมได้ — title คง "Preview article RPC-043 ART-043" (EN structure — d13/m13)
+
+REPORT DETAIL (row menu > ดูรายละเอียด — RPC-043)
+[ ] 14 panel-subtitle: "RPC-043 · ART-043 · ปิดบังตัวตนผู้รายงาน" (before: reporter identity masked — d14/m14)
+[ ] 15 Reported Article section: ปุ่ม "ดูบทความ" + aria "ดูบทความ RPC-043" (before: View Article + aria "View article RPC-043")
+[ ] 16 ปุ่มท้ายจอ: "ปิดรายงาน / แก้ไขบทความ / เก็บบทความเข้าคลัง" (before: Archive article)
+
+BOARD REPORT ACTION MODALS (titles → EN + confirm → ยืนยัน + reasonLabel)
+[ ] 17 RPC-043 > ปิดรายงาน → title "Confirm Close Report" (before: ยืนยันการปิดรายงาน — d15/m15); ปุ่ม confirm "ยืนยัน" (before: ยืนยันปิดรายงาน); reasonLabel "เหตุผลการปิดรายงาน" คงเดิม
+[ ] 18 RPC-043 > เก็บบทความเข้าคลัง → title "Confirm Archive Article" (before: ยืนยันการ Archive article — d16/m16); ปุ่ม confirm "ยืนยัน" (before: ยืนยัน Archive); reasonLabel "เหตุผลการเก็บบทความเข้าคลัง" (before: เหตุผลการ Archive article)
+
+ADMIN ACTION HISTORY (RPC-039 — Closed)
+[ ] 19 คอลัมน์ Action แสดง "เก็บบทความเข้าคลัง" (getBoardReportActionLabel map — before: เก็บบทความ; DECISION-1 align — d17/m17); "รับรายงาน Board" คงเดิม; audit detail "เก็บบทความออกจากการแสดงผล" คงเดิม (เป็น detail text ไทยอยู่แล้ว ไม่ใช่ label)
+
+====================================================================
+B. Side-effect guard (ตาม plan §B ⚠️ + pattern USR-003)
+====================================================================
+[ ] 20 ยืนยัน: modal title EN ไม่ถูก reuse เป็น history/audit — getCategoryActionConfig ใช้ historyAction แยก ("Deactivated"/"Activated"/"Deleted") และ getBoardReportActionConfig ใช้ historyAction แยก ("Close Report"/"Archive Article") → ไม่ต้องเพิ่ม historyLabel field (ตรงตามที่ plan คาด)
+[ ] 21 Admin Action History / Change History render ผ่าน label map เดิม — stored value ไม่เปลี่ยน sort/filter ปกติ
+
+====================================================================
+C. ไม่ได้แตะ (ข้อห้าม + deferred + out of scope)
+====================================================================
+- D16 table headers EN + data-label mirrors (Category list / Reported Articles / Reporter & Admin Action History) — รอ central decision; mismatch เดี่ยว 45512 data-label="Details" คงไว้ตาม plan
+- audit empty state "No admin action recorded yet" ที่ 23916 (User Mgmt) / 46007 (Reported Comments) — module อื่น out of scope; board report เปลี่ยนเป็น "ยังไม่มีการดำเนินการจาก Admin" (string ไม่ reachable ใน mock ปัจจุบันเพราะทุก report มี actionHistory — verify ผ่าน source check)
+- "reporter identity masked" ที่ 32137 (asset report) / 46445 (comment report) — module อื่น
+- toast "ไม่สามารถปิดใช้งาน category ที่มีบทความอยู่ได้" (43191) + field error (43190) — ไทยอยู่แล้ว ไม่ใช่ deviation
+- modal title "Reorder Categories" (40159) / "Add Category"/"Edit Category" (43092) / "Preview article …" (45830) — EN structure ผ่าน §3.2
+- mock data EN ทั้งหมด (M-C01..M-C09 รวม boardReportRows.actionHistory note EN ของ RPC-039 — stored mock ไม่แตะ)
+- Download CSV Template (Phase 2), FO preview internals, scenario selector labels (exempt §5.6), status pills EN, เมนู/module อื่น
+- ปุ่ม "ปิดใช้งาน" ใน row menu/detail — string normalize แล้วแต่ไม่ reachable ใน mock เดิม (ทุก Active category มีบทความ ≥1 → canDeactivate=false) — verify ผ่าน source check
+
+====================================================================
+D. ISSUES / OBSERVATIONS พบระหว่าง implement
+====================================================================
+1. aria-label บนปุ่ม toolbar (Reorder/Add) มีผลจริงบน mobile — CSS ซ่อน span แล้วใช้ attr(aria-label) เป็น tooltip จึง normalize aria คู่กันเสมอ (ตรงตาม O-C14)
+2. canonical §9.1 มี typo เดิม `เก็บบทวามเข้าคลัง` (ขาด ค ใน วาม) ที่ D-C22 row — FIXED เป็น "เก็บบทความเข้าคลัง" ระหว่าง task นี้
+3. ไม่มี canonical row ใหม่ต้องเพิ่มใน §2 — rows ที่ต้องใช้ทั้งหมดถูกเพิ่มไว้ใน CTM-003a แล้ว (ลบ Draft/ยกเลิกกำหนดเผยแพร่/เก็บบทความเข้าคลัง/block labels); label ไทย 003b ทุกตัวใช้ row เดิม (ดูรายละเอียด/แก้ไข <X>/เพิ่ม <Entity>/จัดเรียง <Entity>/ปิดใช้งาน/เปิดใช้งาน/ลบ <Entity>/ดู <Entity>/ยืนยัน/ปิดรายงาน)
+4. Viewport shots เดิม = 1440x900/390x844 ชุดเดียวกับ CTM-003a — ✅ RESOLVED 07/10/2026 ใน CTM-004: recapture ทั้งชุดเป็น standard 1920x1080/768x1024/440x956 (51 PNG ต่อชุด)
+5. [BUG FIX ระหว่าง review] mobile tap ปุ่ม icon-only → :hover ติดค้าง ทำ tooltip attr(aria-label) ซ้อนทับ modal — เพิ่ม CSS rule `body:has(#user-action-modal.show) …::after { content: none }` (~line 912, หลัง back-btn tooltip block) suppress tooltip ทุกชนิด (page-actions / back-btn / filter-reset) เฉพาะขณะ modal เปิด; tooltip บน list page ทำงานปกติ, ใช้ #user-action-modal ใน :has เพื่อให้ specificity ชนะ content: attr(aria-label) เดิม — verify เพิ่ม 2 checks, re-capture after ทั้งชุด (m09/m10 ไม่มี tooltip ซ้อน) — ⚠️ rule เป็น global มีผลกับ tooltip ของ module อื่นเฉพาะตอน modal เปิด (behavior ตรง intent เดิม)
+6. [BUG FIX ระหว่าง review] board report preview modal ("ดูบทความ") บน mobile ≤560px: modal กว้าง 528px (max-width: none) + `transform: translateX(-30px)` → ขอบขวาหลุดจอ ปุ่มปิด X คลิกไม่ได้ — แก้ใน @media (max-width:560px): `transform: none; width: min(528px,100%)` + ลด padding ข้าง .board-report-phone-preview เหลือ 16px (phone frame กว้างขึ้น ~322px บน 390px) — เฉพาะ board-report-phone-preview-modal; article-preview-modal อื่น fit viewport อยู่แล้ว — verify เพิ่ม 2 checks (close btn อยู่ใน viewport x=316 w=40 ≤390 + modal ปิดได้จริง) → 38/38, re-capture m13 แล้ว
+
+สถานะ: ✅ APPROVED — ผู้ใช้ตรวจครบทุกเคสผ่าน 07/10/2026 ("เช็คผ่านหมดทุกเคสแล้ว")
+ผลรีวิวระหว่างทาง: พบจุดต้องแก้ 2 จุด (mobile tooltip ซ้อน modal + preview modal ปุ่มปิดหลุดจอ) → แก้และ verify ผ่านเรียบร้อยก่อน approve (รายละเอียดข้อ D.5-D.6)
+auto-verify สุดท้าย: verify-ctm-003b.js 38/38 + verify-ctm-003a.js regression 28/28 — raw output: CTM-003b-test-results.txt

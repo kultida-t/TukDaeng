@@ -1,0 +1,50 @@
+<!doctype html><meta charset="utf-8"><style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Segoe UI","IBM Plex Sans Thai",Arial,sans-serif;background:#f5f4f0;color:#1b1b1e;padding:30px 36px;width:max-content}
+  .head{display:flex;align-items:center;gap:14px;border-bottom:2px solid #1b1b1e;padding-bottom:12px;margin-bottom:14px}
+  .chip{background:#c8212b;color:#fff;font-weight:700;font-size:13px;padding:6px 14px;border-radius:6px;letter-spacing:.04em;white-space:nowrap}
+  .ttl{font-size:25px;font-weight:800;letter-spacing:.02em}
+  .sub{font-size:13px;color:#666;font-weight:600}
+  .brand{margin-left:auto;color:#c8212b;font-weight:800;font-size:20px;letter-spacing:.06em}
+  .note{background:#ecebe6;border-radius:10px;padding:10px 16px;font-size:13px;line-height:1.7;margin-bottom:18px}
+  .note b{color:#c8212b}
+  .row{display:flex;gap:30px;align-items:flex-start}
+  .opt{flex:0 0 auto}
+  .opt-tag{display:inline-block;background:#1b1b1e;color:#fff;font-size:12.5px;font-weight:700;padding:4px 12px;border-radius:6px;margin-bottom:6px}
+  .opt-desc{font-size:12.5px;color:#555;margin-bottom:10px;width:460px;min-height:38px;line-height:1.5}
+  .opt-imgs{display:flex;gap:14px}
+  .opt-imgs.sub{margin-top:14px}
+  .fig{text-align:center}
+  .fig img{display:block;border-radius:14px;border:1px solid #d8d6cf;box-shadow:0 5px 14px rgba(0,0,0,.12)}
+  .fig .cap{font-size:11px;color:#888;margin-top:6px;letter-spacing:.06em;text-transform:uppercase}
+  .legend{margin-top:20px;border-top:1px solid #d8d6cf;padding-top:12px}
+  .lg{display:flex;gap:10px;align-items:center;font-size:12.5px;line-height:1.6;padding:3px 0}
+  .lg i{background:#c8212b;color:#fff;font-style:normal;font-weight:700;width:19px;height:19px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+  .foot{margin-top:12px;border-top:1px solid #e4e2dc;padding-top:8px;font-size:11px;color:#999;display:flex;justify-content:space-between}
+</style>
+  <div class="head"><span class="chip">SHEET 9</span>
+    <div><div class="ttl">Detail Page — Layer 3 + Comments</div><div class="sub">Feed Redesign — IG-style social feed for watch collectors</div></div>
+    <span class="brand">TUK DAENG</span>
+  </div>
+  <div class="note">หน้ารายละเอียดเต็มเมื่อกดจากกล่อง spec ย่อ — hero slider (ไม่มี thumbnail row), Descriptions → Technical (label ซ้าย/ค่า ขวา + n/a), ไม่มี sticky price bar, comments เปิดเป็น bottom sheet</div>
+  <div class="row">
+    <div class="opt">
+      <span class="opt-tag">Detail · Top</span>
+      <div class="opt-desc">hero รูปเต็มตา + counter 1/3 + FOR SALE tag + action row + seller + ราคา inline</div>
+      <div class="opt-imgs"><div class="fig"><img src="detail/top-dark.png" width="200"><div class="cap">Dark</div></div><div class="fig"><img src="detail/top-light.png" width="200"><div class="cap">Light</div></div></div>
+      
+    </div>
+    <div class="opt">
+      <span class="opt-tag">Detail · Specs</span>
+      <div class="opt-desc">Descriptions ก่อน แล้ว Technical — field ไม่มีข้อมูลแสดง n/a ตำแหน่งคงที่</div>
+      <div class="opt-imgs"><div class="fig"><img src="detail/specs-dark.png" width="200"><div class="cap">Dark</div></div><div class="fig"><img src="detail/specs-light.png" width="200"><div class="cap">Light</div></div></div>
+      
+    </div>
+    <div class="opt">
+      <span class="opt-tag">Comments sheet</span>
+      <div class="opt-desc">กด 💬 จาก action row — bottom sheet ทับจอ + emoji row + ช่องพิมพ์</div>
+      <div class="opt-imgs"><div class="fig"><img src="detail/comments-dark.png" width="200"><div class="cap">Dark</div></div><div class="fig"><img src="detail/comments-light.png" width="200"><div class="cap">Light</div></div></div>
+      
+    </div></div>
+  <div class="legend"><div class="lg"><i>1</i><span>เข้า Detail ได้เฉพาะทางกล่อง spec ย่อ (View full detail ›) — แตะรูปเป็นแค่เลื่อน carousel ตาม IG</span></div><div class="lg"><i>2</i><span>ไม่มี sticky price bar / ไม่มีแถว thumbnail / ไม่มี Comments section ท้ายหน้า</span></div></div>
+  <div class="foot"><span>TukDaeng — Feed Redesign Review</span><span>for internal review only</span></div>

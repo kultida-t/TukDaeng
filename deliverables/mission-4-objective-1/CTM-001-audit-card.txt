@@ -1,0 +1,53 @@
+CTM-001 — Content Management Label Audit (Read-only)
+== Scope ที่ตรวจครบ
+Articles list + filter/sort/search + mobile card
+Article Detail (tiles/readonly blocks/change history) + action buttons
+Add/Edit Article + block editor + inline help + upload controls
+Preview surfaces (board hero + FO phone preview + preview modal)
+Article/category save/cancel/status confirm + alert modals + scenario flows
+Categories list + Reorder modal + detail/editor modals + status/delete flows
+Reported Articles list + Report Detail + reporter/admin history tables
+Report action confirm modal (close-report/archive-article) + article preview modal
+Shared helpers: renderModule content branches, renderPageBackButton, customSelect,
+pager/history helpers — ownership verified (generic fallback path unreachable)
+
+== ผลการตรวจ
+Deviation ชั้นเนื้อหา 25 รายการ (D-C01..C25) / ~55 จุดแสดงผล
+  ไฮไลต์: View detail/Edit article/Edit Category/Add Category/
+  Reorder Categories/Set inactive/Delete category/View Article/
+  Archive article/Preview(+article)/+ Add block/status action labels,
+  block type labels, empty/error EN, alt fallbacks EN, aria ที่ mirror
+  English, article.actionHistory EN raw (historyLabel gap)
+D15 structure candidates 13 จุด (modal titles TH → Confirm <Verb> <Entity>)
+D16 table headers 6 ชุด — deferred ไม่แตะตามข้อห้าม (+ data-label mismatch 1)
+Observations 14 ข้อ (FO preview EN, aria convention, dead fields/button,
+  scenario selector consistency, panel title casing)
+Mock-data findings 9 ข้อ — รอ policy ใน CTM-002
+
+== Watch items จาก planning — ผลลัพธ์
+✓ board report historyLabel: มี mechanism อยู่แล้ว (getBoardReportActionLabel +
+  getBoardReportAuditDetail maps → TH); ช่องว่างจริง = article.actionHistory
+  render EN raw (D-C22) + config.note EN default leak เข้า Change History (D-C21)
+✓ generic surfaces: renderModule content branches = Content-owned; generic
+  fallthrough/renderRows/updateFilters/renderDetail ไม่ถึง content — verified
+✓ scenario strings: selectors+options exempt §5.6 ทั้งชุด; ที่เหลือแยกเป็น
+  result/error copy (board report = TH ครบ; article compact-alert titles ผสม —
+  decision D-C25)
+✓ a11y ใน renderModule: filter listbox aria EN = shared convention (O-C02);
+  toolbar button aria ต้อง mirror (D-C10/C11); block control aria EN (D-C07)
+
+== จุดที่ผ่านกฎ
+nav/breadcrumb/page title/panel title/section heading/modal title EN ครบ
+canonical buttons ไทยครบ (สร้างบทความ/ดูรายละเอียด/ปิดรายงาน/แก้ไขบทความ/
+ยืนยัน/ยกเลิก/รับทราบ/ปิด/บันทึกลำดับ/กลับไป <dest> + aria mirror)
+status/priority/queue pills EN ตามกฎชั้นโครง, filter/sort/search ไทยครบ
+board report error samples + history label maps ไทยครบ
+technical keys/status keys ไม่แตะตามข้อห้าม
+
+== Protected compliance
+bo-prototype.html ไม่แก้ — git clean
+ไม่แตะ D16 / Download CSV Template / mock-data EN / เมนูอื่น
+== Deliverable
+CTM-001-label-audit.txt — deviation list + target พร้อมส่งต่อ CTM-002
+== Next
+รอรีวิว/อนุมัติ → CTM-002 (normalize planning + canonical row additions)

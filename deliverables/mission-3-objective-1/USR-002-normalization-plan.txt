@@ -1,0 +1,256 @@
+================================================================================
+USR-002 — User Management Label Normalization Plan (Approval Gate)
+Mission 3 — Prototype Verification Series (Mission ID 01ebc19c / Task 3c044d17)
+================================================================================
+วันที่จัดทำ   : 2026-10-07
+สถานะ         : ✅ APPROVED 07/10/2026 — ทุก decision อนุมัติแล้ว (ดู §G)
+                ห้ามแก้ Prototypes/bo-prototype.html ใน task นี้ —
+                implement จริงใน USR-003 ตาม scope ที่อนุมัติเท่านั้น
+อิงจาก        : deliverables/mission-3-objective-1/USR-001-label-audit.txt
+มาตรฐาน       : docs/bo-canonical-label-table.md (Confirmed 02/10/2026 + §5)
+รูปแบบตาม     : canonical §7 (Mission 2 — Market Data Normalization Plan)
+
+Legend สถานะรายการ:
+  [CONFIRM]   เสนอ normalize — wording เสนอครบ รอ approve เป็นกลุ่มได้
+  [DECISION]  ต้องถามผู้ใช้ก่อน (มีหลายทางเลือก / กระทบ convention อื่น)
+  [DEFER]     คง deferred — ห้ามแก้ใน mission นี้
+  [OBSERVE]   บันทึก/ขอ policy — ไม่ใช่ deviation ชัดเจน
+
+================================================================================
+A. CONTENT-LAYER NORMALIZATION — ตาราง Current → Proposed (D-U01..D-U11)
+================================================================================
+ทุกรายการคือชั้นเนื้อหา (ควรเป็นไทยตามกฎ 2 ชั้น §1) — wording ด้านล่างเป็น
+ข้อเสนอที่จะขอ approve; label ไทยใหม่ทุกตัวต้องเทียบ §2 (ห้ามประดิษฐ์นอกตาราง —
+ดูหมายเหตุ D-U01)
+
+| #     | บรรทัด / ตำแหน่ง                                   | ปัจจุบัน                          | Proposed                              | สถานะ    |
+|-------|----------------------------------------------------|------------------------------------|----------------------------------------|----------|
+| D-U01 | userActionLabels["Reset password"] 30352 →         | "Reset password"                   | ส่งลิงก์ตั้งรหัสผ่านใหม่               | [DECISION-1] |
+|       | row menu 31827 + detail btn 30519/31627/31651 +    |                                    |                                        |          |
+|       | feedback 30529                                     |                                    |                                        |          |
+| D-U02 | empty chip renderUserDetailActions 30519           | "No available action"              | ไม่มี action บัญชีที่ทำได้              | [CONFIRM] |
+|       | (sibling chip 31654 ใช้ wording นี้อยู่แล้ว —      |                                    |                                        |          |
+|       |  เสนอใช้ตัวเดียวกันเพื่อความสม่ำเสมอ)             |                                    |                                        |          |
+| D-U03 | #panel-subtitle User Detail 31911                  | "{id} · contact data visible"      | "{id} · ข้อมูลติดต่อแสดงครบ"           | [CONFIRM] |
+| D-U04 | #panel-subtitle Report Detail 32054                | "{id} · {cat} · reporter identity  | "{id} · {cat} · ปิดบังตัวตนผู้รายงาน"   | [CONFIRM] |
+|       |                                                    |  masked"                           |                                        |          |
+| D-U05 | warning-note prefix Report Detail 32096            | "Deletion dependency:"             | "เงื่อนไขการลบบัญชี:"                  | [CONFIRM] |
+| D-U06 | Account Status History generated rows              | "Account registered"               | "ลงทะเบียนบัญชี"                       | [CONFIRM] |
+|       | 30024 / 30028 / 30041 / 30134                      | "User registered with {provider}"  | "สมัครด้วย {provider}"                 |          |
+|       |                                                    | "Report User"                      | "รายงานผู้ใช้"                          |          |
+|       |                                                    | "Admin action recorded"            | "บันทึกการดำเนินการของ Admin"          |          |
+| D-U07 | getAccountStatusDeliveryNote 20310-20313 →         | " · user signed out"               | " · ผู้ใช้ถูกออกจากระบบ"               | [CONFIRM] |
+|       | history note 31115 + audit detail 31123            | " · user access restored"          | " · คืนสิทธิ์เข้าใช้งานผู้ใช้"          |          |
+|       |                                                    | "notification email sent to {m}"   | "ส่งอีเมลแจ้งไปที่ {m}"                |          |
+|       |                                                    | "suspension ends {d}"              | "สิ้นสุดระงับ {d}"                     |          |
+| D-U08 | getAccountStatusEmailNote provider note            | "(Apple private relay email)"      | "(อีเมล Apple Private Relay)"          | [CONFIRM] |
+|       | 30565-30569                                        | "(Google account email)"           | "(อีเมลบัญชี Google)"                  |          |
+|       |                                                    | "(registered account email)"       | "(อีเมลที่ลงทะเบียน)"                  |          |
+| D-U09 | report-case button title 30270                     | title="Open {RPU-xxx}"             | title="ดูรายละเอียด {RPU-xxx}"          | [CONFIRM] |
+|       |                                                    |                                    | (title mirror action `ดูรายละเอียด` §2) |          |
+| D-U10 | renderUserProfileImage alt 30227                   | alt="{name} profile image"         | alt="รูปโปรไฟล์ {name}"                | [CONFIRM] |
+| D-U11 | fallback strings                                   | "Unknown time" 20401               | "ไม่ทราบเวลา"                           | [CONFIRM] |
+|       |                                                    | "No audit events recorded yet"     | "ยังไม่มีประวัติการดำเนินการ"           |          |
+|       |                                                    |  20357                             |                                        |          |
+|       |                                                    | "Admin confirmed action from       | "Admin ยืนยันการดำเนินการจาก            |          |
+|       |                                                    |  report context" 30971             |  บริบทรายงาน"                          |          |
+
+ข้อกำหนดเพิ่มเติมสำหรับ D-U01:
+  - "Reset password" เป็น action button (ชั้นเนื้อหา) — ไม่มี row ใน canonical §2
+    ตามกติกาต้อง "เพิ่ม row ในเอกสารก่อนแล้วค่อยใช้" → ต้องเพิ่ม canonical row
+    (กลุ่ม Reset/Send link) ใน docs/bo-canonical-label-table.md §2 พร้อมกับ
+    normalize — wording ที่จะเพิ่มขึ้นกับ DECISION-1
+
+================================================================================
+B. STRUCTURE-LAYER — D15 modal title candidates (S-U01a..e, S-U02, S-U03)
+================================================================================
+ตาม canonical §3.2 modal title = English `<Verb> <Entity>`; ตัวอย่างที่ canonical
+เขียนไว้ตรง: `ยืนยันการปิดรายงาน` → `Confirm Close Report` (D15)
+— ทั้งหมดอยู่ในกลุ่ม [DECISION-2] (ตัดสินใจ EN ทั้งชุด หรือคงไทย)
+
+| #     | ตำแหน่ง                              | ปัจจุบัน (ไทย)            | Proposed EN                 | หมายเหตุ |
+|-------|---------------------------------------|---------------------------|-----------------------------|----------|
+| S-U01a| userActionConfig.Suspend.title 30414  | ระงับบัญชีชั่วคราว         | Suspend Account             | crumb เดิม EN อยู่แล้ว |
+| S-U01b| userActionConfig.Ban.title 30432      | ระงับบัญชีถาวร             | Ban User                    | crumb เดิม EN อยู่แล้ว |
+| S-U01c| userActionConfig.Restore.title 30450  | ยกเลิกระงับบัญชีชั่วคราว    | Unsuspend Account           | ⚠️ ห้ามใช้ "Restore Account" — ชนกับ Account Deletion modal 31158 (audit แจ้งแล้ว) |
+| S-U01d| userActionConfig["Unban user"].title  | ยกเลิกระงับบัญชีถาวร        | Unban User                  |          |
+|       | 30467                                 |                           |                             |          |
+| S-U01e| userActionConfig["Resend verification | ส่งข้อมูลยืนยันตัวตนอีกครั้ง  | Resend Verification         |          |
+|       |  context"].title 30484                |                           |                             |          |
+| S-U02 | renderReportStatusConfirmModal h2     | ยืนยันการปิดรายงาน         | Confirm Close Report        | canonical §3.2 ยกตัวอย่างนี้ไว้โดยตรง |
+|       | 31703                                 |                           |                             |          |
+| S-U03 | userActionConfig["Reset password"]    | Reset Password Link       | คงเดิม หรือ                  | EN อยู่แล้ว (compliant) |
+|       | .title 30398                          | (noun phrase)             | "Send Reset Password Link"  | noun vs <Verb> <Entity> — ผูกกับ DECISION-1 |
+
+⚠️ SIDE-EFFECT ที่ต้องแจ้งตอน approve (ค้นพบใน USR-002):
+  appendUserAccountStatusHistory 31110-31123 ใช้ `config.title` เป็น
+  `action`/`actionLabel` ของ Account Status History และ report audit —
+  ถ้าเปลี่ยน title เป็น EN ช่อง Action ของ history จะกลายเป็น EN ทันที
+  ขัดกับ D-U06 (history content = ไทย)
+  → ถ้าอนุมัติ EN titles ต้องเพิ่ม field แยก เช่น `historyLabel` (ไทย)
+    ให้ config แล้วเปลี่ยน 31111/31122 มาใช้ field นั้น
+    (หรือเลือกคง title ไทย = ไม่เกิด side-effect)
+
+NOTE (config ที่ตายแล้ว): userActionConfig.crumb ทั้ง 6 key
+(30399/30415/30433/30451/30468/30485) ไม่มี callsite render — ถ้า normalize
+title เสนอจัดการ crumb ไทย 3 จุดไปด้วยกันเพื่อไม่ให้หลุด convention
+(ไม่มีผลต่อ UI — เป็น dead config; แก้หรือไม่แก้ก็ได้ ให้ตัดสินพร้อม DECISION-2)
+
+================================================================================
+C. OBSERVATION DECISIONS (O-U01..O-U08)
+================================================================================
+| #     | ประเด็น                                             | ข้อเสนอ                    | สถานะ      |
+|-------|------------------------------------------------------|----------------------------|------------|
+| O-U01 | account-status pill render ไทย (ใช้งานได้/รอยืนยันตัวตน/ | [DECISION-3]              | ถ้า EN:    |
+|       | ระงับชั่วคราว/ระงับบัญชีถาวร/รอลบบัญชี/ลบแล้ว/        | EN = ตรง §3.3 pills       | ต้องแยก    |
+|       | ลบตัวตนแล้ว) ผ่าน userStatusLabels 21829 +           | TH = ตาม convention       | pill label |
+|       | userStatusPill 22147 — ขณะที่ report queue pill =    | ข้าม module (asset pills   | ออกจาก     |
+|       | Pending/Closed EN, priority = High/Medium/Low EN,    | เป็นไทย ส่วน admin/        | filter     |
+|       | แต่ cross-module ผสม (asset moderation = ไทย)        | delivery = EN)             | labels     |
+| O-U02 | row-menu aria ผสม: `เมนูรายงาน` 31634 (TH) vs        | align เป็น "Report         | [CONFIRM]  |
+|       | `Account actions` 31824 (EN) — global convention     | actions" (aria-only,       | (priority  |
+|       | ส่วนใหญ่ EN `X actions`                              | ไม่ใช่ display text)       | ต่ำ)       |
+| O-U03 | customSelect listbox aria EN — shared helper ทุก     | ไม่แก้ — consistent cross- | ไม่ทำ      |
+|       | module                                               | module; localize ต้องทำ    | (out of    |
+|       |                                                      | shared helper              | scope)     |
+| O-U04 | Field/tile labels EN สม่ำเสมอ (User ID, Username,    | compliant — ไม่แก้         | ผ่าน       |
+|       | Follower, Contact/Auth, Report ID ฯลฯ)               |                            |            |
+| O-U05 | `Note / หมายเหตุ` mixed label (≥10 จุดทั้ง           | cross-module convention —  | ไม่ทำ      |
+|       | prototype)                                           | ไม่ใช่ deviation เฉพาะจอ   |            |
+| O-U06 | `${n} assets` / `${n} reporters` count chips         | convention เดียวกับ tag    | ไม่ทำ      |
+|       |                                                      | อื่น                       |            |
+| O-U07 | Dead label sources (getActivityTimeline,             | ไม่แก้ — ไม่มี render      | ไม่ทำ      |
+|       | getSupportContext, getDeletionContext,               | callsite                   |            |
+|       | getLoginHistory, user.statusLabel/latest บางส่วน)    |                            |            |
+| O-U08 | `เปิดใช้งานบัญชีอีกครั้ง` audit action label         | ไทยถูกต้องแล้ว             | ผ่าน       |
+
+ผลตรวจซ้ำ M-U10 (ทำใน task นี้ตาม audit):
+  user.statusLabel ถูก assign ที่ 30725/30735/30743 แต่ไม่มี read/render
+  callsite ใน user scope; user.latest render ผ่าน getSupportContext 29992
+  และ getActivityTimeline 30231-30233 เท่านั้น — ทั้งสอง helper ไม่มี callsite
+  (grep พิสูจน์ 4 definitions 0 calls) → ยืนยัน dead fields ไม่ใช่ surface จริง
+  ถ้าอนุมัติ normalize mock data จุดนี้เป็นค่าเสริม (ไม่มีผลต่อจอ)
+
+================================================================================
+D. MOCK-DATA POLICY — M-U01..M-U10 [DECISION-4]
+================================================================================
+ค่า mock ที่ render จริงบนจอแต่เป็น EN (เป็น "data" ไม่ใช่ "label" — mission
+ห้ามแก้ mock data โดย default; ต้อง policy ชัดเจน):
+
+| #     | ค่า mock                                  | render ที่                        | จำนวน |
+|-------|--------------------------------------------|-----------------------------------|-------|
+| M-U01 | user.foImpact EN 9 users                   | "ผลกระทบต่อแอปพลิเคชัน:" 31952 +   | 9     |
+|       |                                            | action feedback 30530             |       |
+| M-U02 | user.actionNote EN                         | "หมายเหตุการดำเนินการ:" 31953      | 9     |
+| M-U03 | joined "Not joined yet" /                  | tile/column Date Joined,          | 2     |
+|       | lastActive "No app session"                | Last Active                       | users |
+| M-U04 | verification EN strings                    | history Reference 30027            | ~6 ค่า|
+| M-U05 | contact "Line: …"/"Phone: …"              | Contact tiles (label Line/Phone)  | 5     |
+| M-U06 | report.reason EN                           | Reports tile 30251, report-brief   | 6/8   |
+|       |                                            | 30272, history fallback           | reports|
+| M-U07 | report.waiting "N hr" ผสมกับ "N ชม."      | Waiting meta 30275, summary 30252 | 6     |
+| M-U08 | report.category "Profile"/"Chat"          | panel-subtitle 32054, brief 30250 | —     |
+| M-U09 | report.actionHistory EN                   | audit detail drawer/fallback       | —     |
+| M-U10 | user.statusLabel/user.latest EN           | dead fields (ยืนยันแล้ว ข้างบน)    | —     |
+
+ทางเลือก policy:
+  (i) คง mock EN ไว้ทั้งหมด — ถือเป็น data quirk ของ prototype, แก้เฉพาะ label
+      (ประหยัด scope, mock ไม่ใช่ label ตามนิยาม mission)
+  (ii) normalize เฉพาะค่าที่ render บนจอ (M-U01..M-U09) — แก้เฉพาะ string value
+       ไม่แตะ key/logic; M-U10 dead ไม่ต้องแตะ
+  (iii) แก้บางส่วน — ระบุรายการเอง
+
+================================================================================
+E. DEFERRED — D16 table headers (ห้าม normalize ตามข้อห้าม mission)
+================================================================================
+คง deferred รอ central decision — บันทึกไว้เท่านั้น ห้ามแตะทั้ง <th> และ
+data-label attributes (mobile mirror ต้อง normalize คู่กันเมื่อ D16 มีมติ):
+  - User List headers 31800 (EN ทั้งหมด)
+  - Reported Users headers ~31860 (EN ทั้งหมด)
+  - Account Status History 30146-30151 (EN ทั้งหมด)
+  - Reporter History ~20728-20733 (ผสม TH+EN)
+  - Admin Action History ~20768-20773 (ผสม TH+EN)
+
+================================================================================
+F. ขอบเขต / ข้อห้าม (ยืนยันอีกครั้งในแผน)
+================================================================================
+- ห้ามแก้ Prototypes/bo-prototype.html ก่อน approval — จอทั้งหมด protected;
+  implement จริงใน USR-003 เท่านั้น
+- ห้าม normalize table headers (D16 — รอ central decision)
+- ห้ามแตะ technical keys / status keys / ID prefixes / audit event names
+  (reportQueueStatusPill Pending/Closed, priority High/Medium/Low, auth pills
+  Email/Google/Apple คงเดิมทั้งหมด)
+- ห้าม normalize เมนูอื่น / shared helper นอก scope (O-U03 customSelect aria)
+- ห้ามใช้ label นอก canonical table — label ไทยใหม่ที่ไม่มี row ต้องเพิ่มใน
+  canonical §2 ก่อน (เฉพาะ D-U01 ในแผนนี้)
+- ไม่แตะ CSS/logic/navigation/route — แก้เฉพาะ string label
+
+================================================================================
+G. DECISIONS ที่ต้องการ explicit approval (สรุป — ถามทีละข้อ)
+================================================================================
+DECISION-1 : wording ปุ่ม D-U01 "Reset password"
+  (a) `ส่งลิงก์ตั้งรหัสผ่านใหม่`  [เสนอหลัก — ตรงกับ modal summary
+      "ส่งลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนไว้" และ title
+      "Reset Password Link"] + เพิ่ม canonical row §2
+  (b) `ตั้งรหัสผ่านใหม่`        [สั้นกว่า แต่ action จริงคือ "ส่งลิงก์"
+      ไม่ได้ reset ในจอนี้โดยตรง]
+  (c) `ส่งลิงก์รีเซ็ตรหัสผ่าน`   [ใกล้ EN เดิมที่สุด]
+  (d) อื่น ๆ
+
+DECISION-2 : modal titles (S-U01a..e + S-U02) — แปลงเป็น EN ตาม §3.2?
+  (a) EN ทั้งชุด + เพิ่ม `historyLabel` (ไทย) แยกให้ config แล้วเปลี่ยน
+      31111/31122 มาใช้ — กัน side-effect ให้ history Action ยังเป็นไทย
+      [เสนอหลัก — ตรง §3.2 และไม่ทำลาย D-U06]
+  (b) EN ทั้งชุด + ยอมให้ history Action column เป็น EN (แก้น้อยกว่า
+      แต่ขัดกับเป้าหมาย D-U06)
+  (c) คง title ไทยเดิมทั้งหมด (ไม่ normalize D15 ใน mission นี้)
+  — และ S-U03 "Reset Password Link": คงเดิม หรือ "Send Reset Password Link"
+  — dead `crumb` config ไทย 3 จุด: จัดการไปด้วย หรือคงไว้
+
+DECISION-3 : account-status pill (O-U01)
+  (a) normalize เป็น EN (Active/Pending Verification/Suspended/Banned/
+      Deletion Requested/Deleted/Anonymized ฯลฯ) ตาม §3.3 — ต้องแยก pill
+      labels ออกจาก filter option labels (filter ยังไทย) — แตะ
+      userStatusLabels/userStatusPill + render ทุกจุดที่ใช้
+  (b) คงไทยเดิม — ถือตาม precedent asset moderation pills (ไทย) แล้ว
+      flag เป็น cross-module inconsistency ให้ mission กลางตัดสิน
+  [เสนอ: (b) เพราะ §3.3 กับ practice ข้าม module ขัดกันเอง —
+   pill ของ module นี้สอดคล้อง asset side มากกว่า]
+
+DECISION-4 : mock-data policy (M-U01..M-U10) — (i)/(ii)/(iii) ตามตาราง D
+
+CONFIRM batch (ถ้าอนุมัติเป็นชุดได้ ไม่ต้องถามทีละจุด):
+  D-U02..D-U11 (10 รายการ) + O-U02 (aria "Report actions")
+
+================================================================================
+G.1 ผลการตัดสินใจ (APPROVED 07/10/2026 — ผู้ใช้เลือกทีละข้อ)
+================================================================================
+- DECISION-1 : ✅ `ส่งลิงก์ตั้งรหัสผ่านใหม่` — เพิ่ม canonical row §2 ใน
+  docs/bo-canonical-label-table.md ก่อนใช้ (ทำตอน USR-003)
+- DECISION-2 : ✅ modal titles → EN ทั้งชุด (S-U01a Suspend Account,
+  S-U01b Ban User, S-U01c Unsuspend Account, S-U01d Unban User,
+  S-U01e Resend Verification, S-U02 Confirm Close Report)
+  + เพิ่ม `historyLabel` (ไทย = title เดิม) ให้ config แล้วเปลี่ยน
+  appendUserAccountStatusHistory 31111 + pendingReportActionAudit 31122
+  มาใช้ historyLabel — history Action column ยังเป็นไทยตาม D-U06
+- DECISION-2b: ✅ "Reset Password Link" title คงเดิม (EN compliant อยู่แล้ว);
+  dead config `crumb` ไทย 3 จุด → EN (อนุมัติ — ไม่มีผลต่อ UI)
+- DECISION-3 : ✅ status pill → EN ตาม §3.3 — เพิ่ม map EN ให้
+  userStatusPill + tile Account Status 32082; userStatusLabels (ไทย) คงไว้
+  สำหรับประโยค content ที่ 31060/31671 (filter options 29829-29837
+  hardcode แยกอยู่แล้ว ไม่กระทบ)
+- DECISION-4 : ✅ คง mock EN เดิม (M-U01..M-U09 เป็น data quirk ตาม
+  out-of-scope "ไม่เปลี่ยน data mock"; M-U10 = dead fields ไม่ต้องแตะ)
+- CONFIRM batch: ✅ อนุมัติทั้งชุด — D-U02..D-U11 (10 รายการ ตาม proposed
+  wording ในตาราง §A) + O-U02 (aria `เมนูรายงาน` → `Report actions`)
+- แผนโดยรวม  : ✅ อนุมัติ — ผู้ใช้เลือกหยุดไว้ก่อน (USR-003 เริ่มเมื่อสั่ง)
+
+================================================================================
+H. หลัง approval → hand-off ไป USR-003
+================================================================================
+- แก้เฉพาะจุดที่ approve ใน Prototypes/bo-prototype.html
+- เพิ่ม canonical row ใน docs/bo-canonical-label-table.md §2 (กรณี D-U01)
+  และบันทึก approved plan ลง canonical doc (ตาม precedent §7 Market Data)
+- USR-004: re-scan `node Prototypes/scan-labels.mjs` + manual review
+  checklist A–E
+================================================================================

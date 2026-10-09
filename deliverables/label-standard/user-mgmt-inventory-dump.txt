@@ -1,0 +1,136 @@
+total in range: 121
+--- button 28
+--- title 26
+--- modal-title 3
+--- label 4
+--- field-label 9
+--- a11y-attr 7
+--- js-label 44
+===== button =====
+29605	[depLink]	"${…}" act=other
+29659	[depLink]	"คืนบัญชี" act=restrict-moderate
+29662	[depLink]	"ปฏิเสธคืนบัญชี" act=restrict-moderate
+29728	[pushRestoreInbound]	"${…}" act=other
+29808	[renderUserManagement]	"${…} ${…}" act=other
+29809	[renderUserManagement]	"${…} รีเซ็ตค่าทั้งหมด" aria="รีเซ็ตค่าทั้งหมด" act=search-filter-sort
+29845	[renderUserManagement]	"${…} รีเซ็ตค่าทั้งหมด" aria="รีเซ็ตค่าทั้งหมด" act=search-filter-sort
+30270	[renderLatestReportBrief]	"${…}" title="Open ${item.id}" act=other
+30519	[renderUserDetailActions]	"${…}" act=other
+31025	[renderUserActionPage]	"ปิด" aria="ปิด" act=cancel-dismiss
+31055	[renderUserActionPage]	"${…}" act=other
+31056	[renderUserActionPage]	"${…}" act=other
+31375	[renderDeletionActionModal]	"ปิด" aria="ปิด" act=cancel-dismiss
+31405	[renderDeletionActionModal]	"${…}" act=other
+31406	[renderDeletionActionModal]	"${…}" act=other
+31619	[renderReportStatusActionButtons]	"${…}" act=other
+31627	[renderReportAccountActionButtons]	"${…}" act=other
+31636	[renderReportRowActionMenu]	"ดูรายละเอียด" act=view-detail
+31647	[renderReportDetailActionButtons]	"${…}" act=other
+31651	[renderReportDetailActionButtons]	"${…}" act=other
+31706	[renderReportStatusConfirmModal]	"ปิด" aria="ปิด" act=cancel-dismiss
+31733	[renderReportStatusConfirmModal]	"ยกเลิก" act=cancel-dismiss
+31734	[renderReportStatusConfirmModal]	"ยืนยัน" act=confirm-submit
+31826	[start]	"ดูรายละเอียด" act=view-detail
+31827	[start]	"${…}" act=other
+32081	[renderReportedUserDetail]	"${…}" act=other
+32130	[renderReportedAssetDetail]	"${…}" act=other
+32151	[renderReportedAssetDetail]	"View Asset" aria="View asset ${asset.id}" act=view-detail
+===== title =====
+29591	[stepNode]	"Deletion Timeline" act=title-heading
+29610	[depLink]	"Dependency Summary" act=title-heading
+29638	[depLink]	"Deletion Plan" act=title-heading
+29736	[pushRestoreInbound]	"History & Actions" act=title-heading
+29772	[pushRestoreInbound]	"${…} : ${…}" act=title-heading
+30329	[renderProfileLinkSection]	"Link Profile" act=title-heading
+31910	[renderUserDetail]	"User Detail" act=title-heading
+31917	[renderUserDetail]	"${…}" act=title-heading
+31925	[renderUserDetail]	"Account Summary" act=title-heading
+31939	[renderUserDetail]	"Contact / Auth" act=title-heading
+31946	[renderUserDetail]	"Reports" act=title-heading
+31955	[renderUserDetail]	"Account Status History" act=title-heading
+31990	[renderUserDetailPageSpec]	"${…} : ${…}" act=title-heading
+31996	[renderUserDetailPageSpec]	"Account Summary" act=title-heading
+32007	[renderUserDetailPageSpec]	"Contact / Auth" act=title-heading
+32013	[renderUserDetailPageSpec]	"Assets Summary" act=title-heading
+32017	[renderUserDetailPageSpec]	"Reports" act=title-heading
+32023	[renderUserDetailPageSpec]	"Account Status History" act=title-heading
+32064	[renderReportedUserDetail]	"${…} : ${…}" act=title-heading
+32076	[renderReportedUserDetail]	"Reported User" act=title-heading
+32087	[renderReportedUserDetail]	"Reporter History" act=title-heading
+32092	[renderReportedUserDetail]	"Admin Action History" act=title-heading
+32139	[renderReportedAssetDetail]	"${…} : ${…}" act=title-heading
+32150	[renderReportedAssetDetail]	"Reported Asset" act=title-heading
+32164	[renderReportedAssetDetail]	"Reporter History" act=title-heading
+32169	[renderReportedAssetDetail]	"Admin Action History" act=title-heading
+===== modal-title =====
+31022	[renderUserActionPage]	"${…}" act=title-heading
+31372	[renderDeletionActionModal]	"${…}" act=title-heading
+31703	[renderReportStatusConfirmModal]	"ยืนยันการปิดรายงาน" act=title-heading
+===== label =====
+29552	[stepNode]	"${…}" act=other
+29813	[renderUserManagement]	"${…}" act=other
+31806	[start]	"${…}" act=other
+32151	[renderReportedAssetDetail]	"View Asset" act=view-detail
+===== field-label =====
+30706	[renderSuspensionEndField]	"ระงับถึงวันที่ * ค่าเริ่มต้นคือ 7 วัน Admin แก้ไขวันที่ได้ก่อนกดยืนยัน เมื่อครบกำหนดระบบจะคืนสิทธิ์ให้ผู้ใช้โดยอัตโนมัติและผู้ใช้ต้องเข้าสู่ระบบใหม่" act=auth
+31042	[renderUserActionPage]	"${…} ${…})), \"\", \"data-custom-select-silent\", completed)}" act=select-choose
+31046	[renderUserActionPage]	"Note / หมายเหตุ" act=other
+31064	[renderUserActionPage]	"Test flow ${…}" act=other
+31393	[renderDeletionActionModal]	"${…} ${…})), \"\", \"data-custom-select-silent\", completed)}" act=select-choose
+31397	[renderDeletionActionModal]	"Note / หมายเหตุ" act=other
+31723	[renderReportStatusConfirmModal]	"เหตุผลการปิดรายงาน ${…})), \"\", \"data-custom-select-silent\")}" act=restrict-moderate
+31727	[renderReportStatusConfirmModal]	"Note / หมายเหตุ" act=other
+31742	[renderReportStatusConfirmModal]	"Test flow ${…}" act=other
+===== a11y-attr =====
+29809	[renderUserManagement]	"รีเซ็ตค่าทั้งหมด" act=search-filter-sort
+29845	[renderUserManagement]	"รีเซ็ตค่าทั้งหมด" act=search-filter-sort
+30270	[renderLatestReportBrief]	"Open ${item.id}" act=other
+31025	[renderUserActionPage]	"ปิด" act=cancel-dismiss
+31375	[renderDeletionActionModal]	"ปิด" act=cancel-dismiss
+31706	[renderReportStatusConfirmModal]	"ปิด" act=cancel-dismiss
+32151	[renderReportedAssetDetail]	"View asset ${asset.id}" act=view-detail
+===== js-label =====
+29830	[renderUserManagement]	"ทุกสถานะ" act=other
+29831	[renderUserManagement]	"ใช้งานได้" act=other
+29832	[renderUserManagement]	"รอยืนยันตัวตน" act=confirm-submit
+29833	[renderUserManagement]	"ระงับชั่วคราว" act=restrict-moderate
+29834	[renderUserManagement]	"ระงับบัญชีถาวร" act=restrict-moderate
+29835	[renderUserManagement]	"รอลบบัญชี" act=delete-remove
+29836	[renderUserManagement]	"ลบแล้ว" act=delete-remove
+29840	[renderUserManagement]	"เรียงตามใช้งานล่าสุด" act=search-filter-sort
+29841	[renderUserManagement]	"เรียงตามวันที่สมัครล่าสุด" act=search-filter-sort
+29842	[renderUserManagement]	"จำนวน report" act=other
+29843	[renderUserManagement]	"จำนวน asset" act=other
+29948	[getUserContactDisplayItems]	"Contact" act=utility
+29965	[getUserAuthDetailRows]	"Email" act=other
+29966	[getUserAuthDetailRows]	"Auth Method" act=other
+29967	[getUserAuthDetailRows]	"SSO Provider" act=other
+29968	[getUserAuthDetailRows]	"Email Verification" act=other
+30365	[renderContactRows]	"สำเร็จ" act=other
+30366	[renderContactRows]	"สถานะบัญชีไม่ตรงเงื่อนไข" act=other
+30367	[renderContactRows]	"ข้อมูลเปลี่ยนระหว่างดำเนินการ" act=confirm-submit
+30368	[renderContactRows]	"ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด" act=other
+30369	[renderContactRows]	"ส่งข้อมูลไม่สำเร็จ" act=confirm-submit
+30370	[renderContactRows]	"เซสชันหมดอายุ" act=other
+30375	[renderContactRows]	"ไม่สามารถดำเนินการได้" act=confirm-submit
+30379	[renderContactRows]	"ข้อมูลมีการเปลี่ยนแปลงแล้ว" act=edit
+30383	[renderContactRows]	"ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด" act=other
+30387	[renderContactRows]	"ส่งข้อมูลไม่สำเร็จ" act=confirm-submit
+30391	[renderContactRows]	"เซสชันหมดอายุ" act=other
+30398	[renderContactRows]	"Reset Password Link" act=search-filter-sort
+30414	[renderContactRows]	"ระงับบัญชีชั่วคราว" act=restrict-moderate
+30432	[renderContactRows]	"ระงับบัญชีถาวร" act=restrict-moderate
+30450	[renderContactRows]	"ยกเลิกระงับบัญชีชั่วคราว" act=restrict-moderate
+30467	[renderContactRows]	"ยกเลิกระงับบัญชีถาวร" act=restrict-moderate
+30484	[renderContactRows]	"ส่งข้อมูลยืนยันตัวตนอีกครั้ง" act=confirm-submit
+31001	[getUserActionErrorSample]	"ส่งอีเมลยืนยันไม่สำเร็จ" act=confirm-submit
+31158	[part]	"Restore Account" act=restrict-moderate
+31177	[part]	"Reject Restore" act=restrict-moderate
+31571	[getReportStatusActions]	"ปิดรายงาน" act=restrict-moderate
+31576	[getReportStatusActions]	"ปิดรายงาน" act=restrict-moderate
+31689	[renderReportStatusConfirmModal]	"สำเร็จ" act=other
+31690	[renderReportStatusConfirmModal]	"รายงานไม่อยู่ในสถานะที่ปิดได้" act=cancel-dismiss
+31691	[renderReportStatusConfirmModal]	"ข้อมูลรายงานเปลี่ยนระหว่างดำเนินการ" act=confirm-submit
+31692	[renderReportStatusConfirmModal]	"ยังมีเงื่อนไขที่ต้องตรวจสอบ" act=other
+31693	[renderReportStatusConfirmModal]	"บันทึกผลปิดรายงานไม่สำเร็จ" act=confirm-submit
+31694	[renderReportStatusConfirmModal]	"เซสชันหมดอายุ" act=other

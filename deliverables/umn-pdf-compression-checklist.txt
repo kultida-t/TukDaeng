@@ -1,0 +1,34 @@
+PDF Compression Evidence — Univerza_Tukdaeng_User_Manual.pdf
+Task: ลดขนาดไฟล์ Univerza_Tukdaeng_User_Manual.pdf (75MB → ขนาดเล็กลง)
+Date: 07/10/2026
+Commit: 2730f0f (update manual app)
+
+ผลลัพธ์
+- Univerza_Tukdaeng_User_Manual.pdf — 75.0 MB → 7.2 MB (−90%) [ไฟล์หลักสำหรับส่ง]
+- Univerza_Tukdaeng_User_Manual_lite.pdf — 4.6 MB (−94%) [รุ่นสำรองเล็กสุด]
+- Univerza_Tukdaeng_User_Manual_original.pdf — 75.0 MB [backup ต้นฉบับ]
+
+สาเหตุไฟล์ใหญ่ (Root cause)
+- PDF export จาก Chromium print-to-PDF ฝัง screenshot PNG 1080x2400 จำนวน 152 รูป
+- รวมขนาดรูป ~73 MB จากไฟล์ทั้งหมด 75 MB (40 หน้า)
+- ความละเอียดรูปจริง median 300 DPI เกินความจำเป็นสำหรับเอกสารอ่านบนจอ/พิมพ์
+
+วิธีบีบอัด
+- PyMuPDF rewrite_images: downscale รูปที่เกิน threshold เป็น 150 DPI (ไฟล์หลัก) / 120 DPI (lite)
+- Re-encode PNG → JPEG q80 (ไฟล์หลัก) / q65 (lite)
+- save ด้วย garbage collection + stream compression
+- ไม่มีรูปที่มี alpha mask (SMask = 0/143) จึงแปลง JPEG ได้ปลอดภัยทุกรูป
+
+ตรวจสอบแล้ว (Verification)
+[✓] จำนวนหน้าครบ 40/40 ทั้งสองรุ่น
+[✓] Text layer เหมือนเดิม — ค้นหา/ก๊อปข้อความได้ (703 chars เท่ากันบน page 4)
+[✓] Render page 4 (Onboarding) เทียบ original/main/lite — ตัวหนังสือและ screenshot อ่านชัดเท่ากัน
+[✓] Zoom 300 DPI เทียบบริเวณ screenshot โทรศัพท์ — ตัวอักษรในภาพยังคมชัด ไม่พิกเซลแตก
+[✓] โครงสร้างเอกสารไม่เสีย (ต้นฉบับไม่มี TOC/bookmarks/links ภายใน จึงไม่มีอะไรหาย)
+[✓] ขนาดผ่านเกณฑ์ส่งไฟล์ (เป้า < 10–15MB → ได้ 7.2MB / 4.6MB)
+
+หลักฐานภาพ: screenshots/mission-umn-pdf-obj1/
+- before_p3_original_75mb.png / after_p3_main_7.2mb.png / after_p3_lite_4.6mb.png
+- zoom_before_p3.png / zoom_after_main_p3.png / zoom_after_lite_p3.png
+
+หมายเหตุ: PDF หลัก (7.2MB) ใช้แนบส่งตรวจได้ตามเกณฑ์ไฟล์ < 15MB; รุ่น lite เก็บไว้สำรองกรณีต้องการไฟล์เล็กกว่า; original เก็บเป็น master คุณภาพเต็ม

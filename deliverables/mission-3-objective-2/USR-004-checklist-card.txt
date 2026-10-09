@@ -1,0 +1,31 @@
+USR-004 — Inventory Re-scan & Checklist Gate (User Management)
+== Re-scan vs baseline
+scan รันผ่านไม่มี error — inventory.json/md regenerated
+entries 1,926 → 1,926 (delta 0 — label swap ในจุดเดิม)
+deviations ที่ normalize หายครบ: 11 content + 6 modal titles + pill EN + 3 aria/title/alt
+ไม่มี deviation ใหม่ใน User Management scope
+== Known remaining (ตามมติ)
+D16 table headers EN/TH — deferred รอ central decision
+Mock data EN (M-U01..M-U10) — คงเดิมตาม DECISION-4
+reporter identity masked / ยืนยันการปิดรายงาน / View Asset ของ module อื่น — รอ mission เฉพาะจอ
+Reset password เหลือเป็น action key + auth-screen aria (locked)
+== A. Language layering
+nav/title/detail head/breadcrumb EN structure คงเดิม
+modal titles → EN <Verb> <Entity> ครบ 6 จุด + historyLabel ไทยแยก
+action buttons/copy/fallbacks ไทยตาม canonical §2 (row ใหม่: ส่งลิงก์ตั้งรหัสผ่านใหม่)
+status pills EN ผ่าน userStatusPillLabels; aria/title/alt mirror visible ครบ
+== B. Button correctness
+Confirm Close Report title EN + ยกเลิก/ยืนยัน ไทย
+empty chip ไม่มี action บัญชีที่ทำได้ ตรง sibling
+crumb dead config → EN (approved)
+== C. Protected compliance
+แก้เฉพาะ approved scope ตาม canonical §8 + 1 CSS fix ที่อนุมัติ
+internal keys/class/route/mock คงเดิม ไม่มี scope creep
+§2 row ใหม่ + §8 plan บันทึกแล้ว
+== D. Visual / responsive
+mobile action buttons flex บรรทัดเดียว @media ≤760px (extra fix)
+ตรวจครบ 18 จุด 3 viewports (1920/768/440 repo standard)
+== E. Evidence
+before/after 42 PNG + check-mobile 2 PNG
+usr-003-checklist ผ่านครบ ผู้ใช้ review แล้ว
+inventory 1,926 regenerated + canonical table updated

@@ -909,6 +909,15 @@
       opacity: 1;
       visibility: visible;
     }
+    /* ซ่อน tooltip ของปุ่ม icon-only ขณะ modal เปิดอยู่ — mobile tap ทำให้ :hover ติดค้างและ tooltip ซ้อนทับ modal */
+    body:has(#user-action-modal.show) .page-actions .btn::after,
+    body:has(#user-action-modal.show) .page-actions .page-back-btn::after,
+    body:has(#user-action-modal.show) .report-detail-page .report-back-btn::after,
+    body:has(#user-action-modal.show) .user-detail-page .user-back-btn::after,
+    body:has(#user-action-modal.show) .user-filter-bar .filter-reset::after,
+    body:has(#user-action-modal.show) .offer-filter-bar .filter-reset::after {
+      content: none;
+    }
     .crumb {
       color: var(--muted);
       font-size: 13px;
@@ -2716,7 +2725,7 @@
       text-align: right;
     }
     body.market-list-mode .market-table.market-record-table .asset-row {
-      grid-template-columns: minmax(270px, 1.1fr) minmax(180px, .72fr) minmax(120px, .48fr) minmax(132px, .52fr) minmax(180px, .72fr) minmax(320px, 1fr) 92px;
+      grid-template-columns: minmax(270px, 1.1fr) minmax(180px, .72fr) minmax(120px, .48fr) minmax(132px, .52fr) minmax(180px, .72fr) minmax(320px, 1fr) 112px;
       column-gap: 18px;
       align-items: center;
     }
@@ -2758,7 +2767,7 @@
       min-height: 66px;
     }
     body.market-list-mode .market-table.market-model-table .asset-row {
-      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 76px;
+      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 112px;
       column-gap: 22px;
       align-items: center;
       min-height: 66px;
@@ -2811,16 +2820,16 @@
       display: none;
     }
     body.market-list-mode .market-catalog-table .asset-row {
-      grid-template-columns: minmax(220px, 1fr) minmax(160px, .75fr) minmax(180px, .85fr) 76px;
+      grid-template-columns: minmax(220px, 1fr) minmax(160px, .75fr) minmax(180px, .85fr) 112px;
     }
     body.market-list-mode .market-model-table .asset-row {
-      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 76px;
+      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 112px;
     }
     body.market-list-mode .market-reference-list-table .asset-row {
       grid-template-columns: minmax(120px, .7fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(140px, .7fr) minmax(150px, .7fr);
     }
     body.market-list-mode .market-record-table .asset-row {
-      grid-template-columns: minmax(270px, 1.1fr) minmax(180px, .72fr) minmax(120px, .48fr) minmax(132px, .52fr) minmax(180px, .72fr) minmax(320px, 1fr) 92px;
+      grid-template-columns: minmax(270px, 1.1fr) minmax(180px, .72fr) minmax(120px, .48fr) minmax(132px, .52fr) minmax(180px, .72fr) minmax(320px, 1fr) 112px;
     }
     body.market-list-mode .market-arrow-action {
       min-width: 58px;
@@ -2828,8 +2837,9 @@
       padding: 0 12px;
       border-radius: 7px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 400;
       line-height: 1;
+      white-space: nowrap;
     }
     body.market-list-mode .market-catalog-table .asset-row > div:last-child,
     body.market-list-mode .market-model-table .asset-row > div:last-child {
@@ -6014,12 +6024,17 @@
       white-space: nowrap;
     }
     @media (max-width: 560px) {
+      /* modal ต้องกว้างไม่เกิน viewport ไม่เช่นนั้นปุ่มปิด (right) หลุดออกนอกจอบน mobile */
       .modal.user-action-modal.board-report-phone-preview-modal {
-        transform: translateX(-30px);
+        transform: none;
+        width: min(528px, 100%);
+      }
+      .board-report-phone-preview {
+        padding: 22px 16px 34px;
       }
       .board-report-phone-preview .board-report-phone-preview-close {
         top: 12px;
-        right: 24px;
+        right: 16px;
         border-color: transparent;
         background: transparent;
         color: #fff;
@@ -16336,20 +16351,15 @@
         justify-self: start;
       }
       .user-detail-action-section .user-detail-actions {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
         width: 100%;
-        gap: 8px;
       }
       .user-detail-action-section .user-detail-action-btn {
-        width: 100%;
-        min-width: 0;
         min-height: 38px;
         justify-content: center;
-        padding: 7px 6px;
-        font-size: 11px;
+        padding: 7px 10px;
+        font-size: 12px;
         line-height: 1.25;
-        white-space: normal;
+        white-space: nowrap;
       }
       .report-meta {
         grid-template-columns: 1fr;
@@ -20308,8 +20318,8 @@
 
     function getAccountStatusDeliveryNote(action, user, suspendUntil = "") {
       if (!isAccountStatusEmailAction(action)) return "";
-      const accessNote = action === "Suspend" || action === "Ban" ? " · user signed out" : " · user access restored";
-      return `${accessNote} · notification email sent to ${getUserFullEmail(user)}${suspendUntil ? ` · suspension ends ${suspendUntil}` : ""}`;
+      const accessNote = action === "Suspend" || action === "Ban" ? " · ผู้ใช้ถูกออกจากระบบ" : " · คืนสิทธิ์เข้าใช้งานผู้ใช้";
+      return `${accessNote} · ส่งอีเมลแจ้งไปที่ ${getUserFullEmail(user)}${suspendUntil ? ` · สิ้นสุดระงับ ${suspendUntil}` : ""}`;
     }
 
     function ensureAccountStatusDeliveryLog(deliveryId, user, action, reportId = activeReportContextId) {
@@ -20353,7 +20363,7 @@
         entityType: "reported_user",
         entityId: report.id,
         sourceModule: report.source || "Reported Users",
-        detail: report.actionHistory || "No audit events recorded yet",
+        detail: report.actionHistory || "ยังไม่มีประวัติการดำเนินการ",
         before: null,
         after: { reportStatus: report.status, accountStatus: getReportAccountStatus(report) },
         reason: "นำเข้าจากประวัติเดิมของ prototype",
@@ -20397,7 +20407,7 @@
     }
 
     function formatReporterSubmissionTime(timestamp) {
-      if (!timestamp) return "Unknown time";
+      if (!timestamp) return "ไม่ทราบเวลา";
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       const date = new Date(timestamp);
       return `${String(date.getUTCDate()).padStart(2, "0")} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()} ${String(date.getUTCHours()).padStart(2, "0")}:${String(date.getUTCMinutes()).padStart(2, "0")}`;
@@ -20955,7 +20965,7 @@
 
     function renderPageBackButton(dataAttribute, label, className = "user-back-btn") {
       return `
-        <button class="btn ${className} page-back-btn" type="button" ${dataAttribute} aria-label="Back">
+        <button class="btn ${className} page-back-btn" type="button" ${dataAttribute} aria-label="${label}">
           <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
         </button>
       `;
@@ -21838,6 +21848,19 @@
       "Closed": "ปิดแล้ว"
     };
 
+    const userStatusPillLabels = {
+      "Active": "Active",
+      "Pending Verification": "Pending Verification",
+      "Suspended": "Suspended",
+      "Banned": "Banned",
+      "Deletion Requested": "Deletion Requested",
+      "Deleted": "Deleted",
+      "Anonymized": "Anonymized",
+      "Open": "Open",
+      "In Review": "In Review",
+      "Closed": "Closed"
+    };
+
     const reportPriorityLabels = {
       "สูง": "High",
       "กลาง": "Medium",
@@ -22156,7 +22179,7 @@
         "In Review": "amber",
         "Closed": "green"
       };
-      return `<span class="pill ${map[status] || "blue"}">${userStatusLabels[status] || status}</span>`;
+      return `<span class="pill ${map[status] || "blue"}">${userStatusPillLabels[status] || status}</span>`;
     }
 
     function userAuthPill(auth, label = auth) {
@@ -30020,11 +30043,11 @@
           id: `${user.id}-REGISTERED`,
           createdAt: getUserRegisteredAt(user),
           actor: "System",
-          action: "Account registered",
+          action: "ลงทะเบียนบัญชี",
           before: "-",
           after: user.status === "Pending Verification" ? "Pending Verification" : "Active",
           reference: user.verification || user.auth,
-          note: `User registered with ${provider}`
+          note: `สมัครด้วย ${provider}`
         }
       ];
       const statusRows = [];
@@ -30037,7 +30060,7 @@
               id: `${user.id}-${log.id}`,
               createdAt: log.createdAt,
               actor: log.actor || "System",
-              action: log.action === "REPORT_CREATED" ? "Report User" : getReportAuditActionLabel(log),
+              action: log.action === "REPORT_CREATED" ? "รายงานผู้ใช้" : getReportAuditActionLabel(log),
               before: log.before?.accountStatus || "-",
               after: log.after?.accountStatus || "-",
               reference: report.id,
@@ -30130,7 +30153,7 @@
         id: `UAH-${user.id}-${String(nextNumber).padStart(3, "0")}`,
         createdAt: formatBangkokTimestamp(),
         actor: "Somchai Admin",
-        action: "Admin action recorded",
+        action: "บันทึกการดำเนินการของ Admin",
         before: user.status,
         after: user.status,
         reference: activeReportContextId || user.support || "-",
@@ -30223,7 +30246,7 @@
     }
 
     function renderUserProfileImage(user, className = "profile-image") {
-      return `<div class="${className}"><img src="${getUserProfileImage(user)}" alt="${user.displayName} profile image"></div>`;
+      return `<div class="${className}"><img src="${getUserProfileImage(user)}" alt="รูปโปรไฟล์ ${user.displayName}"></div>`;
     }
 
     function getActivityTimeline(user) {
@@ -30266,7 +30289,7 @@
         return `
           <div class="report-brief">
             <div class="report-brief-head">
-              ${reports.map(item => `<button class="report-case" type="button" data-report-action="${item.id}" title="Open ${item.id}">${item.id}</button>`).join("")}
+              ${reports.map(item => `<button class="report-case" type="button" data-report-action="${item.id}" title="ดูรายละเอียด ${item.id}">${item.id}</button>`).join("")}
             </div>
             <p class="report-reason">${report.reason}</p>
             <div class="report-meta">
@@ -30348,7 +30371,7 @@
     }
 
     const userActionLabels = {
-      "Reset password": "Reset password",
+      "Reset password": "ส่งลิงก์ตั้งรหัสผ่านใหม่",
       Suspend: "ระงับบัญชีชั่วคราว",
       Ban: "ระงับบัญชีถาวร",
       Restore: "ยกเลิกระงับบัญชีชั่วคราว",
@@ -30395,6 +30418,7 @@
     const userActionConfig = {
       "Reset password": {
         title: "Reset Password Link",
+        historyLabel: "ส่งลิงก์ตั้งรหัสผ่านใหม่",
         crumb: "Reset Password",
         type: "reset",
         tone: "primary",
@@ -30410,7 +30434,8 @@
         ]
       },
       Suspend: {
-        title: "ระงับบัญชีชั่วคราว",
+        title: "Suspend Account",
+        historyLabel: "ระงับบัญชีชั่วคราว",
         crumb: "Suspend Account",
         type: "status",
         targetStatus: "Suspended",
@@ -30428,7 +30453,8 @@
         ]
       },
       Ban: {
-        title: "ระงับบัญชีถาวร",
+        title: "Ban User",
+        historyLabel: "ระงับบัญชีถาวร",
         crumb: "Ban User",
         type: "status",
         targetStatus: "Banned",
@@ -30446,8 +30472,9 @@
         ]
       },
       Restore: {
-        title: "ยกเลิกระงับบัญชีชั่วคราว",
-        crumb: "ยกเลิกระงับบัญชีชั่วคราว",
+        title: "Unsuspend Account",
+        historyLabel: "ยกเลิกระงับบัญชีชั่วคราว",
+        crumb: "Unsuspend Account",
         type: "status",
         targetStatus: "Active",
         tone: "primary",
@@ -30463,8 +30490,9 @@
         ]
       },
       "Unban user": {
-        title: "ยกเลิกระงับบัญชีถาวร",
-        crumb: "ยกเลิกระงับบัญชีถาวร",
+        title: "Unban User",
+        historyLabel: "ยกเลิกระงับบัญชีถาวร",
+        crumb: "Unban User",
         type: "status",
         targetStatus: "Active",
         tone: "primary",
@@ -30480,8 +30508,9 @@
         ]
       },
       "Resend verification context": {
-        title: "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
-        crumb: "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
+        title: "Resend Verification",
+        historyLabel: "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
+        crumb: "Resend Verification",
         type: "notice",
         tone: "primary",
         summary: "ส่งข้อมูลให้ผู้ใช้ยืนยันอีเมลอีกครั้ง โดยไม่เปลี่ยนสถานะบัญชี",
@@ -30515,7 +30544,7 @@
       return `
         <div class="detail-section user-detail-action-section">
           <div class="user-detail-actions">
-            ${actions.map(({ action, label }, index) => `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${user.id}" data-user-action-surface="detail">${label}</button>`).join("") || `<span class="chip">No available action</span>`}
+            ${actions.map(({ action, label }, index) => `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${user.id}" data-user-action-surface="detail">${label}</button>`).join("") || `<span class="chip">ไม่มี action บัญชีที่ทำได้</span>`}
           </div>
           <div class="warning-note action-feedback" id="user-action-feedback"></div>
         </div>
@@ -30562,10 +30591,10 @@
       if (action !== "Suspend" && action !== "Ban") return "";
       const fullEmail = getUserFullEmail(user);
       const providerNote = user.auth === "Apple" && fullEmail.includes("privaterelay.appleid.com")
-        ? "Apple private relay email"
+        ? "อีเมล Apple Private Relay"
         : user.auth === "Google"
-          ? "Google account email"
-          : "registered account email";
+          ? "อีเมลบัญชี Google"
+          : "อีเมลที่ลงทะเบียน";
       const emailActionLabel = action === "Suspend" ? "การระงับบัญชีชั่วคราว" : "การระงับบัญชีถาวร";
       return `
         <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
@@ -30967,7 +30996,7 @@
             detail: pendingReportActionAudit?.detail || "บันทึก action จาก Reported Users",
             before: { accountStatus: beforeStatus },
             after: { accountStatus: user.status },
-            reason: pendingReportActionAudit?.reason || "Admin confirmed action from report context",
+            reason: pendingReportActionAudit?.reason || "Admin ยืนยันการดำเนินการจากบริบทรายงาน",
             emailDelivery: pendingReportActionAudit?.emailDelivery || { status: "not_required" }
           });
           closeReportAfterAccountOutcome(report, user, pendingReportActionAudit?.accountAction, beforeReportStatus);
@@ -31107,7 +31136,7 @@
         : "";
       ensureAccountStatusDeliveryLog(statusActionDeliveryId, user, action, activeReportContextId);
       appendUserAccountStatusHistory(user, {
-        action: config.title,
+        action: config.historyLabel || config.title,
         before: beforeStatus,
         after: user.status,
         reference: activeReportContextId || user.support || "-",
@@ -31118,7 +31147,7 @@
       });
       pendingReportActionAudit = {
         accountAction: action,
-        actionLabel: config.title,
+        actionLabel: config.historyLabel || config.title,
         detail: `${actionNote || selectedReason || config.summary}${statusActionDeliveryNote}`,
         reason: selectedReason || config.reasonLabel,
         emailDelivery: isAccountStatusEmailAction(action)
@@ -31630,7 +31659,7 @@
       const actions = `${renderReportStatusActionButtons(report)}${renderReportAccountActionButtons(report)}`;
       return `
         <details class="row-menu">
-          <summary aria-label="เมนูรายงาน">...</summary>
+          <summary aria-label="Report actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-report-action="${report.id}">ดูรายละเอียด</button>
             ${actions}
@@ -31699,7 +31728,7 @@
         <div class="user-action-page">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">ยืนยันการปิดรายงาน</h2>
+              <h2 id="user-action-modal-title">Confirm Close Report</h2>
               <p>ใช้เมื่อผู้ดูแลตรวจหลักฐานต้นทางครบแล้ว และต้องการทำเครื่องหมายรายงานนี้ว่าเสร็จสิ้น</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
@@ -31907,7 +31936,7 @@
         <div class="panel-head">
           <div>
             <h2>User Detail</h2>
-            <p>${user.id} · contact data visible</p>
+            <p>${user.id} · ข้อมูลติดต่อแสดงครบ</p>
           </div>
         </div>
         <div class="detail-body">
@@ -32050,7 +32079,7 @@
       document.querySelector("#page-meta").textContent = "";
       setPageActions(renderPageBackButton("data-back-reported-users", "กลับไป Reported Users", "report-back-btn"));
       document.querySelector("#panel-title").textContent = report.user;
-      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.category} · reporter identity masked`;
+      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.category} · ปิดบังตัวตนผู้รายงาน`;
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
@@ -32078,7 +32107,7 @@
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
               <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
               <div class="detail-tile"><span>User</span><strong>${reportUser ? `<button class="link-btn" type="button" data-user-open="${reportUser.id}">${report.user}</button>` : report.user}</strong></div>
-              <div class="detail-tile"><span>Account Status</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
+              <div class="detail-tile"><span>Account Status</span><strong>${userStatusPillLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
             </div>
           </div>
 
@@ -32092,7 +32121,7 @@
             ${renderReportAuditHistoryTable(report)}
           </div>
 
-          ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> บัญชีอยู่ในกระบวนการลบบัญชี ห้าม delete/archive จากคิวนี้ ให้ไปจัดการที่ Account Deletion module</div>` : ""}
+          ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>เงื่อนไขการลบบัญชี:</strong> บัญชีอยู่ในกระบวนการลบบัญชี ห้าม delete/archive จากคิวนี้ ให้ไปจัดการที่ Account Deletion module</div>` : ""}
           ${renderReportDetailActionButtons(report)}
         </div>
       `;
@@ -32360,15 +32389,15 @@
       if (isCategoryList) {
         activeRow = null;
         setPageActions(`
-          <button class="btn" type="button" data-category-order-open aria-label="Reorder Categories on FO Board">${iconSvg.sort}<span>Reorder Categories</span></button>
-          <button class="btn" type="button" data-category-add aria-label="Add Category">${iconSvg.plus}<span>Add Category</span></button>
+          <button class="btn" type="button" data-category-order-open aria-label="จัดเรียง Category บน FO Board">${iconSvg.sort}<span>จัดเรียง Category</span></button>
+          <button class="btn" type="button" data-category-add aria-label="เพิ่ม Category">${iconSvg.plus}<span>เพิ่ม Category</span></button>
         `);
         document.querySelector("#crumb").textContent = `${data.crumb} / Categories`;
         document.querySelector("#page-title").textContent = "Categories";
         document.querySelector("#page-meta").textContent = "";
         document.querySelector("#panel-title").textContent = "CATEGORY LIST";
         document.querySelector("#panel-subtitle").textContent = "";
-        document.querySelector("#primary-action").textContent = "Add Category";
+        document.querySelector("#primary-action").textContent = "เพิ่ม Category";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-category-filter-toggle aria-expanded="${categoryFilterOpen}">${iconSvg.filter}<span>${categoryFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
           <button class="btn" type="button" data-category-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
@@ -36762,9 +36791,9 @@
               </div>
               <div data-label="Models"><div class="main-text">${modelCount.toLocaleString()} models</div></div>
               <div data-label="References"><div class="main-text">${referenceCount.toLocaleString()} references</div></div>
-              <div><button class="panel-action market-arrow-action" type="button" data-market-brand="${brand.id}" aria-label="View ${brand.name} models">View</button></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-brand="${brand.id}" aria-label="ดูรายละเอียดโมเดล ${brand.name}">ดูรายละเอียด</button></div>
             </div>
-          `}).join("") || `<div class="detail-empty user-empty">No brands found</div>`}
+          `}).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
@@ -36779,7 +36808,7 @@
     }
 
     function renderMarketSyncLogAction(row) {
-      return `<button class="panel-action market-arrow-action" type="button" data-market-record="${row.id}" aria-label="View sync log for ${getMarketSyncTitleLabel(row)}">Detail</button>`;
+      return `<button class="panel-action market-arrow-action" type="button" data-market-record="${row.id}" aria-label="ดูรายละเอียดประวัติการ Sync ${getMarketSyncTitleLabel(row)}">ดูรายละเอียด</button>`;
     }
 
     function getMarketSyncTitleLabel(row) {
@@ -36919,7 +36948,7 @@
             <div data-label="หมายเหตุ"><div class="main-text">${shouldShowMarketSyncIssue(row) ? getMarketSyncIssueLabel(row) : ""}</div></div>
             <div data-label="รายละเอียด">${renderMarketSyncLogAction(row)}</div>
           </div>
-        `).join("") || `<div class="detail-empty user-empty">No sync logs found</div>`}
+        `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span>
@@ -37038,9 +37067,9 @@
                 </div>
               </div>
               <div data-label="References"><div class="main-text">${summary.references} references</div></div>
-              <div><button class="panel-action market-arrow-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}" aria-label="View ${model.name} references">View</button></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}" aria-label="ดูรายละเอียดเลขอ้างอิง ${model.name}">ดูรายละเอียด</button></div>
             </div>
-          `}).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
+          `}).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
@@ -37073,7 +37102,7 @@
               <div data-label="Estimated Price"><div class="main-text market-price">${reference.price}</div></div>
               <div data-label="Last Updated"><div class="main-text">${reference.updated || "2026-08-05"}</div></div>
             </div>
-          `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
+          `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
@@ -37142,7 +37171,7 @@
           </div>
           <div class="module-note"><strong>Rule:</strong> Brand, model, reference, detail and price data come from API/backend sync only. BO can review source data and sync logs, but cannot add, edit, import, override or change status in Phase 1.</div>
           <div class="user-detail-actions">
-            <button class="user-detail-action-btn" type="button" data-market-management-action="audit" data-market-scope="${scope}" ${targetAttrs}>Audit trail</button>
+            <button class="user-detail-action-btn" type="button" data-market-management-action="audit" data-market-scope="${scope}" ${targetAttrs}>ดู Audit Trail</button>
           </div>
         </section>
       `;
@@ -37170,7 +37199,7 @@
         <section class="market-detail-section">
           <h3>Audit Trail</h3>
           <div class="timeline">
-            ${rows.map(row => `<div class="event"><strong>${row.action}</strong><br><span class="muted">${row.id} · ${row.actor} · ${row.time}</span><br>${row.before} -> ${row.after}<br><span class="muted">${row.reason}</span></div>`).join("") || `<div class="event">No audit events for this target yet</div>`}
+            ${rows.map(row => `<div class="event"><strong>${row.action}</strong><br><span class="muted">${row.id} · ${row.actor} · ${row.time}</span><br>${row.before} -> ${row.after}<br><span class="muted">${row.reason}</span></div>`).join("") || `<div class="event">ยังไม่มีประวัติ Audit สำหรับรายการนี้</div>`}
           </div>
         </section>
       `;
@@ -37834,7 +37863,7 @@
                     <div><div class="main-text">${reference.description}</div></div>
                     <div><span class="pill blue">${reference.price}</span></div>
                   </div>
-                `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
+                `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
               </div>
             </article>
           `).join("")}
@@ -37861,7 +37890,7 @@
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar market-catalog-filter-bar market-mode market-drilldown-filter-bar">
-          <input class="field search" id="market-model-search" type="search" placeholder="Search ${brand.name} models" />
+          <input class="field search" id="market-model-search" type="search" placeholder="ค้นหา Model ของ ${brand.name}" />
         </div>
       `;
       document.querySelector("#summary-grid").innerHTML = "";
@@ -37896,7 +37925,7 @@
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar market-catalog-filter-bar market-mode market-drilldown-filter-bar">
-          <input class="field search" id="market-reference-search" type="search" placeholder="Search ${model.name} references" />
+          <input class="field search" id="market-reference-search" type="search" placeholder="ค้นหา Reference ของ ${model.name}" />
         </div>
       `;
       document.querySelector("#summary-grid").innerHTML = "";
@@ -38161,10 +38190,10 @@
               </div>
               ${shouldShowSyncProgress ? renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1) : ""}
               <div class="user-detail-actions user-action-footer">
-                ${state === "confirm" ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button><button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Start Sync</button>` : ""}
-                ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>Syncing...</button>` : ""}
-                ${isSuccess ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button><button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync History</button>` : ""}
-                ${isError ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button><button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry Failed Datasets</button>` : ""}
+                ${state === "confirm" ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button><button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>เริ่ม Sync</button>` : ""}
+                ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>กำลัง Sync...</button>` : ""}
+                ${isSuccess ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button><button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>ดู Sync History</button>` : ""}
+                ${isError ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button><button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>ลองใหม่เฉพาะชุดที่ล้มเหลว</button>` : ""}
               </div>
               ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list failed</strong><br><span>The source API returned a rate limit. Existing catalog data was not changed.</span></div>` : ""}
               ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync completed</strong><br><span>Refreshed ${job.brands.toLocaleString()} brands, ${job.models.toLocaleString()} models and ${job.references.toLocaleString()} references at ${jobDisplayTimestamp}. Audit was saved.</span></div>` : ""}
@@ -40234,16 +40263,16 @@
         <details class="row-menu">
           <summary aria-label="Category actions">...</summary>
           <div class="row-menu-list">
-            <button type="button" data-category-open="${category.id}">View detail</button>
-            <button type="button" data-category-edit="${category.id}">Edit Category</button>
+            <button type="button" data-category-open="${category.id}">ดูรายละเอียด</button>
+            <button type="button" data-category-edit="${category.id}">แก้ไข Category</button>
             ${category.status === "Active"
               ? canDeactivate
-                ? `<button type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
+                ? `<button type="button" data-category-status-action="deactivate" data-category-id="${category.id}">ปิดใช้งาน</button>`
                 : ""
-              : `<button type="button" data-category-status-action="activate" data-category-id="${category.id}">Set active</button>`}
+              : `<button type="button" data-category-status-action="activate" data-category-id="${category.id}">เปิดใช้งาน</button>`}
             ${articleCount
               ? ""
-              : `<button type="button" data-category-status-action="delete" data-category-id="${category.id}">Delete category</button>`}
+              : `<button type="button" data-category-status-action="delete" data-category-id="${category.id}">ลบ Category</button>`}
           </div>
         </details>
       `;
@@ -43032,7 +43061,7 @@
                 <label><span>สถานะ</span>
                   <input value="${escapeArticleField(category.status)}" readonly />
                 </label>
-                <label><span>Updated At</span>
+                <label><span>อัปเดตล่าสุด</span>
                   <input value="${escapeArticleField(category.updatedAt)}" readonly />
                 </label>
                 <label class="full"><span>คำอธิบาย</span>
@@ -43041,12 +43070,12 @@
               </div>
             </section>
             <div class="user-detail-actions">
-              <button class="user-detail-action-btn" type="button" data-category-edit="${category.id}">Edit Category</button>
+              <button class="user-detail-action-btn" type="button" data-category-edit="${category.id}">แก้ไข Category</button>
             ${category.status === "Active"
                 ? canDeactivate
-                  ? `<button class="user-detail-action-btn warning" type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
+                  ? `<button class="user-detail-action-btn warning" type="button" data-category-status-action="deactivate" data-category-id="${category.id}">ปิดใช้งาน</button>`
                   : ""
-                : `<button class="user-detail-action-btn primary" type="button" data-category-status-action="activate" data-category-id="${category.id}">Set active</button>`}
+                : `<button class="user-detail-action-btn primary" type="button" data-category-status-action="activate" data-category-id="${category.id}">เปิดใช้งาน</button>`}
             </div>
           </form>
         </div>
@@ -43209,14 +43238,14 @@
         if (articleCount > 0) {
           return {
             blocked: true,
-            title: "ไม่สามารถปิดใช้งาน category",
+            title: "Cannot Deactivate Category",
             question: "Category นี้ยังมีบทความผูกอยู่",
             summary: `ต้องย้ายหรือ archive ${articleCount} บทความในหมวดนี้ก่อน จึงจะเปลี่ยนสถานะเป็น Inactive ได้`,
             iconType: "cancel"
           };
         }
         return {
-          title: "ยืนยันการปิดใช้งาน category",
+          title: "Confirm Deactivate Category",
           question: "ต้องการเปลี่ยนหมวดหมู่นี้เป็น Inactive ใช่หรือไม่?",
           summary: articleCount ? `มีบทความ ${articleCount} รายการผูกอยู่ บทความเดิมยังคงหมวดนี้ แต่หมวดจะไม่ถูกเลือกได้ในบทความใหม่` : "หมวดนี้จะถูกนำออกจาก FO category และตัวเลือกบทความใหม่",
           status: "Inactive",
@@ -43227,7 +43256,7 @@
       }
       if (action === "activate") {
         return {
-          title: "ยืนยันการเปิดใช้งาน category",
+          title: "Confirm Reactivate Category",
           question: "ต้องการเปลี่ยนหมวดหมู่นี้เป็น Active ใช่หรือไม่?",
           summary: "หมวดนี้จะกลับมาแสดงในตัวเลือก Add/Edit Article และ FO category",
           status: "Active",
@@ -43238,7 +43267,7 @@
       }
       if (action === "delete" && articleCount === 0) {
         return {
-          title: "ยืนยันการลบ category",
+          title: "Confirm Delete Category",
           question: "ต้องการลบหมวดหมู่นี้ถาวรใช่หรือไม่?",
           summary: "ลบได้เพราะไม่มีบทความผูกอยู่ ระบบจะเก็บผลลัพธ์ไว้ใน toast ของ prototype เท่านั้น",
           status: "Deleted",
@@ -43393,11 +43422,11 @@
     }
 
     function getArticleCoverAlt(article) {
-      return String(article?.coverCaption || article?.title || article?.coverImageName || "Article cover").trim();
+      return String(article?.coverCaption || article?.title || article?.coverImageName || "รูป Cover บทความ").trim();
     }
 
     function getArticleBodyImageAlt(article, caption = "") {
-      return String(caption || article?.bodyImageCaption || `${article?.title || article?.bodyImageName || "Article"} - content image`).trim();
+      return String(caption || article?.bodyImageCaption || `${article?.title || article?.bodyImageName || "บทความ"} - รูปในเนื้อหา`).trim();
     }
 
     function isArticleSlugDuplicate(slug, articleId = "") {
@@ -43501,16 +43530,16 @@
     }
 
     const articleBlockTypes = [
-      ["paragraph", "Paragraph"],
-      ["h2", "Heading H2"],
-      ["h3", "Heading H3"],
-      ["list", "Bullet List"],
-      ["numbered_list", "Numbered List"],
-      ["link", "Hyperlink"],
-      ["divider", "Divider"],
-      ["image", "Image + Caption"],
-      ["quote", "Quote"],
-      ["comparison", "Comparison Table"]
+      ["paragraph", "ย่อหน้า"],
+      ["h2", "หัวข้อ H2"],
+      ["h3", "หัวข้อ H3"],
+      ["list", "รายการแบบจุด"],
+      ["numbered_list", "รายการแบบตัวเลข"],
+      ["link", "ลิงก์"],
+      ["divider", "เส้นคั่น"],
+      ["image", "รูปภาพ + คำบรรยาย"],
+      ["quote", "ข้อความอ้างอิง"],
+      ["comparison", "ตารางเปรียบเทียบ"]
     ];
 
     function normalizeArticleLinkUrl(url = "") {
@@ -43603,14 +43632,14 @@
       if (!src) return "";
       return `
         <span class="article-upload-thumbnail has-image" ${attr || ""}>
-          <img src="${escapeArticleField(src)}" alt="${escapeArticleField(alt || "Article image preview")}" />
+          <img src="${escapeArticleField(src)}" alt="${escapeArticleField(alt || "ตัวอย่างรูปบทความ")}" />
         </span>
       `;
     }
 
     function renderArticleEditorBlock(block, index, article) {
       const type = String(block?.type || "paragraph");
-      const label = articleBlockTypes.find(([value]) => value === type)?.[1] || "Paragraph";
+      const label = articleBlockTypes.find(([value]) => value === type)?.[1] || "ย่อหน้า";
       const content = escapeArticleField(block?.content || "");
       const caption = escapeArticleField(block?.caption || (type === "image" ? article?.bodyImageCaption : "") || "");
       const placeholder = type === "comparison"
@@ -43623,7 +43652,7 @@
         field = `
           <label class="full">รูปในเนื้อหา
             <span class="article-upload-control ${article?.bodyImageSrc ? "has-image" : ""}" data-article-body-image-upload-control>
-              ${renderArticleUploadThumbnail(article?.bodyImageSrc || "", article?.bodyImageName || "Article content image preview", "data-article-body-image-thumbnail")}
+              ${renderArticleUploadThumbnail(article?.bodyImageSrc || "", article?.bodyImageName || "ตัวอย่างรูปในเนื้อหาบทความ", "data-article-body-image-thumbnail")}
               <span class="article-upload-button">เลือกไฟล์</span>
               ${article?.bodyImageSrc ? "" : `<span class="article-upload-display placeholder" data-article-body-image-display>รองรับ JPG, PNG, WebP ไม่เกิน 5MB</span>`}
               <input name="bodyImage" type="file" accept="image/*" data-article-body-image-upload />
@@ -43636,7 +43665,7 @@
         `;
       } else if (type === "link") {
         field = `
-          <label class="full">Link text
+          <label class="full">ข้อความลิงก์
             <input value="${content}" placeholder="ข้อความลิงก์ที่จะแสดงในบทความ" data-article-block-field data-article-block-value />
           </label>
           <label class="full">URL
@@ -43645,7 +43674,7 @@
           </label>
         `;
       } else if (type === "divider") {
-        field = `<p class="article-editor-section-note">Divider จะแสดงเป็นเส้นแบ่งในบทความและไม่นับเป็นเนื้อหาหลักเพียงอย่างเดียว</p>`;
+        field = `<p class="article-editor-section-note">เส้นคั่นจะแสดงเป็นเส้นแบ่งในบทความและไม่นับเป็นเนื้อหาหลักเพียงอย่างเดียว</p>`;
       } else {
         field = `<label class="full">
             <textarea data-article-block-field data-article-block-value aria-label="${escapeArticleField(label)}" placeholder="${placeholder}">${content}</textarea>
@@ -43656,9 +43685,9 @@
           <div class="article-block-header">
             <div class="article-block-title">${index + 1}. ${label}</div>
             <div class="article-block-controls">
-              <button class="article-block-control" type="button" data-article-block-move="up" aria-label="Move block up">↑</button>
-              <button class="article-block-control" type="button" data-article-block-move="down" aria-label="Move block down">↓</button>
-              <button class="article-block-control delete" type="button" data-article-block-delete aria-label="Delete block">×</button>
+              <button class="article-block-control" type="button" data-article-block-move="up" aria-label="เลื่อน block ขึ้น">↑</button>
+              <button class="article-block-control" type="button" data-article-block-move="down" aria-label="เลื่อน block ลง">↓</button>
+              <button class="article-block-control delete" type="button" data-article-block-delete aria-label="ลบ block">×</button>
             </div>
           </div>
           ${field}
@@ -43668,7 +43697,7 @@
 
     function renderArticleInlineParsingHelp() {
       return `
-        <span class="article-inline-help" tabindex="0" role="img" aria-label="Inline text parsing help">i
+        <span class="article-inline-help" tabindex="0" role="img" aria-label="คำอธิบายการแปลงข้อความในบรรทัด">i
           <span class="article-inline-help-content" role="tooltip">
             <span>พิมพ์ <code>**bold**</code> เพื่อทำตัวหนา</span><br>
             <span>พิมพ์ <code>_italic_</code> เพื่อทำตัวเอียง</span><br>
@@ -43684,7 +43713,7 @@
         <div class="article-block-builder">
           <div class="article-block-add-row">
             ${articleEditorCustomSelect("article-block-type-picker", "blockTypePicker", "เลือกประเภทบล็อก", articleBlockTypes.map(([value, label]) => ({ value, label })), "paragraph", "data-article-block-type-picker")}
-            <button type="button" data-article-block-add>+ Add block</button>
+            <button type="button" data-article-block-add>+ เพิ่ม block</button>
           </div>
           <span class="article-field-error" data-article-content-error></span>
           <div class="article-editor-blocks" data-article-block-list>
@@ -43696,12 +43725,12 @@
 
     function renderArticleReadonlyBlocks(article) {
       const blocks = getArticleContentBlocks(article);
-      if (!blocks.length) return `<div class="article-readonly-empty">No content blocks</div>`;
+      if (!blocks.length) return `<div class="article-readonly-empty">ยังไม่มีเนื้อหา</div>`;
       return `
         <div class="article-readonly-blocks">
           ${blocks.map((block, index) => {
             const type = String(block?.type || "paragraph");
-            const label = articleBlockTypes.find(([value]) => value === type)?.[1] || "Paragraph";
+            const label = articleBlockTypes.find(([value]) => value === type)?.[1] || "ย่อหน้า";
             return `
               <div class="article-readonly-block" data-article-block-type="${type}">
                 <div class="article-block-title">${index + 1}. ${label}</div>
@@ -43721,11 +43750,11 @@
       if ((type === "list" || type === "numbered_list") && content) {
         const items = parseArticleMultilineItems(content);
         const tag = type === "numbered_list" ? "ol" : "ul";
-        return items.length ? `<${tag}>${items.map(item => `<li>${renderArticleInlineFormatting(item)}</li>`).join("")}</${tag}>` : `<span class="article-readonly-empty">Empty block</span>`;
+        return items.length ? `<${tag}>${items.map(item => `<li>${renderArticleInlineFormatting(item)}</li>`).join("")}</${tag}>` : `<span class="article-readonly-empty">บล็อกว่าง</span>`;
       }
       if (type === "image") {
         const caption = String(block?.caption || article?.bodyImageCaption || "").trim();
-        if (!article?.bodyImageSrc && !caption) return `<span class="article-readonly-empty">Empty block</span>`;
+        if (!article?.bodyImageSrc && !caption) return `<span class="article-readonly-empty">บล็อกว่าง</span>`;
         return `
           <div class="article-readonly-image">
             ${article?.bodyImageSrc ? `<img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(getArticleBodyImageAlt(article, caption))}" />` : ""}
@@ -43738,16 +43767,16 @@
       }
       if (type === "link") {
         const url = normalizeArticleLinkUrl(block?.caption || "");
-        if (!content || !isSafeArticleLinkUrl(url)) return `<span class="article-readonly-empty">Invalid link</span>`;
+        if (!content || !isSafeArticleLinkUrl(url)) return `<span class="article-readonly-empty">ลิงก์ไม่ถูกต้อง</span>`;
         return `<a class="article-readonly-link" href="${escapeArticleField(url)}" target="_blank" rel="noopener noreferrer">${renderArticleInlineFormatting(content)}</a>`;
       }
       if (type === "divider") return `<hr class="article-readonly-divider" />`;
       if (type === "quote" && content) return `<blockquote class="article-readonly-quote">${renderArticleInlineFormatting(content)}</blockquote>`;
       if (type === "comparison") {
         const table = renderArticleReadonlyComparisonTable(content);
-        return table || `<span class="article-readonly-empty">Empty block</span>`;
+        return table || `<span class="article-readonly-empty">บล็อกว่าง</span>`;
       }
-      if (!content) return `<span class="article-readonly-empty">Empty block</span>`;
+      if (!content) return `<span class="article-readonly-empty">บล็อกว่าง</span>`;
       return renderArticleInlineFormatting(content).replace(/\n/g, "<br>");
     }
 
@@ -43820,7 +43849,7 @@
       if (!list || !picker) return;
       const type = picker.value || "paragraph";
       if (type === "image" && list.querySelector('[data-article-block-type="image"]')) {
-        alert("เพิ่ม Image + Caption ได้ 1 บล็อกต่อบทความใน prototype นี้");
+        alert("เพิ่มรูปภาพ + คำบรรยายได้ 1 บล็อกต่อบทความใน prototype นี้");
         return;
       }
       const blocks = getArticleEditorContentBlocks(form, true);
@@ -43901,7 +43930,7 @@
       const title = article?.title || "Article title";
       const deck = article?.deck || "";
       return `
-        <div class="article-board-preview" aria-label="Board hero article preview">
+        <div class="article-board-preview" aria-label="ตัวอย่างบทความ Hero บน Board">
           ${article.coverImageSrc ? `<img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(getArticleCoverAlt(article))}" />` : `<div class="article-cover-mark">TD</div>`}
           <div class="article-board-preview-content">
             <h3 class="article-board-preview-title">${escapeArticleField(title)}</h3>
@@ -43916,7 +43945,7 @@
       const contentBlocks = getArticleContentBlocks(article);
       const takeaways = Array.isArray(article?.keyTakeaways) ? article.keyTakeaways : parseArticleMultilineItems(article?.keyTakeaways || "");
       return `
-        <div class="article-phone-preview" aria-label="FO article preview">
+        <div class="article-phone-preview" aria-label="ตัวอย่างบทความบน FO">
           <div class="article-fo-preview">
             <div class="article-fo-scroll">
               <div class="article-fo-top">
@@ -43981,11 +44010,11 @@
       return `
         <div class="article-preview-stack">
           <div class="article-preview-group">
-            <div class="article-preview-label">Preview hero article</div>
+            <div class="article-preview-label">ตัวอย่างบทความ Hero</div>
             ${renderArticleBoardHeroPreview(article)}
           </div>
           <div class="article-preview-group">
-            <div class="article-preview-label">Preview article detail</div>
+            <div class="article-preview-label">ตัวอย่างรายละเอียดบทความ</div>
             ${renderArticleFoPreview(article)}
           </div>
         </div>
@@ -44040,7 +44069,7 @@
     function getArticleScenarioResult(kind, scenario) {
       const results = {
         permission_denied: {
-          title: "Permission denied",
+          title: "ไม่มีสิทธิ์ดำเนินการ",
           detail: "Admin account นี้ไม่มีสิทธิ์ดำเนินการกับบทความในขั้นตอนนี้"
         },
         save_failed: {
@@ -44056,7 +44085,7 @@
           detail: "มีบทความอื่นใช้ Article URL นี้หลังจากเปิดฟอร์ม กรุณาเปลี่ยน URL แล้วลองอีกครั้ง"
         },
         preview_failed: {
-          title: "Preview failed",
+          title: "ดูตัวอย่างไม่สำเร็จ",
           detail: "ระบบยังไม่สามารถ render preview ได้ กรุณาตรวจรูปและ content block แล้วลองใหม่"
         },
         stale_data: {
@@ -44411,6 +44440,17 @@
       return normalizeRows(article.actionHistory);
     }
 
+    function getArticleActionLabel(action) {
+      const labels = {
+        "Created": "สร้างบทความ",
+        "Updated": "แก้ไขล่าสุด",
+        "Archived": "เก็บบทความเข้าคลัง",
+        "Canceled schedule": "ยกเลิกกำหนดเผยแพร่",
+        "Restored": "นำกลับมาเผยแพร่"
+      };
+      return labels[action] || action;
+    }
+
     function renderArticleChangeHistory(article) {
       const rows = getArticleChangeHistoryRows(article);
       return `
@@ -44437,7 +44477,7 @@
                 <tr>
                   <td data-label="Date / Time">${escapeArticleField(row.time)}</td>
                   <td data-label="Admin">${escapeArticleField(row.actor)}</td>
-                  <td data-label="Action">${escapeArticleField(row.action)}</td>
+                  <td data-label="Action">${escapeArticleField(getArticleActionLabel(row.action))}</td>
                   <td class="history-note" data-label="Change Detail">${escapeArticleField(row.note)}</td>
                   <td data-label="Result">${escapeArticleField(row.result)}</td>
                 </tr>
@@ -44453,8 +44493,8 @@
       if (article.status === "Draft") {
         return {
           key: "delete-draft",
-          label: "Delete draft",
-          title: "ยืนยันการลบฉบับร่าง",
+          label: "ลบ Draft",
+          title: "Confirm Delete Draft",
           question: "คุณต้องการลบบทความฉบับร่างนี้ใช่หรือไม่?",
           summary: "บทความนี้ยังไม่เคยเผยแพร่ ระบบจะลบออกจากรายการบทความ",
           tone: "danger",
@@ -44464,8 +44504,8 @@
       if (article.status === "Scheduled") {
         return {
           key: "cancel-schedule",
-          label: "Cancel schedule",
-          title: "ยืนยันการยกเลิกกำหนดเผยแพร่",
+          label: "ยกเลิกกำหนดเผยแพร่",
+          title: "Confirm Cancel Schedule",
           question: "คุณต้องการยกเลิกกำหนดเผยแพร่บทความนี้ใช่หรือไม่?",
           summary: "ระบบจะล้างวันเวลาเผยแพร่และเปลี่ยนบทความกลับเป็นฉบับร่าง",
           tone: "warning",
@@ -44475,8 +44515,8 @@
       if (article.status === "Published") {
         return {
           key: "archive-article",
-          label: "Archive article",
-          title: "ยืนยันการเก็บบทความเข้าคลัง",
+          label: "เก็บบทความเข้าคลัง",
+          title: "Confirm Archive Article",
           question: "คุณต้องการเก็บบทความที่เผยแพร่แล้วนี้เข้าคลังใช่หรือไม่?",
           summary: "ระบบจะเก็บข้อมูลและประวัติบทความไว้ แต่จะนำออกจาก FO Board, Search และ Category",
           tone: "danger",
@@ -44486,8 +44526,8 @@
       if (article.status === "Archived") {
         return {
           key: "restore-article",
-          label: "Restore article",
-          title: "ยืนยันการนำบทความกลับมาเผยแพร่",
+          label: "คืนบทความ",
+          title: "Confirm Restore Article",
           question: "คุณต้องการนำบทความนี้กลับมาเผยแพร่ใช่หรือไม่?",
           summary: "ระบบจะเปลี่ยนสถานะบทความกลับเป็น Published โดยใช้วันที่เผยแพร่เดิม และแสดงบน FO Board, Search และ Category อีกครั้ง",
           tone: "warning",
@@ -44511,9 +44551,9 @@
         <details class="row-menu">
           <summary aria-label="Article actions">...</summary>
           <div class="row-menu-list">
-            <button type="button" data-article-open="${article.id}">View detail</button>
-            <button type="button">Preview as FO</button>
-            <button type="button" data-article-edit="${article.id}">Edit article</button>
+            <button type="button" data-article-open="${article.id}">ดูรายละเอียด</button>
+            <button type="button" data-article-preview-open data-article-id="${article.id}">ดูตัวอย่าง</button>
+            <button type="button" data-article-edit="${article.id}">แก้ไขบทความ</button>
             ${renderArticleStatusActionButton(article, "menu")}
           </div>
         </details>
@@ -44602,9 +44642,9 @@
                     ${renderAssetDetailTiles([
                       ["สถานะเผยแพร่", articleStatusPill(article.status)],
                       ["วันที่เผยแพร่", article.publishAt],
-                      ["Likes", getArticleLikeDisplay(article)],
-                      ["Created At", getArticleCreatedAt(article)],
-                      ["Updated At", article.updatedAt]
+                      ["จำนวน Likes", getArticleLikeDisplay(article)],
+                      ["สร้างเมื่อ", getArticleCreatedAt(article)],
+                      ["อัปเดตล่าสุด", article.updatedAt]
                     ])}
                   </div>
                 </section>
@@ -44616,8 +44656,8 @@
                 </section>
 
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn" type="button" data-article-edit="${article.id}">Edit article</button>
-                  <button class="user-detail-action-btn" type="button" data-article-preview-id="${article.id}">Preview article</button>
+                  <button class="user-detail-action-btn" type="button" data-article-edit="${article.id}">แก้ไขบทความ</button>
+                  <button class="user-detail-action-btn" type="button" data-article-preview-id="${article.id}">ดูตัวอย่าง</button>
                   ${renderArticleStatusActionButton(article, "detail")}
                 </div>
               </div>
@@ -44731,7 +44771,7 @@
                   <div class="article-editor-grid">
                     <label class="full"><span>รูป Cover <span class="article-required-mark">*</span></span>
                       <span class="article-upload-control ${draft.coverImageSrc ? "has-image" : ""}" data-article-cover-upload-control>
-                        ${renderArticleUploadThumbnail(draft.coverImageSrc || "", draft.coverImageName || "Article cover preview", "data-article-cover-thumbnail")}
+                        ${renderArticleUploadThumbnail(draft.coverImageSrc || "", draft.coverImageName || "ตัวอย่างรูป Cover บทความ", "data-article-cover-thumbnail")}
                         <span class="article-upload-button">เลือกไฟล์</span>
                         ${draft.coverImageSrc ? "" : `<span class="article-upload-display placeholder" data-article-cover-display>รองรับ JPG, PNG, WebP ไม่เกิน 5MB</span>`}
                         <input name="coverImage" type="file" accept="image/*" data-article-cover-upload />
@@ -44772,7 +44812,7 @@
                   </div>
                 </section>
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn" type="button" data-article-preview-open>Preview</button>
+                  <button class="user-detail-action-btn" type="button" data-article-preview-open>ดูตัวอย่าง</button>
                   <button class="user-detail-action-btn" type="submit">${isEdit ? "บันทึกการแก้ไข" : "สร้างบทความ"}</button>
                   <button class="user-detail-action-btn" type="button" ${isEdit ? `data-article-edit-cancel="${draft.id}"` : "data-article-add-cancel"}>ยกเลิก</button>
                 </div>
@@ -44881,7 +44921,7 @@
       const id = form?.dataset.articleId || "";
       const returnTo = form?.dataset.articleReturnTo || "detail";
       renderArticleEditorConfirmModal({
-        title: "ยืนยันการยกเลิกแก้ไข",
+        title: "Confirm Cancel Edit",
         summary: "การแก้ไขล่าสุดจะไม่ถูกบันทึก",
         question: "คุณต้องการยกเลิกการแก้ไขบทความนี้ใช่หรือไม่?",
         confirmAttr: `data-article-edit-cancel-confirm="${id}" data-article-edit-return-to="${returnTo}"`,
@@ -44892,7 +44932,7 @@
     function openArticleEditSaveConfirmModal(form, selectedScenario = "success") {
       const id = form?.dataset.articleId || "";
       renderArticleEditorConfirmModal({
-        title: "ยืนยันการบันทึกแก้ไข",
+        title: "Confirm Save Article",
         summary: "ระบบจะบันทึกข้อมูลที่แก้ไขและแสดงผลทันที",
         question: "คุณต้องการบันทึกการแก้ไขบทความนี้ใช่หรือไม่?",
         confirmAttr: `data-article-edit-save-confirm="${id}"`,
@@ -44903,7 +44943,7 @@
 
     function openArticleAddCancelConfirmModal() {
       renderArticleEditorConfirmModal({
-        title: "ยืนยันการยกเลิกสร้างบทความ",
+        title: "Confirm Cancel Create Article",
         summary: "ข้อมูลที่กรอกไว้ในหน้า Add Article จะไม่ถูกบันทึก",
         question: "คุณต้องการยกเลิกการสร้างบทความนี้ใช่หรือไม่?",
         confirmAttr: "data-article-add-cancel-confirm",
@@ -44914,7 +44954,7 @@
     function openArticleAddCreateConfirmModal(form, selectedScenario = "success") {
       const id = form?.dataset.articleId || "";
       renderArticleEditorConfirmModal({
-        title: "ยืนยันการสร้างบทความ",
+        title: "Confirm Create Article",
         summary: "ระบบจะสร้างบทความใหม่ตามข้อมูลในแบบฟอร์ม",
         question: "คุณต้องการสร้างบทความนี้ใช่หรือไม่?",
         confirmAttr: `data-article-add-create-confirm="${id}"`,
@@ -45087,7 +45127,7 @@
         if (urlInput && urlInput.value.trim() && isSafeArticleLinkUrl(linkUrl)) urlInput.value = linkUrl;
         if (!linkText || !isSafeArticleLinkUrl(linkUrl)) {
           hasInvalidLinkBlock = true;
-          setArticleBlockUrlError(block, "กรุณากรอก Link text และ URL เป็น http://, https://, www. หรือ /");
+          setArticleBlockUrlError(block, "กรุณากรอกข้อความลิงก์ และ URL เป็น http://, https://, www. หรือ /");
         }
       });
       if (!hasMainContentBlock) {
@@ -45307,7 +45347,7 @@
           actions.push({ action: "edit-article", label: "แก้ไขบทความ" });
         }
         if (report.contentStatus !== "Archived") {
-          actions.push({ action: "archive-article", label: "Archive article" });
+          actions.push({ action: "archive-article", label: "เก็บบทความเข้าคลัง" });
         }
       }
       return actions;
@@ -45342,7 +45382,7 @@
           <summary aria-label="Board report actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-board-report-open="${report.id}">ดูรายละเอียด</button>
-            <button type="button" data-board-report-preview="${report.id}">View Article</button>
+            <button type="button" data-board-report-preview="${report.id}">ดูบทความ</button>
             ${renderBoardReportStatusActionButtons(report)}
           </div>
         </details>
@@ -45363,7 +45403,7 @@
       const labels = {
         "Report Received": "รับรายงาน Board",
         "Close Report": "ปิดรายงาน",
-        "Archive Article": "เก็บบทความ"
+        "Archive Article": "เก็บบทความเข้าคลัง"
       };
       return labels[action] || action;
     }
@@ -45430,7 +45470,7 @@
           <td data-label="สถานะ">${renderBoardReportState(row.after)}</td>
           <td data-label="รายละเอียด" class="history-note">${getBoardReportAuditDetail(row.action)}</td>
         </tr>
-      `).join("") : `<tr><td colspan="5" class="history-note">No admin action recorded yet</td></tr>`;
+      `).join("") : `<tr><td colspan="5" class="history-note">ยังไม่มีการดำเนินการจาก Admin</td></tr>`;
       return `
         <div class="history-table-wrap">
           <table class="history-table asset-status-history-table">
@@ -45581,7 +45621,7 @@
       document.querySelector("#page-meta").textContent = "";
       setPageActions(renderPageBackButton("data-back-reported-board", "กลับไป Reported Articles", "report-back-btn"));
       document.querySelector("#panel-title").textContent = report.articleTitle;
-      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.articleId} · reporter identity masked`;
+      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.articleId} · ปิดบังตัวตนผู้รายงาน`;
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
@@ -45612,7 +45652,7 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Reported Article</h4>
-              <button class="btn asset-report-view-btn" type="button" data-board-report-preview="${report.id}" aria-label="View article ${report.id}"><span class="asset-report-view-label">View Article</span></button>
+              <button class="btn asset-report-view-btn" type="button" data-board-report-preview="${report.id}" aria-label="ดูบทความ ${report.id}"><span class="asset-report-view-label">ดูบทความ</span></button>
             </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
@@ -45644,11 +45684,11 @@
     function getBoardReportActionConfig(action) {
       const configs = {
         "close-report": {
-          title: "ยืนยันการปิดรายงาน",
+          title: "Confirm Close Report",
           detail: "ปิดรายงานหลังตรวจหลักฐานครบแล้ว โดยไม่เปลี่ยนสถานะ Board content อัตโนมัติ",
-          confirm: "ยืนยันปิดรายงาน",
+          confirm: "ยืนยัน",
           historyAction: "Close Report",
-          note: "Admin closed the Board report after review.",
+          note: "Admin ปิดรายงาน Board หลังตรวจสอบ",
           reasonLabel: "เหตุผลการปิดรายงาน",
           reasons: [
             "ตรวจสอบแล้วไม่พบการละเมิด",
@@ -45657,12 +45697,12 @@
           ]
         },
         "archive-article": {
-          title: "ยืนยันการ Archive article",
+          title: "Confirm Archive Article",
           detail: "นำบทความออกจาก Board public surfaces และปิดรายงานนี้",
-          confirm: "ยืนยัน Archive",
+          confirm: "ยืนยัน",
           historyAction: "Archive Article",
-          note: "Admin archived the Board article and closed the report.",
-          reasonLabel: "เหตุผลการ Archive article",
+          note: "Admin เก็บบทความเข้าคลังและปิดรายงาน",
+          reasonLabel: "เหตุผลการเก็บบทความเข้าคลัง",
           reasons: [
             "บทความละเมิดนโยบายหรือแนวทางชุมชน",
             "ข้อมูลบทความไม่ถูกต้องหรือทำให้เข้าใจผิด",
@@ -48075,7 +48115,15 @@
       }
       const articlePreviewButton = event.target.closest("[data-article-preview-open]");
       if (articlePreviewButton) {
-        openArticleEditorPreviewModal(articlePreviewButton.closest("[data-article-editor]"));
+        const editorForm = articlePreviewButton.closest("[data-article-editor]");
+        if (editorForm) {
+          openArticleEditorPreviewModal(editorForm);
+        } else {
+          const article = getArticleById(articlePreviewButton.dataset.articleId);
+          if (!article) return;
+          openArticlePreviewModal(article);
+          closeRowMenus();
+        }
         return;
       }
       const articlePreviewIdButton = event.target.closest("[data-article-preview-id]");

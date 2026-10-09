@@ -1,0 +1,354 @@
+================================================================================
+CTM-002 — Content Management Label Normalization Plan (Approval Gate)
+Mission 4 — Content Management Label Normalization (Mission ID bc5a2b57 / Task 3931bcb9)
+================================================================================
+วันที่จัดทำ   : 2026-10-07
+สถานะ         : ✅ APPROVED 07/10/2026 — ทุก decision อนุมัติแล้ว (ดู §G.1)
+                ห้ามแก้ Prototypes/bo-prototype.html ใน task
+                นี้ — implement จริงใน CTM-003a/003b ตาม scope ที่อนุมัติเท่านั้น
+อิงจาก        : deliverables/mission-4-objective-1/CTM-001-label-audit.txt
+มาตรฐาน       : docs/bo-canonical-label-table.md (Confirmed 02/10/2026 + §5)
+รูปแบบตาม     : canonical §7 (MKD-002) / §8 (USR-002) — แผนที่อนุมัติจะถูกบันทึก
+                เป็น §9 ใน canonical doc หลัง approval
+
+Legend สถานะรายการ:
+  [CONFIRM]   เสนอ normalize — wording เสนอครบ รอ approve เป็นกลุ่มได้
+  [DECISION]  ต้องถามผู้ใช้ก่อน (มีหลายทางเลือก / กระทบ convention อื่น)
+  [DEFER]     คง deferred — ห้ามแก้ใน mission นี้
+  [OBSERVE]   บันทึก/ขอ policy — ไม่ใช่ deviation ชัดเจน
+
+Scope tags:   [003a] = CTM-003a Articles + Article Editor + Block Editor
+              [003b] = CTM-003b Categories + Reported Board
+
+================================================================================
+A. CONTENT-LAYER NORMALIZATION — ตาราง Current → Proposed (D-C01..D-C25)
+================================================================================
+ทุกรายการคือชั้นเนื้อหา (ควรเป็นไทยตามกฎ 2 ชั้น §1) — wording ด้านล่างเป็น
+ข้อเสนอที่จะขอ approve; label ไทยใหม่ทุกตัวต้องเทียบ §2 (ห้ามประดิษฐ์นอกตาราง —
+ดูหมายเหตุ "canonical rows ใหม่" ท้ายตาราง)
+
+--- A.1 กลุ่ม CTM-003a (Articles + Editor + Block Editor) ---
+
+| #     | บรรทัด / ตำแหน่ง                          | ปัจจุบัน                  | Proposed                            | สถานะ     |
+|-------|--------------------------------------------|---------------------------|-------------------------------------|-----------|
+| D-C01 | article row menu 44529                     | "View detail"             | ดูรายละเอียด                         | [CONFIRM] |
+| D-C02 | article row menu 44531 + detail btn 44634  | "Edit article"            | แก้ไขบทความ (มีใน §2 แล้ว)           | [CONFIRM] |
+| D-C03 | detail btn 44635 + editor btn 44790        | "Preview article"/"Preview"| ดูตัวอย่าง (canonical §5.5)         | [CONFIRM] |
+| D-C04 | article row menu 44530                     | "Preview as FO"           | ✅ wire เข้า preview modal เดิม      | APPROVED   |
+|       |                                            |                           | (handler data-article-preview-open   |(DECISION-4)|
+|       |                                            |                           |  48091) + label `ดูตัวอย่าง`          |           |
+| D-C05 | getArticleStatusAction 44471/44482/      | "Delete draft"            | ลบ Draft (D6 family)                 | [CONFIRM] |
+|       | 44493/44504 (row menu + detail)            | "Cancel schedule"         | ยกเลิกกำหนดเผยแพร่ (canonical row   | [CONFIRM] |
+|       |                                            |                           |  ใหม่ §2)                            |           |
+|       |                                            | "Archive article"         | เก็บบทความเข้าคลัง ✅ (DECISION-1)    | APPROVED   |
+|       |                                            | "Restore article"         | คืนบทความ (confirmed §5.1)           | [CONFIRM] |
+| D-C06 | renderArticleBlockEditor 43702           | "+ Add block"             | + เพิ่ม block (canonical row §2      | [CONFIRM] |
+|       |                                            |                           |  "Block editor (Article)" ล็อกไว้)   |           |
+| D-C07 | renderArticleEditorBlock 43674-43676     | aria "Move block up"/     | เลื่อน block ขึ้น / เลื่อน block     | [CONFIRM] |
+|       | (icon-only ↑ ↓ ×)                          | "Move block down"/        | ลง / ลบ block (canonical row เดียว   |           |
+|       |                                            | "Delete block"            | กัน; icon-only ใช้ภาษาตาม context)   |           |
+| D-C08 | articleBlockTypes 43519-43528 → render   | Paragraph/Heading H2,H3/  | ✅ ไทย: ย่อหน้า / หัวข้อ H2 /        | APPROVED   |
+|       | ที่ picker 43614 + block title 43672 +     | Bullet List/Numbered List/| หัวข้อ H3 / รายการแบบจุด /           |(DECISION-2)|
+|       | readonly title 43719 + textarea aria 43666 | Hyperlink/Divider/Image + | รายการแบบตัวเลข / ลิงก์ / เส้นคั่น / |           |
+|       |                                            | Caption/Quote/Comparison  | รูปภาพ + คำบรรยาย / ข้อความอ้างอิง / |           |
+|       |                                            | Table                     | ตารางเปรียบเทียบ (aria/readonly      |           |
+|       |                                            |                           | mirror ไทย)                          |           |
+| D-C09 | readonly blocks empty/error              | "No content blocks" 43714 | ยังไม่มีเนื้อหา                       | [CONFIRM] |
+|       | 43714/43739/43743/43756                    | "Empty block" 43739/43743 | บล็อกว่าง                             |           |
+|       |                                            | "Invalid link" 43756      | ลิงก์ไม่ถูกต้อง                       |           |
+| D-C14 | article tiles 44620-44622 + 44591/44728  | "Likes"/"Created At"/     | ✅ จำนวน Likes / สร้างเมื่อ /        | APPROVED   |
+|       | + block editor 43654/43657                 | "Updated At"/"Article URL"| อัปเดตล่าสุด / คง `Article URL` /   |(DECISION-3)|
+|       |                                            | /"Link text"/"URL"        | ข้อความลิงก์ / คง `URL` (technical   |           |
+|       |                                            |                           | term)                                |           |
+| D-C22 | article.actionHistory render EN raw      | "Created"/"Updated"/      | ✅ เพิ่ม action label map แบบ        | APPROVED   |
+|       | 44455; writes 44389-44408/45013-45036/     | "Archived"/"Canceled      | getBoardReportActionLabel →          |(DECISION-5)|
+|       | 44994/45192                                | schedule"/"Restored"      | สร้างบทความ / แก้ไขล่าสุด /          |           |
+|       |                                            | (+ ค่าจาก board report    | เก็บบทความเข้าคลัง / ยกเลิกกำหนด     |           |
+|       |                                            |  path)                    | เผยแพร่ / นำกลับมาเผยแพร่ (+ค่า      |           |
+|       |                                            |                           | จาก board report path ครบ)           |           |
+| D-C23 | alt text fallbacks 43621/43411/43415/    | "Article image preview"/  | ตัวอย่างรูปบทความ / รูป Cover       | [CONFIRM] |
+|       | 44749/43641                                | "Article cover"/          | บทความ / "<title> - รูปในเนื้อหา" /  |           |
+|       |                                            | "<title> - content image"/| ตัวอย่างรูป Cover บทความ /           |           |
+|       |                                            | "Article cover preview"/  | ตัวอย่างรูปในเนื้อหาบทความ           |           |
+|       |                                            | "Article content image    |                                      |           |
+|       |                                            |  preview"                 |                                      |           |
+| D-C24 | preview annotations + a11y               | "Preview hero article"    | ตัวอย่างบทความ Hero                  | [CONFIRM] |
+|       | 43919/43934/43999/44003/43686              | "Preview article detail"  | ตัวอย่างรายละเอียดบทความ             |           |
+|       |                                            | aria "Board hero article  | aria: ตัวอย่างบทความ Hero บน Board / |           |
+|       |                                            |  preview"/"FO article     | ตัวอย่างบทความบน FO /                |           |
+|       |                                            |  preview"/"Inline text    | คำอธิบายการแปลงข้อความในบรรทัด       |           |
+|       |                                            |  parsing help"            | (aria mirror visible ตาม §5.4)       |           |
+| D-C25 | getArticleScenarioResult titles          | "Permission denied" 44058 | ✅ ไทย: `ไม่มีสิทธิ์ดำเนินการ` /     | APPROVED   |
+|       | 44058/44074 (ผสม TH 4 ค่าเดิม)             | /"Preview failed" 44074   | `ดูตัวอย่างไม่สำเร็จ` (error copy   |(DECISION-6)|
+|       |                                            |                           |  precedent boardReportErrorSamples)  |           |
+
+--- A.2 กลุ่ม CTM-003b (Categories + Reported Board) ---
+
+| #     | บรรทัด / ตำแหน่ง                          | ปัจจุบัน                  | Proposed                            | สถานะ     |
+|-------|--------------------------------------------|---------------------------|-------------------------------------|-----------|
+| D-C01 | category row menu 40252                    | "View detail"             | ดูรายละเอียด                         | [CONFIRM] |
+| D-C02 | category row menu 40253 + detail btn 43059 | "Edit Category"           | แก้ไข Category (pattern แก้ไข <X>)   | [CONFIRM] |
+| D-C10 | Categories toolbar 32379 (+ hidden        | "Add Category"            | เพิ่ม Category + aria mirror         | [CONFIRM] |
+|       | #primary-action 32386 — CSS ซ่อนอยู่)      |                           | (normalize คู่กันกันหลุด convention)  |           |
+| D-C11 | Categories toolbar 32378                   | "Reorder Categories" +    | จัดเรียง Category (confirmed §5.2) + | [CONFIRM] |
+|       |                                            | aria "Reorder Categories  | aria "จัดเรียง Category บน FO Board" |           |
+|       |                                            |  on FO Board"             | (modal title `Reorder Categories`    |           |
+|       |                                            |                           |  40159 = EN structure คงเดิม ✓)      |           |
+| D-C12 | category row menu 40256/40258 + detail    | "Set inactive"/"Set active"| ปิดใช้งาน / เปิดใช้งาน (canonical   | [CONFIRM] |
+|       | modal 43062/43064                          |                           |  Deactivate/Reactivate §2)           |           |
+| D-C13 | category row menu 40261                    | "Delete category"         | ลบ Category (D6)                     | [CONFIRM] |
+| D-C14 | cat detail tile 43050                      | "Updated At"              | อัปเดตล่าสุด                         | [CONFIRM] |
+| D-C15 | board report row menu 45360 + detail btn  | "View Article" + aria     | ดูบทความ + aria "ดูบทความ <id>"      | [CONFIRM] |
+|       | + aria 45630                               | "View article <id>"       | (mirror, O-C14)                      |           |
+| D-C16 | board report action getBoardReportActions | "Archive article" 45325   | เก็บบทความเข้าคลัง ✅ (DECISION-1)    | APPROVED   |
+| D-C17 | board report confirm labels 45664/45677    | "ยืนยันปิดรายงาน"/        | ยืนยัน (ทั้งคู่ — canonical §2      | [CONFIRM] |
+|       |                                            | "ยืนยัน Archive"          |  confirm primary = `ยืนยัน` เท่านั้น) |           |
+| D-C18 | reasonLabel archive 45680                  | "เหตุผลการ Archive        | เหตุผลการเก็บบทความเข้าคลัง          | [CONFIRM] |
+|       |                                            |  article"                 |  (เหตุผลการปิดรายงาน 45667 = TH ✓)   |           |
+| D-C19 | panel-subtitle Report Detail 45599         | "… · reporter identity    | "… · ปิดบังตัวตนผู้รายงาน"           | [CONFIRM] |
+|       |                                            |  masked"                  | (ตรง D-U04 precedent ที่อนุมัติแล้ว)  |           |
+| D-C20 | audit empty state 45448                    | "No admin action recorded | ยังไม่มีการดำเนินการจาก Admin         | [CONFIRM] |
+|       |                                            |  yet"                     |                                      |           |
+| D-C21 | getBoardReportActionConfig.note           | "Admin closed the Board   | "Admin ปิดรายงาน Board หลัง          | [CONFIRM] |
+|       | 45666/45679 — leak เข้า article.           |  report after review."/   |  ตรวจสอบ" / "Admin เก็บบทความ        |           |
+|       | actionHistory ผ่าน applyBoardReportAction  | "Admin archived the Board |  เข้าคลังและปิดรายงาน"               |           |
+|       | 45762-45772 → แสดงใน Change History (live) |  article and closed the   | (note ไทยกัน EN leak เข้า Change     |           |
+|       |                                            |  report."                 |  History)                            |           |
+
+canonical rows ใหม่ที่ต้องเพิ่มใน §2 (ทำตอน CTM-003a/003b ตามกติกา "เพิ่ม row
+ก่อนใช้" — pattern เดียวกับ USR-002/USR-003):
+  - `ลบ Draft`        (Delete family — entity `Draft` = system term EN §5.5)
+  - `ยกเลิกกำหนดเผยแพร่` (action ใหม่ — Cancel publish schedule; verb ไทย +
+                      คำศัพท์เผยแพร่ตาม convention จอ)
+  - `เก็บบทความเข้าคลัง` (Archive family variant — ✅ DECISION-1; ปรับ board
+                      report map label เดิม `เก็บบทความ` align ตามด้วย)
+  - block type labels ไทย (✅ DECISION-2 — บันทึกชุด label เป็น editor
+                      vocabulary ใน canonical §9)
+
+================================================================================
+B. STRUCTURE-LAYER — D15 modal title candidates (S-C01a..c, S-C02a..d,
+   S-C03a..d, S-C04a..b, S-C05)
+================================================================================
+ตาม canonical §3.2 modal title = English; confirm modal = `Confirm <Verb>
+<Entity>` (ตัวอย่างที่ canonical เขียนไว้ตรง: `ยืนยันการปิดรายงาน` →
+`Confirm Close Report`) — ✅ APPROVED EN ทั้งชุด 12 จุด (DECISION-7) +
+S-C05 `Cannot Deactivate Category` (DECISION-8)
+
+| #     | ตำแหน่ง                              | ปัจจุบัน (ไทย)              | Proposed EN                    | Scope |
+|-------|---------------------------------------|----------------------------|--------------------------------|-------|
+| S-C01a| getCategoryActionConfig               | ยืนยันการปิดใช้งาน          | Confirm Deactivate Category    | 003b  |
+|       | deactivate.title 43234                |  category                   |                                |       |
+| S-C01b| activate.title 43245                  | ยืนยันการเปิดใช้งาน          | Confirm Reactivate Category    | 003b  |
+|       |                                       |  category                   |                                |       |
+| S-C01c| delete.title 43256                    | ยืนยันการลบ category        | Confirm Delete Category        | 003b  |
+| S-C02a| getArticleStatusAction                | ยืนยันการลบฉบับร่าง          | Confirm Delete Draft           | 003a  |
+|       | delete-draft.title 44472              |                            |                                |       |
+| S-C02b| cancel-schedule.title 44483           | ยืนยันการยกเลิกกำหนดเผยแพร่  | Confirm Cancel Schedule        | 003a  |
+| S-C02c| archive-article.title 44494           | ยืนยันการเก็บบทความเข้าคลัง   | Confirm Archive Article        | 003a  |
+| S-C02d| restore-article.title 44505           | ยืนยันการนำบทความกลับมาเผยแพร่| Confirm Restore Article        | 003a  |
+| S-C03a| openArticleEditCancelConfirmModal     | ยืนยันการยกเลิกแก้ไข         | Confirm Cancel Edit            | 003a  |
+|       | 44899                                 |                            |                                |       |
+| S-C03b| openArticleEditSaveConfirmModal 44910 | ยืนยันการบันทึกแก้ไข         | Confirm Save Article           | 003a  |
+| S-C03c| openArticleAddCancelConfirmModal      | ยืนยันการยกเลิกสร้างบทความ    | Confirm Cancel Create Article  | 003a  |
+|       | 44921                                 |                            |                                |       |
+| S-C03d| openArticleAddCreateConfirmModal      | ยืนยันการสร้างบทความ         | Confirm Create Article         | 003a  |
+|       | 44932                                 |                            |                                |       |
+| S-C04a| getBoardReportActionConfig            | ยืนยันการปิดรายงาน           | Confirm Close Report           | 003b  |
+|       | close-report.title 45662              |                            | (§3.2 ยกตัวอย่างไว้ตรง)         |       |
+| S-C04b| archive-article.title 45675           | ยืนยันการ Archive article   | Confirm Archive Article        | 003b  |
+|       |                                       |  (ผสม TH+EN)               |                                |       |
+| S-C05 | category blocked modal h2           | ไม่สามารถปิดใช้งาน category  | ✅ Cannot Deactivate Category  | 003b  |
+|       | 43227/43284                           |                            |  (DECISION-8 — h2 = structure  |       |
+|       |                                       |                            |   layer ตาม §3.2)              |       |
+
+⚠️ SIDE-EFFECT GUARD (precedent USR-002): ตอน implement ต้องตรวจว่า
+config.title ถูก reuse เป็น history/audit action หรือไม่ — article
+actionHistory เขียนด้วย action keys แยก ("Created"/"Archived"/…) ไม่ใช่
+title (ต่างจาก userActionConfig) จึงไม่ต้องเพิ่ม historyLabel field;
+แต่ถ้าพบ reuse เพิ่มเติมให้หยุดแจ้งก่อนแก้ (กฎเดียวกับ USR-003)
+
+================================================================================
+C. OBSERVATION DECISIONS (O-C01..O-C14)
+================================================================================
+| #     | ประเด็น                                             | ข้อเสนอ                          | สถานะ    |
+|-------|------------------------------------------------------|----------------------------------|----------|
+| O-C01 | row-menu summary aria EN ("Article actions"/         | compliant — convention `X        | ผ่าน     |
+|       | "Category actions"/"Board report actions")           |  actions` EN เดียวกันทุก module    |          |
+| O-C02 | customSelect listbox aria EN — shared helper         | ไม่แก้ — consistent cross-module;| ไม่ทำ    |
+|       |                                                      | localize ต้องทำ shared helper     |          |
+| O-C03 | editor select aria ไทย mirror ถูก                    | compliant                        | ผ่าน     |
+| O-C04 | FO preview internals EN (Board/Author/Date/Key       | คง EN — simulated FO product     | [CONFIRM]|
+|       | takeaways/Share/Read Full Article/By TukDaeng)       | surface ไม่ใช่ BO label           |          |
+| O-C05 | mixed labels "Caption รูป Cover"/"Note / หมายเหตุ"   | cross-module convention — ไม่แก้  | ไม่ทำ    |
+| O-C06 | count chips EN unit (`${n} reporters`/`articles`/    | convention เดียวกัน — ไม่แก้      | ไม่ทำ    |
+|       | "5 min")                                             |                                  |          |
+| O-C07 | panel title casing ไม่สม่ำเสมอ (ARTICLE LIST vs      | style issue ไม่ใช่ language —    | ไม่ทำ    |
+|       | Reported Article List)                               | บันทึกไว้นอก scope               |          |
+| O-C08 | moduleData.content dead fields + #primary-action     | บันทึกเท่านั้น — dead code        | ไม่ทำ    |
+|       | ถูก CSS ซ่อน                                         |                                  |          |
+| O-C09 | articleToDetailRow.action + article.detail EN       | dead render path — บันทึกเท่านั้น  | ไม่ทำ    |
+| O-C10 | dead mock fields boardReportRows/categoryRows        | บันทึกเท่านั้น — ไม่มี surface    | ไม่ทำ    |
+| O-C11 | board report historyLabel mechanism มีอยู่แล้ว       | resolved — ช่องว่างจริง = D-C22  | ผ่าน     |
+| O-C12 | scenario selector labels ผสม EN(article)/TH(board)   | exempt §5.6 ทั้งชุด — ไม่แก้      | ไม่ทำ    |
+| O-C13 | board report modal ไม่มี email preview block         | informational — ไม่ใช่ gap        | ไม่ทำ    |
+| O-C14 | aria mirrors (View article <id>/Add Category/        | normalize คู่กับ D-C15/D-C10/    | [CONFIRM]|
+|       | Reorder/block aria)                                  | D-C11/D-C08 (รวมในแถวนั้น ๆ)      |          |
+
+================================================================================
+D. MOCK-DATA POLICY — M-C01..M-C09 [CONFIRM — ตาม DECISION-4 precedent]
+================================================================================
+ค่า mock ที่ render/เก็บเป็น EN (เป็น "data" ไม่ใช่ "label"):
+  M-C01 articleRows EN editorial content (title/deck/body/quote/caption/…)
+  M-C02 readTime "5 min"/"6 min" tag
+  M-C03 article.detail EN defaults + EN audit notes (live part ครอบใน D-C21)
+  M-C04 boardReportRows reporterNote EN (render จริงใน Reporter History)
+  M-C05 boardReportRows.actionHistory mock notes EN (stored-only)
+  M-C06 boardReportReporterNames EN
+  M-C07 article.tags EN
+  M-C08 categoryRows.name EN (product data)
+  M-C09 actor names EN ("Somchai Admin"/"Orn Admin"/"By TukDaeng")
+
+ข้อเสนอ: คง mock EN เดิมทั้งหมด — ตรง precedent DECISION-4 ของ USR-002
+("data quirk ของ prototype — แก้เฉพาะ label ไม่แตะ data mock") และข้อห้าม
+ของ mission ("mock-data EN (DECISION-4)"). ⚠️ ยกเว้น D-C21 default notes
+ที่ไม่ใช่ mock แต่เป็น live config string — normalize เป็นไทยตามตาราง A.2
+
+================================================================================
+E. DEFERRED — D16 table headers (ห้าม normalize ตามข้อห้าม mission)
+================================================================================
+คง deferred รอ central decision — บันทึกไว้เท่านั้น ห้ามแตะทั้ง <th> และ
+data-label attributes (mobile mirror ต้อง normalize คู่กันเมื่อ D16 มีมติ):
+  - Articles table 45226 / Categories table 42983 / Reported Articles 45544
+    (EN ทั้งหมด)
+  - Reporter History 45498-45502 / Admin Action History 45454-45458
+    (ผสม TH+EN)
+  - Article Change History 44443-44447 (EN ทั้งหมด)
+  - mismatch เดี่ยว: 45512 `data-label="Details"` ≠ header `Additional
+    Details` — บันทึกเป็น defect เล็ก แก้คู่กับ D16 เท่านั้น
+
+================================================================================
+F. ขอบเขต / ข้อห้าม (ยืนยันอีกครั้งในแผน)
+================================================================================
+- ห้ามแก้ Prototypes/bo-prototype.html ก่อน approval — Content Management
+  ทั้ง module เป็น protected screens; implement จริงใน CTM-003a/003b เท่านั้น
+- ห้าม normalize table headers (D16 — รอ central decision)
+- ห้ามแตะ technical keys / status keys / ID prefixes / audit event names —
+  status pills (Draft/Scheduled/Published/Archived, Active/Inactive,
+  Pending/Closed, High/Medium/Low) ผ่านกฎแล้ว คงเดิม
+- ห้ามแตะ scenario selectors/options (exempt §5.6), Download CSV Template
+  (Phase 2), เมนู/module อื่น, CSS/logic/route — แก้เฉพาะ string label
+  (ยกเว้น D-C04 wire/remove และ D-C22 label map ซึ่งเป็นงานตาม decision)
+- ห้ามใช้ label นอก canonical table — label ไทยใหม่ที่ไม่มี row ต้องเพิ่มใน
+  canonical §2 ก่อนใช้ (รายการดูท้าย §A)
+
+================================================================================
+G. DECISIONS ที่ต้องการ explicit approval (สรุป — ถามทีละข้อ)
+================================================================================
+DECISION-1 : Archive wording (D-C05/D-C16/D-C18 + historyLabel map ใน D-C22)
+  (a) `เก็บถาวรบทความ`   [เสนอหลัก — ตรง canonical Archive family `เก็บถาวร`
+      + entity; confirm title EN = "Confirm Archive Article" อยู่แล้ว]
+  (b) `เก็บบทความเข้าคลัง` [ตรง confirm title ไทยเดิม "ยืนยันการเก็บบทความ
+      เข้าคลัง" และ board report map label เดิม "เก็บบทความ"]
+  (c) อื่น ๆ
+  — ผลกระทบ: board report historyLabel เดิม "เก็บบทความ" จะ align เป็นค่าที่
+    approve (43221+ / getBoardReportActionLabel 45377-45384)
+
+DECISION-2 : block type labels (D-C08 — articleBlockTypes)
+  (a) ไทย: ย่อหน้า / หัวข้อ H2 / หัวข้อ H3 / รายการแบบจุด / รายการแบบตัวเลข /
+      ลิงก์ / เส้นคั่น / รูปภาพ + คำบรรยาย / ข้อความอ้างอิง / ตารางเปรียบเทียบ
+      [เสนอหลัก — picker options + block header + readonly title + aria เป็น
+      content-layer ในฟอร์มไทย]
+  (b) คง EN — ถือเป็น technical/editor terms (เช่น Paragraph/Quote)
+  (c) อื่น ๆ
+
+DECISION-3 : field/tile labels (D-C14)
+  (a) ไทยทั้งชุดยกเว้น `URL`/`Article URL` คง EN เป็น technical term
+      [เสนอหลัก — Likes→จำนวน Likes, Created At→สร้างเมื่อ,
+      Updated At→อัปเดตล่าสุด, Link text→ข้อความลิงก์]
+  (b) ไทยทั้งหมดรวม URL (`ลิงก์บทความ`/`ลิงก์`)
+  (c) คง EN ทั้งหมด — ถือเป็น identifier tiles ตาม O-U04 precedent
+
+DECISION-4 : dead button `Preview as FO` (D-C04 — row menu 44530)
+  (a) wire เข้า preview modal ที่มีอยู่ (handler data-article-preview-open
+      48091) + label `ดูตัวอย่าง` [เสนอหลัก — ปิด functional gap ด้วยของเดิม]
+  (b) ลบ menu item ออก (clean surface แต่เปลี่ยนโครงเมนู)
+  (c) เก็บไว้ + เปลี่ยน label เป็น `ดูตัวอย่าง FO` เฉย ๆ (คง dead surface)
+
+DECISION-5 : article.actionHistory label map (D-C22 + D-C21)
+  (a) เพิ่ม article action label map (pattern getBoardReportActionLabel) +
+      normalize D-C21 default notes เป็นไทย [เสนอหลัก — กัน EN ดิบทั้ง
+      existing writes และ writes ใหม่จาก normalize]
+  (b) คง EN raw ใน Change History (ไม่แก้ D-C22; แก้เฉพาะ D-C21 notes)
+  (c) คงทั้งหมด
+
+DECISION-6 : compact alert titles (D-C25 — getArticleScenarioResult)
+  (a) ไทย: "Permission denied"→`ไม่มีสิทธิ์ดำเนินการ`, "Preview failed"→
+      `ดูตัวอย่างไม่สำเร็จ` [เสนอหลัก — precedent: error titles ไทยอยู่ใน
+      result area (boardReportErrorSamples/userActionErrorSamples ไทยครบ)]
+  (b) EN: `Permission Denied`/`Preview Failed` — ถ้านับ h2 = structure title
+
+DECISION-7 : modal titles TH → EN `Confirm <Verb> <Entity>` (S-C01a..c,
+  S-C02a..d, S-C03a..d, S-C04a..b — 12 จุด ตามตาราง §B)
+  (a) EN ทั้งชุด [เสนอหลัก — ตรง §3.2 + precedent USR-002 DECISION-2]
+  (b) คงไทยทั้งหมด (ไม่ normalize D15 ใน mission นี้)
+  (c) เลือกบางส่วน — ระบุเอง
+
+DECISION-8 : blocked-modal title (S-C05 — category blocked modal h2)
+  (a) EN `Cannot Deactivate Category` [เสนอหลัก — render เป็น h2 =
+      structure layer ตาม §3.2]
+  (b) คงไทย + แก้ casing: `ไม่สามารถปิดใช้งาน Category` (นับเป็น error copy)
+
+CONFIRM batch (อนุมัติเป็นชุดได้):
+  003a: D-C01/D-C02/D-C03/D-C05(เฉพาะ ลบ Draft/ยกเลิกกำหนดเผยแพร่/คืนบทความ)/
+        D-C06/D-C07/D-C09/D-C23/D-C24
+  003b: D-C01/D-C02/D-C10/D-C11/D-C12/D-C13/D-C14(43050)/D-C15/D-C17/D-C18/
+        D-C19/D-C20/D-C21
+  observations: O-C04 (FO preview internals คง EN) + O-C14 (aria mirrors
+        ตามแถว label) + mock-data คง EN (§D)
+
+================================================================================
+G.1 ผลการตัดสินใจ (APPROVED 07/10/2026 — ผู้ใช้เลือกทีละข้อ)
+================================================================================
+- DECISION-1 : ✅ `เก็บบทความเข้าคลัง` — action label `Archive article` +
+  `เหตุผลการ Archive article` + historyLabel map ใช้ wording นี้; board
+  report map label เดิม `เก็บบทความ` (45377-45384) align เป็น
+  `เก็บบทความเข้าคลัง` ด้วย — เพิ่ม canonical row §2 ตอน implement
+- DECISION-2 : ✅ block type labels → ไทยทั้งชุด (ย่อหน้า/หัวข้อ H2/หัวข้อ
+  H3/รายการแบบจุด/รายการแบบตัวเลข/ลิงก์/เส้นคั่น/รูปภาพ + คำบรรยาย/
+  ข้อความอ้างอิง/ตารางเปรียบเทียบ) — aria/readonly mirror ไทยตาม §5.4
+- DECISION-3 : ✅ field labels → ไทยยกเว้น `URL`/`Article URL` คง EN
+  (technical term); Likes→จำนวน Likes, Created At→สร้างเมื่อ,
+  Updated At→อัปเดตล่าสุด, Link text→ข้อความลิงก์
+- DECISION-4 : ✅ `Preview as FO` → wire เข้า preview modal เดิม
+  (data-article-preview-open 48091) + label `ดูตัวอย่าง`
+- DECISION-5 : ✅ เพิ่ม article action label map (pattern
+  getBoardReportActionLabel) + normalize D-C21 default notes เป็นไทย
+- DECISION-6 : ✅ compact alert titles → ไทย (`ไม่มีสิทธิ์ดำเนินการ` /
+  `ดูตัวอย่างไม่สำเร็จ`) ตาม precedent error copy ไทย
+- DECISION-7 : ✅ modal titles → EN `Confirm <Verb> <Entity>` ครบ 12 จุด
+  (S-C01a..c, S-C02a..d, S-C03a..d, S-C04a..b)
+- DECISION-8 : ✅ blocked-modal h2 → `Cannot Deactivate Category`
+- CONFIRM batch: ✅ อนุมัติทั้งชุด (ทุกรายการ [CONFIRM] ตามตาราง §A)
+- Mock data + FO preview: ✅ คง EN เดิม (M-C01..M-C09 = data quirk ตาม
+  DECISION-4 precedent; O-C04 = simulated FO surface)
+- แผนโดยรวม  : ✅ อนุมัติ — พร้อม hand-off ไป CTM-003a/003b
+
+================================================================================
+H. SCOPE SPLIT CTM-003a / CTM-003b + HAND-OFF
+================================================================================
+CTM-003a — Articles + Article Editor + Block Editor (Feature 0.80 ชม.):
+  Content: D-C01a, D-C02a, D-C03, D-C04*, D-C05, D-C06, D-C07, D-C08*,
+           D-C09, D-C14a*, D-C22*, D-C23, D-C24, D-C25*
+  Titles : S-C02a..d, S-C03a..d
+  (* = ขึ้นกับ decision)
+CTM-003b — Categories + Reported Board (Feature 0.60 ชม.):
+  Content: D-C01b, D-C02b, D-C10, D-C11, D-C12, D-C13, D-C14b, D-C15,
+           D-C16*, D-C17, D-C18*, D-C19, D-C20, D-C21
+  Titles : S-C01a..c, S-C04a..b, S-C05*
+
+หลัง approval:
+- เพิ่มแผนที่อนุมัติเป็น §9 ใน docs/bo-canonical-label-table.md
+  (pattern §7/§8) — ทำใน CTM-002 หลัง approve
+- เพิ่ม canonical rows §2 ใหม่ตอน implement ใน CTM-003a/003b
+- CTM-004: re-scan inventory + Manual Review Checklist Gate
+================================================================================

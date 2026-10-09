@@ -1,0 +1,23 @@
+USR-001 — User Management Label Audit (Read-only)
+== Scope ที่ตรวจครบ
+User List — table + mobile card + filter/sort/search
+User Detail — side panel + full page 5 section
+Reported Users list + Report Detail + history tables
+User action modal 6 actions + confirm close-report modal
+Action menus + crumbs + aria/alt ที่เปิดจาก scope นี้
+== ผลการตรวจ
+Deviation ชั้นเนื้อหา 11 รายการ (D-U01..U11)
+D15 structure candidates 7 จุด (modal titles)
+D16 table headers 5 ชุด — deferred ไม่แตะตามข้อห้าม
+Observations 8 ข้อ (pill language, aria เมนูรายงาน ฯลฯ)
+Mock-data findings 10 ข้อ — รอ policy ใน USR-002
+== จุดที่ผ่านกฎ
+nav/breadcrumb/detail head/page title EN ครบ
+canonical buttons ไทยครบ (ดูรายละเอียด/ปิดรายงาน/ยืนยัน/ยกเลิก)
+queue/priority/channel pills EN ตามกฎชั้นโครง
+technical keys/status keys ไม่แตะตามข้อห้าม
+== Protected compliance
+bo-prototype.html ไม่แก้ — git clean
+ไม่ normalize เมนูอื่น ไม่ deviate จาก Confirmed Rules
+== Deliverable
+USR-001-label-audit.txt — deviation list + target พร้อมส่งต่อ USR-002

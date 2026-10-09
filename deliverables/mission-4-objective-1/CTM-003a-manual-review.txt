@@ -1,0 +1,79 @@
+CTM-003a Manual Review Checklist — Articles + Article Editor + Block Editor Label Normalization
+Mission 4 / Objective 1 — ✅ ตรวจจริงโดยผู้ใช้แล้ว ผ่านทั้งหมด อนุมัติปิด task 07/10/2026
+วันที่ implement: 07/10/2026 — อ้างอิง CTM-002 plan §A.1/§B/§G.1 + canonical §9.1/9.3/9.4
+
+สถานที่หลักฐาน:
+- screenshots/mission-4-objective-1/before/ + after/ — 51 PNG ต่อชุด (17 surfaces × 3 viewports: Desktop 1920x1080 / Tablet 768x1024 / Mobile 440x956 — recaptured ตาม evidence standard 07/10/2026 ใน CTM-004)
+- scripts/capture-ctm-003a-article-labels.js — capture script (before|after)
+- scripts/verify-ctm-003a.js — auto-verify ผ่าน 25/25, ไม่มี JavaScript console error
+- ไฟล์ที่แก้: Prototypes/bo-prototype.html (labels/config เท่านั้น + handler เดียวตาม D-C04), docs/bo-canonical-label-table.md (§2 rows ใหม่ + §4 resolution marks)
+
+====================================================================
+A. จุดที่แก้ — ตรวจเทียบ before/ vs จอจริง (localhost:4173)
+====================================================================
+
+ARTICLE LIST (Content Management > Articles)
+[ ] 01 row menu ทุกแถว: "ดูรายละเอียด / ดูตัวอย่าง / แก้ไขบทความ" + status action ตามสถานะ
+    (before: View detail / Preview as FO / Edit article / Archive article — d02/m02)
+[ ] 02 "ดูตัวอย่าง" ใน row menu เปิด preview modal ได้จริง (เดิม dead button "Preview as FO")
+    — wire เข้า handler data-article-preview-open เดิม, fallback เปิด openArticlePreviewModal(article) เมื่อไม่ได้อยู่ใน editor form
+
+ARTICLE DETAIL (เปิดจาก row menu > ดูรายละเอียด — ลอง ART-043 Published)
+[ ] 03 tiles: "จำนวน Likes / สร้างเมื่อ / อัปเดตล่าสุด" (คง "Article URL" เป็น EN ตาม DECISION-3 — before: Likes/Created At/Updated At — d03/m03)
+[ ] 04 ปุ่มท้ายจอ: "แก้ไขบทความ / ดูตัวอย่าง / เก็บบทความเข้าคลัง" (before: Edit article/Preview article/Archive article)
+[ ] 05 Change History: คอลัมน์ Action แสดงไทยผ่าน getArticleActionLabel map (สร้างบทความ/แก้ไขล่าสุด/เก็บบทความเข้าคลัง/ยกเลิกกำหนดเผยแพร่/นำกลับมาเผยแพร่) — Result/headers คง EN ตาม D16 defer + status token rule
+[ ] 06 readonly Content Blocks: ชื่อ block เป็นไทย (เช่น "6. ข้อความอ้างอิง", "7. ตารางเปรียบเทียบ"); empty/error = "ยังไม่มีเนื้อหา/บล็อกว่าง/ลิงก์ไม่ถูกต้อง"
+
+STATUS ACTION MODALS (titles TH → EN ตาม §3.2)
+[ ] 07 Published (ART-043) > เก็บบทความเข้าคลัง → title "Confirm Archive Article" (before: ยืนยันการเก็บบทความเข้าคลัง — d04/m04)
+[ ] 08 Scheduled (ART-044) > ยกเลิกกำหนดเผยแพร่ → "Confirm Cancel Schedule" (before: d06/m06)
+[ ] 09 Draft (ART-042) > ลบ Draft → "Confirm Delete Draft" (before: d07/m07)
+[ ] 10 Archived (ART-039) > คืนบทความ → "Confirm Restore Article" (before: d08/m08)
+[ ] 11 body ของ modal ทั้ง 4 ยังเป็นไทยเหมือนเดิม (question/summary/ปุ่ม ยกเลิก-ยืนยัน)
+
+PREVIEW MODAL (จากปุ่ม ดูตัวอย่าง บนหน้า detail)
+[ ] 12 section labels: "ตัวอย่างบทความ Hero" / "ตัวอย่างรายละเอียดบทความ" (before: Preview hero article/Preview article detail — d05/m05); title คง "Preview article" (EN structure ผ่าน §3.2 อยู่แล้ว)
+
+ARTICLE EDITOR (detail > แก้ไขบทความ — ART-043)
+[ ] 13 block picker options ไทยครบ 10 ค่า (ย่อหน้า/หัวข้อ H2/หัวข้อ H3/รายการแบบจุด/รายการแบบตัวเลข/ลิงก์/เส้นคั่น/รูปภาพ + คำบรรยาย/ข้อความอ้างอิง/ตารางเปรียบเทียบ) — before: d09b/m09b
+[ ] 14 block header ไทย + ปุ่ม "+ เพิ่ม block" + aria ปุ่ม ↑↓× (เลื่อน block ขึ้น/ลง/ลบ block — invisible, ตรวจผ่าน verify/DOM)
+[ ] 15 link block: label "ข้อความลิงก์" (คง "URL" เป็น EN technical term ตาม DECISION-3)
+[ ] 16 ปุ่มท้ายฟอร์ม "ดูตัวอย่าง" (before: Preview)
+[ ] 17 modal titles EN: "Confirm Save Article" (กดบันทึกการแก้ไข — before d10/m10) / "Confirm Cancel Edit" (แก้ฟอร์มแล้วกดยกเลิก — before d12/m12)
+
+ADD ARTICLE (Articles > + สร้างบทความ)
+[ ] 18 modal titles EN: "Confirm Cancel Create Article" (กรอกแล้วยกเลิก — before d15/m15) / "Confirm Create Article" (submit ผ่าน validation — before d16/m16)
+
+SCENARIO ALERTS (prototype scenario ใน confirm modal — Test flow)
+[ ] 19 permission_denied → title "ไม่มีสิทธิ์ดำเนินการ" (before: Permission denied — d11/m11); preview_failed → alert แสดง detail ไทย (title modal คง "Preview article" EN ตาม §3.2 — string "ดูตัวอย่างไม่สำเร็จ" อยู่ใน result.title สำรอง)
+
+====================================================================
+B. สิ่งที่แก้นอกตาราง §A.1 (ตาม DECISION-5 + user scope "default notes → ไทย")
+====================================================================
+[ ] 20 getBoardReportActionConfig.note ×2 → "Admin ปิดรายงาน Board หลังตรวจสอบ" / "Admin เก็บบทความเข้าคลังและปิดรายงาน"
+    (D-C21 — live config string ที่ leak เข้า article.actionHistory → Change History; อนุมัติใน DECISION-5 แม้ plan §H จัดไว้ฝั่ง 003b — ย้ายมาทำตรงนี้เพราะ user scope 003a ระบุ default notes)
+
+====================================================================
+C. Side-effect guard (ตาม plan §B ⚠️ + pattern USR-003)
+====================================================================
+[ ] 21 ยืนยัน: modal title EN ไม่ถูก reuse เป็น history/audit — article.actionHistory เขียนด้วย action keys แยก ("Created"/"Archived"/…) และ render ผ่าน getArticleActionLabel ไทย → ไม่ต้องเพิ่ม historyLabel field (ตรงตามที่ plan คาด)
+[ ] 22 Change History ยัง sort/filter ปกติ (map แปลงเฉพาะตอน render ไม่แตะ stored value)
+
+====================================================================
+D. ไม่ได้แตะ (ข้อห้าม + deferred)
+====================================================================
+- D16 table headers EN + data-label mirror (ทั้ง Article list / Change History / Reporter & Admin Action History) — รอ central decision
+- Download CSV Template (Phase 2), mock-data EN ทั้งหมด (M-C01..M-C09), FO preview internals (Board/Author/Key takeaways/Share…), scenario selector labels (exempt §5.6), status pills EN
+- 003b scope เจตนาไม่แตะ: category row menu "View detail"/"Edit Category", board report "View Article"/"Archive article" (45336), "ยืนยันการ Archive article" title (45686), "เหตุผลการ Archive article" (45691), getBoardReportActionLabel "เก็บบทความ" → align "เก็บบทความเข้าคลัง" (45381 — ทำตอน 003b ตาม DECISION-1)
+- modal title "Preview article" (44117/44125/45830) — EN structure ผ่าน §3.2
+
+====================================================================
+E. ISSUES / OBSERVATIONS พบระหว่าง implement
+====================================================================
+1. ~43663 divider note: "Divider จะแสดงเป็นเส้นแบ่งในบทความ…" — อ้างชื่อ type EN เดิม → ✅ FIXED 07/10/2026 (post-approval patch, ผู้ใช้อนุมัติ): "เส้นคั่นจะแสดงเป็นเส้นแบ่งในบทความ…" — ใช้ canonical label "เส้นคั่น" ที่อนุมัติแล้ว ไม่ประดิษฐ์ label ใหม่
+2. ~43838 alert: "เพิ่ม Image + Caption ได้ 1 บล็อกต่อบทความ…" — อ้าง type EN เดิม → ✅ FIXED 07/10/2026: "เพิ่มรูปภาพ + คำบรรยายได้ 1 บล็อกต่อบทความใน prototype นี้"
+3. ~45116 validation message: "กรุณากรอก Link text และ URL…" — field label ตอนนี้ "ข้อความลิงก์" → ✅ FIXED 07/10/2026: "กรุณากรอกข้อความลิงก์ และ URL เป็น http://, https://, www. หรือ /"
+4. Viewport before-shots เดิม = 1440x900/390x844 ตาม instruction ของ task นี้ — ⚠️ MKD-003 review เคย flag ว่า evidence standard คือ 1920x1080/768x1024/440x956 → ✅ RESOLVED 07/10/2026 ใน CTM-004: recapture ทั้งชุด (before/ + after/, 51 PNG ต่อชุด = 17 surfaces × 3 viewports; before recapture จาก git HEAD ผ่าน temp file bo-prototype-before.html)
+
+สถานะ: ✅ ผู้ใช้ตรวจครบทุกเคส ผ่านทั้งหมด — อนุมัติ 07/10/2026 (รวมยืนยัน scenario alert titles ไทยถูกต้อง)
+หมายเหตุ: §E ข้อ 1–3 ได้รับอนุมัติ normalize ตามหลังปิด task (same-day follow-up patch, task note บน kanban) — wording ใช้เฉพาะ canonical label ที่อนุมัติแล้วใน DECISION-2/3, verify-ctm-003a.js เพิ่ม 3 checks (รวม 28/28)

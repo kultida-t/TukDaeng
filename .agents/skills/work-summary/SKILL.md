@@ -108,7 +108,7 @@ Workflow สำหรับจับเวลาและสรุปงาน�
 - ถ้าผู้ใช้ระบุแค่ชื่อ/คำค้น → เรียก `get_board` หรือ `get_project_context` เพื่อหา task ที่ตรง
 - ถ้าเป็น task ใหม่ที่ยังไม่มีใน kanban → ถามผู้ใช้ว่าต้องการสร้าง task ใหม่หรือไม่ ถ้าใช่ให้ใช้ `create_task` และ Description ต้องมีบรรทัด `Category: <หมวด> | Planned: <X> ชม. (Category Max <Y> ชม.)` เสมอ (Y = ค่า "ห้ามเกิน" ของหมวดจากตารางเวลามาตรฐาน) โดย `Planned` ต้องเป็นเวลาที่ประเมินตามงานจริง ไม่มี floor ขั้นต่ำ — ประเมินตามหลักเวลาจริงด้านล่าง; ถ้างานเล็กจนแทบไม่ใช้เวลาเลย ควรพิจารณารวมเข้ากับ task ที่เกี่ยวข้องแทนการสร้าง task แยก
 - ถ้า task ที่จะเริ่มไม่มีบรรทัด `Planned` ใน Description → แจ้งผู้ใช้และเสนอเติมผ่าน `update_task` ก่อนเริ่มจับเวลา เพื่อให้เช็ก Time Ratio (เวลาจริงเทียบเป้าหมาย > 1.5 → ติด review) ได้
-- ตรวจว่า task map กับ Mission/Objective ใน approved plan แล้ว — ต้องรู้หมายเลข `mission-<N>-objective-<M>` ก่อนเริ่มจับเวลา เพราะใช้ตั้งชื่อโฟลเดอร์หลักฐาน (`screenshots/`, `deliverables/`); ถ้ายังไม่ map ให้ยืนยัน mapping กับผู้ใช้ก่อน
+- ตรวจว่า task map กับ Mission/Objective ใน approved plan แล้ว — ต้องรู้หมายเลข `mission-<N>-objective-<M>` ก่อนเริ่มจับเวลา เพราะใช้ตั้งชื่อโฟลเดอร์หลักฐาน (`screenshots/`, `deliverables/`); ถ้ายังไม่ map ให้ยืนยัน mapping กับผู้ใช้ก่อน; **ถ้าเป็น task ที่ไม่มี mission จริง (standalone/maintenance/ad-hoc — ยืนยันกับผู้ใช้แล้ว) หลักฐานยังต้องเก็บตามปกติทุกขั้น** โดยใช้โฟลเดอร์ `screenshots/task-<TASK-CODE>/` และ `deliverables/task-<TASK-CODE>/` แทน `mission-<N>-objective-<M>` ทุกจุดใน skill นี้
 
 #### 2. ตรวจสอบ task อื่นที่อยู่ใน `in_progress` (สำคัญ)
 
@@ -200,6 +200,9 @@ mcp_call_tool(
    - ในขั้นตอน Verification ให้รันคำสั่งเทสต์จริงและ redirect stdout/stderr ดิบเข้าไฟล์ทันที เช่น:
      `npx playwright test tests/<target-spec>.spec.js > deliverables/mission-<N>-objective-<M>/test-results.txt 2>&1`
    - คัดลอกไฟล์ `.spec.js` หรือ bundle spec files เข้าโฟลเดอร์ `deliverables/mission-<N>-objective-<M>/`
+   - **เก็บหลักฐานภาพตอนรันจบทันที (ห้ามปล่อยให้ต้องรันใหม่ตอนส่งตรวจ):** เก็บ `playwright-report/` ไว้ และแคปภาพ HTML report dashboard (`npx playwright show-report` แล้ว capture) ลง `screenshots/mission-<N>-objective-<M>/`; ถ้า test ตรวจพฤติกรรม dynamic (countdown lockout, error live, focus trap, toast) ให้แคปภาพหน้าจอ flow นั้นหรืออัด screencast สั้น ๆ เก็บไว้ในรอบเดียวกัน — auditor เคยหักคะแนนเพราะส่งแค่ text log โดยไม่มีภาพ UI
+   - **เขียน triage note ของเคส skipped/blocked ตอนรันจบทันที** ระบุเหตุผลต่อเคสหรือต่อกลุ่ม (project gating / environment / out of scope) ลง `deliverables/mission-<N>-objective-<M>/<task-code>-triage.txt` — context เหตุผลอยู่ในหัวเฉพาะตอนรัน ทำย้อนหลังตอนส่งตรวจมักไม่ตรงกับผลจริง
+   - **ถ้า scope งานครอบ accessibility** (numerical contrast, focus trap, dialog role/aria-modal) ต้องรัน direct assertion จริงในรอบเดียวกัน (เช่น axe-core/playwright) หรือบันทึกเป็น evidence limitation ใน task note ทันทีพร้อมเหตุผล — ห้ามปล่อยว่างให้ auditor เจอเองตอนตรวจ
 4. **งาน Manual QA / Inspection (งานตรวจที่ไม่มีโค้ดแก้):**
    - บันทึกรายการเคสและ Viewports ที่ตรวจรับผ่านเป็น checklist text file ใน `deliverables/mission-<N>-objective-<M>/checklist-objective-<M>.txt`
    - เรนเดอร์เป็นภาพ Checklist Card PNG เก็บไว้ใน `screenshots/mission-<N>-objective-<M>/` ด้วย `scripts/render-checklist-card.js`
@@ -253,7 +256,7 @@ Final Summary ชุดนี้ต้องเป็นแหล่งเดี
 หลังสร้าง Final Summary แล้ว ต้องรวมหลักฐานของ task นั้นให้ครบและแนบไว้กับ task/note ว่าทำอะไรไปบ้าง — หลักฐานราย task ชุดนี้จะถูกดึงไปคัดเลือกและรวมเป็นหลักฐานส่งตรวจระดับเป้าหมายใน `submission-evidence` ภายหลัง:
 
 - **task ที่ผลลัพธ์เห็นบนหน้าจอ (UI/prototype/logic/data ที่สะท้อนบนจอ):** Manual Review Checklist ที่ผู้ใช้ตรวจจริงพร้อมผลรายเคส (ผ่าน / ไม่ผ่าน / พบอะไร + ผลแก้ไข) บันทึกเป็นไฟล์หลักฐาน + ภาพผลลัพธ์ที่ตรวจ + ภาพ Before/After (1440 + 390) ตาม 2.2
-- **task ที่มี test:** สรุป test list ออกมาเป็นไฟล์ — `.spec.js` ที่รัน, เคสที่เทสอะไรบ้าง, ผ่าน/ไม่ผ่าน, จำนวน passed/failed/skipped ตามผลจริง + raw runner output (`test-results.txt`)
+- **task ที่มี test:** สรุป test list ออกมาเป็นไฟล์ — `.spec.js` ที่รัน, เคสที่เทสอะไรบ้าง, ผ่าน/ไม่ผ่าน, จำนวน passed/failed/skipped ตามผลจริง + raw runner output (`test-results.txt`) + ภาพ HTML report dashboard หรือภาพ/screencast พฤติกรรม UI ที่ test ตรวจ (จาก 2.2) + triage note ของเคส skipped/blocked
 - **task เอกสาร/อื่น ๆ:** รายการไฟล์ที่แก้จริง + commit hash (ถ้ามี)
 - ทุก task ต้อง trace ได้ว่า "ทำอะไรไปบ้าง" — ระบุ path หลักฐานทั้งหมดไว้ใน Final Session Note/Copy Block ของ task นั้น และตั้งชื่อไฟล์หลักฐานให้ trace กลับถึง task ได้ (เช่น `<task-code>-checklist.txt`, `<task-code>-test-results.txt`) เพราะหลาย task แชร์โฟลเดอร์ `mission-<N>-objective-<M>/` เดียวกัน
 - ถ้าหลักฐานขาด (เช่น ลืมแคป Before) ให้แจ้งผู้ใช้และบันทึก evidence gap ตรง ๆ ห้ามสร้างหลักฐานย้อนหลังแบบเสแสร้ง
@@ -1016,7 +1019,7 @@ Task: <TASK-CODE> <Task Name>
   3. **ระบุมาตรการความปลอดภัย (Security):** เช่น การ Mask ข้อมูลอีเมล, การเก็บเฉพาะ Token Hash, การห้ามลงข้อมูลลับใน Audit/Delivery Payload
   4. **ระบุสาเหตุและวิธีแก้เมื่อใช้เวลาเกิน (Improvement):** สรุปสาเหตุที่เกิน เช่น Scope กว้าง หรือมีเงื่อนไขหลายชั้น และระบุวิธีแก้ เช่น แยกฟังก์ชันตรวจเงื่อนไขตรงกลาง หรือแตก Subtask ย่อย
 - ใช้ข้อมูลจาก canonical Final Summary / Final Session Note เท่านั้น ห้ามเพิ่มงานที่ไม่ได้ทำจริง
-- Verification สำคัญ เช่น tests, validation, `git diff --check`, assertions, scope/protected-scope check และ user acceptance สามารถรวมใน `รายละเอียดงานที่ทำ` ได้
+- Verification ที่เป็นส่วนหนึ่งของงาน task จริง (เช่น task ตรวจรับ/QA gate — "ตรวจ checklist ครบ 5 หมวด", "เทียบ baseline ยืนยัน deviation หาย") เขียนเป็น bullet ได้; แต่ห้ามเขียนกลไกการรันเครื่องมือ ("re-run verify script ผ่าน X/X", "render checklist card") — นั่นเป็น evidence/verification mechanics ตามข้อ 23
 - หากสาระจาก Files Changed, Decisions, Problems/Resolutions, Scope Changes หรือ Verification สำคัญต่อความเข้าใจงาน ให้รวมไว้ในรายการ `รายละเอียดงานที่ทำ` โดยไม่สร้าง metadata section แยก
 - กรณี task เกินเกณฑ์หมวด ให้ใช้ **Case C**: คงกฎวิเคราะห์/ชี้แจง over-budget เดิมใน canonical summary และแสดง `รายละเอียดงานที่ทำ` แบบแยกสัดส่วน `<TASK-CODE>a/b/c [<Category ย่อย>] (ประมาณ X ชม.)` ตามด้วย sub-bullet — สัดส่วนและหมวดย่อยต้องตรงกับ canonical summary / สรุปราย task ห้ามย่อเป็นรายการแบนรายการเดียวจนสัดส่วนเวลาหาย; ส่วนบรรทัดเวลาทำงานให้ระบุ `(แผน X ชม. — เกินเพราะ <เหตุผล>)` ไว้กำกับ
 - ใช้ business-facing Task Code; ห้ามแสดง Full/Partial Kanban UUID, internal Task ID หรือ Database ID
@@ -1134,7 +1137,11 @@ Task ID: <task_id>
 
 22. **อ้าง requirement/spec/entity ด้วยชื่อที่คนอ่านเข้าใจ ไม่ใช่ ID ล้วน** — summary ที่ก๊อปไปลงระบบอื่นต้องอ่านรู้เรื่องโดยไม่ต้องเปิด kanban; ห้ามเขียน `requirement bf08de1f` หรือ `mission 18598f33` ลอย ๆ ให้ใช้ชื่อ เช่น `requirement "BO Admin Identity Lifecycle — Invitation, My Account และ Password Security"` หรือชื่อย่อที่ระบุตัวตนได้ — internal ID (kanban UUID, requirement id, mission id) เก็บไว้ใน session note/traceability เท่านั้น; Task Code แบบ business-facing (เช่น AIL-019) ยังใช้ได้ตามเดิมเพราะเป็นชื่อที่ทีมใช้เรียกกัน
 
-23. **"รายละเอียดงานที่ทำ" ต้องเป็นงานของ task เท่านั้น ห้ามใส่เรื่อง workflow/kanban mechanics** — เหตุการณ์อย่าง timer quirk, ค่า default ตอนสร้าง task, การย้าย column, การบันทึก note ไม่ใช่งานของ task และไม่ควรเป็น bullet; ถ้าเรื่องนั้นสำคัญต่อผู้ใช้ให้แจ้งแยกนอก copy block (เช่น หมายเหตุเวลา) — bullet ทุกข้อต้องตอบได้ว่า "งานชิ้นนี้ทำให้ task บรรลุเป้าหมายอย่างไร"
+23. **"รายละเอียดงานที่ทำ" ต้องเป็นงานของ task เท่านั้น ห้ามใส่เรื่อง workflow/evidence mechanics** — bullet ทุกข้อต้องตอบได้ว่า "งานชิ้นนี้ทำให้ task บรรลุเป้าหมายอย่างไร" เหตุการณ์ต่อไปนี้ **ไม่ใช่งานของ task** และห้ามเป็น bullet:
+    - workflow mechanics: timer quirk, ค่า default ตอนสร้าง task, การย้าย column, การบันทึก note, การ commit/push
+    - evidence packaging: การ "จัดเตรียม/แพ็กหลักฐาน" เช่น สร้าง report file, checklist card, capture screenshot, render preview — path หลักฐานอยู่ในส่วน Evidence ของ session note เท่านั้น
+    - verification mechanics ที่ไม่ใช่ขอบเขตการตรวจของ task เอง: เช่น "re-run verify script ผ่าน 12/12 ไม่มี error" — ผล verify อยู่ในส่วน Verification ของ session note; ถ้า task เป็นงานตรวจ/review อยู่แล้ว (เช่น QA gate task) ให้เขียนเป็นงานที่ตรวจจริง เช่น "ตรวจ manual review checklist ครบ 5 หมวด A–E ผ่านทั้งหมด" ไม่ใช่เล่ากลไกการรัน script ซ้ำ
+    ถ้าเรื่อง workflow สำคัญต่อผู้ใช้ให้แจ้งแยกนอก copy block (เช่น หมายเหตุเวลา)
 
 24. **ห้ามแปลตรงคำเทคนิค/ศัพท์ CSS-JS เป็นคำไทยที่ไม่มีใครใช้จริง — ให้บรรยาย "ผลที่ผู้อ่านเห็นบนหน้าจอ" แทน** — การแปลตรงเช่น "ห่อตัว" (wrap), "สแตก" (stack), "ยุบ" (collapse), "เลย์เอาต์แตก" ทำให้คนอ่านนึกภาพไม่ออก หลักคืออธิบายว่า "ผู้ใช้เห็นอะไรผิดปกติ" แล้วค่อยบอกทางแก้ เช่น
     - ผิด: `แก้ค่าอีเมลห่อตัวอ่านยาก` → ถูก: `แก้ปัญหาอีเมลยาวจนตกเป็นหลายบรรทัด`
@@ -1142,6 +1149,19 @@ Task ID: <task_id>
     - ผิด: `label ถูก grid แยก` → ถูก: `ชื่อช่องกรอกกับเครื่องหมาย * ถูกแยกคนละบรรทัด`
     - ผิด: `input.select() ทำให้ highlight` → ถูก: `ข้อความเดิมถูกเลือกเป็นแถบสีน้ำเงินตอนเปิดหน้าต่าง`
     ถ้าไม่แน่ใจว่าคำไหนเป็นการแปลตรง ให้ทดสอบด้วยคำถาม "คนที่ไม่รู้โค้ดอ่านแล้วเห็นภาพหน้าจอไหม" — ถ้าไม่เห็นภาพ ให้เขียนบรรยายผลที่ตาเห็นแทน
+
+25. **bullet เขียนแบบ "สรุปผล" ไม่เล่ากระบวนการ — แต่ต้องเล่ารายละเอียดเมื่อเป็นงานแก้บั๊ก/เทส** — bullet ของ "รายละเอียดงานที่ทำ" คือสรุปสั้นกระชับว่าทำอะไรเสร็จ ไม่ใช่เล่าเหตุการณ์หรือลำดับการตัดสินใจ
+    - ผิด: `- เสนอผู้ใช้เลือก target พร้อมเหตุผล → ผู้ใช้เลือก Content Management` → ถูก: `- วิเคราะห์ deviation ทุกเมนู → เลือก Content Management เป็น target ของ Mission 4`
+    - ผิด: `- ผู้ใช้เลือกแยกงาน normalize เป็น 2 task → ปรับแผนเป็น 5 task` → ถูก: `- แยกงาน normalize เป็น 2 task (Articles+Editor กับ Categories+Reported Board)`
+    - ห้ามใส่ตัวเลขเวลาแผน/น้ำหนักใน bullet (เช่น "รวม 2.6 ชม.", "0.40 ชม.", "Weight 31%") — เวลาจริงแสดงแล้วในบรรทัดเวลาทำงาน
+    - ห้ามเอ่ยชื่อเครื่องมือภายใน เช่น Kanban, Jira — copy block ลงระบบอื่น คนอ่านไม่รู้จักเครื่องมือ เขียน "สร้าง Mission 4 พร้อม task ลงมือ 5 ตัว" ไม่ใช่ "สร้าง ... ใน Kanban"
+    - **ข้อยกเว้นสำคัญ — งานที่พบบั๊ก/ปัญหา/เทสล้มต้องเล่ารายละเอียดเสมอตามกฎ 21:** ทุกข้อที่มีการพบบั๊ก แก้ไข หรือตัดสินใจ ต้องระบุชัดว่าเจออะไร สาเหตุคืออะไร แก้อย่างไร และกระทบอะไรไหม — กฎ "สรุปสั้น" ใช้กับการตัด flow ของงาน ไม่ใช่การตัดเนื้อหาบั๊ก/decision ออก
+
+26. **ถ้าสิ่งที่พูดถึงมีชื่อ label จริงบนหน้าจอ ให้ใช้ชื่อนั้นตรง ๆ** — อย่าบรรยายเองเป็นคำไทยลอย ๆ ที่ไม่มีบนจอ เพราะคนอ่านเปิดหน้าจอเทียบไม่ได้ ให้ใช้ชื่อหน้า/เมนู/ปุ่ม/ส่วนของจอ/label ตามที่แสดงจริง (ใส่เครื่องหมายคำพูดได้) แล้วค่อยบรรยายหน้าที่สั้น ๆ ตามหลัง เช่น
+    - ผิด: `กล่องจำลองสถานการณ์` → ถูก: `dropdown "Test flow" / "Prototype scenario" ที่ไว้เลือกจำลองผลลัพธ์ตอนเทส`
+    - ผิด: `ประวัติการแก้ไขของบทความ` → ถูก: `ส่วน Change History ในหน้ารายละเอียดบทความ`
+    - ผิด: `ข้อความหมายเหตุค่าเริ่มต้นรั่วเข้าประวัติ` → ถูก: `ช่องหมายเหตุในหน้าต่างยืนยันรายงานมีข้อความอังกฤษเติมมาให้ ถ้าผู้ใช้ไม่ลบออกจะถูกบันทึกลง Change History ตามไปด้วย`
+    - ตัวอย่างการใช้ชื่อจริง: `หน้ารายการ Articles`, `หน้าต่าง Preview บทความ`, `ปุ่ม "Preview as FO"`, `ข้อความตอนไม่มีข้อมูล "No content blocks"` — อ่านแล้วเห็นภาพและเทียบหน้าจอได้ทันที
 
 > **ข้อยกเว้น:** ถ้าเป็น task เดียวสั้น ๆ ที่ภาพรวมอธิบายครบแล้ว สามารถมีแค่ภาพรวมอย่างเดียว ไม่ต้องมี bullet list ก็ได้
 
@@ -1465,7 +1485,7 @@ Task ID: TK-102
 ### สถานการณ์ที่ 1: เริ่มทำ task
 - [ ] ตรวจสอบ task ที่จะเริ่ม (ระบุ task_id หรือค้นหาจากชื่อ)
 - [ ] ตรวจว่า task มีบรรทัด `Category | Planned | Category Max` ใน Description — ถ้าสร้าง task ใหม่ต้องใส่เสมอทุกหมวด; ถ้า task เดิมไม่มี Planned ให้แจ้งผู้ใช้และเติมผ่าน `update_task` ก่อนเริ่มจับเวลา
-- [ ] ตรวจว่า task map กับ Mission/Objective ใน approved plan แล้ว (รู้หมายเลข `mission-<N>-objective-<M>` สำหรับโฟลเดอร์หลักฐาน) — ถ้ายังไม่ map ให้ยืนยัน mapping กับผู้ใช้ก่อนเริ่มจับเวลา
+- [ ] ตรวจว่า task map กับ Mission/Objective ใน approved plan แล้ว (รู้หมายเลข `mission-<N>-objective-<M>` สำหรับโฟลเดอร์หลักฐาน) — ถ้ายังไม่ map ให้ยืนยัน mapping กับผู้ใช้ก่อนเริ่มจับเวลา; task ที่ไม่มี mission (standalone) ใช้ `task-<TASK-CODE>` เป็นโฟลเดอร์หลักฐานแทน และยังต้อง capture/bundle หลักฐานตามปกติ
 - [ ] ถ้า task มีผลลัพธ์ที่เห็นบนหน้าจอ (UI/prototype/logic/data ที่สะท้อนบนจอ) → capture ภาพ Before (Desktop 1440 + Mobile 390) ลง `screenshots/mission-<N>-objective-<M>/before/` ก่อนแก้โค้ด
 - [ ] เรียก `get_board` เพื่อตรวจสอบ task อื่นที่อยู่ใน `in_progress`
 - [ ] ถ้ามี task อื่นใน `in_progress` → ถามผู้ใช้ว่าจะ pause task เดิมหรือทำต่อ
@@ -1482,7 +1502,7 @@ Task ID: TK-102
 - [ ] เรียก `get_task` หลังปิด เพื่ออ่าน Final Status + Activity Timeline + Actual Start + Actual End + Final `hours_spent`
 - [ ] **ไม่มี floor correction** — ใช้ Final `hours_spent` จากระบบตามจริง แม้จะต่ำกว่า 0.3 ชม. ก็ใช้ค่านั้น ห้ามปรับขึ้นเอง
 - [ ] สร้าง canonical Final Summary จากข้อมูลหลังปิด โดยมี Final Result, Work Completed, Decisions, Verification/Test Result, Actual Start/End, Final Actual Time, Issues/Fixes, Scope Changes, Open Items และ Next Step
-- [ ] รวม Task Evidence Bundle: checklist ผลตรวจรายเคส (ถ้ามี) + ภาพ Before/After / test list + raw output / ไฟล์+commit ที่แก้ — ตั้งชื่อไฟล์ trace ถึง task code และระบุ path ใน Final Session Note (หลักฐานขาด → บันทึก evidence gap ห้ามสร้างย้อนหลัง)
+- [ ] รวม Task Evidence Bundle: checklist ผลตรวจรายเคส (ถ้ามี) + ภาพ Before/After / test list + raw output + ภาพ HTML report หรือภาพ/screencast UI + triage note เคส skipped / ไฟล์+commit ที่แก้ — ตั้งชื่อไฟล์ trace ถึง task code และระบุ path ใน Final Session Note (หลักฐานขาด → บันทึก evidence gap ห้ามสร้างย้อนหลัง)
 - [ ] เรียก `save_session_note` ด้วย Final Summary ชุดเดียวกันเพื่อเก็บ Persistent Task History
 - [ ] ก่อนสร้าง Final Work Summary Copy Block ตรวจ Mission Mapping ที่บันทึกไว้จริง: ถ้ามีให้แสดง Objective → Feature → Task; ถ้าไม่มีให้เริ่มจาก Task และห้ามสร้าง Objective/Feature ขึ้นมาเอง
 - [ ] ตรวจว่า Objective/Feature labels ใน Copy Block เป็น verbatim จาก approved mission baseline (`get_mission` → Objectives) ไม่ใช่ paraphrase หรือ label จาก task description ล้วน ๆ; ถ้า task description เขียนไม่ตรงให้ใช้ชื่อจาก mission แล้วแจ้งผู้ใช้เสนอแก้ description
@@ -1555,5 +1575,7 @@ Task ID: TK-102
 - [ ] **bullet ที่เล่าปัญหา/decision/gap ต้องระบุเนื้อหา** — บอก "ปัญหาอะไร + แก้/ตัดสินใจอะไร" ในตัว bullet (ห้ามเขียนแค่กระบวนการ เช่น "พบ gap 3 จุด → รายงานผู้ใช้" โดยไม่บอกว่า gap คืออะไร)
 - [ ] **4 มาตรฐานข้อมูลสำคัญใน `รายละเอียดงานที่ทำ`** — ตรวจว่ามี (1) ตัวเลขสถิติจริง (Test/Regression/Cooldown/Quota), (2) สาเหตุบั๊กที่แท้จริง (Root Cause), (3) มาตรการความปลอดภัย (Security), และ (4) สาเหตุ/วิธีแก้เมื่อเกินเวลา (Improvement) เมื่อเกี่ยวข้องกับ task นั้น
 - [ ] **อ้าง requirement/spec/entity ด้วยชื่อ ไม่ใช่ ID ล้วน** — ห้าม `bf08de1f`/`18598f33` ลอย ๆ; ใช้ชื่อที่อ่านรู้เรื่อง (internal ID เก็บไว้ใน session note; Task Code แบบ AIL-xxx ใช้ได้)
-- [ ] **"รายละเอียดงานที่ทำ" ต้องเป็นงานของ task เท่านั้น** — ห้ามใส่เรื่อง workflow/kanban mechanics (timer quirk, ค่า default ตอนสร้าง, การย้าย column); ถ้าสำคัญให้แจ้งแยกนอก copy block
+- [ ] **"รายละเอียดงานที่ทำ" ต้องเป็นงานของ task เท่านั้น** — ห้ามใส่ workflow/evidence mechanics (timer quirk, ค่า default ตอนสร้าง, การย้าย column, commit/push, การจัดเตรียมหลักฐาน/report/checklist card/screenshot, re-run verify script) — path หลักฐานอยู่ในส่วน Evidence ของ session note, ผล verify อยู่ในส่วน Verification; ถ้าสำคัญให้แจ้งแยกนอก copy block
+- [ ] **bullet เขียนแบบสรุปผล ไม่เล่ากระบวนการ** — ห้ามเล่าเหตุการณ์/ลำดับตัดสินใจ ("เสนอผู้ใช้เลือก → ผู้ใช้เลือก X"), ห้ามใส่ตัวเลขเวลาแผน/น้ำหนัก, ห้ามเอ่ยชื่อเครื่องมือภายใน (Kanban); แต่งานที่พบบั๊ก/เทสล้มต้องเล่ารายละเอียดเต็มตามเดิม (เจออะไร/สาเหตุ/แก้อย่างไร/กระทบอะไร)
+- [ ] **ใช้ชื่อ label จริงบนหน้าจอ** — ส่วนของจอ/ปุ่ม/เมนูที่มีชื่อแสดงจริงให้ใช้ชื่อนั้นตรง ๆ (เช่น "Test flow", "Change History", "Preview as FO") ห้ามบรรยายเองเป็นคำไทยลอย ๆ ที่ไม่มีบนจอ
 - [ ] **task ที่ยัง `in_progress`** ต้องระบุ "ปัจจุบัน: <now>" แทน "เวลาจบ" และใช้ "เวลาที่ผ่านไป" แทน "เวลาทำงาน" พร้อมระบุ "(ยังจับเวลาอยู่)"

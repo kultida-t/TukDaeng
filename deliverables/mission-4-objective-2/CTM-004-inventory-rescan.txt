@@ -1,0 +1,156 @@
+================================================================================
+CTM-004 — Inventory Re-scan & Deviation Resolution Report
+Mission 4 / Objective 2 — Content Management Label Normalization (Mission bc5a2b57
+/ Task 60513029)
+================================================================================
+วันที่          : 2026-10-07
+คำสั่งที่รัน     : node Prototypes/scan-labels.mjs → regenerate
+                deliverables/label-standard/inventory.json + inventory.md
+Baseline เทียบ  : CTM-001-label-audit.txt (inventory 1,926 entries, 2026-10-07)
+ผล re-scan     : 1,926 entries (เท่า baseline — normalize เปลี่ยน string label
+                ไม่เปลี่ยนจำนวน element; การเทียบทำแบบ per-deviation ด้านล่าง)
+
+--------------------------------------------------------------------------------
+1. ผล RE-SCAN — deviation ใน scope Content Management = 0 (ยกเว้น deferred list)
+--------------------------------------------------------------------------------
+เทียบทุก deviation จาก CTM-001 audit §2/§3 กับ source ปัจจุบัน (grep ทั้งไฟล์
+Prototypes/bo-prototype.html) — "Remaining" = occurrence ที่ยังอยู่ จำแนกแล้ว
+ทั้งหมดว่าอยู่นอก scope / deferred / exempt เท่านั้น
+
+D-C01  "View detail" (article/category row menu)
+       → 0 ใน content scope; เหลือ 2 จุด module อื่น: user mock allowed-actions
+       (19705), user action filter logic (30531)
+D-C02  "Edit article"/"Edit Category" button
+       → 0; modal title "Add/Edit Category" (43106) คง EN structure ✓
+D-C03  "Preview article"/"Preview" button → ดูตัวอย่าง
+       → 0 button; เหลือเฉพาะ modal titles EN: "Preview article" (44139),
+       "Preview article RPC-… ART-…" (45844), alert title 44131 + Policy/
+       Support "Preview" module อื่น (35414/35770/35934/36269)
+D-C04  "Preview as FO" → wire + ดูตัวอย่าง
+       → 0 เป็น button; เหลือ 2 จุดภายใน mock data text (18340/39789 — M-family)
+D-C05  "Delete draft"/"Cancel schedule"/"Archive article"/"Restore article"
+       → 0 ทั้งหมดใน scope (label เป็นไทยแล้ว); "Archive Article"/"Restored"/
+       "Canceled schedule" ที่เหลือเป็น stored action keys EN → render ผ่าน
+       getArticleActionLabel ไทย (44447 ฯลฯ) ✓ ตาม design
+D-C06  "+ Add block" → + เพิ่ม block                  → 0
+D-C07  aria "Move block up/down"/"Delete block"       → 0 (เป็นเลื่อน block
+       ขึ้น/ลง/ลบ block — inventory a11y-attr 43688-43689)
+D-C08  block type labels EN (Paragraph/Bullet List/…) → 0 เป็น label;
+       "Paragraph" ที่เหลือเป็น code identifier (getArticleBodyParagraphs
+       43403/43585/43624/43885) ไม่ใช่ label
+D-C09  "No content blocks"/"Empty block"/"Invalid link" → 0
+D-C10  "Add Category" button + aria → เพิ่ม Category   → 0 (modal title คง EN)
+D-C11  "Reorder Categories" button + aria → จัดเรียง Category → 0
+       (modal title "Reorder Categories" 40173 คง EN structure ✓)
+D-C12  "Set inactive"/"Set active" → ปิดใช้งาน/เปิดใช้งาน → 0
+D-C13  "Delete category" → ลบ Category                 → 0
+D-C14a tile labels "Likes"/"Created At"/"Updated At"/"Link text" → ไทย
+       (จำนวน Likes/สร้างเมื่อ/อัปเดตล่าสุด/ข้อความลิงก์) → 0 ใน content scope;
+       "URL"/"Article URL" คง EN ตาม DECISION-3 ✓; "Updated At"/"Created At"
+       ที่เหลืออยู่ module อื่น (24714-24715/28305/46494-46636)
+D-C14b cat tile "Updated At" → อัปเดตล่าสุด            → 0
+D-C15  "View Article" + aria "View article <id>" → ดูบทความ → 0
+D-C16  board "Archive article" → เก็บบทความเข้าคลัง (DECISION-1) → 0
+D-C17  "ยืนยันปิดรายงาน"/"ยืนยัน Archive" → ยืนยัน     → 0
+D-C18  "เหตุผลการ Archive article" → เหตุผลการเก็บบทความเข้าคลัง → 0
+D-C19  "reporter identity masked" (board subtitle) → ปิดบังตัวตนผู้รายงาน
+       → 0 ใน content; เหลือ 32151 (asset report) / 46459 (comment report)
+       — module อื่น out of scope ✓
+D-C20  "No admin action recorded yet" (board audit empty) → ยังไม่มีการ
+       ดำเนินการจาก Admin → 0 ใน content; เหลือ 23930 (user mgmt) / 46021
+       (reported comments) — module อื่น ✓
+D-C21  EN default notes → "Admin ปิดรายงาน Board หลังตรวจสอบ" /
+       "Admin เก็บบทความเข้าคลังและปิดรายงาน" (45704) → 0 EN note เหลือ
+D-C22  article.actionHistory EN raw → getArticleActionLabel map ไทย
+       ("Archived"→เก็บบทความเข้าคลัง 44447 ฯลฯ) → render ไทยครบ;
+       stored keys EN คงเดิมตาม design ✓
+D-C23  alt fallbacks EN ("Article image preview"/"Article cover"/… ) → 0
+D-C24  "Preview hero article"/"Preview article detail" + aria EN → ไทยทั้งชุด
+       (ตัวอย่างบทความ Hero 44013 ฯลฯ) → 0
+D-C25  "Permission denied"/"Preview failed" result titles → ไทย
+       (ไม่มีสิทธิ์ดำเนินการ/ดูตัวอย่างไม่สำเร็จ — inventory 44088) → 0 เป็น
+       result title; ที่เหลือคือ scenario selector option labels (44822-44889)
+       — exempt §5.6 ✓
+
+S-C01a..S-C05 modal titles TH → EN Confirm <Verb> <Entity> ครบ 13 จุด
+       → "ยืนยันการ…" ที่เหลืออยู่นอก content ทั้งหมด: asset report close
+       (23266), policy publish/restore (35970/36089), comment report (46102),
+       role deactivate btn (34033 ยืนยันปิดใช้งาน), session modals (35102/
+       35248), type-to-confirm copy (41279/42477 — body text ไม่ใช่ title),
+       toast "ไม่สามารถปิดใช้งาน category…" (43205 — TH อยู่แล้ว ไม่ใช่ deviation)
+
+--------------------------------------------------------------------------------
+2. EN ที่ยังอยู่ใน scope Content — จำแนกแล้ว = exempt/deferred ทั้งหมด (ไม่แก้)
+--------------------------------------------------------------------------------
+[DEFERRED D16 — รอ central decision]
+- Articles table head 45251 · Categories 42997 · Reported Articles 45569
+- Article Change History 44471/44481
+- Reporter History 45526-45527 + data-label 45536-45537 (รวม mismatch
+  data-label="Details" ≠ "Additional Details" — defect เล็ก รอแก้คู่ D16)
+- Admin Action History (ผสม TH+EN ตามเดิม)
+[EXEMPT O-C01] row-menu summary aria EN: "Category actions" 40264 /
+  "Article actions" 44552 / "Board report actions" 45382 — convention `X
+  actions` เดียวกันทุก module
+[EXEMPT O-C02] customSelect listbox aria EN: 32371/32408/32504 ฯลฯ —
+  shared helper cross-module
+[EXEMPT O-C04] FO preview internals EN: Read Full Article 43938 /
+  Key takeaways 43965 / Share this feature 43970 / By TukDaeng —
+  simulated FO surface
+[EXEMPT §5.6 / O-C12] scenario selector option labels EN 44822-44889
+  (harness controls — ไม่ normalize)
+[MOCK M-C01..M-C09 / DECISION-4] mock EN: articleRows editorial content,
+  "Preview as FO" ใน mock text 18340/39789, stored actionHistory EN keys,
+  reporter names/tags/category names/actor "By TukDaeng" — data quirk คงเดิม
+[OUT OF SCOPE — module อื่น] residue ทุกจุดใน §1 "Remaining" ด้านบน +
+  Download CSV Template (37307 — Market Data Phase 2)
+
+--------------------------------------------------------------------------------
+3. NEW LABELS ใน inventory (ตัวอย่างยืนยัน — เต็มใน inventory.md)
+--------------------------------------------------------------------------------
+ดูตัวอย่าง (44555/44660/44815) · ดูบทความ + aria mirror (45385/45655) ·
+แก้ไข Category (40267/43073) · จัดเรียง Category + aria บน FO Board (32392) ·
+เลื่อน block ขึ้น/ลง (43688-43689) · ตัวอย่างบทความ Hero (44013) ·
+เก็บบทความเข้าคลัง (44518/45350) · ดูตัวอย่างไม่สำเร็จ (44088)
+
+--------------------------------------------------------------------------------
+4. REGRESSION GATE
+--------------------------------------------------------------------------------
+node scripts/verify-ctm-003a.js → 28/28 PASS (incl. no JS console errors)
+node scripts/verify-ctm-003b.js → 38/38 PASS (incl. mobile tooltip suppress
++ preview modal close-in-viewport regressions)
+
+--------------------------------------------------------------------------------
+5. SPOT-CHECK render (localhost:4173, viewport 1440x900)
+--------------------------------------------------------------------------------
+Articles list / Categories / Reported Articles / Article Detail — render ปกติ
+ทุกจอ; ไม่พบ placeholder แตก: 0 hits ของ pattern ${…} / undefined / NaN /
+[object Object]; 0 JavaScript errors
+
+--------------------------------------------------------------------------------
+6. FINDINGS / OPEN ITEMS (บันทึก — ไม่แก้ตาม constraint "ไม่แก้จุดนอกแผน")
+--------------------------------------------------------------------------------
+1. tests/qa-bo-005-content-management.spec.js — spec จาก Mission 3 QA suite
+   ยัง assert label EN ก่อน normalize ~30 จุด (View detail/Preview as FO/
+   Edit article/Delete draft/Cancel schedule/Archive article/Restore article/
+   Set active/Delete category/Add Category toolbar/View Article/reporter
+   identity masked/ยืนยันการปิดรายงาน/ยืนยันการ Archive article/ยืนยัน Archive/
+   map label เก็บบทความ) → จะ FAIL ถ้ารันกับ prototype ปัจจุบัน
+   ► open item: ตัดสินว่า spec นี้จะอัปเดตเป็น post-normalization contract
+     หรือ supersede ด้วย verify-ctm-003a/003b — อยู่นอก scope CTM-004
+2. D16 table headers — deferred รอ central decision (รวม data-label mismatch
+   45537)
+3. Download CSV Template — Phase 2 deferred (module อื่น)
+4. Scenario selector labels EN — exempt §5.6 ถาวร
+5. Mock-data EN — DECISION-4/M-family คงเดิม
+6. ✅ RESOLVED — viewport evidence standard: screenshots recapture แล้ว
+   07/10/2026 เป็น 1920x1080 / 768x1024 / 440x956 ทั้ง before/ + after/
+   (51 PNG ต่อชุด = 17 surfaces × 3 viewports, prefix d/t/m; before จาก
+   git HEAD ผ่าน temp file) — capture scripts อัปเดตแล้ว
+   (scripts/capture-ctm-003a-article-labels.js / capture-ctm-003b-
+   category-board-labels.js)
+
+================================================================================
+สรุป: deviation ใน scope Content Management = 0 (ยกเว้น deferred D16 +
+exempt/mock/other-module ที่จำแนกครบ) — พร้อม Manual Review Checklist Gate A–E
+→ deliverables/mission-4-objective-2/CTM-004-checklist-card.txt
+================================================================================

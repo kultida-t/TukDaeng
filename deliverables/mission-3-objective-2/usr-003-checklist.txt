@@ -1,0 +1,44 @@
+USR-003 Manual Review Checklist — User Management Label Normalization
+Mission 3 Objective 2 · task USR-003 [3cfd2908] · reviewed by user 07/10/2026
+เปิด http://localhost:4173/bo-prototype.html (server: node Prototypes/server.mjs)
+
+Evidence: screenshots/mission-3-objective-2/before|after (d01–d14 / t* / m* — 42 ภาพ/ชุด)
+Note: capture ใช้ repo standard viewport 1920/768/440 (ตาม AGENTS.md/Market Data precedent)
+     — ต่างจากที่ระบุใน task (1440/390); ผู้ใช้รับทราบและไม่ต้อง recapture
+
+=== A. User Accounts — List & Row Menu ===
+[1] ผ่าน — User Accounts → ค้นหา U-1017 → เมนู ... : เห็น "ส่งลิงก์ตั้งรหัสผ่านใหม่" (เดิม "Reset password")
+[2] ผ่าน — Status pill เป็นภาษาอังกฤษ (Active/Suspended/Banned/Pending Verification)
+[3] ผ่าน — table headers เหมือนเดิม (D16 deferred) + filter options ไทยเหมือนเดิม
+
+=== B. User Detail + Modals ===
+[4] ผ่าน — pill Active EN + ปุ่ม action ไทย + Account Status History action ไทย (ลงทะเบียนบัญชี/สมัครด้วย...)
+[5] ผ่าน — modal "ส่งลิงก์ตั้งรหัสผ่านใหม่" title ยัง "Reset Password Link" (EN คงเดิมตามแผน)
+[6] ผ่าน — confirm → toast ไทย + history Action "ส่งลิงก์ตั้งรหัสผ่านใหม่" (ไทย — historyLabel ทำงานถูก)
+[7] ผ่าน — side panel subtitle "{id} · ข้อมูลติดต่อแสดงครบ"
+[8] ผ่าน — modal title "Suspend Account" EN + confirm → history Action ยัง "ระงับบัญชีชั่วคราว" ไทย
+[9] ผ่าน — modal title "Ban User" EN
+[10] ผ่าน — U-1002 → modal title "Unsuspend Account" EN
+[11] ผ่าน — U-1120 → modal title "Unban User" EN
+[12] ผ่าน — U-1055 → modal title "Resend Verification" EN
+
+=== C. Reported Users ===
+[13] ผ่าน — queue pills Pending/Closed EN เหมือนเดิม
+[14] ผ่าน — RPU-505 subtitle "{id} · {category} · ปิดบังตัวตนผู้รายงาน" + tile Account Status EN
+[15] ผ่าน — RPU-579 warning-note "เงื่อนไขการลบบัญชี:" + tile "Deletion Requested" EN + Admin Action History ไทย
+[16] ผ่าน — modal "Confirm Close Report" EN
+[17] ผ่าน (code-level) — row menu aria-label="Report actions" (invisible — verify ใน diff)
+
+=== D. Mobile (390px) ===
+[18] ผ่าน — card view pill EN + label ไทย + layout ไม่พัง
+
+=== E. Regression (ต้องเห็นเหมือนเดิม) ===
+- ผ่าน — table headers ทุกตารางยัง EN; mock data EN ไม่แตะ; module อื่นไม่เปลี่ยน; flow/route ปกติ
+
+=== พบระหว่าง review (ผู้ใช้รายงาน) ===
+[P1] Filter ค้างเมื่อกลับจาก side menu → ยืนยันเป็น designed behavior (BO-UX-001 per-list
+     filter persistence — ค่าถูกล้างเฉพาะตอนสลับ sub/module/reset/logout) ไม่ใช่ bug
+[P2] ปุ่ม action บน User Detail mobile พับ 2 บรรทัดเพราะ grid บังคับ 3 คอลัมน์แม้มี 2 ปุ่ม
+     → แก้เป็น flex แสดงตามเนื้อหาบรรทัดเดียวเหมือน report detail (extra fix นอก label scope
+     ที่ผู้ใช้สั่งและอนุมัติ — CSS @media ≤760px เท่านั้น ไม่กระทบ desktop/tablet)
+     verify: check-mobile-2btn.png / check-mobile-3btn.png + after/m03,m10

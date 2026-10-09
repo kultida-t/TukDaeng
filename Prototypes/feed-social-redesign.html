@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TukDaeng — Feed Social Redesign (Exploration)</title>
+<style>
+  @font-face {
+    font-family: "IBM Plex Sans Thai";
+    font-weight: 400;
+    src: url("./assets/fonts/google/IBMPlexSansThai-Regular.ttf") format("truetype");
+  }
+  @font-face {
+    font-family: "IBM Plex Sans Thai";
+    font-weight: 500;
+    src: url("./assets/fonts/google/IBMPlexSansThai-Medium.ttf") format("truetype");
+  }
+  @font-face {
+    font-family: "IBM Plex Sans Thai";
+    font-weight: 600;
+    src: url("./assets/fonts/google/IBMPlexSansThai-SemiBold.ttf") format("truetype");
+  }
+  @font-face {
+    font-family: "Bebas Neue";
+    src: url("./assets/fonts/google/BebasNeue-Regular.ttf") format("truetype");
+  }
+
+  :root {
+    --red: #c8212b;
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif;
+    --font-brand: var(--font-main);
+    --page-bg: #1a1a1e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-main);
+    background: var(--page-bg);
+    color: #e8e8ec;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+  }
+
+  /* ============ REVIEW SIDEBAR ============ */
+  .review-bar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 250px;
+    z-index: 50;
+    background: #111114;
+    border-right: 1px solid #2a2a30;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+  }
+  .review-bar .title {
+    font-family: var(--font-brand);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--red);
+  }
+  .review-bar .sub {
+    font-size: 12px;
+    color: #8b8b95;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .variant-btn {
+    font-family: var(--font-main);
+    font-size: 13px;
+    text-align: left;
+    padding: 9px 14px;
+    border-radius: 10px;
+    border: 1px solid #3a3a42;
+    background: transparent;
+    color: #c8c8d0;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .variant-btn:hover { border-color: #6b6b76; color: #fff; }
+  .variant-btn.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+    font-weight: 600;
+  }
+  .variant-label {
+    font-size: 12px;
+    color: #8b8b95;
+    line-height: 1.5;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #2a2a30;
+  }
+  .grp-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #6b6b76;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #2a2a30;
+  }
+
+  /* ============ PHONE PAIR ============ */
+  .stage {
+    display: flex;
+    gap: 48px;
+    padding: 40px 24px 64px;
+    margin-left: 250px;
+    flex: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .theme-tag {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8b8b95;
+  }
+  .phone {
+    width: 390px;
+    height: 844px;
+    border-radius: 44px;
+    padding: 10px;
+    background: #000;
+    box-shadow: 0 24px 64px rgba(0,0,0,.55), inset 0 0 0 2px #2e2e33;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 34px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* theme tokens on each screen */
+  .screen[data-theme="dark"] {
+    --bg: #0b0b0d;
+    --surface: #16161a;
+    --surface-2: #1e1e24;
+    --line: #26262c;
+    --text: #f2f2f5;
+    --muted: #9a9aa3;
+    --chip-bg: rgba(255,255,255,.08);
+    --chip-text: #d6d6dc;
+    --btn-gray: #2b2b31;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .screen[data-theme="light"] {
+    --bg: #f6f6f8;
+    --surface: #ffffff;
+    --surface-2: #f0f0f3;
+    --line: #e4e4e9;
+    --text: #141417;
+    --muted: #6d6d78;
+    --chip-bg: rgba(0,0,0,.06);
+    --chip-text: #3a3a42;
+    --btn-gray: #ededf0;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  /* ============ STATUS BAR ============ */
+  .statusbar {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .statusbar .icons { display: flex; gap: 5px; align-items: center; opacity: .8; }
+  .statusbar svg { display: block; }
+
+  /* ============ APP HEADER ============ */
+  .app-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px 8px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .app-header .wordmark {
+    font-family: var(--font-main);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--red);
+    line-height: 1;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: default;
+  }
+  .wordmark .caret { display: none; color: var(--text); opacity: .85; }
+  .screen[data-ft="none"] .wordmark { cursor: pointer; }
+  .screen[data-ft="none"] .wordmark .caret { display: inline-flex; }
+
+  /* brand feed dropdown (F4 — pure IG) */
+  .brand-menu {
+    position: absolute;
+    top: 78px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    width: 180px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 6px;
+    z-index: 70;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  .screen.brand-open .brand-menu { opacity: 1; pointer-events: auto; transform: translateX(-50%); }
+  .brand-menu button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border: none;
+    background: none;
+    color: var(--text);
+    font-family: var(--font-main);
+    font-size: 13.5px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .brand-menu button:hover { background: var(--chip-bg); }
+  .brand-menu .check { opacity: 0; }
+  .brand-menu button.on .check { opacity: 1; }
+  .app-header .spacer { margin-left: auto; }
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .icon-btn:hover { background: var(--chip-bg); }
+  .icon-btn svg { display: block; }
+
+  /* ============ FEED TABS ============ */
+  .feed-tabs {
+    display: flex;
+    gap: 24px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .feed-tab {
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    background: none;
+    border: none;
+    padding: 8px 2px 10px;
+    cursor: pointer;
+    position: relative;
+  }
+  .feed-tab.active { color: var(--text); }
+  .feed-tab.active::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 2px;
+    background: var(--red);
+    border-radius: 2px 2px 0 0;
+  }
+
+  /* FT1c — text centered */
+  .screen[data-ft="textc"] .feed-tabs { justify-content: center; gap: 32px; }
+  /* FT2c — chips centered */
+  .screen[data-ft="chipsc"] .feed-tabs { justify-content: center; }
+
+  /* FT2 — chips */
+  .screen[data-ft="chips"] .feed-tabs,
+  .screen[data-ft="chipsc"] .feed-tabs { gap: 8px; padding: 8px 12px; border-bottom: none; }
+  .screen[data-ft="chips"] .feed-tab,
+  .screen[data-ft="chipsc"] .feed-tab {
+    padding: 6px 14px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--chip-bg); color: var(--chip-text);
+    font-size: 12.5px;
+  }
+  .screen[data-ft="chips"] .feed-tab.active,
+  .screen[data-ft="chipsc"] .feed-tab.active { background: var(--red); color: #fff; border-color: var(--red); }
+  .screen[data-ft="chips"] .feed-tab.active::after,
+  .screen[data-ft="chipsc"] .feed-tab.active::after { display: none; }
+
+  /* FT3 — segmented */
+  .screen[data-ft="segment"] .feed-tabs {
+    gap: 0; margin: 4px 12px 6px; padding: 3px;
+    border: none; background: var(--chip-bg); border-radius: 999px;
+  }
+  .screen[data-ft="segment"] .feed-tab { flex: 1; padding: 7px 0; border-radius: 999px; font-size: 12.5px; text-align: center; }
+  .screen[data-ft="segment"] .feed-tab.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.18); }
+  .screen[data-ft="segment"] .feed-tab.active::after { display: none; }
+
+  /* FT4 — none (pure IG) */
+  .screen[data-ft="none"] .feed-tabs { display: none; }
+
+  /* ============ FEED SCROLL ============ */
+  .feed-scroll {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .feed-scroll::-webkit-scrollbar { display: none; }
+
+  /* ============ POST ============ */
+  .post { margin-bottom: 28px; }
+  .post-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px 10px 16px;
+  }
+  .avatar-ring {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(45deg, var(--red), #7a1218);
+    flex-shrink: 0;
+  }
+  .avatar-ring img {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 2px solid var(--bg);
+  }
+  .post-head .who { flex: 1; min-width: 0; }
+  .post-head .name {
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .post-head .sub-line {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+  .follow-btn {
+    font-family: var(--font-main);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--btn-gray);
+    border: none;
+    border-radius: 10px;
+    padding: 7px 16px;
+    cursor: pointer;
+  }
+  .post-head .more {
+    color: var(--muted);
+    background: none; border: none; cursor: pointer;
+    padding: 4px;
+    display: flex;
+  }
+
+  /* photo */
+  .post-photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #000;
+  }
+  .post-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-counter {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: rgba(20,20,24,.72);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .photo-dots {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    padding: 9px 0 2px;
+  }
+  .photo-dots span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--line);
+  }
+  .photo-dots span.on { background: var(--red); }
+  .type-tag {
+    position: absolute;
+    top: 12px; left: 12px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+  }
+  .type-tag.sale { background: rgba(200,33,43,.85); color: #fff; }
+  .type-tag.showcase { background: rgba(20,20,24,.6); color: rgba(255,255,255,.85); }
+  .price-overlay {
+    position: absolute;
+    bottom: 12px; left: 12px;
+    background: rgba(15,15,18,.62);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 999px;
+  }
+  .cond-overlay {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: rgba(15,15,18,.62);
+    backdrop-filter: blur(8px);
+    color: rgba(255,255,255,.9);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+
+  /* action row */
+  .post-actions {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px 2px;
+    gap: 2px;
+  }
+  .act {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none; border: none;
+    color: var(--text);
+    font-family: var(--font-main);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 5px 7px;
+    border-radius: 8px;
+  }
+  .act:hover { background: var(--chip-bg); }
+  .act svg { display: block; }
+  .act.liked svg path { fill: var(--red); stroke: var(--red); }
+  .act-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .ask-pill {
+    font-family: var(--font-main);
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 6px 15px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .ask-pill.outline {
+    background: none;
+    border: 1.2px solid var(--muted);
+    color: var(--text);
+  }
+  .ask-pill.solid {
+    background: var(--red);
+    border: none;
+    color: #fff;
+  }
+  .ask-pill.txt {
+    background: none;
+    border: none;
+    color: var(--red);
+    padding: 6px 8px;
+  }
+  .ask-pill.ico {
+    background: none;
+    border: none;
+    color: var(--text);
+    padding: 6px;
+    border-radius: 50%;
+  }
+  .ask-pill.ico svg { width: 21px; height: 21px; }
+  .save-btn {
+    background: none; border: none;
+    color: var(--text);
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+  }
+
+  /* liked-by / caption / details */
+  .liked-by {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 16px 0;
+    font-size: 12.5px;
+    color: var(--text);
+  }
+  .liked-by .stack { display: flex; }
+  .liked-by img {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--bg);
+  }
+  .liked-by .stack img + img { margin-left: -6px; }
+  .liked-by b { font-weight: 600; }
+  .comment-preview {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 16px 0;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .comment-preview .txt { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .comment-preview b { font-weight: 600; }
+  .comment-preview svg { color: var(--muted); flex-shrink: 0; }
+  .post-time {
+    padding: 4px 16px 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .caption {
+    padding: 4px 16px 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .caption b { font-weight: 600; }
+  .caption .more-link { color: var(--muted); cursor: pointer; }
+  .caption .cap-full { display: none; }
+  .caption.expanded .cap-short { display: none; }
+  .caption.expanded .cap-full { display: inline; }
+  .quiet-price {
+    padding: 3px 16px 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .details-toggle {
+    margin: 8px 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 9px 13px;
+    font-family: var(--font-main);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    width: calc(100% - 32px);
+  }
+  .details-toggle svg { transition: transform .2s ease; color: var(--muted); }
+  .details-toggle.open svg { transform: rotate(180deg); }
+  .details-body {
+    margin: 0 16px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease, margin-top .25s ease;
+  }
+  .details-body.open { max-height: 420px; margin-top: 8px; }
+  .details-inner {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .details-price {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--red);
+  }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--chip-text);
+    background: var(--chip-bg);
+    border-radius: 999px;
+    padding: 4px 10px;
+  }
+
+  /* trigger styles */
+  .details-toggle.ln,
+  .details-toggle.txt {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+  }
+  .details-toggle.ln i,
+  .details-toggle.txt i {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .details-toggle.ln .knob {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .details-toggle.txt {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: .03em;
+  }
+  .details-toggle.txt svg { color: var(--muted); }
+
+  /* D1 spec tiles grid */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+  }
+  .spec-tile {
+    background: var(--chip-bg);
+    border-radius: 11px;
+    padding: 8px 11px;
+  }
+  .spec-tile .l {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .spec-tile .v {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  /* D2 list rows */
+  .spec-rows { display: flex; flex-direction: column; }
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 7px 2px;
+    font-size: 13px;
+  }
+  .spec-row + .spec-row { border-top: 1px solid var(--line); }
+  .spec-row .l { color: var(--muted); }
+  .spec-row .v { font-weight: 600; text-align: right; }
+
+  /* B3 price footer */
+  .price-footer {
+    margin: 10px 14px 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .price-footer .p {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--red);
+  }
+
+  /* ============ CARD (B + C variants) ============ */
+  .screen[data-variant^="b"] .feed-scroll,
+  .screen[data-variant^="c"] .feed-scroll { padding: 10px 12px 0; }
+  .screen[data-variant^="b"] .post,
+  .screen[data-variant^="c"] .post {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .screen[data-variant^="b"] .post-photo {
+    margin: 0 10px;
+    width: calc(100% - 20px);
+    border-radius: 14px;
+  }
+  .screen[data-variant^="b"] .post-head { padding: 12px 14px 12px 14px; }
+  .screen[data-variant^="b"] .liked-by,
+  .screen[data-variant^="b"] .caption,
+  .screen[data-variant^="b"] .quiet-price,
+  .screen[data-variant^="c"] .liked-by,
+  .screen[data-variant^="c"] .caption,
+  .screen[data-variant^="c"] .quiet-price { padding-left: 14px; padding-right: 14px; }
+  .screen[data-variant^="b"] .details-toggle { margin-left: 14px; width: calc(100% - 28px); }
+  .screen[data-variant^="b"] .details-body { margin-left: 14px; margin-right: 14px; }
+  .screen[data-variant^="b"] .post-actions { padding-left: 8px; padding-right: 8px; }
+  .screen[data-variant^="b"] .post > :last-child,
+  .screen[data-variant^="c"] .post > :last-child { margin-bottom: 12px; }
+  .screen[data-variant^="c"] .post-time { padding-bottom: 10px; }
+
+  /* ============ DETAIL PAGE (Layer 3) ============ */
+  .page-detail {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    transform: translateX(100%);
+    transition: transform .28s ease;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+  }
+  .screen.detail-open .page-detail { transform: none; }
+  .detail-head {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 12px;
+    flex-shrink: 0;
+  }
+  .detail-title { font-size: 16px; font-weight: 700; margin-left: 4px; }
+  .detail-head .spacer { margin-left: auto; }
+  .detail-scroll {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .detail-scroll::-webkit-scrollbar { display: none; }
+  .detail-hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #000;
+    overflow: hidden;
+  }
+  .detail-hero img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .detail-pad { padding: 0 16px 28px; }
+  .inline-tag {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--red);
+    color: #fff;
+    margin: 12px 0 8px;
+  }
+  .inline-tag.muted { background: var(--chip-bg); color: var(--chip-text); }
+  .detail-name { font-size: 22px; font-weight: 700; line-height: 1.2; }
+  .detail-ref { font-size: 13.5px; color: var(--muted); margin-top: 2px; }
+  .detail-seller {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    margin-top: 10px;
+  }
+  .detail-seller .who { flex: 1; }
+  .detail-price {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 16px 0 12px;
+    letter-spacing: .01em;
+  }
+  .cta-row { display: flex; gap: 10px; }
+  .cta {
+    flex: 1;
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1.2px solid var(--line);
+    background: none;
+    color: var(--text);
+  }
+  .cta.red { background: var(--red); border-color: var(--red); color: #fff; }
+  .detail-h {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 24px 0 8px;
+    display: flex;
+    align-items: baseline;
+  }
+  .detail-h .spacer { margin-left: auto; }
+  .viewall { font-size: 12.5px; font-weight: 500; color: var(--muted); cursor: pointer; }
+  .detail-desc { font-size: 13.5px; line-height: 1.75; }
+  .details-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .view-full {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .details-inner { cursor: pointer; }
+  .comment-card { display: flex; gap: 10px; padding: 8px 0; }
+  .comment-card img {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .comment-card .cname { font-size: 13px; font-weight: 600; }
+  .comment-card .ctime { font-size: 11.5px; color: var(--muted); }
+  .comment-card .ctext { font-size: 13px; margin-top: 2px; }
+  .comment-card .creply { font-size: 11.5px; color: var(--muted); font-weight: 600; margin-top: 4px; cursor: pointer; }
+
+  /* ============ COMMENT SHEET ============ */
+  .sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+    z-index: 35;
+  }
+  .comment-sheet {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 74%;
+    background: var(--bg);
+    border-radius: 18px 18px 0 0;
+    border-top: 1px solid var(--line);
+    transform: translateY(103%);
+    transition: transform .3s ease;
+    z-index: 36;
+    display: flex;
+    flex-direction: column;
+  }
+  .screen.comments-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
+  .screen.comments-open .comment-sheet { transform: none; }
+  .sheet-handle {
+    width: 36px; height: 4px;
+    border-radius: 999px;
+    background: var(--muted);
+    opacity: .5;
+    margin: 10px auto 4px;
+    flex-shrink: 0;
+  }
+  .sheet-title {
+    position: relative;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 6px 16px 12px;
+    flex-shrink: 0;
+  }
+  .sheet-title .send {
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-55%);
+    background: none; border: none;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+  }
+  .sheet-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2px 16px 8px;
+    scrollbar-width: none;
+  }
+  .sheet-list::-webkit-scrollbar { display: none; }
+  .c-row { display: flex; gap: 10px; padding: 8px 0; }
+  .c-row.reply { margin-left: 46px; padding-top: 0; }
+  .c-row img {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .c-row.reply img { width: 30px; height: 30px; }
+  .c-main { flex: 1; min-width: 0; }
+  .c-head {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .c-head .n { color: var(--text); font-weight: 600; font-size: 13px; }
+  .c-text { font-size: 13.5px; margin: 2px 0 5px; line-height: 1.45; }
+  .c-meta { font-size: 11.5px; color: var(--muted); font-weight: 600; cursor: pointer; }
+  .c-like {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    color: var(--muted);
+    font-size: 10.5px;
+    padding-top: 10px;
+    cursor: pointer;
+  }
+  .c-like.liked { color: var(--red); }
+  .c-like.liked svg path { fill: var(--red); stroke: var(--red); }
+  .emoji-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 20px 8px;
+    font-size: 21px;
+    flex-shrink: 0;
+  }
+  .emoji-row span { cursor: pointer; }
+  .comment-input {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 14px 18px;
+    border-top: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .comment-input img {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .comment-input .field {
+    flex: 1;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .comment-input .ci-ic {
+    display: flex;
+    gap: 10px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* ============ BOTTOM NAV ============ */
+  .bottom-nav {
+    display: flex;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+    padding: 7px 4px 2px;
+    flex-shrink: 0;
+  }
+  .home-ind {
+    height: 22px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: var(--surface);
+    flex-shrink: 0;
+    padding-bottom: 8px;
+  }
+  .home-ind i {
+    width: 108px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--muted);
+    opacity: 0.45;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    position: relative;
+  }
+  .nav-item.active { color: var(--red); }
+  .screen[data-nav="icons"] .nav-label { display: none; }
+  .screen[data-nav="icons"] .nav-item { padding: 4px 0; }
+  .screen[data-nav="icons"] .nav-item.active svg {
+    stroke-width: 2.4;
+  }
+  .nav-badge {
+    position: absolute;
+    top: -2px;
+    left: calc(50% + 8px);
+    min-width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: var(--red);
+    color: #fff;
+    font-size: 9.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="review-bar">
+  <span class="title">TUK DAENG</span>
+  <span class="sub">Feed redesign exploration — IG-style social feed for watch collectors</span>
+  <button class="variant-btn active" data-v="a1">A1 · Flat / hidden price</button>
+  <button class="variant-btn" data-v="a2">A2 · Flat / price overlay</button>
+  <button class="variant-btn" data-v="a3">A3 · Flat / quiet price</button>
+  <button class="variant-btn" data-v="b1">B1 · Card / hidden price</button>
+  <button class="variant-btn" data-v="b2">B2 · Card / price overlay</button>
+  <button class="variant-btn" data-v="b3">B3 · Card / price footer</button>
+  <button class="variant-btn" data-v="c1">C1 · Edge photo card / hidden</button>
+  <button class="variant-btn" data-v="c2">C2 · Edge photo card / overlay</button>
+  <button class="variant-btn" data-v="c3">C3 · Edge photo card / footer</button>
+  <button class="variant-btn" data-v="mixed">Mixed post types</button>
+  <div class="grp-label">Details trigger</div>
+  <button class="variant-btn dt-btn active" data-t="t1">T1 · Bar</button>
+  <button class="variant-btn dt-btn" data-t="t2">T2 · Line + knob</button>
+  <button class="variant-btn dt-btn" data-t="t3">T3 · Hairline text</button>
+  <div class="grp-label">Details content</div>
+  <button class="variant-btn dc-btn active" data-d="d1">D1 · Spec tiles</button>
+  <button class="variant-btn dc-btn" data-d="d2">D2 · List rows</button>
+  <button class="variant-btn dc-btn" data-d="d3">D3 · Chips</button>
+  <div class="grp-label">Ask button</div>
+  <button class="variant-btn ka-btn active" data-k="auto">K0 · Auto (per layout)</button>
+  <button class="variant-btn ka-btn" data-k="outline">K1 · Outline pill</button>
+  <button class="variant-btn ka-btn" data-k="solid">K2 · Solid red</button>
+  <button class="variant-btn ka-btn" data-k="txt">K3 · Text link</button>
+  <button class="variant-btn ka-btn" data-k="ico">K4 · Icon only</button>
+  <div class="grp-label">Feed tabs</div>
+  <button class="variant-btn ft-btn active" data-ft="text">F1 · Text underline</button>
+  <button class="variant-btn ft-btn" data-ft="textc">F1c · Text centered</button>
+  <button class="variant-btn ft-btn" data-ft="chips">F2 · Chips</button>
+  <button class="variant-btn ft-btn" data-ft="chipsc">F2c · Chips centered</button>
+  <button class="variant-btn ft-btn" data-ft="segment">F3 · Segmented</button>
+  <button class="variant-btn ft-btn" data-ft="none">F4 · None (pure IG)</button>
+  <div class="grp-label">Bottom nav</div>
+  <button class="variant-btn nv-btn active" data-n="labeled">N1 · With labels</button>
+  <button class="variant-btn nv-btn" data-n="icons">N2 · Icons only (IG)</button>
+  <span class="variant-label" id="variantDesc"></span>
+</div>
+
+<div class="stage" id="stage"></div>
+
+<script>
+/* ================= DATA ================= */
+const POSTS = [
+  {
+    id: "p1",
+    seller: "Watch 777",
+    avatar: "./assets/user-avatars/u-1002.png",
+    time: "3 days ago",
+    following: false,
+    type: "sale",
+    photos: [
+      "./assets/asset-uploads/ast-8831-1.png",
+      "./assets/asset-uploads/ast-8831-2.png",
+      "./assets/asset-uploads/ast-8831-3.png",
+    ],
+    likes: 3, comments: 1, views: "1.2K",
+    caption: "Rolex Submariner Date · Ref. 126610LN",
+    captionFull: "Rolex Submariner Date · Ref. 126610LN\nFull set 2023 — original box & papers, beautiful condition.\nSerious buyers welcome to ask 📩\n\n#Rolex #Submariner #TukDaeng",
+    price: "THB 420,000",
+    chips: ["Very Good", "Original box and Original paper"],
+    specs: [
+      ["Brand", "Rolex"], ["Model", "Submariner Date"],
+      ["Reference No.", "126610LN"], ["Year", "2023"],
+      ["Condition", "Very Good"], ["Delivery", "Original box, Original paper"],
+      ["Case size", "41 mm"], ["Movement", "Calibre 3235"],
+    ],
+    desc: "Rolex Submariner Date Ref. 126610LN — the 41 mm icon in Oystersteel. Black dial with Chromalight display, unidirectional Cerachrom bezel and Cyclops date at 3 o'clock. In-house Calibre 3235 with 70-hour power reserve and 300 m water resistance. Full set with original box and papers. Viewing welcome by appointment.",
+    likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
+    commentPreview: { name: "chrono.th", text: "clean set 🔥" },
+  },
+  {
+    id: "p2",
+    seller: "the watch",
+    avatar: "./assets/user-avatars/u-1042.png",
+    time: "5 hours ago",
+    following: true,
+    type: "sale",
+    photos: ["./assets/asset-uploads/ast-8831-2.png"],
+    likes: 12, comments: 4, views: "2.8K",
+    caption: "Tudor Black Bay 41 · Ref. M7941A1A0RU",
+    captionFull: "Tudor Black Bay 41 · Ref. M7941A1A0RU\nLike new 2024 — warranty remaining until 2027, full set.\n\n#Tudor #BlackBay #TukDaeng",
+    price: "THB 145,000",
+    chips: ["New", "Original box and Original paper"],
+    specs: [
+      ["Brand", "Tudor"], ["Model", "Black Bay 41"],
+      ["Reference No.", "M7941A1A0RU"], ["Year", "2024"],
+      ["Condition", "New"], ["Delivery", "Original box, Original paper"],
+      ["Case size", "41 mm"], ["Movement", "n/a"],
+    ],
+    desc: "Tudor Black Bay 41 Ref. M7941A1A0RU — like-new condition, purchased 2024 with remaining factory warranty. Full set with box and papers.",
+    likedBy: { name: "Watch 777", avatar: "./assets/user-avatars/u-1002.png" },
+    commentPreview: { name: "davikah", text: "great condition 👌" },
+  },
+  {
+    id: "p3",
+    seller: "chrono.th",
+    avatar: "./assets/user-avatars/u-1088.png",
+    time: "1 day ago",
+    following: false,
+    type: "showcase",
+    photos: ["./assets/asset-uploads/ast-8831-3.png"],
+    likes: 28, comments: 6, views: "4.1K",
+    caption: "finally got my grail piece — chrono on slate",
+    captionFull: "finally got my grail piece — chrono on slate, moody sunday 🖤\nwaited 8 months for this one\n\n#grailwatch #watchesofinstagram #TukDaeng",
+    price: null,
+    chips: [],
+    specs: [],
+    desc: "finally got my grail piece — chrono on slate, moody sunday 🖤 waited 8 months for this one",
+    likedBy: { name: "Watch 777", avatar: "./assets/user-avatars/u-1002.png" },
+    commentPreview: { name: "neng_mua", text: "grail unlocked!!" },
+  },
+];
+
+const COMMENTS = {
+  p1: [
+    { name: "chrono.th", avatar: "./assets/user-avatars/u-1088.png", time: "2 days", text: "clean set 🔥", likes: 2,
+      replies: [{ name: "Watch 777", avatar: "./assets/user-avatars/u-1002.png", time: "1 day", text: "@chrono.th thanks! 🙏", likes: 1 }] },
+  ],
+  p2: [
+    { name: "davikah", avatar: "./assets/user-avatars/u-1161.png", time: "1 day", text: "great condition 👌", likes: 3,
+      replies: [{ name: "the watch", avatar: "./assets/user-avatars/u-1042.png", time: "21 hr", text: "@davikah ❤️❤️❤️", likes: 1 }] },
+    { name: "bamzilla", avatar: "./assets/user-avatars/u-1186.png", time: "4 hr", text: "😍😍😍", likes: 1 },
+    { name: "watch.daily", avatar: "./assets/user-avatars/u-1144.png", time: "2 hr", text: "still available?", likes: 0 },
+  ],
+  p3: [
+    { name: "neng_mua", avatar: "./assets/user-avatars/u-1120.png", time: "1 day", text: "grail unlocked!!", likes: 4,
+      replies: [{ name: "chrono.th", avatar: "./assets/user-avatars/u-1088.png", time: "20 hr", text: "@neng_mua 😍😍😍", likes: 1 }] },
+    { name: "bikwans", avatar: "./assets/user-avatars/u-1055.png", time: "1 day", text: "น่ารักมากกกก", likes: 1 },
+  ],
+};
+
+const VARIANT_DESC = {
+  a1: "Flat IG layout — price & specs hidden behind tap-to-expand. Closest to pure Instagram.",
+  a2: "Flat IG layout — price as translucent overlay chip on photo, red Ask Seller pill.",
+  a3: "Flat IG layout — price as quiet muted text under caption. Nothing else visible.",
+  b1: "Rounded card per post — price & specs hidden behind tap-to-expand.",
+  b2: "Rounded card per post — price overlay chip on photo, red Ask Seller pill.",
+  b3: "Rounded card per post — slim price footer strip inside card bottom.",
+  c1: "Rounded card, photo flush to card edges (no inset) — price hidden behind tap-to-expand.",
+  c2: "Rounded card, photo flush to card edges — price overlay chip + red Ask Seller pill.",
+  c3: "Rounded card, photo flush to card edges — slim price footer strip inside card bottom.",
+  mixed: "Flexible posting — same skeleton: FOR SALE post vs SHOWCASE post (no price, no Ask).",
+};
+
+/* ================= ICONS ================= */
+const I = {
+  heart: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>`,
+  comment: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>`,
+  eye: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  share: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>`,
+  bookmark: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
+  burger: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>`,
+  search: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>`,
+  sliders: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="15" cy="6" r="2.3" fill="var(--bg)"/><circle cx="9" cy="12" r="2.3" fill="var(--bg)"/><circle cx="17" cy="18" r="2.3" fill="var(--bg)"/></svg>`,
+  plus: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`,
+  dots: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>`,
+  listMenu: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`,
+  chev: (s=15) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`,
+  chevR: (s=13) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>`,
+  back: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`,
+  img: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="m21 15-4.5-4.5L6 21"/></svg>`,
+  gif: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M8 10.5v3M8 10.5h2.5M8 12h2M11.5 10.5v3M14.5 10.5v3m0-3h2.5M14.5 12H16"/></svg>`,
+  chat: (s=15) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+  navFeed: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>`,
+  navChat: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+  navBoards: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`,
+  navBell: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>`,
+  navUser: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  check: (s=15) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`,
+};
+
+/* ================= RENDER ================= */
+const state = { variant: "a1", tStyle: "t1", dStyle: "d1", nav: "labeled", ft: "text", ask: "auto" };
+
+function askBtnHTML(defaultSolid) {
+  const style = state.ask === "auto" ? (defaultSolid ? "solid" : "outline") : state.ask;
+  if (style === "ico") return `<button class="ask-pill ico" title="Ask seller">${I.chat(21)}</button>`;
+  if (style === "txt") return `<button class="ask-pill txt">Ask</button>`;
+  return `<button class="ask-pill ${style}">${I.chat(14)} Ask</button>`;
+}
+
+function triggerHTML() {
+  const lbl = `<span class="dt-label">Tap for details</span>`;
+  if (state.tStyle === "t2")
+    return `<button class="details-toggle ln"><i></i><span class="knob">${I.chev(13)}</span><i></i></button>`;
+  if (state.tStyle === "t3")
+    return `<button class="details-toggle txt"><i></i>${lbl}${I.chev(13)}<i></i></button>`;
+  return `<button class="details-toggle">${lbl}${I.chev()}</button>`;
+}
+
+function detailsHTML(p, showPriceRow) {
+  const content = {
+    d1: `<div class="spec-grid">${p.specs.map(s => `<div class="spec-tile"><div class="l">${s[0]}</div><div class="v">${s[1]}</div></div>`).join("")}</div>`,
+    d2: `<div class="spec-rows">${p.specs.map(s => `<div class="spec-row"><span class="l">${s[0]}</span><span class="v">${s[1]}</span></div>`).join("")}</div>`,
+    d3: `<div class="chip-row">${p.specs.map(s => `<span class="chip"><b>${s[0]}:</b>&nbsp;${s[1]}</span>`).join("")}</div>`,
+  }[state.dStyle];
+  return `
+    <div class="details-body">
+      <div class="details-inner">
+        <div class="details-top">
+          ${showPriceRow ? `<div class="details-price">${p.price}</div>` : `<span></span>`}
+          <span class="view-full">View full detail ${I.chevR()}</span>
+        </div>
+        ${content}
+      </div>
+    </div>`;
+}
+
+function detailHTML(p) {
+  const spec = k => (p.specs.find(s => s[0] === k) || [k, "n/a"])[1];
+  const isSale = !!p.price;
+  const dots = p.photos.length > 1;
+  const name = p.specs.length ? `${spec("Brand")} ${spec("Model")}` : p.caption.split("—")[0].trim();
+  const ref = p.specs.length && spec("Reference No.") !== "n/a" ? `Ref. ${spec("Reference No.")}` : "";
+  return `
+    <div class="detail-head">
+      <button class="icon-btn detail-back">${I.back()}</button>
+      <span class="detail-title">Detail</span>
+      <span class="spacer"></span>
+      <button class="icon-btn">${I.heart(20)}</button>
+      <button class="icon-btn">${I.dots(18)}</button>
+    </div>
+    <div class="detail-scroll">
+      <div class="detail-hero">
+        <img src="${p.photos[0]}" alt="">
+        <span class="photo-counter">1/${p.photos.length}</span>
+      </div>
+      ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
+      <div class="detail-pad">
+        <span class="inline-tag ${isSale ? "" : "muted"}">${isSale ? "FOR SALE" : "SHOWCASE"}</span>
+        <h2 class="detail-name">${name}</h2>
+        ${ref ? `<div class="detail-ref">${ref}</div>` : ""}
+        <div class="post-actions" style="padding-left:0;padding-right:0">
+          <button class="act like-btn">${I.heart(23)}<span>${p.likes}</span></button>
+          <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
+          <button class="act">${I.eye(24)}<span>${p.views}</span></button>
+          <button class="act">${I.share(22)}</button>
+          <span class="act-right">
+            ${isSale ? askBtnHTML(false) : ""}
+            <button class="save-btn">${I.bookmark(23)}</button>
+          </span>
+        </div>
+        <div class="detail-seller">
+          <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
+          <div class="who"><div class="name" style="font-size:14px;font-weight:600">${p.seller}</div></div>
+          <button class="follow-btn">${p.following ? "Following" : "Follow"}</button>
+        </div>
+        ${isSale ? `<div class="detail-price">${p.price}</div>` : ""}
+        <div class="detail-h">Descriptions</div>
+        <p class="detail-desc">${p.desc}</p>
+        ${p.specs.length ? `
+        <div class="detail-h">Technical</div>
+        <div class="spec-rows">${p.specs.map(s => `<div class="spec-row"><span class="l">${s[0]}</span><span class="v">${s[1]}</span></div>`).join("")}</div>` : ""}
+      </div>
+    </div>`;
+}
+
+function commentsHTML(p) {
+  const rows = (COMMENTS[p.id] || []).map(c => `
+    <div class="c-row">
+      <img src="${c.avatar}" alt="">
+      <div class="c-main">
+        <div class="c-head"><span class="n">${c.name}</span><span>${c.time}</span></div>
+        <div class="c-text">${c.text}</div>
+        <span class="c-meta">Reply</span>
+      </div>
+      <span class="c-like">${I.heart(15)}<span>${c.likes || ""}</span></span>
+    </div>
+    ${(c.replies || []).map(r => `
+    <div class="c-row reply">
+      <img src="${r.avatar}" alt="">
+      <div class="c-main">
+        <div class="c-head"><span class="n">${r.name}</span><span>${r.time}</span></div>
+        <div class="c-text">${r.text}</div>
+        <span class="c-meta">Reply</span>
+      </div>
+      <span class="c-like">${I.heart(15)}<span>${r.likes || ""}</span></span>
+    </div>`).join("")}`).join("");
+  return `
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Comments<button class="send">${I.share(18)}</button></div>
+    <div class="sheet-list">${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No comments yet</div>`}</div>
+    <div class="emoji-row"><span>❤️</span><span>🙌</span><span>🔥</span><span>👏</span><span>🥲</span><span>😍</span><span>😮</span><span>😂</span></div>
+    <div class="comment-input">
+      <img src="./assets/user-avatars/u-1075.png" alt="">
+      <span class="field">Add a comment...</span>
+      <span class="ci-ic">${I.img(20)}${I.gif(20)}</span>
+    </div>`;
+}
+
+function postCard(p, variant) {
+  const isMixed = variant === "mixed";
+  const type = isMixed && p.type === "showcase" ? "showcase" : (isMixed ? "sale" : null);
+  const hasPrice = p.price !== null;
+  const priceOverlay = (variant === "a2" || variant === "b2" || variant === "c2") && hasPrice;
+  const quietPrice = variant === "a3" && hasPrice;
+  const footerPrice = (variant === "b3" || variant === "c3") && hasPrice;
+  const showTag = isMixed;
+  const askSolid = (variant === "a2" || variant === "b2" || variant === "c2");
+  const showAsk = p.type === "sale" || !isMixed;
+  const dots = p.photos.length > 1;
+
+  return `
+  <article class="post" data-pid="${p.id}">
+    <header class="post-head">
+      <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
+      <div class="who">
+        <div class="name">${p.seller}</div>
+      </div>
+      ${!p.following ? `<button class="follow-btn">Follow</button>` : ""}
+      <button class="more">${I.listMenu(19)}</button>
+    </header>
+
+    <div class="post-photo">
+      <img src="${p.photos[0]}" alt="">
+      ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
+      ${showTag && type === "sale" ? `<span class="type-tag sale">FOR SALE</span>` : ""}
+      ${showTag && type === "showcase" ? `<span class="type-tag showcase">SHOWCASE</span>` : ""}
+      ${priceOverlay ? `<span class="cond-overlay">${p.chips[0]}</span>` : ""}
+      ${priceOverlay ? `<span class="price-overlay">${p.price}</span>` : ""}
+    </div>
+
+    ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
+
+    <div class="post-actions">
+      <button class="act like-btn">${I.heart(23)}<span>${p.likes}</span></button>
+      <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
+      <button class="act">${I.eye(24)}<span>${p.views}</span></button>
+      <button class="act">${I.share(22)}</button>
+      <span class="act-right">
+        ${showAsk ? askBtnHTML(askSolid) : ""}
+        <button class="save-btn">${I.bookmark(23)}</button>
+      </span>
+    </div>
+
+    <div class="liked-by">
+      <span class="stack">
+        <img src="${p.likedBy.avatar}" alt="">
+        <img src="./assets/user-avatars/u-1088.png" alt="">
+        <img src="./assets/user-avatars/u-1120.png" alt="">
+      </span>
+      <span><b>${p.likedBy.name}</b> and <b>others</b> liked</span>
+    </div>
+
+    <p class="caption"><b>${p.seller}</b> <span class="cap-short">${p.caption} <span class="more-link">more</span></span><span class="cap-full">${p.captionFull.replace(/\n/g, "<br>")}</span></p>
+
+    <div class="post-time">${p.time}</div>
+
+    ${quietPrice ? `<p class="quiet-price">${p.price}</p>` : ""}
+
+    ${hasPrice ? triggerHTML() + detailsHTML(p, !priceOverlay && !quietPrice && !footerPrice) : ""}
+
+    ${footerPrice ? `
+      <div class="price-footer">
+        <span class="p">${p.price}</span>
+        <button class="ask-pill outline">Ask Seller</button>
+      </div>` : ""}
+  </article>`;
+}
+
+function screenHTML(theme, variant) {
+  const feedPosts = variant === "mixed" ? POSTS : POSTS.slice(0, 2);
+  return `
+  <div class="screen" data-theme="${theme}" data-variant="${variant}" data-nav="${state.nav}" data-ft="${state.ft}">
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="0.5"/><rect x="4.5" y="4.5" width="3" height="6.5" rx="0.5"/><rect x="9" y="2" width="3" height="9" rx="0.5"/><rect x="13.5" y="0" width="2.5" height="11" rx="0.5" opacity=".35"/></svg>
+        <svg width="16" height="11" viewBox="0 0 16 12" fill="currentColor"><path d="M8 9.5a1.6 1.6 0 1 1 0 3.2 1.6 1.6 0 0 1 0-3.2zM8 5.8c1.9 0 3.6.74 4.9 2l-1.4 1.5A4.9 4.9 0 0 0 8 8.1c-1.35 0-2.57.55-3.5 1.4L3.1 7.9A6.9 6.9 0 0 1 8 5.8zM8 1.5c3.1 0 5.9 1.24 7.95 3.25l-1.4 1.45A9.15 9.15 0 0 0 8 3.8c-2.55 0-4.85 1.04-6.55 2.7L.05 5.05A11.15 11.15 0 0 1 8 1.5z" transform="translate(0,-1)"/></svg>
+        <svg width="22" height="11" viewBox="0 0 25 12" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="21" height="11" rx="3"/><rect x="2.5" y="2.5" width="15" height="7" rx="1.5" fill="currentColor" stroke="none"/><path d="M23.5 4v4a2 2 0 0 0 0-4z" fill="currentColor" stroke="none"/></svg>
+      </span>
+    </div>
+
+    <div class="app-header">
+      <button class="icon-btn">${I.burger()}</button>
+      <button class="icon-btn">${I.search()}</button>
+      <span class="wordmark">TUK DAENG <span class="caret">${I.chev(13)}</span></span>
+      <span class="spacer"></span>
+      <button class="icon-btn">${I.sliders()}</button>
+      <button class="icon-btn">${I.plus()}</button>
+    </div>
+
+    ${state.ft === "none" ? `
+    <div class="brand-menu">
+      <button class="bm-item on">All <span class="check">${I.check(15)}</span></button>
+      <button class="bm-item">Following <span class="check">${I.check(15)}</span></button>
+      <button class="bm-item">Favorites <span class="check">${I.check(15)}</span></button>
+    </div>` : ""}
+
+    <div class="feed-tabs">
+      <button class="feed-tab active">All</button>
+      <button class="feed-tab">Following</button>
+      <button class="feed-tab">Favorites</button>
+    </div>
+
+    <div class="feed-scroll">
+      ${feedPosts.map(p => postCard(p, variant)).join("")}
+    </div>
+
+    <nav class="bottom-nav">
+      <span class="nav-item active">${I.navFeed()}<span class="nav-label">Feed</span></span>
+      <span class="nav-item">${I.navChat()}<span class="nav-badge">1</span><span class="nav-label">Chat</span></span>
+      <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
+      <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
+      <span class="nav-item">${I.navUser()}<span class="nav-label">Profile</span></span>
+    </nav>
+    <div class="home-ind"><i></i></div>
+    <div class="sheet-backdrop"></div>
+    <div class="comment-sheet"></div>
+    <div class="page-detail"></div>
+  </div>`;
+}
+
+function render() {
+  document.getElementById("stage").innerHTML =
+    `<div class="phone-wrap"><span class="theme-tag">Dark</span><div class="phone">${screenHTML("dark", state.variant)}</div></div>` +
+    `<div class="phone-wrap"><span class="theme-tag">Light</span><div class="phone">${screenHTML("light", state.variant)}</div></div>`;
+  document.getElementById("variantDesc").textContent = VARIANT_DESC[state.variant];
+}
+
+/* ================= WIRE ================= */
+document.querySelectorAll(".variant-btn[data-v]").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll(".variant-btn[data-v]").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    state.variant = b.dataset.v;
+    render();
+  });
+});
+document.querySelectorAll(".dt-btn").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll(".dt-btn").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    state.tStyle = b.dataset.t;
+    render();
+  });
+});
+document.querySelectorAll(".dc-btn").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll(".dc-btn").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    state.dStyle = b.dataset.d;
+    render();
+  });
+});
+document.querySelectorAll(".nv-btn").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll(".nv-btn").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    state.nav = b.dataset.n;
+    render();
+  });
+});
+document.querySelectorAll(".ft-btn").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll(".ft-btn").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    state.ft = b.dataset.ft;
+    render();
+  });
+});
+document.querySelectorAll(".ka-btn").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll(".ka-btn").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    state.ask = b.dataset.k;
+    render();
+  });
+});
+
+document.getElementById("stage").addEventListener("click", e => {
+  const wm = e.target.closest(".wordmark");
+  if (wm) {
+    const scr = wm.closest(".screen");
+    if (scr.dataset.ft === "none") scr.classList.toggle("brand-open");
+    return;
+  }
+  const bm = e.target.closest(".bm-item");
+  if (bm) {
+    [...bm.parentElement.children].forEach(x => x.classList.toggle("on", x === bm));
+    bm.closest(".screen").classList.remove("brand-open");
+    return;
+  }
+  document.querySelectorAll(".screen.brand-open").forEach(s => s.classList.remove("brand-open"));
+  const back = e.target.closest(".detail-back");
+  if (back) {
+    back.closest(".screen").classList.remove("detail-open");
+    return;
+  }
+  const intoDetail = e.target.closest(".details-inner");
+  if (intoDetail) {
+    const art = e.target.closest(".post");
+    const post = POSTS.find(x => x.id === art.dataset.pid);
+    const scr = e.target.closest(".screen");
+    const pd = scr.querySelector(".page-detail");
+    pd.innerHTML = detailHTML(post);
+    pd.querySelector(".detail-scroll").scrollTop = 0;
+    scr.dataset.detailPid = post.id;
+    scr.classList.add("detail-open");
+    return;
+  }
+  const cbtn = e.target.closest(".comment-btn");
+  if (cbtn) {
+    const scr = e.target.closest(".screen");
+    const art = e.target.closest(".post");
+    const pid = art ? art.dataset.pid : scr.dataset.detailPid;
+    const post = POSTS.find(x => x.id === pid);
+    scr.querySelector(".comment-sheet").innerHTML = commentsHTML(post);
+    scr.classList.add("comments-open");
+    return;
+  }
+  const closeSheet = e.target.closest(".sheet-backdrop, .sheet-handle");
+  if (closeSheet) {
+    closeSheet.closest(".screen").classList.remove("comments-open");
+    return;
+  }
+  const clike = e.target.closest(".c-like");
+  if (clike) {
+    clike.classList.toggle("liked");
+    const n = clike.querySelector("span");
+    if (n.textContent !== "") n.textContent = parseInt(n.textContent) + (clike.classList.contains("liked") ? 1 : -1);
+    else if (clike.classList.contains("liked")) n.textContent = "1";
+    return;
+  }
+  const ft = e.target.closest(".feed-tab");
+  if (ft) {
+    [...ft.parentElement.children].forEach(x => x.classList.toggle("active", x === ft));
+    return;
+  }
+  const ph = e.target.closest(".post-photo");
+  if (ph) {
+    const art = ph.closest(".post");
+    const post = POSTS.find(x => x.id === art.dataset.pid);
+    if (post && post.photos.length > 1) {
+      let i = +(ph.dataset.i || 0);
+      const rect = ph.getBoundingClientRect();
+      i = (e.clientX - rect.left > rect.width / 2)
+        ? (i + 1) % post.photos.length
+        : (i - 1 + post.photos.length) % post.photos.length;
+      ph.dataset.i = i;
+      ph.querySelector("img").src = post.photos[i];
+      const c = ph.querySelector(".photo-counter");
+      if (c) c.textContent = `${i + 1}/${post.photos.length}`;
+      const dotsEl = art.querySelector(".photo-dots");
+      if (dotsEl) [...dotsEl.children].forEach((d, j) => d.classList.toggle("on", j === i));
+    }
+    return;
+  }
+  const t = e.target.closest(".details-toggle");
+  if (t) {
+    t.classList.toggle("open");
+    t.nextElementSibling.classList.toggle("open");
+    const lbl = t.querySelector(".dt-label");
+    if (lbl) lbl.textContent = t.classList.contains("open") ? "Hide details" : "Tap for details";
+    return;
+  }
+  const more = e.target.closest(".more-link");
+  if (more) {
+    more.closest(".caption").classList.add("expanded");
+    return;
+  }
+  const like = e.target.closest(".like-btn");
+  if (like) {
+    like.classList.toggle("liked");
+    const n = like.querySelector("span");
+    n.textContent = parseInt(n.textContent) + (like.classList.contains("liked") ? 1 : -1);
+  }
+});
+
+render();
+</script>
+</body>
+</html>
