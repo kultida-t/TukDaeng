@@ -1580,7 +1580,7 @@ function specGroupsHTML(groups, rowsFn, headFn) {
   const head = t => headFn ? headFn(t) : `<div class="spec-sec">${t}</div>`;
   if (state.ds === "acc") {
     return groups.map((g, i) => `
-      <div class="ds-acc${i === 0 ? " open" : ""}">
+      <div class="ds-acc open">
         <button class="ds-acc-head"><span>${g.title}</span>${I.chev(14)}</button>
         <div class="ds-acc-body">${rows(g)}</div>
       </div>`).join("");
