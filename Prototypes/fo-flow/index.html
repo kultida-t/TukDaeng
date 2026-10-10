@@ -464,7 +464,7 @@
   .post-actions {
     display: flex;
     align-items: center;
-    padding: 8px 12px 2px;
+    padding: 8px 11px 2px 9px;
     gap: 2px;
   }
   .act {
@@ -731,7 +731,7 @@
   .screen[data-variant^="c"] .quiet-price { padding-left: 14px; padding-right: 14px; }
   .screen[data-variant^="b"] .details-toggle { margin-left: 14px; width: calc(100% - 28px); }
   .screen[data-variant^="b"] .details-body { margin-left: 14px; margin-right: 14px; }
-  .screen[data-variant^="b"] .post-actions { padding-left: 8px; padding-right: 8px; }
+  .screen[data-variant^="b"] .post-actions { padding-left: 7px; padding-right: 9px; }
   .screen[data-variant^="b"] .post > :last-child,
   .screen[data-variant^="c"] .post > :last-child { margin-bottom: 12px; }
   .screen[data-variant^="c"] .post-time { padding-bottom: 10px; }
@@ -769,7 +769,7 @@
   .detail-hero {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 5;
     background: #000;
     overflow: hidden;
   }
@@ -779,6 +779,7 @@
     display: block;
   }
   .detail-pad { padding: 0 16px 28px; }
+  .page-detail .post-actions { padding-left: 9px; padding-right: 11px; }
   .inline-tag {
     display: inline-block;
     font-size: 10.5px;
@@ -823,15 +824,18 @@
   }
   .cta.red { background: var(--red); border-color: var(--red); color: #fff; }
   .detail-h {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
-    margin: 24px 0 8px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 28px 0 10px;
     display: flex;
     align-items: baseline;
   }
   .detail-h .spacer { margin-left: auto; }
   .viewall { font-size: 12.5px; font-weight: 500; color: var(--muted); cursor: pointer; }
-  .detail-desc { font-size: 13.5px; line-height: 1.75; }
+  .detail-desc { font-size: 13.5px; line-height: 1.75; color: var(--chip-text); }
   .details-top {
     display: flex;
     align-items: center;
@@ -847,7 +851,8 @@
     color: var(--muted);
     flex-shrink: 0;
   }
-  .details-inner { cursor: pointer; }
+  .details-inner { cursor: default; }
+  .view-full { cursor: pointer; }
   .comment-card { display: flex; gap: 10px; padding: 8px 0; }
   .comment-card img {
     width: 34px; height: 34px;
@@ -1267,8 +1272,147 @@
     .screen { border-radius: 0; }
     .home-ind { display: none; }
   }
-  .post-photo { touch-action: pan-y; }
-  .post-photo img { user-select: none; -webkit-user-drag: none; }
+  .post-photo, .detail-hero { touch-action: pan-y; }
+  .post-photo img, .detail-hero img { user-select: none; -webkit-user-drag: none; }
+  .igd-tag { color: #79b5f2; }
+
+  /* K5 — floating chat bubble + pop-up composer (detail page) */
+  .cp-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+    z-index: 7;
+  }
+  .cp-backdrop.show { opacity: 1; pointer-events: auto; }
+  .page-detail.chat-lock .detail-scroll { overflow: hidden; }
+  .chat-fab {
+    position: absolute;
+    right: 16px;
+    bottom: 20px;
+    z-index: 8;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,.28);
+    transition: transform .15s ease;
+  }
+  .chat-fab:active { transform: scale(.92); }
+  .page-detail:has(> .chat-fab) .detail-pad { padding-bottom: 96px; }
+  .chat-pop {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 84px;
+    z-index: 8;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.4);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    max-height: 64%;
+  }
+  .chat-pop.show { display: flex; }
+  .cp-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 8px 10px 12px;
+    flex-shrink: 0;
+  }
+  .cp-head .cp-av {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .cp-head .cp-who { flex: 1; min-width: 0; }
+  .cp-head .n { font-size: 13.5px; font-weight: 600; }
+  .cp-body {
+    padding: 12px 12px 8px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 320px;
+  }
+  .cp-body::-webkit-scrollbar { display: none; }
+  .cp-post {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px;
+    flex-shrink: 0;
+  }
+  .cp-post img {
+    width: 44px; height: 54px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .cp-post .t { font-size: 12.5px; font-weight: 600; line-height: 1.35; }
+  .cp-post .s { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .chat-msg {
+    align-self: flex-end;
+    max-width: 78%;
+    background: var(--red);
+    color: #fff;
+    font-size: 13px;
+    line-height: 1.45;
+    padding: 8px 13px;
+    border-radius: 16px 16px 4px 16px;
+    word-break: break-word;
+  }
+  .cp-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px 12px;
+    flex-shrink: 0;
+  }
+  .cp-input input {
+    flex: 1;
+    background: var(--chip-bg);
+    border: none;
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-family: var(--font-main);
+    color: var(--text);
+    outline: none;
+    min-width: 0;
+  }
+  .cp-send {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: var(--red);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .cp-send:disabled {
+    opacity: .4;
+    cursor: default;
+    transform: none;
+  }
 </style>
 </head>
 <body>
@@ -1328,7 +1472,7 @@ const POSTS = [
     time: "5 hours ago",
     following: true,
     type: "sale",
-    photos: ["./assets/asset-uploads/ast-8831-2.png"],
+    photos: ["./assets/asset-uploads/feed-tudor-bb.jpg"],
     likes: 12, comments: 4, views: "2.8K",
     caption: "Tudor Black Bay 41 · Ref. M7941A1A0RU",
     captionFull: "Tudor Black Bay 41 · Ref. M7941A1A0RU\nLike new 2024 — warranty remaining until 2027, full set.\n\n#Tudor #BlackBay #TukDaeng",
@@ -1359,6 +1503,112 @@ const POSTS = [
     commentPreview: { name: "davikah", text: "great condition 👌" },
   },
   {
+    id: "p4",
+    seller: "davikah",
+    avatar: "./assets/user-avatars/u-1161.png",
+    time: "2 days ago",
+    following: false,
+    type: "sale",
+    photos: ["./assets/asset-uploads/feed-datejust-1.jpg", "./assets/asset-uploads/feed-datejust-2.jpg"],
+    likes: 9, comments: 2, views: "980",
+    caption: "Rolex Datejust 41 · Ref. 126334",
+    captionFull: "Rolex Datejust 41 · Ref. 126334\nBlue dial, fluted bezel, Jubilee — full set 2023.\n\n#Rolex #Datejust #TukDaeng",
+    price: "THB 380,000",
+    chips: ["Very Good", "Original box and Original paper"],
+    specGroups: [
+      { title: "Watch Specifications", rows: [
+        ["Brand", "Rolex"], ["Collection", "Datejust"], ["Model", "Datejust 41"],
+        ["Reference", "126334"], ["Case Diameter", "41 mm"], ["Thickness", "11.8 mm"],
+        ["Case Material", "Oystersteel & White Gold"], ["Bezel Material", "Fluted white gold"],
+        ["Dial Color", "Blue"], ["Movement Type", "Automatic (Self-winding)"], ["Calibre", "3235"],
+        ["Power Reserve", "70 hours"], ["Functions", "Hours, Minutes, Seconds, Date"],
+        ["Water Resistance", "100 m"], ["Strap/Bracelet Material", "Jubilee bracelet"],
+      ]},
+      { title: "Item Details", rows: [
+        ["Year", "2023"], ["Condition", "Very Good"],
+        ["Box & Papers", "Full set — Original box, Original paper"], ["Service History", "No service record"],
+      ]},
+      { title: "Price & Data Source", rows: [
+        ["Asking Price", "THB 380,000"], ["Estimated Market Price", "THB 360,000 – 400,000"],
+        ["Last Price Update", "2026-10-05"], ["Data Source", "TukDaeng Market Data"],
+      ]},
+    ],
+    desc: "Rolex Datejust 41 Ref. 126334 — blue dial, fluted white gold bezel, Jubilee bracelet. Full set 2023.",
+    likedBy: { name: "Watch 777", avatar: "./assets/user-avatars/u-1002.png" },
+    commentPreview: { name: "watch.daily", text: "classic 🌕" },
+  },
+  {
+    id: "p5",
+    seller: "watch.daily",
+    avatar: "./assets/user-avatars/u-1144.png",
+    time: "6 hours ago",
+    following: false,
+    type: "sale",
+    photos: ["./assets/asset-uploads/feed-breguet-1.jpg", "./assets/asset-uploads/feed-breguet-2.jpg"],
+    likes: 17, comments: 3, views: "1.5K",
+    caption: "Breguet Classique 7137 · Ref. 7137BR",
+    captionFull: "Breguet Classique 7137 · Ref. 7137BR\nRose gold, moonphase + power reserve — full set 2021.\n\n#Breguet #Classique #TukDaeng",
+    price: "THB 890,000",
+    chips: ["Very Good", "Original box and Original paper"],
+    specGroups: [
+      { title: "Watch Specifications", rows: [
+        ["Brand", "Breguet"], ["Collection", "Classique"], ["Model", "Classique 7137"],
+        ["Reference", "7137BR"], ["Case Diameter", "39 mm"], ["Thickness", "8.65 mm"],
+        ["Case Material", "Rose Gold"], ["Dial Color", "Silver guilloché"],
+        ["Movement Type", "Automatic"], ["Calibre", "502.3 DR1"],
+        ["Functions", "Hours, Minutes, Moonphase, Power reserve, Date"],
+        ["Water Resistance", "30 m"], ["Strap Material", "Alligator leather"],
+        ["Clasp Type", "Rose gold pin buckle"],
+      ]},
+      { title: "Item Details", rows: [
+        ["Year", "2021"], ["Condition", "Very Good"],
+        ["Box & Papers", "Full set — Original box, Original paper"], ["Service History", "No service record"],
+      ]},
+      { title: "Price & Data Source", rows: [
+        ["Asking Price", "THB 890,000"], ["Estimated Market Price", "THB 850,000 – 950,000"],
+        ["Last Price Update", "2026-10-08"], ["Data Source", "TukDaeng Market Data"],
+      ]},
+    ],
+    desc: "Breguet Classique 7137 — rose gold, moonphase & power reserve, guilloché dial. Full set 2021.",
+    likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
+    commentPreview: { name: "bamzilla", text: "so clean" },
+  },
+  {
+    id: "p6",
+    seller: "neng_mua",
+    avatar: "./assets/user-avatars/u-1120.png",
+    time: "8 hours ago",
+    following: false,
+    type: "sale",
+    photos: ["./assets/asset-uploads/ast-8831-3.png"],
+    likes: 21, comments: 5, views: "1.9K",
+    caption: "Grand Seiko Snowflake · Ref. SBGA211",
+    captionFull: "Grand Seiko Snowflake · Ref. SBGA211\n2023 full set — titanium, spring drive, barely worn.\n\n#GrandSeiko #Snowflake #TukDaeng",
+    price: "THB 165,000",
+    chips: ["Like New", "Original box and Original paper"],
+    specGroups: [
+      { title: "Watch Specifications", rows: [
+        ["Brand", "Grand Seiko"], ["Collection", "Heritage"], ["Model", "Snowflake"],
+        ["Reference", "SBGA211"], ["Case Diameter", "41 mm"], ["Thickness", "12.5 mm"],
+        ["Case Material", "High-intensity Titanium"], ["Dial Color", "White (Snowflake)"],
+        ["Movement Type", "Spring Drive"], ["Calibre", "9R65"],
+        ["Power Reserve", "72 hours"], ["Functions", "Hours, Minutes, Seconds, Date, Power reserve"],
+        ["Water Resistance", "100 m"], ["Strap/Bracelet Material", "Titanium bracelet"],
+      ]},
+      { title: "Item Details", rows: [
+        ["Year", "2023"], ["Condition", "Like New"],
+        ["Box & Papers", "Full set — Original box, Original paper"], ["Service History", "No service record"],
+      ]},
+      { title: "Price & Data Source", rows: [
+        ["Asking Price", "THB 165,000"], ["Estimated Market Price", "THB 150,000 – 175,000"],
+        ["Last Price Update", "2026-10-06"], ["Data Source", "TukDaeng Market Data"],
+      ]},
+    ],
+    desc: "Grand Seiko Snowflake SBGA211 — titanium case, Spring Drive 9R65. Full set 2023.",
+    likedBy: { name: "Watch 777", avatar: "./assets/user-avatars/u-1002.png" },
+    commentPreview: { name: "chrono.th", text: "dial is unreal ❄️" },
+  },
+  {
     id: "p3",
     seller: "chrono.th",
     avatar: "./assets/user-avatars/u-1088.png",
@@ -1380,6 +1630,15 @@ const POSTS = [
 
 /* flattened rows kept as p.specs for lookups (spec()) and non-grouped renderers */
 POSTS.forEach(p => { p.specs = (p.specGroups || []).flatMap(g => g.rows); });
+
+/* per-post Detail variant sets — each feed post opens Detail with its own combo */
+const POST_DETAIL_CFG = {
+  p1: { ask: "outline", ds: "full", pr: "pr1", dh: "dh3", dl: "dl1", tg: "tg1" },
+  p2: { ask: "bubble",  ds: "full", pr: "pr4", dh: "dh3", dl: "dl1", tg: "tg2" },
+  p4: { ask: "outline", ds: "full", pr: "pr3", dh: "dh3", dl: "dl1", tg: "tg1" },
+  p5: { ask: "bubble",  ds: "full", pr: "pr4", dh: "dh3", dl: "dl2", tg: "tg2" },
+  p6: { ask: "bubble",  ds: "full", pr: "pr3", dh: "dh3", dl: "dl2", tg: "tg1" },
+};
 
 const COMMENTS = {
   p1: [
@@ -1437,13 +1696,16 @@ const I = {
   navBell: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>`,
   navUser: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
   check: (s=15) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`,
+  x: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`,
+  send: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>`,
 };
 
 /* ================= RENDER ================= */
-const state = { variant: "a1", tStyle: "t3", dStyle: "d2", nav: "labeled", ft: "chipsc", ask: "outline", ds: "full", pr: "pr1", dh: "dh1" };
+const state = { variant: "a1", tStyle: "t3", dStyle: "d2", nav: "labeled", ft: "chipsc", ask: "outline", ds: "full", pr: "pr1", dh: "dh1", dl: "dl1", tg: "tg1" };
 
 function askBtnHTML(defaultSolid) {
-  const style = state.ask === "auto" ? (defaultSolid ? "solid" : "outline") : state.ask;
+  let style = state.ask === "auto" ? (defaultSolid ? "solid" : "outline") : state.ask;
+  if (style === "bubble") style = "outline";
   if (style === "ico") return `<button class="ask-pill ico" title="Ask seller">${I.chat(21)}</button>`;
   if (style === "txt") return `<button class="ask-pill txt">Ask</button>`;
   return `<button class="ask-pill ${style}">${I.chat(14)} Ask</button>`;
@@ -1491,7 +1753,13 @@ function detailHeadHTML(p) {
   return `<div class="detail-head">${back}<span class="detail-title">Detail</span><span class="spacer"></span>${dots}</div>`;
 }
 
+function saleTagHTML(isSale) {
+  if (state.tg === "tg2") return "";
+  return `<span class="inline-tag${isSale ? "" : " muted"}">${isSale ? "FOR SALE" : "SHOWCASE"}</span>`;
+}
+
 function detailHTML(p) {
+  if (state.dl !== "dl1") return igDetailHTML(p);
   const spec = k => (p.specs.find(s => s[0] === k) || [k, "n/a"])[1];
   const isSale = !!p.price;
   const dots = p.photos.length > 1;
@@ -1502,28 +1770,28 @@ function detailHTML(p) {
     <div class="detail-scroll">
       <div class="detail-hero${state.dh === "dh4" ? " fabbed" : ""}">
         <img src="${p.photos[0]}" alt="">
-        <span class="photo-counter">1/${p.photos.length}</span>
+        ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
         ${state.dh === "dh4" ? `
         <button class="hero-fab fab-l detail-back">${I.back(19)}</button>
         <button class="hero-fab fab-r">${I.dots(17)}</button>` : ""}
       </div>
       ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
       <div class="detail-pad">
-        <div class="post-actions" style="padding-left:0;padding-right:0;padding-top:6px">
+        <div class="post-actions" style="padding:6px 0 2px;margin:0 -5px 0 -7px">
           <button class="act like-btn">${I.heart(23)}<span>${p.likes}</span></button>
           <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
           <button class="act">${I.eye(24)}<span>${p.views}</span></button>
           <button class="act">${I.share(22)}</button>
           <span class="act-right">
-            ${isSale ? askBtnHTML(false) : ""}
+            ${isSale && state.ask !== "bubble" ? askBtnHTML(false) : ""}
             <button class="save-btn">${I.bookmark(23)}</button>
           </span>
         </div>
         ${isSale && state.pr === "pr2"
-          ? `<div class="tag-price-row"><span class="inline-tag">FOR SALE</span><span class="tp">${p.price}</span></div>`
+          ? `<div class="tag-price-row">${saleTagHTML(true)}<span class="tp">${p.price}</span></div>`
           : isSale && state.pr === "pr3"
-          ? `<div class="tag-price-row"><span class="inline-tag">FOR SALE</span><span class="price-tag">${p.price}</span></div>`
-          : `<span class="inline-tag ${isSale ? "" : "muted"}">${isSale ? "FOR SALE" : "SHOWCASE"}</span>`}
+          ? `<div class="tag-price-row">${saleTagHTML(true)}<span class="price-tag">${p.price}</span></div>`
+          : saleTagHTML(isSale)}
         <h2 class="detail-name">${name}</h2>
         ${ref ? `<div class="detail-ref">${ref}</div>` : ""}
         <div class="detail-seller">
@@ -1533,10 +1801,130 @@ function detailHTML(p) {
         </div>
         ${isSale && state.pr === "pr1" ? `<div class="detail-price">${p.price}</div>` : ""}
         <div class="detail-h">Descriptions</div>
-        <p class="detail-desc">${p.desc}</p>
+        <p class="detail-desc">${igCaptionHTML(p)}</p>
         ${detailSpecsHTML(p)}
       </div>
+    </div>
+    ${isSale && state.ask === "bubble" ? chatPopHTML(p) : ""}`;
+}
+
+/* K5 — floating chat bubble + DM-style pop-up (post preview + messages) */
+function chatPopHTML(p) {
+  return `
+    <div class="cp-backdrop"></div>
+    <button class="chat-fab" title="Chat with ${p.seller}">${I.chat(22)}</button>
+    <div class="chat-pop">
+      <div class="cp-head">
+        <img class="cp-av" src="${p.avatar}" alt="">
+        <div class="cp-who"><div class="n">${p.seller}</div></div>
+        <button class="icon-btn cp-close">${I.x(16)}</button>
+      </div>
+      <div class="cp-body">
+        <div class="cp-post">
+          <img src="${p.photos[0]}" alt="">
+          <div><div class="t">${p.caption}</div><div class="s">${p.price || "Showcase"}</div></div>
+        </div>
+        <div class="cp-thread"></div>
+      </div>
+      <div class="cp-input">
+        <input placeholder="Message ${p.seller}...">
+        <button class="cp-send" disabled>${I.send(16)}</button>
+      </div>
     </div>`;
+}
+
+function closeChatPop(pd) {
+  pd.querySelector(".chat-pop")?.classList.remove("show");
+  pd.querySelector(".cp-backdrop")?.classList.remove("show");
+  pd.classList.remove("chat-lock");
+}
+
+function sendChat(input) {
+  const v = input.value.trim();
+  if (!v) return;
+  const pop = input.closest(".chat-pop");
+  const msg = document.createElement("div");
+  msg.className = "chat-msg";
+  msg.textContent = v;
+  pop.querySelector(".cp-thread").appendChild(msg);
+  input.value = "";
+  pop.querySelector(".cp-send").disabled = true;
+  pop.querySelector(".cp-body").scrollTop = pop.querySelector(".cp-body").scrollHeight;
+}
+
+/* DL2 — IG-style post detail */
+function igDetailHeadHTML(p) {
+  return `<div class="detail-head">
+    <button class="icon-btn detail-back">${I.back()}</button>
+    <span class="spacer"></span>
+  </div>`;
+}
+
+function igCaptionHTML(p, raw) {
+  const txt = (raw ?? p.captionFull ?? p.caption).replace(/\n/g, "<br>");
+  return txt.replace(/(#[A-Za-z0-9_ก-๙]+)/g, `<span class="igd-tag">$1</span>`);
+}
+
+function igBodyHTML(p, withPostHead) {
+  const dots = p.photos.length > 1;
+  const isSale = !!p.price;
+  const priceRow = isSale
+    ? state.pr === "pr4"
+      ? saleTagHTML(true)
+      : state.pr === "pr2"
+      ? `<div class="tag-price-row">${saleTagHTML(true)}<span class="tp">${p.price}</span></div>`
+      : state.pr === "pr3"
+      ? `<div class="tag-price-row">${saleTagHTML(true)}<span class="price-tag">${p.price}</span></div>`
+      : `${saleTagHTML(true)}<div class="detail-price">${p.price}</div>`
+    : saleTagHTML(false);
+  return `
+    ${withPostHead ? `<header class="post-head">
+      <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
+      <div class="who">
+        <div class="name">${p.seller}</div>
+        <div class="sub-line">${p.time}</div>
+      </div>
+      ${!p.following ? `<button class="follow-btn">Follow</button>` : ""}
+      <button class="more">${I.listMenu(19)}</button>
+    </header>` : ""}
+    <div class="detail-hero">
+      <img src="${p.photos[0]}" alt="">
+      ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
+    </div>
+    ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
+    <div class="post-actions">
+      <button class="act like-btn">${I.heart(23)}<span>${p.likes}</span></button>
+      <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
+      <button class="act">${I.eye(24)}<span>${p.views}</span></button>
+      <button class="act">${I.share(22)}</button>
+      <span class="act-right">
+        ${isSale && state.ask !== "bubble" ? askBtnHTML(false) : ""}
+        <button class="save-btn">${I.bookmark(23)}</button>
+      </span>
+    </div>
+    <div class="liked-by">
+      <span class="stack">
+        <img src="${p.likedBy.avatar}" alt="">
+        <img src="./assets/user-avatars/u-1088.png" alt="">
+        <img src="./assets/user-avatars/u-1120.png" alt="">
+      </span>
+      <span>Liked by <b>${p.likedBy.name}</b> and <b>others</b></span>
+    </div>
+    <p class="caption"><b>${p.seller}</b> ${igCaptionHTML(p)}</p>
+    <div class="detail-pad">
+      ${priceRow}
+      ${detailSpecsHTML(p)}
+    </div>`;
+}
+
+function igDetailHTML(p) {
+  const isSale = !!p.price;
+  return `
+    ${igDetailHeadHTML(p)}
+    <div class="detail-scroll">
+      ${igBodyHTML(p, true)}
+    </div>
+    ${isSale && state.ask === "bubble" ? chatPopHTML(p) : ""}`;
 }
 
 function detailSpecsHTML(p) {
@@ -1678,7 +2066,7 @@ function postCard(p, variant) {
 }
 
 function screenHTML(theme, variant) {
-  const feedPosts = variant === "mixed" ? POSTS : POSTS.slice(0, 2);
+  const feedPosts = variant === "mixed" ? POSTS : POSTS.slice(0, 5);
   return `
   <div class="screen" data-theme="${theme}" data-variant="${variant}" data-nav="${state.nav}" data-ft="${state.ft}">
     <div class="statusbar">
@@ -1785,21 +2173,25 @@ try {
 /* photo carousel swipe — drag follows finger, tap still works */
 const stageEl = document.getElementById("stage");
 let swipe = null, suppressPhotoClick = false;
-function applyPhoto(ph, post, i) {
+function photoCtx(el) {
+  const art = el.closest(".post");
+  if (art) return { post: POSTS.find(x => x.id === art.dataset.pid), dotsEl: art.querySelector(".photo-dots") };
+  const scr = el.closest(".screen");
+  return { post: POSTS.find(x => x.id === scr.dataset.detailPid), dotsEl: scr.querySelector(".page-detail .photo-dots") };
+}
+function applyPhoto(ph, post, i, dotsEl) {
   ph.dataset.i = i;
   ph.querySelector("img").src = post.photos[i];
   const c = ph.querySelector(".photo-counter");
   if (c) c.textContent = `${i + 1}/${post.photos.length}`;
-  const dotsEl = ph.closest(".post").querySelector(".photo-dots");
   if (dotsEl) [...dotsEl.children].forEach((d, j) => d.classList.toggle("on", j === i));
 }
 stageEl.addEventListener("pointerdown", e => {
-  const ph = e.target.closest(".post-photo");
+  const ph = e.target.closest(".post-photo, .detail-hero");
   if (!ph) return;
-  const art = ph.closest(".post");
-  const post = POSTS.find(x => x.id === art.dataset.pid);
+  const { post, dotsEl } = photoCtx(ph);
   if (!post || post.photos.length < 2) return;
-  swipe = { ph, post, x0: e.clientX, dx: 0, i: +(ph.dataset.i || 0), moved: false };
+  swipe = { ph, post, dotsEl, x0: e.clientX, dx: 0, i: +(ph.dataset.i || 0), moved: false };
 });
 stageEl.addEventListener("pointermove", e => {
   if (!swipe) return;
@@ -1815,7 +2207,7 @@ stageEl.addEventListener("pointermove", e => {
 });
 function endSwipe() {
   if (!swipe) return;
-  const { ph, post, dx, i, moved } = swipe;
+  const { ph, post, dotsEl, dx, i, moved } = swipe;
   swipe = null;
   if (!moved) return;
   suppressPhotoClick = true;
@@ -1832,7 +2224,7 @@ function endSwipe() {
     }
     img.style.transform = `translateX(${dir * -w}px)`;
     setTimeout(() => {
-      applyPhoto(ph, post, ni);
+      applyPhoto(ph, post, ni, dotsEl);
       img.style.transition = "none";
       img.style.transform = `translateX(${dir * w}px)`;
       requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -1846,6 +2238,18 @@ function endSwipe() {
 }
 stageEl.addEventListener("pointerup", endSwipe);
 stageEl.addEventListener("pointercancel", endSwipe);
+["wheel", "touchmove"].forEach(ev =>
+  stageEl.addEventListener(ev, e => {
+    if (e.target.closest(".cp-backdrop")) e.preventDefault();
+  }, { passive: false })
+);
+stageEl.addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.matches(".cp-input input")) sendChat(e.target);
+});
+stageEl.addEventListener("input", e => {
+  if (e.target.matches(".cp-input input"))
+    e.target.closest(".cp-input").querySelector(".cp-send").disabled = !e.target.value.trim();
+});
 
 document.getElementById("stage").addEventListener("click", e => {
   const flow = e.target.closest("[data-flow]");
@@ -1870,6 +2274,27 @@ document.getElementById("stage").addEventListener("click", e => {
     back.closest(".screen").classList.remove("detail-open");
     return;
   }
+  const fab = e.target.closest(".chat-fab");
+  if (fab) {
+    const pd = fab.closest(".page-detail");
+    const pop = pd.querySelector(".chat-pop");
+    const opening = !pop.classList.contains("show");
+    pop.classList.toggle("show", opening);
+    pd.querySelector(".cp-backdrop").classList.toggle("show", opening);
+    pd.classList.toggle("chat-lock", opening);
+    if (opening) pop.querySelector("input").focus();
+    return;
+  }
+  const cpOff = e.target.closest(".cp-close, .cp-backdrop");
+  if (cpOff) {
+    closeChatPop(cpOff.closest(".page-detail"));
+    return;
+  }
+  const cps = e.target.closest(".cp-send");
+  if (cps) {
+    sendChat(cps.closest(".chat-pop").querySelector("input"));
+    return;
+  }
   const accH = e.target.closest(".ds-acc-head");
   if (accH) {
     accH.parentElement.classList.toggle("open");
@@ -1882,13 +2307,21 @@ document.getElementById("stage").addEventListener("click", e => {
     tabsWrap.parentElement.querySelectorAll(":scope > .ds-panel").forEach(pl => pl.classList.toggle("hidden", pl.dataset.gi !== dst.dataset.gi));
     return;
   }
-  const intoDetail = e.target.closest(".details-inner");
+  const intoDetail = e.target.closest(".view-full");
   if (intoDetail) {
     const art = e.target.closest(".post");
     const post = POSTS.find(x => x.id === art.dataset.pid);
     const scr = e.target.closest(".screen");
     const pd = scr.querySelector(".page-detail");
-    pd.innerHTML = detailHTML(post);
+    const cfg = POST_DETAIL_CFG[post.id];
+    if (cfg) {
+      const keep = { ...state };
+      Object.assign(state, cfg);
+      pd.innerHTML = detailHTML(post);
+      Object.assign(state, keep);
+    } else {
+      pd.innerHTML = detailHTML(post);
+    }
     pd.querySelector(".detail-scroll").scrollTop = 0;
     scr.scrollTop = 0;
     scr.dataset.detailPid = post.id;
@@ -1923,22 +2356,17 @@ document.getElementById("stage").addEventListener("click", e => {
     [...ft.parentElement.children].forEach(x => x.classList.toggle("active", x === ft));
     return;
   }
-  const ph = e.target.closest(".post-photo");
+  const ph = e.target.closest(".post-photo, .detail-hero");
   if (ph) {
-    if (suppressPhotoClick) return;
-    const art = ph.closest(".post");
-    const post = POSTS.find(x => x.id === art.dataset.pid);
+    if (suppressPhotoClick || e.target.closest("button")) return;
+    const { post, dotsEl } = photoCtx(ph);
     if (post && post.photos.length > 1) {
       let i = +(ph.dataset.i || 0);
       const rect = ph.getBoundingClientRect();
-      i = Math.min(post.photos.length - 1, Math.max(0,
-        i + (e.clientX - rect.left > rect.width / 2 ? 1 : -1)));
-      ph.dataset.i = i;
-      ph.querySelector("img").src = post.photos[i];
-      const c = ph.querySelector(".photo-counter");
-      if (c) c.textContent = `${i + 1}/${post.photos.length}`;
-      const dotsEl = art.querySelector(".photo-dots");
-      if (dotsEl) [...dotsEl.children].forEach((d, j) => d.classList.toggle("on", j === i));
+      i = (e.clientX - rect.left > rect.width / 2)
+        ? (i + 1) % post.photos.length
+        : (i - 1 + post.photos.length) % post.photos.length;
+      applyPhoto(ph, post, i, dotsEl);
     }
     return;
   }
@@ -1948,6 +2376,14 @@ document.getElementById("stage").addEventListener("click", e => {
     t.nextElementSibling.classList.toggle("open");
     const lbl = t.querySelector(".dt-label");
     if (lbl) lbl.textContent = t.classList.contains("open") ? "Hide details" : "Tap for details";
+    if (t.classList.contains("open"))
+      t.closest(".screen").querySelectorAll(".details-toggle.open").forEach(o => {
+        if (o === t) return;
+        o.classList.remove("open");
+        o.nextElementSibling.classList.remove("open");
+        const ol = o.querySelector(".dt-label");
+        if (ol) ol.textContent = "Tap for details";
+      });
     return;
   }
   const more = e.target.closest(".more-link");
