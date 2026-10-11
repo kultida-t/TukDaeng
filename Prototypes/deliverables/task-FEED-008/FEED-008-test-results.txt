@@ -1,0 +1,40 @@
+PASS p1 card has Follow button
+PASS p7 card hides button (followed)
+PASS p10 card hides button (followed)
+PASS following tab = 3 posts — 3
+PASS following contains p7,p2,p10 — ["p7","p2","p10"]
+PASS following tab shows no follow-btn
+PASS follow p1 -> button flips to Following in place
+PASS unfollow sheet opens from card
+PASS cancel keeps in-place Following
+PASS confirm unfollow -> button back to Follow
+PASS re-follow works right after unfollow
+PASS following tab = 4 after follow — 4
+PASS p1 present in following tab — ["p1","p7","p2","p10"]
+PASS p1 button hidden after tab re-render
+PASS p1 button still hidden after theme toggle
+PASS p8 still shows Follow (untouched)
+PASS detail shows Following
+PASS unfollow sheet opens
+PASS sheet asks 'Unfollow @Watch 777?' — Unfollow @Watch 777?
+PASS cancel closes sheet
+PASS cancel keeps Following
+PASS confirm closes sheet
+PASS detail btn back to Follow
+PASS card Follow button reappears
+PASS following back to 3 posts — 3
+PASS p2 drops from following tab — 2
+PASS card p2 shows Follow again
+PASS re-follow p2 -> back in following tab — 3
+PASS favorites empty 'No favorites yet'
+PASS detail synced Following
+PASS all posts still 11 — 11
+PASS favorites lists liked p1
+PASS comment sheet opens
+PASS comment sheet not uf-sized
+console/page errors: 0 | failed checks: 0
+DONE
+
+--- regression _verify_feed_like.mjs: 23 checks PASS, 0 console errors
+--- regression _verify_feed_tabs.mjs: All=11, Following=3, Favorites empty, comment sheet 2 rows, 0 errors
+--- regression _verify_feed_posts.mjs: 11 posts, showcase no Details/Ask, p10 swipe 1/2->2/2, 0 errors

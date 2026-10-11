@@ -1,0 +1,82 @@
+FEED-010 Manual Review Checklist — หน้า Feed fo-flow ปุ่มในกล่อง "Thanks for your feedback" ทำงานจริง
+URL ทดสอบ: http://127.0.0.1:4173/fo-flow/index.html
+
+เคส 1: "Mute {seller}" (variant โพสต์ที่ติดตามอยู่) — ผ่าน (auto-verified)
+- กดแล้วเปิด dialog กลางจอตามรูป IG: หัวข้อ "Mute {seller}?" + ข้อความ
+  "You can unmute them anytime from Settings. We won't let them know you muted them."
+- ปุ่มเดียวสีแดง "Mute posts" (ไม่มี posts and story ตามที่ผู้ใช้สั่ง) + "Cancel"
+- Cancel/backdrop → ปิดเฉย ๆ ไม่เกิดอะไร / Mute posts → ซ่อนโพสต์ seller นั้น
+  จาก feed ทุกแท็บ (ยัง follow อยู่ — mute แยกจาก follow ผ่าน p.muted)
+  + toast กลางจอ "Posts muted" ตามรูป IG ที่ผู้ใช้แนบ
+- ni-card ของโพสต์นั้นก็หายไปพร้อม re-render
+
+เคส 2: Unmute ผ่าน Settings — ผ่าน (auto-verified)
+- fo-flow เดิมไม่มีหน้า Settings → ใช้ไอคอน sliders บน app-header (เดิม dead)
+  เปิดหน้า "Settings and activity" (slide-in เหมือน detail page)
+- section "What you see": แถว "Muted accounts" พร้อมตัวเลขจำนวน + chevron
+  และแถว "Content preferences"
+- Muted accounts → list seller ที่ mute (avatar + ชื่อ + "Posts muted")
+  ปุ่ม "Unmute" → toast "Posts unmuted" + โพสต์กลับเข้า feed + ตัวเลขใน Settings อัปเดต
+- หมายเหตุ behavior จริง: โพสต์ที่ถูก mute ผ่าน ni-card จะติด ni ด้วย → unmute อย่างเดียว
+  ยังไม่กลับมา (ยัง ni อยู่) ต้องกด Restore ในหน้า Not interested อีกที — ตรงตาม IG
+
+เคส 3: "Manage content preferences" (variant ยังไม่ติดตาม) — ผ่าน (auto-verified)
+- เปิดหน้า "Content preferences" ตามรูป IG ที่ผู้ใช้แนบ ตัดให้เหลือเฉพาะที่เกี่ยวกับ post:
+  - Sensitive content › → หน้าย่อยเลือก Less/Standard (memory state, check mark ย้ายจริง)
+  - Interested › → list โพสต์ที่กด ❤️ ไว้จริง ปุ่ม Remove = unlike จริง
+  - Not interested › → list โพสต์ที่ ni ไว้จริง ปุ่ม Restore = เอาโพสต์กลับ feed จริง
+  - Snooze suggested posts in feed — toggle ใช้ได้จริง: เปิดแล้วแท็บ All Posts
+    แสดงเฉพาะโพสต์ที่ follow
+  - Reset suggested content › → dialog ยืนยัน → ล้าง ni+hidden+snooze ทั้งหมด
+    โพสต์ทั้งหมดกลับมา + toast "Suggested content reset"
+- เปิดจาก Settings → Content preferences ก็ได้เหมือนกัน (back ย้อนทีละชั้น)
+
+เคส 4: "This post made me uncomfortable" — ผ่าน (auto-verified)
+- กล่องเปลี่ยนเป็น state ack ตามรูป IG ที่ผู้ใช้แนบ (แก้ตามรีวิว — ไม่ใช่ sheet):
+  วงกลม check เขียว + "Thanks for letting us know" + ข้อความ
+  "If you think this post goes against our Community Standards you can report it."
+- ปุ่ม "Report" ตัวแดง → เข้าหน้า Report เต็มจอต่อได้เลย
+- ปุ่ม "Undo" ตัวฟ้า → ปิดกล่องแล้วโพสต์กลับมาเหมือนเดิม (ยกเลิก Not interested
+  ทั้งหมด เหมือน Undo บนกล่องหลัก — แก้ตามรีวิว)
+
+เคส 5: Report → หน้าเต็มจอเด้งขึ้นจากล่างตามรูป IG ที่ผู้ใช้แนบ
+  (แก้ตามรีวิว — เดิมเป็น sheet 92% แล้วเป็น page slide ขวา) — ผ่าน (auto-verified)
+- เปิดจาก "..." menu และจากปุ่ม Report บน uncomfortable card ได้เหมือนกัน
+- header: ชื่อ "Report" กึ่งกลาง + ปุ่ม X มุมขวาบน (ปิดกลับ feed)
+- เหตุผล 9 ข้อปรับให้เข้ากับ TukDaeng: "Selling or promoting restricted items"
+  → "Counterfeit or replica item" (ของปลอม/นาฬิกาก๊อป) ที่เหลือตาม IG
+- เลือกเหตุผล → ปิดหน้า + toast "Report submitted · thanks for letting us know"
+
+เคส 6: Toast "Unfollowed" + กล่องหาย — ผ่าน (auto-verified)
+- Unfollow จาก ni-card และจาก unfollow confirm sheet เดิม → toast กลางจอ "Unfollowed"
+  ตามรูป IG ที่ผู้ใช้แนบ
+- แก้ตามรีวิว: กล่อง Thanks for your feedback หายไปด้วยหลัง unfollow
+  (โพสต์ยังติดสถานะ ni อยู่แล้ว ไม่กลับมา)
+
+เคส regression (ยืนยันโดย _verify_feed_menu.mjs + สคริปต์เดิม):
+- FEED-009 ทั้งหมด: "..." menu, ni-card, Undo, Report 9 เหตุผล, unfollow sheet, follow, like
+- _verify_feed_follow / _verify_feed_like / _verify_feed_tabs / _verify_feed_posts /
+  _verify_swipe / _verify_flow — ผ่านหมด 0 console errors
+- ไม่มี dead toast "Not in this prototype yet" เหลือบนปุ่มใน ni-card แล้ว
+
+ขอบเขต/ข้อจำกัด (ตาม task):
+- state ทั้งหมด memory-only (p.muted / state.snooze / state.sensitive) — refresh แล้วกลับมาหมด
+- Snooze toggle มีผลเฉพาะแท็บ All Posts (suggested = โพสต์ที่ไม่ได้ follow)
+- Reset suggested content ล้าง ni+snooze แต่ไม่ย้าย muted accounts (ตาม IG แยกกัน)
+- nav items ล่าง (Chat/Boards/Alerts/Profile) ยัง dead ตามเดิม — Settings เข้าจาก sliders บน header
+
+Verify script: Prototypes/_verify_feed_menu.mjs (113 checks, 0 fail, 0 console errors)
+Screenshots: Prototypes/screenshots/task-FEED-010/after/ (d-uncomfortable-card,
+  d-report-page, d-mute-dialog, d-posts-muted, d-settings, d-muted-accounts,
+  d-content-preferences, d-prefs-after-reset, d-unfollowed-toast,
+  l-content-preferences + ของ FEED-009)
+Technical: state p.muted เพิ่มใน feedContentHTML filter; state.snooze กรอง
+  non-followed ในแท็บ all; setMuted() account-level เหมือน setFollowing(); หน้า
+  Settings/Prefs/Report ใช้ .page-sub layer เดียวกับ .page-detail ผ่าน
+  openSub/pushSub/subBack stack (report ใช้ header เฉพาะ .rp-head ชื่อกึ่งกลาง
+  + X มุมขวา และ slide ขึ้นจากล่างผ่านคลาส .pg-up ต่างจากหน้าอื่นที่ slide ขวา);
+  dialog กลางจอ .dlg + .sheet-backdrop เดิม; toast กลางจอ .sc-toast
+  ต่อ screen; uncomfortable → uncomfCardHTML swap แทน ni-card (Report เข้า
+  หน้า report / Undo คืนโพสต์เดิมเหมือน Undo หลัก); ni-unfollow ลบ card ทิ้งเลย
+  (art.remove) + toast; ตัด .ni-item ออกจาก dead-zone list; เหตุผล report ข้อ 5
+  เปลี่ยนเป็น "Counterfeit or replica item" ให้เข้ากับ TukDaeng

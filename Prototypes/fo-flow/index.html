@@ -336,6 +336,20 @@
   }
   .feed-scroll::-webkit-scrollbar { display: none; }
 
+  .feed-empty {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px 36px;
+    text-align: center;
+    color: var(--muted);
+  }
+  .feed-empty .fe-ico { opacity: .45; }
+  .feed-empty .fe-title { font-size: 15px; font-weight: 600; color: var(--text); }
+
   /* ============ POST ============ */
   .post { margin-bottom: 28px; }
   .post-head {
@@ -378,10 +392,15 @@
     font-weight: 600;
     color: var(--text);
     background: var(--btn-gray);
-    border: none;
+    border: 1px solid transparent;
     border-radius: 10px;
     padding: 7px 16px;
     cursor: pointer;
+  }
+  .follow-btn.on {
+    background: transparent;
+    border-color: var(--line);
+    color: var(--muted);
   }
   .post-head .more {
     color: var(--muted);
@@ -888,8 +907,355 @@
     display: flex;
     flex-direction: column;
   }
-  .screen.comments-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
-  .screen.comments-open .comment-sheet { transform: none; }
+  .screen.comments-open .sheet-backdrop,
+  .screen.unfollow-open .sheet-backdrop,
+  .screen.pm-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
+  .screen.comments-open .comment-sheet,
+  .screen.unfollow-open .comment-sheet,
+  .screen.pm-open .comment-sheet { transform: none; }
+  .comment-sheet.uf { height: auto; }
+  .uf-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px 30px;
+    text-align: center;
+  }
+  .uf-av { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+  .uf-q { font-size: 15px; font-weight: 600; color: var(--text); }
+  .uf-confirm, .uf-cancel {
+    width: 100%;
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 11px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .uf-confirm { border: none; background: var(--red); color: #fff; }
+  .uf-cancel { border: 1px solid var(--line); background: transparent; color: var(--text); }
+
+  /* ============ POST MENU SHEET (FEED-009 — IG-style "..." flow) ============ */
+  .comment-sheet.pm { height: auto; }
+  .pm-card {
+    margin: 16px 10px 30px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .pm-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--font-main);
+    font-size: 14.5px;
+    font-weight: 400;
+    color: var(--text);
+    background: none; border: none;
+    padding: 15px 16px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .pm-row svg { flex-shrink: 0; }
+  .pm-row + .pm-row { border-top: 1px solid var(--line); }
+  .pm-row.danger { color: var(--red); }
+  .pm-undo {
+    font-family: var(--font-main);
+    font-size: 14px; font-weight: 600;
+    color: #3d9bff;
+    background: none; border: none;
+    padding: 4px;
+    cursor: pointer;
+  }
+  /* not-interested card — replaces the post inline in the feed (IG-style) */
+  .ni-box {
+    margin: 0 10px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .ni-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 16px 4px;
+  }
+  .ni-title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .ni-sub { font-size: 13px; color: var(--muted); padding: 0 16px 14px; }
+  .ni-item {
+    width: 100%;
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--text);
+    background: none; border: none;
+    border-top: 1px solid var(--line);
+    padding: 15px 16px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .ni-item svg { flex-shrink: 0; }
+  .ni-item .ni-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .ni-desc { font-size: 12px; color: var(--muted); }
+
+  /* ============ FEED-010 — mute dialog / settings+content-prefs page / uncomfortable sheet ============ */
+  /* in-screen pill toast, centered over content (IG "Posts muted"/"Unfollowed" style) */
+  .sc-toast {
+    position: absolute; left: 50%; top: 44%;
+    transform: translate(-50%,-50%) scale(.94);
+    background: #26262c; color: #f2f2f5; border: 1px solid #3f3f48;
+    font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 999px;
+    opacity: 0; pointer-events: none; transition: all .22s ease;
+    z-index: 60; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  }
+  .sc-toast.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  /* center confirm dialog (IG "Mute x?" style) */
+  .dlg {
+    position: absolute; left: 50%; top: 50%;
+    width: min(320px, calc(100% - 64px));
+    transform: translate(-50%,-50%) scale(.95);
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 16px; opacity: 0; pointer-events: none;
+    transition: all .2s ease; z-index: 40; overflow: hidden; text-align: center;
+  }
+  .screen.dialog-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
+  .screen.dialog-open .dlg { opacity: 1; pointer-events: auto; transform: translate(-50%,-50%) scale(1); }
+  .dlg-q { font-size: 15.5px; font-weight: 700; padding: 20px 20px 6px; }
+  .dlg-desc { font-size: 13px; color: var(--muted); line-height: 1.45; padding: 0 20px 16px; }
+  .dlg-btn {
+    width: 100%; font-family: var(--font-main); font-size: 14px; font-weight: 600;
+    padding: 13px; background: none; border: none; border-top: 1px solid var(--line);
+    color: var(--text); cursor: pointer;
+  }
+  .dlg-btn.danger { color: var(--red); }
+
+  /* ============ FEED-011 — like / share / save action row ============ */
+  /* eye + view count: display only, not a button */
+  .views-stat {
+    display: flex; align-items: center; gap: 5px;
+    color: var(--text); font-size: 13px; font-weight: 500;
+    padding: 5px 7px;
+  }
+  .views-stat svg { display: block; }
+  .save-btn.saved svg path { fill: var(--text); }
+  .liked-by { cursor: pointer; user-select: none; }
+
+  .screen.likes-open .sheet-backdrop,
+  .screen.share-open .sheet-backdrop,
+  .screen.save-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
+  .screen.likes-open .comment-sheet,
+  .screen.share-open .comment-sheet,
+  .screen.save-open .comment-sheet { transform: none; }
+  .comment-sheet.lk { height: 64%; }
+  .comment-sheet.sh { height: auto; }
+  .comment-sheet.sv { height: auto; max-height: 72%; }
+
+  /* likes sheet — title + note + people rows (no search, no views tab) */
+  .lk-note {
+    font-size: 13px; color: var(--muted); line-height: 1.5;
+    padding: 0 16px 10px; flex-shrink: 0;
+  }
+  .lk-row { display: flex; align-items: center; gap: 11px; padding: 7px 0; }
+  .lk-row img {
+    width: 44px; height: 44px; border-radius: 50%;
+    object-fit: cover; flex-shrink: 0;
+  }
+  .lk-who { flex: 1; min-width: 0; }
+  .lk-who .u { font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .lk-who .d {
+    font-size: 13px; color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .lk-follow {
+    flex-shrink: 0; font-family: var(--font-main); font-size: 13.5px; font-weight: 600;
+    border: none; border-radius: 8px; padding: 7px 22px; cursor: pointer;
+    background: #3d9bff; color: #fff;
+  }
+  .lk-follow.on { background: var(--chip-bg); color: var(--text); }
+
+  /* share sheet — search + friend grid + app row */
+  .sh-search {
+    display: flex; align-items: center; gap: 10px;
+    margin: 4px 16px 12px; flex-shrink: 0;
+  }
+  .sh-field {
+    flex: 1; display: flex; align-items: center; gap: 8px;
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 8px 12px; color: var(--muted);
+  }
+  .sh-field input {
+    flex: 1; min-width: 0; background: none; border: none; outline: none;
+    font-family: var(--font-main); font-size: 14px; color: var(--text);
+  }
+  .sh-add {
+    width: 38px; height: 38px; flex-shrink: 0;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text); cursor: pointer;
+  }
+  .sh-grid {
+    flex: 0 0 auto; height: 216px; overflow-y: auto; scrollbar-width: none;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 15px 6px; padding: 2px 18px 14px; align-content: start;
+  }
+  .sh-grid::-webkit-scrollbar { display: none; }
+  .sh-fr {
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    background: none; border: none; cursor: pointer; font-family: var(--font-main);
+    padding: 0;
+  }
+  .sh-fr img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
+  .sh-fr .n {
+    font-size: 11.5px; color: var(--text); text-align: center; line-height: 1.3;
+    max-width: 100px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .sh-apps {
+    display: flex; gap: 4px; flex-shrink: 0;
+    border-top: 1px solid var(--line);
+    padding: 12px 10px 18px; overflow-x: auto; scrollbar-width: none;
+  }
+  .sh-apps::-webkit-scrollbar { display: none; }
+  .sh-app {
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    background: none; border: none; cursor: pointer; min-width: 0; flex: 1;
+    font-family: var(--font-main); padding: 0;
+  }
+  .sh-app .ic {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .02em;
+  }
+  .sh-app .t { font-size: 11px; color: var(--text); }
+  .sh-app.gray .ic {
+    background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+  }
+
+  /* save / collections sheet — "Saved" head + collection rows + new */
+  .sv-pick {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    background: none; border: none; font-family: var(--font-main);
+    cursor: pointer; text-align: left;
+  }
+  .sv-head { padding: 8px 16px 12px; }
+  .sv-head .thumb, .sv-row .thumb {
+    width: 46px; height: 46px; border-radius: 8px; object-fit: cover;
+    background: var(--surface-2); border: 1px solid var(--line); flex-shrink: 0;
+  }
+  .sv-head .b, .sv-row .b { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .sv-head .t { font-size: 15px; font-weight: 600; color: var(--text); }
+  .sv-head .s, .sv-row .s { font-size: 12.5px; color: var(--muted); }
+  .sv-head > svg { color: var(--text); }
+  .sv-sec {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 16px;
+  }
+  .sv-sec .l { font-size: 14.5px; font-weight: 700; color: var(--text); }
+  .sv-new {
+    font-family: var(--font-main); font-size: 13px; font-weight: 500;
+    color: #3d9bff; background: none; border: none; cursor: pointer; padding: 4px 0;
+  }
+  .sv-list { overflow-y: auto; scrollbar-width: none; }
+  .sv-list::-webkit-scrollbar { display: none; }
+  .sv-row { padding: 7px 16px; }
+  .sv-row .n { font-size: 14px; font-weight: 500; color: var(--text); }
+  .sv-row .plus {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    border: 1.5px solid var(--muted); color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sv-newrow { padding: 4px 16px 18px; }
+  .sv-newrow input {
+    width: 100%; box-sizing: border-box; font-family: var(--font-main); font-size: 14px;
+    color: var(--text); background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px 12px; outline: none;
+  }
+
+  /* settings / content-preferences page — slides in like the detail page */
+  .page-sub {
+    position: absolute; top: 34px; bottom: 22px; left: 0; right: 0;
+    background: var(--bg); transform: translateX(100%);
+    transition: transform .28s ease; z-index: 32;
+    display: flex; flex-direction: column;
+  }
+  .screen.sub-open .page-sub { transform: none; animation: pgSide .28s ease; }
+  @keyframes pgSide { from { transform: translateX(100%); } }
+  /* report view slides up from the bottom like an IG sheet */
+  .page-sub.pg-up { transform: translateY(100%); border-radius: 16px 16px 0 0; }
+  .screen.sub-open .page-sub.pg-up { animation-name: pgUp; }
+  @keyframes pgUp { from { transform: translateY(100%); } }
+  .sub-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
+  .sub-scroll::-webkit-scrollbar { display: none; }
+  .sub-sec { font-size: 13px; color: var(--muted); padding: 18px 16px 6px; }
+  .sub-row {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-main); font-size: 14.5px; color: var(--text);
+    background: none; border: none; padding: 13px 16px; cursor: pointer; text-align: left;
+  }
+  .sub-row .sub-chev { margin-left: auto; color: var(--muted); display: flex; }
+  .sub-row .sub-count { margin-left: auto; color: var(--muted); font-size: 14px; }
+  .sub-row .sub-count + .sub-chev { margin-left: 8px; }
+  .lg-b { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .lg-t { font-size: 14.5px; color: var(--text); }
+  .lg-d { font-size: 12.5px; color: var(--muted); line-height: 1.4; font-weight: 400; }
+  .tg-sw {
+    margin-left: auto; flex-shrink: 0; width: 44px; height: 26px;
+    border-radius: 999px; background: var(--chip-bg); position: relative; transition: background .2s;
+  }
+  .tg-sw::after {
+    content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+    border-radius: 50%; background: #fff; transition: transform .2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.3);
+  }
+  .tg-sw.on { background: var(--text); }
+  .tg-sw.on::after { transform: translateX(18px); }
+  .sens-check { color: var(--text); }
+  .mrow { display: flex; align-items: center; gap: 12px; padding: 9px 16px; }
+  .mrow img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .mrow img.msq { border-radius: 8px; }
+  .mrow .mn { font-size: 14px; font-weight: 600; color: var(--text); }
+  .mrow .md { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mact {
+    margin-left: auto; flex-shrink: 0; font-family: var(--font-main);
+    font-size: 13px; font-weight: 600; color: var(--text);
+    background: var(--chip-bg); border: none; padding: 7px 16px; border-radius: 8px; cursor: pointer;
+  }
+  .sub-empty { padding: 40px 16px; text-align: center; color: var(--muted); font-size: 13px; }
+  /* "Thanks for letting us know" card — IG uncomfortable-feedback ack */
+  .ni-check { display: flex; justify-content: center; padding: 24px 0 10px; color: #46c975; }
+  .ni-t2 { font-size: 15px; font-weight: 700; color: var(--text); text-align: center; padding: 0 20px; }
+  .ni-d2 { font-size: 13px; color: var(--muted); line-height: 1.5; text-align: center; padding: 8px 28px 16px; }
+  .ni-action {
+    width: 100%; font-family: var(--font-main); font-size: 14px; font-weight: 600;
+    padding: 14px; background: none; border: none; border-top: 1px solid var(--line);
+    color: #3d9bff; cursor: pointer; text-align: center;
+  }
+  .ni-action.danger { color: var(--red); }
+  /* full-page report view — centered title + X top-right (IG-style) */
+  .rp-head { position: relative; justify-content: center; }
+  .rp-head .rp-x { position: absolute; right: 8px; margin-left: auto; }
+  .pm-rp-scroll { flex: 1; overflow-y: auto; padding: 14px 16px 28px; scrollbar-width: none; }
+  .pm-rp-scroll::-webkit-scrollbar { display: none; }
+  .pm-rp-q { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .pm-rp-desc { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 6px; }
+  .pm-reason {
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    font-family: var(--font-main);
+    font-size: 14px; font-weight: 500;
+    color: var(--text);
+    background: none; border: none;
+    border-bottom: 1px solid var(--line);
+    padding: 15px 0;
+    cursor: pointer;
+    text-align: left;
+  }
+  .pm-reason:last-child { border-bottom: none; }
+  .pm-reason .pm-chev { color: var(--muted); display: flex; flex-shrink: 0; }
+
   .sheet-handle {
     width: 36px; height: 4px;
     border-radius: 999px;
@@ -1265,6 +1631,9 @@
     white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.45);
   }
   #flowToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open) #themeToggle {
+    opacity: 0; pointer-events: none;
+  }
   @media (max-width: 480px) {
     .stage { padding: 0; }
     .phone-wrap { width: 100%; }
@@ -1466,6 +1835,24 @@ const POSTS = [
     commentPreview: { name: "chrono.th", text: "clean set 🔥" },
   },
   {
+    id: "p7",
+    seller: "wrist.story",
+    avatar: "./assets/user-avatars/u-1017.png",
+    time: "4 hours ago",
+    following: true,
+    type: "showcase",
+    photos: ["./assets/asset-uploads/login-watch-hero.png"],
+    likes: 34, comments: 2, views: "3.2K",
+    caption: "after dark in the studio",
+    captionFull: "after dark in the studio\nred reflections on the tachymeter\n\n#chronograph #watchphotography #TukDaeng",
+    price: null,
+    chips: [],
+    specGroups: [],
+    desc: "after dark in the studio red reflections on the tachymeter",
+    likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
+    commentPreview: { name: "davikah", text: "that light 😍" },
+  },
+  {
     id: "p2",
     seller: "the watch",
     avatar: "./assets/user-avatars/u-1042.png",
@@ -1503,6 +1890,24 @@ const POSTS = [
     commentPreview: { name: "davikah", text: "great condition 👌" },
   },
   {
+    id: "p8",
+    seller: "dial.dude",
+    avatar: "./assets/user-avatars/u-1082.png",
+    time: "11 hours ago",
+    following: false,
+    type: "showcase",
+    photos: ["./assets/asset-uploads/purchase-equipment-box.png"],
+    likes: 19, comments: 1, views: "1.1K",
+    caption: "full set means the box too",
+    captionFull: "full set means the box too\ngreen season loading 💚\n\n#fullset #boxandpapers #TukDaeng",
+    price: null,
+    chips: [],
+    specGroups: [],
+    desc: "full set means the box too green season loading 💚",
+    likedBy: { name: "Watch 777", avatar: "./assets/user-avatars/u-1002.png" },
+    commentPreview: { name: "Watch 777", text: "mood" },
+  },
+  {
     id: "p4",
     seller: "davikah",
     avatar: "./assets/user-avatars/u-1161.png",
@@ -1536,6 +1941,24 @@ const POSTS = [
     desc: "Rolex Datejust 41 Ref. 126334 — blue dial, fluted white gold bezel, Jubilee bracelet. Full set 2023.",
     likedBy: { name: "Watch 777", avatar: "./assets/user-avatars/u-1002.png" },
     commentPreview: { name: "watch.daily", text: "classic 🌕" },
+  },
+  {
+    id: "p9",
+    seller: "nat_collection",
+    avatar: "./assets/user-avatars/u-1090.png",
+    time: "2 days ago",
+    following: false,
+    type: "showcase",
+    photos: ["./assets/asset-uploads/feed-breguet-2.jpg"],
+    likes: 41, comments: 2, views: "5.6K",
+    caption: "guilloché appreciation post 🌀",
+    captionFull: "guilloché appreciation post 🌀\nthe light work on this dial is unreal\n\n#breguet #dialporn #TukDaeng",
+    price: null,
+    chips: [],
+    specGroups: [],
+    desc: "guilloché appreciation post 🌀 the light work on this dial is unreal",
+    likedBy: { name: "chrono.th", avatar: "./assets/user-avatars/u-1088.png" },
+    commentPreview: { name: "watch.daily", text: "the dial work on this 🌀" },
   },
   {
     id: "p5",
@@ -1574,6 +1997,24 @@ const POSTS = [
     commentPreview: { name: "bamzilla", text: "so clean" },
   },
   {
+    id: "p10",
+    seller: "slow.hand",
+    avatar: "./assets/user-avatars/u-1104.png",
+    time: "3 days ago",
+    following: true,
+    type: "showcase",
+    photos: ["./assets/asset-uploads/feed-tudor-bb.jpg", "./assets/asset-uploads/feed-breguet-1.jpg"],
+    likes: 26, comments: 1, views: "2.2K",
+    caption: "this week's rotation — which one wins?",
+    captionFull: "this week's rotation — which one wins?\nblack dial vs silver guilloché\n\n#watchcollection #rotation #TukDaeng",
+    price: null,
+    chips: [],
+    specGroups: [],
+    desc: "this week's rotation — which one wins? black dial vs silver guilloché",
+    likedBy: { name: "davikah", avatar: "./assets/user-avatars/u-1161.png" },
+    commentPreview: { name: "neng_mua", text: "bb stays undefeated" },
+  },
+  {
     id: "p6",
     seller: "neng_mua",
     avatar: "./assets/user-avatars/u-1120.png",
@@ -1609,6 +2050,24 @@ const POSTS = [
     commentPreview: { name: "chrono.th", text: "dial is unreal ❄️" },
   },
   {
+    id: "p11",
+    seller: "gmt.bkk",
+    avatar: "./assets/user-avatars/u-1130.png",
+    time: "6 days ago",
+    following: false,
+    type: "showcase",
+    photos: ["./assets/asset-uploads/feed-datejust-1.jpg"],
+    likes: 15, comments: 1, views: "890",
+    caption: "late night lume check before bed 🌙",
+    captionFull: "late night lume check before bed 🌙\n\n#watches #nightowls #TukDaeng",
+    price: null,
+    chips: [],
+    specGroups: [],
+    desc: "late night lume check before bed 🌙",
+    likedBy: { name: "neng_mua", avatar: "./assets/user-avatars/u-1120.png" },
+    commentPreview: { name: "chrono.th", text: "same ritual every night" },
+  },
+  {
     id: "p3",
     seller: "chrono.th",
     avatar: "./assets/user-avatars/u-1088.png",
@@ -1629,7 +2088,7 @@ const POSTS = [
 ];
 
 /* flattened rows kept as p.specs for lookups (spec()) and non-grouped renderers */
-POSTS.forEach(p => { p.specs = (p.specGroups || []).flatMap(g => g.rows); });
+POSTS.forEach(p => { p.specs = (p.specGroups || []).flatMap(g => g.rows); p.liked = false; p.saved = false; p.savedCol = null; });
 
 /* per-post Detail variant sets — each feed post opens Detail with its own combo */
 const POST_DETAIL_CFG = {
@@ -1656,6 +2115,23 @@ const COMMENTS = {
       replies: [{ name: "chrono.th", avatar: "./assets/user-avatars/u-1088.png", time: "20 hr", text: "@neng_mua 😍😍😍", likes: 1 }] },
     { name: "bikwans", avatar: "./assets/user-avatars/u-1055.png", time: "1 day", text: "น่ารักมากกกก", likes: 1 },
   ],
+  p7: [
+    { name: "davikah", avatar: "./assets/user-avatars/u-1161.png", time: "3 hr", text: "that light 😍", likes: 2 },
+    { name: "bamzilla", avatar: "./assets/user-avatars/u-1186.png", time: "2 hr", text: "clean shot", likes: 1 },
+  ],
+  p8: [
+    { name: "Watch 777", avatar: "./assets/user-avatars/u-1002.png", time: "9 hr", text: "mood", likes: 1 },
+  ],
+  p9: [
+    { name: "watch.daily", avatar: "./assets/user-avatars/u-1144.png", time: "1 day", text: "the dial work on this 🌀", likes: 3 },
+    { name: "chrono.th", avatar: "./assets/user-avatars/u-1088.png", time: "20 hr", text: "rose gold always wins", likes: 1 },
+  ],
+  p10: [
+    { name: "neng_mua", avatar: "./assets/user-avatars/u-1120.png", time: "2 days", text: "bb stays undefeated", likes: 2 },
+  ],
+  p11: [
+    { name: "chrono.th", avatar: "./assets/user-avatars/u-1088.png", time: "5 days", text: "same ritual every night", likes: 1 },
+  ],
 };
 
 const VARIANT_DESC = {
@@ -1674,6 +2150,7 @@ const VARIANT_DESC = {
 /* ================= ICONS ================= */
 const I = {
   heart: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>`,
+  users: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
   comment: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>`,
   eye: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
   share: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>`,
@@ -1683,6 +2160,11 @@ const I = {
   sliders: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="15" cy="6" r="2.3" fill="var(--bg)"/><circle cx="9" cy="12" r="2.3" fill="var(--bg)"/><circle cx="17" cy="18" r="2.3" fill="var(--bg)"/></svg>`,
   plus: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`,
   dots: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>`,
+  circleX: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="m9.5 9.5 5 5m0-5-5 5"/></svg>`,
+  flag: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4.5h11.5l-2.5 4.5 2.5 4.5H6"/></svg>`,
+  sad: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.3 15.6c.9-1.1 2.2-1.7 3.7-1.7s2.8.6 3.7 1.7"/><path d="M9 9.6h.01M15 9.6h.01"/></svg>`,
+  bellOff: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.7 21a2 2 0 0 1-3.4 0"/><path d="M18.6 13a17.9 17.9 0 0 1-.6-5"/><path d="M6.3 6.3A5.9 5.9 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.3-5"/><path d="m1 1 22 22"/></svg>`,
+  userMinus: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M17 8h6"/></svg>`,
   listMenu: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`,
   chev: (s=15) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`,
   chevR: (s=13) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>`,
@@ -1696,12 +2178,20 @@ const I = {
   navBell: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>`,
   navUser: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
   check: (s=15) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`,
+  circleCheck: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="m8 12.5 2.6 2.6L16.5 9"/></svg>`,
   x: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`,
   send: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>`,
+  eyeFill: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.7 7.6 1 12c1.7 4.4 6 7.5 11 7.5s9.3-3.1 11-7.5c-1.7-4.4-6-7.5-11-7.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>`,
+  link: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>`,
+  personAdd: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>`,
+  msgBubble: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a9.5 9.5 0 0 0-8.2 14.3L2 22l5.9-1.6A9.5 9.5 0 1 0 12 2z"/></svg>`,
+  fb: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.7-1.6h1.6V4.1c-.3 0-1.2-.1-2.3-.1-2.4 0-4 1.5-4 4.2v2.4H7.5v3.2h3V22h3z"/></svg>`,
+  igCam: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.4"/><circle cx="12" cy="12" r="4.4"/><circle cx="17.4" cy="6.6" r="1.3" fill="currentColor" stroke="none"/></svg>`,
+  msngr: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.1 2 11.2c0 2.9 1.4 5.5 3.7 7.2V22l3.4-1.9c.9.2 1.9.4 2.9.4 5.5 0 10-4.1 10-9.3S17.5 2 12 2zm1 12.6-2.6-2.7-5 2.7 5.5-5.8 2.6 2.7 4.9-2.7-5.4 5.8z"/></svg>`,
 };
 
 /* ================= RENDER ================= */
-const state = { variant: "a1", tStyle: "t3", dStyle: "d2", nav: "labeled", ft: "chipsc", ask: "outline", ds: "full", pr: "pr1", dh: "dh1", dl: "dl1", tg: "tg1" };
+const state = { variant: "a1", tStyle: "t3", dStyle: "d2", nav: "labeled", ft: "chipsc", ask: "outline", ds: "full", pr: "pr1", dh: "dh1", dl: "dl1", tg: "tg1", feedTab: "all" };
 
 function askBtnHTML(defaultSolid) {
   let style = state.ask === "auto" ? (defaultSolid ? "solid" : "outline") : state.ask;
@@ -1742,7 +2232,7 @@ function detailsHTML(p, showPriceRow) {
 
 function detailHeadHTML(p) {
   const back = `<button class="icon-btn detail-back">${I.back()}</button>`;
-  const dots = `<button class="icon-btn">${I.dots(18)}</button>`;
+  const dots = `<button class="icon-btn pm-btn">${I.dots(18)}</button>`;
   if (state.dh === "dh2")
     return `<div class="detail-head">${back}<span class="spacer"></span>${dots}</div>`;
   if (state.dh === "dh3")
@@ -1773,18 +2263,18 @@ function detailHTML(p) {
         ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
         ${state.dh === "dh4" ? `
         <button class="hero-fab fab-l detail-back">${I.back(19)}</button>
-        <button class="hero-fab fab-r">${I.dots(17)}</button>` : ""}
+        <button class="hero-fab fab-r pm-btn">${I.dots(17)}</button>` : ""}
       </div>
       ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
       <div class="detail-pad">
         <div class="post-actions" style="padding:6px 0 2px;margin:0 -5px 0 -7px">
-          <button class="act like-btn">${I.heart(23)}<span>${p.likes}</span></button>
+          <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
           <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-          <button class="act">${I.eye(24)}<span>${p.views}</span></button>
-          <button class="act">${I.share(22)}</button>
+          <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+          <button class="act share-btn">${I.share(22)}</button>
           <span class="act-right">
             ${isSale && state.ask !== "bubble" ? askBtnHTML(false) : ""}
-            <button class="save-btn">${I.bookmark(23)}</button>
+            <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
           </span>
         </div>
         ${isSale && state.pr === "pr2"
@@ -1797,7 +2287,7 @@ function detailHTML(p) {
         <div class="detail-seller">
           <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
           <div class="who"><div class="name" style="font-size:14px;font-weight:600">${p.seller}</div></div>
-          <button class="follow-btn">${p.following ? "Following" : "Follow"}</button>
+          <button class="follow-btn${p.following ? " on" : ""}">${p.following ? "Following" : "Follow"}</button>
         </div>
         ${isSale && state.pr === "pr1" ? `<div class="detail-price">${p.price}</div>` : ""}
         <div class="detail-h">Descriptions</div>
@@ -1884,8 +2374,8 @@ function igBodyHTML(p, withPostHead) {
         <div class="name">${p.seller}</div>
         <div class="sub-line">${p.time}</div>
       </div>
-      ${!p.following ? `<button class="follow-btn">Follow</button>` : ""}
-      <button class="more">${I.listMenu(19)}</button>
+      ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
+      <button class="more">${I.dots(19)}</button>
     </header>` : ""}
     <div class="detail-hero">
       <img src="${p.photos[0]}" alt="">
@@ -1893,13 +2383,13 @@ function igBodyHTML(p, withPostHead) {
     </div>
     ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
     <div class="post-actions">
-      <button class="act like-btn">${I.heart(23)}<span>${p.likes}</span></button>
+      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
       <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-      <button class="act">${I.eye(24)}<span>${p.views}</span></button>
-      <button class="act">${I.share(22)}</button>
+      <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+      <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
         ${isSale && state.ask !== "bubble" ? askBtnHTML(false) : ""}
-        <button class="save-btn">${I.bookmark(23)}</button>
+        <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
       </span>
     </div>
     <div class="liked-by">
@@ -1995,6 +2485,171 @@ function commentsHTML(p) {
     </div>`;
 }
 
+/* ===== FEED-011 — likes / share / save sheets (memory only) ===== */
+const LIKER_POOL = [
+  { name: "chrono.th", disp: "Chrono TH", avatar: "./assets/user-avatars/u-1088.png" },
+  { name: "davikah", disp: "Davikah Hor", avatar: "./assets/user-avatars/u-1161.png" },
+  { name: "neng_mua", disp: "Neng Mua", avatar: "./assets/user-avatars/u-1120.png" },
+  { name: "watch.daily", disp: "Watch Daily", avatar: "./assets/user-avatars/u-1144.png" },
+  { name: "bamzilla", disp: "Bam Zilla", avatar: "./assets/user-avatars/u-1186.png" },
+  { name: "bikwans", disp: "Biw Kwans", avatar: "./assets/user-avatars/u-1055.png" },
+];
+const FRIENDS = [
+  ...LIKER_POOL,
+  { name: "nat_collection", disp: "Nat", avatar: "./assets/user-avatars/u-1090.png" },
+  { name: "slow.hand", disp: "Slow Hand", avatar: "./assets/user-avatars/u-1104.png" },
+  { name: "gmt.bkk", disp: "GMT BKK", avatar: "./assets/user-avatars/u-1130.png" },
+  { name: "Watch 777", disp: "Watch 777", avatar: "./assets/user-avatars/u-1002.png" },
+  { name: "wrist.story", disp: "Wrist Story", avatar: "./assets/user-avatars/u-1017.png" },
+  { name: "the watch", disp: "The Watch", avatar: "./assets/user-avatars/u-1042.png" },
+  { name: "dial.dude", disp: "Dial Dude", avatar: "./assets/user-avatars/u-1082.png" },
+];
+const SHARE_APPS = [
+  { app: "msngr", t: "Messenger", bg: "#0084ff", ic: "msngr" },
+  { app: "direct", t: "Direct", bg: "linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)", ic: "send" },
+  { app: "line", t: "LINE", bg: "#06c755", txt: "LINE" },
+  { app: "fb", t: "Facebook", bg: "#1877f2", ic: "fb" },
+  { app: "copy", t: "Copy link", cls: "gray", ic: "link" },
+];
+const COLLECTIONS = [
+  { name: "Grail list", thumb: "./assets/asset-uploads/feed-breguet-1.jpg" },
+  { name: "Wishlist", thumb: "./assets/asset-uploads/feed-tudor-bb.jpg" },
+  { name: "Vintage picks", thumb: "./assets/asset-uploads/feed-datejust-1.jpg" },
+  { name: "New", thumb: "" },
+];
+const dispName = n => (FRIENDS.find(f => f.name === n) || {}).disp || n;
+
+function likesSheetHTML(p) {
+  const seen = new Set();
+  const likers = [{ name: p.likedBy.name, avatar: p.likedBy.avatar }, ...LIKER_POOL]
+    .filter(l => !seen.has(l.name) && seen.add(l.name));
+  return `
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Likes</div>
+    <div class="lk-note">Only ${p.seller} can see the total number of likes on this post.</div>
+    <div class="sheet-list">
+      ${likers.map(l => `
+      <div class="lk-row">
+        <img src="${l.avatar}" alt="">
+        <div class="lk-who"><div class="u">${l.name}</div><div class="d">${l.disp || dispName(l.name)}</div></div>
+        <button class="lk-follow">Follow</button>
+      </div>`).join("")}
+    </div>`;
+}
+
+function shareSheetHTML() {
+  return `
+    <div class="sheet-handle"></div>
+    <div class="sh-search">
+      <span class="sh-field">${I.search(17)}<input class="sh-q" placeholder="Search"></span>
+      <button class="sh-add">${I.personAdd(19)}</button>
+    </div>
+    <div class="sh-grid">
+      ${FRIENDS.map(f => `<button class="sh-fr" data-name="${f.name}"><img src="${f.avatar}" alt=""><span class="n">${f.name}</span></button>`).join("")}
+    </div>
+    <div class="sh-apps">
+      ${SHARE_APPS.map(a => `
+      <button class="sh-app${a.cls ? " " + a.cls : ""}" data-app="${a.app}" data-t="${a.t}">
+        <span class="ic"${a.bg ? ` style="background:${a.bg}"` : ""}>${a.ic ? I[a.ic](24) : a.txt}</span>
+        <span class="t">${a.t}</span>
+      </button>`).join("")}
+    </div>`;
+}
+
+function saveSheetHTML(p) {
+  const thumb = c => c.thumb
+    ? `<img class="thumb" src="${c.thumb}" alt="">`
+    : `<span class="thumb"></span>`;
+  return `
+    <div class="sheet-handle"></div>
+    <button class="sv-pick sv-head" data-col="Saved">
+      <img class="thumb" src="${p.photos[0]}" alt="">
+      <span class="b"><span class="t">Saved</span><span class="s">Private</span></span>
+      ${I.bookmark(21)}
+    </button>
+    <div class="sv-sec"><span class="l">Collections</span><button class="sv-new">New collection</button></div>
+    <div class="sv-list">
+      ${COLLECTIONS.map(c => `
+      <button class="sv-pick sv-row" data-col="${c.name}">
+        ${thumb(c)}
+        <span class="b"><span class="n">${c.name}</span><span class="s">Private</span></span>
+        <span class="plus">${I.plus(15)}</span>
+      </button>`).join("")}
+    </div>
+    <div class="sv-newrow"></div>`;
+}
+
+/* shared sheet opener — comment-sheet is a singleton, swap variant class + content */
+function openSheet(scr, variantCls, openCls, html) {
+  const cs = scr.querySelector(".comment-sheet");
+  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv");
+  cs.classList.add(variantCls);
+  cs.innerHTML = html;
+  scr.classList.remove("comments-open", "unfollow-open", "pm-open", "likes-open", "share-open", "save-open");
+  scr.classList.add(openCls);
+}
+
+/* flip every rendered save-btn of a post (feed card + open detail page) */
+function syncSaveBtns(scr, post) {
+  scr.querySelectorAll(".save-btn").forEach(b => {
+    const bArt = b.closest(".post");
+    if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === post.id)
+      b.classList.toggle("saved", post.saved);
+  });
+}
+
+/* post "..." menu — IG-style Not interested / Report flow (FEED-009, memory only) */
+const PM_REASONS = [
+  "I just don't like it",
+  "Bullying or unwanted contact",
+  "Suicide, self-injury or eating disorders",
+  "Violence, hate or exploitation",
+  "Counterfeit or replica item",
+  "Nudity or sexual activity",
+  "Scam, fraud or spam",
+  "False information",
+  "Intellectual property",
+];
+
+function pmMenuHTML() {
+  return `
+    <div class="sheet-handle"></div>
+    <div class="pm-card">
+      <button class="pm-row pm-ni">${I.circleX(20)}<span>Not interested</span></button>
+      <button class="pm-row danger pm-go-report">${I.flag(20)}<span>Report</span></button>
+    </div>`;
+}
+
+function niCardHTML(p) {
+  const rows = p.following
+    ? `<button class="ni-item ni-mute">${I.bellOff(20)}<span class="ni-txt">Mute ${p.seller}<span class="ni-desc">Stop seeing new posts from them in feed</span></span></button>
+       <button class="ni-item ni-unfollow">${I.userMinus(20)}<span>Unfollow ${p.seller}</span></button>`
+    : `<button class="ni-item ni-pref">${I.sliders(20)}<span>Manage content preferences</span></button>`;
+  return `
+  <article class="post ni-card" data-pid="${p.id}">
+    <div class="ni-box">
+      <div class="ni-head"><span class="ni-title">Thanks for your feedback</span><button class="pm-undo">Undo</button></div>
+      <div class="ni-sub">We'll suggest fewer posts like this.</div>
+      ${rows}
+      <button class="ni-item ni-uncomf">${I.sad(21)}<span>This post made me uncomfortable</span></button>
+    </div>
+  </article>`;
+}
+
+/* "This post made me uncomfortable" -> card swaps to IG ack state (check + Report + Undo) */
+function uncomfCardHTML(p) {
+  return `
+  <article class="post ni-card" data-pid="${p.id}">
+    <div class="ni-box">
+      <div class="ni-check">${I.circleCheck(34)}</div>
+      <div class="ni-t2">Thanks for letting us know</div>
+      <div class="ni-d2">If you think this post goes against our Community Standards you can report it.</div>
+      <button class="ni-action danger uc-report">Report</button>
+      <button class="ni-action uc-undo">Undo</button>
+    </div>
+  </article>`;
+}
+
 function postCard(p, variant) {
   const isMixed = variant === "mixed";
   const type = isMixed && p.type === "showcase" ? "showcase" : (isMixed ? "sale" : null);
@@ -2004,7 +2659,7 @@ function postCard(p, variant) {
   const footerPrice = (variant === "b3" || variant === "c3") && hasPrice;
   const showTag = isMixed;
   const askSolid = (variant === "a2" || variant === "b2" || variant === "c2");
-  const showAsk = p.type === "sale" || !isMixed;
+  const showAsk = p.type === "sale";
   const dots = p.photos.length > 1;
 
   return `
@@ -2014,8 +2669,8 @@ function postCard(p, variant) {
       <div class="who">
         <div class="name">${p.seller}</div>
       </div>
-      ${!p.following ? `<button class="follow-btn">Follow</button>` : ""}
-      <button class="more">${I.listMenu(19)}</button>
+      ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
+      <button class="more">${I.dots(19)}</button>
     </header>
 
     <div class="post-photo">
@@ -2030,13 +2685,13 @@ function postCard(p, variant) {
     ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
 
     <div class="post-actions">
-      <button class="act like-btn">${I.heart(23)}<span>${p.likes}</span></button>
+      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
       <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-      <button class="act">${I.eye(24)}<span>${p.views}</span></button>
-      <button class="act">${I.share(22)}</button>
+      <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+      <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
         ${showAsk ? askBtnHTML(askSolid) : ""}
-        <button class="save-btn">${I.bookmark(23)}</button>
+        <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
       </span>
     </div>
 
@@ -2065,8 +2720,187 @@ function postCard(p, variant) {
   </article>`;
 }
 
+function feedEmptyHTML(tab) {
+  const isFollowing = tab === "following";
+  return `
+  <div class="feed-empty">
+    <span class="fe-ico">${isFollowing ? I.users(56) : I.heart(56)}</span>
+    <div class="fe-title">${isFollowing ? "Follow others to see their posts here" : "No favorites yet"}</div>
+  </div>`;
+}
+
+function feedContentHTML(variant) {
+  const posts = POSTS.filter(p => !p.ni && !p.muted)
+    .filter(p => state.feedTab === "favorites" ? p.liked : state.feedTab === "following" ? p.following : (state.snooze ? p.following : true));
+  return posts.length ? posts.map(p => postCard(p, variant)).join("") : feedEmptyHTML(state.feedTab);
+}
+
+function setFeedTab(scr, tab) {
+  if (state.feedTab === tab) return;
+  state.feedTab = tab;
+  scr.querySelectorAll(".feed-tab").forEach(x => x.classList.toggle("active", x.dataset.tab === tab));
+  scr.querySelectorAll(".bm-item").forEach(x => x.classList.toggle("on", x.dataset.tab === tab));
+  const fs = scr.querySelector(".feed-scroll");
+  fs.innerHTML = feedContentHTML(scr.dataset.variant);
+  fs.scrollTop = 0;
+}
+
+/* follow is account-level — toggle every post of the same seller.
+   a button that is already rendered flips Follow<->Following in place so a
+   fresh follow can be undone; after a re-render followed posts have no button */
+function setFollowing(scr, seller, on) {
+  POSTS.forEach(p => { if (p.seller === seller) p.following = on; });
+  scr.querySelectorAll(".feed-scroll .post").forEach(art => {
+    const bp = POSTS.find(x => x.id === art.dataset.pid);
+    if (!bp || bp.seller !== seller) return;
+    const head = art.querySelector(".post-head");
+    if (!head) return;
+    const fb = head.querySelector(".follow-btn");
+    if (fb) {
+      fb.classList.toggle("on", on);
+      fb.textContent = on ? "Following" : "Follow";
+    } else if (!on) {
+      head.querySelector(".more").insertAdjacentHTML("beforebegin", `<button class="follow-btn">Follow</button>`);
+    }
+  });
+  const dp = POSTS.find(x => x.id === scr.dataset.detailPid);
+  const db = scr.querySelector(".page-detail .follow-btn");
+  if (db && dp && dp.seller === seller) {
+    db.classList.toggle("on", dp.following);
+    db.textContent = dp.following ? "Following" : "Follow";
+  }
+  if (state.feedTab === "following")
+    scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+}
+
+/* ===== FEED-010 — feedback-card actions: mute / settings+content prefs / uncomfortable (memory only) ===== */
+state.snooze = false;
+state.sensitive = "standard";
+
+let scrToastTimer;
+function scrToast(scr, msg) {
+  const el = scr.querySelector(".sc-toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(scrToastTimer);
+  scrToastTimer = setTimeout(() => el.classList.remove("show"), 1800);
+}
+
+/* mute is account-level like follow — hide every post of the seller, keep following */
+function setMuted(scr, seller, on) {
+  POSTS.forEach(p => { if (p.seller === seller) p.muted = on; });
+  scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+}
+function mutedSellers() {
+  return [...new Set(POSTS.filter(p => p.muted).map(p => p.seller))];
+}
+
+/* center confirm dialog (IG "Mute x?" style) */
+function openDlg(scr, inner) {
+  scr.querySelector(".dlg").innerHTML = inner;
+  scr.classList.add("dialog-open");
+}
+function muteDlgHTML(seller) {
+  return `
+    <div class="dlg-q">Mute ${seller}?</div>
+    <div class="dlg-desc">You can unmute them anytime from Settings. We won't let them know you muted them.</div>
+    <button class="dlg-btn danger dlg-mute-go">Mute posts</button>
+    <button class="dlg-btn dlg-cancel">Cancel</button>`;
+}
+function resetDlgHTML() {
+  return `
+    <div class="dlg-q">Reset suggested content?</div>
+    <div class="dlg-desc">Posts you marked as not interested will be shown again.</div>
+    <button class="dlg-btn danger dlg-reset-go">Reset</button>
+    <button class="dlg-btn dlg-cancel">Cancel</button>`;
+}
+
+/* settings + content-preferences pages — slide-in layer like the detail page */
+function openSub(scr, name) {
+  scr._subStack = [name];
+  renderSub(scr);
+  scr.classList.add("sub-open");
+}
+function pushSub(scr, name) {
+  (scr._subStack = scr._subStack || []).push(name);
+  renderSub(scr);
+  scr.classList.add("sub-open");
+}
+function renderSub(scr) {
+  const st = scr._subStack || [];
+  const el = scr.querySelector(".page-sub");
+  el.innerHTML = subHTML(st[st.length - 1]);
+  el.classList.toggle("pg-up", st[st.length - 1] === "report");
+}
+function subBack(scr) {
+  const st = scr._subStack || [];
+  st.pop();
+  if (st.length) renderSub(scr);
+  else scr.classList.remove("sub-open");
+}
+function subPostRows(posts, label, cls) {
+  return posts.length ? posts.map(p => `
+    <div class="mrow">
+      <img class="msq" src="${p.photos[0]}" alt="">
+      <span class="lg-b"><span class="mn">${p.seller}</span><span class="md">${p.caption}</span></span>
+      <button class="mact ${cls}" data-pid="${p.id}">${label}</button>
+    </div>`).join("") : `<div class="sub-empty">Nothing here yet</div>`;
+}
+function subHTML(name) {
+  const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${t}</span><span class="spacer"></span></div>`;
+  const row = (t, attr, extra = "") => `<button class="sub-row" ${attr}><span>${t}</span>${extra}<span class="sub-chev">${I.chevR(15)}</span></button>`;
+  if (name === "settings") return head("Settings and activity") + `<div class="sub-scroll">
+    <div class="sub-sec">What you see</div>
+    ${row("Muted accounts", `data-sub="muted"`, `<span class="sub-count">${mutedSellers().length}</span>`)}
+    ${row("Saved", `data-sub="saved"`, `<span class="sub-count">${POSTS.filter(p => p.saved).length}</span>`)}
+    ${row("Content preferences", `data-sub="prefs"`)}
+  </div>`;
+  if (name === "muted") return head("Muted accounts") + `<div class="sub-scroll">${
+    mutedSellers().map(s => {
+      const p = POSTS.find(x => x.seller === s);
+      return `<div class="mrow"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">Posts muted</span></span><button class="mact m-unmute" data-seller="${s}">Unmute</button></div>`;
+    }).join("") || `<div class="sub-empty">No muted accounts</div>`
+  }</div>`;
+  if (name === "prefs") return head("Content preferences") + `<div class="sub-scroll">
+    ${row("Sensitive content", `data-sub="sensitive"`)}
+    ${row("Interested", `data-sub="interested"`)}
+    ${row("Not interested", `data-sub="ni"`)}
+    <button class="sub-row sub-row-lg" data-tgl="snooze"><span class="lg-b"><span class="lg-t">Snooze suggested posts in feed</span><span class="lg-d">Hide posts from accounts you don't follow for 30 days.</span></span><span class="tg-sw${state.snooze ? " on" : ""}"></span></button>
+    ${row("Reset suggested content", `data-dlg="reset"`)}
+  </div>`;
+  if (name === "sensitive") {
+    const opt = (v, t, d) => `<button class="sub-row sub-row-lg" data-sens="${v}"><span class="lg-b"><span class="lg-t">${t}</span><span class="lg-d">${d}</span></span><span class="sub-chev sens-check">${state.sensitive === v ? I.check(17) : ""}</span></button>`;
+    return head("Sensitive content") + `<div class="sub-scroll">
+      <div class="sub-sec">Choose how much sensitive content you see in feed.</div>
+      ${opt("less", "Less", "You'll see less sensitive content.")}
+      ${opt("standard", "Standard", "You'll see some sensitive content.")}
+    </div>`;
+  }
+  if (name === "saved") {
+    const saved = POSTS.filter(p => p.saved);
+    return head("Saved") + `<div class="sub-scroll">${
+      saved.length ? saved.map(p => `
+      <div class="mrow">
+        <img class="msq" src="${p.photos[0]}" alt="">
+        <span class="lg-b"><span class="mn">${p.seller}</span><span class="md">${p.savedCol || "Saved"} · ${p.caption}</span></span>
+        <button class="mact m-unsave" data-pid="${p.id}">Remove</button>
+      </div>`).join("") : `<div class="sub-empty">Nothing saved yet</div>`
+    }</div>`;
+  }
+  if (name === "interested") return head("Interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.liked), "Remove", "m-unlike")}</div>`;
+  if (name === "ni") return head("Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni), "Restore", "m-restore")}</div>`;
+  /* full-page report view (IG-style) — opened from "..." menu or the uncomfortable ack card */
+  if (name === "report") return `
+    <div class="detail-head rp-head"><span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="pm-rp-scroll">
+      <div class="pm-rp-q">Why are you reporting this post?</div>
+      <div class="pm-rp-desc">Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait.</div>
+      ${PM_REASONS.map(r => `<button class="pm-reason">${r}<span class="pm-chev">${I.chevR(14)}</span></button>`).join("")}
+    </div>`;
+  return "";
+}
+
 function screenHTML(theme, variant) {
-  const feedPosts = variant === "mixed" ? POSTS : POSTS.slice(0, 5);
   return `
   <div class="screen" data-theme="${theme}" data-variant="${variant}" data-nav="${state.nav}" data-ft="${state.ft}">
     <div class="statusbar">
@@ -2083,25 +2917,25 @@ function screenHTML(theme, variant) {
       <button class="icon-btn">${I.search()}</button>
       <span class="wordmark">TUK DAENG <span class="caret">${I.chev(13)}</span></span>
       <span class="spacer"></span>
-      <button class="icon-btn">${I.sliders()}</button>
+      <button class="icon-btn set-btn">${I.sliders()}</button>
       <button class="icon-btn" data-flow="create">${I.plus()}</button>
     </div>
 
     ${state.ft === "none" ? `
     <div class="brand-menu">
-      <button class="bm-item on">All Posts <span class="check">${I.check(15)}</span></button>
-      <button class="bm-item">Following <span class="check">${I.check(15)}</span></button>
-      <button class="bm-item">Favorites <span class="check">${I.check(15)}</span></button>
+      <button class="bm-item${state.feedTab === "all" ? " on" : ""}" data-tab="all">All Posts <span class="check">${I.check(15)}</span></button>
+      <button class="bm-item${state.feedTab === "following" ? " on" : ""}" data-tab="following">Following <span class="check">${I.check(15)}</span></button>
+      <button class="bm-item${state.feedTab === "favorites" ? " on" : ""}" data-tab="favorites">Favorites <span class="check">${I.check(15)}</span></button>
     </div>` : ""}
 
     <div class="feed-tabs">
-      <button class="feed-tab active">All Posts</button>
-      <button class="feed-tab">Following</button>
-      <button class="feed-tab">Favorites</button>
+      <button class="feed-tab${state.feedTab === "all" ? " active" : ""}" data-tab="all">All Posts</button>
+      <button class="feed-tab${state.feedTab === "following" ? " active" : ""}" data-tab="following">Following</button>
+      <button class="feed-tab${state.feedTab === "favorites" ? " active" : ""}" data-tab="favorites">Favorites</button>
     </div>
 
     <div class="feed-scroll">
-      ${feedPosts.map(p => postCard(p, variant)).join("")}
+      ${feedContentHTML(variant)}
     </div>
 
     <nav class="bottom-nav">
@@ -2114,7 +2948,10 @@ function screenHTML(theme, variant) {
     <div class="home-ind"><i></i></div>
     <div class="sheet-backdrop"></div>
     <div class="comment-sheet"></div>
+    <div class="dlg"></div>
+    <div class="sc-toast"></div>
     <div class="page-detail"></div>
+    <div class="page-sub"></div>
   </div>`;
 }
 
@@ -2156,7 +2993,7 @@ try {
       following: true,
       type: "sale",
       photos: np.photos && np.photos.length ? np.photos : base.photos,
-      likes: 0, comments: 0, views: "1",
+      likes: 0, comments: 0, views: "1", liked: false,
       caption: np.caption || base.caption,
       captionFull: np.caption || base.captionFull,
       price: base.price,
@@ -2245,16 +3082,215 @@ stageEl.addEventListener("pointercancel", endSwipe);
 );
 stageEl.addEventListener("keydown", e => {
   if (e.key === "Enter" && e.target.matches(".cp-input input")) sendChat(e.target);
+  if (e.key === "Enter" && e.target.matches(".sv-input")) {
+    const scr = e.target.closest(".screen");
+    const post = POSTS.find(x => x.id === scr.dataset.svPid);
+    const name = e.target.value.trim() || "New collection";
+    COLLECTIONS.push({ name, thumb: post ? post.photos[0] : "" });
+    if (post) post.savedCol = name;
+    scr.classList.remove("save-open");
+    scrToast(scr, `Saved to ${name}`);
+  }
 });
 stageEl.addEventListener("input", e => {
   if (e.target.matches(".cp-input input"))
     e.target.closest(".cp-input").querySelector(".cp-send").disabled = !e.target.value.trim();
+  if (e.target.matches(".sh-q")) {
+    const q = e.target.value.trim().toLowerCase();
+    e.target.closest(".comment-sheet").querySelectorAll(".sh-fr").forEach(b => {
+      b.style.display = b.dataset.name.toLowerCase().includes(q) ? "" : "none";
+    });
+  }
 });
 
 document.getElementById("stage").addEventListener("click", e => {
   const flow = e.target.closest("[data-flow]");
   if (flow) { location.href = "create-post.html"; return; }
-  const dead = e.target.closest(".nav-item, .follow-btn, .save-btn, .act:not(.like-btn):not(.comment-btn), .ask-pill, .post-head .more, .app-header .icon-btn:not([data-flow]), .emoji-row, .comment-input, .sheet-title .send, .c-meta");
+  const pmBtn = e.target.closest(".post-head .more, .pm-btn");
+  if (pmBtn) {
+    const scr = pmBtn.closest(".screen");
+    const art = pmBtn.closest(".post");
+    scr.dataset.pmPid = art ? art.dataset.pid : scr.dataset.detailPid;
+    const cs = scr.querySelector(".comment-sheet");
+    cs.classList.remove("uf", "pm-rp", "lk", "sh", "sv");
+    cs.classList.add("pm");
+    cs.innerHTML = pmMenuHTML();
+    scr.classList.add("pm-open");
+    return;
+  }
+  const pmNi = e.target.closest(".pm-ni");
+  if (pmNi) {
+    const scr = pmNi.closest(".screen");
+    scr.classList.remove("pm-open");
+    const post = POSTS.find(x => x.id === scr.dataset.pmPid);
+    if (post) {
+      post.ni = true;
+      const art = scr.querySelector(`.feed-scroll .post[data-pid="${post.id}"]`);
+      if (art) art.outerHTML = niCardHTML(post);
+    }
+    return;
+  }
+  const niUf = e.target.closest(".ni-unfollow");
+  if (niUf) {
+    const scr = niUf.closest(".screen");
+    const art = niUf.closest(".post");
+    const post = art && POSTS.find(x => x.id === art.dataset.pid);
+    if (post) {
+      setFollowing(scr, post.seller, false);
+      art.remove();
+      scrToast(scr, "Unfollowed");
+    }
+    return;
+  }
+  const pmUndo = e.target.closest(".pm-undo");
+  if (pmUndo) {
+    const scr = pmUndo.closest(".screen");
+    const art = pmUndo.closest(".post");
+    const post = art && POSTS.find(x => x.id === art.dataset.pid);
+    if (post) {
+      post.ni = false;
+      art.outerHTML = postCard(post, scr.dataset.variant);
+    }
+    return;
+  }
+  const pmRp = e.target.closest(".pm-go-report");
+  if (pmRp) {
+    const scr = pmRp.closest(".screen");
+    scr.classList.remove("pm-open");
+    openSub(scr, "report");
+    return;
+  }
+  const pmDone = e.target.closest(".pm-reason");
+  if (pmDone) {
+    const scr = pmDone.closest(".screen");
+    scr.classList.remove("pm-open", "sub-open");
+    scr._subStack = [];
+    if (pmDone.matches(".pm-reason")) toast("Report submitted · thanks for letting us know");
+    return;
+  }
+  /* ===== FEED-010 — feedback-card actions ===== */
+  const niMute = e.target.closest(".ni-mute");
+  if (niMute) {
+    const scr = niMute.closest(".screen");
+    const post = POSTS.find(x => x.id === niMute.closest(".post").dataset.pid);
+    if (post) {
+      scr.dataset.muteSeller = post.seller;
+      openDlg(scr, muteDlgHTML(post.seller));
+    }
+    return;
+  }
+  const niPref = e.target.closest(".ni-pref");
+  if (niPref) { openSub(niPref.closest(".screen"), "prefs"); return; }
+  const niUc = e.target.closest(".ni-uncomf");
+  if (niUc) {
+    const art = niUc.closest(".post");
+    const post = art && POSTS.find(x => x.id === art.dataset.pid);
+    if (post) art.outerHTML = uncomfCardHTML(post);
+    return;
+  }
+  const ucRp = e.target.closest(".uc-report");
+  if (ucRp) {
+    const scr = ucRp.closest(".screen");
+    scr.dataset.pmPid = ucRp.closest(".post").dataset.pid;
+    scr.classList.remove("pm-open");
+    openSub(scr, "report");
+    return;
+  }
+  const ucUndo = e.target.closest(".uc-undo");
+  if (ucUndo) {
+    const scr = ucUndo.closest(".screen");
+    const art = ucUndo.closest(".post");
+    const post = art && POSTS.find(x => x.id === art.dataset.pid);
+    if (post) {
+      post.ni = false;
+      art.outerHTML = postCard(post, scr.dataset.variant);
+    }
+    return;
+  }
+  const dlgCancel = e.target.closest(".dlg-cancel");
+  if (dlgCancel) { dlgCancel.closest(".screen").classList.remove("dialog-open"); return; }
+  const dlgMute = e.target.closest(".dlg-mute-go");
+  if (dlgMute) {
+    const scr = dlgMute.closest(".screen");
+    scr.classList.remove("dialog-open");
+    setMuted(scr, scr.dataset.muteSeller, true);
+    scrToast(scr, "Posts muted");
+    return;
+  }
+  const dlgReset = e.target.closest(".dlg-reset-go");
+  if (dlgReset) {
+    const scr = dlgReset.closest(".screen");
+    scr.classList.remove("dialog-open");
+    POSTS.forEach(p => { p.ni = false; });
+    state.snooze = false;
+    scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+    renderSub(scr);
+    scrToast(scr, "Suggested content reset");
+    return;
+  }
+  /* settings + content-preferences pages */
+  const setBtn = e.target.closest(".set-btn");
+  if (setBtn) { openSub(setBtn.closest(".screen"), "settings"); return; }
+  const subNav = e.target.closest("[data-sub]");
+  if (subNav) { pushSub(subNav.closest(".screen"), subNav.dataset.sub); return; }
+  const subBk = e.target.closest(".sub-back, .sub-x");
+  if (subBk) { subBack(subBk.closest(".screen")); return; }
+  const subReset = e.target.closest('[data-dlg="reset"]');
+  if (subReset) { openDlg(subReset.closest(".screen"), resetDlgHTML()); return; }
+  const sens = e.target.closest("[data-sens]");
+  if (sens) { state.sensitive = sens.dataset.sens; renderSub(sens.closest(".screen")); return; }
+  const tgl = e.target.closest("[data-tgl]");
+  if (tgl) {
+    const scr = tgl.closest(".screen");
+    state.snooze = !state.snooze;
+    tgl.querySelector(".tg-sw").classList.toggle("on", state.snooze);
+    scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+    return;
+  }
+  const mUn = e.target.closest(".m-unmute");
+  if (mUn) {
+    const scr = mUn.closest(".screen");
+    setMuted(scr, mUn.dataset.seller, false);
+    renderSub(scr);
+    scrToast(scr, "Posts unmuted");
+    return;
+  }
+  const mRe = e.target.closest(".m-restore");
+  if (mRe) {
+    const p = POSTS.find(x => x.id === mRe.dataset.pid);
+    const scr = mRe.closest(".screen");
+    if (p) {
+      p.ni = false;
+      scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+      renderSub(scr);
+    }
+    return;
+  }
+  const mUl = e.target.closest(".m-unlike");
+  if (mUl) {
+    const p = POSTS.find(x => x.id === mUl.dataset.pid);
+    if (p) {
+      p.liked = false;
+      p.likes--;
+      const scr = mUl.closest(".screen");
+      scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+      renderSub(scr);
+    }
+    return;
+  }
+  const mUs = e.target.closest(".m-unsave");
+  if (mUs) {
+    const p = POSTS.find(x => x.id === mUs.dataset.pid);
+    const scr = mUs.closest(".screen");
+    if (p) {
+      p.saved = false;
+      p.savedCol = null;
+      syncSaveBtns(scr, p);
+      renderSub(scr);
+    }
+    return;
+  }
+  const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn), .emoji-row, .comment-input, .sheet-title .send, .c-meta");
   if (dead) { toast("Not in this prototype yet"); return; }
   const wm = e.target.closest(".wordmark");
   if (wm) {
@@ -2264,7 +3300,7 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const bm = e.target.closest(".bm-item");
   if (bm) {
-    [...bm.parentElement.children].forEach(x => x.classList.toggle("on", x === bm));
+    setFeedTab(bm.closest(".screen"), bm.dataset.tab);
     bm.closest(".screen").classList.remove("brand-open");
     return;
   }
@@ -2328,19 +3364,139 @@ document.getElementById("stage").addEventListener("click", e => {
     scr.classList.add("detail-open");
     return;
   }
+  const fbtn = e.target.closest(".follow-btn");
+  if (fbtn) {
+    const scr = fbtn.closest(".screen");
+    const art = fbtn.closest(".post");
+    const pid = art ? art.dataset.pid : scr.dataset.detailPid;
+    const post = POSTS.find(x => x.id === pid);
+    if (!post) return;
+    if (post.following) {
+      scr.dataset.ufSeller = post.seller;
+      const cs = scr.querySelector(".comment-sheet");
+      cs.classList.remove("pm", "pm-rp", "lk", "sh", "sv");
+      cs.classList.add("uf");
+      cs.innerHTML = `
+        <div class="sheet-handle"></div>
+        <div class="uf-body">
+          <img class="uf-av" src="${post.avatar}" alt="">
+          <div class="uf-q">Unfollow <b>@${post.seller}</b>?</div>
+          <button class="uf-confirm">Unfollow</button>
+          <button class="uf-cancel">Cancel</button>
+        </div>`;
+      scr.classList.add("unfollow-open");
+    } else {
+      setFollowing(scr, post.seller, true);
+    }
+    return;
+  }
+  const ufGo = e.target.closest(".uf-confirm");
+  if (ufGo) {
+    const scr = ufGo.closest(".screen");
+    setFollowing(scr, scr.dataset.ufSeller, false);
+    scr.classList.remove("unfollow-open");
+    scrToast(scr, "Unfollowed");
+    return;
+  }
+  const ufNo = e.target.closest(".uf-cancel");
+  if (ufNo) {
+    ufNo.closest(".screen").classList.remove("unfollow-open");
+    return;
+  }
   const cbtn = e.target.closest(".comment-btn");
   if (cbtn) {
     const scr = e.target.closest(".screen");
     const art = e.target.closest(".post");
     const pid = art ? art.dataset.pid : scr.dataset.detailPid;
     const post = POSTS.find(x => x.id === pid);
-    scr.querySelector(".comment-sheet").innerHTML = commentsHTML(post);
+    const cs = scr.querySelector(".comment-sheet");
+    cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv");
+    cs.innerHTML = commentsHTML(post);
     scr.classList.add("comments-open");
+    return;
+  }
+  /* ===== FEED-011 — likes / share / save ===== */
+  const lbRow = e.target.closest(".liked-by");
+  if (lbRow) {
+    const scr = lbRow.closest(".screen");
+    const art = lbRow.closest(".post");
+    const pid = art ? art.dataset.pid : scr.dataset.detailPid;
+    const post = POSTS.find(x => x.id === pid);
+    if (!post) return;
+    openSheet(scr, "lk", "likes-open", likesSheetHTML(post));
+    return;
+  }
+  const lkF = e.target.closest(".lk-follow");
+  if (lkF) {
+    lkF.classList.toggle("on");
+    lkF.textContent = lkF.classList.contains("on") ? "Following" : "Follow";
+    return;
+  }
+  const shBtn = e.target.closest(".share-btn");
+  if (shBtn) {
+    const scr = shBtn.closest(".screen");
+    const art = shBtn.closest(".post");
+    scr.dataset.shPid = art ? art.dataset.pid : scr.dataset.detailPid;
+    openSheet(scr, "sh", "share-open", shareSheetHTML());
+    return;
+  }
+  const shFr = e.target.closest(".sh-fr");
+  if (shFr) {
+    const scr = shFr.closest(".screen");
+    scr.classList.remove("share-open");
+    scrToast(scr, `Sent to ${shFr.dataset.name}`);
+    return;
+  }
+  const shApp = e.target.closest(".sh-app");
+  if (shApp) {
+    const scr = shApp.closest(".screen");
+    scr.classList.remove("share-open");
+    scrToast(scr, shApp.dataset.app === "copy" ? "Link copied" : `Shared to ${shApp.dataset.t}`);
+    return;
+  }
+  const svBtn = e.target.closest(".save-btn");
+  if (svBtn) {
+    const scr = svBtn.closest(".screen");
+    const art = svBtn.closest(".post");
+    const pid = art ? art.dataset.pid : scr.dataset.detailPid;
+    const post = POSTS.find(x => x.id === pid);
+    if (!post) return;
+    if (post.saved) {
+      post.saved = false;
+      post.savedCol = null;
+      syncSaveBtns(scr, post);
+      scrToast(scr, "Removed from saved");
+    } else {
+      post.saved = true;
+      post.savedCol = "Saved";
+      syncSaveBtns(scr, post);
+      scr.dataset.svPid = post.id;
+      openSheet(scr, "sv", "save-open", saveSheetHTML(post));
+    }
+    return;
+  }
+  const svPick = e.target.closest(".sv-pick");
+  if (svPick) {
+    const scr = svPick.closest(".screen");
+    const post = POSTS.find(x => x.id === scr.dataset.svPid);
+    const col = svPick.dataset.col;
+    if (post) post.savedCol = col;
+    scr.classList.remove("save-open");
+    scrToast(scr, col === "Saved" ? "Saved" : `Saved to ${col}`);
+    return;
+  }
+  const svNew = e.target.closest(".sv-new");
+  if (svNew) {
+    const wrap = svNew.closest(".comment-sheet").querySelector(".sv-newrow");
+    if (!wrap.querySelector("input")) {
+      wrap.innerHTML = `<input class="sv-input" placeholder="Collection name" maxlength="30">`;
+      wrap.querySelector("input").focus();
+    }
     return;
   }
   const closeSheet = e.target.closest(".sheet-backdrop, .sheet-handle");
   if (closeSheet) {
-    closeSheet.closest(".screen").classList.remove("comments-open");
+    closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "dialog-open", "likes-open", "share-open", "save-open");
     return;
   }
   const clike = e.target.closest(".c-like");
@@ -2353,7 +3509,7 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const ft = e.target.closest(".feed-tab");
   if (ft) {
-    [...ft.parentElement.children].forEach(x => x.classList.toggle("active", x === ft));
+    setFeedTab(ft.closest(".screen"), ft.dataset.tab);
     return;
   }
   const ph = e.target.closest(".post-photo, .detail-hero");
@@ -2393,9 +3549,20 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const like = e.target.closest(".like-btn");
   if (like) {
-    like.classList.toggle("liked");
-    const n = like.querySelector("span");
-    n.textContent = parseInt(n.textContent) + (like.classList.contains("liked") ? 1 : -1);
+    const scr = like.closest(".screen");
+    const art = like.closest(".post");
+    const pid = art ? art.dataset.pid : scr.dataset.detailPid;
+    const post = POSTS.find(x => x.id === pid);
+    if (!post) return;
+    post.liked = !post.liked;
+    post.likes += post.liked ? 1 : -1;
+    scr.querySelectorAll(".like-btn").forEach(b => {
+      const bArt = b.closest(".post");
+      if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === pid)
+        b.classList.toggle("liked", post.liked);
+    });
+    if (state.feedTab === "favorites")
+      scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
   }
 });
 

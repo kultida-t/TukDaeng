@@ -1,0 +1,168 @@
+PASS card p1 .more shows 3-dot icon
+PASS no hamburger <path> left in any .more
+PASS every post-head has .more
+PASS pm sheet opens
+PASS menu has exactly 2 rows
+PASS row 1 = Not interested
+PASS row 2 = Report
+PASS Report row is red — rgb(200, 33, 43)
+PASS sheet closes after Not interested
+PASS p1 replaced by feedback card
+PASS title = Thanks for your feedback
+PASS sub = We'll suggest fewer posts like this.
+PASS Undo present top-right
+PASS 2 items (not-followed variant)
+PASS no Mute row when not followed
+PASS item 1 = Manage content preferences
+PASS item 2 = This post made me uncomfortable
+PASS items have leading icons
+PASS Undo restores post p1
+PASS feedback card gone
+PASS menu sheet closes for report
+PASS report page opens
+PASS report slides up from bottom
+PASS report title = Report
+PASS X close button present
+PASS question = Why are you reporting this post?
+PASS anonymous desc
+PASS 9 reason rows
+PASS reason 1 = I just don't like it — I just don't like it
+PASS reason 5 = Counterfeit or replica item — Counterfeit or replica item
+PASS reason 9 = Intellectual property — Intellectual property
+PASS reasons have chevrons
+PASS X closes report page
+PASS reason pick closes report page
+PASS toast shown — Report submitted · thanks for letting us know
+PASS sub-item opens Content preferences
+PASS prefs back closes page
+PASS card still shown
+PASS post gone after tab re-render
+PASS posts count 10 after ni + re-render
+PASS followed variant = 3 items
+PASS followed post gets Mute row
+PASS followed post gets Unfollow row
+PASS row = Unfollow wrist.story
+PASS unfollow via card drops p7 (following=2)
+PASS p7 fully gone after re-render (ni)
+PASS p7 restored to feed
+PASS backdrop closes sheet
+PASS DL1 detail head has pm-btn
+PASS menu opens from DL1 detail head
+PASS sheet closes from detail ni
+PASS feed card replaced via detail ni
+PASS post restored after undo
+PASS menu opens from DL2 detail post-head
+PASS menu opens in light theme
+PASS ni-card shows in light theme
+PASS comment sheet still opens
+PASS follow p8 still flips in place
+PASS unfollow sheet still opens
+PASS liked p8 lands in Favorites
+PASS following tab = 4 posts — 4
+PASS swipe still works (p10 -> 2/2) — 2/2
+PASS uncomfortable swaps card (no sheet)
+PASS green check icon shown
+PASS title = Thanks for letting us know
+PASS desc mentions Community Standards + report
+PASS action 1 = Report (red)
+PASS action 2 = Undo
+PASS uc Undo restores post (card gone)
+PASS uc Report -> report page
+PASS uc report reason closes + toast
+PASS followed ni-card has Mute row
+PASS mute dialog opens
+PASS dialog title = Mute slow.hand?
+PASS dialog desc mentions Settings unmute
+PASS single red action = Mute posts
+PASS cancel keeps card + post
+PASS mute closes dialog
+PASS toast = Posts muted
+PASS p10 gone after mute
+PASS following tab drops muted seller (3) — 3
+PASS sliders opens Settings and activity
+PASS settings has What you see + Muted accounts row
+PASS muted count = 1
+PASS settings has Content preferences row
+PASS muted accounts page
+PASS muted list shows slow.hand + Unmute
+PASS unmute toast = Posts unmuted
+PASS muted list empty after unmute
+PASS back to settings, count now 0
+PASS settings closed
+PASS p10 still hidden (ni'd survives unmute)
+PASS p10 muted flag cleared
+PASS prefs page opens
+PASS prefs rows present
+PASS snooze toggle rendered
+PASS ni list page
+PASS ni list = 4 rows (p1,p9,p10,p3) — 4
+PASS restore removes row (3 left)
+PASS restore p10 -> 2 left
+PASS p3 + p10 back in feed
+PASS sensitive page, Standard checked
+PASS sensitive switches to Less
+PASS interested list = 1 row (p8) — 1
+PASS interested empty after remove
+PASS snooze on -> feed = followed only (4) — 4
+PASS reset dialog opens
+PASS reset restores feed (11 posts) — 11
+PASS reset toast
+PASS prefs back closes to feed
+PASS unfollow toast = Unfollowed
+PASS feedback card removed after unfollow
+PASS p2 back with Follow button
+PASS uf sheet opens for followed seller
+PASS uf-sheet toast = Unfollowed
+PASS prefs opens in light theme
+PASS like-btn has no count span
+PASS p5 heart toggles liked
+PASS p5 heart untoggles
+PASS views stat rendered as span
+PASS no .act button for views
+PASS views shows count
+PASS clicking views does nothing
+PASS likes sheet opens
+PASS likes title
+PASS note names the seller
+PASS no search input in likes sheet
+PASS liker rows >= 6 — 7
+PASS first liker = the watch
+PASS every liker has Follow btn
+PASS liker Follow flips to Following
+PASS backdrop closes likes sheet
+PASS share sheet opens
+PASS share has search field
+PASS 13 friend circles (all friends, scrollable)
+PASS grid shows ~2 rows then scrolls — gridH=216 rowH=93.9375
+PASS apps row order — Messenger,Direct,LINE,Facebook,Copy link
+PASS no Add to story
+PASS Copy link fully in view — right=430
+PASS search filters friends to 1
+PASS friend send closes + toast
+PASS copy link toast
+PASS share to LINE toast
+PASS save fills bookmark + opens sheet
+PASS Saved head row
+PASS Collections + New collection
+PASS 4 collection rows
+PASS saved-to-collection toast
+PASS save sheet closed
+PASS unsave clears icon + toast
+PASS new collection saves + toast
+PASS p6 bookmark filled
+PASS settings has Saved row
+PASS saved count = 2
+PASS saved list = 2 rows
+PASS collection name shown
+PASS remove drops row
+PASS p5 icon cleared in feed
+PASS DL1 detail has views-stat + share + save
+PASS save sheet over DL1 detail
+PASS detail save syncs feed card
+PASS share sheet over DL1 detail
+PASS share to Facebook toast
+PASS likes sheet from DL2 detail
+PASS light theme share works
+PASS light theme save sheet opens
+console/page errors: 0 | failed checks: 0
+DONE

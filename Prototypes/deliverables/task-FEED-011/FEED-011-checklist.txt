@@ -1,0 +1,32 @@
+FEED-011 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: FEED-011 ปรับแถว action ใต้รูปโพสต์ (like/comment/share/save) ให้ทำงานถูกต้อง
+ไฟล์: Prototypes/fo-flow/index.html
+ผลตรวจ: ผ่านทุกเคส (ผู้ใช้ยืนยัน "โอเคปิด task" หลังรีวิว preview 2 รอบ)
+
+เคส 1: Like ไม่แสดงตัวเลข — ผ่าน
+  กดหัวใจใต้โพสต์ → เปลี่ยนเป็นสีแดง ไม่มีตัวเลขข้างไอคอน กดซ้ำกลับเป็นว่าง
+
+เคส 2: Likes sheet — ผ่าน
+  กด "the watch and others liked" → เปิด sheet title "Likes" + note ชื่อ seller
+  รายชื่อคนไลค์มีปุ่ม Follow toggle ได้, ไม่มีช่องค้นหา, ไม่มี Views
+
+เคส 3: Views display-only — ผ่าน
+  ไอคอนตาทึบ + ตัวเลข 3.2K แสดงสีปกติชัดเจน กดไม่ได้ ไม่มี toast
+
+เคส 4: Share sheet — ผ่าน
+  กด share → sheet มี search + grid เพื่อน 2 แถว (เลื่อนดูใน grid ลื่น ไม่สั่น/ไม่ขยาย sheet)
+  app row: Messenger, Direct, LINE, Facebook, Copy link (ไม่มี Instagram แยก ไม่มี Add to story)
+  รอบที่ 1 พบ: grid เลื่อนแล้ว sheet ขยาย/สั่น → แก้เอา expand-on-scroll ออก จำกัด grid 216px
+  รอบที่ 2 พบ: Instagram ซ้ำกับ Direct + Copy link โดนปุ่ม theme toggle บัง → รวมเหลือ Direct, ซ่อน toggle ตอน sheet เปิด
+
+เคส 5: Save/Collections sheet — ผ่าน
+  กด bookmark → เต็ม + เปิด sheet Saved/Collections/New collection (สร้าง collection ใหม่ได้)
+  กดซ้ำ = unsave, ดูรายการที่บันทึกได้ใน Settings > Saved
+
+เคส 6: Regression — ผ่าน
+  _verify_feed_menu.mjs 163 checks ผ่าน 0 errors (รวม comment sheet, like→Favorites,
+  Follow/Unfollow, "..." menu, Not interested, Report, Mute, Content preferences,
+  Uncomfortable, swipe, dark/light, detail page DL1/DL2)
+
+หมายเหตุ: feed-social-redesign.html และหน้าจอ protected ไม่ถูกแตะต้อง

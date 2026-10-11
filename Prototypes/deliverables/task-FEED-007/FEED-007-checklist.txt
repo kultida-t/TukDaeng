@@ -1,0 +1,36 @@
+FEED-007 Manual Review Checklist — หน้า Feed fo-flow ปุ่ม ❤️ → แท็บ Favorites
+URL ทดสอบ: http://127.0.0.1:4173/fo-flow/index.html
+ผู้ตรวจ: ผู้ใช้ยืนยันผลผ่านแชท ("โอเคปิด Task ได้") หลังรีวิวจริงบน preview
+
+เคส 1: กด ❤️ แล้วโพสต์เข้า Favorites — ผ่าน (auto-verified)
+- ในแท็บ All Posts กด ❤️ บนโพสต์ Rolex (p1) และ wrist.story (p7)
+- ผลที่คาด/จริง: ไอคอนหัวใจติดแดง, like count +1 (p1: 3→4, p7: 34→35)
+- กดแท็บ Favorites → เห็น 2 โพสต์ที่กดใจ ไอคอน ❤️ ติดอยู่ทั้งคู่ ไม่มี empty state
+
+เคส 2: กลับแท็บ All สถานะยังอยู่ — ผ่าน (auto-verified)
+- กดแท็บ All Posts
+- ผลที่คาด/จริง: โพสต์ครบ 11 โพสต์, p1 ยังไอคอนใจติดและ count = 4
+
+เคส 3: Theme toggle คงสถานะ — ผ่าน (auto-verified)
+- อยู่แท็บ Favorites กด ☾/☀ สลับ theme (re-render ทั้งหน้าจอ)
+- ผลที่คาด/จริง: ยังอยู่แท็บ Favorites, ยังเห็น 2 โพสต์ + ไอคอนใจติด อ่านได้ทั้ง dark/light
+
+เคส 4: Unlike ใน Favorites โพสต์หลุดทันที — ผ่าน (auto-verified)
+- อยู่แท็บ Favorites กด ❤️ ซ้ำบน p7
+- ผลที่คาด/จริง: p7 หายจากลิสต์ทันที เหลือ 1 โพสต์ (p1)
+- กด unlike p1 → ลิสต์ว่าง กลับ empty state "No favorites yet"
+
+เคส 5: Detail page sync สถานะเดียวกัน — ผ่าน (auto-verified)
+- กด ❤️ p1 ใน feed → เปิด detail ผ่าน Tap for details → View full detail
+- ผลที่คาด/จริง: ปุ่ม ❤️ ใน detail ติดแดง count = 4
+- กด unlike ใน detail → กลับ feed: card p1 ไม่ติดใจ count กลับ 3, Favorites ว่าง
+
+เคส regression (ยืนยันโดย _verify_feed_tabs.mjs + _verify_feed_posts.mjs):
+- All = 11 โพสต์, Following = 3 โพสต์ (wrist.story / the watch / slow.hand)
+- Favorites เริ่มต้น empty state "No favorites yet" เหมือนเดิม
+- comment sheet เปิดได้ 2 rows, swipe multi-photo p10 1/2→2/2, showcase ไม่มี Details/Ask Seller
+- ไม่มี console/page error — ผ่านทั้งหมด
+
+Verify script: Prototypes/_verify_feed_like.mjs (23 checks, 0 fail, 0 console errors)
+Screenshots: Prototypes/screenshots/task-FEED-007/
+Technical: state เก็บใน memory บน post object (p.liked) ตามขอบเขต task — ไม่ persist localStorage

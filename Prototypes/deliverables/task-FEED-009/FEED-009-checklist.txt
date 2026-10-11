@@ -1,0 +1,64 @@
+FEED-009 Manual Review Checklist — หน้า Feed fo-flow เมนูโพสต์ "..." + flow Not interested / Report แบบ IG
+URL ทดสอบ: http://127.0.0.1:4173/fo-flow/index.html
+
+เคส 1: ไอคอนเมนูบนหัวโพสต์เป็น "..." — ผ่าน (auto-verified)
+- การ์ดโพสต์ทุกใบ (11 โพสต์) header แสดงไอคอน 3 จุดแนวนอน ไม่ใช่แฮมเบอร์เกอร์อีกต่อไป
+- จุดเดียวกันบนหน้า detail: DL1 (header Detail) และ DL2 (IG post-head) เป็น "..." ที่กดได้เหมือนกัน
+- ปุ่มที่เคยกดแล้ว toast "Not in this prototype yet" ตอนนี้เปิดเมนูจริงแล้ว
+
+เคส 2: กด "..." → bottom sheet เมนู 2 รายการ — ผ่าน (auto-verified)
+- sheet เด้งจากล่างเหนือ backdrop เข้ม (ใช้ infra เดียวกับ comment/unfollow sheet)
+- เมนูเป็น rounded card ลอยขอบซ้าย-ขวา ตามรูป IG ที่ผู้ใช้แนบ — แถวชิดซ้ายมีไอคอนนำหน้า:
+  "Not interested" ไอคอน ⊗ ตัวขาว / "Report" ไอคอนธง+ตัวแดง คั่นด้วย hairline
+- เปิดได้จากการ์ดใน feed, จากหัว detail แบบ DL1 และ DL2 — ปิดได้ด้วย backdrop / handle
+
+เคส 3: Not interested → โพสต์ถูกแทนด้วย card "Thanks for your feedback" ตำแหน่งเดิม — ผ่าน (auto-verified)
+- พฤติกรรมตาม IG จริง (ผู้ใช้แนบรูปยืนยัน): sheet ปิดแล้วโพสต์หาย กลายเป็น rounded card แทนที่ใน feed
+- card มีหัวข้อ "Thanks for your feedback" + ปุ่ม "Undo" สีฟ้ามุมขวา
+- ข้อความรอง "We'll suggest fewer posts like this."
+- รายการย่อยแยกตามสถานะติดตาม (ผู้ใช้ยืนยัน 2026-10-11):
+  โพสต์ที่ติดตามอยู่ → 3 แถว: bell-off "Mute {seller}" + บรรทัดรอง "Stop seeing new posts
+  from them in feed" / user-minus "Unfollow {seller}" (กดแล้ว unfollow จริง ผ่าน setFollowing)
+  / sad face "This post made me uncomfortable"
+  โพสต์ที่ยังไม่ติดตาม → 2 แถวแบบเดิม: sliders "Manage content preferences" /
+  sad face "This post made me uncomfortable" (ไม่มี Mute)
+- ทุกแถวชิดซ้ายมีไอคอนนำหน้า ไม่มี chevron ฟ้อนต์ regular
+- กด Undo → โพสต์เดิมกลับมาตำแหน่งเดิม
+- ไม่กด Undo แล้ว re-render (สลับแท็บ/theme toggle) → โพสต์หายจาก feed ไปเลย card ไม่ค้าง ตาม IG
+  (ผู้ใช้ยืนยัน behavior 2026-10-11); refresh หน้าโพสต์กลับมาเพราะ state เป็น memory-only
+- กดรายการย่อย Mute / Manage prefs / uncomfortable → toast "Not in this prototype yet"
+  (prototype: ไม่ลงลึก ตามที่ task ระบุ) — มีแต่ Unfollow ที่ทำงานจริง
+- Unfollow ผ่าน ni-card ใช้ setFollowing จริง → โพสต์หลุดจากแท็บ Following ตามกฎเดิม
+
+เคส 4: Report → หน้า Report เต็ม sheet — ผ่าน (auto-verified)
+- sheet สูง ~92% เหมือนหน้าเต็ม: header "Report" กึ่งกลาง + ปุ่มปิด X มุมขวา
+- หัวข้อ "Why are you reporting this post?" + คำอธิบาย anonymous/emergency ตาม IG
+- เหตุผล 9 ข้อพร้อม chevron ครบ: I just don't like it / Bullying or unwanted contact /
+  Suicide, self-injury or eating disorders / Violence, hate or exploitation /
+  Selling or promoting restricted items / Nudity or sexual activity /
+  Scam, fraud or spam / False information / Intellectual property
+- กด X หรือ backdrop → ปิด flow / กดเลือกเหตุผล → ปิด flow + toast "Report submitted · thanks for letting us know"
+
+เคส 5: Theme — ผ่าน (auto-verified)
+- สลับ light theme แล้วเปิด "..." ได้ปกติ sheet ทุกขั้นตอนอ่านง่ายทั้ง 2 theme
+
+เคส regression (ยืนยันโดย _verify_feed_menu.mjs + สคริปต์เดิม):
+- comment sheet / unfollow sheet เปิดได้ปกติ ไม่ติดสไตล์ pm ค้าง (class reset ทุกครั้งที่เปิด)
+- Follow/Unfollow in-place + sheet ยืนยัน, like→Favorites, Following tab, swipe p10 1/2→2/2
+- ไม่มี console/page error — ผ่านทั้งหมด
+
+ขอบเขต/ข้อจำกัด (ตาม task):
+- state ทั้งหมดอยู่ใน memory — ไม่ persist; refresh หน้าโพสต์ที่ ni ไปแล้วจะกลับมา
+- รายการย่อยใน feedback card กดแล้วขึ้น toast dead — ไม่มีหน้า Manage preferences จริง
+- Report เลือกเหตุผลแล้วจบด้วย toast — ไม่มีขั้นตอนส่งรายงานจริง
+
+Verify script: Prototypes/_verify_feed_menu.mjs (57 checks, 0 fail, 0 console errors)
+Screenshots: Prototypes/screenshots/task-FEED-009/after/ (d-menu-sheet, d-ni-card,
+  d-report-sheet, d-menu-from-detail, l-ni-card)
+Technical: เปลี่ยนไอคอน I.listMenu→I.dots ใน postCard + igBodyHTML; เพิ่ม pm-btn ที่
+  detail-head dots + hero-fab fab-r; reuse .comment-sheet/.sheet-backdrop ด้วย
+  modifier .pm (auto) / .pm-rp (92%); เมนูเป็น .pm-card rounded card ลอยตาม mock IG
+  (ชิดซ้าย ไอคอนนำหน้า ฟ้อนต์ regular); Not interested set p.ni=true + swap
+  article→niCardHTML ชั่วคราว (Undo กู้ได้จนกว่าจะ re-render), feedContentHTML
+  filter p.ni ออกทำให้โพสต์หายสนิทหลัง re-render; Report ใช้ pmReportHTML ใน sheet;
+  เช็ค pm handler ก่อน dead-zone list
