@@ -1030,6 +1030,150 @@
     color: var(--text); cursor: pointer;
   }
   .dlg-btn.danger { color: var(--red); }
+
+  /* ============ FEED-011 — like / share / save action row ============ */
+  /* eye + view count: display only, not a button */
+  .views-stat {
+    display: flex; align-items: center; gap: 5px;
+    color: var(--text); font-size: 13px; font-weight: 500;
+    padding: 5px 7px;
+  }
+  .views-stat svg { display: block; }
+  .save-btn.saved svg path { fill: var(--text); }
+  .liked-by { cursor: pointer; user-select: none; }
+
+  .screen.likes-open .sheet-backdrop,
+  .screen.share-open .sheet-backdrop,
+  .screen.save-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
+  .screen.likes-open .comment-sheet,
+  .screen.share-open .comment-sheet,
+  .screen.save-open .comment-sheet { transform: none; }
+  .comment-sheet.lk { height: 64%; }
+  .comment-sheet.sh { height: auto; }
+  .comment-sheet.sv { height: auto; max-height: 72%; }
+
+  /* likes sheet — title + note + people rows (no search, no views tab) */
+  .lk-note {
+    font-size: 13px; color: var(--muted); line-height: 1.5;
+    padding: 0 16px 10px; flex-shrink: 0;
+  }
+  .lk-row { display: flex; align-items: center; gap: 11px; padding: 7px 0; }
+  .lk-row img {
+    width: 44px; height: 44px; border-radius: 50%;
+    object-fit: cover; flex-shrink: 0;
+  }
+  .lk-who { flex: 1; min-width: 0; }
+  .lk-who .u { font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .lk-who .d {
+    font-size: 13px; color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .lk-follow {
+    flex-shrink: 0; font-family: var(--font-main); font-size: 13.5px; font-weight: 600;
+    border: none; border-radius: 8px; padding: 7px 22px; cursor: pointer;
+    background: #3d9bff; color: #fff;
+  }
+  .lk-follow.on { background: var(--chip-bg); color: var(--text); }
+
+  /* share sheet — search + friend grid + app row */
+  .sh-search {
+    display: flex; align-items: center; gap: 10px;
+    margin: 4px 16px 12px; flex-shrink: 0;
+  }
+  .sh-field {
+    flex: 1; display: flex; align-items: center; gap: 8px;
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 8px 12px; color: var(--muted);
+  }
+  .sh-field input {
+    flex: 1; min-width: 0; background: none; border: none; outline: none;
+    font-family: var(--font-main); font-size: 14px; color: var(--text);
+  }
+  .sh-add {
+    width: 38px; height: 38px; flex-shrink: 0;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text); cursor: pointer;
+  }
+  .sh-grid {
+    flex: 0 0 auto; height: 216px; overflow-y: auto; scrollbar-width: none;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 15px 6px; padding: 2px 18px 14px; align-content: start;
+  }
+  .sh-grid::-webkit-scrollbar { display: none; }
+  .sh-fr {
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    background: none; border: none; cursor: pointer; font-family: var(--font-main);
+    padding: 0;
+  }
+  .sh-fr img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
+  .sh-fr .n {
+    font-size: 11.5px; color: var(--text); text-align: center; line-height: 1.3;
+    max-width: 100px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .sh-apps {
+    display: flex; gap: 4px; flex-shrink: 0;
+    border-top: 1px solid var(--line);
+    padding: 12px 10px 18px; overflow-x: auto; scrollbar-width: none;
+  }
+  .sh-apps::-webkit-scrollbar { display: none; }
+  .sh-app {
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    background: none; border: none; cursor: pointer; min-width: 0; flex: 1;
+    font-family: var(--font-main); padding: 0;
+  }
+  .sh-app .ic {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .02em;
+  }
+  .sh-app .t { font-size: 11px; color: var(--text); }
+  .sh-app.gray .ic {
+    background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+  }
+
+  /* save / collections sheet — "Saved" head + collection rows + new */
+  .sv-pick {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    background: none; border: none; font-family: var(--font-main);
+    cursor: pointer; text-align: left;
+  }
+  .sv-head { padding: 8px 16px 12px; }
+  .sv-head .thumb, .sv-row .thumb {
+    width: 46px; height: 46px; border-radius: 8px; object-fit: cover;
+    background: var(--surface-2); border: 1px solid var(--line); flex-shrink: 0;
+  }
+  .sv-head .b, .sv-row .b { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .sv-head .t { font-size: 15px; font-weight: 600; color: var(--text); }
+  .sv-head .s, .sv-row .s { font-size: 12.5px; color: var(--muted); }
+  .sv-head > svg { color: var(--text); }
+  .sv-sec {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 16px;
+  }
+  .sv-sec .l { font-size: 14.5px; font-weight: 700; color: var(--text); }
+  .sv-new {
+    font-family: var(--font-main); font-size: 13px; font-weight: 500;
+    color: #3d9bff; background: none; border: none; cursor: pointer; padding: 4px 0;
+  }
+  .sv-list { overflow-y: auto; scrollbar-width: none; }
+  .sv-list::-webkit-scrollbar { display: none; }
+  .sv-row { padding: 7px 16px; }
+  .sv-row .n { font-size: 14px; font-weight: 500; color: var(--text); }
+  .sv-row .plus {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    border: 1.5px solid var(--muted); color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sv-newrow { padding: 4px 16px 18px; }
+  .sv-newrow input {
+    width: 100%; box-sizing: border-box; font-family: var(--font-main); font-size: 14px;
+    color: var(--text); background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px 12px; outline: none;
+  }
+
   /* settings / content-preferences page — slides in like the detail page */
   .page-sub {
     position: absolute; top: 34px; bottom: 22px; left: 0; right: 0;
@@ -1487,6 +1631,9 @@
     white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.45);
   }
   #flowToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open) #themeToggle {
+    opacity: 0; pointer-events: none;
+  }
   @media (max-width: 480px) {
     .stage { padding: 0; }
     .phone-wrap { width: 100%; }
@@ -1941,7 +2088,7 @@ const POSTS = [
 ];
 
 /* flattened rows kept as p.specs for lookups (spec()) and non-grouped renderers */
-POSTS.forEach(p => { p.specs = (p.specGroups || []).flatMap(g => g.rows); p.liked = false; });
+POSTS.forEach(p => { p.specs = (p.specGroups || []).flatMap(g => g.rows); p.liked = false; p.saved = false; p.savedCol = null; });
 
 /* per-post Detail variant sets — each feed post opens Detail with its own combo */
 const POST_DETAIL_CFG = {
@@ -2034,6 +2181,13 @@ const I = {
   circleCheck: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="m8 12.5 2.6 2.6L16.5 9"/></svg>`,
   x: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`,
   send: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>`,
+  eyeFill: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.7 7.6 1 12c1.7 4.4 6 7.5 11 7.5s9.3-3.1 11-7.5c-1.7-4.4-6-7.5-11-7.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>`,
+  link: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>`,
+  personAdd: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>`,
+  msgBubble: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a9.5 9.5 0 0 0-8.2 14.3L2 22l5.9-1.6A9.5 9.5 0 1 0 12 2z"/></svg>`,
+  fb: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.7-1.6h1.6V4.1c-.3 0-1.2-.1-2.3-.1-2.4 0-4 1.5-4 4.2v2.4H7.5v3.2h3V22h3z"/></svg>`,
+  igCam: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.4"/><circle cx="12" cy="12" r="4.4"/><circle cx="17.4" cy="6.6" r="1.3" fill="currentColor" stroke="none"/></svg>`,
+  msngr: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.1 2 11.2c0 2.9 1.4 5.5 3.7 7.2V22l3.4-1.9c.9.2 1.9.4 2.9.4 5.5 0 10-4.1 10-9.3S17.5 2 12 2zm1 12.6-2.6-2.7-5 2.7 5.5-5.8 2.6 2.7 4.9-2.7-5.4 5.8z"/></svg>`,
 };
 
 /* ================= RENDER ================= */
@@ -2114,13 +2268,13 @@ function detailHTML(p) {
       ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
       <div class="detail-pad">
         <div class="post-actions" style="padding:6px 0 2px;margin:0 -5px 0 -7px">
-          <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}<span>${p.likes}</span></button>
+          <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
           <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-          <button class="act">${I.eye(24)}<span>${p.views}</span></button>
-          <button class="act">${I.share(22)}</button>
+          <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+          <button class="act share-btn">${I.share(22)}</button>
           <span class="act-right">
             ${isSale && state.ask !== "bubble" ? askBtnHTML(false) : ""}
-            <button class="save-btn">${I.bookmark(23)}</button>
+            <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
           </span>
         </div>
         ${isSale && state.pr === "pr2"
@@ -2229,13 +2383,13 @@ function igBodyHTML(p, withPostHead) {
     </div>
     ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
     <div class="post-actions">
-      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}<span>${p.likes}</span></button>
+      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
       <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-      <button class="act">${I.eye(24)}<span>${p.views}</span></button>
-      <button class="act">${I.share(22)}</button>
+      <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+      <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
         ${isSale && state.ask !== "bubble" ? askBtnHTML(false) : ""}
-        <button class="save-btn">${I.bookmark(23)}</button>
+        <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
       </span>
     </div>
     <div class="liked-by">
@@ -2331,6 +2485,119 @@ function commentsHTML(p) {
     </div>`;
 }
 
+/* ===== FEED-011 — likes / share / save sheets (memory only) ===== */
+const LIKER_POOL = [
+  { name: "chrono.th", disp: "Chrono TH", avatar: "./assets/user-avatars/u-1088.png" },
+  { name: "davikah", disp: "Davikah Hor", avatar: "./assets/user-avatars/u-1161.png" },
+  { name: "neng_mua", disp: "Neng Mua", avatar: "./assets/user-avatars/u-1120.png" },
+  { name: "watch.daily", disp: "Watch Daily", avatar: "./assets/user-avatars/u-1144.png" },
+  { name: "bamzilla", disp: "Bam Zilla", avatar: "./assets/user-avatars/u-1186.png" },
+  { name: "bikwans", disp: "Biw Kwans", avatar: "./assets/user-avatars/u-1055.png" },
+];
+const FRIENDS = [
+  ...LIKER_POOL,
+  { name: "nat_collection", disp: "Nat", avatar: "./assets/user-avatars/u-1090.png" },
+  { name: "slow.hand", disp: "Slow Hand", avatar: "./assets/user-avatars/u-1104.png" },
+  { name: "gmt.bkk", disp: "GMT BKK", avatar: "./assets/user-avatars/u-1130.png" },
+  { name: "Watch 777", disp: "Watch 777", avatar: "./assets/user-avatars/u-1002.png" },
+  { name: "wrist.story", disp: "Wrist Story", avatar: "./assets/user-avatars/u-1017.png" },
+  { name: "the watch", disp: "The Watch", avatar: "./assets/user-avatars/u-1042.png" },
+  { name: "dial.dude", disp: "Dial Dude", avatar: "./assets/user-avatars/u-1082.png" },
+];
+const SHARE_APPS = [
+  { app: "msngr", t: "Messenger", bg: "#0084ff", ic: "msngr" },
+  { app: "direct", t: "Direct", bg: "linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)", ic: "send" },
+  { app: "line", t: "LINE", bg: "#06c755", txt: "LINE" },
+  { app: "fb", t: "Facebook", bg: "#1877f2", ic: "fb" },
+  { app: "copy", t: "Copy link", cls: "gray", ic: "link" },
+];
+const COLLECTIONS = [
+  { name: "Grail list", thumb: "./assets/asset-uploads/feed-breguet-1.jpg" },
+  { name: "Wishlist", thumb: "./assets/asset-uploads/feed-tudor-bb.jpg" },
+  { name: "Vintage picks", thumb: "./assets/asset-uploads/feed-datejust-1.jpg" },
+  { name: "New", thumb: "" },
+];
+const dispName = n => (FRIENDS.find(f => f.name === n) || {}).disp || n;
+
+function likesSheetHTML(p) {
+  const seen = new Set();
+  const likers = [{ name: p.likedBy.name, avatar: p.likedBy.avatar }, ...LIKER_POOL]
+    .filter(l => !seen.has(l.name) && seen.add(l.name));
+  return `
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Likes</div>
+    <div class="lk-note">Only ${p.seller} can see the total number of likes on this post.</div>
+    <div class="sheet-list">
+      ${likers.map(l => `
+      <div class="lk-row">
+        <img src="${l.avatar}" alt="">
+        <div class="lk-who"><div class="u">${l.name}</div><div class="d">${l.disp || dispName(l.name)}</div></div>
+        <button class="lk-follow">Follow</button>
+      </div>`).join("")}
+    </div>`;
+}
+
+function shareSheetHTML() {
+  return `
+    <div class="sheet-handle"></div>
+    <div class="sh-search">
+      <span class="sh-field">${I.search(17)}<input class="sh-q" placeholder="Search"></span>
+      <button class="sh-add">${I.personAdd(19)}</button>
+    </div>
+    <div class="sh-grid">
+      ${FRIENDS.map(f => `<button class="sh-fr" data-name="${f.name}"><img src="${f.avatar}" alt=""><span class="n">${f.name}</span></button>`).join("")}
+    </div>
+    <div class="sh-apps">
+      ${SHARE_APPS.map(a => `
+      <button class="sh-app${a.cls ? " " + a.cls : ""}" data-app="${a.app}" data-t="${a.t}">
+        <span class="ic"${a.bg ? ` style="background:${a.bg}"` : ""}>${a.ic ? I[a.ic](24) : a.txt}</span>
+        <span class="t">${a.t}</span>
+      </button>`).join("")}
+    </div>`;
+}
+
+function saveSheetHTML(p) {
+  const thumb = c => c.thumb
+    ? `<img class="thumb" src="${c.thumb}" alt="">`
+    : `<span class="thumb"></span>`;
+  return `
+    <div class="sheet-handle"></div>
+    <button class="sv-pick sv-head" data-col="Saved">
+      <img class="thumb" src="${p.photos[0]}" alt="">
+      <span class="b"><span class="t">Saved</span><span class="s">Private</span></span>
+      ${I.bookmark(21)}
+    </button>
+    <div class="sv-sec"><span class="l">Collections</span><button class="sv-new">New collection</button></div>
+    <div class="sv-list">
+      ${COLLECTIONS.map(c => `
+      <button class="sv-pick sv-row" data-col="${c.name}">
+        ${thumb(c)}
+        <span class="b"><span class="n">${c.name}</span><span class="s">Private</span></span>
+        <span class="plus">${I.plus(15)}</span>
+      </button>`).join("")}
+    </div>
+    <div class="sv-newrow"></div>`;
+}
+
+/* shared sheet opener — comment-sheet is a singleton, swap variant class + content */
+function openSheet(scr, variantCls, openCls, html) {
+  const cs = scr.querySelector(".comment-sheet");
+  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv");
+  cs.classList.add(variantCls);
+  cs.innerHTML = html;
+  scr.classList.remove("comments-open", "unfollow-open", "pm-open", "likes-open", "share-open", "save-open");
+  scr.classList.add(openCls);
+}
+
+/* flip every rendered save-btn of a post (feed card + open detail page) */
+function syncSaveBtns(scr, post) {
+  scr.querySelectorAll(".save-btn").forEach(b => {
+    const bArt = b.closest(".post");
+    if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === post.id)
+      b.classList.toggle("saved", post.saved);
+  });
+}
+
 /* post "..." menu — IG-style Not interested / Report flow (FEED-009, memory only) */
 const PM_REASONS = [
   "I just don't like it",
@@ -2418,13 +2685,13 @@ function postCard(p, variant) {
     ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
 
     <div class="post-actions">
-      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}<span>${p.likes}</span></button>
+      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
       <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-      <button class="act">${I.eye(24)}<span>${p.views}</span></button>
-      <button class="act">${I.share(22)}</button>
+      <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+      <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
         ${showAsk ? askBtnHTML(askSolid) : ""}
-        <button class="save-btn">${I.bookmark(23)}</button>
+        <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
       </span>
     </div>
 
@@ -2585,6 +2852,7 @@ function subHTML(name) {
   if (name === "settings") return head("Settings and activity") + `<div class="sub-scroll">
     <div class="sub-sec">What you see</div>
     ${row("Muted accounts", `data-sub="muted"`, `<span class="sub-count">${mutedSellers().length}</span>`)}
+    ${row("Saved", `data-sub="saved"`, `<span class="sub-count">${POSTS.filter(p => p.saved).length}</span>`)}
     ${row("Content preferences", `data-sub="prefs"`)}
   </div>`;
   if (name === "muted") return head("Muted accounts") + `<div class="sub-scroll">${
@@ -2607,6 +2875,17 @@ function subHTML(name) {
       ${opt("less", "Less", "You'll see less sensitive content.")}
       ${opt("standard", "Standard", "You'll see some sensitive content.")}
     </div>`;
+  }
+  if (name === "saved") {
+    const saved = POSTS.filter(p => p.saved);
+    return head("Saved") + `<div class="sub-scroll">${
+      saved.length ? saved.map(p => `
+      <div class="mrow">
+        <img class="msq" src="${p.photos[0]}" alt="">
+        <span class="lg-b"><span class="mn">${p.seller}</span><span class="md">${p.savedCol || "Saved"} · ${p.caption}</span></span>
+        <button class="mact m-unsave" data-pid="${p.id}">Remove</button>
+      </div>`).join("") : `<div class="sub-empty">Nothing saved yet</div>`
+    }</div>`;
   }
   if (name === "interested") return head("Interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.liked), "Remove", "m-unlike")}</div>`;
   if (name === "ni") return head("Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni), "Restore", "m-restore")}</div>`;
@@ -2803,10 +3082,25 @@ stageEl.addEventListener("pointercancel", endSwipe);
 );
 stageEl.addEventListener("keydown", e => {
   if (e.key === "Enter" && e.target.matches(".cp-input input")) sendChat(e.target);
+  if (e.key === "Enter" && e.target.matches(".sv-input")) {
+    const scr = e.target.closest(".screen");
+    const post = POSTS.find(x => x.id === scr.dataset.svPid);
+    const name = e.target.value.trim() || "New collection";
+    COLLECTIONS.push({ name, thumb: post ? post.photos[0] : "" });
+    if (post) post.savedCol = name;
+    scr.classList.remove("save-open");
+    scrToast(scr, `Saved to ${name}`);
+  }
 });
 stageEl.addEventListener("input", e => {
   if (e.target.matches(".cp-input input"))
     e.target.closest(".cp-input").querySelector(".cp-send").disabled = !e.target.value.trim();
+  if (e.target.matches(".sh-q")) {
+    const q = e.target.value.trim().toLowerCase();
+    e.target.closest(".comment-sheet").querySelectorAll(".sh-fr").forEach(b => {
+      b.style.display = b.dataset.name.toLowerCase().includes(q) ? "" : "none";
+    });
+  }
 });
 
 document.getElementById("stage").addEventListener("click", e => {
@@ -2818,7 +3112,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const art = pmBtn.closest(".post");
     scr.dataset.pmPid = art ? art.dataset.pid : scr.dataset.detailPid;
     const cs = scr.querySelector(".comment-sheet");
-    cs.classList.remove("uf", "pm-rp");
+    cs.classList.remove("uf", "pm-rp", "lk", "sh", "sv");
     cs.classList.add("pm");
     cs.innerHTML = pmMenuHTML();
     scr.classList.add("pm-open");
@@ -2984,7 +3278,19 @@ document.getElementById("stage").addEventListener("click", e => {
     }
     return;
   }
-  const dead = e.target.closest(".nav-item, .save-btn, .act:not(.like-btn):not(.comment-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn), .emoji-row, .comment-input, .sheet-title .send, .c-meta");
+  const mUs = e.target.closest(".m-unsave");
+  if (mUs) {
+    const p = POSTS.find(x => x.id === mUs.dataset.pid);
+    const scr = mUs.closest(".screen");
+    if (p) {
+      p.saved = false;
+      p.savedCol = null;
+      syncSaveBtns(scr, p);
+      renderSub(scr);
+    }
+    return;
+  }
+  const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn), .emoji-row, .comment-input, .sheet-title .send, .c-meta");
   if (dead) { toast("Not in this prototype yet"); return; }
   const wm = e.target.closest(".wordmark");
   if (wm) {
@@ -3068,7 +3374,7 @@ document.getElementById("stage").addEventListener("click", e => {
     if (post.following) {
       scr.dataset.ufSeller = post.seller;
       const cs = scr.querySelector(".comment-sheet");
-      cs.classList.remove("pm", "pm-rp");
+      cs.classList.remove("pm", "pm-rp", "lk", "sh", "sv");
       cs.classList.add("uf");
       cs.innerHTML = `
         <div class="sheet-handle"></div>
@@ -3104,14 +3410,93 @@ document.getElementById("stage").addEventListener("click", e => {
     const pid = art ? art.dataset.pid : scr.dataset.detailPid;
     const post = POSTS.find(x => x.id === pid);
     const cs = scr.querySelector(".comment-sheet");
-    cs.classList.remove("uf", "pm", "pm-rp");
+    cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv");
     cs.innerHTML = commentsHTML(post);
     scr.classList.add("comments-open");
     return;
   }
+  /* ===== FEED-011 — likes / share / save ===== */
+  const lbRow = e.target.closest(".liked-by");
+  if (lbRow) {
+    const scr = lbRow.closest(".screen");
+    const art = lbRow.closest(".post");
+    const pid = art ? art.dataset.pid : scr.dataset.detailPid;
+    const post = POSTS.find(x => x.id === pid);
+    if (!post) return;
+    openSheet(scr, "lk", "likes-open", likesSheetHTML(post));
+    return;
+  }
+  const lkF = e.target.closest(".lk-follow");
+  if (lkF) {
+    lkF.classList.toggle("on");
+    lkF.textContent = lkF.classList.contains("on") ? "Following" : "Follow";
+    return;
+  }
+  const shBtn = e.target.closest(".share-btn");
+  if (shBtn) {
+    const scr = shBtn.closest(".screen");
+    const art = shBtn.closest(".post");
+    scr.dataset.shPid = art ? art.dataset.pid : scr.dataset.detailPid;
+    openSheet(scr, "sh", "share-open", shareSheetHTML());
+    return;
+  }
+  const shFr = e.target.closest(".sh-fr");
+  if (shFr) {
+    const scr = shFr.closest(".screen");
+    scr.classList.remove("share-open");
+    scrToast(scr, `Sent to ${shFr.dataset.name}`);
+    return;
+  }
+  const shApp = e.target.closest(".sh-app");
+  if (shApp) {
+    const scr = shApp.closest(".screen");
+    scr.classList.remove("share-open");
+    scrToast(scr, shApp.dataset.app === "copy" ? "Link copied" : `Shared to ${shApp.dataset.t}`);
+    return;
+  }
+  const svBtn = e.target.closest(".save-btn");
+  if (svBtn) {
+    const scr = svBtn.closest(".screen");
+    const art = svBtn.closest(".post");
+    const pid = art ? art.dataset.pid : scr.dataset.detailPid;
+    const post = POSTS.find(x => x.id === pid);
+    if (!post) return;
+    if (post.saved) {
+      post.saved = false;
+      post.savedCol = null;
+      syncSaveBtns(scr, post);
+      scrToast(scr, "Removed from saved");
+    } else {
+      post.saved = true;
+      post.savedCol = "Saved";
+      syncSaveBtns(scr, post);
+      scr.dataset.svPid = post.id;
+      openSheet(scr, "sv", "save-open", saveSheetHTML(post));
+    }
+    return;
+  }
+  const svPick = e.target.closest(".sv-pick");
+  if (svPick) {
+    const scr = svPick.closest(".screen");
+    const post = POSTS.find(x => x.id === scr.dataset.svPid);
+    const col = svPick.dataset.col;
+    if (post) post.savedCol = col;
+    scr.classList.remove("save-open");
+    scrToast(scr, col === "Saved" ? "Saved" : `Saved to ${col}`);
+    return;
+  }
+  const svNew = e.target.closest(".sv-new");
+  if (svNew) {
+    const wrap = svNew.closest(".comment-sheet").querySelector(".sv-newrow");
+    if (!wrap.querySelector("input")) {
+      wrap.innerHTML = `<input class="sv-input" placeholder="Collection name" maxlength="30">`;
+      wrap.querySelector("input").focus();
+    }
+    return;
+  }
   const closeSheet = e.target.closest(".sheet-backdrop, .sheet-handle");
   if (closeSheet) {
-    closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "dialog-open");
+    closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "dialog-open", "likes-open", "share-open", "save-open");
     return;
   }
   const clike = e.target.closest(".c-like");
@@ -3173,10 +3558,8 @@ document.getElementById("stage").addEventListener("click", e => {
     post.likes += post.liked ? 1 : -1;
     scr.querySelectorAll(".like-btn").forEach(b => {
       const bArt = b.closest(".post");
-      if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === pid) {
+      if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === pid)
         b.classList.toggle("liked", post.liked);
-        b.querySelector("span").textContent = post.likes;
-      }
     });
     if (state.feedTab === "favorites")
       scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);

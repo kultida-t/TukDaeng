@@ -1,11 +1,16 @@
-// Verify fo-flow FEED-009+010: post "..." menu + IG-style Not interested / Report
-// flow + working feedback-card actions. "..." opens a bottom sheet with
+// Verify fo-flow FEED-009+010+011: post "..." menu + IG-style Not interested /
+// Report flow + working feedback-card actions. "..." opens a bottom sheet with
 // Not interested / Report(red); Not interested -> Thanks-for-feedback card
 // (Undo + working rows: Mute -> center dialog -> hides seller + Settings unmute,
 // Manage content preferences -> prefs page, This post made me uncomfortable ->
 // ack card with Report/Undo); Report -> full-page 9-reason list (TukDaeng-adapted,
 // incl. Counterfeit or replica item). FEED-010 adds center "Unfollowed"/"Posts
-// muted" toasts. Regression: comments/unfollow/like/follow/swipe.
+// muted" toasts. FEED-011: action row — like heart has no count, eye is a
+// display-only filled-eye view stat, "x and others liked" opens a Likes sheet
+// (no search, Follow toggles), share opens an IG-style sheet (search + 2-row
+// scrollable friend grid + Messenger/Direct/LINE/Facebook/Copy link), save
+// opens a Collections sheet (Saved + collections + New collection) and saved
+// posts list under Settings > Saved. Regression: comments/unfollow/like/follow/swipe.
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -450,6 +455,193 @@ await page.locator(".sub-back").click();
 await page.waitForTimeout(300);
 await page.locator(".sub-back").click();
 await page.waitForTimeout(300);
+await page.locator("#themeToggle").click();
+await page.waitForTimeout(300);
+
+/* ===== FEED-011 — action row: like (no count) / views (display-only eye) /
+   liked-by -> Likes sheet / share sheet / save -> collections sheet ===== */
+const OUT11 = "C:/Users/Admin/Desktop/TukDaeng/Prototypes/screenshots/task-FEED-011/after";
+mkdirSync(OUT11, { recursive: true });
+
+// 20) like-btn = heart only, no count span; toggle still works
+check("like-btn has no count span", await page.locator('.post[data-pid="p5"] .like-btn span').count() === 0);
+await page.locator('.post[data-pid="p5"] .like-btn').click();
+await page.waitForTimeout(250);
+check("p5 heart toggles liked", await page.locator('.post[data-pid="p5"] .like-btn.liked').count() === 1);
+await page.locator('.post[data-pid="p5"] .like-btn').click();
+await page.waitForTimeout(250);
+check("p5 heart untoggles", await page.locator('.post[data-pid="p5"] .like-btn.liked').count() === 0);
+
+// 21) views = filled-eye stat, not a button, click does nothing
+check("views stat rendered as span", await page.locator('.post[data-pid="p5"] span.views-stat').count() === 1);
+check("no .act button for views", await page.locator('.post[data-pid="p5"] .post-actions .act:not(.like-btn):not(.comment-btn):not(.share-btn)').count() === 0);
+check("views shows count", (await page.locator('.post[data-pid="p5"] .views-stat').textContent()).includes("1.5K"));
+await page.locator('.post[data-pid="p5"] .views-stat').click();
+await page.waitForTimeout(300);
+check("clicking views does nothing", await page.locator(".screen.likes-open, .screen.share-open, .screen.save-open, .screen.comments-open, .screen.pm-open, #flowToast.show").count() === 0);
+
+// 22) "x and others liked" opens Likes sheet (no search / no views tab)
+await page.locator('.post[data-pid="p5"] .liked-by').click();
+await page.waitForTimeout(350);
+check("likes sheet opens", await page.locator(".screen.likes-open").count() === 1);
+check("likes title", (await page.locator(".comment-sheet .sheet-title").textContent()).trim() === "Likes");
+check("note names the seller", (await page.locator(".lk-note").textContent()).includes("watch.daily"));
+check("no search input in likes sheet", await page.locator(".comment-sheet input").count() === 0);
+check("liker rows >= 6", await page.locator(".lk-row").count() >= 6, String(await page.locator(".lk-row").count()));
+check("first liker = the watch", (await page.locator(".lk-row .u").nth(0).textContent()).trim() === "the watch");
+check("every liker has Follow btn", await page.locator(".lk-follow").count() === await page.locator(".lk-row").count());
+await page.screenshot({ path: `${OUT11}/d-likes-sheet.png` });
+await page.locator(".lk-follow").nth(0).click();
+await page.waitForTimeout(200);
+check("liker Follow flips to Following", (await page.locator(".lk-follow").nth(0).textContent()).trim() === "Following");
+await closeSheet();
+check("backdrop closes likes sheet", await page.locator(".screen.likes-open").count() === 0);
+
+// 23) share sheet — search + friend grid + app row (no Add to story)
+await page.locator('.post[data-pid="p5"] .share-btn').click();
+await page.waitForTimeout(350);
+check("share sheet opens", await page.locator(".screen.share-open").count() === 1);
+check("share has search field", await page.locator(".sh-field input").count() === 1);
+check("13 friend circles (all friends, scrollable)", await page.locator(".sh-fr").count() === 13);
+const gridBox = await page.locator(".sh-grid").boundingBox();
+const frBox = await page.locator(".sh-fr").first().boundingBox();
+check("grid shows ~2 rows then scrolls", gridBox.height < frBox.height * 2.5 && await page.locator(".sh-grid").evaluate(el => el.scrollHeight > el.clientHeight), `gridH=${gridBox.height} rowH=${frBox.height}`);
+const appNames = (await page.locator(".sh-app .t").allTextContents()).map(t => t.trim());
+check("apps row order", JSON.stringify(appNames) === JSON.stringify(["Messenger","Direct","LINE","Facebook","Copy link"]), appNames.join(","));
+check("no Add to story", !appNames.some(t => /story/i.test(t)));
+const copyBox = await page.locator('.sh-app[data-app="copy"]').boundingBox();
+check("Copy link fully in view", copyBox.x + copyBox.width <= 440, `right=${Math.round(copyBox.x + copyBox.width)}`);
+await page.screenshot({ path: `${OUT11}/d-share-sheet.png` });
+await page.locator(".sh-q").fill("chrono");
+await page.waitForTimeout(200);
+check("search filters friends to 1", await page.locator(".sh-fr:visible").count() === 1);
+await page.locator(".sh-q").fill("");
+await page.waitForTimeout(150);
+await page.locator('.sh-fr[data-name="davikah"]').click();
+await page.waitForTimeout(250);
+check("friend send closes + toast", await page.locator(".screen.share-open").count() === 0 && (await page.locator(".sc-toast").textContent()).includes("Sent to davikah"));
+await page.waitForTimeout(1900);
+await page.locator('.post[data-pid="p5"] .share-btn').click();
+await page.waitForTimeout(300);
+await page.locator('.sh-app[data-app="copy"]').click();
+await page.waitForTimeout(250);
+check("copy link toast", (await page.locator(".sc-toast").textContent()).trim() === "Link copied");
+await page.waitForTimeout(1900);
+await page.locator('.post[data-pid="p5"] .share-btn').click();
+await page.waitForTimeout(300);
+await page.locator('.sh-app[data-app="line"]').click();
+await page.waitForTimeout(250);
+check("share to LINE toast", (await page.locator(".sc-toast").textContent()).trim() === "Shared to LINE");
+await page.waitForTimeout(1900);
+
+// 24) save -> collections sheet; pick collection -> icon filled + toast
+await page.locator('.post[data-pid="p5"] .save-btn').click();
+await page.waitForTimeout(300);
+check("save fills bookmark + opens sheet", await page.locator('.post[data-pid="p5"] .save-btn.saved').count() === 1 && await page.locator(".screen.save-open").count() === 1);
+check("Saved head row", (await page.locator(".sv-head .t").textContent()).trim() === "Saved" && (await page.locator(".sv-head .s").textContent()).trim() === "Private");
+check("Collections + New collection", (await page.locator(".sv-sec .l").textContent()).trim() === "Collections" && (await page.locator(".sv-new").textContent()).trim() === "New collection");
+check("4 collection rows", await page.locator(".sv-row").count() === 4);
+await page.screenshot({ path: `${OUT11}/d-save-sheet.png` });
+await page.locator('.sv-row[data-col="Wishlist"]').click();
+await page.waitForTimeout(250);
+check("saved-to-collection toast", (await page.locator(".sc-toast").textContent()).trim() === "Saved to Wishlist");
+check("save sheet closed", await page.locator(".screen.save-open").count() === 0);
+await page.waitForTimeout(1900);
+// tap saved bookmark again -> unsaves
+await page.locator('.post[data-pid="p5"] .save-btn').click();
+await page.waitForTimeout(250);
+check("unsave clears icon + toast", await page.locator('.post[data-pid="p5"] .save-btn.saved').count() === 0 && (await page.locator(".sc-toast").textContent()).trim() === "Removed from saved");
+await page.waitForTimeout(1900);
+// save p5 to default Saved + p6 via New collection input
+await page.locator('.post[data-pid="p5"] .save-btn').click();
+await page.waitForTimeout(250);
+await page.locator('.sv-head[data-col="Saved"]').click();
+await page.waitForTimeout(250);
+await page.locator('.post[data-pid="p6"] .save-btn').click();
+await page.waitForTimeout(250);
+await page.locator(".sv-new").click();
+await page.waitForTimeout(200);
+await page.locator(".sv-input").fill("Seiko picks");
+await page.locator(".sv-input").press("Enter");
+await page.waitForTimeout(300);
+check("new collection saves + toast", (await page.locator(".sc-toast").textContent()).trim() === "Saved to Seiko picks");
+check("p6 bookmark filled", await page.locator('.post[data-pid="p6"] .save-btn.saved').count() === 1);
+await page.waitForTimeout(1900);
+
+// 25) Settings > Saved lists saved posts, Remove unsaves
+await page.locator(".set-btn").click();
+await page.waitForTimeout(350);
+check("settings has Saved row", (await page.locator('.sub-row[data-sub="saved"]').textContent()).includes("Saved"));
+check("saved count = 2", (await page.locator('.sub-row[data-sub="saved"] .sub-count').textContent()).trim() === "2");
+await page.locator('.sub-row[data-sub="saved"]').click();
+await page.waitForTimeout(350);
+check("saved list = 2 rows", await page.locator(".page-sub .mrow").count() === 2);
+check("collection name shown", (await page.locator(".page-sub").textContent()).includes("Seiko picks"));
+await page.screenshot({ path: `${OUT11}/d-saved-page.png` });
+await page.locator('.m-unsave[data-pid="p5"]').click();
+await page.waitForTimeout(300);
+check("remove drops row", await page.locator(".page-sub .mrow").count() === 1);
+check("p5 icon cleared in feed", await page.locator('.post[data-pid="p5"] .save-btn.saved').count() === 0);
+await page.locator(".sub-back").click();
+await page.waitForTimeout(300);
+await page.locator(".sub-back").click();
+await page.waitForTimeout(300);
+
+// 26) detail pages — DL1 (p4) share/save work over the page; DL2 (p5) liked-by opens likes
+await page.locator('.post[data-pid="p4"] .details-toggle').click();
+await page.waitForTimeout(300);
+await page.locator('.post[data-pid="p4"] .view-full').click();
+await page.waitForTimeout(400);
+check("DL1 detail has views-stat + share + save", await page.locator(".page-detail .views-stat").count() === 1 && await page.locator(".page-detail .share-btn").count() === 1 && await page.locator(".page-detail .save-btn").count() === 1);
+await page.locator(".page-detail .save-btn").click();
+await page.waitForTimeout(300);
+check("save sheet over DL1 detail", await page.locator(".screen.save-open").count() === 1);
+await page.locator('.sv-row[data-col="Grail list"]').click();
+await page.waitForTimeout(250);
+check("detail save syncs feed card", await page.locator('.post[data-pid="p4"] .save-btn.saved').count() === 1);
+await page.waitForTimeout(1900);
+await page.locator(".page-detail .share-btn").click();
+await page.waitForTimeout(300);
+check("share sheet over DL1 detail", await page.locator(".screen.share-open").count() === 1);
+await page.locator('.sh-app[data-app="fb"]').click();
+await page.waitForTimeout(250);
+check("share to Facebook toast", (await page.locator(".sc-toast").textContent()).trim() === "Shared to Facebook");
+await page.waitForTimeout(1900);
+await page.locator(".page-detail .detail-back").first().click();
+await page.waitForTimeout(300);
+await page.evaluate(() => { const p = POSTS.find(x => x.id === "p4"); p.saved = false; p.savedCol = null; });
+
+await page.locator('.post[data-pid="p5"] .details-toggle').click();
+await page.waitForTimeout(300);
+await page.locator('.post[data-pid="p5"] .view-full').click();
+await page.waitForTimeout(400);
+await page.locator(".page-detail .liked-by").click();
+await page.waitForTimeout(300);
+check("likes sheet from DL2 detail", await page.locator(".screen.likes-open").count() === 1 && (await page.locator(".lk-note").textContent()).includes("watch.daily"));
+await page.screenshot({ path: `${OUT11}/d-likes-from-detail.png` });
+await closeSheet();
+await page.locator(".page-detail .detail-back").first().click();
+await page.waitForTimeout(300);
+
+// 27) light theme — sheets still work + screenshots
+await page.locator("#themeToggle").click();
+await page.waitForTimeout(300);
+await page.locator('.post[data-pid="p6"] .liked-by').click();
+await page.waitForTimeout(300);
+await page.screenshot({ path: `${OUT11}/l-likes-sheet.png` });
+await closeSheet();
+await page.locator('.post[data-pid="p6"] .share-btn').click();
+await page.waitForTimeout(300);
+await page.screenshot({ path: `${OUT11}/l-share-sheet.png` });
+await page.locator('.sh-app[data-app="copy"]').click();
+await page.waitForTimeout(250);
+check("light theme share works", (await page.locator(".sc-toast").textContent()).trim() === "Link copied");
+await page.waitForTimeout(1900);
+await page.locator('.post[data-pid="p3"] .save-btn').click();
+await page.waitForTimeout(250);
+check("light theme save sheet opens", await page.locator(".screen.save-open").count() === 1);
+await page.screenshot({ path: `${OUT11}/l-save-sheet.png` });
+await closeSheet();
 await page.locator("#themeToggle").click();
 await page.waitForTimeout(300);
 

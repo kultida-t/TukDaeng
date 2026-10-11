@@ -1,6 +1,7 @@
 // Verify fo-flow FEED-007: like-btn writes p.liked, Favorites tab lists liked posts,
 // unlike drops post / restores empty state, state survives tab + theme re-renders,
 // detail-page like-btn stays in sync
+// (FEED-011: like-btn no longer shows a count — likeState reads p.likes instead)
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -30,7 +31,7 @@ const posts = () => page.locator(".feed-scroll .post");
 const likeBtn = pid => page.locator(`.feed-scroll .post[data-pid="${pid}"] .like-btn`);
 const likeState = async pid => ({
   liked: await likeBtn(pid).evaluate(el => el.classList.contains("liked")),
-  count: await likeBtn(pid).locator("span").textContent(),
+  count: String(await page.evaluate(id => POSTS.find(x => x.id === id).likes, pid)),
 });
 
 // 1) like p1 (likes 3) + p7 (likes 34) on All tab
@@ -94,12 +95,12 @@ await page.locator('.post[data-pid="p1"] .view-full').click();
 await page.waitForTimeout(400);
 const dLike = page.locator(".page-detail .like-btn");
 check("detail like-btn liked (synced)", await dLike.evaluate(el => el.classList.contains("liked")));
-check("detail like count 4", (await dLike.locator("span").textContent()) === "4");
+check("detail like count 4", (await page.evaluate(() => POSTS.find(x => x.id === "p1").likes)) === 4);
 await page.screenshot({ path: `${OUT}/m-detail-liked.png` });
 await dLike.click();
 await page.waitForTimeout(200);
 check("detail unlike clears class", !(await dLike.evaluate(el => el.classList.contains("liked"))));
-check("detail count back to 3", (await dLike.locator("span").textContent()) === "3");
+check("detail count back to 3", (await page.evaluate(() => POSTS.find(x => x.id === "p1").likes)) === 3);
 await page.locator(".page-detail .detail-back").first().click();
 await page.waitForTimeout(300);
 s = await likeState("p1");
