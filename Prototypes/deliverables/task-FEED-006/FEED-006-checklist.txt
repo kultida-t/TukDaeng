@@ -1,0 +1,30 @@
+FEED-006 Manual Review Checklist — หน้า Feed fo-flow แท็บ Following / Favorites
+URL ทดสอบ: http://127.0.0.1:4173/fo-flow/index.html
+ผู้ตรวจ: ผู้ใช้ยืนยันผลผ่านแชท ("โอเคปิด task ได้") หลังแก้ข้อความ empty state รอบสุดท้าย
+หมายเหตุ: รอบแรก empty state มีข้อความรองภาษาไทย "แตะ ❤️ บนสินค้าใดก็ได้เพื่อบันทึกไว้ที่นี่" — ผู้ใช้สั่งเอาออกและเปลี่ยนหัวข้อเป็นอังกฤษ → แก้เป็น "No favorites yet" บรรทัดเดียว แล้วตรวจผ่าน
+
+เคส 1: Favorites ว่าง — ผ่าน
+- กดแท็บ Favorites
+- ผลที่คาด/จริง: chip Favorites แดง active, ตรงกลางมีไอคอนหัวใจ + ข้อความ "No favorites yet" บรรทัดเดียว ไม่มีข้อความรอง ไม่มีโพสต์
+
+เคส 2: Following filter — ผ่าน
+- กดแท็บ Following
+- ผลที่คาด/จริง: เห็นเฉพาะ 3 โพสต์จากบัญชีที่ติดตาม — wrist.story, the watch, slow.hand (โพสต์ seller อื่นไม่แสดง)
+
+เคส 3: All Posts กลับมาครบ — ผ่าน
+- กดแท็บ All Posts
+- ผลที่คาด/จริง: โพสต์กลับมาครบ 11 โพสต์ เหมือนเดิมทุกประการ
+
+เคส 4: สลับแท็บไปมา — ผ่าน
+- กด Following → Favorites → All สลับหลายรอบ
+- ผลที่คาด/จริง: chip active ตามถูกทุกครั้ง, content เปลี่ยนตามแท็บ, ตำแหน่ง scroll กลับบนสุดเมื่อเปลี่ยนแท็บ
+
+เคส 5: Interaction ในแท็บ Following — ผ่าน
+- อยู่แท็บ Following กดปุ่ม comment ของโพสต์ wrist.story, กด like
+- ผลที่คาด/จริง: comment sheet เปิดได้แสดง 2 รายการ, กด like ได้ตัวเลขเปลี่ยน
+
+เคส 6: Theme toggle คงแท็บที่เลือก — ผ่าน
+- อยู่แท็บ Favorites กดปุ่ม ☾/☀ สลับ theme
+- ผลที่คาด/จริง: theme เปลี่ยนแต่ยังอยู่แท็บ Favorites, empty state อ่านได้ชัดทั้ง dark และ light
+
+เคส regression (ยืนยันโดย _verify_feed_posts.mjs): 11 โพสต์ครบ, showcase ไม่มี Details/Ask Seller, comment sheet, swipe multi-photo — ผ่านทั้งหมด ไม่มี console error

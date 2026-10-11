@@ -1,0 +1,47 @@
+FEED-008 Manual Review Checklist — หน้า Feed fo-flow ปุ่ม Follow → แท็บ Following
+URL ทดสอบ: http://127.0.0.1:4173/fo-flow/index.html
+ผู้ตรวจ: ผู้ใช้รีวิวจริงบน preview แล้วยืนยันผ่าน ("โอเคปิด task ได้" 2026-10-11 ~18:10) — ระหว่างรีวิวขอปรับพฤติกรรม 2 รอบ (ซ่อนปุ่ม Following ตอน re-render + flip เป็น Following in-place เมื่อกดสด) แก้แล้ว verify ซ้ำผ่านทุกเคส
+
+เคส 1: การ์ดแสดงปุ่มเฉพาะตอนยังไม่ติดตาม (IG-style) — ผ่าน (auto-verified)
+- แท็บ All Posts: โพสต์ที่ยังไม่ติดตาม (Watch 777 ฯลฯ) มีปุ่ม "Follow" พื้นเทา
+- โพสต์ที่ติดตามอยู่ (wrist.story / the watch / slow.hand) ไม่มีปุ่มใน header การ์ด
+- สลับ theme ☾/☀ (re-render ทั้งจอ) แล้วก็ยังไม่มีปุ่มบนการ์ดที่ติดตามแล้ว
+
+เคส 2: กด Follow แล้วปุ่มเปลี่ยนเป็น Following ตรงนั้น — ผ่าน (auto-verified)
+- กด "Follow" บนการ์ด Watch 777 → ปุ่มเปลี่ยนเป็น "Following" ขอบเส้นทันที (ยังไม่ re-render)
+- กด "Following" ซ้ำได้เลย → sheet "Unfollow @Watch 777?" เด้ง → Cancel ยังติดตาม / Unfollow ปุ่มกลับ "Follow" กดซ้ำได้อีก
+- กดแท็บ Following → เห็น 4 โพสต์ (p1 + ของเดิม 3) — การ์ดในแท็บนี้ไม่มีปุ่มตาม IG
+- กลับแท็บ All (re-render) → การ์ด p1 ไม่มีปุ่มแล้ว เหมือน IG ที่ปุ่มหายหลัง refresh
+
+เคส 3: Unfollow ผ่าน bottom sheet จากหน้า detail — ผ่าน (auto-verified)
+- เปิด detail ของ Watch 777 (Tap for details → View full detail) → แถว seller มีปุ่ม "Following" ขอบเส้น
+- กด "Following" → sheet เด้งจากล่าง: รูป avatar + "Unfollow @Watch 777?" + ปุ่ม Unfollow แดง / Cancel
+- กด Cancel → sheet ปิด ยังติดตามอยู่ / กด Unfollow → ปุ่มใน detail กลับเป็น "Follow"
+- กลับ feed → การ์ด p1 มีปุ่ม "Follow" กลับมา / แท็บ Following เหลือ 3 โพสต์
+
+เคส 4: Unfollow ขณะอยู่แท็บ Following (ผ่าน detail) โพสต์หลุดทันที — ผ่าน (auto-verified)
+- อยู่แท็บ Following → เปิด detail ของ the watch (p2) → กด Following → Unfollow
+- กลับมา → p2 หายจากลิสต์ทันที เหลือ 2 โพสต์; ไปแท็บ All การ์ด p2 มีปุ่ม "Follow" กลับมา กดซ้ำได้
+
+เคส 5: Empty state แยกตามแท็บ — ผ่าน (auto-verified)
+- Favorites ว่าง → หัวใจ + "No favorites yet" เหมือนเดิม
+- Following ว่าง → ไอคอนคน 2 คน + "Follow others to see their posts here" ตาม mock
+  (หมายเหตุ: ตอนนี้เข้าถึง empty state ผ่าน UI ไม่ได้เพราะ showcase ไม่มีหน้า detail — ดูข้อจำกัดด้านล่าง)
+
+ข้อจำกัดที่รับทราบแล้ว (ผู้ใช้ตัดสินใจ 2026-10-11):
+- Unfollow ทำที่หน้า detail/profile ตาม flow IG — โพสต์ showcase (wrist.story, slow.hand) ยังไม่มีจุดเข้า detail → unfollow ไม่ได้จาก UI ตอนนี้ รอทำหน้า profile ใน task อื่น
+- แท็บ Following จึงว่างถึง empty state ผ่าน UI ไม่ได้ — ภาพ empty state เก็บไว้ใน console-only/
+
+เคส regression (ยืนยันโดย _verify_feed_like.mjs + _verify_feed_tabs.mjs + _verify_feed_posts.mjs):
+- All = 11 โพสต์, Favorites ทำงานเหมือนเดิม (like→เข้าแท็บ, empty "No favorites yet")
+- comment sheet เปิดได้ปกติ (ไม่ติดสไตล์ uf ค้าง), swipe multi-photo p10 1/2→2/2, showcase ไม่มี Details/Ask
+- ไม่มี console/page error — ผ่านทั้งหมด
+
+Verify script: Prototypes/_verify_feed_follow.mjs (34 checks, 0 fail, 0 console errors)
+Screenshots: Prototypes/screenshots/task-FEED-008/after/ (d/m) + console-only/ สำหรับ empty state ที่ UI เข้าไม่ถึง
+Technical: follow เป็นสถานะระดับบัญชี — setFollowing() toggle p.following ทุกโพสต์ของ seller เดียวกัน
+  render rule: post-head แสดงปุ่มเฉพาะตอน !following (feed card + IG detail head) → re-render แล้วปุ่มหาย
+  กด Follow สด ๆ → ปุ่ม flip เป็น Following in-place unfollow ได้ทันทีก่อน re-render (แบบ IG)
+  unfollow จาก detail → DOM surgery ใส่ปุ่ม Follow กลับที่การ์ด (คง scroll/expanded state)
+  detail-seller คงปุ่ม stateful Follow/Following เป็นทาง unfollow หลัก (dl1)
+  state เก็บใน memory บน post object (p.following) ตามขอบเขต task — ไม่ persist localStorage

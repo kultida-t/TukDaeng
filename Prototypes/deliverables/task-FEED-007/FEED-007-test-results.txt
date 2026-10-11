@@ -1,0 +1,25 @@
+PASS like p1 marks btn liked
+PASS like p1 count 3->4 — 4
+PASS like p7 liked + count 34->35 — 35
+PASS favorites lists 2 liked posts — 2
+PASS favorites contains p1,p7 — ["p1","p7"]
+PASS favorites icons all liked
+PASS all posts back to 11
+PASS p1 still liked in All + count 4 — 4
+PASS favorites after theme toggle still 2
+PASS still on Favorites tab
+PASS fav icons liked after re-render
+PASS unlike drops p7 from favorites
+PASS remaining post is p1
+PASS empty state after last unlike
+PASS empty title 'No favorites yet'
+PASS detail like-btn liked (synced)
+PASS detail like count 4
+PASS detail unlike clears class
+PASS detail count back to 3
+PASS feed card un-liked after detail unlike — 3
+PASS favorites empty again
+PASS following still 3 posts
+PASS comment sheet opens
+console/page errors: 0 | failed checks: 0
+DONE
