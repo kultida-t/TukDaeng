@@ -107,3 +107,62 @@ PASS snooze on -> feed = followed only (4) — 4
 PASS reset dialog opens
 PASS reset restores feed (11 posts) — 11
 PASS reset toast
+PASS prefs back closes to feed
+PASS unfollow toast = Unfollowed
+PASS feedback card removed after unfollow
+PASS p2 back with Follow button
+PASS uf sheet opens for followed seller
+PASS uf-sheet toast = Unfollowed
+PASS prefs opens in light theme
+PASS like-btn has no count span
+PASS p5 heart toggles liked
+PASS p5 heart untoggles
+PASS views stat rendered as span
+PASS no .act button for views
+PASS views shows count
+PASS clicking views does nothing
+PASS likes sheet opens
+PASS likes title
+PASS note names the seller
+PASS no search input in likes sheet
+PASS liker rows >= 6 — 7
+PASS first liker = the watch
+PASS every liker has Follow btn
+PASS liker Follow flips to Following
+PASS backdrop closes likes sheet
+PASS share sheet opens
+PASS share has search field
+PASS 13 friend circles (all friends, scrollable)
+PASS grid shows ~2 rows then scrolls — gridH=216 rowH=93.9375
+PASS apps row order — Messenger,Direct,LINE,Facebook,Copy link
+PASS no Add to story
+PASS Copy link fully in view — right=430
+PASS search filters friends to 1
+PASS friend send closes + toast
+PASS copy link toast
+PASS share to LINE toast
+PASS save fills bookmark + opens sheet
+PASS Saved head row
+PASS Collections + New collection
+PASS 4 collection rows
+PASS saved-to-collection toast
+PASS save sheet closed
+PASS unsave clears icon + toast
+PASS new collection saves + toast
+PASS p6 bookmark filled
+PASS settings has Saved row
+PASS saved count = 2
+PASS saved list = 2 rows
+PASS collection name shown
+PASS remove drops row
+PASS p5 icon cleared in feed
+PASS DL1 detail has views-stat + share + save
+PASS save sheet over DL1 detail
+PASS detail save syncs feed card
+PASS share sheet over DL1 detail
+PASS share to Facebook toast
+PASS likes sheet from DL2 detail
+PASS light theme share works
+PASS light theme save sheet opens
+console/page errors: 0 | failed checks: 0
+DONE
