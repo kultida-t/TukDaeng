@@ -1,0 +1,56 @@
+PASS card p1 .more shows 3-dot icon
+PASS no hamburger <path> left in any .more
+PASS every post-head has .more
+PASS pm sheet opens
+PASS menu has exactly 2 rows
+PASS row 1 = Not interested
+PASS row 2 = Report
+PASS Report row is red — rgb(200, 33, 43)
+PASS sheet closes after Not interested
+PASS p1 replaced by feedback card
+PASS title = Thanks for your feedback
+PASS sub = We'll suggest fewer posts like this.
+PASS Undo present top-right
+PASS 2 items (not-followed variant)
+PASS no Mute row when not followed
+PASS item 1 = Manage content preferences
+PASS item 2 = This post made me uncomfortable
+PASS items have leading icons
+PASS Undo restores post p1
+PASS feedback card gone
+PASS menu sheet closes for report
+PASS report page opens
+PASS report slides up from bottom
+PASS report title = Report
+PASS X close button present
+PASS question = Why are you reporting this post?
+PASS anonymous desc
+PASS 9 reason rows
+PASS reason 1 = I just don't like it — I just don't like it
+PASS reason 5 = Counterfeit or replica item — Counterfeit or replica item
+PASS reason 9 = Intellectual property — Intellectual property
+PASS reasons have chevrons
+PASS X closes report page
+PASS reason pick closes report page
+PASS toast shown — Report submitted · thanks for letting us know
+PASS sub-item opens Content preferences
+PASS prefs back closes page
+PASS card still shown
+PASS post gone after tab re-render
+PASS posts count 10 after ni + re-render
+PASS followed variant = 3 items
+PASS followed post gets Mute row
+PASS followed post gets Unfollow row
+PASS row = Unfollow wrist.story
+PASS unfollow via card drops p7 (following=2)
+PASS p7 fully gone after re-render (ni)
+PASS p7 restored to feed
+PASS backdrop closes sheet
+PASS DL1 detail head has pm-btn
+PASS menu opens from DL1 detail head
+PASS sheet closes from detail ni
+PASS feed card replaced via detail ni
+PASS post restored after undo
+PASS menu opens from DL2 detail post-head
+PASS menu opens in light theme
+PASS ni-card shows in light theme
