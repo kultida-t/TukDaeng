@@ -1,0 +1,35 @@
+FEED-014 — Automated Test Results
+วันที่: 2026-10-12
+
+การแก้: "Tap for details" บนการ์ดโพสต์ใน feed ซ่อนอยู่จนกว่าผู้ใช้กด "more"
+กาง caption — ทำด้วย CSS บรรทัดเดียวใน Prototypes/fo-flow/index.html
+  .post:not(.pv-post) .caption:not(.expanded) ~ .details-toggle { display: none; }
++ แตะ caption ที่กางอยู่ → ย่อกลับเป็นสั้น (ลบ .expanded) และพับ spec ที่เปิดอยู่
+ปิดด้วยให้กลับสภาพก่อนกด more เป๊ะ (JS handler ใน click delegation)
+
+ผลรัน (server http://127.0.0.1:4173/fo-flow):
+
+_verify_feed_search.mjs — ผ่านทั้งหมด 0 failed, 0 console/page errors
+  เคสใหม่ที่เพิ่ม:
+  PASS p1 details-toggle hidden until more
+  PASS feed more still expands inline
+  PASS p1 details-toggle visible after more
+  PASS details expand + Hide details label
+  PASS tap expanded caption collapses + closes spec
+  PASS p1 details-toggle hidden again
+  PASS details expand again after re-more
+  PASS details collapse again
+  pv-dt ใน post viewer (out of scope) ยังผ่านเช็คเดิมทุกข้อ
+
+_verify_feed_menu.mjs — ผ่านทั้งหมด (207+ checks) 0 failed, 0 errors
+  (ปรับ 4 จุดที่กด .details-toggle ให้กด .more-link ก่อน)
+
+_verify_feed_like.mjs — ผ่านทั้งหมด 0 failed, 0 errors
+_verify_feed_follow.mjs — ผ่านทั้งหมด 0 failed, 0 errors
+_verify_flow.mjs — จบ DONE ไม่มี error
+
+สคริปต์ที่ปรับให้กด more ก่อนกด details-toggle (behavior ใหม่):
+_verify_feed_menu.mjs, _verify_feed_like.mjs, _verify_feed_follow.mjs,
+_verify_flow.mjs, _cap_feed_like.mjs, _cap_feed_follow.mjs, _cap_r2.mjs
+
+ไม่แตะ: feed-social-redesign.html (protected), หน้าจอ protected ทั้งหมด

@@ -31,6 +31,7 @@ async function feedShot(name, theme, st, scrollMode) {
     scr.classList.remove("detail-open", "comments-open");
     if (scrollMode === "details") {
       const t = scr.querySelector(".details-toggle");
+      t?.closest(".post")?.querySelector(".more-link")?.click();
       t?.click();
       const fs = scr.querySelector(".feed-scroll");
       fs.scrollTop = t.offsetTop - 150;
@@ -210,7 +211,9 @@ for (const ds of ["full", "acc", "cards", "tabs", "seg"]) {
       render();
       const scr = document.querySelector(`.screen[data-theme="${theme}"]`);
       scr.classList.remove("detail-open", "comments-open");
-      scr.querySelector(".details-toggle")?.click();
+      const t = scr.querySelector(".details-toggle");
+      t?.closest(".post")?.querySelector(".more-link")?.click();
+      t?.click();
     }, { theme, ds, base: BASE });
     await page.waitForTimeout(380);
     await page.evaluate(({ theme, ds }) => {
@@ -335,6 +338,7 @@ for (const theme of ["dark", "light"]) {
     render();
     const scr = document.querySelector(`.screen[data-theme="${theme}"]`);
     scr.classList.remove("detail-open", "comments-open");
+    scr.querySelector('.post[data-pid="p2"] .more-link')?.click();
     scr.querySelector('.post[data-pid="p2"] .details-toggle')?.click();
   }, { theme, base: BASE });
   await page.waitForTimeout(380);

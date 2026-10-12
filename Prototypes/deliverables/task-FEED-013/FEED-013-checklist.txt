@@ -1,0 +1,34 @@
+FEED-013 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: FEED-013 ปรับการแสดงผลหน้า feed — จัด padding/spacing ระหว่าง post
+ไฟล์: Prototypes/fo-flow/index.html
+ผลตรวจ: ผ่านทุกเคส (ผู้ใช้ยืนยัน "โอเคแล้วปิด task ได้เลย" หลังรีวิว preview)
+
+เคส 1: ระยะห่างระหว่างโพสต์ (variant a — flat) — ผ่าน
+  ก่อนแก้: gap ใต้แถว "Tap for details" ถึง avatar โพสต์ถัดไป ~56px ดูโล่ง
+  หลังแก้: .post margin-bottom 28px → 10px (index.html:354)
+  gap รวมเหลือ ~28px (padding ล่างปุ่ม 8 + margin 10 + padding บน head 10)
+  ใกล้จังหวะ IG แยกโพสต์ชัดแต่ไม่ห่างเกิน
+
+เคส 2: ทั้ง 2 theme — ผ่าน
+  ตรวจ dark + light ที่ 440x956 — gap เท่ากันทุกคู่โพสต์ ไม่เพี้ยน
+
+เคส 3: card variant b/c — ผ่าน (ไม่แตะ)
+  variant b/c มีกรอบการ์ดคั่นโพสต์อยู่แล้ว margin-bottom 16px คงเดิม
+  การแก้ base rule ไม่กระทบเพราะ b/c มี override ของตัวเอง
+
+เคส 4: โพสต์สุดท้ายก่อน bottom nav — ผ่าน
+  feed-scroll padding-bottom 84px (labeled nav) คงเดิม
+  scroll ถึงท้าย feed spacing ไม่เพี้ยน
+
+เคส 5: Regression — ผ่าน (automated)
+  _verify_feed_menu.mjs ผ่าน 0 errors (207 checks)
+  _verify_feed_tabs.mjs / _verify_feed_like.mjs / _verify_feed_follow.mjs ผ่าน 0 errors
+  ของเดิมไม่พัง: like/comment/share/save (FEED-011), "..." menu + ni-card (FEED-009/010),
+  Favorites (FEED-012), photo swipe, follow/unfollow
+
+หมายเหตุ:
+- state memory-only ไม่เปลี่ยน
+- feed-social-redesign.html และหน้าจอ protected ไม่ถูกแตะต้อง
+- before capture: screenshots/task-FEED-013/before/ (440x956, dark+light)
+- after capture: screenshots/task-FEED-013/after/ (440x956 + 1440 + 390, dark+light)

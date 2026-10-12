@@ -61,6 +61,8 @@ await page.locator(".post").nth(1).locator(".comment-btn").click();
 await page.waitForTimeout(400);
 await page.screenshot({ path: `${OUT}/6-comments.png` });
 await page.locator(".sheet-handle").click();
+await page.locator(".post").nth(1).locator(".more-link").click();
+await page.waitForTimeout(250);
 await page.locator(".post").nth(1).locator(".details-toggle").click();
 await page.waitForTimeout(300);
 await page.locator(".post").nth(1).locator(".details-inner").click();
