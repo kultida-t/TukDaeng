@@ -1,0 +1,49 @@
+FEED-012 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: FEED-012 ปรับเงื่อนไขหน้าแท็บ Favorites — เปลี่ยนจาก liked posts → favorite accounts
+ไฟล์: Prototypes/fo-flow/index.html
+ผลตรวจ: ผ่านทุกเคส (ผู้ใช้ยืนยัน "โอเคแล้วปิด task" หลังรีวิว preview 3 รอบ)
+
+เคส 1: เมนู "..." มีการ์ด Favorites แยกบนสุด เฉพาะโพสต์ที่ follow แล้ว (ตาม IG) — ผ่าน
+  กด "..." บนโพสต์ account ที่ follow → sheet มี 2 การ์ดชิดกัน (gap แคบตามภาพ IG):
+  การ์ดบน = ⭐ "Add to favorites" / การ์ดล่าง = Not interested / Report (แดง)
+  โพสต์ account ที่ยังไม่ follow → ไม่มีการ์ดบน (เหลือการ์ดเดียวเหมือนเดิม)
+  รอบที่ 2 พบ: gap ระหว่างการ์ดกว้างเกิน → ปรับเหลือ 10px ตามภาพตัวอย่าง
+
+เคส 2: Add to favorites → โพสต์ขึ้นแท็บ Favorites — ผ่าน
+  กด "Add to favorites" → toast "Added to favorites"
+  สลับไปแท็บ Favorites → เห็นโพสต์ของ account นั้น
+
+เคส 3: Remove from favorites — ผ่าน
+  เปิด "..." บนโพสต์ของ account ที่ favorite แล้ว → การ์ดบนเป็น
+  ⭐(ทึบสีส้ม) "Remove from favorites" → กด → toast "Removed from favorites"
+  (กดขณะอยู่แท็บ Favorites = โพสต์หาย เหลือ empty state)
+
+เคส 3b: Unfollow ถอด favorite ด้วย (favorites ⊆ following ตาม IG) — ผ่าน
+  account ที่ favorite แล้ว unfollow (ผ่าน ni-card > Unfollow) →
+  โพสต์หลุดจากแท็บ Favorites ด้วย
+
+เคส 3c: สีดาวตาม IG — ผ่าน
+  "Add to favorites" = ดาวเส้นขอบ / "Remove from favorites" = ดาวทึบสีส้ม (#f5a623)
+
+เคส 3d: Settings > Favorites management page (ตามภาพ IG) — ผ่าน
+  เมนู sliders → What you see → แถว "Favorites" (count + chevron) → หน้าจัดการ:
+  คำอธิบาย "New posts from your favorites..." + Search กรองรายชื่อ +
+  section Favorites (ปุ่ม Remove, ลิงก์ Remove all) +
+  section Suggested = account ที่ follow แต่ยังไม่ favorite (ปุ่ม Add account สีฟ้า)
+  Add/Remove จากหน้านี้ sync กับแท็บ Favorites ทันที
+
+เคส 4: like ไม่ feed เข้า Favorites อีก — ผ่าน
+  กด like โพสต์ใดก็ได้ → แท็บ Favorites ไม่เปลี่ยน (ยัง empty ถ้าไม่มี favorite account)
+
+เคส 5: Empty state ไอคอนดาว — ผ่าน
+  แท็บ Favorites ที่ว่าง → ไอคอนดาว (ไม่ใช่หัวใจ) + "No favorites yet"
+
+เคส 6: Regression — ผ่าน (automated)
+  _verify_feed_menu.mjs 207 checks ผ่าน 0 errors
+  _verify_feed_like.mjs / _verify_feed_follow.mjs อัปเดต assertion ตามเงื่อนไขใหม่ ผ่าน 0 errors
+
+หมายเหตุ:
+- state memory-only (refresh แล้ว favorites หาย)
+- ตำแหน่งในเมนู "..." เป็นที่ชั่วคราว — ถ้ามีหน้า Profile จะย้ายไปปุ่ม Following เหมือน IG
+- feed-social-redesign.html และหน้าจอ protected ไม่ถูกแตะต้อง

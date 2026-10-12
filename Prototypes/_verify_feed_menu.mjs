@@ -10,7 +10,11 @@
 // (no search, Follow toggles), share opens an IG-style sheet (search + 2-row
 // scrollable friend grid + Messenger/Direct/LINE/Facebook/Copy link), save
 // opens a Collections sheet (Saved + collections + New collection) and saved
-// posts list under Settings > Saved. Regression: comments/unfollow/like/follow/swipe.
+// posts list under Settings > Saved. FEED-012: Favorites tab filters
+// favorite ACCOUNTS (seller-level flag) instead of liked posts — "..." menu
+// gains a separate top card with Add/Remove from favorites (star icon), and
+// the empty state uses a star instead of a heart. like/unlike no longer
+// affects the Favorites tab. Regression: comments/unfollow/like/follow/swipe.
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -51,15 +55,25 @@ check("card p1 .more shows 3-dot icon", await moreBtn("p1").locator("svg circle"
 check("no hamburger <path> left in any .more", await page.locator(".post-head .more svg path").count() === 0);
 check("every post-head has .more", await page.locator(".feed-scroll .post-head .more").count() === 11);
 
-// 2) "..." opens menu sheet: Not interested + Report(red)
-await openMenu("p1");
+// 2) "..." opens menu sheet. Followed post (p7): top card = Add to favorites (star),
+// bottom card = Not interested + Report(red). Non-followed post (p1): bottom card only.
+await openMenu("p7");
 check("pm sheet opens", await page.locator(".screen.pm-open").count() === 1);
-check("menu has exactly 2 rows", await page.locator(".pm-row").count() === 2);
-check("row 1 = Not interested", (await page.locator(".pm-row").nth(0).textContent()).trim() === "Not interested");
-check("row 2 = Report", (await page.locator(".pm-row").nth(1).textContent()).trim() === "Report");
+check("followed post: menu has 2 cards", await page.locator(".pm-card").count() === 2);
+check("followed post: 3 rows", await page.locator(".pm-row").count() === 3);
+check("row 1 = Add to favorites", (await page.locator(".pm-row").nth(0).textContent()).trim() === "Add to favorites");
+check("row 2 = Not interested", (await page.locator(".pm-row").nth(1).textContent()).trim() === "Not interested");
+check("row 3 = Report", (await page.locator(".pm-row").nth(2).textContent()).trim() === "Report");
+check("favorites row has star icon", await page.locator(".pm-fav svg").count() === 1);
+check("fav row in separate top card", await page.locator(".pm-card.pm-top .pm-fav").count() === 1 && await page.locator(".pm-card.pm-top .pm-row").count() === 1);
+await page.screenshot({ path: `${OUT}/d-menu-sheet.png` });
+await closeSheet();
+await openMenu("p1");
+check("non-followed post: single card", await page.locator(".pm-card").count() === 1);
+check("non-followed post: 2 rows (no favorites)", await page.locator(".pm-row").count() === 2 && await page.locator(".pm-fav").count() === 0);
+check("non-followed row 1 = Not interested", (await page.locator(".pm-row").nth(0).textContent()).trim() === "Not interested");
 const rpColor = await page.locator(".pm-row.danger").evaluate(el => getComputedStyle(el).color);
 check("Report row is red", /rgb\(200, ?33, ?43\)/.test(rpColor), rpColor);
-await page.screenshot({ path: `${OUT}/d-menu-sheet.png` });
 
 // 3) Not interested -> post replaced inline by Thanks-for-feedback card (IG-style)
 await page.locator(".pm-ni").click();
@@ -176,7 +190,7 @@ await page.waitForTimeout(400);
 check("DL1 detail head has pm-btn", await page.locator(".page-detail .detail-head .pm-btn").count() === 1);
 await page.locator(".page-detail .detail-head .pm-btn").click();
 await page.waitForTimeout(350);
-check("menu opens from DL1 detail head", await page.locator(".screen.pm-open").count() === 1 && await page.locator(".pm-row").count() === 2);
+check("menu opens from DL1 detail head (non-followed: 2 rows)", await page.locator(".screen.pm-open").count() === 1 && await page.locator(".pm-row").count() === 2);
 await page.screenshot({ path: `${OUT}/d-menu-from-detail.png` });
 await page.locator(".pm-ni").click();
 await page.waitForTimeout(300);
@@ -194,7 +208,7 @@ await page.locator('.post[data-pid="p5"] .view-full').click();
 await page.waitForTimeout(400);
 await page.locator(".page-detail .post-head .more").click();
 await page.waitForTimeout(350);
-check("menu opens from DL2 detail post-head", await page.locator(".screen.pm-open").count() === 1 && await page.locator(".pm-row").count() === 2);
+check("menu opens from DL2 detail post-head (non-followed: 2 rows)", await page.locator(".screen.pm-open").count() === 1 && await page.locator(".pm-row").count() === 2);
 await page.locator(".sheet-handle").click();
 await page.waitForTimeout(300);
 await page.locator(".page-detail .detail-back").first().click();
@@ -222,6 +236,10 @@ await page.waitForTimeout(400);
 check("comment sheet still opens", await page.locator(".comment-sheet .c-row").count() > 0);
 await page.locator(".sheet-handle").click();
 await page.waitForTimeout(350);
+// favorites gated on follow (IG): non-followed seller shows no favorites row
+await openMenu("p8");
+check("no favorites row before following", await page.locator(".pm-fav").count() === 0 && await page.locator(".pm-row").count() === 2);
+await closeSheet();
 await page.locator('.post[data-pid="p8"] .follow-btn').click();
 await page.waitForTimeout(250);
 check("follow p8 still flips in place", (await page.locator('.post[data-pid="p8"] .follow-btn').textContent()).trim() === "Following");
@@ -234,7 +252,56 @@ await page.locator('.post[data-pid="p8"] .like-btn').click();
 await page.waitForTimeout(250);
 await page.locator(".feed-tab").nth(2).click();
 await page.waitForTimeout(300);
-check("liked p8 lands in Favorites", await page.locator(".feed-scroll .post").count() === 1);
+check("like does NOT feed Favorites anymore", await page.locator(".feed-scroll .post").count() === 0);
+check("favorites empty state = star icon", await page.locator(".feed-empty .fe-ico svg polygon").count() === 1);
+check("favorites empty title", (await page.locator(".feed-empty .fe-title").textContent()).trim() === "No favorites yet");
+await page.locator(".feed-tab").nth(0).click();
+await page.waitForTimeout(300);
+// favorite account via "..." top card -> seller's post lands in Favorites
+await openMenu("p8");
+check("row 1 = Add to favorites (not-yet-fav)", (await page.locator(".pm-fav").textContent()).trim() === "Add to favorites");
+await page.locator(".pm-fav").click();
+await page.waitForTimeout(300);
+check("fav sheet closes", await page.locator(".screen.pm-open").count() === 0);
+check("toast = Added to favorites", (await page.locator(".sc-toast").textContent()).trim() === "Added to favorites" && await page.locator(".sc-toast.show").count() === 1);
+await page.waitForTimeout(1900);
+await page.locator(".feed-tab").nth(2).click();
+await page.waitForTimeout(300);
+check("favorite account p8 lands in Favorites", await page.locator(".feed-scroll .post").count() === 1 && (await page.locator(".feed-scroll .post").first().getAttribute("data-pid")) === "p8");
+// remove via "..." on the favorites tab -> drops inline to empty state
+await openMenu("p8");
+check("row 1 = Remove from favorites (faved)", (await page.locator(".pm-fav").textContent()).trim() === "Remove from favorites");
+check("remove star is amber filled (IG)", await page.locator(".pm-fav svg").evaluate(el => el.getAttribute("fill") === "#f5a623"));
+await page.screenshot({ path: `${OUT}/d-menu-favorites-card.png` });
+await page.locator(".pm-fav").click();
+await page.waitForTimeout(300);
+check("toast = Removed from favorites", (await page.locator(".sc-toast").textContent()).trim() === "Removed from favorites");
+check("remove drops to empty state in-tab", await page.locator(".feed-scroll .post").count() === 0 && await page.locator(".feed-empty").count() === 1);
+await page.waitForTimeout(1900);
+// unfollow also clears the favorite flag (IG: favorites ⊆ following)
+await page.locator(".feed-tab").nth(0).click();
+await page.waitForTimeout(300);
+await openMenu("p8");
+await page.locator(".pm-fav").click();
+await page.waitForTimeout(1900);
+check("re-added to favorites", await page.evaluate(() => POSTS.find(x => x.id === "p8").favorite === true));
+// followed posts render without Follow btn after re-render — unfollow via ni-card row
+await openMenu("p8");
+await page.locator(".pm-ni").click();
+await page.waitForTimeout(300);
+check("followed ni-card has Unfollow row", await page.locator('.post.ni-card[data-pid="p8"] .ni-unfollow').count() === 1);
+await page.locator('.post.ni-card[data-pid="p8"] .ni-unfollow').click();
+await page.waitForTimeout(300);
+check("unfollow toast = Unfollowed", (await page.locator(".sc-toast").textContent()).trim() === "Unfollowed");
+await page.waitForTimeout(1900);
+await page.locator(".feed-tab").nth(2).click();
+await page.waitForTimeout(300);
+check("unfollow removes seller from Favorites", await page.locator(".feed-scroll .post").count() === 0 && await page.locator(".feed-empty").count() === 1);
+// restore p8 baseline (ni + following) — UI undo is gone after card removal
+await page.evaluate(() => { const p = POSTS.find(x => x.id === "p8"); p.ni = false; p.following = true; });
+await page.locator(".feed-tab").nth(0).click();
+await page.waitForTimeout(300);
+check("p8 restored to feed", await page.locator('.post[data-pid="p8"]').count() === 1);
 await page.locator(".feed-tab").nth(1).click();
 await page.waitForTimeout(300);
 check("following tab = 4 posts", await page.locator(".feed-scroll .post").count() === 4, String(await page.locator(".feed-scroll .post").count()));
@@ -643,6 +710,73 @@ check("light theme save sheet opens", await page.locator(".screen.save-open").co
 await page.screenshot({ path: `${OUT11}/l-save-sheet.png` });
 await closeSheet();
 await page.locator("#themeToggle").click();
+await page.waitForTimeout(300);
+
+/* ===== FEED-012 — Settings > Favorites management page (IG) ===== */
+const OUT12 = "C:/Users/Admin/Desktop/TukDaeng/Prototypes/screenshots/task-FEED-012/after";
+mkdirSync(OUT12, { recursive: true });
+
+// 28) Settings > What you see > Favorites row + management page
+await page.locator(".set-btn").click();
+await page.waitForTimeout(350);
+check("settings has Favorites row", (await page.locator('.sub-row[data-sub="favorites"]').textContent()).includes("Favorites"));
+check("favorites count = 0", (await page.locator('.sub-row[data-sub="favorites"] .sub-count').textContent()).trim() === "0");
+await page.locator('.sub-row[data-sub="favorites"]').click();
+await page.waitForTimeout(350);
+check("favorites page opens", (await page.locator(".page-sub .detail-title").textContent()).trim() === "Favorites");
+check("desc mentions appear higher in feed", (await page.locator(".fav-desc").textContent()).includes("higher in feed"));
+check("search field present", await page.locator(".fav-search input").count() === 1);
+check("no favorites yet empty state", await page.locator(".sub-empty").count() === 1);
+check("suggested lists 4 followed sellers", await page.locator(".fav-add").count() === 4, String(await page.locator(".fav-add").count()));
+
+// add dial.dude via Suggested -> moves to Favorites section
+await page.locator('.fav-add[data-seller="dial.dude"]').click();
+await page.waitForTimeout(300);
+check("add toast = Added to favorites", (await page.locator(".sc-toast").textContent()).trim() === "Added to favorites");
+check("dial.dude in Favorites section", await page.locator(".fav-remove").count() === 1);
+check("suggested now 3", await page.locator(".fav-add").count() === 3);
+check("Remove all link appears", await page.locator(".fav-removeall").count() === 1);
+await page.waitForTimeout(1900);
+
+// search filter narrows rows
+await page.locator(".fav-q").fill("dial");
+await page.waitForTimeout(200);
+check("search filters rows to 1", await page.locator(".mrow:visible").count() === 1);
+await page.locator(".fav-q").fill("");
+await page.waitForTimeout(200);
+await page.screenshot({ path: `${OUT12}/d-favorites-page.png` });
+
+// favorites tab reflects the page add
+await page.locator(".sub-back").click();
+await page.waitForTimeout(300);
+await page.locator(".sub-back").click();
+await page.waitForTimeout(300);
+await page.locator(".feed-tab").nth(2).click();
+await page.waitForTimeout(300);
+check("favorites tab shows p8 after page add", await page.locator('.feed-scroll .post[data-pid="p8"]').count() === 1);
+
+// Remove single row -> re-add -> Remove all clears everything
+await page.locator(".set-btn").click();
+await page.waitForTimeout(300);
+check("settings count = 1 after add", (await page.locator('.sub-row[data-sub="favorites"] .sub-count').textContent()).trim() === "1");
+await page.locator('.sub-row[data-sub="favorites"]').click();
+await page.waitForTimeout(300);
+await page.locator('.fav-remove[data-seller="dial.dude"]').click();
+await page.waitForTimeout(300);
+check("remove toast", (await page.locator(".sc-toast").textContent()).trim() === "Removed from favorites");
+check("back to suggested after remove", await page.locator('.fav-add[data-seller="dial.dude"]').count() === 1);
+await page.waitForTimeout(1900);
+await page.locator('.fav-add[data-seller="dial.dude"]').click();
+await page.waitForTimeout(300);
+await page.locator('.fav-add[data-seller="wrist.story"]').click();
+await page.waitForTimeout(300);
+await page.locator(".fav-removeall").click();
+await page.waitForTimeout(300);
+check("remove all toast", (await page.locator(".sc-toast").textContent()).trim() === "Removed all favorites");
+check("empty again after remove all", await page.locator(".fav-remove").count() === 0 && await page.locator(".sub-empty").count() === 1);
+await page.locator(".sub-back").click();
+await page.waitForTimeout(300);
+await page.locator(".sub-back").click();
 await page.waitForTimeout(300);
 
 console.log("console/page errors:", errors, "| failed checks:", failed);

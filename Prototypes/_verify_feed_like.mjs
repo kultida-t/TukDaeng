@@ -1,7 +1,9 @@
-// Verify fo-flow FEED-007: like-btn writes p.liked, Favorites tab lists liked posts,
-// unlike drops post / restores empty state, state survives tab + theme re-renders,
+// Verify fo-flow FEED-007: like-btn writes p.liked, Interested list in Content
+// preferences tracks liked posts, state survives tab + theme re-renders,
 // detail-page like-btn stays in sync
 // (FEED-011: like-btn no longer shows a count — likeState reads p.likes instead)
+// (FEED-012: Favorites tab now lists favorite ACCOUNTS — like no longer feeds
+//  it; this script asserts liked posts do NOT appear there)
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -45,14 +47,13 @@ await page.waitForTimeout(200);
 s = await likeState("p7");
 check("like p7 liked + count 34->35", s.liked && s.count === "35", s.count);
 
-// 2) Favorites tab lists both liked posts
+// 2) Favorites tab no longer lists liked posts (FEED-012 — favorite accounts only)
 await tabs.nth(2).click();
 await page.waitForTimeout(300);
-check("favorites lists 2 liked posts", await posts().count() === 2, String(await posts().count()));
-const favPids = await posts().evaluateAll(els => els.map(el => el.dataset.pid));
-check("favorites contains p1,p7", favPids.includes("p1") && favPids.includes("p7"), JSON.stringify(favPids));
-check("favorites icons all liked", await page.locator(".feed-scroll .post .like-btn.liked").count() === 2);
-await page.screenshot({ path: `${OUT}/m-fav-2posts.png` });
+check("favorites ignores liked posts (empty)", await posts().count() === 0, String(await posts().count()));
+check("favorites empty state shows", await page.locator(".feed-empty").count() === 1);
+check("empty icon is a star", await page.locator(".feed-empty .fe-ico svg polygon").count() === 1);
+await page.screenshot({ path: `${OUT}/m-fav-empty-star.png` });
 
 // 3) back to All — like state persists through partial re-render
 await tabs.nth(0).click();
@@ -61,28 +62,37 @@ check("all posts back to 11", await posts().count() === 11);
 s = await likeState("p1");
 check("p1 still liked in All + count 4", s.liked && s.count === "4", s.count);
 
-// 4) theme toggle (full render) keeps tab + liked state
+// 4) theme toggle (full render) keeps tab + favorites still unaffected by likes
 await tabs.nth(2).click();
 await page.waitForTimeout(300);
 await page.locator("#themeToggle").click();
 await page.waitForTimeout(300);
-check("favorites after theme toggle still 2", await posts().count() === 2);
+check("favorites still empty after theme toggle", await posts().count() === 0);
 check("still on Favorites tab", (await page.locator(".feed-tab.active").textContent()) === "Favorites");
-check("fav icons liked after re-render", await page.locator(".feed-scroll .like-btn.liked").count() === 2);
 await page.screenshot({ path: `${OUT}/m-fav-light.png` });
 await page.locator("#themeToggle").click();
 await page.waitForTimeout(300);
 
-// 5) unlike inside Favorites — post drops out, empty state at 0
-await likeBtn("p7").click();
+// 5) Interested list (Content preferences) still tracks liked posts — unlike removes
+await page.locator(".set-btn").click();
+await page.waitForTimeout(350);
+await page.locator('.sub-row[data-sub="prefs"]').click();
+await page.waitForTimeout(350);
+await page.locator('.sub-row[data-sub="interested"]').click();
+await page.waitForTimeout(350);
+check("interested lists 2 liked posts", await page.locator(".mrow").count() === 2, String(await page.locator(".mrow").count()));
+await page.locator('.m-unlike[data-pid="p7"]').click();
 await page.waitForTimeout(300);
-check("unlike drops p7 from favorites", await posts().count() === 1);
-check("remaining post is p1", (await posts().first().getAttribute("data-pid")) === "p1");
-await likeBtn("p1").click();
+check("interested remove drops p7", await page.locator(".mrow").count() === 1);
+await page.locator('.m-unlike[data-pid="p1"]').click();
 await page.waitForTimeout(300);
-check("empty state after last unlike", await posts().count() === 0);
-check("empty title 'No favorites yet'", (await page.locator(".feed-empty .fe-title").textContent()) === "No favorites yet");
-await page.screenshot({ path: `${OUT}/m-fav-empty.png` });
+check("interested empty after both removed", await page.locator(".sub-empty").count() === 1);
+await page.locator(".sub-back").click();
+await page.waitForTimeout(300);
+await page.locator(".sub-back").click();
+await page.waitForTimeout(300);
+await page.locator(".sub-back").click();
+await page.waitForTimeout(300);
 
 // 6) detail page like-btn syncs with same post object
 await tabs.nth(0).click();
@@ -107,7 +117,7 @@ s = await likeState("p1");
 check("feed card un-liked after detail unlike", !s.liked && s.count === "3", s.count);
 await tabs.nth(2).click();
 await page.waitForTimeout(300);
-check("favorites empty again", await posts().count() === 0);
+check("favorites still empty (no favorite accounts)", await posts().count() === 0);
 
 // 7) regression sanity — following tab + comment sheet still fine
 await tabs.nth(1).click();

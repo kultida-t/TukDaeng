@@ -1,5 +1,6 @@
 // Verify fo-flow feed tabs: All Posts shows all posts, Following filters p.following,
-// Favorites shows empty state (heart + Thai copy), tab switch re-renders feed content
+// Favorites filters favorite accounts (FEED-012) — empty state shows a star icon,
+// tab switch re-renders feed content
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -39,14 +40,14 @@ await page.waitForTimeout(400);
 console.log("following comment rows:", await page.locator(".comment-sheet .c-row").count());
 await page.locator(".sheet-handle").click();
 
-// 3) Favorites — empty state per mock: heart icon + Thai copy, no posts
+// 3) Favorites — empty state: star icon + "No favorites yet", no posts
 await tabs.nth(2).click();
 await page.waitForTimeout(300);
 console.log("favorites posts count:", await posts.count());
 const empty = page.locator(".feed-empty");
 console.log("empty state visible:", await empty.count());
 console.log("empty title:", await empty.locator(".fe-title").textContent());
-console.log("empty heart svg:", await empty.locator(".fe-ico svg").count());
+console.log("empty star svg:", await empty.locator(".fe-ico svg").count());
 await page.screenshot({ path: `${OUT}/m-tab-favorites.png` });
 
 // 4) back to All Posts — full feed again

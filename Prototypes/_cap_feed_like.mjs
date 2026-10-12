@@ -1,4 +1,5 @@
-// FEED-007 after-capture: Favorites with liked posts + detail liked, Desktop 1440 + Mobile 390
+// FEED-007 after-capture → FEED-012 update: Favorites now lists favorite-account
+// posts via "..." > Add to favorites + detail liked, Desktop 1440 + Mobile 390
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -16,9 +17,17 @@ for (const [tag, vp] of [["d", { width: 1440, height: 900 }], ["m", { width: 390
   await page.goto(`${BASE}/index.html`, { waitUntil: "networkidle" });
   await page.waitForTimeout(700);
 
-  // like p1 + p7 then open Favorites
+  // like p1 (for the detail shot) + favorite followed sellers p7/p2 via "..." menu
+  // (FEED-012: Add to favorites only shows for followed accounts)
   await page.locator('.post[data-pid="p1"] .like-btn').click();
-  await page.locator('.post[data-pid="p7"] .like-btn').click();
+  const fav = async pid => {
+    await page.locator(`.post[data-pid="${pid}"] .post-head .more`).click();
+    await page.waitForTimeout(300);
+    await page.locator(".pm-fav").click();
+    await page.waitForTimeout(1900);
+  };
+  await fav("p7");
+  await fav("p2");
   await page.waitForTimeout(200);
   await page.screenshot({ path: `${OUT}/${tag}-all-liked.png` });
   await page.locator(".feed-tab").nth(2).click();
@@ -35,12 +44,14 @@ for (const [tag, vp] of [["d", { width: 1440, height: 900 }], ["m", { width: 390
   await page.screenshot({ path: `${OUT}/${tag}-detail-liked.png` });
   await page.locator(".page-detail .detail-back").first().click();
 
-  // unlike both inside Favorites → back to empty state
+  // remove both inside Favorites via "..." → back to empty state
   await page.locator(".feed-tab").nth(2).click();
   await page.waitForTimeout(300);
-  for (const pid of ["p1", "p7"]) {
-    await page.locator(`.feed-scroll .post[data-pid="${pid}"] .like-btn`).click();
-    await page.waitForTimeout(200);
+  for (const pid of ["p7", "p2"]) {
+    await page.locator(`.feed-scroll .post[data-pid="${pid}"] .post-head .more`).click();
+    await page.waitForTimeout(300);
+    await page.locator(".pm-fav").click();
+    await page.waitForTimeout(1600);
   }
   await page.screenshot({ path: `${OUT}/${tag}-fav-empty.png` });
   await ctx.close();

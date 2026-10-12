@@ -351,7 +351,7 @@
   .feed-empty .fe-title { font-size: 15px; font-weight: 600; color: var(--text); }
 
   /* ============ POST ============ */
-  .post { margin-bottom: 28px; }
+  .post { margin-bottom: 10px; }
   .post-head {
     display: flex;
     align-items: center;
@@ -945,6 +945,12 @@
     border-radius: 14px;
     overflow: hidden;
   }
+  .pm-card.pm-top {
+    margin-bottom: 0;
+  }
+  .pm-card.pm-top + .pm-card {
+    margin-top: 10px;
+  }
   .pm-row {
     width: 100%;
     display: flex;
@@ -1224,6 +1230,12 @@
     background: var(--chip-bg); border: none; padding: 7px 16px; border-radius: 8px; cursor: pointer;
   }
   .sub-empty { padding: 40px 16px; text-align: center; color: var(--muted); font-size: 13px; }
+  /* Favorites management page (FEED-012 — IG Settings > Favorites) */
+  .fav-desc { font-size: 13px; color: var(--muted); line-height: 1.5; padding: 14px 16px 4px; }
+  .fav-search { margin: 12px 16px 4px; }
+  .fav-sec { display: flex; align-items: center; }
+  .fav-removeall { margin-left: auto; background: none; border: none; padding: 0; font-family: var(--font-main); font-size: 13px; font-weight: 600; color: #3d9bff; cursor: pointer; }
+  .mact.fav-add { background: #3d9bff; color: #fff; }
   /* "Thanks for letting us know" card — IG uncomfortable-feedback ack */
   .ni-check { display: flex; justify-content: center; padding: 24px 0 10px; color: #46c975; }
   .ni-t2 { font-size: 15px; font-weight: 700; color: var(--text); text-align: center; padding: 0 20px; }
@@ -1799,6 +1811,7 @@ const POSTS = [
     avatar: "./assets/user-avatars/u-1002.png",
     time: "3 days ago",
     following: false,
+    favorite: false,
     type: "sale",
     photos: [
       "./assets/asset-uploads/ast-8831-1.png",
@@ -1840,6 +1853,7 @@ const POSTS = [
     avatar: "./assets/user-avatars/u-1017.png",
     time: "4 hours ago",
     following: true,
+    favorite: false,
     type: "showcase",
     photos: ["./assets/asset-uploads/login-watch-hero.png"],
     likes: 34, comments: 2, views: "3.2K",
@@ -1858,6 +1872,7 @@ const POSTS = [
     avatar: "./assets/user-avatars/u-1042.png",
     time: "5 hours ago",
     following: true,
+    favorite: false,
     type: "sale",
     photos: ["./assets/asset-uploads/feed-tudor-bb.jpg"],
     likes: 12, comments: 4, views: "2.8K",
@@ -1895,6 +1910,7 @@ const POSTS = [
     avatar: "./assets/user-avatars/u-1082.png",
     time: "11 hours ago",
     following: false,
+    favorite: false,
     type: "showcase",
     photos: ["./assets/asset-uploads/purchase-equipment-box.png"],
     likes: 19, comments: 1, views: "1.1K",
@@ -1913,6 +1929,7 @@ const POSTS = [
     avatar: "./assets/user-avatars/u-1161.png",
     time: "2 days ago",
     following: false,
+    favorite: false,
     type: "sale",
     photos: ["./assets/asset-uploads/feed-datejust-1.jpg", "./assets/asset-uploads/feed-datejust-2.jpg"],
     likes: 9, comments: 2, views: "980",
@@ -1948,6 +1965,7 @@ const POSTS = [
     avatar: "./assets/user-avatars/u-1090.png",
     time: "2 days ago",
     following: false,
+    favorite: false,
     type: "showcase",
     photos: ["./assets/asset-uploads/feed-breguet-2.jpg"],
     likes: 41, comments: 2, views: "5.6K",
@@ -1966,6 +1984,7 @@ const POSTS = [
     avatar: "./assets/user-avatars/u-1144.png",
     time: "6 hours ago",
     following: false,
+    favorite: false,
     type: "sale",
     photos: ["./assets/asset-uploads/feed-breguet-1.jpg", "./assets/asset-uploads/feed-breguet-2.jpg"],
     likes: 17, comments: 3, views: "1.5K",
@@ -2002,6 +2021,7 @@ const POSTS = [
     avatar: "./assets/user-avatars/u-1104.png",
     time: "3 days ago",
     following: true,
+    favorite: false,
     type: "showcase",
     photos: ["./assets/asset-uploads/feed-tudor-bb.jpg", "./assets/asset-uploads/feed-breguet-1.jpg"],
     likes: 26, comments: 1, views: "2.2K",
@@ -2020,6 +2040,7 @@ const POSTS = [
     avatar: "./assets/user-avatars/u-1120.png",
     time: "8 hours ago",
     following: false,
+    favorite: false,
     type: "sale",
     photos: ["./assets/asset-uploads/ast-8831-3.png"],
     likes: 21, comments: 5, views: "1.9K",
@@ -2055,6 +2076,7 @@ const POSTS = [
     avatar: "./assets/user-avatars/u-1130.png",
     time: "6 days ago",
     following: false,
+    favorite: false,
     type: "showcase",
     photos: ["./assets/asset-uploads/feed-datejust-1.jpg"],
     likes: 15, comments: 1, views: "890",
@@ -2073,6 +2095,7 @@ const POSTS = [
     avatar: "./assets/user-avatars/u-1088.png",
     time: "1 day ago",
     following: false,
+    favorite: false,
     type: "showcase",
     photos: ["./assets/asset-uploads/ast-8831-3.png"],
     likes: 28, comments: 6, views: "4.1K",
@@ -2150,6 +2173,8 @@ const VARIANT_DESC = {
 /* ================= ICONS ================= */
 const I = {
   heart: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>`,
+  star: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  starFill: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="#f5a623" stroke="#f5a623" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
   users: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
   comment: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>`,
   eye: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
@@ -2611,9 +2636,14 @@ const PM_REASONS = [
   "Intellectual property",
 ];
 
-function pmMenuHTML() {
+function pmMenuHTML(p) {
+  const fav = p && p.favorite;
+  const canFav = p && (p.following || fav);
   return `
     <div class="sheet-handle"></div>
+    ${canFav ? `<div class="pm-card pm-top">
+      <button class="pm-row pm-fav">${fav ? I.starFill(20) : I.star(20)}<span>${fav ? "Remove from favorites" : "Add to favorites"}</span></button>
+    </div>` : ""}
     <div class="pm-card">
       <button class="pm-row pm-ni">${I.circleX(20)}<span>Not interested</span></button>
       <button class="pm-row danger pm-go-report">${I.flag(20)}<span>Report</span></button>
@@ -2724,14 +2754,14 @@ function feedEmptyHTML(tab) {
   const isFollowing = tab === "following";
   return `
   <div class="feed-empty">
-    <span class="fe-ico">${isFollowing ? I.users(56) : I.heart(56)}</span>
+    <span class="fe-ico">${isFollowing ? I.users(56) : I.star(56)}</span>
     <div class="fe-title">${isFollowing ? "Follow others to see their posts here" : "No favorites yet"}</div>
   </div>`;
 }
 
 function feedContentHTML(variant) {
   const posts = POSTS.filter(p => !p.ni && !p.muted)
-    .filter(p => state.feedTab === "favorites" ? p.liked : state.feedTab === "following" ? p.following : (state.snooze ? p.following : true));
+    .filter(p => state.feedTab === "favorites" ? p.favorite : state.feedTab === "following" ? p.following : (state.snooze ? p.following : true));
   return posts.length ? posts.map(p => postCard(p, variant)).join("") : feedEmptyHTML(state.feedTab);
 }
 
@@ -2749,7 +2779,7 @@ function setFeedTab(scr, tab) {
    a button that is already rendered flips Follow<->Following in place so a
    fresh follow can be undone; after a re-render followed posts have no button */
 function setFollowing(scr, seller, on) {
-  POSTS.forEach(p => { if (p.seller === seller) p.following = on; });
+  POSTS.forEach(p => { if (p.seller === seller) { p.following = on; if (!on) p.favorite = false; } });
   scr.querySelectorAll(".feed-scroll .post").forEach(art => {
     const bp = POSTS.find(x => x.id === art.dataset.pid);
     if (!bp || bp.seller !== seller) return;
@@ -2769,7 +2799,7 @@ function setFollowing(scr, seller, on) {
     db.classList.toggle("on", dp.following);
     db.textContent = dp.following ? "Following" : "Follow";
   }
-  if (state.feedTab === "following")
+  if (state.feedTab === "following" || state.feedTab === "favorites")
     scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
 }
 
@@ -2793,6 +2823,19 @@ function setMuted(scr, seller, on) {
 }
 function mutedSellers() {
   return [...new Set(POSTS.filter(p => p.muted).map(p => p.seller))];
+}
+function favoriteSellers() {
+  return [...new Set(POSTS.filter(p => p.favorite).map(p => p.seller))];
+}
+function followedSellers() {
+  return [...new Set(POSTS.filter(p => p.following).map(p => p.seller))];
+}
+
+/* favorite is account-level like follow/mute — Favorites tab lists favorite sellers' posts */
+function setFavorite(scr, seller, on) {
+  POSTS.forEach(p => { if (p.seller === seller) p.favorite = on; });
+  if (state.feedTab === "favorites")
+    scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
 }
 
 /* center confirm dialog (IG "Mute x?" style) */
@@ -2851,10 +2894,26 @@ function subHTML(name) {
   const row = (t, attr, extra = "") => `<button class="sub-row" ${attr}><span>${t}</span>${extra}<span class="sub-chev">${I.chevR(15)}</span></button>`;
   if (name === "settings") return head("Settings and activity") + `<div class="sub-scroll">
     <div class="sub-sec">What you see</div>
+    ${row("Favorites", `data-sub="favorites"`, `<span class="sub-count">${favoriteSellers().length}</span>`)}
     ${row("Muted accounts", `data-sub="muted"`, `<span class="sub-count">${mutedSellers().length}</span>`)}
     ${row("Saved", `data-sub="saved"`, `<span class="sub-count">${POSTS.filter(p => p.saved).length}</span>`)}
     ${row("Content preferences", `data-sub="prefs"`)}
   </div>`;
+  if (name === "favorites") {
+    const favs = favoriteSellers();
+    const sugg = followedSellers().filter(s => !favs.includes(s));
+    const fRow = (s, label, cls, desc) => {
+      const p = POSTS.find(x => x.seller === s);
+      return `<div class="mrow"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">${desc}</span></span><button class="mact ${cls}" data-seller="${s}">${label}</button></div>`;
+    };
+    return head("Favorites") + `<div class="sub-scroll">
+      <div class="fav-desc">New posts from your favorites will appear higher in feed. Only you can see who you add or remove.</div>
+      <div class="sh-field fav-search">${I.search(17)}<input class="fav-q" placeholder="Search"></div>
+      <div class="sub-sec fav-sec">Favorites ${favs.length ? `<button class="fav-removeall">Remove all</button>` : ""}</div>
+      ${favs.map(s => fRow(s, "Remove", "fav-remove", "Favorite")).join("") || `<div class="sub-empty">No favorites yet</div>`}
+      ${sugg.length ? `<div class="sub-sec">Suggested</div>${sugg.map(s => fRow(s, "Add account", "fav-add", "")).join("")}` : ""}
+    </div>`;
+  }
   if (name === "muted") return head("Muted accounts") + `<div class="sub-scroll">${
     mutedSellers().map(s => {
       const p = POSTS.find(x => x.seller === s);
@@ -2991,6 +3050,7 @@ try {
       avatar: "./assets/user-avatars/u-1075.png",
       time: "Just now",
       following: true,
+      favorite: false,
       type: "sale",
       photos: np.photos && np.photos.length ? np.photos : base.photos,
       likes: 0, comments: 0, views: "1", liked: false,
@@ -3101,6 +3161,12 @@ stageEl.addEventListener("input", e => {
       b.style.display = b.dataset.name.toLowerCase().includes(q) ? "" : "none";
     });
   }
+  if (e.target.matches(".fav-q")) {
+    const q = e.target.value.trim().toLowerCase();
+    e.target.closest(".sub-scroll").querySelectorAll(".mrow").forEach(b => {
+      b.style.display = b.querySelector(".mn").textContent.toLowerCase().includes(q) ? "" : "none";
+    });
+  }
 });
 
 document.getElementById("stage").addEventListener("click", e => {
@@ -3114,8 +3180,20 @@ document.getElementById("stage").addEventListener("click", e => {
     const cs = scr.querySelector(".comment-sheet");
     cs.classList.remove("uf", "pm-rp", "lk", "sh", "sv");
     cs.classList.add("pm");
-    cs.innerHTML = pmMenuHTML();
+    cs.innerHTML = pmMenuHTML(POSTS.find(x => x.id === scr.dataset.pmPid));
     scr.classList.add("pm-open");
+    return;
+  }
+  const pmFav = e.target.closest(".pm-fav");
+  if (pmFav) {
+    const scr = pmFav.closest(".screen");
+    scr.classList.remove("pm-open");
+    const post = POSTS.find(x => x.id === scr.dataset.pmPid);
+    if (post) {
+      const on = !post.favorite;
+      setFavorite(scr, post.seller, on);
+      scrToast(scr, on ? "Added to favorites" : "Removed from favorites");
+    }
     return;
   }
   const pmNi = e.target.closest(".pm-ni");
@@ -3276,6 +3354,32 @@ document.getElementById("stage").addEventListener("click", e => {
       scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
       renderSub(scr);
     }
+    return;
+  }
+  const favR = e.target.closest(".fav-remove");
+  if (favR) {
+    const scr = favR.closest(".screen");
+    setFavorite(scr, favR.dataset.seller, false);
+    renderSub(scr);
+    scrToast(scr, "Removed from favorites");
+    return;
+  }
+  const favA = e.target.closest(".fav-add");
+  if (favA) {
+    const scr = favA.closest(".screen");
+    setFavorite(scr, favA.dataset.seller, true);
+    renderSub(scr);
+    scrToast(scr, "Added to favorites");
+    return;
+  }
+  const favAll = e.target.closest(".fav-removeall");
+  if (favAll) {
+    const scr = favAll.closest(".screen");
+    POSTS.forEach(p => p.favorite = false);
+    if (state.feedTab === "favorites")
+      scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+    renderSub(scr);
+    scrToast(scr, "Removed all favorites");
     return;
   }
   const mUs = e.target.closest(".m-unsave");
@@ -3561,8 +3665,6 @@ document.getElementById("stage").addEventListener("click", e => {
       if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === pid)
         b.classList.toggle("liked", post.liked);
     });
-    if (state.feedTab === "favorites")
-      scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
   }
 });
 

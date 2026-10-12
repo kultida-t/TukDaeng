@@ -159,13 +159,13 @@ await openDetail("p1");
 check("detail synced Following", (await dBtn().textContent()).trim() === "Following");
 await closeDetail();
 
-// 10) regression — All=11, like->Favorites, comment sheet still works
+// 10) regression — All=11, like no longer feeds Favorites (FEED-012), comment sheet still works
 check("all posts still 11", await posts().count() === 11, String(await posts().count()));
 await page.locator('.post[data-pid="p1"] .like-btn').click();
 await page.waitForTimeout(200);
 await tabs.nth(2).click();
 await page.waitForTimeout(300);
-check("favorites lists liked p1", await posts().count() === 1);
+check("favorites ignores liked p1 (empty)", await posts().count() === 0);
 await tabs.nth(0).click();
 await page.waitForTimeout(300);
 await page.locator('.post[data-pid="p7"] .comment-btn').click();
