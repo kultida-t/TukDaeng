@@ -99,6 +99,8 @@ await tabs.nth(0).click();
 await page.waitForTimeout(300);
 await likeBtn("p1").click();
 await page.waitForTimeout(200);
+await page.locator('.post[data-pid="p1"] .more-link').click();
+await page.waitForTimeout(250);
 await page.locator('.post[data-pid="p1"] .details-toggle').click();
 await page.waitForTimeout(300);
 await page.locator('.post[data-pid="p1"] .view-full').click();

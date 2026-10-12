@@ -37,6 +37,8 @@ for (const [tag, vp] of [["d", { width: 1440, height: 900 }], ["m", { width: 390
   // detail page liked state (p1)
   await page.locator(".feed-tab").nth(0).click();
   await page.waitForTimeout(300);
+  await page.locator('.post[data-pid="p1"] .more-link').click();
+  await page.waitForTimeout(250);
   await page.locator('.post[data-pid="p1"] .details-toggle').click();
   await page.waitForTimeout(300);
   await page.locator('.post[data-pid="p1"] .view-full').click();

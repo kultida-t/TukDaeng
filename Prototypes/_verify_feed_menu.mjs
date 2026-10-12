@@ -183,6 +183,8 @@ await closeSheet();
 check("backdrop closes sheet", await page.locator(".screen.pm-open").count() === 0);
 
 // 10) detail page "..." also opens the menu — DL1 header dots (p4) + DL2 post-head (p5)
+await page.locator('.post[data-pid="p4"] .more-link').click();
+await page.waitForTimeout(250);
 await page.locator('.post[data-pid="p4"] .details-toggle').click();
 await page.waitForTimeout(300);
 await page.locator('.post[data-pid="p4"] .view-full').click();
@@ -202,6 +204,8 @@ await page.locator('.post.ni-card .pm-undo').click();
 await page.waitForTimeout(300);
 check("post restored after undo", await page.locator('.post[data-pid="p4"] .post-photo').count() === 1);
 
+await page.locator('.post[data-pid="p5"] .more-link').click();
+await page.waitForTimeout(250);
 await page.locator('.post[data-pid="p5"] .details-toggle').click();
 await page.waitForTimeout(300);
 await page.locator('.post[data-pid="p5"] .view-full').click();
@@ -655,6 +659,8 @@ await page.locator(".sub-back").click();
 await page.waitForTimeout(300);
 
 // 26) detail pages — DL1 (p4) share/save work over the page; DL2 (p5) liked-by opens likes
+await page.locator('.post[data-pid="p4"] .more-link').click();
+await page.waitForTimeout(250);
 await page.locator('.post[data-pid="p4"] .details-toggle').click();
 await page.waitForTimeout(300);
 await page.locator('.post[data-pid="p4"] .view-full').click();
@@ -678,6 +684,8 @@ await page.locator(".page-detail .detail-back").first().click();
 await page.waitForTimeout(300);
 await page.evaluate(() => { const p = POSTS.find(x => x.id === "p4"); p.saved = false; p.savedCol = null; });
 
+await page.locator('.post[data-pid="p5"] .more-link').click();
+await page.waitForTimeout(250);
 await page.locator('.post[data-pid="p5"] .details-toggle').click();
 await page.waitForTimeout(300);
 await page.locator('.post[data-pid="p5"] .view-full').click();

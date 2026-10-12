@@ -16,6 +16,8 @@ const tabs = page.locator(".feed-tab");
 const followBtn = pid => page.locator(`.feed-scroll .post[data-pid="${pid}"] .follow-btn`);
 const dBtn = () => page.locator(".page-detail .detail-seller .follow-btn").first();
 const openDetail = async pid => {
+  await page.locator(`.post[data-pid="${pid}"] .more-link`).click();
+  await page.waitForTimeout(250);
   await page.locator(`.post[data-pid="${pid}"] .details-toggle`).click();
   await page.waitForTimeout(300);
   await page.locator(`.post[data-pid="${pid}"] .view-full`).click();

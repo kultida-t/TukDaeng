@@ -1,0 +1,48 @@
+FEED-014 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: FEED-014 ย้าย "Tap for details" ให้แสดงเฉพาะหลังกด more กาง caption
+      — feed คลีนเหมือนโพสต์ทั่วไป
+ไฟล์: Prototypes/fo-flow/index.html (+ verify/cap scripts ที่เกี่ยวข้อง)
+ผลตรวจ: ผ่านทุกเคส — ผู้ใช้ตรวจรอบ 1 (ส่งเพิ่มเคส 3.5 ตาม feedback IG)
+        และยืนยันรอบ 2 "โอเคปิด task ได้" (12 ต.ค. 2026)
+
+เคส 1: โพสต์ sale ไม่แสดง "Tap for details" ตอนยังไม่กด more — ผ่าน
+  เปิด feed แท็บ All Posts → โพสต์ Watch 777 (Rolex) ต้องไม่มีแถบ
+  "Tap for details" ใต้ "3 days ago" — หน้าตาคลีนเหมือนโพสต์ wrist.story
+
+เคส 2: กด "more" แล้ว toggle ปรากฏ — ผ่าน
+  กด "more" ท้าย caption โพสต์ Watch 777 → caption กางเต็ม + แถบ
+  "Tap for details" ปรากฏใต้เวลาโพสต์ (ตำแหน่งเดิม)
+
+เคส 3: เปิด/พับ spec เหมือนเดิม — ผ่าน
+  กด "Tap for details" → spec กาง + label เปลี่ยน "Hide details"
+  กดซ้ำ → spec พับกลับ label กลับ "Tap for details"
+
+เคส 3.5: แตะ caption ที่กางอยู่ → ย่อกลับเหมือน IG — ผ่าน
+  กด "more" กาง caption แล้วแตะที่ตัว caption → ย่อกลับเป็นสั้นเหมือนเดิม
+  และ "Tap for details" หายไปเหมือนตอนก่อนกด more
+  (ถ้า spec เปิดอยู่ จะพับปิดไปด้วย กลับสภาพเดิมเป๊ะ)
+
+เคส 4: แท็บ Following / Favorites — ผ่าน
+  สลับแท็บ → พฤติกรรมเดียวกัน (toggle ซ่อนจนกว่ากด more)
+  หมายเหตุ: การ์ด render ใหม่เมื่อสลับแท็บ caption จะหุบกลับ (ของเดิมเป็นแบบนี้)
+
+เคส 5: โพสต์ที่ไม่มี price/specs — ผ่าน
+  โพสต์ showcase (เช่น wrist.story) ไม่มี toggle เหมือนเดิม
+
+เคส 6: Regression การ์ดโพสต์ — ผ่าน
+  like / comment / share / save / Ask / swipe รูป / เมนู "..." ทำงานเหมือนเดิม
+
+เคส 7: Post viewer จาก Search — ผ่าน
+  เปิด Search → กดรูปผลค้นหา → viewer เต็มจอยังมี "Tap for details"
+  แสดงตลอดเหมือนเดิม (out of scope — คงพฤติกรรมเดิมตาม task)
+
+หมายเหตุ:
+- แก้ด้วย CSS บรรทัดเดียว: .post:not(.pv-post) .caption:not(.expanded) ~ .details-toggle { display:none }
+- แตะ caption ที่กางอยู่ → ย่อกลับ (ลบ .expanded) + พับ spec ที่เปิดอยู่ปิดด้วย กลับสภาพก่อนกด more เป๊ะ (ตาม feedback IG)
+- feed-social-redesign.html และหน้าจอ protected ไม่ถูกแตะต้อง
+- before capture: screenshots/task-FEED-014/before/ (1440/440 — จำลองสภาพเดิม
+  โดยปิด rule ใหม่ชั่วคราวในหน้าเว็บ ผลเหมือนสภาพจริงก่อนแก้)
+- after capture: screenshots/task-FEED-014/after/ (1440/440)
+- automated: _verify_feed_search/_verify_feed_menu/_verify_feed_like/
+  _verify_feed_follow/_verify_flow ผ่านทั้งหมด 0 errors
