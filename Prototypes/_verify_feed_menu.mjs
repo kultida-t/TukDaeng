@@ -618,40 +618,73 @@ await page.waitForTimeout(250);
 check("saved-to-collection toast", (await page.locator(".sc-toast").textContent()).trim() === "Saved to Wishlist");
 check("save sheet closed", await page.locator(".screen.save-open").count() === 0);
 await page.waitForTimeout(1900);
-// tap saved bookmark again -> unsaves
+// tap saved bookmark again -> sheet reopens; unsave only via Saved row in sheet
 await page.locator('.post[data-pid="p5"] .save-btn').click();
 await page.waitForTimeout(250);
-check("unsave clears icon + toast", await page.locator('.post[data-pid="p5"] .save-btn.saved').count() === 0 && (await page.locator(".sc-toast").textContent()).trim() === "Removed from saved");
-await page.waitForTimeout(1900);
-// save p5 to default Saved + p6 via New collection input
-await page.locator('.post[data-pid="p5"] .save-btn').click();
-await page.waitForTimeout(250);
+check("saved bookmark reopens sheet", await page.locator(".screen.save-open").count() === 1 && await page.locator('.post[data-pid="p5"] .save-btn.saved').count() === 1);
+check("Saved row shows filled bookmark", await page.locator(".sv-head.saved").count() === 1);
 await page.locator('.sv-head[data-col="Saved"]').click();
+await page.waitForTimeout(250);
+check("unsave via Saved row clears icon + toast", await page.locator('.post[data-pid="p5"] .save-btn.saved').count() === 0 && (await page.locator(".sc-toast").textContent()).trim() === "Removed from your saved");
+check("sheet closed after unsave", await page.locator(".screen.save-open").count() === 0);
+await page.waitForTimeout(1900);
+// save p5 to default Saved + p6 via New collection sheet (SAVED-001 — IG Cancel/Next sheet)
+await page.locator('.post[data-pid="p5"] .save-btn').click();
+await page.waitForTimeout(250);
+await page.locator(".sheet-handle").click();  // already in default Saved — dismiss sheet
 await page.waitForTimeout(250);
 await page.locator('.post[data-pid="p6"] .save-btn').click();
 await page.waitForTimeout(250);
 await page.locator(".sv-new").click();
-await page.waitForTimeout(200);
-await page.locator(".sv-input").fill("Seiko picks");
-await page.locator(".sv-input").press("Enter");
+await page.waitForTimeout(300);
+check("new collection sheet opens", (await page.locator(".nc-title").textContent()).trim() === "New collection" && await page.locator(".nc-next").isDisabled());
+await page.locator(".nc-input").fill("Seiko picks");
+await page.waitForTimeout(150);
+check("counter + Next enabled", (await page.locator(".nc-count").textContent()).trim() === "11 / 40" && !(await page.locator(".nc-next").isDisabled()));
+await page.locator(".nc-next").click();
 await page.waitForTimeout(300);
 check("new collection saves + toast", (await page.locator(".sc-toast").textContent()).trim() === "Saved to Seiko picks");
 check("p6 bookmark filled", await page.locator('.post[data-pid="p6"] .save-btn.saved').count() === 1);
 await page.waitForTimeout(1900);
+// reopen p6 sheet -> its collection row is checked; tap it -> remove from collection
+await page.locator('.post[data-pid="p6"] .save-btn').click();
+await page.waitForTimeout(250);
+check("current collection row checked", await page.locator('.sv-row[data-col="Seiko picks"] .plus.on').count() === 1);
+await page.locator('.sv-row[data-col="Seiko picks"]').click();
+await page.waitForTimeout(250);
+check("removed-from-collection toast", (await page.locator(".sc-toast").textContent()).trim() === "Removed from Seiko picks");
+await page.waitForTimeout(1900);
 
-// 25) Settings > Saved lists saved posts, Remove unsaves
+// 25) Settings > Saved — IG-style hub; Manage select + Remove unsaves (SAVED-001)
 await page.locator(".set-btn").click();
 await page.waitForTimeout(350);
 check("settings has Saved row", (await page.locator('.sub-row[data-sub="saved"]').textContent()).includes("Saved"));
-check("saved count = 2", (await page.locator('.sub-row[data-sub="saved"] .sub-count').textContent()).trim() === "2");
+const savedCnt = await page.evaluate(() => POSTS.filter(p => p.saved).length);
+check("saved count = seeded + 2", (await page.locator('.sub-row[data-sub="saved"] .sub-count').textContent()).trim() === String(savedCnt));
 await page.locator('.sub-row[data-sub="saved"]').click();
 await page.waitForTimeout(350);
-check("saved list = 2 rows", await page.locator(".page-sub .mrow").count() === 2);
-check("collection name shown", (await page.locator(".page-sub").textContent()).includes("Seiko picks"));
+check("saved hub head + actions", (await page.locator(".page-sub .detail-title").textContent()).trim() === "Saved" && await page.locator(".svd-srch").count() === 1 && await page.locator(".svd-plus").count() === 1);
+check("3 tab pills, All on", await page.locator(".svd-tab").count() === 3 && await page.locator('.svd-tab[data-tab="all"].on').count() === 1);
+check("collections grid 4 + See all", await page.locator(".svd-col").count() === 4 && (await page.locator(".svd-see").first().textContent()).trim() === "See all");
+check("posts grid = all saved", await page.locator(".svd-tile").count() === savedCnt);
 await page.screenshot({ path: `${OUT11}/d-saved-page.png` });
-await page.locator('.m-unsave[data-pid="p5"]').click();
+await page.locator(".svd-see:not(.svd-manage)").click();
+await page.waitForTimeout(250);
+check("collections tab shows all incl new", await page.locator(".svd-colbig").count() === 5 && (await page.locator(".page-sub").textContent()).includes("Seiko picks"));
+await page.locator('.svd-tab[data-tab="all"]').click();
+await page.waitForTimeout(200);
+await page.locator(".svd-manage").click();
+await page.waitForTimeout(250);
+check("manage mode: select header + bar", (await page.locator(".page-sub .svd-seltitle").textContent()).trim() === "All posts" && (await page.locator(".svd-selall").textContent()).trim() === "Select all" && await page.locator(".svd-bar").count() === 1 && await page.locator(".svd-unsave").isDisabled());
+await page.locator('.svd-tile[data-pid="p5"]').click();
+await page.waitForTimeout(150);
+check("1 selected + Remove enabled", await page.locator('.svd-tile[data-pid="p5"].on').count() === 1 && !(await page.locator(".svd-unsave").isDisabled()));
+await page.locator(".svd-unsave").click();
 await page.waitForTimeout(300);
-check("remove drops row", await page.locator(".page-sub .mrow").count() === 1);
+check("unsave confirm dialog", (await page.locator(".dlg-q").textContent()).trim() === "Unsave post?" && (await page.locator(".dlg-unsave-go").textContent()).trim() === "Unsave");
+await page.locator(".dlg-unsave-go").click();
+await page.waitForTimeout(300);
+check("p5 removed from grid + toast", await page.locator('.svd-tile[data-pid="p5"]').count() === 0 && (await page.locator(".sc-toast").textContent()).trim() === "Removed from All posts");
 check("p5 icon cleared in feed", await page.locator('.post[data-pid="p5"] .save-btn.saved').count() === 0);
 await page.locator(".sub-back").click();
 await page.waitForTimeout(300);

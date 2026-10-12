@@ -1,0 +1,66 @@
+SAVED-001 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: SAVED-001 สร้างหน้า Saved แบบ IG ใน fo-flow
+      — Collections grid + tab pills + New collection sheet + Manage
+ไฟล์: Prototypes/fo-flow/index.html, Prototypes/_verify_feed_saved.mjs,
+      Prototypes/_verify_feed_menu.mjs (อัปเดตเคส save/new-collection/saved page)
+Reference: ภาพ IG Saved + New collection sheet ที่ user แนบ
+ผลตรวจ: รอผู้ใช้รีวิว preview
+
+เคส 1: เข้าหน้า Saved — ผ่าน (automated)
+  Settings (ไอคอน sliders บน header) → Saved → หน้าเต็มจอ: back + title "Saved"
+  (กึ่งกลาง) + ไอคอน search + "+" ขวาบน ตามภาพ reference
+  seed ข้อมูลตัวอย่าง: 7 โพสต์ที่ save ไว้ กระจายใน Grail list / Wishlist /
+  Vintage picks / Saved (memory-only)
+
+เคส 2: Tab pills — ผ่าน
+  แถว pills: All / Collections / Posts / Series / Reels / Audio (ตามภาพ IG)
+  - All = Collections section + All posts grid
+  - Collections = grid collections ทั้งหมด (See all หาย)
+  - Posts = grid โพสต์อย่างเดียว
+  - Series / Reels / Audio = empty state "No saved … yet" (app มีแค่โพสต์)
+
+เคส 3: Collections grid — ผ่าน
+  2 คอลัมน์: cover = รูปโพสต์ล่าสุดใน collection (ว่าง = ไอคอน bookmark),
+  ชื่อ collection + "Private" พร้อมไอคอนกุญแจ — "See all" กระโดดไปแท็บ Collections
+  แตะ card → Collection detail: title = ชื่อ collection + grid โพสต์ในนั้น + back
+
+เคส 4: All posts grid — ผ่าน
+  3 คอลัมน์เหมือน IG, ไอคอน stack มุมขวาบนบนโพสต์หลายรูป, แตะ tile → post viewer
+  เต็มจอ (swipe แนวตั้งผ่านเฉพาะโพสต์ที่ save)
+
+เคส 5: Manage — ผ่าน
+  กด Manage → header เปลี่ยนเป็น "Select items" + Done, tile มีวงกลมเลือก
+  เลือกแล้ว bar ล่างแสดง "n selected" + ปุ่ม Move / Remove
+  - Remove = unsave ทั้งที่เลือก (toast "Removed from saved", ไอคอน feed ซิงก์)
+  - Move = sheet เลือก collection (Saved + ทุก collection + New collection)
+  - ใน Collection detail ปุ่มเป็น "Remove from collection" (โพสต์ยัง saved)
+  - กด back/Done ออกจาก manage mode ก่อน pop หน้า
+
+เคส 6: New collection sheet — ผ่าน
+  เปิดจาก "+" บนหน้า Saved และจากปุ่ม "New collection" ใน save sheet — แบบภาพ IG:
+  Cancel / title "New collection" / Next (เทาจนกว่าพิมพ์ชื่อ), input พร้อม counter
+  "n / 40" + ปุ่ม X ล้าง, แถว "Add people to collection" → กาง list เพื่อนเลือกได้
+  (collection ที่มีคนแสดง "Shared · n" แทน Private)
+  Next → สร้าง collection + toast "Collection created" (หน้า Saved) /
+  "Saved to X" (จาก save sheet — โพสต์ลง collection ใหม่ทันที) /
+  "Moved to X" (จาก Manage > Move)
+
+เคส 7: Search ในหน้า Saved — ผ่าน
+  ไอคอน search → ช่องค้นหา + Cancel; พิมพ์ filter grid โพสต์ที่ save แบบ live
+  (matchQuery เดียวกับ search page); X ล้าง; back/Cancel กลับหน้า hub
+
+เคส 8: Entry points เดิม — ผ่าน
+  Settings > Saved row (count ซิงก์) และไอคอน bookmark บนหน้า Search → เปิด hub
+
+เคส 9: Theme — ผ่าน
+  dark/light ทั้งคู่ render ถูกต้อง
+
+หมายเหตุ:
+- state memory-only เหมือนเดิม (refresh แล้ว seed กลับมาเหมือนเดิม)
+- collection cover อัปเดตตามโพสต์ล่าสุดใน collection อัตโนมัติ
+- โพสต์ที่ save ผ่าน sheet ไป collection ไหนก็ไปโผล่ collection นั้น
+- feed-social-redesign.html และหน้าจอ protected ไม่ถูกแตะต้อง
+- screenshots: Prototypes/screenshots/task-SAVED-001/
+- automated: _verify_feed_saved.mjs 56 checks + _verify_feed_menu/_verify_feed_search/
+  _verify_feed_like/_verify_feed_follow/_verify_flow ผ่านทั้งหมด 0 errors
