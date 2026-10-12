@@ -1,0 +1,37 @@
+SAVED-001 — Automated Test Results
+วันที่: 2026-10-12
+
+การทำ: หน้า Saved แบบ IG เต็มรูปแบบใน Prototypes/fo-flow/index.html แทน list ธรรมดา
+- Saved hub (subHTML "saved"): header back + title กึ่งกลาง + search icon + "+",
+  tab pills 6 ตัว (All/Collections/Posts/Series/Reels/Audio), Collections 2-col grid
+  (cover=โพสต์ล่าสุด, Private/Shared, See all→แท็บ Collections), All posts 3-col grid,
+  Manage multi-select (Move to collection sheet / Remove) + แถบ action ล่าง
+- Collection detail (subHTML "savedcol"): title=ชื่อ, grid, Manage=Remove from collection
+- New collection sheet (.comment-sheet.nc): Cancel/Next, input 0/40 + clear X,
+  Add people to collection (inline friend picker) — เปิดจาก "+" หน้า Saved,
+  ปุ่ม "New collection" ใน save sheet, และ "New collection" ใน Move sheet
+- Search ในหน้า Saved (mode search): field + Cancel, live filter saved grid
+- seed saved demo: p1,p9→Grail list / p2,p11→Wishlist / p8→Vintage picks / p7,p10→Saved
+- post.savedAt ใช้เรียง grid (save ใหม่ขึ้นก่อน)
+
+ผลรัน (server http://127.0.0.1:4173/fo-flow, viewport 440x956, dark+light):
+
+_verify_feed_saved.mjs (ใหม่) — ผ่านทั้งหมด 89 checks, 0 failed, 0 console/page errors
+  ครอบคลุม: entry+header+tabs, collections grid/See all, tab filter/empty states,
+  tile→post viewer (feed card), nc sheet (counter/clear X/people/Next/Enter),
+  create จากทั้ง 3 จุด, collection detail+empty, "···" menu (Add/Edit/Select/Delete),
+  Select mode (Cancel/"N Selected"/Select all→Deselect all, Remove confirm dialog,
+  Collections move sheet, New collection + preview + Save, toast พร้อม thumbnail),
+  Add-to-collection page, Edit collection + Change cover, rename/delete,
+  search-within-saved, back-stack behavior, light theme
+
+_verify_feed_menu.mjs — ผ่านทั้งหมด (200+ checks) 0 failed, 0 errors
+  (ปรับเคส save: New collection ใช้ nc sheet แทน inline input;
+   เคส Saved page ใช้ grid/manage แทน mrow/m-unsave)
+
+_verify_feed_search.mjs — ผ่านทั้งหมด 0 failed, 0 errors (sr-saved → hub)
+_verify_feed_like.mjs — ผ่านทั้งหมด 0 failed, 0 errors
+_verify_feed_follow.mjs — ผ่านทั้งหมด 0 failed, 0 errors
+_verify_flow.mjs — จบ DONE ไม่มี error
+
+ไม่แตะ: feed-social-redesign.html (protected), หน้าจอ protected ทั้งหมดตาม AGENTS.md

@@ -1014,11 +1014,14 @@
   .sc-toast {
     position: absolute; left: 50%; top: 44%;
     transform: translate(-50%,-50%) scale(.94);
+    display: flex; align-items: center; gap: 9px;
     background: #26262c; color: #f2f2f5; border: 1px solid #3f3f48;
     font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: 999px;
     opacity: 0; pointer-events: none; transition: all .22s ease;
     z-index: 60; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.4);
   }
+  .sc-toast.st-top { top: 68px; border-radius: 16px; padding: 9px 20px 9px 10px; }
+  .sc-toast .st-img { width: 26px; height: 26px; border-radius: 7px; object-fit: cover; }
   .sc-toast.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
   /* center confirm dialog (IG "Mute x?" style) */
   .dlg {
@@ -1158,6 +1161,8 @@
   .sv-head .t { font-size: 15px; font-weight: 600; color: var(--text); }
   .sv-head .s, .sv-row .s { font-size: 12.5px; color: var(--muted); }
   .sv-head > svg { color: var(--text); }
+  .sv-head.saved > svg path { fill: var(--text); }
+  .sv-row .plus.on { background: var(--text); border-color: var(--text); color: var(--bg); }
   .sv-sec {
     display: flex; align-items: center; justify-content: space-between;
     padding: 6px 16px;
@@ -1172,7 +1177,7 @@
   .sv-row { padding: 7px 16px; }
   .sv-row .n { font-size: 14px; font-weight: 500; color: var(--text); }
   .sv-row .plus {
-    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
     border: 1.5px solid var(--muted); color: var(--text);
     display: flex; align-items: center; justify-content: center;
   }
@@ -1182,6 +1187,241 @@
     color: var(--text); background: var(--surface-2); border: 1px solid var(--line);
     border-radius: 10px; padding: 10px 12px; outline: none;
   }
+
+  /* ============ SAVED HUB (SAVED-001 — IG Saved screen) ============ */
+  .svd-x { display: none; border: none; background: none; color: var(--muted); cursor: pointer; padding: 0; flex-shrink: 0; }
+  .sr-field.has-q .svd-x { display: flex; }
+  .svd-cancel {
+    flex-shrink: 0; font-family: var(--font-main); font-size: 15px; color: #3d9bff;
+    background: none; border: none; cursor: pointer; padding: 6px 4px;
+  }
+  .svd-tabs {
+    display: flex; gap: 8px; padding: 10px 12px 12px; overflow-x: auto;
+    scrollbar-width: none; flex-shrink: 0;
+  }
+  .svd-tabs::-webkit-scrollbar { display: none; }
+  .svd-tab {
+    flex-shrink: 0; font-family: var(--font-main); font-size: 13.5px; font-weight: 600;
+    color: var(--text); background: var(--chip-bg); border: none;
+    border-radius: 999px; padding: 8px 16px; cursor: pointer;
+  }
+  .svd-tab.on { background: color-mix(in srgb, var(--text) 22%, transparent); }
+  .svd-see, .svd-done {
+    background: none; border: none; font-family: var(--font-main);
+    font-size: 13.5px; font-weight: 600; color: #3d9bff; cursor: pointer; padding: 0;
+  }
+  .svd-done { font-size: 14.5px; padding: 6px 4px; }
+  .svd-sec { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 9px; }
+  .svd-sec .t { font-size: 15px; font-weight: 600; color: var(--text); }
+  /* true-center title — side groups are asymmetric (1 icon vs 2) so auto margins shift it */
+  .svd-head { position: relative; border-bottom: 1px solid var(--line); }
+  .svd-head .rc-title { position: absolute; left: 50%; transform: translateX(-50%); margin-left: 0; }
+  /* All-tab collections rows — small rounded thumb + name/Private beside it (IG) */
+  .svd-cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 14px; padding: 2px 16px 12px; }
+  .svd-col {
+    display: flex; align-items: center; gap: 12px; min-width: 0;
+    background: none; border: none; padding: 0; cursor: pointer;
+    font-family: var(--font-main); text-align: left;
+  }
+  .svd-col .cv {
+    width: 56px; height: 56px; border-radius: 12px; overflow: hidden; flex-shrink: 0;
+    background: var(--surface-2);
+    display: flex; align-items: center; justify-content: center; color: var(--muted);
+  }
+  .svd-col .cv img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .svd-col .b { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .svd-col .n {
+    font-size: 13.5px; font-weight: 500; color: var(--text); max-width: 100%;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .svd-col .s { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+  /* collections tab — big square cards, 2x2 collage cover, name below (IG) */
+  .svd-colsbig { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 12px; padding: 4px 16px 16px; }
+  .svd-colbig {
+    display: flex; flex-direction: column; gap: 7px; min-width: 0;
+    background: none; border: none; padding: 0; cursor: pointer;
+    font-family: var(--font-main); text-align: left;
+  }
+  .svd-colbig .cv {
+    width: 100%; aspect-ratio: 1; border-radius: 18px; overflow: hidden;
+    background: var(--surface-2);
+    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px;
+  }
+  .svd-colbig .cv.one { display: block; }
+  .svd-colbig .cv.two { grid-template-rows: 1fr; }
+  .svd-colbig .cv img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .svd-colbig .n {
+    font-size: 13.5px; font-weight: 500; color: var(--text); max-width: 100%;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  /* posts 3-col grid + manage selection */
+  .svd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; padding-bottom: 8px; }
+  .svd-tile {
+    position: relative; border: none; padding: 0; cursor: pointer;
+    background: var(--surface-2); overflow: hidden; aspect-ratio: 4 / 5; display: block;
+  }
+  .svd-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .svd-stack {
+    position: absolute; top: 8px; right: 8px; color: #fff; display: flex;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,.6));
+  }
+  .svd-sel {
+    position: absolute; top: 8px; right: 8px; width: 23px; height: 23px;
+    border-radius: 50%; border: 1.5px solid rgba(255,255,255,.9); background: rgba(0,0,0,.12);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .svd-tile.on .svd-sel { background: #3d9bff; border-color: #3d9bff; }
+  .svd-tile.on img { opacity: .5; }
+  .svd-bar {
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    padding: 12px 14px; border-top: 1px solid var(--line);
+  }
+  .svd-bar button {
+    flex: 1; font-family: var(--font-main); font-size: 14.5px; font-weight: 600;
+    border: none; border-radius: 12px; padding: 13px; cursor: pointer;
+    background: var(--chip-bg); color: var(--text);
+  }
+  .svd-bar button:disabled { opacity: .38; cursor: default; }
+  .svd-selall {
+    background: none; border: none; font-family: var(--font-main);
+    font-size: 15px; color: #3d9bff; cursor: pointer; padding: 6px 4px;
+  }
+  .svd-mini { display: none; }
+  .svd-body { display: flex; flex-direction: column; }
+  .svd-empty {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    padding: 60px 36px; margin: auto 0; text-align: center; color: var(--muted);
+  }
+  .svd-empty .ic {
+    width: 66px; height: 66px; border-radius: 50%; border: 2px solid var(--text);
+    display: flex; align-items: center; justify-content: center; color: var(--text);
+    margin-bottom: 4px;
+  }
+  .svd-empty .ic.flat { width: auto; height: auto; border: none; margin-bottom: 8px; }
+  .svd-empty .t { font-size: 16px; font-weight: 700; color: var(--text); }
+  .svd-empty .d { font-size: 13px; line-height: 1.55; }
+  /* collection detail — title block + "···" overflow menu + add picker (IG) */
+  .svd-coltitle { padding: 4px 14px 12px; }
+  .svd-coltitle .n { font-size: 20px; font-weight: 800; letter-spacing: -.2px; }
+  .svd-coltitle .c { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .svd-menuwrap { position: absolute; inset: 0; z-index: 34; }
+  .svd-menu {
+    position: absolute; top: 50px; right: 10px; min-width: 220px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 6px; box-shadow: 0 12px 36px rgba(0,0,0,.45);
+  }
+  .svd-mi {
+    display: flex; align-items: center; gap: 13px; width: 100%;
+    padding: 13px 12px; border: 0; background: none; color: var(--text);
+    font-family: var(--font-main); font-size: 14.5px; text-align: left;
+    border-radius: 9px; cursor: pointer;
+  }
+  .svd-mi svg { flex-shrink: 0; }
+  .svd-mi.del, .svd-mi.del svg { color: var(--red); }
+  .svd-addsub { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-top: 2px; }
+  .svd-addhead { padding-top: 12px; padding-bottom: 15px; }
+  /* edit collection page — cover + change cover + name field + manage/delete (IG) */
+  .ec-cover { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 0 8px; }
+  .ecv {
+    width: 118px; height: 118px; border-radius: 14px; overflow: hidden;
+    background: var(--surface-2); display: grid;
+    grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px;
+  }
+  .ecv.one { display: block; }
+  .ecv.two { grid-template-rows: 1fr; }
+  .ecv img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ec-chgcover {
+    background: none; border: none; font-family: var(--font-main);
+    font-size: 14px; color: #3d9bff; cursor: pointer; padding: 2px;
+  }
+  .ec-sec { font-size: 15px; font-weight: 700; color: var(--text); padding: 18px 14px 10px; }
+  .ec-field {
+    display: flex; flex-direction: column; gap: 4px; margin: 0 14px;
+    background: transparent; border: 1px solid var(--line);
+    border-radius: 12px; padding: 10px 14px;
+  }
+  .ec-field .ec-lbl { font-size: 11.5px; color: var(--muted); }
+  .ec-field input {
+    background: none; border: none; outline: none; padding: 0;
+    font-family: var(--font-main); font-size: 16px; color: var(--text);
+  }
+  .ec-del {
+    display: block; width: 100%; text-align: left; padding: 2px 14px;
+    background: none; border: none; font-family: var(--font-main);
+    font-size: 15px; color: var(--red); cursor: pointer;
+  }
+  .ec-note { font-size: 11.5px; color: var(--muted); line-height: 1.45; padding: 10px 14px 0; margin: 0; }
+  /* change cover picker — 2-col grid of collection posts, tap to pick */
+  .ec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .ec-ctile {
+    position: relative; border: 0; padding: 0; aspect-ratio: 4 / 5;
+    overflow: hidden; cursor: pointer; background: var(--surface-2);
+  }
+  .ec-ctile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ec-ctile.on .svd-sel { background: #3d9bff; border-color: #3d9bff; }
+  /* move-to-collection picker reuses the sv sheet look */
+  .svd-mv {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    background: none; border: none; font-family: var(--font-main);
+    cursor: pointer; text-align: left;
+  }
+  .svd-mv-new {
+    font-family: var(--font-main); font-size: 13px; font-weight: 500;
+    color: #3d9bff; background: none; border: none; cursor: pointer; padding: 4px 0;
+  }
+  .svd-mv-new:disabled { color: var(--muted); opacity: .6; cursor: default; }
+  .sv-bm { display: flex; align-items: center; justify-content: center; color: var(--text); }
+  /* new collection sheet — Cancel / Next + name field + add people */
+  .comment-sheet.nc { height: auto; max-height: 80%; }
+  .nc-head { display: flex; align-items: center; padding: 4px 14px 12px; flex-shrink: 0; }
+  .nc-head .nc-title { flex: 1; text-align: center; font-size: 16px; font-weight: 700; color: var(--text); }
+  .nc-cancel, .nc-next {
+    background: none; border: none; font-family: var(--font-main);
+    font-size: 15px; cursor: pointer; padding: 6px 2px; min-width: 52px;
+  }
+  .nc-cancel { color: var(--text); text-align: left; }
+  .nc-next { color: #3d9bff; font-weight: 700; text-align: right; }
+  .nc-next:disabled { color: var(--muted); opacity: .6; cursor: default; }
+  .nc-field {
+    display: flex; align-items: center; gap: 8px; margin: 2px 16px 14px; flex-shrink: 0;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px;
+    padding: 12px 14px;
+  }
+  .nc-field input {
+    flex: 1; min-width: 0; background: none; border: none; outline: none;
+    font-family: var(--font-main); font-size: 15px; color: var(--text);
+  }
+  .nc-count { font-size: 13px; color: var(--muted); flex-shrink: 0; }
+  .nc-x { display: none; border: none; background: none; color: var(--muted); cursor: pointer; padding: 0; flex-shrink: 0; }
+  .nc-field.has-v .nc-x { display: flex; }
+  .nc-preview { display: flex; justify-content: center; padding: 2px 0 14px; flex-shrink: 0; }
+  .nc-preview img { width: 150px; height: 150px; object-fit: cover; border-radius: 12px; }
+  .nc-ppl-btn {
+    width: 100%; display: flex; align-items: center; gap: 13px; flex-shrink: 0;
+    background: none; border: none; font-family: var(--font-main); cursor: pointer;
+    text-align: left; padding: 8px 16px 16px; color: var(--muted);
+  }
+  .nc-ppl-btn .ic {
+    width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center; color: var(--text); flex-shrink: 0;
+  }
+  .nc-ppl-btn .b { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .nc-ppl-btn .t { font-size: 15px; font-weight: 600; color: var(--text); }
+  .nc-ppl-btn .s { font-size: 13px; color: var(--muted); }
+  .nc-ppl { max-height: 196px; overflow-y: auto; scrollbar-width: none; padding: 0 0 14px; flex-shrink: 0; }
+  .nc-ppl::-webkit-scrollbar { display: none; }
+  .nc-fr {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    padding: 6px 16px; background: none; border: none; cursor: pointer;
+    font-family: var(--font-main); text-align: left;
+  }
+  .nc-fr img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+  .nc-fr .n { flex: 1; font-size: 14px; font-weight: 500; color: var(--text); }
+  .nc-fr .chk {
+    width: 23px; height: 23px; border-radius: 50%; border: 2px solid var(--muted);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .nc-fr.on .chk { background: #3d9bff; border-color: #3d9bff; }
 
   /* settings / content-preferences page — slides in like the detail page */
   .page-sub {
@@ -1256,6 +1496,9 @@
   .pv-post .liked-by { padding: 7px 0 0; color: rgba(255,255,255,.8); }
   .pv-post .liked-by img { border-color: transparent; }
   .pv-post .liked-by b { color: #fff; }
+  /* saved-feed viewer variant — IG Saved post list (feed cards, normal scroll) */
+  .page-pv.feed { background: var(--bg); }
+  .page-pv.feed .pv-track { scroll-snap-type: none; }
   .pv-add {
     position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 3;
     display: flex; align-items: center; cursor: pointer;
@@ -2323,7 +2566,21 @@ const POSTS = [
 ];
 
 /* flattened rows kept as p.specs for lookups (spec()) and non-grouped renderers */
-POSTS.forEach(p => { p.specs = (p.specGroups || []).flatMap(g => g.rows); p.liked = false; p.saved = false; p.savedCol = null; });
+/* seed a few saved posts so the Saved hub opens populated like a real account (memory-only) */
+const SEED_SAVED = { p1: "Grail list", p9: "Grail list", p2: "Wishlist", p11: "Wishlist", p8: "Vintage picks", p7: "Saved", p10: "Saved" };
+POSTS.forEach((p, i) => {
+  p.specs = (p.specGroups || []).flatMap(g => g.rows);
+  p.liked = false;
+  p.saved = p.id in SEED_SAVED;
+  p.savedCol = SEED_SAVED[p.id] || null;
+  p.savedAt = p.saved ? 1000 - i : 0;
+  p.colAt = p.savedAt;
+  /* pre-scaled thumbs (canvas high-quality) for Saved grid/covers — sharper than CSS downscale */
+  p._tP = `./assets/thumbs/${p.id}-p.jpg`;
+  p._tS = `./assets/thumbs/${p.id}-s.jpg`;
+});
+const thumbP = p => p._tP || p.photos[0];
+const thumbS = p => p._tS || p.photos[0];
 
 /* per-post Detail variant sets — each feed post opens Detail with its own combo */
 const POST_DETAIL_CFG = {
@@ -2392,6 +2649,8 @@ const I = {
   eye: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
   share: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>`,
   bookmark: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
+  lock: (s=14) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>`,
+  stack: (s=14) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
   burger: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>`,
   search: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>`,
   clock: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>`,
@@ -2400,6 +2659,8 @@ const I = {
   dots: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>`,
   circleX: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="m9.5 9.5 5 5m0-5-5 5"/></svg>`,
   flag: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4.5h11.5l-2.5 4.5 2.5 4.5H6"/></svg>`,
+  pen: (s=18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>`,
+  trash: (s=18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>`,
   sad: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.3 15.6c.9-1.1 2.2-1.7 3.7-1.7s2.8.6 3.7 1.7"/><path d="M9 9.6h.01M15 9.6h.01"/></svg>`,
   bellOff: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.7 21a2 2 0 0 1-3.4 0"/><path d="M18.6 13a17.9 17.9 0 0 1-.6-5"/><path d="M6.3 6.3A5.9 5.9 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.3-5"/><path d="m1 1 22 22"/></svg>`,
   userMinus: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M17 8h6"/></svg>`,
@@ -2799,12 +3060,12 @@ function shareSheetHTML() {
 }
 
 function saveSheetHTML(p) {
-  const thumb = c => c.thumb
-    ? `<img class="thumb" src="${c.thumb}" alt="">`
+  const thumb = c => colCover(c)
+    ? `<img class="thumb" src="${colCover(c)}" alt="">`
     : `<span class="thumb"></span>`;
   return `
     <div class="sheet-handle"></div>
-    <button class="sv-pick sv-head" data-col="Saved">
+    <button class="sv-pick sv-head${p.saved ? " saved" : ""}" data-col="Saved">
       <img class="thumb" src="${p.photos[0]}" alt="">
       <span class="b"><span class="t">Saved</span><span class="s">Private</span></span>
       ${I.bookmark(21)}
@@ -2815,7 +3076,7 @@ function saveSheetHTML(p) {
       <button class="sv-pick sv-row" data-col="${c.name}">
         ${thumb(c)}
         <span class="b"><span class="n">${c.name}</span><span class="s">Private</span></span>
-        <span class="plus">${I.plus(15)}</span>
+        <span class="plus${p.savedCol === c.name ? " on" : ""}">${p.savedCol === c.name ? I.check(13) : I.plus(14)}</span>
       </button>`).join("")}
     </div>
     <div class="sv-newrow"></div>`;
@@ -2824,7 +3085,7 @@ function saveSheetHTML(p) {
 /* shared sheet opener — comment-sheet is a singleton, swap variant class + content */
 function openSheet(scr, variantCls, openCls, html) {
   const cs = scr.querySelector(".comment-sheet");
-  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "so", "dt", "nt", "ps");
+  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "so", "dt", "nt", "ps", "nc");
   cs.classList.add(variantCls);
   cs.innerHTML = html;
   scr.classList.remove("comments-open", "unfollow-open", "pm-open", "likes-open", "share-open", "save-open", "sort-open", "details-open");
@@ -3025,9 +3286,11 @@ state.snooze = false;
 state.sensitive = "standard";
 
 let scrToastTimer;
-function scrToast(scr, msg) {
+function scrToast(scr, msg, thumb = "") {
   const el = scr.querySelector(".sc-toast");
-  el.textContent = msg;
+  el.innerHTML = thumb ? `<img class="st-img" src="${thumb}" alt=""><span>${msg}</span>` : "";
+  if (!thumb) el.textContent = msg;
+  el.classList.toggle("st-top", !!thumb);
   el.classList.add("show");
   clearTimeout(scrToastTimer);
   scrToastTimer = setTimeout(() => el.classList.remove("show"), 1800);
@@ -3335,8 +3598,29 @@ function pvDetailsSheetHTML(p) {
   return `<div class="sheet-handle"></div>
     <div class="sheet-list" style="padding-top:8px">${detailsHTML(p, true)}</div>`;
 }
-function openPostViewer(scr, posts, pid, phi = 0) {
+/* IG Saved viewer — feed-style cards in a vertical scroll (tap tile → opens at that post).
+   Reuses the real feed card so caption collapse + Tap for details + specs render identically. */
+function svfPostHTML(p) {
+  return `<div class="svf-post" data-pid="${p.id}">${postCard(p, state.variant)}</div>`;
+}
+function openPostViewer(scr, posts, pid, phi = 0, feedMode = false) {
   const pv = scr.querySelector(".page-pv");
+  pv.classList.toggle("feed", feedMode);
+  if (feedMode) {
+    pv.innerHTML = `
+      <div class="detail-head svd-head">
+        <button class="icon-btn pv-back">${I.back()}</button>
+        <span class="detail-title rc-title">Saved</span>
+        <span class="spacer"></span>
+        <button class="icon-btn pv-srch">${I.search(21)}</button>
+      </div>
+      <div class="pv-track svf-track">${posts.map(svfPostHTML).join("")}</div>`;
+    scr.classList.add("pv-open");
+    const tr = pv.querySelector(".svf-track");
+    const el = pv.querySelector(`.svf-post[data-pid="${pid}"]`);
+    if (el) tr.scrollTop = el.getBoundingClientRect().top - tr.getBoundingClientRect().top + tr.scrollTop;
+    return;
+  }
   pv.innerHTML = `
     <div class="pv-head">
       <button class="icon-btn pv-back">${I.back()}</button>
@@ -3497,12 +3781,23 @@ function renderSub(scr) {
   const el = scr.querySelector(".page-sub");
   el.innerHTML = subHTML(st[st.length - 1], scr);
   el.classList.toggle("pg-up", st[st.length - 1] === "report");
-  const q = el.querySelector(".sr-q");
+  const q = el.querySelector(".sr-q, .svd-q");
   if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
 }
 function subBack(scr) {
   const st = scr._subStack || [];
   const top = st[st.length - 1];
+  if (top === "saved" || top === "savedcol") {                    /* back exits saved-search/manage first, page pops after */
+    const V = savedState(scr);
+    if (V.mode === "search") { V.mode = ""; V.q = ""; renderSub(scr); return; }
+    if (V.mode === "menu") { V.mode = ""; renderSub(scr); return; }
+    if (V.mode === "cover") { V.mode = "edit"; renderSub(scr); return; }
+    if (V.mode === "edit") { V.mode = ""; renderSub(scr); return; }
+    if (V.mode === "add") { V.mode = ""; V.addSel.clear(); renderSub(scr); return; }
+    if (V.mode === "allmenu") { V.mode = "allposts"; renderSub(scr); return; }
+    if (V.manage) { V.manage = false; V.sel.clear(); renderSub(scr); return; }
+    if (V.mode === "allposts") { V.mode = ""; renderSub(scr); return; }
+  }
   if (top === "sfilter") srchState(scr).fDraft = null;            /* back from Filters = discard draft (spec: Apply applies) */
   if (top === "search" && srchState(scr).mode === "results") {  /* back from results returns to the explore landing like IG */
     srchState(scr).mode = "landing";
@@ -3520,6 +3815,308 @@ function subPostRows(posts, label, cls) {
       <span class="lg-b"><span class="mn">${p.seller}</span><span class="md">${p.caption}</span></span>
       <button class="mact ${cls}" data-pid="${p.id}">${label}</button>
     </div>`).join("") : `<div class="sub-empty">Nothing here yet</div>`;
+}
+
+/* ===== SAVED-001 — IG-style Saved hub (tabs + collections grid + manage + new-collection sheet) ===== */
+const SAVED_TABS = [
+  ["all", "All"], ["collections", "Collections"], ["posts", "Posts"],
+];
+function savedState(scr) {
+  if (!scr._saved) scr._saved = { tab: "all", mode: "", q: "", manage: false, sel: new Set(), addSel: new Set(), col: null };
+  return scr._saved;
+}
+function savedPosts() { return POSTS.filter(p => p.saved).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0)); }
+function colPosts(name) { return POSTS.filter(p => p.saved && p.savedCol === name).sort((a, b) => (b.colAt || 0) - (a.colAt || 0)); }
+function colCover(c) { const ps = colPosts(c.name); const p = ps[ps.length - 1]; return p ? thumbS(p) : ""; }
+function savedList(scr) {
+  const V = savedState(scr);
+  let list = savedPosts();
+  if ((scr._subStack || []).at(-1) === "savedcol") list = list.filter(p => p.savedCol === V.col);
+  if (V.q.trim()) list = list.filter(p => matchQuery(p, V.q));
+  return list;
+}
+function svdTileHTML(V, p) {
+  return `<button class="svd-tile${V.sel.has(p.id) ? " on" : ""}" data-pid="${p.id}">
+    <img src="${thumbP(p)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${p.photos[0]}'">
+    ${!V.manage && p.photos.length > 1 ? `<span class="svd-stack">${I.stack(18)}</span>` : ""}
+    ${V.manage ? `<span class="svd-sel">${V.sel.has(p.id) ? I.check(12) : ""}</span>` : ""}
+  </button>`;
+}
+function colCardHTML(c) {
+  const cover = colCover(c);
+  return `<button class="svd-col" data-col="${esc(c.name)}">
+    <span class="cv">${cover ? `<img src="${cover}" alt="">` : ""}</span>
+    <span class="b"><span class="n">${esc(c.name)}</span>
+    <span class="s">${I.lock(11)} ${c.people && c.people.length ? `Shared · ${c.people.length}` : "Private"}</span></span>
+  </button>`;
+}
+function colCardBigHTML(c) {
+  const ph = colPosts(c.name).map(thumbS).slice(0, 4);
+  const cv = ph.length === 1
+    ? `<span class="cv one"><img src="${ph[0]}" alt=""></span>`
+    : `<span class="cv${ph.length === 2 ? " two" : ""}">${ph.map(s => `<img src="${s}" alt="">`).join("")}</span>`;
+  return `<button class="svd-colbig" data-col="${esc(c.name)}">${cv}<span class="n">${esc(c.name)}</span></button>`;
+}
+function svdConfirmDelete(scr) {
+  openDlg(scr, `
+    <div class="dlg-q">Delete collection?</div>
+    <div class="dlg-desc">When you delete this collection, the photos and videos will still be saved.</div>
+    <button class="dlg-btn danger dlg-delcol-go">Delete</button>
+    <button class="dlg-btn dlg-cancel">Cancel</button>`);
+}
+function svdDeleteCol(scr) {
+  const V = savedState(scr);
+  const i = COLLECTIONS.findIndex(c => c.name === V.col);
+  if (i >= 0) COLLECTIONS.splice(i, 1);
+  POSTS.forEach(p => { if (p.savedCol === V.col) p.savedCol = "Saved"; });
+  V.col = null; V.mode = "";
+  subBack(scr);
+  scrToast(scr, "Collection deleted");
+}
+function svdEmptyHTML(icon, t, d, flat = false) {
+  return `<div class="svd-empty"><span class="ic${flat ? " flat" : ""}">${icon}</span><span class="t">${t}</span>${d ? `<span class="d">${d}</span>` : ""}</div>`;
+}
+/* IG empty-collection glyph — outlined bookmark with colored sparkles */
+function svdSparkIcon() {
+  return `<svg width="46" height="46" viewBox="0 0 48 48" fill="none" stroke-linecap="round">
+    <path d="M16 40V14a2.5 2.5 0 0 1 2.5-2.5h11A2.5 2.5 0 0 1 32 14v26l-8-5.6-8 5.6z" stroke="currentColor" stroke-width="2"/>
+    <path d="M4 16l5.5 1.5" stroke="#f5a623" stroke-width="2.2"/>
+    <path d="M6 26l5 .5" stroke="#e0489a" stroke-width="2.2"/>
+    <path d="M11 8l4 3.5" stroke="#f5a623" stroke-width="2.2"/>
+    <path d="M44 16l-5.5 1.5" stroke="#e0489a" stroke-width="2.2"/>
+    <path d="M42 26l-5 .5" stroke="#8a5cf6" stroke-width="2.2"/>
+    <path d="M37 8l-4 3.5" stroke="#e0489a" stroke-width="2.2"/>
+  </svg>`;
+}
+function svdBarHTML(V, inCol) {
+  return `<div class="svd-bar">
+    <button class="svd-unsave"${V.sel.size ? "" : " disabled"}>${inCol ? "Remove" : "Unsave"}</button>
+    <button class="svd-move"${V.sel.size ? "" : " disabled"}>${inCol ? "Move to collection" : "Add to collection"}</button></div>`;
+}
+function svdSelectHeadHTML(title, n = 0, total = 0) {
+  return `
+    <div class="detail-head svd-head">
+      <button class="svd-cancel">Cancel</button>
+      <span class="detail-title rc-title svd-seltitle" data-base="${esc(title)}">${esc(title)}</span>
+      <span class="spacer"></span>
+      <button class="svd-selall">${total && n >= total ? "Deselect all" : "Select all"}</button>
+    </div>`;
+}
+function savedSearchBodyHTML(scr) {
+  const list = savedList(scr);
+  return list.length
+    ? `<div class="svd-grid">${list.map(p => svdTileHTML(savedState(scr), p)).join("")}</div>`
+    : svdEmptyHTML(I.search(26), "No results found", `No saved posts match "${esc(savedState(scr).q)}".`);
+}
+function savedBodyHTML(scr) {
+  const V = savedState(scr);
+  const list = savedList(scr);
+  const tile = p => svdTileHTML(V, p);
+  const colSec = COLLECTIONS.length ? `
+    <div class="svd-sec"><span class="t">Collections</span><button class="svd-see">See all</button></div>
+    <div class="svd-cols">${COLLECTIONS.slice(0, 4).map(colCardHTML).join("")}</div>` : "";
+  const postSec = `
+    <div class="svd-sec"><span class="t">All posts</span>${list.length && !V.manage ? `<button class="svd-see svd-manage">Manage</button>` : ""}</div>
+    ${list.length
+      ? `<div class="svd-grid">${list.map(tile).join("")}</div>`
+      : svdEmptyHTML(I.bookmark(30), "Nothing saved yet", "Save posts you want to see again. Only you can see what you've saved.")}`;
+  if (V.tab === "collections")
+    return COLLECTIONS.length
+      ? `<div class="svd-colsbig">${COLLECTIONS.map(colCardBigHTML).join("")}</div>`
+      : svdEmptyHTML(I.bookmark(30), "No collections yet", "Create a collection to organise your saved posts.");
+  if (V.tab === "posts")
+    return list.length
+      ? `<div class="svd-grid">${list.map(tile).join("")}</div>`
+      : svdEmptyHTML(I.bookmark(30), "Nothing saved yet", "Save posts you want to see again. Only you can see what you've saved.");
+  return colSec + postSec;
+}
+function savedHTML(scr) {
+  const V = savedState(scr);
+  if (V.mode === "search") {
+    return `
+    <div class="sr-head svd-head">
+      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="Search your saved" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
+      <button class="svd-cancel">Cancel</button>
+    </div>
+    <div class="sub-scroll svd-body">${savedSearchBodyHTML(scr)}</div>`;
+  }
+  if (V.mode === "allposts" || V.mode === "allmenu" || V.manage) {
+    const all = savedPosts();
+    const grid = `<div class="sub-scroll svd-body"><div class="svd-grid">${all.map(p => svdTileHTML(V, p)).join("")}</div></div>`;
+    if (V.manage)
+      return svdSelectHeadHTML("All posts", V.sel.size, all.length) + grid + svdBarHTML(V, false);
+    const menu = V.mode === "allmenu" ? `
+      <div class="svd-menuwrap"><div class="svd-menu">
+        <button class="svd-mi" data-act="sel">${I.circleCheck(19)}<span>Select...</span></button>
+      </div></div>` : "";
+    return `
+    <div class="detail-head svd-head">
+      <button class="icon-btn sub-back">${I.back()}</button>
+      <span class="detail-title rc-title">All posts</span>
+      <span class="spacer"></span>
+      <button class="icon-btn svd-more">${I.dots(21)}</button>
+    </div>` + grid + menu;
+  }
+  const head = `
+    <div class="detail-head svd-head">
+      <button class="icon-btn sub-back">${I.back()}</button>
+      <span class="detail-title rc-title">Saved</span>
+      <span class="spacer"></span>
+      <button class="icon-btn svd-srch">${I.search(21)}</button>
+      <button class="icon-btn svd-plus">${I.plus(23)}</button>
+    </div>`;
+  const tabs = `<div class="svd-tabs">${SAVED_TABS.map(([v, t]) => `<button class="svd-tab${V.tab === v ? " on" : ""}" data-tab="${v}">${t}</button>`).join("")}</div>`;
+  return head + tabs + `<div class="sub-scroll svd-body">${savedBodyHTML(scr)}</div>`;
+}
+function savedColHTML(scr) {
+  const V = savedState(scr);
+  const name = V.col || "Collection";
+  const list = savedList(scr);
+  if (V.mode === "add") return svdAddHTML(scr);
+  if (V.mode === "edit") return svdEditHTML(scr);
+  if (V.mode === "cover") return svdCoverHTML(scr);
+  if (V.mode === "search") {
+    return `
+    <div class="sr-head svd-head">
+      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="Search ${esc(name)}" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
+      <button class="svd-cancel">Cancel</button>
+    </div>
+    <div class="sub-scroll svd-body">${savedSearchBodyHTML(scr)}</div>`;
+  }
+  const head = V.manage ? svdSelectHeadHTML(name, V.sel.size, list.length) : `
+    <div class="detail-head svd-head">
+      <button class="icon-btn sub-back">${I.back()}</button>
+      <span class="detail-title rc-title">${esc(name)}</span>
+      <span class="spacer"></span>
+      <button class="icon-btn svd-srch">${I.search(21)}</button>
+      <button class="icon-btn svd-more">${I.dots(21)}</button>
+    </div>`;
+  const body = `<div class="sub-scroll svd-body">
+    ${list.length ? `<div class="svd-coltitle"><div class="n">${esc(name)}</div><div class="c">${list.length === 1 ? "1 saved post" : `${list.length} saved posts`}</div></div>` : ""}
+    ${list.length
+      ? `<div class="svd-grid">${list.map(p => svdTileHTML(V, p)).join("")}</div>`
+      : svdEmptyHTML(svdSparkIcon(), "No saved posts yet", "", true)}</div>`;
+  const menu = V.mode === "menu" ? `
+    <div class="svd-menuwrap"><div class="svd-menu">
+      <button class="svd-mi" data-act="add">${I.plus(19)}<span>Add to collection</span></button>
+      <button class="svd-mi" data-act="edit">${I.pen(17)}<span>Edit collection</span></button>
+      ${list.length ? `<button class="svd-mi" data-act="sel">${I.circleCheck(19)}<span>Select...</span></button>` : ""}
+      <button class="svd-mi del" data-act="del">${I.trash(18)}<span>Delete collection</span></button>
+    </div></div>` : "";
+  return head + body + (V.manage ? svdBarHTML(V, true) : "") + menu;
+}
+/* IG "Edit collection" page — cover + change-cover picker + name + delete.
+   Cover = picked coverPid, else the first post added to the collection; empty collection → no cover block */
+function ecCoverHTML(c) {
+  if (!c) return "";
+  let src = "", orig = "";
+  if (c.coverPid) {
+    const p = POSTS.find(x => x.id === c.coverPid);
+    if (p) { src = thumbS(p); orig = p.photos[0]; }
+  }
+  if (!src) {
+    const posts = colPosts(c.name);
+    const first = posts[posts.length - 1];
+    if (first) { src = thumbS(first); orig = first.photos[0]; }
+  }
+  return src ? `<span class="ecv one"><img src="${src}" alt="" onerror="this.onerror=null;this.src='${orig}'"></span>` : "";
+}
+function svdEditHTML(scr) {
+  const V = savedState(scr);
+  const name = V.col || "";
+  const c = COLLECTIONS.find(x => x.name === name);
+  const cover = ecCoverHTML(c);
+  return `
+  <div class="detail-head svd-head">
+    <button class="svd-cancel">Cancel</button>
+    <span class="detail-title rc-title">Edit collection</span>
+    <span class="spacer"></span>
+    <button class="svd-done svd-editdone">Done</button>
+  </div>
+  <div class="sub-scroll svd-body">
+    ${cover ? `<div class="ec-cover">${cover}<button class="ec-chgcover">Change cover</button></div>` : ""}
+    <div class="ec-sec">Name</div>
+    <div class="ec-field"><span class="ec-lbl">Collection name</span><input class="ec-input" maxlength="40" autocomplete="off" value="${esc(name)}"></div>
+    <div class="ec-sec">Manage</div>
+    <button class="ec-del">Delete collection</button>
+    <p class="ec-note">When you delete this collection, the photos and videos will still be saved.</p>
+  </div>`;
+}
+function svdCoverHTML(scr) {
+  const V = savedState(scr);
+  const c = COLLECTIONS.find(x => x.name === V.col);
+  const list = colPosts(V.col);
+  return `
+  <div class="detail-head svd-head">
+    <button class="svd-cancel">Cancel</button>
+    <span class="detail-title rc-title">Change cover</span>
+    <span class="spacer"></span>
+  </div>
+  <div class="sub-scroll svd-body">${list.length
+    ? `<div class="ec-grid">${list.map(p => `<button class="ec-ctile${c && c.coverPid === p.id ? " on" : ""}" data-pid="${p.id}"><img src="${thumbS(p)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${p.photos[0]}'"><span class="svd-sel">${c && c.coverPid === p.id ? I.check(12) : ""}</span></button>`).join("")}</div>`
+    : svdEmptyHTML(I.img(30), "No posts yet", "Save posts to this collection first.")}</div>`;
+}
+/* "Add to collection" picker — full page: Cancel / Saved·Add from / Done, grid of saved posts not in this collection */
+function svdAddHTML(scr) {
+  const V = savedState(scr);
+  const cands = savedPosts().filter(p => p.savedCol !== V.col);
+  const pick = { sel: V.addSel, manage: true };
+  return `
+  <div class="detail-head svd-head svd-addhead">
+    <button class="svd-cancel">Cancel</button>
+    <span class="detail-title rc-title svd-addtitle">Saved<span class="svd-addsub">Add from</span></span>
+    <span class="spacer"></span>
+    <button class="svd-done svd-adddone">Done</button>
+  </div>
+  <div class="sub-scroll svd-body">${cands.length
+    ? `<div class="svd-grid">${cands.map(p => svdTileHTML(pick, p)).join("")}</div>`
+    : svdEmptyHTML(I.bookmark(28), "No saved posts to add", "Save more posts first, then add them here.")}</div>`;
+}
+/* move-to-collection picker — "Collections" title + New collection, no Saved row (IG) */
+function svdMoveSheetHTML(scr) {
+  const V = savedState(scr);
+  const cur = (scr._subStack || []).at(-1) === "savedcol" ? V.col : null;
+  const rows = COLLECTIONS.filter(c => c.name !== cur);
+  return `
+    <div class="sheet-handle"></div>
+    <div class="sv-sec"><span class="l">Collections</span><button class="svd-mv-new">New collection</button></div>
+    <div class="sv-list">
+      ${rows.map(c => `
+      <button class="svd-mv sv-row" data-col="${esc(c.name)}">
+        ${colCover(c) ? `<img class="thumb" src="${colCover(c)}" alt="">` : `<span class="thumb"></span>`}
+        <span class="b"><span class="n">${esc(c.name)}</span><span class="s">Private</span></span>
+        <span class="plus">${I.plus(14)}</span>
+      </button>`).join("")}
+    </div>`;
+}
+/* IG "New collection" sheet — Cancel / Next (or "Save" w/ post preview in move flow) + name field + add people */
+function ncSheetHTML(editName = "", preview = "") {
+  const cur = editName ? COLLECTIONS.find(c => c.name === editName) : null;
+  const people = cur && cur.people ? cur.people : [];
+  return `
+    <div class="sheet-handle"></div>
+    <div class="nc-head">
+      <button class="nc-cancel">Cancel</button>
+      <span class="nc-title">${editName ? "Edit collection" : "New collection"}</span>
+      <button class="nc-next"${editName ? "" : " disabled"}>${preview ? "Save" : "Next"}</button>
+    </div>
+    ${preview ? `<div class="nc-preview"><img src="${preview}" alt=""></div>` : ""}
+    <div class="nc-field${editName ? " has-v" : ""}">
+      <input class="nc-input" placeholder="Collection name" maxlength="40" autocomplete="off" value="${esc(editName)}">
+      <span class="nc-count">${editName.length} / 40</span>
+      <button class="nc-x" type="button">${I.circleX(16)}</button>
+    </div>
+    <button class="nc-ppl-btn">
+      <span class="ic">${I.users(22)}</span>
+      <span class="b"><span class="t">Add people to collection</span><span class="s">Save to a collection together</span></span>
+      ${I.chevR(16)}
+    </button>
+    <div class="nc-ppl" hidden>
+      ${FRIENDS.map(f => `<button class="nc-fr${people.includes(f.name) ? " on" : ""}" data-name="${esc(f.name)}">
+        <img src="${f.avatar}" alt=""><span class="n">${esc(dispName(f.name))}</span>
+        <span class="chk">${I.check(12)}</span>
+      </button>`).join("")}
+    </div>`;
 }
 function subHTML(name, scr) {
   const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${t}</span><span class="spacer"></span></div>`;
@@ -3570,17 +4167,8 @@ function subHTML(name, scr) {
       ${opt("standard", "Standard", "You'll see some sensitive content.")}
     </div>`;
   }
-  if (name === "saved") {
-    const saved = POSTS.filter(p => p.saved);
-    return head("Saved") + `<div class="sub-scroll">${
-      saved.length ? saved.map(p => `
-      <div class="mrow">
-        <img class="msq" src="${p.photos[0]}" alt="">
-        <span class="lg-b"><span class="mn">${p.seller}</span><span class="md">${p.savedCol || "Saved"} · ${p.caption}</span></span>
-        <button class="mact m-unsave" data-pid="${p.id}">Remove</button>
-      </div>`).join("") : `<div class="sub-empty">Nothing saved yet</div>`
-    }</div>`;
-  }
+  if (name === "saved") return savedHTML(scr);
+  if (name === "savedcol") return savedColHTML(scr);
   if (name === "interested") return head("Interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.liked), "Remove", "m-unlike")}</div>`;
   if (name === "ni") return head("Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni), "Restore", "m-restore")}</div>`;
   /* full-page report view (IG-style) — opened from "..." menu or the uncomfortable ack card */
@@ -3786,14 +4374,9 @@ stageEl.addEventListener("keydown", e => {
     S.mode = "results"; S.tab = "foryou";
     renderSub(scr);
   }
-  if (e.key === "Enter" && e.target.matches(".sv-input")) {
-    const scr = e.target.closest(".screen");
-    const post = POSTS.find(x => x.id === scr.dataset.svPid);
-    const name = e.target.value.trim() || "New collection";
-    COLLECTIONS.push({ name, thumb: post ? post.photos[0] : "" });
-    if (post) post.savedCol = name;
-    scr.classList.remove("save-open");
-    scrToast(scr, `Saved to ${name}`);
+  if (e.key === "Enter" && e.target.matches(".nc-input")) {
+    const next = e.target.closest(".comment-sheet").querySelector(".nc-next");
+    if (next && !next.disabled) next.click();
   }
 });
 stageEl.addEventListener("input", e => {
@@ -3820,11 +4403,41 @@ stageEl.addEventListener("input", e => {
     const body = scr.querySelector(".page-sub .sr-body");
     if (body) body.innerHTML = S.q.trim() ? suggestHTML(S) : recentHTML(S);
   }
+  /* saved page — live filter within saved posts (SAVED-001) */
+  if (e.target.matches(".svd-q")) {
+    const scr = e.target.closest(".screen");
+    const V = savedState(scr);
+    V.q = e.target.value;
+    e.target.closest(".sr-field").classList.toggle("has-q", !!V.q.trim());
+    const body = scr.querySelector(".page-sub .svd-body");
+    if (body) body.innerHTML = savedSearchBodyHTML(scr);
+  }
+  /* new collection sheet — counter, clear-X, Next enable (SAVED-001) */
+  if (e.target.matches(".nc-input")) {
+    const f = e.target.closest(".nc-field");
+    f.classList.toggle("has-v", !!e.target.value);
+    f.querySelector(".nc-count").textContent = `${e.target.value.length} / 40`;
+    const next = e.target.closest(".comment-sheet").querySelector(".nc-next");
+    if (next) next.disabled = !e.target.value.trim();
+  }
   /* price inputs — auto comma format, digits only (SEARCH-001 spec §12) */
   if (e.target.matches(".flt-pmin, .flt-pmax")) {
     const v = unNum(e.target.value);
     e.target.value = v ? fmtNum(v) : "";
   }
+});
+
+/* saved grid — long-press a tile to enter select mode (IG) */
+document.getElementById("stage").addEventListener("contextmenu", e => {
+  const tile = e.target.closest(".svd-tile");
+  if (!tile) return;
+  const scr = tile.closest(".screen");
+  const V = savedState(scr);
+  if (V.manage) return;
+  e.preventDefault();
+  if ((scr._subStack || []).at(-1) === "saved") V.mode = "allposts";
+  V.manage = true; V.sel.clear(); V.sel.add(tile.dataset.pid);
+  renderSub(scr);
 });
 
 document.getElementById("stage").addEventListener("click", e => {
@@ -4170,7 +4783,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const post = POSTS.find(x => x.id === pvAdd.closest(".post").dataset.pid);
     if (post) {
       const cs = scr.querySelector(".comment-sheet");
-      cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps");
+      cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps", "nc");
       cs.classList.add("nt");
       cs.innerHTML = commentsHTML(post);
       scr.classList.add("comments-open");
@@ -4377,6 +4990,358 @@ document.getElementById("stage").addEventListener("click", e => {
     scrToast(scr, shApp.dataset.app === "copy" ? "Link copied" : `Shared to ${shApp.dataset.t}`);
     return;
   }
+  /* ===== SAVED-001 — Saved hub: tabs / collections / manage / search / new-collection sheet ===== */
+  const svdManage = e.target.closest(".svd-manage");
+  if (svdManage) {
+    const scr = svdManage.closest(".screen");
+    const V = savedState(scr);
+    V.mode = "allposts"; V.manage = true; V.sel.clear();
+    renderSub(scr);
+    return;
+  }
+  const svdDone = e.target.closest(".svd-done:not(.svd-adddone):not(.svd-editdone), .svd-exit");
+  if (svdDone) {
+    const scr = svdDone.closest(".screen");
+    const V = savedState(scr);
+    V.manage = false; V.sel.clear();
+    renderSub(scr);
+    return;
+  }
+  const svdTab = e.target.closest(".svd-tab");
+  if (svdTab) {
+    const scr = svdTab.closest(".screen");
+    const V = savedState(scr);
+    V.tab = svdTab.dataset.tab; V.manage = false; V.sel.clear();
+    renderSub(scr);
+    return;
+  }
+  const svdSee = e.target.closest(".svd-see");
+  if (svdSee) {
+    const scr = svdSee.closest(".screen");
+    savedState(scr).tab = "collections";
+    renderSub(scr);
+    return;
+  }
+  const svdCol = e.target.closest(".svd-col, .svd-colbig");
+  if (svdCol) {
+    const scr = svdCol.closest(".screen");
+    const V = savedState(scr);
+    V.col = svdCol.dataset.col; V.manage = false; V.sel.clear(); V.q = "";
+    pushSub(scr, "savedcol");
+    return;
+  }
+  const svdSrch = e.target.closest(".svd-srch");
+  if (svdSrch) {
+    const scr = svdSrch.closest(".screen");
+    savedState(scr).mode = "search";
+    renderSub(scr);
+    const q = scr.querySelector(".svd-q");
+    if (q) q.focus({ preventScroll: true });
+    return;
+  }
+  const svdSelAll = e.target.closest(".svd-selall");
+  if (svdSelAll) {
+    const scr = svdSelAll.closest(".screen");
+    const V = savedState(scr);
+    const list = savedList(scr);
+    if (V.sel.size >= list.length) V.sel.clear();
+    else list.forEach(p => V.sel.add(p.id));
+    renderSub(scr);
+    return;
+  }
+  const svdCancel = e.target.closest(".svd-cancel");
+  if (svdCancel) {
+    const scr = svdCancel.closest(".screen");
+    const V = savedState(scr);
+    if (V.manage) { V.manage = false; V.sel.clear(); }
+    else if (V.mode === "cover") V.mode = "edit";
+    else { V.mode = ""; V.q = ""; V.addSel.clear(); }
+    renderSub(scr);
+    return;
+  }
+  const svdX = e.target.closest(".svd-x");
+  if (svdX) {
+    const scr = svdX.closest(".screen");
+    const V = savedState(scr);
+    V.q = "";
+    const f = svdX.closest(".sr-field");
+    f.classList.remove("has-q");
+    f.querySelector(".svd-q").value = "";
+    const body = scr.querySelector(".page-sub .svd-body");
+    if (body) body.innerHTML = savedSearchBodyHTML(scr);
+    return;
+  }
+  const svdPlus = e.target.closest(".svd-plus");
+  if (svdPlus) {
+    const scr = svdPlus.closest(".screen");
+    scr._ncFrom = "saved"; scr._ncPids = null;
+    openSheet(scr, "nc", "save-open", ncSheetHTML());
+    scr.querySelector(".nc-input").focus({ preventScroll: true });
+    return;
+  }
+  const svdMore = e.target.closest(".svd-more");
+  if (svdMore) {
+    const scr = svdMore.closest(".screen");
+    const V = savedState(scr);
+    V.mode = V.mode === "allposts" ? "allmenu" : "menu";
+    renderSub(scr);
+    return;
+  }
+  const svdMenuWrap = e.target.closest(".svd-menuwrap");
+  if (svdMenuWrap && !e.target.closest(".svd-mi")) {
+    const scr = svdMenuWrap.closest(".screen");
+    const V = savedState(scr);
+    V.mode = V.mode === "allmenu" ? "allposts" : "";
+    renderSub(scr);
+    return;
+  }
+  const svdMi = e.target.closest(".svd-mi");
+  if (svdMi) {
+    const scr = svdMi.closest(".screen");
+    const V = savedState(scr);
+    const act = svdMi.dataset.act;
+    V.mode = V.mode === "allmenu" ? "allposts" : "";
+    if (act === "add") {
+      V.addSel.clear(); V.mode = "add";
+      renderSub(scr);
+    } else if (act === "edit") {
+      V.mode = "edit";
+      renderSub(scr);
+    } else if (act === "sel") {
+      V.manage = true; V.sel.clear();
+      renderSub(scr);
+    } else if (act === "del") {
+      renderSub(scr);
+      svdConfirmDelete(scr);
+    }
+    return;
+  }
+  const ecChg = e.target.closest(".ec-chgcover");
+  if (ecChg) {
+    const scr = ecChg.closest(".screen");
+    savedState(scr).mode = "cover";
+    renderSub(scr);
+    return;
+  }
+  const ecTile = e.target.closest(".ec-ctile");
+  if (ecTile) {
+    const scr = ecTile.closest(".screen");
+    const V = savedState(scr);
+    const c = COLLECTIONS.find(x => x.name === V.col);
+    if (c) c.coverPid = ecTile.dataset.pid;
+    V.mode = "edit";
+    renderSub(scr);
+    return;
+  }
+  const ecDel = e.target.closest(".ec-del");
+  if (ecDel) {
+    svdConfirmDelete(ecDel.closest(".screen"));
+    return;
+  }
+  const delColGo = e.target.closest(".dlg-delcol-go");
+  if (delColGo) {
+    const scr = delColGo.closest(".screen");
+    scr.classList.remove("dialog-open");
+    svdDeleteCol(scr);
+    return;
+  }
+  const ecDone = e.target.closest(".svd-editdone");
+  if (ecDone) {
+    const scr = ecDone.closest(".screen");
+    const V = savedState(scr);
+    const newName = (scr.querySelector(".ec-input").value || "").trim();
+    const old = V.col;
+    if (newName && newName !== old) {
+      const cur = COLLECTIONS.find(c => c.name === old);
+      if (cur) cur.name = newName;
+      POSTS.forEach(p => { if (p.savedCol === old) p.savedCol = newName; });
+      V.col = newName;
+    }
+    V.mode = "";
+    renderSub(scr);
+    scrToast(scr, "Collection updated");
+    return;
+  }
+  const svdAddDone = e.target.closest(".svd-adddone");
+  if (svdAddDone) {
+    const scr = svdAddDone.closest(".screen");
+    const V = savedState(scr);
+    const n = V.addSel.size;
+    V.addSel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p.savedCol = V.col; p.colAt = Date.now(); } });
+    V.addSel.clear(); V.mode = "";
+    renderSub(scr);
+    if (n) scrToast(scr, n === 1 ? "Added 1 post" : `Added ${n} posts`);
+    return;
+  }
+  const svdTile = e.target.closest(".svd-tile");
+  if (svdTile) {
+    const scr = svdTile.closest(".screen");
+    const V = savedState(scr);
+    const pid = svdTile.dataset.pid;
+    if (V.mode === "add") {
+      const sel = svdTile.querySelector(".svd-sel");
+      if (V.addSel.has(pid)) { V.addSel.delete(pid); svdTile.classList.remove("on"); if (sel) sel.innerHTML = ""; }
+      else { V.addSel.add(pid); svdTile.classList.add("on"); if (sel) sel.innerHTML = I.check(12); }
+      const t = scr.querySelector(".svd-addtitle");
+      if (t) t.innerHTML = V.addSel.size ? `${V.addSel.size} Selected` : `Saved<span class="svd-addsub">Add from</span>`;
+      return;
+    }
+    if (V.manage) {
+      const sel = svdTile.querySelector(".svd-sel");
+      if (V.sel.has(pid)) { V.sel.delete(pid); svdTile.classList.remove("on"); if (sel) sel.innerHTML = ""; }
+      else { V.sel.add(pid); svdTile.classList.add("on"); if (sel) sel.innerHTML = I.check(12); }
+      const sub = scr.querySelector(".page-sub");
+      const sa = sub.querySelector(".svd-selall");
+      if (sa) sa.textContent = V.sel.size >= savedList(scr).length ? "Deselect all" : "Select all";
+      sub.querySelectorAll(".svd-bar button").forEach(b => b.disabled = !V.sel.size);
+      return;
+    }
+    openPostViewer(scr, savedList(scr), pid, 0, true);
+    return;
+  }
+  const svdMove = e.target.closest(".svd-move");
+  if (svdMove) {
+    const scr = svdMove.closest(".screen");
+    openSheet(scr, "sv", "save-open", svdMoveSheetHTML(scr));
+    return;
+  }
+  const svdMv = e.target.closest(".svd-mv");
+  if (svdMv) {
+    const scr = svdMv.closest(".screen");
+    const V = savedState(scr);
+    const col = svdMv.dataset.col;
+    const inCol = (scr._subStack || []).at(-1) === "savedcol";
+    const firstP = POSTS.find(x => V.sel.has(x.id));
+    V.sel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p.savedCol = col; p.colAt = Date.now(); } });
+    V.sel.clear(); V.manage = false;
+    scr.classList.remove("save-open");
+    renderSub(scr);
+    scrToast(scr, inCol ? `Moved to ${col}` : `Added to ${col}`, firstP ? thumbS(firstP) : "");
+    return;
+  }
+  const svdMvNew = e.target.closest(".svd-mv-new");
+  if (svdMvNew) {
+    const scr = svdMvNew.closest(".screen");
+    const V = savedState(scr);
+    scr._ncFrom = "move"; scr._ncPids = [...V.sel];
+    const fp = POSTS.find(x => x.id === scr._ncPids[0]);
+    openSheet(scr, "nc", "save-open", ncSheetHTML("", fp ? thumbS(fp) : ""));
+    scr.querySelector(".nc-input").focus({ preventScroll: true });
+    return;
+  }
+  const svdUnsave = e.target.closest(".svd-unsave");
+  if (svdUnsave && !svdUnsave.disabled) {
+    const scr = svdUnsave.closest(".screen");
+    const V = savedState(scr);
+    const inCol = (scr._subStack || []).at(-1) === "savedcol";
+    if (inCol) {
+      openDlg(scr, `
+        <div class="dlg-q">Remove from this collection?</div>
+        <div class="dlg-desc">Post will still be saved in all posts.</div>
+        <button class="dlg-btn danger dlg-rmcol-go">Remove</button>
+        <button class="dlg-btn dlg-cancel">Cancel</button>`);
+      return;
+    }
+    openDlg(scr, `
+      <div class="dlg-q">Unsave post?</div>
+      <div class="dlg-desc">Unsaving this post will also remove it from any collections.</div>
+      <button class="dlg-btn danger dlg-unsave-go">Unsave</button>
+      <button class="dlg-btn dlg-cancel">Cancel</button>`);
+    return;
+  }
+  const unsaveGo = e.target.closest(".dlg-unsave-go");
+  if (unsaveGo) {
+    const scr = unsaveGo.closest(".screen");
+    const V = savedState(scr);
+    const first = POSTS.find(x => V.sel.has(x.id));
+    V.sel.forEach(pid => {
+      const p = POSTS.find(x => x.id === pid);
+      if (!p) return;
+      p.saved = false; p.savedCol = null; p.savedAt = 0; syncSaveBtns(scr, p);
+    });
+    V.sel.clear(); V.manage = false;
+    scr.classList.remove("dialog-open");
+    renderSub(scr);
+    scrToast(scr, "Removed from All posts", first ? thumbS(first) : "");
+    return;
+  }
+  const rmColGo = e.target.closest(".dlg-rmcol-go");
+  if (rmColGo) {
+    const scr = rmColGo.closest(".screen");
+    const V = savedState(scr);
+    const first = POSTS.find(x => V.sel.has(x.id));
+    const col = V.col;
+    V.sel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) p.savedCol = "Saved"; });
+    V.sel.clear(); V.manage = false;
+    scr.classList.remove("dialog-open");
+    renderSub(scr);
+    scrToast(scr, `Removed from ${col}`, first ? thumbS(first) : "");
+    return;
+  }
+  /* new collection sheet — Cancel / Next / clear-X / add-people */
+  const ncCancel = e.target.closest(".nc-cancel");
+  if (ncCancel) {
+    const scr = ncCancel.closest(".screen");
+    if (scr._ncFrom === "save") {
+      const post = POSTS.find(x => x.id === scr.dataset.svPid);
+      if (post) openSheet(scr, "sv", "save-open", saveSheetHTML(post));
+      else scr.classList.remove("save-open");
+    } else {
+      scr.classList.remove("save-open");
+    }
+    scr._ncFrom = null; scr._ncPids = null; scr._ncEdit = null;
+    return;
+  }
+  const ncX = e.target.closest(".nc-x");
+  if (ncX) {
+    const inp = ncX.closest(".nc-field").querySelector(".nc-input");
+    inp.value = "";
+    inp.dispatchEvent(new Event("input", { bubbles: true }));
+    inp.focus({ preventScroll: true });
+    return;
+  }
+  const ncPpl = e.target.closest(".nc-ppl-btn");
+  if (ncPpl) {
+    const l = ncPpl.closest(".comment-sheet").querySelector(".nc-ppl");
+    l.hidden = !l.hidden;
+    return;
+  }
+  const ncFr = e.target.closest(".nc-fr");
+  if (ncFr) { ncFr.classList.toggle("on"); return; }
+  const ncNext = e.target.closest(".nc-next");
+  if (ncNext && !ncNext.disabled) {
+    const scr = ncNext.closest(".screen");
+    const name = (scr.querySelector(".nc-input").value || "").trim() || "New collection";
+    const people = [...scr.querySelectorAll(".nc-fr.on")].map(b => b.dataset.name);
+    const from = scr._ncFrom;
+    if (from !== "edit") COLLECTIONS.push({ name, thumb: "", people });
+    if (from === "save") {
+      const post = POSTS.find(x => x.id === scr.dataset.svPid);
+      if (post) { post.savedCol = name; post.colAt = Date.now(); }
+      scrToast(scr, `Saved to ${name}`);
+    } else if (from === "move") {
+      const V = savedState(scr);
+      const mvFirst = POSTS.find(x => (scr._ncPids || []).includes(x.id));
+      const ncInCol = (scr._subStack || []).at(-1) === "savedcol";
+      (scr._ncPids || []).forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p.savedCol = name; p.colAt = Date.now(); } });
+      V.sel.clear(); V.manage = false;
+      scrToast(scr, ncInCol ? `Moved to ${name}` : `Added to ${name}`, mvFirst ? thumbS(mvFirst) : "");
+    } else if (from === "edit") {
+      const old = scr._ncEdit;
+      const cur = COLLECTIONS.find(c => c.name === old);
+      if (cur) { cur.name = name; cur.people = people; }
+      POSTS.forEach(p => { if (p.savedCol === old) p.savedCol = name; });
+      const V = savedState(scr);
+      if (V.col === old) V.col = name;
+      scrToast(scr, "Collection updated");
+    } else {
+      scrToast(scr, "Collection created");
+    }
+    scr._ncFrom = null; scr._ncPids = null; scr._ncEdit = null;
+    scr.classList.remove("save-open");
+    if ((scr._subStack || []).length) renderSub(scr);
+    return;
+  }
   const svBtn = e.target.closest(".save-btn");
   if (svBtn) {
     const scr = svBtn.closest(".screen");
@@ -4384,18 +5349,14 @@ document.getElementById("stage").addEventListener("click", e => {
     const pid = art ? art.dataset.pid : scr.dataset.detailPid;
     const post = POSTS.find(x => x.id === pid);
     if (!post) return;
-    if (post.saved) {
-      post.saved = false;
-      post.savedCol = null;
-      syncSaveBtns(scr, post);
-      scrToast(scr, "Removed from saved");
-    } else {
+    if (!post.saved) {
       post.saved = true;
       post.savedCol = "Saved";
+      post.savedAt = Date.now();
       syncSaveBtns(scr, post);
-      scr.dataset.svPid = post.id;
-      openSheet(scr, "sv", "save-open", saveSheetHTML(post));
     }
+    scr.dataset.svPid = post.id;
+    openSheet(scr, "sv", "save-open", saveSheetHTML(post));
     return;
   }
   const svPick = e.target.closest(".sv-pick");
@@ -4403,18 +5364,27 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = svPick.closest(".screen");
     const post = POSTS.find(x => x.id === scr.dataset.svPid);
     const col = svPick.dataset.col;
-    if (post) post.savedCol = col;
+    if (post && col === "Saved" && post.saved) {
+      post.saved = false; post.savedCol = null; post.savedAt = 0;
+      syncSaveBtns(scr, post);
+      scrToast(scr, "Removed from your saved");
+    } else if (post && post.savedCol === col) {
+      post.savedCol = "Saved";
+      scrToast(scr, `Removed from ${col}`);
+    } else if (post) {
+      post.savedCol = col;
+      if (col !== "Saved") post.colAt = Date.now();
+      scrToast(scr, col === "Saved" ? "Saved" : `Saved to ${col}`);
+    }
     scr.classList.remove("save-open");
-    scrToast(scr, col === "Saved" ? "Saved" : `Saved to ${col}`);
     return;
   }
   const svNew = e.target.closest(".sv-new");
   if (svNew) {
-    const wrap = svNew.closest(".comment-sheet").querySelector(".sv-newrow");
-    if (!wrap.querySelector("input")) {
-      wrap.innerHTML = `<input class="sv-input" placeholder="Collection name" maxlength="30">`;
-      wrap.querySelector("input").focus();
-    }
+    const scr = svNew.closest(".screen");
+    scr._ncFrom = "save";
+    openSheet(scr, "nc", "save-open", ncSheetHTML());
+    scr.querySelector(".nc-input").focus({ preventScroll: true });
     return;
   }
   const closeSheet = e.target.closest(".sheet-backdrop, .sheet-handle");
