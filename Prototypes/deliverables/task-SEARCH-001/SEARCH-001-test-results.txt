@@ -1,0 +1,114 @@
+PASS search page opens (sub-open)
+PASS landing shows fake search field
+PASS landing shows saved/bookmark icon
+PASS popular chips rendered (8)
+PASS filter icon chip present
+PASS first chip = For you (active)
+PASS explore grid rendered
+PASS explore tiles >= 14 — 16
+PASS some tall tiles
+PASS some view-count overlays
+PASS typing mode shows real input
+PASS Cancel button shown
+PASS Recent header shown
+PASS 4 recent rows initially
+PASS See all link shown
+PASS seller recent has avatar
+PASS keyword recent has clock icon
+PASS See all opens Recent searches page
+PASS Clear all link shown
+PASS recents page shows all 6 rows
+PASS x removes one recent row
+PASS Clear all empties the list
+PASS back from recents page -> typing recents
+PASS suggestions shown for rolex — 6
+PASS kw suggestion has magnifier icon
+PASS first suggestion mentions Rolex — Rolex
+PASS suggestion shows listing count — 2 listings
+PASS seller suggestion appears
+PASS seller row has avatar
+PASS x clears to recents
+PASS results mode: query in field
+PASS 3 result tabs rendered
+PASS tab labels For you/Profiles/Tags
+PASS For you tab active
+PASS Accounts hidden (no seller named rolex)
+PASS Posts section shown
+PASS results as 2-col grid tiles (2, Sale only)
+PASS Filters icon in head
+PASS no result-count text
+PASS no sort control
+PASS no save icon on results head
+PASS Profiles tab empty for rolex (no name match)
+PASS watch -> Accounts section shown
+PASS watch -> 3 name-matched sellers — 3
+PASS Profiles tab lists matched sellers w/ Follow
+PASS Tags tab lists matching options
+PASS back on For you tab
+PASS back in typing mode w/ query kept
+PASS rolex landed in Recent — rolex
+PASS back on results page
+PASS filters page opens
+PASS brand chips rendered
+PASS Rolex chip shows (2) — Rolex (2)
+PASS Omega chip shows (0) selectable — Omega (0)
+PASS brand chip toggles on
+PASS model list now Rolex-only (5)
+PASS model section shows Rolex context
+PASS Apply shows count (1)
+PASS back returns to results
+PASS no active filter chips after discard
+PASS apply returns to results
+PASS active chips Rolex + Submariner
+PASS filtered to 1 result (Submariner only)
+PASS Datejust filtered out
+PASS removing chip widens to 2 results
+PASS 1 filter chip left
+PASS min auto-formats comma
+PASS min>max shows error, stays on page — Minimum price must not exceed maximum price
+PASS still on filters page
+PASS price range 350k-450k -> 2 results (Datejust+Submariner)
+PASS price chip shown
+PASS empty state = No data found
+PASS 0 result tiles
+PASS cancel returns to landing
+PASS tile opens IG-style post viewer
+PASS viewer shows full post
+PASS viewer has action rail
+PASS rail has views + more icons
+PASS rail like shows Likes label not count
+PASS viewer has add-comment bar
+PASS no Liked-by row in viewer
+PASS … opens caption+comments sheet
+PASS sheet shows seller head + full caption
+PASS sheet has comment input
+PASS Likes label opens likes sheet
+PASS handle closes likes sheet
+PASS viewer comment sheet hides title
+PASS like toggles inside viewer
+PASS sale posts show Tap for details
+PASS details open as bottom sheet
+PASS details sheet has no title
+PASS details sheet shows price + specs
+PASS view full detail closes viewer
+PASS detail page opened
+PASS detail back returns to search landing
+PASS scroll-snap shows second post
+PASS back returns to search landing
+PASS saved page opens over search
+PASS back returns to search landing
+PASS back closes search to feed
+PASS landing renders in light theme
+PASS results render in light theme
+PASS error state renders
+PASS retry button present
+PASS retry restores results
+PASS search closed back to feed
+PASS feed byline says Liked by
+PASS feed comment sheet keeps title
+PASS feed more still expands inline
+PASS following tab still works
+PASS "..." menu still opens
+PASS like still toggles
+
+DONE — 0 failed, 0 console/page errors

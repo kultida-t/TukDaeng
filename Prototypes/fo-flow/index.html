@@ -765,7 +765,7 @@
     background: var(--bg);
     transform: translateX(100%);
     transition: transform .28s ease;
-    z-index: 30;
+    z-index: 33;
     display: flex;
     flex-direction: column;
   }
@@ -1195,6 +1195,86 @@
   @keyframes pgUp { from { transform: translateY(100%); } }
   .sub-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
   .sub-scroll::-webkit-scrollbar { display: none; }
+  /* ============ POST VIEWER (IG search-result viewer — vertical swipe through results) ============ */
+  .page-pv {
+    position: absolute; top: 34px; bottom: 22px; left: 0; right: 0;
+    background: #000; transform: translateX(100%);
+    transition: transform .28s ease; z-index: 34;
+    display: flex; flex-direction: column;
+  }
+  .screen.pv-open .page-pv { transform: none; animation: pgSide .28s ease; }
+  .pv-head {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 5;
+    display: flex; align-items: center; justify-content: space-between; padding: 6px 8px;
+  }
+  .pv-head .icon-btn { color: #fff; }
+  .pv-track { flex: 1; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; }
+  .pv-track::-webkit-scrollbar { display: none; }
+  .pv-post {
+    position: relative; height: 100%; margin: 0; padding: 0; border: none;
+    scroll-snap-align: start; scroll-snap-stop: always; overflow: hidden;
+  }
+  .pv-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pv-grad {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 52%;
+    background: linear-gradient(transparent, rgba(0,0,0,.78)); pointer-events: none;
+  }
+  .pv-rail {
+    position: absolute; right: 8px; bottom: 64px; z-index: 3;
+    display: flex; flex-direction: column; align-items: center; gap: 18px;
+  }
+  .pv-act {
+    background: none; border: none; color: #fff; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-family: var(--font-main); font-size: 12px; font-weight: 500; padding: 2px;
+  }
+  .pv-act svg { display: block; }
+  .pv-act.liked svg path { fill: var(--red); stroke: var(--red); }
+  .pv-post .save-btn.saved svg path { fill: #fff; }
+  .pv-grp { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+  .pv-lbl { font-size: 11.5px; }
+  .pv-foot { position: absolute; left: 0; right: 52px; bottom: 58px; padding: 0 14px; z-index: 3; color: #fff; margin-bottom: 0 !important; }
+  .pv-seller { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+  .pv-seller img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+  .pv-seller .n { font-size: 13.5px; font-weight: 600; }
+  .pv-seller .follow-btn { font-size: 12.5px; padding: 6px 14px; }
+  .pv-cap { padding: 0; font-size: 13px; line-height: 1.35; color: #fff; }
+  .pv-cap .more-link { color: rgba(255,255,255,.6); }
+  .pv-by { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 7px; }
+  .pv-by b { font-weight: 600; color: #fff; }
+  /* slim "Tap for details" inside the viewer — same expander, dark style */
+  .pv-dt {
+    all: unset; display: inline-flex; align-items: center; gap: 6px; margin-top: 9px;
+    font-family: var(--font-main); font-size: 12px; font-weight: 600; color: rgba(255,255,255,.85);
+    cursor: pointer;
+  }
+  .pv-dt svg { color: rgba(255,255,255,.6); }
+  /* Liked-by row inside viewer — same avatar-stack alignment as the feed card */
+  .pv-post .liked-by { padding: 7px 0 0; color: rgba(255,255,255,.8); }
+  .pv-post .liked-by img { border-color: transparent; }
+  .pv-post .liked-by b { color: #fff; }
+  .pv-add {
+    position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 3;
+    display: flex; align-items: center; cursor: pointer;
+    border: 1px solid rgba(255,255,255,.3); border-radius: 999px; padding: 10px 14px;
+    font-size: 13px; color: rgba(255,255,255,.75); background: rgba(0,0,0,.25);
+  }
+  /* details bottom sheet — scrollable, same mechanics as comment sheet */
+  .comment-sheet.dt { height: 72%; }
+  .comment-sheet.nt .sheet-title { display: none; }
+  /* "…" caption+comments sheet inside the viewer */
+  .comment-sheet.ps { height: 78%; }
+  .ps-head { display: flex; align-items: center; gap: 10px; padding: 4px 0 9px; }
+  .ps-head img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
+  .ps-head .n { font-size: 13.5px; font-weight: 600; flex: 1; }
+  .ps-head .follow-btn { font-size: 12.5px; padding: 6px 14px; }
+  .ps-cap { font-size: 13.5px; line-height: 1.5; }
+  .ps-cap b { font-weight: 600; }
+  .ps-time { font-size: 12px; color: var(--muted); padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .comment-sheet.dt .sheet-list { padding-bottom: 22px; }
+  .comment-sheet.dt .details-body { max-height: none; margin: 0; }
+  .screen.details-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
+  .screen.details-open .comment-sheet { transform: none; }
   .sub-sec { font-size: 13px; color: var(--muted); padding: 18px 16px 6px; }
   .sub-row {
     width: 100%; display: flex; align-items: center; gap: 12px;
@@ -1236,6 +1316,135 @@
   .fav-sec { display: flex; align-items: center; }
   .fav-removeall { margin-left: auto; background: none; border: none; padding: 0; font-family: var(--font-main); font-size: 13px; font-weight: 600; color: #3d9bff; cursor: pointer; }
   .mact.fav-add { background: #3d9bff; color: #fff; }
+
+  /* ============ SEARCH PAGE (SEARCH-001 — IG-style search flow) ============ */
+  .sr-head { display: flex; align-items: center; gap: 8px; padding: 8px 10px 6px; flex-shrink: 0; }
+  .sr-field {
+    flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 12px; padding: 9px 12px; color: var(--muted);
+  }
+  .sr-field input {
+    flex: 1; min-width: 0; background: none; border: none; outline: none;
+    font-family: var(--font-main); font-size: 14.5px; color: var(--text);
+  }
+  .sr-field.sr-fake { cursor: text; }
+  .sr-ph { color: var(--muted); font-size: 14.5px; }
+  .sr-qv { color: var(--text); font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sr-x { display: none; border: none; background: none; color: var(--muted); cursor: pointer; padding: 0; flex-shrink: 0; }
+  .sr-field.has-q .sr-x { display: flex; }
+  .sr-cancel {
+    flex-shrink: 0; font-family: var(--font-main); font-size: 14.5px; color: var(--text);
+    background: none; border: none; cursor: pointer; padding: 6px 4px;
+  }
+  .sr-chips {
+    display: flex; gap: 8px; padding: 6px 12px 12px; overflow-x: auto;
+    scrollbar-width: none; flex-shrink: 0;
+  }
+  .sr-chips::-webkit-scrollbar { display: none; }
+  /* result tabs — IG search result page (For you / Sellers / Tags) */
+  .sr-tabs { display: flex; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+  .sr-tab {
+    flex: 1; padding: 9px 0 10px; text-align: center; cursor: pointer;
+    font-family: var(--font-main); font-size: 14px; font-weight: 600;
+    color: var(--muted); background: none; border: none;
+    border-bottom: 1.5px solid transparent; margin-bottom: -1px;
+  }
+  .sr-tab.on { color: var(--text); border-bottom-color: var(--text); }
+  .sr-sec { font-size: 15px; font-weight: 700; color: var(--text); padding: 14px 16px 8px; }
+  /* matched seller card on the For you tab */
+  .sr-scard { display: flex; align-items: center; gap: 12px; padding: 12px 16px 14px; }
+  .sr-scard img { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .sr-scard .b { flex: 1; min-width: 0; }
+  .sr-scard .u { font-size: 14.5px; font-weight: 600; color: var(--text); }
+  .sr-scard .d { font-size: 13px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sr-scard .follow-btn { flex-shrink: 0; }
+  /* recent searches page */
+  .rc-title { margin-left: auto; margin-right: auto; }
+  .rc-clear {
+    flex-shrink: 0; background: none; border: none; cursor: pointer; padding: 6px 0;
+    font-family: var(--font-main); font-size: 13.5px; font-weight: 600; color: #3d9bff;
+  }
+  .sr-chip {
+    flex-shrink: 0; display: flex; align-items: center; gap: 6px;
+    font-family: var(--font-main); font-size: 13.5px; font-weight: 600;
+    color: var(--text); background: var(--chip-bg); border: none;
+    border-radius: 999px; padding: 8px 16px; cursor: pointer;
+  }
+  /* selected = subtle lighter gray like IG, not an inverted white pill */
+  .sr-chip.on { background: color-mix(in srgb, var(--text) 22%, transparent); color: var(--text); }
+  .sr-chip.ico { padding: 8px 11px; }
+  /* explore grid — mixed square/tall tiles like IG explore */
+  .xp-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 118px; grid-auto-flow: dense; gap: 2px; padding-bottom: 8px;
+  }
+  .xp-tile { position: relative; border: none; padding: 0; cursor: pointer; background: var(--surface-2); overflow: hidden; }
+  .xp-tile.tall { grid-row: span 2; }
+  .xp-grid.two { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 178px; }
+  .xp-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .xp-views {
+    position: absolute; left: 8px; bottom: 8px; display: flex; align-items: center; gap: 4px;
+    color: #fff; font-size: 12px; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,.65);
+  }
+  /* recent + suggestion rows */
+  .rc-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 6px; }
+  .rc-head .t { font-size: 15px; font-weight: 700; color: var(--text); }
+  .rc-all { background: none; border: none; font-family: var(--font-main); font-size: 13.5px; font-weight: 600; color: #3d9bff; cursor: pointer; padding: 0; }
+  .rc-row, .ac-row {
+    width: 100%; display: flex; align-items: center; gap: 12px; padding: 7px 16px;
+    background: none; border: none; cursor: pointer; font-family: var(--font-main); text-align: left;
+  }
+  .rc-row:hover, .ac-row:hover { background: var(--chip-bg); }
+  .rc-row img, .ac-row img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .rc-ico, .ac-ico {
+    width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+    border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--text);
+  }
+  .rc-who, .ac-who { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .rc-who .u, .ac-who .u { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rc-who .d, .ac-who .d { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rc-x { flex-shrink: 0; border: none; background: none; color: var(--muted); cursor: pointer; display: flex; padding: 6px; }
+  /* empty / error states */
+  .sr-empty-block {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; padding: 64px 36px; text-align: center; color: var(--muted); font-size: 13px;
+  }
+  .sr-empty-block .t { font-size: 15px; font-weight: 600; color: var(--text); }
+  .sr-empty-block svg { opacity: .45; }
+  .sr-retry {
+    font-family: var(--font-main); font-size: 13.5px; font-weight: 600;
+    color: var(--text); background: var(--chip-bg); border: 1px solid var(--line);
+    border-radius: 10px; padding: 9px 22px; cursor: pointer; margin-top: 6px;
+  }
+  /* filter page */
+  .flt-sec { padding: 4px 16px 14px; }
+  .flt-t { font-size: 13.5px; font-weight: 700; color: var(--text); padding: 12px 0 9px; }
+  .flt-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .flt-chip {
+    font-family: var(--font-main); font-size: 13px; font-weight: 500;
+    color: var(--text); background: var(--chip-bg); border: 1px solid var(--line);
+    border-radius: 999px; padding: 7px 13px; cursor: pointer;
+  }
+  .flt-chip .c { color: var(--muted); font-weight: 400; }
+  .flt-chip.on { background: color-mix(in srgb, var(--text) 22%, transparent); color: var(--text); border-color: transparent; }
+  .flt-chip.on .c { color: var(--text); opacity: .55; }
+  .flt-price { display: flex; align-items: center; gap: 10px; }
+  .flt-price span { color: var(--muted); }
+  .flt-price input {
+    flex: 1; min-width: 0; font-family: var(--font-main); font-size: 14px;
+    color: var(--text); background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px 12px; outline: none;
+  }
+  .flt-price input.err { border-color: var(--red); }
+  .flt-err { font-size: 12.5px; color: var(--red); padding-top: 8px; }
+  .flt-foot { display: flex; gap: 10px; padding: 12px 16px 18px; border-top: 1px solid var(--line); flex-shrink: 0; }
+  .flt-foot button { flex: 1; font-family: var(--font-main); font-size: 14px; font-weight: 600; padding: 12px; border-radius: 10px; cursor: pointer; }
+  .flt-clear { background: var(--chip-bg); border: 1px solid var(--line); color: var(--text); }
+  .flt-apply { background: var(--red); border: none; color: #fff; }
+  /* sort sheet */
+  .screen.sort-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
+
   /* "Thanks for letting us know" card — IG uncomfortable-feedback ack */
   .ni-check { display: flex; justify-content: center; padding: 24px 0 10px; color: #46c975; }
   .ni-t2 { font-size: 15px; font-weight: 700; color: var(--text); text-align: center; padding: 0 20px; }
@@ -1643,7 +1852,7 @@
     white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.45);
   }
   #flowToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open) #themeToggle {
+  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open, .screen.details-open) #themeToggle {
     opacity: 0; pointer-events: none;
   }
   @media (max-width: 480px) {
@@ -2182,6 +2391,7 @@ const I = {
   bookmark: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
   burger: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>`,
   search: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>`,
+  clock: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>`,
   sliders: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="15" cy="6" r="2.3" fill="var(--bg)"/><circle cx="9" cy="12" r="2.3" fill="var(--bg)"/><circle cx="17" cy="18" r="2.3" fill="var(--bg)"/></svg>`,
   plus: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`,
   dots: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>`,
@@ -2423,7 +2633,7 @@ function igBodyHTML(p, withPostHead) {
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
-      <span>Liked by <b>${p.likedBy.name}</b> and <b>others</b></span>
+      <span>Liked by <b>${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
     </div>
     <p class="caption"><b>${p.seller}</b> ${igCaptionHTML(p)}</p>
     <div class="detail-pad">
@@ -2477,8 +2687,8 @@ function specGroupsHTML(groups, rowsFn, headFn) {
   return groups.map(g => `${g.title ? head(g.title) : ""}${rows(g)}`).join("");
 }
 
-function commentsHTML(p) {
-  const rows = (COMMENTS[p.id] || []).map(c => `
+function commentRowsHTML(p) {
+  return (COMMENTS[p.id] || []).map(c => `
     <div class="c-row">
       <img src="${c.avatar}" alt="">
       <div class="c-main">
@@ -2498,6 +2708,10 @@ function commentsHTML(p) {
       </div>
       <span class="c-like">${I.heart(15)}<span>${r.likes || ""}</span></span>
     </div>`).join("")}`).join("");
+}
+
+function commentsHTML(p) {
+  const rows = commentRowsHTML(p);
   return `
     <div class="sheet-handle"></div>
     <div class="sheet-title">Comments<button class="send">${I.share(18)}</button></div>
@@ -2607,10 +2821,10 @@ function saveSheetHTML(p) {
 /* shared sheet opener — comment-sheet is a singleton, swap variant class + content */
 function openSheet(scr, variantCls, openCls, html) {
   const cs = scr.querySelector(".comment-sheet");
-  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv");
+  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "so", "dt", "nt", "ps");
   cs.classList.add(variantCls);
   cs.innerHTML = html;
-  scr.classList.remove("comments-open", "unfollow-open", "pm-open", "likes-open", "share-open", "save-open");
+  scr.classList.remove("comments-open", "unfollow-open", "pm-open", "likes-open", "share-open", "save-open", "sort-open", "details-open");
   scr.classList.add(openCls);
 }
 
@@ -2731,7 +2945,7 @@ function postCard(p, variant) {
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
-      <span><b>${p.likedBy.name}</b> and <b>others</b> liked</span>
+      <span>Liked by <b>${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
     </div>
 
     <p class="caption"><b>${p.seller}</b> <span class="cap-short">${p.caption} <span class="more-link">more</span></span><span class="cap-full">${p.captionFull.replace(/\n/g, "<br>")}</span></p>
@@ -2780,18 +2994,18 @@ function setFeedTab(scr, tab) {
    fresh follow can be undone; after a re-render followed posts have no button */
 function setFollowing(scr, seller, on) {
   POSTS.forEach(p => { if (p.seller === seller) { p.following = on; if (!on) p.favorite = false; } });
-  scr.querySelectorAll(".feed-scroll .post").forEach(art => {
+  scr.querySelectorAll(".feed-scroll .post, .page-sub .post, .page-pv .post").forEach(art => {
     const bp = POSTS.find(x => x.id === art.dataset.pid);
     if (!bp || bp.seller !== seller) return;
-    const head = art.querySelector(".post-head");
-    if (!head) return;
-    const fb = head.querySelector(".follow-btn");
+    const fb = art.querySelector(".follow-btn");
     if (fb) {
       fb.classList.toggle("on", on);
       fb.textContent = on ? "Following" : "Follow";
-    } else if (!on) {
-      head.querySelector(".more").insertAdjacentHTML("beforebegin", `<button class="follow-btn">Follow</button>`);
+      return;
     }
+    const head = art.querySelector(".post-head");
+    if (head && !on)
+      head.querySelector(".more").insertAdjacentHTML("beforebegin", `<button class="follow-btn">Follow</button>`);
   });
   const dp = POSTS.find(x => x.id === scr.dataset.detailPid);
   const db = scr.querySelector(".page-detail .follow-btn");
@@ -2838,6 +3052,412 @@ function setFavorite(scr, seller, on) {
     scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
 }
 
+/* ===== SEARCH-001 — IG-style search flow (memory only) ===== */
+const SEARCH_BRANDS = {
+  Rolex: ["Submariner", "Datejust", "Daytona", "GMT-Master II", "Explorer"],
+  Tudor: ["Black Bay", "Pelagos", "Royal"],
+  Breguet: ["Classique", "Tradition", "Marine"],
+  "Grand Seiko": ["Snowflake", "Heritage", "Sport"],
+  Omega: ["Speedmaster", "Seamaster", "Constellation"],
+  "Patek Philippe": ["Nautilus", "Aquanaut", "Calatrava"],
+};
+const SEARCH_POPULAR = ["For you", "Rolex", "Submariner", "Datejust", "Grand Seiko", "Tudor", "Breguet", "Full set"];
+const SEARCH_REFS = ["126610LN", "126334", "M7941A1A0RU", "7137BR", "SBGA211"];
+const SEARCH_COND = ["New", "Like New", "Very Good", "Good", "Fair"];
+const SEARCH_DELIV = ["Full set", "Watch only", "With box", "With papers"];
+const SEARCH_MOVE = ["Automatic", "Spring Drive", "Manual", "Quartz"];
+const SEARCH_DIAL = ["Black", "Blue", "White", "Silver", "Green"];
+const SEARCH_CASE = ["36 mm", "39 mm", "40 mm", "41 mm", "42 mm"];
+const SEARCH_STRAP = ["Oystersteel bracelet", "Jubilee bracelet", "Titanium bracelet", "Leather", "Rubber"];
+const MAX_PRICE = 2000000;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const specOf = (p, k) => ((p.specs || []).find(s => s[0] === k) || [k, ""])[1];
+const priceNum = p => p.price ? +p.price.replace(/[^0-9]/g, "") : null;
+const viewsNum = p => String(p.views).endsWith("K") ? parseFloat(p.views) * 1000 : +p.views || 0;
+const fmtNum = v => v === "" || v == null ? "" : (+v).toLocaleString("en-US");
+const unNum = s => String(s).replace(/[^0-9]/g, "");
+
+function blankFilters() {
+  return { brand: [], model: [], cond: [], ref: [], year: [], csz: [], move: [], dial: [], strap: [], deliv: [], pmin: "", pmax: "" };
+}
+function srchState(scr) {
+  if (!scr._search) scr._search = {
+    mode: "landing", q: "", tab: "foryou", sort: "new", err: false,
+    recents: [
+      { t: "seller", v: "Watch 777" }, { t: "seller", v: "chrono.th" },
+      { t: "kw", v: "rolex" }, { t: "kw", v: "grand seiko" },
+      { t: "kw", v: "126610ln" }, { t: "seller", v: "wrist.story" },
+    ],
+    f: blankFilters(),
+  };
+  return scr._search;
+}
+function salePosts() { return POSTS.filter(p => p.price && !p.ni && !p.muted); }
+function haystack(p) {
+  return [p.seller, p.caption, p.captionFull, ...(p.chips || []), ...(p.specs || []).flatMap(s => s)].join(" ").toLowerCase();
+}
+function matchQuery(p, q) {
+  q = q.trim().toLowerCase();
+  if (!q) return true;
+  const h = haystack(p);
+  return q.split(/\s+/).every(w => h.includes(w));
+}
+function boxText(p) { return `${specOf(p, "Box & Papers")} ${(p.chips || []).join(" ")}`; }
+function delivMatch(p, v) {
+  const b = boxText(p).toLowerCase();
+  if (v === "Full set") return /full set|original box/.test(b);
+  if (v === "With box") return /box/.test(b);
+  if (v === "With papers") return /paper/.test(b);
+  if (v === "Watch only") return !/box|paper/.test(b);
+  return false;
+}
+function matchFilters(p, f) {
+  if (f.brand.length && !f.brand.includes(specOf(p, "Brand"))) return false;
+  if (f.model.length && !f.model.some(m => specOf(p, "Model").includes(m))) return false;
+  if (f.cond.length && !f.cond.includes(specOf(p, "Condition"))) return false;
+  if (f.ref.length && !f.ref.includes(specOf(p, "Reference"))) return false;
+  if (f.year.length && !f.year.includes(specOf(p, "Year"))) return false;
+  if (f.csz.length && !f.csz.includes(specOf(p, "Case Diameter"))) return false;
+  if (f.move.length && !f.move.some(m => specOf(p, "Movement Type").includes(m))) return false;
+  if (f.dial.length && !f.dial.some(d => specOf(p, "Dial Color").includes(d))) return false;
+  if (f.strap.length && !f.strap.some(s => `${specOf(p, "Strap/Bracelet Material")} ${specOf(p, "Strap Material")}`.includes(s))) return false;
+  if (f.deliv.length && !f.deliv.some(v => delivMatch(p, v))) return false;
+  const pr = priceNum(p) || 0;
+  if (f.pmin !== "" && pr < +f.pmin) return false;
+  if (f.pmax !== "" && pr > +f.pmax) return false;
+  return true;
+}
+function searchResults(S) {
+  let list = salePosts().filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
+  if (S.sort === "plo") list = [...list].sort((a, b) => priceNum(a) - priceNum(b));
+  else if (S.sort === "phi") list = [...list].sort((a, b) => priceNum(b) - priceNum(a));
+  else if (S.sort === "pop") list = [...list].sort((a, b) => viewsNum(b) - viewsNum(a));
+  return list;
+}
+function filterCount(f) {
+  return ["brand", "model", "cond", "ref", "year", "csz", "move", "dial", "strap", "deliv"].reduce((n, k) => n + f[k].length, 0)
+    + (f.pmin !== "" || f.pmax !== "" ? 1 : 0);
+}
+/* count beside every option = current Sale listings the user can see — (0) stays selectable (no current listing ≠ inactive) */
+function brandCount(b) { return salePosts().filter(p => specOf(p, "Brand") === b).length; }
+function modelCount(m, brands) {
+  return salePosts().filter(p => specOf(p, "Model").includes(m) && (!brands || !brands.length || brands.includes(specOf(p, "Brand")))).length;
+}
+function optCount(k, v, partial) {
+  return salePosts().filter(p => partial ? specOf(p, k).includes(v) : specOf(p, k) === v).length;
+}
+function strapCount(v) {
+  return salePosts().filter(p => `${specOf(p, "Strap/Bracelet Material")} ${specOf(p, "Strap Material")}`.includes(v)).length;
+}
+function delivCount(v) { return salePosts().filter(p => delivMatch(p, v)).length; }
+function sellerAvatar(name) { const p = POSTS.find(x => x.seller === name); return p ? p.avatar : "./assets/user-avatars/u-1075.png"; }
+function sellerSub(name) {
+  const posts = POSTS.filter(x => x.seller === name);
+  const n = posts.filter(p => p.price).length;
+  return posts[0] && posts[0].following ? "Following" : `${n} listing${n === 1 ? "" : "s"}`;
+}
+function pushRecent(S, kind, v) {
+  S.recents = [{ t: kind, v }, ...S.recents.filter(r => !(r.t === kind && r.v.toLowerCase() === v.toLowerCase()))].slice(0, 8);
+}
+function suggestRows(S) {
+  const q = S.q.trim().toLowerCase();
+  if (!q) return [];
+  const kw = [];
+  for (const b in SEARCH_BRANDS) {
+    if (b.toLowerCase().includes(q)) kw.push({ t: "kw", v: b, sub: `${brandCount(b)} listing${brandCount(b) === 1 ? "" : "s"}` });
+    SEARCH_BRANDS[b].forEach(m => {
+      const label = `${b} ${m}`, n = modelCount(m, [b]);
+      if (label.toLowerCase().includes(q)) kw.push({ t: "kw", v: label, sub: `${n} listing${n === 1 ? "" : "s"}` });
+    });
+  }
+  SEARCH_REFS.forEach(r => { if (r.toLowerCase().includes(q)) kw.push({ t: "kw", v: r, sub: "" }); });
+  const sellers = [...new Map(POSTS.map(p => [p.seller, p])).values()]
+    .filter(p => p.seller.toLowerCase().includes(q))
+    .map(p => ({ t: "seller", v: p.seller, sub: sellerSub(p.seller) }));
+  return [...kw.slice(0, 6), ...sellers.slice(0, 4)];
+}
+function exploreTiles() {
+  const T = [];
+  POSTS.filter(p => !p.ni && !p.muted).forEach(p => p.photos.forEach((src, i) => T.push({ pid: p.id, i, src })));
+  const tall = new Set([0, 3, 8, 13]), views = new Set([2, 6, 11]);
+  return T.map((t, i) => ({ ...t, tall: tall.has(i), views: views.has(i) ? POSTS.find(x => x.id === t.pid).views : "" }));
+}
+function landingHTML() {
+  return `
+    <div class="sr-chips">
+      <button class="sr-chip ico" data-sub="sfilter" title="Filters">${I.sliders(16)}</button>
+      ${SEARCH_POPULAR.map(c => `<button class="sr-chip sr-pick${c === "For you" ? " on" : ""}" data-q="${esc(c === "For you" ? "" : c)}">${c}</button>`).join("")}
+    </div>
+    <div class="xp-grid">
+      ${exploreTiles().map(t => `<button class="xp-tile${t.tall ? " tall" : ""}" data-pid="${t.pid}" data-phi="${t.i}">
+        <img src="${t.src}" alt="" loading="lazy">${t.views ? `<span class="xp-views">${I.eye(14)} ${t.views}</span>` : ""}
+      </button>`).join("")}
+    </div>`;
+}
+function recentRowHTML(r, i) {
+  return r.t === "seller" ? `
+    <button class="rc-row" data-kind="seller" data-v="${esc(r.v)}">
+      <img src="${sellerAvatar(r.v)}" alt=""><span class="rc-who"><span class="u">${r.v}</span><span class="d">${sellerSub(r.v)}</span></span>
+      <span class="rc-x" data-ri="${i}">${I.x(15)}</span>
+    </button>` : `
+    <button class="rc-row" data-kind="kw" data-v="${esc(r.v)}">
+      <span class="rc-ico">${I.clock(18)}</span><span class="rc-who"><span class="u">${r.v}</span></span>
+      <span class="rc-x" data-ri="${i}">${I.x(15)}</span>
+    </button>`;
+}
+function recentHTML(S) {
+  const items = S.recents.slice(0, 4);
+  return `
+    <div class="rc-head"><span class="t">Recent</span>${S.recents.length > 4 ? `<button class="rc-all">See all</button>` : ""}</div>
+    ${items.length ? items.map(recentRowHTML).join("") : `<div class="sub-empty">No recent searches</div>`}`;
+}
+/* "See all" opens a dedicated Recent searches page like IG (back + Clear all + full list) */
+function recentPageHTML(scr) {
+  const S = srchState(scr);
+  return `
+    <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title rc-title">Recent searches</span><button class="rc-clear">Clear all</button></div>
+    <div class="sub-scroll">
+      ${S.recents.length ? S.recents.map(recentRowHTML).join("") : `<div class="sub-empty">No recent searches</div>`}
+    </div>`;
+}
+function suggestHTML(S) {
+  const rows = suggestRows(S);
+  if (!rows.length) return `<div class="sub-empty">No suggestions</div>`;
+  return rows.map(r => r.t === "kw" ? `
+    <button class="ac-row" data-kind="kw" data-v="${esc(r.v)}">
+      <span class="ac-ico">${I.search(17)}</span>
+      <span class="ac-who"><span class="u">${r.v}</span>${r.sub ? `<span class="d">${r.sub}</span>` : ""}</span>
+    </button>` : `
+    <button class="ac-row" data-kind="seller" data-v="${esc(r.v)}">
+      <img src="${sellerAvatar(r.v)}" alt="">
+      <span class="ac-who"><span class="u">${r.v}</span><span class="d">${r.sub}</span></span>
+    </button>`).join("");
+}
+function activeFilterChips(S) {
+  const f = S.f, out = [];
+  const push = (key, v) => out.push(`<button class="sr-chip on" data-rm="${key}:${esc(v)}">${v} ${I.x(12)}</button>`);
+  ["brand", "model", "cond", "ref", "year", "csz", "move", "dial", "strap", "deliv"].forEach(k => f[k].forEach(v => push(k, v)));
+  if (f.pmin !== "" || f.pmax !== "") push("price", `THB ${f.pmin !== "" ? fmtNum(f.pmin) : "0"}–${f.pmax !== "" ? fmtNum(f.pmax) : "Any"}`);
+  return out.join("");
+}
+
+function searchHTML(scr) {
+  const S = srchState(scr);
+  if (S.mode === "results") return searchResultsHTML(scr, S);
+  const typing = S.mode === "typing";
+  const head = typing ? `
+    <div class="sr-head">
+      <span class="sr-field${S.q ? " has-q" : ""}">${I.search(16)}<input class="sr-q" placeholder="Search" value="${esc(S.q)}"><button class="sr-x" type="button">${I.circleX(16)}</button></span>
+      <button class="sr-cancel">Cancel</button>
+    </div>` : `
+    <div class="sr-head">
+      <button class="icon-btn sub-back">${I.back()}</button>
+      <span class="sr-field sr-fake">${I.search(16)}<span class="sr-ph">Search</span></span>
+      <button class="icon-btn sr-saved">${I.bookmark(21)}</button>
+    </div>`;
+  return head + `<div class="sub-scroll sr-body">${typing ? (S.q.trim() ? suggestHTML(S) : recentHTML(S)) : landingHTML()}</div>`;
+}
+/* Accounts/Profiles lists only sellers whose NAME matches the query — like IG, post sellers don't count */
+function resultSellers(S) {
+  const q = S.q.trim().toLowerCase();
+  if (!q) return [];
+  const seen = new Map();
+  POSTS.forEach(p => { if (p.seller.toLowerCase().includes(q) && !seen.has(p.seller)) seen.set(p.seller, p); });
+  return [...seen.values()];
+}
+function sellerCardHTML(p) {
+  const n = salePosts().filter(x => x.seller === p.seller).length;
+  return `
+    <div class="sr-scard">
+      <img src="${p.avatar}" alt="">
+      <div class="b"><div class="u">${p.seller}</div><div class="d">${n} listing${n === 1 ? "" : "s"}${p.following ? " · Following" : ""}</div></div>
+      <button class="follow-btn sc-follow${p.following ? " on" : ""}" data-seller="${esc(p.seller)}">${p.following ? "Following" : "Follow"}</button>
+    </div>`;
+}
+function resultGridHTML(list) {
+  return `<div class="xp-grid two">${list.map(p => `<button class="xp-tile" data-pid="${p.id}" data-phi="0"><img src="${p.photos[0]}" alt="" loading="lazy"></button>`).join("")}</div>`;
+}
+/* ===== post viewer — IG immersive viewer, vertical swipe through the result list ===== */
+function pvPostHTML(p, phi = 0) {
+  const hasSpecs = (p.specGroups || []).length > 0;
+  return `
+  <section class="post pv-post" data-pid="${p.id}">
+    <img class="pv-img" src="${p.photos[Math.min(phi, p.photos.length - 1)]}" alt="">
+    <div class="pv-grad"></div>
+    <div class="pv-rail">
+      <div class="pv-grp">
+        <button class="pv-act like-btn${p.liked ? " liked" : ""}">${I.heart(26)}</button>
+        <button class="pv-act pv-lbl liked-by">Likes</button>
+      </div>
+      <button class="pv-act comment-btn">${I.comment(25)}<span>${p.comments}</span></button>
+      <span class="pv-act">${I.eye(23)}<span>${p.views}</span></span>
+      <button class="pv-act share-btn">${I.share(24)}</button>
+      <button class="pv-act save-btn${p.saved ? " saved" : ""}">${I.bookmark(24)}</button>
+      <button class="pv-act pm-btn">${I.dots(22)}</button>
+    </div>
+    <div class="pv-foot">
+      <div class="pv-seller"><img src="${p.avatar}" alt=""><span class="n">${p.seller}</span>
+        ${p.following ? "" : `<button class="follow-btn">Follow</button>`}</div>
+      <div class="caption pv-cap"><span class="cap-short">${p.caption} <span class="more-link">…</span></span><span class="cap-full">${(p.captionFull || p.caption).replace(/\n/g, "<br>")}</span></div>
+      ${hasSpecs ? `<button class="details-toggle pv-dt"><span class="dt-label">Tap for details</span>${I.chev(12)}</button>` : ""}
+    </div>
+    <div class="pv-add">Add comment…</div>
+  </section>`;
+}
+
+/* IG "…" caption sheet — seller head + full caption + date + comments, scrollable */
+function pvPostSheetHTML(p) {
+  const rows = commentRowsHTML(p);
+  return `
+    <div class="sheet-handle"></div>
+    <div class="sheet-list">
+      <div class="ps-head">
+        <img src="${p.avatar}" alt="">
+        <span class="n">${p.seller}</span>
+        ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
+      </div>
+      <div class="ps-cap"><b>${p.seller}</b> ${(p.captionFull || p.caption).replace(/\n/g, "<br>")}</div>
+      <div class="ps-time">${p.time}</div>
+      ${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No comments yet</div>`}
+    </div>
+    <div class="comment-input">
+      <img src="./assets/user-avatars/u-1075.png" alt="">
+      <span class="field">Add a comment for ${p.seller}</span>
+      <span class="ci-ic">${I.img(20)}${I.gif(20)}</span>
+    </div>`;
+}
+
+/* post details as a scrollable bottom sheet inside the viewer */
+function pvDetailsSheetHTML(p) {
+  return `<div class="sheet-handle"></div>
+    <div class="sheet-list" style="padding-top:8px">${detailsHTML(p, true)}</div>`;
+}
+function openPostViewer(scr, posts, pid, phi = 0) {
+  const pv = scr.querySelector(".page-pv");
+  pv.innerHTML = `
+    <div class="pv-head">
+      <button class="icon-btn pv-back">${I.back()}</button>
+      <button class="icon-btn pv-srch">${I.search(21)}</button>
+    </div>
+    <div class="pv-track">${posts.map(p => pvPostHTML(p, p.id === pid ? phi : 0)).join("")}</div>`;
+  scr.classList.add("pv-open");
+  const tr = pv.querySelector(".pv-track");
+  const i = Math.max(0, posts.findIndex(x => x.id === pid));
+  tr.scrollTop = i * tr.clientHeight;
+}
+function accountRowHTML(p) {
+  const n = salePosts().filter(x => x.seller === p.seller).length;
+  return `
+    <button class="ac-row" data-kind="seller" data-v="${esc(p.seller)}">
+      <img src="${p.avatar}" alt="">
+      <span class="ac-who"><span class="u">${p.seller}</span><span class="d">${n} listing${n === 1 ? "" : "s"}${p.following ? " · Following" : ""}</span></span>
+    </button>`;
+}
+function searchResultsHTML(scr, S) {
+  const list = S.err ? [] : searchResults(S);
+  const fc = filterCount(S.f);
+  const head = `
+    <div class="sr-head">
+      <button class="icon-btn sub-back">${I.back()}</button>
+      <span class="sr-field sr-fake">${I.search(16)}<span class="sr-qv">${esc(S.q) || "Search"}</span></span>
+      <button class="icon-btn flt-open" data-sub="sfilter" title="Filters">${I.sliders(20)}</button>
+    </div>`;
+  const tabs = `
+    <div class="sr-tabs">
+      <button class="sr-tab${S.tab === "foryou" ? " on" : ""}" data-tab="foryou">For you</button>
+      <button class="sr-tab${S.tab === "profiles" ? " on" : ""}" data-tab="profiles">Profiles</button>
+      <button class="sr-tab${S.tab === "tags" ? " on" : ""}" data-tab="tags">Tags</button>
+    </div>`;
+  const chips = fc ? `<div class="sr-chips">${activeFilterChips(S)}</div>` : "";
+  if (S.err) return head + tabs + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">Something went wrong. Please try again.</div><button class="sr-retry">Try again</button></div></div>`;
+  let body;
+  if (S.tab === "profiles") {
+    const sellers = resultSellers(S);
+    body = `<div class="sub-scroll">${sellers.length ? sellers.map(sellerCardHTML).join("") : `<div class="sr-empty-block">${I.search(44)}<div class="t">No data found</div></div>`}</div>`;
+  } else if (S.tab === "tags") {
+    const rows = suggestRows(S).filter(r => r.t === "kw");
+    body = `<div class="sub-scroll">${rows.length ? rows.map(r => `
+      <button class="ac-row" data-kind="kw" data-v="${esc(r.v)}">
+        <span class="ac-ico">${I.search(17)}</span>
+        <span class="ac-who"><span class="u">${r.v}</span>${r.sub ? `<span class="d">${r.sub}</span>` : ""}</span>
+      </button>`).join("") : `<div class="sr-empty-block">${I.search(44)}<div class="t">No data found</div></div>`}</div>`;
+  } else {
+    const sellers = resultSellers(S);
+    body = `<div class="sub-scroll">
+      ${sellers.length ? `<div class="sr-sec">Accounts</div>${sellers.map(accountRowHTML).join("")}` : ""}
+      ${list.length ? `<div class="sr-sec">Posts</div>${resultGridHTML(list)}` : `<div class="sr-empty-block">${I.search(44)}<div class="t">No data found</div><div>Try a different keyword or adjust your filters</div></div>`}
+    </div>`;
+  }
+  return head + tabs + chips + body;
+}
+function filterHTML(scr) {
+  const S = srchState(scr);
+  const f = S.fDraft = S.fDraft || JSON.parse(JSON.stringify(S.f));
+  const chipRow = (key, vals, cnt) => `<div class="flt-chips">${vals.map(v => `<button class="flt-chip${f[key].includes(v) ? " on" : ""}" data-fk="${key}" data-v="${esc(v)}">${v} <span class="c">(${cnt(v)})</span></button>`).join("")}</div>`;
+  const models = f.brand.length ? f.brand.flatMap(b => SEARCH_BRANDS[b] || []) : Object.values(SEARCH_BRANDS).flat();
+  const years = [...new Set(salePosts().map(p => specOf(p, "Year")).filter(Boolean))].sort().reverse();
+  const refs = [...new Set(salePosts().map(p => specOf(p, "Reference")).filter(Boolean))];
+  return `
+    <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">Filters</span><span class="spacer"></span></div>
+    <div class="sub-scroll">
+      <div class="flt-sec"><div class="flt-t">Brand</div>${chipRow("brand", Object.keys(SEARCH_BRANDS), brandCount)}</div>
+      <div class="flt-sec"><div class="flt-t">Model${f.brand.length ? ` · ${f.brand.join(" + ")}` : ""}</div>${chipRow("model", models, m => modelCount(m, f.brand))}</div>
+      <div class="flt-sec"><div class="flt-t">Price range (THB)</div>
+        <div class="flt-price">
+          <input class="flt-pmin" inputmode="numeric" placeholder="Minimum" value="${fmtNum(f.pmin)}">
+          <span>–</span>
+          <input class="flt-pmax" inputmode="numeric" placeholder="Maximum" value="${fmtNum(f.pmax)}">
+        </div>
+        <div class="flt-err" hidden></div>
+      </div>
+      <div class="flt-sec"><div class="flt-t">Year of production</div>${chipRow("year", years, v => optCount("Year", v))}</div>
+      <div class="flt-sec"><div class="flt-t">Reference</div>${chipRow("ref", refs, v => optCount("Reference", v))}</div>
+      <div class="flt-sec"><div class="flt-t">Condition</div>${chipRow("cond", SEARCH_COND, v => optCount("Condition", v))}</div>
+      <div class="flt-sec"><div class="flt-t">Case size</div>${chipRow("csz", SEARCH_CASE, v => optCount("Case Diameter", v))}</div>
+      <div class="flt-sec"><div class="flt-t">Movement</div>${chipRow("move", SEARCH_MOVE, v => optCount("Movement Type", v, true))}</div>
+      <div class="flt-sec"><div class="flt-t">Dial color</div>${chipRow("dial", SEARCH_DIAL, v => optCount("Dial Color", v, true))}</div>
+      <div class="flt-sec"><div class="flt-t">Strap / Bracelet</div>${chipRow("strap", SEARCH_STRAP, strapCount)}</div>
+      <div class="flt-sec"><div class="flt-t">Delivery contents</div>${chipRow("deliv", SEARCH_DELIV, delivCount)}</div>
+    </div>
+    <div class="flt-foot">
+      <button class="flt-clear">Clear all</button>
+      <button class="flt-apply">Apply${filterCount(f) ? ` (${filterCount(f)})` : ""}</button>
+    </div>`;
+}
+function applyFilters(scr) {
+  const S = srchState(scr);
+  const el = scr.querySelector(".page-sub");
+  const minRaw = unNum(el.querySelector(".flt-pmin").value);
+  const maxRaw = unNum(el.querySelector(".flt-pmax").value);
+  const err = el.querySelector(".flt-err");
+  const bad = msg => { err.textContent = msg; err.hidden = false; };
+  err.hidden = true;
+  if (minRaw !== "" && maxRaw !== "" && +minRaw > +maxRaw)
+    return bad("Minimum price must not exceed maximum price");
+  if (maxRaw !== "" && +maxRaw > MAX_PRICE)
+    return bad(`Maximum price must not exceed ${fmtNum(MAX_PRICE)}`);
+  S.fDraft.pmin = minRaw; S.fDraft.pmax = maxRaw;
+  S.f = S.fDraft; S.fDraft = null;
+  S.mode = "results";
+  scr._subStack = ["search"];
+  renderSub(scr);
+}
+function openPostDetail(scr, post) {
+  const pd = scr.querySelector(".page-detail");
+  const cfg = POST_DETAIL_CFG[post.id];
+  if (cfg) {
+    const keep = { ...state };
+    Object.assign(state, cfg);
+    pd.innerHTML = detailHTML(post);
+    Object.assign(state, keep);
+  } else {
+    pd.innerHTML = detailHTML(post);
+  }
+  pd.querySelector(".detail-scroll").scrollTop = 0;
+  scr.dataset.detailPid = post.id;
+  scr.classList.add("detail-open");
+}
+
 /* center confirm dialog (IG "Mute x?" style) */
 function openDlg(scr, inner) {
   scr.querySelector(".dlg").innerHTML = inner;
@@ -2872,11 +3492,20 @@ function pushSub(scr, name) {
 function renderSub(scr) {
   const st = scr._subStack || [];
   const el = scr.querySelector(".page-sub");
-  el.innerHTML = subHTML(st[st.length - 1]);
+  el.innerHTML = subHTML(st[st.length - 1], scr);
   el.classList.toggle("pg-up", st[st.length - 1] === "report");
+  const q = el.querySelector(".sr-q");
+  if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
 }
 function subBack(scr) {
   const st = scr._subStack || [];
+  const top = st[st.length - 1];
+  if (top === "sfilter") srchState(scr).fDraft = null;            /* back from Filters = discard draft (spec: Apply applies) */
+  if (top === "search" && srchState(scr).mode === "results") {  /* back from results returns to the explore landing like IG */
+    srchState(scr).mode = "landing";
+    renderSub(scr);
+    return;
+  }
   st.pop();
   if (st.length) renderSub(scr);
   else scr.classList.remove("sub-open");
@@ -2889,9 +3518,12 @@ function subPostRows(posts, label, cls) {
       <button class="mact ${cls}" data-pid="${p.id}">${label}</button>
     </div>`).join("") : `<div class="sub-empty">Nothing here yet</div>`;
 }
-function subHTML(name) {
+function subHTML(name, scr) {
   const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${t}</span><span class="spacer"></span></div>`;
   const row = (t, attr, extra = "") => `<button class="sub-row" ${attr}><span>${t}</span>${extra}<span class="sub-chev">${I.chevR(15)}</span></button>`;
+  if (name === "search") return searchHTML(scr);
+  if (name === "sfilter") return filterHTML(scr);
+  if (name === "recents") return recentPageHTML(scr);
   if (name === "settings") return head("Settings and activity") + `<div class="sub-scroll">
     <div class="sub-sec">What you see</div>
     ${row("Favorites", `data-sub="favorites"`, `<span class="sub-count">${favoriteSellers().length}</span>`)}
@@ -2973,7 +3605,7 @@ function screenHTML(theme, variant) {
 
     <div class="app-header">
       <button class="icon-btn">${I.burger()}</button>
-      <button class="icon-btn">${I.search()}</button>
+      <button class="icon-btn search-btn">${I.search()}</button>
       <span class="wordmark">TUK DAENG <span class="caret">${I.chev(13)}</span></span>
       <span class="spacer"></span>
       <button class="icon-btn set-btn">${I.sliders()}</button>
@@ -3011,6 +3643,7 @@ function screenHTML(theme, variant) {
     <div class="sc-toast"></div>
     <div class="page-detail"></div>
     <div class="page-sub"></div>
+    <div class="page-pv"></div>
   </div>`;
 }
 
@@ -3142,6 +3775,14 @@ stageEl.addEventListener("pointercancel", endSwipe);
 );
 stageEl.addEventListener("keydown", e => {
   if (e.key === "Enter" && e.target.matches(".cp-input input")) sendChat(e.target);
+  if (e.key === "Enter" && e.target.matches(".sr-q")) {
+    const scr = e.target.closest(".screen");
+    const S = srchState(scr);
+    S.q = e.target.value.trim();
+    if (S.q) pushRecent(S, "kw", S.q);
+    S.mode = "results"; S.tab = "foryou";
+    renderSub(scr);
+  }
   if (e.key === "Enter" && e.target.matches(".sv-input")) {
     const scr = e.target.closest(".screen");
     const post = POSTS.find(x => x.id === scr.dataset.svPid);
@@ -3167,6 +3808,20 @@ stageEl.addEventListener("input", e => {
       b.style.display = b.querySelector(".mn").textContent.toLowerCase().includes(q) ? "" : "none";
     });
   }
+  /* search page — live suggestions (SEARCH-001) */
+  if (e.target.matches(".sr-q")) {
+    const scr = e.target.closest(".screen");
+    const S = srchState(scr);
+    S.q = e.target.value;
+    e.target.closest(".sr-field").classList.toggle("has-q", !!e.target.value);
+    const body = scr.querySelector(".page-sub .sr-body");
+    if (body) body.innerHTML = S.q.trim() ? suggestHTML(S) : recentHTML(S);
+  }
+  /* price inputs — auto comma format, digits only (SEARCH-001 spec §12) */
+  if (e.target.matches(".flt-pmin, .flt-pmax")) {
+    const v = unNum(e.target.value);
+    e.target.value = v ? fmtNum(v) : "";
+  }
 });
 
 document.getElementById("stage").addEventListener("click", e => {
@@ -3178,7 +3833,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const art = pmBtn.closest(".post");
     scr.dataset.pmPid = art ? art.dataset.pid : scr.dataset.detailPid;
     const cs = scr.querySelector(".comment-sheet");
-    cs.classList.remove("uf", "pm-rp", "lk", "sh", "sv");
+    cs.classList.remove("uf", "pm-rp", "lk", "sh", "sv", "nt", "ps");
     cs.classList.add("pm");
     cs.innerHTML = pmMenuHTML(POSTS.find(x => x.id === scr.dataset.pmPid));
     scr.classList.add("pm-open");
@@ -3394,7 +4049,178 @@ document.getElementById("stage").addEventListener("click", e => {
     }
     return;
   }
-  const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn), .emoji-row, .comment-input, .sheet-title .send, .c-meta");
+  /* ===== SEARCH-001 — search page flow ===== */
+  const sBtn = e.target.closest(".search-btn");
+  if (sBtn) {
+    const scr = sBtn.closest(".screen");
+    srchState(scr);
+    openSub(scr, "search");
+    return;
+  }
+  const srX = e.target.closest(".sr-x");
+  if (srX) {
+    const scr = srX.closest(".screen");
+    srchState(scr).q = "";
+    renderSub(scr);
+    return;
+  }
+  const srCancel = e.target.closest(".sr-cancel");
+  if (srCancel) {
+    const scr = srCancel.closest(".screen");
+    srchState(scr).mode = "landing";
+    renderSub(scr);
+    return;
+  }
+  const srFake = e.target.closest(".sr-fake");
+  if (srFake) {
+    const scr = srFake.closest(".screen");
+    srchState(scr).mode = "typing";   /* keep the query — IG keeps it when tapping the field on results */
+    renderSub(scr);
+    return;
+  }
+  const srSaved = e.target.closest(".sr-saved");
+  if (srSaved) { pushSub(srSaved.closest(".screen"), "saved"); return; }
+  const srPick = e.target.closest(".sr-pick");
+  if (srPick) {
+    const scr = srPick.closest(".screen");
+    const S = srchState(scr);
+    S.q = srPick.dataset.q;
+    if (S.q) pushRecent(S, "kw", S.q);
+    S.mode = "results"; S.tab = "foryou";
+    renderSub(scr);
+    return;
+  }
+  const rcAll = e.target.closest(".rc-all");
+  if (rcAll) { pushSub(rcAll.closest(".screen"), "recents"); return; }
+  const rcClear = e.target.closest(".rc-clear");
+  if (rcClear) {
+    const scr = rcClear.closest(".screen");
+    srchState(scr).recents = [];
+    renderSub(scr);
+    return;
+  }
+  const rcX = e.target.closest(".rc-x");
+  if (rcX) {
+    const scr = rcX.closest(".screen");
+    const S = srchState(scr);
+    S.recents.splice(+rcX.dataset.ri, 1);
+    if ((scr._subStack || []).at(-1) === "recents") renderSub(scr);
+    else {
+      const body = scr.querySelector(".page-sub .sr-body");
+      if (body) body.innerHTML = recentHTML(S);
+    }
+    return;
+  }
+  const acRow = e.target.closest(".rc-row, .ac-row");
+  if (acRow) {
+    const scr = acRow.closest(".screen");
+    const S = srchState(scr);
+    const kind = acRow.dataset.kind, v = acRow.dataset.v;
+    pushRecent(S, kind, v);
+    S.q = v;
+    S.mode = "results"; S.tab = "foryou";
+    if ((scr._subStack || []).at(-1) === "recents") scr._subStack = ["search"]; /* back to search page when picked from Recent searches */
+    renderSub(scr);
+    return;
+  }
+  const srTab = e.target.closest(".sr-tab");
+  if (srTab) {
+    const scr = srTab.closest(".screen");
+    srchState(scr).tab = srTab.dataset.tab;
+    renderSub(scr);
+    return;
+  }
+  const scFollow = e.target.closest(".sc-follow");
+  if (scFollow) {
+    const scr = scFollow.closest(".screen");
+    const seller = scFollow.dataset.seller;
+    const post = POSTS.find(x => x.seller === seller);
+    const on = !(post && post.following);
+    setFollowing(scr, seller, on);
+    scFollow.classList.toggle("on", on);
+    scFollow.textContent = on ? "Following" : "Follow";
+    renderSub(scr);
+    return;
+  }
+  const xpTile = e.target.closest(".xp-tile");
+  if (xpTile) {
+    const scr = xpTile.closest(".screen");
+    const S = srchState(scr);
+    const list = xpTile.closest(".xp-grid").classList.contains("two")
+      ? searchResults(S)
+      : POSTS.filter(p => !p.ni && !p.muted);
+    openPostViewer(scr, list, xpTile.dataset.pid, +xpTile.dataset.phi || 0);
+    return;
+  }
+  const pvBack = e.target.closest(".pv-back");
+  if (pvBack) { pvBack.closest(".screen").classList.remove("pv-open"); return; }
+  const pvSrch = e.target.closest(".pv-srch");
+  if (pvSrch) {
+    const scr = pvSrch.closest(".screen");
+    scr.classList.remove("pv-open");
+    if ((scr._subStack || []).length) { srchState(scr).mode = "typing"; renderSub(scr); }
+    return;
+  }
+  const pvAdd = e.target.closest(".pv-add");
+  if (pvAdd) {
+    const scr = pvAdd.closest(".screen");
+    const post = POSTS.find(x => x.id === pvAdd.closest(".post").dataset.pid);
+    if (post) {
+      const cs = scr.querySelector(".comment-sheet");
+      cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps");
+      cs.classList.add("nt");
+      cs.innerHTML = commentsHTML(post);
+      scr.classList.add("comments-open");
+    }
+    return;
+  }
+  const rmChip = e.target.closest("[data-rm]");
+  if (rmChip) {
+    const scr = rmChip.closest(".screen");
+    const S = srchState(scr);
+    const rm = rmChip.dataset.rm, ci = rm.indexOf(":");
+    const key = rm.slice(0, ci), v = rm.slice(ci + 1);
+    if (key === "price") { S.f.pmin = ""; S.f.pmax = ""; }
+    else S.f[key] = S.f[key].filter(x => x !== v);
+    renderSub(scr);
+    return;
+  }
+  const srRetry = e.target.closest(".sr-retry");
+  if (srRetry) {
+    const scr = srRetry.closest(".screen");
+    srchState(scr).err = false;
+    renderSub(scr);
+    return;
+  }
+  const fltChip = e.target.closest(".flt-chip");
+  if (fltChip) {
+    const scr = fltChip.closest(".screen");
+    const S = srchState(scr);
+    const f = S.fDraft = S.fDraft || JSON.parse(JSON.stringify(S.f));
+    const key = fltChip.dataset.fk, v = fltChip.dataset.v;
+    const arr = f[key];
+    const i = arr.indexOf(v);
+    if (i < 0) arr.push(v); else arr.splice(i, 1);
+    if (key === "brand") {
+      const allowed = new Set(f.brand.flatMap(b => SEARCH_BRANDS[b] || []));
+      f.model = f.model.filter(m => !f.brand.length || allowed.has(m));
+    }
+    const pane = scr.querySelector(".page-sub .sub-scroll");
+    const top = pane.scrollTop;
+    renderSub(scr);
+    scr.querySelector(".page-sub .sub-scroll").scrollTop = top;
+    return;
+  }
+  const fltClear = e.target.closest(".flt-clear");
+  if (fltClear) {
+    const scr = fltClear.closest(".screen");
+    srchState(scr).fDraft = blankFilters();
+    renderSub(scr);
+    return;
+  }
+  const fltApply = e.target.closest(".flt-apply");
+  if (fltApply) { applyFilters(fltApply.closest(".screen")); return; }
+  const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn), .emoji-row, .comment-input, .sheet-title .send, .c-meta");
   if (dead) { toast("Not in this prototype yet"); return; }
   const wm = e.target.closest(".wordmark");
   if (wm) {
@@ -3450,35 +4276,24 @@ document.getElementById("stage").addEventListener("click", e => {
   const intoDetail = e.target.closest(".view-full");
   if (intoDetail) {
     const art = e.target.closest(".post");
-    const post = POSTS.find(x => x.id === art.dataset.pid);
     const scr = e.target.closest(".screen");
-    const pd = scr.querySelector(".page-detail");
-    const cfg = POST_DETAIL_CFG[post.id];
-    if (cfg) {
-      const keep = { ...state };
-      Object.assign(state, cfg);
-      pd.innerHTML = detailHTML(post);
-      Object.assign(state, keep);
-    } else {
-      pd.innerHTML = detailHTML(post);
-    }
-    pd.querySelector(".detail-scroll").scrollTop = 0;
-    scr.scrollTop = 0;
-    scr.dataset.detailPid = post.id;
-    scr.classList.add("detail-open");
+    const post = POSTS.find(x => x.id === (art ? art.dataset.pid : (scr.dataset.dtPid || scr.dataset.detailPid)));
+    if (!post) return;
+    scr.classList.remove("pv-open", "details-open");
+    openPostDetail(scr, post);
     return;
   }
   const fbtn = e.target.closest(".follow-btn");
   if (fbtn) {
     const scr = fbtn.closest(".screen");
     const art = fbtn.closest(".post");
-    const pid = art ? art.dataset.pid : scr.dataset.detailPid;
+    const pid = art ? art.dataset.pid : (scr.dataset.dtPid || scr.dataset.detailPid);
     const post = POSTS.find(x => x.id === pid);
     if (!post) return;
     if (post.following) {
       scr.dataset.ufSeller = post.seller;
       const cs = scr.querySelector(".comment-sheet");
-      cs.classList.remove("pm", "pm-rp", "lk", "sh", "sv");
+      cs.classList.remove("pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps");
       cs.classList.add("uf");
       cs.innerHTML = `
         <div class="sheet-handle"></div>
@@ -3514,7 +4329,8 @@ document.getElementById("stage").addEventListener("click", e => {
     const pid = art ? art.dataset.pid : scr.dataset.detailPid;
     const post = POSTS.find(x => x.id === pid);
     const cs = scr.querySelector(".comment-sheet");
-    cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv");
+    cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "nt");
+    cs.classList.toggle("nt", scr.classList.contains("pv-open"));
     cs.innerHTML = commentsHTML(post);
     scr.classList.add("comments-open");
     return;
@@ -3600,7 +4416,7 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const closeSheet = e.target.closest(".sheet-backdrop, .sheet-handle");
   if (closeSheet) {
-    closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "dialog-open", "likes-open", "share-open", "save-open");
+    closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open");
     return;
   }
   const clike = e.target.closest(".c-like");
@@ -3632,6 +4448,12 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const t = e.target.closest(".details-toggle");
   if (t) {
+    if (t.classList.contains("pv-dt")) {
+      const scr = t.closest(".screen");
+      const post = POSTS.find(x => x.id === t.closest(".post").dataset.pid);
+      if (post) { scr.dataset.dtPid = post.id; openSheet(scr, "dt", "details-open", pvDetailsSheetHTML(post)); }
+      return;
+    }
     t.classList.toggle("open");
     t.nextElementSibling.classList.toggle("open");
     const lbl = t.querySelector(".dt-label");
@@ -3648,6 +4470,13 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const more = e.target.closest(".more-link");
   if (more) {
+    const pvPost = more.closest(".pv-post");
+    if (pvPost) {
+      const scr = more.closest(".screen");
+      const post = POSTS.find(x => x.id === pvPost.dataset.pid);
+      if (post) { scr.dataset.dtPid = post.id; openSheet(scr, "ps", "comments-open", pvPostSheetHTML(post)); }
+      return;
+    }
     more.closest(".caption").classList.add("expanded");
     return;
   }

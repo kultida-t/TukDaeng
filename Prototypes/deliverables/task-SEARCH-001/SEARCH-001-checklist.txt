@@ -1,0 +1,43 @@
+SEARCH-001 — Manual Review Checklist (FO Search & Filter, IG pattern)
+Prototype: Prototypes/fo-flow/index.html @ 440x956, dark + light
+Verify: _verify_feed_search.mjs → 116/116 PASS, 0 console/page errors
+ผลตรวจ: ผ่านทุกเคส (รีวิวจริงหลายรอบระหว่าง session — แก้ตาม feedback จนตรง reference)
+
+เคส 1: Search landing
+- กดไอคอน search ใน header → ✅ เข้าหน้า Search: search pill + ไอคอน bookmark, แถว chips (filter icon, For you, Rolex, Submariner, ฯลฯ), explore grid 3 คอลัมน์สลับ tall tiles + view-count overlay
+- ✅ Pill โค้งเต็ม capsule, selected = เทาอ่อน subtle (ไม่ใช่ขาวตัดชัด) ตาม IG
+- ✅ ระยะห่างรอบแถว pill เท่ากัน 12px บน/ล่าง
+
+เคส 2: Recent searches
+- แตะช่องค้นหา → ✅ แสดง Recent (seller=avatar, keyword=ไอคอนนาฬิกา) + "See all" + x ลบราย item
+- กด See all → ✅ เปิดหน้า "Recent searches" แยก: back + Clear all + ลิสต์เต็ม (IG pattern), Clear all ล้างหมด
+
+เคส 3: Autocomplete
+- พิมพ์ keyword → ✅ suggestions ไอคอนแว่นขยาย + listing count เช่น Rolex (2), Daytona (0) เลือกได้
+- พิมพ์ชื่อ seller → ✅ แถว account เด้งขึ้นเหนือ suggestions
+
+เคส 4: กดค้นตรง (ไม่เลือก suggestion) → หน้า result แบบ IG
+- ✅ Tab bar: For you | Profiles | Tags (underline ใต้ active)
+- For you: ✅ ไม่มี "n results"/sort, head มี back + pill query + ไอคอน Filters (ไม่มีปุ่ม save)
+- ✅ Section "Accounts" เฉพาะ seller ที่ชื่อมีคำค้น (rolex → ไม่มี section; watch → Watch 777/the watch/watch.daily) + "Posts" grid 2 คอลัมน์
+- Profiles: ✅ ลิสต์ seller ที่ชื่อ match เท่านั้น; Tags: ✅ option keyword match + count
+
+เคส 5: Filter
+- กดไอคอน Filters → ✅ หน้า Filters: Brand/Model (dependent)/Condition/Year/Price range, option พร้อม count, draft จนกว่า Apply (back = ทิ้ง), Clear all
+- ✅ Price range auto-comma, validation min≤max ≤2,000,000, Apply แล้ว chips โผล่บน result ถอดได้
+
+เคส 6: Post viewer (กด tile)
+- ✅ เปิด full-screen viewer, back/search icon, rail ขวา: Likes(เปิด likes sheet)/comments+count/views/share/save/···(post menu)
+- ✅ Rail ชิดล่างเหนือกล่อง comment, "Add comment…" กว้างเต็มขอบ
+- ✅ แคปชั่นตัด + "…" กดเปิด bottom sheet: seller head + caption เต็ม + วันที่ + comments เลื่อนได้ + ช่องพิมพ์
+- ✅ ไม่มีแถว Liked by; sheet จาก viewer ไม่มี title
+- ✅ Sale post มี "Tap for details" → bottom sheet spec/price + View full detail
+- ✅ Scroll-snap เลื่อนดูโพสต์ถัดไปได้; like/follow/sync กับ feed
+
+เคส 7: States + regression
+- ✅ empty "No data found", error + Try again, guest ใช้ search/filter/view ได้
+- ✅ Feed คงเดิม: Liked by + more inline + Comments sheet มี title + tabs/menu/like ไม่พัง
+- ✅ Light theme ทั้ง flow
+
+หลักฐาน: screenshots/task-SEARCH-001/ (15 ภาพ), SEARCH-001-test-results.txt
+Evidence gap: ไม่มีภาพ Before/After 1440px (task นี้เป็น mobile prototype 440x956 ตาม spec viewport)
