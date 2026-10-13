@@ -5,7 +5,7 @@ const { chromium } = require("playwright");
 import { mkdirSync } from "fs";
 
 const BASE = "http://127.0.0.1:4173/fo-flow";
-const OUT = process.argv[2] || "C:/Users/Admin/Desktop/TukDaeng/Prototypes/screenshots/task-FEED-013/after";
+const OUT = process.argv[2] || import.meta.dirname + "/screenshots/task-FEED-013/after";
 const STD = process.argv[3] === "std"; // std = evidence viewports 1440 + 390
 mkdirSync(OUT, { recursive: true });
 

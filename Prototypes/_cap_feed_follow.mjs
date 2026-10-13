@@ -4,7 +4,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 
 const BASE = "http://127.0.0.1:4173/fo-flow";
-const OUT = "C:/Users/Admin/Desktop/TukDaeng/Prototypes/screenshots/task-FEED-008/after";
+const OUT = import.meta.dirname + "/screenshots/task-FEED-008/after";
 
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });

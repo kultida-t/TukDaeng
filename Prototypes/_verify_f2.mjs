@@ -5,7 +5,7 @@ const { chromium } = require("playwright");
 import { mkdirSync } from "fs";
 
 const URL = "http://127.0.0.1:4173/feed-create-post.html";
-const OUT = "C:/Users/Admin/Desktop/TukDaeng/Prototypes/screenshots/cp";
+const OUT = import.meta.dirname + "/screenshots/cp";
 mkdirSync(OUT, { recursive: true });
 
 const browser = await chromium.launch();

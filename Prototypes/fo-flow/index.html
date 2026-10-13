@@ -1173,6 +1173,7 @@
     width: 46px; height: 46px; border-radius: 8px; object-fit: cover;
     background: var(--surface-2); border: 1px solid var(--line); flex-shrink: 0;
   }
+  .sv-row .thumb.none { display: flex; align-items: center; justify-content: center; color: var(--muted); }
   .sv-head .b, .sv-row .b { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .sv-head .t { font-size: 15px; font-weight: 600; color: var(--text); }
   .sv-head .s, .sv-row .s { font-size: 12.5px; color: var(--muted); }
@@ -1253,20 +1254,21 @@
   .svd-col .s, .wl-col .s { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
   /* collections tab — big square cards, 2x2 collage cover, name below (IG) */
   .svd-colsbig { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 12px; padding: 4px 16px 16px; }
-  .svd-colbig {
+  .svd-colbig, .wl-colbig {
     display: flex; flex-direction: column; gap: 7px; min-width: 0;
     background: none; border: none; padding: 0; cursor: pointer;
     font-family: var(--font-main); text-align: left;
   }
-  .svd-colbig .cv {
+  .svd-colbig .cv, .wl-colbig .cv {
     width: 100%; aspect-ratio: 1; border-radius: 18px; overflow: hidden;
     background: var(--surface-2);
     display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px;
   }
-  .svd-colbig .cv.one { display: block; }
-  .svd-colbig .cv.two { grid-template-rows: 1fr; }
-  .svd-colbig .cv img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .svd-colbig .n {
+  .svd-colbig .cv.one, .wl-colbig .cv.one { display: block; }
+  .svd-colbig .cv.two, .wl-colbig .cv.two { grid-template-rows: 1fr; }
+  .wl-colbig .cv.none { display: flex; align-items: center; justify-content: center; color: var(--muted); }
+  .svd-colbig .cv img, .wl-colbig .cv img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .svd-colbig .n, .wl-colbig .n {
     font-size: 13.5px; font-weight: 500; color: var(--text); max-width: 100%;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
@@ -3094,14 +3096,14 @@ function saveSheetHTML(p) {
 
 /* Wish List — separate menu, same flow shape as Save but own lists/state */
 const WISHLISTS = [
-  { name: "Next buy", thumb: "./assets/asset-uploads/feed-tudor-bb.jpg" },
-  { name: "Grail goals", thumb: "./assets/asset-uploads/feed-breguet-1.jpg" },
+  { name: "Next buy", thumb: "" },
+  { name: "Grail goals", thumb: "" },
 ];
 
 function wlSheetHTML(p) {
-  const thumb = c => c.thumb
-    ? `<img class="thumb" src="${c.thumb}" alt="">`
-    : `<span class="thumb"></span>`;
+  const thumb = c => wlColCover(c)
+    ? `<img class="thumb" src="${wlColCover(c)}" alt="">`
+    : `<span class="thumb none">${I.gift(18)}</span>`;
   return `
     <div class="sheet-handle"></div>
     <button class="wl-pick sv-head${p.wishlisted ? " saved" : ""}" data-col="Wishlist">
@@ -3834,8 +3836,8 @@ function renderSub(scr) {
 function subBack(scr) {
   const st = scr._subStack || [];
   const top = st[st.length - 1];
-  if (top === "saved" || top === "savedcol") {                    /* back exits saved-search/manage first, page pops after */
-    const V = savedState(scr);
+  if (top === "saved" || top === "savedcol" || top === "wishlist" || top === "wishcol") { /* back exits saved-search/manage first, page pops after */
+    const V = colState(scr);
     if (V.mode === "search") { V.mode = ""; V.q = ""; renderSub(scr); return; }
     if (V.mode === "menu") { V.mode = ""; renderSub(scr); return; }
     if (V.mode === "cover") { V.mode = "edit"; renderSub(scr); return; }
@@ -3907,7 +3909,7 @@ function colCardBigHTML(c) {
 function svdConfirmDelete(scr) {
   openDlg(scr, `
     <div class="dlg-q">Delete collection?</div>
-    <div class="dlg-desc">When you delete this collection, the photos and videos will still be saved.</div>
+    <div class="dlg-desc">When you delete this collection, the photos and videos will still be ${inWlCol(scr) ? "on your wish list" : "saved"}.</div>
     <button class="dlg-btn danger dlg-delcol-go">Delete</button>
     <button class="dlg-btn dlg-cancel">Cancel</button>`);
 }
@@ -3935,9 +3937,9 @@ function svdSparkIcon() {
     <path d="M37 8l-4 3.5" stroke="#e0489a" stroke-width="2.2"/>
   </svg>`;
 }
-function svdBarHTML(V, inCol) {
+function svdBarHTML(V, inCol, wl = false) {
   return `<div class="svd-bar">
-    <button class="svd-unsave"${V.sel.size ? "" : " disabled"}>${inCol ? "Remove" : "Unsave"}</button>
+    <button class="svd-unsave"${V.sel.size ? "" : " disabled"}>${inCol || wl ? "Remove" : "Unsave"}</button>
     <button class="svd-move"${V.sel.size ? "" : " disabled"}>${inCol ? "Move to collection" : "Add to collection"}</button></div>`;
 }
 function svdSelectHeadHTML(title, n = 0, total = 0) {
@@ -4054,17 +4056,39 @@ function savedColHTML(scr) {
 }
 /* ===== Wish List hub — mirrors Saved layout, backed by WISHLISTS + wishlisted ===== */
 function wlState(scr) {
-  if (!scr._wl) scr._wl = { col: null };
+  if (!scr._wl) scr._wl = { col: null, tab: "all", mode: "", q: "", manage: false, sel: new Set(), addSel: new Set() };
   return scr._wl;
 }
 function wlPosts() { return POSTS.filter(p => p.wishlisted).sort((a, b) => (b.wlAt || 0) - (a.wlAt || 0)); }
-function wlColPosts(name) { return wlPosts().filter(p => p.wlCol === name); }
-function wlColCover(c) { const ps = wlColPosts(c.name); return ps.length ? thumbS(ps[0]) : (c.thumb || ""); }
-function wlTileHTML(p) {
-  return `<button class="wl-tile" data-pid="${p.id}">
-    <img src="${thumbP(p)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${p.photos[0]}'">
-    ${p.photos.length > 1 ? `<span class="svd-stack">${I.stack(18)}</span>` : ""}
-  </button>`;
+function wlColPosts(name) { return wlPosts().filter(p => p.wlCol === name).sort((a, b) => (b.wlColAt || 0) - (a.wlColAt || 0)); }
+function wlListPosts(scr) {
+  const V = wlState(scr);
+  let list = inWlCol(scr) ? wlColPosts(V.col) : wlPosts();
+  if (V.q.trim()) list = list.filter(p => matchQuery(p, V.q));
+  return list;
+}
+function wlColCover(c) { const ps = wlColPosts(c.name); const p = ps[ps.length - 1]; return p ? thumbS(p) : ""; }
+/* saved vs wishlist share the same handlers — pick state/collections/field by top sub */
+function inWlCol(scr) { return (scr._subStack || []).at(-1) === "wishcol"; }
+function isWl(scr) { const t = (scr._subStack || []).at(-1); return t === "wishlist" || t === "wishcol"; }
+function colState(scr) { return isWl(scr) ? wlState(scr) : savedState(scr); }
+function colList(scr) { return isWl(scr) ? wlListPosts(scr) : savedList(scr); }
+/* IG empty-collection glyph for Wish List — outlined gift with colored sparkles */
+function wlSparkIcon() {
+  return `<svg width="46" height="46" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="currentColor" stroke-width="2">
+      <rect x="10" y="20" width="28" height="7" rx="1.5"/>
+      <path d="M24 20v18"/>
+      <path d="M14 27v9a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-9"/>
+      <path d="M17.5 20a3.5 3.5 0 0 1 0-7c4.5 0 6.5 7 6.5 7s2-7 6.5-7a3.5 3.5 0 0 1 0 7"/>
+    </g>
+    <path d="M4 16l5.5 1.5" stroke="#f5a623" stroke-width="2.2"/>
+    <path d="M6 26l5 .5" stroke="#e0489a" stroke-width="2.2"/>
+    <path d="M11 8l4 3.5" stroke="#f5a623" stroke-width="2.2"/>
+    <path d="M44 16l-5.5 1.5" stroke="#e0489a" stroke-width="2.2"/>
+    <path d="M42 26l-5 .5" stroke="#8a5cf6" stroke-width="2.2"/>
+    <path d="M37 8l-4 3.5" stroke="#e0489a" stroke-width="2.2"/>
+  </svg>`;
 }
 function wlColCardHTML(c) {
   const cover = wlColCover(c);
@@ -4074,37 +4098,209 @@ function wlColCardHTML(c) {
     <span class="s">${I.lock(11)} Private</span></span>
   </button>`;
 }
+function wlColCardBigHTML(c) {
+  const ph = wlColPosts(c.name).map(thumbS).slice(0, 4);
+  const cv = !ph.length
+    ? `<span class="cv none">${I.gift(26)}</span>`
+    : ph.length === 1
+      ? `<span class="cv one"><img src="${ph[0]}" alt=""></span>`
+      : `<span class="cv${ph.length === 2 ? " two" : ""}">${ph.map(s => `<img src="${s}" alt="">`).join("")}</span>`;
+  return `<button class="wl-colbig" data-col="${esc(c.name)}">${cv}<span class="n">${esc(c.name)}</span></button>`;
+}
+function wlBodyHTML(scr) {
+  const V = wlState(scr);
+  const list = wlListPosts(scr);
+  const tile = p => svdTileHTML(V, p);
+  const colSec = WISHLISTS.length ? `
+    <div class="svd-sec"><span class="t">Collections</span><button class="svd-see">See all</button></div>
+    <div class="svd-cols">${WISHLISTS.slice(0, 4).map(wlColCardHTML).join("")}</div>` : "";
+  const postSec = `
+    <div class="svd-sec"><span class="t">All items</span>${list.length && !V.manage ? `<button class="svd-see svd-manage">Manage</button>` : ""}</div>
+    ${list.length
+      ? `<div class="svd-grid">${list.map(tile).join("")}</div>`
+      : svdEmptyHTML(wlSparkIcon(), "Nothing on your wish list yet", "Tap the gift icon on a model page to add it here.")}`;
+  if (V.tab === "collections")
+    return WISHLISTS.length
+      ? `<div class="svd-colsbig">${WISHLISTS.map(wlColCardBigHTML).join("")}</div>`
+      : svdEmptyHTML(I.gift(30), "No collections yet", "Create a collection to organise your wish list posts.");
+  if (V.tab === "posts")
+    return list.length
+      ? `<div class="svd-grid">${list.map(tile).join("")}</div>`
+      : svdEmptyHTML(wlSparkIcon(), "Nothing on your wish list yet", "Tap the gift icon on a model page to add it here.");
+  return colSec + postSec;
+}
 function wishlistHTML(scr) {
+  const V = wlState(scr);
+  if (V.mode === "search") {
+    return `
+    <div class="sr-head svd-head">
+      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="Search your wish list" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
+      <button class="svd-cancel">Cancel</button>
+    </div>
+    <div class="sub-scroll svd-body">${wlSearchBodyHTML(scr)}</div>`;
+  }
+  if (V.mode === "allposts" || V.mode === "allmenu" || V.manage) {
+    const all = wlPosts();
+    const grid = `<div class="sub-scroll svd-body"><div class="svd-grid">${all.map(p => svdTileHTML(V, p)).join("")}</div></div>`;
+    if (V.manage)
+      return svdSelectHeadHTML("All items", V.sel.size, all.length) + grid + svdBarHTML(V, false, true);
+    const menu = V.mode === "allmenu" ? `
+      <div class="svd-menuwrap"><div class="svd-menu">
+        <button class="svd-mi" data-act="sel">${I.circleCheck(19)}<span>Select...</span></button>
+      </div></div>` : "";
+    return `
+    <div class="detail-head svd-head">
+      <button class="icon-btn sub-back">${I.back()}</button>
+      <span class="detail-title rc-title">All items</span>
+      <span class="spacer"></span>
+      <button class="icon-btn svd-more">${I.dots(21)}</button>
+    </div>` + grid + menu;
+  }
   const head = `
     <div class="detail-head svd-head">
       <button class="icon-btn sub-back">${I.back()}</button>
       <span class="detail-title rc-title">Wish List</span>
       <span class="spacer"></span>
+      <button class="icon-btn svd-srch">${I.search(21)}</button>
+      <button class="icon-btn svd-plus">${I.plus(23)}</button>
     </div>`;
-  const list = wlPosts();
-  const colSec = WISHLISTS.length ? `
-    <div class="svd-sec"><span class="t">Collections</span></div>
-    <div class="svd-cols">${WISHLISTS.slice(0, 4).map(wlColCardHTML).join("")}</div>` : "";
-  const postSec = `
-    <div class="svd-sec"><span class="t">All items</span></div>
-    ${list.length
-      ? `<div class="svd-grid">${list.map(wlTileHTML).join("")}</div>`
-      : svdEmptyHTML(I.gift(30), "Nothing on your wish list yet", "Tap the gift icon on a model page to add it here.")}`;
-  return head + `<div class="sub-scroll svd-body">${colSec + postSec}</div>`;
+  const tabs = `<div class="svd-tabs">${SAVED_TABS.map(([v, t]) => `<button class="svd-tab${V.tab === v ? " on" : ""}" data-tab="${v}">${t}</button>`).join("")}</div>`;
+  return head + tabs + `<div class="sub-scroll svd-body">${wlBodyHTML(scr)}</div>`;
+}
+function wlSearchBodyHTML(scr) {
+  const list = wlListPosts(scr);
+  return list.length
+    ? `<div class="svd-grid">${list.map(p => svdTileHTML(wlState(scr), p)).join("")}</div>`
+    : svdEmptyHTML(I.search(26), "No results found", `No wish list posts match "${esc(wlState(scr).q)}".`);
 }
 function wishColHTML(scr) {
-  const name = wlState(scr).col || "Collection";
-  const list = wlColPosts(name);
-  return `
+  const V = wlState(scr);
+  const name = V.col || "Collection";
+  const list = wlListPosts(scr);
+  if (V.mode === "add") return wlAddHTML(scr);
+  if (V.mode === "edit") return wlEditHTML(scr);
+  if (V.mode === "cover") return wlCoverHTML(scr);
+  if (V.mode === "search") {
+    return `
+    <div class="sr-head svd-head">
+      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="Search ${esc(name)}" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
+      <button class="svd-cancel">Cancel</button>
+    </div>
+    <div class="sub-scroll svd-body">${wlSearchBodyHTML(scr)}</div>`;
+  }
+  const head = V.manage ? svdSelectHeadHTML(name, V.sel.size, list.length) : `
     <div class="detail-head svd-head">
       <button class="icon-btn sub-back">${I.back()}</button>
       <span class="detail-title rc-title">${esc(name)}</span>
       <span class="spacer"></span>
-    </div>
-    <div class="sub-scroll svd-body">
-      ${list.length ? `<div class="svd-coltitle"><div class="n">${esc(name)}</div><div class="c">${list.length === 1 ? "1 item" : `${list.length} items`}</div></div>` : ""}
-      ${list.length ? `<div class="svd-grid">${list.map(wlTileHTML).join("")}</div>` : svdEmptyHTML(I.gift(30), "Nothing here yet", "", true)}
+      <button class="icon-btn svd-srch">${I.search(21)}</button>
+      <button class="icon-btn svd-more">${I.dots(21)}</button>
     </div>`;
+  const body = `<div class="sub-scroll svd-body">
+    ${list.length ? `<div class="svd-coltitle"><div class="n">${esc(name)}</div><div class="c">${list.length === 1 ? "1 item" : `${list.length} items`}</div></div>` : ""}
+    ${list.length
+      ? `<div class="svd-grid">${list.map(p => svdTileHTML(V, p)).join("")}</div>`
+      : svdEmptyHTML(wlSparkIcon(), "No wish list posts yet", "", true)}</div>`;
+  const menu = V.mode === "menu" ? `
+    <div class="svd-menuwrap"><div class="svd-menu">
+      <button class="svd-mi" data-act="add">${I.plus(19)}<span>Add to collection</span></button>
+      <button class="svd-mi" data-act="edit">${I.pen(17)}<span>Edit collection</span></button>
+      ${list.length ? `<button class="svd-mi" data-act="sel">${I.circleCheck(19)}<span>Select...</span></button>` : ""}
+      <button class="svd-mi del" data-act="del">${I.trash(18)}<span>Delete collection</span></button>
+    </div></div>` : "";
+  return head + body + (V.manage ? svdBarHTML(V, true) : "") + menu;
+}
+/* "Add to collection" picker — wishlist variant (grid of wishlisted posts not in this collection) */
+function wlAddHTML(scr) {
+  const V = wlState(scr);
+  const cands = wlPosts().filter(p => p.wlCol !== V.col);
+  const pick = { sel: V.addSel, manage: true };
+  return `
+  <div class="detail-head svd-head svd-addhead">
+    <button class="svd-cancel">Cancel</button>
+    <span class="detail-title rc-title svd-addtitle">Wish List<span class="svd-addsub">Add from</span></span>
+    <span class="spacer"></span>
+    <button class="svd-done svd-adddone">Done</button>
+  </div>
+  <div class="sub-scroll svd-body">${cands.length
+    ? `<div class="svd-grid">${cands.map(p => svdTileHTML(pick, p)).join("")}</div>`
+    : svdEmptyHTML(I.gift(28), "No wish list posts to add", "Add posts to your wish list first, then add them here.")}</div>`;
+}
+/* "Edit collection" page — wishlist variant (cover + change cover + name + delete) */
+function wlEcCoverHTML(c) {
+  if (!c) return "";
+  let src = "", orig = "";
+  if (c.coverPid) {
+    const p = POSTS.find(x => x.id === c.coverPid);
+    if (p) { src = thumbS(p); orig = p.photos[0]; }
+  }
+  if (!src) {
+    const posts = wlColPosts(c.name);
+    const first = posts[posts.length - 1];
+    if (first) { src = thumbS(first); orig = first.photos[0]; }
+  }
+  return src ? `<span class="ecv one"><img src="${src}" alt="" onerror="this.onerror=null;this.src='${orig}'"></span>` : "";
+}
+function wlEditHTML(scr) {
+  const V = wlState(scr);
+  const name = V.col || "";
+  const c = WISHLISTS.find(x => x.name === name);
+  const cover = wlEcCoverHTML(c);
+  return `
+  <div class="detail-head svd-head">
+    <button class="svd-cancel">Cancel</button>
+    <span class="detail-title rc-title">Edit collection</span>
+    <span class="spacer"></span>
+    <button class="svd-done svd-editdone">Done</button>
+  </div>
+  <div class="sub-scroll svd-body">
+    ${cover ? `<div class="ec-cover">${cover}<button class="ec-chgcover">Change cover</button></div>` : ""}
+    <div class="ec-sec">Name</div>
+    <div class="ec-field"><span class="ec-lbl">Collection name</span><input class="ec-input" maxlength="40" autocomplete="off" value="${esc(name)}"></div>
+    <div class="ec-sec">Manage</div>
+    <button class="ec-del">Delete collection</button>
+    <p class="ec-note">When you delete this collection, the photos and videos will still be on your wish list.</p>
+  </div>`;
+}
+function wlCoverHTML(scr) {
+  const V = wlState(scr);
+  const c = WISHLISTS.find(x => x.name === V.col);
+  const list = wlColPosts(V.col);
+  return `
+  <div class="detail-head svd-head">
+    <button class="svd-cancel">Cancel</button>
+    <span class="detail-title rc-title">Change cover</span>
+    <span class="spacer"></span>
+  </div>
+  <div class="sub-scroll svd-body">${list.length
+    ? `<div class="ec-grid">${list.map(p => `<button class="ec-ctile${c && c.coverPid === p.id ? " on" : ""}" data-pid="${p.id}"><img src="${thumbS(p)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${p.photos[0]}'"><span class="svd-sel">${c && c.coverPid === p.id ? I.check(12) : ""}</span></button>`).join("")}</div>`
+    : svdEmptyHTML(I.img(30), "No posts yet", "Add posts to this collection first.")}</div>`;
+}
+/* move-to-collection picker — wishlist variant (WISHLISTS rows, no Wish List row) */
+function wlMoveSheetHTML(scr) {
+  const V = wlState(scr);
+  const cur = inWlCol(scr) ? V.col : null;
+  const rows = WISHLISTS.filter(c => c.name !== cur);
+  return `
+    <div class="sheet-handle"></div>
+    <div class="sv-sec"><span class="l">Collections</span><button class="svd-mv-new">New collection</button></div>
+    <div class="sv-list">
+      ${rows.map(c => `
+      <button class="svd-mv sv-row" data-col="${esc(c.name)}">
+        ${wlColCover(c) ? `<img class="thumb" src="${wlColCover(c)}" alt="">` : `<span class="thumb none">${I.gift(18)}</span>`}
+        <span class="b"><span class="n">${esc(c.name)}</span><span class="s">Private</span></span>
+        <span class="plus">${I.plus(14)}</span>
+      </button>`).join("")}
+    </div>`;
+}
+function wlDeleteCol(scr) {
+  const V = wlState(scr);
+  const i = WISHLISTS.findIndex(c => c.name === V.col);
+  if (i >= 0) WISHLISTS.splice(i, 1);
+  POSTS.forEach(p => { if (p.wlCol === V.col) p.wlCol = "Wishlist"; });
+  V.col = null; V.mode = "";
+  subBack(scr);
+  scrToast(scr, "Collection deleted");
 }
 /* IG "Edit collection" page — cover + change-cover picker + name + delete.
    Cover = picked coverPid, else the first post added to the collection; empty collection → no cover block */
@@ -4508,14 +4704,14 @@ stageEl.addEventListener("input", e => {
     const body = scr.querySelector(".page-sub .sr-body");
     if (body) body.innerHTML = S.q.trim() ? suggestHTML(S) : recentHTML(S);
   }
-  /* saved page — live filter within saved posts (SAVED-001) */
+  /* saved/wishlist page — live filter within collection posts (SAVED-001) */
   if (e.target.matches(".svd-q")) {
     const scr = e.target.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
     V.q = e.target.value;
     e.target.closest(".sr-field").classList.toggle("has-q", !!V.q.trim());
     const body = scr.querySelector(".page-sub .svd-body");
-    if (body) body.innerHTML = savedSearchBodyHTML(scr);
+    if (body) body.innerHTML = isWl(scr) ? wlSearchBodyHTML(scr) : savedSearchBodyHTML(scr);
   }
   /* new collection sheet — counter, clear-X, Next enable (SAVED-001) */
   if (e.target.matches(".nc-input")) {
@@ -4532,15 +4728,16 @@ stageEl.addEventListener("input", e => {
   }
 });
 
-/* saved grid — long-press a tile to enter select mode (IG) */
+/* saved/wishlist grid — long-press a tile to enter select mode (IG) */
 document.getElementById("stage").addEventListener("contextmenu", e => {
   const tile = e.target.closest(".svd-tile");
   if (!tile) return;
   const scr = tile.closest(".screen");
-  const V = savedState(scr);
+  const V = colState(scr);
   if (V.manage) return;
   e.preventDefault();
-  if ((scr._subStack || []).at(-1) === "saved") V.mode = "allposts";
+  const longTop = (scr._subStack || []).at(-1);
+  if (longTop === "saved" || longTop === "wishlist") V.mode = "allposts";
   V.manage = true; V.sel.clear(); V.sel.add(tile.dataset.pid);
   renderSub(scr);
 });
@@ -5117,7 +5314,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdManage = e.target.closest(".svd-manage");
   if (svdManage) {
     const scr = svdManage.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
     V.mode = "allposts"; V.manage = true; V.sel.clear();
     renderSub(scr);
     return;
@@ -5125,7 +5322,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdDone = e.target.closest(".svd-done:not(.svd-adddone):not(.svd-editdone), .svd-exit");
   if (svdDone) {
     const scr = svdDone.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
     V.manage = false; V.sel.clear();
     renderSub(scr);
     return;
@@ -5133,7 +5330,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdTab = e.target.closest(".svd-tab");
   if (svdTab) {
     const scr = svdTab.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
     V.tab = svdTab.dataset.tab; V.manage = false; V.sel.clear();
     renderSub(scr);
     return;
@@ -5141,7 +5338,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdSee = e.target.closest(".svd-see");
   if (svdSee) {
     const scr = svdSee.closest(".screen");
-    savedState(scr).tab = "collections";
+    colState(scr).tab = "collections";
     renderSub(scr);
     return;
   }
@@ -5156,7 +5353,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdSrch = e.target.closest(".svd-srch");
   if (svdSrch) {
     const scr = svdSrch.closest(".screen");
-    savedState(scr).mode = "search";
+    colState(scr).mode = "search";
     renderSub(scr);
     const q = scr.querySelector(".svd-q");
     if (q) q.focus({ preventScroll: true });
@@ -5165,8 +5362,8 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdSelAll = e.target.closest(".svd-selall");
   if (svdSelAll) {
     const scr = svdSelAll.closest(".screen");
-    const V = savedState(scr);
-    const list = savedList(scr);
+    const V = colState(scr);
+    const list = colList(scr);
     if (V.sel.size >= list.length) V.sel.clear();
     else list.forEach(p => V.sel.add(p.id));
     renderSub(scr);
@@ -5175,7 +5372,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdCancel = e.target.closest(".svd-cancel");
   if (svdCancel) {
     const scr = svdCancel.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
     if (V.manage) { V.manage = false; V.sel.clear(); }
     else if (V.mode === "cover") V.mode = "edit";
     else { V.mode = ""; V.q = ""; V.addSel.clear(); }
@@ -5185,19 +5382,19 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdX = e.target.closest(".svd-x");
   if (svdX) {
     const scr = svdX.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
     V.q = "";
     const f = svdX.closest(".sr-field");
     f.classList.remove("has-q");
     f.querySelector(".svd-q").value = "";
     const body = scr.querySelector(".page-sub .svd-body");
-    if (body) body.innerHTML = savedSearchBodyHTML(scr);
+    if (body) body.innerHTML = isWl(scr) ? wlSearchBodyHTML(scr) : savedSearchBodyHTML(scr);
     return;
   }
   const svdPlus = e.target.closest(".svd-plus");
   if (svdPlus) {
     const scr = svdPlus.closest(".screen");
-    scr._ncFrom = "saved"; scr._ncPids = null;
+    scr._ncFrom = isWl(scr) ? "wlcol" : "saved"; scr._ncPids = null;
     openSheet(scr, "nc", "save-open", ncSheetHTML());
     scr.querySelector(".nc-input").focus({ preventScroll: true });
     return;
@@ -5205,7 +5402,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdMore = e.target.closest(".svd-more");
   if (svdMore) {
     const scr = svdMore.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
     V.mode = V.mode === "allposts" ? "allmenu" : "menu";
     renderSub(scr);
     return;
@@ -5213,7 +5410,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdMenuWrap = e.target.closest(".svd-menuwrap");
   if (svdMenuWrap && !e.target.closest(".svd-mi")) {
     const scr = svdMenuWrap.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
     V.mode = V.mode === "allmenu" ? "allposts" : "";
     renderSub(scr);
     return;
@@ -5221,7 +5418,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdMi = e.target.closest(".svd-mi");
   if (svdMi) {
     const scr = svdMi.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
     const act = svdMi.dataset.act;
     V.mode = V.mode === "allmenu" ? "allposts" : "";
     if (act === "add") {
@@ -5242,15 +5439,15 @@ document.getElementById("stage").addEventListener("click", e => {
   const ecChg = e.target.closest(".ec-chgcover");
   if (ecChg) {
     const scr = ecChg.closest(".screen");
-    savedState(scr).mode = "cover";
+    colState(scr).mode = "cover";
     renderSub(scr);
     return;
   }
   const ecTile = e.target.closest(".ec-ctile");
   if (ecTile) {
     const scr = ecTile.closest(".screen");
-    const V = savedState(scr);
-    const c = COLLECTIONS.find(x => x.name === V.col);
+    const V = colState(scr);
+    const c = (inWlCol(scr) ? WISHLISTS : COLLECTIONS).find(x => x.name === V.col);
     if (c) c.coverPid = ecTile.dataset.pid;
     V.mode = "edit";
     renderSub(scr);
@@ -5265,19 +5462,20 @@ document.getElementById("stage").addEventListener("click", e => {
   if (delColGo) {
     const scr = delColGo.closest(".screen");
     scr.classList.remove("dialog-open");
-    svdDeleteCol(scr);
+    if (inWlCol(scr)) wlDeleteCol(scr); else svdDeleteCol(scr);
     return;
   }
   const ecDone = e.target.closest(".svd-editdone");
   if (ecDone) {
     const scr = ecDone.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
+    const wl = inWlCol(scr);
     const newName = (scr.querySelector(".ec-input").value || "").trim();
     const old = V.col;
     if (newName && newName !== old) {
-      const cur = COLLECTIONS.find(c => c.name === old);
+      const cur = (wl ? WISHLISTS : COLLECTIONS).find(c => c.name === old);
       if (cur) cur.name = newName;
-      POSTS.forEach(p => { if (p.savedCol === old) p.savedCol = newName; });
+      POSTS.forEach(p => { if (p[wl ? "wlCol" : "savedCol"] === old) p[wl ? "wlCol" : "savedCol"] = newName; });
       V.col = newName;
     }
     V.mode = "";
@@ -5288,9 +5486,10 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdAddDone = e.target.closest(".svd-adddone");
   if (svdAddDone) {
     const scr = svdAddDone.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
+    const wl = inWlCol(scr);
     const n = V.addSel.size;
-    V.addSel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p.savedCol = V.col; p.colAt = Date.now(); } });
+    V.addSel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p[wl ? "wlCol" : "savedCol"] = V.col; p[wl ? "wlColAt" : "colAt"] = Date.now(); } });
     V.addSel.clear(); V.mode = "";
     renderSub(scr);
     if (n) scrToast(scr, n === 1 ? "Added 1 post" : `Added ${n} posts`);
@@ -5299,14 +5498,14 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdTile = e.target.closest(".svd-tile");
   if (svdTile) {
     const scr = svdTile.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
     const pid = svdTile.dataset.pid;
     if (V.mode === "add") {
       const sel = svdTile.querySelector(".svd-sel");
       if (V.addSel.has(pid)) { V.addSel.delete(pid); svdTile.classList.remove("on"); if (sel) sel.innerHTML = ""; }
       else { V.addSel.add(pid); svdTile.classList.add("on"); if (sel) sel.innerHTML = I.check(12); }
       const t = scr.querySelector(".svd-addtitle");
-      if (t) t.innerHTML = V.addSel.size ? `${V.addSel.size} Selected` : `Saved<span class="svd-addsub">Add from</span>`;
+      if (t) t.innerHTML = V.addSel.size ? `${V.addSel.size} Selected` : `${isWl(scr) ? "Wish List" : "Saved"}<span class="svd-addsub">Add from</span>`;
       return;
     }
     if (V.manage) {
@@ -5315,27 +5514,29 @@ document.getElementById("stage").addEventListener("click", e => {
       else { V.sel.add(pid); svdTile.classList.add("on"); if (sel) sel.innerHTML = I.check(12); }
       const sub = scr.querySelector(".page-sub");
       const sa = sub.querySelector(".svd-selall");
-      if (sa) sa.textContent = V.sel.size >= savedList(scr).length ? "Deselect all" : "Select all";
+      if (sa) sa.textContent = V.sel.size >= colList(scr).length ? "Deselect all" : "Select all";
       sub.querySelectorAll(".svd-bar button").forEach(b => b.disabled = !V.sel.size);
       return;
     }
-    openPostViewer(scr, savedList(scr), pid, 0, true);
+    if (isWl(scr)) openPostViewer(scr, colList(scr), pid, 0, true, "Wish List");
+    else openPostViewer(scr, savedList(scr), pid, 0, true);
     return;
   }
   const svdMove = e.target.closest(".svd-move");
   if (svdMove) {
     const scr = svdMove.closest(".screen");
-    openSheet(scr, "sv", "save-open", svdMoveSheetHTML(scr));
+    openSheet(scr, "sv", "save-open", isWl(scr) ? wlMoveSheetHTML(scr) : svdMoveSheetHTML(scr));
     return;
   }
   const svdMv = e.target.closest(".svd-mv");
   if (svdMv) {
     const scr = svdMv.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
+    const wl = isWl(scr);
     const col = svdMv.dataset.col;
-    const inCol = (scr._subStack || []).at(-1) === "savedcol";
+    const inCol = (scr._subStack || []).at(-1) === "savedcol" || inWlCol(scr);
     const firstP = POSTS.find(x => V.sel.has(x.id));
-    V.sel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p.savedCol = col; p.colAt = Date.now(); } });
+    V.sel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p[wl ? "wlCol" : "savedCol"] = col; p[wl ? "wlColAt" : "colAt"] = Date.now(); } });
     V.sel.clear(); V.manage = false;
     scr.classList.remove("save-open");
     renderSub(scr);
@@ -5345,8 +5546,8 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdMvNew = e.target.closest(".svd-mv-new");
   if (svdMvNew) {
     const scr = svdMvNew.closest(".screen");
-    const V = savedState(scr);
-    scr._ncFrom = "move"; scr._ncPids = [...V.sel];
+    const V = colState(scr);
+    scr._ncFrom = isWl(scr) ? "wlmove" : "move"; scr._ncPids = [...V.sel];
     const fp = POSTS.find(x => x.id === scr._ncPids[0]);
     openSheet(scr, "nc", "save-open", ncSheetHTML("", fp ? thumbS(fp) : ""));
     scr.querySelector(".nc-input").focus({ preventScroll: true });
@@ -5355,17 +5556,22 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdUnsave = e.target.closest(".svd-unsave");
   if (svdUnsave && !svdUnsave.disabled) {
     const scr = svdUnsave.closest(".screen");
-    const V = savedState(scr);
-    const inCol = (scr._subStack || []).at(-1) === "savedcol";
+    const V = colState(scr);
+    const wl = isWl(scr);
+    const inCol = (scr._subStack || []).at(-1) === "savedcol" || inWlCol(scr);
     if (inCol) {
       openDlg(scr, `
         <div class="dlg-q">Remove from this collection?</div>
-        <div class="dlg-desc">Post will still be saved in all posts.</div>
+        <div class="dlg-desc">${wl ? "Post will still be on your wish list." : "Post will still be saved in all posts."}</div>
         <button class="dlg-btn danger dlg-rmcol-go">Remove</button>
         <button class="dlg-btn dlg-cancel">Cancel</button>`);
       return;
     }
-    openDlg(scr, `
+    openDlg(scr, wl ? `
+      <div class="dlg-q">Remove from wish list?</div>
+      <div class="dlg-desc">Removing this post will also remove it from any collections.</div>
+      <button class="dlg-btn danger dlg-unsave-go">Remove</button>
+      <button class="dlg-btn dlg-cancel">Cancel</button>` : `
       <div class="dlg-q">Unsave post?</div>
       <div class="dlg-desc">Unsaving this post will also remove it from any collections.</div>
       <button class="dlg-btn danger dlg-unsave-go">Unsave</button>
@@ -5375,26 +5581,29 @@ document.getElementById("stage").addEventListener("click", e => {
   const unsaveGo = e.target.closest(".dlg-unsave-go");
   if (unsaveGo) {
     const scr = unsaveGo.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
+    const wl = isWl(scr);
     const first = POSTS.find(x => V.sel.has(x.id));
     V.sel.forEach(pid => {
       const p = POSTS.find(x => x.id === pid);
       if (!p) return;
-      p.saved = false; p.savedCol = null; p.savedAt = 0; syncSaveBtns(scr, p);
+      if (wl) { p.wishlisted = false; p.wlCol = null; p.wlAt = 0; p.wlColAt = 0; syncWlBtns(scr, p); }
+      else { p.saved = false; p.savedCol = null; p.savedAt = 0; syncSaveBtns(scr, p); }
     });
     V.sel.clear(); V.manage = false;
     scr.classList.remove("dialog-open");
     renderSub(scr);
-    scrToast(scr, "Removed from All posts", first ? thumbS(first) : "");
+    scrToast(scr, wl ? "Removed from Wish List" : "Removed from All posts", first ? thumbS(first) : "");
     return;
   }
   const rmColGo = e.target.closest(".dlg-rmcol-go");
   if (rmColGo) {
     const scr = rmColGo.closest(".screen");
-    const V = savedState(scr);
+    const V = colState(scr);
+    const wl = isWl(scr);
     const first = POSTS.find(x => V.sel.has(x.id));
     const col = V.col;
-    V.sel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) p.savedCol = "Saved"; });
+    V.sel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) p[wl ? "wlCol" : "savedCol"] = wl ? "Wishlist" : "Saved"; });
     V.sel.clear(); V.manage = false;
     scr.classList.remove("dialog-open");
     renderSub(scr);
@@ -5441,7 +5650,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const name = (scr.querySelector(".nc-input").value || "").trim() || "New collection";
     const people = [...scr.querySelectorAll(".nc-fr.on")].map(b => b.dataset.name);
     const from = scr._ncFrom;
-    if (from === "wishlist") WISHLISTS.push({ name, thumb: "", people });
+    if (from === "wishlist" || from === "wlmove" || from === "wlcol") WISHLISTS.push({ name, thumb: "", people });
     else if (from !== "edit") COLLECTIONS.push({ name, thumb: "", people });
     if (from === "save") {
       const post = POSTS.find(x => x.id === scr.dataset.svPid);
@@ -5449,13 +5658,14 @@ document.getElementById("stage").addEventListener("click", e => {
       scrToast(scr, `Saved to ${name}`);
     } else if (from === "wishlist") {
       const post = POSTS.find(x => x.id === scr.dataset.wlPid);
-      if (post) { post.wishlisted = true; post.wlCol = name; post.wlAt = Date.now(); syncWlBtns(scr, post); }
+      if (post) { post.wishlisted = true; post.wlCol = name; post.wlAt = Date.now(); post.wlColAt = post.wlAt; syncWlBtns(scr, post); }
       scrToast(scr, `Added to ${name}`);
-    } else if (from === "move") {
-      const V = savedState(scr);
+    } else if (from === "move" || from === "wlmove") {
+      const V = colState(scr);
       const mvFirst = POSTS.find(x => (scr._ncPids || []).includes(x.id));
-      const ncInCol = (scr._subStack || []).at(-1) === "savedcol";
-      (scr._ncPids || []).forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p.savedCol = name; p.colAt = Date.now(); } });
+      const ncWl = from === "wlmove";
+      const ncInCol = (scr._subStack || []).at(-1) === "savedcol" || (ncWl && inWlCol(scr));
+      (scr._ncPids || []).forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p[ncWl ? "wlCol" : "savedCol"] = name; p[ncWl ? "wlColAt" : "colAt"] = Date.now(); } });
       V.sel.clear(); V.manage = false;
       scrToast(scr, ncInCol ? `Moved to ${name}` : `Added to ${name}`, mvFirst ? thumbS(mvFirst) : "");
     } else if (from === "edit") {
@@ -5497,7 +5707,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const post = POSTS.find(x => x.id === scr.dataset.wlPid);
     const col = wlPick.dataset.col;
     if (post && col === "Wishlist" && post.wishlisted) {
-      post.wishlisted = false; post.wlCol = null; post.wlAt = 0;
+      post.wishlisted = false; post.wlCol = null; post.wlAt = 0; post.wlColAt = 0;
       syncWlBtns(scr, post);
       scrToast(scr, "Removed from your wish list");
     } else if (post && post.wlCol === col) {
@@ -5505,6 +5715,7 @@ document.getElementById("stage").addEventListener("click", e => {
       scrToast(scr, `Removed from ${col}`);
     } else if (post) {
       post.wlCol = col;
+      post.wlColAt = Date.now();
       scrToast(scr, col === "Wishlist" ? "Added to Wish List" : `Added to ${col}`);
     }
     scr.classList.remove("save-open");
@@ -5518,19 +5729,12 @@ document.getElementById("stage").addEventListener("click", e => {
     scr.querySelector(".nc-input").focus({ preventScroll: true });
     return;
   }
-  const wlColEl = e.target.closest(".wl-col");
+  const wlColEl = e.target.closest(".wl-col, .wl-colbig");
   if (wlColEl) {
     const scr = wlColEl.closest(".screen");
-    wlState(scr).col = wlColEl.dataset.col;
+    const V = wlState(scr);
+    V.col = wlColEl.dataset.col; V.mode = ""; V.manage = false; V.sel.clear(); V.q = "";
     pushSub(scr, "wishcol");
-    return;
-  }
-  const wlTile = e.target.closest(".wl-tile");
-  if (wlTile) {
-    const scr = wlTile.closest(".screen");
-    const inCol = (scr._subStack || []).at(-1) === "wishcol";
-    const list = inCol ? wlColPosts(wlState(scr).col) : wlPosts();
-    openPostViewer(scr, list, wlTile.dataset.pid, 0, true, "Wish List");
     return;
   }
   const svBtn = e.target.closest(".save-btn");
