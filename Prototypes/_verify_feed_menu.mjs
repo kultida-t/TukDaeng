@@ -21,7 +21,7 @@ const { chromium } = require("playwright");
 import { mkdirSync } from "fs";
 
 const BASE = "http://127.0.0.1:4173/fo-flow";
-const OUT = "C:/Users/Admin/Desktop/TukDaeng/Prototypes/screenshots/task-FEED-010/after";
+const OUT = import.meta.dirname + "/screenshots/task-FEED-010/after";
 mkdirSync(OUT, { recursive: true });
 
 const browser = await chromium.launch();
@@ -531,7 +531,7 @@ await page.waitForTimeout(300);
 
 /* ===== FEED-011 — action row: like (no count) / views (display-only eye) /
    liked-by -> Likes sheet / share sheet / save -> collections sheet ===== */
-const OUT11 = "C:/Users/Admin/Desktop/TukDaeng/Prototypes/screenshots/task-FEED-011/after";
+const OUT11 = import.meta.dirname + "/screenshots/task-FEED-011/after";
 mkdirSync(OUT11, { recursive: true });
 
 // 20) like-btn = heart only, no count span; toggle still works
@@ -754,7 +754,7 @@ await page.locator("#themeToggle").click();
 await page.waitForTimeout(300);
 
 /* ===== FEED-012 — Settings > Favorites management page (IG) ===== */
-const OUT12 = "C:/Users/Admin/Desktop/TukDaeng/Prototypes/screenshots/task-FEED-012/after";
+const OUT12 = import.meta.dirname + "/screenshots/task-FEED-012/after";
 mkdirSync(OUT12, { recursive: true });
 
 // 28) Settings > What you see > Favorites row + management page

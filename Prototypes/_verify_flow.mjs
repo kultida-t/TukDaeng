@@ -5,7 +5,7 @@ const { chromium } = require("playwright");
 import { mkdirSync } from "fs";
 
 const BASE = "http://127.0.0.1:4173/fo-flow";
-const OUT = "C:/Users/Admin/Desktop/TukDaeng/Prototypes/screenshots/fo-flow";
+const OUT = import.meta.dirname + "/screenshots/fo-flow";
 mkdirSync(OUT, { recursive: true });
 
 const browser = await chromium.launch();

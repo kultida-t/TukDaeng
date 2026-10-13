@@ -4,7 +4,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 import { writeFileSync, mkdirSync } from "fs";
 
-const BASE_DIR = "C:/Users/Admin/Desktop/TukDaeng/deliverables/feed-redesign-review/round2";
+const BASE_DIR = import.meta.dirname + "/../deliverables/feed-redesign-review/round2";
 const SEC = `file:///${BASE_DIR}/sections`;
 const OUT = `${BASE_DIR}/sheets`;
 mkdirSync(OUT, { recursive: true });
