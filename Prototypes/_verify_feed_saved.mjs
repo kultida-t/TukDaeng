@@ -4,6 +4,8 @@
 // New collection sheet (Cancel / Next, 0/40 counter + clear X, Add people to collection),
 // collection detail page, search-within-saved, empty states. Memory-only state.
 // Regression: save sheet picker flow, unsave, post viewer from saved grid.
+// FEED-021: empty collections show bookmark icon (no img) in col rows, big
+// cards, save sheet rows and move sheet rows — same pattern as WL gift icon.
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -47,6 +49,9 @@ check("All tab active", await sub().locator('.svd-tab[data-tab="all"].on').count
 check("collections section + See all", (await sub().locator(".svd-sec .t").first().textContent()).trim() === "Collections" && (await sub().locator(".svd-see").first().textContent()).trim() === "See all");
 check("collections rows show 4", await sub().locator(".svd-col").count() === 4);
 check("col row has thumb + name + Private", await sub().locator(".svd-col .cv").count() === 4 && (await sub().locator(".svd-col .s").first().textContent()).trim() === "Private");
+check("FEED-021: empty col row shows bookmark icon thumb (no img)",
+  await sub().locator('.svd-col[data-col="New"] .cv svg').count() === 1 &&
+  await sub().locator('.svd-col[data-col="New"] .cv img').count() === 0);
 check("posts section label", (await sub().locator(".svd-sec .t").nth(1).textContent()).trim() === "All posts");
 check("Manage link", (await sub().locator(".svd-manage").textContent()).trim() === "Manage");
 check("all saved tiles", await sub().locator(".svd-tile").count() === await savedCnt());
@@ -58,7 +63,10 @@ await sub().locator('.svd-tab[data-tab="collections"]').click();
 await page.waitForTimeout(250);
 check("collections tab on", await sub().locator('.svd-tab[data-tab="collections"].on').count() === 1);
 check("all 4 collections shown", await sub().locator(".svd-colbig").count() === 4);
-check("collage cover for multi-post col", await sub().locator('.svd-colbig[data-col="Grail list"] .cv img').count() === 2);
+check("single cover for multi-post col", await sub().locator('.svd-colbig[data-col="Grail list"] .cv img').count() === 1);
+check("FEED-021: empty big card shows bookmark icon (no img)",
+  await sub().locator('.svd-colbig[data-col="New"] .cv.none svg').count() === 1 &&
+  await sub().locator('.svd-colbig[data-col="New"] .cv img').count() === 0);
 check("no posts grid on collections tab", await sub().locator(".svd-tile").count() === 0);
 await page.screenshot({ path: `${OUT}/d-saved-collections.png` });
 await sub().locator('.svd-tab[data-tab="posts"]').click();
@@ -110,6 +118,8 @@ await page.waitForTimeout(250);
 check("new collection in grid", await sub().locator(".svd-colbig").count() === 5 && (await sub().textContent()).includes("Divers"));
 check("new col card name", (await page.locator('.svd-colbig[data-col="Divers"] .n').textContent()).trim() === "Divers");
 check("friend saved on new col", await page.evaluate(() => COLLECTIONS.find(c => c.name === "Divers").people.length === 1));
+check("FEED-021: new empty col big card shows bookmark icon",
+  await sub().locator('.svd-colbig[data-col="Divers"] .cv.none svg').count() === 1);
 await page.screenshot({ path: `${OUT}/d-saved-collections-new.png` });
 await page.locator('.svd-colbig[data-col="Divers"]').click();
 await page.waitForTimeout(350);
@@ -253,6 +263,9 @@ check("back at feed", await page.locator(".screen.sub-open").count() === 0);
 await page.locator('.post[data-pid="p6"] .save-btn').click();
 await page.waitForTimeout(300);
 check("save sheet opens", await page.locator(".screen.save-open").count() === 1 && await page.locator(".sv-head").count() === 1);
+check("FEED-021: save sheet empty rows show bookmark thumb (no img)",
+  await page.locator('.sv-pick.sv-row[data-col="New"] .thumb.none svg').count() === 1 &&
+  await page.locator('.sv-pick.sv-row[data-col="Divers"] .thumb.none svg').count() === 1);
 await page.locator(".sv-new").click();
 await page.waitForTimeout(300);
 check("nc sheet from save flow", await page.locator(".comment-sheet.nc").count() === 1);
@@ -288,6 +301,9 @@ await sub().locator(".svd-move").click();
 await page.waitForTimeout(300);
 check("move picker sheet", (await page.locator(".comment-sheet .sv-sec .l").textContent()).trim() === "Collections");
 check("move rows = 5 cols, no Saved row", await page.locator(".svd-mv").count() === 5);
+check("FEED-021: move sheet empty rows show bookmark thumb (no img)",
+  await page.locator('.svd-mv[data-col="New"] .thumb.none svg').count() === 1 &&
+  await page.locator('.svd-mv[data-col="Divers"] .thumb.none svg').count() === 1);
 await page.screenshot({ path: `${OUT}/d-saved-move.png` });
 const orderBefore = await page.evaluate(() => savedPosts().map(p => p.id).join(","));
 await page.locator('.svd-mv[data-col="Snowflake fund"]').click();

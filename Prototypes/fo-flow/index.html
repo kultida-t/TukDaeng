@@ -1252,7 +1252,7 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .svd-col .s, .wl-col .s { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
-  /* collections tab — big square cards, 2x2 collage cover, name below (IG) */
+  /* collections tab — big square cards, single cover, name below (IG) */
   .svd-colsbig { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 12px; padding: 4px 16px 16px; }
   .svd-colbig, .wl-colbig {
     display: flex; flex-direction: column; gap: 7px; min-width: 0;
@@ -1261,12 +1261,9 @@
   }
   .svd-colbig .cv, .wl-colbig .cv {
     width: 100%; aspect-ratio: 1; border-radius: 18px; overflow: hidden;
-    background: var(--surface-2);
-    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px;
+    background: var(--surface-2); display: block;
   }
-  .svd-colbig .cv.one, .wl-colbig .cv.one { display: block; }
-  .svd-colbig .cv.two, .wl-colbig .cv.two { grid-template-rows: 1fr; }
-  .wl-colbig .cv.none { display: flex; align-items: center; justify-content: center; color: var(--muted); }
+  .svd-colbig .cv.none, .wl-colbig .cv.none { display: flex; align-items: center; justify-content: center; color: var(--muted); }
   .svd-colbig .cv img, .wl-colbig .cv img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .svd-colbig .n, .wl-colbig .n {
     font-size: 13.5px; font-weight: 500; color: var(--text); max-width: 100%;
@@ -3074,7 +3071,7 @@ function shareSheetHTML() {
 function saveSheetHTML(p) {
   const thumb = c => colCover(c)
     ? `<img class="thumb" src="${colCover(c)}" alt="">`
-    : `<span class="thumb"></span>`;
+    : `<span class="thumb none">${I.bookmark(18)}</span>`;
   return `
     <div class="sheet-handle"></div>
     <button class="sv-pick sv-head${p.saved ? " saved" : ""}" data-col="Saved">
@@ -3876,7 +3873,7 @@ function savedState(scr) {
 }
 function savedPosts() { return POSTS.filter(p => p.saved).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0)); }
 function colPosts(name) { return POSTS.filter(p => p.saved && p.savedCol === name).sort((a, b) => (b.colAt || 0) - (a.colAt || 0)); }
-function colCover(c) { const ps = colPosts(c.name); const p = ps[ps.length - 1]; return p ? thumbS(p) : ""; }
+function colCover(c) { const ps = colPosts(c.name); const p = ps.find(x => x.id === c.coverPid) || ps[ps.length - 1]; return p ? thumbS(p) : ""; }
 function savedList(scr) {
   const V = savedState(scr);
   let list = savedPosts();
@@ -3894,16 +3891,16 @@ function svdTileHTML(V, p) {
 function colCardHTML(c) {
   const cover = colCover(c);
   return `<button class="svd-col" data-col="${esc(c.name)}">
-    <span class="cv">${cover ? `<img src="${cover}" alt="">` : ""}</span>
+    <span class="cv">${cover ? `<img src="${cover}" alt="">` : I.bookmark(22)}</span>
     <span class="b"><span class="n">${esc(c.name)}</span>
     <span class="s">${I.lock(11)} ${c.people && c.people.length ? `Shared · ${c.people.length}` : "Private"}</span></span>
   </button>`;
 }
 function colCardBigHTML(c) {
-  const ph = colPosts(c.name).map(thumbS).slice(0, 4);
-  const cv = ph.length === 1
-    ? `<span class="cv one"><img src="${ph[0]}" alt=""></span>`
-    : `<span class="cv${ph.length === 2 ? " two" : ""}">${ph.map(s => `<img src="${s}" alt="">`).join("")}</span>`;
+  const cover = colCover(c);
+  const cv = cover
+    ? `<span class="cv"><img src="${cover}" alt=""></span>`
+    : `<span class="cv none">${I.bookmark(26)}</span>`;
   return `<button class="svd-colbig" data-col="${esc(c.name)}">${cv}<span class="n">${esc(c.name)}</span></button>`;
 }
 function svdConfirmDelete(scr) {
@@ -4067,7 +4064,7 @@ function wlListPosts(scr) {
   if (V.q.trim()) list = list.filter(p => matchQuery(p, V.q));
   return list;
 }
-function wlColCover(c) { const ps = wlColPosts(c.name); const p = ps[ps.length - 1]; return p ? thumbS(p) : ""; }
+function wlColCover(c) { const ps = wlColPosts(c.name); const p = ps.find(x => x.id === c.coverPid) || ps[ps.length - 1]; return p ? thumbS(p) : ""; }
 /* saved vs wishlist share the same handlers — pick state/collections/field by top sub */
 function inWlCol(scr) { return (scr._subStack || []).at(-1) === "wishcol"; }
 function isWl(scr) { const t = (scr._subStack || []).at(-1); return t === "wishlist" || t === "wishcol"; }
@@ -4099,12 +4096,10 @@ function wlColCardHTML(c) {
   </button>`;
 }
 function wlColCardBigHTML(c) {
-  const ph = wlColPosts(c.name).map(thumbS).slice(0, 4);
-  const cv = !ph.length
-    ? `<span class="cv none">${I.gift(26)}</span>`
-    : ph.length === 1
-      ? `<span class="cv one"><img src="${ph[0]}" alt=""></span>`
-      : `<span class="cv${ph.length === 2 ? " two" : ""}">${ph.map(s => `<img src="${s}" alt="">`).join("")}</span>`;
+  const cover = wlColCover(c);
+  const cv = cover
+    ? `<span class="cv"><img src="${cover}" alt=""></span>`
+    : `<span class="cv none">${I.gift(26)}</span>`;
   return `<button class="wl-colbig" data-col="${esc(c.name)}">${cv}<span class="n">${esc(c.name)}</span></button>`;
 }
 function wlBodyHTML(scr) {
@@ -4380,7 +4375,7 @@ function svdMoveSheetHTML(scr) {
     <div class="sv-list">
       ${rows.map(c => `
       <button class="svd-mv sv-row" data-col="${esc(c.name)}">
-        ${colCover(c) ? `<img class="thumb" src="${colCover(c)}" alt="">` : `<span class="thumb"></span>`}
+        ${colCover(c) ? `<img class="thumb" src="${colCover(c)}" alt="">` : `<span class="thumb none">${I.bookmark(18)}</span>`}
         <span class="b"><span class="n">${esc(c.name)}</span><span class="s">Private</span></span>
         <span class="plus">${I.plus(14)}</span>
       </button>`).join("")}

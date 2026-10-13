@@ -2,7 +2,7 @@
 // empty collections show gift icon (no fake cover) in hub cards, big cards,
 // picker sheet + move sheet; covers derive only from posts actually in the
 // collection. Hub parity: search/+ head icons, All/Collections/Posts pills,
-// See all/Manage, big collage cards, manage/select/remove/add-to-collection.
+// See all/Manage, big cover cards, manage/select/remove/add-to-collection.
 // Collection detail parity: search/more icons, spark empty state, 3-item menu.
 // Run: needs `npx http-server -p 4173` serving Prototypes/ + playwright chromium.
 import { createRequire } from "module";
@@ -156,7 +156,7 @@ check("Grail goals card still gift icon", await sub().locator('.wl-col[data-col=
   await sub().locator('.wl-col[data-col="Grail goals"] .cv img').count() === 0);
 await sub().locator('.svd-tab[data-tab="collections"]').click();
 await page.waitForTimeout(250);
-check("Next buy big card shows collage cover", await sub().locator('.wl-colbig[data-col="Next buy"] .cv img').count() === 1);
+check("Next buy big card shows single cover", await sub().locator('.wl-colbig[data-col="Next buy"] .cv img').count() === 1);
 check("Grail goals big card still gift icon", await sub().locator('.wl-colbig[data-col="Grail goals"] .cv.none svg').count() === 1);
 await page.screenshot({ path: `${OUT}/f-wl-covers-derived.png` });
 
