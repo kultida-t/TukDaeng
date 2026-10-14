@@ -2708,6 +2708,105 @@
     line-height: 1.5;
     padding: 0 18px 8px;
   }
+  /* clip tab — video roll cells: single-select radios always on, duration pill */
+  .cf .ig-grid.clips .cell .radio { display: flex; }
+  .cf .ig-grid .cell .dur {
+    position: absolute; right: 5px; bottom: 5px;
+    display: flex; align-items: center; gap: 3px;
+    background: rgba(20,20,24,.68); color: #fff;
+    font-size: 10.5px; font-weight: 600; line-height: 1;
+    padding: 3px 7px; border-radius: 999px; z-index: 2;
+  }
+  .cf .ig-grid .cell .dur svg { display: block; }
+  /* clip hero — big play glyph + duration over the picked clip */
+  .cf .ig-hero .clip-play {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 58px; height: 58px; border-radius: 50%;
+    background: rgba(20,20,24,.55); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2; pointer-events: none;
+  }
+  .cf .ig-hero .clip-play svg { margin-left: 3px; }
+  .cf .ig-hero .dur {
+    position: absolute; right: 12px; bottom: 12px;
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(20,20,24,.68); color: #fff;
+    font-size: 12px; font-weight: 600;
+    padding: 5px 10px; border-radius: 999px; z-index: 2;
+  }
+  /* clip preview layer — slides in like step 2, sits under it (Reels-style) */
+  .cf .cf-clipv {
+    position: absolute; inset: 0; z-index: 9;
+    background: #000; color: #fff;
+    transform: translateX(100%);
+    transition: transform .28s ease;
+    display: flex; flex-direction: column;
+  }
+  .cf.pv-open .cf-clipv { transform: none; }
+  .cf .cf-clipv .cf-head { color: #fff; }
+  .cf .cf-clipv .icon-btn { color: #fff; }
+  .cf .clip-stage {
+    flex: 1; min-height: 0; width: 100%;
+    position: relative; display: block;
+    background: #000; border: none; padding: 0; cursor: pointer;
+    font-family: var(--font-main);
+  }
+  .cf .clip-stage > img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .cf .clip-stage .pp-btn, .cf .ig-zoom .pp-btn {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 74px; height: 74px; border-radius: 50%;
+    background: rgba(20,20,24,.55); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity .18s ease; pointer-events: none;
+  }
+  .cf .clip-stage .pp-btn svg, .cf .ig-zoom .pp-btn svg { margin-left: 4px; }
+  .cf .cf-clipv.playing .pp-btn, .cf .ig-zoom.playing .pp-btn { opacity: .45; }
+  .cf .clip-stage .dur, .cf .ig-zoom .dur {
+    position: absolute; right: 14px; bottom: 16px;
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(20,20,24,.68); color: #fff;
+    font-size: 12.5px; font-weight: 600;
+    padding: 5px 11px; border-radius: 999px;
+  }
+  .cf .clip-stage .prog, .cf .ig-zoom .prog {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 3px; background: rgba(255,255,255,.28);
+  }
+  .cf .clip-stage .prog i, .cf .ig-zoom .prog i {
+    display: block; height: 100%; width: 0; background: #fff;
+    transition: width .12s linear;
+  }
+  /* caption step clip thumb — tap opens the same big viewer as photos */
+  .cf .ig-thumb.clip img { cursor: zoom-in; }
+  .cf .ig-thumb .dur {
+    position: absolute; left: 8px; bottom: 8px;
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(20,20,24,.68); color: #fff;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 999px;
+  }
+  /* clip badge on feed/detail media */
+  .post-photo .clip-badge, .detail-hero .clip-badge {
+    position: absolute; right: 12px; bottom: 12px;
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(20,20,24,.68);
+    backdrop-filter: blur(6px);
+    color: #fff; font-size: 11.5px; font-weight: 600;
+    padding: 4px 10px; border-radius: 999px;
+    z-index: 2;
+  }
+  .post-photo .clip-badge svg, .detail-hero .clip-badge svg { display: block; }
+  /* clip autoplay — progress bar + subtle ken-burns motion while "playing" */
+  .post-photo.clip-ph .prog, .detail-hero.clip-ph .prog {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 2.5px;
+    background: rgba(255,255,255,.28); opacity: 0; transition: opacity .25s; z-index: 2;
+  }
+  .post-photo.clip-ph.playing .prog, .detail-hero.clip-ph.playing .prog { opacity: 1; }
+  .post-photo.clip-ph .prog i, .detail-hero.clip-ph .prog i { display: block; height: 100%; width: 0; background: #fff; }
+  .post-photo.clip-ph.playing > img, .detail-hero.clip-ph.playing > img { animation: clipLive 5.5s ease-in-out infinite alternate; }
+  @keyframes clipLive { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.13) translate(-1.8%, 1.2%); } }
 </style>
 </head>
 <body>
@@ -3157,6 +3256,9 @@ const I = {
   box: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v8a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16V8a2 2 0 0 1 1-1.73l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>`,
   music: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
   pin: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  play: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2c0 .8.9 1.3 1.6.9l10.3-6.6c.6-.4.6-1.4 0-1.8L9.6 4.5c-.7-.4-1.6.1-1.6.9z"/></svg>`,
+  pause: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><rect x="6.4" y="4.8" width="3.8" height="14.4" rx="1.2"/><rect x="13.8" y="4.8" width="3.8" height="14.4" rx="1.2"/></svg>`,
+  video: (s=26) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="13.5" height="12" rx="2.5"/><path d="m15.8 10.3 5.7-3.1c.4-.2.8.1.8.5v8.6c0 .4-.4.7-.8.5l-5.7-3.1"/></svg>`,
 };
 
 /* ================= RENDER ================= */
@@ -3225,12 +3327,14 @@ function detailHTML(p) {
   const dots = p.photos.length > 1;
   const name = p.specs.length ? `${spec("Brand")} ${spec("Model")}` : p.caption.split("—")[0].trim();
   const ref = p.specs.length && spec("Reference") !== "n/a" ? `Ref. ${spec("Reference")}` : "";
+  const cl = clipState(p);
   return `
     ${detailHeadHTML(p)}
     <div class="detail-scroll">
-      <div class="detail-hero${state.dh === "dh4" ? " fabbed" : ""}">
+      <div class="detail-hero${state.dh === "dh4" ? " fabbed" : ""}${cl.has ? " clip-ph" : ""}"${cl.has ? ` data-dur="${cl.dur0}"` : ""}>
         <img src="${p.photos[0]}" alt="">
         ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
+        ${clipUiHTML(p)}
         ${state.dh === "dh4" ? `
         <button class="hero-fab fab-l detail-back">${I.back(19)}</button>
         <button class="hero-fab fab-r pm-btn">${I.dots(17)}</button>` : ""}
@@ -3326,6 +3430,7 @@ function igBodyHTML(p, withPostHead) {
       ? `<div class="tag-price-row">${saleTagHTML(true)}<span class="price-tag">${p.price}</span></div>`
       : `${saleTagHTML(true)}<div class="detail-price">${p.price}</div>`
     : saleTagHTML(false);
+  const cl = clipState(p);
   return `
     ${withPostHead ? `<header class="post-head">
       <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
@@ -3336,9 +3441,10 @@ function igBodyHTML(p, withPostHead) {
       ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
       <button class="more">${I.dots(19)}</button>
     </header>` : ""}
-    <div class="detail-hero">
+    <div class="detail-hero${cl.has ? " clip-ph" : ""}"${cl.has ? ` data-dur="${cl.dur0}"` : ""}>
       <img src="${p.photos[0]}" alt="">
       ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
+      ${clipUiHTML(p)}
     </div>
     ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
     <div class="post-actions">
@@ -3655,6 +3761,17 @@ function uncomfCardHTML(p) {
   </article>`;
 }
 
+/* per-slide clip info — clips[i] holds the duration for video slides, null for photos */
+function clipState(p) {
+  const clips = p.clips || (p.clip ? [p.clip] : null);
+  const has = !!(clips && clips.some(Boolean));
+  return { has, d0: has ? clips[0] || null : null, dur0: has && clips[0] ? cfClipSecs(clips[0]) : "" };
+}
+function clipUiHTML(p) {
+  const cl = clipState(p);
+  if (!cl.has) return "";
+  return `<span class="clip-badge"${cl.d0 ? "" : ' style="display:none"'}>${I.play(11)}${cl.d0 || ""}</span><span class="prog"><i></i></span>`;
+}
 function postCard(p, variant) {
   const isMixed = variant === "mixed";
   const type = isMixed && p.type === "showcase" ? "showcase" : (isMixed ? "sale" : null);
@@ -3666,6 +3783,7 @@ function postCard(p, variant) {
   const askSolid = (variant === "a2" || variant === "b2" || variant === "c2");
   const showAsk = p.type === "sale";
   const dots = p.photos.length > 1;
+  const cl = clipState(p);
   const hasDetails = hasPrice || (p.specGroups && p.specGroups.length) || (p.specs && p.specs.length);
   /* "more" only when the caption actually has more text, or details are hidden behind the expand */
   const showMore = hasDetails || (p.captionFull || "") !== p.caption;
@@ -3682,9 +3800,10 @@ function postCard(p, variant) {
       <button class="more">${I.dots(19)}</button>
     </header>
 
-    <div class="post-photo">
+    <div class="post-photo${cl.has ? " clip-ph" : ""}"${cl.has ? ` data-dur="${cl.dur0}"` : ""}>
       <img src="${p.photos[0]}" alt="">
       ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
+      ${clipUiHTML(p)}
       ${showTag && type === "sale" ? `<span class="type-tag sale">FOR SALE</span>` : ""}
       ${showTag && type === "showcase" ? `<span class="type-tag showcase">SHOWCASE</span>` : ""}
       ${priceOverlay ? `<span class="cond-overlay">${p.chips[0]}</span>` : ""}
@@ -4296,6 +4415,7 @@ function renderSub(scr) {
   el.classList.toggle("pg-up", st[st.length - 1] === "report" || st[st.length - 1] === "create");
   const q = el.querySelector(".sr-q, .svd-q");
   if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
+  cfClipSync(scr); /* restore clip play/countdown state after composer re-renders */
 }
 function subBack(scr) {
   const st = scr._subStack || [];
@@ -4897,11 +5017,128 @@ const CP_ROLL = [
   "./assets/asset-uploads/feed-tudor-bb.jpg",
   "./assets/asset-uploads/feed-datejust-2.jpg",
 ];
+/* clip roll — mock video items (poster image + duration), single-select like IG Reels picker */
+const CP_CLIPS = [
+  { src: "./assets/asset-uploads/feed-tudor-bb.jpg", dur: "0:12" },
+  { src: "./assets/asset-uploads/feed-datejust-2.jpg", dur: "0:08" },
+  { src: "./assets/asset-uploads/feed-breguet-1.jpg", dur: "0:31" },
+  { src: "./assets/asset-uploads/ast-8831-1.png", dur: "0:45" },
+  { src: "./assets/asset-uploads/S__10108939_0.jpg", dur: "0:19" },
+  { src: "./assets/asset-uploads/S__10108940_0.jpg", dur: "1:02" },
+  { src: "./assets/asset-uploads/feed-breguet-2.jpg", dur: "0:23" },
+  { src: "./assets/asset-uploads/feed-datejust-1.jpg", dur: "0:27" },
+  { src: "./assets/asset-uploads/ast-8831-2.png", dur: "0:15" },
+  { src: "./assets/asset-uploads/S__10108944_0.jpg", dur: "0:36" },
+  { src: "./assets/asset-uploads/S__10108946_0.jpg", dur: "0:11" },
+  { src: "./assets/asset-uploads/ast-8831-3.png", dur: "0:52" },
+];
+function cfClipSecs(dur) {
+  const [m, s] = dur.split(":").map(Number);
+  return m * 60 + s;
+}
+function cfMmss(sec) {
+  sec = Math.max(0, Math.ceil(sec));
+  return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
+}
+/* Post-tab Recents roll mixes photos + clips (IG) — video cells carry dur */
+const CP_MEDIA = [
+  { src: CP_ROLL[0] }, { src: CP_ROLL[1] },
+  { src: CP_CLIPS[0].src, dur: CP_CLIPS[0].dur },
+  { src: CP_ROLL[2] }, { src: CP_ROLL[3] },
+  { src: CP_CLIPS[1].src, dur: CP_CLIPS[1].dur },
+  { src: CP_ROLL[4] }, { src: CP_ROLL[5] }, { src: CP_ROLL[6] },
+  { src: CP_CLIPS[2].src, dur: CP_CLIPS[2].dur },
+  { src: CP_ROLL[7] }, { src: CP_ROLL[8] }, { src: CP_ROLL[9] },
+  { src: CP_CLIPS[3].src, dur: CP_CLIPS[3].dur },
+  { src: CP_ROLL[10] }, { src: CP_ROLL[11] }, { src: CP_ROLL[12] }, { src: CP_ROLL[13] },
+  { src: CP_CLIPS[4].src, dur: CP_CLIPS[4].dur },
+  { src: CP_ROLL[14] }, { src: CP_ROLL[15] },
+];
 function cpState(scr) {
-  if (!scr._cp) scr._cp = { sel: false, step: 1, order: [], caption: "", asset: false, meta: {} };
+  if (!scr._cp) scr._cp = { sel: false, step: 1, order: [], clip: null, playing: false, rem: null, tab: "post", caption: "", asset: false, meta: {} };
   return scr._cp;
 }
-function cfPhotos(scr) { return cpState(scr).order.map(i => CP_ROLL[i]); }
+function cfMedia(scr) { return cpState(scr).order.map(i => CP_MEDIA[i]); }
+function cfPhotos(scr) { return cfMedia(scr).map(m => m.src); }
+function cfClip(scr) { const i = cpState(scr).clip; return i == null ? null : CP_CLIPS[i]; }
+/* the one playable clip in the composer — clip-tab pick, or a lone video in a post draft */
+function cfActiveClip(scr) {
+  const V = cpState(scr);
+  if (V.tab === "clip") return cfClip(scr);
+  if (V.order.length === 1) { const m = CP_MEDIA[V.order[0]]; return m && m.dur ? m : null; }
+  return null;
+}
+/* the clip currently driving playback — a zoomed clip in a mixed draft, else the draft clip */
+function cfPlayClip(scr) { const V = cpState(scr); return V.viewClip || cfActiveClip(scr); }
+/* push playing state + countdown into every visible clip surface (preview + caption media) */
+function cfClipSync(scr) {
+  const V = scr._cp;
+  if (!V) return;
+  const clip = cfPlayClip(scr);
+  const total = clip ? cfClipSecs(clip.dur) : 0;
+  const rem = V.rem == null ? total : V.rem;
+  scr.querySelectorAll(".cf .cf-clipv, .cf .ig-zoom.is-clip").forEach(box => {
+    box.classList.toggle("playing", !!V.playing);
+    const pp = box.querySelector(".pp-btn");
+    if (pp) pp.innerHTML = V.playing ? I.pause(30) : I.play(30);
+    const d = box.querySelector(".dur");
+    if (d) d.innerHTML = `${I.play(10)}${cfMmss(rem)}`;
+    const bar = box.querySelector(".prog i");
+    if (bar) bar.style.width = total ? `${(1 - rem / total) * 100}%` : "0";
+  });
+}
+function cfClipStop(scr) {
+  const V = scr._cp;
+  if (!V) return;
+  clearInterval(V._t); V._t = null;
+  V.playing = false; V.rem = null;
+}
+function cfClipToggle(scr) {
+  const V = cpState(scr);
+  const clip = cfPlayClip(scr);
+  if (!clip) return;
+  const total = cfClipSecs(clip.dur);
+  clearInterval(V._t); V._t = null;
+  V.playing = !V.playing;
+  if (V.playing) {
+    if (V.rem == null || V.rem <= 0) V.rem = total;
+    V._t = setInterval(() => {
+      V.rem -= 0.1;
+      if (V.rem <= 0) { cfClipStop(scr); }
+      cfClipSync(scr);
+    }, 100);
+  }
+  cfClipSync(scr);
+}
+/* FEED-023 — clip posts play by themselves while ≥55% visible in their scroll box (IG-style
+   autoplay); scrolling past pauses, scrolling back resumes where it left off, end-of-clip loops */
+function feedClipTick() {
+  document.querySelectorAll(".post-photo.clip-ph, .detail-hero.clip-ph").forEach(ph => {
+    const scr = ph.closest(".screen");
+    if (!scr || !ph.dataset.dur) { ph.classList.remove("playing"); return; }
+    /* media inside a sub page shows only while that sub is open; feed media only while it isn't covered */
+    const inSub = !!ph.closest(".page-sub, .page-pv");
+    const subOpen = scr.classList.contains("sub-open");
+    let on = inSub ? subOpen : !subOpen;
+    if (on) {
+      const box = ph.closest(".feed-scroll, .detail-scroll, .sub-scroll, .page-sub, .page-pv") || scr;
+      const cr = box.getBoundingClientRect(), r = ph.getBoundingClientRect();
+      on = r.height > 0 && Math.min(r.bottom, cr.bottom) - Math.max(r.top, cr.top) > r.height * 0.55;
+    }
+    if (!on) { ph.classList.remove("playing"); return; }
+    ph.classList.add("playing");
+    const total = parseFloat(ph.dataset.dur);
+    let rem = ph.dataset.rem == null ? total : parseFloat(ph.dataset.rem);
+    rem -= 0.1;
+    if (rem <= 0) rem = total;
+    ph.dataset.rem = rem;
+    const b = ph.querySelector(".clip-badge");
+    if (b) b.innerHTML = `${I.play(11)}${cfMmss(rem)}`;
+    const bar = ph.querySelector(".prog i");
+    if (bar) bar.style.width = `${(1 - rem / total) * 100}%`;
+  });
+}
+setInterval(feedClipTick, 100);
 const CF_TAGS = ["#rolex", "#patekphilippe", "#omegawatch", "#tudorwatch", "#grandseiko", "#cartier", "#watchesofinstagram", "#fullset", "#watchcollector", "#TukDaeng"];
 const CF_LOCS = ["Bangkok, Thailand", "Siam Paragon", "CentralWorld", "ICONSIAM", "EmQuartier", "Chatuchak Weekend Market", "Phrom Phong", "Thonglor"];
 const CF_LOC_KM = { "Bangkok, Thailand": "12km", "Siam Paragon": "8km", "CentralWorld": "9km", "ICONSIAM": "14km", "EmQuartier": "7km", "Chatuchak Weekend Market": "16km", "Phrom Phong": "6km", "Thonglor": "5km" };
@@ -4972,52 +5209,85 @@ function cfVal(m) {
 function cfZoomGo(z, i, total) {
   i = Math.max(0, Math.min(total - 1, i));
   z.dataset.i = i;
-  const photos = [...z.closest(".cf-step2").querySelectorAll(".ig-thumb img")];
-  z.querySelector("img").src = photos[i] ? photos[i].src : "";
+  const scr = z.closest(".screen");
+  const V = cpState(scr);
+  const m = cfMedia(scr)[i];
+  if (m && m.dur) {
+    /* clip item → same big viewer but playable w/ countdown (play starts paused) */
+    if (V.viewClip !== m) { clearInterval(V._t); V._t = null; V.playing = false; V.rem = null; }
+    V.viewClip = m;
+    z.classList.add("is-clip");
+    z.innerHTML = `<img src="${m.src}" alt=""><span class="pp-btn">${I.play(30)}</span><span class="dur">${I.play(10)}${m.dur}</span><span class="prog"><i></i></span><div class="z-dots"></div>`;
+    cfClipSync(scr);
+  } else {
+    V.viewClip = null;
+    if (z.classList.contains("is-clip")) {
+      z.classList.remove("is-clip");
+      z.innerHTML = `<img alt=""><div class="z-dots"></div>`;
+    }
+    const photos = [...z.closest(".cf-step2").querySelectorAll(".ig-thumb img")];
+    z.querySelector("img").src = photos[i] ? photos[i].src : "";
+  }
   z.querySelector(".z-dots").innerHTML = total > 1
     ? Array.from({ length: total }, (_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("")
     : "";
 }
 function cfPickerHTML(scr) {
   const V = cpState(scr);
+  const isClip = V.tab === "clip";
   const photos = cfPhotos(scr);
-  const n = photos.length;
-  const cells = CP_ROLL.map((p, i) => {
-    const s = V.order.indexOf(i);
-    return `<div class="cell${s >= 0 ? " sel" : ""}" data-i="${i}"><img src="${p}"><span class="radio${s >= 0 ? " on" : ""}">${s >= 0 ? s + 1 : ""}</span></div>`;
-  }).join("");
-  const hero = n
-    ? `<div class="ig-car"><img src="${photos[0]}"><button class="expand">${I.expandIc(15)}</button></div>`
-    : `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`;
+  const clip = cfClip(scr);
+  const n = isClip ? (clip ? 1 : 0) : photos.length;
+  const cells = isClip
+    ? CP_CLIPS.map((c, i) => `<div class="cell${V.clip === i ? " sel" : ""}" data-i="${i}"><img src="${c.src}"><span class="dur">${I.play(9)}${c.dur}</span><span class="radio${V.clip === i ? " on" : ""}">${V.clip === i ? I.check(10) : ""}</span></div>`).join("")
+    : CP_MEDIA.map((m, i) => {
+        const s = V.order.indexOf(i);
+        return `<div class="cell${s >= 0 ? " sel" : ""}" data-i="${i}"><img src="${m.src}">${m.dur ? `<span class="dur">${I.play(9)}${m.dur}</span>` : ""}<span class="radio${s >= 0 ? " on" : ""}">${s >= 0 ? s + 1 : ""}</span></div>`;
+      }).join("");
+  const heroM = V.order.length ? CP_MEDIA[V.order[0]] : null;
+  const hero = isClip
+    ? (clip
+      ? `<div class="ig-car"><img src="${clip.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${clip.dur}</span></div>`
+      : `<div class="add-tile">${I.video(38)}<span>Select a clip</span></div>`)
+    : (heroM
+      ? (heroM.dur
+        ? `<div class="ig-car"><img src="${heroM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${heroM.dur}</span></div>`
+        : `<div class="ig-car"><img src="${heroM.src}"><button class="expand">${I.expandIc(15)}</button></div>`)
+      : `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`);
   return `
     <div class="cf-head">
       <button class="icon-btn cf-x">${I.x(21)}</button>
-      <span class="t">New post</span>
+      <span class="t">${isClip ? "New clip" : "New post"}</span>
       <button class="cf-act${n ? "" : " off"} cf-next">Next</button>
     </div>
     <div class="cf-scroll">
       <div class="ig-hero" data-hero>${hero}</div>
       <div class="ig-bar">
         <button class="rc">Recents ${I.chevR(13)}</button>
-        <button class="sel-btn${V.sel ? " on" : ""}" data-selmode>${I.gridSel(13)} Select</button>
+        ${isClip ? "" : `<button class="sel-btn${V.sel ? " on" : ""}" data-selmode>${I.gridSel(13)} Select</button>`}
       </div>
-      <div class="ig-grid${V.sel ? " selmode" : ""}">
-        <div class="cell cam">${I.camPlain(26)}</div>
+      <div class="ig-grid${isClip ? " clips" : ""}${V.sel && !isClip ? " selmode" : ""}">
+        <div class="cell cam">${isClip ? I.video(26) : I.camPlain(26)}</div>
         ${cells}
       </div>
     </div>
     <div class="ig-tabs">
-      <button class="ig-tab on">Post</button>
-      <button class="ig-tab">Clip</button>
+      <button class="ig-tab${isClip ? "" : " on"}" data-ctab="post">Post</button>
+      <button class="ig-tab${isClip ? " on" : ""}" data-ctab="clip">Clip</button>
     </div>`;
 }
 function cfStep2HTML(scr) {
   const V = cpState(scr);
-  const photos = cfPhotos(scr);
-  const n = photos.length;
-  const thumbs = n > 1
-    ? `<div class="ig-thumbs multi">${photos.map((p, i) => `<div class="ig-thumb"><img src="${p}"><button class="rm-mini" data-i="${i}">${I.x(11)}</button></div>`).join("")}</div>`
-    : `<div class="ig-thumb">${n ? `<img src="${photos[0]}"><button class="rm-mini" data-i="0">${I.x(11)}</button>` : ""}</div>`;
+  const isClip = V.tab === "clip";
+  const media = cfMedia(scr);
+  const clip = cfActiveClip(scr);
+  const n = isClip ? (clip ? 1 : 0) : media.length;
+  /* playable media keeps the normal thumb look — tap opens the big viewer like photos */
+  const thumbs = clip
+    ? `<div class="ig-thumb clip"><img src="${clip.src}"><span class="dur">${I.play(9)}${clip.dur}</span><button class="rm-mini" data-i="0">${I.x(11)}</button></div>`
+    : n > 1
+    ? `<div class="ig-thumbs multi">${media.map((m, i) => `<div class="ig-thumb${m.dur ? " clip" : ""}"><img src="${m.src}">${m.dur ? `<span class="dur">${I.play(9)}${m.dur}</span>` : ""}<button class="rm-mini" data-i="${i}">${I.x(11)}</button></div>`).join("")}</div>`
+    : `<div class="ig-thumb">${n ? `<img src="${media[0].src}"><button class="rm-mini" data-i="0">${I.x(11)}</button>` : ""}</div>`;
   const m = V.meta;
   const mv = cfVal(m);
   const row = (ic, label, pane, val = "", cls = "") => `
@@ -5025,7 +5295,7 @@ function cfStep2HTML(scr) {
   return `<div class="cf-step2">
     <div class="cf-head">
       <button class="icon-btn cf-back2">${I.back(22)}</button>
-      <span class="t">New post</span>
+      <span class="t">${isClip ? "New clip" : "New post"}</span>
     </div>
     <div class="ig-cap-scroll">
       ${thumbs}
@@ -5054,15 +5324,35 @@ function cfStep2HTML(scr) {
     </div>
     <div class="cf-pane"></div>
     <button class="ig-share${n ? "" : " off"} cf-share">Share</button>
-    <div class="ig-zoom" data-i="0">
+    <div class="ig-zoom${clip ? " is-clip" : ""}" data-i="0">
       <img alt="">
+      ${clip ? `<span class="pp-btn">${V.playing ? I.pause(30) : I.play(30)}</span><span class="dur">${I.play(10)}${clip.dur}</span><span class="prog"><i></i></span>` : ""}
       <div class="z-dots"></div>
     </div>
   </div>`;
 }
+/* full-screen clip preview between picker and caption (Reels-style play/pause + progress) */
+function cfClipPrevHTML(scr) {
+  const V = cpState(scr);
+  const clip = cfClip(scr);
+  if (V.tab !== "clip" || !clip) return "";
+  return `<div class="cf-clipv${V.playing ? " playing" : ""}">
+    <div class="cf-head">
+      <button class="icon-btn cf-pv-back">${I.back(22)}</button>
+      <span class="t">New clip</span>
+      <button class="cf-act cf-pv-next">Next</button>
+    </div>
+    <button class="clip-stage" style="--dur:${cfClipSecs(clip.dur)}s">
+      <img src="${clip.src}" alt="">
+      <span class="pp-btn">${V.playing ? I.pause(30) : I.play(30)}</span>
+      <span class="dur">${I.play(10)}${clip.dur}</span>
+      <span class="prog"><i></i></span>
+    </button>
+  </div>`;
+}
 function createHTML(scr) {
   const V = cpState(scr);
-  return `<div class="cf${V.step === 2 ? " cap-open" : ""}">${cfPickerHTML(scr)}${cfStep2HTML(scr)}</div>`;
+  return `<div class="cf${V.step === 2 ? " cap-open" : ""}${V.step === "pv" ? " pv-open" : ""}">${cfPickerHTML(scr)}${cfStep2HTML(scr)}${cfClipPrevHTML(scr)}</div>`;
 }
 /* shared with the standalone create-post.html handoff (fo_newpost) */
 function insertNewPost(np) {
@@ -5099,6 +5389,8 @@ function insertNewPost(np) {
     favorite: false,
     type: price ? "sale" : "showcase",
     photos: np.photos && np.photos.length ? np.photos : base.photos,
+    clip: np.clip || null,
+    clips: np.clips || (np.clip ? [np.clip] : null),
     likes: 0, comments: 0, views: 0, liked: false,
     caption: np.caption || base.caption,
     captionFull: np.caption || base.captionFull,
@@ -5281,12 +5573,25 @@ function photoCtx(el) {
   const scr = el.closest(".screen");
   return { post: POSTS.find(x => x.id === scr.dataset.detailPid), dotsEl: scr.querySelector(".page-detail .photo-dots") };
 }
+/* swap a clip-capable media box to slide i — badge/countdown follow the slide's own dur */
+function phClipSet(ph, post, i) {
+  if (!ph.classList.contains("clip-ph")) return;
+  const dur = post.clips && post.clips[i];
+  ph.dataset.dur = dur ? cfClipSecs(dur) : "";
+  delete ph.dataset.rem;
+  ph.classList.remove("playing");
+  const b = ph.querySelector(".clip-badge");
+  if (b) { b.style.display = dur ? "" : "none"; if (dur) b.innerHTML = `${I.play(11)}${dur}`; }
+  const bar = ph.querySelector(".prog i");
+  if (bar) bar.style.width = "0";
+}
 function applyPhoto(ph, post, i, dotsEl) {
   ph.dataset.i = i;
   ph.querySelector("img").src = post.photos[i];
   const c = ph.querySelector(".photo-counter");
   if (c) c.textContent = `${i + 1}/${post.photos.length}`;
   if (dotsEl) [...dotsEl.children].forEach((d, j) => d.classList.toggle("on", j === i));
+  phClipSet(ph, post, i);
 }
 /* CREATE-001 — caption thumbs strip + hashtag chips: wheel + drag to scroll (desktop has no scrollbar) */
 let stripDrag = null;
@@ -5329,7 +5634,9 @@ stageEl.addEventListener("pointermove", e => {
   const dx = e.clientX - x0;
   if (moved && Math.abs(dx) > 40) {
     const scr = z.closest(".screen");
-    cfZoomGo(z, +z.dataset.i + (dx < 0 ? 1 : -1), cfPhotos(scr).length);
+    const n = cfMedia(scr).length;
+    /* swipe only when the draft has multiple items — cfZoomGo swaps photo/clip mode */
+    if (n > 1) cfZoomGo(z, +z.dataset.i + (dx < 0 ? 1 : -1), n);
   }
 }));
 
@@ -5497,43 +5804,94 @@ document.getElementById("stage").addEventListener("click", e => {
     const V = cpState(scr);
     const cfX = e.target.closest(".cf-x");
     if (cfX) {
-      if (V.order.length || V.caption.trim())
+      if (V.order.length || V.clip != null || V.caption.trim()) {
+        const kind = V.tab === "clip" ? "clip" : "post";
         openDlg(scr, `
-          <div class="dlg-q">Discard post?</div>
+          <div class="dlg-q">Discard ${kind}?</div>
           <div class="dlg-desc">If you go back now, you'll lose your draft.</div>
-          <button class="dlg-btn danger dlg-discard-go">Discard post</button>
+          <button class="dlg-btn danger dlg-discard-go">Discard ${kind}</button>
           <button class="dlg-btn dlg-cancel">Keep editing</button>`);
+      }
       else { scr._subStack = []; scr.classList.remove("sub-open"); }
+      return;
+    }
+    /* Post / Clip tab switch — each tab keeps its own draft, clip is single-select */
+    const cfTab = e.target.closest(".ig-tab");
+    if (cfTab) {
+      const t = cfTab.dataset.ctab;
+      if (t && t !== V.tab) { V.tab = t; V.sel = false; cfClipStop(scr); renderSub(scr); }
       return;
     }
     const cfNx = e.target.closest(".cf-next");
     if (cfNx) {
       if (!cfNx.classList.contains("off")) {
-        V.step = 2;
-        cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
-        cf.classList.add("cap-open");
+        if (V.tab === "clip" && V.step === 1) {
+          V.step = "pv"; cfClipStop(scr);
+          /* clipv layer is built on demand — the picker DOM didn't re-render on select */
+          cf.querySelector(".cf-clipv")?.remove();
+          cf.insertAdjacentHTML("beforeend", cfClipPrevHTML(scr));
+          void cf.querySelector(".cf-clipv").offsetWidth;
+          cf.classList.add("pv-open");
+        } else {
+          V.step = 2;
+          cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+          cf.classList.add("cap-open");
+        }
       }
       return;
     }
+    /* clip preview layer — back to picker / Next to caption / tap stage toggles play */
+    const cfPvBack = e.target.closest(".cf-pv-back");
+    if (cfPvBack) { V.step = 1; cfClipStop(scr); cf.classList.remove("pv-open"); return; }
+    const cfPvNext = e.target.closest(".cf-pv-next");
+    if (cfPvNext) {
+      V.step = 2;
+      cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+      cf.classList.add("cap-open");
+      cfClipSync(scr);
+      return;
+    }
+    /* tap a clip surface (preview stage or the zoomed clip viewer) toggles play/pause + countdown */
+    const cfPlay = e.target.closest(".clip-stage");
+    if (cfPlay) { cfClipToggle(scr); return; }
     const cfBk = e.target.closest(".cf-back2");
-    if (cfBk) { V.step = 1; cf.classList.remove("cap-open"); return; }
+    if (cfBk) {
+      V.step = V.tab === "clip" ? "pv" : 1;
+      cf.classList.remove("cap-open");
+      return;
+    }
     const cfSel = e.target.closest("[data-selmode]");
     if (cfSel) { V.sel = !V.sel; renderSub(scr); return; }
     const cfRm = e.target.closest(".rm-mini");
     if (cfRm) {
-      V.order.splice(+cfRm.dataset.i, 1);
-      if (!V.order.length) V.step = 1;
+      cfClipStop(scr);
+      if (V.tab === "clip") { V.clip = null; V.step = 1; }
+      else { V.order.splice(+cfRm.dataset.i, 1); if (!V.order.length) V.step = 1; }
       renderSub(scr);
       return;
     }
     const cfZoom = e.target.closest(".ig-zoom");
-    if (cfZoom && e.target === cfZoom && !suppressPhotoClick) { cfZoom.classList.remove("open"); return; }
+    if (cfZoom && !suppressPhotoClick) {
+      /* clip zoom — tap media toggles play, tap backdrop closes (same as photos) */
+      if (e.target === cfZoom) { cfZoom.classList.remove("open"); cfClipStop(scr); V.viewClip = null; return; }
+      if (cfZoom.classList.contains("is-clip")) { cfClipToggle(scr); return; }
+    }
     const cfThumb = e.target.closest(".ig-thumb img");
     if (cfThumb && !suppressPhotoClick) {
       const z = cf.querySelector(".ig-zoom");
+      const actClip = cfActiveClip(scr);
+      /* clip-tab / lone-video draft — the baked clip viewer */
+      if (actClip) {
+        z.querySelector("img").src = actClip.src;
+        z.querySelector(".z-dots").innerHTML = "";
+        z.classList.add("open");
+        cfClipSync(scr);
+        return;
+      }
+      /* mixed/photo draft — cfZoomGo picks photo vs playable-clip mode per item */
       const th = cfThumb.closest(".ig-thumb");
       const i = [...th.parentElement.children].filter(c => c.classList.contains("ig-thumb")).indexOf(th);
-      cfZoomGo(z, i, cfPhotos(scr).length);
+      cfZoomGo(z, i, cfMedia(scr).length);
       z.classList.add("open");
       return;
     }
@@ -5541,21 +5899,43 @@ document.getElementById("stage").addEventListener("click", e => {
     if (cfShare) {
       if (cfShare.classList.contains("off")) return;
       V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() || V.caption;
-      const photos = cfPhotos(scr);
-      insertNewPost({ photos, caption: V.caption, meta: V.meta });
+      const clip = cfActiveClip(scr);
+      const photos = clip ? [clip.src] : cfPhotos(scr);
+      const clips = clip ? [clip.dur] : cfMedia(scr).map(m => m.dur || null);
+      insertNewPost({ photos, caption: V.caption, meta: V.meta, clip: clip ? clip.dur : null, clips });
+      cfClipStop(scr);
       scr._cp = null;
       scr._subStack = [];
       scr.classList.remove("sub-open");
       const fs = scr.querySelector(".feed-scroll");
       fs.innerHTML = feedContentHTML(scr.dataset.variant);
       fs.scrollTop = 0;
-      scrToast(scr, "Posted · shared to feed ✓", photos[0] || "");
+      scrToast(scr, clip ? "Clip shared to feed ✓" : "Posted · shared to feed ✓", photos[0] || "");
       return;
     }
     const cfCell = e.target.closest(".ig-grid .cell");
     if (cfCell && !cfCell.classList.contains("cam")) {
       const i = +cfCell.dataset.i;
       const grid = cfCell.closest(".ig-grid");
+      /* clip roll — single-select, tap again to deselect */
+      if (V.tab === "clip") {
+        V.clip = V.clip === i ? null : i;
+        cfClipStop(scr);
+        grid.querySelectorAll(".cell[data-i]").forEach(c => {
+          const on = +c.dataset.i === V.clip;
+          c.classList.toggle("sel", on);
+          const r = c.querySelector(".radio");
+          r.classList.toggle("on", on);
+          r.innerHTML = on ? I.check(10) : "";
+        });
+        const clip = cfClip(scr);
+        cf.querySelector("[data-hero]").innerHTML = clip
+          ? `<div class="ig-car"><img src="${clip.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${clip.dur}</span></div>`
+          : `<div class="add-tile">${I.video(38)}<span>Select a clip</span></div>`;
+        cf.querySelector(".cf-next").classList.toggle("off", !clip);
+        return;
+      }
+      cfClipStop(scr);
       if (grid.classList.contains("selmode")) {
         const k = V.order.indexOf(i);
         if (k < 0) V.order.push(i); else V.order.splice(k, 1);
@@ -5570,9 +5950,12 @@ document.getElementById("stage").addEventListener("click", e => {
         V.order = [i];
         grid.querySelectorAll(".cell[data-i]").forEach(c => c.classList.toggle("sel", +c.dataset.i === i));
       }
-      cf.querySelector("[data-hero]").innerHTML = V.order.length
-        ? `<div class="ig-car"><img src="${CP_ROLL[V.order.at(-1)]}"><button class="expand">${I.expandIc(15)}</button></div>`
-        : `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`;
+      const lastM = V.order.length ? CP_MEDIA[V.order.at(-1)] : null;
+      cf.querySelector("[data-hero]").innerHTML = !lastM
+        ? `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`
+        : lastM.dur
+        ? `<div class="ig-car"><img src="${lastM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${lastM.dur}</span></div>`
+        : `<div class="ig-car"><img src="${lastM.src}"><button class="expand">${I.expandIc(15)}</button></div>`;
       cf.querySelector(".cf-next").classList.toggle("off", !V.order.length);
       return;
     }
@@ -5612,6 +5995,7 @@ document.getElementById("stage").addEventListener("click", e => {
       V.meta.pane = null;
       cf.querySelector(".cf-pane").classList.remove("open");
       cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+      cfClipSync(scr);
       return;
     }
     const cfOpt = e.target.closest(".loc-opt, .cond-opt");
@@ -5635,6 +6019,7 @@ document.getElementById("stage").addEventListener("click", e => {
         V.meta.pane = null;
         cf.querySelector(".cf-pane").classList.remove("open");
         cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+        cfClipSync(scr);
       }
       return;
     }
@@ -5645,7 +6030,7 @@ document.getElementById("stage").addEventListener("click", e => {
       cfPaneSw.classList.toggle("on", V.meta[f]);
       return;
     }
-    const cfDead = e.target.closest(".ig-tab:not(.on), .rc, .expand, .cell.cam");
+    const cfDead = e.target.closest(".rc, .expand, .cell.cam");
     if (cfDead) { toast("Not in this prototype yet"); return; }
     return;
   }
@@ -5768,6 +6153,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (dlgDiscard) {
     const scr = dlgDiscard.closest(".screen");
     scr.classList.remove("dialog-open");
+    if (scr._cp) { clearInterval(scr._cp._t); }
     scr._cp = null;
     scr._subStack = [];
     scr.classList.remove("sub-open");
