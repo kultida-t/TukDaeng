@@ -64,19 +64,14 @@ await page.screenshot({ path: `${OUT}/pm-own-1-menu-dark.png` });
 await page.locator(".sheet-backdrop").click({ force: true });
 await page.waitForTimeout(300);
 
-// 3. Archive / Pin — memory-only flags + toast
-await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
-await page.locator(".pm-own-archive").click();
-await page.waitForTimeout(250);
-check("Archive → archived flag + toast", await page.evaluate(() => POSTS.find(p => p.id === "own1").archived === true) &&
-  await page.locator(".sc-toast").evaluate(t => t.textContent === "Post archived"));
+// 3. Pin to profile — memory-only flag + toast
 await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
 await page.locator(".pm-own-pin").click();
 await page.waitForTimeout(250);
 check("Pin to profile → pinned flag + toast", await page.evaluate(() => POSTS.find(p => p.id === "own1").pinned === true) &&
   await page.locator(".sc-toast").evaluate(t => t.textContent === "Pinned to your profile"));
 
-// 6. Turn off commenting → comment button gone from card
+// 4. Turn off commenting → comment button gone from card
 await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
 await page.locator(".pm-own-nocomm").click();
 await page.waitForTimeout(300);
@@ -87,10 +82,46 @@ check("noComments → comment btn hidden on card", await page.evaluate(() => {
 await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
 await page.waitForTimeout(300);
 labels = await page.locator(".comment-sheet .pm-row span").allTextContents();
-check("menu labels flip (Turn on commenting / Unarchive / Unpin)",
-  labels.includes("Unarchive") &&
-  labels.includes("Turn on commenting") && labels.includes("Unpin from profile"));
+check("menu labels flip (Turn on commenting / Unpin)",
+  labels.includes("Turn on commenting") && labels.includes("Unpin from profile") && labels.includes("Archive"));
 await page.locator(".sheet-backdrop").click({ force: true });
+await page.waitForTimeout(300);
+
+// 5. Archive — post leaves the feed and lands in Settings → Archive
+await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
+await page.locator(".pm-own-archive").click();
+await page.waitForTimeout(300);
+check("Archive → archived flag + card leaves feed + toast", await page.evaluate(() =>
+  POSTS.find(p => p.id === "own1").archived === true &&
+  !document.querySelector('.feed-scroll .post[data-pid="own1"]')) &&
+  await page.locator(".sc-toast").evaluate(t => t.textContent === "Post archived"));
+
+await page.evaluate(() => pushSub(document.querySelector(".screen"), "settings"));
+await page.waitForTimeout(350);
+check("settings shows Archive row with count 1", await page.evaluate(() =>
+  [...document.querySelectorAll(".page-sub .sub-row")].some(r => r.dataset.sub === "archive" && r.querySelector(".sub-count")?.textContent === "1")));
+await page.locator('.page-sub [data-sub="archive"]').click();
+await page.waitForTimeout(350);
+check("archive page lists the archived post", await page.locator(".arc-grid .svd-tile").count() === 1);
+await page.screenshot({ path: `${OUT}/pm-own-8-archive.png` });
+await page.locator(".arc-grid .svd-tile").first().click();
+await page.waitForTimeout(400);
+check("archive tile opens Archive viewer", await page.evaluate(() =>
+  document.querySelector(".screen").classList.contains("pv-open") &&
+  document.querySelector(".page-pv .detail-title")?.textContent === "Archive"));
+await page.locator(".page-pv .post-head .more").first().click();
+await page.waitForTimeout(350);
+await page.locator(".pm-own-archive").click(); // Unarchive from the menu
+await page.waitForTimeout(350);
+check("Unarchive → post back in feed + archive page emptied", await page.evaluate(() =>
+  POSTS.find(p => p.id === "own1").archived === false &&
+  !!document.querySelector('.feed-scroll .post[data-pid="own1"]')) &&
+  await page.locator(".arc-grid .svd-tile").count() === 0);
+await page.locator(".pv-back").click();
+await page.waitForTimeout(300);
+await page.locator(".page-sub .sub-back").first().click(); // archive → settings
+await page.waitForTimeout(300);
+await page.locator(".page-sub .sub-back").first().click(); // settings → feed
 await page.waitForTimeout(300);
 
 // 8. Edit — full "Edit info" composer prefilled with the post's data (IG edit info)

@@ -3954,7 +3954,7 @@ function feedEmptyHTML(tab) {
 }
 
 function feedContentHTML(variant) {
-  const posts = POSTS.filter(p => !p.ni && !p.muted)
+  const posts = POSTS.filter(p => !p.ni && !p.muted && !p.archived)
     .filter(p => state.feedTab === "favorites" ? p.favorite : state.feedTab === "following" ? p.following : (state.snooze ? p.following : true));
   return posts.length ? posts.map(p => postCard(p, variant)).join("") : feedEmptyHTML(state.feedTab);
 }
@@ -4553,6 +4553,24 @@ const SAVED_TABS = [
 function savedState(scr) {
   if (!scr._saved) scr._saved = { tab: "all", mode: "", q: "", manage: false, sel: new Set(), addSel: new Set(), col: null };
   return scr._saved;
+}
+/* FEED-024 — Archive page in Settings: posts hidden from feed live here until unarchived */
+function archivePosts() { return POSTS.filter(p => p.archived).sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0)); }
+function archiveHTML(scr) {
+  const V = savedState(scr);
+  const list = archivePosts();
+  return `
+    <div class="detail-head svd-head">
+      <button class="icon-btn sub-back">${I.back()}</button>
+      <span class="detail-title rc-title">Archive</span>
+      <span class="spacer"></span>
+    </div>
+    <div class="sub-scroll svd-body">
+      ${list.length
+        ? `<div class="svd-coltitle"><div class="c">Only you can see posts you've archived</div></div>
+           <div class="svd-grid arc-grid">${list.map(p => svdTileHTML(V, p)).join("")}</div>`
+        : svdEmptyHTML(I.history(46), "No archived posts", "Posts you archive will only be visible to you.", true)}
+    </div>`;
 }
 function savedPosts() { return POSTS.filter(p => p.saved).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0)); }
 function colPosts(name) { return POSTS.filter(p => p.saved && p.savedCol === name).sort((a, b) => (b.colAt || 0) - (a.colAt || 0)); }
@@ -5571,6 +5589,7 @@ function subHTML(name, scr) {
     <div class="sub-sec">Your library</div>
     ${row("Saved", `data-sub="saved"`, `<span class="sub-count">${POSTS.filter(p => p.saved).length}</span>`, I.bookmark(21))}
     ${row("Wish List", `data-sub="wishlist"`, `<span class="sub-count">${wlPosts().length}</span>`, I.gift(21))}
+    ${row("Archive", `data-sub="archive"`, `<span class="sub-count">${archivePosts().length}</span>`, I.history(21))}
     <div class="sub-sec sec-div">What you see</div>
     ${row("Favorites", `data-sub="favorites"`, `<span class="sub-count">${favoriteSellers().length}</span>`, I.star(21))}
     ${row("Muted accounts", `data-sub="muted"`, `<span class="sub-count">${mutedSellers().length}</span>`, I.bellOff(21))}
@@ -5613,6 +5632,7 @@ function subHTML(name, scr) {
     </div>`;
   }
   if (name === "saved") return savedHTML(scr);
+  if (name === "archive") return archiveHTML(scr);
   if (name === "savedcol") return savedColHTML(scr);
   if (name === "wishlist") return wishlistHTML(scr);
   if (name === "wishcol") return wishColHTML(scr);
@@ -6309,6 +6329,9 @@ document.getElementById("stage").addEventListener("click", e => {
     if (!post) return;
     if (pmOwn.matches(".pm-own-archive")) {
       post.archived = !post.archived;
+      post.archivedAt = post.archived ? Date.now() : 0;
+      scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+      if ((scr._subStack || []).at(-1) === "archive") renderSub(scr);
       scrToast(scr, post.archived ? "Post archived" : "Post unarchived");
     } else if (pmOwn.matches(".pm-own-nocomm")) {
       post.noComments = !post.noComments;
@@ -7115,8 +7138,12 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdTile = e.target.closest(".svd-tile");
   if (svdTile) {
     const scr = svdTile.closest(".screen");
-    const V = colState(scr);
     const pid = svdTile.dataset.pid;
+    if (svdTile.closest(".arc-grid")) { /* FEED-024 — archive tiles open the Archive viewer */
+      openPostViewer(scr, archivePosts(), pid, 0, true, "Archive");
+      return;
+    }
+    const V = colState(scr);
     if (V.mode === "add") {
       const sel = svdTile.querySelector(".svd-sel");
       if (V.addSel.has(pid)) { V.addSel.delete(pid); svdTile.classList.remove("on"); if (sel) sel.innerHTML = ""; }

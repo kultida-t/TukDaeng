@@ -11,10 +11,14 @@ PASS no preview card on top of menu
 PASS 5 own-post menu rows in order
 PASS no Save / Share / hide-counts / QR / reel / adjust-preview rows
 PASS Delete row is danger-styled
-PASS Archive → archived flag + toast
 PASS Pin to profile → pinned flag + toast
 PASS noComments → comment btn hidden on card
-PASS menu labels flip (Turn on commenting / Unarchive / Unpin)
+PASS menu labels flip (Turn on commenting / Unpin)
+PASS Archive → archived flag + card leaves feed + toast
+PASS settings shows Archive row with count 1
+PASS archive page lists the archived post
+PASS archive tile opens Archive viewer
+PASS Unarchive → post back in feed + archive page emptied
 PASS Edit → composer opens on Edit info step
 PASS Edit info head: Cancel + title + Done (no Share btn)
 PASS caption prefilled with post caption
@@ -53,4 +57,4 @@ PASS audience options still there
 PASS light theme own menu renders
 PASS no console/page errors
 
-49 passed, 0 failed
+53 passed, 0 failed

@@ -11,8 +11,12 @@ Archive / Turn off commenting / Edit / Pin to profile / Delete(แดง)
 เคส 2: Regression โพสต์คนอื่น — ผ่าน
 โพสต์ seller อื่นกด ... → เมนูเดิม Add to favorites / Not interested / Report เหมือนเดิมทุกประการ
 
-เคส 3: Archive / Pin to profile — ผ่าน
-memory-only flag + toast; label พลิกเป็น Unarchive / Unpin เมื่อเปิดเมนูซ้ำ
+เคส 3: Archive / Pin to profile — ผ่าน (ปรับตาม feedback รอบ 8 — Archive ของจริง)
+- Archive: flag archived + archivedAt → โพสต์หายจาก feed ทันที + toast "Post archived"
+- Settings มีแถว "Archive" (icon history + count) ระหว่าง Wish List / Favorites
+- หน้า Archive แสดง grid tile เหมือน Saved + ข้อความ "Only you can see posts you've archived"; empty state "No archived posts"
+- แตะ tile → เปิด Archive viewer (feed-style cards title "Archive") → เมนู ... บนการ์ดมี "Unarchive" → โพสต์กลับเข้า feed + หน้า Archive ว่าง
+- Pin to profile: memory-only flag + toast; label พลิกเป็น Unpin เมื่อเปิดเมนูซ้ำ
 
 เคส 4: Turn off commenting — ผ่าน
 toggle post.noComments → ปุ่ม comment หายจากการ์ด; label พลิกเป็น Turn on commenting
@@ -48,5 +52,5 @@ confirm dialog "Delete post?" → ลบออกจาก POSTS + ลบกา�
 เคส 10: Light theme — ผ่าน
 เมนู render ถูกทั้ง dark/light
 
-Verification: node _verify_pm_own.mjs → 49 passed, 0 failed, 0 console errors
+Verification: node _verify_pm_own.mjs → 53 passed, 0 failed, 0 console errors
 Screenshots: Prototypes/screenshots/task-FEED-024/pm-own-*.png
