@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+l<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -1614,6 +1614,73 @@
   .fav-removeall { margin-left: auto; background: none; border: none; padding: 0; font-family: var(--font-main); font-size: 13px; font-weight: 600; color: var(--red); cursor: pointer; }
   .mact.fav-add { background: var(--red); color: #fff; }
 
+  /* ============ WATCH ALERTS — create/edit sheet + settings list ============ */
+  .screen.wa-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
+  .screen.wa-open .comment-sheet { transform: none; }
+  .comment-sheet.wa { height: auto; max-height: 82%; }
+  .wa-body { padding: 4px 16px 26px; overflow-y: auto; }
+  .wa-title { font-size: 16px; font-weight: 700; color: var(--text); text-align: center; padding: 4px 0 12px; }
+  .wa-lbl { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin: 0 0 6px; }
+  .wa-name {
+    width: 100%; font-family: var(--font-main); font-size: 14px; color: var(--text);
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px 12px; outline: none; margin-bottom: 10px;
+  }
+  .wa-name:focus { border-color: var(--muted); }
+  .wa-sub { font-size: 12.5px; color: var(--muted); text-align: center; margin-bottom: 12px; }
+  .wa-sec { font-size: 13px; font-weight: 600; color: var(--muted); margin: 16px 0 8px; }
+  .wa-mode {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-main); text-align: left; cursor: pointer;
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 11px 13px; margin-bottom: 8px;
+  }
+  .wa-mode.on { border-color: var(--red); }
+  .wa-mode:disabled { opacity: .45; cursor: default; }
+  .wa-mb { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .wa-mt { font-size: 14px; font-weight: 600; color: var(--text); }
+  .wa-md { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .wa-mc { font-size: 12px; color: var(--muted); flex-shrink: 0; }
+  .wa-mode.on .wa-mc { color: var(--red); }
+  .wa-rad {
+    width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid var(--muted); position: relative;
+  }
+  .wa-mode.on .wa-rad { border-color: var(--red); }
+  .wa-mode.on .wa-rad::after {
+    content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--red);
+  }
+  .wa-go, .wa-del {
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: var(--font-main); font-size: 14.5px; font-weight: 600;
+    padding: 12px; border-radius: 12px; cursor: pointer; margin-top: 10px;
+  }
+  .wa-go { border: none; background: var(--red); color: #fff; }
+  .wa-del { border: 1px solid var(--line); background: transparent; color: var(--red); }
+  /* settings > watch alerts list */
+  .wa-row {
+    display: flex; align-items: flex-start; gap: 12px; width: 100%;
+    padding: 12px 16px; background: none; border: none; border-bottom: 1px solid var(--line);
+    font-family: var(--font-main); text-align: left; cursor: default;
+  }
+  .wa-ic {
+    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+    background: var(--chip-bg); color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wa-b { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .wa-t { font-size: 14px; font-weight: 600; color: var(--text); }
+  .wa-c { font-size: 12px; color: var(--muted); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .wa-badge { cursor: pointer; }
+  .wa-meta { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--muted); }
+  .wa-badge {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 999px; background: var(--chip-bg); color: var(--text);
+  }
+  .wa-row.wa-off .wa-b { opacity: .45; }
+  .wa-tgl { background: none; border: none; padding: 6px 0 6px 10px; cursor: pointer; align-self: center; }
+  .sr-wa.on svg path { fill: var(--text); }
+
   /* ============ SEARCH PAGE (SEARCH-001 — IG-style search flow) ============ */
   .sr-head { display: flex; align-items: center; gap: 8px; padding: 8px 10px 6px; flex-shrink: 0; }
   .sr-field {
@@ -2150,7 +2217,7 @@
     white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.45);
   }
   #flowToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open, .screen.details-open, .screen.hb-open) #themeToggle {
+  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open, .screen.details-open, .screen.hb-open, .screen.wa-open) #themeToggle {
     opacity: 0; pointer-events: none;
   }
   @media (max-width: 480px) {
@@ -3747,10 +3814,10 @@ function wlSheetHTML(p) {
 /* shared sheet opener — comment-sheet is a singleton, swap variant class + content */
 function openSheet(scr, variantCls, openCls, html) {
   const cs = scr.querySelector(".comment-sheet");
-  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "so", "dt", "nt", "ps", "nc", "wl");
+  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "so", "dt", "nt", "ps", "nc", "wl", "wa");
   cs.classList.add(variantCls);
   cs.innerHTML = html;
-  scr.classList.remove("comments-open", "unfollow-open", "pm-open", "likes-open", "share-open", "save-open", "sort-open", "details-open");
+  scr.classList.remove("comments-open", "unfollow-open", "pm-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
   scr.classList.add(openCls);
 }
 
@@ -4371,10 +4438,12 @@ function accountRowHTML(p) {
 function searchResultsHTML(scr, S) {
   const list = S.err ? [] : searchResults(S);
   const fc = filterCount(S.f);
+  const waSaved = WATCH_ALERTS.some(a => a.source === "search" && waSig(a.criteria) === waSig(waCriteriaFromSearch(S)));
   const head = `
     <div class="sr-head">
       <button class="icon-btn sub-back">${I.back()}</button>
       <span class="sr-field sr-fake">${I.search(16)}<span class="sr-qv">${esc(S.q) || "Search"}</span></span>
+      <button class="icon-btn sr-wa${waSaved ? " on" : ""}" title="Create watch alert">${I.navBell(20)}</button>
       <button class="icon-btn flt-open" data-sub="sfilter" title="Filters">${I.sliders(20)}</button>
     </div>`;
   const tabs = `
@@ -5529,6 +5598,8 @@ function insertNewPost(np) {
     likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
   });
   POSTS[0].specs = (POSTS[0].specGroups || []).flatMap(g => g.rows);
+  /* watch alerts fire when the new post matches an ON alert — surfaced as a toast by the caller */
+  POSTS[0]._waHits = WATCH_ALERTS.filter(a => a.on && alertMatch(POSTS[0], a.matchMode, a.criteria)).map(a => a.name);
 }
 
 /* ===== FEED-024 — Edit info: same composer prefilled with the post's data ===== */
@@ -5578,6 +5649,159 @@ function applyPostEdit(scr, post, V) {
   post.noComments = !!m.noComments;
   post.desc = m.desc || "";
 }
+/* ===== watch alerts — saved criteria that ping when a matching post lands (memory only) ===== */
+const WATCH_ALERTS = [];
+let waSeq = 1;
+const WA_MODES = {
+  all:   { t: "Match all criteria", d: "Alert me only when a post matches every field below", badge: "All" },
+  any:   { t: "Match any criteria", d: "Alert me when a post matches at least one field — can get noisy", badge: "Any" },
+  model: { t: "Model only",         d: "Just the brand, model and reference — ignore the rest", badge: "Model" },
+};
+const naSpec = v => /^n\/?a$/i.test(String(v || "").trim());
+const WA_FK_LABEL = {
+  brand: "Brand", model: "Model", cond: "Condition", ref: "Reference", year: "Year",
+  csz: "Case size", move: "Movement", dial: "Dial color", strap: "Strap / Bracelet", deliv: "Delivery contents",
+};
+
+/* detail entry — every spec field the post fills in becomes a criterion */
+function waCriteriaFromPost(p) {
+  const c = [];
+  const pick = k => { const v = specOf(p, k); return naSpec(v) ? "" : v.trim(); };
+  const push = (l, v, fk) => { if (v) c.push({ l, v, fk }); };
+  push("Brand", pick("Brand"), "brand");
+  push("Model", pick("Model"), "model");
+  push("Reference", pick("Reference"), "ref");
+  push("Year", pick("Year"), "year");
+  push("Condition", pick("Condition"), "cond");
+  push("Case Diameter", pick("Case Diameter"), "csz");
+  push("Movement Type", pick("Movement Type"), "move");
+  push("Dial Color", pick("Dial Color"), "dial");
+  const strap = `${pick("Strap/Bracelet Material")} ${pick("Strap Material")}`.trim();
+  if (strap) c.push({ l: "Strap / Bracelet", v: strap, fk: "strap" });
+  SEARCH_DELIV.filter(d => delivMatch(p, d)).forEach(d => c.push({ l: "Delivery contents", v: d, fk: "deliv" }));
+  const mapped = ["Brand", "Model", "Reference", "Year", "Condition", "Case Diameter", "Movement Type", "Dial Color",
+    "Strap/Bracelet Material", "Strap Material", "Box & Papers",
+    "Asking Price", "Estimated Market Price", "Last Price Update", "Data Source"];
+  (p.specs || []).forEach(([l, v]) => {
+    if (naSpec(v) || mapped.includes(l)) return;
+    c.push({ l, v: String(v).trim() });
+  });
+  return c;
+}
+/* search entry — snapshot the query + every selected filter */
+function waCriteriaFromSearch(S) {
+  const c = [];
+  const q = S.q.trim();
+  if (q) c.push({ l: "Keyword", v: q, fk: "q" });
+  for (const k in WA_FK_LABEL) S.f[k].forEach(v => c.push({ l: WA_FK_LABEL[k], v, fk: k }));
+  if (S.f.pmin !== "" || S.f.pmax !== "")
+    c.push({ l: "Price", v: `THB ${S.f.pmin !== "" ? fmtNum(S.f.pmin) : "0"} – ${S.f.pmax !== "" ? fmtNum(S.f.pmax) : "Any"}`,
+      fk: "price", min: S.f.pmin, max: S.f.pmax });
+  return c;
+}
+/* one criterion vs one post — same semantics the search filters use */
+function critMatch(p, c) {
+  const spec = k => String(specOf(p, k) || "");
+  const eq = (a, b) => a.trim().toLowerCase() === String(b).trim().toLowerCase();
+  const inc = (a, b) => a.toLowerCase().includes(String(b).toLowerCase());
+  switch (c.fk) {
+    case "brand": return eq(spec("Brand"), c.v);
+    case "model": return inc(spec("Model"), c.v);
+    case "cond":  return eq(spec("Condition"), c.v);
+    case "ref":   return eq(spec("Reference"), c.v);
+    case "year":  return eq(spec("Year"), c.v);
+    case "csz":   return eq(spec("Case Diameter"), c.v);
+    case "move":  return inc(spec("Movement Type"), c.v);
+    case "dial":  return inc(spec("Dial Color"), c.v);
+    case "strap": return inc(`${spec("Strap/Bracelet Material")} ${spec("Strap Material")}`, c.v);
+    case "deliv": return delivMatch(p, c.v);
+    case "price": { const pr = priceNum(p); return pr != null && !(c.min !== "" && pr < +c.min) && !(c.max !== "" && pr > +c.max); }
+    case "q":     return matchQuery(p, c.v);
+    default:      return c.l ? eq(spec(c.l), c.v) : false;
+  }
+}
+function alertMatch(p, mode, criteria) {
+  if (!criteria.length) return mode === "all";      /* no criteria = watch every new listing */
+  if (mode === "any") return criteria.some(c => critMatch(p, c));
+  if (mode === "model") {
+    const mc = criteria.filter(c => ["brand", "model", "ref"].includes(c.fk));
+    return mc.length > 0 && mc.every(c => critMatch(p, c));
+  }
+  return criteria.every(c => critMatch(p, c));
+}
+const alertMatchCount = (mode, criteria) => salePosts().filter(p => alertMatch(p, mode, criteria)).length;
+const waSig = c => c.map(x => `${x.fk || x.l}:${x.v}`).sort().join("¦");
+function waName(criteria) {
+  const g = fk => (criteria.find(c => c.fk === fk) || {}).v;
+  if (g("brand") || g("model")) return [g("brand"), g("model")].filter(Boolean).join(" ") + (g("ref") ? ` · ${g("ref")}` : "");
+  if (g("q")) return `"${g("q")}"`;
+  return criteria.length ? criteria.slice(0, 2).map(c => c.v).join(" · ") : "Any new listing";
+}
+/* bell state = an ON alert exists for this post's brand|model|ref key */
+const modelKeyOf = p => ["Brand", "Model", "Reference"].map(k => String(specOf(p, k) || "").trim().toLowerCase()).join("|");
+function syncModelFlags() {
+  const keys = new Set(WATCH_ALERTS.filter(a => a.on && a.modelKey && a.modelKey !== "||").map(a => a.modelKey));
+  POSTS.forEach(p => p.modelFollowing = keys.has(modelKeyOf(p)));
+}
+function refreshMfBtns(scr) {
+  scr.querySelectorAll(".mf-btn").forEach(b => {
+    const art = b.closest(".post");
+    const p = POSTS.find(x => x.id === (art ? art.dataset.pid : scr.dataset.detailPid));
+    const on = !!(p && p.modelFollowing);
+    b.classList.toggle("on", on);
+    b.title = on ? "Following this model" : "Follow this model";
+  });
+}
+
+function waModesHTML(d) {
+  return Object.keys(WA_MODES).map(k => {
+    const m = WA_MODES[k];
+    const dis = !d.criteria.length && k !== "all";
+    const n = alertMatchCount(k, d.criteria);
+    return `<button class="wa-mode${d.matchMode === k ? " on" : ""}" data-mode="${k}"${dis ? " disabled" : ""}>
+      <span class="wa-mb"><span class="wa-mt">${m.t}</span><span class="wa-md">${m.d}</span></span>
+      <span class="wa-mc">${n} now</span><span class="wa-rad"></span>
+    </button>`;
+  }).join("");
+}
+/* one bottom sheet shared by every entry — detail bell, search bell and the
+   settings row edit. Name is auto-filled but editable; criteria stay out of the
+   sheet — they're visible on the page behind it and on the Watch Alerts list. */
+function waSheetHTML(scr) {
+  const d = scr._waDraft;
+  const edit = !!d.id;
+  return `<div class="sheet-handle"></div>
+    <div class="wa-body">
+      <div class="wa-title">${edit ? "Edit watch alert" : "Create watch alert"}</div>
+      <label class="wa-lbl">Give this watch alert a name</label>
+      <input class="wa-name" type="text" value="${esc(d.name)}" placeholder="Name this alert">
+      <div class="wa-sec">Notify me when a post matches</div>
+      ${waModesHTML(d)}
+      <button class="wa-go">${edit ? "Save changes" : "Create alert"}</button>
+      ${edit ? `<button class="wa-del">${I.trash(16)} Delete alert</button>` : ""}
+    </div>`;
+}
+function waRowHTML(a) {
+  const n = alertMatchCount(a.matchMode, a.criteria);
+  const critTxt = a.criteria.map(c => c.v).join(" · ") || "Any new listing";
+  return `<div class="wa-row${a.on ? "" : " wa-off"}" data-wa="${a.id}">
+    <span class="wa-ic">${I.navBell(18)}</span>
+    <span class="wa-b">
+      <span class="wa-t">${esc(a.name)}</span>
+      <span class="wa-c">${esc(critTxt)}</span>
+      <span class="wa-meta"><span class="wa-badge">Edit</span><span>${{ all: "Match all", any: "Match any", model: "Model only" }[a.matchMode]} · ${n} match${n === 1 ? "" : "es"} now</span></span>
+    </span>
+    <button class="wa-tgl" title="${a.on ? "Pause alert" : "Resume alert"}"><span class="tg-sw${a.on ? " on" : ""}"></span></button>
+  </div>`;
+}
+function walertsHTML() {
+  return `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">Watch Alerts</span><span class="spacer"></span></div>
+    <div class="sub-scroll">
+      <div class="fav-desc">Get notified when a new listing matches what you're watching.</div>
+      ${WATCH_ALERTS.length ? WATCH_ALERTS.map(waRowHTML).join("") : `<div class="sub-empty">No watch alerts yet — tap the bell on a post or save a search to start one</div>`}
+    </div>`;
+}
+
 function subHTML(name, scr) {
   const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${t}</span><span class="spacer"></span></div>`;
   const row = (t, attr, extra = "", ic = "") => `<button class="sub-row" ${attr}>${ic ? `<span class="sub-ic">${ic}</span>` : ""}<span>${t}</span>${extra}<span class="sub-chev">${I.chevR(15)}</span></button>`;
@@ -5590,6 +5814,7 @@ function subHTML(name, scr) {
     ${row("Saved", `data-sub="saved"`, `<span class="sub-count">${POSTS.filter(p => p.saved).length}</span>`, I.bookmark(21))}
     ${row("Wish List", `data-sub="wishlist"`, `<span class="sub-count">${wlPosts().length}</span>`, I.gift(21))}
     ${row("Archive", `data-sub="archive"`, `<span class="sub-count">${archivePosts().length}</span>`, I.history(21))}
+    ${row("Watch Alerts", `data-sub="walerts"`, `<span class="sub-count">${WATCH_ALERTS.length}</span>`, I.navBell(21))}
     <div class="sub-sec sec-div">What you see</div>
     ${row("Favorites", `data-sub="favorites"`, `<span class="sub-count">${favoriteSellers().length}</span>`, I.star(21))}
     ${row("Muted accounts", `data-sub="muted"`, `<span class="sub-count">${mutedSellers().length}</span>`, I.bellOff(21))}
@@ -5631,6 +5856,7 @@ function subHTML(name, scr) {
       ${opt("standard", "Standard", "You'll see some sensitive content.")}
     </div>`;
   }
+  if (name === "walerts") return walertsHTML();
   if (name === "saved") return savedHTML(scr);
   if (name === "archive") return archiveHTML(scr);
   if (name === "savedcol") return savedColHTML(scr);
@@ -5751,6 +5977,8 @@ try {
     localStorage.removeItem("fo_newpost");
     insertNewPost(JSON.parse(raw));
     setTimeout(() => toast("Posted · shared to feed ✓"), 500);
+    if (POSTS[0]._waHits && POSTS[0]._waHits.length)
+      setTimeout(() => toast(`Watch alert matched: ${POSTS[0]._waHits[0]}`), 2400);
   }
 } catch {}
 
@@ -6180,6 +6408,9 @@ document.getElementById("stage").addEventListener("click", e => {
       fs.innerHTML = feedContentHTML(scr.dataset.variant);
       fs.scrollTop = 0;
       scrToast(scr, clip ? "Clip shared to feed ✓" : "Posted · shared to feed ✓", photos[0] || "");
+      const waHits = POSTS[0]._waHits || [];
+      if (waHits.length)
+        setTimeout(() => scrToast(scr, `Watch alert matched: ${waHits[0]}${waHits.length > 1 ? ` +${waHits.length - 1} more` : ""}`), 2100);
       return;
     }
     const cfCell = e.target.closest(".ig-grid .cell");
@@ -6887,15 +7118,113 @@ document.getElementById("stage").addEventListener("click", e => {
     const pid = art ? art.dataset.pid : (scr.dataset.dtPid || scr.dataset.detailPid);
     const post = POSTS.find(x => x.id === pid);
     if (!post) return;
-    post.modelFollowing = !post.modelFollowing;
-    scr.querySelectorAll(".mf-btn").forEach(b => {
-      const bArt = b.closest(".post");
-      if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === post.id) {
-        b.classList.toggle("on", post.modelFollowing);
-        b.title = post.modelFollowing ? "Following this model" : "Follow this model";
+    const key = modelKeyOf(post);
+    const existing = WATCH_ALERTS.find(a => a.modelKey && a.modelKey === key);
+    if (existing) {
+      scr._waDraft = { id: existing.id, source: existing.source, criteria: existing.criteria, matchMode: existing.matchMode, name: existing.name, modelKey: existing.modelKey };
+    } else {
+      const criteria = waCriteriaFromPost(post);
+      if (!criteria.length) { scrToast(scr, "No details on this post to watch"); return; }
+      scr._waDraft = { source: "detail", criteria, matchMode: "all", name: waName(criteria), modelKey: key };
+    }
+    openSheet(scr, "wa", "wa-open", waSheetHTML(scr));
+    return;
+  }
+  /* watch alert — mode pick / create / save / delete in the shared bottom sheet
+     (detail bell, search bell and the settings list row all open the same one) */
+  const waModeBtn = e.target.closest(".wa-mode");
+  if (waModeBtn) {
+    if (waModeBtn.disabled) return;
+    const scr = waModeBtn.closest(".screen");
+    if (scr._waDraft) {
+      const nameIn = scr.querySelector(".wa-name");
+      if (nameIn && nameIn.value.trim()) scr._waDraft.name = nameIn.value.trim();
+      scr._waDraft.matchMode = waModeBtn.dataset.mode;
+      openSheet(scr, "wa", "wa-open", waSheetHTML(scr));
+    }
+    return;
+  }
+  const waGo = e.target.closest(".wa-go");
+  if (waGo) {
+    const scr = waGo.closest(".screen");
+    const d = scr._waDraft;
+    if (!d) return;
+    const nameIn = scr.querySelector(".wa-name");
+    if (nameIn) d.name = nameIn.value.trim() || waName(d.criteria);
+    if (d.id) {
+      const a = WATCH_ALERTS.find(x => x.id === d.id);
+      if (a) { a.matchMode = d.matchMode; a.name = d.name; }
+      scrToast(scr, "Watch alert updated");
+    } else {
+      const sig = waSig(d.criteria);
+      const dupe = WATCH_ALERTS.find(a => waSig(a.criteria) === sig && a.matchMode === d.matchMode);
+      if (dupe) {
+        scr._waDraft = { id: dupe.id, source: dupe.source, criteria: dupe.criteria, matchMode: dupe.matchMode, name: dupe.name, modelKey: dupe.modelKey };
+        openSheet(scr, "wa", "wa-open", waSheetHTML(scr));
+        scrToast(scr, "You already saved this alert");
+        return;
       }
-    });
-    scrToast(scr, post.modelFollowing ? "Following this model" : "Unfollowed this model");
+      WATCH_ALERTS.push({
+        id: "wa" + waSeq++, name: d.name, source: d.source,
+        criteria: d.criteria, matchMode: d.matchMode, modelKey: d.modelKey || null, on: true,
+      });
+      scrToast(scr, "Watch alert on");
+    }
+    scr._waDraft = null;
+    scr.classList.remove("wa-open");
+    syncModelFlags();
+    refreshMfBtns(scr);
+    if (scr.classList.contains("sub-open")) renderSub(scr);
+    return;
+  }
+  const waDel = e.target.closest(".wa-del");
+  if (waDel) {
+    const scr = waDel.closest(".screen");
+    const d = scr._waDraft;
+    const i = WATCH_ALERTS.findIndex(x => x.id === (d && d.id));
+    if (i > -1) WATCH_ALERTS.splice(i, 1);
+    scr._waDraft = null;
+    scr.classList.remove("wa-open");
+    syncModelFlags();
+    refreshMfBtns(scr);
+    if (scr.classList.contains("sub-open")) renderSub(scr);
+    scrToast(scr, "Watch alert removed");
+    return;
+  }
+  const waTgl = e.target.closest(".wa-tgl");
+  if (waTgl) {
+    const scr = waTgl.closest(".screen");
+    const a = WATCH_ALERTS.find(x => x.id === waTgl.closest(".wa-row").dataset.wa);
+    if (a) {
+      a.on = !a.on;
+      syncModelFlags();
+      refreshMfBtns(scr);
+      renderSub(scr);
+      scrToast(scr, a.on ? "Watch alert on" : "Watch alert paused");
+    }
+    return;
+  }
+  const waRowEl = e.target.closest(".wa-row .wa-badge");
+  if (waRowEl) {
+    const scr = waRowEl.closest(".screen");
+    const a = WATCH_ALERTS.find(x => x.id === waRowEl.closest(".wa-row").dataset.wa);
+    if (a) {
+      scr._waDraft = { id: a.id, source: a.source, criteria: a.criteria, matchMode: a.matchMode, name: a.name, modelKey: a.modelKey };
+      openSheet(scr, "wa", "wa-open", waSheetHTML(scr));
+    }
+    return;
+  }
+  const srWa = e.target.closest(".sr-wa");
+  if (srWa) {
+    const scr = srWa.closest(".screen");
+    const S = srchState(scr);
+    const criteria = waCriteriaFromSearch(S);
+    const sig = waSig(criteria);
+    const existing = WATCH_ALERTS.find(a => waSig(a.criteria) === sig);
+    scr._waDraft = existing
+      ? { id: existing.id, source: existing.source, criteria: existing.criteria, matchMode: existing.matchMode, name: existing.name, modelKey: existing.modelKey }
+      : { source: "search", criteria, matchMode: "all", name: waName(criteria) };
+    openSheet(scr, "wa", "wa-open", waSheetHTML(scr));
     return;
   }
   const cbtn = e.target.closest(".comment-btn");
@@ -7428,7 +7757,7 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const closeSheet = e.target.closest(".sheet-backdrop, .sheet-handle");
   if (closeSheet) {
-    closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open");
+    closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
     return;
   }
   const clike = e.target.closest(".c-like");
