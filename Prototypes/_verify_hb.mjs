@@ -39,9 +39,14 @@ check("panel starts below statusbar", Math.abs(panelBox.y - (screenBox.y + 34)) 
 await page.screenshot({ path: `${OUT}/hb-1-drawer-dark.png` });
 
 // 3. Menu entries — exactly 9, in the order of the reference image, each with an icon
-const labels = await page.locator(".hb-item span").allTextContents();
+const labels = await page.locator(".hb-item span:not(.hb-chev)").allTextContents();
 check("9 menu items in order", JSON.stringify(labels) === JSON.stringify(ITEMS));
-check("every item has an icon", await page.locator(".hb-item svg").count() === 9);
+check("every item has an icon", await page.locator(".hb-item > svg").count() === 9);
+check("IG settings row style — 14px regular label", await page.locator(".hb-item").first().evaluate(el => {
+  const cs = getComputedStyle(el);
+  return cs.fontSize === "14px" && cs.fontWeight === "400";
+}));
+check("every item has a trailing chevron", await page.locator(".hb-item .hb-chev").count() === 9);
 
 // 4. Menu item is a dead action → toast, drawer stays open
 await page.locator(".hb-item", { hasText: "Watch Brands" }).click();

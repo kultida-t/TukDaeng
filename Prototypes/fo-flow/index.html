@@ -289,17 +289,18 @@
     display: flex; flex-direction: column;
   }
   .screen.hb-open .hb-panel { transform: none; }
-  .hb-list { flex: 1; padding: 40px 0 12px; overflow-y: auto; scrollbar-width: none; }
+  .hb-list { flex: 1; padding: 28px 0 12px; overflow-y: auto; scrollbar-width: none; }
   .hb-list::-webkit-scrollbar { display: none; }
   .hb-item {
-    display: flex; align-items: center; gap: 18px;
-    width: 100%; padding: 13px 26px;
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; padding: 12px 22px;
     background: none; border: none; cursor: pointer;
-    font-family: var(--font-main); font-size: 15.5px; font-weight: 500;
+    font-family: var(--font-main); font-size: 14px; font-weight: 400;
     color: var(--text); text-align: left;
   }
   .hb-item:hover { background: var(--chip-bg); }
-  .hb-item svg { display: block; flex-shrink: 0; opacity: .92; }
+  .hb-item svg { display: block; flex-shrink: 0; }
+  .hb-item .hb-chev { margin-left: auto; color: var(--muted); display: flex; }
   .hb-profile {
     position: absolute; right: 14px; bottom: 30px;
     display: flex; flex-direction: column; align-items: center; gap: 4px;
@@ -5578,15 +5579,15 @@ function screenHTML(theme, variant) {
       <div class="hb-scrim"></div>
       <div class="hb-panel">
         <div class="hb-list">
-          <button class="hb-item">${I.gem(23)}<span>Watch Brands</span></button>
-          <button class="hb-item">${I.award(23)}<span>Watch Price Index</span></button>
-          <button class="hb-item">${I.bag(23)}<span>Watch Shops</span></button>
-          <button class="hb-item">${I.bag(23)}<span>Accessories Shop</span></button>
-          <button class="hb-item">${I.bag(23)}<span>Repair Shop</span></button>
-          <button class="hb-item">${I.home(23)}<span>Auction Center</span></button>
-          <button class="hb-item">${I.home(23)}<span>Consignment Center</span></button>
-          <button class="hb-item">${I.home(23)}<span>Authentication Center</span></button>
-          <button class="hb-item">${I.users(23)}<span>Community</span></button>
+          <button class="hb-item">${I.gem(22)}<span>Watch Brands</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.award(22)}<span>Watch Price Index</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.bag(22)}<span>Watch Shops</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.bag(22)}<span>Accessories Shop</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.bag(22)}<span>Repair Shop</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.home(22)}<span>Auction Center</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.home(22)}<span>Consignment Center</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.home(22)}<span>Authentication Center</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.users(22)}<span>Community</span><span class="hb-chev">${I.chevR(15)}</span></button>
         </div>
       </div>
       <button class="hb-profile">${I.navUser(20)}<span>Profile</span></button>
