@@ -113,8 +113,8 @@ check("Edit info head: Cancel + title + Done (no Share btn)", await page.evaluat
 check("caption prefilled with post caption", await page.locator(".cf .ig-cap-line .ta").evaluate(el => el.textContent === "my own test post"));
 const mediaThumbs = () => page.locator('.cf .ig-thumbs.multi .ig-thumb:not(.ig-add)');
 check("existing media prefilled as thumbs (2)", await mediaThumbs().count() === 2);
-check("+ add-media tile + reorder hint shown", await page.locator(".cf .ig-thumb.ig-add").count() === 1 &&
-  (await page.locator(".ig-reord-hint").textContent()).includes("Press and hold"));
+check("+ add-media tile shown (no reorder hint text)", await page.locator(".cf .ig-thumb.ig-add").count() === 1 &&
+  await page.locator(".ig-reord-hint").count() === 0);
 await page.screenshot({ path: `${OUT}/pm-own-4-edit-info.png` });
 
 // 8a. drag-and-drop reorder — hold thumb 0, drop over thumb 1 → order flips
@@ -135,9 +135,10 @@ check("reorder drag flips thumb order", after[0] === before[1] && after[1] === b
 // 8b. "+" tile → media picker (add mode) — tap a cell to append
 await page.locator(".cf .ig-thumb.ig-add").click();
 await page.waitForTimeout(350);
-check("add-media picker opens (title + no Post/Clip tabs)", await page.evaluate(() => {
+check("add-media picker opens (title + Done + no Post/Clip tabs)", await page.evaluate(() => {
   const cf = document.querySelector(".cf");
-  return cf.querySelector(".cf-head .t").textContent === "Add photos or clips" && !cf.querySelector(".ig-tabs");
+  return cf.querySelector(".cf-head .t").textContent === "Add photos or clips" && !cf.querySelector(".ig-tabs") &&
+    [...cf.querySelectorAll(".cf-act")].some(b => b.textContent === "Done");
 }));
 const addedSrc = await page.locator(".cf .ig-grid .cell[data-i] img").first().getAttribute("src");
 await page.locator(".cf .ig-grid .cell[data-i]").first().click();
@@ -162,9 +163,9 @@ await page.evaluate(() => { // restore draft to the 3 edited media, back to Edit
   cpState(scr).order.splice(3);
   renderSub(scr);
 });
-await page.locator(".cf-back2").click();
+await page.locator('.cf-head .cf-act.cf-back2').click(); // Done in add-media picker → Edit info
 await page.waitForTimeout(400);
-check("back to Edit info with 3 thumbs", await mediaThumbs().count() === 3);
+check("picker Done returns to Edit info with 3 thumbs", await mediaThumbs().count() === 3);
 
 // 8d. remove media — down to 1 allowed, removing the last is blocked
 await mediaThumbs().nth(2).locator(".rm-mini").click();
@@ -180,7 +181,7 @@ check("removing last media blocked + toast", await mediaThumbs().count() === 1 &
 await page.locator(".cf .ig-thumb.ig-add").click();
 await page.waitForTimeout(300);
 await page.locator(".cf .ig-grid .cell[data-i]").nth(1).click();
-await page.locator(".cf-back2").click();
+await page.locator(".cf-head .cf-act.cf-back2").click();
 await page.waitForTimeout(350);
 check("add-media via picker restores 2 thumbs", await mediaThumbs().count() === 2);
 
@@ -198,7 +199,44 @@ check("post updated in place (no duplicate, caption + 2 photos saved)", await pa
     document.querySelector('.feed-scroll .post[data-pid="own1"]').textContent.includes("edited caption 🎉");
 }) && await page.evaluate(c => POSTS.length === c, postCountBefore));
 
-// 8f. clip post edit — clip badge + dur preserved through the flow
+// 8g. detail page polish — centered "Detail" title, no N/A in name, "Ref. -", descriptions = caption
+await page.evaluate(() => {
+  POSTS.unshift({
+    id: "ownSpec", seller: CP_ME.name, avatar: CP_ME.avatar, time: "Just now", following: true, favorite: false,
+    type: "sale", photos: ["./assets/asset-uploads/ast-8831-1.png"], clip: null, clips: null,
+    likes: 0, comments: 0, views: 0, liked: false, caption: "rolex for sale", captionFull: "rolex for sale",
+    price: "THB 100,000", chips: [],
+    specGroups: [{ title: "Item Details", rows: [["Brand", "rolex"], ["Model", "N/A"], ["Reference", "N/A"]] }],
+    specs: [["Brand", "rolex"], ["Model", "N/A"], ["Reference", "N/A"]],
+    location: null, desc: "rolex for sale",
+    likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
+  });
+  const scr = document.querySelector(".screen");
+  openPostDetail(scr, POSTS.find(p => p.id === "ownSpec"));
+});
+await page.waitForTimeout(400);
+check("detail head centers the Detail title", await page.evaluate(() => {
+  const h = document.querySelector(".page-detail .detail-head");
+  const kids = [...h.children];
+  const ti = kids.findIndex(k => k.classList.contains("detail-title"));
+  return kids[ti - 1]?.classList.contains("spacer") && kids[ti + 1]?.classList.contains("spacer");
+}));
+check("detail name hides N/A parts ('rolex' not 'rolex N/A')",
+  await page.locator(".page-detail .detail-name").textContent() === "rolex");
+check("missing reference shows 'Ref. -' not 'Ref. N/A'",
+  await page.locator(".page-detail .detail-ref").textContent() === "Ref. -");
+check("spec list still shows N/A values", await page.locator(".page-detail").evaluate(el => el.textContent.includes("N/A")));
+check("descriptions = caption text", await page.locator(".page-detail .detail-desc").evaluate(el => el.textContent === "rolex for sale"));
+await page.screenshot({ path: `${OUT}/pm-own-6-detail.png` });
+await page.locator(".page-detail .detail-back").first().click();
+await page.waitForTimeout(350);
+await page.evaluate(() => { // clean up
+  POSTS.splice(POSTS.findIndex(x => x.id === "ownSpec"), 1);
+  const scr = document.querySelector(".screen");
+  scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+});
+
+// 8h. clip post edit — clip badge + dur preserved through the flow
 await page.evaluate(() => {
   POSTS.unshift({
     id: "ownClip", seller: CP_ME.name, avatar: CP_ME.avatar, time: "Just now", following: true, favorite: false,

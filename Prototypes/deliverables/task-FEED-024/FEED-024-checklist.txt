@@ -22,8 +22,8 @@ toggle post.noComments → ปุ่ม comment หายจากการ์�
 
 เคส 6: Edit — ผ่าน (ปรับตาม feedback รอบ 3 — Edit info เหมือนหน้า Add)
 เลือก Edit → เปิด composer หน้า "Edit info" (Cancel / Done แทน Share) preload ข้อมูลโพสต์:
-- media เดิมแสดงเป็น thumbs (clip มี dur badge) + tile "+" เพิ่มรูป/คลิปผ่าน picker "Add photos or clips"
-- กดค้างลาก thumb สลับตำแหน่งได้ (hint "Press and hold to reorder")
+- media เดิมแสดงเป็น thumbs (clip มี dur badge) + tile "+" เพิ่มรูป/คลิปผ่าน picker "Add photos or clips" (มีปุ่ม Done กลับหน้า Edit info)
+- กดค้างลาก thumb สลับตำแหน่งได้ (ไม่มี hint text ตาม feedback รอบ 4)
 - ลบรูปด้วย × ได้ แต่กันไม่ให้เหลือ 0 — toast "Post needs at least 1 photo or clip"
 - เพิ่มเกิน 10 ชิ้นถูกบล็อก — toast "You can add up to 10 photos or clips"
 - แก้ caption / location / price / Watch details / Condition / More options (audience, commenting) ได้
@@ -36,11 +36,17 @@ toggle post.noComments → ปุ่ม comment หายจากการ์�
 เคส 8: Delete — ผ่าน
 confirm dialog "Delete post?" → ลบออกจาก POSTS + ลบการ์ดจาก feed/viewer + ปิด detail ถ้าเปิดอยู่ + toast "Post deleted"
 
-เคส 9: More options ใน create flow — ผ่าน (feedback รอบ 2)
+เคส 9: หน้า Detail — ผ่าน (feedback รอบ 4)
+- title "Detail" จัดกลางเหมือนหน้าอื่น (เพิ่ม spacer ซ้ายใน detail-head variant หลัก)
+- ชื่อโพสต์ซ่อนส่วนที่เป็น N/A ("rolex N/A" → "rolex"); ถ้าไม่มี specs เลย fallback เป็น caption
+- Reference ที่ไม่มีข้อมูลแสดง "Ref. -" (เดิม "Ref. N/A"); ในลิสต์ WATCH SPECIFICATIONS ยังแสดง N/A เหมือนเดิม
+- Descriptions = caption ของโพสต์ (captionFull) ไม่ใช้ field desc แยกอีกต่อไป
+
+เคส 10: More options ใน create flow — ผ่าน (feedback รอบ 2)
 เอา toggle "Hide like and view counts" ออกจาก pane More options เหลือ Turn off commenting + audience Everyone/Followers only
 
-เคส 10: Light theme — ผ่าน
+เคส 11: Light theme — ผ่าน
 เมนู render ถูกทั้ง dark/light
 
-Verification: node _verify_pm_own.mjs → 41 passed, 0 failed, 0 console errors
+Verification: node _verify_pm_own.mjs → 46 passed, 0 failed, 0 console errors
 Screenshots: Prototypes/screenshots/task-FEED-024/pm-own-*.png

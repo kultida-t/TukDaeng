@@ -21,17 +21,22 @@ PASS Edit → composer opens on Edit info step
 PASS Edit info head: Cancel + title + Done (no Share btn)
 PASS caption prefilled with post caption
 PASS existing media prefilled as thumbs (2)
-PASS + add-media tile + reorder hint shown
+PASS + add-media tile shown (no reorder hint text)
 PASS reorder drag flips thumb order
-PASS add-media picker opens (title + no Post/Clip tabs)
+PASS add-media picker opens (title + Done + no Post/Clip tabs)
 PASS picker cell appends media (order=3, radio shows 3)
 PASS adding beyond 10 blocked + toast
-PASS back to Edit info with 3 thumbs
+PASS picker Done returns to Edit info with 3 thumbs
 PASS remove down to 1 media ok
 PASS removing last media blocked + toast
 PASS add-media via picker restores 2 thumbs
 PASS Done closes composer + toast Post updated
 PASS post updated in place (no duplicate, caption + 2 photos saved)
+PASS detail head centers the Detail title
+PASS detail name hides N/A parts ('rolex' not 'rolex N/A')
+PASS missing reference shows 'Ref. -' not 'Ref. N/A'
+PASS spec list still shows N/A values
+PASS descriptions = caption text
 PASS clip post → thumb keeps dur badge in edit
 PASS Done keeps clip on the post
 PASS detail page ... shows own-post menu
@@ -45,4 +50,4 @@ PASS audience options still there
 PASS light theme own menu renders
 PASS no console/page errors
 
-41 passed, 0 failed
+46 passed, 0 failed
