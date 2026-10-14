@@ -1,0 +1,55 @@
+SAVED-002 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: SAVED-002 ปรับ New collection sheet — เอาแถว "Add people to collection"
+      ออก + ช่องชื่อ autofocus ตอนเปิด sheet (Saved / Wish List) ใน fo-flow
+ไฟล์: Prototypes/fo-flow/index.html, Prototypes/_verify_feed_saved.mjs,
+      Prototypes/_verify_feed_wishlist.mjs
+Reference: ภาพ IG Saved > New collection sheet ที่ user แนบ
+      (เปิด sheet แล้วคีย์บอร์ดเด้งพร้อมพิมพ์ชื่อ)
+ผลตรวจ: รอผู้ใช้รีวิว preview
+
+เคส 1: ไม่มีแถว Add people — ผ่าน (automated)
+  เปิด sheet จาก "+" หน้า Saved → เหลือแค่ Cancel / "New collection" / Next
+  (เทาจนกว่าพิมพ์ชื่อ) + ช่อง Collection name พร้อม counter "0 / 40" + ปุ่ม X ล้าง
+  ไม่มีแถว "Add people to collection / Save to a collection together"
+  และไม่มี friend picker ที่กางลงมา — ลบ .nc-ppl-btn / .nc-ppl / .nc-fr
+  ออกทั้ง HTML (ncSheetHTML), CSS และ JS handler; กด Next/Edit ไม่เก็บ people แล้ว
+
+เคส 2: ครอบคลุมทุก entry point — ผ่าน
+  sheet เดียวกัน (ncSheetHTML) ใช้ทุกจุดจึงหายพร้อมกันหมด:
+  "+" หน้า Saved, "New collection" ใน save sheet, "New collection" ใน
+  move-to-collection sheet (Manage > Move / ใน collection detail),
+  "New collection" ใน wishlist sheet และหน้า Edit collection
+
+เคส 3: Autofocus ช่องชื่อ (คีย์บอร์ดเด้ง) — ผ่าน (automated)
+  เปิด sheet แล้ว .nc-input เป็น activeElement ทันทีทุก entry point —
+  บนมือถือจริงคีย์บอร์ดจะเด้งเองตามภาพ IG (ใช้ .focus() ที่มีอยู่แล้ว ตรวจครบทุกจุด)
+  ตัดสินใจ: ไม่วาด mock keyboard ใน demo desktop — เป็นเว็บในกรอบจอ กดไม่ได้จริง
+  ถ้าอยากได้ลุคเหมือนแอป IG ค่อยเพิ่มทีหลัง
+
+เคส 4: Flow เดิมยังทำงาน — ผ่าน
+  พิมพ์ชื่อ → counter เดิน + Next เปิด, X ล้างค่า, Next/Enter สร้าง collection
+  + toast ("Collection created" / "Saved to X" / "Added to X" ตามจุดเปิด),
+  Cancel กลับ sheet เดิม (save sheet / wishlist sheet), rename ผ่าน
+  Edit collection ปกติ
+
+เคส 5: Collection card — ผ่าน
+  การ์ด collection หน้า Saved แสดง "Private" เสมอ (ตัดเงื่อนไข "Shared · n"
+  ออก เพราะเพิ่มคนเข้า collection ไม่ได้แล้ว)
+
+เคส 6: Padding ล่างของ sheet — ผ่าน (automated)
+  หลังลบแถว Add people ช่องชื่อ collection ชิดขอบจอเกินไป → เพิ่ม
+  padding-bottom 18px ที่ .comment-sheet.nc (รวมกับ margin ช่อง = ~32px
+  เว้นจากขอบล่าง) ดูสมดุลทุก entry point ที่เปิด sheet นี้
+
+หมายเหตุ:
+- state memory-only เหมือนเดิม, mock COLLECTIONS/WISHLISTS ไม่มี people อยู่แล้ว
+- FRIENDS/dispName ยังถูกใช้ใน share/likes sheet — ไม่แตะ
+- หน้าจอ protected ทั้งหมดไม่ถูกแตะต้อง (งานอยู่ใน fo-flow FO ฝั่ง user app)
+- screenshots: Prototypes/screenshots/task-SAVED-002/
+- automated: _verify_feed_saved.mjs 105 checks ผ่านหมด 0 errors,
+  _verify_feed_wishlist.mjs 53 checks ผ่านหมด 0 errors
+- ปัญหาที่พบ (เก่าก่อน task นี้ ไม่เกี่ยวกับการแก้): _verify_feed_menu.mjs
+  ค้างที่บรรทัด 213 หา .page-detail .post-head .more ไม่เจอ — ลองรันบน
+  index.html เวอร์ชันก่อนแก้ (git stash) ก็ fail จุดเดียวกัน น่าจะพังจาก
+  task หลัง SAVED-001 (FEED-022/023/024 หรือ WAL-001) — รอตัดสินใจแยก task

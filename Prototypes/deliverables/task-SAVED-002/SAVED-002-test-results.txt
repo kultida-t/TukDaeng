@@ -1,0 +1,38 @@
+SAVED-002 — Automated Test Results
+วันที่: 2026-10-14
+
+การทำ: ปรับ New collection sheet ใน Prototypes/fo-flow/index.html ตามภาพ IG
+ที่ user แนบ + requirement ใหม่ (ไม่ต้องการ collaborative collection)
+- ลบแถว "Add people to collection / Save to a collection together" และ
+  friend picker ที่กางลง (.nc-ppl-btn / .nc-ppl / .nc-fr) ออกจาก ncSheetHTML
+- ลบ CSS block ของ ppl/friend row และ JS handler (toggle list, .nc-fr.on)
+- nc-next สร้าง/แก้ collection โดยไม่เก็บ people; colCardHTML แสดง Private เสมอ
+- autofocus .nc-input ตอนเปิด sheet มีอยู่แล้วทุก entry point — ตรวจยืนยันด้วย
+  document.activeElement (บนมือถือจริง = คีย์บอร์ดเด้งอัตโนมัติ)
+- ไม่วาด mock keyboard (เว็บ demo บน desktop กดไม่ได้จริง)
+- เพิ่ม padding-bottom 18px ที่ .comment-sheet.nc หลังลบ ppl row —
+  ช่องชื่อไม่ชิดขอบจอ (feedback รอบ review)
+
+ผลรัน (server http://127.0.0.1:4173/fo-flow, viewport 440x956, dark+light):
+
+_verify_feed_saved.mjs — ผ่านทั้งหมด 106 checks, 0 failed, 0 console/page errors
+  เคสใหม่ SAVED-002:
+  - "no add people row" — .nc-ppl-btn/.nc-ppl/.nc-fr = 0 ใน sheet
+  - "sheet bottom padding" — .comment-sheet.nc paddingBottom >= 18px
+  - "name input autofocused (mobile keyboard pops)" — activeElement เป็น .nc-input
+  - "new col has no people" — collection ที่สร้างไม่มี field people
+  (แทนเคสเดิม add people row / people list expands / friend toggle on /
+   friend saved on new col ที่ถูกลบออก)
+
+_verify_feed_wishlist.mjs — ผ่านทั้งหมด 53 checks, 0 failed, 0 errors
+  เคสใหม่ SAVED-002 (เปิด nc sheet จากปุ่ม "New collection" ใน wishlist sheet):
+  - "nc sheet from wishlist" / "no add people row (wishlist)" /
+    "name input autofocused (wishlist)" / "cancel returns to wl sheet"
+
+_verify_feed_menu.mjs — FAIL ที่บรรทัด 213 (ก่อนถึงเคส nc sheet):
+  locator '.page-detail .post-head .more' timeout — ยืนยันแล้วว่าเป็น
+  pre-existing failure: stash การแก้ SAVED-002 แล้วรันซ้ำบน index.html
+  เดิมก็ fail จุดเดียวกัน → ไม่เกี่ยวกับ task นี้ (น่าจะจากงาน FEED-022/023/024
+  หรือ WAL-001 ที่แตะ detail/post-head ทีหลัง) — แจ้ง user แล้ว รอแยก task
+
+ไม่แตะ: feed-social-redesign.html, หน้าจอ protected ทั้งหมดตาม AGENTS.md

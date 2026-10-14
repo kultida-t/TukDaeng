@@ -970,26 +970,6 @@
     display: flex; align-items: center; justify-content: center;
     z-index: 2;
   }
-  .ig-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 26px;
-    padding: 10px 0 6px;
-    border-top: 1px solid var(--line);
-    flex-shrink: 0;
-    margin-top: auto;
-  }
-  .ig-tab {
-    font-family: var(--font-main);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    background: none; border: none;
-    cursor: pointer;
-    padding: 4px 2px;
-  }
-  .ig-tab.on { color: var(--text); font-weight: 700; }
-
   /* multi-select mode */
   .ig-grid .radio {
     display: none;
@@ -1255,10 +1235,6 @@ function igPickerHTML() {
         ${cells}
       </div>
     </div>
-    <div class="ig-tabs">
-      <button class="ig-tab on">Post</button>
-      <button class="ig-tab">Clip</button>
-    </div>
     <div class="home-ind"><i></i></div>`;
 }
 
@@ -1387,11 +1363,6 @@ document.getElementById("stage").addEventListener("click", e => {
     const hero = scr.querySelector(".ig-car > img:not(.peek)") || scr.querySelector(".ig-hero img");
     const src = igCell.querySelector("img")?.src;
     if (hero && src) hero.src = src;
-    return;
-  }
-  const igTab = e.target.closest(".ig-tab");
-  if (igTab) {
-    igTab.parentElement.querySelectorAll(".ig-tab").forEach(x => x.classList.toggle("on", x === igTab));
     return;
   }
   const sw = e.target.closest(".sw");

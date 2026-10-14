@@ -1,8 +1,9 @@
 // Verify fo-flow SAVED-001: IG-style Saved hub — header (back / Saved / search / +),
 // tab pills (All/Collections/Posts), Collections 2-col grid + See all,
 // All posts 3-col grid + Manage (multi-select -> Move to collection / Remove),
-// New collection sheet (Cancel / Next, 0/40 counter + clear X, Add people to collection),
-// collection detail page, search-within-saved, empty states. Memory-only state.
+// New collection sheet (Cancel / Next, 0/40 counter + clear X — SAVED-002: no Add people row,
+// name input autofocused so mobile keyboard pops), collection detail page,
+// search-within-saved, empty states. Memory-only state.
 // Regression: save sheet picker flow, unsave, post viewer from saved grid.
 // FEED-021: empty collections show bookmark icon (no img) in col rows, big
 // cards, save sheet rows and move sheet rows — same pattern as WL gift icon.
@@ -12,7 +13,7 @@ const { chromium } = require("playwright");
 import { mkdirSync } from "fs";
 
 const BASE = "http://127.0.0.1:4173/fo-flow";
-const OUT = import.meta.dirname + "/screenshots/task-SAVED-001";
+const OUT = import.meta.dirname + "/screenshots/task-SAVED-002";
 mkdirSync(OUT, { recursive: true });
 
 const browser = await chromium.launch();
@@ -85,19 +86,15 @@ await page.screenshot({ path: `${OUT}/d-saved-viewer.png` });
 await page.locator(".pv-back").click();
 await page.waitForTimeout(300);
 
-// 5) "+" -> New collection sheet (Cancel/Next, counter, clear X, add people)
+// 5) "+" -> New collection sheet (Cancel/Next, counter, clear X; SAVED-002: no add people, autofocus)
 await sub().locator(".svd-plus").click();
 await page.waitForTimeout(300);
 check("nc sheet opens", await page.locator(".comment-sheet.nc").count() === 1 && (await page.locator(".nc-title").textContent()).trim() === "New collection");
 check("nc Cancel + disabled Next", (await page.locator(".nc-cancel").textContent()).trim() === "Cancel" && await page.locator(".nc-next").isDisabled());
 check("nc counter 0/40", (await page.locator(".nc-count").textContent()).trim() === "0 / 40");
-check("add people row", (await page.locator(".nc-ppl-btn .t").textContent()).trim() === "Add people to collection");
-await page.locator(".nc-ppl-btn").click();
-await page.waitForTimeout(200);
-check("people list expands", await page.locator(".nc-ppl:not([hidden]) .nc-fr").count() > 0);
-await page.locator(".nc-fr").first().click();
-await page.waitForTimeout(150);
-check("friend toggle on", await page.locator(".nc-fr.on").count() === 1);
+check("SAVED-002: no add people row", await page.locator(".nc-ppl-btn, .nc-ppl, .nc-fr").count() === 0);
+check("SAVED-002: sheet bottom padding", await page.locator(".comment-sheet.nc").evaluate(el => parseFloat(getComputedStyle(el).paddingBottom) >= 18));
+check("SAVED-002: name input autofocused (mobile keyboard pops)", await page.evaluate(() => document.activeElement && document.activeElement.classList.contains("nc-input")));
 await page.locator(".nc-input").fill("Divers");
 await page.waitForTimeout(150);
 check("counter 6/40 + Next enabled", (await page.locator(".nc-count").textContent()).trim() === "6 / 40" && !(await page.locator(".nc-next").isDisabled()));
@@ -117,7 +114,7 @@ await sub().locator('.svd-tab[data-tab="collections"]').click();
 await page.waitForTimeout(250);
 check("new collection in grid", await sub().locator(".svd-colbig").count() === 5 && (await sub().textContent()).includes("Divers"));
 check("new col card name", (await page.locator('.svd-colbig[data-col="Divers"] .n').textContent()).trim() === "Divers");
-check("friend saved on new col", await page.evaluate(() => COLLECTIONS.find(c => c.name === "Divers").people.length === 1));
+check("SAVED-002: new col has no people", await page.evaluate(() => !COLLECTIONS.find(c => c.name === "Divers").people));
 check("FEED-021: new empty col big card shows bookmark icon",
   await sub().locator('.svd-colbig[data-col="Divers"] .cv.none svg').count() === 1);
 await page.screenshot({ path: `${OUT}/d-saved-collections-new.png` });
