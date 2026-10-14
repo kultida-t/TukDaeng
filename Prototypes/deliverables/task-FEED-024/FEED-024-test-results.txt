@@ -7,24 +7,27 @@ PASS feed renders phone
 PASS own post card injected on top of feed
 PASS other post menu keeps Not interested + Report
 PASS pm sheet opens for own post
-PASS preview card shows thumb + caption, no audio row
-PASS 8 own-post menu rows in order
+PASS no preview card on top of menu
+PASS 6 own-post menu rows in order
+PASS no Share / hide-counts / QR / reel / adjust-preview rows
 PASS Delete row is danger-styled
 PASS Save → toast + saved flag + card save-btn on
 PASS toast says Saved
-PASS Share → share sheet opens
 PASS Archive → archived flag + toast
 PASS Pin to profile → pinned flag + toast
-PASS hideCounts → views + liked-by hidden on card
 PASS noComments → comment btn hidden on card
-PASS menu labels flip (Unhide / Turn on commenting / Remove from saved / Unarchive / Unpin)
+PASS menu labels flip (Turn on commenting / Remove from saved / Unarchive / Unpin)
 PASS Edit → dialog with caption textarea
 PASS Edit saves caption → card re-renders new caption
 PASS detail page ... shows own-post menu
 PASS Delete → confirm dialog
 PASS Delete removes post from POSTS + feed
 PASS toast says Post deleted
+PASS More options pane opens
+PASS no hideCounts toggle in More options
+PASS Turn off commenting toggle still there
+PASS audience options still there
 PASS light theme own menu renders
 PASS no console/page errors
 
-23 passed, 0 failed
+26 passed, 0 failed

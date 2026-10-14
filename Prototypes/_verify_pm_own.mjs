@@ -11,7 +11,7 @@ mkdirSync(OUT, { recursive: true });
 let pass = 0, fail = 0;
 const check = (name, ok) => { console.log(`${ok ? "PASS" : "FAIL"} ${name}`); ok ? pass++ : fail++; };
 
-const OWN_LABELS = ["Save", "Share", "Archive", "Hide like and view counts", "Turn off commenting", "Edit", "Pin to profile", "Delete"];
+const OWN_LABELS = ["Save", "Archive", "Turn off commenting", "Edit", "Pin to profile", "Delete"];
 
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 560, height: 950 }, deviceScaleFactor: 2 });
@@ -54,10 +54,10 @@ await page.waitForTimeout(300);
 await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
 await page.waitForTimeout(350);
 check("pm sheet opens for own post", await page.locator(".screen").evaluate(el => el.classList.contains("pm-open")));
-check("preview card shows thumb + caption, no audio row", await page.locator(".comment-sheet .pm-post").evaluate(el =>
-  !!el.querySelector("img.pm-ptumb") && el.querySelector(".pm-pt").textContent === "my own test post" && !/audio/i.test(el.textContent)));
+check("no preview card on top of menu", await page.locator(".comment-sheet .pm-post").count() === 0);
 labels = await page.locator(".comment-sheet .pm-row span").allTextContents();
-check("8 own-post menu rows in order", JSON.stringify(labels) === JSON.stringify(OWN_LABELS));
+check("6 own-post menu rows in order", JSON.stringify(labels) === JSON.stringify(OWN_LABELS));
+check("no Share / hide-counts / QR / reel / adjust-preview rows", !labels.some(l => /share|like count|qr|reel|preview|audio/i.test(l)));
 check("Delete row is danger-styled", await page.locator(".comment-sheet .pm-row.danger span").allTextContents().then(t => t.join() === "Delete"));
 await page.screenshot({ path: `${OUT}/pm-own-1-menu-dark.png` });
 
@@ -69,16 +69,7 @@ check("Save → toast + saved flag + card save-btn on", await page.evaluate(() =
   document.querySelector('.post[data-pid="own1"] .save-btn')?.classList.contains("saved")));
 check("toast says Saved", await page.locator(".sc-toast").evaluate(t => t.classList.contains("show") && t.textContent === "Saved"));
 
-// 4. Share opens the existing share sheet
-await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
-await page.waitForTimeout(300);
-await page.locator(".pm-own-share").click();
-await page.waitForTimeout(350);
-check("Share → share sheet opens", await page.locator(".screen").evaluate(el => el.classList.contains("share-open")));
-await page.locator(".sheet-backdrop").click({ force: true });
-await page.waitForTimeout(300);
-
-// 5. Archive / Pin — memory-only flags + toast
+// 4. Archive / Pin — memory-only flags + toast
 await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
 await page.locator(".pm-own-archive").click();
 await page.waitForTimeout(250);
@@ -90,16 +81,7 @@ await page.waitForTimeout(250);
 check("Pin to profile → pinned flag + toast", await page.evaluate(() => POSTS.find(p => p.id === "own1").pinned === true) &&
   await page.locator(".sc-toast").evaluate(t => t.textContent === "Pinned to your profile"));
 
-// 6. Hide like and view counts → card + detail re-render without counts
-await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
-await page.locator(".pm-own-hidec").click();
-await page.waitForTimeout(300);
-check("hideCounts → views + liked-by hidden on card", await page.evaluate(() => {
-  const art = document.querySelector('.feed-scroll .post[data-pid="own1"]');
-  return POSTS.find(p => p.id === "own1").hideCounts === true && !art.querySelector(".views-stat") && !art.querySelector(".liked-by");
-}));
-
-// 7. Turn off commenting → comment button gone from card
+// 6. Turn off commenting → comment button gone from card
 await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
 await page.locator(".pm-own-nocomm").click();
 await page.waitForTimeout(300);
@@ -110,9 +92,9 @@ check("noComments → comment btn hidden on card", await page.evaluate(() => {
 await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
 await page.waitForTimeout(300);
 labels = await page.locator(".comment-sheet .pm-row span").allTextContents();
-check("menu labels flip (Unhide / Turn on commenting / Remove from saved / Unarchive / Unpin)",
+check("menu labels flip (Turn on commenting / Remove from saved / Unarchive / Unpin)",
   labels.includes("Remove from saved") && labels.includes("Unarchive") &&
-  labels.includes("Unhide like and view counts") && labels.includes("Turn on commenting") && labels.includes("Unpin from profile"));
+  labels.includes("Turn on commenting") && labels.includes("Unpin from profile"));
 await page.locator(".sheet-backdrop").click({ force: true });
 await page.waitForTimeout(300);
 
@@ -157,7 +139,29 @@ check("Delete removes post from POSTS + feed", await page.evaluate(() =>
   !POSTS.find(p => p.id === "own1") && !document.querySelector('.post[data-pid="own1"]')));
 check("toast says Post deleted", await page.locator(".sc-toast").evaluate(t => t.textContent === "Post deleted"));
 
-// 11. light theme sanity
+// 11. create flow — More options pane no longer has "Hide like and view counts"
+await page.locator('[data-flow="create"]').click();
+await page.waitForTimeout(450);
+await page.locator(".cf .ig-grid .cell[data-i]").first().click();
+await page.waitForTimeout(250);
+await page.locator(".cf-next").click();
+await page.waitForTimeout(400);
+await page.locator('.ig-row[data-pane="more"]').click();
+await page.waitForTimeout(350);
+check("More options pane opens", await page.locator(".cf-pane").evaluate(el => el.classList.contains("open")));
+check("no hideCounts toggle in More options", await page.locator('.cf-pane [data-f="hideCounts"]').count() === 0);
+check("Turn off commenting toggle still there", await page.locator('.cf-pane [data-f="noComments"]').count() === 1);
+check("audience options still there", await page.locator(".cf-pane .aud-opt").count() === 2);
+await page.locator(".cf-pane .pane-done").click();
+await page.waitForTimeout(250);
+await page.locator(".cf-back2").click();
+await page.waitForTimeout(300);
+await page.locator(".cf-x").click();
+await page.waitForTimeout(300);
+await page.locator(".dlg-discard-go").click().catch(() => {});
+await page.waitForTimeout(300);
+
+// 12. light theme sanity
 await page.locator("#themeToggle").click();
 await page.waitForTimeout(400);
 await page.evaluate(() => {
@@ -171,7 +175,7 @@ await page.evaluate(() => {
 });
 await page.locator('.feed-scroll .post[data-pid="own2"] .post-head .more').click();
 await page.waitForTimeout(350);
-check("light theme own menu renders", await page.locator(".comment-sheet .pm-row").count() === 8);
+check("light theme own menu renders", await page.locator(".comment-sheet .pm-row").count() === 6);
 await page.screenshot({ path: `${OUT}/pm-own-3-menu-light.png` });
 await page.locator(".sheet-backdrop").click({ force: true });
 
