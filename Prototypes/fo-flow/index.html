@@ -270,6 +270,48 @@
   .icon-btn:hover { background: var(--chip-bg); }
   .icon-btn svg { display: block; }
 
+  /* ============ HAMBURGER DRAWER (NAV-001 — IG settings-style side menu) ============ */
+  .hb-wrap { position: absolute; inset: 0; z-index: 38; pointer-events: none; }
+  .screen.hb-open .hb-wrap { pointer-events: auto; }
+  .hb-scrim {
+    position: absolute; left: 0; right: 0; top: 34px; bottom: 0;
+    background: rgba(0,0,0,.3);
+    opacity: 0; transition: opacity .26s ease;
+  }
+  .screen.hb-open .hb-scrim { opacity: 1; }
+  .hb-panel {
+    position: absolute; left: 0; top: 34px; bottom: 0;
+    width: 82%;
+    background: var(--bg);
+    border-right: 1px solid var(--line);
+    transform: translateX(-103%);
+    transition: transform .28s ease;
+    display: flex; flex-direction: column;
+  }
+  .screen.hb-open .hb-panel { transform: none; }
+  .hb-list { flex: 1; padding: 40px 0 12px; overflow-y: auto; scrollbar-width: none; }
+  .hb-list::-webkit-scrollbar { display: none; }
+  .hb-item {
+    display: flex; align-items: center; gap: 18px;
+    width: 100%; padding: 13px 26px;
+    background: none; border: none; cursor: pointer;
+    font-family: var(--font-main); font-size: 15.5px; font-weight: 500;
+    color: var(--text); text-align: left;
+  }
+  .hb-item:hover { background: var(--chip-bg); }
+  .hb-item svg { display: block; flex-shrink: 0; opacity: .92; }
+  .hb-profile {
+    position: absolute; right: 14px; bottom: 30px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 10px 16px; border-radius: 18px;
+    background: var(--surface); border: 1px solid var(--line);
+    color: var(--text); font-family: var(--font-main); font-size: 12px; font-weight: 500;
+    cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    opacity: 0; transition: opacity .2s ease .06s;
+  }
+  .screen.hb-open .hb-profile { opacity: 1; }
+  .hb-profile svg { display: block; }
+
   /* ============ FEED TABS ============ */
   .feed-tabs {
     display: flex;
@@ -3212,6 +3254,10 @@ const I = {
   lock: (s=14) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>`,
   stack: (s=14) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
   burger: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>`,
+  gem: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M2 9h20"/><path d="M9.5 3 8 9l4 13 4-13-1.5-6"/></svg>`,
+  award: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.9 17 22l-5-3-5 3 1.5-8.1"/></svg>`,
+  bag: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+  home: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>`,
   search: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>`,
   clock: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>`,
   sliders: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="15" cy="6" r="2.3" fill="var(--bg)"/><circle cx="9" cy="12" r="2.3" fill="var(--bg)"/><circle cx="17" cy="18" r="2.3" fill="var(--bg)"/></svg>`,
@@ -5488,7 +5534,7 @@ function screenHTML(theme, variant) {
     </div>
 
     <div class="app-header">
-      <button class="icon-btn">${I.burger()}</button>
+      <button class="icon-btn hb-btn">${I.burger()}</button>
       <button class="icon-btn search-btn">${I.search()}</button>
       <span class="wordmark">TUK DAENG <span class="caret">${I.chev(13)}</span></span>
       <span class="spacer"></span>
@@ -5528,6 +5574,23 @@ function screenHTML(theme, variant) {
     <div class="page-detail"></div>
     <div class="page-sub"></div>
     <div class="page-pv"></div>
+    <div class="hb-wrap">
+      <div class="hb-scrim"></div>
+      <div class="hb-panel">
+        <div class="hb-list">
+          <button class="hb-item">${I.gem(23)}<span>Watch Brands</span></button>
+          <button class="hb-item">${I.award(23)}<span>Watch Price Index</span></button>
+          <button class="hb-item">${I.bag(23)}<span>Watch Shops</span></button>
+          <button class="hb-item">${I.bag(23)}<span>Accessories Shop</span></button>
+          <button class="hb-item">${I.bag(23)}<span>Repair Shop</span></button>
+          <button class="hb-item">${I.home(23)}<span>Auction Center</span></button>
+          <button class="hb-item">${I.home(23)}<span>Consignment Center</span></button>
+          <button class="hb-item">${I.home(23)}<span>Authentication Center</span></button>
+          <button class="hb-item">${I.users(23)}<span>Community</span></button>
+        </div>
+      </div>
+      <button class="hb-profile">${I.navUser(20)}<span>Profile</span></button>
+    </div>
   </div>`;
 }
 
@@ -6437,6 +6500,12 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const fltApply = e.target.closest(".flt-apply");
   if (fltApply) { applyFilters(fltApply.closest(".screen")); return; }
+  const hbBtn = e.target.closest(".hb-btn");
+  if (hbBtn) { hbBtn.closest(".screen").classList.add("hb-open"); return; }
+  const hbScrim = e.target.closest(".hb-scrim");
+  if (hbScrim) { hbScrim.closest(".screen").classList.remove("hb-open"); return; }
+  const hbDead = e.target.closest(".hb-item, .hb-profile");
+  if (hbDead) { toast("Not in this prototype yet"); return; }
   const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn), .emoji-row, .comment-input, .sheet-title .send, .c-meta");
   if (dead) { toast("Not in this prototype yet"); return; }
   const wm = e.target.closest(".wordmark");
