@@ -157,6 +157,7 @@
     --chip-bg: rgba(255,255,255,.08);
     --chip-text: #d6d6dc;
     --btn-gray: #2b2b31;
+    --link: #79b5f2;
     background: var(--bg);
     color: var(--text);
   }
@@ -170,6 +171,7 @@
     --chip-bg: rgba(0,0,0,.06);
     --chip-text: #3a3a42;
     --btn-gray: #ededf0;
+    --link: #0b57d0;
     background: var(--bg);
     color: var(--text);
   }
@@ -990,7 +992,7 @@
   .pm-undo {
     font-family: var(--font-main);
     font-size: 14px; font-weight: 600;
-    color: #3d9bff;
+    color: var(--red);
     background: none; border: none;
     padding: 4px;
     cursor: pointer;
@@ -1099,7 +1101,7 @@
   .lk-follow {
     flex-shrink: 0; font-family: var(--font-main); font-size: 13.5px; font-weight: 600;
     border: none; border-radius: 8px; padding: 7px 22px; cursor: pointer;
-    background: #3d9bff; color: #fff;
+    background: var(--red); color: #fff;
   }
   .lk-follow.on { background: var(--chip-bg); color: var(--text); }
 
@@ -1187,7 +1189,7 @@
   .sv-sec .l { font-size: 14.5px; font-weight: 700; color: var(--text); }
   .sv-new, .wl-new {
     font-family: var(--font-main); font-size: 13px; font-weight: 500;
-    color: #3d9bff; background: none; border: none; cursor: pointer; padding: 4px 0;
+    color: var(--red); background: none; border: none; cursor: pointer; padding: 4px 0;
   }
   .sv-list { overflow-y: auto; scrollbar-width: none; }
   .sv-list::-webkit-scrollbar { display: none; }
@@ -1209,7 +1211,7 @@
   .svd-x { display: none; border: none; background: none; color: var(--muted); cursor: pointer; padding: 0; flex-shrink: 0; }
   .sr-field.has-q .svd-x { display: flex; }
   .svd-cancel {
-    flex-shrink: 0; font-family: var(--font-main); font-size: 15px; color: #3d9bff;
+    flex-shrink: 0; font-family: var(--font-main); font-size: 15px; color: var(--red);
     background: none; border: none; cursor: pointer; padding: 6px 4px;
   }
   .svd-tabs {
@@ -1225,7 +1227,7 @@
   .svd-tab.on { background: color-mix(in srgb, var(--text) 22%, transparent); }
   .svd-see, .svd-done {
     background: none; border: none; font-family: var(--font-main);
-    font-size: 13.5px; font-weight: 600; color: #3d9bff; cursor: pointer; padding: 0;
+    font-size: 13.5px; font-weight: 600; color: var(--red); cursor: pointer; padding: 0;
   }
   .svd-done { font-size: 14.5px; padding: 6px 4px; }
   .svd-sec { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 9px; }
@@ -1285,7 +1287,7 @@
     border-radius: 50%; border: 1.5px solid rgba(255,255,255,.9); background: rgba(0,0,0,.12);
     display: flex; align-items: center; justify-content: center; color: #fff;
   }
-  .svd-tile.on .svd-sel { background: #3d9bff; border-color: #3d9bff; }
+  .svd-tile.on .svd-sel { background: var(--red); border-color: var(--red); }
   .svd-tile.on img { opacity: .5; }
   .svd-bar {
     display: flex; align-items: center; gap: 10px; flex-shrink: 0;
@@ -1299,7 +1301,7 @@
   .svd-bar button:disabled { opacity: .38; cursor: default; }
   .svd-selall {
     background: none; border: none; font-family: var(--font-main);
-    font-size: 15px; color: #3d9bff; cursor: pointer; padding: 6px 4px;
+    font-size: 15px; color: var(--red); cursor: pointer; padding: 6px 4px;
   }
   .svd-mini { display: none; }
   .svd-body { display: flex; flex-direction: column; }
@@ -1347,7 +1349,7 @@
   .ecv img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .ec-chgcover {
     background: none; border: none; font-family: var(--font-main);
-    font-size: 14px; color: #3d9bff; cursor: pointer; padding: 2px;
+    font-size: 14px; color: var(--red); cursor: pointer; padding: 2px;
   }
   .ec-sec { font-size: 15px; font-weight: 700; color: var(--text); padding: 18px 14px 10px; }
   .ec-field {
@@ -1373,7 +1375,7 @@
     overflow: hidden; cursor: pointer; background: var(--surface-2);
   }
   .ec-ctile img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .ec-ctile.on .svd-sel { background: #3d9bff; border-color: #3d9bff; }
+  .ec-ctile.on .svd-sel { background: var(--red); border-color: var(--red); }
   /* move-to-collection picker reuses the sv sheet look */
   .svd-mv {
     width: 100%; display: flex; align-items: center; gap: 12px;
@@ -1382,7 +1384,7 @@
   }
   .svd-mv-new {
     font-family: var(--font-main); font-size: 13px; font-weight: 500;
-    color: #3d9bff; background: none; border: none; cursor: pointer; padding: 4px 0;
+    color: var(--red); background: none; border: none; cursor: pointer; padding: 4px 0;
   }
   .svd-mv-new:disabled { color: var(--muted); opacity: .6; cursor: default; }
   .sv-bm { display: flex; align-items: center; justify-content: center; color: var(--text); }
@@ -1395,7 +1397,7 @@
     font-size: 15px; cursor: pointer; padding: 6px 2px; min-width: 52px;
   }
   .nc-cancel { color: var(--text); text-align: left; }
-  .nc-next { color: #3d9bff; font-weight: 700; text-align: right; }
+  .nc-next { color: var(--red); font-weight: 700; text-align: right; }
   .nc-next:disabled { color: var(--muted); opacity: .6; cursor: default; }
   .nc-field {
     display: flex; align-items: center; gap: 8px; margin: 2px 16px 14px; flex-shrink: 0;
@@ -1436,7 +1438,7 @@
     width: 23px; height: 23px; border-radius: 50%; border: 2px solid var(--muted);
     flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff;
   }
-  .nc-fr.on .chk { background: #3d9bff; border-color: #3d9bff; }
+  .nc-fr.on .chk { background: var(--red); border-color: var(--red); }
 
   /* settings / content-preferences page — slides in like the detail page */
   .page-sub {
@@ -1448,9 +1450,9 @@
   .screen.sub-open .page-sub { transform: none; animation: pgSide .28s ease; }
   @keyframes pgSide { from { transform: translateX(100%); } }
   /* report view slides up from the bottom like an IG sheet */
-  .page-sub.pg-up { transform: translateY(100%); border-radius: 16px 16px 0 0; }
+  .page-sub.pg-up { transform: translateY(110%); border-radius: 16px 16px 0 0; }
   .screen.sub-open .page-sub.pg-up { animation-name: pgUp; }
-  @keyframes pgUp { from { transform: translateY(100%); } }
+  @keyframes pgUp { from { transform: translateY(110%); } }
   .sub-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
   .sub-scroll::-webkit-scrollbar { display: none; }
   /* ============ POST VIEWER (IG search-result viewer — vertical swipe through results) ============ */
@@ -1559,7 +1561,7 @@
     border-radius: 50%; background: #fff; transition: transform .2s;
     box-shadow: 0 1px 3px rgba(0,0,0,.3);
   }
-  .tg-sw.on { background: var(--text); }
+  .tg-sw.on { background: var(--red); }
   .tg-sw.on::after { transform: translateX(18px); }
   .sens-check { color: var(--text); }
   .mrow { display: flex; align-items: center; gap: 12px; padding: 9px 16px; }
@@ -1577,8 +1579,8 @@
   .fav-desc { font-size: 13px; color: var(--muted); line-height: 1.5; padding: 14px 16px 4px; }
   .fav-search { margin: 12px 16px 4px; }
   .fav-sec { display: flex; align-items: center; }
-  .fav-removeall { margin-left: auto; background: none; border: none; padding: 0; font-family: var(--font-main); font-size: 13px; font-weight: 600; color: #3d9bff; cursor: pointer; }
-  .mact.fav-add { background: #3d9bff; color: #fff; }
+  .fav-removeall { margin-left: auto; background: none; border: none; padding: 0; font-family: var(--font-main); font-size: 13px; font-weight: 600; color: var(--red); cursor: pointer; }
+  .mact.fav-add { background: var(--red); color: #fff; }
 
   /* ============ SEARCH PAGE (SEARCH-001 — IG-style search flow) ============ */
   .sr-head { display: flex; align-items: center; gap: 8px; padding: 8px 10px 6px; flex-shrink: 0; }
@@ -1626,7 +1628,7 @@
   .rc-title { margin-left: auto; margin-right: auto; }
   .rc-clear {
     flex-shrink: 0; background: none; border: none; cursor: pointer; padding: 6px 0;
-    font-family: var(--font-main); font-size: 13.5px; font-weight: 600; color: #3d9bff;
+    font-family: var(--font-main); font-size: 13.5px; font-weight: 600; color: var(--red);
   }
   .sr-chip {
     flex-shrink: 0; display: flex; align-items: center; gap: 6px;
@@ -1653,7 +1655,7 @@
   /* recent + suggestion rows */
   .rc-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 6px; }
   .rc-head .t { font-size: 15px; font-weight: 700; color: var(--text); }
-  .rc-all { background: none; border: none; font-family: var(--font-main); font-size: 13.5px; font-weight: 600; color: #3d9bff; cursor: pointer; padding: 0; }
+  .rc-all { background: none; border: none; font-family: var(--font-main); font-size: 13.5px; font-weight: 600; color: var(--red); cursor: pointer; padding: 0; }
   .rc-row, .ac-row {
     width: 100%; display: flex; align-items: center; gap: 12px; padding: 7px 16px;
     background: none; border: none; cursor: pointer; font-family: var(--font-main); text-align: left;
@@ -1664,6 +1666,7 @@
     width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
     border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--text);
   }
+  .ac-ico.tag-ic { font-size: 20px; font-weight: 700; }
   .rc-who, .ac-who { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .rc-who .u, .ac-who .u { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .rc-who .d, .ac-who .d { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1715,7 +1718,7 @@
   .ni-action {
     width: 100%; font-family: var(--font-main); font-size: 14px; font-weight: 600;
     padding: 14px; background: none; border: none; border-top: 1px solid var(--line);
-    color: #3d9bff; cursor: pointer; text-align: center;
+    color: var(--red); cursor: pointer; text-align: center;
   }
   .ni-action.danger { color: var(--red); }
   /* full-page report view — centered title + X top-right (IG-style) */
@@ -2127,7 +2130,7 @@
   }
   .post-photo, .detail-hero { touch-action: pan-y; }
   .post-photo img, .detail-hero img { user-select: none; -webkit-user-drag: none; }
-  .igd-tag { color: #79b5f2; }
+  .igd-tag { color: var(--link); cursor: pointer; }
 
   /* K5 — floating chat bubble + pop-up composer (detail page) */
   .cp-backdrop {
@@ -2265,6 +2268,445 @@
     opacity: .4;
     cursor: default;
     transform: none;
+  }
+
+  /* ============ CREATE-001 — IG-style create-post task flow (picker → caption → feed) ============ */
+  .cf {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative;
+    background: var(--bg);
+  }
+  .cf-head {
+    display: flex;
+    align-items: center;
+    padding: 4px 12px 10px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .cf-head .t {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 15.5px;
+    font-weight: 700;
+  }
+  .cf-act {
+    margin-left: auto;
+    font-family: var(--font-main);
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--red);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 4px;
+  }
+  .cf-act.off { color: var(--muted); font-weight: 600; }
+  .cf-scroll {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+    min-height: 0;
+  }
+  .cf-scroll::-webkit-scrollbar { display: none; }
+  .cf .add-tile {
+    background: var(--surface-2);
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  /* step 1 — picker: square hero preview + Recents roll */
+  .cf .ig-hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--surface-2);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .cf .ig-car { position: absolute; inset: 0; overflow: hidden; }
+  .cf .ig-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cf .ig-hero .expand {
+    position: absolute;
+    left: 14px; bottom: 14px;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(20,20,24,.6);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .cf .ig-hero .add-tile { position: absolute; inset: 0; }
+  .cf .ig-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px 8px;
+    flex-shrink: 0;
+  }
+  .cf .ig-bar .rc {
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    background: none; border: none;
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer;
+    padding: 0;
+  }
+  .cf .sel-btn {
+    margin-left: auto;
+    font-family: var(--font-main);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--chip-bg);
+    border: none;
+    border-radius: 999px;
+    padding: 7px 14px;
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer;
+  }
+  .cf .sel-btn.on { background: var(--red); color: #fff; }
+  .cf .ig-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5px;
+    flex-shrink: 0;
+  }
+  .cf .ig-grid .cell {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    overflow: hidden;
+    background: var(--surface-2);
+    cursor: pointer;
+  }
+  .cf .ig-grid .cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cf .ig-grid .cell.cam { display: flex; align-items: center; justify-content: center; color: var(--text); }
+  .cf .ig-grid .radio {
+    display: none;
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1.6px solid rgba(255,255,255,.92);
+    background: rgba(0,0,0,.3);
+    color: #fff;
+    font-size: 11px; font-weight: 700;
+    align-items: center; justify-content: center;
+    z-index: 2;
+  }
+  .cf .ig-grid.selmode .radio { display: flex; }
+  .cf .ig-grid.selmode .radio.on { background: var(--red); border-color: var(--red); }
+  .cf .ig-grid.selmode .cell.sel img { opacity: .62; }
+  .cf .ig-grid.selmode .cell.sel::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,.18);
+  }
+  .cf .ig-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 26px;
+    padding: 10px 0 6px;
+    border-top: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .cf .ig-tab {
+    font-family: var(--font-main);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: none; border: none;
+    cursor: pointer;
+    padding: 4px 2px;
+  }
+  .cf .ig-tab.on { color: var(--text); font-weight: 700; }
+  /* step 2 — caption page sliding in over the picker */
+  .cf .cf-step2 {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    transform: translateX(100%);
+    transition: transform .28s ease;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+  }
+  .cf.cap-open .cf-step2 { transform: none; }
+  .cf .ig-cap-scroll {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+    min-height: 0;
+  }
+  .cf .ig-cap-scroll::-webkit-scrollbar { display: none; }
+  .cf .ig-thumb {
+    width: 168px;
+    aspect-ratio: 4 / 5;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 4px auto 0;
+    background: var(--surface-2);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .cf .ig-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cf .ig-thumbs.multi {
+    display: flex;
+    gap: 3px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 4px 16px 0;
+    justify-content: flex-start;
+  }
+  .cf .ig-thumbs.multi::-webkit-scrollbar { display: none; }
+  .cf .ig-thumbs.multi .ig-thumb { margin: 0; width: 46%; }
+  .cf .ig-thumb .rm-mini {
+    position: absolute;
+    bottom: 8px; right: 8px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(20,20,24,.62);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .cf .ig-thumb img { cursor: zoom-in; -webkit-user-drag: none; user-select: none; }
+  .cf .ig-thumbs.multi { cursor: grab; }
+  .cf .ig-thumbs.multi:active { cursor: grabbing; }
+  /* tap a caption-step thumbnail → full-sheet photo preview (IG), swipe between photos */
+  .cf .ig-zoom {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease;
+    touch-action: pan-y;
+  }
+  .cf .ig-zoom.open { opacity: 1; pointer-events: auto; }
+  .cf .ig-zoom img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    animation: igZoomIn .18s ease;
+    -webkit-user-drag: none;
+    user-select: none;
+    touch-action: pan-y;
+  }
+  @keyframes igZoomIn { from { transform: scale(.92); } to { transform: none; } }
+  .cf .ig-zoom .z-dots {
+    position: absolute;
+    bottom: 16px; left: 0; right: 0;
+    display: flex; gap: 6px; justify-content: center;
+    pointer-events: none;
+  }
+  .cf .ig-zoom .z-dots i {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,.38);
+  }
+  .cf .ig-zoom .z-dots i.on { background: #fff; }
+  .cf .ig-cap-line {
+    padding: 14px 18px 10px;
+  }
+  .cf .ig-cap-line .ta {
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 68px;
+    outline: none;
+  }
+  .cf .ig-cap-line .ta:empty::before { content: attr(data-ph); color: var(--muted); }
+  .cf .ig-chip-row {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cf .ig-chip-row::-webkit-scrollbar { display: none; }
+  .cf .ig-chip {
+    font-family: var(--font-main);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 14px;
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .cf .ig-rows { padding: 8px 0 0; }
+  .cf .ig-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+    background: none; border: none;
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+  }
+  .cf .ig-row .ic { color: var(--text); display: flex; flex-shrink: 0; width: 24px; justify-content: center; }
+  .cf .ig-row .val {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 52%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cf .ig-row .val.set { color: var(--text); font-weight: 600; }
+  .cf .ig-row .val.set.price { color: var(--red); }
+  .cf .ig-row > svg { color: var(--muted); flex-shrink: 0; }
+  .cf .ig-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+  }
+  .cf .ig-toggle-row .tx { flex: 1; min-width: 0; }
+  .cf .ig-toggle-row .tt { font-size: 14px; font-weight: 500; }
+  .cf .ig-toggle-row .ts { font-size: 11.5px; color: var(--muted); margin-top: 2px; line-height: 1.45; }
+  .cf .sw {
+    width: 44px; height: 26px;
+    border-radius: 999px;
+    background: var(--chip-bg);
+    border: none;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .2s ease;
+  }
+  .cf .sw::after {
+    content: "";
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform .2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+  }
+  .cf .sw.on { background: var(--red); }
+  .cf .sw.on::after { transform: translateX(18px); }
+  .cf .ig-share {
+    flex-shrink: 0;
+    margin: 6px 14px 0;
+    font-family: var(--font-main);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 13px 0;
+    border-radius: 12px;
+    border: none;
+    background: var(--red);
+    color: #fff;
+    cursor: pointer;
+  }
+  .cf .ig-share.off { background: var(--btn-gray); color: var(--muted); }
+  /* caption row sub-panes — slide in from right over step 2 (IG-style option screens) */
+  .cf .cf-pane {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: var(--bg);
+    transform: translateX(100%);
+    transition: transform .26s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .cf .cf-pane.open { transform: none; }
+  .cf .pane-body { flex: 1; overflow-y: auto; min-height: 0; scrollbar-width: none; padding-bottom: 24px; }
+  .cf .pane-body::-webkit-scrollbar { display: none; }
+  .cf .pane-in {
+    width: calc(100% - 32px);
+    margin: 8px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+  }
+  .cf .pane-in:focus { border-color: var(--muted); }
+  .cf .pane-lab { font-size: 12px; color: var(--muted); font-weight: 600; padding: 14px 18px 4px; line-height: 1.5; }
+  .cf .loc-opt, .cf .cond-opt {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-family: var(--font-main);
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+  }
+  .cf .loc-opt:active, .cf .cond-opt:active { background: var(--surface-2); }
+  .cf .loc-opt svg { color: var(--muted); flex-shrink: 0; }
+  .cf .cond-opt .rad {
+    margin-left: auto;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--muted);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .cf .cond-opt.on .rad { border-color: var(--red); }
+  .cf .cond-opt.on .rad::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+  .cf .cond-opt .lab { flex: 1; min-width: 0; }
+  .cf .cond-opt .lab .sub { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .cf .pane-sec { font-size: 13px; color: var(--muted); font-weight: 600; padding: 18px 18px 8px; }
+  .cf .pane-note { font-size: 12px; color: var(--muted); padding: 8px 18px 4px; line-height: 1.5; }
+  .cf .ig-toggle-row .ic { color: var(--text); display: flex; flex-shrink: 0; width: 24px; justify-content: center; }
+  /* picked location row — name + distance + clear X (IG) */
+  .cf .ig-row .lab2 { flex: 1; min-width: 0; }
+  .cf .ig-row .lab2 .sub { display: block; font-size: 12px; color: var(--muted); font-weight: 400; margin-top: 1px; }
+  .cf .ig-row .loc-x {
+    margin-left: auto;
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cf .row-note {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    padding: 0 18px 8px;
   }
 </style>
 </head>
@@ -2706,6 +3148,15 @@ const I = {
   fb: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.7-1.6h1.6V4.1c-.3 0-1.2-.1-2.3-.1-2.4 0-4 1.5-4 4.2v2.4H7.5v3.2h3V22h3z"/></svg>`,
   igCam: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.4"/><circle cx="12" cy="12" r="4.4"/><circle cx="17.4" cy="6.6" r="1.3" fill="currentColor" stroke="none"/></svg>`,
   msngr: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.1 2 11.2c0 2.9 1.4 5.5 3.7 7.2V22l3.4-1.9c.9.2 1.9.4 2.9.4 5.5 0 10-4.1 10-9.3S17.5 2 12 2zm1 12.6-2.6-2.7-5 2.7 5.5-5.8 2.6 2.7 4.9-2.7-5.4 5.8z"/></svg>`,
+  camPlain: (s=26) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+  gridSel: (s=14) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`,
+  expandIc: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>`,
+  tag: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 12 22 2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.6"/></svg>`,
+  watch: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="6"/><path d="M12 9v3l2 2M9.5 3.5h5l-.6 2.7a6.9 6.9 0 0 0-3.8 0l-.6-2.7zM9.5 20.5h5l-.6-2.7a6.9 6.9 0 0 1-3.8 0l-.6 2.7z"/></svg>`,
+  shield: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/><path d="m9 11.5 2 2 4-4.5"/></svg>`,
+  box: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v8a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16V8a2 2 0 0 1 1-1.73l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>`,
+  music: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
+  pin: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
 };
 
 /* ================= RENDER ================= */
@@ -2788,8 +3239,8 @@ function detailHTML(p) {
       <div class="detail-pad">
         <div class="post-actions" style="padding:6px 0 2px;margin:0 -5px 0 -7px">
           <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
-          <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-          <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+          ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+          ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
           <button class="act share-btn">${I.share(22)}</button>
           <span class="act-right">
             <button class="mf-btn${p.modelFollowing ? " on" : ""}" title="${p.modelFollowing ? "Following this model" : "Follow this model"}">${I.navBell(23)}</button>
@@ -2892,22 +3343,22 @@ function igBodyHTML(p, withPostHead) {
     ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
     <div class="post-actions">
       <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
-      <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-      <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+      ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+      ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
         ${isSale && state.ask !== "bubble" ? askBtnHTML(false) : ""}
         <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
       </span>
     </div>
-    <div class="liked-by">
+    ${p.hideCounts || !p.likes || !p.likedBy ? "" : `<div class="liked-by">
       <span class="stack">
         <img src="${p.likedBy.avatar}" alt="">
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
       <span>Liked by <b>${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
-    </div>
+    </div>`}
     <p class="caption"><b>${p.seller}</b> ${igCaptionHTML(p)}</p>
     <div class="detail-pad">
       ${priceRow}
@@ -3215,6 +3666,9 @@ function postCard(p, variant) {
   const askSolid = (variant === "a2" || variant === "b2" || variant === "c2");
   const showAsk = p.type === "sale";
   const dots = p.photos.length > 1;
+  const hasDetails = hasPrice || (p.specGroups && p.specGroups.length) || (p.specs && p.specs.length);
+  /* "more" only when the caption actually has more text, or details are hidden behind the expand */
+  const showMore = hasDetails || (p.captionFull || "") !== p.caption;
 
   return `
   <article class="post" data-pid="${p.id}">
@@ -3222,6 +3676,7 @@ function postCard(p, variant) {
       <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
       <div class="who">
         <div class="name">${p.seller}</div>
+        ${p.location ? `<div class="sub-line">${p.location}</div>` : ""}
       </div>
       ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
       <button class="more">${I.dots(19)}</button>
@@ -3240,8 +3695,8 @@ function postCard(p, variant) {
 
     <div class="post-actions">
       <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
-      <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-      <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+      ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+      ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
         ${showAsk ? askBtnHTML(askSolid) : ""}
@@ -3249,22 +3704,22 @@ function postCard(p, variant) {
       </span>
     </div>
 
-    <div class="liked-by">
+    ${p.hideCounts || !p.likes || !p.likedBy ? "" : `<div class="liked-by">
       <span class="stack">
         <img src="${p.likedBy.avatar}" alt="">
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
       <span>Liked by <b>${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
-    </div>
+    </div>`}
 
-    <p class="caption"><b>${p.seller}</b> <span class="cap-short">${p.caption} <span class="more-link">more</span></span><span class="cap-full">${p.captionFull.replace(/\n/g, "<br>")}</span></p>
+    <p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">more</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>
 
     <div class="post-time">${p.time}</div>
 
     ${quietPrice ? `<p class="quiet-price">${p.price}</p>` : ""}
 
-    ${hasPrice ? triggerHTML() + detailsHTML(p, !priceOverlay && !quietPrice && !footerPrice) : ""}
+    ${hasDetails ? triggerHTML() + detailsHTML(p, hasPrice && !priceOverlay && !quietPrice && !footerPrice) : ""}
 
     ${footerPrice ? `
       <div class="price-footer">
@@ -3440,7 +3895,8 @@ function matchFilters(p, f) {
   return true;
 }
 function searchResults(S) {
-  let list = salePosts().filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
+  const isTag = S.q.trim().startsWith("#");
+  let list = (isTag ? POSTS.filter(p => !p.muted) : salePosts()).filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
   if (S.sort === "plo") list = [...list].sort((a, b) => priceNum(a) - priceNum(b));
   else if (S.sort === "phi") list = [...list].sort((a, b) => priceNum(b) - priceNum(a));
   else if (S.sort === "pop") list = [...list].sort((a, b) => viewsNum(b) - viewsNum(a));
@@ -3487,6 +3943,17 @@ function suggestRows(S) {
     .filter(p => p.seller.toLowerCase().includes(q))
     .map(p => ({ t: "seller", v: p.seller, sub: sellerSub(p.seller) }));
   return [...kw.slice(0, 6), ...sellers.slice(0, 4)];
+}
+/* Tags tab — every hashtag used in captions + suggested tags, matched against the query, counted per post (IG style) */
+function tagRows(S) {
+  const q = S.q.trim().replace(/^#+/, "").toLowerCase();
+  const set = new Set();
+  POSTS.filter(p => !p.muted).forEach(p => (String(p.captionFull || p.caption || "").match(/#[A-Za-z0-9_ก-๙]+/gi) || []).forEach(t => set.add(t.toLowerCase())));
+  (typeof CF_TAGS !== "undefined" ? CF_TAGS : []).forEach(t => set.add(t.toLowerCase()));
+  return [...set]
+    .filter(t => !q || t.slice(1).includes(q))
+    .map(t => ({ tag: t, n: POSTS.filter(p => !p.muted && String(p.captionFull || p.caption || "").toLowerCase().includes(t)).length }))
+    .sort((a, b) => b.n - a.n || a.tag.localeCompare(b.tag));
 }
 function exploreTiles() {
   const T = [];
@@ -3601,8 +4068,8 @@ function pvPostHTML(p, phi = 0) {
         <button class="pv-act like-btn${p.liked ? " liked" : ""}">${I.heart(26)}</button>
         <button class="pv-act pv-lbl liked-by">Likes</button>
       </div>
-      <button class="pv-act comment-btn">${I.comment(25)}<span>${p.comments}</span></button>
-      <span class="pv-act">${I.eye(23)}<span>${p.views}</span></span>
+      ${p.noComments ? "" : `<button class="pv-act comment-btn">${I.comment(25)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+      ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="pv-act">${I.eye(23)}<span>${p.views}</span></span>`}
       <button class="pv-act share-btn">${I.share(24)}</button>
       <button class="pv-act save-btn${p.saved ? " saved" : ""}">${I.bookmark(24)}</button>
       <button class="pv-act pm-btn">${I.dots(22)}</button>
@@ -3610,7 +4077,7 @@ function pvPostHTML(p, phi = 0) {
     <div class="pv-foot">
       <div class="pv-seller"><img src="${p.avatar}" alt=""><span class="n">${p.seller}</span>
         ${p.following ? "" : `<button class="follow-btn">Follow</button>`}</div>
-      <div class="caption pv-cap"><span class="cap-short">${p.caption} <span class="more-link">…</span></span><span class="cap-full">${(p.captionFull || p.caption).replace(/\n/g, "<br>")}</span></div>
+      <div class="caption pv-cap"><span class="cap-short">${igCaptionHTML(p, p.caption)}${(p.captionFull || "") !== p.caption ? ` <span class="more-link">…</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></div>
       ${hasSpecs ? `<button class="details-toggle pv-dt"><span class="dt-label">Tap for details</span>${I.chev(12)}</button>` : ""}
     </div>
     <div class="pv-add">Add comment…</div>
@@ -3628,7 +4095,7 @@ function pvPostSheetHTML(p) {
         <span class="n">${p.seller}</span>
         ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
       </div>
-      <div class="ps-cap"><b>${p.seller}</b> ${(p.captionFull || p.caption).replace(/\n/g, "<br>")}</div>
+      <div class="ps-cap"><b>${p.seller}</b> ${igCaptionHTML(p)}</div>
       <div class="ps-time">${p.time}</div>
       ${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No comments yet</div>`}
     </div>
@@ -3708,11 +4175,11 @@ function searchResultsHTML(scr, S) {
     const sellers = resultSellers(S);
     body = `<div class="sub-scroll">${sellers.length ? sellers.map(sellerCardHTML).join("") : `<div class="sr-empty-block">${I.search(44)}<div class="t">No data found</div></div>`}</div>`;
   } else if (S.tab === "tags") {
-    const rows = suggestRows(S).filter(r => r.t === "kw");
+    const rows = tagRows(S);
     body = `<div class="sub-scroll">${rows.length ? rows.map(r => `
-      <button class="ac-row" data-kind="kw" data-v="${esc(r.v)}">
-        <span class="ac-ico">${I.search(17)}</span>
-        <span class="ac-who"><span class="u">${r.v}</span>${r.sub ? `<span class="d">${r.sub}</span>` : ""}</span>
+      <button class="ac-row" data-kind="kw" data-v="${esc(r.tag)}">
+        <span class="ac-ico tag-ic">#</span>
+        <span class="ac-who"><span class="u">${r.tag}</span><span class="d">${r.n} post${r.n === 1 ? "" : "s"}</span></span>
       </button>`).join("") : `<div class="sr-empty-block">${I.search(44)}<div class="t">No data found</div></div>`}</div>`;
   } else {
     const sellers = resultSellers(S);
@@ -3826,7 +4293,7 @@ function renderSub(scr) {
   const st = scr._subStack || [];
   const el = scr.querySelector(".page-sub");
   el.innerHTML = subHTML(st[st.length - 1], scr);
-  el.classList.toggle("pg-up", st[st.length - 1] === "report");
+  el.classList.toggle("pg-up", st[st.length - 1] === "report" || st[st.length - 1] === "create");
   const q = el.querySelector(".sr-q, .svd-q");
   if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
 }
@@ -4410,9 +4877,247 @@ function ncSheetHTML(editName = "", preview = "") {
       </button>`).join("")}
     </div>`;
 }
+/* ===== CREATE-001 — IG-style create-post task flow: "+" → picker → caption → feed ===== */
+const CP_ME = { name: "mycollection", avatar: "./assets/user-avatars/u-1075.png" };
+const CP_ROLL = [
+  "./assets/asset-uploads/ast-8831-1.png",
+  "./assets/asset-uploads/ast-8831-2.png",
+  "./assets/asset-uploads/ast-8831-3.png",
+  "./assets/asset-uploads/purchase-equipment-box.png",
+  "./assets/asset-uploads/purchase-certificate-docs.png",
+  "./assets/asset-uploads/purchase-dealer-invoice.png",
+  "./assets/asset-uploads/S__10108939_0.jpg",
+  "./assets/asset-uploads/S__10108940_0.jpg",
+  "./assets/asset-uploads/S__10108942_0.jpg",
+  "./assets/asset-uploads/S__10108943_0.jpg",
+  "./assets/asset-uploads/S__10108944_0.jpg",
+  "./assets/asset-uploads/S__10108945_0.jpg",
+  "./assets/asset-uploads/S__10108946_0.jpg",
+  "./assets/asset-uploads/S__10108947_0.jpg",
+  "./assets/asset-uploads/feed-tudor-bb.jpg",
+  "./assets/asset-uploads/feed-datejust-2.jpg",
+];
+function cpState(scr) {
+  if (!scr._cp) scr._cp = { sel: false, step: 1, order: [], caption: "", asset: false, meta: {} };
+  return scr._cp;
+}
+function cfPhotos(scr) { return cpState(scr).order.map(i => CP_ROLL[i]); }
+const CF_TAGS = ["#rolex", "#patekphilippe", "#omegawatch", "#tudorwatch", "#grandseiko", "#cartier", "#watchesofinstagram", "#fullset", "#watchcollector", "#TukDaeng"];
+const CF_LOCS = ["Bangkok, Thailand", "Siam Paragon", "CentralWorld", "ICONSIAM", "EmQuartier", "Chatuchak Weekend Market", "Phrom Phong", "Thonglor"];
+const CF_LOC_KM = { "Bangkok, Thailand": "12km", "Siam Paragon": "8km", "CentralWorld": "9km", "ICONSIAM": "14km", "EmQuartier": "7km", "Chatuchak Weekend Market": "16km", "Phrom Phong": "6km", "Thonglor": "5km" };
+const CF_CONDS = ["Brand New", "Like New", "Very Good", "Good", "Fair"];
+const CF_BOXES = ["Full set — box & papers", "Box only", "Papers only", "Watch only (no set)"];
+/* Watch details field list — mirrors the post Detail page spec groups */
+const CF_SPECS = [
+  ["Watch Specifications", [
+    ["brand", "Brand", "e.g. Rolex"], ["collection", "Collection", "e.g. Submariner"],
+    ["model", "Model", "e.g. Submariner Date"], ["ref", "Reference", "e.g. 126610LN"],
+    ["caseDiameter", "Case Diameter", "e.g. 41 mm"], ["thickness", "Thickness", "e.g. 12.5 mm"],
+    ["lug", "Lug-to-Lug", "e.g. 47.5 mm"], ["caseMaterial", "Case Material", "e.g. Oystersteel"],
+    ["caseColor", "Case Color", "e.g. Steel"], ["bezel", "Bezel Material", "e.g. Cerachrom (Black)"],
+    ["dialColor", "Dial Color", "e.g. Black"], ["dialPattern", "Dial Pattern", "e.g. Index / Chromalight"],
+    ["movement", "Movement Type", "e.g. Automatic (Self-winding)"], ["calibre", "Calibre", "e.g. 3235"],
+    ["powerReserve", "Power Reserve", "e.g. 70 hours"], ["functions", "Functions", "e.g. Hours, Minutes, Seconds, Date"],
+    ["waterRes", "Water Resistance", "e.g. 300 m"], ["strapMaterial", "Strap/Bracelet Material", "e.g. Oystersteel (Oyster bracelet)"],
+    ["strapColor", "Strap Color", "e.g. Steel"], ["clasp", "Clasp Type", "e.g. Oysterlock folding clasp"],
+  ]],
+  ["Item Details", [
+    ["year", "Year", "e.g. 2023"], ["service", "Service History", "e.g. No service record"],
+  ]],
+];
+function cfPaneHTML(scr) {
+  const V = cpState(scr);
+  const m = V.meta;
+  const head = t => `<div class="cf-head"><button class="icon-btn cf-pane-back">${I.back(22)}</button><span class="t">${t}</span><button class="cf-act pane-done">Done</button></div>`;
+  if (m.pane === "loc") return head("Add location") + `<div class="pane-body">
+    <input class="pane-in pane-q" placeholder="Search places…" value="${esc(m.locQ || "")}">
+    ${CF_LOCS.filter(l => !(m.locQ || "").trim() || l.toLowerCase().includes(m.locQ.toLowerCase())).map(l =>
+      `<button class="loc-opt" data-v="${l}">${I.pin(15)}${l}</button>`).join("") || `<div class="pane-lab">No matching places</div>`}
+  </div>`;
+  if (m.pane === "price") return head("Add price") + `<div class="pane-body">
+    <div class="pane-lab">Asking price (THB)</div>
+    <input class="pane-in cf-f" data-f="price" inputmode="numeric" placeholder="e.g. 420,000" value="${esc(m.price || "")}">
+    <div class="pane-lab">Type digits only — separators are added automatically. Leave empty for a showcase post (no price tag).</div>
+  </div>`;
+  if (m.pane === "spec") return head("Watch details") + `<div class="pane-body">
+    ${CF_SPECS.map(([g, fields]) => `<div class="pane-lab" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--red)">${g}</div>` +
+      fields.map(([f, l, ph]) => `<div class="pane-lab" style="padding-top:6px">${l}</div><input class="pane-in cf-f" data-f="${f}" placeholder="${ph}" value="${esc(m[f] || "")}">`).join("")).join("")}
+    <div class="pane-lab">Condition &amp; Box are set in the Condition section — they appear here under Item Details.</div>
+  </div>`;
+  if (m.pane === "cond") return head("Condition") + `<div class="pane-body">
+    <div class="pane-sec">Item condition</div>
+    ${CF_CONDS.map(c => `<button class="cond-opt${m.cond === c ? " on" : ""}" data-v="${c}"><span class="lab">${c}</span><span class="rad"></span></button>`).join("")}
+    <div class="pane-sec">Box &amp; papers</div>
+    ${CF_BOXES.map(b => `<button class="cond-opt box-opt${m.box === b ? " on" : ""}" data-v="${b}"><span class="lab">${b}</span><span class="rad"></span></button>`).join("")}
+  </div>`;
+  if (m.pane === "more") return head("More options") + `<div class="pane-body">
+    <div class="pane-sec">How others can interact with your post</div>
+    <div class="ig-toggle-row"><span class="ic">${I.comment(19)}</span><div class="tx"><div class="tt">Turn off commenting</div><div class="ts">Nobody can comment on this post. You can change this later from the ··· menu.</div></div><button class="sw pane-sw${m.noComments ? " on" : ""}" data-f="noComments"></button></div>
+    <div class="ig-toggle-row"><span class="ic">${I.heart(19)}</span><div class="tx"><div class="tt">Hide like and view counts</div><div class="ts">Only you will see the total number of likes and views on this post.</div></div><button class="sw pane-sw${m.hideCounts ? " on" : ""}" data-f="hideCounts"></button></div>
+    <div class="pane-sec">Who can see your post</div>
+    <button class="cond-opt aud-opt${(m.audience || "public") === "public" ? " on" : ""}" data-v="public"><span class="ic">${I.users(19)}</span><span class="lab">Everyone<span class="sub">Visible to all TukDaeng users</span></span><span class="rad"></span></button>
+    <button class="cond-opt aud-opt${m.audience === "followers" ? " on" : ""}" data-v="followers"><span class="ic">${I.star(19)}</span><span class="lab">Followers only<span class="sub">Only people who follow you</span></span><span class="rad"></span></button>
+    <div class="pane-note">This doesn't affect your account privacy or change sharing preferences.</div>
+  </div>`;
+  return "";
+}
+function cfVal(m) {
+  return {
+    loc: m.loc || "",
+    price: m.price ? "THB " + fmtNum(unNum(m.price)) : "",
+    spec: [m.brand, m.model].filter(Boolean).join(" · "),
+    cond: m.cond || "",
+  };
+}
+function cfZoomGo(z, i, total) {
+  i = Math.max(0, Math.min(total - 1, i));
+  z.dataset.i = i;
+  const photos = [...z.closest(".cf-step2").querySelectorAll(".ig-thumb img")];
+  z.querySelector("img").src = photos[i] ? photos[i].src : "";
+  z.querySelector(".z-dots").innerHTML = total > 1
+    ? Array.from({ length: total }, (_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("")
+    : "";
+}
+function cfPickerHTML(scr) {
+  const V = cpState(scr);
+  const photos = cfPhotos(scr);
+  const n = photos.length;
+  const cells = CP_ROLL.map((p, i) => {
+    const s = V.order.indexOf(i);
+    return `<div class="cell${s >= 0 ? " sel" : ""}" data-i="${i}"><img src="${p}"><span class="radio${s >= 0 ? " on" : ""}">${s >= 0 ? s + 1 : ""}</span></div>`;
+  }).join("");
+  const hero = n
+    ? `<div class="ig-car"><img src="${photos[0]}"><button class="expand">${I.expandIc(15)}</button></div>`
+    : `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`;
+  return `
+    <div class="cf-head">
+      <button class="icon-btn cf-x">${I.x(21)}</button>
+      <span class="t">New post</span>
+      <button class="cf-act${n ? "" : " off"} cf-next">Next</button>
+    </div>
+    <div class="cf-scroll">
+      <div class="ig-hero" data-hero>${hero}</div>
+      <div class="ig-bar">
+        <button class="rc">Recents ${I.chevR(13)}</button>
+        <button class="sel-btn${V.sel ? " on" : ""}" data-selmode>${I.gridSel(13)} Select</button>
+      </div>
+      <div class="ig-grid${V.sel ? " selmode" : ""}">
+        <div class="cell cam">${I.camPlain(26)}</div>
+        ${cells}
+      </div>
+    </div>
+    <div class="ig-tabs">
+      <button class="ig-tab on">Post</button>
+      <button class="ig-tab">Clip</button>
+    </div>`;
+}
+function cfStep2HTML(scr) {
+  const V = cpState(scr);
+  const photos = cfPhotos(scr);
+  const n = photos.length;
+  const thumbs = n > 1
+    ? `<div class="ig-thumbs multi">${photos.map((p, i) => `<div class="ig-thumb"><img src="${p}"><button class="rm-mini" data-i="${i}">${I.x(11)}</button></div>`).join("")}</div>`
+    : `<div class="ig-thumb">${n ? `<img src="${photos[0]}"><button class="rm-mini" data-i="0">${I.x(11)}</button>` : ""}</div>`;
+  const m = V.meta;
+  const mv = cfVal(m);
+  const row = (ic, label, pane, val = "", cls = "") => `
+    <button class="ig-row" data-pane="${pane}"><span class="ic">${ic}</span>${label}<span class="val${val ? " set" : ""}${cls}">${val}</span>${I.chevR(15)}</button>`;
+  return `<div class="cf-step2">
+    <div class="cf-head">
+      <button class="icon-btn cf-back2">${I.back(22)}</button>
+      <span class="t">New post</span>
+    </div>
+    <div class="ig-cap-scroll">
+      ${thumbs}
+      <div class="ig-cap-line"><div class="ta" contenteditable="true" data-ph="Add a caption…">${esc(V.caption)}</div></div>
+      <div class="ig-chip-row">
+        ${CF_TAGS.map(t => `<button class="ig-chip" data-tag="${t}">${t}</button>`).join("")}
+      </div>
+      <div class="ig-rows">
+        ${m.loc
+          ? `<button class="ig-row" data-pane="loc"><span class="ic">${I.pin(19)}</span><span class="lab2">${m.loc}<span class="sub">${CF_LOC_KM[m.loc] || ""}</span></span><span class="loc-x">${I.x(12)}</span></button>
+             <div class="row-note">People you share this content with can see the location you tag and view your content on the map.</div>`
+          : row(I.pin(19), "Add location", "loc")}
+        ${row(I.tag(19), "Add price", "price", mv.price, mv.price ? " price" : "")}
+        ${row(I.watch(19), "Watch details", "spec", mv.spec)}
+        ${row(I.shield(19), "Condition", "cond", mv.cond)}
+      </div>
+      <div class="ig-toggle-row">
+        <span class="ic" style="color:var(--text);display:flex;width:24px;justify-content:center">${I.box(19)}</span>
+        <div class="tx">
+          <div class="tt">Also save to My Assets</div>
+          <div class="ts">Keep this item in your profile collection — full specs live in "Add Asset".</div>
+        </div>
+        <button class="sw${V.asset ? " on" : ""}"></button>
+      </div>
+      <button class="ig-row" data-pane="more"><span class="ic">${I.dots(18)}</span>More options<span class="val${m.audience === "followers" ? " set" : ""}">${m.audience === "followers" ? "Followers only" : ""}</span>${I.chevR(15)}</button>
+    </div>
+    <div class="cf-pane"></div>
+    <button class="ig-share${n ? "" : " off"} cf-share">Share</button>
+    <div class="ig-zoom" data-i="0">
+      <img alt="">
+      <div class="z-dots"></div>
+    </div>
+  </div>`;
+}
+function createHTML(scr) {
+  const V = cpState(scr);
+  return `<div class="cf${V.step === 2 ? " cap-open" : ""}">${cfPickerHTML(scr)}${cfStep2HTML(scr)}</div>`;
+}
+/* shared with the standalone create-post.html handoff (fo_newpost) */
+function insertNewPost(np) {
+  const base = POSTS[0];
+  const m = np.meta || {};
+  const price = m.price ? "THB " + fmtNum(unNum(m.price)) : null;
+  const chips = [m.cond, m.box].filter(Boolean);
+  /* show every field once details exist — empty fields render as N/A */
+  const hasSpecInput = m.cond || m.box || CF_SPECS.some(([g, fields]) => fields.some(([f]) => m[f]));
+  const specGroups = hasSpecInput ? CF_SPECS.map(([g, fields]) => ({
+    title: g,
+    rows: fields.map(([f, l]) => [l, m[f] || "N/A"]),
+  })) : [];
+  if (hasSpecInput) {
+    const itemG = specGroups.find(g => g.title === "Item Details");
+    itemG.rows.push(["Condition", m.cond || "N/A"], ["Box & Papers", m.box || "N/A"]);
+  }
+  if (price) {
+    const n = +unNum(m.price);
+    const r5k = v => Math.round(v / 5000) * 5000; /* auto market band ~−5%/+6% around asking, like seeded posts */
+    specGroups.push({ title: "Price & Data Source", rows: [
+      ["Asking Price", price],
+      ["Estimated Market Price", `THB ${fmtNum(r5k(n * 0.95))} – ${fmtNum(r5k(n * 1.06))}`],
+      ["Last Price Update", new Date().toISOString().slice(0, 10)],
+      ["Data Source", "TukDaeng Market Data"],
+    ]});
+  }
+  POSTS.unshift({
+    id: "px" + Date.now(),
+    seller: CP_ME.name,
+    avatar: CP_ME.avatar,
+    time: "Just now",
+    following: true,
+    favorite: false,
+    type: price ? "sale" : "showcase",
+    photos: np.photos && np.photos.length ? np.photos : base.photos,
+    likes: 0, comments: 0, views: 0, liked: false,
+    caption: np.caption || base.caption,
+    captionFull: np.caption || base.captionFull,
+    price,
+    chips,
+    specGroups,
+    location: m.loc || null,
+    audience: m.audience || "public",
+    noComments: !!m.noComments,
+    hideCounts: !!m.hideCounts,
+    desc: np.caption || base.desc,
+    likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
+  });
+  POSTS[0].specs = (POSTS[0].specGroups || []).flatMap(g => g.rows);
+}
 function subHTML(name, scr) {
   const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${t}</span><span class="spacer"></span></div>`;
   const row = (t, attr, extra = "", ic = "") => `<button class="sub-row" ${attr}>${ic ? `<span class="sub-ic">${ic}</span>` : ""}<span>${t}</span>${extra}<span class="sub-chev">${I.chevR(15)}</span></button>`;
+  if (name === "create") return createHTML(scr);
   if (name === "search") return searchHTML(scr);
   if (name === "sfilter") return filterHTML(scr);
   if (name === "recents") return recentPageHTML(scr);
@@ -4562,27 +5267,7 @@ try {
   const raw = localStorage.getItem("fo_newpost");
   if (raw) {
     localStorage.removeItem("fo_newpost");
-    const np = JSON.parse(raw);
-    const base = POSTS[0];
-    POSTS.unshift({
-      id: "px" + Date.now(),
-      seller: "mycollection",
-      avatar: "./assets/user-avatars/u-1075.png",
-      time: "Just now",
-      following: true,
-      favorite: false,
-      type: "sale",
-      photos: np.photos && np.photos.length ? np.photos : base.photos,
-      likes: 0, comments: 0, views: "1", liked: false,
-      caption: np.caption || base.caption,
-      captionFull: np.caption || base.captionFull,
-      price: base.price,
-      chips: base.chips,
-      specGroups: base.specGroups,
-      desc: np.caption || base.desc,
-      likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
-    });
-    POSTS[0].specs = (POSTS[0].specGroups || []).flatMap(g => g.rows);
+    insertNewPost(JSON.parse(raw));
     setTimeout(() => toast("Posted · shared to feed ✓"), 500);
   }
 } catch {}
@@ -4603,6 +5288,51 @@ function applyPhoto(ph, post, i, dotsEl) {
   if (c) c.textContent = `${i + 1}/${post.photos.length}`;
   if (dotsEl) [...dotsEl.children].forEach((d, j) => d.classList.toggle("on", j === i));
 }
+/* CREATE-001 — caption thumbs strip + hashtag chips: wheel + drag to scroll (desktop has no scrollbar) */
+let stripDrag = null;
+stageEl.addEventListener("wheel", e => {
+  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row");
+  if (strip) { strip.scrollLeft += e.deltaY || e.deltaX; e.preventDefault(); }
+}, { passive: false });
+stageEl.addEventListener("pointerdown", e => {
+  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row");
+  if (strip) stripDrag = { strip, x0: e.clientX, sl: strip.scrollLeft, moved: false };
+});
+stageEl.addEventListener("pointermove", e => {
+  if (!stripDrag) return;
+  const dx = e.clientX - stripDrag.x0;
+  if (Math.abs(dx) > 8) stripDrag.moved = true;
+  if (stripDrag.moved) stripDrag.strip.scrollLeft = stripDrag.sl - dx;
+});
+["pointerup", "pointercancel"].forEach(ev => stageEl.addEventListener(ev, () => {
+  if (stripDrag?.moved) { suppressPhotoClick = true; setTimeout(() => { suppressPhotoClick = false; }, 60); }
+  stripDrag = null;
+}));
+
+/* CREATE-001 — zoom viewer: swipe left/right between selected photos (IG) */
+let zoomSwipe = null;
+stageEl.addEventListener("pointerdown", e => {
+  const zimg = e.target.closest(".cf .ig-zoom img");
+  if (!zimg) return;
+  zoomSwipe = { z: zimg.closest(".ig-zoom"), x0: e.clientX, moved: false };
+});
+stageEl.addEventListener("pointermove", e => {
+  if (!zoomSwipe) return;
+  if (Math.abs(e.clientX - zoomSwipe.x0) > 8) zoomSwipe.moved = true;
+});
+["pointerup", "pointercancel"].forEach(ev => stageEl.addEventListener(ev, e => {
+  if (!zoomSwipe) return;
+  const { z, x0, moved } = zoomSwipe;
+  zoomSwipe = null;
+  if (moved) { suppressPhotoClick = true; setTimeout(() => { suppressPhotoClick = false; }, 60); }
+  if (!z || !z.classList.contains("open")) return;
+  const dx = e.clientX - x0;
+  if (moved && Math.abs(dx) > 40) {
+    const scr = z.closest(".screen");
+    cfZoomGo(z, +z.dataset.i + (dx < 0 ? 1 : -1), cfPhotos(scr).length);
+  }
+}));
+
 stageEl.addEventListener("pointerdown", e => {
   const ph = e.target.closest(".post-photo, .detail-hero");
   if (!ph) return;
@@ -4676,6 +5406,26 @@ stageEl.addEventListener("keydown", e => {
   }
 });
 stageEl.addEventListener("input", e => {
+  if (e.target.matches(".cf .ig-cap-line .ta"))
+    cpState(e.target.closest(".screen")).caption = e.target.textContent;
+  /* composer option panes — field inputs write into V.meta */
+  if (e.target.matches(".cf .cf-f")) {
+    const scr = e.target.closest(".screen");
+    const V = cpState(scr);
+    const f = e.target.dataset.f;
+    if (f === "price") { const v = unNum(e.target.value); V.meta[f] = v; e.target.value = v ? fmtNum(v) : ""; }
+    else V.meta[f] = e.target.value;
+  }
+  /* composer location pane — live filter suggestions */
+  if (e.target.matches(".cf .pane-q")) {
+    const scr = e.target.closest(".screen");
+    const V = cpState(scr);
+    V.meta.locQ = e.target.value;
+    const q = e.target.value.trim().toLowerCase();
+    e.target.closest(".pane-body").querySelectorAll(".loc-opt").forEach(b => {
+      b.style.display = !q || b.dataset.v.toLowerCase().includes(q) ? "" : "none";
+    });
+  }
   if (e.target.matches(".cp-input input"))
     e.target.closest(".cp-input").querySelector(".cp-send").disabled = !e.target.value.trim();
   if (e.target.matches(".sh-q")) {
@@ -4739,7 +5489,166 @@ document.getElementById("stage").addEventListener("contextmenu", e => {
 
 document.getElementById("stage").addEventListener("click", e => {
   const flow = e.target.closest("[data-flow]");
-  if (flow) { location.href = "create-post.html"; return; }
+  if (flow) { openSub(flow.closest(".screen"), "create"); return; }
+  /* ===== CREATE-001 — in-app create-post task flow (picker → caption → feed) ===== */
+  const cf = e.target.closest(".cf");
+  if (cf) {
+    const scr = cf.closest(".screen");
+    const V = cpState(scr);
+    const cfX = e.target.closest(".cf-x");
+    if (cfX) {
+      if (V.order.length || V.caption.trim())
+        openDlg(scr, `
+          <div class="dlg-q">Discard post?</div>
+          <div class="dlg-desc">If you go back now, you'll lose your draft.</div>
+          <button class="dlg-btn danger dlg-discard-go">Discard post</button>
+          <button class="dlg-btn dlg-cancel">Keep editing</button>`);
+      else { scr._subStack = []; scr.classList.remove("sub-open"); }
+      return;
+    }
+    const cfNx = e.target.closest(".cf-next");
+    if (cfNx) {
+      if (!cfNx.classList.contains("off")) {
+        V.step = 2;
+        cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+        cf.classList.add("cap-open");
+      }
+      return;
+    }
+    const cfBk = e.target.closest(".cf-back2");
+    if (cfBk) { V.step = 1; cf.classList.remove("cap-open"); return; }
+    const cfSel = e.target.closest("[data-selmode]");
+    if (cfSel) { V.sel = !V.sel; renderSub(scr); return; }
+    const cfRm = e.target.closest(".rm-mini");
+    if (cfRm) {
+      V.order.splice(+cfRm.dataset.i, 1);
+      if (!V.order.length) V.step = 1;
+      renderSub(scr);
+      return;
+    }
+    const cfZoom = e.target.closest(".ig-zoom");
+    if (cfZoom && e.target === cfZoom && !suppressPhotoClick) { cfZoom.classList.remove("open"); return; }
+    const cfThumb = e.target.closest(".ig-thumb img");
+    if (cfThumb && !suppressPhotoClick) {
+      const z = cf.querySelector(".ig-zoom");
+      const th = cfThumb.closest(".ig-thumb");
+      const i = [...th.parentElement.children].filter(c => c.classList.contains("ig-thumb")).indexOf(th);
+      cfZoomGo(z, i, cfPhotos(scr).length);
+      z.classList.add("open");
+      return;
+    }
+    const cfShare = e.target.closest(".cf-share");
+    if (cfShare) {
+      if (cfShare.classList.contains("off")) return;
+      V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() || V.caption;
+      const photos = cfPhotos(scr);
+      insertNewPost({ photos, caption: V.caption, meta: V.meta });
+      scr._cp = null;
+      scr._subStack = [];
+      scr.classList.remove("sub-open");
+      const fs = scr.querySelector(".feed-scroll");
+      fs.innerHTML = feedContentHTML(scr.dataset.variant);
+      fs.scrollTop = 0;
+      scrToast(scr, "Posted · shared to feed ✓", photos[0] || "");
+      return;
+    }
+    const cfCell = e.target.closest(".ig-grid .cell");
+    if (cfCell && !cfCell.classList.contains("cam")) {
+      const i = +cfCell.dataset.i;
+      const grid = cfCell.closest(".ig-grid");
+      if (grid.classList.contains("selmode")) {
+        const k = V.order.indexOf(i);
+        if (k < 0) V.order.push(i); else V.order.splice(k, 1);
+        grid.querySelectorAll(".cell[data-i]").forEach(c => {
+          const pos = V.order.indexOf(+c.dataset.i);
+          const r = c.querySelector(".radio");
+          c.classList.toggle("sel", pos >= 0);
+          r.classList.toggle("on", pos >= 0);
+          r.textContent = pos >= 0 ? pos + 1 : "";
+        });
+      } else {
+        V.order = [i];
+        grid.querySelectorAll(".cell[data-i]").forEach(c => c.classList.toggle("sel", +c.dataset.i === i));
+      }
+      cf.querySelector("[data-hero]").innerHTML = V.order.length
+        ? `<div class="ig-car"><img src="${CP_ROLL[V.order.at(-1)]}"><button class="expand">${I.expandIc(15)}</button></div>`
+        : `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`;
+      cf.querySelector(".cf-next").classList.toggle("off", !V.order.length);
+      return;
+    }
+    const cfSw = e.target.closest(".sw");
+    if (cfSw && !cfSw.classList.contains("pane-sw")) { V.asset = !V.asset; cfSw.classList.toggle("on", V.asset); return; }
+    const cfChip = e.target.closest(".ig-chip");
+    if (cfChip && !suppressPhotoClick) {
+      const tag = cfChip.dataset.tag;
+      const ta = cf.querySelector(".ig-cap-line .ta");
+      if (ta && !ta.textContent.includes(tag)) {
+        ta.textContent = (ta.textContent.trimEnd() ? ta.textContent.trimEnd() + " " : "") + tag;
+        V.caption = ta.textContent;
+      }
+      return;
+    }
+    /* clear picked location via the X inside the row */
+    const cfLocX = e.target.closest(".loc-x");
+    if (cfLocX) {
+      V.meta.loc = "";
+      cfLocX.closest(".ig-row").outerHTML = `<button class="ig-row" data-pane="loc"><span class="ic">${I.pin(19)}</span>Add location<span class="val"></span>${I.chevR(15)}</button>`;
+      const note = cf.querySelector(".row-note");
+      if (note) note.remove();
+      return;
+    }
+    /* option rows → slide-in pane (location / price / details / condition / more) */
+    const cfRow = e.target.closest(".ig-row[data-pane]");
+    if (cfRow) {
+      V.meta.pane = cfRow.dataset.pane;
+      const pane = cf.querySelector(".cf-pane");
+      pane.innerHTML = cfPaneHTML(scr);
+      void pane.offsetWidth;
+      pane.classList.add("open");
+      return;
+    }
+    const cfPaneBack = e.target.closest(".cf-pane-back, .pane-done");
+    if (cfPaneBack) {
+      V.meta.pane = null;
+      cf.querySelector(".cf-pane").classList.remove("open");
+      cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+      return;
+    }
+    const cfOpt = e.target.closest(".loc-opt, .cond-opt");
+    if (cfOpt) {
+      const v = cfOpt.dataset.v;
+      const close = cfOpt.classList.contains("loc-opt");
+      if (cfOpt.classList.contains("loc-opt")) { V.meta.loc = v; V.meta.locQ = ""; }
+      else if (cfOpt.classList.contains("aud-opt")) {
+        V.meta.audience = v;
+        cf.querySelectorAll(".aud-opt").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+      }
+      else if (cfOpt.classList.contains("box-opt")) {
+        V.meta.box = V.meta.box === v ? "" : v;
+        cf.querySelectorAll(".box-opt").forEach(b => b.classList.toggle("on", b.dataset.v === V.meta.box));
+      }
+      else {
+        V.meta.cond = v;
+        cf.querySelectorAll(".cond-opt:not(.box-opt)").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+      }
+      if (close) {
+        V.meta.pane = null;
+        cf.querySelector(".cf-pane").classList.remove("open");
+        cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+      }
+      return;
+    }
+    const cfPaneSw = e.target.closest(".pane-sw");
+    if (cfPaneSw) {
+      const f = cfPaneSw.dataset.f;
+      V.meta[f] = f === "allowOffers" ? V.meta[f] === false : !V.meta[f];
+      cfPaneSw.classList.toggle("on", V.meta[f]);
+      return;
+    }
+    const cfDead = e.target.closest(".ig-tab:not(.on), .rc, .expand, .cell.cam");
+    if (cfDead) { toast("Not in this prototype yet"); return; }
+    return;
+  }
   const pmBtn = e.target.closest(".post-head .more, .pm-btn");
   if (pmBtn) {
     const scr = pmBtn.closest(".screen");
@@ -4855,6 +5764,15 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const dlgCancel = e.target.closest(".dlg-cancel");
   if (dlgCancel) { dlgCancel.closest(".screen").classList.remove("dialog-open"); return; }
+  const dlgDiscard = e.target.closest(".dlg-discard-go");
+  if (dlgDiscard) {
+    const scr = dlgDiscard.closest(".screen");
+    scr.classList.remove("dialog-open");
+    scr._cp = null;
+    scr._subStack = [];
+    scr.classList.remove("sub-open");
+    return;
+  }
   const dlgMute = e.target.closest(".dlg-mute-go");
   if (dlgMute) {
     const scr = dlgMute.closest(".screen");
@@ -5829,6 +6747,15 @@ document.getElementById("stage").addEventListener("click", e => {
         const ol = o.querySelector(".dt-label");
         if (ol) ol.textContent = "Tap for details";
       });
+    return;
+  }
+  const igdTag = e.target.closest(".igd-tag");
+  if (igdTag) {
+    const scr = igdTag.closest(".screen");
+    const S = srchState(scr);
+    S.q = igdTag.textContent.trim();
+    S.mode = "results"; S.tab = "foryou";
+    openSub(scr, "search");
     return;
   }
   const more = e.target.closest(".more-link");
