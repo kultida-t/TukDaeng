@@ -37,7 +37,7 @@ PASS detail head centers the Detail title
 PASS detail name hides N/A parts ('rolex' not 'rolex N/A')
 PASS missing reference shows 'Ref. -' not 'Ref. N/A'
 PASS spec list still shows N/A values
-PASS descriptions = caption text (no desc field filled)
+PASS descriptions shows '-' when no desc filled
 PASS Watch details pane has a Description textarea
 PASS saved post gains Price & Data Source with N/A rows
 PASS detail shows Price & Data Source section

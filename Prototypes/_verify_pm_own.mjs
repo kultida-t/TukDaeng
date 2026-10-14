@@ -220,7 +220,7 @@ await page.evaluate(() => {
       { title: "Item Details", rows: [["Condition", "Fair"]] },
     ],
     specs: [["Brand", "rolex"], ["Model", "N/A"], ["Reference", "N/A"], ["Condition", "Fair"]],
-    location: null, desc: "rolex for sale",
+    location: null, desc: "",
     likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
   });
   const scr = document.querySelector(".screen");
@@ -238,7 +238,7 @@ check("detail name hides N/A parts ('rolex' not 'rolex N/A')",
 check("missing reference shows 'Ref. -' not 'Ref. N/A'",
   await page.locator(".page-detail .detail-ref").textContent() === "Ref. -");
 check("spec list still shows N/A values", await page.locator(".page-detail").evaluate(el => el.textContent.includes("N/A")));
-check("descriptions = caption text (no desc field filled)", await page.locator(".page-detail .detail-desc").evaluate(el => el.textContent === "rolex for sale"));
+check("descriptions shows '-' when no desc filled", await page.locator(".page-detail .detail-desc").evaluate(el => el.textContent === "-"));
 await page.screenshot({ path: `${OUT}/pm-own-6-detail.png` });
 
 // 8h. edit adds Price & Data Source (N/A rows) + Description field in Watch details

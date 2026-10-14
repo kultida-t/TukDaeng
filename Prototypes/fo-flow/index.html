@@ -3422,7 +3422,7 @@ function detailHTML(p) {
         <h2 class="detail-name">${name}</h2>
         ${ref ? `<div class="detail-ref">${ref}</div>` : ""}
         <div class="detail-h">Descriptions</div>
-        <p class="detail-desc">${igCaptionHTML(p, p.desc || p.captionFull || "")}</p>
+        <p class="detail-desc">${igCaptionHTML(p, p.desc || "-")}</p>
         ${detailSpecsHTML(p)}
       </div>
     </div>`;
@@ -5508,7 +5508,7 @@ function insertNewPost(np) {
     location: m.loc || null,
     audience: m.audience || "public",
     noComments: !!m.noComments,
-    desc: m.desc || np.caption || base.desc,
+    desc: m.desc || "", /* description is its own field — empty shows "-" on detail */
     likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
   });
   POSTS[0].specs = (POSTS[0].specGroups || []).flatMap(g => g.rows);

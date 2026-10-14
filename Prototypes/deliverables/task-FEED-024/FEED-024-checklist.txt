@@ -41,7 +41,7 @@ confirm dialog "Delete post?" → ลบออกจาก POSTS + ลบกา�
 - ชื่อโพสต์ซ่อนส่วนที่เป็น N/A ("rolex N/A" → "rolex"); ถ้าไม่มี specs เลย fallback เป็น caption
 - Reference ที่ไม่มีข้อมูลแสดง "Ref. -" (เดิม "Ref. N/A"); ในลิสต์ WATCH SPECIFICATIONS ยังแสดง N/A เหมือนเดิม
 - มี section "Price & Data Source" เสมอเมื่อโพสต์มีรายละเอียด — ไม่มีราคาแสดง N/A (Asking Price / Estimated Market Price / Last Price Update = N/A, Data Source = TukDaeng Market Data)
-- Descriptions = field description จริง (p.desc) — ไม่ใช่สำเนา caption; ถ้าไม่ได้กรอก fallback เป็น caption
+- Descriptions = field description จริง (p.desc) — ไม่ใช่สำเนา caption; ถ้าไม่ได้กรอกแสดง "-"
 - Watch details pane (ทั้งหน้า Add และ Edit) เพิ่มฟิลด์ "Description" เป็น textarea รองรับข้อความยาวกว่าฟิลด์อื่น
 - Edit จากหน้า Detail: composer ถูก detail layer บัง (z-index) — แก้โดยปิด detail ตอนเปิด edit แล้วเปิดกลับหลัง Done/Cancel พร้อมเนื้อหาล่าสุด
 
