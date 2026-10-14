@@ -1,0 +1,47 @@
+NAV-001 Manual Review Checklist — Hamburger drawer (IG Settings style)
+Task: NAV-001 เพิ่มเมนูแฮมเบอร์เกอร์มุมซ้ายบนใน fo-flow/index.html แบบ IG Settings menu
+Reviewer: พี่มาเต็ม (ผู้ใช้)
+Date: 2026-10-14 (Asia/Bangkok)
+URL: http://127.0.0.1:4173/fo-flow/index.html
+
+เคส 1: เปิด drawer จากปุ่ม burger มุมซ้ายบน
+- ขั้นกด: กดไอคอน ☰ ซ้ายบนของ app-header
+- ผลที่คาด: panel เมนูสไลด์เข้าจากซ้าย กว้าง ~82% ของจอ เริ่มใต้ statusbar เห็น feed ชิดขอบขวา + scrim dim
+- ผลจริง: ผ่าน
+
+เคส 2: รายการเมนูตามภาพ reference
+- ขั้นกด: อ่านรายการใน panel บน→ล่าง
+- ผลที่คาด: 9 รายการเรียง Watch Brands / Watch Price Index / Watch Shops / Accessories Shop / Repair Shop / Auction Center / Consignment Center / Authentication Center / Community พร้อมไอคอน + ปุ่ม Profile pill มุมล่างขวา
+- ผลจริง: ผ่าน
+
+เคส 3: สไตล์ row แบบ IG Settings
+- ขั้นกด: เทียบกับภาพ reference (IG "Settings and activity")
+- ผลที่คาด: label ฟ้อนต์ ~14px น้ำหนักปกติ มี chevron > ชิดขวาทุกแถว
+- ผลจริงรอบแรก: ไม่ผ่าน — ฟ้อนต์ใหญ่เกิน (15.5px/500, ไม่มี chevron) ผู้ใช้ feedback "ฟ้อนต์ตัวใหญ่เกินไป"
+- ผลแก้ไข: ปรับเป็น 14px/400 + เพิ่ม trailing chevron + padding แน่นขึ้น → รอบสอง ผ่าน (ผู้ใช้ตอบ "โอเคปิด task ได้")
+
+เคส 4: เมนูยังไม่มีหน้าปลายทาง
+- ขั้นกด: กดเมนูใดก็ได้ (เช่น Watch Brands) / กด Profile pill
+- ผลที่คาด: ขึ้น toast "Not in this prototype yet" ตาม convention dead action เดิม drawer ยังเปิดอยู่
+- ผลจริง: ผ่าน
+
+เคส 5: ปิด drawer
+- ขั้นกด: แตะพื้นที่ scrim (แถบขวาที่เห็น feed)
+- ผลที่คาด: panel สไลด์ออกซ้าย กลับหน้า feed ปกติ
+- ผลจริง: ผ่าน
+
+เคส 6: Regression — ของเดิมไม่พัง
+- ขั้นกด: กด search icon / กด + (create) บน app-header
+- ผลที่คาด: search page และ create sheet เปิดได้ปกติ
+- ผลจริง: ผ่าน (คุมด้วย _verify_hb.mjs อัตโนมัติ)
+
+เคส 7: Light theme
+- ขั้นกด: กดปุ่ม theme toggle แล้วเปิด burger อีกครั้ง
+- ผลที่คาด: panel เป็นสีขาว เมนู/ไอคอนอ่านชัด ปิดได้ปกติ
+- ผลจริง: ผ่าน
+
+สรุป: ผ่านทุกเคสหลังแก้รอบสอง (เคส 3 แก้จาก feedback ผู้ใช้)
+Automated: _verify_hb.mjs 25 checks ALL PASS, 0 console errors
+Commits: 6af44b5 (drawer + เมนู 9 รายการ), 29d433b (IG settings row style)
+
+หมายเหตุ evidence: ไม่มีภาพ Before แยก เพราะ state เดิมคือปุ่ม burger เป็น dead action toast (ไม่มี UI เปลี่ยนบนจอให้เทียบ) — บันทึกเป็น evidence gap ตรง ๆ

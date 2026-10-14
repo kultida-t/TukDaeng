@@ -1,0 +1,92 @@
+WAL-001 Automated Test Results — _verify_wa.mjs
+Date: 2026-10-15 (Asia/Bangkok)
+Command: cd Prototypes && node _verify_wa.mjs
+Target: http://127.0.0.1:4173/fo-flow/index.html (playwright chromium, 440x956, dsf 2)
+
+PASS feed renders phone
+PASS no watch alerts initially
+PASS settings lists Watch Alerts row with count 0
+PASS watch alerts page opens + empty state
+PASS bell opens create sheet
+PASS sheet title = Create watch alert
+PASS name input prefilled with the model
+PASS no criteria chips on the detail sheet
+PASS draft still snapshots every filled spec (>=14) — 26 fields
+PASS draft criteria include Brand/Model/Reference/Delivery
+PASS 3 match modes rendered
+PASS Match all is default
+PASS each mode shows a live match count
+PASS Match all count is stricter than Any
+PASS mode switch re-renders with Model selected
+PASS typed name survives mode-switch re-render
+PASS alert created + toast
+PASS custom name saved on the alert
+PASS detail bell now shows following state
+PASS alert carries the post's modelKey
+PASS bell on followed model opens Edit watch alert
+PASS edit sheet shows Delete alert
+PASS mode edited to all (no duplicate alert)
+PASS results page shows bell button
+PASS search sheet snapshots the keyword
+PASS backdrop dismiss leaves no alert
+PASS criteria = keyword + Brand: Rolex chips
+PASS search alert saved (2 total)
+PASS bell icon fills when this exact search is saved
+PASS duplicate search opens Edit sheet instead of a new alert
+PASS no-result page still offers the bell
+PASS empty-result sheet shows 0 now on Match all
+PASS 0-result alert saved anyway
+PASS list shows 3 alerts
+PASS rows show name + criteria + Edit badge + mode + match count
+PASS toggle pauses alert + row dims + toast
+PASS paused alert drops the model-follow bell
+PASS tapping row body does not open the sheet
+PASS Edit pill opens edit sheet
+PASS delete removes the alert + re-renders list
+PASS new post matched the detail alert
+PASS match toast shows the alert name
+PASS matcher: all=AND, any=OR, model=brand+model+ref
+PASS no console errors
+
+44 passed, 0 failed
+
+--- Regression: _verify_feed_follow.mjs (follow/unfollow + mf-btn → watch-alert sheet)
+PASS p1 card has Follow button
+PASS p7 card hides button (followed)
+PASS p10 card hides button (followed)
+PASS following tab = 3 posts — 3
+PASS following contains p7,p2,p10 — ["p7","p2","p10"]
+PASS following tab shows no follow-btn
+PASS follow p1 -> button flips to Following in place
+PASS unfollow sheet opens from card
+PASS cancel keeps in-place Following
+PASS confirm unfollow -> button back to Follow
+PASS re-follow works right after unfollow
+PASS following tab = 4 after follow — 4
+PASS p1 present in following tab — ["p1","p7","p2","p10"]
+PASS p1 button hidden after tab re-render
+PASS p1 button still hidden after theme toggle
+PASS p8 still shows Follow (untouched)
+PASS detail has no seller row
+PASS detail has no price hero
+PASS detail has no ask pill
+PASS detail keeps Price & Data Source group
+PASS detail model Follow (icon-only)
+PASS model follow opens watch-alert dialog
+PASS creating the alert flips the bell on + toast
+PASS deleting the alert flips the bell back off + toast
+PASS card still hides follow-btn (seller followed)
+PASS following still 4 posts — 4
+PASS p2 drops from following tab — 3
+PASS card p2 restored w/o follow-btn (still followed)
+PASS p2 back in following tab — 4
+PASS favorites empty 'No favorites yet'
+PASS model follow off despite seller followed
+PASS model follow on
+PASS model follow persists on detail re-open
+PASS all posts still 11 — 11
+PASS favorites ignores liked p1 (empty)
+PASS comment sheet opens
+PASS comment sheet not uf-sized
+
+37 passed, 0 failed, 0 console errors

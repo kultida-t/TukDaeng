@@ -1,0 +1,60 @@
+FEED-024 Automated Test Results — _verify_pm_own.mjs
+Date: 2026-10-14 (Asia/Bangkok)
+Command: cd Prototypes && node _verify_pm_own.mjs
+Target: http://127.0.0.1:4173/fo-flow/index.html (playwright chromium, 560x950, dsf 2)
+
+PASS feed renders phone
+PASS own post card injected on top of feed
+PASS other post menu keeps Not interested + Report
+PASS pm sheet opens for own post
+PASS no preview card on top of menu
+PASS 5 own-post menu rows in order
+PASS no Save / Share / hide-counts / QR / reel / adjust-preview rows
+PASS Delete row is danger-styled
+PASS Pin to profile → pinned flag + toast
+PASS noComments → comment btn hidden on card
+PASS menu labels flip (Turn on commenting / Unpin)
+PASS Archive → archived flag + card leaves feed + toast
+PASS settings shows Archive row with count 1
+PASS archive page lists the archived post
+PASS archive tile opens Archive viewer
+PASS Unarchive → post back in feed + archive page emptied
+PASS Edit → composer opens on Edit info step
+PASS Edit info head: Cancel + title + Done (no Share btn)
+PASS caption prefilled with post caption
+PASS existing media prefilled as thumbs (2)
+PASS + add-media tile shown (no reorder hint text)
+PASS reorder drag flips thumb order
+PASS add-media picker opens (title + Done + no Post/Clip tabs)
+PASS picker cell appends media (order=3, radio shows 3)
+PASS adding beyond 10 blocked + toast
+PASS picker Done returns to Edit info with 3 thumbs
+PASS picker < cancels added media (back to 3 thumbs)
+PASS remove down to 1 media ok
+PASS removing last media blocked + toast
+PASS add-media via picker restores 2 thumbs
+PASS Done closes composer + toast Post updated
+PASS post updated in place (no duplicate, caption + 2 photos saved)
+PASS detail head centers the Detail title
+PASS detail name hides N/A parts ('rolex' not 'rolex N/A')
+PASS missing reference shows 'Ref. -' not 'Ref. N/A'
+PASS spec list still shows N/A values
+PASS descriptions shows '-' when no desc filled
+PASS Watch details pane has a Description textarea
+PASS saved post gains Price & Data Source with N/A rows
+PASS detail shows Price & Data Source section
+PASS descriptions shows the real description field
+PASS clip post → thumb keeps dur badge in edit
+PASS Done keeps clip on the post
+PASS detail page ... shows own-post menu
+PASS Delete → confirm dialog
+PASS Delete removes post from POSTS + feed
+PASS toast says Post deleted
+PASS More options pane opens
+PASS no hideCounts toggle in More options
+PASS Turn off commenting toggle still there
+PASS audience options still there
+PASS light theme own menu renders
+PASS no console/page errors
+
+53 passed, 0 failed

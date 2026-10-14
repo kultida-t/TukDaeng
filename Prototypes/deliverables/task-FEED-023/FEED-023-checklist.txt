@@ -1,0 +1,34 @@
+FEED-023 — Manual Review Checklist (ผลตรวจจริง)
+Task: Task flow อัปโหลดโพสต์แบบ Clip ใน fo-flow/index.html (in-app create clip)
+URL: http://127.0.0.1:4173/fo-flow/index.html
+ผู้ตรวจ: ผู้ใช้ (ยืนยันผ่าน) | ผล: ผ่านทุกเคสหลังแก้ไข 3 รอบ
+
+เคส 1: แท็บ Clip ใน picker — ผ่าน
+กด + → แท็บ Clip → grid คลิปมีป้ายเวลาทุกช่อง เลือกได้ทีละ 1 คลิป ไม่มีปุ่ม Select
+
+เคส 2: Preview เต็มจอ + เล่น/หยุด — ผ่าน
+Next → หน้าดำเต็มจอ แตะเล่น/หยุดได้ ป้ายเวลานับถอยหลังจริง + progress bar วิ่ง
+
+เคส 3: Caption reuse composer ของ Post — ผ่าน
+หัวข้อ "New clip" thumb เล็กมีป้ายเวลา + ปุ่ม × ลบ panes location/price/watch details/condition/more options/My Assets ใช้ได้
+
+เคส 4: thumb คลิปเปิด viewer ใหญ่ — ผ่าน (แก้ไขรอบ 2: เดิมเด้งกลับหน้า preview → แก้เป็น zoom overlay เล่น/หยุด+นับเวลา ปิดแล้วอยู่ caption เดิม)
+
+เคส 5: Picker ปนรูป+คลิป multi-select — ผ่าน (แก้ไขรอบ 1: เพิ่มช่องวิดีโอในแท็บ Post เลือกปนกันได้)
+
+เคส 6: viewer ใน draft ผสมเล่นคลิปได้ — ผ่าน (แก้ไขรอบ 3: เดิม thumb คลิปใน draft ผสมเปิด zoom รูปนิ่ง → ทำให้ viewer สลับโหมดรูป/คลิปตามชิ้น swipe ข้ามประเภทได้)
+
+เคส 7: Publish ขึ้นฟีด — ผ่าน
+โพสต์บนสุด mycollection · Just now + badge ▶︎ เวลา + toast "Clip shared to feed"
+
+เคส 8: Autoplay บนฟีด — ผ่าน (เพิ่มตาม feedback รอบ 4)
+โพสต์คลิปเล่นเองตอนอยู่ในจอ (ภาพขยับ + นับถอยหลัง + progress bar) เลื่อนผ่านหยุด เลื่อนกลับเล่นต่อ; หน้า detail เล่นเองด้วย
+
+เคส 9: Discard — ผ่าน
+X ตอนมี draft clip → "Discard clip?" dialog เดิม
+
+เคส 10: Regression Post — ผ่าน
+แท็บ Post เลือกหลายรูป zoom รูป swipe ปกติ โพสต์รูปได้เหมือนเดิม
+
+Verification: node _verify_flow.mjs → 136 passed, 0 failed, 0 console errors
+Screenshots: Prototypes/screenshots/fo-flow/8*.png

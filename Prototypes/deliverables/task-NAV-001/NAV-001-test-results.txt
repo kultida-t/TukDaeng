@@ -1,0 +1,27 @@
+PASS feed renders phone
+PASS burger button in app-header
+PASS drawer hidden before open
+PASS screen gets hb-open
+PASS scrim visible
+PASS panel pinned to left edge
+PASS panel width ~82% (feed peeks on right)
+PASS panel starts below statusbar
+PASS 9 menu items in order
+PASS every item has an icon
+PASS IG settings row style — 14px regular label
+PASS every item has a trailing chevron
+PASS item tap → prototype toast
+PASS drawer stays open after item tap
+PASS profile pill visible
+PASS profile pill at bottom-right of screen
+PASS profile pill → prototype toast
+PASS scrim tap closes drawer
+PASS panel slid back out
+PASS light theme drawer opens
+PASS light theme shows 9 items
+PASS light theme scrim closes
+PASS search page still opens
+PASS create sheet still opens
+PASS no console/page errors
+
+25 passed, 0 failed

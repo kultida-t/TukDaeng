@@ -3,7 +3,8 @@
 // consistent across re-render/theme toggle); unfollow goes through the
 // confirm sheet from the card's fresh "Following" button or via the
 // "..." -> Not interested -> Unfollow path. Detail page is model-level
-// (no seller row): its mf-btn toggles p.modelFollowing only.
+// (no seller row): its mf-btn opens the watch-alert sheet — creating an alert
+// for the model flips p.modelFollowing via syncModelFlags.
 // Following tab adds/drops posts, per-tab empty states, state survives
 // tab + theme re-renders.
 import { createRequire } from "module";
@@ -35,10 +36,18 @@ const posts = () => page.locator(".feed-scroll .post");
 const followBtn = pid => page.locator(`.feed-scroll .post[data-pid="${pid}"] .follow-btn`);
 const dBtn = () => page.locator(".page-detail .mf-btn").first();
 const openDetail = async pid => {
-  await page.locator(`.post[data-pid="${pid}"] .more-link`).click();
-  await page.waitForTimeout(250);
-  await page.locator(`.post[data-pid="${pid}"] .details-toggle`).click();
-  await page.waitForTimeout(300);
+  /* caption stays expanded after the first open — skip "more" when it's gone */
+  const more = page.locator(`.post[data-pid="${pid}"] .more-link`);
+  if (await more.isVisible()) {
+    await more.click();
+    await page.waitForTimeout(250);
+  }
+  /* details panel also persists across opens — only toggle it if closed */
+  const tgl = page.locator(`.post[data-pid="${pid}"] .details-toggle`);
+  if (!(await tgl.evaluate(el => el.classList.contains("open")))) {
+    await tgl.click();
+    await page.waitForTimeout(300);
+  }
   await page.locator(`.post[data-pid="${pid}"] .view-full`).click();
   await page.waitForTimeout(400);
 };
@@ -115,15 +124,20 @@ check("detail model Follow (icon-only)", (await dBtn().getAttribute("title")) ==
 await page.screenshot({ path: `${OUT}/m-detail-model-follow.png` });
 await dBtn().click();
 await page.waitForTimeout(300);
-check("model follow flips on + toast",
+check("model follow opens watch-alert sheet", await page.locator(".screen").evaluate(el => el.classList.contains("wa-open")));
+await page.locator(".comment-sheet .wa-go").click();
+await page.waitForTimeout(300);
+check("creating the alert flips the bell on + toast",
   (await dBtn().getAttribute("title")) === "Following this model" && await dBtn().evaluate(el => el.classList.contains("on"))
-    && (await page.locator(".sc-toast").textContent()).includes("Following this model"));
+    && (await page.locator(".sc-toast").textContent()).includes("Watch alert on"));
 await page.screenshot({ path: `${OUT}/m-detail-model-following.png` });
 await dBtn().click();
 await page.waitForTimeout(300);
-check("model unfollow back off + toast",
+await page.locator(".comment-sheet .wa-del").click();
+await page.waitForTimeout(300);
+check("deleting the alert flips the bell back off + toast",
   (await dBtn().getAttribute("title")) === "Follow this model" && !(await dBtn().evaluate(el => el.classList.contains("on")))
-    && (await page.locator(".sc-toast").textContent()).includes("Unfollowed this model"));
+    && (await page.locator(".sc-toast").textContent()).includes("Watch alert removed"));
 
 // 6) model unfollow leaves seller following untouched — card still has no button, tab keeps 4
 await closeDetail();
@@ -155,17 +169,22 @@ await page.waitForTimeout(300);
 check("favorites empty 'No favorites yet'", (await page.locator(".feed-empty .fe-title").textContent()).trim() === "No favorites yet");
 
 // 9) model follow is independent of seller follow + persists across detail re-open
+//    (bell → watch-alert modal: Create turns it on, Delete turns it off)
 await tabs.nth(0).click();
 await page.waitForTimeout(300);
 await openDetail("p1");
 check("model follow off despite seller followed", (await dBtn().getAttribute("title")) === "Follow this model");
 await dBtn().click();
 await page.waitForTimeout(300);
+await page.locator(".comment-sheet .wa-go").click();
+await page.waitForTimeout(300);
 check("model follow on", (await dBtn().getAttribute("title")) === "Following this model" && await dBtn().evaluate(el => el.classList.contains("on")));
 await closeDetail();
 await openDetail("p1");
 check("model follow persists on detail re-open", (await dBtn().getAttribute("title")) === "Following this model" && await dBtn().evaluate(el => el.classList.contains("on")));
 await dBtn().click();
+await page.waitForTimeout(300);
+await page.locator(".comment-sheet .wa-del").click();
 await page.waitForTimeout(300);
 await closeDetail();
 

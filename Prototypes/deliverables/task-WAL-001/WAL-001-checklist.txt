@@ -1,0 +1,45 @@
+WAL-001 — Manual Review Checklist (ผลตรวจจริง)
+Task: เมนู Watch Alert ใน Settings + ตั้ง alert จาก Detail (follow model) และหน้า Search ใน fo-flow/index.html
+URL: http://127.0.0.1:4173/fo-flow/index.html
+ผู้ตรวจ: ผู้ใช้ | ผล: รอยืนยัน
+
+เคส 1: Settings > Watch Alerts — ผ่าน (automated)
+- Settings มีแถว "Watch Alerts" (icon กระดิ่ง + count) ข้าง Saved/Wish List/Archive
+- เปิดหน้า Watch Alerts: empty state "No watch alerts yet" + ข้อความอธิบาย
+- แต่ละ alert row แสดง ชื่อ (รุ่น/brand), criteria แสดงแค่ values ต่อกันด้วย " · " (ตัด 3 บรรทัด ไม่ลิสต์ชื่อฟิลด์), badge "EDIT" + โหมดเป็นข้อความ "Match all / Match any / Model only · N matches now", toggle เปิด/ปิด
+- แตะพื้นที่ row ทั่วไปไม่ทำอะไร — กดเฉพาะ pill EDIT เท่านั้นที่เปิด Edit sheet (สลับโหมด/ลบได้); toggle ปิด → row จาง + toast "Watch alert paused"; delete → toast "Watch alert removed"
+
+เคส 2: Entry จาก Detail — ผ่าน (automated, ปรับตาม feedback — bottom sheet ชุดเดียวกับ search)
+- ปุ่มกระดิ่ง (.mf-btn) บนหน้า Detail เปิด bottom sheet "Create watch alert" (ลาก/แตะ backdrop ปิด) แทน toggle ตรง ๆ
+- ช่องตั้งชื่อ auto-fill ชื่อรุ่น (เช่น Rolex Submariner Date · 126610LN) — แก้ไขชื่อได้ก่อนบันทึก; ชื่อที่พิมพ์ไม่หายตอนสลับโหมด
+- ไม่ลิสต์ criteria chips บน sheet ฝั่ง Detail เพราะผู้ใช้ดูรายละเอียดบนหน้า Detail มาก่อนแล้ว — แต่ criteria ทุก spec field (p1 = 26 fields) ยังถูก snapshot ลง alert เงียบ ๆ ใช้ match จริงเต็มชุด
+- สร้าง alert → กระดิ่งบน Detail กลายเป็น filled/on + toast "Watch alert on"
+- กดกระดิ่งบนรุ่นที่มี alert อยู่ → เปิด "Edit watch alert" (ไม่สร้างซ้ำ) แก้ชื่อ/โหมดได้ มีปุ่ม Delete alert
+- toggle ปิด alert → กระดิ่งบน Detail กลับเป็น off (syncModelFlags)
+
+เคส 3: Entry จาก Search — ผ่าน (automated, sheet เดียวกับ Detail เป๊ะ)
+- หน้าผลค้นหามีปุ่มกระดิ่ง (.sr-wa) — ทั้งตอนมีผลและตอน 0 ผลลัพธ์ — เปิด bottom sheet "Create watch alert" หน้าตาเดียวกับหน้า Detail (ชื่อ auto-fill จาก keyword/brand, แก้ไขได้; ไม่มี criteria pills ใน sheet — criteria ดูได้จาก chips บนหน้าผลค้นหาและในหน้า Watch Alerts list)
+- snapshot criteria = keyword + filter ทั้งหมดที่เลือก (เช่น Keyword: submariner + Brand: Rolex)
+- กดปุ่มซ้ำด้วย criteria เดิม → เปิด Edit sheet ของ alert เดิม (dedupe ไม่สร้างซ้ำ)
+- ปุ่มกระดิ่งบน search แสดงสถานะ on เมื่อ criteria ปัจจุบันถูกบันทึกเป็น alert ที่เปิดอยู่
+- search ที่ 0 ผลลัพธ์สร้าง alert ได้ — sheet แสดง "0 now" บน Match all
+
+เคส 4: Match Mode 3 ระดับ — ผ่าน (automated)
+- bottom sheet ชุดเดียวทั้ง 3 entry (Detail / Search / แตะ row ในหน้า Settings) มี 3 ตัวเลือก: Match all criteria (default) / Match any criteria / Model only
+- แต่ละตัวเลือกแสดง match count สด "N now" — user เห็นความกว้างก่อนสร้าง
+- Match all = AND ทุกฟิลด์; Match any = OR ≥1 ฟิลด์; Model only = เทียบแค่ Brand+Model+Ref
+- สลับโหมดใน edit sheet อัปเดต alert เดิม (ไม่สร้างซ้ำ)
+
+เคส 5: Notification — ผ่าน (automated)
+- insertNewPost ประเมิน alert ที่เปิดอยู่ → โพสต์ใหม่ match → _waHits + toast "Watch alert matched: <ชื่อ alert>"
+- alert ที่ปิดอยู่ (paused) ไม่ถูกประเมิน
+
+เคส 6: Regression — ผ่าน (automated)
+- _verify_feed_follow.mjs ปรับตามพฤติกรรมใหม่ (mf-btn เปิด sheet) ผ่าน 37 checks, 0 errors
+- seller Follow แยกจาก model Watch Alert — ไม่กระทบ feed/saved/wishlist/search เดิม
+- dark theme ทั้งหมด; memory-only ตาม convention ของ prototype
+
+Verification:
+- node _verify_wa.mjs → 44 passed, 0 failed, 0 console errors
+- node _verify_feed_follow.mjs → 37 checks passed, 0 failed, 0 console errors
+Screenshots: Prototypes/screenshots/task-WAL-001/{d,t,m}-wa-*.png (desktop 1920×1080, tablet 768×1024, mobile 440×956)

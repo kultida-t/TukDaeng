@@ -1,0 +1,137 @@
+PASS feed renders phones
+PASS stays on index.html
+PASS sub-open = create sheet
+PASS picker visible
+PASS Next disabled with 0 photos
+PASS hero shows photo
+PASS Next enabled after select
+PASS multi-select ord badges 1,2,3
+PASS hero shows last-selected photo
+PASS caption step open
+PASS 3 thumbs in caption step
+PASS thumb tap opens photo zoom
+PASS zoom shows tapped photo
+PASS no nav arrows (swipe only)
+PASS swipe left → photo 2
+PASS dots show position 2
+PASS tap on photo keeps zoom open
+PASS tap backdrop closes preview
+PASS thumb strip scrolls via wheel
+PASS 10 hashtag pills
+PASS chip inserts #rolex into caption
+PASS chip row scrolls via wheel
+PASS Add audio / Tag people removed
+PASS price pane opens
+PASS price formats digits
+PASS price val on row
+PASS condition pick keeps pane open
+PASS box option selectable after condition
+PASS box options are single-select
+PASS condition val on row
+PASS watch details has full spec fields
+PASS spec val on row
+PASS location pane has suggestions
+PASS location row shows picked place + km
+PASS location note shown
+PASS X clears location
+PASS more-options has sections
+PASS Selling section removed
+PASS more-options toggle works
+PASS toggles same on/off colors
+PASS audience radio selects followers
+PASS pane closed back to caption
+PASS audience val on more row
+PASS back returns to picker
+PASS composer closed
+PASS new post on top (mycollection / Just now)
+PASS post carries location
+PASS post carries price (sale)
+PASS post has spec groups
+PASS price & data source auto rows
+PASS noComments hides comment btn
+PASS 0 views hidden on new post
+PASS 0 likes hides liked-by row
+PASS new post has details toggle
+PASS caption hashtag is blue tag
+PASS toast shown
+PASS more reveals details toggle
+PASS details body shows specs
+PASS unfilled spec fields show N/A
+PASS tag tap opens search results
+PASS tag results list posts
+PASS tags tab lists tag rows
+PASS tag row shows post count
+PASS tag row → results for that tag
+PASS back from results → explore landing
+PASS back from search to feed
+PASS minimal post on top
+PASS short caption → no more link
+PASS no meta → no details toggle
+PASS 0 comments → icon w/o count
+PASS 0 views → no views-stat
+PASS 0 likes → no liked-by
+PASS discard dialog shown
+PASS discard closes composer
+PASS comment sheet opens
+PASS post grid mixes video cells
+PASS mixed photo+video multi-select
+PASS mixed draft → 2 thumbs, video has dur badge
+PASS mixed clip thumb opens clip viewer
+PASS clip viewer shows full duration
+PASS mixed clip viewer plays
+PASS mixed clip countdown runs
+PASS swipe to photo → photo zoom mode
+PASS swipe back to clip → clip viewer mode
+PASS clip viewer paused on re-entry
+PASS mixed viewer backdrop closes
+PASS caption still open after mixed viewer
+PASS clip tab becomes active
+PASS clip grid renders video cells w/ duration
+PASS no multi-select Select button in clip tab
+PASS clip hero empty state
+PASS Next still disabled w/o clip
+PASS clip select → hero preview w/ play glyph
+PASS clip hero shows duration
+PASS clip single-select (only last picked)
+PASS clip preview layer opens
+PASS preview shows duration badge
+PASS preview has progress bar
+PASS tap stage plays clip
+PASS duration counts down while playing
+PASS progress bar advances
+PASS tap stage again pauses
+PASS countdown holds when paused
+PASS preview back → picker
+PASS clip draft kept
+PASS clip caption step open
+PASS caption title is New clip
+PASS clip shows as normal thumb w/ duration
+PASS composer rows reused
+PASS clip thumb opens big viewer
+PASS tap viewer plays clip
+PASS viewer countdown runs
+PASS viewer backdrop tap closes
+PASS caption still open after viewer
+PASS caption back → clip preview
+PASS price pane reused in clip
+PASS composer closed after clip share
+PASS clip post on top (mycollection)
+PASS clip badge w/ duration on feed
+PASS clip badge has play icon
+PASS clip post keeps price
+PASS clip toast
+PASS feed clip autoplays in view
+PASS feed clip badge counts down
+PASS feed clip progress bar runs
+PASS clip pauses when scrolled past
+PASS clip resumes on scroll back
+PASS clip discard dialog
+PASS discard clip closes composer
+PASS default tab is Post
+PASS post picker keeps Select btn
+PASS post-tab video hero has play glyph
+PASS video-only draft → clip thumb w/ dur
+PASS title stays New post
+PASS post-tab video thumb opens viewer
+PASS video post gets clip badge
+DONE — 136 passed, 0 failed

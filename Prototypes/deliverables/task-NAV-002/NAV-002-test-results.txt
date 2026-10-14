@@ -1,0 +1,35 @@
+NAV-002 Automated Test Results — _verify_hb.mjs
+Date: 2026-10-14 (Asia/Bangkok)
+Command: cd Prototypes && node _verify_hb.mjs
+Target: http://127.0.0.1:4173/fo-flow/index.html (playwright chromium, 560x950, dsf 2)
+
+PASS feed renders phone
+PASS burger button in app-header
+PASS drawer hidden before open
+PASS screen gets hb-open
+PASS scrim visible
+PASS panel pinned to left edge
+PASS panel width ~82% (feed peeks on right)
+PASS panel starts below statusbar
+PASS 9 menu items in order
+PASS every item has an icon
+PASS IG settings row style — 14px regular label
+PASS every item has a trailing chevron
+PASS item tap → prototype toast
+PASS drawer stays open after item tap
+PASS no profile entry inside the drawer                            [NAV-002]
+PASS drawer has exactly the 9 menu rows                            [NAV-002]
+PASS hb-wrap z-index above all in-screen layers                    [NAV-002]
+PASS theme toggle hidden while drawer open                         [NAV-002]
+PASS scrim tap closes drawer
+PASS panel slid back out
+PASS light theme drawer opens
+PASS light theme shows 9 items
+PASS light theme scrim closes
+PASS theme toggle visible again after drawer closes                [NAV-002]
+PASS search page still opens
+PASS create sheet still opens
+PASS NAV-002: create opens as right-slide page (no pg-up)          [NAV-002]
+PASS no console/page errors
+
+28 passed, 0 failed

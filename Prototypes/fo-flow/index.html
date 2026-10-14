@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+l<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -157,6 +157,7 @@
     --chip-bg: rgba(255,255,255,.08);
     --chip-text: #d6d6dc;
     --btn-gray: #2b2b31;
+    --link: #79b5f2;
     background: var(--bg);
     color: var(--text);
   }
@@ -170,6 +171,7 @@
     --chip-bg: rgba(0,0,0,.06);
     --chip-text: #3a3a42;
     --btn-gray: #ededf0;
+    --link: #0b57d0;
     background: var(--bg);
     color: var(--text);
   }
@@ -267,6 +269,38 @@
   }
   .icon-btn:hover { background: var(--chip-bg); }
   .icon-btn svg { display: block; }
+
+  /* ============ HAMBURGER DRAWER (NAV-001 — IG settings-style side menu) ============ */
+  .hb-wrap { position: absolute; inset: 0; z-index: 80; pointer-events: none; }
+  .screen.hb-open .hb-wrap { pointer-events: auto; }
+  .hb-scrim {
+    position: absolute; left: 0; right: 0; top: 34px; bottom: 0;
+    background: rgba(0,0,0,.3);
+    opacity: 0; transition: opacity .26s ease;
+  }
+  .screen.hb-open .hb-scrim { opacity: 1; }
+  .hb-panel {
+    position: absolute; left: 0; top: 34px; bottom: 0;
+    width: 82%;
+    background: var(--bg);
+    border-right: 1px solid var(--line);
+    transform: translateX(-103%);
+    transition: transform .28s ease;
+    display: flex; flex-direction: column;
+  }
+  .screen.hb-open .hb-panel { transform: none; }
+  .hb-list { flex: 1; padding: 28px 0 12px; overflow-y: auto; scrollbar-width: none; }
+  .hb-list::-webkit-scrollbar { display: none; }
+  .hb-item {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; padding: 12px 22px;
+    background: none; border: none; cursor: pointer;
+    font-family: var(--font-main); font-size: 14px; font-weight: 400;
+    color: var(--text); text-align: left;
+  }
+  .hb-item:hover { background: var(--chip-bg); }
+  .hb-item svg { display: block; flex-shrink: 0; }
+  .hb-item .hb-chev { margin-left: auto; color: var(--muted); display: flex; }
 
   /* ============ FEED TABS ============ */
   .feed-tabs {
@@ -990,7 +1024,7 @@
   .pm-undo {
     font-family: var(--font-main);
     font-size: 14px; font-weight: 600;
-    color: #3d9bff;
+    color: var(--red);
     background: none; border: none;
     padding: 4px;
     cursor: pointer;
@@ -1099,7 +1133,7 @@
   .lk-follow {
     flex-shrink: 0; font-family: var(--font-main); font-size: 13.5px; font-weight: 600;
     border: none; border-radius: 8px; padding: 7px 22px; cursor: pointer;
-    background: #3d9bff; color: #fff;
+    background: var(--red); color: #fff;
   }
   .lk-follow.on { background: var(--chip-bg); color: var(--text); }
 
@@ -1187,7 +1221,7 @@
   .sv-sec .l { font-size: 14.5px; font-weight: 700; color: var(--text); }
   .sv-new, .wl-new {
     font-family: var(--font-main); font-size: 13px; font-weight: 500;
-    color: #3d9bff; background: none; border: none; cursor: pointer; padding: 4px 0;
+    color: var(--red); background: none; border: none; cursor: pointer; padding: 4px 0;
   }
   .sv-list { overflow-y: auto; scrollbar-width: none; }
   .sv-list::-webkit-scrollbar { display: none; }
@@ -1209,7 +1243,7 @@
   .svd-x { display: none; border: none; background: none; color: var(--muted); cursor: pointer; padding: 0; flex-shrink: 0; }
   .sr-field.has-q .svd-x { display: flex; }
   .svd-cancel {
-    flex-shrink: 0; font-family: var(--font-main); font-size: 15px; color: #3d9bff;
+    flex-shrink: 0; font-family: var(--font-main); font-size: 15px; color: var(--red);
     background: none; border: none; cursor: pointer; padding: 6px 4px;
   }
   .svd-tabs {
@@ -1225,7 +1259,7 @@
   .svd-tab.on { background: color-mix(in srgb, var(--text) 22%, transparent); }
   .svd-see, .svd-done {
     background: none; border: none; font-family: var(--font-main);
-    font-size: 13.5px; font-weight: 600; color: #3d9bff; cursor: pointer; padding: 0;
+    font-size: 13.5px; font-weight: 600; color: var(--red); cursor: pointer; padding: 0;
   }
   .svd-done { font-size: 14.5px; padding: 6px 4px; }
   .svd-sec { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 9px; }
@@ -1285,7 +1319,7 @@
     border-radius: 50%; border: 1.5px solid rgba(255,255,255,.9); background: rgba(0,0,0,.12);
     display: flex; align-items: center; justify-content: center; color: #fff;
   }
-  .svd-tile.on .svd-sel { background: #3d9bff; border-color: #3d9bff; }
+  .svd-tile.on .svd-sel { background: var(--red); border-color: var(--red); }
   .svd-tile.on img { opacity: .5; }
   .svd-bar {
     display: flex; align-items: center; gap: 10px; flex-shrink: 0;
@@ -1299,7 +1333,7 @@
   .svd-bar button:disabled { opacity: .38; cursor: default; }
   .svd-selall {
     background: none; border: none; font-family: var(--font-main);
-    font-size: 15px; color: #3d9bff; cursor: pointer; padding: 6px 4px;
+    font-size: 15px; color: var(--red); cursor: pointer; padding: 6px 4px;
   }
   .svd-mini { display: none; }
   .svd-body { display: flex; flex-direction: column; }
@@ -1347,7 +1381,7 @@
   .ecv img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .ec-chgcover {
     background: none; border: none; font-family: var(--font-main);
-    font-size: 14px; color: #3d9bff; cursor: pointer; padding: 2px;
+    font-size: 14px; color: var(--red); cursor: pointer; padding: 2px;
   }
   .ec-sec { font-size: 15px; font-weight: 700; color: var(--text); padding: 18px 14px 10px; }
   .ec-field {
@@ -1373,7 +1407,7 @@
     overflow: hidden; cursor: pointer; background: var(--surface-2);
   }
   .ec-ctile img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .ec-ctile.on .svd-sel { background: #3d9bff; border-color: #3d9bff; }
+  .ec-ctile.on .svd-sel { background: var(--red); border-color: var(--red); }
   /* move-to-collection picker reuses the sv sheet look */
   .svd-mv {
     width: 100%; display: flex; align-items: center; gap: 12px;
@@ -1382,7 +1416,7 @@
   }
   .svd-mv-new {
     font-family: var(--font-main); font-size: 13px; font-weight: 500;
-    color: #3d9bff; background: none; border: none; cursor: pointer; padding: 4px 0;
+    color: var(--red); background: none; border: none; cursor: pointer; padding: 4px 0;
   }
   .svd-mv-new:disabled { color: var(--muted); opacity: .6; cursor: default; }
   .sv-bm { display: flex; align-items: center; justify-content: center; color: var(--text); }
@@ -1395,7 +1429,7 @@
     font-size: 15px; cursor: pointer; padding: 6px 2px; min-width: 52px;
   }
   .nc-cancel { color: var(--text); text-align: left; }
-  .nc-next { color: #3d9bff; font-weight: 700; text-align: right; }
+  .nc-next { color: var(--red); font-weight: 700; text-align: right; }
   .nc-next:disabled { color: var(--muted); opacity: .6; cursor: default; }
   .nc-field {
     display: flex; align-items: center; gap: 8px; margin: 2px 16px 14px; flex-shrink: 0;
@@ -1436,7 +1470,7 @@
     width: 23px; height: 23px; border-radius: 50%; border: 2px solid var(--muted);
     flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff;
   }
-  .nc-fr.on .chk { background: #3d9bff; border-color: #3d9bff; }
+  .nc-fr.on .chk { background: var(--red); border-color: var(--red); }
 
   /* settings / content-preferences page — slides in like the detail page */
   .page-sub {
@@ -1448,9 +1482,9 @@
   .screen.sub-open .page-sub { transform: none; animation: pgSide .28s ease; }
   @keyframes pgSide { from { transform: translateX(100%); } }
   /* report view slides up from the bottom like an IG sheet */
-  .page-sub.pg-up { transform: translateY(100%); border-radius: 16px 16px 0 0; }
+  .page-sub.pg-up { transform: translateY(110%); border-radius: 16px 16px 0 0; }
   .screen.sub-open .page-sub.pg-up { animation-name: pgUp; }
-  @keyframes pgUp { from { transform: translateY(100%); } }
+  @keyframes pgUp { from { transform: translateY(110%); } }
   .sub-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
   .sub-scroll::-webkit-scrollbar { display: none; }
   /* ============ POST VIEWER (IG search-result viewer — vertical swipe through results) ============ */
@@ -1559,7 +1593,7 @@
     border-radius: 50%; background: #fff; transition: transform .2s;
     box-shadow: 0 1px 3px rgba(0,0,0,.3);
   }
-  .tg-sw.on { background: var(--text); }
+  .tg-sw.on { background: var(--red); }
   .tg-sw.on::after { transform: translateX(18px); }
   .sens-check { color: var(--text); }
   .mrow { display: flex; align-items: center; gap: 12px; padding: 9px 16px; }
@@ -1577,8 +1611,75 @@
   .fav-desc { font-size: 13px; color: var(--muted); line-height: 1.5; padding: 14px 16px 4px; }
   .fav-search { margin: 12px 16px 4px; }
   .fav-sec { display: flex; align-items: center; }
-  .fav-removeall { margin-left: auto; background: none; border: none; padding: 0; font-family: var(--font-main); font-size: 13px; font-weight: 600; color: #3d9bff; cursor: pointer; }
-  .mact.fav-add { background: #3d9bff; color: #fff; }
+  .fav-removeall { margin-left: auto; background: none; border: none; padding: 0; font-family: var(--font-main); font-size: 13px; font-weight: 600; color: var(--red); cursor: pointer; }
+  .mact.fav-add { background: var(--red); color: #fff; }
+
+  /* ============ WATCH ALERTS — create/edit sheet + settings list ============ */
+  .screen.wa-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
+  .screen.wa-open .comment-sheet { transform: none; }
+  .comment-sheet.wa { height: auto; max-height: 82%; }
+  .wa-body { padding: 4px 16px 26px; overflow-y: auto; }
+  .wa-title { font-size: 16px; font-weight: 700; color: var(--text); text-align: center; padding: 4px 0 12px; }
+  .wa-lbl { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin: 0 0 6px; }
+  .wa-name {
+    width: 100%; font-family: var(--font-main); font-size: 14px; color: var(--text);
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px 12px; outline: none; margin-bottom: 10px;
+  }
+  .wa-name:focus { border-color: var(--muted); }
+  .wa-sub { font-size: 12.5px; color: var(--muted); text-align: center; margin-bottom: 12px; }
+  .wa-sec { font-size: 13px; font-weight: 600; color: var(--muted); margin: 16px 0 8px; }
+  .wa-mode {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-main); text-align: left; cursor: pointer;
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 11px 13px; margin-bottom: 8px;
+  }
+  .wa-mode.on { border-color: var(--red); }
+  .wa-mode:disabled { opacity: .45; cursor: default; }
+  .wa-mb { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .wa-mt { font-size: 14px; font-weight: 600; color: var(--text); }
+  .wa-md { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .wa-mc { font-size: 12px; color: var(--muted); flex-shrink: 0; }
+  .wa-mode.on .wa-mc { color: var(--red); }
+  .wa-rad {
+    width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid var(--muted); position: relative;
+  }
+  .wa-mode.on .wa-rad { border-color: var(--red); }
+  .wa-mode.on .wa-rad::after {
+    content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--red);
+  }
+  .wa-go, .wa-del {
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: var(--font-main); font-size: 14.5px; font-weight: 600;
+    padding: 12px; border-radius: 12px; cursor: pointer; margin-top: 10px;
+  }
+  .wa-go { border: none; background: var(--red); color: #fff; }
+  .wa-del { border: 1px solid var(--line); background: transparent; color: var(--red); }
+  /* settings > watch alerts list */
+  .wa-row {
+    display: flex; align-items: flex-start; gap: 12px; width: 100%;
+    padding: 12px 16px; background: none; border: none; border-bottom: 1px solid var(--line);
+    font-family: var(--font-main); text-align: left; cursor: default;
+  }
+  .wa-ic {
+    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+    background: var(--chip-bg); color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wa-b { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .wa-t { font-size: 14px; font-weight: 600; color: var(--text); }
+  .wa-c { font-size: 12px; color: var(--muted); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .wa-badge { cursor: pointer; }
+  .wa-meta { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--muted); }
+  .wa-badge {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 999px; background: var(--chip-bg); color: var(--text);
+  }
+  .wa-row.wa-off .wa-b { opacity: .45; }
+  .wa-tgl { background: none; border: none; padding: 6px 0 6px 10px; cursor: pointer; align-self: center; }
+  .sr-wa.on svg path { fill: var(--text); }
 
   /* ============ SEARCH PAGE (SEARCH-001 — IG-style search flow) ============ */
   .sr-head { display: flex; align-items: center; gap: 8px; padding: 8px 10px 6px; flex-shrink: 0; }
@@ -1626,7 +1727,7 @@
   .rc-title { margin-left: auto; margin-right: auto; }
   .rc-clear {
     flex-shrink: 0; background: none; border: none; cursor: pointer; padding: 6px 0;
-    font-family: var(--font-main); font-size: 13.5px; font-weight: 600; color: #3d9bff;
+    font-family: var(--font-main); font-size: 13.5px; font-weight: 600; color: var(--red);
   }
   .sr-chip {
     flex-shrink: 0; display: flex; align-items: center; gap: 6px;
@@ -1653,7 +1754,7 @@
   /* recent + suggestion rows */
   .rc-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 6px; }
   .rc-head .t { font-size: 15px; font-weight: 700; color: var(--text); }
-  .rc-all { background: none; border: none; font-family: var(--font-main); font-size: 13.5px; font-weight: 600; color: #3d9bff; cursor: pointer; padding: 0; }
+  .rc-all { background: none; border: none; font-family: var(--font-main); font-size: 13.5px; font-weight: 600; color: var(--red); cursor: pointer; padding: 0; }
   .rc-row, .ac-row {
     width: 100%; display: flex; align-items: center; gap: 12px; padding: 7px 16px;
     background: none; border: none; cursor: pointer; font-family: var(--font-main); text-align: left;
@@ -1664,6 +1765,7 @@
     width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
     border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--text);
   }
+  .ac-ico.tag-ic { font-size: 20px; font-weight: 700; }
   .rc-who, .ac-who { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .rc-who .u, .ac-who .u { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .rc-who .d, .ac-who .d { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1715,7 +1817,7 @@
   .ni-action {
     width: 100%; font-family: var(--font-main); font-size: 14px; font-weight: 600;
     padding: 14px; background: none; border: none; border-top: 1px solid var(--line);
-    color: #3d9bff; cursor: pointer; text-align: center;
+    color: var(--red); cursor: pointer; text-align: center;
   }
   .ni-action.danger { color: var(--red); }
   /* full-page report view — centered title + X top-right (IG-style) */
@@ -2115,7 +2217,7 @@
     white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.45);
   }
   #flowToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open, .screen.details-open) #themeToggle {
+  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open, .screen.details-open, .screen.hb-open, .screen.wa-open) #themeToggle {
     opacity: 0; pointer-events: none;
   }
   @media (max-width: 480px) {
@@ -2127,7 +2229,7 @@
   }
   .post-photo, .detail-hero { touch-action: pan-y; }
   .post-photo img, .detail-hero img { user-select: none; -webkit-user-drag: none; }
-  .igd-tag { color: #79b5f2; }
+  .igd-tag { color: var(--link); cursor: pointer; }
 
   /* K5 — floating chat bubble + pop-up composer (detail page) */
   .cp-backdrop {
@@ -2266,6 +2368,569 @@
     cursor: default;
     transform: none;
   }
+
+  /* ============ CREATE-001 — IG-style create-post task flow (picker → caption → feed) ============ */
+  .cf {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative;
+    background: var(--bg);
+  }
+  .cf-head {
+    display: flex;
+    align-items: center;
+    padding: 4px 12px 10px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .cf-head .t {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 15.5px;
+    font-weight: 700;
+  }
+  .cf-act {
+    margin-left: auto;
+    font-family: var(--font-main);
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--red);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 4px;
+  }
+  .cf-act.off { color: var(--muted); font-weight: 600; }
+  .cf-scroll {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+    min-height: 0;
+  }
+  .cf-scroll::-webkit-scrollbar { display: none; }
+  .cf .add-tile {
+    background: var(--surface-2);
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  /* step 1 — picker: square hero preview + Recents roll */
+  .cf .ig-hero {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--surface-2);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .cf .ig-car { position: absolute; inset: 0; overflow: hidden; }
+  .cf .ig-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cf .ig-hero .expand {
+    position: absolute;
+    left: 14px; bottom: 14px;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(20,20,24,.6);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .cf .ig-hero .add-tile { position: absolute; inset: 0; }
+  .cf .ig-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px 8px;
+    flex-shrink: 0;
+  }
+  .cf .ig-bar .rc {
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    background: none; border: none;
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer;
+    padding: 0;
+  }
+  .cf .sel-btn {
+    margin-left: auto;
+    font-family: var(--font-main);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--chip-bg);
+    border: none;
+    border-radius: 999px;
+    padding: 7px 14px;
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer;
+  }
+  .cf .sel-btn.on { background: var(--red); color: #fff; }
+  .cf .ig-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5px;
+    flex-shrink: 0;
+  }
+  .cf .ig-grid .cell {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    overflow: hidden;
+    background: var(--surface-2);
+    cursor: pointer;
+  }
+  .cf .ig-grid .cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cf .ig-grid .cell.cam { display: flex; align-items: center; justify-content: center; color: var(--text); }
+  .cf .ig-grid .radio {
+    display: none;
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1.6px solid rgba(255,255,255,.92);
+    background: rgba(0,0,0,.3);
+    color: #fff;
+    font-size: 11px; font-weight: 700;
+    align-items: center; justify-content: center;
+    z-index: 2;
+  }
+  .cf .ig-grid.selmode .radio { display: flex; }
+  .cf .ig-grid.selmode .radio.on { background: var(--red); border-color: var(--red); }
+  .cf .ig-grid.selmode .cell.sel img { opacity: .62; }
+  .cf .ig-grid.selmode .cell.sel::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,.18);
+  }
+  .cf .ig-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 26px;
+    padding: 10px 0 6px;
+    border-top: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .cf .ig-tab {
+    font-family: var(--font-main);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: none; border: none;
+    cursor: pointer;
+    padding: 4px 2px;
+  }
+  .cf .ig-tab.on { color: var(--text); font-weight: 700; }
+  /* step 2 — caption page sliding in over the picker */
+  .cf .cf-step2 {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    transform: translateX(100%);
+    transition: transform .28s ease;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+  }
+  .cf.cap-open .cf-step2 { transform: none; }
+  .cf .ig-cap-scroll {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+    min-height: 0;
+  }
+  .cf .ig-cap-scroll::-webkit-scrollbar { display: none; }
+  .cf .ig-thumb {
+    width: 168px;
+    aspect-ratio: 4 / 5;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 4px auto 0;
+    background: var(--surface-2);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .cf .ig-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cf .ig-thumbs.multi {
+    display: flex;
+    gap: 3px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 4px 16px 0;
+    justify-content: flex-start;
+  }
+  .cf .ig-thumbs.multi::-webkit-scrollbar { display: none; }
+  .cf .ig-thumbs.multi .ig-thumb { margin: 0; width: 46%; }
+  .cf .ig-thumb .rm-mini {
+    position: absolute;
+    bottom: 8px; right: 8px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(20,20,24,.62);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .cf .ig-thumb img { cursor: zoom-in; -webkit-user-drag: none; user-select: none; }
+  .cf .ig-thumbs.multi { cursor: grab; }
+  .cf .ig-thumbs.multi:active { cursor: grabbing; }
+  /* FEED-024 — edit info: drag-to-reorder thumb, "+" add tile, reorder hint */
+  .cf .ig-thumb.drag {
+    z-index: 6;
+    box-shadow: 0 10px 28px rgba(0,0,0,.5);
+    opacity: .96;
+    transition: none;
+  }
+  .cf .ig-thumb.ig-add {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1.5px dashed var(--line);
+    cursor: pointer;
+    font-family: var(--font-main);
+  }
+  .cf .cf-edit-x {
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    padding: 10px 4px;
+    cursor: pointer;
+  }
+  /* tap a caption-step thumbnail → full-sheet photo preview (IG), swipe between photos */
+  .cf .ig-zoom {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease;
+    touch-action: pan-y;
+  }
+  .cf .ig-zoom.open { opacity: 1; pointer-events: auto; }
+  .cf .ig-zoom img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    animation: igZoomIn .18s ease;
+    -webkit-user-drag: none;
+    user-select: none;
+    touch-action: pan-y;
+  }
+  @keyframes igZoomIn { from { transform: scale(.92); } to { transform: none; } }
+  .cf .ig-zoom .z-dots {
+    position: absolute;
+    bottom: 16px; left: 0; right: 0;
+    display: flex; gap: 6px; justify-content: center;
+    pointer-events: none;
+  }
+  .cf .ig-zoom .z-dots i {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,.38);
+  }
+  .cf .ig-zoom .z-dots i.on { background: #fff; }
+  .cf .ig-cap-line {
+    padding: 14px 18px 10px;
+  }
+  .cf .ig-cap-line .ta {
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 68px;
+    outline: none;
+  }
+  .cf .ig-cap-line .ta:empty::before { content: attr(data-ph); color: var(--muted); }
+  .cf .ig-chip-row {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cf .ig-chip-row::-webkit-scrollbar { display: none; }
+  .cf .ig-chip {
+    font-family: var(--font-main);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 14px;
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .cf .ig-rows { padding: 8px 0 0; }
+  .cf .ig-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+    background: none; border: none;
+    font-family: var(--font-main);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+  }
+  .cf .ig-row .ic { color: var(--text); display: flex; flex-shrink: 0; width: 24px; justify-content: center; }
+  .cf .ig-row .val {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 52%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cf .ig-row .val.set { color: var(--text); font-weight: 600; }
+  .cf .ig-row .val.set.price { color: var(--red); }
+  .cf .ig-row > svg { color: var(--muted); flex-shrink: 0; }
+  .cf .ig-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+  }
+  .cf .ig-toggle-row .tx { flex: 1; min-width: 0; }
+  .cf .ig-toggle-row .tt { font-size: 14px; font-weight: 500; }
+  .cf .ig-toggle-row .ts { font-size: 11.5px; color: var(--muted); margin-top: 2px; line-height: 1.45; }
+  .cf .sw {
+    width: 44px; height: 26px;
+    border-radius: 999px;
+    background: var(--chip-bg);
+    border: none;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .2s ease;
+  }
+  .cf .sw::after {
+    content: "";
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform .2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+  }
+  .cf .sw.on { background: var(--red); }
+  .cf .sw.on::after { transform: translateX(18px); }
+  .cf .ig-share {
+    flex-shrink: 0;
+    margin: 6px 14px 0;
+    font-family: var(--font-main);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 13px 0;
+    border-radius: 12px;
+    border: none;
+    background: var(--red);
+    color: #fff;
+    cursor: pointer;
+  }
+  .cf .ig-share.off { background: var(--btn-gray); color: var(--muted); }
+  /* caption row sub-panes — slide in from right over step 2 (IG-style option screens) */
+  .cf .cf-pane {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: var(--bg);
+    transform: translateX(100%);
+    transition: transform .26s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .cf .cf-pane.open { transform: none; }
+  .cf .pane-body { flex: 1; overflow-y: auto; min-height: 0; scrollbar-width: none; padding-bottom: 24px; }
+  .cf .pane-body::-webkit-scrollbar { display: none; }
+  .cf .pane-in {
+    width: calc(100% - 32px);
+    margin: 8px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+  }
+  .cf .pane-in:focus { border-color: var(--muted); }
+  .cf .pane-ta { resize: none; min-height: 96px; line-height: 1.5; display: block; }
+  .cf .pane-lab { font-size: 12px; color: var(--muted); font-weight: 600; padding: 14px 18px 4px; line-height: 1.5; }
+  .cf .loc-opt, .cf .cond-opt {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-family: var(--font-main);
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+  }
+  .cf .loc-opt:active, .cf .cond-opt:active { background: var(--surface-2); }
+  .cf .loc-opt svg { color: var(--muted); flex-shrink: 0; }
+  .cf .cond-opt .rad {
+    margin-left: auto;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--muted);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .cf .cond-opt.on .rad { border-color: var(--red); }
+  .cf .cond-opt.on .rad::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+  .cf .cond-opt .lab { flex: 1; min-width: 0; }
+  .cf .cond-opt .lab .sub { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .cf .pane-sec { font-size: 13px; color: var(--muted); font-weight: 600; padding: 18px 18px 8px; }
+  .cf .pane-note { font-size: 12px; color: var(--muted); padding: 8px 18px 4px; line-height: 1.5; }
+  .cf .ig-toggle-row .ic { color: var(--text); display: flex; flex-shrink: 0; width: 24px; justify-content: center; }
+  /* picked location row — name + distance + clear X (IG) */
+  .cf .ig-row .lab2 { flex: 1; min-width: 0; }
+  .cf .ig-row .lab2 .sub { display: block; font-size: 12px; color: var(--muted); font-weight: 400; margin-top: 1px; }
+  .cf .ig-row .loc-x {
+    margin-left: auto;
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cf .row-note {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    padding: 0 18px 8px;
+  }
+  /* clip tab — video roll cells: single-select radios always on, duration pill */
+  .cf .ig-grid.clips .cell .radio { display: flex; }
+  .cf .ig-grid .cell .dur {
+    position: absolute; right: 5px; bottom: 5px;
+    display: flex; align-items: center; gap: 3px;
+    background: rgba(20,20,24,.68); color: #fff;
+    font-size: 10.5px; font-weight: 600; line-height: 1;
+    padding: 3px 7px; border-radius: 999px; z-index: 2;
+  }
+  .cf .ig-grid .cell .dur svg { display: block; }
+  /* clip hero — big play glyph + duration over the picked clip */
+  .cf .ig-hero .clip-play {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 58px; height: 58px; border-radius: 50%;
+    background: rgba(20,20,24,.55); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2; pointer-events: none;
+  }
+  .cf .ig-hero .clip-play svg { margin-left: 3px; }
+  .cf .ig-hero .dur {
+    position: absolute; right: 12px; bottom: 12px;
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(20,20,24,.68); color: #fff;
+    font-size: 12px; font-weight: 600;
+    padding: 5px 10px; border-radius: 999px; z-index: 2;
+  }
+  /* clip preview layer — slides in like step 2, sits under it (Reels-style) */
+  .cf .cf-clipv {
+    position: absolute; inset: 0; z-index: 9;
+    background: #000; color: #fff;
+    transform: translateX(100%);
+    transition: transform .28s ease;
+    display: flex; flex-direction: column;
+  }
+  .cf.pv-open .cf-clipv { transform: none; }
+  .cf .cf-clipv .cf-head { color: #fff; }
+  .cf .cf-clipv .icon-btn { color: #fff; }
+  .cf .clip-stage {
+    flex: 1; min-height: 0; width: 100%;
+    position: relative; display: block;
+    background: #000; border: none; padding: 0; cursor: pointer;
+    font-family: var(--font-main);
+  }
+  .cf .clip-stage > img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .cf .clip-stage .pp-btn, .cf .ig-zoom .pp-btn {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 74px; height: 74px; border-radius: 50%;
+    background: rgba(20,20,24,.55); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity .18s ease; pointer-events: none;
+  }
+  .cf .clip-stage .pp-btn svg, .cf .ig-zoom .pp-btn svg { margin-left: 4px; }
+  .cf .cf-clipv.playing .pp-btn, .cf .ig-zoom.playing .pp-btn { opacity: .45; }
+  .cf .clip-stage .dur, .cf .ig-zoom .dur {
+    position: absolute; right: 14px; bottom: 16px;
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(20,20,24,.68); color: #fff;
+    font-size: 12.5px; font-weight: 600;
+    padding: 5px 11px; border-radius: 999px;
+  }
+  .cf .clip-stage .prog, .cf .ig-zoom .prog {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 3px; background: rgba(255,255,255,.28);
+  }
+  .cf .clip-stage .prog i, .cf .ig-zoom .prog i {
+    display: block; height: 100%; width: 0; background: #fff;
+    transition: width .12s linear;
+  }
+  /* caption step clip thumb — tap opens the same big viewer as photos */
+  .cf .ig-thumb.clip img { cursor: zoom-in; }
+  .cf .ig-thumb .dur {
+    position: absolute; left: 8px; bottom: 8px;
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(20,20,24,.68); color: #fff;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 999px;
+  }
+  /* clip badge on feed/detail media */
+  .post-photo .clip-badge, .detail-hero .clip-badge {
+    position: absolute; right: 12px; bottom: 12px;
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(20,20,24,.68);
+    backdrop-filter: blur(6px);
+    color: #fff; font-size: 11.5px; font-weight: 600;
+    padding: 4px 10px; border-radius: 999px;
+    z-index: 2;
+  }
+  .post-photo .clip-badge svg, .detail-hero .clip-badge svg { display: block; }
+  /* clip autoplay — progress bar + subtle ken-burns motion while "playing" */
+  .post-photo.clip-ph .prog, .detail-hero.clip-ph .prog {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 2.5px;
+    background: rgba(255,255,255,.28); opacity: 0; transition: opacity .25s; z-index: 2;
+  }
+  .post-photo.clip-ph.playing .prog, .detail-hero.clip-ph.playing .prog { opacity: 1; }
+  .post-photo.clip-ph .prog i, .detail-hero.clip-ph .prog i { display: block; height: 100%; width: 0; background: #fff; }
+  .post-photo.clip-ph.playing > img, .detail-hero.clip-ph.playing > img { animation: clipLive 5.5s ease-in-out infinite alternate; }
+  @keyframes clipLive { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.13) translate(-1.8%, 1.2%); } }
 </style>
 </head>
 <body>
@@ -2671,6 +3336,10 @@ const I = {
   lock: (s=14) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>`,
   stack: (s=14) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
   burger: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>`,
+  gem: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M2 9h20"/><path d="M9.5 3 8 9l4 13 4-13-1.5-6"/></svg>`,
+  award: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.9 17 22l-5-3-5 3 1.5-8.1"/></svg>`,
+  bag: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+  home: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>`,
   search: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>`,
   clock: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>`,
   sliders: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="15" cy="6" r="2.3" fill="var(--bg)"/><circle cx="9" cy="12" r="2.3" fill="var(--bg)"/><circle cx="17" cy="18" r="2.3" fill="var(--bg)"/></svg>`,
@@ -2706,6 +3375,21 @@ const I = {
   fb: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.7-1.6h1.6V4.1c-.3 0-1.2-.1-2.3-.1-2.4 0-4 1.5-4 4.2v2.4H7.5v3.2h3V22h3z"/></svg>`,
   igCam: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.4"/><circle cx="12" cy="12" r="4.4"/><circle cx="17.4" cy="6.6" r="1.3" fill="currentColor" stroke="none"/></svg>`,
   msngr: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.1 2 11.2c0 2.9 1.4 5.5 3.7 7.2V22l3.4-1.9c.9.2 1.9.4 2.9.4 5.5 0 10-4.1 10-9.3S17.5 2 12 2zm1 12.6-2.6-2.7-5 2.7 5.5-5.8 2.6 2.7 4.9-2.7-5.4 5.8z"/></svg>`,
+  camPlain: (s=26) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+  gridSel: (s=14) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`,
+  expandIc: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>`,
+  tag: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 12 22 2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.6"/></svg>`,
+  watch: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="6"/><path d="M12 9v3l2 2M9.5 3.5h5l-.6 2.7a6.9 6.9 0 0 0-3.8 0l-.6-2.7zM9.5 20.5h5l-.6-2.7a6.9 6.9 0 0 1-3.8 0l-.6 2.7z"/></svg>`,
+  shield: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/><path d="m9 11.5 2 2 4-4.5"/></svg>`,
+  box: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v8a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16V8a2 2 0 0 1 1-1.73l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>`,
+  music: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
+  pin: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  play: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.4v13.2c0 .8.9 1.3 1.6.9l10.3-6.6c.6-.4.6-1.4 0-1.8L9.6 4.5c-.7-.4-1.6.1-1.6.9z"/></svg>`,
+  pause: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><rect x="6.4" y="4.8" width="3.8" height="14.4" rx="1.2"/><rect x="13.8" y="4.8" width="3.8" height="14.4" rx="1.2"/></svg>`,
+  video: (s=26) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="13.5" height="12" rx="2.5"/><path d="m15.8 10.3 5.7-3.1c.4-.2.8.1.8.5v8.6c0 .4-.4.7-.8.5l-5.7-3.1"/></svg>`,
+  commentOff: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.9 4.3A8.4 8.4 0 0 1 12.5 3a8.48 8.48 0 0 1 8 8v.5a8.38 8.38 0 0 1-.9 3.8"/><path d="M15.3 15.3a8.5 8.5 0 0 1-5.8 2.2 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 3-6.4"/><path d="m2 2 20 20"/></svg>`,
+  history: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>`,
+  pinPost: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16h14v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"/></svg>`,
 };
 
 /* ================= RENDER ================= */
@@ -2759,7 +3443,7 @@ function detailHeadHTML(p) {
   if (state.dh === "dh4") return "";
   if (state.dh === "dh5")
     return `<div class="detail-head">${back}<span class="head-av"><img src="${p.avatar}" alt=""></span><span class="detail-title" style="font-size:14px">${p.seller}</span><span class="spacer"></span>${dots}</div>`;
-  return `<div class="detail-head">${back}<span class="detail-title">Detail</span><span class="spacer"></span>${dots}</div>`;
+  return `<div class="detail-head">${back}<span class="spacer"></span><span class="detail-title">Detail</span><span class="spacer"></span>${dots}</div>`;
 }
 
 function saleTagHTML(isSale) {
@@ -2772,14 +3456,19 @@ function detailHTML(p) {
   const spec = k => (p.specs.find(s => s[0] === k) || [k, "n/a"])[1];
   const isSale = !!p.price;
   const dots = p.photos.length > 1;
-  const name = p.specs.length ? `${spec("Brand")} ${spec("Model")}` : p.caption.split("—")[0].trim();
-  const ref = p.specs.length && spec("Reference") !== "n/a" ? `Ref. ${spec("Reference")}` : "";
+  /* hide N/A parts in the title ("rolex N/A" → "rolex"); Ref falls back to "Ref. -" */
+  const na = v => /^n\/?a$/i.test((v || "").trim());
+  const nm = p.specs.length ? [spec("Brand"), spec("Model")].filter(v => !na(v)).join(" ") : "";
+  const name = nm || p.caption.split("—")[0].trim();
+  const ref = p.specs.length ? `Ref. ${na(spec("Reference")) ? "-" : spec("Reference")}` : "";
+  const cl = clipState(p);
   return `
     ${detailHeadHTML(p)}
     <div class="detail-scroll">
-      <div class="detail-hero${state.dh === "dh4" ? " fabbed" : ""}">
+      <div class="detail-hero${state.dh === "dh4" ? " fabbed" : ""}${cl.has ? " clip-ph" : ""}"${cl.has ? ` data-dur="${cl.dur0}"` : ""}>
         <img src="${p.photos[0]}" alt="">
         ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
+        ${clipUiHTML(p)}
         ${state.dh === "dh4" ? `
         <button class="hero-fab fab-l detail-back">${I.back(19)}</button>
         <button class="hero-fab fab-r pm-btn">${I.dots(17)}</button>` : ""}
@@ -2788,8 +3477,8 @@ function detailHTML(p) {
       <div class="detail-pad">
         <div class="post-actions" style="padding:6px 0 2px;margin:0 -5px 0 -7px">
           <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
-          <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-          <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+          ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+          ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
           <button class="act share-btn">${I.share(22)}</button>
           <span class="act-right">
             <button class="mf-btn${p.modelFollowing ? " on" : ""}" title="${p.modelFollowing ? "Following this model" : "Follow this model"}">${I.navBell(23)}</button>
@@ -2800,7 +3489,7 @@ function detailHTML(p) {
         <h2 class="detail-name">${name}</h2>
         ${ref ? `<div class="detail-ref">${ref}</div>` : ""}
         <div class="detail-h">Descriptions</div>
-        <p class="detail-desc">${igCaptionHTML(p, p.desc || "")}</p>
+        <p class="detail-desc">${igCaptionHTML(p, p.desc || "-")}</p>
         ${detailSpecsHTML(p)}
       </div>
     </div>`;
@@ -2875,6 +3564,7 @@ function igBodyHTML(p, withPostHead) {
       ? `<div class="tag-price-row">${saleTagHTML(true)}<span class="price-tag">${p.price}</span></div>`
       : `${saleTagHTML(true)}<div class="detail-price">${p.price}</div>`
     : saleTagHTML(false);
+  const cl = clipState(p);
   return `
     ${withPostHead ? `<header class="post-head">
       <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
@@ -2885,29 +3575,30 @@ function igBodyHTML(p, withPostHead) {
       ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
       <button class="more">${I.dots(19)}</button>
     </header>` : ""}
-    <div class="detail-hero">
+    <div class="detail-hero${cl.has ? " clip-ph" : ""}"${cl.has ? ` data-dur="${cl.dur0}"` : ""}>
       <img src="${p.photos[0]}" alt="">
       ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
+      ${clipUiHTML(p)}
     </div>
     ${dots ? `<div class="photo-dots">${p.photos.map((_,i)=>`<span class="${i===0?'on':''}"></span>`).join("")}</div>` : ""}
     <div class="post-actions">
       <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
-      <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-      <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+      ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+      ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
         ${isSale && state.ask !== "bubble" ? askBtnHTML(false) : ""}
         <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
       </span>
     </div>
-    <div class="liked-by">
+    ${p.hideCounts || !p.likes || !p.likedBy ? "" : `<div class="liked-by">
       <span class="stack">
         <img src="${p.likedBy.avatar}" alt="">
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
       <span>Liked by <b>${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
-    </div>
+    </div>`}
     <p class="caption"><b>${p.seller}</b> ${igCaptionHTML(p)}</p>
     <div class="detail-pad">
       ${priceRow}
@@ -3123,10 +3814,10 @@ function wlSheetHTML(p) {
 /* shared sheet opener — comment-sheet is a singleton, swap variant class + content */
 function openSheet(scr, variantCls, openCls, html) {
   const cs = scr.querySelector(".comment-sheet");
-  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "so", "dt", "nt", "ps", "nc", "wl");
+  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "so", "dt", "nt", "ps", "nc", "wl", "wa");
   cs.classList.add(variantCls);
   cs.innerHTML = html;
-  scr.classList.remove("comments-open", "unfollow-open", "pm-open", "likes-open", "share-open", "save-open", "sort-open", "details-open");
+  scr.classList.remove("comments-open", "unfollow-open", "pm-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
   scr.classList.add(openCls);
 }
 
@@ -3174,6 +3865,35 @@ function pmMenuHTML(p) {
     </div>`;
 }
 
+/* ===== FEED-024 — own-post "..." menu (IG own-post sheet, trimmed to TukDaeng actions) ===== */
+const isOwnPost = p => p && p.seller === CP_ME.name;
+
+function pmOwnMenuHTML(p) {
+  return `
+    <div class="sheet-handle"></div>
+    <div class="pm-card">
+      <button class="pm-row pm-own-archive">${I.history(20)}<span>${p.archived ? "Unarchive" : "Archive"}</span></button>
+      <button class="pm-row pm-own-nocomm">${I.commentOff(20)}<span>${p.noComments ? "Turn on commenting" : "Turn off commenting"}</span></button>
+      <button class="pm-row pm-own-edit">${I.pen(20)}<span>Edit</span></button>
+      <button class="pm-row pm-own-pin">${I.pinPost(20)}<span>${p.pinned ? "Unpin from profile" : "Pin to profile"}</span></button>
+      <button class="pm-row danger pm-own-del">${I.trash(20)}<span>Delete</span></button>
+    </div>`;
+}
+
+/* re-render every visible surface of a post after own-menu toggles */
+function refreshPostViews(scr, p) {
+  scr.querySelectorAll(`.feed-scroll .post[data-pid="${p.id}"]`).forEach(art => {
+    if (!art.classList.contains("ni-card")) art.outerHTML = postCard(p, scr.dataset.variant);
+  });
+  scr.querySelectorAll(`.svf-post[data-pid="${p.id}"]`).forEach(w => { w.innerHTML = postCard(p, state.variant); });
+  scr.querySelectorAll(`.pv-post[data-pid="${p.id}"]`).forEach(sec => {
+    const img = sec.querySelector(".pv-img");
+    const phi = Math.max(0, img ? p.photos.indexOf(img.getAttribute("src")) : 0);
+    sec.outerHTML = pvPostHTML(p, phi);
+  });
+  if (scr.dataset.detailPid === p.id && scr.classList.contains("detail-open")) openPostDetail(scr, p);
+}
+
 function niCardHTML(p) {
   const rows = p.following
     ? `<button class="ni-item ni-mute">${I.bellOff(20)}<span class="ni-txt">Mute ${p.seller}<span class="ni-desc">Stop seeing new posts from them in feed</span></span></button>
@@ -3204,6 +3924,17 @@ function uncomfCardHTML(p) {
   </article>`;
 }
 
+/* per-slide clip info — clips[i] holds the duration for video slides, null for photos */
+function clipState(p) {
+  const clips = p.clips || (p.clip ? [p.clip] : null);
+  const has = !!(clips && clips.some(Boolean));
+  return { has, d0: has ? clips[0] || null : null, dur0: has && clips[0] ? cfClipSecs(clips[0]) : "" };
+}
+function clipUiHTML(p) {
+  const cl = clipState(p);
+  if (!cl.has) return "";
+  return `<span class="clip-badge"${cl.d0 ? "" : ' style="display:none"'}>${I.play(11)}${cl.d0 || ""}</span><span class="prog"><i></i></span>`;
+}
 function postCard(p, variant) {
   const isMixed = variant === "mixed";
   const type = isMixed && p.type === "showcase" ? "showcase" : (isMixed ? "sale" : null);
@@ -3215,6 +3946,10 @@ function postCard(p, variant) {
   const askSolid = (variant === "a2" || variant === "b2" || variant === "c2");
   const showAsk = p.type === "sale";
   const dots = p.photos.length > 1;
+  const cl = clipState(p);
+  const hasDetails = hasPrice || (p.specGroups && p.specGroups.length) || (p.specs && p.specs.length);
+  /* "more" only when the caption actually has more text, or details are hidden behind the expand */
+  const showMore = hasDetails || (p.captionFull || "") !== p.caption;
 
   return `
   <article class="post" data-pid="${p.id}">
@@ -3222,14 +3957,16 @@ function postCard(p, variant) {
       <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
       <div class="who">
         <div class="name">${p.seller}</div>
+        ${p.location ? `<div class="sub-line">${p.location}</div>` : ""}
       </div>
       ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
       <button class="more">${I.dots(19)}</button>
     </header>
 
-    <div class="post-photo">
+    <div class="post-photo${cl.has ? " clip-ph" : ""}"${cl.has ? ` data-dur="${cl.dur0}"` : ""}>
       <img src="${p.photos[0]}" alt="">
       ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
+      ${clipUiHTML(p)}
       ${showTag && type === "sale" ? `<span class="type-tag sale">FOR SALE</span>` : ""}
       ${showTag && type === "showcase" ? `<span class="type-tag showcase">SHOWCASE</span>` : ""}
       ${priceOverlay ? `<span class="cond-overlay">${p.chips[0]}</span>` : ""}
@@ -3240,8 +3977,8 @@ function postCard(p, variant) {
 
     <div class="post-actions">
       <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
-      <button class="act comment-btn">${I.comment(23)}<span>${p.comments}</span></button>
-      <span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>
+      ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+      ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
         ${showAsk ? askBtnHTML(askSolid) : ""}
@@ -3249,22 +3986,22 @@ function postCard(p, variant) {
       </span>
     </div>
 
-    <div class="liked-by">
+    ${p.hideCounts || !p.likes || !p.likedBy ? "" : `<div class="liked-by">
       <span class="stack">
         <img src="${p.likedBy.avatar}" alt="">
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
       <span>Liked by <b>${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
-    </div>
+    </div>`}
 
-    <p class="caption"><b>${p.seller}</b> <span class="cap-short">${p.caption} <span class="more-link">more</span></span><span class="cap-full">${p.captionFull.replace(/\n/g, "<br>")}</span></p>
+    <p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">more</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>
 
     <div class="post-time">${p.time}</div>
 
     ${quietPrice ? `<p class="quiet-price">${p.price}</p>` : ""}
 
-    ${hasPrice ? triggerHTML() + detailsHTML(p, !priceOverlay && !quietPrice && !footerPrice) : ""}
+    ${hasDetails ? triggerHTML() + detailsHTML(p, hasPrice && !priceOverlay && !quietPrice && !footerPrice) : ""}
 
     ${footerPrice ? `
       <div class="price-footer">
@@ -3284,7 +4021,7 @@ function feedEmptyHTML(tab) {
 }
 
 function feedContentHTML(variant) {
-  const posts = POSTS.filter(p => !p.ni && !p.muted)
+  const posts = POSTS.filter(p => !p.ni && !p.muted && !p.archived)
     .filter(p => state.feedTab === "favorites" ? p.favorite : state.feedTab === "following" ? p.following : (state.snooze ? p.following : true));
   return posts.length ? posts.map(p => postCard(p, variant)).join("") : feedEmptyHTML(state.feedTab);
 }
@@ -3440,7 +4177,8 @@ function matchFilters(p, f) {
   return true;
 }
 function searchResults(S) {
-  let list = salePosts().filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
+  const isTag = S.q.trim().startsWith("#");
+  let list = (isTag ? POSTS.filter(p => !p.muted) : salePosts()).filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
   if (S.sort === "plo") list = [...list].sort((a, b) => priceNum(a) - priceNum(b));
   else if (S.sort === "phi") list = [...list].sort((a, b) => priceNum(b) - priceNum(a));
   else if (S.sort === "pop") list = [...list].sort((a, b) => viewsNum(b) - viewsNum(a));
@@ -3487,6 +4225,17 @@ function suggestRows(S) {
     .filter(p => p.seller.toLowerCase().includes(q))
     .map(p => ({ t: "seller", v: p.seller, sub: sellerSub(p.seller) }));
   return [...kw.slice(0, 6), ...sellers.slice(0, 4)];
+}
+/* Tags tab — every hashtag used in captions + suggested tags, matched against the query, counted per post (IG style) */
+function tagRows(S) {
+  const q = S.q.trim().replace(/^#+/, "").toLowerCase();
+  const set = new Set();
+  POSTS.filter(p => !p.muted).forEach(p => (String(p.captionFull || p.caption || "").match(/#[A-Za-z0-9_ก-๙]+/gi) || []).forEach(t => set.add(t.toLowerCase())));
+  (typeof CF_TAGS !== "undefined" ? CF_TAGS : []).forEach(t => set.add(t.toLowerCase()));
+  return [...set]
+    .filter(t => !q || t.slice(1).includes(q))
+    .map(t => ({ tag: t, n: POSTS.filter(p => !p.muted && String(p.captionFull || p.caption || "").toLowerCase().includes(t)).length }))
+    .sort((a, b) => b.n - a.n || a.tag.localeCompare(b.tag));
 }
 function exploreTiles() {
   const T = [];
@@ -3601,8 +4350,8 @@ function pvPostHTML(p, phi = 0) {
         <button class="pv-act like-btn${p.liked ? " liked" : ""}">${I.heart(26)}</button>
         <button class="pv-act pv-lbl liked-by">Likes</button>
       </div>
-      <button class="pv-act comment-btn">${I.comment(25)}<span>${p.comments}</span></button>
-      <span class="pv-act">${I.eye(23)}<span>${p.views}</span></span>
+      ${p.noComments ? "" : `<button class="pv-act comment-btn">${I.comment(25)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+      ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="pv-act">${I.eye(23)}<span>${p.views}</span></span>`}
       <button class="pv-act share-btn">${I.share(24)}</button>
       <button class="pv-act save-btn${p.saved ? " saved" : ""}">${I.bookmark(24)}</button>
       <button class="pv-act pm-btn">${I.dots(22)}</button>
@@ -3610,7 +4359,7 @@ function pvPostHTML(p, phi = 0) {
     <div class="pv-foot">
       <div class="pv-seller"><img src="${p.avatar}" alt=""><span class="n">${p.seller}</span>
         ${p.following ? "" : `<button class="follow-btn">Follow</button>`}</div>
-      <div class="caption pv-cap"><span class="cap-short">${p.caption} <span class="more-link">…</span></span><span class="cap-full">${(p.captionFull || p.caption).replace(/\n/g, "<br>")}</span></div>
+      <div class="caption pv-cap"><span class="cap-short">${igCaptionHTML(p, p.caption)}${(p.captionFull || "") !== p.caption ? ` <span class="more-link">…</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></div>
       ${hasSpecs ? `<button class="details-toggle pv-dt"><span class="dt-label">Tap for details</span>${I.chev(12)}</button>` : ""}
     </div>
     <div class="pv-add">Add comment…</div>
@@ -3628,7 +4377,7 @@ function pvPostSheetHTML(p) {
         <span class="n">${p.seller}</span>
         ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
       </div>
-      <div class="ps-cap"><b>${p.seller}</b> ${(p.captionFull || p.caption).replace(/\n/g, "<br>")}</div>
+      <div class="ps-cap"><b>${p.seller}</b> ${igCaptionHTML(p)}</div>
       <div class="ps-time">${p.time}</div>
       ${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No comments yet</div>`}
     </div>
@@ -3689,10 +4438,12 @@ function accountRowHTML(p) {
 function searchResultsHTML(scr, S) {
   const list = S.err ? [] : searchResults(S);
   const fc = filterCount(S.f);
+  const waSaved = WATCH_ALERTS.some(a => a.source === "search" && waSig(a.criteria) === waSig(waCriteriaFromSearch(S)));
   const head = `
     <div class="sr-head">
       <button class="icon-btn sub-back">${I.back()}</button>
       <span class="sr-field sr-fake">${I.search(16)}<span class="sr-qv">${esc(S.q) || "Search"}</span></span>
+      <button class="icon-btn sr-wa${waSaved ? " on" : ""}" title="Create watch alert">${I.navBell(20)}</button>
       <button class="icon-btn flt-open" data-sub="sfilter" title="Filters">${I.sliders(20)}</button>
     </div>`;
   const tabs = `
@@ -3708,11 +4459,11 @@ function searchResultsHTML(scr, S) {
     const sellers = resultSellers(S);
     body = `<div class="sub-scroll">${sellers.length ? sellers.map(sellerCardHTML).join("") : `<div class="sr-empty-block">${I.search(44)}<div class="t">No data found</div></div>`}</div>`;
   } else if (S.tab === "tags") {
-    const rows = suggestRows(S).filter(r => r.t === "kw");
+    const rows = tagRows(S);
     body = `<div class="sub-scroll">${rows.length ? rows.map(r => `
-      <button class="ac-row" data-kind="kw" data-v="${esc(r.v)}">
-        <span class="ac-ico">${I.search(17)}</span>
-        <span class="ac-who"><span class="u">${r.v}</span>${r.sub ? `<span class="d">${r.sub}</span>` : ""}</span>
+      <button class="ac-row" data-kind="kw" data-v="${esc(r.tag)}">
+        <span class="ac-ico tag-ic">#</span>
+        <span class="ac-who"><span class="u">${r.tag}</span><span class="d">${r.n} post${r.n === 1 ? "" : "s"}</span></span>
       </button>`).join("") : `<div class="sr-empty-block">${I.search(44)}<div class="t">No data found</div></div>`}</div>`;
   } else {
     const sellers = resultSellers(S);
@@ -3829,6 +4580,7 @@ function renderSub(scr) {
   el.classList.toggle("pg-up", st[st.length - 1] === "report");
   const q = el.querySelector(".sr-q, .svd-q");
   if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
+  cfClipSync(scr); /* restore clip play/countdown state after composer re-renders */
 }
 function subBack(scr) {
   const st = scr._subStack || [];
@@ -3870,6 +4622,24 @@ const SAVED_TABS = [
 function savedState(scr) {
   if (!scr._saved) scr._saved = { tab: "all", mode: "", q: "", manage: false, sel: new Set(), addSel: new Set(), col: null };
   return scr._saved;
+}
+/* FEED-024 — Archive page in Settings: posts hidden from feed live here until unarchived */
+function archivePosts() { return POSTS.filter(p => p.archived).sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0)); }
+function archiveHTML(scr) {
+  const V = savedState(scr);
+  const list = archivePosts();
+  return `
+    <div class="detail-head svd-head">
+      <button class="icon-btn sub-back">${I.back()}</button>
+      <span class="detail-title rc-title">Archive</span>
+      <span class="spacer"></span>
+    </div>
+    <div class="sub-scroll svd-body">
+      ${list.length
+        ? `<div class="svd-coltitle"><div class="c">Only you can see posts you've archived</div></div>
+           <div class="svd-grid arc-grid">${list.map(p => svdTileHTML(V, p)).join("")}</div>`
+        : svdEmptyHTML(I.history(46), "No archived posts", "Posts you archive will only be visible to you.", true)}
+    </div>`;
 }
 function savedPosts() { return POSTS.filter(p => p.saved).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0)); }
 function colPosts(name) { return POSTS.filter(p => p.saved && p.savedCol === name).sort((a, b) => (b.colAt || 0) - (a.colAt || 0)); }
@@ -4410,9 +5180,632 @@ function ncSheetHTML(editName = "", preview = "") {
       </button>`).join("")}
     </div>`;
 }
+/* ===== CREATE-001 — IG-style create-post task flow: "+" → picker → caption → feed ===== */
+const CP_ME = { name: "mycollection", avatar: "./assets/user-avatars/u-1075.png" };
+const CP_ROLL = [
+  "./assets/asset-uploads/ast-8831-1.png",
+  "./assets/asset-uploads/ast-8831-2.png",
+  "./assets/asset-uploads/ast-8831-3.png",
+  "./assets/asset-uploads/purchase-equipment-box.png",
+  "./assets/asset-uploads/purchase-certificate-docs.png",
+  "./assets/asset-uploads/purchase-dealer-invoice.png",
+  "./assets/asset-uploads/S__10108939_0.jpg",
+  "./assets/asset-uploads/S__10108940_0.jpg",
+  "./assets/asset-uploads/S__10108942_0.jpg",
+  "./assets/asset-uploads/S__10108943_0.jpg",
+  "./assets/asset-uploads/S__10108944_0.jpg",
+  "./assets/asset-uploads/S__10108945_0.jpg",
+  "./assets/asset-uploads/S__10108946_0.jpg",
+  "./assets/asset-uploads/S__10108947_0.jpg",
+  "./assets/asset-uploads/feed-tudor-bb.jpg",
+  "./assets/asset-uploads/feed-datejust-2.jpg",
+];
+/* clip roll — mock video items (poster image + duration), single-select like IG Reels picker */
+const CP_CLIPS = [
+  { src: "./assets/asset-uploads/feed-tudor-bb.jpg", dur: "0:12" },
+  { src: "./assets/asset-uploads/feed-datejust-2.jpg", dur: "0:08" },
+  { src: "./assets/asset-uploads/feed-breguet-1.jpg", dur: "0:31" },
+  { src: "./assets/asset-uploads/ast-8831-1.png", dur: "0:45" },
+  { src: "./assets/asset-uploads/S__10108939_0.jpg", dur: "0:19" },
+  { src: "./assets/asset-uploads/S__10108940_0.jpg", dur: "1:02" },
+  { src: "./assets/asset-uploads/feed-breguet-2.jpg", dur: "0:23" },
+  { src: "./assets/asset-uploads/feed-datejust-1.jpg", dur: "0:27" },
+  { src: "./assets/asset-uploads/ast-8831-2.png", dur: "0:15" },
+  { src: "./assets/asset-uploads/S__10108944_0.jpg", dur: "0:36" },
+  { src: "./assets/asset-uploads/S__10108946_0.jpg", dur: "0:11" },
+  { src: "./assets/asset-uploads/ast-8831-3.png", dur: "0:52" },
+];
+function cfClipSecs(dur) {
+  const [m, s] = dur.split(":").map(Number);
+  return m * 60 + s;
+}
+function cfMmss(sec) {
+  sec = Math.max(0, Math.ceil(sec));
+  return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
+}
+/* Post-tab Recents roll mixes photos + clips (IG) — video cells carry dur */
+const CP_MEDIA = [
+  { src: CP_ROLL[0] }, { src: CP_ROLL[1] },
+  { src: CP_CLIPS[0].src, dur: CP_CLIPS[0].dur },
+  { src: CP_ROLL[2] }, { src: CP_ROLL[3] },
+  { src: CP_CLIPS[1].src, dur: CP_CLIPS[1].dur },
+  { src: CP_ROLL[4] }, { src: CP_ROLL[5] }, { src: CP_ROLL[6] },
+  { src: CP_CLIPS[2].src, dur: CP_CLIPS[2].dur },
+  { src: CP_ROLL[7] }, { src: CP_ROLL[8] }, { src: CP_ROLL[9] },
+  { src: CP_CLIPS[3].src, dur: CP_CLIPS[3].dur },
+  { src: CP_ROLL[10] }, { src: CP_ROLL[11] }, { src: CP_ROLL[12] }, { src: CP_ROLL[13] },
+  { src: CP_CLIPS[4].src, dur: CP_CLIPS[4].dur },
+  { src: CP_ROLL[14] }, { src: CP_ROLL[15] },
+];
+function cpState(scr) {
+  if (!scr._cp) scr._cp = { sel: false, step: 1, order: [], clip: null, playing: false, rem: null, tab: "post", caption: "", asset: false, meta: {} };
+  return scr._cp;
+}
+/* order entries are CP_MEDIA indices in create mode, or {src,dur} objects in edit mode */
+function cfMedia(scr) { return cpState(scr).order.map(i => typeof i === "object" ? i : CP_MEDIA[i]); }
+function cfPhotos(scr) { return cfMedia(scr).map(m => m.src); }
+function cfClip(scr) { const i = cpState(scr).clip; return i == null ? null : CP_CLIPS[i]; }
+/* the one playable clip in the composer — clip-tab pick, or a lone video in a post draft */
+function cfActiveClip(scr) {
+  const V = cpState(scr);
+  if (V.tab === "clip") return cfClip(scr);
+  if (V.order.length === 1) { const m = cfMedia(scr)[0]; return m && m.dur ? m : null; }
+  return null;
+}
+/* the clip currently driving playback — a zoomed clip in a mixed draft, else the draft clip */
+function cfPlayClip(scr) { const V = cpState(scr); return V.viewClip || cfActiveClip(scr); }
+/* push playing state + countdown into every visible clip surface (preview + caption media) */
+function cfClipSync(scr) {
+  const V = scr._cp;
+  if (!V) return;
+  const clip = cfPlayClip(scr);
+  const total = clip ? cfClipSecs(clip.dur) : 0;
+  const rem = V.rem == null ? total : V.rem;
+  scr.querySelectorAll(".cf .cf-clipv, .cf .ig-zoom.is-clip").forEach(box => {
+    box.classList.toggle("playing", !!V.playing);
+    const pp = box.querySelector(".pp-btn");
+    if (pp) pp.innerHTML = V.playing ? I.pause(30) : I.play(30);
+    const d = box.querySelector(".dur");
+    if (d) d.innerHTML = `${I.play(10)}${cfMmss(rem)}`;
+    const bar = box.querySelector(".prog i");
+    if (bar) bar.style.width = total ? `${(1 - rem / total) * 100}%` : "0";
+  });
+}
+function cfClipStop(scr) {
+  const V = scr._cp;
+  if (!V) return;
+  clearInterval(V._t); V._t = null;
+  V.playing = false; V.rem = null;
+}
+function cfClipToggle(scr) {
+  const V = cpState(scr);
+  const clip = cfPlayClip(scr);
+  if (!clip) return;
+  const total = cfClipSecs(clip.dur);
+  clearInterval(V._t); V._t = null;
+  V.playing = !V.playing;
+  if (V.playing) {
+    if (V.rem == null || V.rem <= 0) V.rem = total;
+    V._t = setInterval(() => {
+      V.rem -= 0.1;
+      if (V.rem <= 0) { cfClipStop(scr); }
+      cfClipSync(scr);
+    }, 100);
+  }
+  cfClipSync(scr);
+}
+/* FEED-023 — clip posts play by themselves while ≥55% visible in their scroll box (IG-style
+   autoplay); scrolling past pauses, scrolling back resumes where it left off, end-of-clip loops */
+function feedClipTick() {
+  document.querySelectorAll(".post-photo.clip-ph, .detail-hero.clip-ph").forEach(ph => {
+    const scr = ph.closest(".screen");
+    if (!scr || !ph.dataset.dur) { ph.classList.remove("playing"); return; }
+    /* media inside a sub page shows only while that sub is open; feed media only while it isn't covered */
+    const inSub = !!ph.closest(".page-sub, .page-pv");
+    const subOpen = scr.classList.contains("sub-open");
+    let on = inSub ? subOpen : !subOpen;
+    if (on) {
+      const box = ph.closest(".feed-scroll, .detail-scroll, .sub-scroll, .page-sub, .page-pv") || scr;
+      const cr = box.getBoundingClientRect(), r = ph.getBoundingClientRect();
+      on = r.height > 0 && Math.min(r.bottom, cr.bottom) - Math.max(r.top, cr.top) > r.height * 0.55;
+    }
+    if (!on) { ph.classList.remove("playing"); return; }
+    ph.classList.add("playing");
+    const total = parseFloat(ph.dataset.dur);
+    let rem = ph.dataset.rem == null ? total : parseFloat(ph.dataset.rem);
+    rem -= 0.1;
+    if (rem <= 0) rem = total;
+    ph.dataset.rem = rem;
+    const b = ph.querySelector(".clip-badge");
+    if (b) b.innerHTML = `${I.play(11)}${cfMmss(rem)}`;
+    const bar = ph.querySelector(".prog i");
+    if (bar) bar.style.width = `${(1 - rem / total) * 100}%`;
+  });
+}
+setInterval(feedClipTick, 100);
+const CF_TAGS = ["#rolex", "#patekphilippe", "#omegawatch", "#tudorwatch", "#grandseiko", "#cartier", "#watchesofinstagram", "#fullset", "#watchcollector", "#TukDaeng"];
+const CF_LOCS = ["Bangkok, Thailand", "Siam Paragon", "CentralWorld", "ICONSIAM", "EmQuartier", "Chatuchak Weekend Market", "Phrom Phong", "Thonglor"];
+const CF_LOC_KM = { "Bangkok, Thailand": "12km", "Siam Paragon": "8km", "CentralWorld": "9km", "ICONSIAM": "14km", "EmQuartier": "7km", "Chatuchak Weekend Market": "16km", "Phrom Phong": "6km", "Thonglor": "5km" };
+const CF_CONDS = ["Brand New", "Like New", "Very Good", "Good", "Fair"];
+const CF_BOXES = ["Full set — box & papers", "Box only", "Papers only", "Watch only (no set)"];
+/* Watch details field list — mirrors the post Detail page spec groups */
+const CF_SPECS = [
+  ["Watch Specifications", [
+    ["brand", "Brand", "e.g. Rolex"], ["collection", "Collection", "e.g. Submariner"],
+    ["model", "Model", "e.g. Submariner Date"], ["ref", "Reference", "e.g. 126610LN"],
+    ["caseDiameter", "Case Diameter", "e.g. 41 mm"], ["thickness", "Thickness", "e.g. 12.5 mm"],
+    ["lug", "Lug-to-Lug", "e.g. 47.5 mm"], ["caseMaterial", "Case Material", "e.g. Oystersteel"],
+    ["caseColor", "Case Color", "e.g. Steel"], ["bezel", "Bezel Material", "e.g. Cerachrom (Black)"],
+    ["dialColor", "Dial Color", "e.g. Black"], ["dialPattern", "Dial Pattern", "e.g. Index / Chromalight"],
+    ["movement", "Movement Type", "e.g. Automatic (Self-winding)"], ["calibre", "Calibre", "e.g. 3235"],
+    ["powerReserve", "Power Reserve", "e.g. 70 hours"], ["functions", "Functions", "e.g. Hours, Minutes, Seconds, Date"],
+    ["waterRes", "Water Resistance", "e.g. 300 m"], ["strapMaterial", "Strap/Bracelet Material", "e.g. Oystersteel (Oyster bracelet)"],
+    ["strapColor", "Strap Color", "e.g. Steel"], ["clasp", "Clasp Type", "e.g. Oysterlock folding clasp"],
+  ]],
+  ["Item Details", [
+    ["year", "Year", "e.g. 2023"], ["service", "Service History", "e.g. No service record"],
+  ]],
+];
+function cfPaneHTML(scr) {
+  const V = cpState(scr);
+  const m = V.meta;
+  const head = t => `<div class="cf-head"><button class="icon-btn cf-pane-back">${I.back(22)}</button><span class="t">${t}</span><button class="cf-act pane-done">Done</button></div>`;
+  if (m.pane === "loc") return head("Add location") + `<div class="pane-body">
+    <input class="pane-in pane-q" placeholder="Search places…" value="${esc(m.locQ || "")}">
+    ${CF_LOCS.filter(l => !(m.locQ || "").trim() || l.toLowerCase().includes(m.locQ.toLowerCase())).map(l =>
+      `<button class="loc-opt" data-v="${l}">${I.pin(15)}${l}</button>`).join("") || `<div class="pane-lab">No matching places</div>`}
+  </div>`;
+  if (m.pane === "price") return head("Add price") + `<div class="pane-body">
+    <div class="pane-lab">Asking price (THB)</div>
+    <input class="pane-in cf-f" data-f="price" inputmode="numeric" placeholder="e.g. 420,000" value="${esc(m.price || "")}">
+    <div class="pane-lab">Type digits only — separators are added automatically. Leave empty for a showcase post (no price tag).</div>
+  </div>`;
+  if (m.pane === "spec") return head("Watch details") + `<div class="pane-body">
+    ${CF_SPECS.map(([g, fields]) => `<div class="pane-lab" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--red)">${g}</div>` +
+      fields.map(([f, l, ph]) => `<div class="pane-lab" style="padding-top:6px">${l}</div><input class="pane-in cf-f" data-f="${f}" placeholder="${ph}" value="${esc(m[f] || "")}">`).join("")).join("")}
+    <div class="pane-lab" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--red)">Description</div>
+    <textarea class="pane-in pane-ta cf-f" data-f="desc" rows="4" placeholder="Describe the item — condition notes, history, what's included…">${esc(m.desc || "")}</textarea>
+    <div class="pane-lab">Condition &amp; Box are set in the Condition section — they appear here under Item Details.</div>
+  </div>`;
+  if (m.pane === "cond") return head("Condition") + `<div class="pane-body">
+    <div class="pane-sec">Item condition</div>
+    ${CF_CONDS.map(c => `<button class="cond-opt${m.cond === c ? " on" : ""}" data-v="${c}"><span class="lab">${c}</span><span class="rad"></span></button>`).join("")}
+    <div class="pane-sec">Box &amp; papers</div>
+    ${CF_BOXES.map(b => `<button class="cond-opt box-opt${m.box === b ? " on" : ""}" data-v="${b}"><span class="lab">${b}</span><span class="rad"></span></button>`).join("")}
+  </div>`;
+  if (m.pane === "more") return head("More options") + `<div class="pane-body">
+    <div class="pane-sec">How others can interact with your post</div>
+    <div class="ig-toggle-row"><span class="ic">${I.comment(19)}</span><div class="tx"><div class="tt">Turn off commenting</div><div class="ts">Nobody can comment on this post. You can change this later from the ··· menu.</div></div><button class="sw pane-sw${m.noComments ? " on" : ""}" data-f="noComments"></button></div>
+    <div class="pane-sec">Who can see your post</div>
+    <button class="cond-opt aud-opt${(m.audience || "public") === "public" ? " on" : ""}" data-v="public"><span class="ic">${I.users(19)}</span><span class="lab">Everyone<span class="sub">Visible to all TukDaeng users</span></span><span class="rad"></span></button>
+    <button class="cond-opt aud-opt${m.audience === "followers" ? " on" : ""}" data-v="followers"><span class="ic">${I.star(19)}</span><span class="lab">Followers only<span class="sub">Only people who follow you</span></span><span class="rad"></span></button>
+    <div class="pane-note">This doesn't affect your account privacy or change sharing preferences.</div>
+  </div>`;
+  return "";
+}
+function cfVal(m) {
+  return {
+    loc: m.loc || "",
+    price: m.price ? "THB " + fmtNum(unNum(m.price)) : "",
+    spec: [m.brand, m.model].filter(Boolean).join(" · "),
+    cond: m.cond || "",
+  };
+}
+function cfZoomGo(z, i, total) {
+  i = Math.max(0, Math.min(total - 1, i));
+  z.dataset.i = i;
+  const scr = z.closest(".screen");
+  const V = cpState(scr);
+  const m = cfMedia(scr)[i];
+  if (m && m.dur) {
+    /* clip item → same big viewer but playable w/ countdown (play starts paused) */
+    if (V.viewClip !== m) { clearInterval(V._t); V._t = null; V.playing = false; V.rem = null; }
+    V.viewClip = m;
+    z.classList.add("is-clip");
+    z.innerHTML = `<img src="${m.src}" alt=""><span class="pp-btn">${I.play(30)}</span><span class="dur">${I.play(10)}${m.dur}</span><span class="prog"><i></i></span><div class="z-dots"></div>`;
+    cfClipSync(scr);
+  } else {
+    V.viewClip = null;
+    if (z.classList.contains("is-clip")) {
+      z.classList.remove("is-clip");
+      z.innerHTML = `<img alt=""><div class="z-dots"></div>`;
+    }
+    const photos = [...z.closest(".cf-step2").querySelectorAll(".ig-thumb img")];
+    z.querySelector("img").src = photos[i] ? photos[i].src : "";
+  }
+  z.querySelector(".z-dots").innerHTML = total > 1
+    ? Array.from({ length: total }, (_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("")
+    : "";
+}
+function cfPickerHTML(scr) {
+  const V = cpState(scr);
+  const isClip = V.tab === "clip";
+  const photos = cfPhotos(scr);
+  const clip = cfClip(scr);
+  const n = isClip ? (clip ? 1 : 0) : photos.length;
+  const cells = isClip
+    ? CP_CLIPS.map((c, i) => `<div class="cell${V.clip === i ? " sel" : ""}" data-i="${i}"><img src="${c.src}"><span class="dur">${I.play(9)}${c.dur}</span><span class="radio${V.clip === i ? " on" : ""}">${V.clip === i ? I.check(10) : ""}</span></div>`).join("")
+    : CP_MEDIA.map((m, i) => {
+        const s = V.order.indexOf(i);
+        return `<div class="cell${s >= 0 ? " sel" : ""}" data-i="${i}"><img src="${m.src}">${m.dur ? `<span class="dur">${I.play(9)}${m.dur}</span>` : ""}<span class="radio${s >= 0 ? " on" : ""}">${s >= 0 ? s + 1 : ""}</span></div>`;
+      }).join("");
+  const heroM = V.order.length ? cfMedia(scr)[0] : null;
+  const hero = isClip
+    ? (clip
+      ? `<div class="ig-car"><img src="${clip.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${clip.dur}</span></div>`
+      : `<div class="add-tile">${I.video(38)}<span>Select a clip</span></div>`)
+    : (heroM
+      ? (heroM.dur
+        ? `<div class="ig-car"><img src="${heroM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${heroM.dur}</span></div>`
+        : `<div class="ig-car"><img src="${heroM.src}"><button class="expand">${I.expandIc(15)}</button></div>`)
+      : `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`);
+  return `
+    <div class="cf-head">
+      ${V.editPid
+        ? `<button class="icon-btn cf-add-cancel">${I.back(22)}</button><span class="t">Add photos or clips</span><button class="cf-act cf-add-done">Done</button>`
+        : `<button class="icon-btn cf-x">${I.x(21)}</button><span class="t">${isClip ? "New clip" : "New post"}</span><button class="cf-act${n ? "" : " off"} cf-next">Next</button>`}
+    </div>
+    <div class="cf-scroll">
+      <div class="ig-hero" data-hero>${hero}</div>
+      <div class="ig-bar">
+        <button class="rc">Recents ${I.chevR(13)}</button>
+        ${isClip || V.editPid ? "" : `<button class="sel-btn${V.sel ? " on" : ""}" data-selmode>${I.gridSel(13)} Select</button>`}
+      </div>
+      <div class="ig-grid${isClip ? " clips" : ""}${(V.sel || V.editPid) && !isClip ? " selmode" : ""}">
+        <div class="cell cam">${isClip ? I.video(26) : I.camPlain(26)}</div>
+        ${cells}
+      </div>
+    </div>
+    ${V.editPid ? "" : `<div class="ig-tabs">
+      <button class="ig-tab${isClip ? "" : " on"}" data-ctab="post">Post</button>
+      <button class="ig-tab${isClip ? " on" : ""}" data-ctab="clip">Clip</button>
+    </div>`}`;
+}
+function cfStep2HTML(scr) {
+  const V = cpState(scr);
+  const isClip = V.tab === "clip";
+  const media = cfMedia(scr);
+  const clip = cfActiveClip(scr);
+  const n = isClip ? (clip ? 1 : 0) : media.length;
+  /* playable media keeps the normal thumb look — tap opens the big viewer like photos.
+     FEED-024 edit mode always uses the multi strip so the "+" tile can append media */
+  const addTile = V.editPid && n < 10 ? `<button class="ig-thumb ig-add" type="button">${I.plus(24)}</button>` : "";
+  const thumbs = clip && !V.editPid
+    ? `<div class="ig-thumb clip"><img src="${clip.src}"><span class="dur">${I.play(9)}${clip.dur}</span><button class="rm-mini" data-i="0">${I.x(11)}</button></div>`
+    : (n > 1 || V.editPid)
+    ? `<div class="ig-thumbs multi">${media.map((m, i) => `<div class="ig-thumb${m.dur ? " clip" : ""}"><img src="${m.src}">${m.dur ? `<span class="dur">${I.play(9)}${m.dur}</span>` : ""}<button class="rm-mini" data-i="${i}">${I.x(11)}</button></div>`).join("")}${addTile}</div>`
+    : `<div class="ig-thumb">${n ? `<img src="${media[0].src}"><button class="rm-mini" data-i="0">${I.x(11)}</button>` : ""}</div>`;
+  const m = V.meta;
+  const mv = cfVal(m);
+  const row = (ic, label, pane, val = "", cls = "") => `
+    <button class="ig-row" data-pane="${pane}"><span class="ic">${ic}</span>${label}<span class="val${val ? " set" : ""}${cls}">${val}</span>${I.chevR(15)}</button>`;
+  return `<div class="cf-step2">
+    <div class="cf-head">
+      ${V.editPid
+        ? `<button class="cf-edit-x">Cancel</button><span class="t">Edit info</span><button class="cf-act cf-done">Done</button>`
+        : `<button class="icon-btn cf-back2">${I.back(22)}</button><span class="t">${isClip ? "New clip" : "New post"}</span>`}
+    </div>
+    <div class="ig-cap-scroll">
+      ${thumbs}
+      <div class="ig-cap-line"><div class="ta" contenteditable="true" data-ph="Add a caption…">${esc(V.caption)}</div></div>
+      <div class="ig-chip-row">
+        ${CF_TAGS.map(t => `<button class="ig-chip" data-tag="${t}">${t}</button>`).join("")}
+      </div>
+      <div class="ig-rows">
+        ${m.loc
+          ? `<button class="ig-row" data-pane="loc"><span class="ic">${I.pin(19)}</span><span class="lab2">${m.loc}<span class="sub">${CF_LOC_KM[m.loc] || ""}</span></span><span class="loc-x">${I.x(12)}</span></button>
+             <div class="row-note">People you share this content with can see the location you tag and view your content on the map.</div>`
+          : row(I.pin(19), "Add location", "loc")}
+        ${row(I.tag(19), "Add price", "price", mv.price, mv.price ? " price" : "")}
+        ${row(I.watch(19), "Watch details", "spec", mv.spec)}
+        ${row(I.shield(19), "Condition", "cond", mv.cond)}
+      </div>
+      <div class="ig-toggle-row">
+        <span class="ic" style="color:var(--text);display:flex;width:24px;justify-content:center">${I.box(19)}</span>
+        <div class="tx">
+          <div class="tt">Also save to My Assets</div>
+          <div class="ts">Keep this item in your profile collection — full specs live in "Add Asset".</div>
+        </div>
+        <button class="sw${V.asset ? " on" : ""}"></button>
+      </div>
+      <button class="ig-row" data-pane="more"><span class="ic">${I.dots(18)}</span>More options<span class="val${m.audience === "followers" ? " set" : ""}">${m.audience === "followers" ? "Followers only" : ""}</span>${I.chevR(15)}</button>
+    </div>
+    <div class="cf-pane"></div>
+    ${V.editPid ? "" : `<button class="ig-share${n ? "" : " off"} cf-share">Share</button>`}
+    <div class="ig-zoom${clip ? " is-clip" : ""}" data-i="0">
+      <img alt="">
+      ${clip ? `<span class="pp-btn">${V.playing ? I.pause(30) : I.play(30)}</span><span class="dur">${I.play(10)}${clip.dur}</span><span class="prog"><i></i></span>` : ""}
+      <div class="z-dots"></div>
+    </div>
+  </div>`;
+}
+/* full-screen clip preview between picker and caption (Reels-style play/pause + progress) */
+function cfClipPrevHTML(scr) {
+  const V = cpState(scr);
+  const clip = cfClip(scr);
+  if (V.tab !== "clip" || !clip) return "";
+  return `<div class="cf-clipv${V.playing ? " playing" : ""}">
+    <div class="cf-head">
+      <button class="icon-btn cf-pv-back">${I.back(22)}</button>
+      <span class="t">New clip</span>
+      <button class="cf-act cf-pv-next">Next</button>
+    </div>
+    <button class="clip-stage" style="--dur:${cfClipSecs(clip.dur)}s">
+      <img src="${clip.src}" alt="">
+      <span class="pp-btn">${V.playing ? I.pause(30) : I.play(30)}</span>
+      <span class="dur">${I.play(10)}${clip.dur}</span>
+      <span class="prog"><i></i></span>
+    </button>
+  </div>`;
+}
+function createHTML(scr) {
+  const V = cpState(scr);
+  return `<div class="cf${V.step === 2 ? " cap-open" : ""}${V.step === "pv" ? " pv-open" : ""}">${cfPickerHTML(scr)}${cfStep2HTML(scr)}${cfClipPrevHTML(scr)}</div>`;
+}
+/* shared with the standalone create-post.html handoff (fo_newpost) */
+/* composer meta → post fields (shared by create share + edit Done) */
+function cfFieldsFromMeta(m) {
+  const price = m.price ? "THB " + fmtNum(unNum(m.price)) : null;
+  const chips = [m.cond, m.box].filter(Boolean);
+  /* show every field once details exist — empty fields render as N/A */
+  const hasSpecInput = m.cond || m.box || CF_SPECS.some(([g, fields]) => fields.some(([f]) => m[f]));
+  const specGroups = hasSpecInput ? CF_SPECS.map(([g, fields]) => ({
+    title: g,
+    rows: fields.map(([f, l]) => [l, m[f] || "N/A"]),
+  })) : [];
+  if (hasSpecInput) {
+    const itemG = specGroups.find(g => g.title === "Item Details");
+    itemG.rows.push(["Condition", m.cond || "N/A"], ["Box & Papers", m.box || "N/A"]);
+  }
+  /* Price & Data Source always shows once any details exist — missing values render as N/A */
+  if (hasSpecInput || price) {
+    const n = price ? +unNum(m.price) : 0;
+    const r5k = v => Math.round(v / 5000) * 5000; /* auto market band ~−5%/+6% around asking, like seeded posts */
+    specGroups.push({ title: "Price & Data Source", rows: [
+      ["Asking Price", price || "N/A"],
+      ["Estimated Market Price", price ? `THB ${fmtNum(r5k(n * 0.95))} – ${fmtNum(r5k(n * 1.06))}` : "N/A"],
+      ["Last Price Update", price ? new Date().toISOString().slice(0, 10) : "N/A"],
+      ["Data Source", "TukDaeng Market Data"],
+    ]});
+  }
+  return { price, chips, specGroups };
+}
+function insertNewPost(np) {
+  const base = POSTS[0];
+  const m = np.meta || {};
+  const { price, chips, specGroups } = cfFieldsFromMeta(m);
+  POSTS.unshift({
+    id: "px" + Date.now(),
+    seller: CP_ME.name,
+    avatar: CP_ME.avatar,
+    time: "Just now",
+    following: true,
+    favorite: false,
+    type: price ? "sale" : "showcase",
+    photos: np.photos && np.photos.length ? np.photos : base.photos,
+    clip: np.clip || null,
+    clips: np.clips || (np.clip ? [np.clip] : null),
+    likes: 0, comments: 0, views: 0, liked: false,
+    caption: np.caption || base.caption,
+    captionFull: np.caption || base.captionFull,
+    price,
+    chips,
+    specGroups,
+    location: m.loc || null,
+    audience: m.audience || "public",
+    noComments: !!m.noComments,
+    desc: m.desc || "", /* description is its own field — empty shows "-" on detail */
+    likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
+  });
+  POSTS[0].specs = (POSTS[0].specGroups || []).flatMap(g => g.rows);
+  /* watch alerts fire when the new post matches an ON alert — surfaced as a toast by the caller */
+  POSTS[0]._waHits = WATCH_ALERTS.filter(a => a.on && alertMatch(POSTS[0], a.matchMode, a.criteria)).map(a => a.name);
+}
+
+/* ===== FEED-024 — Edit info: same composer prefilled with the post's data ===== */
+const CF_MAX_MEDIA = 10;
+/* reverse a post's stored fields back into composer meta (spec rows are [label, value]) */
+function metaFromPost(p) {
+  const m = { loc: p.location || "", audience: p.audience || "public", noComments: !!p.noComments };
+  if (p.price) m.price = unNum(p.price);
+  const rows = (p.specGroups || []).flatMap(g => g.rows);
+  const pick = l => { const r = rows.find(r => r[0] === l); return r && r[1] !== "N/A" ? r[1] : ""; };
+  CF_SPECS.forEach(([g, fields]) => fields.forEach(([f, l]) => { const v = pick(l); if (v) m[f] = v; }));
+  const cond = pick("Condition"); if (cond) m.cond = cond;
+  const box = pick("Box & Papers"); if (box) m.box = box;
+  /* only preload a real description — skip captions that were copied into desc by older saves */
+  if (p.desc && p.desc !== p.captionFull && p.desc !== p.caption) m.desc = p.desc;
+  return m;
+}
+function openPostEdit(scr, post) {
+  const V = cpState(scr);
+  V.editPid = post.id;
+  V.tab = "post";
+  V.step = 2;
+  V.order = post.photos.map((src, i) => ({ src, dur: (post.clips && post.clips[i]) || null }));
+  V.caption = post.captionFull || post.caption || "";
+  V.meta = metaFromPost(post);
+  /* detail page (z33) sits above the composer (z32) — close it while editing, reopen on Done/Cancel */
+  V.editFromDetail = scr.classList.contains("detail-open");
+  if (V.editFromDetail) scr.classList.remove("detail-open");
+  openSub(scr, "create");
+}
+function applyPostEdit(scr, post, V) {
+  const m = V.meta || {};
+  const { price, chips, specGroups } = cfFieldsFromMeta(m);
+  const media = cfMedia(scr);
+  const clip = cfActiveClip(scr);
+  post.photos = clip ? [clip.src] : media.map(x => x.src);
+  post.clip = clip ? clip.dur : null;
+  post.clips = clip ? [clip.dur] : media.map(x => x.dur || null);
+  post.caption = post.captionFull = post.desc = V.caption;
+  post.price = price;
+  post.type = price ? "sale" : "showcase";
+  post.chips = chips;
+  post.specGroups = specGroups;
+  post.specs = specGroups.flatMap(g => g.rows);
+  post.location = m.loc || null;
+  post.audience = m.audience || "public";
+  post.noComments = !!m.noComments;
+  post.desc = m.desc || "";
+}
+/* ===== watch alerts — saved criteria that ping when a matching post lands (memory only) ===== */
+const WATCH_ALERTS = [];
+let waSeq = 1;
+const WA_MODES = {
+  all:   { t: "Match all criteria", d: "Alert me only when a post matches every field below", badge: "All" },
+  any:   { t: "Match any criteria", d: "Alert me when a post matches at least one field — can get noisy", badge: "Any" },
+  model: { t: "Model only",         d: "Just the brand, model and reference — ignore the rest", badge: "Model" },
+};
+const naSpec = v => /^n\/?a$/i.test(String(v || "").trim());
+const WA_FK_LABEL = {
+  brand: "Brand", model: "Model", cond: "Condition", ref: "Reference", year: "Year",
+  csz: "Case size", move: "Movement", dial: "Dial color", strap: "Strap / Bracelet", deliv: "Delivery contents",
+};
+
+/* detail entry — every spec field the post fills in becomes a criterion */
+function waCriteriaFromPost(p) {
+  const c = [];
+  const pick = k => { const v = specOf(p, k); return naSpec(v) ? "" : v.trim(); };
+  const push = (l, v, fk) => { if (v) c.push({ l, v, fk }); };
+  push("Brand", pick("Brand"), "brand");
+  push("Model", pick("Model"), "model");
+  push("Reference", pick("Reference"), "ref");
+  push("Year", pick("Year"), "year");
+  push("Condition", pick("Condition"), "cond");
+  push("Case Diameter", pick("Case Diameter"), "csz");
+  push("Movement Type", pick("Movement Type"), "move");
+  push("Dial Color", pick("Dial Color"), "dial");
+  const strap = `${pick("Strap/Bracelet Material")} ${pick("Strap Material")}`.trim();
+  if (strap) c.push({ l: "Strap / Bracelet", v: strap, fk: "strap" });
+  SEARCH_DELIV.filter(d => delivMatch(p, d)).forEach(d => c.push({ l: "Delivery contents", v: d, fk: "deliv" }));
+  const mapped = ["Brand", "Model", "Reference", "Year", "Condition", "Case Diameter", "Movement Type", "Dial Color",
+    "Strap/Bracelet Material", "Strap Material", "Box & Papers",
+    "Asking Price", "Estimated Market Price", "Last Price Update", "Data Source"];
+  (p.specs || []).forEach(([l, v]) => {
+    if (naSpec(v) || mapped.includes(l)) return;
+    c.push({ l, v: String(v).trim() });
+  });
+  return c;
+}
+/* search entry — snapshot the query + every selected filter */
+function waCriteriaFromSearch(S) {
+  const c = [];
+  const q = S.q.trim();
+  if (q) c.push({ l: "Keyword", v: q, fk: "q" });
+  for (const k in WA_FK_LABEL) S.f[k].forEach(v => c.push({ l: WA_FK_LABEL[k], v, fk: k }));
+  if (S.f.pmin !== "" || S.f.pmax !== "")
+    c.push({ l: "Price", v: `THB ${S.f.pmin !== "" ? fmtNum(S.f.pmin) : "0"} – ${S.f.pmax !== "" ? fmtNum(S.f.pmax) : "Any"}`,
+      fk: "price", min: S.f.pmin, max: S.f.pmax });
+  return c;
+}
+/* one criterion vs one post — same semantics the search filters use */
+function critMatch(p, c) {
+  const spec = k => String(specOf(p, k) || "");
+  const eq = (a, b) => a.trim().toLowerCase() === String(b).trim().toLowerCase();
+  const inc = (a, b) => a.toLowerCase().includes(String(b).toLowerCase());
+  switch (c.fk) {
+    case "brand": return eq(spec("Brand"), c.v);
+    case "model": return inc(spec("Model"), c.v);
+    case "cond":  return eq(spec("Condition"), c.v);
+    case "ref":   return eq(spec("Reference"), c.v);
+    case "year":  return eq(spec("Year"), c.v);
+    case "csz":   return eq(spec("Case Diameter"), c.v);
+    case "move":  return inc(spec("Movement Type"), c.v);
+    case "dial":  return inc(spec("Dial Color"), c.v);
+    case "strap": return inc(`${spec("Strap/Bracelet Material")} ${spec("Strap Material")}`, c.v);
+    case "deliv": return delivMatch(p, c.v);
+    case "price": { const pr = priceNum(p); return pr != null && !(c.min !== "" && pr < +c.min) && !(c.max !== "" && pr > +c.max); }
+    case "q":     return matchQuery(p, c.v);
+    default:      return c.l ? eq(spec(c.l), c.v) : false;
+  }
+}
+function alertMatch(p, mode, criteria) {
+  if (!criteria.length) return mode === "all";      /* no criteria = watch every new listing */
+  if (mode === "any") return criteria.some(c => critMatch(p, c));
+  if (mode === "model") {
+    const mc = criteria.filter(c => ["brand", "model", "ref"].includes(c.fk));
+    return mc.length > 0 && mc.every(c => critMatch(p, c));
+  }
+  return criteria.every(c => critMatch(p, c));
+}
+const alertMatchCount = (mode, criteria) => salePosts().filter(p => alertMatch(p, mode, criteria)).length;
+const waSig = c => c.map(x => `${x.fk || x.l}:${x.v}`).sort().join("¦");
+function waName(criteria) {
+  const g = fk => (criteria.find(c => c.fk === fk) || {}).v;
+  if (g("brand") || g("model")) return [g("brand"), g("model")].filter(Boolean).join(" ") + (g("ref") ? ` · ${g("ref")}` : "");
+  if (g("q")) return `"${g("q")}"`;
+  return criteria.length ? criteria.slice(0, 2).map(c => c.v).join(" · ") : "Any new listing";
+}
+/* bell state = an ON alert exists for this post's brand|model|ref key */
+const modelKeyOf = p => ["Brand", "Model", "Reference"].map(k => String(specOf(p, k) || "").trim().toLowerCase()).join("|");
+function syncModelFlags() {
+  const keys = new Set(WATCH_ALERTS.filter(a => a.on && a.modelKey && a.modelKey !== "||").map(a => a.modelKey));
+  POSTS.forEach(p => p.modelFollowing = keys.has(modelKeyOf(p)));
+}
+function refreshMfBtns(scr) {
+  scr.querySelectorAll(".mf-btn").forEach(b => {
+    const art = b.closest(".post");
+    const p = POSTS.find(x => x.id === (art ? art.dataset.pid : scr.dataset.detailPid));
+    const on = !!(p && p.modelFollowing);
+    b.classList.toggle("on", on);
+    b.title = on ? "Following this model" : "Follow this model";
+  });
+}
+
+function waModesHTML(d) {
+  return Object.keys(WA_MODES).map(k => {
+    const m = WA_MODES[k];
+    const dis = !d.criteria.length && k !== "all";
+    const n = alertMatchCount(k, d.criteria);
+    return `<button class="wa-mode${d.matchMode === k ? " on" : ""}" data-mode="${k}"${dis ? " disabled" : ""}>
+      <span class="wa-mb"><span class="wa-mt">${m.t}</span><span class="wa-md">${m.d}</span></span>
+      <span class="wa-mc">${n} now</span><span class="wa-rad"></span>
+    </button>`;
+  }).join("");
+}
+/* one bottom sheet shared by every entry — detail bell, search bell and the
+   settings row edit. Name is auto-filled but editable; criteria stay out of the
+   sheet — they're visible on the page behind it and on the Watch Alerts list. */
+function waSheetHTML(scr) {
+  const d = scr._waDraft;
+  const edit = !!d.id;
+  return `<div class="sheet-handle"></div>
+    <div class="wa-body">
+      <div class="wa-title">${edit ? "Edit watch alert" : "Create watch alert"}</div>
+      <label class="wa-lbl">Give this watch alert a name</label>
+      <input class="wa-name" type="text" value="${esc(d.name)}" placeholder="Name this alert">
+      <div class="wa-sec">Notify me when a post matches</div>
+      ${waModesHTML(d)}
+      <button class="wa-go">${edit ? "Save changes" : "Create alert"}</button>
+      ${edit ? `<button class="wa-del">${I.trash(16)} Delete alert</button>` : ""}
+    </div>`;
+}
+function waRowHTML(a) {
+  const n = alertMatchCount(a.matchMode, a.criteria);
+  const critTxt = a.criteria.map(c => c.v).join(" · ") || "Any new listing";
+  return `<div class="wa-row${a.on ? "" : " wa-off"}" data-wa="${a.id}">
+    <span class="wa-ic">${I.navBell(18)}</span>
+    <span class="wa-b">
+      <span class="wa-t">${esc(a.name)}</span>
+      <span class="wa-c">${esc(critTxt)}</span>
+      <span class="wa-meta"><span class="wa-badge">Edit</span><span>${{ all: "Match all", any: "Match any", model: "Model only" }[a.matchMode]} · ${n} match${n === 1 ? "" : "es"} now</span></span>
+    </span>
+    <button class="wa-tgl" title="${a.on ? "Pause alert" : "Resume alert"}"><span class="tg-sw${a.on ? " on" : ""}"></span></button>
+  </div>`;
+}
+function walertsHTML() {
+  return `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">Watch Alerts</span><span class="spacer"></span></div>
+    <div class="sub-scroll">
+      <div class="fav-desc">Get notified when a new listing matches what you're watching.</div>
+      ${WATCH_ALERTS.length ? WATCH_ALERTS.map(waRowHTML).join("") : `<div class="sub-empty">No watch alerts yet — tap the bell on a post or save a search to start one</div>`}
+    </div>`;
+}
+
 function subHTML(name, scr) {
   const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${t}</span><span class="spacer"></span></div>`;
   const row = (t, attr, extra = "", ic = "") => `<button class="sub-row" ${attr}>${ic ? `<span class="sub-ic">${ic}</span>` : ""}<span>${t}</span>${extra}<span class="sub-chev">${I.chevR(15)}</span></button>`;
+  if (name === "create") return createHTML(scr);
   if (name === "search") return searchHTML(scr);
   if (name === "sfilter") return filterHTML(scr);
   if (name === "recents") return recentPageHTML(scr);
@@ -4420,6 +5813,8 @@ function subHTML(name, scr) {
     <div class="sub-sec">Your library</div>
     ${row("Saved", `data-sub="saved"`, `<span class="sub-count">${POSTS.filter(p => p.saved).length}</span>`, I.bookmark(21))}
     ${row("Wish List", `data-sub="wishlist"`, `<span class="sub-count">${wlPosts().length}</span>`, I.gift(21))}
+    ${row("Archive", `data-sub="archive"`, `<span class="sub-count">${archivePosts().length}</span>`, I.history(21))}
+    ${row("Watch Alerts", `data-sub="walerts"`, `<span class="sub-count">${WATCH_ALERTS.length}</span>`, I.navBell(21))}
     <div class="sub-sec sec-div">What you see</div>
     ${row("Favorites", `data-sub="favorites"`, `<span class="sub-count">${favoriteSellers().length}</span>`, I.star(21))}
     ${row("Muted accounts", `data-sub="muted"`, `<span class="sub-count">${mutedSellers().length}</span>`, I.bellOff(21))}
@@ -4461,7 +5856,9 @@ function subHTML(name, scr) {
       ${opt("standard", "Standard", "You'll see some sensitive content.")}
     </div>`;
   }
+  if (name === "walerts") return walertsHTML();
   if (name === "saved") return savedHTML(scr);
+  if (name === "archive") return archiveHTML(scr);
   if (name === "savedcol") return savedColHTML(scr);
   if (name === "wishlist") return wishlistHTML(scr);
   if (name === "wishcol") return wishColHTML(scr);
@@ -4491,7 +5888,7 @@ function screenHTML(theme, variant) {
     </div>
 
     <div class="app-header">
-      <button class="icon-btn">${I.burger()}</button>
+      <button class="icon-btn hb-btn">${I.burger()}</button>
       <button class="icon-btn search-btn">${I.search()}</button>
       <span class="wordmark">TUK DAENG <span class="caret">${I.chev(13)}</span></span>
       <span class="spacer"></span>
@@ -4531,6 +5928,22 @@ function screenHTML(theme, variant) {
     <div class="page-detail"></div>
     <div class="page-sub"></div>
     <div class="page-pv"></div>
+    <div class="hb-wrap">
+      <div class="hb-scrim"></div>
+      <div class="hb-panel">
+        <div class="hb-list">
+          <button class="hb-item">${I.gem(22)}<span>Watch Brands</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.award(22)}<span>Watch Price Index</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.bag(22)}<span>Watch Shops</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.bag(22)}<span>Accessories Shop</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.bag(22)}<span>Repair Shop</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.home(22)}<span>Auction Center</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.home(22)}<span>Consignment Center</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.home(22)}<span>Authentication Center</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.users(22)}<span>Community</span><span class="hb-chev">${I.chevR(15)}</span></button>
+        </div>
+      </div>
+    </div>
   </div>`;
 }
 
@@ -4562,28 +5975,10 @@ try {
   const raw = localStorage.getItem("fo_newpost");
   if (raw) {
     localStorage.removeItem("fo_newpost");
-    const np = JSON.parse(raw);
-    const base = POSTS[0];
-    POSTS.unshift({
-      id: "px" + Date.now(),
-      seller: "mycollection",
-      avatar: "./assets/user-avatars/u-1075.png",
-      time: "Just now",
-      following: true,
-      favorite: false,
-      type: "sale",
-      photos: np.photos && np.photos.length ? np.photos : base.photos,
-      likes: 0, comments: 0, views: "1", liked: false,
-      caption: np.caption || base.caption,
-      captionFull: np.caption || base.captionFull,
-      price: base.price,
-      chips: base.chips,
-      specGroups: base.specGroups,
-      desc: np.caption || base.desc,
-      likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
-    });
-    POSTS[0].specs = (POSTS[0].specGroups || []).flatMap(g => g.rows);
+    insertNewPost(JSON.parse(raw));
     setTimeout(() => toast("Posted · shared to feed ✓"), 500);
+    if (POSTS[0]._waHits && POSTS[0]._waHits.length)
+      setTimeout(() => toast(`Watch alert matched: ${POSTS[0]._waHits[0]}`), 2400);
   }
 } catch {}
 
@@ -4596,13 +5991,117 @@ function photoCtx(el) {
   const scr = el.closest(".screen");
   return { post: POSTS.find(x => x.id === scr.dataset.detailPid), dotsEl: scr.querySelector(".page-detail .photo-dots") };
 }
+/* swap a clip-capable media box to slide i — badge/countdown follow the slide's own dur */
+function phClipSet(ph, post, i) {
+  if (!ph.classList.contains("clip-ph")) return;
+  const dur = post.clips && post.clips[i];
+  ph.dataset.dur = dur ? cfClipSecs(dur) : "";
+  delete ph.dataset.rem;
+  ph.classList.remove("playing");
+  const b = ph.querySelector(".clip-badge");
+  if (b) { b.style.display = dur ? "" : "none"; if (dur) b.innerHTML = `${I.play(11)}${dur}`; }
+  const bar = ph.querySelector(".prog i");
+  if (bar) bar.style.width = "0";
+}
 function applyPhoto(ph, post, i, dotsEl) {
   ph.dataset.i = i;
   ph.querySelector("img").src = post.photos[i];
   const c = ph.querySelector(".photo-counter");
   if (c) c.textContent = `${i + 1}/${post.photos.length}`;
   if (dotsEl) [...dotsEl.children].forEach((d, j) => d.classList.toggle("on", j === i));
+  phClipSet(ph, post, i);
 }
+/* CREATE-001 — caption thumbs strip + hashtag chips: wheel + drag to scroll (desktop has no scrollbar) */
+let stripDrag = null;
+stageEl.addEventListener("wheel", e => {
+  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row");
+  if (strip) { strip.scrollLeft += e.deltaY || e.deltaX; e.preventDefault(); }
+}, { passive: false });
+stageEl.addEventListener("pointerdown", e => {
+  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row");
+  if (strip) stripDrag = { strip, x0: e.clientX, sl: strip.scrollLeft, moved: false };
+});
+stageEl.addEventListener("pointermove", e => {
+  if (!stripDrag) return;
+  const dx = e.clientX - stripDrag.x0;
+  if (Math.abs(dx) > 8) stripDrag.moved = true;
+  if (stripDrag.moved) stripDrag.strip.scrollLeft = stripDrag.sl - dx;
+});
+["pointerup", "pointercancel"].forEach(ev => stageEl.addEventListener(ev, () => {
+  if (stripDrag?.moved) { suppressPhotoClick = true; setTimeout(() => { suppressPhotoClick = false; }, 60); }
+  stripDrag = null;
+}));
+
+/* FEED-024 — caption thumbs: press and hold a thumb to drag it into a new order (IG edit info) */
+let reordDrag = null;
+stageEl.addEventListener("pointerdown", e => {
+  const th = e.target.closest(".cf .ig-thumbs.multi .ig-thumb");
+  if (!th || th.classList.contains("ig-add")) return;
+  const strip = th.closest(".ig-thumbs");
+  const scr = th.closest(".screen");
+  const idx = [...strip.querySelectorAll(".ig-thumb:not(.ig-add)")].indexOf(th);
+  reordDrag = { th, strip, scr, idx, x0: e.clientX, lx: e.clientX, active: false, t: setTimeout(() => {
+    if (reordDrag && Math.abs(reordDrag.lx - reordDrag.x0) <= 10) {
+      reordDrag.active = true;
+      reordDrag.th.classList.add("drag");
+      stripDrag = null; /* hand the gesture to reorder, not strip scroll */
+    }
+  }, 380) };
+});
+stageEl.addEventListener("pointermove", e => {
+  if (!reordDrag) return;
+  reordDrag.lx = e.clientX;
+  const dx = e.clientX - reordDrag.x0;
+  if (!reordDrag.active) { if (Math.abs(dx) > 10) { clearTimeout(reordDrag.t); reordDrag = null; } return; }
+  reordDrag.th.style.transform = `translateX(${dx}px)`;
+});
+["pointerup", "pointercancel"].forEach(ev => stageEl.addEventListener(ev, e => {
+  if (!reordDrag) return;
+  const { th, strip, scr, idx, active, t } = reordDrag;
+  clearTimeout(t);
+  reordDrag = null;
+  if (!active) return;
+  th.classList.remove("drag");
+  th.style.transform = "";
+  suppressPhotoClick = true;
+  setTimeout(() => { suppressPhotoClick = false; }, 80);
+  const sibs = [...strip.querySelectorAll(".ig-thumb:not(.ig-add)")].filter(s => s !== th);
+  let to = sibs.length;
+  sibs.forEach((s, i) => { const r = s.getBoundingClientRect(); if (e.clientX < r.left + r.width / 2 && to === sibs.length) to = i; });
+  if (to !== idx && scr) {
+    const V = cpState(scr);
+    const [item] = V.order.splice(idx, 1);
+    V.order.splice(to, 0, item);
+    renderSub(scr);
+  }
+}));
+
+/* CREATE-001 — zoom viewer: swipe left/right between selected photos (IG) */
+let zoomSwipe = null;
+stageEl.addEventListener("pointerdown", e => {
+  const zimg = e.target.closest(".cf .ig-zoom img");
+  if (!zimg) return;
+  zoomSwipe = { z: zimg.closest(".ig-zoom"), x0: e.clientX, moved: false };
+});
+stageEl.addEventListener("pointermove", e => {
+  if (!zoomSwipe) return;
+  if (Math.abs(e.clientX - zoomSwipe.x0) > 8) zoomSwipe.moved = true;
+});
+["pointerup", "pointercancel"].forEach(ev => stageEl.addEventListener(ev, e => {
+  if (!zoomSwipe) return;
+  const { z, x0, moved } = zoomSwipe;
+  zoomSwipe = null;
+  if (moved) { suppressPhotoClick = true; setTimeout(() => { suppressPhotoClick = false; }, 60); }
+  if (!z || !z.classList.contains("open")) return;
+  const dx = e.clientX - x0;
+  if (moved && Math.abs(dx) > 40) {
+    const scr = z.closest(".screen");
+    const n = cfMedia(scr).length;
+    /* swipe only when the draft has multiple items — cfZoomGo swaps photo/clip mode */
+    if (n > 1) cfZoomGo(z, +z.dataset.i + (dx < 0 ? 1 : -1), n);
+  }
+}));
+
 stageEl.addEventListener("pointerdown", e => {
   const ph = e.target.closest(".post-photo, .detail-hero");
   if (!ph) return;
@@ -4676,6 +6175,26 @@ stageEl.addEventListener("keydown", e => {
   }
 });
 stageEl.addEventListener("input", e => {
+  if (e.target.matches(".cf .ig-cap-line .ta"))
+    cpState(e.target.closest(".screen")).caption = e.target.textContent;
+  /* composer option panes — field inputs write into V.meta */
+  if (e.target.matches(".cf .cf-f")) {
+    const scr = e.target.closest(".screen");
+    const V = cpState(scr);
+    const f = e.target.dataset.f;
+    if (f === "price") { const v = unNum(e.target.value); V.meta[f] = v; e.target.value = v ? fmtNum(v) : ""; }
+    else V.meta[f] = e.target.value;
+  }
+  /* composer location pane — live filter suggestions */
+  if (e.target.matches(".cf .pane-q")) {
+    const scr = e.target.closest(".screen");
+    const V = cpState(scr);
+    V.meta.locQ = e.target.value;
+    const q = e.target.value.trim().toLowerCase();
+    e.target.closest(".pane-body").querySelectorAll(".loc-opt").forEach(b => {
+      b.style.display = !q || b.dataset.v.toLowerCase().includes(q) ? "" : "none";
+    });
+  }
   if (e.target.matches(".cp-input input"))
     e.target.closest(".cp-input").querySelector(".cp-send").disabled = !e.target.value.trim();
   if (e.target.matches(".sh-q")) {
@@ -4739,17 +6258,328 @@ document.getElementById("stage").addEventListener("contextmenu", e => {
 
 document.getElementById("stage").addEventListener("click", e => {
   const flow = e.target.closest("[data-flow]");
-  if (flow) { location.href = "create-post.html"; return; }
+  if (flow) { openSub(flow.closest(".screen"), "create"); return; }
+  /* ===== CREATE-001 — in-app create-post task flow (picker → caption → feed) ===== */
+  const cf = e.target.closest(".cf");
+  if (cf) {
+    const scr = cf.closest(".screen");
+    const V = cpState(scr);
+    const cfX = e.target.closest(".cf-x");
+    if (cfX) {
+      if (V.order.length || V.clip != null || V.caption.trim()) {
+        const kind = V.tab === "clip" ? "clip" : "post";
+        openDlg(scr, `
+          <div class="dlg-q">Discard ${kind}?</div>
+          <div class="dlg-desc">If you go back now, you'll lose your draft.</div>
+          <button class="dlg-btn danger dlg-discard-go">Discard ${kind}</button>
+          <button class="dlg-btn dlg-cancel">Keep editing</button>`);
+      }
+      else { scr._subStack = []; scr.classList.remove("sub-open"); }
+      return;
+    }
+    /* Post / Clip tab switch — each tab keeps its own draft, clip is single-select */
+    const cfTab = e.target.closest(".ig-tab");
+    if (cfTab) {
+      const t = cfTab.dataset.ctab;
+      if (t && t !== V.tab) { V.tab = t; V.sel = false; cfClipStop(scr); renderSub(scr); }
+      return;
+    }
+    const cfNx = e.target.closest(".cf-next");
+    if (cfNx) {
+      if (!cfNx.classList.contains("off")) {
+        if (V.tab === "clip" && V.step === 1) {
+          V.step = "pv"; cfClipStop(scr);
+          /* clipv layer is built on demand — the picker DOM didn't re-render on select */
+          cf.querySelector(".cf-clipv")?.remove();
+          cf.insertAdjacentHTML("beforeend", cfClipPrevHTML(scr));
+          void cf.querySelector(".cf-clipv").offsetWidth;
+          cf.classList.add("pv-open");
+        } else {
+          V.step = 2;
+          cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+          cf.classList.add("cap-open");
+        }
+      }
+      return;
+    }
+    /* clip preview layer — back to picker / Next to caption / tap stage toggles play */
+    const cfPvBack = e.target.closest(".cf-pv-back");
+    if (cfPvBack) { V.step = 1; cfClipStop(scr); cf.classList.remove("pv-open"); return; }
+    const cfPvNext = e.target.closest(".cf-pv-next");
+    if (cfPvNext) {
+      V.step = 2;
+      cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+      cf.classList.add("cap-open");
+      cfClipSync(scr);
+      return;
+    }
+    /* tap a clip surface (preview stage or the zoomed clip viewer) toggles play/pause + countdown */
+    const cfPlay = e.target.closest(".clip-stage");
+    if (cfPlay) { cfClipToggle(scr); return; }
+    /* FEED-024 edit mode — Cancel / Done / add-media tile / picker back → caption */
+    const cfEditX = e.target.closest(".cf-edit-x");
+    if (cfEditX) {
+      openDlg(scr, `
+        <div class="dlg-q">Discard changes?</div>
+        <div class="dlg-desc">If you go back now, your edits will be lost.</div>
+        <button class="dlg-btn danger dlg-discard-go">Discard</button>
+        <button class="dlg-btn dlg-cancel">Keep editing</button>`);
+      return;
+    }
+    const cfDone = e.target.closest(".cf-done");
+    if (cfDone) {
+      const post = POSTS.find(x => x.id === V.editPid);
+      const wasDetail = V.editFromDetail;
+      V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() ?? V.caption;
+      if (post) applyPostEdit(scr, post, V); /* before _cp reset — cfMedia reads V.order */
+      cfClipStop(scr);
+      scr._cp = null;
+      scr._subStack = [];
+      scr.classList.remove("sub-open");
+      if (post) {
+        refreshPostViews(scr, post);
+        if (wasDetail) openPostDetail(scr, post); /* reopens detail with fresh content */
+        scrToast(scr, "Post updated", post.photos[0] || "");
+      }
+      return;
+    }
+    const cfAdd = e.target.closest(".ig-add");
+    if (cfAdd) { V._orderSnap = V.order.slice(); V.step = 1; renderSub(scr); return; }
+    /* add-media picker — < cancels the additions, Done keeps them */
+    const cfAddCancel = e.target.closest(".cf-add-cancel");
+    if (cfAddCancel) { if (V._orderSnap) { V.order = V._orderSnap; V._orderSnap = null; } V.step = 2; renderSub(scr); return; }
+    const cfAddDone = e.target.closest(".cf-add-done");
+    if (cfAddDone) { V._orderSnap = null; V.step = 2; renderSub(scr); return; }
+    const cfBk = e.target.closest(".cf-back2");
+    if (cfBk) {
+      V.step = V.tab === "clip" ? "pv" : 1;
+      cf.classList.remove("cap-open");
+      return;
+    }
+    const cfSel = e.target.closest("[data-selmode]");
+    if (cfSel) { V.sel = !V.sel; renderSub(scr); return; }
+    const cfRm = e.target.closest(".rm-mini");
+    if (cfRm) {
+      cfClipStop(scr);
+      if (V.editPid && V.order.length <= 1) { scrToast(scr, "Post needs at least 1 photo or clip"); return; }
+      if (V.tab === "clip") { V.clip = null; V.step = 1; }
+      else { V.order.splice(+cfRm.dataset.i, 1); if (!V.order.length) V.step = 1; }
+      renderSub(scr);
+      return;
+    }
+    const cfZoom = e.target.closest(".ig-zoom");
+    if (cfZoom && !suppressPhotoClick) {
+      /* clip zoom — tap media toggles play, tap backdrop closes (same as photos) */
+      if (e.target === cfZoom) { cfZoom.classList.remove("open"); cfClipStop(scr); V.viewClip = null; return; }
+      if (cfZoom.classList.contains("is-clip")) { cfClipToggle(scr); return; }
+    }
+    const cfThumb = e.target.closest(".ig-thumb img");
+    if (cfThumb && !suppressPhotoClick) {
+      const z = cf.querySelector(".ig-zoom");
+      const actClip = cfActiveClip(scr);
+      /* clip-tab / lone-video draft — the baked clip viewer */
+      if (actClip) {
+        z.querySelector("img").src = actClip.src;
+        z.querySelector(".z-dots").innerHTML = "";
+        z.classList.add("open");
+        cfClipSync(scr);
+        return;
+      }
+      /* mixed/photo draft — cfZoomGo picks photo vs playable-clip mode per item */
+      const th = cfThumb.closest(".ig-thumb");
+      const i = [...th.parentElement.children].filter(c => c.classList.contains("ig-thumb")).indexOf(th);
+      cfZoomGo(z, i, cfMedia(scr).length);
+      z.classList.add("open");
+      return;
+    }
+    const cfShare = e.target.closest(".cf-share");
+    if (cfShare) {
+      if (cfShare.classList.contains("off")) return;
+      V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() || V.caption;
+      const clip = cfActiveClip(scr);
+      const photos = clip ? [clip.src] : cfPhotos(scr);
+      const clips = clip ? [clip.dur] : cfMedia(scr).map(m => m.dur || null);
+      insertNewPost({ photos, caption: V.caption, meta: V.meta, clip: clip ? clip.dur : null, clips });
+      cfClipStop(scr);
+      scr._cp = null;
+      scr._subStack = [];
+      scr.classList.remove("sub-open");
+      const fs = scr.querySelector(".feed-scroll");
+      fs.innerHTML = feedContentHTML(scr.dataset.variant);
+      fs.scrollTop = 0;
+      scrToast(scr, clip ? "Clip shared to feed ✓" : "Posted · shared to feed ✓", photos[0] || "");
+      const waHits = POSTS[0]._waHits || [];
+      if (waHits.length)
+        setTimeout(() => scrToast(scr, `Watch alert matched: ${waHits[0]}${waHits.length > 1 ? ` +${waHits.length - 1} more` : ""}`), 2100);
+      return;
+    }
+    const cfCell = e.target.closest(".ig-grid .cell");
+    if (cfCell && !cfCell.classList.contains("cam")) {
+      const i = +cfCell.dataset.i;
+      const grid = cfCell.closest(".ig-grid");
+      /* clip roll — single-select, tap again to deselect */
+      if (V.tab === "clip") {
+        V.clip = V.clip === i ? null : i;
+        cfClipStop(scr);
+        grid.querySelectorAll(".cell[data-i]").forEach(c => {
+          const on = +c.dataset.i === V.clip;
+          c.classList.toggle("sel", on);
+          const r = c.querySelector(".radio");
+          r.classList.toggle("on", on);
+          r.innerHTML = on ? I.check(10) : "";
+        });
+        const clip = cfClip(scr);
+        cf.querySelector("[data-hero]").innerHTML = clip
+          ? `<div class="ig-car"><img src="${clip.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${clip.dur}</span></div>`
+          : `<div class="add-tile">${I.video(38)}<span>Select a clip</span></div>`;
+        cf.querySelector(".cf-next").classList.toggle("off", !clip);
+        return;
+      }
+      cfClipStop(scr);
+      if (grid.classList.contains("selmode")) {
+        const k = V.order.indexOf(i);
+        if (k < 0) {
+          if (V.order.length >= CF_MAX_MEDIA) { scrToast(scr, `You can add up to ${CF_MAX_MEDIA} photos or clips`); return; }
+          V.order.push(i);
+        } else V.order.splice(k, 1);
+        grid.querySelectorAll(".cell[data-i]").forEach(c => {
+          const pos = V.order.indexOf(+c.dataset.i);
+          const r = c.querySelector(".radio");
+          c.classList.toggle("sel", pos >= 0);
+          r.classList.toggle("on", pos >= 0);
+          r.textContent = pos >= 0 ? pos + 1 : "";
+        });
+      } else {
+        V.order = [i];
+        grid.querySelectorAll(".cell[data-i]").forEach(c => c.classList.toggle("sel", +c.dataset.i === i));
+      }
+      const cfNext = cf.querySelector(".cf-next");
+      const lastM = V.order.length ? cfMedia(scr).at(-1) : null;
+      cf.querySelector("[data-hero]").innerHTML = !lastM
+        ? `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`
+        : lastM.dur
+        ? `<div class="ig-car"><img src="${lastM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${lastM.dur}</span></div>`
+        : `<div class="ig-car"><img src="${lastM.src}"><button class="expand">${I.expandIc(15)}</button></div>`;
+      if (cfNext) cfNext.classList.toggle("off", !V.order.length);
+      return;
+    }
+    const cfSw = e.target.closest(".sw");
+    if (cfSw && !cfSw.classList.contains("pane-sw")) { V.asset = !V.asset; cfSw.classList.toggle("on", V.asset); return; }
+    const cfChip = e.target.closest(".ig-chip");
+    if (cfChip && !suppressPhotoClick) {
+      const tag = cfChip.dataset.tag;
+      const ta = cf.querySelector(".ig-cap-line .ta");
+      if (ta && !ta.textContent.includes(tag)) {
+        ta.textContent = (ta.textContent.trimEnd() ? ta.textContent.trimEnd() + " " : "") + tag;
+        V.caption = ta.textContent;
+      }
+      return;
+    }
+    /* clear picked location via the X inside the row */
+    const cfLocX = e.target.closest(".loc-x");
+    if (cfLocX) {
+      V.meta.loc = "";
+      cfLocX.closest(".ig-row").outerHTML = `<button class="ig-row" data-pane="loc"><span class="ic">${I.pin(19)}</span>Add location<span class="val"></span>${I.chevR(15)}</button>`;
+      const note = cf.querySelector(".row-note");
+      if (note) note.remove();
+      return;
+    }
+    /* option rows → slide-in pane (location / price / details / condition / more) */
+    const cfRow = e.target.closest(".ig-row[data-pane]");
+    if (cfRow) {
+      V.meta.pane = cfRow.dataset.pane;
+      const pane = cf.querySelector(".cf-pane");
+      pane.innerHTML = cfPaneHTML(scr);
+      void pane.offsetWidth;
+      pane.classList.add("open");
+      return;
+    }
+    const cfPaneBack = e.target.closest(".cf-pane-back, .pane-done");
+    if (cfPaneBack) {
+      V.meta.pane = null;
+      cf.querySelector(".cf-pane").classList.remove("open");
+      cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+      cfClipSync(scr);
+      return;
+    }
+    const cfOpt = e.target.closest(".loc-opt, .cond-opt");
+    if (cfOpt) {
+      const v = cfOpt.dataset.v;
+      const close = cfOpt.classList.contains("loc-opt");
+      if (cfOpt.classList.contains("loc-opt")) { V.meta.loc = v; V.meta.locQ = ""; }
+      else if (cfOpt.classList.contains("aud-opt")) {
+        V.meta.audience = v;
+        cf.querySelectorAll(".aud-opt").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+      }
+      else if (cfOpt.classList.contains("box-opt")) {
+        V.meta.box = V.meta.box === v ? "" : v;
+        cf.querySelectorAll(".box-opt").forEach(b => b.classList.toggle("on", b.dataset.v === V.meta.box));
+      }
+      else {
+        V.meta.cond = v;
+        cf.querySelectorAll(".cond-opt:not(.box-opt)").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+      }
+      if (close) {
+        V.meta.pane = null;
+        cf.querySelector(".cf-pane").classList.remove("open");
+        cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+        cfClipSync(scr);
+      }
+      return;
+    }
+    const cfPaneSw = e.target.closest(".pane-sw");
+    if (cfPaneSw) {
+      const f = cfPaneSw.dataset.f;
+      V.meta[f] = f === "allowOffers" ? V.meta[f] === false : !V.meta[f];
+      cfPaneSw.classList.toggle("on", V.meta[f]);
+      return;
+    }
+    const cfDead = e.target.closest(".rc, .expand, .cell.cam");
+    if (cfDead) { toast("Not in this prototype yet"); return; }
+    return;
+  }
   const pmBtn = e.target.closest(".post-head .more, .pm-btn");
   if (pmBtn) {
     const scr = pmBtn.closest(".screen");
     const art = pmBtn.closest(".post");
     scr.dataset.pmPid = art ? art.dataset.pid : scr.dataset.detailPid;
+    const post = POSTS.find(x => x.id === scr.dataset.pmPid);
     const cs = scr.querySelector(".comment-sheet");
     cs.classList.remove("uf", "pm-rp", "lk", "sh", "sv", "nt", "ps");
     cs.classList.add("pm");
-    cs.innerHTML = pmMenuHTML(POSTS.find(x => x.id === scr.dataset.pmPid));
+    cs.innerHTML = isOwnPost(post) ? pmOwnMenuHTML(post) : pmMenuHTML(post);
     scr.classList.add("pm-open");
+    return;
+  }
+  /* ===== FEED-024 — own-post "..." menu actions (memory only) ===== */
+  const pmOwn = e.target.closest(".pm-own-archive, .pm-own-nocomm, .pm-own-edit, .pm-own-pin, .pm-own-del");
+  if (pmOwn) {
+    const scr = pmOwn.closest(".screen");
+    const post = POSTS.find(x => x.id === scr.dataset.pmPid);
+    scr.classList.remove("pm-open");
+    if (!post) return;
+    if (pmOwn.matches(".pm-own-archive")) {
+      post.archived = !post.archived;
+      post.archivedAt = post.archived ? Date.now() : 0;
+      scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+      if ((scr._subStack || []).at(-1) === "archive") renderSub(scr);
+      scrToast(scr, post.archived ? "Post archived" : "Post unarchived");
+    } else if (pmOwn.matches(".pm-own-nocomm")) {
+      post.noComments = !post.noComments;
+      refreshPostViews(scr, post);
+      scrToast(scr, post.noComments ? "Commenting turned off" : "Commenting turned on");
+    } else if (pmOwn.matches(".pm-own-edit")) {
+      openPostEdit(scr, post);
+    } else if (pmOwn.matches(".pm-own-pin")) {
+      post.pinned = !post.pinned;
+      scrToast(scr, post.pinned ? "Pinned to your profile" : "Unpinned from your profile");
+    } else if (pmOwn.matches(".pm-own-del")) {
+      openDlg(scr, `
+        <div class="dlg-q">Delete post?</div>
+        <div class="dlg-desc">This post will be permanently deleted.</div>
+        <button class="dlg-btn danger dlg-delpost-go">Delete</button>
+        <button class="dlg-btn dlg-cancel">Cancel</button>`);
+    }
     return;
   }
   const pmFav = e.target.closest(".pm-fav");
@@ -4855,6 +6685,18 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const dlgCancel = e.target.closest(".dlg-cancel");
   if (dlgCancel) { dlgCancel.closest(".screen").classList.remove("dialog-open"); return; }
+  const dlgDiscard = e.target.closest(".dlg-discard-go");
+  if (dlgDiscard) {
+    const scr = dlgDiscard.closest(".screen");
+    scr.classList.remove("dialog-open");
+    const wasDetail = scr._cp && scr._cp.editFromDetail;
+    if (scr._cp) { clearInterval(scr._cp._t); }
+    scr._cp = null;
+    scr._subStack = [];
+    scr.classList.remove("sub-open");
+    if (wasDetail) scr.classList.add("detail-open");
+    return;
+  }
   const dlgMute = e.target.closest(".dlg-mute-go");
   if (dlgMute) {
     const scr = dlgMute.closest(".screen");
@@ -4872,6 +6714,34 @@ document.getElementById("stage").addEventListener("click", e => {
     scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
     renderSub(scr);
     scrToast(scr, "Suggested content reset");
+    return;
+  }
+  /* FEED-024 — own-post edit caption / delete confirms */
+  const dlgEditGo = e.target.closest(".dlg-edit-go");
+  if (dlgEditGo) {
+    const scr = dlgEditGo.closest(".screen");
+    const post = POSTS.find(x => x.id === scr.dataset.pmPid);
+    const v = scr.querySelector(".dlg-ta").value;
+    scr.classList.remove("dialog-open");
+    if (post && v !== (post.captionFull || post.caption)) {
+      post.caption = post.captionFull = post.desc = v;
+      refreshPostViews(scr, post);
+      scrToast(scr, "Post updated");
+    }
+    return;
+  }
+  const dlgDel = e.target.closest(".dlg-delpost-go");
+  if (dlgDel) {
+    const scr = dlgDel.closest(".screen");
+    const pid = scr.dataset.pmPid;
+    const i = POSTS.findIndex(x => x.id === pid);
+    scr.classList.remove("dialog-open");
+    if (i > -1) {
+      POSTS.splice(i, 1);
+      scr.querySelectorAll(`.post[data-pid="${pid}"], .svf-post[data-pid="${pid}"]`).forEach(el => el.remove());
+      if (scr.dataset.detailPid === pid) scr.classList.remove("detail-open");
+      scrToast(scr, "Post deleted");
+    }
     return;
   }
   /* settings + content-preferences pages */
@@ -5133,6 +7003,12 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const fltApply = e.target.closest(".flt-apply");
   if (fltApply) { applyFilters(fltApply.closest(".screen")); return; }
+  const hbBtn = e.target.closest(".hb-btn");
+  if (hbBtn) { hbBtn.closest(".screen").classList.add("hb-open"); return; }
+  const hbScrim = e.target.closest(".hb-scrim");
+  if (hbScrim) { hbScrim.closest(".screen").classList.remove("hb-open"); return; }
+  const hbDead = e.target.closest(".hb-item");
+  if (hbDead) { toast("Not in this prototype yet"); return; }
   const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn), .emoji-row, .comment-input, .sheet-title .send, .c-meta");
   if (dead) { toast("Not in this prototype yet"); return; }
   const wm = e.target.closest(".wordmark");
@@ -5242,15 +7118,113 @@ document.getElementById("stage").addEventListener("click", e => {
     const pid = art ? art.dataset.pid : (scr.dataset.dtPid || scr.dataset.detailPid);
     const post = POSTS.find(x => x.id === pid);
     if (!post) return;
-    post.modelFollowing = !post.modelFollowing;
-    scr.querySelectorAll(".mf-btn").forEach(b => {
-      const bArt = b.closest(".post");
-      if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === post.id) {
-        b.classList.toggle("on", post.modelFollowing);
-        b.title = post.modelFollowing ? "Following this model" : "Follow this model";
+    const key = modelKeyOf(post);
+    const existing = WATCH_ALERTS.find(a => a.modelKey && a.modelKey === key);
+    if (existing) {
+      scr._waDraft = { id: existing.id, source: existing.source, criteria: existing.criteria, matchMode: existing.matchMode, name: existing.name, modelKey: existing.modelKey };
+    } else {
+      const criteria = waCriteriaFromPost(post);
+      if (!criteria.length) { scrToast(scr, "No details on this post to watch"); return; }
+      scr._waDraft = { source: "detail", criteria, matchMode: "all", name: waName(criteria), modelKey: key };
+    }
+    openSheet(scr, "wa", "wa-open", waSheetHTML(scr));
+    return;
+  }
+  /* watch alert — mode pick / create / save / delete in the shared bottom sheet
+     (detail bell, search bell and the settings list row all open the same one) */
+  const waModeBtn = e.target.closest(".wa-mode");
+  if (waModeBtn) {
+    if (waModeBtn.disabled) return;
+    const scr = waModeBtn.closest(".screen");
+    if (scr._waDraft) {
+      const nameIn = scr.querySelector(".wa-name");
+      if (nameIn && nameIn.value.trim()) scr._waDraft.name = nameIn.value.trim();
+      scr._waDraft.matchMode = waModeBtn.dataset.mode;
+      openSheet(scr, "wa", "wa-open", waSheetHTML(scr));
+    }
+    return;
+  }
+  const waGo = e.target.closest(".wa-go");
+  if (waGo) {
+    const scr = waGo.closest(".screen");
+    const d = scr._waDraft;
+    if (!d) return;
+    const nameIn = scr.querySelector(".wa-name");
+    if (nameIn) d.name = nameIn.value.trim() || waName(d.criteria);
+    if (d.id) {
+      const a = WATCH_ALERTS.find(x => x.id === d.id);
+      if (a) { a.matchMode = d.matchMode; a.name = d.name; }
+      scrToast(scr, "Watch alert updated");
+    } else {
+      const sig = waSig(d.criteria);
+      const dupe = WATCH_ALERTS.find(a => waSig(a.criteria) === sig && a.matchMode === d.matchMode);
+      if (dupe) {
+        scr._waDraft = { id: dupe.id, source: dupe.source, criteria: dupe.criteria, matchMode: dupe.matchMode, name: dupe.name, modelKey: dupe.modelKey };
+        openSheet(scr, "wa", "wa-open", waSheetHTML(scr));
+        scrToast(scr, "You already saved this alert");
+        return;
       }
-    });
-    scrToast(scr, post.modelFollowing ? "Following this model" : "Unfollowed this model");
+      WATCH_ALERTS.push({
+        id: "wa" + waSeq++, name: d.name, source: d.source,
+        criteria: d.criteria, matchMode: d.matchMode, modelKey: d.modelKey || null, on: true,
+      });
+      scrToast(scr, "Watch alert on");
+    }
+    scr._waDraft = null;
+    scr.classList.remove("wa-open");
+    syncModelFlags();
+    refreshMfBtns(scr);
+    if (scr.classList.contains("sub-open")) renderSub(scr);
+    return;
+  }
+  const waDel = e.target.closest(".wa-del");
+  if (waDel) {
+    const scr = waDel.closest(".screen");
+    const d = scr._waDraft;
+    const i = WATCH_ALERTS.findIndex(x => x.id === (d && d.id));
+    if (i > -1) WATCH_ALERTS.splice(i, 1);
+    scr._waDraft = null;
+    scr.classList.remove("wa-open");
+    syncModelFlags();
+    refreshMfBtns(scr);
+    if (scr.classList.contains("sub-open")) renderSub(scr);
+    scrToast(scr, "Watch alert removed");
+    return;
+  }
+  const waTgl = e.target.closest(".wa-tgl");
+  if (waTgl) {
+    const scr = waTgl.closest(".screen");
+    const a = WATCH_ALERTS.find(x => x.id === waTgl.closest(".wa-row").dataset.wa);
+    if (a) {
+      a.on = !a.on;
+      syncModelFlags();
+      refreshMfBtns(scr);
+      renderSub(scr);
+      scrToast(scr, a.on ? "Watch alert on" : "Watch alert paused");
+    }
+    return;
+  }
+  const waRowEl = e.target.closest(".wa-row .wa-badge");
+  if (waRowEl) {
+    const scr = waRowEl.closest(".screen");
+    const a = WATCH_ALERTS.find(x => x.id === waRowEl.closest(".wa-row").dataset.wa);
+    if (a) {
+      scr._waDraft = { id: a.id, source: a.source, criteria: a.criteria, matchMode: a.matchMode, name: a.name, modelKey: a.modelKey };
+      openSheet(scr, "wa", "wa-open", waSheetHTML(scr));
+    }
+    return;
+  }
+  const srWa = e.target.closest(".sr-wa");
+  if (srWa) {
+    const scr = srWa.closest(".screen");
+    const S = srchState(scr);
+    const criteria = waCriteriaFromSearch(S);
+    const sig = waSig(criteria);
+    const existing = WATCH_ALERTS.find(a => waSig(a.criteria) === sig);
+    scr._waDraft = existing
+      ? { id: existing.id, source: existing.source, criteria: existing.criteria, matchMode: existing.matchMode, name: existing.name, modelKey: existing.modelKey }
+      : { source: "search", criteria, matchMode: "all", name: waName(criteria) };
+    openSheet(scr, "wa", "wa-open", waSheetHTML(scr));
     return;
   }
   const cbtn = e.target.closest(".comment-btn");
@@ -5493,8 +7467,12 @@ document.getElementById("stage").addEventListener("click", e => {
   const svdTile = e.target.closest(".svd-tile");
   if (svdTile) {
     const scr = svdTile.closest(".screen");
-    const V = colState(scr);
     const pid = svdTile.dataset.pid;
+    if (svdTile.closest(".arc-grid")) { /* FEED-024 — archive tiles open the Archive viewer */
+      openPostViewer(scr, archivePosts(), pid, 0, true, "Archive");
+      return;
+    }
+    const V = colState(scr);
     if (V.mode === "add") {
       const sel = svdTile.querySelector(".svd-sel");
       if (V.addSel.has(pid)) { V.addSel.delete(pid); svdTile.classList.remove("on"); if (sel) sel.innerHTML = ""; }
@@ -5779,7 +7757,7 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const closeSheet = e.target.closest(".sheet-backdrop, .sheet-handle");
   if (closeSheet) {
-    closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open");
+    closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
     return;
   }
   const clike = e.target.closest(".c-like");
@@ -5829,6 +7807,15 @@ document.getElementById("stage").addEventListener("click", e => {
         const ol = o.querySelector(".dt-label");
         if (ol) ol.textContent = "Tap for details";
       });
+    return;
+  }
+  const igdTag = e.target.closest(".igd-tag");
+  if (igdTag) {
+    const scr = igdTag.closest(".screen");
+    const S = srchState(scr);
+    S.q = igdTag.textContent.trim();
+    S.mode = "results"; S.tab = "foryou";
+    openSub(scr, "search");
     return;
   }
   const more = e.target.closest(".more-link");
