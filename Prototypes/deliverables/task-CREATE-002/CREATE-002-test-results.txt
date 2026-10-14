@@ -1,0 +1,7 @@
+composer .ig-tab count: 0
+step2 title: New post | thumbs: 2
+lone clip thumb: 1
+empty-caption post: .caption count: 0 | text: (none)
+create-post.html ig-tab count: 0
+feed-create-post.html ig-tab count: 0
+ERRORS: none

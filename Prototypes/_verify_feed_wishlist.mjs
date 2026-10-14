@@ -4,6 +4,7 @@
 // collection. Hub parity: search/+ head icons, All/Collections/Posts pills,
 // See all/Manage, big cover cards, manage/select/remove/add-to-collection.
 // Collection detail parity: search/more icons, spark empty state, 3-item menu.
+// SAVED-002: New collection sheet from wishlist has no Add people row + name input autofocused.
 // Run: needs `npx http-server -p 4173` serving Prototypes/ + playwright chromium.
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -58,6 +59,15 @@ check("FEED-019: empty col rows show gift icon thumb (no img)",
   await sheet().locator(".wl-pick.sv-row img.thumb").count() === 0);
 check("head row shows wishlisted state", await sheet().locator(".wl-pick.sv-head.saved").count() === 1);
 await page.screenshot({ path: `${OUT}/a-wl-sheet.png` });
+// SAVED-002: "New collection" from wishlist sheet — no Add people row, name input autofocused
+await sheet().locator(".wl-new").click();
+await page.waitForTimeout(300);
+check("SAVED-002: nc sheet from wishlist", await page.locator(".comment-sheet.nc").count() === 1);
+check("SAVED-002: no add people row (wishlist)", await page.locator(".nc-ppl-btn, .nc-ppl, .nc-fr").count() === 0);
+check("SAVED-002: name input autofocused (wishlist)", await page.evaluate(() => document.activeElement && document.activeElement.classList.contains("nc-input")));
+await page.locator(".nc-cancel").click();
+await page.waitForTimeout(300);
+check("cancel returns to wl sheet", await sheet().locator(".wl-pick.sv-head").count() === 1);
 await page.locator(".sheet-backdrop").dispatchEvent("click");
 await page.waitForTimeout(300);
 check("backdrop closes sheet, post stays wishlisted", (await page.locator(".screen.save-open").count()) === 0 && (await wlCnt()) === 1);

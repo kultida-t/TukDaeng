@@ -1420,8 +1420,8 @@ l<!DOCTYPE html>
   }
   .svd-mv-new:disabled { color: var(--muted); opacity: .6; cursor: default; }
   .sv-bm { display: flex; align-items: center; justify-content: center; color: var(--text); }
-  /* new collection sheet — Cancel / Next + name field + add people */
-  .comment-sheet.nc { height: auto; max-height: 80%; }
+  /* new collection sheet — Cancel / Next + name field */
+  .comment-sheet.nc { height: auto; max-height: 80%; padding-bottom: 18px; }
   .nc-head { display: flex; align-items: center; padding: 4px 14px 12px; flex-shrink: 0; }
   .nc-head .nc-title { flex: 1; text-align: center; font-size: 16px; font-weight: 700; color: var(--text); }
   .nc-cancel, .nc-next {
@@ -1445,32 +1445,6 @@ l<!DOCTYPE html>
   .nc-field.has-v .nc-x { display: flex; }
   .nc-preview { display: flex; justify-content: center; padding: 2px 0 14px; flex-shrink: 0; }
   .nc-preview img { width: 150px; height: 150px; object-fit: cover; border-radius: 12px; }
-  .nc-ppl-btn {
-    width: 100%; display: flex; align-items: center; gap: 13px; flex-shrink: 0;
-    background: none; border: none; font-family: var(--font-main); cursor: pointer;
-    text-align: left; padding: 8px 16px 16px; color: var(--muted);
-  }
-  .nc-ppl-btn .ic {
-    width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line);
-    display: flex; align-items: center; justify-content: center; color: var(--text); flex-shrink: 0;
-  }
-  .nc-ppl-btn .b { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-  .nc-ppl-btn .t { font-size: 15px; font-weight: 600; color: var(--text); }
-  .nc-ppl-btn .s { font-size: 13px; color: var(--muted); }
-  .nc-ppl { max-height: 196px; overflow-y: auto; scrollbar-width: none; padding: 0 0 14px; flex-shrink: 0; }
-  .nc-ppl::-webkit-scrollbar { display: none; }
-  .nc-fr {
-    width: 100%; display: flex; align-items: center; gap: 12px;
-    padding: 6px 16px; background: none; border: none; cursor: pointer;
-    font-family: var(--font-main); text-align: left;
-  }
-  .nc-fr img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-  .nc-fr .n { flex: 1; font-size: 14px; font-weight: 500; color: var(--text); }
-  .nc-fr .chk {
-    width: 23px; height: 23px; border-radius: 50%; border: 2px solid var(--muted);
-    flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff;
-  }
-  .nc-fr.on .chk { background: var(--red); border-color: var(--red); }
 
   /* settings / content-preferences page — slides in like the detail page */
   .page-sub {
@@ -2512,24 +2486,6 @@ l<!DOCTYPE html>
     position: absolute; inset: 0;
     background: rgba(0,0,0,.18);
   }
-  .cf .ig-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 26px;
-    padding: 10px 0 6px;
-    border-top: 1px solid var(--line);
-    flex-shrink: 0;
-  }
-  .cf .ig-tab {
-    font-family: var(--font-main);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    background: none; border: none;
-    cursor: pointer;
-    padding: 4px 2px;
-  }
-  .cf .ig-tab.on { color: var(--text); font-weight: 700; }
   /* step 2 — caption page sliding in over the picker */
   .cf .cf-step2 {
     position: absolute;
@@ -2832,8 +2788,7 @@ l<!DOCTYPE html>
     line-height: 1.5;
     padding: 0 18px 8px;
   }
-  /* clip tab — video roll cells: single-select radios always on, duration pill */
-  .cf .ig-grid.clips .cell .radio { display: flex; }
+  /* duration pill on video cells in the mixed Recents roll */
   .cf .ig-grid .cell .dur {
     position: absolute; right: 5px; bottom: 5px;
     display: flex; align-items: center; gap: 3px;
@@ -2859,25 +2814,7 @@ l<!DOCTYPE html>
     font-size: 12px; font-weight: 600;
     padding: 5px 10px; border-radius: 999px; z-index: 2;
   }
-  /* clip preview layer — slides in like step 2, sits under it (Reels-style) */
-  .cf .cf-clipv {
-    position: absolute; inset: 0; z-index: 9;
-    background: #000; color: #fff;
-    transform: translateX(100%);
-    transition: transform .28s ease;
-    display: flex; flex-direction: column;
-  }
-  .cf.pv-open .cf-clipv { transform: none; }
-  .cf .cf-clipv .cf-head { color: #fff; }
-  .cf .cf-clipv .icon-btn { color: #fff; }
-  .cf .clip-stage {
-    flex: 1; min-height: 0; width: 100%;
-    position: relative; display: block;
-    background: #000; border: none; padding: 0; cursor: pointer;
-    font-family: var(--font-main);
-  }
-  .cf .clip-stage > img { width: 100%; height: 100%; object-fit: contain; display: block; }
-  .cf .clip-stage .pp-btn, .cf .ig-zoom .pp-btn {
+  .cf .ig-zoom .pp-btn {
     position: absolute; top: 50%; left: 50%;
     transform: translate(-50%,-50%);
     width: 74px; height: 74px; border-radius: 50%;
@@ -2885,20 +2822,20 @@ l<!DOCTYPE html>
     display: flex; align-items: center; justify-content: center;
     transition: opacity .18s ease; pointer-events: none;
   }
-  .cf .clip-stage .pp-btn svg, .cf .ig-zoom .pp-btn svg { margin-left: 4px; }
-  .cf .cf-clipv.playing .pp-btn, .cf .ig-zoom.playing .pp-btn { opacity: .45; }
-  .cf .clip-stage .dur, .cf .ig-zoom .dur {
+  .cf .ig-zoom .pp-btn svg { margin-left: 4px; }
+  .cf .ig-zoom.playing .pp-btn { opacity: .45; }
+  .cf .ig-zoom .dur {
     position: absolute; right: 14px; bottom: 16px;
     display: flex; align-items: center; gap: 5px;
     background: rgba(20,20,24,.68); color: #fff;
     font-size: 12.5px; font-weight: 600;
     padding: 5px 11px; border-radius: 999px;
   }
-  .cf .clip-stage .prog, .cf .ig-zoom .prog {
+  .cf .ig-zoom .prog {
     position: absolute; left: 0; right: 0; bottom: 0;
     height: 3px; background: rgba(255,255,255,.28);
   }
-  .cf .clip-stage .prog i, .cf .ig-zoom .prog i {
+  .cf .ig-zoom .prog i {
     display: block; height: 100%; width: 0; background: #fff;
     transition: width .12s linear;
   }
@@ -3995,7 +3932,7 @@ function postCard(p, variant) {
       <span>Liked by <b>${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
     </div>`}
 
-    <p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">more</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>
+    ${(p.caption || p.captionFull) ? `<p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">more</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
 
     <div class="post-time">${p.time}</div>
 
@@ -4359,7 +4296,7 @@ function pvPostHTML(p, phi = 0) {
     <div class="pv-foot">
       <div class="pv-seller"><img src="${p.avatar}" alt=""><span class="n">${p.seller}</span>
         ${p.following ? "" : `<button class="follow-btn">Follow</button>`}</div>
-      <div class="caption pv-cap"><span class="cap-short">${igCaptionHTML(p, p.caption)}${(p.captionFull || "") !== p.caption ? ` <span class="more-link">…</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></div>
+      ${(p.caption || p.captionFull) ? `<div class="caption pv-cap"><span class="cap-short">${igCaptionHTML(p, p.caption)}${(p.captionFull || "") !== p.caption ? ` <span class="more-link">…</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></div>` : ""}
       ${hasSpecs ? `<button class="details-toggle pv-dt"><span class="dt-label">Tap for details</span>${I.chev(12)}</button>` : ""}
     </div>
     <div class="pv-add">Add comment…</div>
@@ -4663,7 +4600,7 @@ function colCardHTML(c) {
   return `<button class="svd-col" data-col="${esc(c.name)}">
     <span class="cv">${cover ? `<img src="${cover}" alt="">` : I.bookmark(22)}</span>
     <span class="b"><span class="n">${esc(c.name)}</span>
-    <span class="s">${I.lock(11)} ${c.people && c.people.length ? `Shared · ${c.people.length}` : "Private"}</span></span>
+    <span class="s">${I.lock(11)} Private</span></span>
   </button>`;
 }
 function colCardBigHTML(c) {
@@ -5151,10 +5088,8 @@ function svdMoveSheetHTML(scr) {
       </button>`).join("")}
     </div>`;
 }
-/* IG "New collection" sheet — Cancel / Next (or "Save" w/ post preview in move flow) + name field + add people */
+/* IG "New collection" sheet — Cancel / Next (or "Save" w/ post preview in move flow) + name field */
 function ncSheetHTML(editName = "", preview = "") {
-  const cur = editName ? COLLECTIONS.find(c => c.name === editName) : null;
-  const people = cur && cur.people ? cur.people : [];
   return `
     <div class="sheet-handle"></div>
     <div class="nc-head">
@@ -5167,17 +5102,6 @@ function ncSheetHTML(editName = "", preview = "") {
       <input class="nc-input" placeholder="Collection name" maxlength="40" autocomplete="off" value="${esc(editName)}">
       <span class="nc-count">${editName.length} / 40</span>
       <button class="nc-x" type="button">${I.circleX(16)}</button>
-    </div>
-    <button class="nc-ppl-btn">
-      <span class="ic">${I.users(22)}</span>
-      <span class="b"><span class="t">Add people to collection</span><span class="s">Save to a collection together</span></span>
-      ${I.chevR(16)}
-    </button>
-    <div class="nc-ppl" hidden>
-      ${FRIENDS.map(f => `<button class="nc-fr${people.includes(f.name) ? " on" : ""}" data-name="${esc(f.name)}">
-        <img src="${f.avatar}" alt=""><span class="n">${esc(dispName(f.name))}</span>
-        <span class="chk">${I.check(12)}</span>
-      </button>`).join("")}
     </div>`;
 }
 /* ===== CREATE-001 — IG-style create-post task flow: "+" → picker → caption → feed ===== */
@@ -5223,7 +5147,7 @@ function cfMmss(sec) {
   sec = Math.max(0, Math.ceil(sec));
   return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
 }
-/* Post-tab Recents roll mixes photos + clips (IG) — video cells carry dur */
+/* Recents roll mixes photos + clips (IG) — video cells carry dur */
 const CP_MEDIA = [
   { src: CP_ROLL[0] }, { src: CP_ROLL[1] },
   { src: CP_CLIPS[0].src, dur: CP_CLIPS[0].dur },
@@ -5238,17 +5162,15 @@ const CP_MEDIA = [
   { src: CP_ROLL[14] }, { src: CP_ROLL[15] },
 ];
 function cpState(scr) {
-  if (!scr._cp) scr._cp = { sel: false, step: 1, order: [], clip: null, playing: false, rem: null, tab: "post", caption: "", asset: false, meta: {} };
+  if (!scr._cp) scr._cp = { sel: false, step: 1, order: [], playing: false, rem: null, caption: "", asset: false, meta: {} };
   return scr._cp;
 }
 /* order entries are CP_MEDIA indices in create mode, or {src,dur} objects in edit mode */
 function cfMedia(scr) { return cpState(scr).order.map(i => typeof i === "object" ? i : CP_MEDIA[i]); }
 function cfPhotos(scr) { return cfMedia(scr).map(m => m.src); }
-function cfClip(scr) { const i = cpState(scr).clip; return i == null ? null : CP_CLIPS[i]; }
-/* the one playable clip in the composer — clip-tab pick, or a lone video in a post draft */
+/* the one playable clip in the composer — a lone video in the draft */
 function cfActiveClip(scr) {
   const V = cpState(scr);
-  if (V.tab === "clip") return cfClip(scr);
   if (V.order.length === 1) { const m = cfMedia(scr)[0]; return m && m.dur ? m : null; }
   return null;
 }
@@ -5261,7 +5183,7 @@ function cfClipSync(scr) {
   const clip = cfPlayClip(scr);
   const total = clip ? cfClipSecs(clip.dur) : 0;
   const rem = V.rem == null ? total : V.rem;
-  scr.querySelectorAll(".cf .cf-clipv, .cf .ig-zoom.is-clip").forEach(box => {
+  scr.querySelectorAll(".cf .ig-zoom.is-clip").forEach(box => {
     box.classList.toggle("playing", !!V.playing);
     const pp = box.querySelector(".pp-btn");
     if (pp) pp.innerHTML = V.playing ? I.pause(30) : I.play(30);
@@ -5419,54 +5341,40 @@ function cfZoomGo(z, i, total) {
 }
 function cfPickerHTML(scr) {
   const V = cpState(scr);
-  const isClip = V.tab === "clip";
-  const photos = cfPhotos(scr);
-  const clip = cfClip(scr);
-  const n = isClip ? (clip ? 1 : 0) : photos.length;
-  const cells = isClip
-    ? CP_CLIPS.map((c, i) => `<div class="cell${V.clip === i ? " sel" : ""}" data-i="${i}"><img src="${c.src}"><span class="dur">${I.play(9)}${c.dur}</span><span class="radio${V.clip === i ? " on" : ""}">${V.clip === i ? I.check(10) : ""}</span></div>`).join("")
-    : CP_MEDIA.map((m, i) => {
-        const s = V.order.indexOf(i);
-        return `<div class="cell${s >= 0 ? " sel" : ""}" data-i="${i}"><img src="${m.src}">${m.dur ? `<span class="dur">${I.play(9)}${m.dur}</span>` : ""}<span class="radio${s >= 0 ? " on" : ""}">${s >= 0 ? s + 1 : ""}</span></div>`;
-      }).join("");
-  const heroM = V.order.length ? cfMedia(scr)[0] : null;
-  const hero = isClip
-    ? (clip
-      ? `<div class="ig-car"><img src="${clip.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${clip.dur}</span></div>`
-      : `<div class="add-tile">${I.video(38)}<span>Select a clip</span></div>`)
-    : (heroM
-      ? (heroM.dur
-        ? `<div class="ig-car"><img src="${heroM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${heroM.dur}</span></div>`
-        : `<div class="ig-car"><img src="${heroM.src}"><button class="expand">${I.expandIc(15)}</button></div>`)
-      : `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`);
+  const n = V.order.length;
+  const cells = CP_MEDIA.map((m, i) => {
+    const s = V.order.indexOf(i);
+    return `<div class="cell${s >= 0 ? " sel" : ""}" data-i="${i}"><img src="${m.src}">${m.dur ? `<span class="dur">${I.play(9)}${m.dur}</span>` : ""}<span class="radio${s >= 0 ? " on" : ""}">${s >= 0 ? s + 1 : ""}</span></div>`;
+  }).join("");
+  const heroM = n ? cfMedia(scr)[0] : null;
+  const hero = heroM
+    ? (heroM.dur
+      ? `<div class="ig-car"><img src="${heroM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${heroM.dur}</span></div>`
+      : `<div class="ig-car"><img src="${heroM.src}"><button class="expand">${I.expandIc(15)}</button></div>`)
+    : `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`;
   return `
     <div class="cf-head">
       ${V.editPid
         ? `<button class="icon-btn cf-add-cancel">${I.back(22)}</button><span class="t">Add photos or clips</span><button class="cf-act cf-add-done">Done</button>`
-        : `<button class="icon-btn cf-x">${I.x(21)}</button><span class="t">${isClip ? "New clip" : "New post"}</span><button class="cf-act${n ? "" : " off"} cf-next">Next</button>`}
+        : `<button class="icon-btn cf-x">${I.x(21)}</button><span class="t">New post</span><button class="cf-act${n ? "" : " off"} cf-next">Next</button>`}
     </div>
     <div class="cf-scroll">
       <div class="ig-hero" data-hero>${hero}</div>
       <div class="ig-bar">
         <button class="rc">Recents ${I.chevR(13)}</button>
-        ${isClip || V.editPid ? "" : `<button class="sel-btn${V.sel ? " on" : ""}" data-selmode>${I.gridSel(13)} Select</button>`}
+        ${V.editPid ? "" : `<button class="sel-btn${V.sel ? " on" : ""}" data-selmode>${I.gridSel(13)} Select</button>`}
       </div>
-      <div class="ig-grid${isClip ? " clips" : ""}${(V.sel || V.editPid) && !isClip ? " selmode" : ""}">
-        <div class="cell cam">${isClip ? I.video(26) : I.camPlain(26)}</div>
+      <div class="ig-grid${V.sel || V.editPid ? " selmode" : ""}">
+        <div class="cell cam">${I.camPlain(26)}</div>
         ${cells}
       </div>
-    </div>
-    ${V.editPid ? "" : `<div class="ig-tabs">
-      <button class="ig-tab${isClip ? "" : " on"}" data-ctab="post">Post</button>
-      <button class="ig-tab${isClip ? " on" : ""}" data-ctab="clip">Clip</button>
-    </div>`}`;
+    </div>`;
 }
 function cfStep2HTML(scr) {
   const V = cpState(scr);
-  const isClip = V.tab === "clip";
   const media = cfMedia(scr);
   const clip = cfActiveClip(scr);
-  const n = isClip ? (clip ? 1 : 0) : media.length;
+  const n = media.length;
   /* playable media keeps the normal thumb look — tap opens the big viewer like photos.
      FEED-024 edit mode always uses the multi strip so the "+" tile can append media */
   const addTile = V.editPid && n < 10 ? `<button class="ig-thumb ig-add" type="button">${I.plus(24)}</button>` : "";
@@ -5483,7 +5391,7 @@ function cfStep2HTML(scr) {
     <div class="cf-head">
       ${V.editPid
         ? `<button class="cf-edit-x">Cancel</button><span class="t">Edit info</span><button class="cf-act cf-done">Done</button>`
-        : `<button class="icon-btn cf-back2">${I.back(22)}</button><span class="t">${isClip ? "New clip" : "New post"}</span>`}
+        : `<button class="icon-btn cf-back2">${I.back(22)}</button><span class="t">New post</span>`}
     </div>
     <div class="ig-cap-scroll">
       ${thumbs}
@@ -5519,28 +5427,9 @@ function cfStep2HTML(scr) {
     </div>
   </div>`;
 }
-/* full-screen clip preview between picker and caption (Reels-style play/pause + progress) */
-function cfClipPrevHTML(scr) {
-  const V = cpState(scr);
-  const clip = cfClip(scr);
-  if (V.tab !== "clip" || !clip) return "";
-  return `<div class="cf-clipv${V.playing ? " playing" : ""}">
-    <div class="cf-head">
-      <button class="icon-btn cf-pv-back">${I.back(22)}</button>
-      <span class="t">New clip</span>
-      <button class="cf-act cf-pv-next">Next</button>
-    </div>
-    <button class="clip-stage" style="--dur:${cfClipSecs(clip.dur)}s">
-      <img src="${clip.src}" alt="">
-      <span class="pp-btn">${V.playing ? I.pause(30) : I.play(30)}</span>
-      <span class="dur">${I.play(10)}${clip.dur}</span>
-      <span class="prog"><i></i></span>
-    </button>
-  </div>`;
-}
 function createHTML(scr) {
   const V = cpState(scr);
-  return `<div class="cf${V.step === 2 ? " cap-open" : ""}${V.step === "pv" ? " pv-open" : ""}">${cfPickerHTML(scr)}${cfStep2HTML(scr)}${cfClipPrevHTML(scr)}</div>`;
+  return `<div class="cf${V.step === 2 ? " cap-open" : ""}">${cfPickerHTML(scr)}${cfStep2HTML(scr)}</div>`;
 }
 /* shared with the standalone create-post.html handoff (fo_newpost) */
 /* composer meta → post fields (shared by create share + edit Done) */
@@ -5586,8 +5475,8 @@ function insertNewPost(np) {
     clip: np.clip || null,
     clips: np.clips || (np.clip ? [np.clip] : null),
     likes: 0, comments: 0, views: 0, liked: false,
-    caption: np.caption || base.caption,
-    captionFull: np.caption || base.captionFull,
+    caption: np.caption || "",
+    captionFull: np.caption || "",
     price,
     chips,
     specGroups,
@@ -5620,7 +5509,6 @@ function metaFromPost(p) {
 function openPostEdit(scr, post) {
   const V = cpState(scr);
   V.editPid = post.id;
-  V.tab = "post";
   V.step = 2;
   V.order = post.photos.map((src, i) => ({ src, dur: (post.clips && post.clips[i]) || null }));
   V.caption = post.captionFull || post.caption || "";
@@ -6266,56 +6154,25 @@ document.getElementById("stage").addEventListener("click", e => {
     const V = cpState(scr);
     const cfX = e.target.closest(".cf-x");
     if (cfX) {
-      if (V.order.length || V.clip != null || V.caption.trim()) {
-        const kind = V.tab === "clip" ? "clip" : "post";
+      if (V.order.length || V.caption.trim()) {
         openDlg(scr, `
-          <div class="dlg-q">Discard ${kind}?</div>
+          <div class="dlg-q">Discard post?</div>
           <div class="dlg-desc">If you go back now, you'll lose your draft.</div>
-          <button class="dlg-btn danger dlg-discard-go">Discard ${kind}</button>
+          <button class="dlg-btn danger dlg-discard-go">Discard post</button>
           <button class="dlg-btn dlg-cancel">Keep editing</button>`);
       }
       else { scr._subStack = []; scr.classList.remove("sub-open"); }
       return;
     }
-    /* Post / Clip tab switch — each tab keeps its own draft, clip is single-select */
-    const cfTab = e.target.closest(".ig-tab");
-    if (cfTab) {
-      const t = cfTab.dataset.ctab;
-      if (t && t !== V.tab) { V.tab = t; V.sel = false; cfClipStop(scr); renderSub(scr); }
-      return;
-    }
     const cfNx = e.target.closest(".cf-next");
     if (cfNx) {
       if (!cfNx.classList.contains("off")) {
-        if (V.tab === "clip" && V.step === 1) {
-          V.step = "pv"; cfClipStop(scr);
-          /* clipv layer is built on demand — the picker DOM didn't re-render on select */
-          cf.querySelector(".cf-clipv")?.remove();
-          cf.insertAdjacentHTML("beforeend", cfClipPrevHTML(scr));
-          void cf.querySelector(".cf-clipv").offsetWidth;
-          cf.classList.add("pv-open");
-        } else {
-          V.step = 2;
-          cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
-          cf.classList.add("cap-open");
-        }
+        V.step = 2;
+        cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+        cf.classList.add("cap-open");
       }
       return;
     }
-    /* clip preview layer — back to picker / Next to caption / tap stage toggles play */
-    const cfPvBack = e.target.closest(".cf-pv-back");
-    if (cfPvBack) { V.step = 1; cfClipStop(scr); cf.classList.remove("pv-open"); return; }
-    const cfPvNext = e.target.closest(".cf-pv-next");
-    if (cfPvNext) {
-      V.step = 2;
-      cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
-      cf.classList.add("cap-open");
-      cfClipSync(scr);
-      return;
-    }
-    /* tap a clip surface (preview stage or the zoomed clip viewer) toggles play/pause + countdown */
-    const cfPlay = e.target.closest(".clip-stage");
-    if (cfPlay) { cfClipToggle(scr); return; }
     /* FEED-024 edit mode — Cancel / Done / add-media tile / picker back → caption */
     const cfEditX = e.target.closest(".cf-edit-x");
     if (cfEditX) {
@@ -6352,7 +6209,7 @@ document.getElementById("stage").addEventListener("click", e => {
     if (cfAddDone) { V._orderSnap = null; V.step = 2; renderSub(scr); return; }
     const cfBk = e.target.closest(".cf-back2");
     if (cfBk) {
-      V.step = V.tab === "clip" ? "pv" : 1;
+      V.step = 1;
       cf.classList.remove("cap-open");
       return;
     }
@@ -6362,8 +6219,7 @@ document.getElementById("stage").addEventListener("click", e => {
     if (cfRm) {
       cfClipStop(scr);
       if (V.editPid && V.order.length <= 1) { scrToast(scr, "Post needs at least 1 photo or clip"); return; }
-      if (V.tab === "clip") { V.clip = null; V.step = 1; }
-      else { V.order.splice(+cfRm.dataset.i, 1); if (!V.order.length) V.step = 1; }
+      V.order.splice(+cfRm.dataset.i, 1); if (!V.order.length) V.step = 1;
       renderSub(scr);
       return;
     }
@@ -6377,7 +6233,7 @@ document.getElementById("stage").addEventListener("click", e => {
     if (cfThumb && !suppressPhotoClick) {
       const z = cf.querySelector(".ig-zoom");
       const actClip = cfActiveClip(scr);
-      /* clip-tab / lone-video draft — the baked clip viewer */
+      /* lone-video draft — the baked clip viewer */
       if (actClip) {
         z.querySelector("img").src = actClip.src;
         z.querySelector(".z-dots").innerHTML = "";
@@ -6417,24 +6273,6 @@ document.getElementById("stage").addEventListener("click", e => {
     if (cfCell && !cfCell.classList.contains("cam")) {
       const i = +cfCell.dataset.i;
       const grid = cfCell.closest(".ig-grid");
-      /* clip roll — single-select, tap again to deselect */
-      if (V.tab === "clip") {
-        V.clip = V.clip === i ? null : i;
-        cfClipStop(scr);
-        grid.querySelectorAll(".cell[data-i]").forEach(c => {
-          const on = +c.dataset.i === V.clip;
-          c.classList.toggle("sel", on);
-          const r = c.querySelector(".radio");
-          r.classList.toggle("on", on);
-          r.innerHTML = on ? I.check(10) : "";
-        });
-        const clip = cfClip(scr);
-        cf.querySelector("[data-hero]").innerHTML = clip
-          ? `<div class="ig-car"><img src="${clip.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${clip.dur}</span></div>`
-          : `<div class="add-tile">${I.video(38)}<span>Select a clip</span></div>`;
-        cf.querySelector(".cf-next").classList.toggle("off", !clip);
-        return;
-      }
       cfClipStop(scr);
       if (grid.classList.contains("selmode")) {
         const k = V.order.indexOf(i);
@@ -7583,7 +7421,7 @@ document.getElementById("stage").addEventListener("click", e => {
     scrToast(scr, `Removed from ${col}`, first ? thumbS(first) : "");
     return;
   }
-  /* new collection sheet — Cancel / Next / clear-X / add-people */
+  /* new collection sheet — Cancel / Next / clear-X */
   const ncCancel = e.target.closest(".nc-cancel");
   if (ncCancel) {
     const scr = ncCancel.closest(".screen");
@@ -7609,22 +7447,13 @@ document.getElementById("stage").addEventListener("click", e => {
     inp.focus({ preventScroll: true });
     return;
   }
-  const ncPpl = e.target.closest(".nc-ppl-btn");
-  if (ncPpl) {
-    const l = ncPpl.closest(".comment-sheet").querySelector(".nc-ppl");
-    l.hidden = !l.hidden;
-    return;
-  }
-  const ncFr = e.target.closest(".nc-fr");
-  if (ncFr) { ncFr.classList.toggle("on"); return; }
   const ncNext = e.target.closest(".nc-next");
   if (ncNext && !ncNext.disabled) {
     const scr = ncNext.closest(".screen");
     const name = (scr.querySelector(".nc-input").value || "").trim() || "New collection";
-    const people = [...scr.querySelectorAll(".nc-fr.on")].map(b => b.dataset.name);
     const from = scr._ncFrom;
-    if (from === "wishlist" || from === "wlmove" || from === "wlcol") WISHLISTS.push({ name, thumb: "", people });
-    else if (from !== "edit") COLLECTIONS.push({ name, thumb: "", people });
+    if (from === "wishlist" || from === "wlmove" || from === "wlcol") WISHLISTS.push({ name, thumb: "" });
+    else if (from !== "edit") COLLECTIONS.push({ name, thumb: "" });
     if (from === "save") {
       const post = POSTS.find(x => x.id === scr.dataset.svPid);
       if (post) { post.savedCol = name; post.colAt = Date.now(); }
@@ -7644,7 +7473,7 @@ document.getElementById("stage").addEventListener("click", e => {
     } else if (from === "edit") {
       const old = scr._ncEdit;
       const cur = COLLECTIONS.find(c => c.name === old);
-      if (cur) { cur.name = name; cur.people = people; }
+      if (cur) { cur.name = name; }
       POSTS.forEach(p => { if (p.savedCol === old) p.savedCol = name; });
       const V = savedState(scr);
       if (V.col === old) V.col = name;

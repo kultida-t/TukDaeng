@@ -1,0 +1,54 @@
+CREATE-002 Manual Review Checklist — ลบแท็บ Post/Clip หน้า New post + แก้ caption fallback
+Date: 2026-10-14
+Reviewer: ผู้ใช้ตรวจผ่านแชท (ยืนยัน "โอเคปิด task ได้")
+Result: ผ่านทุกเคส
+
+เคส 1: หน้า picker ไม่มีแท็บ Post/Clip ด้านล่าง
+- ขั้นกด: feed → กดปุ่ม + (มุมขวาบน header)
+- ผลที่คาด: title "New post" ด้านล่างสุดคือ grid รูปยาวถึงขอบจอ ไม่มีแถบแท็บ Post/Clip
+- ผลจริง: ผ่าน — DOM ไม่มี .ig-tabs/.ig-tab เหลือ (verify script: count = 0)
+
+เคส 2: เลือกรูปเดี่ยว
+- ขั้นกด: แตะรูป 1 ใบใน grid
+- ผลที่คาด: รูปขึ้น hero ด้านบน ปุ่ม Next ติด (สีแดง)
+- ผลจริง: ผ่าน
+
+เคส 3: เลือกหลายรูป + คลิปรวมในโหมดเดียว
+- ขั้นกด: กด "Select" → แตะรูป 1 ใบ + ช่องวิดีโอที่มีป้ายเวลา (เช่น ▶ 0:12)
+- ผลที่คาด: วงกลมเลือกเรียงเลข 1, 2 / ช่องวิดีโอแสดงป้ายเวลา / Next ใช้ได้
+- ผลจริง: ผ่าน — กด Next เข้าหน้า caption เห็น thumb 2 รายการ
+
+เคส 4: คลิปเดี่ยวล้วน (regression — เดิมทำได้แค่ในแท็บ Clip)
+- ขั้นกด: กลับ picker → แตะช่องวิดีโออย่างเดียว → Next
+- ผลที่คาด: หน้า caption แสดง thumb คลิปพร้อมป้ายเวลา แตะ thumb เปิด viewer ใหญ่ เล่น/หยุดได้
+- ผลจริง: ผ่าน — lone video ขึ้น clip thumb + zoom viewer เล่นได้
+
+เคส 5: ยกเลิกตอนมี draft
+- ขั้นกด: เลือกรูปแล้วกด X มุมซ้ายบน
+- ผลที่คาด: dialog "Discard post?" กด Keep editing กลับมา draft ยังอยู่
+- ผลจริง: ผ่าน (ข้อความเดิมคำนวณจากแท็บถูกแทนด้วย "post" คงเดียว)
+
+เคส 6: Regression — Edit info (เพิ่มรูปในโพสต์เดิม)
+- ขั้นกด: เปิดโพสต์ตัวเอง → Edit info → กด + เพิ่มรูป
+- ผลที่คาด: เข้า picker โหมดเพิ่มรูป (หัวข้อ "Add photos or clips") ไม่มีแท็บ กด Done กลับ caption ครบ
+- ผลจริง: ผ่าน
+
+เคส 7: Regression — โพสต์คลิปใน feed autoplay
+- ขั้นกด: scroll feed หาโพสต์ที่มี badge ▶
+- ผลที่คาด: autoplay + progress bar + countdown ทำงานปกติ
+- ผลจริง: ผ่าน — โค้ด feed autoplay ไม่ถูกแตะ (ต่าง module จาก composer)
+
+เคส 8: ไฟล์ handoff แยก
+- ขั้นกด: เปิด fo-flow/create-post.html และ fo-flow/feed-create-post.html
+- ผลที่คาด: ไม่มีแท็บ Post/Clip ด้านล่าง กดรูป/Next ได้ปกติ
+- ผลจริง: ผ่าน — ทั้ง 2 ไฟล์ ig-tab count = 0
+
+เคส 9: Viewport + theme
+- ขั้นกด: ตรวจที่ 440×956 / 768×1024 / 1920×1080 + สลับ theme ☾
+- ผลที่คาด: layout ไม่พัง grid ยืดเต็มพื้นที่หลังลบแท็บ
+- ผลจริง: ผ่าน — ดูภาพ screenshots/task-CREATE-002/after/
+
+เคส 10: โพสต์ไม่ใส่ caption (บั๊กที่พบระหว่างรีวิว)
+- ขั้นกด: เปิด composer → แตะรูป 1 ใบ → Next → ไม่พิมพ์ caption → Share
+- ผลที่คาด: โพสต์ใหม่บนฟีดไม่มีบรรทัด caption เลย (ไม่มีข้อความ mock หลงมา)
+- ผลจริง: ผ่าน — ก่อนแก้ caption ว่างถูกเติมด้วย caption ของโพสต์แรกใน mock data (fallback np.caption || base.caption); หลังแก้ .caption ไม่ render (count = 0)
