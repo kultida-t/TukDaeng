@@ -271,7 +271,7 @@
   .icon-btn svg { display: block; }
 
   /* ============ HAMBURGER DRAWER (NAV-001 — IG settings-style side menu) ============ */
-  .hb-wrap { position: absolute; inset: 0; z-index: 38; pointer-events: none; }
+  .hb-wrap { position: absolute; inset: 0; z-index: 80; pointer-events: none; }
   .screen.hb-open .hb-wrap { pointer-events: auto; }
   .hb-scrim {
     position: absolute; left: 0; right: 0; top: 34px; bottom: 0;
@@ -301,17 +301,7 @@
   .hb-item:hover { background: var(--chip-bg); }
   .hb-item svg { display: block; flex-shrink: 0; }
   .hb-item .hb-chev { margin-left: auto; color: var(--muted); display: flex; }
-  .hb-profile {
-    position: absolute; right: 14px; bottom: 30px;
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    padding: 10px 16px; border-radius: 18px;
-    background: var(--surface); border: 1px solid var(--line);
-    color: var(--text); font-family: var(--font-main); font-size: 12px; font-weight: 500;
-    cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.35);
-    opacity: 0; transition: opacity .2s ease .06s;
-  }
-  .screen.hb-open .hb-profile { opacity: 1; }
-  .hb-profile svg { display: block; }
+  .hb-profile { flex-shrink: 0; margin-bottom: 22px; }
 
   /* ============ FEED TABS ============ */
   .feed-tabs {
@@ -2161,7 +2151,7 @@
     white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.45);
   }
   #flowToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open, .screen.details-open) #themeToggle {
+  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open, .screen.details-open, .screen.hb-open) #themeToggle {
     opacity: 0; pointer-events: none;
   }
   @media (max-width: 480px) {
@@ -4459,7 +4449,7 @@ function renderSub(scr) {
   const st = scr._subStack || [];
   const el = scr.querySelector(".page-sub");
   el.innerHTML = subHTML(st[st.length - 1], scr);
-  el.classList.toggle("pg-up", st[st.length - 1] === "report" || st[st.length - 1] === "create");
+  el.classList.toggle("pg-up", st[st.length - 1] === "report");
   const q = el.querySelector(".sr-q, .svd-q");
   if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
   cfClipSync(scr); /* restore clip play/countdown state after composer re-renders */
@@ -5589,8 +5579,8 @@ function screenHTML(theme, variant) {
           <button class="hb-item">${I.home(22)}<span>Authentication Center</span><span class="hb-chev">${I.chevR(15)}</span></button>
           <button class="hb-item">${I.users(22)}<span>Community</span><span class="hb-chev">${I.chevR(15)}</span></button>
         </div>
+        <button class="hb-item hb-profile">${I.navUser(22)}<span>Profile</span><span class="hb-chev">${I.chevR(15)}</span></button>
       </div>
-      <button class="hb-profile">${I.navUser(20)}<span>Profile</span></button>
     </div>
   </div>`;
 }

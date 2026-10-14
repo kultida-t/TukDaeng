@@ -1,0 +1,45 @@
+NAV-002 Manual Review Checklist — Header button open-direction standard + burger drawer topmost layer
+Task: NAV-002 มาตรฐานทิศทางเปิดปุ่มบน header (burger/search/settings/add) + แก้ layer ให้ burger drawer อยู่บนสุด
+Reviewer: พี่มาเต็ม (ผู้ใช้)
+Date: 2026-10-14 (Asia/Bangkok)
+URL: http://127.0.0.1:4173/fo-flow/index.html
+
+มาตรฐานที่ตัดสินใจ (header buttons บนหน้า Feed):
+- burger = navigation drawer สไลด์จากซ้าย (ล็อกตาม NAV-001 ไม่แตะ)
+- search / settings / + (create) = push page สไลด์จากขวาเหมือนกันทั้งหมด (.page-sub มาตรฐานเดียว)
+- report ไม่ใช่ปุ่ม header → คง bottom sheet (pg-up) ไว้ตามเดิม
+
+เคส 1: ทิศทางเปิดของปุ่ม header เป็นมาตรฐานเดียว
+- ขั้นกด: กด search → กด settings → กด + ทีละปุ่ม
+- ผลที่คาด: ทั้ง 3 ปุ่มเปิดเพจสไลด์เข้าจากขวาเหมือนกัน (เดิม + สไลด์จากล่างคนละทิศ)
+- ผลจริง: ผ่าน (create ไม่มี class pg-up แล้ว — คุมด้วย verify check)
+
+เคส 2: burger drawer เป็น layer บนสุดเมื่อกาง
+- ขั้นกด: เปิด burger drawer แล้วสังเกตทุก element บนจอ
+- ผลที่คาด: ไม่มี element ใดลอยทับ drawer/scrim — .hb-wrap z-index 80 เหนือทุกชั้นในจอ (brand-menu 70 / sc-toast 60 / dlg 40 / sheets 35-36 / page-sub 32 / page-detail 33 / bottom-nav 20), #themeToggle ถูกซ่อนระหว่าง hb-open แล้วกลับมาเมื่อปิด
+- ผลจริง: ผ่าน
+
+เคส 3: Profile เป็น row เมนูปกติท้าย panel (ตาม reference รูปที่ 2)
+- ขั้นกด: เปิด drawer ดูรายการ Profile
+- ผลที่คาด: Profile เป็น row เหมือนเมนูอื่นทุกประการ — icon + label 14px/400 + chevron ชิดขวา กว้างเต็ม panel pin ท้ายลิสต์ (รอบแรกทำเป็น pill ลอย ผู้ใช้ feedback "ปุ่ม profile ต้องเหมือนปุ่มอื่นสิ" → แก้เป็น row)
+- ผลจริงรอบแรก: ไม่ผ่าน — ทำเป็น pill ลอยมุมล่างขวาใน panel
+- ผลแก้ไข: เปลี่ยนเป็น .hb-item เต็มรูปแบบ (class hb-item hb-profile) pin ท้าย .hb-panel → รอบสอง ผ่าน
+
+เคส 4: dead actions ใน drawer ยังทำงาน
+- ขั้นกด: กดเมนูในลิสต์ / กด row Profile
+- ผลที่คาด: toast "Not in this prototype yet" drawer ยังเปิดอยู่
+- ผลจริง: ผ่าน
+
+เคส 5: ปิด drawer
+- ขั้นกด: แตะ scrim แถบขวา
+- ผลที่คาด: panel สไลด์ออกซ้าย themeToggle กลับมาแสดง
+- ผลจริง: ผ่าน
+
+เคส 6: Regression — ของเดิมไม่พัง
+- ขั้นกด: เมนู 9 รายการเรียงถูก/ไอคอน/chevron, search page เปิดได้, create composer เปิดได้ (กริดรูปขึ้น), report sheet ยัง pg-up จากล่าง (คงเดิมในโค้ด — ไม่ได้แตะ), light theme ปกติ
+- ผลจริง: ผ่าน
+
+สรุป: ผ่านทุกเคสหลังแก้รอบสอง (เคส 3 แก้จาก feedback ผู้ใช้)
+Automated: _verify_hb.mjs 31 checks ALL PASS, 0 console errors
+Evidence: Prototypes/screenshots/task-NAV-002/before|after/ + Prototypes/screenshots/fo-flow/hb-*.png
+Files changed: Prototypes/fo-flow/index.html (z-index .hb-wrap, Profile row เข้า panel แบบ .hb-item, themeToggle hide rule, renderSub pg-up เหลือ report อย่างเดียว), Prototypes/_verify_hb.mjs (checks ใหม่ + scope .hb-list)

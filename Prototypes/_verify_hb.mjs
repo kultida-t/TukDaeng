@@ -1,4 +1,6 @@
 // Verify fo-flow NAV-001: burger (top-left) → IG settings-style side drawer with 9 menu entries
+// NAV-002 additions: profile pill lives INSIDE the panel, drawer is the topmost in-screen layer,
+// and the + (create) header button opens a right-slide page like search/settings (no more pg-up)
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -39,28 +41,37 @@ check("panel starts below statusbar", Math.abs(panelBox.y - (screenBox.y + 34)) 
 await page.screenshot({ path: `${OUT}/hb-1-drawer-dark.png` });
 
 // 3. Menu entries — exactly 9, in the order of the reference image, each with an icon
-const labels = await page.locator(".hb-item span:not(.hb-chev)").allTextContents();
+const labels = await page.locator(".hb-list .hb-item span:not(.hb-chev)").allTextContents();
 check("9 menu items in order", JSON.stringify(labels) === JSON.stringify(ITEMS));
-check("every item has an icon", await page.locator(".hb-item > svg").count() === 9);
-check("IG settings row style — 14px regular label", await page.locator(".hb-item").first().evaluate(el => {
+check("every item has an icon", await page.locator(".hb-list .hb-item > svg").count() === 9);
+check("IG settings row style — 14px regular label", await page.locator(".hb-list .hb-item").first().evaluate(el => {
   const cs = getComputedStyle(el);
   return cs.fontSize === "14px" && cs.fontWeight === "400";
 }));
-check("every item has a trailing chevron", await page.locator(".hb-item .hb-chev").count() === 9);
+check("every item has a trailing chevron", await page.locator(".hb-list .hb-item .hb-chev").count() === 9);
 
 // 4. Menu item is a dead action → toast, drawer stays open
-await page.locator(".hb-item", { hasText: "Watch Brands" }).click();
+await page.locator(".hb-list .hb-item", { hasText: "Watch Brands" }).click();
 await page.waitForTimeout(250);
 check("item tap → prototype toast", await page.locator("#flowToast").evaluate(t => t.classList.contains("show") && t.textContent === "Not in this prototype yet"));
 check("drawer stays open after item tap", await page.locator(".screen").evaluate(el => el.classList.contains("hb-open")));
 
-// 5. Profile pill at bottom-right of the strip → dead action toast
-check("profile pill visible", await page.locator(".hb-profile").isVisible());
+// 5. Profile row pinned INSIDE the panel as a normal menu row (NAV-002) → dead action toast
+check("profile row visible", await page.locator(".hb-profile").isVisible());
 const pillBox = await page.locator(".hb-profile").boundingBox();
-check("profile pill at bottom-right of screen", (screenBox.x + screenBox.width) - (pillBox.x + pillBox.width) < 20 && (screenBox.y + screenBox.height) - (pillBox.y + pillBox.height) < 60);
+check("profile row inside panel bounds", pillBox.x >= panelBox.x - 1 && pillBox.x + pillBox.width <= panelBox.x + panelBox.width + 1 && pillBox.y >= panelBox.y && pillBox.y + pillBox.height <= panelBox.y + panelBox.height + 1);
+check("profile row pinned full-width at panel bottom", Math.abs(pillBox.width - panelBox.width) < 2 && (panelBox.y + panelBox.height) - (pillBox.y + pillBox.height) < 60);
+check("profile row styled like other items (icon + 14px label + chevron)", await page.locator(".hb-profile").evaluate(el => {
+  const cs = getComputedStyle(el);
+  return el.classList.contains("hb-item") && !!el.querySelector("svg") && !!el.querySelector(".hb-chev") && cs.fontSize === "14px" && cs.fontWeight === "400";
+}));
 await page.locator(".hb-profile").click();
 await page.waitForTimeout(250);
-check("profile pill → prototype toast", await page.locator("#flowToast").evaluate(t => t.textContent === "Not in this prototype yet"));
+check("profile row → prototype toast", await page.locator("#flowToast").evaluate(t => t.textContent === "Not in this prototype yet"));
+
+// 5b. NAV-002 — open drawer is the topmost layer in the phone
+check("hb-wrap z-index above all in-screen layers", await page.locator(".hb-wrap").evaluate(el => +getComputedStyle(el).zIndex >= 80));
+check("theme toggle hidden while drawer open", await page.locator("#themeToggle").evaluate(t => getComputedStyle(t).opacity === "0"));
 
 // 6. Tap the scrim (right strip) → drawer closes
 await page.locator(".hb-scrim").click({ position: { x: 320, y: 400 }, force: true });
@@ -74,11 +85,12 @@ await page.waitForTimeout(500);
 await page.locator(".app-header .hb-btn").click();
 await page.waitForTimeout(450);
 check("light theme drawer opens", await page.locator(".screen").evaluate(el => el.classList.contains("hb-open")));
-check("light theme shows 9 items", await page.locator(".hb-item").count() === 9);
+check("light theme shows 9 items", await page.locator(".hb-list .hb-item").count() === 9);
 await page.screenshot({ path: `${OUT}/hb-2-drawer-light.png` });
 await page.locator(".hb-scrim").click({ position: { x: 320, y: 400 }, force: true });
 await page.waitForTimeout(400);
 check("light theme scrim closes", !(await page.locator(".screen").evaluate(el => el.classList.contains("hb-open"))));
+check("theme toggle visible again after drawer closes", await page.locator("#themeToggle").evaluate(t => getComputedStyle(t).opacity === "1"));
 
 // 8. Regression — burger no longer hits the dead-action toast; search + create still work
 await page.locator(".app-header .search-btn").click();
@@ -89,6 +101,8 @@ await page.waitForTimeout(350);
 await page.locator('[data-flow="create"]').click();
 await page.waitForTimeout(450);
 check("create sheet still opens", await page.locator(".cf .ig-grid").isVisible());
+check("NAV-002: create opens as right-slide page (no pg-up)", await page.locator(".page-sub").evaluate(el => !el.classList.contains("pg-up")));
+await page.screenshot({ path: `${OUT}/hb-3-create-rightslide.png` });
 await page.locator(".cf-x").click();
 await page.waitForTimeout(300);
 await page.locator(".dlg-discard-go").click().catch(() => {});
