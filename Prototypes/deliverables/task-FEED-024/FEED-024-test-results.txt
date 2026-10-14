@@ -17,8 +17,23 @@ PASS Archive → archived flag + toast
 PASS Pin to profile → pinned flag + toast
 PASS noComments → comment btn hidden on card
 PASS menu labels flip (Turn on commenting / Remove from saved / Unarchive / Unpin)
-PASS Edit → dialog with caption textarea
-PASS Edit saves caption → card re-renders new caption
+PASS Edit → composer opens on Edit info step
+PASS Edit info head: Cancel + title + Done (no Share btn)
+PASS caption prefilled with post caption
+PASS existing media prefilled as thumbs (2)
+PASS + add-media tile + reorder hint shown
+PASS reorder drag flips thumb order
+PASS add-media picker opens (title + no Post/Clip tabs)
+PASS picker cell appends media (order=3, radio shows 3)
+PASS adding beyond 10 blocked + toast
+PASS back to Edit info with 3 thumbs
+PASS remove down to 1 media ok
+PASS removing last media blocked + toast
+PASS add-media via picker restores 2 thumbs
+PASS Done closes composer + toast Post updated
+PASS post updated in place (no duplicate, caption + 2 photos saved)
+PASS clip post → thumb keeps dur badge in edit
+PASS Done keeps clip on the post
 PASS detail page ... shows own-post menu
 PASS Delete → confirm dialog
 PASS Delete removes post from POSTS + feed
@@ -30,4 +45,4 @@ PASS audience options still there
 PASS light theme own menu renders
 PASS no console/page errors
 
-26 passed, 0 failed
+41 passed, 0 failed

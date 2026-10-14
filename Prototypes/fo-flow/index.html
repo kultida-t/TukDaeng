@@ -1092,13 +1092,6 @@
     color: var(--text); cursor: pointer;
   }
   .dlg-btn.danger { color: var(--red); }
-  .dlg-ta {
-    width: calc(100% - 40px); margin: 6px 0 14px; padding: 10px 12px;
-    border-radius: 10px; border: 1px solid var(--line);
-    background: var(--bg); color: var(--text);
-    font-family: var(--font-main); font-size: 13.5px; line-height: 1.45;
-    resize: none; text-align: left;
-  }
 
   /* ============ FEED-011 — like / share / save action row ============ */
   /* eye + view count: display only, not a button */
@@ -2524,6 +2517,35 @@
   .cf .ig-thumb img { cursor: zoom-in; -webkit-user-drag: none; user-select: none; }
   .cf .ig-thumbs.multi { cursor: grab; }
   .cf .ig-thumbs.multi:active { cursor: grabbing; }
+  /* FEED-024 — edit info: drag-to-reorder thumb, "+" add tile, reorder hint */
+  .cf .ig-thumb.drag {
+    z-index: 6;
+    box-shadow: 0 10px 28px rgba(0,0,0,.5);
+    opacity: .96;
+    transition: none;
+  }
+  .cf .ig-thumb.ig-add {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1.5px dashed var(--line);
+    cursor: pointer;
+    font-family: var(--font-main);
+  }
+  .cf .ig-reord-hint {
+    font-size: 11.5px;
+    color: var(--muted);
+    padding: 7px 18px 0;
+  }
+  .cf .cf-edit-x {
+    font-family: var(--font-main);
+    font-size: 14px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    padding: 10px 4px;
+    cursor: pointer;
+  }
   /* tap a caption-step thumbnail → full-sheet photo preview (IG), swipe between photos */
   .cf .ig-zoom {
     position: absolute;
@@ -3805,14 +3827,6 @@ function refreshPostViews(scr, p) {
     sec.outerHTML = pvPostHTML(p, phi);
   });
   if (scr.dataset.detailPid === p.id && scr.classList.contains("detail-open")) openPostDetail(scr, p);
-}
-
-function editPostDlgHTML(p) {
-  return `
-    <div class="dlg-q">Edit post</div>
-    <textarea class="dlg-ta" rows="5" placeholder="Write a caption...">${esc(p.captionFull || p.caption || "")}</textarea>
-    <button class="dlg-btn dlg-edit-go">Save</button>
-    <button class="dlg-btn dlg-cancel">Cancel</button>`;
 }
 
 function niCardHTML(p) {
@@ -5142,14 +5156,15 @@ function cpState(scr) {
   if (!scr._cp) scr._cp = { sel: false, step: 1, order: [], clip: null, playing: false, rem: null, tab: "post", caption: "", asset: false, meta: {} };
   return scr._cp;
 }
-function cfMedia(scr) { return cpState(scr).order.map(i => CP_MEDIA[i]); }
+/* order entries are CP_MEDIA indices in create mode, or {src,dur} objects in edit mode */
+function cfMedia(scr) { return cpState(scr).order.map(i => typeof i === "object" ? i : CP_MEDIA[i]); }
 function cfPhotos(scr) { return cfMedia(scr).map(m => m.src); }
 function cfClip(scr) { const i = cpState(scr).clip; return i == null ? null : CP_CLIPS[i]; }
 /* the one playable clip in the composer — clip-tab pick, or a lone video in a post draft */
 function cfActiveClip(scr) {
   const V = cpState(scr);
   if (V.tab === "clip") return cfClip(scr);
-  if (V.order.length === 1) { const m = CP_MEDIA[V.order[0]]; return m && m.dur ? m : null; }
+  if (V.order.length === 1) { const m = cfMedia(scr)[0]; return m && m.dur ? m : null; }
   return null;
 }
 /* the clip currently driving playback — a zoomed clip in a mixed draft, else the draft clip */
@@ -5327,7 +5342,7 @@ function cfPickerHTML(scr) {
         const s = V.order.indexOf(i);
         return `<div class="cell${s >= 0 ? " sel" : ""}" data-i="${i}"><img src="${m.src}">${m.dur ? `<span class="dur">${I.play(9)}${m.dur}</span>` : ""}<span class="radio${s >= 0 ? " on" : ""}">${s >= 0 ? s + 1 : ""}</span></div>`;
       }).join("");
-  const heroM = V.order.length ? CP_MEDIA[V.order[0]] : null;
+  const heroM = V.order.length ? cfMedia(scr)[0] : null;
   const hero = isClip
     ? (clip
       ? `<div class="ig-car"><img src="${clip.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${clip.dur}</span></div>`
@@ -5339,25 +5354,25 @@ function cfPickerHTML(scr) {
       : `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`);
   return `
     <div class="cf-head">
-      <button class="icon-btn cf-x">${I.x(21)}</button>
-      <span class="t">${isClip ? "New clip" : "New post"}</span>
-      <button class="cf-act${n ? "" : " off"} cf-next">Next</button>
+      ${V.editPid
+        ? `<button class="icon-btn cf-back2">${I.back(22)}</button><span class="t">Add photos or clips</span>`
+        : `<button class="icon-btn cf-x">${I.x(21)}</button><span class="t">${isClip ? "New clip" : "New post"}</span><button class="cf-act${n ? "" : " off"} cf-next">Next</button>`}
     </div>
     <div class="cf-scroll">
       <div class="ig-hero" data-hero>${hero}</div>
       <div class="ig-bar">
         <button class="rc">Recents ${I.chevR(13)}</button>
-        ${isClip ? "" : `<button class="sel-btn${V.sel ? " on" : ""}" data-selmode>${I.gridSel(13)} Select</button>`}
+        ${isClip || V.editPid ? "" : `<button class="sel-btn${V.sel ? " on" : ""}" data-selmode>${I.gridSel(13)} Select</button>`}
       </div>
-      <div class="ig-grid${isClip ? " clips" : ""}${V.sel && !isClip ? " selmode" : ""}">
+      <div class="ig-grid${isClip ? " clips" : ""}${(V.sel || V.editPid) && !isClip ? " selmode" : ""}">
         <div class="cell cam">${isClip ? I.video(26) : I.camPlain(26)}</div>
         ${cells}
       </div>
     </div>
-    <div class="ig-tabs">
+    ${V.editPid ? "" : `<div class="ig-tabs">
       <button class="ig-tab${isClip ? "" : " on"}" data-ctab="post">Post</button>
       <button class="ig-tab${isClip ? " on" : ""}" data-ctab="clip">Clip</button>
-    </div>`;
+    </div>`}`;
 }
 function cfStep2HTML(scr) {
   const V = cpState(scr);
@@ -5365,11 +5380,13 @@ function cfStep2HTML(scr) {
   const media = cfMedia(scr);
   const clip = cfActiveClip(scr);
   const n = isClip ? (clip ? 1 : 0) : media.length;
-  /* playable media keeps the normal thumb look — tap opens the big viewer like photos */
-  const thumbs = clip
+  /* playable media keeps the normal thumb look — tap opens the big viewer like photos.
+     FEED-024 edit mode always uses the multi strip so the "+" tile can append media */
+  const addTile = V.editPid && n < 10 ? `<button class="ig-thumb ig-add" type="button">${I.plus(24)}</button>` : "";
+  const thumbs = clip && !V.editPid
     ? `<div class="ig-thumb clip"><img src="${clip.src}"><span class="dur">${I.play(9)}${clip.dur}</span><button class="rm-mini" data-i="0">${I.x(11)}</button></div>`
-    : n > 1
-    ? `<div class="ig-thumbs multi">${media.map((m, i) => `<div class="ig-thumb${m.dur ? " clip" : ""}"><img src="${m.src}">${m.dur ? `<span class="dur">${I.play(9)}${m.dur}</span>` : ""}<button class="rm-mini" data-i="${i}">${I.x(11)}</button></div>`).join("")}</div>`
+    : (n > 1 || V.editPid)
+    ? `<div class="ig-thumbs multi">${media.map((m, i) => `<div class="ig-thumb${m.dur ? " clip" : ""}"><img src="${m.src}">${m.dur ? `<span class="dur">${I.play(9)}${m.dur}</span>` : ""}<button class="rm-mini" data-i="${i}">${I.x(11)}</button></div>`).join("")}${addTile}</div>`
     : `<div class="ig-thumb">${n ? `<img src="${media[0].src}"><button class="rm-mini" data-i="0">${I.x(11)}</button>` : ""}</div>`;
   const m = V.meta;
   const mv = cfVal(m);
@@ -5377,11 +5394,13 @@ function cfStep2HTML(scr) {
     <button class="ig-row" data-pane="${pane}"><span class="ic">${ic}</span>${label}<span class="val${val ? " set" : ""}${cls}">${val}</span>${I.chevR(15)}</button>`;
   return `<div class="cf-step2">
     <div class="cf-head">
-      <button class="icon-btn cf-back2">${I.back(22)}</button>
-      <span class="t">${isClip ? "New clip" : "New post"}</span>
+      ${V.editPid
+        ? `<button class="cf-edit-x">Cancel</button><span class="t">Edit info</span><button class="cf-act cf-done">Done</button>`
+        : `<button class="icon-btn cf-back2">${I.back(22)}</button><span class="t">${isClip ? "New clip" : "New post"}</span>`}
     </div>
     <div class="ig-cap-scroll">
       ${thumbs}
+      ${V.editPid && n > 1 ? `<div class="ig-reord-hint">Press and hold to reorder</div>` : ""}
       <div class="ig-cap-line"><div class="ta" contenteditable="true" data-ph="Add a caption…">${esc(V.caption)}</div></div>
       <div class="ig-chip-row">
         ${CF_TAGS.map(t => `<button class="ig-chip" data-tag="${t}">${t}</button>`).join("")}
@@ -5406,7 +5425,7 @@ function cfStep2HTML(scr) {
       <button class="ig-row" data-pane="more"><span class="ic">${I.dots(18)}</span>More options<span class="val${m.audience === "followers" ? " set" : ""}">${m.audience === "followers" ? "Followers only" : ""}</span>${I.chevR(15)}</button>
     </div>
     <div class="cf-pane"></div>
-    <button class="ig-share${n ? "" : " off"} cf-share">Share</button>
+    ${V.editPid ? "" : `<button class="ig-share${n ? "" : " off"} cf-share">Share</button>`}
     <div class="ig-zoom${clip ? " is-clip" : ""}" data-i="0">
       <img alt="">
       ${clip ? `<span class="pp-btn">${V.playing ? I.pause(30) : I.play(30)}</span><span class="dur">${I.play(10)}${clip.dur}</span><span class="prog"><i></i></span>` : ""}
@@ -5438,9 +5457,8 @@ function createHTML(scr) {
   return `<div class="cf${V.step === 2 ? " cap-open" : ""}${V.step === "pv" ? " pv-open" : ""}">${cfPickerHTML(scr)}${cfStep2HTML(scr)}${cfClipPrevHTML(scr)}</div>`;
 }
 /* shared with the standalone create-post.html handoff (fo_newpost) */
-function insertNewPost(np) {
-  const base = POSTS[0];
-  const m = np.meta || {};
+/* composer meta → post fields (shared by create share + edit Done) */
+function cfFieldsFromMeta(m) {
   const price = m.price ? "THB " + fmtNum(unNum(m.price)) : null;
   const chips = [m.cond, m.box].filter(Boolean);
   /* show every field once details exist — empty fields render as N/A */
@@ -5463,6 +5481,12 @@ function insertNewPost(np) {
       ["Data Source", "TukDaeng Market Data"],
     ]});
   }
+  return { price, chips, specGroups };
+}
+function insertNewPost(np) {
+  const base = POSTS[0];
+  const m = np.meta || {};
+  const { price, chips, specGroups } = cfFieldsFromMeta(m);
   POSTS.unshift({
     id: "px" + Date.now(),
     seller: CP_ME.name,
@@ -5487,6 +5511,48 @@ function insertNewPost(np) {
     likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
   });
   POSTS[0].specs = (POSTS[0].specGroups || []).flatMap(g => g.rows);
+}
+
+/* ===== FEED-024 — Edit info: same composer prefilled with the post's data ===== */
+const CF_MAX_MEDIA = 10;
+/* reverse a post's stored fields back into composer meta (spec rows are [label, value]) */
+function metaFromPost(p) {
+  const m = { loc: p.location || "", audience: p.audience || "public", noComments: !!p.noComments };
+  if (p.price) m.price = unNum(p.price);
+  const rows = (p.specGroups || []).flatMap(g => g.rows);
+  const pick = l => { const r = rows.find(r => r[0] === l); return r && r[1] !== "N/A" ? r[1] : ""; };
+  CF_SPECS.forEach(([g, fields]) => fields.forEach(([f, l]) => { const v = pick(l); if (v) m[f] = v; }));
+  const cond = pick("Condition"); if (cond) m.cond = cond;
+  const box = pick("Box & Papers"); if (box) m.box = box;
+  return m;
+}
+function openPostEdit(scr, post) {
+  const V = cpState(scr);
+  V.editPid = post.id;
+  V.tab = "post";
+  V.step = 2;
+  V.order = post.photos.map((src, i) => ({ src, dur: (post.clips && post.clips[i]) || null }));
+  V.caption = post.captionFull || post.caption || "";
+  V.meta = metaFromPost(post);
+  openSub(scr, "create");
+}
+function applyPostEdit(scr, post, V) {
+  const m = V.meta || {};
+  const { price, chips, specGroups } = cfFieldsFromMeta(m);
+  const media = cfMedia(scr);
+  const clip = cfActiveClip(scr);
+  post.photos = clip ? [clip.src] : media.map(x => x.src);
+  post.clip = clip ? clip.dur : null;
+  post.clips = clip ? [clip.dur] : media.map(x => x.dur || null);
+  post.caption = post.captionFull = post.desc = V.caption;
+  post.price = price;
+  post.type = price ? "sale" : "showcase";
+  post.chips = chips;
+  post.specGroups = specGroups;
+  post.specs = specGroups.flatMap(g => g.rows);
+  post.location = m.loc || null;
+  post.audience = m.audience || "public";
+  post.noComments = !!m.noComments;
 }
 function subHTML(name, scr) {
   const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${t}</span><span class="spacer"></span></div>`;
@@ -5710,6 +5776,50 @@ stageEl.addEventListener("pointermove", e => {
 ["pointerup", "pointercancel"].forEach(ev => stageEl.addEventListener(ev, () => {
   if (stripDrag?.moved) { suppressPhotoClick = true; setTimeout(() => { suppressPhotoClick = false; }, 60); }
   stripDrag = null;
+}));
+
+/* FEED-024 — caption thumbs: press and hold a thumb to drag it into a new order (IG edit info) */
+let reordDrag = null;
+stageEl.addEventListener("pointerdown", e => {
+  const th = e.target.closest(".cf .ig-thumbs.multi .ig-thumb");
+  if (!th || th.classList.contains("ig-add")) return;
+  const strip = th.closest(".ig-thumbs");
+  const scr = th.closest(".screen");
+  const idx = [...strip.querySelectorAll(".ig-thumb:not(.ig-add)")].indexOf(th);
+  reordDrag = { th, strip, scr, idx, x0: e.clientX, lx: e.clientX, active: false, t: setTimeout(() => {
+    if (reordDrag && Math.abs(reordDrag.lx - reordDrag.x0) <= 10) {
+      reordDrag.active = true;
+      reordDrag.th.classList.add("drag");
+      stripDrag = null; /* hand the gesture to reorder, not strip scroll */
+    }
+  }, 380) };
+});
+stageEl.addEventListener("pointermove", e => {
+  if (!reordDrag) return;
+  reordDrag.lx = e.clientX;
+  const dx = e.clientX - reordDrag.x0;
+  if (!reordDrag.active) { if (Math.abs(dx) > 10) { clearTimeout(reordDrag.t); reordDrag = null; } return; }
+  reordDrag.th.style.transform = `translateX(${dx}px)`;
+});
+["pointerup", "pointercancel"].forEach(ev => stageEl.addEventListener(ev, e => {
+  if (!reordDrag) return;
+  const { th, strip, scr, idx, active, t } = reordDrag;
+  clearTimeout(t);
+  reordDrag = null;
+  if (!active) return;
+  th.classList.remove("drag");
+  th.style.transform = "";
+  suppressPhotoClick = true;
+  setTimeout(() => { suppressPhotoClick = false; }, 80);
+  const sibs = [...strip.querySelectorAll(".ig-thumb:not(.ig-add)")].filter(s => s !== th);
+  let to = sibs.length;
+  sibs.forEach((s, i) => { const r = s.getBoundingClientRect(); if (e.clientX < r.left + r.width / 2 && to === sibs.length) to = i; });
+  if (to !== idx && scr) {
+    const V = cpState(scr);
+    const [item] = V.order.splice(idx, 1);
+    V.order.splice(to, 0, item);
+    renderSub(scr);
+  }
 }));
 
 /* CREATE-001 — zoom viewer: swipe left/right between selected photos (IG) */
@@ -5952,8 +6062,36 @@ document.getElementById("stage").addEventListener("click", e => {
     /* tap a clip surface (preview stage or the zoomed clip viewer) toggles play/pause + countdown */
     const cfPlay = e.target.closest(".clip-stage");
     if (cfPlay) { cfClipToggle(scr); return; }
+    /* FEED-024 edit mode — Cancel / Done / add-media tile / picker back → caption */
+    const cfEditX = e.target.closest(".cf-edit-x");
+    if (cfEditX) {
+      openDlg(scr, `
+        <div class="dlg-q">Discard changes?</div>
+        <div class="dlg-desc">If you go back now, your edits will be lost.</div>
+        <button class="dlg-btn danger dlg-discard-go">Discard</button>
+        <button class="dlg-btn dlg-cancel">Keep editing</button>`);
+      return;
+    }
+    const cfDone = e.target.closest(".cf-done");
+    if (cfDone) {
+      const post = POSTS.find(x => x.id === V.editPid);
+      V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() ?? V.caption;
+      if (post) applyPostEdit(scr, post, V); /* before _cp reset — cfMedia reads V.order */
+      cfClipStop(scr);
+      scr._cp = null;
+      scr._subStack = [];
+      scr.classList.remove("sub-open");
+      if (post) {
+        refreshPostViews(scr, post);
+        scrToast(scr, "Post updated", post.photos[0] || "");
+      }
+      return;
+    }
+    const cfAdd = e.target.closest(".ig-add");
+    if (cfAdd) { V.step = 1; renderSub(scr); return; }
     const cfBk = e.target.closest(".cf-back2");
     if (cfBk) {
+      if (V.editPid) { V.step = 2; renderSub(scr); return; }
       V.step = V.tab === "clip" ? "pv" : 1;
       cf.classList.remove("cap-open");
       return;
@@ -5963,6 +6101,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const cfRm = e.target.closest(".rm-mini");
     if (cfRm) {
       cfClipStop(scr);
+      if (V.editPid && V.order.length <= 1) { scrToast(scr, "Post needs at least 1 photo or clip"); return; }
       if (V.tab === "clip") { V.clip = null; V.step = 1; }
       else { V.order.splice(+cfRm.dataset.i, 1); if (!V.order.length) V.step = 1; }
       renderSub(scr);
@@ -6036,7 +6175,10 @@ document.getElementById("stage").addEventListener("click", e => {
       cfClipStop(scr);
       if (grid.classList.contains("selmode")) {
         const k = V.order.indexOf(i);
-        if (k < 0) V.order.push(i); else V.order.splice(k, 1);
+        if (k < 0) {
+          if (V.order.length >= CF_MAX_MEDIA) { scrToast(scr, `You can add up to ${CF_MAX_MEDIA} photos or clips`); return; }
+          V.order.push(i);
+        } else V.order.splice(k, 1);
         grid.querySelectorAll(".cell[data-i]").forEach(c => {
           const pos = V.order.indexOf(+c.dataset.i);
           const r = c.querySelector(".radio");
@@ -6048,13 +6190,14 @@ document.getElementById("stage").addEventListener("click", e => {
         V.order = [i];
         grid.querySelectorAll(".cell[data-i]").forEach(c => c.classList.toggle("sel", +c.dataset.i === i));
       }
-      const lastM = V.order.length ? CP_MEDIA[V.order.at(-1)] : null;
+      const cfNext = cf.querySelector(".cf-next");
+      const lastM = V.order.length ? cfMedia(scr).at(-1) : null;
       cf.querySelector("[data-hero]").innerHTML = !lastM
         ? `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`
         : lastM.dur
         ? `<div class="ig-car"><img src="${lastM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${lastM.dur}</span></div>`
         : `<div class="ig-car"><img src="${lastM.src}"><button class="expand">${I.expandIc(15)}</button></div>`;
-      cf.querySelector(".cf-next").classList.toggle("off", !V.order.length);
+      if (cfNext) cfNext.classList.toggle("off", !V.order.length);
       return;
     }
     const cfSw = e.target.closest(".sw");
@@ -6166,9 +6309,7 @@ document.getElementById("stage").addEventListener("click", e => {
       refreshPostViews(scr, post);
       scrToast(scr, post.noComments ? "Commenting turned off" : "Commenting turned on");
     } else if (pmOwn.matches(".pm-own-edit")) {
-      openDlg(scr, editPostDlgHTML(post));
-      const ta = scr.querySelector(".dlg-ta");
-      ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+      openPostEdit(scr, post);
     } else if (pmOwn.matches(".pm-own-pin")) {
       post.pinned = !post.pinned;
       scrToast(scr, post.pinned ? "Pinned to your profile" : "Unpinned from your profile");

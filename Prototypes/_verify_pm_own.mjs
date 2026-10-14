@@ -1,5 +1,6 @@
-// Verify fo-flow FEED-024: own-post "..." menu — IG own-post sheet trimmed to TukDaeng actions
-// (Save / Share / Archive / Hide counts / Turn off commenting / Edit / Pin / Delete; no music/QR/reel/adjust-preview)
+// Verify fo-flow FEED-024: own-post "..." menu — IG sheet trimmed to TukDaeng actions
+// (Save / Archive / Turn off commenting / Edit / Pin / Delete) + Edit info composer
+// (prefilled media/caption/meta, drag-reorder, add/remove media, min 1 / max 10)
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
@@ -98,18 +99,132 @@ check("menu labels flip (Turn on commenting / Remove from saved / Unarchive / Un
 await page.locator(".sheet-backdrop").click({ force: true });
 await page.waitForTimeout(300);
 
-// 8. Edit — caption dialog updates the post everywhere
+// 8. Edit — full "Edit info" composer prefilled with the post's data (IG edit info)
 await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
 await page.locator(".pm-own-edit").click();
+await page.waitForTimeout(450);
+check("Edit → composer opens on Edit info step", await page.locator(".screen").evaluate(el =>
+  el.classList.contains("sub-open") && !!el.querySelector(".cf.cap-open .cf-step2")));
+check("Edit info head: Cancel + title + Done (no Share btn)", await page.evaluate(() => {
+  const cf = document.querySelector(".cf-step2");
+  return !!cf.querySelector(".cf-edit-x") && cf.querySelector(".t").textContent === "Edit info" &&
+    !!cf.querySelector(".cf-done") && !cf.querySelector(".cf-share");
+}));
+check("caption prefilled with post caption", await page.locator(".cf .ig-cap-line .ta").evaluate(el => el.textContent === "my own test post"));
+const mediaThumbs = () => page.locator('.cf .ig-thumbs.multi .ig-thumb:not(.ig-add)');
+check("existing media prefilled as thumbs (2)", await mediaThumbs().count() === 2);
+check("+ add-media tile + reorder hint shown", await page.locator(".cf .ig-thumb.ig-add").count() === 1 &&
+  (await page.locator(".ig-reord-hint").textContent()).includes("Press and hold"));
+await page.screenshot({ path: `${OUT}/pm-own-4-edit-info.png` });
+
+// 8a. drag-and-drop reorder — hold thumb 0, drop over thumb 1 → order flips
+const thumbSrcs = () => page.locator('.cf .ig-thumbs.multi .ig-thumb:not(.ig-add) img')
+  .evaluateAll(els => els.map(e => e.getAttribute("src")));
+const before = await thumbSrcs();
+const b0 = await mediaThumbs().nth(0).boundingBox();
+const b1 = await mediaThumbs().nth(1).boundingBox();
+await page.mouse.move(b0.x + b0.width / 2, b0.y + b0.height / 2);
+await page.mouse.down();
+await page.waitForTimeout(450); // past the 380ms hold-to-reorder delay
+await page.mouse.move(b1.x + b1.width / 2 + 20, b1.y + b1.height / 2, { steps: 8 });
+await page.mouse.up();
+await page.waitForTimeout(400);
+const after = await thumbSrcs();
+check("reorder drag flips thumb order", after[0] === before[1] && after[1] === before[0]);
+
+// 8b. "+" tile → media picker (add mode) — tap a cell to append
+await page.locator(".cf .ig-thumb.ig-add").click();
+await page.waitForTimeout(350);
+check("add-media picker opens (title + no Post/Clip tabs)", await page.evaluate(() => {
+  const cf = document.querySelector(".cf");
+  return cf.querySelector(".cf-head .t").textContent === "Add photos or clips" && !cf.querySelector(".ig-tabs");
+}));
+const addedSrc = await page.locator(".cf .ig-grid .cell[data-i] img").first().getAttribute("src");
+await page.locator(".cf .ig-grid .cell[data-i]").first().click();
+await page.waitForTimeout(250);
+check("picker cell appends media (order=3, radio shows 3)", await page.evaluate(() => {
+  const V = cpState(document.querySelector(".screen"));
+  return V.order.length === 3 && document.querySelector(".cf .ig-grid .cell.sel .radio").textContent === "3";
+}));
+
+// 8c. max-10 guard — fill order to 10, another tap is blocked with a toast
+await page.evaluate(() => {
+  const V = cpState(document.querySelector(".screen"));
+  while (V.order.length < 10) V.order.push({ src: "./assets/asset-uploads/ast-8831-3.png", dur: null });
+});
+await page.locator(".cf .ig-grid .cell[data-i]").nth(3).click();
+await page.waitForTimeout(250);
+check("adding beyond 10 blocked + toast", await page.evaluate(() =>
+  cpState(document.querySelector(".screen")).order.length === 10) &&
+  await page.locator(".sc-toast").evaluate(t => t.classList.contains("show") && /10/.test(t.textContent)));
+await page.evaluate(() => { // restore draft to the 3 edited media, back to Edit info
+  const scr = document.querySelector(".screen");
+  cpState(scr).order.splice(3);
+  renderSub(scr);
+});
+await page.locator(".cf-back2").click();
+await page.waitForTimeout(400);
+check("back to Edit info with 3 thumbs", await mediaThumbs().count() === 3);
+
+// 8d. remove media — down to 1 allowed, removing the last is blocked
+await mediaThumbs().nth(2).locator(".rm-mini").click();
 await page.waitForTimeout(300);
-check("Edit → dialog with caption textarea", await page.locator(".screen").evaluate(el =>
-  el.classList.contains("dialog-open") && el.querySelector(".dlg-ta")?.value === "my own test post"));
-await page.locator(".dlg-ta").fill("edited caption 🎉");
-await page.locator(".dlg-edit-go").click();
+await mediaThumbs().nth(1).locator(".rm-mini").click();
 await page.waitForTimeout(300);
-check("Edit saves caption → card re-renders new caption", await page.evaluate(() =>
-  POSTS.find(p => p.id === "own1").caption === "edited caption 🎉" &&
-  document.querySelector('.feed-scroll .post[data-pid="own1"]').textContent.includes("edited caption 🎉")));
+check("remove down to 1 media ok", await mediaThumbs().count() === 1);
+await mediaThumbs().nth(0).locator(".rm-mini").click();
+await page.waitForTimeout(300);
+check("removing last media blocked + toast", await mediaThumbs().count() === 1 &&
+  await page.locator(".sc-toast").evaluate(t => /at least 1/.test(t.textContent)));
+// re-add one media via the picker so the draft ends with 2
+await page.locator(".cf .ig-thumb.ig-add").click();
+await page.waitForTimeout(300);
+await page.locator(".cf .ig-grid .cell[data-i]").nth(1).click();
+await page.locator(".cf-back2").click();
+await page.waitForTimeout(350);
+check("add-media via picker restores 2 thumbs", await mediaThumbs().count() === 2);
+
+// 8e. edit caption → Done → same POSTS entry updated in place, feed re-renders
+await page.locator(".cf .ig-cap-line .ta").fill("edited caption 🎉");
+const postCountBefore = await page.evaluate(() => POSTS.length);
+await page.screenshot({ path: `${OUT}/pm-own-5-edit-filled.png` });
+await page.locator(".cf-done").click();
+await page.waitForTimeout(400);
+check("Done closes composer + toast Post updated", await page.locator(".screen").evaluate(el => !el.classList.contains("sub-open")) &&
+  await page.locator(".sc-toast").evaluate(t => t.textContent === "Post updated"));
+check("post updated in place (no duplicate, caption + 2 photos saved)", await page.evaluate(() => {
+  const p = POSTS.find(x => x.id === "own1");
+  return p.caption === "edited caption 🎉" && p.photos.length === 2 &&
+    document.querySelector('.feed-scroll .post[data-pid="own1"]').textContent.includes("edited caption 🎉");
+}) && await page.evaluate(c => POSTS.length === c, postCountBefore));
+
+// 8f. clip post edit — clip badge + dur preserved through the flow
+await page.evaluate(() => {
+  POSTS.unshift({
+    id: "ownClip", seller: CP_ME.name, avatar: CP_ME.avatar, time: "Just now", following: true, favorite: false,
+    type: "showcase", photos: ["./assets/asset-uploads/feed-tudor-bb.jpg"], clip: "0:12", clips: ["0:12"],
+    likes: 0, comments: 0, views: 0, liked: false, caption: "clip edit test", captionFull: "clip edit test",
+    price: null, chips: [], specGroups: [], specs: [], location: null, desc: "clip edit test",
+    likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
+  });
+  const scr = document.querySelector(".screen");
+  scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+});
+await page.locator('.feed-scroll .post[data-pid="ownClip"] .post-head .more').click();
+await page.locator(".pm-own-edit").click();
+await page.waitForTimeout(450);
+check("clip post → thumb keeps dur badge in edit", await page.locator(".cf .ig-thumb.clip .dur").count() === 1);
+await page.locator(".cf-done").click();
+await page.waitForTimeout(350);
+check("Done keeps clip on the post", await page.evaluate(() => {
+  const p = POSTS.find(x => x.id === "ownClip");
+  return p.clip === "0:12" && p.clips[0] === "0:12";
+}));
+await page.evaluate(() => { // clean up the clip post
+  POSTS.splice(POSTS.findIndex(x => x.id === "ownClip"), 1);
+  const scr = document.querySelector(".screen");
+  scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+});
 
 // 9. own menu also opens from post detail page (.pm-btn)
 await page.evaluate(() => {
