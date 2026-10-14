@@ -37,7 +37,11 @@ PASS detail head centers the Detail title
 PASS detail name hides N/A parts ('rolex' not 'rolex N/A')
 PASS missing reference shows 'Ref. -' not 'Ref. N/A'
 PASS spec list still shows N/A values
-PASS descriptions = caption text
+PASS descriptions = caption text (no desc field filled)
+PASS Watch details pane has a Description textarea
+PASS saved post gains Price & Data Source with N/A rows
+PASS detail shows Price & Data Source section
+PASS descriptions shows the real description field
 PASS clip post → thumb keeps dur badge in edit
 PASS Done keeps clip on the post
 PASS detail page ... shows own-post menu
@@ -51,4 +55,4 @@ PASS audience options still there
 PASS light theme own menu renders
 PASS no console/page errors
 
-47 passed, 0 failed
+51 passed, 0 failed

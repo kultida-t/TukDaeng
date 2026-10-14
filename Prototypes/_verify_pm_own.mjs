@@ -208,15 +208,18 @@ check("post updated in place (no duplicate, caption + 2 photos saved)", await pa
     document.querySelector('.feed-scroll .post[data-pid="own1"]').textContent.includes("edited caption 🎉");
 }) && await page.evaluate(c => POSTS.length === c, postCountBefore));
 
-// 8g. detail page polish — centered "Detail" title, no N/A in name, "Ref. -", descriptions = caption
+// 8g. detail page polish — centered "Detail" title, no N/A in name, "Ref. -", Price & Data Source N/A
 await page.evaluate(() => {
   POSTS.unshift({
     id: "ownSpec", seller: CP_ME.name, avatar: CP_ME.avatar, time: "Just now", following: true, favorite: false,
-    type: "sale", photos: ["./assets/asset-uploads/ast-8831-1.png"], clip: null, clips: null,
+    type: "showcase", photos: ["./assets/asset-uploads/ast-8831-1.png"], clip: null, clips: null,
     likes: 0, comments: 0, views: 0, liked: false, caption: "rolex for sale", captionFull: "rolex for sale",
-    price: "THB 100,000", chips: [],
-    specGroups: [{ title: "Item Details", rows: [["Brand", "rolex"], ["Model", "N/A"], ["Reference", "N/A"]] }],
-    specs: [["Brand", "rolex"], ["Model", "N/A"], ["Reference", "N/A"]],
+    price: null, chips: ["Fair"],
+    specGroups: [
+      { title: "Watch Specifications", rows: [["Brand", "rolex"], ["Model", "N/A"], ["Reference", "N/A"]] },
+      { title: "Item Details", rows: [["Condition", "Fair"]] },
+    ],
+    specs: [["Brand", "rolex"], ["Model", "N/A"], ["Reference", "N/A"], ["Condition", "Fair"]],
     location: null, desc: "rolex for sale",
     likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
   });
@@ -235,8 +238,32 @@ check("detail name hides N/A parts ('rolex' not 'rolex N/A')",
 check("missing reference shows 'Ref. -' not 'Ref. N/A'",
   await page.locator(".page-detail .detail-ref").textContent() === "Ref. -");
 check("spec list still shows N/A values", await page.locator(".page-detail").evaluate(el => el.textContent.includes("N/A")));
-check("descriptions = caption text", await page.locator(".page-detail .detail-desc").evaluate(el => el.textContent === "rolex for sale"));
+check("descriptions = caption text (no desc field filled)", await page.locator(".page-detail .detail-desc").evaluate(el => el.textContent === "rolex for sale"));
 await page.screenshot({ path: `${OUT}/pm-own-6-detail.png` });
+
+// 8h. edit adds Price & Data Source (N/A rows) + Description field in Watch details
+await page.locator(".page-detail .pm-btn, .page-detail .post-head .more").first().click();
+await page.waitForTimeout(350);
+await page.locator(".pm-own-edit").click();
+await page.waitForTimeout(450);
+await page.locator('.ig-row[data-pane="spec"]').click();
+await page.waitForTimeout(350);
+check("Watch details pane has a Description textarea", await page.locator('.cf-pane textarea.cf-f[data-f="desc"]').count() === 1);
+await page.locator('.cf-pane textarea.cf-f[data-f="desc"]').fill("Long description — serviced in 2024, keeps great time, hairline scratches on the clasp.");
+await page.locator(".cf-pane .pane-done").click();
+await page.waitForTimeout(250);
+await page.locator(".cf-done").click();
+await page.waitForTimeout(400);
+check("saved post gains Price & Data Source with N/A rows", await page.evaluate(() => {
+  const g = (POSTS.find(p => p.id === "ownSpec").specGroups || []).find(g => g.title === "Price & Data Source");
+  return !!g && g.rows.some(r => r[0] === "Asking Price" && r[1] === "N/A");
+}));
+check("detail shows Price & Data Source section", await page.locator(".page-detail").evaluate(el => el.textContent.includes("Price & Data Source")));
+check("descriptions shows the real description field", await page.evaluate(() => {
+  const p = POSTS.find(x => x.id === "ownSpec");
+  return p.desc.startsWith("Long description") && document.querySelector(".page-detail .detail-desc").textContent.startsWith("Long description");
+}));
+await page.screenshot({ path: `${OUT}/pm-own-7-detail-price.png` });
 await page.locator(".page-detail .detail-back").first().click();
 await page.waitForTimeout(350);
 await page.evaluate(() => { // clean up

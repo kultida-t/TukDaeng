@@ -40,7 +40,10 @@ confirm dialog "Delete post?" → ลบออกจาก POSTS + ลบกา�
 - title "Detail" จัดกลางเหมือนหน้าอื่น (เพิ่ม spacer ซ้ายใน detail-head variant หลัก)
 - ชื่อโพสต์ซ่อนส่วนที่เป็น N/A ("rolex N/A" → "rolex"); ถ้าไม่มี specs เลย fallback เป็น caption
 - Reference ที่ไม่มีข้อมูลแสดง "Ref. -" (เดิม "Ref. N/A"); ในลิสต์ WATCH SPECIFICATIONS ยังแสดง N/A เหมือนเดิม
-- Descriptions = caption ของโพสต์ (captionFull) ไม่ใช้ field desc แยกอีกต่อไป
+- มี section "Price & Data Source" เสมอเมื่อโพสต์มีรายละเอียด — ไม่มีราคาแสดง N/A (Asking Price / Estimated Market Price / Last Price Update = N/A, Data Source = TukDaeng Market Data)
+- Descriptions = field description จริง (p.desc) — ไม่ใช่สำเนา caption; ถ้าไม่ได้กรอก fallback เป็น caption
+- Watch details pane (ทั้งหน้า Add และ Edit) เพิ่มฟิลด์ "Description" เป็น textarea รองรับข้อความยาวกว่าฟิลด์อื่น
+- Edit จากหน้า Detail: composer ถูก detail layer บัง (z-index) — แก้โดยปิด detail ตอนเปิด edit แล้วเปิดกลับหลัง Done/Cancel พร้อมเนื้อหาล่าสุด
 
 เคส 10: More options ใน create flow — ผ่าน (feedback รอบ 2)
 เอา toggle "Hide like and view counts" ออกจาก pane More options เหลือ Turn off commenting + audience Everyone/Followers only
@@ -48,5 +51,5 @@ confirm dialog "Delete post?" → ลบออกจาก POSTS + ลบกา�
 เคส 11: Light theme — ผ่าน
 เมนู render ถูกทั้ง dark/light
 
-Verification: node _verify_pm_own.mjs → 47 passed, 0 failed, 0 console errors
+Verification: node _verify_pm_own.mjs → 51 passed, 0 failed, 0 console errors
 Screenshots: Prototypes/screenshots/task-FEED-024/pm-own-*.png

@@ -2708,6 +2708,7 @@
     outline: none;
   }
   .cf .pane-in:focus { border-color: var(--muted); }
+  .cf .pane-ta { resize: none; min-height: 96px; line-height: 1.5; display: block; }
   .cf .pane-lab { font-size: 12px; color: var(--muted); font-weight: 600; padding: 14px 18px 4px; line-height: 1.5; }
   .cf .loc-opt, .cf .cond-opt {
     width: 100%;
@@ -3421,7 +3422,7 @@ function detailHTML(p) {
         <h2 class="detail-name">${name}</h2>
         ${ref ? `<div class="detail-ref">${ref}</div>` : ""}
         <div class="detail-h">Descriptions</div>
-        <p class="detail-desc">${igCaptionHTML(p, p.captionFull || p.desc || "")}</p>
+        <p class="detail-desc">${igCaptionHTML(p, p.desc || p.captionFull || "")}</p>
         ${detailSpecsHTML(p)}
       </div>
     </div>`;
@@ -5276,6 +5277,8 @@ function cfPaneHTML(scr) {
   if (m.pane === "spec") return head("Watch details") + `<div class="pane-body">
     ${CF_SPECS.map(([g, fields]) => `<div class="pane-lab" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--red)">${g}</div>` +
       fields.map(([f, l, ph]) => `<div class="pane-lab" style="padding-top:6px">${l}</div><input class="pane-in cf-f" data-f="${f}" placeholder="${ph}" value="${esc(m[f] || "")}">`).join("")).join("")}
+    <div class="pane-lab" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--red)">Description</div>
+    <textarea class="pane-in pane-ta cf-f" data-f="desc" rows="4" placeholder="Describe the item — condition notes, history, what's included…">${esc(m.desc || "")}</textarea>
     <div class="pane-lab">Condition &amp; Box are set in the Condition section — they appear here under Item Details.</div>
   </div>`;
   if (m.pane === "cond") return head("Condition") + `<div class="pane-body">
@@ -5468,13 +5471,14 @@ function cfFieldsFromMeta(m) {
     const itemG = specGroups.find(g => g.title === "Item Details");
     itemG.rows.push(["Condition", m.cond || "N/A"], ["Box & Papers", m.box || "N/A"]);
   }
-  if (price) {
-    const n = +unNum(m.price);
+  /* Price & Data Source always shows once any details exist — missing values render as N/A */
+  if (hasSpecInput || price) {
+    const n = price ? +unNum(m.price) : 0;
     const r5k = v => Math.round(v / 5000) * 5000; /* auto market band ~−5%/+6% around asking, like seeded posts */
     specGroups.push({ title: "Price & Data Source", rows: [
-      ["Asking Price", price],
-      ["Estimated Market Price", `THB ${fmtNum(r5k(n * 0.95))} – ${fmtNum(r5k(n * 1.06))}`],
-      ["Last Price Update", new Date().toISOString().slice(0, 10)],
+      ["Asking Price", price || "N/A"],
+      ["Estimated Market Price", price ? `THB ${fmtNum(r5k(n * 0.95))} – ${fmtNum(r5k(n * 1.06))}` : "N/A"],
+      ["Last Price Update", price ? new Date().toISOString().slice(0, 10) : "N/A"],
       ["Data Source", "TukDaeng Market Data"],
     ]});
   }
@@ -5504,7 +5508,7 @@ function insertNewPost(np) {
     location: m.loc || null,
     audience: m.audience || "public",
     noComments: !!m.noComments,
-    desc: np.caption || base.desc,
+    desc: m.desc || np.caption || base.desc,
     likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
   });
   POSTS[0].specs = (POSTS[0].specGroups || []).flatMap(g => g.rows);
@@ -5521,6 +5525,8 @@ function metaFromPost(p) {
   CF_SPECS.forEach(([g, fields]) => fields.forEach(([f, l]) => { const v = pick(l); if (v) m[f] = v; }));
   const cond = pick("Condition"); if (cond) m.cond = cond;
   const box = pick("Box & Papers"); if (box) m.box = box;
+  /* only preload a real description — skip captions that were copied into desc by older saves */
+  if (p.desc && p.desc !== p.captionFull && p.desc !== p.caption) m.desc = p.desc;
   return m;
 }
 function openPostEdit(scr, post) {
@@ -5531,6 +5537,9 @@ function openPostEdit(scr, post) {
   V.order = post.photos.map((src, i) => ({ src, dur: (post.clips && post.clips[i]) || null }));
   V.caption = post.captionFull || post.caption || "";
   V.meta = metaFromPost(post);
+  /* detail page (z33) sits above the composer (z32) — close it while editing, reopen on Done/Cancel */
+  V.editFromDetail = scr.classList.contains("detail-open");
+  if (V.editFromDetail) scr.classList.remove("detail-open");
   openSub(scr, "create");
 }
 function applyPostEdit(scr, post, V) {
@@ -5550,6 +5559,7 @@ function applyPostEdit(scr, post, V) {
   post.location = m.loc || null;
   post.audience = m.audience || "public";
   post.noComments = !!m.noComments;
+  post.desc = m.desc || "";
 }
 function subHTML(name, scr) {
   const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${t}</span><span class="spacer"></span></div>`;
@@ -6072,6 +6082,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const cfDone = e.target.closest(".cf-done");
     if (cfDone) {
       const post = POSTS.find(x => x.id === V.editPid);
+      const wasDetail = V.editFromDetail;
       V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() ?? V.caption;
       if (post) applyPostEdit(scr, post, V); /* before _cp reset — cfMedia reads V.order */
       cfClipStop(scr);
@@ -6080,6 +6091,7 @@ document.getElementById("stage").addEventListener("click", e => {
       scr.classList.remove("sub-open");
       if (post) {
         refreshPostViews(scr, post);
+        if (wasDetail) openPostDetail(scr, post); /* reopens detail with fresh content */
         scrToast(scr, "Post updated", post.photos[0] || "");
       }
       return;
@@ -6430,10 +6442,12 @@ document.getElementById("stage").addEventListener("click", e => {
   if (dlgDiscard) {
     const scr = dlgDiscard.closest(".screen");
     scr.classList.remove("dialog-open");
+    const wasDetail = scr._cp && scr._cp.editFromDetail;
     if (scr._cp) { clearInterval(scr._cp._t); }
     scr._cp = null;
     scr._subStack = [];
     scr.classList.remove("sub-open");
+    if (wasDetail) scr.classList.add("detail-open");
     return;
   }
   const dlgMute = e.target.closest(".dlg-mute-go");
