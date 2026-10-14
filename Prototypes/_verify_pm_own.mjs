@@ -12,7 +12,7 @@ mkdirSync(OUT, { recursive: true });
 let pass = 0, fail = 0;
 const check = (name, ok) => { console.log(`${ok ? "PASS" : "FAIL"} ${name}`); ok ? pass++ : fail++; };
 
-const OWN_LABELS = ["Save", "Archive", "Turn off commenting", "Edit", "Pin to profile", "Delete"];
+const OWN_LABELS = ["Archive", "Turn off commenting", "Edit", "Pin to profile", "Delete"];
 
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 560, height: 950 }, deviceScaleFactor: 2 });
@@ -57,20 +57,14 @@ await page.waitForTimeout(350);
 check("pm sheet opens for own post", await page.locator(".screen").evaluate(el => el.classList.contains("pm-open")));
 check("no preview card on top of menu", await page.locator(".comment-sheet .pm-post").count() === 0);
 labels = await page.locator(".comment-sheet .pm-row span").allTextContents();
-check("6 own-post menu rows in order", JSON.stringify(labels) === JSON.stringify(OWN_LABELS));
-check("no Share / hide-counts / QR / reel / adjust-preview rows", !labels.some(l => /share|like count|qr|reel|preview|audio/i.test(l)));
+check("5 own-post menu rows in order", JSON.stringify(labels) === JSON.stringify(OWN_LABELS));
+check("no Save / Share / hide-counts / QR / reel / adjust-preview rows", !labels.some(l => /save|share|like count|qr|reel|preview|audio/i.test(l)));
 check("Delete row is danger-styled", await page.locator(".comment-sheet .pm-row.danger span").allTextContents().then(t => t.join() === "Delete"));
 await page.screenshot({ path: `${OUT}/pm-own-1-menu-dark.png` });
-
-// 3. Save toggles saved state + syncs card save-btn
-await page.locator(".pm-own-save").click();
+await page.locator(".sheet-backdrop").click({ force: true });
 await page.waitForTimeout(300);
-check("Save → toast + saved flag + card save-btn on", await page.evaluate(() =>
-  POSTS.find(p => p.id === "own1").saved === true &&
-  document.querySelector('.post[data-pid="own1"] .save-btn')?.classList.contains("saved")));
-check("toast says Saved", await page.locator(".sc-toast").evaluate(t => t.classList.contains("show") && t.textContent === "Saved"));
 
-// 4. Archive / Pin — memory-only flags + toast
+// 3. Archive / Pin — memory-only flags + toast
 await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
 await page.locator(".pm-own-archive").click();
 await page.waitForTimeout(250);
@@ -93,8 +87,8 @@ check("noComments → comment btn hidden on card", await page.evaluate(() => {
 await page.locator('.feed-scroll .post[data-pid="own1"] .post-head .more').click();
 await page.waitForTimeout(300);
 labels = await page.locator(".comment-sheet .pm-row span").allTextContents();
-check("menu labels flip (Turn on commenting / Remove from saved / Unarchive / Unpin)",
-  labels.includes("Remove from saved") && labels.includes("Unarchive") &&
+check("menu labels flip (Turn on commenting / Unarchive / Unpin)",
+  labels.includes("Unarchive") &&
   labels.includes("Turn on commenting") && labels.includes("Unpin from profile"));
 await page.locator(".sheet-backdrop").click({ force: true });
 await page.waitForTimeout(300);
@@ -364,7 +358,7 @@ await page.evaluate(() => {
 });
 await page.locator('.feed-scroll .post[data-pid="own2"] .post-head .more').click();
 await page.waitForTimeout(350);
-check("light theme own menu renders", await page.locator(".comment-sheet .pm-row").count() === 6);
+check("light theme own menu renders", await page.locator(".comment-sheet .pm-row").count() === 5);
 await page.screenshot({ path: `${OUT}/pm-own-3-menu-light.png` });
 await page.locator(".sheet-backdrop").click({ force: true });
 

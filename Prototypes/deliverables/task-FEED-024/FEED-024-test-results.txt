@@ -8,15 +8,13 @@ PASS own post card injected on top of feed
 PASS other post menu keeps Not interested + Report
 PASS pm sheet opens for own post
 PASS no preview card on top of menu
-PASS 6 own-post menu rows in order
-PASS no Share / hide-counts / QR / reel / adjust-preview rows
+PASS 5 own-post menu rows in order
+PASS no Save / Share / hide-counts / QR / reel / adjust-preview rows
 PASS Delete row is danger-styled
-PASS Save → toast + saved flag + card save-btn on
-PASS toast says Saved
 PASS Archive → archived flag + toast
 PASS Pin to profile → pinned flag + toast
 PASS noComments → comment btn hidden on card
-PASS menu labels flip (Turn on commenting / Remove from saved / Unarchive / Unpin)
+PASS menu labels flip (Turn on commenting / Unarchive / Unpin)
 PASS Edit → composer opens on Edit info step
 PASS Edit info head: Cancel + title + Done (no Share btn)
 PASS caption prefilled with post caption
@@ -55,4 +53,4 @@ PASS audience options still there
 PASS light theme own menu renders
 PASS no console/page errors
 
-51 passed, 0 failed
+49 passed, 0 failed

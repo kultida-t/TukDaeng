@@ -3,24 +3,21 @@ Task: เมนู ... ของโพสต์ตัวเองในหน้
 URL: http://127.0.0.1:4173/fo-flow/index.html
 ผู้ตรวจ: ผู้ใช้ | ผล: รอยืนยัน
 
-เคส 1: เมนู ... โพสต์ตัวเอง — ผ่าน (automated) + ปรับตาม feedback รอบ 2
-โพสต์ seller = mycollection (CP_ME) กด ... → bottom sheet การ์ดเดียว 6 เมนู:
-Save / Archive / Turn off commenting / Edit / Pin to profile / Delete(แดง)
-ตัดออกตามสั่ง: preview card, เพลง, QR code, Shared/Share, Hide like and view counts, Create reel, Adjust preview — ไม่มีใน DOM
+เคส 1: เมนู ... โพสต์ตัวเอง — ผ่าน (automated) + ปรับตาม feedback รอบ 2/8
+โพสต์ seller = mycollection (CP_ME) กด ... → bottom sheet การ์ดเดียว 5 เมนู:
+Archive / Turn off commenting / Edit / Pin to profile / Delete(แดง)
+ตัดออกตามสั่ง: preview card, เพลง, QR code, Shared/Share, Hide like and view counts, Create reel, Adjust preview, Save — ไม่มีใน DOM
 
 เคส 2: Regression โพสต์คนอื่น — ผ่าน
 โพสต์ seller อื่นกด ... → เมนูเดิม Add to favorites / Not interested / Report เหมือนเดิมทุกประการ
 
-เคส 3: Save — ผ่าน
-toggle saved → sync ปุ่ม bookmark บนการ์ด + toast "Saved" / "Removed from your saved"
-
-เคส 4: Archive / Pin to profile — ผ่าน
+เคส 3: Archive / Pin to profile — ผ่าน
 memory-only flag + toast; label พลิกเป็น Unarchive / Unpin เมื่อเปิดเมนูซ้ำ
 
-เคส 5: Turn off commenting — ผ่าน
+เคส 4: Turn off commenting — ผ่าน
 toggle post.noComments → ปุ่ม comment หายจากการ์ด; label พลิกเป็น Turn on commenting
 
-เคส 6: Edit — ผ่าน (ปรับตาม feedback รอบ 3 — Edit info เหมือนหน้า Add)
+เคส 5: Edit — ผ่าน (ปรับตาม feedback รอบ 3 — Edit info เหมือนหน้า Add)
 เลือก Edit → เปิด composer หน้า "Edit info" (Cancel / Done แทน Share) preload ข้อมูลโพสต์:
 - media เดิมแสดงเป็น thumbs (clip มี dur badge) + tile "+" เพิ่มรูป/คลิปผ่าน picker "Add photos or clips" (Done = ยืนยันรูปที่เพิ่ม, < = ยกเลิกคืนค่าเดิม)
 - กดค้างลาก thumb สลับตำแหน่งได้ (ไม่มี hint text ตาม feedback รอบ 4)
@@ -30,13 +27,13 @@ toggle post.noComments → ปุ่ม comment หายจากการ์�
 - Done อัปเดตโพสต์เดิมใน POSTS (ไม่สร้างโพสต์ใหม่) + re-render ทุก surface + toast "Post updated"
 - Cancel → confirm "Discard changes?" ทิ้งการแก้ไข โพสต์เดิมไม่เปลี่ยน
 
-เคส 7: เมนูจากหน้า Detail — ผ่าน
+เคส 6: เมนูจากหน้า Detail — ผ่าน
 ปุ่ม ... (pm-btn) บนหน้า detail ของโพสต์ตัวเองเปิดเมนูชุดเดียวกัน
 
-เคส 8: Delete — ผ่าน
+เคส 7: Delete — ผ่าน
 confirm dialog "Delete post?" → ลบออกจาก POSTS + ลบการ์ดจาก feed/viewer + ปิด detail ถ้าเปิดอยู่ + toast "Post deleted"
 
-เคส 9: หน้า Detail — ผ่าน (feedback รอบ 4)
+เคส 8: หน้า Detail — ผ่าน (feedback รอบ 4)
 - title "Detail" จัดกลางเหมือนหน้าอื่น (เพิ่ม spacer ซ้ายใน detail-head variant หลัก)
 - ชื่อโพสต์ซ่อนส่วนที่เป็น N/A ("rolex N/A" → "rolex"); ถ้าไม่มี specs เลย fallback เป็น caption
 - Reference ที่ไม่มีข้อมูลแสดง "Ref. -" (เดิม "Ref. N/A"); ในลิสต์ WATCH SPECIFICATIONS ยังแสดง N/A เหมือนเดิม
@@ -45,11 +42,11 @@ confirm dialog "Delete post?" → ลบออกจาก POSTS + ลบกา�
 - Watch details pane (ทั้งหน้า Add และ Edit) เพิ่มฟิลด์ "Description" เป็น textarea รองรับข้อความยาวกว่าฟิลด์อื่น
 - Edit จากหน้า Detail: composer ถูก detail layer บัง (z-index) — แก้โดยปิด detail ตอนเปิด edit แล้วเปิดกลับหลัง Done/Cancel พร้อมเนื้อหาล่าสุด
 
-เคส 10: More options ใน create flow — ผ่าน (feedback รอบ 2)
+เคส 9: More options ใน create flow — ผ่าน (feedback รอบ 2)
 เอา toggle "Hide like and view counts" ออกจาก pane More options เหลือ Turn off commenting + audience Everyone/Followers only
 
-เคส 11: Light theme — ผ่าน
+เคส 10: Light theme — ผ่าน
 เมนู render ถูกทั้ง dark/light
 
-Verification: node _verify_pm_own.mjs → 51 passed, 0 failed, 0 console errors
+Verification: node _verify_pm_own.mjs → 49 passed, 0 failed, 0 console errors
 Screenshots: Prototypes/screenshots/task-FEED-024/pm-own-*.png

@@ -3805,7 +3805,6 @@ function pmOwnMenuHTML(p) {
   return `
     <div class="sheet-handle"></div>
     <div class="pm-card">
-      <button class="pm-row pm-own-save">${I.bookmark(20)}<span>${p.saved ? "Remove from saved" : "Save"}</span></button>
       <button class="pm-row pm-own-archive">${I.history(20)}<span>${p.archived ? "Unarchive" : "Archive"}</span></button>
       <button class="pm-row pm-own-nocomm">${I.commentOff(20)}<span>${p.noComments ? "Turn on commenting" : "Turn off commenting"}</span></button>
       <button class="pm-row pm-own-edit">${I.pen(20)}<span>Edit</span></button>
@@ -6302,19 +6301,13 @@ document.getElementById("stage").addEventListener("click", e => {
     return;
   }
   /* ===== FEED-024 — own-post "..." menu actions (memory only) ===== */
-  const pmOwn = e.target.closest(".pm-own-save, .pm-own-archive, .pm-own-nocomm, .pm-own-edit, .pm-own-pin, .pm-own-del");
+  const pmOwn = e.target.closest(".pm-own-archive, .pm-own-nocomm, .pm-own-edit, .pm-own-pin, .pm-own-del");
   if (pmOwn) {
     const scr = pmOwn.closest(".screen");
     const post = POSTS.find(x => x.id === scr.dataset.pmPid);
     scr.classList.remove("pm-open");
     if (!post) return;
-    if (pmOwn.matches(".pm-own-save")) {
-      post.saved = !post.saved;
-      post.savedCol = post.saved ? "Saved" : null;
-      post.savedAt = post.saved ? Date.now() : 0;
-      syncSaveBtns(scr, post);
-      scrToast(scr, post.saved ? "Saved" : "Removed from your saved");
-    } else if (pmOwn.matches(".pm-own-archive")) {
+    if (pmOwn.matches(".pm-own-archive")) {
       post.archived = !post.archived;
       scrToast(scr, post.archived ? "Post archived" : "Post unarchived");
     } else if (pmOwn.matches(".pm-own-nocomm")) {
