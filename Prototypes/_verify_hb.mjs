@@ -56,18 +56,9 @@ await page.waitForTimeout(250);
 check("item tap → prototype toast", await page.locator("#flowToast").evaluate(t => t.classList.contains("show") && t.textContent === "Not in this prototype yet"));
 check("drawer stays open after item tap", await page.locator(".screen").evaluate(el => el.classList.contains("hb-open")));
 
-// 5. Profile row pinned INSIDE the panel as a normal menu row (NAV-002) → dead action toast
-check("profile row visible", await page.locator(".hb-profile").isVisible());
-const pillBox = await page.locator(".hb-profile").boundingBox();
-check("profile row inside panel bounds", pillBox.x >= panelBox.x - 1 && pillBox.x + pillBox.width <= panelBox.x + panelBox.width + 1 && pillBox.y >= panelBox.y && pillBox.y + pillBox.height <= panelBox.y + panelBox.height + 1);
-check("profile row pinned full-width at panel bottom", Math.abs(pillBox.width - panelBox.width) < 2 && (panelBox.y + panelBox.height) - (pillBox.y + pillBox.height) < 60);
-check("profile row styled like other items (icon + 14px label + chevron)", await page.locator(".hb-profile").evaluate(el => {
-  const cs = getComputedStyle(el);
-  return el.classList.contains("hb-item") && !!el.querySelector("svg") && !!el.querySelector(".hb-chev") && cs.fontSize === "14px" && cs.fontWeight === "400";
-}));
-await page.locator(".hb-profile").click();
-await page.waitForTimeout(250);
-check("profile row → prototype toast", await page.locator("#flowToast").evaluate(t => t.textContent === "Not in this prototype yet"));
+// 5. NAV-002 — drawer contains ONLY the 9 menu items; no Profile entry inside the drawer at all
+check("no profile entry inside the drawer", await page.locator(".hb-wrap .hb-profile, .hb-panel [class*='profile']").count() === 0);
+check("drawer has exactly the 9 menu rows", await page.locator(".hb-panel .hb-item").count() === 9);
 
 // 5b. NAV-002 — open drawer is the topmost layer in the phone
 check("hb-wrap z-index above all in-screen layers", await page.locator(".hb-wrap").evaluate(el => +getComputedStyle(el).zIndex >= 80));

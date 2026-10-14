@@ -17,22 +17,19 @@ PASS IG settings row style — 14px regular label
 PASS every item has a trailing chevron
 PASS item tap → prototype toast
 PASS drawer stays open after item tap
-PASS profile row visible                                            [NAV-002]
-PASS profile row inside panel bounds                                [NAV-002]
-PASS profile row pinned full-width at panel bottom                  [NAV-002]
-PASS profile row styled like other items (icon + 14px + chevron)    [NAV-002]
-PASS profile row → prototype toast                                  [NAV-002]
-PASS hb-wrap z-index above all in-screen layers                     [NAV-002]
-PASS theme toggle hidden while drawer open                          [NAV-002]
+PASS no profile entry inside the drawer                            [NAV-002]
+PASS drawer has exactly the 9 menu rows                            [NAV-002]
+PASS hb-wrap z-index above all in-screen layers                    [NAV-002]
+PASS theme toggle hidden while drawer open                         [NAV-002]
 PASS scrim tap closes drawer
 PASS panel slid back out
 PASS light theme drawer opens
 PASS light theme shows 9 items
 PASS light theme scrim closes
-PASS theme toggle visible again after drawer closes                 [NAV-002]
+PASS theme toggle visible again after drawer closes                [NAV-002]
 PASS search page still opens
 PASS create sheet still opens
-PASS NAV-002: create opens as right-slide page (no pg-up)           [NAV-002]
+PASS NAV-002: create opens as right-slide page (no pg-up)          [NAV-002]
 PASS no console/page errors
 
-31 passed, 0 failed
+28 passed, 0 failed

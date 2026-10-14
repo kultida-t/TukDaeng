@@ -19,14 +19,14 @@ URL: http://127.0.0.1:4173/fo-flow/index.html
 - ผลที่คาด: ไม่มี element ใดลอยทับ drawer/scrim — .hb-wrap z-index 80 เหนือทุกชั้นในจอ (brand-menu 70 / sc-toast 60 / dlg 40 / sheets 35-36 / page-sub 32 / page-detail 33 / bottom-nav 20), #themeToggle ถูกซ่อนระหว่าง hb-open แล้วกลับมาเมื่อปิด
 - ผลจริง: ผ่าน
 
-เคส 3: Profile เป็น row เมนูปกติท้าย panel (ตาม reference รูปที่ 2)
-- ขั้นกด: เปิด drawer ดูรายการ Profile
-- ผลที่คาด: Profile เป็น row เหมือนเมนูอื่นทุกประการ — icon + label 14px/400 + chevron ชิดขวา กว้างเต็ม panel pin ท้ายลิสต์ (รอบแรกทำเป็น pill ลอย ผู้ใช้ feedback "ปุ่ม profile ต้องเหมือนปุ่มอื่นสิ" → แก้เป็น row)
-- ผลจริงรอบแรก: ไม่ผ่าน — ทำเป็น pill ลอยมุมล่างขวาใน panel
-- ผลแก้ไข: เปลี่ยนเป็น .hb-item เต็มรูปแบบ (class hb-item hb-profile) pin ท้าย .hb-panel → รอบสอง ผ่าน
+เคส 3: ไม่มี Profile entry ใน drawer เลย
+- ขั้นกด: เปิด drawer ดูเนื้อหาใน panel
+- ผลที่คาด: panel มีแค่ 9 เมนูล้วน ไม่มี Profile ทับ/แถมมา (เดิมมี pill ลอยบน scrim → รอบแรกแก้เป็น pill ใน panel → รอบสองแก้เป็น row → ผู้ใช้ยืนยัน "จะเอาเมนูโปรไฟล์มาไว้ใน burger ทำไม ไม่ต้องมี" → ลบออก)
+- ผลจริงรอบแรก: ไม่ผ่าน (pill ใน panel) / รอบสอง: ไม่ผ่าน (row ใน panel)
+- ผลแก้ไข: ลบ element .hb-profile + CSS + dead-action selector ออกทั้งหมด → รอบสาม ผ่าน (Profile จาง ๆ ที่เห็นในแถบ peek คือ bottom-nav ของจอข้างล่างใต้ scrim ถูกต้อง)
 
 เคส 4: dead actions ใน drawer ยังทำงาน
-- ขั้นกด: กดเมนูในลิสต์ / กด row Profile
+- ขั้นกด: กดเมนูในลิสต์
 - ผลที่คาด: toast "Not in this prototype yet" drawer ยังเปิดอยู่
 - ผลจริง: ผ่าน
 
@@ -39,7 +39,7 @@ URL: http://127.0.0.1:4173/fo-flow/index.html
 - ขั้นกด: เมนู 9 รายการเรียงถูก/ไอคอน/chevron, search page เปิดได้, create composer เปิดได้ (กริดรูปขึ้น), report sheet ยัง pg-up จากล่าง (คงเดิมในโค้ด — ไม่ได้แตะ), light theme ปกติ
 - ผลจริง: ผ่าน
 
-สรุป: ผ่านทุกเคสหลังแก้รอบสอง (เคส 3 แก้จาก feedback ผู้ใช้)
-Automated: _verify_hb.mjs 31 checks ALL PASS, 0 console errors
+สรุป: ผ่านทุกเคสหลังแก้รอบสาม (เคส 3 ลบ Profile ออกจาก drawer ตาม feedback ผู้ใช้)
+Automated: _verify_hb.mjs 28 checks ALL PASS, 0 console errors
 Evidence: Prototypes/screenshots/task-NAV-002/before|after/ + Prototypes/screenshots/fo-flow/hb-*.png
-Files changed: Prototypes/fo-flow/index.html (z-index .hb-wrap, Profile row เข้า panel แบบ .hb-item, themeToggle hide rule, renderSub pg-up เหลือ report อย่างเดียว), Prototypes/_verify_hb.mjs (checks ใหม่ + scope .hb-list)
+Files changed: Prototypes/fo-flow/index.html (z-index .hb-wrap 80, ลบ .hb-profile ทั้ง markup/CSS/selector, themeToggle hide rule, renderSub pg-up เหลือ report อย่างเดียว), Prototypes/_verify_hb.mjs (checks ใหม่ + scope .hb-list)

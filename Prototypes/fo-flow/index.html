@@ -301,7 +301,6 @@
   .hb-item:hover { background: var(--chip-bg); }
   .hb-item svg { display: block; flex-shrink: 0; }
   .hb-item .hb-chev { margin-left: auto; color: var(--muted); display: flex; }
-  .hb-profile { flex-shrink: 0; margin-bottom: 22px; }
 
   /* ============ FEED TABS ============ */
   .feed-tabs {
@@ -5579,7 +5578,6 @@ function screenHTML(theme, variant) {
           <button class="hb-item">${I.home(22)}<span>Authentication Center</span><span class="hb-chev">${I.chevR(15)}</span></button>
           <button class="hb-item">${I.users(22)}<span>Community</span><span class="hb-chev">${I.chevR(15)}</span></button>
         </div>
-        <button class="hb-item hb-profile">${I.navUser(22)}<span>Profile</span><span class="hb-chev">${I.chevR(15)}</span></button>
       </div>
     </div>
   </div>`;
@@ -6495,7 +6493,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (hbBtn) { hbBtn.closest(".screen").classList.add("hb-open"); return; }
   const hbScrim = e.target.closest(".hb-scrim");
   if (hbScrim) { hbScrim.closest(".screen").classList.remove("hb-open"); return; }
-  const hbDead = e.target.closest(".hb-item, .hb-profile");
+  const hbDead = e.target.closest(".hb-item");
   if (hbDead) { toast("Not in this prototype yet"); return; }
   const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn), .emoji-row, .comment-input, .sheet-title .send, .c-meta");
   if (dead) { toast("Not in this prototype yet"); return; }
