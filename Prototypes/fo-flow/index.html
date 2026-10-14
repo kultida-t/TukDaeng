@@ -5353,7 +5353,7 @@ function cfPickerHTML(scr) {
   return `
     <div class="cf-head">
       ${V.editPid
-        ? `<button class="icon-btn cf-back2">${I.back(22)}</button><span class="t">Add photos or clips</span><button class="cf-act cf-back2">Done</button>`
+        ? `<button class="icon-btn cf-add-cancel">${I.back(22)}</button><span class="t">Add photos or clips</span><button class="cf-act cf-add-done">Done</button>`
         : `<button class="icon-btn cf-x">${I.x(21)}</button><span class="t">${isClip ? "New clip" : "New post"}</span><button class="cf-act${n ? "" : " off"} cf-next">Next</button>`}
     </div>
     <div class="cf-scroll">
@@ -6085,10 +6085,14 @@ document.getElementById("stage").addEventListener("click", e => {
       return;
     }
     const cfAdd = e.target.closest(".ig-add");
-    if (cfAdd) { V.step = 1; renderSub(scr); return; }
+    if (cfAdd) { V._orderSnap = V.order.slice(); V.step = 1; renderSub(scr); return; }
+    /* add-media picker — < cancels the additions, Done keeps them */
+    const cfAddCancel = e.target.closest(".cf-add-cancel");
+    if (cfAddCancel) { if (V._orderSnap) { V.order = V._orderSnap; V._orderSnap = null; } V.step = 2; renderSub(scr); return; }
+    const cfAddDone = e.target.closest(".cf-add-done");
+    if (cfAddDone) { V._orderSnap = null; V.step = 2; renderSub(scr); return; }
     const cfBk = e.target.closest(".cf-back2");
     if (cfBk) {
-      if (V.editPid) { V.step = 2; renderSub(scr); return; }
       V.step = V.tab === "clip" ? "pv" : 1;
       cf.classList.remove("cap-open");
       return;

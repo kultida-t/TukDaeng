@@ -27,6 +27,7 @@ PASS add-media picker opens (title + Done + no Post/Clip tabs)
 PASS picker cell appends media (order=3, radio shows 3)
 PASS adding beyond 10 blocked + toast
 PASS picker Done returns to Edit info with 3 thumbs
+PASS picker < cancels added media (back to 3 thumbs)
 PASS remove down to 1 media ok
 PASS removing last media blocked + toast
 PASS add-media via picker restores 2 thumbs
@@ -50,4 +51,4 @@ PASS audience options still there
 PASS light theme own menu renders
 PASS no console/page errors
 
-46 passed, 0 failed
+47 passed, 0 failed

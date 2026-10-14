@@ -22,7 +22,7 @@ toggle post.noComments → ปุ่ม comment หายจากการ์�
 
 เคส 6: Edit — ผ่าน (ปรับตาม feedback รอบ 3 — Edit info เหมือนหน้า Add)
 เลือก Edit → เปิด composer หน้า "Edit info" (Cancel / Done แทน Share) preload ข้อมูลโพสต์:
-- media เดิมแสดงเป็น thumbs (clip มี dur badge) + tile "+" เพิ่มรูป/คลิปผ่าน picker "Add photos or clips" (มีปุ่ม Done กลับหน้า Edit info)
+- media เดิมแสดงเป็น thumbs (clip มี dur badge) + tile "+" เพิ่มรูป/คลิปผ่าน picker "Add photos or clips" (Done = ยืนยันรูปที่เพิ่ม, < = ยกเลิกคืนค่าเดิม)
 - กดค้างลาก thumb สลับตำแหน่งได้ (ไม่มี hint text ตาม feedback รอบ 4)
 - ลบรูปด้วย × ได้ แต่กันไม่ให้เหลือ 0 — toast "Post needs at least 1 photo or clip"
 - เพิ่มเกิน 10 ชิ้นถูกบล็อก — toast "You can add up to 10 photos or clips"
@@ -48,5 +48,5 @@ confirm dialog "Delete post?" → ลบออกจาก POSTS + ลบกา�
 เคส 11: Light theme — ผ่าน
 เมนู render ถูกทั้ง dark/light
 
-Verification: node _verify_pm_own.mjs → 46 passed, 0 failed, 0 console errors
+Verification: node _verify_pm_own.mjs → 47 passed, 0 failed, 0 console errors
 Screenshots: Prototypes/screenshots/task-FEED-024/pm-own-*.png

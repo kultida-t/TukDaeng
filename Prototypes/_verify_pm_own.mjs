@@ -163,9 +163,18 @@ await page.evaluate(() => { // restore draft to the 3 edited media, back to Edit
   cpState(scr).order.splice(3);
   renderSub(scr);
 });
-await page.locator('.cf-head .cf-act.cf-back2').click(); // Done in add-media picker → Edit info
+await page.locator(".cf-add-done").click(); // Done in add-media picker → Edit info
 await page.waitForTimeout(400);
 check("picker Done returns to Edit info with 3 thumbs", await mediaThumbs().count() === 3);
+
+// picker "<" cancels additions — order restored to the snapshot
+await page.locator(".cf .ig-thumb.ig-add").click();
+await page.waitForTimeout(300);
+await page.locator(".cf .ig-grid .cell[data-i]").nth(2).click();
+await page.waitForTimeout(200);
+await page.locator(".cf-add-cancel").click();
+await page.waitForTimeout(350);
+check("picker < cancels added media (back to 3 thumbs)", await mediaThumbs().count() === 3);
 
 // 8d. remove media — down to 1 allowed, removing the last is blocked
 await mediaThumbs().nth(2).locator(".rm-mini").click();
@@ -181,7 +190,7 @@ check("removing last media blocked + toast", await mediaThumbs().count() === 1 &
 await page.locator(".cf .ig-thumb.ig-add").click();
 await page.waitForTimeout(300);
 await page.locator(".cf .ig-grid .cell[data-i]").nth(1).click();
-await page.locator(".cf-head .cf-act.cf-back2").click();
+await page.locator(".cf-add-done").click();
 await page.waitForTimeout(350);
 check("add-media via picker restores 2 thumbs", await mediaThumbs().count() === 2);
 
