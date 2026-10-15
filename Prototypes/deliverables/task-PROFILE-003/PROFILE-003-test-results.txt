@@ -1,0 +1,92 @@
+_verify_pfg.mjs (ใหม่ — PROFILE-003)
+-----------------------------------
+PASS viewer profile opened
+PASS no blue verified badge anywhere
+PASS grid filled: 13 tiles (1 real + 12 mock) — 13
+PASS posts stat syncs to tile count = 13 — 13
+PASS 3 viewer tabs All/Sale/Show
+PASS viewer head = back + bell + more
+PASS followed-by row intact
+PASS Follow button is theme red (--red #c8212b) — rgb(200, 33, 43)
+PASS Sale tab = 6 tiles (p1 + 5 sale gfx) — 6
+PASS Show tab = 4 tiles (show gfx) — 4
+PASS viewer has no Hide/Sold tabs
+PASS posts viewer opens over viewer profile
+PASS title Posts / Watch 777 + 13 cards — 13
+PASS pv head shows Follow pill (IG-style, unfollowed)
+PASS no per-card follow buttons in Posts viewer
+PASS head follow flips to Following
+PASS head follow auto-hides after following (IG behaviour)
+PASS no per-card follow buttons after unfollow cycle
+PASS gfx card renders feed-style (caption + actions + liked-by w/o count)
+PASS gfx like toggles -> liked class (no count, feed parity)
+PASS other-user gfx post ... -> Not interested/Report (no own menu)
+PASS Tap for details expands inline
+PASS detail opens over viewer — pv stays mounted (no flicker)
+PASS detail page renders
+PASS detail-back returns to Posts viewer (not grid)
+PASS gfx sale card expands details inline
+PASS gfx post opens full detail (findPost resolves registry)
+PASS detail-back from gfx detail returns to Posts viewer
+PASS back lands on Watch 777 profile
+PASS head follow synced to profile button
+PASS Following opens manage sheet
+PASS add to favorites toggles row in place
+PASS mute opens feed-style confirm dialog
+PASS mute confirm closes dialog
+PASS unfollow acts immediately — no confirm (IG)
+PASS unfollow resets favorite + muted state
+PASS reopen gfx post -> liked state persisted
+PASS follow pill returns as Follow after unfollow
+PASS search profiles finds chrono.th
+PASS chrono.th viewer profile opened — chrono.th
+PASS chrono.th grid filled (>1 tile, real+mock) — 10
+PASS chrono.th posts stat = tile count — 10 vs 10
+PASS chrono.th no verified badge
+PASS follow toggles to Following (gray, not primary)
+PASS all seller profiles have filled grids + synced counts — 11 sellers
+PASS viewer profile + grid render light theme
+PASS viewer action button uses theme color (no leftover IG blue) — rgb(200, 33, 43)
+PASS no console errors
+
+0 failed / 0 console errors
+
+Regression
+----------
+_verify_profile.mjs     — 0 failed / 0 console errors (แก้ stale checks:
+                          pf-vb badge removed → expect count 0; viewer grid
+                          Watch 777 >=1 → === 13 tiles; discover-people btn
+                          ถูกถอด → expect count 0 + เช็คความสูง Follow/Message
+                          เท่ากัน; เมนู … บนโปรไฟล์คนอื่นเป็น IG action-sheet
+                          Report/Block/About/Copy/Share + Cancel — assert
+                          rows + ไม่มี Restrict/shared activity/hide story/
+                          QR + Report เปิดหน้า report "this account" ที่
+                          stack ทับโปรไฟล์ + Cancel ปิดเฉย ๆ)
+_verify_pfp.mjs         — 0 failed / 0 console errors (feed parity + privacy:
+                          เลขไลค์ข้าง ♡ เฉพาะ own posts / liked-by "and others"
+                          ไม่มีตัวเลข / no music / no comment preview /
+                          views-stat present)
+_verify_feed_saved.mjs  — ALL PASS / 0 console errors (saved feed viewer ใช้
+                          pv→detail path เดียวกัน — back ตอนนี้กลับ viewer)
+_verify_feed_posts.mjs  — DONE / ผ่าน (feed card details flow ไม่กระทบ)
+
+รอบล่าสุด — gfx sale details
+---------------------------
+gfx posts ที่ pfkind "sale" ได้ mock spec set จริง (PF_GFX_SALE — 4 variants
+หมุนตาม index: Datejust 41 / BB58 / Seamaster 300M / Santos) → type:"sale" +
+price + chips + specs + specGroups + desc ทำให้ "Tap for details" / Ask pill /
+View full detail ทำงานเหมือน sale post จริงในฟีด (own profile ด้วย — own grid
+idx0 เป็น sale → มี details).  handler .view-full เปลี่ยน POSTS.find → findPost
+เพื่อ resolve registry posts; detail-back กลับ Posts viewer ตาม fix รอบก่อน
+
+รอบล่าสุด — profile … menu ตาม IG
+-----------------------------------
+pf-more sheet เปลี่ยนจาก icon-card 2 แถวเป็น IG action-sheet: แถว text
+กึ่งกลาง (.pm-ctr) — Report (แดง) / Block / About this account /
+Copy profile URL / Share this profile + Cancel แยก card ล่าง
+(.pm-card.pm-cancel); Report wire เข้าหน้า report เดิมผ่าน variant
+report:user ("Why are you reporting this account?") ด้วย pushSub —
+back กลับโปรไฟล์; pg-up slide-up class ขยายเป็น startsWith("report");
+Block/About → toast "Not in this prototype yet" ตาม pattern เดิม;
+ตัด Restrict/See shared activity/Hide your story/QR code ตาม spec —
+verify เพิ่ม 6 checks ใน _verify_profile.mjs section 10

@@ -106,7 +106,7 @@ check("no discover-people btn on own", await sub().locator(".pf-addp").count() =
 await sub().locator('.pf-iconbtn[data-sub="portfolio"]').click();
 await page.waitForTimeout(350);
 check("portfolio page opens", (await sub().locator(".detail-title").textContent()).trim() === "Portfolio");
-check("total value card", (await sub().locator(".pfo-total").textContent()).includes("Total asset value") && /THB [\d,]+/.test(await sub().locator(".pfo-total b").textContent()));
+check("total value card", (await sub().locator(".pfo-total").textContent()).includes("Total invested") && /THB [\d,]+/.test(await sub().locator(".pfo-total b").textContent()));
 check("asset rows with values", await sub().locator(".pfo-row").count() === 9 && await sub().locator(".pfo-val").count() === 9);
 await page.screenshot({ path: `${OUT}/d-profile-portfolio.png` });
 await sub().locator(".sub-back").click();
@@ -122,13 +122,17 @@ check("feed nav exits profile", !(await scr().getAttribute("class")).includes("s
 await scr().locator(".feed-scroll .post").first().locator(".post-head .avatar-ring").click();
 await page.waitForTimeout(400);
 check("viewer profile opens", await scr().getAttribute("class").then(c => c.includes("sub-open")));
-check("viewer header username + verified", (await sub().locator(".pf-vname").textContent()).includes("Watch 777") && await sub().locator(".pf-vname .pf-vb").count() === 1);
+check("viewer header username (no blue verified badge — removed per PROFILE-003)", (await sub().locator(".pf-vname").textContent()).includes("Watch 777") && await sub().locator(".pf-vb").count() === 0);
 check("viewer back + more", await sub().locator(".pf-head .sub-back").count() === 1 && await sub().locator(".pf-more").count() === 1);
-check("viewer keeps discover-people btn (no portfolio)", await sub().locator(".pf-addp").count() === 1 && await sub().locator('[data-sub="portfolio"]').count() === 0);
+check("viewer has no discover-people btn (IG parity)", await sub().locator(".pf-addp").count() === 0 && await sub().locator('[data-sub="portfolio"]').count() === 0);
 check("Follow/Message buttons", /^(Follow|Following)\s*\|Message/.test((await sub().locator(".pf-actions .pf-btn").allTextContents()).join("|")), (await sub().locator(".pf-actions .pf-btn").allTextContents()).join("|"));
+check("Follow/Message equal height (IG parity)", await sub().locator(".pf-actions").evaluate(el => {
+  const btns = [...el.querySelectorAll(".pf-btn")].map(b => Math.round(b.getBoundingClientRect().height));
+  return btns.length === 2 && btns[0] === btns[1];
+}));
 check("followed-by row", (await sub().locator(".pf-fby").textContent()).includes("Followed by"));
 check("no note/sleep/add-badge on viewer", await sub().locator(".pf-note").count() === 0 && await sub().locator(".pf-sleep").count() === 0 && await sub().locator(".pf-avadd").count() === 0);
-check("viewer post grid populated", await sub().locator(".pf-tile").count() >= 1, String(await sub().locator(".pf-tile").count()));
+check("viewer post grid populated (13 = 1 real + 12 mock)", await sub().locator(".pf-tile").count() === 13, String(await sub().locator(".pf-tile").count()));
 await page.screenshot({ path: `${OUT}/d-profile-viewer.png` });
 
 // ============ 8) follow syncs to feed ============
@@ -149,14 +153,31 @@ await page.locator(".pv-back").click();
 await page.waitForTimeout(350);
 check("back lands on same profile", (await sub().locator(".pf-vname").textContent()).includes("Watch 777"));
 
-// ============ 10) ... menu sheet ============
+// ============ 10) ... menu sheet (IG-style, app-relevant only) ============
 await sub().locator(".pf-more").click();
 await page.waitForTimeout(300);
 check("profile ... sheet opens", await scr().getAttribute("class").then(c => c.includes("pm-open")));
-check("sheet has copy/share rows", await page.locator(".comment-sheet .pm-row").count() === 2);
+const pmLabels = await page.locator(".comment-sheet.pm .pm-row span").allTextContents();
+check("IG menu rows = Report/Block/About/Copy/Share + Cancel",
+  pmLabels.join("|") === "Report|Block|About this account|Copy profile URL|Share this profile|Cancel", pmLabels.join("|"));
+check("no Restrict/shared-activity/hide-story/QR rows", !pmLabels.some(t => /restrict|shared activity|story|qr code/i.test(t)));
+check("Report row is danger-styled", await page.locator(".pf-sh-report.danger").count() === 1);
+await page.screenshot({ path: `${OUT}/d-profile-more-menu.png` });
+await page.locator(".pf-sh-report").click();
+await page.waitForTimeout(400);
+check("Report opens account-report page", (await page.locator(".pm-rp-q").textContent()).includes("account"));
+await page.locator(".rp-x").click();
+await page.waitForTimeout(350);
+await sub().locator(".pf-more").click();
+await page.waitForTimeout(300);
 await page.locator(".pf-sh-copy").click();
 await page.waitForTimeout(300);
 check("copy link -> toast", (await page.locator(".sc-toast").textContent()).includes("copied"));
+await sub().locator(".pf-more").click();
+await page.waitForTimeout(300);
+await page.locator(".pf-sh-cancel").click();
+await page.waitForTimeout(300);
+check("Cancel closes sheet silently", !(await scr().getAttribute("class")).includes("pm-open"));
 
 // ============ 10b) avatar tap -> full view overlay ============
 await sub().locator("[data-pfav]").click();

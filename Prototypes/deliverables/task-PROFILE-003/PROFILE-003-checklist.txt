@@ -1,0 +1,135 @@
+PROFILE-003 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: PROFILE-003 เติม mock grid โพสต์ให้หน้าโปรไฟล์คนอื่น + sync posts count
+      + audit viewer profile เทียบ IG
+ไฟล์: Prototypes/fo-flow/index.html, Prototypes/_verify_pfg.mjs (ใหม่),
+      Prototypes/_verify_profile.mjs (แก้ stale checks: badge ถูกถอด + Watch 777 grid 13 tiles)
+ผลตรวจ: รอผู้ใช้รีวิว
+
+เคส 1: grid โปรไฟล์คนอื่นเต็มแล้ว — ผ่าน (automated)
+  ทุก PROFILES entry ที่ไม่ใช่ own ได้ grid เพิ่มผ่าน pool PF_IMGS (16 รูป
+  asset-uploads เดิม) + helper pfGrid(offset, n) ที่ rotate pool ให้แต่ละ
+  โปรไฟล์ได้ชุดรูปต่างกัน — Watch 777 = 12 mock + โพสต์จริง p1 = 13 tiles,
+  the watch/watch.daily = 12, chrono.th/dial.dude/wrist.story = 9 (+โพสต์จริง),
+  ที่เหลือ 6; ทุก seller ใน feed (11 กระโดดเข้าได้จาก avatar) มี grid >1 tile
+
+เคส 2: posts count sync — ผ่าน (automated)
+  stat "posts" บน viewer profile เปลี่ยนจาก userPosts.length (โพสต์จริงอย่างเดียว
+  → Watch 777 เคยโชว์ "1") เป็น pfTabPosts(uname,"all").length = จำนวน tile
+  จริงในแท็บ All — Watch 777 โชว์ "13", chrono.th โชว์ "10" ตรง tile พอดี;
+  own profile ยังคง "344" ตามที่ล็อก (field posts ใน PROFILES)
+
+เคส 3: tabs + Posts viewer — ผ่าน (automated)
+  gfx posts เข้าแท็บตาม pfkind cycle เดิม — Watch 777: All=13 / Sale=6
+  (p1 + gfx 5) / Show=4 (viewer ไม่มี Hide/Sold tab); แตะ tile gfx → Posts
+  viewer "Posts / Watch 777" 13 การ์ด feed-style; เมนู … บน gfx ของคนอื่น
+  ยังเป็น Not interested/Report (ไม่มี own menu); กด ♡ แล้วปิด-เปิดใหม่
+  state ยังอยู่ (PF_GFX_REG reuse); back กลับโปรไฟล์เดิม
+
+เคส 4: audit viewer profile เทียบ IG + ปรับธีม — ผ่าน (automated + รอตรวจตา)
+  header (back + username + bell + …), stats row, cat/bio/link/@handle chips,
+  followed-by row, Follow/Message/discover row — โครงตรง IG เดิม;
+  การเปลี่ยนแปลงที่ user อนุมัติ: ถอด blue verified badge ออกจาก header +
+  ชื่อ disp (PF_BADGE + .pf-vb ถูกลบ, flag verified ยังอยู่ใน mock data),
+  และปุ่ม primary ทั้งหมดใน flow profile เปลี่ยนจาก IG blue #2f7df6 เป็น
+  --red #c8212b (Follow, Save บน Edit profile, Share a post บน empty state,
+  Edit picture link) ให้ตรงธีม TukDaeng ที่หน้าอื่นใช้อยู่แล้ว;
+  render ได้ทั้ง dark/light
+
+เคส 5: fix nav bug จาก user report — ผ่าน (automated)
+  เดิม: กด tile → Posts viewer → Tap for details → View full detail
+  ปิด pv ทิ้ง (remove pv-open) ทำให้ (1) จอแว๊บเพราะ viewer slide ออก
+  พร้อม detail slide เข้า (2) กด back จาก detail ตกลงหน้า grid แทน
+  ที่จะกลับ Posts viewer. แก้โดย .page-detail z-index 33→35 (เหนือ
+  .page-pv 34) และ view-full ไม่ remove pv-open อีก — detail slide ทับ
+  viewer ที่ mount ค้างไว้, detail-back pop กลับเจอ viewer เดิม
+  (scroll position คงเดิม); comment sheet ที่เปิดจาก detail ไม่รับ class
+  nt (title ถูกซ่อนสำหรับ pv เท่านั้น) แก้เงื่อนไขเป็น pv-open &&
+  !detail-open; ใช้ได้กับทุก pv→detail path (profile posts, immersive
+  search viewer, saved/wishlist feed viewer)
+
+เคส 6: การ์ด Posts viewer เหมือนการ์ดฟีดเป๊ะ — ผ่าน (automated)
+  ตาม feedback ผู้ใช้ — pfpPostHTML ปรับให้ตรง postCard ของฟีด: ถอดแถว
+  เพลงใต้ชื่อ (แอปเราไม่มีเพลง — เหลือ sub-line เฉพาะ location เหมือนฟีด),
+  ถอดแถว comment preview (ดูคอมเมนต์ต้องกดไอคอนคอมเมนต์ → comments sheet
+  เดิม), เพิ่ม views-stat (👁) ตรงกลาง actions เหมือนฟีด, Ask pill ใช้
+  เงื่อนไขเดียวกับฟีด (p.type === "sale"); โบนัส fix: follow-btn handler
+  เปลี่ยน POSTS.find → findPost ทำให้ปุ่ม Follow บน gfx card ใช้ได้จริง
+
+เคส 7: like count เป็น private — ผ่าน (automated)
+  ตาม feedback ผู้ใช้: เลขไลค์ข้าง ♡ แสดงเฉพาะโพสต์ตัวเองใน Posts viewer
+  ของ own profile (seller === king.mr.fox → gfx posts ตัวเองนับด้วย),
+  โปรไฟล์คนอื่นและฟีดไม่แสดง; แถว "Liked by X and N others" ตัดเลขออก
+  เหลือ "Liked by X and others" ทุก surface (feed card / detail page /
+  posts viewer) — สอดคล้อง copy เดิมของแอป "Only {seller} can see the
+  total number of likes on this post"
+
+เคส 8: gfx sale posts มีรายละเอียด (Tap for details) — ผ่าน (automated)
+  เดิม gfx posts ทุกใบเป็น showcase specs ว่าง → own profile Posts viewer
+  ไม่มีโพสต์ที่กางรายละเอียดได้เลย; เพิ่ม PF_GFX_SALE (4 variants หมุนตาม
+  index: Datejust 41 / BB58 / Seamaster 300M / Santos) แปะลง gfx posts
+  ที่ pfkind "sale" → type:"sale" + price + chips + specs + specGroups +
+  desc — การ์ดได้ Tap for details + Ask pill + แถว details กางได้ และ
+  View full detail เปิด detail page จริง (handler .view-full เปลี่ยน
+  POSTS.find → findPost เพื่อ resolve registry posts); ใช้ได้ทุกโปรไฟล์
+  รวม own profile (own grid idx0/2/6 = sale) — tab counts ไม่ขยับ
+
+เคส 9: ปุ่ม Follow ย้ายขึ้น header ของ Posts viewer — ผ่าน (automated)
+  ตาม reference IG: head "Posts / {user}" มี pill Follow ขวาบนเมื่อ
+  โปรไฟล์ยังไม่ได้ follow (own profile ไม่มี pill), การ์ดแต่ละใบใน viewer
+  ไม่มีปุ่ม Follow แล้ว (ถอด .follow-btn ออกจาก pfpPostHTML post-head —
+  แก้ side-effect เดิมที่ own cards ก็โชว์ Follow เพราะไม่มี field
+  following); pill ใช้ pf-foll เดิม → pfSetFollow sync กับปุ่มบนหน้า
+  profile + POSTS, toggle ได้ Follow↔Following; สีเป็น gray pill
+  (--btn-gray) ตาม reference IG + ตรง .follow-btn บนการ์ดฟีด — ไม่ใช้
+  แดงเพราะดึงสายตาเกินบน head ที่โผล่ตลอด; pill หลบเองหลัง follow
+  ตาม IG — render เฉพาะตอนยังไม่ follow, กดแล้ว flip เป็น Following
+  ~1.2s แล้ว fade ออก (unfollow ทำจากหน้า profile); fix: setFollowing
+  ตอน unfollow เคย insertAdjacentHTML follow-btn กลับเข้า post-head
+  ของ .pfp-post → guard ด้วย art.classList.contains("pfp-post")
+
+เคส 10: action row ของ viewer profile ตรง IG — ผ่าน (automated)
+  ถอดปุ่ม person+ (discover people / .pf-addp) ออกจาก actions เหลือ
+  Follow + Message สองปุ่ม flex เท่ากันตาม reference; ล็อกความสูงปุ่ม
+  ให้เท่ากันเป๊ะ (.pf-actions .pf-btn { height:38px; padding:0 }) —
+  _verify_profile.mjs แก้ check "viewer keeps discover-people" →
+  "no discover-people btn" + เพิ่ม assert ความสูงปุ่มเท่ากัน
+
+เคส 11: Following ⌄ เปิด manage sheet ตาม IG — ผ่าน (automated)
+  เดิมกด Following แล้ว unfollow ทันที; ตอนนี้เปิด sheet ชื่อ username
+  มี 3 rows: Add to favorites (star toggle เป็น Remove from favorites
+  ในแถวเดิม ไม่มี toast — wire เข้า setFavorite/pfSetFav), Mute (ไม่มี
+  chevron เพราะไม่ใช่ sub-page — เปิด confirm dialog กลางจอชุดเดียวกับ
+  หน้าฟีด "Mute {user}?" → Mute posts/Cancel, wire เข้า setMuted/
+  pfSetMuted), Unfollow → unfollow ทันทีไม่มี confirm/ไม่มี toast (ตาม
+  flow IG ในคลิปที่ user ส่ง) + ปุ่มบน profile flip เป็น Follow และ
+  reset ค่าค้าง: favorite + muted ถูกเคลียร์ (setFollowing set
+  p.muted=false + extras ลบ PF_EXTRA_FAV/PF_EXTRA_MUT) → ชื่อหลุดจาก
+  Favorites/Muted lists ใน Settings; feed re-render เพื่อเอาโพสต์ที่
+  เคย mute กลับมา (unfollowed แต่ไม่ mute แล้ว);
+  helpers ใหม่ PF_EXTRA_FAV/PF_EXTRA_MUT สำหรับ
+  profile ที่ไม่มี post จริง; pv head pill ไม่เปิด sheet (quick-toggle
+  ตาม flow ก่อนหน้า)
+
+เคส 12: เมนู … บนหัวโปรไฟล์คนอื่นตาม IG — ผ่าน (automated)
+  เดิมเป็น card 2 แถว icon+text (Copy profile link / Share this profile);
+  ตอนนี้เป็น IG action-sheet — แถวตัวหนังสือกึ่งกลางบน card เดียว +
+  Cancel แยก card ล่าง: Report (แดง) → เปิดหน้า report เต็มจอเดิม
+  (variant report:user — คำถาม "Why are you reporting this account?")
+  โดย pushSub stack ทับโปรไฟล์ (back กลับโปรไฟล์ไม่ใช่ฟีด) /
+  Block / About this account → toast "Not in this prototype yet" /
+  Copy profile URL + Share this profile → toast "Profile link copied" /
+  Cancel ปิด sheet เฉย ๆ; ตัด Restrict / See shared activity /
+  Hide your story / QR code ออกตามที่ user กำหนด (เมนูโผล่เฉพาะ
+  โปรไฟล์คนอื่น — own profile ไม่มีปุ่ม … อยู่แล้ว)
+
+หมายเหตุ:
+- gap ที่เหลือจาก audit: ไม่มี empty state บน viewer profile แล้ว หลังเติม
+  grid ทุกโปรไฟล์ (ทุกแท็บ Sale/Show มีโพสต์อย่างน้อย 2) — โค้ด empty state
+  pfEmptyHTML ยังอยู่พร้อมใช้ถ้าโปรไฟล์ไหนไม่มี grid ในอนาคต
+- own profile layout/behaviour ที่ล็อก (PROFILE-001) ไม่ถูกแตะ — แก้เฉพาะ
+  สีปุ่ม primary ตามที่ user อนุมัติ (follow เป็น --red เหมือนหน้าอื่น);
+  viewer ของ Search/Saved/Wish List/Archive ไม่ถูกแตะ
+- pre-existing baseline fails เดิม (ไม่เกี่ยว task นี้):
+  _verify_feed_search "Tags tab", _verify_feed_menu post-head .more,
+  _verify_flow clip tab

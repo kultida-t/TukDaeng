@@ -392,11 +392,11 @@ l<!DOCTYPE html>
     gap: 10px;
     padding: 10px 14px 10px 16px;
   }
+  /* PROFILE-003 — no red ring on avatars anywhere (IG parity): keep the class
+     for click targeting (.post-head .avatar-ring opens profile) but render plain */
   .avatar-ring {
     width: 38px; height: 38px;
     border-radius: 50%;
-    padding: 2px;
-    background: linear-gradient(45deg, var(--red), #7a1218);
     flex-shrink: 0;
   }
   .avatar-ring img {
@@ -404,7 +404,6 @@ l<!DOCTYPE html>
     border-radius: 50%;
     object-fit: cover;
     display: block;
-    border: 2px solid var(--bg);
   }
   .post-head .who { flex: 1; min-width: 0; }
   .post-head .name {
@@ -818,7 +817,7 @@ l<!DOCTYPE html>
     background: var(--bg);
     transform: translateX(100%);
     transition: transform .28s ease;
-    z-index: 33;
+    z-index: 35; /* above .page-pv (34) — viewer stays mounted underneath so detail-back reveals it */
     display: flex;
     flex-direction: column;
   }
@@ -962,9 +961,11 @@ l<!DOCTYPE html>
   }
   .screen.comments-open .sheet-backdrop,
   .screen.unfollow-open .sheet-backdrop,
+  .screen.mf-open .sheet-backdrop,
   .screen.pm-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
   .screen.comments-open .comment-sheet,
   .screen.unfollow-open .comment-sheet,
+  .screen.mf-open .comment-sheet,
   .screen.pm-open .comment-sheet { transform: none; }
   .comment-sheet.uf { height: auto; }
   .uf-body {
@@ -1021,6 +1022,24 @@ l<!DOCTYPE html>
   .pm-row svg { flex-shrink: 0; }
   .pm-row + .pm-row { border-top: 1px solid var(--line); }
   .pm-row.danger { color: var(--red); }
+  .pm-row.pm-ctr { justify-content: center; } /* IG action-sheet parity — centered plain rows */
+  .comment-sheet.pm .pm-card.pm-rows { margin-bottom: 8px; }
+  .comment-sheet.pm .pm-card.pm-cancel { margin-top: 0; margin-bottom: 22px; }
+  /* ============ FOLLOWING manage sheet (PROFILE-003 — IG "Following ⌄" flow) ============ */
+  .comment-sheet.mf { height: auto; }
+  .screen.mf-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
+  .screen.mf-open .comment-sheet { transform: none; }
+  .comment-sheet.mf .sheet-title { font-size: 16px; } /* IG: username head is a touch bigger */
+  .mf-list { padding-bottom: 38px; } /* IG parity — roomy gap under the last row */
+  .mf-row {
+    width: 100%; display: flex; align-items: center; gap: 14px;
+    font-family: var(--font-main); font-size: 15px; font-weight: 400; color: var(--text);
+    background: none; border: none; padding: 15px 18px; cursor: pointer; text-align: left;
+  }
+  .mf-row > svg, .mf-row > .tg-sw { margin-left: auto; flex-shrink: 0; }
+  .mf-row > svg { color: var(--muted); }
+  .mf-row + .mf-row { border-top: 1px solid var(--line); }
+
   .pm-undo {
     font-family: var(--font-main);
     font-size: 14px; font-weight: 600;
@@ -1525,6 +1544,20 @@ l<!DOCTYPE html>
   /* saved-feed viewer variant — IG Saved post list (feed cards, normal scroll) */
   .page-pv.feed { background: var(--bg); }
   .page-pv.feed .pv-track { scroll-snap-type: none; }
+  /* PROFILE-002 — IG "Posts" surface (opened from a profile grid): feed-style cards,
+     photos stacked vertically, continuous scroll */
+  .page-pv.pfp { background: var(--bg); }
+  .page-pv.pfp .pv-track { scroll-snap-type: none; }
+  .pfp-tt { display: flex; flex-direction: column; align-items: center; line-height: 1.25; }
+  .pfp-tt b { font-size: 16px; font-weight: 700; }
+  .pfp-tt span { font-size: 12px; font-weight: 500; color: var(--muted); }
+  /* IG-style Follow lives in the viewer head, not on each card — gray pill like the feed card;
+     fades out shortly after the user follows (IG behaviour: head pill auto-hides) */
+  .pfp-follow { flex-shrink: 0; background: var(--btn-gray); color: var(--text); border: none;
+    border-radius: 8px; padding: 6px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: opacity .22s; }
+  .pfp-follow.on { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+  .comment-preview .c-like { flex-direction: row; padding-top: 0; font-size: 0; }
   .pv-add {
     position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 3;
     display: flex; align-items: center; cursor: pointer;
@@ -2194,7 +2227,7 @@ l<!DOCTYPE html>
     white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.45);
   }
   #flowToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open, .screen.details-open, .screen.hb-open, .screen.wa-open) #themeToggle {
+  body:has(.screen.comments-open, .screen.unfollow-open, .screen.pm-open, .screen.mf-open, .screen.dialog-open, .screen.likes-open, .screen.share-open, .screen.save-open, .screen.details-open, .screen.hb-open, .screen.wa-open) #themeToggle {
     opacity: 0; pointer-events: none;
   }
   @media (max-width: 480px) {
@@ -2882,7 +2915,6 @@ l<!DOCTYPE html>
   }
   .pf-uname svg { opacity: .85; }
   .pf-vname { display: flex; align-items: center; gap: 4px; font-size: 16.5px; font-weight: 700; letter-spacing: .2px; }
-  .pf-vb { flex-shrink: 0; }
   .pf-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
   .pf-scroll::-webkit-scrollbar { display: none; }
   .pf-top { display: flex; align-items: center; gap: 22px; padding: 12px 16px 4px; }
@@ -2899,7 +2931,7 @@ l<!DOCTYPE html>
     position: absolute; left: 22px; top: 100%; width: 8px; height: 8px;
     background: var(--surface-2); border-radius: 50%;
   }
-  .pf-av { width: 80px; height: 80px; padding: 3px; display: block; cursor: pointer; border-radius: 50%; }
+  .pf-av { width: 80px; height: 80px; display: block; cursor: pointer; border-radius: 50%; }
   .pf-av img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
   .pf-avadd {
     position: absolute; right: 0; bottom: 2px;
@@ -2984,8 +3016,10 @@ l<!DOCTYPE html>
     font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 6px;
   }
-  .pf-btn.primary { background: #2f7df6; color: #fff; }
+  .pf-btn.primary { background: var(--red); color: #fff; }
   .pf-btn.pf-iconbtn { flex: 0 0 40px; }
+  /* IG parity — action buttons share one fixed height (Follow == Message); ~34px like IG */
+  .pf-actions .pf-btn { height: 34px; padding: 0; }
   /* PORTFOLIO-001 — owner-only portfolio dashboard + asset list + sold history (spec 14) */
   .pfo-scroll { padding-bottom: 34px; }
   .pfo-total {
@@ -3118,7 +3152,7 @@ l<!DOCTYPE html>
   /* edit profile */
   .pe-av { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 18px 16px 6px; }
   .pe-av img { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; }
-  .pe-pic { background: none; border: none; color: #2f7df6; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; padding: 2px 8px; }
+  .pe-pic { background: none; border: none; color: var(--red); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; padding: 2px 8px; }
   .pe-f { display: flex; flex-direction: column; gap: 5px; padding: 9px 16px; }
   .pe-f span { font-size: 12.5px; color: var(--muted); font-weight: 600; }
   .pe-in {
@@ -3150,6 +3184,7 @@ const POSTS = [
     time: "3 days ago",
     following: false,
     favorite: false,
+    music: "gamza · Smile Again",
     type: "sale",
     photos: [
       "./assets/asset-uploads/ast-8831-1.png",
@@ -3805,7 +3840,7 @@ function igBodyHTML(p, withPostHead) {
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
-      <span>Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
+      <span>Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others</span>
     </div>`}
     <p class="caption"><b>${p.seller}</b> ${igCaptionHTML(p)}</p>
     <div class="detail-pad">
@@ -4022,10 +4057,10 @@ function wlSheetHTML(p) {
 /* shared sheet opener — comment-sheet is a singleton, swap variant class + content */
 function openSheet(scr, variantCls, openCls, html) {
   const cs = scr.querySelector(".comment-sheet");
-  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "so", "dt", "nt", "ps", "nc", "wl", "wa");
+  cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "so", "dt", "nt", "ps", "nc", "wl", "wa", "mf");
   cs.classList.add(variantCls);
   cs.innerHTML = html;
-  scr.classList.remove("comments-open", "unfollow-open", "pm-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
+  scr.classList.remove("comments-open", "unfollow-open", "pm-open", "mf-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
   scr.classList.add(openCls);
 }
 
@@ -4099,6 +4134,8 @@ function refreshPostViews(scr, p) {
     const phi = Math.max(0, img ? p.photos.indexOf(img.getAttribute("src")) : 0);
     sec.outerHTML = pvPostHTML(p, phi);
   });
+  scr.querySelectorAll(`.pfp-post[data-pid="${p.id}"]`).forEach(a => { a.outerHTML = pfpPostHTML(p); });
+  scr.querySelectorAll(`.pf-tile[data-pid="${p.id}"] img`).forEach(im => { im.src = p.photos[0]; });
   if (scr.dataset.detailPid === p.id && scr.classList.contains("detail-open")) openPostDetail(scr, p);
 }
 
@@ -4200,7 +4237,7 @@ function postCard(p, variant) {
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
-      <span>Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
+      <span>Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others</span>
     </div>`}
 
     ${(p.caption || p.captionFull) ? `<p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">more</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
@@ -4248,8 +4285,9 @@ function setFeedTab(scr, tab) {
    a button that is already rendered flips Follow<->Following in place so a
    fresh follow can be undone; after a re-render followed posts have no button */
 function setFollowing(scr, seller, on) {
-  POSTS.forEach(p => { if (p.seller === seller) { p.following = on; if (!on) p.favorite = false; } });
+  POSTS.forEach(p => { if (p.seller === seller) { p.following = on; if (!on) { p.favorite = false; p.muted = false; } } }); /* unfollow also clears favorite+mute so they drop off the Settings lists */
   scr.querySelectorAll(".feed-scroll .post, .page-sub .post, .page-pv .post").forEach(art => {
+    if (art.classList.contains("pfp-post")) return; /* Posts viewer cards never carry a follow btn — it lives in the pv head */
     const bp = POSTS.find(x => x.id === art.dataset.pid);
     if (!bp || bp.seller !== seller) return;
     const fb = art.querySelector(".follow-btn");
@@ -4268,7 +4306,7 @@ function setFollowing(scr, seller, on) {
     db.classList.toggle("on", dp.following);
     db.textContent = dp.following ? "Following" : "Follow";
   }
-  if (state.feedTab === "following" || state.feedTab === "favorites")
+  if (state.feedTab === "following" || state.feedTab === "favorites" || !on) /* !on → unmuted posts may re-enter the feed */
     scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
 }
 
@@ -4606,9 +4644,77 @@ function pvDetailsSheetHTML(p) {
 function svfPostHTML(p) {
   return `<div class="svf-post" data-pid="${p.id}">${postCard(p, state.variant)}</div>`;
 }
-function openPostViewer(scr, posts, pid, phi = 0, feedMode = false, title = "Saved") {
+/* PROFILE-002 — IG "Posts" card (opened from a profile grid tile): renders exactly like
+   the feed card — author head (+location), photo carousel + counter chip + dots, heart,
+   comment count, views, share, Ask, save, liked-by, caption, timestamp.
+   PROFILE-003b — dropped music line / comment preview per feed parity; like counts are
+   private — heart count shows only on own posts, liked-by reads "and others" (no number). */
+function pfpPostHTML(p) {
+  const hasDetails = !!p.price || (p.specGroups && p.specGroups.length) || (p.specs && p.specs.length);
+  const showMore = hasDetails || (p.captionFull || "") !== p.caption;
+  const dots = p.photos.length > 1;
+  const cl = clipState(p);
+  return `
+  <article class="post pfp-post" data-pid="${p.id}">
+    <header class="post-head">
+      <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
+      <div class="who">
+        <div class="name">${p.seller}</div>
+        ${p.location ? `<div class="sub-line">${p.location}</div>` : ""}
+      </div>
+      <button class="more">${I.dots(19)}</button>
+    </header>
+    <div class="post-photo${cl.has ? " clip-ph" : ""}"${cl.has ? ` data-dur="${cl.dur0}"` : ""}>
+      <img src="${p.photos[0]}" alt="">
+      ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
+      ${clipUiHTML(p)}
+    </div>
+    ${dots ? `<div class="photo-dots">${p.photos.map((_, i) => `<span class="${i === 0 ? "on" : ""}"></span>`).join("")}</div>` : ""}
+    <div class="post-actions">
+      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}${p.seller === CP_ME.name && p.likes ? `<span class="lk-n">${p.likes}</span>` : ""}</button>
+      ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+      ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
+      <button class="act share-btn">${I.share(22)}</button>
+      <span class="act-right">
+        ${p.type === "sale" ? askBtnHTML(false) : ""}
+        <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
+      </span>
+    </div>
+    ${p.hideCounts || !p.likes || !p.likedBy ? "" : `<div class="liked-by">
+      <span class="stack">
+        <img src="${p.likedBy.avatar}" alt="">
+        <img src="./assets/user-avatars/u-1088.png" alt="">
+        <img src="./assets/user-avatars/u-1120.png" alt="">
+      </span>
+      <span>Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others</span>
+    </div>`}
+    ${(p.caption || p.captionFull) ? `<p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">more</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
+    ${p.time ? `<div class="post-time">${p.time}</div>` : ""}
+    ${hasDetails ? triggerHTML() + detailsHTML(p, !!p.price) : ""}
+  </article>`;
+}
+function openPostViewer(scr, posts, pid, phi = 0, feedMode = false, title = "Saved", user = "") {
   const pv = scr.querySelector(".page-pv");
   pv.classList.toggle("feed", feedMode);
+  pv.classList.toggle("pfp", !!user);
+  if (user) { /* PROFILE-002 — IG "Posts" surface: centered Posts/username head + feed-card list */
+    /* followed profiles get no head pill at all — matches IG (it only appears while unfollowed) */
+    const hf = user !== CP_ME.name && !pfIsFollowed(user)
+      ? `<button class="pf-foll pfp-follow" data-u="${esc(user)}">Follow</button>` : "";
+    pv.innerHTML = `
+      <div class="detail-head svd-head">
+        <button class="icon-btn pv-back">${I.back()}</button>
+        <span class="detail-title rc-title pfp-tt"><b>${esc(title)}</b><span>${esc(user)}</span></span>
+        <span class="spacer"></span>
+        ${hf}
+      </div>
+      <div class="pv-track svf-track">${posts.map(pfpPostHTML).join("")}</div>`;
+    scr.classList.add("pv-open");
+    const tr = pv.querySelector(".svf-track");
+    const el = pv.querySelector(`.pfp-post[data-pid="${pid}"]`);
+    if (el) tr.scrollTop = el.getBoundingClientRect().top - tr.getBoundingClientRect().top + tr.scrollTop;
+    return;
+  }
   if (feedMode) {
     pv.innerHTML = `
       <div class="detail-head svd-head">
@@ -4791,7 +4897,7 @@ function renderSub(scr) {
   const oldBar = el.querySelector(".pf-tabs");
   if (oldBar) scr._pfTabSl = oldBar.scrollLeft; /* keep tab-bar position across re-renders */
   el.innerHTML = subHTML(st[st.length - 1], scr);
-  el.classList.toggle("pg-up", st[st.length - 1] === "report");
+  el.classList.toggle("pg-up", (st[st.length - 1] || "").startsWith("report"));
   el.classList.toggle("pg-swap", !!scr._subSwap);
   const q = el.querySelector(".sr-q, .svd-q");
   if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
@@ -5976,31 +6082,35 @@ function walertsHTML() {
 }
 
 /* ===== PROFILE-001 — IG-style profile pages (own + viewer, mock data) ===== */
-const PF_BADGE = `<svg class="pf-vb" width="13" height="13" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#3897f0"/><path d="m8.3 12.6 2.4 2.4 4.9-5.4" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const PF_REPOST = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M21 6H8a5 5 0 0 0-5 5v2"/><path d="M7 22l-4-4 4-4"/><path d="M3 18h13a5 5 0 0 0 5-5v-2"/></svg>`;
 
+/* PROFILE-003 — shared photo pool; pfGrid rotates it so every reachable viewer profile gets a realistic grid */
+const PF_IMGS = ["S__10108939_0.jpg", "S__10108940_0.jpg", "S__10108942_0.jpg", "S__10108943_0.jpg", "S__10108944_0.jpg", "S__10108945_0.jpg", "S__10108946_0.jpg", "S__10108947_0.jpg", "feed-tudor-bb.jpg", "feed-datejust-1.jpg", "feed-datejust-2.jpg", "feed-breguet-1.jpg", "feed-breguet-2.jpg", "ast-8831-1.png", "ast-8831-2.png", "ast-8831-3.png"].map(f => "./assets/asset-uploads/" + f);
+const pfGrid = (off, n) => Array.from({ length: n }, (_, i) => PF_IMGS[(off + i) % PF_IMGS.length]);
 const PROFILES = {
   "king.mr.fox": { disp: "Mr.FOX", avatar: "./assets/user-avatars/mrfox.png", bio: "Chatmongkol Khemapirat (King)\nCEO of Mr.FOX\nMISTER FOX CO., LTD.", link: "www.mrfox.com", followers: "21.1K", following: "4,173", posts: "344", story: true,
     followedBy: ["jutatip_sroysomree", "kunk4i"], fbyMore: "9 others",
     grid: ["./assets/asset-uploads/S__10108939_0.jpg", "./assets/asset-uploads/S__10108940_0.jpg", "./assets/asset-uploads/S__10108942_0.jpg", "./assets/asset-uploads/S__10108943_0.jpg", "./assets/asset-uploads/S__10108944_0.jpg", "./assets/asset-uploads/S__10108945_0.jpg", "./assets/asset-uploads/S__10108946_0.jpg", "./assets/asset-uploads/S__10108947_0.jpg", "./assets/asset-uploads/feed-tudor-bb.jpg"] },
-  "mycollection": { disp: "matem | มาเต็ม", bio: "มาเต็ม ♡\nhappy vibe 🧋🌼🍄✨💚🍎", link: "@mycollection", followers: "182", following: "1,855" },
-  "jutatip_sroysomree": { bio: "", followers: "890", following: "412" },
-  "kunk4i": { bio: "", followers: "1,302", following: "388" },
-  "the watch":    { cat: "Media/news company", bio: "Made For Watch Collectors By Watch Collectors\n#thewatch", link: "www.the-watch.example and 1 more", followers: "211K", following: "1,688", verified: true, followedBy: ["chrono.th", "watch.daily"], fbyMore: "9 others", story: true },
-  "Watch 777":    { cat: "Watch shop", bio: "Bangkok · consignment & rare pieces\nDM for viewing 📩", link: "tukdaeng.example/watch777", followers: "38.2K", following: "214", verified: true, followedBy: ["the watch", "dial.dude"], fbyMore: "5 others", story: true },
-  "davikah":      { bio: "vintage lover · BKK\nslow mornings, fast watches", followers: "12.4K", following: "301", followedBy: ["the watch"] },
-  "chrono.th":    { bio: "chronographs only", followers: "8,932", following: "412", followedBy: ["the watch", "Watch 777"] },
-  "neng_mua":     { bio: "มาเต็ม's friend · collects colors", followers: "2,108", following: "990" },
-  "watch.daily":  { cat: "Media/news company", bio: "daily wrist shots & market notes", followers: "54.7K", following: "120", verified: true, followedBy: ["Watch 777", "the watch"], fbyMore: "3 others" },
-  "dial.dude":    { bio: "dials, hands & loupe macros", followers: "6,455", following: "233" },
-  "wrist.story":  { bio: "studio light · film grain", followers: "9,871", following: "187" },
-  "nat_collection": { bio: "my rotation, my rules", followers: "1,204", following: "350" },
-  "slow.hand":    { bio: "in no rush", followers: "3,330", following: "145" },
-  "gmt.bkk":      { bio: "GMTs & travel", followers: "7,502", following: "268" },
-  "bamzilla":     { bio: "here for the shine", followers: "640", following: "512" },
-  "bikwans":      { bio: "นึกว่าซื้อนาฬิกา ที่แท้ซื้อความสุข", followers: "1,876", following: "432" },
+  "mycollection": { disp: "matem | มาเต็ม", bio: "มาเต็ม ♡\nhappy vibe 🧋🌼🍄✨💚🍎", link: "@mycollection", followers: "182", following: "1,855", grid: pfGrid(2, 6) },
+  "jutatip_sroysomree": { bio: "", followers: "890", following: "412", grid: pfGrid(5, 6) },
+  "kunk4i": { bio: "", followers: "1,302", following: "388", grid: pfGrid(9, 6) },
+  "the watch":    { cat: "Media/news company", bio: "Made For Watch Collectors By Watch Collectors\n#thewatch", link: "www.the-watch.example and 1 more", followers: "211K", following: "1,688", verified: true, followedBy: ["chrono.th", "watch.daily"], fbyMore: "9 others", story: true, grid: pfGrid(0, 12) },
+  "Watch 777":    { cat: "Watch shop", bio: "Bangkok · consignment & rare pieces\nDM for viewing 📩", link: "tukdaeng.example/watch777", followers: "38.2K", following: "214", verified: true, followedBy: ["the watch", "dial.dude"], fbyMore: "5 others", story: true, grid: pfGrid(4, 12) },
+  "davikah":      { bio: "vintage lover · BKK\nslow mornings, fast watches", followers: "12.4K", following: "301", followedBy: ["the watch"], grid: pfGrid(7, 6) },
+  "chrono.th":    { bio: "chronographs only", followers: "8,932", following: "412", followedBy: ["the watch", "Watch 777"], grid: pfGrid(10, 9) },
+  "neng_mua":     { bio: "มาเต็ม's friend · collects colors", followers: "2,108", following: "990", grid: pfGrid(1, 6) },
+  "watch.daily":  { cat: "Media/news company", bio: "daily wrist shots & market notes", followers: "54.7K", following: "120", verified: true, followedBy: ["Watch 777", "the watch"], fbyMore: "3 others", grid: pfGrid(3, 12) },
+  "dial.dude":    { bio: "dials, hands & loupe macros", followers: "6,455", following: "233", grid: pfGrid(13, 9) },
+  "wrist.story":  { bio: "studio light · film grain", followers: "9,871", following: "187", grid: pfGrid(6, 9) },
+  "nat_collection": { bio: "my rotation, my rules", followers: "1,204", following: "350", grid: pfGrid(11, 6) },
+  "slow.hand":    { bio: "in no rush", followers: "3,330", following: "145", grid: pfGrid(14, 6) },
+  "gmt.bkk":      { bio: "GMTs & travel", followers: "7,502", following: "268", grid: pfGrid(8, 6) },
+  "bamzilla":     { bio: "here for the shine", followers: "640", following: "512", grid: pfGrid(12, 6) },
+  "bikwans":      { bio: "นึกว่าซื้อนาฬิกา ที่แท้ซื้อความสุข", followers: "1,876", following: "432", grid: pfGrid(15, 6) },
 };
 const PF_EXTRA_FOL = new Set(); /* follow state for users that have no posts (session only) */
+const PF_EXTRA_FAV = new Set(); /* favorites for users that have no posts (session only) */
+const PF_EXTRA_MUT = new Set(); /* muted state for users that have no posts (session only) */
 
 /* ===== PORTFOLIO-001 — owner-only portfolio (spec 14_PORTFOLIO_MODULE): dashboard + asset list + sold history ===== */
 /* eligible = status Sale/Show/Hide + own asset (not consignment); sold/deleted/hidden-perm/consignment excluded */
@@ -6102,18 +6212,144 @@ function profileOf(name) {
 function userPosts(name) { return POSTS.filter(p => p.seller === name && !p.archived); }
 /* grid-only mock photos (profile tab) — not real feed posts, so they never leak into feed/search */
 const PF_GFX_KINDS = ["sale", "show", "sale", "show", "hide", "sold", "sale", "show", "sold"];
+/* PROFILE-003 — compact sale-spec mocks so gfx posts with pfkind "sale" render
+   "Tap for details" + Ask + full detail page like real feed sale posts */
+const PF_GFX_SALE = [
+  { price: "THB 385,000", chips: ["Very Good", "Original box and Original paper"],
+    desc: "Rolex Datejust 41 Ref. 126334 — fluted bezel, Jubilee bracelet. Full set 2022, very good condition. Viewing welcome by appointment.",
+    specs: [["Brand", "Rolex"], ["Model", "Datejust 41"], ["Reference", "126334"], ["Year", "2022"], ["Condition", "Very Good"]],
+    specGroups: [
+      { title: "Watch Specifications", rows: [
+        ["Brand", "Rolex"], ["Collection", "Datejust"], ["Model", "Datejust 41"],
+        ["Reference", "126334"], ["Case Diameter", "41 mm"], ["Thickness", "11.8 mm"],
+        ["Lug-to-Lug", "47.5 mm"], ["Case Material", "Oystersteel & White Gold"], ["Case Color", "Steel"],
+        ["Bezel Material", "Fluted white gold"], ["Dial Color", "Blue"], ["Dial Pattern", "Index / Chromalight"],
+        ["Movement Type", "Automatic (Self-winding)"], ["Calibre", "3235"], ["Power Reserve", "70 hours"],
+        ["Functions", "Hours, Minutes, Seconds, Date"], ["Water Resistance", "100 m"],
+        ["Strap/Bracelet Material", "Jubilee bracelet"], ["Strap Color", "Steel"],
+        ["Clasp Type", "Folding clasp w/ Easylink"],
+      ]},
+      { title: "Item Details", rows: [
+        ["Year", "2022"], ["Condition", "Very Good"],
+        ["Box & Papers", "Full set — Original box, Original paper"], ["Service History", "No service record"],
+      ]},
+      { title: "Price & Data Source", rows: [
+        ["Asking Price", "THB 385,000"], ["Estimated Market Price", "THB 368,000 – 404,000"],
+        ["Last Price Update", "2026-10-07"], ["Data Source", "TukDaeng Market Data"],
+      ]},
+    ] },
+  { price: "THB 128,000", chips: ["Like New", "Original box and Original paper"],
+    desc: "Tudor Black Bay 58 Ref. M79030N — 39 mm, gilt dial. Like new 2023, full set with warranty card.",
+    specs: [["Brand", "Tudor"], ["Model", "Black Bay 58"], ["Reference", "M79030N"], ["Year", "2023"], ["Condition", "Like New"]],
+    specGroups: [
+      { title: "Watch Specifications", rows: [
+        ["Brand", "Tudor"], ["Collection", "Black Bay"], ["Model", "Black Bay 58"],
+        ["Reference", "M79030N"], ["Case Diameter", "39 mm"], ["Thickness", "11.7 mm"],
+        ["Lug-to-Lug", "47.5 mm"], ["Case Material", "Stainless Steel"], ["Case Color", "Steel"],
+        ["Bezel Material", "Stainless Steel"], ["Dial Color", "Black"], ["Dial Pattern", "N/A"],
+        ["Movement Type", "Automatic (Self-winding)"], ["Calibre", "MT5400"], ["Power Reserve", "70 hours"],
+        ["Functions", "Hours, Minutes, Seconds"], ["Water Resistance", "200 m"],
+        ["Strap/Bracelet Material", "Stainless Steel bracelet"], ["Strap Color", "Steel"],
+        ["Clasp Type", "Folding clasp w/ T-fit"],
+      ]},
+      { title: "Item Details", rows: [
+        ["Year", "2023"], ["Condition", "Like New"],
+        ["Box & Papers", "Full set"], ["Service History", "N/A"],
+      ]},
+      { title: "Price & Data Source", rows: [
+        ["Asking Price", "THB 128,000"], ["Estimated Market Price", "THB 122,000 – 135,000"],
+        ["Last Price Update", "2026-10-07"], ["Data Source", "TukDaeng Market Data"],
+      ]},
+    ] },
+  { price: "THB 162,000", chips: ["Very Good", "Watch only"],
+    desc: "Omega Seamaster Diver 300M Ref. 210.30.42.20.03.001 — blue wave dial on bracelet. Very good 2021, watch only.",
+    specs: [["Brand", "Omega"], ["Model", "Seamaster Diver 300M"], ["Reference", "210.30.42.20.03.001"], ["Year", "2021"], ["Condition", "Very Good"]],
+    specGroups: [
+      { title: "Watch Specifications", rows: [
+        ["Brand", "Omega"], ["Collection", "Seamaster"], ["Model", "Diver 300M"],
+        ["Reference", "210.30.42.20.03.001"], ["Case Diameter", "42 mm"], ["Thickness", "13.6 mm"],
+        ["Lug-to-Lug", "50 mm"], ["Case Material", "Stainless Steel"], ["Case Color", "Steel"],
+        ["Bezel Material", "Ceramic (Blue)"], ["Dial Color", "Blue"], ["Dial Pattern", "Wave"],
+        ["Movement Type", "Automatic (Self-winding)"], ["Calibre", "8800"], ["Power Reserve", "55 hours"],
+        ["Functions", "Hours, Minutes, Seconds, Date"], ["Water Resistance", "300 m"],
+        ["Strap/Bracelet Material", "Stainless Steel bracelet"], ["Strap Color", "Steel"],
+        ["Clasp Type", "N/A"],
+      ]},
+      { title: "Item Details", rows: [
+        ["Year", "2021"], ["Condition", "Very Good"],
+        ["Box & Papers", "Watch only"], ["Service History", "N/A"],
+      ]},
+      { title: "Price & Data Source", rows: [
+        ["Asking Price", "THB 162,000"], ["Estimated Market Price", "THB 154,000 – 171,000"],
+        ["Last Price Update", "2026-10-07"], ["Data Source", "TukDaeng Market Data"],
+      ]},
+    ] },
+  { price: "THB 239,000", chips: ["Excellent", "Original box and Original paper"],
+    desc: "Cartier Santos de Cartier Medium Ref. WSSA0029 — steel, quick-switch bracelet. Excellent 2024, full set.",
+    specs: [["Brand", "Cartier"], ["Model", "Santos Medium"], ["Reference", "WSSA0029"], ["Year", "2024"], ["Condition", "Excellent"]],
+    specGroups: [
+      { title: "Watch Specifications", rows: [
+        ["Brand", "Cartier"], ["Collection", "Santos"], ["Model", "Santos Medium"],
+        ["Reference", "WSSA0029"], ["Case Diameter", "35.1 mm"], ["Thickness", "8.8 mm"],
+        ["Lug-to-Lug", "N/A"], ["Case Material", "Stainless Steel"], ["Case Color", "Steel"],
+        ["Bezel Material", "Stainless Steel"], ["Dial Color", "Silver"], ["Dial Pattern", "Guilloché"],
+        ["Movement Type", "Automatic (Self-winding)"], ["Calibre", "1847 MC"], ["Power Reserve", "42 hours"],
+        ["Functions", "Hours, Minutes, Seconds, Date"], ["Water Resistance", "100 m"],
+        ["Strap/Bracelet Material", "SmartLink bracelet"], ["Strap Color", "Steel"],
+        ["Clasp Type", "N/A"],
+      ]},
+      { title: "Item Details", rows: [
+        ["Year", "2024"], ["Condition", "Excellent"],
+        ["Box & Papers", "Full set"], ["Service History", "N/A"],
+      ]},
+      { title: "Price & Data Source", rows: [
+        ["Asking Price", "THB 239,000"], ["Estimated Market Price", "THB 228,000 – 251,000"],
+        ["Last Price Update", "2026-10-07"], ["Data Source", "TukDaeng Market Data"],
+      ]},
+    ] },
+];
+/* PROFILE-002 — mock meta for grid-only posts so the "Posts" surface reads like a real profile feed */
+const PF_GFX_META = [
+  { caption: "snow day rotation 🌧❄️⛄️", time: "2 days ago", likes: 128, comments: 6, likedBy: "chrono.th", cprev: { name: "neng_mua", text: "น่ารัก 🫶" } },
+  { caption: "new arrival — full set, unworn condition", time: "5 days ago", likes: 96, comments: 3, likedBy: "davikah", cprev: { name: "chrono.th", text: "clean set 🔥" } },
+  { caption: "desk shot 🖤", time: "1 week ago", likes: 84, comments: 1, likedBy: "Watch 777" },
+  { caption: "rose gold hours", time: "2 weeks ago", likes: 203, comments: 9, likedBy: "watch.daily", cprev: { name: "bamzilla", text: "so clean" } },
+  { caption: "gone before it hit the feed 🙏", time: "3 weeks ago", likes: 61, comments: 2 },
+  { caption: "tifosi blue", time: "1 month ago", likes: 77, comments: 0, likedBy: "neng_mua" },
+  { caption: "weekend pair", time: "1 month ago", likes: 145, comments: 5, likedBy: "the watch", cprev: { name: "watch.daily", text: "classic 🌕" } },
+  { caption: "grail energy", time: "2 months ago", likes: 118, comments: 4, likedBy: "dial.dude" },
+  { caption: "Tudor Tuesday", time: "2 months ago", likes: 92, comments: 2, likedBy: "bamzilla", cprev: { name: "bikwans", text: "มูฟออนไม่ได้" } },
+];
+const PF_GFX_REG = {}; /* registry so Posts-surface interactions resolve grid-only posts (session only) */
+const PF_GFX_DEL = new Set(); /* tombstones — deleted grid posts must not regenerate on re-render */
+const findPost = pid => POSTS.find(x => x.id === pid) || PF_GFX_REG[pid] || null;
 function pfGridPosts(uname) {
   const g = (PROFILES[uname] || {}).grid || [];
-  return userPosts(uname).concat(g.map((src, i) => ({
-    id: `gfx-${uname}-${i}`, seller: uname, avatar: (PROFILES[uname] || {}).avatar || pfAvatar(uname),
-    photos: [src], likes: 0, comments: 0, views: "", caption: "", time: "", specs: [], specGroups: [], chips: [],
-    pfkind: PF_GFX_KINDS[i % PF_GFX_KINDS.length],
-  })));
+  return userPosts(uname).concat(g.map((src, i) => {
+    const id = `gfx-${uname}-${i}`;
+    if (PF_GFX_DEL.has(id)) return null;
+    if (PF_GFX_REG[id]) return PF_GFX_REG[id]; /* reuse so like/edit/archive mutations stick */
+    const m = PF_GFX_META[i % PF_GFX_META.length];
+    const kind = PF_GFX_KINDS[i % PF_GFX_KINDS.length];
+    const p = {
+      id, seller: uname, avatar: (PROFILES[uname] || {}).avatar || pfAvatar(uname),
+      photos: [src], likes: m.likes || 0, comments: m.comments || 0, views: "",
+      caption: m.caption || "", captionFull: m.caption || "", time: m.time || "",
+      commentPreview: m.cprev || null,
+      likedBy: m.likedBy ? { name: m.likedBy, avatar: pfAvatar(m.likedBy) } : null,
+      specs: [], specGroups: [], chips: [], price: null, type: "showcase",
+      pfkind: kind,
+    };
+    /* sale-kind gfx posts carry real-feeling specs → Tap for details / Ask / full detail all work */
+    if (kind === "sale") Object.assign(p, PF_GFX_SALE[i % PF_GFX_SALE.length], { type: "sale" });
+    PF_GFX_REG[p.id] = p;
+    return p;
+  }).filter(Boolean));
 }
 /* PRD 06: profile grid filters — All / Sale / Show / Hide / Sold */
 function pfKind(p) { return p.pfkind || (p.price || p.type === "sale" ? "sale" : "show"); }
 function pfTabPosts(uname, tab) {
-  const all = pfGridPosts(uname);
+  const all = pfGridPosts(uname).filter(p => !p.archived); /* mirror userPosts — archived drops out of the grid */
   return tab === "all" ? all : all.filter(p => pfKind(p) === tab);
 }
 function userClips(name) { return userPosts(name).filter(p => clipState(p).has); }
@@ -6125,7 +6361,39 @@ function pfIsFollowed(name) {
 function pfSetFollow(scr, name, on) {
   const p = POSTS.find(x => x.seller === name);
   if (p) setFollowing(scr, name, on);
-  else if (on) PF_EXTRA_FOL.add(name); else PF_EXTRA_FOL.delete(name);
+  else if (on) PF_EXTRA_FOL.add(name);
+  else { PF_EXTRA_FOL.delete(name); PF_EXTRA_FAV.delete(name); PF_EXTRA_MUT.delete(name); }
+}
+function pfIsFav(name) {
+  const p = POSTS.find(x => x.seller === name);
+  return p ? !!p.favorite : PF_EXTRA_FAV.has(name);
+}
+function pfSetFav(scr, name, on) {
+  const p = POSTS.find(x => x.seller === name);
+  if (p) setFavorite(scr, name, on);
+  else if (on) PF_EXTRA_FAV.add(name); else PF_EXTRA_FAV.delete(name);
+}
+function pfIsMuted(name) {
+  const p = POSTS.find(x => x.seller === name);
+  return p ? !!p.muted : PF_EXTRA_MUT.has(name);
+}
+function pfSetMuted(scr, name, on) {
+  const p = POSTS.find(x => x.seller === name);
+  if (p) setMuted(scr, name, on);
+  else if (on) PF_EXTRA_MUT.add(name); else PF_EXTRA_MUT.delete(name);
+}
+/* PROFILE-003 — IG "Following" manage sheet (opened by the Following ⌄ button)
+   + Mute sub-page inside the same sheet */
+function mfSheetHTML(uname) {
+  const fav = pfIsFav(uname);
+  return `
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">${esc(uname)}</div>
+    <div class="mf-list">
+      <button class="mf-row mf-fav" data-u="${esc(uname)}"><span>${fav ? "Remove from favorites" : "Add to favorites"}</span>${fav ? I.starFill(20) : I.star(20)}</button>
+      <button class="mf-row mf-mute" data-u="${esc(uname)}"><span>Mute</span></button>
+      <button class="mf-row mf-unf" data-u="${esc(uname)}"><span>Unfollow</span></button>
+    </div>`;
 }
 function pfAllUsers(except) {
   const s = new Set(POSTS.map(p => p.seller));
@@ -6175,7 +6443,6 @@ function profileHTML(scr, key) {
   const [uname, tab = "all"] = key.split(":");
   const u = profileOf(uname);
   const own = uname === CP_ME.name;
-  const posts = userPosts(uname);
   const isF = pfIsFollowed(uname);
   const stat = (v, l, go) => `<button class="pf-stat"${go ? ` data-pfgo="${go}"` : ""}><b>${v}</b><span>${l}</span></button>`;
   /* PRD 06 — owner sees Hide/Sold too; public profile exposes only All/Sale/Show */
@@ -6196,7 +6463,7 @@ function profileHTML(scr, key) {
          <span class="spacer"></span>
          <button class="icon-btn pf-menu" title="Settings and activity">${I.burger(22)}</button>`
       : `<button class="icon-btn sub-back">${I.back()}</button>
-         <span class="pf-vname">${esc(u.user)}${u.verified ? PF_BADGE : ""}</span>
+         <span class="pf-vname">${esc(u.user)}</span>
          <span class="spacer"></span>
          <button class="icon-btn pf-bell" title="Notifications">${I.navBell(20)}</button>
          <button class="icon-btn pf-more">${I.dots(18)}</button>`}
@@ -6208,9 +6475,9 @@ function profileHTML(scr, key) {
         <span class="${u.ring ? "avatar-ring " : ""}pf-av" data-pfav><img src="${u.avatar}" alt=""></span>
       </div>
       <div class="pf-idcol">
-        <div class="pf-disp">${esc(u.disp)}${u.verified ? PF_BADGE : ""}</div>
+        <div class="pf-disp">${esc(u.disp)}</div>
         <div class="pf-stats">
-          ${stat(u.posts || posts.length, "posts")}
+          ${stat(u.posts || pfTabPosts(uname, "all").length, "posts")}
           ${stat(u.followers, "followers", "followers")}
           ${stat(u.following, "following", "following")}
         </div>
@@ -6230,7 +6497,7 @@ function profileHTML(scr, key) {
     <div class="pf-actions">
       ${own
         ? `<button class="pf-btn pf-edit">Edit profile</button><button class="pf-btn pf-share">Share profile</button><button class="pf-btn pf-iconbtn pf-pfo" data-sub="portfolio" title="Portfolio">${I.wallet(16)}</button>`
-        : `<button class="pf-btn pf-foll${isF ? "" : " primary"}" data-u="${esc(uname)}">${isF ? `Following ${I.chev(12)}` : "Follow"}</button><button class="pf-btn pf-msg">Message</button><button class="pf-btn pf-iconbtn pf-addp" title="Discover people">${I.personAdd(16)}</button>`}
+        : `<button class="pf-btn pf-foll${isF ? "" : " primary"}" data-u="${esc(uname)}">${isF ? `Following ${I.chev(12)}` : "Follow"}</button><button class="pf-btn pf-msg">Message</button>`}
     </div>
     <div class="pf-tabs">
       ${TABS.map(([k, l, ic]) => `<button class="pf-tab pf-tab-txt${tabName === k ? " on" : ""}" data-pftab="${k}">${ic}<span>${l}</span></button>`).join("")}
@@ -6490,10 +6757,10 @@ function subHTML(name, scr) {
   if (name === "interested") return head("Interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.liked), "Remove", "m-unlike")}</div>`;
   if (name === "ni") return head("Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni), "Restore", "m-restore")}</div>`;
   /* full-page report view (IG-style) — opened from "..." menu or the uncomfortable ack card */
-  if (name === "report") return `
+  if (name === "report" || name === "report:user") return `
     <div class="detail-head rp-head"><span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="pm-rp-scroll">
-      <div class="pm-rp-q">Why are you reporting this post?</div>
+      <div class="pm-rp-q">Why are you reporting this ${name === "report:user" ? "account" : "post"}?</div>
       <div class="pm-rp-desc">Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait.</div>
       ${PM_REASONS.map(r => `<button class="pm-reason">${r}<span class="pm-chev">${I.chevR(14)}</span></button>`).join("")}
     </div>`;
@@ -6624,7 +6891,7 @@ const stageEl = document.getElementById("stage");
 let swipe = null, suppressPhotoClick = false;
 function photoCtx(el) {
   const art = el.closest(".post");
-  if (art) return { post: POSTS.find(x => x.id === art.dataset.pid), dotsEl: art.querySelector(".photo-dots") };
+  if (art) return { post: findPost(art.dataset.pid), dotsEl: art.querySelector(".photo-dots") };
   if (el.dataset.pfaid) {
     const a = PF_ASSETS.find(x => x.id === el.dataset.pfaid) || PF_SOLD.find(x => x.id === el.dataset.pfaid);
     return { post: a, dotsEl: el.parentElement.querySelector(".photo-dots") };
@@ -6942,7 +7209,7 @@ document.getElementById("stage").addEventListener("click", e => {
     }
     const cfDone = e.target.closest(".cf-done");
     if (cfDone) {
-      const post = POSTS.find(x => x.id === V.editPid);
+      const post = findPost(V.editPid);
       const wasDetail = V.editFromDetail;
       V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() ?? V.caption;
       if (post) applyPostEdit(scr, post, V); /* before _cp reset — cfMedia reads V.order */
@@ -7138,7 +7405,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = pmBtn.closest(".screen");
     const art = pmBtn.closest(".post");
     scr.dataset.pmPid = art ? art.dataset.pid : scr.dataset.detailPid;
-    const post = POSTS.find(x => x.id === scr.dataset.pmPid);
+    const post = findPost(scr.dataset.pmPid);
     const cs = scr.querySelector(".comment-sheet");
     cs.classList.remove("uf", "pm-rp", "lk", "sh", "sv", "nt", "ps");
     cs.classList.add("pm");
@@ -7150,14 +7417,16 @@ document.getElementById("stage").addEventListener("click", e => {
   const pmOwn = e.target.closest(".pm-own-archive, .pm-own-nocomm, .pm-own-edit, .pm-own-pin, .pm-own-del");
   if (pmOwn) {
     const scr = pmOwn.closest(".screen");
-    const post = POSTS.find(x => x.id === scr.dataset.pmPid);
+    const post = findPost(scr.dataset.pmPid);
     scr.classList.remove("pm-open");
     if (!post) return;
     if (pmOwn.matches(".pm-own-archive")) {
       post.archived = !post.archived;
       post.archivedAt = post.archived ? Date.now() : 0;
       scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
-      if ((scr._subStack || []).at(-1) === "archive") renderSub(scr);
+      const top = (scr._subStack || []).at(-1) || "";
+      if (top === "archive" || top.startsWith("profile:")) renderSub(scr);
+      scr.querySelectorAll(`.pfp-post[data-pid="${post.id}"]`).forEach(el => el.remove());
       scrToast(scr, post.archived ? "Post archived" : "Post unarchived");
     } else if (pmOwn.matches(".pm-own-nocomm")) {
       post.noComments = !post.noComments;
@@ -7181,7 +7450,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (pmFav) {
     const scr = pmFav.closest(".screen");
     scr.classList.remove("pm-open");
-    const post = POSTS.find(x => x.id === scr.dataset.pmPid);
+    const post = findPost(scr.dataset.pmPid);
     if (post) {
       const on = !post.favorite;
       setFavorite(scr, post.seller, on);
@@ -7193,7 +7462,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (pmNi) {
     const scr = pmNi.closest(".screen");
     scr.classList.remove("pm-open");
-    const post = POSTS.find(x => x.id === scr.dataset.pmPid);
+    const post = findPost(scr.dataset.pmPid);
     if (post) {
       post.ni = true;
       const art = scr.querySelector(`.feed-scroll .post[data-pid="${post.id}"]`);
@@ -7296,7 +7565,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (dlgMute) {
     const scr = dlgMute.closest(".screen");
     scr.classList.remove("dialog-open");
-    setMuted(scr, scr.dataset.muteSeller, true);
+    pfSetMuted(scr, scr.dataset.muteSeller, true); /* pfSetMuted covers profiles without real posts too */
     scrToast(scr, "Posts muted");
     return;
   }
@@ -7315,7 +7584,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const dlgEditGo = e.target.closest(".dlg-edit-go");
   if (dlgEditGo) {
     const scr = dlgEditGo.closest(".screen");
-    const post = POSTS.find(x => x.id === scr.dataset.pmPid);
+    const post = findPost(scr.dataset.pmPid);
     const v = scr.querySelector(".dlg-ta").value;
     scr.classList.remove("dialog-open");
     if (post && v !== (post.captionFull || post.caption)) {
@@ -7331,9 +7600,10 @@ document.getElementById("stage").addEventListener("click", e => {
     const pid = scr.dataset.pmPid;
     const i = POSTS.findIndex(x => x.id === pid);
     scr.classList.remove("dialog-open");
-    if (i > -1) {
-      POSTS.splice(i, 1);
-      scr.querySelectorAll(`.post[data-pid="${pid}"], .svf-post[data-pid="${pid}"]`).forEach(el => el.remove());
+    if (i > -1 || PF_GFX_REG[pid]) {
+      if (i > -1) POSTS.splice(i, 1);
+      if (PF_GFX_REG[pid]) { delete PF_GFX_REG[pid]; PF_GFX_DEL.add(pid); }
+      scr.querySelectorAll(`.post[data-pid="${pid}"], .svf-post[data-pid="${pid}"], .pf-tile[data-pid="${pid}"]`).forEach(el => el.remove());
       if (scr.dataset.detailPid === pid) scr.classList.remove("detail-open");
       scrToast(scr, "Post deleted");
     }
@@ -7651,7 +7921,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const parts = ((scr._subStack || []).at(-1) || "").split(":");
     const u = parts[1] || "", tab = parts[2] || "all";
     const list = pfTabPosts(u, tab);
-    openPostViewer(scr, list, pfTile.dataset.pid);
+    openPostViewer(scr, list, pfTile.dataset.pid, 0, false, "Posts", u);
     return;
   }
   const pfAv = e.target.closest("[data-pfav]");
@@ -7675,10 +7945,60 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const pfBell = e.target.closest(".pf-bell");
   if (pfBell) { scrToast(pfBell.closest(".screen"), "Notification settings aren't in this prototype yet"); return; }
-  const pfFoll = e.target.closest(".pf-foll, .pf-flw");
+  const pfFoll = e.target.closest(".pf-foll");
   if (pfFoll) {
     const scr = pfFoll.closest(".screen");
-    pfSetFollow(scr, pfFoll.dataset.u || pfFoll.dataset.seller, !pfIsFollowed(pfFoll.dataset.u || pfFoll.dataset.seller));
+    const u = pfFoll.dataset.u || pfFoll.dataset.seller;
+    if (pfIsFollowed(u) && !pfFoll.classList.contains("pfp-follow")) {
+      /* IG: tapping "Following ⌄" opens the manage sheet (favorites / mute / unfollow) */
+      scr.dataset.mfUser = u;
+      openSheet(scr, "mf", "mf-open", mfSheetHTML(u));
+      return;
+    }
+    pfSetFollow(scr, u, !pfIsFollowed(u));
+    renderSub(scr);
+    if (pfFoll.classList.contains("pfp-follow")) { /* pv head button lives outside .page-sub — flip in place */
+      const on = pfIsFollowed(u);
+      pfFoll.classList.toggle("on", on);
+      pfFoll.textContent = on ? "Following" : "Follow";
+      if (on) setTimeout(() => { /* IG: head pill fades away a moment after following */
+        if (pfFoll.isConnected && pfFoll.classList.contains("on")) {
+          pfFoll.style.opacity = "0";
+          setTimeout(() => pfFoll.remove(), 240);
+        }
+      }, 1200);
+    }
+    return;
+  }
+  const pfFlw = e.target.closest(".pf-flw");
+  if (pfFlw) {
+    const scr = pfFlw.closest(".screen");
+    pfSetFollow(scr, pfFlw.dataset.u || pfFlw.dataset.seller, !pfIsFollowed(pfFlw.dataset.u || pfFlw.dataset.seller));
+    renderSub(scr);
+    return;
+  }
+  /* Following-sheet rows (favorites / mute page / unfollow) */
+  const mfFav = e.target.closest(".mf-fav");
+  if (mfFav) {
+    const scr = mfFav.closest(".screen");
+    const u = mfFav.dataset.u, on = !pfIsFav(u);
+    pfSetFav(scr, u, on);
+    mfFav.querySelector("span").textContent = on ? "Remove from favorites" : "Add to favorites";
+    mfFav.querySelector("svg").outerHTML = on ? I.starFill(20) : I.star(20);
+    return;
+  }
+  const mfMute = e.target.closest(".mf-mute");
+  if (mfMute) { /* only Posts can be muted — reuse the feed's center confirm dialog */
+    const scr = mfMute.closest(".screen");
+    scr.dataset.muteSeller = mfMute.dataset.u;
+    openDlg(scr, muteDlgHTML(mfMute.dataset.u));
+    return;
+  }
+  const mfUnf = e.target.closest(".mf-unf");
+  if (mfUnf) { /* IG: Unfollow in the manage sheet acts immediately — no confirm */
+    const scr = mfUnf.closest(".screen");
+    pfSetFollow(scr, mfUnf.dataset.u, false);
+    scr.classList.remove("mf-open");
     renderSub(scr);
     return;
   }
@@ -7697,18 +8017,39 @@ document.getElementById("stage").addEventListener("click", e => {
   const pfMore = e.target.closest(".pf-more");
   if (pfMore) {
     const scr = pfMore.closest(".screen");
+    /* IG parity — plain centered action rows + separate Cancel card (no Restrict/Shared activity/Hide story/QR) */
     openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
-      <div class="pm-card">
-        <button class="pm-row pf-sh-copy">${I.link(20)}<span>Copy profile link</span></button>
-        <button class="pm-row pf-sh-share">${I.share(20)}<span>Share this profile</span></button>
-      </div>`);
+      <div class="pm-card pm-rows">
+        <button class="pm-row pm-ctr danger pf-sh-report"><span>Report</span></button>
+        <button class="pm-row pm-ctr pf-sh-block"><span>Block</span></button>
+        <button class="pm-row pm-ctr pf-sh-about"><span>About this account</span></button>
+        <button class="pm-row pm-ctr pf-sh-copy"><span>Copy profile URL</span></button>
+        <button class="pm-row pm-ctr pf-sh-share"><span>Share this profile</span></button>
+      </div>
+      <div class="pm-card pm-cancel"><button class="pm-row pm-ctr pf-sh-cancel"><span>Cancel</span></button></div>`);
     return;
   }
-  const pfSh = e.target.closest(".pf-sh-copy, .pf-sh-share");
-  if (pfSh) {
-    const scr = pfSh.closest(".screen");
+  const pfShDone = e.target.closest(".pf-sh-copy, .pf-sh-share");
+  if (pfShDone) {
+    const scr = pfShDone.closest(".screen");
     scr.classList.remove("pm-open");
     scrToast(scr, "Profile link copied");
+    return;
+  }
+  const pfShCancel = e.target.closest(".pf-sh-cancel");
+  if (pfShCancel) { pfShCancel.closest(".screen").classList.remove("pm-open"); return; }
+  const pfShReport = e.target.closest(".pf-sh-report");
+  if (pfShReport) {
+    const scr = pfShReport.closest(".screen");
+    scr.classList.remove("pm-open");
+    pushSub(scr, "report:user"); /* stack — back returns to this profile, not the feed */
+    return;
+  }
+  const pfShStub = e.target.closest(".pf-sh-block, .pf-sh-about");
+  if (pfShStub) {
+    const scr = pfShStub.closest(".screen");
+    scr.classList.remove("pm-open");
+    scrToast(scr, "Not in this prototype yet");
     return;
   }
   /* PORTFOLIO-001 — portfolio ⋯ = prototype-only preview-state picker (needs ?dev=1; production has no menu) */
@@ -7830,9 +8171,9 @@ document.getElementById("stage").addEventListener("click", e => {
   if (intoDetail) {
     const art = e.target.closest(".post");
     const scr = e.target.closest(".screen");
-    const post = POSTS.find(x => x.id === (art ? art.dataset.pid : (scr.dataset.dtPid || scr.dataset.detailPid)));
+    const post = findPost(art ? art.dataset.pid : (scr.dataset.dtPid || scr.dataset.detailPid));
     if (!post) return;
-    scr.classList.remove("pv-open", "details-open");
+    scr.classList.remove("details-open"); /* keep pv-open — detail slides over the viewer; detail-back pops back to it */
     openPostDetail(scr, post);
     return;
   }
@@ -7841,12 +8182,12 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = fbtn.closest(".screen");
     const art = fbtn.closest(".post");
     const pid = art ? art.dataset.pid : (scr.dataset.dtPid || scr.dataset.detailPid);
-    const post = POSTS.find(x => x.id === pid);
+    const post = findPost(pid);
     if (!post) return;
     if (post.following) {
       scr.dataset.ufSeller = post.seller;
       const cs = scr.querySelector(".comment-sheet");
-      cs.classList.remove("pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps");
+      cs.classList.remove("pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps", "mf");
       cs.classList.add("uf");
       cs.innerHTML = `
         <div class="sheet-handle"></div>
@@ -7996,10 +8337,11 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = e.target.closest(".screen");
     const art = e.target.closest(".post");
     const pid = art ? art.dataset.pid : scr.dataset.detailPid;
-    const post = POSTS.find(x => x.id === pid);
+    const post = findPost(pid);
+    if (!post) return;
     const cs = scr.querySelector(".comment-sheet");
     cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "nt");
-    cs.classList.toggle("nt", scr.classList.contains("pv-open"));
+    cs.classList.toggle("nt", scr.classList.contains("pv-open") && !scr.classList.contains("detail-open"));
     cs.innerHTML = commentsHTML(post);
     scr.classList.add("comments-open");
     return;
@@ -8010,7 +8352,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = lbRow.closest(".screen");
     const art = lbRow.closest(".post");
     const pid = art ? art.dataset.pid : scr.dataset.detailPid;
-    const post = POSTS.find(x => x.id === pid);
+    const post = findPost(pid);
     if (!post) return;
     openSheet(scr, "lk", "likes-open", likesSheetHTML(post));
     return;
@@ -8470,7 +8812,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = svBtn.closest(".screen");
     const art = svBtn.closest(".post");
     const pid = art ? art.dataset.pid : scr.dataset.detailPid;
-    const post = POSTS.find(x => x.id === pid);
+    const post = findPost(pid);
     if (!post) return;
     if (!post.saved) {
       post.saved = true;
@@ -8512,7 +8854,7 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const closeSheet = e.target.closest(".sheet-backdrop, .sheet-handle");
   if (closeSheet) {
-    closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
+    closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
     return;
   }
   const clike = e.target.closest(".c-like");
@@ -8602,14 +8944,17 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = like.closest(".screen");
     const art = like.closest(".post");
     const pid = art ? art.dataset.pid : scr.dataset.detailPid;
-    const post = POSTS.find(x => x.id === pid);
+    const post = findPost(pid);
     if (!post) return;
     post.liked = !post.liked;
     post.likes += post.liked ? 1 : -1;
     scr.querySelectorAll(".like-btn").forEach(b => {
       const bArt = b.closest(".post");
-      if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === pid)
+      if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === pid) {
         b.classList.toggle("liked", post.liked);
+        const ln = b.querySelector(".lk-n");
+        if (ln) ln.textContent = post.likes || "";
+      }
     });
   }
 });
