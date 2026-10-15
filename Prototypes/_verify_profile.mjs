@@ -65,17 +65,33 @@ await sub().locator('.pf-tab[data-pftab="all"]').click();
 await page.waitForTimeout(300);
 check("all tab back to 9 tiles", await sub().locator(".pf-tile").count() === 9);
 
-// ============ 3) followers list ============
+// ============ 3) followers list (IG-style, PROFILE-004) ============
 await sub().locator('[data-pfgo="followers"]').click();
 await page.waitForTimeout(350);
 check("followers page title = username", (await sub().locator(".detail-title").textContent()).trim() === "king.mr.fox");
-check("followers/following tabs", (await sub().locator(".pfl-tab").allTextContents()).join("|").includes("Followers|"));
+check("followers/following tabs (IG lowercase counts)", (await sub().locator(".pfl-tab").allTextContents()).join("|") === "21.1K followers|4,173 following");
+check("list search bar (username or display name)", await sub().locator(".pfl-search input.pfl-q").count() === 1);
 check("follower rows shown", await sub().locator(".pfl-row").count() > 3);
-const firstFlw = sub().locator(".pfl-row .pf-flw").first();
-const flwBefore = (await firstFlw.textContent()).trim();
-await firstFlw.click();
+check("own followers show Remove only (IG)", await sub().locator(".pfl-row .pf-rmf").count() === await sub().locator(".pfl-row").count() &&
+  await sub().locator(".pfl-row .pf-flw").count() === 0);
+const rowsBefore = await sub().locator(".pfl-row").count();
+await sub().locator(".pfl-row .pf-rmf").first().click();
 await page.waitForTimeout(300);
-check("row follow toggles", (await sub().locator(".pfl-row .pf-flw").first().textContent()).trim() !== flwBefore || flwBefore === "Following");
+check("Remove opens confirm dialog", (await page.locator(".dlg .dlg-q").textContent()).includes("Remove follower") &&
+  await page.locator(".dlg .dlg-rmf-go").count() === 1);
+await page.locator(".dlg .dlg-rmf-go").click();
+await page.waitForTimeout(300);
+check("confirm removes the follower row", await sub().locator(".pfl-row").count() === rowsBefore - 1, `${rowsBefore} -> ${await sub().locator(".pfl-row").count()}`);
+await sub().locator('.pfl-tab[data-pftab="following"]').click();
+await page.waitForTimeout(300);
+check("own following rows all show Following", await sub().locator(".pfl-row").count() > 0 &&
+  await sub().locator(".pfl-row .pf-flw.on").count() === await sub().locator(".pfl-row").count());
+await sub().locator(".pfl-row .pf-flw").first().click();
+await page.waitForTimeout(250);
+check("Following unfollows in place -> Follow", (await sub().locator(".pfl-row .pf-flw").first().textContent()).trim() === "Follow");
+await sub().locator(".pfl-row .pf-flw").first().click();
+await page.waitForTimeout(250);
+check("re-follow flips back to Following", (await sub().locator(".pfl-row .pf-flw").first().textContent()).trim() === "Following");
 await page.screenshot({ path: `${OUT}/d-profile-followers.png` });
 await sub().locator(".sub-back").click();
 await page.waitForTimeout(350);

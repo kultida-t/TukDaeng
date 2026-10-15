@@ -3148,6 +3148,16 @@ l<!DOCTYPE html>
   }
   .pfl-tab.on { color: var(--text); border-bottom-color: var(--text); }
   .pfl-row { cursor: pointer; }
+  /* IG parity — the username title sits dead-center in the head, not beside back */
+  .pfl-head { position: relative; }
+  .pfl-head .detail-title {
+    position: absolute; left: 50%; transform: translateX(-50%); margin-left: 0;
+    max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .pfl-search { margin: 10px 16px 6px; }
+  /* IG parity — every action pill in the list is the same fixed width + compact height */
+  .pfl-row .mact { min-width: 88px; padding: 6px 0; text-align: center; }
+  .mact.pf-flw { background: var(--red); color: #fff; }
   .mact.pf-flw.on { background: var(--chip-bg); color: var(--chip-text); }
   /* edit profile */
   .pe-av { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 18px 16px 6px; }
@@ -6111,6 +6121,7 @@ const PROFILES = {
 const PF_EXTRA_FOL = new Set(); /* follow state for users that have no posts (session only) */
 const PF_EXTRA_FAV = new Set(); /* favorites for users that have no posts (session only) */
 const PF_EXTRA_MUT = new Set(); /* muted state for users that have no posts (session only) */
+const PF_REMOVED_FOL = new Set(); /* PROFILE-004 — own followers removed via Remove button (session only) */
 
 /* ===== PORTFOLIO-001 — owner-only portfolio (spec 14_PORTFOLIO_MODULE): dashboard + asset list + sold history ===== */
 /* eligible = status Sale/Show/Hide + own asset (not consignment); sold/deleted/hidden-perm/consignment excluded */
@@ -6465,7 +6476,6 @@ function profileHTML(scr, key) {
       : `<button class="icon-btn sub-back">${I.back()}</button>
          <span class="pf-vname">${esc(u.user)}</span>
          <span class="spacer"></span>
-         <button class="icon-btn pf-bell" title="Notifications">${I.navBell(20)}</button>
          <button class="icon-btn pf-more">${I.dots(18)}</button>`}
   </div>
   <div class="pf-scroll">
@@ -6507,26 +6517,42 @@ function profileHTML(scr, key) {
   ${scr._pfAv ? pfAvovHTML(u, own, isF) : ""}
   ${pfNavHTML(own)}`;
 }
+/* PROFILE-004 — IG followers/following page: 2 tabs + live search, own
+   followers carry a Remove button (confirm dialog), every other row gets a
+   Follow/Following pill that flips in place; you never appear in other
+   people's lists */
 function pfollowHTML(scr, key) {
   const [uname, tab = "followers"] = key.split(":");
   const u = profileOf(uname);
-  const all = pfAllUsers(uname);
+  const own = uname === CP_ME.name;
+  let all = pfAllUsers(uname);
+  if (!own) all = all.filter(n => n !== CP_ME.name);
   const names = tab === "following"
-    ? all.filter(n => pfIsFollowed(n) || uname !== CP_ME.name && n !== CP_ME.name).slice(0, uname === CP_ME.name ? all.length : 8)
-    : all;
-  const rows = names.map(n => `
+    ? (own ? all.filter(pfIsFollowed) : all.slice(0, 8))
+    : all.filter(n => !own || !PF_REMOVED_FOL.has(n));
+  const rows = names.map(n => {
+    const p = profileOf(n), isF = pfIsFollowed(n);
+    return `
     <div class="mrow pfl-row" data-pf-user="${esc(n)}">
-      <img src="${pfAvatar(n)}" alt="">
-      <span class="lg-b"><span class="mn">${esc(n)}</span><span class="md">${esc(profileOf(n).disp !== n ? profileOf(n).disp : (profileOf(n).cat || "TukDaeng member"))}</span></span>
-      <button class="mact pf-flw${pfIsFollowed(n) ? " on" : ""}" data-seller="${esc(n)}">${pfIsFollowed(n) ? "Following" : "Follow"}</button>
-    </div>`).join("");
+      <img src="${p.avatar}" alt="">
+      <span class="lg-b"><span class="mn">${esc(n)}</span><span class="md">${esc(p.disp !== n ? p.disp : (p.cat || "TukDaeng member"))}</span></span>
+      ${own && tab === "followers"
+        ? `<button class="mact pf-rmf" data-u="${esc(n)}">Remove</button>`
+        : `<button class="mact pf-flw${isF ? " on" : ""}" data-u="${esc(n)}">${isF ? "Following" : "Follow"}</button>`}
+    </div>`;
+  }).join("");
+  const empty = tab === "followers" ? "No followers yet" : own ? "You're not following anyone yet" : "Not following anyone yet";
   return `
-    <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${esc(uname)}</span><span class="spacer"></span></div>
+    <div class="detail-head pfl-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${esc(uname)}</span><span class="spacer"></span></div>
     <div class="pfl-tabs">
-      <button class="pfl-tab${tab === "followers" ? " on" : ""}" data-pftab="followers">${u.followers} Followers</button>
-      <button class="pfl-tab${tab === "following" ? " on" : ""}" data-pftab="following">${u.following} Following</button>
+      <button class="pfl-tab${tab === "followers" ? " on" : ""}" data-pftab="followers">${u.followers} followers</button>
+      <button class="pfl-tab${tab === "following" ? " on" : ""}" data-pftab="following">${u.following} following</button>
     </div>
-    <div class="sub-scroll pfl-list">${rows || `<div class="sub-empty">No ${tab} yet</div>`}</div>`;
+    <div class="sub-scroll pfl-list">
+      <div class="sh-field pfl-search">${I.search(17)}<input class="pfl-q" placeholder="Search username or display name"></div>
+      ${rows || `<div class="sub-empty">${empty}</div>`}
+      <div class="sub-empty pfl-none" style="display:none">No results found</div>
+    </div>`;
 }
 function peditHTML(scr) {
   const u = profileOf(CP_ME.name);
@@ -7121,6 +7147,19 @@ stageEl.addEventListener("input", e => {
       b.style.display = b.querySelector(".mn").textContent.toLowerCase().includes(q) ? "" : "none";
     });
   }
+  /* PROFILE-004 — followers/following list search matches username or display name */
+  if (e.target.matches(".pfl-q")) {
+    const q = e.target.value.trim().toLowerCase();
+    const list = e.target.closest(".pfl-list");
+    let hits = 0;
+    list.querySelectorAll(".pfl-row").forEach(b => {
+      const t = b.querySelector(".mn").textContent + " " + (b.querySelector(".md") ? b.querySelector(".md").textContent : "");
+      const show = !q || t.toLowerCase().includes(q);
+      b.style.display = show ? "" : "none";
+      if (show) hits++;
+    });
+    list.querySelector(".pfl-none").style.display = hits ? "none" : "";
+  }
   /* search page — live suggestions (SEARCH-001) */
   if (e.target.matches(".sr-q")) {
     const scr = e.target.closest(".screen");
@@ -7569,6 +7608,14 @@ document.getElementById("stage").addEventListener("click", e => {
     scrToast(scr, "Posts muted");
     return;
   }
+  const dlgRmf = e.target.closest(".dlg-rmf-go");
+  if (dlgRmf) {
+    const scr = dlgRmf.closest(".screen");
+    scr.classList.remove("dialog-open");
+    PF_REMOVED_FOL.add(scr.dataset.rmUser);
+    renderSub(scr);
+    return;
+  }
   const dlgReset = e.target.closest(".dlg-reset-go");
   if (dlgReset) {
     const scr = dlgReset.closest(".screen");
@@ -7943,8 +7990,6 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = pfOv.closest(".screen");
     scr._pfAv = false; renderSub(scr); return;
   }
-  const pfBell = e.target.closest(".pf-bell");
-  if (pfBell) { scrToast(pfBell.closest(".screen"), "Notification settings aren't in this prototype yet"); return; }
   const pfFoll = e.target.closest(".pf-foll");
   if (pfFoll) {
     const scr = pfFoll.closest(".screen");
@@ -7970,11 +8015,28 @@ document.getElementById("stage").addEventListener("click", e => {
     }
     return;
   }
+  /* PROFILE-004 — IG list button flips in place (no re-render) so an
+     unfollowed row stays put and the toggle can be undone */
   const pfFlw = e.target.closest(".pf-flw");
   if (pfFlw) {
     const scr = pfFlw.closest(".screen");
-    pfSetFollow(scr, pfFlw.dataset.u || pfFlw.dataset.seller, !pfIsFollowed(pfFlw.dataset.u || pfFlw.dataset.seller));
-    renderSub(scr);
+    const u = pfFlw.dataset.u || pfFlw.dataset.seller;
+    const on = !pfIsFollowed(u);
+    pfSetFollow(scr, u, on);
+    pfFlw.classList.toggle("on", on);
+    pfFlw.textContent = on ? "Following" : "Follow";
+    return;
+  }
+  /* own followers -> Remove opens the center confirm dialog (IG "Remove follower?") */
+  const pfRmf = e.target.closest(".pf-rmf");
+  if (pfRmf) {
+    const scr = pfRmf.closest(".screen");
+    scr.dataset.rmUser = pfRmf.dataset.u;
+    openDlg(scr, `
+      <div class="dlg-q">Remove follower?</div>
+      <div class="dlg-desc">We won't let ${esc(pfRmf.dataset.u)} know you removed them from your followers.</div>
+      <button class="dlg-btn danger dlg-rmf-go">Remove</button>
+      <button class="dlg-btn dlg-cancel">Cancel</button>`);
     return;
   }
   /* Following-sheet rows (favorites / mute page / unfollow) */

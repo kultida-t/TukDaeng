@@ -42,8 +42,8 @@ check("no blue verified badge anywhere", await sub().locator(".pf-vb").count() =
 check("grid filled: 13 tiles (1 real + 12 mock)", await tileCount() === 13, String(await tileCount()));
 check("posts stat syncs to tile count = 13", (await postsStat()) === "13", await postsStat());
 check("3 viewer tabs All/Sale/Show", (await sub().locator(".pf-tab").allTextContents()).join("|") === "All|Sale|Show");
-check("viewer head = back + bell + more", await sub().locator(".pf-head .sub-back").count() === 1 &&
-  await sub().locator(".pf-bell").count() === 1 && await sub().locator(".pf-more").count() === 1);
+check("viewer head = back + more, no bell (removed per PROFILE-004)", await sub().locator(".pf-head .sub-back").count() === 1 &&
+  await sub().locator(".pf-bell").count() === 0 && await sub().locator(".pf-more").count() === 1);
 check("followed-by row intact", (await sub().locator(".pf-fby").textContent()).includes("Followed by"));
 const follBtn = sub().locator(".pf-foll");
 if ((await follBtn.textContent()).trim() === "Follow") {
