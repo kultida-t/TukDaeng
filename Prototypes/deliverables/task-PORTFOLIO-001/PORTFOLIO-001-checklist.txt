@@ -1,0 +1,90 @@
+PORTFOLIO-001 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: PORTFOLIO-001 ปรับหน้า Portfolio ใน fo-flow ให้สมบูรณ์ — Dashboard + Asset List + Sold History ตาม spec 14_PORTFOLIO_MODULE
+ไฟล์: Prototypes/fo-flow/index.html, Prototypes/_verify_pfo.mjs
+Reference: FrontOffice/14_PORTFOLIO_MODULE.md (V1 baseline, owner-only private)
+ผลตรวจ: ผ่าน — ผู้ใช้รีวิวผ่านการใช้งานจริงหลายรอบพร้อม feedback ปรับจนเสร็จสิ้น
+
+เคส 1: เข้า Portfolio จากโปรไฟล์ตัวเอง — ผ่าน (automated)
+  Profile (bottom nav) > ปุ่ม wallet icon → หน้า Portfolio เปิดเป็น sub page,
+  header = back + "Portfolio" + ⋯ (เมนู Preview states สำหรับตรวจทุก state)
+
+เคส 2: Dashboard — Total Invested — ผ่าน (automated)
+  การ์ด hero: "Total invested" + chip "🔒 Private" + ตัวเลขใหญ่
+  THB 1,789,500 = ผลรวมราคาที่ซื้อจริง (purchase cost) +
+  coverage "Purchase cost of 8/9 assets · only you can see this"
+  (pfa-07 Seamaster ไม่มีราคาซื้อ/ราคาตลาด → ไม่นับใน total;
+  ปรับจาก Total Asset Value รวมมูลค่าตลาด ตาม feedback — list โชว์
+  ราคาซื้อ การ์ดบนจึงรวมต้นทุนเพื่อความสอดคล้อง)
+
+เคส 3: Stat tiles ยุบเข้า hero card (feedback ผู้ใช้) — ผ่าน (automated)
+  ตาม feedback: หน้า dashboard minimal — tiles แยกถูกถอดทิ้ง
+  ข้อมูลสำคัญยุบเป็นบรรทัดใน hero card: "Market value ฿1,888,500 · +5.5%"
+  (มูลค่าตลาดรวม + % เทียบต้นทุน, สีเขียว/แดงตามกำไรขาดทุน)
+  YTD performance tile ถูกตัดออก (market-driven, ไม่จำเป็นต่อหน้านี้)
+
+เคส 4: Top brands / Sold history row ถูกถอด (feedback ผู้ใช้) — ผ่าน (automated)
+  ตาม feedback: minimal แบบ IG — หน้า dashboard เหลือ hero card + 2 stat tiles
+  + list ตรง ๆ; Top brands card และแถว Sold history ออกจากหน้า
+  (Top brand holdings ยังอยู่ใน spec เป็น V1 baseline — ตัดตามผู้ใช้,
+  Sold history ยังเข้าถึงได้ผ่านเมนู ⋯ ไม่หายไปจากระบบ)
+
+เคส 5: Asset list 9 รายการ — ผ่าน (automated)
+  ต่อ row: รูป 52px rounded + ชื่อ + ref·meta (2 บรรทัด)
+  ขวา: ราคาที่ซื้อ (purchase price) ตัวเดียว — IG pure minimal
+  Seamaster = ไม่มีราคาซื้อ → "—" ไม่นับใน total
+  ข้อมูลละเอียดทั้งหมด (status / market value / G/L / holding /
+  asking / expected profit) อยู่ในหน้า Asset Detail เมื่อแตะ row
+  (status pill / holding chip / source label / Mkt line / cmp chip
+  ถูกถอดจาก list ทั้งหมดตาม feedback)
+
+เคส 6: แตะ asset row → Owner Asset Detail — ผ่าน (automated)
+  hero image แบบ post detail: detail-hero 4/5 + photo counter "1/N"
+  + photo-dots + swipe/tap ซ้ายขวาเปลี่ยนรูป (assets มี photos[] mock;
+  ชิ้นที่มี 1 รูปไม่โชว์ counter/dots); ชื่อ + status chip;
+  การ์ด "Value (private)": Current value, Value source, Estimated
+  market (range ±5% ปัด step 500), Last price update, Data source =
+  TukDaeng Market Data, Purchase price, Purchased date, Unrealized
+  gain/loss, Holding period (days + human); asset Sale มีการ์ด
+  "Listing": Asking price, Expected profit, Market comparison chip;
+  note "Owner-only data"; back กลับ Portfolio
+
+เคส 7: Sold history — ผ่าน (automated)
+  ลิงก์ muted "↺ Sold history ›" อยู่ในแถวเดียวกับหัวข้อ Assets (ชิดขวา,
+  ไม่มีตัวนับ — ตาม feedback) → list 3 รายการ
+  (ชื่อ, Sold <date> · buyer, Sale price, Realized ▲▼)
+  → แตะ row → Sold detail: Sale record (Sale date, Buyer, Contact,
+  Sale price, Payment method, Attachment thumb) + Return
+  (Purchase price, Realized gain/loss ±฿%, Holding period) — back กลับได้ทุกชั้น
+
+เคส 8: Privacy + exclusion rules — ผ่าน (automated/design)
+  Portfolio เข้าได้เฉพาะ owner (entry = wallet icon บน own profile เท่านั้น,
+  viewer profile ไม่มีปุ่ม); Sold ไม่นับใน Total/Unrealized;
+  footnote อธิบาย exclusion (sold/deleted/hidden-perm/consignment)
+
+เคส 9: Preview states เป็น dev-only (feedback ผู้ใช้) — ผ่าน (automated)
+  ⋯ ถูกถอดจาก UI ปกติทั้งหมด — Sold history ย้ายไปเป็นลิงก์ใต้ list;
+  Preview states โผล่เฉพาะเมื่อเปิดด้วย ?dev=1 (prototype affordance):
+  Normal / Market prices unavailable / Empty portfolio / Load failed /
+  Viewer access (permission denied)
+  - nomkt: banner "Some market prices are unavailable", rows ยังโชว์
+    ราคาซื้อปกติ (market lines ซ่อน — ไม่มีบรรทัดรองตามดีไซน์),
+    การ์ดบนโชว์ "Market value unavailable"
+  - empty: "No data found" + คำอธิบาย
+  - failed: "Unable to load data." + ปุ่ม Try again → กลับปกติ
+  - denied: "Permission denied." + note private
+  - ทุก state มี "Preview: <state> · Reset" bar (ด่าน denied/empty ก็ reset ได้)
+
+เคส 10: Theme — ผ่าน (automated)
+  render ครบทั้ง dark/light (ใช้ CSS vars เดิม + tint rgba),
+  chips/pills อ่านได้ทั้ง 2 ธีม
+
+หมายเหตุ:
+- mock data เดิม 9 assets ขยายเป็น PF_ASSETS (brand, status, market,
+  purchase, bought, asking) + PF_SOLD 3 รายการ + PF_YTD_OPEN snapshot
+- total เปลี่ยนจาก 2,077,500 → 1,888,500 เพราะ Seamaster demo
+  no-valuation state (ไม่มี market/purchase) ตาม spec exclusion
+- regression: _verify_profile.mjs + _verify_theme.mjs ผ่านครบ
+  0 failed / 0 console errors
+- state preview เป็น demo affordance ของ prototype (scr._pfoSim);
+  production จะมาจาก API/data จริง ไม่ใช่เมนูนี้

@@ -1,0 +1,57 @@
+_verify_pfp.mjs
+---------------
+PASS posts viewer opens over own profile
+PASS viewer is pfp (posts) mode
+PASS header title = Posts / king.mr.fox
+PASS no search icon in posts head
+PASS back button present
+PASS 9 feed-style cards (one per grid post) — 9
+PASS card head avatar + name + more
+PASS no Follow btn on own post
+PASS music line under username
+PASS photo renders 4:5 slot
+PASS like count beside heart
+PASS comment count beside icon
+PASS share + save(right) actions
+PASS liked-by row
+PASS caption line
+PASS comment preview row
+PASS timestamp
+PASS like toggles + count 128->129
+PASS own post ... -> pm-open
+PASS own menu has Archive/Edit/Pin/Delete
+PASS own menu has NO Not interested/Report
+PASS second card exists in same scroll track
+PASS scrolled card 1 upward — 136
+PASS back lands on own profile
+PASS viewer profile opened
+PASS posts viewer title = Watch 777
+PASS music line on p1
+PASS multi-photo renders one swipeable photo — 1
+PASS counter chip 1/3
+PASS 3 dots under photo
+PASS swipe left -> 2/3 + dot moves
+PASS tap right -> 3/3
+PASS like 3 / comment 1 counts
+PASS sale post keeps Ask pill
+PASS caption + comment preview + time
+PASS viewer like 3->4 + liked class
+PASS comment opens comments sheet
+PASS ... opens post menu sheet
+PASS other-user post keeps Not interested/Report menu
+PASS back lands on Watch 777 profile
+PASS posts viewer renders light theme
+PASS no console errors
+
+0 failed / 0 console errors
+
+Regression
+----------
+_verify_profile.mjs   — 0 failed / 0 console errors (fixed 1 stale check: portfolio card label
+                        is "Total invested" per PORTFOLIO-001, was "Total asset value")
+_verify_feed_saved.mjs — all pass / 0 console errors (Saved feedMode viewer untouched)
+_verify_feed_like.mjs  — 0 failed (like-btn handler extended for .lk-n count update)
+_verify_pm_own.mjs     — 53 passed / 0 failed (own-post menu + refreshPostViews pfp branch);
+                         gfx posts now resolve via findPost → own menu + Archive/Edit/
+                         Pin/Delete work on grid posts (delete tombstones via PF_GFX_DEL)
+_verify_swipe.mjs      — DONE (photo swipe/tap unaffected — pfp photos use .pfp-photo, inert)

@@ -1,0 +1,31 @@
+PASS default data-theme dark
+PASS default fo_theme (null = dark)
+PASS sidebar toggle shows ☾
+PASS settings title
+PASS Display section label
+PASS theme row exists
+PASS theme row shows Dark
+PASS theme row has icon
+PASS theme page title
+PASS 2 options
+PASS option labels
+PASS options have icons
+PASS check on Dark mode
+PASS screen switches to light
+PASS check moves to Light
+PASS fo_theme=light
+PASS toggle shows ☀
+PASS theme page still open
+PASS settings row shows Light
+PASS back at feed
+PASS feed screen is light
+PASS persisted data-theme light
+PASS persisted fo_theme
+PASS persisted toggle ☀
+PASS persisted row shows Light
+PASS sidebar toggle -> dark
+PASS row follows toggle -> Dark
+PASS re-pick light applies
+PASS no console errors
+
+0 failed / 0 console errors

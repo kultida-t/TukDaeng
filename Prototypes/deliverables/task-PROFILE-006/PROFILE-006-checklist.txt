@@ -1,0 +1,6 @@
+PROFILE-006 Block confirm sheet = IG
+[x] Block / Block and report buttons height 41px, radius 11px, side margin 23px, gap 11px, bottom padding 40px
+[x] Avatar 89px, title/description left-aligned, row icon spacing per IG
+[x] Added "Block and report" (secondary) -> blocks + opens report picker
+[x] Report-flow sheet unchanged (Block only)
+[x] Dark + light screenshots

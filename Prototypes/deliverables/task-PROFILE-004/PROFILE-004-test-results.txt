@@ -1,0 +1,145 @@
+PROFILE-004 — Test Results (2026-10-15)
+viewport 440x956 · http://127.0.0.1:4173/fo-flow · playwright chromium
+
+_verify_pfl.mjs (ใหม่ — PROFILE-004)
+-----------------------------------
+PASS followers page title = username
+PASS header title centered (IG)
+PASS exactly 2 tabs, IG lowercase counts — 21.1K followers|4,173 following
+PASS followers tab active by default
+PASS search bar with IG placeholder
+PASS own follower rows render
+PASS own followers: Remove on every row, no follow buttons
+PASS row buttons equal width + compact height (IG)
+PASS search 'watch' narrows the list — 3/13
+PASS search matches display name too
+PASS no-match search shows No results found
+PASS clearing search restores all rows
+PASS Remove opens center confirm dialog
+PASS Cancel keeps the row
+PASS confirm removes the follower row — 13 -> 12
+PASS removed follower stays gone after tab switch
+PASS removed user absent from the list
+PASS own following rows all show Following pill
+PASS no Remove on own following
+PASS Following unfollows in place -> Follow (row stays, IG)
+PASS unfollow synced to account state
+PASS re-follow flips back to Following + state sync
+PASS viewer profile opened
+PASS viewer followers title = their username
+PASS viewer followers have Follow/Following, no Remove
+PASS mixed Follow/Following pills equal width (IG)
+PASS you never appear in other people's lists
+PASS Follow pill is theme red — rgb(200, 33, 43)
+PASS Follow -> Following in place + state sync
+PASS row tap opens the user's profile
+PASS back returns to the followers list — opened wrist.story
+PASS viewer following rows use Follow/Following pills
+PASS followers page renders in light theme
+PASS no console errors
+
+35/35 PASS — 0 failed / 0 console errors
+
+
+_verify_profile.mjs (regression — PROFILE-001, แก้ stale checks ส่วน followers)
+---------------------------------------------------------------------------
+PASS own profile opens as sub page
+PASS own header username = king.mr.fox
+PASS own header plain username (no lock/chevron)
+PASS own header hamburger + create +
+PASS no note bubble on avatar
+PASS no avatar add badge
+PASS 3 stats posts/followers/following
+PASS display name
+PASS bio shows
+PASS no sleep mode pill
+PASS link chip + Add chip
+PASS Edit/Share buttons
+PASS 5 owner tabs (All/Sale/Show/Hide/Sold)
+PASS all tab active
+PASS own grid populated (9 mock posts)
+PASS in-page bottom nav, Profile active
+PASS sold tab active + filters grid
+PASS active tab stays in view
+PASS all tab back to 9 tiles
+PASS followers page title = username
+PASS followers/following tabs (IG lowercase counts)
+PASS list search bar (username or display name)
+PASS follower rows shown
+PASS own followers show Remove only (IG)
+PASS Remove opens confirm dialog
+PASS confirm removes the follower row — 13 -> 12
+PASS own following rows all show Following
+PASS Following unfollows in place -> Follow
+PASS re-follow flips back to Following
+PASS back to own profile
+PASS edit page title
+PASS 3 fields + save
+PASS save returns to profile
+PASS bio updated
+PASS hamburger opens settings
+PASS back to profile from settings
+PASS portfolio icon button on own profile
+PASS no discover-people btn on own
+PASS portfolio page opens
+PASS total value card
+PASS asset rows with values
+PASS back to profile from portfolio
+PASS feed nav exits profile
+PASS viewer profile opens
+PASS viewer header username (no blue verified badge — removed per PROFILE-003)
+PASS viewer back + more
+PASS viewer has no discover-people btn (IG parity)
+PASS Follow/Message buttons — Follow|Message
+PASS Follow/Message equal height (IG parity)
+PASS followed-by row
+PASS no note/sleep/add-badge on viewer
+PASS viewer post grid populated (13 = 1 real + 12 mock) — 13
+PASS profile shows Following
+PASS post stats row intact
+PASS post viewer opens over profile
+PASS back lands on same profile
+PASS profile ... sheet opens
+PASS IG menu rows = Report/Block/About/Copy/Share + Cancel
+PASS no Restrict/shared-activity/hide-story/QR rows
+PASS Report row is danger-styled
+PASS Report opens account-report page
+PASS copy link -> toast
+PASS Cancel closes sheet silently
+PASS avatar overlay opens
+PASS overlay has 4 actions — Following|Share|Copy link|QR code
+PASS overlay copy -> toast + closes
+PASS backdrop tap closes overlay
+PASS back to feed
+PASS feed follow button synced
+PASS profile cards listed
+PASS sr-scard opens viewer profile — Watch 777
+PASS back to search results
+PASS comments sheet open
+PASS comment author opens profile — chrono.th
+PASS profile renders in light theme
+PASS no console errors
+
+0 failed / 0 console errors
+
+
+_verify_pfg.mjs (regression — PROFILE-003)
+------------------------------------------
+0 failed / 0 console errors  (46 checks ผ่านครบ — grid sync, Posts viewer,
+manage sheet, unfollow reset, light theme, ฯลฯ)
+
+
+_verify_pfp.mjs (regression — PROFILE-002)
+------------------------------------------
+0 failed / 0 console errors  (posts viewer cards feed-parity, swipe,
+menus, light theme)
+
+
+Screenshots: Prototypes/screenshots/task-PROFILE-004/
+  d-pfl-own-followers.png      own followers + Remove rows
+  d-pfl-search.png             search filter "watch" → 3 rows
+  d-pfl-remove-dialog.png      Remove follower? confirm dialog
+  d-pfl-own-following.png      own following + Following pills
+  d-pfl-viewer-followers.png   Watch 777 followers + Follow(แดง)/Following
+  d-pfl-viewer-following.png   viewer following tab
+  d-pfl-light.png              light theme

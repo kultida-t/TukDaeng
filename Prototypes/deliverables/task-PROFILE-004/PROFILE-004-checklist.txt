@@ -1,0 +1,77 @@
+PROFILE-004 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: PROFILE-004 ปรับหน้า Followers/Following ให้เหมือน IG
+ไฟล์: Prototypes/fo-flow/index.html, Prototypes/_verify_pfl.mjs (ใหม่),
+      Prototypes/_verify_profile.mjs (แก้ stale checks ส่วน followers:
+      แท็บ lowercase + own followers เป็น Remove)
+ผลตรวจ: รอผู้ใช้รีวิว
+
+เคส 1: layout IG ตาม reference — ผ่าน (automated)
+  header = back + username กึ่งกลางจอจริง (.pfl-head .detail-title
+  absolute center + ellipsis กันชื่อยาวชนปุ่ม back — fix ตาม feedback
+  ผู้ใช้ที่ title เคยชิดซ้าย); แท็บเหลือ 2 อันตามที่สั่ง —
+  "21.1K followers" / "4,173 following" (lowercase ตัวหนังสือตาม IG, ไม่มี
+  mutual/suggested); search bar pill ใต้แท็บ placeholder "Search username
+  or display name"; row = avatar + username (bold) + display name (เทา) +
+  ปุ่มขวา; แตะ row → เข้าโปรไฟล์คนนั้น, back กลับ list เดิม
+
+เคส 2: search ใน list — ผ่าน (automated)
+  input .pfl-q filter live เทียบ username + display name (.mn + .md —
+  ไม่นับข้อความบนปุ่ม); พิมพ์ "watch" เหลือ 3/13 rows ทุก row ที่เหลือ
+  match จริง; พิมพ์มั่ว "zzzznothing" → โชว์ "No results found"; ลบคำ →
+  rows กลับครบ; ค้นหาไม่ทำ state หาย — เป็น display:none filter ล้วน
+
+เคส 3: own followers = ปุ่ม Remove ตาม IG — ผ่าน (automated)
+  followers ของตัวเองทุก row มีแค่ปุ่ม Remove (เทา) ไม่มีปุ่ม follow;
+  กด → center confirm dialog "Remove follower?" + desc "We won't let
+  {user} know…" + Remove (danger) / Cancel — pattern .dlg เดียวกับ
+  Mute/Delete; Cancel ปิดเฉย ๆ row อยู่ครบ; กด Remove → row หาย (13→12),
+  ไม่ toast ตาม IG, state จำใน PF_REMOVED_FOL (session-only เหมือน
+  PF_EXTRA_FOL) → สลับแท็บกลับมาก็ยังไม่โผล่
+
+เคส 4: own following = Following pills — ผ่าน (automated)
+  ทุก row เป็น "Following" เทา ไม่มี Remove; กด Following → unfollow
+  ทันที flip เป็น "Follow" แดงในที่เดิม ไม่มี confirm/ไม่ re-render
+  (row ไม่หาย กดย้อนได้ — ตาม IG ล่าสุดที่ user ยืนยัน); state sync ผ่าน
+  pfSetFollow → pfIsFollowed false จริง; กดซ้ำกลับเป็น Following
+
+เคส 5: list ของคนอื่น — ผ่าน (automated)
+  followers ของ Watch 777 ทุก row เป็น Follow (แดง --red) / Following
+  (เทา) ไม่มี Remove; king.mr.fox ไม่โผล่ใน list คนอื่น (กันกด follow
+  ตัวเอง); กด Follow → flip เป็น Following + pfIsFollowed true จริง;
+  following tab ของคนอื่นก็ pills เหมือนกัน
+
+เคส 6: follow sync ทุก surface — ผ่าน (automated)
+  ปุ่มใน list ใช้ pfSetFollow/setFollowing เดิม → sync กับปุ่ม Follow บน
+  profile, head pill ของ Posts viewer และ follow-btn บนการ์ดฟีด
+  (account-level เหมือนเดิม); unfollow เคลียร์ favorite/muted ตาม logic
+  เดิมของ setFollowing
+
+เคส 6b: ขนาดปุ่มเท่ากันตาม reference IG — ผ่าน (automated)
+  ตาม feedback ผู้ใช้ (ภาพปุ่ม IG กว้างเท่ากันหมด): .pfl-row .mact
+  ล็อก min-width 88px + padding แนวตั้ง 6px + text กึ่งกลาง →
+  Follow/Following/Remove กว้างเท่ากันเป๊ะและเตี้ยลง (≤34px) ทั้ง own
+  list และ list คนอื่น; ไม่กระทบ .mact ของหน้า Favorites/Muted
+
+เคส 6c: ถอดกระดิ่งออกจาก header โปรไฟล์คนอื่น — ผ่าน (automated)
+  ตาม feedback ผู้ใช้: ลบปุ่ม pf-bell (Notifications toast stub) ออกจาก
+  viewer profile head เหลือ back + username + … เท่านั้น + ลบ handler
+  ที่ไม่มี element แล้ว; _verify_pfg.mjs check "viewer head" แก้เป็น
+  expect pf-bell === 0 — เป็นการแตะหน้าที่ล็อกโดยผู้ใช้สั่งโดยตรง
+
+เคส 7: theme — ผ่าน (automated)
+  render ได้ทั้ง dark/light (toggle แล้ว navigate เข้าใหม่เพราะ theme
+  re-render ทั้ง screen — พฤติกรรมเดิมของแอป)
+
+หมายเหตุ:
+- ไม่ได้ใส่ avatar ring ใน row แม้ภาพ IG จะมี — PROFILE-003 ล็อกไว้ว่า
+  ไม่มี ring บน avatar ทุกที่ (.avatar-ring render ธรรมดา)
+- own followers ไม่มีปุ่ม Follow back ตาม IG จริง (followers ของตัวเอง
+  โชว์แค่ Remove)
+- จำนวนบนแท็บเป็น stat string เดิม (21.1K/4,173) ไม่ลดตาม Remove —
+  mock คงไว้
+- own/viewer profile layout ที่ล็อก (PROFILE-001/003) ไม่ถูกแตะ —
+  แก้เฉพาะ pfollowHTML + handler .pf-flw/.pf-rmf/.dlg-rmf-go/.pfl-q +
+  CSS .pfl-search/.mact.pf-flw + PF_REMOVED_FOL
+- verify: _verify_pfl.mjs 32/32 PASS; regression _verify_profile.mjs /
+  _verify_pfg.mjs / _verify_pfp.mjs = 0 failed ทั้งหมด

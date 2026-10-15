@@ -1,0 +1,61 @@
+PROFILE-002 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: PROFILE-002 ปรับ Post Viewer ที่เปิดจากหน้า Profile ให้แสดงแบบ IG "Posts"
+      (feed-card style) แทน immersive viewer
+ไฟล์: Prototypes/fo-flow/index.html, Prototypes/_verify_pfp.mjs (ใหม่),
+      Prototypes/_verify_profile.mjs (แก้ stale check เดียว)
+Reference: screenshot IG หน้า Posts ของ maaaaatem ที่ผู้ใช้แนบ (15/10/2026)
+ผลตรวจ: รอผู้ใช้รีวิว
+
+เคส 1: เปิดจาก grid โปรไฟล์ตัวเอง — ผ่าน (automated)
+  แตะ tile ใน grid → เปิดหน้า "Posts" เต็มจอทับโปรไฟล์ (pv เดิม);
+  header = back + title "Posts" ใหญ่ + username "king.mr.fox" เล็กใต้ title
+  (centered, ไม่มี search icon); โพสต์ทั้ง 9 ของแท็บนั้น render เป็น
+  feed card ไล่ลงมาใน scroll เดียว (ไม่ snap เต็มจอต่อใบ) เปิดมาที่โพสต์ที่กด;
+  รูปเป็น carousel ปัดซ้าย-ขวา/แตะเปลี่ยนรูปได้เหมือน feed (ผู้ใช้ขอปรับจาก
+  แบบซ้อนแนวตั้ง ตามภาพ reference)
+
+เคส 2: โครงการ์ดตามภาพ IG — ผ่าน (automated)
+  author row = avatar ring + username + แถวเพลง "♪ gamza · Smile Again"
+  (โพสต์ที่มี field music) + ปุ่ม … ; รูปเต็มกรอบ 4:5 — โพสต์หลายรูป
+  เป็น carousel เหมือน feed (ปัดซ้าย/ขวาหรือแตะครึ่งซ้าย-ขวาเปลี่ยนรูป)
+  + chip "1/n" มุมขวาบน + dot pagination ใต้รูป; action bar = ♡ + จำนวน / comment + จำนวน / share / bookmark
+  ชิดขวา; ตามด้วย Liked by (avatar ซ้อน), caption (username + text +
+  more link), comment preview (ชื่อ + ข้อความ + ไอคอน ♡ กดไลก์คอมเมนต์ได้),
+  timestamp; โพสต์ตัวเองไม่มีปุ่ม Follow (IG ไม่แสดงบนโพสต์ตัวเอง)
+
+เคส 3: interaction ในการ์ด — ผ่าน (automated)
+  กด ♡ บนโพสต์ grid-only → หัวใจแดง + เลข like ขยับทันที (128→129);
+  กด comment → comments sheet เดิม; กด … บนโพสต์ตัวเอง → own-post menu
+  เดียวกับ feed (Archive / Turn off commenting / Edit / Pin to profile /
+  Delete) — ไม่ใช่เมนู Not interested/Report ของโพสต์คนอื่น (แก้ lookup
+  pmPid จาก POSTS.find → findPost); โพสต์คนอื่นยังได้เมนูเดิม;
+  share/save/liked-by ใช้ handler เดิมของ feed; sale post ยังมีปุ่ม Ask
+  + "Tap for details" เหมือนการ์ดใน feed; back กลับโปรไฟล์เดิมทุกครั้ง
+
+เคส 4: โปรไฟล์คนอื่น (Watch 777, โพสต์จริง p1) — ผ่าน (automated)
+  header "Posts / Watch 777"; การ์ด p1: carousel 3 รูป — chip 1/3 +
+  dots 3 จุด, ปัดซ้าย → 2/3, แตะขวา → 3/3 (ยืนยัน automated แล้ว),
+  music line, like 3 / comment 1, caption Rolex, preview
+  "clean set 🔥", "3 days ago", ปุ่ม Ask; กด ♡ → 3→4 + class liked
+
+เคส 5: theme — ผ่าน (automated)
+  หน้า Posts ใช้ CSS vars เดิม render ได้ทั้ง dark/light
+
+หมายเหตุ:
+- รูปในโพสต์ใช้ .post-photo + กลไก swipe/tap เดียวกับ feed (photoCtx/
+  applyPhoto เดิม — photoCtx ถูกขยายให้ resolve gfx posts ผ่าน findPost
+  ด้วย จึงปัดได้ทั้งโพสต์จริงและ mock) — แก้ตาม feedback ผู้ใช้จากแบบ
+  ซ้อนแนวตั้ง (.pfp-photo ถูกถอดออกแล้ว)
+- โพสต์ grid-only (gfx-*) ได้ mock meta เพิ่ม (caption/time/likes/comments/
+  likedBy/commentPreview/music บนใบแรก) + register ลง PF_GFX_REG เพื่อให้
+  like/comment/save/liked-by resolve ได้ — handler ที่แตะเปลี่ยนจาก
+  POSTS.find → findPost ครบ (comment/liked-by/save/like/…menu/cfDone/
+  dlgEditGo/photoCtx) + กัน crash commentsHTML(undefined) เดิม;
+  pfGridPosts reuse object จาก registry ทำให้ mutation ต่าง ๆ คงอยู่ข้าม
+  re-render; Archive/Delete บน gfx post ใช้งานได้จริง (grid ลบออกทันที,
+  delete มี tombstone กัน gen ซ้ำ); viewer ของ Search results / Saved /
+  Wish List / Archive ไม่ถูกแตะ
+- pre-existing baseline fails เดิม (ไม่เกี่ยว task นี้):
+  _verify_feed_search "Tags tab", _verify_feed_menu post-head .more,
+  _verify_flow clip tab

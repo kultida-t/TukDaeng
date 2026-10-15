@@ -1,0 +1,84 @@
+PROFILE-005 — Automated Test Results
+File: Prototypes/_verify_pfm.mjs (Playwright, 440x956, deviceScaleFactor 2)
+Date: 2026-10-15 | Result: 59/59 PASS, 0 console errors
+
+== _verify_pfm.mjs (new) ==
+PASS viewer profile opened
+PASS menu = 1 card of rows + separate Cancel (IG)
+PASS row order = Report/Block/About/Copy/Share (IG)
+PASS Report row still danger
+PASS Block row carries data-u
+PASS block sheet: avatar + 'Block Watch 777?'
+PASS block sheet: 2 impact rows with icons
+PASS block sheet: Block button only (no 'Block and report')
+PASS 'Blocking' toast
+PASS profile Follow -> Unblock button
+PASS Message button still there (IG)
+PASS state: PF_BLOCKED + posts flagged
+PASS block unfollowed them
+PASS they dropped out of own followers
+PASS their posts left the feed — 11 -> 10
+PASS blocked profile grid still renders (IG)
+PASS menu row reads 'Unblock' when blocked
+PASS unblock = center dialog (not sheet)
+PASS dialog: red Unblock + Cancel
+PASS unblocked: Follow button back
+PASS restrict hint banner (IG)
+PASS unblock did NOT re-follow (IG)
+PASS Report -> picker replaces the sheet instantly (IG)
+PASS ...picker lists 2 targets (post/account)
+PASS Block (only button) blocks them
+PASS settings has Blocked row with count
+PASS Blocked profiles page lists them
+PASS row subtitle IG-style + Unblock button
+PASS unblock from settings = same center dialog
+PASS empty state after last unblock
+PASS About title
+PASS hero avatar + username + verified badge
+PASS authenticity note
+PASS Date joined + Account based in rows
+PASS verified foot note
+PASS non-verified: 2 rows, no badge, no foot
+PASS Share this profile -> share sheet
+PASS Copy profile URL -> link toast
+PASS Report -> picker first (IG)
+PASS 'Something about this account' -> reason list
+PASS '<' back returns to picker
+PASS Select a post: title + back + radio circles + disabled Next
+PASS tile select fills circle + enables Next
+PASS Next -> post reasons
+PASS '<' back to Select a post keeps selection
+PASS X closes whole report stack back to profile
+PASS thanks page: check + 'Thanks for your feedback'
+PASS other steps = Block/Mute only (TukDaeng-adapted) — Block dial.dude|Mute dial.dude
+PASS no Restrict/message/Community-Standards steps
+PASS Mute step -> center dialog with Mute posts option
+PASS muted -> toast + row keeps green check (IG)
+PASS Block step -> report sheet: 3 impact rows, Block button only
+PASS blocked from thanks page -> row flips to Unblock
+PASS Done closes report back to profile + submitted toast
+PASS Unfollow row shows for followed account
+PASS 'Unfollowed' toast + row gets green check (IG)
+PASS done checks are per-user (Mute the watch still unchecked)
+PASS about page renders in light theme
+PASS no console errors
+
+== Regression ==
+_verify_profile.mjs  0 failed / 0 console errors
+_verify_pfg.mjs      0 failed / 0 console errors
+_verify_pfl.mjs      0 failed / 0 console errors
+_verify_pfp.mjs      0 failed / 0 console errors
+
+Notes for future verifiers:
+- pushSub via page.evaluate is the established pattern for deep-linking
+  into profile:X subs (same as _verify_pfg seller sweep)
+- report pages navigate with rpPush/rpBack/rpClose (not subBack): '<'
+  pops one report step (current page slides out right over a static
+  under-page), 'X' closes the entire report stack back to wherever the
+  '...' menu was opened. During the .3s transition a .pg-ghost clone
+  sits in the DOM — scope locators to .page-sub (ghosts don't carry
+  that class) or wait >340ms
+- after X closes the report stack the profile sub stays open — to
+  reach Settings, reopen own profile first (pushSub profile:king.mr.fox)
+- .pf-rhint auto-dismisses in 6s — assert immediately after unblock or
+  click it away explicitly before the next step

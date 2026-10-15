@@ -1,0 +1,118 @@
+PROFILE-005 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: PROFILE-005 ทำเมนู ... บนโปรไฟล์คนอื่นให้ใช้งานได้ (Block + About this account)
+ไฟล์: Prototypes/fo-flow/index.html, Prototypes/_verify_pfm.mjs (ใหม่)
+Reference: ภาพ IG ที่ผู้ใช้แนบ + คลิป IG block flow (813749570.177950.mp4 —
+           ดึงเฟรมด้วย Prototypes/_cap_block.mjs → screenshots/_ref-block/)
+           + คลิป IG report flow (813752856.187328.mp4 — _cap_report.mjs
+           → screenshots/_ref-report/)
+ผลตรวจ: รอผู้ใช้รีวิว
+
+เคส 1: เมนู ... การ์ดเดียวคั่นเส้นตาม IG — ผ่าน (automated)
+  จากภาพ IG ที่ผู้ใช้ส่ง: แถวทั้งหมดอยู่การ์ดเดียวคั่นด้วยเส้นบาง —
+  Report(แดง) / Block / About this account / Copy profile URL /
+  Share this profile + Cancel การ์ดแยก (Restrict/See shared activity/
+  Hide your story/QR code ไม่ใส่ — เคยตัดไว้ตั้งแต่ PROFILE-001/003);
+  แถว Block ผูก data-u = username ของโปรไฟล์นั้น; ตอน blocked แถวนี้
+  เปลี่ยนเป็น "Unblock" ตาม IG
+
+เคส 2: Block confirm sheet — ผ่าน (automated)
+  กด Block → bottom sheet ตามคลิป: avatar กลาง + "Block <user>?" +
+  "This will also block any other profiles they may have or create in
+  the future. You can unblock them anytime." + impact 2 แถวพร้อมไอคอน
+  (ข้อความ/กระดิ่งขีดฆ่า) + ปุ่ม Block แดงปุ่มเดียว + padding เหนือ/
+  ใต้ปุ่มตามภาพ IG — ผู้ใช้สั่งตัด "Block and report" ออกทั้ง 2 variant
+
+เคส 3: Block มีผลจริงใน session — ผ่าน (automated)
+  กดยืนยัน → toast "Blocking" (ตามคลิป) → state PF_BLOCKED + flag
+  p.blocked บนโพสต์ทั้งหมดของ seller; unfollow อัตโนมัติผ่าน pfSetFollow
+  (เคลียร์ favorite/mute ด้วยตาม logic เดิม); เข้าลิสต์ PF_REMOVED_FOL
+  → หลุดจาก own followers; โพสต์หายจาก feed + search (เพิ่ม !p.blocked
+  ที่จุดกรองเดิมของ ni/muted + resultSellers); โปรไฟล์ยังเปิดได้ตาม
+  คลิป — ปุ่ม Follow กลายเป็น "Unblock" แดง, Message อยู่ครบ, grid
+  โชว์ปกติ; Posts viewer head ไม่โชว์ Follow pill เมื่อ blocked
+
+เคส 4: Unblock — ผ่าน (automated)
+  ทางเข้า 3 จุด: ปุ่ม Unblock บนโปรไฟล์, แถว Unblock ในเมนู ..., ปุ่ม
+  Unblock ใน Settings > Blocked profiles — ทั้งหมดเปิด center dialog
+  เดียวกัน "Unblock <user>?" + desc "<user> and other profiles they may
+  have or create will now be able to request to follow and message you
+  on TukDaeng. They won't be notified that you unblocked them." +
+  Unblock(แดง)/Cancel ตามคลิป; กดยืนยัน → Follow กลับ + banner ล่าง
+  "You can restrict them to hide their comments and messages without
+  blocking them completely. Learn more" (auto-dismiss 6s/แตะปิด);
+  unblock ไม่ re-follow ตาม IG
+
+เคส 5: Report entry — ผ่าน (automated)
+  กด Report → sheet หล่น + picker แทนที่ในเฟรมเดียว (instant swap —
+  ผู้ใช้สั่งตัด slide-up ออกเพราะ transition ทำให้เห็นแว๊บที่ขอบจอ)
+
+เคส 5b: Report picker ตาม IG — ผ่าน (automated)
+  กด Report → หน้าคั่น "What do you want to
+  report?" + ตัวเลือก 2 แถว (A specific post / Something about this
+  account) — ผู้ใช้ตัด "Recent messages they sent you" ออกเพราะ
+  TukDaeng มีแค่ chat pop-up เล็กบนหน้าโพสต์ ไม่มีห้องแชทจริงให้เลือก
+  ข้อความ (IG มี แอปเราไม่มี) → "Something about this account" ไป
+  หน้าเหตุผล 9 ข้อเดิม, "A specific post" เปิดหน้า "Select a post to
+  report" ตามภาพที่ 2: ปุ่ม '<' back + X + grid โพสต์พร้อมวงกลมเลือก
+  มุมขวาบน + ปุ่ม Next ล่าง (disabled จนกว่าจะเลือก) → เหตุผลโพสต์
+
+เคส 5b2: navigation report ตาม IG — ผ่าน (automated)
+  X = ปิด report ทั้งกลุ่มกลับหน้าที่เปิดเมนู ... มา (โปรไฟล์/feed) ทุก
+  หน้า; '<' = back ทีละชั้นเท่านั้น — หน้าปัจจุบันสไลด์ออกทางขวาและหน้า
+  ก่อนหน้าอยู่นิ่งข้างใต้ (ไม่สไลด์กลับมาซ้ำ) ทำด้วย rpPush/rpBack/
+  rpClose + .pg-ghost clone; หน้าที่มี '<' สไลด์เข้าจากขวา (pgSide)
+
+เคส 5c: Report thanks page ตาม IG (คลิป 813752856.187328.mp4 +
+  ภาพรีวิวล่าสุด) — ผ่าน (automated)
+  เลือกเหตุผล → หน้า "Thanks for your feedback": วงกลมเช็ค + "We use
+  these reports to show you less of this kind of content in the
+  future." + "Other steps you can take" — ปรับให้เข้า TukDaeng เหลือ
+  action ที่มีจริง 3 แบบ:
+  - Block <u> → sheet variant ตามภาพ: desc ตัดประโยค unblock ออก +
+    impact 3 แถว (prohibit/bell/gear — "You can unblock them anytime
+    in Settings.") + ปุ่ม Block เดียว; block แล้ว row กลายเป็น
+    Unblock → dialog เดิม
+  - Unfollow <u> → ทำทันที + toast "Unfollowed" + row ค้างไว้พร้อม
+    เครื่องหมายถูกเขียวตามภาพที่ 3 (โชว์แถวเฉพาะตอน following)
+  - Mute <u> → center dialog "Mute <u>?" : "Mute posts" / Cancel
+    (ผู้ใช้สั่งตัด "Mute posts and story" ออก — แอปไม่มี story)
+    → toast "Muted" + เครื่องหมายถูกเขียว
+  ตัด Restrict + Recent messages + Learn more (Community Standards)
+  ที่ IG มีเพราะแอปเราไม่มีฟีเจอร์เหล่านั้น; ปุ่ม Done แดงปิดทั้ง stack
+  + toast "Report submitted · thanks for letting us know"
+
+เคส 6: Settings > Blocked profiles — ผ่าน (automated)
+  เพิ่ม row "Blocked" (ไอคอน person-minus) ในส่วน What you see หลัง
+  Muted accounts + count badge; หน้า Blocked profiles = mrow
+  avatar + username + "Includes other profiles they may have or
+  create" + ปุ่ม Unblock → dialog เดียวกัน; unblock หมดแล้วโชว์
+  "No blocked accounts"; แตะ row ไปโปรไฟล์คนถูกบล็อกได้
+
+เคส 7: About this account — ผ่าน (automated)
+  sub page ใหม่ about:<uname> ตามภาพ IG: back + title, avatar กลาง +
+  username + verified badge ฟ้า (เฉพาะแอค verified), ข้อความอธิบาย
+  "To help keep our community authentic…", rows ไอคอน: Date joined /
+  Account based in Thailand / Verified <เดือนปี> (เฉพาะ verified) +
+  foot note อธิบาย verification; mock วันที่ deterministic จากชื่อ
+  เหมือน follower count — non-verified เหลือ 2 rows ไม่มี badge/foot
+
+เคส 8: Copy vs Share แยกตาม IG — ผ่าน (automated)
+  Copy profile URL = toast "Profile link copied" เหมือนเดิม;
+  Share this profile = เปิด shareSheetHTML() เดิมของโพสต์
+  (search + เพื่อน + แอป) ตรงภาพ IG share sheet
+
+เคส 9: regression + theme — ผ่าน (automated)
+  Report เดิมยังทำงาน (เพิ่ม picker คั่น + thanks page ตาม IG); light
+  theme render ครบ; verify ใหม่ _verify_pfm.mjs 59/59 PASS; regression _verify_profile.mjs /
+  _verify_pfg.mjs / _verify_pfl.mjs / _verify_pfp.mjs = 0 failed
+  ทั้งหมด, 0 console errors; own/viewer profile layout ที่ล็อก
+  (PROFILE-001/003) ไม่ถูกแตะนอกจาก conditional เพิ่มปุ่ม Unblock
+
+หมายเหตุ:
+- state block เป็น session-only (PF_BLOCKED + flag p.blocked) เหมือน
+  mute/fav — ไม่มี persist ตาม pattern โปรโตไทป์เดิม
+- IG จริงมีแถว Restrict/Hide your story/QR code ในเมนู — เคยตัดไว้
+  ตั้งแต่ PROFILE-001/003 คงไว้; โครงการ์ดตอนนี้ตรง IG แล้ว
+- about page ไม่ใส่ปุ่ม "Get a verified badge" (upsell ของ IG เอง)
+- comments ของคนถูกบล็อกยังโชว์ — IG ซ่อน แต่เกิน scope task นี้
