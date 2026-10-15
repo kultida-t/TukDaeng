@@ -3266,7 +3266,14 @@ l<!DOCTYPE html>
   .pe-savewrap { padding: 16px; }
   .pe-save { width: 100%; }
   /* floating pill nav inside .page-sub sits 22px above screen bottom — realign with the feed nav */
-  .screen[data-nav="labeled"] .pf-nav { bottom: 8px; }
+  .screen[data-nav="labeled"] .pf-nav {
+    bottom: 8px;
+    /* solid fill — the frosted tint flashes when the pill re-mounts while a
+       report page slides away on top of it (backdrop-filter lags a few frames) */
+    background: var(--surface-2);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
   .screen[data-nav="labeled"] .pf-scroll { padding-bottom: 84px; }
 </style>
 </head>
