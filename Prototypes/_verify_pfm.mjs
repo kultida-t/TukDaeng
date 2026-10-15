@@ -53,9 +53,9 @@ check("block sheet: avatar + 'Block Watch 777?'",
   await page.locator(".comment-sheet .blk-av").count() === 1 &&
   (await page.locator(".blk-q").textContent()).trim() === "Block Watch 777?");
 check("block sheet: 2 impact rows with icons", await page.locator(".blk-i").count() === 2);
-check("block sheet: Block button only (no 'Block and report')",
+check("block sheet: Block + 'Block and report' (IG, PROFILE-006)",
   (await page.locator(".blk-go").textContent()).trim() === "Block" &&
-  (await page.locator(".blk-rp").count()) === 0);
+  (await page.locator(".blk-rep").textContent()).trim() === "Block and report");
 await page.screenshot({ path: `${OUT}/b-pfm-block-sheet.png` });
 
 // ============ 3) confirm Block -> real session state ============
@@ -96,13 +96,11 @@ await page.locator(".dlg-unblock-go").click();
 await page.waitForTimeout(400);
 check("unblocked: Follow button back", await sub().locator(".pf-foll").count() === 1 &&
   (await sub().locator(".pf-foll").textContent()).includes("Follow"));
-check("restrict hint banner (IG)", await scr().locator(".pf-rhint").isVisible() &&
-  (await scr().locator(".pf-rhint").textContent()).includes("restrict"));
+check("no restrict hint banner after unblock", await scr().locator(".pf-rhint").count() === 0);
 check("unblock did NOT re-follow (IG)", await page.evaluate(() => !pfIsFollowed("Watch 777")));
 await page.screenshot({ path: `${OUT}/e-pfm-restrict-hint.png` });
 
 // ============ 5) Report row -> report picker (instant replace, no slide-up) ============
-await scr().locator(".pf-rhint").click(); /* dismiss banner */
 await sub().locator(".pf-more").click();
 await page.waitForTimeout(250);
 await page.locator(".pf-sh-report").click();

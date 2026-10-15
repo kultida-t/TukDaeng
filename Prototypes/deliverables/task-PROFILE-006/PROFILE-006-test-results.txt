@@ -1,0 +1,3 @@
+_verify_blk.mjs: ALL PASS (12 checks, 0 console errors)
+Regression: _verify_pfm / _pfl / _pfg / _pfp / _profile -> 0 failed / 0 console errors each
+(_verify_pfm check updated: sheet now expects Block + Block and report)
