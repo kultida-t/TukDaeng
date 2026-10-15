@@ -54,16 +54,23 @@ Reference: ภาพ IG ที่ผู้ใช้แนบ + คลิป IG b
   หน้าเหตุผล 9 ข้อเดิม, "A specific post" เปิด grid เลือกโพสต์ของเขา
   → เหตุผลโพสต์; X ปิด pop ทีละชั้นกลับโปรไฟล์
 
-เคส 5c: Report thanks page ตาม IG (คลิป 813752856.187328.mp4) — ผ่าน (automated)
+เคส 5c: Report thanks page ตาม IG (คลิป 813752856.187328.mp4 +
+  ภาพรีวิวล่าสุด) — ผ่าน (automated)
   เลือกเหตุผล → หน้า "Thanks for your feedback": วงกลมเช็ค + "We use
   these reports to show you less of this kind of content in the
   future." + "Other steps you can take" — ปรับให้เข้า TukDaeng เหลือ
-  action ที่มีจริง: Block <u> (เปิด confirm sheet เดิม, ถ้า block
-  แล้วเป็น Unblock → dialog เดิม) / Unfollow <u> (โชว์เฉพาะตอน
-  following) / Mute·Unmute <u> (ผ่าน pfSetMuted เดิม) / Learn more
-  about our Community Standards (stub toast) — ตัด Restrict + Recent
-  messages ที่ IG มีเพราะแอปเราไม่มีฟีเจอร์นั้น; ปุ่ม Done ปิดทั้ง
-  stack + toast "Report submitted · thanks for letting us know"
+  action ที่มีจริง 3 แบบ:
+  - Block <u> → sheet variant ตามภาพ: desc ตัดประโยค unblock ออก +
+    impact 3 แถว (prohibit/bell/gear — "You can unblock them anytime
+    in Settings.") + ปุ่ม Block เดียว (ไม่มี Block and report เพราะ
+    อยู่ใน report flow แล้ว); block แล้ว row กลายเป็น Unblock → dialog เดิม
+  - Unfollow <u> → ทำทันที + toast "Unfollowed" + row ค้างไว้พร้อม
+    เครื่องหมายถูกเขียวตามภาพที่ 3 (โชว์แถวเฉพาะตอน following)
+  - Mute <u> → center dialog "Mute <u>?" ตามภาพที่ 2: "Mute posts" /
+    "Mute posts and story" / Cancel → toast "Muted" + เครื่องหมายถูกเขียว
+  ตัด Restrict + Recent messages + Learn more (Community Standards)
+  ที่ IG มีเพราะแอปเราไม่มีฟีเจอร์เหล่านั้น; ปุ่ม Done แดงปิดทั้ง stack
+  + toast "Report submitted · thanks for letting us know"
 
 เคส 6: Settings > Blocked profiles — ผ่าน (automated)
   เพิ่ม row "Blocked" (ไอคอน person-minus) ในส่วน What you see หลัง

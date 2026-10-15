@@ -206,20 +206,30 @@ check("thanks page: check + 'Thanks for your feedback'",
   await sub().locator(".rp-thanks-ck").count() === 1 &&
   (await sub().locator(".rp-thanks-t").textContent()).includes("Thanks for your feedback"));
 const stepLabels = await sub().locator(".rp-step .rp-step-t").allTextContents();
-check("other steps = Block/Mute/Learn (TukDaeng-adapted; no Unfollow since not following)",
-  stepLabels.join("|") === `Block dial.dude|Mute dial.dude|Learn more about our Community Standards`, stepLabels.join("|"));
-check("no Restrict/message steps (not in TukDaeng)", !stepLabels.some(t => /restrict|message/i.test(t)));
+check("other steps = Block/Mute only (TukDaeng-adapted)",
+  stepLabels.join("|") === `Block dial.dude|Mute dial.dude`, stepLabels.join("|"));
+check("no Restrict/message/Community-Standards steps", !stepLabels.some(t => /restrict|message|community/i.test(t)));
 await page.screenshot({ path: `${OUT}/k-pfm-report-thanks.png` });
-// Mute applies + rows refresh to Unmute
+// Mute step -> IG mute dialog (posts / posts and story / Cancel) -> green check
 await sub().locator('.rp-step[data-act="mute"]').click();
+await page.waitForTimeout(300);
+check("Mute step -> center dialog with 2 mute options",
+  (await page.locator(".dlg-q").textContent()).includes("Mute dial.dude") &&
+  (await page.locator(".dlg-mute-go").count()) === 2);
+await page.screenshot({ path: `${OUT}/l-pfm-mute-dialog.png` });
+await page.locator(".dlg-mute-go").first().click();
 await page.waitForTimeout(350);
-check("Mute step -> muted + row flips to Unmute",
+check("muted -> toast + row keeps green check (IG)",
   await page.evaluate(() => pfIsMuted("dial.dude")) &&
-  (await sub().locator('.rp-step[data-act="unmute"]').count()) === 1);
-// Block step reuses the confirm sheet (does not submit blindly)
+  (await sub().locator('.rp-step[data-act="mute"][disabled] .rp-ck').count()) === 1);
+// Block step -> report-variant sheet (3 impact rows, no Block-and-report)
 await sub().locator('.rp-step[data-act="block"]').click();
 await page.waitForTimeout(300);
-check("Block step -> confirm sheet", (await page.locator(".blk-q").textContent()).includes("Block dial.dude"));
+check("Block step -> report sheet: 3 impact rows, Block button only",
+  (await page.locator(".blk-q").textContent()).includes("Block dial.dude") &&
+  (await page.locator(".blk-i").count()) === 3 &&
+  (await page.locator(".blk-rp").count()) === 0);
+await page.screenshot({ path: `${OUT}/m-pfm-block-sheet-report.png` });
 await page.locator(".blk-go").click();
 await page.waitForTimeout(350);
 check("blocked from thanks page -> row flips to Unblock", await page.evaluate(() => pfIsBlocked("dial.dude")) &&
@@ -230,7 +240,33 @@ await page.waitForTimeout(350);
 check("Done closes report + submitted toast",
   !(await scr().getAttribute("class")).includes("sub-open") &&
   (await scr().locator(".sc-toast").textContent()).includes("Report submitted"));
-await page.evaluate(() => { pfSetBlocked(document.querySelector(".screen"), "dial.dude", false); pfSetMuted(document.querySelector(".screen"), "dial.dude", false); });
+await page.evaluate(() => { const s = document.querySelector(".screen"); pfSetBlocked(s, "dial.dude", false); pfSetMuted(s, "dial.dude", false); });
+
+// ============ 10b) Unfollow step -> toast + green check (IG image 3) ============
+await page.evaluate(() => pfSetFollow(document.querySelector(".screen"), "the watch", true));
+await openProfile("the watch");
+await page.waitForTimeout(350);
+await sub().locator(".pf-more").click();
+await page.waitForTimeout(250);
+await page.locator(".pf-sh-report").click();
+await page.waitForTimeout(300);
+await sub().locator('.rp-opt[data-rp="acct"]').click();
+await page.waitForTimeout(250);
+await sub().locator(".pm-reason").first().click();
+await page.waitForTimeout(350);
+check("Unfollow row shows for followed account",
+  (await sub().locator('.rp-step[data-act="unfollow"]').count()) === 1);
+await sub().locator('.rp-step[data-act="unfollow"]').click();
+await page.waitForTimeout(350);
+check("'Unfollowed' toast + row gets green check (IG)",
+  (await scr().locator(".sc-toast").textContent()).includes("Unfollowed") &&
+  (await sub().locator('.rp-step[data-act="unfollow"][disabled] .rp-ck').count()) === 1 &&
+  await page.evaluate(() => !pfIsFollowed("the watch")));
+check("done checks are per-user (Mute the watch still unchecked)",
+  (await sub().locator('.rp-step[data-act="mute"] .rp-ck').count()) === 0);
+await page.screenshot({ path: `${OUT}/n-pfm-report-unfollowed.png` });
+await sub().locator(".rp-done").click();
+await page.waitForTimeout(300);
 
 // ============ 11) light theme ============
 await page.locator("#themeToggle").click();

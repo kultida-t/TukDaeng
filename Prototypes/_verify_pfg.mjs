@@ -162,10 +162,10 @@ await page.locator(".comment-sheet .mf-fav").click(); await page.waitForTimeout(
 check("add to favorites toggles row in place",
   (await page.locator(".comment-sheet .mf-fav span").textContent()).includes("Remove from favorites"));
 await page.locator(".comment-sheet .mf-mute").click(); await page.waitForTimeout(300);
-check("mute opens feed-style confirm dialog",
+check("mute opens feed-style confirm dialog (posts / posts+story)",
   (await page.locator(".dlg .dlg-q").textContent()).includes("Mute Watch 777") &&
-  await page.locator(".dlg .dlg-mute-go").count() === 1);
-await page.locator(".dlg .dlg-mute-go").click(); await page.waitForTimeout(300);
+  await page.locator(".dlg .dlg-mute-go").count() === 2);
+await page.locator(".dlg .dlg-mute-go").first().click(); await page.waitForTimeout(300);
 check("mute confirm closes dialog", !(await scr().getAttribute("class")).includes("dialog-open"));
 await page.locator(".comment-sheet .mf-unf").click(); await page.waitForTimeout(350);
 check("unfollow acts immediately — no confirm (IG)", (await sub().locator(".pf-foll").textContent()).trim() === "Follow" &&

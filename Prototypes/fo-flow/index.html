@@ -1911,6 +1911,8 @@ l<!DOCTYPE html>
   }
   .rp-step .rp-step-t { flex: 1; }
   .rp-step .pm-chev { color: var(--muted); display: flex; flex-shrink: 0; }
+  .rp-step .rp-ck { color: #3ddc84; display: flex; flex-shrink: 0; } /* IG: green check on completed steps */
+  .rp-step[disabled] { cursor: default; }
   .rp-done {
     width: 100%; border: none; border-radius: 10px; padding: 14px; margin-top: 24px;
     background: var(--red); color: #fff; font-family: var(--font-main);
@@ -3660,6 +3662,7 @@ const I = {
   circleX: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="m9.5 9.5 5 5m0-5-5 5"/></svg>`,
   flag: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4.5h11.5l-2.5 4.5 2.5 4.5H6"/></svg>`,
   prohibit: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="m5.7 5.7 12.6 12.6"/></svg>`,
+  gear: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.24.6.84 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-.67 0-1.27.4-1.51 1z"/></svg>`,
   pen: (s=18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>`,
   trash: (s=18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>`,
   sad: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.3 15.6c.9-1.1 2.2-1.7 3.7-1.7s2.8.6 3.7 1.7"/><path d="M9 9.6h.01M15 9.6h.01"/></svg>`,
@@ -4941,8 +4944,9 @@ function openDlg(scr, inner) {
 function muteDlgHTML(seller) {
   return `
     <div class="dlg-q">Mute ${seller}?</div>
-    <div class="dlg-desc">You can unmute them anytime from Settings. We won't let them know you muted them.</div>
+    <div class="dlg-desc">You can unmute them anytime from their profile. We won't let them know you muted them.</div>
     <button class="dlg-btn danger dlg-mute-go">Mute posts</button>
+    <button class="dlg-btn danger dlg-mute-go">Mute posts and story</button>
     <button class="dlg-btn dlg-cancel">Cancel</button>`;
 }
 function resetDlgHTML() {
@@ -6480,17 +6484,21 @@ function pfSetBlocked(scr, name, on) {
 }
 const PF_VBADGE = `<svg class="ab-vb" width="16" height="16" viewBox="0 0 24 24"><path fill="#0095f6" d="M12 2l2.53 2.2 3.35-.29.75 3.27 2.88 1.73-1.31 3.09L21.51 15.1l-2.88 1.72-.75 3.27-3.35-.28L12 22l-2.53-2.19-3.35.28-.75-3.27-2.88-1.72 1.31-3.1L2.49 8.92l2.88-1.73.75-3.27 3.35.3z"/><path fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" d="m8.4 12.4 2.4 2.4 4.8-5.1"/></svg>`;
 /* IG block confirm — bottom sheet: centered avatar + impact rows + two actions */
-function blkSheetHTML(uname) {
+function blkSheetHTML(uname, fromReport) {
   const u = profileOf(uname);
+  /* IG swaps the sheet inside the report flow: the "unblock anytime" note
+     becomes a Settings row, and "Block and report" is gone (you're already
+     in the report flow) — 3 impact rows + a single Block button */
   return `<div class="sheet-handle"></div>
     <div class="blk-body">
       <img class="blk-av" src="${u.avatar}" alt="">
       <div class="blk-q">Block ${esc(uname)}?</div>
-      <div class="blk-d">This will also block any other profiles they may have or create in the future. You can unblock them anytime.</div>
-      <div class="blk-i">${I.commentOff(22)}<span>They won't be able to message you or find your profile or content on TukDaeng.</span></div>
-      <div class="blk-i">${I.bellOff(22)}<span>They won't be notified that you blocked or reported them.</span></div>
+      <div class="blk-d">This will also block any other profiles they may have or create in the future.${fromReport ? "" : " You can unblock them anytime."}</div>
+      <div class="blk-i">${fromReport ? I.prohibit(22) : I.commentOff(22)}<span>They won't be able to message you or find your profile or content on TukDaeng.</span></div>
+      <div class="blk-i">${I.bellOff(22)}<span>They won't be notified that you blocked${fromReport ? "" : " or reported"} them.</span></div>
+      ${fromReport ? `<div class="blk-i">${I.gear(22)}<span>You can unblock them anytime in Settings.</span></div>` : ""}
       <button class="blk-go" data-u="${esc(uname)}">Block</button>
-      <button class="blk-rp" data-u="${esc(uname)}">Block and report</button>
+      ${fromReport ? "" : `<button class="blk-rp" data-u="${esc(uname)}">Block and report</button>`}
     </div>`;
 }
 /* IG unblock confirm — center dialog like Mute (not a sheet) */
@@ -6960,7 +6968,9 @@ function subHTML(name, scr) {
      no Restrict, no message reporting. */
   if (name.startsWith("report:done:")) {
     const u = name.slice(12);
-    const step = (act, ic, label) => `<button class="rp-step" data-act="${act}" data-u="${esc(u)}"><span class="rp-step-ic">${ic}</span><span class="rp-step-t">${esc(label)}</span><span class="pm-chev">${I.chevR(14)}</span></button>`;
+    const dn = scr._rpDone || (scr._rpDone = new Set());
+    /* IG keeps a completed step in place with a green check instead of a chevron */
+    const step = (act, ic, label, done) => `<button class="rp-step" data-act="${act}" data-u="${esc(u)}"${done ? " disabled" : ""}><span class="rp-step-ic">${ic}</span><span class="rp-step-t">${esc(label)}</span>${done ? `<span class="rp-ck">${I.check(15)}</span>` : `<span class="pm-chev">${I.chevR(14)}</span>`}</button>`;
     return `
     <div class="detail-head rp-head"><button class="icon-btn rp-back sub-back">${I.back(20)}</button><span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="pm-rp-scroll">
@@ -6971,9 +6981,8 @@ function subHTML(name, scr) {
       </div>
       <div class="rp-steps-h">Other steps you can take</div>
       ${pfIsBlocked(u) ? step("unblock", I.prohibit(22), `Unblock ${u}`) : step("block", I.prohibit(22), `Block ${u}`)}
-      ${pfIsFollowed(u) ? step("unfollow", I.userMinus(22), `Unfollow ${u}`) : ""}
-      ${pfIsMuted(u) ? step("unmute", I.bellOff(22), `Unmute ${u}`) : step("mute", I.bellOff(22), `Mute ${u}`)}
-      ${step("learn", I.shield(22), "Learn more about our Community Standards")}
+      ${dn.has(u + "|unfollow") ? step("unfollow", I.userMinus(22), `Unfollow ${u}`, true) : pfIsFollowed(u) ? step("unfollow", I.userMinus(22), `Unfollow ${u}`) : ""}
+      ${dn.has(u + "|mute") ? step("mute", I.bellOff(22), `Mute ${u}`, true) : pfIsMuted(u) ? step("unmute", I.bellOff(22), `Unmute ${u}`) : step("mute", I.bellOff(22), `Mute ${u}`)}
       <button class="rp-done">Done</button>
     </div>`;
   }
@@ -7821,7 +7830,11 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = dlgMute.closest(".screen");
     scr.classList.remove("dialog-open");
     pfSetMuted(scr, scr.dataset.muteSeller, true); /* pfSetMuted covers profiles without real posts too */
-    scrToast(scr, "Posts muted");
+    scrToast(scr, "Muted");
+    if (((scr._subStack || []).at(-1) || "").startsWith("report:done:")) {
+      (scr._rpDone ||= new Set()).add(scr.dataset.muteSeller + "|mute"); /* IG: step gets a green check */
+      renderSub(scr);
+    }
     return;
   }
   const dlgUblk = e.target.closest(".dlg-unblock-go");
@@ -8381,13 +8394,14 @@ document.getElementById("stage").addEventListener("click", e => {
      apply instantly then re-render the page so the rows refresh. */
   const rpStep = e.target.closest(".rp-step");
   if (rpStep) {
+    if (rpStep.disabled) return; /* completed step — just shows its green check */
     const scr = rpStep.closest(".screen"), u = rpStep.dataset.u, act = rpStep.dataset.act;
-    if (act === "block") openSheet(scr, "pm", "pm-open", blkSheetHTML(u));
+    const dn = scr._rpDone || (scr._rpDone = new Set());
+    if (act === "block") openSheet(scr, "pm", "pm-open", blkSheetHTML(u, true)); /* IG report-flow sheet: 3 rows, Block only */
     else if (act === "unblock") { scr.dataset.unblockU = u; openDlg(scr, unblockDlgHTML(u)); }
-    else if (act === "unfollow") { pfSetFollow(scr, u, false); scrToast(scr, `Unfollowed ${u}`); renderSub(scr); }
-    else if (act === "mute") { pfSetMuted(scr, u, true); scrToast(scr, `Muted ${u}`); renderSub(scr); }
-    else if (act === "unmute") { pfSetMuted(scr, u, false); scrToast(scr, `Unmuted ${u}`); renderSub(scr); }
-    else if (act === "learn") scrToast(scr, "Community Standards aren't in this prototype yet");
+    else if (act === "unfollow") { pfSetFollow(scr, u, false); dn.add(u + "|unfollow"); scrToast(scr, "Unfollowed"); renderSub(scr); }
+    else if (act === "mute") { scr.dataset.muteSeller = u; openDlg(scr, muteDlgHTML(u)); } /* IG: pick Mute posts / posts and story */
+    else if (act === "unmute") { pfSetMuted(scr, u, false); dn.delete(u + "|mute"); scrToast(scr, "Unmuted"); renderSub(scr); }
     return;
   }
   const rpDone = e.target.closest(".rp-done");

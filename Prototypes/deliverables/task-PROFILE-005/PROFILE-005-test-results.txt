@@ -1,6 +1,6 @@
 PROFILE-005 — Automated Test Results
 File: Prototypes/_verify_pfm.mjs (Playwright, 440x956, deviceScaleFactor 2)
-Date: 2026-10-15 | Result: 49/49 PASS, 0 console errors
+Date: 2026-10-15 | Result: 53/53 PASS, 0 console errors
 
 == _verify_pfm.mjs (new) ==
 PASS viewer profile opened
@@ -44,12 +44,16 @@ PASS Copy profile URL -> link toast
 PASS Report -> picker first (IG)
 PASS 'Something about this account' -> reason list
 PASS thanks page: check + 'Thanks for your feedback'
-PASS other steps = Block/Mute/Learn (TukDaeng-adapted; no Unfollow since not following) — Block dial.dude|Mute dial.dude|Learn more about our Community Standards
-PASS no Restrict/message steps (not in TukDaeng)
-PASS Mute step -> muted + row flips to Unmute
-PASS Block step -> confirm sheet
+PASS other steps = Block/Mute only (TukDaeng-adapted) — Block dial.dude|Mute dial.dude
+PASS no Restrict/message/Community-Standards steps
+PASS Mute step -> center dialog with 2 mute options
+PASS muted -> toast + row keeps green check (IG)
+PASS Block step -> report sheet: 3 impact rows, Block button only
 PASS blocked from thanks page -> row flips to Unblock
 PASS Done closes report + submitted toast
+PASS Unfollow row shows for followed account
+PASS 'Unfollowed' toast + row gets green check (IG)
+PASS done checks are per-user (Mute the watch still unchecked)
 PASS about page renders in light theme
 PASS no console errors
 
