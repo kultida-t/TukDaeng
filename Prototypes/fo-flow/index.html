@@ -5053,6 +5053,13 @@ function rpPush(scr, name) {
   pushSub(scr, name);
   el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; /* restart slide-in */
 }
+function pmDropCovered(scr) { /* the '...' sheet is fully covered by the report page — snap it shut
+    (no transition) so its rows don't sweep through the uncovered bottom strip below .page-sub */
+  const sh = scr.querySelector(".comment-sheet");
+  if (sh) sh.style.transition = "none";
+  scr.classList.remove("pm-open");
+  requestAnimationFrame(() => { if (sh) sh.style.transition = ""; });
+}
 function rpBack(scr) {
   const st = scr._subStack || [];
   if (st.length > 1) {
@@ -8431,7 +8438,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = pfShReport.closest(".screen");
     scr.dataset.rpUser = pfShReport.dataset.u;
     rpPush(scr, "report:pick:" + pfShReport.dataset.u); /* IG picker first, then reasons — slides up OVER the open sheet */
-    setTimeout(() => scr.classList.remove("pm-open"), 300); /* sheet drops silently once the page covers it — no gap/flash */
+    setTimeout(() => pmDropCovered(scr), 300); /* sheet snaps shut once covered — its slide-down would flicker in the bottom strip */
     return;
   }
   /* PROFILE-005 — Block -> IG confirm sheet; when already blocked the same row
@@ -8465,7 +8472,7 @@ document.getElementById("stage").addEventListener("click", e => {
     if (toReport) {
       scr.dataset.rpUser = u;
       rpPush(scr, "report:pick:" + u);
-      setTimeout(() => scr.classList.remove("pm-open"), 300); /* drop the sheet once covered */
+      setTimeout(() => pmDropCovered(scr), 300); /* drop the covered sheet without a visible slide */
     }
     return;
   }
