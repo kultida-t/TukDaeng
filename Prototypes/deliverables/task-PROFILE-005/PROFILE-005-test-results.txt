@@ -10,7 +10,7 @@ PASS Report row still danger
 PASS Block row carries data-u
 PASS block sheet: avatar + 'Block Watch 777?'
 PASS block sheet: 2 impact rows with icons
-PASS block sheet: Block + Block and report buttons
+PASS block sheet: Block button only (no 'Block and report')
 PASS 'Blocking' toast
 PASS profile Follow -> Unblock button
 PASS Message button still there (IG)
@@ -25,9 +25,9 @@ PASS dialog: red Unblock + Cancel
 PASS unblocked: Follow button back
 PASS restrict hint banner (IG)
 PASS unblock did NOT re-follow (IG)
-PASS Block and report -> report picker (IG)
+PASS Report -> picker replaces the sheet instantly (IG)
 PASS ...picker lists 2 targets (post/account)
-PASS ...and they ARE blocked
+PASS Block (only button) blocks them
 PASS settings has Blocked row with count
 PASS Blocked profiles page lists them
 PASS row subtitle IG-style + Unblock button

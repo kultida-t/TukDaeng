@@ -1028,7 +1028,7 @@ l<!DOCTYPE html>
   /* ============ PROFILE-005 — IG block confirm sheet / About this account / restrict hint ============ */
   .blk-body {
     display: flex; flex-direction: column; align-items: center;
-    padding: 6px 22px 24px; text-align: center;
+    padding: 6px 22px 40px; text-align: center;
   }
   .blk-av { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
   .blk-q { font-size: 20px; font-weight: 700; color: var(--text); margin-top: 12px; }
@@ -1039,13 +1039,9 @@ l<!DOCTYPE html>
   }
   .blk-i svg { flex-shrink: 0; margin-top: 1px; }
   .blk-go {
-    width: 100%; border: none; border-radius: 10px; padding: 13px; margin-top: 4px;
+    width: 100%; border: none; border-radius: 10px; padding: 13px; margin-top: 14px;
     background: var(--red); color: #fff; font-family: var(--font-main);
     font-size: 14.5px; font-weight: 600; cursor: pointer;
-  }
-  .blk-rp {
-    width: 100%; border: none; background: none; padding: 14px 12px 0;
-    color: var(--text); font-family: var(--font-main); font-size: 14px; font-weight: 600; cursor: pointer;
   }
   /* about page */
   .ab-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px 26px 6px; }
@@ -6580,7 +6576,6 @@ function blkSheetHTML(uname, fromReport) {
       <div class="blk-i">${I.bellOff(22)}<span>They won't be notified that you blocked${fromReport ? "" : " or reported"} them.</span></div>
       ${fromReport ? `<div class="blk-i">${I.gear(22)}<span>You can unblock them anytime in Settings.</span></div>` : ""}
       <button class="blk-go" data-u="${esc(uname)}">Block</button>
-      ${fromReport ? "" : `<button class="blk-rp" data-u="${esc(uname)}">Block and report</button>`}
     </div>`;
 }
 /* IG unblock confirm — center dialog like Mute (not a sheet) */
@@ -8468,21 +8463,15 @@ document.getElementById("stage").addEventListener("click", e => {
     pushSub(scr, "about:" + pfShAbout.dataset.u);
     return;
   }
-  const blkGo = e.target.closest(".blk-go, .blk-rp");
+  const blkGo = e.target.closest(".blk-go");
   if (blkGo) {
     const scr = blkGo.closest(".screen");
     const u = blkGo.dataset.u;
-    const toReport = blkGo.classList.contains("blk-rp");
-    if (!toReport) scr.classList.remove("pm-open"); /* report: keep the sheet up — the picker slides over it */
+    scr.classList.remove("pm-open");
     pfSetBlocked(scr, u, true);
     const subTop = (scr._subStack || []).at(-1) || "";
     if (subTop === "profile:" + u || subTop === "report:done:" + u) renderSub(scr);
     scrToast(scr, "Blocking"); /* IG flashes this transient toast */
-    if (toReport) {
-      scr.dataset.rpUser = u;
-      pmDropCovered(scr);
-      scr._subSwap = true; rpPush(scr, "report:pick:" + u); scr._subSwap = false; /* instant replace, no slide-up */
-    }
     return;
   }
   /* PROFILE-005 — "Thanks for your feedback" steps: real actions only.

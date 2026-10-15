@@ -1,5 +1,5 @@
 // Verify fo-flow PROFILE-005: viewer-profile "..." menu becomes functional —
-// IG block confirm sheet (avatar + impact rows + Block / Block and report),
+// IG block confirm sheet (avatar + impact rows + Block),
 // real session block state (unfollow + out of your followers + posts leave
 // feed/search, profile swaps Follow -> Unblock), Unblock center dialog +
 // restrict-hint banner, Settings > Blocked profiles list, About this account
@@ -53,9 +53,9 @@ check("block sheet: avatar + 'Block Watch 777?'",
   await page.locator(".comment-sheet .blk-av").count() === 1 &&
   (await page.locator(".blk-q").textContent()).trim() === "Block Watch 777?");
 check("block sheet: 2 impact rows with icons", await page.locator(".blk-i").count() === 2);
-check("block sheet: Block + Block and report buttons",
+check("block sheet: Block button only (no 'Block and report')",
   (await page.locator(".blk-go").textContent()).trim() === "Block" &&
-  (await page.locator(".blk-rp").textContent()).trim() === "Block and report");
+  (await page.locator(".blk-rp").count()) === 0);
 await page.screenshot({ path: `${OUT}/b-pfm-block-sheet.png` });
 
 // ============ 3) confirm Block -> real session state ============
@@ -101,21 +101,26 @@ check("restrict hint banner (IG)", await scr().locator(".pf-rhint").isVisible() 
 check("unblock did NOT re-follow (IG)", await page.evaluate(() => !pfIsFollowed("Watch 777")));
 await page.screenshot({ path: `${OUT}/e-pfm-restrict-hint.png` });
 
-// ============ 5) Block and report -> blocks + opens report page ============
+// ============ 5) Report row -> report picker (instant replace, no slide-up) ============
 await scr().locator(".pf-rhint").click(); /* dismiss banner */
+await sub().locator(".pf-more").click();
+await page.waitForTimeout(250);
+await page.locator(".pf-sh-report").click();
+await page.waitForTimeout(150);
+check("Report -> picker replaces the sheet instantly (IG)", await sub().locator(".pm-rp-q").isVisible() &&
+  (await sub().locator(".pm-rp-q").textContent()).includes("What do you want to report"));
+check("...picker lists 2 targets (post/account)", (await sub().locator(".rp-opt").count()) === 2);
+await page.screenshot({ path: `${OUT}/f-pfm-report-picker.png` });
+await sub().locator(".sub-x").click();
+await page.waitForTimeout(300);
+/* keep one blocked user for the Settings list below — plain Block now */
 await sub().locator(".pf-more").click();
 await page.waitForTimeout(250);
 await page.locator(".pf-sh-block").click();
 await page.waitForTimeout(250);
-await page.locator(".blk-rp").click();
+await page.locator(".blk-go").click();
 await page.waitForTimeout(400);
-check("Block and report -> report picker (IG)", await sub().locator(".pm-rp-q").isVisible() &&
-  (await sub().locator(".pm-rp-q").textContent()).includes("What do you want to report"));
-check("...picker lists 2 targets (post/account)", (await sub().locator(".rp-opt").count()) === 2);
-check("...and they ARE blocked", await page.evaluate(() => pfIsBlocked("Watch 777")));
-await page.screenshot({ path: `${OUT}/f-pfm-block-and-report.png` });
-await sub().locator(".sub-x").click();
-await page.waitForTimeout(300);
+check("Block (only button) blocks them", await page.evaluate(() => pfIsBlocked("Watch 777")));
 
 // ============ 6) Settings > Blocked profiles list ============
 await openProfile("king.mr.fox");

@@ -20,7 +20,8 @@ Reference: ภาพ IG ที่ผู้ใช้แนบ + คลิป IG b
   กด Block → bottom sheet ตามคลิป: avatar กลาง + "Block <user>?" +
   "This will also block any other profiles they may have or create in
   the future. You can unblock them anytime." + impact 2 แถวพร้อมไอคอน
-  (ข้อความ/กระดิ่งขีดฆ่า) + ปุ่ม Block แดง + "Block and report"
+  (ข้อความ/กระดิ่งขีดฆ่า) + ปุ่ม Block แดงปุ่มเดียว + padding เหนือ/
+  ใต้ปุ่มตามภาพ IG — ผู้ใช้สั่งตัด "Block and report" ออกทั้ง 2 variant
 
 เคส 3: Block มีผลจริงใน session — ผ่าน (automated)
   กดยืนยัน → toast "Blocking" (ตามคลิป) → state PF_BLOCKED + flag
@@ -42,11 +43,12 @@ Reference: ภาพ IG ที่ผู้ใช้แนบ + คลิป IG b
   blocking them completely. Learn more" (auto-dismiss 6s/แตะปิด);
   unblock ไม่ re-follow ตาม IG
 
-เคส 5: Block and report — ผ่าน (automated)
-  กด Block and report → block ก่อนแล้ว push ไปหน้า Report picker ตาม IG
+เคส 5: Report entry — ผ่าน (automated)
+  กด Report → sheet หล่น + picker แทนที่ในเฟรมเดียว (instant swap —
+  ผู้ใช้สั่งตัด slide-up ออกเพราะ transition ทำให้เห็นแว๊บที่ขอบจอ)
 
 เคส 5b: Report picker ตาม IG — ผ่าน (automated)
-  กด Report (หรือ Block and report) → หน้าคั่น "What do you want to
+  กด Report → หน้าคั่น "What do you want to
   report?" + ตัวเลือก 2 แถว (A specific post / Something about this
   account) — ผู้ใช้ตัด "Recent messages they sent you" ออกเพราะ
   TukDaeng มีแค่ chat pop-up เล็กบนหน้าโพสต์ ไม่มีห้องแชทจริงให้เลือก
@@ -69,8 +71,8 @@ Reference: ภาพ IG ที่ผู้ใช้แนบ + คลิป IG b
   action ที่มีจริง 3 แบบ:
   - Block <u> → sheet variant ตามภาพ: desc ตัดประโยค unblock ออก +
     impact 3 แถว (prohibit/bell/gear — "You can unblock them anytime
-    in Settings.") + ปุ่ม Block เดียว (ไม่มี Block and report เพราะ
-    อยู่ใน report flow แล้ว); block แล้ว row กลายเป็น Unblock → dialog เดิม
+    in Settings.") + ปุ่ม Block เดียว; block แล้ว row กลายเป็น
+    Unblock → dialog เดิม
   - Unfollow <u> → ทำทันที + toast "Unfollowed" + row ค้างไว้พร้อม
     เครื่องหมายถูกเขียวตามภาพที่ 3 (โชว์แถวเฉพาะตอน following)
   - Mute <u> → center dialog "Mute <u>?" : "Mute posts" / Cancel
