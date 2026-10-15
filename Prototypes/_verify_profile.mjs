@@ -181,7 +181,12 @@ check("Report row is danger-styled", await page.locator(".pf-sh-report.danger").
 await page.screenshot({ path: `${OUT}/d-profile-more-menu.png` });
 await page.locator(".pf-sh-report").click();
 await page.waitForTimeout(400);
-check("Report opens account-report page", (await page.locator(".pm-rp-q").textContent()).includes("account"));
+check("Report opens IG picker first", (await page.locator(".pm-rp-q").textContent()).includes("What do you want to report"));
+await page.locator('.rp-opt[data-rp="acct"]').click();
+await page.waitForTimeout(300);
+check("'Something about this account' opens account-report page", (await page.locator(".pm-rp-q").textContent()).includes("account"));
+await page.locator(".rp-x").click();
+await page.waitForTimeout(250);
 await page.locator(".rp-x").click();
 await page.waitForTimeout(350);
 await sub().locator(".pf-more").click();

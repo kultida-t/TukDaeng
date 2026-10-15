@@ -1,0 +1,61 @@
+PROFILE-005 — Automated Test Results
+File: Prototypes/_verify_pfm.mjs (Playwright, 440x956, deviceScaleFactor 2)
+Date: 2026-10-15 | Result: 42/42 PASS, 0 console errors
+
+== _verify_pfm.mjs (new) ==
+PASS viewer profile opened
+PASS menu = 1 card of rows + separate Cancel (IG)
+PASS row order = Report/Block/About/Copy/Share (IG)
+PASS Report row still danger
+PASS Block row carries data-u
+PASS block sheet: avatar + 'Block Watch 777?'
+PASS block sheet: 2 impact rows with icons
+PASS block sheet: Block + Block and report buttons
+PASS 'Blocking' toast
+PASS profile Follow -> Unblock button
+PASS Message button still there (IG)
+PASS state: PF_BLOCKED + posts flagged
+PASS block unfollowed them
+PASS they dropped out of own followers
+PASS their posts left the feed — 11 -> 10
+PASS blocked profile grid still renders (IG)
+PASS menu row reads 'Unblock' when blocked
+PASS unblock = center dialog (not sheet)
+PASS dialog: red Unblock + Cancel
+PASS unblocked: Follow button back
+PASS restrict hint banner (IG)
+PASS unblock did NOT re-follow (IG)
+PASS Block and report -> report picker (IG)
+PASS ...picker lists 2 targets (post/account)
+PASS ...and they ARE blocked
+PASS settings has Blocked row with count
+PASS Blocked profiles page lists them
+PASS row subtitle IG-style + Unblock button
+PASS unblock from settings = same center dialog
+PASS empty state after last unblock
+PASS About title
+PASS hero avatar + username + verified badge
+PASS authenticity note
+PASS Date joined + Account based in rows
+PASS verified foot note
+PASS non-verified: 2 rows, no badge, no foot
+PASS Share this profile -> share sheet
+PASS Copy profile URL -> link toast
+PASS Report -> picker first (IG)
+PASS 'Something about this account' -> reason list
+PASS about page renders in light theme
+PASS no console errors
+
+== Regression ==
+_verify_profile.mjs  0 failed / 0 console errors
+_verify_pfg.mjs      0 failed / 0 console errors
+_verify_pfl.mjs      0 failed / 0 console errors
+_verify_pfp.mjs      0 failed / 0 console errors
+
+Notes for future verifiers:
+- pushSub via page.evaluate is the established pattern for deep-linking
+  into profile:X subs (same as _verify_pfg seller sweep)
+- after sub-x closes the report page the whole sub layer closes — to
+  reach Settings, reopen own profile first (pushSub profile:king.mr.fox)
+- .pf-rhint auto-dismisses in 6s — assert immediately after unblock or
+  click it away explicitly before the next step

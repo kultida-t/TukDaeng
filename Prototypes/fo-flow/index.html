@@ -1025,6 +1025,51 @@ l<!DOCTYPE html>
   .pm-row.pm-ctr { justify-content: center; } /* IG action-sheet parity — centered plain rows */
   .comment-sheet.pm .pm-card.pm-rows { margin-bottom: 8px; }
   .comment-sheet.pm .pm-card.pm-cancel { margin-top: 0; margin-bottom: 22px; }
+  /* ============ PROFILE-005 — IG block confirm sheet / About this account / restrict hint ============ */
+  .blk-body {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 6px 22px 24px; text-align: center;
+  }
+  .blk-av { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+  .blk-q { font-size: 20px; font-weight: 700; color: var(--text); margin-top: 12px; }
+  .blk-d { font-size: 13.5px; color: var(--text); line-height: 1.45; margin: 8px 0 16px; }
+  .blk-i {
+    display: flex; gap: 12px; align-items: flex-start; text-align: left;
+    font-size: 13.5px; color: var(--text); line-height: 1.4; width: 100%; margin-bottom: 12px;
+  }
+  .blk-i svg { flex-shrink: 0; margin-top: 1px; }
+  .blk-go {
+    width: 100%; border: none; border-radius: 10px; padding: 13px; margin-top: 4px;
+    background: var(--red); color: #fff; font-family: var(--font-main);
+    font-size: 14.5px; font-weight: 600; cursor: pointer;
+  }
+  .blk-rp {
+    width: 100%; border: none; background: none; padding: 14px 12px 0;
+    color: var(--text); font-family: var(--font-main); font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  /* about page */
+  .ab-hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px 26px 6px; }
+  .ab-av { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; }
+  .ab-name { display: flex; align-items: center; gap: 5px; margin-top: 12px; font-size: 16px; font-weight: 700; color: var(--text); }
+  .ab-name .ab-vb { display: flex; }
+  .ab-note { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin-top: 9px; }
+  .ab-note b { color: var(--text); font-weight: 500; }
+  .ab-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 22px; }
+  .ab-row .ab-ic { color: var(--text); flex-shrink: 0; margin-top: 2px; }
+  .ab-b { display: flex; flex-direction: column; gap: 1px; text-align: left; min-width: 0; }
+  .ab-t { font-size: 15px; font-weight: 500; color: var(--text); }
+  .ab-v { font-size: 14px; color: var(--muted); }
+  .ab-foot { font-size: 13px; color: var(--muted); line-height: 1.5; padding: 14px 22px; }
+  /* post-unblock restrict hint banner (IG) */
+  .pf-rhint {
+    position: absolute; left: 10px; right: 10px; bottom: 62px; z-index: 45;
+    display: flex; align-items: center; gap: 10px;
+    background: #26262c; color: #f2f2f5; border: 1px solid #3f3f48;
+    border-radius: 12px; padding: 12px 14px; font-size: 12.5px; line-height: 1.4;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4); cursor: pointer;
+  }
+  .pf-rhint svg { flex-shrink: 0; }
+  .pf-rhint .pf-rhint-lm { margin-left: auto; flex-shrink: 0; font-weight: 700; color: var(--red); padding-left: 8px; }
   /* ============ FOLLOWING manage sheet (PROFILE-003 — IG "Following ⌄" flow) ============ */
   .comment-sheet.mf { height: auto; }
   .screen.mf-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
@@ -3643,6 +3688,7 @@ const I = {
   qr: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3z"/><path d="M21 14v3h-3"/><path d="M17 21h4v-4"/></svg>`,
   eyeOff: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10.8 10.8 0 0 1 12 20c-7 0-11-8-11-8a19.4 19.4 0 0 1 5.1-6.1"/><path d="M9.9 4.3A10.6 10.6 0 0 1 12 4c7 0 11 8 11 8a19.5 19.5 0 0 1-2.9 3.9"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="m2 2 20 20"/></svg>`,
   checkCir: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.7 2.7L16.5 9.4"/></svg>`,
+  cal: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>`,
 };
 
 /* ================= RENDER ================= */
@@ -4276,7 +4322,7 @@ function feedEmptyHTML(tab) {
 }
 
 function feedContentHTML(variant) {
-  const posts = POSTS.filter(p => !p.ni && !p.muted && !p.archived)
+  const posts = POSTS.filter(p => !p.ni && !p.muted && !p.blocked && !p.archived)
     .filter(p => state.feedTab === "favorites" ? p.favorite : state.feedTab === "following" ? p.following : (state.snooze ? p.following : true));
   return posts.length ? posts.map(p => postCard(p, variant)).join("") : feedEmptyHTML(state.feedTab);
 }
@@ -4397,7 +4443,7 @@ function srchState(scr) {
   };
   return scr._search;
 }
-function salePosts() { return POSTS.filter(p => p.price && !p.ni && !p.muted); }
+function salePosts() { return POSTS.filter(p => p.price && !p.ni && !p.muted && !p.blocked); }
 function haystack(p) {
   return [p.seller, p.caption, p.captionFull, ...(p.chips || []), ...(p.specs || []).flatMap(s => s)].join(" ").toLowerCase();
 }
@@ -4495,7 +4541,7 @@ function tagRows(S) {
 }
 function exploreTiles() {
   const T = [];
-  POSTS.filter(p => !p.ni && !p.muted).forEach(p => p.photos.forEach((src, i) => T.push({ pid: p.id, i, src })));
+  POSTS.filter(p => !p.ni && !p.muted && !p.blocked).forEach(p => p.photos.forEach((src, i) => T.push({ pid: p.id, i, src })));
   const tall = new Set([0, 3, 8, 13]), views = new Set([2, 6, 11]);
   return T.map((t, i) => ({ ...t, tall: tall.has(i), views: views.has(i) ? POSTS.find(x => x.id === t.pid).views : "" }));
 }
@@ -4579,7 +4625,7 @@ function resultSellers(S) {
   const q = S.q.trim().toLowerCase();
   if (!q) return [];
   const seen = new Map();
-  POSTS.forEach(p => { if (p.seller.toLowerCase().includes(q) && !seen.has(p.seller)) seen.set(p.seller, p); });
+  POSTS.forEach(p => { if (p.seller.toLowerCase().includes(q) && !PF_BLOCKED.has(p.seller) && !seen.has(p.seller)) seen.set(p.seller, p); });
   return [...seen.values()];
 }
 function sellerCardHTML(p) {
@@ -4709,7 +4755,7 @@ function openPostViewer(scr, posts, pid, phi = 0, feedMode = false, title = "Sav
   pv.classList.toggle("pfp", !!user);
   if (user) { /* PROFILE-002 — IG "Posts" surface: centered Posts/username head + feed-card list */
     /* followed profiles get no head pill at all — matches IG (it only appears while unfollowed) */
-    const hf = user !== CP_ME.name && !pfIsFollowed(user)
+    const hf = user !== CP_ME.name && !pfIsFollowed(user) && !pfIsBlocked(user)
       ? `<button class="pf-foll pfp-follow" data-u="${esc(user)}">Follow</button>` : "";
     pv.innerHTML = `
       <div class="detail-head svd-head">
@@ -6122,6 +6168,7 @@ const PF_EXTRA_FOL = new Set(); /* follow state for users that have no posts (se
 const PF_EXTRA_FAV = new Set(); /* favorites for users that have no posts (session only) */
 const PF_EXTRA_MUT = new Set(); /* muted state for users that have no posts (session only) */
 const PF_REMOVED_FOL = new Set(); /* PROFILE-004 — own followers removed via Remove button (session only) */
+const PF_BLOCKED = new Set(); /* PROFILE-005 — accounts you blocked (session only) */
 
 /* ===== PORTFOLIO-001 — owner-only portfolio (spec 14_PORTFOLIO_MODULE): dashboard + asset list + sold history ===== */
 /* eligible = status Sale/Show/Hide + own asset (not consignment); sold/deleted/hidden-perm/consignment excluded */
@@ -6364,7 +6411,7 @@ function pfTabPosts(uname, tab) {
   return tab === "all" ? all : all.filter(p => pfKind(p) === tab);
 }
 function userClips(name) { return userPosts(name).filter(p => clipState(p).has); }
-function userTagged(name) { return POSTS.filter(p => p.seller !== name && !p.archived && !p.ni && !p.muted && ((p.likedBy && p.likedBy.name === name) || (p.commentPreview && p.commentPreview.name === name))); }
+function userTagged(name) { return POSTS.filter(p => p.seller !== name && !p.archived && !p.ni && !p.muted && !p.blocked && ((p.likedBy && p.likedBy.name === name) || (p.commentPreview && p.commentPreview.name === name))); }
 function pfIsFollowed(name) {
   const p = POSTS.find(x => x.seller === name);
   return p ? !!p.following : PF_EXTRA_FOL.has(name);
@@ -6392,6 +6439,79 @@ function pfSetMuted(scr, name, on) {
   const p = POSTS.find(x => x.seller === name);
   if (p) setMuted(scr, name, on);
   else if (on) PF_EXTRA_MUT.add(name); else PF_EXTRA_MUT.delete(name);
+}
+/* PROFILE-005 — block is account-level (IG): unfollow both ways, they drop out
+   of your followers, their posts leave feed/search — but their profile page
+   stays viewable with an Unblock button. Session-only. */
+function pfIsBlocked(name) {
+  return PF_BLOCKED.has(name);
+}
+function pfSetBlocked(scr, name, on) {
+  if (on) {
+    PF_BLOCKED.add(name);
+    PF_REMOVED_FOL.add(name);
+    pfSetFollow(scr, name, false);
+  } else {
+    PF_BLOCKED.delete(name); /* IG: unblock does NOT re-follow */
+  }
+  POSTS.forEach(p => { if (p.seller === name) p.blocked = on; });
+  scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+}
+const PF_VBADGE = `<svg class="ab-vb" width="16" height="16" viewBox="0 0 24 24"><path fill="#0095f6" d="M12 2l2.53 2.2 3.35-.29.75 3.27 2.88 1.73-1.31 3.09L21.51 15.1l-2.88 1.72-.75 3.27-3.35-.28L12 22l-2.53-2.19-3.35.28-.75-3.27-2.88-1.72 1.31-3.1L2.49 8.92l2.88-1.73.75-3.27 3.35.3z"/><path fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" d="m8.4 12.4 2.4 2.4 4.8-5.1"/></svg>`;
+/* IG block confirm — bottom sheet: centered avatar + impact rows + two actions */
+function blkSheetHTML(uname) {
+  const u = profileOf(uname);
+  return `<div class="sheet-handle"></div>
+    <div class="blk-body">
+      <img class="blk-av" src="${u.avatar}" alt="">
+      <div class="blk-q">Block ${esc(uname)}?</div>
+      <div class="blk-d">This will also block any other profiles they may have or create in the future. You can unblock them anytime.</div>
+      <div class="blk-i">${I.commentOff(22)}<span>They won't be able to message you or find your profile or content on TukDaeng.</span></div>
+      <div class="blk-i">${I.bellOff(22)}<span>They won't be notified that you blocked or reported them.</span></div>
+      <button class="blk-go" data-u="${esc(uname)}">Block</button>
+      <button class="blk-rp" data-u="${esc(uname)}">Block and report</button>
+    </div>`;
+}
+/* IG unblock confirm — center dialog like Mute (not a sheet) */
+function unblockDlgHTML(uname) {
+  return `
+    <div class="dlg-q">Unblock ${esc(uname)}?</div>
+    <div class="dlg-desc">${esc(uname)} and other profiles they may have or create will now be able to request to follow and message you on TukDaeng. They won't be notified that you unblocked them.</div>
+    <button class="dlg-btn danger dlg-unblock-go">Unblock</button>
+    <button class="dlg-btn dlg-cancel">Cancel</button>`;
+}
+/* IG: right after unblocking, a bottom banner nudges Restrict instead */
+function pfRestrictHint(scr) {
+  scr.querySelector(".pf-rhint")?.remove();
+  const el = document.createElement("div");
+  el.className = "pf-rhint";
+  el.innerHTML = `${I.userMinus(18)}<span>You can restrict them to hide their comments and messages without blocking them completely.</span><span class="pf-rhint-lm">Learn more</span>`;
+  scr.appendChild(el);
+  clearTimeout(scr._rhintT);
+  scr._rhintT = setTimeout(() => el.remove(), 6000);
+}
+/* PROFILE-005 — IG "About this account": hero + joined/country/verified rows.
+   Mock meta is deterministic per username (same trick as follower counts). */
+const PF_AB_MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+function aboutHTML(uname) {
+  const u = profileOf(uname);
+  const h = [...uname].reduce((a, c) => a + c.charCodeAt(0), 0);
+  const joined = `${PF_AB_MONTHS[h % 12]} ${2015 + h % 9}`;
+  const verifiedOn = `${PF_AB_MONTHS[(h * 5 + 2) % 12]} ${2023 + h % 3}`;
+  const row = (ic, t, v) => `<div class="ab-row"><span class="ab-ic">${ic}</span><span class="ab-b"><span class="ab-t">${t}</span><span class="ab-v">${v}</span></span></div>`;
+  return `
+    <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">About this account</span><span class="spacer"></span></div>
+    <div class="sub-scroll">
+      <div class="ab-hero">
+        <img class="ab-av" src="${u.avatar}" alt="">
+        <div class="ab-name"><span>${esc(uname)}</span>${u.verified ? PF_VBADGE : ""}</div>
+        <div class="ab-note">To help keep our community authentic, we're showing information about profiles on TukDaeng. <b>See why this information is important.</b></div>
+      </div>
+      ${row(I.cal(22), "Date joined", joined)}
+      ${row(I.pin(22), "Account based in", "Thailand")}
+      ${u.verified ? row(I.shield(22), "Verified", verifiedOn) : ""}
+      ${u.verified ? `<div class="ab-foot">Profiles can be verified by TukDaeng, based on their activity across TukDaeng products or documents they provide. Verified badges are displayed on these profiles.<br><br>Some verified profiles are owned by a notable person, brand or entity, while others subscribe to get verified.</div>` : ""}
+    </div>`;
 }
 /* PROFILE-003 — IG "Following" manage sheet (opened by the Following ⌄ button)
    + Mute sub-page inside the same sheet */
@@ -6455,6 +6575,7 @@ function profileHTML(scr, key) {
   const u = profileOf(uname);
   const own = uname === CP_ME.name;
   const isF = pfIsFollowed(uname);
+  const isB = !own && pfIsBlocked(uname); /* PROFILE-005 — blocked profile: IG keeps the page, swaps Follow -> Unblock */
   const stat = (v, l, go) => `<button class="pf-stat"${go ? ` data-pfgo="${go}"` : ""}><b>${v}</b><span>${l}</span></button>`;
   /* PRD 06 — owner sees Hide/Sold too; public profile exposes only All/Sale/Show */
   const TABS = own
@@ -6507,7 +6628,9 @@ function profileHTML(scr, key) {
     <div class="pf-actions">
       ${own
         ? `<button class="pf-btn pf-edit">Edit profile</button><button class="pf-btn pf-share">Share profile</button><button class="pf-btn pf-iconbtn pf-pfo" data-sub="portfolio" title="Portfolio">${I.wallet(16)}</button>`
-        : `<button class="pf-btn pf-foll${isF ? "" : " primary"}" data-u="${esc(uname)}">${isF ? `Following ${I.chev(12)}` : "Follow"}</button><button class="pf-btn pf-msg">Message</button>`}
+        : isB
+          ? `<button class="pf-btn primary pf-unblock" data-u="${esc(uname)}">Unblock</button><button class="pf-btn pf-msg">Message</button>`
+          : `<button class="pf-btn pf-foll${isF ? "" : " primary"}" data-u="${esc(uname)}">${isF ? `Following ${I.chev(12)}` : "Follow"}</button><button class="pf-btn pf-msg">Message</button>`}
     </div>
     <div class="pf-tabs">
       ${TABS.map(([k, l, ic]) => `<button class="pf-tab pf-tab-txt${tabName === k ? " on" : ""}" data-pftab="${k}">${ic}<span>${l}</span></button>`).join("")}
@@ -6725,6 +6848,7 @@ function subHTML(name, scr) {
     <div class="sub-sec sec-div">What you see</div>
     ${row("Favorites", `data-sub="favorites"`, `<span class="sub-count">${favoriteSellers().length}</span>`, I.star(21))}
     ${row("Muted accounts", `data-sub="muted"`, `<span class="sub-count">${mutedSellers().length}</span>`, I.bellOff(21))}
+    ${row("Blocked", `data-sub="blocked"`, `<span class="sub-count">${PF_BLOCKED.size}</span>`, I.userMinus(21))}
     ${row("Content preferences", `data-sub="prefs"`, "", I.stack(21))}
     <div class="sub-sec sec-div">Display</div>
     ${row("Theme mode", `data-sub="theme"`, `<span class="sub-count">${state.theme === "dark" ? "Dark" : "Light"}</span>`, I.moon(21))}
@@ -6749,6 +6873,13 @@ function subHTML(name, scr) {
       const p = POSTS.find(x => x.seller === s);
       return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">Posts muted</span></span><button class="mact m-unmute" data-seller="${s}">Unmute</button></div>`;
     }).join("") || `<div class="sub-empty">No muted accounts</div>`
+  }</div>`;
+  /* PROFILE-005 — IG Settings > Blocked profiles: rows unblock via the same center dialog */
+  if (name === "blocked") return head("Blocked profiles") + `<div class="sub-scroll">${
+    [...PF_BLOCKED].map(s => {
+      const p = profileOf(s);
+      return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${esc(s)}</span><span class="md">Includes other profiles they may have or create</span></span><button class="mact m-unblock" data-seller="${esc(s)}">Unblock</button></div>`;
+    }).join("") || `<div class="sub-empty">No blocked accounts</div>`
   }</div>`;
   if (name === "prefs") return head("Content preferences") + `<div class="sub-scroll">
     ${row("Sensitive content", `data-sub="sensitive"`)}
@@ -6790,9 +6921,34 @@ function subHTML(name, scr) {
       <div class="pm-rp-desc">Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait.</div>
       ${PM_REASONS.map(r => `<button class="pm-reason">${r}<span class="pm-chev">${I.chevR(14)}</span></button>`).join("")}
     </div>`;
+  /* PROFILE-005 — IG report picker: "What do you want to report?" comes before the reason list */
+  if (name.startsWith("report:pick:")) {
+    const u = name.slice(12);
+    const opt = (go, label) => `<button class="pm-reason rp-opt" data-rp="${go}" data-u="${esc(u)}">${label}<span class="pm-chev">${I.chevR(14)}</span></button>`;
+    return `
+    <div class="detail-head rp-head"><span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="pm-rp-scroll">
+      <div class="pm-rp-q">What do you want to report?</div>
+      <div class="pm-rp-desc">Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait.</div>
+      ${opt("posts", "A specific post")}
+      ${opt("acct", "Something about this account")}
+    </div>`;
+  }
+  /* pick one of their posts -> post reasons */
+  if (name.startsWith("report:posts:")) {
+    const u = name.slice(13);
+    return `
+    <div class="detail-head rp-head"><span class="detail-title">Select a post to report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="pm-rp-scroll" style="padding:0 0 28px">
+      <div class="pf-grid">${pfTabPosts(u, "all").map(p => `
+        <button class="pf-tile rp-tile" data-pid="${p.id}"><img src="${p.photos[0]}" alt="" loading="lazy"></button>`).join("")}</div>
+    </div>`;
+  }
+
   /* PROFILE-001 — profile pages stack like any other sub page */
   if (name.startsWith("profile:")) return profileHTML(scr, name.slice(8));
   if (name.startsWith("pfollow:")) return pfollowHTML(scr, name.slice(8));
+  if (name.startsWith("about:")) return aboutHTML(name.slice(6));
   if (name === "pedit") return peditHTML(scr);
   /* PORTFOLIO-001 — portfolio dashboard + asset/sold detail pages stack like any other sub page */
   if (name === "portfolio") return portfolioHTML(scr);
@@ -7539,6 +7695,15 @@ document.getElementById("stage").addEventListener("click", e => {
     openSub(scr, "report");
     return;
   }
+  /* PROFILE-005 — IG report picker options + pickers (post/message) reuse the
+     pm-reason row styling but navigate instead of submitting */
+  const rpOpt = e.target.closest(".rp-opt");
+  if (rpOpt) {
+    const scr = rpOpt.closest(".screen"), u = rpOpt.dataset.u;
+    if (rpOpt.dataset.rp === "acct") pushSub(scr, "report:user");
+    else pushSub(scr, "report:" + rpOpt.dataset.rp + ":" + u);
+    return;
+  }
   const pmDone = e.target.closest(".pm-reason");
   if (pmDone) {
     const scr = pmDone.closest(".screen");
@@ -7606,6 +7771,15 @@ document.getElementById("stage").addEventListener("click", e => {
     scr.classList.remove("dialog-open");
     pfSetMuted(scr, scr.dataset.muteSeller, true); /* pfSetMuted covers profiles without real posts too */
     scrToast(scr, "Posts muted");
+    return;
+  }
+  const dlgUblk = e.target.closest(".dlg-unblock-go");
+  if (dlgUblk) {
+    const scr = dlgUblk.closest(".screen");
+    scr.classList.remove("dialog-open");
+    pfSetBlocked(scr, scr.dataset.unblockU, false);
+    if (scr.classList.contains("sub-open")) renderSub(scr);
+    pfRestrictHint(scr); /* IG: post-unblock banner nudges Restrict instead */
     return;
   }
   const dlgRmf = e.target.closest(".dlg-rmf-go");
@@ -7854,7 +8028,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const S = srchState(scr);
     const list = xpTile.closest(".xp-grid").classList.contains("two")
       ? searchResults(S)
-      : POSTS.filter(p => !p.ni && !p.muted);
+      : POSTS.filter(p => !p.ni && !p.muted && !p.blocked);
     openPostViewer(scr, list, xpTile.dataset.pid, +xpTile.dataset.phi || 0);
     return;
   }
@@ -7965,6 +8139,10 @@ document.getElementById("stage").addEventListener("click", e => {
   const pfTile = e.target.closest(".pf-tile");
   if (pfTile) {
     const scr = pfTile.closest(".screen");
+    if (pfTile.classList.contains("rp-tile")) { /* PROFILE-005 — report post picker -> post reasons */
+      pushSub(scr, "report");
+      return;
+    }
     const parts = ((scr._subStack || []).at(-1) || "").split(":");
     const u = parts[1] || "", tab = parts[2] || "all";
     const list = pfTabPosts(u, tab);
@@ -8079,23 +8257,32 @@ document.getElementById("stage").addEventListener("click", e => {
   const pfMore = e.target.closest(".pf-more");
   if (pfMore) {
     const scr = pfMore.closest(".screen");
-    /* IG parity — plain centered action rows + separate Cancel card (no Restrict/Shared activity/Hide story/QR) */
+    const top = (scr._subStack || []).at(-1) || "";
+    const uname = top.startsWith("profile:") ? top.slice(8) : "";
+    /* PROFILE-005 — IG: one card, all rows separated by hairlines + separate
+       Cancel; Restrict/Hide story/QR stay cut */
     openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
       <div class="pm-card pm-rows">
-        <button class="pm-row pm-ctr danger pf-sh-report"><span>Report</span></button>
-        <button class="pm-row pm-ctr pf-sh-block"><span>Block</span></button>
-        <button class="pm-row pm-ctr pf-sh-about"><span>About this account</span></button>
+        <button class="pm-row pm-ctr danger pf-sh-report" data-u="${esc(uname)}"><span>Report</span></button>
+        <button class="pm-row pm-ctr pf-sh-block" data-u="${esc(uname)}"><span>${pfIsBlocked(uname) ? "Unblock" : "Block"}</span></button>
+        <button class="pm-row pm-ctr pf-sh-about" data-u="${esc(uname)}"><span>About this account</span></button>
         <button class="pm-row pm-ctr pf-sh-copy"><span>Copy profile URL</span></button>
         <button class="pm-row pm-ctr pf-sh-share"><span>Share this profile</span></button>
       </div>
       <div class="pm-card pm-cancel"><button class="pm-row pm-ctr pf-sh-cancel"><span>Cancel</span></button></div>`);
     return;
   }
-  const pfShDone = e.target.closest(".pf-sh-copy, .pf-sh-share");
-  if (pfShDone) {
-    const scr = pfShDone.closest(".screen");
+  const pfShCopy = e.target.closest(".pf-sh-copy");
+  if (pfShCopy) {
+    const scr = pfShCopy.closest(".screen");
     scr.classList.remove("pm-open");
     scrToast(scr, "Profile link copied");
+    return;
+  }
+  const pfShShare = e.target.closest(".pf-sh-share");
+  if (pfShShare) { /* PROFILE-005 — IG: Share opens the share sheet (Copy stays a toast) */
+    const scr = pfShShare.closest(".screen");
+    openSheet(scr, "sh", "share-open", shareSheetHTML());
     return;
   }
   const pfShCancel = e.target.closest(".pf-sh-cancel");
@@ -8104,16 +8291,54 @@ document.getElementById("stage").addEventListener("click", e => {
   if (pfShReport) {
     const scr = pfShReport.closest(".screen");
     scr.classList.remove("pm-open");
-    pushSub(scr, "report:user"); /* stack — back returns to this profile, not the feed */
+    pushSub(scr, "report:pick:" + pfShReport.dataset.u); /* IG picker first, then reasons */
     return;
   }
-  const pfShStub = e.target.closest(".pf-sh-block, .pf-sh-about");
-  if (pfShStub) {
-    const scr = pfShStub.closest(".screen");
+  /* PROFILE-005 — Block -> IG confirm sheet; when already blocked the same row
+     reads "Unblock" and opens the center dialog instead */
+  const pfShBlock = e.target.closest(".pf-sh-block");
+  if (pfShBlock) {
+    const scr = pfShBlock.closest(".screen");
+    const u = pfShBlock.dataset.u;
     scr.classList.remove("pm-open");
-    scrToast(scr, "Not in this prototype yet");
+    if (pfIsBlocked(u)) { scr.dataset.unblockU = u; openDlg(scr, unblockDlgHTML(u)); }
+    else openSheet(scr, "pm", "pm-open", blkSheetHTML(u));
     return;
   }
+  const pfShAbout = e.target.closest(".pf-sh-about");
+  if (pfShAbout) {
+    const scr = pfShAbout.closest(".screen");
+    scr.classList.remove("pm-open");
+    pushSub(scr, "about:" + pfShAbout.dataset.u);
+    return;
+  }
+  const blkGo = e.target.closest(".blk-go, .blk-rp");
+  if (blkGo) {
+    const scr = blkGo.closest(".screen");
+    const u = blkGo.dataset.u;
+    scr.classList.remove("pm-open");
+    pfSetBlocked(scr, u, true);
+    if ((scr._subStack || []).at(-1) === "profile:" + u) renderSub(scr);
+    scrToast(scr, "Blocking"); /* IG flashes this transient toast */
+    if (blkGo.classList.contains("blk-rp")) pushSub(scr, "report:pick:" + u);
+    return;
+  }
+  const pfUblk = e.target.closest(".pf-unblock");
+  if (pfUblk) {
+    const scr = pfUblk.closest(".screen");
+    scr.dataset.unblockU = pfUblk.dataset.u;
+    openDlg(scr, unblockDlgHTML(pfUblk.dataset.u));
+    return;
+  }
+  const mUblk = e.target.closest(".m-unblock");
+  if (mUblk) {
+    const scr = mUblk.closest(".screen");
+    scr.dataset.unblockU = mUblk.dataset.seller;
+    openDlg(scr, unblockDlgHTML(mUblk.dataset.seller));
+    return;
+  }
+  const pfRhint = e.target.closest(".pf-rhint");
+  if (pfRhint) { pfRhint.remove(); return; }
   /* PORTFOLIO-001 — portfolio ⋯ = prototype-only preview-state picker (needs ?dev=1; production has no menu) */
   const pfoMore = e.target.closest(".pfo-more");
   if (pfoMore) {
