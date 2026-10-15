@@ -1,6 +1,6 @@
 PROFILE-005 — Automated Test Results
 File: Prototypes/_verify_pfm.mjs (Playwright, 440x956, deviceScaleFactor 2)
-Date: 2026-10-15 | Result: 42/42 PASS, 0 console errors
+Date: 2026-10-15 | Result: 49/49 PASS, 0 console errors
 
 == _verify_pfm.mjs (new) ==
 PASS viewer profile opened
@@ -43,6 +43,13 @@ PASS Share this profile -> share sheet
 PASS Copy profile URL -> link toast
 PASS Report -> picker first (IG)
 PASS 'Something about this account' -> reason list
+PASS thanks page: check + 'Thanks for your feedback'
+PASS other steps = Block/Mute/Learn (TukDaeng-adapted; no Unfollow since not following) — Block dial.dude|Mute dial.dude|Learn more about our Community Standards
+PASS no Restrict/message steps (not in TukDaeng)
+PASS Mute step -> muted + row flips to Unmute
+PASS Block step -> confirm sheet
+PASS blocked from thanks page -> row flips to Unblock
+PASS Done closes report + submitted toast
 PASS about page renders in light theme
 PASS no console errors
 

@@ -1896,6 +1896,26 @@ l<!DOCTYPE html>
   }
   .pm-reason:last-child { border-bottom: none; }
   .pm-reason .pm-chev { color: var(--muted); display: flex; flex-shrink: 0; }
+  /* report thanks page (IG "Thanks for your feedback" + Other steps) */
+  .rp-head .rp-back { position: absolute; left: 8px; }
+  .rp-thanks { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 34px 8px 20px; }
+  .rp-thanks-ck { width: 78px; height: 78px; border-radius: 50%; background: var(--surface-2); display: flex; align-items: center; justify-content: center; color: var(--text); margin-bottom: 15px; }
+  .rp-thanks-t { font-size: 18px; font-weight: 700; }
+  .rp-thanks-d { font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 8px; max-width: 300px; }
+  .rp-steps-h { font-size: 14px; font-weight: 700; margin: 4px 0 2px; }
+  .rp-step {
+    display: flex; align-items: center; gap: 14px; width: 100%;
+    background: none; border: none; border-bottom: 1px solid var(--line);
+    padding: 15px 0; font-family: var(--font-main); font-size: 14px; font-weight: 500;
+    color: var(--text); cursor: pointer; text-align: left;
+  }
+  .rp-step .rp-step-t { flex: 1; }
+  .rp-step .pm-chev { color: var(--muted); display: flex; flex-shrink: 0; }
+  .rp-done {
+    width: 100%; border: none; border-radius: 10px; padding: 14px; margin-top: 24px;
+    background: var(--red); color: #fff; font-family: var(--font-main);
+    font-size: 14.5px; font-weight: 600; cursor: pointer;
+  }
 
   .sheet-handle {
     width: 36px; height: 4px;
@@ -3639,6 +3659,7 @@ const I = {
   dots: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>`,
   circleX: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="m9.5 9.5 5 5m0-5-5 5"/></svg>`,
   flag: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4.5h11.5l-2.5 4.5 2.5 4.5H6"/></svg>`,
+  prohibit: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="m5.7 5.7 12.6 12.6"/></svg>`,
   pen: (s=18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>`,
   trash: (s=18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>`,
   sad: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.3 15.6c.9-1.1 2.2-1.7 3.7-1.7s2.8.6 3.7 1.7"/><path d="M9 9.6h.01M15 9.6h.01"/></svg>`,
@@ -6934,6 +6955,28 @@ function subHTML(name, scr) {
       ${opt("acct", "Something about this account")}
     </div>`;
   }
+  /* PROFILE-005 — IG report completion: "Thanks for your feedback" + Other steps.
+     Adapted to TukDaeng: only actions that exist in-app (Block/Unfollow/Mute) —
+     no Restrict, no message reporting. */
+  if (name.startsWith("report:done:")) {
+    const u = name.slice(12);
+    const step = (act, ic, label) => `<button class="rp-step" data-act="${act}" data-u="${esc(u)}"><span class="rp-step-ic">${ic}</span><span class="rp-step-t">${esc(label)}</span><span class="pm-chev">${I.chevR(14)}</span></button>`;
+    return `
+    <div class="detail-head rp-head"><button class="icon-btn rp-back sub-back">${I.back(20)}</button><span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="pm-rp-scroll">
+      <div class="rp-thanks">
+        <div class="rp-thanks-ck">${I.check(30)}</div>
+        <div class="rp-thanks-t">Thanks for your feedback</div>
+        <div class="rp-thanks-d">We use these reports to show you less of this kind of content in the future.</div>
+      </div>
+      <div class="rp-steps-h">Other steps you can take</div>
+      ${pfIsBlocked(u) ? step("unblock", I.prohibit(22), `Unblock ${u}`) : step("block", I.prohibit(22), `Block ${u}`)}
+      ${pfIsFollowed(u) ? step("unfollow", I.userMinus(22), `Unfollow ${u}`) : ""}
+      ${pfIsMuted(u) ? step("unmute", I.bellOff(22), `Unmute ${u}`) : step("mute", I.bellOff(22), `Mute ${u}`)}
+      ${step("learn", I.shield(22), "Learn more about our Community Standards")}
+      <button class="rp-done">Done</button>
+    </div>`;
+  }
   /* pick one of their posts -> post reasons */
   if (name.startsWith("report:posts:")) {
     const u = name.slice(13);
@@ -7691,6 +7734,8 @@ document.getElementById("stage").addEventListener("click", e => {
   const pmRp = e.target.closest(".pm-go-report");
   if (pmRp) {
     const scr = pmRp.closest(".screen");
+    const post = findPost(scr.dataset.pmPid);
+    if (post) scr.dataset.rpUser = post.seller; /* PROFILE-005 — thanks page needs the reported user */
     scr.classList.remove("pm-open");
     openSub(scr, "report");
     return;
@@ -7704,12 +7749,16 @@ document.getElementById("stage").addEventListener("click", e => {
     else pushSub(scr, "report:" + rpOpt.dataset.rp + ":" + u);
     return;
   }
+  /* PROFILE-005 — picking a reason opens the IG "Thanks for your feedback" page
+     (with Other steps) instead of closing with a toast */
   const pmDone = e.target.closest(".pm-reason");
   if (pmDone) {
     const scr = pmDone.closest(".screen");
+    const u = scr.dataset.rpUser || "";
+    if (u) { pushSub(scr, "report:done:" + u); return; }
     scr.classList.remove("pm-open", "sub-open");
     scr._subStack = [];
-    if (pmDone.matches(".pm-reason")) toast("Report submitted · thanks for letting us know");
+    toast("Report submitted · thanks for letting us know");
     return;
   }
   /* ===== FEED-010 — feedback-card actions ===== */
@@ -7736,6 +7785,8 @@ document.getElementById("stage").addEventListener("click", e => {
   if (ucRp) {
     const scr = ucRp.closest(".screen");
     scr.dataset.pmPid = ucRp.closest(".post").dataset.pid;
+    const post = findPost(scr.dataset.pmPid);
+    if (post) scr.dataset.rpUser = post.seller;
     scr.classList.remove("pm-open");
     openSub(scr, "report");
     return;
@@ -8291,6 +8342,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (pfShReport) {
     const scr = pfShReport.closest(".screen");
     scr.classList.remove("pm-open");
+    scr.dataset.rpUser = pfShReport.dataset.u;
     pushSub(scr, "report:pick:" + pfShReport.dataset.u); /* IG picker first, then reasons */
     return;
   }
@@ -8318,9 +8370,32 @@ document.getElementById("stage").addEventListener("click", e => {
     const u = blkGo.dataset.u;
     scr.classList.remove("pm-open");
     pfSetBlocked(scr, u, true);
-    if ((scr._subStack || []).at(-1) === "profile:" + u) renderSub(scr);
+    const subTop = (scr._subStack || []).at(-1) || "";
+    if (subTop === "profile:" + u || subTop === "report:done:" + u) renderSub(scr);
     scrToast(scr, "Blocking"); /* IG flashes this transient toast */
-    if (blkGo.classList.contains("blk-rp")) pushSub(scr, "report:pick:" + u);
+    if (blkGo.classList.contains("blk-rp")) { scr.dataset.rpUser = u; pushSub(scr, "report:pick:" + u); }
+    return;
+  }
+  /* PROFILE-005 — "Thanks for your feedback" steps: real actions only.
+     Block reuses the confirm sheet, Unblock the center dialog; unfollow/mute
+     apply instantly then re-render the page so the rows refresh. */
+  const rpStep = e.target.closest(".rp-step");
+  if (rpStep) {
+    const scr = rpStep.closest(".screen"), u = rpStep.dataset.u, act = rpStep.dataset.act;
+    if (act === "block") openSheet(scr, "pm", "pm-open", blkSheetHTML(u));
+    else if (act === "unblock") { scr.dataset.unblockU = u; openDlg(scr, unblockDlgHTML(u)); }
+    else if (act === "unfollow") { pfSetFollow(scr, u, false); scrToast(scr, `Unfollowed ${u}`); renderSub(scr); }
+    else if (act === "mute") { pfSetMuted(scr, u, true); scrToast(scr, `Muted ${u}`); renderSub(scr); }
+    else if (act === "unmute") { pfSetMuted(scr, u, false); scrToast(scr, `Unmuted ${u}`); renderSub(scr); }
+    else if (act === "learn") scrToast(scr, "Community Standards aren't in this prototype yet");
+    return;
+  }
+  const rpDone = e.target.closest(".rp-done");
+  if (rpDone) {
+    const scr = rpDone.closest(".screen");
+    scr.classList.remove("pm-open", "sub-open");
+    scr._subStack = [];
+    scrToast(scr, "Report submitted · thanks for letting us know");
     return;
   }
   const pfUblk = e.target.closest(".pf-unblock");

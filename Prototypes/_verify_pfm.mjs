@@ -198,10 +198,39 @@ await sub().locator('.rp-opt[data-rp="acct"]').click();
 await page.waitForTimeout(300);
 check("'Something about this account' -> reason list", (await sub().locator(".pm-rp-q").textContent()).includes("account") &&
   (await sub().locator(".pm-reason").count()) === 9);
-await sub().locator(".sub-x").click(); /* reasons -> picker */
-await page.waitForTimeout(250);
-await sub().locator(".sub-x").click(); /* picker -> profile */
+
+// reason -> IG "Thanks for your feedback" + Other steps page
+await sub().locator(".pm-reason").first().click();
+await page.waitForTimeout(350);
+check("thanks page: check + 'Thanks for your feedback'",
+  await sub().locator(".rp-thanks-ck").count() === 1 &&
+  (await sub().locator(".rp-thanks-t").textContent()).includes("Thanks for your feedback"));
+const stepLabels = await sub().locator(".rp-step .rp-step-t").allTextContents();
+check("other steps = Block/Mute/Learn (TukDaeng-adapted; no Unfollow since not following)",
+  stepLabels.join("|") === `Block dial.dude|Mute dial.dude|Learn more about our Community Standards`, stepLabels.join("|"));
+check("no Restrict/message steps (not in TukDaeng)", !stepLabels.some(t => /restrict|message/i.test(t)));
+await page.screenshot({ path: `${OUT}/k-pfm-report-thanks.png` });
+// Mute applies + rows refresh to Unmute
+await sub().locator('.rp-step[data-act="mute"]').click();
+await page.waitForTimeout(350);
+check("Mute step -> muted + row flips to Unmute",
+  await page.evaluate(() => pfIsMuted("dial.dude")) &&
+  (await sub().locator('.rp-step[data-act="unmute"]').count()) === 1);
+// Block step reuses the confirm sheet (does not submit blindly)
+await sub().locator('.rp-step[data-act="block"]').click();
 await page.waitForTimeout(300);
+check("Block step -> confirm sheet", (await page.locator(".blk-q").textContent()).includes("Block dial.dude"));
+await page.locator(".blk-go").click();
+await page.waitForTimeout(350);
+check("blocked from thanks page -> row flips to Unblock", await page.evaluate(() => pfIsBlocked("dial.dude")) &&
+  (await sub().locator('.rp-step[data-act="unblock"]').count()) === 1);
+// Done closes the whole report stack
+await sub().locator(".rp-done").click();
+await page.waitForTimeout(350);
+check("Done closes report + submitted toast",
+  !(await scr().getAttribute("class")).includes("sub-open") &&
+  (await scr().locator(".sc-toast").textContent()).includes("Report submitted"));
+await page.evaluate(() => { pfSetBlocked(document.querySelector(".screen"), "dial.dude", false); pfSetMuted(document.querySelector(".screen"), "dial.dude", false); });
 
 // ============ 11) light theme ============
 await page.locator("#themeToggle").click();
