@@ -5042,6 +5042,14 @@ function subBack(scr) {
 /* PROFILE-005 — report pages navigate like IG: a new page slides in from the
    right while the previous one stays put underneath (ghost clone), "<" slides
    the current page back out the same way, "X" closes the whole report stack */
+function pmCloseNow(scr) { /* dismiss the '...' sheet instantly — a slow slide-down would flash its rows under the report page */
+  const sh = scr.querySelector(".comment-sheet");
+  scr.classList.remove("pm-open");
+  if (sh) {
+    sh.style.transition = "none";
+    requestAnimationFrame(() => { sh.style.transition = ""; });
+  }
+}
 function rpPush(scr, name) {
   const el = scr.querySelector(".page-sub");
   if ((scr._subStack || []).length) {
@@ -8429,7 +8437,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const pfShReport = e.target.closest(".pf-sh-report");
   if (pfShReport) {
     const scr = pfShReport.closest(".screen");
-    scr.classList.remove("pm-open");
+    pmCloseNow(scr);
     scr.dataset.rpUser = pfShReport.dataset.u;
     rpPush(scr, "report:pick:" + pfShReport.dataset.u); /* IG picker first, then reasons */
     return;
@@ -8461,7 +8469,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const subTop = (scr._subStack || []).at(-1) || "";
     if (subTop === "profile:" + u || subTop === "report:done:" + u) renderSub(scr);
     scrToast(scr, "Blocking"); /* IG flashes this transient toast */
-    if (blkGo.classList.contains("blk-rp")) { scr.dataset.rpUser = u; rpPush(scr, "report:pick:" + u); }
+    if (blkGo.classList.contains("blk-rp")) { scr.dataset.rpUser = u; pmCloseNow(scr); rpPush(scr, "report:pick:" + u); }
     return;
   }
   /* PROFILE-005 — "Thanks for your feedback" steps: real actions only.
