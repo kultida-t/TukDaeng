@@ -1157,6 +1157,13 @@
     .screen { border-radius: 0; }
     .home-ind { display: none; }
   }
+  /* unified hand cursor for every clickable element */
+  button:not(:disabled), [role="button"], a[href], summary, label[for], select,
+  .nav-item, .avatar-ring, .post-head .who, .post .caption > b, .pf-uname,
+  .sh-add, .act, .ask-pill, .app-header .icon-btn, .emoji-row, .sheet-title .send, .c-meta,
+  [data-pf-user], [data-navgo], [data-pftab], [data-tab], [data-act], [data-pid], [data-flow],
+  [data-avact], [data-pfgo], [data-sub], [data-theme-opt], [data-tgl], [data-tag], [data-u] { cursor: pointer; }
+  button:disabled, [disabled] { cursor: default; }
 </style>
 </head>
 <body>

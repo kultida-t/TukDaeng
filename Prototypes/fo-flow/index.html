@@ -427,7 +427,7 @@ l<!DOCTYPE html>
     background: var(--btn-gray);
     border: 1px solid transparent;
     border-radius: 10px;
-    padding: 7px 16px;
+    padding: 0 16px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
     cursor: pointer;
   }
   .follow-btn.on {
@@ -1535,6 +1535,11 @@ l<!DOCTYPE html>
   }
   .screen .pg-ghost.pg-out-r { animation: pgOut .3s ease forwards; z-index: 33; }
   .screen .pg-ghost.pg-out-d { animation: pgDown .3s ease forwards; z-index: 33; }
+  /* report opened from the profile "Posts" viewer (pv, z34) — report pages must stack above it */
+  .screen.rp-over .page-sub { z-index: 35; }
+  .screen.rp-over .page-sub.pg-up { z-index: 38; }
+  .screen.rp-over .pg-ghost { z-index: 35; }
+  .screen .pg-ghost.pg-top { z-index: 36; }
   @keyframes pgOut { to { transform: translateX(100%); } }
   @keyframes pgDown { to { transform: translateY(110%); } }
   .sub-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
@@ -1581,7 +1586,7 @@ l<!DOCTYPE html>
   .pv-seller { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
   .pv-seller img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
   .pv-seller .n { font-size: 13.5px; font-weight: 600; }
-  .pv-seller .follow-btn { font-size: 12.5px; padding: 6px 14px; }
+  .pv-seller .follow-btn { font-size: 12.5px; padding: 0 14px; }
   .pv-cap { padding: 0; font-size: 13px; line-height: 1.35; color: #fff; }
   .pv-cap .more-link { color: rgba(255,255,255,.6); }
   .pv-by { font-size: 12px; color: rgba(255,255,255,.7); margin-top: 7px; }
@@ -1628,7 +1633,7 @@ l<!DOCTYPE html>
   .ps-head { display: flex; align-items: center; gap: 10px; padding: 4px 0 9px; }
   .ps-head img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
   .ps-head .n { font-size: 13.5px; font-weight: 600; flex: 1; }
-  .ps-head .follow-btn { font-size: 12.5px; padding: 6px 14px; }
+  .ps-head .follow-btn { font-size: 12.5px; padding: 0 14px; }
   .ps-cap { font-size: 13.5px; line-height: 1.5; }
   .ps-cap b { font-weight: 600; }
   .ps-time { font-size: 12px; color: var(--muted); padding: 9px 0; border-bottom: 1px solid var(--line); }
@@ -1670,7 +1675,7 @@ l<!DOCTYPE html>
   .mact {
     margin-left: auto; flex-shrink: 0; font-family: var(--font-main);
     font-size: 13px; font-weight: 600; color: var(--text);
-    background: var(--chip-bg); border: none; padding: 7px 16px; border-radius: 8px; cursor: pointer;
+    background: var(--chip-bg); border: none; padding: 0 16px; height: 34px; border-radius: 8px; cursor: pointer;
   }
   .sub-empty { padding: 40px 16px; text-align: center; color: var(--muted); font-size: 13px; }
   /* Favorites management page (FEED-012 — IG Settings > Favorites) */
@@ -1925,19 +1930,25 @@ l<!DOCTYPE html>
   .rp-step .rp-ck { color: #3ddc84; display: flex; flex-shrink: 0; } /* IG: green check on completed steps */
   .rp-step[disabled] { cursor: default; }
   /* Select a post — radio circle on each tile + pinned Next bar (IG) */
-  .pf-tile.rp-tile { position: relative; }
+  .rp-select-head { padding: 14px 14px 16px; }
+  .rp-select-head .detail-title { font-size: 17px; font-weight: 600; margin: 0; }
+  .rp-select-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
+  .rp-select-scroll::-webkit-scrollbar { display: none; }
+  .rp-select-scroll .pf-grid { gap: 1px; }
+  .pf-tile.rp-tile { position: relative; aspect-ratio: 1 / 1; }
   .rp-sel {
-    position: absolute; top: 8px; right: 8px; width: 22px; height: 22px;
-    border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,.35);
+    position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; box-sizing: border-box;
+    border-radius: 50%; border: 1.5px solid rgba(255,255,255,.9); background: transparent;
     display: flex; align-items: center; justify-content: center; color: #fff;
   }
   .rp-tile.on .rp-sel { background: var(--red); border-color: var(--red); }
+  .rp-next-bar { flex-shrink: 0; border-top: 1px solid var(--line); padding: 14px 18px 26px; }
   .rp-next {
-    flex-shrink: 0; margin: 8px 14px 14px; border: none; border-radius: 10px;
-    padding: 14px; background: var(--red); color: #fff;
+    display: flex; align-items: center; justify-content: center; width: 100%; height: 41px; border: none; border-radius: 11px;
+    padding: 0; background: var(--red); color: #fff;
     font-family: var(--font-main); font-size: 14.5px; font-weight: 600; cursor: pointer;
   }
-  .rp-next[disabled] { opacity: .45; cursor: default; }
+  .rp-next[disabled] { opacity: .4; cursor: default; }
   .rp-done {
     width: 100%; border: none; border-radius: 10px; padding: 14px; margin-top: 24px;
     background: var(--red); color: #fff; font-family: var(--font-main);
@@ -3248,7 +3259,7 @@ l<!DOCTYPE html>
   }
   .pfl-search { margin: 10px 16px 6px; }
   /* IG parity — every action pill in the list is the same fixed width + compact height */
-  .pfl-row .mact { min-width: 88px; padding: 6px 0; text-align: center; }
+  .pfl-row .mact { min-width: 88px; padding: 0; text-align: center; }
   .mact.pf-flw { background: var(--red); color: #fff; }
   .mact.pf-flw.on { background: var(--chip-bg); color: var(--chip-text); }
   /* edit profile */
@@ -3275,6 +3286,13 @@ l<!DOCTYPE html>
     backdrop-filter: none;
   }
   .screen[data-nav="labeled"] .pf-scroll { padding-bottom: 84px; }
+  /* unified hand cursor for every clickable element */
+  button:not(:disabled), [role="button"], a[href], summary, label[for], select,
+  .nav-item, .avatar-ring, .post-head .who, .post .caption > b, .pf-uname,
+  .sh-add, .act, .ask-pill, .app-header .icon-btn, .emoji-row, .sheet-title .send, .c-meta,
+  [data-pf-user], [data-navgo], [data-pftab], [data-tab], [data-act], [data-pid], [data-flow],
+  [data-avact], [data-pfgo], [data-sub], [data-theme-opt], [data-tgl], [data-tag], [data-u] { cursor: pointer; }
+  button:disabled, [disabled] { cursor: default; }
 </style>
 </head>
 <body>
@@ -4206,7 +4224,12 @@ const PM_REASONS = [
   "Intellectual property",
 ];
 
-function pmMenuHTML(p) {
+function pmMenuHTML(p, reportOnly) {
+  if (reportOnly) return `
+    <div class="sheet-handle"></div>
+    <div class="pm-card">
+      <button class="pm-row danger pm-go-report">${I.flag(20)}<span>Report</span></button>
+    </div>`;
   const fav = p && p.favorite;
   const canFav = p && (p.following || fav);
   return `
@@ -4806,6 +4829,7 @@ function pfpPostHTML(p) {
   </article>`;
 }
 function openPostViewer(scr, posts, pid, phi = 0, feedMode = false, title = "Saved", user = "") {
+  scr.classList.remove("rp-over");
   const pv = scr.querySelector(".page-pv");
   pv.classList.toggle("feed", feedMode);
   pv.classList.toggle("pfp", !!user);
@@ -5049,6 +5073,16 @@ function subBack(scr) {
 /* PROFILE-005 — report pages navigate like IG: a new page slides in from the
    right while the previous one stays put underneath (ghost clone), "<" slides
    the current page back out the same way, "X" closes the whole report stack */
+function rpOpenFromPost(scr) { /* report from a post "..." menu — over the Posts viewer when it is open */
+  if (!scr.classList.contains("pv-open")) { openSub(scr, "report"); return; }
+  scr.classList.add("rp-over");
+  const el = scr.querySelector(".page-sub");
+  scr._subSwap = false; scr._pfAv = false;
+  (scr._subStack = scr._subStack || []).push("report");
+  renderSub(scr);
+  scr.classList.add("sub-open");
+  el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; /* slide in even if a page was already open */
+}
 function rpPush(scr, name) {
   const el = scr.querySelector(".page-sub");
   if ((scr._subStack || []).length) {
@@ -5074,7 +5108,7 @@ function rpBack(scr) {
   if (st.length > 1) {
     const el = scr.querySelector(".page-sub");
     const g = el.cloneNode(true);
-    g.className = "pg-ghost pg-out-r"; /* exiting page rides on top */
+    g.className = "pg-ghost pg-out-r" + (scr.classList.contains("rp-over") ? " pg-top" : ""); /* exiting page rides on top */
     el.insertAdjacentElement("afterend", g);
     setTimeout(() => g.remove(), 340);
     st.pop();
@@ -5082,18 +5116,20 @@ function rpBack(scr) {
   } else {
     st.pop();
     scr.classList.remove("sub-open"); /* last page slides itself out via the resting transform */
+    if (scr.classList.contains("rp-over")) setTimeout(() => { if (!scr.classList.contains("sub-open")) scr.classList.remove("rp-over"); }, 320);
   }
 }
 function rpClose(scr) {
   const el = scr.querySelector(".page-sub");
   if (scr.classList.contains("sub-open")) {
     const g = el.cloneNode(true);
-    g.className = "pg-ghost " + (el.classList.contains("pg-up") ? "pg-out-d" : "pg-out-r");
+    g.className = "pg-ghost " + (el.classList.contains("pg-up") ? "pg-out-d" : "pg-out-r") + (scr.classList.contains("rp-over") ? " pg-top" : "");
     el.insertAdjacentElement("afterend", g);
     setTimeout(() => g.remove(), 340);
   }
   const st = scr._subStack || [];
   while (st.length && (st[st.length - 1] || "").startsWith("report")) st.pop(); /* keep whatever opened the report flow (profile etc.) */
+  scr.classList.remove("rp-over");
   if (st.length) { scr._subSwap = true; renderSub(scr); scr._subSwap = false; }
   else scr.classList.remove("sub-open");
 }
@@ -6237,7 +6273,7 @@ function waRowHTML(a) {
   </div>`;
 }
 function walertsHTML() {
-  return `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">Watch Alerts</span><span class="spacer"></span></div>
+  return `<div class="detail-head svd-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title rc-title">Watch Alerts</span><span class="spacer"></span></div>
     <div class="sub-scroll">
       <div class="fav-desc">Get notified when a new listing matches what you're watching.</div>
       ${WATCH_ALERTS.length ? WATCH_ALERTS.map(waRowHTML).join("") : `<div class="sub-empty">No watch alerts yet — tap the bell on a post or save a search to start one</div>`}
@@ -6566,21 +6602,20 @@ function pfSetBlocked(scr, name, on) {
 }
 const PF_VBADGE = `<svg class="ab-vb" width="16" height="16" viewBox="0 0 24 24"><path fill="#0095f6" d="M12 2l2.53 2.2 3.35-.29.75 3.27 2.88 1.73-1.31 3.09L21.51 15.1l-2.88 1.72-.75 3.27-3.35-.28L12 22l-2.53-2.19-3.35.28-.75-3.27-2.88-1.72 1.31-3.1L2.49 8.92l2.88-1.73.75-3.27 3.35.3z"/><path fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" d="m8.4 12.4 2.4 2.4 4.8-5.1"/></svg>`;
 /* IG block confirm — bottom sheet: centered avatar + impact rows + two actions */
-function blkSheetHTML(uname, fromReport) {
+function blkSheetHTML(uname) {
   const u = profileOf(uname);
-  /* IG swaps the sheet inside the report flow: the "unblock anytime" note
-     becomes a Settings row, and "Block and report" is gone (you're already
-     in the report flow) — 3 impact rows + a single Block button */
+  /* One identical sheet everywhere (profile menu + report flow): same copy,
+     3 impact rows, Block + Block and report */
   return `<div class="sheet-handle"></div>
     <div class="blk-body">
       <img class="blk-av" src="${u.avatar}" alt="">
       <div class="blk-q">Block ${esc(uname)}?</div>
-      <div class="blk-d">This will also block any other profiles they may have or create in the future.${fromReport ? "" : " You can unblock them anytime."}</div>
-      <div class="blk-i">${fromReport ? I.prohibit(22) : I.commentOff(22)}<span>They won't be able to message you or find your profile or content on TukDaeng.</span></div>
-      <div class="blk-i">${I.bellOff(22)}<span>They won't be notified that you blocked${fromReport ? "" : " or reported"} them.</span></div>
-      ${fromReport ? `<div class="blk-i">${I.gear(22)}<span>You can unblock them anytime in Settings.</span></div>` : ""}
+      <div class="blk-d">This will also block any other profiles they may have or create in the future.</div>
+      <div class="blk-i">${I.prohibit(22)}<span>They won't be able to message you or find your profile or content on TukDaeng.</span></div>
+      <div class="blk-i">${I.bellOff(22)}<span>They won't be notified that you blocked or reported them.</span></div>
+      <div class="blk-i">${I.gear(22)}<span>You can unblock them anytime in Settings.</span></div>
       <button class="blk-go" data-u="${esc(uname)}">Block</button>
-      ${fromReport ? "" : `<button class="blk-rep" data-u="${esc(uname)}">Block and report</button>`}
+      <button class="blk-rep" data-u="${esc(uname)}">Block and report</button>
     </div>`;
 }
 /* IG unblock confirm — center dialog like Mute (not a sheet) */
@@ -6944,7 +6979,7 @@ function soldDetailHTML(id) {
 }
 
 function subHTML(name, scr) {
-  const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${t}</span><span class="spacer"></span></div>`;
+  const head = t => `<div class="detail-head svd-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title rc-title">${t}</span><span class="spacer"></span></div>`;
   const row = (t, attr, extra = "", ic = "") => `<button class="sub-row" ${attr}>${ic ? `<span class="sub-ic">${ic}</span>` : ""}<span>${t}</span>${extra}<span class="sub-chev">${I.chevR(15)}</span></button>`;
   if (name === "create") return createHTML(scr);
   if (name === "search") return searchHTML(scr);
@@ -7025,8 +7060,8 @@ function subHTML(name, scr) {
   if (name === "interested") return head("Interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.liked), "Remove", "m-unlike")}</div>`;
   if (name === "ni") return head("Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni), "Restore", "m-restore")}</div>`;
   /* full-page report view (IG-style) — opened from "..." menu or the uncomfortable ack card */
-  if (name === "report" || name === "report:user") return `
-    <div class="detail-head rp-head"><button class="icon-btn rp-back sub-back">${I.back(20)}</button><span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+  if (name === "report" || name === "report:user" || name === "report:post") return `
+    <div class="detail-head rp-head">${name === "report" ? "" : `<button class="icon-btn rp-back sub-back">${I.back(20)}</button>`}<span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="pm-rp-scroll">
       <div class="pm-rp-q">Why are you reporting this ${name === "report:user" ? "account" : "post"}?</div>
       <div class="pm-rp-desc">Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait.</div>
@@ -7072,12 +7107,12 @@ function subHTML(name, scr) {
   if (name.startsWith("report:posts:")) {
     const u = name.slice(13), sel = scr._rpSel || "";
     return `
-    <div class="detail-head rp-head"><button class="icon-btn rp-back sub-back">${I.back(20)}</button><span class="detail-title">Select a post</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
-    <div class="pm-rp-scroll" style="padding:0 0 8px">
+    <div class="detail-head rp-head rp-select-head"><button class="icon-btn rp-back sub-back">${I.back(20)}</button><span class="detail-title">Select a post</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="rp-select-scroll">
       <div class="pf-grid">${pfTabPosts(u, "all").map(p => `
         <button class="pf-tile rp-tile${sel === p.id ? " on" : ""}" data-pid="${p.id}"><img src="${p.photos[0]}" alt="" loading="lazy"><span class="rp-sel">${sel === p.id ? I.check(12) : ""}</span></button>`).join("")}</div>
     </div>
-    <button class="rp-next"${sel ? "" : " disabled"}>Next</button>`;
+    <div class="rp-next-bar"><button class="rp-next"${sel ? "" : " disabled"}>Next</button></div>`;
   }
 
   /* PROFILE-001 — profile pages stack like any other sub page */
@@ -7110,7 +7145,6 @@ function screenHTML(theme, variant) {
       <button class="icon-btn search-btn">${I.search()}</button>
       <span class="wordmark">TUK DAENG <span class="caret">${I.chev(13)}</span></span>
       <span class="spacer"></span>
-      <button class="icon-btn set-btn">${I.sliders()}</button>
       <button class="icon-btn" data-flow="create">${I.plus()}</button>
     </div>
 
@@ -7739,7 +7773,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const cs = scr.querySelector(".comment-sheet");
     cs.classList.remove("uf", "pm-rp", "lk", "sh", "sv", "nt", "ps");
     cs.classList.add("pm");
-    cs.innerHTML = isOwnPost(post) ? pmOwnMenuHTML(post) : pmMenuHTML(post);
+    cs.innerHTML = isOwnPost(post) ? pmOwnMenuHTML(post) : pmMenuHTML(post, !!(art && art.classList.contains("pfp-post")));
     scr.classList.add("pm-open");
     return;
   }
@@ -7829,7 +7863,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const post = findPost(scr.dataset.pmPid);
     if (post) scr.dataset.rpUser = post.seller; /* PROFILE-005 — thanks page needs the reported user */
     pmDropCovered(scr); /* drop the sheet in the same frame — no row sweep in the bottom strip */
-    openSub(scr, "report");
+    rpOpenFromPost(scr);
     return;
   }
   /* PROFILE-005 — IG report picker options + pickers (post/message) reuse the
@@ -8186,7 +8220,7 @@ document.getElementById("stage").addEventListener("click", e => {
     return;
   }
   const pvBack = e.target.closest(".pv-back");
-  if (pvBack) { pvBack.closest(".screen").classList.remove("pv-open"); return; }
+  if (pvBack) { pvBack.closest(".screen").classList.remove("pv-open", "rp-over"); return; }
   const pvSrch = e.target.closest(".pv-srch");
   if (pvSrch) {
     const scr = pvSrch.closest(".screen");
@@ -8496,7 +8530,7 @@ document.getElementById("stage").addEventListener("click", e => {
     if (rpStep.disabled) return; /* completed step — just shows its green check */
     const scr = rpStep.closest(".screen"), u = rpStep.dataset.u, act = rpStep.dataset.act;
     const dn = scr._rpDone || (scr._rpDone = new Set());
-    if (act === "block") openSheet(scr, "pm", "pm-open", blkSheetHTML(u, true)); /* IG report-flow sheet: 3 rows, Block only */
+    if (act === "block") openSheet(scr, "pm", "pm-open", blkSheetHTML(u));
     else if (act === "unblock") { scr.dataset.unblockU = u; openDlg(scr, unblockDlgHTML(u)); }
     else if (act === "unfollow") { pfSetFollow(scr, u, false); dn.add(u + "|unfollow"); scrToast(scr, "Unfollowed"); renderSub(scr); }
     else if (act === "mute") { scr.dataset.muteSeller = u; openDlg(scr, muteDlgHTML(u)); } /* IG: pick Mute posts / posts and story */
@@ -8506,7 +8540,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const rpNext = e.target.closest(".rp-next");
   if (rpNext) {
     if (rpNext.disabled) return;
-    rpPush(rpNext.closest(".screen"), "report"); /* selected post -> post reasons */
+    rpPush(rpNext.closest(".screen"), "report:post"); /* selected post -> post reasons */
     return;
   }
   const rpDone = e.target.closest(".rp-done");
