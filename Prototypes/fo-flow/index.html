@@ -5009,7 +5009,7 @@ function renderSub(scr) {
   const oldBar = el.querySelector(".pf-tabs");
   if (oldBar) scr._pfTabSl = oldBar.scrollLeft; /* keep tab-bar position across re-renders */
   el.innerHTML = subHTML(st[st.length - 1], scr);
-  el.classList.toggle("pg-up", (st[st.length - 1] || "").startsWith("report:pick")); /* only the picker slides up — deeper report pages slide from the right */
+  el.classList.toggle("pg-up", (st[st.length - 1] || "").startsWith("report:pick")); /* picker look (rounded top); opens via instant swap — deeper report pages slide from the right */
   el.classList.toggle("pg-swap", !!scr._subSwap);
   const q = el.querySelector(".sr-q, .svd-q");
   if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
@@ -8444,8 +8444,8 @@ document.getElementById("stage").addEventListener("click", e => {
   if (pfShReport) {
     const scr = pfShReport.closest(".screen");
     scr.dataset.rpUser = pfShReport.dataset.u;
-    rpPush(scr, "report:pick:" + pfShReport.dataset.u); /* IG picker first, then reasons — slides up OVER the open sheet */
-    setTimeout(() => pmDropCovered(scr), 300); /* sheet snaps shut once covered — its slide-down would flicker in the bottom strip */
+    pmDropCovered(scr); /* sheet drops in the same frame — the picker replaces it instantly, no slide-up */
+    scr._subSwap = true; rpPush(scr, "report:pick:" + pfShReport.dataset.u); scr._subSwap = false;
     return;
   }
   /* PROFILE-005 — Block -> IG confirm sheet; when already blocked the same row
@@ -8478,8 +8478,8 @@ document.getElementById("stage").addEventListener("click", e => {
     scrToast(scr, "Blocking"); /* IG flashes this transient toast */
     if (toReport) {
       scr.dataset.rpUser = u;
-      rpPush(scr, "report:pick:" + u);
-      setTimeout(() => pmDropCovered(scr), 300); /* drop the covered sheet without a visible slide */
+      pmDropCovered(scr);
+      scr._subSwap = true; rpPush(scr, "report:pick:" + u); scr._subSwap = false; /* instant replace, no slide-up */
     }
     return;
   }
