@@ -1,0 +1,51 @@
+PASS portfolio page opens
+PASS total card label + THB value
+PASS total = THB 1,888,500 (excl. no-valuation)
+PASS coverage 8/9 + private
+PASS unrealized G/L tile +฿99,000 +5.5% — 
+        Unrealized gain/loss
+        +฿99,000 +5.5%from 8/9 assets
+      
+PASS YTD tile +8.4% — 
+        YTD performance
+        +8.4%vs 1 Jan snapshot
+      
+PASS no top brands card (minimal per feedback)
+PASS no sold-history row on page (lives in ⋯ menu)
+PASS 9 asset rows
+PASS status chips present — 4/3/2
+PASS market comparison chips
+PASS no-valuation row shows —
+PASS source labels incl. No market price
+PASS gain/loss signs (▲ up + ▼ down) — 6/2
+PASS holding chips on rows
+PASS asset detail opens
+PASS detail name + sale chip
+PASS detail value fields
+PASS listing card: asking + expected profit + above market
+PASS owner-only note
+PASS back to portfolio
+PASS menu has sold history row
+PASS sheet closes + sold history opens
+PASS 3 sold rows
+PASS sold row shows sale price + realized
+PASS sold detail opens
+PASS sold detail all fields — Sale date30 Aug 2025|Buyerwatch.daily|Contact@watch.daily · DM|Sale price฿295,000|Payment methodBank transfer|Attachment
+PASS realized +฿34,000 — Realized gain/loss+฿34,000 (+13.0%)
+PASS back to portfolio from sold
+PASS preview sheet opens (5 options)
+PASS nomkt banner shows
+PASS nomkt: fallback source labels
+PASS nomkt: no market-price sources left
+PASS nomkt: G/L unavailable
+PASS simbar visible
+PASS empty state = No data found
+PASS load failed state
+PASS retry restores normal
+PASS permission denied state
+PASS reset restores normal
+PASS back to own profile
+PASS portfolio renders in light theme
+PASS no console errors
+
+0 failed / 0 console errors

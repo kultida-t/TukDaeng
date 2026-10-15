@@ -1,0 +1,67 @@
+PASS own profile opens as sub page
+PASS own header username = king.mr.fox
+PASS own header plain username (no lock/chevron)
+PASS own header hamburger + create +
+PASS no note bubble on avatar
+PASS no avatar add badge
+PASS 3 stats posts/followers/following
+PASS display name
+PASS bio shows
+PASS no sleep mode pill
+PASS link chip + Add chip
+PASS Edit/Share buttons
+PASS 5 owner tabs (All/Sale/Show/Hide/Sold) — All|Sale|Show|Hide|Sold
+PASS all tab active
+PASS own grid populated (9 mock posts) — 9
+PASS in-page bottom nav, Profile active
+PASS sold tab active + filters grid — 2
+PASS active tab stays in view
+PASS all tab back to 9 tiles
+PASS followers page title = username
+PASS followers/following tabs
+PASS follower rows shown
+PASS row follow toggles
+PASS back to own profile
+PASS edit page title
+PASS 3 fields + save
+PASS save returns to profile
+PASS bio updated
+PASS hamburger opens settings
+PASS back to profile from settings
+PASS portfolio icon button on own profile
+PASS no discover-people btn on own
+PASS portfolio page opens
+PASS total value card
+PASS asset rows with values
+PASS back to profile from portfolio
+PASS feed nav exits profile
+PASS viewer profile opens
+PASS viewer header username + verified
+PASS viewer back + more
+PASS viewer keeps discover-people btn (no portfolio)
+PASS Follow/Message buttons — Following |Message|
+PASS followed-by row
+PASS no note/sleep/add-badge on viewer
+PASS viewer post grid populated — 1
+PASS profile shows Following
+PASS post stats row intact
+PASS post viewer opens over profile
+PASS back lands on same profile
+PASS profile ... sheet opens
+PASS sheet has copy/share rows
+PASS copy link -> toast
+PASS avatar overlay opens
+PASS overlay has 4 actions — Following|Share|Copy link|QR code
+PASS overlay copy -> toast + closes
+PASS backdrop tap closes overlay
+PASS back to feed
+PASS feed follow button synced
+PASS profile cards listed
+PASS sr-scard opens viewer profile — Watch 777
+PASS back to search results
+PASS comments sheet open
+PASS comment author opens profile — chrono.th
+PASS profile renders in light theme
+PASS no console errors
+
+0 failed / 0 console errors

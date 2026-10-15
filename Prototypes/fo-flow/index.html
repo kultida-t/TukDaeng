@@ -1459,6 +1459,9 @@ l<!DOCTYPE html>
   .page-sub.pg-up { transform: translateY(110%); border-radius: 16px 16px 0 0; }
   .screen.sub-open .page-sub.pg-up { animation-name: pgUp; }
   @keyframes pgUp { from { transform: translateY(110%); } }
+  /* nav-tab swap (IG behavior) — bottom-nav pages replace instantly, no slide */
+  .page-sub.pg-swap { transition: none; }
+  .screen.sub-open .page-sub.pg-swap { animation: none; }
   .sub-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
   .sub-scroll::-webkit-scrollbar { display: none; }
   /* ============ POST VIEWER (IG search-result viewer — vertical swipe through results) ============ */
@@ -2868,6 +2871,267 @@ l<!DOCTYPE html>
   .post-photo.clip-ph .prog i, .detail-hero.clip-ph .prog i { display: block; height: 100%; width: 0; background: #fff; }
   .post-photo.clip-ph.playing > img, .detail-hero.clip-ph.playing > img { animation: clipLive 5.5s ease-in-out infinite alternate; }
   @keyframes clipLive { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.13) translate(-1.8%, 1.2%); } }
+
+  /* ============ PROFILE-001 — IG-style profile pages (own + viewer) ============ */
+  .pf-head { padding: 6px 10px; }
+  .pf-uname {
+    display: flex; align-items: center; gap: 5px;
+    background: none; border: none; color: var(--text);
+    font: inherit; font-size: 16.5px; font-weight: 700;
+    padding: 4px 2px; cursor: pointer; letter-spacing: .2px;
+  }
+  .pf-uname svg { opacity: .85; }
+  .pf-vname { display: flex; align-items: center; gap: 4px; font-size: 16.5px; font-weight: 700; letter-spacing: .2px; }
+  .pf-vb { flex-shrink: 0; }
+  .pf-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
+  .pf-scroll::-webkit-scrollbar { display: none; }
+  .pf-top { display: flex; align-items: center; gap: 22px; padding: 12px 16px 4px; }
+  .pf-avcol { position: relative; flex-shrink: 0; }
+  .pf-note {
+    position: absolute; left: 50%; bottom: calc(100% - 14px); transform: translateX(-46%);
+    background: var(--surface-2); color: var(--muted);
+    border-radius: 12px; padding: 5px 10px;
+    font-size: 11px; line-height: 1.2; white-space: nowrap;
+    max-width: 120px; overflow: hidden; text-overflow: ellipsis;
+    box-shadow: 0 1px 3px rgba(0,0,0,.18); cursor: pointer; z-index: 2;
+  }
+  .pf-note i {
+    position: absolute; left: 22px; top: 100%; width: 8px; height: 8px;
+    background: var(--surface-2); border-radius: 50%;
+  }
+  .pf-av { width: 80px; height: 80px; padding: 3px; display: block; cursor: pointer; border-radius: 50%; }
+  .pf-av img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+  .pf-avadd {
+    position: absolute; right: 0; bottom: 2px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--red); color: #fff; border: 2.5px solid var(--bg);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .pf-idcol { flex: 1; min-width: 0; }
+  .pf-disp { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+  .pf-stats { display: flex; justify-content: space-between; width: 92%; /* IG: even gaps, row not stretched to right edge */ }
+  .pf-stat {
+    flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+    background: none; border: none; color: var(--text); font: inherit; cursor: pointer; padding: 2px 0;
+    text-align: left;
+  }
+  .pf-stat b { font-size: 15px; font-weight: 700; }
+  .pf-stat span { font-size: 12.5px; color: var(--muted); }
+  .pf-sleep {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin: 8px 16px 0; padding: 6px 12px;
+    background: var(--surface-2); border-radius: 999px;
+    font-size: 12.5px; color: var(--muted); cursor: pointer;
+    align-self: flex-start;
+  }
+  .pf-bio { padding: 8px 16px 0; font-size: 13px; line-height: 1.45; }
+  .pf-cat { color: var(--muted); font-size: 12.5px; }
+  .pf-biot { white-space: pre-line; }
+  .pf-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 7px; padding: 4px 11px;
+    background: var(--chip-bg); color: var(--chip-text);
+    border-radius: 999px; font-size: 12.5px; font-weight: 600;
+  }
+  .pf-addchip {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin: 7px 0 0 6px; padding: 4px 11px;
+    background: var(--chip-bg); color: var(--chip-text);
+    border: none; border-radius: 999px; font: inherit;
+    font-size: 12.5px; font-weight: 600; cursor: pointer; vertical-align: top;
+  }
+  .pf-fby { display: flex; align-items: center; gap: 7px; padding: 9px 16px 0; font-size: 12.5px; color: var(--muted); }
+  .pf-fbavs { display: flex; flex-shrink: 0; }
+  .pf-fbavs img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--bg); margin-left: -6px; }
+  .pf-fbavs img:first-child { margin-left: 0; }
+  .pf-fby b { color: var(--text); font-weight: 600; }
+  .pf-chrow { display: flex; gap: 6px; margin-top: 7px; align-items: center; }
+  .pf-chrow .pf-link { margin-top: 0; }
+  .pf-chrow .pf-addchip { margin: 0; }
+  .pf-atch { font-weight: 700; }
+  /* avatar full view (IG) — blurred backdrop, big avatar, circular actions */
+  .pf-avov {
+    position: absolute; inset: 0; z-index: 40;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(10,10,12,.38);
+    -webkit-backdrop-filter: blur(24px) saturate(1.15);
+    backdrop-filter: blur(24px) saturate(1.15);
+    cursor: pointer;
+  }
+  .pf-avov-img {
+    width: 62%; aspect-ratio: 1; border-radius: 50%; object-fit: cover;
+    box-shadow: 0 18px 50px rgba(0,0,0,.5); cursor: default;
+  }
+  .pf-avov-acts {
+    position: absolute; left: 0; right: 0; bottom: 36px;
+    display: flex; justify-content: center; gap: 24px;
+  }
+  .pf-avov-act {
+    background: none; border: none; color: #fff; font: inherit;
+    font-size: 11.5px; font-weight: 500;
+    display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer;
+  }
+  .pf-avov-ic {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(255,255,255,.16);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pf-avov-act:active .pf-avov-ic { background: rgba(255,255,255,.28); }
+  .pf-actions { display: flex; gap: 6px; padding: 12px 16px 2px; }
+  .pf-btn {
+    flex: 1; background: var(--btn-gray); color: var(--text);
+    border: none; border-radius: 8px; padding: 8.5px 0;
+    font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .pf-btn.primary { background: #2f7df6; color: #fff; }
+  .pf-btn.pf-iconbtn { flex: 0 0 40px; }
+  /* PORTFOLIO-001 — owner-only portfolio dashboard + asset list + sold history (spec 14) */
+  .pfo-scroll { padding-bottom: 34px; }
+  .pfo-total {
+    margin: 12px 16px 10px; padding: 18px 18px 16px; border-radius: 18px;
+    background: linear-gradient(165deg, var(--surface-2), var(--surface) 72%);
+    border: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 5px; align-items: center;
+  }
+  .pfo-total b { font-size: 29px; font-weight: 800; letter-spacing: -.5px; }
+  .pfo-lb { font-size: 12px; color: var(--muted); }
+  .pfo-tt { width: 100%; display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+  .pfo-lock {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10.5px; font-weight: 600; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 999px; padding: 2.5px 8px;
+  }
+  .pfo-mktd { font-style: normal; font-weight: 700; }
+  .pfo-mktd.up { color: #34c77b; }
+  .pfo-mktd.dn { color: #ff6b72; }
+  .pfd-kv b.up { color: #34c77b; }
+  .pfd-kv b.dn { color: #ff6b72; }
+  .pfo-card {
+    margin: 8px 16px; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 12px 14px;
+  }
+  .pfo-card-t {
+    font-size: 12px; font-weight: 700; color: var(--muted);
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;
+  }
+  .pfo-privtag { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; }
+  .pfo-count { font-size: 11px; background: var(--chip-bg); color: var(--chip-text); border-radius: 999px; padding: 1px 7px; margin-left: 5px; font-weight: 700; }
+  .pfo-row { cursor: pointer; width: 100%; background: none; border: none; color: inherit; font: inherit; text-align: left; }
+  .pfo-row:active { background: var(--chip-bg); }
+  .mrow .pfo-img { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; }
+  .pfo-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 1px; }
+  .pfo-chip { font-style: normal; font-size: 10px; font-weight: 700; padding: 2.5px 7px; border-radius: 999px; letter-spacing: .2px; }
+  .pfo-chip.st-sale { background: rgba(200,33,43,.16); color: #ff7078; }
+  .pfo-chip.st-show { background: rgba(56,151,240,.15); color: #5eabff; }
+  .pfo-chip.st-hide { background: var(--chip-bg); color: var(--chip-text); }
+  .pfo-chip.st-hold { background: var(--chip-bg); color: var(--muted); font-weight: 600; }
+  .pfo-chip.cmp-above { background: rgba(245,166,35,.14); color: #f5a623; }
+  .pfo-chip.cmp-at { background: var(--chip-bg); color: var(--chip-text); }
+  .pfo-chip.cmp-below { background: rgba(52,199,123,.14); color: #34c77b; }
+  .pfo-chip.cmp-none { background: var(--chip-bg); color: var(--muted); }
+  .pfo-r { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex-shrink: 0; }
+  .pfo-val { font-size: 14px; font-weight: 700; white-space: nowrap; }
+  .pfo-gl { font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .pfo-gl.up { color: #34c77b; }
+  .pfo-gl.dn { color: #ff6b72; }
+  .pfo-gl.na { color: var(--muted); font-weight: 500; }
+  .pfo-src { font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .pfo-banner {
+    margin: 10px 16px 2px; padding: 10px 12px; border-radius: 12px;
+    background: rgba(245,166,35,.12); color: #f5a623;
+    font-size: 12px; font-weight: 600; display: flex; gap: 8px; align-items: center;
+  }
+  .pfo-simbar {
+    margin: 10px 16px 0; display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--muted);
+    background: var(--chip-bg); border: 1px dashed var(--line); border-radius: 10px; padding: 7px 10px;
+  }
+  .pfo-simbar button { margin-left: auto; background: none; border: none; color: #5eabff; font: inherit; font-weight: 700; cursor: pointer; padding: 0 2px; }
+  .pfo-note { font-size: 11px; color: var(--muted); line-height: 1.5; padding: 14px 20px 8px; text-align: center; }
+  .pfo-sec { display: flex; align-items: center; }
+  .pfo-soldlink {
+    display: inline-flex; align-items: center; gap: 4px; margin-left: auto;
+    background: none; border: none; padding: 0;
+    color: var(--muted); font: inherit; font-weight: 600; cursor: pointer;
+  }
+  .pfo-soldlink svg:last-child { opacity: .55; }
+  .pfo-menu-cap { font-size: 11px; color: var(--muted); font-weight: 700; padding: 2px 16px 9px; }
+  .pfo-ed { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .pfo-retry {
+    font-family: var(--font-main); font-size: 13.5px; font-weight: 600;
+    color: var(--text); background: var(--chip-bg); border: 1px solid var(--line);
+    border-radius: 10px; padding: 9px 22px; cursor: pointer; margin-top: 6px;
+  }
+  .pfd-id { padding: 12px 16px 6px; display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
+  .pfd-name { font-size: 17px; font-weight: 800; }
+  .pfd-meta { font-size: 12px; color: var(--muted); }
+  .pfd-kv { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7.5px 0; font-size: 13px; }
+  .pfd-kv + .pfd-kv { border-top: 1px solid var(--line); }
+  .pfd-kv span { color: var(--muted); }
+  .pfd-kv b { font-weight: 600; text-align: right; }
+  .pfd-att { display: inline-flex; align-items: center; gap: 6px; }
+  .pfd-att img { width: 22px; height: 22px; border-radius: 5px; object-fit: cover; }
+  .pf-tabs {
+    display: flex; margin-top: 12px; border-bottom: 1px solid var(--line);
+    overflow-x: auto; scrollbar-width: none; /* >4 tabs → swipe to reveal */
+  }
+  .pf-tabs::-webkit-scrollbar { display: none; }
+  .pf-tab {
+    flex: 1 0 25%; background: none; border: none; color: var(--muted);
+    padding: 9px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+    min-width: 0; font: inherit;
+  }
+  .pf-tab.on { color: var(--text); border-bottom-color: var(--text); }
+  .pf-tab-txt { font-size: 10px; font-weight: 500; letter-spacing: .3px; }
+  .pf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; }
+  .pf-tile {
+    position: relative; aspect-ratio: 4 / 5; border: none; padding: 0; /* IG grid is portrait 4:5 */
+    background: var(--surface-2); overflow: hidden; cursor: pointer; display: block;
+  }
+  .pf-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pf-tb {
+    position: absolute; top: 7px; right: 7px; color: #fff;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,.55)); display: flex;
+  }
+  .pf-empty { padding: 46px 24px 60px; text-align: center; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .pf-empty .pf-eic {
+    width: 74px; height: 74px; border-radius: 50%;
+    border: 2.5px solid var(--text); color: var(--text);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 6px;
+  }
+  .pf-empty .pf-et { font-size: 16px; font-weight: 700; color: var(--text); }
+  .pf-empty .pf-ed { font-size: 13px; }
+  .pf-empty .pf-cta { margin-top: 8px; flex: 0 0 auto; padding: 9px 22px; }
+  /* followers / following list */
+  .pfl-tabs { display: flex; border-bottom: 1px solid var(--line); }
+  .pfl-tab {
+    flex: 1; background: none; border: none; color: var(--muted);
+    font: inherit; font-size: 14px; font-weight: 600;
+    padding: 10px 0 9px; cursor: pointer; text-align: center;
+    border-bottom: 1.5px solid transparent; margin-bottom: -1px;
+  }
+  .pfl-tab.on { color: var(--text); border-bottom-color: var(--text); }
+  .pfl-row { cursor: pointer; }
+  .mact.pf-flw.on { background: var(--chip-bg); color: var(--chip-text); }
+  /* edit profile */
+  .pe-av { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 18px 16px 6px; }
+  .pe-av img { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; }
+  .pe-pic { background: none; border: none; color: #2f7df6; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; padding: 2px 8px; }
+  .pe-f { display: flex; flex-direction: column; gap: 5px; padding: 9px 16px; }
+  .pe-f span { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+  .pe-in {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; color: var(--text); font: inherit; font-size: 13.5px;
+    width: 100%; box-sizing: border-box; resize: none;
+  }
+  .pe-in:focus { outline: none; border-color: var(--muted); }
+  .pe-savewrap { padding: 16px; }
+  .pe-save { width: 100%; }
+  /* floating pill nav inside .page-sub sits 22px above screen bottom — realign with the feed nav */
+  .screen[data-nav="labeled"] .pf-nav { bottom: 8px; }
+  .screen[data-nav="labeled"] .pf-scroll { padding-bottom: 84px; }
 </style>
 </head>
 <body>
@@ -3274,6 +3538,7 @@ const I = {
   stack: (s=14) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
   burger: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>`,
   gem: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9l4-6z"/><path d="M2 9h20"/><path d="M9.5 3 8 9l4 13 4-13-1.5-6"/></svg>`,
+  wallet: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v2"/><path d="M3 7v10a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14" r="1.1" fill="currentColor" stroke="none"/></svg>`,
   award: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.9 17 22l-5-3-5 3 1.5-8.1"/></svg>`,
   bag: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
   home: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>`,
@@ -3327,6 +3592,12 @@ const I = {
   commentOff: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.9 4.3A8.4 8.4 0 0 1 12.5 3a8.48 8.48 0 0 1 8 8v.5a8.38 8.38 0 0 1-.9 3.8"/><path d="M15.3 15.3a8.5 8.5 0 0 1-5.8 2.2 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 3-6.4"/><path d="m2 2 20 20"/></svg>`,
   history: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>`,
   pinPost: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16h14v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"/></svg>`,
+  moon: (s=21) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>`,
+  sun: (s=21) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>`,
+  personCheck: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="m17 11 2 2 4-4"/></svg>`,
+  qr: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3z"/><path d="M21 14v3h-3"/><path d="M17 21h4v-4"/></svg>`,
+  eyeOff: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10.8 10.8 0 0 1 12 20c-7 0-11-8-11-8a19.4 19.4 0 0 1 5.1-6.1"/><path d="M9.9 4.3A10.6 10.6 0 0 1 12 4c7 0 11 8 11 8a19.5 19.5 0 0 1-2.9 3.9"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="m2 2 20 20"/></svg>`,
+  checkCir: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.7 2.7L16.5 9.4"/></svg>`,
 };
 
 /* ================= RENDER ================= */
@@ -3379,7 +3650,7 @@ function detailHeadHTML(p) {
     return `<div class="detail-head">${back}<span class="spacer"></span><span class="detail-title">Detail</span><span class="spacer"></span>${dots}</div>`;
   if (state.dh === "dh4") return "";
   if (state.dh === "dh5")
-    return `<div class="detail-head">${back}<span class="head-av"><img src="${p.avatar}" alt=""></span><span class="detail-title" style="font-size:14px">${p.seller}</span><span class="spacer"></span>${dots}</div>`;
+    return `<div class="detail-head">${back}<span class="head-av" data-pf-user="${esc(p.seller)}"><img src="${p.avatar}" alt=""></span><span class="detail-title" style="font-size:14px" data-pf-user="${esc(p.seller)}">${p.seller}</span><span class="spacer"></span>${dots}</div>`;
   return `<div class="detail-head">${back}<span class="spacer"></span><span class="detail-title">Detail</span><span class="spacer"></span>${dots}</div>`;
 }
 
@@ -3439,8 +3710,8 @@ function chatPopHTML(p) {
     <button class="chat-fab" title="Chat with ${p.seller}">${I.chat(22)}</button>
     <div class="chat-pop">
       <div class="cp-head">
-        <img class="cp-av" src="${p.avatar}" alt="">
-        <div class="cp-who"><div class="n">${p.seller}</div></div>
+        <img class="cp-av" src="${p.avatar}" alt="" data-pf-user="${esc(p.seller)}">
+        <div class="cp-who"><div class="n" data-pf-user="${esc(p.seller)}">${p.seller}</div></div>
         <button class="icon-btn cp-close">${I.x(16)}</button>
       </div>
       <div class="cp-body">
@@ -3534,7 +3805,7 @@ function igBodyHTML(p, withPostHead) {
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
-      <span>Liked by <b>${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
+      <span>Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
     </div>`}
     <p class="caption"><b>${p.seller}</b> ${igCaptionHTML(p)}</p>
     <div class="detail-pad">
@@ -3591,9 +3862,9 @@ function specGroupsHTML(groups, rowsFn, headFn) {
 function commentRowsHTML(p) {
   return (COMMENTS[p.id] || []).map(c => `
     <div class="c-row">
-      <img src="${c.avatar}" alt="">
+      <img src="${c.avatar}" alt="" data-pf-user="${esc(c.name)}">
       <div class="c-main">
-        <div class="c-head"><span class="n">${c.name}</span><span>${c.time}</span></div>
+        <div class="c-head"><span class="n" data-pf-user="${esc(c.name)}">${c.name}</span><span>${c.time}</span></div>
         <div class="c-text">${c.text}</div>
         <span class="c-meta">Reply</span>
       </div>
@@ -3601,9 +3872,9 @@ function commentRowsHTML(p) {
     </div>
     ${(c.replies || []).map(r => `
     <div class="c-row reply">
-      <img src="${r.avatar}" alt="">
+      <img src="${r.avatar}" alt="" data-pf-user="${esc(r.name)}">
       <div class="c-main">
-        <div class="c-head"><span class="n">${r.name}</span><span>${r.time}</span></div>
+        <div class="c-head"><span class="n" data-pf-user="${esc(r.name)}">${r.name}</span><span>${r.time}</span></div>
         <div class="c-text">${r.text}</div>
         <span class="c-meta">Reply</span>
       </div>
@@ -3669,7 +3940,7 @@ function likesSheetHTML(p) {
     <div class="lk-note">Only ${p.seller} can see the total number of likes on this post.</div>
     <div class="sheet-list">
       ${likers.map(l => `
-      <div class="lk-row">
+      <div class="lk-row" data-pf-user="${esc(l.name)}">
         <img src="${l.avatar}" alt="">
         <div class="lk-who"><div class="u">${l.name}</div><div class="d">${l.disp || dispName(l.name)}</div></div>
         <button class="lk-follow">Follow</button>
@@ -3929,7 +4200,7 @@ function postCard(p, variant) {
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
-      <span>Liked by <b>${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
+      <span>Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and <b>${p.likes} others</b></span>
     </div>`}
 
     ${(p.caption || p.captionFull) ? `<p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">more</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
@@ -4266,7 +4537,7 @@ function resultSellers(S) {
 function sellerCardHTML(p) {
   const n = salePosts().filter(x => x.seller === p.seller).length;
   return `
-    <div class="sr-scard">
+    <div class="sr-scard" data-pf-user="${esc(p.seller)}">
       <img src="${p.avatar}" alt="">
       <div class="b"><div class="u">${p.seller}</div><div class="d">${n} listing${n === 1 ? "" : "s"}${p.following ? " · Following" : ""}</div></div>
       <button class="follow-btn sc-follow${p.following ? " on" : ""}" data-seller="${esc(p.seller)}">${p.following ? "Following" : "Follow"}</button>
@@ -4294,7 +4565,7 @@ function pvPostHTML(p, phi = 0) {
       <button class="pv-act pm-btn">${I.dots(22)}</button>
     </div>
     <div class="pv-foot">
-      <div class="pv-seller"><img src="${p.avatar}" alt=""><span class="n">${p.seller}</span>
+      <div class="pv-seller"><img src="${p.avatar}" alt="" data-pf-user="${esc(p.seller)}"><span class="n" data-pf-user="${esc(p.seller)}">${p.seller}</span>
         ${p.following ? "" : `<button class="follow-btn">Follow</button>`}</div>
       ${(p.caption || p.captionFull) ? `<div class="caption pv-cap"><span class="cap-short">${igCaptionHTML(p, p.caption)}${(p.captionFull || "") !== p.caption ? ` <span class="more-link">…</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></div>` : ""}
       ${hasSpecs ? `<button class="details-toggle pv-dt"><span class="dt-label">Tap for details</span>${I.chev(12)}</button>` : ""}
@@ -4500,23 +4771,37 @@ function resetDlgHTML() {
 }
 
 /* settings + content-preferences pages — slide-in layer like the detail page */
-function openSub(scr, name) {
+function openSub(scr, name, swap) {
   scr._subStack = [name];
+  scr._subSwap = !!swap;
+  scr._pfAv = false;
   renderSub(scr);
   scr.classList.add("sub-open");
 }
 function pushSub(scr, name) {
   (scr._subStack = scr._subStack || []).push(name);
+  if (scr._subStack.length === 1) scr._subSwap = false; /* fresh push root slides in — only nav tabs swap */
+  scr._pfAv = false;
   renderSub(scr);
   scr.classList.add("sub-open");
 }
 function renderSub(scr) {
   const st = scr._subStack || [];
   const el = scr.querySelector(".page-sub");
+  const oldBar = el.querySelector(".pf-tabs");
+  if (oldBar) scr._pfTabSl = oldBar.scrollLeft; /* keep tab-bar position across re-renders */
   el.innerHTML = subHTML(st[st.length - 1], scr);
   el.classList.toggle("pg-up", st[st.length - 1] === "report");
+  el.classList.toggle("pg-swap", !!scr._subSwap);
   const q = el.querySelector(".sr-q, .svd-q");
   if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
+  const onTab = el.querySelector(".pf-tab.on");
+  if (onTab) { /* scroll only the tab bar — scrollIntoView would drag the whole page (overflow-x ancestors) */
+    const bar = onTab.closest(".pf-tabs"), L = onTab.offsetLeft, R = L + onTab.offsetWidth;
+    if (scr._pfTabSl != null) bar.scrollLeft = scr._pfTabSl;
+    if (L < bar.scrollLeft) bar.scrollLeft = L - 8;
+    else if (R > bar.scrollLeft + bar.clientWidth) bar.scrollLeft = R - bar.clientWidth + 8;
+  }
   cfClipSync(scr); /* restore clip play/countdown state after composer re-renders */
 }
 function subBack(scr) {
@@ -4545,7 +4830,7 @@ function subBack(scr) {
 }
 function subPostRows(posts, label, cls) {
   return posts.length ? posts.map(p => `
-    <div class="mrow">
+    <div class="mrow" data-pf-user="${esc(p.seller)}">
       <img class="msq" src="${p.photos[0]}" alt="">
       <span class="lg-b"><span class="mn">${p.seller}</span><span class="md">${p.caption}</span></span>
       <button class="mact ${cls}" data-pid="${p.id}">${label}</button>
@@ -5105,7 +5390,7 @@ function ncSheetHTML(editName = "", preview = "") {
     </div>`;
 }
 /* ===== CREATE-001 — IG-style create-post task flow: "+" → picker → caption → feed ===== */
-const CP_ME = { name: "mycollection", avatar: "./assets/user-avatars/u-1075.png" };
+const CP_ME = { name: "king.mr.fox", avatar: "./assets/user-avatars/mrfox.png" };
 const CP_ROLL = [
   "./assets/asset-uploads/ast-8831-1.png",
   "./assets/asset-uploads/ast-8831-2.png",
@@ -5690,6 +5975,447 @@ function walertsHTML() {
     </div>`;
 }
 
+/* ===== PROFILE-001 — IG-style profile pages (own + viewer, mock data) ===== */
+const PF_BADGE = `<svg class="pf-vb" width="13" height="13" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#3897f0"/><path d="m8.3 12.6 2.4 2.4 4.9-5.4" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const PF_REPOST = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M21 6H8a5 5 0 0 0-5 5v2"/><path d="M7 22l-4-4 4-4"/><path d="M3 18h13a5 5 0 0 0 5-5v-2"/></svg>`;
+
+const PROFILES = {
+  "king.mr.fox": { disp: "Mr.FOX", avatar: "./assets/user-avatars/mrfox.png", bio: "Chatmongkol Khemapirat (King)\nCEO of Mr.FOX\nMISTER FOX CO., LTD.", link: "www.mrfox.com", followers: "21.1K", following: "4,173", posts: "344", story: true,
+    followedBy: ["jutatip_sroysomree", "kunk4i"], fbyMore: "9 others",
+    grid: ["./assets/asset-uploads/S__10108939_0.jpg", "./assets/asset-uploads/S__10108940_0.jpg", "./assets/asset-uploads/S__10108942_0.jpg", "./assets/asset-uploads/S__10108943_0.jpg", "./assets/asset-uploads/S__10108944_0.jpg", "./assets/asset-uploads/S__10108945_0.jpg", "./assets/asset-uploads/S__10108946_0.jpg", "./assets/asset-uploads/S__10108947_0.jpg", "./assets/asset-uploads/feed-tudor-bb.jpg"] },
+  "mycollection": { disp: "matem | มาเต็ม", bio: "มาเต็ม ♡\nhappy vibe 🧋🌼🍄✨💚🍎", link: "@mycollection", followers: "182", following: "1,855" },
+  "jutatip_sroysomree": { bio: "", followers: "890", following: "412" },
+  "kunk4i": { bio: "", followers: "1,302", following: "388" },
+  "the watch":    { cat: "Media/news company", bio: "Made For Watch Collectors By Watch Collectors\n#thewatch", link: "www.the-watch.example and 1 more", followers: "211K", following: "1,688", verified: true, followedBy: ["chrono.th", "watch.daily"], fbyMore: "9 others", story: true },
+  "Watch 777":    { cat: "Watch shop", bio: "Bangkok · consignment & rare pieces\nDM for viewing 📩", link: "tukdaeng.example/watch777", followers: "38.2K", following: "214", verified: true, followedBy: ["the watch", "dial.dude"], fbyMore: "5 others", story: true },
+  "davikah":      { bio: "vintage lover · BKK\nslow mornings, fast watches", followers: "12.4K", following: "301", followedBy: ["the watch"] },
+  "chrono.th":    { bio: "chronographs only", followers: "8,932", following: "412", followedBy: ["the watch", "Watch 777"] },
+  "neng_mua":     { bio: "มาเต็ม's friend · collects colors", followers: "2,108", following: "990" },
+  "watch.daily":  { cat: "Media/news company", bio: "daily wrist shots & market notes", followers: "54.7K", following: "120", verified: true, followedBy: ["Watch 777", "the watch"], fbyMore: "3 others" },
+  "dial.dude":    { bio: "dials, hands & loupe macros", followers: "6,455", following: "233" },
+  "wrist.story":  { bio: "studio light · film grain", followers: "9,871", following: "187" },
+  "nat_collection": { bio: "my rotation, my rules", followers: "1,204", following: "350" },
+  "slow.hand":    { bio: "in no rush", followers: "3,330", following: "145" },
+  "gmt.bkk":      { bio: "GMTs & travel", followers: "7,502", following: "268" },
+  "bamzilla":     { bio: "here for the shine", followers: "640", following: "512" },
+  "bikwans":      { bio: "นึกว่าซื้อนาฬิกา ที่แท้ซื้อความสุข", followers: "1,876", following: "432" },
+};
+const PF_EXTRA_FOL = new Set(); /* follow state for users that have no posts (session only) */
+
+/* ===== PORTFOLIO-001 — owner-only portfolio (spec 14_PORTFOLIO_MODULE): dashboard + asset list + sold history ===== */
+/* eligible = status Sale/Show/Hide + own asset (not consignment); sold/deleted/hidden-perm/consignment excluded */
+const PF_ASSETS = [
+  { id: "pfa-01", img: "./assets/asset-uploads/S__10108939_0.jpg", photos: ["./assets/asset-uploads/S__10108939_0.jpg", "./assets/asset-uploads/purchase-equipment-box.png", "./assets/asset-uploads/purchase-certificate-docs.png"], name: "Cartier Tank Must XL", ref: "WSTA0040", meta: "Full set 2023", brand: "Cartier", status: "show", market: 132000, purchase: 119000, bought: "2023-06-14" },
+  { id: "pfa-02", img: "./assets/asset-uploads/S__10108940_0.jpg", photos: ["./assets/asset-uploads/S__10108940_0.jpg", "./assets/asset-uploads/purchase-equipment-box.png"], name: "Cartier Tank Must Large", ref: "WSTA0052", meta: "Box & papers", brand: "Cartier", status: "sale", market: 118500, purchase: 104500, bought: "2022-11-02", asking: 125000 },
+  { id: "pfa-03", img: "./assets/asset-uploads/S__10108942_0.jpg", photos: ["./assets/asset-uploads/S__10108942_0.jpg"], name: "Cartier Tank Louis Cartier", ref: "WGTA0011", meta: "Rose gold", brand: "Cartier", status: "hide", market: 345000, purchase: 362000, bought: "2021-08-21" },
+  { id: "pfa-04", img: "./assets/asset-uploads/S__10108943_0.jpg", photos: ["./assets/asset-uploads/S__10108943_0.jpg"], name: "Omega Speedmaster Moonwatch", ref: "310.30.42.50.01.001", meta: "2021", brand: "Omega", status: "sale", market: 248000, purchase: 233000, bought: "2021-12-03", asking: 265000 },
+  { id: "pfa-05", img: "./assets/asset-uploads/S__10108944_0.jpg", photos: ["./assets/asset-uploads/S__10108944_0.jpg", "./assets/asset-uploads/purchase-equipment-box.png", "./assets/asset-uploads/purchase-dealer-invoice.png"], name: "Rolex Submariner Date", ref: "126610LN", meta: "Unworn", brand: "Rolex", status: "sale", market: 465000, purchase: 398000, bought: "2024-02-11", asking: 449000 },
+  { id: "pfa-06", img: "./assets/asset-uploads/S__10108945_0.jpg", photos: ["./assets/asset-uploads/S__10108945_0.jpg"], name: "Omega Speedmaster '57", ref: "332.10.41.51.01.001", meta: "Steel", brand: "Omega", status: "show", market: 296000, purchase: 311000, bought: "2022-05-19" },
+  { id: "pfa-07", img: "./assets/asset-uploads/S__10108946_0.jpg", photos: ["./assets/asset-uploads/S__10108946_0.jpg"], name: "Omega Seamaster Diver 300M", ref: "210.30.42.20.03.001", meta: "Blue dial", brand: "Omega", status: "hide", market: null, purchase: null, bought: "" },
+  { id: "pfa-08", img: "./assets/asset-uploads/S__10108947_0.jpg", photos: ["./assets/asset-uploads/S__10108947_0.jpg", "./assets/asset-uploads/purchase-equipment-box.png"], name: "Tudor Black Bay 58", ref: "M79030N", meta: "Full set", brand: "Tudor", status: "show", market: 128000, purchase: 121000, bought: "2023-09-08" },
+  { id: "pfa-09", img: "./assets/asset-uploads/feed-tudor-bb.jpg", photos: ["./assets/asset-uploads/feed-tudor-bb.jpg"], name: "Tudor Black Bay GMT", ref: "M79830RB", meta: "Pepsi bezel", brand: "Tudor", status: "sale", market: 156000, purchase: 141000, bought: "2023-01-27", asking: 154000 },
+];
+/* Sold History — separate from portfolio value; fields per spec (sale date/buyer/contact/price/payment/attachment) */
+const PF_SOLD = [
+  { id: "pfs-01", img: "./assets/asset-uploads/feed-datejust-1.jpg", photos: ["./assets/asset-uploads/feed-datejust-1.jpg", "./assets/asset-uploads/feed-datejust-2.jpg"], name: "Rolex Datejust 36", ref: "126234 · Fluted bezel", brand: "Rolex",
+    soldDate: "2025-08-30", buyer: "watch.daily", contact: "@watch.daily · DM", price: 295000, pay: "Bank transfer",
+    attach: "transfer-slip-0830.png", attachImg: "./assets/asset-uploads/purchase-transfer-slip.png", purchase: 261000, bought: "2022-03-15" },
+  { id: "pfs-02", img: "./assets/asset-uploads/feed-breguet-1.jpg", photos: ["./assets/asset-uploads/feed-breguet-1.jpg", "./assets/asset-uploads/feed-breguet-2.jpg"], name: "Breguet Classique 5177", ref: "5177BB · Grand feu enamel", brand: "Breguet",
+    soldDate: "2025-05-12", buyer: "Watch 777", contact: "Consignment desk", price: 618000, pay: "Bank transfer",
+    attach: "invoice-5177.pdf", attachImg: "./assets/asset-uploads/purchase-dealer-invoice.png", purchase: 540000, bought: "2021-10-08" },
+  { id: "pfs-03", img: "./assets/asset-uploads/ast-8831-1.png", photos: ["./assets/asset-uploads/ast-8831-1.png", "./assets/asset-uploads/ast-8831-2.png", "./assets/asset-uploads/ast-8831-3.png"], name: "Tudor Pelagos 39", ref: "M25407N · Full set", brand: "Tudor",
+    soldDate: "2024-11-02", buyer: "bamzilla", contact: "@bamzilla", price: 118000, pay: "Cash · meetup",
+    attach: "receipt-pelagos.pdf", attachImg: "./assets/asset-uploads/purchase-certificate-docs.png", purchase: 131000, bought: "2023-04-22" },
+];
+/* PF_YTD_OPEN removed — YTD tile cut per user feedback (minimal dashboard) */
+const PF_MKT_UPDATED = "2026-10-07"; /* mock: last Watch Price API sync (Asia/Bangkok) */
+
+const pfoTHB = n => "฿" + n.toLocaleString("en-US");
+const pfoSignTHB = n => (n > 0 ? "+" : n < 0 ? "−" : "") + "฿" + Math.abs(n).toLocaleString("en-US");
+const pfoPct = (d, b) => (d > 0 ? "+" : "−") + (Math.abs(d) / b * 100).toFixed(1) + "%";
+const pfoEligible = a => ["sale", "show", "hide"].includes(a.status) && a.own !== false;
+/* current value priority: market price → purchase price fallback → no valuation */
+function pfoCur(a, mktOff) {
+  if (!mktOff && a.market != null) return { v: a.market, src: "mkt" };
+  if (a.purchase != null && a.purchase > 0) return { v: a.purchase, src: "fb" };
+  return { v: null, src: "none" };
+}
+/* unrealized gain/loss — only when a real market price + purchase price exist */
+function pfoGL(a, mktOff) {
+  if (mktOff || a.market == null || a.purchase == null || a.purchase <= 0) return null;
+  return a.market - a.purchase;
+}
+const pfoExp = a => (a.asking != null && a.purchase > 0) ? a.asking - a.purchase : null;
+/* asking vs market — ±1% dead band; purchase fallback is never used for this */
+function pfoCmp(a, mktOff) {
+  if (a.asking == null) return null;
+  if (mktOff || a.market == null) return "none";
+  const p = (a.asking - a.market) / a.market * 100;
+  return p > 1 ? "above" : p < -1 ? "below" : "at";
+}
+/* holding period in days + human form; sold assets use sale date as the end */
+function pfoHold(from, to) {
+  if (!from) return null;
+  const a = new Date(from + "T00:00:00"), b = to ? new Date(to + "T00:00:00") : new Date();
+  if (b < a) return null;
+  const d = Math.round((b - a) / 864e5), y = Math.floor(d / 365), m = Math.floor(d % 365 / 30.4);
+  return { d, txt: y ? `${y}y ${m}m` : m ? `${m}m` : `${d}d` };
+}
+const pfoDate = iso => new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+const PFO_STATUS = { sale: ["Sale", "st-sale"], show: ["Show", "st-show"], hide: ["Hide", "st-hide"] };
+const PFO_CMP = { above: ["Above market", "cmp-above"], at: ["At market", "cmp-at"], below: ["Below market", "cmp-below"] };
+const PFO_SRC = { mkt: "Latest market price", fb: "Purchase price estimate", none: "No market price" };
+
+function pfAvatar(name) {
+  const p = POSTS.find(x => x.seller === name);
+  if (p) return p.avatar;
+  for (const cs of Object.values(COMMENTS)) {
+    for (const c of cs) {
+      if (c.name === name) return c.avatar;
+      for (const r of c.replies || []) if (r.name === name) return r.avatar;
+    }
+  }
+  return "./assets/user-avatars/u-1075.png";
+}
+function profileOf(name) {
+  const o = PROFILES[name] || {};
+  const h = [...name].reduce((a, c) => a + c.charCodeAt(0), 0);
+  return {
+    user: name,
+    avatar: o.avatar || pfAvatar(name),
+    disp: o.disp || name,
+    cat: o.cat || "",
+    bio: o.bio ?? "⌚ watch collector",
+    link: o.link || "",
+    verified: !!o.verified,
+    followers: o.followers || (120 + h % 4800).toLocaleString("en-US"),
+    following: o.following || String(120 + h % 800),
+    posts: o.posts || "",
+    note: o.note || "",
+    sleep: !!o.sleep,
+    followedBy: o.followedBy ? [].concat(o.followedBy)
+      : (() => { const s = followedSellers().find(x => x !== name); return s ? [s] : []; })(),
+    fbyMore: o.fbyMore || "",
+    ring: !!o.story || name === CP_ME.name,
+  };
+}
+function userPosts(name) { return POSTS.filter(p => p.seller === name && !p.archived); }
+/* grid-only mock photos (profile tab) — not real feed posts, so they never leak into feed/search */
+const PF_GFX_KINDS = ["sale", "show", "sale", "show", "hide", "sold", "sale", "show", "sold"];
+function pfGridPosts(uname) {
+  const g = (PROFILES[uname] || {}).grid || [];
+  return userPosts(uname).concat(g.map((src, i) => ({
+    id: `gfx-${uname}-${i}`, seller: uname, avatar: (PROFILES[uname] || {}).avatar || pfAvatar(uname),
+    photos: [src], likes: 0, comments: 0, views: "", caption: "", time: "", specs: [], specGroups: [], chips: [],
+    pfkind: PF_GFX_KINDS[i % PF_GFX_KINDS.length],
+  })));
+}
+/* PRD 06: profile grid filters — All / Sale / Show / Hide / Sold */
+function pfKind(p) { return p.pfkind || (p.price || p.type === "sale" ? "sale" : "show"); }
+function pfTabPosts(uname, tab) {
+  const all = pfGridPosts(uname);
+  return tab === "all" ? all : all.filter(p => pfKind(p) === tab);
+}
+function userClips(name) { return userPosts(name).filter(p => clipState(p).has); }
+function userTagged(name) { return POSTS.filter(p => p.seller !== name && !p.archived && !p.ni && !p.muted && ((p.likedBy && p.likedBy.name === name) || (p.commentPreview && p.commentPreview.name === name))); }
+function pfIsFollowed(name) {
+  const p = POSTS.find(x => x.seller === name);
+  return p ? !!p.following : PF_EXTRA_FOL.has(name);
+}
+function pfSetFollow(scr, name, on) {
+  const p = POSTS.find(x => x.seller === name);
+  if (p) setFollowing(scr, name, on);
+  else if (on) PF_EXTRA_FOL.add(name); else PF_EXTRA_FOL.delete(name);
+}
+function pfAllUsers(except) {
+  const s = new Set(POSTS.map(p => p.seller));
+  Object.values(COMMENTS).forEach(cs => cs.forEach(c => { s.add(c.name); (c.replies || []).forEach(r => s.add(r.name)); }));
+  s.add(CP_ME.name);
+  s.delete(except);
+  return [...s];
+}
+
+function pfNavHTML(own) {
+  return `<nav class="bottom-nav pf-nav">
+    <span class="nav-item${own ? "" : " active"}" data-navgo="feed">${I.navFeed()}<span class="nav-label">Feed</span></span>
+    <span class="nav-item">${I.navChat()}<span class="nav-badge">1</span><span class="nav-label">Chat</span></span>
+    <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
+    <span class="nav-item${own ? " active" : ""}" data-navgo="profile">${I.navUser()}<span class="nav-label">Profile</span></span>
+  </nav>`;
+}
+function pfAvovHTML(u, own, isF) {
+  const act = (a, ic, lb) => `<button class="pf-avov-act" data-avact="${a}" data-u="${esc(u.user)}"><span class="pf-avov-ic">${ic}</span><span>${lb}</span></button>`;
+  return `<div class="pf-avov">
+    <img class="pf-avov-img" src="${u.avatar}" alt="">
+    <div class="pf-avov-acts">
+      ${!own ? act("foll", isF ? I.personCheck(22) : I.personAdd(22), isF ? "Following" : "Follow") : ""}
+      ${act("share", I.navUser(22), "Share")}
+      ${act("copy", I.link(20), "Copy link")}
+      ${act("qr", I.qr(22), "QR code")}
+    </div>
+  </div>`;
+}
+function pfTilesHTML(list) {
+  return `<div class="pf-grid">${list.map(p => `
+    <button class="pf-tile" data-pid="${p.id}">
+      <img src="${p.photos[0]}" alt="" loading="lazy">
+      ${p.photos.length > 1 ? `<span class="pf-tb">${I.stack(15)}</span>` : clipState(p).has ? `<span class="pf-tb">${I.play(12)}</span>` : ""}
+    </button>`).join("")}</div>`;
+}
+function pfEmptyHTML(icon, title, desc, own) {
+  return `<div class="pf-empty">
+    <span class="pf-eic">${icon}</span>
+    <div class="pf-et">${title}</div>
+    ${desc ? `<div class="pf-ed">${desc}</div>` : ""}
+    ${own ? `<button class="pf-btn primary pf-cta" data-flow="create">Share a post</button>` : ""}
+  </div>`;
+}
+function profileHTML(scr, key) {
+  const [uname, tab = "all"] = key.split(":");
+  const u = profileOf(uname);
+  const own = uname === CP_ME.name;
+  const posts = userPosts(uname);
+  const isF = pfIsFollowed(uname);
+  const stat = (v, l, go) => `<button class="pf-stat"${go ? ` data-pfgo="${go}"` : ""}><b>${v}</b><span>${l}</span></button>`;
+  /* PRD 06 — owner sees Hide/Sold too; public profile exposes only All/Sale/Show */
+  const TABS = own
+    ? [["all", "All", I.gridSel(22)], ["sale", "Sale", I.bag(22)], ["show", "Show", I.eye(22)], ["hide", "Hide", I.eyeOff(22)], ["sold", "Sold", I.checkCir(22)]]
+    : [["all", "All", I.gridSel(22)], ["sale", "Sale", I.bag(22)], ["show", "Show", I.eye(22)]];
+  const tabName = TABS.some(t => t[0] === tab) ? tab : "all";
+  const list = pfTabPosts(uname, tabName);
+  const body = list.length ? pfTilesHTML(list)
+    : pfEmptyHTML(I.camPlain(30), tabName === "all" ? (own ? "Share your first post" : "No posts yet") : `No ${tabName} posts`,
+        own && tabName === "all" ? "When you share photos and clips, they'll show up here." : "", own && tabName === "all");
+  return `
+  <div class="detail-head pf-head">
+    ${own
+      ? `<button class="icon-btn" data-flow="create" title="Create">${I.plus()}</button>
+         <span class="spacer"></span>
+         <button class="pf-uname"><span>${esc(u.user)}</span></button>
+         <span class="spacer"></span>
+         <button class="icon-btn pf-menu" title="Settings and activity">${I.burger(22)}</button>`
+      : `<button class="icon-btn sub-back">${I.back()}</button>
+         <span class="pf-vname">${esc(u.user)}${u.verified ? PF_BADGE : ""}</span>
+         <span class="spacer"></span>
+         <button class="icon-btn pf-bell" title="Notifications">${I.navBell(20)}</button>
+         <button class="icon-btn pf-more">${I.dots(18)}</button>`}
+  </div>
+  <div class="pf-scroll">
+    <div class="pf-top">
+      <div class="pf-avcol">
+        ${u.note ? `<span class="pf-note">${esc(u.note)}<i></i></span>` : ""}
+        <span class="${u.ring ? "avatar-ring " : ""}pf-av" data-pfav><img src="${u.avatar}" alt=""></span>
+      </div>
+      <div class="pf-idcol">
+        <div class="pf-disp">${esc(u.disp)}${u.verified ? PF_BADGE : ""}</div>
+        <div class="pf-stats">
+          ${stat(u.posts || posts.length, "posts")}
+          ${stat(u.followers, "followers", "followers")}
+          ${stat(u.following, "following", "following")}
+        </div>
+      </div>
+    </div>
+    ${u.sleep ? `<div class="pf-sleep">${I.moon(14)}<span>In sleep mode</span></div>` : ""}
+    <div class="pf-bio">
+      ${u.cat ? `<div class="pf-cat">${esc(u.cat)}</div>` : ""}
+      <div class="pf-biot">${esc(u.bio)}</div>
+      ${(u.link || own) ? `<div class="pf-chrow">
+        ${u.link ? `<span class="pf-link">${u.link.startsWith("@") ? `<b class="pf-atch">@</b>` : I.link(13)}${esc(u.link.startsWith("@") ? u.link.slice(1) : u.link)}</span>` : ""}
+        ${own ? `<button class="pf-addchip">${I.plus(12)} Add</button>` : ""}
+      </div>` : ""}
+      ${!own ? `<div class="pf-chrow"><span class="pf-link"><b class="pf-atch">@</b>${esc(u.user)}</span></div>` : ""}
+    </div>
+    ${!own && u.followedBy.length ? `<div class="pf-fby"><span class="pf-fbavs">${u.followedBy.slice(0, 3).map(n => `<img src="${pfAvatar(n)}" alt="">`).join("")}</span><span>Followed by ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` and <b>${esc(u.fbyMore)}</b>` : ""}</span></div>` : ""}
+    <div class="pf-actions">
+      ${own
+        ? `<button class="pf-btn pf-edit">Edit profile</button><button class="pf-btn pf-share">Share profile</button><button class="pf-btn pf-iconbtn pf-pfo" data-sub="portfolio" title="Portfolio">${I.wallet(16)}</button>`
+        : `<button class="pf-btn pf-foll${isF ? "" : " primary"}" data-u="${esc(uname)}">${isF ? `Following ${I.chev(12)}` : "Follow"}</button><button class="pf-btn pf-msg">Message</button><button class="pf-btn pf-iconbtn pf-addp" title="Discover people">${I.personAdd(16)}</button>`}
+    </div>
+    <div class="pf-tabs">
+      ${TABS.map(([k, l, ic]) => `<button class="pf-tab pf-tab-txt${tabName === k ? " on" : ""}" data-pftab="${k}">${ic}<span>${l}</span></button>`).join("")}
+    </div>
+    ${body}
+  </div>
+  ${scr._pfAv ? pfAvovHTML(u, own, isF) : ""}
+  ${pfNavHTML(own)}`;
+}
+function pfollowHTML(scr, key) {
+  const [uname, tab = "followers"] = key.split(":");
+  const u = profileOf(uname);
+  const all = pfAllUsers(uname);
+  const names = tab === "following"
+    ? all.filter(n => pfIsFollowed(n) || uname !== CP_ME.name && n !== CP_ME.name).slice(0, uname === CP_ME.name ? all.length : 8)
+    : all;
+  const rows = names.map(n => `
+    <div class="mrow pfl-row" data-pf-user="${esc(n)}">
+      <img src="${pfAvatar(n)}" alt="">
+      <span class="lg-b"><span class="mn">${esc(n)}</span><span class="md">${esc(profileOf(n).disp !== n ? profileOf(n).disp : (profileOf(n).cat || "TukDaeng member"))}</span></span>
+      <button class="mact pf-flw${pfIsFollowed(n) ? " on" : ""}" data-seller="${esc(n)}">${pfIsFollowed(n) ? "Following" : "Follow"}</button>
+    </div>`).join("");
+  return `
+    <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${esc(uname)}</span><span class="spacer"></span></div>
+    <div class="pfl-tabs">
+      <button class="pfl-tab${tab === "followers" ? " on" : ""}" data-pftab="followers">${u.followers} Followers</button>
+      <button class="pfl-tab${tab === "following" ? " on" : ""}" data-pftab="following">${u.following} Following</button>
+    </div>
+    <div class="sub-scroll pfl-list">${rows || `<div class="sub-empty">No ${tab} yet</div>`}</div>`;
+}
+function peditHTML(scr) {
+  const u = profileOf(CP_ME.name);
+  return `
+    <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">Edit profile</span><span class="spacer"></span></div>
+    <div class="sub-scroll">
+      <div class="pe-av"><img src="${u.avatar}" alt=""><button class="pe-pic">Edit picture</button></div>
+      <label class="pe-f"><span>Name</span><input class="pe-in pe-name" value="${esc(u.disp)}"></label>
+      <label class="pe-f"><span>Bio</span><textarea class="pe-in pe-bio" rows="3">${esc(u.bio)}</textarea></label>
+      <label class="pe-f"><span>Link</span><input class="pe-in pe-link" value="${esc(u.link)}"></label>
+      <div class="pe-savewrap"><button class="pf-btn primary pe-save">Save</button></div>
+    </div>`;
+}
+
+/* PORTFOLIO-001 — portfolio pages: dashboard, asset detail, sold history + detail */
+const PFO_SIMS = { nomkt: "market prices unavailable", empty: "empty portfolio", failed: "load failed", denied: "permission denied" };
+function pfoSimBar(scr) {
+  const sim = scr._pfoSim || "";
+  return sim ? `<div class="pfo-simbar"><span>Preview: ${PFO_SIMS[sim]}</span><button data-pfosim="">Reset</button></div>` : "";
+}
+function pfoRowHTML({ a }) {
+  return `<button class="mrow pfo-row" data-sub="pfasset:${a.id}">
+    <img class="pfo-img" src="${a.img}" alt="">
+    <span class="lg-b">
+      <span class="mn">${esc(a.name)}</span>
+      <span class="md">${esc(a.ref)}${a.meta ? " · " + esc(a.meta) : ""}</span>
+    </span>
+    <span class="pfo-r">
+      <span class="pfo-val">${a.purchase != null && a.purchase > 0 ? pfoTHB(a.purchase) : "—"}</span>
+    </span>
+  </button>`;
+}
+function portfolioHTML(scr) {
+  const sim = scr._pfoSim || "";
+  const dev = new URLSearchParams(location.search).has("dev");
+  const head = `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">Portfolio</span><span class="spacer"></span>${dev ? `<button class="icon-btn pfo-more" title="Preview states">${I.dots(18)}</button>` : `<span class="icon-btn" style="visibility:hidden"></span>`}</div>`;
+  if (sim === "denied")
+    return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.lock(40)}<div class="t">Permission denied.</div><div class="pfo-ed">Portfolios are private — only the owner can see this.</div></div>${pfoSimBar(scr)}</div>`;
+  if (sim === "failed")
+    return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">Unable to load data.</div><button class="pfo-retry">Try again</button></div></div>`;
+  const mktOff = sim === "nomkt";
+  const els = PF_ASSETS.filter(pfoEligible);
+  if (sim === "empty" || !els.length)
+    return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.wallet(40)}<div class="t">No data found</div><div class="pfo-ed">Assets you list as Sale, Show or Hide will appear here.</div></div>${pfoSimBar(scr)}</div>`;
+  const rows = els.map(a => ({ a, cur: pfoCur(a, mktOff), gl: pfoGL(a, mktOff), cmp: pfoCmp(a, mktOff), hold: pfoHold(a.bought), mktOff }));
+  const invested = rows.filter(r => r.a.purchase != null && r.a.purchase > 0);
+  const total = invested.reduce((s, r) => s + r.a.purchase, 0);
+  const mktTotal = mktOff ? null : rows.reduce((s, r) => s + (r.a.market || 0), 0);
+  const glRows = rows.filter(r => r.gl != null);
+  const glSum = glRows.reduce((s, r) => s + r.gl, 0);
+  const glBase = glRows.reduce((s, r) => s + r.a.purchase, 0);
+  return head + `<div class="sub-scroll pfo-scroll">
+    ${pfoSimBar(scr)}
+    ${mktOff ? `<div class="pfo-banner">${I.clock(14)}<span>Some market prices are unavailable — market comparison hidden</span></div>` : ""}
+    <div class="pfo-total">
+      <span class="pfo-lb pfo-tt"><span>Total invested</span><span class="pfo-lock">${I.lock(11)} Private</span></span>
+      <b>THB ${total.toLocaleString("en-US")}</b>
+      ${mktTotal != null && glRows.length
+        ? `<span class="pfo-lb">Market value ${pfoTHB(mktTotal)} · <i class="pfo-mktd ${glSum >= 0 ? "up" : "dn"}">${pfoPct(glSum, glBase)}</i></span>`
+        : `<span class="pfo-lb">Market value unavailable</span>`}
+      <span class="pfo-lb">Purchase cost of ${invested.length}/${els.length} assets · only you can see this</span>
+    </div>
+    <div class="sub-sec pfo-sec"><span>Assets <span class="pfo-count">${els.length}</span></span><button class="pfo-soldlink" data-sub="soldhist">${I.history(13)} Sold history ${I.chevR(12)}</button></div>
+    ${rows.map(pfoRowHTML).join("")}
+    <div class="pfo-note">Counts Sale, Show &amp; Hide pieces you own — sold, deleted, permanently hidden and consignment items are excluded.</div>
+  </div>`;
+}
+function pfassetHTML(scr, id) {
+  const a = PF_ASSETS.find(x => x.id === id);
+  const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">${t}</span><span class="spacer"></span><span class="icon-btn" style="visibility:hidden"></span></div>`;
+  if (!a) return head("Asset") + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">No data found</div></div></div>`;
+  const cur = pfoCur(a, false), gl = pfoGL(a, false), cmp = pfoCmp(a, false), ex = pfoExp(a), hold = pfoHold(a.bought);
+  const kv = (k, v, cls = "") => `<div class="pfd-kv"><span>${k}</span><b class="${cls}">${v}</b></div>`;
+  return head("Asset") + `<div class="sub-scroll pfo-scroll">
+    <div class="detail-hero" data-pfaid="${a.id}">
+      <img src="${a.photos[0]}" alt="">
+      ${a.photos.length > 1 ? `<span class="photo-counter">1/${a.photos.length}</span>` : ""}
+    </div>
+    ${a.photos.length > 1 ? `<div class="photo-dots">${a.photos.map((_, i) => `<span class="${i === 0 ? "on" : ""}"></span>`).join("")}</div>` : ""}
+    <div class="pfd-id">
+      <div class="pfd-name">${esc(a.name)}</div>
+      <div class="pfd-meta">${esc(a.ref)}${a.meta ? " · " + esc(a.meta) : ""} · ${esc(a.brand)}</div>
+      <span class="pfo-chip ${PFO_STATUS[a.status][1]}">${PFO_STATUS[a.status][0]}</span>
+    </div>
+    <div class="pfo-card">
+      <div class="pfo-card-t">Value <span class="pfo-privtag">${I.lock(10)} private</span></div>
+      ${kv("Current value", cur.v != null ? pfoTHB(cur.v) : "—")}
+      ${kv("Value source", PFO_SRC[cur.src])}
+      ${kv("Estimated market", a.market != null ? `${pfoTHB(Math.round(a.market * 0.95 / 500) * 500)} – ${pfoTHB(Math.round(a.market * 1.05 / 500) * 500)}` : "—")}
+      ${kv("Last price update", a.market != null ? pfoDate(PF_MKT_UPDATED) : "—")}
+      ${kv("Data source", a.market != null ? "TukDaeng Market Data" : "—")}
+      ${kv("Purchase price", a.purchase ? pfoTHB(a.purchase) : "—")}
+      ${kv("Purchased", a.bought ? pfoDate(a.bought) : "—")}
+      ${kv("Unrealized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, a.purchase)})` : "—", gl != null ? (gl >= 0 ? "up" : "dn") : "")}
+      ${kv("Holding period", hold ? `${hold.d.toLocaleString("en-US")} days · ${hold.txt}` : "—")}
+    </div>
+    ${a.status === "sale" ? `<div class="pfo-card">
+      <div class="pfo-card-t">Listing</div>
+      ${kv("Asking price", a.asking != null ? pfoTHB(a.asking) : "—")}
+      ${kv("Expected profit", ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : "—", ex != null ? "up" : "")}
+      ${kv("Market comparison", cmp && cmp !== "none" ? `<i class="pfo-chip ${PFO_CMP[cmp][1]}">${PFO_CMP[cmp][0]}</i>` : "No market price")}
+    </div>` : ""}
+    <div class="pfo-note">Owner-only data — never shown on your public profile.</div>
+  </div>`;
+}
+function soldHistHTML() {
+  const rows = PF_SOLD.map(x => {
+    return `<button class="mrow pfo-row" data-sub="sold:${x.id}">
+      <img class="pfo-img" src="${x.img}" alt="">
+      <span class="lg-b"><span class="mn">${esc(x.name)}</span><span class="md">Sold ${pfoDate(x.soldDate)} · ${esc(x.buyer)}</span></span>
+      <span class="pfo-r"><span class="pfo-val">${pfoTHB(x.price)}</span></span>
+    </button>`;
+  }).join("");
+  return `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">Sold history</span><span class="spacer"></span><span class="icon-btn" style="visibility:hidden"></span></div>
+  <div class="sub-scroll pfo-scroll">
+    <div class="fav-desc">Sold pieces keep their sale record here — they're never counted in portfolio value.</div>
+    ${PF_SOLD.length ? rows : `<div class="sr-empty-block">${I.history(40)}<div class="t">No data found</div></div>`}
+  </div>`;
+}
+function soldDetailHTML(id) {
+  const x = PF_SOLD.find(s => s.id === id);
+  const head = `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">Sold item</span><span class="spacer"></span><span class="icon-btn" style="visibility:hidden"></span></div>`;
+  if (!x) return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">No data found</div></div></div>`;
+  const gl = x.purchase > 0 ? x.price - x.purchase : null;
+  const hold = pfoHold(x.bought, x.soldDate);
+  const kv = (k, v, cls = "") => `<div class="pfd-kv"><span>${k}</span><b class="${cls}">${v}</b></div>`;
+  return head + `<div class="sub-scroll pfo-scroll">
+    <div class="detail-hero" data-pfaid="${x.id}">
+      <img src="${x.photos[0]}" alt="">
+      ${x.photos.length > 1 ? `<span class="photo-counter">1/${x.photos.length}</span>` : ""}
+    </div>
+    ${x.photos.length > 1 ? `<div class="photo-dots">${x.photos.map((_, i) => `<span class="${i === 0 ? "on" : ""}"></span>`).join("")}</div>` : ""}
+    <div class="pfd-id">
+      <div class="pfd-name">${esc(x.name)}</div>
+      <div class="pfd-meta">${esc(x.ref)} · ${esc(x.brand)}</div>
+      <span class="pfo-chip st-hide">Sold</span>
+    </div>
+    <div class="pfo-card">
+      <div class="pfo-card-t">Sale record <span class="pfo-privtag">${I.lock(10)} private</span></div>
+      ${kv("Sale date", pfoDate(x.soldDate))}
+      ${kv("Buyer", esc(x.buyer))}
+      ${kv("Contact", esc(x.contact))}
+      ${kv("Sale price", pfoTHB(x.price))}
+      ${kv("Payment method", esc(x.pay))}
+      ${kv("Attachment", `<span class="pfd-att"><img src="${x.attachImg}" alt="">${esc(x.attach)}</span>`)}
+    </div>
+    <div class="pfo-card">
+      <div class="pfo-card-t">Return</div>
+      ${kv("Purchase price", x.purchase ? pfoTHB(x.purchase) : "—")}
+      ${kv("Realized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, x.purchase)})` : "—", gl != null ? (gl >= 0 ? "up" : "dn") : "")}
+      ${kv("Holding period", hold ? `${hold.d.toLocaleString("en-US")} days · ${hold.txt}` : "—")}
+    </div>
+    <div class="pfo-note">Realized gain/loss is separate<br>from portfolio value.</div>
+  </div>`;
+}
+
 function subHTML(name, scr) {
   const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${t}</span><span class="spacer"></span></div>`;
   const row = (t, attr, extra = "", ic = "") => `<button class="sub-row" ${attr}>${ic ? `<span class="sub-ic">${ic}</span>` : ""}<span>${t}</span>${extra}<span class="sub-chev">${I.chevR(15)}</span></button>`;
@@ -5707,13 +6433,15 @@ function subHTML(name, scr) {
     ${row("Favorites", `data-sub="favorites"`, `<span class="sub-count">${favoriteSellers().length}</span>`, I.star(21))}
     ${row("Muted accounts", `data-sub="muted"`, `<span class="sub-count">${mutedSellers().length}</span>`, I.bellOff(21))}
     ${row("Content preferences", `data-sub="prefs"`, "", I.stack(21))}
+    <div class="sub-sec sec-div">Display</div>
+    ${row("Theme mode", `data-sub="theme"`, `<span class="sub-count">${state.theme === "dark" ? "Dark" : "Light"}</span>`, I.moon(21))}
   </div>`;
   if (name === "favorites") {
     const favs = favoriteSellers();
     const sugg = followedSellers().filter(s => !favs.includes(s));
     const fRow = (s, label, cls, desc) => {
       const p = POSTS.find(x => x.seller === s);
-      return `<div class="mrow"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">${desc}</span></span><button class="mact ${cls}" data-seller="${s}">${label}</button></div>`;
+      return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">${desc}</span></span><button class="mact ${cls}" data-seller="${s}">${label}</button></div>`;
     };
     return head("Favorites") + `<div class="sub-scroll">
       <div class="fav-desc">New posts from your favorites will appear higher in feed. Only you can see who you add or remove.</div>
@@ -5726,7 +6454,7 @@ function subHTML(name, scr) {
   if (name === "muted") return head("Muted accounts") + `<div class="sub-scroll">${
     mutedSellers().map(s => {
       const p = POSTS.find(x => x.seller === s);
-      return `<div class="mrow"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">Posts muted</span></span><button class="mact m-unmute" data-seller="${s}">Unmute</button></div>`;
+      return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">Posts muted</span></span><button class="mact m-unmute" data-seller="${s}">Unmute</button></div>`;
     }).join("") || `<div class="sub-empty">No muted accounts</div>`
   }</div>`;
   if (name === "prefs") return head("Content preferences") + `<div class="sub-scroll">
@@ -5742,6 +6470,15 @@ function subHTML(name, scr) {
       <div class="sub-sec">Choose how much sensitive content you see in feed.</div>
       ${opt("less", "Less", "You'll see less sensitive content.")}
       ${opt("standard", "Standard", "You'll see some sensitive content.")}
+    </div>`;
+  }
+  /* THEME-001 — Theme mode picker: Dark / Light (spec 13_SETTINGS_MODULE Theme Mode) */
+  if (name === "theme") {
+    const opt = (v, t, d, ic) => `<button class="sub-row sub-row-lg" data-theme-opt="${v}"><span class="sub-ic">${ic}</span><span class="lg-b"><span class="lg-t">${t}</span><span class="lg-d">${d}</span></span><span class="sub-chev theme-check">${state.theme === v ? I.check(17) : ""}</span></button>`;
+    return head("Theme mode") + `<div class="sub-scroll">
+      <div class="fav-desc">Choose how TukDaeng looks on this device.</div>
+      ${opt("light", "Light mode", "Bright background for daytime browsing.", I.sun(21))}
+      ${opt("dark", "Dark mode", "Dimmed background that's easier on the eyes at night.", I.moon(21))}
     </div>`;
   }
   if (name === "walerts") return walertsHTML();
@@ -5760,6 +6497,15 @@ function subHTML(name, scr) {
       <div class="pm-rp-desc">Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait.</div>
       ${PM_REASONS.map(r => `<button class="pm-reason">${r}<span class="pm-chev">${I.chevR(14)}</span></button>`).join("")}
     </div>`;
+  /* PROFILE-001 — profile pages stack like any other sub page */
+  if (name.startsWith("profile:")) return profileHTML(scr, name.slice(8));
+  if (name.startsWith("pfollow:")) return pfollowHTML(scr, name.slice(8));
+  if (name === "pedit") return peditHTML(scr);
+  /* PORTFOLIO-001 — portfolio dashboard + asset/sold detail pages stack like any other sub page */
+  if (name === "portfolio") return portfolioHTML(scr);
+  if (name.startsWith("pfasset:")) return pfassetHTML(scr, name.slice(8));
+  if (name === "soldhist") return soldHistHTML();
+  if (name.startsWith("sold:")) return soldDetailHTML(name.slice(5));
   return "";
 }
 
@@ -5806,7 +6552,7 @@ function screenHTML(theme, variant) {
       <span class="nav-item">${I.navChat()}<span class="nav-badge">1</span><span class="nav-label">Chat</span></span>
       <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
       <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
-      <span class="nav-item">${I.navUser()}<span class="nav-label">Profile</span></span>
+      <span class="nav-item" data-navgo="profile">${I.navUser()}<span class="nav-label">Profile</span></span>
     </nav>
     <div class="home-ind"><i></i></div>
     <div class="sheet-backdrop"></div>
@@ -5851,10 +6597,13 @@ function toast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => flowToast.classList.remove("show"), 1800);
 }
+function setTheme(v) {
+  state.theme = v;
+  localStorage.setItem("fo_theme", v);
+  themeToggle.textContent = v === "dark" ? "☾" : "☀";
+}
 themeToggle.addEventListener("click", () => {
-  state.theme = state.theme === "dark" ? "light" : "dark";
-  localStorage.setItem("fo_theme", state.theme);
-  themeToggle.textContent = state.theme === "dark" ? "☾" : "☀";
+  setTheme(state.theme === "dark" ? "light" : "dark");
   render();
 });
 themeToggle.textContent = state.theme === "dark" ? "☾" : "☀";
@@ -5876,6 +6625,10 @@ let swipe = null, suppressPhotoClick = false;
 function photoCtx(el) {
   const art = el.closest(".post");
   if (art) return { post: POSTS.find(x => x.id === art.dataset.pid), dotsEl: art.querySelector(".photo-dots") };
+  if (el.dataset.pfaid) {
+    const a = PF_ASSETS.find(x => x.id === el.dataset.pfaid) || PF_SOLD.find(x => x.id === el.dataset.pfaid);
+    return { post: a, dotsEl: el.parentElement.querySelector(".photo-dots") };
+  }
   const scr = el.closest(".screen");
   return { post: POSTS.find(x => x.id === scr.dataset.detailPid), dotsEl: scr.querySelector(".page-detail .photo-dots") };
 }
@@ -5902,11 +6655,11 @@ function applyPhoto(ph, post, i, dotsEl) {
 /* CREATE-001 — caption thumbs strip + hashtag chips: wheel + drag to scroll (desktop has no scrollbar) */
 let stripDrag = null;
 stageEl.addEventListener("wheel", e => {
-  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row");
+  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row, .pf-tabs");
   if (strip) { strip.scrollLeft += e.deltaY || e.deltaX; e.preventDefault(); }
 }, { passive: false });
 stageEl.addEventListener("pointerdown", e => {
-  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row");
+  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row, .pf-tabs");
   if (strip) stripDrag = { strip, x0: e.clientX, sl: strip.scrollLeft, moved: false };
 });
 stageEl.addEventListener("pointermove", e => {
@@ -5995,12 +6748,16 @@ stageEl.addEventListener("pointerdown", e => {
   if (!ph) return;
   const { post, dotsEl } = photoCtx(ph);
   if (!post || post.photos.length < 2) return;
-  swipe = { ph, post, dotsEl, x0: e.clientX, dx: 0, i: +(ph.dataset.i || 0), moved: false };
+  swipe = { ph, post, dotsEl, x0: e.clientX, y0: e.clientY, dx: 0, i: +(ph.dataset.i || 0), moved: false };
 });
 stageEl.addEventListener("pointermove", e => {
   if (!swipe) return;
   swipe.dx = e.clientX - swipe.x0;
-  if (Math.abs(swipe.dx) > 8) swipe.moved = true;
+  if (!swipe.moved) {
+    const dy = e.clientY - swipe.y0;
+    if (Math.abs(dy) > Math.abs(swipe.dx) + 4) { swipe = null; return; } /* vertical scroll wins — don't translate the photo */
+    if (Math.abs(swipe.dx) > 8) swipe.moved = true;
+  }
   if (!swipe.moved) return;
   let eff = swipe.dx;
   const last = swipe.post.photos.length - 1;
@@ -6593,6 +7350,17 @@ document.getElementById("stage").addEventListener("click", e => {
   if (subReset) { openDlg(subReset.closest(".screen"), resetDlgHTML()); return; }
   const sens = e.target.closest("[data-sens]");
   if (sens) { state.sensitive = sens.dataset.sens; renderSub(sens.closest(".screen")); return; }
+  /* THEME-001 — theme option: apply instantly to the open screen (data-theme attr
+     drives every --var), persist via setTheme, then re-render the picker so the
+     check moves. No full render() — the settings stack must stay open. */
+  const thOpt = e.target.closest("[data-theme-opt]");
+  if (thOpt) {
+    const scr = thOpt.closest(".screen");
+    setTheme(thOpt.dataset.themeOpt);
+    scr.dataset.theme = state.theme;
+    renderSub(scr);
+    return;
+  }
   const tgl = e.target.closest("[data-tgl]");
   if (tgl) {
     const scr = tgl.closest(".screen");
@@ -6847,6 +7615,164 @@ document.getElementById("stage").addEventListener("click", e => {
   if (hbScrim) { hbScrim.closest(".screen").classList.remove("hb-open"); return; }
   const hbDead = e.target.closest(".hb-item");
   if (hbDead) { toast("Not in this prototype yet"); return; }
+  /* ===== PROFILE-001 — profile menu + profile page actions ===== */
+  const navGo = e.target.closest("[data-navgo]");
+  if (navGo) {
+    const scr = navGo.closest(".screen");
+    const go = navGo.dataset.navgo;
+    if (go === "profile") openSub(scr, "profile:" + CP_ME.name, true);
+    else if (go === "feed") { scr._subStack = []; scr.classList.remove("sub-open"); }
+    return;
+  }
+  const pfGo = e.target.closest("[data-pfgo]");
+  if (pfGo) {
+    const scr = pfGo.closest(".screen");
+    const u = ((scr._subStack || []).at(-1) || "").split(":")[1] || CP_ME.name;
+    pushSub(scr, `pfollow:${u}:${pfGo.dataset.pfgo}`);
+    return;
+  }
+  const pfTab = e.target.closest("[data-pftab]");
+  if (pfTab) {
+    if (suppressPhotoClick) return; /* tab-bar drag, not a tap */
+    const scr = pfTab.closest(".screen");
+    const st = scr._subStack || [];
+    const top = st[st.length - 1] || "";
+    if (top.startsWith("profile:") || top.startsWith("pfollow:")) {
+      const parts = top.split(":");
+      parts[2] = pfTab.dataset.pftab;
+      st[st.length - 1] = parts.join(":");
+      renderSub(scr);
+    }
+    return;
+  }
+  const pfTile = e.target.closest(".pf-tile");
+  if (pfTile) {
+    const scr = pfTile.closest(".screen");
+    const parts = ((scr._subStack || []).at(-1) || "").split(":");
+    const u = parts[1] || "", tab = parts[2] || "all";
+    const list = pfTabPosts(u, tab);
+    openPostViewer(scr, list, pfTile.dataset.pid);
+    return;
+  }
+  const pfAv = e.target.closest("[data-pfav]");
+  if (pfAv) { const scr = pfAv.closest(".screen"); scr._pfAv = true; renderSub(scr); return; }
+  const avAct = e.target.closest(".pf-avov-act");
+  if (avAct) {
+    const scr = avAct.closest(".screen");
+    scr._pfAv = false;
+    const a = avAct.dataset.avact;
+    if (a === "foll") pfSetFollow(scr, avAct.dataset.u, !pfIsFollowed(avAct.dataset.u));
+    renderSub(scr);
+    if (a === "share") scrToast(scr, "Profile shared");
+    else if (a === "copy") scrToast(scr, "Profile link copied");
+    else if (a === "qr") scrToast(scr, "QR code isn't in this prototype yet");
+    return;
+  }
+  const pfOv = e.target.closest(".pf-avov");
+  if (pfOv && !e.target.closest(".pf-avov-act, .pf-avov-img")) {
+    const scr = pfOv.closest(".screen");
+    scr._pfAv = false; renderSub(scr); return;
+  }
+  const pfBell = e.target.closest(".pf-bell");
+  if (pfBell) { scrToast(pfBell.closest(".screen"), "Notification settings aren't in this prototype yet"); return; }
+  const pfFoll = e.target.closest(".pf-foll, .pf-flw");
+  if (pfFoll) {
+    const scr = pfFoll.closest(".screen");
+    pfSetFollow(scr, pfFoll.dataset.u || pfFoll.dataset.seller, !pfIsFollowed(pfFoll.dataset.u || pfFoll.dataset.seller));
+    renderSub(scr);
+    return;
+  }
+  const pfEdit = e.target.closest(".pf-edit");
+  if (pfEdit) { pushSub(pfEdit.closest(".screen"), "pedit"); return; }
+  const pfShare = e.target.closest(".pf-share");
+  if (pfShare) { scrToast(pfShare.closest(".screen"), "Profile link copied"); return; }
+  const pfMsg = e.target.closest(".pf-msg");
+  if (pfMsg) { scrToast(pfMsg.closest(".screen"), "Open a listing to chat with this seller"); return; }
+  const pfAddP = e.target.closest(".pf-addp, .pf-addchip, .pf-avadd, .pf-note, .pf-sleep");
+  if (pfAddP) { scrToast(pfAddP.closest(".screen"), "Not in this prototype yet"); return; }
+  const pfMenu = e.target.closest(".pf-menu");
+  if (pfMenu) { pushSub(pfMenu.closest(".screen"), "settings"); return; }
+  const pfUname = e.target.closest(".pf-uname");
+  if (pfUname) { scrToast(pfUname.closest(".screen"), `Signed in as ${CP_ME.name}`); return; }
+  const pfMore = e.target.closest(".pf-more");
+  if (pfMore) {
+    const scr = pfMore.closest(".screen");
+    openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
+      <div class="pm-card">
+        <button class="pm-row pf-sh-copy">${I.link(20)}<span>Copy profile link</span></button>
+        <button class="pm-row pf-sh-share">${I.share(20)}<span>Share this profile</span></button>
+      </div>`);
+    return;
+  }
+  const pfSh = e.target.closest(".pf-sh-copy, .pf-sh-share");
+  if (pfSh) {
+    const scr = pfSh.closest(".screen");
+    scr.classList.remove("pm-open");
+    scrToast(scr, "Profile link copied");
+    return;
+  }
+  /* PORTFOLIO-001 — portfolio ⋯ = prototype-only preview-state picker (needs ?dev=1; production has no menu) */
+  const pfoMore = e.target.closest(".pfo-more");
+  if (pfoMore) {
+    const scr = pfoMore.closest(".screen");
+    const sim = scr._pfoSim || "";
+    const opt = (v, t) => `<button class="pm-row" data-pfosim="${v}"><span>${t}</span><span style="margin-left:auto">${sim === v ? I.check(15) : ""}</span></button>`;
+    openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
+      <div class="pm-card"><div class="pfo-menu-cap">Preview states (prototype)</div>
+        ${opt("", "Normal")}
+        ${opt("nomkt", "Market prices unavailable")}
+        ${opt("empty", "Empty portfolio")}
+        ${opt("failed", "Load failed")}
+        ${opt("denied", "Viewer access — permission denied")}
+      </div>`);
+    return;
+  }
+  const pfoSim = e.target.closest("[data-pfosim]");
+  if (pfoSim) {
+    const scr = pfoSim.closest(".screen");
+    scr._pfoSim = pfoSim.dataset.pfosim;
+    scr.classList.remove("pm-open");
+    renderSub(scr);
+    return;
+  }
+  const pfoRetry = e.target.closest(".pfo-retry");
+  if (pfoRetry) {
+    const scr = pfoRetry.closest(".screen");
+    scr._pfoSim = "";
+    renderSub(scr);
+    return;
+  }
+  const peSave = e.target.closest(".pe-save");
+  if (peSave) {
+    const scr = peSave.closest(".screen");
+    const o = PROFILES[CP_ME.name] = PROFILES[CP_ME.name] || {};
+    o.disp = scr.querySelector(".pe-name").value.trim() || CP_ME.name;
+    o.bio = scr.querySelector(".pe-bio").value.trim();
+    o.link = scr.querySelector(".pe-link").value.trim();
+    subBack(scr);
+    scrToast(scr, "Profile updated");
+    return;
+  }
+  const pePic = e.target.closest(".pe-pic");
+  if (pePic) { scrToast(pePic.closest(".screen"), "Photo picker isn't in this prototype yet"); return; }
+  const pfUserGo = e.target.closest("[data-pf-user]");
+  if (pfUserGo && !e.target.closest(".mact, .pf-flw, .sc-follow, .c-like, .lk-follow")) {
+    const scr = pfUserGo.closest(".screen");
+    scr.classList.remove("pv-open", "detail-open", "comments-open", "pm-open", "likes-open");
+    pushSub(scr, "profile:" + pfUserGo.dataset.pfUser);
+    return;
+  }
+  const pfWho = e.target.closest(".post-head .avatar-ring, .post-head .who, .post .caption > b");
+  if (pfWho) {
+    const scr = pfWho.closest(".screen");
+    const art = pfWho.closest("[data-pid]");
+    const p = POSTS.find(x => x.id === (art ? art.dataset.pid : scr.dataset.detailPid));
+    if (p) {
+      scr.classList.remove("pv-open", "detail-open", "comments-open", "pm-open", "likes-open");
+      pushSub(scr, "profile:" + p.seller);
+    }
+    return;
+  }
   const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn), .emoji-row, .comment-input, .sheet-title .send, .c-meta");
   if (dead) { toast("Not in this prototype yet"); return; }
   const wm = e.target.closest(".wordmark");

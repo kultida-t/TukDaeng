@@ -1,0 +1,98 @@
+PROFILE-001 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: PROFILE-001 ทำเมนู Profile ให้ใช้งานได้ใน fo-flow — มุมมองตัวเอง + มุมมองคนอื่น (สไตล์ IG)
+ไฟล์: Prototypes/fo-flow/index.html, Prototypes/_verify_profile.mjs
+Reference: IG profile layout ตามภาพที่ผู้ใช้แนบ (own profile + public profile)
+      + FrontOffice/06_PROFILE_MODULE.md (Owner/Public profile concept)
+ผลตรวจ: รอผู้ใช้รีวิว
+
+เคส 1: เข้าโปรไฟล์ตัวเองจาก bottom nav — ผ่าน (automated)
+  แถบ nav ล่าง > Profile (เดิม dead click) → เปิดหน้าโปรไฟล์ตัวเอง
+  เลื่อนเข้าแบบ sub-page เดียวกับ Settings/Search; header มีปุ่ม + (create),
+  username กลางจอพร้อมไอคอน lock + chevron, hamburger ขวาสุด
+
+เคส 2: องค์ประกอบโปรไฟล์ตัวเองตาม IG — ผ่าน (automated)
+  avatar ใหญ่พร้อม ring + note bubble "Can't decide…" + ปุ่ม + มุมล่างขวา,
+  display name "Mr.FOX" (persona = king.mr.fox, avatar รูป Mr.FOX),
+  stats posts/followers/following (344 / 21.1K / 4,173),
+  bio "CEO of Mr.FOX …" + chip "www.mrfox.com" + chip "+ Add",
+  ปุ่ม Edit profile / Share profile / ไอคอน wallet (ขนาดเดียว add-person) → Portfolio,
+  แถบ tab ไอคอน+label (All / Sale / Show / Hide / Sold — viewer เห็นแค่
+  All / Sale / Show) scroll ได้เมื่อเกิน 4 แท็บ + grid 3 คอลัมน์ 4:5 filter ตามแท็บ,
+  bottom nav ในหน้าโปรไฟล์ active ที่ Profile
+  (note bubble / sleep pill / ปุ่ม + บน avatar ถูกถอดออกตามที่ผู้ใช้สั่ง)
+
+เคส 3: grid โพสต์ตัวเอง + empty state — ผ่าน (automated)
+  grid แสดง 9 mock tiles ของ king.mr.fox (grid-only, ไม่กระทบ feed/search);
+  โพสต์ที่สร้างจาก composer (seller = king.mr.fox) จะขึ้นใน grid อัตโนมัติ,
+  บัญชีที่ไม่มีโพสต์จริงยังเห็น empty state ไอคอนกล้อง + "Share your first post"
+
+เคส 4: Followers / Following list — ผ่าน (automated)
+  แตะตัวเลข followers/following → หน้ารายชื่อพร้อมแท็บ 2 อัน (ตัวเลขบนแท็บ),
+  row = avatar + ชื่อ + ปุ่ม Follow/Following toggle ได้ (account-level sync
+  กับ feed ผ่าน setFollowing เดิม), แตะ row → เข้าโปรไฟล์คนนั้น, back กลับมาหน้าเดิม
+
+เคส 5: Edit profile — ผ่าน (automated)
+  Edit profile → หน้าฟอร์ม (รูป + Edit picture, Name, Bio, Link, ปุ่ม Save)
+  แก้แล้ว Save → กลับหน้าโปรไฟล์ ค่าเปลี่ยนทันที + toast "Profile updated"
+
+เคส 6: Hamburger → Settings / nav Feed ออกจากโปรไฟล์ — ผ่าน (automated)
+  ☰ บนโปรไฟล์ตัวเองเปิดหน้า "Settings and activity" เดิม (back กลับโปรไฟล์);
+  nav "Feed" ใน bottom nav ของหน้าโปรไฟล์ปิด sub page กลับ feed
+
+เคส 7: โปรไฟล์คนอื่นจาก feed — ผ่าน (automated)
+  แตะ avatar/ชื่อ seller บน post head (feed/detail/viewer) → โปรไฟล์คนนั้น:
+  header back + username + verified badge (บางบัญชี) + เมนู ...,
+  stats, category, bio, link, แถว "Followed by ...", ปุ่ม Follow/Message +
+  add-person, grid โพสต์จริงของ seller นั้น; ไม่มี note/sleep/add-badge
+
+เคส 8: Follow sync กับ feed — ผ่าน (automated)
+  กด Follow บนโปรไฟล์ → ปุ่มเปลี่ยนเป็น Following และปุ่ม Follow บนการ์ด
+  โพสต์ของ seller คนเดียวกันใน feed sync ตาม (ใช้ setFollowing เดิม)
+
+เคส 9: tile → post viewer → back — ผ่าน (automated)
+  แตะ tile ใน grid → post viewer เต็มจอ (pv เดิม), back กลับโปรไฟล์เดิม
+  (แท็บ clips/tagged กรอง list ให้ตรงแท็บ)
+
+เคส 10: เมนู ... บนโปรไฟล์คนอื่น — ผ่าน (automated)
+  ... → sheet แบบ pm เดิม มี Copy profile link / Share this profile,
+  เลือกแล้ว toast "Profile link copied" + sheet ปิด;
+  header โปรไฟล์คนอื่นมีไอคอน bell (toast) ก่อน ... ตาม ref IG
+
+เคส 10b: avatar tap → full view (IG) — ผ่าน (automated)
+  แตะ avatar บนโปรไฟล์ → overlay เต็มจอ backdrop blur + avatar ใหญ่ตรงกลาง
+  + ปุ่มวงกลมล่างจอ: viewer = Following/Share/Copy link/QR code (4 ปุ่ม),
+  own = Share/Copy link/QR code (3 ปุ่ม); copy → toast "Profile link copied",
+  Following toggle ผ่าน pfSetFollow เดิม, แตะ backdrop ปิด
+
+เคส 10c: รายละเอียดโปรไฟล์คนอื่นตาม ref IG — ผ่าน (automated)
+  ปุ่ม Following มี chevron ⌄, แถว Followed by แสดง avatar ซ้อนกันสูงสุด 3 วง
+  + "Followed by A, B and N others", chip แยก 2 แถว: 🔗 link กับ @username,
+  avatar ring แสดงเฉพาะบัญชีที่มี story (own + บาง seller), nav เปลี่ยนเมนู
+  Profile↔Feed เป็น swap ทันที (ไม่ slide) ตามพฤติกรรม IG tab
+
+เคส 10d: asset value → Portfolio (owner-only ตาม PRD) — ผ่าน (automated)
+  โปรไฟล์ตัวเอง: ปุ่มไอคอนแถว action เป็น wallet icon ขนาดเดิม (ไม่แสดงราคา
+  บนหน้าโปรไฟล์); กด → หน้า Portfolio: การ์ด Total asset value THB 2,077,500
+  + "9 assets · private to you" + รายการ asset (รูป, ชื่อ, ref/meta, มูลค่า ฿)
+  back กลับโปรไฟล์; โปรไฟล์คนอื่นยังมีปุ่ม add-person เดิม ไม่เปิดเผย portfolio
+
+เคส 11: entry points อื่น — ผ่าน (automated)
+  Search > Profiles tab: แตะการ์ด account (ไม่ใช่ปุ่ม Follow) → โปรไฟล์,
+  back กลับหน้า results; Comments sheet: แตะชื่อ/avatar คนคอมเมนต์ → โปรไฟล์;
+  Liked by <ชื่อ> บนการ์ด → โปรไฟล์ (จุดอื่นของแถวยังเปิด likes sheet เหมือนเดิม);
+  Likes sheet rows / chat-pop head / detail head dh5 / mrow ใน favorites,
+  muted, interested, ni → โปรไฟล์
+
+เคส 12: theme — ผ่าน (automated)
+  หน้าโปรไฟล์ใช้ CSS vars เดิมทั้งหมด render ได้ทั้ง dark/light,
+  nav variant icons/labeled ยังทำงานในหน้าโปรไฟล์
+
+หมายเหตุ:
+- state เป็น memory mock (session only) ไม่ persist — เหมือน task ก่อนหน้า
+- search suggestion row (.ac-row seller) ยังคง behavior เดิม (search ด้วยชื่อ)
+  ตามสเปก prototype ที่ lock ไว้ — เปิดโปรไฟล์ผ่านการ์ดในแท็บ Profiles แทน
+- pre-existing failures บน baseline (ไม่เกี่ยวกับ task นี้):
+  _verify_feed_search "Tags tab lists matching options",
+  _verify_feed_menu timeout ที่ .page-detail .post-head .more,
+  _verify_flow timeout ที่ clip tab (แท็บถูกลบใน task ก่อนหน้า)

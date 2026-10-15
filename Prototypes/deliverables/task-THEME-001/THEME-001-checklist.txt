@@ -1,0 +1,47 @@
+THEME-001 — Manual Review Checklist (ผู้ใช้ตรวจจริงบน preview 440x956)
+
+Task: THEME-001 เพิ่มเมนู Theme mode ใน Settings (Dark mode / Light mode) ใน fo-flow
+ไฟล์: Prototypes/fo-flow/index.html, Prototypes/_verify_theme.mjs
+Reference: FrontOffice/13_SETTINGS_MODULE.md — Theme Mode: Dark Mode / Light Mode
+      (เลือก theme → apply → บันทึก selection)
+ผลตรวจ: ผู้ใช้รีวิวผ่าน (2026-10-15) — ขอเพิ่มไอคอน sun/moon หน้าตัวเลือกระหว่างรีวิว ทำแล้วตรวจผ่าน
+
+เคส 1: เมนู Theme mode ในหน้า Settings — ผ่าน (automated)
+  กดปุ่ม settings (ไอคอน sliders) บน header → หน้า "Settings and activity"
+  มี section ใหม่ "Display" ใต้ "What you see" พร้อมแถว "Theme mode"
+  ไอคอน moon + ค่าปัจจุบันด้านขวา (Dark/Light) ตาม pattern แถวอื่นที่มี count
+
+เคส 2: หน้าเลือก Theme — ผ่าน (automated)
+  กดแถว Theme mode → หน้า "Theme mode" เลื่อนเข้าแบบ sub-page เดียวกับ
+  Sensitive content / Watch Alerts; มี 2 ตัวเลือก Light mode (ไอคอน sun) /
+  Dark mode (ไอคอน moon) พร้อมคำอธิบายสั้น และเครื่องหมายถูกบนโหมดที่ใช้อยู่
+
+เคส 3: Apply ทันทีทั้งจอ — ผ่าน (automated)
+  แตะ Light mode → .screen[data-theme] เปลี่ยนเป็น light ทันที (ทุก CSS var
+  เปลี่ยนตาม) โดยยังอยู่หน้า Theme mode เช็กย้ายไป Light ไม่ต้อง render ใหม่
+  ทั้งจอ — ใช้ token เดียวกับ dark/light ที่มีอยู่แล้ว ไม่เพิ่มชุดสีใหม่
+
+เคส 4: จำค่า (persistence) — ผ่าน (automated)
+  เลือก theme → เขียน localStorage fo_theme เดิม (key เดียวกับปุ่ม toggle
+  ใน review sidebar); reload หน้า → จอเปิดมาเป็น theme ที่เลือกไว้
+  ค่าเริ่มต้น (ยังไม่เคยเลือก) = dark เหมือนเดิม
+
+เคส 5: sync กับปุ่ม toggle ใน review sidebar — ผ่าน (automated)
+  แยก logic เป็น setTheme(v) ใช้ร่วมกันทั้งสองทาง: เลือกใน Settings แล้ว
+  ไอคอน ☾/☀ บน #themeToggle เปลี่ยนตาม และกด #themeToggle แล้วแถว
+  Theme mode ใน Settings แสดงค่าตามจริงเมื่อเปิดใหม่
+
+เคส 6: ค่าแสดงบนแถวตามจริง + back flow — ผ่าน (automated)
+  เปลี่ยน theme แล้วกด back กลับหน้า Settings แถว Theme mode แสดงค่าใหม่
+  กด back ออกถึง feed feed ทั้งจอเป็น theme ที่เลือก
+
+หมายเหตุ:
+- state จริงของ prototype: state.theme + localStorage fo_theme เดิมอยู่แล้ว
+  (ใช้กับปุ่ม toggle หน้า review) — task นี้แค่เพิ่มเมนูใน Settings ให้ควบคุม
+  ตัวเดียวกัน ไม่ได้เพิ่มระบบ theme ใหม่
+- ไม่มีตัวเลือก "System" — spec กำหนดแค่ Dark Mode / Light Mode
+- หน้าจอ protected ทั้งหมดไม่ถูกแตะต้อง (งานอยู่ใน fo-flow FO ฝั่ง user app)
+- screenshots: Prototypes/screenshots/task-THEME-001/
+- automated: _verify_theme.mjs 29 checks ผ่านหมด 0 errors
+- regression: _verify_feed_saved.mjs 106 checks, _verify_feed_wishlist.mjs
+  53 checks, _verify_wa.mjs 44 checks ผ่านหมด 0 errors
