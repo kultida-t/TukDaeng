@@ -5061,11 +5061,13 @@ function rpPush(scr, name) {
   el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; /* restart slide-in */
 }
 function pmDropCovered(scr) { /* the '...' sheet is fully covered by the report page — snap it shut
-    (no transition) so its rows don't sweep through the uncovered bottom strip below .page-sub */
-  const sh = scr.querySelector(".comment-sheet");
+    (no transition) so its rows don't sweep through the uncovered strips outside .page-sub;
+    the backdrop must snap too or its fade-out flashes in those same strips */
+  const sh = scr.querySelector(".comment-sheet"), bd = scr.querySelector(".sheet-backdrop");
   if (sh) sh.style.transition = "none";
+  if (bd) bd.style.transition = "none";
   scr.classList.remove("pm-open");
-  requestAnimationFrame(() => { if (sh) sh.style.transition = ""; });
+  requestAnimationFrame(() => { if (sh) sh.style.transition = ""; if (bd) bd.style.transition = ""; });
 }
 function rpBack(scr) {
   const st = scr._subStack || [];
@@ -7826,7 +7828,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = pmRp.closest(".screen");
     const post = findPost(scr.dataset.pmPid);
     if (post) scr.dataset.rpUser = post.seller; /* PROFILE-005 — thanks page needs the reported user */
-    scr.classList.remove("pm-open");
+    pmDropCovered(scr); /* drop the sheet in the same frame — no row sweep in the bottom strip */
     openSub(scr, "report");
     return;
   }
