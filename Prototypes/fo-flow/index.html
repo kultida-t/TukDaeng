@@ -1526,6 +1526,17 @@ l<!DOCTYPE html>
   /* nav-tab swap (IG behavior) — bottom-nav pages replace instantly, no slide */
   .page-sub.pg-swap { transition: none; }
   .screen.sub-open .page-sub.pg-swap { animation: none; }
+  /* report stack illusion (IG): a cloned page keeps the previous view visible
+     while the new page slides in on top / the popped page slides out */
+  .screen .pg-ghost {
+    position: absolute; top: 34px; bottom: 22px; left: 0; right: 0;
+    background: var(--bg); transform: none; animation: none;
+    pointer-events: none; z-index: 31;
+  }
+  .screen .pg-ghost.pg-out-r { animation: pgOut .3s ease forwards; z-index: 33; }
+  .screen .pg-ghost.pg-out-d { animation: pgDown .3s ease forwards; z-index: 33; }
+  @keyframes pgOut { to { transform: translateX(100%); } }
+  @keyframes pgDown { to { transform: translateY(110%); } }
   .sub-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
   .sub-scroll::-webkit-scrollbar { display: none; }
   /* ============ POST VIEWER (IG search-result viewer — vertical swipe through results) ============ */
@@ -1913,6 +1924,20 @@ l<!DOCTYPE html>
   .rp-step .pm-chev { color: var(--muted); display: flex; flex-shrink: 0; }
   .rp-step .rp-ck { color: #3ddc84; display: flex; flex-shrink: 0; } /* IG: green check on completed steps */
   .rp-step[disabled] { cursor: default; }
+  /* Select a post — radio circle on each tile + pinned Next bar (IG) */
+  .pf-tile.rp-tile { position: relative; }
+  .rp-sel {
+    position: absolute; top: 8px; right: 8px; width: 22px; height: 22px;
+    border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,.35);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .rp-tile.on .rp-sel { background: var(--red); border-color: var(--red); }
+  .rp-next {
+    flex-shrink: 0; margin: 8px 14px 14px; border: none; border-radius: 10px;
+    padding: 14px; background: var(--red); color: #fff;
+    font-family: var(--font-main); font-size: 14.5px; font-weight: 600; cursor: pointer;
+  }
+  .rp-next[disabled] { opacity: .45; cursor: default; }
   .rp-done {
     width: 100%; border: none; border-radius: 10px; padding: 14px; margin-top: 24px;
     background: var(--red); color: #fff; font-family: var(--font-main);
@@ -4946,7 +4971,6 @@ function muteDlgHTML(seller) {
     <div class="dlg-q">Mute ${seller}?</div>
     <div class="dlg-desc">You can unmute them anytime from their profile. We won't let them know you muted them.</div>
     <button class="dlg-btn danger dlg-mute-go">Mute posts</button>
-    <button class="dlg-btn danger dlg-mute-go">Mute posts and story</button>
     <button class="dlg-btn dlg-cancel">Cancel</button>`;
 }
 function resetDlgHTML() {
@@ -4978,7 +5002,7 @@ function renderSub(scr) {
   const oldBar = el.querySelector(".pf-tabs");
   if (oldBar) scr._pfTabSl = oldBar.scrollLeft; /* keep tab-bar position across re-renders */
   el.innerHTML = subHTML(st[st.length - 1], scr);
-  el.classList.toggle("pg-up", (st[st.length - 1] || "").startsWith("report"));
+  el.classList.toggle("pg-up", (st[st.length - 1] || "").startsWith("report:pick")); /* only the picker slides up — deeper report pages slide from the right */
   el.classList.toggle("pg-swap", !!scr._subSwap);
   const q = el.querySelector(".sr-q, .svd-q");
   if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
@@ -5013,6 +5037,48 @@ function subBack(scr) {
   }
   st.pop();
   if (st.length) renderSub(scr);
+  else scr.classList.remove("sub-open");
+}
+/* PROFILE-005 — report pages navigate like IG: a new page slides in from the
+   right while the previous one stays put underneath (ghost clone), "<" slides
+   the current page back out the same way, "X" closes the whole report stack */
+function rpPush(scr, name) {
+  const el = scr.querySelector(".page-sub");
+  if ((scr._subStack || []).length) {
+    const g = el.cloneNode(true);
+    g.className = "pg-ghost"; /* own class — keeps selectors/queries on the real page clean */
+    el.insertAdjacentElement("afterend", g);
+    setTimeout(() => g.remove(), 340);
+  }
+  pushSub(scr, name);
+  el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; /* restart slide-in */
+}
+function rpBack(scr) {
+  const st = scr._subStack || [];
+  if (st.length > 1) {
+    const el = scr.querySelector(".page-sub");
+    const g = el.cloneNode(true);
+    g.className = "pg-ghost pg-out-r"; /* exiting page rides on top */
+    el.insertAdjacentElement("afterend", g);
+    setTimeout(() => g.remove(), 340);
+    st.pop();
+    scr._subSwap = true; renderSub(scr); scr._subSwap = false; /* previous page stays put — no re-slide */
+  } else {
+    st.pop();
+    scr.classList.remove("sub-open"); /* last page slides itself out via the resting transform */
+  }
+}
+function rpClose(scr) {
+  const el = scr.querySelector(".page-sub");
+  if (scr.classList.contains("sub-open")) {
+    const g = el.cloneNode(true);
+    g.className = "pg-ghost " + (el.classList.contains("pg-up") ? "pg-out-d" : "pg-out-r");
+    el.insertAdjacentElement("afterend", g);
+    setTimeout(() => g.remove(), 340);
+  }
+  const st = scr._subStack || [];
+  while (st.length && (st[st.length - 1] || "").startsWith("report")) st.pop(); /* keep whatever opened the report flow (profile etc.) */
+  if (st.length) { scr._subSwap = true; renderSub(scr); scr._subSwap = false; }
   else scr.classList.remove("sub-open");
 }
 function subPostRows(posts, label, cls) {
@@ -6944,7 +7010,7 @@ function subHTML(name, scr) {
   if (name === "ni") return head("Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni), "Restore", "m-restore")}</div>`;
   /* full-page report view (IG-style) — opened from "..." menu or the uncomfortable ack card */
   if (name === "report" || name === "report:user") return `
-    <div class="detail-head rp-head"><span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="detail-head rp-head"><button class="icon-btn rp-back sub-back">${I.back(20)}</button><span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="pm-rp-scroll">
       <div class="pm-rp-q">Why are you reporting this ${name === "report:user" ? "account" : "post"}?</div>
       <div class="pm-rp-desc">Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait.</div>
@@ -6986,15 +7052,16 @@ function subHTML(name, scr) {
       <button class="rp-done">Done</button>
     </div>`;
   }
-  /* pick one of their posts -> post reasons */
+  /* pick one of their posts -> Next -> post reasons (IG: radio circle + pinned Next) */
   if (name.startsWith("report:posts:")) {
-    const u = name.slice(13);
+    const u = name.slice(13), sel = scr._rpSel || "";
     return `
-    <div class="detail-head rp-head"><span class="detail-title">Select a post to report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
-    <div class="pm-rp-scroll" style="padding:0 0 28px">
+    <div class="detail-head rp-head"><button class="icon-btn rp-back sub-back">${I.back(20)}</button><span class="detail-title">Select a post</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="pm-rp-scroll" style="padding:0 0 8px">
       <div class="pf-grid">${pfTabPosts(u, "all").map(p => `
-        <button class="pf-tile rp-tile" data-pid="${p.id}"><img src="${p.photos[0]}" alt="" loading="lazy"></button>`).join("")}</div>
-    </div>`;
+        <button class="pf-tile rp-tile${sel === p.id ? " on" : ""}" data-pid="${p.id}"><img src="${p.photos[0]}" alt="" loading="lazy"><span class="rp-sel">${sel === p.id ? I.check(12) : ""}</span></button>`).join("")}</div>
+    </div>
+    <button class="rp-next"${sel ? "" : " disabled"}>Next</button>`;
   }
 
   /* PROFILE-001 — profile pages stack like any other sub page */
@@ -7754,8 +7821,8 @@ document.getElementById("stage").addEventListener("click", e => {
   const rpOpt = e.target.closest(".rp-opt");
   if (rpOpt) {
     const scr = rpOpt.closest(".screen"), u = rpOpt.dataset.u;
-    if (rpOpt.dataset.rp === "acct") pushSub(scr, "report:user");
-    else pushSub(scr, "report:" + rpOpt.dataset.rp + ":" + u);
+    if (rpOpt.dataset.rp === "acct") rpPush(scr, "report:user");
+    else { scr._rpSel = ""; rpPush(scr, "report:" + rpOpt.dataset.rp + ":" + u); }
     return;
   }
   /* PROFILE-005 — picking a reason opens the IG "Thanks for your feedback" page
@@ -7764,7 +7831,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (pmDone) {
     const scr = pmDone.closest(".screen");
     const u = scr.dataset.rpUser || "";
-    if (u) { pushSub(scr, "report:done:" + u); return; }
+    if (u) { rpPush(scr, "report:done:" + u); return; }
     scr.classList.remove("pm-open", "sub-open");
     scr._subStack = [];
     toast("Report submitted · thanks for letting us know");
@@ -7899,8 +7966,15 @@ document.getElementById("stage").addEventListener("click", e => {
   if (setBtn) { openSub(setBtn.closest(".screen"), "settings"); return; }
   const subNav = e.target.closest("[data-sub]");
   if (subNav) { pushSub(subNav.closest(".screen"), subNav.dataset.sub); return; }
-  const subBk = e.target.closest(".sub-back, .sub-x");
-  if (subBk) { subBack(subBk.closest(".screen")); return; }
+  const subBk = e.target.closest(".sub-back");
+  if (subBk) {
+    const scr = subBk.closest(".screen");
+    if (((scr._subStack || []).at(-1) || "").startsWith("report")) rpBack(scr); /* report pages slide back out right */
+    else subBack(scr);
+    return;
+  }
+  const subX = e.target.closest(".sub-x");
+  if (subX) { rpClose(subX.closest(".screen")); return; } /* X closes the whole report stack, keeping the page that opened it */
   const subReset = e.target.closest('[data-dlg="reset"]');
   if (subReset) { openDlg(subReset.closest(".screen"), resetDlgHTML()); return; }
   const sens = e.target.closest("[data-sens]");
@@ -8203,8 +8277,9 @@ document.getElementById("stage").addEventListener("click", e => {
   const pfTile = e.target.closest(".pf-tile");
   if (pfTile) {
     const scr = pfTile.closest(".screen");
-    if (pfTile.classList.contains("rp-tile")) { /* PROFILE-005 — report post picker -> post reasons */
-      pushSub(scr, "report");
+    if (pfTile.classList.contains("rp-tile")) { /* PROFILE-005 — select a post to report: pick then Next (IG) */
+      scr._rpSel = pfTile.dataset.pid;
+      scr._subSwap = true; renderSub(scr); scr._subSwap = false; /* mark in place, no re-slide */
       return;
     }
     const parts = ((scr._subStack || []).at(-1) || "").split(":");
@@ -8356,7 +8431,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = pfShReport.closest(".screen");
     scr.classList.remove("pm-open");
     scr.dataset.rpUser = pfShReport.dataset.u;
-    pushSub(scr, "report:pick:" + pfShReport.dataset.u); /* IG picker first, then reasons */
+    rpPush(scr, "report:pick:" + pfShReport.dataset.u); /* IG picker first, then reasons */
     return;
   }
   /* PROFILE-005 — Block -> IG confirm sheet; when already blocked the same row
@@ -8386,7 +8461,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const subTop = (scr._subStack || []).at(-1) || "";
     if (subTop === "profile:" + u || subTop === "report:done:" + u) renderSub(scr);
     scrToast(scr, "Blocking"); /* IG flashes this transient toast */
-    if (blkGo.classList.contains("blk-rp")) { scr.dataset.rpUser = u; pushSub(scr, "report:pick:" + u); }
+    if (blkGo.classList.contains("blk-rp")) { scr.dataset.rpUser = u; rpPush(scr, "report:pick:" + u); }
     return;
   }
   /* PROFILE-005 — "Thanks for your feedback" steps: real actions only.
@@ -8404,11 +8479,16 @@ document.getElementById("stage").addEventListener("click", e => {
     else if (act === "unmute") { pfSetMuted(scr, u, false); dn.delete(u + "|mute"); scrToast(scr, "Unmuted"); renderSub(scr); }
     return;
   }
+  const rpNext = e.target.closest(".rp-next");
+  if (rpNext) {
+    if (rpNext.disabled) return;
+    rpPush(rpNext.closest(".screen"), "report"); /* selected post -> post reasons */
+    return;
+  }
   const rpDone = e.target.closest(".rp-done");
   if (rpDone) {
     const scr = rpDone.closest(".screen");
-    scr.classList.remove("pm-open", "sub-open");
-    scr._subStack = [];
+    rpClose(scr); /* same as X — closes the report stack, keeps the profile below */
     scrToast(scr, "Report submitted · thanks for letting us know");
     return;
   }

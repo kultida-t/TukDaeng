@@ -199,6 +199,44 @@ await page.waitForTimeout(300);
 check("'Something about this account' -> reason list", (await sub().locator(".pm-rp-q").textContent()).includes("account") &&
   (await sub().locator(".pm-reason").count()) === 9);
 
+// "<" back returns to the picker (page underneath, no re-slide)
+await sub().locator(".sub-back").click();
+await page.waitForTimeout(300);
+check("'<' back returns to picker", (await sub().locator(".pm-rp-q").textContent()).includes("What do you want to report"));
+
+// "A specific post" -> Select a post (radio circles + pinned Next)
+await sub().locator('.rp-opt[data-rp="posts"]').click();
+await page.waitForTimeout(300);
+check("Select a post: title + back + radio circles + disabled Next",
+  (await sub().locator(".detail-title").textContent()).trim() === "Select a post" &&
+  (await sub().locator(".rp-back").count()) === 1 &&
+  (await sub().locator(".rp-sel").count()) > 0 &&
+  (await sub().locator(".rp-next[disabled]").count()) === 1);
+await sub().locator(".rp-tile").first().click();
+await page.waitForTimeout(250);
+check("tile select fills circle + enables Next",
+  (await sub().locator(".rp-tile.on .rp-sel").count()) === 1 &&
+  (await sub().locator(".rp-next:not([disabled])").count()) === 1);
+await page.screenshot({ path: `${OUT}/o-pfm-select-post.png` });
+await sub().locator(".rp-next").click();
+await page.waitForTimeout(350);
+check("Next -> post reasons", (await sub().locator(".pm-rp-q").textContent()).includes("post") &&
+  (await sub().locator(".pm-reason").count()) === 9);
+await sub().locator(".sub-back").click();
+await page.waitForTimeout(300);
+check("'<' back to Select a post keeps selection", (await sub().locator(".rp-tile.on").count()) === 1);
+await sub().locator(".rp-x").click();
+await page.waitForTimeout(350);
+check("X closes whole report stack back to profile", (await sub().locator(".pf-more").count()) === 1);
+
+// re-enter report -> account reasons -> reason -> thanks page
+await sub().locator(".pf-more").click();
+await page.waitForTimeout(250);
+await page.locator(".pf-sh-report").click();
+await page.waitForTimeout(300);
+await sub().locator('.rp-opt[data-rp="acct"]').click();
+await page.waitForTimeout(300);
+
 // reason -> IG "Thanks for your feedback" + Other steps page
 await sub().locator(".pm-reason").first().click();
 await page.waitForTimeout(350);
@@ -210,12 +248,12 @@ check("other steps = Block/Mute only (TukDaeng-adapted)",
   stepLabels.join("|") === `Block dial.dude|Mute dial.dude`, stepLabels.join("|"));
 check("no Restrict/message/Community-Standards steps", !stepLabels.some(t => /restrict|message|community/i.test(t)));
 await page.screenshot({ path: `${OUT}/k-pfm-report-thanks.png` });
-// Mute step -> IG mute dialog (posts / posts and story / Cancel) -> green check
+// Mute step -> IG mute dialog (Mute posts / Cancel) -> green check
 await sub().locator('.rp-step[data-act="mute"]').click();
 await page.waitForTimeout(300);
-check("Mute step -> center dialog with 2 mute options",
+check("Mute step -> center dialog with Mute posts option",
   (await page.locator(".dlg-q").textContent()).includes("Mute dial.dude") &&
-  (await page.locator(".dlg-mute-go").count()) === 2);
+  (await page.locator(".dlg-mute-go").count()) === 1);
 await page.screenshot({ path: `${OUT}/l-pfm-mute-dialog.png` });
 await page.locator(".dlg-mute-go").first().click();
 await page.waitForTimeout(350);
@@ -234,11 +272,11 @@ await page.locator(".blk-go").click();
 await page.waitForTimeout(350);
 check("blocked from thanks page -> row flips to Unblock", await page.evaluate(() => pfIsBlocked("dial.dude")) &&
   (await sub().locator('.rp-step[data-act="unblock"]').count()) === 1);
-// Done closes the whole report stack
+// Done closes the report pages back to the profile that opened them
 await sub().locator(".rp-done").click();
 await page.waitForTimeout(350);
-check("Done closes report + submitted toast",
-  !(await scr().getAttribute("class")).includes("sub-open") &&
+check("Done closes report back to profile + submitted toast",
+  (await sub().locator(".pf-more").count()) === 1 &&
   (await scr().locator(".sc-toast").textContent()).includes("Report submitted"));
 await page.evaluate(() => { const s = document.querySelector(".screen"); pfSetBlocked(s, "dial.dude", false); pfSetMuted(s, "dial.dude", false); });
 

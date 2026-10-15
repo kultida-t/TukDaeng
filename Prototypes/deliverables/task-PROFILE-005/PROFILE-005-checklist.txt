@@ -51,8 +51,15 @@ Reference: ภาพ IG ที่ผู้ใช้แนบ + คลิป IG b
   account) — ผู้ใช้ตัด "Recent messages they sent you" ออกเพราะ
   TukDaeng มีแค่ chat pop-up เล็กบนหน้าโพสต์ ไม่มีห้องแชทจริงให้เลือก
   ข้อความ (IG มี แอปเราไม่มี) → "Something about this account" ไป
-  หน้าเหตุผล 9 ข้อเดิม, "A specific post" เปิด grid เลือกโพสต์ของเขา
-  → เหตุผลโพสต์; X ปิด pop ทีละชั้นกลับโปรไฟล์
+  หน้าเหตุผล 9 ข้อเดิม, "A specific post" เปิดหน้า "Select a post to
+  report" ตามภาพที่ 2: ปุ่ม '<' back + X + grid โพสต์พร้อมวงกลมเลือก
+  มุมขวาบน + ปุ่ม Next ล่าง (disabled จนกว่าจะเลือก) → เหตุผลโพสต์
+
+เคส 5b2: navigation report ตาม IG — ผ่าน (automated)
+  X = ปิด report ทั้งกลุ่มกลับหน้าที่เปิดเมนู ... มา (โปรไฟล์/feed) ทุก
+  หน้า; '<' = back ทีละชั้นเท่านั้น — หน้าปัจจุบันสไลด์ออกทางขวาและหน้า
+  ก่อนหน้าอยู่นิ่งข้างใต้ (ไม่สไลด์กลับมาซ้ำ) ทำด้วย rpPush/rpBack/
+  rpClose + .pg-ghost clone; หน้าที่มี '<' สไลด์เข้าจากขวา (pgSide)
 
 เคส 5c: Report thanks page ตาม IG (คลิป 813752856.187328.mp4 +
   ภาพรีวิวล่าสุด) — ผ่าน (automated)
@@ -66,8 +73,9 @@ Reference: ภาพ IG ที่ผู้ใช้แนบ + คลิป IG b
     อยู่ใน report flow แล้ว); block แล้ว row กลายเป็น Unblock → dialog เดิม
   - Unfollow <u> → ทำทันที + toast "Unfollowed" + row ค้างไว้พร้อม
     เครื่องหมายถูกเขียวตามภาพที่ 3 (โชว์แถวเฉพาะตอน following)
-  - Mute <u> → center dialog "Mute <u>?" ตามภาพที่ 2: "Mute posts" /
-    "Mute posts and story" / Cancel → toast "Muted" + เครื่องหมายถูกเขียว
+  - Mute <u> → center dialog "Mute <u>?" : "Mute posts" / Cancel
+    (ผู้ใช้สั่งตัด "Mute posts and story" ออก — แอปไม่มี story)
+    → toast "Muted" + เครื่องหมายถูกเขียว
   ตัด Restrict + Recent messages + Learn more (Community Standards)
   ที่ IG มีเพราะแอปเราไม่มีฟีเจอร์เหล่านั้น; ปุ่ม Done แดงปิดทั้ง stack
   + toast "Report submitted · thanks for letting us know"
@@ -94,7 +102,7 @@ Reference: ภาพ IG ที่ผู้ใช้แนบ + คลิป IG b
 
 เคส 9: regression + theme — ผ่าน (automated)
   Report เดิมยังทำงาน (เพิ่ม picker คั่น + thanks page ตาม IG); light
-  theme render ครบ; verify ใหม่ _verify_pfm.mjs 49/49 PASS; regression _verify_profile.mjs /
+  theme render ครบ; verify ใหม่ _verify_pfm.mjs 59/59 PASS; regression _verify_profile.mjs /
   _verify_pfg.mjs / _verify_pfl.mjs / _verify_pfp.mjs = 0 failed
   ทั้งหมด, 0 console errors; own/viewer profile layout ที่ล็อก
   (PROFILE-001/003) ไม่ถูกแตะนอกจาก conditional เพิ่มปุ่ม Unblock

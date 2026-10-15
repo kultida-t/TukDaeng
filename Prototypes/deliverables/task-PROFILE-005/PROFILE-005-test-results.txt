@@ -1,6 +1,6 @@
 PROFILE-005 — Automated Test Results
 File: Prototypes/_verify_pfm.mjs (Playwright, 440x956, deviceScaleFactor 2)
-Date: 2026-10-15 | Result: 53/53 PASS, 0 console errors
+Date: 2026-10-15 | Result: 59/59 PASS, 0 console errors
 
 == _verify_pfm.mjs (new) ==
 PASS viewer profile opened
@@ -43,14 +43,20 @@ PASS Share this profile -> share sheet
 PASS Copy profile URL -> link toast
 PASS Report -> picker first (IG)
 PASS 'Something about this account' -> reason list
+PASS '<' back returns to picker
+PASS Select a post: title + back + radio circles + disabled Next
+PASS tile select fills circle + enables Next
+PASS Next -> post reasons
+PASS '<' back to Select a post keeps selection
+PASS X closes whole report stack back to profile
 PASS thanks page: check + 'Thanks for your feedback'
 PASS other steps = Block/Mute only (TukDaeng-adapted) — Block dial.dude|Mute dial.dude
 PASS no Restrict/message/Community-Standards steps
-PASS Mute step -> center dialog with 2 mute options
+PASS Mute step -> center dialog with Mute posts option
 PASS muted -> toast + row keeps green check (IG)
 PASS Block step -> report sheet: 3 impact rows, Block button only
 PASS blocked from thanks page -> row flips to Unblock
-PASS Done closes report + submitted toast
+PASS Done closes report back to profile + submitted toast
 PASS Unfollow row shows for followed account
 PASS 'Unfollowed' toast + row gets green check (IG)
 PASS done checks are per-user (Mute the watch still unchecked)
@@ -66,7 +72,13 @@ _verify_pfp.mjs      0 failed / 0 console errors
 Notes for future verifiers:
 - pushSub via page.evaluate is the established pattern for deep-linking
   into profile:X subs (same as _verify_pfg seller sweep)
-- after sub-x closes the report page the whole sub layer closes — to
+- report pages navigate with rpPush/rpBack/rpClose (not subBack): '<'
+  pops one report step (current page slides out right over a static
+  under-page), 'X' closes the entire report stack back to wherever the
+  '...' menu was opened. During the .3s transition a .pg-ghost clone
+  sits in the DOM — scope locators to .page-sub (ghosts don't carry
+  that class) or wait >340ms
+- after X closes the report stack the profile sub stays open — to
   reach Settings, reopen own profile first (pushSub profile:king.mr.fox)
 - .pf-rhint auto-dismisses in 6s — assert immediately after unblock or
   click it away explicitly before the next step
