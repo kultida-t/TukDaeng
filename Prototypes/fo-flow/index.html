@@ -822,6 +822,8 @@
     flex-direction: column;
   }
   .screen.detail-open .page-detail { transform: none; }
+  .screen:is(.comments-open, .unfollow-open, .pm-open, .mf-open, .likes-open, .share-open, .save-open, .sort-open, .details-open, .wa-open) :is(.feed-scroll, .detail-scroll, .sub-scroll, .pv-track) { overflow: hidden !important; overscroll-behavior: contain; } /* bottom sheet open — page behind must not scroll */
+  .screen.detail-open .sheet-backdrop { z-index: 36; } /* Detail page (35) is later in DOM — keep the dim scrim above it */
   .detail-head {
     display: flex;
     align-items: center;
@@ -1198,8 +1200,8 @@
 
   /* likes sheet — title + note + people rows (no search, no views tab) */
   .lk-note {
-    font-size: 13px; color: var(--muted); line-height: 1.5;
-    padding: 0 16px 10px; flex-shrink: 0;
+    font-size: 12px; color: var(--muted); line-height: 1.45; text-align: center;
+    padding: 12px 28px 10px; flex-shrink: 0;
   }
   .lk-row { display: flex; align-items: center; gap: 11px; padding: 7px 0; }
   .lk-row img {
@@ -1284,7 +1286,7 @@
     background: none; border: none; font-family: var(--font-main);
     cursor: pointer; text-align: left;
   }
-  .sv-head { padding: 8px 16px 12px; }
+  .sv-head { padding: 8px 16px 12px; border-bottom: 1px solid var(--line); border-radius: 0; margin-bottom: 6px; box-sizing: border-box; }
   .sv-head .thumb, .sv-row .thumb {
     width: 46px; height: 46px; border-radius: 8px; object-fit: cover;
     background: var(--surface-2); border: 1px solid var(--line); flex-shrink: 0;
@@ -1650,7 +1652,6 @@
   }
   /* details bottom sheet — scrollable, same mechanics as comment sheet */
   .comment-sheet.dt { height: 72%; }
-  .comment-sheet.nt .sheet-title { display: none; }
   /* "…" caption+comments sheet inside the viewer */
   .comment-sheet.ps { height: 78%; }
   .ps-head { display: flex; align-items: center; gap: 10px; padding: 4px 0 9px; }
@@ -1993,20 +1994,12 @@
     font-weight: 700;
     padding: 6px 16px 12px;
     flex-shrink: 0;
-  }
-  .sheet-title .send {
-    position: absolute;
-    right: 14px; top: 50%;
-    transform: translateY(-55%);
-    background: none; border: none;
-    color: var(--text);
-    cursor: pointer;
-    display: flex;
+    border-bottom: 1px solid var(--line);
   }
   .sheet-list {
     flex: 1;
     overflow-y: auto;
-    padding: 2px 16px 8px;
+    padding: 8px 16px 8px;
     scrollbar-width: none;
   }
   .sheet-list::-webkit-scrollbar { display: none; }
@@ -3326,7 +3319,7 @@
   /* unified hand cursor for every clickable element */
   button:not(:disabled), [role="button"], a[href], summary, label[for], select,
   .nav-item, .avatar-ring, .post-head .who, .post .caption > b, .pf-uname,
-  .sh-add, .act, .ask-pill, .app-header .icon-btn, .emoji-row, .sheet-title .send, .c-meta,
+  .sh-add, .act, .ask-pill, .app-header .icon-btn, .emoji-row, .c-meta,
   [data-pf-user], [data-navgo], [data-pftab], [data-tab], [data-act], [data-pid], [data-flow],
   [data-avact], [data-pfgo], [data-sub], [data-theme-opt], [data-tgl], [data-tag], [data-u] { cursor: pointer; }
   button:disabled, [disabled] { cursor: default; }
@@ -3359,7 +3352,7 @@ const POSTS = [
       "./assets/asset-uploads/ast-8831-2.png",
       "./assets/asset-uploads/ast-8831-3.png",
     ],
-    likes: 3, comments: 1, views: "1.2K",
+    likes: 3, comments: 2, views: "1.2K",
     caption: "Rolex Submariner Date · Ref. 126610LN",
     captionFull: "Rolex Submariner Date · Ref. 126610LN\nFull set 2023 — original box & papers, beautiful condition.\nSerious buyers welcome to ask 📩\n\n#Rolex #Submariner #TukDaeng",
     price: "THB 420,000",
@@ -3692,6 +3685,9 @@ const COMMENTS = {
     { name: "neng_mua", avatar: "./assets/user-avatars/u-1120.png", time: "1 day", text: "grail unlocked!!", likes: 4,
       replies: [{ name: "chrono.th", avatar: "./assets/user-avatars/u-1088.png", time: "20 hr", text: "@neng_mua 😍😍😍", likes: 1 }] },
     { name: "bikwans", avatar: "./assets/user-avatars/u-1055.png", time: "1 day", text: "น่ารักมากกกก", likes: 1 },
+    { name: "davikah", avatar: "./assets/user-avatars/u-1161.png", time: "20 hr", text: "congrats on the grail!", likes: 2 },
+    { name: "bamzilla", avatar: "./assets/user-avatars/u-1186.png", time: "6 hr", text: "clean 🔥", likes: 0 },
+    { name: "watch.daily", avatar: "./assets/user-avatars/u-1144.png", time: "2 hr", text: "that dial though 😍", likes: 1 },
   ],
   p7: [
     { name: "davikah", avatar: "./assets/user-avatars/u-1161.png", time: "3 hr", text: "that light 😍", likes: 2 },
@@ -4065,8 +4061,24 @@ function specGroupsHTML(groups, rowsFn, headFn) {
   return groups.map(g => `${g.title ? head(g.title) : ""}${rows(g)}`).join("");
 }
 
+const PF_CMT_TEXTS = ["clean set 🔥", "love this one", "that dial 😍", "grail energy", "so clean", "great shot 🙌", "still available?", "น่ารักมากกก", "mood", "classic 🌕", "needs more wrist shots", "👏👏👏"];
+const PF_CMT_TIMES = ["5 min", "20 min", "1 hr", "3 hr", "9 hr", "1 day", "2 days", "4 days", "1 week"];
+/* profile grid posts carry a comment count but no seeded thread — build one whose rows add up to p.comments */
+function commentsFor(p) {
+  if (COMMENTS[p.id]) return COMMENTS[p.id];
+  const n = p.comments || 0;
+  if (!n) return [];
+  const pool = LIKER_POOL.filter(u => u.name !== p.seller);
+  const seed = [...String(p.id)].reduce((a, ch) => a + ch.charCodeAt(0), 0);
+  const list = Array.from({ length: n }, (_, i) => {
+    const u = pool[(seed + i) % pool.length];
+    const cp = i === 0 && p.commentPreview;
+    return { name: cp ? cp.name : u.name, avatar: cp ? pfAvatar(cp.name) : u.avatar, time: PF_CMT_TIMES[Math.min(PF_CMT_TIMES.length - 1, n - 1 - i)], text: cp ? cp.text : PF_CMT_TEXTS[(seed + i * 5) % PF_CMT_TEXTS.length], likes: (seed + i) % 4 };
+  });
+  return (COMMENTS[p.id] = list);
+}
 function commentRowsHTML(p) {
-  return (COMMENTS[p.id] || []).map(c => `
+  return commentsFor(p).map(c => `
     <div class="c-row">
       <img src="${c.avatar}" alt="" data-pf-user="${esc(c.name)}">
       <div class="c-main">
@@ -4092,7 +4104,7 @@ function commentsHTML(p) {
   const rows = commentRowsHTML(p);
   return `
     <div class="sheet-handle"></div>
-    <div class="sheet-title">Comments<button class="send">${I.share(18)}</button></div>
+    <div class="sheet-title">Comments</div>
     <div class="sheet-list">${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No comments yet</div>`}</div>
     <div class="emoji-row"><span>❤️</span><span>🙌</span><span>🔥</span><span>👏</span><span>🥲</span><span>😍</span><span>😮</span><span>😂</span></div>
     <div class="comment-input">
@@ -4143,7 +4155,7 @@ function likesSheetHTML(p) {
   return `
     <div class="sheet-handle"></div>
     <div class="sheet-title">Likes</div>
-    <div class="lk-note">Only ${p.seller} can see the total number of likes on this post.</div>
+    ${isOwnPost(p) ? "" : `<div class="lk-note">Only ${p.seller} can see the total number of likes on this post.</div>`}
     <div class="sheet-list">
       ${likers.map(l => `
       <div class="lk-row" data-pf-user="${esc(l.name)}">
@@ -4572,7 +4584,7 @@ function setFollowing(scr, seller, on) {
   POSTS.forEach(p => { if (p.seller === seller) { p.following = on; if (!on) { p.favorite = false; p.muted = false; } } }); /* unfollow also clears favorite+mute so they drop off the Settings lists */
   scr.querySelectorAll(".feed-scroll .post, .page-sub .post, .page-pv .post").forEach(art => {
     if (art.classList.contains("pfp-post")) return; /* Posts viewer cards never carry a follow btn — it lives in the pv head */
-    const bp = POSTS.find(x => x.id === art.dataset.pid);
+    const bp = findPost(art.dataset.pid);
     if (!bp || bp.seller !== seller) return;
     const fb = art.querySelector(".follow-btn");
     if (fb) {
@@ -4584,7 +4596,7 @@ function setFollowing(scr, seller, on) {
     if (head && !on)
       head.querySelector(".more").insertAdjacentHTML("beforebegin", `<button class="follow-btn">Follow</button>`);
   });
-  const dp = POSTS.find(x => x.id === scr.dataset.detailPid);
+  const dp = findPost(scr.dataset.detailPid);
   const db = scr.querySelector(".page-detail .follow-btn");
   if (db && dp && dp.seller === seller) {
     db.classList.toggle("on", dp.following);
@@ -5673,7 +5685,7 @@ function wlEcCoverHTML(c) {
   if (!c) return "";
   let src = "", orig = "";
   if (c.coverPid) {
-    const p = POSTS.find(x => x.id === c.coverPid);
+    const p = findPost(c.coverPid);
     if (p) { src = thumbS(p); orig = p.photos[0]; }
   }
   if (!src) {
@@ -5750,7 +5762,7 @@ function ecCoverHTML(c) {
   if (!c) return "";
   let src = "", orig = "";
   if (c.coverPid) {
-    const p = POSTS.find(x => x.id === c.coverPid);
+    const p = findPost(c.coverPid);
     if (p) { src = thumbS(p); orig = p.photos[0]; }
   }
   if (!src) {
@@ -6410,7 +6422,7 @@ function syncModelFlags() {
 function refreshMfBtns(scr) {
   scr.querySelectorAll(".mf-btn").forEach(b => {
     const art = b.closest(".post");
-    const p = POSTS.find(x => x.id === (art ? art.dataset.pid : scr.dataset.detailPid));
+    const p = findPost(art ? art.dataset.pid : scr.dataset.detailPid);
     const on = !!(p && p.modelFollowing);
     b.classList.toggle("on", on);
     b.title = on ? "Following this model" : "Follow this model";
@@ -7462,7 +7474,7 @@ function photoCtx(el) {
     return { post: a, dotsEl: el.parentElement.querySelector(".photo-dots") };
   }
   const scr = el.closest(".screen");
-  return { post: POSTS.find(x => x.id === scr.dataset.detailPid), dotsEl: scr.querySelector(".page-detail .photo-dots") };
+  return { post: findPost(scr.dataset.detailPid), dotsEl: scr.querySelector(".page-detail .photo-dots") };
 }
 /* swap a clip-capable media box to slide i — badge/countdown follow the slide's own dur */
 function phClipSet(ph, post, i) {
@@ -8059,7 +8071,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (niUf) {
     const scr = niUf.closest(".screen");
     const art = niUf.closest(".post");
-    const post = art && POSTS.find(x => x.id === art.dataset.pid);
+    const post = art && findPost(art.dataset.pid);
     if (post) {
       setFollowing(scr, post.seller, false);
       art.remove();
@@ -8071,7 +8083,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (pmUndo) {
     const scr = pmUndo.closest(".screen");
     const art = pmUndo.closest(".post");
-    const post = art && POSTS.find(x => x.id === art.dataset.pid);
+    const post = art && findPost(art.dataset.pid);
     if (post) {
       post.ni = false;
       art.outerHTML = postCard(post, scr.dataset.variant);
@@ -8112,7 +8124,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const niMute = e.target.closest(".ni-mute");
   if (niMute) {
     const scr = niMute.closest(".screen");
-    const post = POSTS.find(x => x.id === niMute.closest(".post").dataset.pid);
+    const post = findPost(niMute.closest(".post").dataset.pid);
     if (post) {
       scr.dataset.muteSeller = post.seller;
       openDlg(scr, muteDlgHTML(post.seller));
@@ -8124,7 +8136,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const niUc = e.target.closest(".ni-uncomf");
   if (niUc) {
     const art = niUc.closest(".post");
-    const post = art && POSTS.find(x => x.id === art.dataset.pid);
+    const post = art && findPost(art.dataset.pid);
     if (post) art.outerHTML = uncomfCardHTML(post);
     return;
   }
@@ -8142,7 +8154,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (ucUndo) {
     const scr = ucUndo.closest(".screen");
     const art = ucUndo.closest(".post");
-    const post = art && POSTS.find(x => x.id === art.dataset.pid);
+    const post = art && findPost(art.dataset.pid);
     if (post) {
       post.ni = false;
       art.outerHTML = postCard(post, scr.dataset.variant);
@@ -8297,7 +8309,7 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const mRe = e.target.closest(".m-restore");
   if (mRe) {
-    const p = POSTS.find(x => x.id === mRe.dataset.pid);
+    const p = findPost(mRe.dataset.pid);
     const scr = mRe.closest(".screen");
     if (p) {
       p.ni = false;
@@ -8308,7 +8320,7 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const mUl = e.target.closest(".m-unlike");
   if (mUl) {
-    const p = POSTS.find(x => x.id === mUl.dataset.pid);
+    const p = findPost(mUl.dataset.pid);
     if (p) {
       p.liked = false;
       p.likes--;
@@ -8346,7 +8358,7 @@ document.getElementById("stage").addEventListener("click", e => {
   }
   const mUs = e.target.closest(".m-unsave");
   if (mUs) {
-    const p = POSTS.find(x => x.id === mUs.dataset.pid);
+    const p = findPost(mUs.dataset.pid);
     const scr = mUs.closest(".screen");
     if (p) {
       p.saved = false;
@@ -8471,7 +8483,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const pvAdd = e.target.closest(".pv-add");
   if (pvAdd) {
     const scr = pvAdd.closest(".screen");
-    const post = POSTS.find(x => x.id === pvAdd.closest(".post").dataset.pid);
+    const post = findPost(pvAdd.closest(".post").dataset.pid);
     if (post) {
       const cs = scr.querySelector(".comment-sheet");
       cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps", "nc");
@@ -8883,14 +8895,14 @@ document.getElementById("stage").addEventListener("click", e => {
   if (pfWho) {
     const scr = pfWho.closest(".screen");
     const art = pfWho.closest("[data-pid]");
-    const p = POSTS.find(x => x.id === (art ? art.dataset.pid : scr.dataset.detailPid));
+    const p = findPost(art ? art.dataset.pid : scr.dataset.detailPid);
     if (p) {
       scr.classList.remove("pv-open", "detail-open", "comments-open", "pm-open", "likes-open");
       pushSub(scr, "profile:" + p.seller);
     }
     return;
   }
-  const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn), .emoji-row, .comment-input, .sheet-title .send, .c-meta");
+  const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn), .emoji-row, .comment-input, .c-meta");
   if (dead) { toast("Not in this prototype yet"); return; }
   const wm = e.target.closest(".wordmark");
   if (wm) {
@@ -8997,7 +9009,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = mfBtn.closest(".screen");
     const art = mfBtn.closest(".post");
     const pid = art ? art.dataset.pid : (scr.dataset.dtPid || scr.dataset.detailPid);
-    const post = POSTS.find(x => x.id === pid);
+    const post = findPost(pid);
     if (!post) return;
     const key = modelKeyOf(post);
     const existing = WATCH_ALERTS.find(a => a.modelKey && a.modelKey === key);
@@ -9340,7 +9352,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const V = colState(scr);
     const wl = inWlCol(scr);
     const n = V.addSel.size;
-    V.addSel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p[wl ? "wlCol" : "savedCol"] = V.col; p[wl ? "wlColAt" : "colAt"] = Date.now(); } });
+    V.addSel.forEach(pid => { const p = findPost(pid); if (p) { p[wl ? "wlCol" : "savedCol"] = V.col; p[wl ? "wlColAt" : "colAt"] = Date.now(); } });
     V.addSel.clear(); V.mode = "";
     renderSub(scr);
     if (n) scrToast(scr, n === 1 ? "Added 1 post" : `Added ${n} posts`);
@@ -9391,7 +9403,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const col = svdMv.dataset.col;
     const inCol = (scr._subStack || []).at(-1) === "savedcol" || inWlCol(scr);
     const firstP = POSTS.find(x => V.sel.has(x.id));
-    V.sel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p[wl ? "wlCol" : "savedCol"] = col; p[wl ? "wlColAt" : "colAt"] = Date.now(); } });
+    V.sel.forEach(pid => { const p = findPost(pid); if (p) { p[wl ? "wlCol" : "savedCol"] = col; p[wl ? "wlColAt" : "colAt"] = Date.now(); } });
     V.sel.clear(); V.manage = false;
     scr.classList.remove("save-open");
     renderSub(scr);
@@ -9440,7 +9452,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const wl = isWl(scr);
     const first = POSTS.find(x => V.sel.has(x.id));
     V.sel.forEach(pid => {
-      const p = POSTS.find(x => x.id === pid);
+      const p = findPost(pid);
       if (!p) return;
       if (wl) { p.wishlisted = false; p.wlCol = null; p.wlAt = 0; p.wlColAt = 0; syncWlBtns(scr, p); }
       else { p.saved = false; p.savedCol = null; p.savedAt = 0; syncSaveBtns(scr, p); }
@@ -9458,7 +9470,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const wl = isWl(scr);
     const first = POSTS.find(x => V.sel.has(x.id));
     const col = V.col;
-    V.sel.forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) p[wl ? "wlCol" : "savedCol"] = wl ? "Wishlist" : "Saved"; });
+    V.sel.forEach(pid => { const p = findPost(pid); if (p) p[wl ? "wlCol" : "savedCol"] = wl ? "Wishlist" : "Saved"; });
     V.sel.clear(); V.manage = false;
     scr.classList.remove("dialog-open");
     renderSub(scr);
@@ -9470,11 +9482,11 @@ document.getElementById("stage").addEventListener("click", e => {
   if (ncCancel) {
     const scr = ncCancel.closest(".screen");
     if (scr._ncFrom === "save") {
-      const post = POSTS.find(x => x.id === scr.dataset.svPid);
+      const post = findPost(scr.dataset.svPid);
       if (post) openSheet(scr, "sv", "save-open", saveSheetHTML(post));
       else scr.classList.remove("save-open");
     } else if (scr._ncFrom === "wishlist") {
-      const post = POSTS.find(x => x.id === scr.dataset.wlPid);
+      const post = findPost(scr.dataset.wlPid);
       if (post) openSheet(scr, "wl", "save-open", wlSheetHTML(post));
       else scr.classList.remove("save-open");
     } else {
@@ -9499,11 +9511,11 @@ document.getElementById("stage").addEventListener("click", e => {
     if (from === "wishlist" || from === "wlmove" || from === "wlcol") WISHLISTS.push({ name, thumb: "" });
     else if (from !== "edit") COLLECTIONS.push({ name, thumb: "" });
     if (from === "save") {
-      const post = POSTS.find(x => x.id === scr.dataset.svPid);
+      const post = findPost(scr.dataset.svPid);
       if (post) { post.savedCol = name; post.colAt = Date.now(); }
       scrToast(scr, `Saved to ${name}`);
     } else if (from === "wishlist") {
-      const post = POSTS.find(x => x.id === scr.dataset.wlPid);
+      const post = findPost(scr.dataset.wlPid);
       if (post) { post.wishlisted = true; post.wlCol = name; post.wlAt = Date.now(); post.wlColAt = post.wlAt; syncWlBtns(scr, post); }
       scrToast(scr, `Added to ${name}`);
     } else if (from === "move" || from === "wlmove") {
@@ -9511,7 +9523,7 @@ document.getElementById("stage").addEventListener("click", e => {
       const mvFirst = POSTS.find(x => (scr._ncPids || []).includes(x.id));
       const ncWl = from === "wlmove";
       const ncInCol = (scr._subStack || []).at(-1) === "savedcol" || (ncWl && inWlCol(scr));
-      (scr._ncPids || []).forEach(pid => { const p = POSTS.find(x => x.id === pid); if (p) { p[ncWl ? "wlCol" : "savedCol"] = name; p[ncWl ? "wlColAt" : "colAt"] = Date.now(); } });
+      (scr._ncPids || []).forEach(pid => { const p = findPost(pid); if (p) { p[ncWl ? "wlCol" : "savedCol"] = name; p[ncWl ? "wlColAt" : "colAt"] = Date.now(); } });
       V.sel.clear(); V.manage = false;
       scrToast(scr, ncInCol ? `Moved to ${name}` : `Added to ${name}`, mvFirst ? thumbS(mvFirst) : "");
     } else if (from === "edit") {
@@ -9535,7 +9547,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = wlBtn.closest(".screen");
     const art = wlBtn.closest(".post");
     const pid = art ? art.dataset.pid : scr.dataset.detailPid;
-    const post = POSTS.find(x => x.id === pid);
+    const post = findPost(pid);
     if (!post) return;
     if (!post.wishlisted) {
       post.wishlisted = true;
@@ -9550,7 +9562,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const wlPick = e.target.closest(".wl-pick");
   if (wlPick) {
     const scr = wlPick.closest(".screen");
-    const post = POSTS.find(x => x.id === scr.dataset.wlPid);
+    const post = findPost(scr.dataset.wlPid);
     const col = wlPick.dataset.col;
     if (post && col === "Wishlist" && post.wishlisted) {
       post.wishlisted = false; post.wlCol = null; post.wlAt = 0; post.wlColAt = 0;
@@ -9603,7 +9615,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const svPick = e.target.closest(".sv-pick");
   if (svPick) {
     const scr = svPick.closest(".screen");
-    const post = POSTS.find(x => x.id === scr.dataset.svPid);
+    const post = findPost(scr.dataset.svPid);
     const col = svPick.dataset.col;
     if (post && col === "Saved" && post.saved) {
       post.saved = false; post.savedCol = null; post.savedAt = 0;
@@ -9664,7 +9676,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (t) {
     if (t.classList.contains("pv-dt")) {
       const scr = t.closest(".screen");
-      const post = POSTS.find(x => x.id === t.closest(".post").dataset.pid);
+      const post = findPost(t.closest(".post").dataset.pid);
       if (post) { scr.dataset.dtPid = post.id; openSheet(scr, "dt", "details-open", pvDetailsSheetHTML(post)); }
       return;
     }
@@ -9696,7 +9708,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const pvPost = more.closest(".pv-post");
     if (pvPost) {
       const scr = more.closest(".screen");
-      const post = POSTS.find(x => x.id === pvPost.dataset.pid);
+      const post = findPost(pvPost.dataset.pid);
       if (post) { scr.dataset.dtPid = post.id; openSheet(scr, "ps", "comments-open", pvPostSheetHTML(post)); }
       return;
     }

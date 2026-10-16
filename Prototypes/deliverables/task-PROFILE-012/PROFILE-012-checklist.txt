@@ -1,0 +1,11 @@
+PROFILE-012 — Save + Comment ใน Posts จากโปรไฟล์ (fo-flow/index.html)
+ผลตรวจอัตโนมัติ: _verify_savecomment.mjs ผ่านทุกข้อ (errors=0 failed=0), viewport 440x956
+
+[ผ่าน] ทุกโพสต์โปรไฟล์ (gfx-king.mr.fox-0..8): จำนวนบนปุ่ม comment = จำนวนแถวใน sheet (0 -> No comments yet)
+[ผ่าน] กด save: sheet เปิด + ไอคอน bookmark เป็น saved
+[ผ่าน] เลือก collection (Grail list): savedCol เปลี่ยน, sheet ปิด, ไอคอนยัง saved; เปิดใหม่เห็นติ๊ก 1 แถว
+[ผ่าน] กดแถว Saved: unsave, ไอคอนกลับ, sheet ปิด
+[ผ่าน] ข้อมูลฟีด POSTS: count = rows ทุกโพสต์ (แก้ p1 -> 2, p3 เพิ่มคอมเมนต์เป็น 6)
+[ผ่าน] เอาไอคอนแชร์มุมขวาบนของ sheet Comments ออกทุกที่ + แสดงหัวข้อ Comments ในหน้า Posts โปรไฟล์ (ผู้ใช้ยืนยันและแก้ CSS เองแล้ว)
+ภาพ: screenshots/task-PROFILE-012/a-comments.png, b-save-sheet.png
+Evidence gap: ไม่มีภาพ Before/After 1440+390 ตาม work-summary (prototype FO ตรวจที่ 440px)
