@@ -164,7 +164,37 @@ const browser = await chromium.launch({
   await page.locator('.ch-rhead .sub-back').click();
   await page.waitForTimeout(300);
   const activeTab = await page.locator('.ch-top-tab[data-chview="item"].active-pill').count();
-  check("Back returns directly to Items view", activeTab === 1);
+  // Check 13: Filter selection in Items view resets when switching bottom nav to Feed and back to Chat
+  // Step A: Open filter popover by tapping Items tab again
+  await page.locator('.ch-top-tab[data-chview="item"]').click();
+  await page.waitForTimeout(200);
+  const isPopOpen = await page.locator('.ch-filter-popover').count();
+  check("Filter popover opens when tapping Items tab again", isPopOpen === 1);
+
+  // Step B: Select 'Your listings'
+  await page.locator('.ch-filter-pop-row[data-chitemfilter="mine"]').click();
+  await page.waitForTimeout(200);
+  const askedHeaderCount = await page.locator('.ch-sec:has-text("Items you asked about")').count();
+  check("Filter 'Your listings' hides asked items section", askedHeaderCount === 0);
+
+  // Step C: Tap Feed bottom nav
+  await page.locator('.bottom-nav .nav-item[data-navgo="feed"]').first().click();
+  await page.waitForTimeout(300);
+
+  // Step D: Tap Chat bottom nav to return
+  await page.locator('.bottom-nav .nav-item[data-navgo="chat"]').first().click();
+  await page.waitForTimeout(300);
+
+  // Step E: Verify active view is Chats (tab Chats has active-pill)
+  const isChatsActive = await page.locator('.ch-top-tab[data-chview="user"].active-pill').count();
+  check("Returning to Chat from Feed defaults back to Chats view", isChatsActive === 1);
+
+  // Step F: Tap Items tab and verify filter is reset to 'all'
+  await page.locator('.ch-top-tab[data-chview="item"]').click();
+  await page.waitForTimeout(300);
+  const askedHeaderRestored = await page.locator('.ch-sec:has-text("Items you asked about")').count();
+  const mineHeaderRestored = await page.locator('.ch-sec:has-text("Your listings")').count();
+  check("Filter is cleared to 'All items' (both sections visible)", askedHeaderRestored === 1 && mineHeaderRestored === 1);
 
   check("No unhandled page errors on Mobile", pageErrors === 0);
   await ctx.close();

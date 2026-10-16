@@ -1,7 +1,7 @@
 === CHAT-003 Verification Results ===
-Timestamp: 2026-10-16T07:35:11.131Z
-Total Tests: 25
-Passed: 25
+Timestamp: 2026-10-16T07:45:19.075Z
+Total Tests: 28
+Passed: 28
 Failed: 0
 
 PASS: Your listings row shows clean summary without unread text — THB 380,000 · 14 chats
@@ -23,7 +23,10 @@ PASS: Tapping row opens Chat Room for user — watch.daily
 PASS: Back button returns to Item chats — Item chats
 PASS: Items you asked about have direct data-chgo='room'
 PASS: Tapping asked item directly opens Chat Room with seller — Watch 777
-PASS: Back returns directly to Items view
+PASS: Filter popover opens when tapping Items tab again
+PASS: Filter 'Your listings' hides asked items section
+PASS: Returning to Chat from Feed defaults back to Chats view
+PASS: Filter is cleared to 'All items' (both sections visible)
 PASS: No unhandled page errors on Mobile
 PASS: Captured viewport: m-390-item-chats.png (390x844)
 PASS: Captured viewport: t-768-item-chats.png (768x1024)

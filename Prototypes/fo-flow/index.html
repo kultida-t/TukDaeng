@@ -7785,6 +7785,14 @@ function chatInit() {
   CHAT.view = CHAT.cfg.defView;
   return CHAT;
 }
+function chatResetToDefault() {
+  const C = chatInit();
+  C.view = C.cfg.defView || "user";
+  C.itemFilter = "all";
+  C.filterMenuOpen = false;
+  C.q = "";
+  C.iq = "";
+}
 function chGet(id) {
   const C = chatInit();
   return C.threads.find(t => t.id === id) || (C.draft && C.draft.id === id ? C.draft : null);
@@ -9503,6 +9511,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (navGo) {
     const scr = navGo.closest(".screen");
     const go = navGo.dataset.navgo;
+    chatResetToDefault();
     if (go === "profile") openSub(scr, "profile:" + CP_ME.name, true);
     else if (go === "chat") openSub(scr, "chat", true);
     else if (go === "feed") { scr._subStack = []; scr.classList.remove("sub-open"); }
