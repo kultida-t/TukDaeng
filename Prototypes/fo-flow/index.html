@@ -365,10 +365,13 @@
   /* ============ FEED SCROLL ============ */
   .feed-scroll {
     flex: 1;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
     scrollbar-width: none;
   }
   .feed-scroll::-webkit-scrollbar { display: none; }
+  .feed-list { flex: 1 0 auto; }
 
   .feed-empty {
     min-height: 100%;
@@ -778,8 +781,8 @@
   }
 
   /* ============ CARD (B + C variants) ============ */
-  .screen[data-variant^="b"] .feed-scroll,
-  .screen[data-variant^="c"] .feed-scroll { padding: 10px 12px 0; }
+  .screen[data-variant^="b"] .feed-list,
+  .screen[data-variant^="c"] .feed-list { padding: 10px 12px 0; }
   .screen[data-variant^="b"] .post,
   .screen[data-variant^="c"] .post {
     background: var(--surface);
@@ -4962,7 +4965,7 @@ function postCard(p, variant) {
   const footerPrice = (variant === "b3" || variant === "c3") && hasPrice;
   const showTag = isMixed;
   const askSolid = (variant === "a2" || variant === "b2" || variant === "c2");
-  const showAsk = p.type === "sale";
+  const showAsk = !isOwnPost(p);
   const dots = p.photos.length > 1;
   const cl = clipState(p);
   const hasDetails = hasPrice || (p.specGroups && p.specGroups.length) || (p.specs && p.specs.length);
@@ -5050,7 +5053,7 @@ function setFeedTab(scr, tab) {
   scr.querySelectorAll(".feed-tab").forEach(x => x.classList.toggle("active", x.dataset.tab === tab));
   scr.querySelectorAll(".bm-item").forEach(x => x.classList.toggle("on", x.dataset.tab === tab));
   const fs = scr.querySelector(".feed-scroll");
-  fs.innerHTML = feedContentHTML(scr.dataset.variant);
+  fs.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
   fs.scrollTop = 0;
 }
 
@@ -5080,7 +5083,7 @@ function setFollowing(scr, seller, on) {
     db.textContent = dp.following ? "Following" : "Follow";
   }
   if (state.feedTab === "following" || state.feedTab === "favorites" || !on) /* !on → unmuted posts may re-enter the feed */
-    scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+    scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
 }
 
 /* ===== FEED-010 — feedback-card actions: mute / settings+content prefs / uncomfortable (memory only) ===== */
@@ -5101,7 +5104,7 @@ function scrToast(scr, msg, thumb = "") {
 /* mute is account-level like follow — hide every post of the seller, keep following */
 function setMuted(scr, seller, on) {
   POSTS.forEach(p => { if (p.seller === seller) p.muted = on; });
-  scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+  scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
 }
 function mutedSellers() {
   return [...new Set(POSTS.filter(p => p.muted).map(p => p.seller))];
@@ -5117,7 +5120,7 @@ function followedSellers() {
 function setFavorite(scr, seller, on) {
   POSTS.forEach(p => { if (p.seller === seller) p.favorite = on; });
   if (state.feedTab === "favorites")
-    scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+    scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
 }
 
 /* ===== SEARCH-001 — IG-style search flow (memory only) ===== */
@@ -7332,7 +7335,7 @@ function pfSetBlocked(scr, name, on) {
   }
   POSTS.forEach(p => { if (p.seller === name) p.blocked = on; });
   const fs = scr ? scr.querySelector(".feed-scroll") : null;
-  if (fs) fs.innerHTML = feedContentHTML(scr.dataset.variant);
+  if (fs) fs.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
 }
 const PF_VBADGE = `<svg class="ab-vb" width="16" height="16" viewBox="0 0 24 24"><path fill="#0095f6" d="M12 2l2.53 2.2 3.35-.29.75 3.27 2.88 1.73-1.31 3.09L21.51 15.1l-2.88 1.72-.75 3.27-3.35-.28L12 22l-2.53-2.19-3.35.28-.75-3.27-2.88-1.72 1.31-3.1L2.49 8.92l2.88-1.73.75-3.27 3.35.3z"/><path fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" d="m8.4 12.4 2.4 2.4 4.8-5.1"/></svg>`;
 /* IG block confirm — bottom sheet: centered avatar + impact rows + two actions (single action if fromChat) */
@@ -9041,14 +9044,6 @@ function screenHTML(theme, variant) {
       </span>
     </div>
 
-    <div class="app-header">
-      <button class="icon-btn hb-btn">${I.burger()}</button>
-      <button class="icon-btn search-btn">${I.search()}</button>
-      <span class="wordmark">TUK DAENG <span class="caret">${I.chev(13)}</span></span>
-      <span class="spacer"></span>
-      <button class="icon-btn" data-flow="create">${I.plus()}</button>
-    </div>
-
     ${state.ft === "none" ? `
     <div class="brand-menu">
       <button class="bm-item${state.feedTab === "all" ? " on" : ""}" data-tab="all">All Posts <span class="check">${I.check(15)}</span></button>
@@ -9056,18 +9051,24 @@ function screenHTML(theme, variant) {
       <button class="bm-item${state.feedTab === "favorites" ? " on" : ""}" data-tab="favorites">Favorites <span class="check">${I.check(15)}</span></button>
     </div>` : ""}
 
-    <div class="feed-tabs">
-      <button class="feed-tab${state.feedTab === "all" ? " active" : ""}" data-tab="all">All Posts</button>
-      <button class="feed-tab${state.feedTab === "following" ? " active" : ""}" data-tab="following">Following</button>
-      <button class="feed-tab${state.feedTab === "favorites" ? " active" : ""}" data-tab="favorites">Favorites</button>
-    </div>
-
     <div class="feed-scroll">
-      ${feedContentHTML(variant)}
+      <div class="app-header">
+        <button class="icon-btn hb-btn">${I.burger()}</button>
+        <button class="icon-btn search-btn">${I.search()}</button>
+        <span class="wordmark">TUK DAENG <span class="caret">${I.chev(13)}</span></span>
+        <span class="spacer"></span>
+        <button class="icon-btn" data-flow="create">${I.plus()}</button>
+      </div>
+      <div class="feed-tabs">
+        <button class="feed-tab${state.feedTab === "all" ? " active" : ""}" data-tab="all">All Posts</button>
+        <button class="feed-tab${state.feedTab === "following" ? " active" : ""}" data-tab="following">Following</button>
+        <button class="feed-tab${state.feedTab === "favorites" ? " active" : ""}" data-tab="favorites">Favorites</button>
+      </div>
+      <div class="feed-list">${feedContentHTML(variant)}</div>
     </div>
 
     <nav class="bottom-nav">
-      <span class="nav-item active">${I.navFeed()}<span class="nav-label">Feed</span></span>
+      <span class="nav-item active" data-navgo="feed">${I.navFeed()}<span class="nav-label">Feed</span></span>
       <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
       <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
       <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
@@ -9583,7 +9584,7 @@ document.getElementById("stage").addEventListener("click", e => {
       scr._subStack = [];
       scr.classList.remove("sub-open");
       const fs = scr.querySelector(".feed-scroll");
-      fs.innerHTML = feedContentHTML(scr.dataset.variant);
+      fs.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
       fs.scrollTop = 0;
       scrToast(scr, clip ? "Clip shared to feed ✓" : "Posted · shared to feed ✓", photos[0] || "");
       const waHits = POSTS[0]._waHits || [];
@@ -9723,7 +9724,7 @@ document.getElementById("stage").addEventListener("click", e => {
       post.archived = !post.archived;
       post.archivedAt = post.archived ? Date.now() : 0;
       if (post.archived) post.pins = null;
-      scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+      scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
       const top = (scr._subStack || []).at(-1) || "";
       if (top === "archive" || top.startsWith("profile:")) renderSub(scr);
       scr.querySelectorAll(`.pfp-post[data-pid="${post.id}"]`).forEach(el => el.remove());
@@ -9934,7 +9935,7 @@ document.getElementById("stage").addEventListener("click", e => {
     scr.classList.remove("dialog-open");
     POSTS.forEach(p => { p.ni = false; });
     state.snooze = false;
-    scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+    scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
     renderSub(scr);
     scrToast(scr, "Suggested content reset");
     return;
@@ -10021,7 +10022,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = tgl.closest(".screen");
     state.snooze = !state.snooze;
     tgl.querySelector(".tg-sw").classList.toggle("on", state.snooze);
-    scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+    scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
     return;
   }
   const mUn = e.target.closest(".m-unmute");
@@ -10038,7 +10039,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = mRe.closest(".screen");
     if (p) {
       p.ni = false;
-      scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+      scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
       renderSub(scr);
     }
     return;
@@ -10050,7 +10051,7 @@ document.getElementById("stage").addEventListener("click", e => {
       p.liked = false;
       p.likes--;
       const scr = mUl.closest(".screen");
-      scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+      scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
       renderSub(scr);
     }
     return;
@@ -10076,7 +10077,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = favAll.closest(".screen");
     POSTS.forEach(p => p.favorite = false);
     if (state.feedTab === "favorites")
-      scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+      scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
     renderSub(scr);
     scrToast(scr, "Removed all favorites");
     return;
@@ -10279,7 +10280,14 @@ document.getElementById("stage").addEventListener("click", e => {
     chatResetToDefault();
     if (go === "profile") openSub(scr, "profile:" + CP_ME.name, true);
     else if (go === "chat") openSub(scr, "chat", true);
-    else if (go === "feed") { scr._subStack = []; scr.classList.remove("sub-open"); }
+    else if (go === "feed") {
+      const wasFeed = !scr.classList.contains("sub-open");
+      scr._subStack = []; scr.classList.remove("sub-open");
+      if (wasFeed) { /* IG — tapping Feed while on Feed refreshes and returns to top */
+        scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
+        scr.querySelector(".feed-scroll").scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
     return;
   }
   const pfGo = e.target.closest("[data-pfgo]");
