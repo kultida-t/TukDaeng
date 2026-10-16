@@ -1,0 +1,17 @@
+PROFILE-011 — Followers/Following slide in from the side (fo-flow)
+Verified by: Prototypes/_verify_follow_slide.mjs (playwright, viewport 440x956)
+
+Case 1: Own profile (king.mr.fox) -> tap "followers" count
+  Expected: Followers page slides in from the right (mid-animation offset > 20px), profile stays underneath (ghost)
+  Result: PASS (offset 271.8px)
+Case 2: Followers list shown after animation
+  Result: PASS
+Case 3: Tap "<"
+  Expected: page slides out to the right
+  Result: PASS (pg-out-r ghost present)
+Case 4: Profile after back
+  Expected: profile visible, scroll position kept
+  Result: PASS (40 -> 40)
+Case 5: Other users' profiles use the same code path (data-pfgo handler) — not run separately
+Regression: tab switch followers/following inside the page unchanged (no slide); search / Remove untouched
+Evidence gap: no Before/After screenshots captured for this task

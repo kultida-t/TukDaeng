@@ -1,0 +1,14 @@
+PROFILE-007 Edit post from "..." in own-profile Posts viewer = same composer as feed create
+Files: Prototypes/fo-flow/index.html (openPostEdit, closePostEdit, .cf-done, .dlg-discard-go)
+
+Manual review (user confirmed visually, 2026-10-16)
+[x] Case 1: own profile > grid tile > Posts viewer > "..." > Edit opens "Edit info" composer (prefilled photo, caption, specs)  -> PASS
+[x] Case 2: viewer stays still while Edit slides in over it (no viewer slide-out/in)  -> PASS after fix (round 1 FAIL: viewer slid out; fixed with rp-over layering)
+[x] Case 3: Cancel > Discard -> composer slides out, Posts viewer + profile intact  -> PASS
+[x] Case 4: Done -> composer slides out, caption updated in viewer and grid, toast "Post updated"  -> PASS
+[x] Case 5: back from viewer -> own profile  -> PASS
+[x] Regression: Edit from feed / detail page unchanged (_verify_pfp.mjs PASS; _verify_pm_own.mjs 44 PASS, 1 pre-existing failure at Delete step, same on pre-change code)
+
+Automated: PROFILE-007-test-results.txt (9 PASS / 0 FAIL / 0 console errors), spec PROFILE-007-verify.mjs
+Screenshots: screenshots/task-PROFILE-007/edit-open.png, edit-done.png
+Evidence gap: no Before screenshots (1440/390) captured; prototype is mobile-frame only (440px viewport).

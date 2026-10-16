@@ -1,0 +1,40 @@
+PROFILE-010 Share profile (หน้า QR แบบ IG) — Manual/Automated Review Checklist
+Prototype: Prototypes/fo-flow/index.html  |  Script: Prototypes/_verify_share.mjs  |  Result: 18/18 PASS, console error 0
+Viewport ที่ตรวจ: 440x956 (phone frame), After capture 1440 และ 390
+
+เคส 1: เปิดหน้า QR
+  ขั้นตอน: Profile -> กด Share profile
+  ผลที่คาด: หน้าเต็มจอพื้นไล่สี มี X / COLOR (pill เล็ก) / ไอคอน scan, การ์ด QR + @KING.MR.FOX, ปุ่ม Share profile / Copy link / Download  -> ผ่าน
+
+เคส 2: COLOR
+  ขั้นตอน: กด COLOR
+  ผลที่คาด: วนเปลี่ยนธีมสีพื้นหลังและสี QR  -> ผ่าน
+
+เคส 3: ไอคอน scan
+  ขั้นตอน: กดไอคอนขวาบน
+  ผลที่คาด: เปิดกล้องจริง (getUserMedia) + กรอบสแกน + ข้อความ, X กลับหน้า QR, stream หยุดเมื่อปิด  -> ผ่าน (ทดสอบด้วยกล้องปลอมของ Chromium; ยังไม่ได้ทดสอบสแกน QR ด้วยกล้องจริง)
+
+เคส 4: Copy link
+  ผลที่คาด: คลิปบอร์ดได้ https://tukdaeng.app/u/king.mr.fox + toast "Link copied"  -> ผ่าน
+
+เคส 5: Download
+  ผลที่คาด: ได้ไฟล์ king.mr.fox-qr.png + toast "QR code saved"  -> ผ่าน
+
+เคส 6: Share profile (ในหน้า QR)
+  ผลที่คาด: เปิด share sheet เดียวกับทั้งแอป (ไม่มี Story, ไม่มีปุ่มคน+, ช่องค้นหาเต็มความกว้าง) ทับหน้า QR; เลือกแอป -> "Shared to LINE" และหน้า QR ยังเปิด  -> ผ่าน
+
+เคส 7: ปิด/เปิดซ้ำ + regression
+  ผลที่คาด: X ปิด QR, หน้าโปรไฟล์ปกติ (Edit profile ยังอยู่), เปิดซ้ำมี overlay เดียว, ฟอนต์ปุ่มตรงกับปุ่มอื่นของแอป  -> ผ่าน
+
+พบ/แก้ระหว่างตรวจ (รอบ review ของผู้ใช้):
+  - COLOR pill ใหญ่/หนาเกิน -> ลดขนาดและน้ำหนักให้เหมือน IG
+  - ปุ่ม 3 ปุ่มใช้ฟอนต์ browser default -> ใส่ font-family ของแอป
+  - ไอคอน scan เดิมเป็น toast -> เปลี่ยนเป็นเปิดกล้อง
+  - ไอคอนคน+ในช่องค้นหา share sheet -> เอาออกทุกที่
+
+Evidence gap: ไม่มีภาพ Before (task เริ่มจากพฤติกรรมเดิมที่เป็นแค่ toast "Profile link copied" ไม่ได้แคปไว้ก่อนแก้)
+
+หลักฐาน:
+  - screenshots/task-PROFILE-010/01-qr.png, 02-color.png, 02b-camera.png, 03-share-sheet.png
+  - screenshots/task-PROFILE-010/after/{desktop-1440,mobile-390}-{profile,qr,share-sheet}.png
+  - deliverables/task-PROFILE-010/PROFILE-010-test-results.txt (raw output)

@@ -1,0 +1,20 @@
+PASS QR page opens
+PASS QR svg + handle
+PASS 3 actions
+PASS COLOR changes theme
+PASS scan opens camera
+PASS camera stream live
+PASS camera X returns to QR
+PASS QR buttons use app font — -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif
+PASS Copy link toast
+PASS clipboard has link
+PASS Download png — king.mr.fox-qr.png
+PASS Download toast
+PASS Share profile opens share sheet over QR
+PASS share app toast
+PASS QR page still open
+PASS X closes QR
+PASS Profile intact
+PASS reopen single overlay
+
+errors=0 failed=0

@@ -17,6 +17,28 @@
 
 ---
 
+# 1.1 Revision 2026-10 — Chat View (CHAT-001)
+
+ข้อสรุปจากประชุมล่าสุด (พี่คิง) **override กฎเดิมในเอกสารนี้ที่ขัดกัน** โดยเฉพาะเรื่อง Offer Card / Accept-Reject ในห้องแชท และ Pinned Asset Bar
+
+| หัวข้อ | กฎใหม่ |
+|---|---|
+| รูปแบบห้องแชท | แชทซ้าย-ขวาแบบ LINE / IG Direct — ข้อความเรา = ขวา (สีหลัก), คู่สนทนา = ซ้าย (พร้อม avatar), เวลา/สถานะ Read อยู่ข้าง bubble, คั่นวัน |
+| การต่อรองราคา | พิมพ์คุยกันตามธรรมชาติ **ไม่มี Offer Card และไม่มีปุ่ม Accept / Reject ในห้องแชท** |
+| อ้างอิงโพสต์สินค้า (CHAT-004) | เมื่อทักจากฟีด/โพสต์ แสดงการ์ดอ้างอิงโพสต์สินค้า (รูป + ชื่อ + ราคา + เจ้าของโพสต์) **แนบอยู่ในสายแชท (Message Stream) ฝั่งของผู้ส่งข้อความสอบถาม** ตามสไตล์การแชร์โพสต์ใน Instagram Direct (ไม่มีการ์ดลอยคั่นกลางจอ และในแอปไม่มี Story) มีข้อความแชทที่พิมพ์สอบถามต่อท้ายทันที แตะที่การ์ดแล้วเปิด Asset Detail ได้ |
+| Pinned Item Bar | **ยกเลิก** — ไม่มีแถบปักหมุดสินค้าด้านบนห้อง (ข้อความ/สินค้าล่าสุดอยู่ล่างสุดตามธรรมชาติของแชท) |
+| Chat Center | หน้ารวมแชท = ศูนย์กลางประวัติสนทนา สอบถาม และซื้อขายทั้งหมด |
+| View Toggle | ปุ่มสลับมุมมอง 2 แบบในหน้า Chat List: **Chats** (เรียงตามคู่สนทนา + เวลาล่าสุด, unread badge) และ **Items** (จัดกลุ่มตามสินค้า) |
+| Items Filter Dropdown (CHAT-002, CHAT-003) | แท็บ Items มีลูกศรชี้ลง `▼` สไตล์ LINE (แท็บ Chats ไม่มีลูกศร) — กดแล้วกาง Popover Filter มุมมน มีตัวเลือก **All items**, **Your listings**, และ **Items you asked about** พร้อม checkmark `✓` แสดงตัวเลือกปัจจุบัน กรองรายการสินค้าทันที; เมื่อสลับเมนูไปหน้าอื่น (เช่น Feed หรือ Profile) หรือกดไอคอน Chat ที่แถบเมนูล่างเพื่อเข้าแชทใหม่ ระบบจะรีเซ็ตกลับสู่มุมมองเริ่มต้นที่หน้า **Chats** ปกติ พร้อมเคลียร์ตัวกรองกลับเป็นค่าเริ่มต้นเสมอ |
+| Item → ผู้ทัก (CHAT-003) | **Your listings**: แถวสินค้าแสดงชื่อสินค้าคลีน (ไม่มีเลขวงเล็บซ้ำซ้อน) + ราคาและจำนวนแชท (เช่น `THB 380,000 · 14 chats` โดยตัดข้อความ unread ออกไม่ให้ซ้ำกับป้ายตัวเลขสีแดงทางขวา), เมื่อกดสินค้าจะเปิดหน้า Item chats เพื่อเลือกดูรายชื่อผู้ทักทั้งหมด โดยการ์ดหัวเรื่องปรับเป็นดีไซน์แคปซูลลอย (Floating Pill Capsule สไตล์เดียวกับแคปซูล Chats/Items ขอบมนกลม 999px + เงาลอยโปร่งแสง + รูปสินค้าทรงกลม badge 52px) บรรจุอยู่ภายในคอนเทนเนอร์เลื่อน (`ch-scroll`) ทำให้เลื่อนหน้าจอได้ทั้งหมดโดยไม่ฟิกตำแหน่งช่องค้นหา (แถวแชทสูง ~64px, avatar 44×44px เต็มรูป, preview 1 บรรทัด, unread badge, swipe actions) → กดเข้าห้องแชท; เมื่อกดย้อนกลับ `<` มาหน้า Items แล้วแตะสลับแท็บ Chats จะสลับมุมมองทันทีโดยไม่สไลด์หน้าจอซ้ำ<br>**Items you asked about**: แถวสินค้าแสดงราคา + ข้อความล่าสุดที่คุยกับผู้ขาย, เมื่อแตะสินค้าจะเปิดตรงเข้าสู่ห้องแชท (Chat Room) กับผู้ขายรายนั้นทันที โดยไม่ต้องผ่านหน้า Item chats ซ้ำซ้อน เนื่องจากมีคู่สนทนารายเดียวเสมอ |
+| Quick Ask | ปุ่ม Ask บนโพสต์ฟีด/Post viewer/Detail เปิดห้องแชททันทีพร้อมการ์ดอ้างอิงโพสต์และข้อความเริ่มต้นที่แก้ไขได้ (ค่าตั้งใน Chat Config) — ถ้ามีห้องเดิมของ user+สินค้าเดียวกันให้เปิดห้องเดิม, ห้องใหม่จะถูกสร้างในรายการเมื่อส่งข้อความแรก, ทักโพสต์ของตัวเองไม่ได้ |
+| Chat Config | ปุ่มตั้งค่าอยู่ที่หน้า Chat โดยตรง (ไอคอนเฟืองใน header) ไม่อยู่ใน Profile Settings: แจ้งเตือนข้อความ, แสดง preview, Read receipts, เฉพาะคนที่ follow ทักได้, มุมมองเริ่มต้น (People/Items), ข้อความ Quick Ask |
+| Swipe Actions & Modals (LINE Style - CHAT-006) | **Swipe Left (ปัดซ้าย)**: แสดงปุ่มสี่เหลี่ยมโค้งมนสีเทาอ่อน 2 ปุ่ม ได้แก่ `Hide` และ `Delete` (ตัวอักษรสีเข้ม พื้นหลังสีเทาอ่อน `#e9e9eb` ทั้งสองปุ่มตามแบบ LINE)<br>- กด Hide: แสดง Confirmation Modal สไตล์ iOS ตรงกลางจอ *"Hiding chats doesn't delete their messages."* พร้อมปุ่ม Cancel และ Hide (ตัวหนังสือสีแดง `#ff3b30`) กดยืนยันแล้วซ่อนแชทออกจากรายการ<br>- กด Delete: แสดง Confirmation Modal สไตล์ iOS ตรงกลางจอ *"Are you sure you want to delete this chat?"* พร้อมปุ่ม Cancel และ Delete (ตัวหนังสือสีแดง `#ff3b30`) กดยืนยันแล้วลบห้องแชทและข้อความถาวร<br>**Swipe Right (ปัดขวา)**: แสดงปุ่มวงกลมสีเขียวสด (LINE Green `#06c755`) 2 ปุ่ม ได้แก่:<br>1. `Pin / Unpin` (ปุ่มซ้าย): สลับสถานะปักหมุด โดยแสดงไอคอนหมุดเมื่อยังไม่ปัก และไอคอนหมุดขีดเฉียง (Unpin) เมื่อปักหมุดแล้ว — แชทที่ปักหมุดจะถูกจัดลำดับขึ้นไปอยู่ด้านบนสุดของ Chat List เสมอ พร้อม Badge หมุดสีน้ำเงิน (`#2b7fff`) ที่มุมขวาล่างของ Avatar<br>2. `Mute / Unmute` (ปุ่มขวา): สลับสถานะแจ้งเตือน โดยแสดงไอคอนปิดเสียงเมื่อเปิดแจ้งเตือน และไอคอนลำโพงมีเสียง (`chUnmute`) เมื่อปิดเสียงอยู่ — เมื่อปิดแจ้งเตือนจะแสดงไอคอนลำโพงปิดเสียงสีเทาข้างชื่อแชท<br>- ระบบ Auto-close Swipe: เมื่อแตะที่อื่น เลื่อนหน้าจอ (Scroll) หรือกดใช้งานปุ่มใดปุ่มหนึ่ง แถวที่เปิดอยู่จะหุบกลับสู่สถานะปกติทันที |
+
+Prototype: `Prototypes/fo-flow/index.html` — เมนู Chat ใน bottom nav (`data-navgo="chat"`), sub pages `chat`, `chatitem:<itemId>`, `chatroom:<threadId>`, `chatcfg`.
+
+---
+
 # 2. Objective
 
 Chat Module ใช้สำหรับการสนทนาระหว่างผู้ซื้อและผู้ขาย โดยผูกบริบทกับ Asset Reference และ Offer Card เพื่อให้ผู้ใช้พูดคุย ต่อรองราคา ติดตาม Offer และดูสถานะ Asset ที่เกี่ยวข้องได้จากห้องสนทนาเดียวกัน
@@ -422,7 +444,7 @@ Product review สำหรับ V1:
 - การส่งข้อความใหม่ต้องถูกปิดหลัง block
 - การสร้าง Chat / Offer ใหม่ระหว่างคู่ที่ block กันต้องถูกปิด
 - Block User จาก Chat ต้องเปิด confirmation ก่อน block
-- Confirmation ใช้ title `Block this user?` และ actions `Cancel`, `Block`
+- Confirmation ใน Chat Menu แสดงปุ่ม `Block` เพียงปุ่มเดียว (ตัดปุ่ม `Block and report` ออกเฉพาะในแชท ส่วนจุดอื่นในแอป เช่น Profile ยังคงมีทั้ง `Block` และ `Block and report` ตามเดิม)
 - หากกด `Cancel` หรือ dismiss confirmation ต้องไม่เปลี่ยน block state และต้องยังส่งข้อความได้ตาม permission เดิม
 - Body และ success feedback ให้ใช้ copy กลางจาก Trust & Safety Module
 
@@ -434,11 +456,21 @@ Product review สำหรับ V1:
 
 ## Report User Rule
 
-Chat ต้องรองรับ Report User
+Chat Menu รองรับปุ่ม Quick Action `Report` ควบคู่กับ Mute, Profile, Block
 
-Report ไม่ทำให้ Asset หรือ Content หายทันที
-
-Asset หรือ Content จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น
+- เมื่อกดปุ่ม Report ใน Chat Menu จะเปิด Bottom Sheet ในรูปแบบและสไตล์เดียวกับ Block Bottom Sheet (Handle ด้านบน, Avatar ผู้ใช้กึ่งกลาง, Title, Description และปุ่มการกระทำ)
+- Title: `Are you sure you want to report [User]?`
+- Description: `If this user appears suspicious, please report them. Selecting "Report and delete" will delete this chat and its associated history.`
+- Actions:
+  - `Report and delete` (ปุ่มหลักสีแดง): เข้าสู่ Flow รายงานผู้ใช้ (หากส่งรายงานสำเร็จจะลบแชทออกจากอุปกรณ์/รายการแชทของผู้ใช้)
+  - `Report` (ปุ่มรอง): เข้าสู่ Flow รายงานผู้ใช้โดยไม่ลบประวัติการสนทนา
+  - `Cancel`: ปิด Bottom Sheet และอยู่บนหน้า Chat Menu ต่อไป
+- Flow การรายงานจาก Chat Menu:
+  - เข้าสู่หน้าเหตุผลการรายงานบัญชี (`Why are you reporting this account?`) โดยตรงทันที ไม่ต้องผ่านหน้าเลือกว่าจะรายงานโพสต์หรือบัญชี
+  - Header ของหน้ารายงานที่เปิดจากแชทจะไม่มีปุ่มย้อนกลับ `<` โดยมีเพียงชื่อหน้า `Report` ตรงกลาง และปุ่มปิด `✕` ด้านขวา
+  - เมื่อกดปุ่มปิด `✕` จะปิดหน้ารายงานและกลับมายังหน้า Chat Menu (การตั้งค่าแชท)
+  - ในหน้ายืนยันผลการรายงาน (`Thanks for your feedback`) หากกดขั้นตอนเพิ่มเติม `Block [User]` แผ่นยืนยันการบล็อกจะแสดงปุ่ม `Block` เพียงปุ่มเดียว (ไม่มีปุ่ม `Block and report` เนื่องจากอยู่ใน Flow รายงานแล้ว เพื่อไม่ให้เกิดความซ้ำซ้อน)
+- การ Report ไม่ทำให้ Asset หรือ Content หายทันที แต่จะเข้าสู่คิวการตรวจสอบของ Admin ตาม Moderation Policy
 
 ---
 
@@ -665,15 +697,15 @@ Notification destination:
 
 ---
 
-## Chat Room Menu / Mute / Delete Locked Criteria
+## Chat Room Header Search & LINE-Style Menu Criteria
 
 | AC ID | Criteria |
 |---|---|
-| AC-CHAT-031 | Chat Room overflow menu must show `View profile`, `Mute notifications` or `Unmute notifications`, `Delete chat`, `Report user`, and `Block user` in this order |
-| AC-CHAT-032 | Header search icon is the search entry; `Search in chat` must not be duplicated in the overflow menu |
-| AC-CHAT-033 | Mute notifications must auto-save, show `Notifications muted`, and change the menu label to `Unmute notifications`; unmute must show `Notifications unmuted` |
-| AC-CHAT-034 | Delete Chat confirmation must use title `Delete chat?`, actions `Cancel` / `Delete chat`, and copy that the chat is removed only from the actor's inbox while records may be retained |
-| AC-CHAT-035 | Delete Chat success must return to Chat List and show `Chat deleted`; API failure must show `Unable to delete chat. Please try again.` |
+| AC-CHAT-031 | When tapping search icon in Chat Room header, the search bar replaces the entire header (`placeholder="Messages"`, search icon, clear button, and close `✕` button); typing highlights matching terms and dims non-matching messages; closing returns to normal header |
+| AC-CHAT-032 | When tapping hamburger menu (`≡`) in Chat Room header, opens Chat Menu sub-page with back `<` pinned left and centered partner name, 3 circular action buttons (`Mute/Unmute`, `Profile`, `Block/Unblock` which opens TukDaeng app standard Block confirmation bottom sheet with Block & Report actions, or Unblock dialog), and content rows |
+| AC-CHAT-033 | Chat Menu list rows include `Photos & videos` (showing horizontal thumbnail strip without border and 4px radius when populated, or a light rounded card with "No photos or videos found." when empty), and `Listings & Items` (single-line label, truncated item caption with ellipsis, navigating to post detail screen) |
+| AC-CHAT-034 | Chat Media Gallery sub-page displays in-chat media grouped by date; direct photo grid without unnecessary tabs (no Links/Files tabs); tapping a photo opens the Photo Viewer strictly contained within the mobile device frame |
+| AC-CHAT-035 | In Chat Media Gallery Select Mode, selected items display sequential badges (`1`, `2`, ...); bottom action bar provides Delete (Trash) and Download actions (Share action is excluded); empty gallery displays "No photos or videos found." empty card; closing (`✕`) returns smoothly to Chat Menu without sliding animation |
 
 ---
 
