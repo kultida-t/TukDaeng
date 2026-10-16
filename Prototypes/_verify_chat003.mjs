@@ -72,6 +72,12 @@ const browser = await chromium.launch({
   const itemCardNote = await page.locator('.ch-itemcard em').textContent();
   check("Item chats card shows 'Your listing · 14 chats' without unread text", itemCardNote === "Your listing · 14 chats", itemCardNote);
 
+  // Check 2b: Item card is a floating pill capsule
+  const isPill = await page.locator('.ch-itemcard-pill-w .ch-itemcard').count();
+  check("Item card is enclosed in pill capsule wrapper", isPill === 1);
+  const cardBorderRadius = await page.locator('.ch-itemcard').evaluate(el => getComputedStyle(el).borderRadius);
+  check("Item card has pill border-radius (999px)", cardBorderRadius.includes("999px") || parseInt(cardBorderRadius) >= 30, cardBorderRadius);
+
   // Check 3: Exactly 14 chat rows
   const rowCount = await page.locator('.ch-scroll[data-iid="mi1"] .ch-row-wrap').count();
   check("Item chats list has 14 chat rows", rowCount === 14, `Found: ${rowCount}`);
@@ -99,6 +105,17 @@ const browser = await chromium.launch({
   // Capture Mobile Item chats main view
   await page.screenshot({ path: path.join(OUT, "m-440-item-chats.png") });
   await page.screenshot({ path: path.join(DELIV, "m-440-item-chats.png") });
+
+  // Also capture light mode version for deliverables
+  await page.evaluate(() => {
+    document.querySelectorAll('.screen').forEach(s => s.setAttribute('data-theme', 'light'));
+  });
+  await page.waitForTimeout(200);
+  await page.screenshot({ path: path.join(DELIV, "m-440-item-chats-light.png") });
+  await page.evaluate(() => {
+    document.querySelectorAll('.screen').forEach(s => s.setAttribute('data-theme', 'dark'));
+  });
+  await page.waitForTimeout(200);
 
   // Check 9: Search filtering in Item chats
   await page.locator('.ch-iq').fill("slow");
@@ -150,7 +167,19 @@ const browser = await chromium.launch({
   await page.locator('.detail-head .sub-back').click();
   await page.waitForTimeout(300);
 
-  // Check 12: Tapping an item under "Items you asked about" opens Chat Room directly!
+  // Check 12a: When returning from Item chats to Items tab, tapping 'Chats' tab switches instantly without page sliding
+  await page.locator('.ch-top-tab[data-chview="user"]').click();
+  await page.waitForTimeout(100);
+  const psubClasses = await page.locator('.page-sub').getAttribute("class");
+  check("Page keeps pg-swap and does not slide when switching to Chats tab", psubClasses.includes("pg-swap"));
+  const isChatsNow = await page.locator('.ch-top-tab[data-chview="user"].active-pill').count();
+  check("Chats tab becomes active immediately", isChatsNow === 1);
+
+  // Switch back to Items tab for next tests
+  await page.locator('.ch-top-tab[data-chview="item"]').click();
+  await page.waitForTimeout(200);
+
+  // Check 12b: Tapping an item under "Items you asked about" opens Chat Room directly!
   const askedRow = page.locator('.ch-list-inner .ch-row[data-chgo="room"]').first();
   const askedRowCount = await askedRow.count();
   check("Items you asked about have direct data-chgo='room'", askedRowCount > 0);
