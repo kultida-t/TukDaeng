@@ -3316,6 +3316,268 @@
     backdrop-filter: none;
   }
   .screen[data-nav="labeled"] .pf-scroll { padding-bottom: 84px; }
+  /* ============ CHAT — LINE / IG Direct style ============ */
+  /* ============ CHAT — LINE Style ============ */
+  .page-sub.pg-chat,
+  .screen .page-sub:has(.ch-head),
+  .screen .page-sub:has(.ch-scroll) {
+    background: #ffffff;
+  }
+  .screen[data-theme="dark"] .page-sub.pg-chat,
+  .screen[data-theme="dark"] .page-sub:has(.ch-head),
+  .screen[data-theme="dark"] .page-sub:has(.ch-scroll) {
+    background: #14161a;
+  }
+  .ch-scroll {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+  }
+  .screen[data-theme="dark"] .ch-scroll { background: #14161a; }
+  .screen[data-nav="labeled"] .ch-scroll { padding-bottom: 88px; }
+
+  .ch-head {
+    position: sticky;
+    top: 0;
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px 8px;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+  .screen[data-theme="dark"] .ch-head {
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .ch-nav-tabs {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.58);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    border-radius: 999px;
+    padding: 3px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    pointer-events: auto;
+  }
+  .screen[data-theme="dark"] .ch-nav-tabs {
+    background: rgba(28, 32, 38, 0.58);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 16px rgba(0,0,0,.35);
+  }
+  .ch-top-tab {
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 800;
+    color: #1c1d21;
+    padding: 6px 16px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .16s ease;
+    line-height: 1.2;
+    letter-spacing: -.2px;
+  }
+  .screen[data-theme="dark"] .ch-top-tab { color: #e5e7eb; }
+  .ch-top-tab.active-pill {
+    background: #5d6b7e;
+    color: #ffffff !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,.18);
+  }
+  .screen[data-theme="dark"] .ch-top-tab.active-pill {
+    background: #475569;
+    color: #ffffff !important;
+  }
+  .ch-head-actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.58);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    border-radius: 999px;
+    padding: 3px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    pointer-events: auto;
+  }
+  .screen[data-theme="dark"] .ch-head-actions {
+    background: rgba(28, 32, 38, 0.58);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 16px rgba(0,0,0,.35);
+  }
+  .ch-cfg-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    background: none;
+    color: #1c1d21;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .16s ease;
+    padding: 0;
+  }
+  .screen[data-theme="dark"] .ch-cfg-btn { color: #e5e7eb; }
+  .ch-cfg-btn:active { background: var(--surface-2); }
+
+  .ch-tools { padding: 4px 16px 14px; flex-shrink: 0; background: #ffffff; }
+  .screen[data-theme="dark"] .ch-tools { background: #14161a; }
+  .ch-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f3f5;
+    border-radius: 18px;
+    padding: 7px 12px;
+    color: var(--muted);
+    border: 1px solid transparent;
+  }
+  .screen[data-theme="dark"] .ch-search {
+    background: var(--surface-2);
+    border-color: var(--line);
+  }
+  .ch-search input {
+    flex: 1;
+    min-width: 0;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font: inherit;
+    font-size: 13.5px;
+  }
+  .ch-sec { padding: 10px 16px 4px; font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; background: #ffffff; }
+  .screen[data-theme="dark"] .ch-sec { background: #14161a; }
+  /* ============ CHAT SWIPE ACTIONS (LINE STYLE) ============ */
+  .ch-row-wrap { position:relative; width:100%; overflow:hidden; background:var(--surface); touch-action:pan-y; }
+  .screen[data-theme="dark"] .ch-row-wrap { background:var(--surface); }
+  
+  .ch-act-left { position:absolute; left:0; top:0; bottom:0; display:flex; align-items:center; gap:10px; padding-left:14px; z-index:1; opacity:0; pointer-events:none; transition:opacity .18s ease; }
+  .ch-act-right { position:absolute; right:0; top:0; bottom:0; display:flex; align-items:center; gap:8px; padding-right:14px; z-index:1; opacity:0; pointer-events:none; transition:opacity .18s ease; }
+  .ch-row-wrap.revealed-left .ch-act-left { opacity:1; pointer-events:auto; }
+  .ch-row-wrap.revealed-right .ch-act-right { opacity:1; pointer-events:auto; }
+  
+  .ch-act-cir { width:44px; height:44px; border-radius:50%; background:#06c755; border:none; outline:none; color:#ffffff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .12s, background .15s; box-shadow:0 1px 3px rgba(0,0,0,.15); flex-shrink:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  .ch-act-cir:focus, .ch-act-cir:focus-visible { outline:none; }
+  .ch-act-cir:active { transform:scale(.92); background:#05b34c; }
+  
+  .ch-act-rect { width:56px; height:56px; border-radius:18px; border:none; outline:none; font:inherit; font-size:12.5px; font-weight:400; color:#ffffff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .12s, filter .15s; flex-shrink:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  .ch-act-rect:focus, .ch-act-rect:focus-visible { outline:none; }
+  .ch-act-rect:active { transform:scale(.94); }
+  .ch-act-hide { background:#9ea4aa; }
+  .screen[data-theme="dark"] .ch-act-hide { background:#6b7280; }
+  .ch-act-del { background:#ff334b; }
+  
+  .ch-row-wrap .ch-row { position:relative; z-index:2; background:var(--surface); transition:transform .22s cubic-bezier(0.2, 0.9, 0.3, 1); width:100%; box-sizing:border-box; outline:none; border:none; -webkit-tap-highlight-color:transparent; }
+  .ch-row-wrap .ch-row:focus, .ch-row-wrap .ch-row:focus-visible { outline:none; }
+  .screen[data-theme="dark"] .ch-row-wrap .ch-row { background:var(--surface); }
+  .ch-row-wrap.revealed-left .ch-row { transform:translateX(118px); }
+  .ch-row-wrap.revealed-right .ch-row { transform:translateX(-160px); }
+
+  .ch-row { display:flex; align-items:center; gap:11px; width:100%; padding:10px 16px; background:none; border:none; outline:none; color:var(--text); font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .ch-row:focus, .ch-row:focus-visible { outline:none; }
+  .ch-row:active { background:var(--surface-2); }
+  .ch-av { flex-shrink:0; position:relative; display:inline-block; }
+  .ch-av img { width:44px; height:44px; border-radius:50%; object-fit:cover; display:block; }
+  .ch-pin-badge { position:absolute; right:-2px; bottom:-2px; width:17px; height:17px; border-radius:50%; background:#2b7fff; border:2px solid #ffffff; color:#ffffff; display:flex; align-items:center; justify-content:center; box-sizing:border-box; box-shadow:0 1px 2px rgba(0,0,0,.15); }
+  .screen[data-theme="dark"] .ch-pin-badge { border-color:#121417; }
+  .ch-mute-ico { display:inline-flex; align-items:center; color:#72849a; margin-left:3px; flex-shrink:0; }
+  .screen[data-theme="dark"] .ch-mute-ico { color:#8d9eaf; }
+  
+  /* Chat delete confirmation modal */
+  .ch-modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; animation:chFadeIn .16s ease; }
+  .ch-modal { background:var(--surface); border-radius:18px; width:100%; max-width:300px; padding:20px 18px 16px; box-shadow:0 12px 32px rgba(0,0,0,.28); text-align:center; animation:chPopIn .18s ease; }
+  .ch-modal-title { font-size:16px; font-weight:700; color:var(--text); margin-bottom:6px; line-height:1.3; }
+  .ch-modal-desc { font-size:13px; color:var(--muted); line-height:1.45; margin-bottom:18px; }
+  .ch-modal-acts { display:flex; gap:10px; }
+  .ch-modal-btn { flex:1; height:40px; border-radius:10px; font:inherit; font-size:14px; font-weight:600; border:none; cursor:pointer; }
+  .ch-modal-btn.cancel { background:var(--surface-2); color:var(--text); }
+  .ch-modal-btn.confirm-del { background:#ef4444; color:#ffffff; }
+  @keyframes chFadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes chPopIn { from { transform:scale(.94); opacity:0; } to { transform:scale(1); opacity:1; } }
+  
+  .ch-thumb { width:44px; height:44px; border-radius:11px; object-fit:cover; flex-shrink:0; }
+  .ch-main { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; justify-content:center; }
+  .ch-name-line { display:flex; align-items:baseline; gap:3px; min-width:0; }
+  .ch-name { font-size:13.8px; font-weight:600; line-height:1.25; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:-.1px; }
+  .ch-count-badge { font-size:13.2px; font-weight:500; color:var(--muted); flex-shrink:0; }
+  .ch-prev-line { min-width:0; }
+  .ch-prev { display:block; font-size:11.8px; line-height:1.35; color:#72849a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:400; }
+  .screen[data-theme="dark"] .ch-prev { color:#8d9eaf; }
+  
+  .ch-meta-col { display:flex; flex-direction:column; align-items:flex-end; justify-content:center; gap:4px; flex-shrink:0; min-width:46px; }
+  .ch-time { font-size:10.5px; color:#a0aab8; font-weight:400; line-height:1; }
+  .screen[data-theme="dark"] .ch-time { color:#7e8b9b; }
+  .ch-un { min-width:17px; height:17px; padding:0 4px; border-radius:999px; background:var(--red); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; }
+  .ch-un-spacer { height:17px; visibility:hidden; }
+  .ch-empty { display:flex; flex-direction:column; align-items:center; gap:6px; padding:48px 32px; text-align:center; color:var(--muted); }
+  .ch-empty b { color:var(--text); font-size:16px; }
+  .ch-empty span { font-size:13px; line-height:1.45; }
+  .ch-itemcard { display:flex; align-items:center; gap:12px; margin:4px 14px 0; padding:10px; border:1px solid var(--line); border-radius:14px; background:var(--surface); flex-shrink:0; }
+  .ch-itemcard img { width:56px; height:56px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+  .ch-itemcard b { display:block; font-size:14px; line-height:1.3; }
+  .ch-itemcard span { display:block; font-size:13px; font-weight:600; margin-top:2px; }
+  .ch-itemcard em { display:block; font-style:normal; font-size:12px; color:var(--muted); margin-top:2px; }
+  .ch-rhead { display:flex; align-items:center; gap:8px; padding:8px 12px; border-bottom:1px solid var(--line); flex-shrink:0; }
+  .ch-rhead img { width:34px; height:34px; border-radius:50%; object-fit:cover; }
+  .ch-rhead .n { font-size:15px; font-weight:700; }
+  .ch-rhead .spacer { margin-left:auto; }
+  .ch-room { flex:1; min-height:0; display:flex; flex-direction:column; }
+  .ch-msgs { flex:1; overflow-y:auto; scrollbar-width:none; padding:10px 12px 8px; display:flex; flex-direction:column; gap:4px; }
+  .ch-msgs::-webkit-scrollbar { display:none; }
+  .ch-day { align-self:center; margin:8px 0 6px; padding:3px 10px; border-radius:999px; background:var(--surface-2); color:var(--muted); font-size:11px; font-weight:600; }
+  .ch-ref-w { display:flex; justify-content:center; margin:2px 0 10px; }
+  .ch-ref { display:flex; align-items:center; gap:10px; max-width:250px; padding:7px 12px 7px 7px; border:1px solid var(--line); border-radius:14px; background:var(--surface); color:var(--text); font:inherit; text-align:left; }
+  .ch-ref img { width:42px; height:50px; border-radius:8px; object-fit:cover; flex-shrink:0; }
+  .ch-ref small { display:block; font-size:10.5px; color:var(--muted); font-weight:600; }
+  .ch-ref b { display:block; font-size:12.5px; line-height:1.3; margin:1px 0; }
+  .ch-ref em { display:block; font-style:normal; font-size:12px; font-weight:700; }
+  .ch-m { display:flex; align-items:flex-end; gap:6px; max-width:100%; }
+  .ch-m.me { justify-content:flex-end; }
+  .ch-mav { width:28px; height:28px; border-radius:50%; object-fit:cover; flex-shrink:0; }
+  .ch-mav-sp { width:28px; flex-shrink:0; }
+  .ch-b { max-width:72%; padding:8px 12px; border-radius:18px; font-size:14px; line-height:1.4; word-break:break-word; white-space:pre-wrap; }
+  .ch-m.them .ch-b { background:var(--surface-2); color:var(--text); border-bottom-left-radius:6px; }
+  .ch-m.me .ch-b { background:var(--red); color:#fff; border-bottom-right-radius:6px; }
+  .ch-meta { display:flex; flex-direction:column; font-size:10px; color:var(--muted); line-height:1.25; flex-shrink:0; }
+  .ch-m.me .ch-meta { align-items:flex-end; }
+  .ch-comp { display:flex; align-items:center; gap:8px; padding:8px 12px 10px; border-top:1px solid var(--line); flex-shrink:0; }
+  .ch-input { flex:1; min-width:0; background:var(--surface-2); border:none; outline:none; border-radius:999px; padding:10px 14px; color:var(--text); font:inherit; font-size:14px; }
+  .ch-send { width:36px; height:36px; border-radius:50%; border:none; background:var(--red); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .ch-send:disabled { opacity:.35; }
+  .ch-set-h { padding:16px 16px 6px; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; }
+  .ch-set { display:flex; align-items:center; gap:12px; width:100%; padding:12px 16px; background:none; border:none; color:var(--text); font:inherit; text-align:left; }
+  .ch-set .t { flex:1; min-width:0; }
+  .ch-set .t b { display:block; font-size:14.5px; font-weight:600; }
+  .ch-set .t span { display:block; font-size:12.5px; color:var(--muted); margin-top:2px; line-height:1.4; }
+  .ch-tgl { position:relative; width:46px; height:28px; border-radius:999px; background:var(--line); flex-shrink:0; transition:background .18s; }
+  .ch-tgl i { position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff; transition:transform .18s; box-shadow:0 1px 3px rgba(0,0,0,.3); }
+  .ch-tgl.on { background:var(--red); }
+  .ch-tgl.on i { transform:translateX(18px); }
+  .ch-set-in { margin:0 16px; width:calc(100% - 32px); box-sizing:border-box; background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:10px 12px; color:var(--text); font:inherit; font-size:14px; }
+  .ch-set-note { padding:6px 16px 0; font-size:12px; color:var(--muted); line-height:1.4; }
   /* unified hand cursor for every clickable element */
   button:not(:disabled), [role="button"], a[href], summary, label[for], select,
   .nav-item, .avatar-ring, .post-head .who, .post .caption > b, .pf-uname,
@@ -3800,6 +4062,9 @@ const I = {
   eyeOff: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10.8 10.8 0 0 1 12 20c-7 0-11-8-11-8a19.4 19.4 0 0 1 5.1-6.1"/><path d="M9.9 4.3A10.6 10.6 0 0 1 12 4c7 0 11 8 11 8a19.5 19.5 0 0 1-2.9 3.9"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="m2 2 20 20"/></svg>`,
   checkCir: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.7 2.7L16.5 9.4"/></svg>`,
   cal: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>`,
+  chPin: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M16 2.5a1.5 1.5 0 0 0-1.06.44l-2.12 2.12a.5.5 0 0 1-.47.13L8.9 4.25a1.5 1.5 0 0 0-1.57.37L6.2 5.75a1 1 0 0 0-.25 1.05l1.8 4.5-4.46 4.46a1 1 0 1 0 1.42 1.42L9.17 12.8l4.5 1.8a1 1 0 0 0 1.05-.25l1.13-1.13a1.5 1.5 0 0 0 .37-1.57l-.94-3.45a.5.5 0 0 1 .13-.47l2.12-2.12A1.5 1.5 0 0 0 16 2.5z"/></svg>`,
+  chMute: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`,
+  chUnmute: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9.5 9.5 0 0 1 0 14"/></svg>`,
 };
 
 /* ================= RENDER ================= */
@@ -5194,7 +5459,10 @@ function renderSub(scr) {
   const oldBar = el.querySelector(".pf-tabs");
   if (oldBar) scr._pfTabSl = oldBar.scrollLeft; /* keep tab-bar position across re-renders */
   el.innerHTML = subHTML(st[st.length - 1], scr);
-  el.classList.toggle("pg-up", (st[st.length - 1] || "").startsWith("report:pick")); /* picker look (rounded top); opens via instant swap — deeper report pages slide from the right */
+  chPostRender(el);
+  const curTop = st[st.length - 1] || "";
+  el.classList.toggle("pg-chat", curTop.startsWith("chat"));
+  el.classList.toggle("pg-up", curTop.startsWith("report:pick")); /* picker look (rounded top); opens via instant swap — deeper report pages slide from the right */
   el.classList.toggle("pg-swap", !!scr._subSwap);
   const q = el.querySelector(".sr-q, .svd-q");
   if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
@@ -6907,7 +7175,7 @@ function pfAllUsers(except) {
 function pfNavHTML(own) {
   return `<nav class="bottom-nav pf-nav">
     <span class="nav-item${own ? "" : " active"}" data-navgo="feed">${I.navFeed()}<span class="nav-label">Feed</span></span>
-    <span class="nav-item">${I.navChat()}<span class="nav-badge">1</span><span class="nav-label">Chat</span></span>
+    <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
     <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
     <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
     <span class="nav-item${own ? " active" : ""}" data-navgo="profile">${I.navUser()}<span class="nav-label">Profile</span></span>
@@ -7275,6 +7543,11 @@ function subHTML(name, scr) {
       ${opt("dark", "Dark mode", "Dimmed background that's easier on the eyes at night.", I.moon(21))}
     </div>`;
   }
+  /* CHAT — Chat Center, item chats, chat room, chat settings */
+  if (name === "chat") return chatListHTML();
+  if (name.startsWith("chatitem:")) return chatItemHTML(name.slice(9));
+  if (name.startsWith("chatroom:")) return chatRoomHTML(name.slice(9));
+  if (name === "chatcfg") return chatCfgHTML();
   if (name === "walerts") return walertsHTML();
   if (name === "saved") return savedHTML(scr);
   if (name === "archive") return archiveHTML(scr);
@@ -7352,6 +7625,467 @@ function subHTML(name, scr) {
   return "";
 }
 
+/* ================= CHAT — LINE / IG Direct style =================
+   Chat Center (People view / Items view), item chats, chat room (left-right
+   bubbles + centered post reference), Quick Ask from posts, Chat settings.
+   Pages live in the same .page-sub stack as profile/settings. */
+const CHAT = {
+  inited: false, view: "user", q: "", iq: "", threads: [], draft: null,
+  cfg: { notif: true, preview: true, read: true, followOnly: false, defView: "user", quick: "สนใจสินค้าชิ้นนี้ครับ ยังอยู่ไหมครับ?" }
+};
+function chatInit() {
+  if (CHAT.inited) return CHAT;
+  CHAT.inited = true;
+  const post = id => POSTS.find(x => x.id === id);
+  const own = (id, cap, price, pid) => ({ id, cap, price, photo: post(pid).photos[0], owner: CP_ME.name, pid: null });
+  const ref = id => { const p = post(id); return { id: p.id, cap: p.caption, price: p.price || "", photo: p.photos[0], owner: p.seller, pid: p.id }; };
+  const M1 = own("mi1", "Rolex Datejust 36 · Ref. 126234", "THB 380,000", "p4");
+  const M2 = own("mi2", "Breguet Classique 5177 · Ref. 5177BB", "THB 890,000", "p5");
+  let n = 0;
+  const mk = (user, item, at, day, unread, lines, pinned = false, muted = false) => ({
+    id: "t" + (++n), user, item, unread, draft: "", pinned, muted, hidden: false,
+    msgs: lines.map(l => ({ f: l[0] === ">" ? "me" : "them", t: l.slice(1).trim(), at, day, read: true }))
+  });
+  const T = [
+    mk("watch.daily", M1, "09:38", "Today", 2, ["<ขอราคาสุดท้ายได้ไหมครับ", "<ถ้ารับเลยวันนี้ 360,000 ได้ไหม"], true, false),
+    mk("Watch 777", ref("p1"), "09:30", "Today", 1, [">สนใจเรือนนี้ครับ ยังอยู่ไหมครับ", "<ยังอยู่ครับ ราคา 420,000 ครับ", ">ลดได้อีกนิดไหมครับ", "<ให้ได้ 410,000 ครับ ถ้ารับเร็ว"], true, false),
+    mk("slow.hand", M1, "09:12", "Today", 1, ["<สนใจครับ ขอดูรูปกล่องกับใบรับประกันหน่อย", ">ได้ครับ ครบเซ็ตเลย ส่งให้ทางนี้นะครับ", "<ขอบคุณครับ ขอคิดแป๊บนึง"], true, false),
+    mk("nat_collection", M2, "09:05", "Today", 1, ["<สนใจ Breguet เรือนนี้ครับ ราคาต่อรองได้ไหม"], true, false),
+    mk("gmt.bkk", M1, "08:50", "Today", 0, ["<เครื่องผ่านการเซอร์วิสล่าสุดเมื่อไหร่ครับ", ">เซอร์วิสที่ศูนย์ปี 2024 ครับ มีใบเสร็จ", "<โอเคครับ นัดดูที่สยามได้ไหม", ">ได้ครับ เสาร์นี้บ่ายสองไหมครับ"], false, true),
+    mk("the watch", ref("p2"), "08:20", "Today", 0, [">สนใจ Black Bay ครับ", "<ยังอยู่ครับ"]),
+    mk("davikah", M2, "21:40", "Yesterday", 0, ["<ขอบคุณที่ตอบนะครับ ขอปรึกษาที่บ้านก่อน", ">ได้เลยครับ"]),
+    mk("dial.dude", M1, "19:15", "Yesterday", 0, ["<ยังอยู่ไหมครับ", ">ยังอยู่ครับ", "<ขอบคุณครับ"]),
+    mk("chrono.th", M1, "18:02", "Yesterday", 1, ["<ลดได้อีกไหมครับ"])
+  ];
+  const more = ["nat_collection", "wrist.story", "neng_mua", "nong.boat", "ploy_w", "tee.watchlover", "kk_collector", "mild.chrono", "pae.tick"];
+  const days = ["Yesterday", "Yesterday", "Mon", "Mon", "Sun", "Sun", "Sat", "Sat", "Fri"];
+  const tpl = [
+    ["<ยังอยู่ไหมครับ", ">ยังอยู่ครับ"], ["<ขอดูรูปเพิ่มได้ไหมครับ"],
+    ["<รับเทรดไหมครับ", ">ขอขายอย่างเดียวครับ"], ["<ส่งต่างจังหวัดได้ไหมครับ", ">ส่งได้ครับ ประกันพัสดุให้"]
+  ];
+  more.forEach((u, i) => {
+    const lines = tpl[i % tpl.length];
+    T.push(mk(u, M1, "1" + (i % 9) + ":2" + (i % 6), days[i], lines[lines.length - 1][0] === "<" && i % 2 === 0 ? 1 : 0, lines));
+  });
+  T.push(mk("neng_mua", ref("p6"), "10:10", "Mon", 0, [">Snowflake ยังอยู่ไหมครับ", "<ขายไปแล้วครับ ขอโทษด้วย"]));
+  CHAT.threads = T;
+  CHAT.view = CHAT.cfg.defView;
+  return CHAT;
+}
+function chGet(id) {
+  const C = chatInit();
+  return C.threads.find(t => t.id === id) || (C.draft && C.draft.id === id ? C.draft : null);
+}
+function chTimeLbl(t) {
+  const m = t.msgs[t.msgs.length - 1];
+  return m ? (m.day === "Today" ? m.at : m.day) : "";
+}
+function chUnread() { return chatInit().threads.reduce((a, t) => a + (t.unread || 0), 0); }
+function chBadgeHTML() { const n = chUnread(); return n ? `<span class="nav-badge">${n > 99 ? "99+" : n}</span>` : ""; }
+function chBadgeSync() {
+  const b = chBadgeHTML();
+  document.querySelectorAll('.nav-item[data-navgo="chat"]').forEach(el => {
+    el.querySelector(".nav-badge")?.remove();
+    if (b) el.insertAdjacentHTML("afterbegin", b);
+  });
+}
+function chPostRender(el) {
+  const m = el.querySelector(".ch-msgs");
+  if (m) m.scrollTop = m.scrollHeight;
+}
+function chEmptyHTML(t, d) { return `<div class="ch-empty"><b>${esc(t)}</b><span>${esc(d)}</span></div>`; }
+function chatNavHTML() {
+  return `<nav class="bottom-nav pf-nav">
+    <span class="nav-item" data-navgo="feed">${I.navFeed()}<span class="nav-label">Feed</span></span>
+    <span class="nav-item active" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
+    <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
+    <span class="nav-item" data-navgo="profile">${I.navUser()}<span class="nav-label">Profile</span></span>
+  </nav>`;
+}
+function chThreadMatch(t, q) {
+  return !q || (t.user + " " + t.item.cap + " " + t.msgs.map(m => m.t).join(" ")).toLowerCase().includes(q);
+}
+function chRowHTML(t) {
+  const last = t.msgs[t.msgs.length - 1], un = t.unread > 0;
+  return `<div class="ch-row-wrap" data-tid="${t.id}">
+    <div class="ch-act-left">
+      <button class="ch-act-cir ch-act-mute" data-chact="mute" data-tid="${t.id}" title="${t.muted ? "เปิดการแจ้งเตือน" : "ปิดการแจ้งเตือน"}">
+        ${t.muted ? I.chUnmute(22) : I.chMute(22)}
+      </button>
+      <button class="ch-act-cir ch-act-pin" data-chact="pin" data-tid="${t.id}" title="${t.pinned ? "ยกเลิกปักหมุด" : "ปักหมุด"}">
+        ${I.chPin(20)}
+      </button>
+    </div>
+    <button class="ch-row${un ? " unread" : ""}" data-chgo="room" data-tid="${t.id}">
+      <span class="ch-av">
+        <img src="${profileOf(t.user).avatar}" alt="">
+        ${t.pinned ? `<span class="ch-pin-badge">${I.chPin(10)}</span>` : ""}
+      </span>
+      <span class="ch-main">
+        <span class="ch-name-line">
+          <b class="ch-name">${esc(t.user)}</b>
+          ${t.muted ? `<span class="ch-mute-ico" title="ปิดแจ้งเตือน">${I.chMute(13)}</span>` : ""}
+        </span>
+        <span class="ch-prev-line"><span class="ch-prev">${last.f === "me" ? "You: " : ""}${esc(last.t)}</span></span>
+      </span>
+      <span class="ch-meta-col">
+        <span class="ch-time">${chTimeLbl(t)}</span>
+        ${un ? `<span class="ch-un">${t.unread}</span>` : `<span class="ch-un-spacer"></span>`}
+      </span>
+    </button>
+    <div class="ch-act-right">
+      <button class="ch-act-rect ch-act-hide" data-chact="hide" data-tid="${t.id}">Hide</button>
+      <button class="ch-act-rect ch-act-del" data-chact="del" data-tid="${t.id}">Delete</button>
+    </div>
+  </div>`;
+}
+function chItemGroups() {
+  const g = new Map();
+  chatInit().threads.forEach(t => {
+    if (!g.has(t.item.id)) g.set(t.item.id, { item: t.item, threads: [], unread: 0, mine: t.item.owner === CP_ME.name });
+    const x = g.get(t.item.id);
+    x.threads.push(t);
+    x.unread += t.unread || 0;
+  });
+  return [...g.values()];
+}
+function chItemRowHTML(g) {
+  const n = g.threads.length;
+  const lastMsg = g.threads[0]?.msgs.at(-1)?.t || (n + " chats");
+  return `<button class="ch-row${g.unread ? " unread" : ""}" data-chgo="item" data-iid="${esc(g.item.id)}">
+    <img class="ch-thumb" src="${g.item.photo}" alt="">
+    <span class="ch-main">
+      <span class="ch-name-line"><b class="ch-name">${esc(g.item.cap)}</b><span class="ch-count-badge">(${n})</span></span>
+      <span class="ch-prev-line"><span class="ch-prev">${g.item.price ? esc(g.item.price) + " · " : ""}${esc(lastMsg)}</span></span>
+    </span>
+    <span class="ch-meta-col">
+      <span class="ch-time">${chTimeLbl(g.threads[0])}</span>
+      ${g.unread ? `<span class="ch-un">${g.unread}</span>` : `<span class="ch-un-spacer"></span>`}
+    </span>
+  </button>`;
+}
+function chListBody() {
+  const C = chatInit(), q = C.q.trim().toLowerCase();
+  if (C.view === "user") {
+    const visible = C.threads.filter(t => !t.hidden && chThreadMatch(t, q));
+    const sorted = [...visible].sort((a, b) => {
+      if (!!b.pinned !== !!a.pinned) return b.pinned ? 1 : -1;
+      return 0;
+    });
+    return sorted.length ? sorted.map(t => chRowHTML(t)).join("")
+      : chEmptyHTML(q ? "No chats found" : "No chats yet", q ? "Try another name, item or message." : "Tap Ask on a post to start chatting with the seller.");
+  }
+  const gs = chItemGroups().filter(g => !q || g.item.cap.toLowerCase().includes(q) || g.threads.some(t => chThreadMatch(t, q)));
+  if (!gs.length) return chEmptyHTML(q ? "No items found" : "No item chats yet", q ? "Try another item name." : "Chats are grouped by item once people message about a listing.");
+  const mine = gs.filter(g => g.mine), other = gs.filter(g => !g.mine);
+  return (mine.length ? `<div class="ch-sec">Your listings</div>${mine.map(chItemRowHTML).join("")}` : "")
+    + (other.length ? `<div class="ch-sec">Items you asked about</div>${other.map(chItemRowHTML).join("")}` : "");
+}
+function chatListHTML() {
+  const C = chatInit();
+  return `
+  <div class="ch-scroll sub-scroll">
+    <div class="ch-head">
+      <div class="ch-nav-tabs">
+        <button class="ch-top-tab${C.view === "user" ? " active-pill" : ""}" data-chview="user">
+          <span>Chats</span>
+        </button>
+        <button class="ch-top-tab${C.view === "item" ? " active-pill" : ""}" data-chview="item">
+          <span>Items</span>
+        </button>
+      </div>
+      <div class="ch-head-actions">
+        <button class="ch-cfg-btn" data-chgo="cfg" title="Chat settings">${I.gear(20)}</button>
+      </div>
+    </div>
+    <div class="ch-tools">
+      <label class="ch-search">${I.search(16)}<input class="ch-q" placeholder="Search" value="${esc(C.q)}"></label>
+    </div>
+    <div class="ch-list-inner">${chListBody()}</div>
+  </div>
+  ${chatNavHTML()}`;
+}
+function chItemBody(iid) {
+  const g = chItemGroups().find(x => x.item.id === iid), q = chatInit().iq.trim().toLowerCase();
+  const rows = g ? g.threads.filter(t => chThreadMatch(t, q)) : [];
+  return rows.length ? rows.map(t => chRowHTML(t, false)).join("") : chEmptyHTML("No chats found", "Try another name or message.");
+}
+function chatItemHTML(iid) {
+  const g = chItemGroups().find(x => x.item.id === iid);
+  const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
+  if (!g) return `<div class="detail-head">${back}<span class="detail-title">Item chats</span></div>` + chEmptyHTML("Item not found", "No chats for this item.");
+  const n = g.threads.length;
+  return `
+  <div class="detail-head">${back}<span class="detail-title">Item chats</span></div>
+  <div class="ch-itemcard"><img src="${g.item.photo}" alt=""><div><b>${esc(g.item.cap)}</b>${g.item.price ? `<span>${esc(g.item.price)}</span>` : ""}<em>${g.mine ? "Your listing" : "@" + esc(g.item.owner)} · ${n} chat${n > 1 ? "s" : ""}${g.unread ? " · " + g.unread + " unread" : ""}</em></div></div>
+  <div class="ch-tools"><label class="ch-search">${I.search(16)}<input class="ch-iq" placeholder="Search people or messages" value="${esc(chatInit().iq)}"></label></div>
+  <div class="ch-scroll sub-scroll" data-iid="${esc(iid)}">${chItemBody(iid)}</div>`;
+}
+function chatRoomHTML(tid) {
+  const C = chatInit(), t = chGet(tid);
+  const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
+  if (!t) return `<div class="ch-rhead">${back}<span class="n">Chat</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
+  if (t.unread) { t.unread = 0; chBadgeSync(); }
+  const av = profileOf(t.user).avatar, it = t.item, mine = it.owner === CP_ME.name;
+  let lastMe = -1;
+  t.msgs.forEach((m, i) => { if (m.f === "me") lastMe = i; });
+  const day0 = t.msgs[0] ? t.msgs[0].day : "Today";
+  const out = [`<div class="ch-day">${esc(day0)}</div>`, `<div class="ch-ref-w"><button class="ch-ref" data-chgo="post" data-pid="${esc(it.pid || "")}">
+      <img src="${it.photo}" alt=""><span><small>${mine ? "Your listing" : "@" + esc(it.owner) + "'s post"}</small><b>${esc(it.cap)}</b>${it.price ? `<em>${esc(it.price)}</em>` : ""}</span></button></div>`];
+  let lastDay = day0, prev = null;
+  t.msgs.forEach((m, i) => {
+    if (m.day !== lastDay) { out.push(`<div class="ch-day">${esc(m.day)}</div>`); lastDay = m.day; prev = null; }
+    if (m.f === "me") {
+      const rd = i === lastMe ? (m.read && C.cfg.read ? "Read" : "Sent") : "";
+      out.push(`<div class="ch-m me"><span class="ch-meta">${rd ? `<span>${rd}</span>` : ""}<span>${m.at}</span></span><span class="ch-b">${esc(m.t)}</span></div>`);
+    } else {
+      out.push(`<div class="ch-m them">${prev === "them" ? `<span class="ch-mav-sp"></span>` : `<img class="ch-mav" src="${av}" alt="">`}<span class="ch-b">${esc(m.t)}</span><span class="ch-meta"><span>${m.at}</span></span></div>`);
+    }
+    prev = m.f;
+  });
+  return `
+  <div class="ch-rhead">${back}<img src="${av}" alt="" data-pf-user="${esc(t.user)}"><span class="n" data-pf-user="${esc(t.user)}">${esc(t.user)}</span><span class="spacer"></span><button class="icon-btn" data-chgo="more" title="More">${I.dots(20)}</button></div>
+  <div class="ch-room" data-tid="${t.id}">
+    <div class="ch-msgs">${out.join("")}</div>
+    <div class="ch-comp">
+      <button class="icon-btn" data-chgo="attach" title="Attach">${I.plus(22)}</button>
+      <input class="ch-input" placeholder="Message" value="${esc(t.draft || "")}">
+      <button class="ch-send"${(t.draft || "").trim() ? "" : " disabled"} title="Send">${I.send(16)}</button>
+    </div>
+  </div>`;
+}
+function chatCfgHTML() {
+  const c = chatInit().cfg;
+  const tg = (k, t, d) => `<button class="ch-set" data-chtgl="${k}"><span class="t"><b>${t}</b><span>${d}</span></span><span class="ch-tgl${c[k] ? " on" : ""}"><i></i></span></button>`;
+  const vw = (v, t, d) => `<button class="ch-set" data-chdef="${v}"><span class="t"><b>${t}</b><span>${d}</span></span><span class="sub-chev">${c.defView === v ? I.check(17) : ""}</span></button>`;
+  return `
+  <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">Chat settings</span></div>
+  <div class="sub-scroll">
+    <div class="ch-set-h">Notifications</div>
+    ${tg("notif", "Message notifications", "Get notified when someone sends you a message.")}
+    ${tg("preview", "Show message preview", "Show the message text in notifications.")}
+    <div class="ch-set-h">Privacy</div>
+    ${tg("read", "Read receipts", "Let people see when you have read their message.")}
+    ${tg("followOnly", "Only people I follow can message me", "Others will not be able to start a new chat with you.")}
+    <div class="ch-set-h">Default chat view</div>
+    ${vw("user", "Chats", "List chats by person, latest first.")}
+    ${vw("item", "Items", "Group chats by item — handy when many people ask about the same listing.")}
+    <div class="ch-set-h">Quick Ask</div>
+    <input class="ch-set-in chc-quick" maxlength="80" value="${esc(c.quick)}" placeholder="Default message">
+    <div class="ch-set-note">Pre-filled when you tap Ask on a post. You can edit it before sending.</div>
+  </div>`;
+}
+function chSend(scr) {
+  const inp = scr.querySelector(".ch-input"), room = scr.querySelector(".ch-room");
+  if (!inp || !room) return;
+  const v = inp.value.trim(), t = chGet(room.dataset.tid), C = chatInit();
+  if (!v || !t) return;
+  if (C.draft === t) { C.threads.unshift(t); C.draft = null; }
+  else { const i = C.threads.indexOf(t); if (i > 0) { C.threads.splice(i, 1); C.threads.unshift(t); } }
+  t.msgs.push({ f: "me", t: v, at: "09:41", day: "Today", read: false });
+  t.draft = "";
+  renderSub(scr);
+  const ni = scr.querySelector(".ch-input");
+  if (ni) ni.focus();
+}
+function chatQuickAsk(scr, post) {
+  const C = chatInit();
+  if (post.seller === CP_ME.name) { scrToast(scr, "This is your own listing"); return; }
+  let t = C.threads.find(x => x.user === post.seller && x.item.id === post.id);
+  if (!t) {
+    if (C.draft && C.draft.user === post.seller && C.draft.item.id === post.id) t = C.draft;
+    else {
+      t = { id: "t" + Date.now(), user: post.seller, unread: 0, draft: C.cfg.quick, msgs: [],
+        item: { id: post.id, cap: post.caption, price: post.price || "", photo: post.photos[0], owner: post.seller, pid: post.id } };
+      C.draft = t;
+    }
+  }
+  scr.classList.remove("pv-open", "detail-open", "comments-open", "pm-open", "likes-open", "details-open");
+  openSub(scr, "chatroom:" + t.id);
+}
+let suppressChatClick = false;
+
+function openChatDeleteConfirm(t, scr) {
+  const old = document.getElementById("chDelModal");
+  if (old) old.remove();
+  const html = `
+  <div class="ch-modal-backdrop" id="chDelModal">
+    <div class="ch-modal">
+      <div class="ch-modal-title">ลบการแชทนี้หรือไม่?</div>
+      <div class="ch-modal-desc">ประวัติการสนทนากับ <b>${esc(t.user)}</b> จะถูกลบออกจากเครื่องของคุณ</div>
+      <div class="ch-modal-acts">
+        <button class="ch-modal-btn cancel" id="chDelCancel">ยกเลิก</button>
+        <button class="ch-modal-btn confirm-del" id="chDelConfirm">ลบ</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML("beforeend", html);
+  const m = document.getElementById("chDelModal");
+  m.querySelector("#chDelCancel").onclick = () => m.remove();
+  m.onclick = (e) => { if (e.target === m) m.remove(); };
+  m.querySelector("#chDelConfirm").onclick = () => {
+    m.remove();
+    const C = chatInit();
+    const idx = C.threads.indexOf(t);
+    if (idx >= 0) C.threads.splice(idx, 1);
+    scrToast(scr, "ลบแชทเรียบร้อยแล้ว");
+    renderSub(scr);
+  };
+}
+
+/* returns true when the click belonged to the chat module */
+function chatClick(e) {
+  const scr = e.target.closest(".screen");
+  if (!scr) return false;
+  const C = chatInit();
+  
+  if (suppressChatClick && e.target.closest(".ch-row")) return true;
+
+  const act = e.target.closest("[data-chact]");
+  if (act) {
+    const a = act.dataset.chact, tid = act.dataset.tid, t = chGet(tid);
+    if (!t) return true;
+    if (a === "pin") {
+      t.pinned = !t.pinned;
+      scrToast(scr, t.pinned ? "ปักหมุดแชทแล้ว" : "ยกเลิกการปักหมุดแล้ว");
+      renderSub(scr);
+    } else if (a === "mute") {
+      t.muted = !t.muted;
+      scrToast(scr, t.muted ? "ปิดการแจ้งเตือนแล้ว" : "เปิดการแจ้งเตือนแล้ว");
+      renderSub(scr);
+    } else if (a === "hide") {
+      t.hidden = true;
+      scrToast(scr, "ซ่อนแชทแล้ว");
+      renderSub(scr);
+    } else if (a === "del") {
+      openChatDeleteConfirm(t, scr);
+    }
+    return true;
+  }
+
+  const openWrap = e.target.closest(".ch-row-wrap.revealed-left, .ch-row-wrap.revealed-right");
+  if (openWrap) {
+    openWrap.classList.remove("revealed-left", "revealed-right");
+    return true;
+  }
+
+  document.querySelectorAll(".ch-row-wrap.revealed-left, .ch-row-wrap.revealed-right").forEach(w => {
+    w.classList.remove("revealed-left", "revealed-right");
+  });
+
+  const seg = e.target.closest("[data-chview]");
+  if (seg) { C.view = seg.dataset.chview; C.q = ""; renderSub(scr); return true; }
+  const tgl = e.target.closest("[data-chtgl]");
+  if (tgl) {
+    const k = tgl.dataset.chtgl;
+    C.cfg[k] = !C.cfg[k];
+    tgl.querySelector(".ch-tgl").classList.toggle("on", C.cfg[k]);
+    return true;
+  }
+  const def = e.target.closest("[data-chdef]");
+  if (def) { C.cfg.defView = C.view = def.dataset.chdef; C.q = ""; renderSub(scr); return true; }
+  const go = e.target.closest("[data-chgo]");
+  if (go) {
+    const a = go.dataset.chgo;
+    if (a === "room") rpPush(scr, "chatroom:" + go.dataset.tid);
+    else if (a === "item") { C.iq = ""; rpPush(scr, "chatitem:" + go.dataset.iid); }
+    else if (a === "cfg") rpPush(scr, "chatcfg");
+    else if (a === "more") scrToast(scr, "Chat options aren't in this prototype yet");
+    else if (a === "attach") scrToast(scr, "Attachments aren't in this prototype yet");
+    else if (a === "post") {
+      const p = go.dataset.pid && findPost(go.dataset.pid);
+      if (p) openPostDetail(scr, p); else scrToast(scr, "Listing detail isn't in this prototype yet");
+    }
+    return true;
+  }
+  if (e.target.closest(".ch-send")) { chSend(scr); return true; }
+  const ask = e.target.closest(".ask-pill, .chat-fab");
+  if (ask) {
+    const art = ask.closest(".post");
+    const post = findPost(art ? art.dataset.pid : (scr.dataset.dtPid || scr.dataset.detailPid));
+    if (post) { chatQuickAsk(scr, post); return true; }
+  }
+  return false;
+}
+
+/* Pointer gesture handling for LINE-style swipe actions */
+let chSwipe = null;
+document.addEventListener("pointerdown", e => {
+  const row = e.target.closest(".ch-row-wrap .ch-row");
+  if (!row) return;
+  const wrap = row.closest(".ch-row-wrap");
+  if (!wrap) return;
+  if (e.target.closest("[data-chact]")) return;
+  
+  document.querySelectorAll(".ch-row-wrap.revealed-left, .ch-row-wrap.revealed-right").forEach(w => {
+    if (w !== wrap) w.classList.remove("revealed-left", "revealed-right");
+  });
+
+  chSwipe = {
+    wrap, row,
+    startX: e.clientX,
+    startY: e.clientY,
+    dx: 0, dy: 0,
+    lockedH: false,
+    initiallyRevealed: wrap.classList.contains("revealed-left") ? "left" : (wrap.classList.contains("revealed-right") ? "right" : null)
+  };
+}, { passive: true });
+
+document.addEventListener("pointermove", e => {
+  if (!chSwipe) return;
+  const dx = e.clientX - chSwipe.startX;
+  const dy = e.clientY - chSwipe.startY;
+  chSwipe.dx = dx;
+  chSwipe.dy = dy;
+  if (!chSwipe.lockedH) {
+    if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx)) {
+      chSwipe = null;
+      return;
+    }
+    if (Math.abs(dx) > 8) {
+      chSwipe.lockedH = true;
+      chSwipe.row.style.transition = "none";
+    }
+  }
+  if (chSwipe.lockedH) {
+    let offset = dx;
+    if (chSwipe.initiallyRevealed === "left") offset += 118;
+    else if (chSwipe.initiallyRevealed === "right") offset -= 160;
+    if (offset > 135) offset = 135 + (offset - 135) * 0.2;
+    if (offset < -185) offset = -185 + (offset + 185) * 0.2;
+    chSwipe.row.style.transform = `translateX(${offset}px)`;
+  }
+}, { passive: true });
+
+document.addEventListener("pointerup", e => {
+  if (!chSwipe) return;
+  const { wrap, row, dx, lockedH, initiallyRevealed } = chSwipe;
+  chSwipe = null;
+  row.style.transition = "";
+  row.style.transform = "";
+  
+  if (!lockedH) return;
+  
+  suppressChatClick = true;
+  setTimeout(() => { suppressChatClick = false; }, 250);
+  
+  let finalState = null;
+  if (initiallyRevealed === "left") {
+    if (dx < -30) finalState = null;
+    else finalState = "left";
+  } else if (initiallyRevealed === "right") {
+    if (dx > 30) finalState = null;
+    else finalState = "right";
+  } else {
+    if (dx > 40) finalState = "left";
+    else if (dx < -40) finalState = "right";
+  }
+  
+  wrap.classList.toggle("revealed-left", finalState === "left");
+  wrap.classList.toggle("revealed-right", finalState === "right");
+});
+
 function screenHTML(theme, variant) {
   return `
   <div class="screen" data-theme="${theme}" data-variant="${variant}" data-nav="${state.nav}" data-ft="${state.ft}">
@@ -7391,7 +8125,7 @@ function screenHTML(theme, variant) {
 
     <nav class="bottom-nav">
       <span class="nav-item active">${I.navFeed()}<span class="nav-label">Feed</span></span>
-      <span class="nav-item">${I.navChat()}<span class="nav-badge">1</span><span class="nav-label">Chat</span></span>
+      <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
       <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
       <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
       <span class="nav-item" data-navgo="profile">${I.navUser()}<span class="nav-label">Profile</span></span>
@@ -7650,6 +8384,7 @@ stageEl.addEventListener("pointercancel", endSwipe);
 );
 stageEl.addEventListener("keydown", e => {
   if (e.key === "Enter" && e.target.matches(".cp-input input")) sendChat(e.target);
+  if (e.key === "Enter" && e.target.matches(".ch-input")) { e.preventDefault(); chSend(e.target.closest(".screen")); }
   if (e.key === "Enter" && e.target.matches(".sr-q")) {
     const scr = e.target.closest(".screen");
     const S = srchState(scr);
@@ -7686,6 +8421,22 @@ stageEl.addEventListener("input", e => {
   }
   if (e.target.matches(".cp-input input"))
     e.target.closest(".cp-input").querySelector(".cp-send").disabled = !e.target.value.trim();
+  if (e.target.matches(".ch-input")) {
+    const room = e.target.closest(".ch-room"), t = chGet(room.dataset.tid);
+    if (t) t.draft = e.target.value;
+    room.querySelector(".ch-send").disabled = !e.target.value.trim();
+  }
+  if (e.target.matches(".ch-q")) {
+    chatInit().q = e.target.value;
+    const box = e.target.closest(".page-sub").querySelector(".ch-list-inner") || e.target.closest(".page-sub").querySelector(".ch-scroll");
+    box.innerHTML = chListBody();
+  }
+  if (e.target.matches(".ch-iq")) {
+    chatInit().iq = e.target.value;
+    const box = e.target.closest(".page-sub").querySelector(".ch-scroll");
+    box.innerHTML = chItemBody(box.dataset.iid);
+  }
+  if (e.target.matches(".chc-quick")) chatInit().cfg.quick = e.target.value;
   if (e.target.matches(".sh-q")) {
     const q = e.target.value.trim().toLowerCase();
     e.target.closest(".comment-sheet").querySelectorAll(".sh-fr").forEach(b => {
@@ -8271,6 +9022,7 @@ document.getElementById("stage").addEventListener("click", e => {
       if (sc && y != null) { sc.scrollTop = y; requestAnimationFrame(() => { sc.scrollTop = y; }); }
     }
     else if (topSub.startsWith("report")) rpBack(scr); /* report pages slide back out right */
+    else if (topSub.startsWith("chat") && scr._subStack.length > 1) rpBack(scr); /* chat pages slide back out right */
     else subBack(scr);
     return;
   }
@@ -8545,12 +9297,14 @@ document.getElementById("stage").addEventListener("click", e => {
   if (hbScrim) { hbScrim.closest(".screen").classList.remove("hb-open"); return; }
   const hbDead = e.target.closest(".hb-item");
   if (hbDead) { toast("Not in this prototype yet"); return; }
+  if (chatClick(e)) return;
   /* ===== PROFILE-001 — profile menu + profile page actions ===== */
   const navGo = e.target.closest("[data-navgo]");
   if (navGo) {
     const scr = navGo.closest(".screen");
     const go = navGo.dataset.navgo;
     if (go === "profile") openSub(scr, "profile:" + CP_ME.name, true);
+    else if (go === "chat") openSub(scr, "chat", true);
     else if (go === "feed") { scr._subStack = []; scr.classList.remove("sub-open"); }
     return;
   }
