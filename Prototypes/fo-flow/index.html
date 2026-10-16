@@ -1,4 +1,4 @@
-l<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -6106,7 +6106,43 @@ function openPostEdit(scr, post) {
   /* detail page (z33) sits above the composer (z32) — close it while editing, reopen on Done/Cancel */
   V.editFromDetail = scr.classList.contains("detail-open");
   if (V.editFromDetail) scr.classList.remove("detail-open");
+  /* opened from a profile / Posts viewer — remember that surface so Done/Cancel returns to it */
+  V.editRet = { stack: (scr._subStack || []).slice(), pv: scr.classList.contains("pv-open"), rp: scr.classList.contains("rp-over") };
+  if (V.editRet.pv) {
+    /* Posts viewer stays put — the composer slides in over it (same layering as report pages) */
+    const el = scr.querySelector(".page-sub");
+    scr.classList.add("rp-over");
+    el.style.transition = "none";
+    scr.classList.remove("sub-open");
+    void el.offsetWidth;
+    el.style.transition = "";
+  }
   openSub(scr, "create");
+}
+/* leave edit mode — restore whatever surface (profile / Posts viewer / detail / feed) it was opened from */
+function closePostEdit(scr, V) {
+  const r = V.editRet;
+  cfClipStop(scr);
+  if (scr._cp && scr._cp._t) clearInterval(scr._cp._t);
+  scr._cp = null;
+  if (r && r.pv) {
+    /* composer slides out to the right revealing the untouched Posts viewer, then the profile is restored underneath */
+    scr.classList.remove("sub-open");
+    setTimeout(() => {
+      if (scr._cp) return;
+      scr.classList.toggle("rp-over", r.rp);
+      scr._subStack = r.stack;
+      renderSub(scr);
+      scr.classList.add("sub-open");
+    }, 320);
+  } else if (r && r.stack.length) {
+    scr._subStack = r.stack;
+    renderSub(scr);
+  } else {
+    scr._subStack = [];
+    scr.classList.remove("sub-open");
+  }
+  if (V.editFromDetail && !(r && r.pv)) scr.classList.add("detail-open");
 }
 function applyPostEdit(scr, post, V) {
   const m = V.meta || {};
@@ -7577,10 +7613,7 @@ document.getElementById("stage").addEventListener("click", e => {
       const wasDetail = V.editFromDetail;
       V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() ?? V.caption;
       if (post) applyPostEdit(scr, post, V); /* before _cp reset — cfMedia reads V.order */
-      cfClipStop(scr);
-      scr._cp = null;
-      scr._subStack = [];
-      scr.classList.remove("sub-open");
+      closePostEdit(scr, V);
       if (post) {
         refreshPostViews(scr, post);
         if (wasDetail) openPostDetail(scr, post); /* reopens detail with fresh content */
@@ -7934,6 +7967,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (dlgDiscard) {
     const scr = dlgDiscard.closest(".screen");
     scr.classList.remove("dialog-open");
+    if (scr._cp && scr._cp.editPid) { closePostEdit(scr, scr._cp); return; }
     const wasDetail = scr._cp && scr._cp.editFromDetail;
     if (scr._cp) { clearInterval(scr._cp._t); }
     scr._cp = null;

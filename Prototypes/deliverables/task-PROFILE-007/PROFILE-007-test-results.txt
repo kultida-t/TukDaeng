@@ -1,0 +1,11 @@
+PASS edit composer visible (Edit info head)
+PASS viewer stays open (not slid out) while editing
+PASS caption prefilled
+PASS cancel returns to Posts viewer
+PASS profile restored underneath
+PASS done returns to Posts viewer
+PASS viewer caption updated
+PASS back lands on own profile
+PASS no console errors
+
+0 failed / 0 console errors
