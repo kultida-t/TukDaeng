@@ -7865,14 +7865,19 @@ function chItemGroups() {
 }
 function chItemRowHTML(g) {
   const n = g.threads.length;
-  const lastMsg = g.threads[0]?.msgs.at(-1)?.t || (n + " chats");
   const isDirectRoom = !g.mine && g.threads.length === 1;
   const navAttr = isDirectRoom ? `data-chgo="room" data-tid="${esc(g.threads[0].id)}"` : `data-chgo="item" data-iid="${esc(g.item.id)}"`;
+  const countBadge = g.mine ? `<span class="ch-count-badge">(${n})</span>` : "";
+  const lastMsg = g.threads[0]?.msgs.at(-1)?.t || "";
+  const subText = g.mine
+    ? `${n} chat${n > 1 ? "s" : ""}${g.unread ? " · " + g.unread + " unread" : ""}`
+    : esc(lastMsg);
+  const pricePrefix = g.item.price ? esc(g.item.price) + " · " : "";
   return `<button class="ch-row${g.unread ? " unread" : ""}" ${navAttr}>
     <img class="ch-thumb" src="${g.item.photo}" alt="">
     <span class="ch-main">
-      <span class="ch-name-line"><b class="ch-name">${esc(g.item.cap)}</b><span class="ch-count-badge">(${n})</span></span>
-      <span class="ch-prev-line"><span class="ch-prev">${g.item.price ? esc(g.item.price) + " · " : ""}${esc(lastMsg)}</span></span>
+      <span class="ch-name-line"><b class="ch-name">${esc(g.item.cap)}</b>${countBadge}</span>
+      <span class="ch-prev-line"><span class="ch-prev">${pricePrefix}${subText}</span></span>
     </span>
     <span class="ch-meta-col">
       <span class="ch-time">${chTimeLbl(g.threads[0])}</span>

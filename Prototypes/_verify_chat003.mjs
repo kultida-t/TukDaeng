@@ -43,6 +43,17 @@ const browser = await chromium.launch({
   await page.locator('.ch-top-tab[data-chview="item"]').click();
   await page.waitForTimeout(300);
 
+  // Check: Your listings row shows summary instead of single user message
+  const rolexSub = await page.locator('.ch-list-inner .ch-row[data-iid="mi1"] .ch-prev').textContent();
+  check("Your listings row shows aggregate summary", rolexSub.includes("14 chats · 4 unread") && !rolexSub.includes("ถ้ารับเลยวันนี้"), rolexSub);
+
+  // Check: Items you asked about shows last message preview
+  const subSub = await page.locator('.ch-list-inner .ch-row[data-chgo="room"]').first().locator('.ch-prev').textContent();
+  check("Asked item shows last message preview", subSub.includes("ให้ได้ 410,000"), subSub);
+
+  await page.screenshot({ path: path.join(OUT, "m-440-items-tab.png") });
+  await page.screenshot({ path: path.join(DELIV, "m-440-items-tab.png") });
+
   // Click on the first item "Rolex Datejust 36 · Ref. 126234"
   await page.locator('.ch-row[data-chgo="item"][data-iid="mi1"]').click();
   await page.waitForTimeout(400);

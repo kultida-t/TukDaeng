@@ -1,9 +1,11 @@
 === CHAT-003 Verification Results ===
-Timestamp: 2026-10-16T07:20:58.693Z
-Total Tests: 21
-Passed: 21
+Timestamp: 2026-10-16T07:26:24.747Z
+Total Tests: 23
+Passed: 23
 Failed: 0
 
+PASS: Your listings row shows aggregate summary — THB 380,000 · 14 chats · 4 unread
+PASS: Asked item shows last message preview — THB 420,000 · ให้ได้ 410,000 ครับ ถ้ารับเร็ว
 PASS: Header title is 'Item chats' — Item chats
 PASS: Item card shows Rolex Datejust 36 — Rolex Datejust 36 · Ref. 126234
 PASS: Item chats list has 14 chat rows — Found: 14
