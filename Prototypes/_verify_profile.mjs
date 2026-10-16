@@ -44,7 +44,7 @@ check("3 stats posts/followers/following", (await sub().locator(".pf-stat span")
 check("display name", (await sub().locator(".pf-disp").textContent()).includes("Mr.FOX"));
 check("bio shows", (await sub().locator(".pf-biot").textContent()).includes("CEO of Mr.FOX"));
 check("no sleep mode pill", await sub().locator(".pf-sleep").count() === 0);
-check("link chip + Add chip", await sub().locator(".pf-link").count() === 1 && await sub().locator(".pf-addchip").count() === 1);
+check("link chip, no Add chip", await sub().locator(".pf-link").count() === 1 && await sub().locator(".pf-addchip").count() === 0);
 check("Edit/Share buttons", (await sub().locator(".pf-actions .pf-btn").allTextContents()).join("|").includes("Edit profile|Share profile"));
 check("5 owner tabs (All/Sale/Show/Hide/Sold)", (await sub().locator(".pf-tab").allTextContents()).join("|") === "All|Sale|Show|Hide|Sold", (await sub().locator(".pf-tab").allTextContents()).join("|"));
 check("all tab active", await sub().locator('.pf-tab.on[data-pftab="all"]').count() === 1);

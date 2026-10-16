@@ -3232,6 +3232,20 @@
     position: absolute; top: 7px; right: 7px; color: #fff;
     filter: drop-shadow(0 1px 2px rgba(0,0,0,.55)); display: flex;
   }
+  .pf-pin { position: absolute; top: 7px; right: 7px; color: #fff; filter: drop-shadow(0 1px 2px rgba(0,0,0,.55)); display: flex; }
+  .pf-pin svg { fill: currentColor; transform: rotate(38deg); }
+  .pf-tb + .pf-pin { right: 29px; }
+  /* PROFILE-008 — IG pin feedback: center "Pinning…" pill, then bottom toast with pin icon; both auto-dismiss */
+  .pin-pill, .pin-toast {
+    position: absolute; left: 50%; opacity: 0; pointer-events: none; z-index: 62;
+    background: #2b2b31; color: #f2f2f5; font-size: 14px; font-weight: 500; white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4); transition: opacity .2s ease, transform .2s ease;
+  }
+  .pin-pill { top: 44%; transform: translate(-50%,-50%) scale(.95); padding: 14px 22px; border-radius: 14px; }
+  .pin-pill.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  .pin-toast { bottom: 84px; width: calc(100% - 28px); transform: translate(-50%,12px); display: flex; align-items: center; gap: 14px; padding: 15px 18px; border-radius: 16px; }
+  .pin-toast.show { opacity: 1; transform: translate(-50%,0); }
+  .pin-toast svg { fill: currentColor; flex-shrink: 0; }
   .pf-empty { padding: 46px 24px 60px; text-align: center; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .pf-empty .pf-eic {
     width: 74px; height: 74px; border-radius: 50%;
@@ -4246,14 +4260,14 @@ function pmMenuHTML(p, reportOnly) {
 /* ===== FEED-024 — own-post "..." menu (IG own-post sheet, trimmed to TukDaeng actions) ===== */
 const isOwnPost = p => p && p.seller === CP_ME.name;
 
-function pmOwnMenuHTML(p) {
+function pmOwnMenuHTML(p, tab = "all") {
   return `
     <div class="sheet-handle"></div>
     <div class="pm-card">
       <button class="pm-row pm-own-archive">${I.history(20)}<span>${p.archived ? "Unarchive" : "Archive"}</span></button>
       <button class="pm-row pm-own-nocomm">${I.commentOff(20)}<span>${p.noComments ? "Turn on commenting" : "Turn off commenting"}</span></button>
       <button class="pm-row pm-own-edit">${I.pen(20)}<span>Edit</span></button>
-      <button class="pm-row pm-own-pin">${I.pinPost(20)}<span>${p.pinned ? "Unpin from profile" : "Pin to profile"}</span></button>
+      <button class="pm-row pm-own-pin">${I.pinPost(20)}<span>${p.pins && p.pins[tab] ? "Unpin from grid" : "Pin to top of grid"}</span></button>
       <button class="pm-row danger pm-own-del">${I.trash(20)}<span>Delete</span></button>
     </div>`;
 }
@@ -5041,8 +5055,8 @@ function renderSub(scr) {
   if (onTab) { /* scroll only the tab bar — scrollIntoView would drag the whole page (overflow-x ancestors) */
     const bar = onTab.closest(".pf-tabs"), L = onTab.offsetLeft, R = L + onTab.offsetWidth;
     if (scr._pfTabSl != null) bar.scrollLeft = scr._pfTabSl;
-    if (L < bar.scrollLeft) bar.scrollLeft = L - 8;
-    else if (R > bar.scrollLeft + bar.clientWidth) bar.scrollLeft = R - bar.clientWidth + 8;
+    if (L < bar.scrollLeft - 2) bar.scrollLeft = L - 8;
+    else if (R > bar.scrollLeft + bar.clientWidth + 2) bar.scrollLeft = R - bar.clientWidth + 8; /* 2px tolerance — fractional tab widths must not nudge the bar */
   }
   cfClipSync(scr); /* restore clip play/countdown state after composer re-renders */
 }
@@ -6587,7 +6601,33 @@ function pfGridPosts(uname) {
 function pfKind(p) { return p.pfkind || (p.price || p.type === "sale" ? "sale" : "show"); }
 function pfTabPosts(uname, tab) {
   const all = pfGridPosts(uname).filter(p => !p.archived); /* mirror userPosts — archived drops out of the grid */
-  return tab === "all" ? all : all.filter(p => pfKind(p) === tab);
+  const list = tab === "all" ? all : all.filter(p => pfKind(p) === tab);
+  const pinned = list.filter(p => p.pins && p.pins[tab]).sort((a, b) => b.pins[tab] - a.pins[tab]); /* newest pin first; unpinned posts keep natural order */
+  return pinned.concat(list.filter(p => !(p.pins && p.pins[tab])));
+}
+/* PROFILE-008 — pin to top of grid: max 3 per tab, newest pin first, unpin returns to natural slot */
+const PIN_MAX = 3;
+let pinSeq = 0;
+const pinnedIn = (uname, tab) => pfTabPosts(uname, tab).filter(p => p.pins && p.pins[tab]);
+let pinTimers = [];
+function pinFeedback(scr, pillMsg, toastMsg) {
+  pinTimers.forEach(clearTimeout);
+  const pill = scr.querySelector(".pin-pill"), toast = scr.querySelector(".pin-toast");
+  pill.textContent = pillMsg;
+  toast.classList.remove("show");
+  pill.classList.add("show");
+  pinTimers = [
+    setTimeout(() => { pill.classList.remove("show"); toast.innerHTML = `${I.pinPost(20)}<span>${toastMsg}</span>`; toast.classList.add("show"); }, 700),
+    setTimeout(() => toast.classList.remove("show"), 3000),
+  ];
+}
+function applyPin(scr, post, tab, on) {
+  post.pins = post.pins || {};
+  if (on) post.pins[tab] = ++pinSeq; else delete post.pins[tab];
+  refreshPostViews(scr, post);
+  const top = (scr._subStack || []).at(-1) || "";
+  if (top.startsWith("profile:")) { scr._subSwap = true; renderSub(scr); scr._subSwap = false; } /* grid behind the viewer reorders in place */
+  pinFeedback(scr, on ? "Pinning..." : "Unpinning...", on ? "Your post has been pinned" : "Your post has been unpinned");
 }
 function userClips(name) { return userPosts(name).filter(p => clipState(p).has); }
 function userTagged(name) { return POSTS.filter(p => p.seller !== name && !p.archived && !p.ni && !p.muted && !p.blocked && ((p.likedBy && p.likedBy.name === name) || (p.commentPreview && p.commentPreview.name === name))); }
@@ -6737,11 +6777,12 @@ function pfAvovHTML(u, own, isF) {
     </div>
   </div>`;
 }
-function pfTilesHTML(list) {
+function pfTilesHTML(list, tab = "all") {
   return `<div class="pf-grid">${list.map(p => `
     <button class="pf-tile" data-pid="${p.id}">
       <img src="${p.photos[0]}" alt="" loading="lazy">
       ${p.photos.length > 1 ? `<span class="pf-tb">${I.stack(15)}</span>` : clipState(p).has ? `<span class="pf-tb">${I.play(12)}</span>` : ""}
+      ${p.pins && p.pins[tab] ? `<span class="pf-pin">${I.pinPost(15)}</span>` : ""}
     </button>`).join("")}</div>`;
 }
 function pfEmptyHTML(icon, title, desc, own) {
@@ -6765,7 +6806,7 @@ function profileHTML(scr, key) {
     : [["all", "All", I.gridSel(22)], ["sale", "Sale", I.bag(22)], ["show", "Show", I.eye(22)]];
   const tabName = TABS.some(t => t[0] === tab) ? tab : "all";
   const list = pfTabPosts(uname, tabName);
-  const body = list.length ? pfTilesHTML(list)
+  const body = list.length ? pfTilesHTML(list, tabName)
     : pfEmptyHTML(I.camPlain(30), tabName === "all" ? (own ? "Share your first post" : "No posts yet") : `No ${tabName} posts`,
         own && tabName === "all" ? "When you share photos and clips, they'll show up here." : "", own && tabName === "all");
   return `
@@ -6800,9 +6841,8 @@ function profileHTML(scr, key) {
     <div class="pf-bio">
       ${u.cat ? `<div class="pf-cat">${esc(u.cat)}</div>` : ""}
       <div class="pf-biot">${esc(u.bio)}</div>
-      ${(u.link || own) ? `<div class="pf-chrow">
+      ${u.link ? `<div class="pf-chrow">
         ${u.link ? `<span class="pf-link">${u.link.startsWith("@") ? `<b class="pf-atch">@</b>` : I.link(13)}${esc(u.link.startsWith("@") ? u.link.slice(1) : u.link)}</span>` : ""}
-        ${own ? `<button class="pf-addchip">${I.plus(12)} Add</button>` : ""}
       </div>` : ""}
       ${!own ? `<div class="pf-chrow"><span class="pf-link"><b class="pf-atch">@</b>${esc(u.user)}</span></div>` : ""}
     </div>
@@ -7213,6 +7253,8 @@ function screenHTML(theme, variant) {
     <div class="comment-sheet"></div>
     <div class="dlg"></div>
     <div class="sc-toast"></div>
+    <div class="pin-pill"></div>
+    <div class="pin-toast"></div>
     <div class="page-detail"></div>
     <div class="page-sub"></div>
     <div class="page-pv"></div>
@@ -7806,7 +7848,8 @@ document.getElementById("stage").addEventListener("click", e => {
     const cs = scr.querySelector(".comment-sheet");
     cs.classList.remove("uf", "pm-rp", "lk", "sh", "sv", "nt", "ps");
     cs.classList.add("pm");
-    cs.innerHTML = isOwnPost(post) ? pmOwnMenuHTML(post) : pmMenuHTML(post, !!(art && art.classList.contains("pfp-post")));
+    scr._pmPinTab = art && art.classList.contains("pfp-post") ? (scr._pinTab || "all") : "all";
+    cs.innerHTML = isOwnPost(post) ? pmOwnMenuHTML(post, scr._pmPinTab) : pmMenuHTML(post, !!(art && art.classList.contains("pfp-post")));
     scr.classList.add("pm-open");
     return;
   }
@@ -7820,6 +7863,7 @@ document.getElementById("stage").addEventListener("click", e => {
     if (pmOwn.matches(".pm-own-archive")) {
       post.archived = !post.archived;
       post.archivedAt = post.archived ? Date.now() : 0;
+      if (post.archived) post.pins = null;
       scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
       const top = (scr._subStack || []).at(-1) || "";
       if (top === "archive" || top.startsWith("profile:")) renderSub(scr);
@@ -7832,8 +7876,16 @@ document.getElementById("stage").addEventListener("click", e => {
     } else if (pmOwn.matches(".pm-own-edit")) {
       openPostEdit(scr, post);
     } else if (pmOwn.matches(".pm-own-pin")) {
-      post.pinned = !post.pinned;
-      scrToast(scr, post.pinned ? "Pinned to your profile" : "Unpinned from your profile");
+      const tab = scr._pmPinTab || "all";
+      if (post.pins && post.pins[tab]) applyPin(scr, post, tab, false);
+      else if (pinnedIn(CP_ME.name, tab).length >= PIN_MAX) {
+        scr._pinPend = { pid: post.id, tab };
+        openDlg(scr, `
+          <div class="dlg-q">Pin limit reached</div>
+          <div class="dlg-desc">Are you sure you want to pin this post? You can only pin up to three posts to your grid. Pinning this post will replace your oldest pinned post.</div>
+          <button class="dlg-btn dlg-pin-go" style="color:#6c8cff">Confirm</button>
+          <button class="dlg-btn dlg-cancel">Cancel</button>`);
+      } else applyPin(scr, post, tab, true);
     } else if (pmOwn.matches(".pm-own-del")) {
       openDlg(scr, `
         <div class="dlg-q">Delete post?</div>
@@ -7959,6 +8011,18 @@ document.getElementById("stage").addEventListener("click", e => {
       post.ni = false;
       art.outerHTML = postCard(post, scr.dataset.variant);
     }
+    return;
+  }
+  const dlgPin = e.target.closest(".dlg-pin-go");
+  if (dlgPin) {
+    const scr = dlgPin.closest(".screen");
+    scr.classList.remove("dialog-open");
+    const pend = scr._pinPend, post = pend && findPost(pend.pid);
+    scr._pinPend = null;
+    if (!post) return;
+    const oldest = pinnedIn(CP_ME.name, pend.tab).sort((a, b) => a.pins[pend.tab] - b.pins[pend.tab])[0];
+    if (oldest) delete oldest.pins[pend.tab];
+    applyPin(scr, post, pend.tab, true);
     return;
   }
   const dlgCancel = e.target.closest(".dlg-cancel");
@@ -8353,7 +8417,14 @@ document.getElementById("stage").addEventListener("click", e => {
       const parts = top.split(":");
       parts[2] = pfTab.dataset.pftab;
       st[st.length - 1] = parts.join(":");
+      const sc0 = scr.querySelector(".pf-scroll"), y0 = sc0 ? sc0.scrollTop : 0; /* keep page position when switching tabs */
       renderSub(scr);
+      const sc1 = scr.querySelector(".pf-scroll");
+      if (sc1) {
+        const need = y0 + sc1.clientHeight - [...sc1.children].reduce((h, k) => h + k.offsetHeight, 0); /* shorter tab would clamp scrollTop — pad so the position holds */
+        if (need > 0) sc1.insertAdjacentHTML("beforeend", `<div class="pf-keep" style="height:${need}px;flex:none"></div>`);
+        sc1.scrollTop = y0;
+      }
     }
     return;
   }
@@ -8368,6 +8439,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const parts = ((scr._subStack || []).at(-1) || "").split(":");
     const u = parts[1] || "", tab = parts[2] || "all";
     const list = pfTabPosts(u, tab);
+    scr._pinTab = tab;
     openPostViewer(scr, list, pfTile.dataset.pid, 0, false, "Posts", u);
     return;
   }

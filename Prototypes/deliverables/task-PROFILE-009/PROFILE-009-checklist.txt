@@ -1,0 +1,13 @@
+PROFILE-009 — Own profile: remove + Add, keep scroll on tab switch, steady tab bar
+File: Prototypes/fo-flow/index.html (viewport 440px, automated via Playwright + _verify_profile.mjs)
+
+Case 1: Own profile has no "+ Add" chip beside the website link ............ PASS (.pf-addchip count = 0)
+Case 2: Scroll page down 60px on All, switch All -> Sale -> Show -> Hide ...... PASS (scrollTop stays 60 on every switch,
+        including shorter tabs — spacer pads the page so position is not clamped)
+Case 3: Tab bar stays put on switch (All <-> Hide etc.) ........................ PASS (tab bar scrollLeft = 0, top offset constant;
+        cause was fractional-width rounding triggering an 8px auto-reveal; fixed with 2px tolerance)
+Regression: _verify_profile.mjs ............................................... PASS (0 failed / 0 console errors)
+Regression: _verify_pin.mjs (PROFILE-008) ..................................... PASS (no FAIL / ERR)
+
+Screenshots: screenshots/task-PROFILE-009/after-*.png
+Evidence gap: no Before screenshots captured before the code change.
