@@ -1,0 +1,25 @@
+CHAT-002 Verification Test Results
+Date: 2026-10-16T06:18:57.664Z
+Passed: 20
+Failed: 0
+
+PASS: Chats tab has NO arrow
+PASS: Items tab has arrow ▼
+PASS: Items tab becomes active
+PASS: Popover closed initially upon switching to Items
+PASS: Tapping Items tab opens Popover
+PASS: Popover has All items option
+PASS: Popover has Your listings option
+PASS: Popover has Items you asked about option
+PASS: All items has checkmark initially
+PASS: Your listings has no checkmark initially
+PASS: Popover closed after selecting Your listings
+PASS: Only Your listings section is visible
+PASS: Your listings now has checkmark
+PASS: All items no longer has checkmark
+PASS: Only Items you asked about section is visible
+PASS: Popover opened for backdrop test
+PASS: Backdrop tap closes popover
+PASS: Switched to Chats tab
+PASS: Switching to Chats resets filter to All items on return
+PASS: No JS page errors during tests
