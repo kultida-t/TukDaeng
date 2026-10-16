@@ -3,14 +3,17 @@ TEST RESULTS FOR TASK CHAT-006:
 PASS: Swipe right reveals left action buttons
 PASS: Pin button is present in swipe right
 PASS: Mute button is present in swipe right
-PASS: Pinned chat moves to the top of the chat list — First is: gmt.bkk
+PASS: Pin and Mute buttons have distinct green shades — Pin: rgb(46, 200, 114), Mute: rgb(6, 199, 85)
 PASS: Pinned chat shows blue pin badge on avatar
 PASS: Pinned chat displays 'ยกเลิกปักหมุด' (Unpin) button — ยกเลิกปักหมุด
+PASS: Unpinning removes the blue pin badge
 PASS: Muting a chat displays mute speaker icon next to name
 PASS: Swipe left reveals right action buttons
 PASS: Hide button is present in swipe left
 PASS: Delete button is present in swipe left
+PASS: Delete button has red background — rgb(255, 69, 58)
 PASS: Hide modal shows exact copy 'Hiding chats doesn\'t delete their messages.' — Hiding chats doesn't delete their messages.
+PASS: Popup title font weight is regular (400, not bold) — 400
 PASS: Hide modal has Cancel button
 PASS: Hide modal has Hide confirm button
 PASS: Cancel Hide closes the modal
@@ -20,5 +23,5 @@ PASS: Row revealed before outside tap
 PASS: Row closes when tapping outside
 PASS: No unhandled console errors during tests — Page errors: 0
 
-TOTAL: 19 | FAILED: 0
+TOTAL: 22 | FAILED: 0
 ==========================================

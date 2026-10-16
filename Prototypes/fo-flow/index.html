@@ -3594,15 +3594,19 @@
   .ch-row-wrap.revealed-left .ch-act-left { opacity:1; pointer-events:auto; }
   .ch-row-wrap.revealed-right .ch-act-right { opacity:1; pointer-events:auto; }
   
-  .ch-act-cir { width:46px; height:46px; border-radius:50%; background:#06c755; border:none; outline:none; color:#ffffff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .12s, background .15s; box-shadow:0 1px 3px rgba(0,0,0,.15); flex-shrink:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  .ch-act-cir { width:46px; height:46px; border-radius:50%; border:none; outline:none; color:#ffffff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .12s, filter .15s; box-shadow:0 1px 3px rgba(0,0,0,.15); flex-shrink:0; padding:0; -webkit-tap-highlight-color:transparent; }
   .ch-act-cir:focus, .ch-act-cir:focus-visible { outline:none; }
-  .ch-act-cir:active { transform:scale(.92); background:#05b34c; }
+  .ch-act-cir:active { transform:scale(.92); filter:brightness(.92); }
+  .ch-act-cir.ch-act-pin { background:#2ec872; }
+  .ch-act-cir.ch-act-mute { background:#06c755; }
   
-  .ch-act-rect { width:64px; height:50px; border-radius:14px; border:none; outline:none; font:inherit; font-size:13.5px; font-weight:500; color:#111111; background:#e9e9eb; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .12s, background .15s; flex-shrink:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  .ch-act-rect { width:64px; height:50px; border-radius:14px; border:none; outline:none; font:inherit; font-size:13.5px; font-weight:500; color:#ffffff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .12s, filter .15s; flex-shrink:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   .ch-act-rect:focus, .ch-act-rect:focus-visible { outline:none; }
-  .ch-act-rect:active { transform:scale(.94); background:#dedee0; }
-  .screen[data-theme="dark"] .ch-act-rect { background:#2c2c2e; color:#ffffff; }
-  .screen[data-theme="dark"] .ch-act-rect:active { background:#3a3a3c; }
+  .ch-act-rect:active { transform:scale(.94); filter:brightness(.92); }
+  .ch-act-hide { background:#a8a8ad; color:#ffffff; }
+  .screen[data-theme="dark"] .ch-act-hide { background:#636366; color:#ffffff; }
+  .ch-act-del { background:#ff334b; color:#ffffff; }
+  .screen[data-theme="dark"] .ch-act-del { background:#ff453a; color:#ffffff; }
   
   .ch-row-wrap .ch-row { position:relative; z-index:2; background:var(--surface); transition:transform .22s cubic-bezier(0.2, 0.9, 0.3, 1); width:100%; box-sizing:border-box; outline:none; border:none; -webkit-tap-highlight-color:transparent; }
   .ch-row-wrap .ch-row:focus, .ch-row-wrap .ch-row:focus-visible { outline:none; }
@@ -3624,7 +3628,7 @@
   .ch-modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; display:flex; align-items:center; justify-content:center; padding:24px; animation:chFadeIn .16s ease; -webkit-tap-highlight-color:transparent; }
   .ch-modal { background:#ffffff; border-radius:20px; width:100%; max-width:290px; padding:24px 18px 18px; box-shadow:0 16px 40px rgba(0,0,0,.26); text-align:center; animation:chPopIn .18s cubic-bezier(0.18, 0.89, 0.32, 1.15); box-sizing:border-box; }
   .screen[data-theme="dark"] .ch-modal { background:#25272c; }
-  .ch-modal-title { font-size:16.5px; font-weight:600; color:#000000; margin-bottom:20px; line-height:1.35; padding:0 4px; }
+  .ch-modal-title { font-size:16px; font-weight:400; color:#000000; margin-bottom:20px; line-height:1.35; padding:0 4px; }
   .screen[data-theme="dark"] .ch-modal-title { color:#ffffff; }
   .ch-modal-acts { display:flex; gap:10px; }
   .ch-modal-btn { flex:1; height:44px; border-radius:12px; font:inherit; font-size:15px; font-weight:600; border:none; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent; transition:opacity .12s, transform .1s; }
@@ -8559,6 +8563,7 @@ function chSend(scr) {
   const v = inp.value.trim(), t = chGet(room.dataset.tid), C = chatInit();
   if (!v || !t) return;
   if (pfIsBlocked(t.user) || t.blocked) return;
+  t.hidden = false;
   if (C.draft === t) { C.threads.unshift(t); C.draft = null; }
   else { const i = C.threads.indexOf(t); if (i > 0) { C.threads.splice(i, 1); C.threads.unshift(t); } }
   t.msgs.push({ f: "me", t: v, at: "09:41", day: "Today", read: false });
@@ -8579,6 +8584,8 @@ function chatQuickAsk(scr, post) {
         item: { id: post.id, cap: post.caption, price: post.price || "", photo: post.photos[0], owner: post.seller, pid: post.id } };
       C.draft = t;
     }
+  } else {
+    t.hidden = false;
   }
   scr.classList.remove("pv-open", "detail-open", "comments-open", "pm-open", "likes-open", "details-open");
   openSub(scr, "chatroom:" + t.id);
@@ -8645,7 +8652,10 @@ function openChatDeleteConfirm(t, scr) {
     close();
     const C = chatInit();
     const idx = C.threads.indexOf(t);
-    if (idx >= 0) C.threads.splice(idx, 1);
+    if (idx >= 0) {
+      t.msgs = [];
+      C.threads.splice(idx, 1);
+    }
     scrToast(scr, "ลบแชทเรียบร้อยแล้ว");
     if (scr._subStack && scr._subStack.length > 0) {
       while (scr._subStack.length > 0 && (scr._subStack[scr._subStack.length - 1].startsWith("chatroom:") || scr._subStack[scr._subStack.length - 1].startsWith("chmenu:") || scr._subStack[scr._subStack.length - 1].startsWith("chsettings:"))) {

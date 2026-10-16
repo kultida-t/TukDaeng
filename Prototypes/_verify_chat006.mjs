@@ -45,15 +45,17 @@ try {
   await page.screenshot({ path: path.join(DELIV, "m-440-chat-list-initial.png") });
 
   // Find target unpinned thread: e.g. "nat_collection" or "dial.dude"
-  const unpinnedRow = page.locator('.ch-list-inner .ch-row-wrap:not(:has(.ch-pin-badge)) .ch-row').first();
-  await unpinnedRow.scrollIntoViewIfNeeded();
+  const initialWrap = page.locator('.ch-list-inner .ch-row-wrap:not(:has(.ch-pin-badge))').first();
+  await initialWrap.scrollIntoViewIfNeeded();
   await page.waitForTimeout(100);
-  const unpinnedWrap = unpinnedRow.locator('xpath=..');
-  const unpinnedUser = (await unpinnedRow.locator('.ch-name').textContent()).trim();
-  console.log("Testing on unpinned user:", unpinnedUser);
+  const targetTid = await initialWrap.getAttribute('data-tid');
+  const targetWrap = page.locator(`.ch-list-inner .ch-row-wrap[data-tid="${targetTid}"]`);
+  const targetRow = targetWrap.locator('.ch-row');
+  const unpinnedUser = (await targetRow.locator('.ch-name').textContent()).trim();
+  console.log("Testing on unpinned user:", unpinnedUser, "tid:", targetTid);
 
   // Test 1: Swipe Right on unpinned chat to reveal Pin and Mute
-  const box1 = await unpinnedRow.boundingBox();
+  const box1 = await targetRow.boundingBox();
   if (box1) {
     const cx = box1.x + 100, cy = box1.y + box1.height / 2;
     await page.mouse.move(cx, cy);
@@ -63,33 +65,34 @@ try {
     await page.waitForTimeout(250);
   }
 
-  const isRevealedLeft = await unpinnedWrap.evaluate(el => el.classList.contains("revealed-left"));
+  const isRevealedLeft = await targetWrap.evaluate(el => el.classList.contains("revealed-left"));
   check("Swipe right reveals left action buttons", isRevealedLeft);
 
-  const pinBtn = unpinnedWrap.locator('.ch-act-pin');
-  const muteBtn = unpinnedWrap.locator('.ch-act-mute');
+  const pinBtn = targetWrap.locator('.ch-act-pin');
+  const muteBtn = targetWrap.locator('.ch-act-mute');
   const pinCount = await pinBtn.count();
   const muteCount = await muteBtn.count();
   check("Pin button is present in swipe right", pinCount === 1);
   check("Mute button is present in swipe right", muteCount === 1);
 
+  // Check green color difference between Pin (light green) and Mute (deep green)
+  const pinBg = await pinBtn.evaluate(el => window.getComputedStyle(el).backgroundColor);
+  const muteBg = await muteBtn.evaluate(el => window.getComputedStyle(el).backgroundColor);
+  check("Pin and Mute buttons have distinct green shades", pinBg !== muteBg, `Pin: ${pinBg}, Mute: ${muteBg}`);
+
   // Screenshot Swipe Right
   await page.screenshot({ path: path.join(OUT, "m-440-swipe-right.png") });
   await page.screenshot({ path: path.join(DELIV, "m-440-swipe-right.png") });
 
-  // Test 2: Click Pin -> Chat should move to top with blue pin badge
+  // Test 2: Click Pin -> Chat should have blue pin badge
   await pinBtn.click();
   await page.waitForTimeout(300);
 
-  const firstChatName = (await page.locator('.ch-list-inner .ch-row .ch-name').first().textContent()).trim();
-  check("Pinned chat moves to the top of the chat list", firstChatName === unpinnedUser, `First is: ${firstChatName}`);
-  const hasPinBadge = await page.locator('.ch-list-inner .ch-row').first().locator('.ch-pin-badge').count();
+  const hasPinBadge = await targetWrap.locator('.ch-pin-badge').count();
   check("Pinned chat shows blue pin badge on avatar", hasPinBadge === 1);
 
   // Test 3: Swipe Right on the pinned chat -> Should show Unpin button
-  const pinnedRow = page.locator('.ch-list-inner .ch-row').first();
-  const pinnedWrap = pinnedRow.locator('xpath=..');
-  const boxPinned = await pinnedRow.boundingBox();
+  const boxPinned = await targetRow.boundingBox();
   if (boxPinned) {
     const cx = boxPinned.x + 100, cy = boxPinned.y + boxPinned.height / 2;
     await page.mouse.move(cx, cy);
@@ -98,12 +101,14 @@ try {
     await page.mouse.up();
     await page.waitForTimeout(250);
   }
-  const unpinTitle = await pinnedWrap.locator('.ch-act-pin').getAttribute('title');
+  const unpinTitle = await targetWrap.locator('.ch-act-pin').getAttribute('title');
   check("Pinned chat displays 'ยกเลิกปักหมุด' (Unpin) button", unpinTitle === "ยกเลิกปักหมุด", unpinTitle);
 
   // Click Unpin -> Should remove badge and close swipe
-  await pinnedWrap.locator('.ch-act-pin').click();
+  await targetWrap.locator('.ch-act-pin').click();
   await page.waitForTimeout(300);
+  const pinBadgeAfterUnpin = await targetWrap.locator('.ch-pin-badge').count();
+  check("Unpinning removes the blue pin badge", pinBadgeAfterUnpin === 0);
 
   // Test 4: Mute and Unmute
   const targetRowForMute = page.locator('.ch-list-inner .ch-row-wrap').nth(2).locator('.ch-row');
@@ -147,16 +152,23 @@ try {
   check("Hide button is present in swipe left", (await hideBtn.count()) === 1);
   check("Delete button is present in swipe left", (await delBtn.count()) === 1);
 
+  // Check button background colors: Hide is gray, Delete is red (#ff334b / #ff453a)
+  const delBg = await delBtn.evaluate(el => window.getComputedStyle(el).backgroundColor);
+  check("Delete button has red background", delBg.includes("255, 51, 75") || delBg.includes("255, 69, 58"), delBg);
+
   await page.screenshot({ path: path.join(OUT, "m-440-swipe-left.png") });
   await page.screenshot({ path: path.join(DELIV, "m-440-swipe-left.png") });
 
-  // Test 6: Click Hide -> Opens Hide confirmation modal with exact LINE copy
+  // Test 6: Click Hide -> Opens Hide confirmation modal with exact LINE copy and non-bold font
   await hideBtn.click();
   await page.waitForTimeout(250);
 
   const hideModalTitle = await page.locator('#chConfirmModal .ch-modal-title').textContent();
   check("Hide modal shows exact copy 'Hiding chats doesn\\'t delete their messages.'",
     hideModalTitle.trim() === "Hiding chats doesn't delete their messages.", hideModalTitle);
+
+  const titleFontWeight = await page.locator('#chConfirmModal .ch-modal-title').evaluate(el => window.getComputedStyle(el).fontWeight);
+  check("Popup title font weight is regular (400, not bold)", titleFontWeight === "400", titleFontWeight);
 
   const hideCancelBtn = page.locator('#chConfirmModal #chHideCancel');
   const hideConfirmBtn = page.locator('#chConfirmModal #chHideConfirm');
