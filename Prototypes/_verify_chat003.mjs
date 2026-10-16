@@ -117,6 +117,16 @@ const browser = await chromium.launch({
   });
   await page.waitForTimeout(200);
 
+  // Check 8b: Scroll content down and verify pill card stays floating sticky at top
+  await page.locator('.ch-scroll[data-iid="mi1"]').evaluate(el => { el.scrollTop = 220; });
+  await page.waitForTimeout(300);
+  const pillBoxScrolled = await page.locator('.ch-itemcard').boundingBox();
+  check("Pill item card stays sticky at top when scrolled", pillBoxScrolled && pillBoxScrolled.y < 120, `Y pos: ${pillBoxScrolled?.y}`);
+  await page.screenshot({ path: path.join(DELIV, "m-440-item-chats-scrolled.png") });
+  // Scroll back to top
+  await page.locator('.ch-scroll[data-iid="mi1"]').evaluate(el => { el.scrollTop = 0; });
+  await page.waitForTimeout(200);
+
   // Check 9: Search filtering in Item chats
   await page.locator('.ch-iq').fill("slow");
   await page.waitForTimeout(200);

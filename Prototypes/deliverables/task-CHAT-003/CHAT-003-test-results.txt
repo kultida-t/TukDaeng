@@ -1,7 +1,7 @@
 === CHAT-003 Verification Results ===
-Timestamp: 2026-10-16T08:06:06.699Z
-Total Tests: 32
-Passed: 32
+Timestamp: 2026-10-16T08:13:28.183Z
+Total Tests: 33
+Passed: 33
 Failed: 0
 
 PASS: Your listings row shows clean summary without unread text — THB 380,000 · 14 chats
@@ -18,6 +18,7 @@ PASS: Avatar image is 44x44px — 44x44px
 PASS: First row preview text is visible — ถ้ารับเลยวันนี้ 360,000 ได้ไหม
 PASS: Top pinned chat has pin badge
 PASS: Unread badges are present — Count: 3
+PASS: Pill item card stays sticky at top when scrolled — Y pos: 86
 PASS: Filtering by 'slow' shows 1 chat — Found: 1
 PASS: Clearing search restores 14 chats — Found: 14
 PASS: Swipe right reveals Mute/Pin actions
