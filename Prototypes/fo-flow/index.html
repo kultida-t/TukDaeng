@@ -3583,8 +3583,9 @@
   .ch-sec { padding: 10px 16px 4px; font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; background: #ffffff; }
   .screen[data-theme="dark"] .ch-sec { background: #14161a; }
   /* ============ CHAT SWIPE ACTIONS (LINE STYLE) ============ */
-  .ch-row-wrap { position:relative; width:100%; overflow:hidden; background:var(--surface); touch-action:pan-y; }
+  .ch-row-wrap { position:relative; width:100%; flex-shrink:0; overflow:hidden; background:var(--surface); touch-action:pan-y; }
   .screen[data-theme="dark"] .ch-row-wrap { background:var(--surface); }
+  .ch-list-inner { display:flex; flex-direction:column; width:100%; min-height:0; }
   
   .ch-act-left { position:absolute; left:0; top:0; bottom:0; display:flex; align-items:center; gap:10px; padding-left:14px; z-index:1; opacity:0; pointer-events:none; transition:opacity .18s ease; }
   .ch-act-right { position:absolute; right:0; top:0; bottom:0; display:flex; align-items:center; gap:8px; padding-right:14px; z-index:1; opacity:0; pointer-events:none; transition:opacity .18s ease; }
@@ -3608,7 +3609,7 @@
   .ch-row-wrap.revealed-left .ch-row { transform:translateX(118px); }
   .ch-row-wrap.revealed-right .ch-row { transform:translateX(-160px); }
 
-  .ch-row { display:flex; align-items:center; gap:11px; width:100%; padding:10px 16px; background:none; border:none; outline:none; color:var(--text); font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .ch-row { display:flex; align-items:center; gap:11px; width:100%; min-height:64px; box-sizing:border-box; padding:10px 16px; background:none; border:none; outline:none; color:var(--text); font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
   .ch-row:focus, .ch-row:focus-visible { outline:none; }
   .ch-row:active { background:var(--surface-2); }
   .ch-av { flex-shrink:0; position:relative; display:inline-block; }
@@ -7956,19 +7957,27 @@ function chatListHTML() {
 }
 function chItemBody(iid) {
   const g = chItemGroups().find(x => x.item.id === iid), q = chatInit().iq.trim().toLowerCase();
-  const rows = g ? g.threads.filter(t => chThreadMatch(t, q)) : [];
-  return rows.length ? rows.map(t => chRowHTML(t, false)).join("") : chEmptyHTML("No chats found", "Try another name or message.");
+  const rows = g ? g.threads.filter(t => !t.hidden && chThreadMatch(t, q)) : [];
+  const sorted = [...rows].sort((a, b) => {
+    if (!!b.pinned !== !!a.pinned) return b.pinned ? 1 : -1;
+    return 0;
+  });
+  return sorted.length ? sorted.map(t => chRowHTML(t)).join("") : chEmptyHTML("No chats found", "Try another name or message.");
 }
 function chatItemHTML(iid) {
   const g = chItemGroups().find(x => x.item.id === iid);
   const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
   if (!g) return `<div class="detail-head">${back}<span class="detail-title">Item chats</span></div>` + chEmptyHTML("Item not found", "No chats for this item.");
-  const n = g.threads.length;
+  const visible = g.threads.filter(t => !t.hidden);
+  const n = visible.length;
+  const unreadCount = visible.reduce((sum, t) => sum + (t.unread || 0), 0);
   return `
   <div class="detail-head">${back}<span class="detail-title">Item chats</span></div>
-  <div class="ch-itemcard"><img src="${g.item.photo}" alt=""><div><b>${esc(g.item.cap)}</b>${g.item.price ? `<span>${esc(g.item.price)}</span>` : ""}<em>${g.mine ? "Your listing" : "@" + esc(g.item.owner)} · ${n} chat${n > 1 ? "s" : ""}${g.unread ? " · " + g.unread + " unread" : ""}</em></div></div>
+  <div class="ch-itemcard"><img src="${g.item.photo}" alt=""><div><b>${esc(g.item.cap)}</b>${g.item.price ? `<span>${esc(g.item.price)}</span>` : ""}<em>${g.mine ? "Your listing" : "@" + esc(g.item.owner)} · ${n} chat${n > 1 ? "s" : ""}${unreadCount ? " · " + unreadCount + " unread" : ""}</em></div></div>
   <div class="ch-tools"><label class="ch-search">${I.search(16)}<input class="ch-iq" placeholder="Search people or messages" value="${esc(chatInit().iq)}"></label></div>
-  <div class="ch-scroll sub-scroll" data-iid="${esc(iid)}">${chItemBody(iid)}</div>`;
+  <div class="ch-scroll sub-scroll" data-iid="${esc(iid)}">
+    <div class="ch-list-inner">${chItemBody(iid)}</div>
+  </div>`;
 }
 function chatRoomHTML(tid) {
   const C = chatInit(), t = chGet(tid);
@@ -8618,8 +8627,10 @@ stageEl.addEventListener("input", e => {
   }
   if (e.target.matches(".ch-iq")) {
     chatInit().iq = e.target.value;
-    const box = e.target.closest(".page-sub").querySelector(".ch-scroll");
-    box.innerHTML = chItemBody(box.dataset.iid);
+    const psub = e.target.closest(".page-sub");
+    const scrollBox = psub ? psub.querySelector(".ch-scroll") : null;
+    const box = psub ? (psub.querySelector(".ch-list-inner") || scrollBox) : null;
+    if (box && scrollBox) box.innerHTML = chItemBody(scrollBox.dataset.iid);
   }
   if (e.target.matches(".chc-quick")) chatInit().cfg.quick = e.target.value;
   if (e.target.matches(".sh-q")) {
