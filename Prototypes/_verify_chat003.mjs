@@ -129,6 +129,26 @@ const browser = await chromium.launch({
   const backTitle = await page.locator('.detail-title').textContent();
   check("Back button returns to Item chats", backTitle.includes("Item chats"), backTitle);
 
+  // Back to Chat Center (Items tab)
+  await page.locator('.detail-head .sub-back').click();
+  await page.waitForTimeout(300);
+
+  // Check 12: Tapping an item under "Items you asked about" opens Chat Room directly!
+  const askedRow = page.locator('.ch-list-inner .ch-row[data-chgo="room"]').first();
+  const askedRowCount = await askedRow.count();
+  check("Items you asked about have direct data-chgo='room'", askedRowCount > 0);
+
+  await askedRow.click();
+  await page.waitForTimeout(400);
+  const askedRoomUser = await page.locator('.ch-rhead .n').first().textContent();
+  check("Tapping asked item directly opens Chat Room with seller", askedRoomUser.includes("Watch 777"), askedRoomUser);
+
+  // Back button from direct Chat Room returns to Items view
+  await page.locator('.ch-rhead .sub-back').click();
+  await page.waitForTimeout(300);
+  const activeTab = await page.locator('.ch-top-tab[data-chview="item"].active-pill').count();
+  check("Back returns directly to Items view", activeTab === 1);
+
   check("No unhandled page errors on Mobile", pageErrors === 0);
   await ctx.close();
 }

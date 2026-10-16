@@ -1,7 +1,7 @@
 === CHAT-003 Verification Results ===
-Timestamp: 2026-10-16T06:57:13.581Z
-Total Tests: 18
-Passed: 18
+Timestamp: 2026-10-16T07:20:58.693Z
+Total Tests: 21
+Passed: 21
 Failed: 0
 
 PASS: Header title is 'Item chats' — Item chats
@@ -17,6 +17,9 @@ PASS: Clearing search restores 14 chats — Found: 14
 PASS: Swipe right reveals Mute/Pin actions
 PASS: Tapping row opens Chat Room for user — watch.daily
 PASS: Back button returns to Item chats — Item chats
+PASS: Items you asked about have direct data-chgo='room'
+PASS: Tapping asked item directly opens Chat Room with seller — Watch 777
+PASS: Back returns directly to Items view
 PASS: No unhandled page errors on Mobile
 PASS: Captured viewport: m-390-item-chats.png (390x844)
 PASS: Captured viewport: t-768-item-chats.png (768x1024)
