@@ -3659,33 +3659,118 @@
   .ch-itemcard b { display:block; font-size:13.5px; font-weight:700; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .ch-itemcard span { display:block; font-size:12.5px; font-weight:600; margin-top:1px; color:var(--text); }
   .ch-itemcard em { display:block; font-style:normal; font-size:11.5px; color:var(--muted); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .ch-rhead { display:flex; align-items:center; gap:8px; padding:8px 12px; border-bottom:1px solid var(--line); flex-shrink:0; }
-  .ch-rhead img { width:34px; height:34px; border-radius:50%; object-fit:cover; }
-  .ch-rhead .n { font-size:15px; font-weight:700; }
+  .ch-rhead { display:flex; align-items:center; gap:6px; padding:8px 10px 8px 6px; border-bottom:1px solid var(--line); flex-shrink:0; background:inherit; min-height:48px; box-sizing:border-box; }
+  .ch-rhead .sub-back { margin-right:-2px; }
+  .ch-rhead .n { font-size:16px; font-weight:700; color:var(--text); line-height:1.2; letter-spacing:-0.2px; padding:4px 2px; }
   .ch-rhead .spacer { margin-left:auto; }
-  .ch-room { flex:1; min-height:0; display:flex; flex-direction:column; }
-  .ch-msgs { flex:1; overflow-y:auto; scrollbar-width:none; padding:10px 12px 8px; display:flex; flex-direction:column; gap:4px; }
+  .ch-rhead .icon-btn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; }
+  .ch-rhead .icon-btn.active { color:var(--red); }
+  .ch-rhead.ch-rhead-search { padding:6px 10px 6px 12px; gap:8px; }
+  .ch-rsearch-box { flex:1; min-width:0; display:flex; align-items:center; gap:8px; background:var(--surface-2); border-radius:999px; padding:0 12px; height:36px; box-sizing:border-box; }
+  .ch-rsearch-ico { display:flex; align-items:center; color:var(--muted); flex-shrink:0; }
+  .ch-room-search-in { flex:1; min-width:0; background:none; border:none; outline:none; font:inherit; font-size:13.5px; color:var(--text); padding:4px 0; }
+  .ch-room-search-clear { background:none; border:none; padding:4px; color:var(--muted); display:flex; align-items:center; cursor:pointer; }
+  .ch-room-search-close { width:34px; height:34px; display:flex; align-items:center; justify-content:center; color:var(--text); background:none; border:none; cursor:pointer; flex-shrink:0; border-radius:50%; }
+  .ch-room-search-close:hover { background:var(--surface-2); }
+  mark.ch-hl { background:rgba(235, 94, 40, 0.28); color:inherit; padding:1px 3px; border-radius:3px; font-weight:700; }
+  .screen[data-theme="dark"] mark.ch-hl { background:rgba(240, 90, 60, 0.45); color:#fff; }
+  /* LINE-style Chat Menu & Settings */
+  .ch-menu-head { position:relative; display:flex; align-items:center; justify-content:center; min-height:48px; padding:0 48px; border-bottom:1px solid var(--line); background:inherit; flex-shrink:0; box-sizing:border-box; }
+  .ch-menu-head .sub-back { position:absolute; left:6px; top:50%; transform:translateY(-50%); }
+  .ch-menu-head .detail-title { font-size:16px; font-weight:700; color:var(--text); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ch-menu-actions { display:flex; justify-content:space-between; align-items:center; padding:18px 16px 16px; border-bottom:1px solid var(--line); background:inherit; }
+  .ch-menu-act-btn { display:flex; flex-direction:column; align-items:center; gap:8px; background:none; border:none; color:var(--text); cursor:pointer; font:inherit; flex:1; min-width:0; }
+  .ch-menu-act-icon { width:46px; height:46px; border-radius:50%; background:var(--surface-2); display:flex; align-items:center; justify-content:center; color:var(--text); transition:background .15s, transform .12s; }
+  .ch-menu-act-btn:active .ch-menu-act-icon { transform:scale(0.92); background:var(--line); }
+  .ch-menu-act-btn.active .ch-menu-act-icon { background:rgba(235, 94, 40, 0.15); color:var(--red); }
+  .ch-menu-act-label { font-size:12px; font-weight:600; color:var(--text); }
+  .ch-menu-list { display:flex; flex-direction:column; }
+  .ch-menu-row { display:flex; align-items:center; gap:12px; padding:14px 16px; border-bottom:1px solid var(--line); background:none; border-left:none; border-right:none; border-top:none; color:var(--text); font:inherit; text-align:left; width:100%; cursor:pointer; box-sizing:border-box; }
+  .ch-menu-row-ico { display:flex; align-items:center; color:var(--muted); flex-shrink:0; }
+  .ch-menu-row-label { font-size:14px; font-weight:600; white-space:nowrap; flex-shrink:0; }
+  .ch-menu-row-val { margin-left:auto; display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--muted); min-width:0; }
+  .ch-menu-row-val .ch-val-text { max-width:130px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12.5px; }
+  .ch-menu-row.ch-menu-row-media { padding:14px 16px 8px; border-bottom:none; }
+  .ch-menu-media-strip { display:flex; align-items:center; gap:3px; padding:0 16px 14px; overflow-x:auto; scrollbar-width:none; border-bottom:1px solid var(--line); }
+  .ch-menu-media-strip::-webkit-scrollbar { display:none; }
+  .ch-menu-media-thumb { width:74px; height:74px; border-radius:4px; object-fit:cover; flex-shrink:0; border:none; cursor:pointer; transition:opacity .12s; }
+  .ch-menu-media-thumb:active { opacity:0.8; }
+  .ch-menu-media-empty { margin:4px 16px 16px; min-height:96px; border-radius:12px; background:#f4f5f7; display:flex; align-items:center; justify-content:center; color:#999ca3; font-size:13.5px; font-weight:500; }
+  .screen[data-theme="dark"] .ch-menu-media-empty { background:rgba(255,255,255,0.06); color:var(--muted); }
+  .ch-menu-footer { display:flex; align-items:center; justify-content:center; gap:6px; padding:24px 16px 36px; color:var(--muted); font-size:12px; text-align:center; }
+  /* In-chat Photo Viewer modal - strictly contained inside mobile phone frame */
+  .ch-media-viewer { position:absolute; inset:0; z-index:999; background:rgba(0,0,0,0.94); display:flex; flex-direction:column; border-radius:inherit; overflow:hidden; }
+  .ch-media-viewer-head { display:flex; justify-content:flex-end; padding:12px 14px; position:relative; z-index:2; }
+  .ch-media-viewer-close { color:#fff; width:36px; height:36px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.18); border-radius:50%; border:none; cursor:pointer; }
+  .ch-media-viewer-body { flex:1; display:flex; align-items:center; justify-content:center; padding:12px; }
+  .ch-media-viewer-body img { max-width:100%; max-height:85%; object-fit:contain; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,0.5); }
+  /* Chat Media Gallery (Photos & videos sub-page) */
+  .ch-gal-head { position:relative; display:flex; align-items:center; justify-content:space-between; min-height:48px; padding:0 12px; border-bottom:1px solid var(--line); background:inherit; flex-shrink:0; }
+  .ch-gal-title { position:absolute; left:50%; transform:translateX(-50%); font-size:16px; font-weight:700; color:var(--text); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:55%; }
+  .ch-gal-top-btn { background:none; border:none; font:inherit; font-size:14.5px; font-weight:600; color:var(--text); cursor:pointer; padding:6px 10px; }
+  .ch-gal-date { padding:14px 14px 8px; font-size:12.5px; color:var(--muted); font-weight:600; }
+  .ch-gal-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:2px; padding:0 0 16px; }
+  .ch-gal-item { position:relative; aspect-ratio:1; overflow:hidden; cursor:pointer; background:var(--surface-2); }
+  .ch-gal-item img { width:100%; height:100%; object-fit:cover; display:block; }
+  .ch-gal-chk { position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:50%; border:1.5px solid #ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.25); color:#fff; font-size:11px; font-weight:700; }
+  .ch-gal-item.selected .ch-gal-chk { background:#06c755; border-color:#06c755; }
+  .ch-gal-bot-bar { display:flex; align-items:center; justify-content:space-between; padding:12px 48px; border-top:1px solid var(--line); background:inherit; flex-shrink:0; }
+  .ch-gal-bot-btn { background:none; border:none; color:var(--text); padding:6px 12px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .ch-gal-bot-btn:disabled { opacity:0.35; cursor:default; }
+  .ch-gal-empty-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:24px 16px; }
+  .ch-gal-empty-wrap .ch-menu-media-empty { width:100%; margin:0; }
+  .ch-room { flex:1; min-height:0; display:flex; flex-direction:column; background:inherit; }
+  .ch-msgs { flex:1; overflow-y:auto; scrollbar-width:none; padding:12px 14px 12px; display:flex; flex-direction:column; gap:9px; }
   .ch-msgs::-webkit-scrollbar { display:none; }
-  .ch-day { align-self:center; margin:8px 0 6px; padding:3px 10px; border-radius:999px; background:var(--surface-2); color:var(--muted); font-size:11px; font-weight:600; }
-  .ch-ref-w { display:flex; justify-content:center; margin:2px 0 10px; }
-  .ch-ref { display:flex; align-items:center; gap:10px; max-width:250px; padding:7px 12px 7px 7px; border:1px solid var(--line); border-radius:14px; background:var(--surface); color:var(--text); font:inherit; text-align:left; }
-  .ch-ref img { width:42px; height:50px; border-radius:8px; object-fit:cover; flex-shrink:0; }
-  .ch-ref small { display:block; font-size:10.5px; color:var(--muted); font-weight:600; }
-  .ch-ref b { display:block; font-size:12.5px; line-height:1.3; margin:1px 0; }
-  .ch-ref em { display:block; font-style:normal; font-size:12px; font-weight:700; }
+  .ch-day { align-self:center; margin:10px 0 6px; color:var(--muted); font-size:11px; font-weight:600; letter-spacing:0.3px; text-transform:uppercase; }
   .ch-m { display:flex; align-items:flex-end; gap:6px; max-width:100%; }
   .ch-m.me { justify-content:flex-end; }
+  .ch-m-col { display:flex; flex-direction:column; gap:6px; max-width:76%; }
+  .ch-m.me .ch-m-col { align-items:flex-end; }
+  .ch-m.them .ch-m-col { align-items:flex-start; }
   .ch-mav { width:28px; height:28px; border-radius:50%; object-fit:cover; flex-shrink:0; }
   .ch-mav-sp { width:28px; flex-shrink:0; }
-  .ch-b { max-width:72%; padding:8px 12px; border-radius:18px; font-size:14px; line-height:1.4; word-break:break-word; white-space:pre-wrap; }
+  .ch-b { padding:7px 12px 8px; border-radius:17px; font-size:12.8px; line-height:1.5; word-break:break-word; white-space:pre-wrap; }
   .ch-m.them .ch-b { background:var(--surface-2); color:var(--text); border-bottom-left-radius:6px; }
   .ch-m.me .ch-b { background:var(--red); color:#fff; border-bottom-right-radius:6px; }
-  .ch-meta { display:flex; flex-direction:column; font-size:10px; color:var(--muted); line-height:1.25; flex-shrink:0; }
+  .ch-meta { display:flex; flex-direction:column; font-size:10px; color:var(--muted); line-height:1.2; flex-shrink:0; margin-bottom:2px; }
   .ch-m.me .ch-meta { align-items:flex-end; }
+  .ch-post-card { position:relative; display:block; width:190px; height:252px; max-width:100%; padding:0; margin:0 0 4px; border:1px solid rgba(0,0,0,0.08); border-radius:18px; background:#111; color:#fff; font:inherit; text-align:left; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,0.12); cursor:pointer; flex-shrink:0; transition:transform .12s, box-shadow .12s; }
+  .screen[data-theme="dark"] .ch-post-card { border-color:rgba(255,255,255,0.14); box-shadow:0 4px 16px rgba(0,0,0,0.45); }
+  .ch-post-card:active { transform:scale(0.97); }
+  .ch-post-card-img { width:100%; height:100%; object-fit:cover; display:block; }
+  .ch-post-card-top-scrim { position:absolute; top:0; left:0; right:0; padding:10px 10px 24px; background:linear-gradient(180deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.25) 60%, transparent 100%); display:flex; align-items:center; gap:7px; pointer-events:none; }
+  .ch-post-card-av { width:22px; height:22px; border-radius:50%; object-fit:cover; border:1.5px solid rgba(255,255,255,0.85); flex-shrink:0; }
+  .ch-post-card-user { font-size:12px; font-weight:700; color:#ffffff; text-shadow:0 1px 3px rgba(0,0,0,0.8); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ch-post-card-bot-scrim { position:absolute; bottom:0; left:0; right:0; padding:24px 10px 10px; background:linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.45) 60%, transparent 100%); pointer-events:none; }
+  .ch-post-card-title { font-size:12.5px; font-weight:700; line-height:1.3; color:#ffffff; text-shadow:0 1px 3px rgba(0,0,0,0.8); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ch-post-card-price { font-size:12px; font-weight:700; color:#ffffff; text-shadow:0 1px 3px rgba(0,0,0,0.8); margin-top:2px; }
+  .ch-bubble-media { position:relative; width:170px; max-width:100%; border-radius:14px; overflow:hidden; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.12); border:1px solid var(--line); }
+  .ch-bubble-media img { width:100%; height:auto; max-height:220px; object-fit:cover; display:block; }
+  .ch-media-play { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3); color:#fff; }
+  .ch-attach-sheet-backdrop { position:absolute; inset:0; z-index:950; background:rgba(0,0,0,0.5); display:flex; flex-direction:column; justify-content:flex-end; border-radius:inherit; overflow:hidden; }
+  .ch-attach-sheet { background:var(--surface); border-top-left-radius:18px; border-top-right-radius:18px; padding:10px 16px 24px; box-shadow:0 -4px 20px rgba(0,0,0,0.25); display:flex; flex-direction:column; max-height:65%; animation:sheetUp .2s cubic-bezier(0.16,1,0.3,1); }
+  .ch-attach-handle { width:36px; height:4px; border-radius:2px; background:var(--line); align-self:center; margin-bottom:8px; }
+  .ch-attach-head { display:flex; align-items:center; justify-content:space-between; padding:4px 0 12px; }
+  .ch-attach-title { font-size:15px; font-weight:700; color:var(--text); }
+  .ch-attach-close { color:var(--muted); width:32px; height:32px; display:flex; align-items:center; justify-content:center; background:none; border:none; border-radius:50%; cursor:pointer; }
+  .ch-attach-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; overflow-y:auto; padding:2px 0 8px; }
+  .ch-attach-item { position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; cursor:pointer; background:var(--surface-2); }
+  .ch-attach-item img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .12s; }
+  .ch-attach-item:active img { transform:scale(0.95); }
   .ch-comp { display:flex; align-items:center; gap:8px; padding:8px 12px 10px; border-top:1px solid var(--line); flex-shrink:0; }
   .ch-input { flex:1; min-width:0; background:var(--surface-2); border:none; outline:none; border-radius:999px; padding:10px 14px; color:var(--text); font:inherit; font-size:14px; }
   .ch-send { width:36px; height:36px; border-radius:50%; border:none; background:var(--red); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .ch-send:disabled { opacity:.35; }
+  .ch-blocked-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; background:var(--surface-2); border-top:1px solid var(--line); flex-shrink:0; }
+  .ch-blocked-info { display:flex; align-items:center; gap:10px; min-width:0; flex:1; }
+  .ch-blocked-icon { width:32px; height:32px; border-radius:50%; background:rgba(239,68,68,0.12); color:var(--red); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .ch-blocked-text { min-width:0; flex:1; }
+  .ch-blocked-title { font-size:13.5px; font-weight:600; color:var(--text); line-height:1.3; }
+  .ch-blocked-sub { font-size:11.5px; color:var(--muted); line-height:1.3; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ch-blocked-unblock-btn { padding:7px 15px; font-size:13px; font-weight:600; border-radius:999px; border:none; background:var(--red); color:#fff; cursor:pointer; flex-shrink:0; transition:opacity .15s; }
+  .ch-blocked-unblock-btn:hover { opacity:.9; }
+  .ch-blk-badge { font-size:10.5px; font-weight:600; color:var(--red); background:rgba(239,68,68,0.12); padding:1px 6px; border-radius:4px; margin-left:6px; line-height:1.2; display:inline-flex; align-items:center; }
   .ch-set-h { padding:16px 16px 6px; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; }
   .ch-set { display:flex; align-items:center; gap:12px; width:100%; padding:12px 16px; background:none; border:none; color:var(--text); font:inherit; text-align:left; }
   .ch-set .t { flex:1; min-width:0; }
@@ -5618,9 +5703,12 @@ function subBack(scr) {
     renderSub(scr);
     return;
   }
-  st.pop();
-  if (st.length) renderSub(scr);
-  else scr.classList.remove("sub-open");
+  if (st.length > 1) {
+    rpBack(scr);
+  } else {
+    st.pop();
+    scr.classList.remove("sub-open");
+  }
 }
 /* PROFILE-005 — report pages navigate like IG: a new page slides in from the
    right while the previous one stays put underneath (ghost clone), "<" slides
@@ -5683,9 +5771,23 @@ function rpClose(scr) {
     setTimeout(() => g.remove(), 340);
   }
   const st = scr._subStack || [];
-  while (st.length && (st[st.length - 1] || "").startsWith("report")) st.pop(); /* keep whatever opened the report flow (profile etc.) */
+  const hadDone = st.some(s => s.startsWith("report:done:"));
+  const delTid = scr.dataset.rpDelChat;
+  while (st.length && (st[st.length - 1] || "").startsWith("report")) st.pop(); /* remove all report pages */
+  if (hadDone && delTid) {
+    const C = chatInit();
+    const t = chGet(delTid);
+    if (t) {
+      t.hidden = true;
+      C.threads = C.threads.filter(x => x.id !== t.id);
+    }
+    scr._subStack = st.filter(s => !s.startsWith("chmenu:") && !s.startsWith("chatroom:"));
+    if (!scr._subStack.includes("chat")) scr._subStack.unshift("chat");
+  }
+  delete scr.dataset.rpFromChat;
+  delete scr.dataset.rpDelChat;
   scr.classList.remove("rp-over");
-  if (st.length) { scr._subSwap = true; renderSub(scr); scr._subSwap = false; }
+  if ((scr._subStack || []).length) { scr._subSwap = true; renderSub(scr); scr._subSwap = false; }
   else scr.classList.remove("sub-open");
 }
 function subPostRows(posts, label, cls) {
@@ -7214,15 +7316,22 @@ function pfSetBlocked(scr, name, on) {
   } else {
     PF_BLOCKED.delete(name); /* IG: unblock does NOT re-follow */
   }
+  if (typeof chatInit === "function") {
+    const C = chatInit();
+    if (C && C.threads) {
+      C.threads.forEach(th => { if (th.user === name) th.blocked = on; });
+    }
+  }
   POSTS.forEach(p => { if (p.seller === name) p.blocked = on; });
-  scr.querySelector(".feed-scroll").innerHTML = feedContentHTML(scr.dataset.variant);
+  const fs = scr ? scr.querySelector(".feed-scroll") : null;
+  if (fs) fs.innerHTML = feedContentHTML(scr.dataset.variant);
 }
 const PF_VBADGE = `<svg class="ab-vb" width="16" height="16" viewBox="0 0 24 24"><path fill="#0095f6" d="M12 2l2.53 2.2 3.35-.29.75 3.27 2.88 1.73-1.31 3.09L21.51 15.1l-2.88 1.72-.75 3.27-3.35-.28L12 22l-2.53-2.19-3.35.28-.75-3.27-2.88-1.72 1.31-3.1L2.49 8.92l2.88-1.73.75-3.27 3.35.3z"/><path fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" d="m8.4 12.4 2.4 2.4 4.8-5.1"/></svg>`;
-/* IG block confirm — bottom sheet: centered avatar + impact rows + two actions */
-function blkSheetHTML(uname) {
+/* IG block confirm — bottom sheet: centered avatar + impact rows + two actions (single action if fromChat) */
+function blkSheetHTML(uname, fromChat = false) {
   const u = profileOf(uname);
   /* One identical sheet everywhere (profile menu + report flow): same copy,
-     3 impact rows, Block + Block and report */
+     3 impact rows, Block + Block and report (Chat menu displays only Block) */
   return `<div class="sheet-handle"></div>
     <div class="blk-body">
       <img class="blk-av" src="${u.avatar}" alt="">
@@ -7232,7 +7341,20 @@ function blkSheetHTML(uname) {
       <div class="blk-i">${I.bellOff(22)}<span>They won't be notified that you blocked or reported them.</span></div>
       <div class="blk-i">${I.gear(22)}<span>You can unblock them anytime in Settings.</span></div>
       <button class="blk-go" data-u="${esc(uname)}">Block</button>
-      <button class="blk-rep" data-u="${esc(uname)}">Block and report</button>
+      ${fromChat ? "" : `<button class="blk-rep" data-u="${esc(uname)}">Block and report</button>`}
+    </div>`;
+}
+/* Chat report confirm — bottom sheet matching Block sheet layout with centered avatar, title, description and actions */
+function chatReportSheetHTML(uname, tid) {
+  const u = profileOf(uname);
+  return `<div class="sheet-handle"></div>
+    <div class="blk-body">
+      <img class="blk-av" src="${u.avatar}" alt="">
+      <div class="blk-q" style="text-align:center; font-size:18px; margin-top:16px;">Are you sure you want to report ${esc(uname)}?</div>
+      <div class="blk-d" style="text-align:center; font-size:13.5px; line-height:1.45; color:var(--muted); margin:10px auto 24px; max-width:280px;">If this user appears suspicious, please report them. Selecting &quot;Report and delete&quot; will delete this chat and its associated history.</div>
+      <button class="blk-go ch-rep-del-btn" style="margin-top:0;" data-u="${esc(uname)}" data-tid="${esc(tid || "")}">Report and delete</button>
+      <button class="blk-rep ch-rep-only-btn" data-u="${esc(uname)}" data-tid="${esc(tid || "")}">Report</button>
+      <button class="ch-sheet-cancel-btn" style="width:100%; margin-top:10px; padding:10px 0; background:none; border:none; font-family:var(--font-main); font-size:14.5px; font-weight:600; color:var(--text); cursor:pointer;">Cancel</button>
     </div>`;
 }
 /* IG unblock confirm — center dialog like Mute (not a sheet) */
@@ -7346,10 +7468,12 @@ function profileHTML(scr, key) {
     ? [["all", "All", I.gridSel(22)], ["sale", "Sale", I.bag(22)], ["show", "Show", I.eye(22)], ["hide", "Hide", I.eyeOff(22)], ["sold", "Sold", I.checkCir(22)]]
     : [["all", "All", I.gridSel(22)], ["sale", "Sale", I.bag(22)], ["show", "Show", I.eye(22)]];
   const tabName = TABS.some(t => t[0] === tab) ? tab : "all";
-  const list = pfTabPosts(uname, tabName);
-  const body = list.length ? pfTilesHTML(list, tabName)
-    : pfEmptyHTML(I.camPlain(30), tabName === "all" ? (own ? "Share your first post" : "No posts yet") : `No ${tabName} posts`,
-        own && tabName === "all" ? "When you share photos and clips, they'll show up here." : "", own && tabName === "all");
+  const list = isB ? [] : pfTabPosts(uname, tabName);
+  const body = isB
+    ? pfEmptyHTML(I.camPlain(30), "No posts yet", "")
+    : (list.length ? pfTilesHTML(list, tabName)
+        : pfEmptyHTML(I.camPlain(30), tabName === "all" ? (own ? "Share your first post" : "No posts yet") : `No ${tabName} posts`,
+            own && tabName === "all" ? "When you share photos and clips, they'll show up here." : "", own && tabName === "all"));
   return `
   <div class="detail-head pf-head">
     ${own
@@ -7372,9 +7496,9 @@ function profileHTML(scr, key) {
       <div class="pf-idcol">
         <div class="pf-disp">${esc(u.disp)}</div>
         <div class="pf-stats">
-          ${stat(u.posts || pfTabPosts(uname, "all").length, "posts")}
-          ${stat(u.followers, "followers", "followers")}
-          ${stat(u.following, "following", "following")}
+          ${stat(isB ? 0 : (u.posts || pfTabPosts(uname, "all").length), "posts")}
+          ${stat(isB ? "-" : u.followers, "followers", isB ? "" : "followers")}
+          ${stat(isB ? "-" : u.following, "following", isB ? "" : "following")}
         </div>
       </div>
     </div>
@@ -7392,7 +7516,7 @@ function profileHTML(scr, key) {
       ${own
         ? `<button class="pf-btn pf-edit">Edit profile</button><button class="pf-btn pf-share">Share profile</button><button class="pf-btn pf-iconbtn pf-pfo" data-sub="portfolio" title="Portfolio">${I.wallet(16)}</button>`
         : isB
-          ? `<button class="pf-btn primary pf-unblock" data-u="${esc(uname)}">Unblock</button><button class="pf-btn pf-msg">Message</button>`
+          ? `<button class="pf-btn primary pf-unblock" data-u="${esc(uname)}" style="flex:1;">Unblock</button>`
           : `<button class="pf-btn pf-foll${isF ? "" : " primary"}" data-u="${esc(uname)}">${isF ? `Following ${I.chev(12)}` : "Follow"}</button><button class="pf-btn pf-msg">Message</button>`}
     </div>
     <div class="pf-tabs">
@@ -7672,6 +7796,9 @@ function subHTML(name, scr) {
   if (name === "chat") return chatListHTML();
   if (name.startsWith("chatitem:")) return chatItemHTML(name.slice(9));
   if (name.startsWith("chatroom:")) return chatRoomHTML(name.slice(9));
+  if (name.startsWith("chmenu:")) return chatRoomMenuHTML(name.slice(7));
+  if (name.startsWith("chsettings:")) return chatRoomSettingsHTML(name.slice(11));
+  if (name.startsWith("chmedia:")) return chatMediaGalleryHTML(name.slice(8), scr);
   if (name === "chatcfg") return chatCfgHTML();
   if (name === "walerts") return walertsHTML();
   if (name === "saved") return savedHTML(scr);
@@ -7682,13 +7809,16 @@ function subHTML(name, scr) {
   if (name === "interested") return head("Interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.liked), "Remove", "m-unlike")}</div>`;
   if (name === "ni") return head("Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni), "Restore", "m-restore")}</div>`;
   /* full-page report view (IG-style) — opened from "..." menu or the uncomfortable ack card */
-  if (name === "report" || name === "report:user" || name === "report:post") return `
-    <div class="detail-head rp-head">${name === "report" ? "" : `<button class="icon-btn rp-back sub-back">${I.back(20)}</button>`}<span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+  if (name === "report" || name === "report:user" || name === "report:post") {
+    const hasBack = name !== "report" && scr.dataset.rpFromChat !== "true";
+    return `
+    <div class="detail-head rp-head">${hasBack ? `<button class="icon-btn rp-back sub-back">${I.back(20)}</button>` : ""}<span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="pm-rp-scroll">
       <div class="pm-rp-q">Why are you reporting this ${name === "report:user" ? "account" : "post"}?</div>
       <div class="pm-rp-desc">Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait.</div>
       ${PM_REASONS.map(r => `<button class="pm-reason">${r}<span class="pm-chev">${I.chevR(14)}</span></button>`).join("")}
     </div>`;
+  }
   /* PROFILE-005 — IG report picker: "What do you want to report?" comes before the reason list */
   if (name.startsWith("report:pick:")) {
     const u = name.slice(12);
@@ -7710,8 +7840,9 @@ function subHTML(name, scr) {
     const dn = scr._rpDone || (scr._rpDone = new Set());
     /* IG keeps a completed step in place with a green check instead of a chevron */
     const step = (act, ic, label, done) => `<button class="rp-step" data-act="${act}" data-u="${esc(u)}"${done ? " disabled" : ""}><span class="rp-step-ic">${ic}</span><span class="rp-step-t">${esc(label)}</span>${done ? `<span class="rp-ck">${I.check(15)}</span>` : `<span class="pm-chev">${I.chevR(14)}</span>`}</button>`;
+    const hasBack = scr.dataset.rpFromChat !== "true";
     return `
-    <div class="detail-head rp-head"><button class="icon-btn rp-back sub-back">${I.back(20)}</button><span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="detail-head rp-head">${hasBack ? `<button class="icon-btn rp-back sub-back">${I.back(20)}</button>` : ""}<span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="pm-rp-scroll">
       <div class="rp-thanks">
         <div class="rp-thanks-ck">${I.check(30)}</div>
@@ -7762,7 +7893,7 @@ function chatInit() {
   if (CHAT.inited) return CHAT;
   CHAT.inited = true;
   const post = id => POSTS.find(x => x.id === id);
-  const own = (id, cap, price, pid) => ({ id, cap, price, photo: post(pid).photos[0], owner: CP_ME.name, pid: null });
+  const own = (id, cap, price, pid) => ({ id, cap, price, photo: post(pid).photos[0], owner: CP_ME.name, pid });
   const ref = id => { const p = post(id); return { id: p.id, cap: p.caption, price: p.price || "", photo: p.photos[0], owner: p.seller, pid: p.id }; };
   const M1 = own("mi1", "Rolex Datejust 36 · Ref. 126234", "THB 380,000", "p4");
   const M2 = own("mi2", "Breguet Classique 5177 · Ref. 5177BB", "THB 890,000", "p5");
@@ -7841,6 +7972,7 @@ function chThreadMatch(t, q) {
 }
 function chRowHTML(t) {
   const last = t.msgs[t.msgs.length - 1], un = t.unread > 0;
+  const isBlk = pfIsBlocked(t.user) || !!t.blocked;
   return `<div class="ch-row-wrap" data-tid="${t.id}">
     <div class="ch-act-left">
       <button class="ch-act-cir ch-act-mute" data-chact="mute" data-tid="${t.id}" title="${t.muted ? "เปิดการแจ้งเตือน" : "ปิดการแจ้งเตือน"}">
@@ -7858,7 +7990,7 @@ function chRowHTML(t) {
       <span class="ch-main">
         <span class="ch-name-line">
           <b class="ch-name">${esc(t.user)}</b>
-          ${t.muted ? `<span class="ch-mute-ico" title="ปิดแจ้งเตือน">${I.chMute(13)}</span>` : ""}
+          ${isBlk ? `<span class="ch-blk-badge">Blocked</span>` : (t.muted ? `<span class="ch-mute-ico" title="ปิดแจ้งเตือน">${I.chMute(13)}</span>` : "")}
         </span>
         <span class="ch-prev-line"><span class="ch-prev">${last.f === "me" ? "You: " : ""}${esc(last.t)}</span></span>
       </span>
@@ -8019,32 +8151,379 @@ function chatRoomHTML(tid) {
   const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
   if (!t) return `<div class="ch-rhead">${back}<span class="n">Chat</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
   if (t.unread) { t.unread = 0; chBadgeSync(); }
-  const av = profileOf(t.user).avatar, it = t.item, mine = it.owner === CP_ME.name;
+  const isBlk = pfIsBlocked(t.user) || !!t.blocked;
+  const av = profileOf(t.user).avatar, it = t.item;
   let lastMe = -1;
   t.msgs.forEach((m, i) => { if (m.f === "me") lastMe = i; });
   const day0 = t.msgs[0] ? t.msgs[0].day : "Today";
-  const out = [`<div class="ch-day">${esc(day0)}</div>`, `<div class="ch-ref-w"><button class="ch-ref" data-chgo="post" data-pid="${esc(it.pid || "")}">
-      <img src="${it.photo}" alt=""><span><small>${mine ? "Your listing" : "@" + esc(it.owner) + "'s post"}</small><b>${esc(it.cap)}</b>${it.price ? `<em>${esc(it.price)}</em>` : ""}</span></button></div>`];
+  const out = [`<div class="ch-day">${esc(day0)}</div>`];
+
+  const postCardHTML = it ? `<button class="ch-post-card" data-chgo="post" data-pid="${esc(it.pid || it.id || "")}" title="View listing">
+      <img class="ch-post-card-img" src="${it.photo}" alt="">
+      <div class="ch-post-card-top-scrim">
+        <img class="ch-post-card-av" src="${profileOf(it.owner || t.user).avatar}" alt="">
+        <span class="ch-post-card-user">${esc(it.owner || t.user)}</span>
+      </div>
+      <div class="ch-post-card-bot-scrim">
+        <div class="ch-post-card-title">${esc(it.cap)}</div>
+        ${it.price ? `<div class="ch-post-card-price">${esc(it.price)}</div>` : ""}
+      </div>
+    </button>` : "";
+
+  if (t.msgs.length === 0 && postCardHTML) {
+    out.push(`<div class="ch-m me"><div class="ch-m-col">${postCardHTML}</div></div>`);
+  }
+
+  const q = (t.searching && t.roomQuery ? t.roomQuery.trim().toLowerCase() : "");
+  const formatText = (text) => {
+    if (!q) return esc(text);
+    const escaped = esc(text);
+    const qEsc = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return escaped.replace(new RegExp('(' + qEsc + ')', 'gi'), '<mark class="ch-hl">$1</mark>');
+  };
+
   let lastDay = day0, prev = null;
   t.msgs.forEach((m, i) => {
     if (m.day !== lastDay) { out.push(`<div class="ch-day">${esc(m.day)}</div>`); lastDay = m.day; prev = null; }
+    const card = (i === 0 && postCardHTML) ? postCardHTML : "";
+    const isMedia = !!m.img;
+    const isMatch = !q || (!isMedia && (m.t || "").toLowerCase().includes(q));
+    const opacityStyle = (q && !isMatch) ? ' style="opacity:0.25;"' : '';
+    const bubbleHTML = isMedia
+      ? `<div class="ch-bubble-media" data-chmedia="${esc(m.img)}"><img src="${m.img}" alt="Shared photo">${m.isVideo ? `<div class="ch-media-play">${I.play(18)}</div>` : ""}</div>`
+      : `<span class="ch-b">${formatText(m.t || "")}</span>`;
+
     if (m.f === "me") {
       const rd = i === lastMe ? (m.read && C.cfg.read ? "Read" : "Sent") : "";
-      out.push(`<div class="ch-m me"><span class="ch-meta">${rd ? `<span>${rd}</span>` : ""}<span>${m.at}</span></span><span class="ch-b">${esc(m.t)}</span></div>`);
+      out.push(`<div class="ch-m me"${opacityStyle}><span class="ch-meta">${rd ? `<span>${rd}</span>` : ""}<span>${m.at}</span></span><div class="ch-m-col">${card}${bubbleHTML}</div></div>`);
     } else {
-      out.push(`<div class="ch-m them">${prev === "them" ? `<span class="ch-mav-sp"></span>` : `<img class="ch-mav" src="${av}" alt="">`}<span class="ch-b">${esc(m.t)}</span><span class="ch-meta"><span>${m.at}</span></span></div>`);
+      out.push(`<div class="ch-m them"${opacityStyle}>${prev === "them" && !card ? `<span class="ch-mav-sp"></span>` : `<img class="ch-mav" src="${av}" alt="">`}<div class="ch-m-col">${card}${bubbleHTML}</div><span class="ch-meta"><span>${m.at}</span></span></div>`);
     }
     prev = m.f;
   });
+
+  const headerHTML = t.searching ? `
+  <div class="ch-rhead ch-rhead-search">
+    <div class="ch-rsearch-box">
+      <span class="ch-rsearch-ico">${I.search(16)}</span>
+      <input class="ch-room-search-in" placeholder="Messages" value="${esc(t.roomQuery || "")}" autofocus>
+      ${t.roomQuery ? `<button class="ch-room-search-clear" title="ล้างข้อความ">${I.x(14)}</button>` : ""}
+    </div>
+    <button class="ch-room-search-close" title="ยกเลิก">${I.x(20)}</button>
+  </div>` : `
+  <div class="ch-rhead">
+    ${back}
+    <span class="n" data-pf-user="${esc(t.user)}">${esc(t.user)}</span>
+    <span class="spacer"></span>
+    <button class="icon-btn${t.searching ? " active" : ""}" data-chgo="room-search" title="ค้นหาในแชท">${I.search(20)}</button>
+    <button class="icon-btn" data-chgo="more" title="เมนู">${I.burger(21)}</button>
+  </div>`;
+
   return `
-  <div class="ch-rhead">${back}<img src="${av}" alt="" data-pf-user="${esc(t.user)}"><span class="n" data-pf-user="${esc(t.user)}">${esc(t.user)}</span><span class="spacer"></span><button class="icon-btn" data-chgo="more" title="More">${I.dots(20)}</button></div>
+  ${headerHTML}
   <div class="ch-room" data-tid="${t.id}">
     <div class="ch-msgs">${out.join("")}</div>
+    ${t.searching ? "" : (isBlk ? `
+    <div class="ch-blocked-bar">
+      <div class="ch-blocked-info">
+        <span class="ch-blocked-icon">${I.prohibit(18)}</span>
+        <div class="ch-blocked-text">
+          <div class="ch-blocked-title">You blocked this account</div>
+          <div class="ch-blocked-sub">You can't message or call them unless you unblock them.</div>
+        </div>
+      </div>
+      <button class="ch-blocked-unblock-btn" data-chact="unblock-room" data-user="${esc(t.user)}" data-tid="${t.id}">Unblock</button>
+    </div>` : `
     <div class="ch-comp">
       <button class="icon-btn" data-chgo="attach" title="Attach">${I.plus(22)}</button>
-      <input class="ch-input" placeholder="Message" value="${esc(t.draft || "")}">
+      <input class="ch-input" placeholder="Message..." value="${esc(t.draft || "")}">
       <button class="ch-send"${(t.draft || "").trim() ? "" : " disabled"} title="Send">${I.send(16)}</button>
+    </div>`)}
+  </div>`;
+}
+
+function openChatAttachSheet(scr, tid) {
+  if (!scr) scr = document.querySelector(".screen");
+  if (!scr) return;
+  const t = chGet(tid);
+  if (!t) return;
+
+  const sampleMedia = [];
+  POSTS.forEach(p => {
+    if (p.photos) {
+      p.photos.forEach(ph => {
+        if (!sampleMedia.some(m => m.src === ph) && sampleMedia.length < 8) {
+          sampleMedia.push({ src: ph, isVideo: false });
+        }
+      });
+    }
+  });
+
+  const old = scr.querySelector(".ch-attach-sheet-backdrop");
+  if (old) old.remove();
+
+  const html = `
+  <div class="ch-attach-sheet-backdrop" id="chAttachBackdrop">
+    <div class="ch-attach-sheet">
+      <div class="ch-attach-handle"></div>
+      <div class="ch-attach-head">
+        <span class="ch-attach-title">Photos & videos</span>
+        <button class="icon-btn ch-attach-close" title="Close">${I.x(18)}</button>
+      </div>
+      <div class="ch-attach-grid">
+        ${sampleMedia.map(m => `
+          <div class="ch-attach-item" data-chsendmedia="${esc(m.src)}" data-tid="${t.id}" data-isvideo="${m.isVideo ? 'true' : 'false'}" title="Send photo">
+            <img src="${m.src}" alt="Media thumbnail">
+            ${m.isVideo ? `<div class="ch-media-play">${I.play(16)}</div>` : ""}
+          </div>
+        `).join("")}
+      </div>
     </div>
+  </div>`;
+
+  scr.insertAdjacentHTML("beforeend", html);
+  const bd = scr.querySelector("#chAttachBackdrop");
+  bd.querySelector(".ch-attach-close").onclick = () => bd.remove();
+  bd.onclick = (e) => { if (e.target === bd) bd.remove(); };
+}
+function openChatMediaViewer(scr, src) {
+  if (!scr) scr = document.querySelector(".screen");
+  if (!scr) return;
+  const old = scr.querySelector(".ch-media-viewer");
+  if (old) old.remove();
+  const html = `
+  <div class="ch-media-viewer" id="chMediaViewer">
+    <div class="ch-media-viewer-head">
+      <button class="icon-btn ch-media-viewer-close" title="Close">${I.x(22)}</button>
+    </div>
+    <div class="ch-media-viewer-body">
+      <img src="${src}" alt="Chat media">
+    </div>
+  </div>`;
+  scr.insertAdjacentHTML("beforeend", html);
+  const v = scr.querySelector(".ch-media-viewer");
+  v.querySelector(".ch-media-viewer-close").onclick = () => v.remove();
+  v.onclick = (e) => { if (e.target === v || e.target.classList.contains("ch-media-viewer-body")) v.remove(); };
+}
+
+function chatRoomMenuHTML(tid) {
+  const t = chGet(tid);
+  const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
+  if (!t) return `<div class="ch-menu-head">${back}<span class="detail-title">Chat</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
+  const it = t.item;
+
+  if (!t.media) {
+    if (t.id === "t1") {
+      t.media = [];
+      if (it && it.photo) t.media.push(it.photo);
+      POSTS.forEach(p => {
+        if (p.photos?.[0] && !t.media.includes(p.photos[0]) && t.media.length < 9) {
+          t.media.push(p.photos[0]);
+        }
+      });
+    } else {
+      t.media = [];
+    }
+  }
+  const mediaList = t.media || [];
+
+  const isBlk = pfIsBlocked(t.user) || !!t.blocked;
+
+  return `
+  <div class="ch-menu-head">
+    ${back}
+    <span class="detail-title">${esc(t.user)}</span>
+  </div>
+  <div class="sub-scroll">
+    <div class="ch-menu-actions">
+      <button class="ch-menu-act-btn${t.muted ? " active" : ""}" data-chact="mute" data-tid="${t.id}" title="${t.muted ? "Unmute" : "Mute"}">
+        <div class="ch-menu-act-icon">${t.muted ? I.bellOff(22) : I.navBell(22)}</div>
+        <span class="ch-menu-act-label">${t.muted ? "Unmute" : "Mute"}</span>
+      </button>
+      <button class="ch-menu-act-btn" data-pf-user="${esc(t.user)}" title="ดูโปรไฟล์">
+        <div class="ch-menu-act-icon">${I.users(22)}</div>
+        <span class="ch-menu-act-label">Profile</span>
+      </button>
+      <button class="ch-menu-act-btn${isBlk ? " active" : ""}" data-chact="block-user" data-tid="${t.id}" data-user="${esc(t.user)}" title="${isBlk ? "Unblock" : "Block"}">
+        <div class="ch-menu-act-icon">${I.prohibit(22)}</div>
+        <span class="ch-menu-act-label">${isBlk ? "Unblock" : "Block"}</span>
+      </button>
+      <button class="ch-menu-act-btn" data-chact="report-chat-user" data-tid="${t.id}" data-user="${esc(t.user)}" title="Report">
+        <div class="ch-menu-act-icon">${I.flag(22)}</div>
+        <span class="ch-menu-act-label">Report</span>
+      </button>
+    </div>
+
+    <div class="ch-menu-list">
+      <button class="ch-menu-row ch-menu-row-media" data-chgo="chmedia" data-tid="${t.id}">
+        <span class="ch-menu-row-ico">${I.img(18)}</span>
+        <span class="ch-menu-row-label">Photos & videos</span>
+        <span class="ch-menu-row-val">
+          <span class="sub-chev">${I.chevR(16)}</span>
+        </span>
+      </button>
+      ${mediaList.length > 0 ? `
+      <div class="ch-menu-media-strip">
+        ${mediaList.map(src => `<img class="ch-menu-media-thumb" src="${src}" alt="Chat media" data-chmedia="${esc(src)}">`).join("")}
+      </div>` : `
+      <div class="ch-menu-media-empty">
+        <span>No photos or videos found.</span>
+      </div>`}
+
+      ${it ? `
+      <button class="ch-menu-row" data-chgo="post" data-pid="${esc(it.pid || it.id || "")}">
+        <span class="ch-menu-row-ico">${I.bag ? I.bag(18) : I.tag(18)}</span>
+        <span class="ch-menu-row-label">Listings & Items</span>
+        <span class="ch-menu-row-val">
+          <span class="ch-val-text">${esc(it.cap)}</span>
+          <span class="sub-chev">${I.chevR(16)}</span>
+        </span>
+      </button>` : ""}
+    </div>
+
+    <div class="ch-menu-footer">
+      ${I.lock(13)}
+      <span>This chat is protected with End-to-End Encryption</span>
+    </div>
+  </div>`;
+}
+
+function chatMediaGalleryHTML(tid, scr) {
+  const t = chGet(tid);
+  const back = `<button class="icon-btn sub-back" data-chgalclose="true" title="Close">${I.x(20)}</button>`;
+  if (!t) return `<div class="ch-gal-head">${back}<span class="ch-gal-title">Photos & videos</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
+
+  if (!t.media) {
+    if (t.id === "t1") {
+      t.media = [];
+      if (t.item && t.item.photo) t.media.push(t.item.photo);
+      POSTS.forEach(p => {
+        if (p.photos?.[0] && !t.media.includes(p.photos[0]) && t.media.length < 9) {
+          t.media.push(p.photos[0]);
+        }
+      });
+    } else {
+      t.media = [];
+    }
+  }
+
+  if (!t.galState) {
+    t.galState = { selecting: false, selected: [] };
+  }
+  const gs = t.galState;
+  const isSel = gs.selecting;
+  const selCount = gs.selected.length;
+  const hasMedia = t.media && t.media.length > 0;
+
+  let headerHTML = "";
+  if (isSel) {
+    headerHTML = `
+    <div class="ch-gal-head">
+      <button class="ch-gal-top-btn" data-chgal="cancel">Cancel</button>
+      <span class="ch-gal-title">${selCount} selected</span>
+      <button class="ch-gal-top-btn" data-chgal="deselect"${selCount === 0 ? " disabled style='opacity:0.4;'" : ""}>Deselect</button>
+    </div>`;
+  } else {
+    headerHTML = `
+    <div class="ch-gal-head">
+      <button class="icon-btn sub-back" data-chgalclose="true" title="Close">${I.x(20)}</button>
+      <span class="ch-gal-title">${esc(t.user)}</span>
+      ${hasMedia ? `<button class="ch-gal-top-btn" data-chgal="select">Select</button>` : `<div style="width:48px;"></div>`}
+    </div>`;
+  }
+
+  let bodyHTML = "";
+  if (hasMedia) {
+    bodyHTML = `
+    <div class="ch-gal-date">October 2569 BE</div>
+    <div class="ch-gal-grid">
+      ${t.media.map(src => {
+        const idx = gs.selected.indexOf(src);
+        const selected = idx >= 0;
+        return `
+        <div class="ch-gal-item${selected ? " selected" : ""}" data-chgalitem="${esc(src)}" data-tid="${t.id}">
+          <img src="${src}" alt="Media">
+          ${isSel ? `<div class="ch-gal-chk">${selected ? (idx + 1) : ""}</div>` : ""}
+        </div>`;
+      }).join("")}
+    </div>`;
+  } else {
+    bodyHTML = `
+    <div class="ch-gal-empty-wrap">
+      <div class="ch-menu-media-empty">
+        <span>No photos or videos found.</span>
+      </div>
+    </div>`;
+  }
+
+  const botBarHTML = isSel ? `
+  <div class="ch-gal-bot-bar">
+    <button class="ch-gal-bot-btn" data-chgalact="trash" data-tid="${t.id}" title="Delete"${selCount === 0 ? " disabled" : ""}>${I.trash(22)}</button>
+    <button class="ch-gal-bot-btn" data-chgalact="download" title="Download"${selCount === 0 ? " disabled" : ""}>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    </button>
+  </div>` : "";
+
+  return `
+  ${headerHTML}
+  <div class="sub-scroll" style="flex:1; min-height:0; display:flex; flex-direction:column;">
+    ${bodyHTML}
+  </div>
+  ${botBarHTML}`;
+}
+function chatRoomSettingsHTML(tid) {
+  const t = chGet(tid);
+  const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
+  if (!t) return `<div class="ch-menu-head">${back}<span class="detail-title">Settings</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
+
+  return `
+  <div class="ch-menu-head">
+    ${back}
+    <span class="detail-title">Settings</span>
+  </div>
+  <div class="sub-scroll">
+    <button class="ch-set" data-chact="mute" data-tid="${t.id}">
+      <span class="t">
+        <b>Note notifications</b>
+        <span>Get notified when someone leaves a comment or reaction on your notes.</span>
+      </span>
+      <span class="ch-tgl${t.muted ? "" : " on"}"><i></i></span>
+    </button>
+
+    <div class="ch-set-h">Chat settings</div>
+    <button class="ch-set" data-chact="wallpaper">
+      <span class="t"><b>Chat wallpaper</b></span>
+      <span class="sub-chev">${I.chevR(16)}</span>
+    </button>
+
+    <button class="ch-set" data-chact="export-chat" data-tid="${t.id}">
+      <span class="t">
+        <b>Export chat history</b>
+        <span>Export this chat's history as a text file.</span>
+      </span>
+      <span class="sub-chev">${I.chevR(16)}</span>
+    </button>
+
+    <div class="ch-set" style="cursor:default;">
+      <span class="t">
+        <b>Encryption keys</b>
+        <span style="display:flex; align-items:center; gap:4px; margin-top:3px;">
+          ${I.lock(12)} This chat is protected with Letter Sealing.
+        </span>
+      </span>
+      <span class="sub-chev">${I.chevR(16)}</span>
+    </div>
+
+    <div style="height:14px;"></div>
+    <button class="ch-set" data-chact="del" data-tid="${t.id}">
+      <span class="t"><b style="color:var(--text);">Delete data</b></span>
+      <span class="sub-chev">${I.chevR(16)}</span>
+    </button>
+
+    <button class="ch-set" data-chact="report-chat" data-user="${esc(t.user)}">
+      <span class="t"><b style="color:var(--text);">Report</b></span>
+      <span class="sub-chev">${I.chevR(16)}</span>
+    </button>
   </div>`;
 }
 function chatCfgHTML() {
@@ -8073,6 +8552,7 @@ function chSend(scr) {
   if (!inp || !room) return;
   const v = inp.value.trim(), t = chGet(room.dataset.tid), C = chatInit();
   if (!v || !t) return;
+  if (pfIsBlocked(t.user) || t.blocked) return;
   if (C.draft === t) { C.threads.unshift(t); C.draft = null; }
   else { const i = C.threads.indexOf(t); if (i > 0) { C.threads.splice(i, 1); C.threads.unshift(t); } }
   t.msgs.push({ f: "me", t: v, at: "09:41", day: "Today", read: false });
@@ -8084,6 +8564,7 @@ function chSend(scr) {
 function chatQuickAsk(scr, post) {
   const C = chatInit();
   if (post.seller === CP_ME.name) { scrToast(scr, "This is your own listing"); return; }
+  if (pfIsBlocked(post.seller)) { scrToast(scr, "Cannot message a blocked account"); return; }
   let t = C.threads.find(x => x.user === post.seller && x.item.id === post.id);
   if (!t) {
     if (C.draft && C.draft.user === post.seller && C.draft.item.id === post.id) t = C.draft;
@@ -8122,6 +8603,11 @@ function openChatDeleteConfirm(t, scr) {
     const idx = C.threads.indexOf(t);
     if (idx >= 0) C.threads.splice(idx, 1);
     scrToast(scr, "ลบแชทเรียบร้อยแล้ว");
+    if (scr._subStack && scr._subStack.length > 0) {
+      while (scr._subStack.length > 0 && (scr._subStack[scr._subStack.length - 1].startsWith("chatroom:") || scr._subStack[scr._subStack.length - 1].startsWith("chmenu:") || scr._subStack[scr._subStack.length - 1].startsWith("chsettings:"))) {
+        scr._subStack.pop();
+      }
+    }
     renderSub(scr);
   };
 }
@@ -8136,22 +8622,44 @@ function chatClick(e) {
 
   const act = e.target.closest("[data-chact]");
   if (act) {
-    const a = act.dataset.chact, tid = act.dataset.tid, t = chGet(tid);
-    if (!t) return true;
-    if (a === "pin") {
+    const a = act.dataset.chact, tid = act.dataset.tid, t = tid ? chGet(tid) : null;
+    if (a === "pin" && t) {
       t.pinned = !t.pinned;
       scrToast(scr, t.pinned ? "ปักหมุดแชทแล้ว" : "ยกเลิกการปักหมุดแล้ว");
       renderSub(scr);
-    } else if (a === "mute") {
+    } else if (a === "mute" && t) {
       t.muted = !t.muted;
       scrToast(scr, t.muted ? "ปิดการแจ้งเตือนแล้ว" : "เปิดการแจ้งเตือนแล้ว");
       renderSub(scr);
-    } else if (a === "hide") {
+    } else if (a === "hide" && t) {
       t.hidden = true;
       scrToast(scr, "ซ่อนแชทแล้ว");
       renderSub(scr);
-    } else if (a === "del") {
+    } else if (a === "del" && t) {
       openChatDeleteConfirm(t, scr);
+    } else if (a === "block-user" || a === "unblock-room") {
+      const u = act.dataset.user || (t ? t.user : "");
+      if (a === "unblock-room" || pfIsBlocked(u) || (t && t.blocked)) {
+        scr.dataset.unblockU = u;
+        openDlg(scr, unblockDlgHTML(u));
+      } else {
+        openSheet(scr, "pm", "pm-open", blkSheetHTML(u, true));
+      }
+    } else if (a === "report-chat-user") {
+      const u = act.dataset.user || (t ? t.user : "");
+      openSheet(scr, "pm", "pm-open", chatReportSheetHTML(u, tid || (t ? t.id : "")));
+    } else if (a === "export-chat" && t) {
+      const txt = t.msgs.map(m => `[${m.day} ${m.at}] ${m.f === 'me' ? 'Me' : t.user}: ${m.t}`).join('\n');
+      if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(() => {});
+      scrToast(scr, "คัดลอกประวัติแชทเรียบร้อยแล้ว");
+    } else if (a === "wallpaper") {
+      scrToast(scr, "การเปลี่ยนพื้นหลังแชทจะเปิดให้ใช้งานเร็ว ๆ นี้");
+    } else if (a === "report-chat") {
+      const u = act.dataset.user || (t ? t.user : "");
+      if (u) scr.dataset.rpUser = u;
+      scr.dataset.rpFromChat = "true";
+      delete scr.dataset.rpDelChat;
+      rpPush(scr, "report:user");
     }
     return true;
   }
@@ -8226,13 +8734,147 @@ function chatClick(e) {
     if (a === "room") rpPush(scr, "chatroom:" + go.dataset.tid);
     else if (a === "item") { C.iq = ""; rpPush(scr, "chatitem:" + go.dataset.iid); }
     else if (a === "cfg") rpPush(scr, "chatcfg");
-    else if (a === "more") scrToast(scr, "Chat options aren't in this prototype yet");
-    else if (a === "attach") scrToast(scr, "Attachments aren't in this prototype yet");
+    else if (a === "more") {
+      const room = scr.querySelector(".ch-room");
+      const tid = room ? room.dataset.tid : "";
+      if (tid) rpPush(scr, "chmenu:" + tid);
+      else scrToast(scr, "Chat options aren't in this prototype yet");
+      return true;
+    }
+    else if (a === "chsettings") {
+      rpPush(scr, "chsettings:" + go.dataset.tid);
+      return true;
+    }
+    else if (a === "chmedia") {
+      rpPush(scr, "chmedia:" + go.dataset.tid);
+      return true;
+    }
+    else if (a === "attach") {
+      const room = scr.querySelector(".ch-room");
+      const tid = room ? room.dataset.tid : "";
+      if (tid) openChatAttachSheet(scr, tid);
+      return true;
+    }
+    else if (a === "room-search") {
+      const room = scr.querySelector(".ch-room");
+      const t = room ? chGet(room.dataset.tid) : null;
+      if (t) {
+        t.searching = !t.searching;
+        if (!t.searching) t.roomQuery = "";
+        renderSub(scr);
+        if (t.searching) scr.querySelector(".ch-room-search-in")?.focus();
+      }
+      return true;
+    }
     else if (a === "post") {
-      const p = go.dataset.pid && findPost(go.dataset.pid);
+      let pid = go.dataset.pid;
+      if (!pid) {
+        const room = e.target.closest(".ch-room");
+        const t = room ? chGet(room.dataset.tid) : null;
+        if (t && t.item) pid = t.item.pid || t.item.id;
+      }
+      const p = pid && findPost(pid);
       if (p) openPostDetail(scr, p); else scrToast(scr, "Listing detail isn't in this prototype yet");
     }
     return true;
+  }
+  const cSendMed = e.target.closest("[data-chsendmedia]");
+  if (cSendMed) {
+    const tid = cSendMed.dataset.tid;
+    const src = cSendMed.dataset.chsendmedia;
+    const isVideo = cSendMed.dataset.isvideo === "true";
+    const t = tid ? chGet(tid) : null;
+    if (t) {
+      t.msgs.push({ f: "me", img: src, isVideo, at: "09:41", day: "Today", read: false });
+      if (!t.media) t.media = [];
+      if (!t.media.includes(src)) t.media.unshift(src);
+      const bd = scr.querySelector("#chAttachBackdrop");
+      if (bd) bd.remove();
+      renderSub(scr);
+    }
+    return true;
+  }
+  const med = e.target.closest("[data-chmedia]");
+  if (med) {
+    openChatMediaViewer(scr, med.dataset.chmedia);
+    return true;
+  }
+  const cClose = e.target.closest("[data-chgalclose]");
+  if (cClose) {
+    const curSub = scr._subStack ? scr._subStack[scr._subStack.length - 1] : "";
+    const tid = curSub.startsWith("chmedia:") ? curSub.slice(8) : "";
+    const t = tid ? chGet(tid) : null;
+    if (t && t.galState) {
+      t.galState.selecting = false;
+      t.galState.selected = [];
+    }
+    (scr._subStack || []).pop();
+    scr._subSwap = true;
+    renderSub(scr);
+    scr._subSwap = false;
+    return true;
+  }
+  const cGal = e.target.closest("[data-chgal]");
+  if (cGal) {
+    const curSub = scr._subStack ? scr._subStack[scr._subStack.length - 1] : "";
+    const tid = curSub.startsWith("chmedia:") ? curSub.slice(8) : "";
+    const t = tid ? chGet(tid) : null;
+    if (t && t.galState) {
+      const act = cGal.dataset.chgal;
+      if (act === "select") t.galState.selecting = true;
+      else if (act === "cancel") { t.galState.selecting = false; t.galState.selected = []; }
+      else if (act === "deselect") t.galState.selected = [];
+      renderSub(scr);
+    }
+    return true;
+  }
+  const cItem = e.target.closest("[data-chgalitem]");
+  if (cItem) {
+    const tid = cItem.dataset.tid;
+    const t = tid ? chGet(tid) : null;
+    const src = cItem.dataset.chgalitem;
+    if (t && t.galState && t.galState.selecting) {
+      const idx = t.galState.selected.indexOf(src);
+      if (idx >= 0) t.galState.selected.splice(idx, 1);
+      else t.galState.selected.push(src);
+      renderSub(scr);
+    } else {
+      openChatMediaViewer(scr, src);
+    }
+    return true;
+  }
+  const cAct = e.target.closest("[data-chgalact]");
+  if (cAct) {
+    const act = cAct.dataset.chgalact;
+    const tid = cAct.dataset.tid;
+    const t = tid ? chGet(tid) : null;
+    if (act === "trash" && t && t.galState) {
+      t.media = t.media.filter(m => !t.galState.selected.includes(m));
+      t.galState.selected = [];
+      t.galState.selecting = false;
+      scrToast(scr, "ลบรูปภาพที่เลือกแล้ว");
+      renderSub(scr);
+    } else if (act === "download") {
+      scrToast(scr, "บันทึกลงในรูปภาพแล้ว");
+    }
+    return true;
+  }
+  const sClose = e.target.closest(".ch-room-search-close");
+  if (sClose) {
+    const room = scr.querySelector(".ch-room");
+    const t = room ? chGet(room.dataset.tid) : null;
+    if (t) { t.searching = false; t.roomQuery = ""; renderSub(scr); return true; }
+  }
+  const sClear = e.target.closest(".ch-room-search-clear");
+  if (sClear) {
+    const room = scr.querySelector(".ch-room");
+    const t = room ? chGet(room.dataset.tid) : null;
+    if (t) {
+      t.roomQuery = "";
+      renderSub(scr);
+      scr.querySelector(".ch-room-search-in")?.focus();
+      return true;
+    }
   }
   if (e.target.closest(".ch-send")) { chSend(scr); return true; }
   const ask = e.target.closest(".ask-pill, .chat-fab");
@@ -8660,6 +9302,21 @@ stageEl.addEventListener("input", e => {
     const room = e.target.closest(".ch-room"), t = chGet(room.dataset.tid);
     if (t) t.draft = e.target.value;
     room.querySelector(".ch-send").disabled = !e.target.value.trim();
+  }
+  if (e.target.matches(".ch-room-search-in")) {
+    const scr = e.target.closest(".screen");
+    const room = scr ? scr.querySelector(".ch-room") : null;
+    const t = room ? chGet(room.dataset.tid) : null;
+    if (t) {
+      t.roomQuery = e.target.value;
+      const pos = e.target.selectionStart;
+      renderSub(scr);
+      const inEl = scr.querySelector(".ch-room-search-in");
+      if (inEl) {
+        inEl.focus();
+        inEl.setSelectionRange(pos, pos);
+      }
+    }
   }
   if (e.target.matches(".ch-q")) {
     chatInit().q = e.target.value;
@@ -9193,6 +9850,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = dlgUblk.closest(".screen");
     scr.classList.remove("dialog-open");
     pfSetBlocked(scr, scr.dataset.unblockU, false);
+    scrToast(scr, "Unblocked");
     if (scr.classList.contains("sub-open")) renderSub(scr);
     return;
   }
@@ -9259,7 +9917,19 @@ document.getElementById("stage").addEventListener("click", e => {
       if (sc && y != null) { sc.scrollTop = y; requestAnimationFrame(() => { sc.scrollTop = y; }); }
     }
     else if (topSub.startsWith("report")) rpBack(scr); /* report pages slide back out right */
-    else if (topSub.startsWith("chat") && scr._subStack.length > 1) rpBack(scr); /* chat pages slide back out right */
+    else if (topSub.startsWith("chmedia:")) {
+      const tid = topSub.slice(8);
+      const t = tid ? chGet(tid) : null;
+      if (t && t.galState) {
+        t.galState.selecting = false;
+        t.galState.selected = [];
+      }
+      (scr._subStack || []).pop();
+      scr._subSwap = true;
+      renderSub(scr);
+      scr._subSwap = false;
+    }
+    else if ((topSub.startsWith("chat") || topSub.startsWith("chmenu:") || topSub.startsWith("chsettings:") || topSub.startsWith("profile:")) && scr._subStack.length > 1) rpBack(scr); /* chat and profile pages slide back out right */
     else subBack(scr);
     return;
   }
@@ -9767,6 +10437,37 @@ document.getElementById("stage").addEventListener("click", e => {
     pushSub(scr, "about:" + pfShAbout.dataset.u);
     return;
   }
+  const chRepDel = e.target.closest(".ch-rep-del-btn");
+  if (chRepDel) {
+    const scr = chRepDel.closest(".screen");
+    const u = chRepDel.dataset.u;
+    const tid = chRepDel.dataset.tid;
+    scr.classList.remove("pm-open");
+    scr.dataset.rpUser = u;
+    scr.dataset.rpFromChat = "true";
+    scr.dataset.rpDelChat = tid || "";
+    scr._subSwap = false;
+    rpPush(scr, "report:user");
+    return;
+  }
+  const chRepOnly = e.target.closest(".ch-rep-only-btn");
+  if (chRepOnly) {
+    const scr = chRepOnly.closest(".screen");
+    const u = chRepOnly.dataset.u;
+    scr.classList.remove("pm-open");
+    scr.dataset.rpUser = u;
+    scr.dataset.rpFromChat = "true";
+    delete scr.dataset.rpDelChat;
+    scr._subSwap = false;
+    rpPush(scr, "report:user");
+    return;
+  }
+  const chCancel = e.target.closest(".ch-sheet-cancel-btn");
+  if (chCancel) {
+    const scr = chCancel.closest(".screen");
+    scr.classList.remove("pm-open");
+    return;
+  }
   const blkRep = e.target.closest(".blk-rep");
   if (blkRep) {
     const scr = blkRep.closest(".screen");
@@ -9784,7 +10485,7 @@ document.getElementById("stage").addEventListener("click", e => {
     scr.classList.remove("pm-open");
     pfSetBlocked(scr, u, true);
     const subTop = (scr._subStack || []).at(-1) || "";
-    if (subTop === "profile:" + u || subTop === "report:done:" + u) renderSub(scr);
+    if (subTop === "profile:" + u || subTop === "report:done:" + u || subTop.startsWith("chmenu:") || subTop.startsWith("chatroom:")) renderSub(scr);
     scrToast(scr, "Blocking"); /* IG flashes this transient toast */
     return;
   }
@@ -9796,7 +10497,7 @@ document.getElementById("stage").addEventListener("click", e => {
     if (rpStep.disabled) return; /* completed step — just shows its green check */
     const scr = rpStep.closest(".screen"), u = rpStep.dataset.u, act = rpStep.dataset.act;
     const dn = scr._rpDone || (scr._rpDone = new Set());
-    if (act === "block") openSheet(scr, "pm", "pm-open", blkSheetHTML(u));
+    if (act === "block") openSheet(scr, "pm", "pm-open", blkSheetHTML(u, scr.dataset.rpFromChat === "true"));
     else if (act === "unblock") { scr.dataset.unblockU = u; openDlg(scr, unblockDlgHTML(u)); }
     else if (act === "unfollow") { pfSetFollow(scr, u, false); dn.add(u + "|unfollow"); scrToast(scr, "Unfollowed"); renderSub(scr); }
     else if (act === "mute") { scr.dataset.muteSeller = u; openDlg(scr, muteDlgHTML(u)); } /* IG: pick Mute posts / posts and story */
