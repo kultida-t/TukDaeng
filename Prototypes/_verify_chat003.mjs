@@ -45,7 +45,10 @@ const browser = await chromium.launch({
 
   // Check: Your listings row shows summary instead of single user message
   const rolexSub = await page.locator('.ch-list-inner .ch-row[data-iid="mi1"] .ch-prev').textContent();
-  check("Your listings row shows aggregate summary", rolexSub.includes("14 chats · 4 unread") && !rolexSub.includes("ถ้ารับเลยวันนี้"), rolexSub);
+  check("Your listings row shows clean summary without unread text", rolexSub === "THB 380,000 · 14 chats", rolexSub);
+
+  const rolexTitle = await page.locator('.ch-list-inner .ch-row[data-iid="mi1"] .ch-name').textContent();
+  check("Your listings title has no bracketed number", !rolexTitle.includes("(14)"), rolexTitle);
 
   // Check: Items you asked about shows last message preview
   const subSub = await page.locator('.ch-list-inner .ch-row[data-chgo="room"]').first().locator('.ch-prev').textContent();
@@ -65,6 +68,9 @@ const browser = await chromium.launch({
   // Check 2: Item card is displayed
   const cardCap = await page.locator('.ch-itemcard b').textContent();
   check("Item card shows Rolex Datejust 36", cardCap.includes("Rolex Datejust 36"), cardCap);
+
+  const itemCardNote = await page.locator('.ch-itemcard em').textContent();
+  check("Item chats card shows 'Your listing · 14 chats' without unread text", itemCardNote === "Your listing · 14 chats", itemCardNote);
 
   // Check 3: Exactly 14 chat rows
   const rowCount = await page.locator('.ch-scroll[data-iid="mi1"] .ch-row-wrap').count();

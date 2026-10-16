@@ -1,13 +1,15 @@
 === CHAT-003 Verification Results ===
-Timestamp: 2026-10-16T07:26:24.747Z
-Total Tests: 23
-Passed: 23
+Timestamp: 2026-10-16T07:35:11.131Z
+Total Tests: 25
+Passed: 25
 Failed: 0
 
-PASS: Your listings row shows aggregate summary — THB 380,000 · 14 chats · 4 unread
+PASS: Your listings row shows clean summary without unread text — THB 380,000 · 14 chats
+PASS: Your listings title has no bracketed number — Rolex Datejust 36 · Ref. 126234
 PASS: Asked item shows last message preview — THB 420,000 · ให้ได้ 410,000 ครับ ถ้ารับเร็ว
 PASS: Header title is 'Item chats' — Item chats
 PASS: Item card shows Rolex Datejust 36 — Rolex Datejust 36 · Ref. 126234
+PASS: Item chats card shows 'Your listing · 14 chats' without unread text — Your listing · 14 chats
 PASS: Item chats list has 14 chat rows — Found: 14
 PASS: First row height >= 60px — Height: 64px
 PASS: Avatar image is 44x44px — 44x44px
