@@ -3594,42 +3594,45 @@
   .ch-row-wrap.revealed-left .ch-act-left { opacity:1; pointer-events:auto; }
   .ch-row-wrap.revealed-right .ch-act-right { opacity:1; pointer-events:auto; }
   
-  .ch-act-cir { width:44px; height:44px; border-radius:50%; background:#06c755; border:none; outline:none; color:#ffffff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .12s, background .15s; box-shadow:0 1px 3px rgba(0,0,0,.15); flex-shrink:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  .ch-act-cir { width:46px; height:46px; border-radius:50%; background:#06c755; border:none; outline:none; color:#ffffff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .12s, background .15s; box-shadow:0 1px 3px rgba(0,0,0,.15); flex-shrink:0; padding:0; -webkit-tap-highlight-color:transparent; }
   .ch-act-cir:focus, .ch-act-cir:focus-visible { outline:none; }
   .ch-act-cir:active { transform:scale(.92); background:#05b34c; }
   
-  .ch-act-rect { width:56px; height:56px; border-radius:18px; border:none; outline:none; font:inherit; font-size:12.5px; font-weight:400; color:#ffffff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .12s, filter .15s; flex-shrink:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  .ch-act-rect { width:64px; height:50px; border-radius:14px; border:none; outline:none; font:inherit; font-size:13.5px; font-weight:500; color:#111111; background:#e9e9eb; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .12s, background .15s; flex-shrink:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   .ch-act-rect:focus, .ch-act-rect:focus-visible { outline:none; }
-  .ch-act-rect:active { transform:scale(.94); }
-  .ch-act-hide { background:#9ea4aa; }
-  .screen[data-theme="dark"] .ch-act-hide { background:#6b7280; }
-  .ch-act-del { background:#ff334b; }
+  .ch-act-rect:active { transform:scale(.94); background:#dedee0; }
+  .screen[data-theme="dark"] .ch-act-rect { background:#2c2c2e; color:#ffffff; }
+  .screen[data-theme="dark"] .ch-act-rect:active { background:#3a3a3c; }
   
   .ch-row-wrap .ch-row { position:relative; z-index:2; background:var(--surface); transition:transform .22s cubic-bezier(0.2, 0.9, 0.3, 1); width:100%; box-sizing:border-box; outline:none; border:none; -webkit-tap-highlight-color:transparent; }
   .ch-row-wrap .ch-row:focus, .ch-row-wrap .ch-row:focus-visible { outline:none; }
   .screen[data-theme="dark"] .ch-row-wrap .ch-row { background:var(--surface); }
-  .ch-row-wrap.revealed-left .ch-row { transform:translateX(118px); }
-  .ch-row-wrap.revealed-right .ch-row { transform:translateX(-160px); }
+  .ch-row-wrap.revealed-left .ch-row { transform:translateX(124px); }
+  .ch-row-wrap.revealed-right .ch-row { transform:translateX(-156px); }
 
   .ch-row { display:flex; align-items:center; gap:11px; width:100%; min-height:64px; box-sizing:border-box; padding:10px 16px; background:none; border:none; outline:none; color:var(--text); font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
   .ch-row:focus, .ch-row:focus-visible { outline:none; }
   .ch-row:active { background:var(--surface-2); }
   .ch-av { flex-shrink:0; position:relative; display:inline-block; }
-  .ch-av img { width:44px; height:44px; border-radius:50%; object-fit:cover; display:block; }
+  .ch-av img { width:44px; height:44px; border-radius:50%; object-fit:cover; display:block; pointer-events:none; -webkit-user-drag:none; user-select:none; }
   .ch-pin-badge { position:absolute; right:-2px; bottom:-2px; width:17px; height:17px; border-radius:50%; background:#2b7fff; border:2px solid #ffffff; color:#ffffff; display:flex; align-items:center; justify-content:center; box-sizing:border-box; box-shadow:0 1px 2px rgba(0,0,0,.15); }
   .screen[data-theme="dark"] .ch-pin-badge { border-color:#121417; }
   .ch-mute-ico { display:inline-flex; align-items:center; color:#72849a; margin-left:3px; flex-shrink:0; }
   .screen[data-theme="dark"] .ch-mute-ico { color:#8d9eaf; }
   
-  /* Chat delete confirmation modal */
-  .ch-modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; animation:chFadeIn .16s ease; }
-  .ch-modal { background:var(--surface); border-radius:18px; width:100%; max-width:300px; padding:20px 18px 16px; box-shadow:0 12px 32px rgba(0,0,0,.28); text-align:center; animation:chPopIn .18s ease; }
-  .ch-modal-title { font-size:16px; font-weight:700; color:var(--text); margin-bottom:6px; line-height:1.3; }
-  .ch-modal-desc { font-size:13px; color:var(--muted); line-height:1.45; margin-bottom:18px; }
+  /* Chat confirmation modal (LINE / iOS Style) */
+  .ch-modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; display:flex; align-items:center; justify-content:center; padding:24px; animation:chFadeIn .16s ease; -webkit-tap-highlight-color:transparent; }
+  .ch-modal { background:#ffffff; border-radius:20px; width:100%; max-width:290px; padding:24px 18px 18px; box-shadow:0 16px 40px rgba(0,0,0,.26); text-align:center; animation:chPopIn .18s cubic-bezier(0.18, 0.89, 0.32, 1.15); box-sizing:border-box; }
+  .screen[data-theme="dark"] .ch-modal { background:#25272c; }
+  .ch-modal-title { font-size:16.5px; font-weight:600; color:#000000; margin-bottom:20px; line-height:1.35; padding:0 4px; }
+  .screen[data-theme="dark"] .ch-modal-title { color:#ffffff; }
   .ch-modal-acts { display:flex; gap:10px; }
-  .ch-modal-btn { flex:1; height:40px; border-radius:10px; font:inherit; font-size:14px; font-weight:600; border:none; cursor:pointer; }
-  .ch-modal-btn.cancel { background:var(--surface-2); color:var(--text); }
-  .ch-modal-btn.confirm-del { background:#ef4444; color:#ffffff; }
+  .ch-modal-btn { flex:1; height:44px; border-radius:12px; font:inherit; font-size:15px; font-weight:600; border:none; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent; transition:opacity .12s, transform .1s; }
+  .ch-modal-btn:active { transform:scale(.97); opacity:.85; }
+  .ch-modal-btn.cancel { background:#e9e9eb; color:#000000; }
+  .screen[data-theme="dark"] .ch-modal-btn.cancel { background:#3a3d45; color:#ffffff; }
+  .ch-modal-btn.confirm-action { background:#e9e9eb; color:#ff3b30; }
+  .screen[data-theme="dark"] .ch-modal-btn.confirm-action { background:#3a3d45; color:#ff453a; }
   @keyframes chFadeIn { from { opacity:0; } to { opacity:1; } }
   @keyframes chPopIn { from { transform:scale(.94); opacity:0; } to { transform:scale(1); opacity:1; } }
   
@@ -4267,6 +4270,7 @@ const I = {
   checkCir: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.7 2.7L16.5 9.4"/></svg>`,
   cal: (s=17) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>`,
   chPin: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><path d="M16 2.5a1.5 1.5 0 0 0-1.06.44l-2.12 2.12a.5.5 0 0 1-.47.13L8.9 4.25a1.5 1.5 0 0 0-1.57.37L6.2 5.75a1 1 0 0 0-.25 1.05l1.8 4.5-4.46 4.46a1 1 0 1 0 1.42 1.42L9.17 12.8l4.5 1.8a1 1 0 0 0 1.05-.25l1.13-1.13a1.5 1.5 0 0 0 .37-1.57l-.94-3.45a.5.5 0 0 1 .13-.47l2.12-2.12A1.5 1.5 0 0 0 16 2.5z"/></svg>`,
+  chUnpin: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 2.5a1.5 1.5 0 0 0-1.06.44l-2.12 2.12a.5.5 0 0 1-.47.13L8.9 4.25a1.5 1.5 0 0 0-1.57.37L6.2 5.75a1 1 0 0 0-.25 1.05l1.8 4.5-4.46 4.46a1 1 0 1 0 1.42 1.42L9.17 12.8l4.5 1.8a1 1 0 0 0 1.05-.25l1.13-1.13a1.5 1.5 0 0 0 .37-1.57l-.94-3.45a.5.5 0 0 1 .13-.47l2.12-2.12A1.5 1.5 0 0 0 16 2.5z" fill="currentColor"/><line x1="2" y1="2" x2="22" y2="22" stroke="#06c755" stroke-width="3.6"/><line x1="2" y1="2" x2="22" y2="22" stroke="currentColor" stroke-width="2.2"/></svg>`,
   chMute: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`,
   chUnmute: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9.5 9.5 0 0 1 0 14"/></svg>`,
 };
@@ -7975,11 +7979,11 @@ function chRowHTML(t) {
   const isBlk = pfIsBlocked(t.user) || !!t.blocked;
   return `<div class="ch-row-wrap" data-tid="${t.id}">
     <div class="ch-act-left">
+      <button class="ch-act-cir ch-act-pin" data-chact="pin" data-tid="${t.id}" title="${t.pinned ? "ยกเลิกปักหมุด" : "ปักหมุด"}">
+        ${t.pinned ? I.chUnpin(20) : I.chPin(20)}
+      </button>
       <button class="ch-act-cir ch-act-mute" data-chact="mute" data-tid="${t.id}" title="${t.muted ? "เปิดการแจ้งเตือน" : "ปิดการแจ้งเตือน"}">
         ${t.muted ? I.chUnmute(22) : I.chMute(22)}
-      </button>
-      <button class="ch-act-cir ch-act-pin" data-chact="pin" data-tid="${t.id}" title="${t.pinned ? "ยกเลิกปักหมุด" : "ปักหมุด"}">
-        ${I.chPin(20)}
       </button>
     </div>
     <button class="ch-row${un ? " unread" : ""}" data-chgo="room" data-tid="${t.id}">
@@ -8040,6 +8044,7 @@ function chListBody() {
     const visible = C.threads.filter(t => !t.hidden && chThreadMatch(t, q));
     const sorted = [...visible].sort((a, b) => {
       if (!!b.pinned !== !!a.pinned) return b.pinned ? 1 : -1;
+      if (b.pinned && a.pinned) return (b.pinnedAt || 0) - (a.pinnedAt || 0);
       return 0;
     });
     return sorted.length ? sorted.map(t => chRowHTML(t)).join("")
@@ -8116,6 +8121,7 @@ function chItemBody(iid) {
   const rows = g ? g.threads.filter(t => !t.hidden && chThreadMatch(t, q)) : [];
   const sorted = [...rows].sort((a, b) => {
     if (!!b.pinned !== !!a.pinned) return b.pinned ? 1 : -1;
+    if (b.pinned && a.pinned) return (b.pinnedAt || 0) - (a.pinnedAt || 0);
     return 0;
   });
   return sorted.length ? sorted.map(t => chRowHTML(t)).join("") : chEmptyHTML("No chats found", "Try another name or message.");
@@ -8579,26 +8585,64 @@ function chatQuickAsk(scr, post) {
 }
 let suppressChatClick = false;
 
-function openChatDeleteConfirm(t, scr) {
-  const old = document.getElementById("chDelModal");
+function chCloseRevealedRows() {
+  document.querySelectorAll(".ch-row-wrap.revealed-left, .ch-row-wrap.revealed-right").forEach(w => {
+    w.classList.remove("revealed-left", "revealed-right");
+  });
+}
+
+function openChatHideConfirm(t, scr) {
+  const old = document.getElementById("chConfirmModal");
   if (old) old.remove();
   const html = `
-  <div class="ch-modal-backdrop" id="chDelModal">
+  <div class="ch-modal-backdrop" id="chConfirmModal">
     <div class="ch-modal">
-      <div class="ch-modal-title">ลบการแชทนี้หรือไม่?</div>
-      <div class="ch-modal-desc">ประวัติการสนทนากับ <b>${esc(t.user)}</b> จะถูกลบออกจากเครื่องของคุณ</div>
+      <div class="ch-modal-title">Hiding chats doesn't delete their messages.</div>
       <div class="ch-modal-acts">
-        <button class="ch-modal-btn cancel" id="chDelCancel">ยกเลิก</button>
-        <button class="ch-modal-btn confirm-del" id="chDelConfirm">ลบ</button>
+        <button class="ch-modal-btn cancel" id="chHideCancel">Cancel</button>
+        <button class="ch-modal-btn confirm-action" id="chHideConfirm">Hide</button>
       </div>
     </div>
   </div>`;
   document.body.insertAdjacentHTML("beforeend", html);
-  const m = document.getElementById("chDelModal");
-  m.querySelector("#chDelCancel").onclick = () => m.remove();
-  m.onclick = (e) => { if (e.target === m) m.remove(); };
-  m.querySelector("#chDelConfirm").onclick = () => {
+  const m = document.getElementById("chConfirmModal");
+  const close = () => {
     m.remove();
+    chCloseRevealedRows();
+  };
+  m.querySelector("#chHideCancel").onclick = close;
+  m.onclick = (e) => { if (e.target === m) close(); };
+  m.querySelector("#chHideConfirm").onclick = () => {
+    close();
+    t.hidden = true;
+    scrToast(scr, "ซ่อนแชทแล้ว");
+    renderSub(scr);
+  };
+}
+
+function openChatDeleteConfirm(t, scr) {
+  const old = document.getElementById("chConfirmModal");
+  if (old) old.remove();
+  const html = `
+  <div class="ch-modal-backdrop" id="chConfirmModal">
+    <div class="ch-modal">
+      <div class="ch-modal-title">Are you sure you want to delete this chat?</div>
+      <div class="ch-modal-acts">
+        <button class="ch-modal-btn cancel" id="chDelCancel">Cancel</button>
+        <button class="ch-modal-btn confirm-action" id="chDelConfirm">Delete</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML("beforeend", html);
+  const m = document.getElementById("chConfirmModal");
+  const close = () => {
+    m.remove();
+    chCloseRevealedRows();
+  };
+  m.querySelector("#chDelCancel").onclick = close;
+  m.onclick = (e) => { if (e.target === m) close(); };
+  m.querySelector("#chDelConfirm").onclick = () => {
+    close();
     const C = chatInit();
     const idx = C.threads.indexOf(t);
     if (idx >= 0) C.threads.splice(idx, 1);
@@ -8625,16 +8669,18 @@ function chatClick(e) {
     const a = act.dataset.chact, tid = act.dataset.tid, t = tid ? chGet(tid) : null;
     if (a === "pin" && t) {
       t.pinned = !t.pinned;
+      if (t.pinned) t.pinnedAt = Date.now();
+      else delete t.pinnedAt;
+      chCloseRevealedRows();
       scrToast(scr, t.pinned ? "ปักหมุดแชทแล้ว" : "ยกเลิกการปักหมุดแล้ว");
       renderSub(scr);
     } else if (a === "mute" && t) {
       t.muted = !t.muted;
+      chCloseRevealedRows();
       scrToast(scr, t.muted ? "ปิดการแจ้งเตือนแล้ว" : "เปิดการแจ้งเตือนแล้ว");
       renderSub(scr);
     } else if (a === "hide" && t) {
-      t.hidden = true;
-      scrToast(scr, "ซ่อนแชทแล้ว");
-      renderSub(scr);
+      openChatHideConfirm(t, scr);
     } else if (a === "del" && t) {
       openChatDeleteConfirm(t, scr);
     } else if (a === "block-user" || a === "unblock-room") {
@@ -8890,7 +8936,14 @@ function chatClick(e) {
 let chSwipe = null;
 document.addEventListener("pointerdown", e => {
   const row = e.target.closest(".ch-row-wrap .ch-row");
-  if (!row) return;
+  if (!row) {
+    if (!e.target.closest("[data-chact]") && !e.target.closest("#chConfirmModal")) {
+      document.querySelectorAll(".ch-row-wrap.revealed-left, .ch-row-wrap.revealed-right").forEach(w => {
+        w.classList.remove("revealed-left", "revealed-right");
+      });
+    }
+    return;
+  }
   const wrap = row.closest(".ch-row-wrap");
   if (!wrap) return;
   if (e.target.closest("[data-chact]")) return;
@@ -8917,6 +8970,9 @@ document.addEventListener("pointermove", e => {
   chSwipe.dy = dy;
   if (!chSwipe.lockedH) {
     if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx)) {
+      if (chSwipe.initiallyRevealed) {
+        chSwipe.wrap.classList.remove("revealed-left", "revealed-right");
+      }
       chSwipe = null;
       return;
     }
@@ -8927,10 +8983,10 @@ document.addEventListener("pointermove", e => {
   }
   if (chSwipe.lockedH) {
     let offset = dx;
-    if (chSwipe.initiallyRevealed === "left") offset += 118;
-    else if (chSwipe.initiallyRevealed === "right") offset -= 160;
-    if (offset > 135) offset = 135 + (offset - 135) * 0.2;
-    if (offset < -185) offset = -185 + (offset + 185) * 0.2;
+    if (chSwipe.initiallyRevealed === "left") offset += 124;
+    else if (chSwipe.initiallyRevealed === "right") offset -= 156;
+    if (offset > 140) offset = 140 + (offset - 140) * 0.2;
+    if (offset < -175) offset = -175 + (offset + 175) * 0.2;
     chSwipe.row.style.transform = `translateX(${offset}px)`;
   }
 }, { passive: true });
