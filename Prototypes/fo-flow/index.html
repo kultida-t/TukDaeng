@@ -3669,6 +3669,69 @@
   .al-back { color:var(--text); }
   .pfp-tt.solo span { display:none; }
   .al-title { display:flex; align-items:center; gap:6px; font-size:17px; font-weight:600; color:var(--text); }
+  /* ============ BOARD — news board (Home, Journal Board, Article detail, Search) ============ */
+  .screen .page-sub:has(.bd-scroll), .screen .page-sub:has(.bd-dscroll) { background:#fff; }
+  .screen[data-theme="dark"] .page-sub:has(.bd-scroll), .screen[data-theme="dark"] .page-sub:has(.bd-dscroll) { background:#14161a; }
+  .bd-scroll { padding-bottom:96px; }
+  .bd-head { position:sticky; top:0; z-index:25; display:grid; grid-template-columns:44px 1fr 44px; align-items:center; padding:8px 8px; background:#fff; border-bottom:1px solid var(--line); flex-shrink:0; }
+  .screen[data-theme="dark"] .bd-head { background:#14161a; }
+  .bd-head .icon-btn { color:var(--text); }
+  .bd-brand { text-align:center; font-size:18px; font-weight:400; color:var(--text); letter-spacing:.3px; }
+  .bd-brand b { color:var(--red); font-weight:600; }
+  .bd-hero { position:relative; height:334px; background:#000 center/cover no-repeat; display:flex; flex-direction:column; justify-content:flex-end; padding:0 16px 30px; box-sizing:border-box; flex-shrink:0; cursor:pointer; }
+  .bd-hero::before { content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,.85) 8%, rgba(0,0,0,.05) 75%); }
+  .bd-hero > * { position:relative; }
+  .bd-hero h2 { margin:0 0 6px; font-size:23px; line-height:1.2; font-weight:700; color:#fff; letter-spacing:.2px; }
+  .bd-hero p { margin:0 0 16px; font-size:13px; line-height:1.4; color:rgba(255,255,255,.7); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .bd-hero-btn { align-self:flex-start; border:none; background:#d10c0c; color:#fff; font:inherit; font-size:13.5px; font-weight:600; padding:12px 20px; border-radius:3px; cursor:pointer; }
+  .bd-sec { display:flex; align-items:center; justify-content:space-between; padding:26px 16px 14px; }
+  .bd-sec h3 { margin:0; font-size:20px; font-weight:700; color:var(--text); letter-spacing:.2px; }
+  .bd-sec button { background:none; border:none; padding:0; font:inherit; font-size:13px; color:var(--muted); cursor:pointer; }
+  .bd-trend { display:flex; gap:12px; overflow-x:auto; padding:0 16px 4px; scrollbar-width:none; flex-shrink:0; cursor:grab; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; }
+  .bd-trend::after { content:""; flex:0 0 4px; }
+  .bd-tcard img, .bd-card img, .bd-row img { -webkit-user-drag:none; user-select:none; pointer-events:none; }
+  .bd-trend::-webkit-scrollbar { display:none; }
+  .bd-tcard { flex:0 0 175px; background:none; border:none; padding:0; text-align:left; color:var(--text); font:inherit; cursor:pointer; }
+  .bd-tcard img { width:175px; height:175px; object-fit:cover; border-radius:13px; display:block; }
+  .bd-tcat { display:block; margin-top:10px; font-size:11.5px; color:var(--muted); }
+  .bd-ttl { display:block; margin-top:4px; font-size:13.5px; font-weight:600; line-height:1.35; letter-spacing:.2px; }
+  .bd-card { display:block; width:calc(100% - 32px); margin:0 16px; box-sizing:border-box; padding:0 0 16px; background:none; border:none; border-bottom:1px solid var(--line); text-align:left; color:var(--text); font:inherit; cursor:pointer; flex-shrink:0; }
+  .bd-card img { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:9px; display:block; }
+  .bd-cat { display:block; margin-top:12px; font-size:11.5px; font-weight:500; color:#d10c0c; letter-spacing:.2px; }
+  .bd-ct { display:block; margin-top:5px; font-size:17px; font-weight:600; line-height:1.35; letter-spacing:.3px; }
+  .bd-meta { display:block; margin-top:7px; font-size:10.5px; letter-spacing:.4px; color:var(--muted); white-space:pre; }
+  .bd-row { display:flex; gap:12px; align-items:flex-start; width:calc(100% - 32px); margin:0 16px; box-sizing:border-box; padding:14px 0; background:none; border:none; border-bottom:1px solid var(--line); text-align:left; color:var(--text); font:inherit; cursor:pointer; flex-shrink:0; }
+  .bd-row:last-child { border-bottom:none; }
+  .bd-row img { width:94px; height:75px; object-fit:cover; border-radius:7px; flex-shrink:0; background:#1f2126; }
+  .bd-row .bd-cat { margin-top:0; font-size:10.5px; }
+  .bd-row .bd-ct { margin-top:3px; font-size:14px; font-weight:500; line-height:1.4; }
+  .bd-row .bd-meta { margin-top:5px; font-size:10px; }
+  .bd-sbar { display:flex; align-items:center; gap:8px; margin:10px 16px 6px; padding:0 12px; height:44px; border:1px solid var(--line); border-radius:12px; color:var(--muted); box-sizing:border-box; flex-shrink:0; }
+  .bd-sbar input { flex:1; min-width:0; background:none; border:none; outline:none; font:inherit; font-size:14px; color:var(--text); }
+  .bd-sbar button { background:none; border:none; padding:0; color:var(--muted); display:flex; cursor:pointer; }
+  .bd-crumb { display:flex; align-items:center; gap:7px; padding:14px 16px 0; font-size:12px; color:var(--muted); flex-shrink:0; }
+  .bd-crumb button { background:none; border:none; padding:0; color:var(--muted); display:flex; cursor:pointer; }
+  .bd-rtitle { margin:10px 16px 16px; font-size:20px; font-weight:700; color:var(--text); letter-spacing:.2px; }
+  .bd-card + .bd-card { margin-top:16px; }
+  .bd-none { display:flex; flex-direction:column; align-items:center; gap:14px; padding:52px 16px; color:var(--muted); font-size:14px; }
+  .bd-dhead { display:grid; grid-template-columns:44px 1fr 44px; align-items:center; padding:8px; flex-shrink:0; color:var(--text); }
+  .bd-dhead .icon-btn { color:var(--text); }
+  .bd-dhead span { text-align:center; font-size:15px; font-weight:600; }
+  .bd-dscroll { flex:1; overflow-y:auto; scrollbar-width:none; padding:6px 16px 24px; color:var(--text); }
+  .bd-dscroll h1 { margin:8px 0 18px; font-size:24px; line-height:1.2; font-weight:700; letter-spacing:.2px; }
+  .bd-info { display:flex; align-items:flex-end; gap:26px; margin-bottom:16px; font-size:11.5px; }
+  .bd-info small { display:block; font-size:9.5px; color:var(--muted); margin-bottom:3px; }
+  .bd-info b { font-weight:600; }
+  .bd-likes { margin-left:auto; display:flex; align-items:center; gap:6px; color:var(--muted); font-size:12px; }
+  .bd-likes.on { color:var(--red); }
+  .bd-likes.on svg { fill:currentColor; }
+  .bd-cover { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:5px; display:block; margin-bottom:18px; }
+  .bd-dscroll p { margin:0 0 18px; font-size:14px; line-height:1.7; letter-spacing:.2px; }
+  .bd-dfoot { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-top:1px solid var(--line); flex-shrink:0; color:var(--text); font-size:13px; font-weight:600; }
+  .bd-fbtns { display:flex; gap:10px; }
+  .bd-fb { width:40px; height:40px; border-radius:50%; border:none; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer; background:#2f6bd6; }
+  .bd-fb.bd-lk { background:var(--red); }
+  .bd-fb.bd-lk.on svg { fill:currentColor; }
   .al-readall { background:none; border:none; padding:6px 0; font:inherit; font-size:13px; font-weight:500; color:var(--red); cursor:pointer; }
   .al-sec { display:flex; align-items:center; justify-content:space-between; font-size:15px; font-weight:600; color:var(--text); padding:14px 16px 6px; }
   .al-row { display:flex; align-items:center; gap:12px; width:100%; box-sizing:border-box; padding:10px 16px; background:none; border:none; outline:none; color:var(--text); font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
@@ -7474,7 +7537,7 @@ function pfNavHTML(own) {
   return `<nav class="bottom-nav pf-nav">
     <span class="nav-item${own ? "" : " active"}" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
     <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-    <span class="nav-item">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
     <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
     <span class="nav-item${own ? " active" : ""}" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
   </nav>`;
@@ -7845,6 +7908,10 @@ function subHTML(name, scr) {
   }
   /* CHAT — Chat Center, item chats, chat room, chat settings */
   if (name === "alerts") return alertsHTML();
+  if (name === "board") return boardHomeHTML();
+  if (name === "boardsearch") return boardSearchHTML();
+  if (name === "boardall") return boardAllHTML();
+  if (name.startsWith("boardart:")) return boardArticleHTML(name.slice(9));
   if (name === "chat") return chatListHTML();
   if (name.startsWith("chatitem:")) return chatItemHTML(name.slice(9));
   if (name.startsWith("chatroom:")) return chatRoomHTML(name.slice(9));
@@ -8014,7 +8081,7 @@ function chatNavHTML() {
   return `<nav class="bottom-nav pf-nav">
     <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
     <span class="nav-item active" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-    <span class="nav-item">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
     <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
     <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
   </nav>`;
@@ -8061,7 +8128,7 @@ function alertsNavHTML() {
   return `<nav class="bottom-nav pf-nav">
     <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
     <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-    <span class="nav-item">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
     <span class="nav-item active" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
     <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
   </nav>`;
@@ -8167,6 +8234,161 @@ function alertsClick(e) {
   } else scrToast(scr, "Security details aren't in this prototype yet");
   if (alUnread() === 0) { const b = scr.querySelector("[data-alreadall]"); if (b) b.remove(); }
   return true;
+}
+/* ===== BOARD — news board: Home (hero + trending + Journal Board), Journal Board list, Article detail (like/share), Search (results / empty) ===== */
+let bdQ = "";
+const BD_P = "./assets/thumbs/";
+const BD_TREND_MAX = 5;
+const BD_BODY = [
+  "The perpetual calendar remains one of watchmaking's most romantic and technically daunting complications. Unlike its simpler calendar cousins, a perpetual mechanism accounts for the differing lengths of all 12 months and even the quadrennial leap year anomaly. It is a mechanical computer designed to remain accurate for over a century without manual intervention.",
+  "Collectors keep coming back to this subject because the details reward patience. Finishing, movement architecture and the way a case sits on the wrist all tell a story that spec sheets rarely capture.",
+  "Whether you are buying your first piece or adding to a long-running collection, understanding the market context makes every decision easier. Take your time, compare references, and always verify provenance before you commit."
+];
+const BOARD = [
+  { id: "b1", cat: "Featured", title: "The Perpetual Calendar: A Century of Mastery", sub: "Exploring the mechanical evolution of watchmaking's most poetic complication.", img: BD_P + "p1-p.jpg", min: 9, ago: "1 hour ago", date: "Oct 28, 2024", likes: 12, hero: true },
+  { id: "b2", cat: "Market Watch", title: "Daytona Prices Stabilize in Q3", img: BD_P + "p2-p.jpg", min: 6, ago: "30 minutes ago", date: "Oct 27, 2024", likes: 34, trend: 1 },
+  { id: "b3", cat: "Technical", title: "Understanding Silicon Hairsprings", img: BD_P + "p3-p.jpg", min: 8, ago: "1 hour ago", date: "Oct 26, 2024", likes: 21, trend: 2 },
+  { id: "b4", cat: "Collector", title: "Why Vintage Patina Is the Real Story", img: BD_P + "p4-p.jpg", min: 5, ago: "3 hours ago", date: "Oct 25, 2024", likes: 18, trend: 3 },
+  { id: "b12", cat: "Industry", title: "Inside the Swiss Watch Export Numbers", img: BD_P + "p9-p.jpg", min: 6, ago: "4 hours ago", date: "Oct 24, 2024", likes: 14, trend: 4 },
+  { id: "b13", cat: "Guides", title: "How to Care for an Automatic Watch", img: BD_P + "p10-p.jpg", min: 4, ago: "6 hours ago", date: "Oct 24, 2024", likes: 10, trend: 5 },
+  { id: "b5", cat: "More Watch Brands", title: "5 Things You Should Know Before You Buy a Grand Seiko Watch", img: BD_P + "p5-p.jpg", min: 8, ago: "2 hours ago", date: "Oct 24, 2024", likes: 27 },
+  { id: "b6", cat: "Watch Basics", title: "Steel vs. Titanium Watches: What are the differences?", img: BD_P + "p6-p.jpg", min: 12, ago: "30 minutes ago", date: "Oct 23, 2024", likes: 9 },
+  { id: "b14", cat: "Watch Trends", title: "Best New Watches Under $6,000 in 2026", img: BD_P + "p7-p.jpg", min: 15, ago: "1 hour ago", date: "Oct 23, 2024", likes: 22 },
+  { id: "b15", cat: "Watch Guides", title: "Our Top 5 Best-Selling Graduation Watches Under $4,000", img: BD_P + "p8-p.jpg", min: 10, ago: "3 hours ago", date: "Oct 22, 2024", likes: 16 },
+  { id: "b7", cat: "Rolex", title: "Rolex Price Development Across Five Years: Factors and Forecasts", img: BD_P + "p11-p.jpg", min: 7, ago: "45 minutes ago", date: "Oct 22, 2024", likes: 41 },
+  { id: "b8", cat: "Feature More Rolex Collections", title: "5 Essential Facts Before Buying a Rolex Watch", img: BD_P + "p2-p.jpg", min: 7, ago: "25 minutes ago", date: "Oct 21, 2024", likes: 30 },
+  { id: "b9", cat: "Rolex", title: "Submariner vs Explorer: Which Rolex Fits You?", img: BD_P + "p3-p.jpg", min: 6, ago: "1 day ago", date: "Oct 20, 2024", likes: 15 },
+  { id: "b10", cat: "Rolex", title: "Rolex Service Intervals Explained", img: BD_P + "p4-p.jpg", min: 5, ago: "2 days ago", date: "Oct 19, 2024", likes: 8 },
+  { id: "b11", cat: "Rolex", title: "Spotting a Genuine Rolex Bracelet", img: BD_P + "p1-p.jpg", min: 6, ago: "3 days ago", date: "Oct 18, 2024", likes: 11 },
+].map(a => ({ author: "Tuk Daeng", liked: false, ...a }));
+const bdGet = id => BOARD.find(a => a.id === id);
+const bdMeta = (a, dot = "•") => `${a.min} MIN READ  ${dot}  ${a.ago.toUpperCase()}`;
+const bdJournal = () => BOARD.filter(a => !a.hero && !a.trend);
+function boardNavHTML() {
+  return `<nav class="bottom-nav pf-nav">
+    <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
+    <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
+    <span class="nav-item active" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
+    <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
+  </nav>`;
+}
+function bdHeadHTML() {
+  return `<div class="bd-head">
+      <button class="icon-btn" data-bdmenu>${I.burger(22)}</button>
+      <span class="bd-brand"><b>TUK DAENG</b> | Board</span>
+      <button class="icon-btn" data-bdsearch>${I.search(22)}</button>
+    </div>`;
+}
+function bdCardHTML(a) {
+  return `<button class="bd-card" data-bdart="${a.id}"><img src="${a.img}" alt="" loading="lazy"><span class="bd-cat">${esc(a.cat)}</span><span class="bd-ct">${esc(a.title)}</span><span class="bd-meta">${bdMeta(a)}</span></button>`;
+}
+function bdRowHTML(a) {
+  return `<button class="bd-row" data-bdart="${a.id}"><img src="${a.img}" alt="" loading="lazy"><span><span class="bd-cat">${esc(a.cat)}</span><span class="bd-ct">${esc(a.title)}</span><span class="bd-meta">${bdMeta(a, "·")}</span></span></button>`;
+}
+function bdListHTML(list) { return list.map((a, i) => i ? bdRowHTML(a) : bdCardHTML(a)).join(""); }
+function boardHomeHTML() {
+  const hero = BOARD.find(a => a.hero), trend = BOARD.filter(a => a.trend).sort((x, y) => x.trend - y.trend).slice(0, BD_TREND_MAX);
+  return `
+  <div class="ch-scroll sub-scroll bd-scroll">
+    ${bdHeadHTML()}
+    <div class="bd-hero" style="background-image:url('${hero.img}')" data-bdart="${hero.id}">
+      <h2>${esc(hero.title)}</h2><p>${esc(hero.sub)}</p>
+      <button class="bd-hero-btn" data-bdart="${hero.id}">Read Full Article</button>
+    </div>
+    <div class="bd-sec"><h3>Trending Now</h3><button data-bdall>View all</button></div>
+    <div class="bd-trend">${trend.map(a => `<button class="bd-tcard" data-bdart="${a.id}"><img src="${a.img}" alt="" loading="lazy"><span class="bd-tcat">${esc(a.cat)}</span><span class="bd-ttl">${esc(a.title)}</span></button>`).join("")}</div>
+    <div class="bd-sec"><h3>Journal Board</h3></div>
+    ${bdListHTML(bdJournal())}
+  </div>
+  ${boardNavHTML()}`;
+}
+function boardAllHTML() {
+  return `
+  <div class="ch-scroll sub-scroll bd-scroll">
+    ${bdHeadHTML()}
+    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>Journal Board</span></div>
+    <h1 class="bd-rtitle" style="font-size:24px">Journal Board</h1>
+    ${bdListHTML(bdJournal())}
+  </div>
+  ${boardNavHTML()}`;
+}
+function bdResultsHTML() {
+  const q = bdQ.trim(), k = q.toLowerCase();
+  if (!q) return `<div class="bd-none"><span>พิมพ์คำเพื่อค้นหาบทความ</span></div>`;
+  const r = BOARD.filter(a => (a.title + " " + a.cat + " " + (a.sub || "")).toLowerCase().includes(k));
+  return `<h1 class="bd-rtitle">${r.length} ผลลัพธ์สำหรับ “${esc(q)}”</h1>` + (r.length ? r.map(bdCardHTML).join("")
+    : `<div class="bd-none"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M8 8l5 5M13 8l-5 5"/></svg><span>ไม่พบผลลัพธ์</span></div>`);
+}
+function boardSearchHTML() {
+  return `
+  <div class="ch-scroll sub-scroll bd-scroll">
+    <div class="bd-sbar">
+      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="ค้นหาบทความ" autocomplete="off">
+      <button data-bdclear aria-label="Clear">${I.x(18)}</button>${I.search(20)}
+    </div>
+    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>ค้นหา</span></div>
+    <div class="bd-res">${bdResultsHTML()}</div>
+  </div>
+  ${boardNavHTML()}`;
+}
+function boardSearchSync(pg) {
+  const r = pg && pg.querySelector(".bd-res");
+  if (r) r.innerHTML = bdResultsHTML();
+}
+function boardArticleHTML(id) {
+  const a = bdGet(id);
+  if (!a) return chEmptyHTML("Article not found", "This article is no longer available.");
+  return `
+  <div class="bd-dhead">
+    <button class="icon-btn sub-back">${I.back(22)}</button><span>Board</span>
+    <button class="icon-btn" data-bdmore>${I.dots(20)}</button>
+  </div>
+  <div class="bd-dscroll">
+    <h1>${esc(a.title)}</h1>
+    <div class="bd-info"><div><small>ผู้เขียน</small><b>By ${esc(a.author)}</b></div><div><small>วันที่</small><b>${esc(a.date)}</b></div><span class="bd-likes${a.liked ? " on" : ""}">${I.heart(18)}<span>${a.likes}</span></span></div>
+    <img class="bd-cover" src="${a.img}" alt="">
+    ${BD_BODY.map(t => `<p>${esc(t)}</p>`).join("")}
+  </div>
+  <div class="bd-dfoot">
+    <span>แชร์บทความนี้</span>
+    <div class="bd-fbtns">
+      <button class="bd-fb" data-bdshare aria-label="Share">${I.share(18)}</button>
+      <button class="bd-fb bd-lk${a.liked ? " on" : ""}" data-bdlike="${a.id}" aria-label="Like">${I.heart(20)}</button>
+    </div>
+  </div>`;
+}
+function boardClick(e) {
+  const scr = e.target.closest(".screen");
+  if (!scr) return false;
+  const art = e.target.closest("[data-bdart]");
+  if (art && suppressPhotoClick) return true;
+  if (art) { rpPush(scr, "boardart:" + art.dataset.bdart); return true; }
+  if (e.target.closest("[data-bdsearch]")) {
+    bdQ = ""; rpPush(scr, "boardsearch");
+    setTimeout(() => scr.querySelector(".bd-q")?.focus(), 320);
+    return true;
+  }
+  if (e.target.closest("[data-bdclear]")) {
+    bdQ = ""; const i = scr.querySelector(".bd-q");
+    if (i) { i.value = ""; i.focus(); }
+    boardSearchSync(scr.querySelector(".page-sub"));
+    return true;
+  }
+  if (e.target.closest("[data-bdhome]")) { rpBack(scr); return true; }
+  if (e.target.closest("[data-bdall]")) { rpPush(scr, "boardall"); return true; }
+  if (e.target.closest("[data-bdmenu], [data-bdmore]")) { scrToast(scr, "Not in this prototype yet"); return true; }
+  if (e.target.closest("[data-bdshare]")) { scrToast(scr, "Link copied"); return true; }
+  const lk = e.target.closest("[data-bdlike]");
+  if (lk) {
+    const a = bdGet(lk.dataset.bdlike);
+    a.liked = !a.liked; a.likes += a.liked ? 1 : -1;
+    lk.classList.toggle("on", a.liked);
+    const lc = scr.querySelector(".bd-likes");
+    if (lc) { lc.classList.toggle("on", a.liked); lc.lastElementChild.textContent = a.likes; }
+    return true;
+  }
+  return false;
 }
 function chThreadMatch(t, q) {
   return !q || (t.user + " " + t.item.cap + " " + t.msgs.map(m => m.t).join(" ")).toLowerCase().includes(q);
@@ -9260,7 +9482,7 @@ function screenHTML(theme, variant) {
     <nav class="bottom-nav">
       <span class="nav-item active" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
       <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-      <span class="nav-item">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+      <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
       <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
       <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
     </nav>
@@ -9367,11 +9589,11 @@ function applyPhoto(ph, post, i, dotsEl) {
 /* CREATE-001 — caption thumbs strip + hashtag chips: wheel + drag to scroll (desktop has no scrollbar) */
 let stripDrag = null;
 stageEl.addEventListener("wheel", e => {
-  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row, .pf-tabs");
+  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row, .pf-tabs, .bd-trend");
   if (strip) { strip.scrollLeft += e.deltaY || e.deltaX; e.preventDefault(); }
 }, { passive: false });
 stageEl.addEventListener("pointerdown", e => {
-  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row, .pf-tabs");
+  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row, .pf-tabs, .bd-trend");
   if (strip) stripDrag = { strip, x0: e.clientX, sl: strip.scrollLeft, moved: false };
 });
 stageEl.addEventListener("pointermove", e => {
@@ -9533,6 +9755,7 @@ stageEl.addEventListener("keydown", e => {
   }
 });
 stageEl.addEventListener("input", e => {
+  if (e.target.matches(".bd-q")) { bdQ = e.target.value; boardSearchSync(e.target.closest(".page-sub")); return; }
   if (e.target.matches(".cf .ig-cap-line .ta"))
     cpState(e.target.closest(".screen")).caption = e.target.textContent;
   /* composer option panes — field inputs write into V.meta */
@@ -10463,6 +10686,7 @@ document.getElementById("stage").addEventListener("click", e => {
   if (hbDead) { toast("Not in this prototype yet"); return; }
   if (chatClick(e)) return;
   if (alertsClick(e)) return;
+  if (boardClick(e)) return;
   /* ===== PROFILE-001 — profile menu + profile page actions ===== */
   const navGo = e.target.closest("[data-navgo]");
   if (navGo) {
@@ -10472,6 +10696,7 @@ document.getElementById("stage").addEventListener("click", e => {
     if (go === "profile") openSub(scr, "profile:" + CP_ME.name, true);
     else if (go === "chat") openSub(scr, "chat", true);
     else if (go === "alerts") openSub(scr, "alerts", true);
+    else if (go === "board") { bdQ = ""; openSub(scr, "board", true); }
     else if (go === "feed") {
       const wasFeed = !scr.classList.contains("sub-open");
       scr._subStack = []; scr.classList.remove("sub-open");
