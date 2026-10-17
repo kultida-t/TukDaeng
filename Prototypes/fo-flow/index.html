@@ -1539,6 +1539,7 @@
     background: var(--bg); transform: translateX(100%);
     transition: transform .28s ease; z-index: 32;
     display: flex; flex-direction: column;
+    overflow-x: hidden;
   }
   .screen.sub-open .page-sub { transform: none; animation: pgSide .28s ease; }
   @keyframes pgSide { from { transform: translateX(100%); } }
@@ -1570,7 +1571,7 @@
   .screen .pg-ghost.pg-top { z-index: 36; }
   @keyframes pgOut { to { transform: translateX(100%); } }
   @keyframes pgDown { to { transform: translateY(110%); } }
-  .sub-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
+  .sub-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
   .sub-scroll::-webkit-scrollbar { display: none; }
   /* ============ POST VIEWER (IG search-result viewer — vertical swipe through results) ============ */
   .page-pv {
@@ -3670,9 +3671,9 @@
   .pfp-tt.solo span { display:none; }
   .al-title { display:flex; align-items:center; gap:6px; font-size:17px; font-weight:600; color:var(--text); }
   /* ============ BOARD — news board (Home, Journal Board, Article detail, Search) ============ */
-  .screen .page-sub:has(.bd-scroll), .screen .page-sub:has(.bd-dscroll) { background:#ffffff; }
+  .screen .page-sub:has(.bd-scroll), .screen .page-sub:has(.bd-dscroll) { background:#ffffff; overflow-x:hidden; }
   .screen[data-theme="dark"] .page-sub:has(.bd-scroll), .screen[data-theme="dark"] .page-sub:has(.bd-dscroll) { background:#0e1014; }
-  .bd-scroll { padding-bottom:100px; -webkit-overflow-scrolling:touch; }
+  .bd-scroll { padding-bottom:100px; -webkit-overflow-scrolling:touch; overflow-x:hidden; }
   
   /* Board Header */
   .bd-head {
@@ -3828,53 +3829,84 @@
 
   /* Journal Board - Luxury Editorial Rows */
   .bd-row {
-    display:flex; gap:16px; align-items:center; width:calc(100% - 32px);
-    margin:0 16px; box-sizing:border-box; padding:12px 0;
+    display:flex; gap:16px; align-items:center; width:calc(100% - 36px);
+    margin:0 18px; box-sizing:border-box; padding:12px 6px;
     background:transparent; border:none;
-    border-radius:0; text-align:left; color:var(--text); font:inherit;
-    cursor:pointer; flex-shrink:0; transition:opacity .15s ease;
+    border-radius:14px; text-align:left; color:var(--text); font-family:var(--font-main);
+    cursor:pointer; flex-shrink:0; transition:background .15s ease, opacity .15s ease;
   }
-  .bd-row:hover { opacity:.85; }
+  .bd-row:hover { background:var(--chip-bg); opacity:1; }
   .bd-row img {
-    width:88px; height:88px; aspect-ratio:1/1; object-fit:cover;
+    width:90px; height:90px; aspect-ratio:1/1; object-fit:cover;
     border-radius:14px; flex-shrink:0; background:#1b1d22;
-    box-shadow:0 4px 12px rgba(0,0,0,.18);
+    box-shadow:0 4px 14px rgba(0,0,0,.16);
+    transition:transform .18s ease;
   }
+  .bd-row:active img { transform:scale(.96); }
   .bd-row-main { flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; }
   .bd-row .bd-cat {
+    font-family:var(--font-main);
     font-size:10.5px; font-weight:700; color:var(--red);
-    text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px;
+    text-transform:uppercase; letter-spacing:.6px; margin-bottom:5px;
   }
   .bd-row .bd-ct {
-    font-size:15px; font-weight:600; line-height:1.36;
+    font-family:var(--font-main);
+    font-size:15px; font-weight:600; line-height:1.38;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
     color:var(--text); letter-spacing:.1px;
   }
   .bd-row .bd-meta {
-    margin-top:7px; font-size:11.5px; color:var(--muted); opacity:.85;
+    margin-top:7px; font-family:var(--font-main);
+    font-size:11.5px; color:var(--muted); opacity:.85;
     display:flex; align-items:center; gap:6px;
   }
+  .bd-all-list {
+    display:flex; flex-direction:column; gap:2px;
+  }
   .bd-end-note {
-    text-align:center; padding:24px 16px 12px;
-    font-size:11.5px; color:var(--muted); letter-spacing:.4px;
+    text-align:center; padding:28px 16px 16px; font-family:var(--font-main);
+    font-size:11.5px; color:var(--muted); letter-spacing:.5px;
     text-transform:uppercase; font-weight:600; opacity:.75;
   }
 
   /* Category Filter Pills on All Board */
   .bd-pills {
-    display:flex; gap:8px; overflow-x:auto; padding:6px 16px 14px;
-    scrollbar-width:none; flex-shrink:0; -webkit-overflow-scrolling:touch;
+    display:flex; gap:9px; overflow-x:auto; padding:6px 18px 16px;
+    scrollbar-width:none; -ms-overflow-style:none; flex-shrink:0;
+    -webkit-overflow-scrolling:touch;
+    scroll-behavior:smooth;
+    user-select:none;
+    cursor:grab;
   }
+  .bd-pills:active { cursor:grabbing; }
   .bd-pills::-webkit-scrollbar { display:none; }
+  .bd-pills::after {
+    content:"";
+    flex:0 0 16px;
+    pointer-events:none;
+  }
   .bd-pill {
     border:1px solid var(--line); background:var(--surface); color:var(--text);
-    padding:7px 15px; border-radius:20px; font-size:12px; font-weight:600;
-    white-space:nowrap; cursor:pointer; transition:all .15s ease;
+    padding:8px 18px; border-radius:22px; font-family:var(--font-main);
+    font-size:13px; font-weight:600; letter-spacing:.1px;
+    white-space:nowrap; cursor:pointer; flex-shrink:0;
+    transition:all .18s cubic-bezier(.16,1,.3,1);
+    box-shadow:0 1px 4px rgba(0,0,0,.04);
   }
-  .bd-pill:hover { border-color:var(--muted); }
+  .bd-pill:hover { border-color:var(--muted); transform:translateY(-1px); }
+  .bd-pill:active { transform:scale(.95); }
   .bd-pill.active {
     background:var(--red); border-color:var(--red); color:#fff;
-    box-shadow:0 3px 10px rgba(200,33,43,.35);
+    box-shadow:0 4px 14px rgba(200,33,43,.38);
+  }
+  .screen[data-theme="dark"] .bd-pill {
+    background:var(--surface-2); border-color:rgba(255,255,255,.08); color:var(--text);
+    box-shadow:0 2px 6px rgba(0,0,0,.25);
+  }
+  .screen[data-theme="dark"] .bd-pill:hover { border-color:rgba(255,255,255,.22); }
+  .screen[data-theme="dark"] .bd-pill.active {
+    background:var(--red); border-color:var(--red); color:#fff;
+    box-shadow:0 4px 14px rgba(200,33,43,.45);
   }
 
   /* Search Screen */
@@ -3882,7 +3914,7 @@
     display:flex; align-items:center; gap:10px; margin:12px 16px 8px;
     padding:0 14px; height:46px; border:1.5px solid var(--line);
     border-radius:14px; background:var(--surface); color:var(--muted);
-    box-sizing:border-box; flex-shrink:0;
+    box-sizing:border-box; flex-shrink:0; font-family:var(--font-main);
     transition:border-color .15s ease, box-shadow .15s ease;
   }
   .bd-sbar:focus-within {
@@ -3891,7 +3923,7 @@
   .bd-sbar-ic { color:var(--muted); flex-shrink:0; display:flex; }
   .bd-sbar input {
     flex:1; min-width:0; background:none; border:none; outline:none;
-    font:inherit; font-size:14.5px; color:var(--text);
+    font:inherit; font-size:14.5px; color:var(--text); font-family:var(--font-main);
   }
   .bd-sbar button {
     background:none; border:none; padding:4px; color:var(--muted);
@@ -3900,14 +3932,14 @@
   .bd-sbar button:hover { color:var(--text); }
   .bd-sugg { padding:10px 16px 18px; }
   .bd-sugg-title {
-    font-size:11.5px; font-weight:700; color:var(--muted);
+    font-size:11.5px; font-weight:700; color:var(--muted); font-family:var(--font-main);
     text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px;
   }
   .bd-sugg-chips { display:flex; flex-wrap:wrap; gap:8px; }
   .bd-sugg-chip {
     padding:6px 13px; border-radius:18px; border:1px solid var(--line);
     background:var(--surface); color:var(--text); font-size:12px; font-weight:600;
-    cursor:pointer; transition:all .15s ease;
+    font-family:var(--font-main); cursor:pointer; transition:all .15s ease;
   }
   .bd-sugg-chip:hover {
     background:var(--surface-2); border-color:var(--red); color:var(--red);
@@ -3915,18 +3947,27 @@
 
   /* Breadcrumbs */
   .bd-crumb {
-    display:flex; align-items:center; gap:7px; padding:12px 16px 4px;
-    font-size:12px; color:var(--muted); flex-shrink:0; font-weight:500;
+    display:flex; align-items:center; gap:8px; padding:16px 18px 10px;
+    font-family:var(--font-main); font-size:13px; color:var(--muted);
+    flex-shrink:0; font-weight:500;
   }
   .bd-crumb button {
-    background:none; border:none; padding:4px; color:var(--muted);
-    display:flex; cursor:pointer; border-radius:6px; transition:color .15s ease;
+    background:none; border:none; padding:4px 6px; color:var(--muted);
+    font-family:var(--font-main); font-size:13px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; border-radius:8px; transition:color .15s ease, background .15s ease;
   }
-  .bd-crumb button:hover { color:var(--text); }
-  .bd-rtitle { margin:8px 16px 14px; font-size:20px; font-weight:800; color:var(--text); letter-spacing:.2px; }
+  .bd-crumb button:hover { color:var(--text); background:var(--chip-bg); }
+  .bd-crumb span { font-weight:600; color:var(--text); }
+  .bd-rtitle {
+    margin:6px 18px 14px; font-family:var(--font-main);
+    font-size:24px; font-weight:700; color:var(--text);
+    letter-spacing:-.3px; line-height:1.25;
+  }
   .bd-none {
     display:flex; flex-direction:column; align-items:center; gap:12px;
     padding:56px 20px; color:var(--muted); font-size:14px; text-align:center;
+    font-family:var(--font-main);
   }
   .bd-none svg { color:var(--muted); opacity:.7; }
 
@@ -8626,36 +8667,70 @@ function bdStepSlide(scr, dir) {
   c.scrollTo({ left: targetIdx * w, behavior: "smooth" });
 }
 
+function bdCenterPill(pill) {
+  if (!pill) return;
+  const pWrap = pill.closest(".bd-pills");
+  if (!pWrap) return;
+  const target = pill.offsetLeft - (pWrap.clientWidth / 2) + (pill.clientWidth / 2);
+  pWrap.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+}
+
 let bdIsDragging = false, bdDidDrag = false, bdDragStartX = 0, bdScrollStartX = 0;
+let bdPillsDragging = false, bdPillsDidDrag = false, bdPillsDragStartX = 0, bdPillsScrollStartX = 0;
 document.addEventListener("mousedown", e => {
   const c = e.target.closest(".bd-carousel");
-  if (!c) return;
-  bdIsDragging = true;
-  bdDidDrag = false;
-  bdDragStartX = e.pageX;
-  bdScrollStartX = c.scrollLeft;
-  c.style.scrollBehavior = "auto";
-  c.style.scrollSnapType = "none";
+  if (c) {
+    bdIsDragging = true;
+    bdDidDrag = false;
+    bdDragStartX = e.pageX;
+    bdScrollStartX = c.scrollLeft;
+    c.style.scrollBehavior = "auto";
+    c.style.scrollSnapType = "none";
+    return;
+  }
+  const p = e.target.closest(".bd-pills");
+  if (p) {
+    bdPillsDragging = true;
+    bdPillsDidDrag = false;
+    bdPillsDragStartX = e.pageX;
+    bdPillsScrollStartX = p.scrollLeft;
+    p.style.scrollBehavior = "auto";
+    return;
+  }
 });
 document.addEventListener("mousemove", e => {
-  if (!bdIsDragging) return;
-  const dx = e.pageX - bdDragStartX;
-  if (Math.abs(dx) > 6) bdDidDrag = true;
-  const c = document.querySelector(".bd-carousel");
-  if (c) c.scrollLeft = bdScrollStartX - dx;
+  if (bdIsDragging) {
+    const dx = e.pageX - bdDragStartX;
+    if (Math.abs(dx) > 6) bdDidDrag = true;
+    const c = document.querySelector(".bd-carousel");
+    if (c) c.scrollLeft = bdScrollStartX - dx;
+  }
+  if (bdPillsDragging) {
+    const dx = e.pageX - bdPillsDragStartX;
+    if (Math.abs(dx) > 5) bdPillsDidDrag = true;
+    const p = document.querySelector(".bd-pills");
+    if (p) p.scrollLeft = bdPillsScrollStartX - dx;
+  }
 });
 document.addEventListener("mouseup", () => {
-  if (!bdIsDragging) return;
-  bdIsDragging = false;
-  const c = document.querySelector(".bd-carousel");
-  if (c) {
-    c.style.scrollBehavior = "smooth";
-    c.style.scrollSnapType = "x mandatory";
-    const w = c.offsetWidth || 1;
-    const targetIdx = Math.round(c.scrollLeft / w);
-    c.scrollTo({ left: targetIdx * w, behavior: "smooth" });
+  if (bdIsDragging) {
+    bdIsDragging = false;
+    const c = document.querySelector(".bd-carousel");
+    if (c) {
+      c.style.scrollBehavior = "smooth";
+      c.style.scrollSnapType = "x mandatory";
+      const w = c.offsetWidth || 1;
+      const targetIdx = Math.round(c.scrollLeft / w);
+      c.scrollTo({ left: targetIdx * w, behavior: "smooth" });
+    }
+    setTimeout(() => { bdDidDrag = false; }, 120);
   }
-  setTimeout(() => { bdDidDrag = false; }, 120);
+  if (bdPillsDragging) {
+    bdPillsDragging = false;
+    const p = document.querySelector(".bd-pills");
+    if (p) p.style.scrollBehavior = "smooth";
+    setTimeout(() => { bdPillsDidDrag = false; }, 120);
+  }
 });
 
 let bdLastScrollTop = 0;
@@ -8769,10 +8844,8 @@ function boardHomeHTML() {
 }
 function boardAllHTML() {
   return `
-  <div class="ch-scroll sub-scroll bd-scroll" onscroll="bdScrollHandler(this)">
-    ${bdHeadHTML()}
+  <div class="ch-scroll sub-scroll bd-scroll">
     <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>Latest Articles</span></div>
-    <h1 class="bd-rtitle" style="font-size:24px">Latest Articles</h1>
     <div class="bd-pills">
       ${BD_CATEGORIES.map(c => `<button class="bd-pill${bdFilterCat === c ? " active" : ""}" data-bdcat="${esc(c)}">${esc(c)}</button>`).join("")}
     </div>
@@ -8896,14 +8969,24 @@ function boardClick(e) {
   }
   const pill = e.target.closest("[data-bdcat]");
   if (pill) {
+    if (bdPillsDidDrag) return true;
     bdFilterCat = pill.dataset.bdcat;
     scr.querySelectorAll(".bd-pill").forEach(p => p.classList.toggle("active", p.dataset.bdcat === bdFilterCat));
     const listWrap = scr.querySelector(".bd-all-list");
     if (listWrap) listWrap.innerHTML = bdListHTML(bdFilteredJournal());
+    bdCenterPill(pill);
     return true;
   }
   if (e.target.closest("[data-bdhome]")) { rpBack(scr); return true; }
-  if (e.target.closest("[data-bdall]")) { bdFilterCat = "All"; rpPush(scr, "boardall"); return true; }
+  if (e.target.closest("[data-bdall]")) {
+    bdFilterCat = "All";
+    rpPush(scr, "boardall");
+    setTimeout(() => {
+      const activePill = scr.querySelector(".bd-pill.active");
+      if (activePill) bdCenterPill(activePill);
+    }, 100);
+    return true;
+  }
   if (e.target.closest("[data-bdmenu]")) {
     openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
       <div style="padding:14px 16px 8px; font-weight:700; font-size:15px; text-align:center; color:var(--text);">Categories</div>
@@ -8918,6 +9001,10 @@ function boardClick(e) {
     bdFilterCat = menuCat.dataset.bdmenuCat;
     scr.classList.remove("pm-open");
     rpPush(scr, "boardall");
+    setTimeout(() => {
+      const activePill = scr.querySelector(".bd-pill.active");
+      if (activePill) bdCenterPill(activePill);
+    }, 100);
     return true;
   }
   const more = e.target.closest("[data-bdmore]");
