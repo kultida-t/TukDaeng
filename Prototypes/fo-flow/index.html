@@ -1539,6 +1539,7 @@
     background: var(--bg); transform: translateX(100%);
     transition: transform .28s ease; z-index: 32;
     display: flex; flex-direction: column;
+    overflow-x: hidden;
   }
   .screen.sub-open .page-sub { transform: none; animation: pgSide .28s ease; }
   @keyframes pgSide { from { transform: translateX(100%); } }
@@ -1570,7 +1571,7 @@
   .screen .pg-ghost.pg-top { z-index: 36; }
   @keyframes pgOut { to { transform: translateX(100%); } }
   @keyframes pgDown { to { transform: translateY(110%); } }
-  .sub-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; }
+  .sub-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
   .sub-scroll::-webkit-scrollbar { display: none; }
   /* ============ POST VIEWER (IG search-result viewer — vertical swipe through results) ============ */
   .page-pv {
@@ -1711,6 +1712,50 @@
   .fav-sec { display: flex; align-items: center; }
   .fav-removeall { margin-left: auto; background: none; border: none; padding: 0; font-family: var(--font-main); font-size: 13px; font-weight: 600; color: var(--red); cursor: pointer; }
   .mact.fav-add { background: var(--red); color: #fff; }
+
+  /* Settings Additions — Logout row (IG style), About Account hero, legal & support */
+  .sub-row-logout {
+    color: #ed4956 !important;
+    font-weight: 500;
+    padding-top: 13px;
+    padding-bottom: 180px;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .sub-row-logout span { color: #ed4956 !important; font-size: 14.5px; }
+  .about-acc-hero {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 24px 16px 18px;
+  }
+  .about-acc-hero img {
+    width: 76px; height: 76px; border-radius: 50%; object-fit: cover;
+    margin-bottom: 12px; border: 2px solid var(--line);
+  }
+  .about-acc-name { font-size: 16.5px; font-weight: 600; color: var(--text); }
+  .about-acc-uname { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .sub-card-box {
+    margin: 14px 16px 6px; padding: 16px; border-radius: 12px;
+    background: var(--chip-bg); border: 1px solid var(--line);
+  }
+  .sub-card-title { font-size: 15.5px; font-weight: 600; color: var(--text); }
+  .sub-card-sub { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+  .sub-legal-body { padding: 16px; }
+  .legal-sec { margin-bottom: 20px; }
+  .legal-sec h3 { font-size: 14.5px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .legal-sec p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+  .about-app-hero {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 32px 16px 24px;
+  }
+  .about-brand { font-size: 22px; font-weight: 700; letter-spacing: 2px; color: var(--red); margin-bottom: 6px; }
+  .about-tagline { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .about-ver { font-size: 12px; color: var(--text); font-weight: 600; background: var(--chip-bg); padding: 4px 10px; border-radius: 999px; margin-bottom: 6px; }
+  .about-corp { font-size: 11.5px; color: var(--muted); }
 
   /* ============ WATCH ALERTS — create/edit sheet + settings list ============ */
   .screen.wa-open .sheet-backdrop { opacity: 1; pointer-events: auto; }
@@ -2140,13 +2185,22 @@
     left: 14px; right: 14px; bottom: 30px;
     z-index: 20;
     border-top: none;
-    background: color-mix(in srgb, var(--surface-2) 74%, transparent);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
-    backdrop-filter: blur(16px) saturate(1.4);
-    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface-2) 50%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    backdrop-filter: blur(24px) saturate(1.6);
+    border: 1px solid rgba(255,255,255,.14);
     border-radius: 999px;
     padding: 7px 6px;
-    box-shadow: 0 10px 28px rgba(0,0,0,.22);
+    box-shadow: 0 10px 28px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .screen[data-nav="labeled"][data-theme="light"] .bottom-nav {
+    background: rgba(255,255,255,.62);
+    border-color: rgba(255,255,255,.7);
+    box-shadow: 0 10px 28px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.9);
+  }
+  .screen[data-nav="labeled"][data-theme="light"] .nav-item:not(.active) {
+    color: color-mix(in srgb, var(--text) 72%, transparent);
+    font-weight: 600;
   }
   .screen[data-nav="labeled"] .feed-scroll { padding-bottom: 84px; }
   .screen[data-nav="labeled"] .nav-item.active {
@@ -2158,6 +2212,9 @@
     margin-bottom: -4px;
   }
   .screen[data-nav="labeled"] .nav-item.active .nav-label { font-weight: 700; }
+  .screen[data-nav="labeled"] .nav-item > svg { width: 22px; height: 22px; stroke-width: 1.8; }
+  .nav-item.active .tab-fill { fill: currentColor; }
+  .nav-item.active .nav-chat-ic .nc-dots { fill: #fff; }
 
   /* spec group sub-headings (details expander) */
   .spec-sec {
@@ -3312,11 +3369,6 @@
   /* floating pill nav inside .page-sub sits 22px above screen bottom — realign with the feed nav */
   .screen[data-nav="labeled"] .pf-nav {
     bottom: 8px;
-    /* solid fill — the frosted tint flashes when the pill re-mounts while a
-       report page slides away on top of it (backdrop-filter lags a few frames) */
-    background: var(--surface-2);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
   }
   .screen[data-nav="labeled"] .pf-scroll { padding-bottom: 84px; }
   /* ============ CHAT — LINE / IG Direct style ============ */
@@ -3657,6 +3709,469 @@
   .screen[data-theme="dark"] .ch-time { color:#7e8b9b; }
   .ch-un { min-width:17px; height:17px; padding:0 4px; border-radius:999px; background:var(--red); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; }
   .ch-un-spacer { height:17px; visibility:hidden; }
+  .al-head { position:sticky; top:0; z-index:25; display:flex; align-items:center; justify-content:flex-start; gap:2px; padding:10px 12px; background:#fff; border-bottom:1px solid var(--line); flex-shrink:0; }
+  .screen[data-theme="dark"] .al-head { background:#14161a; }
+  .al-back { color:var(--text); }
+  .pfp-tt.solo span { display:none; }
+  .al-title { display:flex; align-items:center; gap:6px; font-size:17px; font-weight:600; color:var(--text); }
+  /* ============ BOARD — news board (Home, Journal Board, Article detail, Search) ============ */
+  .screen .page-sub:has(.bd-scroll), .screen .page-sub:has(.bd-dscroll) { background:#ffffff; overflow-x:hidden; }
+  .screen[data-theme="dark"] .page-sub:has(.bd-scroll), .screen[data-theme="dark"] .page-sub:has(.bd-dscroll) { background:#0e1014; }
+  .bd-scroll { padding-bottom:100px; -webkit-overflow-scrolling:touch; overflow-x:hidden; }
+  
+  /* Board Header */
+  .bd-head {
+    position:sticky; top:0; z-index:25;
+    display:grid; grid-template-columns:44px 1fr 44px; align-items:center;
+    padding:8px 10px;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--line);
+    flex-shrink:0;
+    transition:transform .28s cubic-bezier(.16,1,.3,1), opacity .22s ease, box-shadow .25s ease, background .2s ease;
+    will-change:transform, opacity;
+  }
+  .screen[data-theme="dark"] .bd-head { background:rgba(14,16,20,.92); }
+  .bd-head.bd-head-floating {
+    box-shadow:0 6px 20px rgba(0,0,0,.12);
+  }
+  .screen[data-theme="dark"] .bd-head.bd-head-floating {
+    box-shadow:0 6px 22px rgba(0,0,0,.45);
+  }
+  .bd-head.bd-head-hidden {
+    transform:translateY(-100%);
+    opacity:0;
+    pointer-events:none;
+  }
+  .bd-head .icon-btn {
+    width:38px; height:38px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    border:none; background:none; color:var(--text); cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .bd-head .icon-btn:hover { background:var(--chip-bg); }
+  .bd-head .icon-btn:active { transform:scale(.92); }
+  .bd-brand { text-align:center; font-size:17.5px; font-weight:500; color:var(--text); letter-spacing:.4px; }
+  .bd-brand b { color:var(--red); font-weight:800; }
+  
+  /* Featured Stories Carousel */
+  .bd-carousel-wrap {
+    position:relative; width:100%; flex-shrink:0;
+    overflow:hidden;
+    background:#0b0c0e;
+  }
+  .bd-carousel {
+    display:flex; overflow-x:auto; width:100%;
+    scroll-snap-type:x mandatory; scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
+  }
+  .bd-carousel::-webkit-scrollbar { display:none; }
+  .bd-slide {
+    flex:0 0 100%; width:100%; aspect-ratio:4/5; max-height:480px;
+    position:relative; scroll-snap-align:start;
+    background:#000 center/cover no-repeat;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:22px 18px 36px; box-sizing:border-box;
+    cursor:pointer; text-align:left;
+  }
+  .bd-slide::before {
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.55) 45%, rgba(0,0,0,.1) 80%, transparent 100%);
+    pointer-events:none;
+  }
+  .bd-slide > * { position:relative; z-index:1; }
+  .bd-hero-tag {
+    display:inline-flex; align-items:center; align-self:flex-start;
+    padding:4px 11px; border-radius:20px;
+    background:rgba(200,33,43,.92); backdrop-filter:blur(8px);
+    color:#fff; font-size:10.5px; font-weight:700; letter-spacing:1px;
+    text-transform:uppercase; margin-bottom:10px;
+    box-shadow:0 3px 10px rgba(200,33,43,.45);
+  }
+  .bd-slide h2 {
+    margin:0 0 8px; font-size:21px; line-height:1.3; font-weight:600;
+    color:#ffffff; letter-spacing:.2px;
+    text-shadow:0 2px 8px rgba(0,0,0,.5);
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .bd-slide p {
+    margin:0 0 16px; font-size:13.5px; line-height:1.45;
+    color:rgba(255,255,255,.82);
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .bd-hero-bar {
+    display:flex; align-items:center; justify-content:flex-end;
+  }
+  .bd-hero-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    border:none; background:linear-gradient(135deg, #e02424 0%, #b81414 100%);
+    color:#fff; font:inherit; font-size:13px; font-weight:600;
+    padding:9px 16px; border-radius:22px; cursor:pointer;
+    box-shadow:0 4px 14px rgba(200,33,43,.45);
+    transition:filter .15s ease;
+  }
+  .bd-hero-btn:hover { filter:brightness(1.1); }
+
+  /* Carousel Dots */
+  .bd-dots {
+    position:absolute; bottom:14px; left:0; right:0;
+    display:flex; justify-content:center; align-items:center; gap:8px;
+    z-index:4;
+  }
+  .bd-dot {
+    width:7px; height:7px; border-radius:4px;
+    background:rgba(255,255,255,.35);
+    transition:all .22s cubic-bezier(.4,0,.2,1); cursor:pointer;
+    border:none; padding:0; display:block;
+  }
+  .bd-dot:hover { background:rgba(255,255,255,.75); }
+  .bd-dot.active {
+    width:22px; background:var(--red);
+    box-shadow:0 0 10px rgba(200,33,43,.7);
+  }
+
+
+  /* Sections */
+  .bd-sec {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px 16px 12px;
+  }
+  .bd-sec h3 { margin:0; font-size:19px; font-weight:700; color:var(--text); letter-spacing:.2px; }
+  .bd-viewall {
+    display:inline-flex; align-items:center; gap:4px;
+    background:none; border:none; padding:6px 10px; border-radius:14px;
+    font:inherit; font-size:12.5px; font-weight:600; color:var(--red);
+    cursor:pointer; transition:background .15s ease;
+  }
+  .bd-viewall:hover { background:rgba(200,33,43,.08); }
+
+  /* Journal Board - Feature Card */
+  .bd-card {
+    display:block; width:calc(100% - 32px); margin:0 16px 14px; box-sizing:border-box;
+    padding:0; background:var(--surface); border:1px solid var(--line);
+    border-radius:16px; overflow:hidden; text-align:left; color:var(--text);
+    font:inherit; cursor:pointer; flex-shrink:0;
+    transition:background .15s ease;
+  }
+  .bd-card:hover { background:var(--surface-2); }
+  .bd-card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .bd-card-body { padding:14px 16px 16px; }
+  .bd-card .bd-cat {
+    display:inline-block; font-size:11px; font-weight:700;
+    color:var(--red); letter-spacing:.5px; text-transform:uppercase;
+  }
+  .bd-card .bd-ct {
+    display:block; margin-top:5px; font-size:16.5px; font-weight:700;
+    line-height:1.35; letter-spacing:.2px; color:var(--text);
+  }
+  .bd-meta {
+    display:flex; align-items:center; gap:6px; margin-top:8px;
+    font-size:11px; color:var(--muted); font-weight:500;
+  }
+  .bd-meta .bd-msep { opacity:.45; }
+
+  /* Journal Board - Luxury Editorial Rows */
+  .bd-row {
+    display:flex; gap:16px; align-items:center; width:calc(100% - 36px);
+    margin:0 18px; box-sizing:border-box; padding:12px 6px;
+    background:transparent; border:none;
+    border-radius:14px; text-align:left; color:var(--text); font-family:var(--font-main);
+    cursor:pointer; flex-shrink:0; transition:background .15s ease, opacity .15s ease;
+  }
+  .bd-row:hover { background:var(--chip-bg); opacity:1; }
+  .bd-row img {
+    width:90px; height:90px; aspect-ratio:1/1; object-fit:cover;
+    border-radius:14px; flex-shrink:0; background:#1b1d22;
+    box-shadow:0 4px 14px rgba(0,0,0,.16);
+    transition:transform .18s ease;
+  }
+  .bd-row:active img { transform:scale(.96); }
+  .bd-row-main { flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; }
+  .bd-row .bd-cat {
+    font-family:var(--font-main);
+    font-size:10.5px; font-weight:700; color:var(--red);
+    text-transform:uppercase; letter-spacing:.6px; margin-bottom:5px;
+  }
+  .bd-row .bd-ct {
+    font-family:var(--font-main);
+    font-size:15px; font-weight:600; line-height:1.38;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+    color:var(--text); letter-spacing:.1px;
+  }
+  .bd-row .bd-meta {
+    margin-top:7px; font-family:var(--font-main);
+    font-size:11.5px; color:var(--muted); opacity:.85;
+    display:flex; align-items:center; gap:6px;
+  }
+  .bd-all-list {
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .bd-end-note {
+    text-align:center; padding:28px 16px 16px; font-family:var(--font-main);
+    font-size:11.5px; color:var(--muted); letter-spacing:.5px;
+    text-transform:uppercase; font-weight:600; opacity:.75;
+  }
+
+  /* Category Filter Pills on All Board */
+  .bd-pills {
+    display:flex; gap:9px; overflow-x:auto; padding:6px 18px 16px;
+    scrollbar-width:none; -ms-overflow-style:none; flex-shrink:0;
+    -webkit-overflow-scrolling:touch;
+    scroll-behavior:smooth;
+    user-select:none;
+    cursor:grab;
+  }
+  .bd-pills:active { cursor:grabbing; }
+  .bd-pills::-webkit-scrollbar { display:none; }
+  .bd-pills::after {
+    content:"";
+    flex:0 0 16px;
+    pointer-events:none;
+  }
+  .bd-pill {
+    border:1px solid var(--line); background:var(--surface); color:var(--text);
+    padding:8px 18px; border-radius:22px; font-family:var(--font-main);
+    font-size:13px; font-weight:600; letter-spacing:.1px;
+    white-space:nowrap; cursor:pointer; flex-shrink:0;
+    transition:all .18s cubic-bezier(.16,1,.3,1);
+    box-shadow:0 1px 4px rgba(0,0,0,.04);
+  }
+  .bd-pill:hover { border-color:var(--muted); transform:translateY(-1px); }
+  .bd-pill:active { transform:scale(.95); }
+  .bd-pill.active {
+    background:var(--red); border-color:var(--red); color:#fff;
+    box-shadow:0 4px 14px rgba(200,33,43,.38);
+  }
+  .screen[data-theme="dark"] .bd-pill {
+    background:var(--surface-2); border-color:rgba(255,255,255,.08); color:var(--text);
+    box-shadow:0 2px 6px rgba(0,0,0,.25);
+  }
+  .screen[data-theme="dark"] .bd-pill:hover { border-color:rgba(255,255,255,.22); }
+  .screen[data-theme="dark"] .bd-pill.active {
+    background:var(--red); border-color:var(--red); color:#fff;
+    box-shadow:0 4px 14px rgba(200,33,43,.45);
+  }
+
+  /* Search Screen */
+  .bd-sbar {
+    display:flex; align-items:center; gap:10px; margin:12px 16px 8px;
+    padding:0 14px; height:46px; border:1.5px solid var(--line);
+    border-radius:14px; background:var(--surface); color:var(--muted);
+    box-sizing:border-box; flex-shrink:0; font-family:var(--font-main);
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .bd-sbar:focus-within {
+    border-color:var(--red); box-shadow:0 0 0 3px rgba(200,33,43,.12);
+  }
+  .bd-sbar-ic { color:var(--muted); flex-shrink:0; display:flex; }
+  .bd-sbar input {
+    flex:1; min-width:0; background:none; border:none; outline:none;
+    font:inherit; font-size:14.5px; color:var(--text); font-family:var(--font-main);
+  }
+  .bd-sbar button {
+    background:none; border:none; padding:4px; color:var(--muted);
+    display:flex; cursor:pointer; border-radius:50%; transition:color .15s ease;
+  }
+  .bd-sbar button:hover { color:var(--text); }
+  .bd-sugg { padding:10px 16px 18px; }
+  .bd-sugg-title {
+    font-size:11.5px; font-weight:700; color:var(--muted); font-family:var(--font-main);
+    text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px;
+  }
+  .bd-sugg-chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .bd-sugg-chip {
+    padding:6px 13px; border-radius:18px; border:1px solid var(--line);
+    background:var(--surface); color:var(--text); font-size:12px; font-weight:600;
+    font-family:var(--font-main); cursor:pointer; transition:all .15s ease;
+  }
+  .bd-sugg-chip:hover {
+    background:var(--surface-2); border-color:var(--red); color:var(--red);
+  }
+
+  /* Breadcrumbs */
+  .bd-crumb {
+    display:flex; align-items:center; gap:8px; padding:16px 18px 10px;
+    font-family:var(--font-main); font-size:13px; color:var(--muted);
+    flex-shrink:0; font-weight:500;
+  }
+  .bd-crumb button {
+    background:none; border:none; padding:4px 6px; color:var(--muted);
+    font-family:var(--font-main); font-size:13px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; border-radius:8px; transition:color .15s ease, background .15s ease;
+  }
+  .bd-crumb button:hover { color:var(--text); background:var(--chip-bg); }
+  .bd-crumb span { font-weight:600; color:var(--text); }
+  .bd-rtitle {
+    margin:6px 18px 14px; font-family:var(--font-main);
+    font-size:24px; font-weight:700; color:var(--text);
+    letter-spacing:-.3px; line-height:1.25;
+  }
+  .bd-none {
+    display:flex; flex-direction:column; align-items:center; gap:12px;
+    padding:56px 20px; color:var(--muted); font-size:14px; text-align:center;
+    font-family:var(--font-main);
+  }
+  .bd-none svg { color:var(--muted); opacity:.7; }
+
+  /* Article Detail Screen */
+  .bd-dscroll {
+    flex:1; overflow-y:auto; scrollbar-width:none;
+    padding:10px 20px 64px; color:var(--text); -webkit-overflow-scrolling:touch;
+  }
+
+  /* Floating pill navigation bar (Fixed, Transparent, Glassmorphism) */
+  .bd-dnav {
+    position:sticky; top:0; z-index:30;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 12px; margin:-10px -20px 10px;
+    background:transparent;
+    pointer-events:none;
+  }
+  .bd-dnav > * {
+    pointer-events:auto;
+  }
+
+  .bd-pill-btn {
+    width:38px; height:38px; border-radius:50%;
+    background:rgba(255,255,255,.9); border:1px solid rgba(0,0,0,.08);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 4px 16px rgba(0,0,0,.08);
+    display:inline-flex; align-items:center; justify-content:center;
+    color:var(--text); cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .screen[data-theme="dark"] .bd-pill-btn {
+    background:rgba(20,22,28,.85); border-color:rgba(255,255,255,.12);
+    box-shadow:0 4px 16px rgba(0,0,0,.35);
+  }
+  .bd-pill-btn:hover { background:var(--chip-bg); }
+  .bd-pill-btn:active { transform:scale(.92); }
+
+  .bd-pill-group {
+    display:inline-flex; align-items:center; height:38px; gap:2px;
+    background:rgba(255,255,255,.9); border:1px solid rgba(0,0,0,.08);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 4px 16px rgba(0,0,0,.08);
+    border-radius:20px; padding:0 8px;
+  }
+  .screen[data-theme="dark"] .bd-pill-group {
+    background:rgba(20,22,28,.85); border-color:rgba(255,255,255,.12);
+    box-shadow:0 4px 16px rgba(0,0,0,.35);
+  }
+  .bd-pill-act {
+    width:28px; height:28px; border-radius:50%; border:none; background:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:12.5px; font-weight:600; color:var(--text); cursor:pointer; padding:0;
+    transition:all .15s ease;
+  }
+  .bd-pill-act:active { transform:scale(.93); }
+  .bd-pill-act.bd-pill-like.on {
+    background:none; color:var(--text);
+  }
+  .bd-pill-act.bd-pill-like.on svg {
+    color:var(--red); fill:var(--red);
+  }
+  .bd-pill-act.bd-pill-sh {
+    width:28px; padding:0; border-radius:50%;
+  }
+
+  .bd-dcat {
+    display:inline-block; font-size:11px; font-weight:700;
+    color:var(--red); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px;
+  }
+  .bd-dscroll h1 {
+    margin:0 0 16px; font-size:23px; line-height:1.35; font-weight:600;
+    letter-spacing:-.1px; color:var(--text);
+  }
+
+  /* Article Author & Meta Row */
+  .bd-author-row {
+    display:flex; align-items:center; gap:12px; margin-bottom:20px;
+  }
+  .bd-author-av {
+    width:38px; height:38px; border-radius:50%;
+    object-fit:cover; flex-shrink:0;
+    border:1px solid rgba(0,0,0,.08);
+    box-shadow:0 2px 8px rgba(200,33,43,.12);
+  }
+  .bd-author-body {
+    flex:1; min-width:0;
+    display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
+  }
+  .bd-meta-cols {
+    display:flex; align-items:flex-end; gap:20px;
+  }
+  .bd-meta-col {
+    display:flex; flex-direction:column;
+  }
+  .bd-meta-lbl {
+    font-size:11px; font-weight:500; color:var(--muted); margin-bottom:2px;
+    line-height:1.1;
+  }
+  .bd-meta-val {
+    font-size:12.5px; font-weight:500; color:var(--text); opacity:.82; white-space:nowrap;
+    line-height:1.2; letter-spacing:-.1px;
+  }
+  .bd-author-likes {
+    display:inline-flex; align-items:center; gap:4.5px;
+    font-size:12.5px; font-weight:500; color:var(--text); opacity:.82; flex-shrink:0;
+    line-height:1.2; padding-bottom:1px;
+  }
+  .bd-author-likes svg {
+    color:var(--text); opacity:.75; display:block;
+  }
+
+  .bd-cover {
+    width:calc(100% + 40px); margin-left:-20px; margin-right:-20px;
+    aspect-ratio:4/5; max-height:520px; object-fit:cover;
+    border:none; border-radius:0; box-shadow:none;
+    display:block; margin-bottom:24px;
+  }
+  .bd-callout {
+    margin:22px 0; padding:16px 18px;
+    background:var(--surface);
+    border-radius:0 14px 14px 0; border:1px solid var(--line);
+    border-left:4px solid var(--red);
+    font-size:14px; line-height:1.7; color:var(--text); font-style:italic;
+  }
+  .bd-dscroll p {
+    margin:0 0 20px; font-size:15px; line-height:1.85;
+    letter-spacing:.15px; color:var(--text); opacity:.92;
+  }
+  .bd-tags {
+    display:flex; gap:8px; flex-wrap:wrap; margin-top:28px;
+    padding-top:18px; border-top:1px solid var(--line);
+  }
+  .bd-tag {
+    padding:6px 14px; border-radius:20px; background:var(--chip-bg);
+    color:var(--muted); font-size:12px; font-weight:500; letter-spacing:.2px;
+  }
+  .al-readall { background:none; border:none; padding:6px 0; font:inherit; font-size:13px; font-weight:500; color:var(--red); cursor:pointer; }
+  .al-sec { display:flex; align-items:center; justify-content:space-between; font-size:15px; font-weight:600; color:var(--text); padding:14px 16px 6px; }
+  .al-row { display:flex; align-items:center; gap:12px; width:100%; box-sizing:border-box; padding:10px 16px; background:none; border:none; outline:none; color:var(--text); font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .al-row.unread { background:rgba(237,28,36,.07); }
+  .al-av { flex-shrink:0; position:relative; width:44px; height:44px; display:inline-block; }
+  .al-av img { width:44px; height:44px; border-radius:50%; object-fit:cover; display:block; pointer-events:none; }
+  .al-stack img { width:30px; height:30px; border:2px solid var(--surface); box-sizing:border-box; }
+  .al-stack .al-s1 { position:absolute; left:0; top:0; }
+  .al-stack .al-s2 { position:absolute; right:0; bottom:0; }
+  .al-badge { position:absolute; right:-2px; bottom:-2px; width:20px; height:20px; border-radius:50%; background:var(--red); color:#fff; border:2px solid var(--surface); box-sizing:border-box; display:flex; align-items:center; justify-content:center; }
+  .al-badge svg { fill:#fff; stroke:#fff; }
+  .al-ic { border-radius:50%; background:var(--chip-bg); color:var(--text); display:flex; align-items:center; justify-content:center; }
+  .al-ic.al-watch { background:linear-gradient(135deg,#c4222a 0%,#9e161d 100%); color:#fff; box-shadow:0 0 0 2px var(--surface), 0 0 0 3.5px rgba(196,34,42,.28); }
+  .al-watch > svg { fill:#fff; stroke:#fff; }
+  .al-wseller { position:absolute; right:-3px; bottom:-3px; width:20px; height:20px; border-radius:50%; border:2px solid var(--surface); box-sizing:border-box; overflow:hidden; background:var(--surface); }
+  .al-wseller img { width:100%; height:100%; border-radius:0; border:none; }
+  .al-ic.al-sys { background:#7a1016; color:#fff; }
+  .al-txt { flex:1; min-width:0; font-size:13px; font-weight:400; line-height:1.35; color:var(--text); overflow-wrap:anywhere; }
+  .al-txt b { font-weight:600; }
+  .al-time { color:var(--muted); margin-left:2px; white-space:nowrap; }
+  .al-thumb { width:44px; height:58px; border-radius:6px; object-fit:cover; flex-shrink:0; }
+  .al-fbtn { flex-shrink:0; border:none; border-radius:8px; height:32px; padding:0 16px; font:inherit; font-size:13px; font-weight:500; background:var(--red); color:#fff; cursor:pointer; white-space:nowrap; }
+  .al-fbtn.on { background:var(--chip-bg); color:var(--text); }
+  .al-x { flex-shrink:0; background:none; border:none; padding:4px; margin-left:-4px; color:var(--text); cursor:pointer; display:flex; }
   .ch-empty { display:flex; flex-direction:column; align-items:center; gap:6px; padding:48px 32px; text-align:center; color:var(--muted); }
   .page-sub.pg-chat .detail-head { background:#ffffff; z-index:30; position:relative; }
   .screen[data-theme="dark"] .page-sub.pg-chat .detail-head { background:#14161a; }
@@ -4239,7 +4754,11 @@ const I = {
   gif: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M8 10.5v3M8 10.5h2.5M8 12h2M11.5 10.5v3M14.5 10.5v3m0-3h2.5M14.5 12H16"/></svg>`,
   chat: (s=15) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
   navFeed: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>`,
-  navChat: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+  navChat: (s=24) => `<svg class="nav-chat-ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="tab-fill" d="M12 2.5a9.5 9.5 0 0 0-8.1 14.4L2.7 21.3l4.5-1.2A9.5 9.5 0 1 0 12 2.5z"/><g class="nc-dots" stroke="none" fill="currentColor"><circle cx="7.9" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="16.1" cy="12" r="1.3"/></g></svg>`,
+  tabFeed: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="tab-fill" d="M3.5 10.6 12 3.4l8.5 7.2V19.5a1.5 1.5 0 0 1-1.5 1.5h-4v-5.5H9V21H5a1.5 1.5 0 0 1-1.5-1.5z"/></svg>`,
+  tabBoards: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect class="tab-fill" x="3.5" y="3.5" width="7" height="7" rx="2"/><rect class="tab-fill" x="13.5" y="3.5" width="7" height="7" rx="2"/><rect class="tab-fill" x="3.5" y="13.5" width="7" height="7" rx="2"/><rect class="tab-fill" x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>`,
+  tabAlerts: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="tab-fill" d="M18 9a6 6 0 0 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15.5 18 9z"/><path d="M13.8 21a2 2 0 0 1-3.6 0"/></svg>`,
+  tabProfile: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle class="tab-fill" cx="12" cy="7.5" r="4"/><path class="tab-fill" d="M4.5 20.5v-1a5 5 0 0 1 5-5h5a5 5 0 0 1 5 5v1z"/></svg>`,
   navBoards: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`,
   navBell: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>`,
   navUser: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
@@ -4280,6 +4799,12 @@ const I = {
   chUnpin: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 2.5a1.5 1.5 0 0 0-1.06.44l-2.12 2.12a.5.5 0 0 1-.47.13L8.9 4.25a1.5 1.5 0 0 0-1.57.37L6.2 5.75a1 1 0 0 0-.25 1.05l1.8 4.5-4.46 4.46a1 1 0 1 0 1.42 1.42L9.17 12.8l4.5 1.8a1 1 0 0 0 1.05-.25l1.13-1.13a1.5 1.5 0 0 0 .37-1.57l-.94-3.45a.5.5 0 0 1 .13-.47l2.12-2.12A1.5 1.5 0 0 0 16 2.5z" fill="currentColor"/><line x1="2" y1="2" x2="22" y2="22" stroke="#06c755" stroke-width="3.6"/><line x1="2" y1="2" x2="22" y2="22" stroke="currentColor" stroke-width="2.2"/></svg>`,
   chMute: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`,
   chUnmute: (s=16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9.5 9.5 0 0 1 0 14"/></svg>`,
+  userCir: (s=21) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.2 18.5a7 7 0 0 1 11.6 0"/></svg>`,
+  globe: (s=21) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a15.3 15.3 0 0 1 4 9 15.3 15.3 0 0 1-4 9 15.3 15.3 0 0 1-4-9 15.3 15.3 0 0 1 4-9z"/></svg>`,
+  helpCir: (s=21) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  fileText: (s=21) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+  infoCir: (s=21) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+  phone: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
 };
 
 /* ================= RENDER ================= */
@@ -5651,6 +6176,26 @@ function resetDlgHTML() {
     <div class="dlg-desc">Posts you marked as not interested will be shown again.</div>
     <button class="dlg-btn danger dlg-reset-go">Reset</button>
     <button class="dlg-btn dlg-cancel">Cancel</button>`;
+}
+function logoutDlgHTML() {
+  return `
+    <div class="dlg-q">Log out of @king.mr.fox?</div>
+    <div class="dlg-desc">You will need to sign in again to access your account.</div>
+    <button class="dlg-btn danger dlg-logout-go">Log out</button>
+    <button class="dlg-btn dlg-cancel">Cancel</button>`;
+}
+function delAccountDlgHTML() {
+  return `
+    <div class="dlg-q">Delete account?</div>
+    <div class="dlg-desc">Your account will be deactivated and your public profile will be removed from TukDaeng. You have a 30-day grace period to restore your account before permanent deletion.</div>
+    <button class="dlg-btn danger dlg-delaccount-go">Delete account</button>
+    <button class="dlg-btn dlg-cancel">Cancel</button>`;
+}
+function delAccountSuccessDlgHTML() {
+  return `
+    <div class="dlg-q">Account deletion started</div>
+    <div class="dlg-desc">Your account has been deactivated and session cleared. If you change your mind, contact support within 30 days.</div>
+    <button class="dlg-btn dlg-delaccount-done">Back to sign in</button>`;
 }
 
 /* settings + content-preferences pages — slide-in layer like the detail page */
@@ -7432,11 +7977,11 @@ function pfAllUsers(except) {
 
 function pfNavHTML(own) {
   return `<nav class="bottom-nav pf-nav">
-    <span class="nav-item${own ? "" : " active"}" data-navgo="feed">${I.navFeed()}<span class="nav-label">Feed</span></span>
+    <span class="nav-item${own ? "" : " active"}" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
     <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-    <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
-    <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
-    <span class="nav-item${own ? " active" : ""}" data-navgo="profile">${I.navUser()}<span class="nav-label">Profile</span></span>
+    <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
+    <span class="nav-item${own ? " active" : ""}" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
   </nav>`;
 }
 function pfAvovHTML(u, own, isF) {
@@ -7738,7 +8283,9 @@ function subHTML(name, scr) {
   if (name === "sfilter") return filterHTML(scr);
   if (name === "recents") return recentPageHTML(scr);
   if (name === "settings") return head("Settings and activity") + `<div class="sub-scroll">
-    <div class="sub-sec">Your library</div>
+    <div class="sub-sec">Account</div>
+    ${row("About your account", `data-sub="about_account"`, "", I.userCir(21))}
+    <div class="sub-sec sec-div">Your library</div>
     ${row("Saved", `data-sub="saved"`, `<span class="sub-count">${POSTS.filter(p => p.saved).length}</span>`, I.bookmark(21))}
     ${row("Wish List", `data-sub="wishlist"`, `<span class="sub-count">${wlPosts().length}</span>`, I.gift(21))}
     ${row("Archive", `data-sub="archive"`, `<span class="sub-count">${archivePosts().length}</span>`, I.history(21))}
@@ -7748,9 +8295,129 @@ function subHTML(name, scr) {
     ${row("Muted accounts", `data-sub="muted"`, `<span class="sub-count">${mutedSellers().length}</span>`, I.bellOff(21))}
     ${row("Blocked", `data-sub="blocked"`, `<span class="sub-count">${PF_BLOCKED.size}</span>`, I.userMinus(21))}
     ${row("Content preferences", `data-sub="prefs"`, "", I.stack(21))}
-    <div class="sub-sec sec-div">Display</div>
+    <div class="sub-sec sec-div">Your app and media</div>
+    ${row("Language", `data-sub="lang"`, `<span class="sub-count">${(state.lang === "th" ? "ภาษาไทย" : "English")}</span>`, I.globe(21))}
     ${row("Theme mode", `data-sub="theme"`, `<span class="sub-count">${state.theme === "dark" ? "Dark" : "Light"}</span>`, I.moon(21))}
+    <div class="sub-sec sec-div">Notifications</div>
+    ${row("Notification settings", `data-sub="notif_settings"`, "", I.navBell(21))}
+    <div class="sub-sec sec-div">More info and support</div>
+    ${row("Help", `data-sub="help"`, "", I.helpCir(21))}
+    ${row("Privacy Policy", `data-sub="privacy"`, "", I.shield(21))}
+    ${row("Terms of Use", `data-sub="terms"`, "", I.fileText(21))}
+    ${row("About", `data-sub="about_app"`, "", I.infoCir(21))}
+    <div class="sub-sec sec-div">Login</div>
+    <button class="sub-row sub-row-logout" data-act="logout"><span>Log out</span></button>
   </div>`;
+  if (name === "about_account") {
+    const me = (typeof profileOf === "function" ? profileOf(CP_ME.name) : null) || { disp: "Mr.FOX", user: "king.mr.fox", avatar: CP_ME.avatar };
+    return head("About your account") + `<div class="sub-scroll">
+      <div class="about-acc-hero">
+        <img src="${me.avatar}" alt="">
+        <div class="about-acc-name">${esc(me.disp || "Mr.FOX")}</div>
+        <div class="about-acc-uname">@${esc(me.user || "king.mr.fox")}</div>
+      </div>
+      <div class="sub-sec">Account information</div>
+      <div class="sub-row"><span class="sub-ic">${I.cal(20)}</span><span class="lg-b"><span class="lg-t">Date joined</span><span class="lg-d">October 2024</span></span></div>
+      <div class="sub-row"><span class="sub-ic">${I.globe(20)}</span><span class="lg-b"><span class="lg-t">Account based in</span><span class="lg-d">Thailand</span></span></div>
+      <div class="sub-row"><span class="sub-ic">${I.userMinus(20)}</span><span class="lg-b"><span class="lg-t">Former usernames</span><span class="lg-d">0</span></span></div>
+      <div class="sub-sec sec-div">Security</div>
+      <button class="sub-row" data-act="change-pwd"><span class="sub-ic">${I.lock(20)}</span><span>Change password</span><span class="sub-chev">${I.chevR(15)}</span></button>
+      <div class="sub-sec sec-div">Account management</div>
+      <button class="sub-row" data-dlg="del-account"><span class="sub-ic" style="color:var(--red);">${I.trash(20)}</span><span style="color:var(--red);">Delete account</span><span class="sub-chev">${I.chevR(15)}</span></button>
+    </div>`;
+  }
+  if (name === "lang") {
+    const curLang = state.lang || "en";
+    const opt = (code, label, desc) => `<button class="sub-row sub-row-lg" data-lang-opt="${code}"><span class="lg-b"><span class="lg-t">${label}</span><span class="lg-d">${desc}</span></span><span class="sub-chev sens-check">${curLang === code ? I.check(17) : ""}</span></button>`;
+    return head("Language") + `<div class="sub-scroll">
+      <div class="fav-desc">Choose your preferred language for the TukDaeng app.</div>
+      ${opt("en", "English", "App interface in English")}
+      ${opt("th", "ภาษาไทย", "หน้าจอแอปเป็นภาษาไทย")}
+    </div>`;
+  }
+  if (name === "notif_settings") {
+    state.notif = state.notif || { likes: true, comments: true, follows: true, offers: true, walerts: true };
+    const nRow = (k, title, desc) => `<button class="sub-row sub-row-lg" data-notif-tgl="${k}"><span class="lg-b"><span class="lg-t">${title}</span><span class="lg-d">${desc}</span></span><span class="tg-sw${state.notif[k] ? " on" : ""}"></span></button>`;
+    return head("Notification settings") + `<div class="sub-scroll">
+      <div class="fav-desc">Choose what notifications you receive on this device.</div>
+      <div class="sub-sec">Activity</div>
+      ${nRow("likes", "Likes", "When someone likes your posts or comments")}
+      ${nRow("comments", "Comments", "When someone comments on your posts")}
+      ${nRow("follows", "New followers", "When someone follows your profile")}
+      <div class="sub-sec sec-div">Trading & Alerts</div>
+      ${nRow("offers", "Offers", "When you receive or have updates on watch offers")}
+      ${nRow("walerts", "Watch Alerts", "When new listings match your criteria")}
+    </div>`;
+  }
+  if (name === "help") {
+    return head("Help") + `<div class="sub-scroll">
+      <div class="sub-card-box">
+        <div class="sub-card-title">Contact support</div>
+        <div class="sub-card-sub">Available daily · 09:00 - 22:00 (GMT+7)</div>
+      </div>
+      <div class="sub-sec">Support channels</div>
+      <a class="sub-row" href="https://line.me" target="_blank" rel="noopener"><span class="sub-ic">${I.chat(20)}</span><span class="lg-b"><span class="lg-t">LINE Official</span><span class="lg-d">@mrfoxthailand</span></span><span class="sub-chev">${I.chevR(15)}</span></a>
+      <a class="sub-row" href="tel:+66800088088"><span class="sub-ic">${I.phone(20)}</span><span class="lg-b"><span class="lg-t">Call support</span><span class="lg-d">(+66) 80-008-8088</span></span><span class="sub-chev">${I.chevR(15)}</span></a>
+      <a class="sub-row" href="mailto:service@mrfox.com"><span class="sub-ic">${I.send(20)}</span><span class="lg-b"><span class="lg-t">Email support</span><span class="lg-d">service@mrfox.com</span></span><span class="sub-chev">${I.chevR(15)}</span></a>
+      <div class="sub-sec sec-div">Help topics</div>
+      <button class="sub-row" data-sub="privacy"><span class="sub-ic">${I.shield(20)}</span><span>Privacy & Safety</span><span class="sub-chev">${I.chevR(15)}</span></button>
+      <button class="sub-row" data-sub="terms"><span class="sub-ic">${I.fileText(20)}</span><span>Terms & Guidelines</span><span class="sub-chev">${I.chevR(15)}</span></button>
+    </div>`;
+  }
+  if (name === "privacy") {
+    return head("Privacy Policy") + `<div class="sub-scroll sub-legal-body">
+      <div class="legal-sec">
+        <h3>1. Information We Collect</h3>
+        <p>We collect information you provide directly to us when you create an account, update your profile, list watches, make offers, or communicate with other collectors on TukDaeng.</p>
+      </div>
+      <div class="legal-sec">
+        <h3>2. How We Use Information</h3>
+        <p>We use the information to operate, maintain, and provide the features of our marketplace, verify authentic listings, ensure community safety, and send notifications.</p>
+      </div>
+      <div class="legal-sec">
+        <h3>3. Data Protection & Retention</h3>
+        <p>Your personal information is protected with industry-standard encryption. Transaction and audit logs are retained as required by applicable laws and safety policies.</p>
+      </div>
+      <div class="legal-sec">
+        <h3>4. Your Rights</h3>
+        <p>You may view, update, or request deactivation of your account at any time through Settings > About your account.</p>
+      </div>
+    </div>`;
+  }
+  if (name === "terms") {
+    return head("Terms of Use") + `<div class="sub-scroll sub-legal-body">
+      <div class="legal-sec">
+        <h3>1. Agreement to Terms</h3>
+        <p>By accessing or using TukDaeng, you agree to be bound by these Terms of Use and our Community Guidelines for watch collectors and enthusiasts.</p>
+      </div>
+      <div class="legal-sec">
+        <h3>2. Listing Authenticity</h3>
+        <p>Sellers must guarantee the authenticity of luxury watches listed on the platform. Misleading descriptions, counterfeit goods, or falsified papers are strictly prohibited.</p>
+      </div>
+      <div class="legal-sec">
+        <h3>3. Offers & Transactions</h3>
+        <p>Offers submitted through TukDaeng are binding expressions of intent. Parties agree to conduct inspections and completions in good faith.</p>
+      </div>
+      <div class="legal-sec">
+        <h3>4. Termination & Deactivation</h3>
+        <p>We reserve the right to suspend or terminate accounts that violate safety rules, spam other members, or engage in fraudulent activities.</p>
+      </div>
+    </div>`;
+  }
+  if (name === "about_app") {
+    return head("About") + `<div class="sub-scroll">
+      <div class="about-app-hero">
+        <div class="about-brand">TUK DAENG</div>
+        <div class="about-tagline">The digital curator for watch collectors</div>
+        <div class="about-ver">Version 0.0.1</div>
+        <div class="about-corp">Mister Fox Co., Ltd. · Est. 2026</div>
+      </div>
+      <div class="sub-sec">Legal & Support</div>
+      <button class="sub-row" data-sub="privacy"><span class="sub-ic">${I.shield(20)}</span><span>Privacy Policy</span><span class="sub-chev">${I.chevR(15)}</span></button>
+      <button class="sub-row" data-sub="terms"><span class="sub-ic">${I.fileText(20)}</span><span>Terms of Use</span><span class="sub-chev">${I.chevR(15)}</span></button>
+      <button class="sub-row" data-sub="help"><span class="sub-ic">${I.helpCir(20)}</span><span>Contact support</span><span class="sub-chev">${I.chevR(15)}</span></button>
+    </div>`;
+  }
   if (name === "favorites") {
     const favs = favoriteSellers();
     const sugg = followedSellers().filter(s => !favs.includes(s));
@@ -7804,6 +8471,11 @@ function subHTML(name, scr) {
     </div>`;
   }
   /* CHAT — Chat Center, item chats, chat room, chat settings */
+  if (name === "alerts") return alertsHTML();
+  if (name === "board") return boardHomeHTML();
+  if (name === "boardsearch") return boardSearchHTML();
+  if (name === "boardall") return boardAllHTML();
+  if (name.startsWith("boardart:")) return boardArticleHTML(name.slice(9));
   if (name === "chat") return chatListHTML();
   if (name.startsWith("chatitem:")) return chatItemHTML(name.slice(9));
   if (name.startsWith("chatroom:")) return chatRoomHTML(name.slice(9));
@@ -7971,12 +8643,633 @@ function chPostRender(el) {
 function chEmptyHTML(t, d) { return `<div class="ch-empty"><b>${esc(t)}</b><span>${esc(d)}</span></div>`; }
 function chatNavHTML() {
   return `<nav class="bottom-nav pf-nav">
-    <span class="nav-item" data-navgo="feed">${I.navFeed()}<span class="nav-label">Feed</span></span>
+    <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
     <span class="nav-item active" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-    <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
-    <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
-    <span class="nav-item" data-navgo="profile">${I.navUser()}<span class="nav-label">Profile</span></span>
+    <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
+    <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
   </nav>`;
+}
+
+/* ===== ALERTS — IG-style activity list: Watch Alert / Like / Comment / Follow (mock, memory only) ===== */
+let ALERTS = null;
+function alInit() {
+  if (ALERTS) return ALERTS;
+  const me = CP_ME.name;
+  const mine = i => ({ pid: `gfx-${me}-${i}`, thumb: (PROFILES[me].grid || [])[i] });
+  const wa = (pid, ago, grp, unread) => {
+    const p = findPost(pid);
+    return { type: "watch", users: [p.seller], ago, grp, unread, pid, thumb: p.photos[0],
+      name: [specOf(p, "Brand"), specOf(p, "Model")].filter(Boolean).join(" ") || p.caption, price: p.price };
+  };
+  ALERTS = [
+    { type: "like", users: ["jutatip_sroysomree", "kunk4i"], more: 1, ago: "23m", grp: "Today", unread: true, ...mine(0) },
+    wa("p1", "2h", "Today", true),
+    { type: "follow", users: ["dial.dude"], ago: "5h", grp: "Today", unread: true },
+    { type: "comment", users: ["chrono.th"], text: "clean set 🔥", ago: "15h", grp: "Yesterday", unread: true, ...mine(1) },
+    wa("p5", "18h", "Yesterday", true),
+    { type: "like", users: ["davikah", "Watch 777", "the watch"], more: 4, ago: "1d", grp: "Yesterday", unread: false, ...mine(2) },
+    { type: "comment", users: ["davikah"], text: "love this one", ago: "2d", grp: "Last 7 days", unread: false, ...mine(4) },
+    { type: "follow", users: ["watch.daily"], ago: "2d", grp: "Last 7 days", unread: false },
+    wa("p3", "3d", "Last 7 days", false),
+    { type: "like", users: ["Watch 777", "the watch"], more: 8, ago: "4d", grp: "Last 7 days", unread: false, ...mine(3) },
+    { type: "system", users: [], text: "A new device just logged in to your account near Bangkok, TH", ago: "6d", grp: "Last 7 days", unread: false },
+    { type: "follow", users: ["neng_mua"], ago: "2w", grp: "Earlier", unread: false },
+    { type: "like", users: ["bamzilla"], more: 0, ago: "3w", grp: "Earlier", unread: false, ...mine(5) },
+  ].map((a, i) => ({ id: "al" + i, ...a }));
+  return ALERTS;
+}
+const alUnread = () => alInit().filter(a => a.unread).length;
+function alBadgeHTML() { const n = alUnread(); return n ? `<span class="nav-badge">${n > 99 ? "99+" : n}</span>` : ""; }
+function alBadgeSync() {
+  const b = alBadgeHTML();
+  document.querySelectorAll('.nav-item[data-navgo="alerts"]').forEach(el => {
+    el.querySelector(".nav-badge")?.remove();
+    if (b) el.insertAdjacentHTML("afterbegin", b);
+  });
+}
+function alertsNavHTML() {
+  return `<nav class="bottom-nav pf-nav">
+    <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
+    <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
+    <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item active" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
+    <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
+  </nav>`;
+}
+function alAvatarHTML(a) {
+  const badge = ic => `<span class="al-badge">${ic}</span>`;
+  if (a.type === "watch") return `<span class="al-av al-ic al-watch">${I.navBell(22)}<span class="al-wseller"><img src="${profileOf(a.users[0]).avatar}" alt=""></span></span>`;
+  if (a.type === "system") return `<span class="al-av al-ic al-sys"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg></span>`;
+  const img = n => `<img src="${profileOf(n).avatar}" alt="">`;
+  const b = a.type === "like" ? badge(I.heart(10)) : "";
+  return a.users.length > 1
+    ? `<span class="al-av al-stack"><span class="al-s1">${img(a.users[0])}</span><span class="al-s2">${img(a.users[1])}</span>${b}</span>`
+    : `<span class="al-av">${img(a.users[0])}${b}</span>`;
+}
+function alTextHTML(a) {
+  const n = (a.more || 0) + Math.max(0, a.users.length - 2);
+  const who = a.users.slice(0, 2).map(u => `<b>${esc(u)}</b>`);
+  const names = who.join(", ") + (n ? ` and ${n} other${n > 1 ? "s" : ""}` : "");
+  const body = {
+    like: `${names} liked your post.`,
+    comment: `${names} commented: ${esc(a.text || "")}`,
+    follow: `${names} started following you.`,
+    watch: `Watch alert <b>${esc(a.name || "")}</b> — new listing from <b>${esc(a.users[0])}</b> · ${esc(a.price || "")}`,
+    system: esc(a.text || ""),
+  }[a.type];
+  return `${body} <span class="al-time">${a.ago}</span>`;
+}
+function alRowHTML(a) {
+  const side = a.type === "follow"
+    ? `<button class="al-fbtn${pfIsFollowed(a.users[0]) ? " on" : ""}" data-alfollow="${esc(a.users[0])}">${pfIsFollowed(a.users[0]) ? "Following" : "Follow back"}</button>`
+    : a.thumb ? `<img class="al-thumb" src="${a.thumb}" alt="">` : "";
+  const x = a.type === "follow" ? `<span class="al-x" data-aldismiss="${a.id}">${I.x(16)}</span>` : "";
+  return `<div class="al-row${a.unread ? " unread" : ""}" role="button" data-alid="${a.id}">
+    ${alAvatarHTML(a)}<span class="al-txt">${alTextHTML(a)}</span>${side}${x}
+  </div>`;
+}
+function alertsHTML() {
+  const list = alInit(), un = alUnread();
+  const groups = ["Today", "Yesterday", "Last 7 days", "Earlier"].map(g => [g, list.filter(a => a.grp === g)]).filter(([, l]) => l.length);
+  return `
+  <div class="ch-scroll sub-scroll al-scroll">
+    <div class="al-head">
+      <button class="icon-btn al-back" data-navgo="feed">${I.back(22)}</button>
+      <span class="al-title">${esc(CP_ME.name)}</span>
+    </div>
+    ${groups.length ? groups.map(([g, l], i) => `<div class="al-sec"><span>${g}</span>${i === 0 && un ? `<button class="al-readall" data-alreadall>Mark all as read</button>` : ""}</div>${l.map(alRowHTML).join("")}`).join("")
+      : chEmptyHTML("No alerts yet", "Watch alerts, likes, comments and new followers will show up here.")}
+  </div>
+  ${alertsNavHTML()}`;
+}
+function alRerender(scr) {
+  const sc = scr.querySelector(".al-scroll"), y = sc ? sc.scrollTop : 0;
+  scr._subSwap = true; renderSub(scr); scr._subSwap = false;
+  const n = scr.querySelector(".al-scroll");
+  if (n) n.scrollTop = y;
+}
+function alertsClick(e) {
+  const scr = e.target.closest(".screen");
+  if (!scr) return false;
+  if (e.target.closest("[data-alreadall]")) {
+    alInit().forEach(a => { a.unread = false; });
+    alBadgeSync(); alRerender(scr);
+    return true;
+  }
+  const dx = e.target.closest("[data-aldismiss]");
+  if (dx) {
+    const i = alInit().findIndex(x => x.id === dx.dataset.aldismiss);
+    if (i >= 0) alInit().splice(i, 1);
+    alBadgeSync(); alRerender(scr);
+    return true;
+  }
+  const fb = e.target.closest("[data-alfollow]");
+  if (fb) {
+    const u = fb.dataset.alfollow;
+    pfSetFollow(scr, u, !pfIsFollowed(u));
+    const on = pfIsFollowed(u);
+    fb.classList.toggle("on", on);
+    fb.textContent = on ? "Following" : "Follow back";
+    return true;
+  }
+  const row = e.target.closest(".al-row");
+  if (!row) return false;
+  const a = alInit().find(x => x.id === row.dataset.alid);
+  if (!a) return true;
+  if (a.unread) { a.unread = false; row.classList.remove("unread"); alBadgeSync(); }
+  if (a.type === "follow") rpPush(scr, "profile:" + a.users[0]);
+  else if (a.type === "watch") {
+    const p = findPost(a.pid);
+    if (p) {
+      openPostViewer(scr, [p], p.id, 0, false, "Post", p.seller);
+      const pv = scr.querySelector(".page-pv");
+      pv.querySelector(".pfp-tt")?.classList.add("solo");
+      pv.querySelector(".pfp-follow")?.remove();
+      if (!p.following) pv.querySelector(".post-head .more")?.insertAdjacentHTML("beforebegin", `<button class="follow-btn">Follow</button>`);
+    }
+  }
+  else if (a.type === "like" || a.type === "comment") {
+    const me = CP_ME.name, post = pfTabPosts(me, "all").find(p => p.id === a.pid);
+    if (post) {
+      openPostViewer(scr, [post], a.pid, 0, false, "Post", me);
+      scr.querySelector(".page-pv .pfp-tt")?.classList.add("solo");
+    } else scrToast(scr, "This post is no longer available");
+  } else scrToast(scr, "Security details aren't in this prototype yet");
+  if (alUnread() === 0) { const b = scr.querySelector("[data-alreadall]"); if (b) b.remove(); }
+  return true;
+}
+/* ===== BOARD — news board: Home (hero + trending + Journal Board), Journal Board list, Article detail (like/share), Search (results / empty) ===== */
+let bdQ = "";
+const BD_P = "./assets/thumbs/";
+const BD_FEAT_MAX = 5;
+const BD_BODY = [
+  "The perpetual calendar remains one of watchmaking's most romantic and technically daunting complications. Unlike its simpler calendar cousins, a perpetual mechanism accounts for the differing lengths of all 12 months and even the quadrennial leap year anomaly. It is a mechanical computer designed to remain accurate for over a century without manual intervention.",
+  "Collectors keep coming back to this subject because the details reward patience. Finishing, movement architecture and the way a case sits on the wrist all tell a story that spec sheets rarely capture.",
+  "Whether you are buying your first piece or adding to a long-running collection, understanding the market context makes every decision easier. Take your time, compare references, and always verify provenance before you commit."
+];
+const BOARD = [
+  { id: "b1", cat: "Featured", title: "The Perpetual Calendar: A Century of Mastery", sub: "Exploring the mechanical evolution of watchmaking's most poetic complication.", img: BD_P + "p1-p.jpg", min: 9, ago: "1 hour ago", date: "Oct 28, 2024", likes: 12, feat: 1 },
+  { id: "b2", cat: "Market Watch", title: "Daytona Prices Stabilize in Q3", sub: "Analyzing recent secondary market movements for key Cosmograph references.", img: BD_P + "p2-p.jpg", min: 6, ago: "30 minutes ago", date: "Oct 27, 2024", likes: 34, feat: 2 },
+  { id: "b3", cat: "Technical", title: "Understanding Silicon Hairsprings", sub: "How anti-magnetic balance springs transformed modern horological precision.", img: BD_P + "p3-p.jpg", min: 8, ago: "1 hour ago", date: "Oct 26, 2024", likes: 21, feat: 3 },
+  { id: "b7", cat: "Rolex", title: "Rolex Price Development Across Five Years: Factors and Forecasts", sub: "Comprehensive historical data and five-year price trends for luxury timepieces.", img: BD_P + "p11-p.jpg", min: 7, ago: "45 minutes ago", date: "Oct 22, 2024", likes: 41, feat: 4 },
+  { id: "b14", cat: "Watch Trends", title: "Best New Watches Under $6,000 in 2026", sub: "Curated selections offering exceptional craftsmanship without breaking the bank.", img: BD_P + "p7-p.jpg", min: 15, ago: "1 hour ago", date: "Oct 23, 2024", likes: 22, feat: 5 },
+  { id: "b4", cat: "Collector", title: "Why Vintage Patina Is the Real Story", img: BD_P + "p4-p.jpg", min: 5, ago: "3 hours ago", date: "Oct 25, 2024", likes: 18 },
+  { id: "b12", cat: "Industry", title: "Inside the Swiss Watch Export Numbers", img: BD_P + "p9-p.jpg", min: 6, ago: "4 hours ago", date: "Oct 24, 2024", likes: 14 },
+  { id: "b13", cat: "Guides", title: "How to Care for an Automatic Watch", img: BD_P + "p10-p.jpg", min: 4, ago: "6 hours ago", date: "Oct 24, 2024", likes: 10 },
+  { id: "b5", cat: "More Watch Brands", title: "5 Things You Should Know Before You Buy a Grand Seiko Watch", img: BD_P + "p5-p.jpg", min: 8, ago: "2 hours ago", date: "Oct 24, 2024", likes: 27 },
+  { id: "b6", cat: "Watch Basics", title: "Steel vs. Titanium Watches: What are the differences?", img: BD_P + "p6-p.jpg", min: 12, ago: "30 minutes ago", date: "Oct 23, 2024", likes: 9 },
+  { id: "b15", cat: "Watch Guides", title: "Our Top 5 Best-Selling Graduation Watches Under $4,000", img: BD_P + "p8-p.jpg", min: 10, ago: "3 hours ago", date: "Oct 22, 2024", likes: 16 },
+  { id: "b8", cat: "Feature More Rolex Collections", title: "5 Essential Facts Before Buying a Rolex Watch", img: BD_P + "p2-p.jpg", min: 7, ago: "25 minutes ago", date: "Oct 21, 2024", likes: 30 },
+  { id: "b9", cat: "Rolex", title: "Submariner vs Explorer: Which Rolex Fits You?", img: BD_P + "p3-p.jpg", min: 6, ago: "1 day ago", date: "Oct 20, 2024", likes: 15 },
+  { id: "b10", cat: "Rolex", title: "Rolex Service Intervals Explained", img: BD_P + "p4-p.jpg", min: 5, ago: "2 days ago", date: "Oct 19, 2024", likes: 8 },
+  { id: "b11", cat: "Rolex", title: "Spotting a Genuine Rolex Bracelet", img: BD_P + "p1-p.jpg", min: 6, ago: "3 days ago", date: "Oct 18, 2024", likes: 11 },
+].map(a => ({ author: "Tuk Daeng Editorial", liked: false, saved: false, ...a }));
+const bdGet = id => BOARD.find(a => a.id === id);
+const bdMeta = (a, dot = "·") => `${a.min} min read  ${dot}  ${a.ago}`;
+const bdFeatured = () => BOARD.filter(a => a.feat).sort((x, y) => x.feat - y.feat);
+const bdLatest = () => BOARD.filter(a => !a.feat);
+const bdJournal = () => BOARD;
+
+const BD_CATEGORIES = ["All", "Market Watch", "Rolex", "Technical", "Collector", "Guides", "Industry"];
+let bdFilterCat = "All";
+const bdFilteredJournal = () => bdFilterCat === "All" ? BOARD : BOARD.filter(a => (a.cat + " " + a.title).toLowerCase().includes(bdFilterCat.toLowerCase()));
+
+const BD_POPULAR_TAGS = ["Rolex", "Daytona", "Perpetual Calendar", "Titanium", "Patina", "Grand Seiko"];
+
+function bdCarouselScroll(el) {
+  if (!el) return;
+  const idx = Math.round(el.scrollLeft / (el.offsetWidth || 1));
+  const dots = el.parentElement ? el.parentElement.querySelectorAll(".bd-dot") : [];
+  dots.forEach((d, i) => d.classList.toggle("active", i === idx));
+}
+function bdGoSlide(scr, idx) {
+  const c = scr && scr.querySelector(".bd-carousel");
+  if (!c) return;
+  const w = c.offsetWidth || 1;
+  c.scrollTo({ left: idx * w, behavior: "smooth" });
+}
+function bdStepSlide(scr, dir) {
+  const c = scr && scr.querySelector(".bd-carousel");
+  if (!c) return;
+  const w = c.offsetWidth || 1;
+  const curIdx = Math.round(c.scrollLeft / w);
+  const maxIdx = bdFeatured().length - 1;
+  const targetIdx = Math.max(0, Math.min(maxIdx, curIdx + dir));
+  c.scrollTo({ left: targetIdx * w, behavior: "smooth" });
+}
+
+function bdCenterPill(pill) {
+  if (!pill) return;
+  const pWrap = pill.closest(".bd-pills");
+  if (!pWrap) return;
+  const target = pill.offsetLeft - (pWrap.clientWidth / 2) + (pill.clientWidth / 2);
+  pWrap.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+}
+
+let bdIsDragging = false, bdDidDrag = false, bdDragStartX = 0, bdScrollStartX = 0;
+let bdPillsDragging = false, bdPillsDidDrag = false, bdPillsDragStartX = 0, bdPillsScrollStartX = 0;
+document.addEventListener("mousedown", e => {
+  const c = e.target.closest(".bd-carousel");
+  if (c) {
+    bdIsDragging = true;
+    bdDidDrag = false;
+    bdDragStartX = e.pageX;
+    bdScrollStartX = c.scrollLeft;
+    c.style.scrollBehavior = "auto";
+    c.style.scrollSnapType = "none";
+    return;
+  }
+  const p = e.target.closest(".bd-pills");
+  if (p) {
+    bdPillsDragging = true;
+    bdPillsDidDrag = false;
+    bdPillsDragStartX = e.pageX;
+    bdPillsScrollStartX = p.scrollLeft;
+    p.style.scrollBehavior = "auto";
+    return;
+  }
+});
+document.addEventListener("mousemove", e => {
+  if (bdIsDragging) {
+    const dx = e.pageX - bdDragStartX;
+    if (Math.abs(dx) > 6) bdDidDrag = true;
+    const c = document.querySelector(".bd-carousel");
+    if (c) c.scrollLeft = bdScrollStartX - dx;
+  }
+  if (bdPillsDragging) {
+    const dx = e.pageX - bdPillsDragStartX;
+    if (Math.abs(dx) > 5) bdPillsDidDrag = true;
+    const p = document.querySelector(".bd-pills");
+    if (p) p.scrollLeft = bdPillsScrollStartX - dx;
+  }
+});
+document.addEventListener("mouseup", () => {
+  if (bdIsDragging) {
+    bdIsDragging = false;
+    const c = document.querySelector(".bd-carousel");
+    if (c) {
+      c.style.scrollBehavior = "smooth";
+      c.style.scrollSnapType = "x mandatory";
+      const w = c.offsetWidth || 1;
+      const targetIdx = Math.round(c.scrollLeft / w);
+      c.scrollTo({ left: targetIdx * w, behavior: "smooth" });
+    }
+    setTimeout(() => { bdDidDrag = false; }, 120);
+  }
+  if (bdPillsDragging) {
+    bdPillsDragging = false;
+    const p = document.querySelector(".bd-pills");
+    if (p) p.style.scrollBehavior = "smooth";
+    setTimeout(() => { bdPillsDidDrag = false; }, 120);
+  }
+});
+
+let bdLastScrollTop = 0;
+let bdScrollTimer = null;
+function bdScrollHandler(el) {
+  if (!el) return;
+  const curTop = el.scrollTop;
+  const head = el.querySelector(".bd-head");
+  if (!head) return;
+
+  head.classList.toggle("bd-head-floating", curTop > 8);
+
+  if (curTop <= 8) {
+    head.classList.remove("bd-head-hidden");
+    if (bdScrollTimer) { clearTimeout(bdScrollTimer); bdScrollTimer = null; }
+    bdLastScrollTop = curTop;
+    return;
+  }
+
+  // Hide header while actively scrolling in either direction (up or down)
+  head.classList.add("bd-head-hidden");
+  bdLastScrollTop = curTop;
+
+  // When scrolling stops: reveal floating header
+  if (bdScrollTimer) clearTimeout(bdScrollTimer);
+  bdScrollTimer = setTimeout(() => {
+    head.classList.remove("bd-head-hidden");
+  }, 200);
+}
+
+function boardNavHTML() {
+  return `<nav class="bottom-nav pf-nav">
+    <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
+    <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
+    <span class="nav-item active" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
+    <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
+  </nav>`;
+}
+function bdHeadHTML() {
+  return `<div class="bd-head">
+      <button class="icon-btn" data-bdmenu title="Categories">${I.burger(22)}</button>
+      <span class="bd-brand"><b>TUK DAENG</b> | Board</span>
+      <button class="icon-btn" data-bdsearch title="Search">${I.search(22)}</button>
+    </div>`;
+}
+function bdCardHTML(a) {
+  return `<button class="bd-card" data-bdart="${a.id}">
+    <img class="bd-card-img" src="${a.img}" alt="" loading="lazy">
+    <div class="bd-card-body">
+      <span class="bd-cat">${esc(a.cat)}</span>
+      <span class="bd-ct">${esc(a.title)}</span>
+      <span class="bd-meta">
+        <span>${bdMeta(a)}</span>
+        <span class="bd-msep">•</span>
+        <span>${a.likes} likes</span>
+      </span>
+    </div>
+  </button>`;
+}
+function bdRowHTML(a) {
+  return `<button class="bd-row" data-bdart="${a.id}">
+    <img src="${a.img}" alt="" loading="lazy">
+    <div class="bd-row-main">
+      <span class="bd-cat">${esc(a.cat)}</span>
+      <span class="bd-ct">${esc(a.title)}</span>
+      <span class="bd-meta">${bdMeta(a, "·")}</span>
+    </div>
+  </button>`;
+}
+function bdListHTML(list) {
+  if (!list.length) return `<div class="bd-none"><span>No articles in this category</span></div>`;
+  return list.map(a => bdRowHTML(a)).join("")
+    + `<div class="bd-end-note"><span>You're all caught up</span></div>`;
+}
+function boardHomeHTML() {
+  const featured = bdFeatured();
+  const latest = bdLatest();
+  return `
+  <div class="ch-scroll sub-scroll bd-scroll" onscroll="bdScrollHandler(this)">
+    ${bdHeadHTML()}
+    <div class="bd-carousel-wrap">
+      <div class="bd-carousel" onscroll="bdCarouselScroll(this)">
+        ${featured.map(a => `
+          <div class="bd-slide" style="background-image:url('${a.img}')" data-bdart="${a.id}">
+            <span class="bd-hero-tag">${esc(a.cat || "FEATURED")}</span>
+            <h2>${esc(a.title)}</h2>
+            <p>${esc(a.sub || a.title)}</p>
+            <div class="bd-hero-bar">
+              <button class="bd-hero-btn" data-bdart="${a.id}">
+                <span>Read more</span>
+              </button>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div class="bd-dots">
+        ${featured.map((_, i) => `<button class="bd-dot${i === 0 ? " active" : ""}" data-bddot="${i}" aria-label="Slide ${i + 1}"></button>`).join("")}
+      </div>
+    </div>
+    <div class="bd-sec">
+      <h3>Latest Articles</h3>
+      <button class="bd-viewall" data-bdall>
+        <span>View all</span>
+        ${I.chevR(14)}
+      </button>
+    </div>
+    ${bdListHTML(latest)}
+  </div>
+  ${boardNavHTML()}`;
+}
+function boardAllHTML() {
+  return `
+  <div class="ch-scroll sub-scroll bd-scroll">
+    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>Latest Articles</span></div>
+    <div class="bd-pills">
+      ${BD_CATEGORIES.map(c => `<button class="bd-pill${bdFilterCat === c ? " active" : ""}" data-bdcat="${esc(c)}">${esc(c)}</button>`).join("")}
+    </div>
+    <div class="bd-all-list">
+      ${bdListHTML(bdFilteredJournal())}
+    </div>
+  </div>
+  ${boardNavHTML()}`;
+}
+function bdResultsHTML() {
+  const q = bdQ.trim(), k = q.toLowerCase();
+  if (!q) {
+    return `<div class="bd-sugg">
+      <div class="bd-sugg-title">Popular Topics</div>
+      <div class="bd-sugg-chips">
+        ${BD_POPULAR_TAGS.map(t => `<button class="bd-sugg-chip" data-bdtag="${esc(t)}">${esc(t)}</button>`).join("")}
+      </div>
+    </div>`;
+  }
+  const r = BOARD.filter(a => (a.title + " " + a.cat + " " + (a.sub || "")).toLowerCase().includes(k));
+  return `<h1 class="bd-rtitle">${r.length} ${r.length === 1 ? "result" : "results"} for “${esc(q)}”</h1>` + (r.length ? r.map(bdCardHTML).join("")
+    : `<div class="bd-none"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M8 8l5 5M13 8l-5 5"/></svg><span>No results found for “${esc(q)}”</span><span style="font-size:12px">Try searching with different keywords like Rolex, Daytona, or Titanium</span></div>`);
+}
+function boardSearchHTML() {
+  return `
+  <div class="ch-scroll sub-scroll bd-scroll">
+    <div class="bd-sbar">
+      <span class="bd-sbar-ic">${I.search(18)}</span>
+      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="Search articles, brands, or topics..." autocomplete="off">
+      ${bdQ ? `<button data-bdclear aria-label="Clear">${I.x(18)}</button>` : ""}
+    </div>
+    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>Search</span></div>
+    <div class="bd-res">${bdResultsHTML()}</div>
+  </div>
+  ${boardNavHTML()}`;
+}
+function boardSearchSync(pg) {
+  const r = pg && pg.querySelector(".bd-res");
+  if (r) r.innerHTML = bdResultsHTML();
+  const clr = pg && pg.querySelector("[data-bdclear]");
+  if (clr && !bdQ) clr.remove();
+}
+function boardArticleHTML(id) {
+  const a = bdGet(id);
+  if (!a) return chEmptyHTML("Article not found", "This article is no longer available.");
+  return `
+  <div class="bd-dscroll">
+    <div class="bd-dnav">
+      <button class="bd-pill-btn sub-back" title="Back" aria-label="Back">${I.back(20)}</button>
+      <div class="bd-pill-group">
+        <button class="bd-pill-act bd-pill-like${a.liked ? " on" : ""}" data-bdlike="${a.id}" title="Like" aria-label="Like">
+          ${I.heart(17)}
+        </button>
+        <button class="bd-pill-act bd-pill-sh" data-bdshare="${a.id}" title="Share" aria-label="Share">
+          ${I.share(17)}
+        </button>
+      </div>
+    </div>
+    <span class="bd-dcat">${esc(a.cat)}</span>
+    <h1>${esc(a.title)}</h1>
+    <div class="bd-author-row">
+      <img class="bd-author-av" src="./assets/thumbs/td-editorial.png" alt="Tuk Daeng">
+      <div class="bd-author-body">
+        <div class="bd-meta-cols">
+          <div class="bd-meta-col">
+            <span class="bd-meta-lbl">Author</span>
+            <span class="bd-meta-val">By Tuk Daeng</span>
+          </div>
+          <div class="bd-meta-col">
+            <span class="bd-meta-lbl">Date</span>
+            <span class="bd-meta-val">${esc(a.date)}</span>
+          </div>
+        </div>
+        <div class="bd-author-likes">
+          ${I.heart(14)} <span data-bdlike-count="${a.id}">${a.likes}</span>
+        </div>
+      </div>
+    </div>
+    <img class="bd-cover" src="${a.img}" alt="" loading="lazy">
+    <div class="bd-callout">${esc(a.sub || a.title)}</div>
+    ${BD_BODY.map(t => `<p>${esc(t)}</p>`).join("")}
+    <div class="bd-tags">
+      <span class="bd-tag">#Watches</span>
+      <span class="bd-tag">#${esc(a.cat.replace(/\s+/g, ""))}</span>
+      <span class="bd-tag">#TukDaeng</span>
+      <span class="bd-tag">#Horology</span>
+    </div>
+  </div>`;
+}
+function boardClick(e) {
+  const scr = e.target.closest(".screen");
+  if (!scr) return false;
+  const dot = e.target.closest("[data-bddot]");
+  if (dot) {
+    const idx = parseInt(dot.dataset.bddot, 10);
+    bdGoSlide(scr, idx);
+    return true;
+  }
+
+  const art = e.target.closest("[data-bdart]");
+  if (art && (suppressPhotoClick || bdDidDrag)) return true;
+  if (art) { rpPush(scr, "boardart:" + art.dataset.bdart); return true; }
+  if (e.target.closest("[data-bdsearch]")) {
+    bdQ = ""; rpPush(scr, "boardsearch");
+    setTimeout(() => scr.querySelector(".bd-q")?.focus(), 320);
+    return true;
+  }
+  if (e.target.closest("[data-bdclear]")) {
+    bdQ = ""; const i = scr.querySelector(".bd-q");
+    if (i) { i.value = ""; i.focus(); }
+    boardSearchSync(scr.querySelector(".page-sub"));
+    return true;
+  }
+  const tag = e.target.closest("[data-bdtag]");
+  if (tag) {
+    bdQ = tag.dataset.bdtag;
+    const i = scr.querySelector(".bd-q");
+    if (i) { i.value = bdQ; i.focus(); }
+    boardSearchSync(scr.querySelector(".page-sub"));
+    return true;
+  }
+  const pill = e.target.closest("[data-bdcat]");
+  if (pill) {
+    if (bdPillsDidDrag) return true;
+    bdFilterCat = pill.dataset.bdcat;
+    scr.querySelectorAll(".bd-pill").forEach(p => p.classList.toggle("active", p.dataset.bdcat === bdFilterCat));
+    const listWrap = scr.querySelector(".bd-all-list");
+    if (listWrap) listWrap.innerHTML = bdListHTML(bdFilteredJournal());
+    bdCenterPill(pill);
+    return true;
+  }
+  if (e.target.closest("[data-bdhome]")) { rpBack(scr); return true; }
+  if (e.target.closest("[data-bdall]")) {
+    bdFilterCat = "All";
+    rpPush(scr, "boardall");
+    setTimeout(() => {
+      const activePill = scr.querySelector(".bd-pill.active");
+      if (activePill) bdCenterPill(activePill);
+    }, 100);
+    return true;
+  }
+  if (e.target.closest("[data-bdmenu]")) {
+    openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
+      <div style="padding:14px 16px 8px; font-weight:700; font-size:15px; text-align:center; color:var(--text);">Categories</div>
+      <div class="pm-card pm-rows">
+        ${BD_CATEGORIES.map(c => `<button class="pm-row pm-ctr" data-bdmenu-cat="${esc(c)}"><span>${esc(c)}</span></button>`).join("")}
+      </div>
+      <div class="pm-card pm-cancel"><button class="pm-row pm-ctr" data-bdcancel-sheet><span>Close</span></button></div>`);
+    return true;
+  }
+  const menuCat = e.target.closest("[data-bdmenu-cat]");
+  if (menuCat) {
+    bdFilterCat = menuCat.dataset.bdmenuCat;
+    scr.classList.remove("pm-open");
+    rpPush(scr, "boardall");
+    setTimeout(() => {
+      const activePill = scr.querySelector(".bd-pill.active");
+      if (activePill) bdCenterPill(activePill);
+    }, 100);
+    return true;
+  }
+  const more = e.target.closest("[data-bdmore]");
+  if (more) {
+    const a = bdGet(more.dataset.bdmore);
+    if (!a) return true;
+    openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
+      <div class="pm-card pm-rows">
+        <button class="pm-row pm-ctr" data-bdact="share" data-id="${a.id}"><span>Share Article</span></button>
+        <button class="pm-row pm-ctr" data-bdact="copy" data-id="${a.id}"><span>Copy Link</span></button>
+        <button class="pm-row pm-ctr" data-bdact="save" data-id="${a.id}"><span>${a.saved ? "Remove from Saved" : "Save to Favorites"}</span></button>
+        <button class="pm-row pm-ctr danger" data-bdact="report"><span>Report Article</span></button>
+      </div>
+      <div class="pm-card pm-cancel"><button class="pm-row pm-ctr" data-bdcancel-sheet><span>Cancel</span></button></div>`);
+    return true;
+  }
+  const act = e.target.closest("[data-bdact]");
+  if (act) {
+    const action = act.dataset.bdact;
+    scr.classList.remove("pm-open");
+    if (action === "share") {
+      openSheet(scr, "sh", "share-open", shareSheetHTML());
+    } else if (action === "copy") {
+      scrToast(scr, "Link copied");
+    } else if (action === "save") {
+      const a = bdGet(act.dataset.id);
+      if (a) {
+        a.saved = !a.saved;
+        scr.querySelectorAll(`[data-bdsave="${a.id}"]`).forEach(btn => btn.classList.toggle("on", a.saved));
+        scrToast(scr, a.saved ? "Saved to favorites" : "Removed from favorites");
+      }
+    } else if (action === "report") {
+      scrToast(scr, "Report submitted. Thank you for notifying us.");
+    }
+    return true;
+  }
+  if (e.target.closest("[data-bdcancel-sheet]")) {
+    scr.classList.remove("pm-open");
+    return true;
+  }
+  if (e.target.closest("[data-bdshare]")) {
+    openSheet(scr, "sh", "share-open", shareSheetHTML());
+    return true;
+  }
+  const sv = e.target.closest("[data-bdsave]");
+  if (sv) {
+    const a = bdGet(sv.dataset.bdsave);
+    if (a) {
+      a.saved = !a.saved;
+      scr.querySelectorAll(`[data-bdsave="${a.id}"]`).forEach(btn => btn.classList.toggle("on", a.saved));
+      scrToast(scr, a.saved ? "Saved to favorites" : "Removed from favorites");
+    }
+    return true;
+  }
+  const lk = e.target.closest("[data-bdlike]");
+  if (lk) {
+    const a = bdGet(lk.dataset.bdlike);
+    if (a) {
+      a.liked = !a.liked; a.likes += a.liked ? 1 : -1;
+      scr.querySelectorAll(`[data-bdlike="${a.id}"]`).forEach(btn => {
+        btn.classList.toggle("on", a.liked);
+        const cnt = btn.querySelector("span");
+        if (cnt) cnt.textContent = a.likes;
+      });
+      scr.querySelectorAll(`[data-bdlike-count="${a.id}"]`).forEach(el => {
+        el.textContent = a.likes;
+      });
+      const footSub = scr.querySelector(".bd-dfoot-sub");
+      if (footSub) footSub.textContent = `${a.likes} ${a.likes === 1 ? "person" : "people"} liked this article`;
+    }
+    return true;
+  }
+  return false;
 }
 function chThreadMatch(t, q) {
   return !q || (t.user + " " + t.item.cap + " " + t.msgs.map(m => m.t).join(" ")).toLowerCase().includes(q);
@@ -9068,11 +10361,11 @@ function screenHTML(theme, variant) {
     </div>
 
     <nav class="bottom-nav">
-      <span class="nav-item active" data-navgo="feed">${I.navFeed()}<span class="nav-label">Feed</span></span>
+      <span class="nav-item active" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
       <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-      <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
-      <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
-      <span class="nav-item" data-navgo="profile">${I.navUser()}<span class="nav-label">Profile</span></span>
+      <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+      <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
+      <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
     </nav>
     <div class="home-ind"><i></i></div>
     <div class="sheet-backdrop"></div>
@@ -9177,11 +10470,11 @@ function applyPhoto(ph, post, i, dotsEl) {
 /* CREATE-001 — caption thumbs strip + hashtag chips: wheel + drag to scroll (desktop has no scrollbar) */
 let stripDrag = null;
 stageEl.addEventListener("wheel", e => {
-  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row, .pf-tabs");
+  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row, .pf-tabs, .bd-trend");
   if (strip) { strip.scrollLeft += e.deltaY || e.deltaX; e.preventDefault(); }
 }, { passive: false });
 stageEl.addEventListener("pointerdown", e => {
-  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row, .pf-tabs");
+  const strip = e.target.closest(".cf .ig-thumbs.multi, .cf .ig-chip-row, .pf-tabs, .bd-trend");
   if (strip) stripDrag = { strip, x0: e.clientX, sl: strip.scrollLeft, moved: false };
 });
 stageEl.addEventListener("pointermove", e => {
@@ -9343,6 +10636,7 @@ stageEl.addEventListener("keydown", e => {
   }
 });
 stageEl.addEventListener("input", e => {
+  if (e.target.matches(".bd-q")) { bdQ = e.target.value; boardSearchSync(e.target.closest(".page-sub")); return; }
   if (e.target.matches(".cf .ig-cap-line .ta"))
     cpState(e.target.closest(".screen")).caption = e.target.textContent;
   /* composer option panes — field inputs write into V.meta */
@@ -10004,6 +11298,54 @@ document.getElementById("stage").addEventListener("click", e => {
   if (subX) { rpClose(subX.closest(".screen")); return; } /* X closes the whole report stack, keeping the page that opened it */
   const subReset = e.target.closest('[data-dlg="reset"]');
   if (subReset) { openDlg(subReset.closest(".screen"), resetDlgHTML()); return; }
+  const logOutBtn = e.target.closest('[data-act="logout"]');
+  if (logOutBtn) { openDlg(logOutBtn.closest(".screen"), logoutDlgHTML()); return; }
+  const dlgLogout = e.target.closest(".dlg-logout-go");
+  if (dlgLogout) {
+    const scr = dlgLogout.closest(".screen");
+    scr.classList.remove("dialog-open");
+    subBack(scr);
+    scrToast(scr, "Logged out successfully");
+    return;
+  }
+  const delAccBtn = e.target.closest('[data-dlg="del-account"]');
+  if (delAccBtn) { openDlg(delAccBtn.closest(".screen"), delAccountDlgHTML()); return; }
+  const dlgDelGo = e.target.closest(".dlg-delaccount-go");
+  if (dlgDelGo) {
+    const scr = dlgDelGo.closest(".screen");
+    openDlg(scr, delAccountSuccessDlgHTML());
+    return;
+  }
+  const dlgDelDone = e.target.closest(".dlg-delaccount-done");
+  if (dlgDelDone) {
+    const scr = dlgDelDone.closest(".screen");
+    scr.classList.remove("dialog-open");
+    scr._subStack = [];
+    scr.classList.remove("sub-open");
+    scrToast(scr, "Account deactivated");
+    return;
+  }
+  const chgPwdBtn = e.target.closest('[data-act="change-pwd"]');
+  if (chgPwdBtn) {
+    scrToast(chgPwdBtn.closest(".screen"), "Password reset link sent to your email");
+    return;
+  }
+  const langOpt = e.target.closest("[data-lang-opt]");
+  if (langOpt) {
+    const scr = langOpt.closest(".screen");
+    state.lang = langOpt.dataset.langOpt;
+    renderSub(scr);
+    scrToast(scr, state.lang === "th" ? "เปลี่ยนภาษาเรียบร้อย" : "Language updated");
+    return;
+  }
+  const notifTgl = e.target.closest("[data-notif-tgl]");
+  if (notifTgl) {
+    const k = notifTgl.dataset.notifTgl;
+    state.notif = state.notif || { likes: true, comments: true, follows: true, offers: true, walerts: true };
+    state.notif[k] = !state.notif[k];
+    notifTgl.querySelector(".tg-sw").classList.toggle("on", state.notif[k]);
+    return;
+  }
   const sens = e.target.closest("[data-sens]");
   if (sens) { state.sensitive = sens.dataset.sens; renderSub(sens.closest(".screen")); return; }
   /* THEME-001 — theme option: apply instantly to the open screen (data-theme attr
@@ -10272,6 +11614,8 @@ document.getElementById("stage").addEventListener("click", e => {
   const hbDead = e.target.closest(".hb-item");
   if (hbDead) { toast("Not in this prototype yet"); return; }
   if (chatClick(e)) return;
+  if (alertsClick(e)) return;
+  if (boardClick(e)) return;
   /* ===== PROFILE-001 — profile menu + profile page actions ===== */
   const navGo = e.target.closest("[data-navgo]");
   if (navGo) {
@@ -10280,6 +11624,8 @@ document.getElementById("stage").addEventListener("click", e => {
     chatResetToDefault();
     if (go === "profile") openSub(scr, "profile:" + CP_ME.name, true);
     else if (go === "chat") openSub(scr, "chat", true);
+    else if (go === "alerts") openSub(scr, "alerts", true);
+    else if (go === "board") { bdQ = ""; openSub(scr, "board", true); }
     else if (go === "feed") {
       const wasFeed = !scr.classList.contains("sub-open");
       scr._subStack = []; scr.classList.remove("sub-open");
