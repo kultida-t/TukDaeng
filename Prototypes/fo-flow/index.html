@@ -176,18 +176,27 @@
     color: var(--text);
   }
 
-  /* ============ STATUS BAR ============ */
+  /* ============ STATUS BAR (Transparent Overlay / Edge-to-Edge) ============ */
   .statusbar {
-    height: 34px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 22px;
+    padding: 2px 22px 0;
     font-size: 12px;
     font-weight: 600;
-    flex-shrink: 0;
+    z-index: 50;
+    pointer-events: none;
+    background: transparent;
   }
-  .statusbar .icons { display: flex; gap: 5px; align-items: center; opacity: .8; }
+  .screen[data-theme="dark"] .statusbar {
+    text-shadow: 0 1px 3px rgba(0,0,0,0.55);
+  }
+  .statusbar .icons { display: flex; gap: 5px; align-items: center; opacity: .85; }
   .statusbar svg { display: block; }
 
   /* ============ APP HEADER ============ */
@@ -195,7 +204,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 6px 12px 8px;
+    padding: 38px 12px 8px;
     flex-shrink: 0;
     position: relative;
   }
@@ -208,6 +217,7 @@
     line-height: 1;
     position: absolute;
     left: 50%;
+    top: 44px;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
@@ -221,7 +231,7 @@
   /* brand feed dropdown (F4 — pure IG) */
   .brand-menu {
     position: absolute;
-    top: 78px;
+    top: 80px;
     left: 50%;
     transform: translateX(-50%) translateY(-6px);
     width: 180px;
@@ -813,7 +823,7 @@
   /* ============ DETAIL PAGE (Layer 3) ============ */
   .page-detail {
     position: absolute;
-    top: 34px;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
@@ -831,7 +841,7 @@
     display: flex;
     align-items: center;
     gap: 2px;
-    padding: 8px 12px;
+    padding: 38px 12px 8px;
     flex-shrink: 0;
   }
   .detail-title { font-size: 16px; font-weight: 700; margin-left: 4px; }
@@ -1535,7 +1545,7 @@
 
   /* settings / content-preferences page — slides in like the detail page */
   .page-sub {
-    position: absolute; top: 34px; bottom: 0; left: 0; right: 0;
+    position: absolute; top: 0; bottom: 0; left: 0; right: 0;
     background: var(--bg); transform: translateX(100%);
     transition: transform .28s ease; z-index: 32;
     display: flex; flex-direction: column;
@@ -1557,7 +1567,7 @@
   /* report stack illusion (IG): a cloned page keeps the previous view visible
      while the new page slides in on top / the popped page slides out */
   .screen .pg-ghost {
-    position: absolute; top: 34px; bottom: 0; left: 0; right: 0;
+    position: absolute; top: 0; bottom: 0; left: 0; right: 0;
     background: var(--bg); transform: none; animation: none;
     pointer-events: none; z-index: 31;
     display: flex; flex-direction: column; overflow: hidden;
@@ -1575,7 +1585,7 @@
   .sub-scroll::-webkit-scrollbar { display: none; }
   /* ============ POST VIEWER (IG search-result viewer — vertical swipe through results) ============ */
   .page-pv {
-    position: absolute; top: 34px; bottom: 0; left: 0; right: 0;
+    position: absolute; top: 0; bottom: 0; left: 0; right: 0;
     background: #000; transform: translateX(100%);
     transition: transform .28s ease; z-index: 34;
     display: flex; flex-direction: column;
@@ -1583,7 +1593,7 @@
   .screen.pv-open .page-pv { transform: none; animation: pgSide .28s ease; }
   .pv-head {
     position: absolute; top: 0; left: 0; right: 0; z-index: 5;
-    display: flex; align-items: center; justify-content: space-between; padding: 6px 8px;
+    display: flex; align-items: center; justify-content: space-between; padding: 38px 8px 6px;
   }
   .pv-head .icon-btn { color: #fff; }
   .pv-track { flex: 1; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none; }
@@ -2236,7 +2246,7 @@
   .sr-wa.on svg path { fill: var(--text); }
 
   /* ============ SEARCH PAGE (SEARCH-001 — IG-style search flow) ============ */
-  .sr-head { display: flex; align-items: center; gap: 8px; padding: 8px 10px 6px; flex-shrink: 0; }
+  .sr-head { display: flex; align-items: center; gap: 8px; padding: 38px 10px 6px; flex-shrink: 0; }
   .sr-field {
     flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;
     background: var(--surface-2); border: 1px solid var(--line);
@@ -2988,13 +2998,14 @@
   .cf-head {
     display: flex;
     align-items: center;
-    padding: 4px 12px 10px;
+    padding: 38px 12px 10px;
     flex-shrink: 0;
     position: relative;
   }
   .cf-head .t {
     position: absolute;
     left: 50%;
+    top: 44px;
     transform: translateX(-50%);
     font-size: 15.5px;
     font-weight: 700;
@@ -3503,7 +3514,7 @@
   @keyframes clipLive { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.13) translate(-1.8%, 1.2%); } }
 
   /* ============ PROFILE-001 — IG-style profile pages (own + viewer) ============ */
-  .pf-head { padding: 6px 10px; }
+  .pf-head { padding: 38px 10px 8px; }
   .pf-uname {
     display: flex; align-items: center; gap: 5px;
     background: none; border: none; color: var(--text);
@@ -3815,7 +3826,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 16px 8px;
+    padding: 38px 16px 8px;
     background: none;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -4123,7 +4134,7 @@
   .screen[data-theme="dark"] .ch-time { color:#7e8b9b; }
   .ch-un { min-width:17px; height:17px; padding:0 4px; border-radius:999px; background:var(--red); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; }
   .ch-un-spacer { height:17px; visibility:hidden; }
-  .al-head { position:sticky; top:0; z-index:25; display:flex; align-items:center; justify-content:flex-start; gap:2px; padding:10px 12px; background:#fff; border-bottom:1px solid var(--line); flex-shrink:0; }
+  .al-head { position:sticky; top:0; z-index:25; display:flex; align-items:center; justify-content:flex-start; gap:2px; padding:38px 12px 10px; background:#fff; border-bottom:1px solid var(--line); flex-shrink:0; }
   .screen[data-theme="dark"] .al-head { background:#14161a; }
   .al-back { color:var(--text); }
   .pfp-tt.solo span { display:none; }
@@ -4137,7 +4148,7 @@
   .bd-head {
     position:sticky; top:0; z-index:25;
     display:grid; grid-template-columns:44px 1fr 44px; align-items:center;
-    padding:8px 10px;
+    padding:38px 10px 8px;
     background:rgba(255,255,255,.92);
     backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
     border-bottom:1px solid var(--line);
