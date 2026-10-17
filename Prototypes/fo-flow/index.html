@@ -814,7 +814,7 @@
   .page-detail {
     position: absolute;
     top: 34px;
-    bottom: 22px;
+    bottom: 0;
     left: 0;
     right: 0;
     background: var(--bg);
@@ -1535,7 +1535,7 @@
 
   /* settings / content-preferences page — slides in like the detail page */
   .page-sub {
-    position: absolute; top: 34px; bottom: 22px; left: 0; right: 0;
+    position: absolute; top: 34px; bottom: 0; left: 0; right: 0;
     background: var(--bg); transform: translateX(100%);
     transition: transform .28s ease; z-index: 32;
     display: flex; flex-direction: column;
@@ -1557,7 +1557,7 @@
   /* report stack illusion (IG): a cloned page keeps the previous view visible
      while the new page slides in on top / the popped page slides out */
   .screen .pg-ghost {
-    position: absolute; top: 34px; bottom: 22px; left: 0; right: 0;
+    position: absolute; top: 34px; bottom: 0; left: 0; right: 0;
     background: var(--bg); transform: none; animation: none;
     pointer-events: none; z-index: 31;
     display: flex; flex-direction: column; overflow: hidden;
@@ -1575,7 +1575,7 @@
   .sub-scroll::-webkit-scrollbar { display: none; }
   /* ============ POST VIEWER (IG search-result viewer — vertical swipe through results) ============ */
   .page-pv {
-    position: absolute; top: 34px; bottom: 22px; left: 0; right: 0;
+    position: absolute; top: 34px; bottom: 0; left: 0; right: 0;
     background: #000; transform: translateX(100%);
     transition: transform .28s ease; z-index: 34;
     display: flex; flex-direction: column;
@@ -1680,9 +1680,9 @@
   .sub-row .sub-chev { margin-left: auto; color: var(--muted); display: flex; }
   .sub-row .sub-count { margin-left: auto; color: var(--muted); font-size: 14px; }
   .sub-row .sub-count + .sub-chev { margin-left: 8px; }
-  .lg-b { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-  .lg-t { font-size: 14.5px; color: var(--text); }
-  .lg-d { font-size: 12.5px; color: var(--muted); line-height: 1.4; font-weight: 400; }
+  .lg-b { display: flex; flex-direction: column; gap: 1.5px; min-width: 0; }
+  .lg-t { font-size: 14.5px; color: var(--text); line-height: 1.22; }
+  .lg-d { font-size: 12.5px; color: var(--muted); line-height: 1.32; font-weight: 400; }
   .tg-sw {
     margin-left: auto; flex-shrink: 0; width: 44px; height: 26px;
     border-radius: 999px; background: var(--chip-bg); position: relative; transition: background .2s;
@@ -2541,12 +2541,15 @@
     flex-shrink: 0;
   }
   .home-ind {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
     height: 22px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    background: var(--surface);
-    flex-shrink: 0;
+    background: transparent;
+    pointer-events: none;
+    z-index: 40;
     padding-bottom: 8px;
   }
   .home-ind i {
@@ -2593,7 +2596,7 @@
   /* N1 — floating OS-style pill nav (translucent, floats over content) */
   .screen[data-nav="labeled"] .bottom-nav {
     position: absolute;
-    left: 14px; right: 14px; bottom: 30px;
+    left: 14px; right: 14px; bottom: 24px;
     z-index: 20;
     border-top: none;
     background: color-mix(in srgb, var(--surface-2) 50%, transparent);
@@ -2626,6 +2629,10 @@
   .screen[data-nav="labeled"] .nav-item > svg { width: 22px; height: 22px; stroke-width: 1.8; }
   .nav-item.active .tab-fill { fill: currentColor; }
   .nav-item.active .nav-chat-ic .nc-dots { fill: #fff; }
+
+  .screen:is(.sub-open, .detail-open, .pv-open) > .bottom-nav {
+    display: none !important;
+  }
 
   /* spec group sub-headings (details expander) */
   .spec-sec {
@@ -3777,10 +3784,6 @@
   .pe-in:focus { outline: none; border-color: var(--muted); }
   .pe-savewrap { padding: 16px; }
   .pe-save { width: 100%; }
-  /* floating pill nav inside .page-sub sits 22px above screen bottom — realign with the feed nav */
-  .screen[data-nav="labeled"] .pf-nav {
-    bottom: 8px;
-  }
   .screen[data-nav="labeled"] .pf-scroll { padding-bottom: 84px; }
   /* ============ CHAT — LINE / IG Direct style ============ */
   /* ============ CHAT — LINE Style ============ */
@@ -5217,21 +5220,46 @@ const I = {
   fileText: (s=21) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
   infoCir: (s=21) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
   phone: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+  flagEn: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" style="border-radius:50%;overflow:hidden;box-shadow:0 0 0 1px var(--line,rgba(128,128,128,0.25));flex-shrink:0;"><rect width="24" height="24" fill="#012169"/><path d="M0 0 L24 24 M24 0 L0 24" stroke="#ffffff" stroke-width="4.5"/><path d="M0 0 L24 24 M24 0 L0 24" stroke="#C8102E" stroke-width="2.5"/><path d="M12 0 V24 M0 12 H24" stroke="#ffffff" stroke-width="7"/><path d="M12 0 V24 M0 12 H24" stroke="#C8102E" stroke-width="4.2"/></svg>`,
+  flagTh: (s=22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" style="border-radius:50%;overflow:hidden;box-shadow:0 0 0 1px var(--line,rgba(128,128,128,0.25));flex-shrink:0;"><rect width="24" height="4" fill="#A51931"/><rect y="4" width="24" height="4" fill="#FFFFFF"/><rect y="8" width="24" height="8" fill="#2D2A4A"/><rect y="16" width="24" height="4" fill="#FFFFFF"/><rect y="20" width="24" height="4" fill="#A51931"/></svg>`,
 };
 
 /* ================= RENDER ================= */
 const state = { variant: "a1", tStyle: "t3", dStyle: "d2", nav: "labeled", ft: "chipsc", ask: "outline", ds: "full", pr: "pr1", dh: "dh1", dl: "dl1", tg: "tg1", feedTab: "all" };
 
+function formatPostTime(t, isTh) {
+  if (!isTh || !t) return t;
+  return t
+    .replace(/(\d+)\s*hours?\s*ago/i, "$1 ชั่วโมงที่แล้ว")
+    .replace(/(\d+)\s*mins?\s*ago/i, "$1 นาทีที่แล้ว")
+    .replace(/(\d+)\s*minutes?\s*ago/i, "$1 นาทีที่แล้ว")
+    .replace(/(\d+)\s*days?\s*ago/i, "$1 วันที่แล้ว")
+    .replace(/(\d+)\s*weeks?\s*ago/i, "$1 สัปดาห์ที่แล้ว")
+    .replace(/yesterday/i, "เมื่อวานนี้")
+    .replace(/just now/i, "เมื่อสักครู่");
+}
+function formatAlertTime(ago, isTh) {
+  if (!isTh || !ago) return ago;
+  return ago
+    .replace(/(\d+)m/g, "$1 นาที")
+    .replace(/(\d+)h/g, "$1 ชม.")
+    .replace(/(\d+)d/g, "$1 วัน")
+    .replace(/(\d+)w/g, "$1 สัปดาห์");
+}
+
 function askBtnHTML(defaultSolid) {
+  const isTh = state.lang === "th";
+  const txt = isTh ? "สอบถาม" : "Ask";
   let style = state.ask === "auto" ? (defaultSolid ? "solid" : "outline") : state.ask;
   if (style === "bubble") style = "outline";
-  if (style === "ico") return `<button class="ask-pill ico" title="Ask seller">${I.chat(21)}</button>`;
-  if (style === "txt") return `<button class="ask-pill txt">Ask</button>`;
-  return `<button class="ask-pill ${style}">${I.chat(14)} Ask</button>`;
+  if (style === "ico") return `<button class="ask-pill ico" title="${isTh ? "สอบถามผู้ขาย" : "Ask seller"}">${I.chat(21)}</button>`;
+  if (style === "txt") return `<button class="ask-pill txt">${txt}</button>`;
+  return `<button class="ask-pill ${style}">${I.chat(14)} ${txt}</button>`;
 }
 
 function triggerHTML() {
-  const lbl = `<span class="dt-label">Tap for details</span>`;
+  const isTh = state.lang === "th";
+  const lbl = `<span class="dt-label">${isTh ? "แตะเพื่อดูรายละเอียด" : "Tap for details"}</span>`;
   if (state.tStyle === "t2")
     return `<button class="details-toggle ln"><i></i><span class="knob">${I.chev(13)}</span><i></i></button>`;
   if (state.tStyle === "t3")
@@ -5240,6 +5268,7 @@ function triggerHTML() {
 }
 
 function detailsHTML(p, showPriceRow) {
+  const isTh = state.lang === "th";
   const groups = ((p.specGroups && p.specGroups.length) ? p.specGroups : [{ title: "", rows: p.specs }])
     .filter(g => g.title !== "Price & Data Source");
   const renderRows = {
@@ -5253,7 +5282,7 @@ function detailsHTML(p, showPriceRow) {
       <div class="details-inner">
         <div class="details-top">
           ${showPriceRow ? `<div class="details-price">${p.price}</div>` : `<span></span>`}
-          <span class="view-full">View full detail ${I.chevR()}</span>
+          <span class="view-full">${isTh ? "ดูรายละเอียดทั้งหมด" : "View full detail"} ${I.chevR()}</span>
         </div>
         ${content}
       </div>
@@ -5261,25 +5290,29 @@ function detailsHTML(p, showPriceRow) {
 }
 
 function detailHeadHTML(p) {
+  const isTh = state.lang === "th";
   const back = `<button class="icon-btn detail-back">${I.back()}</button>`;
   const dots = `<button class="icon-btn pm-btn">${I.dots(18)}</button>`;
+  const title = isTh ? "รายละเอียด" : "Detail";
   if (state.dh === "dh2")
     return `<div class="detail-head">${back}<span class="spacer"></span>${dots}</div>`;
   if (state.dh === "dh3")
-    return `<div class="detail-head">${back}<span class="spacer"></span><span class="detail-title">Detail</span><span class="spacer"></span>${dots}</div>`;
+    return `<div class="detail-head">${back}<span class="spacer"></span><span class="detail-title">${title}</span><span class="spacer"></span>${dots}</div>`;
   if (state.dh === "dh4") return "";
   if (state.dh === "dh5")
     return `<div class="detail-head">${back}<span class="head-av" data-pf-user="${esc(p.seller)}"><img src="${p.avatar}" alt=""></span><span class="detail-title" style="font-size:14px" data-pf-user="${esc(p.seller)}">${p.seller}</span><span class="spacer"></span>${dots}</div>`;
-  return `<div class="detail-head">${back}<span class="spacer"></span><span class="detail-title">Detail</span><span class="spacer"></span>${dots}</div>`;
+  return `<div class="detail-head">${back}<span class="spacer"></span><span class="detail-title">${title}</span><span class="spacer"></span>${dots}</div>`;
 }
 
 function saleTagHTML(isSale) {
   if (state.tg === "tg2") return "";
-  return `<span class="inline-tag${isSale ? "" : " muted"}">${isSale ? "FOR SALE" : "SHOWCASE"}</span>`;
+  const isTh = state.lang === "th";
+  return `<span class="inline-tag${isSale ? "" : " muted"}">${isSale ? (isTh ? "ลงขาย" : "FOR SALE") : (isTh ? "โชว์" : "SHOWCASE")}</span>`;
 }
 
 function detailHTML(p) {
   if (state.dl !== "dl1") return igDetailHTML(p);
+  const isTh = state.lang === "th";
   const spec = k => (p.specs.find(s => s[0] === k) || [k, "n/a"])[1];
   const isSale = !!p.price;
   const dots = p.photos.length > 1;
@@ -5315,7 +5348,7 @@ function detailHTML(p) {
         ${saleTagHTML(isSale)}
         <h2 class="detail-name">${name}</h2>
         ${ref ? `<div class="detail-ref">${ref}</div>` : ""}
-        <div class="detail-h">Descriptions</div>
+        <div class="detail-h">${isTh ? "คำอธิบาย" : "Descriptions"}</div>
         <p class="detail-desc">${igCaptionHTML(p, p.desc || "-")}</p>
         ${detailSpecsHTML(p)}
       </div>
@@ -5397,9 +5430,9 @@ function igBodyHTML(p, withPostHead) {
       <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
       <div class="who">
         <div class="name">${p.seller}</div>
-        <div class="sub-line">${p.time}</div>
+        <div class="sub-line">${formatPostTime(p.time, state.lang === "th")}</div>
       </div>
-      ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
+      ${p.following ? "" : `<button class="follow-btn">${state.lang === "th" ? "ติดตาม" : "Follow"}</button>`}
       <button class="more">${I.dots(19)}</button>
     </header>` : ""}
     <div class="detail-hero${cl.has ? " clip-ph" : ""}"${cl.has ? ` data-dur="${cl.dur0}"` : ""}>
@@ -5424,7 +5457,7 @@ function igBodyHTML(p, withPostHead) {
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
-      <span>Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others</span>
+      <span>${state.lang === "th" ? `ถูกใจโดย <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> และคนอื่น ๆ` : `Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others`}</span>
     </div>`}
     <p class="caption"><b>${p.seller}</b> ${igCaptionHTML(p)}</p>
     <div class="detail-pad">
@@ -5511,22 +5544,23 @@ function commentRowsHTML(p) {
       <div class="c-main">
         <div class="c-head"><span class="n" data-pf-user="${esc(r.name)}">${r.name}</span><span>${r.time}</span></div>
         <div class="c-text">${r.text}</div>
-        <span class="c-meta">Reply</span>
+        <span class="c-meta">${state.lang === "th" ? "ตอบกลับ" : "Reply"}</span>
       </div>
       <span class="c-like">${I.heart(15)}<span>${r.likes || ""}</span></span>
     </div>`).join("")}`).join("");
 }
 
 function commentsHTML(p) {
+  const isTh = state.lang === "th";
   const rows = commentRowsHTML(p);
   return `
     <div class="sheet-handle"></div>
-    <div class="sheet-title">Comments</div>
-    <div class="sheet-list">${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No comments yet</div>`}</div>
+    <div class="sheet-title">${isTh ? "ความคิดเห็น" : "Comments"}</div>
+    <div class="sheet-list">${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">${isTh ? "ยังไม่มีความคิดเห็น" : "No comments yet"}</div>`}</div>
     <div class="emoji-row"><span>❤️</span><span>🙌</span><span>🔥</span><span>👏</span><span>🥲</span><span>😍</span><span>😮</span><span>😂</span></div>
     <div class="comment-input">
       <img src="./assets/user-avatars/u-1075.png" alt="">
-      <span class="field">Add a comment...</span>
+      <span class="field">${isTh ? "เพิ่มความคิดเห็น..." : "Add a comment..."}</span>
       <span class="ci-ic">${I.img(20)}${I.gif(20)}</span>
     </div>`;
 }
@@ -5566,38 +5600,43 @@ const COLLECTIONS = [
 const dispName = n => (FRIENDS.find(f => f.name === n) || {}).disp || n;
 
 function likesSheetHTML(p) {
+  const isTh = state.lang === "th";
   const seen = new Set();
   const likers = [{ name: p.likedBy.name, avatar: p.likedBy.avatar }, ...LIKER_POOL]
     .filter(l => !seen.has(l.name) && seen.add(l.name));
   return `
     <div class="sheet-handle"></div>
-    <div class="sheet-title">Likes</div>
-    ${isOwnPost(p) ? "" : `<div class="lk-note">Only ${p.seller} can see the total number of likes on this post.</div>`}
+    <div class="sheet-title">${isTh ? "ยอดถูกใจ" : "Likes"}</div>
+    ${isOwnPost(p) ? "" : `<div class="lk-note">${isTh ? `มีเพียง ${p.seller} เท่านั้นที่สามารถดูจำนวนผู้กดถูกใจทั้งหมดในโพสต์นี้ได้` : `Only ${p.seller} can see the total number of likes on this post.`}</div>`}
     <div class="sheet-list">
       ${likers.map(l => `
       <div class="lk-row" data-pf-user="${esc(l.name)}">
         <img src="${l.avatar}" alt="">
         <div class="lk-who"><div class="u">${l.name}</div><div class="d">${l.disp || dispName(l.name)}</div></div>
-        <button class="lk-follow">Follow</button>
+        <button class="lk-follow">${isTh ? "ติดตาม" : "Follow"}</button>
       </div>`).join("")}
     </div>`;
 }
 
 function shareSheetHTML() {
+  const isTh = state.lang === "th";
   return `
     <div class="sheet-handle"></div>
     <div class="sh-search">
-      <span class="sh-field">${I.search(17)}<input class="sh-q" placeholder="Search"></span>
+      <span class="sh-field">${I.search(17)}<input class="sh-q" placeholder="${isTh ? "ค้นหา" : "Search"}"></span>
     </div>
     <div class="sh-grid">
       ${FRIENDS.map(f => `<button class="sh-fr" data-name="${f.name}"><img src="${f.avatar}" alt=""><span class="n">${f.name}</span></button>`).join("")}
     </div>
     <div class="sh-apps">
-      ${SHARE_APPS.map(a => `
-      <button class="sh-app${a.cls ? " " + a.cls : ""}" data-app="${a.app}" data-t="${a.t}">
+      ${SHARE_APPS.map(a => {
+        const title = a.app === "copy" ? (isTh ? "คัดลอกลิงก์" : "Copy link") : a.t;
+        return `
+      <button class="sh-app${a.cls ? " " + a.cls : ""}" data-app="${a.app}" data-t="${title}">
         <span class="ic"${a.bg ? ` style="background:${a.bg}"` : ""}>${a.ic ? I[a.ic](24) : a.txt}</span>
-        <span class="t">${a.t}</span>
-      </button>`).join("")}
+        <span class="t">${title}</span>
+      </button>`;
+      }).join("")}
     </div>`;
 }
 
@@ -5801,23 +5840,35 @@ const PM_REASONS = [
   "False information",
   "Intellectual property",
 ];
+const PM_REASONS_TH = [
+  "ฉันแค่ไม่ชอบ",
+  "การกลั่นแกล้งหรือการติดต่อที่ไม่พึงประสงค์",
+  "การฆ่าตัวตาย ทำร้ายตัวเอง หรือพฤติกรรมการกินที่ผิดปกติ",
+  "ความรุนแรง ความเกลียดชัง หรือการแสวงหาประโยชน์",
+  "สินค้าลอกเลียนแบบหรือของปลอม",
+  "ภาพเปลือยหรือกิจกรรมทางเพศ",
+  "การหลอกลวง การฉ้อโกง หรือสแปม",
+  "ข้อมูลเท็จ",
+  "ทรัพย์สินทางปัญญา",
+];
 
 function pmMenuHTML(p, reportOnly) {
+  const isTh = state.lang === "th";
   if (reportOnly) return `
     <div class="sheet-handle"></div>
     <div class="pm-card">
-      <button class="pm-row danger pm-go-report">${I.flag(20)}<span>Report</span></button>
+      <button class="pm-row danger pm-go-report">${I.flag(20)}<span>${isTh ? "รายงาน" : "Report"}</span></button>
     </div>`;
   const fav = p && p.favorite;
   const canFav = p && (p.following || fav);
   return `
     <div class="sheet-handle"></div>
     ${canFav ? `<div class="pm-card pm-top">
-      <button class="pm-row pm-fav">${fav ? I.starFill(20) : I.star(20)}<span>${fav ? "Remove from favorites" : "Add to favorites"}</span></button>
+      <button class="pm-row pm-fav">${fav ? I.starFill(20) : I.star(20)}<span>${fav ? (isTh ? "ลบออกจากรายการโปรด" : "Remove from favorites") : (isTh ? "เพิ่มในรายการโปรด" : "Add to favorites")}</span></button>
     </div>` : ""}
     <div class="pm-card">
-      <button class="pm-row pm-ni">${I.circleX(20)}<span>Not interested</span></button>
-      <button class="pm-row danger pm-go-report">${I.flag(20)}<span>Report</span></button>
+      <button class="pm-row pm-ni">${I.circleX(20)}<span>${isTh ? "ไม่สนใจ" : "Not interested"}</span></button>
+      <button class="pm-row danger pm-go-report">${I.flag(20)}<span>${isTh ? "รายงาน" : "Report"}</span></button>
     </div>`;
 }
 
@@ -5825,14 +5876,15 @@ function pmMenuHTML(p, reportOnly) {
 const isOwnPost = p => p && p.seller === CP_ME.name;
 
 function pmOwnMenuHTML(p, tab = "all") {
+  const isTh = state.lang === "th";
   return `
     <div class="sheet-handle"></div>
     <div class="pm-card">
-      <button class="pm-row pm-own-archive">${I.history(20)}<span>${p.archived ? "Unarchive" : "Archive"}</span></button>
-      <button class="pm-row pm-own-nocomm">${I.commentOff(20)}<span>${p.noComments ? "Turn on commenting" : "Turn off commenting"}</span></button>
-      <button class="pm-row pm-own-edit">${I.pen(20)}<span>Edit</span></button>
-      <button class="pm-row pm-own-pin">${I.pinPost(20)}<span>${p.pins && p.pins[tab] ? "Unpin from grid" : "Pin to top of grid"}</span></button>
-      <button class="pm-row danger pm-own-del">${I.trash(20)}<span>Delete</span></button>
+      <button class="pm-row pm-own-archive">${I.history(20)}<span>${p.archived ? (isTh ? "ยกเลิกการเก็บถาวร" : "Unarchive") : (isTh ? "จัดเก็บถาวร" : "Archive")}</span></button>
+      <button class="pm-row pm-own-nocomm">${I.commentOff(20)}<span>${p.noComments ? (isTh ? "เปิดความคิดเห็น" : "Turn on commenting") : (isTh ? "ปิดความคิดเห็น" : "Turn off commenting")}</span></button>
+      <button class="pm-row pm-own-edit">${I.pen(20)}<span>${isTh ? "แก้ไข" : "Edit"}</span></button>
+      <button class="pm-row pm-own-pin">${I.pinPost(20)}<span>${p.pins && p.pins[tab] ? (isTh ? "ถอนหมุดออกจากกริด" : "Unpin from grid") : (isTh ? "ปักหมุดไว้ด้านบนสุดของกริด" : "Pin to top of grid")}</span></button>
+      <button class="pm-row danger pm-own-del">${I.trash(20)}<span>${isTh ? "ลบ" : "Delete"}</span></button>
     </div>`;
 }
 
@@ -5853,17 +5905,18 @@ function refreshPostViews(scr, p) {
 }
 
 function niCardHTML(p) {
+  const isTh = state.lang === "th";
   const rows = p.following
-    ? `<button class="ni-item ni-mute">${I.bellOff(20)}<span class="ni-txt">Mute ${p.seller}<span class="ni-desc">Stop seeing new posts from them in feed</span></span></button>
-       <button class="ni-item ni-unfollow">${I.userMinus(20)}<span>Unfollow ${p.seller}</span></button>`
-    : `<button class="ni-item ni-pref">${I.sliders(20)}<span>Manage content preferences</span></button>`;
+    ? `<button class="ni-item ni-mute">${I.bellOff(20)}<span class="ni-txt">${isTh ? `ปิดเสียงเตือน ${p.seller}` : `Mute ${p.seller}`}<span class="ni-desc">${isTh ? "หยุดเห็นโพสต์ใหม่จากผู้ใช้นี้ในฟีด" : "Stop seeing new posts from them in feed"}</span></span></button>
+       <button class="ni-item ni-unfollow">${I.userMinus(20)}<span>${isTh ? `เลิกติดตาม ${p.seller}` : `Unfollow ${p.seller}`}</span></button>`
+    : `<button class="ni-item ni-pref">${I.sliders(20)}<span>${isTh ? "จัดการความต้องการเนื้อหา" : "Manage content preferences"}</span></button>`;
   return `
   <article class="post ni-card" data-pid="${p.id}">
     <div class="ni-box">
-      <div class="ni-head"><span class="ni-title">Thanks for your feedback</span><button class="pm-undo">Undo</button></div>
-      <div class="ni-sub">We'll suggest fewer posts like this.</div>
+      <div class="ni-head"><span class="ni-title">${isTh ? "ขอบคุณสำหรับข้อเสนอแนะ" : "Thanks for your feedback"}</span><button class="pm-undo">${isTh ? "เลิกทำ" : "Undo"}</button></div>
+      <div class="ni-sub">${isTh ? "เราจะแนะนำโพสต์แบบนี้น้อยลง" : "We'll suggest fewer posts like this."}</div>
       ${rows}
-      <button class="ni-item ni-uncomf">${I.sad(21)}<span>This post made me uncomfortable</span></button>
+      <button class="ni-item ni-uncomf">${I.sad(21)}<span>${isTh ? "โพสต์นี้ทำให้ฉันรู้สึกไม่สบายใจ" : "This post made me uncomfortable"}</span></button>
     </div>
   </article>`;
 }
@@ -5894,6 +5947,7 @@ function clipUiHTML(p) {
   return `<span class="clip-badge"${cl.d0 ? "" : ' style="display:none"'}>${I.play(11)}${cl.d0 || ""}</span><span class="prog"><i></i></span>`;
 }
 function postCard(p, variant) {
+  const isTh = state.lang === "th";
   const isMixed = variant === "mixed";
   const type = isMixed && p.type === "showcase" ? "showcase" : (isMixed ? "sale" : null);
   const hasPrice = p.price !== null;
@@ -5917,7 +5971,7 @@ function postCard(p, variant) {
         <div class="name">${p.seller}</div>
         ${p.location ? `<div class="sub-line">${p.location}</div>` : ""}
       </div>
-      ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
+      ${p.following ? "" : `<button class="follow-btn">${isTh ? "ติดตาม" : "Follow"}</button>`}
       <button class="more">${I.dots(19)}</button>
     </header>
 
@@ -5925,8 +5979,8 @@ function postCard(p, variant) {
       <img src="${p.photos[0]}" alt="">
       ${dots ? `<span class="photo-counter">1/${p.photos.length}</span>` : ""}
       ${clipUiHTML(p)}
-      ${showTag && type === "sale" ? `<span class="type-tag sale">FOR SALE</span>` : ""}
-      ${showTag && type === "showcase" ? `<span class="type-tag showcase">SHOWCASE</span>` : ""}
+      ${showTag && type === "sale" ? `<span class="type-tag sale">${isTh ? "ลงขาย" : "FOR SALE"}</span>` : ""}
+      ${showTag && type === "showcase" ? `<span class="type-tag showcase">${isTh ? "โชว์" : "SHOWCASE"}</span>` : ""}
       ${priceOverlay ? `<span class="cond-overlay">${p.chips[0]}</span>` : ""}
       ${priceOverlay ? `<span class="price-overlay">${p.price}</span>` : ""}
     </div>
@@ -5950,12 +6004,12 @@ function postCard(p, variant) {
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
-      <span>Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others</span>
+      <span>${isTh ? `ถูกใจโดย <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> และคนอื่น ๆ` : `Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others`}</span>
     </div>`}
 
-    ${(p.caption || p.captionFull) ? `<p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">more</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
+    ${(p.caption || p.captionFull) ? `<p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">${isTh ? "เพิ่มเติม" : "more"}</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
 
-    <div class="post-time">${p.time}</div>
+    <div class="post-time">${formatPostTime(p.time, isTh)}</div>
 
     ${quietPrice ? `<p class="quiet-price">${p.price}</p>` : ""}
 
@@ -5964,17 +6018,18 @@ function postCard(p, variant) {
     ${footerPrice ? `
       <div class="price-footer">
         <span class="p">${p.price}</span>
-        <button class="ask-pill outline">Ask Seller</button>
+        <button class="ask-pill outline">${isTh ? "สอบถามผู้ขาย" : "Ask Seller"}</button>
       </div>` : ""}
   </article>`;
 }
 
 function feedEmptyHTML(tab) {
+  const isTh = state.lang === "th";
   const isFollowing = tab === "following";
   return `
   <div class="feed-empty">
     <span class="fe-ico">${isFollowing ? I.users(56) : I.star(56)}</span>
-    <div class="fe-title">${isFollowing ? "Follow others to see their posts here" : "No favorites yet"}</div>
+    <div class="fe-title">${isFollowing ? (isTh ? "ติดตามผู้อื่นเพื่อดูโพสต์ของพวกเขาที่นี่" : "Follow others to see their posts here") : (isTh ? "ยังไม่มีรายการโปรด" : "No favorites yet")}</div>
   </div>`;
 }
 
@@ -5998,6 +6053,7 @@ function setFeedTab(scr, tab) {
    a button that is already rendered flips Follow<->Following in place so a
    fresh follow can be undone; after a re-render followed posts have no button */
 function setFollowing(scr, seller, on) {
+  const isTh = state.lang === "th";
   POSTS.forEach(p => { if (p.seller === seller) { p.following = on; if (!on) { p.favorite = false; p.muted = false; } } }); /* unfollow also clears favorite+mute so they drop off the Settings lists */
   scr.querySelectorAll(".feed-scroll .post, .page-sub .post, .page-pv .post").forEach(art => {
     if (art.classList.contains("pfp-post")) return; /* Posts viewer cards never carry a follow btn — it lives in the pv head */
@@ -6006,18 +6062,18 @@ function setFollowing(scr, seller, on) {
     const fb = art.querySelector(".follow-btn");
     if (fb) {
       fb.classList.toggle("on", on);
-      fb.textContent = on ? "Following" : "Follow";
+      fb.textContent = on ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตาม" : "Follow");
       return;
     }
     const head = art.querySelector(".post-head");
     if (head && !on)
-      head.querySelector(".more").insertAdjacentHTML("beforebegin", `<button class="follow-btn">Follow</button>`);
+      head.querySelector(".more").insertAdjacentHTML("beforebegin", `<button class="follow-btn">${isTh ? "ติดตาม" : "Follow"}</button>`);
   });
   const dp = findPost(scr.dataset.detailPid);
   const db = scr.querySelector(".page-detail .follow-btn");
   if (db && dp && dp.seller === seller) {
     db.classList.toggle("on", dp.following);
-    db.textContent = dp.following ? "Following" : "Follow";
+    db.textContent = dp.following ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตาม" : "Follow");
   }
   if (state.feedTab === "following" || state.feedTab === "favorites" || !on) /* !on → unmuted posts may re-enter the feed */
     scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
@@ -6286,12 +6342,15 @@ function resultSellers(S) {
   return [...seen.values()];
 }
 function sellerCardHTML(p) {
+  const isTh = state.lang === "th";
   const n = salePosts().filter(x => x.seller === p.seller).length;
+  const countStr = isTh ? `${n} รายการประกาศ` : `${n} listing${n === 1 ? "" : "s"}`;
+  const flwStr = p.following ? (isTh ? " · กำลังติดตาม" : " · Following") : "";
   return `
     <div class="sr-scard" data-pf-user="${esc(p.seller)}">
       <img src="${p.avatar}" alt="">
-      <div class="b"><div class="u">${p.seller}</div><div class="d">${n} listing${n === 1 ? "" : "s"}${p.following ? " · Following" : ""}</div></div>
-      <button class="follow-btn sc-follow${p.following ? " on" : ""}" data-seller="${esc(p.seller)}">${p.following ? "Following" : "Follow"}</button>
+      <div class="b"><div class="u">${p.seller}</div><div class="d">${countStr}${flwStr}</div></div>
+      <button class="follow-btn sc-follow${p.following ? " on" : ""}" data-seller="${esc(p.seller)}">${p.following ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตาม" : "Follow")}</button>
     </div>`;
 }
 function resultGridHTML(list) {
@@ -6299,6 +6358,7 @@ function resultGridHTML(list) {
 }
 /* ===== post viewer — IG immersive viewer, vertical swipe through the result list ===== */
 function pvPostHTML(p, phi = 0) {
+  const isTh = state.lang === "th";
   const hasSpecs = (p.specGroups || []).length > 0;
   return `
   <section class="post pv-post" data-pid="${p.id}">
@@ -6307,7 +6367,7 @@ function pvPostHTML(p, phi = 0) {
     <div class="pv-rail">
       <div class="pv-grp">
         <button class="pv-act like-btn${p.liked ? " liked" : ""}">${I.heart(26)}</button>
-        <button class="pv-act pv-lbl liked-by">Likes</button>
+        <button class="pv-act pv-lbl liked-by">${isTh ? "ถูกใจ" : "Likes"}</button>
       </div>
       ${p.noComments ? "" : `<button class="pv-act comment-btn">${I.comment(25)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="pv-act">${I.eye(23)}<span>${p.views}</span></span>`}
@@ -6317,11 +6377,11 @@ function pvPostHTML(p, phi = 0) {
     </div>
     <div class="pv-foot">
       <div class="pv-seller"><img src="${p.avatar}" alt="" data-pf-user="${esc(p.seller)}"><span class="n" data-pf-user="${esc(p.seller)}">${p.seller}</span>
-        ${p.following ? "" : `<button class="follow-btn">Follow</button>`}</div>
+        ${p.following ? "" : `<button class="follow-btn">${isTh ? "ติดตาม" : "Follow"}</button>`}</div>
       ${(p.caption || p.captionFull) ? `<div class="caption pv-cap"><span class="cap-short">${igCaptionHTML(p, p.caption)}${(p.captionFull || "") !== p.caption ? ` <span class="more-link">…</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></div>` : ""}
-      ${hasSpecs ? `<button class="details-toggle pv-dt"><span class="dt-label">Tap for details</span>${I.chev(12)}</button>` : ""}
+      ${hasSpecs ? `<button class="details-toggle pv-dt"><span class="dt-label">${isTh ? "แตะเพื่อดูรายละเอียด" : "Tap for details"}</span>${I.chev(12)}</button>` : ""}
     </div>
-    <div class="pv-add">Add comment…</div>
+    <div class="pv-add">${isTh ? "เพิ่มความคิดเห็น…" : "Add comment…"}</div>
   </section>`;
 }
 
@@ -6363,6 +6423,7 @@ function svfPostHTML(p) {
    PROFILE-003b — dropped music line / comment preview per feed parity; like counts are
    private — heart count shows only on own posts, liked-by reads "and others" (no number). */
 function pfpPostHTML(p) {
+  const isTh = state.lang === "th";
   const hasDetails = !!p.price || (p.specGroups && p.specGroups.length) || (p.specs && p.specs.length);
   const showMore = hasDetails || (p.captionFull || "") !== p.caption;
   const dots = p.photos.length > 1;
@@ -6399,14 +6460,15 @@ function pfpPostHTML(p) {
         <img src="./assets/user-avatars/u-1088.png" alt="">
         <img src="./assets/user-avatars/u-1120.png" alt="">
       </span>
-      <span>Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others</span>
+      <span>${isTh ? `ถูกใจโดย <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> และคนอื่น ๆ` : `Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others`}</span>
     </div>`}
-    ${(p.caption || p.captionFull) ? `<p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">more</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
-    ${p.time ? `<div class="post-time">${p.time}</div>` : ""}
+    ${(p.caption || p.captionFull) ? `<p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">${isTh ? "เพิ่มเติม" : "more"}</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
+    ${p.time ? `<div class="post-time">${formatPostTime(p.time, isTh)}</div>` : ""}
     ${hasDetails ? triggerHTML() + detailsHTML(p, !!p.price) : ""}
   </article>`;
 }
 function openPostViewer(scr, posts, pid, phi = 0, feedMode = false, title = "Saved", user = "") {
+  const isTh = state.lang === "th";
   scr.classList.remove("rp-over");
   const pv = scr.querySelector(".page-pv");
   pv.classList.toggle("feed", feedMode);
@@ -6414,7 +6476,7 @@ function openPostViewer(scr, posts, pid, phi = 0, feedMode = false, title = "Sav
   if (user) { /* PROFILE-002 — IG "Posts" surface: centered Posts/username head + feed-card list */
     /* followed profiles get no head pill at all — matches IG (it only appears while unfollowed) */
     const hf = user !== CP_ME.name && !pfIsFollowed(user) && !pfIsBlocked(user)
-      ? `<button class="pf-foll pfp-follow" data-u="${esc(user)}">Follow</button>` : "";
+      ? `<button class="pf-foll pfp-follow" data-u="${esc(user)}">${isTh ? "ติดตาม" : "Follow"}</button>` : "";
     pv.innerHTML = `
       <div class="detail-head svd-head">
         <button class="icon-btn pv-back">${I.back()}</button>
@@ -6590,11 +6652,12 @@ function resetDlgHTML() {
     <button class="dlg-btn dlg-cancel">Cancel</button>`;
 }
 function logoutDlgHTML() {
+  const isTh = state.lang === "th";
   return `
-    <div class="dlg-q">Log out of @king.mr.fox?</div>
-    <div class="dlg-desc">You will need to sign in again to access your account.</div>
-    <button class="dlg-btn danger dlg-logout-go">Log out</button>
-    <button class="dlg-btn dlg-cancel">Cancel</button>`;
+    <div class="dlg-q">${isTh ? "ออกจากระบบ @king.mr.fox หรือไม่?" : "Log out of @king.mr.fox?"}</div>
+    <div class="dlg-desc">${isTh ? "คุณจะต้องเข้าสู่ระบบอีกครั้งเพื่อเข้าถึงบัญชีของคุณ" : "You will need to sign in again to access your account."}</div>
+    <button class="dlg-btn danger dlg-logout-go">${isTh ? "ออกจากระบบ" : "Log out"}</button>
+    <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
 }
 function delPasswordConfirmDlgHTML() {
   const isTh = state.lang === "th";
@@ -6787,12 +6850,13 @@ function rpClose(scr) {
   else scr.classList.remove("sub-open");
 }
 function subPostRows(posts, label, cls) {
+  const isTh = state.lang === "th";
   return posts.length ? posts.map(p => `
     <div class="mrow" data-pf-user="${esc(p.seller)}">
       <img class="msq" src="${p.photos[0]}" alt="">
       <span class="lg-b"><span class="mn">${p.seller}</span><span class="md">${p.caption}</span></span>
       <button class="mact ${cls}" data-pid="${p.id}">${label}</button>
-    </div>`).join("") : `<div class="sub-empty">Nothing here yet</div>`;
+    </div>`).join("") : `<div class="sub-empty">${isTh ? "ยังไม่มีข้อมูลที่นี่" : "Nothing here yet"}</div>`;
 }
 
 /* ===== SAVED-001 — IG-style Saved hub (tabs + collections grid + manage + new-collection sheet) ===== */
@@ -6806,19 +6870,20 @@ function savedState(scr) {
 /* FEED-024 — Archive page in Settings: posts hidden from feed live here until unarchived */
 function archivePosts() { return POSTS.filter(p => p.archived).sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0)); }
 function archiveHTML(scr) {
+  const isTh = state.lang === "th";
   const V = savedState(scr);
   const list = archivePosts();
   return `
     <div class="detail-head svd-head">
       <button class="icon-btn sub-back">${I.back()}</button>
-      <span class="detail-title rc-title">Archive</span>
+      <span class="detail-title rc-title">${isTh ? "คลังเก็บ" : "Archive"}</span>
       <span class="spacer"></span>
     </div>
     <div class="sub-scroll svd-body">
       ${list.length
-        ? `<div class="svd-coltitle"><div class="c">Only you can see posts you've archived</div></div>
+        ? `<div class="svd-coltitle"><div class="c">${isTh ? "คุณเท่านั้นที่สามารถดูโพสต์ที่คุณจัดเก็บไว้" : "Only you can see posts you've archived"}</div></div>
            <div class="svd-grid arc-grid">${list.map(p => svdTileHTML(V, p)).join("")}</div>`
-        : svdEmptyHTML(I.history(46), "No archived posts", "Posts you archive will only be visible to you.", true)}
+        : svdEmptyHTML(I.history(46), isTh ? "ไม่มีโพสต์ในคลังเก็บ" : "No archived posts", isTh ? "โพสต์ที่คุณจัดเก็บจะแสดงให้คุณเห็นเท่านั้น" : "Posts you archive will only be visible to you.", true)}
     </div>`;
 }
 function savedPosts() { return POSTS.filter(p => p.saved).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0)); }
@@ -6839,11 +6904,12 @@ function svdTileHTML(V, p) {
   </button>`;
 }
 function colCardHTML(c) {
+  const isTh = state.lang === "th";
   const cover = colCover(c);
   return `<button class="svd-col" data-col="${esc(c.name)}">
     <span class="cv">${cover ? `<img src="${cover}" alt="">` : I.bookmark(22)}</span>
     <span class="b"><span class="n">${esc(c.name)}</span>
-    <span class="s">${I.lock(11)} Private</span></span>
+    <span class="s">${I.lock(11)} ${isTh ? "ส่วนตัว" : "Private"}</span></span>
   </button>`;
 }
 function colCardBigHTML(c) {
@@ -6854,11 +6920,12 @@ function colCardBigHTML(c) {
   return `<button class="svd-colbig" data-col="${esc(c.name)}">${cv}<span class="n">${esc(c.name)}</span></button>`;
 }
 function svdConfirmDelete(scr) {
+  const isTh = state.lang === "th";
   openDlg(scr, `
-    <div class="dlg-q">Delete collection?</div>
-    <div class="dlg-desc">When you delete this collection, the photos and videos will still be ${inWlCol(scr) ? "on your wish list" : "saved"}.</div>
-    <button class="dlg-btn danger dlg-delcol-go">Delete</button>
-    <button class="dlg-btn dlg-cancel">Cancel</button>`);
+    <div class="dlg-q">${isTh ? "ลบคอลเลกชันหรือไม่?" : "Delete collection?"}</div>
+    <div class="dlg-desc">${isTh ? (inWlCol(scr) ? "เมื่อลบคอลเลกชันนี้ รูปภาพและวิดีโอจะยังคงอยู่ในสิ่งที่อยากได้ของคุณ" : "เมื่อลบคอลเลกชันนี้ รูปภาพและวิดีโอจะยังคงถูกบันทึกไว้") : `When you delete this collection, the photos and videos will still be ${inWlCol(scr) ? "on your wish list" : "saved"}.`}</div>
+    <button class="dlg-btn danger dlg-delcol-go">${isTh ? "ลบ" : "Delete"}</button>
+    <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`);
 }
 function svdDeleteCol(scr) {
   const V = savedState(scr);
@@ -6867,7 +6934,7 @@ function svdDeleteCol(scr) {
   POSTS.forEach(p => { if (p.savedCol === V.col) p.savedCol = "Saved"; });
   V.col = null; V.mode = "";
   subBack(scr);
-  scrToast(scr, "Collection deleted");
+  scrToast(scr, state.lang === "th" ? "ลบคอลเลกชันแล้ว" : "Collection deleted");
 }
 function svdEmptyHTML(icon, t, d, flat = false) {
   return `<div class="svd-empty"><span class="ic${flat ? " flat" : ""}">${icon}</span><span class="t">${t}</span>${d ? `<span class="d">${d}</span>` : ""}</div>`;
@@ -6885,54 +6952,62 @@ function svdSparkIcon() {
   </svg>`;
 }
 function svdBarHTML(V, inCol, wl = false) {
+  const isTh = state.lang === "th";
+  const unsaveLabel = inCol || wl ? (isTh ? "ลบออก" : "Remove") : (isTh ? "ยกเลิกการบันทึก" : "Unsave");
+  const moveLabel = inCol ? (isTh ? "ย้ายไปคอลเลกชัน" : "Move to collection") : (isTh ? "เพิ่มลงในคอลเลกชัน" : "Add to collection");
   return `<div class="svd-bar">
-    <button class="svd-unsave"${V.sel.size ? "" : " disabled"}>${inCol || wl ? "Remove" : "Unsave"}</button>
-    <button class="svd-move"${V.sel.size ? "" : " disabled"}>${inCol ? "Move to collection" : "Add to collection"}</button></div>`;
+    <button class="svd-unsave"${V.sel.size ? "" : " disabled"}>${unsaveLabel}</button>
+    <button class="svd-move"${V.sel.size ? "" : " disabled"}>${moveLabel}</button></div>`;
 }
 function svdSelectHeadHTML(title, n = 0, total = 0) {
+  const isTh = state.lang === "th";
+  const selAllLabel = total && n >= total ? (isTh ? "ยกเลิกการเลือกทั้งหมด" : "Deselect all") : (isTh ? "เลือกทั้งหมด" : "Select all");
   return `
     <div class="detail-head svd-head">
-      <button class="svd-cancel">Cancel</button>
+      <button class="svd-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>
       <span class="detail-title rc-title svd-seltitle" data-base="${esc(title)}">${esc(title)}</span>
       <span class="spacer"></span>
-      <button class="svd-selall">${total && n >= total ? "Deselect all" : "Select all"}</button>
+      <button class="svd-selall">${selAllLabel}</button>
     </div>`;
 }
 function savedSearchBodyHTML(scr) {
+  const isTh = state.lang === "th";
   const list = savedList(scr);
   return list.length
     ? `<div class="svd-grid">${list.map(p => svdTileHTML(savedState(scr), p)).join("")}</div>`
-    : svdEmptyHTML(I.search(26), "No results found", `No saved posts match "${esc(savedState(scr).q)}".`);
+    : svdEmptyHTML(I.search(26), isTh ? "ไม่พบผลลัพธ์" : "No results found", isTh ? `ไม่มีโพสต์ที่บันทึกไว้ตรงกับ "${esc(savedState(scr).q)}"` : `No saved posts match "${esc(savedState(scr).q)}".`);
 }
 function savedBodyHTML(scr) {
+  const isTh = state.lang === "th";
   const V = savedState(scr);
   const list = savedList(scr);
   const tile = p => svdTileHTML(V, p);
   const colSec = COLLECTIONS.length ? `
-    <div class="svd-sec"><span class="t">Collections</span><button class="svd-see">See all</button></div>
+    <div class="svd-sec"><span class="t">${isTh ? "คอลเลกชัน" : "Collections"}</span><button class="svd-see">${isTh ? "ดูทั้งหมด" : "See all"}</button></div>
     <div class="svd-cols">${COLLECTIONS.slice(0, 4).map(colCardHTML).join("")}</div>` : "";
   const postSec = `
-    <div class="svd-sec"><span class="t">All posts</span>${list.length && !V.manage ? `<button class="svd-see svd-manage">Manage</button>` : ""}</div>
+    <div class="svd-sec"><span class="t">${isTh ? "โพสต์ทั้งหมด" : "All posts"}</span>${list.length && !V.manage ? `<button class="svd-see svd-manage">${isTh ? "จัดการ" : "Manage"}</button>` : ""}</div>
     ${list.length
       ? `<div class="svd-grid">${list.map(tile).join("")}</div>`
-      : svdEmptyHTML(I.bookmark(30), "Nothing saved yet", "Save posts you want to see again. Only you can see what you've saved.")}`;
+      : svdEmptyHTML(I.bookmark(30), isTh ? "ยังไม่มีรายการที่บันทึก" : "Nothing saved yet", isTh ? "บันทึกโพสต์ที่คุณต้องการดูอีกครั้ง คุณเท่านั้นที่เห็นสิ่งที่คุณบันทึกไว้" : "Save posts you want to see again. Only you can see what you've saved.")}`;
   if (V.tab === "collections")
     return COLLECTIONS.length
       ? `<div class="svd-colsbig">${COLLECTIONS.map(colCardBigHTML).join("")}</div>`
-      : svdEmptyHTML(I.bookmark(30), "No collections yet", "Create a collection to organise your saved posts.");
+      : svdEmptyHTML(I.bookmark(30), isTh ? "ยังไม่มีคอลเลกชัน" : "No collections yet", isTh ? "สร้างคอลเลกชันเพื่อจัดระเบียบโพสต์ที่บันทึกไว้ของคุณ" : "Create a collection to organise your saved posts.");
   if (V.tab === "posts")
     return list.length
       ? `<div class="svd-grid">${list.map(tile).join("")}</div>`
-      : svdEmptyHTML(I.bookmark(30), "Nothing saved yet", "Save posts you want to see again. Only you can see what you've saved.");
+      : svdEmptyHTML(I.bookmark(30), isTh ? "ยังไม่มีรายการที่บันทึก" : "Nothing saved yet", isTh ? "บันทึกโพสต์ที่คุณต้องการดูอีกครั้ง คุณเท่านั้นที่เห็นสิ่งที่คุณบันทึกไว้" : "Save posts you want to see again. Only you can see what you've saved.");
   return colSec + postSec;
 }
 function savedHTML(scr) {
+  const isTh = state.lang === "th";
   const V = savedState(scr);
   if (V.mode === "search") {
     return `
     <div class="sr-head svd-head">
-      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="Search your saved" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
-      <button class="svd-cancel">Cancel</button>
+      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="${isTh ? "ค้นหารายการที่บันทึกไว้" : "Search your saved"}" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
+      <button class="svd-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>
     </div>
     <div class="sub-scroll svd-body">${savedSearchBodyHTML(scr)}</div>`;
   }
@@ -6940,15 +7015,15 @@ function savedHTML(scr) {
     const all = savedPosts();
     const grid = `<div class="sub-scroll svd-body"><div class="svd-grid">${all.map(p => svdTileHTML(V, p)).join("")}</div></div>`;
     if (V.manage)
-      return svdSelectHeadHTML("All posts", V.sel.size, all.length) + grid + svdBarHTML(V, false);
+      return svdSelectHeadHTML(isTh ? "โพสต์ทั้งหมด" : "All posts", V.sel.size, all.length) + grid + svdBarHTML(V, false);
     const menu = V.mode === "allmenu" ? `
       <div class="svd-menuwrap"><div class="svd-menu">
-        <button class="svd-mi" data-act="sel">${I.circleCheck(19)}<span>Select...</span></button>
+        <button class="svd-mi" data-act="sel">${I.circleCheck(19)}<span>${isTh ? "เลือก..." : "Select..."}</span></button>
       </div></div>` : "";
     return `
     <div class="detail-head svd-head">
       <button class="icon-btn sub-back">${I.back()}</button>
-      <span class="detail-title rc-title">All posts</span>
+      <span class="detail-title rc-title">${isTh ? "โพสต์ทั้งหมด" : "All posts"}</span>
       <span class="spacer"></span>
       <button class="icon-btn svd-more">${I.dots(21)}</button>
     </div>` + grid + menu;
@@ -6956,12 +7031,15 @@ function savedHTML(scr) {
   const head = `
     <div class="detail-head svd-head">
       <button class="icon-btn sub-back">${I.back()}</button>
-      <span class="detail-title rc-title">Saved</span>
+      <span class="detail-title rc-title">${isTh ? "บันทึกแล้ว" : "Saved"}</span>
       <span class="spacer"></span>
       <button class="icon-btn svd-srch">${I.search(21)}</button>
       <button class="icon-btn svd-plus">${I.plus(23)}</button>
     </div>`;
-  const tabs = `<div class="svd-tabs">${SAVED_TABS.map(([v, t]) => `<button class="svd-tab${V.tab === v ? " on" : ""}" data-tab="${v}">${t}</button>`).join("")}</div>`;
+  const tabs = `<div class="svd-tabs">${SAVED_TABS.map(([v, t]) => {
+    const label = isTh ? (v === "all" ? "ทั้งหมด" : v === "collections" ? "คอลเลกชัน" : "โพสต์") : t;
+    return `<button class="svd-tab${V.tab === v ? " on" : ""}" data-tab="${v}">${label}</button>`;
+  }).join("")}</div>`;
   return head + tabs + `<div class="sub-scroll svd-body">${savedBodyHTML(scr)}</div>`;
 }
 function savedColHTML(scr) {
@@ -7038,11 +7116,12 @@ function wlSparkIcon() {
   </svg>`;
 }
 function wlColCardHTML(c) {
+  const isTh = state.lang === "th";
   const cover = wlColCover(c);
   return `<button class="wl-col" data-col="${esc(c.name)}">
     <span class="cv">${cover ? `<img src="${cover}" alt="">` : I.gift(22)}</span>
     <span class="b"><span class="n">${esc(c.name)}</span>
-    <span class="s">${I.lock(11)} Private</span></span>
+    <span class="s">${I.lock(11)} ${isTh ? "ส่วนตัว" : "Private"}</span></span>
   </button>`;
 }
 function wlColCardBigHTML(c) {
@@ -7053,34 +7132,36 @@ function wlColCardBigHTML(c) {
   return `<button class="wl-colbig" data-col="${esc(c.name)}">${cv}<span class="n">${esc(c.name)}</span></button>`;
 }
 function wlBodyHTML(scr) {
+  const isTh = state.lang === "th";
   const V = wlState(scr);
   const list = wlListPosts(scr);
   const tile = p => svdTileHTML(V, p);
   const colSec = WISHLISTS.length ? `
-    <div class="svd-sec"><span class="t">Collections</span><button class="svd-see">See all</button></div>
+    <div class="svd-sec"><span class="t">${isTh ? "คอลเลกชัน" : "Collections"}</span><button class="svd-see">${isTh ? "ดูทั้งหมด" : "See all"}</button></div>
     <div class="svd-cols">${WISHLISTS.slice(0, 4).map(wlColCardHTML).join("")}</div>` : "";
   const postSec = `
-    <div class="svd-sec"><span class="t">All items</span>${list.length && !V.manage ? `<button class="svd-see svd-manage">Manage</button>` : ""}</div>
+    <div class="svd-sec"><span class="t">${isTh ? "รายการทั้งหมด" : "All items"}</span>${list.length && !V.manage ? `<button class="svd-see svd-manage">${isTh ? "จัดการ" : "Manage"}</button>` : ""}</div>
     ${list.length
       ? `<div class="svd-grid">${list.map(tile).join("")}</div>`
-      : svdEmptyHTML(wlSparkIcon(), "Nothing on your wish list yet", "Tap the gift icon on a model page to add it here.")}`;
+      : svdEmptyHTML(wlSparkIcon(), isTh ? "ยังไม่มีรายการในสิ่งที่อยากได้" : "Nothing on your wish list yet", isTh ? "แตะไอคอนของขวัญในหน้ารุ่นนาฬิกาเพื่อเพิ่มที่นี่" : "Tap the gift icon on a model page to add it here.")}`;
   if (V.tab === "collections")
     return WISHLISTS.length
       ? `<div class="svd-colsbig">${WISHLISTS.map(wlColCardBigHTML).join("")}</div>`
-      : svdEmptyHTML(I.gift(30), "No collections yet", "Create a collection to organise your wish list posts.");
+      : svdEmptyHTML(I.gift(30), isTh ? "ยังไม่มีคอลเลกชัน" : "No collections yet", isTh ? "สร้างคอลเลกชันเพื่อจัดระเบียบสิ่งที่อยากได้ของคุณ" : "Create a collection to organise your wish list posts.");
   if (V.tab === "posts")
     return list.length
       ? `<div class="svd-grid">${list.map(tile).join("")}</div>`
-      : svdEmptyHTML(wlSparkIcon(), "Nothing on your wish list yet", "Tap the gift icon on a model page to add it here.");
+      : svdEmptyHTML(wlSparkIcon(), isTh ? "ยังไม่มีรายการในสิ่งที่อยากได้" : "Nothing on your wish list yet", isTh ? "แตะไอคอนของขวัญในหน้ารุ่นนาฬิกาเพื่อเพิ่มที่นี่" : "Tap the gift icon on a model page to add it here.");
   return colSec + postSec;
 }
 function wishlistHTML(scr) {
+  const isTh = state.lang === "th";
   const V = wlState(scr);
   if (V.mode === "search") {
     return `
     <div class="sr-head svd-head">
-      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="Search your wish list" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
-      <button class="svd-cancel">Cancel</button>
+      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="${isTh ? "ค้นหาสิ่งที่อยากได้ของคุณ" : "Search your wish list"}" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
+      <button class="svd-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>
     </div>
     <div class="sub-scroll svd-body">${wlSearchBodyHTML(scr)}</div>`;
   }
@@ -7088,15 +7169,15 @@ function wishlistHTML(scr) {
     const all = wlPosts();
     const grid = `<div class="sub-scroll svd-body"><div class="svd-grid">${all.map(p => svdTileHTML(V, p)).join("")}</div></div>`;
     if (V.manage)
-      return svdSelectHeadHTML("All items", V.sel.size, all.length) + grid + svdBarHTML(V, false, true);
+      return svdSelectHeadHTML(isTh ? "รายการทั้งหมด" : "All items", V.sel.size, all.length) + grid + svdBarHTML(V, false, true);
     const menu = V.mode === "allmenu" ? `
       <div class="svd-menuwrap"><div class="svd-menu">
-        <button class="svd-mi" data-act="sel">${I.circleCheck(19)}<span>Select...</span></button>
+        <button class="svd-mi" data-act="sel">${I.circleCheck(19)}<span>${isTh ? "เลือก..." : "Select..."}</span></button>
       </div></div>` : "";
     return `
     <div class="detail-head svd-head">
       <button class="icon-btn sub-back">${I.back()}</button>
-      <span class="detail-title rc-title">All items</span>
+      <span class="detail-title rc-title">${isTh ? "รายการทั้งหมด" : "All items"}</span>
       <span class="spacer"></span>
       <button class="icon-btn svd-more">${I.dots(21)}</button>
     </div>` + grid + menu;
@@ -7104,19 +7185,23 @@ function wishlistHTML(scr) {
   const head = `
     <div class="detail-head svd-head">
       <button class="icon-btn sub-back">${I.back()}</button>
-      <span class="detail-title rc-title">Wish List</span>
+      <span class="detail-title rc-title">${isTh ? "สิ่งที่อยากได้" : "Wish List"}</span>
       <span class="spacer"></span>
       <button class="icon-btn svd-srch">${I.search(21)}</button>
       <button class="icon-btn svd-plus">${I.plus(23)}</button>
     </div>`;
-  const tabs = `<div class="svd-tabs">${SAVED_TABS.map(([v, t]) => `<button class="svd-tab${V.tab === v ? " on" : ""}" data-tab="${v}">${t}</button>`).join("")}</div>`;
+  const tabs = `<div class="svd-tabs">${SAVED_TABS.map(([v, t]) => {
+    const label = isTh ? (v === "all" ? "ทั้งหมด" : v === "collections" ? "คอลเลกชัน" : "โพสต์") : t;
+    return `<button class="svd-tab${V.tab === v ? " on" : ""}" data-tab="${v}">${label}</button>`;
+  }).join("")}</div>`;
   return head + tabs + `<div class="sub-scroll svd-body">${wlBodyHTML(scr)}</div>`;
 }
 function wlSearchBodyHTML(scr) {
+  const isTh = state.lang === "th";
   const list = wlListPosts(scr);
   return list.length
     ? `<div class="svd-grid">${list.map(p => svdTileHTML(wlState(scr), p)).join("")}</div>`
-    : svdEmptyHTML(I.search(26), "No results found", `No wish list posts match "${esc(wlState(scr).q)}".`);
+    : svdEmptyHTML(I.search(26), isTh ? "ไม่พบผลลัพธ์" : "No results found", isTh ? `ไม่มีรายการในสิ่งที่อยากได้ตรงกับ "${esc(wlState(scr).q)}"` : `No wish list posts match "${esc(wlState(scr).q)}".`);
 }
 function wishColHTML(scr) {
   const V = wlState(scr);
@@ -7512,39 +7597,40 @@ const CF_SPECS = [
   ]],
 ];
 function cfPaneHTML(scr) {
+  const isTh = state.lang === "th";
   const V = cpState(scr);
   const m = V.meta;
-  const head = t => `<div class="cf-head"><button class="icon-btn cf-pane-back">${I.back(22)}</button><span class="t">${t}</span><button class="cf-act pane-done">Done</button></div>`;
-  if (m.pane === "loc") return head("Add location") + `<div class="pane-body">
-    <input class="pane-in pane-q" placeholder="Search places…" value="${esc(m.locQ || "")}">
+  const head = t => `<div class="cf-head"><button class="icon-btn cf-pane-back">${I.back(22)}</button><span class="t">${t}</span><button class="cf-act pane-done">${isTh ? "เสร็จสิ้น" : "Done"}</button></div>`;
+  if (m.pane === "loc") return head(isTh ? "เพิ่มตำแหน่งที่อยู่" : "Add location") + `<div class="pane-body">
+    <input class="pane-in pane-q" placeholder="${isTh ? "ค้นหาสถานที่…" : "Search places…"}" value="${esc(m.locQ || "")}">
     ${CF_LOCS.filter(l => !(m.locQ || "").trim() || l.toLowerCase().includes(m.locQ.toLowerCase())).map(l =>
-      `<button class="loc-opt" data-v="${l}">${I.pin(15)}${l}</button>`).join("") || `<div class="pane-lab">No matching places</div>`}
+      `<button class="loc-opt" data-v="${l}">${I.pin(15)}${l}</button>`).join("") || `<div class="pane-lab">${isTh ? "ไม่พบสถานที่ที่ค้นหา" : "No matching places"}</div>`}
   </div>`;
-  if (m.pane === "price") return head("Add price") + `<div class="pane-body">
-    <div class="pane-lab">Asking price (THB)</div>
-    <input class="pane-in cf-f" data-f="price" inputmode="numeric" placeholder="e.g. 420,000" value="${esc(m.price || "")}">
-    <div class="pane-lab">Type digits only — separators are added automatically. Leave empty for a showcase post (no price tag).</div>
+  if (m.pane === "price") return head(isTh ? "ระบุราคา" : "Add price") + `<div class="pane-body">
+    <div class="pane-lab">${isTh ? "ราคาตั้งขาย (บาท)" : "Asking price (THB)"}</div>
+    <input class="pane-in cf-f" data-f="price" inputmode="numeric" placeholder="${isTh ? "เช่น 420,000" : "e.g. 420,000"}" value="${esc(m.price || "")}">
+    <div class="pane-lab">${isTh ? "กรอกเฉพาะตัวเลข — ระบบจะใส่เครื่องหมายจุลภาคให้อัตโนมัติ หากเป็นโพสต์โชว์ให้เว้นว่างไว้" : "Type digits only — separators are added automatically. Leave empty for a showcase post (no price tag)."}</div>
   </div>`;
-  if (m.pane === "spec") return head("Watch details") + `<div class="pane-body">
+  if (m.pane === "spec") return head(isTh ? "รายละเอียดนาฬิกา" : "Watch details") + `<div class="pane-body">
     ${CF_SPECS.map(([g, fields]) => `<div class="pane-lab" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--red)">${g}</div>` +
       fields.map(([f, l, ph]) => `<div class="pane-lab" style="padding-top:6px">${l}</div><input class="pane-in cf-f" data-f="${f}" placeholder="${ph}" value="${esc(m[f] || "")}">`).join("")).join("")}
-    <div class="pane-lab" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--red)">Description</div>
-    <textarea class="pane-in pane-ta cf-f" data-f="desc" rows="4" placeholder="Describe the item — condition notes, history, what's included…">${esc(m.desc || "")}</textarea>
-    <div class="pane-lab">Condition &amp; Box are set in the Condition section — they appear here under Item Details.</div>
+    <div class="pane-lab" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--red)">${isTh ? "คำอธิบาย" : "Description"}</div>
+    <textarea class="pane-in pane-ta cf-f" data-f="desc" rows="4" placeholder="${isTh ? "อธิบายสินค้า เช่น สภาพ ประวัติ สิ่งที่ได้รับ…" : "Describe the item — condition notes, history, what's included…"}">${esc(m.desc || "")}</textarea>
+    <div class="pane-lab">${isTh ? "สภาพและกล่อง/ใบรับประกันจะถูกกำหนดในส่วน สภาพสินค้า" : "Condition & Box are set in the Condition section — they appear here under Item Details."}</div>
   </div>`;
-  if (m.pane === "cond") return head("Condition") + `<div class="pane-body">
-    <div class="pane-sec">Item condition</div>
+  if (m.pane === "cond") return head(isTh ? "สภาพสินค้า" : "Condition") + `<div class="pane-body">
+    <div class="pane-sec">${isTh ? "สภาพของสินค้า" : "Item condition"}</div>
     ${CF_CONDS.map(c => `<button class="cond-opt${m.cond === c ? " on" : ""}" data-v="${c}"><span class="lab">${c}</span><span class="rad"></span></button>`).join("")}
-    <div class="pane-sec">Box &amp; papers</div>
+    <div class="pane-sec">${isTh ? "กล่องและใบรับประกัน" : "Box & papers"}</div>
     ${CF_BOXES.map(b => `<button class="cond-opt box-opt${m.box === b ? " on" : ""}" data-v="${b}"><span class="lab">${b}</span><span class="rad"></span></button>`).join("")}
   </div>`;
-  if (m.pane === "more") return head("More options") + `<div class="pane-body">
-    <div class="pane-sec">How others can interact with your post</div>
-    <div class="ig-toggle-row"><span class="ic">${I.comment(19)}</span><div class="tx"><div class="tt">Turn off commenting</div><div class="ts">Nobody can comment on this post. You can change this later from the ··· menu.</div></div><button class="sw pane-sw${m.noComments ? " on" : ""}" data-f="noComments"></button></div>
-    <div class="pane-sec">Who can see your post</div>
-    <button class="cond-opt aud-opt${(m.audience || "public") === "public" ? " on" : ""}" data-v="public"><span class="ic">${I.users(19)}</span><span class="lab">Everyone<span class="sub">Visible to all TukDaeng users</span></span><span class="rad"></span></button>
-    <button class="cond-opt aud-opt${m.audience === "followers" ? " on" : ""}" data-v="followers"><span class="ic">${I.star(19)}</span><span class="lab">Followers only<span class="sub">Only people who follow you</span></span><span class="rad"></span></button>
-    <div class="pane-note">This doesn't affect your account privacy or change sharing preferences.</div>
+  if (m.pane === "more") return head(isTh ? "ตัวเลือกเพิ่มเติม" : "More options") + `<div class="pane-body">
+    <div class="pane-sec">${isTh ? "การโต้ตอบกับโพสต์ของคุณ" : "How others can interact with your post"}</div>
+    <div class="ig-toggle-row"><span class="ic">${I.comment(19)}</span><div class="tx"><div class="tt">${isTh ? "ปิดความคิดเห็น" : "Turn off commenting"}</div><div class="ts">${isTh ? "จะไม่มีใครสามารถแสดงความคิดเห็นในโพสต์นี้ได้ คุณสามารถเปลี่ยนได้ในภายหลัง" : "Nobody can comment on this post. You can change this later from the ··· menu."}</div></div><button class="sw pane-sw${m.noComments ? " on" : ""}" data-f="noComments"></button></div>
+    <div class="pane-sec">${isTh ? "ใครสามารถเห็นโพสต์นี้ได้บ้าง" : "Who can see your post"}</div>
+    <button class="cond-opt aud-opt${(m.audience || "public") === "public" ? " on" : ""}" data-v="public"><span class="ic">${I.users(19)}</span><span class="lab">${isTh ? "ทุกคน" : "Everyone"}<span class="sub">${isTh ? "ผู้ใช้งานตึกแดงทุกคนสามารถเห็นได้" : "Visible to all TukDaeng users"}</span></span><span class="rad"></span></button>
+    <button class="cond-opt aud-opt${m.audience === "followers" ? " on" : ""}" data-v="followers"><span class="ic">${I.star(19)}</span><span class="lab">${isTh ? "เฉพาะผู้ติดตาม" : "Followers only"}<span class="sub">${isTh ? "เฉพาะผู้ที่ติดตามคุณเท่านั้น" : "Only people who follow you"}</span></span><span class="rad"></span></button>
+    <div class="pane-note">${isTh ? "ไม่มีผลต่อความเป็นส่วนตัวของบัญชีของคุณ" : "This doesn't affect your account privacy or change sharing preferences."}</div>
   </div>`;
   return "";
 }
@@ -7583,6 +7669,7 @@ function cfZoomGo(z, i, total) {
     : "";
 }
 function cfPickerHTML(scr) {
+  const isTh = state.lang === "th";
   const V = cpState(scr);
   const n = V.order.length;
   const cells = CP_MEDIA.map((m, i) => {
@@ -7594,18 +7681,18 @@ function cfPickerHTML(scr) {
     ? (heroM.dur
       ? `<div class="ig-car"><img src="${heroM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${heroM.dur}</span></div>`
       : `<div class="ig-car"><img src="${heroM.src}"><button class="expand">${I.expandIc(15)}</button></div>`)
-    : `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`;
+    : `<div class="add-tile">${I.camPlain(38)}<span>${isTh ? "เลือกรูปภาพ" : "Select photos"}</span></div>`;
   return `
     <div class="cf-head">
       ${V.editPid
-        ? `<button class="icon-btn cf-add-cancel">${I.back(22)}</button><span class="t">Add photos or clips</span><button class="cf-act cf-add-done">Done</button>`
-        : `<button class="icon-btn cf-x">${I.x(21)}</button><span class="t">New post</span><button class="cf-act${n ? "" : " off"} cf-next">Next</button>`}
+        ? `<button class="icon-btn cf-add-cancel">${I.back(22)}</button><span class="t">${isTh ? "เพิ่มรูปภาพหรือคลิป" : "Add photos or clips"}</span><button class="cf-act cf-add-done">${isTh ? "เสร็จสิ้น" : "Done"}</button>`
+        : `<button class="icon-btn cf-x">${I.x(21)}</button><span class="t">${isTh ? "สร้างโพสต์ใหม่" : "New post"}</span><button class="cf-act${n ? "" : " off"} cf-next">${isTh ? "ถัดไป" : "Next"}</button>`}
     </div>
     <div class="cf-scroll">
       <div class="ig-hero" data-hero>${hero}</div>
       <div class="ig-bar">
-        <button class="rc">Recents ${I.chevR(13)}</button>
-        ${V.editPid ? "" : `<button class="sel-btn${V.sel ? " on" : ""}" data-selmode>${I.gridSel(13)} Select</button>`}
+        <button class="rc">${isTh ? "ล่าสุด" : "Recents"} ${I.chevR(13)}</button>
+        ${V.editPid ? "" : `<button class="sel-btn${V.sel ? " on" : ""}" data-selmode>${I.gridSel(13)} ${isTh ? "เลือกหลายรายการ" : "Select"}</button>`}
       </div>
       <div class="ig-grid${V.sel || V.editPid ? " selmode" : ""}">
         <div class="cell cam">${I.camPlain(26)}</div>
@@ -7614,6 +7701,7 @@ function cfPickerHTML(scr) {
     </div>`;
 }
 function cfStep2HTML(scr) {
+  const isTh = state.lang === "th";
   const V = cpState(scr);
   const media = cfMedia(scr);
   const clip = cfActiveClip(scr);
@@ -7633,36 +7721,36 @@ function cfStep2HTML(scr) {
   return `<div class="cf-step2">
     <div class="cf-head">
       ${V.editPid
-        ? `<button class="cf-edit-x">Cancel</button><span class="t">Edit info</span><button class="cf-act cf-done">Done</button>`
-        : `<button class="icon-btn cf-back2">${I.back(22)}</button><span class="t">New post</span>`}
+        ? `<button class="cf-edit-x">${isTh ? "ยกเลิก" : "Cancel"}</button><span class="t">${isTh ? "แก้ไขข้อมูล" : "Edit info"}</span><button class="cf-act cf-done">${isTh ? "เสร็จสิ้น" : "Done"}</button>`
+        : `<button class="icon-btn cf-back2">${I.back(22)}</button><span class="t">${isTh ? "สร้างโพสต์ใหม่" : "New post"}</span>`}
     </div>
     <div class="ig-cap-scroll">
       ${thumbs}
-      <div class="ig-cap-line"><div class="ta" contenteditable="true" data-ph="Add a caption…">${esc(V.caption)}</div></div>
+      <div class="ig-cap-line"><div class="ta" contenteditable="true" data-ph="${isTh ? "เขียนคำอธิบาย..." : "Add a caption…"}">${esc(V.caption)}</div></div>
       <div class="ig-chip-row">
         ${CF_TAGS.map(t => `<button class="ig-chip" data-tag="${t}">${t}</button>`).join("")}
       </div>
       <div class="ig-rows">
         ${m.loc
           ? `<button class="ig-row" data-pane="loc"><span class="ic">${I.pin(19)}</span><span class="lab2">${m.loc}<span class="sub">${CF_LOC_KM[m.loc] || ""}</span></span><span class="loc-x">${I.x(12)}</span></button>
-             <div class="row-note">People you share this content with can see the location you tag and view your content on the map.</div>`
-          : row(I.pin(19), "Add location", "loc")}
-        ${row(I.tag(19), "Add price", "price", mv.price, mv.price ? " price" : "")}
-        ${row(I.watch(19), "Watch details", "spec", mv.spec)}
-        ${row(I.shield(19), "Condition", "cond", mv.cond)}
+             <div class="row-note">${isTh ? "ผู้ใช้ที่คุณแชร์โพสต์นี้ด้วยจะเห็นตำแหน่งที่คุณระบุบนแผนที่" : "People you share this content with can see the location you tag and view your content on the map."}</div>`
+          : row(I.pin(19), isTh ? "เพิ่มตำแหน่งที่อยู่" : "Add location", "loc")}
+        ${row(I.tag(19), isTh ? "ระบุราคา" : "Add price", "price", mv.price, mv.price ? " price" : "")}
+        ${row(I.watch(19), isTh ? "รายละเอียดนาฬิกา" : "Watch details", "spec", mv.spec)}
+        ${row(I.shield(19), isTh ? "สภาพสินค้า" : "Condition", "cond", mv.cond)}
       </div>
       <div class="ig-toggle-row">
         <span class="ic" style="color:var(--text);display:flex;width:24px;justify-content:center">${I.box(19)}</span>
         <div class="tx">
-          <div class="tt">Also save to My Assets</div>
-          <div class="ts">Keep this item in your profile collection — full specs live in "Add Asset".</div>
+          <div class="tt">${isTh ? "บันทึกลงในสินทรัพย์ของฉันด้วย" : "Also save to My Assets"}</div>
+          <div class="ts">${isTh ? "เก็บรายการนี้ไว้ในคอลเลกชันโปรไฟล์ของคุณ" : "Keep this item in your profile collection — full specs live in \"Add Asset\"."}</div>
         </div>
         <button class="sw${V.asset ? " on" : ""}"></button>
       </div>
-      <button class="ig-row" data-pane="more"><span class="ic">${I.dots(18)}</span>More options<span class="val${m.audience === "followers" ? " set" : ""}">${m.audience === "followers" ? "Followers only" : ""}</span>${I.chevR(15)}</button>
+      <button class="ig-row" data-pane="more"><span class="ic">${I.dots(18)}</span>${isTh ? "ตัวเลือกเพิ่มเติม" : "More options"}<span class="val${m.audience === "followers" ? " set" : ""}">${m.audience === "followers" ? (isTh ? "เฉพาะผู้ติดตาม" : "Followers only") : ""}</span>${I.chevR(15)}</button>
     </div>
     <div class="cf-pane"></div>
-    ${V.editPid ? "" : `<button class="ig-share${n ? "" : " off"} cf-share">Share</button>`}
+    ${V.editPid ? "" : `<button class="ig-share${n ? "" : " off"} cf-share">${isTh ? "แชร์" : "Share"}</button>`}
     <div class="ig-zoom${clip ? " is-clip" : ""}" data-i="0">
       <img alt="">
       ${clip ? `<span class="pp-btn">${V.playing ? I.pause(30) : I.play(30)}</span><span class="dur">${I.play(10)}${clip.dur}</span><span class="prog"><i></i></span>` : ""}
@@ -7921,13 +8009,21 @@ function refreshMfBtns(scr) {
 }
 
 function waModesHTML(d) {
+  const isTh = state.lang === "th";
   return Object.keys(WA_MODES).map(k => {
     const m = WA_MODES[k];
     const dis = !d.criteria.length && k !== "all";
     const n = alertMatchCount(k, d.criteria);
+    const title = isTh
+      ? (k === "all" ? "ตรงทุกเงื่อนไข" : k === "any" ? "ตรงเงื่อนไขใดเงื่อนไขหนึ่ง" : "เฉพาะรุ่น")
+      : m.t;
+    const desc = isTh
+      ? (k === "all" ? "แจ้งเตือนเมื่อโพสต์ตรงกับทุกข้อมูลด้านล่าง" : k === "any" ? "แจ้งเตือนเมื่อโพสต์ตรงกับอย่างน้อยหนึ่งข้อมูล" : "เฉพาะแบรนด์ รุ่น และ Reference เท่านั้น")
+      : m.d;
+    const countLabel = isTh ? `${n} รายการในขณะนี้` : `${n} now`;
     return `<button class="wa-mode${d.matchMode === k ? " on" : ""}" data-mode="${k}"${dis ? " disabled" : ""}>
-      <span class="wa-mb"><span class="wa-mt">${m.t}</span><span class="wa-md">${m.d}</span></span>
-      <span class="wa-mc">${n} now</span><span class="wa-rad"></span>
+      <span class="wa-mb"><span class="wa-mt">${title}</span><span class="wa-md">${desc}</span></span>
+      <span class="wa-mc">${countLabel}</span><span class="wa-rad"></span>
     </button>`;
   }).join("");
 }
@@ -7935,37 +8031,46 @@ function waModesHTML(d) {
    settings row edit. Name is auto-filled but editable; criteria stay out of the
    sheet — they're visible on the page behind it and on the Watch Alerts list. */
 function waSheetHTML(scr) {
+  const isTh = state.lang === "th";
   const d = scr._waDraft;
   const edit = !!d.id;
   return `<div class="sheet-handle"></div>
     <div class="wa-body">
-      <div class="wa-title">${edit ? "Edit watch alert" : "Create watch alert"}</div>
-      <label class="wa-lbl">Give this watch alert a name</label>
-      <input class="wa-name" type="text" value="${esc(d.name)}" placeholder="Name this alert">
-      <div class="wa-sec">Notify me when a post matches</div>
+      <div class="wa-title">${edit ? (isTh ? "แก้ไขการแจ้งเตือนนาฬิกา" : "Edit watch alert") : (isTh ? "สร้างการแจ้งเตือนนาฬิกา" : "Create watch alert")}</div>
+      <label class="wa-lbl">${isTh ? "ตั้งชื่อการแจ้งเตือนนี้" : "Give this watch alert a name"}</label>
+      <input class="wa-name" type="text" value="${esc(d.name)}" placeholder="${isTh ? "ชื่อการแจ้งเตือน" : "Name this alert"}">
+      <div class="wa-sec">${isTh ? "แจ้งเตือนฉันเมื่อโพสต์ตรงกับเงื่อนไข" : "Notify me when a post matches"}</div>
       ${waModesHTML(d)}
-      <button class="wa-go">${edit ? "Save changes" : "Create alert"}</button>
-      ${edit ? `<button class="wa-del">${I.trash(16)} Delete alert</button>` : ""}
+      <button class="wa-go">${edit ? (isTh ? "บันทึกการเปลี่ยนแปลง" : "Save changes") : (isTh ? "สร้างการแจ้งเตือน" : "Create alert")}</button>
+      ${edit ? `<button class="wa-del">${I.trash(16)} ${isTh ? "ลบการแจ้งเตือน" : "Delete alert"}</button>` : ""}
     </div>`;
 }
 function waRowHTML(a) {
+  const isTh = state.lang === "th";
   const n = alertMatchCount(a.matchMode, a.criteria);
-  const critTxt = a.criteria.map(c => c.v).join(" · ") || "Any new listing";
+  const critTxt = a.criteria.map(c => c.v).join(" · ") || (isTh ? "ทุกรายการใหม่" : "Any new listing");
+  const modeLabels = {
+    all: isTh ? "ตรงทุกเงื่อนไข" : "Match all",
+    any: isTh ? "ตรงเงื่อนไขใดเงื่อนไขหนึ่ง" : "Match any",
+    model: isTh ? "เฉพาะรุ่น" : "Model only"
+  };
+  const countStr = isTh ? `${n} รายการในขณะนี้` : `${n} match${n === 1 ? "" : "es"} now`;
   return `<div class="wa-row${a.on ? "" : " wa-off"}" data-wa="${a.id}">
     <span class="wa-ic">${I.navBell(18)}</span>
     <span class="wa-b">
       <span class="wa-t">${esc(a.name)}</span>
       <span class="wa-c">${esc(critTxt)}</span>
-      <span class="wa-meta"><span class="wa-badge">Edit</span><span>${{ all: "Match all", any: "Match any", model: "Model only" }[a.matchMode]} · ${n} match${n === 1 ? "" : "es"} now</span></span>
+      <span class="wa-meta"><span class="wa-badge">${isTh ? "แก้ไข" : "Edit"}</span><span>${modeLabels[a.matchMode]} · ${countStr}</span></span>
     </span>
-    <button class="wa-tgl" title="${a.on ? "Pause alert" : "Resume alert"}"><span class="tg-sw${a.on ? " on" : ""}"></span></button>
+    <button class="wa-tgl" title="${a.on ? (isTh ? "หยุดการแจ้งเตือนชั่วคราว" : "Pause alert") : (isTh ? "เปิดการแจ้งเตือนต่อ" : "Resume alert")}"><span class="tg-sw${a.on ? " on" : ""}"></span></button>
   </div>`;
 }
 function walertsHTML() {
-  return `<div class="detail-head svd-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title rc-title">Watch Alerts</span><span class="spacer"></span></div>
+  const isTh = state.lang === "th";
+  return `<div class="detail-head svd-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title rc-title">${isTh ? "การแจ้งเตือนนาฬิกา" : "Watch Alerts"}</span><span class="spacer"></span></div>
     <div class="sub-scroll">
-      <div class="fav-desc">Get notified when a new listing matches what you're watching.</div>
-      ${WATCH_ALERTS.length ? WATCH_ALERTS.map(waRowHTML).join("") : `<div class="sub-empty">No watch alerts yet — tap the bell on a post or save a search to start one</div>`}
+      <div class="fav-desc">${isTh ? "รับการแจ้งเตือนเมื่อมีรายการใหม่ตรงกับนาฬิกาที่คุณกำลังติดตาม" : "Get notified when a new listing matches what you're watching."}</div>
+      ${WATCH_ALERTS.length ? WATCH_ALERTS.map(waRowHTML).join("") : `<div class="sub-empty">${isTh ? "ยังไม่มีการแจ้งเตือนนาฬิกา — แตะไอคอนกระดิ่งบนโพสต์หรือบันทึกการค้นหาเพื่อเริ่มต้น" : "No watch alerts yet — tap the bell on a post or save a search to start one"}</div>`}
     </div>`;
 }
 
@@ -8355,11 +8460,12 @@ function chatReportSheetHTML(uname, tid) {
 }
 /* IG unblock confirm — center dialog like Mute (not a sheet) */
 function unblockDlgHTML(uname) {
+  const isTh = state.lang === "th";
   return `
-    <div class="dlg-q">Unblock ${esc(uname)}?</div>
-    <div class="dlg-desc">${esc(uname)} and other profiles they may have or create will now be able to request to follow and message you on TukDaeng. They won't be notified that you unblocked them.</div>
-    <button class="dlg-btn danger dlg-unblock-go">Unblock</button>
-    <button class="dlg-btn dlg-cancel">Cancel</button>`;
+    <div class="dlg-q">${isTh ? `เลิกบล็อก ${esc(uname)} หรือไม่?` : `Unblock ${esc(uname)}?`}</div>
+    <div class="dlg-desc">${isTh ? `${esc(uname)} และบัญชีอื่นที่พวกเขาอาจมีจะสามารถขอติดตามและส่งข้อความหาคุณได้ พวกเขาจะไม่ได้รับการแจ้งเตือนว่าคุณเลิกบล็อก` : `${esc(uname)} and other profiles they may have or create will now be able to request to follow and message you on TukDaeng. They won't be notified that you unblocked them.`}</div>
+    <button class="dlg-btn danger dlg-unblock-go">${isTh ? "เลิกบล็อก" : "Unblock"}</button>
+    <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
 }
 /* IG: right after unblocking, a bottom banner nudges Restrict instead */
 function pfRestrictHint(scr) {
@@ -8374,37 +8480,42 @@ function pfRestrictHint(scr) {
 /* PROFILE-005 — IG "About this account": hero + joined/country/verified rows.
    Mock meta is deterministic per username (same trick as follower counts). */
 const PF_AB_MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const PF_AB_MONTHS_TH = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
 function aboutHTML(uname) {
+  const isTh = state.lang === "th";
   const u = profileOf(uname);
   const h = [...uname].reduce((a, c) => a + c.charCodeAt(0), 0);
-  const joined = `${PF_AB_MONTHS[h % 12]} ${2015 + h % 9}`;
-  const verifiedOn = `${PF_AB_MONTHS[(h * 5 + 2) % 12]} ${2023 + h % 3}`;
+  const mName = isTh ? PF_AB_MONTHS_TH[h % 12] : PF_AB_MONTHS[h % 12];
+  const joined = `${mName} ${2015 + h % 9 + (isTh ? 543 : 0)}`;
+  const vmName = isTh ? PF_AB_MONTHS_TH[(h * 5 + 2) % 12] : PF_AB_MONTHS[(h * 5 + 2) % 12];
+  const verifiedOn = `${vmName} ${2023 + h % 3 + (isTh ? 543 : 0)}`;
   const row = (ic, t, v) => `<div class="ab-row"><span class="ab-ic">${ic}</span><span class="ab-b"><span class="ab-t">${t}</span><span class="ab-v">${v}</span></span></div>`;
   return `
-    <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">About this account</span><span class="spacer"></span></div>
+    <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${isTh ? "เกี่ยวกับบัญชีนี้" : "About this account"}</span><span class="spacer"></span></div>
     <div class="sub-scroll">
       <div class="ab-hero">
         <img class="ab-av" src="${u.avatar}" alt="">
         <div class="ab-name"><span>${esc(uname)}</span>${u.verified ? PF_VBADGE : ""}</div>
-        <div class="ab-note">To help keep our community authentic, we're showing information about profiles on TukDaeng. <b>See why this information is important.</b></div>
+        <div class="ab-note">${isTh ? "เพื่อช่วยให้ชุมชนของเราโปร่งใสและน่าเชื่อถือ เรากำลังแสดงข้อมูลเกี่ยวกับบัญชีบน TukDaeng <b>ดูว่าเหตุใดข้อมูลนี้จึงมีความสำคัญ</b>" : "To help keep our community authentic, we're showing information about profiles on TukDaeng. <b>See why this information is important.</b>"}</div>
       </div>
-      ${row(I.cal(22), "Date joined", joined)}
-      ${row(I.pin(22), "Account based in", "Thailand")}
-      ${u.verified ? row(I.shield(22), "Verified", verifiedOn) : ""}
-      ${u.verified ? `<div class="ab-foot">Profiles can be verified by TukDaeng, based on their activity across TukDaeng products or documents they provide. Verified badges are displayed on these profiles.<br><br>Some verified profiles are owned by a notable person, brand or entity, while others subscribe to get verified.</div>` : ""}
+      ${row(I.cal(22), isTh ? "วันที่เข้าร่วม" : "Date joined", joined)}
+      ${row(I.pin(22), isTh ? "ตำแหน่งบัญชีใน" : "Account based in", isTh ? "ประเทศไทย" : "Thailand")}
+      ${u.verified ? row(I.shield(22), isTh ? "ยืนยันตัวตนแล้ว" : "Verified", verifiedOn) : ""}
+      ${u.verified ? `<div class="ab-foot">${isTh ? "โปรไฟล์สามารถได้รับการยืนยันโดย TukDaeng โดยพิจารณาจากกิจกรรมในผลิตภัณฑ์ TukDaeng หรือเอกสารที่ระบุ ป้ายยืนยันจะแสดงบนโปรไฟล์เหล่านี้" : "Profiles can be verified by TukDaeng, based on their activity across TukDaeng products or documents they provide. Verified badges are displayed on these profiles."}</div>` : ""}
     </div>`;
 }
 /* PROFILE-003 — IG "Following" manage sheet (opened by the Following ⌄ button)
    + Mute sub-page inside the same sheet */
 function mfSheetHTML(uname) {
+  const isTh = state.lang === "th";
   const fav = pfIsFav(uname);
   return `
     <div class="sheet-handle"></div>
     <div class="sheet-title">${esc(uname)}</div>
     <div class="mf-list">
-      <button class="mf-row mf-fav" data-u="${esc(uname)}"><span>${fav ? "Remove from favorites" : "Add to favorites"}</span>${fav ? I.starFill(20) : I.star(20)}</button>
-      <button class="mf-row mf-mute" data-u="${esc(uname)}"><span>Mute</span></button>
-      <button class="mf-row mf-unf" data-u="${esc(uname)}"><span>Unfollow</span></button>
+      <button class="mf-row mf-fav" data-u="${esc(uname)}"><span>${fav ? (isTh ? "ลบออกจากรายการโปรด" : "Remove from favorites") : (isTh ? "เพิ่มในรายการโปรด" : "Add to favorites")}</span>${fav ? I.starFill(20) : I.star(20)}</button>
+      <button class="mf-row mf-mute" data-u="${esc(uname)}"><span>${isTh ? "ปิดเสียงเตือน" : "Mute"}</span></button>
+      <button class="mf-row mf-unf" data-u="${esc(uname)}"><span>${isTh ? "เลิกติดตาม" : "Unfollow"}</span></button>
     </div>`;
 }
 function pfAllUsers(except) {
@@ -8415,14 +8526,18 @@ function pfAllUsers(except) {
   return [...s];
 }
 
-function pfNavHTML(own) {
+function botNavHTML(active = "feed", own = true) {
+  const isTh = state.lang === "th";
   return `<nav class="bottom-nav pf-nav">
-    <span class="nav-item${own ? "" : " active"}" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
-    <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-    <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
-    <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
-    <span class="nav-item${own ? " active" : ""}" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
+    <span class="nav-item${active === "feed" ? " active" : ""}" data-navgo="feed">${I.tabFeed()}<span class="nav-label">${isTh ? "ฟีด" : "Feed"}</span></span>
+    <span class="nav-item${active === "chat" ? " active" : ""}" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">${isTh ? "แชท" : "Chat"}</span></span>
+    <span class="nav-item${active === "board" ? " active" : ""}" data-navgo="board">${I.tabBoards()}<span class="nav-label">${isTh ? "กระดาน" : "Boards"}</span></span>
+    <span class="nav-item${active === "alerts" ? " active" : ""}" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">${isTh ? "แจ้งเตือน" : "Alerts"}</span></span>
+    <span class="nav-item${active === "profile" && own ? " active" : ""}" data-navgo="profile">${I.tabProfile()}<span class="nav-label">${isTh ? "โปรไฟล์" : "Profile"}</span></span>
   </nav>`;
+}
+function pfNavHTML(own) {
+  return botNavHTML(own ? "profile" : "feed", own);
 }
 function pfAvovHTML(u, own, isF) {
   const act = (a, ic, lb) => `<button class="pf-avov-act" data-avact="${a}" data-u="${esc(u.user)}"><span class="pf-avov-ic">${ic}</span><span>${lb}</span></button>`;
@@ -8459,25 +8574,26 @@ function profileHTML(scr, key) {
   const isF = pfIsFollowed(uname);
   const isB = !own && pfIsBlocked(uname); /* PROFILE-005 — blocked profile: IG keeps the page, swaps Follow -> Unblock */
   const stat = (v, l, go) => `<button class="pf-stat"${go ? ` data-pfgo="${go}"` : ""}><b>${v}</b><span>${l}</span></button>`;
+  const isTh = state.lang === "th";
   /* PRD 06 — owner sees Hide/Sold too; public profile exposes only All/Sale/Show */
   const TABS = own
-    ? [["all", "All", I.gridSel(22)], ["sale", "Sale", I.bag(22)], ["show", "Show", I.eye(22)], ["hide", "Hide", I.eyeOff(22)], ["sold", "Sold", I.checkCir(22)]]
-    : [["all", "All", I.gridSel(22)], ["sale", "Sale", I.bag(22)], ["show", "Show", I.eye(22)]];
+    ? [["all", isTh ? "ทั้งหมด" : "All", I.gridSel(22)], ["sale", isTh ? "ขาย" : "Sale", I.bag(22)], ["show", isTh ? "โชว์" : "Show", I.eye(22)], ["hide", isTh ? "ซ่อน" : "Hide", I.eyeOff(22)], ["sold", isTh ? "ขายแล้ว" : "Sold", I.checkCir(22)]]
+    : [["all", isTh ? "ทั้งหมด" : "All", I.gridSel(22)], ["sale", isTh ? "ขาย" : "Sale", I.bag(22)], ["show", isTh ? "โชว์" : "Show", I.eye(22)]];
   const tabName = TABS.some(t => t[0] === tab) ? tab : "all";
   const list = isB ? [] : pfTabPosts(uname, tabName);
   const body = isB
-    ? pfEmptyHTML(I.camPlain(30), "No posts yet", "")
+    ? pfEmptyHTML(I.camPlain(30), isTh ? "ยังไม่มีโพสต์" : "No posts yet", "")
     : (list.length ? pfTilesHTML(list, tabName)
-        : pfEmptyHTML(I.camPlain(30), tabName === "all" ? (own ? "Share your first post" : "No posts yet") : `No ${tabName} posts`,
-            own && tabName === "all" ? "When you share photos and clips, they'll show up here." : "", own && tabName === "all"));
+        : pfEmptyHTML(I.camPlain(30), tabName === "all" ? (own ? (isTh ? "แชร์โพสต์แรกของคุณ" : "Share your first post") : (isTh ? "ยังไม่มีโพสต์" : "No posts yet")) : (isTh ? `ไม่มีโพสต์หมวด ${tabName}` : `No ${tabName} posts`),
+            own && tabName === "all" ? (isTh ? "เมื่อคุณแชร์รูปภาพและคลิป สิ่งเหล่านั้นจะแสดงที่นี่" : "When you share photos and clips, they'll show up here.") : "", own && tabName === "all"));
   return `
   <div class="detail-head pf-head">
     ${own
-      ? `<button class="icon-btn" data-flow="create" title="Create">${I.plus()}</button>
+      ? `<button class="icon-btn" data-flow="create" title="${isTh ? "สร้างโพสต์" : "Create"}">${I.plus()}</button>
          <span class="spacer"></span>
          <button class="pf-uname"><span>${esc(u.user)}</span></button>
          <span class="spacer"></span>
-         <button class="icon-btn pf-menu" title="Settings and activity">${I.burger(22)}</button>`
+         <button class="icon-btn pf-menu" title="${isTh ? "การตั้งค่าและกิจกรรม" : "Settings and activity"}">${I.burger(22)}</button>`
       : `<button class="icon-btn sub-back">${I.back()}</button>
          <span class="pf-vname">${esc(u.user)}</span>
          <span class="spacer"></span>
@@ -8492,13 +8608,13 @@ function profileHTML(scr, key) {
       <div class="pf-idcol">
         <div class="pf-disp">${esc(u.disp)}</div>
         <div class="pf-stats">
-          ${stat(isB ? 0 : (u.posts || pfTabPosts(uname, "all").length), "posts")}
-          ${stat(isB ? "-" : u.followers, "followers", isB ? "" : "followers")}
-          ${stat(isB ? "-" : u.following, "following", isB ? "" : "following")}
+          ${stat(isB ? 0 : (u.posts || pfTabPosts(uname, "all").length), isTh ? "โพสต์" : "posts")}
+          ${stat(isB ? "-" : u.followers, isTh ? "ผู้ติดตาม" : "followers", isB ? "" : "followers")}
+          ${stat(isB ? "-" : u.following, isTh ? "กำลังติดตาม" : "following", isB ? "" : "following")}
         </div>
       </div>
     </div>
-    ${u.sleep ? `<div class="pf-sleep">${I.moon(14)}<span>In sleep mode</span></div>` : ""}
+    ${u.sleep ? `<div class="pf-sleep">${I.moon(14)}<span>${isTh ? "อยู่ในโหมดสลีป" : "In sleep mode"}</span></div>` : ""}
     <div class="pf-bio">
       ${u.cat ? `<div class="pf-cat">${esc(u.cat)}</div>` : ""}
       <div class="pf-biot">${esc(u.bio)}</div>
@@ -8507,13 +8623,13 @@ function profileHTML(scr, key) {
       </div>` : ""}
       ${!own ? `<div class="pf-chrow"><span class="pf-link"><b class="pf-atch">@</b>${esc(u.user)}</span></div>` : ""}
     </div>
-    ${!own && u.followedBy.length ? `<div class="pf-fby"><span class="pf-fbavs">${u.followedBy.slice(0, 3).map(n => `<img src="${pfAvatar(n)}" alt="">`).join("")}</span><span>Followed by ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` and <b>${esc(u.fbyMore)}</b>` : ""}</span></div>` : ""}
+    ${!own && u.followedBy.length ? `<div class="pf-fby"><span class="pf-fbavs">${u.followedBy.slice(0, 3).map(n => `<img src="${pfAvatar(n)}" alt="">`).join("")}</span><span>${isTh ? `ติดตามโดย ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` และ <b>${esc(u.fbyMore)}</b>` : ""}` : `Followed by ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` and <b>${esc(u.fbyMore)}</b>` : ""}`}</span></div>` : ""}
     <div class="pf-actions">
       ${own
-        ? `<button class="pf-btn pf-edit">Edit profile</button><button class="pf-btn pf-share">Share profile</button><button class="pf-btn pf-iconbtn pf-pfo" data-sub="portfolio" title="Portfolio">${I.wallet(16)}</button>`
+        ? `<button class="pf-btn pf-edit">${isTh ? "แก้ไขโปรไฟล์" : "Edit profile"}</button><button class="pf-btn pf-share">${isTh ? "แชร์โปรไฟล์" : "Share profile"}</button><button class="pf-btn pf-iconbtn pf-pfo" data-sub="portfolio" title="${isTh ? "พอร์ตโฟลิโอ" : "Portfolio"}">${I.wallet(16)}</button>`
         : isB
-          ? `<button class="pf-btn primary pf-unblock" data-u="${esc(uname)}" style="flex:1;">Unblock</button>`
-          : `<button class="pf-btn pf-foll${isF ? "" : " primary"}" data-u="${esc(uname)}">${isF ? `Following ${I.chev(12)}` : "Follow"}</button><button class="pf-btn pf-msg">Message</button>`}
+          ? `<button class="pf-btn primary pf-unblock" data-u="${esc(uname)}" style="flex:1;">${isTh ? "เลิกบล็อก" : "Unblock"}</button>`
+          : `<button class="pf-btn pf-foll${isF ? "" : " primary"}" data-u="${esc(uname)}">${isF ? `${isTh ? "กำลังติดตาม" : "Following"} ${I.chev(12)}` : (isTh ? "ติดตาม" : "Follow")}</button><button class="pf-btn pf-msg">${isTh ? "ส่งข้อความ" : "Message"}</button>`}
     </div>
     <div class="pf-tabs">
       ${TABS.map(([k, l, ic]) => `<button class="pf-tab pf-tab-txt${tabName === k ? " on" : ""}" data-pftab="${k}">${ic}<span>${l}</span></button>`).join("")}
@@ -8561,15 +8677,16 @@ function pfollowHTML(scr, key) {
     </div>`;
 }
 function peditHTML(scr) {
+  const isTh = state.lang === "th";
   const u = profileOf(CP_ME.name);
   return `
-    <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">Edit profile</span><span class="spacer"></span></div>
+    <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${isTh ? "แก้ไขโปรไฟล์" : "Edit profile"}</span><span class="spacer"></span></div>
     <div class="sub-scroll">
-      <div class="pe-av"><img src="${u.avatar}" alt=""><button class="pe-pic">Edit picture</button></div>
-      <label class="pe-f"><span>Name</span><input class="pe-in pe-name" value="${esc(u.disp)}"></label>
-      <label class="pe-f"><span>Bio</span><textarea class="pe-in pe-bio" rows="3">${esc(u.bio)}</textarea></label>
-      <label class="pe-f"><span>Link</span><input class="pe-in pe-link" value="${esc(u.link)}"></label>
-      <div class="pe-savewrap"><button class="pf-btn primary pe-save">Save</button></div>
+      <div class="pe-av"><img src="${u.avatar}" alt=""><button class="pe-pic">${isTh ? "เปลี่ยนรูปโปรไฟล์" : "Edit picture"}</button></div>
+      <label class="pe-f"><span>${isTh ? "ชื่อที่แสดง" : "Name"}</span><input class="pe-in pe-name" value="${esc(u.disp)}"></label>
+      <label class="pe-f"><span>${isTh ? "ประวัติโดยย่อ" : "Bio"}</span><textarea class="pe-in pe-bio" rows="3">${esc(u.bio)}</textarea></label>
+      <label class="pe-f"><span>${isTh ? "ลิงก์" : "Link"}</span><input class="pe-in pe-link" value="${esc(u.link)}"></label>
+      <div class="pe-savewrap"><button class="pf-btn primary pe-save">${isTh ? "บันทึก" : "Save"}</button></div>
     </div>`;
 }
 
@@ -8592,17 +8709,18 @@ function pfoRowHTML({ a }) {
   </button>`;
 }
 function portfolioHTML(scr) {
+  const isTh = state.lang === "th";
   const sim = scr._pfoSim || "";
   const dev = new URLSearchParams(location.search).has("dev");
-  const head = `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">Portfolio</span><span class="spacer"></span>${dev ? `<button class="icon-btn pfo-more" title="Preview states">${I.dots(18)}</button>` : `<span class="icon-btn" style="visibility:hidden"></span>`}</div>`;
+  const head = `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">${isTh ? "พอร์ตโฟลิโอ" : "Portfolio"}</span><span class="spacer"></span>${dev ? `<button class="icon-btn pfo-more" title="Preview states">${I.dots(18)}</button>` : `<span class="icon-btn" style="visibility:hidden"></span>`}</div>`;
   if (sim === "denied")
-    return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.lock(40)}<div class="t">Permission denied.</div><div class="pfo-ed">Portfolios are private — only the owner can see this.</div></div>${pfoSimBar(scr)}</div>`;
+    return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.lock(40)}<div class="t">${isTh ? "ไม่ได้รับอนุญาต" : "Permission denied."}</div><div class="pfo-ed">${isTh ? "พอร์ตโฟลิโอเป็นข้อมูลส่วนตัว — มีเพียงเจ้าของเท่านั้นที่เห็น" : "Portfolios are private — only the owner can see this."}</div></div>${pfoSimBar(scr)}</div>`;
   if (sim === "failed")
-    return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">Unable to load data.</div><button class="pfo-retry">Try again</button></div></div>`;
+    return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">${isTh ? "ไม่สามารถโหลดข้อมูลได้" : "Unable to load data."}</div><button class="pfo-retry">${isTh ? "ลองใหม่อีกครั้ง" : "Try again"}</button></div></div>`;
   const mktOff = sim === "nomkt";
   const els = PF_ASSETS.filter(pfoEligible);
   if (sim === "empty" || !els.length)
-    return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.wallet(40)}<div class="t">No data found</div><div class="pfo-ed">Assets you list as Sale, Show or Hide will appear here.</div></div>${pfoSimBar(scr)}</div>`;
+    return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.wallet(40)}<div class="t">${isTh ? "ไม่พบข้อมูล" : "No data found"}</div><div class="pfo-ed">${isTh ? "นาฬิกาที่คุณระบุสถานะ ลงขาย โชว์ หรือ ซ่อน จะแสดงที่นี่" : "Assets you list as Sale, Show or Hide will appear here."}</div></div>${pfoSimBar(scr)}</div>`;
   const rows = els.map(a => ({ a, cur: pfoCur(a, mktOff), gl: pfoGL(a, mktOff), cmp: pfoCmp(a, mktOff), hold: pfoHold(a.bought), mktOff }));
   const invested = rows.filter(r => r.a.purchase != null && r.a.purchase > 0);
   const total = invested.reduce((s, r) => s + r.a.purchase, 0);
@@ -8612,27 +8730,28 @@ function portfolioHTML(scr) {
   const glBase = glRows.reduce((s, r) => s + r.a.purchase, 0);
   return head + `<div class="sub-scroll pfo-scroll">
     ${pfoSimBar(scr)}
-    ${mktOff ? `<div class="pfo-banner">${I.clock(14)}<span>Some market prices are unavailable — market comparison hidden</span></div>` : ""}
+    ${mktOff ? `<div class="pfo-banner">${I.clock(14)}<span>${isTh ? "ไม่พบราคาตลาดบางรายการ — ซ่อนการเปรียบเทียบราคาตลาด" : "Some market prices are unavailable — market comparison hidden"}</span></div>` : ""}
     <div class="pfo-total">
-      <span class="pfo-lb pfo-tt"><span>Total invested</span><span class="pfo-lock">${I.lock(11)} Private</span></span>
+      <span class="pfo-lb pfo-tt"><span>${isTh ? "ต้นทุนรวม" : "Total invested"}</span><span class="pfo-lock">${I.lock(11)} ${isTh ? "ส่วนตัว" : "Private"}</span></span>
       <b>THB ${total.toLocaleString("en-US")}</b>
       ${mktTotal != null && glRows.length
-        ? `<span class="pfo-lb">Market value ${pfoTHB(mktTotal)} · <i class="pfo-mktd ${glSum >= 0 ? "up" : "dn"}">${pfoPct(glSum, glBase)}</i></span>`
-        : `<span class="pfo-lb">Market value unavailable</span>`}
-      <span class="pfo-lb">Purchase cost of ${invested.length}/${els.length} assets · only you can see this</span>
+        ? `<span class="pfo-lb">${isTh ? "มูลค่าตลาด" : "Market value"} ${pfoTHB(mktTotal)} · <i class="pfo-mktd ${glSum >= 0 ? "up" : "dn"}">${pfoPct(glSum, glBase)}</i></span>`
+        : `<span class="pfo-lb">${isTh ? "ไม่พบข้อมูลมูลค่าตลาด" : "Market value unavailable"}</span>`}
+      <span class="pfo-lb">${isTh ? `ต้นทุนซื้อของ ${invested.length}/${els.length} รายการ · มีเพียงคุณเท่านั้นที่เห็น` : `Purchase cost of ${invested.length}/${els.length} assets · only you can see this`}</span>
     </div>
-    <div class="sub-sec pfo-sec"><span>Assets <span class="pfo-count">${els.length}</span></span><button class="pfo-soldlink" data-sub="soldhist">${I.history(13)} Sold history ${I.chevR(12)}</button></div>
+    <div class="sub-sec pfo-sec"><span>${isTh ? "รายการนาฬิกา" : "Assets"} <span class="pfo-count">${els.length}</span></span><button class="pfo-soldlink" data-sub="soldhist">${I.history(13)} ${isTh ? "ประวัติการขาย" : "Sold history"} ${I.chevR(12)}</button></div>
     ${rows.map(pfoRowHTML).join("")}
-    <div class="pfo-note">Counts Sale, Show &amp; Hide pieces you own — sold, deleted, permanently hidden and consignment items are excluded.</div>
+    <div class="pfo-note">${isTh ? "นับเฉพาะนาฬิกาที่คุณเป็นเจ้าของในสถานะ ลงขาย โชว์ และ ซ่อน — ไม่รวมรายการที่ขายแล้ว ลบ ซ่อนถาวร หรือสินค้าฝากขาย" : "Counts Sale, Show &amp; Hide pieces you own — sold, deleted, permanently hidden and consignment items are excluded."}</div>
   </div>`;
 }
 function pfassetHTML(scr, id) {
+  const isTh = state.lang === "th";
   const a = PF_ASSETS.find(x => x.id === id);
   const head = t => `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">${t}</span><span class="spacer"></span><span class="icon-btn" style="visibility:hidden"></span></div>`;
-  if (!a) return head("Asset") + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">No data found</div></div></div>`;
+  if (!a) return head(isTh ? "รายละเอียดนาฬิกา" : "Asset") + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">${isTh ? "ไม่พบข้อมูล" : "No data found"}</div></div></div>`;
   const cur = pfoCur(a, false), gl = pfoGL(a, false), cmp = pfoCmp(a, false), ex = pfoExp(a), hold = pfoHold(a.bought);
   const kv = (k, v, cls = "") => `<div class="pfd-kv"><span>${k}</span><b class="${cls}">${v}</b></div>`;
-  return head("Asset") + `<div class="sub-scroll pfo-scroll">
+  return head(isTh ? "รายละเอียดนาฬิกา" : "Asset") + `<div class="sub-scroll pfo-scroll">
     <div class="detail-hero" data-pfaid="${a.id}">
       <img src="${a.photos[0]}" alt="">
       ${a.photos.length > 1 ? `<span class="photo-counter">1/${a.photos.length}</span>` : ""}
@@ -8644,44 +8763,46 @@ function pfassetHTML(scr, id) {
       <span class="pfo-chip ${PFO_STATUS[a.status][1]}">${PFO_STATUS[a.status][0]}</span>
     </div>
     <div class="pfo-card">
-      <div class="pfo-card-t">Value <span class="pfo-privtag">${I.lock(10)} private</span></div>
-      ${kv("Current value", cur.v != null ? pfoTHB(cur.v) : "—")}
-      ${kv("Value source", PFO_SRC[cur.src])}
-      ${kv("Estimated market", a.market != null ? `${pfoTHB(Math.round(a.market * 0.95 / 500) * 500)} – ${pfoTHB(Math.round(a.market * 1.05 / 500) * 500)}` : "—")}
-      ${kv("Last price update", a.market != null ? pfoDate(PF_MKT_UPDATED) : "—")}
-      ${kv("Data source", a.market != null ? "TukDaeng Market Data" : "—")}
-      ${kv("Purchase price", a.purchase ? pfoTHB(a.purchase) : "—")}
-      ${kv("Purchased", a.bought ? pfoDate(a.bought) : "—")}
-      ${kv("Unrealized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, a.purchase)})` : "—", gl != null ? (gl >= 0 ? "up" : "dn") : "")}
-      ${kv("Holding period", hold ? `${hold.d.toLocaleString("en-US")} days · ${hold.txt}` : "—")}
+      <div class="pfo-card-t">${isTh ? "มูลค่า" : "Value"} <span class="pfo-privtag">${I.lock(10)} ${isTh ? "ส่วนตัว" : "private"}</span></div>
+      ${kv(isTh ? "มูลค่าปัจจุบัน" : "Current value", cur.v != null ? pfoTHB(cur.v) : "—")}
+      ${kv(isTh ? "ที่มาของมูลค่า" : "Value source", PFO_SRC[cur.src])}
+      ${kv(isTh ? "ราคาประเมินตลาด" : "Estimated market", a.market != null ? `${pfoTHB(Math.round(a.market * 0.95 / 500) * 500)} – ${pfoTHB(Math.round(a.market * 1.05 / 500) * 500)}` : "—")}
+      ${kv(isTh ? "อัปเดตราคาล่าสุด" : "Last price update", a.market != null ? pfoDate(PF_MKT_UPDATED) : "—")}
+      ${kv(isTh ? "แหล่งข้อมูล" : "Data source", a.market != null ? "TukDaeng Market Data" : "—")}
+      ${kv(isTh ? "ราคาซื้อ" : "Purchase price", a.purchase ? pfoTHB(a.purchase) : "—")}
+      ${kv(isTh ? "วันที่ซื้อ" : "Purchased", a.bought ? pfoDate(a.bought) : "—")}
+      ${kv(isTh ? "กำไร/ขาดทุนที่ยังไม่เกิดขึ้น" : "Unrealized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, a.purchase)})` : "—", gl != null ? (gl >= 0 ? "up" : "dn") : "")}
+      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txt}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "—")}
     </div>
     ${a.status === "sale" ? `<div class="pfo-card">
-      <div class="pfo-card-t">Listing</div>
-      ${kv("Asking price", a.asking != null ? pfoTHB(a.asking) : "—")}
-      ${kv("Expected profit", ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : "—", ex != null ? "up" : "")}
-      ${kv("Market comparison", cmp && cmp !== "none" ? `<i class="pfo-chip ${PFO_CMP[cmp][1]}">${PFO_CMP[cmp][0]}</i>` : "No market price")}
+      <div class="pfo-card-t">${isTh ? "การลงประกาศ" : "Listing"}</div>
+      ${kv(isTh ? "ราคาตั้งขาย" : "Asking price", a.asking != null ? pfoTHB(a.asking) : "—")}
+      ${kv(isTh ? "กำไรที่คาดหวัง" : "Expected profit", ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : "—", ex != null ? "up" : "")}
+      ${kv(isTh ? "เปรียบเทียบตลาด" : "Market comparison", cmp && cmp !== "none" ? `<i class="pfo-chip ${PFO_CMP[cmp][1]}">${PFO_CMP[cmp][0]}</i>` : (isTh ? "ไม่มีราคาตลาด" : "No market price"))}
     </div>` : ""}
-    <div class="pfo-note">Owner-only data — never shown on your public profile.</div>
+    <div class="pfo-note">${isTh ? "ข้อมูลเฉพาะเจ้าของ — จะไม่แสดงบนโปรไฟล์สาธารณะของคุณ" : "Owner-only data — never shown on your public profile."}</div>
   </div>`;
 }
 function soldHistHTML() {
+  const isTh = state.lang === "th";
   const rows = PF_SOLD.map(x => {
     return `<button class="mrow pfo-row" data-sub="sold:${x.id}">
       <img class="pfo-img" src="${x.img}" alt="">
-      <span class="lg-b"><span class="mn">${esc(x.name)}</span><span class="md">Sold ${pfoDate(x.soldDate)} · ${esc(x.buyer)}</span></span>
+      <span class="lg-b"><span class="mn">${esc(x.name)}</span><span class="md">${isTh ? `ขายแล้วเมื่อ ${pfoDate(x.soldDate)} · ${esc(x.buyer)}` : `Sold ${pfoDate(x.soldDate)} · ${esc(x.buyer)}`}</span></span>
       <span class="pfo-r"><span class="pfo-val">${pfoTHB(x.price)}</span></span>
     </button>`;
   }).join("");
-  return `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">Sold history</span><span class="spacer"></span><span class="icon-btn" style="visibility:hidden"></span></div>
+  return `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">${isTh ? "ประวัติการขาย" : "Sold history"}</span><span class="spacer"></span><span class="icon-btn" style="visibility:hidden"></span></div>
   <div class="sub-scroll pfo-scroll">
-    <div class="fav-desc">Sold pieces keep their sale record here — they're never counted in portfolio value.</div>
-    ${PF_SOLD.length ? rows : `<div class="sr-empty-block">${I.history(40)}<div class="t">No data found</div></div>`}
+    <div class="fav-desc">${isTh ? "บันทึกข้อมูลนาฬิกาที่ขายแล้วจะเก็บไว้ที่นี่ และไม่นำไปรวมกับมูลค่าพอร์ตโฟลิโอ" : "Sold pieces keep their sale record here — they're never counted in portfolio value."}</div>
+    ${PF_SOLD.length ? rows : `<div class="sr-empty-block">${I.history(40)}<div class="t">${isTh ? "ไม่พบข้อมูล" : "No data found"}</div></div>`}
   </div>`;
 }
 function soldDetailHTML(id) {
+  const isTh = state.lang === "th";
   const x = PF_SOLD.find(s => s.id === id);
-  const head = `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">Sold item</span><span class="spacer"></span><span class="icon-btn" style="visibility:hidden"></span></div>`;
-  if (!x) return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">No data found</div></div></div>`;
+  const head = `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">${isTh ? "รายการที่ขายแล้ว" : "Sold item"}</span><span class="spacer"></span><span class="icon-btn" style="visibility:hidden"></span></div>`;
+  if (!x) return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">${isTh ? "ไม่พบข้อมูล" : "No data found"}</div></div></div>`;
   const gl = x.purchase > 0 ? x.price - x.purchase : null;
   const hold = pfoHold(x.bought, x.soldDate);
   const kv = (k, v, cls = "") => `<div class="pfd-kv"><span>${k}</span><b class="${cls}">${v}</b></div>`;
@@ -8694,24 +8815,24 @@ function soldDetailHTML(id) {
     <div class="pfd-id">
       <div class="pfd-name">${esc(x.name)}</div>
       <div class="pfd-meta">${esc(x.ref)} · ${esc(x.brand)}</div>
-      <span class="pfo-chip st-hide">Sold</span>
+      <span class="pfo-chip st-hide">${isTh ? "ขายแล้ว" : "Sold"}</span>
     </div>
     <div class="pfo-card">
-      <div class="pfo-card-t">Sale record <span class="pfo-privtag">${I.lock(10)} private</span></div>
-      ${kv("Sale date", pfoDate(x.soldDate))}
-      ${kv("Buyer", esc(x.buyer))}
-      ${kv("Contact", esc(x.contact))}
-      ${kv("Sale price", pfoTHB(x.price))}
-      ${kv("Payment method", esc(x.pay))}
-      ${kv("Attachment", `<span class="pfd-att"><img src="${x.attachImg}" alt="">${esc(x.attach)}</span>`)}
+      <div class="pfo-card-t">${isTh ? "บันทึกการขาย" : "Sale record"} <span class="pfo-privtag">${I.lock(10)} ${isTh ? "ส่วนตัว" : "private"}</span></div>
+      ${kv(isTh ? "วันที่ขาย" : "Sale date", pfoDate(x.soldDate))}
+      ${kv(isTh ? "ผู้ซื้อ" : "Buyer", esc(x.buyer))}
+      ${kv(isTh ? "ติดต่อ" : "Contact", esc(x.contact))}
+      ${kv(isTh ? "ราคาขาย" : "Sale price", pfoTHB(x.price))}
+      ${kv(isTh ? "วิธีชำระเงิน" : "Payment method", esc(x.pay))}
+      ${kv(isTh ? "หลักฐานแนบ" : "Attachment", `<span class="pfd-att"><img src="${x.attachImg}" alt="">${esc(x.attach)}</span>`)}
     </div>
     <div class="pfo-card">
-      <div class="pfo-card-t">Return</div>
-      ${kv("Purchase price", x.purchase ? pfoTHB(x.purchase) : "—")}
-      ${kv("Realized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, x.purchase)})` : "—", gl != null ? (gl >= 0 ? "up" : "dn") : "")}
-      ${kv("Holding period", hold ? `${hold.d.toLocaleString("en-US")} days · ${hold.txt}` : "—")}
+      <div class="pfo-card-t">${isTh ? "ผลตอบแทน" : "Return"}</div>
+      ${kv(isTh ? "ราคาซื้อ" : "Purchase price", x.purchase ? pfoTHB(x.purchase) : "—")}
+      ${kv(isTh ? "กำไร/ขาดทุนที่เกิดขึ้นจริง" : "Realized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, x.purchase)})` : "—", gl != null ? (gl >= 0 ? "up" : "dn") : "")}
+      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txt}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "—")}
     </div>
-    <div class="pfo-note">Realized gain/loss is separate<br>from portfolio value.</div>
+    <div class="pfo-note">${isTh ? "กำไร/ขาดทุนที่เกิดขึ้นจริงจะแยกออกจาก<br>มูลค่าพอร์ตโฟลิโอ" : "Realized gain/loss is separate<br>from portfolio value."}</div>
   </div>`;
 }
 
@@ -8722,49 +8843,53 @@ function subHTML(name, scr) {
   if (name === "search") return searchHTML(scr);
   if (name === "sfilter") return filterHTML(scr);
   if (name === "recents") return recentPageHTML(scr);
-  if (name === "settings") return head("Settings and activity") + `<div class="sub-scroll">
-    <div class="sub-sec">Account</div>
-    ${row("About your account", `data-sub="about_account"`, "", I.userCir(21))}
-    <div class="sub-sec sec-div">Your library</div>
-    ${row("Saved", `data-sub="saved"`, `<span class="sub-count">${POSTS.filter(p => p.saved).length}</span>`, I.bookmark(21))}
-    ${row("Wish List", `data-sub="wishlist"`, `<span class="sub-count">${wlPosts().length}</span>`, I.gift(21))}
-    ${row("Archive", `data-sub="archive"`, `<span class="sub-count">${archivePosts().length}</span>`, I.history(21))}
-    ${row("Watch Alerts", `data-sub="walerts"`, `<span class="sub-count">${WATCH_ALERTS.length}</span>`, I.navBell(21))}
-    <div class="sub-sec sec-div">What you see</div>
-    ${row("Favorites", `data-sub="favorites"`, `<span class="sub-count">${favoriteSellers().length}</span>`, I.star(21))}
-    ${row("Muted accounts", `data-sub="muted"`, `<span class="sub-count">${mutedSellers().length}</span>`, I.bellOff(21))}
-    ${row("Blocked", `data-sub="blocked"`, `<span class="sub-count">${PF_BLOCKED.size}</span>`, I.userMinus(21))}
-    ${row("Content preferences", `data-sub="prefs"`, "", I.stack(21))}
-    <div class="sub-sec sec-div">Your app and media</div>
-    ${row("Language", `data-sub="lang"`, `<span class="sub-count">${(state.lang === "th" ? "ภาษาไทย" : "English")}</span>`, I.globe(21))}
-    ${row("Theme mode", `data-sub="theme"`, `<span class="sub-count">${state.theme === "dark" ? "Dark" : "Light"}</span>`, I.moon(21))}
-    <div class="sub-sec sec-div">Notifications</div>
-    ${row("Notification settings", `data-sub="notif_settings"`, "", I.navBell(21))}
-    <div class="sub-sec sec-div">More info and support</div>
-    ${row("Help", `data-sub="help"`, "", I.helpCir(21))}
-    ${row("Privacy Policy", `data-sub="privacy"`, "", I.shield(21))}
-    ${row("Terms of Use", `data-sub="terms"`, "", I.fileText(21))}
-    ${row("About", `data-sub="about_app"`, "", I.infoCir(21))}
-    <div class="sub-sec sec-div">Login</div>
-    <button class="sub-row sub-row-logout" data-act="logout"><span>Log out</span></button>
-  </div>`;
+  if (name === "settings") {
+    const isTh = state.lang === "th";
+    return head(isTh ? "การตั้งค่าและกิจกรรม" : "Settings and activity") + `<div class="sub-scroll">
+      <div class="sub-sec">${isTh ? "บัญชี" : "Account"}</div>
+      ${row(isTh ? "เกี่ยวกับบัญชีของคุณ" : "About your account", `data-sub="about_account"`, "", I.userCir(21))}
+      <div class="sub-sec sec-div">${isTh ? "คลังของคุณ" : "Your library"}</div>
+      ${row(isTh ? "โพสต์ที่บันทึกไว้" : "Saved", `data-sub="saved"`, `<span class="sub-count">${POSTS.filter(p => p.saved).length}</span>`, I.bookmark(21))}
+      ${row(isTh ? "รายการที่อยากได้" : "Wish List", `data-sub="wishlist"`, `<span class="sub-count">${wlPosts().length}</span>`, I.gift(21))}
+      ${row(isTh ? "คลังข้อมูลที่เก็บถาวร" : "Archive", `data-sub="archive"`, `<span class="sub-count">${archivePosts().length}</span>`, I.history(21))}
+      ${row(isTh ? "การแจ้งเตือนนาฬิกา" : "Watch Alerts", `data-sub="walerts"`, `<span class="sub-count">${WATCH_ALERTS.length}</span>`, I.navBell(21))}
+      <div class="sub-sec sec-div">${isTh ? "สิ่งที่คุณเห็น" : "What you see"}</div>
+      ${row(isTh ? "รายการโปรด" : "Favorites", `data-sub="favorites"`, `<span class="sub-count">${favoriteSellers().length}</span>`, I.star(21))}
+      ${row(isTh ? "บัญชีที่ปิดเสียง" : "Muted accounts", `data-sub="muted"`, `<span class="sub-count">${mutedSellers().length}</span>`, I.bellOff(21))}
+      ${row(isTh ? "บัญชีที่บล็อก" : "Blocked", `data-sub="blocked"`, `<span class="sub-count">${PF_BLOCKED.size}</span>`, I.userMinus(21))}
+      ${row(isTh ? "การตั้งค่าเนื้อหา" : "Content preferences", `data-sub="prefs"`, "", I.stack(21))}
+      <div class="sub-sec sec-div">${isTh ? "แอปและสื่อของคุณ" : "Your app and media"}</div>
+      ${row(isTh ? "ภาษา" : "Language", `data-sub="lang"`, `<span class="sub-count">${(state.lang === "th" ? "ภาษาไทย" : "English")}</span>`, I.globe(21))}
+      ${row(isTh ? "โหมดธีม" : "Theme mode", `data-sub="theme"`, `<span class="sub-count">${state.theme === "dark" ? (isTh ? "โหมดมืด" : "Dark") : (isTh ? "โหมดสว่าง" : "Light")}</span>`, I.moon(21))}
+      <div class="sub-sec sec-div">${isTh ? "การแจ้งเตือน" : "Notifications"}</div>
+      ${row(isTh ? "การตั้งค่าการแจ้งเตือน" : "Notification settings", `data-sub="notif_settings"`, "", I.navBell(21))}
+      <div class="sub-sec sec-div">${isTh ? "ข้อมูลเพิ่มเติมและการสนับสนุน" : "More info and support"}</div>
+      ${row(isTh ? "ศูนย์ช่วยเหลือ" : "Help", `data-sub="help"`, "", I.helpCir(21))}
+      ${row(isTh ? "นโยบายความเป็นส่วนตัว" : "Privacy Policy", `data-sub="privacy"`, "", I.shield(21))}
+      ${row(isTh ? "ข้อกำหนดการใช้งาน" : "Terms of Use", `data-sub="terms"`, "", I.fileText(21))}
+      ${row(isTh ? "เกี่ยวกับตึกแดง" : "About", `data-sub="about_app"`, "", I.infoCir(21))}
+      <div class="sub-sec sec-div">${isTh ? "การเข้าสู่ระบบ" : "Login"}</div>
+      <button class="sub-row sub-row-logout" data-act="logout"><span>${isTh ? "ออกจากระบบ" : "Log out"}</span></button>
+    </div>`;
+  }
   if (name === "about_account") {
+    const isTh = state.lang === "th";
     const me = (typeof profileOf === "function" ? profileOf(CP_ME.name) : null) || { disp: "Mr.FOX", user: "king.mr.fox", avatar: CP_ME.avatar };
-    return head("About your account") + `<div class="sub-scroll">
+    return head(isTh ? "เกี่ยวกับบัญชีของคุณ" : "About your account") + `<div class="sub-scroll">
       <div class="about-acc-hero">
         <img src="${me.avatar}" alt="">
         <div class="about-acc-name">${esc(me.disp || "Mr.FOX")}</div>
         <div class="about-acc-uname">@${esc(me.user || "king.mr.fox")}</div>
       </div>
-      <div class="sub-sec">Account information</div>
-      <div class="sub-row sub-row-static"><span class="sub-ic">${I.cal(22)}</span><span class="lg-b"><span class="lg-t">Date joined</span><span class="lg-d">October 2024</span></span></div>
-      <div class="sub-row sub-row-static"><span class="sub-ic">${I.globe(22)}</span><span class="lg-b"><span class="lg-t">Account based in</span><span class="lg-d">Thailand</span></span></div>
+      <div class="sub-sec">${isTh ? "ข้อมูลบัญชี" : "Account information"}</div>
+      <div class="sub-row sub-row-static"><span class="sub-ic">${I.cal(22)}</span><span class="lg-b"><span class="lg-t">${isTh ? "วันที่เข้าร่วม" : "Date joined"}</span><span class="lg-d">${isTh ? "ตุลาคม 2567" : "October 2024"}</span></span></div>
+      <div class="sub-row sub-row-static"><span class="sub-ic">${I.globe(22)}</span><span class="lg-b"><span class="lg-t">${isTh ? "ตำแหน่งบัญชี" : "Account based in"}</span><span class="lg-d">${isTh ? "ประเทศไทย" : "Thailand"}</span></span></div>
       <div class="about-acc-divider"></div>
-      <div class="sub-sec">Security</div>
-      <button class="sub-row" data-sub="change_pwd"><span class="sub-ic">${I.lock(22)}</span><span>${state.lang === "th" ? "เปลี่ยนรหัสผ่าน" : "Change password"}</span><span class="sub-chev">${I.chevR(16)}</span></button>
+      <div class="sub-sec">${isTh ? "ความปลอดภัย" : "Security"}</div>
+      <button class="sub-row" data-sub="change_pwd"><span class="sub-ic">${I.lock(22)}</span><span>${isTh ? "เปลี่ยนรหัสผ่าน" : "Change password"}</span><span class="sub-chev">${I.chevR(16)}</span></button>
       <div class="about-acc-divider"></div>
-      <div class="sub-sec">${state.lang === "th" ? "การจัดการบัญชี" : "Account management"}</div>
-      <button class="sub-row" data-sub="del_account"><span class="sub-ic" style="color:#ed4956;">${I.trash(22)}</span><span style="color:#ed4956;">${state.lang === "th" ? "ลบบัญชีผู้ใช้" : "Delete account"}</span><span class="sub-chev">${I.chevR(16)}</span></button>
+      <div class="sub-sec">${isTh ? "การจัดการบัญชี" : "Account management"}</div>
+      <button class="sub-row" data-sub="del_account"><span class="sub-ic" style="color:#ed4956;">${I.trash(22)}</span><span style="color:#ed4956;">${isTh ? "ลบบัญชีผู้ใช้" : "Delete account"}</span><span class="sub-chev">${I.chevR(16)}</span></button>
     </div>`;
   }
   if (name === "change_pwd") {
@@ -8898,45 +9023,49 @@ function subHTML(name, scr) {
     }
   }
   if (name === "lang") {
+    const isTh = state.lang === "th";
     const curLang = state.lang || "en";
-    const opt = (code, label, desc) => `<button class="sub-row sub-row-lg" data-lang-opt="${code}"><span class="lg-b"><span class="lg-t">${label}</span><span class="lg-d">${desc}</span></span><span class="sub-chev sens-check">${curLang === code ? I.check(17) : ""}</span></button>`;
-    return head("Language") + `<div class="sub-scroll">
-      <div class="fav-desc">Choose your preferred language for the TukDaeng app.</div>
-      ${opt("en", "English", "App interface in English")}
-      ${opt("th", "ภาษาไทย", "หน้าจอแอปเป็นภาษาไทย")}
+    const opt = (code, label, desc, ic) => `<button class="sub-row sub-row-lg" data-lang-opt="${code}"><span class="sub-ic">${ic}</span><span class="lg-b"><span class="lg-t">${label}</span><span class="lg-d">${desc}</span></span><span class="sub-chev sens-check">${curLang === code ? I.check(17) : ""}</span></button>`;
+    return head(isTh ? "ภาษา" : "Language") + `<div class="sub-scroll">
+      <div class="fav-desc">${isTh ? "เลือกภาษาที่ต้องการใช้งานในแอปตึกแดง" : "Choose your preferred language for the TukDaeng app."}</div>
+      ${opt("en", "English", "App interface in English", I.flagEn(22))}
+      ${opt("th", "ภาษาไทย", "หน้าจอแอปเป็นภาษาไทย", I.flagTh(22))}
     </div>`;
   }
   if (name === "notif_settings") {
+    const isTh = state.lang === "th";
     state.notif = state.notif || { likes: true, comments: true, follows: true, offers: true, walerts: true };
     const nRow = (k, title, desc) => `<button class="sub-row sub-row-lg" data-notif-tgl="${k}"><span class="lg-b"><span class="lg-t">${title}</span><span class="lg-d">${desc}</span></span><span class="tg-sw${state.notif[k] ? " on" : ""}"></span></button>`;
-    return head("Notification settings") + `<div class="sub-scroll">
-      <div class="fav-desc">Choose what notifications you receive on this device.</div>
-      <div class="sub-sec">Activity</div>
-      ${nRow("likes", "Likes", "When someone likes your posts or comments")}
-      ${nRow("comments", "Comments", "When someone comments on your posts")}
-      ${nRow("follows", "New followers", "When someone follows your profile")}
-      <div class="sub-sec sec-div">Trading & Alerts</div>
-      ${nRow("offers", "Offers", "When you receive or have updates on watch offers")}
-      ${nRow("walerts", "Watch Alerts", "When new listings match your criteria")}
+    return head(isTh ? "การตั้งค่าการแจ้งเตือน" : "Notification settings") + `<div class="sub-scroll">
+      <div class="fav-desc">${isTh ? "เลือกประเภทการแจ้งเตือนที่คุณต้องการรับบนอุปกรณ์นี้" : "Choose what notifications you receive on this device."}</div>
+      <div class="sub-sec">${isTh ? "กิจกรรม" : "Activity"}</div>
+      ${nRow("likes", isTh ? "ยอดถูกใจ" : "Likes", isTh ? "เมื่อมีคนถูกใจโพสต์หรือความคิดเห็นของคุณ" : "When someone likes your posts or comments")}
+      ${nRow("comments", isTh ? "ความคิดเห็น" : "Comments", isTh ? "เมื่อมีคนแสดงความคิดเห็นในโพสต์ของคุณ" : "When someone comments on your posts")}
+      ${nRow("follows", isTh ? "ผู้ติดตามใหม่" : "New followers", isTh ? "เมื่อมีคนเริ่มติดตามโปรไฟล์ของคุณ" : "When someone follows your profile")}
+      <div class="sub-sec sec-div">${isTh ? "การซื้อขายและการแจ้งเตือน" : "Trading & Alerts"}</div>
+      ${nRow("offers", isTh ? "ข้อเสนอราคา" : "Offers", isTh ? "เมื่อคุณได้รับหรือมีการอัปเดตเกี่ยวกับข้อเสนอซื้อนาฬิกา" : "When you receive or have updates on watch offers")}
+      ${nRow("walerts", isTh ? "การแจ้งเตือนนาฬิกา" : "Watch Alerts", isTh ? "เมื่อมีนาฬิกาที่ตรงกับเกณฑ์ที่คุณติดตามลงขายใหม่" : "When new listings match your criteria")}
     </div>`;
   }
   if (name === "help") {
-    return head("Help") + `<div class="sub-scroll">
+    const isTh = state.lang === "th";
+    return head(isTh ? "ศูนย์ช่วยเหลือ" : "Help") + `<div class="sub-scroll">
       <div class="sub-card-box">
-        <div class="sub-card-title">Contact support</div>
-        <div class="sub-card-sub">Available daily · 09:00 - 22:00 (GMT+7)</div>
+        <div class="sub-card-title">${isTh ? "ติดต่อฝ่ายบริการลูกค้า" : "Contact support"}</div>
+        <div class="sub-card-sub">${isTh ? "ให้บริการทุกวัน · 09:00 - 22:00 น. (GMT+7)" : "Available daily · 09:00 - 22:00 (GMT+7)"}</div>
       </div>
-      <div class="sub-sec">Support channels</div>
+      <div class="sub-sec">${isTh ? "ช่องทางการติดต่อ" : "Support channels"}</div>
       <a class="sub-row" href="https://line.me" target="_blank" rel="noopener"><span class="sub-ic">${I.chat(20)}</span><span class="lg-b"><span class="lg-t">LINE Official</span><span class="lg-d">@mrfoxthailand</span></span><span class="sub-chev">${I.chevR(15)}</span></a>
-      <a class="sub-row" href="tel:+66800088088"><span class="sub-ic">${I.phone(20)}</span><span class="lg-b"><span class="lg-t">Call support</span><span class="lg-d">(+66) 80-008-8088</span></span><span class="sub-chev">${I.chevR(15)}</span></a>
-      <a class="sub-row" href="mailto:service@mrfox.com"><span class="sub-ic">${I.send(20)}</span><span class="lg-b"><span class="lg-t">Email support</span><span class="lg-d">service@mrfox.com</span></span><span class="sub-chev">${I.chevR(15)}</span></a>
-      <div class="sub-sec sec-div">Help topics</div>
-      <button class="sub-row" data-sub="privacy"><span class="sub-ic">${I.shield(20)}</span><span>Privacy & Safety</span><span class="sub-chev">${I.chevR(15)}</span></button>
-      <button class="sub-row" data-sub="terms"><span class="sub-ic">${I.fileText(20)}</span><span>Terms & Guidelines</span><span class="sub-chev">${I.chevR(15)}</span></button>
+      <a class="sub-row" href="tel:+66800088088"><span class="sub-ic">${I.phone(20)}</span><span class="lg-b"><span class="lg-t">${isTh ? "โทรศัพท์ติดต่อ" : "Call support"}</span><span class="lg-d">(+66) 80-008-8088</span></span><span class="sub-chev">${I.chevR(15)}</span></a>
+      <a class="sub-row" href="mailto:service@mrfox.com"><span class="sub-ic">${I.send(20)}</span><span class="lg-b"><span class="lg-t">${isTh ? "อีเมลติดต่อ" : "Email support"}</span><span class="lg-d">service@mrfox.com</span></span><span class="sub-chev">${I.chevR(15)}</span></a>
+      <div class="sub-sec sec-div">${isTh ? "หัวข้อช่วยเหลือ" : "Help topics"}</div>
+      <button class="sub-row" data-sub="privacy"><span class="sub-ic">${I.shield(20)}</span><span>${isTh ? "ความเป็นส่วนตัวและความปลอดภัย" : "Privacy & Safety"}</span><span class="sub-chev">${I.chevR(15)}</span></button>
+      <button class="sub-row" data-sub="terms"><span class="sub-ic">${I.fileText(20)}</span><span>${isTh ? "ข้อกำหนดและแนวทางปฏิบัติ" : "Terms & Guidelines"}</span><span class="sub-chev">${I.chevR(15)}</span></button>
     </div>`;
   }
   if (name === "privacy") {
-    return head("Privacy Policy") + `<div class="sub-scroll sub-legal-body">
+    const isTh = state.lang === "th";
+    return head(isTh ? "นโยบายความเป็นส่วนตัว" : "Privacy Policy") + `<div class="sub-scroll sub-legal-body">
       <div class="legal-sec">
         <h3>1. Information We Collect</h3>
         <p>We collect information you provide directly to us when you create an account, update your profile, list watches, make offers, or communicate with other collectors on TukDaeng.</p>
@@ -8956,7 +9085,8 @@ function subHTML(name, scr) {
     </div>`;
   }
   if (name === "terms") {
-    return head("Terms of Use") + `<div class="sub-scroll sub-legal-body">
+    const isTh = state.lang === "th";
+    return head(isTh ? "ข้อกำหนดการใช้งาน" : "Terms of Use") + `<div class="sub-scroll sub-legal-body">
       <div class="legal-sec">
         <h3>1. Agreement to Terms</h3>
         <p>By accessing or using TukDaeng, you agree to be bound by these Terms of Use and our Community Guidelines for watch collectors and enthusiasts.</p>
@@ -8976,69 +9106,82 @@ function subHTML(name, scr) {
     </div>`;
   }
   if (name === "about_app") {
-    return head("About") + `<div class="sub-scroll">
+    const isTh = state.lang === "th";
+    return head(isTh ? "เกี่ยวกับตึกแดง" : "About") + `<div class="sub-scroll">
       <div class="about-app-hero">
         <div class="about-brand">TUK DAENG</div>
-        <div class="about-tagline">The digital curator for watch collectors</div>
-        <div class="about-ver">Version 0.0.1</div>
+        <div class="about-tagline">${isTh ? "ศูนย์รวมและดูแลนาฬิกาหรูสำหรับนักสะสม" : "The digital curator for watch collectors"}</div>
+        <div class="about-ver">${isTh ? "เวอร์ชัน 0.0.1" : "Version 0.0.1"}</div>
         <div class="about-corp">Mister Fox Co., Ltd. · Est. 2026</div>
       </div>
-      <div class="sub-sec">Legal & Support</div>
-      <button class="sub-row" data-sub="privacy"><span class="sub-ic">${I.shield(20)}</span><span>Privacy Policy</span><span class="sub-chev">${I.chevR(15)}</span></button>
-      <button class="sub-row" data-sub="terms"><span class="sub-ic">${I.fileText(20)}</span><span>Terms of Use</span><span class="sub-chev">${I.chevR(15)}</span></button>
-      <button class="sub-row" data-sub="help"><span class="sub-ic">${I.helpCir(20)}</span><span>Contact support</span><span class="sub-chev">${I.chevR(15)}</span></button>
+      <div class="sub-sec">${isTh ? "ข้อมูลทางกฎหมายและการสนับสนุน" : "Legal & Support"}</div>
+      <button class="sub-row" data-sub="privacy"><span class="sub-ic">${I.shield(20)}</span><span>${isTh ? "นโยบายความเป็นส่วนตัว" : "Privacy Policy"}</span><span class="sub-chev">${I.chevR(15)}</span></button>
+      <button class="sub-row" data-sub="terms"><span class="sub-ic">${I.fileText(20)}</span><span>${isTh ? "ข้อกำหนดการใช้งาน" : "Terms of Use"}</span><span class="sub-chev">${I.chevR(15)}</span></button>
+      <button class="sub-row" data-sub="help"><span class="sub-ic">${I.helpCir(20)}</span><span>${isTh ? "ติดต่อฝ่ายบริการลูกค้า" : "Contact support"}</span><span class="sub-chev">${I.chevR(15)}</span></button>
     </div>`;
   }
   if (name === "favorites") {
+    const isTh = state.lang === "th";
     const favs = favoriteSellers();
     const sugg = followedSellers().filter(s => !favs.includes(s));
     const fRow = (s, label, cls, desc) => {
       const p = POSTS.find(x => x.seller === s);
       return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">${desc}</span></span><button class="mact ${cls}" data-seller="${s}">${label}</button></div>`;
     };
-    return head("Favorites") + `<div class="sub-scroll">
-      <div class="fav-desc">New posts from your favorites will appear higher in feed. Only you can see who you add or remove.</div>
-      <div class="sh-field fav-search">${I.search(17)}<input class="fav-q" placeholder="Search"></div>
-      <div class="sub-sec fav-sec">Favorites ${favs.length ? `<button class="fav-removeall">Remove all</button>` : ""}</div>
-      ${favs.map(s => fRow(s, "Remove", "fav-remove", "Favorite")).join("") || `<div class="sub-empty">No favorites yet</div>`}
-      ${sugg.length ? `<div class="sub-sec">Suggested</div>${sugg.map(s => fRow(s, "Add account", "fav-add", "")).join("")}` : ""}
+    return head(isTh ? "รายการโปรด" : "Favorites") + `<div class="sub-scroll">
+      <div class="fav-desc">${isTh ? "โพสต์ใหม่จากรายการโปรดของคุณจะแสดงสูงขึ้นในฟีด มีเพียงคุณเท่านั้นที่เห็นว่าคุณเพิ่มหรือลบใคร" : "New posts from your favorites will appear higher in feed. Only you can see who you add or remove."}</div>
+      <div class="sh-field fav-search">${I.search(17)}<input class="fav-q" placeholder="${isTh ? "ค้นหา" : "Search"}"></div>
+      <div class="sub-sec fav-sec">${isTh ? "รายการโปรด" : "Favorites"} ${favs.length ? `<button class="fav-removeall">${isTh ? "ลบทั้งหมด" : "Remove all"}</button>` : ""}</div>
+      ${favs.map(s => fRow(s, isTh ? "ลบออก" : "Remove", "fav-remove", isTh ? "รายการโปรด" : "Favorite")).join("") || `<div class="sub-empty">${isTh ? "ยังไม่มีรายการโปรด" : "No favorites yet"}</div>`}
+      ${sugg.length ? `<div class="sub-sec">${isTh ? "แนะนำ" : "Suggested"}</div>${sugg.map(s => fRow(s, isTh ? "เพิ่มบัญชี" : "Add account", "fav-add", "")).join("")}` : ""}
     </div>`;
   }
-  if (name === "muted") return head("Muted accounts") + `<div class="sub-scroll">${
+  if (name === "muted") {
+    const isTh = state.lang === "th";
+    return head(isTh ? "บัญชีที่ปิดเสียง" : "Muted accounts") + `<div class="sub-scroll">${
     mutedSellers().map(s => {
       const p = POSTS.find(x => x.seller === s);
-      return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">Posts muted</span></span><button class="mact m-unmute" data-seller="${s}">Unmute</button></div>`;
-    }).join("") || `<div class="sub-empty">No muted accounts</div>`
+      return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">${isTh ? "ปิดเสียงโพสต์แล้ว" : "Posts muted"}</span></span><button class="mact m-unmute" data-seller="${s}">${isTh ? "เปิดเสียง" : "Unmute"}</button></div>`;
+    }).join("") || `<div class="sub-empty">${isTh ? "ไม่มีบัญชีที่ปิดเสียง" : "No muted accounts"}</div>`
   }</div>`;
+  }
   /* PROFILE-005 — IG Settings > Blocked profiles: rows unblock via the same center dialog */
-  if (name === "blocked") return head("Blocked profiles") + `<div class="sub-scroll">${
+  if (name === "blocked") {
+    const isTh = state.lang === "th";
+    return head(isTh ? "บัญชีที่บล็อก" : "Blocked profiles") + `<div class="sub-scroll">${
     [...PF_BLOCKED].map(s => {
       const p = profileOf(s);
-      return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${esc(s)}</span><span class="md">Includes other profiles they may have or create</span></span><button class="mact m-unblock" data-seller="${esc(s)}">Unblock</button></div>`;
-    }).join("") || `<div class="sub-empty">No blocked accounts</div>`
+      return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${esc(s)}</span><span class="md">${isTh ? "รวมถึงโปรไฟล์อื่นที่พวกเขาอาจมีหรือสร้างขึ้น" : "Includes other profiles they may have or create"}</span></span><button class="mact m-unblock" data-seller="${esc(s)}">${isTh ? "ปลดบล็อก" : "Unblock"}</button></div>`;
+    }).join("") || `<div class="sub-empty">${isTh ? "ไม่มีบัญชีที่ถูกบล็อก" : "No blocked accounts"}</div>`
   }</div>`;
-  if (name === "prefs") return head("Content preferences") + `<div class="sub-scroll">
-    ${row("Sensitive content", `data-sub="sensitive"`)}
-    ${row("Interested", `data-sub="interested"`)}
-    ${row("Not interested", `data-sub="ni"`)}
-    <button class="sub-row sub-row-lg" data-tgl="snooze"><span class="lg-b"><span class="lg-t">Snooze suggested posts in feed</span><span class="lg-d">Hide posts from accounts you don't follow for 30 days.</span></span><span class="tg-sw${state.snooze ? " on" : ""}"></span></button>
-    ${row("Reset suggested content", `data-dlg="reset"`)}
+  }
+  if (name === "prefs") {
+    const isTh = state.lang === "th";
+    return head(isTh ? "การตั้งค่าเนื้อหา" : "Content preferences") + `<div class="sub-scroll">
+    ${row(isTh ? "เนื้อหาที่ละเอียดอ่อน" : "Sensitive content", `data-sub="sensitive"`)}
+    ${row(isTh ? "สนใจ" : "Interested", `data-sub="interested"`)}
+    ${row(isTh ? "ไม่สนใจ" : "Not interested", `data-sub="ni"`)}
+    <button class="sub-row sub-row-lg" data-tgl="snooze"><span class="lg-b"><span class="lg-t">${isTh ? "หยุดพักโพสต์แนะนำในฟีดชั่วคราว" : "Snooze suggested posts in feed"}</span><span class="lg-d">${isTh ? "ซ่อนโพสต์จากบัญชีที่คุณไม่ได้ติดตามเป็นเวลา 30 วัน" : "Hide posts from accounts you don't follow for 30 days."}</span></span><span class="tg-sw${state.snooze ? " on" : ""}"></span></button>
+    ${row(isTh ? "รีเซ็ตเนื้อหาที่แนะนำ" : "Reset suggested content", `data-dlg="reset"`)}
   </div>`;
+  }
   if (name === "sensitive") {
+    const isTh = state.lang === "th";
     const opt = (v, t, d) => `<button class="sub-row sub-row-lg" data-sens="${v}"><span class="lg-b"><span class="lg-t">${t}</span><span class="lg-d">${d}</span></span><span class="sub-chev sens-check">${state.sensitive === v ? I.check(17) : ""}</span></button>`;
-    return head("Sensitive content") + `<div class="sub-scroll">
-      <div class="sub-sec">Choose how much sensitive content you see in feed.</div>
-      ${opt("less", "Less", "You'll see less sensitive content.")}
-      ${opt("standard", "Standard", "You'll see some sensitive content.")}
+    return head(isTh ? "เนื้อหาที่ละเอียดอ่อน" : "Sensitive content") + `<div class="sub-scroll">
+      <div class="sub-sec">${isTh ? "เลือกระดับของเนื้อหาที่ละเอียดอ่อนที่คุณจะเห็นในฟีด" : "Choose how much sensitive content you see in feed."}</div>
+      ${opt("less", isTh ? "น้อยลง" : "Less", isTh ? "คุณจะเห็นเนื้อหาที่ละเอียดอ่อนน้อยลง" : "You'll see less sensitive content.")}
+      ${opt("standard", isTh ? "มาตรฐาน" : "Standard", isTh ? "คุณจะเห็นเนื้อหาที่ละเอียดอ่อนบางส่วน" : "You'll see some sensitive content.")}
     </div>`;
   }
   /* THEME-001 — Theme mode picker: Dark / Light (spec 13_SETTINGS_MODULE Theme Mode) */
   if (name === "theme") {
+    const isTh = state.lang === "th";
     const opt = (v, t, d, ic) => `<button class="sub-row sub-row-lg" data-theme-opt="${v}"><span class="sub-ic">${ic}</span><span class="lg-b"><span class="lg-t">${t}</span><span class="lg-d">${d}</span></span><span class="sub-chev theme-check">${state.theme === v ? I.check(17) : ""}</span></button>`;
-    return head("Theme mode") + `<div class="sub-scroll">
-      <div class="fav-desc">Choose how TukDaeng looks on this device.</div>
-      ${opt("light", "Light mode", "Bright background for daytime browsing.", I.sun(21))}
-      ${opt("dark", "Dark mode", "Dimmed background that's easier on the eyes at night.", I.moon(21))}
+    return head(isTh ? "โหมดธีม" : "Theme mode") + `<div class="sub-scroll">
+      <div class="fav-desc">${isTh ? "เลือกรูปแบบการแสดงผลของตึกแดงบนอุปกรณ์นี้" : "Choose how TukDaeng looks on this device."}</div>
+      ${opt("light", isTh ? "โหมดสว่าง" : "Light mode", isTh ? "พื้นหลังสว่าง เหมาะสำหรับการใช้งานตอนกลางวัน" : "Bright background for daytime browsing.", I.sun(21))}
+      ${opt("dark", isTh ? "โหมดมืด" : "Dark mode", isTh ? "พื้นหลังสีเข้ม สบายตายิ่งขึ้นเมื่อใช้งานในที่แสงน้อย" : "Dimmed background that's easier on the eyes at night.", I.moon(21))}
     </div>`;
   }
   /* CHAT — Chat Center, item chats, chat room, chat settings */
@@ -9060,17 +9203,19 @@ function subHTML(name, scr) {
   if (name === "savedcol") return savedColHTML(scr);
   if (name === "wishlist") return wishlistHTML(scr);
   if (name === "wishcol") return wishColHTML(scr);
-  if (name === "interested") return head("Interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.liked), "Remove", "m-unlike")}</div>`;
-  if (name === "ni") return head("Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni), "Restore", "m-restore")}</div>`;
+  if (name === "interested") return head(isTh ? "รายการที่สนใจ" : "Interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.liked), isTh ? "ลบออก" : "Remove", "m-unlike")}</div>`;
+  if (name === "ni") return head(isTh ? "ไม่สนใจ" : "Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni), isTh ? "คืนค่า" : "Restore", "m-restore")}</div>`;
   /* full-page report view (IG-style) — opened from "..." menu or the uncomfortable ack card */
   if (name === "report" || name === "report:user" || name === "report:post") {
     const hasBack = name !== "report" && scr.dataset.rpFromChat !== "true";
+    const qTarget = name === "report:user" ? (isTh ? "บัญชีนี้" : "account") : (isTh ? "โพสต์นี้" : "post");
+    const reasons = isTh ? PM_REASONS_TH : PM_REASONS;
     return `
-    <div class="detail-head rp-head">${hasBack ? `<button class="icon-btn rp-back sub-back">${I.back(20)}</button>` : ""}<span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="detail-head rp-head">${hasBack ? `<button class="icon-btn rp-back sub-back">${I.back(20)}</button>` : ""}<span class="detail-title">${isTh ? "รายงาน" : "Report"}</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="pm-rp-scroll">
-      <div class="pm-rp-q">Why are you reporting this ${name === "report:user" ? "account" : "post"}?</div>
-      <div class="pm-rp-desc">Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait.</div>
-      ${PM_REASONS.map(r => `<button class="pm-reason">${r}<span class="pm-chev">${I.chevR(14)}</span></button>`).join("")}
+      <div class="pm-rp-q">${isTh ? `ทำไมคุณถึงรายงาน${qTarget}?` : `Why are you reporting this ${qTarget}?`}</div>
+      <div class="pm-rp-desc">${isTh ? "การรายงานของคุณจะไม่เปิดเผยตัวตน หากมีคนตกอยู่ในอันตรายทันที โปรดโทรติดต่อบริการฉุกเฉินในพื้นที่" : "Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait."}</div>
+      ${reasons.map(r => `<button class="pm-reason">${r}<span class="pm-chev">${I.chevR(14)}</span></button>`).join("")}
     </div>`;
   }
   /* PROFILE-005 — IG report picker: "What do you want to report?" comes before the reason list */
@@ -9078,12 +9223,12 @@ function subHTML(name, scr) {
     const u = name.slice(12);
     const opt = (go, label) => `<button class="pm-reason rp-opt" data-rp="${go}" data-u="${esc(u)}">${label}<span class="pm-chev">${I.chevR(14)}</span></button>`;
     return `
-    <div class="detail-head rp-head"><span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="detail-head rp-head"><span class="detail-title">${isTh ? "รายงาน" : "Report"}</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="pm-rp-scroll">
-      <div class="pm-rp-q">What do you want to report?</div>
-      <div class="pm-rp-desc">Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait.</div>
-      ${opt("posts", "A specific post")}
-      ${opt("acct", "Something about this account")}
+      <div class="pm-rp-q">${isTh ? "คุณต้องการรายงานอะไร?" : "What do you want to report?"}</div>
+      <div class="pm-rp-desc">${isTh ? "การรายงานของคุณจะไม่เปิดเผยตัวตน หากมีคนตกอยู่ในอันตรายทันที โปรดโทรติดต่อบริการฉุกเฉินในพื้นที่" : "Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait."}</div>
+      ${opt("posts", isTh ? "โพสต์ใดโพสต์หนึ่ง" : "A specific post")}
+      ${opt("acct", isTh ? "เกี่ยวกับบัญชีนี้" : "Something about this account")}
     </div>`;
   }
   /* PROFILE-005 — IG report completion: "Thanks for your feedback" + Other steps.
@@ -9096,30 +9241,30 @@ function subHTML(name, scr) {
     const step = (act, ic, label, done) => `<button class="rp-step" data-act="${act}" data-u="${esc(u)}"${done ? " disabled" : ""}><span class="rp-step-ic">${ic}</span><span class="rp-step-t">${esc(label)}</span>${done ? `<span class="rp-ck">${I.check(15)}</span>` : `<span class="pm-chev">${I.chevR(14)}</span>`}</button>`;
     const hasBack = scr.dataset.rpFromChat !== "true";
     return `
-    <div class="detail-head rp-head">${hasBack ? `<button class="icon-btn rp-back sub-back">${I.back(20)}</button>` : ""}<span class="detail-title">Report</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="detail-head rp-head">${hasBack ? `<button class="icon-btn rp-back sub-back">${I.back(20)}</button>` : ""}<span class="detail-title">${isTh ? "รายงาน" : "Report"}</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="pm-rp-scroll">
       <div class="rp-thanks">
         <div class="rp-thanks-ck">${I.check(30)}</div>
-        <div class="rp-thanks-t">Thanks for your feedback</div>
-        <div class="rp-thanks-d">We use these reports to show you less of this kind of content in the future.</div>
+        <div class="rp-thanks-t">${isTh ? "ขอบคุณสำหรับข้อเสนอแนะ" : "Thanks for your feedback"}</div>
+        <div class="rp-thanks-d">${isTh ? "เราใช้รายงานเหล่านี้เพื่อแสดงเนื้อหาประเภทนี้น้อยลงในอนาคต" : "We use these reports to show you less of this kind of content in the future."}</div>
       </div>
-      <div class="rp-steps-h">Other steps you can take</div>
-      ${pfIsBlocked(u) ? step("unblock", I.prohibit(22), `Unblock ${u}`) : step("block", I.prohibit(22), `Block ${u}`)}
-      ${dn.has(u + "|unfollow") ? step("unfollow", I.userMinus(22), `Unfollow ${u}`, true) : pfIsFollowed(u) ? step("unfollow", I.userMinus(22), `Unfollow ${u}`) : ""}
-      ${dn.has(u + "|mute") ? step("mute", I.bellOff(22), `Mute ${u}`, true) : pfIsMuted(u) ? step("unmute", I.bellOff(22), `Unmute ${u}`) : step("mute", I.bellOff(22), `Mute ${u}`)}
-      <button class="rp-done">Done</button>
+      <div class="rp-steps-h">${isTh ? "ขั้นตอนอื่น ๆ ที่คุณทำได้" : "Other steps you can take"}</div>
+      ${pfIsBlocked(u) ? step("unblock", I.prohibit(22), isTh ? `เลิกบล็อก ${u}` : `Unblock ${u}`) : step("block", I.prohibit(22), isTh ? `บล็อก ${u}` : `Block ${u}`)}
+      ${dn.has(u + "|unfollow") ? step("unfollow", I.userMinus(22), isTh ? `เลิกติดตาม ${u}` : `Unfollow ${u}`, true) : pfIsFollowed(u) ? step("unfollow", I.userMinus(22), isTh ? `เลิกติดตาม ${u}` : `Unfollow ${u}`) : ""}
+      ${dn.has(u + "|mute") ? step("mute", I.bellOff(22), isTh ? `ปิดเสียงเตือน ${u}` : `Mute ${u}`, true) : pfIsMuted(u) ? step("unmute", I.bellOff(22), isTh ? `เปิดเสียงเตือน ${u}` : `Unmute ${u}`) : step("mute", I.bellOff(22), isTh ? `ปิดเสียงเตือน ${u}` : `Mute ${u}`)}
+      <button class="rp-done">${isTh ? "เสร็จสิ้น" : "Done"}</button>
     </div>`;
   }
   /* pick one of their posts -> Next -> post reasons (IG: radio circle + pinned Next) */
   if (name.startsWith("report:posts:")) {
     const u = name.slice(13), sel = scr._rpSel || "";
     return `
-    <div class="detail-head rp-head rp-select-head"><button class="icon-btn rp-back sub-back">${I.back(20)}</button><span class="detail-title">Select a post</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
+    <div class="detail-head rp-head rp-select-head"><button class="icon-btn rp-back sub-back">${I.back(20)}</button><span class="detail-title">${isTh ? "เลือกโพสต์" : "Select a post"}</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="rp-select-scroll">
       <div class="pf-grid">${pfTabPosts(u, "all").map(p => `
         <button class="pf-tile rp-tile${sel === p.id ? " on" : ""}" data-pid="${p.id}"><img src="${p.photos[0]}" alt="" loading="lazy"><span class="rp-sel">${sel === p.id ? I.check(12) : ""}</span></button>`).join("")}</div>
     </div>
-    <div class="rp-next-bar"><button class="rp-next"${sel ? "" : " disabled"}>Next</button></div>`;
+    <div class="rp-next-bar"><button class="rp-next"${sel ? "" : " disabled"}>${isTh ? "ถัดไป" : "Next"}</button></div>`;
   }
 
   /* PROFILE-001 — profile pages stack like any other sub page */
@@ -9213,13 +9358,7 @@ function chPostRender(el) {
 }
 function chEmptyHTML(t, d) { return `<div class="ch-empty"><b>${esc(t)}</b><span>${esc(d)}</span></div>`; }
 function chatNavHTML() {
-  return `<nav class="bottom-nav pf-nav">
-    <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
-    <span class="nav-item active" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-    <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
-    <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
-    <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
-  </nav>`;
+  return botNavHTML("chat");
 }
 
 /* ===== ALERTS — IG-style activity list: Watch Alert / Like / Comment / Follow (mock, memory only) ===== */
@@ -9260,13 +9399,7 @@ function alBadgeSync() {
   });
 }
 function alertsNavHTML() {
-  return `<nav class="bottom-nav pf-nav">
-    <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
-    <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-    <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
-    <span class="nav-item active" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
-    <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
-  </nav>`;
+  return botNavHTML("alerts");
 }
 function alAvatarHTML(a) {
   const badge = ic => `<span class="al-badge">${ic}</span>`;
@@ -9279,21 +9412,23 @@ function alAvatarHTML(a) {
     : `<span class="al-av">${img(a.users[0])}${b}</span>`;
 }
 function alTextHTML(a) {
+  const isTh = state.lang === "th";
   const n = (a.more || 0) + Math.max(0, a.users.length - 2);
   const who = a.users.slice(0, 2).map(u => `<b>${esc(u)}</b>`);
-  const names = who.join(", ") + (n ? ` and ${n} other${n > 1 ? "s" : ""}` : "");
+  const names = who.join(", ") + (n ? (isTh ? ` และคนอื่น ๆ อีก ${n} คน` : ` and ${n} other${n > 1 ? "s" : ""}`) : "");
   const body = {
-    like: `${names} liked your post.`,
-    comment: `${names} commented: ${esc(a.text || "")}`,
-    follow: `${names} started following you.`,
-    watch: `Watch alert <b>${esc(a.name || "")}</b> — new listing from <b>${esc(a.users[0])}</b> · ${esc(a.price || "")}`,
+    like: isTh ? `${names} ถูกใจโพสต์ของคุณ` : `${names} liked your post.`,
+    comment: isTh ? `${names} แสดงความคิดเห็น: ${esc(a.text || "")}` : `${names} commented: ${esc(a.text || "")}`,
+    follow: isTh ? `${names} เริ่มติดตามคุณ` : `${names} started following you.`,
+    watch: isTh ? `การแจ้งเตือนนาฬิกา <b>${esc(a.name || "")}</b> — รายการใหม่จาก <b>${esc(a.users[0])}</b> · ${esc(a.price || "")}` : `Watch alert <b>${esc(a.name || "")}</b> — new listing from <b>${esc(a.users[0])}</b> · ${esc(a.price || "")}`,
     system: esc(a.text || ""),
   }[a.type];
-  return `${body} <span class="al-time">${a.ago}</span>`;
+  return `${body} <span class="al-time">${formatAlertTime(a.ago, isTh)}</span>`;
 }
 function alRowHTML(a) {
+  const isTh = state.lang === "th";
   const side = a.type === "follow"
-    ? `<button class="al-fbtn${pfIsFollowed(a.users[0]) ? " on" : ""}" data-alfollow="${esc(a.users[0])}">${pfIsFollowed(a.users[0]) ? "Following" : "Follow back"}</button>`
+    ? `<button class="al-fbtn${pfIsFollowed(a.users[0]) ? " on" : ""}" data-alfollow="${esc(a.users[0])}">${pfIsFollowed(a.users[0]) ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตามกลับ" : "Follow back")}</button>`
     : a.thumb ? `<img class="al-thumb" src="${a.thumb}" alt="">` : "";
   const x = a.type === "follow" ? `<span class="al-x" data-aldismiss="${a.id}">${I.x(16)}</span>` : "";
   return `<div class="al-row${a.unread ? " unread" : ""}" role="button" data-alid="${a.id}">
@@ -9301,7 +9436,14 @@ function alRowHTML(a) {
   </div>`;
 }
 function alertsHTML() {
+  const isTh = state.lang === "th";
   const list = alInit(), un = alUnread();
+  const groupLabels = {
+    "Today": isTh ? "วันนี้" : "Today",
+    "Yesterday": isTh ? "เมื่อวาน" : "Yesterday",
+    "Last 7 days": isTh ? "7 วันที่ผ่านมา" : "Last 7 days",
+    "Earlier": isTh ? "ก่อนหน้า" : "Earlier"
+  };
   const groups = ["Today", "Yesterday", "Last 7 days", "Earlier"].map(g => [g, list.filter(a => a.grp === g)]).filter(([, l]) => l.length);
   return `
   <div class="ch-scroll sub-scroll al-scroll">
@@ -9309,8 +9451,8 @@ function alertsHTML() {
       <button class="icon-btn al-back" data-navgo="feed">${I.back(22)}</button>
       <span class="al-title">${esc(CP_ME.name)}</span>
     </div>
-    ${groups.length ? groups.map(([g, l], i) => `<div class="al-sec"><span>${g}</span>${i === 0 && un ? `<button class="al-readall" data-alreadall>Mark all as read</button>` : ""}</div>${l.map(alRowHTML).join("")}`).join("")
-      : chEmptyHTML("No alerts yet", "Watch alerts, likes, comments and new followers will show up here.")}
+    ${groups.length ? groups.map(([g, l], i) => `<div class="al-sec"><span>${groupLabels[g] || g}</span>${i === 0 && un ? `<button class="al-readall" data-alreadall>${isTh ? "อ่านทั้งหมดแล้ว" : "Mark all as read"}</button>` : ""}</div>${l.map(alRowHTML).join("")}`).join("")
+      : chEmptyHTML(isTh ? "ยังไม่มีการแจ้งเตือน" : "No alerts yet", isTh ? "การแจ้งเตือนนาฬิกา ยอดถูกใจ ความคิดเห็น และผู้ติดตามใหม่จะแสดงที่นี่" : "Watch alerts, likes, comments and new followers will show up here.")}
   </div>
   ${alertsNavHTML()}`;
 }
@@ -9525,13 +9667,7 @@ function bdScrollHandler(el) {
 }
 
 function boardNavHTML() {
-  return `<nav class="bottom-nav pf-nav">
-    <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
-    <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-    <span class="nav-item active" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
-    <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
-    <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
-  </nav>`;
+  return botNavHTML("board");
 }
 function bdHeadHTML() {
   return `<div class="bd-head">
@@ -9570,6 +9706,7 @@ function bdListHTML(list) {
     + `<div class="bd-end-note"><span>You're all caught up</span></div>`;
 }
 function boardHomeHTML() {
+  const isTh = state.lang === "th";
   const featured = bdFeatured();
   const latest = bdLatest();
   return `
@@ -9579,12 +9716,12 @@ function boardHomeHTML() {
       <div class="bd-carousel" onscroll="bdCarouselScroll(this)">
         ${featured.map(a => `
           <div class="bd-slide" style="background-image:url('${a.img}')" data-bdart="${a.id}">
-            <span class="bd-hero-tag">${esc(a.cat || "FEATURED")}</span>
+            <span class="bd-hero-tag">${esc(a.cat || (isTh ? "แนะนำ" : "FEATURED"))}</span>
             <h2>${esc(a.title)}</h2>
             <p>${esc(a.sub || a.title)}</p>
             <div class="bd-hero-bar">
               <button class="bd-hero-btn" data-bdart="${a.id}">
-                <span>Read more</span>
+                <span>${isTh ? "อ่านต่อ" : "Read more"}</span>
               </button>
             </div>
           </div>
@@ -9595,9 +9732,9 @@ function boardHomeHTML() {
       </div>
     </div>
     <div class="bd-sec">
-      <h3>Latest Articles</h3>
+      <h3>${isTh ? "บทความล่าสุด" : "Latest Articles"}</h3>
       <button class="bd-viewall" data-bdall>
-        <span>View all</span>
+        <span>${isTh ? "ดูทั้งหมด" : "View all"}</span>
         ${I.chevR(14)}
       </button>
     </div>
@@ -9606,9 +9743,10 @@ function boardHomeHTML() {
   ${boardNavHTML()}`;
 }
 function boardAllHTML() {
+  const isTh = state.lang === "th";
   return `
   <div class="ch-scroll sub-scroll bd-scroll">
-    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>Latest Articles</span></div>
+    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>${isTh ? "บทความล่าสุด" : "Latest Articles"}</span></div>
     <div class="bd-pills">
       ${BD_CATEGORIES.map(c => `<button class="bd-pill${bdFilterCat === c ? " active" : ""}" data-bdcat="${esc(c)}">${esc(c)}</button>`).join("")}
     </div>
@@ -9619,28 +9757,30 @@ function boardAllHTML() {
   ${boardNavHTML()}`;
 }
 function bdResultsHTML() {
+  const isTh = state.lang === "th";
   const q = bdQ.trim(), k = q.toLowerCase();
   if (!q) {
     return `<div class="bd-sugg">
-      <div class="bd-sugg-title">Popular Topics</div>
+      <div class="bd-sugg-title">${isTh ? "หัวข้อยอดนิยม" : "Popular Topics"}</div>
       <div class="bd-sugg-chips">
         ${BD_POPULAR_TAGS.map(t => `<button class="bd-sugg-chip" data-bdtag="${esc(t)}">${esc(t)}</button>`).join("")}
       </div>
     </div>`;
   }
   const r = BOARD.filter(a => (a.title + " " + a.cat + " " + (a.sub || "")).toLowerCase().includes(k));
-  return `<h1 class="bd-rtitle">${r.length} ${r.length === 1 ? "result" : "results"} for “${esc(q)}”</h1>` + (r.length ? r.map(bdCardHTML).join("")
-    : `<div class="bd-none"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M8 8l5 5M13 8l-5 5"/></svg><span>No results found for “${esc(q)}”</span><span style="font-size:12px">Try searching with different keywords like Rolex, Daytona, or Titanium</span></div>`);
+  return `<h1 class="bd-rtitle">${r.length} ${r.length === 1 ? (isTh ? "ผลลัพธ์" : "result") : (isTh ? "ผลลัพธ์" : "results")} ${isTh ? "สำหรับ" : "for"} “${esc(q)}”</h1>` + (r.length ? r.map(bdCardHTML).join("")
+    : `<div class="bd-none"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M8 8l5 5M13 8l-5 5"/></svg><span>${isTh ? `ไม่พบบทความสำหรับ “${esc(q)}”` : `No results found for “${esc(q)}”`}</span><span style="font-size:12px">${isTh ? "ลองค้นหาด้วยคำอื่น เช่น Rolex, Daytona หรือ Titanium" : "Try searching with different keywords like Rolex, Daytona, or Titanium"}</span></div>`);
 }
 function boardSearchHTML() {
+  const isTh = state.lang === "th";
   return `
   <div class="ch-scroll sub-scroll bd-scroll">
     <div class="bd-sbar">
       <span class="bd-sbar-ic">${I.search(18)}</span>
-      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="Search articles, brands, or topics..." autocomplete="off">
+      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="${isTh ? "ค้นหาบทความ แบรนด์ หรือประเด็นที่สนใจ..." : "Search articles, brands, or topics..."}" autocomplete="off">
       ${bdQ ? `<button data-bdclear aria-label="Clear">${I.x(18)}</button>` : ""}
     </div>
-    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>Search</span></div>
+    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>${isTh ? "ค้นหา" : "Search"}</span></div>
     <div class="bd-res">${bdResultsHTML()}</div>
   </div>
   ${boardNavHTML()}`;
@@ -9937,6 +10077,7 @@ function chListBody() {
     + (other.length ? `<div class="ch-sec">Items you asked about</div>${other.map(chItemRowHTML).join("")}` : "");
 }
 function chatListHTML() {
+  const isTh = state.lang === "th";
   const C = chatInit();
   const filter = C.itemFilter || "all";
   const filterOpen = !!C.filterMenuOpen;
@@ -9946,10 +10087,10 @@ function chatListHTML() {
       <div class="ch-nav-tabs-wrap">
         <div class="ch-nav-tabs">
           <button class="ch-top-tab${C.view === "user" ? " active-pill" : ""}" data-chview="user">
-            <span>Chats</span>
+            <span>${isTh ? "แชท" : "Chats"}</span>
           </button>
           <button class="ch-top-tab${C.view === "item" ? " active-pill" : ""}" data-chview="item" aria-haspopup="true" aria-expanded="${filterOpen && C.view === "item"}">
-            <span>Items</span>
+            <span>${isTh ? "สินค้า" : "Items"}</span>
             <svg class="ch-tab-arrow" width="9" height="7" viewBox="0 0 10 8" fill="currentColor">
               <path d="M1.2 1.5h7.6c.4 0 .6.4.4.8l-3.8 5.2c-.2.3-.6.3-.8 0L.8 2.3c-.2-.4.1-.8.4-.8z"/>
             </svg>
@@ -9958,30 +10099,30 @@ function chatListHTML() {
         ${filterOpen && C.view === "item" ? `
         <div class="ch-filter-backdrop" data-chfilter-close></div>
         <div class="ch-filter-popover" data-chfilter-pop>
-          <div class="ch-filter-pop-title">Filter items by</div>
+          <div class="ch-filter-pop-title">${isTh ? "กรองตามรายการ" : "Filter items by"}</div>
           <button class="ch-filter-pop-row${filter === "all" ? " active" : ""}" data-chitemfilter="all">
             <span class="ch-filter-pop-check">${filter === "all" ? I.check(16) : ""}</span>
             <span class="ch-filter-pop-icon">${I.stack(18)}</span>
-            <span class="ch-filter-pop-label">All items</span>
+            <span class="ch-filter-pop-label">${isTh ? "สินค้าทั้งหมด" : "All items"}</span>
           </button>
           <button class="ch-filter-pop-row${filter === "mine" ? " active" : ""}" data-chitemfilter="mine">
             <span class="ch-filter-pop-check">${filter === "mine" ? I.check(16) : ""}</span>
             <span class="ch-filter-pop-icon">${I.bag(18)}</span>
-            <span class="ch-filter-pop-label">Your listings</span>
+            <span class="ch-filter-pop-label">${isTh ? "สินค้าที่คุณลงขาย" : "Your listings"}</span>
           </button>
           <button class="ch-filter-pop-row${filter === "asked" ? " active" : ""}" data-chitemfilter="asked">
             <span class="ch-filter-pop-check">${filter === "asked" ? I.check(16) : ""}</span>
             <span class="ch-filter-pop-icon">${I.comment(18)}</span>
-            <span class="ch-filter-pop-label">Items you asked about</span>
+            <span class="ch-filter-pop-label">${isTh ? "สินค้าที่คุณเคยสอบถาม" : "Items you asked about"}</span>
           </button>
         </div>` : ""}
       </div>
       <div class="ch-head-actions">
-        <button class="ch-cfg-btn" data-chgo="cfg" title="Chat settings">${I.gear(20)}</button>
+        <button class="ch-cfg-btn" data-chgo="cfg" title="${isTh ? "ตั้งค่าแชท" : "Chat settings"}">${I.gear(20)}</button>
       </div>
     </div>
     <div class="ch-tools">
-      <label class="ch-search">${I.search(16)}<input class="ch-q" placeholder="Search" value="${esc(C.q)}"></label>
+      <label class="ch-search">${I.search(16)}<input class="ch-q" placeholder="${isTh ? "ค้นหา" : "Search"}" value="${esc(C.q)}"></label>
     </div>
     <div class="ch-list-inner">${chListBody()}</div>
   </div>
@@ -10353,39 +10494,40 @@ function chatRoomSettingsHTML(tid) {
   const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
   if (!t) return `<div class="ch-menu-head">${back}<span class="detail-title">Settings</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
 
+  const isTh = state.lang === "th";
   return `
   <div class="ch-menu-head">
     ${back}
-    <span class="detail-title">Settings</span>
+    <span class="detail-title">${isTh ? "การตั้งค่า" : "Settings"}</span>
   </div>
   <div class="sub-scroll">
     <button class="ch-set" data-chact="mute" data-tid="${t.id}">
       <span class="t">
-        <b>Note notifications</b>
-        <span>Get notified when someone leaves a comment or reaction on your notes.</span>
+        <b>${isTh ? "การแจ้งเตือนโน้ต" : "Note notifications"}</b>
+        <span>${isTh ? "รับการแจ้งเตือนเมื่อมีคนแสดงความคิดเห็นบนโน้ตของคุณ" : "Get notified when someone leaves a comment or reaction on your notes."}</span>
       </span>
       <span class="ch-tgl${t.muted ? "" : " on"}"><i></i></span>
     </button>
 
-    <div class="ch-set-h">Chat settings</div>
+    <div class="ch-set-h">${isTh ? "การตั้งค่าแชท" : "Chat settings"}</div>
     <button class="ch-set" data-chact="wallpaper">
-      <span class="t"><b>Chat wallpaper</b></span>
+      <span class="t"><b>${isTh ? "วอลเปเปอร์แชท" : "Chat wallpaper"}</b></span>
       <span class="sub-chev">${I.chevR(16)}</span>
     </button>
 
     <button class="ch-set" data-chact="export-chat" data-tid="${t.id}">
       <span class="t">
-        <b>Export chat history</b>
-        <span>Export this chat's history as a text file.</span>
+        <b>${isTh ? "ส่งออกประวัติการแชท" : "Export chat history"}</b>
+        <span>${isTh ? "ส่งออกประวัติการแชทนี้เป็นไฟล์ข้อความ" : "Export this chat's history as a text file."}</span>
       </span>
       <span class="sub-chev">${I.chevR(16)}</span>
     </button>
 
     <div class="ch-set" style="cursor:default;">
       <span class="t">
-        <b>Encryption keys</b>
+        <b>${isTh ? "คีย์การเข้ารหัส" : "Encryption keys"}</b>
         <span style="display:flex; align-items:center; gap:4px; margin-top:3px;">
-          ${I.lock(12)} This chat is protected with Letter Sealing.
+          ${I.lock(12)} ${isTh ? "การแชทนี้ได้รับการปกป้องด้วยการเข้ารหัสความปลอดภัย" : "This chat is protected with Letter Sealing."}
         </span>
       </span>
       <span class="sub-chev">${I.chevR(16)}</span>
@@ -10393,35 +10535,36 @@ function chatRoomSettingsHTML(tid) {
 
     <div style="height:14px;"></div>
     <button class="ch-set" data-chact="del" data-tid="${t.id}">
-      <span class="t"><b style="color:var(--text);">Delete data</b></span>
+      <span class="t"><b style="color:var(--text);">${isTh ? "ลบข้อมูลแชท" : "Delete data"}</b></span>
       <span class="sub-chev">${I.chevR(16)}</span>
     </button>
 
     <button class="ch-set" data-chact="report-chat" data-user="${esc(t.user)}">
-      <span class="t"><b style="color:var(--text);">Report</b></span>
+      <span class="t"><b style="color:var(--text);">${isTh ? "รายงาน" : "Report"}</b></span>
       <span class="sub-chev">${I.chevR(16)}</span>
     </button>
   </div>`;
 }
 function chatCfgHTML() {
+  const isTh = state.lang === "th";
   const c = chatInit().cfg;
   const tg = (k, t, d) => `<button class="ch-set" data-chtgl="${k}"><span class="t"><b>${t}</b><span>${d}</span></span><span class="ch-tgl${c[k] ? " on" : ""}"><i></i></span></button>`;
   const vw = (v, t, d) => `<button class="ch-set" data-chdef="${v}"><span class="t"><b>${t}</b><span>${d}</span></span><span class="sub-chev">${c.defView === v ? I.check(17) : ""}</span></button>`;
   return `
-  <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">Chat settings</span></div>
+  <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${isTh ? "การตั้งค่าแชท" : "Chat settings"}</span></div>
   <div class="sub-scroll">
-    <div class="ch-set-h">Notifications</div>
-    ${tg("notif", "Message notifications", "Get notified when someone sends you a message.")}
-    ${tg("preview", "Show message preview", "Show the message text in notifications.")}
-    <div class="ch-set-h">Privacy</div>
-    ${tg("read", "Read receipts", "Let people see when you have read their message.")}
-    ${tg("followOnly", "Only people I follow can message me", "Others will not be able to start a new chat with you.")}
-    <div class="ch-set-h">Default chat view</div>
-    ${vw("user", "Chats", "List chats by person, latest first.")}
-    ${vw("item", "Items", "Group chats by item — handy when many people ask about the same listing.")}
-    <div class="ch-set-h">Quick Ask</div>
-    <input class="ch-set-in chc-quick" maxlength="80" value="${esc(c.quick)}" placeholder="Default message">
-    <div class="ch-set-note">Pre-filled when you tap Ask on a post. You can edit it before sending.</div>
+    <div class="ch-set-h">${isTh ? "การแจ้งเตือน" : "Notifications"}</div>
+    ${tg("notif", isTh ? "การแจ้งเตือนข้อความ" : "Message notifications", isTh ? "รับการแจ้งเตือนเมื่อมีคนส่งข้อความถึงคุณ" : "Get notified when someone sends you a message.")}
+    ${tg("preview", isTh ? "แสดงตัวอย่างข้อความ" : "Show message preview", isTh ? "แสดงข้อความในการแจ้งเตือน" : "Show the message text in notifications.")}
+    <div class="ch-set-h">${isTh ? "ความเป็นส่วนตัว" : "Privacy"}</div>
+    ${tg("read", isTh ? "แสดงสถานะการอ่าน" : "Read receipts", isTh ? "ให้ผู้อื่นเห็นเมื่อคุณอ่านข้อความของพวกเขาแล้ว" : "Let people see when you have read their message.")}
+    ${tg("followOnly", isTh ? "รับข้อความเฉพาะผู้ที่คุณติดตาม" : "Only people I follow can message me", isTh ? "ผู้อื่นจะไม่สามารถเริ่มการสนทนากับคุณได้" : "Others will not be able to start a new chat with you.")}
+    <div class="ch-set-h">${isTh ? "มุมมองแชทเริ่มต้น" : "Default chat view"}</div>
+    ${vw("user", isTh ? "แชท" : "Chats", isTh ? "เรียงตามบุคคล ล่าสุดขึ้นก่อน" : "List chats by person, latest first.")}
+    ${vw("item", isTh ? "สินค้า" : "Items", isTh ? "จัดกลุ่มแชทตามรายการสินค้า สะดวกเมื่อมีคนถามถึงสินค้าเดียวกันหลายคน" : "Group chats by item — handy when many people ask about the same listing.")}
+    <div class="ch-set-h">${isTh ? "ข้อความสอบถามด่วน" : "Quick Ask"}</div>
+    <input class="ch-set-in chc-quick" maxlength="80" value="${esc(c.quick)}" placeholder="${isTh ? "ข้อความเริ่มต้น" : "Default message"}">
+    <div class="ch-set-note">${isTh ? "ข้อความจะถูกกรอกล่วงหน้าเมื่อคุณแตะ สอบถาม บนโพสต์ คุณสามารถแก้ไขก่อนส่งได้" : "Pre-filled when you tap Ask on a post. You can edit it before sending."}</div>
   </div>`;
 }
 function chSend(scr) {
@@ -10897,6 +11040,7 @@ document.addEventListener("pointerup", e => {
 });
 
 function screenHTML(theme, variant) {
+  const isTh = state.lang === "th";
   return `
   <div class="screen" data-theme="${theme}" data-variant="${variant}" data-nav="${state.nav}" data-ft="${state.ft}">
     <div class="statusbar">
@@ -10910,9 +11054,9 @@ function screenHTML(theme, variant) {
 
     ${state.ft === "none" ? `
     <div class="brand-menu">
-      <button class="bm-item${state.feedTab === "all" ? " on" : ""}" data-tab="all">All Posts <span class="check">${I.check(15)}</span></button>
-      <button class="bm-item${state.feedTab === "following" ? " on" : ""}" data-tab="following">Following <span class="check">${I.check(15)}</span></button>
-      <button class="bm-item${state.feedTab === "favorites" ? " on" : ""}" data-tab="favorites">Favorites <span class="check">${I.check(15)}</span></button>
+      <button class="bm-item${state.feedTab === "all" ? " on" : ""}" data-tab="all">${isTh ? "ทั้งหมด" : "All Posts"} <span class="check">${I.check(15)}</span></button>
+      <button class="bm-item${state.feedTab === "following" ? " on" : ""}" data-tab="following">${isTh ? "กำลังติดตาม" : "Following"} <span class="check">${I.check(15)}</span></button>
+      <button class="bm-item${state.feedTab === "favorites" ? " on" : ""}" data-tab="favorites">${isTh ? "รายการโปรด" : "Favorites"} <span class="check">${I.check(15)}</span></button>
     </div>` : ""}
 
     <div class="feed-scroll">
@@ -10924,20 +11068,14 @@ function screenHTML(theme, variant) {
         <button class="icon-btn" data-flow="create">${I.plus()}</button>
       </div>
       <div class="feed-tabs">
-        <button class="feed-tab${state.feedTab === "all" ? " active" : ""}" data-tab="all">All Posts</button>
-        <button class="feed-tab${state.feedTab === "following" ? " active" : ""}" data-tab="following">Following</button>
-        <button class="feed-tab${state.feedTab === "favorites" ? " active" : ""}" data-tab="favorites">Favorites</button>
+        <button class="feed-tab${state.feedTab === "all" ? " active" : ""}" data-tab="all">${isTh ? "ทั้งหมด" : "All Posts"}</button>
+        <button class="feed-tab${state.feedTab === "following" ? " active" : ""}" data-tab="following">${isTh ? "กำลังติดตาม" : "Following"}</button>
+        <button class="feed-tab${state.feedTab === "favorites" ? " active" : ""}" data-tab="favorites">${isTh ? "รายการโปรด" : "Favorites"}</button>
       </div>
       <div class="feed-list">${feedContentHTML(variant)}</div>
     </div>
 
-    <nav class="bottom-nav">
-      <span class="nav-item active" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
-      <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-      <span class="nav-item" data-navgo="board">${I.tabBoards()}<span class="nav-label">Boards</span></span>
-      <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
-      <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
-    </nav>
+    ${botNavHTML("feed")}
     <div class="home-ind"><i></i></div>
     <div class="sheet-backdrop"></div>
     <div class="comment-sheet"></div>
@@ -10952,15 +11090,15 @@ function screenHTML(theme, variant) {
       <div class="hb-scrim"></div>
       <div class="hb-panel">
         <div class="hb-list">
-          <button class="hb-item">${I.gem(22)}<span>Watch Brands</span><span class="hb-chev">${I.chevR(15)}</span></button>
-          <button class="hb-item">${I.award(22)}<span>Watch Price Index</span><span class="hb-chev">${I.chevR(15)}</span></button>
-          <button class="hb-item">${I.bag(22)}<span>Watch Shops</span><span class="hb-chev">${I.chevR(15)}</span></button>
-          <button class="hb-item">${I.bag(22)}<span>Accessories Shop</span><span class="hb-chev">${I.chevR(15)}</span></button>
-          <button class="hb-item">${I.bag(22)}<span>Repair Shop</span><span class="hb-chev">${I.chevR(15)}</span></button>
-          <button class="hb-item">${I.home(22)}<span>Auction Center</span><span class="hb-chev">${I.chevR(15)}</span></button>
-          <button class="hb-item">${I.home(22)}<span>Consignment Center</span><span class="hb-chev">${I.chevR(15)}</span></button>
-          <button class="hb-item">${I.home(22)}<span>Authentication Center</span><span class="hb-chev">${I.chevR(15)}</span></button>
-          <button class="hb-item">${I.users(22)}<span>Community</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.gem(22)}<span>${isTh ? "แบรนด์นาฬิกา" : "Watch Brands"}</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.award(22)}<span>${isTh ? "ดัชนีราคานาฬิกา" : "Watch Price Index"}</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.bag(22)}<span>${isTh ? "ร้านนาฬิกา" : "Watch Shops"}</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.bag(22)}<span>${isTh ? "ร้านอุปกรณ์เสริม" : "Accessories Shop"}</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.bag(22)}<span>${isTh ? "ศูนย์ซ่อมแซม" : "Repair Shop"}</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.home(22)}<span>${isTh ? "ศูนย์ประมูล" : "Auction Center"}</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.home(22)}<span>${isTh ? "ศูนย์ฝากขาย" : "Consignment Center"}</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.home(22)}<span>${isTh ? "ศูนย์ตรวจเช็คแท้" : "Authentication Center"}</span><span class="hb-chev">${I.chevR(15)}</span></button>
+          <button class="hb-item">${I.users(22)}<span>${isTh ? "ชุมชนคนรักนาฬิกา" : "Community"}</span><span class="hb-chev">${I.chevR(15)}</span></button>
         </div>
       </div>
     </div>
@@ -10974,6 +11112,7 @@ function render() {
 
 /* ================= FLOW WIRING ================= */
 state.theme = localStorage.getItem("fo_theme") || "dark";
+state.lang = localStorage.getItem("fo_lang") || "en";
 const themeToggle = document.getElementById("themeToggle");
 const flowToast = document.getElementById("flowToast");
 let toastTimer;
@@ -10987,6 +11126,103 @@ function setTheme(v) {
   state.theme = v;
   localStorage.setItem("fo_theme", v);
   themeToggle.textContent = v === "dark" ? "☾" : "☀";
+}
+function syncAppLanguage(lang) {
+  const isTh = lang === "th";
+  // 1. Bottom Navigation bars
+  document.querySelectorAll(".bottom-nav, .pf-nav").forEach(nav => {
+    const labels = {
+      feed: isTh ? "ฟีด" : "Feed",
+      chat: isTh ? "แชท" : "Chat",
+      board: isTh ? "กระดาน" : "Boards",
+      alerts: isTh ? "แจ้งเตือน" : "Alerts",
+      profile: isTh ? "โปรไฟล์" : "Profile"
+    };
+    for (const [key, text] of Object.entries(labels)) {
+      const item = nav.querySelector(`[data-navgo="${key}"] .nav-label`);
+      if (item) item.textContent = text;
+    }
+  });
+
+  // 2. Feed Tabs & Brand Menu
+  document.querySelectorAll(".feed-tab[data-tab='all'], .bm-item[data-tab='all']").forEach(el => {
+    const check = el.querySelector(".check");
+    el.innerHTML = (isTh ? "ทั้งหมด" : "All Posts") + (check ? check.outerHTML : "");
+  });
+  document.querySelectorAll(".feed-tab[data-tab='following'], .bm-item[data-tab='following']").forEach(el => {
+    const check = el.querySelector(".check");
+    el.innerHTML = (isTh ? "กำลังติดตาม" : "Following") + (check ? check.outerHTML : "");
+  });
+  document.querySelectorAll(".feed-tab[data-tab='favorites'], .bm-item[data-tab='favorites']").forEach(el => {
+    const check = el.querySelector(".check");
+    el.innerHTML = (isTh ? "รายการโปรด" : "Favorites") + (check ? check.outerHTML : "");
+  });
+
+  // 3. Profile buttons & stats if visible
+  document.querySelectorAll(".pf-edit").forEach(el => el.textContent = isTh ? "แก้ไขโปรไฟล์" : "Edit profile");
+  document.querySelectorAll(".pf-share").forEach(el => el.textContent = isTh ? "แชร์โปรไฟล์" : "Share profile");
+  document.querySelectorAll(".pf-msg").forEach(el => el.textContent = isTh ? "ส่งข้อความ" : "Message");
+  document.querySelectorAll(".pf-stat").forEach(el => {
+    const span = el.querySelector("span");
+    if (!span) return;
+    const txt = span.textContent.trim().toLowerCase();
+    if (txt === "posts" || txt === "โพสต์") span.textContent = isTh ? "โพสต์" : "posts";
+    else if (txt === "followers" || txt === "ผู้ติดตาม") span.textContent = isTh ? "ผู้ติดตาม" : "followers";
+    else if (txt === "following" || txt === "กำลังติดตาม") span.textContent = isTh ? "กำลังติดตาม" : "following";
+  });
+
+  // 4. Board section headers & buttons if visible
+  document.querySelectorAll(".bd-sec h3").forEach(el => {
+    if (el.textContent.includes("Articles") || el.textContent.includes("บทความ")) {
+      el.textContent = isTh ? "บทความล่าสุด" : "Latest Articles";
+    }
+  });
+  document.querySelectorAll(".bd-viewall span").forEach(el => el.textContent = isTh ? "ดูทั้งหมด" : "View all");
+  document.querySelectorAll(".bd-hero-btn span").forEach(el => el.textContent = isTh ? "อ่านต่อ" : "Read more");
+  document.querySelectorAll(".bd-q").forEach(el => el.placeholder = isTh ? "ค้นหาบทความ แบรนด์ หรือประเด็นที่สนใจ..." : "Search articles, brands, or topics...");
+
+  // 5. Chat Center tabs & tools if visible
+  document.querySelectorAll(".ch-top-tab[data-chview='user'] span").forEach(el => el.textContent = isTh ? "แชท" : "Chats");
+  document.querySelectorAll(".ch-top-tab[data-chview='item'] span").forEach(el => el.textContent = isTh ? "สินค้า" : "Items");
+  document.querySelectorAll(".ch-q").forEach(el => el.placeholder = isTh ? "ค้นหา" : "Search");
+
+  // 6. Alerts if visible
+  document.querySelectorAll(".al-readall").forEach(el => el.textContent = isTh ? "อ่านทั้งหมดแล้ว" : "Mark all as read");
+
+  // 7. Hamburger Drawer Menu items
+  const hbItems = [
+    { en: "Watch Brands", th: "แบรนด์นาฬิกา" },
+    { en: "Watch Price Index", th: "ดัชนีราคานาฬิกา" },
+    { en: "Watch Shops", th: "ร้านนาฬิกา" },
+    { en: "Accessories Shop", th: "ร้านอุปกรณ์เสริม" },
+    { en: "Repair Shop", th: "ศูนย์ซ่อมแซม" },
+    { en: "Auction Center", th: "ศูนย์ประมูล" },
+    { en: "Consignment Center", th: "ศูนย์ฝากขาย" },
+    { en: "Authentication Center", th: "ศูนย์ตรวจเช็คแท้" },
+    { en: "Community", th: "ชุมชนคนรักนาฬิกา" }
+  ];
+  document.querySelectorAll(".hb-item span:not(.hb-chev)").forEach(el => {
+    const item = hbItems.find(x => x.en === el.textContent.trim() || x.th === el.textContent.trim());
+    if (item) el.textContent = isTh ? item.th : item.en;
+  });
+
+  // 8. Re-render open sub-page, detail page, or feed posts so they switch language dynamically
+  document.querySelectorAll(".screen.sub-open").forEach(scr => renderSub(scr));
+  document.querySelectorAll(".screen.detail-open").forEach(scr => {
+    const post = findPost(scr.dataset.detailPid);
+    if (post) openPostDetail(scr, post);
+  });
+  document.querySelectorAll(".screen").forEach(scr => {
+    const list = scr.querySelector(".feed-list");
+    if (list && !scr.classList.contains("sub-open")) {
+      list.innerHTML = feedContentHTML(scr.dataset.variant || state.variant);
+    }
+  });
+}
+function setLang(v) {
+  state.lang = v;
+  localStorage.setItem("fo_lang", v);
+  syncAppLanguage(v);
 }
 themeToggle.addEventListener("click", () => {
   setTheme(state.theme === "dark" ? "light" : "dark");
@@ -12108,7 +12344,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const langOpt = e.target.closest("[data-lang-opt]");
   if (langOpt) {
     const scr = langOpt.closest(".screen");
-    state.lang = langOpt.dataset.langOpt;
+    setLang(langOpt.dataset.langOpt);
     renderSub(scr);
     scrToast(scr, state.lang === "th" ? "เปลี่ยนภาษาเรียบร้อย" : "Language updated");
     return;
@@ -12861,6 +13097,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const post = findPost(pid);
     if (!post) return;
     if (post.following) {
+      const isTh = state.lang === "th";
       scr.dataset.ufSeller = post.seller;
       const cs = scr.querySelector(".comment-sheet");
       cs.classList.remove("pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps", "mf");
@@ -12869,9 +13106,9 @@ document.getElementById("stage").addEventListener("click", e => {
         <div class="sheet-handle"></div>
         <div class="uf-body">
           <img class="uf-av" src="${post.avatar}" alt="">
-          <div class="uf-q">Unfollow <b>@${post.seller}</b>?</div>
-          <button class="uf-confirm">Unfollow</button>
-          <button class="uf-cancel">Cancel</button>
+          <div class="uf-q">${isTh ? `เลิกติดตาม <b>@${post.seller}</b> หรือไม่?` : `Unfollow <b>@${post.seller}</b>?`}</div>
+          <button class="uf-confirm">${isTh ? "เลิกติดตาม" : "Unfollow"}</button>
+          <button class="uf-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>
         </div>`;
       scr.classList.add("unfollow-open");
     } else {
@@ -12884,7 +13121,7 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = ufGo.closest(".screen");
     setFollowing(scr, scr.dataset.ufSeller, false);
     scr.classList.remove("unfollow-open");
-    scrToast(scr, "Unfollowed");
+    scrToast(scr, state.lang === "th" ? "เลิกติดตามแล้ว" : "Unfollowed");
     return;
   }
   const ufNo = e.target.closest(".uf-cancel");
@@ -13568,17 +13805,18 @@ document.getElementById("stage").addEventListener("click", e => {
       if (post) { scr.dataset.dtPid = post.id; openSheet(scr, "dt", "details-open", pvDetailsSheetHTML(post)); }
       return;
     }
+    const isTh = state.lang === "th";
     t.classList.toggle("open");
     t.nextElementSibling.classList.toggle("open");
     const lbl = t.querySelector(".dt-label");
-    if (lbl) lbl.textContent = t.classList.contains("open") ? "Hide details" : "Tap for details";
+    if (lbl) lbl.textContent = t.classList.contains("open") ? (isTh ? "ซ่อนรายละเอียด" : "Hide details") : (isTh ? "แตะเพื่อดูรายละเอียด" : "Tap for details");
     if (t.classList.contains("open"))
       t.closest(".screen").querySelectorAll(".details-toggle.open").forEach(o => {
         if (o === t) return;
         o.classList.remove("open");
         o.nextElementSibling.classList.remove("open");
         const ol = o.querySelector(".dt-label");
-        if (ol) ol.textContent = "Tap for details";
+        if (ol) ol.textContent = isTh ? "แตะเพื่อดูรายละเอียด" : "Tap for details";
       });
     return;
   }
@@ -13611,7 +13849,7 @@ document.getElementById("stage").addEventListener("click", e => {
       tgl.classList.remove("open");
       tgl.nextElementSibling.classList.remove("open");
       const lbl = tgl.querySelector(".dt-label");
-      if (lbl) lbl.textContent = "Tap for details";
+      if (lbl) lbl.textContent = state.lang === "th" ? "แตะเพื่อดูรายละเอียด" : "Tap for details";
     }
     return;
   }
