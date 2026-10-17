@@ -3670,68 +3670,392 @@
   .pfp-tt.solo span { display:none; }
   .al-title { display:flex; align-items:center; gap:6px; font-size:17px; font-weight:600; color:var(--text); }
   /* ============ BOARD — news board (Home, Journal Board, Article detail, Search) ============ */
-  .screen .page-sub:has(.bd-scroll), .screen .page-sub:has(.bd-dscroll) { background:#fff; }
-  .screen[data-theme="dark"] .page-sub:has(.bd-scroll), .screen[data-theme="dark"] .page-sub:has(.bd-dscroll) { background:#14161a; }
-  .bd-scroll { padding-bottom:96px; }
-  .bd-head { position:sticky; top:0; z-index:25; display:grid; grid-template-columns:44px 1fr 44px; align-items:center; padding:8px 8px; background:#fff; border-bottom:1px solid var(--line); flex-shrink:0; }
-  .screen[data-theme="dark"] .bd-head { background:#14161a; }
-  .bd-head .icon-btn { color:var(--text); }
-  .bd-brand { text-align:center; font-size:18px; font-weight:400; color:var(--text); letter-spacing:.3px; }
-  .bd-brand b { color:var(--red); font-weight:600; }
-  .bd-hero { position:relative; height:334px; background:#000 center/cover no-repeat; display:flex; flex-direction:column; justify-content:flex-end; padding:0 16px 30px; box-sizing:border-box; flex-shrink:0; cursor:pointer; }
-  .bd-hero::before { content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,.85) 8%, rgba(0,0,0,.05) 75%); }
-  .bd-hero > * { position:relative; }
-  .bd-hero h2 { margin:0 0 6px; font-size:23px; line-height:1.2; font-weight:700; color:#fff; letter-spacing:.2px; }
-  .bd-hero p { margin:0 0 16px; font-size:13px; line-height:1.4; color:rgba(255,255,255,.7); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-  .bd-hero-btn { align-self:flex-start; border:none; background:#d10c0c; color:#fff; font:inherit; font-size:13.5px; font-weight:600; padding:12px 20px; border-radius:3px; cursor:pointer; }
-  .bd-sec { display:flex; align-items:center; justify-content:space-between; padding:26px 16px 14px; }
-  .bd-sec h3 { margin:0; font-size:20px; font-weight:700; color:var(--text); letter-spacing:.2px; }
-  .bd-sec button { background:none; border:none; padding:0; font:inherit; font-size:13px; color:var(--muted); cursor:pointer; }
-  .bd-trend { display:flex; gap:12px; overflow-x:auto; padding:0 16px 4px; scrollbar-width:none; flex-shrink:0; cursor:grab; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; }
-  .bd-trend::after { content:""; flex:0 0 4px; }
-  .bd-tcard img, .bd-card img, .bd-row img { -webkit-user-drag:none; user-select:none; pointer-events:none; }
-  .bd-trend::-webkit-scrollbar { display:none; }
-  .bd-tcard { flex:0 0 175px; background:none; border:none; padding:0; text-align:left; color:var(--text); font:inherit; cursor:pointer; }
-  .bd-tcard img { width:175px; height:175px; object-fit:cover; border-radius:13px; display:block; }
-  .bd-tcat { display:block; margin-top:10px; font-size:11.5px; color:var(--muted); }
-  .bd-ttl { display:block; margin-top:4px; font-size:13.5px; font-weight:600; line-height:1.35; letter-spacing:.2px; }
-  .bd-card { display:block; width:calc(100% - 32px); margin:0 16px; box-sizing:border-box; padding:0 0 16px; background:none; border:none; border-bottom:1px solid var(--line); text-align:left; color:var(--text); font:inherit; cursor:pointer; flex-shrink:0; }
-  .bd-card img { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:9px; display:block; }
-  .bd-cat { display:block; margin-top:12px; font-size:11.5px; font-weight:500; color:#d10c0c; letter-spacing:.2px; }
-  .bd-ct { display:block; margin-top:5px; font-size:17px; font-weight:600; line-height:1.35; letter-spacing:.3px; }
-  .bd-meta { display:block; margin-top:7px; font-size:10.5px; letter-spacing:.4px; color:var(--muted); white-space:pre; }
-  .bd-row { display:flex; gap:12px; align-items:flex-start; width:calc(100% - 32px); margin:0 16px; box-sizing:border-box; padding:14px 0; background:none; border:none; border-bottom:1px solid var(--line); text-align:left; color:var(--text); font:inherit; cursor:pointer; flex-shrink:0; }
-  .bd-row:last-child { border-bottom:none; }
-  .bd-row img { width:94px; height:75px; object-fit:cover; border-radius:7px; flex-shrink:0; background:#1f2126; }
-  .bd-row .bd-cat { margin-top:0; font-size:10.5px; }
-  .bd-row .bd-ct { margin-top:3px; font-size:14px; font-weight:500; line-height:1.4; }
-  .bd-row .bd-meta { margin-top:5px; font-size:10px; }
-  .bd-sbar { display:flex; align-items:center; gap:8px; margin:10px 16px 6px; padding:0 12px; height:44px; border:1px solid var(--line); border-radius:12px; color:var(--muted); box-sizing:border-box; flex-shrink:0; }
-  .bd-sbar input { flex:1; min-width:0; background:none; border:none; outline:none; font:inherit; font-size:14px; color:var(--text); }
-  .bd-sbar button { background:none; border:none; padding:0; color:var(--muted); display:flex; cursor:pointer; }
-  .bd-crumb { display:flex; align-items:center; gap:7px; padding:14px 16px 0; font-size:12px; color:var(--muted); flex-shrink:0; }
-  .bd-crumb button { background:none; border:none; padding:0; color:var(--muted); display:flex; cursor:pointer; }
-  .bd-rtitle { margin:10px 16px 16px; font-size:20px; font-weight:700; color:var(--text); letter-spacing:.2px; }
-  .bd-card + .bd-card { margin-top:16px; }
-  .bd-none { display:flex; flex-direction:column; align-items:center; gap:14px; padding:52px 16px; color:var(--muted); font-size:14px; }
-  .bd-dhead { display:grid; grid-template-columns:44px 1fr 44px; align-items:center; padding:8px; flex-shrink:0; color:var(--text); }
-  .bd-dhead .icon-btn { color:var(--text); }
-  .bd-dhead span { text-align:center; font-size:15px; font-weight:600; }
-  .bd-dscroll { flex:1; overflow-y:auto; scrollbar-width:none; padding:6px 16px 24px; color:var(--text); }
-  .bd-dscroll h1 { margin:8px 0 18px; font-size:24px; line-height:1.2; font-weight:700; letter-spacing:.2px; }
-  .bd-info { display:flex; align-items:flex-end; gap:26px; margin-bottom:16px; font-size:11.5px; }
-  .bd-info small { display:block; font-size:9.5px; color:var(--muted); margin-bottom:3px; }
-  .bd-info b { font-weight:600; }
-  .bd-likes { margin-left:auto; display:flex; align-items:center; gap:6px; color:var(--muted); font-size:12px; }
-  .bd-likes.on { color:var(--red); }
-  .bd-likes.on svg { fill:currentColor; }
-  .bd-cover { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:5px; display:block; margin-bottom:18px; }
-  .bd-dscroll p { margin:0 0 18px; font-size:14px; line-height:1.7; letter-spacing:.2px; }
-  .bd-dfoot { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-top:1px solid var(--line); flex-shrink:0; color:var(--text); font-size:13px; font-weight:600; }
-  .bd-fbtns { display:flex; gap:10px; }
-  .bd-fb { width:40px; height:40px; border-radius:50%; border:none; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer; background:#2f6bd6; }
-  .bd-fb.bd-lk { background:var(--red); }
-  .bd-fb.bd-lk.on svg { fill:currentColor; }
+  .screen .page-sub:has(.bd-scroll), .screen .page-sub:has(.bd-dscroll) { background:#ffffff; }
+  .screen[data-theme="dark"] .page-sub:has(.bd-scroll), .screen[data-theme="dark"] .page-sub:has(.bd-dscroll) { background:#0e1014; }
+  .bd-scroll { padding-bottom:100px; -webkit-overflow-scrolling:touch; }
+  
+  /* Board Header */
+  .bd-head {
+    position:sticky; top:0; z-index:25;
+    display:grid; grid-template-columns:44px 1fr 44px; align-items:center;
+    padding:8px 10px;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--line);
+    flex-shrink:0;
+    transition:background .2s ease;
+  }
+  .screen[data-theme="dark"] .bd-head { background:rgba(14,16,20,.88); }
+  .bd-head .icon-btn {
+    width:38px; height:38px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    border:none; background:none; color:var(--text); cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .bd-head .icon-btn:hover { background:var(--chip-bg); }
+  .bd-head .icon-btn:active { transform:scale(.92); }
+  .bd-brand { text-align:center; font-size:17.5px; font-weight:500; color:var(--text); letter-spacing:.4px; }
+  .bd-brand b { color:var(--red); font-weight:800; }
+  
+  /* Featured Stories Carousel */
+  .bd-carousel-wrap {
+    position:relative; width:100%; flex-shrink:0;
+    border-radius:0 0 22px 22px; overflow:hidden;
+    box-shadow:0 12px 28px rgba(0,0,0,.22);
+    background:#0b0c0e;
+  }
+  .bd-carousel {
+    display:flex; overflow-x:auto; width:100%;
+    scroll-snap-type:x mandatory; scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
+  }
+  .bd-carousel::-webkit-scrollbar { display:none; }
+  .bd-slide {
+    flex:0 0 100%; width:100%; aspect-ratio:4/5; max-height:480px;
+    position:relative; scroll-snap-align:start;
+    background:#000 center/cover no-repeat;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:22px 18px 36px; box-sizing:border-box;
+    cursor:pointer; text-align:left;
+  }
+  .bd-slide::before {
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.55) 45%, rgba(0,0,0,.1) 80%, transparent 100%);
+    pointer-events:none;
+  }
+  .bd-slide > * { position:relative; z-index:1; }
+  .bd-hero-tag {
+    display:inline-flex; align-items:center; align-self:flex-start;
+    padding:4px 11px; border-radius:20px;
+    background:rgba(200,33,43,.92); backdrop-filter:blur(8px);
+    color:#fff; font-size:10.5px; font-weight:700; letter-spacing:1px;
+    text-transform:uppercase; margin-bottom:10px;
+    box-shadow:0 3px 10px rgba(200,33,43,.45);
+  }
+  .bd-slide h2 {
+    margin:0 0 8px; font-size:21px; line-height:1.3; font-weight:600;
+    color:#ffffff; letter-spacing:.2px;
+    text-shadow:0 2px 8px rgba(0,0,0,.5);
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .bd-slide p {
+    margin:0 0 16px; font-size:13.5px; line-height:1.45;
+    color:rgba(255,255,255,.82);
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .bd-hero-bar {
+    display:flex; align-items:center; justify-content:flex-end;
+  }
+  .bd-hero-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    border:none; background:linear-gradient(135deg, #e02424 0%, #b81414 100%);
+    color:#fff; font:inherit; font-size:13px; font-weight:600;
+    padding:9px 16px; border-radius:22px; cursor:pointer;
+    box-shadow:0 4px 14px rgba(200,33,43,.45);
+    transition:filter .15s ease;
+  }
+  .bd-hero-btn:hover { filter:brightness(1.1); }
+
+  /* Carousel Dots */
+  .bd-dots {
+    position:absolute; bottom:14px; left:0; right:0;
+    display:flex; justify-content:center; align-items:center; gap:8px;
+    z-index:4;
+  }
+  .bd-dot {
+    width:7px; height:7px; border-radius:4px;
+    background:rgba(255,255,255,.35);
+    transition:all .22s cubic-bezier(.4,0,.2,1); cursor:pointer;
+    border:none; padding:0; display:block;
+  }
+  .bd-dot:hover { background:rgba(255,255,255,.75); }
+  .bd-dot.active {
+    width:22px; background:var(--red);
+    box-shadow:0 0 10px rgba(200,33,43,.7);
+  }
+
+
+  /* Sections */
+  .bd-sec {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px 16px 12px;
+  }
+  .bd-sec h3 { margin:0; font-size:19px; font-weight:700; color:var(--text); letter-spacing:.2px; }
+  .bd-viewall {
+    display:inline-flex; align-items:center; gap:4px;
+    background:none; border:none; padding:6px 10px; border-radius:14px;
+    font:inherit; font-size:12.5px; font-weight:600; color:var(--red);
+    cursor:pointer; transition:background .15s ease;
+  }
+  .bd-viewall:hover { background:rgba(200,33,43,.08); }
+
+  /* Journal Board - Feature Card */
+  .bd-card {
+    display:block; width:calc(100% - 32px); margin:0 16px 14px; box-sizing:border-box;
+    padding:0; background:var(--surface); border:1px solid var(--line);
+    border-radius:16px; overflow:hidden; text-align:left; color:var(--text);
+    font:inherit; cursor:pointer; flex-shrink:0;
+    transition:background .15s ease;
+  }
+  .bd-card:hover { background:var(--surface-2); }
+  .bd-card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .bd-card-body { padding:14px 16px 16px; }
+  .bd-card .bd-cat {
+    display:inline-block; font-size:11px; font-weight:700;
+    color:var(--red); letter-spacing:.5px; text-transform:uppercase;
+  }
+  .bd-card .bd-ct {
+    display:block; margin-top:5px; font-size:16.5px; font-weight:700;
+    line-height:1.35; letter-spacing:.2px; color:var(--text);
+  }
+  .bd-meta {
+    display:flex; align-items:center; gap:6px; margin-top:8px;
+    font-size:11px; color:var(--muted); font-weight:500;
+  }
+  .bd-meta .bd-msep { opacity:.45; }
+
+  /* Journal Board - Luxury Editorial Rows */
+  .bd-row {
+    display:flex; gap:16px; align-items:center; width:calc(100% - 32px);
+    margin:0 16px; box-sizing:border-box; padding:16px 0;
+    background:transparent; border:none;
+    border-bottom:1px solid rgba(255,255,255,.07);
+    border-radius:0; text-align:left; color:var(--text); font:inherit;
+    cursor:pointer; flex-shrink:0; transition:opacity .15s ease;
+  }
+  .screen[data-theme="light"] .bd-row {
+    border-bottom-color:rgba(0,0,0,.07);
+  }
+  .bd-row:hover { opacity:.85; }
+  .bd-row img {
+    width:88px; height:88px; aspect-ratio:1/1; object-fit:cover;
+    border-radius:14px; flex-shrink:0; background:#1b1d22;
+    box-shadow:0 4px 12px rgba(0,0,0,.18);
+  }
+  .bd-row-main { flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; }
+  .bd-row .bd-cat {
+    font-size:10.5px; font-weight:700; color:var(--red);
+    text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px;
+  }
+  .bd-row .bd-ct {
+    font-size:15px; font-weight:600; line-height:1.36;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+    color:var(--text); letter-spacing:.1px;
+  }
+  .bd-row .bd-meta {
+    margin-top:7px; font-size:11.5px; color:var(--muted); opacity:.85;
+    display:flex; align-items:center; gap:6px;
+  }
+  .bd-end-note {
+    text-align:center; padding:24px 16px 12px;
+    font-size:11.5px; color:var(--muted); letter-spacing:.4px;
+    text-transform:uppercase; font-weight:600; opacity:.75;
+  }
+
+  /* Category Filter Pills on All Board */
+  .bd-pills {
+    display:flex; gap:8px; overflow-x:auto; padding:6px 16px 14px;
+    scrollbar-width:none; flex-shrink:0; -webkit-overflow-scrolling:touch;
+  }
+  .bd-pills::-webkit-scrollbar { display:none; }
+  .bd-pill {
+    border:1px solid var(--line); background:var(--surface); color:var(--text);
+    padding:7px 15px; border-radius:20px; font-size:12px; font-weight:600;
+    white-space:nowrap; cursor:pointer; transition:all .15s ease;
+  }
+  .bd-pill:hover { border-color:var(--muted); }
+  .bd-pill.active {
+    background:var(--red); border-color:var(--red); color:#fff;
+    box-shadow:0 3px 10px rgba(200,33,43,.35);
+  }
+
+  /* Search Screen */
+  .bd-sbar {
+    display:flex; align-items:center; gap:10px; margin:12px 16px 8px;
+    padding:0 14px; height:46px; border:1.5px solid var(--line);
+    border-radius:14px; background:var(--surface); color:var(--muted);
+    box-sizing:border-box; flex-shrink:0;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .bd-sbar:focus-within {
+    border-color:var(--red); box-shadow:0 0 0 3px rgba(200,33,43,.12);
+  }
+  .bd-sbar-ic { color:var(--muted); flex-shrink:0; display:flex; }
+  .bd-sbar input {
+    flex:1; min-width:0; background:none; border:none; outline:none;
+    font:inherit; font-size:14.5px; color:var(--text);
+  }
+  .bd-sbar button {
+    background:none; border:none; padding:4px; color:var(--muted);
+    display:flex; cursor:pointer; border-radius:50%; transition:color .15s ease;
+  }
+  .bd-sbar button:hover { color:var(--text); }
+  .bd-sugg { padding:10px 16px 18px; }
+  .bd-sugg-title {
+    font-size:11.5px; font-weight:700; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px;
+  }
+  .bd-sugg-chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .bd-sugg-chip {
+    padding:6px 13px; border-radius:18px; border:1px solid var(--line);
+    background:var(--surface); color:var(--text); font-size:12px; font-weight:600;
+    cursor:pointer; transition:all .15s ease;
+  }
+  .bd-sugg-chip:hover {
+    background:var(--surface-2); border-color:var(--red); color:var(--red);
+  }
+
+  /* Breadcrumbs */
+  .bd-crumb {
+    display:flex; align-items:center; gap:7px; padding:12px 16px 4px;
+    font-size:12px; color:var(--muted); flex-shrink:0; font-weight:500;
+  }
+  .bd-crumb button {
+    background:none; border:none; padding:4px; color:var(--muted);
+    display:flex; cursor:pointer; border-radius:6px; transition:color .15s ease;
+  }
+  .bd-crumb button:hover { color:var(--text); }
+  .bd-rtitle { margin:8px 16px 14px; font-size:20px; font-weight:800; color:var(--text); letter-spacing:.2px; }
+  .bd-none {
+    display:flex; flex-direction:column; align-items:center; gap:12px;
+    padding:56px 20px; color:var(--muted); font-size:14px; text-align:center;
+  }
+  .bd-none svg { color:var(--muted); opacity:.7; }
+
+  /* Article Detail Screen */
+  .bd-dscroll {
+    flex:1; overflow-y:auto; scrollbar-width:none;
+    padding:10px 20px 64px; color:var(--text); -webkit-overflow-scrolling:touch;
+  }
+
+  /* Floating pill navigation bar (Fixed, Transparent, Glassmorphism) */
+  .bd-dnav {
+    position:sticky; top:0; z-index:30;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 12px; margin:-10px -20px 10px;
+    background:transparent;
+    pointer-events:none;
+  }
+  .bd-dnav > * {
+    pointer-events:auto;
+  }
+
+  .bd-pill-btn {
+    width:38px; height:38px; border-radius:50%;
+    background:rgba(255,255,255,.9); border:1px solid rgba(0,0,0,.08);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 4px 16px rgba(0,0,0,.08);
+    display:inline-flex; align-items:center; justify-content:center;
+    color:var(--text); cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .screen[data-theme="dark"] .bd-pill-btn {
+    background:rgba(20,22,28,.85); border-color:rgba(255,255,255,.12);
+    box-shadow:0 4px 16px rgba(0,0,0,.35);
+  }
+  .bd-pill-btn:hover { background:var(--chip-bg); }
+  .bd-pill-btn:active { transform:scale(.92); }
+
+  .bd-pill-group {
+    display:inline-flex; align-items:center; height:38px; gap:2px;
+    background:rgba(255,255,255,.9); border:1px solid rgba(0,0,0,.08);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 4px 16px rgba(0,0,0,.08);
+    border-radius:20px; padding:0 8px;
+  }
+  .screen[data-theme="dark"] .bd-pill-group {
+    background:rgba(20,22,28,.85); border-color:rgba(255,255,255,.12);
+    box-shadow:0 4px 16px rgba(0,0,0,.35);
+  }
+  .bd-pill-act {
+    width:28px; height:28px; border-radius:50%; border:none; background:none;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:12.5px; font-weight:600; color:var(--text); cursor:pointer; padding:0;
+    transition:all .15s ease;
+  }
+  .bd-pill-act:active { transform:scale(.93); }
+  .bd-pill-act.bd-pill-like.on {
+    background:none; color:var(--text);
+  }
+  .bd-pill-act.bd-pill-like.on svg {
+    color:var(--red); fill:var(--red);
+  }
+  .bd-pill-act.bd-pill-sh {
+    width:28px; padding:0; border-radius:50%;
+  }
+
+  .bd-dcat {
+    display:inline-block; font-size:11px; font-weight:700;
+    color:var(--red); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px;
+  }
+  .bd-dscroll h1 {
+    margin:0 0 16px; font-size:23px; line-height:1.35; font-weight:600;
+    letter-spacing:-.1px; color:var(--text);
+  }
+
+  /* Article Author & Meta Row */
+  .bd-author-row {
+    display:flex; align-items:center; gap:12px; margin-bottom:20px;
+  }
+  .bd-author-av {
+    width:38px; height:38px; border-radius:50%;
+    object-fit:cover; flex-shrink:0;
+    border:1px solid rgba(0,0,0,.08);
+    box-shadow:0 2px 8px rgba(200,33,43,.12);
+  }
+  .bd-author-body {
+    flex:1; min-width:0;
+    display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
+  }
+  .bd-meta-cols {
+    display:flex; align-items:flex-end; gap:20px;
+  }
+  .bd-meta-col {
+    display:flex; flex-direction:column;
+  }
+  .bd-meta-lbl {
+    font-size:11px; font-weight:500; color:var(--muted); margin-bottom:2px;
+    line-height:1.1;
+  }
+  .bd-meta-val {
+    font-size:12.5px; font-weight:500; color:var(--text); opacity:.82; white-space:nowrap;
+    line-height:1.2; letter-spacing:-.1px;
+  }
+  .bd-author-likes {
+    display:inline-flex; align-items:center; gap:4.5px;
+    font-size:12.5px; font-weight:500; color:var(--text); opacity:.82; flex-shrink:0;
+    line-height:1.2; padding-bottom:1px;
+  }
+  .bd-author-likes svg {
+    color:var(--text); opacity:.75; display:block;
+  }
+
+  .bd-cover {
+    width:calc(100% + 40px); margin-left:-20px; margin-right:-20px;
+    aspect-ratio:4/5; max-height:520px; object-fit:cover;
+    border:none; border-radius:0; box-shadow:none;
+    display:block; margin-bottom:24px;
+  }
+  .bd-callout {
+    margin:22px 0; padding:16px 18px;
+    background:var(--surface);
+    border-radius:0 14px 14px 0; border:1px solid var(--line);
+    border-left:4px solid var(--red);
+    font-size:14px; line-height:1.7; color:var(--text); font-style:italic;
+  }
+  .bd-dscroll p {
+    margin:0 0 20px; font-size:15px; line-height:1.85;
+    letter-spacing:.15px; color:var(--text); opacity:.92;
+  }
+  .bd-tags {
+    display:flex; gap:8px; flex-wrap:wrap; margin-top:28px;
+    padding-top:18px; border-top:1px solid var(--line);
+  }
+  .bd-tag {
+    padding:6px 14px; border-radius:20px; background:var(--chip-bg);
+    color:var(--muted); font-size:12px; font-weight:500; letter-spacing:.2px;
+  }
   .al-readall { background:none; border:none; padding:6px 0; font:inherit; font-size:13px; font-weight:500; color:var(--red); cursor:pointer; }
   .al-sec { display:flex; align-items:center; justify-content:space-between; font-size:15px; font-weight:600; color:var(--text); padding:14px 16px 6px; }
   .al-row { display:flex; align-items:center; gap:12px; width:100%; box-sizing:border-box; padding:10px 16px; background:none; border:none; outline:none; color:var(--text); font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
@@ -8238,32 +8562,95 @@ function alertsClick(e) {
 /* ===== BOARD — news board: Home (hero + trending + Journal Board), Journal Board list, Article detail (like/share), Search (results / empty) ===== */
 let bdQ = "";
 const BD_P = "./assets/thumbs/";
-const BD_TREND_MAX = 5;
+const BD_FEAT_MAX = 5;
 const BD_BODY = [
   "The perpetual calendar remains one of watchmaking's most romantic and technically daunting complications. Unlike its simpler calendar cousins, a perpetual mechanism accounts for the differing lengths of all 12 months and even the quadrennial leap year anomaly. It is a mechanical computer designed to remain accurate for over a century without manual intervention.",
   "Collectors keep coming back to this subject because the details reward patience. Finishing, movement architecture and the way a case sits on the wrist all tell a story that spec sheets rarely capture.",
   "Whether you are buying your first piece or adding to a long-running collection, understanding the market context makes every decision easier. Take your time, compare references, and always verify provenance before you commit."
 ];
 const BOARD = [
-  { id: "b1", cat: "Featured", title: "The Perpetual Calendar: A Century of Mastery", sub: "Exploring the mechanical evolution of watchmaking's most poetic complication.", img: BD_P + "p1-p.jpg", min: 9, ago: "1 hour ago", date: "Oct 28, 2024", likes: 12, hero: true },
-  { id: "b2", cat: "Market Watch", title: "Daytona Prices Stabilize in Q3", img: BD_P + "p2-p.jpg", min: 6, ago: "30 minutes ago", date: "Oct 27, 2024", likes: 34, trend: 1 },
-  { id: "b3", cat: "Technical", title: "Understanding Silicon Hairsprings", img: BD_P + "p3-p.jpg", min: 8, ago: "1 hour ago", date: "Oct 26, 2024", likes: 21, trend: 2 },
-  { id: "b4", cat: "Collector", title: "Why Vintage Patina Is the Real Story", img: BD_P + "p4-p.jpg", min: 5, ago: "3 hours ago", date: "Oct 25, 2024", likes: 18, trend: 3 },
-  { id: "b12", cat: "Industry", title: "Inside the Swiss Watch Export Numbers", img: BD_P + "p9-p.jpg", min: 6, ago: "4 hours ago", date: "Oct 24, 2024", likes: 14, trend: 4 },
-  { id: "b13", cat: "Guides", title: "How to Care for an Automatic Watch", img: BD_P + "p10-p.jpg", min: 4, ago: "6 hours ago", date: "Oct 24, 2024", likes: 10, trend: 5 },
+  { id: "b1", cat: "Featured", title: "The Perpetual Calendar: A Century of Mastery", sub: "Exploring the mechanical evolution of watchmaking's most poetic complication.", img: BD_P + "p1-p.jpg", min: 9, ago: "1 hour ago", date: "Oct 28, 2024", likes: 12, feat: 1 },
+  { id: "b2", cat: "Market Watch", title: "Daytona Prices Stabilize in Q3", sub: "Analyzing recent secondary market movements for key Cosmograph references.", img: BD_P + "p2-p.jpg", min: 6, ago: "30 minutes ago", date: "Oct 27, 2024", likes: 34, feat: 2 },
+  { id: "b3", cat: "Technical", title: "Understanding Silicon Hairsprings", sub: "How anti-magnetic balance springs transformed modern horological precision.", img: BD_P + "p3-p.jpg", min: 8, ago: "1 hour ago", date: "Oct 26, 2024", likes: 21, feat: 3 },
+  { id: "b7", cat: "Rolex", title: "Rolex Price Development Across Five Years: Factors and Forecasts", sub: "Comprehensive historical data and five-year price trends for luxury timepieces.", img: BD_P + "p11-p.jpg", min: 7, ago: "45 minutes ago", date: "Oct 22, 2024", likes: 41, feat: 4 },
+  { id: "b14", cat: "Watch Trends", title: "Best New Watches Under $6,000 in 2026", sub: "Curated selections offering exceptional craftsmanship without breaking the bank.", img: BD_P + "p7-p.jpg", min: 15, ago: "1 hour ago", date: "Oct 23, 2024", likes: 22, feat: 5 },
+  { id: "b4", cat: "Collector", title: "Why Vintage Patina Is the Real Story", img: BD_P + "p4-p.jpg", min: 5, ago: "3 hours ago", date: "Oct 25, 2024", likes: 18 },
+  { id: "b12", cat: "Industry", title: "Inside the Swiss Watch Export Numbers", img: BD_P + "p9-p.jpg", min: 6, ago: "4 hours ago", date: "Oct 24, 2024", likes: 14 },
+  { id: "b13", cat: "Guides", title: "How to Care for an Automatic Watch", img: BD_P + "p10-p.jpg", min: 4, ago: "6 hours ago", date: "Oct 24, 2024", likes: 10 },
   { id: "b5", cat: "More Watch Brands", title: "5 Things You Should Know Before You Buy a Grand Seiko Watch", img: BD_P + "p5-p.jpg", min: 8, ago: "2 hours ago", date: "Oct 24, 2024", likes: 27 },
   { id: "b6", cat: "Watch Basics", title: "Steel vs. Titanium Watches: What are the differences?", img: BD_P + "p6-p.jpg", min: 12, ago: "30 minutes ago", date: "Oct 23, 2024", likes: 9 },
-  { id: "b14", cat: "Watch Trends", title: "Best New Watches Under $6,000 in 2026", img: BD_P + "p7-p.jpg", min: 15, ago: "1 hour ago", date: "Oct 23, 2024", likes: 22 },
   { id: "b15", cat: "Watch Guides", title: "Our Top 5 Best-Selling Graduation Watches Under $4,000", img: BD_P + "p8-p.jpg", min: 10, ago: "3 hours ago", date: "Oct 22, 2024", likes: 16 },
-  { id: "b7", cat: "Rolex", title: "Rolex Price Development Across Five Years: Factors and Forecasts", img: BD_P + "p11-p.jpg", min: 7, ago: "45 minutes ago", date: "Oct 22, 2024", likes: 41 },
   { id: "b8", cat: "Feature More Rolex Collections", title: "5 Essential Facts Before Buying a Rolex Watch", img: BD_P + "p2-p.jpg", min: 7, ago: "25 minutes ago", date: "Oct 21, 2024", likes: 30 },
   { id: "b9", cat: "Rolex", title: "Submariner vs Explorer: Which Rolex Fits You?", img: BD_P + "p3-p.jpg", min: 6, ago: "1 day ago", date: "Oct 20, 2024", likes: 15 },
   { id: "b10", cat: "Rolex", title: "Rolex Service Intervals Explained", img: BD_P + "p4-p.jpg", min: 5, ago: "2 days ago", date: "Oct 19, 2024", likes: 8 },
   { id: "b11", cat: "Rolex", title: "Spotting a Genuine Rolex Bracelet", img: BD_P + "p1-p.jpg", min: 6, ago: "3 days ago", date: "Oct 18, 2024", likes: 11 },
-].map(a => ({ author: "Tuk Daeng", liked: false, ...a }));
+].map(a => ({ author: "Tuk Daeng Editorial", liked: false, saved: false, ...a }));
 const bdGet = id => BOARD.find(a => a.id === id);
-const bdMeta = (a, dot = "•") => `${a.min} MIN READ  ${dot}  ${a.ago.toUpperCase()}`;
-const bdJournal = () => BOARD.filter(a => !a.hero && !a.trend);
+const bdMeta = (a, dot = "·") => `${a.min} min read  ${dot}  ${a.ago}`;
+const bdFeatured = () => BOARD.filter(a => a.feat).sort((x, y) => x.feat - y.feat);
+const bdLatest = () => BOARD.filter(a => !a.feat);
+const bdJournal = () => BOARD;
+
+const BD_CATEGORIES = ["All", "Market Watch", "Rolex", "Technical", "Collector", "Guides", "Industry"];
+let bdFilterCat = "All";
+const bdFilteredJournal = () => bdFilterCat === "All" ? BOARD : BOARD.filter(a => (a.cat + " " + a.title).toLowerCase().includes(bdFilterCat.toLowerCase()));
+
+const BD_POPULAR_TAGS = ["Rolex", "Daytona", "Perpetual Calendar", "Titanium", "Patina", "Grand Seiko"];
+
+function bdCarouselScroll(el) {
+  if (!el) return;
+  const idx = Math.round(el.scrollLeft / (el.offsetWidth || 1));
+  const dots = el.parentElement ? el.parentElement.querySelectorAll(".bd-dot") : [];
+  dots.forEach((d, i) => d.classList.toggle("active", i === idx));
+}
+function bdGoSlide(scr, idx) {
+  const c = scr && scr.querySelector(".bd-carousel");
+  if (!c) return;
+  const w = c.offsetWidth || 1;
+  c.scrollTo({ left: idx * w, behavior: "smooth" });
+}
+function bdStepSlide(scr, dir) {
+  const c = scr && scr.querySelector(".bd-carousel");
+  if (!c) return;
+  const w = c.offsetWidth || 1;
+  const curIdx = Math.round(c.scrollLeft / w);
+  const maxIdx = bdFeatured().length - 1;
+  const targetIdx = Math.max(0, Math.min(maxIdx, curIdx + dir));
+  c.scrollTo({ left: targetIdx * w, behavior: "smooth" });
+}
+
+let bdIsDragging = false, bdDidDrag = false, bdDragStartX = 0, bdScrollStartX = 0;
+document.addEventListener("mousedown", e => {
+  const c = e.target.closest(".bd-carousel");
+  if (!c) return;
+  bdIsDragging = true;
+  bdDidDrag = false;
+  bdDragStartX = e.pageX;
+  bdScrollStartX = c.scrollLeft;
+  c.style.scrollBehavior = "auto";
+  c.style.scrollSnapType = "none";
+});
+document.addEventListener("mousemove", e => {
+  if (!bdIsDragging) return;
+  const dx = e.pageX - bdDragStartX;
+  if (Math.abs(dx) > 6) bdDidDrag = true;
+  const c = document.querySelector(".bd-carousel");
+  if (c) c.scrollLeft = bdScrollStartX - dx;
+});
+document.addEventListener("mouseup", () => {
+  if (!bdIsDragging) return;
+  bdIsDragging = false;
+  const c = document.querySelector(".bd-carousel");
+  if (c) {
+    c.style.scrollBehavior = "smooth";
+    c.style.scrollSnapType = "x mandatory";
+    const w = c.offsetWidth || 1;
+    const targetIdx = Math.round(c.scrollLeft / w);
+    c.scrollTo({ left: targetIdx * w, behavior: "smooth" });
+  }
+  setTimeout(() => { bdDidDrag = false; }, 120);
+});
+
 function boardNavHTML() {
   return `<nav class="bottom-nav pf-nav">
     <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
@@ -8275,31 +8662,73 @@ function boardNavHTML() {
 }
 function bdHeadHTML() {
   return `<div class="bd-head">
-      <button class="icon-btn" data-bdmenu>${I.burger(22)}</button>
+      <button class="icon-btn" data-bdmenu title="Categories">${I.burger(22)}</button>
       <span class="bd-brand"><b>TUK DAENG</b> | Board</span>
-      <button class="icon-btn" data-bdsearch>${I.search(22)}</button>
+      <button class="icon-btn" data-bdsearch title="Search">${I.search(22)}</button>
     </div>`;
 }
 function bdCardHTML(a) {
-  return `<button class="bd-card" data-bdart="${a.id}"><img src="${a.img}" alt="" loading="lazy"><span class="bd-cat">${esc(a.cat)}</span><span class="bd-ct">${esc(a.title)}</span><span class="bd-meta">${bdMeta(a)}</span></button>`;
+  return `<button class="bd-card" data-bdart="${a.id}">
+    <img class="bd-card-img" src="${a.img}" alt="" loading="lazy">
+    <div class="bd-card-body">
+      <span class="bd-cat">${esc(a.cat)}</span>
+      <span class="bd-ct">${esc(a.title)}</span>
+      <span class="bd-meta">
+        <span>${bdMeta(a)}</span>
+        <span class="bd-msep">•</span>
+        <span>${a.likes} likes</span>
+      </span>
+    </div>
+  </button>`;
 }
 function bdRowHTML(a) {
-  return `<button class="bd-row" data-bdart="${a.id}"><img src="${a.img}" alt="" loading="lazy"><span><span class="bd-cat">${esc(a.cat)}</span><span class="bd-ct">${esc(a.title)}</span><span class="bd-meta">${bdMeta(a, "·")}</span></span></button>`;
+  return `<button class="bd-row" data-bdart="${a.id}">
+    <img src="${a.img}" alt="" loading="lazy">
+    <div class="bd-row-main">
+      <span class="bd-cat">${esc(a.cat)}</span>
+      <span class="bd-ct">${esc(a.title)}</span>
+      <span class="bd-meta">${bdMeta(a, "·")}</span>
+    </div>
+  </button>`;
 }
-function bdListHTML(list) { return list.map((a, i) => i ? bdRowHTML(a) : bdCardHTML(a)).join(""); }
+function bdListHTML(list) {
+  if (!list.length) return `<div class="bd-none"><span>No articles in this category</span></div>`;
+  return list.map(a => bdRowHTML(a)).join("")
+    + `<div class="bd-end-note"><span>You're all caught up</span></div>`;
+}
 function boardHomeHTML() {
-  const hero = BOARD.find(a => a.hero), trend = BOARD.filter(a => a.trend).sort((x, y) => x.trend - y.trend).slice(0, BD_TREND_MAX);
+  const featured = bdFeatured();
+  const latest = bdLatest();
   return `
   <div class="ch-scroll sub-scroll bd-scroll">
     ${bdHeadHTML()}
-    <div class="bd-hero" style="background-image:url('${hero.img}')" data-bdart="${hero.id}">
-      <h2>${esc(hero.title)}</h2><p>${esc(hero.sub)}</p>
-      <button class="bd-hero-btn" data-bdart="${hero.id}">Read Full Article</button>
+    <div class="bd-carousel-wrap">
+      <div class="bd-carousel" onscroll="bdCarouselScroll(this)">
+        ${featured.map(a => `
+          <div class="bd-slide" style="background-image:url('${a.img}')" data-bdart="${a.id}">
+            <span class="bd-hero-tag">${esc(a.cat || "FEATURED")}</span>
+            <h2>${esc(a.title)}</h2>
+            <p>${esc(a.sub || a.title)}</p>
+            <div class="bd-hero-bar">
+              <button class="bd-hero-btn" data-bdart="${a.id}">
+                <span>Read more</span>
+              </button>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div class="bd-dots">
+        ${featured.map((_, i) => `<button class="bd-dot${i === 0 ? " active" : ""}" data-bddot="${i}" aria-label="Slide ${i + 1}"></button>`).join("")}
+      </div>
     </div>
-    <div class="bd-sec"><h3>Trending Now</h3><button data-bdall>View all</button></div>
-    <div class="bd-trend">${trend.map(a => `<button class="bd-tcard" data-bdart="${a.id}"><img src="${a.img}" alt="" loading="lazy"><span class="bd-tcat">${esc(a.cat)}</span><span class="bd-ttl">${esc(a.title)}</span></button>`).join("")}</div>
-    <div class="bd-sec"><h3>Journal Board</h3></div>
-    ${bdListHTML(bdJournal())}
+    <div class="bd-sec">
+      <h3>Latest Articles</h3>
+      <button class="bd-viewall" data-bdall>
+        <span>View all</span>
+        ${I.chevR(14)}
+      </button>
+    </div>
+    ${bdListHTML(latest)}
   </div>
   ${boardNavHTML()}`;
 }
@@ -8307,27 +8736,40 @@ function boardAllHTML() {
   return `
   <div class="ch-scroll sub-scroll bd-scroll">
     ${bdHeadHTML()}
-    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>Journal Board</span></div>
-    <h1 class="bd-rtitle" style="font-size:24px">Journal Board</h1>
-    ${bdListHTML(bdJournal())}
+    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>Latest Articles</span></div>
+    <h1 class="bd-rtitle" style="font-size:24px">Latest Articles</h1>
+    <div class="bd-pills">
+      ${BD_CATEGORIES.map(c => `<button class="bd-pill${bdFilterCat === c ? " active" : ""}" data-bdcat="${esc(c)}">${esc(c)}</button>`).join("")}
+    </div>
+    <div class="bd-all-list">
+      ${bdListHTML(bdFilteredJournal())}
+    </div>
   </div>
   ${boardNavHTML()}`;
 }
 function bdResultsHTML() {
   const q = bdQ.trim(), k = q.toLowerCase();
-  if (!q) return `<div class="bd-none"><span>พิมพ์คำเพื่อค้นหาบทความ</span></div>`;
+  if (!q) {
+    return `<div class="bd-sugg">
+      <div class="bd-sugg-title">Popular Topics</div>
+      <div class="bd-sugg-chips">
+        ${BD_POPULAR_TAGS.map(t => `<button class="bd-sugg-chip" data-bdtag="${esc(t)}">${esc(t)}</button>`).join("")}
+      </div>
+    </div>`;
+  }
   const r = BOARD.filter(a => (a.title + " " + a.cat + " " + (a.sub || "")).toLowerCase().includes(k));
-  return `<h1 class="bd-rtitle">${r.length} ผลลัพธ์สำหรับ “${esc(q)}”</h1>` + (r.length ? r.map(bdCardHTML).join("")
-    : `<div class="bd-none"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M8 8l5 5M13 8l-5 5"/></svg><span>ไม่พบผลลัพธ์</span></div>`);
+  return `<h1 class="bd-rtitle">${r.length} ${r.length === 1 ? "result" : "results"} for “${esc(q)}”</h1>` + (r.length ? r.map(bdCardHTML).join("")
+    : `<div class="bd-none"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M8 8l5 5M13 8l-5 5"/></svg><span>No results found for “${esc(q)}”</span><span style="font-size:12px">Try searching with different keywords like Rolex, Daytona, or Titanium</span></div>`);
 }
 function boardSearchHTML() {
   return `
   <div class="ch-scroll sub-scroll bd-scroll">
     <div class="bd-sbar">
-      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="ค้นหาบทความ" autocomplete="off">
-      <button data-bdclear aria-label="Clear">${I.x(18)}</button>${I.search(20)}
+      <span class="bd-sbar-ic">${I.search(18)}</span>
+      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="Search articles, brands, or topics..." autocomplete="off">
+      ${bdQ ? `<button data-bdclear aria-label="Clear">${I.x(18)}</button>` : ""}
     </div>
-    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>ค้นหา</span></div>
+    <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>Search</span></div>
     <div class="bd-res">${bdResultsHTML()}</div>
   </div>
   ${boardNavHTML()}`;
@@ -8335,34 +8777,68 @@ function boardSearchHTML() {
 function boardSearchSync(pg) {
   const r = pg && pg.querySelector(".bd-res");
   if (r) r.innerHTML = bdResultsHTML();
+  const clr = pg && pg.querySelector("[data-bdclear]");
+  if (clr && !bdQ) clr.remove();
 }
 function boardArticleHTML(id) {
   const a = bdGet(id);
   if (!a) return chEmptyHTML("Article not found", "This article is no longer available.");
   return `
-  <div class="bd-dhead">
-    <button class="icon-btn sub-back">${I.back(22)}</button><span>Board</span>
-    <button class="icon-btn" data-bdmore>${I.dots(20)}</button>
-  </div>
   <div class="bd-dscroll">
+    <div class="bd-dnav">
+      <button class="bd-pill-btn sub-back" title="Back" aria-label="Back">${I.back(20)}</button>
+      <div class="bd-pill-group">
+        <button class="bd-pill-act bd-pill-like${a.liked ? " on" : ""}" data-bdlike="${a.id}" title="Like" aria-label="Like">
+          ${I.heart(17)}
+        </button>
+        <button class="bd-pill-act bd-pill-sh" data-bdshare="${a.id}" title="Share" aria-label="Share">
+          ${I.share(17)}
+        </button>
+      </div>
+    </div>
+    <span class="bd-dcat">${esc(a.cat)}</span>
     <h1>${esc(a.title)}</h1>
-    <div class="bd-info"><div><small>ผู้เขียน</small><b>By ${esc(a.author)}</b></div><div><small>วันที่</small><b>${esc(a.date)}</b></div><span class="bd-likes${a.liked ? " on" : ""}">${I.heart(18)}<span>${a.likes}</span></span></div>
-    <img class="bd-cover" src="${a.img}" alt="">
+    <div class="bd-author-row">
+      <img class="bd-author-av" src="./assets/thumbs/td-editorial.png" alt="Tuk Daeng">
+      <div class="bd-author-body">
+        <div class="bd-meta-cols">
+          <div class="bd-meta-col">
+            <span class="bd-meta-lbl">Author</span>
+            <span class="bd-meta-val">By Tuk Daeng</span>
+          </div>
+          <div class="bd-meta-col">
+            <span class="bd-meta-lbl">Date</span>
+            <span class="bd-meta-val">${esc(a.date)}</span>
+          </div>
+        </div>
+        <div class="bd-author-likes">
+          ${I.heart(14)} <span data-bdlike-count="${a.id}">${a.likes}</span>
+        </div>
+      </div>
+    </div>
+    <img class="bd-cover" src="${a.img}" alt="" loading="lazy">
+    <div class="bd-callout">${esc(a.sub || a.title)}</div>
     ${BD_BODY.map(t => `<p>${esc(t)}</p>`).join("")}
-  </div>
-  <div class="bd-dfoot">
-    <span>แชร์บทความนี้</span>
-    <div class="bd-fbtns">
-      <button class="bd-fb" data-bdshare aria-label="Share">${I.share(18)}</button>
-      <button class="bd-fb bd-lk${a.liked ? " on" : ""}" data-bdlike="${a.id}" aria-label="Like">${I.heart(20)}</button>
+    <div class="bd-tags">
+      <span class="bd-tag">#Watches</span>
+      <span class="bd-tag">#${esc(a.cat.replace(/\s+/g, ""))}</span>
+      <span class="bd-tag">#TukDaeng</span>
+      <span class="bd-tag">#Horology</span>
     </div>
   </div>`;
 }
 function boardClick(e) {
   const scr = e.target.closest(".screen");
   if (!scr) return false;
+  const dot = e.target.closest("[data-bddot]");
+  if (dot) {
+    const idx = parseInt(dot.dataset.bddot, 10);
+    bdGoSlide(scr, idx);
+    return true;
+  }
+
   const art = e.target.closest("[data-bdart]");
-  if (art && suppressPhotoClick) return true;
+  if (art && (suppressPhotoClick || bdDidDrag)) return true;
   if (art) { rpPush(scr, "boardart:" + art.dataset.bdart); return true; }
   if (e.target.closest("[data-bdsearch]")) {
     bdQ = ""; rpPush(scr, "boardsearch");
@@ -8375,17 +8851,108 @@ function boardClick(e) {
     boardSearchSync(scr.querySelector(".page-sub"));
     return true;
   }
+  const tag = e.target.closest("[data-bdtag]");
+  if (tag) {
+    bdQ = tag.dataset.bdtag;
+    const i = scr.querySelector(".bd-q");
+    if (i) { i.value = bdQ; i.focus(); }
+    boardSearchSync(scr.querySelector(".page-sub"));
+    return true;
+  }
+  const pill = e.target.closest("[data-bdcat]");
+  if (pill) {
+    bdFilterCat = pill.dataset.bdcat;
+    scr.querySelectorAll(".bd-pill").forEach(p => p.classList.toggle("active", p.dataset.bdcat === bdFilterCat));
+    const listWrap = scr.querySelector(".bd-all-list");
+    if (listWrap) listWrap.innerHTML = bdListHTML(bdFilteredJournal());
+    return true;
+  }
   if (e.target.closest("[data-bdhome]")) { rpBack(scr); return true; }
-  if (e.target.closest("[data-bdall]")) { rpPush(scr, "boardall"); return true; }
-  if (e.target.closest("[data-bdmenu], [data-bdmore]")) { scrToast(scr, "Not in this prototype yet"); return true; }
-  if (e.target.closest("[data-bdshare]")) { scrToast(scr, "Link copied"); return true; }
+  if (e.target.closest("[data-bdall]")) { bdFilterCat = "All"; rpPush(scr, "boardall"); return true; }
+  if (e.target.closest("[data-bdmenu]")) {
+    openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
+      <div style="padding:14px 16px 8px; font-weight:700; font-size:15px; text-align:center; color:var(--text);">Categories</div>
+      <div class="pm-card pm-rows">
+        ${BD_CATEGORIES.map(c => `<button class="pm-row pm-ctr" data-bdmenu-cat="${esc(c)}"><span>${esc(c)}</span></button>`).join("")}
+      </div>
+      <div class="pm-card pm-cancel"><button class="pm-row pm-ctr" data-bdcancel-sheet><span>Close</span></button></div>`);
+    return true;
+  }
+  const menuCat = e.target.closest("[data-bdmenu-cat]");
+  if (menuCat) {
+    bdFilterCat = menuCat.dataset.bdmenuCat;
+    scr.classList.remove("pm-open");
+    rpPush(scr, "boardall");
+    return true;
+  }
+  const more = e.target.closest("[data-bdmore]");
+  if (more) {
+    const a = bdGet(more.dataset.bdmore);
+    if (!a) return true;
+    openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
+      <div class="pm-card pm-rows">
+        <button class="pm-row pm-ctr" data-bdact="share" data-id="${a.id}"><span>Share Article</span></button>
+        <button class="pm-row pm-ctr" data-bdact="copy" data-id="${a.id}"><span>Copy Link</span></button>
+        <button class="pm-row pm-ctr" data-bdact="save" data-id="${a.id}"><span>${a.saved ? "Remove from Saved" : "Save to Favorites"}</span></button>
+        <button class="pm-row pm-ctr danger" data-bdact="report"><span>Report Article</span></button>
+      </div>
+      <div class="pm-card pm-cancel"><button class="pm-row pm-ctr" data-bdcancel-sheet><span>Cancel</span></button></div>`);
+    return true;
+  }
+  const act = e.target.closest("[data-bdact]");
+  if (act) {
+    const action = act.dataset.bdact;
+    scr.classList.remove("pm-open");
+    if (action === "share") {
+      openSheet(scr, "sh", "share-open", shareSheetHTML());
+    } else if (action === "copy") {
+      scrToast(scr, "Link copied");
+    } else if (action === "save") {
+      const a = bdGet(act.dataset.id);
+      if (a) {
+        a.saved = !a.saved;
+        scr.querySelectorAll(`[data-bdsave="${a.id}"]`).forEach(btn => btn.classList.toggle("on", a.saved));
+        scrToast(scr, a.saved ? "Saved to favorites" : "Removed from favorites");
+      }
+    } else if (action === "report") {
+      scrToast(scr, "Report submitted. Thank you for notifying us.");
+    }
+    return true;
+  }
+  if (e.target.closest("[data-bdcancel-sheet]")) {
+    scr.classList.remove("pm-open");
+    return true;
+  }
+  if (e.target.closest("[data-bdshare]")) {
+    openSheet(scr, "sh", "share-open", shareSheetHTML());
+    return true;
+  }
+  const sv = e.target.closest("[data-bdsave]");
+  if (sv) {
+    const a = bdGet(sv.dataset.bdsave);
+    if (a) {
+      a.saved = !a.saved;
+      scr.querySelectorAll(`[data-bdsave="${a.id}"]`).forEach(btn => btn.classList.toggle("on", a.saved));
+      scrToast(scr, a.saved ? "Saved to favorites" : "Removed from favorites");
+    }
+    return true;
+  }
   const lk = e.target.closest("[data-bdlike]");
   if (lk) {
     const a = bdGet(lk.dataset.bdlike);
-    a.liked = !a.liked; a.likes += a.liked ? 1 : -1;
-    lk.classList.toggle("on", a.liked);
-    const lc = scr.querySelector(".bd-likes");
-    if (lc) { lc.classList.toggle("on", a.liked); lc.lastElementChild.textContent = a.likes; }
+    if (a) {
+      a.liked = !a.liked; a.likes += a.liked ? 1 : -1;
+      scr.querySelectorAll(`[data-bdlike="${a.id}"]`).forEach(btn => {
+        btn.classList.toggle("on", a.liked);
+        const cnt = btn.querySelector("span");
+        if (cnt) cnt.textContent = a.likes;
+      });
+      scr.querySelectorAll(`[data-bdlike-count="${a.id}"]`).forEach(el => {
+        el.textContent = a.likes;
+      });
+      const footSub = scr.querySelector(".bd-dfoot-sub");
+      if (footSub) footSub.textContent = `${a.likes} ${a.likes === 1 ? "person" : "people"} liked this article`;
+    }
     return true;
   }
   return false;
