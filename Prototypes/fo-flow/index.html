@@ -1730,14 +1730,21 @@
   .sub-row-logout span { color: #ed4956 !important; font-size: 14.5px; }
   .about-acc-hero {
     display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding: 24px 16px 18px;
+    padding: 28px 16px 20px;
   }
   .about-acc-hero img {
-    width: 76px; height: 76px; border-radius: 50%; object-fit: cover;
-    margin-bottom: 12px; border: 2px solid var(--line);
+    width: 84px; height: 84px; border-radius: 50%; object-fit: cover;
+    margin-bottom: 14px; border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
-  .about-acc-name { font-size: 16.5px; font-weight: 600; color: var(--text); }
-  .about-acc-uname { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .about-acc-name { font-size: 17.5px; font-weight: 700; color: var(--text); }
+  .about-acc-uname { font-size: 13.5px; color: var(--muted); margin-top: 4px; }
+  .about-acc-divider {
+    height: 1px;
+    background: var(--line);
+    margin: 12px 0 4px;
+    width: 100%;
+  }
+  .sub-row-static { cursor: default; }
   .sub-card-box {
     margin: 14px 16px 6px; padding: 16px; border-radius: 12px;
     background: var(--chip-bg); border: 1px solid var(--line);
@@ -8317,13 +8324,14 @@ function subHTML(name, scr) {
         <div class="about-acc-uname">@${esc(me.user || "king.mr.fox")}</div>
       </div>
       <div class="sub-sec">Account information</div>
-      <div class="sub-row"><span class="sub-ic">${I.cal(20)}</span><span class="lg-b"><span class="lg-t">Date joined</span><span class="lg-d">October 2024</span></span></div>
-      <div class="sub-row"><span class="sub-ic">${I.globe(20)}</span><span class="lg-b"><span class="lg-t">Account based in</span><span class="lg-d">Thailand</span></span></div>
-      <div class="sub-row"><span class="sub-ic">${I.userMinus(20)}</span><span class="lg-b"><span class="lg-t">Former usernames</span><span class="lg-d">0</span></span></div>
-      <div class="sub-sec sec-div">Security</div>
-      <button class="sub-row" data-act="change-pwd"><span class="sub-ic">${I.lock(20)}</span><span>Change password</span><span class="sub-chev">${I.chevR(15)}</span></button>
-      <div class="sub-sec sec-div">Account management</div>
-      <button class="sub-row" data-dlg="del-account"><span class="sub-ic" style="color:var(--red);">${I.trash(20)}</span><span style="color:var(--red);">Delete account</span><span class="sub-chev">${I.chevR(15)}</span></button>
+      <div class="sub-row sub-row-static"><span class="sub-ic">${I.cal(22)}</span><span class="lg-b"><span class="lg-t">Date joined</span><span class="lg-d">October 2024</span></span></div>
+      <div class="sub-row sub-row-static"><span class="sub-ic">${I.globe(22)}</span><span class="lg-b"><span class="lg-t">Account based in</span><span class="lg-d">Thailand</span></span></div>
+      <div class="about-acc-divider"></div>
+      <div class="sub-sec">Security</div>
+      <button class="sub-row" data-act="change-pwd"><span class="sub-ic">${I.lock(22)}</span><span>Change password</span><span class="sub-chev">${I.chevR(16)}</span></button>
+      <div class="about-acc-divider"></div>
+      <div class="sub-sec">Account management</div>
+      <button class="sub-row" data-dlg="del-account"><span class="sub-ic" style="color:#ed4956;">${I.trash(22)}</span><span style="color:#ed4956;">Delete account</span><span class="sub-chev">${I.chevR(16)}</span></button>
     </div>`;
   }
   if (name === "lang") {
