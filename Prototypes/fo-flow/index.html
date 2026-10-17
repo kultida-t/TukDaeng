@@ -3679,13 +3679,25 @@
     position:sticky; top:0; z-index:25;
     display:grid; grid-template-columns:44px 1fr 44px; align-items:center;
     padding:8px 10px;
-    background:rgba(255,255,255,.88);
+    background:rgba(255,255,255,.92);
     backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
     border-bottom:1px solid var(--line);
     flex-shrink:0;
-    transition:background .2s ease;
+    transition:transform .28s cubic-bezier(.16,1,.3,1), opacity .22s ease, box-shadow .25s ease, background .2s ease;
+    will-change:transform, opacity;
   }
-  .screen[data-theme="dark"] .bd-head { background:rgba(14,16,20,.88); }
+  .screen[data-theme="dark"] .bd-head { background:rgba(14,16,20,.92); }
+  .bd-head.bd-head-floating {
+    box-shadow:0 6px 20px rgba(0,0,0,.12);
+  }
+  .screen[data-theme="dark"] .bd-head.bd-head-floating {
+    box-shadow:0 6px 22px rgba(0,0,0,.45);
+  }
+  .bd-head.bd-head-hidden {
+    transform:translateY(-100%);
+    opacity:0;
+    pointer-events:none;
+  }
   .bd-head .icon-btn {
     width:38px; height:38px; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
@@ -3700,8 +3712,7 @@
   /* Featured Stories Carousel */
   .bd-carousel-wrap {
     position:relative; width:100%; flex-shrink:0;
-    border-radius:0 0 22px 22px; overflow:hidden;
-    box-shadow:0 12px 28px rgba(0,0,0,.22);
+    overflow:hidden;
     background:#0b0c0e;
   }
   .bd-carousel {
@@ -3818,14 +3829,10 @@
   /* Journal Board - Luxury Editorial Rows */
   .bd-row {
     display:flex; gap:16px; align-items:center; width:calc(100% - 32px);
-    margin:0 16px; box-sizing:border-box; padding:16px 0;
+    margin:0 16px; box-sizing:border-box; padding:12px 0;
     background:transparent; border:none;
-    border-bottom:1px solid rgba(255,255,255,.07);
     border-radius:0; text-align:left; color:var(--text); font:inherit;
     cursor:pointer; flex-shrink:0; transition:opacity .15s ease;
-  }
-  .screen[data-theme="light"] .bd-row {
-    border-bottom-color:rgba(0,0,0,.07);
   }
   .bd-row:hover { opacity:.85; }
   .bd-row img {
@@ -8651,6 +8658,34 @@ document.addEventListener("mouseup", () => {
   setTimeout(() => { bdDidDrag = false; }, 120);
 });
 
+let bdLastScrollTop = 0;
+let bdScrollTimer = null;
+function bdScrollHandler(el) {
+  if (!el) return;
+  const curTop = el.scrollTop;
+  const head = el.querySelector(".bd-head");
+  if (!head) return;
+
+  head.classList.toggle("bd-head-floating", curTop > 8);
+
+  if (curTop <= 8) {
+    head.classList.remove("bd-head-hidden");
+    if (bdScrollTimer) { clearTimeout(bdScrollTimer); bdScrollTimer = null; }
+    bdLastScrollTop = curTop;
+    return;
+  }
+
+  // Hide header while actively scrolling in either direction (up or down)
+  head.classList.add("bd-head-hidden");
+  bdLastScrollTop = curTop;
+
+  // When scrolling stops: reveal floating header
+  if (bdScrollTimer) clearTimeout(bdScrollTimer);
+  bdScrollTimer = setTimeout(() => {
+    head.classList.remove("bd-head-hidden");
+  }, 200);
+}
+
 function boardNavHTML() {
   return `<nav class="bottom-nav pf-nav">
     <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
@@ -8700,7 +8735,7 @@ function boardHomeHTML() {
   const featured = bdFeatured();
   const latest = bdLatest();
   return `
-  <div class="ch-scroll sub-scroll bd-scroll">
+  <div class="ch-scroll sub-scroll bd-scroll" onscroll="bdScrollHandler(this)">
     ${bdHeadHTML()}
     <div class="bd-carousel-wrap">
       <div class="bd-carousel" onscroll="bdCarouselScroll(this)">
@@ -8734,7 +8769,7 @@ function boardHomeHTML() {
 }
 function boardAllHTML() {
   return `
-  <div class="ch-scroll sub-scroll bd-scroll">
+  <div class="ch-scroll sub-scroll bd-scroll" onscroll="bdScrollHandler(this)">
     ${bdHeadHTML()}
     <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>Latest Articles</span></div>
     <h1 class="bd-rtitle" style="font-size:24px">Latest Articles</h1>
