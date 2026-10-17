@@ -1744,6 +1744,410 @@
     margin: 12px 0 4px;
     width: 100%;
   }
+  /* Change password sub-page styles */
+  .chg-pwd-wrap {
+    padding: 18px 16px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .chg-pwd-desc {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .chg-pwd-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .chg-pwd-lbl {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .chg-pwd-input-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  .chg-pwd-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 42px 0 14px;
+    font-size: 14px;
+    font-family: var(--font-main);
+    color: var(--text);
+    background: var(--chip-bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+    box-sizing: border-box;
+  }
+  .chg-pwd-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(186, 12, 47, 0.12);
+  }
+  .chg-pwd-input.is-err {
+    border-color: #ed4956 !important;
+    background: rgba(237, 73, 86, 0.04);
+  }
+  .chg-pwd-eye {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
+  .chg-pwd-eye:hover {
+    color: var(--text);
+  }
+  .chg-pwd-forgot {
+    align-self: flex-start;
+    margin-top: 2px;
+    font-size: 12.5px;
+    font-weight: 500;
+    font-family: var(--font-main);
+    color: var(--red);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+  }
+  .chg-pwd-forgot:hover {
+    text-decoration: underline;
+  }
+  .chg-pwd-err {
+    font-size: 13px;
+    color: #ed4956;
+    line-height: 1.4;
+    padding: 10px 14px;
+    background: rgba(237, 73, 86, 0.08);
+    border-radius: 8px;
+    border: 1px solid rgba(237, 73, 86, 0.2);
+  }
+  .chg-pwd-action {
+    margin-top: 6px;
+    width: 100%;
+  }
+  .chg-pwd-submit {
+    width: 100%;
+    height: 46px;
+    border-radius: 10px;
+    background: var(--red);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--font-main);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity .15s, transform .1s;
+  }
+  .chg-pwd-submit:active {
+    transform: scale(0.985);
+  }
+  /* Delete account sub-page & flow styles */
+  .del-acc-wrap {
+    padding: 16px 16px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .del-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 8px 12px 4px;
+  }
+  .del-hero-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(237, 73, 86, 0.12);
+    color: #ed4956;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .del-hero-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .del-hero-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.45;
+    max-width: 320px;
+  }
+  .del-terms-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .del-term-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    background: var(--chip-bg);
+    border: 1px solid var(--line);
+  }
+  .del-term-ic {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .del-term-ic.cal {
+    background: rgba(245, 166, 35, 0.12);
+    color: #f5a623;
+  }
+  .del-term-ic.trash {
+    background: rgba(237, 73, 86, 0.12);
+    color: #ed4956;
+  }
+  .del-term-ic.shield {
+    background: rgba(0, 149, 246, 0.12);
+    color: #0095f6;
+  }
+  .del-term-ic.bell {
+    background: rgba(0, 149, 246, 0.12);
+    color: #0095f6;
+  }
+  .del-term-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .del-term-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .del-term-desc {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .del-step2-head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: 4px;
+  }
+  .del-step2-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .del-step2-sub {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .del-reasons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .del-reason-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--chip-bg);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .del-reason-row:hover {
+    border-color: var(--muted);
+  }
+  .del-reason-row.is-selected {
+    border-color: var(--red);
+    background: rgba(186, 12, 47, 0.05);
+  }
+  .del-reason-row input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .del-reason-text {
+    font-size: 13.5px;
+    color: var(--text);
+    font-weight: 500;
+    padding-right: 12px;
+  }
+  .del-reason-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--muted);
+    flex-shrink: 0;
+    box-sizing: border-box;
+    transition: all .15s ease;
+  }
+  .del-reason-row.is-selected .del-reason-dot {
+    border-color: var(--red);
+    background: var(--red);
+    box-shadow: inset 0 0 0 3px var(--surface);
+  }
+  .del-feedback-box {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 4px;
+  }
+  .del-feedback-lbl {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .del-feedback-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 13.5px;
+    font-family: var(--font-main);
+    color: var(--text);
+    background: var(--chip-bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    resize: none;
+    box-sizing: border-box;
+    line-height: 1.45;
+    transition: border-color .15s;
+  }
+  .del-feedback-textarea:focus {
+    border-color: var(--red);
+  }
+  .del-reason-err {
+    font-size: 12.5px;
+    color: #ed4956;
+    padding: 9px 12px;
+    background: rgba(237, 73, 86, 0.08);
+    border-radius: 8px;
+    border: 1px solid rgba(237, 73, 86, 0.2);
+  }
+  .del-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .del-btn-primary {
+    width: 100%;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--red);
+    color: #fff;
+    font-size: 14.5px;
+    font-weight: 600;
+    font-family: var(--font-main);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .1s;
+  }
+  .del-btn-primary:active {
+    transform: scale(0.985);
+  }
+  .del-btn-secondary {
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    background: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--font-main);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color .15s;
+  }
+  .del-btn-secondary:hover {
+    color: var(--text);
+  }
+  .dlg-pwd-box {
+    position: relative;
+    margin: 4px 18px 12px;
+  }
+  .dlg-pwd-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 38px 0 12px;
+    font-size: 13.5px;
+    font-family: var(--font-main);
+    color: var(--text);
+    background: var(--chip-bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color .15s;
+  }
+  .dlg-pwd-input:focus {
+    border-color: var(--red);
+  }
+  .dlg-pwd-input.is-err {
+    border-color: #ed4956 !important;
+    background: rgba(237, 73, 86, 0.05);
+  }
+  .dlg-pwd-eye {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dlg-pwd-eye:hover {
+    color: var(--text);
+  }
+  .dlg-pwd-err {
+    font-size: 12px;
+    color: #ed4956;
+    margin: -6px 18px 10px;
+    text-align: left;
+    line-height: 1.35;
+  }
   .sub-row-static { cursor: default; }
   .sub-card-box {
     margin: 14px 16px 6px; padding: 16px; border-radius: 12px;
@@ -4727,6 +5131,7 @@ const I = {
   users: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
   comment: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>`,
   eye: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  eyeOff: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`,
   share: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>`,
   bookmark: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
   gift: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>`,
@@ -6191,18 +6596,46 @@ function logoutDlgHTML() {
     <button class="dlg-btn danger dlg-logout-go">Log out</button>
     <button class="dlg-btn dlg-cancel">Cancel</button>`;
 }
-function delAccountDlgHTML() {
+function delPasswordConfirmDlgHTML() {
+  const isTh = state.lang === "th";
   return `
-    <div class="dlg-q">Delete account?</div>
-    <div class="dlg-desc">Your account will be deactivated and your public profile will be removed from TukDaeng. You have a 30-day grace period to restore your account before permanent deletion.</div>
-    <button class="dlg-btn danger dlg-delaccount-go">Delete account</button>
-    <button class="dlg-btn dlg-cancel">Cancel</button>`;
+    <div class="dlg-q">${isTh ? "ยืนยันการขอลบบัญชี" : "Confirm account deletion"}</div>
+    <div class="dlg-desc">${isTh ? "เพื่อความปลอดภัย กรุณากรอกรหัสผ่านของคุณเพื่อยืนยันการเริ่มระยะเวลา 30-Day Grace Period" : "To protect your account, please enter your password to confirm starting the 30-day grace period."}</div>
+    <div class="dlg-pwd-box">
+      <input type="password" class="dlg-pwd-input" id="del-acc-pwd" placeholder="${isTh ? "รหัสผ่านปัจจุบัน" : "Current password"}" autocomplete="current-password">
+      <button type="button" class="dlg-pwd-eye" data-pwd-toggle="del-acc-pwd" aria-label="Toggle password">${I.eye(18)}</button>
+    </div>
+    <div class="dlg-pwd-err" id="del-acc-pwd-err" style="display:none;"></div>
+    <button class="dlg-btn danger dlg-del-pwd-submit">${isTh ? "ยืนยันลบบัญชี" : "Delete account"}</button>
+    <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
 }
-function delAccountSuccessDlgHTML() {
+function delAccountDlgHTML() {
+  return delPasswordConfirmDlgHTML();
+}
+function delAccountSuccessDlgHTML(dateFormatted) {
+  const isTh = state.lang === "th";
+  const finalDate = dateFormatted || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(isTh ? 'th-TH' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' });
   return `
-    <div class="dlg-q">Account deletion started</div>
-    <div class="dlg-desc">Your account has been deactivated and session cleared. If you change your mind, contact support within 30 days.</div>
-    <button class="dlg-btn dlg-delaccount-done">Back to sign in</button>`;
+    <div class="dlg-q" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:rgba(237,73,86,0.12);color:#ed4956;">
+        ${I.trash(24)}
+      </span>
+      <span>${isTh ? "ตั้งเวลากำหนดลบบัญชีแล้ว" : "Account deletion scheduled"}</span>
+    </div>
+    <div class="dlg-desc" style="text-align:center;">
+      ${isTh 
+        ? `บัญชี @king.mr.fox ถูกปิดการใช้งานเรียบร้อยแล้ว และมีกำหนดลบถาวรในวันที่ <b>${finalDate}</b> (30 วัน)<br><br>หากคุณเปลี่ยนใจ สามารถเข้าสู่ระบบก่อนวันที่ดังกล่าวเพื่อยกเลิกคำขอและกู้คืนบัญชีได้ตลอดเวลา` 
+        : `Your account @king.mr.fox has been deactivated and is scheduled for permanent deletion on <b>${finalDate}</b> (30 days).<br><br>If you change your mind, simply log back in before this date to cancel deletion and restore your account.`}
+    </div>
+    <button class="dlg-btn dlg-delaccount-done" style="font-weight:600;color:var(--text);">${isTh ? "ออกจากระบบ" : "Log out"}</button>`;
+}
+function forgotPwdDlgHTML() {
+  const isTh = state.lang === "th";
+  return `
+    <div class="dlg-q">${isTh ? "รีเซ็ตรหัสผ่าน?" : "Reset password?"}</div>
+    <div class="dlg-desc">${isTh ? "เราจะส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมลของคุณ (k***@tukdaeng.com) เพื่อให้คุณตั้งรหัสผ่านใหม่ได้อย่างปลอดภัย" : "We can send a password reset link to your email (k***@tukdaeng.com) to help you reset your password."}</div>
+    <button class="dlg-btn dlg-forgotpwd-go" style="color:var(--red);font-weight:600;">${isTh ? "ส่งลิงก์รีเซ็ต" : "Send reset link"}</button>
+    <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
 }
 
 /* settings + content-preferences pages — slide-in layer like the detail page */
@@ -8328,11 +8761,141 @@ function subHTML(name, scr) {
       <div class="sub-row sub-row-static"><span class="sub-ic">${I.globe(22)}</span><span class="lg-b"><span class="lg-t">Account based in</span><span class="lg-d">Thailand</span></span></div>
       <div class="about-acc-divider"></div>
       <div class="sub-sec">Security</div>
-      <button class="sub-row" data-act="change-pwd"><span class="sub-ic">${I.lock(22)}</span><span>Change password</span><span class="sub-chev">${I.chevR(16)}</span></button>
+      <button class="sub-row" data-sub="change_pwd"><span class="sub-ic">${I.lock(22)}</span><span>${state.lang === "th" ? "เปลี่ยนรหัสผ่าน" : "Change password"}</span><span class="sub-chev">${I.chevR(16)}</span></button>
       <div class="about-acc-divider"></div>
-      <div class="sub-sec">Account management</div>
-      <button class="sub-row" data-dlg="del-account"><span class="sub-ic" style="color:#ed4956;">${I.trash(22)}</span><span style="color:#ed4956;">Delete account</span><span class="sub-chev">${I.chevR(16)}</span></button>
+      <div class="sub-sec">${state.lang === "th" ? "การจัดการบัญชี" : "Account management"}</div>
+      <button class="sub-row" data-sub="del_account"><span class="sub-ic" style="color:#ed4956;">${I.trash(22)}</span><span style="color:#ed4956;">${state.lang === "th" ? "ลบบัญชีผู้ใช้" : "Delete account"}</span><span class="sub-chev">${I.chevR(16)}</span></button>
     </div>`;
+  }
+  if (name === "change_pwd") {
+    const isTh = state.lang === "th";
+    return head(isTh ? "เปลี่ยนรหัสผ่าน" : "Change password") + `<div class="sub-scroll">
+      <div class="chg-pwd-wrap">
+        <div class="chg-pwd-desc">${isTh ? "รหัสผ่านของคุณต้องมีความยาวอย่างน้อย 6 ตัวอักษร และควรประกอบด้วยตัวเลข ตัวอักษร และอักขระพิเศษ (!$@%)" : "Your password must be at least 6 characters and should include a combination of numbers, letters and special characters (!$@%)."}</div>
+
+        <div class="chg-pwd-field">
+          <label class="chg-pwd-lbl" for="cpwd-current">${isTh ? "รหัสผ่านปัจจุบัน" : "Current password"}</label>
+          <div class="chg-pwd-input-box">
+            <input type="password" class="chg-pwd-input" id="cpwd-current" placeholder="${isTh ? "รหัสผ่านปัจจุบัน" : "Current password"}" autocomplete="current-password">
+            <button type="button" class="chg-pwd-eye" data-pwd-toggle="cpwd-current" aria-label="Toggle password visibility">${I.eye(20)}</button>
+          </div>
+          <button type="button" class="chg-pwd-forgot" data-act="forgot-pwd">${isTh ? "ลืมรหัสผ่านใช่ไหม?" : "Forgot your password?"}</button>
+        </div>
+
+        <div class="chg-pwd-field">
+          <label class="chg-pwd-lbl" for="cpwd-new">${isTh ? "รหัสผ่านใหม่" : "New password"}</label>
+          <div class="chg-pwd-input-box">
+            <input type="password" class="chg-pwd-input" id="cpwd-new" placeholder="${isTh ? "รหัสผ่านใหม่" : "New password"}" autocomplete="new-password">
+            <button type="button" class="chg-pwd-eye" data-pwd-toggle="cpwd-new" aria-label="Toggle password visibility">${I.eye(20)}</button>
+          </div>
+        </div>
+
+        <div class="chg-pwd-field">
+          <label class="chg-pwd-lbl" for="cpwd-confirm">${isTh ? "ยืนยันรหัสผ่านใหม่" : "Re-type new password"}</label>
+          <div class="chg-pwd-input-box">
+            <input type="password" class="chg-pwd-input" id="cpwd-confirm" placeholder="${isTh ? "ยืนยันรหัสผ่านใหม่" : "Re-type new password"}" autocomplete="new-password">
+            <button type="button" class="chg-pwd-eye" data-pwd-toggle="cpwd-confirm" aria-label="Toggle password visibility">${I.eye(20)}</button>
+          </div>
+        </div>
+
+        <div class="chg-pwd-err" id="cpwd-err" style="display:none;"></div>
+
+        <div class="chg-pwd-action">
+          <button type="button" class="chg-pwd-submit" data-act="submit-chg-pwd">${isTh ? "เปลี่ยนรหัสผ่าน" : "Change password"}</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  if (name === "del_account") {
+    const isTh = state.lang === "th";
+    const curStep = scr._delStep || 1;
+    scr._delReason = scr._delReason || "";
+    scr._delFeedback = scr._delFeedback || "";
+
+    if (curStep === 1) {
+      return head(isTh ? "ลบบัญชีผู้ใช้" : "Delete account") + `<div class="sub-scroll">
+        <div class="del-acc-wrap">
+          <div class="del-hero">
+            <div class="del-hero-icon">${I.trash(32)}</div>
+            <div class="del-hero-title">${isTh ? "เสียดายที่เราต้องบอกลากัน" : "We're sorry to see you go"}</div>
+            <div class="del-hero-desc">${isTh ? "ก่อนดำเนินการขอลบบัญชี โปรดตรวจสอบเงื่อนไขและสิ่งที่จะเกิดขึ้นกับบัญชีของคุณ" : "Before you proceed with deleting your account, please review the important terms and conditions below."}</div>
+          </div>
+
+          <div class="del-terms-list">
+            <div class="del-term-card">
+              <div class="del-term-ic cal">${I.cal(22)}</div>
+              <div class="del-term-body">
+                <div class="del-term-title">${isTh ? "ระยะเวลาผ่อนผัน 30 วัน (30-Day Grace Period)" : "30-Day Grace Period"}</div>
+                <div class="del-term-desc">${isTh ? "บัญชีของคุณจะถูกปิดการใช้งาน (Deactivated) ทันที โดยโปรไฟล์ โพสต์นาฬิกา และกิจกรรมทั้งหมดจะถูกซ่อนจากสาธารณะ หากเปลี่ยนใจ คุณสามารถเข้าสู่ระบบเพื่อกู้คืนบัญชีได้ตลอดเวลาภายใน 30 วัน" : "Your account will be deactivated immediately, and your profile and listings will be hidden. If you change your mind, you can log back in anytime within 30 days to cancel deletion."}</div>
+              </div>
+            </div>
+
+            <div class="del-term-card">
+              <div class="del-term-ic trash">${I.trash(22)}</div>
+              <div class="del-term-body">
+                <div class="del-term-title">${isTh ? "ลบข้อมูลถาวรหลังจาก 30 วัน" : "Permanent Deletion after 30 days"}</div>
+                <div class="del-term-desc">${isTh ? "เมื่อครบกำหนด 30 วัน ข้อมูลส่วนบุคคล ประวัติการแชท รายการโปรด และโพสต์ทั้งหมดจะถูกลบถาวรอย่างปลอดภัย ไม่สามารถกู้คืนได้ตามนโยบายคุ้มครองข้อมูลส่วนบุคคล" : "After 30 days, your personal data, chat history, watch alerts, and posts will be permanently erased and cannot be recovered."}</div>
+              </div>
+            </div>
+
+            <div class="del-term-card">
+              <div class="del-term-ic bell">${I.navBell(22)}</div>
+              <div class="del-term-body">
+                <div class="del-term-title">${isTh ? "การแจ้งเตือนนาฬิกาจะถูกยกเลิก" : "Watch Alerts Cancelled"}</div>
+                <div class="del-term-desc">${isTh ? "การแจ้งเตือนนาฬิกา (Watch Alerts) ที่คุณตั้งค่าติดตามไว้ทั้งหมดจะถูกยกเลิกโดยอัตโนมัติเมื่อเริ่มกระบวนการลบบัญชี" : "All of your active watch alerts will be cancelled automatically upon deactivation."}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="del-actions">
+            <button type="button" class="del-btn-primary" data-act="del-go-reasons">${isTh ? "ดำเนินการต่อ" : "Continue to delete"}</button>
+            <button type="button" class="del-btn-secondary sub-back">${isTh ? "เก็บบัญชีของฉันไว้" : "Keep my account"}</button>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    if (curStep === 2) {
+      const reasons = [
+        { id: "not_using", en: "I'm no longer using TukDaeng", th: "ฉันไม่ได้ใช้งานตึกแดงแล้ว" },
+        { id: "privacy", en: "Privacy or security concerns", th: "มีความกังวลเรื่องความเป็นส่วนตัวและความปลอดภัย" },
+        { id: "notifications", en: "Too many notifications", th: "ได้รับการแจ้งเตือนบ่อยเกินไป" },
+        { id: "second_account", en: "Created a second account", th: "สร้างหรือมีบัญชีอื่นใช้งานแล้ว" },
+        { id: "trouble", en: "Trouble getting started or technical issues", th: "พบปัญหาการเริ่มต้นใช้งานหรือปัญหาเทคนิค" },
+        { id: "other", en: "Something else", th: "เหตุผลอื่น ๆ" }
+      ];
+
+      return head(isTh ? "เหตุผลในการลบบัญชี" : "Why are you leaving?") + `<div class="sub-scroll">
+        <div class="del-acc-wrap">
+          <div class="del-step2-head">
+            <div class="del-step2-title">${isTh ? "ทำไมคุณถึงต้องการลบบัญชี?" : "Why do you want to delete your account?"}</div>
+            <div class="del-step2-sub">${isTh ? "โปรดเลือกเหตุผลเพื่อให้เรานำไปพัฒนาและปรับปรุงตึกแดงให้ดียิ่งขึ้น" : "Please select a reason so we can improve TukDaeng for everyone."}</div>
+          </div>
+
+          <div class="del-reasons-list">
+            ${reasons.map(r => `
+              <label class="del-reason-row${scr._delReason === r.id ? " is-selected" : ""}" data-reason-val="${r.id}">
+                <input type="radio" name="del-reason-radio" value="${r.id}" ${scr._delReason === r.id ? "checked" : ""}>
+                <span class="del-reason-text">${isTh ? r.th : r.en}</span>
+                <span class="del-reason-dot"></span>
+              </label>
+            `).join("")}
+          </div>
+
+          <div class="del-feedback-box">
+            <label class="del-feedback-lbl" for="del-feedback-text">${isTh ? "ความคิดเห็นหรือข้อเสนอแนะเพิ่มเติม (ไม่บังคับ)" : "Additional feedback (optional)"}</label>
+            <textarea class="del-feedback-textarea" id="del-feedback-text" rows="3" placeholder="${isTh ? "บอกรายละเอียดเพิ่มเติมเพื่อให้เราพัฒนาบริการให้ดียิ่งขึ้น..." : "Tell us more about your experience..."}">${esc(scr._delFeedback || "")}</textarea>
+          </div>
+
+          <div class="del-reason-err" id="del-reason-err" style="display:none;">${isTh ? "กรุณาเลือกเหตุผลในการขอลบบัญชี" : "Please select a reason to continue."}</div>
+
+          <div class="del-actions">
+            <button type="button" class="del-btn-primary" data-act="del-submit-reason">${isTh ? "ดำเนินการขอลบบัญชี" : "Continue"}</button>
+            <button type="button" class="del-btn-secondary" data-act="del-go-terms">${isTh ? "ย้อนกลับ" : "Back"}</button>
+          </div>
+        </div>
+      </div>`;
+    }
   }
   if (name === "lang") {
     const curLang = state.lang || "en";
@@ -10642,8 +11205,35 @@ stageEl.addEventListener("keydown", e => {
     const next = e.target.closest(".comment-sheet").querySelector(".nc-next");
     if (next && !next.disabled) next.click();
   }
+  if (e.key === "Enter" && e.target.matches(".chg-pwd-input")) {
+    const wrap = e.target.closest(".chg-pwd-wrap");
+    wrap?.querySelector(".chg-pwd-submit")?.click();
+  }
+  if (e.key === "Enter" && e.target.matches("#del-acc-pwd")) {
+    const dlg = e.target.closest(".dlg");
+    dlg?.querySelector(".dlg-del-pwd-submit")?.click();
+  }
 });
 stageEl.addEventListener("input", e => {
+  if (e.target.matches(".chg-pwd-input")) {
+    e.target.classList.remove("is-err");
+    const wrap = e.target.closest(".chg-pwd-wrap");
+    const errBox = wrap?.querySelector("#cpwd-err");
+    if (errBox) { errBox.textContent = ""; errBox.style.display = "none"; }
+    return;
+  }
+  if (e.target.matches("#del-acc-pwd")) {
+    e.target.classList.remove("is-err");
+    const dlg = e.target.closest(".dlg");
+    const errBox = dlg?.querySelector("#del-acc-pwd-err");
+    if (errBox) { errBox.textContent = ""; errBox.style.display = "none"; }
+    return;
+  }
+  if (e.target.matches("#del-feedback-text")) {
+    const scr = e.target.closest(".screen");
+    if (scr) scr._delFeedback = e.target.value;
+    return;
+  }
   if (e.target.matches(".bd-q")) { bdQ = e.target.value; boardSearchSync(e.target.closest(".page-sub")); return; }
   if (e.target.matches(".cf .ig-cap-line .ta"))
     cpState(e.target.closest(".screen")).caption = e.target.textContent;
@@ -11280,6 +11870,11 @@ document.getElementById("stage").addEventListener("click", e => {
   if (subBk) {
     const scr = subBk.closest(".screen");
     const topSub = (scr._subStack || []).at(-1) || "";
+    if (topSub === "del_account" && scr._delStep === 2) {
+      scr._delStep = 1;
+      renderSub(scr);
+      return;
+    }
     if (topSub.startsWith("pfollow:") && scr._subStack.length > 1) { /* PROFILE-011 — followers/following slide back out right, profile keeps its scroll */
       rpBack(scr);
       const sc = scr.querySelector(".pf-scroll"), y = (scr._pfScrollStack || []).pop();
@@ -11316,8 +11911,94 @@ document.getElementById("stage").addEventListener("click", e => {
     scrToast(scr, "Logged out successfully");
     return;
   }
+  const delGoReasons = e.target.closest('[data-act="del-go-reasons"]');
+  if (delGoReasons) {
+    const scr = delGoReasons.closest(".screen");
+    scr._delStep = 2;
+    renderSub(scr);
+    return;
+  }
+  const delGoTerms = e.target.closest('[data-act="del-go-terms"]');
+  if (delGoTerms) {
+    const scr = delGoTerms.closest(".screen");
+    scr._delStep = 1;
+    renderSub(scr);
+    return;
+  }
+  const reasonRow = e.target.closest(".del-reason-row");
+  if (reasonRow) {
+    const scr = reasonRow.closest(".screen");
+    const val = reasonRow.dataset.reasonVal;
+    scr._delReason = val;
+    scr.querySelectorAll(".del-reason-row").forEach(r => {
+      const isMatch = r.dataset.reasonVal === val;
+      r.classList.toggle("is-selected", isMatch);
+      const radio = r.querySelector('input[type="radio"]');
+      if (radio) radio.checked = isMatch;
+    });
+    const errEl = scr.querySelector("#del-reason-err");
+    if (errEl) errEl.style.display = "none";
+    return;
+  }
+  const delSubmitReason = e.target.closest('[data-act="del-submit-reason"]');
+  if (delSubmitReason) {
+    const scr = delSubmitReason.closest(".screen");
+    const errEl = scr.querySelector("#del-reason-err");
+    const fbInp = scr.querySelector("#del-feedback-text");
+    if (fbInp) scr._delFeedback = fbInp.value.trim();
+    if (!scr._delReason) {
+      if (errEl) {
+        errEl.style.display = "block";
+        errEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+      return;
+    }
+    if (errEl) errEl.style.display = "none";
+    openDlg(scr, delPasswordConfirmDlgHTML());
+    const pwdInp = scr.querySelector("#del-acc-pwd");
+    if (pwdInp) pwdInp.focus();
+    return;
+  }
+  const dlgDelPwdSubmit = e.target.closest(".dlg-del-pwd-submit");
+  if (dlgDelPwdSubmit) {
+    const scr = dlgDelPwdSubmit.closest(".screen");
+    const inp = scr.querySelector("#del-acc-pwd");
+    const errEl = scr.querySelector("#del-acc-pwd-err");
+    const pwd = (inp?.value || "").trim();
+    const isTh = state.lang === "th";
+    const correctPwd = state.mockPassword || "fox1234";
+
+    if (!pwd) {
+      if (inp) inp.classList.add("is-err");
+      if (errEl) {
+        errEl.textContent = isTh ? "กรุณากรอกรหัสผ่านของคุณ" : "Please enter your password.";
+        errEl.style.display = "block";
+      }
+      inp?.focus();
+      return;
+    }
+    if (pwd !== correctPwd) {
+      if (inp) inp.classList.add("is-err");
+      if (errEl) {
+        errEl.textContent = isTh ? "รหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบแล้วลองใหม่อีกครั้ง" : "Incorrect password. Please try again.";
+        errEl.style.display = "block";
+      }
+      inp?.focus();
+      return;
+    }
+
+    const futureDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    const dateFormatted = futureDate.toLocaleDateString(isTh ? "th-TH" : "en-US", { day: "numeric", month: "long", year: "numeric" });
+    openDlg(scr, delAccountSuccessDlgHTML(dateFormatted));
+    return;
+  }
   const delAccBtn = e.target.closest('[data-dlg="del-account"]');
-  if (delAccBtn) { openDlg(delAccBtn.closest(".screen"), delAccountDlgHTML()); return; }
+  if (delAccBtn) {
+    const scr = delAccBtn.closest(".screen");
+    scr._delStep = 1;
+    pushSub(scr, "del_account");
+    return;
+  }
   const dlgDelGo = e.target.closest(".dlg-delaccount-go");
   if (dlgDelGo) {
     const scr = dlgDelGo.closest(".screen");
@@ -11329,13 +12010,99 @@ document.getElementById("stage").addEventListener("click", e => {
     const scr = dlgDelDone.closest(".screen");
     scr.classList.remove("dialog-open");
     scr._subStack = [];
+    scr._delStep = 1;
+    scr._delReason = "";
+    scr._delFeedback = "";
     scr.classList.remove("sub-open");
-    scrToast(scr, "Account deactivated");
+    const isTh = state.lang === "th";
+    scrToast(scr, isTh ? "บัญชีถูกระงับการใช้งานและเริ่มนับถอยหลัง 30 วัน" : "Account deactivated. 30-day grace period started.");
     return;
   }
-  const chgPwdBtn = e.target.closest('[data-act="change-pwd"]');
-  if (chgPwdBtn) {
-    scrToast(chgPwdBtn.closest(".screen"), "Password reset link sent to your email");
+  const pwdTgl = e.target.closest("[data-pwd-toggle]");
+  if (pwdTgl) {
+    const id = pwdTgl.dataset.pwdToggle;
+    const inp = pwdTgl.closest(".chg-pwd-wrap")?.querySelector("#" + id) ||
+                pwdTgl.closest(".dlg-pwd-box")?.querySelector("#" + id) ||
+                document.getElementById(id);
+    if (inp) {
+      const isPwd = inp.type === "password";
+      inp.type = isPwd ? "text" : "password";
+      const s = inp.id === "del-acc-pwd" ? 18 : 20;
+      pwdTgl.innerHTML = isPwd ? I.eyeOff(s) : I.eye(s);
+    }
+    return;
+  }
+  const forgotBtn = e.target.closest('[data-act="forgot-pwd"]');
+  if (forgotBtn) {
+    const scr = forgotBtn.closest(".screen");
+    openDlg(scr, forgotPwdDlgHTML());
+    return;
+  }
+  const dlgForgotGo = e.target.closest(".dlg-forgotpwd-go");
+  if (dlgForgotGo) {
+    const scr = dlgForgotGo.closest(".screen");
+    scr.classList.remove("dialog-open");
+    const isTh = state.lang === "th";
+    scrToast(scr, isTh ? "ส่งลิงก์รีเซ็ตรหัสผ่านไปยัง k***@tukdaeng.com แล้ว" : "Password reset link sent to k***@tukdaeng.com");
+    return;
+  }
+  const submitChgPwd = e.target.closest('[data-act="submit-chg-pwd"]');
+  if (submitChgPwd) {
+    const scr = submitChgPwd.closest(".screen");
+    const wrap = submitChgPwd.closest(".chg-pwd-wrap");
+    const curInp = wrap?.querySelector("#cpwd-current");
+    const newInp = wrap?.querySelector("#cpwd-new");
+    const confInp = wrap?.querySelector("#cpwd-confirm");
+    const errBox = wrap?.querySelector("#cpwd-err");
+    const isTh = state.lang === "th";
+
+    const showErr = (msg, inputToFocus) => {
+      if (errBox) {
+        errBox.textContent = msg;
+        errBox.style.display = "block";
+      }
+      if (inputToFocus) {
+        inputToFocus.classList.add("is-err");
+        inputToFocus.focus();
+      }
+    };
+
+    wrap?.querySelectorAll(".chg-pwd-input").forEach(el => el.classList.remove("is-err"));
+    if (errBox) { errBox.textContent = ""; errBox.style.display = "none"; }
+
+    const curVal = (curInp?.value || "").trim();
+    const newVal = (newInp?.value || "").trim();
+    const confVal = (confInp?.value || "").trim();
+
+    if (!curVal) {
+      showErr(isTh ? "กรุณากรอกรหัสผ่านปัจจุบัน" : "Please enter your current password.", curInp);
+      return;
+    }
+    const activePwd = state.userPwd || "fox1234";
+    if (curVal !== activePwd) {
+      showErr(isTh ? "รหัสผ่านปัจจุบันไม่ถูกต้อง กรุณาตรวจสอบแล้วลองใหม่อีกครั้ง" : "Your current password was entered incorrectly. Please check it and try again.", curInp);
+      return;
+    }
+    if (!newVal) {
+      showErr(isTh ? "กรุณากรอกรหัสผ่านใหม่" : "Please enter a new password.", newInp);
+      return;
+    }
+    if (newVal.length < 6) {
+      showErr(isTh ? "รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร" : "Password must be at least 6 characters long.", newInp);
+      return;
+    }
+    if (newVal === curVal) {
+      showErr(isTh ? "รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านปัจจุบัน" : "New password must be different from your current password.", newInp);
+      return;
+    }
+    if (newVal !== confVal) {
+      showErr(isTh ? "รหัสผ่านใหม่ไม่ตรงกัน กรุณากรอกใหม่อีกครั้ง" : "Passwords do not match. Please re-enter your new password.", confInp);
+      return;
+    }
+
+    state.userPwd = newVal;
+    subBack(scr);
+    scrToast(scr, isTh ? "เปลี่ยนรหัสผ่านเรียบร้อยแล้ว" : "Password changed successfully");
     return;
   }
   const langOpt = e.target.closest("[data-lang-opt]");
