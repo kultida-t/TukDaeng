@@ -2140,13 +2140,22 @@
     left: 14px; right: 14px; bottom: 30px;
     z-index: 20;
     border-top: none;
-    background: color-mix(in srgb, var(--surface-2) 74%, transparent);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
-    backdrop-filter: blur(16px) saturate(1.4);
-    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface-2) 50%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    backdrop-filter: blur(24px) saturate(1.6);
+    border: 1px solid rgba(255,255,255,.14);
     border-radius: 999px;
     padding: 7px 6px;
-    box-shadow: 0 10px 28px rgba(0,0,0,.22);
+    box-shadow: 0 10px 28px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .screen[data-nav="labeled"][data-theme="light"] .bottom-nav {
+    background: rgba(255,255,255,.62);
+    border-color: rgba(255,255,255,.7);
+    box-shadow: 0 10px 28px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.9);
+  }
+  .screen[data-nav="labeled"][data-theme="light"] .nav-item:not(.active) {
+    color: color-mix(in srgb, var(--text) 72%, transparent);
+    font-weight: 600;
   }
   .screen[data-nav="labeled"] .feed-scroll { padding-bottom: 84px; }
   .screen[data-nav="labeled"] .nav-item.active {
@@ -2158,6 +2167,9 @@
     margin-bottom: -4px;
   }
   .screen[data-nav="labeled"] .nav-item.active .nav-label { font-weight: 700; }
+  .screen[data-nav="labeled"] .nav-item > svg { width: 22px; height: 22px; stroke-width: 1.8; }
+  .nav-item.active .tab-fill { fill: currentColor; }
+  .nav-item.active .nav-chat-ic .nc-dots { fill: #fff; }
 
   /* spec group sub-headings (details expander) */
   .spec-sec {
@@ -3312,11 +3324,6 @@
   /* floating pill nav inside .page-sub sits 22px above screen bottom — realign with the feed nav */
   .screen[data-nav="labeled"] .pf-nav {
     bottom: 8px;
-    /* solid fill — the frosted tint flashes when the pill re-mounts while a
-       report page slides away on top of it (backdrop-filter lags a few frames) */
-    background: var(--surface-2);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
   }
   .screen[data-nav="labeled"] .pf-scroll { padding-bottom: 84px; }
   /* ============ CHAT — LINE / IG Direct style ============ */
@@ -3657,6 +3664,35 @@
   .screen[data-theme="dark"] .ch-time { color:#7e8b9b; }
   .ch-un { min-width:17px; height:17px; padding:0 4px; border-radius:999px; background:var(--red); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; }
   .ch-un-spacer { height:17px; visibility:hidden; }
+  .al-head { position:sticky; top:0; z-index:25; display:flex; align-items:center; justify-content:flex-start; gap:2px; padding:10px 12px; background:#fff; border-bottom:1px solid var(--line); flex-shrink:0; }
+  .screen[data-theme="dark"] .al-head { background:#14161a; }
+  .al-back { color:var(--text); }
+  .pfp-tt.solo span { display:none; }
+  .al-title { display:flex; align-items:center; gap:6px; font-size:17px; font-weight:600; color:var(--text); }
+  .al-readall { background:none; border:none; padding:6px 0; font:inherit; font-size:13px; font-weight:500; color:var(--red); cursor:pointer; }
+  .al-sec { display:flex; align-items:center; justify-content:space-between; font-size:15px; font-weight:600; color:var(--text); padding:14px 16px 6px; }
+  .al-row { display:flex; align-items:center; gap:12px; width:100%; box-sizing:border-box; padding:10px 16px; background:none; border:none; outline:none; color:var(--text); font:inherit; text-align:left; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .al-row.unread { background:rgba(237,28,36,.07); }
+  .al-av { flex-shrink:0; position:relative; width:44px; height:44px; display:inline-block; }
+  .al-av img { width:44px; height:44px; border-radius:50%; object-fit:cover; display:block; pointer-events:none; }
+  .al-stack img { width:30px; height:30px; border:2px solid var(--surface); box-sizing:border-box; }
+  .al-stack .al-s1 { position:absolute; left:0; top:0; }
+  .al-stack .al-s2 { position:absolute; right:0; bottom:0; }
+  .al-badge { position:absolute; right:-2px; bottom:-2px; width:20px; height:20px; border-radius:50%; background:var(--red); color:#fff; border:2px solid var(--surface); box-sizing:border-box; display:flex; align-items:center; justify-content:center; }
+  .al-badge svg { fill:#fff; stroke:#fff; }
+  .al-ic { border-radius:50%; background:var(--chip-bg); color:var(--text); display:flex; align-items:center; justify-content:center; }
+  .al-ic.al-watch { background:linear-gradient(135deg,#c4222a 0%,#9e161d 100%); color:#fff; box-shadow:0 0 0 2px var(--surface), 0 0 0 3.5px rgba(196,34,42,.28); }
+  .al-watch > svg { fill:#fff; stroke:#fff; }
+  .al-wseller { position:absolute; right:-3px; bottom:-3px; width:20px; height:20px; border-radius:50%; border:2px solid var(--surface); box-sizing:border-box; overflow:hidden; background:var(--surface); }
+  .al-wseller img { width:100%; height:100%; border-radius:0; border:none; }
+  .al-ic.al-sys { background:#7a1016; color:#fff; }
+  .al-txt { flex:1; min-width:0; font-size:13px; font-weight:400; line-height:1.35; color:var(--text); overflow-wrap:anywhere; }
+  .al-txt b { font-weight:600; }
+  .al-time { color:var(--muted); margin-left:2px; white-space:nowrap; }
+  .al-thumb { width:44px; height:58px; border-radius:6px; object-fit:cover; flex-shrink:0; }
+  .al-fbtn { flex-shrink:0; border:none; border-radius:8px; height:32px; padding:0 16px; font:inherit; font-size:13px; font-weight:500; background:var(--red); color:#fff; cursor:pointer; white-space:nowrap; }
+  .al-fbtn.on { background:var(--chip-bg); color:var(--text); }
+  .al-x { flex-shrink:0; background:none; border:none; padding:4px; margin-left:-4px; color:var(--text); cursor:pointer; display:flex; }
   .ch-empty { display:flex; flex-direction:column; align-items:center; gap:6px; padding:48px 32px; text-align:center; color:var(--muted); }
   .page-sub.pg-chat .detail-head { background:#ffffff; z-index:30; position:relative; }
   .screen[data-theme="dark"] .page-sub.pg-chat .detail-head { background:#14161a; }
@@ -4239,7 +4275,11 @@ const I = {
   gif: (s=20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="3"/><path d="M8 10.5v3M8 10.5h2.5M8 12h2M11.5 10.5v3M14.5 10.5v3m0-3h2.5M14.5 12H16"/></svg>`,
   chat: (s=15) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
   navFeed: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>`,
-  navChat: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+  navChat: (s=24) => `<svg class="nav-chat-ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="tab-fill" d="M12 2.5a9.5 9.5 0 0 0-8.1 14.4L2.7 21.3l4.5-1.2A9.5 9.5 0 1 0 12 2.5z"/><g class="nc-dots" stroke="none" fill="currentColor"><circle cx="7.9" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="16.1" cy="12" r="1.3"/></g></svg>`,
+  tabFeed: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="tab-fill" d="M3.5 10.6 12 3.4l8.5 7.2V19.5a1.5 1.5 0 0 1-1.5 1.5h-4v-5.5H9V21H5a1.5 1.5 0 0 1-1.5-1.5z"/></svg>`,
+  tabBoards: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect class="tab-fill" x="3.5" y="3.5" width="7" height="7" rx="2"/><rect class="tab-fill" x="13.5" y="3.5" width="7" height="7" rx="2"/><rect class="tab-fill" x="3.5" y="13.5" width="7" height="7" rx="2"/><rect class="tab-fill" x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>`,
+  tabAlerts: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="tab-fill" d="M18 9a6 6 0 0 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15.5 18 9z"/><path d="M13.8 21a2 2 0 0 1-3.6 0"/></svg>`,
+  tabProfile: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle class="tab-fill" cx="12" cy="7.5" r="4"/><path class="tab-fill" d="M4.5 20.5v-1a5 5 0 0 1 5-5h5a5 5 0 0 1 5 5v1z"/></svg>`,
   navBoards: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`,
   navBell: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>`,
   navUser: (s=24) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
@@ -7432,11 +7472,11 @@ function pfAllUsers(except) {
 
 function pfNavHTML(own) {
   return `<nav class="bottom-nav pf-nav">
-    <span class="nav-item${own ? "" : " active"}" data-navgo="feed">${I.navFeed()}<span class="nav-label">Feed</span></span>
+    <span class="nav-item${own ? "" : " active"}" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
     <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-    <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
-    <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
-    <span class="nav-item${own ? " active" : ""}" data-navgo="profile">${I.navUser()}<span class="nav-label">Profile</span></span>
+    <span class="nav-item">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
+    <span class="nav-item${own ? " active" : ""}" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
   </nav>`;
 }
 function pfAvovHTML(u, own, isF) {
@@ -7804,6 +7844,7 @@ function subHTML(name, scr) {
     </div>`;
   }
   /* CHAT — Chat Center, item chats, chat room, chat settings */
+  if (name === "alerts") return alertsHTML();
   if (name === "chat") return chatListHTML();
   if (name.startsWith("chatitem:")) return chatItemHTML(name.slice(9));
   if (name.startsWith("chatroom:")) return chatRoomHTML(name.slice(9));
@@ -7971,12 +8012,161 @@ function chPostRender(el) {
 function chEmptyHTML(t, d) { return `<div class="ch-empty"><b>${esc(t)}</b><span>${esc(d)}</span></div>`; }
 function chatNavHTML() {
   return `<nav class="bottom-nav pf-nav">
-    <span class="nav-item" data-navgo="feed">${I.navFeed()}<span class="nav-label">Feed</span></span>
+    <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
     <span class="nav-item active" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-    <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
-    <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
-    <span class="nav-item" data-navgo="profile">${I.navUser()}<span class="nav-label">Profile</span></span>
+    <span class="nav-item">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
+    <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
   </nav>`;
+}
+
+/* ===== ALERTS — IG-style activity list: Watch Alert / Like / Comment / Follow (mock, memory only) ===== */
+let ALERTS = null;
+function alInit() {
+  if (ALERTS) return ALERTS;
+  const me = CP_ME.name;
+  const mine = i => ({ pid: `gfx-${me}-${i}`, thumb: (PROFILES[me].grid || [])[i] });
+  const wa = (pid, ago, grp, unread) => {
+    const p = findPost(pid);
+    return { type: "watch", users: [p.seller], ago, grp, unread, pid, thumb: p.photos[0],
+      name: [specOf(p, "Brand"), specOf(p, "Model")].filter(Boolean).join(" ") || p.caption, price: p.price };
+  };
+  ALERTS = [
+    { type: "like", users: ["jutatip_sroysomree", "kunk4i"], more: 1, ago: "23m", grp: "Today", unread: true, ...mine(0) },
+    wa("p1", "2h", "Today", true),
+    { type: "follow", users: ["dial.dude"], ago: "5h", grp: "Today", unread: true },
+    { type: "comment", users: ["chrono.th"], text: "clean set 🔥", ago: "15h", grp: "Yesterday", unread: true, ...mine(1) },
+    wa("p5", "18h", "Yesterday", true),
+    { type: "like", users: ["davikah", "Watch 777", "the watch"], more: 4, ago: "1d", grp: "Yesterday", unread: false, ...mine(2) },
+    { type: "comment", users: ["davikah"], text: "love this one", ago: "2d", grp: "Last 7 days", unread: false, ...mine(4) },
+    { type: "follow", users: ["watch.daily"], ago: "2d", grp: "Last 7 days", unread: false },
+    wa("p3", "3d", "Last 7 days", false),
+    { type: "like", users: ["Watch 777", "the watch"], more: 8, ago: "4d", grp: "Last 7 days", unread: false, ...mine(3) },
+    { type: "system", users: [], text: "A new device just logged in to your account near Bangkok, TH", ago: "6d", grp: "Last 7 days", unread: false },
+    { type: "follow", users: ["neng_mua"], ago: "2w", grp: "Earlier", unread: false },
+    { type: "like", users: ["bamzilla"], more: 0, ago: "3w", grp: "Earlier", unread: false, ...mine(5) },
+  ].map((a, i) => ({ id: "al" + i, ...a }));
+  return ALERTS;
+}
+const alUnread = () => alInit().filter(a => a.unread).length;
+function alBadgeHTML() { const n = alUnread(); return n ? `<span class="nav-badge">${n > 99 ? "99+" : n}</span>` : ""; }
+function alBadgeSync() {
+  const b = alBadgeHTML();
+  document.querySelectorAll('.nav-item[data-navgo="alerts"]').forEach(el => {
+    el.querySelector(".nav-badge")?.remove();
+    if (b) el.insertAdjacentHTML("afterbegin", b);
+  });
+}
+function alertsNavHTML() {
+  return `<nav class="bottom-nav pf-nav">
+    <span class="nav-item" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
+    <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
+    <span class="nav-item">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+    <span class="nav-item active" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
+    <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
+  </nav>`;
+}
+function alAvatarHTML(a) {
+  const badge = ic => `<span class="al-badge">${ic}</span>`;
+  if (a.type === "watch") return `<span class="al-av al-ic al-watch">${I.navBell(22)}<span class="al-wseller"><img src="${profileOf(a.users[0]).avatar}" alt=""></span></span>`;
+  if (a.type === "system") return `<span class="al-av al-ic al-sys"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg></span>`;
+  const img = n => `<img src="${profileOf(n).avatar}" alt="">`;
+  const b = a.type === "like" ? badge(I.heart(10)) : "";
+  return a.users.length > 1
+    ? `<span class="al-av al-stack"><span class="al-s1">${img(a.users[0])}</span><span class="al-s2">${img(a.users[1])}</span>${b}</span>`
+    : `<span class="al-av">${img(a.users[0])}${b}</span>`;
+}
+function alTextHTML(a) {
+  const n = (a.more || 0) + Math.max(0, a.users.length - 2);
+  const who = a.users.slice(0, 2).map(u => `<b>${esc(u)}</b>`);
+  const names = who.join(", ") + (n ? ` and ${n} other${n > 1 ? "s" : ""}` : "");
+  const body = {
+    like: `${names} liked your post.`,
+    comment: `${names} commented: ${esc(a.text || "")}`,
+    follow: `${names} started following you.`,
+    watch: `Watch alert <b>${esc(a.name || "")}</b> — new listing from <b>${esc(a.users[0])}</b> · ${esc(a.price || "")}`,
+    system: esc(a.text || ""),
+  }[a.type];
+  return `${body} <span class="al-time">${a.ago}</span>`;
+}
+function alRowHTML(a) {
+  const side = a.type === "follow"
+    ? `<button class="al-fbtn${pfIsFollowed(a.users[0]) ? " on" : ""}" data-alfollow="${esc(a.users[0])}">${pfIsFollowed(a.users[0]) ? "Following" : "Follow back"}</button>`
+    : a.thumb ? `<img class="al-thumb" src="${a.thumb}" alt="">` : "";
+  const x = a.type === "follow" ? `<span class="al-x" data-aldismiss="${a.id}">${I.x(16)}</span>` : "";
+  return `<div class="al-row${a.unread ? " unread" : ""}" role="button" data-alid="${a.id}">
+    ${alAvatarHTML(a)}<span class="al-txt">${alTextHTML(a)}</span>${side}${x}
+  </div>`;
+}
+function alertsHTML() {
+  const list = alInit(), un = alUnread();
+  const groups = ["Today", "Yesterday", "Last 7 days", "Earlier"].map(g => [g, list.filter(a => a.grp === g)]).filter(([, l]) => l.length);
+  return `
+  <div class="ch-scroll sub-scroll al-scroll">
+    <div class="al-head">
+      <button class="icon-btn al-back" data-navgo="feed">${I.back(22)}</button>
+      <span class="al-title">${esc(CP_ME.name)}</span>
+    </div>
+    ${groups.length ? groups.map(([g, l], i) => `<div class="al-sec"><span>${g}</span>${i === 0 && un ? `<button class="al-readall" data-alreadall>Mark all as read</button>` : ""}</div>${l.map(alRowHTML).join("")}`).join("")
+      : chEmptyHTML("No alerts yet", "Watch alerts, likes, comments and new followers will show up here.")}
+  </div>
+  ${alertsNavHTML()}`;
+}
+function alRerender(scr) {
+  const sc = scr.querySelector(".al-scroll"), y = sc ? sc.scrollTop : 0;
+  scr._subSwap = true; renderSub(scr); scr._subSwap = false;
+  const n = scr.querySelector(".al-scroll");
+  if (n) n.scrollTop = y;
+}
+function alertsClick(e) {
+  const scr = e.target.closest(".screen");
+  if (!scr) return false;
+  if (e.target.closest("[data-alreadall]")) {
+    alInit().forEach(a => { a.unread = false; });
+    alBadgeSync(); alRerender(scr);
+    return true;
+  }
+  const dx = e.target.closest("[data-aldismiss]");
+  if (dx) {
+    const i = alInit().findIndex(x => x.id === dx.dataset.aldismiss);
+    if (i >= 0) alInit().splice(i, 1);
+    alBadgeSync(); alRerender(scr);
+    return true;
+  }
+  const fb = e.target.closest("[data-alfollow]");
+  if (fb) {
+    const u = fb.dataset.alfollow;
+    pfSetFollow(scr, u, !pfIsFollowed(u));
+    const on = pfIsFollowed(u);
+    fb.classList.toggle("on", on);
+    fb.textContent = on ? "Following" : "Follow back";
+    return true;
+  }
+  const row = e.target.closest(".al-row");
+  if (!row) return false;
+  const a = alInit().find(x => x.id === row.dataset.alid);
+  if (!a) return true;
+  if (a.unread) { a.unread = false; row.classList.remove("unread"); alBadgeSync(); }
+  if (a.type === "follow") rpPush(scr, "profile:" + a.users[0]);
+  else if (a.type === "watch") {
+    const p = findPost(a.pid);
+    if (p) {
+      openPostViewer(scr, [p], p.id, 0, false, "Post", p.seller);
+      const pv = scr.querySelector(".page-pv");
+      pv.querySelector(".pfp-tt")?.classList.add("solo");
+      pv.querySelector(".pfp-follow")?.remove();
+      if (!p.following) pv.querySelector(".post-head .more")?.insertAdjacentHTML("beforebegin", `<button class="follow-btn">Follow</button>`);
+    }
+  }
+  else if (a.type === "like" || a.type === "comment") {
+    const me = CP_ME.name, post = pfTabPosts(me, "all").find(p => p.id === a.pid);
+    if (post) {
+      openPostViewer(scr, [post], a.pid, 0, false, "Post", me);
+      scr.querySelector(".page-pv .pfp-tt")?.classList.add("solo");
+    } else scrToast(scr, "This post is no longer available");
+  } else scrToast(scr, "Security details aren't in this prototype yet");
+  if (alUnread() === 0) { const b = scr.querySelector("[data-alreadall]"); if (b) b.remove(); }
+  return true;
 }
 function chThreadMatch(t, q) {
   return !q || (t.user + " " + t.item.cap + " " + t.msgs.map(m => m.t).join(" ")).toLowerCase().includes(q);
@@ -9068,11 +9258,11 @@ function screenHTML(theme, variant) {
     </div>
 
     <nav class="bottom-nav">
-      <span class="nav-item active" data-navgo="feed">${I.navFeed()}<span class="nav-label">Feed</span></span>
+      <span class="nav-item active" data-navgo="feed">${I.tabFeed()}<span class="nav-label">Feed</span></span>
       <span class="nav-item" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">Chat</span></span>
-      <span class="nav-item">${I.navBoards()}<span class="nav-label">Boards</span></span>
-      <span class="nav-item">${I.navBell()}<span class="nav-badge">9</span><span class="nav-label">Alerts</span></span>
-      <span class="nav-item" data-navgo="profile">${I.navUser()}<span class="nav-label">Profile</span></span>
+      <span class="nav-item">${I.tabBoards()}<span class="nav-label">Boards</span></span>
+      <span class="nav-item" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">Alerts</span></span>
+      <span class="nav-item" data-navgo="profile">${I.tabProfile()}<span class="nav-label">Profile</span></span>
     </nav>
     <div class="home-ind"><i></i></div>
     <div class="sheet-backdrop"></div>
@@ -10272,6 +10462,7 @@ document.getElementById("stage").addEventListener("click", e => {
   const hbDead = e.target.closest(".hb-item");
   if (hbDead) { toast("Not in this prototype yet"); return; }
   if (chatClick(e)) return;
+  if (alertsClick(e)) return;
   /* ===== PROFILE-001 — profile menu + profile page actions ===== */
   const navGo = e.target.closest("[data-navgo]");
   if (navGo) {
@@ -10280,6 +10471,7 @@ document.getElementById("stage").addEventListener("click", e => {
     chatResetToDefault();
     if (go === "profile") openSub(scr, "profile:" + CP_ME.name, true);
     else if (go === "chat") openSub(scr, "chat", true);
+    else if (go === "alerts") openSub(scr, "alerts", true);
     else if (go === "feed") {
       const wasFeed = !scr.classList.contains("sub-open");
       scr._subStack = []; scr.classList.remove("sub-open");
