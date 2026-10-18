@@ -1642,21 +1642,104 @@
   .pv-post .liked-by img { border-color: transparent; }
   .pv-post .liked-by b { color: #fff; }
   /* saved-feed viewer variant — IG Saved post list (feed cards, normal scroll) */
-  .page-pv.feed { background: var(--bg); }
-  .page-pv.feed .pv-track { scroll-snap-type: none; }
+  .page-pv.feed { background: var(--bg); position: absolute; inset: 0; }
+  .page-pv.feed .pv-track { scroll-snap-type: none; height: 100%; box-sizing: border-box; padding-top: 86px; }
   /* PROFILE-002 — IG "Posts" surface (opened from a profile grid): feed-style cards,
      photos stacked vertically, continuous scroll */
-  .page-pv.pfp { background: var(--bg); }
-  .page-pv.pfp .pv-track { scroll-snap-type: none; }
-  .pfp-tt { display: flex; flex-direction: column; align-items: center; line-height: 1.25; }
-  .pfp-tt b { font-size: 16px; font-weight: 700; }
-  .pfp-tt span { font-size: 12px; font-weight: 500; color: var(--muted); }
-  /* IG-style Follow lives in the viewer head, not on each card — gray pill like the feed card;
-     fades out shortly after the user follows (IG behaviour: head pill auto-hides) */
-  .pfp-follow { flex-shrink: 0; background: var(--btn-gray); color: var(--text); border: none;
-    border-radius: 8px; padding: 6px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
-    transition: opacity .22s; }
-  .pfp-follow.on { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+  .page-pv.pfp { background: var(--bg); position: absolute; inset: 0; }
+  .page-pv.pfp .pv-track { scroll-snap-type: none; height: 100%; box-sizing: border-box; padding-top: 86px; }
+
+  /* iOS-style Floating Header for Post Viewer (Completely transparent background strip) */
+  .page-pv .detail-head.svd-head {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 38px 14px 12px; min-height: 84px; box-sizing: border-box;
+    border-bottom: none; pointer-events: none;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .screen[data-theme="light"] .page-pv .detail-head.svd-head {
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .page-pv .detail-head.svd-head > * { pointer-events: auto; }
+
+  /* iOS Floating Glass Circle Back Button */
+  /* iOS Floating Glass Circle Back Button (Truly translucent frosted glass) */
+  .page-pv .pv-back {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.16); color: #ffffff;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.4);
+    -webkit-backdrop-filter: blur(25px) saturate(2);
+    backdrop-filter: blur(25px) saturate(2);
+    cursor: pointer; flex-shrink: 0;
+    transition: transform .12s ease, background .15s ease;
+  }
+  .page-pv .pv-back:active { transform: scale(0.92); }
+  .screen[data-theme="light"] .page-pv .pv-back {
+    background: rgba(255, 255, 255, 0.52);
+    border-color: rgba(255, 255, 255, 0.75);
+    color: #141417;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.95);
+  }
+
+  /* Floating Center Title - Pure floating text without background strip */
+  .page-pv .pfp-tt,
+  .page-pv .detail-title.rc-title {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    line-height: 1.25; pointer-events: none; text-align: center; max-width: 58%;
+    margin-left: 0;
+  }
+  .page-pv .pfp-tt b,
+  .page-pv .detail-title.rc-title {
+    font-size: 16px; font-weight: 700; letter-spacing: -0.2px; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  }
+  .page-pv .pfp-tt span {
+    font-size: 12px; font-weight: 500; color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  }
+
+  /* iOS-style Floating Glass Follow & Search Action Buttons (Translucent Glass) */
+  .page-pv .pfp-follow {
+    margin-left: auto; border-radius: 999px; padding: 7px 18px;
+    font-size: 13px; font-weight: 600; cursor: pointer; flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.16); color: #ffffff;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.4);
+    -webkit-backdrop-filter: blur(25px) saturate(2);
+    backdrop-filter: blur(25px) saturate(2);
+    transition: transform .12s ease, opacity .22s ease;
+  }
+  .page-pv .pfp-follow:active { transform: scale(0.94); }
+  .screen[data-theme="light"] .page-pv .pfp-follow {
+    background: rgba(255, 255, 255, 0.52);
+    border-color: rgba(255, 255, 255, 0.75);
+    color: #141417;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.95);
+  }
+  .page-pv .pfp-follow.on { background: transparent; border: 1px solid var(--line); color: var(--muted); box-shadow: none; }
+  .page-pv .pv-srch {
+    margin-left: auto; width: 38px; height: 38px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.16); color: #ffffff;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.4);
+    -webkit-backdrop-filter: blur(25px);
+    backdrop-filter: blur(25px);
+    cursor: pointer; flex-shrink: 0;
+  }
+  .screen[data-theme="light"] .page-pv .pv-srch {
+    background: rgba(255, 255, 255, 0.52);
+    border-color: rgba(255, 255, 255, 0.75);
+    color: #141417;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.95);
+  }
   .comment-preview .c-like { flex-direction: row; padding-top: 0; font-size: 0; }
   .pv-add {
     position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 3;
@@ -3820,9 +3903,7 @@
   .screen[data-nav="labeled"] .ch-scroll { padding-bottom: 88px; }
 
   .ch-head {
-    position: sticky;
-    top: 0;
-    z-index: 25;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -4134,8 +4215,8 @@
   .screen[data-theme="dark"] .ch-time { color:#7e8b9b; }
   .ch-un { min-width:17px; height:17px; padding:0 4px; border-radius:999px; background:var(--red); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; }
   .ch-un-spacer { height:17px; visibility:hidden; }
-  .al-head { position:sticky; top:0; z-index:25; display:flex; align-items:center; justify-content:flex-start; gap:2px; padding:38px 12px 10px; background:#fff; border-bottom:1px solid var(--line); flex-shrink:0; }
-  .screen[data-theme="dark"] .al-head { background:#14161a; }
+  .al-head { position:relative; display:flex; align-items:center; justify-content:flex-start; gap:2px; padding:38px 12px 10px; background:inherit; border-bottom:1px solid var(--line); flex-shrink:0; }
+  .screen[data-theme="dark"] .al-head { background:inherit; }
   .al-back { color:var(--text); }
   .pfp-tt.solo span { display:none; }
   .al-title { display:flex; align-items:center; gap:6px; font-size:17px; font-weight:600; color:var(--text); }
@@ -4144,29 +4225,13 @@
   .screen[data-theme="dark"] .page-sub:has(.bd-scroll), .screen[data-theme="dark"] .page-sub:has(.bd-dscroll) { background:#0e1014; }
   .bd-scroll { padding-bottom:100px; -webkit-overflow-scrolling:touch; overflow-x:hidden; }
   
-  /* Board Header */
+  /* Board Header — Natural scroll like Feed */
   .bd-head {
-    position:sticky; top:0; z-index:25;
+    position:relative;
     display:grid; grid-template-columns:44px 1fr 44px; align-items:center;
     padding:38px 10px 8px;
-    background:rgba(255,255,255,.92);
-    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
-    border-bottom:1px solid var(--line);
+    background:inherit;
     flex-shrink:0;
-    transition:transform .28s cubic-bezier(.16,1,.3,1), opacity .22s ease, box-shadow .25s ease, background .2s ease;
-    will-change:transform, opacity;
-  }
-  .screen[data-theme="dark"] .bd-head { background:rgba(14,16,20,.92); }
-  .bd-head.bd-head-floating {
-    box-shadow:0 6px 20px rgba(0,0,0,.12);
-  }
-  .screen[data-theme="dark"] .bd-head.bd-head-floating {
-    box-shadow:0 6px 22px rgba(0,0,0,.45);
-  }
-  .bd-head.bd-head-hidden {
-    transform:translateY(-100%);
-    opacity:0;
-    pointer-events:none;
   }
   .bd-head .icon-btn {
     width:38px; height:38px; border-radius:50%;
@@ -4443,19 +4508,15 @@
   /* Article Detail Screen */
   .bd-dscroll {
     flex:1; overflow-y:auto; scrollbar-width:none;
-    padding:10px 20px 64px; color:var(--text); -webkit-overflow-scrolling:touch;
+    padding:0 20px 64px; color:var(--text); -webkit-overflow-scrolling:touch;
   }
 
-  /* Floating pill navigation bar (Fixed, Transparent, Glassmorphism) */
+  /* Navigation bar in Article Detail — Natural scroll like Feed */
   .bd-dnav {
-    position:sticky; top:0; z-index:30;
+    position:relative;
     display:flex; align-items:center; justify-content:space-between;
-    padding:8px 12px; margin:-10px -20px 10px;
+    padding:38px 0 16px; margin:0 0 10px;
     background:transparent;
-    pointer-events:none;
-  }
-  .bd-dnav > * {
-    pointer-events:auto;
   }
 
   .bd-pill-btn {
@@ -4600,22 +4661,23 @@
   .ch-empty { display:flex; flex-direction:column; align-items:center; gap:6px; padding:48px 32px; text-align:center; color:var(--muted); }
   .page-sub.pg-chat .detail-head { background:#ffffff; z-index:30; position:relative; }
   .screen[data-theme="dark"] .page-sub.pg-chat .detail-head { background:#14161a; }
-  .ch-itemcard-pill-w { position:sticky; top:0; z-index:25; padding:10px 14px 8px; display:flex; justify-content:center; flex-shrink:0; pointer-events:none; background:linear-gradient(180deg, #ffffff 0%, #ffffff 10px, rgba(255,255,255,0) 100%); }
-  .screen[data-theme="dark"] .ch-itemcard-pill-w { background:linear-gradient(180deg, #14161a 0%, #14161a 10px, rgba(20,22,26,0) 100%); }
-  .ch-itemcard { display:flex; align-items:center; gap:12px; width:100%; margin:0; padding:6px 18px 6px 6px; border-radius:999px; background:rgba(255,255,255,0.58); -webkit-backdrop-filter:blur(20px) saturate(1.6); backdrop-filter:blur(20px) saturate(1.6); box-shadow:0 4px 16px rgba(0,0,0,0.08); border:1px solid rgba(255,255,255,0.65); flex-shrink:0; box-sizing:border-box; pointer-events:auto; }
-  .screen[data-theme="dark"] .ch-itemcard { background:rgba(28,32,38,0.58); border-color:rgba(255,255,255,0.12); box-shadow:0 4px 16px rgba(0,0,0,0.35); }
+  .ch-itemcard-pill-w { position:sticky; top:0; z-index:25; padding:40px 14px 10px; display:flex; justify-content:center; flex-shrink:0; pointer-events:none; background:linear-gradient(180deg, #ffffff 0%, #ffffff 38px, rgba(255,255,255,0) 100%); }
+  .screen[data-theme="dark"] .ch-itemcard-pill-w { background:linear-gradient(180deg, #14161a 0%, #14161a 38px, rgba(20,22,26,0) 100%); }
+  .detail-head + .ch-itemcard-pill-w { margin-top:-26px; }
+  .ch-itemcard { display:flex; align-items:center; gap:12px; width:100%; margin:0; padding:6px 18px 6px 6px; border-radius:999px; background:rgba(255,255,255,0.88); -webkit-backdrop-filter:blur(20px) saturate(1.6); backdrop-filter:blur(20px) saturate(1.6); box-shadow:0 4px 16px rgba(0,0,0,0.08); border:1px solid rgba(255,255,255,0.65); flex-shrink:0; box-sizing:border-box; pointer-events:auto; }
+  .screen[data-theme="dark"] .ch-itemcard { background:rgba(28,32,38,0.88); border-color:rgba(255,255,255,0.12); box-shadow:0 4px 16px rgba(0,0,0,0.35); }
   .ch-itemcard img { width:52px; height:52px; border-radius:50%; object-fit:cover; flex-shrink:0; }
   .ch-itemcard-info { min-width:0; flex:1; }
-  .ch-itemcard b { display:block; font-size:13.5px; font-weight:700; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ch-itemcard b { display:block; font-size:13.5px; font-weight:700; line-height:1.25; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .ch-itemcard span { display:block; font-size:12.5px; font-weight:600; margin-top:1px; color:var(--text); }
   .ch-itemcard em { display:block; font-style:normal; font-size:11.5px; color:var(--muted); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .ch-rhead { display:flex; align-items:center; gap:6px; padding:8px 10px 8px 6px; border-bottom:1px solid var(--line); flex-shrink:0; background:inherit; min-height:48px; box-sizing:border-box; }
+  .ch-rhead { display:flex; align-items:center; gap:6px; padding:38px 10px 10px 6px; border-bottom:1px solid var(--line); flex-shrink:0; background:inherit; min-height:48px; box-sizing:border-box; }
   .ch-rhead .sub-back { margin-right:-2px; }
   .ch-rhead .n { font-size:16px; font-weight:700; color:var(--text); line-height:1.2; letter-spacing:-0.2px; padding:4px 2px; }
   .ch-rhead .spacer { margin-left:auto; }
   .ch-rhead .icon-btn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; }
   .ch-rhead .icon-btn.active { color:var(--red); }
-  .ch-rhead.ch-rhead-search { padding:6px 10px 6px 12px; gap:8px; }
+  .ch-rhead.ch-rhead-search { padding:38px 10px 10px 12px; gap:8px; }
   .ch-rsearch-box { flex:1; min-width:0; display:flex; align-items:center; gap:8px; background:var(--surface-2); border-radius:999px; padding:0 12px; height:36px; box-sizing:border-box; }
   .ch-rsearch-ico { display:flex; align-items:center; color:var(--muted); flex-shrink:0; }
   .ch-room-search-in { flex:1; min-width:0; background:none; border:none; outline:none; font:inherit; font-size:13.5px; color:var(--text); padding:4px 0; }
@@ -4625,8 +4687,8 @@
   mark.ch-hl { background:rgba(235, 94, 40, 0.28); color:inherit; padding:1px 3px; border-radius:3px; font-weight:700; }
   .screen[data-theme="dark"] mark.ch-hl { background:rgba(240, 90, 60, 0.45); color:#fff; }
   /* LINE-style Chat Menu & Settings */
-  .ch-menu-head { position:relative; display:flex; align-items:center; justify-content:center; min-height:48px; padding:0 48px; border-bottom:1px solid var(--line); background:inherit; flex-shrink:0; box-sizing:border-box; }
-  .ch-menu-head .sub-back { position:absolute; left:6px; top:50%; transform:translateY(-50%); }
+  .ch-menu-head { position:relative; display:flex; align-items:center; justify-content:center; min-height:48px; padding:38px 48px 10px; border-bottom:1px solid var(--line); background:inherit; flex-shrink:0; box-sizing:border-box; }
+  .ch-menu-head .sub-back { position:absolute; left:6px; top:calc(50% + 14px); transform:translateY(-50%); }
   .ch-menu-head .detail-title { font-size:16px; font-weight:700; color:var(--text); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .ch-menu-actions { display:flex; justify-content:space-between; align-items:center; padding:18px 16px 16px; border-bottom:1px solid var(--line); background:inherit; }
   .ch-menu-act-btn { display:flex; flex-direction:column; align-items:center; gap:8px; background:none; border:none; color:var(--text); cursor:pointer; font:inherit; flex:1; min-width:0; }
@@ -4655,7 +4717,7 @@
   .ch-media-viewer-body { flex:1; display:flex; align-items:center; justify-content:center; padding:12px; }
   .ch-media-viewer-body img { max-width:100%; max-height:85%; object-fit:contain; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,0.5); }
   /* Chat Media Gallery (Photos & videos sub-page) */
-  .ch-gal-head { position:relative; display:flex; align-items:center; justify-content:space-between; min-height:48px; padding:0 12px; border-bottom:1px solid var(--line); background:inherit; flex-shrink:0; }
+  .ch-gal-head { position:relative; display:flex; align-items:center; justify-content:space-between; min-height:48px; padding:38px 12px 10px; border-bottom:1px solid var(--line); background:inherit; flex-shrink:0; box-sizing:border-box; }
   .ch-gal-title { position:absolute; left:50%; transform:translateX(-50%); font-size:16px; font-weight:700; color:var(--text); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:55%; }
   .ch-gal-top-btn { background:none; border:none; font:inherit; font-size:14.5px; font-weight:600; color:var(--text); cursor:pointer; padding:6px 10px; }
   .ch-gal-date { padding:14px 14px 8px; font-size:12.5px; color:var(--muted); font-weight:600; }
@@ -4664,7 +4726,7 @@
   .ch-gal-item img { width:100%; height:100%; object-fit:cover; display:block; }
   .ch-gal-chk { position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:50%; border:1.5px solid #ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.25); color:#fff; font-size:11px; font-weight:700; }
   .ch-gal-item.selected .ch-gal-chk { background:#06c755; border-color:#06c755; }
-  .ch-gal-bot-bar { display:flex; align-items:center; justify-content:space-between; padding:12px 48px; border-top:1px solid var(--line); background:inherit; flex-shrink:0; }
+  .ch-gal-bot-bar { display:flex; align-items:center; justify-content:space-between; padding:12px 48px 28px; border-top:1px solid var(--line); background:inherit; flex-shrink:0; box-sizing:border-box; }
   .ch-gal-bot-btn { background:none; border:none; color:var(--text); padding:6px 12px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
   .ch-gal-bot-btn:disabled { opacity:0.35; cursor:default; }
   .ch-gal-empty-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:24px 16px; }
@@ -4708,11 +4770,11 @@
   .ch-attach-item { position:relative; aspect-ratio:1; border-radius:8px; overflow:hidden; cursor:pointer; background:var(--surface-2); }
   .ch-attach-item img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .12s; }
   .ch-attach-item:active img { transform:scale(0.95); }
-  .ch-comp { display:flex; align-items:center; gap:8px; padding:8px 12px 10px; border-top:1px solid var(--line); flex-shrink:0; }
+  .ch-comp { display:flex; align-items:center; gap:8px; padding:10px 14px 28px; border-top:1px solid var(--line); flex-shrink:0; box-sizing:border-box; background:inherit; }
   .ch-input { flex:1; min-width:0; background:var(--surface-2); border:none; outline:none; border-radius:999px; padding:10px 14px; color:var(--text); font:inherit; font-size:14px; }
   .ch-send { width:36px; height:36px; border-radius:50%; border:none; background:var(--red); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .ch-send:disabled { opacity:.35; }
-  .ch-blocked-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; background:var(--surface-2); border-top:1px solid var(--line); flex-shrink:0; }
+  .ch-blocked-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px 28px; background:var(--surface-2); border-top:1px solid var(--line); flex-shrink:0; box-sizing:border-box; }
   .ch-blocked-info { display:flex; align-items:center; gap:10px; min-width:0; flex:1; }
   .ch-blocked-icon { width:32px; height:32px; border-radius:50%; background:rgba(239,68,68,0.12); color:var(--red); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .ch-blocked-text { min-width:0; flex:1; }
@@ -6499,7 +6561,10 @@ function openPostViewer(scr, posts, pid, phi = 0, feedMode = false, title = "Sav
     scr.classList.add("pv-open");
     const tr = pv.querySelector(".svf-track");
     const el = pv.querySelector(`.pfp-post[data-pid="${pid}"]`);
-    if (el) tr.scrollTop = el.getBoundingClientRect().top - tr.getBoundingClientRect().top + tr.scrollTop;
+    if (el) {
+      if (posts[0] && posts[0].id === pid) tr.scrollTop = 0;
+      else tr.scrollTop = Math.max(0, el.offsetTop - 86);
+    }
     return;
   }
   if (feedMode) {
@@ -6514,7 +6579,10 @@ function openPostViewer(scr, posts, pid, phi = 0, feedMode = false, title = "Sav
     scr.classList.add("pv-open");
     const tr = pv.querySelector(".svf-track");
     const el = pv.querySelector(`.svf-post[data-pid="${pid}"]`);
-    if (el) tr.scrollTop = el.getBoundingClientRect().top - tr.getBoundingClientRect().top + tr.scrollTop;
+    if (el) {
+      if (posts[0] && posts[0].id === pid) tr.scrollTop = 0;
+      else tr.scrollTop = Math.max(0, el.offsetTop - 86);
+    }
     return;
   }
   pv.innerHTML = `
@@ -6638,6 +6706,11 @@ function openPostDetail(scr, post) {
   } else {
     pd.innerHTML = detailHTML(post);
   }
+  const dHead = pd.querySelector(":scope > .detail-head");
+  const dScroll = pd.querySelector(":scope > .detail-scroll");
+  if (dHead && dScroll) {
+    dScroll.prepend(dHead);
+  }
   pd.querySelector(".detail-scroll").scrollTop = 0;
   scr.dataset.detailPid = post.id;
   scr.classList.add("detail-open");
@@ -6736,6 +6809,11 @@ function renderSub(scr) {
   if (oldBar) scr._pfTabSl = oldBar.scrollLeft; /* keep tab-bar position across re-renders */
   el.innerHTML = subHTML(st[st.length - 1], scr);
   chPostRender(el);
+  const headEl = el.querySelector(":scope > .detail-head");
+  const scrollEl = el.querySelector(":scope > .sub-scroll, :scope > .pm-rp-scroll");
+  if (headEl && scrollEl) {
+    scrollEl.prepend(headEl);
+  }
   const curTop = st[st.length - 1] || "";
   el.classList.toggle("pg-chat", curTop.startsWith("chat"));
   el.classList.toggle("pg-up", curTop.startsWith("report:pick")); /* picker look (rounded top); opens via instant swap — deeper report pages slide from the right */
@@ -8598,19 +8676,19 @@ function profileHTML(scr, key) {
         : pfEmptyHTML(I.camPlain(30), tabName === "all" ? (own ? (isTh ? "แชร์โพสต์แรกของคุณ" : "Share your first post") : (isTh ? "ยังไม่มีโพสต์" : "No posts yet")) : (isTh ? `ไม่มีโพสต์หมวด ${tabName}` : `No ${tabName} posts`),
             own && tabName === "all" ? (isTh ? "เมื่อคุณแชร์รูปภาพและคลิป สิ่งเหล่านั้นจะแสดงที่นี่" : "When you share photos and clips, they'll show up here.") : "", own && tabName === "all"));
   return `
-  <div class="detail-head pf-head">
-    ${own
-      ? `<button class="icon-btn" data-flow="create" title="${isTh ? "สร้างโพสต์" : "Create"}">${I.plus()}</button>
-         <span class="spacer"></span>
-         <button class="pf-uname"><span>${esc(u.user)}</span></button>
-         <span class="spacer"></span>
-         <button class="icon-btn pf-menu" title="${isTh ? "การตั้งค่าและกิจกรรม" : "Settings and activity"}">${I.burger(22)}</button>`
-      : `<button class="icon-btn sub-back">${I.back()}</button>
-         <span class="pf-vname">${esc(u.user)}</span>
-         <span class="spacer"></span>
-         <button class="icon-btn pf-more">${I.dots(18)}</button>`}
-  </div>
   <div class="pf-scroll">
+    <div class="detail-head pf-head">
+      ${own
+        ? `<button class="icon-btn" data-flow="create" title="${isTh ? "สร้างโพสต์" : "Create"}">${I.plus()}</button>
+           <span class="spacer"></span>
+           <button class="pf-uname"><span>${esc(u.user)}</span></button>
+           <span class="spacer"></span>
+           <button class="icon-btn pf-menu" title="${isTh ? "การตั้งค่าและกิจกรรม" : "Settings and activity"}">${I.burger(22)}</button>`
+        : `<button class="icon-btn sub-back">${I.back()}</button>
+           <span class="pf-vname">${esc(u.user)}</span>
+           <span class="spacer"></span>
+           <button class="icon-btn pf-more">${I.dots(18)}</button>`}
+    </div>
     <div class="pf-top">
       <div class="pf-avcol">
         ${u.note ? `<span class="pf-note">${esc(u.note)}<i></i></span>` : ""}
@@ -9652,29 +9730,7 @@ document.addEventListener("mouseup", () => {
 let bdLastScrollTop = 0;
 let bdScrollTimer = null;
 function bdScrollHandler(el) {
-  if (!el) return;
-  const curTop = el.scrollTop;
-  const head = el.querySelector(".bd-head");
-  if (!head) return;
-
-  head.classList.toggle("bd-head-floating", curTop > 8);
-
-  if (curTop <= 8) {
-    head.classList.remove("bd-head-hidden");
-    if (bdScrollTimer) { clearTimeout(bdScrollTimer); bdScrollTimer = null; }
-    bdLastScrollTop = curTop;
-    return;
-  }
-
-  // Hide header while actively scrolling in either direction (up or down)
-  head.classList.add("bd-head-hidden");
-  bdLastScrollTop = curTop;
-
-  // When scrolling stops: reveal floating header
-  if (bdScrollTimer) clearTimeout(bdScrollTimer);
-  bdScrollTimer = setTimeout(() => {
-    head.classList.remove("bd-head-hidden");
-  }, 200);
+  // Natural scroll like Feed — header scrolls out of view naturally with content
 }
 
 function boardNavHTML() {
