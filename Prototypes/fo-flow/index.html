@@ -16553,7 +16553,7 @@
       }
       if (name === "notif_settings") {
         const isTh = state.lang === "th";
-        state.notif = state.notif || { likes: true, comments: true, follows: true, offers: true, walerts: true };
+        state.notif = state.notif || { likes: true, comments: true, follows: true, walerts: true };
         const nRow = (k, title, desc) => `<button class="sub-row sub-row-lg" data-notif-tgl="${k}"><span class="lg-b"><span class="lg-t">${title}</span><span class="lg-d">${desc}</span></span><span class="tg-sw${state.notif[k] ? " on" : ""}"></span></button>`;
         return head(isTh ? "การตั้งค่าการแจ้งเตือน" : "Notification settings") + `<div class="sub-scroll">
       <div class="fav-desc">${isTh ? "เลือกประเภทการแจ้งเตือนที่คุณต้องการรับบนอุปกรณ์นี้" : "Choose what notifications you receive on this device."}</div>
@@ -16562,7 +16562,6 @@
       ${nRow("comments", isTh ? "ความคิดเห็น" : "Comments", isTh ? "เมื่อมีคนแสดงความคิดเห็นในโพสต์ของคุณ" : "When someone comments on your posts")}
       ${nRow("follows", isTh ? "ผู้ติดตามใหม่" : "New followers", isTh ? "เมื่อมีคนเริ่มติดตามโปรไฟล์ของคุณ" : "When someone follows your profile")}
       <div class="sub-sec sec-div">${isTh ? "การซื้อขายและการแจ้งเตือน" : "Trading & Alerts"}</div>
-      ${nRow("offers", isTh ? "ข้อเสนอราคา" : "Offers", isTh ? "เมื่อคุณได้รับหรือมีการอัปเดตเกี่ยวกับข้อเสนอซื้อนาฬิกา" : "When you receive or have updates on watch offers")}
       ${nRow("walerts", isTh ? "การแจ้งเตือนนาฬิกา" : "Watch Alerts", isTh ? "เมื่อมีนาฬิกาที่ตรงกับเกณฑ์ที่คุณติดตามลงขายใหม่" : "When new listings match your criteria")}
     </div>`;
       }
@@ -16587,7 +16586,7 @@
         return head(isTh ? "นโยบายความเป็นส่วนตัว" : "Privacy Policy") + `<div class="sub-scroll sub-legal-body">
       <div class="legal-sec">
         <h3>1. Information We Collect</h3>
-        <p>We collect information you provide directly to us when you create an account, update your profile, list watches, make offers, or communicate with other collectors on TukDaeng.</p>
+        <p>We collect information you provide directly to us when you create an account, update your profile, list watches, or communicate with other collectors on TukDaeng.</p>
       </div>
       <div class="legal-sec">
         <h3>2. How We Use Information</h3>
@@ -16615,11 +16614,7 @@
         <p>Sellers must guarantee the authenticity of luxury watches listed on the platform. Misleading descriptions, counterfeit goods, or falsified papers are strictly prohibited.</p>
       </div>
       <div class="legal-sec">
-        <h3>3. Offers & Transactions</h3>
-        <p>Offers submitted through TukDaeng are binding expressions of intent. Parties agree to conduct inspections and completions in good faith.</p>
-      </div>
-      <div class="legal-sec">
-        <h3>4. Termination & Deactivation</h3>
+        <h3>3. Termination & Deactivation</h3>
         <p>We reserve the right to suspend or terminate accounts that violate safety rules, spam other members, or engage in fraudulent activities.</p>
       </div>
     </div>`;
@@ -18683,7 +18678,7 @@
       "Posted · shared to feed ✓": "โพสต์แล้ว · แชร์ไปยังฟีดเรียบร้อย ✓",
       /* legal bodies */
       "1. Information We Collect": "1. ข้อมูลที่เราเก็บรวบรวม",
-      "We collect information you provide directly to us when you create an account, update your profile, list watches, make offers, or communicate with other collectors on TukDaeng.": "เราเก็บข้อมูลที่คุณให้โดยตรงเมื่อสร้างบัญชี แก้ไขโปรไฟล์ ลงขายนาฬิกา ยื่นข้อเสนอ หรือสื่อสารกับนักสะสมท่านอื่นบนตึกแดง",
+      "We collect information you provide directly to us when you create an account, update your profile, list watches, or communicate with other collectors on TukDaeng.": "เราเก็บข้อมูลที่คุณให้โดยตรงเมื่อสร้างบัญชี แก้ไขโปรไฟล์ ลงขายนาฬิกา หรือสื่อสารกับนักสะสมท่านอื่นบนตึกแดง",
       "2. How We Use Information": "2. วิธีที่เราใช้ข้อมูล",
       "We use the information to operate, maintain, and provide the features of our marketplace, verify authentic listings, ensure community safety, and send notifications.": "เราใช้ข้อมูลเพื่อดำเนินงาน ดูแลรักษา และให้บริการฟีเจอร์ของตลาดซื้อขาย ตรวจสอบรายการที่เป็นของแท้ ดูแลความปลอดภัยของชุมชน และส่งการแจ้งเตือน",
       "3. Data Protection & Retention": "3. การคุ้มครองและการเก็บรักษาข้อมูล",
@@ -18694,9 +18689,7 @@
       "By accessing or using TukDaeng, you agree to be bound by these Terms of Use and our Community Guidelines for watch collectors and enthusiasts.": "เมื่อเข้าใช้งานตึกแดง คุณตกลงผูกพันตามข้อกำหนดการใช้งานนี้และแนวทางปฏิบัติของชุมชนสำหรับนักสะสมและผู้ชื่นชอบนาฬิกา",
       "2. Listing Authenticity": "2. ความถูกต้องแท้ของรายการขาย",
       "Sellers must guarantee the authenticity of luxury watches listed on the platform. Misleading descriptions, counterfeit goods, or falsified papers are strictly prohibited.": "ผู้ขายต้องรับรองความเป็นของแท้ของนาฬิกาหรูที่ลงขายบนแพลตฟอร์ม ห้ามใช้คำอธิบายที่ทำให้เข้าใจผิด สินค้าปลอม หรือเอกสารปลอมโดยเด็ดขาด",
-      "3. Offers & Transactions": "3. ข้อเสนอและการทำธุรกรรม",
-      "Offers submitted through TukDaeng are binding expressions of intent. Parties agree to conduct inspections and completions in good faith.": "ข้อเสนอที่ยื่นผ่านตึกแดงถือเป็นการแสดงเจตนาที่มีผลผูกพัน คู่สัญญาตกลงตรวจสอบและทำธุรกรรมให้เสร็จสิ้นด้วยความสุจริต",
-      "4. Termination & Deactivation": "4. การยกเลิกและการปิดใช้งาน",
+      "3. Termination & Deactivation": "3. การยกเลิกและการปิดใช้งาน",
       "We reserve the right to suspend or terminate accounts that violate safety rules, spam other members, or engage in fraudulent activities.": "เราขอสงวนสิทธิ์ระงับหรือยกเลิกบัญชีที่ละเมิดกฎความปลอดภัย สแปมสมาชิกอื่น หรือมีส่วนร่วมในกิจกรรมหลอกลวง",
     };
     /* spec VALUES are translated per word, but only inside rows whose label is in this set
@@ -19545,7 +19538,7 @@
         const cfPaneSw = e.target.closest(".pane-sw");
         if (cfPaneSw) {
           const f = cfPaneSw.dataset.f;
-          V.meta[f] = f === "allowOffers" ? V.meta[f] === false : !V.meta[f];
+          V.meta[f] = !V.meta[f];
           cfPaneSw.classList.toggle("on", V.meta[f]);
           return;
         }
@@ -20078,7 +20071,7 @@
       const notifTgl = e.target.closest("[data-notif-tgl]");
       if (notifTgl) {
         const k = notifTgl.dataset.notifTgl;
-        state.notif = state.notif || { likes: true, comments: true, follows: true, offers: true, walerts: true };
+        state.notif = state.notif || { likes: true, comments: true, follows: true, walerts: true };
         state.notif[k] = !state.notif[k];
         notifTgl.querySelector(".tg-sw").classList.toggle("on", state.notif[k]);
         return;
