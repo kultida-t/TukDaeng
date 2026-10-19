@@ -1,0 +1,19 @@
+FONT-001 — เปลี่ยนฟอนต์ทั้งแอป FO Flow จาก IBM Plex Sans Thai เป็น Google Sans Thai
+
+[x] ดาวน์โหลด Google Sans variable font (Thai+Latin, wght 400-700, license OFL) จาก google/fonts repo → Prototypes/fo-flow/assets/fonts/google/GoogleSans-Variable.ttf (4.9MB) + GoogleSans-Italic-Variable.ttf (5.1MB)
+[x] index.html: แทนที่ @font-face "IBM Plex Sans Thai" ×3 + alias "TD Thai" ×4 ด้วย "Google Sans" normal+italic (unicode-range scoping ไม่จำเป็นแล้วเพราะฟอนต์เดียวครอบไทย+ละติน)
+[x] create-post.html, feed-create-post.html, feed-social-redesign.html: แทนที่ @font-face "IBM Plex Sans Thai" ด้วย "Google Sans" เหมือนกัน
+[x] --font-main ทั้ง 4 ไฟล์ชี้ "Google Sans" เป็นลำดับแรก (คง fallback stack เดิม, --font-brand ตามไปด้วย)
+[x] เก็บ Bebas Neue @font-face ไว้เหมือนเดิม (โหลดไว้แต่ไม่ได้ใช้ — นอก scope)
+[x] ลบไฟล์ IBMPlexSansThai-*.ttf เดิมที่เลิกใช้แล้วออก (ไม่มี @font-face อ้างถึง) — คงชื่อใน fallback stack สำหรับเครื่องที่ติดตั้งฟอนต์ไว้เอง
+[x] rule letter-spacing ภาษาไทย (I18N-001) คงเดิม สระ/วรรณยุกต์เรนเดอร์ครบ
+[x] 28/28 checks pass, 0 console/page errors (Prototypes/_verify_font001.mjs; Prototypes/deliverables/task-FONT-001/FONT-001-test-results.txt)
+[x] ตาม feedback: ป้ายชื่อเมนู bottom nav บางลง — inactive 600→400, active 700→500 (ทั้ง dark+light theme, .nav-badge คง 700 ไว้)
+[x] nav label 5/5 checks pass (Prototypes/_verify_font001b.mjs; m-nav-labels-thin-dark.png / m-nav-labels-thin-light.png)
+[x] screenshots: Prototypes/deliverables/task-FONT-001/m-feed-th-google-sans.png (440×956 TH), d-feed-en-google-sans.png (1920×1080 EN)
+[x] protected screens (bo-prototype.html) ไม่ถูกแตะ — แก้เฉพาะ Prototypes/fo-flow/*
+
+ผลตรวจ manual ของผู้ใช้ (2026-10-19):
+- เคส 1 ฟอนต์ใหม่แสดงทั้งไทย/อังกฤษ: ผ่าน — ผู้ใช้เห็น Google Sans จริงบนหน้าจอ (ส่ง capture bottom nav กลับมา)
+- เคส 2 ความหนาป้ายชื่อเมนู bottom nav: รอบแรกไม่ผ่าน — ป้ายชื่อเมนูดูหนาไม่ชัดกับฟอนต์ใหม่ → ปรับน้ำหนัก (ข้างบน) แล้วตรวจซ้ำผ่าน ผู้ใช้ยืนยัน "โอเคปิด task ได้"
+- evidence gap: ไม่มีภาพ Before ของฟอนต์เดิม (ไม่ได้ capture ก่อนแก้) — สภาพเดิมย้อนดูได้จาก code diff (IBM Plex Sans Thai → Google Sans)

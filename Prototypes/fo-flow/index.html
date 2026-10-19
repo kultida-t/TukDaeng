@@ -7,49 +7,17 @@
   <title>TukDaeng — FO Prototype</title>
   <style>
     @font-face {
-      font-family: "IBM Plex Sans Thai";
-      font-weight: 400;
-      src: url("./assets/fonts/google/IBMPlexSansThai-Regular.ttf") format("truetype");
+      font-family: "Google Sans";
+      font-weight: 400 700;
+      font-style: normal;
+      src: url("./assets/fonts/google/GoogleSans-Variable.ttf") format("truetype");
     }
 
     @font-face {
-      font-family: "IBM Plex Sans Thai";
-      font-weight: 500;
-      src: url("./assets/fonts/google/IBMPlexSansThai-Medium.ttf") format("truetype");
-    }
-
-    @font-face {
-      font-family: "IBM Plex Sans Thai";
-      font-weight: 600;
-      src: url("./assets/fonts/google/IBMPlexSansThai-SemiBold.ttf") format("truetype");
-    }
-
-    @font-face {
-      font-family: "TD Thai";
-      font-weight: 400;
-      unicode-range: U+0E00-0E7F;
-      src: url("./assets/fonts/google/IBMPlexSansThai-Regular.ttf") format("truetype");
-    }
-
-    @font-face {
-      font-family: "TD Thai";
-      font-weight: 500;
-      unicode-range: U+0E00-0E7F;
-      src: url("./assets/fonts/google/IBMPlexSansThai-Medium.ttf") format("truetype");
-    }
-
-    @font-face {
-      font-family: "TD Thai";
-      font-weight: 600;
-      unicode-range: U+0E00-0E7F;
-      src: url("./assets/fonts/google/IBMPlexSansThai-SemiBold.ttf") format("truetype");
-    }
-
-    @font-face {
-      font-family: "TD Thai";
-      font-weight: 700;
-      unicode-range: U+0E00-0E7F;
-      src: url("./assets/fonts/google/IBMPlexSansThai-SemiBold.ttf") format("truetype");
+      font-family: "Google Sans";
+      font-weight: 400 700;
+      font-style: italic;
+      src: url("./assets/fonts/google/GoogleSans-Italic-Variable.ttf") format("truetype");
     }
 
     /* I18N-001 — letter-spacing breaks Thai combining marks (นาฬิกา) */
@@ -62,7 +30,7 @@
 
     :root {
       --red: #c8212b;
-      --font-main: "TD Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif;
+      --font-main: "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif;
       --font-brand: var(--font-main);
       --page-bg: #1a1a1e;
     }
@@ -6304,12 +6272,12 @@
 
     .screen[data-nav="labeled"][data-theme="light"] .nav-item:not(.active) {
       color: color-mix(in srgb, var(--text) 72%, transparent);
-      font-weight: 600;
+      font-weight: 400;
     }
 
     .screen[data-nav="labeled"]:not([data-theme="light"]) .nav-item:not(.active) {
       color: rgba(255, 255, 255, .88);
-      font-weight: 600;
+      font-weight: 400;
       text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
     }
 
@@ -6335,7 +6303,7 @@
     }
 
     .screen[data-nav="labeled"] .nav-item.active .nav-label {
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .screen[data-nav="labeled"] .nav-item>svg {

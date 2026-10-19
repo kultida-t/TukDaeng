@@ -1,0 +1,8 @@
+TEST RESULTS FOR TASK FONT-001 (nav label weights):
+PASS: dark inactive labels weight 400 — ["500","400","400","400","400"]
+PASS: dark active label weight 500
+PASS: light inactive labels weight 400 — ["500","400","400","400","400"]
+PASS: light active label weight 500
+PASS: no console/page errors — errors=0
+
+TOTAL: 5 | FAILED: 0
