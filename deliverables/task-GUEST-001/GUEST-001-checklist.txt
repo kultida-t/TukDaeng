@@ -1,0 +1,21 @@
+GUEST-001 — FO Flow Guest Mode / New Member / Auth Gate
+วันที่ทำ: 2026-10-19
+ไฟล์หลัก: Prototypes/fo-flow/index.html
+หลักฐาน: screenshots/task-GUEST-001/after/ (mobile-390 + desktop-1440, 12 ภาพ)
+
+รอบทดสอบ: ผ่าน
+
+[ผ่าน] กด "ข้ามไปก่อน" → เข้าแอปแบบ guest เงียบ (ไม่มี toast)
+[ผ่าน] Guest: badge แชท/แจ้งเตือนหาย, flag like/save/follow บนโพสต์ถูกล้าง
+[ผ่าน] Guest กด action ที่ต้องยืนยันตัวตน (like, save, wish list, follow, +โพสต์, สอบถาม, แท็บ Chat/Alerts/Profile, comment input, share, report, watch alert) → เด้ง sheet "เข้าร่วมตึกแดง" เวอร์ชัน gate พร้อมปุ่ม Google/Apple
+[ผ่าน] Guest ปิด gate ได้ด้วย scrim / "ข้ามไปก่อน" → กลับไปดูต่อ
+[ผ่าน] Guest coach marks เวอร์ชันชวนสมัครสมาชิก
+[ผ่าน] Signup email: email+password เท่านั้น → OTP (123456 mock) → Profile setup (avatar + username เดียว, validate ^[a-z0-9_.]{3,20}$, suggest จาก email) → session=new
+[ผ่าน] Google signup → ข้าม OTP → ตั้ง username → session=new; Apple signin → session=member (demo)
+[ผ่าน] สมาชิกใหม่: โปรไฟล์ stat 0/0/0, empty state "แชร์โพสต์แรกของคุณ", alerts/chat/saved/wish list/collections/portfolio/followers ว่าง, ฟีดมีข้อมูล
+[ผ่าน] Collections ของ demo (Grail list/Wishlist ฯลฯ) ไม่รั่วเข้า guest/new; กลับเป็น member demo ได้ครบ (4+2 รายการ)
+[ผ่าน] Login demo → member ข้อมูลเดิมครบ; Logout → กลับเป็น guest
+[ผ่าน] ภาษาไทย: empty states/ปุ่ม/แท็บโปรไฟล์แปลครบ ไม่มีอังกฤษปนใน UI (เหลือเฉพาะ user content)
+[ผ่าน] Smoke test Playwright 19/19 + social-auth flow + session regression (new=[0,0], member=[4,2], guest=[0,0], return member=[4,2]) + node syntax ผ่าน
+
+หมายเหตุหลักฐาน: ไม่มีภาพ Before (งานนี้เพิ่มพฤติกรรมใหม่ใน prototype — เทียบพฤติกรรม member เดิมผ่านการ login demo แทน)

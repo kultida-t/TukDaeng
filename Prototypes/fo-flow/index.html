@@ -12612,6 +12612,18 @@
     .ob-osbtn button:last-child { color: #fff; font-weight: 600; }
     #obReplay { bottom: 72px; }
     #obRecon { bottom: 126px; }
+    /* social sign-in buttons (Google / Apple) */
+    .ob-or { display: flex; align-items: center; gap: 12px; margin: 16px 0 14px; color: rgba(255, 255, 255, .45); font-size: 12px; font-weight: 500; }
+    .ob-or::before, .ob-or::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, .14); }
+    .ob-soc { display: flex; flex-direction: column; gap: 10px; }
+    .ob-soc button { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 48px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .14); color: rgba(255, 255, 255, .88); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity .15s ease; }
+    .ob-soc button:active { opacity: .7; }
+    .ob-soc button svg { width: 19px; height: 19px; flex: none; }
+    .ob-soc.row { flex-direction: row; }
+    .ob-soc.row button { flex: 1; min-height: 44px; font-size: 14px; }
+    .screen[data-theme='light'] .ob-or { color: rgba(0, 0, 0, .45); }
+    .screen[data-theme='light'] .ob-or::before, .screen[data-theme='light'] .ob-or::after { background: rgba(0, 0, 0, .12); }
+    .screen[data-theme='light'] .ob-soc button { background: #fff; border: 1px solid rgba(0, 0, 0, .12); color: var(--text); }
   </style>
 </head>
 
@@ -16556,7 +16568,7 @@
     <span class="pf-eic">${icon}</span>
     <div class="pf-et">${title}</div>
     ${desc ? `<div class="pf-ed">${desc}</div>` : ""}
-    ${own ? `<button class="pf-btn primary pf-cta" data-flow="create">Share a post</button>` : ""}
+    ${own ? `<button class="pf-btn primary pf-cta" data-flow="create">${state.lang === "th" ? "แชร์โพสต์" : "Share a post"}</button>` : ""}
   </div>`;
     }
     function profileHTML(scr, key) {
@@ -16576,7 +16588,7 @@
       const body = isB
         ? pfEmptyHTML(I.camPlain(30), isTh ? "ยังไม่มีโพสต์" : "No posts yet", "")
         : (list.length ? pfTilesHTML(list, tabName)
-          : pfEmptyHTML(I.camPlain(30), tabName === "all" ? (own ? (isTh ? "แชร์โพสต์แรกของคุณ" : "Share your first post") : (isTh ? "ยังไม่มีโพสต์" : "No posts yet")) : (isTh ? `ไม่มีโพสต์หมวด ${tabName}` : `No ${tabName} posts`),
+          : pfEmptyHTML(I.camPlain(30), tabName === "all" ? (own ? (isTh ? "แชร์โพสต์แรกของคุณ" : "Share your first post") : (isTh ? "ยังไม่มีโพสต์" : "No posts yet")) : (() => { const tl = TABS.find(t => t[0] === tabName)[1]; return isTh ? `ยังไม่มีโพสต์ในแท็บ${tl}` : `No ${tl.toLowerCase()} posts`; })(),
             own && tabName === "all" ? (isTh ? "เมื่อคุณแชร์รูปภาพและคลิป สิ่งเหล่านั้นจะแสดงที่นี่" : "When you share photos and clips, they'll show up here.") : "", own && tabName === "all"));
       return `
   <div class="pf-scroll">
@@ -16640,6 +16652,7 @@
       const own = uname === CP_ME.name;
       let all = pfAllUsers(uname);
       if (!own) all = all.filter(n => n !== CP_ME.name);
+      if (own && state.session !== "member") all = []; /* GUEST-001 — fresh account has no followers/following yet */
       const names = tab === "following"
         ? (own ? all.filter(pfIsFollowed) : all.slice(0, 8))
         : all.filter(n => !own || !PF_REMOVED_FOL.has(n));
@@ -16710,7 +16723,7 @@
         return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">${isTh ? "ไม่สามารถโหลดข้อมูลได้" : "Unable to load data."}</div><button class="pfo-retry">${isTh ? "ลองใหม่อีกครั้ง" : "Try again"}</button></div></div>`;
       const mktOff = sim === "nomkt";
       const els = PF_ASSETS.filter(pfoEligible);
-      if (sim === "empty" || !els.length)
+      if (state.session !== "member" || sim === "empty" || !els.length) /* GUEST-001 — fresh account has no assets */
         return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.wallet(40)}<div class="t">${isTh ? "ไม่พบข้อมูล" : "No data found"}</div><div class="pfo-ed">${isTh ? "นาฬิกาที่คุณระบุสถานะ ลงขาย โชว์ หรือ ซ่อน จะแสดงที่นี่" : "Assets you list as Sale, Show or Hide will appear here."}</div></div>${pfoSimBar(scr)}</div>`;
       const rows = els.map(a => ({ a, cur: pfoCur(a, mktOff), gl: pfoGL(a, mktOff), cmp: pfoCmp(a, mktOff), hold: pfoHold(a.bought), mktOff }));
       const invested = rows.filter(r => r.a.purchase != null && r.a.purchase > 0);
@@ -16874,7 +16887,7 @@
         <div class="about-acc-uname">@${esc(me.user || "king.mr.fox")}</div>
       </div>
       <div class="sub-sec">${isTh ? "ข้อมูลบัญชี" : "Account information"}</div>
-      <div class="sub-row sub-row-static"><span class="sub-ic">${I.cal(22)}</span><span class="lg-b"><span class="lg-t">${isTh ? "วันที่เข้าร่วม" : "Date joined"}</span><span class="lg-d">${isTh ? "ตุลาคม 2567" : "October 2024"}</span></span></div>
+      <div class="sub-row sub-row-static"><span class="sub-ic">${I.cal(22)}</span><span class="lg-b"><span class="lg-t">${isTh ? "วันที่เข้าร่วม" : "Date joined"}</span><span class="lg-d">${state.session === "new" ? (isTh ? "ตุลาคม 2569" : "October 2026") : (isTh ? "ตุลาคม 2567" : "October 2024")}</span></span></div>
       <div class="sub-row sub-row-static"><span class="sub-ic">${I.globe(22)}</span><span class="lg-b"><span class="lg-t">${isTh ? "ตำแหน่งบัญชี" : "Account based in"}</span><span class="lg-d">${isTh ? "ประเทศไทย" : "Thailand"}</span></span></div>
       <div class="about-acc-divider"></div>
       <div class="sub-sec">${isTh ? "ความปลอดภัย" : "Security"}</div>
@@ -17273,6 +17286,7 @@
     function chatInit() {
       if (CHAT.inited) return CHAT;
       CHAT.inited = true;
+      if (state.session !== "member") { CHAT.threads = []; CHAT.view = CHAT.cfg.defView; return CHAT; } /* GUEST-001 — guests & fresh accounts start with no chats */
       const post = id => POSTS.find(x => x.id === id);
       const own = (id, cap, price, pid) => ({ id, cap, price, photo: post(pid).photos[0], owner: CP_ME.name, pid });
       const ref = id => { const p = post(id); return { id: p.id, cap: p.caption, price: p.price || "", photo: p.photos[0], owner: p.seller, pid: p.id }; };
@@ -17347,6 +17361,7 @@
     let ALERTS = null;
     function alInit() {
       if (ALERTS) return ALERTS;
+      if (state.session !== "member") { ALERTS = []; return ALERTS; } /* GUEST-001 — guests & fresh accounts have no alerts */
       const me = CP_ME.name;
       const mine = i => ({ pid: `gfx-${me}-${i}`, thumb: (PROFILES[me].grid || [])[i] });
       const wa = (pid, ago, grp, unread) => {
@@ -19081,6 +19096,7 @@
     /* ================= FLOW WIRING ================= */
     state.theme = localStorage.getItem("fo_theme") || "dark";
     state.lang = localStorage.getItem("fo_lang") || "en";
+    state.session = localStorage.getItem("fo_session") || "member"; /* GUEST-001 — member | guest | new */
     const themeToggle = document.getElementById("themeToggle");
     const flowToast = document.getElementById("flowToast");
     let toastTimer;
@@ -19142,6 +19158,14 @@
       "Close": "ปิด", "Back": "ย้อนกลับ", "Like": "ถูกใจ", "Share": "แชร์", "No photos or videos found.": "ไม่พบรูปภาพหรือวิดีโอ",
       "Media/news company": "บริษัทสื่อ/ข่าว", "Watch shop": "ร้านนาฬิกา", "TukDaeng member": "สมาชิกตึกแดง", "Remove": "นำออก",
       "No results found": "ไม่พบผลลัพธ์", "Search username": "ค้นหาชื่อผู้ใช้", "No followers yet": "ยังไม่มีผู้ติดตาม",
+      "No chats yet": "ยังไม่มีแชท", "Tap Ask on a post to start chatting with the seller.": "แตะ สอบถาม บนโพสต์เพื่อเริ่มแชทกับผู้ขาย",
+      "No chats found": "ไม่พบแชท", "Try another name, item or message.": "ลองค้นหาด้วยชื่อ สินค้า หรือข้อความอื่น", "Try another name or message.": "ลองค้นหาด้วยชื่อหรือข้อความอื่น",
+      "No items found": "ไม่พบสินค้า", "Try another item name.": "ลองค้นหาด้วยชื่อสินค้าอื่น", "No items match your filter.": "ไม่มีสินค้าที่ตรงกับตัวกรอง",
+      "No item chats yet": "ยังไม่มีแชทตามสินค้า", "Chats are grouped by item once people message about a listing.": "แชทจะถูกจัดกลุ่มตามสินค้าเมื่อมีคนส่งข้อความถึงรายการขาย",
+      "No posts yet": "ยังไม่มีโพสต์", "Add posts to this collection first.": "เพิ่มโพสต์ลงในคอลเลกชันนี้ก่อน", "Save posts to this collection first.": "บันทึกโพสต์ลงในคอลเลกชันนี้ก่อน",
+      "No saved posts yet": "ยังไม่มีโพสต์ที่บันทึก", "No saved posts to add": "ไม่มีโพสต์ที่บันทึกให้เพิ่ม", "Save more posts first, then add them here.": "บันทึกโพสต์เพิ่มก่อน แล้วค่อยเพิ่มที่นี่",
+      "No wish list posts yet": "ยังไม่มีโพสต์ในสิ่งที่อยากได้", "No wish list posts to add": "ไม่มีโพสต์สิ่งที่อยากได้ให้เพิ่ม", "Add posts to your wish list first, then add them here.": "เพิ่มโพสต์ลงสิ่งที่อยากได้ก่อน แล้วค่อยเพิ่มที่นี่",
+      "Photos & videos": "รูปภาพและวิดีโอ", "Chat": "แชท",
       "You're not following anyone yet": "คุณยังไม่ได้ติดตามใคร", "Not following anyone yet": "ยังไม่ได้ติดตามใคร",
       "Latest market price": "ราคาตลาดล่าสุด", "Show": "แสดง", "Bank transfer": "โอนเงิน", "Article not found": "ไม่พบบทความ",
       "This article is no longer available.": "บทความนี้ไม่มีให้บริการแล้ว", "Chat not found": "ไม่พบแชท", "This conversation is no longer available.": "บทสนทนานี้ไม่มีให้บริการแล้ว",
@@ -19792,6 +19816,8 @@
       stage.addEventListener("click", e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
     })();
     document.getElementById("stage").addEventListener("click", e => {
+      /* GUEST-001 — logged-out browsing: identity-required actions open the member sheet instead */
+      if (isGuest() && !e.target.closest(".ob, .ob-coach") && e.target.closest(GUEST_GATE_SEL)) { obGate(); return; }
       const flow = e.target.closest("[data-flow]");
       if (flow) { openSub(flow.closest(".screen"), "create"); return; }
       /* ===== CREATE-001 — in-app create-post task flow (picker → caption → feed) ===== */
@@ -20336,8 +20362,12 @@
       if (dlgLogout) {
         const scr = dlgLogout.closest(".screen");
         scr.classList.remove("dialog-open");
-        subBack(scr);
-        scrToast(scr, "Logged out successfully");
+        scr._subStack = []; scr.classList.remove("sub-open"); /* AUTH-002 — leave the profile/settings stack entirely */
+        setSession("guest"); /* GUEST-001 — logging out drops into guest browsing on the feed */
+        scr.querySelector(".feed-scroll")?.scrollTo({ top: 0 });
+        const isTh = state.lang === "th";
+        scrToast(scr, isTh ? "ออกจากระบบแล้ว" : "Logged out successfully");
+        obGate(); /* AUTH-002 — surface the member sheet so signing back in is one tap (scrim/ข้ามไปก่อน keeps browsing as guest) */
         return;
       }
       const delGoReasons = e.target.closest('[data-act="del-go-reasons"]');
@@ -20443,8 +20473,11 @@
         scr._delReason = "";
         scr._delFeedback = "";
         scr.classList.remove("sub-open");
+        setSession("guest"); /* AUTH-002 — a deactivated account falls back to guest browsing on the feed */
+        scr.querySelector(".feed-scroll")?.scrollTo({ top: 0 });
         const isTh = state.lang === "th";
         scrToast(scr, isTh ? "บัญชีถูกระงับการใช้งานและเริ่มนับถอยหลัง 30 วัน" : "Account deactivated. 30-day grace period started.");
+        obGate(); /* AUTH-002 — member sheet offers the sign-in path back (needed to cancel the grace period) */
         return;
       }
       const pwdTgl = e.target.closest("[data-pwd-toggle]");
@@ -22104,7 +22137,7 @@
        -> Account created -> Sign in (Forgot password) -> Notification pre-permission -> Home (coach mark).
        Re-consent: the "v2" dev button simulates a new Terms/Privacy version popping up over the feed. */
     const OB = {
-      on: !localStorage.getItem("fo_onboarded"), step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0",
+      on: !localStorage.getItem("fo_onboarded"), step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", gate: false,
       opt: { analytics: false, personalized: false },
       f: { name: "", email: "", pw: "", user: "" }, errs: {}, tries: 0, account: null, resend: 30, os: false, sent: false
     };
@@ -22115,9 +22148,23 @@
     const obBell = (s = 40) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>`;
     const obScore = p => (p.length >= 8 ? 1 : 0) + (/[a-z]/.test(p) && /[A-Z]/.test(p) ? 1 : 0) + (/\d/.test(p) ? 1 : 0) + (/[^A-Za-z0-9]/.test(p) || p.length >= 12 ? 1 : 0);
     const obEmailOk = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+    const OB_DEMO = { email: "demo@tukdaeng.com", pw: "Tukdaeng123", name: "Demo" };
     const obBack = (to, right = "") => `<div class="ob-top"><button class="ob-ghost" data-ob="go:${to}" aria-label="${obT("Back", "ย้อนกลับ")}">${I.back(22)}</button>${right}</div>`;
     const obField = (key, label, type, ph, extra = "") => `<div class="ob-field${OB.errs[key] ? " err" : ""}"><label>${label}</label><div class="ob-input"><input data-f="${key}" type="${type}" placeholder="${ph}" value="${obEsc(OB.f[key] || "")}" autocomplete="off" ${extra}>${type === "password" ? `<button class="ob-eye" data-ob="eye" type="button" aria-label="${obT("Show or hide password", "แสดง/ซ่อนรหัสผ่าน")}">${I.eye(20)}</button>` : ""}</div>${OB.errs[key] ? `<div class="ob-msg">${OB.errs[key]}</div>` : ""}</div>`;
     const obLegalLinks = () => `<div class="ob-legal">${obT("By continuing you agree to our", "การดำเนินการต่อถือว่าคุณยอมรับ")} <button data-ob="legal:terms">${obT("Terms of Use", "ข้อกำหนดการใช้งาน")}</button> ${obT("and", "และ")} <button data-ob="legal:privacy">${obT("Privacy Policy", "นโยบายความเป็นส่วนตัว")}</button></div>`;
+    const OB_G = `<svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C41.4 35.2 44 30 44 24c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3l5.7-5.7C34.5 6.1 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8.1l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C41.4 35.2 44 30 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>`;
+    const OB_APPLE = `<svg viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>`;
+    const obSocial = (row = false) => `<div class="ob-or"><span>${obT("or continue with", "หรือดำเนินการต่อด้วย")}</span></div><div class="ob-soc${row ? " row" : ""}"><button type="button" data-ob="social:google">${OB_G}<span>${obT(row ? "Google" : "Continue with Google", row ? "Google" : "ดำเนินการต่อด้วย Google")}</span></button><button type="button" data-ob="social:apple">${OB_APPLE}<span>${obT(row ? "Apple" : "Continue with Apple", row ? "Apple" : "ดำเนินการต่อด้วย Apple")}</span></button></div>`;
+    function obSuggestUser() {
+      const base = (OB.f.user || OB.f.email || (OB.account && OB.account.email) || "").split("@")[0].toLowerCase().replace(/[^a-z0-9_.]/g, "").replace(/^\.+|\.+$/g, "").slice(0, 18);
+      return /^[a-z0-9_.]{3,20}$/.test(base) ? base : "member" + Math.floor(1000 + Math.random() * 9000);
+    }
+    function obEnterAfterProfile() {
+      if (OB.provider && OB.provider !== "email") { /* social sign-up has no password — enter the app right after picking a username */
+        localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user, name: OB.f.name.trim() }));
+        setSession("new"); obFinish(obT("Welcome to TukDaeng", "ยินดีต้อนรับสู่ตึกแดง"), !OB.gate);
+      } else obGo("created");
+    }
 
     const obSvg = body => `<svg width="168" height="156" viewBox="0 0 160 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
     const OB_ILL = {
@@ -22200,29 +22247,29 @@
           <div class="ob-bar"><button class="ob-btn pri" data-ob="os:open">${obT("Continue", "ต่อไป")}</button></div>`;
         case "member": return `<div class="ob-scrim"></div><div class="ob-sheet ob-msheet" role="dialog" aria-modal="true"><div class="ob-grab"></div>
           <div class="ob-ill" style="margin:6px 0 4px">${OB_ILL.member}</div><h2>${obT("Join TukDaeng", "เข้าร่วมตึกแดง")}</h2>
-          <p class="ob-sub">${obT("Create a free account to follow collectors, chat and list your watches.", "สร้างบัญชีฟรีเพื่อติดตามนักสะสม แชท และลงขายนาฬิกาของคุณ")}</p>
-          <button class="ob-check" role="checkbox" aria-checked="${!!OB.hide}" data-ob="hide"><i class="${OB.hide ? "on" : ""}">${OB.hide ? I.check(13) : ""}</i>${obT("Don't show this again", "ไม่ต้องแสดงข้อความนี้อีก")}</button>
-          <div class="ob-stack"><button class="ob-btn pri" data-ob="go:signup">${obT("Sign up", "สมัครสมาชิก")}</button><button class="ob-btn out" data-ob="go:signin">${obT("Sign in", "เข้าสู่ระบบ")}</button><button class="ob-textbtn" data-ob="guest" style="padding:6px">${obT("Skip for now", "ข้ามไปก่อน")}</button></div></div>`;
+          <p class="ob-sub">${OB.gate ? obT("Sign in or create a free account to use this feature.", "เข้าสู่ระบบหรือสมัครสมาชิกฟรีเพื่อใช้ฟีเจอร์นี้") : obT("Create a free account to follow collectors, chat and list your watches.", "สร้างบัญชีฟรีเพื่อติดตามนักสะสม แชท และลงขายนาฬิกาของคุณ")}</p>
+          ${OB.gate ? "" : `<button class="ob-check" role="checkbox" aria-checked="${!!OB.hide}" data-ob="hide"><i class="${OB.hide ? "on" : ""}">${OB.hide ? I.check(13) : ""}</i>${obT("Don't show this again", "ไม่ต้องแสดงข้อความนี้อีก")}</button>`}
+          <div class="ob-stack"><button class="ob-btn pri" data-ob="go:signup">${obT("Sign up", "สมัครสมาชิก")}</button><button class="ob-btn out" data-ob="go:signin">${obT("Sign in", "เข้าสู่ระบบ")}</button><button class="ob-textbtn" data-ob="guest" style="padding:6px">${obT("Skip for now", "ข้ามไปก่อน")}</button></div>${obSocial(true)}</div>`;
         case "signup": return `<div class="ob-page">${obBack("member")}<h1>${obT("Create your account", "สร้างบัญชีของคุณ")}</h1><p class="ob-sub">${obT("It only takes a minute.", "ใช้เวลาไม่ถึงหนึ่งนาที")}</p>
-          ${obField("name", obT("Full name", "ชื่อ-นามสกุล"), "text", obT("Your name", "ชื่อของคุณ"))}${obField("email", obT("Email", "อีเมล"), "email", "you@example.com")}
+          ${obField("email", obT("Email", "อีเมล"), "email", "you@example.com")}
           ${obField("pw", obT("Password", "รหัสผ่าน"), "password", obT("At least 8 characters", "อย่างน้อย 8 ตัวอักษร"))}
           <div class="ob-meter" data-s="${f.pw ? Math.max(1, obScore(f.pw)) : 0}"><i></i><i></i><i></i><i></i></div><div class="ob-hint">${obT("Use upper & lower case, a number and a symbol for a stronger password.", "ใช้พิมพ์ใหญ่ พิมพ์เล็ก ตัวเลข และสัญลักษณ์ให้แข็งแรงขึ้น")}</div>
-          <div class="ob-grow" style="min-height:18px"></div><button class="ob-btn pri" data-ob="signup">${obT("Create account", "สร้างบัญชี")}</button>${obLegalLinks()}</div>`;
+          ${obSocial()}<div class="ob-grow" style="min-height:18px"></div><button class="ob-btn pri" data-ob="signup">${obT("Create account", "สร้างบัญชี")}</button>${obLegalLinks()}</div>`;
         case "otp": return `<div class="ob-page">${obBack("signup")}<h1>${obT("Verify your email", "ยืนยันอีเมลของคุณ")}</h1>
           <p class="ob-sub">${obT("We sent a 6-digit code to", "เราส่งรหัส 6 หลักไปที่")} <b style="color:var(--text)">${obEsc(f.email)}</b></p>
           <div class="ob-otp">${[0, 1, 2, 3, 4, 5].map(i => `<input data-otp="${i}" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="${i + 1}">`).join("")}</div>
           <div class="ob-msg" id="obOtpMsg"></div><div id="obRsw" style="margin-top:8px">${obResendHTML()}</div>
           <div class="ob-banner info" style="margin-top:18px">${obT("Demo code: 123456", "รหัสสำหรับทดสอบ: 123456")}</div></div>`;
-        case "profile": return `<div class="ob-page"><div class="ob-top"><span></span><button class="ob-ghost muted" data-ob="go:created">${obT("Skip for now", "ข้ามไปก่อน")}</button></div>
-          <h1>${obT("Set up your profile", "ตั้งค่าโปรไฟล์")}</h1><p class="ob-sub">${obT("Add a photo and username so collectors can find you. You can do this later.", "เพิ่มรูปและชื่อผู้ใช้เพื่อให้นักสะสมค้นหาคุณได้ ทำภายหลังได้")}</p>
-          <div class="ob-avatar">${obEsc((f.name || "?").trim().charAt(0).toUpperCase())}</div><button class="ob-link" style="align-self:center;margin:-8px 0 16px" data-ob="photo">${obT("Add photo", "เพิ่มรูปภาพ")}</button>
+        case "profile": return `<div class="ob-page"><div class="ob-top"><span></span><button class="ob-ghost muted" data-ob="skipprof">${obT("Skip for now", "ข้ามไปก่อน")}</button></div>
+          <h1>${obT("Set up your profile", "ตั้งค่าโปรไฟล์")}</h1><p class="ob-sub">${obT("Pick your username — a photo can be added later.", "ตั้งชื่อผู้ใช้ของคุณ — รูปใส่ภายหลังได้")}</p>
+          <div class="ob-avatar">${obEsc((f.user || f.name || "?").trim().charAt(0).toUpperCase())}</div><button class="ob-link" style="align-self:center;margin:-8px 0 16px" data-ob="photo">${obT("Add photo", "เพิ่มรูปภาพ")}</button>
           ${obField("user", obT("Username", "ชื่อผู้ใช้"), "text", "username")}<div class="ob-grow"></div><button class="ob-btn pri" data-ob="profile">${obT("Continue", "ต่อไป")}</button></div>`;
         case "created": return `<div class="ob-page ob-center"><div class="ob-grow"></div><div class="ob-ico ok">${I.check(40)}</div><h1>${obT("Account created", "สร้างบัญชีสำเร็จ")}</h1>
-          <p class="ob-sub">${obT("Welcome, ", "ยินดีต้อนรับ ")}${obEsc(f.name || "")}. ${obT("Sign in to start exploring.", "เข้าสู่ระบบเพื่อเริ่มใช้งาน")}</p><div class="ob-grow"></div><button class="ob-btn pri" data-ob="go:signin">${obT("Sign in", "เข้าสู่ระบบ")}</button></div>`;
+          <p class="ob-sub">${obT("Welcome, ", "ยินดีต้อนรับ ")}${obEsc(f.name || f.user || "")}. ${obT("Sign in to start exploring.", "เข้าสู่ระบบเพื่อเริ่มใช้งาน")}</p><div class="ob-grow"></div><button class="ob-btn pri" data-ob="go:signin">${obT("Sign in", "เข้าสู่ระบบ")}</button></div>`;
         case "signin": return `<div class="ob-page">${obBack("member")}<h1>${obT("Sign in", "เข้าสู่ระบบ")}</h1><p class="ob-sub">${obT("Welcome back to TukDaeng.", "ยินดีต้อนรับกลับสู่ตึกแดง")}</p>
           ${E.form ? `<div class="ob-banner">${E.form}</div>` : ""}${obField("email", obT("Email", "อีเมล"), "email", "you@example.com")}${obField("pw", obT("Password", "รหัสผ่าน"), "password", obT("Your password", "รหัสผ่านของคุณ"))}
           <div style="text-align:right;margin-top:-6px"><button class="ob-link" data-ob="go:forgot">${obT("Forgot password?", "ลืมรหัสผ่าน?")}</button></div>
-          <div class="ob-grow" style="min-height:18px"></div><button class="ob-btn pri" data-ob="signin" ${OB.tries >= 5 ? "disabled" : ""}>${obT("Sign in", "เข้าสู่ระบบ")}</button>
+          <div class="ob-grow" style="min-height:18px"></div><button class="ob-btn pri" data-ob="signin" ${OB.tries >= 5 ? "disabled" : ""}>${obT("Sign in", "เข้าสู่ระบบ")}</button>${obSocial()}
           <div class="ob-legal">${obT("New here?", "ยังไม่มีบัญชี?")} <button data-ob="go:signup">${obT("Create account", "สร้างบัญชี")}</button></div></div>`;
         case "forgot": return OB.sent ? `<div class="ob-page ob-center"><div class="ob-grow"></div><div class="ob-ico ok">${I.check(40)}</div><h1>${obT("Check your email", "ตรวจสอบอีเมลของคุณ")}</h1>
           <p class="ob-sub">${obT("If an account exists for", "หากมีบัญชีสำหรับ")} <b style="color:var(--text)">${obEsc(f.email)}</b>${obT(", we sent a reset link.", " เราได้ส่งลิงก์รีเซ็ตรหัสผ่านให้แล้ว")}</p><div class="ob-grow"></div>
@@ -22247,8 +22294,9 @@
     }
     function obGo(s) {
       OB.step = s; OB.loading = false; OB.errs = {}; OB.sent = false; OB.declined = false; OB.legal = null; OB.os = false;
-      if (s === "profile" && !OB.f.user) OB.f.user = (OB.f.email.split("@")[0] || "").toLowerCase().replace(/[^a-z0-9_.]/g, "");
-      if (s === "member" && localStorage.getItem("fo_member_hide") === "1") return obFinish(obT("Welcome to TukDaeng", "ยินดีต้อนรับสู่ตึกแดง"));
+      if (s === "profile" && !OB.f.user && OB.f.email) OB.f.user = obSuggestUser();
+      if (s === "signin" && !OB.f.email && !OB.f.pw) { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; }
+      if (s === "member" && !OB.gate && localStorage.getItem("fo_member_hide") === "1") return obFinish(obT("Welcome to TukDaeng", "ยินดีต้อนรับสู่ตึกแดง"));
       const r = obRoot(), clear = OB.recon || s === "member";
       if (r && r.classList.contains("recon") !== clear) return obMount();
       obDraw();
@@ -22268,17 +22316,24 @@
       { sel: ".feed-tabs", en: "Scroll the feed, or switch tabs to filter posts.", th: "เลื่อนดูฟีดได้เรื่อย ๆ หรือเลือกแท็บเพื่อกรองโพสต์" },
       { sel: ".bottom-nav", en: "Chat, boards, alerts and your profile live down here.", th: "แชท กระดานข่าว การแจ้งเตือน และโปรไฟล์อยู่ด้านล่าง" }
     ];
+    /* GUEST-001 — coach marks for logged-out browsing nudge sign-up instead of member actions */
+    const OB_TOUR_GUEST = [
+      { sel: ".app-header [data-flow='create']", en: "Sign up to create your first post.", th: "สมัครสมาชิกเพื่อสร้างโพสต์แรกของคุณ" },
+      { sel: ".app-header .search-btn", en: "Search brands, references or collectors.", th: "ค้นหาแบรนด์ รุ่น หรือนักสะสมได้ที่นี่" },
+      { sel: ".feed-tabs", en: "Scroll the feed, or switch tabs to filter posts.", th: "เลื่อนดูฟีดได้เรื่อย ๆ หรือเลือกแท็บเพื่อกรองโพสต์" },
+      { sel: ".bottom-nav", en: "Sign in to use chat, alerts and your profile.", th: "เข้าสู่ระบบเพื่อใช้แชท การแจ้งเตือน และโปรไฟล์" }
+    ];
     let obTourI = -1;
     function obTour(i) {
       document.querySelectorAll(".ob-coach").forEach(c => c.remove());
       obTourI = -1;
-      const scr = document.querySelector("#stage .screen"), st = OB_TOUR[i];
+      const scr = document.querySelector("#stage .screen"), tour = isGuest() ? OB_TOUR_GUEST : OB_TOUR, st = tour[i];
       if (!scr || !st) return;
       const t = scr.querySelector(st.sel);
       if (!t) return obTour(i + 1);
       const el = document.createElement("div");
       el.className = "ob-coach";
-      el.innerHTML = `${obT(st.en, st.th)}<button>${i < OB_TOUR.length - 1 ? obT("Next", "ถัดไป") : obT("Got it", "เข้าใจแล้ว")}</button>`;
+      el.innerHTML = `${obT(st.en, st.th)}<button>${i < tour.length - 1 ? obT("Next", "ถัดไป") : obT("Got it", "เข้าใจแล้ว")}</button>`;
       el.style.visibility = "hidden";
       scr.appendChild(el);
       const sr = scr.getBoundingClientRect(), r = t.getBoundingClientRect(), W = 230, h = el.offsetHeight;
@@ -22292,10 +22347,10 @@
       el.style.visibility = "";
       obTourI = i;
     }
-    function obFinish(msg) {
-      localStorage.setItem("fo_onboarded", "1"); OB.on = false; OB.os = false; obMount();
-      obTour(0);
-      toast(msg);
+    function obFinish(msg, tour = true) {
+      localStorage.setItem("fo_onboarded", "1"); OB.on = false; OB.os = false; OB.gate = false; obMount();
+      if (tour) obTour(0);
+      if (msg) toast(msg);
     }
     function obLog() {
       const rec = { terms: OB.ver, privacy: OB.ver, termsAt: OB.termsAt || null, analytics: OB.opt.analytics, personalized: OB.opt.personalized, lang: state.lang, at: new Date().toISOString() };
@@ -22308,27 +22363,116 @@
     }
     function obSignup() {
       const f = OB.f, E = {};
-      if (f.name.trim().length < 2) E.name = obT("Enter your name (at least 2 characters).", "กรอกชื่อ (อย่างน้อย 2 ตัวอักษร)");
       if (!obEmailOk(f.email.trim())) E.email = obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง");
       else if (f.email.trim().toLowerCase() === "taken@example.com") E.email = obT("This email is already registered. Try signing in.", "อีเมลนี้ถูกใช้สมัครแล้ว ลองเข้าสู่ระบบ");
       if (obScore(f.pw) < 2 || f.pw.length < 8) E.pw = obT("Use at least 8 characters with upper & lower case or a number.", "ใช้อย่างน้อย 8 ตัวอักษร ผสมพิมพ์ใหญ่-เล็ก หรือตัวเลข");
       OB.errs = E;
       if (Object.keys(E).length) return obDraw();
-      f.email = f.email.trim(); f.name = f.name.trim(); OB.account = { email: f.email, pw: f.pw }; OB.resend = 30; obGo("otp");
+      f.email = f.email.trim(); f.name = f.name.trim(); OB.account = { email: f.email, pw: f.pw }; OB.provider = "email"; OB.resend = 30; obGo("otp");
     }
     function obSignin() {
       const f = OB.f, E = {};
-      if (!obEmailOk(f.email.trim())) E.email = obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง");
+      if (!f.email.trim()) E.email = obT("Enter your email.", "กรอกอีเมล");
+      else if (!obEmailOk(f.email.trim())) E.email = obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง");
       if (!f.pw) E.pw = obT("Enter your password.", "กรอกรหัสผ่าน");
       OB.errs = E;
       if (Object.keys(E).length) return obDraw();
-      const ok = OB.account ? (f.email.trim().toLowerCase() === OB.account.email.toLowerCase() && f.pw === OB.account.pw) : f.pw.length >= 8;
+      const ok = [OB.account, OB_DEMO].filter(Boolean).some(a => f.email.trim().toLowerCase() === a.email.toLowerCase() && f.pw === a.pw);
       if (!ok) {
         OB.tries++;
         OB.errs = { form: OB.tries >= 5 ? obT("Too many attempts. Try again in 15 minutes or reset your password.", "พยายามหลายครั้งเกินไป ลองใหม่ในอีก 15 นาที หรือรีเซ็ตรหัสผ่าน") : obT("Email or password is incorrect.", "อีเมลหรือรหัสผ่านไม่ถูกต้อง") + ` (${OB.tries}/5)` };
         return obDraw();
       }
-      OB.tries = 0; if (!f.name) f.name = f.email.split("@")[0]; obFinish(obT("Welcome back, ", "ยินดีต้อนรับกลับ ") + f.name);
+      OB.tries = 0; if (!f.name) f.name = f.email.trim().toLowerCase() === OB_DEMO.email ? OB_DEMO.name : (f.user || f.email.split("@")[0]);
+      /* GUEST-001 — demo credentials sign in as the existing member (all mock data);
+         the account just created in this run starts as a fresh member (empty states) */
+      const isNew = !!(OB.account && f.email.trim().toLowerCase() === OB.account.email.toLowerCase());
+      setSession(isNew ? "new" : "member");
+      obFinish(obT(isNew ? "Welcome, " : "Welcome back, ", isNew ? "ยินดีต้อนรับ " : "ยินดีต้อนรับกลับ ") + f.name, isNew);
+    }
+
+    /* ===== GUEST-001 — session model: member (demo data) / guest (logged-out) / new (fresh account) =====
+       Guests can browse feed, boards and search; anything that needs an identity opens the
+       member sheet instead. New members keep member powers but start with no data of their own. */
+    const isGuest = () => state.session === "guest";
+    const CP_ME_DEMO = { name: CP_ME.name, avatar: CP_ME.avatar };
+    const POST_FLAG_KEYS = ["liked", "saved", "wishlisted", "wlCol", "wlAt", "wlColAt", "following", "favorite", "muted", "archived", "archivedAt", "ni", "blocked", "pins"];
+    let POSTS_SNAP = null, COLS_SNAP = null, NEW_USER_KEY = null;
+    function snapPosts() {
+      if (!POSTS_SNAP) POSTS_SNAP = new Map(POSTS.map(p => [p.id, Object.fromEntries(POST_FLAG_KEYS.map(k => [k, p[k]]))]));
+      if (!COLS_SNAP) COLS_SNAP = { c: COLLECTIONS.map(x => ({ ...x })), w: WISHLISTS.map(x => ({ ...x })) };
+    }
+    function clearUserData() {
+      COLLECTIONS.length = 0; WISHLISTS.length = 0;
+      POSTS.forEach(p => { p.liked = false; p.saved = false; p.wishlisted = false; p.wlCol = null; p.wlAt = 0; p.wlColAt = 0; p.following = false; p.favorite = false; p.muted = false; p.archived = false; p.archivedAt = 0; p.ni = false; p.blocked = false; p.pins = null; });
+      PF_EXTRA_FOL.clear(); PF_EXTRA_FAV.clear(); PF_EXTRA_MUT.clear(); PF_REMOVED_FOL.clear(); PF_BLOCKED.clear(); PF_GFX_DEL.clear();
+      for (const k in PF_GFX_REG) delete PF_GFX_REG[k];
+      WATCH_ALERTS.length = 0;
+    }
+    function restoreUserData() {
+      COLLECTIONS.length = 0; COLLECTIONS.push(...COLS_SNAP.c.map(x => ({ ...x })));
+      WISHLISTS.length = 0; WISHLISTS.push(...COLS_SNAP.w.map(x => ({ ...x })));
+      POSTS.forEach(p => {
+        const s = POSTS_SNAP.get(p.id); if (!s) return;
+        POST_FLAG_KEYS.forEach(k => { if (s[k] === undefined) delete p[k]; else p[k] = s[k]; });
+      });
+    }
+    function applySessionData() {
+      snapPosts();
+      ALERTS = null;
+      CHAT.inited = false; CHAT.threads = []; CHAT.draft = null;
+      for (const k in PF_GFX_REG) delete PF_GFX_REG[k]; PF_GFX_DEL.clear();
+      if (state.session === "member") {
+        restoreUserData();
+        CP_ME.name = CP_ME_DEMO.name; CP_ME.avatar = CP_ME_DEMO.avatar;
+        if (NEW_USER_KEY) { delete PROFILES[NEW_USER_KEY]; NEW_USER_KEY = null; }
+      } else {
+        clearUserData();
+        if (state.session === "new") {
+          const nu = JSON.parse(localStorage.getItem("fo_newuser") || "null") || {};
+          const uname = (nu.user || OB.f.user || (OB.f.email || "").split("@")[0] || "new.member").toLowerCase().replace(/[^a-z0-9_.]/g, "") || "new.member";
+          NEW_USER_KEY = uname;
+          CP_ME.name = uname; CP_ME.avatar = "./assets/user-avatars/u-1075.png";
+          PROFILES[uname] = { disp: nu.name || OB.f.name || uname, bio: "", followers: "0", following: "0", posts: "0", grid: [], followedBy: [] };
+        } else {
+          NEW_USER_KEY = null;
+          CP_ME.name = "__guest__"; CP_ME.avatar = "./assets/user-avatars/u-1075.png";
+        }
+        state.feedTab = "all";
+      }
+      /* refresh visible surfaces so badges/feed/follow states match the new session */
+      const scr = document.querySelector("#stage .screen");
+      if (scr) {
+        const fl = scr.querySelector(".feed-list");
+        if (fl) fl.innerHTML = feedContentHTML(scr.dataset.variant || state.variant);
+        if (scr.classList.contains("sub-open")) renderSub(scr);
+        if (typeof chBadgeSync === "function") chBadgeSync();
+        if (typeof alBadgeSync === "function") alBadgeSync();
+      }
+    }
+    function setSession(s) {
+      state.session = s;
+      localStorage.setItem("fo_session", s);
+      if (s === "new") {
+        localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user || "", name: OB.f.name || "" }));
+      } else localStorage.removeItem("fo_newuser");
+      applySessionData();
+    }
+    /* actions that require an identity — tapping any of these while logged out opens the member sheet */
+    const GUEST_GATE_SEL = [
+      "[data-flow]", '[data-navgo="chat"]', '[data-navgo="alerts"]', '[data-navgo="profile"]',
+      ".like-btn", ".save-btn", ".share-btn", ".wl-btn", ".mf-btn", ".ask-pill", ".chat-fab",
+      ".follow-btn", ".pf-foll", ".pf-flw", ".pf-msg", ".lk-follow", ".al-fbtn", ".pf-avov-act", ".pf-dots", ".pf-rmf", ".pf-unblock",
+      ".comment-input", ".emoji-row", ".c-like", ".c-meta",
+      ".post-head .more", ".pm-btn", ".pm-go-report", ".pm-fav", ".pm-ni", ".pm-own-archive", ".pm-own-nocomm", ".pm-own-edit", ".pm-own-pin", ".pm-own-del",
+      ".rp-opt", ".pm-reason", ".uc-report", ".ni-mute", ".ni-unfollow", ".sr-wa",
+      ".pf-more", ".pf-menu", ".pf-edit", ".pf-share", ".pf-sh-report", ".pf-sh-block", ".blk-rep", ".blk-go", ".ch-rep-del-btn", ".ch-rep-only-btn",
+      ".set-btn", ".sh-add", ".sh-fr", ".pf-sh-share", "[data-bdlike]", "[data-bdsave]", "[data-bdshare]", "[data-bdact='share']", "[data-bdact='save']", "[data-bdact='report']"
+    ].join(",");
+    function obGate() {
+      if (OB.on && !OB.gate) return; /* first-run sheet already up */
+      OB.on = true; OB.gate = true; OB.step = "member"; OB.legal = null; OB.os = false;
+      obMount();
     }
     document.addEventListener("click", e => {
       const b = e.target.closest("[data-ob]");
@@ -22350,8 +22494,13 @@
           case "signup": obSignup(); break;
           case "resend": OB.resend = 30; toast(obT("New code sent", "ส่งรหัสใหม่แล้ว")); obDraw(); break;
           case "photo": toast(obT("Photo picker opens here (prototype)", "ตัวเลือกรูปภาพจะเปิดตรงนี้ (โปรโตไทป์)")); break;
-          case "profile": if (OB.f.user && !/^[a-z0-9_.]{3,20}$/.test(OB.f.user)) { OB.errs = { user: obT("3–20 characters: a–z, 0–9, _ or .", "3–20 ตัวอักษร: a–z, 0–9, _ หรือ .") }; obDraw(); } else obGo("created"); break;
-          case "guest": if (OB.hide) localStorage.setItem("fo_member_hide", "1"); obFinish(obT("Browsing as guest", "กำลังเข้าใช้แบบผู้เยี่ยมชม")); break;
+          case "profile": OB.f.user = OB.f.user.trim().toLowerCase(); if (!/^[a-z0-9_.]{3,20}$/.test(OB.f.user)) { OB.errs = { user: obT("Username required — 3–20 characters: a–z, 0–9, _ or .", "ต้องตั้งชื่อผู้ใช้ 3–20 ตัวอักษร: a–z, 0–9, _ หรือ .") }; obDraw(); } else obEnterAfterProfile(); break;
+          case "skipprof": { const u = OB.f.user.trim().toLowerCase(); OB.f.user = /^[a-z0-9_.]{3,20}$/.test(u) ? u : obSuggestUser(); obEnterAfterProfile(); break; }
+          case "social": { /* AUTH-002 — returning sign-in (sign-in page, or the member sheet shown as a gate/re-consent) skips profile setup; it only shows on a first-time sign-up */
+            const returning = OB.step === "signin" || ((OB.gate || OB.recon) && OB.step === "member");
+            if (returning) { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; obSignin(); }
+            else { OB.provider = arg; OB.account = { email: "", pw: "" }; OB.f.user = ""; OB.f.name = ""; obGo("profile"); } break; }
+          case "guest": { const wasGate = OB.gate; if (OB.hide && !wasGate) localStorage.setItem("fo_member_hide", "1"); setSession("guest"); obFinish("", !wasGate); break; } /* GUEST-001 — real apps just enter silently, no "browsing as guest" toast */
           case "signin": obSignin(); break;
           case "forgot": if (!obEmailOk(OB.f.email.trim())) { OB.errs = { email: obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง") }; obDraw(); } else { OB.sent = true; obDraw(); } break;
                     case "os": if (arg === "open") { OB.os = OB.step; obDraw(); } else { const was = OB.os; if (was === "track" && arg === "no") OB.opt.personalized = false; obGo(was === "track" ? "member" : "track"); } break;
@@ -22359,6 +22508,8 @@
         }
         return;
       }
+      /* GUEST-001 — the login-gate sheet dismisses on scrim tap like a normal bottom sheet */
+      if (OB.gate && e.target.classList && e.target.classList.contains("ob-scrim")) { OB.on = false; OB.gate = false; obMount(); return; }
       const coach = e.target.closest(".ob-coach button");
       if (coach) obTour(obTourI + 1);
       else if (!e.target.closest(".ob-coach")) { obTourI = -1; document.querySelectorAll(".ob-coach").forEach(c => c.remove()); }
@@ -22368,6 +22519,7 @@
       if (t.dataset.f) {
         OB.f[t.dataset.f] = t.value;
         if (t.dataset.f === "pw") { const m = t.closest(".ob-page").querySelector(".ob-meter"); if (m) m.dataset.s = t.value ? Math.max(1, obScore(t.value)) : 0; }
+        if ((t.dataset.f === "user" || t.dataset.f === "name") && OB.step === "profile") { const av = t.closest(".ob-page").querySelector(".ob-avatar"); if (av) av.textContent = ((OB.f.user || OB.f.name || "?").trim().charAt(0) || "?").toUpperCase(); }
       } else if (t.dataset.otp !== undefined) {
         const boxes = [...t.closest(".ob-otp").querySelectorAll("input")], i = +t.dataset.otp;
         t.value = t.value.replace(/\D/g, "");
@@ -22390,6 +22542,7 @@
     });
     document.getElementById("obReplay").addEventListener("click", () => {
       localStorage.removeItem("fo_onboarded"); localStorage.removeItem("fo_member_hide");
+      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); setSession("member");
       document.querySelectorAll(".ob-coach").forEach(c => c.remove());
       Object.assign(OB, { on: true, step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", opt: { analytics: false, personalized: false }, f: { name: "", email: "", pw: "", user: "" }, errs: {}, tries: 0, account: null, resend: 30, os: false, sent: false });
       obMount();
@@ -22401,6 +22554,7 @@
     });
 
     document.documentElement.lang = state.lang;
+    applySessionData();
     render();
     i18nApply(document.getElementById("stage"));
   </script>

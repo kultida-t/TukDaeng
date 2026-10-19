@@ -1,0 +1,17 @@
+AUTH-002 — ปรับ flow ออกจากระบบ FO (logout → Feed guest + member sheet)
+วันที่ทำ: 2026-10-19
+ไฟล์หลัก: Prototypes/fo-flow/index.html
+หลักฐานภาพ: ผู้ใช้ส่งภาพหน้าจอเข้าแชทระหว่างรีวิว (Settings page, wa-sheet bug, profile-setup bug) — ไม่ได้แยกเก็บเป็นไฟล์ (evidence gap)
+
+รอบทดสอบ: ผ่าน (รีวิวผู้ใช้จริงใน preview + พบบั๊ก 2 จุดระหว่างรีวิว → แก้แล้ว)
+
+[ผ่าน] Settings and activity → กด "ออกจากระบบ" → confirm dialog → ยืนยัน → ลงหน้า Feed โหมด guest (ไม่ค้างหน้า Profile/Settings) + toast "ออกจากระบบแล้ว"/"Logged out successfully" ตามภาษา + member sheet "เข้าร่วมตึกแดง" เด้งให้ sign in กลับ
+[ผ่าน] member sheet หลัง logout: กด scrim หรือ "ข้ามไปก่อน" → browse ต่อแบบ guest ได้ตาม GUEST-001
+[ผ่าน] ลบบัญชี → dialog success → กด "ออกจากระบบ" → flow เดียวกัน (session guest + Feed + member sheet) — เดิม session ค้างเป็น member
+[ผ่าน] guest แตะปุ่มกระดิ่ง watch alert หน้ารายละเอียดโพสต์ → เด้ง member sheet (เดิมเปิด sheet "สร้างการแจ้งเตือนนาฬิกา" ได้เพราะ .mf-btn หลุด GUEST_GATE_SEL) — พบจากภาพที่ผู้ใช้รีวิว → แก้แล้ว
+[ผ่าน] social login Google/Apple จาก member sheet หลัง logout → เข้าระบบเลย ไม่ผ่านหน้า "ตั้งค่าโปรไฟล์" (เดิมขึ้นทุกครั้ง) — พบจากภาพที่ผู้ใช้รีวิว → แก้แล้ว; หน้าตั้งโปรไฟล์ยังแสดงเฉพาะ first-run signup เท่านั้น
+[ผ่าน] reload หลัง logout → session guest คงอยู่ (localStorage fo_session) ไม่เด้งกลับ member
+[ผ่าน] node syntax check script blocks ผ่านหลังแก้ทุกรอบ
+
+หมายเหตุหลักฐาน: ไม่มีภาพ Before/After เป็นไฟล์ — ผู้ใช้ส่งภาพผลรีวิวเข้าแชทโดยตรง (3 ภาพ: หน้า Settings, sheet สร้างการแจ้งเตือนที่ guest เปิดได้, หน้าตั้งค่าโปรไฟล์ที่ขึ้นผิด) หากต้องส่งตรวจแนะนำ capture ซ้ำจาก preview
+หมายเหตุเวลา: bank 0.3 ชม. ถึงจุดปิด task (20:07) — งาน follow-up 2 จุด (gate .mf-btn + social login returning) ทำหลังปิด task ไม่ถูก timer นับ
