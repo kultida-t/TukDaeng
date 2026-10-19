@@ -556,12 +556,13 @@
 
     .screen[data-ft="chips"] .feed-tab,
     .screen[data-ft="chipsc"] .feed-tab {
-      padding: 6px 14px;
+      padding: 4px 12px;
       border-radius: 999px;
       border: 1px solid var(--line);
       background: var(--chip-bg);
       color: var(--chip-text);
       font-size: 12.5px;
+      line-height: 1.25;
     }
 
     .screen[data-ft="chips"] .feed-tab.active,
@@ -2730,7 +2731,10 @@
       background: var(--chip-bg);
       border: none;
       border-radius: 999px;
-      padding: 8px 16px;
+      padding: 5px 13px;
+      font-size: 12.5px;
+      line-height: 1.25;
+      white-space: nowrap;
       cursor: pointer;
     }
 
@@ -3017,6 +3021,10 @@
     .svd-body {
       display: flex;
       flex-direction: column;
+    }
+
+    .svd-body:not(:has(.svd-empty)) {
+      padding-bottom: calc(100% * 4 / 9);
     }
 
     .svd-empty {
@@ -5285,10 +5293,20 @@
     .sr-chips {
       display: flex;
       gap: 8px;
-      padding: 6px 12px 12px;
+      padding: 6px 12px 10px;
       overflow-x: auto;
+      overflow-y: hidden;
       scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      touch-action: pan-x;
+      cursor: grab;
       flex-shrink: 0;
+    }
+
+    .sr-chips.dragging {
+      cursor: grabbing;
+      user-select: none;
     }
 
     .sr-chips::-webkit-scrollbar {
@@ -5399,7 +5417,10 @@
       background: var(--chip-bg);
       border: none;
       border-radius: 999px;
-      padding: 8px 16px;
+      padding: 5px 13px;
+      font-size: 12.5px;
+      line-height: 1.25;
+      white-space: nowrap;
       cursor: pointer;
     }
 
@@ -5410,21 +5431,20 @@
     }
 
     .sr-chip.ico {
-      padding: 8px 11px;
+      padding: 5px 9px;
     }
 
     /* explore grid — mixed square/tall tiles like IG explore */
     .xp-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-auto-rows: 118px;
-      grid-auto-flow: dense;
-      gap: 2px;
-      padding-bottom: 8px;
+      gap: 1px;
+      padding-bottom: calc(100% * 4 / 9);
     }
 
     .xp-tile {
       position: relative;
+      aspect-ratio: 3 / 4;
       border: none;
       padding: 0;
       cursor: pointer;
@@ -5434,11 +5454,6 @@
 
     .xp-tile.tall {
       grid-row: span 2;
-    }
-
-    .xp-grid.two {
-      grid-template-columns: repeat(2, 1fr);
-      grid-auto-rows: 178px;
     }
 
     .xp-tile img {
@@ -5626,13 +5641,14 @@
 
     .flt-chip {
       font-family: var(--font-main);
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 500;
       color: var(--text);
       background: var(--chip-bg);
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: 7px 13px;
+      padding: 4px 12px;
+      line-height: 1.25;
       cursor: pointer;
     }
 
@@ -8044,7 +8060,8 @@
       align-items: center;
       gap: 5px;
       margin-top: 7px;
-      padding: 4px 11px;
+      padding: 5px 13px;
+      line-height: 1.25;
       background: var(--chip-bg);
       color: var(--chip-text);
       border-radius: 999px;
@@ -8057,7 +8074,8 @@
       align-items: center;
       gap: 4px;
       margin: 7px 0 0 6px;
-      padding: 4px 11px;
+      padding: 5px 13px;
+      line-height: 1.25;
       background: var(--chip-bg);
       color: var(--chip-text);
       border: none;
@@ -10271,10 +10289,11 @@
       border: 1px solid var(--line);
       background: var(--surface);
       color: var(--text);
-      padding: 8px 18px;
-      border-radius: 22px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      line-height: 1.25;
       font-family: var(--font-main);
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
       letter-spacing: .1px;
       white-space: nowrap;
@@ -10395,12 +10414,13 @@
     }
 
     .bd-sugg-chip {
-      padding: 6px 13px;
-      border-radius: 18px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      line-height: 1.25;
       border: 1px solid var(--line);
       background: var(--surface);
       color: var(--text);
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 600;
       font-family: var(--font-main);
       cursor: pointer;
@@ -10424,6 +10444,10 @@
       color: var(--muted);
       flex-shrink: 0;
       font-weight: 500;
+    }
+
+    .bd-scroll>.bd-crumb:first-child {
+      padding-top: 56px;
     }
 
     .bd-crumb button {
@@ -13685,14 +13709,14 @@
     function exploreTiles() {
       const T = [];
       POSTS.filter(p => !p.ni && !p.muted && !p.blocked).forEach(p => p.photos.forEach((src, i) => T.push({ pid: p.id, i, src })));
-      const tall = new Set([0, 3, 8, 13]), views = new Set([2, 6, 11]);
+      const tall = new Set(), views = new Set([2, 3, 7]);
       return T.map((t, i) => ({ ...t, tall: tall.has(i), views: views.has(i) ? POSTS.find(x => x.id === t.pid).views : "" }));
     }
     function landingHTML() {
       return `
     <div class="sr-chips">
       <button class="sr-chip ico" data-sub="sfilter" title="Filters">${I.sliders(16)}</button>
-      ${SEARCH_POPULAR.map(c => `<button class="sr-chip sr-pick${c === "For you" ? " on" : ""}" data-q="${esc(c === "For you" ? "" : c)}">${c}</button>`).join("")}
+      ${SEARCH_POPULAR.slice(0, 10).map(c => `<button class="sr-chip sr-pick${c === "For you" ? " on" : ""}" data-q="${esc(c === "For you" ? "" : c)}">${c}</button>`).join("")}
     </div>
     <div class="xp-grid">
       ${exploreTiles().map(t => `<button class="xp-tile${t.tall ? " tall" : ""}" data-pid="${t.pid}" data-phi="${t.i}">
@@ -13784,7 +13808,8 @@
     </div>`;
     }
     function resultGridHTML(list) {
-      return `<div class="xp-grid two">${list.map(p => `<button class="xp-tile" data-pid="${p.id}" data-phi="0"><img src="${p.photos[0]}" alt="" loading="lazy"></button>`).join("")}</div>`;
+      const tall = new Set(), views = new Set([2, 3, 7]);
+      return `<div class="xp-grid two">${list.map((p, i) => `<button class="xp-tile${tall.has(i) ? " tall" : ""}" data-pid="${p.id}" data-phi="0"><img src="${p.photos[0]}" alt="" loading="lazy">${views.has(i) && p.views ? `<span class="xp-views">${I.eye(14)} ${p.views}</span>` : ""}</button>`).join("")}</div>`;
     }
     /* ===== post viewer — IG immersive viewer, vertical swipe through the result list ===== */
     function pvPostHTML(p, phi = 0) {
@@ -19281,6 +19306,24 @@
       renderSub(scr);
     });
 
+    (function () {
+      const stage = document.getElementById("stage");
+      let el = null, x0 = 0, s0 = 0, moved = false;
+      stage.addEventListener("pointerdown", e => {
+        if (e.pointerType !== "mouse") return;
+        el = e.target.closest(".sr-chips");
+        if (!el) return;
+        x0 = e.clientX; s0 = el.scrollLeft; moved = false;
+      });
+      window.addEventListener("pointermove", e => {
+        if (!el) return;
+        const dx = e.clientX - x0;
+        if (Math.abs(dx) > 4) { moved = true; el.classList.add("dragging"); }
+        if (moved) el.scrollLeft = s0 - dx;
+      });
+      window.addEventListener("pointerup", () => { if (el) { el.classList.remove("dragging"); el = null; setTimeout(() => { moved = false; }, 0); } });
+      stage.addEventListener("click", e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+    })();
     document.getElementById("stage").addEventListener("click", e => {
       const flow = e.target.closest("[data-flow]");
       if (flow) { openSub(flow.closest(".screen"), "create"); return; }
