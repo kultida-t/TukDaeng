@@ -22175,7 +22175,7 @@
       obSaveAccount({ email: (OB.account && OB.account.email) || OB.f.email || "", pw: OB.account ? OB.account.pw : "", user: OB.f.user, name: OB.f.name.trim(), provider: OB.provider || "email" }); /* AUTH-003 — profile step completes the persisted account */
       if (OB.provider && OB.provider !== "email") { /* social sign-up has no password — enter the app right after picking a username */
         localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user, name: OB.f.name.trim() }));
-        setSession("new"); obFinish(obT("Welcome to TukDaeng", "ยินดีต้อนรับสู่ตึกแดง"), !OB.gate);
+        setSession("new"); obFinish("", !OB.gate); /* AUTH-003 — enter silently like a real app, no welcome toast */
       } else obGo("created");
     }
 
@@ -22309,7 +22309,7 @@
       OB.step = s; OB.loading = false; OB.errs = {}; OB.sent = false; OB.declined = false; OB.legal = null; OB.os = false;
       if (s === "profile" && !OB.f.user && OB.f.email) OB.f.user = obSuggestUser();
       if (s === "signin" && !OB.f.email && !OB.f.pw) { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; }
-      if (s === "member" && !OB.gate && localStorage.getItem("fo_member_hide") === "1") return obFinish(obT("Welcome to TukDaeng", "ยินดีต้อนรับสู่ตึกแดง"));
+      if (s === "member" && !OB.gate && localStorage.getItem("fo_member_hide") === "1") return obFinish("");
       const r = obRoot(), clear = OB.recon || s === "member";
       if (r && r.classList.contains("recon") !== clear) return obMount();
       obDraw();
@@ -22533,7 +22533,7 @@
           case "signin": obSignin(); break;
           case "forgot": if (!obEmailOk(OB.f.email.trim())) { OB.errs = { email: obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง") }; obDraw(); } else { OB.sent = true; obDraw(); } break;
                     case "os": if (arg === "open") { OB.os = OB.step; obDraw(); } else { const was = OB.os; if (was === "track" && arg === "no") OB.opt.personalized = false; obGo(was === "track" ? "member" : "track"); } break;
-          case "finish": obFinish(obT("Welcome to TukDaeng", "ยินดีต้อนรับสู่ตึกแดง")); break;
+          case "finish": obFinish(""); break;
         }
         return;
       }
@@ -22574,7 +22574,8 @@
       localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); setSession("member");
       document.querySelectorAll(".ob-coach").forEach(c => c.remove());
       Object.assign(OB, { on: true, step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", opt: { analytics: false, personalized: false }, f: { name: "", email: "", pw: "", user: "" }, errs: {}, tries: 0, account: null, resend: 30, os: false, sent: false });
-      obMount();
+      state.feedTab = "all"; obLast = null;
+      render(); /* rebuild the screen so the replay lands on the feed like a real cold start — an orphaned sub/detail/viewer page must not survive underneath onboarding */
     });
     document.getElementById("obRecon").addEventListener("click", () => {
       if (OB.on && !OB.recon) return toast("Finish first-run onboarding before simulating re-consent");
