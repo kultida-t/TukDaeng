@@ -14602,7 +14602,7 @@
     function logoutDlgHTML() {
       const isTh = state.lang === "th";
       return `
-    <div class="dlg-q">${isTh ? "ออกจากระบบ @king.mr.fox หรือไม่?" : "Log out of @king.mr.fox?"}</div>
+    <div class="dlg-q">${isTh ? `ออกจากระบบ @${CP_ME.name} หรือไม่?` : `Log out of @${CP_ME.name}?`}</div>
     <div class="dlg-desc">${isTh ? "คุณจะต้องเข้าสู่ระบบอีกครั้งเพื่อเข้าถึงบัญชีของคุณ" : "You will need to sign in again to access your account."}</div>
     <button class="dlg-btn danger dlg-logout-go">${isTh ? "ออกจากระบบ" : "Log out"}</button>
     <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
@@ -14635,16 +14635,22 @@
     </div>
     <div class="dlg-desc" style="text-align:center;">
       ${isTh
-          ? `บัญชี @king.mr.fox ถูกปิดการใช้งานเรียบร้อยแล้ว และมีกำหนดลบถาวรในวันที่ <b>${finalDate}</b> (30 วัน)<br><br>หากคุณเปลี่ยนใจ สามารถเข้าสู่ระบบก่อนวันที่ดังกล่าวเพื่อยกเลิกคำขอและกู้คืนบัญชีได้ตลอดเวลา`
-          : `Your account @king.mr.fox has been deactivated and is scheduled for permanent deletion on <b>${finalDate}</b> (30 days).<br><br>If you change your mind, simply log back in before this date to cancel deletion and restore your account.`}
+          ? `บัญชี @${CP_ME.name} ถูกปิดการใช้งานเรียบร้อยแล้ว และมีกำหนดลบถาวรในวันที่ <b>${finalDate}</b> (30 วัน)<br><br>หากคุณเปลี่ยนใจ สามารถเข้าสู่ระบบก่อนวันที่ดังกล่าวเพื่อยกเลิกคำขอและกู้คืนบัญชีได้ตลอดเวลา`
+          : `Your account @${CP_ME.name} has been deactivated and is scheduled for permanent deletion on <b>${finalDate}</b> (30 days).<br><br>If you change your mind, simply log back in before this date to cancel deletion and restore your account.`}
     </div>
     <button class="dlg-btn dlg-delaccount-done" style="font-weight:600;color:var(--text);">${isTh ? "ออกจากระบบ" : "Log out"}</button>`;
     }
+    /* AUTH-003 — mask the signed-in account's own email instead of the fixed demo one */
+    const obMaskedEmail = () => {
+      const e = (obLoadAccount() || {}).email || "";
+      return state.session === "new" && e ? e.replace(/(.).*(@.*)/, "$1***$2") : "k***@tukdaeng.com";
+    };
     function forgotPwdDlgHTML() {
       const isTh = state.lang === "th";
+      const em = obMaskedEmail();
       return `
     <div class="dlg-q">${isTh ? "รีเซ็ตรหัสผ่าน?" : "Reset password?"}</div>
-    <div class="dlg-desc">${isTh ? "เราจะส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมลของคุณ (k***@tukdaeng.com) เพื่อให้คุณตั้งรหัสผ่านใหม่ได้อย่างปลอดภัย" : "We can send a password reset link to your email (k***@tukdaeng.com) to help you reset your password."}</div>
+    <div class="dlg-desc">${isTh ? `เราจะส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมลของคุณ (${em}) เพื่อให้คุณตั้งรหัสผ่านใหม่ได้อย่างปลอดภัย` : `We can send a password reset link to your email (${em}) to help you reset your password.`}</div>
     <button class="dlg-btn dlg-forgotpwd-go" style="color:var(--red);font-weight:600;">${isTh ? "ส่งลิงก์รีเซ็ต" : "Send reset link"}</button>
     <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
     }
@@ -20473,6 +20479,7 @@
         scr._delReason = "";
         scr._delFeedback = "";
         scr.classList.remove("sub-open");
+        if (state.session === "new") localStorage.removeItem("fo_account"); /* AUTH-003 — deleting the account for real drops the persisted credential; ordinary logout keeps it */
         setSession("guest"); /* AUTH-002 — a deactivated account falls back to guest browsing on the feed */
         scr.querySelector(".feed-scroll")?.scrollTo({ top: 0 });
         const isTh = state.lang === "th";
@@ -20505,7 +20512,7 @@
         const scr = dlgForgotGo.closest(".screen");
         scr.classList.remove("dialog-open");
         const isTh = state.lang === "th";
-        scrToast(scr, isTh ? "ส่งลิงก์รีเซ็ตรหัสผ่านไปยัง k***@tukdaeng.com แล้ว" : "Password reset link sent to k***@tukdaeng.com");
+        scrToast(scr, isTh ? `ส่งลิงก์รีเซ็ตรหัสผ่านไปยัง ${obMaskedEmail()} แล้ว` : `Password reset link sent to ${obMaskedEmail()}`);
         return;
       }
       const submitChgPwd = e.target.closest('[data-act="submit-chg-pwd"]');
@@ -22149,6 +22156,11 @@
     const obScore = p => (p.length >= 8 ? 1 : 0) + (/[a-z]/.test(p) && /[A-Z]/.test(p) ? 1 : 0) + (/\d/.test(p) ? 1 : 0) + (/[^A-Za-z0-9]/.test(p) || p.length >= 12 ? 1 : 0);
     const obEmailOk = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
     const OB_DEMO = { email: "demo@tukdaeng.com", pw: "Tukdaeng123", name: "Demo" };
+    /* AUTH-003 — an account registered in this browser lives in fo_account (credentials + profile)
+       so it survives logout/page reload; fo_newuser stays the lightweight profile of the active
+       "new" session while fo_account is the credential store */
+    const obLoadAccount = () => { try { return JSON.parse(localStorage.getItem("fo_account") || "null"); } catch (e) { return null; } };
+    const obSaveAccount = patch => { const a = { ...(obLoadAccount() || {}), ...patch }; localStorage.setItem("fo_account", JSON.stringify(a)); return a; };
     const obBack = (to, right = "") => `<div class="ob-top"><button class="ob-ghost" data-ob="go:${to}" aria-label="${obT("Back", "ย้อนกลับ")}">${I.back(22)}</button>${right}</div>`;
     const obField = (key, label, type, ph, extra = "") => `<div class="ob-field${OB.errs[key] ? " err" : ""}"><label>${label}</label><div class="ob-input"><input data-f="${key}" type="${type}" placeholder="${ph}" value="${obEsc(OB.f[key] || "")}" autocomplete="off" ${extra}>${type === "password" ? `<button class="ob-eye" data-ob="eye" type="button" aria-label="${obT("Show or hide password", "แสดง/ซ่อนรหัสผ่าน")}">${I.eye(20)}</button>` : ""}</div>${OB.errs[key] ? `<div class="ob-msg">${OB.errs[key]}</div>` : ""}</div>`;
     const obLegalLinks = () => `<div class="ob-legal">${obT("By continuing you agree to our", "การดำเนินการต่อถือว่าคุณยอมรับ")} <button data-ob="legal:terms">${obT("Terms of Use", "ข้อกำหนดการใช้งาน")}</button> ${obT("and", "และ")} <button data-ob="legal:privacy">${obT("Privacy Policy", "นโยบายความเป็นส่วนตัว")}</button></div>`;
@@ -22160,6 +22172,7 @@
       return /^[a-z0-9_.]{3,20}$/.test(base) ? base : "member" + Math.floor(1000 + Math.random() * 9000);
     }
     function obEnterAfterProfile() {
+      obSaveAccount({ email: (OB.account && OB.account.email) || OB.f.email || "", pw: OB.account ? OB.account.pw : "", user: OB.f.user, name: OB.f.name.trim(), provider: OB.provider || "email" }); /* AUTH-003 — profile step completes the persisted account */
       if (OB.provider && OB.provider !== "email") { /* social sign-up has no password — enter the app right after picking a username */
         localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user, name: OB.f.name.trim() }));
         setSession("new"); obFinish(obT("Welcome to TukDaeng", "ยินดีต้อนรับสู่ตึกแดง"), !OB.gate);
@@ -22349,7 +22362,7 @@
     }
     function obFinish(msg, tour = true) {
       localStorage.setItem("fo_onboarded", "1"); OB.on = false; OB.os = false; OB.gate = false; obMount();
-      if (tour) obTour(0);
+      if (tour && !localStorage.getItem("fo_toured")) { localStorage.setItem("fo_toured", "1"); obTour(0); } /* AUTH-003 — coach marks are a first-run thing, not an every-sign-in thing */
       if (msg) toast(msg);
     }
     function obLog() {
@@ -22368,7 +22381,9 @@
       if (obScore(f.pw) < 2 || f.pw.length < 8) E.pw = obT("Use at least 8 characters with upper & lower case or a number.", "ใช้อย่างน้อย 8 ตัวอักษร ผสมพิมพ์ใหญ่-เล็ก หรือตัวเลข");
       OB.errs = E;
       if (Object.keys(E).length) return obDraw();
-      f.email = f.email.trim(); f.name = f.name.trim(); OB.account = { email: f.email, pw: f.pw }; OB.provider = "email"; OB.resend = 30; obGo("otp");
+      f.email = f.email.trim(); f.name = f.name.trim(); OB.account = { email: f.email, pw: f.pw }; OB.provider = "email"; OB.resend = 30;
+      obSaveAccount({ email: f.email, pw: f.pw, name: f.name, user: "", provider: "email" }); /* AUTH-003 — persist the credential now, username joins after the profile step */
+      obGo("otp");
     }
     function obSignin() {
       const f = OB.f, E = {};
@@ -22377,18 +22392,24 @@
       if (!f.pw) E.pw = obT("Enter your password.", "กรอกรหัสผ่าน");
       OB.errs = E;
       if (Object.keys(E).length) return obDraw();
-      const ok = [OB.account, OB_DEMO].filter(Boolean).some(a => f.email.trim().toLowerCase() === a.email.toLowerCase() && f.pw === a.pw);
-      if (!ok) {
+      /* AUTH-003 — match against this run's OB.account plus the persisted fo_account so a
+         registered account still signs in after logout/reload, alongside the demo member */
+      const saved = obLoadAccount();
+      const credOk = a => a && a.email && f.email.trim().toLowerCase() === a.email.toLowerCase() && f.pw === a.pw;
+      const acct = [OB.account, saved].find(credOk);
+      if (!acct && !credOk(OB_DEMO)) {
         OB.tries++;
         OB.errs = { form: OB.tries >= 5 ? obT("Too many attempts. Try again in 15 minutes or reset your password.", "พยายามหลายครั้งเกินไป ลองใหม่ในอีก 15 นาที หรือรีเซ็ตรหัสผ่าน") : obT("Email or password is incorrect.", "อีเมลหรือรหัสผ่านไม่ถูกต้อง") + ` (${OB.tries}/5)` };
         return obDraw();
       }
-      OB.tries = 0; if (!f.name) f.name = f.email.trim().toLowerCase() === OB_DEMO.email ? OB_DEMO.name : (f.user || f.email.split("@")[0]);
+      OB.tries = 0;
       /* GUEST-001 — demo credentials sign in as the existing member (all mock data);
-         the account just created in this run starts as a fresh member (empty states) */
-      const isNew = !!(OB.account && f.email.trim().toLowerCase() === OB.account.email.toLowerCase());
+         a registered account comes back as a fresh member (empty states) with its own username */
+      const isNew = !!acct;
+      if (acct) { f.user = acct.user || f.user; f.name = acct.name || f.name || f.user || f.email.split("@")[0]; }
+      else f.name = OB_DEMO.name;
       setSession(isNew ? "new" : "member");
-      obFinish(obT(isNew ? "Welcome, " : "Welcome back, ", isNew ? "ยินดีต้อนรับ " : "ยินดีต้อนรับกลับ ") + f.name, isNew);
+      obFinish("", isNew); /* AUTH-003 — real apps drop you straight in, no welcome-back toast on sign-in */
     }
 
     /* ===== GUEST-001 — session model: member (demo data) / guest (logged-out) / new (fresh account) =====
@@ -22429,7 +22450,7 @@
       } else {
         clearUserData();
         if (state.session === "new") {
-          const nu = JSON.parse(localStorage.getItem("fo_newuser") || "null") || {};
+          const nu = JSON.parse(localStorage.getItem("fo_newuser") || "null") || obLoadAccount() || {};
           const uname = (nu.user || OB.f.user || (OB.f.email || "").split("@")[0] || "new.member").toLowerCase().replace(/[^a-z0-9_.]/g, "") || "new.member";
           NEW_USER_KEY = uname;
           CP_ME.name = uname; CP_ME.avatar = "./assets/user-avatars/u-1075.png";
@@ -22454,7 +22475,8 @@
       state.session = s;
       localStorage.setItem("fo_session", s);
       if (s === "new") {
-        localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user || "", name: OB.f.name || "" }));
+        const saved = obLoadAccount() || {}; /* AUTH-003 — the persisted account fills in when the form state is gone (e.g. after reload) */
+        localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user || saved.user || "", name: OB.f.name || saved.name || "" }));
       } else localStorage.removeItem("fo_newuser");
       applySessionData();
     }
@@ -22498,7 +22520,14 @@
           case "skipprof": { const u = OB.f.user.trim().toLowerCase(); OB.f.user = /^[a-z0-9_.]{3,20}$/.test(u) ? u : obSuggestUser(); obEnterAfterProfile(); break; }
           case "social": { /* AUTH-002 — returning sign-in (sign-in page, or the member sheet shown as a gate/re-consent) skips profile setup; it only shows on a first-time sign-up */
             const returning = OB.step === "signin" || ((OB.gate || OB.recon) && OB.step === "member");
-            if (returning) { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; obSignin(); }
+            if (returning) {
+              const saved = obLoadAccount(); /* AUTH-003 — a persisted account from the same provider returns to its own new-member session */
+              if (saved && saved.provider === arg) {
+                OB.f.email = saved.email || ""; OB.f.pw = ""; OB.f.user = saved.user || ""; OB.f.name = saved.name || "";
+                setSession("new");
+                obFinish("", !OB.gate); /* AUTH-003 — sign back in silently like a real app */
+              } else { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; obSignin(); }
+            }
             else { OB.provider = arg; OB.account = { email: "", pw: "" }; OB.f.user = ""; OB.f.name = ""; obGo("profile"); } break; }
           case "guest": { const wasGate = OB.gate; if (OB.hide && !wasGate) localStorage.setItem("fo_member_hide", "1"); setSession("guest"); obFinish("", !wasGate); break; } /* GUEST-001 — real apps just enter silently, no "browsing as guest" toast */
           case "signin": obSignin(); break;
@@ -22542,7 +22571,7 @@
     });
     document.getElementById("obReplay").addEventListener("click", () => {
       localStorage.removeItem("fo_onboarded"); localStorage.removeItem("fo_member_hide");
-      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); setSession("member");
+      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); setSession("member");
       document.querySelectorAll(".ob-coach").forEach(c => c.remove());
       Object.assign(OB, { on: true, step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", opt: { analytics: false, personalized: false }, f: { name: "", email: "", pw: "", user: "" }, errs: {}, tries: 0, account: null, resend: 30, os: false, sent: false });
       obMount();
