@@ -12447,7 +12447,10 @@
     .ob-links { position: relative; display: flex; align-items: center; gap: 12px; margin: 6px 0 16px; }
     .ob-links .ob-spin { position: absolute; left: 50%; top: 50%; margin: -13px 0 0 -13px; width: 26px; height: 26px; border-width: 2.5px; }
     .ob-c.loading .ob-links button { opacity: .45; pointer-events: none; }
-    .ob-c.loading .ob-ill svg { transform-origin: 50% 80%; animation: obWave 1.1s ease-in-out infinite; }
+    .ob-c.loading .ob-ill svg, .ob-c.loading .ob-ill img { transform-origin: 50% 80%; animation: obWave 1.1s ease-in-out infinite; }
+    .screen[data-theme="dark"] .ob-ill img.ob-hero-hand { content: url("./assets/ob-welcome-hand-dark.png"); }
+    .screen[data-theme="dark"] .ob-ill img.ob-hero-bell { content: url("./assets/ob-notif-phone-dark.png"); }
+    .screen[data-theme="dark"] .ob-ill img.ob-hero-tailor { content: url("./assets/ob-track-phone-dark.png"); }
     @keyframes obWave { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
     .ob-links i { width: 1px; height: 12px; background: var(--line); }
     .ob-links button, .ob-ulink { background: none; border: 0; color: var(--link); font: inherit; font-size: 12.5px; cursor: pointer; padding: 4px; }
@@ -22118,9 +22121,9 @@
 
     const obSvg = body => `<svg width="168" height="156" viewBox="0 0 160 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
     const OB_ILL = {
-      watch: obSvg(`<path d="M64 36L68 8h24l4 28"/><path d="M64 114l4 28h24l4-28"/><circle cx="80" cy="75" r="42"/><circle cx="80" cy="75" r="35"/><path d="M80 44v5M80 101v5M49 75h5M106 75h5"/><path d="M80 75V54M80 75l15 9"/><circle cx="80" cy="75" r="3" fill="#c8212b" stroke="none"/><path d="M122 70h7v10h-7z"/>`),
-      bell: obSvg(`<path d="M80 24c-20 0-32 16-32 38 0 24-9 32-14 40h92c-5-8-14-16-14-40 0-22-12-38-32-38z"/><path d="M72 24v-6a8 8 0 0 1 16 0v6"/><path d="M68 108a12 12 0 0 0 24 0"/><path d="M22 50c-4 9-4 17 0 26M138 50c4 9 4 17 0 26M12 44c-6 13-6 27 0 40M148 44c6 13 6 27 0 40"/><circle cx="112" cy="36" r="9" fill="#c8212b" stroke="none"/>`),
-      tailor: obSvg(`<rect x="38" y="20" width="84" height="108" rx="10"/><circle cx="80" cy="66" r="22"/><path d="M80 66V51M80 66l10 6"/><path d="M54 104h52M64 116h32"/><path d="M118 40c-9-6-14-10-14-16a7 7 0 0 1 14-1 7 7 0 0 1 14 1c0 6-5 10-14 16z" fill="#c8212b" stroke="none" transform="translate(0 -4)"/>`),
+      watch: `<img class="ob-hero-hand" src="./assets/ob-welcome-hand.png" alt="" style="height:180px;filter:drop-shadow(0 0 22px rgba(200,33,43,.22))">`,
+      bell: `<img class="ob-hero-bell" src="./assets/ob-notif-phone.png" alt="" style="height:180px;filter:drop-shadow(0 0 22px rgba(200,33,43,.22))">`,
+      tailor: `<img class="ob-hero-tailor" src="./assets/ob-track-phone.png" alt="" style="height:180px;filter:drop-shadow(0 0 22px rgba(200,33,43,.22))">`,
       member: obSvg(`<circle cx="76" cy="50" r="18"/><path d="M42 118c0-20 14-34 34-34s34 14 34 34"/><circle cx="116" cy="44" r="11" fill="#c8212b" stroke="none"/><path d="M116 38v12M110 44h12" stroke="#fff" stroke-width="2"/>`)
     };
     const OB_LEGAL = {
