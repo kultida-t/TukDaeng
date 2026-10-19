@@ -14349,12 +14349,24 @@
       scr.classList.add("sub-open");
     }
     function pushSub(scr, name) {
-      (scr._subStack = scr._subStack || []).push(name);
-      if (scr._subStack.length === 1) scr._subSwap = false; /* fresh push root slides in — only nav tabs swap */
+      const st = (scr._subStack = scr._subStack || []);
+      const el = scr.querySelector(".page-sub");
+      /* push while a sub page is already open — the new page slides in over it;
+         a ghost clone keeps the current page visible as backing (same illusion as rpPush) */
+      const inPlace = scr.classList.contains("sub-open") && st.length > 0;
+      if (inPlace && el) {
+        const g = el.cloneNode(true);
+        g.className = "pg-ghost";
+        el.insertAdjacentElement("afterend", g);
+        setTimeout(() => g.remove(), 340);
+      }
+      st.push(name);
+      scr._subSwap = false; /* fresh push root slides in — only nav tabs swap */
       scr._pfAv = false;
       scr._lastSubTop = "";
       renderSub(scr);
       scr.classList.add("sub-open");
+      if (inPlace && el) { el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; } /* restart slide-in */
     }
     function renderSub(scr) {
       const st = scr._subStack || [];
@@ -14428,18 +14440,11 @@
       el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; /* slide in even if a page was already open */
     }
     function rpPush(scr, name) {
-      const el = scr.querySelector(".page-sub");
-      if ((scr._subStack || []).length) {
-        const g = el.cloneNode(true);
-        g.className = "pg-ghost"; /* own class — keeps selectors/queries on the real page clean */
-        el.insertAdjacentElement("afterend", g);
-        setTimeout(() => g.remove(), 340);
-      }
-      scr._subSwap = false; /* a swap-opened root (nav tab) must not suppress the slide of pages pushed on it */
-      scr._lastSubTop = "";
-      if (el) el.classList.remove("pg-swap");
+      /* ghost + slide-in restart live in pushSub now — every pushed sub page slides
+         over the previous one (a swap-opened root must not suppress that slide) */
       pushSub(scr, name);
-      el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; /* restart slide-in */
+      const el = scr.querySelector(".page-sub");
+      if (el) { el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
     }
     function pmDropCovered(scr) { /* the '...' sheet is fully covered by the report page — snap it shut
     (no transition) so its rows don't sweep through the uncovered strips outside .page-sub;

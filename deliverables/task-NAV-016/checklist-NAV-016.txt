@@ -1,0 +1,14 @@
+NAV-016 Manual Review Checklist — แก้ transition เปิดหน้าย่อยจากหน้า Settings and activity ให้สม่ำเสมอ (FO Flow)
+ผู้ตรวจ: ผู้ใช้ (ตรวจหน้าจอจริงผ่าน preview http://localhost:8642) | ผล: ผ่าน
+
+สาเหตุที่แก้: pushSub() render ทับเนื้อหา .page-sub ตรง ๆ โดยไม่มี ghost clone/animation restart เหมือน rpPush() — ทำให้กดเมนูย่อยครั้งแรกดูเป็น "แทนที่" (ไม่มี slide) และเมื่อกดหลัง back (ที่ render หน้าเดิมด้วย pg-swap/animation:none) animation pgSide จะ replay โดยไม่มีหน้าเดิมค้างเป็น backing เลยเห็นหน้าโปรไฟล์ใต้จอแทนหน้า Settings — แก้โดยย้ายกลไก ghost + slide-in restart เข้า pushSub() (ทุก data-sub push ทั่วแอปได้พฤติกรรมเดียวกัน) และเหลือ rpPush() เป็น wrapper เรียก pushSub เพื่อกัน ghost ซ้อน
+
+เคส 1: Profile → burger (Settings and activity) → กดเมนูย่อยครั้งแรก (Language) — หน้าใหม่สไลด์เข้าจากขวา มีหน้า Settings ค้างเป็น backing  -> ผ่าน (ยืนยันทั้ง automated check: ghost "Settings and activity" + animation pgSide และภาพ after-slide-*)
+เคส 2: กด back กลับ Settings แล้วกดเมนูอื่น (Theme mode) — สไลด์เข้าเหมือนเดิมและ backing เป็น Settings ไม่ใช่โปรไฟล์ (เคสที่เคยบั๊ก)  -> ผ่าน
+เคส 3: กด back จากหน้าย่อย — สไลด์ออกทางขวากลับมาหน้า Settings ตามเดิม  -> ผ่าน
+เคส 4: ครอบคลุมทุกเมนูย่อยของ Settings and activity ผ่านจุดเดียว (data-sub → pushSub) — ไม่ hardcode เฉพาะ row ใด  -> ผ่าน (ผู้ใช้ยืนยัน "โอเคปิด task ได้")
+เคส 5: Regression — flow อื่นที่ใช้ pushSub/rpPush (report, chat, profile:, savedcol/wishcol, sfilter) ได้ slide-in สม่ำเสมอและ symmetric กับ back ที่ slide ออกอยู่แล้ว  -> ผ่าน (ตรวจ code path รวม + ผู้ใช้ยืนยันรวม)
+
+Evidence gap: ไม่มีภาพ Before (เริ่ม capture หลังแก้แล้ว) — อาการเดิมยืนยันจากรายงานผู้ใช้ + code inspection (pushSub ไม่มี ghost; pg-swap toggle ทำ pgSide replay โดยไม่มี backing); After แคปจริง 8 ภาพใน screenshots/task-NAV-016/after/ (settings เปิดแล้ว, mid-slide เห็น ghost Settings, หน้า Language นิ่ง, mid-slide รอบ 2 — ทั้ง 390 และ 1440)
+
+ไฟล์ที่แก้: Prototypes/fo-flow/index.html (pushSub ~L14351 เพิ่ม ghost clone + animation restart เมื่อ sub page เปิดอยู่; rpPush ~L14442 ลดเป็น wrapper เรียก pushSub)
