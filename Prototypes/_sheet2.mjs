@@ -1,0 +1,14 @@
+import { chromium } from "playwright";
+import { readdirSync, writeFileSync } from "fs";
+import { pathToFileURL } from "url";
+const dir = "d:/TukDaeng/Prototypes/screenshots/task-NAV-012/after";
+const files = readdirSync(dir).filter(f => f.endsWith(".png") && !f.startsWith("sheet"));
+const browser = await chromium.launch();
+const html = `<body style="margin:0;background:#444;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:1500px">${files.map(f => `<figure style="margin:0;color:#fff;font:12px sans-serif"><img src="${pathToFileURL(dir + "/" + f).href}" style="width:100%">${f}</figure>`).join("")}</body>`;
+writeFileSync(dir + "/sheet.html", html);
+const pg = await browser.newPage({ viewport: { width: 1500, height: 900 } });
+await pg.goto(pathToFileURL(dir + "/sheet.html").href);
+await pg.waitForTimeout(800);
+await pg.screenshot({ path: `${dir}/sheet.png`, fullPage: true });
+console.log(files.join(","));
+await browser.close();
