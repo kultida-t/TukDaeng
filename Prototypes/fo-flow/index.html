@@ -6283,6 +6283,16 @@
       font-weight: 600;
     }
 
+    .screen[data-nav="labeled"]:not([data-theme="light"]) .nav-item:not(.active) {
+      color: rgba(255, 255, 255, .88);
+      font-weight: 600;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+    }
+
+    .screen[data-nav="labeled"]:not([data-theme="light"]) .nav-item:not(.active)>svg {
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .55));
+    }
+
     .screen[data-nav="labeled"] .feed-scroll {
       padding-bottom: 84px;
     }
