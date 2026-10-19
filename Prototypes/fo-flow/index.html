@@ -12310,6 +12310,305 @@
     .ch-menu-head .detail-title {
       font-weight: 500;
     }
+
+    /* ============ FIRST-RUN ONBOARDING (install -> first open -> consent -> sign up -> sign in) ============ */
+    .ob { position: absolute; inset: 0; z-index: 100; background: var(--bg); color: var(--text); display: flex; flex-direction: column; overflow: hidden; font-family: var(--font-main); }
+    .ob.recon { background: transparent; }
+    .ob .statusbar { z-index: 3; }
+    .ob-page { flex: 1; display: flex; flex-direction: column; padding: 56px 24px 28px; overflow-y: auto; animation: obIn .28s ease; }
+    @keyframes obIn { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+    .ob-splash { align-items: center; justify-content: center; text-align: center; gap: 10px; animation: none; }
+    .ob-logo { font-size: 34px; font-weight: 800; color: var(--red); letter-spacing: .02em; line-height: 1; }
+    .ob-tag { font-size: 13px; color: var(--muted); }
+    .ob-spin { width: 22px; height: 22px; border-radius: 50%; border: 2.5px solid var(--line); border-top-color: var(--red); animation: obSpin .8s linear infinite; margin-top: 26px; }
+    @keyframes obSpin { to { transform: rotate(360deg); } }
+    .ob-top { display: flex; align-items: center; justify-content: space-between; min-height: 36px; margin: -6px -8px 10px; }
+    .ob-top .ob-ghost { background: none; border: 0; color: var(--text); padding: 8px; border-radius: 10px; cursor: pointer; font: inherit; font-size: 14px; font-weight: 600; display: flex; align-items: center; }
+    .ob-top .ob-ghost.muted { color: var(--muted); font-weight: 500; }
+    .ob h1 { font-size: 26px; font-weight: 700; line-height: 1.25; margin-bottom: 8px; }
+    .ob .ob-sub { font-size: 14px; color: var(--muted); line-height: 1.55; margin-bottom: 20px; }
+    .ob-grow { flex: 1; }
+    .ob-btn { width: 100%; min-height: 50px; border-radius: 14px; border: 1px solid transparent; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .15s ease; }
+    .ob-btn.pri { background: var(--red); color: #fff; }
+    .ob-btn.sec { background: var(--btn-gray); color: var(--text); }
+    .ob-btn.out { background: transparent; border-color: var(--line); color: var(--text); }
+    .ob-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .ob-link { background: none; border: 0; color: var(--link); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 6px 2px; }
+    .ob-textbtn { background: none; border: 0; color: var(--muted); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 12px; width: 100%; }
+    .ob-stack { display: flex; flex-direction: column; gap: 10px; }
+    .ob-hero { height: 250px; border-radius: 24px; margin-bottom: 26px; display: flex; align-items: center; justify-content: center; color: #fff; background: radial-gradient(circle at 30% 20%, #e5434d, var(--red) 55%, #6f1219); box-shadow: 0 14px 34px rgba(200, 33, 43, .28); }
+    .ob-dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 18px; }
+    .ob-dots i { width: 7px; height: 7px; border-radius: 99px; background: var(--line); transition: all .2s ease; }
+    .ob-dots i.on { width: 22px; background: var(--red); }
+    .ob-opt { display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 16px; border: 1.5px solid var(--line); background: var(--surface); margin-bottom: 10px; cursor: pointer; font: inherit; color: var(--text); text-align: left; width: 100%; }
+    .ob-opt.on { border-color: var(--red); }
+    .ob-opt b { font-size: 16px; font-weight: 600; display: block; }
+    .ob-opt small { color: var(--muted); font-size: 12px; }
+    .ob-radio { margin-left: auto; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ob-opt.on .ob-radio { border-color: var(--red); background: var(--red); color: #fff; }
+    .ob-field { margin-bottom: 14px; }
+    .ob-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .ob-input { position: relative; display: flex; align-items: center; }
+    .ob-input input { width: 100%; height: 50px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--surface); color: var(--text); padding: 0 46px 0 14px; font: inherit; font-size: 15px; outline: none; }
+    .ob-input input:focus { border-color: var(--red); }
+    .ob-field.err .ob-input input { border-color: #e5484d; }
+    .ob-input .ob-eye { position: absolute; right: 6px; width: 38px; height: 38px; background: none; border: 0; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .ob-msg { font-size: 12px; margin-top: 6px; color: #e5484d; min-height: 0; }
+    .ob-banner { padding: 12px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; margin-bottom: 14px; background: rgba(229, 72, 77, .12); color: #e5484d; }
+    .ob-banner.info { background: var(--surface-2); color: var(--muted); }
+    .ob-meter { display: flex; gap: 4px; margin-top: 8px; }
+    .ob-meter i { flex: 1; height: 4px; border-radius: 4px; background: var(--line); }
+    .ob-meter[data-s="1"] i:nth-child(-n+1) { background: #e5484d; }
+    .ob-meter[data-s="2"] i:nth-child(-n+2) { background: #f5a623; }
+    .ob-meter[data-s="3"] i:nth-child(-n+3) { background: #5ab552; }
+    .ob-meter[data-s="4"] i { background: #2f9e44; }
+    .ob-hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .ob-otp { display: flex; gap: 8px; justify-content: space-between; margin: 6px 0 12px; }
+    .ob-otp input { width: 100%; max-width: 48px; height: 56px; text-align: center; font: inherit; font-size: 22px; font-weight: 700; border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface); color: var(--text); outline: none; padding: 0; }
+    .ob-otp input:focus { border-color: var(--red); }
+    .ob-otp.bad input { border-color: #e5484d; animation: obShake .3s; }
+    @keyframes obShake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    .ob-avatar { width: 96px; height: 96px; border-radius: 50%; background: var(--surface-2); border: 2px dashed var(--line); margin: 6px auto 20px; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 700; color: var(--muted); }
+    .ob-ico { width: 84px; height: 84px; border-radius: 50%; margin: 30px auto 22px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--red) 14%, transparent); color: var(--red); }
+    .ob-ico.ok { background: rgba(47, 158, 68, .15); color: #2f9e44; }
+    .ob-center { text-align: center; }
+    .ob-list { list-style: none; margin: 0 0 18px; display: flex; flex-direction: column; gap: 12px; }
+    .ob-list li { display: flex; gap: 10px; font-size: 14px; color: var(--muted); line-height: 1.45; }
+    .ob-list li svg { color: #2f9e44; flex-shrink: 0; margin-top: 2px; }
+    .ob-legal { font-size: 12px; color: var(--muted); text-align: center; line-height: 1.6; margin-top: 14px; }
+    .ob-legal button { background: none; border: 0; color: var(--link); font: inherit; cursor: pointer; padding: 0; text-decoration: underline; }
+    .ob-scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, .58); z-index: 1; animation: obFade .25s ease; }
+    @keyframes obFade { from { opacity: 0; } }
+    .ob-sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; background: var(--surface); border-radius: 26px 26px 0 0; padding: 12px 22px 24px; max-height: 88%; overflow-y: auto; box-shadow: 0 -12px 40px rgba(0, 0, 0, .35); animation: obUp .38s cubic-bezier(.2, .9, .3, 1); }
+    @keyframes obUp { from { transform: translateY(100%); } }
+    .ob-grab { width: 38px; height: 4px; border-radius: 4px; background: var(--line); margin: 0 auto 14px; }
+    .ob-sheet h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .ob-sheet p.ob-sub { margin-bottom: 14px; font-size: 13px; }
+    .ob-tog { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); }
+    .ob-tog div { flex: 1; font-size: 13px; line-height: 1.4; }
+    .ob-tog b { display: block; font-size: 14px; font-weight: 600; }
+    .ob-tog span { color: var(--muted); font-size: 12px; }
+    .ob-sw { position: relative; width: 46px; height: 28px; border-radius: 99px; border: 0; background: var(--line); cursor: pointer; flex-shrink: 0; transition: background .2s ease; }
+    .ob-sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform .2s ease; }
+    .ob-sw.on { background: var(--red); }
+    .ob-sw.on::after { transform: translateX(18px); }
+    .ob-reqrow { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 13px; }
+    .ob-reqrow b { display: block; font-size: 14px; font-weight: 600; }
+    .ob-reqrow span { color: var(--muted); font-size: 12px; }
+    .ob-pill { margin-left: auto; font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 99px; background: var(--chip-bg); color: var(--chip-text); }
+    .ob-legalview { position: absolute; inset: 0; z-index: 4; background: var(--bg); display: flex; flex-direction: column; padding-top: 44px; animation: obIn .25s ease; }
+    .ob-legalview .ob-top { padding: 0 14px; margin: 0 0 6px; border-bottom: 1px solid var(--line); min-height: 48px; }
+    .ob-legalbody { flex: 1; overflow-y: auto; padding: 16px 22px 28px; font-size: 14px; line-height: 1.65; color: var(--text); }
+    .ob-legalbody h3 { font-size: 15px; margin: 16px 0 4px; }
+    .ob-legalbody p { color: var(--muted); }
+    .ob-os { position: absolute; inset: 0; z-index: 6; background: rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center; animation: obFade .2s ease; }
+    .ob-coach { position: absolute; z-index: 60; width: 230px; background: color-mix(in srgb, var(--red) 74%, transparent); color: #fff; border-radius: 14px; padding: 12px 14px; font-size: 13px; line-height: 1.45; box-shadow: 0 10px 28px rgba(0, 0, 0, .4), inset 0 0 0 .5px rgba(255, 255, 255, .2); -webkit-backdrop-filter: blur(24px) saturate(1.6); backdrop-filter: blur(24px) saturate(1.6); animation: obFade .3s ease; }
+    .ob-coach::before { content: ""; position: absolute; top: -6px; left: var(--ax, 20px); width: 14px; height: 14px; background: color-mix(in srgb, var(--red) 74%, transparent); transform: rotate(45deg); border-radius: 3px; }
+    .ob-coach.flip::before { top: auto; bottom: -6px; }
+    .ob-coach button { display: block; margin-top: 8px; margin-left: auto; background: rgba(255, 255, 255, .22); color: #fff; border: 0; border-radius: 99px; padding: 6px 14px; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .ob-dev { position: fixed; right: 18px; z-index: 60; width: 44px; height: 44px; border-radius: 50%; border: 1px solid #3a3a42; background: #111114; color: #e8e8ec; font-size: 11px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(0, 0, 0, .45); }
+    /* splash sequence: icon alone -> icon + name + tagline -> loading bar -> language */
+    .ob-splash { background: var(--bg); }
+    .ob-splash img { width: 132px; height: 132px; margin: -22px 0; display: block; animation: obIcon 1.1s cubic-bezier(.2, .8, .2, 1) both; }
+    .ob-splash .ob-name { font-size: 22px; font-weight: 600; letter-spacing: .04em; margin-top: 30px; opacity: 0; animation: obRise .7s ease 1s both; }
+    .ob-splash .ob-tag { opacity: 0; animation: obRise .7s ease 1.25s both; }
+    .ob-load { position: absolute; left: 50%; bottom: 96px; width: 120px; height: 3px; margin-left: -60px; border-radius: 3px; background: var(--line); overflow: hidden; opacity: 0; animation: obFade .4s ease 1.5s both; }
+    .ob-load i { display: block; height: 100%; width: 100%; background: var(--red); transform-origin: left; animation: obBar 1.4s ease-in-out 1.6s both; }
+    @keyframes obIcon { 0% { opacity: 0; transform: translateY(46px) scale(.88); } 35% { opacity: 1; transform: translateY(46px) scale(1); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes obRise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @keyframes obBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    /* lighter, calmer typography for the whole onboarding flow */
+    .ob h1 { font-size: 22px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
+    .ob .ob-sub { font-size: 13.5px; font-weight: 400; line-height: 1.6; }
+    .ob-btn { min-height: 48px; font-size: 14.5px; font-weight: 600; }
+    .ob-textbtn, .ob-link, .ob-top .ob-ghost { font-weight: 500; }
+    .ob-opt b { font-size: 15px; font-weight: 500; }
+    .ob-field label { font-size: 12.5px; font-weight: 500; color: var(--muted); }
+    .ob-input input { font-size: 14.5px; font-weight: 400; }
+    .ob-sheet h2 { font-size: 18px; font-weight: 600; }
+    .ob-tog b, .ob-reqrow b { font-size: 14px; font-weight: 500; }
+    .ob-otp input { font-size: 20px; font-weight: 600; }
+    .ob-pill { font-weight: 600; }
+    .ob-legalbody h3 { font-weight: 600; font-size: 14.5px; }
+    /* Uniqlo-style first-run: quiet monochrome, thin type, line illustrations, bottom action bar */
+    .ob-btn { border-radius: 999px; letter-spacing: .02em; }
+    .ob-btn.pri { background: var(--text); color: var(--bg); }
+    .ob-btn.out { background: transparent; border: 1px solid var(--text); color: var(--text); }
+    .ob-bar { padding: 12px 20px 26px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; background: var(--bg); flex-shrink: 0; }
+    .ob-bar.row { flex-direction: row; }
+    .ob-bar.row .ob-btn { flex: 1; }
+    .ob-page:has(+ .ob-bar) { padding-bottom: 14px; }
+    .ob-c { align-items: center; text-align: center; }
+    .ob-c h1 { font-size: 17px; font-weight: 500; text-align: center; margin: 4px 0 10px; }
+    .ob-c .ob-sub { font-size: 12.5px; text-align: center; margin-bottom: 14px; }
+    .ob-c .ob-top { align-self: stretch; }
+    .ob-ill { display: flex; justify-content: center; color: var(--text); margin: 34px 0 26px; }
+    .ob-c .ob-ill { margin-top: 56px; }
+    .ob-links { position: relative; display: flex; align-items: center; gap: 12px; margin: 6px 0 16px; }
+    .ob-links .ob-spin { position: absolute; left: 50%; top: 50%; margin: -13px 0 0 -13px; width: 26px; height: 26px; border-width: 2.5px; }
+    .ob-c.loading .ob-links button { opacity: .45; pointer-events: none; }
+    .ob-c.loading .ob-ill svg { transform-origin: 50% 80%; animation: obWave 1.1s ease-in-out infinite; }
+    @keyframes obWave { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+    .ob-links i { width: 1px; height: 12px; background: var(--line); }
+    .ob-links button, .ob-ulink { background: none; border: 0; color: var(--link); font: inherit; font-size: 12.5px; cursor: pointer; padding: 4px; }
+    .ob-ulink { padding: 0; text-decoration: underline; }
+    .ob-fine { font-size: 11.5px !important; color: var(--muted); max-width: 270px; }
+    .ob-lhead { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 22px 0 34px; }
+    .ob-lhead img { width: 112px; height: 112px; margin: -14px 0 -10px; }
+    .ob-lhead .ob-tag { font-size: 17px; font-weight: 500; color: var(--text); }
+    .ob-lh { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+    .ob-lrow { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 15px 2px; background: none; border: 0; border-bottom: 1px solid var(--line); color: var(--muted); font: inherit; font-size: 14px; cursor: pointer; text-align: left; }
+    .ob-lrow.on { color: var(--text); font-weight: 500; }
+    .ob-pt { font-size: 16px; font-weight: 500; text-align: center; margin: 14px 0 18px; }
+    .ob-doc { font-size: 12.5px; line-height: 1.7; color: var(--text); }
+    .ob-doc p { margin-bottom: 12px; color: var(--muted); }
+    .ob-doc p:first-child { color: var(--text); }
+    .ob-doc ul { margin: 0 0 12px 18px; display: flex; flex-direction: column; gap: 4px; color: var(--muted); }
+    .ob-sw.on { background: var(--text); }
+    .ob-sw.on::after { background: var(--bg); }
+    .ob-sw::after { background: var(--muted); }
+    .ob-msheet { text-align: center; padding-bottom: 20px; }
+    .ob-msheet h2 { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
+    .ob-msheet .ob-sub { font-size: 12.5px; margin-bottom: 12px; }
+    .ob-check { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; padding: 4px 0; background: none; border: 0; color: var(--muted); font: inherit; font-size: 12.5px; cursor: pointer; }
+    .ob-check i { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--muted); display: flex; align-items: center; justify-content: center; }
+    .ob-check i.on { background: var(--text); border-color: var(--text); color: var(--bg); }
+    .ob-os { position: absolute; inset: 0; z-index: 6; background: rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center; padding: 0 28px; animation: obFade .2s ease; }
+    .ob-osbox { width: 100%; background: var(--surface-2); border-radius: 30px; padding: 22px 18px 18px; box-shadow: 0 16px 48px rgba(0, 0, 0, .4); }
+    .ob-osbox h4 { font-size: 15px; font-weight: 500; line-height: 1.4; margin-bottom: 8px; }
+    .ob-osbox p { font-size: 12.5px; line-height: 1.5; color: var(--muted); margin-bottom: 18px; }
+    .ob-osbtn { display: flex; gap: 8px; }
+    .ob-osbtn.col { flex-direction: column; }
+    .ob-osbtn button { flex: 1; padding: 13px 8px; border: 0; border-radius: 999px; background: var(--btn-gray); color: var(--text); font: inherit; font-size: 14px; cursor: pointer; }
+    .ob h1 { font-weight: 500; }
+    .ob-field input, .ob-btn { font-weight: 500; }
+    .ob-btn { font-weight: 500; }
+    /* TukDaeng brand theme: red accent across the first-run flow */
+    .ob-btn.pri { background: var(--red); color: #fff; }
+    .ob-btn.out { border-color: var(--red); color: var(--red); }
+    .ob-ill { color: var(--red); }
+    .ob-links button, .ob-ulink, .ob-link, .ob-legal button { color: var(--red); }
+    .ob-lrow.on { color: var(--text); }
+    .ob-lrow.on svg { color: var(--red); }
+    .ob-sw.on { background: var(--red); }
+    .ob-sw.on::after { background: #fff; }
+    .ob-check i.on { background: var(--red); border-color: var(--red); color: #fff; }
+    .ob-input input:focus, .ob-otp input:focus { border-color: var(--red); }
+    .ob-dots i.on { background: var(--red); }
+    .ob-osbtn button:last-child { color: var(--red); font-weight: 600; }
+    .ob-top .ob-ghost { color: var(--text); }
+    .ob-splash .ob-name, .ob-lhead .ob-tag { color: var(--red); }
+    /* iOS 26 (Liquid Glass) look: capsule buttons, glass bars/sheets, inset grouped lists, 51x31 switches */
+    .ob { --fill: rgba(120, 120, 128, .24); --glass: color-mix(in srgb, var(--surface) 78%, transparent); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', var(--font-main); -webkit-font-smoothing: antialiased; }
+    .screen[data-theme='light'] .ob { --fill: rgba(120, 120, 128, .12); }
+    .ob-btn { min-height: 50px; border: 0; border-radius: 999px; font-size: 17px; font-weight: 600; letter-spacing: -.01em; transition: transform .15s ease, opacity .15s ease; }
+    .ob-btn:active:not(:disabled), .ob-osbtn button:active { transform: scale(.97); opacity: .8; }
+    .ob-btn.pri { background: var(--red); color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 6px 16px color-mix(in srgb, var(--red) 32%, transparent); }
+    .ob-btn.out, .ob-btn.sec { background: color-mix(in srgb, var(--red) 15%, transparent); color: var(--red); border: 0; }
+    .ob-btn:disabled { opacity: .35; box-shadow: none; }
+    .ob-bar { border-top: 0; padding: 14px 20px 30px; background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--bg) 88%, transparent) 38%); -webkit-backdrop-filter: blur(16px) saturate(1.6); backdrop-filter: blur(16px) saturate(1.6); }
+    .ob-top .ob-ghost { width: 40px; height: 40px; padding: 0; justify-content: center; border-radius: 50%; background: var(--fill); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+    .ob-top .ob-ghost.muted { width: auto; height: auto; padding: 8px 4px; background: none; border-radius: 0; font-size: 17px; color: var(--red); }
+    .ob-top { margin: -6px 0 10px; }
+    .ob h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+    .ob-c h1 { font-size: 22px; font-weight: 700; }
+    .ob .ob-sub, .ob-c .ob-sub { font-size: 15px; line-height: 1.45; color: var(--muted); }
+    .ob-pt { font-size: 28px; font-weight: 700; letter-spacing: -.02em; text-align: left; margin: 10px 0 14px; }
+    .ob-doc { font-size: 15px; line-height: 1.5; }
+    .ob-doc p, .ob-doc ul { color: var(--muted); }
+    .ob-links button, .ob-ulink { font-size: 15px; }
+    .ob-fine { font-size: 13px !important; }
+    .ob-lh { font-size: 13px; font-weight: 400; color: var(--muted); text-transform: uppercase; letter-spacing: .02em; padding-left: 16px; margin-bottom: 7px; }
+    .ob-lrow { background: var(--surface); padding: 16px; border-bottom: .5px solid var(--line); color: var(--text); font-size: 17px; transition: none; }
+    .ob-lh + .ob-lrow { border-radius: 20px 20px 0 0; }
+    .ob-lrow:last-of-type { border-radius: 0 0 20px 20px; border-bottom: 0; }
+    .ob-lh + .ob-lrow:last-of-type { border-radius: 20px; }
+    .ob-lrow.on { font-weight: 400; }
+    .ob-lrow.on svg { stroke-width: 2.6; }
+    .ob-sw { width: 51px; height: 31px; background: var(--fill); }
+    .ob-sw::after { top: 2px; left: 2px; width: 27px; height: 27px; background: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
+    .ob-sw.on::after { transform: translateX(20px); }
+    .ob-tog b, .ob-reqrow b { font-size: 17px; font-weight: 500; }
+    .ob-tog span, .ob-reqrow span { font-size: 13px; }
+    .ob-field label { font-size: 13px; font-weight: 400; padding-left: 4px; }
+    .ob-input input { height: 52px; border: 0; border-radius: 14px; background: var(--surface); font-size: 17px; }
+    .ob-input input:focus { box-shadow: inset 0 0 0 1.5px var(--red); }
+    .ob-field.err .ob-input input { box-shadow: inset 0 0 0 1.5px #ff453a; }
+    .ob-otp input { border: 0; background: var(--surface); font-size: 22px; border-radius: 14px; }
+    .ob-otp input:focus { box-shadow: inset 0 0 0 1.5px var(--red); }
+    .ob-otp.bad input { box-shadow: inset 0 0 0 1.5px #ff453a; }
+    .ob-link, .ob-textbtn { font-size: 15px; }
+    .ob-sheet { border-radius: 38px 38px 0 0; background: var(--glass); -webkit-backdrop-filter: blur(34px) saturate(1.8); backdrop-filter: blur(34px) saturate(1.8); padding: 10px 24px 28px; }
+    .ob-grab { width: 36px; height: 5px; background: var(--fill); }
+    .ob-msheet h2, .ob-sheet h2 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+    .ob-msheet .ob-sub { font-size: 15px; }
+    .ob-check { font-size: 15px; }
+    .ob-pill { background: var(--fill); font-size: 12px; }
+    .ob-osbox { border-radius: 34px; background: color-mix(in srgb, var(--surface-2) 86%, transparent); -webkit-backdrop-filter: blur(40px) saturate(1.8); backdrop-filter: blur(40px) saturate(1.8); padding: 24px 20px 20px; }
+    .ob-osbox h4 { font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+    .ob-osbox p { font-size: 14px; }
+    .ob-osbtn button { min-height: 50px; border-radius: 999px; background: var(--fill); font-size: 17px; }
+    .ob-osbtn button:last-child { font-weight: 600; }
+    .ob-banner { border-radius: 14px; font-size: 14px; }
+    /* unified font (Google Sans / Thai fallback from the app stack) and calmer sizes; iOS styling kept for shapes only */
+    .ob, .ob button, .ob input { font-family: var(--font-main); }
+    .ob-btn { min-height: 48px; font-size: 15px; font-weight: 500; letter-spacing: 0; }
+    .ob-osbtn button { min-height: 46px; font-size: 15px; font-weight: 500; }
+    .ob-osbtn button:last-child { font-weight: 500; }
+    .ob h1, .ob-c h1 { font-size: 19px; font-weight: 600; letter-spacing: 0; line-height: 1.35; }
+    .ob-pt { font-size: 22px; font-weight: 600; letter-spacing: 0; margin: 8px 0 12px; }
+    .ob .ob-sub, .ob-c .ob-sub { font-size: 13px; line-height: 1.55; }
+    .ob-doc { font-size: 13px; line-height: 1.6; }
+    .ob-links button, .ob-ulink { font-size: 13px; }
+    .ob-fine { font-size: 12px !important; }
+    .ob-lh { font-size: 12px; }
+    .ob-lrow { font-size: 15px; padding: 14px 16px; }
+    .ob-lhead .ob-tag { font-size: 15px; font-weight: 600; }
+    .ob-splash .ob-name { font-size: 20px; font-weight: 600; }
+    .ob-tog b, .ob-reqrow b { font-size: 15px; font-weight: 500; }
+    .ob-tog span, .ob-reqrow span { font-size: 12px; }
+    .ob-field label { font-size: 12px; }
+    .ob-input input { height: 48px; font-size: 15px; font-weight: 400; }
+    .ob-otp input { font-size: 20px; font-weight: 500; }
+    .ob-link, .ob-textbtn, .ob-check { font-size: 13px; }
+    .ob-top .ob-ghost.muted { font-size: 14px; }
+    .ob-msheet h2, .ob-sheet h2 { font-size: 19px; font-weight: 600; letter-spacing: 0; }
+    .ob-msheet .ob-sub { font-size: 13px; }
+    .ob-osbox h4 { font-size: 15px; font-weight: 600; letter-spacing: 0; }
+    .ob-osbox p { font-size: 12.5px; }
+    .ob-banner { font-size: 13px; }
+    .ob-pill { font-size: 11px; font-weight: 500; }
+    .ob-legalbody { font-size: 13px; }
+    .ob-legalbody h3 { font-size: 14px; }
+    .ob-hint, .ob-msg { font-size: 12px; }
+    .ob-ill svg { width: 150px; height: 140px; }
+    .ob-still .ob-page, .ob-still .ob-sheet, .ob-still .ob-scrim { animation: none; }
+    /* language switch must not move anything: fixed line boxes + Thai tuned to the same visual weight/size as English */
+    .ob-btn { height: 48px; line-height: 1.2; }
+    .ob-lrow { height: 48px; line-height: 1.2; padding-top: 0; padding-bottom: 0; }
+    .ob-lh { line-height: 16px; letter-spacing: 0; }
+    .ob-lhead .ob-tag { line-height: 20px; }
+    .ob h1, .ob-c h1 { line-height: 1.4; }
+    html[lang='th'] .ob-btn, html[lang='th'] .ob-osbtn button { font-size: 14px; font-weight: 450; }
+    html[lang='th'] .ob h1, html[lang='th'] .ob-c h1, html[lang='th'] .ob-msheet h2, html[lang='th'] .ob-sheet h2 { font-size: 18px; font-weight: 550; }
+    html[lang='th'] .ob-pt { font-size: 21px; font-weight: 550; }
+    html[lang='th'] .ob .ob-sub, html[lang='th'] .ob-c .ob-sub, html[lang='th'] .ob-doc { font-size: 12.5px; }
+    html[lang='th'] .ob-lrow { font-size: 14.5px; }
+    html[lang='th'] .ob-tog b, html[lang='th'] .ob-reqrow b { font-size: 14.5px; font-weight: 450; }
+    html[lang='th'] .ob-osbox h4 { font-size: 14.5px; font-weight: 550; }
+    html[lang='th'] .ob-osbtn button:last-child { font-weight: 600; }
+    .ob-tog em.ob-pill { display: inline-block; margin: 6px 0 0; font-style: normal; }
+    .ob-doc ul li { display: list-item; }
+    .ob-page { scrollbar-width: none; }
+    .ob-page::-webkit-scrollbar { display: none; }
+    .ob-doc { text-align: left; }
+    .ob-osbox { background: color-mix(in srgb, #2e2e33 82%, transparent); color: #fff; box-shadow: 0 18px 50px rgba(0, 0, 0, .45), inset 0 .5px 0 rgba(255, 255, 255, .12); }
+    .ob-osbox p { color: rgba(255, 255, 255, .62); }
+    .screen[data-theme='dark'] .ob-btn.out, .screen[data-theme='dark'] .ob-btn.sec { background: rgba(255, 255, 255, .14); color: rgba(255, 255, 255, .88); }
+    .ob-osbtn button { background: rgba(255, 255, 255, .16); color: #fff; }
+    .ob-osbtn button:last-child { color: #fff; font-weight: 600; }
+    #obReplay { bottom: 72px; }
+    #obRecon { bottom: 126px; }
   </style>
 </head>
 
@@ -12318,6 +12617,8 @@
   <div class="stage" id="stage"></div>
   <button id="themeToggle" title="Switch theme">☾</button>
   <div id="flowToast"></div>
+  <button class="ob-dev" id="obReplay" title="Replay first-run onboarding">1st</button>
+  <button class="ob-dev" id="obRecon" title="Simulate new Terms/Privacy version (re-consent)">v2</button>
 
   <script>
     /* qrcode-generator 1.4.4 (MIT, Kazuhiko Arase) — used by PROFILE-010 profile QR */
@@ -18771,6 +19072,7 @@
     function render() {
       document.getElementById("stage").innerHTML =
         `<div class="phone-wrap"><div class="phone">${screenHTML(state.theme, state.variant)}</div></div>`;
+      if (typeof obMount === "function") obMount();
     }
 
     /* ================= FLOW WIRING ================= */
@@ -21792,6 +22094,307 @@
           }
         });
       }
+    });
+
+    /* ================= FIRST-RUN ONBOARDING =================
+       Splash -> Language -> Consent (auto-popup sheet) -> Intro -> Gateway -> Sign up -> Email OTP -> Profile
+       -> Account created -> Sign in (Forgot password) -> Notification pre-permission -> Home (coach mark).
+       Re-consent: the "v2" dev button simulates a new Terms/Privacy version popping up over the feed. */
+    const OB = {
+      on: !localStorage.getItem("fo_onboarded"), step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0",
+      opt: { analytics: false, personalized: false },
+      f: { name: "", email: "", pw: "", user: "" }, errs: {}, tries: 0, account: null, resend: 30, os: false, sent: false
+    };
+    let obTimer = null, obSplashT = null;
+    const obT = (en, th) => state.lang === "th" ? th : en;
+    const obEsc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const obRoot = () => document.querySelector("#stage .ob");
+    const obBell = (s = 40) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>`;
+    const obScore = p => (p.length >= 8 ? 1 : 0) + (/[a-z]/.test(p) && /[A-Z]/.test(p) ? 1 : 0) + (/\d/.test(p) ? 1 : 0) + (/[^A-Za-z0-9]/.test(p) || p.length >= 12 ? 1 : 0);
+    const obEmailOk = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+    const obBack = (to, right = "") => `<div class="ob-top"><button class="ob-ghost" data-ob="go:${to}" aria-label="${obT("Back", "ย้อนกลับ")}">${I.back(22)}</button>${right}</div>`;
+    const obField = (key, label, type, ph, extra = "") => `<div class="ob-field${OB.errs[key] ? " err" : ""}"><label>${label}</label><div class="ob-input"><input data-f="${key}" type="${type}" placeholder="${ph}" value="${obEsc(OB.f[key] || "")}" autocomplete="off" ${extra}>${type === "password" ? `<button class="ob-eye" data-ob="eye" type="button" aria-label="${obT("Show or hide password", "แสดง/ซ่อนรหัสผ่าน")}">${I.eye(20)}</button>` : ""}</div>${OB.errs[key] ? `<div class="ob-msg">${OB.errs[key]}</div>` : ""}</div>`;
+    const obLegalLinks = () => `<div class="ob-legal">${obT("By continuing you agree to our", "การดำเนินการต่อถือว่าคุณยอมรับ")} <button data-ob="legal:terms">${obT("Terms of Use", "ข้อกำหนดการใช้งาน")}</button> ${obT("and", "และ")} <button data-ob="legal:privacy">${obT("Privacy Policy", "นโยบายความเป็นส่วนตัว")}</button></div>`;
+
+    const obSvg = body => `<svg width="168" height="156" viewBox="0 0 160 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+    const OB_ILL = {
+      watch: obSvg(`<path d="M64 36L68 8h24l4 28"/><path d="M64 114l4 28h24l4-28"/><circle cx="80" cy="75" r="42"/><circle cx="80" cy="75" r="35"/><path d="M80 44v5M80 101v5M49 75h5M106 75h5"/><path d="M80 75V54M80 75l15 9"/><circle cx="80" cy="75" r="3" fill="#c8212b" stroke="none"/><path d="M122 70h7v10h-7z"/>`),
+      bell: obSvg(`<path d="M80 24c-20 0-32 16-32 38 0 24-9 32-14 40h92c-5-8-14-16-14-40 0-22-12-38-32-38z"/><path d="M72 24v-6a8 8 0 0 1 16 0v6"/><path d="M68 108a12 12 0 0 0 24 0"/><path d="M22 50c-4 9-4 17 0 26M138 50c4 9 4 17 0 26M12 44c-6 13-6 27 0 40M148 44c6 13 6 27 0 40"/><circle cx="112" cy="36" r="9" fill="#c8212b" stroke="none"/>`),
+      tailor: obSvg(`<rect x="38" y="20" width="84" height="108" rx="10"/><circle cx="80" cy="66" r="22"/><path d="M80 66V51M80 66l10 6"/><path d="M54 104h52M64 116h32"/><path d="M118 40c-9-6-14-10-14-16a7 7 0 0 1 14-1 7 7 0 0 1 14 1c0 6-5 10-14 16z" fill="#c8212b" stroke="none" transform="translate(0 -4)"/>`),
+      member: obSvg(`<circle cx="76" cy="50" r="18"/><path d="M42 118c0-20 14-34 34-34s34 14 34 34"/><circle cx="116" cy="44" r="11" fill="#c8212b" stroke="none"/><path d="M116 38v12M110 44h12" stroke="#fff" stroke-width="2"/>`)
+    };
+    const OB_LEGAL = {
+      terms: [["Terms of Use", "ข้อกำหนดการใช้งาน", [
+        ["1. Agreement to Terms", "1. การยอมรับข้อกำหนด", "By using TukDaeng you agree to these Terms and our Community Guidelines for watch collectors.", "เมื่อใช้งานตึกแดง คุณตกลงตามข้อกำหนดนี้และแนวทางปฏิบัติของชุมชนนักสะสมนาฬิกา"],
+        ["2. Listing Authenticity", "2. ความถูกต้องแท้ของรายการขาย", "Sellers must guarantee the authenticity of listed watches. Counterfeit goods and misleading descriptions are prohibited.", "ผู้ขายต้องรับรองความเป็นของแท้ของนาฬิกาที่ลงขาย ห้ามสินค้าปลอมและคำอธิบายที่ทำให้เข้าใจผิด"],
+        ["3. Account Suspension", "3. การระงับบัญชี", "We may suspend accounts that break safety rules, spam members or commit fraud.", "เราอาจระงับบัญชีที่ละเมิดกฎความปลอดภัย สแปมสมาชิก หรือหลอกลวง"]]]],
+      privacy: [["Privacy Policy", "นโยบายความเป็นส่วนตัว", [
+        ["1. Information We Collect", "1. ข้อมูลที่เราเก็บรวบรวม", "Information you give us when you create an account, update your profile, list watches or chat with other collectors.", "ข้อมูลที่คุณให้เมื่อสร้างบัญชี แก้ไขโปรไฟล์ ลงขายนาฬิกา หรือแชทกับนักสะสมท่านอื่น"],
+        ["2. How We Use It", "2. วิธีที่เราใช้ข้อมูล", "To run the marketplace, verify listings, keep the community safe and send notifications you ask for.", "เพื่อให้บริการตลาดซื้อขาย ตรวจสอบรายการ ดูแลความปลอดภัย และส่งการแจ้งเตือนที่คุณต้องการ"],
+        ["3. Optional Data Uses", "3. การใช้ข้อมูลแบบเลือกได้", "Analytics and personalization are off by default and only start if you opt in. You can change this anytime in Settings.", "การวิเคราะห์และการปรับแต่งเฉพาะบุคคลปิดไว้เป็นค่าเริ่มต้น และจะเริ่มเมื่อคุณเลือกเปิดเท่านั้น เปลี่ยนได้ทุกเมื่อในการตั้งค่า"],
+        ["4. Your Rights", "4. สิทธิของคุณ", "You can access, correct, export or delete your data and withdraw consent at any time (PDPA / GDPR).", "คุณขอเข้าถึง แก้ไข ส่งออก หรือลบข้อมูล และถอนความยินยอมได้ทุกเมื่อ (PDPA / GDPR)"]]]]
+    };
+
+    function obConsentSheet() {
+      const re = OB.recon, v = OB.ver;
+      const row = (k, ic, t, th) => `<button class="ob-reqrow" style="width:100%;background:none;border:0;border-top:1px solid var(--line);color:var(--text);font-family:inherit;text-align:left;cursor:pointer" data-ob="legal:${k}">${ic}<div><b>${obT(t, th)}</b><span>v${v} · ${obT("Tap to read", "แตะเพื่ออ่าน")}</span></div><span class="ob-pill">${obT("Required", "จำเป็น")}</span></button>`;
+      const tog = (k, t, th, d, dth) => `<div class="ob-tog"><div><b>${obT(t, th)}</b><span>${obT(d, dth)}</span></div><button class="ob-sw${OB.opt[k] ? " on" : ""}" role="switch" aria-checked="${OB.opt[k]}" data-ob="tog:${k}" aria-label="${obT(t, th)}"></button></div>`;
+      return `<div class="ob-scrim"></div>
+      <div class="ob-sheet" role="dialog" aria-modal="true"><div class="ob-grab"></div>
+        <h2>${re ? obT("We've updated our policies", "เราอัปเดตนโยบายแล้ว") : obT("Before you start", "ก่อนเริ่มใช้งาน")}</h2>
+        <p class="ob-sub">${re ? obT("Please review and accept the updated Terms of Use and Privacy Policy to keep using TukDaeng.", "โปรดอ่านและยอมรับข้อกำหนดการใช้งานและนโยบายความเป็นส่วนตัวฉบับใหม่ เพื่อใช้งานตึกแดงต่อ") : obT("Please review how TukDaeng works and how we handle your data.", "โปรดอ่านวิธีการทำงานของตึกแดงและวิธีที่เราดูแลข้อมูลของคุณ")}</p>
+        ${row("terms", I.fileText(20), "Terms of Use", "ข้อกำหนดการใช้งาน")}${row("privacy", I.shield(20), "Privacy Policy", "นโยบายความเป็นส่วนตัว")}
+        ${tog("analytics", "Analytics", "การวิเคราะห์การใช้งาน", "Help us improve the app. Optional.", "ช่วยให้เราปรับปรุงแอป (ไม่บังคับ)")}
+        ${tog("personalized", "Personalized content", "เนื้อหาตามความสนใจ", "Suggest watches you may like. Optional.", "แนะนำนาฬิกาที่คุณอาจสนใจ (ไม่บังคับ)")}
+        ${OB.declined ? `<div class="ob-banner" style="margin-top:12px">${obT("You need to accept the required Terms and Privacy Policy to use TukDaeng. You can review them again or exit the app.", "ต้องยอมรับข้อกำหนดและนโยบายความเป็นส่วนตัวที่จำเป็นจึงจะใช้ตึกแดงได้ คุณสามารถอ่านอีกครั้งหรือออกจากแอป")}</div>` : ""}
+        <div class="ob-stack" style="margin-top:14px">
+          <button class="ob-btn pri" data-ob="accept">${obT("Accept & continue", "ยอมรับและดำเนินการต่อ")}</button>
+          ${OB.declined ? `<button class="ob-btn out" data-ob="exit">${obT(re ? "Sign out" : "Exit app", re ? "ออกจากระบบ" : "ออกจากแอป")}</button>` : `<button class="ob-textbtn" data-ob="decline" style="padding:6px">${obT("Decline", "ไม่ยอมรับ")}</button>`}
+        </div>
+        <div class="ob-legal">${obT("Tapping Accept confirms you have read the required documents. Optional items stay off unless you turn them on.", "การแตะยอมรับหมายถึงคุณได้อ่านเอกสารที่จำเป็นแล้ว ส่วนที่เลือกได้จะปิดไว้จนกว่าคุณจะเปิดเอง")}</div>
+      </div>`;
+    }
+    function obLegalView() {
+      const [t, th, secs] = OB_LEGAL[OB.legal][0];
+      return `<div class="ob-legalview"><div class="ob-top"><button class="ob-ghost" data-ob="closelegal">${I.back(22)}</button><b style="font-size:15px">${obT(t, th)}</b><span style="width:38px"></span></div>
+        <div class="ob-legalbody"><p>v${OB.ver} · ${obT("Effective 19 Oct 2026", "มีผล 19 ต.ค. 2569")}</p>${secs.map(s => `<h3>${obT(s[0], s[1])}</h3><p>${obT(s[2], s[3])}</p>`).join("")}</div>
+        <div style="padding:12px 22px 22px"><button class="ob-btn sec" data-ob="closelegal">${obT("Close", "ปิด")}</button></div></div>`;
+    }
+    function obResendHTML() {
+      return OB.resend > 0 ? `<span class="ob-hint">${obT("Resend code in", "ส่งรหัสอีกครั้งใน")} 0:${String(OB.resend).padStart(2, "0")}</span>` : `<button class="ob-link" data-ob="resend">${obT("Resend code", "ส่งรหัสอีกครั้ง")}</button>`;
+    }
+    function obView() {
+      const f = OB.f, E = OB.errs;
+      switch (OB.step) {
+        case "splash": return `<div class="ob-page ob-splash"><img src="./assets/td-logo.png" alt="TukDaeng"><div class="ob-name">TukDaeng</div><div class="ob-load"><i></i></div></div>`;
+        case "lang": return `<div class="ob-page"><div class="ob-lhead"><img src="./assets/td-logo.png" alt="TukDaeng"><div class="ob-tag">TukDaeng</div></div>
+          <div class="ob-lh">Select your language · เลือกภาษา</div>
+          ${[["en", "English"], ["th", "ไทย"]].map(([k, n]) => `<button class="ob-lrow${state.lang === k ? " on" : ""}" data-ob="lang:${k}"><span>${n}</span>${state.lang === k ? I.check(17) : ""}</button>`).join("")}</div>
+          <div class="ob-bar"><button class="ob-btn pri" data-ob="go:welcome">${obT("Continue", "ต่อไป")}</button></div>`;
+        case "welcome": return `<div class="ob-page ob-c${OB.loading ? " loading" : ""}"><div class="ob-ill">${OB_ILL.watch}</div>
+          <h1>${obT("Welcome to the TukDaeng app", "ยินดีต้อนรับสู่แอปตึกแดง")}</h1>
+          <p class="ob-sub">${obT("Discover authentic watches, follow collectors and chat safely, all in one place.", "ค้นพบนาฬิกาแท้ ติดตามนักสะสม และแชทอย่างปลอดภัย ครบ⁠ใน⁠ที่⁠เดียว")}</p>
+          <div class="ob-links"><button data-ob="legal:terms">${obT("Terms of Use", "ข้อกำหนดการใช้งาน")}</button><i></i><button data-ob="legal:privacy">${obT("Privacy Policy", "นโยบายความเป็นส่วนตัว")}</button>${OB.loading ? `<div class="ob-spin"></div>` : ""}</div>
+          <p class="ob-sub ob-fine">${obT("By tapping Continue you agree to the Terms of Use and acknowledge the Privacy Policy.", "การแตะ ต่อไป ถือว่าคุณยอมรับข้อกำหนดการใช้งานและรับทราบนโยบายความเป็นส่วนตัว")}</p></div>
+          <div class="ob-bar"><button class="ob-btn pri" data-ob="welcome" ${OB.loading ? "disabled" : ""}>${obT("Continue", "ต่อไป")}</button></div>`;
+        case "consent": return OB.recon ? obConsentSheet() : `<div class="ob-page"><h1 class="ob-pt">${obT("Privacy notice", "ประกาศความเป็นส่วนตัว")}</h1>
+          <div class="ob-doc"><p>${obT("TukDaeng uses cookies and similar tools (such as SDKs) to:", "ตึกแดงใช้คุกกี้และเครื่องมือที่คล้ายกัน (เช่น SDK) เพื่อ:")}</p>
+          <ul><li>${obT("Run the app and keep your account secure (essential)", "ให้แอปทำงานและรักษาความปลอดภัยของบัญชี (จำเป็น)")}</li><li>${obT("Remember your preferences (essential)", "จดจำการตั้งค่าของคุณ (จำเป็น)")}</li><li>${obT("Understand how the app is used (optional)", "เข้าใจวิธีการใช้งานแอป (ไม่บังคับ)")}</li><li>${obT("Suggest watches and news you may like (optional)", "แนะนำนาฬิกาและข่าวที่คุณอาจสนใจ (ไม่บังคับ)")}</li></ul>
+          <p>${obT("Accept all turns on the optional uses. Reject all keeps only the essential ones, and some features may be limited.", "ยอมรับทั้งหมดจะเปิดการใช้งานที่ไม่บังคับ ปฏิเสธทั้งหมดจะเหลือเฉพาะที่จำเป็น บางฟีเจอร์อาจถูกจำกัด")}</p>
+          <p>${obT("You can change this anytime in Settings > Privacy. Learn more in our", "คุณเปลี่ยนได้ทุกเมื่อที่ ตั้งค่า > ความเป็นส่วนตัว อ่านเพิ่มเติมที่")} <button class="ob-ulink" data-ob="legal:privacy">${obT("Privacy Policy", "นโยบายความเป็นส่วนตัว")}</button></p></div></div>
+          <div class="ob-bar"><button class="ob-btn pri" data-ob="cons:all">${obT("Accept all", "ยอมรับทั้งหมด")}</button><button class="ob-btn pri" data-ob="cons:none">${obT("Reject all", "ปฏิเสธทั้งหมด")}</button><button class="ob-btn out" data-ob="go:prefs">${obT("Cookie settings", "ตั้งค่าคุกกี้")}</button></div>`;
+        case "prefs": return `<div class="ob-page">${obBack("consent")}<h1 class="ob-pt" style="margin-top:0">${obT("Cookie settings", "ตั้งค่าคุกกี้")}</h1>
+          <div class="ob-tog"><div><b>${obT("Essential", "จำเป็น")}</b><span>${obT("Needed to run the app and keep it secure. Always on.", "จำเป็นต่อการทำงานและความปลอดภัยของแอป เปิดตลอด")}</span><em class="ob-pill">${obT("Always on", "เปิดตลอด")}</em></div></div>
+          ${[["analytics", "Analytics", "การวิเคราะห์การใช้งาน", "Helps us improve the app.", "ช่วยให้เราปรับปรุงแอป"], ["personalized", "Personalization", "การปรับแต่งเฉพาะบุคคล", "Suggests watches and news you may like.", "แนะนำนาฬิกาและข่าวที่คุณอาจสนใจ"]].map(([k, t, th, d, dth]) => `<div class="ob-tog"><div><b>${obT(t, th)}</b><span>${obT(d, dth)}</span></div><button class="ob-sw${OB.opt[k] ? " on" : ""}" role="switch" aria-checked="${OB.opt[k]}" data-ob="tog:${k}" aria-label="${obT(t, th)}"></button></div>`).join("")}</div>
+          <div class="ob-bar"><button class="ob-btn pri" data-ob="cons:save">${obT("Save preferences", "บันทึกการตั้งค่า")}</button></div>`;
+        case "notif": return `<div class="ob-page ob-c"><div class="ob-top"><button class="ob-ghost" data-ob="go:consent" aria-label="${obT("Back", "ย้อนกลับ")}">${I.back(22)}</button></div><div class="ob-ill">${OB_ILL.bell}</div>
+          <h1>${obT("Never miss an update", "เปิดการแจ้งเตือนเพื่อไม่พลาดข่าวสาร")}</h1>
+          <p class="ob-sub">${obT("Get price alerts for models you follow, chat replies and updates on your listings.", "รับแจ้งราคารุ่นที่ติดตาม การตอบกลับในแชท และอัปเดตรายการของคุณ")}</p></div>
+          <div class="ob-bar row"><button class="ob-btn pri" data-ob="os:open">${obT("Continue", "ต่อไป")}</button><button class="ob-btn out" data-ob="go:track">${obT("Skip", "ข้าม")}</button></div>`;
+        case "track": return `<div class="ob-page ob-c"><div class="ob-top"><button class="ob-ghost" data-ob="go:notif" aria-label="${obT("Back", "ย้อนกลับ")}">${I.back(22)}</button></div><div class="ob-ill">${OB_ILL.tailor}</div>
+          <h1>${obT("We suggest news that suits you", "เราแนะนำข่าวสารที่เหมาะกับคุณ")}</h1>
+          <p class="ob-sub">${obT("To recommend watches and news you may like, please allow us to use your activity data. You can change this anytime in Settings.", "อนุญาตให้เราใช้ข้อมูลกิจกรรมของคุณ เพื่อแนะนำนาฬิกาและข่าวสารที่เข้ากับคุณ เปลี่ยนได้ทุกเมื่อในการตั้งค่า")}</p></div>
+          <div class="ob-bar"><button class="ob-btn pri" data-ob="os:open">${obT("Continue", "ต่อไป")}</button></div>`;
+        case "member": return `<div class="ob-scrim"></div><div class="ob-sheet ob-msheet" role="dialog" aria-modal="true"><div class="ob-grab"></div>
+          <div class="ob-ill" style="margin:6px 0 4px">${OB_ILL.member}</div><h2>${obT("Join TukDaeng", "เข้าร่วมตึกแดง")}</h2>
+          <p class="ob-sub">${obT("Create a free account to follow collectors, chat and list your watches.", "สร้างบัญชีฟรีเพื่อติดตามนักสะสม แชท และลงขายนาฬิกาของคุณ")}</p>
+          <button class="ob-check" role="checkbox" aria-checked="${!!OB.hide}" data-ob="hide"><i class="${OB.hide ? "on" : ""}">${OB.hide ? I.check(13) : ""}</i>${obT("Don't show this again", "ไม่ต้องแสดงข้อความนี้อีก")}</button>
+          <div class="ob-stack"><button class="ob-btn pri" data-ob="go:signup">${obT("Sign up", "สมัครสมาชิก")}</button><button class="ob-btn out" data-ob="go:signin">${obT("Sign in", "เข้าสู่ระบบ")}</button><button class="ob-textbtn" data-ob="guest" style="padding:6px">${obT("Skip for now", "ข้ามไปก่อน")}</button></div></div>`;
+        case "signup": return `<div class="ob-page">${obBack("member")}<h1>${obT("Create your account", "สร้างบัญชีของคุณ")}</h1><p class="ob-sub">${obT("It only takes a minute.", "ใช้เวลาไม่ถึงหนึ่งนาที")}</p>
+          ${obField("name", obT("Full name", "ชื่อ-นามสกุล"), "text", obT("Your name", "ชื่อของคุณ"))}${obField("email", obT("Email", "อีเมล"), "email", "you@example.com")}
+          ${obField("pw", obT("Password", "รหัสผ่าน"), "password", obT("At least 8 characters", "อย่างน้อย 8 ตัวอักษร"))}
+          <div class="ob-meter" data-s="${f.pw ? Math.max(1, obScore(f.pw)) : 0}"><i></i><i></i><i></i><i></i></div><div class="ob-hint">${obT("Use upper & lower case, a number and a symbol for a stronger password.", "ใช้พิมพ์ใหญ่ พิมพ์เล็ก ตัวเลข และสัญลักษณ์ให้แข็งแรงขึ้น")}</div>
+          <div class="ob-grow" style="min-height:18px"></div><button class="ob-btn pri" data-ob="signup">${obT("Create account", "สร้างบัญชี")}</button>${obLegalLinks()}</div>`;
+        case "otp": return `<div class="ob-page">${obBack("signup")}<h1>${obT("Verify your email", "ยืนยันอีเมลของคุณ")}</h1>
+          <p class="ob-sub">${obT("We sent a 6-digit code to", "เราส่งรหัส 6 หลักไปที่")} <b style="color:var(--text)">${obEsc(f.email)}</b></p>
+          <div class="ob-otp">${[0, 1, 2, 3, 4, 5].map(i => `<input data-otp="${i}" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="${i + 1}">`).join("")}</div>
+          <div class="ob-msg" id="obOtpMsg"></div><div id="obRsw" style="margin-top:8px">${obResendHTML()}</div>
+          <div class="ob-banner info" style="margin-top:18px">${obT("Demo code: 123456", "รหัสสำหรับทดสอบ: 123456")}</div></div>`;
+        case "profile": return `<div class="ob-page"><div class="ob-top"><span></span><button class="ob-ghost muted" data-ob="go:created">${obT("Skip for now", "ข้ามไปก่อน")}</button></div>
+          <h1>${obT("Set up your profile", "ตั้งค่าโปรไฟล์")}</h1><p class="ob-sub">${obT("Add a photo and username so collectors can find you. You can do this later.", "เพิ่มรูปและชื่อผู้ใช้เพื่อให้นักสะสมค้นหาคุณได้ ทำภายหลังได้")}</p>
+          <div class="ob-avatar">${obEsc((f.name || "?").trim().charAt(0).toUpperCase())}</div><button class="ob-link" style="align-self:center;margin:-8px 0 16px" data-ob="photo">${obT("Add photo", "เพิ่มรูปภาพ")}</button>
+          ${obField("user", obT("Username", "ชื่อผู้ใช้"), "text", "username")}<div class="ob-grow"></div><button class="ob-btn pri" data-ob="profile">${obT("Continue", "ต่อไป")}</button></div>`;
+        case "created": return `<div class="ob-page ob-center"><div class="ob-grow"></div><div class="ob-ico ok">${I.check(40)}</div><h1>${obT("Account created", "สร้างบัญชีสำเร็จ")}</h1>
+          <p class="ob-sub">${obT("Welcome, ", "ยินดีต้อนรับ ")}${obEsc(f.name || "")}. ${obT("Sign in to start exploring.", "เข้าสู่ระบบเพื่อเริ่มใช้งาน")}</p><div class="ob-grow"></div><button class="ob-btn pri" data-ob="go:signin">${obT("Sign in", "เข้าสู่ระบบ")}</button></div>`;
+        case "signin": return `<div class="ob-page">${obBack("member")}<h1>${obT("Sign in", "เข้าสู่ระบบ")}</h1><p class="ob-sub">${obT("Welcome back to TukDaeng.", "ยินดีต้อนรับกลับสู่ตึกแดง")}</p>
+          ${E.form ? `<div class="ob-banner">${E.form}</div>` : ""}${obField("email", obT("Email", "อีเมล"), "email", "you@example.com")}${obField("pw", obT("Password", "รหัสผ่าน"), "password", obT("Your password", "รหัสผ่านของคุณ"))}
+          <div style="text-align:right;margin-top:-6px"><button class="ob-link" data-ob="go:forgot">${obT("Forgot password?", "ลืมรหัสผ่าน?")}</button></div>
+          <div class="ob-grow" style="min-height:18px"></div><button class="ob-btn pri" data-ob="signin" ${OB.tries >= 5 ? "disabled" : ""}>${obT("Sign in", "เข้าสู่ระบบ")}</button>
+          <div class="ob-legal">${obT("New here?", "ยังไม่มีบัญชี?")} <button data-ob="go:signup">${obT("Create account", "สร้างบัญชี")}</button></div></div>`;
+        case "forgot": return OB.sent ? `<div class="ob-page ob-center"><div class="ob-grow"></div><div class="ob-ico ok">${I.check(40)}</div><h1>${obT("Check your email", "ตรวจสอบอีเมลของคุณ")}</h1>
+          <p class="ob-sub">${obT("If an account exists for", "หากมีบัญชีสำหรับ")} <b style="color:var(--text)">${obEsc(f.email)}</b>${obT(", we sent a reset link.", " เราได้ส่งลิงก์รีเซ็ตรหัสผ่านให้แล้ว")}</p><div class="ob-grow"></div>
+          <button class="ob-btn pri" data-ob="go:signin">${obT("Back to sign in", "กลับไปเข้าสู่ระบบ")}</button></div>`
+          : `<div class="ob-page">${obBack("signin")}<h1>${obT("Reset password", "รีเซ็ตรหัสผ่าน")}</h1><p class="ob-sub">${obT("Enter your email and we'll send you a reset link.", "กรอกอีเมลแล้วเราจะส่งลิงก์รีเซ็ตรหัสผ่านให้")}</p>
+          ${obField("email", obT("Email", "อีเมล"), "email", "you@example.com")}<div class="ob-grow"></div><button class="ob-btn pri" data-ob="forgot">${obT("Send reset link", "ส่งลิงก์รีเซ็ต")}</button></div>`;
+      }
+      return "";
+    }
+    let obLast = null;
+    function obDraw() {
+      const root = obRoot(); if (!root) return;
+      clearInterval(obTimer);
+      root.classList.toggle("ob-still", OB.step === obLast); obLast = OB.step;
+      const osBox = OB.os === "track"
+        ? `<h4>${obT("Allow “TukDaeng” to track your activity across other companies’ apps and websites?", "อนุญาตให้ “ตึกแดง” ติดตามกิจกรรมของคุณข้ามแอปและเว็บไซต์ของบริษัทอื่นหรือไม่?")}</h4><p>${obT("Your data is used to show you watches and news that match your interests.", "ข้อมูลของคุณใช้เพื่อแสดงนาฬิกาและข่าวสารที่ตรงกับความสนใจ")}</p><div class="ob-osbtn col"><button data-ob="os:no">${obT("Ask App Not to Track", "ขอให้แอปไม่ติดตาม")}</button><button data-ob="os:yes">${obT("Allow", "อนุญาต")}</button></div>`
+        : `<h4>${obT("“TukDaeng” Would Like to Send You Notifications", "“ตึกแดง” ต้องการส่งการแจ้งเตือนถึงคุณ")}</h4><p>${obT("Notifications may include alerts, sounds and icon badges. These can be configured in Settings.", "การแจ้งเตือนอาจมีข้อความ เสียง และตัวเลขบนไอคอน ตั้งค่าได้ในการตั้งค่า")}</p><div class="ob-osbtn"><button data-ob="os:no">${obT("Don't Allow", "ไม่อนุญาต")}</button><button data-ob="os:yes">${obT("Allow", "อนุญาต")}</button></div>`;
+      root.querySelector(".ob-view").innerHTML = obView() + (OB.legal ? obLegalView() : "") + (OB.os ? `<div class="ob-os"><section class="ob-osbox">${osBox}</section></div>` : "");
+      if (OB.step === "splash") { clearTimeout(obSplashT); obSplashT = setTimeout(() => { if (OB.on && OB.step === "splash") obGo("lang"); }, 3200); }
+      if (OB.step === "otp") obTimer = setInterval(() => { if (OB.resend > 0) OB.resend--; const w = root.querySelector("#obRsw"); if (w) w.innerHTML = obResendHTML(); if (OB.resend <= 0) clearInterval(obTimer); }, 1000);
+      const first = root.querySelector(".ob-otp input"); if (first) first.focus({ preventScroll: true });
+    }
+    function obGo(s) {
+      OB.step = s; OB.loading = false; OB.errs = {}; OB.sent = false; OB.declined = false; OB.legal = null; OB.os = false;
+      if (s === "profile" && !OB.f.user) OB.f.user = (OB.f.email.split("@")[0] || "").toLowerCase().replace(/[^a-z0-9_.]/g, "");
+      if (s === "member" && localStorage.getItem("fo_member_hide") === "1") return obFinish(obT("Welcome to TukDaeng", "ยินดีต้อนรับสู่ตึกแดง"));
+      const r = obRoot(), clear = OB.recon || s === "member";
+      if (r && r.classList.contains("recon") !== clear) return obMount();
+      obDraw();
+    }
+    function obMount() {
+      const scr = document.querySelector("#stage .screen"); if (!scr) return;
+      scr.querySelector(".ob")?.remove();
+      if (!OB.on) return;
+      const clear = OB.recon || OB.step === "member";
+      const d = document.createElement("div"); d.className = "ob" + (clear ? " recon" : "");
+      d.innerHTML = (clear ? "" : scr.querySelector(".statusbar").outerHTML) + `<div class="ob-view" style="display:contents"></div>`;
+      scr.appendChild(d); obDraw();
+    }
+    const OB_TOUR = [
+      { sel: ".app-header [data-flow='create']", en: "Tap + to create your first post.", th: "แตะ + เพื่อสร้างโพสต์แรกของคุณ" },
+      { sel: ".app-header .search-btn", en: "Search brands, references or collectors.", th: "ค้นหาแบรนด์ รุ่น หรือนักสะสมได้ที่นี่" },
+      { sel: ".feed-tabs", en: "Scroll the feed, or switch tabs to filter posts.", th: "เลื่อนดูฟีดได้เรื่อย ๆ หรือเลือกแท็บเพื่อกรองโพสต์" },
+      { sel: ".bottom-nav", en: "Chat, boards, alerts and your profile live down here.", th: "แชท กระดานข่าว การแจ้งเตือน และโปรไฟล์อยู่ด้านล่าง" }
+    ];
+    let obTourI = -1;
+    function obTour(i) {
+      document.querySelectorAll(".ob-coach").forEach(c => c.remove());
+      obTourI = -1;
+      const scr = document.querySelector("#stage .screen"), st = OB_TOUR[i];
+      if (!scr || !st) return;
+      const t = scr.querySelector(st.sel);
+      if (!t) return obTour(i + 1);
+      const el = document.createElement("div");
+      el.className = "ob-coach";
+      el.innerHTML = `${obT(st.en, st.th)}<button>${i < OB_TOUR.length - 1 ? obT("Next", "ถัดไป") : obT("Got it", "เข้าใจแล้ว")}</button>`;
+      el.style.visibility = "hidden";
+      scr.appendChild(el);
+      const sr = scr.getBoundingClientRect(), r = t.getBoundingClientRect(), W = 230, h = el.offsetHeight;
+      const cx = r.left + r.width / 2 - sr.left;
+      const below = r.top + r.height / 2 - sr.top < sr.height * 0.5;
+      const left = Math.max(10, Math.min(cx - W / 2, sr.width - W - 10));
+      el.style.left = left + "px";
+      el.style.top = (below ? r.bottom - sr.top + 12 : r.top - sr.top - h - 12) + "px";
+      el.classList.toggle("flip", !below);
+      el.style.setProperty("--ax", Math.max(12, Math.min(cx - left - 7, W - 26)) + "px");
+      el.style.visibility = "";
+      obTourI = i;
+    }
+    function obFinish(msg) {
+      localStorage.setItem("fo_onboarded", "1"); OB.on = false; OB.os = false; obMount();
+      obTour(0);
+      toast(msg);
+    }
+    function obLog() {
+      const rec = { terms: OB.ver, privacy: OB.ver, termsAt: OB.termsAt || null, analytics: OB.opt.analytics, personalized: OB.opt.personalized, lang: state.lang, at: new Date().toISOString() };
+      const log = JSON.parse(localStorage.getItem("fo_consent_log") || "[]"); log.push(rec);
+      localStorage.setItem("fo_consent_log", JSON.stringify(log)); localStorage.setItem("fo_consent", JSON.stringify(rec));
+    }
+    function obAccept() {
+      obLog(); OB.recon = false; OB.on = false; obMount();
+      toast(obT("Thanks — updated policies accepted", "ขอบคุณ — ยอมรับนโยบายฉบับใหม่แล้ว"));
+    }
+    function obSignup() {
+      const f = OB.f, E = {};
+      if (f.name.trim().length < 2) E.name = obT("Enter your name (at least 2 characters).", "กรอกชื่อ (อย่างน้อย 2 ตัวอักษร)");
+      if (!obEmailOk(f.email.trim())) E.email = obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง");
+      else if (f.email.trim().toLowerCase() === "taken@example.com") E.email = obT("This email is already registered. Try signing in.", "อีเมลนี้ถูกใช้สมัครแล้ว ลองเข้าสู่ระบบ");
+      if (obScore(f.pw) < 2 || f.pw.length < 8) E.pw = obT("Use at least 8 characters with upper & lower case or a number.", "ใช้อย่างน้อย 8 ตัวอักษร ผสมพิมพ์ใหญ่-เล็ก หรือตัวเลข");
+      OB.errs = E;
+      if (Object.keys(E).length) return obDraw();
+      f.email = f.email.trim(); f.name = f.name.trim(); OB.account = { email: f.email, pw: f.pw }; OB.resend = 30; obGo("otp");
+    }
+    function obSignin() {
+      const f = OB.f, E = {};
+      if (!obEmailOk(f.email.trim())) E.email = obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง");
+      if (!f.pw) E.pw = obT("Enter your password.", "กรอกรหัสผ่าน");
+      OB.errs = E;
+      if (Object.keys(E).length) return obDraw();
+      const ok = OB.account ? (f.email.trim().toLowerCase() === OB.account.email.toLowerCase() && f.pw === OB.account.pw) : f.pw.length >= 8;
+      if (!ok) {
+        OB.tries++;
+        OB.errs = { form: OB.tries >= 5 ? obT("Too many attempts. Try again in 15 minutes or reset your password.", "พยายามหลายครั้งเกินไป ลองใหม่ในอีก 15 นาที หรือรีเซ็ตรหัสผ่าน") : obT("Email or password is incorrect.", "อีเมลหรือรหัสผ่านไม่ถูกต้อง") + ` (${OB.tries}/5)` };
+        return obDraw();
+      }
+      OB.tries = 0; if (!f.name) f.name = f.email.split("@")[0]; obFinish(obT("Welcome back, ", "ยินดีต้อนรับกลับ ") + f.name);
+    }
+    document.addEventListener("click", e => {
+      const b = e.target.closest("[data-ob]");
+      if (b && b.closest(".ob")) {
+        const [a, arg] = b.dataset.ob.split(":");
+        switch (a) {
+          case "go": obGo(arg); break;
+          case "welcome": if (OB.loading) break; OB.termsAt = new Date().toISOString(); OB.loading = true; obDraw(); setTimeout(() => { if (OB.step === "welcome" && OB.loading) obGo("consent"); }, 1500); break;
+          case "cons": if (arg === "all") OB.opt = { analytics: true, personalized: true }; else if (arg === "none") OB.opt = { analytics: false, personalized: false }; obLog(); obGo("notif"); break;
+          case "hide": OB.hide = !OB.hide; obDraw(); break;
+          case "lang": { setLang(arg); const rt = obRoot(); rt.querySelectorAll(".ob-lrow").forEach(r => { const on = r.dataset.ob === "lang:" + arg; r.classList.toggle("on", on); r.querySelector("svg")?.remove(); if (on) r.insertAdjacentHTML("beforeend", I.check(17)); }); rt.querySelector(".ob-bar .ob-btn").textContent = obT("Continue", "ต่อไป"); break; }
+          case "tog": OB.opt[arg] = !OB.opt[arg]; obDraw(); break;
+          case "accept": obAccept(); break;
+          case "decline": OB.declined = true; obDraw(); break;
+          case "exit": if (OB.recon) { OB.recon = false; OB.declined = false; OB.on = false; localStorage.removeItem("fo_onboarded"); toast(obT("Signed out (demo)", "ออกจากระบบแล้ว (เดโม)")); OB.on = true; OB.step = "member"; obMount(); } else { OB.declined = false; toast(obT("App closed (demo)", "ปิดแอปแล้ว (เดโม)")); obDraw(); } break;
+          case "legal": OB.legal = arg; obDraw(); break;
+          case "closelegal": OB.legal = null; obDraw(); break;
+          case "eye": { const i = b.parentElement.querySelector("input"); i.type = i.type === "password" ? "text" : "password"; b.innerHTML = i.type === "password" ? I.eye(20) : I.eyeOff(20); break; }
+          case "signup": obSignup(); break;
+          case "resend": OB.resend = 30; toast(obT("New code sent", "ส่งรหัสใหม่แล้ว")); obDraw(); break;
+          case "photo": toast(obT("Photo picker opens here (prototype)", "ตัวเลือกรูปภาพจะเปิดตรงนี้ (โปรโตไทป์)")); break;
+          case "profile": if (OB.f.user && !/^[a-z0-9_.]{3,20}$/.test(OB.f.user)) { OB.errs = { user: obT("3–20 characters: a–z, 0–9, _ or .", "3–20 ตัวอักษร: a–z, 0–9, _ หรือ .") }; obDraw(); } else obGo("created"); break;
+          case "guest": if (OB.hide) localStorage.setItem("fo_member_hide", "1"); obFinish(obT("Browsing as guest", "กำลังเข้าใช้แบบผู้เยี่ยมชม")); break;
+          case "signin": obSignin(); break;
+          case "forgot": if (!obEmailOk(OB.f.email.trim())) { OB.errs = { email: obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง") }; obDraw(); } else { OB.sent = true; obDraw(); } break;
+                    case "os": if (arg === "open") { OB.os = OB.step; obDraw(); } else { const was = OB.os; if (was === "track" && arg === "no") OB.opt.personalized = false; obGo(was === "track" ? "member" : "track"); } break;
+          case "finish": obFinish(obT("Welcome to TukDaeng", "ยินดีต้อนรับสู่ตึกแดง")); break;
+        }
+        return;
+      }
+      const coach = e.target.closest(".ob-coach button");
+      if (coach) obTour(obTourI + 1);
+      else if (!e.target.closest(".ob-coach")) { obTourI = -1; document.querySelectorAll(".ob-coach").forEach(c => c.remove()); }
+    });
+    document.addEventListener("input", e => {
+      const t = e.target; if (!t.closest || !t.closest(".ob")) return;
+      if (t.dataset.f) {
+        OB.f[t.dataset.f] = t.value;
+        if (t.dataset.f === "pw") { const m = t.closest(".ob-page").querySelector(".ob-meter"); if (m) m.dataset.s = t.value ? Math.max(1, obScore(t.value)) : 0; }
+      } else if (t.dataset.otp !== undefined) {
+        const boxes = [...t.closest(".ob-otp").querySelectorAll("input")], i = +t.dataset.otp;
+        t.value = t.value.replace(/\D/g, "");
+        if (t.value && i < 5) boxes[i + 1].focus();
+        const code = boxes.map(x => x.value).join("");
+        if (code.length === 6) {
+          if (code === "123456") obGo("profile");
+          else {
+            const w = t.closest(".ob-otp"); w.classList.add("bad");
+            document.getElementById("obOtpMsg").textContent = obT("That code is incorrect. Try again.", "รหัสไม่ถูกต้อง ลองอีกครั้ง");
+            setTimeout(() => { boxes.forEach(x => x.value = ""); w.classList.remove("bad"); boxes[0].focus(); }, 450);
+          }
+        }
+      }
+    });
+    document.addEventListener("keydown", e => {
+      const t = e.target; if (!t.closest || !t.closest(".ob")) return;
+      if (t.dataset.otp !== undefined && e.key === "Backspace" && !t.value && +t.dataset.otp > 0) t.closest(".ob-otp").querySelectorAll("input")[+t.dataset.otp - 1].focus();
+      else if (e.key === "Enter" && t.tagName === "INPUT" && t.dataset.f) { e.preventDefault(); t.closest(".ob-page").querySelector(".ob-btn.pri")?.click(); }
+    });
+    document.getElementById("obReplay").addEventListener("click", () => {
+      localStorage.removeItem("fo_onboarded"); localStorage.removeItem("fo_member_hide");
+      document.querySelectorAll(".ob-coach").forEach(c => c.remove());
+      Object.assign(OB, { on: true, step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", opt: { analytics: false, personalized: false }, f: { name: "", email: "", pw: "", user: "" }, errs: {}, tries: 0, account: null, resend: 30, os: false, sent: false });
+      obMount();
+    });
+    document.getElementById("obRecon").addEventListener("click", () => {
+      if (OB.on && !OB.recon) return toast("Finish first-run onboarding before simulating re-consent");
+      Object.assign(OB, { on: true, recon: true, step: "consent", ver: "1.1", legal: null, declined: false, os: false });
+      obMount();
     });
 
     document.documentElement.lang = state.lang;
