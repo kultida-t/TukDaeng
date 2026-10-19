@@ -1,0 +1,6 @@
+CHAT-009 — Items filter popover text weights → no longer all-bold
+
+[x] .ch-filter-pop-row font-weight 500 → 400 (All items / Your listings / Items you asked about) (Prototypes/fo-flow/index.html)
+[x] .ch-filter-pop-title font-weight 600 → 500 (Filter items by)
+[x] ไม่แตะ .ch-filter-pop-check weight 800 (เป็น check glyph ไม่ใช่ข้อความ)
+[x] 4/4 checks pass, 0 console/page errors (Prototypes/_verify_chat009.mjs; Prototypes/deliverables/task-CHAT-009/popover-light-weights.png)

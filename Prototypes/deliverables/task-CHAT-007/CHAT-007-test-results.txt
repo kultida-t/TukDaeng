@@ -1,0 +1,16 @@
+TEST RESULTS FOR TASK CHAT-007:
+PASS: dark: active pill bg = rgba(0,0,0,.3) (feed segment pattern) — rgba(0, 0, 0, 0.3)
+PASS: dark: active pill label is --red — rgb(200, 33, 43)
+PASS: dark: active pill font-weight 700 — 700
+PASS: dark: active pill is full radius capsule — 999px
+PASS: dark: inactive label = rgba(255,255,255,.88) — rgba(255, 255, 255, 0.88)
+PASS: dark: no slate #475569 active bg — rgba(0, 0, 0, 0.3)
+PASS: Items tab becomes active on click — Items
+PASS: Items dropdown popover still opens on 2nd click — popover count=1
+PASS: light: active pill bg = --chip-bg rgba(0,0,0,.06) — rgba(0, 0, 0, 0.06)
+PASS: light: active pill label is --red — rgb(200, 33, 43)
+PASS: light: inactive label = color-mix text 72% — color(srgb 0.0784314 0.0784314 0.0901961 / 0.72)
+PASS: light: no slate #5d6b7e active bg — rgba(0, 0, 0, 0.06)
+PASS: No console/page errors — errors=0
+
+TOTAL: 13 | FAILED: 0

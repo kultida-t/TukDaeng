@@ -1,0 +1,13 @@
+TEST RESULTS FOR TASK CHAT-008:
+PASS: dark: popover bg = rgba(28,33,41,.55) translucent — rgba(28, 33, 41, 0.55)
+PASS: dark: backdrop blur(30px) saturate(1.8) — blur(30px) saturate(1.8)
+PASS: dark: radius 20px — 20px
+PASS: dark: 3 filter rows visible
+PASS: selecting a filter closes popover
+PASS: Items tab stays active after filter pick
+PASS: light: popover bg = rgba(255,255,255,.55) translucent — rgba(255, 255, 255, 0.55)
+PASS: light: backdrop blur(30px) saturate(1.8) — blur(30px) saturate(1.8)
+PASS: light: radius 20px — 20px
+PASS: No console/page errors — errors=0
+
+TOTAL: 10 | FAILED: 0

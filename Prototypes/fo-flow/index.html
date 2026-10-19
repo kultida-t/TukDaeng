@@ -577,28 +577,52 @@
       display: none;
     }
 
-    /* FT3 — segmented */
+    /* FT3 — segmented capsule (same translucent glass as the floating bottom nav) */
     .screen[data-ft="segment"] .feed-tabs {
+      align-self: center;
       gap: 0;
       margin: 4px 12px 6px;
-      padding: 3px;
-      border: none;
-      background: var(--chip-bg);
+      padding: 4px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      background: rgba(120, 124, 134, .26);
+      -webkit-backdrop-filter: blur(24px) saturate(1.6);
+      backdrop-filter: blur(24px) saturate(1.6);
       border-radius: 999px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .18);
+      flex-shrink: 0;
+    }
+
+    .screen[data-ft="segment"][data-theme="light"] .feed-tabs {
+      background: rgba(255, 255, 255, .34);
+      border-color: rgba(255, 255, 255, .7);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, .18), inset 0 1px 0 rgba(255, 255, 255, .9);
     }
 
     .screen[data-ft="segment"] .feed-tab {
-      flex: 1;
-      padding: 7px 0;
+      padding: 6px 14px;
       border-radius: 999px;
       font-size: 12.5px;
+      font-weight: 600;
       text-align: center;
     }
 
+    .screen[data-ft="segment"][data-theme="light"] .feed-tab:not(.active) {
+      color: color-mix(in srgb, var(--text) 72%, transparent);
+    }
+
+    .screen[data-ft="segment"]:not([data-theme="light"]) .feed-tab:not(.active) {
+      color: rgba(255, 255, 255, .88);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+    }
+
     .screen[data-ft="segment"] .feed-tab.active {
-      background: var(--surface);
-      color: var(--text);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, .18);
+      background: var(--chip-bg);
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .screen[data-ft="segment"]:not([data-theme="light"]) .feed-tab.active {
+      background: rgba(0, 0, 0, .3);
     }
 
     .screen[data-ft="segment"] .feed-tab.active::after {
@@ -9088,7 +9112,7 @@
       font: inherit;
       font-size: 14.5px;
       font-weight: 600;
-      color: #1c1d21;
+      color: color-mix(in srgb, var(--text) 72%, transparent);
       padding: 6px 16px;
       border-radius: 999px;
       display: flex;
@@ -9101,18 +9125,20 @@
     }
 
     .screen[data-theme="dark"] .ch-top-tab {
-      color: #e5e7eb;
+      color: rgba(255, 255, 255, .88);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
     }
 
     .ch-top-tab.active-pill {
-      background: #5d6b7e;
-      color: #ffffff !important;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .18);
+      background: var(--chip-bg);
+      color: var(--red);
+      font-weight: 700;
     }
 
     .screen[data-theme="dark"] .ch-top-tab.active-pill {
-      background: #475569;
-      color: #ffffff !important;
+      background: rgba(0, 0, 0, .3);
+      color: var(--red);
+      text-shadow: none;
     }
 
     .ch-tab-arrow {
@@ -9142,22 +9168,22 @@
       width: max-content;
       min-width: 275px;
       max-width: calc(100vw - 32px);
-      background: rgba(255, 255, 255, 0.78);
-      -webkit-backdrop-filter: blur(25px) saturate(1.8);
-      backdrop-filter: blur(25px) saturate(1.8);
+      background: rgba(255, 255, 255, 0.55);
+      -webkit-backdrop-filter: blur(30px) saturate(1.8);
+      backdrop-filter: blur(30px) saturate(1.8);
       border-radius: 20px;
       padding: 14px 0 10px;
       box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.6);
       pointer-events: auto;
       animation: chPopIn .16s cubic-bezier(0.16, 1, 0.3, 1);
       transform-origin: top left;
     }
 
     .screen[data-theme="dark"] .ch-filter-popover {
-      background: rgba(28, 33, 41, 0.78);
-      -webkit-backdrop-filter: blur(25px) saturate(1.8);
-      backdrop-filter: blur(25px) saturate(1.8);
+      background: rgba(28, 33, 41, 0.55);
+      -webkit-backdrop-filter: blur(30px) saturate(1.8);
+      backdrop-filter: blur(30px) saturate(1.8);
       border-color: rgba(255, 255, 255, 0.14);
       box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
     }
@@ -9177,7 +9203,7 @@
     .ch-filter-pop-title {
       padding: 0 20px 8px 44px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
       color: #8e8e93;
       letter-spacing: -.1px;
       text-align: left;
@@ -9197,7 +9223,7 @@
       outline: none;
       font: inherit;
       font-size: 15px;
-      font-weight: 500;
+      font-weight: 400;
       color: var(--text);
       cursor: pointer;
       text-align: left;
@@ -12850,7 +12876,7 @@
     };
 
     /* ================= RENDER ================= */
-    const state = { variant: "a1", tStyle: "t3", dStyle: "d2", nav: "labeled", ft: "chipsc", ask: "outline", ds: "full", pr: "pr1", dh: "dh1", dl: "dl1", tg: "tg1", feedTab: "all" };
+    const state = { variant: "a1", tStyle: "t3", dStyle: "d2", nav: "labeled", ft: "segment", ask: "outline", ds: "full", pr: "pr1", dh: "dh1", dl: "dl1", tg: "tg1", feedTab: "all" };
 
     function formatPostTime(t, isTh) {
       if (!isTh || !t) return t;

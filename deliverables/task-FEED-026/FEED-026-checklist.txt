@@ -1,0 +1,11 @@
+FEED-026 — feed option pills → compact glass capsule (same style as floating bottom nav)
+
+[x] state.ft "chipsc" → "segment" (Prototypes/fo-flow/index.html, screen data-ft="segment")
+[x] Compact centered capsule — align-self:center, container ~250×38 @440w (was full-width 416px)
+[x] Same glass as bottom nav: rgba(120,124,134,.26) + blur(24px) saturate(1.6), border rgba(255,255,255,.14), radius 999px, shadow 0 10px 28px
+[x] Light theme matches nav: rgba(255,255,255,.34) + border rgba(255,255,255,.7)
+[x] Active tab = red label + subtle capsule (rgba(0,0,0,.3) dark / --chip-bg light) — same active pattern as nav-item
+[x] Inactive labels: rgba(255,255,255,.88) + text-shadow (dark), color-mix text 72% (light) — same as nav-item
+[x] Labels only — 0 icons inside .feed-tab (EN/TH)
+[x] Tab switching still filters: all=11 posts, following=3, favorites=empty state
+[x] 0 console/page errors (Prototypes/_verify_feed026.mjs; screenshots/task-FEED-026/seg-*.png)

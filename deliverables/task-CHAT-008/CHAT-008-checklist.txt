@@ -1,0 +1,9 @@
+CHAT-008 — Items filter popover background → translucent frosted glass (iOS context-menu look)
+
+[x] .ch-filter-popover bg alpha .78 → .55 เห็นเนื้อหาเบลอทะลุด้านหลังตาม reference LINE sort menu (Prototypes/fo-flow/index.html)
+[x] backdrop blur(25px) → blur(30px) saturate(1.8) ทั้ง light/dark
+[x] Light: rgba(255,255,255,.55) + border rgba(255,255,255,.6) (จาก .78/.85)
+[x] Dark: rgba(28,33,41,.55) + border rgba(255,255,255,.14) เดิม
+[x] คง radius 20px / shadow / chPopIn animation / row+title+check เดิม ไม่แตะ
+[x] Filter flow ปกติ: คลิก Items ซ้ำเปิด popover, เลือก "Your listings" ปิดและ filter ได้
+[x] 10/10 checks pass, 0 console/page errors (Prototypes/_verify_chat008.mjs; Prototypes/deliverables/task-CHAT-008/popover-{dark,light}.png)
