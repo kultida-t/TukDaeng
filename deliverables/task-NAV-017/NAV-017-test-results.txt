@@ -1,0 +1,10 @@
+PASS head uses detail-head pattern
+PASS header title = Alerts (not username) — Alerts
+PASS header has no username
+PASS header title centered (parity w/ Portfolio ~3px)
+PASS back button still routes to feed
+PASS alert list still renders
+PASS header title = แจ้งเตือน (TH) — แจ้งเตือน
+PASS TH title centered (parity w/ Portfolio ~3px)
+
+ALL PASS — failed=0 consoleErrors=0

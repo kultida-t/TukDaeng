@@ -1,0 +1,43 @@
+NAV-017 — Manual/Auto Review Checklist (ผลตรวจจริง)
+Task: ปรับ header หน้า Alerts จากชื่อ username เป็นชื่อหน้า "Alerts" จัดกึ่งกลางตาม pattern หน้า Portfolio
+วันที่ตรวจ: 19/10/2026
+ผู้ตรวจ: AI verify script (_verify_nav017.mjs) + ผู้ใช้ยืนยันผล ("แก้ให้เลย" → "โอเคปิด task ได้")
+
+เคส 1: Header ใช้ pattern detail-head เดียวกับ Portfolio
+  ขั้นกด: เปิด FO Flow → กด tab "Alerts" (กระดิ่ง) ใน bottom nav
+  ผลที่คาด: header เป็น glass header แบบหน้า Portfolio — ปุ่มย้อนวงกลมซ้าย + ชื่อหน้ากึ่งกลาง + placeholder ขวา
+  ผล: ผ่าน (PASS head uses detail-head pattern)
+
+เคส 2: Title แสดงชื่อหน้า ไม่ใช่ username (EN)
+  ผลที่คาด: title = "Alerts" และไม่มีข้อความ "king.mr.fox" ใน header
+  ผล: ผ่าน (title = "Alerts", ไม่มี username)
+
+เคส 3: Title อยู่กึ่งกลางจอ
+  ผลที่คาด: จุดกึ่งกลาง title ตรงกึ่งกลาง header (วัดจริง offset ~3px เท่ากับหน้า Portfolio ที่เป็น reference pattern เป๊ะ)
+  ผล: ผ่าน (offset เดียวกับ Portfolio = parity ตาม pattern)
+
+เคส 4: ปุ่มย้อนกลับทำงานเดิม
+  ผลที่คาด: ปุ่มย้อนกลับไปหน้า Feed (data-navgo="feed")
+  ผล: ผ่าน
+
+เคส 5: รายการแจ้งเตือนแสดงครบเหมือนเดิม (regression)
+  ผลที่คาด: กลุ่ม Today / Yesterday / Last 7 days + แถวแจ้งเตือน + "Mark all as read" + bottom nav ครบ
+  ผล: ผ่าน (render .al-row ครบ)
+
+เคส 6: Title ภาษาไทย + i18n สลับทันที
+  ขั้นกด: สลับภาษาเป็นไทยผ่าน setLang("th")
+  ผลที่คาด: title เปลี่ยนเป็น "แจ้งเตือน" ทันทีโดยไม่ต้องรีเฟรช และยังกึ่งกลาง
+  ผล: ผ่าน
+
+เคส 7: Console error
+  ผลที่คาด: ไม่มี console error / page error ตลอด flow
+  ผล: ผ่าน (consoleErrors=0)
+
+สรุป: ผ่าน 7/7 เคส (auto-checks 8/8 PASS) — ผู้ใช้ยืนยันปิด task
+
+หลักฐานประกอบ:
+- Prototypes/screenshots/task-NAV-017/before/before-alerts-username.png (ภาพก่อนแก้ — header แสดง username king.mr.fox, รับจากผู้ใช้)
+- Prototypes/screenshots/task-NAV-017/before/ref-portfolio-header.png (ภาพ reference pattern หน้า Portfolio, รับจากผู้ใช้)
+- Prototypes/screenshots/task-NAV-017/alerts-en.png, alerts-th.png, alerts-head-en.png, alerts-head-th.png (After, viewport มือถือ 440px — หน้าจอ FO Flow เป็น mobile prototype, viewport Desktop ไม่เกี่ยวข้อง)
+- deliverables/task-NAV-017/_verify_nav017.mjs (สคริปต์ตรวจ)
+- deliverables/task-NAV-017/NAV-017-test-results.txt (raw output)

@@ -17133,9 +17133,12 @@
       const groups = ["Today", "Yesterday", "Last 7 days", "Earlier"].map(g => [g, list.filter(a => a.grp === g)]).filter(([, l]) => l.length);
       return `
   <div class="ch-scroll sub-scroll al-scroll">
-    <div class="al-head">
-      <button class="icon-btn al-back" data-navgo="feed">${I.back(22)}</button>
-      <span class="al-title">${esc(CP_ME.name)}</span>
+    <div class="detail-head al-head">
+      <button class="icon-btn al-back" data-navgo="feed">${I.back()}</button>
+      <span class="spacer"></span>
+      <span class="detail-title">${isTh ? "แจ้งเตือน" : "Alerts"}</span>
+      <span class="spacer"></span>
+      <span class="icon-btn" style="visibility:hidden"></span>
     </div>
     ${groups.length ? groups.map(([g, l], i) => `<div class="al-sec"><span>${groupLabels[g] || g}</span>${i === 0 && un ? `<button class="al-readall" data-alreadall>${isTh ? "อ่านทั้งหมดแล้ว" : "Mark all as read"}</button>` : ""}</div>${l.map(alRowHTML).join("")}`).join("")
           : chEmptyHTML(isTh ? "ยังไม่มีการแจ้งเตือน" : "No alerts yet", isTh ? "การแจ้งเตือนนาฬิกา ยอดถูกใจ ความคิดเห็น และผู้ติดตามใหม่จะแสดงที่นี่" : "Watch alerts, likes, comments and new followers will show up here.")}
