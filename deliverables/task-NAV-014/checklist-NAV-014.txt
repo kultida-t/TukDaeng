@@ -14,5 +14,5 @@ NAV-014 Manual Review Checklist — Bottom Nav contrast เวลาพื้น
 เคส 6: Dark Mode + เลื่อนรูปพื้นหลังสว่าง (นาฬิกา) มาทับเมนูล่าง ดรอปยังสว่างตามพื้นหลัง -> พบว่าลด alpha สีขาวอย่างเดียวไม่พอ เพราะ backdrop blur ดึงความสว่างจากพื้นหลัง -> เปลี่ยนดรอปเป็น smoked glass สีดำจาง ผ่าน
 เคส 7 (regression): Light Mode ดรอปหลังเมนูที่เลือกยังเป็นสีเข้มจางเดิม ไม่สว่าง/ไม่กลืนเกินไป -> ตรวจแล้วโอเค ไม่ปรับ
 
-Evidence gap: ไม่ได้แคปภาพ Before/After ลงไฟล์ (ผู้ใช้ตรวจผ่านภาพแปะในแชท 5 รอบ: ภาพต้นฉบับ 3 รูป + ภาพผล light mode 1 รูป + ภาพ follow-up 2 รูป)
+Evidence gap: ไม่ได้แคปภาพ Before/After ลงไฟล์ (ผู้ใช้ตรวจผ่านภาพแปะในแชทรวม 6 รอบ / 9 ภาพ — งานเดิม 3 รอบ: ภาพต้นฉบับ 3 รูป + ภาพผล light mode 1 รูป; follow-up 3 รอบ: dark สว่างเกิน 1 รูป + dark ทับภาพนาฬิกา 2 รูป + light mode 2 รูป)
 ไฟล์ที่แก้: Prototypes/fo-flow/index.html (CSS บล็อก .screen[data-nav="labeled"] ~บรรทัด 6281-6294 + เพิ่ม rule dark-mode สำหรับ active drop ~บรรทัด 6309)
