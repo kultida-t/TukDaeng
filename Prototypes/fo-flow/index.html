@@ -12152,6 +12152,156 @@
     [disabled] {
       cursor: default;
     }
+
+    /* NAV-013 — standard glass circle for back/action buttons in every sub-page header (same look as .bd-pill-btn) */
+    :is(.detail-head, .cf-head, .pf-head, .ch-rhead)>button.icon-btn,
+    .cf-head>button.icon-btn {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .34);
+      border: 1px solid rgba(255, 255, 255, .65);
+      -webkit-backdrop-filter: blur(24px) saturate(1.6);
+      backdrop-filter: blur(24px) saturate(1.6);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
+      transition: background .15s ease, transform .1s ease;
+    }
+
+    .screen[data-theme="dark"] :is(.detail-head, .cf-head, .pf-head, .ch-rhead)>button.icon-btn {
+      background: rgba(120, 124, 134, .26);
+      border-color: rgba(255, 255, 255, .12);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .22);
+    }
+
+    :is(.detail-head, .cf-head, .pf-head, .ch-rhead)>button.icon-btn:hover {
+      background: rgba(255, 255, 255, .5);
+    }
+
+    .screen[data-theme="dark"] :is(.detail-head, .cf-head, .pf-head, .ch-rhead)>button.icon-btn:hover {
+      background: rgba(120, 124, 134, .4);
+    }
+
+    :is(.detail-head, .cf-head, .pf-head, .ch-rhead)>button.icon-btn:active {
+      transform: scale(.92);
+    }
+
+    :is(.app-header, .al-head, .bd-head, .ch-menu-head, .sr-head, .ch-gal-head)>button.icon-btn {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .34);
+      border: 1px solid rgba(255, 255, 255, .65);
+      -webkit-backdrop-filter: blur(24px) saturate(1.6);
+      backdrop-filter: blur(24px) saturate(1.6);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
+      transition: background .15s ease, transform .1s ease;
+    }
+
+    .screen[data-theme="dark"] :is(.app-header, .al-head, .bd-head, .ch-menu-head, .sr-head, .ch-gal-head)>button.icon-btn {
+      background: rgba(120, 124, 134, .26);
+      border-color: rgba(255, 255, 255, .12);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .22);
+    }
+
+    :is(.app-header, .al-head, .bd-head, .sr-head)>button.icon-btn:active {
+      transform: scale(.92);
+    }
+
+    .app-header {
+      gap: 8px;
+    }
+
+    .bd-head {
+      grid-template-columns: 38px 1fr 38px;
+    }
+
+    .ch-rhead,
+    .al-head,
+    .ch-menu-head,
+    .ch-gal-head,
+    .svd-head {
+      border-bottom: none;
+    }
+
+    .ch-rhead,
+    .al-head {
+      gap: 8px;
+    }
+
+    .sr-head {
+      padding: 38px 12px 8px;
+      min-height: 84px;
+      box-sizing: border-box;
+    }
+
+    .sr-head .sr-field {
+      height: 38px;
+      box-sizing: border-box;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .34);
+      border: 1px solid rgba(255, 255, 255, .65);
+      -webkit-backdrop-filter: blur(24px) saturate(1.6);
+      backdrop-filter: blur(24px) saturate(1.6);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
+    }
+
+    .screen[data-theme="dark"] .sr-head .sr-field {
+      background: rgba(120, 124, 134, .26);
+      border-color: rgba(255, 255, 255, .12);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .22);
+    }
+
+    .ch-menu-head {
+      min-height: 84px;
+      padding: 38px 58px 8px;
+    }
+
+    .ch-menu-head .sub-back {
+      left: 12px;
+      top: 38px;
+      transform: none;
+    }
+
+    .ch-menu-head .detail-title {
+      line-height: 38px;
+      margin: 0;
+    }
+
+    .ch-rhead {
+      padding-left: 12px;
+    }
+
+    .ch-rhead .sub-back {
+      margin-right: 0;
+    }
+
+    .detail-head,
+    .ch-menu-head {
+      gap: 8px;
+    }
+
+    .screen[data-nav="labeled"] .bottom-nav {
+      border: .5px solid rgba(255, 255, 255, .1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+    }
+
+    .screen[data-nav="labeled"][data-theme="light"] .bottom-nav {
+      border: .5px solid rgba(255, 255, 255, .45);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+    }
+
+    .detail-title,
+    .cf-head .t,
+    .pf-uname,
+    .pf-vname,
+    .al-title,
+    .ch-rhead .n,
+    .ch-menu-head .detail-title {
+      font-weight: 500;
+    }
   </style>
 </head>
 
@@ -16121,7 +16271,6 @@
            <span class="spacer"></span>
            <button class="icon-btn pf-menu" title="${isTh ? "การตั้งค่าและกิจกรรม" : "Settings and activity"}">${I.burger(22)}</button>`
           : `<button class="icon-btn sub-back">${I.back()}</button>
-           <span class="pf-vname">${esc(u.user)}</span>
            <span class="spacer"></span>
            <button class="icon-btn pf-more">${I.dots(18)}</button>`}
     </div>
