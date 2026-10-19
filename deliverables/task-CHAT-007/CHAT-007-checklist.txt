@@ -1,0 +1,9 @@
+CHAT-007 — chat top capsule active pill → same pattern as feed segment (FEED-026)
+
+[x] .ch-top-tab.active-pill slate #5d6b7e/#475569 + white text → --red label on subtle capsule (Prototypes/fo-flow/index.html)
+[x] Light theme active = --chip-bg rgba(0,0,0,.06) + --red #c8212b, weight 700 — same as .feed-tab.active [data-ft="segment"]
+[x] Dark theme active = rgba(0,0,0,.3) + --red — same as feed segment dark
+[x] Inactive labels aligned to segment pattern: color-mix text 72% (light) / rgba(255,255,255,.88) + text-shadow (dark)
+[x] Items dropdown arrow + filter popover still works (2nd click toggles popover, aria-expanded intact)
+[x] Chat capsule container (.ch-nav-tabs glass) unchanged — already matched bottom nav
+[x] 13/13 checks pass, 0 console/page errors (Prototypes/_verify_chat007.mjs; Prototypes/deliverables/task-CHAT-007/chat-tabs-{dark,light}.png)

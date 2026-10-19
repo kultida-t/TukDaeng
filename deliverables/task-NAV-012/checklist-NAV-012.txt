@@ -1,0 +1,14 @@
+NAV-012 Floating pill/menu audit (ref: Apple Health liquid glass)
+Evidence: Prototypes/screenshots/task-NAV-012/before, after
+
+Audited OK (no change): bottom nav capsule (all tabs/sub-pages), Chats|Items capsule + gear circle, Post Viewer circle back/follow/search glass.
+Fixed: Board article back circle + action group -> translucent glass (.58, blur 24 sat 1.6), group radius 20px -> full pill.
+Fixed: Item chats listing card .88 opaque -> .62/.58 glass, blur 24.
+Fixed: chat tab pills blur 20 -> 24 (same token as nav).
+Not floating menus (flat frosted header strips from NAV-008/009): settings/saved/etc sub-pages - unchanged.
+
+Manual review cases:
+1 Boards tab > open any article (dark + light): back circle and heart/send group look like translucent pills; scroll up and content blurs underneath.
+2 Chat > Items > open a listing: listing card is a translucent pill, content blurs behind it.
+3 Chat tab: Chats|Items capsule and gear unchanged.
+4 Bottom nav on Feed/Chat/Boards/Alerts/Profile unchanged.

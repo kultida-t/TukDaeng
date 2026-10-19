@@ -157,3 +157,7 @@ When the user asks for a fun blog from the day's work (e.g. "เขียน blo
 - ห้ามใส่: "ดึง kanban context", "ย้าย task เข้า in_progress", "บันทึก session note", "อ่านเอกสาร..."
 - หลักฐานและ checklist ต้องแสดงเฉพาะ **ผลงานที่ทำจริง (Actual Work Results)** เท่านั้น เช่น สิ่งที่ตรวจพบ, จุดที่ผ่าน/ไม่ผ่าน, สถิติตัวเลขจริง, หรือข้อสรุปทางเทคนิค
 - ถ้า task ใดเป็นงานเอกสาร/ตรวจอย่างเดียวที่ไม่มีหน้าจอเปลี่ยน ให้เน้นไฟล์เอกสารผลลัพธ์จริง (Markdown report) เป็นหลักฐานหลัก และหากมีการสรุปเป็นการ์ดภาพ ให้แสดงเฉพาะผลการตรวจสอบจริงเท่านั้น ห้ามประดิษฐ์ขั้นตอนระบบมาใส่
+
+## Kanban Workflow Preference
+
+- Do not move a Kanban task to `done` until the user explicitly confirms the result and asks to close it. If more work arrives for an already-closed task, fold it into the same task (keep original start time, update end time) when the user asks.

@@ -1,0 +1,11 @@
+import { chromium } from "playwright";
+import { pathToFileURL } from "url";
+const b = await chromium.launch();
+const pg = await (await b.newContext({ viewport: { width: 440, height: 956 }, deviceScaleFactor: 2 })).newPage();
+await pg.addInitScript(() => localStorage.setItem("fo_lang", "th"));
+await pg.goto(pathToFileURL("d:/TukDaeng/Prototypes/fo-flow/index.html").href, { waitUntil: "networkidle" });
+await pg.waitForTimeout(500);
+await pg.evaluate(() => { const s = document.querySelector(".screen"); openPostDetail(s, POSTS.find(p => p.id === "p1")); document.querySelector(".page-detail .detail-scroll").scrollTop = 560; });
+await pg.waitForTimeout(400);
+await pg.screenshot({ path: "d:/TukDaeng/Prototypes/screenshots/task-I18N-001/detail-th-specs.png" });
+await b.close();

@@ -1,0 +1,25 @@
+Manual Review Checklist — Task NAV-010
+แก้ header ซ้อนเนื้อหา/ระยะขอบล่าง และ pill Saved-Wish List, Boards Search
+Viewport: Mobile 440 (Playwright) | Theme: dark เท่านั้น | Status: ผ่านเฉพาะเคสที่ตรวจภาพ
+
+เคส 1: Saved — pill All/Collections/Posts
+  ขั้นกด: Profile → Saved
+  ผลที่คาด: header ก่อน แล้ว pill ใต้ header ไม่ทับ status bar
+  ผลจริง: ผ่าน ภาพ: Prototypes/screenshots/task-NAV-009/saved.png
+
+เคส 2: Wish List — ใช้โค้ดเดียวกับ Saved
+  ผลจริง: ยังไม่ได้เปิดดูภาพ (wishlist.png ถูก capture แล้ว)
+
+เคส 3: New post step 2 — ปุ่ม Share ไม่ชิดขอบล่าง
+  ผลจริง: ผ่าน ภาพ: .../caption.png
+
+เคส 4: หน้าย่อย Condition — แถวแรกไม่โดน header ทับ
+  ผลจริง: ผ่าน ภาพ: .../pane-cond.png
+  Watch details / Add price / Add location / More options: ใช้ container เดียวกัน (pane-spec.png capture แล้ว ยังไม่ได้เปิดดู)
+
+เคส 5: Boards Search — ช่องค้นหาไม่ทับ status bar
+  ผลจริง: ผ่าน ภาพ: .../board.png
+
+เคส 6: Home Indicator ถูกซ่อน (ผู้ใช้ขอ) — แก้ CSS แล้ว ไม่ได้ capture ภาพยืนยัน
+
+Evidence gap: ไม่มีภาพ Before; ไม่ได้ตรวจ light / desktop 1440

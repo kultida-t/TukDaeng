@@ -1,0 +1,14 @@
+import { chromium } from "playwright";
+import { pathToFileURL } from "url";
+const b = await chromium.launch();
+const pg = await (await b.newContext({ viewport: { width: 440, height: 956 }, deviceScaleFactor: 2 })).newPage();
+await pg.addInitScript(() => localStorage.setItem("fo_lang", "th"));
+await pg.goto(pathToFileURL("d:/TukDaeng/Prototypes/fo-flow/index.html").href, { waitUntil: "networkidle" });
+await pg.waitForTimeout(500);
+await pg.evaluate(() => openSub(document.querySelector(".screen"), "board"));
+await pg.waitForTimeout(400);
+await pg.screenshot({ path: "d:/TukDaeng/Prototypes/screenshots/task-I18N-001/board-th.png" });
+await pg.evaluate(() => openSub(document.querySelector(".screen"), "pfollow:king.mr.fox:followers"));
+await pg.waitForTimeout(400);
+await pg.screenshot({ path: "d:/TukDaeng/Prototypes/screenshots/task-I18N-001/followers-th.png" });
+await b.close();

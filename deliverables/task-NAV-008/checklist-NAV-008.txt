@@ -1,0 +1,35 @@
+Manual Review Checklist — Task NAV-008 (Kanban 1918936b)
+ปรับแก้ Header ทุกหน้าจอของ Front Office ให้เป็น iOS Floating Frosted Glass
+Date: 2026-10-18 | Viewports: Desktop 1440px, Mobile 390px (Playwright verified)
+Status: ผ่านทุกเคส
+
+เคส 1: หน้า Settings and activity
+  ขั้นกด: Profile → เมนู hamburger → เลื่อนรายการลง ~60px
+  ผลที่คาด: header "Settings and activity" ค้างอยู่ด้านบนเป็นพื้นแก้วเบลอ ไม่มีเส้นแบ่งใต้ header เนื้อหาเลื่อนลอดใต้ header
+  ผลจริง: ผ่าน — header sticky + blur + gradient fade ถูกต้อง ภาพ: Prototypes/screenshots/task-NAV-008/after/{d,m}-settings.png
+
+เคส 2: หน้า Feed หลัก
+  ขั้นกด: เปิดหน้า Feed → เลื่อนลง ~120px
+  ผลที่คาด: app-header ค้างด้านบนแบบ glass เนื้อหา feed เลื่อนใต้ header
+  ผลจริง: ผ่าน ภาพ: Prototypes/screenshots/task-NAV-008/after/{d,m}-feed.png
+
+เคส 3: หน้า Chat
+  ขั้นกด: nav Chat → เลื่อนลง ~120px
+  ผลที่คาด: แถบ Chats/Items + ปุ่มตั้งค่าค้างด้านบนแบบ glass
+  ผลจริง: ผ่าน ภาพ: Prototypes/screenshots/task-NAV-008/after/{d,m}-chat.png
+
+เคส 4: หน้า Board
+  ขั้นกด: nav Boards → เลื่อนลง ~300px
+  ผลที่คาด: header TUK DAENG | Board ค้างด้านบนแบบ glass
+  ผลจริง: ผ่าน ภาพ: Prototypes/screenshots/task-NAV-008/after/{d,m}-board.png
+
+เคส 5: หน้า Alerts
+  ขั้นกด: nav Alerts → เลื่อนลง ~120px
+  ผลที่คาด: header ค้างด้านบนแบบ glass
+  ผลจริง: ผ่าน ภาพ: Prototypes/screenshots/task-NAV-008/after/{d,m}-alerts.png
+
+เคส 6 (regression): โหมด dark/light ใช้สีพื้นหน้านั้นเป็นพื้นแก้ว
+  ผลจริง: ผ่าน — chat ใช้ #ffffff/#14161a, board ใช้ #ffffff/#0e1014 ตาม theme
+
+หมายเหตุ: ไม่มีภาพ Before (capture ไม่ได้ทำก่อนแก้โค้ด — evidence gap)
+ยังไม่ครอบคลุม: ห้องแชทรายบุคคล (ch-rhead), Report sheet (pg-up), Post Viewer (ออกแบบแยกต่างหากแล้ว)

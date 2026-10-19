@@ -1,0 +1,7 @@
+TEST RESULTS FOR TASK CHAT-009:
+PASS: popover open
+PASS: pop-title font-weight 500 — 500
+PASS: all 3 rows font-weight 400 — ["400","400","400"]
+PASS: No console/page errors — errors=0
+
+TOTAL: 4 | FAILED: 0

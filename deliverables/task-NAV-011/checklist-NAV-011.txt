@@ -1,0 +1,17 @@
+Manual Review Checklist — Task NAV-011
+ปรับ pill Saved/Wish List ให้ขนาดเท่า Search, เพิ่มระยะล่างสุด, มาตรฐาน pill ทั้งแอป, แก้ breadcrumb Latest Articles ทับ status bar
+Viewport: Mobile 440 (Playwright) | Theme: dark เท่านั้น
+
+เคส 1: ขนาด pill Saved เทียบ Search
+  ผลจริง: ผ่าน (สูง 25.6px / ฟอนต์ 12.5px เทียบ Search 26px / 12.5px)
+เคส 2: ขนาด pill Wish List เทียบ Search
+  ผลจริง: ผ่าน (สูง 25.6px / ฟอนต์ 12.5px) ภาพ: Prototypes/screenshots/task-NAV-011/wishlist.png
+เคส 3: Saved เลื่อนล่างสุด มีพื้นที่ว่างเท่า Search (4/9 ความกว้าง)
+  ผลจริง: ผ่าน padding-bottom 195.5px ภาพ: Prototypes/screenshots/task-NAV-011/saved.png
+เคส 4: Wish List ว่าง (empty state) ไม่เพิ่มระยะล่าง
+  ผลจริง: ผ่าน padding-bottom 0px (ตั้งใจให้ข้อความกลางจอคงเดิม)
+เคส 5: Board > Latest Articles breadcrumb ไม่ทับ status bar
+  ผลจริง: ผ่าน ภาพ: Prototypes/screenshots/task-NAV-011/boardall.png
+
+Evidence gap: ไม่มีภาพ Before; ไม่ได้ตรวจ light / desktop 1440; pill ชนิดอื่น (Filter/Feed/Board/Profile chip) แก้ CSS แล้วแต่ไม่ได้วัดขนาดจริงทีละหน้า
+Script: Prototypes/_verify_nav011.mjs

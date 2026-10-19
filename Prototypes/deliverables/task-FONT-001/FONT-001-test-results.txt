@@ -1,0 +1,31 @@
+TEST RESULTS FOR TASK FONT-001:
+PASS: index.html body font-family starts with "Google Sans" — "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif
+PASS: index.html Google Sans loaded for Thai glyphs
+PASS: index.html Google Sans loaded for Latin glyphs
+PASS: index.html Google Sans weight 700 available
+PASS: index.html Google Sans italic available
+PASS: index.html on-screen element uses Google Sans stack — "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif
+PASS: index.html no console/page errors — errors=0
+PASS: create-post.html body font-family starts with "Google Sans" — "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif
+PASS: create-post.html Google Sans loaded for Thai glyphs
+PASS: create-post.html Google Sans loaded for Latin glyphs
+PASS: create-post.html Google Sans weight 700 available
+PASS: create-post.html Google Sans italic available
+PASS: create-post.html on-screen element uses Google Sans stack — "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif
+PASS: create-post.html no console/page errors — errors=0
+PASS: feed-create-post.html body font-family starts with "Google Sans" — "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif
+PASS: feed-create-post.html Google Sans loaded for Thai glyphs
+PASS: feed-create-post.html Google Sans loaded for Latin glyphs
+PASS: feed-create-post.html Google Sans weight 700 available
+PASS: feed-create-post.html Google Sans italic available
+PASS: feed-create-post.html on-screen element uses Google Sans stack — "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif
+PASS: feed-create-post.html no console/page errors — errors=0
+PASS: feed-social-redesign.html body font-family starts with "Google Sans" — "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif
+PASS: feed-social-redesign.html Google Sans loaded for Thai glyphs
+PASS: feed-social-redesign.html Google Sans loaded for Latin glyphs
+PASS: feed-social-redesign.html Google Sans weight 700 available
+PASS: feed-social-redesign.html Google Sans italic available
+PASS: feed-social-redesign.html on-screen element uses Google Sans stack — "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif
+PASS: feed-social-redesign.html no console/page errors — errors=0
+
+TOTAL: 28 | FAILED: 0

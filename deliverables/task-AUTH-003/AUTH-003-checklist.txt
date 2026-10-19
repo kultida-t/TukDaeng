@@ -1,0 +1,20 @@
+AUTH-003 — persist บัญชีสมาชิกใหม่ (session=new) ข้าม logout + แก้ตามรีวิวผู้ใช้
+วันที่ทำ: 2026-10-19
+ไฟล์หลัก: Prototypes/fo-flow/index.html
+หลักฐานภาพ: ผู้ใช้ส่งภาพหน้าจอเข้าแชทระหว่างรีวิว (dialog logout แสดง @king.mr.fox, coach mark เด้งซ้ำ) — ไม่ได้แยกเก็บเป็นไฟล์ (evidence gap)
+
+รอบทดสอบ: ผ่าน (รีวิวผู้ใช้จริงใน preview + พบบั๊ก 3 จุดระหว่างรีวิว → แก้แล้ว)
+
+[ผ่าน] สมัครสมาชิกใหม่ (email → OTP 123456 → ตั้ง username → Account created → sign in) → ได้ session=new ข้อมูลว่างตาม new member
+[ผ่าน] ออกจากระบบ → member sheet เด้ง → sign in ด้วยอีเมล/รหัสผ่านที่เพิ่งสมัคร → กลับเป็น session=new username เดิม (เดิมเจอ "Email or password is incorrect" เพราะบัญชีอยู่แค่ memory)
+[ผ่าน] reload หลัง logout → sign in อีเมลเดิมยังเข้าได้ (บัญชี persist ใน localStorage fo_account ไม่หายตาม fo_newuser)
+[ผ่าน] sign in ผิดรหัสบัญชีที่ persist → error "Email or password is incorrect" + นับ tries/5 เหมือนเดิม
+[ผ่าน] demo creds (demo@tukdaeng.com / Tukdaeng123) → session=member ข้อมูล demo ครบเหมือนเดิม
+[ผ่าน] social sign-in (Google/Apple) จาก member sheet หลัง logout: มีบัญชี persist provider เดียวกัน → session=new ของบัญชีตัวเอง / ไม่มี → member demo ตามเดิม
+[ผ่าน] logout ปกติไม่ลบ fo_account — ลบเฉพาะปุ่ม "1st" (replay onboarding) หรือลบบัญชีจริงจาก session=new
+[ผ่าน] dialog "ออกจากระบบ @…?" แสดง username ของบัญชีจริงตาม session (เดิม hardcode @king.mr.fox) — พบจากภาพที่ผู้ใช้รีวิว → แก้แล้ว; dialog ลบบัญชีและ mask อีเมลใน forgot/reset password ใช้อีเมลบัญชีจริงเช่นกัน
+[ผ่าน] coach marks สอนใช้แอปเด้งเฉพาะครั้งแรก (flag fo_toured) ไม่เด้งซ้ำตอน sign in กลับ — พบจากภาพที่ผู้ใช้รีวิว → แก้แล้ว; replay onboarding ล้าง flag เพื่อจำลอง first-run ใหม่ได้
+[ผ่าน] sign in กลับ (email + social) เข้าแอปเงียบ ๆ ไม่มี toast "ยินดีต้อนรับกลับ" ตามแอปจริง — ผู้ใช้สั่งถอด
+[ผ่าน] node syntax check script blocks ผ่านหลังแก้ทุกรอบ (2 blocks, 0 errors)
+
+หมายเหตุหลักฐาน: ไม่มีภาพ Before/After เป็นไฟล์ — ผู้ใช้ส่งภาพผลรีวิวเข้าแชทโดยตรง (3 ภาพ: dialog logout ชื่อ demo, coach mark เด้งบนฟีด, zoom coach mark) หากต้องส่งตรวจแนะนำ capture ซ้ำจาก preview

@@ -1,0 +1,11 @@
+NAV-015 Manual Review Checklist — Header หน้า Privacy Policy / Terms of Use ให้ padding เท่าหน้าอื่น (FO Flow)
+ผู้ตรวจ: ผู้ใช้ (ตรวจหน้าจอจริงผ่านภาพสกรีนเทียบ) | ผล: ผ่าน
+
+สาเหตุที่แก้: หน้า privacy/terms ใช้ scroll container `.sub-scroll.sub-legal-body` ที่มี padding: 16px ของตัวเอง ทำให้ sticky header (.detail-head ที่ renderSub ย้ายเข้ามาใน scroll) ถูก inset 16px รอบด้าน ต่างจากหน้าอื่นที่ container ไม่มี padding — แก้โดยย้าย padding ออกจาก container ไปไว้ที่ .legal-sec แทน (เพิ่ม margin-top/side ให้ section, เหลือ padding-bottom ไว้ที่ container)
+
+เคส 1: Dark Mode หน้า Privacy Policy — ปุ่มย้อนกลับ Glass Circle + ชื่อ "Privacy Policy" อยู่ตำแหน่ง/ระยะห่างเท่าหน้า Help  -> ผ่าน (ผู้ใช้ยืนยันแก้แล้วตรงตามหน้าอื่น)
+เคส 2: Dark Mode หน้า Terms of Use — เหมือนเคส 1  -> ผ่าน (ยืนยันรวมกับเคส 1)
+เคส 3-6: ครอบคลุมโดยการยืนยันรวมของผู้ใช้ ("โอเคปิด task ได้") — header ตรงมาตรฐาน, sticky/glass ครอบเต็มความกว้าง, ระยะเนื้อหาเท่าเดิม, เข้าได้ทุกทาง  -> ผ่าน
+
+Evidence gap: ไม่ได้แคปภาพ Before/After ลงไฟล์ (ผู้ใช้ตรวจผ่านภาพ Before 5 รูปที่แปะในแชทตอนสั่งงาน + ยืนยันผล After ผ่าน preview http://localhost:8642 ใน session เดียวกัน)
+ไฟล์ที่แก้: Prototypes/fo-flow/index.html (CSS .sub-legal-body ~บรรทัด 4903 เปลี่ยน padding: 16px -> 0 0 16px; .legal-sec ~บรรทัด 4907 เปลี่ยน margin-bottom: 20px -> margin: 16px 16px 20px)

@@ -1,0 +1,20 @@
+NAV-013 Manual Review Checklist — Glass Circle buttons + หัวหน้าบางลง (FO Flow)
+ผู้ตรวจ: ผู้ใช้ (ตรวจผ่านภาพและหน้าจอจริงทีละรอบ) | ผล: ผ่านทั้งหมด หลังแก้ 4 รอบ
+
+เคส 1: ปุ่มกลับ/ปุ่ม action หัวหน้าย่อยเป็นวงกลม glass 38px  -> ผ่าน
+  เปิด Settings and activity, Saved, Wish List, Archive, Watch Alerts, Language, Portfolio, Help, Report
+  ผลที่คาด: ปุ่มกลมโปร่งแสง ขนาดเท่ากันทุกหน้า ทั้ง Light/Dark
+เคส 2: ปุ่มหน้า Feed, Board, Alerts (burger, search, +, back)  -> พบว่ายังไม่เป็น glass รอบแรก แก้แล้ว ผ่าน
+เคส 3: หน้า Search (back, bookmark, bell, filter) + ช่อง Search เป็น glass แคปซูล 38px  -> พบว่าช่องเข้ม/ปุ่มไม่ glass รอบแรก แก้แล้ว ผ่าน
+เคส 4: ห้องแชท / ข้อมูลห้องแชท / Settings ห้อง / Photos & videos ไม่มีเส้นคั่น header และปุ่มกลับอยู่ตำแหน่งเดียวกับหน้าอื่น  -> พบเส้นคั่น + ตำแหน่งเพี้ยน แก้แล้ว ผ่าน
+เคส 5: ระยะห่างปุ่มกับชื่อหัวหน้า 8px, น้ำหนักชื่อหัวหน้า 500 (Settings and activity ไม่หนาตัน)  -> ผ่าน
+เคส 6: โปรไฟล์คนอื่น ไม่แสดงชื่อ user ซ้ำข้างปุ่ม <  -> ผ่าน
+เคส 7: เมนูล่าง (Feed/Chat/Boards/Alerts/Profile) เส้นขอบบางลง 0.5px ไม่มีเส้นไฮไลต์ขาวด้านบน  -> ผ่าน
+เคส 8 (regression): กดปุ่มกลับ/ปุ่ม action ทำงานเหมือนเดิม, หน้า Board/Article Detail เหมือนเดิม  -> ผ่าน
+
+สคริปต์ตรวจทั้งแอป (ชั่วคราว ลบแล้ว): เปิดหน้าย่อยกว่า 40 หน้า x Light/Dark ที่ 440px ตรวจว่า header ไม่มีเส้นคั่นและปุ่มเป็น glass 38px -> ผ่านทุกหน้า
+ยกเว้นตั้งใจ: หน้ารายการแชท (ปุ่มเฟืองอยู่ในกลุ่ม glass เดิม), Board search/Latest Articles (ไม่มีปุ่มใน header), ปุ่มข้อความ Cancel/Done/Select
+
+Evidence gap: ไม่ได้แคปภาพ Before ก่อนแก้ (task เริ่มจากคำสั่งปรับดีไซน์ต่อเนื่องหลายรอบ)
+ภาพ After: Prototypes/screenshots/task-NAV-013/after/ (54 ไฟล์: d=1920x1080, t=768x1024, m=440x956 x 9 หน้า x light/dark)
+ไฟล์ที่แก้: Prototypes/fo-flow/index.html (บล็อก CSS NAV-013 ท้าย <style> + ลบชื่อ user ใน header โปรไฟล์คนอื่น)
