@@ -3870,6 +3870,27 @@
       backdrop-filter: none;
     }
 
+    .page-pv .detail-head.svd-head {
+      isolation: isolate;
+    }
+
+    /* NAV-009 — same floating frosted glass strip as the other sub-page headers (NAV-008) */
+    .page-pv .detail-head.svd-head::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: -14px;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(to bottom, color-mix(in srgb, var(--glass-bg, var(--bg)) 88%, transparent) 0%, color-mix(in srgb, var(--glass-bg, var(--bg)) 62%, transparent) 55%, transparent 100%);
+      -webkit-backdrop-filter: blur(18px) saturate(1.8);
+      backdrop-filter: blur(18px) saturate(1.8);
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+    }
+
     .page-pv .detail-head.svd-head>* {
       pointer-events: auto;
     }
@@ -6129,6 +6150,7 @@
     }
 
     .home-ind i {
+      display: none;
       width: 108px;
       height: 4px;
       border-radius: 999px;
@@ -6818,6 +6840,41 @@
       position: relative;
     }
 
+    /* NAV-009 — floating frosted glass header (same as NAV-008 sub-page headers); content scrolls beneath */
+    .cf-head {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 5;
+      min-height: 84px;
+      box-sizing: border-box;
+      isolation: isolate;
+    }
+
+    .cf-head::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: -14px;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(to bottom, color-mix(in srgb, var(--glass-bg, var(--bg)) 88%, transparent) 0%, color-mix(in srgb, var(--glass-bg, var(--bg)) 62%, transparent) 55%, transparent 100%);
+      -webkit-backdrop-filter: blur(18px) saturate(1.8);
+      backdrop-filter: blur(18px) saturate(1.8);
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+    }
+
+    .cf-scroll,
+    .cf .ig-cap-scroll {
+      padding-top: 84px;
+      padding-bottom: 20px;
+      box-sizing: border-box;
+    }
+
     .cf-head .t {
       position: absolute;
       left: 50%;
@@ -7360,7 +7417,7 @@
 
     .cf .ig-share {
       flex-shrink: 0;
-      margin: 6px 14px 0;
+      margin: 6px 14px 26px;
       font-family: var(--font-main);
       font-size: 15px;
       font-weight: 700;
@@ -7398,7 +7455,8 @@
       overflow-y: auto;
       min-height: 0;
       scrollbar-width: none;
-      padding-bottom: 24px;
+      padding-top: 84px;
+      padding-bottom: 48px;
     }
 
     .cf .pane-body::-webkit-scrollbar {
@@ -10174,7 +10232,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin: 12px 16px 8px;
+      margin: 52px 16px 8px;
       padding: 0 14px;
       height: 46px;
       border: 1.5px solid var(--line);
@@ -14021,6 +14079,8 @@
       const scrollEl = el.querySelector(":scope > .sub-scroll, :scope > .pm-rp-scroll");
       if (headEl && scrollEl) {
         scrollEl.prepend(headEl);
+        const tabsEl = el.querySelector(":scope > .svd-tabs");
+        if (tabsEl) headEl.after(tabsEl);
       }
       const curTop = st[st.length - 1] || "";
       el.classList.toggle("pg-chat", curTop.startsWith("chat"));

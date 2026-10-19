@@ -1,0 +1,19 @@
+Manual Review Checklist — Task NAV-009 (Kanban af462c3f)
+ปรับ Header หน้า Post Viewer (โพสต์ตัวเอง/คนอื่น) ให้เป็น iOS Floating Frosted Glass
+Viewport: Mobile 440 (Playwright), Desktop 1440 (Playwright) | Theme: dark + light
+Status: ผ่าน (ผู้ใช้ตรวจเองในเบราว์เซอร์และสั่งต่อ)
+
+เคส 1: Post Viewer โพสต์ตัวเอง (Watch 777, มีปุ่ม Follow)
+  ขั้นกด: Profile → เปิดโพสต์จาก grid
+  ผลที่คาด: header พื้นแก้วเบลอ ข้อความ Posts/ชื่อ owner อ่านชัด ปุ่ม back/Follow ไม่ซ้อนรูปจนอ่านยาก
+  ผลจริง: ผ่าน ภาพ: Prototypes/screenshots/task-NAV-009/m-own-dark.png, m-own-light.png, d-own-*.png
+
+เคส 2: Post Viewer โพสต์คนอื่น (king.mr.fox)
+  ผลจริง: ผ่าน ภาพ: Prototypes/screenshots/task-NAV-009/m-other-*.png, d-other-*.png
+  หมายเหตุ: สคริปต์ fallback เป็น POSTS[0] เพราะหาโพสต์ king.mr.fox ไม่เจอ
+
+เคส 3: dark/light — ผ่านอัตโนมัติ 8/8 (_verify_nav009.mjs)
+
+เคส 4: New post (picker + caption) — header glass; ภาพ m-create-picker.png, m-create-caption.png (ตรวจเฉพาะ dark)
+
+หมายเหตุ/Evidence gap: ไม่มีภาพ Before; ไม่ได้ตรวจ light ในหน้า New post; ไม่ได้ตรวจ desktop 1440 ในหน้า New post
