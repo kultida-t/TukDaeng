@@ -5758,6 +5758,7 @@
     .pm-rp-q {
       font-size: 17px;
       font-weight: 700;
+      margin-top: 16px;
       margin-bottom: 8px;
     }
 
@@ -9865,6 +9866,7 @@
       text-shadow: 0 2px 8px rgba(0, 0, 0, .5);
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -9876,6 +9878,7 @@
       color: rgba(255, 255, 255, .82);
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -10112,6 +10115,7 @@
       line-height: 1.38;
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       color: var(--text);
@@ -14079,7 +14083,7 @@
       const scrollEl = el.querySelector(":scope > .sub-scroll, :scope > .pm-rp-scroll");
       if (headEl && scrollEl) {
         scrollEl.prepend(headEl);
-        const tabsEl = el.querySelector(":scope > .svd-tabs");
+        const tabsEl = el.querySelector(":scope > .svd-tabs, :scope > .pfl-tabs");
         if (tabsEl) headEl.after(tabsEl);
       }
       const curTop = st[st.length - 1] || "";
@@ -16238,6 +16242,7 @@
     }
 
     function subHTML(name, scr) {
+      const isTh = state.lang === "th";
       const head = t => `<div class="detail-head svd-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title rc-title">${t}</span><span class="spacer"></span></div>`;
       const row = (t, attr, extra = "", ic = "") => `<button class="sub-row" ${attr}>${ic ? `<span class="sub-ic">${ic}</span>` : ""}<span>${t}</span>${extra}<span class="sub-chev">${I.chevR(15)}</span></button>`;
       if (name === "create") return createHTML(scr);

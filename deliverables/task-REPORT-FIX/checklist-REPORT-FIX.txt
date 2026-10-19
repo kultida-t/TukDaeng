@@ -1,0 +1,9 @@
+Task 57656249 - FO Flow: Report flow fix (isTh), Report heading spacing, line-clamp
+ไฟล์ที่แก้: Prototypes/fo-flow/index.html
+ตรวจโดย: ผู้ใช้ (ยืนยันว่า 3 ปัญหาใน editor หายแล้ว) + สคริปต์ Prototypes/_verify_reportfix.mjs
+
+เคส 1: Feed "..." > Report เปิดหน้า Report (EN/TH) มีเหตุผล 9 ข้อ ไม่มี pageerror  -> ผ่าน (390 + 1440)
+เคส 2: ระยะระหว่าง header "Report" กับ "Why are you reporting this post?" = 16px -> ผ่าน
+เคส 3: Problems ของ index.html ที่เป็น -webkit-line-clamp 3 จุด -> หาย (ผู้ใช้ยืนยัน)
+Evidence gap: ไม่มีภาพ Before; ไม่ได้ทดสอบ Report จากหน้า Chat/Detail ผ่านสคริปต์ (ใช้ branch เดียวกับ subHTML)
+ภาพ: Prototypes/screenshots/task-REPORT-FIX/after-m.png, after-d.png
