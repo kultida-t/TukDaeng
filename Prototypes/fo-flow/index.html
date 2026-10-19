@@ -4883,24 +4883,21 @@
       cursor: default;
     }
 
-    .sub-card-box {
-      margin: 14px 16px 6px;
-      padding: 16px;
-      border-radius: 12px;
-      background: var(--chip-bg);
-      border: 1px solid var(--line);
-    }
-
-    .sub-card-title {
-      font-size: 15.5px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .sub-card-sub {
+    .sub-hint {
       font-size: 12.5px;
       color: var(--muted);
-      margin-top: 4px;
+      padding: 0 16px 6px;
+      margin-top: -2px;
+    }
+
+    a.sub-row {
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+
+    a.sub-row .lg-t,
+    a.sub-row .lg-d {
+      text-decoration: none;
     }
 
     .sub-legal-body {
@@ -16578,11 +16575,8 @@
       if (name === "help") {
         const isTh = state.lang === "th";
         return head(isTh ? "ศูนย์ช่วยเหลือ" : "Help") + `<div class="sub-scroll">
-      <div class="sub-card-box">
-        <div class="sub-card-title">${isTh ? "ติดต่อฝ่ายบริการลูกค้า" : "Contact support"}</div>
-        <div class="sub-card-sub">${isTh ? "ให้บริการทุกวัน · 09:00 - 22:00 น. (GMT+7)" : "Available daily · 09:00 - 22:00 (GMT+7)"}</div>
-      </div>
       <div class="sub-sec">${isTh ? "ช่องทางการติดต่อ" : "Support channels"}</div>
+      <div class="sub-hint">${isTh ? "ให้บริการทุกวัน · 09:00 - 22:00 น. (GMT+7)" : "Available daily · 09:00 - 22:00 (GMT+7)"}</div>
       <a class="sub-row" href="https://line.me" target="_blank" rel="noopener"><span class="sub-ic">${I.chat(20)}</span><span class="lg-b"><span class="lg-t">LINE Official</span><span class="lg-d">@mrfoxthailand</span></span><span class="sub-chev">${I.chevR(15)}</span></a>
       <a class="sub-row" href="tel:+66800088088"><span class="sub-ic">${I.phone(20)}</span><span class="lg-b"><span class="lg-t">${isTh ? "โทรศัพท์ติดต่อ" : "Call support"}</span><span class="lg-d">(+66) 80-008-8088</span></span><span class="sub-chev">${I.chevR(15)}</span></a>
       <a class="sub-row" href="mailto:service@mrfox.com"><span class="sub-ic">${I.send(20)}</span><span class="lg-b"><span class="lg-t">${isTh ? "อีเมลติดต่อ" : "Email support"}</span><span class="lg-d">service@mrfox.com</span></span><span class="sub-chev">${I.chevR(15)}</span></a>
