@@ -1,0 +1,23 @@
+I18N-001 - FO Flow EN/TH language switch standard
+Files: Prototypes/fo-flow/index.html, Prototypes/_verify_i18n001.mjs
+Screenshot: Prototypes/screenshots/task-I18N-001/detail-th.png
+
+[x] syncAppLanguage re-renders ALL live layers (feed, post detail, post viewer, sub stack) keeping scroll; feed was skipped when a sub page was open (root cause of "need refresh")
+[x] Post viewer args stored (scr._pvArgs) so it can re-render in place
+[x] Central display translator (I18N_TH + MutationObserver): spec labels/group titles/values, search+filter UI, board labels, chat weekdays, legal text, relative time, aria/placeholder/title
+[x] Spec values translated only for descriptive rows; Brand/Model/Reference/Calibre/user text unchanged
+[x] TH -> EN restores original strings exactly; <html lang> follows language; localStorage persists, applied on first load
+[x] Verify: node Prototypes/_verify_i18n001.mjs verify  (18 PASS, live switch, no reload)
+[x] Audit: node Prototypes/_verify_i18n001.mjs audit  (remaining English = user content, product names, editorial article titles/summaries)
+[ ] Not covered: Board article titles/summaries (content data, single language), transient dialogs/sheets (closed at switch time)
+[x] No BO protected screen touched
+
+--- Follow-up rounds (same task, after first close) ---
+[x] Thai typography: letter-spacing reset under html[lang=th] (fixed broken "นาฬิกา"), Thai-only font stack "TD Thai" (IBM Plex Sans Thai via unicode-range) incl. weight 700
+[x] Thai watch terminology reviewed (ตัวเรือน, เลขรุ่น (Ref.), ระดับกันน้ำ, ตัวล็อกสาย, สายสร้อย, เฉพาะนาฬิกา)
+[x] Fix: "Date" inside "Datejust" no longer translated (word-boundary matching)
+[x] Board naming unified: เมนูล่าง + หัวหน้า = "กระดานข่าว"
+[x] More pages covered: article detail, followers/following, item chats, chat room, profile, sold/asset detail, Thai dates (BE), "N followers/following/others"
+[x] Article Author shows name only ("Tuk Daeng"), no By/โดย
+[x] Audit extended with parameterized pages (_verify_i18n001.mjs audit); verify 18/18 PASS
+Screenshots: Prototypes/screenshots/task-I18N-001/{detail-th,detail-th-specs,board-th,followers-th}.png

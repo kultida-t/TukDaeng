@@ -25,13 +25,44 @@
     }
 
     @font-face {
+      font-family: "TD Thai";
+      font-weight: 400;
+      unicode-range: U+0E00-0E7F;
+      src: url("./assets/fonts/google/IBMPlexSansThai-Regular.ttf") format("truetype");
+    }
+
+    @font-face {
+      font-family: "TD Thai";
+      font-weight: 500;
+      unicode-range: U+0E00-0E7F;
+      src: url("./assets/fonts/google/IBMPlexSansThai-Medium.ttf") format("truetype");
+    }
+
+    @font-face {
+      font-family: "TD Thai";
+      font-weight: 600;
+      unicode-range: U+0E00-0E7F;
+      src: url("./assets/fonts/google/IBMPlexSansThai-SemiBold.ttf") format("truetype");
+    }
+
+    @font-face {
+      font-family: "TD Thai";
+      font-weight: 700;
+      unicode-range: U+0E00-0E7F;
+      src: url("./assets/fonts/google/IBMPlexSansThai-SemiBold.ttf") format("truetype");
+    }
+
+    /* I18N-001 — letter-spacing breaks Thai combining marks (นาฬิกา) */
+    html[lang="th"] .screen *:not(.wordmark):not(.about-brand) { letter-spacing: normal !important; }
+
+    @font-face {
       font-family: "Bebas Neue";
       src: url("./assets/fonts/google/BebasNeue-Regular.ttf") format("truetype");
     }
 
     :root {
       --red: #c8212b;
-      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif;
+      --font-main: "TD Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "IBM Plex Sans Thai", Arial, sans-serif;
       --font-brand: var(--font-main);
       --page-bg: #1a1a1e;
     }
@@ -8797,6 +8828,62 @@
       text-align: center;
     }
 
+    .pfl-row .mact.pf-msg,
+    .pfl-row .mact.pf-flw {
+      margin-left: auto;
+      height: 28px;
+      min-width: 80px;
+      font-size: 12.5px;
+    }
+
+    .pfl-ic {
+      flex-shrink: 0;
+      width: 24px;
+      height: 28px;
+      margin-left: -4px;
+      display: grid;
+      place-items: center;
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .pfl-list {
+      position: relative;
+    }
+
+    .pfl-pop {
+      position: absolute;
+      right: 14px;
+      z-index: 5;
+      min-width: 210px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, .28);
+      padding: 4px 0;
+    }
+
+    .pfl-pop button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-family: var(--font-main);
+      font-size: 14px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .pfl-pop button.danger {
+      color: var(--red);
+    }
+
     .mact.pf-flw {
       background: var(--red);
       color: #fff;
@@ -13812,6 +13899,7 @@
     }
     function openPostViewer(scr, posts, pid, phi = 0, feedMode = false, title = "Saved", user = "") {
       const isTh = state.lang === "th";
+      scr._pvArgs = { posts, pid, phi, feedMode, title, user };
       scr.classList.remove("rp-over");
       const pv = scr.querySelector(".page-pv");
       pv.classList.toggle("feed", feedMode);
@@ -15936,7 +16024,7 @@
       return `<nav class="bottom-nav pf-nav">
     <span class="nav-item${active === "feed" ? " active" : ""}" data-navgo="feed">${I.tabFeed()}<span class="nav-label">${isTh ? "ฟีด" : "Feed"}</span></span>
     <span class="nav-item${active === "chat" ? " active" : ""}" data-navgo="chat">${I.navChat()}${chBadgeHTML()}<span class="nav-label">${isTh ? "แชท" : "Chat"}</span></span>
-    <span class="nav-item${active === "board" ? " active" : ""}" data-navgo="board">${I.tabBoards()}<span class="nav-label">${isTh ? "กระดาน" : "Boards"}</span></span>
+    <span class="nav-item${active === "board" ? " active" : ""}" data-navgo="board">${I.tabBoards()}<span class="nav-label">${isTh ? "กระดานข่าว" : "Boards"}</span></span>
     <span class="nav-item${active === "alerts" ? " active" : ""}" data-navgo="alerts">${I.tabAlerts()}${alBadgeHTML()}<span class="nav-label">${isTh ? "แจ้งเตือน" : "Alerts"}</span></span>
     <span class="nav-item${active === "profile" && own ? " active" : ""}" data-navgo="profile">${I.tabProfile()}<span class="nav-label">${isTh ? "โปรไฟล์" : "Profile"}</span></span>
   </nav>`;
@@ -16034,7 +16122,7 @@
           ? `<button class="pf-btn pf-edit">${isTh ? "แก้ไขโปรไฟล์" : "Edit profile"}</button><button class="pf-btn pf-share">${isTh ? "แชร์โปรไฟล์" : "Share profile"}</button><button class="pf-btn pf-iconbtn pf-pfo" data-sub="portfolio" title="${isTh ? "พอร์ตโฟลิโอ" : "Portfolio"}">${I.wallet(16)}</button>`
           : isB
             ? `<button class="pf-btn primary pf-unblock" data-u="${esc(uname)}" style="flex:1;">${isTh ? "เลิกบล็อก" : "Unblock"}</button>`
-            : `<button class="pf-btn pf-foll${isF ? "" : " primary"}" data-u="${esc(uname)}">${isF ? `${isTh ? "กำลังติดตาม" : "Following"} ${I.chev(12)}` : (isTh ? "ติดตาม" : "Follow")}</button><button class="pf-btn pf-msg">${isTh ? "ส่งข้อความ" : "Message"}</button>`}
+            : `<button class="pf-btn pf-foll${isF ? "" : " primary"}" data-u="${esc(uname)}">${isF ? `${isTh ? "กำลังติดตาม" : "Following"} ${I.chev(12)}` : (isTh ? "ติดตาม" : "Follow")}</button><button class="pf-btn pf-msg">${isTh ? "แชท" : "Chat"}</button>`}
     </div>
     <div class="pf-tabs">
       ${TABS.map(([k, l, ic]) => `<button class="pf-tab pf-tab-txt${tabName === k ? " on" : ""}" data-pftab="${k}">${ic}<span>${l}</span></button>`).join("")}
@@ -16062,9 +16150,9 @@
         return `
     <div class="mrow pfl-row" data-pf-user="${esc(n)}">
       <img src="${p.avatar}" alt="">
-      <span class="lg-b"><span class="mn">${esc(n)}</span><span class="md">${esc(p.disp !== n ? p.disp : (p.cat || "TukDaeng member"))}</span></span>
-      ${own && tab === "followers"
-            ? `<button class="mact pf-rmf" data-u="${esc(n)}">Remove</button>`
+      <span class="lg-b"><span class="mn">${esc(n)}</span></span>
+      ${own
+            ? `<button class="mact pf-msg">${state.lang === "th" ? "แชท" : "Chat"}</button><button class="pfl-ic ${tab === "followers" ? "pf-rmf" : "pf-dots"}" data-u="${esc(n)}" title="${tab === "followers" ? "Remove" : "More"}">${tab === "followers" ? I.x(18) : I.dots(20)}</button>`
             : `<button class="mact pf-flw${isF ? " on" : ""}" data-u="${esc(n)}">${isF ? "Following" : "Follow"}</button>`}
     </div>`;
       }).join("");
@@ -16076,7 +16164,7 @@
       <button class="pfl-tab${tab === "following" ? " on" : ""}" data-pftab="following">${u.following} following</button>
     </div>
     <div class="sub-scroll pfl-list">
-      <div class="sh-field pfl-search">${I.search(17)}<input class="pfl-q" placeholder="Search username or display name"></div>
+      <div class="sh-field pfl-search">${I.search(17)}<input class="pfl-q" placeholder="Search username"></div>
       ${rows || `<div class="sub-empty">${empty}</div>`}
       <div class="sub-empty pfl-none" style="display:none">No results found</div>
     </div>`;
@@ -17199,7 +17287,7 @@
         <div class="bd-meta-cols">
           <div class="bd-meta-col">
             <span class="bd-meta-lbl">Author</span>
-            <span class="bd-meta-val">By Tuk Daeng</span>
+            <span class="bd-meta-val">Tuk Daeng</span>
           </div>
           <div class="bd-meta-col">
             <span class="bd-meta-lbl">Date</span>
@@ -18513,6 +18601,199 @@
       localStorage.setItem("fo_theme", v);
       themeToggle.textContent = v === "dark" ? "☾" : "☀";
     }
+    /* ===== I18N-001 — central EN/TH display translator =====
+       App code keeps English as the data/key language (filters, specs, search keys); this layer only
+       swaps what is DISPLAYED. A MutationObserver translates any node the app renders or updates, so a
+       language change (or a late re-render) never leaves English behind and never needs a refresh.
+       Switching back to EN restores every original string. User-generated text (names, captions,
+       hashtags, article titles) is never in the dictionaries, so it always stays as typed. */
+    const I18N_TH = {
+      /* spec labels + group titles */
+      "Brand": "แบรนด์", "Collection": "คอลเลกชัน", "Model": "รุ่น", "Reference": "เลขรุ่น (Ref.)", "Case Diameter": "เส้นผ่านศูนย์กลางตัวเรือน",
+      "Thickness": "ความหนา", "Lug-to-Lug": "ความยาวหูถึงหู", "Case Material": "วัสดุตัวเรือน", "Case Color": "สีตัวเรือน",
+      "Bezel Material": "วัสดุเบเซล", "Dial Color": "สีหน้าปัด", "Dial Pattern": "ลายหน้าปัด", "Movement Type": "ประเภทกลไก",
+      "Calibre": "คาลิเบอร์", "Power Reserve": "พลังงานสำรอง", "Functions": "ฟังก์ชัน", "Water Resistance": "ระดับกันน้ำ",
+      "Strap/Bracelet Material": "วัสดุสาย/สายสร้อย", "Strap Material": "วัสดุสาย", "Strap Color": "สีสาย", "Clasp Type": "ประเภทตัวล็อกสาย",
+      "Year": "ปี", "Condition": "สภาพ", "Box & Papers": "กล่องและเอกสาร", "Service History": "ประวัติการเซอร์วิส",
+      "Watch Specifications": "ข้อมูลจำเพาะนาฬิกา", "Item Details": "รายละเอียดสินค้า", "Price & Data Source": "ราคาและแหล่งข้อมูล",
+      "Watch Specs": "สเปกนาฬิกา", "Pricing": "ราคา", "Asking Price": "ราคาตั้งขาย", "Estimated Market Price": "ราคาตลาดโดยประมาณ",
+      "Last Price Update": "อัปเดตราคาล่าสุด", "Data Source": "แหล่งข้อมูล", "TukDaeng Market Data": "ข้อมูลตลาดตึกแดง",
+      "Watch details": "รายละเอียดนาฬิกา",
+      "Follow this model": "ติดตามรุ่นนี้", "Following this model": "กำลังติดตามรุ่นนี้", "Wish List": "รายการที่อยากได้",
+      /* search + filters */
+      "Search": "ค้นหา", "For you": "สำหรับคุณ", "Profiles": "โปรไฟล์", "Tags": "แท็ก", "Accounts": "บัญชี", "Posts": "โพสต์", "Saved": "บันทึกไว้",
+      "Filters": "ตัวกรอง", "Price range (THB)": "ช่วงราคา (บาท)", "Year of production": "ปีที่ผลิต", "Case size": "ขนาดตัวเรือน",
+      "Movement": "กลไก", "Dial color": "สีหน้าปัด", "Strap / Bracelet": "สาย / สายสร้อย", "Delivery contents": "ของที่ส่งมอบ",
+      "Clear all": "ล้างทั้งหมด", "Apply": "ใช้", "Minimum": "ต่ำสุด", "Maximum": "สูงสุด", "Recent searches": "การค้นหาล่าสุด",
+      "Following": "กำลังติดตาม", "Follow": "ติดตาม", "No data found": "ไม่พบข้อมูล", "Try again": "ลองอีกครั้ง",
+      "Try a different keyword or adjust your filters": "ลองใช้คำค้นอื่นหรือปรับตัวกรอง",
+      "Something went wrong. Please try again.": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง",
+      "Full set": "ครบชุด", "Watch only": "เฉพาะนาฬิกา", "With box": "มีกล่อง", "With papers": "มีเอกสาร",
+      "New": "ใหม่", "Brand New": "ใหม่แกะกล่อง", "Like New": "สภาพเหมือนใหม่", "Very Good": "ดีมาก", "Good": "ดี", "Fair": "พอใช้",
+      "Automatic": "อัตโนมัติ", "Manual": "ไขลานมือ", "Quartz": "ควอตซ์",
+      "Black": "ดำ", "Blue": "น้ำเงิน", "White": "ขาว", "Silver": "เงิน", "Green": "เขียว",
+      "Leather": "หนัง", "Rubber": "ยาง", "Oystersteel bracelet": "สายสร้อย Oystersteel", "Jubilee bracelet": "สายสร้อย Jubilee", "Titanium bracelet": "สายสร้อยไทเทเนียม",
+      "Box & papers": "กล่องและเอกสาร", "Rose gold": "โรสโกลด์", "Unworn": "ไม่เคยสวม", "Blue dial": "หน้าปัดสีน้ำเงิน", "Pepsi bezel": "เบเซลเป๊ปซี่",
+      "Full set — box & papers": "ครบชุด — กล่องและเอกสาร", "Box only": "กล่องอย่างเดียว", "Papers only": "เอกสารอย่างเดียว", "Watch only (no set)": "เฉพาะนาฬิกา (ไม่มีอุปกรณ์)",
+      /* board */
+      "Board": "กระดานข่าว", "| Board": "| กระดานข่าว", "Categories": "หมวดหมู่", "All": "ทั้งหมด", "Featured": "แนะนำ", "Market Watch": "ตลาดนาฬิกา",
+      "Technical": "เทคนิค", "Collector": "นักสะสม", "Guides": "คู่มือ", "Industry": "อุตสาหกรรม", "Watch Trends": "เทรนด์นาฬิกา",
+      "More Watch Brands": "แบรนด์นาฬิกาเพิ่มเติม", "Watch Basics": "พื้นฐานนาฬิกา", "Watch Guides": "คู่มือนาฬิกา",
+      "Feature More Rolex Collections": "คอลเลกชัน Rolex เพิ่มเติม", "You're all caught up": "คุณดูครบทั้งหมดแล้ว",
+      /* chat + misc */
+      "Hide": "ซ่อน", "Delete": "ลบ", "Yesterday": "เมื่อวานนี้", "Today": "วันนี้",
+      "Mon": "จ.", "Tue": "อ.", "Wed": "พ.", "Thu": "พฤ.", "Fri": "ศ.", "Sat": "ส.", "Sun": "อา.",
+      "Author": "ผู้เขียน", "Date": "วันที่", "Item chats": "แชทตามสินค้า", "Your listings": "สินค้าที่คุณลงขาย", "Read": "อ่านแล้ว", "Select": "เลือก",
+      "Search people or messages": "ค้นหาผู้คนหรือข้อความ", "Message...": "ข้อความ...", "View listing": "ดูรายการขาย", "Attach": "แนบไฟล์", "Send": "ส่ง",
+      "Close": "ปิด", "Back": "ย้อนกลับ", "Like": "ถูกใจ", "Share": "แชร์", "No photos or videos found.": "ไม่พบรูปภาพหรือวิดีโอ",
+      "Media/news company": "บริษัทสื่อ/ข่าว", "Watch shop": "ร้านนาฬิกา", "TukDaeng member": "สมาชิกตึกแดง", "Remove": "นำออก",
+      "No results found": "ไม่พบผลลัพธ์", "Search username": "ค้นหาชื่อผู้ใช้", "No followers yet": "ยังไม่มีผู้ติดตาม",
+      "You're not following anyone yet": "คุณยังไม่ได้ติดตามใคร", "Not following anyone yet": "ยังไม่ได้ติดตามใคร",
+      "Latest market price": "ราคาตลาดล่าสุด", "Show": "แสดง", "Bank transfer": "โอนเงิน", "Article not found": "ไม่พบบทความ",
+      "This article is no longer available.": "บทความนี้ไม่มีให้บริการแล้ว", "Chat not found": "ไม่พบแชท", "This conversation is no longer available.": "บทสนทนานี้ไม่มีให้บริการแล้ว",
+      "Item not found": "ไม่พบสินค้า", "No chats for this item.": "ไม่มีแชทสำหรับสินค้านี้",
+      "Toggle password visibility": "แสดง/ซ่อนรหัสผ่าน", "Toggle password": "แสดง/ซ่อนรหัสผ่าน",
+      "Mister Fox Co., Ltd. · Est. 2026": "บริษัท มิสเตอร์ฟอกซ์ จำกัด · ก่อตั้ง พ.ศ. 2569",
+      "A new device just logged in to your account near Bangkok, TH": "มีอุปกรณ์เครื่องใหม่เพิ่งเข้าสู่ระบบบัญชีของคุณใกล้กรุงเทพฯ ประเทศไทย",
+      "Posted · shared to feed ✓": "โพสต์แล้ว · แชร์ไปยังฟีดเรียบร้อย ✓",
+      /* legal bodies */
+      "1. Information We Collect": "1. ข้อมูลที่เราเก็บรวบรวม",
+      "We collect information you provide directly to us when you create an account, update your profile, list watches, make offers, or communicate with other collectors on TukDaeng.": "เราเก็บข้อมูลที่คุณให้โดยตรงเมื่อสร้างบัญชี แก้ไขโปรไฟล์ ลงขายนาฬิกา ยื่นข้อเสนอ หรือสื่อสารกับนักสะสมท่านอื่นบนตึกแดง",
+      "2. How We Use Information": "2. วิธีที่เราใช้ข้อมูล",
+      "We use the information to operate, maintain, and provide the features of our marketplace, verify authentic listings, ensure community safety, and send notifications.": "เราใช้ข้อมูลเพื่อดำเนินงาน ดูแลรักษา และให้บริการฟีเจอร์ของตลาดซื้อขาย ตรวจสอบรายการที่เป็นของแท้ ดูแลความปลอดภัยของชุมชน และส่งการแจ้งเตือน",
+      "3. Data Protection & Retention": "3. การคุ้มครองและการเก็บรักษาข้อมูล",
+      "Your personal information is protected with industry-standard encryption. Transaction and audit logs are retained as required by applicable laws and safety policies.": "ข้อมูลส่วนบุคคลของคุณได้รับการปกป้องด้วยการเข้ารหัสตามมาตรฐานอุตสาหกรรม บันทึกธุรกรรมและบันทึกการตรวจสอบจะถูกเก็บรักษาตามที่กฎหมายและนโยบายความปลอดภัยกำหนด",
+      "4. Your Rights": "4. สิทธิของคุณ",
+      "You may view, update, or request deactivation of your account at any time through Settings > About your account.": "คุณสามารถดู แก้ไข หรือขอปิดการใช้งานบัญชีได้ทุกเมื่อผ่านการตั้งค่า > เกี่ยวกับบัญชีของคุณ",
+      "1. Agreement to Terms": "1. การยอมรับข้อกำหนด",
+      "By accessing or using TukDaeng, you agree to be bound by these Terms of Use and our Community Guidelines for watch collectors and enthusiasts.": "เมื่อเข้าใช้งานตึกแดง คุณตกลงผูกพันตามข้อกำหนดการใช้งานนี้และแนวทางปฏิบัติของชุมชนสำหรับนักสะสมและผู้ชื่นชอบนาฬิกา",
+      "2. Listing Authenticity": "2. ความถูกต้องแท้ของรายการขาย",
+      "Sellers must guarantee the authenticity of luxury watches listed on the platform. Misleading descriptions, counterfeit goods, or falsified papers are strictly prohibited.": "ผู้ขายต้องรับรองความเป็นของแท้ของนาฬิกาหรูที่ลงขายบนแพลตฟอร์ม ห้ามใช้คำอธิบายที่ทำให้เข้าใจผิด สินค้าปลอม หรือเอกสารปลอมโดยเด็ดขาด",
+      "3. Offers & Transactions": "3. ข้อเสนอและการทำธุรกรรม",
+      "Offers submitted through TukDaeng are binding expressions of intent. Parties agree to conduct inspections and completions in good faith.": "ข้อเสนอที่ยื่นผ่านตึกแดงถือเป็นการแสดงเจตนาที่มีผลผูกพัน คู่สัญญาตกลงตรวจสอบและทำธุรกรรมให้เสร็จสิ้นด้วยความสุจริต",
+      "4. Termination & Deactivation": "4. การยกเลิกและการปิดใช้งาน",
+      "We reserve the right to suspend or terminate accounts that violate safety rules, spam other members, or engage in fraudulent activities.": "เราขอสงวนสิทธิ์ระงับหรือยกเลิกบัญชีที่ละเมิดกฎความปลอดภัย สแปมสมาชิกอื่น หรือมีส่วนร่วมในกิจกรรมหลอกลวง",
+    };
+    /* spec VALUES are translated per word, but only inside rows whose label is in this set
+       (so Brand / Model / Reference / Calibre stay exactly as entered) */
+    const I18N_VALUE_LABELS = new Set(["Case Diameter", "Thickness", "Lug-to-Lug", "Case Material", "Case Color", "Bezel Material", "Dial Color", "Dial Pattern",
+      "Movement Type", "Power Reserve", "Functions", "Water Resistance", "Strap/Bracelet Material", "Strap Material", "Strap Color", "Clasp Type",
+      "Condition", "Box & Papers", "Service History", "Data Source", "Year", "Estimated Market Price", "Last Price Update", "Asking Price"]);
+    const I18N_VALUE_TH = [
+      ["Automatic (Self-winding)", "อัตโนมัติ (ไขลานในตัว)"], ["Oystersteel (Oyster bracelet)", "Oystersteel (สายสร้อยแบบ Oyster)"],
+      ["Full set — Original box, Original paper", "ครบชุด — กล่องแท้ เอกสารแท้"], ["No service record", "ไม่มีประวัติเซอร์วิส"],
+      ["TukDaeng Market Data", "ข้อมูลตลาดตึกแดง"], ["Stainless Steel", "สแตนเลสสตีล"], ["Rose Gold", "โรสโกลด์"], ["White Gold", "ไวต์โกลด์"],
+      ["Power reserve", "พลังงานสำรอง"], ["Moonphase", "ข้างขึ้นข้างแรม"], ["Hours", "ชั่วโมง"], ["Minutes", "นาที"], ["Seconds", "วินาที"], ["Date", "วันที่"],
+      ["hours", "ชั่วโมง"], ["Original box and Original paper", "กล่องแท้และเอกสารแท้"], ["Original box", "กล่องแท้"], ["Original paper", "เอกสารแท้"],
+      ["Full set", "ครบชุด"], ["Automatic", "อัตโนมัติ"], ["Alligator leather", "หนังจระเข้"], ["Titanium", "ไทเทเนียม"], ["bracelet", "สายสร้อย"],
+      ["folding clasp", "ตะขอพับ"], ["pin buckle", "หัวเข็มขัด"], ["Index", "ขีด"], ["Black", "ดำ"], ["Blue", "น้ำเงิน"], ["White", "ขาว"], ["Silver", "เงิน"],
+      ["Green", "เขียว"], ["Steel", "สตีล"], ["Brand New", "ใหม่แกะกล่อง"], ["Like New", "สภาพเหมือนใหม่"], ["Very Good", "ดีมาก"], ["Good", "ดี"], ["Fair", "พอใช้"],
+      ["New", "ใหม่"], ["N/A", "ไม่ระบุ"], ["n/a", "ไม่ระบุ"],
+    ];
+    const I18N_MON = { Jan: "ม.ค.", Feb: "ก.พ.", Mar: "มี.ค.", Apr: "เม.ย.", May: "พ.ค.", Jun: "มิ.ย.", Jul: "ก.ค.", Aug: "ส.ค.", Sep: "ก.ย.", Oct: "ต.ค.", Nov: "พ.ย.", Dec: "ธ.ค." };
+    const I18N_WD = { Mon: "จ.", Tue: "อ.", Wed: "พ.", Thu: "พฤ.", Fri: "ศ.", Sat: "ส.", Sun: "อา." };
+    const I18N_LABEL_REV = {};
+    ["Brand", "Collection", "Model", "Reference", "Case Diameter", "Thickness", "Lug-to-Lug", "Case Material", "Case Color", "Bezel Material", "Dial Color", "Dial Pattern",
+      "Movement Type", "Calibre", "Power Reserve", "Functions", "Water Resistance", "Strap/Bracelet Material", "Strap Material", "Strap Color", "Clasp Type", "Year",
+      "Condition", "Box & Papers", "Service History", "Asking Price", "Estimated Market Price", "Last Price Update", "Data Source"].forEach(k => { I18N_LABEL_REV[I18N_TH[k]] = k; });
+    const i18nEscRe = s => s.replace(/[.*+?^${}()|[\]\\\/]/g, "\\$&");
+    const I18N_VALUE_RE = new RegExp("(?<![A-Za-z])(?:" + I18N_VALUE_TH.map(([e]) => i18nEscRe(e)).sort((a, b) => b.length - a.length).join("|") + ")(?![A-Za-z])", "g");
+    const I18N_VALUE_MAP = Object.fromEntries(I18N_VALUE_TH);
+    const i18nHasThai = s => /[\u0E00-\u0E7F]/.test(s);
+    const i18nTextOrig = new Map(), i18nAttrOrig = new Map();
+    let i18nBusy = false;
+    function i18nValue(label, txt) {
+      if (!I18N_VALUE_LABELS.has(label)) return null;
+      const r = txt.replace(/(\d+(?:\.\d+)?)\s*hours\b/g, "$1 ชั่วโมง").replace(I18N_VALUE_RE, m => I18N_VALUE_MAP[m] || m);
+      return r === txt ? null : r;
+    }
+    /* returns the Thai display string for an English one (or null = leave as is) */
+    function i18nTr(txt, el) {
+      const t = txt.trim();
+      if (!t || i18nHasThai(t)) return null;
+      const valBox = el && el.closest(".spec-row, .spec-tile");
+      if (valBox && el.closest(".v")) {
+        const l = valBox.querySelector(".l");
+        const lt = l ? l.textContent.trim() : "";
+        const v = i18nValue(I18N_LABEL_REV[lt] || lt, t);
+        if (v) return txt.replace(t, v);
+      }
+      if (I18N_TH[t]) return txt.replace(t, I18N_TH[t]);
+      let m;
+      if ((m = t.match(/^(\d+) min read\s*·\s*(.+)$/))) return `อ่าน ${m[1]} นาที  ·  ${formatPostTime(m[2], true)}`;
+      if ((m = t.match(/^(\d+) listings?(\s·\sFollowing)?$/))) return `${m[1]} รายการประกาศ${m[2] ? " · กำลังติดตาม" : ""}`;
+      if ((m = t.match(/^(\d+) posts?$/))) return `${m[1]} โพสต์`;
+      if ((m = t.match(/^Slide (\d+)$/))) return `สไลด์ ${m[1]}`;
+      if ((m = t.match(/^e\.g\. (.+)$/))) return `เช่น ${m[1]}`;
+      if ((m = t.match(/^Add a comment for (.+)$/))) return `เพิ่มความคิดเห็นให้ ${m[1]}`;
+      if ((m = t.match(/^Message (.+)\.\.\.$/))) return `ส่งข้อความถึง ${m[1]}...`;
+      if ((m = t.match(/^Chat with (.+)$/))) return `แชทกับ ${m[1]}`;
+      if ((m = t.match(/^Your listing · (\d+) chats?$/))) return "สินค้าของคุณ · " + m[1] + " แชท";
+      if ((m = t.match(/^(\d+) others$/))) return "อีก " + m[1] + " คน";
+      if ((m = t.match(/^(.+) and (\d+) more$/))) return m[1] + " และอีก " + m[2];
+      if ((m = t.match(/^([\d.,]+[KM]?) followers$/))) return m[1] + " ผู้ติดตาม";
+      if ((m = t.match(/^([\d.,]+[KM]?) following$/))) return m[1] + " กำลังติดตาม";
+      if ((m = t.match(/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* (\d{1,2}), (\d{4})$/))) return m[2] + " " + I18N_MON[m[1]] + " " + (+m[3] + 543);
+      if ((m = t.match(/^(\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{4})$/))) return m[1] + " " + I18N_MON[m[2]] + " " + (+m[3] + 543);
+      if (t.includes(" · ") && !/^(THB|Ref)/.test(t)) {
+        const parts = t.split(" · "), out = parts.map(x => I18N_TH[x] || i18nValue("Condition", x) || x);
+        if (out.some((x, i) => x !== parts[i])) return txt.replace(t, out.join(" · "));
+      }
+      if (/(\d+\s*(hours?|mins?|minutes?|days?|weeks?)\s*ago|^just now$)/i.test(t)) { const r = formatPostTime(t, true); if (r !== t) return txt.replace(t, r); }
+      return null;
+    }
+    const I18N_ATTRS = ["placeholder", "title", "aria-label"];
+    function i18nNode(node, th) {
+      if (node.nodeType === 3) {
+        const p = node.parentElement;
+        if (!p || p.closest("script,style,textarea,[contenteditable],[data-i18n-skip]")) return;
+        if (!th) return;
+        const r = i18nTr(node.nodeValue, p);
+        if (r != null && r !== node.nodeValue) { if (!i18nTextOrig.has(node)) i18nTextOrig.set(node, node.nodeValue); node.nodeValue = r; }
+      } else if (node.nodeType === 1) {
+        if (node.matches("script,style,[data-i18n-skip]")) return;
+        if (th) for (const a of I18N_ATTRS) {
+          const v = node.getAttribute(a);
+          if (!v) continue;
+          const r = i18nTr(v, null);
+          if (r != null && r !== v) {
+            let o = i18nAttrOrig.get(node); if (!o) i18nAttrOrig.set(node, o = {});
+            if (!(a in o)) o[a] = v;
+            node.setAttribute(a, r);
+          }
+        }
+        for (let c = node.firstChild; c; c = c.nextSibling) i18nNode(c, th);
+      }
+    }
+    function i18nApply(root) {
+      if (!root) return;
+      const th = state.lang === "th";
+      i18nBusy = true;
+      try {
+        if (!th) {
+          i18nTextOrig.forEach((o, n) => { if (n.isConnected) n.nodeValue = o; });
+          i18nAttrOrig.forEach((o, e) => { if (e.isConnected) for (const a in o) e.setAttribute(a, o[a]); });
+          i18nTextOrig.clear(); i18nAttrOrig.clear();
+        } else {
+          /* a node translated earlier may now sit in a different context — retranslate from its original */
+          i18nTextOrig.forEach((o, n) => { if (n.isConnected) n.nodeValue = o; else i18nTextOrig.delete(n); });
+          i18nTextOrig.clear();
+          i18nNode(root, true);
+        }
+      } finally { i18nBusy = false; i18nObs.takeRecords(); }
+    }
+    const i18nObs = new MutationObserver(muts => {
+      if (i18nBusy || state.lang !== "th") return;
+      i18nBusy = true;
+      try {
+        for (const m of muts) {
+          if (m.type === "childList") m.addedNodes.forEach(n => i18nNode(n, true));
+          else if (m.type === "characterData") { i18nTextOrig.delete(m.target); i18nNode(m.target, true); }
+          else if (m.type === "attributes") { i18nAttrOrig.delete(m.target); i18nNode(m.target, true); }
+        }
+      } finally { i18nBusy = false; i18nObs.takeRecords(); }
+    });
+    i18nObs.observe(document.getElementById("stage"), { childList: true, characterData: true, subtree: true });
     function syncAppLanguage(lang) {
       const isTh = lang === "th";
       // 1. Bottom Navigation bars
@@ -18520,7 +18801,7 @@
         const labels = {
           feed: isTh ? "ฟีด" : "Feed",
           chat: isTh ? "แชท" : "Chat",
-          board: isTh ? "กระดาน" : "Boards",
+          board: isTh ? "กระดานข่าว" : "Boards",
           alerts: isTh ? "แจ้งเตือน" : "Alerts",
           profile: isTh ? "โปรไฟล์" : "Profile"
         };
@@ -18547,7 +18828,7 @@
       // 3. Profile buttons & stats if visible
       document.querySelectorAll(".pf-edit").forEach(el => el.textContent = isTh ? "แก้ไขโปรไฟล์" : "Edit profile");
       document.querySelectorAll(".pf-share").forEach(el => el.textContent = isTh ? "แชร์โปรไฟล์" : "Share profile");
-      document.querySelectorAll(".pf-msg").forEach(el => el.textContent = isTh ? "ส่งข้อความ" : "Message");
+      document.querySelectorAll(".pf-msg").forEach(el => el.textContent = isTh ? "แชท" : "Chat");
       document.querySelectorAll(".pf-stat").forEach(el => {
         const span = el.querySelector("span");
         if (!span) return;
@@ -18593,21 +18874,35 @@
       });
 
       // 8. Re-render open sub-page, detail page, or feed posts so they switch language dynamically
-      document.querySelectorAll(".screen.sub-open").forEach(scr => renderSub(scr));
-      document.querySelectorAll(".screen.detail-open").forEach(scr => {
-        const post = findPost(scr.dataset.detailPid);
-        if (post) openPostDetail(scr, post);
-      });
+      /* I18N-001 — every layer that can be alive behind the Language page is re-rendered
+         (feed, detail, post viewer, sub stack) with its scroll position kept, so nothing needs a refresh */
+      const keepScroll = (root, sel, fn) => {
+        const el = root.querySelector(sel), top = el ? el.scrollTop : 0;
+        fn();
+        const nel = root.querySelector(sel);
+        if (nel && top) nel.scrollTop = top;
+      };
       document.querySelectorAll(".screen").forEach(scr => {
         const list = scr.querySelector(".feed-list");
-        if (list && !scr.classList.contains("sub-open")) {
-          list.innerHTML = feedContentHTML(scr.dataset.variant || state.variant);
+        if (list) keepScroll(scr, ".feed-scroll", () => { list.innerHTML = feedContentHTML(scr.dataset.variant || state.variant); });
+        if (scr.classList.contains("detail-open")) {
+          const post = findPost(scr.dataset.detailPid);
+          if (post) keepScroll(scr, ".page-detail .detail-scroll", () => openPostDetail(scr, post));
         }
+        if (scr.classList.contains("pv-open") && scr._pvArgs) {
+          keepScroll(scr, ".page-pv .pv-track", () => {
+            const a = scr._pvArgs;
+            openPostViewer(scr, a.posts, a.pid, a.phi, a.feedMode, a.title, a.user);
+          });
+        }
+        if (scr.classList.contains("sub-open")) keepScroll(scr, ".page-sub .sub-scroll", () => renderSub(scr));
       });
+      i18nApply(document.getElementById("stage"));
     }
     function setLang(v) {
       state.lang = v;
       localStorage.setItem("fo_lang", v);
+      document.documentElement.lang = v;
       syncAppLanguage(v);
     }
     themeToggle.addEventListener("click", () => {
@@ -20137,6 +20432,39 @@
         return;
       }
       /* own followers -> Remove opens the center confirm dialog (IG "Remove follower?") */
+      const pflPop = e.target.closest(".pfl-pop button");
+      if (pflPop) {
+        const pop = pflPop.closest(".pfl-pop"), scr = pop.closest(".screen"), u = pop.dataset.u;
+        const isTh = state.lang === "th";
+        pop.remove();
+        if (pflPop.dataset.act === "unf") {
+          pfSetFollow(scr, u, false);
+          const row = [...scr.querySelectorAll(".pfl-row")].find(r => r.dataset.pfUser === u);
+          if (row) row.remove();
+          scrToast(scr, isTh ? "เลิกติดตามแล้ว" : "Unfollowed");
+        } else if (pflPop.dataset.act === "mute") {
+          if (pfIsMuted(u)) { pfSetMuted(scr, u, false); scrToast(scr, isTh ? "เปิดเสียงเตือนแล้ว" : "Unmuted"); }
+          else { scr.dataset.muteSeller = u; openDlg(scr, muteDlgHTML(u)); }
+        }
+        return;
+      }
+      const pfDots = e.target.closest(".pf-dots");
+      const oldPop = document.querySelector(".pfl-pop");
+      if (oldPop) oldPop.remove();
+      if (pfDots) {
+        if (oldPop && oldPop.dataset.u === pfDots.dataset.u) return;
+        const list = pfDots.closest(".pfl-list"), u = pfDots.dataset.u, isTh = state.lang === "th";
+        const lr = list.getBoundingClientRect(), br = pfDots.getBoundingClientRect();
+        const pop = document.createElement("div");
+        pop.className = "pfl-pop";
+        pop.dataset.u = u;
+        pop.innerHTML = `<button class="danger" data-act="unf">${I.userMinus(20)}<span>${isTh ? "เลิกติดตาม" : "Unfollow"}</span></button>
+      <button data-act="mute">${I.bellOff(20)}<span>${pfIsMuted(u) ? (isTh ? "เปิดเสียงเตือน" : "Unmute") : (isTh ? "ปิดเสียงเตือน" : "Mute")}</span></button>`;
+        list.appendChild(pop);
+        const top = br.bottom - lr.top + list.scrollTop + 2;
+        pop.style.top = (top + pop.offsetHeight > list.scrollHeight ? br.top - lr.top + list.scrollTop - pop.offsetHeight - 2 : top) + "px";
+        return;
+      }
       const pfRmf = e.target.closest(".pf-rmf");
       if (pfRmf) {
         const scr = pfRmf.closest(".screen");
@@ -20397,7 +20725,7 @@
       const pePic = e.target.closest(".pe-pic");
       if (pePic) { scrToast(pePic.closest(".screen"), "Photo picker isn't in this prototype yet"); return; }
       const pfUserGo = e.target.closest("[data-pf-user]");
-      if (pfUserGo && !e.target.closest(".mact, .pf-flw, .sc-follow, .c-like, .lk-follow")) {
+      if (pfUserGo && !e.target.closest(".mact, .pfl-ic, .pfl-pop, .pf-flw, .sc-follow, .c-like, .lk-follow")) {
         const scr = pfUserGo.closest(".screen");
         scr.classList.remove("pv-open", "detail-open", "comments-open", "pm-open", "likes-open");
         pushSub(scr, "profile:" + pfUserGo.dataset.pfUser);
@@ -21261,7 +21589,9 @@
       }
     });
 
+    document.documentElement.lang = state.lang;
     render();
+    i18nApply(document.getElementById("stage"));
   </script>
 </body>
 
