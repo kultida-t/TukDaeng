@@ -8988,6 +8988,10 @@
       border-color: #e5484d;
     }
 
+    .pe-bio {
+      overflow-y: hidden;
+    }
+
     /* PROFILE-015 — same error style as the rest of the app (.ob-field.err / .ob-msg).
        Selector must outrank `.pe-f span` which paints spans muted. */
     .pe-f .pe-err {
@@ -16712,7 +16716,7 @@
     <div class="sub-scroll">
       <div class="pe-av"><img src="${u.avatar}" alt=""><button class="pe-pic">${isTh ? "เปลี่ยนรูปโปรไฟล์" : "Edit picture"}</button></div>
       <label class="pe-f"><span>${isTh ? "ชื่อผู้ใช้" : "Username"}</span><input class="pe-in pe-name" value="${esc(u.user)}" maxlength="20" placeholder="${isTh ? "เช่น watch.collector" : "e.g. watch.collector"}"><span class="pe-err" hidden></span></label>
-      <label class="pe-f"><span>${isTh ? "ประวัติโดยย่อ" : "Bio"}</span><textarea class="pe-in pe-bio" rows="3" maxlength="150" placeholder="${isTh ? "เขียนแนะนำตัวสั้น ๆ เช่น สายสะสมนาฬิกา" : "Write a short bio, e.g. watch collector"}">${esc(u.bio)}</textarea><span class="pe-err" hidden></span></label>
+      <label class="pe-f"><span>${isTh ? "ประวัติโดยย่อ" : "Bio"}</span><textarea class="pe-in pe-bio" rows="5" maxlength="150" placeholder="${isTh ? "เขียนแนะนำตัวสั้น ๆ เช่น สายสะสมนาฬิกา" : "Write a short bio, e.g. watch collector"}">${esc(u.bio)}</textarea><span class="pe-err" hidden></span></label>
       <label class="pe-f"><span>${isTh ? "ลิงก์" : "Link"}</span><input class="pe-in pe-link" value="${esc(u.link)}" placeholder="${isTh ? "เช่น https://your-site.com หรือ @username" : "e.g. https://your-site.com or @username"}"><span class="pe-err" hidden></span></label>
       <div class="pe-savewrap"><button class="pf-btn primary pe-save">${isTh ? "บันทึก" : "Save"}</button></div>
     </div>`;
