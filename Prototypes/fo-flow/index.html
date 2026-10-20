@@ -17369,7 +17369,7 @@
        Pages live in the same .page-sub stack as profile/settings. */
     const CHAT = {
       inited: false, view: "user", itemFilter: "all", filterMenuOpen: false, q: "", iq: "", threads: [], draft: null,
-      cfg: { notif: true, preview: true, read: true, followOnly: false, defView: "user", quick: "สนใจสินค้าชิ้นนี้ครับ ยังอยู่ไหมครับ?" }
+      cfg: { notif: true, preview: true, followOnly: false, defView: "user", quick: "สนใจสินค้าชิ้นนี้ครับ ยังอยู่ไหมครับ?" }
     };
     function chatInit() {
       if (CHAT.inited) return CHAT;
@@ -18280,7 +18280,7 @@
           : `<span class="ch-b">${formatText(m.t || "")}</span>`;
 
         if (m.f === "me") {
-          const rd = i === lastMe ? (m.read && C.cfg.read ? "Read" : "Sent") : "";
+          const rd = i === lastMe ? (m.read ? "Read" : "Sent") : "";
           out.push(`<div class="ch-m me"${opacityStyle}><span class="ch-meta">${rd ? `<span>${rd}</span>` : ""}<span>${m.at}</span></span><div class="ch-m-col">${card}${bubbleHTML}</div></div>`);
         } else {
           out.push(`<div class="ch-m them"${opacityStyle}>${prev === "them" && !card ? `<span class="ch-mav-sp"></span>` : `<img class="ch-mav" src="${av}" alt="">`}<div class="ch-m-col">${card}${bubbleHTML}</div><span class="ch-meta"><span>${m.at}</span></span></div>`);
@@ -18625,7 +18625,6 @@
     ${tg("notif", isTh ? "การแจ้งเตือนข้อความ" : "Message notifications", isTh ? "รับการแจ้งเตือนเมื่อมีคนส่งข้อความถึงคุณ" : "Get notified when someone sends you a message.")}
     ${tg("preview", isTh ? "แสดงตัวอย่างข้อความ" : "Show message preview", isTh ? "แสดงข้อความในการแจ้งเตือน" : "Show the message text in notifications.")}
     <div class="ch-set-h">${isTh ? "ความเป็นส่วนตัว" : "Privacy"}</div>
-    ${tg("read", isTh ? "แสดงสถานะการอ่าน" : "Read receipts", isTh ? "ให้ผู้อื่นเห็นเมื่อคุณอ่านข้อความของพวกเขาแล้ว" : "Let people see when you have read their message.")}
     ${tg("followOnly", isTh ? "รับข้อความเฉพาะผู้ที่คุณติดตาม" : "Only people I follow can message me", isTh ? "ผู้อื่นจะไม่สามารถเริ่มการสนทนากับคุณได้" : "Others will not be able to start a new chat with you.")}
     <div class="ch-set-h">${isTh ? "มุมมองแชทเริ่มต้น" : "Default chat view"}</div>
     ${vw("user", isTh ? "แชท" : "Chats", isTh ? "เรียงตามบุคคล ล่าสุดขึ้นก่อน" : "List chats by person, latest first.")}

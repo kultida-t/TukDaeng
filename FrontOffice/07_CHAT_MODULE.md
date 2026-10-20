@@ -32,7 +32,7 @@
 | Items Filter Dropdown (CHAT-002, CHAT-003) | แท็บ Items มีลูกศรชี้ลง `▼` สไตล์ LINE (แท็บ Chats ไม่มีลูกศร) — กดแล้วกาง Popover Filter มุมมน มีตัวเลือก **All items**, **Your listings**, และ **Items you asked about** พร้อม checkmark `✓` แสดงตัวเลือกปัจจุบัน กรองรายการสินค้าทันที; เมื่อสลับเมนูไปหน้าอื่น (เช่น Feed หรือ Profile) หรือกดไอคอน Chat ที่แถบเมนูล่างเพื่อเข้าแชทใหม่ ระบบจะรีเซ็ตกลับสู่มุมมองเริ่มต้นที่หน้า **Chats** ปกติ พร้อมเคลียร์ตัวกรองกลับเป็นค่าเริ่มต้นเสมอ |
 | Item → ผู้ทัก (CHAT-003) | **Your listings**: แถวสินค้าแสดงชื่อสินค้าคลีน (ไม่มีเลขวงเล็บซ้ำซ้อน) + ราคาและจำนวนแชท (เช่น `THB 380,000 · 14 chats` โดยตัดข้อความ unread ออกไม่ให้ซ้ำกับป้ายตัวเลขสีแดงทางขวา), เมื่อกดสินค้าจะเปิดหน้า Item chats เพื่อเลือกดูรายชื่อผู้ทักทั้งหมด โดยการ์ดหัวเรื่องปรับเป็นดีไซน์แคปซูลลอย (Floating Pill Capsule สไตล์เดียวกับแคปซูล Chats/Items ขอบมนกลม 999px + เงาลอยโปร่งแสง + รูปสินค้าทรงกลม badge 52px) บรรจุอยู่ภายในคอนเทนเนอร์เลื่อน (`ch-scroll`) ทำให้เลื่อนหน้าจอได้ทั้งหมดโดยไม่ฟิกตำแหน่งช่องค้นหา (แถวแชทสูง ~64px, avatar 44×44px เต็มรูป, preview 1 บรรทัด, unread badge, swipe actions) → กดเข้าห้องแชท; เมื่อกดย้อนกลับ `<` มาหน้า Items แล้วแตะสลับแท็บ Chats จะสลับมุมมองทันทีโดยไม่สไลด์หน้าจอซ้ำ<br>**Items you asked about**: แถวสินค้าแสดงราคา + ข้อความล่าสุดที่คุยกับผู้ขาย, เมื่อแตะสินค้าจะเปิดตรงเข้าสู่ห้องแชท (Chat Room) กับผู้ขายรายนั้นทันที โดยไม่ต้องผ่านหน้า Item chats ซ้ำซ้อน เนื่องจากมีคู่สนทนารายเดียวเสมอ |
 | Quick Ask | ปุ่ม Ask บนโพสต์ฟีด/Post viewer/Detail เปิดห้องแชททันทีพร้อมการ์ดอ้างอิงโพสต์และข้อความเริ่มต้นที่แก้ไขได้ (ค่าตั้งใน Chat Config) — ถ้ามีห้องเดิมของ user+สินค้าเดียวกันให้เปิดห้องเดิม, ห้องใหม่จะถูกสร้างในรายการเมื่อส่งข้อความแรก, ทักโพสต์ของตัวเองไม่ได้ |
-| Chat Config | ปุ่มตั้งค่าอยู่ที่หน้า Chat โดยตรง (ไอคอนเฟืองใน header) ไม่อยู่ใน Profile Settings: แจ้งเตือนข้อความ, แสดง preview, Read receipts, เฉพาะคนที่ follow ทักได้, มุมมองเริ่มต้น (People/Items), ข้อความ Quick Ask |
+| Chat Config | ปุ่มตั้งค่าอยู่ที่หน้า Chat โดยตรง (ไอคอนเฟืองใน header) ไม่อยู่ใน Profile Settings: แจ้งเตือนข้อความ, แสดง preview, เฉพาะคนที่ follow ทักได้, มุมมองเริ่มต้น (People/Items), ข้อความ Quick Ask |
 | Swipe Actions & Modals (LINE Style - CHAT-006) | **Swipe Left (ปัดซ้าย)**: แสดงปุ่มสี่เหลี่ยมโค้งมนสีเทาอ่อน 2 ปุ่ม ได้แก่ `Hide` และ `Delete` (ตัวอักษรสีเข้ม พื้นหลังสีเทาอ่อน `#e9e9eb` ทั้งสองปุ่มตามแบบ LINE)<br>- กด Hide: แสดง Confirmation Modal สไตล์ iOS ตรงกลางจอ *"Hiding chats doesn't delete their messages."* พร้อมปุ่ม Cancel และ Hide (ตัวหนังสือสีแดง `#ff3b30`) กดยืนยันแล้วซ่อนแชทออกจากรายการ<br>- กด Delete: แสดง Confirmation Modal สไตล์ iOS ตรงกลางจอ *"Are you sure you want to delete this chat?"* พร้อมปุ่ม Cancel และ Delete (ตัวหนังสือสีแดง `#ff3b30`) กดยืนยันแล้วลบห้องแชทและข้อความถาวร<br>**Swipe Right (ปัดขวา)**: แสดงปุ่มวงกลมสีเขียวสด (LINE Green `#06c755`) 2 ปุ่ม ได้แก่:<br>1. `Pin / Unpin` (ปุ่มซ้าย): สลับสถานะปักหมุด โดยแสดงไอคอนหมุดเมื่อยังไม่ปัก และไอคอนหมุดขีดเฉียง (Unpin) เมื่อปักหมุดแล้ว — แชทที่ปักหมุดจะถูกจัดลำดับขึ้นไปอยู่ด้านบนสุดของ Chat List เสมอ พร้อม Badge หมุดสีน้ำเงิน (`#2b7fff`) ที่มุมขวาล่างของ Avatar<br>2. `Mute / Unmute` (ปุ่มขวา): สลับสถานะแจ้งเตือน โดยแสดงไอคอนปิดเสียงเมื่อเปิดแจ้งเตือน และไอคอนลำโพงมีเสียง (`chUnmute`) เมื่อปิดเสียงอยู่ — เมื่อปิดแจ้งเตือนจะแสดงไอคอนลำโพงปิดเสียงสีเทาข้างชื่อแชท<br>- ระบบ Auto-close Swipe: เมื่อแตะที่อื่น เลื่อนหน้าจอ (Scroll) หรือกดใช้งานปุ่มใดปุ่มหนึ่ง แถวที่เปิดอยู่จะหุบกลับสู่สถานะปกติทันที |
 
 Prototype: `Prototypes/fo-flow/index.html` — เมนู Chat ใน bottom nav (`data-navgo="chat"`), sub pages `chat`, `chatitem:<itemId>`, `chatroom:<threadId>`, `chatcfg`.
@@ -123,7 +123,6 @@ Chat Module ใน V1 ครอบคลุม:
 ไม่รวมใน V1:
 
 - Voice Message
-- Read Receipt
 - Typing Indicator
 - Message Reaction
 - Pinned Message
@@ -723,7 +722,6 @@ Notification destination:
 # 19. Future Enhancement
 
 - Voice Message
-- Read Receipt
 - Typing Indicator
 - Message Reaction
 - Pinned Message
