@@ -1,0 +1,55 @@
+PASS composer step2 opened
+PASS cost row visible in asset mode
+PASS cost pane opens
+PASS purchase input auto-formats
+PASS cost row shows summary
+PASS back on profile after Add Asset
+PASS feed post created — px1792497460060
+PASS total invested includes new 350,000 → 2,139,500 — THB 2,139,500
+PASS coverage now 9/10 —  Total invested Private THB 2,139,500 Market value ฿1,888,500 · +5.5% Purchase cost of 9/10 assets · only you can see this 
+PASS 10 asset rows
+PASS new asset on top of list — Untitled asset
+      
+    
+    
+      ฿350,000
+PASS Purchase price shown
+PASS Purchased date shown
+PASS Holding period shown
+PASS Mark as sold button present
+PASS sell form opens
+PASS sale price prefilled from asking
+PASS price required validation
+PASS form has only price + date fields
+PASS no buyer/payment/attach fields
+PASS lands on sold detail
+PASS sold record fields
+PASS realized G/L shown — Sold item Untitled asset N/A Sold Sale price ฿430,000 Realized gain/loss +฿80,000 (+22.9%) Sale record private Sale date20 Oct 2026 Sale price฿430,000 Return Purchase price฿350,000 Holding period893 days · 2y 5m Realized gain/loss is separatefrom portfolio value. 
+PASS total invested back to 1,789,500 — THB 1,789,500
+PASS 9 asset rows again
+PASS sold history 4 rows
+PASS newest sale on top
+PASS post in Sold tab
+PASS post gone from Sale tab
+PASS post gone from feed
+PASS second feed post created — px1792497468320
+PASS Mark as sold in own-post menu
+PASS sell form opens from menu
+PASS second sale recorded
+PASS sold tab now has 2 tiles
+PASS sold post menu: View sale record row
+PASS sold post menu: no Edit row
+PASS sold post menu: no Mark as sold row
+PASS View sale record opens sold detail
+PASS fixture sold tile exists — gfx-king.mr.fox-5
+PASS fixture sold menu: View sale record row
+PASS fixture sold opens materialized record
+PASS fixture sold record has real data — Sold item Rolex GMT-Master II 126710BLRO · Rolex Sold Sale price ฿685,000 Realized gain/loss +฿145,000 (+26.9%) Sale record private Sale date29 Sept 2026 Sale price฿685,000 Return Purchase price฿540,0
+PASS fixture sold record shows only form fields
+PASS show post in Show tab — mine1792497479669
+PASS edit info has cost row prefilled — THB 200,000
+PASS purchase prefilled in pane
+PASS bought prefilled in pane
+PASS total invested reflects edit (1,789,500 + 210,000) — THB 1,999,500
+
+0 failed, 0 console/page errors

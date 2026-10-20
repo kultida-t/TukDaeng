@@ -1,0 +1,60 @@
+PASS A1 normal post in feed — px1792497495420
+PASS A1 in All tab
+PASS A1 not in Sale tab
+PASS A1 not in Show tab
+PASS A1 not in Hide tab
+PASS A1 not in Sold tab
+PASS A1 created no asset (9 rows)
+PASS A2 post+drawer in feed — px1792497501384
+PASS A2 in Sale tab
+PASS A2 asset created (10 rows)
+PASS A3 asset-Show post in Show tab — mine1792497504783
+PASS A3 never in feed
+PASS A3 asset created (11 rows)
+PASS A4 asset-Hide post in Hide tab — mine1792497507800
+PASS A4 never in feed
+PASS A4 asset created (12 rows)
+PASS A5 asset-feed post in feed — px1792497510633
+PASS A5 in Sale tab
+PASS A5 asset created (13 rows)
+PASS B1 edit shows status picker
+PASS B1 edit shows cost row
+PASS B1 moved to Show tab
+PASS B1 left Sale tab
+PASS B1 left feed
+PASS B2 moved to Hide tab
+PASS B2 left Show tab
+PASS B3 status picker hidden when OFF
+PASS B3 left Hide tab
+PASS B3 back in All tab only
+PASS B3 asset removed (12 rows)
+PASS B3 ordinary post menu has Edit
+PASS B3 ordinary post has no sell menu
+PASS B3 detached post back in feed
+PASS B4 status picker appears when ON
+PASS B4 normal post now in Show tab
+PASS B4 asset materialized (13 rows)
+PASS B4 left feed (show status)
+PASS C1 Show post has Mark as sold
+PASS C1 sell form opens
+PASS C1 lands on sold detail
+PASS C1 post in Sold tab
+PASS C1 left Show tab
+PASS C1 asset sold (12 rows)
+PASS C2 Hide post has Mark as sold
+PASS C2 post in Sold tab
+PASS C2 left Hide tab
+PASS C2 asset sold (11 rows)
+PASS C3 post in Sold tab
+PASS C3 left feed
+PASS C3 asset sold (10 rows)
+PASS C4 sold post absent in Following feed
+PASS C4 sold post absent after feed re-render
+PASS C5 sold menu: View sale record
+PASS C5 sold menu: no Edit
+PASS C5 sold menu: no Mark as sold
+PASS C5 view opens sold detail
+PASS C5 record shows price+date only
+PASS D sold history 3 + 3 sales = 6 rows
+
+0 failed, 0 console/page errors

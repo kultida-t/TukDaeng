@@ -7481,6 +7481,11 @@
       transform: translateX(18px);
     }
 
+    .cf .sw:disabled {
+      opacity: .5;
+      cursor: default;
+    }
+
     .cf .ig-share {
       flex-shrink: 0;
       margin: 6px 14px 26px;
@@ -7544,6 +7549,17 @@
 
     .cf .pane-in:focus {
       border-color: var(--muted);
+    }
+
+    .cf .pane-in.is-err {
+      border-color: #e5484d;
+    }
+
+    .cf .pane-err {
+      font-size: 12px;
+      color: #e5484d;
+      padding: 0 18px 6px;
+      margin-top: -4px;
     }
 
     .cf .pane-ta {
@@ -7619,6 +7635,22 @@
       font-size: 12px;
       color: var(--muted);
       margin-top: 2px;
+    }
+
+    /* icon option rows share .ig-row's 24px icon column + gap so labels align with the field rows */
+    .cf .cond-opt .ic {
+      color: var(--text);
+      display: flex;
+      flex-shrink: 0;
+      width: 24px;
+      justify-content: center;
+    }
+
+    .cf .cond-opt.stt-opt,
+    .cf .cond-opt.vis-opt,
+    .cf .cond-opt.aud-opt {
+      gap: 14px;
+      padding: 13px 16px;
     }
 
     .cf .pane-sec {
@@ -8613,17 +8645,61 @@
       text-align: right;
     }
 
-    .pfd-att {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+
+    .pfd-acts {
+      padding: 4px 16px 8px;
     }
 
-    .pfd-att img {
-      width: 22px;
-      height: 22px;
-      border-radius: 5px;
+    .pfd-acts .pf-btn {
+      width: 100%;
+    }
+
+    .sell-hero {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 12px 16px 2px;
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .sell-hero img {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
       object-fit: cover;
+    }
+
+    .sell-hero .sell-brand {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .sell-hero .mn {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .sell-hero .md {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    /* sell form fields sit directly on the page like Edit profile */
+    .sell-st {
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .sell-gl {
+      padding: 0 16px 4px;
     }
 
     .pf-tabs {
@@ -9013,7 +9089,8 @@
       padding: 16px;
     }
 
-    .pe-save {
+    .pe-save,
+    .sell-save {
       width: 100%;
     }
 
@@ -13842,12 +13919,16 @@
 
     function pmOwnMenuHTML(p, tab = "all") {
       const isTh = state.lang === "th";
+      /* Mark as sold shows on every post in a status tab — a missing drawer link is materialized on tap */
+      const sellable = p && ["sale", "show", "hide"].includes(pfKind(p));
+      const isSold = p && pfKind(p) === "sold"; /* sold is final — no Edit; offer the sale record instead */
       return `
     <div class="sheet-handle"></div>
     <div class="pm-card">
       <button class="pm-row pm-own-archive">${I.history(20)}<span>${p.archived ? (isTh ? "ยกเลิกการเก็บถาวร" : "Unarchive") : (isTh ? "จัดเก็บถาวร" : "Archive")}</span></button>
       <button class="pm-row pm-own-nocomm">${I.commentOff(20)}<span>${p.noComments ? (isTh ? "เปิดความคิดเห็น" : "Turn on commenting") : (isTh ? "ปิดความคิดเห็น" : "Turn off commenting")}</span></button>
-      <button class="pm-row pm-own-edit">${I.pen(20)}<span>${isTh ? "แก้ไข" : "Edit"}</span></button>
+      ${isSold ? `<button class="pm-row pm-own-soldview">${I.checkCir(20)}<span>${isTh ? "ดูประวัติการขาย" : "View sale record"}</span></button>` : `<button class="pm-row pm-own-edit">${I.pen(20)}<span>${isTh ? "แก้ไข" : "Edit"}</span></button>`}
+      ${sellable ? `<button class="pm-row pm-own-sold">${I.checkCir(20)}<span>${isTh ? "บันทึกการขาย" : "Mark as sold"}</span></button>` : ""}
       <button class="pm-row pm-own-pin">${I.pinPost(20)}<span>${p.pins && p.pins[tab] ? (isTh ? "ถอนหมุดออกจากกริด" : "Unpin from grid") : (isTh ? "ปักหมุดไว้ด้านบนสุดของกริด" : "Pin to top of grid")}</span></button>
       <button class="pm-row danger pm-own-del">${I.trash(20)}<span>${isTh ? "ลบ" : "Delete"}</span></button>
     </div>`;
@@ -13855,17 +13936,29 @@
 
     /* re-render every visible surface of a post after own-menu toggles */
     function refreshPostViews(scr, p) {
-      scr.querySelectorAll(`.feed-scroll .post[data-pid="${p.id}"]`).forEach(art => {
-        if (p.pfkind === "hide" || p.pfkind === "show") art.remove(); /* PROFILE-017 — โชว์/ซ่อน statuses pull the post off the feed */
+      const feedArts = scr.querySelectorAll(`.feed-scroll .post[data-pid="${p.id}"]`);
+      feedArts.forEach(art => {
+        if (["hide", "show", "sold"].includes(p.pfkind)) art.remove(); /* โชว์/ซ่อน/ขายแล้ว statuses pull the post off the feed */
         else if (!art.classList.contains("ni-card")) art.outerHTML = postCard(p, scr.dataset.variant);
       });
+      /* the post is feed-eligible again (e.g. detached from the drawer) but its card was
+         already removed — rebuild the list so it comes back */
+      if (!feedArts.length && !["hide", "show", "sold"].includes(p.pfkind) && !p.ni && !p.muted && !p.blocked && !p.archived) {
+        const fl = scr.querySelector(".feed-scroll .feed-list");
+        if (fl) fl.innerHTML = feedContentHTML(scr.dataset.variant);
+      }
       scr.querySelectorAll(`.svf-post[data-pid="${p.id}"]`).forEach(w => { w.innerHTML = postCard(p, state.variant); });
       scr.querySelectorAll(`.pv-post[data-pid="${p.id}"]`).forEach(sec => {
         const img = sec.querySelector(".pv-img");
         const phi = Math.max(0, img ? p.photos.indexOf(img.getAttribute("src")) : 0);
         sec.outerHTML = pvPostHTML(p, phi);
       });
-      scr.querySelectorAll(`.pfp-post[data-pid="${p.id}"]`).forEach(a => { a.outerHTML = pfpPostHTML(p); });
+      scr.querySelectorAll(`.pfp-post[data-pid="${p.id}"]`).forEach(a => {
+        /* a tab-scoped viewer lists only that tab's posts — a status change pulls the card out of it */
+        const tab = scr._pinTab || "all";
+        if (tab !== "all" && pfKind(p) !== tab) a.remove();
+        else a.outerHTML = pfpPostHTML(p);
+      });
       scr.querySelectorAll(`.pf-tile[data-pid="${p.id}"] img`).forEach(im => { im.src = p.photos[0]; });
       if (scr.dataset.detailPid === p.id && scr.classList.contains("detail-open")) openPostDetail(scr, p);
     }
@@ -14000,7 +14093,7 @@
     }
 
     function feedContentHTML(variant) {
-      const posts = POSTS.filter(p => !p.ni && !p.muted && !p.blocked && !p.archived && (p.pfkind || "post") !== "hide" && (p.pfkind || "post") !== "show") /* feed = ขาย + โพสต์ธรรมดา only; โชว์/ซ่อน are drawer statuses — off the feed */
+      const posts = POSTS.filter(p => !p.ni && !p.muted && !p.blocked && !p.archived && !["show", "hide", "sold"].includes(p.pfkind || "post")) /* feed = ขาย + โพสต์ธรรมดา only; โชว์/ซ่อน/ขายแล้ว are drawer statuses — off the feed */
         .filter(p => state.feedTab === "favorites" ? p.favorite : state.feedTab === "following" ? p.following : (state.snooze ? p.following : true));
       return posts.length ? posts.map(p => postCard(p, variant)).join("") : feedEmptyHTML(state.feedTab);
     }
@@ -14778,6 +14871,7 @@
        the current page back out the same way, "X" closes the whole report stack */
     function rpOpenFromPost(scr) { /* report from a post "..." menu — over the Posts viewer when it is open */
       if (!scr.classList.contains("pv-open")) { openSub(scr, "report"); return; }
+      if (!scr.classList.contains("rp-over")) scr._rpBase = (scr._subStack || []).length;
       scr.classList.add("rp-over");
       const el = scr.querySelector(".page-sub");
       scr._subSwap = false; scr._pfAv = false;
@@ -14812,8 +14906,10 @@
         setTimeout(() => g.remove(), 340);
         st.pop();
         scr._subSwap = true; renderSub(scr); scr._subSwap = false; /* previous page stays put — no re-slide */
+        if (scr._rpBase != null && st.length <= scr._rpBase) { scr._rpBase = null; scr.classList.remove("rp-over"); } /* back to the surface under the Posts viewer — let it show again */
       } else {
         st.pop();
+        scr._rpBase = null;
         scr.classList.remove("sub-open"); /* last page slides itself out via the resting transform */
         if (scr.classList.contains("rp-over")) setTimeout(() => { if (!scr.classList.contains("sub-open")) scr.classList.remove("rp-over"); }, 320);
       }
@@ -14842,6 +14938,7 @@
       }
       delete scr.dataset.rpFromChat;
       delete scr.dataset.rpDelChat;
+      scr._rpBase = null;
       scr.classList.remove("rp-over");
       if ((scr._subStack || []).length) { scr._subSwap = true; renderSub(scr); scr._subSwap = false; }
       else scr.classList.remove("sub-open");
@@ -15595,6 +15692,7 @@
         ["year", "Year", "e.g. 2023"], ["service", "Service History", "e.g. No service record"],
       ]],
     ];
+    const cfToday = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
     function cfPaneHTML(scr) {
       const isTh = state.lang === "th";
       const V = cpState(scr);
@@ -15616,6 +15714,14 @@
     <div class="pane-lab" style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--red)">${isTh ? "คำอธิบาย" : "Description"}</div>
     <textarea class="pane-in pane-ta cf-f" data-f="desc" rows="4" placeholder="${isTh ? "อธิบายสินค้า เช่น สภาพ ประวัติ สิ่งที่ได้รับ…" : "Describe the item — condition notes, history, what's included…"}">${esc(m.desc || "")}</textarea>
     <div class="pane-lab">${isTh ? "สภาพและกล่อง/ใบรับประกันจะถูกกำหนดในส่วน สภาพสินค้า" : "Condition & Box are set in the Condition section — they appear here under Item Details."}</div>
+  </div>`;
+      if (m.pane === "cost") return head(isTh ? "ข้อมูลต้นทุน" : "Cost details") + `<div class="pane-body">
+    <div class="pane-lab">${isTh ? "ราคาซื้อ (บาท)" : "Purchase price (THB)"}</div>
+    <input class="pane-in cf-f" data-f="purchase" inputmode="numeric" placeholder="${isTh ? "เช่น 398,000" : "e.g. 398,000"}" value="${esc(m.purchase ? fmtNum(m.purchase) : "")}">
+    <div class="pane-lab">${isTh ? "วันที่ซื้อ" : "Purchase date"}</div>
+    <input class="pane-in cf-f" data-f="bought" type="date" min="1900-01-01" max="${cfToday()}" value="${esc(m.bought || "")}">
+    <div class="pane-err" hidden></div>
+    <div class="pane-lab">${isTh ? "ข้อมูลต้นทุนเป็นข้อมูลส่วนตัว — ใช้คำนวณมูลค่าและกำไร/ขาดทุนในพอร์ตโฟลิโอ มีเพียงคุณเท่านั้นที่เห็น" : "Cost details are private — they feed portfolio value and gain/loss. Only you can see them."}</div>
   </div>`;
       if (m.pane === "cond") return head(isTh ? "สภาพสินค้า" : "Condition") + `<div class="pane-body">
     <div class="pane-sec">${isTh ? "สภาพของสินค้า" : "Item condition"}</div>
@@ -15639,6 +15745,8 @@
         price: m.price ? "THB " + fmtNum(unNum(m.price)) : "",
         spec: [m.brand, m.model].filter(Boolean).join(" · "),
         cond: m.cond || "",
+        /* row summary stays short — price only; the date lives in the pane (long text wraps the label) */
+        cost: m.purchase ? "THB " + fmtNum(unNum(m.purchase)) : (m.bought ? pfoDate(m.bought) : ""),
       };
     }
     function cfZoomGo(z, i, total) {
@@ -15737,6 +15845,7 @@
         ${row(I.tag(19), isTh ? "ระบุราคา" : "Add price", "price", mv.price, mv.price ? " price" : "")}
         ${row(I.watch(19), isTh ? "รายละเอียดนาฬิกา" : "Watch details", "spec", mv.spec)}
         ${row(I.shield(19), isTh ? "สภาพสินค้า" : "Condition", "cond", mv.cond)}
+        ${V.mode === "asset" || V.asset ? row(I.wallet(19), isTh ? "ข้อมูลต้นทุน (ส่วนตัว)" : "Cost details (private)", "cost", mv.cost) : ""}
       </div>
       ${V.editPid && V.asset ? `
       <div class="pane-sec">${isTh ? "สถานะในโปรไฟล์" : "Profile status"}</div>
@@ -15752,9 +15861,9 @@
         <span class="ic" style="color:var(--text);display:flex;width:24px;justify-content:center">${I.box(19)}</span>
         <div class="tx">
           <div class="tt">${isTh ? "บันทึกลงในสินทรัพย์ของฉันด้วย" : "Also save to My Assets"}</div>
-          <div class="ts">${isTh ? "เก็บรายการนี้ไว้ในคอลเลกชันโปรไฟล์ของคุณ" : "Keep this item in your profile collection — full specs live in \"Add Asset\"."}</div>
+          <div class="ts">${V.editSold ? (isTh ? "รายการนี้อยู่ในประวัติการขายแล้ว" : "This item lives in your Sold history") : (isTh ? "เก็บรายการนี้ไว้ในคอลเลกชันโปรไฟล์ของคุณ" : "Keep this item in your profile collection — full specs live in \"Add Asset\".")}</div>
         </div>
-        <button class="sw${V.asset ? " on" : ""}"></button>
+        ${V.editSold ? `<button class="sw on" disabled></button>` : `<button class="sw${V.asset ? " on" : ""}"></button>`}
       </div>`}
       <button class="ig-row" data-pane="more"><span class="ic">${I.dots(18)}</span>${isTh ? "ตัวเลือกเพิ่มเติม" : "More options"}<span class="val${m.audience === "followers" ? " set" : ""}">${m.audience === "followers" ? (isTh ? "เฉพาะผู้ติดตาม" : "Followers only") : ""}</span>${I.chevR(15)}</button>
     </div>
@@ -15811,9 +15920,41 @@
         name: [m.brand, m.model].filter(Boolean).join(" ") || (V.caption || "Untitled asset").slice(0, 42),
         ref: m.ref || "", meta: [m.year, m.cond].filter(Boolean).join(" · "), brand: m.brand || "",
         status,
-        market: null, purchase: null, bought: "", asking: m.price ? +unNum(m.price) : null,
+        market: null, purchase: m.purchase ? +unNum(m.purchase) : null, bought: m.bought || "", asking: m.price ? +unNum(m.price) : null,
       });
       return PF_ASSETS[0];
+    }
+    /* a tab-status post with no linked asset gets a drawer record materialized on demand —
+      specs/caption seed it the same way composer meta seeds cfToPortfolio */
+    function assetFromPost(post) {
+      const name = [specOf(post, "Brand"), specOf(post, "Model")].filter(Boolean).join(" ");
+      PF_ASSETS.unshift({
+        id: "pfa-x" + Date.now(), img: post.photos[0], photos: post.photos.slice(),
+        name: name || (post.captionFull || post.caption || "Untitled asset").slice(0, 42),
+        ref: specOf(post, "Reference") || "", meta: [specOf(post, "Year"), specOf(post, "Condition")].filter(Boolean).join(" · "), brand: specOf(post, "Brand") || "",
+        status: PFO_STATUS[post.pfkind] ? post.pfkind : "sale",
+        market: null, purchase: null, bought: "", asking: post.price ? +unNum(post.price) : null,
+      });
+      return PF_ASSETS[0];
+    }
+    /* a sold post's sale record — linked PF_SOLD entry, or one materialized from the post
+       on first view (fixture posts carry no link; optional fields stay empty) */
+    function soldFromPost(post) {
+      const linked = post.assetId && PF_SOLD.find(s => s.id === post.assetId);
+      if (linked) return linked;
+      const name = [specOf(post, "Brand"), specOf(post, "Model")].filter(Boolean).join(" ");
+      const d = new Date(), s = post.sold || {}; /* fixture sold posts carry a full mock; real ones fall back to the post */
+      const rec = {
+        id: "pfs-x" + Date.now(), img: post.photos[0], photos: post.photos.slice(),
+        name: name || (post.captionFull || post.caption || "Untitled asset").slice(0, 42),
+        ref: specOf(post, "Reference") || "", brand: specOf(post, "Brand") || "",
+        soldDate: s.soldDate || `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`,
+        price: s.price ?? (post.price ? +unNum(post.price) : null),
+        purchase: s.purchase ?? null, bought: s.bought || "",
+      };
+      post.assetId = rec.id;
+      PF_SOLD.unshift(rec);
+      return rec;
     }
     function insertNewPost(np) {
       const base = POSTS[0];
@@ -15870,9 +16011,15 @@
       V.order = post.photos.map((src, i) => ({ src, dur: (post.clips && post.clips[i]) || null }));
       V.caption = post.captionFull || post.caption || "";
       V.meta = metaFromPost(post);
+      const paSrc = post.assetId && PF_ASSETS.find(a => a.id === post.assetId); /* drawer cost fields prefill from the asset record */
+      if (paSrc) { if (paSrc.purchase != null) V.meta.purchase = String(paSrc.purchase); if (paSrc.bought) V.meta.bought = paSrc.bought; }
       V.mode = "post";
-      V.asset = !!post.assetId; /* PROFILE-017 — the toggle reflects drawer membership; pfkind seeds the ขาย/โชว์ pick */
-      V.pfkind = post.pfkind && post.pfkind !== "post" ? post.pfkind : "sale";
+      /* the toggle reflects drawer membership — a tab-status post counts as a drawer item even
+         before a real asset is linked (one is materialized on save); a sold post's assetId points
+         into Sold history instead, so the drawer reads as OFF and can't detach it by accident */
+      V.asset = post.assetId ? PF_ASSETS.some(a => a.id === post.assetId) : ["sale", "show", "hide"].includes(pfKind(post)); /* PROFILE-017 — pfkind seeds the ขาย/โชว์ pick */
+      V.pfkind = ["sale", "show", "hide"].includes(pfKind(post)) ? pfKind(post) : "sale";
+      V.editSold = pfKind(post) === "sold"; /* sold posts show the drawer toggle locked ON — the item lives in Sold history */
       /* detail page (z33) sits above the composer (z32) — close it while editing, reopen on Done/Cancel */
       V.editFromDetail = scr.classList.contains("detail-open");
       if (V.editFromDetail) scr.classList.remove("detail-open");
@@ -15881,6 +16028,7 @@
       if (V.editRet.pv) {
         /* Posts viewer stays put — the composer slides in over it (same layering as report pages) */
         const el = scr.querySelector(".page-sub");
+        if (!scr.classList.contains("rp-over")) scr._rpBase = (scr._subStack || []).length;
         scr.classList.add("rp-over");
         el.style.transition = "none";
         scr.classList.remove("sub-open");
@@ -15901,6 +16049,7 @@
         setTimeout(() => {
           if (scr._cp) return;
           scr.classList.toggle("rp-over", r.rp);
+          if (!r.rp) scr._rpBase = null;
           scr._subStack = r.stack;
           renderSub(scr);
           scr.classList.add("sub-open");
@@ -15933,17 +16082,29 @@
       post.noComments = !!m.noComments;
       post.desc = m.desc || "";
       /* PROFILE-017 — Edit info can move the post between ขาย/โชว์ and flip drawer membership;
-         the status pick only applies while the drawer toggle is on */
-      if (V.asset) post.pfkind = V.pfkind || post.pfkind;
-      if (V.asset && !post.assetId) post.assetId = cfToPortfolio(V, post.photos, post.pfkind === "sale" ? "sale" : "show").id;
+         the status pick only applies while the drawer toggle is on — OFF drops it out of the status tabs */
+      if (post.pfkind !== "sold") post.pfkind = V.asset ? (V.pfkind || post.pfkind) : "post"; /* ขายแล้ว stays sold — its status isn't user-editable here */
+      if (V.asset && !post.assetId) post.assetId = cfToPortfolio(V, post.photos, PFO_STATUS[post.pfkind] ? post.pfkind : "sale").id;
       else if (!V.asset && post.assetId) {
         const i = PF_ASSETS.findIndex(a => a.id === post.assetId);
-        if (i > -1) PF_ASSETS.splice(i, 1);
-        post.assetId = null;
-        if (POSTS.includes(post)) post.pfkind = "post"; /* a real feed post returns to feed-only — drops out of ขาย/โชว์ tabs */
+        if (i > -1) { /* only detach a live drawer asset — sold posts keep their Sold-history link */
+          PF_ASSETS.splice(i, 1);
+          post.assetId = null;
+        }
       }
       const pa = post.assetId && PF_ASSETS.find(a => a.id === post.assetId);
       if (pa && PFO_STATUS[post.pfkind]) pa.status = post.pfkind; /* keeps ซ่อน as Hide when untouched */
+      if (pa) { /* the drawer asset mirrors the edited post — same mapping cfToPortfolio uses */
+        pa.purchase = m.purchase ? +unNum(m.purchase) : null;
+        pa.bought = m.bought || "";
+        pa.asking = m.price ? +unNum(m.price) : null;
+        pa.name = [m.brand, m.model].filter(Boolean).join(" ") || (post.captionFull || "Untitled asset").slice(0, 42);
+        pa.ref = m.ref || "";
+        pa.meta = [m.year, m.cond].filter(Boolean).join(" · ");
+        pa.brand = m.brand || "";
+        pa.img = post.photos[0];
+        pa.photos = post.photos.slice();
+      }
     }
     /* ===== watch alerts — saved criteria that ping when a matching post lands (memory only) ===== */
     const WATCH_ALERTS = [];
@@ -16165,22 +16326,20 @@
       { id: "pfa-08", img: "./assets/asset-uploads/S__10108947_0.jpg", photos: ["./assets/asset-uploads/S__10108947_0.jpg", "./assets/asset-uploads/purchase-equipment-box.png"], name: "Tudor Black Bay 58", ref: "M79030N", meta: "Full set", brand: "Tudor", status: "show", market: 128000, purchase: 121000, bought: "2023-09-08" },
       { id: "pfa-09", img: "./assets/asset-uploads/feed-tudor-bb.jpg", photos: ["./assets/asset-uploads/feed-tudor-bb.jpg"], name: "Tudor Black Bay GMT", ref: "M79830RB", meta: "Pepsi bezel", brand: "Tudor", status: "sale", market: 156000, purchase: 141000, bought: "2023-01-27", asking: 154000 },
     ];
-    /* Sold History — separate from portfolio value; fields per spec (sale date/buyer/contact/price/payment/attachment) */
+    /* Sold History — separate from portfolio value; the form captures sale price + sale date,
+       the rest comes from the asset (purchase cost/date → realized G/L + holding period) */
     const PF_SOLD = [
       {
         id: "pfs-01", img: "./assets/asset-uploads/feed-datejust-1.jpg", photos: ["./assets/asset-uploads/feed-datejust-1.jpg", "./assets/asset-uploads/feed-datejust-2.jpg"], name: "Rolex Datejust 36", ref: "126234 · Fluted bezel", brand: "Rolex",
-        soldDate: "2025-08-30", buyer: "watch.daily", contact: "@watch.daily · DM", price: 295000, pay: "Bank transfer",
-        attach: "transfer-slip-0830.png", attachImg: "./assets/asset-uploads/purchase-transfer-slip.png", purchase: 261000, bought: "2022-03-15"
+        soldDate: "2025-08-30", price: 295000, purchase: 261000, bought: "2022-03-15"
       },
       {
         id: "pfs-02", img: "./assets/asset-uploads/feed-breguet-1.jpg", photos: ["./assets/asset-uploads/feed-breguet-1.jpg", "./assets/asset-uploads/feed-breguet-2.jpg"], name: "Breguet Classique 5177", ref: "5177BB · Grand feu enamel", brand: "Breguet",
-        soldDate: "2025-05-12", buyer: "Watch 777", contact: "Consignment desk", price: 618000, pay: "Bank transfer",
-        attach: "invoice-5177.pdf", attachImg: "./assets/asset-uploads/purchase-dealer-invoice.png", purchase: 540000, bought: "2021-10-08"
+        soldDate: "2025-05-12", price: 618000, purchase: 540000, bought: "2021-10-08"
       },
       {
         id: "pfs-03", img: "./assets/asset-uploads/ast-8831-1.png", photos: ["./assets/asset-uploads/ast-8831-1.png", "./assets/asset-uploads/ast-8831-2.png", "./assets/asset-uploads/ast-8831-3.png"], name: "Tudor Pelagos 39", ref: "M25407N · Full set", brand: "Tudor",
-        soldDate: "2024-11-02", buyer: "bamzilla", contact: "@bamzilla", price: 118000, pay: "Cash · meetup",
-        attach: "receipt-pelagos.pdf", attachImg: "./assets/asset-uploads/purchase-certificate-docs.png", purchase: 131000, bought: "2023-04-22"
+        soldDate: "2024-11-02", price: 118000, purchase: 131000, bought: "2023-04-22"
       },
     ];
     /* PF_YTD_OPEN removed — YTD tile cut per user feedback (minimal dashboard) */
@@ -16386,6 +16545,18 @@
         ]
       },
     ];
+    /* PORTFOLIO-002 — sold-kind gfx posts carry a full sale record mock (keyed by grid index in
+       PF_GFX_KINDS where kind === "sold") so "View sale record" shows real data, not blanks */
+    const PF_GFX_SOLD = {
+      5: {
+        specs: [["Brand", "Rolex"], ["Model", "GMT-Master II"], ["Reference", "126710BLRO"], ["Year", "2023"], ["Condition", "Very Good"]],
+        sold: { price: 685000, soldDate: "2026-09-29", purchase: 540000, bought: "2023-02-14" },
+      },
+      8: {
+        specs: [["Brand", "Tudor"], ["Model", "Black Bay"], ["Reference", "M7939A1A0RU"], ["Year", "2024"], ["Condition", "Like New"]],
+        sold: { price: 152000, soldDate: "2026-08-22", purchase: 139000, bought: "2024-01-09" },
+      },
+    };
     /* PROFILE-002 — mock meta for grid-only posts so the "Posts" surface reads like a real profile feed */
     const PF_GFX_META = [
       { caption: "snow day rotation 🌧❄️⛄️", time: "2 days ago", likes: 128, comments: 6, likedBy: "chrono.th", cprev: { name: "neng_mua", text: "น่ารัก 🫶" } },
@@ -16423,6 +16594,8 @@
         };
         /* sale-kind gfx posts carry real-feeling specs → Tap for details / Ask / full detail all work */
         if (kind === "sale") Object.assign(p, PF_GFX_SALE[i % PF_GFX_SALE.length], { type: "sale" });
+        /* sold-kind gfx posts carry specs + a sale-record mock → View sale record shows filled fields */
+        if (kind === "sold" && PF_GFX_SOLD[i % PF_GFX_KINDS.length]) Object.assign(p, PF_GFX_SOLD[i % PF_GFX_KINDS.length]);
         PF_GFX_REG[p.id] = p;
         return p;
       }).filter(Boolean));
@@ -16872,6 +17045,7 @@
       ${kv(isTh ? "กำไรที่คาดหวัง" : "Expected profit", ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : "—", ex != null ? "up" : "")}
       ${kv(isTh ? "เปรียบเทียบตลาด" : "Market comparison", cmp && cmp !== "none" ? `<i class="pfo-chip ${PFO_CMP[cmp][1]}">${PFO_CMP[cmp][0]}</i>` : (isTh ? "ไม่มีราคาตลาด" : "No market price"))}
     </div>` : ""}
+    ${pfoEligible(a) ? `<div class="pfd-acts"><button class="pf-btn primary" data-sell="${a.id}">${I.checkCir(15)} ${isTh ? "บันทึกการขาย" : "Mark as sold"}</button></div>` : ""}
     <div class="pfo-note">${isTh ? "ข้อมูลเฉพาะเจ้าของ — จะไม่แสดงบนโปรไฟล์สาธารณะของคุณ" : "Owner-only data — never shown on your public profile."}</div>
   </div>`;
     }
@@ -16880,8 +17054,8 @@
       const rows = PF_SOLD.map(x => {
         return `<button class="mrow pfo-row" data-sub="sold:${x.id}">
       <img class="pfo-img" src="${x.img}" alt="">
-      <span class="lg-b"><span class="mn">${esc(x.name)}</span><span class="md">${isTh ? `ขายแล้วเมื่อ ${pfoDate(x.soldDate)} · ${esc(x.buyer)}` : `Sold ${pfoDate(x.soldDate)} · ${esc(x.buyer)}`}</span></span>
-      <span class="pfo-r"><span class="pfo-val">${pfoTHB(x.price)}</span></span>
+      <span class="lg-b"><span class="mn">${esc(x.name)}</span><span class="md">${isTh ? `ขายแล้วเมื่อ ${pfoDate(x.soldDate)}` : `Sold ${pfoDate(x.soldDate)}`}</span></span>
+      <span class="pfo-r"><span class="pfo-val">${x.price != null ? pfoTHB(x.price) : "N/A"}</span></span>
     </button>`;
       }).join("");
       return `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">${isTh ? "ประวัติการขาย" : "Sold history"}</span><span class="spacer"></span><span class="icon-btn" style="visibility:hidden"></span></div>
@@ -16906,26 +17080,72 @@
     ${x.photos.length > 1 ? `<div class="photo-dots">${x.photos.map((_, i) => `<span class="${i === 0 ? "on" : ""}"></span>`).join("")}</div>` : ""}
     <div class="pfd-id">
       <div class="pfd-name">${esc(x.name)}</div>
-      <div class="pfd-meta">${esc(x.ref)} · ${esc(x.brand)}</div>
+      <div class="pfd-meta">${[x.ref, x.brand].filter(Boolean).map(s => esc(s)).join(" · ") || "N/A"}</div>
       <span class="pfo-chip st-hide">${isTh ? "ขายแล้ว" : "Sold"}</span>
+    </div>
+    <div class="pfo-total">
+      <span class="pfo-lb pfo-tt"><span>${isTh ? "ราคาขาย" : "Sale price"}</span></span>
+      <b>${x.price != null ? pfoTHB(x.price) : "N/A"}</b>
+      ${gl != null ? `<span class="pfo-lb">${isTh ? "กำไร/ขาดทุนที่เกิดขึ้นจริง" : "Realized gain/loss"} <i class="pfo-mktd ${gl >= 0 ? "up" : "dn"}">${pfoSignTHB(gl)} (${pfoPct(gl, x.purchase)})</i></span>` : ""}
     </div>
     <div class="pfo-card">
       <div class="pfo-card-t">${isTh ? "บันทึกการขาย" : "Sale record"} <span class="pfo-privtag">${I.lock(10)} ${isTh ? "ส่วนตัว" : "private"}</span></div>
       ${kv(isTh ? "วันที่ขาย" : "Sale date", pfoDate(x.soldDate))}
-      ${kv(isTh ? "ผู้ซื้อ" : "Buyer", esc(x.buyer))}
-      ${kv(isTh ? "ติดต่อ" : "Contact", esc(x.contact))}
-      ${kv(isTh ? "ราคาขาย" : "Sale price", pfoTHB(x.price))}
-      ${kv(isTh ? "วิธีชำระเงิน" : "Payment method", esc(x.pay))}
-      ${kv(isTh ? "หลักฐานแนบ" : "Attachment", `<span class="pfd-att"><img src="${x.attachImg}" alt="">${esc(x.attach)}</span>`)}
+      ${kv(isTh ? "ราคาขาย" : "Sale price", x.price != null ? pfoTHB(x.price) : "N/A")}
     </div>
     <div class="pfo-card">
       <div class="pfo-card-t">${isTh ? "ผลตอบแทน" : "Return"}</div>
-      ${kv(isTh ? "ราคาซื้อ" : "Purchase price", x.purchase ? pfoTHB(x.purchase) : "—")}
-      ${kv(isTh ? "กำไร/ขาดทุนที่เกิดขึ้นจริง" : "Realized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, x.purchase)})` : "—", gl != null ? (gl >= 0 ? "up" : "dn") : "")}
-      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txt}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "—")}
+      ${kv(isTh ? "ราคาซื้อ" : "Purchase price", x.purchase ? pfoTHB(x.purchase) : "N/A")}
+      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txt}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "N/A")}
     </div>
     <div class="pfo-note">${isTh ? "กำไร/ขาดทุนที่เกิดขึ้นจริงจะแยกออกจาก<br>มูลค่าพอร์ตโฟลิโอ" : "Realized gain/loss is separate<br>from portfolio value."}</div>
   </div>`;
+    }
+
+    /* Mark as sold — sale-record form; saves move the asset into Sold history */
+    function sellFormHTML(scr, id) {
+      const isTh = state.lang === "th";
+      const a = PF_ASSETS.find(x => x.id === id);
+      const head = `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">${isTh ? "บันทึกการขาย" : "Mark as sold"}</span><span class="spacer"></span><span class="icon-btn" style="visibility:hidden"></span></div>`;
+      if (!a) return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.sad(44)}<div class="t">${isTh ? "ไม่พบข้อมูล" : "No data found"}</div></div></div>`;
+      const d = new Date(), today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      const ex = a.asking != null && a.purchase > 0 ? a.asking - a.purchase : null; /* live preview: same math as Expected profit on asset detail */
+      const modelTxt = a.brand && a.name.startsWith(a.brand) ? a.name.slice(a.brand.length).trim() || a.name : a.name;
+      return head + `<div class="sub-scroll pfo-scroll">
+    <div class="sell-hero"><img src="${a.img}" alt=""><span class="lg-b">${a.brand ? `<span class="sell-brand">${esc(a.brand)}</span>` : ""}<span class="mn">${esc(modelTxt)}</span>${a.ref ? `<span class="md">${esc(a.ref)}</span>` : ""}</span><span class="pfo-chip sell-st ${PFO_STATUS[a.status][1]}">${PFO_STATUS[a.status][0]}</span></div>
+    <div class="fav-desc">${isTh ? "ข้อมูลเป็นส่วนตัว — รายการจะย้ายไปประวัติการขายและหลุดจากมูลค่าพอร์ตโฟลิโอโดยอัตโนมัติ" : "Private data — the piece moves to Sold history and drops out of portfolio value automatically."}</div>
+    <label class="pe-f"><span>${isTh ? "ราคาขาย (บาท)" : "Sale price (THB)"} *</span><input class="pe-in sell-price" inputmode="numeric" placeholder="${isTh ? "เช่น 449,000" : "e.g. 449,000"}" value="${a.asking != null ? fmtNum(a.asking) : ""}"><span class="pe-err" hidden></span></label>
+    ${a.purchase > 0 ? `<div class="pfd-kv sell-gl" data-aid="${a.id}"><span>${isTh ? "กำไรที่คาดหวัง" : "Expected gain"}</span><b class="${ex != null ? (ex >= 0 ? "up" : "dn") : ""}">${ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : "—"}</b></div>` : ""}
+    <label class="pe-f"><span>${isTh ? "วันที่ขาย" : "Sale date"} *</span><input class="pe-in sell-date" type="date" value="${today}" max="${today}"><span class="pe-err" hidden></span></label>
+    <div class="pe-savewrap"><button class="pf-btn primary sell-save">${I.checkCir(16)} ${isTh ? "บันทึกการขาย" : "Save sale record"}</button></div>
+  </div>`;
+    }
+    /* a sub page stacks over the profile / Posts viewer like report pages */
+    function openSubOver(scr, name) {
+      if (scr.classList.contains("pv-open")) {
+        if (!scr.classList.contains("rp-over")) scr._rpBase = (scr._subStack || []).length; /* stack depth the viewer sits over — popping back to it must drop rp-over */
+        scr.classList.add("rp-over");
+        scr._subSwap = false; scr._pfAv = false; /* stale swap flag would snap the page in with no slide — same fix as rpOpenFromPost */
+        (scr._subStack = scr._subStack || []).push(name);
+        renderSub(scr);
+        scr.classList.add("sub-open");
+        const el = scr.querySelector(".page-sub");
+        if (el) { el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
+      } else if (scr.classList.contains("sub-open")) pushSub(scr, name);
+      else openSub(scr, name);
+    }
+    function openSellForm(scr, id) { openSubOver(scr, "sell:" + id); }
+    /* asset leaves PF_ASSETS → PF_SOLD; the linked post lands in the profile's ขายแล้ว tab */
+    function markAssetSold(scr, a, rec) {
+      const i = PF_ASSETS.findIndex(x => x.id === a.id);
+      if (i > -1) PF_ASSETS.splice(i, 1);
+      PF_SOLD.unshift({
+        id: a.id, img: a.img, photos: a.photos, name: a.name, ref: a.ref, brand: a.brand,
+        soldDate: rec.soldDate, price: rec.price, purchase: a.purchase, bought: a.bought,
+      });
+      POSTS.concat(PF_MINE, Object.values(PF_GFX_REG)).forEach(p => {
+        if (p.assetId === a.id) { p.pfkind = "sold"; refreshPostViews(scr, p); }
+      });
     }
 
     function subHTML(name, scr) {
@@ -17360,6 +17580,7 @@
       if (name.startsWith("pfasset:")) return pfassetHTML(scr, name.slice(8));
       if (name === "soldhist") return soldHistHTML();
       if (name.startsWith("sold:")) return soldDetailHTML(name.slice(5));
+      if (name.startsWith("sell:")) return sellFormHTML(scr, name.slice(5));
       return "";
     }
 
@@ -19741,7 +19962,7 @@
         e.target.classList.remove("is-err");
         const errEl = e.target.closest(".pe-f")?.querySelector(".pe-err");
         if (errEl) { errEl.textContent = ""; errEl.hidden = true; }
-        return;
+        if (!e.target.matches(".sell-price")) return; /* sell-price falls through to comma-format + expected-gain update */
       }
       if (e.target.matches(".chg-pwd-input")) {
         e.target.classList.remove("is-err");
@@ -19770,8 +19991,22 @@
         const scr = e.target.closest(".screen");
         const V = cpState(scr);
         const f = e.target.dataset.f;
-        if (f === "price") { const v = unNum(e.target.value); V.meta[f] = v; e.target.value = v ? fmtNum(v) : ""; }
+        if (f === "price" || f === "purchase") { const v = unNum(e.target.value); V.meta[f] = v; e.target.value = v ? fmtNum(v) : ""; }
         else V.meta[f] = e.target.value;
+        if (f === "bought") { /* purchase date — flag unparseable / out-of-range input as it happens */
+          const i = e.target;
+          const bad = i.validity.badInput || (i.value && (i.validity.rangeUnderflow || i.validity.rangeOverflow));
+          i.classList.toggle("is-err", !!bad);
+          const err = i.parentElement.querySelector(".pane-err");
+          if (err) {
+            err.hidden = !bad;
+            err.textContent = bad
+              ? (i.validity.rangeOverflow
+                  ? (state.lang === "th" ? "วันที่ซื้ออยู่ในอนาคตไม่ได้" : "Purchase date can't be in the future")
+                  : (state.lang === "th" ? "วันที่ซื้อไม่ถูกต้อง" : "Invalid purchase date"))
+              : "";
+          }
+        }
       }
       /* composer location pane — live filter suggestions */
       if (e.target.matches(".cf .pane-q")) {
@@ -19870,9 +20105,18 @@
         if (next) next.disabled = !e.target.value.trim();
       }
       /* price inputs — auto comma format, digits only (SEARCH-001 spec §12) */
-      if (e.target.matches(".flt-pmin, .flt-pmax")) {
+      if (e.target.matches(".flt-pmin, .flt-pmax, .sell-price")) {
         const v = unNum(e.target.value);
         e.target.value = v ? fmtNum(v) : "";
+        /* sell form — refresh the live expected-gain row as the sale price changes */
+        const glRow = e.target.closest(".sub-scroll")?.querySelector(".sell-gl");
+        if (glRow) {
+          const ga = PF_ASSETS.find(x => x.id === glRow.dataset.aid);
+          const gl = ga && ga.purchase > 0 && +v > 0 ? +v - ga.purchase : null;
+          const gb = glRow.querySelector("b");
+          gb.className = gl != null ? (gl >= 0 ? "up" : "dn") : "";
+          gb.textContent = gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, ga.purchase)})` : "—";
+        }
       }
     });
 
@@ -20120,13 +20364,12 @@
           return;
         }
         const cfSw = e.target.closest(".sw");
-        if (cfSw && !cfSw.classList.contains("pane-sw")) {
-          V.asset = !V.asset; cfSw.classList.toggle("on", V.asset);
-          if (V.editPid) { /* the ขาย/โชว์ status picker only lives behind an ON drawer toggle */
-            V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() || V.caption;
-            cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
-            cfClipSync(scr);
-          }
+        if (cfSw && !cfSw.disabled && !cfSw.classList.contains("pane-sw")) {
+          V.asset = !V.asset;
+          /* the ขาย/โชว์ status picker (edit) + cost row (any drawer save) only live behind an ON drawer toggle — re-render to reveal them */
+          V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() || V.caption;
+          cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+          cfClipSync(scr);
           return;
         }
         const cfChip = e.target.closest(".ig-chip");
@@ -20160,6 +20403,15 @@
         }
         const cfPaneBack = e.target.closest(".cf-pane-back, .pane-done");
         if (cfPaneBack) {
+          /* Done on the cost pane won't close while the purchase date is invalid — back still cancels */
+          if (cfPaneBack.classList.contains("pane-done") && V.meta.pane === "cost") {
+            const bi = cf.querySelector('.cf-f[data-f="bought"]');
+            if (bi && (bi.validity.badInput || bi.validity.rangeUnderflow || bi.validity.rangeOverflow)) {
+              bi.dispatchEvent(new Event("input", { bubbles: true })); /* paint the error via the live check */
+              bi.focus();
+              return;
+            }
+          }
           V.meta.pane = null;
           cf.querySelector(".cf-pane").classList.remove("open");
           cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
@@ -20225,7 +20477,7 @@
         return;
       }
       /* ===== FEED-024 — own-post "..." menu actions (memory only) ===== */
-      const pmOwn = e.target.closest(".pm-own-archive, .pm-own-nocomm, .pm-own-edit, .pm-own-pin, .pm-own-del");
+      const pmOwn = e.target.closest(".pm-own-archive, .pm-own-nocomm, .pm-own-edit, .pm-own-sold, .pm-own-soldview, .pm-own-pin, .pm-own-del");
       if (pmOwn) {
         const scr = pmOwn.closest(".screen");
         const post = findPost(scr.dataset.pmPid);
@@ -20246,6 +20498,13 @@
           scrToast(scr, post.noComments ? "Commenting turned off" : "Commenting turned on");
         } else if (pmOwn.matches(".pm-own-edit")) {
           openPostEdit(scr, post);
+        } else if (pmOwn.matches(".pm-own-sold")) {
+          if (!post.assetId || !PF_ASSETS.some(a => a.id === post.assetId)) post.assetId = assetFromPost(post).id;
+          if (scr.classList.contains("pv-open")) pmDropCovered(scr); /* sheet rides above the incoming sell page — snap it shut like the report flow */
+          openSellForm(scr, post.assetId);
+        } else if (pmOwn.matches(".pm-own-soldview")) {
+          if (scr.classList.contains("pv-open")) pmDropCovered(scr);
+          openSubOver(scr, "sold:" + soldFromPost(post).id);
         } else if (pmOwn.matches(".pm-own-pin")) {
           const tab = scr._pmPinTab || "all";
           if (post.pins && post.pins[tab]) applyPin(scr, post, tab, false);
@@ -20945,7 +21204,7 @@
         return;
       }
       const pvBack = e.target.closest(".pv-back");
-      if (pvBack) { pvBack.closest(".screen").classList.remove("pv-open", "rp-over"); return; }
+      if (pvBack) { const s = pvBack.closest(".screen"); s._rpBase = null; s.classList.remove("pv-open", "rp-over"); return; }
       const pvSrch = e.target.closest(".pv-srch");
       if (pvSrch) {
         const scr = pvSrch.closest(".screen");
@@ -21061,7 +21320,7 @@
           parts[2] = pfTab.dataset.pftab;
           st[st.length - 1] = parts.join(":");
           const sc0 = scr.querySelector(".pf-scroll"), y0 = sc0 ? sc0.scrollTop : 0; /* keep page position when switching tabs */
-          renderSub(scr);
+          scr._subSwap = true; renderSub(scr); scr._subSwap = false; /* tab switch swaps in place — the top name changed, so it needs the flag, not a stale leftover */
           const sc1 = scr.querySelector(".pf-scroll");
           if (sc1) {
             const need = y0 + sc1.clientHeight - [...sc1.children].reduce((h, k) => h + k.offsetHeight, 0); /* shorter tab would clamp scrollTop — pad so the position holds */
@@ -21420,6 +21679,51 @@
         const scr = pfoRetry.closest(".screen");
         scr._pfoSim = "";
         renderSub(scr);
+        return;
+      }
+      /* Mark as sold — entry from the asset detail button (the own-post "..." row uses the same page) */
+      const sellGo = e.target.closest("[data-sell]");
+      if (sellGo) { openSellForm(sellGo.closest(".screen"), sellGo.dataset.sell); return; }
+      const sellSave = e.target.closest(".sell-save");
+      if (sellSave) {
+        const scr = sellSave.closest(".screen");
+        const isTh = state.lang === "th";
+        const top = (scr._subStack || []).at(-1) || "";
+        const a = top.startsWith("sell:") && PF_ASSETS.find(x => x.id === top.slice(5));
+        if (!a) return;
+        const priceInp = scr.querySelector(".sell-price"), dateInp = scr.querySelector(".sell-date");
+        const peErr = (inp, msg) => {
+          const errEl = inp.closest(".pe-f").querySelector(".pe-err");
+          inp.classList.toggle("is-err", !!msg);
+          errEl.textContent = msg;
+          errEl.hidden = !msg;
+        };
+        peErr(priceInp, ""); peErr(dateInp, "");
+        const price = unNum(priceInp.value), date = dateInp.value;
+        let bad = null;
+        if (!price || +price <= 0) { peErr(priceInp, isTh ? "กรุณากรอกราคาขาย" : "Sale price required"); bad = priceInp; }
+        if (!date) { peErr(dateInp, isTh ? "กรุณาเลือกวันที่ขาย" : "Sale date required"); bad = bad || dateInp; }
+        else if (dateInp.validity.badInput || dateInp.validity.rangeOverflow) { peErr(dateInp, isTh ? "วันที่ขายไม่ถูกต้อง" : "Invalid sale date"); bad = bad || dateInp; }
+        if (bad) { bad.focus(); return; }
+        markAssetSold(scr, a, { price: +price, soldDate: date });
+        /* drop the stale sell/asset pages, land on the new Sold record — it slides in
+           over the form like a pushed page (a ghost clone keeps the form visible) */
+        const st = scr._subStack || [];
+        for (let k = st.length - 1; k >= 0; k--) if (st[k] === "sell:" + a.id || st[k] === "pfasset:" + a.id) st.splice(k, 1);
+        st.push("sold:" + a.id);
+        const sel = scr.querySelector(".page-sub");
+        if (sel && scr.classList.contains("sub-open")) {
+          const g = sel.cloneNode(true);
+          g.className = "pg-ghost";
+          sel.insertAdjacentElement("afterend", g);
+          if (scr.classList.contains("rp-over")) sel.style.zIndex = "36"; /* ghost(35) must sit over the pv(34); lift the incoming page so its slide stays visible */
+          setTimeout(() => { g.remove(); sel.style.zIndex = ""; }, 340);
+        }
+        scr._subSwap = false;
+        renderSub(scr);
+        scr.classList.add("sub-open");
+        if (sel) { sel.style.animation = "none"; void sel.offsetWidth; sel.style.animation = ""; }
+        scrToast(scr, isTh ? "บันทึกการขายแล้ว · ย้ายไปประวัติการขาย ✓" : "Sale recorded · moved to Sold history ✓", a.img);
         return;
       }
       /* PROFILE-015 — Edit profile: validate before saving. ชื่อผู้ใช้ = ฟิลด์เดียวกับตอนสมัคร
@@ -22695,7 +22999,7 @@
       ".like-btn", ".save-btn", ".share-btn", ".wl-btn", ".mf-btn", ".ask-pill", ".chat-fab",
       ".follow-btn", ".pf-foll", ".pf-flw", ".pf-msg", ".lk-follow", ".al-fbtn", ".pf-avov-act", ".pf-dots", ".pf-rmf", ".pf-unblock",
       ".comment-input", ".emoji-row", ".c-like", ".c-meta",
-      ".post-head .more", ".pm-btn", ".pm-go-report", ".pm-fav", ".pm-ni", ".pm-own-archive", ".pm-own-nocomm", ".pm-own-edit", ".pm-own-pin", ".pm-own-del",
+      ".post-head .more", ".pm-btn", ".pm-go-report", ".pm-fav", ".pm-ni", ".pm-own-archive", ".pm-own-nocomm", ".pm-own-edit", ".pm-own-sold", ".pm-own-soldview", ".pm-own-pin", ".pm-own-del",
       ".rp-opt", ".pm-reason", ".uc-report", ".ni-mute", ".ni-unfollow", ".sr-wa",
       ".pf-more", ".pf-menu", ".pf-edit", ".pf-share", ".pf-sh-report", ".pf-sh-block", ".blk-rep", ".blk-go", ".ch-rep-del-btn", ".ch-rep-only-btn",
       ".set-btn", ".sh-add", ".sh-fr", ".pf-sh-share", "[data-bdlike]", "[data-bdsave]", "[data-bdshare]", "[data-bdact='share']", "[data-bdact='save']", "[data-bdact='report']"
