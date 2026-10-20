@@ -1,0 +1,49 @@
+PASS feed + header = สร้างโพสต์ใหม่
+PASS my-assets toggle defaults OFF
+PASS post composer closed (discard)
+PASS picker header = เพิ่มสินทรัพย์ใหม่
+PASS step2 header = เพิ่มสินทรัพย์ใหม่
+PASS submit button = เพิ่มสินทรัพย์ใหม่
+PASS 3 visibility options
+PASS โชว์ selected by default
+PASS no My-Assets toggle in asset mode
+PASS feed option = โพสต์ลงฟีด
+PASS discard sheet is Thai (IG-style) — เริ่มใหม่ใช่ไหมหากคุณย้อนกลับตอนนี้ ฉบับร่างนี้จะไม่ได้รับกา
+PASS no save-draft option
+PASS ซ่อน selected
+PASS back on profile after save
+PASS hidden asset in ซ่อน tab
+PASS hidden asset not in feed
+PASS discard returns to profile
+PASS back on profile after feed post
+PASS asset posted to feed
+PASS feed post carries price
+PASS feed-posted asset in ขาย tab
+PASS edit composer opens (แก้ไขข้อมูล)
+PASS status selector = 3 options
+PASS ขาย selected initially
+PASS my-assets toggle ON (drawer-linked)
+PASS โชว์ post leaves the feed
+PASS edited post left ขาย tab
+PASS edited post in โชว์ tab
+PASS edited post still in ทั้งหมด tab
+PASS drawer asset in Portfolio list
+PASS edited asset status = Show in Portfolio
+PASS my-assets toggle off (default)
+PASS feed-only post lands in ทั้งหมด tab — 11 -> 12
+PASS feed-only post stays OUT of ขาย tab — still 3
+PASS untoggled post not in Portfolio — count 11
+PASS no status picker while drawer toggle off
+PASS status picker appears once toggle on
+PASS ขาย seeded for a feed post
+PASS status picker hides again on toggle off
+PASS edit cancelled -> back on feed
+PASS hidden post leaves the feed
+PASS hidden post lands in ซ่อน tab
+PASS hidden post status = Hide in Portfolio
+PASS my-assets toggle on
+PASS toggled post saved to Portfolio — 12 -> 13
+PASS asset name built from specs
+PASS no console errors
+
+0 failed / 0 console errors

@@ -2257,6 +2257,14 @@
       padding: 0 20px 16px;
     }
 
+    /* IG-style sheets put the message itself on top — no bold title (EN wording) */
+    .dlg-msg {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.45;
+      padding: 20px 20px 16px;
+    }
+
     .dlg-btn {
       width: 100%;
       font-family: var(--font-main);
@@ -13848,7 +13856,8 @@
     /* re-render every visible surface of a post after own-menu toggles */
     function refreshPostViews(scr, p) {
       scr.querySelectorAll(`.feed-scroll .post[data-pid="${p.id}"]`).forEach(art => {
-        if (!art.classList.contains("ni-card")) art.outerHTML = postCard(p, scr.dataset.variant);
+        if (p.pfkind === "hide" || p.pfkind === "show") art.remove(); /* PROFILE-017 — โชว์/ซ่อน statuses pull the post off the feed */
+        else if (!art.classList.contains("ni-card")) art.outerHTML = postCard(p, scr.dataset.variant);
       });
       scr.querySelectorAll(`.svf-post[data-pid="${p.id}"]`).forEach(w => { w.innerHTML = postCard(p, state.variant); });
       scr.querySelectorAll(`.pv-post[data-pid="${p.id}"]`).forEach(sec => {
@@ -13991,7 +14000,7 @@
     }
 
     function feedContentHTML(variant) {
-      const posts = POSTS.filter(p => !p.ni && !p.muted && !p.blocked && !p.archived)
+      const posts = POSTS.filter(p => !p.ni && !p.muted && !p.blocked && !p.archived && (p.pfkind || "post") !== "hide" && (p.pfkind || "post") !== "show") /* feed = ขาย + โพสต์ธรรมดา only; โชว์/ซ่อน are drawer statuses — off the feed */
         .filter(p => state.feedTab === "favorites" ? p.favorite : state.feedTab === "following" ? p.following : (state.snooze ? p.following : true));
       return posts.length ? posts.map(p => postCard(p, variant)).join("") : feedEmptyHTML(state.feedTab);
     }
@@ -15478,7 +15487,9 @@
       { src: CP_ROLL[14] }, { src: CP_ROLL[15] },
     ];
     function cpState(scr) {
-      if (!scr._cp) scr._cp = { sel: false, step: 1, order: [], playing: false, rem: null, caption: "", asset: false, meta: {} };
+      /* mode: "post" = feed "+" (CREATE-001) · "asset" = profile "+" (PROFILE-017 Add Asset)
+         asset stays OFF by default — the feed is for general posts; the drawer is opt-in */
+      if (!scr._cp) scr._cp = { sel: false, step: 1, order: [], playing: false, rem: null, caption: "", asset: false, meta: {}, mode: "post" };
       return scr._cp;
     }
     /* order entries are CP_MEDIA indices in create mode, or {src,dur} objects in edit mode */
@@ -15674,7 +15685,7 @@
     <div class="cf-head">
       ${V.editPid
           ? `<button class="icon-btn cf-add-cancel">${I.back(22)}</button><span class="t">${isTh ? "เพิ่มรูปภาพหรือคลิป" : "Add photos or clips"}</span><button class="cf-act cf-add-done">${isTh ? "เสร็จสิ้น" : "Done"}</button>`
-          : `<button class="icon-btn cf-x">${I.x(21)}</button><span class="t">${isTh ? "สร้างโพสต์ใหม่" : "New post"}</span><button class="cf-act${n ? "" : " off"} cf-next">${isTh ? "ถัดไป" : "Next"}</button>`}
+          : `<button class="icon-btn cf-x">${I.x(21)}</button><span class="t">${V.mode === "asset" ? (isTh ? "เพิ่มสินทรัพย์ใหม่" : "Add Asset") : (isTh ? "สร้างโพสต์ใหม่" : "New post")}</span><button class="cf-act${n ? "" : " off"} cf-next">${isTh ? "ถัดไป" : "Next"}</button>`}
     </div>
     <div class="cf-scroll">
       <div class="ig-hero" data-hero>${hero}</div>
@@ -15710,11 +15721,11 @@
     <div class="cf-head">
       ${V.editPid
           ? `<button class="cf-edit-x">${isTh ? "ยกเลิก" : "Cancel"}</button><span class="t">${isTh ? "แก้ไขข้อมูล" : "Edit info"}</span><button class="cf-act cf-done">${isTh ? "เสร็จสิ้น" : "Done"}</button>`
-          : `<button class="icon-btn cf-back2">${I.back(22)}</button><span class="t">${isTh ? "สร้างโพสต์ใหม่" : "New post"}</span>`}
+          : `<button class="icon-btn cf-back2">${I.back(22)}</button><span class="t">${V.mode === "asset" ? (isTh ? "เพิ่มสินทรัพย์ใหม่" : "Add Asset") : (isTh ? "สร้างโพสต์ใหม่" : "New post")}</span>`}
     </div>
     <div class="ig-cap-scroll">
       ${thumbs}
-      <div class="ig-cap-line"><div class="ta" contenteditable="true" data-ph="${isTh ? "เขียนคำอธิบาย..." : "Add a caption…"}">${esc(V.caption)}</div></div>
+      <div class="ig-cap-line"><div class="ta" contenteditable="true" data-ph="${V.mode === "asset" && !V.editPid ? (isTh ? "เขียนคำอธิบายสินทรัพย์…" : "Describe this asset…") : (isTh ? "เขียนคำอธิบาย..." : "Add a caption…")}">${esc(V.caption)}</div></div>
       <div class="ig-chip-row">
         ${CF_TAGS.map(t => `<button class="ig-chip" data-tag="${t}">${t}</button>`).join("")}
       </div>
@@ -15727,18 +15738,28 @@
         ${row(I.watch(19), isTh ? "รายละเอียดนาฬิกา" : "Watch details", "spec", mv.spec)}
         ${row(I.shield(19), isTh ? "สภาพสินค้า" : "Condition", "cond", mv.cond)}
       </div>
-      <div class="ig-toggle-row">
+      ${V.editPid && V.asset ? `
+      <div class="pane-sec">${isTh ? "สถานะในโปรไฟล์" : "Profile status"}</div>
+      <button class="cond-opt stt-opt${(V.pfkind || "sale") === "sale" ? " on" : ""}" data-v="sale"><span class="ic">${I.bag(19)}</span><span class="lab">${isTh ? "ขาย" : "Sale"}<span class="sub">${isTh ? "แสดงในแท็บขายบนโปรไฟล์ — ใส่ราคาหรือไม่ใส่ก็ได้" : "Listed in your Sale tab — price is optional"}</span></span><span class="rad"></span></button>
+      <button class="cond-opt stt-opt${V.pfkind === "show" ? " on" : ""}" data-v="show"><span class="ic">${I.eye(19)}</span><span class="lab">${isTh ? "โชว์" : "Show"}<span class="sub">${isTh ? "แสดงในคอลเลกชัน ไม่ได้ลงขาย — หลุดจากฟีด" : "In your collection, not for sale — leaves the feed"}</span></span><span class="rad"></span></button>
+      <button class="cond-opt stt-opt${V.pfkind === "hide" ? " on" : ""}" data-v="hide"><span class="ic">${I.eyeOff(19)}</span><span class="lab">${isTh ? "ซ่อน" : "Hide"}<span class="sub">${isTh ? "เก็บไว้ในลิ้นชักส่วนตัว — หลุดจากฟีด คุณเท่านั้นที่เห็น" : "Private drawer — leaves the feed, only you can see it"}</span></span><span class="rad"></span></button>` : ""}
+      ${V.mode === "asset" && !V.editPid ? `
+      <div class="pane-sec">${isTh ? "การแสดงผล" : "Visibility"}</div>
+      <button class="cond-opt vis-opt${(V.vis || "show") === "show" ? " on" : ""}" data-v="show"><span class="ic">${I.eye(19)}</span><span class="lab">${isTh ? "โชว์" : "Show"}<span class="sub">${isTh ? "แสดงในคอลเลกชันบนโปรไฟล์ให้ผู้ใช้อื่นเข้าชม" : "Shown in your profile collection for others to see"}</span></span><span class="rad"></span></button>
+      <button class="cond-opt vis-opt${V.vis === "hide" ? " on" : ""}" data-v="hide"><span class="ic">${I.eyeOff(19)}</span><span class="lab">${isTh ? "ซ่อน" : "Hide"}<span class="sub">${isTh ? "เก็บไว้ในลิ้นชักส่วนตัว — คุณเท่านั้นที่เห็น" : "Kept in your private drawer — only you can see it"}</span></span><span class="rad"></span></button>
+      <button class="cond-opt vis-opt${V.vis === "feed" ? " on" : ""}" data-v="feed"><span class="ic">${I.send(19)}</span><span class="lab">${isTh ? "โพสต์ลงฟีด" : "Post to feed"}<span class="sub">${isTh ? "บันทึกเข้าลิ้นชักแล้วประกาศลงฟีดทันที — สเปกตามไปอัตโนมัติ" : "Save to your drawer and post to feed — specs go along automatically"}</span></span><span class="rad"></span></button>`
+        : `<div class="ig-toggle-row">
         <span class="ic" style="color:var(--text);display:flex;width:24px;justify-content:center">${I.box(19)}</span>
         <div class="tx">
           <div class="tt">${isTh ? "บันทึกลงในสินทรัพย์ของฉันด้วย" : "Also save to My Assets"}</div>
           <div class="ts">${isTh ? "เก็บรายการนี้ไว้ในคอลเลกชันโปรไฟล์ของคุณ" : "Keep this item in your profile collection — full specs live in \"Add Asset\"."}</div>
         </div>
         <button class="sw${V.asset ? " on" : ""}"></button>
-      </div>
+      </div>`}
       <button class="ig-row" data-pane="more"><span class="ic">${I.dots(18)}</span>${isTh ? "ตัวเลือกเพิ่มเติม" : "More options"}<span class="val${m.audience === "followers" ? " set" : ""}">${m.audience === "followers" ? (isTh ? "เฉพาะผู้ติดตาม" : "Followers only") : ""}</span>${I.chevR(15)}</button>
     </div>
     <div class="cf-pane"></div>
-    ${V.editPid ? "" : `<button class="ig-share${n ? "" : " off"} cf-share">${isTh ? "แชร์" : "Share"}</button>`}
+    ${V.editPid ? "" : `<button class="ig-share${n ? "" : " off"} cf-share">${V.mode === "asset" ? (isTh ? "เพิ่มสินทรัพย์ใหม่" : "Add Asset") : (isTh ? "แชร์" : "Share")}</button>`}
     <div class="ig-zoom${clip ? " is-clip" : ""}" data-i="0">
       <img alt="">
       ${clip ? `<span class="pp-btn">${V.playing ? I.pause(30) : I.play(30)}</span><span class="dur">${I.play(10)}${clip.dur}</span><span class="prog"><i></i></span>` : ""}
@@ -15780,6 +15801,20 @@
       }
       return { price, chips, specGroups };
     }
+    /* PROFILE-017 — a composer draft → Portfolio asset row (the "ลิ้นชักสินทรัพย์" record
+       where collection value/history live); status follows the chosen visibility */
+    function cfToPortfolio(V, photos, status) {
+      const m = V.meta;
+      const ph = photos.length ? photos : [CP_ROLL[0]];
+      PF_ASSETS.unshift({
+        id: "pfa-x" + Date.now(), img: ph[0], photos: ph,
+        name: [m.brand, m.model].filter(Boolean).join(" ") || (V.caption || "Untitled asset").slice(0, 42),
+        ref: m.ref || "", meta: [m.year, m.cond].filter(Boolean).join(" · "), brand: m.brand || "",
+        status,
+        market: null, purchase: null, bought: "", asking: m.price ? +unNum(m.price) : null,
+      });
+      return PF_ASSETS[0];
+    }
     function insertNewPost(np) {
       const base = POSTS[0];
       const m = np.meta || {};
@@ -15792,6 +15827,7 @@
         following: true,
         favorite: false,
         type: price ? "sale" : "showcase",
+        pfkind: "post", /* PROFILE-017 — feed-only posts carry no asset status: they sit in ทั้งหมด only until saved to the drawer */
         photos: np.photos && np.photos.length ? np.photos : base.photos,
         clip: np.clip || null,
         clips: np.clips || (np.clip ? [np.clip] : null),
@@ -15834,6 +15870,9 @@
       V.order = post.photos.map((src, i) => ({ src, dur: (post.clips && post.clips[i]) || null }));
       V.caption = post.captionFull || post.caption || "";
       V.meta = metaFromPost(post);
+      V.mode = "post";
+      V.asset = !!post.assetId; /* PROFILE-017 — the toggle reflects drawer membership; pfkind seeds the ขาย/โชว์ pick */
+      V.pfkind = post.pfkind && post.pfkind !== "post" ? post.pfkind : "sale";
       /* detail page (z33) sits above the composer (z32) — close it while editing, reopen on Done/Cancel */
       V.editFromDetail = scr.classList.contains("detail-open");
       if (V.editFromDetail) scr.classList.remove("detail-open");
@@ -15893,6 +15932,18 @@
       post.audience = m.audience || "public";
       post.noComments = !!m.noComments;
       post.desc = m.desc || "";
+      /* PROFILE-017 — Edit info can move the post between ขาย/โชว์ and flip drawer membership;
+         the status pick only applies while the drawer toggle is on */
+      if (V.asset) post.pfkind = V.pfkind || post.pfkind;
+      if (V.asset && !post.assetId) post.assetId = cfToPortfolio(V, post.photos, post.pfkind === "sale" ? "sale" : "show").id;
+      else if (!V.asset && post.assetId) {
+        const i = PF_ASSETS.findIndex(a => a.id === post.assetId);
+        if (i > -1) PF_ASSETS.splice(i, 1);
+        post.assetId = null;
+        if (POSTS.includes(post)) post.pfkind = "post"; /* a real feed post returns to feed-only — drops out of ขาย/โชว์ tabs */
+      }
+      const pa = post.assetId && PF_ASSETS.find(a => a.id === post.assetId);
+      if (pa && PFO_STATUS[post.pfkind]) pa.status = post.pfkind; /* keeps ซ่อน as Hide when untouched */
     }
     /* ===== watch alerts — saved criteria that ping when a matching post lands (memory only) ===== */
     const WATCH_ALERTS = [];
@@ -16349,10 +16400,13 @@
     ];
     const PF_GFX_REG = {}; /* registry so Posts-surface interactions resolve grid-only posts (session only) */
     const PF_GFX_DEL = new Set(); /* tombstones — deleted grid posts must not regenerate on re-render */
-    const findPost = pid => POSTS.find(x => x.id === pid) || PF_GFX_REG[pid] || null;
+    /* PROFILE-017 — drawer-only assets saved from profile "+" (Show/Hide): session-only,
+       never enter POSTS so they can't leak into feed/search; "Post to feed" uses insertNewPost */
+    const PF_MINE = [];
+    const findPost = pid => POSTS.find(x => x.id === pid) || PF_GFX_REG[pid] || PF_MINE.find(x => x.id === pid) || null;
     function pfGridPosts(uname) {
       const g = (PROFILES[uname] || {}).grid || [];
-      return userPosts(uname).concat(g.map((src, i) => {
+      return PF_MINE.filter(a => a.seller === uname).concat(userPosts(uname), g.map((src, i) => {
         const id = `gfx-${uname}-${i}`;
         if (PF_GFX_DEL.has(id)) return null;
         if (PF_GFX_REG[id]) return PF_GFX_REG[id]; /* reuse so like/edit/archive mutations stick */
@@ -16596,7 +16650,7 @@
     <span class="pf-eic">${icon}</span>
     <div class="pf-et">${title}</div>
     ${desc ? `<div class="pf-ed">${desc}</div>` : ""}
-    ${own ? `<button class="pf-btn primary pf-cta" data-flow="create">${state.lang === "th" ? "แชร์โพสต์" : "Share a post"}</button>` : ""}
+    ${own ? `<button class="pf-btn primary pf-cta" data-flow="create" data-mode="asset">${state.lang === "th" ? "เพิ่มสินทรัพย์ใหม่" : "Add asset"}</button>` : ""}
   </div>`;
     }
     function profileHTML(scr, key) {
@@ -16616,13 +16670,13 @@
       const body = isB
         ? pfEmptyHTML(I.camPlain(30), isTh ? "ยังไม่มีโพสต์" : "No posts yet", "")
         : (list.length ? pfTilesHTML(list, tabName)
-          : pfEmptyHTML(I.camPlain(30), tabName === "all" ? (own ? (isTh ? "แชร์โพสต์แรกของคุณ" : "Share your first post") : (isTh ? "ยังไม่มีโพสต์" : "No posts yet")) : (() => { const tl = TABS.find(t => t[0] === tabName)[1]; return isTh ? `ยังไม่มีโพสต์ในแท็บ${tl}` : `No ${tl.toLowerCase()} posts`; })(),
-            own && tabName === "all" ? (isTh ? "เมื่อคุณแชร์รูปภาพและคลิป สิ่งเหล่านั้นจะแสดงที่นี่" : "When you share photos and clips, they'll show up here.") : "", own && tabName === "all"));
+          : pfEmptyHTML(I.camPlain(30), tabName === "all" ? (own ? (isTh ? "เพิ่มสินทรัพย์ชิ้นแรกของคุณ" : "Add your first asset") : (isTh ? "ยังไม่มีโพสต์" : "No posts yet")) : (() => { const tl = TABS.find(t => t[0] === tabName)[1]; return isTh ? `ยังไม่มีโพสต์ในแท็บ${tl}` : `No ${tl.toLowerCase()} posts`; })(),
+            own && tabName === "all" ? (isTh ? "สินทรัพย์ที่บันทึกและโพสต์ที่แชร์จะแสดงที่นี่" : "Assets you save and posts you share will show up here.") : "", own && tabName === "all"));
       return `
   <div class="pf-scroll">
     <div class="detail-head pf-head">
       ${own
-          ? `<button class="icon-btn" data-flow="create" title="${isTh ? "สร้างโพสต์" : "Create"}">${I.plus()}</button>
+          ? `<button class="icon-btn" data-flow="create" data-mode="asset" title="${isTh ? "เพิ่มสินทรัพย์ใหม่" : "Add asset"}">${I.plus()}</button>
            <span class="spacer"></span>
            <button class="pf-uname"><span>${esc(u.user)}</span></button>
            <span class="spacer"></span>
@@ -19859,7 +19913,12 @@
       /* GUEST-001 — logged-out browsing: identity-required actions open the member sheet instead */
       if (isGuest() && !e.target.closest(".ob, .ob-coach") && e.target.closest(GUEST_GATE_SEL)) { obGate(); return; }
       const flow = e.target.closest("[data-flow]");
-      if (flow) { openSub(flow.closest(".screen"), "create"); return; }
+      if (flow) {
+        const scr = flow.closest(".screen");
+        cpState(scr).mode = flow.dataset.mode === "asset" ? "asset" : "post"; /* PROFILE-017 — profile "+" opens Add-Asset mode */
+        openSub(scr, "create");
+        return;
+      }
       /* ===== CREATE-001 — in-app create-post task flow (picker → caption → feed) ===== */
       const cf = e.target.closest(".cf");
       if (cf) {
@@ -19868,12 +19927,17 @@
         const cfX = e.target.closest(".cf-x");
         if (cfX) {
           if (V.order.length || V.caption.trim()) {
+            const isTh = state.lang === "th";
+            /* IG-style discard sheet — TH: เริ่มใหม่ใช่ไหม / EN: IG discard wording */
             openDlg(scr, `
-          <div class="dlg-q">Discard post?</div>
-          <div class="dlg-desc">If you go back now, you'll lose your draft.</div>
-          <button class="dlg-btn danger dlg-discard-go">Discard post</button>
-          <button class="dlg-btn dlg-cancel">Keep editing</button>`);
+          ${isTh
+              ? `<div class="dlg-q">เริ่มใหม่ใช่ไหม</div><div class="dlg-desc">หากคุณย้อนกลับตอนนี้ ฉบับร่างนี้จะไม่ได้รับการบันทึก</div>`
+              : `<div class="dlg-msg">If you go back now, your edits will be discarded.</div>`}
+          <button class="dlg-btn danger dlg-discard-go">${isTh ? "เริ่มใหม่" : "Discard"}</button>
+          <button class="dlg-btn dlg-cancel">${isTh ? "แก้ไขต่อไป" : "Cancel"}</button>`);
           }
+          /* PROFILE-017 — asset composer was opened over the profile; closing returns there */
+          else if (V.mode === "asset" && !V.editPid) openSub(scr, "profile:" + CP_ME.name, true);
           else { scr._subStack = []; scr.classList.remove("sub-open"); }
           return;
         }
@@ -19889,11 +19953,13 @@
         /* FEED-024 edit mode — Cancel / Done / add-media tile / picker back → caption */
         const cfEditX = e.target.closest(".cf-edit-x");
         if (cfEditX) {
+          const isTh = state.lang === "th";
           openDlg(scr, `
-        <div class="dlg-q">Discard changes?</div>
-        <div class="dlg-desc">If you go back now, your edits will be lost.</div>
-        <button class="dlg-btn danger dlg-discard-go">Discard</button>
-        <button class="dlg-btn dlg-cancel">Keep editing</button>`);
+        ${isTh
+            ? `<div class="dlg-q">ทิ้งการแก้ไข?</div><div class="dlg-desc">ถ้ากลับตอนนี้ การแก้ไขจะหายไป</div>`
+            : `<div class="dlg-msg">If you go back now, your edits will be discarded.</div>`}
+        <button class="dlg-btn danger dlg-discard-go">${isTh ? "ทิ้งการแก้ไข" : "Discard"}</button>
+        <button class="dlg-btn dlg-cancel">${isTh ? "แก้ไขต่อ" : "Cancel"}</button>`);
           return;
         }
         const cfDone = e.target.closest(".cf-done");
@@ -19965,7 +20031,50 @@
           const clip = cfActiveClip(scr);
           const photos = clip ? [clip.src] : cfPhotos(scr);
           const clips = clip ? [clip.dur] : cfMedia(scr).map(m => m.dur || null);
+          /* PROFILE-017 — Add Asset: primary action saves to the profile asset drawer;
+             Show/Hide stay drawer-only (PF_MINE), "Post to feed" also pushes to the feed */
+          if (V.mode === "asset") {
+            const vis = V.vis || "show";
+            const m = V.meta;
+            if (vis === "feed") {
+              insertNewPost({ photos, caption: V.caption, meta: m, clip: clip ? clip.dur : null, clips });
+              POSTS[0].pfkind = "sale"; /* posting a drawer asset to the feed = listing it for sale on the profile */
+            } else {
+              const { price, chips, specGroups } = cfFieldsFromMeta(m); /* full specs ride along — feed post reuses them */
+              PF_MINE.unshift({
+                id: "mine" + Date.now(), seller: CP_ME.name, avatar: CP_ME.avatar, time: "Just now",
+                following: true, favorite: false,
+                type: price ? "sale" : "showcase", pfkind: vis,
+                photos: photos.length ? photos : [CP_ROLL[0]],
+                clip: clip ? clip.dur : null, clips,
+                likes: 0, comments: 0, views: 0, liked: false,
+                caption: V.caption, captionFull: V.caption,
+                price, chips, specGroups,
+                specs: specGroups.flatMap(g => g.rows),
+                location: m.loc || null, audience: "public", noComments: false,
+                desc: m.desc || "", likedBy: null,
+              });
+            }
+            const pa = cfToPortfolio(V, photos, vis === "feed" ? "sale" : vis); /* every asset-mode save is a drawer record */
+            (vis === "feed" ? POSTS : PF_MINE)[0].assetId = pa.id; /* link so Edit info can move it between ขาย/โชว์ later */
+            cfClipStop(scr);
+            scr._cp = null;
+            const isTh = state.lang === "th";
+            scr.querySelector(".feed-scroll .feed-list").innerHTML = feedContentHTML(scr.dataset.variant); /* feed may have gained the post */
+            openSub(scr, "profile:" + CP_ME.name, true); /* land back on the profile grid with the new asset on top */
+            scrToast(scr, vis === "feed"
+              ? (isTh ? "บันทึกลงลิ้นชักและโพสต์ลงฟีดแล้ว ✓" : "Saved to My Assets · posted to feed ✓")
+              : vis === "hide"
+                ? (isTh ? "บันทึกลงลิ้นชักแบบซ่อนแล้ว ✓" : "Saved to My Assets · private ✓")
+                : (isTh ? "บันทึกลงลิ้นชักและแสดงบนโปรไฟล์แล้ว ✓" : "Saved to My Assets · shown on profile ✓"), photos[0] || "");
+            const waHits = vis === "feed" ? (POSTS[0]._waHits || []) : [];
+            if (waHits.length)
+              setTimeout(() => scrToast(scr, `Watch alert matched: ${waHits[0]}${waHits.length > 1 ? ` +${waHits.length - 1} more` : ""}`), 2100);
+            return;
+          }
           insertNewPost({ photos, caption: V.caption, meta: V.meta, clip: clip ? clip.dur : null, clips });
+          /* "Also save to My Assets" (opt-in) → post lands in the Portfolio drawer as ขาย; OFF → feed only, ทั้งหมด tab only */
+          if (V.asset) { POSTS[0].pfkind = "sale"; POSTS[0].assetId = cfToPortfolio(V, photos, "sale").id; }
           cfClipStop(scr);
           scr._cp = null;
           scr._subStack = [];
@@ -19973,7 +20082,7 @@
           const fs = scr.querySelector(".feed-scroll");
           fs.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
           fs.scrollTop = 0;
-          scrToast(scr, clip ? "Clip shared to feed ✓" : "Posted · shared to feed ✓", photos[0] || "");
+          scrToast(scr, clip ? "Clip shared to feed ✓" : V.asset ? "Posted · shared to feed + My Assets ✓" : "Posted · shared to feed ✓", photos[0] || "");
           const waHits = POSTS[0]._waHits || [];
           if (waHits.length)
             setTimeout(() => scrToast(scr, `Watch alert matched: ${waHits[0]}${waHits.length > 1 ? ` +${waHits.length - 1} more` : ""}`), 2100);
@@ -20012,7 +20121,15 @@
           return;
         }
         const cfSw = e.target.closest(".sw");
-        if (cfSw && !cfSw.classList.contains("pane-sw")) { V.asset = !V.asset; cfSw.classList.toggle("on", V.asset); return; }
+        if (cfSw && !cfSw.classList.contains("pane-sw")) {
+          V.asset = !V.asset; cfSw.classList.toggle("on", V.asset);
+          if (V.editPid) { /* the ขาย/โชว์ status picker only lives behind an ON drawer toggle */
+            V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() || V.caption;
+            cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
+            cfClipSync(scr);
+          }
+          return;
+        }
         const cfChip = e.target.closest(".ig-chip");
         if (cfChip && !suppressPhotoClick) {
           const tag = cfChip.dataset.tag;
@@ -20055,6 +20172,14 @@
           const v = cfOpt.dataset.v;
           const close = cfOpt.classList.contains("loc-opt");
           if (cfOpt.classList.contains("loc-opt")) { V.meta.loc = v; V.meta.locQ = ""; }
+          else if (cfOpt.classList.contains("vis-opt")) { /* PROFILE-017 — Add-Asset visibility */
+            V.vis = v;
+            cf.querySelectorAll(".vis-opt").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+          }
+          else if (cfOpt.classList.contains("stt-opt")) { /* PROFILE-017 — Edit info: switch the post's profile status ขาย/โชว์ */
+            V.pfkind = v;
+            cf.querySelectorAll(".stt-opt").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+          }
           else if (cfOpt.classList.contains("aud-opt")) {
             V.meta.audience = v;
             cf.querySelectorAll(".aud-opt").forEach(b => b.classList.toggle("on", b.dataset.v === v));
@@ -20065,7 +20190,7 @@
           }
           else {
             V.meta.cond = v;
-            cf.querySelectorAll(".cond-opt:not(.box-opt)").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+            cf.querySelectorAll(".cond-opt:not(.box-opt):not(.stt-opt):not(.vis-opt)").forEach(b => b.classList.toggle("on", b.dataset.v === v));
           }
           if (close) {
             V.meta.pane = null;
@@ -20280,8 +20405,11 @@
         scr.classList.remove("dialog-open");
         if (scr._cp && scr._cp.editPid) { closePostEdit(scr, scr._cp); return; }
         const wasDetail = scr._cp && scr._cp.editFromDetail;
+        const wasAsset = scr._cp && scr._cp.mode === "asset";
         if (scr._cp) { clearInterval(scr._cp._t); }
         scr._cp = null;
+        /* PROFILE-017 — discard from the asset composer returns to the profile, not the feed */
+        if (wasAsset) { openSub(scr, "profile:" + CP_ME.name, true); return; }
         scr._subStack = [];
         scr.classList.remove("sub-open");
         if (wasDetail) scr.classList.add("detail-open");
