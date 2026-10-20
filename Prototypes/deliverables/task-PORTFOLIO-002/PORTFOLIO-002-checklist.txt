@@ -1,0 +1,51 @@
+PORTFOLIO-002 — Manual Review Checklist (ผลตรวจจริง)
+Task: เพิ่มฟิลด์ต้นทุนและ flow บันทึกการขาย (Mark as Sold)
+ไฟล์งาน: Prototypes/fo-flow/index.html
+ผู้ตรวจ: P'Matem (user) — ยืนยันผลผ่าน + ปรับรอบตามรีวิวหน้าจอหลายรอบ
+วันที่: 20/10/2026
+
+เคสที่ตรวจจริง (ทั้ง manual + automated verify 2 สคริปต์):
+
+1. Add Asset มีฟิลด์ ราคาซื้อ + วันที่ซื้อ — PASS
+   - กรอกต้นทุนแล้ว asset เข้า PF_ASSETS ถูก, asset detail แสดง Purchase price / Purchased / Unrealized G/L / Holding period
+   - ยอด "ต้นทุนรวม" ของ Portfolio ใช้ purchase จริง (ทดสอบแก้เป็น 200,000 → total = 1,999,500 ถูกต้อง)
+   - วันที่ซื้ออนาคตถูกบล็อก validation
+
+2. Mark as Sold จาก asset detail — PASS
+   - ฟอร์มมีเฉพาะ ราคาขาย + วันที่ขาย (ตัดฟิลด์อื่นออกตามรีวิว)
+   - ราคาขาย required, วันที่ขาย required + ห้ามอนาคต, prefill จาก asking price
+   - กดบันทึก → asset หลุด PF_ASSETS เข้า PF_SOLD, โพสต์เปลี่ยน pfkind=sold, ไปแท็บ "ขายแล้ว", หลุดฟีดและยอดรวม
+
+3. Mark as Sold จากเมนู ... ของโพสต์ตัวเอง — PASS
+   - ครอบทุกสถานะ ขาย/โชว์/ซ่อน (รวมโพสต์ที่ไม่เคยลงขาย — ขายนอกระบบก็บันทึกได้)
+   - โพสต์ธรรมดา (ไม่ผูก asset) ไม่มีเมนูนี้ — ต้องผูก asset ก่อน
+
+4. สถานะขายแล้วเป็น final — PASS
+   - เมนู ... ของโพสต์ขายแล้ว: ไม่มี "แก้ไข" ไม่มี "บันทึกการขาย" มี "ดูประวัติการขาย" แทน
+   - เปิดหน้า Sold detail: ราคาขายเด่น + กำไร/ขาดทุนจริง + วันที่ขาย + ราคาซื้อ + ระยะเวลาถือครอง
+   - ฟอร์ม/record แสดงเฉพาะฟิลด์ที่ระบบเก็บจริง (ตัด buyer/contact/pay/attach ที่ mock เกินออก)
+
+5. Fixture sold posts มี mock data ครบ — PASS
+   - gfx-king.mr.fox-5: Rolex GMT-Master II 126710BLRO, ขาย ฿685,000 ทุน ฿540,000 → +฿145,000 (+26.9%)
+   - gfx-king.mr.fox-8: Tudor Black Bay, ขาย ฿152,000 ทุน ฿139,000 → +฿13,000
+   - ฟิลด์ที่ไม่มีข้อมูลจริงแสดง N/A (ไม่ใช่ — หรือ blank)
+
+6. Edit post sync ข้อมูลลิงก์ — PASS
+   - แก้ caption/ราคา/spec/รูป แล้วอัปเดตทั้ง post + asset + viewer + profile tabs
+   - toggle "บันทึกลงในสินทรัพย์" OFF → โพสต์กลับฟีด หลุดทุกแท็บสถานะ asset ถูกลบ
+   - toggle ON บนโพสต์ธรรมดา → materialize asset เข้าแท็บสถานะถูกต้อง
+   - โพสต์ขายแล้ว toggle แสดง ON+ล็อก "รายการนี้อยู่ในประวัติการขายแล้ว"
+
+7. Navigation/animation — PASS (แก้ระหว่างรีวิว 3 จุด)
+   - พบ: ฟอร์มขาย + หน้า sold "snap" ไม่ slide (flag สลับหน้าค้างจาก nav) → เคลียร์ flag + เปลี่ยน save เป็น forward slide
+   - พบ: สลับแท็บโปรไฟล์หลังกลับจาก sold detail slide เข้าผิด → ตั้ง flag swap ชัดเจนใน tab handler
+   - พบ: back จากหน้าที่ push ทับ Posts viewer แล้ว profile ค้างทับ (rp-over ไม่ถูกถอด) → track base depth ถอดเมื่อ pop ถึง viewer
+
+8. Feed filtering — PASS (แก้ระหว่างรีวิว)
+   - พบ: feed re-render ดึงโพสต์ขายแล้วกลับมา (filter ไม่ครอบ sold) → เพิ่ม sold ใน exclusion
+   - พบ: โพสต์ detach จากลิ้นชักไม่กลับขึ้นฟีด (refresh อัปเดตเฉพาะ DOM เดิม) → rebuild feed เมื่อโพสต์กลับเข้าเงื่อนไข
+
+ผลรวม: PASS ทุกเคส — automated verify 2 สคริปต์ 0 failed / 0 console errors
+หลักฐานภาพ: Prototypes/screenshots/task-PORTFOLIO-002/ (m-*.png 11 ภาพ)
+Raw test output: PORTFOLIO-002-test-results.txt, PORTFOLIO-002-flows-test-results.txt
+Verify scripts: Prototypes/_verify_pfo002.mjs (46 checks), Prototypes/_verify_pfo002_flows.mjs (56 checks)
