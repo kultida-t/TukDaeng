@@ -1,19 +1,19 @@
-PROFILE-015 — เพิ่ม placeholder ตัวอย่าง + validation ให้ช่องกรอกหน้าแก้ไขโปรไฟล์ (fo-flow/index.html)
+PROFILE-015 — placeholder + validation หน้าแก้ไขโปรไฟล์ + unify ชื่อผู้ใช้ + social sign-up auto-fill (fo-flow/index.html)
 
-จุดที่แก้
-- peditHTML(): เพิ่ม placeholder (TH/EN) + maxlength ให้ .pe-name (30) / .pe-bio (150) / .pe-link + <span class="pe-err"> ใต้ทุกช่อง
-- CSS: .pe-in::placeholder (var(--muted)), .pe-in.is-err (border #ed4956), .pe-err (text แดง 12.5px)
-- peValidLink(): รับ http(s) URL / bare domain (www.mrfox.com) / @username — parity IG
-- handler .pe-save: validate ก่อนเซฟ — ชื่อ required ≤30, bio ≤150, link ต้องผ่าน peValidLink; error ใต้ช่อง + focus ช่องแรกที่ผิด + ไม่เซฟ
-- input listener: พิมพ์แล้วลบ is-err + ซ่อน error ของช่องนั้น
+รอบ 2 (feedback ผู้ใช้)
+- ชื่อที่แสดง → ชื่อผู้ใช้: ฟิลด์เดียวกับตอนสมัคร (แก้ username จริง rule 3–20 a–z 0–9 _ ., lowercase, unique เช็คซ้ำกับ PROFILES + POSTS sellers; error message ตัวเดียวกับหน้าสมัคร)
+- rename username: ย้าย PROFILES key, POSTS seller, COMMENTS (map ไม่ใช่ p.comments — เจอบั๊กจับได้ตอน verify), followedBy, PF_* sets, NEW_USER_KEY, CP_ME.name, fo_newuser/fo_account (session new), _subStack profile:<old> → profile:<new> (กัน back ไปโผล่ viewer ชื่อเก่า)
+- disp = username เสมอ (ฟิลด์เดียวกัน)
+- error style เทียบ .ob-field.err/.ob-msg: border + text #e5484d, font 12px — เจอจุดที่เคยผิด: .pe-f span (muted) ทับ .pe-err เพราะ specificity ต่ำกว่า → แก้เป็น .pe-f .pe-err
+- social sign-up (Google/Apple ตอนสมัครใหม่): mock OB_SOCIAL {email,name,photo} → prefill avatar (OB.f.photo) + username suggest จาก provider name (obSocialUser) — persist ลง fo_newuser/fo_account.photo → CP_ME.avatar + PROFILES[uname].avatar; returning social restore photo ด้วย
 
-Automated: _verify_pedit.mjs — 13 PASS / 0 FAIL / 0 console errors (440x956, session=member, lang=th)
-  - placeholder ครบ 3 ช่อง (link มีทั้ง https:// และ @)
-  - ชื่อว่าง/เว้นวรรคล้วน → error + save blocked
-  - พิมพ์ใหม่ error หาย
-  - link "not a url" → error + save blocked
-  - @watchclub, https://watchclub.example.com, www.mrfox.com → save ผ่าน + กลับโปรไฟล์ + link แสดงบนหน้าโปรไฟล์
+รอบ 1 (เดิม)
+- placeholder (TH/EN) ทั้ง 3 ช่อง: ชื่อผู้ใช้/ประวัติโดยย่อ/ลิงก์
+- bio maxlength 150, link ต้องเป็น http(s) URL / bare domain (www.mrfox.com) / @username — parity IG (peValidLink)
+- error ใต้ช่อง + focus ช่องแรกที่ผิด + เซฟไม่ได้จนผ่าน; พิมพ์แล้ว error หาย
 
-ภาพ: screenshots/task-PROFILE-015/ (a-placeholders, b-name-error, c-link-error)
+Automated: _verify_pedit.mjs — 18 PASS / 0 FAIL / 0 console errors (440x956, lang=th)
+  member: label ชื่อผู้ใช้, ค่า king.mr.fox, placeholder ครบ, username ผิดรูปแบบ/ซ้ำ → error แดง #e5484d + save blocked, พิมพ์แล้วหาย, link ผิด → error, rename king.watch → โปรไฟล์ uname+disp เปลี่ยนตาม
+  social: onboarding → member sheet → Google → avatar = u-1088.png + field prefilled matem_watch → เข้าแอปโปรไฟล์แสดง matem_watch + รูป Google
 
-หมายเหตุ: commit เดียวกันนี้เก็บงาน default avatar (PROFILE-014/ONBOARD-003) ที่ verify แล้วแต่ยังไม่ได้ commit — u-1075→default-avatar.jpg 6 จุด + .ob-avatar img + assets default-avatar.{jpg,svg}
+ภาพ: screenshots/task-PROFILE-015/ (b-name-error, d-renamed-profile, e-social-prefill)

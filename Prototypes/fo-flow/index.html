@@ -8985,12 +8985,16 @@
     }
 
     .pe-in.is-err {
-      border-color: #ed4956;
+      border-color: #e5484d;
     }
 
-    .pe-err {
-      font-size: 12.5px;
-      color: #ed4956;
+    /* PROFILE-015 — same error style as the rest of the app (.ob-field.err / .ob-msg).
+       Selector must outrank `.pe-f span` which paints spans muted. */
+    .pe-f .pe-err {
+      font-size: 12px;
+      font-weight: 400;
+      color: #e5484d;
+      margin-top: 1px;
     }
 
     .pe-savewrap {
@@ -16707,7 +16711,7 @@
     <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${isTh ? "แก้ไขโปรไฟล์" : "Edit profile"}</span><span class="spacer"></span></div>
     <div class="sub-scroll">
       <div class="pe-av"><img src="${u.avatar}" alt=""><button class="pe-pic">${isTh ? "เปลี่ยนรูปโปรไฟล์" : "Edit picture"}</button></div>
-      <label class="pe-f"><span>${isTh ? "ชื่อที่แสดง" : "Name"}</span><input class="pe-in pe-name" value="${esc(u.disp)}" maxlength="30" placeholder="${isTh ? "เช่น Watch Collector" : "e.g. Watch Collector"}"><span class="pe-err" hidden></span></label>
+      <label class="pe-f"><span>${isTh ? "ชื่อผู้ใช้" : "Username"}</span><input class="pe-in pe-name" value="${esc(u.user)}" maxlength="20" placeholder="${isTh ? "เช่น watch.collector" : "e.g. watch.collector"}"><span class="pe-err" hidden></span></label>
       <label class="pe-f"><span>${isTh ? "ประวัติโดยย่อ" : "Bio"}</span><textarea class="pe-in pe-bio" rows="3" maxlength="150" placeholder="${isTh ? "เขียนแนะนำตัวสั้น ๆ เช่น สายสะสมนาฬิกา" : "Write a short bio, e.g. watch collector"}">${esc(u.bio)}</textarea><span class="pe-err" hidden></span></label>
       <label class="pe-f"><span>${isTh ? "ลิงก์" : "Link"}</span><input class="pe-in pe-link" value="${esc(u.link)}" placeholder="${isTh ? "เช่น https://your-site.com หรือ @username" : "e.g. https://your-site.com or @username"}"><span class="pe-err" hidden></span></label>
       <div class="pe-savewrap"><button class="pf-btn primary pe-save">${isTh ? "บันทึก" : "Save"}</button></div>
@@ -21287,13 +21291,14 @@
         renderSub(scr);
         return;
       }
-      /* PROFILE-015 — Edit profile: validate before saving (name required ≤30, bio ≤150, link = URL or @handle) */
+      /* PROFILE-015 — Edit profile: validate before saving. ชื่อผู้ใช้ = ฟิลด์เดียวกับตอนสมัคร
+         (username rules 3–20 a–z 0–9 _ .), bio ≤150, link = URL/domain/@handle */
       const peSave = e.target.closest(".pe-save");
       if (peSave) {
         const scr = peSave.closest(".screen");
         const isTh = state.lang === "th";
         const nameInp = scr.querySelector(".pe-name"), bioInp = scr.querySelector(".pe-bio"), linkInp = scr.querySelector(".pe-link");
-        const name = nameInp.value.trim(), bio = bioInp.value.trim(), link = linkInp.value.trim();
+        const uname = nameInp.value.trim().toLowerCase(), bio = bioInp.value.trim(), link = linkInp.value.trim();
         const peErr = (inp, msg) => {
           const errEl = inp.closest(".pe-f").querySelector(".pe-err");
           inp.classList.toggle("is-err", !!msg);
@@ -21302,13 +21307,31 @@
         };
         peErr(nameInp, ""); peErr(bioInp, ""); peErr(linkInp, "");
         let bad = null;
-        if (!name) { peErr(nameInp, isTh ? "กรุณากรอกชื่อที่แสดง" : "Please enter a display name."); bad = nameInp; }
-        else if (name.length > 30) { peErr(nameInp, isTh ? "ชื่อที่แสดงยาวเกิน 30 ตัวอักษร" : "Display name must be 30 characters or fewer."); bad = nameInp; }
+        if (!/^[a-z0-9_.]{3,20}$/.test(uname)) { peErr(nameInp, isTh ? "ต้องตั้งชื่อผู้ใช้ 3–20 ตัวอักษร: a–z, 0–9, _ หรือ ." : "Username required — 3–20 characters: a–z, 0–9, _ or ."); bad = nameInp; }
+        else if (uname !== CP_ME.name && (PROFILES[uname] || POSTS.some(p => p.seller === uname))) { peErr(nameInp, isTh ? "ชื่อผู้ใช้นี้ถูกใช้งานแล้ว" : "This username is already taken."); bad = nameInp; }
         if (bio.length > 150) { peErr(bioInp, isTh ? "ประวัติโดยย่อยาวเกิน 150 ตัวอักษร" : "Bio must be 150 characters or fewer."); bad = bad || bioInp; }
         if (link && !peValidLink(link)) { peErr(linkInp, isTh ? "ลิงก์ไม่ถูกต้อง — ใส่ URL (https://...) หรือ @username" : "Invalid link — enter a URL (https://...) or @username."); bad = bad || linkInp; }
         if (bad) { bad.focus(); return; }
-        const o = PROFILES[CP_ME.name] = PROFILES[CP_ME.name] || {};
-        o.disp = name;
+        const oldName = CP_ME.name;
+        if (uname !== oldName) { /* rename the real username — move every reference that keys on it */
+          PROFILES[uname] = PROFILES[oldName] || {};
+          delete PROFILES[oldName];
+          POSTS.forEach(p => { if (p.seller === oldName) p.seller = uname; });
+          Object.values(COMMENTS).forEach(cs => cs.forEach(c => { if (c.name === oldName) c.name = uname; (c.replies || []).forEach(r => { if (r.name === oldName) r.name = uname; }); }));
+          for (const pr of Object.values(PROFILES)) if (pr.followedBy) pr.followedBy = pr.followedBy.map(n => n === oldName ? uname : n);
+          for (const s of [PF_BLOCKED, PF_REMOVED_FOL, PF_EXTRA_FOL, PF_EXTRA_FAV, PF_EXTRA_MUT]) if (s.has(oldName)) { s.delete(oldName); s.add(uname); }
+          if (NEW_USER_KEY === oldName) NEW_USER_KEY = uname;
+          CP_ME.name = uname;
+          (scr._subStack || []).forEach((k, i, a) => { if (k === "profile:" + oldName) a[i] = "profile:" + uname; });
+          if (state.session === "new") {
+            const nu = JSON.parse(localStorage.getItem("fo_newuser") || "{}");
+            nu.user = uname;
+            localStorage.setItem("fo_newuser", JSON.stringify(nu));
+            obSaveAccount({ user: uname });
+          }
+        }
+        const o = PROFILES[uname] = PROFILES[uname] || {};
+        o.disp = uname; /* ชื่อที่แสดง = ชื่อผู้ใช้ เดียวกัน */
         o.bio = bio;
         o.link = link;
         subBack(scr);
@@ -22199,6 +22222,12 @@
     const obScore = p => (p.length >= 8 ? 1 : 0) + (/[a-z]/.test(p) && /[A-Z]/.test(p) ? 1 : 0) + (/\d/.test(p) ? 1 : 0) + (/[^A-Za-z0-9]/.test(p) || p.length >= 12 ? 1 : 0);
     const obEmailOk = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
     const OB_DEMO = { email: "demo@tukdaeng.com", pw: "Tukdaeng123", name: "Demo" };
+    /* PROFILE-015 — mock social identity: a real provider returns the account's display
+       name + email + photo, so sign-up prefills them instead of starting blank */
+    const OB_SOCIAL = {
+      google: { email: "matem.watch@gmail.com", name: "Matem Watch", photo: "./assets/user-avatars/u-1088.png" },
+      apple: { email: "matem@privaterelay.appleid.com", name: "Matem", photo: "./assets/user-avatars/u-1104.png" }
+    };
     /* AUTH-003 — an account registered in this browser lives in fo_account (credentials + profile)
        so it survives logout/page reload; fo_newuser stays the lightweight profile of the active
        "new" session while fo_account is the credential store */
@@ -22214,10 +22243,15 @@
       const base = (OB.f.user || OB.f.email || (OB.account && OB.account.email) || "").split("@")[0].toLowerCase().replace(/[^a-z0-9_.]/g, "").replace(/^\.+|\.+$/g, "").slice(0, 18);
       return /^[a-z0-9_.]{3,20}$/.test(base) ? base : "member" + Math.floor(1000 + Math.random() * 9000);
     }
+    /* PROFILE-015 — suggest the username from the provider's display name first, then email */
+    function obSocialUser(sp) {
+      const base = (sp.name || "").toLowerCase().trim().replace(/\s+/g, "_").replace(/[^a-z0-9_.]/g, "").replace(/^\.+|\.+$/g, "").slice(0, 18);
+      return /^[a-z0-9_.]{3,20}$/.test(base) ? base : obSuggestUser();
+    }
     function obEnterAfterProfile() {
-      obSaveAccount({ email: (OB.account && OB.account.email) || OB.f.email || "", pw: OB.account ? OB.account.pw : "", user: OB.f.user, name: OB.f.name.trim(), provider: OB.provider || "email" }); /* AUTH-003 — profile step completes the persisted account */
+      obSaveAccount({ email: (OB.account && OB.account.email) || OB.f.email || "", pw: OB.account ? OB.account.pw : "", user: OB.f.user, name: OB.f.name.trim(), provider: OB.provider || "email", photo: OB.f.photo || "" }); /* AUTH-003 — profile step completes the persisted account */
       if (OB.provider && OB.provider !== "email") { /* social sign-up has no password — enter the app right after picking a username */
-        localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user, name: OB.f.name.trim() }));
+        localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user, name: OB.f.name.trim(), photo: OB.f.photo || "" }));
         setSession("new"); obFinish("", !OB.gate); /* AUTH-003 — enter silently like a real app, no welcome toast */
       } else obGo("created");
     }
@@ -22318,7 +22352,7 @@
           <div class="ob-banner info" style="margin-top:18px">${obT("Demo code: 123456", "รหัสสำหรับทดสอบ: 123456")}</div></div>`;
         case "profile": return `<div class="ob-page"><div class="ob-top"><span></span><button class="ob-ghost muted" data-ob="skipprof">${obT("Skip for now", "ข้ามไปก่อน")}</button></div>
           <h1>${obT("Set up your profile", "ตั้งค่าโปรไฟล์")}</h1><p class="ob-sub">${obT("Pick your username — a photo can be added later.", "ตั้งชื่อผู้ใช้ของคุณ — รูปใส่ภายหลังได้")}</p>
-          <div class="ob-avatar"><img src="./assets/user-avatars/default-avatar.jpg" alt=""></div><button class="ob-link" style="align-self:center;margin:-8px 0 16px" data-ob="photo">${obT("Add photo", "เพิ่มรูปภาพ")}</button>
+          <div class="ob-avatar"><img src="${obEsc(OB.f.photo || "./assets/user-avatars/default-avatar.jpg")}" alt=""></div><button class="ob-link" style="align-self:center;margin:-8px 0 16px" data-ob="photo">${obT("Add photo", "เพิ่มรูปภาพ")}</button>
           ${obField("user", obT("Username", "ชื่อผู้ใช้"), "text", "username")}<div class="ob-grow"></div><button class="ob-btn pri" data-ob="profile">${obT("Continue", "ต่อไป")}</button></div>`;
         case "created": return `<div class="ob-page ob-center"><div class="ob-grow"></div><div class="ob-ico ok">${I.check(40)}</div><h1>${obT("Account created", "สร้างบัญชีสำเร็จ")}</h1>
           <p class="ob-sub">${obT("Welcome, ", "ยินดีต้อนรับ ")}${obEsc(f.name || f.user || "")}. ${obT("Sign in to start exploring.", "เข้าสู่ระบบเพื่อเริ่มใช้งาน")}</p><div class="ob-grow"></div><button class="ob-btn pri" data-ob="go:signin">${obT("Sign in", "เข้าสู่ระบบ")}</button></div>`;
@@ -22496,8 +22530,9 @@
           const nu = JSON.parse(localStorage.getItem("fo_newuser") || "null") || obLoadAccount() || {};
           const uname = (nu.user || OB.f.user || (OB.f.email || "").split("@")[0] || "new.member").toLowerCase().replace(/[^a-z0-9_.]/g, "") || "new.member";
           NEW_USER_KEY = uname;
-          CP_ME.name = uname; CP_ME.avatar = "./assets/user-avatars/default-avatar.jpg";
-          PROFILES[uname] = { disp: nu.name || OB.f.name || uname, bio: "", followers: "0", following: "0", posts: "0", grid: [], followedBy: [] };
+          /* PROFILE-015 — social sign-up photo becomes the account avatar; disp = ชื่อผู้ใช้ (ฟิลด์เดียวกัน) */
+          CP_ME.name = uname; CP_ME.avatar = nu.photo || "./assets/user-avatars/default-avatar.jpg";
+          PROFILES[uname] = { disp: uname, avatar: nu.photo || "", bio: "", followers: "0", following: "0", posts: "0", grid: [], followedBy: [] };
         } else {
           NEW_USER_KEY = null;
           CP_ME.name = "__guest__"; CP_ME.avatar = "./assets/user-avatars/default-avatar.jpg";
@@ -22519,7 +22554,7 @@
       localStorage.setItem("fo_session", s);
       if (s === "new") {
         const saved = obLoadAccount() || {}; /* AUTH-003 — the persisted account fills in when the form state is gone (e.g. after reload) */
-        localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user || saved.user || "", name: OB.f.name || saved.name || "" }));
+        localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user || saved.user || "", name: OB.f.name || saved.name || "", photo: OB.f.photo || saved.photo || "" }));
       } else localStorage.removeItem("fo_newuser");
       applySessionData();
     }
@@ -22566,12 +22601,16 @@
             if (returning) {
               const saved = obLoadAccount(); /* AUTH-003 — a persisted account from the same provider returns to its own new-member session */
               if (saved && saved.provider === arg) {
-                OB.f.email = saved.email || ""; OB.f.pw = ""; OB.f.user = saved.user || ""; OB.f.name = saved.name || "";
+                OB.f.email = saved.email || ""; OB.f.pw = ""; OB.f.user = saved.user || ""; OB.f.name = saved.name || ""; OB.f.photo = saved.photo || "";
                 setSession("new");
                 obFinish("", !OB.gate); /* AUTH-003 — sign back in silently like a real app */
               } else { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; obSignin(); }
             }
-            else { OB.provider = arg; OB.account = { email: "", pw: "" }; OB.f.user = ""; OB.f.name = ""; obGo("profile"); } break; }
+            else { /* PROFILE-015 — first-time social sign-up: pull the provider's name + photo and suggest a username */
+              const sp = OB_SOCIAL[arg] || {};
+              OB.provider = arg; OB.account = { email: sp.email || "", pw: "" };
+              OB.f.email = sp.email || ""; OB.f.name = sp.name || ""; OB.f.photo = sp.photo || ""; OB.f.user = obSocialUser(sp);
+              obGo("profile"); } break; }
           case "guest": { const wasGate = OB.gate; if (OB.hide && !wasGate) localStorage.setItem("fo_member_hide", "1"); setSession("guest"); obFinish("", !wasGate); break; } /* GUEST-001 — real apps just enter silently, no "browsing as guest" toast */
           case "signin": obSignin(); break;
           case "forgot": if (!obEmailOk(OB.f.email.trim())) { OB.errs = { email: obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง") }; obDraw(); } else { OB.sent = true; obDraw(); } break;
