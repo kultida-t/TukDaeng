@@ -8980,6 +8980,19 @@
       border-color: var(--muted);
     }
 
+    .pe-in::placeholder {
+      color: var(--muted);
+    }
+
+    .pe-in.is-err {
+      border-color: #ed4956;
+    }
+
+    .pe-err {
+      font-size: 12.5px;
+      color: #ed4956;
+    }
+
     .pe-savewrap {
       padding: 16px;
     }
@@ -12368,7 +12381,8 @@
     .ob-otp input:focus { border-color: var(--red); }
     .ob-otp.bad input { border-color: #e5484d; animation: obShake .3s; }
     @keyframes obShake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-    .ob-avatar { width: 96px; height: 96px; border-radius: 50%; background: var(--surface-2); border: 2px dashed var(--line); margin: 6px auto 20px; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 700; color: var(--muted); }
+    .ob-avatar { width: 96px; height: 96px; border-radius: 50%; background: var(--surface-2); margin: 6px auto 20px; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 700; color: var(--muted); overflow: hidden; }
+    .ob-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .ob-ico { width: 84px; height: 84px; border-radius: 50%; margin: 30px auto 22px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--red) 14%, transparent); color: var(--red); }
     .ob-ico.ok { background: rgba(47, 158, 68, .15); color: #2f9e44; }
     .ob-center { text-align: center; }
@@ -13494,7 +13508,7 @@
     <div class="sheet-list">${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">${isTh ? "ยังไม่มีความคิดเห็น" : "No comments yet"}</div>`}</div>
     <div class="emoji-row"><span>❤️</span><span>🙌</span><span>🔥</span><span>👏</span><span>🥲</span><span>😍</span><span>😮</span><span>😂</span></div>
     <div class="comment-input">
-      <img src="./assets/user-avatars/u-1075.png" alt="">
+      <img src="./assets/user-avatars/default-avatar.jpg" alt="">
       <span class="field">${isTh ? "เพิ่มความคิดเห็น..." : "Add a comment..."}</span>
       <span class="ci-ic">${I.img(20)}${I.gif(20)}</span>
     </div>`;
@@ -14150,7 +14164,7 @@
       return salePosts().filter(p => `${specOf(p, "Strap/Bracelet Material")} ${specOf(p, "Strap Material")}`.includes(v)).length;
     }
     function delivCount(v) { return salePosts().filter(p => delivMatch(p, v)).length; }
-    function sellerAvatar(name) { const p = POSTS.find(x => x.seller === name); return p ? p.avatar : "./assets/user-avatars/u-1075.png"; }
+    function sellerAvatar(name) { const p = POSTS.find(x => x.seller === name); return p ? p.avatar : "./assets/user-avatars/default-avatar.jpg"; }
     function sellerSub(name) {
       const posts = POSTS.filter(x => x.seller === name);
       const n = posts.filter(p => p.price).length;
@@ -14337,7 +14351,7 @@
       ${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No comments yet</div>`}
     </div>
     <div class="comment-input">
-      <img src="./assets/user-avatars/u-1075.png" alt="">
+      <img src="./assets/user-avatars/default-avatar.jpg" alt="">
       <span class="field">Add a comment for ${p.seller}</span>
       <span class="ci-ic">${I.img(20)}${I.gif(20)}</span>
     </div>`;
@@ -16158,7 +16172,7 @@
           for (const r of c.replies || []) if (r.name === name) return r.avatar;
         }
       }
-      return "./assets/user-avatars/u-1075.png";
+      return "./assets/user-avatars/default-avatar.jpg";
     }
     function profileOf(name) {
       const o = PROFILES[name] || {};
@@ -16693,11 +16707,17 @@
     <div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title">${isTh ? "แก้ไขโปรไฟล์" : "Edit profile"}</span><span class="spacer"></span></div>
     <div class="sub-scroll">
       <div class="pe-av"><img src="${u.avatar}" alt=""><button class="pe-pic">${isTh ? "เปลี่ยนรูปโปรไฟล์" : "Edit picture"}</button></div>
-      <label class="pe-f"><span>${isTh ? "ชื่อที่แสดง" : "Name"}</span><input class="pe-in pe-name" value="${esc(u.disp)}"></label>
-      <label class="pe-f"><span>${isTh ? "ประวัติโดยย่อ" : "Bio"}</span><textarea class="pe-in pe-bio" rows="3">${esc(u.bio)}</textarea></label>
-      <label class="pe-f"><span>${isTh ? "ลิงก์" : "Link"}</span><input class="pe-in pe-link" value="${esc(u.link)}"></label>
+      <label class="pe-f"><span>${isTh ? "ชื่อที่แสดง" : "Name"}</span><input class="pe-in pe-name" value="${esc(u.disp)}" maxlength="30" placeholder="${isTh ? "เช่น Watch Collector" : "e.g. Watch Collector"}"><span class="pe-err" hidden></span></label>
+      <label class="pe-f"><span>${isTh ? "ประวัติโดยย่อ" : "Bio"}</span><textarea class="pe-in pe-bio" rows="3" maxlength="150" placeholder="${isTh ? "เขียนแนะนำตัวสั้น ๆ เช่น สายสะสมนาฬิกา" : "Write a short bio, e.g. watch collector"}">${esc(u.bio)}</textarea><span class="pe-err" hidden></span></label>
+      <label class="pe-f"><span>${isTh ? "ลิงก์" : "Link"}</span><input class="pe-in pe-link" value="${esc(u.link)}" placeholder="${isTh ? "เช่น https://your-site.com หรือ @username" : "e.g. https://your-site.com or @username"}"><span class="pe-err" hidden></span></label>
       <div class="pe-savewrap"><button class="pf-btn primary pe-save">${isTh ? "บันทึก" : "Save"}</button></div>
     </div>`;
+    }
+    /* PROFILE-015 — link must be an http(s) URL, a bare domain (IG accepts both), or an @username handle */
+    function peValidLink(v) {
+      if (/^@[A-Za-z0-9_.]{1,30}$/.test(v)) return true;
+      if (/^(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(v)) return true;
+      try { const u = new URL(v); return u.protocol === "http:" || u.protocol === "https:"; } catch { return false; }
     }
 
     /* PORTFOLIO-001 — portfolio pages: dashboard, asset detail, sold history + detail */
@@ -19656,6 +19676,12 @@
       }
     });
     stageEl.addEventListener("input", e => {
+      if (e.target.matches(".pe-in")) { /* PROFILE-015 — clear field error as the user types */
+        e.target.classList.remove("is-err");
+        const errEl = e.target.closest(".pe-f")?.querySelector(".pe-err");
+        if (errEl) { errEl.textContent = ""; errEl.hidden = true; }
+        return;
+      }
       if (e.target.matches(".chg-pwd-input")) {
         e.target.classList.remove("is-err");
         const wrap = e.target.closest(".chg-pwd-wrap");
@@ -21261,13 +21287,30 @@
         renderSub(scr);
         return;
       }
+      /* PROFILE-015 — Edit profile: validate before saving (name required ≤30, bio ≤150, link = URL or @handle) */
       const peSave = e.target.closest(".pe-save");
       if (peSave) {
         const scr = peSave.closest(".screen");
+        const isTh = state.lang === "th";
+        const nameInp = scr.querySelector(".pe-name"), bioInp = scr.querySelector(".pe-bio"), linkInp = scr.querySelector(".pe-link");
+        const name = nameInp.value.trim(), bio = bioInp.value.trim(), link = linkInp.value.trim();
+        const peErr = (inp, msg) => {
+          const errEl = inp.closest(".pe-f").querySelector(".pe-err");
+          inp.classList.toggle("is-err", !!msg);
+          errEl.textContent = msg;
+          errEl.hidden = !msg;
+        };
+        peErr(nameInp, ""); peErr(bioInp, ""); peErr(linkInp, "");
+        let bad = null;
+        if (!name) { peErr(nameInp, isTh ? "กรุณากรอกชื่อที่แสดง" : "Please enter a display name."); bad = nameInp; }
+        else if (name.length > 30) { peErr(nameInp, isTh ? "ชื่อที่แสดงยาวเกิน 30 ตัวอักษร" : "Display name must be 30 characters or fewer."); bad = nameInp; }
+        if (bio.length > 150) { peErr(bioInp, isTh ? "ประวัติโดยย่อยาวเกิน 150 ตัวอักษร" : "Bio must be 150 characters or fewer."); bad = bad || bioInp; }
+        if (link && !peValidLink(link)) { peErr(linkInp, isTh ? "ลิงก์ไม่ถูกต้อง — ใส่ URL (https://...) หรือ @username" : "Invalid link — enter a URL (https://...) or @username."); bad = bad || linkInp; }
+        if (bad) { bad.focus(); return; }
         const o = PROFILES[CP_ME.name] = PROFILES[CP_ME.name] || {};
-        o.disp = scr.querySelector(".pe-name").value.trim() || CP_ME.name;
-        o.bio = scr.querySelector(".pe-bio").value.trim();
-        o.link = scr.querySelector(".pe-link").value.trim();
+        o.disp = name;
+        o.bio = bio;
+        o.link = link;
         subBack(scr);
         scrToast(scr, "Profile updated");
         return;
@@ -22275,7 +22318,7 @@
           <div class="ob-banner info" style="margin-top:18px">${obT("Demo code: 123456", "รหัสสำหรับทดสอบ: 123456")}</div></div>`;
         case "profile": return `<div class="ob-page"><div class="ob-top"><span></span><button class="ob-ghost muted" data-ob="skipprof">${obT("Skip for now", "ข้ามไปก่อน")}</button></div>
           <h1>${obT("Set up your profile", "ตั้งค่าโปรไฟล์")}</h1><p class="ob-sub">${obT("Pick your username — a photo can be added later.", "ตั้งชื่อผู้ใช้ของคุณ — รูปใส่ภายหลังได้")}</p>
-          <div class="ob-avatar">${obEsc((f.user || f.name || "?").trim().charAt(0).toUpperCase())}</div><button class="ob-link" style="align-self:center;margin:-8px 0 16px" data-ob="photo">${obT("Add photo", "เพิ่มรูปภาพ")}</button>
+          <div class="ob-avatar"><img src="./assets/user-avatars/default-avatar.jpg" alt=""></div><button class="ob-link" style="align-self:center;margin:-8px 0 16px" data-ob="photo">${obT("Add photo", "เพิ่มรูปภาพ")}</button>
           ${obField("user", obT("Username", "ชื่อผู้ใช้"), "text", "username")}<div class="ob-grow"></div><button class="ob-btn pri" data-ob="profile">${obT("Continue", "ต่อไป")}</button></div>`;
         case "created": return `<div class="ob-page ob-center"><div class="ob-grow"></div><div class="ob-ico ok">${I.check(40)}</div><h1>${obT("Account created", "สร้างบัญชีสำเร็จ")}</h1>
           <p class="ob-sub">${obT("Welcome, ", "ยินดีต้อนรับ ")}${obEsc(f.name || f.user || "")}. ${obT("Sign in to start exploring.", "เข้าสู่ระบบเพื่อเริ่มใช้งาน")}</p><div class="ob-grow"></div><button class="ob-btn pri" data-ob="go:signin">${obT("Sign in", "เข้าสู่ระบบ")}</button></div>`;
@@ -22453,11 +22496,11 @@
           const nu = JSON.parse(localStorage.getItem("fo_newuser") || "null") || obLoadAccount() || {};
           const uname = (nu.user || OB.f.user || (OB.f.email || "").split("@")[0] || "new.member").toLowerCase().replace(/[^a-z0-9_.]/g, "") || "new.member";
           NEW_USER_KEY = uname;
-          CP_ME.name = uname; CP_ME.avatar = "./assets/user-avatars/u-1075.png";
+          CP_ME.name = uname; CP_ME.avatar = "./assets/user-avatars/default-avatar.jpg";
           PROFILES[uname] = { disp: nu.name || OB.f.name || uname, bio: "", followers: "0", following: "0", posts: "0", grid: [], followedBy: [] };
         } else {
           NEW_USER_KEY = null;
-          CP_ME.name = "__guest__"; CP_ME.avatar = "./assets/user-avatars/u-1075.png";
+          CP_ME.name = "__guest__"; CP_ME.avatar = "./assets/user-avatars/default-avatar.jpg";
         }
         state.feedTab = "all";
       }
@@ -22548,7 +22591,6 @@
       if (t.dataset.f) {
         OB.f[t.dataset.f] = t.value;
         if (t.dataset.f === "pw") { const m = t.closest(".ob-page").querySelector(".ob-meter"); if (m) m.dataset.s = t.value ? Math.max(1, obScore(t.value)) : 0; }
-        if ((t.dataset.f === "user" || t.dataset.f === "name") && OB.step === "profile") { const av = t.closest(".ob-page").querySelector(".ob-avatar"); if (av) av.textContent = ((OB.f.user || OB.f.name || "?").trim().charAt(0) || "?").toUpperCase(); }
       } else if (t.dataset.otp !== undefined) {
         const boxes = [...t.closest(".ob-otp").querySelectorAll("input")], i = +t.dataset.otp;
         t.value = t.value.replace(/\D/g, "");

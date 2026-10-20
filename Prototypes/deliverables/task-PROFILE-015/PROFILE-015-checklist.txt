@@ -1,0 +1,19 @@
+PROFILE-015 — เพิ่ม placeholder ตัวอย่าง + validation ให้ช่องกรอกหน้าแก้ไขโปรไฟล์ (fo-flow/index.html)
+
+จุดที่แก้
+- peditHTML(): เพิ่ม placeholder (TH/EN) + maxlength ให้ .pe-name (30) / .pe-bio (150) / .pe-link + <span class="pe-err"> ใต้ทุกช่อง
+- CSS: .pe-in::placeholder (var(--muted)), .pe-in.is-err (border #ed4956), .pe-err (text แดง 12.5px)
+- peValidLink(): รับ http(s) URL / bare domain (www.mrfox.com) / @username — parity IG
+- handler .pe-save: validate ก่อนเซฟ — ชื่อ required ≤30, bio ≤150, link ต้องผ่าน peValidLink; error ใต้ช่อง + focus ช่องแรกที่ผิด + ไม่เซฟ
+- input listener: พิมพ์แล้วลบ is-err + ซ่อน error ของช่องนั้น
+
+Automated: _verify_pedit.mjs — 13 PASS / 0 FAIL / 0 console errors (440x956, session=member, lang=th)
+  - placeholder ครบ 3 ช่อง (link มีทั้ง https:// และ @)
+  - ชื่อว่าง/เว้นวรรคล้วน → error + save blocked
+  - พิมพ์ใหม่ error หาย
+  - link "not a url" → error + save blocked
+  - @watchclub, https://watchclub.example.com, www.mrfox.com → save ผ่าน + กลับโปรไฟล์ + link แสดงบนหน้าโปรไฟล์
+
+ภาพ: screenshots/task-PROFILE-015/ (a-placeholders, b-name-error, c-link-error)
+
+หมายเหตุ: commit เดียวกันนี้เก็บงาน default avatar (PROFILE-014/ONBOARD-003) ที่ verify แล้วแต่ยังไม่ได้ commit — u-1075→default-avatar.jpg 6 จุด + .ob-avatar img + assets default-avatar.{jpg,svg}
