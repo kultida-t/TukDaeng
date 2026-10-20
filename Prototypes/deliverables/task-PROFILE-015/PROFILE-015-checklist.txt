@@ -1,0 +1,19 @@
+PROFILE-015 — placeholder + validation หน้าแก้ไขโปรไฟล์ + unify ชื่อผู้ใช้ + social sign-up auto-fill (fo-flow/index.html)
+
+รอบ 2 (feedback ผู้ใช้)
+- ชื่อที่แสดง → ชื่อผู้ใช้: ฟิลด์เดียวกับตอนสมัคร (แก้ username จริง rule 3–20 a–z 0–9 _ ., lowercase, unique เช็คซ้ำกับ PROFILES + POSTS sellers; error message ตัวเดียวกับหน้าสมัคร)
+- rename username: ย้าย PROFILES key, POSTS seller, COMMENTS (map ไม่ใช่ p.comments — เจอบั๊กจับได้ตอน verify), followedBy, PF_* sets, NEW_USER_KEY, CP_ME.name, fo_newuser/fo_account (session new), _subStack profile:<old> → profile:<new> (กัน back ไปโผล่ viewer ชื่อเก่า)
+- disp = username เสมอ (ฟิลด์เดียวกัน)
+- error style เทียบ .ob-field.err/.ob-msg: border + text #e5484d, font 12px — เจอจุดที่เคยผิด: .pe-f span (muted) ทับ .pe-err เพราะ specificity ต่ำกว่า → แก้เป็น .pe-f .pe-err
+- social sign-up (Google/Apple ตอนสมัครใหม่): mock OB_SOCIAL {email,name,photo} → prefill avatar (OB.f.photo) + username suggest จาก provider name (obSocialUser) — persist ลง fo_newuser/fo_account.photo → CP_ME.avatar + PROFILES[uname].avatar; returning social restore photo ด้วย
+
+รอบ 1 (เดิม)
+- placeholder (TH/EN) ทั้ง 3 ช่อง: ชื่อผู้ใช้/ประวัติโดยย่อ/ลิงก์
+- bio maxlength 150, link ต้องเป็น http(s) URL / bare domain (www.mrfox.com) / @username — parity IG (peValidLink)
+- error ใต้ช่อง + focus ช่องแรกที่ผิด + เซฟไม่ได้จนผ่าน; พิมพ์แล้ว error หาย
+
+Automated: _verify_pedit.mjs — 18 PASS / 0 FAIL / 0 console errors (440x956, lang=th)
+  member: label ชื่อผู้ใช้, ค่า king.mr.fox, placeholder ครบ, username ผิดรูปแบบ/ซ้ำ → error แดง #e5484d + save blocked, พิมพ์แล้วหาย, link ผิด → error, rename king.watch → โปรไฟล์ uname+disp เปลี่ยนตาม
+  social: onboarding → member sheet → Google → avatar = u-1088.png + field prefilled matem_watch → เข้าแอปโปรไฟล์แสดง matem_watch + รูป Google
+
+ภาพ: screenshots/task-PROFILE-015/ (b-name-error, d-renamed-profile, e-social-prefill)
