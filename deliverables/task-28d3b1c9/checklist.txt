@@ -2,17 +2,29 @@
 Task: COMMENT-001 เพิ่มเมนูกดค้างบนความคิดเห็น (Long-press) สำหรับ Report / Block และ Delete ใน Comment Sheet ตามแบบ IG (ไม่รวม Share)
 Target File: Prototypes/fo-flow/index.html
 Date: 2026-10-21
-Status: Ready for User Verification
+Tested By: User verified (PASS ALL)
+Status: Completed & Verified
 
 ---
 
-### รายละเอียดการแก้ไขเพิ่มเติมตาม Feedback ผู้ใช้:
-1. [Report Comment Header]:
-   - หน้าจอรายงานความคิดเห็น (`report:comment` และ `report:done:` เมื่อมาจากคอมเมนต์) **ตัดปุ่มย้อนกลับ `<` ออกเรียบร้อย** เหลือเฉพาะปุ่มปิด `X` ที่มุมขวาบน ตามแบบ IG เป๊ะ
-2. [Delete Own Comment]:
-   - แก้ไข Bug `closeDlg` ทำให้การกดยืนยันปุ่มสีแดง "ลบ" / "Delete" ใน Confirmation Dialog ทำงานได้สมบูรณ์ ปิด Dialog ลบคอมเมนต์ออกจาก State ลดจำนวนคอมเมนต์ และแสดง Toast แจ้งเตือน
-   - เพิ่ม Mock Comment ของ `king.mr.fox` ให้มีทั้งในโพสต์แรก (p1), โพสต์ที่ 2 (p2), โพสต์ที่ 3 (p3)
-   - เพิ่มฟังก์ชันแตะไอคอน Emoji ด้านล่าง เพื่อโพสต์คอมเมนต์ของ `king.mr.fox` ได้ทันทีแบบ Real-time เพื่อให้ทดสอบกดสร้างแล้วกดลบได้สะดวก
-3. [Block User from Comment]:
-   - เมื่อบล็อกผู้ใช้จากคอมเมนต์ ระบบจะซ่อน/กรองความคิดเห็นและข้อความตอบกลับของผู้ใช้ที่ถูกบล็อกออกไปทันที
-   - เมื่อกดยืนยัน Block ใน Sheet หน้าต่าง Comment Sheet จะรีเฟรชกลับมาพร้อมคอมเมนต์ของคนนั้นที่หายไป และแสดง Toast แจ้งเตือน
+### รายละเอียดการแก้ไขและผลการทดสอบ:
+1. [Theme-Adaptive Floating Popover]:
+   - Light Mode: การ์ดกระจกฝ้าสีขาวใส (White Frosted Glass, background: rgba(255,255,255,0.78), backdrop-filter: blur(30px) saturate(1.8)), ขอบมน border-radius: 20px, ตัวหนังสือสีเข้ม var(--text), เมนูอันตรายสีแดง #ed4956 ตรงตามเมนูกรองของหน้าแชท (ภาพที่ 3) (PASS)
+   - Dark Mode: การ์ดกระจกฝ้าสีเข้ม (Dark Frosted Glass, background: rgba(28,33,41,0.78)), ขอบมน 20px, ตัวหนังสือสีขาว #fff, เมนูอันตรายสีแดง #ed4956 (PASS)
+
+2. [Menu Structure (ไม่รวม Share)]:
+   - คอมเมนต์ผู้อื่น: Block และ Report (สีแดง) เท่านั้น ไม่มี Share (PASS)
+   - คอมเมนต์ตนเอง (king.mr.fox): Delete (สีแดง) เท่านั้น ไม่มี Share (PASS)
+
+3. [Flow Report Comment]:
+   - หน้าจอรายงานคอมเมนต์ (report:comment และ report:done:) ไม่มีปุ่มย้อนกลับ < มีเฉพาะปุ่มปิด X ทางขวาบนตามแบบ IG (PASS)
+   - เลือกเหตุผล 5 ข้อ → ส่งรายงานสำเร็จ → คอมเมนต์คงอยู่ตามหลัก Trust & Safety (PASS)
+
+4. [Flow Delete Comment]:
+   - กด Delete บนคอมเมนต์ตนเอง → Dialog ยืนยันความปลอดภัยเปิดขึ้นมา → กดยืนยันปุ่มสีแดง ลบจริงใน State, ปิด Dialog, ลดตัวเลขจำนวนคอมเมนต์ และมี Toast แจ้งเตือน (PASS)
+
+5. [Flow Block User from Comment]:
+   - กด Block จากคอมเมนต์ → กดยืนยันใน Sheet บล็อก → Comment Sheet รีเฟรชกลับมาพร้อมซ่อนความคิดเห็นของคนนั้นออกไปทันที (PASS)
+
+---
+Verdict: PASS ALL (ผ่านการตรวจรับโดยผู้ใช้เรียบร้อย)
