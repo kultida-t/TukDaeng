@@ -1,0 +1,18 @@
+# Manual Review Checklist Results — Task [28d3b1c9] COMMENT-001
+Task: COMMENT-001 เพิ่มเมนูกดค้างบนความคิดเห็น (Long-press) สำหรับ Report / Block และ Delete ใน Comment Sheet ตามแบบ IG (ไม่รวม Share)
+Target File: Prototypes/fo-flow/index.html
+Date: 2026-10-21
+Status: Ready for User Verification
+
+---
+
+### รายละเอียดการแก้ไขเพิ่มเติมตาม Feedback ผู้ใช้:
+1. [Report Comment Header]:
+   - หน้าจอรายงานความคิดเห็น (`report:comment` และ `report:done:` เมื่อมาจากคอมเมนต์) **ตัดปุ่มย้อนกลับ `<` ออกเรียบร้อย** เหลือเฉพาะปุ่มปิด `X` ที่มุมขวาบน ตามแบบ IG เป๊ะ
+2. [Delete Own Comment]:
+   - แก้ไข Bug `closeDlg` ทำให้การกดยืนยันปุ่มสีแดง "ลบ" / "Delete" ใน Confirmation Dialog ทำงานได้สมบูรณ์ ปิด Dialog ลบคอมเมนต์ออกจาก State ลดจำนวนคอมเมนต์ และแสดง Toast แจ้งเตือน
+   - เพิ่ม Mock Comment ของ `king.mr.fox` ให้มีทั้งในโพสต์แรก (p1), โพสต์ที่ 2 (p2), โพสต์ที่ 3 (p3)
+   - เพิ่มฟังก์ชันแตะไอคอน Emoji ด้านล่าง เพื่อโพสต์คอมเมนต์ของ `king.mr.fox` ได้ทันทีแบบ Real-time เพื่อให้ทดสอบกดสร้างแล้วกดลบได้สะดวก
+3. [Block User from Comment]:
+   - เมื่อบล็อกผู้ใช้จากคอมเมนต์ ระบบจะซ่อน/กรองความคิดเห็นและข้อความตอบกลับของผู้ใช้ที่ถูกบล็อกออกไปทันที
+   - เมื่อกดยืนยัน Block ใน Sheet หน้าต่าง Comment Sheet จะรีเฟรชกลับมาพร้อมคอมเมนต์ของคนนั้นที่หายไป และแสดง Toast แจ้งเตือน

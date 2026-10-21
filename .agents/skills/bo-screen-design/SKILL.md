@@ -9,17 +9,25 @@ description: มาตรฐานการออกแบบ/ปรับแก
 >
 > Skill นี้ผูกกับเครื่องเฉพาะ เพราะอ้างอิง path/workspace ของ TukDaeng บนเครื่องนี้เท่านั้น
 >
-> **เครื่องที่อนุญาต:**
+> **เครื่องที่อนุญาต (ผ่านถ้าตรงชุดใดชุดหนึ่ง):**
+>
+> **เครื่อง A (เครื่องหลัก Admin):**
 > - Platform: Windows
 > - User: `Admin`
 > - Home path: `C:\Users\Admin`
 > - Workspace path ที่ต้องมีอยู่จริง: `C:\Users\Admin\Desktop\TukDaeng\`
 >
-> **วิธีตรวจสอบก่อนเริ่ม skill:**
-> 1. ตรวจ user ปัจจุบัน (เช่น `whoami`) — ต้องเป็น `Admin`
-> 2. ตรวจว่า path `C:\Users\Admin\Desktop\TukDaeng\` มีอยู่จริง
+> **เครื่อง B (เครื่อง mailt):**
+> - Platform: Windows
+> - User: `mailt`
+> - Home path: `C:\Users\mailt`
+> - Workspace path ที่ต้องมีอยู่จริง: `D:\TukDaeng\`
 >
-> **ถ้าไม่ใช่เครื่องนี้:** หยุดทำงาน skill นี้ทันที แจ้งผู้ใช้ว่า skill นี้ใช้ได้เฉพาะเครื่องของ Admin เท่านั้น
+> **วิธีตรวจสอบก่อนเริ่ม skill:**
+> 1. ตรวจ user ปัจจุบัน (เช่น `whoami`) — ต้องเป็น `Admin` (เครื่อง A) หรือ `mailt` (เครื่อง B)
+> 2. ตรวจว่า workspace path ของชุดนั้นมีอยู่จริง (`C:\Users\Admin\Desktop\TukDaeng\` สำหรับเครื่อง A, `D:\TukDaeng\` สำหรับเครื่อง B)
+>
+> **ถ้าไม่ใช่เครื่องที่อนุญาต:** หยุดทำงาน skill นี้ทันที แจ้งผู้ใช้ว่า skill นี้ใช้ได้เฉพาะเครื่องของ Admin หรือ mailt เท่านั้น
 
 Skill นี้เป็น **มาตรฐานกลางสำหรับออกแบบ/ปรับแก้หน้าจอ Back Office (BO) module ของ TukDaeng** โดยถอด pattern จาก prototype ที่คอนเฟิร์มและล็อกแล้ว ใช้เพื่อให้ module ใหม่ที่จะขึ้น reuse สไตล์/interaction เดียวกันได้ทันที โดยไม่ต้องปรับแก้หน้าจอ ตาราง responsive modal ฯลฯ ซ้ำ
 

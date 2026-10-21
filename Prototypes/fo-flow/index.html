@@ -6131,6 +6131,81 @@
       stroke: var(--red);
     }
 
+    /* Comment long-press context popover (IG-style) */
+    .c-popover-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 99;
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    .c-popover {
+      position: absolute;
+      z-index: 100;
+      min-width: 175px;
+      background: rgba(38, 38, 38, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 6px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
+      animation: cPopIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: top left;
+      user-select: none;
+    }
+
+    @keyframes cPopIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .c-pop-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: none;
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: var(--font-main, inherit);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.12s;
+    }
+
+    .c-pop-item:hover, .c-pop-item:active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .c-pop-item.danger {
+      color: #ed4956;
+    }
+
+    .c-pop-ic {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .c-row {
+      user-select: none;
+      -webkit-user-select: none;
+      transition: background-color 0.15s;
+    }
+
+    .c-row.c-holding {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+    }
+
     .emoji-row {
       display: flex;
       justify-content: space-between;
@@ -13114,27 +13189,44 @@
     const COMMENTS = {
       p1: [
         {
+          id: "p1-c1",
           name: "chrono.th", avatar: "./assets/user-avatars/u-1088.png", time: "2 days", text: "clean set 🔥", likes: 2,
-          replies: [{ name: "Watch 777", avatar: "./assets/user-avatars/u-1002.png", time: "1 day", text: "@chrono.th thanks! 🙏", likes: 1 }]
+          replies: [
+            { id: "p1-r1", name: "Watch 777", avatar: "./assets/user-avatars/u-1002.png", time: "1 day", text: "@chrono.th thanks! 🙏", likes: 1 },
+            { id: "p1-r2", name: "king.mr.fox", avatar: "./assets/user-avatars/mrfox.png", time: "5 hr", text: "@chrono.th สวยมากครับ", likes: 0 }
+          ]
+        },
+        {
+          id: "p1-c2",
+          name: "king.mr.fox", avatar: "./assets/user-avatars/mrfox.png", time: "3 hr", text: "สภาพกริบมาก พร้อมกล่องใบครบไหมครับ", likes: 1,
+          replies: [
+            { id: "p1-r3", name: "Watch 777", avatar: "./assets/user-avatars/u-1002.png", time: "2 hr", text: "@king.mr.fox กล่องใบครบชุดเลยครับ", likes: 0 }
+          ]
         },
       ],
       p2: [
         {
+          id: "p2-c1",
           name: "davikah", avatar: "./assets/user-avatars/u-1161.png", time: "1 day", text: "great condition 👌", likes: 3,
-          replies: [{ name: "the watch", avatar: "./assets/user-avatars/u-1042.png", time: "21 hr", text: "@davikah ❤️❤️❤️", likes: 1 }]
+          replies: [{ id: "p2-r1", name: "the watch", avatar: "./assets/user-avatars/u-1042.png", time: "21 hr", text: "@davikah ❤️❤️❤️", likes: 1 }]
         },
-        { name: "bamzilla", avatar: "./assets/user-avatars/u-1186.png", time: "4 hr", text: "😍😍😍", likes: 1 },
-        { name: "watch.daily", avatar: "./assets/user-avatars/u-1144.png", time: "2 hr", text: "still available?", likes: 0 },
+        { id: "p2-c2", name: "king.mr.fox", avatar: "./assets/user-avatars/mrfox.png", time: "5 hr", text: "สวยมากครับรุ่นนี้", likes: 2 },
+        { id: "p2-c3", name: "bamzilla", avatar: "./assets/user-avatars/u-1186.png", time: "4 hr", text: "😍😍😍", likes: 1 },
+        { id: "p2-c4", name: "watch.daily", avatar: "./assets/user-avatars/u-1144.png", time: "2 hr", text: "still available?", likes: 0 },
       ],
       p3: [
         {
+          id: "p3-c1",
           name: "neng_mua", avatar: "./assets/user-avatars/u-1120.png", time: "1 day", text: "grail unlocked!!", likes: 4,
-          replies: [{ name: "chrono.th", avatar: "./assets/user-avatars/u-1088.png", time: "20 hr", text: "@neng_mua 😍😍😍", likes: 1 }]
+          replies: [
+            { id: "p3-r1", name: "chrono.th", avatar: "./assets/user-avatars/u-1088.png", time: "20 hr", text: "@neng_mua 😍😍😍", likes: 1 },
+            { id: "p3-r2", name: "king.mr.fox", avatar: "./assets/user-avatars/mrfox.png", time: "10 hr", text: "ยินดีด้วยครับ สุดยอดมาก", likes: 1 }
+          ]
         },
-        { name: "bikwans", avatar: "./assets/user-avatars/u-1055.png", time: "1 day", text: "น่ารักมากกกก", likes: 1 },
-        { name: "davikah", avatar: "./assets/user-avatars/u-1161.png", time: "20 hr", text: "congrats on the grail!", likes: 2 },
-        { name: "bamzilla", avatar: "./assets/user-avatars/u-1186.png", time: "6 hr", text: "clean 🔥", likes: 0 },
-        { name: "watch.daily", avatar: "./assets/user-avatars/u-1144.png", time: "2 hr", text: "that dial though 😍", likes: 1 },
+        { id: "p3-c2", name: "bikwans", avatar: "./assets/user-avatars/u-1055.png", time: "1 day", text: "น่ารักมากกกก", likes: 1 },
+        { id: "p3-c3", name: "davikah", avatar: "./assets/user-avatars/u-1161.png", time: "20 hr", text: "congrats on the grail!", likes: 2 },
+        { id: "p3-c4", name: "bamzilla", avatar: "./assets/user-avatars/u-1186.png", time: "6 hr", text: "clean 🔥", likes: 0 },
+        { id: "p3-c5", name: "watch.daily", avatar: "./assets/user-avatars/u-1144.png", time: "2 hr", text: "that dial though 😍", likes: 1 },
       ],
       p7: [
         { name: "davikah", avatar: "./assets/user-avatars/u-1161.png", time: "3 hr", text: "that light 😍", likes: 2 },
@@ -13197,6 +13289,7 @@
       circleX: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="m9.5 9.5 5 5m0-5-5 5"/></svg>`,
       flag: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4.5h11.5l-2.5 4.5 2.5 4.5H6"/></svg>`,
       prohibit: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="m5.7 5.7 12.6 12.6"/></svg>`,
+      reportBubble: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
       gear: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.24.6.84 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-.67 0-1.27.4-1.51 1z"/></svg>`,
       pen: (s = 18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>`,
       trash: (s = 18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>`,
@@ -13570,26 +13663,141 @@
       return (COMMENTS[p.id] = list);
     }
     function commentRowsHTML(p) {
-      return commentsFor(p).map(c => `
-    <div class="c-row">
+      const isTh = state.lang === "th";
+      const myName = (typeof state !== "undefined" && state.user && state.user.username) || CP_ME.name;
+      const list = commentsFor(p).filter(c => !pfIsBlocked(c.name));
+      return list.map((c, ci) => {
+        const cId = c.id || ("c-" + ci);
+        c.id = cId;
+        const isOwn = c.name === myName;
+        const replies = (c.replies || []).filter(r => !pfIsBlocked(r.name));
+        return `
+    <div class="c-row" data-pid="${esc(p.id)}" data-cid="${esc(cId)}" data-author="${esc(c.name)}" data-is-own="${isOwn}">
       <img src="${c.avatar}" alt="" data-pf-user="${esc(c.name)}">
       <div class="c-main">
         <div class="c-head"><span class="n" data-pf-user="${esc(c.name)}">${c.name}</span><span>${c.time}</span></div>
         <div class="c-text">${c.text}</div>
-        <span class="c-meta">Reply</span>
+        <span class="c-meta">${isTh ? "ตอบกลับ" : "Reply"}</span>
       </div>
       <span class="c-like">${I.heart(15)}<span>${c.likes || ""}</span></span>
     </div>
-    ${(c.replies || []).map(r => `
-    <div class="c-row reply">
+    ${replies.map((r, ri) => {
+      const rId = r.id || ("r-" + ci + "-" + ri);
+      r.id = rId;
+      const rIsOwn = r.name === myName;
+      return `
+    <div class="c-row reply" data-pid="${esc(p.id)}" data-cid="${esc(cId)}" data-rid="${esc(rId)}" data-author="${esc(r.name)}" data-is-own="${rIsOwn}">
       <img src="${r.avatar}" alt="" data-pf-user="${esc(r.name)}">
       <div class="c-main">
         <div class="c-head"><span class="n" data-pf-user="${esc(r.name)}">${r.name}</span><span>${r.time}</span></div>
         <div class="c-text">${r.text}</div>
-        <span class="c-meta">${state.lang === "th" ? "ตอบกลับ" : "Reply"}</span>
+        <span class="c-meta">${isTh ? "ตอบกลับ" : "Reply"}</span>
       </div>
       <span class="c-like">${I.heart(15)}<span>${r.likes || ""}</span></span>
-    </div>`).join("")}`).join("");
+    </div>`;
+    }).join("")}`;
+      }).join("");
+    }
+
+    function closeCommentPopover(scr) {
+      if (!scr) scr = document.querySelector(".screen");
+      if (!scr) return;
+      scr.querySelectorAll(".c-popover, .c-popover-backdrop").forEach(el => el.remove());
+    }
+
+    function openCommentPopover(scr, row, clientX, clientY) {
+      closeCommentPopover(scr);
+      const isTh = state.lang === "th";
+      const pid = row.dataset.pid || "";
+      const cid = row.dataset.cid || "";
+      const rid = row.dataset.rid || "";
+      const author = row.dataset.author || "";
+      const isOwn = row.dataset.isOwn === "true";
+      const cs = scr.querySelector(".comment-sheet");
+      if (!cs) return;
+
+      const bd = document.createElement("div");
+      bd.className = "c-popover-backdrop";
+
+      const pop = document.createElement("div");
+      pop.className = "c-popover";
+      pop.dataset.pid = pid;
+      pop.dataset.cid = cid;
+      pop.dataset.rid = rid;
+      pop.dataset.author = author;
+      pop.dataset.isOwn = isOwn ? "true" : "false";
+
+      let itemsHTML = "";
+      if (isOwn) {
+        itemsHTML = `
+      <button class="c-pop-item danger" data-act="delete">
+        <span class="c-pop-ic">${I.trash(20)}</span>
+        <span class="c-pop-label">${isTh ? "ลบ" : "Delete"}</span>
+      </button>`;
+      } else {
+        itemsHTML = `
+      <button class="c-pop-item" data-act="block">
+        <span class="c-pop-ic">${I.prohibit(20)}</span>
+        <span class="c-pop-label">${isTh ? "บล็อก" : "Block"}</span>
+      </button>
+      <button class="c-pop-item danger" data-act="report">
+        <span class="c-pop-ic">${I.reportBubble(20)}</span>
+        <span class="c-pop-label">${isTh ? "รายงาน" : "Report"}</span>
+      </button>`;
+      }
+      pop.innerHTML = itemsHTML;
+
+      cs.appendChild(bd);
+      cs.appendChild(pop);
+
+      const rowRect = row.getBoundingClientRect();
+      const sheetRect = cs.getBoundingClientRect();
+      let top = rowRect.bottom - sheetRect.top + 2;
+      let left = Math.max(12, Math.min(rowRect.left - sheetRect.left + 36, sheetRect.width - 185));
+      if (top + 115 > sheetRect.height) {
+        top = Math.max(10, rowRect.top - sheetRect.top - (isOwn ? 60 : 105));
+      }
+      pop.style.top = top + "px";
+      pop.style.left = left + "px";
+    }
+
+    function delCommentDlgHTML(isRootWithReplies, pid, cid, rid) {
+      const isTh = state.lang === "th";
+      const q = isTh ? "ลบความคิดเห็นนี้หรือไม่?" : "Delete this comment?";
+      const desc = isRootWithReplies
+        ? (isTh ? "การกระทำนี้ไม่สามารถยกเลิกได้ ความคิดเห็นนี้และการตอบกลับทั้งหมดจะถูกลบออก" : "This action cannot be undone. This comment and its replies will be removed.")
+        : (isTh ? "การกระทำนี้ไม่สามารถยกเลิกได้ ความคิดเห็นนี้จะถูกลบออก" : "This action cannot be undone. This comment will be removed.");
+      return `
+    <div class="dlg-q">${q}</div>
+    <div class="dlg-desc">${desc}</div>
+    <button class="dlg-btn danger dlg-delcomment-go" data-pid="${esc(pid)}" data-cid="${esc(cid)}" data-rid="${esc(rid || "")}">${isTh ? "ลบ" : "Delete"}</button>
+    <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
+    }
+
+    function deleteComment(pid, cid, rid) {
+      const p = findPost(pid);
+      if (!p) return false;
+      const list = commentsFor(p);
+      if (rid) {
+        const parent = list.find(c => c.id === cid);
+        if (parent && parent.replies) {
+          const idx = parent.replies.findIndex(r => r.id === rid);
+          if (idx !== -1) {
+            parent.replies.splice(idx, 1);
+            if (p.comments > 0) p.comments--;
+            return true;
+          }
+        }
+      } else {
+        const idx = list.findIndex(c => c.id === cid);
+        if (idx !== -1) {
+          const removed = list.splice(idx, 1)[0];
+          const repCount = (removed.replies || []).length;
+          p.comments = Math.max(0, (p.comments || 1) - (1 + repCount));
+          return true;
+        }
+      }
+      return false;
     }
 
     function commentsHTML(p) {
@@ -14708,6 +14916,10 @@
     function openDlg(scr, inner) {
       scr.querySelector(".dlg").innerHTML = inner;
       scr.classList.add("dialog-open");
+    }
+    function closeDlg(scr) {
+      if (!scr) scr = document.querySelector(".screen");
+      if (scr) scr.classList.remove("dialog-open");
     }
     function muteDlgHTML(seller) {
       return `
@@ -17209,7 +17421,7 @@
         const isTh = state.lang === "th";
         return head(isTh ? "เปลี่ยนรหัสผ่าน" : "Change password") + `<div class="sub-scroll">
       <div class="chg-pwd-wrap">
-        <div class="chg-pwd-desc">${isTh ? "รหัสผ่านของคุณต้องมีความยาวอย่างน้อย 6 ตัวอักษร และควรประกอบด้วยตัวเลข ตัวอักษร และอักขระพิเศษ (!$@%)" : "Your password must be at least 6 characters and should include a combination of numbers, letters and special characters (!$@%)."}</div>
+        <div class="chg-pwd-desc">${isTh ? "รหัสผ่านของคุณต้องมีความยาวอย่างน้อย 8 ตัวอักษร และควรประกอบด้วยตัวเลข ตัวอักษร และอักขระพิเศษ (!$@%)" : "Your password must be at least 8 characters and should include a combination of numbers, letters and special characters (!$@%)."}</div>
 
         <div class="chg-pwd-field">
           <label class="chg-pwd-lbl" for="cpwd-current">${isTh ? "รหัสผ่านปัจจุบัน" : "Current password"}</label>
@@ -17509,9 +17721,9 @@
       if (name === "interested") return head(isTh ? "รายการที่สนใจ" : "Interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.liked), isTh ? "ลบออก" : "Remove", "m-unlike")}</div>`;
       if (name === "ni") return head(isTh ? "ไม่สนใจ" : "Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni), isTh ? "คืนค่า" : "Restore", "m-restore")}</div>`;
       /* full-page report view (IG-style) — opened from "..." menu or the uncomfortable ack card */
-      if (name === "report" || name === "report:user" || name === "report:post") {
-        const hasBack = name !== "report" && scr.dataset.rpFromChat !== "true";
-        const qTarget = name === "report:user" ? (isTh ? "บัญชีนี้" : "account") : (isTh ? "โพสต์นี้" : "post");
+      if (name === "report" || name === "report:user" || name === "report:post" || name === "report:comment") {
+        const hasBack = name !== "report" && name !== "report:comment" && scr.dataset.rpFromChat !== "true";
+        const qTarget = name === "report:user" ? (isTh ? "บัญชีนี้" : "account") : name === "report:comment" ? (isTh ? "ความคิดเห็นนี้" : "comment") : (isTh ? "โพสต์นี้" : "post");
         const reasons = isTh ? PM_REASONS_TH : PM_REASONS;
         return `
     <div class="detail-head rp-head">${hasBack ? `<button class="icon-btn rp-back sub-back">${I.back(20)}</button>` : ""}<span class="detail-title">${isTh ? "รายงาน" : "Report"}</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
@@ -17542,7 +17754,7 @@
         const dn = scr._rpDone || (scr._rpDone = new Set());
         /* IG keeps a completed step in place with a green check instead of a chevron */
         const step = (act, ic, label, done) => `<button class="rp-step" data-act="${act}" data-u="${esc(u)}"${done ? " disabled" : ""}><span class="rp-step-ic">${ic}</span><span class="rp-step-t">${esc(label)}</span>${done ? `<span class="rp-ck">${I.check(15)}</span>` : `<span class="pm-chev">${I.chevR(14)}</span>`}</button>`;
-        const hasBack = scr.dataset.rpFromChat !== "true";
+        const hasBack = scr.dataset.rpFromChat !== "true" && scr.dataset.rpTargetType !== "comment";
         return `
     <div class="detail-head rp-head">${hasBack ? `<button class="icon-btn rp-back sub-back">${I.back(20)}</button>` : ""}<span class="detail-title">${isTh ? "รายงาน" : "Report"}</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="pm-rp-scroll">
@@ -20976,8 +21188,8 @@
           showErr(isTh ? "กรุณากรอกรหัสผ่านใหม่" : "Please enter a new password.", newInp);
           return;
         }
-        if (newVal.length < 6) {
-          showErr(isTh ? "รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร" : "Password must be at least 6 characters long.", newInp);
+        if (newVal.length < 8) {
+          showErr(isTh ? "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร" : "Password must be at least 8 characters long.", newInp);
           return;
         }
         if (newVal === curVal) {
@@ -21220,6 +21432,7 @@
           const cs = scr.querySelector(".comment-sheet");
           cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps", "nc");
           cs.classList.add("nt");
+          scr.dataset.cmtPid = post.id;
           cs.innerHTML = commentsHTML(post);
           scr.classList.add("comments-open");
         }
@@ -21603,7 +21816,21 @@
         pfSetBlocked(scr, u, true);
         const subTop = (scr._subStack || []).at(-1) || "";
         if (subTop === "profile:" + u || subTop === "report:done:" + u || subTop.startsWith("chmenu:") || subTop.startsWith("chatroom:")) renderSub(scr);
-        scrToast(scr, "Blocking"); /* IG flashes this transient toast */
+        if (scr._cmtFromPid) {
+          const cp = findPost(scr._cmtFromPid);
+          scr._cmtFromPid = null;
+          if (cp) {
+            const cs = scr.querySelector(".comment-sheet");
+            if (cs) {
+              cs.className = "comment-sheet";
+              cs.innerHTML = commentsHTML(cp);
+              scr.classList.add("comments-open");
+            }
+          }
+          scrToast(scr, state.lang === "th" ? "บล็อกและซ่อนความคิดเห็นแล้ว" : "Blocked and hidden comments");
+        } else {
+          scrToast(scr, "Blocking"); /* IG flashes this transient toast */
+        }
         return;
       }
       /* PROFILE-005 — "Thanks for your feedback" steps: real actions only.
@@ -22022,6 +22249,7 @@
         const cs = scr.querySelector(".comment-sheet");
         cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "nt");
         cs.classList.toggle("nt", scr.classList.contains("pv-open") && !scr.classList.contains("detail-open"));
+        scr.dataset.cmtPid = post.id;
         cs.innerHTML = commentsHTML(post);
         scr.classList.add("comments-open");
         return;
@@ -22532,9 +22760,119 @@
         scr.querySelector(".nc-input").focus({ preventScroll: true });
         return;
       }
+      const cPopBd = e.target.closest(".c-popover-backdrop");
+      if (cPopBd) {
+        closeCommentPopover(cPopBd.closest(".screen"));
+        return;
+      }
+      const cPopItem = e.target.closest(".c-pop-item");
+      if (cPopItem) {
+        const scr = cPopItem.closest(".screen");
+        const pop = cPopItem.closest(".c-popover");
+        const act = cPopItem.dataset.act;
+        const pid = pop ? pop.dataset.pid : "";
+        const cid = pop ? pop.dataset.cid : "";
+        const rid = pop ? pop.dataset.rid : "";
+        const author = pop ? pop.dataset.author : "";
+        closeCommentPopover(scr);
+        if (state.session === "guest") {
+          obGate();
+          return;
+        }
+        if (act === "block") {
+          scr._cmtFromPid = pid;
+          scr.classList.remove("comments-open");
+          if (pfIsBlocked(author)) {
+            scr.dataset.unblockU = author;
+            openDlg(scr, unblockDlgHTML(author));
+          } else {
+            openSheet(scr, "pm", "pm-open", blkSheetHTML(author));
+          }
+        } else if (act === "report") {
+          scr.classList.remove("comments-open");
+          scr.dataset.rpUser = author;
+          scr.dataset.rpTargetType = "comment";
+          scr.dataset.rpPid = pid;
+          scr.dataset.rpCid = cid;
+          if (scr.classList.contains("pv-open")) {
+            if (!scr.classList.contains("rp-over")) scr._rpBase = (scr._subStack || []).length;
+            scr.classList.add("rp-over");
+            const el = scr.querySelector(".page-sub");
+            scr._subSwap = false; scr._pfAv = false;
+            (scr._subStack = scr._subStack || []).push("report:comment");
+            renderSub(scr);
+            scr.classList.add("sub-open");
+            el.style.animation = "none"; void el.offsetWidth; el.style.animation = "";
+          } else {
+            pushSub(scr, "report:comment");
+          }
+        } else if (act === "delete") {
+          const p = findPost(pid);
+          let hasReplies = false;
+          if (p && !rid) {
+            const list = commentsFor(p);
+            const cObj = list.find(x => x.id === cid);
+            if (cObj && (cObj.replies || []).length > 0) hasReplies = true;
+          }
+          openDlg(scr, delCommentDlgHTML(hasReplies, pid, cid, rid));
+        }
+        return;
+      }
+      const dlgDelCommentGo = e.target.closest(".dlg-delcomment-go");
+      if (dlgDelCommentGo) {
+        const scr = dlgDelCommentGo.closest(".screen");
+        const pid = dlgDelCommentGo.dataset.pid;
+        const cid = dlgDelCommentGo.dataset.cid;
+        const rid = dlgDelCommentGo.dataset.rid;
+        closeDlg(scr);
+        const ok = deleteComment(pid, cid, rid);
+        if (ok) {
+          const p = findPost(pid);
+          const cs = scr.querySelector(".comment-sheet");
+          if (p && cs) {
+            cs.innerHTML = commentsHTML(p);
+          }
+          scr.querySelectorAll(`.post[data-pid="${pid}"] .comment-count, .detail-counts .comment-count`).forEach(el => {
+            el.textContent = p.comments;
+          });
+          toast(state.lang === "th" ? "ลบความคิดเห็นแล้ว" : "This comment was removed.");
+        }
+        return;
+      }
+      const emojiSpan = e.target.closest(".emoji-row span");
+      if (emojiSpan) {
+        const scr = emojiSpan.closest(".screen");
+        const cs = scr.querySelector(".comment-sheet");
+        const row1 = cs.querySelector(".c-row");
+        const pid = row1 ? row1.dataset.pid : (scr.dataset.cmtPid || "p1");
+        const p = findPost(pid);
+        if (p) {
+          const list = commentsFor(p);
+          const myName = (typeof state !== "undefined" && state.user && state.user.username) || CP_ME.name;
+          const newC = {
+            id: "c-own-" + Date.now(),
+            name: myName,
+            avatar: "./assets/user-avatars/mrfox.png",
+            time: state.lang === "th" ? "เมื่อสักครู่" : "Just now",
+            text: emojiSpan.textContent,
+            likes: 0
+          };
+          list.push(newC);
+          p.comments = (p.comments || 0) + 1;
+          cs.innerHTML = commentsHTML(p);
+          scr.querySelectorAll(`.post[data-pid="${pid}"] .comment-count, .detail-counts .comment-count`).forEach(el => {
+            el.textContent = p.comments;
+          });
+          const listEl = cs.querySelector(".sheet-list");
+          if (listEl) listEl.scrollTop = listEl.scrollHeight;
+        }
+        return;
+      }
       const closeSheet = e.target.closest(".sheet-backdrop, .sheet-handle");
       if (closeSheet) {
-        closeSheet.closest(".screen").classList.remove("comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
+        const scr = closeSheet.closest(".screen");
+        closeCommentPopover(scr);
+        scr.classList.remove("comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
         return;
       }
       const clike = e.target.closest(".c-like");
@@ -22890,7 +23228,8 @@
       const f = OB.f, E = {};
       if (!obEmailOk(f.email.trim())) E.email = obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง");
       else if (f.email.trim().toLowerCase() === "taken@example.com") E.email = obT("This email is already registered. Try signing in.", "อีเมลนี้ถูกใช้สมัครแล้ว ลองเข้าสู่ระบบ");
-      if (obScore(f.pw) < 2 || f.pw.length < 8) E.pw = obT("Use at least 8 characters with upper & lower case or a number.", "ใช้อย่างน้อย 8 ตัวอักษร ผสมพิมพ์ใหญ่-เล็ก หรือตัวเลข");
+      if (!f.pw) E.pw = obT("Enter a password.", "กรอกรหัสผ่าน");
+      else if (f.pw.length < 8) E.pw = obT("Password must be at least 8 characters long.", "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
       OB.errs = E;
       if (Object.keys(E).length) return obDraw();
       f.email = f.email.trim(); f.name = f.name.trim(); OB.account = { email: f.email, pw: f.pw }; OB.provider = "email"; OB.resend = 30;
@@ -23097,6 +23436,77 @@
       if (OB.on && !OB.recon) return toast("Finish first-run onboarding before simulating re-consent");
       Object.assign(OB, { on: true, recon: true, step: "consent", ver: "1.1", legal: null, declined: false, os: false });
       obMount();
+    });
+
+    /* Comment long-press context menu (IG-style) */
+    let cHoldTimer = null, cHoldTarget = null, cHoldStartX = 0, cHoldStartY = 0;
+    function clearCHold() {
+      if (cHoldTimer) { clearTimeout(cHoldTimer); cHoldTimer = null; }
+      if (cHoldTarget) { cHoldTarget.classList.remove("c-holding"); cHoldTarget = null; }
+    }
+    document.addEventListener("touchstart", e => {
+      const row = e.target.closest(".c-row");
+      if (!row || e.target.closest(".c-like, .c-meta, img")) return;
+      clearCHold();
+      cHoldTarget = row;
+      const touch = e.touches[0];
+      cHoldStartX = touch.clientX;
+      cHoldStartY = touch.clientY;
+      row.classList.add("c-holding");
+      cHoldTimer = setTimeout(() => {
+        row.classList.remove("c-holding");
+        const scr = row.closest(".screen");
+        if (scr) {
+          if (state.session === "guest") { obGate(); return; }
+          openCommentPopover(scr, row, cHoldStartX, cHoldStartY);
+        }
+      }, 450);
+    }, { passive: true });
+    document.addEventListener("touchmove", e => {
+      if (!cHoldTimer) return;
+      const touch = e.touches[0];
+      if (Math.abs(touch.clientX - cHoldStartX) > 8 || Math.abs(touch.clientY - cHoldStartY) > 8) {
+        clearCHold();
+      }
+    }, { passive: true });
+    document.addEventListener("touchend", clearCHold);
+    document.addEventListener("touchcancel", clearCHold);
+
+    document.addEventListener("mousedown", e => {
+      if (e.button !== 0) return;
+      const row = e.target.closest(".c-row");
+      if (!row || e.target.closest(".c-like, .c-meta, img, .c-popover, .c-popover-backdrop")) return;
+      clearCHold();
+      cHoldTarget = row;
+      cHoldStartX = e.clientX;
+      cHoldStartY = e.clientY;
+      row.classList.add("c-holding");
+      cHoldTimer = setTimeout(() => {
+        row.classList.remove("c-holding");
+        const scr = row.closest(".screen");
+        if (scr) {
+          if (state.session === "guest") { obGate(); return; }
+          openCommentPopover(scr, row, cHoldStartX, cHoldStartY);
+        }
+      }, 450);
+    });
+    document.addEventListener("mousemove", e => {
+      if (!cHoldTimer) return;
+      if (Math.abs(e.clientX - cHoldStartX) > 8 || Math.abs(e.clientY - cHoldStartY) > 8) {
+        clearCHold();
+      }
+    });
+    document.addEventListener("mouseup", clearCHold);
+    document.addEventListener("contextmenu", e => {
+      const row = e.target.closest(".c-row");
+      if (!row || e.target.closest(".c-like, .c-meta, img, .c-popover")) return;
+      e.preventDefault();
+      clearCHold();
+      const scr = row.closest(".screen");
+      if (scr) {
+        if (state.session === "guest") { obGate(); return; }
+        openCommentPopover(scr, row, e.clientX, e.clientY);
+      }
     });
 
     document.documentElement.lang = state.lang;

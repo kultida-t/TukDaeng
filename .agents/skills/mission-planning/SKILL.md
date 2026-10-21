@@ -9,17 +9,25 @@ description: TukDaeng daily work workflow — วางแผน Mission รา�
 >
 > Skill นี้ผูกกับเครื่องเฉพาะ เพราะอ้างอิง path/workspace ของ TukDaeng บนเครื่องนี้เท่านั้น
 >
-> **เครื่องที่อนุญาต:**
+> **เครื่องที่อนุญาต (ผ่านถ้าตรงชุดใดชุดหนึ่ง):**
+>
+> **เครื่อง A (เครื่องหลัก Admin):**
 > - Platform: Windows
 > - User: `Admin` หรือ account sandbox ที่ลงท้ายด้วย `\\codexsandboxoffline`
 > - Home path: `C:\Users\Admin`
 > - Workspace path ที่ต้องมีอยู่จริง: `C:\Users\Admin\Desktop\TukDaeng\`
 >
-> **วิธีตรวจสอบก่อนเริ่ม skill:**
-> 1. ตรวจ user ปัจจุบัน (เช่น `whoami`) — ต้องเป็น `Admin` หรือ account sandbox ที่ลงท้ายด้วย `\\codexsandboxoffline`
-> 2. ตรวจว่า path `C:\Users\Admin\Desktop\TukDaeng\` มีอยู่จริง
+> **เครื่อง B (เครื่อง mailt):**
+> - Platform: Windows
+> - User: `mailt`
+> - Home path: `C:\Users\mailt`
+> - Workspace path ที่ต้องมีอยู่จริง: `D:\TukDaeng\`
 >
-> **ถ้าไม่ใช่เครื่องนี้:** หยุดทำงาน skill นี้ทันที ไม่เรียก MCP ใด ๆ แจ้งผู้ใช้ว่า skill นี้ใช้ได้เฉพาะเครื่องของ Admin เท่านั้น
+> **วิธีตรวจสอบก่อนเริ่ม skill:**
+> 1. ตรวจ user ปัจจุบัน (เช่น `whoami`) — ต้องเป็น `Admin` / account sandbox ที่ลงท้ายด้วย `\\codexsandboxoffline` (เครื่อง A) หรือ `mailt` (เครื่อง B)
+> 2. ตรวจว่า workspace path ของชุดนั้นมีอยู่จริง (`C:\Users\Admin\Desktop\TukDaeng\` สำหรับเครื่อง A, `D:\TukDaeng\` สำหรับเครื่อง B)
+>
+> **ถ้าไม่ใช่เครื่องที่อนุญาต:** หยุดทำงาน skill นี้ทันที ไม่เรียก MCP ใด ๆ แจ้งผู้ใช้ว่า skill นี้ใช้ได้เฉพาะเครื่องของ Admin หรือ mailt เท่านั้น
 
 Workflow สำหรับ **วางแผนการทำงานรายวัน** และ **สรุปผลหลังทำตามแผน** ของทีม TukDaeng — แบ่งการทำงานเป็น 2 ส่วนที่แยกจากกันชัดเจน
 
