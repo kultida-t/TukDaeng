@@ -14,7 +14,7 @@ Tuk Daeng เป็น Mobile Application สำหรับ Marketplace Communi
 - ให้ผู้ซื้อค้นหาและติดตามนาฬิกาที่สนใจได้ง่าย
 - ให้ผู้ขายลงขายและบริหาร Asset ของตัวเองได้
 - ให้ผู้ใช้เก็บและแสดงคอลเลกชันนาฬิกาของตัวเองได้
-- ให้ผู้ใช้พูดคุย เสนอราคา ติดตามผู้ขาย และตั้ง Watch Alert ได้
+- ให้ผู้ใช้พูดคุย ติดตามผู้ขาย และตั้ง Watch Alert ได้
 - ให้ Admin ตรวจสอบเนื้อหา Report และบริหารระบบผ่าน Back Office
 
 ระบบนี้ไม่ใช่:
@@ -44,7 +44,6 @@ User เดียวกันสามารถ:
 - ลงขาย Asset
 - แสดงคอลเลกชัน
 - ซ่อนคอลเลกชัน
-- เสนอราคา
 - แชท
 - Follow ผู้ใช้คนอื่น
 - Like และ Comment
@@ -93,7 +92,6 @@ Guest ใช้งานไม่ได้:
 - Follow
 - Comment
 - Chat
-- Make Offer
 - Favorites
 - Following
 - Watch Alert
@@ -113,7 +111,7 @@ Admin รับผิดชอบ:
 - จัดการ User / Asset ตาม policy
 - ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา
 
-Full Back Office PRD ยังไม่เริ่มระหว่าง FO cleanup รอบนี้ ให้ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary ก่อน และเริ่ม Full Back Office PRD หลัง FO baseline, Figma cleanup, Dev checklist, QA checklist และ FO sign-off ครบ/นิ่งแล้วเท่านั้น
+Full Back Office PRD ยังไม่เริ่มระหว่าง FO cleanup รอบนี้ ให้ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary ก่อน และเริ่ม Full Back Office PRD หลัง FO baseline, Dev checklist, QA checklist และ FO sign-off ครบ/นิ่งแล้วเท่านั้น
 
 ## 4. Canonical Terminology
 
@@ -129,8 +127,6 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 | Owner Profile | โปรไฟล์ของ User เอง เห็น Asset ตัวเองทุกสถานะ |
 | Public Profile | โปรไฟล์ของ User อื่น เห็นเฉพาะ Asset สถานะ Sale และ Show |
 | Watch Alert | การตั้งเงื่อนไขแจ้งเตือนเมื่อมี Asset Sale ที่ตรง Criteria |
-| Provenance | ประวัติและหลักฐานการได้มาของนาฬิกา |
-| Consignment | ข้อมูลการฝากขายนาฬิกา |
 
 ### Legacy Term Mapping
 
@@ -163,7 +159,7 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 - Sale แสดงใน Owner Profile, Public Profile, Feed, Search และ Watch Alert
 - Show แสดงใน Owner Profile และ Public Profile เท่านั้น
 - Show ไม่แสดงใน Feed, Search และ Watch Alert แต่สามารถเปิด Asset Detail แบบ Public ได้
-- Show สามารถ Make Offer, Contact Seller และ Chat ได้จาก Asset Detail หรือ Public Profile detail entry
+- Show สามารถ Contact Seller และ Chat ได้จาก Asset Detail หรือ Public Profile detail entry
 - Hide เห็นเฉพาะเจ้าของใน Owner Profile เท่านั้น
 - Sold เห็นเฉพาะเจ้าของใน Owner Profile เท่านั้น
 - Hide และ Sold ไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search และไม่เข้า Watch Alert
@@ -186,7 +182,7 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 
 - Search แสดงเฉพาะ Asset สถานะ Sale
 - Search ต้องไม่แสดง Hide, Show หรือ Sold
-- Search ต้องรองรับ Filter หลายมิติและ Sort ตามที่กำหนดใน Search Module
+- Search ต้องรองรับ Filter หลายมิติตามที่กำหนดใน Search Module (V1 ไม่มี Sort UI)
 
 ### Watch Alert
 
@@ -195,7 +191,7 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 - Watch Alert criteria ไม่มี Required Field แต่ Alert Name ต้องไม่ว่างตอนบันทึก
 - เมื่อสร้าง Watch Alert ระบบต้องเติมชื่อเริ่มต้นจาก Filter หรือ default name ให้ user แก้ไขได้ก่อนบันทึก
 - หาก user ลบชื่อจนว่างแล้วกดบันทึก ระบบต้องแจ้งให้กรอกชื่อและไม่สร้าง Watch Alert
-- Watch Alert Notification เปิดไปที่ Result List ไม่เปิด Asset ตรง
+- Watch Alert Notification เปิดไปที่ Asset Detail (post viewer) ของ Asset ที่ match โดยตรง ไม่มี Result List คั่น
 
 ### Public Profile
 
@@ -213,10 +209,10 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 - Owner Profile asset card แสดงปุ่ม `...` เพื่อเปิด quick actions
 - Tap asset card เปิด Asset Detail; tap `...` เปิด quick action menu และต้องไม่เปิด Asset Detail
 - Owner quick actions:
-  - Sale: Share asset, Edit asset, Edit provenance, Mark as sold, Change status, Delete asset
+  - Sale: Share asset, Edit asset, Edit purchase history, Mark as sold, Change status, Delete asset
   - Show: Share asset, Edit asset, Edit purchase history, Change status, Delete asset
   - Hide: Edit asset, Edit purchase history, Change status, Delete asset
-  - Sold: View sale history, View provenance แบบ read-only
+  - Sold: View sale history (owner-only read-only)
   - ซ่อนถาวร: View detail แบบ read-only เท่านั้น
 
 Asset ที่ลบโดยเจ้าของไม่แสดงใน owner list ปกติ ส่วน asset ที่ถูก Back Office ซ่อนถาวรยังแสดงให้ owner เห็นแบบ read-only เพื่อรับรู้สถานะและประวัติ แต่ไม่รวมใน Portfolio / Asset Value
@@ -230,8 +226,7 @@ Asset ที่ลบโดยเจ้าของไม่แสดงใน o
 - Sign Up
 - OTP Verification
 - Sign In
-- Forgot Password
-- Reset Password
+- Forgot Password (ส่ง reset link; ไม่มีหน้า Reset Password ในแอป)
 - Change Password
 - Sign Out
 - Sign in / Sign up with Apple
@@ -240,7 +235,6 @@ Asset ที่ลบโดยเจ้าของไม่แสดงใน o
 Rules:
 
 - Email / Password ต้องยืนยัน OTP
-- OTP หมดอายุภายใน 30 นาที
 - Password อย่างน้อย 8 ตัวอักษร และต้องมีตัวเลขหรือสัญลักษณ์
 - 1 Email สมัครได้ 1 บัญชีเท่านั้น
 - SSO Email ไม่ต้องยืนยัน OTP
@@ -287,7 +281,7 @@ Feed Actions:
   - Block User / บล็อกผู้ใช้งาน
 - เมนูสามจุดสำหรับ Asset ของ Owner:
   - Edit asset
-  - Edit provenance
+  - Edit purchase history
   - Mark as sold
   - Change status
   - Delete asset
@@ -296,7 +290,7 @@ Hide Feed Item:
 
 - เป็น user-level preference ของ viewer เท่านั้น
 - ไม่ใช่ asset status `Hide`
-- ไม่กระทบ Owner, ผู้ใช้อื่น, Public Profile, Offer หรือ Chat
+- ไม่กระทบ Owner, ผู้ใช้อื่น, Public Profile หรือ Chat
 - หลัง Hide ต้องซ่อน Asset นั้นจาก Feed ของผู้กด
 - ต้องมี undo ชั่วคราวหลัง hide สำเร็จ
 - หากไม่ undo ระบบต้องไม่แสดง Asset นั้นใน Feed ของผู้กดเมื่อ refresh/reload
@@ -339,7 +333,6 @@ Search รองรับ:
 - Result Count
 - Apply Filters
 - Clear Filters
-- Sort By Relevance, Price Low to High, Price High to Low, Newest, Popularity
 
 Search Result แสดงเฉพาะ Asset Sale
 
@@ -371,15 +364,14 @@ Asset Detail ต้องรองรับ:
 - Follow / Unfollow
 - Technical Specifications
 - Comments Section
-- Make Offer
 - Contact Seller
 
 Asset Detail Action Rules:
 
-- Asset สถานะ Sale สามารถ Make Offer, Contact Seller และ Chat ได้
-- Asset สถานะ Show สามารถ Make Offer, Contact Seller และ Chat ได้
+- Asset สถานะ Sale สามารถ Contact Seller และ Chat ได้
+- Asset สถานะ Show สามารถ Contact Seller และ Chat ได้
 - Asset สถานะ Show ต้องไม่ขึ้น Feed, Search หรือ Watch Alert
-- Asset สถานะ Hide และ Sold ไม่สามารถ Make Offer หรือ Contact Seller ใน public viewer context ได้
+- Asset สถานะ Hide และ Sold ไม่สามารถ Contact Seller ใน public viewer context ได้
 
 Asset Detail Price Analytics:
 
@@ -409,8 +401,8 @@ Add / Edit Asset รองรับข้อมูล:
 - Price
 - Description
 - Status: Sale / Show / Hide
-- Provenance
-- Consignment
+- Purchase Price (optional, owner-private)
+- Purchase Date (optional, owner-private)
 
 Market Data และ Asset Specification ต้องแยกขอบเขตดังนี้:
 
@@ -439,28 +431,21 @@ Sale is the only marketplace listing status and uses `Asking Price (THB)` when p
 Add Asset flow:
 
 - Step 1: กรอก Asset Detail และเลือก Status: Sale / Show / Hide
-- Step 2: กรอก Provenance ก่อน final Save / Upload Asset
-- หาก Status = Sale ให้เลือก Provenance Type ได้เป็น `Owner (Asset)` หรือ `Consignment`
-- หาก Status = Show หรือ Hide ต้องใช้ `Owner (Asset)` เท่านั้น และต้องไม่แสดง `Consignment`
+- Step 2: (optional) กรอก Purchase Information (Purchase Price, Purchase Date) เป็น owner-private data — ไม่มี provenance step หรือ type selection ใน V1
 - ก่อนสร้าง asset จริงต้องแสดง confirmation `Add this asset?` พร้อม primary action `Add asset`
 - หลังสร้างสำเร็จให้แสดง `Asset added.` และ default ไป Owner Asset Detail ของ asset ที่เพิ่งสร้าง
 
-Provenance required / optional fields:
+Purchase Information fields (optional, owner-private):
 
-| Provenance Type | Available Status | Required Fields | Optional Fields That Must Validate When Filled |
-| --- | --- | --- | --- |
-| Owner (Asset) | Sale, Show, Hide | Purchase Price (THB), must be greater than 0 | Purchase Date, Purchase From, All Equipment & Accessories, Proof of Payment, Note |
-| Consignment | Sale only | Full Name, Phone Number, Asking Price (THB), must be greater than 0 | Line / IG / Facebook, Email, Payout Method, Consignment Date, Consignment Duration, Commission (%), Minimum Acceptable Price, All Equipment & Accessories, Proof of Payment / Documentation, Note |
+- Purchase Price (THB): เมื่อกรอกต้องมากกว่า 0; ใช้เป็น asset cost basis สำหรับ Portfolio
+- Purchase Date: เมื่อกรอกต้องเป็นวันที่จริงและไม่เป็นวันที่ในอนาคต
 
-Provenance display and edit rules:
+Purchase Information display and edit rules:
 
-- Provenance, Purchase Information, Consignment Information, Proof of Payment และ Consignment Terms เป็น private เห็นเฉพาะ Owner หรือ Admin
+- Purchase Information เป็น private เห็นเฉพาะ Owner หรือ Admin
 - Optional fields ที่ไม่ได้กรอกต้องไม่แสดง label หรือ placeholder ใน Viewer/Public mode
-- Optional fields ที่ user กรอกหรืออัปโหลดต้อง validate ก่อน Save: date ต้องเป็นวันที่จริงและไม่เป็นอนาคตเมื่อเป็น purchase/consignment date, phone/email ต้อง format ถูกต้อง, numeric fields ต้องอยู่ในช่วงที่กำหนด, text ต้องไม่เป็น whitespace-only/เกินความยาว, และ uploads ต้องผ่าน type/size/count limits
-- `Payout Method`, `Consignment Date`, `Consignment Duration` และ `Commission (%)` ไม่ required ใน FO Add Provenance V1 เพราะเป็นเงื่อนไขที่ทีมงานอาจ confirm ภายหลัง แต่ถ้า user กรอกต้อง validate ครบ
-- Consignment Asking Price ต้องใช้ source เดียวกับ Commerce / listing Asking Price
-- หาก Asset ที่เป็น Consignment ถูกเปลี่ยนจาก Sale เป็น Show หรือ Hide ต้องเปลี่ยน provenance type เป็น Owner (Asset) หรือปิด consignment data ก่อนบันทึก
-- Sold Asset ต้องแสดง Provenance / Consignment เป็น read-only และไม่ให้แก้ผ่าน Edit Asset ปกติ
+- Optional fields ที่ user กรอกต้อง validate ก่อน Save
+- Sold Asset ต้องแสดง Purchase Information เป็น read-only และไม่ให้แก้ผ่าน Edit Asset ปกติ
 
 Owner สามารถแก้ไข Status ระหว่าง:
 
@@ -476,7 +461,6 @@ Change Status:
 - Success toast ใช้ข้อความกลาง `Asset status updated.`
 - Error toast ใช้ `Unable to update asset status. Please try again.`
 - หากเปลี่ยน status จาก Feed แล้วสถานะใหม่ไม่ใช่ Sale card ต้องหายจาก Feed ทันที
-- หาก Consignment เปลี่ยนจาก Sale เป็น Show หรือ Hide ต้อง confirm และแปลง active provenance เป็น `Owner (Asset)` โดย require Purchase Price
 
 Sold Asset:
 
@@ -489,7 +473,6 @@ Sold Asset:
 - Owner ลบ Asset ที่ไม่ใช่ Sold และไม่ถูก Back Office ซ่อนถาวรได้ตาม policy ของ V1
 - หลังลบแล้ว Asset หายจาก owner list ปกติและ public surfaces ทั้งหมด
 - Chat ที่เกี่ยวข้องยังอยู่ แต่ Reference Asset ต้องแสดง unavailable/deleted state
-- Offer ที่เกี่ยวข้องต้องเป็น Cancelled
 - Backend/BO ควรเก็บ record ตาม retention policy เพื่อ audit, report history, dispute หรือ compliance
 - การลบนี้ไม่ใช่ hard delete ทันที เว้นแต่นโยบายระบบระบุไว้ต่างหาก
 
@@ -520,7 +503,7 @@ Rules:
 - Report User รองรับ
 - หลัง Block แล้ว Chat history เดิมยังอ่านได้แบบ read-only
 - หลัง Block แล้วไม่สามารถส่งข้อความใหม่ระหว่างคู่ที่ Block กัน
-- หลัง Block แล้วไม่สามารถสร้าง Chat หรือ Offer ใหม่ระหว่างคู่ที่ Block กัน
+- หลัง Block แล้วไม่สามารถสร้าง Chat ใหม่ระหว่างคู่ที่ Block กัน
 
 Chat Room รองรับ:
 
@@ -528,7 +511,6 @@ Chat Room รองรับ:
 - Image
 - File
 - Asset Card
-- Offer Card
 - Delete Chat พร้อม Confirmation
 
 Delete Chat V1:
@@ -536,34 +518,8 @@ Delete Chat V1:
 - Delete Chat ต้องซ่อนห้องแชทจาก Chat List เฉพาะฝั่งผู้กด
 - Delete Chat ไม่ลบ message/archive ฝั่ง server
 - Delete Chat ไม่กระทบคู่สนทนา
-- Delete Chat ไม่ลบหลักฐาน offer/chat history
+- Delete Chat ไม่ลบหลักฐาน chat history
 - ไม่มี restore UI ใน V1
-
-### Offer
-
-Rules:
-
-- Make Offer ทำผ่าน Asset Detail เท่านั้น
-- Make Offer รองรับ Asset สถานะ Sale และ Show
-- Asset สถานะ Show สร้าง Offer ได้จาก Asset Detail หรือ Public Profile detail entry เท่านั้น
-- Asset สถานะ Show ยังไม่ขึ้น Feed, Search หรือ Watch Alert
-- Asset สถานะ Hide, Sold และ Deleted ไม่สามารถสร้าง Offer ใหม่ได้
-- Accepted Offer เปิด Chat Room
-- Rejected Offer เปิด Asset Detail
-- Asset Deleted ทำให้ Offer เป็น Cancelled
-- Asset Sold ต้อง Auto Reject Offer อื่น
-
-Offer Flow:
-
-```text
-Asset Detail
-→ Make Offer
-→ Enter Offer Price
-→ Add Message
-→ Send Offer
-→ Offer Sent Successfully
-→ Go to Chat
-```
 
 ### Social
 
@@ -600,8 +556,8 @@ Rules:
 - สร้างจากหน้า Search Filter
 - ไม่มี Required Field
 - Match เฉพาะ Asset Sale
-- เปิด Notification แล้วไป Watch Alert Result List
-- ไม่เปิด Asset Detail โดยตรงจาก Watch Alert Notification
+- เปิด Notification แล้วไป Asset Detail (post viewer) ของ Asset ที่ match โดยตรง
+- ไม่มี Watch Alert Result List เป็น destination คั่นใน V1
 
 Management:
 
@@ -618,7 +574,6 @@ Notification รองรับ:
 - Like
 - Comment
 - Follow
-- Offer
 - Watch Alert
 
 Notification ไม่รองรับใน Front Office V1:
@@ -633,13 +588,9 @@ Destination:
 
 | Notification | Destination |
 | --- | --- |
-| Watch Alert | Watch Alert Result List |
+| Watch Alert | Asset Detail (post viewer) |
 | Like | Asset Detail |
 | Comment | Asset Detail และ Focus Comment |
-| New Offer | Chat Room และ Focus Offer Card |
-| Offer Accepted | Chat Room |
-| Offer Rejected | Asset Detail |
-| Offer Cancelled | Chat Room และ Focus Offer Card |
 
 ### Profile
 
@@ -673,8 +624,7 @@ Public Profile ต้องไม่แสดง:
 
 - Hide
 - Sold
-- ข้อมูล Provenance
-- ข้อมูล Consignment
+- ข้อมูล Purchase Information (Purchase Price, Purchase Date) และ private asset data อื่น
 
 ### Portfolio
 
@@ -824,7 +774,7 @@ Delete Account V1:
 - ถ้า Delete Account API fail ต้องไม่ sign out, ไม่ clear session และต้องแสดง error/retry จาก context เดิม
 - ใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
 - ระหว่าง grace period user login ไม่ได้ หรือเห็น account-deleted support state
-- Transaction, offer, chat, report และ audit record ที่จำเป็นยังเก็บตาม legal/safety policy
+- Transaction, chat, report และ audit record ที่จำเป็นยังเก็บตาม legal/safety policy
 
 ## 8. Global State & Error Rules
 
@@ -846,7 +796,6 @@ Feature ที่ต้อง Login:
 - Like
 - Follow
 - Comment
-- Offer
 - Chat
 - Favorites
 - Following
@@ -868,7 +817,6 @@ Feature ที่ Guest ใช้ได้โดยไม่ต้อง Login:
 - Asset ต้องหายจาก Feed, Search, Watch Alert และ Public Profile
 - Asset Detail ต้องแสดงว่า `รายการนี้ไม่พร้อมใช้งานแล้ว`
 - Chat ยังอยู่
-- Offer ที่เกี่ยวข้องต้องเป็น Cancelled
 
 ### Feed Error
 
@@ -892,7 +840,6 @@ Feature ที่ Guest ใช้ได้โดยไม่ต้อง Login:
 - หายจาก Favorites ทันที
 - หายจาก Search ทันที
 - หายจาก Watch Alert ทันที
-- Offer อื่นถูก Auto Reject
 - Chat ยังใช้งานได้
 - Owner ยังเห็นใน Owner Profile และ Sold History
 
@@ -943,11 +890,11 @@ Feature ที่ Guest ใช้ได้โดยไม่ต้อง Login:
 
 - Asset ของผู้ถูก Block ต้องหายจาก Feed ทันที
 - Asset ของผู้ถูก Block ต้องหายจาก Search ทันที
-- Asset ของผู้ถูก Block ต้องหายจาก Watch Alert Result ทันที
+- Asset ของผู้ถูก Block ต้องหยุดถูก match ใน Watch Alert ทันที
 - ความสัมพันธ์ Follow ระหว่างกันต้องไม่ถูกใช้ในการแสดง Following Feed
 - Chat history เดิมระหว่างคู่ที่ Block กันยังอ่านได้แบบ read-only
 - ผู้ใช้ที่ Block กันไม่สามารถส่งข้อความใหม่หากันได้
-- ผู้ใช้ที่ Block กันไม่สามารถสร้าง Chat หรือ Offer ใหม่ระหว่างกันได้
+- ผู้ใช้ที่ Block กันไม่สามารถสร้าง Chat ใหม่ระหว่างกันได้
 
 ### Report
 
@@ -976,17 +923,12 @@ Asset หรือ Content จะหายเมื่อ Admin ดำเนิ�
 
 ข้อมูลต่อไปนี้เป็น Private และเห็นเฉพาะ Owner หรือ Admin ตามสิทธิ์:
 
-- Provenance
 - Purchase Price
 - Purchase Date
-- Purchase From
-- Proof of Payment
-- Consignment Owner Contact
-- Consignment Terms
 - Sold History
 - Portfolio Value Detail
 
-ข้อมูล Proof of Payment และเอกสารส่วนตัวต้องไม่ Public
+ข้อมูล Purchase Information และเอกสารส่วนตัวต้องไม่ Public
 
 ## 12. Non-Functional Requirements
 

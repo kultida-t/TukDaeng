@@ -4,7 +4,6 @@ Reference:
 
 - [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 - [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md)
-- [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md)
 
 Purpose:
 
@@ -19,8 +18,7 @@ Purpose:
 - [ ] มี Owner account ที่มี Asset ครบ status: `Sale`, `Show`, `Hide`, `Sold`
 - [ ] มี Admin / Back Office reference หรือ mock moderation endpoint
 - [ ] มี Asset ที่ถูก Deleted
-- [ ] มี Asset ที่มี Offer Pending / Accepted / Rejected / Cancelled
-- [ ] มี Chat Room พร้อม Asset Card และ Offer Card
+- [ ] มี Chat Room พร้อม Asset Card
 - [ ] มี Watch Alert ที่ match และไม่ match
 - [ ] มี Portfolio asset ที่มี Market Price
 - [ ] มี Portfolio asset ที่ไม่มี Market Price แต่มี Purchase Price
@@ -35,7 +33,7 @@ Purpose:
 ## QA-GLOBAL-001: Guest Login Required
 
 Given user เป็น Guest  
-When user กด Like, Follow, Comment, Offer, Chat, Favorites, Following, Watch Alert, Add Asset หรือ Article Like  
+When user กด Like, Follow, Comment, Chat, Favorites, Following, Watch Alert, Add Asset หรือ Article Like  
 Then ระบบต้องแสดง Global Login Required Dialog
 
 ## QA-GLOBAL-002: Guest Public Browsing
@@ -148,18 +146,18 @@ Then ระบบต้องอนุญาตให้เข้าถึงไ
 ## QA-GLOBAL-003H: Guest Login-Required Action After Deep Link
 
 Given Guest เปิด public Asset deep link
-When Guest กด Like, Follow, Comment, Chat, Make Offer, Report หรือ Block User บน Asset Detail
+When Guest กด Like, Follow, Comment, Chat, Report หรือ Block User บน Asset Detail
 Then ระบบต้องแสดง Global Login Required Dialog
 
 Given Guest เปิด Public Profile deep link
-When Guest กด Follow, Report User, Block User, Chat หรือ Make Offer บน Public Profile
+When Guest กด Follow, Report User, Block User หรือ Chat บน Public Profile
 Then ระบบต้องแสดง Global Login Required Dialog
 
 ## QA-GLOBAL-004: Private Data Not Public
 
 Given user ไม่ใช่ Owner  
 When user เปิด Public Asset Detail หรือ Public Profile  
-Then user ต้องไม่เห็น Purchase Price, Purchase Date, Purchase From, Proof of Payment, Provenance, Consignment, Sold History หรือ Portfolio Value Detail
+Then user ต้องไม่เห็น Purchase Price, Purchase Date, Sale History รายละเอียดการขาย (Buyer, Contact, Payment Method, Proof of Payment) หรือ Portfolio Value Detail — ไม่มี Provenance/Consignment entity ใน V1
 
 ---
 
@@ -183,8 +181,7 @@ Then Asset ต้องไม่แสดง
 
 Given Asset status เป็น `Show` และ user เป็น Member  
 When user เปิด Asset Detail จาก Public Profile  
-Then ต้องเห็น Make Offer / Contact Seller / Chat  
-And การสร้าง Offer ต้องทำได้จาก Detail เท่านั้น
+Then ต้องเห็น Contact Seller / Chat
 
 ## QA-VIS-004: Hide Visibility
 
@@ -220,11 +217,11 @@ Given user สมัครด้วย Email / Password
 When user submit sign up  
 Then ระบบต้องส่ง OTP และรอ verify ก่อนใช้งานเป็น Member
 
-## QA-AUTH-002: OTP Expired
+## QA-AUTH-002: OTP Resend (contract-only)
 
-Given OTP ถูกสร้างเกิน 30 นาที  
-When user submit OTP  
-Then ระบบต้อง reject และให้ขอ OTP ใหม่
+Given user ได้รับ OTP แต่ยังไม่ได้ verify  
+When user กด Resend OTP  
+Then ระบบต้องส่ง OTP ใหม่ — FO V1 ไม่ได้กำหนด OTP expiry duration หรือ OTP Expired page (S-20)
 
 ## QA-AUTH-002A: OTP Format
 
@@ -391,7 +388,7 @@ And ต้องไม่เห็น Comment direct action จาก Feed
 
 Given Owner เห็น Feed Card ของ Asset ตัวเอง status `Sale`
 When Owner เปิดเมนูสามจุด
-Then ต้องเห็น `Share Asset`, `Edit asset`, `Edit provenance`, `Mark as sold`, `Change status`, `Delete asset`
+Then ต้องเห็น `Share Asset`, `Edit asset`, `Edit purchase history`, `Mark as sold`, `Change status`, `Delete asset`
 And ต้องไม่เห็น `Hide this asset`, `Report Asset` หรือ `Block User`
 
 ## QA-FEED-011B: Owner Feed Change Status Removes Card
@@ -524,8 +521,8 @@ Then notification/result ต้องสร้างเฉพาะ `Sale`
 
 Given user มี Watch Alert notification  
 When user กด notification  
-Then ต้องเปิด Watch Alert Result List  
-And ต้องไม่เปิด Asset Detail โดยตรง
+Then ต้องเปิด Asset Detail (post viewer) ของ Asset ที่ match โดยตรง  
+And ต้องไม่มี Watch Alert Result List เป็น destination คั่น
 
 ---
 
@@ -573,48 +570,27 @@ Then ระบบต้อง save ได้
 And Asset ต้องเห็นเฉพาะ Owner
 And form ต้องไม่ใช้ listing price สำหรับ `Hide`
 
-## QA-ASSET-002G: Add Asset Requires Provenance Step
+## QA-ASSET-002G: Add Asset ไม่มี Provenance/Consignment Step
 
 Given Owner กรอก Add Asset detail ครบตาม required fields
-When Owner กด `Next`
-Then ระบบต้องเปิด Provenance step ก่อน final Save / Upload
-And ระบบต้องยังไม่สร้าง Asset จนกว่า Provenance step จะ Save สำเร็จ
+When Owner กด `Save` / `Add asset`
+Then ระบบต้อง save ได้โดยไม่ต้องผ่าน provenance step แยก — ไม่มี Provenance/Consignment entity หรือ type selection ใน V1 (S-25)
+And Purchase Information (Purchase Price, Purchase Date) เป็น optional owner-private fields ใน form เดียวกัน
 
-## QA-ASSET-002H: Sale Provenance Type Options
+## QA-ASSET-002H: Purchase Information Owner-Private
 
-Given Owner เลือก Status = `Sale`
-When Owner เข้าหน้า Provenance step
-Then ระบบต้องให้เลือก `Owner (Asset)` หรือ `Consignment`
+Given Owner กรอก Purchase Price และ Purchase Date ใน section `Purchase Information`
+When Asset ถูก save
+Then Purchase Price และ Purchase Date ต้องเป็น owner-private — Viewer ต้องไม่เห็นบน public surface
+And ระบบต้องใช้ค่าเหล่านี้เป็น input ของ Portfolio calculation
 
-## QA-ASSET-002I: Show Hide Owner Provenance Only
+## QA-ASSET-002J: Purchase Information Validation
 
-Given Owner เลือก Status = `Show` หรือ `Hide`
-When Owner เข้าหน้า Provenance step
-Then ระบบต้องแสดงเฉพาะ `Owner (Asset)` provenance form
-And ต้องไม่แสดงตัวเลือกหรือ tab `Consignment`
-
-## QA-ASSET-002J: Owner Provenance Purchase Price Required
-
-Given Owner อยู่ใน `Owner (Asset)` provenance form
-When Owner กด Save โดยไม่กรอก Purchase Price
-Then ระบบต้องแสดง validation `กรุณากรอกราคาซื้อ`
+Given Owner กรอก Purchase Price <= 0 หรือ Purchase Date เป็นวันที่ในอนาคต
+When Owner กด Save
+Then ระบบต้องแสดง validation เฉพาะ field นั้น
 And ต้องไม่ Save / Upload Asset
-
-## QA-ASSET-002K: Consignment Required Fields
-
-Given Owner เลือก Status = `Sale`
-And Owner เลือก provenance type = `Consignment`
-When Owner กด Save โดยไม่กรอก Full Name, Phone Number หรือ Asking Price
-Then ระบบต้องแสดง validation ตาม field ที่ขาด
-And ต้องไม่ Save / Upload Asset
-
-## QA-ASSET-002L: Consignment Asking Price Sync
-
-Given Owner กรอก Commerce / listing Asking Price ใน Asset detail step
-When Owner เลือก provenance type = `Consignment`
-Then Consignment Asking Price ต้อง prefill จาก listing Asking Price
-When Owner แก้ Consignment Asking Price
-Then listing Asking Price ต้อง sync เป็นค่าเดียวกัน
+And Purchase Information ที่เว้นว่างต้อง save ได้ (optional)
 
 ## QA-ASSET-002M: Optional Empty Fields Hidden After Save
 
@@ -625,11 +601,11 @@ And ต้องไม่เห็น `N/A`, `-` หรือ `Not provided`
 
 ## QA-ASSET-002N: Owner Private Fields Visibility
 
-Given Owner Save Asset พร้อม Provenance หรือ Consignment
+Given Owner Save Asset พร้อม Purchase Information
 When Viewer เปิด Public Asset Detail
-Then Viewer ต้องไม่เห็น Purchase Price, Purchase Date, Purchase From, Proof of Payment, Consignment Owner Contact, Payout Method, Commission หรือ Minimum Acceptable Price
+Then Viewer ต้องไม่เห็น Purchase Price หรือ Purchase Date
 When Owner เปิด Owner Asset Detail
-Then Owner ต้องเห็น private provenance section ตามข้อมูลที่บันทึกไว้
+Then Owner ต้องเห็น section `Purchase Information` ตามข้อมูลที่บันทึกไว้
 
 ## QA-ASSET-002O: Uploading State After Save
 
@@ -667,20 +643,13 @@ And body ต้องแจ้งว่าจะบันทึกการแ�
 And ต้องไม่ใช้ body ของ Edit Asset ที่อ้างถึง current status
 And action ต้องเป็น `Cancel` และ `Save` / `ยกเลิก` และ `บันทึก`
 When Owner กด `Cancel`
-Then popup ต้องปิดและข้อมูลที่แก้ไว้ใน Provenance form ต้องยังคงอยู่
+Then popup ต้องปิดและข้อมูลที่แก้ไว้ใน Purchase Information form ต้องยังคงอยู่
 
-## QA-ASSET-002S: Edit Consignment Confirmation Copy
-
-Given Owner แก้ไข Consignment details
-When Owner กด `Save`
-Then ระบบต้องแสดง confirmation title `Save consignment details?` / `บันทึกข้อมูลฝากขาย?`
-And body ต้องแจ้งว่าจะบันทึกการแก้ไขข้อมูลฝากขายของรายการนี้
-And ต้องไม่ใช้ body ของ Edit Asset ที่อ้างถึง current status
-And action ต้องเป็น `Cancel` และ `Save` / `ยกเลิก` และ `บันทึก`
+## QA-ASSET-002S: (removed — ไม่มี Consignment entity ใน FO V1 ตาม S-25)
 
 ## QA-ASSET-002T: Add Asset Confirmation Copy
 
-Given Owner กรอก Asset Detail และ Provenance ครบตาม required fields
+Given Owner กรอก Asset Detail ครบตาม required fields (Purchase Information เป็น optional)
 When Owner กด final action เพื่อสร้าง Asset
 Then ระบบต้องแสดง confirmation title `Add this asset?` / `เพิ่มรายการนี้?`
 And body ต้องแจ้งว่าจะบันทึก asset ลง collection ตาม selected status
@@ -694,7 +663,7 @@ And หาก save สำเร็จต้องแสดง `Asset added.` แ
 Given Owner กด `Add asset` จาก Add Asset confirmation
 When save/upload ล้มเหลว
 Then ระบบต้องแสดง `Unable to add asset. Please try again.`
-And ต้องคงข้อมูลทั้งหมดใน Asset Detail และ Provenance form
+And ต้องคงข้อมูลทั้งหมดใน Asset Detail และ Purchase Information form
 And ต้องไม่สร้าง asset ซ้ำ
 
 ## QA-ASSET-003: Mark As Sold
@@ -767,7 +736,6 @@ Then main fields ต้องถูก lock
 Given Owner ลบ Asset  
 When deletion สำเร็จ  
 Then Asset ต้องหายจาก Feed/Search/Watch Alert/Public Profile  
-And related Offer ต้องเป็น `Cancelled`  
 And related Chat ต้องยังอยู่
 And ต้องไม่มี Undo / restore action
 
@@ -805,23 +773,9 @@ Then ระบบต้องแสดง `Unable to update asset status. Please
 And ต้องคง selection ใน sheet
 And ต้องไม่เปลี่ยนสถานะจริงของ Asset
 
-## QA-ASSET-006H: Consignment Change Status Requires Owner Provenance
+## QA-ASSET-006H: (removed — ไม่มี Consignment/provenance type ใน FO V1 ตาม S-25)
 
-Given Asset เป็น `Consignment` และ status `Sale`
-When Owner เปลี่ยน status เป็น `Show` หรือ `Hide`
-Then ระบบต้องแสดง warning title `Change to owner asset?`
-And body ต้องแจ้งว่า Consignment details ใช้ได้เฉพาะ assets listed for sale
-When Owner กด `Continue`
-Then ระบบต้องพาไป Provenance และบังคับใช้ `Owner (Asset)`
-And ต้อง require `Purchase Price` ก่อนบันทึก status ใหม่
-
-## QA-ASSET-006A: Consignment Sale Cannot Switch To Show Without Provenance Conversion
-
-Given Owner มี Asset status `Sale`
-And Asset provenance type เป็น `Consignment`
-When Owner เปลี่ยน status เป็น `Show`
-Then ระบบต้องบังคับเปลี่ยน provenance type เป็น `Owner (Asset)` หรือปิด consignment data ก่อนบันทึก
-And ต้องไม่อนุญาตให้ Asset status `Show` เก็บ provenance type เป็น `Consignment`
+## QA-ASSET-006A: (removed — ไม่มี Consignment/provenance type ใน FO V1 ตาม S-25)
 
 ## QA-ASSET-007: Status Switch Show To Sale
 
@@ -841,13 +795,7 @@ Then Asset ต้องหายจาก Feed, Search, Watch Alert และ Pu
 And Asset ต้องเห็นเฉพาะ Owner
 And ระบบต้องไม่ใช้ Asking Price เป็น public/listing field อีกต่อไป
 
-## QA-ASSET-008A: Consignment Sale Cannot Switch To Hide Without Provenance Conversion
-
-Given Owner มี Asset status `Sale`
-And Asset provenance type เป็น `Consignment`
-When Owner เปลี่ยน status เป็น `Hide`
-Then ระบบต้องบังคับเปลี่ยน provenance type เป็น `Owner (Asset)` หรือปิด consignment data ก่อนบันทึก
-And ต้องไม่อนุญาตให้ Asset status `Hide` เก็บ provenance type เป็น `Consignment`
+## QA-ASSET-008A: (removed — ไม่มี Consignment/provenance type ใน FO V1 ตาม S-25)
 
 ## QA-ASSET-009: Status Switch Hide To Sale
 
@@ -991,7 +939,7 @@ Then แต่ละ asset card ต้องแสดงปุ่ม `...` บ�
 When Member tap ปุ่ม `...`
 Then ระบบต้องเปิด quick action menu และต้องไม่เปิด Asset Detail
 And menu ต้องแสดงเฉพาะ `Share asset` และ `Report asset`
-And ต้องไม่แสดง `Edit asset`, `Edit provenance`, `Edit purchase history`, `Mark as sold`, `Change status`, `Delete asset` หรือ `View sale history`
+And ต้องไม่แสดง `Edit asset`, `Edit purchase history`, `Mark as sold`, `Change status`, `Delete asset` หรือ `View sale history`
 When Member tap `Report asset` และ submit report
 Then report ต้องส่งเข้า Trust & Safety Report Asset flow
 And Asset ต้องไม่หายจาก Public Profile ทันทีจนกว่า Admin จะดำเนินการ
@@ -1014,7 +962,7 @@ Then ต้องไม่แสดงปุ่ม `...` บน asset card เ�
 
 Given Owner เปิด quick action menu ของ asset card
 When Asset status เป็น `Sale`
-Then menu ต้องแสดง `Share asset`, `Edit asset`, `Edit provenance`, `Mark as sold`, `Change status`, `Delete asset`
+Then menu ต้องแสดง `Share asset`, `Edit asset`, `Edit purchase history`, `Mark as sold`, `Change status`, `Delete asset`
 When Asset status เป็น `Show`
 Then menu ต้องแสดง `Share asset`, `Edit asset`, `Edit purchase history`, `Change status`, `Delete asset`
 And ต้องไม่แสดง `Mark as sold`
@@ -1022,7 +970,7 @@ When Asset status เป็น `Hide`
 Then menu ต้องแสดง `Edit asset`, `Edit purchase history`, `Change status`, `Delete asset`
 And ต้องไม่แสดง `Share asset` หรือ `Mark as sold`
 When Asset status เป็น `Sold`
-Then menu ต้องแสดงเฉพาะ `View sale history` และ `View provenance`
+Then menu ต้องแสดงเฉพาะ `View sale history` ตาม prototype
 And ต้องไม่แสดง `Share asset`, `Delete asset`, `Edit asset`, `Change status` หรือ `Mark as sold`
 
 ## QA-PROFILE-003: Share Profile Sheet
@@ -1060,101 +1008,7 @@ Then user ต้องยังไม่ถูก block และ Public Profile
 
 ---
 
-# 8. Offer
-
-## QA-OFFER-001: Offer Entry Point
-
-Given Member ต้องการ Make Offer  
-When Member อยู่ Feed/Search/Profile list/Chat  
-Then ต้องไม่สามารถสร้าง Offer ใหม่โดยตรง  
-When Member เปิด Asset Detail ของ `Sale` หรือ `Show`  
-Then Make Offer ต้องทำได้
-
-## QA-OFFER-002: Offer Unavailable Status
-
-Given Asset status เป็น `Hide`, `Sold` หรือ `Deleted`  
-When Member พยายาม Make Offer  
-Then ระบบต้องไม่สร้าง Offer
-
-## QA-OFFER-003: Offer Price Validation
-
-Given Buyer อยู่ใน Make Offer form  
-When Offer Price ว่าง  
-Then ปุ่ม `Send offer` ต้อง disabled  
-When Offer Price เป็น 0, ติดลบ, ตัวอักษร หรือ parse เป็นจำนวนเงินไม่ได้  
-Then ต้องแสดง `Please enter a valid offer amount`  
-And ระบบต้องไม่สร้าง Offer
-
-## QA-OFFER-004: Offer Message Validation
-
-Given Buyer อยู่ใน Make Offer form  
-When Message ว่างหรือมีเฉพาะช่องว่าง  
-Then ระบบต้องส่ง Offer ได้โดยไม่มี Message หลัง trim  
-When Message เกิน 500 characters  
-Then ต้องแสดง field-level validation error  
-And ระบบต้องไม่สร้าง Offer
-
-## QA-OFFER-005: Duplicate Pending Offer
-
-Given Buyer มี Pending Offer เดิมของ Asset เดียวกัน  
-When Buyer ส่ง Offer ซ้ำ  
-Then ระบบต้องไม่สร้าง Offer ใหม่  
-And ต้องแสดง `You already have a pending offer. Go to chat to view it.`
-
-## QA-OFFER-006: Owner And Guest Restrictions
-
-Given user เป็น Guest  
-When user กด Make Offer  
-Then ต้องแสดง Global Login Required Dialog  
-Given user เป็น Owner ของ Asset  
-When user เปิด Asset Detail ของตัวเอง  
-Then ต้องไม่เห็นปุ่ม Make Offer
-
-## QA-OFFER-007: Offer Sent Opens Chat
-
-Given Buyer submit valid offer  
-When offer created  
-Then status ต้องเป็น `Pending`  
-And ระบบต้องเปิด Chat Room พร้อม Offer Card
-
-## QA-OFFER-008: Accept Offer
-
-Given Seller มี Pending Offer  
-When Seller Accept และ confirm  
-Then Offer status ต้องเป็น `Accepted`  
-And Buyer ได้ Offer Accepted notification  
-And notification เปิด Chat Room
-
-## QA-OFFER-009: Reject Offer
-
-Given Seller มี Pending Offer  
-When Seller Reject และ confirm  
-Then Offer status ต้องเป็น `Rejected`  
-And Buyer ได้ Offer Rejected notification  
-And notification เปิด Asset Detail
-
-## QA-OFFER-010: New Offer Notification
-
-Given Buyer ส่ง Offer ใหม่  
-When Seller ได้ New Offer notification  
-Then notification ต้องเปิด Chat Room และ focus Offer Card
-
-## QA-OFFER-011: Offer Cancelled
-
-Given Asset ถูก Deleted  
-When related Offer ถูกเปลี่ยนเป็น `Cancelled`  
-Then Buyer/Seller notification ต้องเปิด Chat Room และ focus Offer Card ที่ Cancelled  
-And Asset reference ต้องแสดง unavailable state
-
-## QA-OFFER-012: Asset Sold Auto Reject
-
-Given Asset มีหลาย Pending Offer  
-When Owner mark Asset as Sold  
-Then Offer อื่นที่ไม่ใช่รายการที่เลือกขายต้อง Auto Reject
-
----
-
-# 9. Chat
+# 8. Chat
 
 ## QA-CHAT-001: New Message Badge Only
 
@@ -1177,10 +1031,10 @@ When A หรือ B เปิด Chat history เดิม
 Then history ต้องอ่านได้  
 And message input ต้อง disabled/read-only
 
-## QA-CHAT-004: Block Prevents New Offer
+## QA-CHAT-004: Block Prevents New Chat
 
 Given Member A และ B block กัน  
-When A หรือ B พยายามสร้าง Chat หรือ Offer ใหม่  
+When A หรือ B พยายามสร้าง Chat ใหม่  
 Then ระบบต้อง reject
 
 ## QA-CHAT-004A: Block User Confirmation From Chat
@@ -1198,7 +1052,7 @@ Given Member A และ Member B มี Chat Room เดียวกัน
 When Member A กด Delete Chat และ confirm  
 Then Chat Room ต้องหายจาก Chat List ของ Member A  
 And Chat Room ต้องยังอยู่ใน Chat List ของ Member B  
-And message/archive และ offer/chat history ต้องไม่ถูกลบจาก server
+And message/archive history ต้องไม่ถูกลบจาก server
 
 ## QA-CHAT-005A: Chat Room Overflow Menu
 
@@ -1238,13 +1092,13 @@ Then ต้องไม่มี Restore Chat UI
 
 ---
 
-# 10. Notification
+# 9. Notification
 
 ## QA-NOTI-001: Supported Types Only
 
 Given Notification Center แสดงรายการ  
 When QA ตรวจ type  
-Then type ต้องอยู่ใน Like, Comment, Follow, Offer, Watch Alert เท่านั้น
+Then type ต้องอยู่ใน Like, Comment, Follow, Watch Alert เท่านั้น
 
 ## QA-NOTI-002: Unsupported Types Hidden
 
@@ -1263,11 +1117,7 @@ Then destination ต้องตรงนี้:
 | Like | Asset Detail |
 | Comment | Asset Detail + Focus Comment |
 | Follow | Public Profile |
-| Watch Alert | Watch Alert Result List |
-| New Offer | Chat Room + Focus Offer Card |
-| Offer Accepted | Chat Room |
-| Offer Rejected | Asset Detail |
-| Offer Cancelled | Chat Room + Focus Offer Card |
+| Watch Alert | Asset Detail (post viewer) ของ Asset ที่ match |
 
 ## QA-NOTI-004: Read Unread Badge
 
@@ -1284,7 +1134,7 @@ Then ระบบต้องแสดง unavailable/user not found state ต�
 
 ---
 
-# 11. Portfolio
+# 10. Portfolio
 
 ## QA-PORT-001: Portfolio Owner Only
 
@@ -1363,7 +1213,7 @@ And แสดง label `YTD จากข้อมูลแรกของปี`
 
 ---
 
-# 12. Settings
+# 11. Settings
 
 ## QA-SETTING-001: Settings Member Only
 
@@ -1386,7 +1236,7 @@ And ต้องไม่มี Delete Account เป็น direct action บน
 
 Given Member เปิด Notification Settings  
 When toggle list แสดง  
-Then ต้องมีเฉพาะ Like, Comment, Follow, Offer, Watch Alert  
+Then ต้องมีเฉพาะ Like, Comment, Follow, Watch Alert  
 And ต้องไม่มี Chat/New Message, Market Update, Price/Valuation, Sale Success, Moderation หรือ Account Action
 And default state ของ Member ใหม่ต้องเป็น ON ทุก type
 And การเปิด/ปิด toggle ต้อง auto-save โดยไม่มี Save button
@@ -1501,7 +1351,7 @@ And ต้องแสดง error/retry state
 
 ---
 
-# 13. Board
+# 12. Board
 
 ## QA-BOARD-001: Board Is Article Area
 
@@ -1627,7 +1477,7 @@ Then ต้องแสดง Global Login Required Dialog
 
 ---
 
-# 14. Trust & Safety
+# 13. Trust & Safety
 
 ## QA-TRUST-001: Report Does Not Hide Immediately
 
@@ -1654,7 +1504,7 @@ And content ของ user นั้นต้องถูก filter จาก Fe
 Given Member เลือก Block User จาก Profile, Asset Detail, Feed หรือ Chat
 When confirmation แสดง
 Then title ต้องเป็น `Block this user?`
-And body ต้องอธิบายว่า asset/content ของ user นั้นจะถูก filter, chat history เดิมยังอ่านได้แบบ read-only, และไม่สามารถส่งข้อความหรือสร้าง offer ใหม่กับ user นั้นได้
+And body ต้องอธิบายว่า asset/content ของ user นั้นจะถูก filter, chat history เดิมยังอ่านได้แบบ read-only, และไม่สามารถส่งข้อความหรือสร้าง chat ใหม่กับ user นั้นได้
 And actions ต้องเป็น `Cancel` และ `Block`
 
 ## QA-TRUST-002: Block Hides Public Content
@@ -1671,7 +1521,7 @@ Then content ต้องกลับมาแสดงตาม rule ปกต�
 
 ---
 
-# 15. Integrations And Failure
+# 14. Integrations And Failure
 
 ## QA-INT-001: FCM Token Lifecycle
 
@@ -1696,13 +1546,13 @@ And ห้าม crash หรือแสดงค่าผิดเป็น Ma
 
 ## QA-INT-004: Payment Gateway Not V1
 
-Given user อยู่ Offer/Asset flow  
-When user ทำ purchase/offer  
+Given user อยู่ Asset flow  
+When user ทำ purchase  
 Then ต้องไม่มี Payment Gateway หรือ payment UI ใน V1
 
 ---
 
-# 16. Regression Sign-Off Matrix
+# 15. Regression Sign-Off Matrix
 
 QA sign-off ก่อนส่ง Dev complete ต้องครอบคลุม:
 
@@ -1710,10 +1560,9 @@ QA sign-off ก่อนส่ง Dev complete ต้องครอบคลุ
 - [ ] Sale / Show / Hide / Sold / Deleted
 - [ ] Like / Unlike / Favorites sync
 - [ ] Comment IG-style one-level replies และไม่มี multi-level nested thread
-- [ ] Offer Pending / Accepted / Rejected / Cancelled
 - [ ] Chat unread badge and block read-only
 - [ ] Notification routing ทุก supported type
-- [ ] Watch Alert Result List
+- [ ] Watch Alert notification เปิด Asset Detail (post viewer) ตรง ไม่มี Result List คั่น
 - [ ] Portfolio valuation fallback and no market price
 - [ ] Settings baseline and account-type behavior
 - [ ] Board guest share and login-required article like

@@ -1,777 +1,587 @@
 # 03 Search & Filter Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7/§9–§12 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6–§9 — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
 
 ---
 
 # 1. Document Information
 
-| Item | Detail |
-|---|---|
+| Field | Detail |
+| --- | --- |
 | Module Name | Search & Filter |
 | Platform | Mobile Application |
 | Version | V1 |
-| Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD |
-
----
+| Owner | Product / UX / Engineering |
+| Document Type | Functional PRD - Master Aligned |
 
 # 2. Objective
 
-Search & Filter Module ใช้สำหรับค้นหาและกรองรายการนาฬิกาที่เปิดขายในระบบ โดยเป็น entry point สำคัญของ Search Result และ Watch Alert Creation
+Search & Filter Module คือ discovery surface แบบ IG (post-centric — S-09) — เข้าจาก search icon บน app header ของ feed shell แล้วเปิด `search` sub page: landing = popular chips + explore photo grid, typing = recent searches + live suggestions, results = tabs `For you` / `Profiles` / `Tags` พร้อม active filter chips, filter page (`sfilter`) = chip multi-select แบบ draft pattern (Apply เท่านั้นที่ commit) และ result/explore tile เปิด Post Viewer เต็มจอเลื่อนแนวตั้งผ่านรายการโพสต์
 
-เป้าหมายหลักคือช่วยให้ผู้ซื้อค้นหา Asset สถานะ `Sale` ที่ต้องการได้รวดเร็ว แม่นยำ และสอดคล้องกับ visibility rule ของ master
-
----
+เป้าหมายหลักคือให้ผู้ใช้ค้นพบโพสต์จาก keyword / filter / hashtag, ค้นหา seller accounts และ hashtags, กรอง sale listing ด้วยเงื่อนไขหลายมิติ (AND logic), และบันทึกเงื่อนไขค้นหาเป็น Watch Alert — ตามสิทธิ์ของ session (guest browse ได้เสรี, action ที่ต้องมีตัวตนเจอ Member Sheet `Join TukDaeng`)
 
 # 3. Prototype Reference
 
-- `Search & Filter.png`
-- `Menu Feed.png`
-- `Watch Alert.png`
+Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
 
----
+- Search constants + state (~14178–14217): `SEARCH_BRANDS`, `SEARCH_POPULAR` (8 chips), `SEARCH_REFS`, `SEARCH_COND`, `SEARCH_DELIV`, `SEARCH_MOVE`, `SEARCH_DIAL`, `SEARCH_CASE`, `SEARCH_STRAP`, `MAX_PRICE` = `2,000,000`; helpers `esc`/`specOf`/`priceNum`/`viewsNum`/`fmtNum`/`unNum` (~14196–14201); `blankFilters`/`srchState` (~14203–14217) — state ผูกกับ screen object (session memory), `recents` seed เป็น mock 6 rows
+- Eligibility + matching (~14218–14260): `salePosts()` (`price && !ni && !muted && !blocked`), `haystack`/`matchQuery` (ทุกคำต้องเจอใน haystack), `delivMatch`/`matchFilters`, `searchResults` (`#` query → `POSTS` กรองแค่ `!muted`; ปกติ → `salePosts()`), `S.sort` dead (`"new"` เสมอ — `plo`/`phi`/`pop` มี code แต่ไม่มี UI)
+- Count + suggestion helpers (~14261–14302): `filterCount`, `brandCount`/`modelCount`/`optCount`/`strapCount`/`delivCount` (นับจาก `salePosts()`), `sellerAvatar`/`sellerSub`, `pushRecent` (dedupe แบบ case-insensitive + cap 8), `suggestRows` (keyword ≤6 + sellers ≤4)
+- Tags + explore (~14303–14319): `tagRows` (hashtag จาก caption ทุกโพสต์ `!muted` + `CF_TAGS` seed), `exploreTiles` (ทุก photo ของทุกโพสต์ `!ni && !muted && !blocked`; tall/views badge = decorative index คงที่)
+- Search UI (~14320–14633): `landingHTML` (chips + `xp-grid`), `recentRowHTML`/`recentHTML`/`recentPageHTML`, `suggestHTML`, `activeFilterChips`, `searchHTML` (modes `landing`/`typing`/`results`), `resultSellers`, `accountRowHTML`, `sellerCardHTML` (มี isTh branch บางส่วน), `resultGridHTML`, `searchResultsHTML` (head/tabs/sections/empty/error blocks)
+- Filter page (~14634–14685): `filterHTML` (sections + `fDraft` clone + `Apply (N)` + `Clear all`), `applyFilters` (validate → `.flt-err` หรือ commit + `_subStack = ["search"]`)
+- Post viewer (~14419–14586 + CSS ~3686–3760): `pvPostHTML` (rail/foot/`pv-add`), `pvPostSheetHTML` (`ps` sheet), `pvDetailsSheetHTML` (`dt` sheet), `svfPostHTML`/`pfpPostHTML`, `openPostViewer` (default / `feed` / `pfp` modes); `.pv-track` `scroll-snap-type: y mandatory` + `.pv-post` `scroll-snap-align: start` / `snap-stop: always`
+- Entries: `.search-btn` บน feed app-header (~19355); `.igd-tag` hashtag ใน caption → `openSub("search")` + preset q (~22590–22597); `.sr-saved` → `pushSub("saved")` (~21132–21133); `.sr-chip ico` / `.flt-open` → `sfilter`
+- Search handlers (~21103–21273): `.search-btn`/`.sr-x`/`.sr-cancel`/`.sr-fake`/`.sr-saved`/`.sr-pick`/`.rc-all`/`.rc-clear`/`.rc-x`/`.rc-row`+`.ac-row`/`.sr-tab`/`.sc-follow`/`.xp-tile`/`.pv-back`/`.pv-srch`/`.pv-add`/`[data-rm]`/`.sr-retry`/`.flt-chip`/`.flt-clear`/`.flt-apply`; Enter submit (~19939–19946); live suggestion input (~20082–20089); price auto-comma + digits-only (~20107–20120); chips-row drag scroll (~20137–20154)
+- Back semantics (~14842–14868 + ~20750–20780): `subBack` — `sfilter` → `fDraft = null` ทิ้ง draft; `search` mode `results` → `mode = "landing"`; pick จาก `recents` page → `_subStack = ["search"]`
+- Sheets + actions บน viewer: `.liked-by` → likes sheet (~22030–22038), share (~22046–22067), save (~22490–22520), comment (`pv-add` → `nt` variant ~21215–21227, `.comment-btn` ~22015–22028), `more-link` → `ps` + `details-toggle.pv-dt` → `dt` (~22567–22610), `.view-full` → `openPostDetail` ทับ viewer (~21849–21857), `follow-btn` → unfollow sheet (~21859–21898), `.pm-btn` → own/others post menu + `rpOpenFromPost` report stack ทับ viewer (`rp-over`, ~14872–14882)
+- Watch Alert: `WA_FK_LABEL` (~16117–16121), `waCriteriaFromSearch`/`waCriteriaFromPost` (~16124–16160), `critMatch`/`alertMatch`/`alertMatchCount`/`waSig`/`waName`/`modelKeyOf`/`syncModelFlags`/`refreshMfBtns` (~16161–16213), `waModesHTML`/`waSheetHTML`/`waRowHTML`/`walertsHTML` (~16215–16279); handlers `.sr-wa`/`.wa-mode`/`.wa-go`/`.wa-del`/`.wa-tgl` (~21899–22013); entry ที่ 2 `mf-btn` บน Post Detail (~21899–21917)
+- Guest gate `GUEST_GATE_SEL` + `obGate` (~22997–23012): `.sr-wa`/`.follow-btn`/`.sc-follow`/`.like-btn`/`.save-btn`/`.share-btn`/`.pm-btn`/`.comment-input`/`.lk-follow` gated; search/explore/filter/viewer surfaces ไม่ gated
+- Notification → viewer (~17806–17821): watch alert row → `pfp` viewer 1 โพสต์; like/comment row → own post `pfp` viewer; post หาย → toast `This post is no longer available`
+- Language re-render รักษา scroll ของ viewer/sub page (~19700–19723)
+- Dead/untriggered (ห้ามเขียนเป็น feature): `S.sort` (`plo`/`phi`/`pop` ไม่มี control), `S.err` (error block + `sr-retry` render ได้แต่ไม่มี code path ใด set `err = true`), `POST_DETAIL_CFG`, explore tall-tile/views badge (decorative index 2/3/7), recents seed rows (mock ไม่ใช่ history จริง), coach-mark copy `.search-btn` (onboarding artifact)
 
 # 4. Master Alignment Summary
 
-Search & Filter Module ต้องยึด master baseline ต่อไปนี้เป็นหลัก:
+| Area | Master Baseline |
+| --- | --- |
+| Search entry | Search icon บน app header ของ feed shell → `search` sub page (root ของ `_subStack`) — ไม่ใช่ bottom-nav tab (00_NAV §6.4/§6.6) |
+| Result model | Photo grid (`xp-tile`) → Post Viewer — **ไม่ใช่** feed card / asset card (post-centric, S-09) |
+| Result eligibility | Posts grid บน results = `salePosts()` — โพสต์ที่มีราคา (sale listing) + ไม่ `ni`/`muted`/`blocked`; explore/tags/hashtag surfaces ใช้ post eligibility ของตัวเอง (§9) |
+| Filter | Chip multi-select draft pattern — edits ไปที่ `fDraft`, `Apply` commit เข้า `S.f` เท่านั้น; price = typed inputs (ไม่มี slider); ทุก option แสดง `(N)` = จำนวน sale listing ที่เห็น — `(0)` เลือกได้ (no current listing ≠ inactive) |
+| Recent searches | อยู่ใน scope V1 — session-memory list ≤8 รายการ (inline 4 แถว + `See all` → `recents` page + `Clear all` + X รายแถว) |
+| Watch Alert | `sr-wa` bell บน results head → shared Watch Alert sheet (criteria = keyword + filters + price); match เฉพาะ `salePosts()`; entry ที่ 2 = `mf-btn` บน Post Detail (canonical อยู่ [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md)) |
+| Guest | Search / explore / results / filter / post viewer browse ได้เสรี (00_GLOBAL §11 guest capabilities) — identity actions → Member Sheet `Join TukDaeng` |
+| Navigation | Post Viewer = `.page-pv` overlay เหนือ sub page; Post Detail เหนือ viewer; back ตาม 00_NAV §6.7 (results → landing, `sfilter` → ทิ้ง draft) |
+| ไม่มีใน V1 | Sort UI, result count, pull-to-refresh / infinite scroll, saved search เป็น feature แยก, Popular Filter context-aware, TH copy ของ search surfaces (prototype เป็น EN-only) |
 
-- Search Result แสดงเฉพาะ Asset สถานะ `Sale`
-- Search ต้องไม่แสดง Asset สถานะ `Show`, `Hide`, `Sold`
-- Search ต้องกรอง Asset ที่ User ไม่มีสิทธิ์มองเห็น
-- Search ต้องไม่แสดง Asset ของ User ที่ถูก Block หรือ Block กันอยู่
-- Search ต้องรองรับ Filter หลายมิติ
-- Watch Alert ต้องสร้างจาก Search Filter
-- Watch Alert criteria ไม่มี Required Field แต่ Alert Name ต้องไม่ว่างตอนบันทึก
-- Watch Alert Match เฉพาะ Asset สถานะ `Sale`
-- Watch Alert Notification ต้องเปิดไปที่ Watch Alert Result List ไม่เปิด Asset Detail ตรง
-- Guest ใช้ Search / Filter / View Result ได้ แต่ Create Watch Alert ไม่ได้
+# 5. Scope
 
----
+## In Scope
 
-# 5. Figma Gap Checklist For Search & Filter Module
+- Search entry: `.search-btn` บน app header, hashtag (`igd-tag`) จากทุก caption surface, `pv-srch` jump กลับ search
+- `search` sub page 3 modes: `landing` (popular chips + explore photo grid), `typing` (field + Cancel + X, recents/suggestions), `results` (head + tabs + active filter chips + sections)
+- Recent searches: push อัตโนมัติเมื่อเลือก, dedupe, cap 8, inline 4 แถว + `See all` → `recents` page (`Clear all` + X รายแถว) — session memory เท่านั้น
+- Live suggestions: keyword rows (brand/model พร้อม `N listings`, reference) + seller rows (พร้อม `N listings`/`Following`)
+- Results tabs: `For you` (Accounts section + Posts grid), `Profiles` (seller cards + Follow button), `Tags` (hashtag rows + `N posts`)
+- Active filter chips + per-chip remove (price chip ลบทั้ง min/max)
+- `sfilter` page: 11 sections, dependent Model ← Brand, price range inputs + validation, draft/commit/discard pattern, `Clear all`, `Apply (N)`
+- Post Viewer: 3 modes (`default` scroll-snap / `feed` / `pfp`), rail + foot + `pv-add` actions, sheets (`ps`/`dt`/`nt`/`lk`/`sh`/`sv`/post menus), back + search-icon semantics, detail-over-viewer
+- Watch Alert entry จาก results (`sr-wa` → criteria snapshot + bell `on` state)
+- Guest gate behavior (browse vs gated actions → Member Sheet)
+- Empty/error states ตามที่ prototype render จริง (รวม EN-only copies)
+- Contract-only: search error path (`S.err` ไม่มี trigger ใน prototype), analytics events
 
-รายการนี้ใช้เป็น checklist สำหรับปรับ Figma เฉพาะ Search & Filter Module ให้ตรงกับ master ก่อนส่งต่อ Dev/QA
+## Out Of Scope (module อื่นเป็นเจ้าของ)
 
-| Priority | Gap | Master Baseline | Figma Action |
-|---|---|---|---|
-| High | ยังไม่เห็น Watch Alert Result List | Watch Alert Notification ต้องเปิดไปที่ Result List ไม่เปิด Asset Detail ตรง | เพิ่ม Watch Alert Result List screen |
-| High | ต้องยืนยันว่า Search Result แสดงเฉพาะ Sale | Search Result แสดงเฉพาะ Asset สถานะ Sale | ตรวจ state/filter ไม่ให้มี Show, Hide, Sold ใน Search Result |
-| High | ยังไม่เห็น Guest restriction สำหรับ Create Watch Alert ชัดเจน | Guest Create Watch Alert ไม่ได้ และต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state เมื่อกด Create Watch Alert |
-| Medium | Search Result ใช้ layout เดียวกับ Feed แต่ต้องไม่แสดง Location | Feed/Search card V1 ห้ามแสดง Location | ตรวจ card ใน Search Result ให้เหลือเฉพาะ Posted Time |
-| Medium | ยังไม่เห็น state ของ no result / error / retry ครบ | Empty State ใช้ `ไม่พบข้อมูล` / `No data found`; error ต้องมี retry | เพิ่ม no result และ error state พร้อมปุ่ม retry |
-| Medium | ยังไม่เห็น clear filter / result count ชัดเจน | Search รองรับ Result Count, Apply Filters, Clear Filters | เพิ่ม result count และ clear filter control |
-| Medium | ยังไม่เห็น sort options ครบ | Search รองรับ Relevance, Price Low to High, Price High to Low, Newest, Popularity | เพิ่ม sort option set ให้ครบตาม master |
-| Medium | Filter dropdown ยังไม่แสดงจำนวน listing ข้างชื่อ option | Filter Visibility Rule กำหนดให้แสดงจำนวน Asset Sale ปัจจุบันข้างชื่อทุก entity/option แม้จำนวนเป็น 0 | เพิ่ม count label ข้างชื่อใน autocomplete และ filter dropdown เช่น `Rolex (212)`, `Daytona (0)` |
+- Post Detail internals (specs, `mf-btn`, `wl-btn`, ask) — [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (FSP-018); เอกสารนี้ระบุแค่ `View full detail` → Post Detail handoff
+- Watch Alert sheet internals / matching / list / notification — [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) (FSP-021); เอกสารนี้ระบุเฉพาะ criteria snapshot + entry + bell state
+- Saved / Wishlist hub + collections internals (`sr-saved` เป็น entry เท่านั้น) — [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) (FSP-022)
+- Profile grid + `pfp` viewer content rules — [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (FSP-019); viewer mode `pfp` ระบุแค่ shell/entry
+- Notification list internals — [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (FSP-021); destination อ้าง 00_NAV §8
+- Report stack internals — [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) (entry จาก post menu ใน viewer เท่านั้น)
+- Comment/likes/share/save sheet internals — shared sheets ของ [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) (02_FEED อ้าง entry-level เช่นเดียวกัน)
+- Sort UI / result count / pull-to-refresh / infinite scroll / end-of-list marker — ไม่มีใน V1 (prototype ไม่มี)
+- Market Data `is_active` model / option-master lifecycle — prototype ใช้ static catalogs (`SEARCH_*`); no current listing vs inactive เป็น backend contract (ดู Filter Visibility Rule)
+- Search Insights / keyword analytics backend — aggregate concern ฝั่ง BO
 
----
+# 6. Screen Mapping
 
-# 6. Scope
+| Screen / State | Prototype | Description |
+| --- | --- | --- |
+| Search landing | `search` sub page · `mode:"landing"` | back + fake field + `sr-saved` icon + popular chips + explore `xp-grid` |
+| Search typing | `mode:"typing"` | real input `.sr-q` + `.sr-x` + `Cancel`; body = recents (q ว่าง) หรือ suggestions |
+| Recent section | `recentHTML()` | `Recent` + ≤4 rows + `See all`; per-row X |
+| Recent searches page | `recents` route · `recentPageHTML()` | back + title + `Clear all` + full list |
+| Suggestions | `suggestHTML()` | keyword rows (search icon + `N listings`) + seller rows (avatar + `N listings`/`Following`) |
+| Search results | `mode:"results"` · `searchResultsHTML()` | head (back/fake field/`sr-wa` bell/filter icon) + tabs + active filter chips + body ตาม tab |
+| Results — For you | `tab:"foryou"` | `Accounts` section + `Posts` `xp-grid two` |
+| Results — Profiles | `tab:"profiles"` | seller cards (`sr-scard`) + Follow button |
+| Results — Tags | `tab:"tags"` | hashtag rows `#tag` + `N posts` |
+| Filter page | `sfilter` route · `filterHTML()` | back + `Filters` + chip sections + price inputs + `Clear all`/`Apply (N)` |
+| Post Viewer — default | `.page-pv` · `openPostViewer()` | immersive snap viewer (explore/result tiles, notifications) |
+| Post Viewer — feed mode | `.page-pv.feed` | head title + `pv-srch` + feed-style cards (saved/wishlist/archive) |
+| Post Viewer — pfp mode | `.page-pv.pfp` | head `Posts`/`{user}` + Follow pill + `pfp-post` cards (profile grid) |
+| Caption sheet | `ps` sheet · `pvPostSheetHTML()` | seller head + full caption + time + comments + dead input |
+| Details sheet | `dt` sheet · `pvDetailsSheetHTML()` | spec/details + `View full detail` → Post Detail |
+| Comment sheet | `nt` variant · `commentsHTML()` | shared comment sheet (view-only composer — contract) |
+| Likes / Share / Save / Watch Alert sheets | `lk`/`sh`/`sv`/`wa` | shared bottom sheets (canonical 11_SOCIAL / 10_WATCH_ALERT) |
+| Member Sheet | `obGate()` | guest gate `Join TukDaeng` (00_GLOBAL §11) |
+| Result empty / error | `.sr-empty-block` | `No data found` / `Something went wrong. Please try again.` + `Try again` |
 
-Search & Filter Module ใน V1 ครอบคลุม:
-
-- Keyword Search
-- Autocomplete
-- Filter
-- Search Result
-- Result Count
-- Sort
-- Apply Filters
-- Clear Filters
-- Open Asset Detail
-- Open Public Profile
-- Create Watch Alert from Search Filter
-- Popular Filter / Popular Selection tags สำหรับช่วยเลือก Brand, Model, Reference และ filter option ที่ถูกเลือกบ่อยแบบ aggregate
-- Quick selection จาก Popular Filter tags ในหน้า Search และหน้า Filter
-
-ไม่รวมใน V1:
-
-- Saved Search เป็น feature แยก
-- Recent Search หรือประวัติการค้นหาส่วนตัวของ user
-- Trending Search แบบหน้าแยกหรือประสบการณ์ค้นหาเต็มรูปแบบ
-- AI Search Suggestion
-- Search History Sync
-- Natural Language Search
-
-Popular Filter ที่อยู่ใน V1 ไม่ถือเป็น Saved Search, Recent Search หรือ Search History ส่วนตัว แต่เป็นข้อมูล aggregate ของการเลือก keyword/filter เพื่อช่วยให้ user เลือกเงื่อนไขที่นิยมได้เร็วขึ้น
-
----
-
-# 7. Screen Mapping
-
-หน้าจอที่เกี่ยวข้องในโมดูลนี้:
-
-1. Search
-2. Search Autocomplete
-3. Filter
-4. Search Result
-5. Empty Search Result
-6. Search Error State
-7. Create Watch Alert
-8. Watch Alert Result List
-9. Global Login Required Dialog
-
----
-
-# 8. User States
+# 7. User States
 
 ## Guest
 
-สามารถ:
+Guest ทำได้โดยไม่ gate:
 
-- Search
-- Filter
-- View Search Result
-- Open Asset Detail ที่เป็น Public
-- Open Public Profile
+- เปิด search sub page (header icon, hashtag ใน caption), พิมพ์/ลบ keyword, submit ค้นหา, กด `Cancel`/X
+- ดู popular chips + explore grid, recents (session-local), suggestions, results ทุก tab, active filter chips
+- เปิด `sfilter`, toggle chips, `Apply`/`Clear all`, back ทิ้ง draft
+- แตะ explore/result tile เปิด Post Viewer + เลื่อนดูโพสต์ใน list + `pv-back`/`pv-srch`
+- เปิด caption (`ps`) / details (`dt`) / comments / likes sheets เพื่ออ่าน และ `View full detail` → Post Detail + seller area → Public Profile (read-only)
+- เปิด Saved hub จาก `sr-saved` (guest เห็น empty — ไม่ gate แต่ไม่มีข้อมูล)
 
-ไม่สามารถ:
+Guest กดแล้วเจอ Member Sheet `Join TukDaeng` (gate — `GUEST_GATE_SEL`):
 
-- Create Watch Alert
-- Like
-- Follow
-- Comment
-- Chat
-- Make Offer
-
-เมื่อ Guest กด Create Watch Alert หรือ feature ที่ต้อง Login ต้องแสดง Global Login Required Dialog
+- `sr-wa` watch-alert bell, Follow ทุกจุด (results seller card `.sc-follow`, viewer foot `.follow-btn`, `ps` sheet, `pfp` head pill)
+- like / save / share / `...` post menu บน viewer rail และทุก action ในเมนู (favorites / not-interested / report / own items)
+- comment input / emoji row / comment like / liker-row Follow (ภายใน sheets)
+- mute / unfollow / report / block ทุกจุด
 
 ## Member
 
-สามารถใช้งาน Search & Filter ได้ทั้งหมดตามสิทธิ์ของ User
+Member ใช้ครบ: search + recents (ของ session ตัวเอง), suggestions, results ทุก tab, filter draft/apply/clear, tile → viewer + rail actions (like/save/share/menu), comment surface, Follow/Unfollow seller จาก results/viewer, Watch Alert create/edit/delete จาก `sr-wa` (dedupe → `You already saved this alert`)
+
+## Owner (โพสต์ตัวเอง)
+
+- `...` menu บนโพสต์ตัวเองใน viewer = own-post menu เดียวกับ feed (archive/commenting/edit/sold/pin/delete — canonical 02_FEED)
+- โพสต์ตัวเองขึ้น explore/results ตาม eligibility เดียวกับโพสต์คนอื่น (composer เซ็ต `following:true` ให้ตัวเอง)
 
 ## Blocked Relationship
 
-เมื่อ User Block กัน:
+- โพสต์ของบัญชีที่ block กัน (`p.blocked`) หลุดจาก results Posts grid และ explore grid — **ยกเว้น** hashtag query ที่ยังแสดง (deviation — §9 Deviations)
+- Blocked seller ไม่ขึ้นใน Accounts section / Profiles tab / suggestions (`PF_BLOCKED`)
+- Muted seller: โพสต์หลุดทุก surface ของ search (results, explore, tags, hashtag grid)
+- Not-interested (`ni`): หลุดจาก results Posts grid + explore แต่ยังขึ้นใน hashtag grid (deviation)
 
-- Search Result ต้องไม่แสดง Asset ของผู้ที่ถูก Block
-- Watch Alert Result List ต้องไม่แสดง Asset ของผู้ที่ถูก Block
-- ความสัมพันธ์ Follow ระหว่างกันต้องไม่ถูกใช้ในการแสดงผลที่เกี่ยวข้อง
+# 8. User Flow
 
----
+## Open Search
 
-# 9. User Flow
+1. User กด search icon บน app header ของ feed shell (guest กดได้ — ไม่ gate)
+2. `openSub(scr, "search")` เปิด sub page เป็น root ของ stack (`_subStack = ["search"]`), mode default `landing`
+3. แสดง popular chips + explore grid; back จาก landing ปิดหน้า search กลับ feed shell
 
-## Search Asset
+## Landing → Typing → Submit
 
-```text
-Search
-→ Enter Keyword
-→ View Autocomplete
-→ Submit Search
-→ Search Result
-→ Asset Detail
-```
+1. User แตะ fake field (หรือ `sr-fake` บน results head) → `mode = "typing"` — input จริง focus พร้อม cursor ท้ายข้อความ (คง q เดิมถ้ามี)
+2. q ว่าง → แสดง `Recent` section; q ไม่ว่าง → live suggestions ทุก keystroke (`input` handler re-render body เท่านั้น)
+3. `Cancel` → กลับ `landing` (คง q); `.sr-x` → ล้าง q เป็น `""` (กลับไป recents)
+4. Enter/Submit → `q` trimmed; ถ้าไม่ว่าง `pushRecent(kw)`; `mode = "results"`, `tab = "foryou"`
 
-## Filter Asset
+## Popular Chip
 
-```text
-Search
-→ Open Filter
-→ Select Conditions
-→ Apply Filter
-→ Search Result
-```
+1. User กด chip บน landing (`For you` = q ว่าง — เท่ากับ browse ทุก sale listing; อื่น = keyword)
+2. Chip ที่ไม่ใช่ `For you` → `pushRecent(kw)` อัตโนมัติ
+3. `mode = "results"`, `tab = "foryou"` — ไม่มี transition พิเศษ
 
-## Clear Filter
+## Recent Searches
 
-```text
-Search Result
-→ Open Filter
-→ Clear Filters
-→ Apply
-→ Search Result with cleared conditions
-```
+1. Typing (q ว่าง) → `Recent` + ≤4 แถว; >4 → `See all` → `recents` page (back + title + `Clear all` + list เต็ม)
+2. Row มี 2 แบบ: seller (avatar + name + `N listings`/`Following` sub) และ keyword (clock icon + text); X รายแถวลบทันที; `Clear all` ล้างทั้ง list
+3. กด row (ทั้ง inline และบน `recents` page) → `pushRecent` + `q` + `mode = "results"` + `tab = "foryou"`; pick จาก `recents` page → `_subStack` เหลือ `["search"]` (back กลับหน้า search)
+4. Recents เป็น session memory ต่อ screen — ไม่ persist ข้าม session (00_GLOBAL §7); seed rows ใน prototype เป็น mock
 
-## Sort Result
+## Suggestions
 
-```text
-Search Result
-→ Open Sort
-→ Select Sort Option
-→ Search Result Reordered
-```
+1. พิมพ์ q → ระบบ render keyword rows ก่อน (brand/model ที่ชื่อ contains q พร้อม `N listings` จาก sale listings ปัจจุบัน + reference ที่ contains q — รวม ≤6) ตามด้วย seller rows (name contains q — ≤4, sub `N listings` หรือ `Following`)
+2. ไม่มีผล → `No suggestions`
+3. กด row → `pushRecent` (kw หรือ seller ตามชนิด) + `q` + `mode = "results"`
 
-## Create Watch Alert
+## Results Tabs
 
-```text
-Search Result
-→ Create Watch Alert
-→ Confirm / Save Alert
-→ Watch Alert Created
-```
+1. `For you` = `Accounts` section (seller ที่**ชื่อ** match q — post seller ที่ชื่อไม่ match ไม่นับ) + `Posts` grid
+2. `Profiles` = seller cards (avatar, name, `N listings`/`N รายการประกาศ`, `· Following`, Follow/Following button)
+3. `Tags` = hashtag rows + `N posts` (นับจากทุกโพสต์ `!muted` ที่มี tag ใน caption) — กด tag → q เป็น `#tag` → results tab `foryou` ที่ grid แสดงทุกโพสต์
+4. สลับ tab ไม่เปลี่ยน q/filters; active filter chips แสดงใต้ tabs เสมอเมื่อมี filter
 
-## Guest Create Watch Alert
+## Filter Flow (`sfilter`)
 
-```text
-Search Result
-→ Create Watch Alert
-→ Global Login Required Dialog
-```
+1. เปิดจาก filter icon บน landing chips หรือ `flt-open` บน results head → `pushSub("sfilter")` + clone `S.f` → `fDraft`
+2. User toggle chips — edits ลง `fDraft` เท่านั้น (re-render แต่คง scroll position); เลือก/ยกเลิก Brand → prune `model` ที่ไม่ใช่ของ brand ที่เลือกออกจาก draft
+3. `Clear all` → `fDraft` = blank (ไม่ commit — ต้อง Apply ถึงมีผล)
+4. `Apply (N)` (N = จำนวน filter values ที่เลือก, price นับ 1) → validate price → commit `S.f = fDraft`, `mode = "results"`, `_subStack = ["search"]` (กลับ results โดยตรง)
+5. Back/ออกกลางทาง → `fDraft = null` ทิ้ง draft ทั้งหมด (00_NAV §6.7)
 
-## Open Watch Alert Notification
+## Price Range
 
-```text
-Notification
-→ Watch Alert Result List
-→ Asset Detail
-```
+1. พิมพ์ min/max — input handler strip ทุก non-digit เงียบ + auto-format comma ทุก keystroke (`2000000` → `2,000,000`)
+2. `Apply` → validate: min > max → `Minimum price must not exceed maximum price`; max > `2,000,000` → `Maximum price must not exceed 2,000,000` — error แสดงใน `.flt-err` และไม่ commit
+3. ผ่าน → commit เป็น price chip `THB {min|0}–{max|Any}` บน results
 
----
+## Active Filter Chips
 
-# 10. Business Rules
+1. Results แสดง chip ต่อ selected value (`data-rm`) + chip price รวม 1 อัน
+2. กด `×` → ลบ value นั้นออกจาก `S.f` ทันที (price chip ล้างทั้ง min/max) + re-render results — ไม่ต้อง Apply
 
-## Search Visibility Rule
+## Hashtag → Search
 
-Search แสดงเฉพาะ:
+1. User กด `#tag` (`.igd-tag`) ใน caption บน feed card / viewer / post detail / caption sheet
+2. `openSub(scr, "search")` เปิดหน้า search ใหม่ + `q = "#tag"` + `mode = "results"` + `tab = "foryou"`
+3. Posts grid แสดง**ทุกโพสต์**ที่ caption match (ไม่จำกัด sale — ดู Results Eligibility Rule)
 
-- Asset สถานะ `Sale`
-- Asset ที่ User มีสิทธิ์มองเห็น
-- Asset ของ User ที่ไม่ได้ถูก Block และไม่ได้ Block กันอยู่
+## Result Tile → Post Viewer
 
-Search ต้องไม่แสดง:
+1. User กด `xp-tile` บน explore grid (ทุก photo ของทุก eligible post) หรือ `xp-grid two` บน results (photo แรกของแต่ละ result)
+2. `openPostViewer` เปิด `.page-pv`: default mode = รายการโพสต์ของ grid นั้น, เลื่อนแนวตั้ง snap ทีละโพสต์, เปิดที่โพสต์/photo index ที่กด (result tile = photo index 0 เสมอ)
+3. `pv-back` → ปิด viewer กลับหน้าที่เปิดมา; `pv-srch` → ปิด viewer + กลับ `mode = "typing"` ของหน้า search (เฉพาะเมื่อมี sub stack — จาก notification ที่ไม่มี stack, icon นี้แค่ปิด viewer)
 
-- `Show`
-- `Hide`
-- `Sold`
-- Deleted Asset
-- Asset ของ User ที่ถูก Block หรือ Block กันอยู่
+## Post Viewer Actions
+
+1. Rail: like (toggle + sync), `Likes`/`ถูกใจ` label → likes sheet, comment (+count) → comment sheet `nt` variant, views (read-only), share → share sheet, save → save sheet, `...` → post menu (own/others ตาม `isOwnPost()`)
+2. Foot: avatar/seller → Public Profile; `Follow` pill (เฉพาะยังไม่ follow → follow ทันที; following → unfollow sheet `Unfollow @{seller}?`); caption `…` → `ps` sheet; `Tap for details`/`แตะเพื่อดูรายละเอียด` → `dt` sheet (เฉพาะโพสต์ที่มี `specGroups`)
+3. `pv-add` `Add comment…`/`เพิ่มความคิดเห็น…` → comment sheet เดียวกัน
+4. `View full detail` ใน `dt` sheet → Post Detail slide ทับ viewer (`pv-open` คงอยู่ — `detail-back` กลับ viewer); Report จาก `...` → report stack `rp-over` ทับ viewer
+5. Guest: rail actions + Follow + menu ทั้งหมด → Member Sheet; เปิด sheets ดู/ไป detail/profile ได้เสรี
+
+## Watch Alert From Results
+
+1. Member กด `sr-wa` bell บน results head (guest → Member Sheet)
+2. `waCriteriaFromSearch` snapshot: keyword (`fk:"q"` ถ้ามี) + ทุก filter value + price range → draft `source:"search"`, `matchMode:"all"`, name = `waName()` auto
+3. Shared Watch Alert sheet เปิด (title `Create watch alert`/`สร้างการแจ้งเตือนนาฬิกา`): name input (auto-filled, editable), match modes `ตรงทุกเงื่อนไข`/`ตรงเงื่อนไขใดเงื่อนไขหนึ่ง`/`เฉพาะรุ่น` พร้อม `N now` count, `Create alert`/`สร้างการแจ้งเตือน`
+4. Criteria เหมือน alert เดิม (`waSig`) → เปิดเป็น edit mode (Save changes + Delete) แทน; save criteria ซ้ำ matchMode ซ้ำ → toast `You already saved this alert`
+5. สำเร็จ → toast `Watch alert on`/`Watch alert updated` + bell `on` บน results head; alert เข้า Watch Alerts list (Settings)
+
+# 9. Business Rules
+
+## Search Entry Rule
+
+- Entry หลัก = `.search-btn` บน app header ของ feed shell เท่านั้น — Search ไม่ใช่ bottom-nav tab (00_NAV §6.4)
+- `openSub` เปิดเป็น root ของ `_subStack` เสมอ — หน้า search ไม่ stack ซ้ำ
+- Entry เสริม: `.igd-tag` (hashtag → results `#tag`), `.sr-saved` (→ `saved` hub), `pv-srch` (viewer → typing)
+- Coach-mark copy `Search brands, references or collectors.`/`ค้นหาแบรนด์ รุ่น หรือนักสะสมได้ที่นี่` เป็น onboarding artifact — ไม่ใช่ spec feature
+
+## Search State Rule
+
+- `srchState` ผูกกับ screen object (`scr._search`) — session memory เท่านั้น; เปลี่ยน session/unmount → state ใหม่ (00_GLOBAL §7/§12)
+- Fields: `mode` (`landing`/`typing`/`results`), `q`, `tab` (`foryou`/`profiles`/`tags`), `sort` (`"new"` — dead), `err`, `recents` (≤8), `f` (applied filters), `fDraft` (filter draft)
+- `fDraft` ถูกสร้างเมื่อเปิด `sfilter` และถูกทิ้งเมื่อ back/Apply (null หลัง commit/discard)
 
 ## Search Keyword Rule
 
-Keyword Search ต้องรองรับ:
+- `matchQuery`: ทุกคำที่แยกด้วย whitespace ของ query ต้องปรากฏใน haystack (case-insensitive) = `seller + caption + captionFull + chips + specs (label + value)` — spec snapshot text ครอบค่า free-text ที่ Owner save ไว้ด้วย (ค้นเจอผ่าน keyword เสมอ)
+- Query ว่าง (หลัง trim) = match ทุกโพสต์ใน eligible set (chip `For you` / Enter ด้วย q ว่าง → ทุก sale listing)
+- Query ขึ้นต้น `#` = hashtag mode — ดู Results Eligibility Rule
 
-- Brand
-- Model
-- Reference Number
-- Specification snapshot text — ค่าที่ Owner save กับ Asset ของ Case Material, Movement, Dial Color และ Strap / Bracelet Type ทั้งค่าที่อ้าง option master และค่า free-text ที่ Owner กรอกผ่าน `ระบุเอง` (relation = `null`)
+## Results Eligibility Rule
 
-Asset ที่เก็บ spec เป็น free-text (relation = `null`) ต้องค้นเจอผ่าน keyword บน snapshot text ได้เสมอ เพราะ keyword search เป็นช่องทางเดียวที่ค่า free-text ปรากฏใน Search ก่อนที่ Back Office จะ promote ค่านั้นเป็น option จริง
+Surface eligibility แยกตาม surface — **ไม่ใช่** "search = sale only" ทั้งโมดูล:
 
-Keyword ต้องรองรับ:
+| Surface | Eligible set |
+| --- | --- |
+| Results Posts grid (non-`#` query) | `salePosts()` = มี `price` (sale listing) + ไม่ `ni`/`muted`/`blocked` |
+| Results Posts grid (`#` query) | `POSTS` กรองแค่ `!muted` — รวม showcase/post ธรรมดา **และ** ni/blocked (deviation) |
+| Explore grid (landing) | ทุก photo ของทุกโพสต์ `!ni && !muted && !blocked` (รวม non-sale) |
+| Tags tab + `tagRows` | ทุกโพสต์ `!muted` |
+| Accounts / Profiles / seller suggestions | seller ที่ชื่อ match q, ไม่ `PF_BLOCKED` (ไม่จำกัด sale posts) |
+| Filter option counts `(N)` + WA match | `salePosts()` เท่านั้น |
 
-- ภาษาไทย
-- ภาษาอังกฤษ
-- ตัวเลข
+- `matchFilters` apply กับผลลัพธ์ทุกชนิด (รวม `#` query)
+- ไม่มี result count บนหน้า results — ตัวเลขที่เห็นคือ `(N)` ข้าง filter option + `Apply (N)` = จำนวน filter ที่เลือก ไม่ใช่จำนวนผลลัพธ์
 
-## Autocomplete Rule
+## Explore Landing Rule
 
-Autocomplete ใช้เพื่อช่วยเลือก keyword หรือ entity ที่มีอยู่ในระบบ
+- Chips row: filter icon (→ `sfilter`) + `SEARCH_POPULAR` คงที่ ≤10 chips (`For you` active default, `Rolex`, `Submariner`, `Datejust`, `Grand Seiko`, `Tudor`, `Breguet`, `Full set`); scroll แนวนอนได้
+- Explore grid `xp-grid`: `xp-tile` ต่อ photo — ทุก photo ของทุก eligible post (flatten); บาง tile มี `.xp-views` badge (decorative — index คงที่ 2/3/7, ไม่ใช่กฎธุรกิจ)
+- Tile → Post Viewer default mode ที่ post + photo index นั้น; list ของ viewer = eligible posts ทั้งหมด (ไม่ใช่ทุก photo — viewer snap ทีละโพสต์)
 
-Autocomplete ต้องแสดงทุก entity ที่ `is_active=true` จาก Market Data (Brand, Model, Reference Number) และทุก active option จาก internal option master (Condition, Delivery Contents, Case Material, Movement, Dial Color, Strap / Bracelet) — พร้อมแสดงจำนวน Asset Sale ปัจจุบันที่ User มีสิทธิ์เห็นข้างชื่อ entity/option เช่น `Rolex (212)`, `Daytona (0)`, `New (380)`, `Fair (0)`
+## Recents Rule
 
-จำนวน listing เป็นข้อมูลอ้างอิงเท่านั้น ไม่ใช่เกณฑ์ตัด entity/option ออกจากรายการ — entity/option ที่มีจำนวน `0` (no current listing) ยังเลือกได้ เพื่อรองรับ Watch Alert use case ที่ผู้ซื้อหานาฬิกาตรงเงื่อนไขที่ต้องการ ไม่ว่าจะยังไม่มีรุ่นนั้นลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไข (เช่น ราคา/สภาพ/สี)
+- `pushRecent` ทุกครั้งที่เลือก keyword/seller/tag เข้า results — dedupe แบบ case-insensitive ตาม (kind, value), ค่าใหม่ขึ้นหัว, cap 8
+- Kind: `kw` (keyword/hashtag) / `seller` — render row ต่างกัน (clock icon vs avatar)
+- Session memory — ไม่ persist; seed ใน prototype เป็น mock 6 rows (ไม่ใช่ history จริง)
+- ลบรายแถวด้วย X; `Clear all` ล้างทั้งหมด; ไม่มี confirm
 
-Entity/option ที่ `is_active=false` (inactive market data หรือ deactivated option) ต้องไม่แสดงเป็นตัวเลือกใหม่ใน autocomplete
+## Suggestions Rule
 
-ค่า free-text ที่ Owner กรอกผ่าน `ระบุเอง` และค่าใน suggestion pool ที่ยังไม่ได้ promote ต้องไม่แสดงใน autocomplete — autocomplete แสดงเฉพาะ entity/option ที่มีอยู่จริงและ `is_active=true` เท่านั้น
+- Live ทุก keystroke: `q` ว่าง → recents; `q` ไม่ว่าง → suggestions
+- Keyword pool = `SEARCH_BRANDS` (brand + `brand model` label) + `SEARCH_REFS` — name contains q (case-insensitive); sub = `N listings` จาก `brandCount`/`modelCount` (refs ไม่มี sub); ≤6 rows
+- Seller pool = sellers จาก `POSTS` (dedupe, name contains q); sub = `N listings` (เฉพาะโพสต์ที่มี price) หรือ `Following`; ≤4 rows — keyword rows ก่อนเสมอ
+- ไม่มี entity/option-master suggestions (Condition/Delivery/Case/Movement/Dial/Strap) และไม่มี `is_active` concept — static catalogs (deviation จาก spec เดิม, contract อยู่ Filter Visibility Rule)
 
-## Popular Filter / Popular Selection Rule
+## Results Tabs Rule
 
-หน้า Search และหน้า Filter ต้องรองรับการแสดง Popular Filter tags เพื่อช่วยให้ user เลือกเงื่อนไขที่นิยมได้รวดเร็วขึ้น โดยระบบคำนวณจากข้อมูล aggregate ของพฤติกรรมการใช้งาน เช่น:
+- `For you`: `Accounts` (ก่อน) + `Posts` — Accounts = `resultSellers` (ชื่อ match q, dedupe, ไม่ blocked) render `accountRowHTML` (`N listings` + `· Following`) — **ไม่**นับ seller ที่มีโพสต์ match แต่ชื่อไม่ match (IG semantic)
+- `Profiles`: `sellerCardHTML` รายการเดียวกับ Accounts แต่เต็มการ์ด + Follow button (`sc-follow` → `setFollowing` toggle + re-render)
+- `Tags`: `tagRows` — รวม hashtag จาก caption ทุกโพสต์ `!muted` + `CF_TAGS` seed; filter ตาม q (strip `#`); count = จำนวนโพสต์ที่มี tag; sort count desc → alpha; กด → `#tag` results
+- Tab default `foryou` ทุกครั้งที่เข้า results (submit/chip/recent/suggestion/tag)
 
-- Keyword ที่ถูก submit บ่อย
-- Brand, Model และ Reference ที่ถูกเลือกบ่อย
-- Filter option ที่ถูกเลือกบ่อยในแต่ละหมวด
-- Filter combination ที่ถูกใช้บ่อย หากระบบรองรับการจัดอันดับแบบหลายเงื่อนไข
+## Active Filter Chips Rule
 
-กฎการแสดงผล:
+- แสดงเมื่อ `filterCount(S.f) > 0`: chip ต่อ selected value + chip `THB {pmin|0}–{pmax|Any}` อันเดียวสำหรับ price
+- `×` ลบ value ทันที (commit ทันทีไม่ใช่ draft) — price chip ล้าง `pmin`+`pmax`
+- Chips row ลาก scroll แนวนอนได้ (drag — desktop pointer)
 
-- หน้า Search แสดง quick-selection tags ที่เกี่ยวข้องกับการค้นหาหรือหมวดที่ระบบกำหนด โดยจำกัดจำนวนตามพื้นที่ของหน้าจอ (prototype ปัจจุบันแสดงประมาณ 10 รายการ)
-- หน้า Filter แสดง Popular Filter tags แยกตามหมวด เช่น Brand, Model หรือ option master ก่อนรายการเต็ม
-- ในหมวด Model หาก User เลือก Brand ไปแล้ว ให้แสดง Popular Model ของ Brand ที่เลือก (context-aware) สูงสุด 10 อันดับแรก ก่อนรายการ Model เต็มของ Brand นั้น — ดูรายละเอียดเพิ่มเติมที่ Filter Dependency Rule
-- User เลือกจาก tag ได้โดยตรง หรือเลือกจากรายการเต็มและค้นหาด้วยช่อง Search ได้เหมือนเดิม
-- Popular Filter ต้องไม่ตัดตัวเลือกอื่นออกจากรายการเต็ม และต้องไม่เปลี่ยนผลลัพธ์ของ Search/Filter logic
-- การจัดอันดับต้องใช้ข้อมูล aggregate และไม่แสดงข้อมูลที่ระบุตัว user รายบุคคล
-- ตัวเลือกที่ไม่มี Asset Sale ปัจจุบันยังเลือกได้ตาม Filter Visibility Rule หากเป็น active market data/option; จำนวน `(0)` ยังคงแสดงตามเดิม
-- หากยังไม่มีข้อมูลเพียงพอ ให้แสดงรายการเริ่มต้นตาม implementation หรือไม่แสดง Popular Filter โดยไม่ทำให้การเลือกจากรายการเต็มใช้งานไม่ได้
+## Filter Page Rule
 
-Popular Filter เป็น convenience layer สำหรับ Search & Filter ไม่ใช่ Saved Search, Recent Search, Search History หรือ AI Search Suggestion
+- `fDraft` = deep clone ของ `S.f` ตอนเปิด — ทุก chip edit ลง draft; `Apply` commit; back/`sub-back` ทิ้ง (00_NAV §6.7)
+- Sections (ทั้งหมด multi-select chips):
 
-## Filter Fields
+| Section | Key | Source | Match logic |
+| --- | --- | --- | --- |
+| Brand | `brand` | `SEARCH_BRANDS` keys | `specOf(p,"Brand")` exact |
+| Model | `model` | models ของ brand ที่เลือก (ไม่เลือก = ทุก brand) | `specOf(p,"Model")` contains |
+| Price range (THB) | `pmin`/`pmax` | typed inputs | `priceNum` ≥min ≤max |
+| Year of production | `year` | unique `specOf(p,"Year")` จาก salePosts, sort desc | exact |
+| Reference | `ref` | unique `specOf(p,"Reference")` จาก salePosts | exact |
+| Condition | `cond` | `SEARCH_COND` | `specOf(p,"Condition")` exact |
+| Case size | `csz` | `SEARCH_CASE` | `specOf(p,"Case Diameter")` exact |
+| Movement | `move` | `SEARCH_MOVE` | `specOf(p,"Movement Type")` contains |
+| Dial color | `dial` | `SEARCH_DIAL` | `specOf(p,"Dial Color")` contains |
+| Strap / Bracelet | `strap` | `SEARCH_STRAP` | `Strap/Bracelet Material` + `Strap Material` contains |
+| Delivery contents | `deliv` | `SEARCH_DELIV` | `delivMatch` (regex บน `Box & Papers` + chips) |
 
-Search & Filter ต้องรองรับ filter ต่อไปนี้:
-
-- Brand
-- Model
-- Price Range
-- Year of Production
-- Reference Number
-- Delivery Contents
-- Condition
-- Case Size
-- Movement
-- Dial Color
-- Strap / Bracelet
-
-Filter data source rule:
-
-- Brand, Model และ Reference Number ใช้ Market Data relation/snapshot ของ Asset เพื่อค้นหาและ filter
-- Year of Production, Delivery Contents, Condition, Case Size, Movement, Dial Color และ Strap / Bracelet ใช้ข้อมูลที่ Owner save ไว้ใน Asset Specification
-- Condition, Delivery Contents, Case Material, Movement, Dial Color และ Strap / Bracelet option ต้องอ่านจาก internal option master เดียวกับ Add/Edit Asset
-- Provider/API specification ใช้ช่วย prefill ตอน Add/Edit Asset ได้ แต่ Search/Filter ต้องอิงค่าที่ถูก save กับ Asset จริง
-- ถ้า Asset ใช้ free-text Brand/Model/Reference หรือค่า spec free-text ที่ไม่มี relation id ต้องยังค้นหา keyword จาก snapshot text ได้
-- ค่า free-text spec (relation = `null`) และค่าใน suggestion pool ที่ยังไม่ได้ promote ต้องไม่เป็น filter option — option filter match ด้วย relation id เท่านั้น ดังนั้น Asset ที่เก็บ spec เป็น free-text จะไม่ถูก option filter จับจนกว่า Back Office promote/map alias แล้ว backfill relation id
-- จำนวน listing ที่แสดงข้างชื่อ entity/option ใน autocomplete/filter dropdown คำนวณจาก Asset สถานะ `Sale` ที่ User มีสิทธิ์เห็นและไม่ได้ถูก Block เท่านั้น (ไม่รวม Show, Hide, Sold, Deleted)
+- Model dependency: เลือก brand → section title `Model · {brands joined " + "}` + model list เฉพาะ brand เหล่านั้น; toggle brand → prune model ที่ไม่อยู่ใน brand ที่เหลือทันที
+- ทุก option แสดง `(N)` = จำนวน `salePosts()` ที่ match — รวม `(0)` เลือกได้เสมอ
+- Section order คงที่ตามตาราง; scroll position คงไว้เมื่อ chip re-render
 
 ## Filter Visibility Rule
 
-Filter option ต้องแสดงทุก entity/option ที่ `is_active=true` จาก Market Data และ internal option master พร้อมจำนวน Asset Sale ปัจจุบันที่ User มีสิทธิ์เห็นข้างชื่อ — เพื่อให้ User เห็นก่อนกด Search ว่าตัวเลือกนี้มี listing หรือไม่ และให้ตั้ง Watch Alert สำหรับนาฬิกาที่ตรงเงื่อนไขที่ต้องการ ไม่ว่าจะยังไม่มีรุ่นนั้นลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไข (เช่น ราคา/สภาพ/สี)
+- Option lists ใน prototype เป็น static catalogs (`SEARCH_*`) + dynamic (Year/Reference จาก salePosts) — production contract: Brand/Model/Reference มาจาก Market Data, ที่เหลือมาจาก option master ที่ `is_active=true`
+- `(N)` count = no current listing ยังเลือกได้เสมอ เพื่อรองรับ Watch Alert use case (หารุ่นที่ตรงเงื่อนไขแม้ตอนนี้ไม่มี listing)
+- แยกความหมาย: `no current listing` (active แต่ N=0 → แสดงเลือกได้) vs `inactive market data`/`deactivated option` (`is_active=false` → ไม่แสดงเป็นตัวเลือกใหม่) — prototype ไม่มี inactive entity ใน catalog, contract เดิมคงไว้
 
-ตัวอย่าง:
+## Price Range Rule
 
-- หากไม่มี Asset Sale ของ `Rolex Daytona` ที่ User มีสิทธิ์เห็น ต้องแสดง `Daytona (0)` ใน dropdown ให้เลือกได้ (ไม่ใช่ผลลัพธ์หลอก เพราะ User อาจตั้ง Watch Alert รอนาฬิกาที่ตรงเงื่อนไขที่ต้องการ ทั้งกรณีที่ยังไม่มีรุ่นนี้ลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไขที่ต้องการ เช่น ราคา/สภาพ/สี)
-- หาก `Rolex Daytona` ถูก deactivate ใน Market Data แล้ว ต้องไม่แสดงเป็นตัวเลือกใหม่ใน filter (เป็น inactive market data ไม่ใช่ no current listing)
+- Inputs 2 ช่อง (`Minimum`/`Maximum`) ไม่มี slider; `inputmode="numeric"`
+- ระหว่างพิมพ์: strip ทุก non-digit เงียบ (ตัวอักษร/ทศนิยม/ติดลบ/สัญลักษณ์หายทันที ไม่มี error) + auto-comma; paste `2,000,000` หรือ `20,00,000` → normalize เป็น `2,000,000`
+- Validate เฉพาะตอน `Apply`: `min > max` → `Minimum price must not exceed maximum price`; `max > 2,000,000` → `Maximum price must not exceed 2,000,000` (EN hardcode — deviation)
+- ว่างทั้งคู่ = ไม่ใช้เงื่อนไข; กรอกข้างเดียวใช้ข้างนั้น; min == max = ราคาเท่ากัน; `MAX_PRICE` = 2,000,000 THB
 
-การแยกความหมาย:
+## Sort Rule
 
-| สถานะ | ความหมาย | การแสดงใน filter |
-| --- | --- | --- |
-| no current listing | มีใน Market Data/Option Master (`is_active=true`) แต่ไม่มี Asset Sale ตอนนั้น | แสดง พร้อมจำนวน `(0)` ยังเลือกได้ |
-| inactive market data | Brand/Model/Reference ถูก deactivate ใน Market Data (`is_active=false`) | ไม่แสดงเป็นตัวเลือกใหม่ |
-| deactivated option | Option master ถูก deactivate (`is_active=false`) | ไม่แสดงเป็นตัวเลือกใหม่ |
-| free-text / suggested spec value | ค่าที่ Owner กรอกผ่าน `ระบุเอง` หรืออยู่ใน suggestion pool ยังไม่ใช่ option จริง | ไม่แสดงเป็น filter option/autocomplete จนกว่า Back Office promote เป็น option จริง |
+- V1 ไม่มี sort control — `S.sort = "new"` ตลอด (natural order ของ POSTS); `plo`/`phi`/`pop` มี code เผื่อแต่ไม่มี UI → ไม่ใช่ feature
 
-## Filter Dependency Rule
+## Post Viewer Entry Rule
 
-Filter ทำงานแบบ dependent
+- Post Viewer เปิดจาก grid tiles เท่านั้น — explore tile, results tile, profile grid tile, saved/wishlist/archive tile, notification row (00_NAV AC-NAV-026) — **ไม่เปิด**จาก feed card โดยตรง
+- Tile → viewer list = post list ของ grid นั้น: explore = eligible posts; results = `searchResults(S)`; saved/wl/archive = collection list; profile = `pfTabPosts(user, tab)`; notification = 1 โพสต์
+- Viewer เปิดที่ post (และ photo index) ของ tile ที่กด — snap ทีละโพสต์ตาม `scroll-snap-type: y mandatory`
 
-ตัวอย่าง:
+## Post Viewer Anatomy Rule (default mode)
 
-```text
-Brand = Rolex
-→ Model แสดงเฉพาะ Model ของ Rolex
-```
+- Head: `pv-back` + `pv-srch` (search icon) — floating บนโพสต์
+- `pv-post` เต็มจอ: full-bleed photo (`object-fit: cover`, photo index = phi ของ tile; โพสต์อื่น index 0) + bottom gradient
+- Rail (ขวา): like heart, `Likes`/`ถูกใจ` label → likes sheet, comment icon + count (ซ่อนเมื่อ `noComments`), views eye + count (ซ่อนเมื่อ `hideCounts` หรือ views = 0/ว่าง), share, save bookmark (filled เมื่อ saved), `...` menu
+- Foot (ล่างซ้าย): avatar + seller name (→ Public Profile) + `Follow`/`ติดตาม` pill (เฉพาะยังไม่ follow), caption สั้น + `…` → `ps` sheet, `Tap for details`/`แตะเพื่อดูรายละเอียด` → `dt` sheet (เฉพาะ `specGroups.length > 0`)
+- `pv-add` bar `Add comment…`/`เพิ่มความคิดเห็น…` → comment sheet (`nt` variant)
 
-กรณีเลือกหลาย Brand:
+## Post Viewer Modes Rule
 
-```text
-Brand = Rolex + Omega
-→ Model แสดงเฉพาะ Model ของ Rolex และ Omega รวมกัน
-→ ในบรรดา Model ที่เข้าเงื่อนไข ให้เรียงตามความนิยม (Popular Model) แสดงสูงสุด 10 อันดับแรกก่อน ตามด้วยรายการเต็มตามลำดับปกติ
-```
+| Mode | Head | Body | Entries |
+| --- | --- | --- | --- |
+| `default` | back + `pv-srch` floating | snap `pv-post` เต็มจอ | explore/results tiles, notification |
+| `feed` | back + title + `pv-srch` | `svf-track` feed cards (`postCard` เดิม) | saved/wishlist/archive tiles |
+| `pfp` | back + `Posts`/`{user}` + Follow pill (เฉพาะคนอื่น + ยังไม่ follow + ไม่ block) | `pfp-post` feed-style cards | profile grid tiles, notification (like/comment/watch) |
 
-กฎเพิ่มเติมสำหรับ Popular Model ใน context ที่เลือก Brand แล้ว:
+- ทุก mode scroll ไปที่โพสต์ที่กด (feed/pfp: `offsetTop - 86`; default: index × viewport height)
+- `pfp` mode title แสดง `<b>{title}</b><span>{user}</span>` (`Posts`/`{user}` หรือ `Post`/`{user}` จาก notification)
 
-- ระบบคำนวณ Popular Model จากข้อมูล aggregate ของการเลือก Model ในหมวด Brand ที่ผู้ใช้เลือก (เช่น Rolex + Omega) เท่านั้น ไม่ใช่ Popular Model รวมทุกแบรนด์
-- การจัดอันดับ Popular Model ต้องใช้ข้อมูล aggregate และไม่แสดงข้อมูลที่ระบุตัว user รายบุคคล
-- หากยังไม่มีข้อมูลเพียงพอ ให้แสดงรายการ Model ตามลำดับปกติโดยไม่แสดง Popular Model section
-- Popular Model ต้องไม่ตัด Model อื่นออกจากรายการเต็ม และต้องไม่เปลี่ยนผลลัพธ์ของ Search/Filter logic
-- Model ที่มี no current listing (จำนวน `(0)`) ยังเลือกได้ตาม Filter Visibility Rule หากเป็น active market data
+## Post Viewer Navigation Rule
 
-## Multiple Filter Rule
+- `pv-back` → ปิด viewer (`pv-open` + `rp-over` ออก) กลับ surface ที่เปิดมา — ไม่ re-render search state
+- `pv-srch` → ปิด viewer; ถ้ามี `_subStack` → `mode = "typing"` ของหน้า search (กลับไปพิมพ์ต่อ q เดิม); ถ้าไม่มี stack (เช่นเปิดจาก notification) → ปิดเฉย ๆ
+- Post Detail เปิดทับ viewer (`view-full` → `openPostDetail`); `detail-back` กลับ viewer — viewer mount ค้าง (00_NAV §6.7)
+- Report stack เปิดทับ viewer (`rp-over`); `sub-x`/`sub-back` คืน viewer
+- Post flags (liked/saved/following/muted/…) sync ทุก surface ผ่าน `refreshPostViews`; language switch re-render viewer คง scroll/mode (`_pvArgs`)
 
-Search รองรับหลายเงื่อนไขพร้อมกัน และ Result ต้องตรงทุกเงื่อนไขแบบ AND Logic
+## Watch Alert Search Entry Rule
 
-## Apply / Clear Filter Rule
-
-- Apply Filters ต้องใช้เงื่อนไขที่ User เลือกกับ Search Result
-- Clear Filters ต้องล้างเงื่อนไขทั้งหมด
-- หลัง Clear Filters แล้ว Result ต้องกลับไปตาม keyword / default visibility ที่เหลืออยู่
-
-## Result Count Rule
-
-Search Result ต้องแสดงจำนวนผลลัพธ์ที่ตรงเงื่อนไข
-
-## Search Result Display
-
-Search Result ใช้ card layout เดียวกับ Feed โดยแสดง:
-
-- Asset Images
-- Brand
-- Model
-- Price
-- Posted Time
-- Owner Name
-- Like Count
-- Comment Count
-
-ไม่แสดงใน V1:
-
-- Location
-- Verified Badge
-- Status Badge
-
-## Search Result Sorting
-
-รองรับ Sort:
-
-- Relevance
-- Price Low to High
-- Price High to Low
-- Newest
-- Popularity
-
-Default Sorting:
-
-- Created Date DESC / Newest
-
-## Asset Lifecycle Rule
-
-### Sale → Sold
-
-Asset ต้องหายจาก:
-
-- Search Result
-- Watch Alert Result List
-
-### Sale → Hide
-
-Asset ต้องหายจาก:
-
-- Search Result
-- Watch Alert Result List
-
-### Hide → Sale
-
-Asset ต้องกลับเข้า:
-
-- Search Result
-- Watch Alert Result List หากตรง Watch Alert criteria
-
-### Show → Sale
-
-Asset ต้องกลับเข้า:
-
-- Search Result
-- Watch Alert Result List หากตรง Watch Alert criteria
-
-### Sale → Show
-
-Asset ต้องหายจาก:
-
-- Search Result
-- Watch Alert Result List
-
-## Delete Asset Rule
-
-เมื่อ Asset ถูกลบ:
-
-- Asset ต้องหายจาก Search Result
-- Asset ต้องหายจาก Watch Alert Result List
-- หากเปิด Asset Detail จากผลลัพธ์เก่าต้องเห็น Deleted Asset state จาก Asset Detail Module
-
-## Block User Rule
-
-เมื่อ User Block ผู้ใช้อีกคน:
-
-- Asset ของผู้ถูก Block ต้องหายจาก Search Result ทันที
-- Asset ของผู้ถูก Block ต้องหายจาก Watch Alert Result List ทันที
-
-## Report Asset Rule
-
-Report Asset ไม่ทำให้ Asset หายจาก Search Result ทันที
-
-Asset จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น
-
-## Watch Alert Entry Point
-
-Create Watch Alert ต้องสร้างจาก Search Filter เท่านั้น
-
-## Watch Alert Rule
-
-- Watch Alert Match เฉพาะ Asset สถานะ `Sale`
-- Watch Alert criteria ไม่มี Required Field
-- Alert Name ต้องไม่ว่างตอนกด Save this search
-- Watch Alert Notification ต้องเปิดไปที่ Watch Alert Result List
-- Watch Alert Notification ต้องไม่เปิด Asset Detail โดยตรง
-- Watch Alert criteria สามารถอ้าง Brand/Model/Reference หรือ option master ที่มี no current listing (จำนวน listing = 0 ตอนสร้าง) ได้ — เพราะ Watch Alert ใช้หานาฬิกาที่ผู้ซื้อต้องการ ไม่ว่าจะยังไม่มีรุ่นที่ต้องการลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไขที่ต้องการ (เช่น ราคา/สภาพ/สี)
-- Alert ที่ criteria อ้าง entity/option ที่มี no current listing ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data (ดู Filter Visibility Rule สำหรับความแตกต่าง)
+- `sr-wa` bell แสดงบน results head เสมอ (ทั้ง q ว่าง/ไม่ว่าง); `on` เฉพาะเมื่อมี alert `source:"search"` ที่ `waSig` ตรง criteria ปัจจุบัน (alert จาก detail/settings ที่ sig เดียวกันไม่เปิด `on`)
+- Criteria snapshot (`waCriteriaFromSearch`): keyword `fk:"q"` (ถ้า q ไม่ว่าง) + ทุก filter value ตาม `WA_FK_LABEL` + price range `fk:"price"` (`THB {min|0} – {max|Any}`)
+- Criteria ว่างเปล่า = alert "ทุก listing ใหม่" (`Any new listing`) — อนุญาต
+- Dedupe: `waSig` ตรง alert เดิม (ทุก source) → เปิด sheet เป็น edit mode; criteria + matchMode ซ้ำตอน save → toast `You already saved this alert` ไม่สร้างซ้ำ
+- `matchMode` default `all`; `any`/`model` disabled เมื่อ criteria ว่าง (`all` = watch every new listing)
+- Save → toast `Watch alert on` / `Watch alert updated`; Delete (edit mode) → `Watch alert removed`; ปิด sheet ไม่ commit
+- Match count `N now` บน mode rows = `alertMatchCount` จาก `salePosts()` — sale เท่านั้น (canonical matching อยู่ 10_WATCH_ALERT)
+- Entry ที่ 2 = `mf-btn` `Follow this model` บน Post Detail → `waCriteriaFromPost` + `modelKey` (canonical 05/10)
 
 ## Watch Alert Name Rule
 
-- เมื่อเปิด Save to Watch Alert modal ระบบต้องสร้างชื่อเริ่มต้นจาก Filter ที่ใช้อยู่และเติมลงในช่อง Alert Name ให้ก่อน เช่น brand, model, reference หรือช่วงราคาที่เลือก
-- User สามารถแก้ไขชื่อที่ระบบสร้างให้ได้ก่อนบันทึก
-- ตอนกด `Save this search` ระบบต้อง trim ค่า Alert Name ก่อนตรวจสอบ
-- หาก Alert Name หลัง trim แล้วว่าง ต้องไม่สร้าง Watch Alert และต้องแสดง validation message ให้ user กรอกชื่อ
-- หาก Filter ว่างหรือไม่มี criteria ที่ใช้ตั้งชื่อได้ ระบบต้องเติมชื่อ default เช่น `Watch Alert`
+- `waName` auto: `brand model · ref` / `"keyword"` / criteria แรก 2 ค่า join ` · ` / `Any new listing`
+- Name field auto-filled + editable; **ว่างตอน save → regenerate auto-name เสมอ ไม่มี validation block** (deviation จาก spec เดิมที่บังคับชื่อ — prototype wins)
 
-## Search Refresh And Pagination Behavior
+## Lifecycle Impact (post/asset transitions)
 
-Search Result ต้องรองรับ:
+| Transition | Search impact |
+| --- | --- |
+| `Sale` → `Sold` / `Hide` / `Show` | โพสต์หลุด results Posts grid (ไม่มี price-eligibility เมื่อ `pfkind` เปลี่ยน — canonical `salePosts` ตาม price + flags), filter counts, WA match — ตาม 00_GLOBAL §12 |
+| `Hide`/`Show` → `Sale` | กลับเข้า results grid + WA matching ถ้าตรง criteria |
+| Asset-linked → `post` (ไม่มี price) | หลุด results Posts grid + filter counts + WA match — ยังอยู่ explore/tags surfaces |
+| Post deleted | หลุดทุก surface; เปิดจาก notification/list เก่า → toast `This post is no longer available` (contract: unavailable state ของ Post Detail อยู่ 05/00_GLOBAL §11) |
+| Block / unblock | block → หลุดทันที (posts grid, explore, accounts); unblock → กลับตาม eligibility |
+| Mute / unmute / not-interested | muted → หลุดทุก search surface รวม `#tag`/tags; ni → หลุด results grid + explore (hashtag grid ยังขึ้น — deviation) |
 
-- Pull To Refresh
-- Infinite Scroll
-- Reload Result
+## Search Error / Loading (contract — S-29)
 
-เมื่อ Scroll ถึงรายการสุดท้าย ต้องแสดงข้อความ:
+- `S.err` → `.sr-empty-block` sad icon + `Something went wrong. Please try again.` + `Try again` — **ไม่มี code path ใด set `err = true` ใน prototype** (render path มี แต่ untriggered): spec เก็บเป็น contract เท่านั้น
+- `Try again` → `err = false` + re-render
+- ไม่มี skeleton/loading state, ไม่มี infinite scroll/pagination/pull-to-refresh ใน V1 — grid render ครั้งเดียว (`loading="lazy"` บน tile images)
 
-```text
-คุณดูรายการทั้งหมดแล้ว
-```
+## Prototype Deviations & Dead-Code Notes (documented, not spec)
 
-หากโหลด Search Result ไม่สำเร็จ ต้องแสดง Error State พร้อมปุ่ม:
+- Search surfaces เกือบทั้งหมด **EN-only** (tabs `For you`/`Profiles`/`Tags`, placeholder `Search`, `Recent`/`See all`/`Cancel`/`Clear all`, `Filters`/`Apply`/`Clear all`/section titles/validation messages, `No data found`/`Try a different keyword or adjust your filters`/`No suggestions`/`No recent searches`, `Something went wrong…`/`Try again`, toasts `Watch alert on`/`updated`/`removed`/`You already saved this alert`/`This post is no longer available`) — มี isTh เฉพาะ seller card (`N รายการประกาศ`/`กำลังติดตาม`/`ติดตาม`), viewer labels, unfollow sheet และ Watch Alert sheet — i18n gap รวมใน sweep FSP-026
+- `#` query results grid ใช้ `POSTS` กรองแค่ `!muted` → โพสต์ `ni`/`blocked` ยังขึ้นใน hashtag results (spec ยอมรับตาม prototype — flag ให้ FSP-030 consistency sweep)
+- `S.sort` (`plo`/`phi`/`pop`) + `S.err` = dead state (code มี ไม่มี UI/trigger)
+- Explore `.xp-views` badge + `tall` tile = decorative index คงที่ (2/3/7) ไม่ใช่ popularity logic
+- Recents seed 6 rows = mock — `pushRecent` cap 8 เป็นกฎจริง
+- `For you` ปรากฏ 2 บทบาท: landing chip (browse all) vs results tab — ชื่อเดียวกันตาม prototype
+- `pv-add` `Add comment…` แสดงเสมอแม้ `noComments` — rail comment button ซ่อนตามกฎ แต่ bar นี้ยังเปิด comment sheet ได้ (prototype quirk — รับตามจริง)
+- `resultSellers` นับ `N listings` = โพสต์ที่มี price ของ seller นั้น (ไม่ใช่ทุกโพสต์)
+- `pfp-post` others-menu = Report เดียว (ตาม 02 deviation เดิม)
 
-- ลองใหม่
-
----
-
-# 11. Permission Rules
+# 10. Permission Rules
 
 ## Guest
 
-สามารถ:
+สามารถ (ไม่ gate):
 
-- Search
-- Filter
-- View Search Result
-- Open Asset Detail
-- Open Public Profile
+- เปิด/ใช้ search ทุก mode (landing/typing/results), recents (session-local), suggestions, tabs, filter page + Apply/Clear
+- เปิด Post Viewer จาก tile, เลื่อนดู, เปิด caption/details/comments/likes sheets อ่านอย่างเดียว, `View full detail` → Post Detail, seller → Public Profile
+- `pv-back`/`pv-srch`, hashtag → search, `sr-saved` → Saved hub (empty)
 
-ไม่สามารถ:
+ไม่สามารถ (gate → Member Sheet `Join TukDaeng`):
 
-- Create Watch Alert
-- Like
-- Follow
-- Comment
-- Chat
-- Make Offer
+- Watch Alert (`sr-wa`), Follow ทุกจุด, like/save/share/post menus บน viewer, comment composer, report/block/mute/unfollow/not-interested
 
 ## Member
 
-สามารถใช้งาน Search & Filter ได้ทั้งหมดตามสิทธิ์ของ User
+ใช้งานครบทุกอย่าง + Watch Alert create/edit/delete/toggle จาก results entry
 
----
-
-# 12. Validation Rules
+# 11. Validation Rules
 
 ## Search Keyword
 
-- รองรับภาษาไทย
-- รองรับภาษาอังกฤษ
-- รองรับตัวเลข
-- ไม่ required
+- ไม่ required — q ว่าง = browse ทุก eligible post
+- รองรับอักขระทุกภาษา/ตัวเลข/`#` (matching เป็น substring contains, case-insensitive)
+- `Enter` = submit; ไม่มี sanitize พิเศษนอกเหนือ `esc()` output
 
 ## Filter
 
-- ไม่มี Required Field
-- สามารถค้นหาโดยไม่เลือก Filter ได้
-- Price Range ต้องไม่ให้ค่าต่ำสุดมากกว่าค่าสูงสุด
-- Year Range ต้องไม่ให้ค่าต่ำสุดมากกว่าค่าสูงสุด
+- ไม่มี required field — Apply ด้วย draft ว่าง = ไม่มีเงื่อนไข (เทียบเท่า clear)
+- Chips toggle อิสระทุก section; multiple sections = AND logic (`matchFilters` ทุกเงื่อนไขต้องผ่าน)
 
-## Price Range Manual Input
+## Price Range
 
-- การกรอก Minimum price และ Maximum price เป็น optional ทั้งคู่
-- หากไม่กรอกทั้งสองช่อง ให้ถือว่าไม่ใช้เงื่อนไข Price Range
-- หากกรอกเฉพาะ Minimum price ให้ค้นหาราคาที่มากกว่าหรือเท่ากับค่านั้น
-- หากกรอกเฉพาะ Maximum price ให้ค้นหาราคาที่น้อยกว่าหรือเท่ากับค่านั้น
-- รับเฉพาะตัวเลขจำนวนเต็มบวกและ `0`
-- ระบบต้อง auto-format comma คั่นหลักพันระหว่าง user กรอก เช่น user พิมพ์ `2000000` แล้ว field แสดง `2,000,000`
-- ระบบต้องเก็บค่า internal เป็นตัวเลขล้วนและ normalize ก่อนค้นหา เช่น display `2,000,000` เป็น value `2000000`
-- หาก user paste ค่าที่มี comma เช่น `2,000,000` ระบบต้อง strip comma, validate ค่าเลขล้วน และ format ใหม่ตาม pattern ของระบบ
-- หาก user paste comma ผิดหลัก เช่น `20,00,000` ระบบต้อง strip comma แล้ว format ใหม่เป็น `2,000,000` หากค่าตัวเลขถูกต้อง
-- ห้ามกรอกตัวอักษร, currency symbol หรืออักขระพิเศษอื่น
-- ห้ามกรอกค่าติดลบ
-- ห้ามกรอกทศนิยม
-- Minimum price ต้องไม่มากกว่า Maximum price
-- Maximum price ต้องไม่เกิน price range สูงสุดที่ระบบกำหนดสำหรับ filter นั้น; prototype ปัจจุบันใช้ `2,000,000`
-- Minimum price ต้องไม่น้อยกว่า price range ต่ำสุดที่ระบบกำหนดสำหรับ filter นั้น; prototype ปัจจุบันใช้ `0`
-- หาก Minimum price เท่ากับ Maximum price ให้ค้นหาราคาที่เท่ากับค่านั้นได้
-- เมื่อ input ถูกต้อง ต้อง sync ค่า typed input กับ slider/range control
-- เมื่อ input ไม่ถูกต้อง ต้องไม่ Apply filter และต้องแสดง inline validation ใต้ field ที่ผิดหรือใต้ Price Range control
-
-| Case | TH validation message |
-|---|---|
-| กรอกตัวอักษร/อักขระไม่รองรับ | กรุณากรอกราคาเป็นตัวเลข |
-| กรอกค่าติดลบ | ราคาต้องไม่ต่ำกว่า 0 |
-| กรอกทศนิยม | กรุณากรอกราคาเป็นจำนวนเต็ม |
-| Minimum price > Maximum price | ราคาต่ำสุดต้องไม่มากกว่าราคาสูงสุด |
-| Maximum price เกินเพดาน filter | ราคาสูงสุดต้องไม่เกิน 2,000,000 |
+- digits-only enforcement ณ ขณะพิมพ์ (non-digit ถูก strip เงียบ — ไม่มี error message สำหรับตัวอักษร/ทศนิยม/ติดลบ)
+- Auto-comma + normalize (internal = digits ล้วน)
+- Validate ตอน Apply เท่านั้น: `min > max` → `Minimum price must not exceed maximum price`; `max > MAX_PRICE (2,000,000)` → `Maximum price must not exceed 2,000,000`
+- ว่าง = ไม่จำกัดข้างนั้น (`0`/`Any` บน chip)
 
 ## Watch Alert
 
-- ไม่มี Required Field
-- หากไม่กรอกชื่อ ให้ระบบสร้างชื่ออัตโนมัติ
+- Criteria ไม่มี required field (criteria ว่าง = `Any new listing`)
+- Alert name: auto-filled เสมอ, editable, ว่างตอน save → regenerate auto (ไม่ block — ดู §9)
+- Dedupe `waSig` (criteria set) → edit mode; criteria+mode ซ้ำตอน save → `You already saved this alert`
 
----
+# 12. Exception Handling
 
-# 13. Exception Handling
+| Case | Behavior |
+| --- | --- |
+| Results ไม่พบ (Posts grid ว่าง) | `.sr-empty-block` icon + `No data found` + `Try a different keyword or adjust your filters` (For you) / `No data found` (Profiles/Tags) |
+| Suggestions ไม่พบ | `No suggestions` |
+| Recents ว่าง | `No recent searches` (ทั้ง section และ `recents` page) |
+| Search error (contract — ไม่มี trigger) | sad icon + `Something went wrong. Please try again.` + `Try again` → `err=false` re-render |
+| Price validation fail | `.flt-err` ใต้ price row — ไม่ commit, draft คงอยู่ |
+| Alert ซ้ำ | `You already saved this alert` + เปิด sheet edit mode ของ alert เดิม |
+| โพสต์ถูกลบก่อนเปิด | toast `This post is no longer available` (จาก notification/list เก่า) |
+| Blocked/muted/ni | กรองออกจาก eligible set ตาม Results Eligibility Rule — ไม่มี error UI |
+| Guest กด gated action | Member Sheet `Join TukDaeng` (ทับทุก layer รวม viewer) |
+| `mf-btn` โพสต์ไม่มี spec | toast `No details on this post to watch` (entry 05 — บันทึกเพื่อ cross-ref) |
 
-## Result Not Found
+# 13. Empty State
 
-| Language | Message |
-|---|---|
-| TH | ไม่พบข้อมูล |
-| EN | No data found |
+| Surface | Copy (prototype — EN only) |
+| --- | --- |
+| Results For you | `No data found` + `Try a different keyword or adjust your filters` |
+| Results Profiles / Tags | `No data found` |
+| Suggestions | `No suggestions` |
+| Recent section / recents page | `No recent searches` |
+| Watch Alerts list (cross-ref) | `No watch alerts yet — tap the bell on a post or save a search to start one` (canonical 10) |
 
-## Search Error
+หมายเหตุ: global empty `ไม่พบข้อมูล`/`No data found` ของ 00_GLOBAL §11 ตรงเฉพาะส่วน `No data found`; sub-copy `Try a different keyword or adjust your filters` เป็น variant ของ module นี้; EN-only = deviation (i18n sweep)
 
-| Language | Message |
-|---|---|
-| TH | เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง |
-| EN | Something went wrong. Please try again. |
+# 14. Notification Rules
 
-ปุ่ม:
+- Search module ไม่สร้าง notification โดยตรง
+- Watch Alert notification → Post Viewer โพสต์ที่ match โดยตรง (`pfp` mode 1 โพสต์) — ไม่มี Result List คั่นใน V1 (00_NAV §8; canonical 10_WATCH_ALERT)
+- `Watch alert matched:` toast ตอน publish โพสต์ใหม่ = simulation, ไม่ใช่ notification item (02_FEED §14)
 
-- ลองใหม่
+# 15. Analytics Events
 
-## Asset Deleted
+Contract (S-29 — prototype ไม่มี tracking layer; event names เป็นข้อตกลงสำหรับ implement):
 
-หาก User เปิด Asset Detail จาก Search Result เก่าที่ Asset ถูกลบแล้ว ให้ใช้ Deleted Asset state ของ Asset Detail Module:
+- `search_opened` — เปิด `search` sub page
+- `search_query_submitted` — Enter/chip/suggestion/recent/tag → results (พร้อม q kind)
+- `search_recent_selected` / `search_recent_removed` / `search_recents_cleared` / `search_recents_view_all`
+- `search_suggestion_selected` (kind: kw/seller)
+- `search_result_tab_switched` (foryou/profiles/tags)
+- `search_result_tile_opened` (→ post viewer)
+- `filter_opened` / `filter_chip_toggled` (key,value) / `filter_cleared` / `filter_applied` (N) / `filter_chip_removed` (key) / `filter_price_error`
+- `post_viewer_opened` (mode + source surface) / `post_viewer_scrolled` / `post_viewer_closed` (back vs srch)
+- `post_viewer_sheet_opened` (ps/dt/nt/lk/sh/sv/menu)
+- `watch_alert_sheet_opened` (source: search) / `watch_alert_created` / `watch_alert_updated` / `watch_alert_deleted` / `watch_alert_duplicate`
+- `search_error_retry` (contract — ไม่มี trigger ใน prototype)
 
-| Language | Message |
-|---|---|
-| TH | รายการนี้ไม่พร้อมใช้งานแล้ว |
-| EN | This item is no longer available. |
+# 16. Acceptance Criteria
 
----
+| ID | Criteria |
+| --- | --- |
+| AC-SEARCH-001 | กด `.search-btn` บน feed app-header ต้องเปิด `search` sub page ที่ landing mode — guest ใช้ได้โดยไม่ gate |
+| AC-SEARCH-002 | Landing ต้องแสดง popular chips (filter icon + `SEARCH_POPULAR`) และ explore photo grid จากทุก photo ของทุกโพสต์ `!ni && !muted && !blocked` |
+| AC-SEARCH-003 | กด chip ต้องเข้า results: `For you` = q ว่าง (ทุก sale listing), chip อื่น = q เป็น keyword + pushRecent |
+| AC-SEARCH-004 | แตะ fake field ต้องเข้า typing mode พร้อม input focus + `Cancel`; `Cancel` กลับ landing คง q; `.sr-x` ล้าง q |
+| AC-SEARCH-005 | q ว่างใน typing ต้องแสดง `Recent` ≤4 rows + `See all` (เมื่อ >4); q ไม่ว่างต้องแสดง live suggestions ทุก keystroke |
+| AC-SEARCH-006 | Enter ต้อง submit: trim q, `pushRecent` เมื่อไม่ว่าง, `mode="results"`, `tab="foryou"` |
+| AC-SEARCH-007 | Recents ต้อง dedupe case-insensitive ตาม kind+value, ค่าใหม่ขึ้นหัว, cap 8; X ลบรายแถว, `Clear all` ล้างทั้งหมด — session memory เท่านั้น |
+| AC-SEARCH-008 | `See all` ต้องเปิด `recents` page (back + `Clear all` + full list); กด row จาก page ต้องเข้า results และ `_subStack` เหลือ `["search"]` |
+| AC-SEARCH-009 | Suggestions ต้องแสดง keyword rows ≤6 (brand/`brand model` พร้อม `N listings`, reference) ตามด้วย seller rows ≤4 (พร้อม `N listings`/`Following`); ไม่มีผล → `No suggestions` |
+| AC-SEARCH-010 | Query matching ต้องเป็น AND ของทุกคำบน haystack (seller + caption + chips + specs) case-insensitive |
+| AC-SEARCH-011 | Results Posts grid (non-`#` query) ต้องแสดงเฉพาะ `salePosts()` — โพสต์มี price + ไม่ `ni`/`muted`/`blocked`; ต้องไม่แสดง showcase/post ที่ไม่มี price |
+| AC-SEARCH-012 | `#` query ต้องค้นทุกโพสต์ `!muted` (รวม non-sale, ni, blocked — deviation documented) |
+| AC-SEARCH-013 | Results head ต้องมี back + fake field (แสดง q, แตะกลับ typing คง q) + `sr-wa` bell + filter icon; back จาก results ต้องกลับ landing ไม่ pop page |
+| AC-SEARCH-014 | Results ต้องมี tabs `For you`/`Profiles`/`Tags`; tab default `foryou` ทุกครั้งที่เข้า results |
+| AC-SEARCH-015 | `For you` ต้องแสดง `Accounts` (seller ชื่อ match q, ไม่ blocked) + `Posts` `xp-grid two`; seller ที่ชื่อไม่ match ต้องไม่อยู่ใน Accounts แม้โพสต์ match |
+| AC-SEARCH-016 | `Profiles` ต้องแสดง seller cards พร้อม `N listings`/`N รายการประกาศ` + `· Following` + Follow button; guest กด Follow → Member Sheet |
+| AC-SEARCH-017 | `Tags` ต้องแสดง hashtag rows + `N posts` (รวมจากทุกโพสต์ `!muted` + `CF_TAGS` seed), sort count desc → alpha; กด tag → `#tag` results |
+| AC-SEARCH-018 | Result tile / explore tile ต้องเปิด Post Viewer default mode ที่โพสต์นั้น (explore = photo index ของ tile, results = index 0) — ไม่เปิด feed card |
+| AC-SEARCH-019 | Filter page ต้องมี 11 sections: Brand, Model, Price range, Year, Reference, Condition, Case size, Movement, Dial color, Strap/Bracelet, Delivery contents — ทุก option มี `(N)` count จาก `salePosts()` และ `(0)` เลือกได้ |
+| AC-SEARCH-020 | Model ต้อง dependent: เลือก brand → list เหลือ model ของ brand ที่เลือก + title `Model · {brands}` + prune model ที่ไม่เข้าเงื่อนออกจาก draft |
+| AC-SEARCH-021 | Filter edits ต้องลง `fDraft` เท่านั้น — `Apply` commit เข้า `S.f`; back/ออกทิ้ง draft; `Clear all` reset draft (ไม่ commit) |
+| AC-SEARCH-022 | `Apply` ต้องแสดง `Apply (N)` เมื่อมี selection; commit แล้วกลับ results (`_subStack=["search"]`) พร้อม active filter chips |
+| AC-SEARCH-023 | Price inputs ต้อง strip non-digit + auto-comma ทุก keystroke; Apply ต้อง error `Minimum price must not exceed maximum price` (min>max) และ `Maximum price must not exceed 2,000,000` (เกินเพดาน) โดยไม่ commit |
+| AC-SEARCH-024 | Active filter chips ต้องมี chip ต่อ value + chip `THB {min\|0}–{max\|Any}`; `×` ลบ value ทันที (price chip ล้างทั้งคู่) โดยไม่ต้อง Apply |
+| AC-SEARCH-025 | Multiple filters ต้องใช้ AND logic (`matchFilters`); filter apply กับ `#` query ด้วย |
+| AC-SEARCH-026 | Post Viewer default ต้องเป็น full-bleed photo snap แนวตั้ง (scroll-snap mandatory) + head (back + search icon) + rail + foot + `pv-add` ตาม Anatomy Rule |
+| AC-SEARCH-027 | Rail ต้องซ่อน comment เมื่อ `noComments` และซ่อน views เมื่อ `hideCounts`/views ว่าง; save แสดง filled เมื่อ saved; `...` เปิด own/others menu ตามเจ้าของโพสต์ |
+| AC-SEARCH-028 | `Likes` label → likes sheet; caption `…` → `ps` sheet; `Tap for details` → `dt` sheet (เฉพาะมี specGroups); `pv-add`/comment → `nt` comment sheet; `View full detail` → Post Detail ทับ viewer |
+| AC-SEARCH-029 | `pv-back` ปิด viewer กลับ surface เดิม; `pv-srch` ปิด viewer + กลับ `mode="typing"` เมื่อมี sub stack (ไม่มี → ปิดเฉย ๆ) |
+| AC-SEARCH-030 | Viewer modes: `feed` (saved/wl/archive tile → head title + `pv-srch` + feed cards) และ `pfp` (profile tile → head `Posts`/`{user}` + Follow pill ตามเงื่อนไข) ต้อง scroll ไปที่โพสต์ที่กด |
+| AC-SEARCH-031 | Guest ต้อง browse search/results/filter/viewer ได้ครบ — แต่ `sr-wa`/Follow/like/save/share/`...`/comment input ต้องเจอ Member Sheet `Join TukDaeng` |
+| AC-SEARCH-032 | `sr-wa` ต้องเปิด shared Watch Alert sheet ด้วย criteria = keyword + ทุก filter + price; criteria ว่าง = `Any new listing`; bell `on` เมื่อ sig ตรง |
+| AC-SEARCH-033 | Alert name ต้อง auto-fill จาก `waName` + editable; ว่างตอน save → regenerate auto — ต้องไม่ block (deviation จาก spec เดิม) |
+| AC-SEARCH-034 | Criteria `waSig` ซ้ำ → เปิด edit mode; criteria+matchMode ซ้ำตอน save → `You already saved this alert`; save → `Watch alert on`/`Watch alert updated`; delete → `Watch alert removed` |
+| AC-SEARCH-035 | WA match count บน mode rows ต้องนับจาก `salePosts()` เท่านั้น; `any`/`model` disabled เมื่อ criteria ว่าง |
+| AC-SEARCH-036 | Asset `Sale`→`Sold`/`Hide`/`Show` หรือ post ที่หลุด price ต้องหายจาก results Posts grid + filter counts + WA match; `Hide`/`Show`→`Sale` ต้องกลับเข้า |
+| AC-SEARCH-037 | Blocked seller ต้องหายจาก results grid/explore/accounts/profiles/suggestions (ยกเว้น `#` grid — deviation); muted ต้องหายทุก search surface |
+| AC-SEARCH-038 | Report จาก `...` ใน viewer ต้องเปิด report stack `rp-over` ทับ viewer และไม่ทำให้โพสต์หายจาก results ทันที |
+| AC-SEARCH-039 | Results ว่างต้องแสดง `No data found` (+ `Try a different keyword or adjust your filters` บน For you); error state (contract) = `Something went wrong. Please try again.` + `Try again` — ทุก copy EN-only (deviation) |
+| AC-SEARCH-040 | V1 ต้องไม่มี sort UI / result count / pull-to-refresh / infinite scroll / end-of-list marker บน search results — grid render ครั้งเดียว |
 
-# 14. Empty State
+# 17. Related Modules
 
-ใช้ข้อความมาตรฐานเดียวกับระบบ:
+- [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md)
+- [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md)
+- [02_FEED_MODULE.md](02_FEED_MODULE.md)
+- [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md)
+- [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md)
+- [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md)
+- [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md)
+- [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md)
+- [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md)
+- [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md)
+- [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md)
 
-| Language | Message |
-|---|---|
-| TH | ไม่พบข้อมูล |
-| EN | No data found |
+# 18. Future Enhancement
 
-ใช้กับ:
-
-- Search Result
-- Watch Alert Result List
-
----
-
-# 15. Notification Rules
-
-- Search Module ไม่สร้าง Notification โดยตรง
-- Watch Alert Notification ถูกจัดการโดย Watch Alert / Notification Module
-- เมื่อเปิด Watch Alert Notification ต้องไปที่ Watch Alert Result List
-- ต้องไม่เปิด Asset Detail โดยตรงจาก Watch Alert Notification
-
----
-
-# 16. Analytics Events
-
-- Search Open
-- Search Keyword Submit
-- Search Autocomplete Select
-- Popular Filter Tag Impression
-- Popular Filter Tag Select
-- Apply Filter
-- Clear Filter
-- Sort Search Result
-- Search Result Click
-- Search Result Impression (สำหรับคำนวณ click-through rate ใน Search Insights)
-- Open Asset Detail From Search
-- Open Public Profile From Search
-- Create Watch Alert
-- Watch Alert Result Open
-- Make Offer From Search (สำหรับคำนวณ Search Funnel ใน Search Insights)
-
----
-
-# 17. Acceptance Criteria
-
-## Search Visibility
-
-| AC ID | Criteria |
-|---|---|
-| AC-SEARCH-001 | Search Result ต้องแสดงเฉพาะ Asset สถานะ Sale ที่ User มีสิทธิ์มองเห็น |
-| AC-SEARCH-002 | Search Result ต้องไม่แสดง Asset สถานะ Show, Hide และ Sold |
-| AC-SEARCH-003 | Search Result ต้องไม่แสดง Asset ของ User ที่ถูก Block หรือ Block กันอยู่ |
-| AC-SEARCH-004 | Search Result ต้องเรียง default ตาม Created Date DESC / Newest |
-
-## Guest User
-
-| AC ID | Criteria |
-|---|---|
-| AC-SEARCH-005 | Guest ต้องสามารถ Search, Filter, View Search Result, Open Asset Detail และ Open Public Profile ได้ |
-| AC-SEARCH-006 | Guest ต้องไม่สามารถ Create Watch Alert ได้ |
-| AC-SEARCH-007 | เมื่อ Guest กด Create Watch Alert ต้องแสดง Global Login Required Dialog |
-
-## Search & Filter
-
-| AC ID | Criteria |
-|---|---|
-| AC-SEARCH-008 | Search Keyword ต้องค้นหาจาก Brand, Model และ Reference Number ได้ |
-| AC-SEARCH-008A | Search Keyword ต้องค้นหาจาก specification snapshot text (Case Material, Movement, Dial Color, Strap / Bracelet) ได้ รวมถึงค่า free-text ที่ Owner กรอกผ่าน `ระบุเอง` (relation = `null`) |
-| AC-SEARCH-009 | Filter ต้องรองรับ Brand, Model, Price Range, Year of Production, Reference Number, Delivery Contents, Condition, Case Size, Movement, Dial Color และ Strap / Bracelet |
-| AC-SEARCH-009A | Filter option (Brand, Model, Reference, option master) ต้องแสดงทุก entity/option ที่ `is_active=true` พร้อมจำนวน Asset Sale ปัจจุบันข้างชื่อ แม้จำนวนเป็น `0` (no current listing) |
-| AC-SEARCH-009B | Entity/option ที่ `is_active=false` (inactive market data หรือ deactivated option) ต้องไม่แสดงเป็นตัวเลือกใหม่ใน filter |
-| AC-SEARCH-009C | หน้า Search และหน้า Filter ต้องแสดง Popular Filter/Popular Selection tags จากข้อมูล aggregate ตามหมวดที่เกี่ยวข้อง โดย user ยังเลือกจากรายการเต็มได้ |
-| AC-SEARCH-009D | Popular Filter ต้องไม่ตัดตัวเลือกอื่นออก ไม่เปลี่ยน Search/Filter logic และไม่เปิดเผยข้อมูลที่ระบุตัว user รายบุคคล |
-| AC-SEARCH-009E | ค่า free-text spec และค่า suggestion pool ที่ยังไม่ promote ต้องไม่แสดงเป็น filter option หรือ autocomplete — แสดงเฉพาะ entity/option `is_active=true` เท่านั้น |
-| AC-SEARCH-010 | Brand → Model ต้องเป็น Dependent Filter |
-| AC-SEARCH-010A | เมื่อเลือกหลาย Brand (เช่น Rolex + Omega) Model filter ต้องแสดงเฉพาะ Model ของ Brand ที่เลือกทั้งหมดรวมกัน |
-| AC-SEARCH-010B | ใน Model filter ที่กรองตาม Brand แล้ว ต้องแสดง Popular Model สูงสุด 10 อันดับแรกของ Brand ที่เลือก (context-aware aggregate) ก่อนรายการเต็ม โดยไม่ตัด Model อื่นออก |
-| AC-SEARCH-010C | Popular Model ใน Model filter ต้องใช้ข้อมูล aggregate ของ Brand ที่เลือกเท่านั้น ไม่ใช่ Popular Model รวมทุกแบรนด์ และต้องไม่เปิดเผยข้อมูลที่ระบุตัว user รายบุคคล |
-| AC-SEARCH-011 | Multiple Filter ต้องใช้ AND Logic |
-| AC-SEARCH-012 | Apply Filters ต้องอัปเดต Search Result ตามเงื่อนไขที่เลือก |
-| AC-SEARCH-013 | Clear Filters ต้องล้างเงื่อนไขทั้งหมดและอัปเดต Search Result |
-| AC-SEARCH-014 | Search Result ต้องแสดง Result Count |
-| AC-SEARCH-015 | Sort ต้องรองรับ Relevance, Price Low to High, Price High to Low, Newest และ Popularity |
-
-## Search Result Card
-
-| AC ID | Criteria |
-|---|---|
-| AC-SEARCH-016 | Search Result Card ต้องแสดง Asset Images, Brand, Model, Price, Posted Time, Owner Name, Like Count และ Comment Count |
-| AC-SEARCH-017 | Search Result Card ต้องไม่แสดง Location, Verified Badge และ Status Badge ใน V1 |
-| AC-SEARCH-018 | User ต้องสามารถเปิด Asset Detail จาก Search Result ได้ |
-| AC-SEARCH-019 | User ต้องสามารถเปิด Public Profile จาก Search Result ได้ |
-
-## Asset Lifecycle
-
-| AC ID | Criteria |
-|---|---|
-| AC-SEARCH-020 | เมื่อ Asset เปลี่ยนสถานะ Sale → Sold ต้องหายจาก Search Result และ Watch Alert Result List ทันที |
-| AC-SEARCH-021 | เมื่อ Asset เปลี่ยนสถานะ Sale → Hide ต้องหายจาก Search Result และ Watch Alert Result List ทันที |
-| AC-SEARCH-022 | เมื่อ Asset เปลี่ยนสถานะ Hide → Sale ต้องกลับเข้า Search Result และ Watch Alert Result List หากตรง criteria |
-| AC-SEARCH-023 | เมื่อ Asset เปลี่ยนสถานะ Show → Sale ต้องกลับเข้า Search Result และ Watch Alert Result List หากตรง criteria |
-| AC-SEARCH-024 | เมื่อ Asset เปลี่ยนสถานะ Sale → Show ต้องหายจาก Search Result และ Watch Alert Result List |
-| AC-SEARCH-025 | เมื่อ Asset ถูกลบ ต้องหายจาก Search Result และ Watch Alert Result List |
-
-## Block & Report
-
-| AC ID | Criteria |
-|---|---|
-| AC-SEARCH-026 | เมื่อ User Block ผู้ใช้อีกคน Asset ของผู้ถูก Block ต้องหายจาก Search Result ทันที |
-| AC-SEARCH-027 | การ Report Asset ต้องไม่ทำให้ Asset หายจาก Search Result จนกว่า Admin จะดำเนินการ |
-
-## Watch Alert
-
-| AC ID | Criteria |
-|---|---|
-| AC-SEARCH-028 | Create Watch Alert ต้องสร้างจาก Search Filter ได้ |
-| AC-SEARCH-029 | Watch Alert criteria ต้องไม่มี Required Field แต่ Alert Name ต้องไม่ว่างตอนบันทึก |
-| AC-SEARCH-029A | Watch Alert criteria สามารถอ้าง Brand/Model/Reference หรือ option master ที่มี no current listing (จำนวน listing = 0 ตอนสร้าง) ได้ และถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data |
-| AC-SEARCH-030 | Watch Alert ต้อง Match เฉพาะ Asset สถานะ Sale |
-| AC-SEARCH-031 | เมื่อเปิด Save to Watch Alert ระบบต้องเติมชื่อเริ่มต้นจาก Filter หรือ default name ให้ user แก้ไขได้ |
-| AC-SEARCH-031A | หาก User ลบ Alert Name จนว่างแล้วกด Save this search ระบบต้องแจ้งเตือนให้กรอกชื่อและไม่สร้าง Watch Alert |
-| AC-SEARCH-032 | Watch Alert Notification ต้องเปิดไปที่ Watch Alert Result List |
-| AC-SEARCH-033 | Watch Alert Notification ต้องไม่เปิด Asset Detail โดยตรง |
-
-## Refresh & State
-
-| AC ID | Criteria |
-|---|---|
-| AC-SEARCH-034 | Search Result ต้องรองรับ Pull To Refresh |
-| AC-SEARCH-035 | Search Result ต้องรองรับ Infinite Scroll |
-| AC-SEARCH-036 | เมื่อ Scroll ถึงรายการสุดท้าย ต้องแสดงข้อความ `คุณดูรายการทั้งหมดแล้ว` |
-| AC-SEARCH-037 | เมื่อไม่พบผลลัพธ์ ต้องแสดง Empty State `ไม่พบข้อมูล` / `No data found` |
-| AC-SEARCH-038 | เมื่อโหลด Search Result ไม่สำเร็จ ต้องแสดง Error State พร้อมปุ่ม `ลองใหม่` |
-
----
-
-# 18. Related Modules
-
-- Feed Module
-- Asset Module
-- Asset Detail Module
-- Profile Module
-- Watch Alert Module
-- Notification Module
-- Trust & Safety Module
-
----
-
-# 19. Future Enhancement
-
-- Saved Search
-- Recent Search
-- Trending Search
-- AI Search Suggestion
-- Search History Sync
-- Natural Language Search
+- Sort control บน results (`plo`/`phi`/`pop` มี dead code รองรับ)
+- Result count / pull-to-refresh / infinite scroll / end-of-list marker
+- TH localization ของ search surfaces ทั้งหมด (ปัจจุบัน EN-only — i18n sweep FSP-026)
+- Saved Search เป็น feature แยก / recents persist ข้าม session
+- Popular Filter / context-aware Popular Model / trending page
+- Entity/option-master suggestions (Condition/Delivery/Case/Movement/Dial/Strap) + `is_active` gating จริงแทน static catalogs
+- `#` grid ให้เคารพ ni/blocked เหมือน surfaces อื่น (prototype inconsistency — ติดตาม FSP-030)
+- AI Search Suggestion / Natural Language Search
+- Search Insights event instrumentation (analytics contract ใน §15)

@@ -4,11 +4,10 @@ Reference:
 
 - [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 - [README_MODULE_INDEX.md](README_MODULE_INDEX.md)
-- [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md)
 
 Purpose:
 
-เอกสารนี้ใช้เป็น implementation checklist สำหรับ Dev โดยแยกจาก Figma gap checklist รายการด้านล่างเน้นสิ่งที่ต้องทำในระบบจริง เช่น data model, API, permission, routing, state handling, integration และ logging
+เอกสารนี้ใช้เป็น implementation checklist สำหรับ Dev รายการด้านล่างเน้นสิ่งที่ต้องทำในระบบจริง เช่น data model, API, permission, routing, state handling, integration และ logging
 
 ---
 
@@ -31,7 +30,7 @@ Purpose:
 - [ ] รองรับ Email / Password Sign Up
 - [ ] บังคับ Terms of Use และ Privacy Policy ก่อนสมัครทุก auth method
 - [ ] Email / Password ต้อง verify OTP
-- [ ] OTP หมดอายุภายใน 30 นาที
+- [ ] รองรับ Resend OTP (FO V1 ไม่ได้กำหนด OTP expiry duration — S-20)
 - [ ] Password อย่างน้อย 8 ตัวอักษร และต้องมีตัวเลขหรือสัญลักษณ์
 - [ ] 1 Email สมัครได้ 1 บัญชี
 - [ ] SSO Email ไม่ต้อง OTP
@@ -40,7 +39,7 @@ Purpose:
 - [ ] บัญชี SSO-only ห้าม Sign In ด้วย Email / Password
 - [ ] บัญชี Email / Password ห้าม Sign In ด้วย SSO หากไม่ได้ linked ตาม policy
 - [ ] Email หลัง verify แล้วแก้ไขไม่ได้
-- [ ] Forgot / Reset Password รองรับ invalid/expired token
+- [ ] Forgot Password ส่ง reset link และแสดง generic confirmation — ไม่มี Reset Password page ในแอป (S-20)
 - [ ] Change Password รองรับเฉพาะ authenticated Email / Password account
 - [ ] Change Password ต้องมี Current password, New password และ Confirm new password
 - [ ] Change Password ต้อง validate current password, password policy, new password ต้องต่างจาก current password และ confirm ต้องตรงกับ new password
@@ -62,7 +61,7 @@ Purpose:
 - [ ] Feed Card แสดง required fields: image, brand, model, price, posted time, owner, like count, comment count
 - [ ] Feed more menu สำหรับ Asset ของผู้อื่นรองรับ Hide this asset, Report Asset, Block User
 - [ ] Hide this asset เป็น user-level preference และไม่ใช่ asset status `Hide`
-- [ ] Hide this asset ซ่อน Asset เฉพาะ Feed ของผู้กดและไม่กระทบ Owner/ผู้ใช้อื่น/Public Profile/Offer/Chat
+- [ ] Hide this asset ซ่อน Asset เฉพาะ Feed ของผู้กดและไม่กระทบ Owner/ผู้ใช้อื่น/Public Profile/Chat
 - [ ] Hide this asset มี undo ชั่วคราว และถ้าไม่ undo ต้องไม่กลับมาใน Feed หลัง refresh/reload
 - [ ] Report Asset จาก Feed เปิด Trust & Safety Report Asset flow และไม่ทำให้ Asset หายทันที
 - [ ] Block User จาก Feed ต้องมี confirmation และใช้ block filtering rule หลัง block สำเร็จ
@@ -87,7 +86,7 @@ Purpose:
 - [ ] Filter option สำหรับ Condition, Delivery, Case Material, Movement, Dial Color, Strap/Bracelet Type ใช้ internal option master เดียวกับ Add/Edit Asset
 - [ ] Seed internal option master จาก `SeedData/asset-spec-options.csv` หรือ `SeedData/asset-spec-options.json`
 - [ ] Brand -> Model เป็น dependent filter
-- [ ] Sort รองรับ Relevance, Price Low to High, Price High to Low, Newest, Popularity
+- ไม่มี Sort UI ใน FO V1 (S-24 — prototype ไม่ implement sort controls)
 - [ ] Result Count แสดงจำนวนผลลัพธ์หลัง filter
 - [ ] Clear Filters reset criteria ทั้งหมด
 - [ ] No result ใช้ empty state กลาง
@@ -123,10 +122,8 @@ Purpose:
 - [ ] Delete Asset ต้องมี confirmation ที่ระบุ `This action cannot be undone.`
 - [ ] Delete Asset สำเร็จแล้วต้องไม่มี Undo / restore UI ใน V1
 - [ ] Asset Deleted ต้องหายจาก Feed, Search, Watch Alert, Public Profile
-- [ ] Asset Deleted ทำให้ Offer ที่เกี่ยวข้องเป็น `Cancelled`
 - [ ] Chat ที่เกี่ยวข้องกับ Deleted Asset ยังอยู่
-- [ ] Provenance, Purchase Price, Purchase Date, Purchase From, Proof of Payment เป็น private
-- [ ] Consignment Owner Contact และ Consignment Terms เป็น private
+- [ ] Purchase Price และ Purchase Date (Purchase Information) เป็น owner-private — ไม่มี Provenance/Consignment entity ใน V1 (S-25)
 - [ ] Status transition ต้อง trigger reindex/filter impact ต่อ Feed/Search/Watch Alert/Profile
 - [ ] Location ไม่เป็น required/display field หลักใน V1
 
@@ -150,7 +147,7 @@ Purpose:
 - [ ] Report Comment success ต้องไม่ซ่อน comment ทันที
 - [ ] Comments sheet เปิด comment action sheet ซ้อนแล้วปิด action sheet ต้องไม่ปิด Comments sheet
 - [ ] Show Asset เปิด Public Detail ได้แต่ไม่ขึ้น Feed/Search/Watch Alert
-- [ ] Show Asset สามารถ Make Offer / Contact Seller / Chat จาก Detail ได้
+- [ ] Show Asset สามารถ Contact Seller / Chat จาก Detail ได้
 - [ ] Asset Detail ไม่แสดง Market Comparison / Expected Profit (product decision: ไม่เพิ่ม; analytics อยู่ใน Portfolio / Assets Value เท่านั้น)
 - [ ] Purchase data, Sold History, Portfolio Value Detail เป็น Owner-only
 
@@ -160,7 +157,7 @@ Purpose:
 
 - [ ] Owner Profile แสดง Asset ของตัวเองทุก status: `Sale`, `Show`, `Hide`, `Sold`
 - [ ] Public Profile แสดงเฉพาะ `Sale` และ `Show`
-- [ ] Public Profile ห้ามแสดง `Hide`, `Sold`, purchase data, provenance, consignment, sold history, portfolio value detail
+- [ ] Public Profile ห้ามแสดง `Hide`, `Sold`, purchase data, sale history, portfolio value detail
 - [ ] Public Profile ต้องมี Report User และ Block User entry สำหรับ profile ของ user อื่น
 - [ ] Public Profile more menu ต้องมี `Share profile`, `Report user`, `Block user`
 - [ ] Owner Profile more menu ต้องมี `Share profile`, `Settings` และใช้ label `Settings`
@@ -187,7 +184,7 @@ Purpose:
 # 7. Chat
 
 - [ ] Chat list แสดงห้องสนทนาของ user เท่านั้น
-- [ ] Chat Room รองรับ Text, Image, File, Asset Card, Offer Card
+- [ ] Chat Room รองรับ Text, Image, File, Asset Card
 - [ ] Same Asset ระหว่าง buyer/seller ควรใช้ room เดิมตาม rule
 - [ ] New Message แสดง unread/badge ใน Chat menu เท่านั้น
 - [ ] New Message ไม่เข้า Notification Center
@@ -202,55 +199,19 @@ Purpose:
 - [ ] Block User จาก Chat ต้องเปิด confirmation `Block this user?` และ cancel/dismiss ต้องไม่ apply block
 - [ ] หลัง block แล้ว chat history เดิมอ่านได้แบบ read-only
 - [ ] หลัง block แล้วส่งข้อความใหม่ไม่ได้
-- [ ] หลัง block แล้วสร้าง Chat/Offer ใหม่ระหว่างคู่ที่ block กันไม่ได้
+- [ ] หลัง block แล้วสร้าง Chat ใหม่ระหว่างคู่ที่ block กันไม่ได้
 - [ ] Delete Chat รองรับ confirmation ตาม baseline
 - [ ] Delete Chat confirmation ใช้ title `Delete chat?`, body ว่า chat ถูกลบจาก inbox ฝั่งเราและอีกฝ่ายยังอาจเห็น conversation, actions `Cancel` / `Delete chat`
 - [ ] Delete Chat ซ่อนห้องจาก Chat List เฉพาะฝั่งผู้กด
 - [ ] Delete Chat ไม่ลบ message/archive ฝั่ง server และไม่กระทบคู่สนทนา
-- [ ] Delete Chat ไม่ลบหลักฐาน offer/chat history และไม่มี restore UI ใน V1
+- [ ] Delete Chat ไม่ลบหลักฐาน chat history และไม่มี restore UI ใน V1
 - [ ] Delete Chat success แสดง `Chat deleted`; API fail แสดง `Unable to delete chat. Please try again.`
 
 ---
 
-# 8. Offer
+# 8. Notification
 
-- [ ] Make Offer ทำจาก Asset Detail เท่านั้น
-- [ ] Offer รองรับ Asset status `Sale` และ `Show`
-- [ ] Show สร้าง Offer ได้จาก Asset Detail / Public Profile detail entry เท่านั้น
-- [ ] Hide, Sold, Deleted, ซ่อนชั่วคราว/Under Review และซ่อนถาวร สร้าง Offer ใหม่ไม่ได้
-- [ ] Guest กด Offer ต้องเปิด Login Required Dialog
-- [ ] Owner ต้องไม่สามารถ Make Offer กับ Asset ของตัวเอง
-- [ ] Offer Price เป็น required และถ้าว่างต้อง disable ปุ่ม `Send offer`
-- [ ] Offer Price ต้องรับเฉพาะตัวเลขจำนวนเงิน THB ที่ parse ได้
-- [ ] Offer Price ต้อง validate มากกว่า 0 และแสดง `Please enter a valid offer amount` เมื่อเป็น 0, ติดลบ หรือไม่ใช่ตัวเลข
-- [ ] Offer Message เป็น optional, trim ก่อนส่ง และถ้าเป็น whitespace-only ให้ถือว่าไม่กรอก
-- [ ] Offer Message ต้องไม่เกิน 500 characters และแสดง field-level validation error เมื่อเกิน
-- [ ] Buyer ที่มี Pending Offer เดิมของ Asset เดียวกันต้องสร้างซ้ำไม่ได้ และแสดง `You already have a pending offer. Go to chat to view it.`
-- [ ] Offer ส่งสำเร็จแล้ว status = `Pending`
-- [ ] Offer Sent Successfully แล้วเปิด Chat Room
-- [ ] Offer Card ต้องแสดงใน Chat Room
-- [ ] Seller Accept แล้ว status = `Accepted`
-- [ ] Offer Accepted notification ไป Chat Room
-- [ ] Seller กด `Decline` แล้ว status = `Rejected`
-- [ ] Offer Rejected notification ไป Asset Detail
-- [ ] Asset Deleted ทำให้ Offer เป็น `Cancelled`
-- [ ] Offer Cancelled notification ไป Chat Room + Focus Offer Card
-- [ ] Asset Sold ต้องเปลี่ยน pending offers อื่นเป็น `Rejected` โดยอัตโนมัติ
-- [ ] Owner เปลี่ยน Asset จาก `Sale`/`Show` เป็น `Hide` ต้องเปลี่ยน pending offers เป็น `Cancelled`
-- [ ] Asset ถูก auto hidden จาก report หรือซ่อนชั่วคราวระหว่าง review ต้องเปลี่ยน pending offers เป็น `Paused`
-- [ ] Offer Card สถานะ `Paused` ต้องแสดง `Offer Paused` และไม่มี `Accept` / `Decline`
-- [ ] Review ผ่านและ Asset กลับเป็น `Sale`/`Show` ต้องเปลี่ยน `Paused` offers กลับเป็น `Pending`
-- [ ] Asset ถูกซ่อนถาวรจาก moderation ต้องเปลี่ยน pending/paused offers เป็น `Invalidated`
-- [ ] Offer Card สถานะ `Invalidated` ต้องแสดง `Offer Unavailable` และไม่มี `Accept` / `Decline`
-- [ ] ไม่มี Counter Offer ใน V1
-- [ ] ไม่มี Withdraw Offer ใน V1
-- [ ] ไม่มี Payment Gateway ใน V1
-
----
-
-# 9. Notification
-
-- [ ] Notification Center รองรับเฉพาะ Like, Comment, Follow, Offer, Watch Alert
+- [ ] Notification Center รองรับเฉพาะ Like, Comment, Follow, Watch Alert
 - [ ] Chat/New Message ไม่เข้า Notification Center
 - [ ] Moderation, Account Action, Market Update, Price/Valuation, Sale Success ไม่เข้า FO V1 Notification Center
 - [ ] Notification list แสดงเฉพาะของ current user
@@ -260,19 +221,13 @@ Purpose:
 - [ ] Like notification ไป Asset Detail
 - [ ] Comment notification ไป Asset Detail + Focus Comment
 - [ ] Follow notification ไป Public Profile
-- [ ] Watch Alert notification ไป Watch Alert Result List
-- [ ] Watch Alert notification ห้ามเปิด Asset Detail โดยตรง
-- [ ] New Offer notification ไป Chat Room + Focus Offer Card
-- [ ] Offer Accepted notification ไป Chat Room
-- [ ] Offer Rejected notification ไป Asset Detail
-- [ ] Offer Cancelled notification ไป Chat Room + Focus Offer Card
-- [ ] Offer Paused notification ไป Chat Room + Focus Offer Card และไม่มี action
-- [ ] Offer Invalidated notification ไป Chat Room + Focus Offer Card และไม่มี action
+- [ ] Watch Alert notification เปิด Asset Detail (post viewer) ของ Asset ที่ match โดยตรง
+- [ ] ไม่มี Watch Alert Result List เป็น destination คั่นใน V1
 - [ ] Destination ต้อง handle Deleted Asset, Deleted User, Permission Denied, Block state
 
 ---
 
-# 10. Watch Alert
+# 9. Watch Alert
 
 - [ ] Watch Alert match เฉพาะ Asset status `Sale`
 - [ ] Watch Alert ไม่ match `Show`, `Hide`, `Sold`, `Deleted`
@@ -285,13 +240,12 @@ Purpose:
 - [ ] รองรับ toggle notification ต่อ alert
 - [ ] รองรับ rename alert
 - [ ] รองรับ delete alert พร้อม confirmation
-- [ ] Watch Alert Result List แสดงรายการ match
-- [ ] Notification เปิด Watch Alert Result List
-- [ ] Blocked user/asset ต้องถูก filter ออกจาก Watch Alert Result
+- [ ] Watch Alert notification เปิด Asset Detail (post viewer) ของ Asset ที่ match โดยตรง ไม่มี Result List คั่น
+- [ ] Blocked user/asset ต้องถูก filter ออกจาก Watch Alert match/notification
 
 ---
 
-# 11. Social
+# 10. Social
 
 - [ ] Like Asset ได้จาก Asset Detail/Feed ตาม route ที่อนุญาต
 - [ ] Like ต้องเพิ่ม Favorites
@@ -320,7 +274,7 @@ Purpose:
 
 ---
 
-# 12. Board
+# 11. Board
 
 - [ ] Board เป็น Article Area ไม่ใช่ forum/user-generated post board
 - [ ] Article สร้าง/แก้/ลบโดย Admin ผ่าน Back Office เท่านั้น
@@ -354,7 +308,7 @@ Purpose:
 
 ---
 
-# 13. Settings
+# 12. Settings
 
 - [ ] Settings เข้าได้เฉพาะ Member
 - [ ] Settings Home ต้องเรียง section: Account, Your app and media, Notifications, More info and support, bottom Sign out
@@ -363,7 +317,7 @@ Purpose:
 - [ ] Email Display เป็น read-only หลัง verify
 - [ ] Language รองรับ English / Thai
 - [ ] Theme Mode รองรับ Dark Mode / Light Mode
-- [ ] Notification Settings รองรับเฉพาะ Like, Comment, Follow, Offer, Watch Alert
+- [ ] Notification Settings รองรับเฉพาะ Like, Comment, Follow, Watch Alert
 - [ ] Notification Settings ไม่รวม Chat/New Message
 - [ ] Notification Settings default ON และ auto-save toggle โดยไม่มี Save button
 - [ ] Change Password เป็น Auth-linked entry
@@ -389,7 +343,7 @@ Purpose:
 
 ---
 
-# 14. Portfolio
+# 13. Portfolio
 
 - [ ] Portfolio เป็น Owner-only
 - [ ] Public Profile ห้ามแสดง Portfolio Value Detail
@@ -419,7 +373,7 @@ Purpose:
 
 ---
 
-# 15. Trust & Safety
+# 14. Trust & Safety
 
 - [ ] Report Asset ได้จาก Asset Detail
 - [ ] Report User ได้จาก Profile/Chat ตาม entry point
@@ -431,7 +385,7 @@ Purpose:
 - [ ] Block ต้องซ่อน asset/content จาก Feed, Search, Watch Alert Result
 - [ ] Block ต้องหยุด Following Feed relation ระหว่างคู่ที่ block กัน
 - [ ] Block ต้องทำให้ Chat read-only
-- [ ] Block ต้องกัน new message/new chat/new offer ระหว่างคู่ที่ block กัน
+- [ ] Block ต้องกัน new message/new chat ระหว่างคู่ที่ block กัน
 - [ ] Unblock behavior ต้อง restore visibility ตาม normal permission
 - [ ] Suspended/Banned account ต้อง login เข้า main app ไม่ได้ และต้องเห็น account status state พร้อมเหตุผล/support contact
 - [ ] เมื่อ BO เปลี่ยน account เป็น Suspended/Banned ต้อง revoke/block active session และ clear authenticated app state
@@ -440,7 +394,7 @@ Purpose:
 
 ---
 
-# 16. Integrations
+# 15. Integrations
 
 - [ ] Apple Sign In integration พร้อม callback/error handling
 - [ ] Google OAuth integration พร้อม callback/error handling
@@ -456,7 +410,7 @@ Purpose:
 
 ---
 
-# 17. Non-Functional Requirements
+# 16. Non-Functional Requirements
 
 - [ ] Feed initial load target ต้องเป็นไปตาม NFR baseline
 - [ ] Search/filter response target ต้องเป็นไปตาม NFR baseline
@@ -472,24 +426,22 @@ Purpose:
 
 ---
 
-# 18. Admin / Back Office Boundary
+# 17. Admin / Back Office Boundary
 
 - [ ] Front Office mobile ไม่มี Admin UI
 - [ ] Admin ใช้งานผ่าน Web Back Office เท่านั้น
 - [ ] Front Office ต้องส่ง report/moderation handoff data ให้ Back Office ได้
 - [ ] Admin Review, Moderation, Audit Trail อยู่ใน Back Office scope
 - [ ] Mobile V1 ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary
-- [ ] Full Back Office PRD เริ่มหลัง FO baseline, Figma cleanup, Dev checklist และ QA checklist ครบ/นิ่งแล้วเท่านั้น
+- [ ] Full Back Office PRD เริ่มหลัง FO baseline, Dev checklist และ QA checklist ครบ/นิ่งแล้วเท่านั้น
 
 ---
 
-# 19. Implementation Handoff Gates
+# 18. Implementation Handoff Gates
 
 - [ ] Dev อ่าน source-of-truth order ใน `README_MODULE_INDEX.md`
 - [ ] Dev อ่าน `ERROR_STATE_UI_COPY_CATALOG.md` ก่อน implement error/loading/empty/retry states
-- [ ] Dev ใช้ master เป็น source สูงสุดเมื่อ Figma/PRD ขัดกัน
-- [ ] Figma `Must Fix` ต้องแก้ก่อนเริ่ม implementation จริง
-- [ ] Figma `High` ต้องมี owner/decision ก่อน QA sign-off
+- [ ] Dev ใช้ master เป็น source สูงสุดเมื่อเอกสารขัดกัน
 - [ ] API contract ต้องระบุ permission และ visibility filtering ชัดเจน
 - [ ] QA ต้องมี test cases ครอบคลุม Guest, Member, Owner, Other User, Admin boundary
 - [ ] QA ต้อง test Sale/Show/Hide/Sold/Deleted lifecycle ครบ

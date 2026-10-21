@@ -37,20 +37,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | Accessibility | Font size รองรับการปรับตามระบบ |
 | Accessibility | รองรับ Screen Reader ตามความเหมาะสมของ Mobile Platform |
 
-# 4. Figma Gap Checklist For Non-Functional Requirements
-
-| Priority | Gap | Master Baseline | Figma Action |
-| --- | --- | --- | --- |
-| High | Feed performance/loading state ยังไม่ครบ | Feed ควรโหลดภายใน 2 วินาที, Infinite Scroll, end-of-list | เพิ่ม loading, load-more และ end-of-list state |
-| High | Image loading/fallback state ยังไม่ชัด | รูปภาพต้อง Lazy Load | เพิ่ม skeleton/placeholder/error image state |
-| High | Private data อาจปรากฏใน public screens | Private Asset Data ต้องตรวจสิทธิ์ทุกครั้ง | แยก Owner-only และ Viewer/Public state ให้ชัด |
-| High | Admin action audit ไม่ถูกระบุใน admin/back office flow | Admin Action ต้องมี Audit Trail | เพิ่ม audit trail requirement ใน Back Office note |
-| Medium | ภาษาไทย/อังกฤษยังไม่เห็น coverage ครบ | รองรับ TH/EN | ตรวจ copy และพื้นที่ข้อความสำหรับสองภาษา |
-| Medium | ราคาอาจมีหลาย currency format | ราคาแสดงเป็น THB | Normalize price format และ currency label |
-| Medium | Empty state copy ไม่สม่ำเสมอ | ใช้ข้อความกลาง `ไม่พบข้อมูล` / `No data found` | Normalize empty state |
-| Medium | Accessibility state ยังไม่ถูก annotate | Font size และ Screen Reader ต้องรองรับตาม platform | เพิ่ม note สำหรับ dynamic font และ accessibility labels |
-
-# 5. Performance Requirements
+# 4. Performance Requirements
 
 | Requirement | Acceptance |
 | --- | --- |
@@ -60,7 +47,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | End of list | เมื่อ Scroll ถึงรายการสุดท้ายให้แสดง `คุณดูรายการทั้งหมดแล้ว` |
 | Offline Feed | Feed ต้องแสดง cached data ได้เมื่อ offline หากมีข้อมูลล่าสุด |
 
-# 6. Security Requirements
+# 5. Security Requirements
 
 | Requirement | Acceptance |
 | --- | --- |
@@ -71,7 +58,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | Route guard | Deep link / notification destination ต้อง validate auth, permission, deletion, block และ asset status |
 | Push payload | Push notification payload ต้องไม่ใส่ private data ที่ไม่จำเป็น |
 
-# 7. Localization Requirements
+# 6. Localization Requirements
 
 | Requirement | Acceptance |
 | --- | --- |
@@ -81,7 +68,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | Labels | ใช้ canonical terminology ตาม master |
 | Text expansion | UI ต้องรองรับความยาวข้อความต่างกันระหว่าง TH/EN |
 
-# 8. Accessibility Requirements
+# 7. Accessibility Requirements
 
 | Requirement | Acceptance |
 | --- | --- |
@@ -91,7 +78,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | Image accessibility | รูปภาพสำคัญควรมี label/description ตามความเหมาะสม |
 | Error accessibility | Error state ต้องสื่อสารได้ด้วยข้อความ ไม่พึ่งสีอย่างเดียว |
 
-# 9. QA Checklist
+# 8. QA Checklist
 
 | Area | Check |
 | --- | --- |
@@ -102,7 +89,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | Accessibility | Dynamic font, screen reader, touch target, error text |
 | Admin | Audit trail requirement exists for Back Office actions |
 
-# 10. Acceptance Criteria
+# 9. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -121,7 +108,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | AC-NFR-013 | Font size รองรับการปรับตามระบบ |
 | AC-NFR-014 | รองรับ Screen Reader ตามความเหมาะสมของ Mobile Platform |
 
-# 11. Related Modules
+# 10. Related Modules
 
 - [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md)
 - [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md)
@@ -131,7 +118,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 - [16_INTEGRATIONS_MODULE.md](16_INTEGRATIONS_MODULE.md)
 - [18_ADMIN_SCOPE_NOTE.md](18_ADMIN_SCOPE_NOTE.md)
 
-# 12. Future Enhancement
+# 11. Future Enhancement
 
 - Formal performance budget by device/network tier
 - WCAG mapping

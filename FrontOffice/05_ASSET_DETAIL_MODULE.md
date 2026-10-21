@@ -1,6 +1,6 @@
-# 05 Asset Detail Module
+# 05 Post Detail Module (Asset Detail)
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§10 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / own-post menu / Edit info canonical) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (post viewer 3 modes + lifecycle matrix canonical — FSP-016 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
 
 ---
 
@@ -8,952 +8,571 @@
 
 | Item | Detail |
 |---|---|
-| Module Name | Asset Detail |
+| Module Name | Post Detail (เดิมเรียก Asset Detail — spec เดิมตีความเป็น asset entity page แยก; prototype คือ post detail layer) |
 | Platform | Mobile Application |
 | Version | V1 |
 | Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD |
+| Document Type | Functional PRD - Master Aligned |
 
 ---
 
 # 2. Objective
 
-Asset Detail Module ใช้สำหรับแสดงรายละเอียดของ Asset นาฬิกา ทั้งในมุม Viewer, Guest, Member และ Owner โดยเป็นจุดรวมของการดูข้อมูล Asset, Gallery, Owner Information, Like, Comment, Make Offer, Chat, Share, Report และการเข้าถึง Owner actions ตามสิทธิ์
+Post Detail คือ read-facing detail layer ของโพสต์ (`.page-detail` overlay — "asset-detail equivalent" ตาม 00_NAV) — หน้าเต็มที่รวมรูป, actions, FOR SALE/SHOWCASE tag, ชื่อ Brand+Model, Reference, Descriptions และ spec groups (รวม `Price & Data Source`) ของโพสต์เดียว พร้อม entry พิเศษ 2 จุดที่ไม่มีบน feed card: `mf-btn` Follow this model (Watch Alert จาก spec โพสต์) และ `wl-btn` Wish List
 
-โมดูลนี้ต้องคุม visibility ของ Asset แต่ละสถานะให้ตรง master และต้องไม่เปิดเผยข้อมูล private เช่น Provenance, Consignment, Purchase Data, Sold History หรือ Portfolio Value Detail ให้ Viewer ที่ไม่มีสิทธิ์เห็น
+โมดูลนี้ต้องคุมว่า detail ถูกเปิดจาก entry points ที่ prototype มีจริงเท่านั้น, render จาก post model เดียวกับ feed, ไม่แสดง private data (purchase/sold/portfolio อยู่ owner surfaces ของ 04/14) และไม่มี owner/contact block ของ spec เดิม (prototype ไม่มี)
 
 ---
 
 # 3. Prototype Reference
 
-- `Detail asset viewer.png`
-- `Detail asset owner.png`
+Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
+
+- Detail layer: `.page-detail` mount ทุก screen (~19376) + CSS z-index เหนือ `.page-pv` + bottom nav ซ่อนเมื่อ `detail-open` (~1308–1333, ~6331); `openPostDetail` (~14686–14705 — render + `detailPid` + scroll reset + head เข้า scroller); `detail-back` (~21811–21814 — ปิดเฉพาะ `detail-open`); `keepScroll` re-render ตอนสลับภาษา (~19712–19714); `refreshPostViews` re-render detail ที่เปิดอยู่ (~13963)
+- Detail anatomy `detailHTML` dl1 (~13355–13398): `detailHeadHTML` dh3 (~13334–13347 — back + title `รายละเอียด`/`Detail` + `pm-btn`), hero + `photo-counter`/`photo-dots`/`clipUiHTML` (~13370–13378), actions row like/comment/views/share + `mf-btn` + `wl-btn` (~13380–13389), `saleTagHTML` (~13349–13353), `detail-name`/`detail-ref` fallback rules (~13358–13365), `Descriptions`/`คำอธิบาย` + `p.desc` (~13393–13394), `detailSpecsHTML` (~13521–13525 — **ไม่** filter `Price & Data Source`)
+- Spec groups: `specGroupsHTML` shared renderer (~13528–13554); `p.specs` = flattened `specGroups` rows (~13092); `specOf` (~14197); `naSpec` (~16117); seed `specGroups` 3 กลุ่ม (Watch Specifications / Item Details / Price & Data Source ~12771–12796)
+- Entries: `.view-full` handler (~21849–21857 — คง `pv-open` ไว้ detail ทับ viewer); `detailsHTML`/`triggerHTML` (`Tap for details` expander, filter `Price & Data Source` ~13302–13332); `pvDetailsSheetHTML` (`dt` sheet ~14470–14474); chat item `[data-chgo="post"]` (~19125–19134)
+- `hasDetails` gating: feed card ~14021, `pfp`/`svf` card ~14487 (`price || specGroups.length || specs.length`); `pv-dt` เฉพาะ `specGroups.length` (~14442)
+- Comments: `commentsFor`/`commentRowsHTML`/`commentsHTML` (~13556–13608), `COMMENT` seed threads (~13114–13156), `.comment-btn` handler (~22015–22028), `.c-like` local toggle (~22540–22546)
+- Watch Alert from detail: `.mf-btn` handler (~21899–21917), `modelKeyOf`/`syncModelFlags`/`refreshMfBtns` (~16199–16213), `waCriteriaFromPost` (~16124–16147 — field map + `mapped` exclusion list), `waSheetHTML` shared sheet (~16234–16279), WA handlers `wa-mode`/`wa-go`/`wa-del` (~21920–21978)
+- Wish List: `wlSheetHTML`/`WISHLISTS` (~13708–13733), handlers `.wl-btn`/`.wl-pick`/`.wl-new`/`syncWlBtns` (~22437–22482)
+- Shared sheets ที่ detail ใช้: `likesSheetHTML`/`shareSheetHTML`/`saveSheetHTML` (~13644–13706), share/save handlers (~22030–22067, ~22490–22526)
+- Own/viewer: `isOwnPost` → `pmOwnMenuHTML`/`pmMenuHTML` (canonical 02_FEED); edit-from-detail `V.editFromDetail` (~16024–16064); delete closes open detail (~20740)
+- `findPost` (~16577 — `POSTS` + `PF_GFX_REG` + `PF_MINE`); `pfTabPosts`/`pfKind` (~16604–16610 — sold/hide reachable ผ่าน own profile tabs); `PF_GFX_SOLD` (~16550–16559); `soldFromPost`/`markAssetSold` (~15942–15958, ~17139–17149)
+- Guest gate `GUEST_GATE_SEL` + `obGate` (~22997–23012): `.like-btn`/`.share-btn`/`.wl-btn`/`.mf-btn`/`.pm-btn`/`.comment-input`/`.emoji-row`/`.c-like`/`.c-meta` gated — `.comment-btn` และ `.view-full` ไม่ gate
+- Dead/tooling (ห้ามเขียนเป็น feature): `POST_DETAIL_CFG` per-post variant overrides (~13106–13112 — dev artifact), `igDetailHTML`/`igBodyHTML`/`igDetailHeadHTML` dl2 (~13444–13519 — มี post-head/caption/ask/save/liked-by ที่ dl1 ไม่มี), `chatPopHTML`/`chat-fab`/`sendChat`/`closeChatPop` (~13400–13442, ~21816–21836), header variants `dh2`/`dh4`/`dh5`, spec layouts `ds` acc/cards/tabs/seg + `dStyle` d1/d3, price variants `pr` pr1–pr4, `tg` tg2 — ดู 00_NAV §11 prototype-tooling rule
 
 ---
 
 # 4. Master Alignment Summary
 
-Asset Detail Module ต้องยึด master baseline ต่อไปนี้เป็นหลัก:
-
-- Viewer เห็น Asset Detail เฉพาะ Asset ที่เป็น Public: `Sale`, `Show`
-- Owner เห็น Asset Detail ของตัวเองได้ทุกสถานะ: `Sale`, `Show`, `Hide`, `Sold`
-- `Hide` และ `Sold` ต้องไม่ Public
-- Deleted Asset ต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว`
-- Asset Detail ต้องรองรับ Gallery รูปภาพ, Swipe รูป และ Full Screen Image Viewer
-- Asset Detail ต้องแสดง Brand, Model, Reference No., Description, Price, Owner Information, Technical Specifications และ Comments Section
-- Owner ต้องไม่เห็นปุ่ม Follow ตัวเอง
-- Comment รองรับ IG-style one-level replies ใต้ comment หลัก
-- ไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
-- ไม่มี Edit Comment ใน V1
-- รองรับ Delete Comment
-- Make Offer ทำผ่าน Asset Detail เท่านั้น
-- Accepted Offer เปิด Chat Room
-- Rejected Offer เปิด Asset Detail
-- Asset Deleted ทำให้ Offer เป็น Cancelled
-- Asset Sold ต้อง Auto Reject Offer อื่น
-- Provenance, Purchase Price, Purchase Date, Purchase From, Proof of Payment, Consignment Owner Contact, Consignment Terms, Sold History และ Portfolio Value Detail เป็น private data
+| Area | Master Baseline |
+| --- | --- |
+| Destination model | Post Detail (`.page-detail`) = asset-detail equivalent เดียวใน V1 — ไม่มี Asset Detail page แยก (00_NAV §6.1) |
+| Status model | `pfkind` ∈ `post`/`sale`/`show`/`hide`/`sold` mirror กับ canonical `Sale`/`Show`/`Hide`/`Sold` (00_GLOBAL §9) |
+| Visibility | ตาม 00_GLOBAL §10 — detail เปิดได้เฉพาะโพสต์ที่ visible ต่อ current user ผ่าน entry นั้น (feed=sale+post, public profile=sale+show, owner profile=ทุกสถานะ); viewer ต้องไม่ถึง hide/sold ของคนอื่น |
+| Private data | Purchase Price/Date, Sold History, Portfolio Value = private (00_GLOBAL §14) — **Post Detail ไม่แสดงเลย** (อยู่ `pfasset:`/`sold:`/`portfolio` ของ 04/14 เท่านั้น) |
+| Guest | เปิด detail + อ่าน specs/comments ได้เสรี (00_GLOBAL §11 capabilities); action ทุกตัว gated → Member Sheet `Join TukDaeng` |
+| Navigation | `.page-detail` เป็น layer ไม่ใช่ route — entries ตาม 00_NAV §7 matrix; `.detail-back` ตาม §6.7; unavailable fallbacks ตาม §10 (contract) |
+| Comments | shared comment bottom sheet เดียวกับทุก surface (00_NAV §6.1 comment surface rule) — detail ไม่มี inline comment section |
+| Watch Alert | `mf-btn` = WA entry ที่ 2 นอกจาก `sr-wa` search bell (03_SEARCH §9 + 10_WATCH_ALERT canonical) |
+| ไม่มีใน V1 | Owner/contact block บน detail, Follow จาก detail, Ask Seller บน detail, Save (bookmark) บน detail, Full Screen Image Viewer, inline comments + per-comment `...` actions, comment write/delete/report จริง |
 
 ---
 
-# 5. Figma Gap Checklist For Asset Detail Module
+# 5. Scope
 
-รายการนี้ใช้เป็น checklist สำหรับปรับ Figma เฉพาะ Asset Detail Module ให้ตรงกับ master ก่อนส่งต่อ Dev/QA
+## In Scope
 
-| Priority | Gap | Master Baseline | Figma Action |
-|---|---|---|---|
-| Must Fix | Comment UI ต้องรองรับการตอบโต้แบบ IG โดยไม่กลายเป็น forum thread | Comment รองรับ one-level replies ใต้ comment หลักเท่านั้น และไม่รองรับ reply ซ้อนหลายระดับ | ปรับ comment UI ให้แสดง reply ได้ 1 ชั้นใต้ comment หลัก และป้องกัน reply ต่อจาก reply |
-| High | ยังไม่เห็น Deleted Asset state ชัดเจน | Asset Detail ของ Asset ที่ถูกลบต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว` | เพิ่ม deleted/unavailable asset state |
-| High | Detail อาจแสดงข้อมูล private ให้ Viewer | Provenance, Consignment, purchase data, Sold History และ Portfolio Value Detail เป็น private | แยก Owner-only private sections และห้ามแสดงใน Viewer/Public mode |
-| High | ยังไม่เห็น state ของ Hide / Sold ที่เป็น Owner-only ชัดเจน | Viewer เห็นเฉพาะ Sale/Show; Owner เห็น Sale/Show/Hide/Sold | เพิ่ม Owner-only detail states สำหรับ Hide และ Sold |
-| High | Sold Asset ยังไม่ชัดว่า read-only / owner-only | Sold Asset เห็นเฉพาะ Owner และแก้ข้อมูลหลักไม่ได้ | เพิ่ม Sold Mode ที่ lock edit main info และแสดง Sold History |
-| Medium | Detail ยังมี field `Location` | Master Asset Detail ไม่ได้กำหนด Location เป็น required display field และ Feed/Search ไม่แสดง Location | ตัด Location ออกจาก V1 detail หรือย้ายเป็น future/optional หลัง master decision |
-| Medium | Image/gallery ยังอาจสื่อว่าสูงสุด 3 รูป | Asset Management รองรับ Gallery สูงสุด 10 รูป และ Detail ต้องรองรับ Gallery / Swipe / Full Screen | ปรับ gallery indicator/viewer ให้รองรับได้ถึง 10 รูป |
-| Medium | Guest restriction state ยังไม่ครบ | Guest ดูได้ แต่ Like, Follow, Comment, Chat, Offer ต้อง Login | เพิ่ม Global Login Required Dialog สำหรับ guest action |
-| Medium | Detail ของ Asset สถานะ Show ต้องรองรับ `Make an Offer` / `Contact seller` | Master อนุญาตให้ `Show` เสนอราคา/ติดต่อได้จาก Detail แต่ยังไม่ขึ้น Feed, Search หรือ Watch Alert | คง Make Offer / Contact Seller บน `Show` และ annotate ว่า entry มาจาก Detail/Public Profile เท่านั้น |
-| Resolved | Market Comparison / Expected Profit ไม่เพิ่มใน Asset Detail | Master อนุญาตให้ Asset Detail แสดง price analytics ได้ แต่ Figma ออกแบบไว้เฉพาะ Portfolio / Assets Value | Product decision: ไม่เพิ่มใน Asset Detail; analytics อยู่ใน Portfolio / Assets Value เท่านั้น |
+- Post Detail layer (`.page-detail`) — open/back/layer semantics + re-render behavior
+- Entry points ทั้งหมด: `View full detail` (feed card details-body + `dt` sheet + saved/wishlist/archive/profile viewer cards) + chat item card
+- Detail anatomy dl1: head, hero carousel + clip UI, action row (like/comment/views/share + `mf-btn` + `wl-btn`), sale tag, name/ref, Descriptions, spec groups + `Price & Data Source`
+- Detail actions: like toggle, comment sheet entry, share sheet entry, `mf-btn` WA flow (criteria จาก spec + `modelKey` bell state + `No details on this post to watch`), `wl-btn` wishlist flow, `pm-btn` own/others menu, photo carousel, `#tag` in desc
+- Owner vs viewer vs guest state บน detail (layout เดียวกัน — ต่างที่ menu + gate + eligibility)
+- Sold/hide/show post บน detail (reachability + display + `View sale record` path)
+- Edit-from-detail + delete-closes-detail lifecycle
+- Empty/fallback rules (no-specs post, empty desc, missing post)
+- Deviations vs spec เดิม + dead variant paths
 
----
+## Out Of Scope (module อื่นเป็นเจ้าของ)
 
-# 6. Scope
-
-Asset Detail Module ใน V1 ครอบคลุม:
-
-- Viewer Asset Detail
-- Owner Asset Detail
-- Sold Asset Detail สำหรับ Owner
-- Deleted Asset State
-- Gallery / Image Swipe
-- Full Screen Image Viewer
-- Asset Information Display
-- Owner Information
-- Follow / Unfollow จาก Asset Detail
-- Like / Unlike
-- Comment
-- Delete Comment
-- Report Comment
-- Make Offer
-- Open Chat
-- Share Asset Deep Link
-- Report Asset
-- Block User
-
-ไม่รวมใน V1:
-
-- Multi-level Nested Comment เกิน 1 reply level
-- Edit Comment
-- Asset View Count
-- Asset Share Count
-- Related Watches
-- Similar Listings
-- Video Gallery
+- Post model / composer / Edit info internals / own-post menu anatomy/rows — canonical [02_FEED_MODULE.md](02_FEED_MODULE.md) (FSP-015a/b lock); เอกสารนี้ระบุเฉพาะ fields ที่ detail render + surface-restore semantics
+- Post Viewer (`.page-pv`) 3 modes + sheets mechanics — canonical [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (FSP-016); เอกสารนี้ระบุเฉพาะ handoff `View full detail` → detail
+- Comments/likes/share/save sheet internals — shared sheets canonical อยู่ 02_FEED + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) (FSP-022)
+- Watch Alert internals — `waSheetHTML`, `alertMatch`, alert list, match notification — canonical [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) (FSP-021); เอกสารนี้ระบุเฉพาะ `mf-btn` entry + criteria/bell semantics
+- Wishlist hub (saved/wishlist/collections pages) — canonical 02_FEED §9 / saved-library surfaces (FSP-002b inventory)
+- Chat room + item card anatomy — [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (FSP-020)
+- Report flow internals + comment moderation — [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md); `pm-btn` report entry canonical 02_FEED
+- Profile grid/tabs/sold tab reachability — [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (FSP-019)
+- Portfolio pages `pfasset:`/`sold:`/`sell:`/`soldhist` + purchase/sale math — [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (FSP-017) + [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) (FSP-024)
+- Deep-link routing/unavailable states — contract เท่านั้น (00_NAV §10; prototype ไม่มี external deep link mechanism)
+- BO moderation — master contract เท่านั้น
 
 ---
 
-# 7. Screen Mapping
+# 6. Screen Mapping
 
-หน้าจอที่เกี่ยวข้องในโมดูลนี้:
-
-1. Asset Detail - Viewer Mode
-2. Asset Detail - Guest Mode
-3. Asset Detail - Owner Mode
-4. Asset Detail - Sold Mode
-5. Deleted Asset State
-6. Full Screen Image Viewer
-7. Comment Section
-8. Report Asset
-9. Report Comment
-10. Block User
-11. Global Login Required Dialog
-12. Permission Denied State
-
----
-
-# 8. User States
-
-## Guest
-
-สามารถ:
-
-- View public Asset Detail สำหรับ `Sale` และ `Show`
-- View Gallery
-- Open Full Screen Image Viewer
-- View Like Count
-- View Comment Count
-- View Comments
-- View Owner Information
-- Open Public Profile
-- Share Asset Deep Link
-
-ไม่สามารถ:
-
-- Like
-- Follow
-- Comment
-- Chat
-- Make Offer
-- Report
-- Block User
-
-เมื่อ Guest ใช้ feature ที่ต้อง Login ต้องแสดง Global Login Required Dialog
-
-## Member / Viewer
-
-สามารถ:
-
-- View public Asset Detail สำหรับ `Sale` และ `Show`
-- Like / Unlike
-- Follow / Unfollow Owner
-- Comment
-- Delete Comment ของตัวเอง
-- Make Offer ตาม rule ของ Offer Module
-- Open Chat
-- Share
-- Report Asset
-- Block User
-
-ไม่สามารถ:
-
-- View `Hide` Asset ของผู้อื่น
-- View `Sold` Asset ของผู้อื่น
-- View private asset data ของผู้อื่น
-- Edit / Delete / Change Status Asset ของผู้อื่น
-
-## Owner
-
-สามารถ:
-
-- View Asset Detail ของตัวเองทุกสถานะ: `Sale`, `Show`, `Hide`, `Sold`
-- View private asset data ของตัวเอง
-- Open Edit Asset ตาม rule ของ Asset Management Module
-- Delete / Change Status ตาม rule ของ Asset Management Module
-- View Sold History สำหรับ Sold Asset
-- Like Asset ตัวเอง
-
-Owner ต้องไม่เห็นปุ่ม Follow ตัวเอง
-
----
-
-# 9. User Flow
-
-## View Asset Detail
-
-```text
-Feed / Search / Public Profile / Notification
-→ Asset Detail
-→ View Asset Information
-```
-
-## Open Full Screen Image
-
-```text
-Asset Detail
-→ Tap Image
-→ Full Screen Image Viewer
-→ Swipe Images
-```
-
-## Like Asset
-
-```text
-Asset Detail
-→ Like
-→ Update Like Count
-→ Add To Favorites
-```
-
-## Unlike Asset
-
-```text
-Asset Detail
-→ Unlike
-→ Update Like Count
-→ Remove From Favorites
-```
-
-## Comment Asset
-
-```text
-Asset Detail
-→ Comment Section
-→ Enter Comment
-→ Submit
-→ Comment Added
-```
-
-## Delete Comment
-
-```text
-Asset Detail
-→ Own Comment
-→ Delete
-→ Confirm
-→ Comment Deleted
-```
-
-## Report Comment
-
-```text
-Asset Detail
-→ Comment more menu
-→ Report Comment
-→ Select reason
-→ Submit
-→ Report submitted successfully
-```
-
-## Comment Action Behavior
-
-- Comment action ใช้ปุ่ม `...` แนวนอนข้างเวลาของแต่ละ comment / reply
-- Comment ของตัวเองต้องแสดง action `Delete comment`
-- Comment ของคนอื่นต้องแสดง action `Report comment`
-- ไม่ใช้ `Hide comment` ใน V1
-
-Delete Comment:
-
-- User ลบได้เฉพาะ comment หรือ reply ของตัวเอง
-- `Delete comment` ต้องเปิด confirmation ก่อนลบ
-- Confirmation title: `Delete this comment?`
-- Confirmation body สำหรับ root comment ที่มี replies: `This action cannot be undone. This comment and its replies will be removed.`
-- Confirmation body สำหรับ reply หรือ root comment ที่ไม่มี replies: `This action cannot be undone. This comment will be removed.`
-- Actions: `Cancel`, `Delete`
-- ไม่มี Undo
-- ลบ root comment แล้วต้องลบ replies ใต้ root comment ทั้งที่แสดงอยู่และที่ collapsed อยู่
-- ลบ reply แล้วลบเฉพาะ reply นั้น
-- เมื่อลบสำเร็จให้แสดง feedback `This comment was removed.`
-
-Report Comment:
-
-- `Report comment` ต้องเปิด report reason sheet หัวข้อ `Report this comment`
-- Description: `Select a reason for reporting this comment. Our team will review it.`
-- Reasons: `Harassment or hate`, `Spam or scam`, `Inappropriate content`, `False or misleading information`, `Other`
-- Additional details เป็น optional
-- `Submit report` disabled จนกว่าจะเลือก reason
-- Report สำเร็จต้องไม่ทำให้ comment หายทันที
-- Success title: `Report submitted`
-- Success copy: `Our team will review this comment. It will remain visible until moderation is complete.`
-- Success action ใช้ปุ่ม `Done` และปิด modal กลับ Asset Detail หรือ Comments sheet เดิม
-
-## Comments Bottom Sheet Behavior
-
-- `View all comments` เปิด Comments bottom sheet
-- หากกด `...` บน comment ภายใน Comments bottom sheet ให้เปิด comment action sheet เป็นชั้นบนสุด
-- กดนอก action sheet หรือ swipe down ต้องปิดเฉพาะ action sheet ไม่ปิด Comments sheet
-- หากเลือก `Report comment` ให้เปิด report form เป็น sheet/modal ชั้นบนสุด
-- หลัง report/delete สำเร็จ ให้กลับมาที่ Comments sheet เดิมและคง scroll context เท่าที่ทำได้
-- Comment action sheet แบบ nested ใช้ได้ แต่ต้อง dim Comments sheet ด้านหลังเล็กน้อยเพื่อสื่อ modal layering
-
-## Make Offer
-
-```text
-Asset Detail
-→ Make Offer
-→ Enter Offer Price
-→ Add Message
-→ Send Offer
-→ Offer Sent Successfully
-→ Go to Chat
-```
-
-## Open Chat
-
-```text
-Asset Detail
-→ Contact Seller / Chat
-→ Chat Room
-```
-
-## Report Asset
-
-```text
-Asset Detail
-→ More Menu
-→ Report
-→ Submit Report
-```
-
-## Block User
-
-```text
-Asset Detail
-→ More Menu / Owner Menu
-→ Block User
-→ Confirm
-→ Block Applied
-```
-
-## Deleted Asset
-
-```text
-Open old Asset Detail link
-→ Asset Deleted State
-→ Back
-```
-
----
-
-# 10. Business Rules
-
-## Asset Detail Visibility Rule
-
-Viewer เห็นเฉพาะ Asset ที่เป็น Public:
-
-- Sale
-- Show
-
-Owner เห็น Asset ของตัวเองได้ทุกสถานะ:
-
-- Sale
-- Show
-- Hide
-- Sold
-
-Viewer ต้องไม่เห็น:
-
-- Hide
-- Sold
-- Deleted Asset detail แบบปกติ
-- Private Asset Data
-
-## Asset Status Display Rule
-
-| Status | Viewer Detail | Owner Detail | Public Surfaces |
-|---|---|---|---|
-| Sale | แสดง | แสดง | Public Profile, Feed, Search, Watch Alert |
-| Show | แสดง | แสดง | Public Profile เท่านั้น |
-| Hide | ไม่แสดง | แสดง | ไม่ Public |
-| Sold | ไม่แสดง | แสดง | ไม่ Public |
-
-## Gallery Rule
-
-- Asset Detail ต้องรองรับ Gallery รูปภาพ
-- ต้องรองรับ Swipe รูป
-- ต้องรองรับ Full Screen Image Viewer
-- Gallery ต้องรองรับจำนวนรูปตาม Asset Management สูงสุด 10 รูป
-
-## Asset Information Display
-
-Asset Detail ต้องแสดง:
-
-- Gallery รูปภาพ
-- Brand
-- Model
-- Reference No.
-- Description
-- Price
-- Owner Information
-- Technical Specifications
-- Comments Section
-
-Technical Specifications อ้างอิงจาก Asset Management fields:
-
-- Year
-- Condition
-- Scope of Delivery
-- Case Size
-- Thickness
-- Case Material
-- Movement
-- Dial Color
-- Strap / Bracelet Type
-
-Scope of Delivery display rule:
-
-- Show Scope of Delivery only when the asset has `original_box` and/or `original_papers`.
-- If the asset has no selected Scope of Delivery value, hide the Scope of Delivery section/row. Do not display placeholder text such as `Watch only`, `None`, `N/A`, or other delivery labels.
-
-V1 ไม่กำหนดให้แสดง Location เป็น field หลักใน Asset Detail
-
-## Owner Information Rule
-
-แสดง:
-
-- Owner Name
-- Owner Profile Image
-- Follow / Unfollow สำหรับ Viewer ที่ไม่ใช่ Owner
-
-Owner ต้องไม่เห็นปุ่ม Follow ตัวเอง
-
-## Private Data Rule
-
-ข้อมูลต่อไปนี้ต้องไม่แสดงใน Viewer/Public mode:
-
-- Provenance
-- Purchase Price
-- Purchase Date
-- Purchase From
-- Proof of Payment
-- Consignment Owner Contact
-- Consignment Terms
-- Sold History
-- Portfolio Value Detail
-
-ข้อมูลเหล่านี้เห็นเฉพาะ Owner หรือ Admin ตามสิทธิ์
-
-## Owner Private Provenance Display Rule
-
-Owner Asset Detail ต้องแยก private provenance เป็น section เฉพาะ Owner และต้องไม่ปนกับข้อมูล public listing:
-
-| Section | Visible To | Display Rule |
+| Screen / State | Prototype | Description |
 | --- | --- | --- |
-| Purchase Information / Owner (Asset) | Owner, Admin | แสดงเฉพาะ field ที่มีค่า เช่น Purchase Price, Purchase Date, Purchase From |
-| Consignment Information | Owner, Admin | แสดงเฉพาะ field ที่มีค่า เช่น Consignor name, contact, payout, consignment date, duration |
-| Price & Terms | Owner, Admin | แสดงเฉพาะ field ที่มีค่า เช่น Asking Price, Commission, Minimum Acceptable Price |
-| Documentation | Owner, Admin | แสดงเฉพาะเอกสารหรือรูปที่ upload แล้ว |
-| Note | Owner, Admin | แสดงเฉพาะเมื่อมีข้อความ |
-
-Post-save display behavior:
-
-- Public / Viewer mode แสดงเฉพาะ Gallery, Brand, Model, Reference No. ที่มีค่า, Description ที่มีค่า, Price เฉพาะ Sale, Owner Information, Technical Specifications ที่มีค่า และ Comments / Like Count
-- Public / Viewer mode ต้องไม่แสดง Purchase Price, Purchase Date, Purchase From, Proof of Payment, Consignment Owner Contact, Payout Method, Commission, Minimum Acceptable Price, Consignment Terms, Portfolio Value Detail หรือ Sold History
-- Owner mode แสดง public data ทั้งหมด และแสดง private provenance section ตาม type ที่บันทึกไว้
-- Owner mode สำหรับ `Owner (Asset)` ต้องแสดง Purchase Information โดยมี Purchase Price เสมอ และแสดง Purchase Date / Purchase From เฉพาะเมื่อมีค่า
-- Owner mode สำหรับ `Consignment` ต้องแสดง Consignment Information และ Price & Terms เฉพาะ field ที่มีค่า
-
-Empty private field behavior:
-
-- ถ้ามี `Owner (Asset)` provenance record แล้ว Purchase Price ต้องมีค่าเสมอ เพราะเป็น required field ของ record นั้น
-- ถ้า optional field ไม่ได้กรอก ห้ามแสดงชื่อ field นั้นใน Viewer/Public mode
-- ใน Owner mode ให้ซ่อน field ที่ว่าง เพื่อให้หน้ารายละเอียดอ่านง่าย
-- ถ้า private section ไม่มีข้อมูลเลย ให้แสดง owner-only action prompt เช่น `Add provenance` หรือซ่อน section ตาม layout
-- ห้ามแสดง placeholder เช่น `N/A`, `-`, `Not provided` สำหรับ optional descriptive fields ที่ว่าง
-- Price analytics ที่ต้องคง layout เช่น Expected Profit สามารถใช้ `—` ได้ตาม Price Analytics Rule
-
-Provenance edit behavior:
-
-- Asset สถานะ `Sale`: Owner สามารถแก้ `Owner (Asset)` หรือ `Consignment` provenance ได้ตาม type ที่เลือก
-- Asset สถานะ `Show` หรือ `Hide`: Owner แก้ได้เฉพาะ `Owner (Asset)` provenance และต้องไม่เห็น `Consignment` option
-- Asset สถานะ `Sold` ต้องแสดง Provenance / Consignment แบบ read-only และไม่ให้แก้ผ่าน Edit Asset ปกติ
-- การแก้ข้อมูลที่มีผลต่อ portfolio หรือ consignment settlement หลังขายต้องใช้ correction/audit flow ไม่ใช่แก้ทับประวัติเดิม
-
-## Price Analytics Rule
-
-Asset Detail **ไม่แสดง** Market Comparison หรือ Expected Profit ส่วน analytics ทั้งสองนี้อยู่ใน Portfolio / Assets Value เท่านั้น (อ้างอิง [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) Market Comparison และ Expected Profit)
-
-Product decision: ไม่เพิ่ม Market Comparison / Expected Profit ใน Asset Detail
-
-สิทธิ์การแสดงผลข้อมูล private ที่เกี่ยวกับ price analytics ยังคงยึดตาม Private Data Rule:
-
-- Purchase Price, Purchase Date และ Portfolio Value Detail ต้องไม่แสดงใน Viewer/Public mode
-
-## Like Rule
-
-- User สามารถ Like Asset ได้
-- Owner สามารถ Like Asset ตัวเองได้
-- ปุ่มหัวใจด้านบนของ Asset Detail เป็น action สำหรับ Like / Unlike จริง
-- Heart icon ใน metadata row ใต้ชื่อ Asset / Reference No. เป็น like count และ entry ไป `Liked by` list เท่านั้น ไม่ใช่ปุ่ม Like ซ้ำ
-- Like สำเร็จต้อง Update Like Count ทันที
-- Like สำเร็จต้องเพิ่ม Asset เข้า Favorites
-- Unlike สำเร็จต้อง Update Like Count ทันที
-- Unlike สำเร็จต้องลบ Asset ออกจาก Favorites
-- Like count และ Comment count ควรแสดงใต้ชื่อ Asset / Reference No. ก่อน Owner block
-- กด like count ต้องเปิดรายชื่อคนที่กด Like
-- กด comment count ต้อง scroll ไป Comments section
-- หาก count = 0 สามารถซ่อนตัวเลขและแสดง icon อย่างเดียวได้ แต่ icon ต้องยังทำหน้าที่เป็น entry ตามสิทธิ์
-- Public / Viewer และ Owner view ใช้ตำแหน่ง like/comment metadata เดียวกัน
-
-## Comment Rule
-
-- Comment ทำใน Asset Detail เท่านั้น
-- Comment รองรับ IG-style one-level replies ใต้ comment หลัก
-- ไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
-- ไม่มี Edit Comment ใน V1
-- รองรับ Delete Comment
-- User ลบได้เฉพาะ Comment ของตัวเองตามสิทธิ์
-- Comment action menu ใช้ปุ่ม `...` แนวนอน
-- Comment ของตัวเองแสดง `Delete comment`
-- Comment ของคนอื่นแสดง `Report comment`
-- ไม่รองรับ `Hide comment` ใน V1
-- Root comment deletion ลบ root comment และ replies ใต้ comment นั้น
-- Reply deletion ลบเฉพาะ reply นั้น
-
-## Comment Empty State
-
-หาก Asset ยังไม่มี comment เลย Comments section ต้องไม่ปล่อยว่างเปล่า
-
-UI copy:
-
-- Title section: `Comments`
-- Empty title: `No comments yet.`
-- Empty body: `Be the first to comment.`
-- Input placeholder: `Write a comment...`
-
-Rules:
-
-- หากไม่มี comment ให้ซ่อนหรือ disable `View all`
-- แสดง empty state แบบเบา ๆ ในพื้นที่ Comments section ไม่ต้องใช้การ์ดใหญ่
-- หากมี comment input ให้แสดง input ต่อใต้ empty state เพื่อให้ user เริ่ม comment ได้ทันที
-- Guest เห็น empty state ได้ แต่เมื่อกด input/comment action ต้องเจอ Global Login Required Dialog
-- Owner และ Member ใช้ empty state เดียวกัน
-
-## Share Rule
-
-- Share Asset entry point: Feed Card, Asset Detail และ Profile asset grid (อ้างอิง [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) Share Rules และ [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Deep Link Rules)
-- Comment ยังทำได้จาก Asset Detail เท่านั้น แต่ Share ทำได้จาก Feed, Asset Detail และ Profile grid
-- Share เป็น public share action สำหรับ public Asset (`Sale`, `Show`)
-- Share ไม่รองรับ Asset สถานะ `Hide`, `Sold` หรือ Asset ที่ถูกลบ เพราะไม่ใช่ public content
-- Guest สามารถ Share public Asset ได้โดยไม่ต้อง Login เพราะเป็น public share action
-- Guest share ต้องไม่เปิดสิทธิ์ Like, Follow, Comment, Chat, Make Offer, Report หรือ Block User
-- Primary share channel คือ system share sheet เมื่อ platform รองรับ
-- Fallback share channel คือ copy public deep link และต้องแสดง copy success state เช่น `Asset link copied`
-- Share ไม่สร้าง Notification Center item
-- Public deep link ที่แชร์ต้อง validate asset status, deleted state, permission และ block state เมื่อเปิด (ดู Deep Link Display State Rule ด้านล่าง)
-
-## Deep Link Display State Rule
-
-เมื่อเปิด shared public Asset deep link ระบบต้อง validate ก่อน render และแสดง state ตามตารางนี้ (อ้างอิง [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Deep Link Rules และ Unavailable Fallback Rules):
-
-| Case | Guest | Login User (non-owner) | Owner |
-| --- | --- | --- | --- |
-| Public Asset `Sale` / `Show` | แสดง public Asset Detail (Guest Mode) | แสดง public Asset Detail (Viewer Mode) | แสดง Owner Asset Detail |
-| Asset `Hide` (stale link) | Permission Denied / Unavailable state | Permission Denied / Unavailable state | แสดง Owner-only Asset Detail |
-| Asset `Sold` (stale link) | Permission Denied / Unavailable state | Permission Denied / Unavailable state | แสดง Owner-only Sold Asset Detail |
-| Asset Deleted | Deleted Asset State `รายการนี้ไม่พร้อมใช้งานแล้ว` | Deleted Asset State `รายการนี้ไม่พร้อมใช้งานแล้ว` | Deleted Asset State `รายการนี้ไม่พร้อมใช้งานแล้ว` |
-| Asset owner blocked viewer | Unavailable / blocked state | Unavailable / blocked state | n/a |
-| Login-required surface (เช่น Make Offer จาก deep link) | Global Login Required Dialog หรือ Sign In | แสดง surface ตามสิทธิ์ | แสดง surface ตามสิทธิ์ |
-| Account Suspended / Banned | n/a (Guest ไม่มี account) | Account status state | Account status state |
-
-Rules:
-
-- ทุก deep link ต้อง validate authentication, permission, asset status, block relationship และ deletion state ก่อน render
-- Deep link ไปยัง unavailable Asset ต้องไม่ crash และต้องไม่แสดง private data ที่ค้างอยู่
-- สำหรับ `Hide` และ `Sold` stale link ของ non-owner ให้แสดง Permission Denied / Unavailable state ไม่ใช่เปิด private detail
-- Owner เปิด deep link ของ Asset ตัวเองที่ `Hide` หรือ `Sold` ต้องแสดง Owner-only detail ไม่ใช่ public/viewer detail
-- Guest เปิด public Asset deep link ได้โดยไม่ต้อง Login แต่เมื่อ Guest กด action ที่ต้อง Login (เช่น Like, Follow, Comment, Chat, Make Offer, Report, Block User) ต้องแสดง Global Login Required Dialog เช่นเดียวกับการเข้าผ่าน entry point ปกติ
-- Login user ที่เปิด deep link แล้ว asset เปลี่ยนสถานะระหว่าง session ต้องอัปเดต visibility ตาม matrix เมื่อ sync/refresh
-
-## Back Button And Navigation After Deep Link Rule
-
-เมื่อ Asset Detail เปิดจาก external deep link (ไม่มี in-app navigation history) ต้องจัดการ back button และ main navigation ดังนี้:
-
-### Back Button บน Normal Asset Detail
-
-- ถ้ามี in-app navigation history (เช่น เปิดจาก Feed, Search, Public Profile, Notification) ให้ back button กลับไปหน้าก่อนหน้าตามปกติ
-- ถ้าไม่มี navigation history (เปิดจาก external deep link โดยตรง) ให้ back button fallback ไป Feed
-- ห้ามปิด app หรือแสดงหน้าจอว่างเปล่าเมื่อกด back button จาก Asset Detail ที่เปิดจาก external deep link
-
-### Back Button บน Error / Unavailable State
-
-- ใช้ rule เดียวกับ Exception Handling > Asset Deleted และ Permission Denied: primary CTA `Go back`
-- ถ้ามี navigation history ให้กลับหน้าก่อนหน้า
-- ถ้าไม่มี navigation history (external deep link) ให้ fallback ไป Feed
-
-### Main Navigation หลังเปิด Deep Link
-
-- หลังเปิด deep link ทั้ง Guest และ Login user ต้องใช้งาน main navigation (bottom tab / menu) ต่อได้ เพื่อเข้าถึง Feed, Search, Profile, Notification และ surface อื่น ๆ ตามสิทธิ์
-- ห้ามล็อก user อยู่ใน Asset Detail อย่างเดียวหลังเปิด deep link โดยไม่มีทางออกนอกจาก back button
-- Guest ที่เปิด deep link แล้วใช้ main navigation ต้องเจอ Global Login Required Dialog เมื่อกด login-required surface เช่นเดียวกับการเข้าผ่าน Feed ปกติ
-
-## Make Offer Rule
-
-- Make Offer ทำผ่าน Asset Detail เท่านั้น
-- Accepted Offer เปิด Chat Room
-- Rejected Offer เปิด Asset Detail
-- Asset Deleted ทำให้ Offer เป็น Cancelled
-- Asset Sold ต้อง Auto Reject Offer อื่น
-
-## Show Asset Action Rule
-
-Master ระบุว่า `Show` เป็น Public Asset Detail ได้ แต่ไม่ขึ้น Feed, Search หรือ Watch Alert
-
-Product review สำหรับ V1:
-
-- `Show` เป็น public collection/detail ที่ไม่ขึ้น Feed, Search หรือ Watch Alert
-- `Show` สามารถแสดง Make Offer / Contact Seller / Chat จาก Asset Detail ได้
-- เหตุผลคือผู้ใช้อาจสนใจสอบถามหรือเสนอราคากับเจ้าของ Asset แม้ Asset ไม่ได้ถูกวางใน marketplace feed
-- Entry point ของ `Show` ต้องมาจาก Public Profile / Asset Detail เท่านั้น ไม่ใช่ Feed, Search หรือ Watch Alert
-- Master ระบุ rule นี้แล้ว และต้องให้ Figma annotate entry point ให้ชัด
-
-## Chat Rule
-
-- Chat เปิดจาก Asset Detail ได้
-- Same Asset ใช้ห้องเดิม
-- Asset Deleted แล้ว Chat ยังอยู่
-- Asset Sold แล้ว Chat ยังใช้งานได้
-
-## Deleted Asset Rule
-
-เมื่อ Asset ถูกลบ:
-
-- Asset ต้องหายจาก Feed, Search, Watch Alert และ Public Profile
-- Asset Detail ต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว`
-- Chat ยังอยู่
-- Offer ที่เกี่ยวข้องต้องเป็น Cancelled
-
-## Report Rule
-
-- Report Asset ทำจาก Asset Detail ได้
-- Report ไม่ทำให้ Asset หายจาก Feed หรือ Search ทันที
-- Asset จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น
-
-## Report Comment Rule
-
-- Report Comment ทำจาก Comment action ใน Asset Detail ได้
-- Report Comment ต้องเปิด Trust & Safety Report Comment flow
-- Report ไม่ทำให้ Comment หายทันที
-- Comment จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น
-
-## Block User Rule
-
-- Block User ทำจาก Asset Detail ได้
-- เมื่อ Block แล้ว Asset ของผู้ถูก Block ต้องหายจาก Feed, Search และ Watch Alert Result ทันที
+| Post Detail (dl1) | `.page-detail` + `detailHTML()` | layer เต็มจอ — head + hero + actions + tag + name/ref + Descriptions + spec groups |
+| Detail over viewer | `detail-open` + `pv-open` คงอยู่ | `View full detail` จาก `dt` sheet / pfp-svf card — `detail-back` เผย viewer ข้างล่าง |
+| Detail over feed/sub page | `detail-open` เดี่ยว | `View full detail` จาก feed card / chat item — `detail-back` กลับ surface เดิม |
+| Comments sheet จาก detail | `.comment-btn` → `commentsHTML()` | shared sheet ตัวเดียวกับ feed/viewer (ไม่ใช่ `nt` variant — นั้นสงวน viewer) |
+| Watch Alert sheet จาก detail | `.mf-btn` → `waSheetHTML()` | shared WA sheet (`source:"detail"`, `modelKey` set) |
+| Wishlist sheet จาก detail | `.wl-btn` → `wlSheetHTML()` | Wish List + collections + New collection |
+| Share sheet จาก detail | `.share-btn` → `shareSheetHTML()` | friends grid + app row + `Copy link` |
+| Member Sheet | `obGate()` | guest gate `Join TukDaeng` (00_GLOBAL §11) |
 
 ---
 
-# 11. Permission Rules
+# 7. User States
 
 ## Guest
 
-ดูได้:
+ทำได้ (ไม่ gate):
 
-- Public Asset Detail
-- Gallery
-- Full Screen Image
-- Like Count
-- Comment Count
-- Comments
-- Owner Information
+- เปิด Post Detail ผ่านทุก public entry (`View full detail` จาก feed card / `dt` sheet / viewer cards)
+- ดู content ทั้งหมด: hero carousel, action row, tag, name/ref, Descriptions, spec groups + `Price & Data Source`
+- เปิด comment sheet อ่าน comments + replies (`comment-btn` ไม่ gate)
+- กด `#tag` ใน Descriptions → search; กดรูป → carousel
 
-ใช้ไม่ได้:
+ต้อง login (Member Sheet `Join TukDaeng` — gated selectors บน detail):
 
-- Like
-- Follow
-- Comment
-- Chat
-- Make Offer
-- Report
-- Block User
+- `.like-btn`, `.share-btn` (S-03), `.mf-btn`, `.wl-btn`, `.pm-btn` (post menus)
+- ภายใน comment sheet: `.comment-input`, `.emoji-row`, `.c-like`, `.c-meta` (Reply)
 
-## Member / Viewer
+## Member / Viewer (non-owner)
 
-สามารถ:
-
-- Like / Unlike
-- Follow / Unfollow
-- Comment
-- Delete own Comment
-- Make Offer
-- Open Chat
-- Share
-- Report Asset
-- Block User
-
-ไม่สามารถ:
-
-- Edit Asset ของผู้อื่น
-- Delete Asset ของผู้อื่น
-- View private asset data ของผู้อื่น
-- View Hide / Sold Asset ของผู้อื่น
+- ทุกอย่างของ guest + like, share, `mf-btn` (WA จาก spec โพสต์), `wl-btn` (wishlist), `...` → others menu (Add/Remove favorites · Not interested · Report — canonical 02_FEED)
+- เห็น detail เฉพาะโพสต์ที่ eligible ผ่าน entry นั้น (`sale`/`post` ทาง feed; `sale`/`show` ทาง public profile; ไม่มีทางถึง `hide`/`sold` ของคนอื่น — 00_GLOBAL §10)
+- Comment input/reply = contract (prototype dead → toast `Not in this prototype yet`)
 
 ## Owner
 
-สามารถ:
+- Layout เดียวกับ viewer เป๊ะ (detail ไม่มี owner block/private section)
+- `...` → own-post menu (Archive · Turn off/on commenting · Edit · Mark as sold · Pin to top of grid · Delete — canonical 02_FEED); โพสต์ `sold` เห็น `View sale record` แทน Edit
+- `Edit` จาก detail → detail ซ่อนระหว่าง composer + เปิดคืนหลังปิด composer (`V.editFromDetail`)
+- `Delete` โพสต์ที่ detail เปิดอยู่ → detail ปิดอัตโนมัติ
+- เห็น detail ของทุก `pfkind` รวม `hide`/`sold` (reachability ผ่าน own profile tabs — 06_PROFILE)
+- Like โพสต์ตัวเองได้; `mf-btn`/`wl-btn` ใช้ได้บนโพสต์ตัวเอง (ตาม prototype — ดู §9 Deviations)
 
-- View Asset ของตัวเองทุกสถานะ
-- View private asset data ของตัวเอง
-- Open Edit Asset ตามสิทธิ์
-- Delete / Change Status ตาม rule ของ Asset Management Module
-- View Sold History
-- Like Asset ตัวเอง
+## Blocked Relationship
 
-ไม่ควรเห็น:
-
-- Follow button ของตัวเอง
-
----
-
-# 12. Validation Rules
-
-## Comment
-
-- Required
-- ต้องไม่เป็นค่าว่าง
-- ต้องไม่เกิน max length ที่กำหนดโดย implementation
-
-## Offer
-
-ตรวจสอบใน Offer Module
-
-## Report
-
-ตรวจสอบใน Trust & Safety Module
+- โพสต์ของ seller ที่ block กัน/ถูก block หลุดจาก feed/search/viewer-eligible lists ก่อนแล้ว (00_GLOBAL §13) → ไม่มี public entry ถึง detail; stale/direct entry → unavailable contract (00_NAV §10)
+- `muted`/`ni` posts หลุด eligibility เช่นเดียวกัน — `findPost` resolve ได้แต่ไม่มี UI path มาถึง
 
 ---
 
-# 13. Exception Handling
+# 8. User Flow
 
-## Asset Deleted
+## Open Post Detail (ทุก entry)
 
-| Language | Message |
-|---|---|
-| TH | รายการนี้ไม่พร้อมใช้งานแล้ว |
-| EN | This item is no longer available. |
+```text
+Entry A: Feed card → `Tap for details` (เฉพาะโพสต์ที่ hasDetails) → details-body → `View full detail`
+Entry B: Post viewer (default) → `Tap for details` (`pv-dt`, เฉพาะมี specGroups) → `dt` sheet → `View full detail`
+Entry C: Post viewer feed/pfp modes (saved/wishlist/archive/profile grid) → card `Tap for details` → `View full detail`
+Entry D: Chat room → item card / `View asset` (`data-chgo="post"`)
+→ `openPostDetail` → detail layer slide ทับ (viewer คง mount ข้างล่าง)
+→ `.detail-back` → ปิด detail เผย surface/viewer เดิม
+```
 
-ปุ่ม:
+- Feed card media tap **ไม่** เข้า detail (carousel เท่านั้น — AC-NAV-001)
+- ไม่มี entry จาก notification โดยตรง — notification → Post Viewer ก่อน (00_NAV §8) แล้วค่อย `View full detail`
+- `findPost` คืน null → ไม่เกิดอะไร (`view-full` silent no-op); chat path → toast `Listing detail isn't in this prototype yet` (contract: unavailable state)
 
-- `Go back`
+## Detail Actions Flow
 
-CTA behavior:
+```text
+Post Detail
+→ like-btn    → toggle liked + likes ±1 (sync ทุก like-btn ของ pid เดียวกันทุก surface)
+→ comment-btn → comments bottom sheet (rows + replies + emoji row + input)
+→ share-btn   → share sheet → `Sent to {name}` / `Shared to {app}` / `Link copied`
+→ mf-btn      → WA sheet (criteria จาก post specs หรือ edit draft ของ alert เดิม)
+→ wl-btn      → auto-wishlist (ครั้งแรก) + wishlist sheet → pick collection
+→ pm-btn      → own menu / others menu ตาม isOwnPost
+→ hero tap    → carousel ซ้าย/ขวา (ครึ่งจอ) + dots อัปเดต (photos >1)
+→ `#tag`      → search results ของ tag นั้น
+```
 
-- ถ้ามี navigation history ให้กลับไปหน้าก่อนหน้าที่ user เข้ามา เช่น Feed, Public Profile, Chat หรือ Watch Alert Result
-- ถ้าไม่มี navigation history เช่นเปิดจาก external deep link โดยตรง ให้ fallback ไป Feed
-- shared unavailable / permission state ไม่ควรใช้ label `Back to feed` เว้นแต่รู้แน่นอนว่า entry point มาจาก Feed เท่านั้น
+## Watch Alert From Detail Flow (`mf-btn`)
 
-## Permission Denied
+```text
+`mf-btn` (bell — title `Follow this model` / `Following this model`)
+→ modelKey = `brand|model|ref` (lowercase) ของโพสต์
+→ มี ON/OFF alert ที่ modelKey เดียวกัน → เปิด sheet edit mode (criteria/name/mode เดิม)
+→ ไม่มี → criteria = waCriteriaFromPost(post)
+   → criteria ว่าง → toast `No details on this post to watch` (จบ — ไม่เปิด sheet)
+→ waSheet (source:"detail", matchMode "all", name = waName auto)
+→ Save → dedupe sig+mode → `You already saved this alert` หรือสร้าง alert → `Watch alert on`
+→ `syncModelFlags` + `refreshMfBtns` — bell `.on` บนทุกโพสต์ที่ modelKey ตรง alert ON
+→ Delete ใน sheet → `Watch alert removed` + bell off
+```
 
-| Language | Message |
-|---|---|
-| TH | คุณไม่มีสิทธิ์ดำเนินการ |
-| EN | Permission denied |
+## Wishlist From Detail Flow (`wl-btn`)
 
-ปุ่ม:
+```text
+`wl-btn` (gift — title `Wish List`)
+→ ครั้งแรก: set `wishlisted` + `wlCol:"Wishlist"` + sync icon → เปิด wlSheet
+→ sheet: `Wish List` head pick + collection rows + `New collection` (→ nc sheet)
+→ pick `Wish List` ขณะ wishlisted → remove → toast `Removed from your wish list`
+→ pick col เดิม → กลับ `Wishlist` → `Removed from {col}`; pick col ใหม่ → `Added to {col}`/`Added to Wish List`
+```
 
-- `Go back`
+## Edit Info From Detail Flow
 
-CTA behavior ใช้ rule เดียวกับ Asset Deleted / Unavailable state: กลับไปหน้าก่อนหน้าถ้ามี navigation history; ถ้าไม่มี history ให้ fallback ไป Feed
+```text
+own menu `Edit`
+→ detail ถูกซ่อน (`V.editFromDetail`) → Edit info composer ทับ
+→ `Done`/`Cancel` → composer ปิด → detail เปิดคืน (re-render content ใหม่ เว้นแต่ viewer base — canonical 02_FEED)
+→ toast `Post updated` + `refreshPostViews`
+```
 
-## Asset Not Found
+## Sold Post Flow
 
-| Language | Message |
-|---|---|
-| TH | ไม่พบรายการ |
-| EN | Asset not found |
-
-## Action Requires Login
-
-ใช้ Global Login Required Dialog
-
----
-
-# 14. Empty State
-
-## Comment Empty State Copy
-
-| Language | Message |
-|---|---|
-| TH | ยังไม่มีความคิดเห็น |
-| EN | No comments yet. |
-
-Comment empty state ต้องใช้ copy และ behavior ตาม `Comment Empty State` ใน Comment Rule:
-
-- `No comments yet.`
-- `Be the first to comment.`
-- `Write a comment...`
-
----
-
-# 15. Notification Rules
-
-- Like Asset ส่ง Like Notification ตาม Notification Module
-- Comment Asset ส่ง Comment Notification ตาม Notification Module
-- Make Offer ส่ง Offer Notification ตาม Offer / Notification Module
-- Comment Notification เปิด Asset Detail และ focus comment ที่เกี่ยวข้อง
-- Offer Accepted เปิด Chat Room
-- Offer Rejected เปิด Asset Detail
-
----
-
-# 16. Analytics Events
-
-- Open Asset Detail
-- Open Asset Detail From Feed
-- Open Asset Detail From Search
-- Open Asset Detail From Profile
-- Open Asset Detail From Notification
-- Full Screen Image Open
-- Like Asset
-- Unlike Asset
-- Comment Asset
-- Delete Comment
-- Report Comment
-- Open Chat
-- Make Offer
-- Share Asset
-- Report Asset
-- Block User
-- Deleted Asset Viewed
+```text
+Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` → `View full detail`
+→ Post Detail layout เดิม (specs/tag ตามข้อมูลที่เหลือ — ดู §9 Sold Post Rule)
+→ `...` own menu → `View sale record` → `sold:{id}` page (04_ASSET_MANAGEMENT — ไม่ใช่ detail อีกต่อไป)
+```
 
 ---
 
-# 17. Acceptance Criteria
+# 9. Business Rules
 
-## Visibility
+## Detail Layer Rule
 
-| AC ID | Criteria |
-|---|---|
-| AC-DETAIL-001 | Viewer ต้องเปิด Asset Detail ได้เฉพาะ Asset สถานะ Sale และ Show |
-| AC-DETAIL-002 | Owner ต้องเปิด Asset Detail ของตัวเองได้ทุกสถานะ Sale, Show, Hide และ Sold |
-| AC-DETAIL-003 | Viewer ต้องไม่เห็น Asset สถานะ Hide และ Sold ของผู้อื่น |
-| AC-DETAIL-004 | Viewer ต้องไม่เห็น private asset data ของผู้อื่น |
-| AC-DETAIL-005 | Owner ต้องไม่เห็นปุ่ม Follow ตัวเอง |
+- `.page-detail` เป็น overlay layer ของ screen (ไม่ใช่ `.page-sub` route — ไม่มี route name, ไม่อยู่ใน sub stack)
+- Z-order: เหนือ `.page-pv` (viewer mount ค้างข้างล่างตลอดที่ detail เปิด) และเหนือ `.page-sub`; bottom nav ซ่อนขณะ `detail-open`
+- เปิด 1 detail ต่อ screen; `dataset.detailPid` จำโพสต์ที่เปิด — shared handlers (like/comment/share/save/wl/mf/menu) resolve pid จาก `.post` ancestor ก่อน แล้ว fallback `detailPid`
+- `detail-back` ปิดเฉพาะ `detail-open` — ไม่มี pop chain, ไม่มี forward; เปิดซ้ำโพสต์เดิม = re-render + scroll กลับบน
+- Re-render triggers: like/save/wl/wa state sync (class toggle, ไม่ re-render ทั้งหน้า), `refreshPostViews` (post mutate → re-render detail ที่เปิดอยู่), lang switch (`keepScroll` preserve scroll)
+- Head เป็น sticky ภายใน `detail-scroll` (openPostDetail ย้าย `.detail-head` เข้า scroller)
 
-## Asset Detail Display
+## Detail Entry Rule
 
-| AC ID | Criteria |
-|---|---|
-| AC-DETAIL-006 | Asset Detail ต้องแสดง Gallery, Brand, Model, Reference No., Description, Price, Owner Information, Technical Specifications และ Comments Section |
-| AC-DETAIL-007 | Asset Detail ต้องรองรับ Full Screen Image Viewer |
-| AC-DETAIL-008 | Asset Detail ต้องรองรับ Swipe รูป |
-| AC-DETAIL-009 | Gallery ใน Asset Detail ต้องรองรับจำนวนรูปสูงสุด 10 รูปตาม Asset Management |
-| AC-DETAIL-010 | Asset Detail V1 ต้องไม่ใช้ Location เป็น field หลัก เว้นแต่ master จะตัดสินใจเพิ่มภายหลัง |
-| AC-DETAIL-010C | Owner Asset Detail ต้องแยก Purchase Information / Owner Provenance ออกจาก Consignment Information และแสดงเฉพาะ Owner หรือ Admin |
-| AC-DETAIL-010D | Optional private fields ที่ไม่ได้กรอกต้องไม่แสดง label หรือ placeholder ใน Viewer/Public mode และ Owner private section ควรซ่อน field ว่าง |
-| AC-DETAIL-010E | Sold Asset ต้องแสดง Provenance / Consignment เป็น read-only และไม่ให้แก้ผ่าน Edit Asset ปกติ |
-| AC-DETAIL-010F | Public / Viewer Asset Detail ต้องไม่แสดง Purchase Price, Purchase Date, Purchase From, Proof of Payment, Consignment Owner Contact, Payout Method, Commission, Minimum Acceptable Price, Portfolio Value Detail หรือ Sold History |
-| AC-DETAIL-010G | Owner Asset Detail ของ Status = Show หรือ Hide ต้องแสดง/แก้ได้เฉพาะ `Owner (Asset)` provenance และต้องไม่มี `Consignment` option |
-| AC-DETAIL-010H | Owner Asset Detail ของ Consignment ต้องแสดง Consignment Information และ Price & Terms เฉพาะ field ที่มีค่า |
+| Entry | Path | Gating |
+| --- | --- | --- |
+| Feed card | `Tap for details` → `View full detail` | โพสต์ `hasDetails` = `price \|\| specGroups.length \|\| specs.length`; โพสต์ต้องอยู่ feed eligibility ก่อนแล้ว |
+| Viewer `dt` sheet | `pv-dt` → `dt` sheet → `View full detail` | `pv-dt` แสดงเฉพาะ `specGroups.length > 0`; detail ทับ viewer (`pv-open` คงอยู่) |
+| Viewer feed/pfp cards | card `Tap for details` → `View full detail` | เหมือน feed card (svf/pfp render `postCard` เต็ม) — saved/wishlist/archive member-only, profile grid ตาม tab visibility |
+| Chat item | `[data-chgo="post"]` | เปิด detail ตรงจาก item card; `findPost` ไม่เจอ → toast `Listing detail isn't in this prototype yet` |
 
-## Guest User
+- `View full detail` ไม่ gate สำหรับ guest (browse ฟรีตาม 00_GLOBAL §11 capabilities)
+- โพสต์ไม่มี details เลย (ไม่มี price/specs) ไม่มี `Tap for details`/`pv-dt` → เข้า detail ได้เฉพาะทาง chat item (หรือ state อื่นที่มี pid)
 
-| AC ID | Criteria |
-|---|---|
-| AC-DETAIL-011 | Guest ต้องดู Public Asset Detail, Gallery, Comment, Like Count, Comment Count และ Owner Information ได้ |
-| AC-DETAIL-012 | Guest ต้องไม่สามารถ Like, Follow, Comment, Chat, Make Offer, Report หรือ Block User ได้ |
-| AC-DETAIL-013 | เมื่อ Guest ใช้ action ที่ต้อง Login ต้องแสดง Global Login Required Dialog |
+## Detail Anatomy Rule (dl1)
 
-## Like & Comment
+เรียงบนลงล่าง:
 
-| AC ID | Criteria |
-|---|---|
-| AC-DETAIL-014 | User ต้อง Like และ Unlike Asset จาก Asset Detail ได้ |
-| AC-DETAIL-015 | Owner ต้อง Like Asset ตัวเองได้ |
-| AC-DETAIL-016 | Like สำเร็จต้อง Update Like Count และเพิ่ม Asset เข้า Favorites |
-| AC-DETAIL-017 | Unlike สำเร็จต้อง Update Like Count และลบ Asset ออกจาก Favorites |
-| AC-DETAIL-018 | Comment ต้องรองรับ IG-style one-level replies ใต้ comment หลัก |
-| AC-DETAIL-019 | Asset Detail ต้องไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น |
-| AC-DETAIL-020 | Asset Detail ต้องไม่มี Edit Comment ใน V1 |
-| AC-DETAIL-021 | User ต้องลบ Comment ของตัวเองได้ตามสิทธิ์ |
+| # | Element | Rule |
+| --- | --- | --- |
+| 1 | `detail-head` (dh3) | back `‹` + title `รายละเอียด`/`Detail` (กึ่งกลาง) + `pm-btn` `…` — sticky ใน scroll |
+| 2 | `detail-hero` | รูปแรกเต็มกว้าง; `photo-counter` `1/N` เมื่อ photos >1; clip badge + duration + progress เมื่อมี clip (`clipUiHTML` — mechanics canonical 02_FEED); `photo-dots` ใต้ hero |
+| 3 | `post-actions` | `like-btn` (heart — **ไม่มีตัวเลข**), `comment-btn` + count (ซ่อนทั้งปุ่มเมื่อ `noComments`), `views-stat` eye + count (ซ่อนเมื่อ `hideCounts` หรือ `views` ว่าง/`"0"`), `share-btn`; `act-right`: `mf-btn` (bell — `Follow this model`/`Following this model`) + `wl-btn` (gift — `Wish List`) |
+| 4 | `inline-tag` | `ลงขาย`/`FOR SALE` เมื่อมี `price`; `โชว์`/`SHOWCASE` (muted) เมื่อไม่มี — tag ขับด้วย price ไม่ใช่ `pfkind` (ดู Sold Post Rule) |
+| 5 | `detail-name` | `Brand + Model` จาก flat `specs` (ตัดค่า `n/a`/`N/A` ทิ้ง); `specs` ว่าง → fallback = caption ส่วนแรกก่อน `—` (trim) |
+| 6 | `detail-ref` | `Ref. {value}`; `n/a` → `Ref. -`; **ไม่ render เลย** เมื่อ `specs` ว่าง |
+| 7 | `Descriptions`/`คำอธิบาย` + desc | `p.desc` (field ของตัวเอง — **ไม่ copy จาก caption**); ว่าง → `-`; `#tag` ภายใน desc = `.igd-tag` กด → search (เหมือน caption hashtags) |
+| 8 | Spec groups | `detailSpecsHTML` render `specGroups` ทุกกลุ่มเป็น `spec-row` label–value — **รวม `Price & Data Source`** (ต่างจาก `detailsHTML` ของ feed card/feed-viewer expander ที่ filter กลุ่มนี้ออก) |
 
-Additional Like & Comment display criteria:
+สิ่งที่ **ไม่มี** บน dl1 (ขัด spec เดิม — เป็น deviations ด้านล่าง): seller/owner block, Follow button, Ask Seller pill, save/bookmark button, liked-by row, caption, comment list inline, timestamp
 
-| AC ID | Criteria |
-|---|---|
-| AC-DETAIL-017A | ปุ่มหัวใจด้านบนของ Asset Detail ต้องเป็น Like / Unlike action ส่วน heart icon ใน metadata row ต้องเป็น like count และเปิด `Liked by` list เท่านั้น |
-| AC-DETAIL-017B | Like count และ Comment count ต้องแสดงใต้ชื่อ Asset / Reference No.; หาก count = 0 สามารถซ่อนตัวเลขและแสดง icon อย่างเดียวได้ |
-| AC-DETAIL-017C | กด Comment count ต้อง scroll ไป Comments section |
-| AC-DETAIL-017D | หากยังไม่มี comment ต้องแสดง `No comments yet.` และ `Be the first to comment.` พร้อม input placeholder `Write a comment...` |
+## Description Rule
 
-## Offer / Chat / Share
+- `desc` เป็น post field แยกจาก `caption`/`captionFull` (composer มี field Description ของตัวเอง — canonical 02_FEED)
+- Prototype seeds บางโพสต์เคย copy caption ลง `desc` (showcase posts) — `metaFromPost` ไม่ preload กลับในกรณีนั้น (ระบุใน 02_FEED Edit rule)
+- Detail fallback `-` เมื่อ `desc` ว่าง — ไม่มี placeholder อื่น
 
-| AC ID | Criteria |
-|---|---|
-| AC-DETAIL-022 | Make Offer ต้องทำจาก Asset Detail เท่านั้น |
-| AC-DETAIL-023 | เมื่อ Offer Accepted ต้องเปิด Chat Room |
-| AC-DETAIL-024 | เมื่อ Offer Rejected ต้องเปิด Asset Detail |
-| AC-DETAIL-025 | User ต้องเปิด Chat จาก Asset Detail ได้ตามสิทธิ์ |
-| AC-DETAIL-026 | User ต้อง Share Asset Deep Link จาก Asset Detail, Feed และ Profile grid ได้ โดยใช้ system share sheet เป็น primary channel และ copy public deep link เป็น fallback |
-| AC-DETAIL-026A | Guest ต้อง Share public Asset ได้โดยไม่ต้อง Login และต้องไม่เปิดสิทธิ์ Like, Follow, Comment, Chat, Make Offer, Report หรือ Block User |
-| AC-DETAIL-026B | Share ต้องไม่สร้าง Notification Center item |
-| AC-DETAIL-026C | Shared public deep link ที่เปิดต้อง validate asset status, deleted state, permission และ block state ก่อน render และต้องไม่แสดง private data |
-| AC-DETAIL-026D | เมื่อเปิด shared deep link ของ Asset `Hide` หรือ `Sold` โดย non-owner ต้องแสดง Permission Denied / Unavailable state ไม่ใช่เปิด private detail |
-| AC-DETAIL-026E | Owner เปิด deep link ของ Asset ตัวเองที่ `Hide` หรือ `Sold` ต้องแสดง Owner-only detail |
-| AC-DETAIL-026F | เมื่อ Asset Detail เปิดจาก external deep link โดยไม่มี navigation history แล้วกด back button ต้อง fallback ไป Feed ไม่ใช่ปิด app หรือแสดงหน้าว่าง |
-| AC-DETAIL-026G | หลังเปิด deep link ทั้ง Guest และ Login user ต้องใช้งาน main navigation ต่อได้ และ Guest ที่กด login-required surface ต้องเจอ Global Login Required Dialog |
-| AC-DETAIL-026H | Guest เปิด public Asset deep link ได้โดยไม่ต้อง Login แต่เมื่อ Guest กด action ที่ต้อง Login (Like, Follow, Comment, Chat, Make Offer, Report, Block User) ต้องแสดง Global Login Required Dialog |
-| AC-DETAIL-027 | Asset สถานะ `Show` ต้องแสดง Make Offer / Contact Seller / Chat ได้จาก Asset Detail แต่ต้องไม่ขึ้น Feed, Search หรือ Watch Alert |
+## Price & Data Source Rule
 
-## Deleted / Sold Asset
+- กลุ่ม `Price & Data Source` ใน `specGroups` = `Asking Price` · `Estimated Market Price` · `Last Price Update` · `Data Source` (`TukDaeng Market Data`)
+- แสดงบน Post Detail เสมอเมื่ออยู่ใน `specGroups` (เป็น spec group ปกติกลุ่มสุดท้าย — ไม่ใช่ private data: `Estimated Market Price`/`Data Source` เป็น public market data, `Asking Price` = price)
+- ค่า `N/A` แสดงตาม seed ตรง ๆ (ไม่มี row-hiding)
+- `waCriteriaFromPost` **ยกเว้น** keys กลุ่มนี้ (`Asking Price`/`Estimated Market Price`/`Last Price Update`/`Data Source` อยู่ใน `mapped` exclusion) — WA ไม่ snapshot ราคาจาก detail entry
+- Market data contract (`PFO_SRC`/market price feeds) อยู่ 14_PORTFOLIO — detail แค่ render สตริงที่ post เก็บ
 
-| AC ID | Criteria |
-|---|---|
-| AC-DETAIL-028 | Deleted Asset ต้องแสดงข้อความ `รายการนี้ไม่พร้อมใช้งานแล้ว` / `This item is no longer available.` |
-| AC-DETAIL-029 | เมื่อ Asset Deleted แล้ว Chat ต้องยังอยู่ |
-| AC-DETAIL-030 | เมื่อ Asset Deleted แล้ว Offer ที่เกี่ยวข้องต้องเป็น Cancelled |
-| AC-DETAIL-031 | Sold Asset ต้องเห็นเฉพาะ Owner |
-| AC-DETAIL-032 | Sold Asset ต้องแสดง Sold History ให้ Owner ดูได้ |
-| AC-DETAIL-033 | Sold Asset ต้องไม่ให้ Edit ข้อมูลหลักผ่าน Asset Detail |
+## Like / Comment / Views Row Rule
 
-## Report & Block
+- `like-btn` toggle `post.liked` + `likes ±1` — sync `.liked` class ทุก `.like-btn` ของ pid เดียวกันข้าม surfaces (feed card / viewer rail / detail); detail ไม่แสดงตัวเลขข้างหัวใจ (`.lk-n` มีเฉพาะ own-post cards บน feed/pfp — canonical 02/06)
+- `comment-btn` ซ่อนทั้งปุ่มเมื่อ `noComments` (Turn off commenting — canonical 02_FEED); count แสดง `p.comments` เมื่อ >0
+- `views-stat` เป็น read-only (ซ่อนเมื่อ `hideCounts` หรือ `views` ว่าง/`"0"`) — ไม่ใช่ button, ไม่มี destination
+- `share-btn` → shared share sheet; guest gated (S-03 — share ต้อง login ทุกจุด)
 
-| AC ID | Criteria |
-|---|---|
-| AC-DETAIL-034 | User ต้อง Report Asset จาก Asset Detail ได้ |
-| AC-DETAIL-035 | Report Asset ต้องไม่ทำให้ Asset หายทันทีจนกว่า Admin จะดำเนินการ |
-| AC-DETAIL-036 | User ต้อง Block User จาก Asset Detail ได้ |
-| AC-DETAIL-037 | เมื่อ Block User แล้ว Asset ของผู้ถูก Block ต้องหายจาก Feed, Search และ Watch Alert Result |
-| AC-DETAIL-038 | User ต้อง Report Comment จาก Comment action ใน Asset Detail ได้ |
-| AC-DETAIL-039 | Report Comment ต้องไม่ทำให้ Comment หายทันทีจนกว่า Admin จะดำเนินการ |
+## Comment Surface Rule (จาก detail)
+
+- `comment-btn` → shared comments bottom sheet (`commentsHTML`) — sheet เดียวกับ feed card/viewer ทุกประการ (00_NAV comment surface rule); `nt` variant ถูก toggle เฉพาะตอน viewer เปิดอยู่และ detail **ไม่**เปิด — จาก detail ได้ regular sheet
+- Anatomy: sheet title `ความคิดเห็น`/`Comments`, rows (avatar→profile · name·time · text · `Reply` meta · heart+count ขวา), replies 1 ระดับใต้ root (`.c-row.reply`), emoji row 8 ตัว, input `เพิ่มความคิดเห็น...`/`Add a comment...` + img/gif icons
+- Replies = one-level เท่านั้น (nested ไม่เกิน 1 ชั้น — data model `c.replies[]` ไม่มีชั้นซ้อน)
+- Empty thread → บรรทัดเดียว `ยังไม่มีความคิดเห็น`/`No comments yet` (ไม่มี `Be the first to comment.` / `Write a comment...` ของ spec เดิม — deviation)
+- โพสต์ที่มี comment count แต่ไม่มี seeded thread → `commentsFor` สร้าง mock rows ให้ครบตาม count (session-generated — contract)
+- Comment interactions ใน prototype เป็น read/like-only: `c-like` toggle local (member), `Reply`/`emoji`/`input` → toast `Not in this prototype yet` (member) หรือ Member Sheet (guest); **ไม่มี** per-comment `...` menu, **ไม่มี** delete/report comment, **ไม่มี** `View all comments` (sheet คือ list เต็มแล้ว) — write/delete/report เป็น contract (§18)
+- Root comment meta เป็น hardcode `Reply` (EN ล้วน) ส่วน reply rows เป็น `ตอบกลับ`/`Reply` ตามภาษา — prototype quirk (deviation)
+
+## Watch Alert Entry Rule (`mf-btn`)
+
+- `mf-btn` อยู่ `act-right` ของ detail เท่านั้น (ไม่มีบน feed card/viewer rail) — เป็น WA entry ที่ 2 นอกจาก `sr-wa` (03_SEARCH canonical)
+- `modelKey` = `[Brand, Model, Reference].map(specOf).trim().toLowerCase().join("|")`; bell `.on` เมื่อมี ON alert ที่ `modelKey` เดียวกัน (`syncModelFlags` — `modelKey:"||"` ไม่นับ); title สลับ `Follow this model`/`Following this model`
+- เปิดด้วย alert เดิมที่ modelKey match (ON หรือ OFF) → edit draft (`id`/`criteria`/`matchMode`/`name`/`modelKey` เดิม) → sheet title `Edit watch alert`
+- เปิดด้วย alert ใหม่ → `criteria = waCriteriaFromPost(post)`:
+  - mapped fields: Brand·Model·Reference·Year·Condition·`Case Diameter`·`Movement Type`·`Dial Color`·Strap (`Strap/Bracelet Material` + `Strap Material` รวม) + `Delivery contents` (จาก `Box & Papers` → `SEARCH_DELIV` match)
+  - spec rows อื่นที่ไม่อยู่ `mapped` exclusion list (รวม `Collection`, `Case Material`, `Calibre` ฯลฯ) ติดไปเป็น generic criteria ด้วย (label-match)
+  - **ยกเว้น** price/data-source keys (`Asking Price`/`Estimated Market Price`/`Last Price Update`/`Data Source`) และค่า `n/a`
+  - criteria ว่างเปล่า → toast `No details on this post to watch` — sheet ไม่เปิด (โพสต์ไม่มี specs เลยเช่น showcase ธรรมดา/โพสต์ text-only)
+- Sheet = shared `waSheetHTML` (`source:"detail"`, `matchMode:"all"` default, name auto `waName(criteria)` แก้ได้) — mechanics/dedupe/modes/delete canonical 10_WATCH_ALERT (FSP-021) + 03_SEARCH §9
+- ผลลัพธ์ match นับจาก `salePosts()` เท่านั้น (canonical 03/10 — sold/hide post ที่ detail เปิดอยู่ไม่ถูกนับ)
+- Guest → Member Sheet (`.mf-btn` ∈ `GUEST_GATE_SEL`)
+
+## Wishlist Entry Rule (`wl-btn`)
+
+- `wl-btn` (gift icon) อยู่ `act-right` — เป็น wishlist entry หลักของโพสต์ (wishlist **ไม่ใช่** save/bookmark — save-btn ไม่มีบน detail)
+- กดครั้งแรกบนโพสต์ที่ยังไม่ wishlist → set `wishlisted:true` + `wlCol:"Wishlist"` + `wlAt` ทันทีก่อนเปิด sheet (optimistic) แล้วเปิด `wlSheet`
+- Sheet anatomy: `Wish List` head pick (thumb = รูปแรกของ post) + `Collections` section + `New collection` + rows (`WISHLISTS` seed: `Next buy`, `Grail goals`)
+- Pick `Wish List` ขณะ wishlisted → un-wishlist (`wishlisted/wlCol/wlAt/wlColAt` reset) → toast `Removed from your wish list`; pick col ซ้ำ → กลับ `Wishlist` (`Removed from {col}`); pick col ใหม่ → `Added to {col}` / `Added to Wish List`
+- `New collection` → `nc` sheet (shared new-collection flow — canonical saved/library surfaces)
+- Guest → Member Sheet (`.wl-btn` ∈ `GUEST_GATE_SEL`)
+
+## Post Menu Rule (`pm-btn`)
+
+- `pm-btn` บน detail head → `isOwnPost` (`seller === CP_ME`) → `pmOwnMenuHTML` / อื่น → `pmMenuHTML` — canonical 02_FEED §9 (entries: Archive/commenting/Edit/Mark as sold/Pin/Delete หรือ `View sale record` บน sold · favorites/Not interested/Report)
+- `scr.dataset.pmPid` resolve จาก `detailPid` เมื่อไม่มี `.post` ancestor (~20469)
+- Edit → edit-from-detail (§8); Delete → confirm `Delete post?` → ลบ + ปิด detail อัตโนมัติ (~20740); Mark as sold/`View sale record` → `sell:`/`sold:` sub pages (04_ASSET_MANAGEMENT)
+- Guest → Member Sheet (`.pm-btn` gated — guest ไม่เปิด post menu จาก detail ได้)
+
+## Photo Carousel Rule
+
+- Hero tap: ครึ่งขวา next / ครึ่งซ้าย prev (wrap-around), อัปเดต `photo-counter` + `photo-dots` — handler เดียวกับ feed card (`.post-photo, .detail-hero` shared)
+- รูปเดียว → tap ไม่ทำอะไร; มี clip → tap = clip play control (`clipUiHTML` mechanics 02_FEED)
+- **ไม่มี** full-screen image viewer / zoom / pinch — ตัดจาก spec เดิม (B1 ใน gap inventory — contract §18)
+
+## Own vs Viewer Rule
+
+- Layout เหมือนกันทุก element — owner/viewer ต่างกันเฉพาะ: (1) `pm-btn` menu ที่เปิด, (2) guest gate, (3) eligibility ว่าถึง detail ได้หรือไม่
+- Owner **ไม่มี** private section เพิ่มบน detail (purchase cost/sale record/portfolio value อยู่ `pfasset:`/`sold:`/`portfolio` เท่านั้น — 00_GLOBAL §14)
+- Owner ใช้ `mf-btn`/`wl-btn` บนโพสต์ตัวเองได้ตาม prototype (ไม่มี self-guard — deviation flag)
+- Owner like โพสต์ตัวเองได้ (toggle เหมือนกัน); ไม่มี Follow ให้กดเพราะไม่มี seller block เลย
+
+## Sold Post Rule
+
+- Reachability: own profile `sold`/ `all` tab → pfp viewer → `Tap for details` (hasDetails) → `View full detail` → detail — viewer คนอื่นไม่มีทางถึง (visibility matrix; public profile leak ที่ 00_GLOBAL §10 บันทึกเป็น defect ไม่ใช่ spec)
+- Display: detail render ตามข้อมูลที่โพสต์เหลือ — `pfkind:"sold"` **ไม่**เปลี่ยน anatomy
+  - โพสต์ที่ขายผ่าน `markAssetSold`: price + specGroups คงอยู่ → ยังขึ้น `FOR SALE` tag + spec groups เต็ม (deviation — ไม่มี sold state บน detail tag)
+  - gfx sold seeds (`PF_GFX_SOLD`): flat `specs` เท่านั้น + `price:null` → `SHOWCASE` tag + name จาก specs + ไม่มี spec groups (deviation — tag อ่านจาก price ไม่ใช่ pfkind)
+- `pm-btn` บน sold post → `View sale record` แทน `Edit` → `sold:{id}` page (private sale record — canonical 04/14; `soldFromPost` materialize เมื่อไม่มี link)
+- `sold` ไม่มี `Edit`/`Mark as sold` ใน menu; `applyPostEdit` กัน status sold ไว้แล้ว (canonical 02/04)
+- `mf-btn` บน sold post ใช้ได้ (criteria จาก specs ที่เหลือ) — match count ไม่นับโพสต์ sold เอง (salePosts เท่านั้น)
+- Chat กับ post ที่ sold ยังใช้ได้ (canonical 00_GLOBAL §12: chat อยู่) — chat item เปิด detail ได้ตามปกติ
+
+## Hide / Show Post Rule
+
+- `hide`: owner เห็น detail ผ่าน own profile tabs เท่านั้น; `show`: public profile `show` tab → viewer pfp → detail (visibility matrix §10)
+- ทั้งสองใช้ layout เดียวกัน — `hide` ที่เป็น drawer-only (`PF_MINE`) มี specs ตามที่สร้าง; detail ไม่มี "private" marking พิเศษ
+
+## Unavailable / Missing Post Rule
+
+- `findPost` = `POSTS` + `PF_GFX_REG` + `PF_MINE` — resolve ไม่ได้: `view-full` silent return (ไม่มี UI feedback); chat entry → toast `Listing detail isn't in this prototype yet`
+- โพสต์ถูกลบขณะ detail เปิด → detail ปิดอัตโนมัติ (delete handler splice ก่อน re-render)
+- Deleted/permission states เต็มรูปแบบ (`รายการนี้ไม่พร้อมใช้งานแล้ว` page) = contract ตาม 00_GLOBAL §11 + 00_NAV §10 — prototype มีแค่ toast/unavailable ระดับ entry
+
+## Deviations & Dead-Code Notes
+
+Spec เลือกตาม prototype — รายการนี้คือจุดที่ spec เดิม/master คาดหวัง แต่ prototype ทำต่างหรือไม่มี (documented, ไม่ใช่ spec):
+
+| # | Deviation | Note |
+| --- | --- | --- |
+| 1 | ไม่มี Owner Information block + Follow บน detail | spec เดิมบังคับ owner row + follow — dl1 ไม่มี seller element เลย (seller ไป profile ผ่าน comment avatar/post-head ที่ surface อื่นเท่านั้น) |
+| 2 | ไม่มี Ask Seller / Contact / Chat entry บน detail | `chat-fab`+`chatPop` เป็น dead path (ต้อง `ask:"bubble"`+dl2); dl1 ไม่มี `ask-pill` — chat เข้าผ่าน feed card Ask / item chat rows เท่านั้น (profile Chat เป็น dead toast ตาม canonical 06; ไม่มี chat notification type) |
+| 3 | ไม่มี Save (bookmark) บน detail | action row ใช้ `mf-btn`+`wl-btn` แทน `save-btn`; wishlist คือ save-family ของ detail |
+| 4 | ไม่มี Full Screen Image Viewer | tap hero = carousel เท่านั้น (ขัด spec เดิม AC-DETAIL-007 + AC-FEED-016 เดิม) — contract §18 |
+| 5 | ไม่มี inline comments + comment actions | ไม่มี `View all comments`/per-comment `...`/delete/report comment; comment sheet read+like-only; input/Reply/emoji dead → `Not in this prototype yet` |
+| 6 | `FOR SALE`/`SHOWCASE` tag ขับด้วย `price` ไม่ใช่ `pfkind` | sold post (markAssetSold) ยังขึ้น FOR SALE; gfx sold (price:null) ขึ้น SHOWCASE — canonical sold ไม่ควรมี sale tag; flag FSP-030 |
+| 7 | `Price & Data Source` บน detail แต่ถูก filter ใน feed expander | `detailsHTML` ตัดกลุ่มนี้ออก — detail เต็มกว่า expander (ตั้งใจตามโค้ด — รับตามจริง) |
+| 8 | `mf-btn`/`wl-btn` ใช้บนโพสต์ตัวเองได้ | ไม่มี self-guard — owner wishlist/watch โพสต์ตัวเองได้ (IG ก็ไม่กัน wishlist; flag เป็น contract note) |
+| 9 | Root comment `Reply` ไม่ localize | `<span class="c-meta">Reply</span>` hardcode EN; reply rows มี `ตอบกลับ`/`Reply` — i18n sweep FSP-026 |
+| 10 | Comment empty copy เดี่ยว | `No comments yet`/`ยังไม่มีความคิดเห็น` บรรทัดเดียว — ไม่มี `Be the first to comment.`/`Write a comment...` ของ spec เดิม |
+| 11 | `commentsFor` mock thread | โพสต์ที่มี count แต่ไม่มี seed → generate rows จาก `LIKER_POOL`/`PF_CMT_TEXTS` (session) — contract |
+| 12 | `POST_DETAIL_CFG` per-post overrides | dev artifact (เปลี่ยน ask/ds/pr/dh/dl/tg ตาม post id) — ทุก seed posts ใช้ dl1; ไม่เขียนเป็น feature (00_NAV §11 tooling rule) |
+| 13 | dl2/dh2/dh4/dh5/ds variants/pr variants/tg2 dead | `igDetailHTML` (post-head+caption+ask+save+liked-by), accordion/cards/tabs spec layouts, price variants — dead paths ทั้งหมด |
+| 14 | Detail ไม่ persist/deep-link | ไม่มี route — external deep link contract อยู่ 00_NAV §10 เท่านั้น |
+| 15 | EN-hardcoded strings | `Follow this model`/`Following this model`/`No details on this post to watch`/`Added to Wish List`/`Removed from your wish list`/`Sent to X`/`Link copied`/`Listing detail isn't in this prototype yet` — i18n sweep FSP-026 |
+| 16 | `pfKind()` fallback | โพสต์ไม่มี `pfkind` infer จาก price (seed/gfx) — canonical อยู่ 04 (documented ที่นั่นแล้ว) |
+| 17 | State session-only | `liked`/`wishlisted`/`wlCol`/`modelFollowing` เป็น memory state — persistence = contract |
 
 ---
 
-# 18. Related Modules
+# 10. Permission Rules
 
-- Asset Management Module
-- Feed Module
-- Search & Filter Module
-- Profile Module
-- Chat Module
-- Offer Module
-- Notification Module
-- Watch Alert Module
-- Trust & Safety Module
+## Guest
+
+ดู/ใช้ได้: เปิด detail ทุก public entry, hero carousel, spec groups + Price & Data Source, comment sheet (read), `#tag` → search
+
+ต้อง login (Member Sheet): `.like-btn`, `.share-btn`, `.mf-btn`, `.wl-btn`, `.pm-btn`, `.comment-input`, `.emoji-row`, `.c-like`, `.c-meta`
+
+## Member / Viewer
+
+ทำได้: ทุกอย่างของ guest + like/share/watch alert/wishlist/others menu (favorites/ni/report)
+
+ทำไม่ได้: edit/delete/mark-as-sold/pin/archive/commenting toggle ของโพสต์คนอื่น (menu ไม่มี rows เหล่านั้น); เข้าถึง `hide`/`sold` detail ของคนอื่น (ไม่มี entry)
+
+## Owner
+
+ทำได้: own-post menu เต็ม (archive/commenting/edit/mark-as-sold/pin/delete หรือ `View sale record`), edit-from-detail, like ตัวเอง, `mf-btn`/`wl-btn` ตัวเอง (ตาม prototype)
+
+ทำไม่ได้: `Edit` บน sold post (มี `View sale record` แทน); re-sold (`Mark as sold` หายเมื่อ `pfkind:"sold"`)
+
+## Blocked
+
+โพสต์ blocked seller ไม่มี eligible entry ถึง detail (feed/search/profile กรองก่อนแล้ว) — direct/stale entry → unavailable contract (00_NAV §10)
 
 ---
 
-# 19. Future Enhancement
+# 11. Validation Rules
 
-- Asset View Count
-- Asset Share Count
-- Related Watches
-- Similar Listings
-- Video Gallery
+- Post Detail เป็น read surface — ไม่มี input field ของตัวเอง
+- WA name field (ใน shared sheet): ว่าง → auto-name `waName()` เสมอ ไม่ block (canonical 03/10)
+- New collection name (nc sheet): canonical saved/library flow — นอก scope เอกสารนี้
+- `view-full`/chat entry resolve `findPost` — missing → silent no-op / `Listing detail isn't in this prototype yet` toast ตามลำดับ
+
+---
+
+# 12. Exception Handling
+
+| Case | Behavior |
+| --- | --- |
+| `findPost` ไม่เจอ (view-full) | silent return — ไม่มี UI change |
+| Chat item post missing | toast `Listing detail isn't in this prototype yet` (contract: unavailable state — canonical copy `รายการนี้ไม่พร้อมใช้งานแล้ว` อยู่ 00_GLOBAL §11) |
+| โพสต์ถูกลบขณะ detail เปิด | `detail-open` ถูก remove อัตโนมัติ → เผย surface ข้างล่าง |
+| Post ไม่มี specs | detail render minimal: `SHOWCASE` tag + name fallback caption + Descriptions + `-`; ไม่มี `detail-ref`, ไม่มี spec groups; `mf-btn` → `No details on this post to watch` |
+| Post ไม่มี `desc` | Descriptions section ยัง render + body `-` |
+| `desc`/`specs` มี `#tag` | `.igd-tag` กด → search results (`srchState.q` = tag, tab `foryou`) |
+| WA criteria ว่าง | toast `No details on this post to watch` — sheet ไม่เปิด |
+| Image โหลดไม่ได้ | contract: hero แสดง image-unavailable แต่ detail ยังเปิดได้ (02_FEED §12 เดียวกัน) — prototype ไม่มี path นี้ |
+
+---
+
+# 13. Empty State
+
+| Context | Copy |
+| --- | --- |
+| Comment sheet ว่าง | `ยังไม่มีความคิดเห็น` / `No comments yet` (บรรทัดเดียว — deviation จาก spec เดิม) |
+| Detail ของโพสต์ไม่มี specs | `SHOWCASE` tag + name (caption fallback) + `Descriptions` + `-` — ไม่ใช่ empty state page |
+| Missing post (chat path) | toast `Listing detail isn't in this prototype yet` (contract `No data found`/unavailable อยู่ 00_GLOBAL §11) |
+
+---
+
+# 14. Notification Rules
+
+- Post Detail ไม่สร้าง notification เอง
+- Like/comment notifications เปิด Post Viewer (ไม่ใช่ detail) ตาม 00_NAV §8 — canonical 09_NOTIFICATION
+- WA match toast (`Watch alert matched`) เกิดฝั่ง publish — canonical 10_WATCH_ALERT/02_FEED
+- `mf-btn` save/delete ให้ toast feedback เท่านั้น (`Watch alert on`/`updated`/`removed`) — ไม่มี notification item
+
+---
+
+# 15. Analytics Events
+
+Contract set (prototype ไม่มี tracking layer — เหมือน baseline อื่น):
+
+- `post_detail_open` (entry: feed_card / viewer_dt / viewer_card / chat_item)
+- `post_detail_back`
+- `post_detail_like` / `post_detail_unlike`
+- `post_detail_comment_open`
+- `post_detail_share` (`sent:{name}` / `app:{app}` / `copy_link`)
+- `post_detail_watch_alert_open` / `post_detail_watch_alert_saved` (source:`detail`) / `post_detail_watch_alert_no_details`
+- `post_detail_wishlist_open` / `post_detail_wishlist_pick`
+- `post_detail_menu_open` (own / others)
+- `post_detail_photo_swipe`
+- `post_detail_tag_click`
+
+---
+
+# 16. Acceptance Criteria
+
+## Layer & Entries
+
+| AC ID | Criteria |
+|---|---|
+| AC-DETAIL-001 | Post Detail ต้องเป็น `.page-detail` overlay เหนือ `.page-pv` — `View full detail` จาก `dt` sheet / viewer card ต้องเปิด detail โดย `pv-open` คงอยู่ และ `.detail-back` ต้องเผย viewer เดิม |
+| AC-DETAIL-002 | `View full detail` ต้องแสดงเฉพาะโพสต์ที่ `hasDetails` (price หรือ specGroups หรือ specs); โพสต์ที่ไม่มี details ไม่มี `Tap for details` entry |
+| AC-DETAIL-003 | Feed card media tap ต้องเป็น in-card carousel เท่านั้น — ต้องไม่เปิด Post Detail (AC-NAV-001) |
+| AC-DETAIL-004 | Chat room item card (`data-chgo="post"`) ต้องเปิด Post Detail ของโพสต์นั้น; post ไม่พบ → toast `Listing detail isn't in this prototype yet` |
+| AC-DETAIL-005 | `.detail-back` ต้อง remove เฉพาะ `detail-open` — ไม่มี forward/stack; bottom nav ต้องซ่อนขณะ detail เปิด |
+
+## Anatomy
+
+| AC ID | Criteria |
+|---|---|
+| AC-DETAIL-006 | Detail head ต้องมี back + title `รายละเอียด`/`Detail` + `...` (`pm-btn`) และ sticky ใน scroll |
+| AC-DETAIL-007 | Hero ต้องแสดง `photo-counter` `1/N` + dots เมื่อ photos >1 และ tap ครึ่งซ้าย/ขวาเลื่อนรูป wrap-around; ไม่มี full-screen viewer |
+| AC-DETAIL-008 | Action row ต้องมี like / comment(+count) / views / share และ `act-right` = `mf-btn` + `wl-btn` — ต้องไม่มี save-btn, ask-pill, liked-by row หรือ seller block |
+| AC-DETAIL-009 | `comment-btn` ต้องซ่อนทั้งปุ่มเมื่อ `noComments`; `views-stat` ต้องซ่อนเมื่อ `hideCounts` หรือ `views` ว่าง/`"0"` |
+| AC-DETAIL-010 | Tag ต้องเป็น `ลงขาย`/`FOR SALE` เมื่อโพสต์มี `price` และ `โชว์`/`SHOWCASE` (muted) เมื่อไม่มี |
+| AC-DETAIL-011 | `detail-name` = Brand+Model จาก specs (ตัด `n/a`), fallback caption ส่วนแรกก่อน `—`; `detail-ref` = `Ref. {v}` (`Ref. -` เมื่อ n/a) และไม่ render เมื่อไม่มี specs |
+| AC-DETAIL-012 | `Descriptions` ต้อง render `p.desc` (ไม่ copy caption); ว่าง → `-`; `#tag` ใน desc ต้องเปิด search results ของ tag นั้น |
+| AC-DETAIL-013 | Spec groups ต้อง render ทุกกลุ่มใน `specGroups` **รวม `Price & Data Source`** (`Asking Price`/`Estimated Market Price`/`Last Price Update`/`Data Source`) — ต่างจาก feed expander ที่ filter กลุ่มนี้ออก |
+
+## Actions
+
+| AC ID | Criteria |
+|---|---|
+| AC-DETAIL-014 | `like-btn` ต้อง toggle `liked` + `likes ±1` และ sync `.liked` ทุก `.like-btn` ของ pid เดียวกันข้าม feed/viewer/detail |
+| AC-DETAIL-015 | `comment-btn` ต้องเปิด shared comments sheet (title `ความคิดเห็น`/`Comments` + rows + one-level replies + emoji row + input); จาก detail ต้องไม่ใช่ `nt` variant |
+| AC-DETAIL-016 | Comment rows ต้องมี avatar/name → Public Profile, time, text, `Reply` meta, like heart + count (`c-like` toggle local); ไม่มี per-comment `...`, delete หรือ report action ใน V1 prototype |
+| AC-DETAIL-017 | Comment input/emoji/`Reply` (member) → toast `Not in this prototype yet`; guest → Member Sheet; `c-like` เป็น local toggle เท่านั้น (contract: write/delete/report) |
+| AC-DETAIL-018 | `share-btn` ต้องเปิด shared share sheet — friends grid → `Sent to {name}`, app row → `Shared to {app}`, `Copy link` → `Link copied` (mock ไม่มี link จริง — canonical 02/11) |
+
+## Watch Alert (`mf-btn`)
+
+| AC ID | Criteria |
+|---|---|
+| AC-DETAIL-019 | `mf-btn` ต้องเปิด shared WA sheet ด้วย `source:"detail"` + `matchMode:"all"` + name auto `waName` เมื่อไม่มี alert เดิมที่ `modelKey` เดียวกัน |
+| AC-DETAIL-020 | `waCriteriaFromPost` ต้อง snapshot mapped spec fields + delivery contents + unmapped spec rows และ **ยกเว้น** `Asking Price`/`Estimated Market Price`/`Last Price Update`/`Data Source` กับค่า `n/a` |
+| AC-DETAIL-021 | โพสต์ที่ criteria ว่าง → toast `No details on this post to watch` และต้องไม่เปิด sheet |
+| AC-DETAIL-022 | เมื่อมี alert เดิมที่ `modelKey` ตรง → เปิด sheet edit mode (criteria/name/mode เดิม); Save ซ้ำ criteria+mode → `You already saved this alert` |
+| AC-DETAIL-023 | Bell `.on` + title `Following this model` เมื่อ ON alert ที่ `modelKey` ตรงกันอยู่ (`syncModelFlags`/`refreshMfBtns` ต้อง sync ทุก mf-btn) |
+
+## Wishlist (`wl-btn`)
+
+| AC ID | Criteria |
+|---|---|
+| AC-DETAIL-024 | `wl-btn` ครั้งแรกต้อง set `wishlisted` + `wlCol:"Wishlist"` ก่อนเปิด sheet (optimistic) |
+| AC-DETAIL-025 | Pick `Wish List` ขณะ wishlisted → un-wishlist + `Removed from your wish list`; pick collection → `Added to {col}` / `Added to Wish List`; `New collection` → nc sheet |
+
+## States
+
+| AC ID | Criteria |
+|---|---|
+| AC-DETAIL-026 | Guest ต้องเปิด detail + อ่าน specs + เปิด comment sheet อ่านได้เสรี (`view-full`/`comment-btn` ไม่ gate) |
+| AC-DETAIL-027 | Guest กด `.like-btn`/`.share-btn`/`.mf-btn`/`.wl-btn`/`.pm-btn` หรือ `.comment-input`/`.emoji-row`/`.c-like`/`.c-meta` → Member Sheet `Join TukDaeng` |
+| AC-DETAIL-028 | Owner detail ต้อง layout เดียวกับ viewer — ไม่มี private section (purchase/sale/portfolio อยู่ `pfasset:`/`sold:` ของ 04/14) |
+| AC-DETAIL-029 | `pm-btn` ต้องเปิด own menu (member เจ้าของ) หรือ others menu — canonical 02_FEED; guest → Member Sheet |
+| AC-DETAIL-030 | `Edit` จาก own menu บน detail ต้องซ่อน detail ระหว่าง composer และเปิดคืนหลัง composer ปิด (`V.editFromDetail`); `Delete` ต้องปิด detail ที่เปิดอยู่ |
+| AC-DETAIL-031 | Viewer ต้องไม่มีทางถึง detail ของ `hide`/`sold` post ของคนอื่น (visibility matrix §10); owner เห็น detail ของทุก `pfkind` ผ่าน own profile tabs |
+
+## Sold / Lifecycle
+
+| AC ID | Criteria |
+|---|---|
+| AC-DETAIL-032 | Sold post บน detail ต้อง render ตามข้อมูลคงเหลือ (tag ตาม price — deviation documented) และ own menu ต้องมี `View sale record` → `sold:{id}` แทน `Edit` |
+| AC-DETAIL-033 | `mf-btn` บน sold post ต้องยังทำงาน (criteria จาก specs) แต่ match count ต้องนับเฉพาะ `salePosts()` |
+| AC-DETAIL-034 | โพสต์ถูกลบขณะ detail เปิด → detail ต้องปิดอัตโนมัติเผย surface ข้างล่าง |
+
+## Contract / Deviation Guard
+
+| AC ID | Criteria |
+|---|---|
+| AC-DETAIL-035 | `POST_DETAIL_CFG` และ variant paths (dl2/dh2/dh4/dh5/ds acc-cards-tabs/pr variants/tg2/chat-fab) ต้องไม่ถูกเขียนเป็น feature — dev artifact ตาม 00_NAV §11 |
+| AC-DETAIL-036 | Detail ต้องไม่แสดง private data (Purchase Price/Date, Sold History, Portfolio Value) ในทุก mode — 00_GLOBAL §14 |
+
+---
+
+# 17. Related Modules
+
+- [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) — statuses §9, visibility §10, gate §11, lifecycle §12, private data §14
+- [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) — layer model §6.1, back §6.7, entry matrix §7, unavailable §10
+- [02_FEED_MODULE.md](02_FEED_MODULE.md) — post model, `hasDetails`/details-body, own-post menu, Edit info, share/save sheets canonical
+- [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) — post viewer modes + `dt` sheet + WA entry semantics canonical (FSP-016)
+- [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) — `pfkind`/`assetId` linkage, Mark as Sold, `sold:`/`sell:` pages (FSP-017)
+- [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) — profile tabs reachability (sold/hide entries)
+- [07_CHAT_MODULE.md](07_CHAT_MODULE.md) — chat room + item card entry
+- [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) — notification → viewer destinations
+- [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) — `waSheetHTML`/`modelKey`/`alertMatch` internals
+- [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) — comments/likes/share/save sheets canonical
+- [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) — portfolio math + market data contract
+- [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) — report flow + comment moderation
+
+---
+
+# 18. Future Enhancement
+
+- Comment write/reply/delete/report จริง (prototype read+like-only) — per-comment `...` actions + delete cascade root→replies + report comment sheet (spec เดิม §8/§9 เก็บเป็น contract)
+- Full Screen Image Viewer (zoom/pinch/swipe ข้ามรูป) — spec เดิม AC-DETAIL-007 contract
+- Seller block + Follow บน detail (spec เดิม owner row) — ถ้าตัดสินเพิ่มต้อง resolve กับ dl1 minimal-head design
+- Ask Seller / chat entry บน detail (`chat-fab` dead path → revive หรือยืนยันตัด)
+- Save/bookmark บน detail (ปัจจุบันมีแค่ wishlist)
+- Comment notification → deep-link focus comment (ปัจจุบันเปิด viewer เฉย ๆ — 00_NAV §8 note)
+- Persistent `wishlisted`/`liked`/`modelFollowing` state (prototype session-only)
+- Self-guard `mf-btn`/`wl-btn` บนโพสต์ตัวเอง (ถ้าตัดสินใจว่า owner ไม่ควร watch/wishlist ของตัวเอง)
+- Sold state visual บน detail (tag ปัจจุบันอ่านจาก price — deviation #6)
+- Unavailable detail page เต็มรูปแบบ (`รายการนี้ไม่พร้อมใช้งานแล้ว`) แทน toast/entry-level fallback
+- External deep link → Post Detail (contract 00_NAV §10 — ไม่มี route ใน prototype)

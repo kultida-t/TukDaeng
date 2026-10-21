@@ -28,7 +28,7 @@ Current Back Office baseline: `BO-PRD-v0.1`
 
 | Folder | Purpose |
 | --- | --- |
-| [FrontOffice](FrontOffice) | เอกสาร PRD, module specs, Dev/QA/Figma handoff ของ Front Office |
+| [FrontOffice](FrontOffice) | เอกสาร PRD, module specs, Dev/QA handoff ของ Front Office |
 | [BackOffice](BackOffice) | BO baseline, legacy specs, module index และ implementation checklist |
 | [DailyLogs](DailyLogs) | Daily work reports |
 | [SourceInputs](SourceInputs) | เอกสาร input ต้นทางที่ใช้เป็น reference |
@@ -46,8 +46,6 @@ Current Back Office baseline: `BO-PRD-v0.1`
 | Dev implementation checklist | [FrontOffice/DEV_IMPLEMENTATION_CHECKLIST.md](FrontOffice/DEV_IMPLEMENTATION_CHECKLIST.md) |
 | Chat-specific Dev checklist | [FrontOffice/DEV_CHAT_IMPLEMENTATION_CHECKLIST.md](FrontOffice/DEV_CHAT_IMPLEMENTATION_CHECKLIST.md) |
 | QA regression checklist | [FrontOffice/QA_TEST_SCENARIO_CHECKLIST.md](FrontOffice/QA_TEST_SCENARIO_CHECKLIST.md) |
-| Figma gap checklist | [FrontOffice/Figma_Gap_Checklist_Against_Master.md](FrontOffice/Figma_Gap_Checklist_Against_Master.md) |
-| Figma cleanup task breakdown | [FrontOffice/FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FrontOffice/FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md) |
 
 ## Back Office Key Files
 
@@ -87,7 +85,7 @@ Current Back Office baseline: `BO-PRD-v0.1`
 
 ## Notes
 
-- ถ้า Front Office document ขัดกับ Figma หรือเอกสารเก่า ให้ใช้ source-of-truth order ใน [FrontOffice/README_MODULE_INDEX.md](FrontOffice/README_MODULE_INDEX.md)
+- ถ้า Front Office document ขัดกับเอกสารเก่า ให้ใช้ source-of-truth order ใน [FrontOffice/README_MODULE_INDEX.md](FrontOffice/README_MODULE_INDEX.md)
 - ถ้า Back Office document ขัดกับ legacy BO specs ให้ใช้ source-of-truth order ใน [BackOffice/DOCUMENT_VERSION.md](BackOffice/DOCUMENT_VERSION.md)
 - Requirement ที่ข้าม Front Office และ Back Office ให้ใช้ [ProjectAdmin/FO_BO_INTEGRATION_MAP.md](ProjectAdmin/FO_BO_INTEGRATION_MAP.md) เพื่อ trace ทั้งสองฝั่งโดยไม่ปน scope
 - Source input `.docx` เก็บไว้ใน [SourceInputs](SourceInputs) เพื่อ trace requirement กลับไปยังต้นทาง

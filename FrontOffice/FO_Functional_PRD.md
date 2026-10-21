@@ -49,8 +49,7 @@ Tuk Daeng เป็น Marketplace Community สำหรับซื้อข�
 - Sign Up
 - OTP Verification
 - Sign In
-- Forgot Password
-- Reset Password
+- Forgot Password (ส่ง reset link; ไม่มีหน้า Reset Password ในแอป)
 - Change Password
 - Sign Out
 
@@ -80,10 +79,6 @@ Tuk Daeng เป็น Marketplace Community สำหรับซื้อข�
 ### Chat
 
 - สนทนาระหว่างผู้ซื้อและผู้ขาย
-
-### Offer
-
-- เสนอราคา
 
 ### Watch Alert
 
@@ -211,7 +206,6 @@ Guest กด Feature ที่ต้อง Login ให้ใช้ Dialog เ�
 
 - Like
 - Follow
-- Offer
 - Chat
 - Favorites
 - Following
@@ -252,39 +246,24 @@ Guest กด Feature ที่ต้อง Login ให้ใช้ Dialog เ�
 
 - รองรับ
 
-## 13. Offer Module
-
-- Make Offer ผ่าน Asset Detail เท่านั้น
-- Accepted Offer เปิด Chat Room
-- Rejected Offer เปิด Asset Detail
-
-### Asset Deleted
-
-- Offer กลายเป็น Cancelled
-
-### Sold
-
-- Auto Reject Offer อื่น
-
-## 14. Notification Module
+## 13. Notification Module
 
 Notification รองรับ:
 
 - Like
 - Comment
 - Follow
-- Offer
 - Watch Alert
 
 ### Notification Destination
 
 | Notification | Destination |
 | --- | --- |
-| Watch Alert Notification | เปิด Watch Alert Result List ไม่เปิด Asset ตรง |
+| Watch Alert Notification | เปิด Asset Detail (post viewer) ของ Asset ที่ match โดยตรง ไม่มี Result List คั่น |
 | Like Notification | เปิด Asset Detail |
 | Comment Notification | เปิด Asset Detail และ Focus Comment |
 
-## 15. Social Module
+## 14. Social Module
 
 ### Like
 
@@ -301,14 +280,14 @@ Notification รองรับ:
 
 - รองรับ
 
-## 16. Watch Alert
+## 15. Watch Alert
 
 - สร้างจากหน้า Search Filter
 - ไม่มี Required Field
 - Match เฉพาะ Sale
-- เปิด Notification แล้วไป Result List
+- เปิด Notification แล้วไป Asset Detail (post viewer) ของ Asset ที่ match โดยตรง
 
-## 17. Portfolio
+## 16. Portfolio
 
 Portfolio เป็น Private และเห็นเฉพาะ Owner
 
@@ -333,7 +312,7 @@ Portfolio เป็น Private และเห็นเฉพาะ Owner
 - Payment Method
 - Attachment
 
-## 18. Trust & Safety
+## 17. Trust & Safety
 
 ### Block User
 
@@ -356,7 +335,7 @@ Portfolio เป็น Private และเห็นเฉพาะ Owner
 
 - Admin ต้องตรวจสอบ Report และดำเนินการภายใน 24 ชั่วโมง
 
-## 19. Apple Compliance
+## 18. Apple Compliance
 
 รองรับ:
 

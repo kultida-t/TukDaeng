@@ -1,6 +1,6 @@
 ﻿# 04 Asset Management Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§8 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / composer / own-post menu canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
 
 ---
 
@@ -13,1205 +13,590 @@
 | Version | V1 |
 | Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD |
+| Document Type | Functional PRD - Master Aligned |
 
 ---
 
 # 2. Objective
 
-Asset Management Module ใช้สำหรับให้ Member จัดการ Asset นาฬิกาของตัวเอง ตั้งแต่เพิ่มรายการ แก้ไขข้อมูล เปลี่ยนสถานะ ลบรายการ และบันทึกการขายตาม status model ของ master
+Asset Management Module คือ owner-private domain ของ "My Assets drawer" (ลิ้นชักสินทรัพย์) — ระบบจัดการนาฬิกาที่ member เป็นเจ้าของ: เพิ่มสินทรัพย์ผ่าน composer asset mode (drawer-first — ทุกเส้นทางสร้าง drawer record ก่อน ไม่ใช่ marketplace listing form แยก), สถานะ `Sale`/`Show`/`Hide`/`Sold` บน drawer record ที่ mirror กับ `pfkind` ของโพสต์ที่ link, purchase cost (ราคาซื้อ + วันที่ซื้อ) เป็น private cost data, และ Mark as Sold ที่ย้าย asset เข้า Sold history
 
-โมดูลนี้ต้องคุม ownership, visibility, lifecycle และข้อมูล private ให้ชัด เพื่อไม่ให้ Asset ที่ไม่ควร public หลุดไปยัง Feed, Search, Watch Alert หรือ Public Profile
+โมดูลนี้ต้องคุม ownership, status lifecycle และ private data ให้ชัด — drawer record ไม่เคย public เอง การเข้าถึง public เกิดผ่าน linked post + `pfkind` เท่านั้น และ private data (ต้นทุน/ประวัติขาย/มูลค่า) ต้องไม่หลุดไปยัง public surfaces
 
 ---
 
 # 3. Prototype Reference
 
-- `Add new asset.png`
-- `Edit asset.png`
-- `Detail asset owner.png`
-- `Main Owner Profile.png`
+Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
+
+- Composer constants (~15672–15695): `CF_TAGS` (10 hashtag chips), `CF_LOCS`/`CF_LOC_KM`, `CF_CONDS` (5 ตัวเลือก), `CF_BOXES` (4 ตัวเลือก), `CF_SPECS` (Watch Specifications 20 fields + Item Details 2 fields — free-text ทั้งหมด), `cfToday()`; `CF_MAX_MEDIA` = 10 (~15993)
+- Composer UI (~15529–15879): `createHTML`/`cfPickerHTML` (step 1 — title `เพิ่มสินทรัพย์ใหม่`/`Add Asset` เมื่อ `V.mode === "asset"`), `cfStep2HTML` (step 2 — rows + **Visibility pick** `vis-opt` ~15855–15859 เฉพาะ asset mode, **Profile status pick** `stt-opt` ~15850–15854 เฉพาะ edit mode + drawer ON, `Also save to My Assets` toggle ~15860–15867, primary button `Add Asset` ~15871), `cfPaneHTML` (panes loc/price/spec/**cost** ~15718–15725/cond/more), `cfVal` (row summaries ~15742–15751)
+- Drawer data (~15913–16108 + ~16318–16576): `cfToPortfolio` (draft → `PF_ASSETS` record ~15915–15926), `assetFromPost` (materialize record จาก post ~15929–15939), `soldFromPost` (materialize sold record ~15942–15958), `insertNewPost` (~15959–15990), `metaFromPost`/`openPostEdit`/`applyPostEdit` (~15992–16108 — edit sync กลับ drawer asset ~16095–16107); `PF_ASSETS` seed (~16318–16328), `PF_SOLD` (~16329–16344), `PF_MINE` (drawer-only posts ~16574–16576), `findPost`/`pfGridPosts`/`pfKind`/`pfTabPosts` (~16577–16609)
+- Portfolio helpers (~16348–16382): `pfoTHB`/`pfoSignTHB`/`pfoPct`, `pfoEligible` (`status ∈ sale/show/hide && own !== false`), `pfoCur`/`pfoGL`/`pfoExp`/`pfoCmp`/`pfoHold`/`pfoDate`, `PFO_STATUS`/`PFO_CMP`/`PFO_SRC`
+- Pages (~16958–17149): `pfoSimBar`/`PFO_SIMS` (dev `?dev` preview เท่านั้น), `pfoRowHTML` (~16964–16975), `portfolioHTML` (~16976–17011), `pfassetHTML` (~17012–17051), `soldHistHTML` (~17052–17066), `soldDetailHTML` (~17067–17103), `sellFormHTML` (~17106–17121), `openSubOver`/`openSellForm`/`markAssetSold` (~17124–17149)
+- Entries: own-profile `+` icon (`data-flow="create" data-mode="asset"` ~16852) + `all`-tab empty-state CTA `เพิ่มสินทรัพย์ใหม่`/`Add asset` (~16826); `.pf-pfo` portfolio button บน own-profile actions row (~16887); own-post menu rows `pm-own-sold`/`pm-own-soldview` (~13920–13935) + handlers (~20501–20507)
+- Handlers: composer `cf-share` asset mode (~20277–20317) + post mode (~20318–20332); `vis-opt`/`stt-opt` (~20426–20433); `.cf-f` input — `price`/`purchase` strip non-digit + auto-comma, `bought` live validation (~19990–20010); `pane-done` cost block เมื่อ date invalid (~20404–20414); `data-sell`/`sell-save` + inline `pe-err` validation + stack splice → `sold:{id}` (~21684–21728); `sell-price` → Expected gain live update (~20108–20120); `dlg-delpost-go` post delete (~20730–20744)
+- Guest gate `GUEST_GATE_SEL` + `obGate` (~22997–23012): `[data-flow]` (composer entries) + `.pm-btn` (post menus) + profile tab gated → Member Sheet `Join TukDaeng`
+- Feed/status effects: `refreshPostViews` (`show`/`hide`/`sold` ดึง card ออก feed ~13938–13949); feed eligibility filter (~14096)
+- Dead/tooling (ห้ามเขียนเป็น feature): `pfo-more` dev sim bar + `PFO_SIMS` (`?dev` preview states), `POST_DETAIL_CFG`, `PF_GFX_*` registry (mock grid posts), `chsettings:{id}` dead route — ดู 00_NAV §11 prototype-tooling rule
 
 ---
 
 # 4. Master Alignment Summary
 
-Asset Management Module ต้องยึด master baseline ต่อไปนี้เป็นหลัก:
-
-- ใช้ canonical status ชุดเดียว: `Sale`, `Show`, `Hide`, `Sold`
-- Add / Edit Asset ให้ Owner เลือกสถานะระหว่าง `Sale`, `Show`, `Hide`
-- `Sold` เป็น terminal state สำหรับบันทึกการขาย ไม่ใช่ status ที่แก้ข้อมูลหลักได้เหมือนสถานะทั่วไป
-- Sold Asset ไม่สามารถ Edit ข้อมูลหลักได้
-- Sold Asset เก็บไว้เพื่อ Sales History, Portfolio และ Admin Review
-- ลบ Asset โดยเจ้าของ เป็นการลบจากมุมมองหน้าบ้านของเจ้าของและ public surfaces แต่ backend/BO ควรเก็บ record ตาม retention policy
-- Asset ที่ถูก Back Office ซ่อนถาวรยังให้ Owner เห็นได้แบบ read-only พร้อมสถานะถูกซ่อนถาวร แต่ Owner แก้ไข เปลี่ยนสถานะ publish ใหม่ mark sold หรือ delete เองไม่ได้
-- Gallery รองรับสูงสุด 10 รูป
-- Asset Management ต้องรองรับ Provenance และ Consignment
-- Provenance, Purchase Price, Purchase Date, Purchase From, Proof of Payment, Consignment Owner Contact, Consignment Terms, Sold History และ Portfolio Value Detail เป็น private data
-- Sale แสดงใน Owner Profile, Public Profile, Feed, Search และ Watch Alert
-- Show แสดงใน Owner Profile และ Public Profile เท่านั้น
-- Hide เห็นเฉพาะ Owner
-- Sold เห็นเฉพาะ Owner
-- Hide และ Sold ต้องไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search และไม่เข้า Watch Alert
-- ลบโดยเจ้าของ และ ซ่อนถาวร ต้องไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search, ไม่เข้า Watch Alert และไม่ถูกนำไปรวมใน Portfolio / Asset Value
-- Asset ที่เป็น `Consignment` ไม่ถูกนำไปรวมใน Portfolio / Asset Value เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ Owner ถือครองเอง
-- ไม่มี Payment ภายในแอปใน Phase 1
+| Area | Master Baseline |
+| --- | --- |
+| Status model | canonical `Sale`/`Show`/`Hide`/`Sold` เท่านั้น (00_GLOBAL §9); โพสต์ feed-only ใช้ kind `post` ไม่นับเป็น asset status |
+| Visibility | ตาม 00_GLOBAL §10 — Feed = `sale` + `post`; Search/Watch Alert = `Sale` เท่านั้น; Public Profile = `Sale`+`Show`; Owner เห็นทุกสถานะ |
+| Lifecycle | ตาม 00_GLOBAL §12 — transition ทุกเส้นทางมี required impact บน Feed/Search/WA/profile |
+| Private data | Purchase Price, Purchase Date, Sold History, Portfolio Value Detail = private (00_GLOBAL §14) — เห็นเฉพาะ Owner/Admin |
+| Add Asset | Composer asset mode (drawer-first) — ไม่ใช่ multi-step listing form; ไม่มี provenance/consignment entity (ตัดตาม sign-off เดิม) |
+| Guest | Asset management ทั้งหมด member-only — guest กด gated entry ใด ๆ เจอ Member Sheet `Join TukDaeng` (00_GLOBAL §11) |
+| Navigation | Routes `create` / `portfolio` / `pfasset:{id}` / `soldhist` / `sold:{id}` / `sell:{id}` ตาม 00_NAV §6.6; back ตาม §6.7 (sub stack pop) |
+| Mark as Sold | entries = own-post menu + portfolio asset detail ตามที่ prototype มีจริง — Sale Record = ราคาขาย + วันที่ขายเท่านั้น |
+| ไม่มีใน V1 | ฟอร์ม Add/Edit Asset แยก, Change Status sheet แยก, confirmation `Add this asset?`/`Save sale history?`, Market Data autocomplete, option-master `ระบุเอง`, provenance/consignment, payment ในแอป |
 
 ---
 
-# 5. Figma Gap Checklist For Asset Management Module
+# 5. Scope
 
-รายการนี้ใช้เป็น checklist สำหรับปรับ Figma เฉพาะ Asset Management Module ให้ตรงกับ master ก่อนส่งต่อ Dev/QA
+## In Scope
 
-| Priority | Gap | Master Baseline | Figma Action |
-|---|---|---|---|
-| Must Fix | Edit Asset ใช้ status 2 ชั้น เช่น `Status` และ `Sale Status` | Canonical status มีชุดเดียว: `Sale / Show / Hide / Sold` | ปรับ Figma ให้เหลือ status model เดียว |
-| Must Fix | Add/Edit อาจเปิดให้เลือก `Sold` เหมือน status ปกติ | Owner แก้ status ได้ระหว่าง `Sale / Show / Hide`; `Sold` ต้องผ่าน Mark as Sold / Sale Record | แยก Mark as Sold flow ออกจาก Edit Asset |
-| Must Fix | จำนวนรูปยังเป็น 3 รูป | Master รองรับ Gallery สูงสุด 10 รูป | ปรับ upload/gallery limit เป็น 10 รูป |
-| High | ยังไม่เห็น Sold Asset read-only state ชัดเจน | Sold Asset ไม่สามารถ Edit ข้อมูลหลักได้ | เพิ่ม owner detail/edit state ที่ lock main fields ของ Sold Asset |
-| High | ยังไม่เห็น Sale Record / Sold History ครบตาม master | Sold History ต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment | เพิ่ม Sale Record Form และ Sold History display |
-| High | ยังไม่เห็น privacy treatment ของ Provenance / Consignment / purchase data | ข้อมูลเหล่านี้เป็น private เห็นเฉพาะ Owner หรือ Admin | ระบุ private section/state และห้ามแสดงใน Public Profile |
-| High | ยังไม่เห็น lifecycle impact หลังเปลี่ยน status | Sale/Hide/Show/Sold ต้องส่งผลต่อ Feed, Search, Watch Alert, Public Profile ตาม visibility matrix | เพิ่ม state notes หรือ flow annotation ใน Figma |
-| Medium | ยังไม่เห็น Delete confirmation และผลกระทบต่อ Chat/Offer | Deleted Asset หายจาก public surfaces, Chat ยังอยู่, Offer ที่เกี่ยวข้องเป็น Cancelled | เพิ่ม delete confirmation และ deleted impact state |
-| Medium | อาจมี field `Location` ใน Add/Edit | Master Asset Management ไม่ได้กำหนด Location เป็น field หลัก และ Feed/Search ไม่แสดง Location | ตัด Location ออกจาก V1 หรือย้ายเป็น future/optional หลัง master decision |
+- Add Asset entries: own-profile `+` icon + `all`-tab empty-state CTA (`data-mode="asset"`)
+- Composer asset mode deltas เหนือ shared composer: title/placeholder/primary `Add Asset`, **Visibility pick** `Show`/`Hide`/`Post to feed`, `Cost details (private)` row แสดงเสมอ
+- Asset data model: `PF_ASSETS` drawer record + `assetId` link + `pfkind` status mirror + `PF_MINE` drawer-only posts
+- Status transitions: set ตอนสร้าง (visibility), เปลี่ยนผ่าน Edit info `Profile status` pick (`stt-opt`), `post` ↔ drawer detach/link, `Sold` ผ่าน Mark as Sold เท่านั้น
+- Mark as Sold: entries (own-post menu + portfolio asset detail), `sell:{id}` Sale Record form, `markAssetSold` transition, `sold:{id}` landing
+- Purchase cost fields: `purchase` (ราคาซื้อ) + `bought` (วันที่ซื้อ) — private, validation,จุดที่ถูกใช้ต่อ (portfolio/pfasset/sell form/sold record)
+- Asset list + asset detail: `portfolio` page anatomy + `pfasset:{id}` owner detail ในระดับ structure/fields/privacy (สูตรคำนวณมูลค่าอยู่ 14_PORTFOLIO)
+- Sold history (`soldhist`) + sold record (`sold:{id}`) anatomy
+- Delete asset semantics (post-level delete + drawer record behavior)
+- Lifecycle impact, private data rule, guest gate, contract-only items (BO moderation states)
 
----
+## Out Of Scope (module อื่นเป็นเจ้าของ)
 
-# 6. Scope
-
-Asset Management Module ใน V1 ครอบคลุม:
-
-- Add Asset
-- Edit Asset
-- Delete Asset
-- Change Status ระหว่าง `Sale`, `Show`, `Hide`
-- Mark as Sold
-- Sale Record Form
-- Sold History
-- Asset Ownership
-- Provenance
-- Consignment
-
-ไม่รวมใน V1:
-
-- Bulk Upload
-- Asset Import
-- Asset Archive
-- QR Asset Verification
-- Video Upload
-- Payment ภายในแอป
-- Watch Authentication Service ในแอป
+- Composer mechanics — picker, media strip, caption/hashtags, option panes (loc/price/spec/cond/more), discard dialogs, `insertNewPost`, Edit info internals — canonical อยู่ [02_FEED_MODULE.md](02_FEED_MODULE.md) §9 (FSP-015b lock แล้ว); เอกสารนี้ระบุเฉพาะ asset-mode deltas + drawer linkage
+- Own-post menu anatomy/rows — canonical 02_FEED §8/§9; เอกสารนี้ระบุเฉพาะ semantics ของ `Mark as sold`/`View sale record` entries
+- Post Detail page (public-facing detail, `mf-btn`, `wl-btn`) — [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (FSP-018)
+- Portfolio analytics/valuation — current value, unrealized/realized G-L, expected profit, market comparison, holding period, totals, `PFO_SIMS` states, market-price contract — [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) (FSP-024)
+- Profile shell/grid/tabs/follow — [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (FSP-019); เอกสารนี้ระบุเฉพาะ entry + status tab mapping
+- Watch Alert internals — [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) (FSP-021); WA toast simulation หลัง `Post to feed` อยู่ 10/02
+- Market Data / option-master spec options / `ระบุเอง` free-text promotion flow — ไม่มีใน V1 prototype (fields เป็น free-text ล้วน) — contract/future เท่านั้น (§9 Spec Free-Text Rule, §18)
+- Provenance / Consignment entity — ไม่มีใน V1 (sign-off เดิม)
+- Payment ในแอป / transaction — Phase 1 ไม่มี
+- BO moderation surfaces (ซ่อนถาวร / ซ่อนชั่วคราว) — master contract เท่านั้น prototype ไม่มี (§9 Contract Notes)
 
 ---
 
-# 7. Screen Mapping
+# 6. Screen Mapping
 
-หน้าจอที่เกี่ยวข้องในโมดูลนี้:
-
-1. Add Asset
-2. Edit Asset
-3. Owner Asset Detail
-4. Asset Status Management
-5. Delete Asset Confirmation
-6. Mark as Sold Confirmation
-7. Sale Record Form
-8. Sold History
-9. Permission Denied State
-10. Asset Not Found State
+| Screen / State | Prototype | Description |
+| --- | --- | --- |
+| Add Asset composer | `create` sub page · `V.mode === "asset"` | picker → step 2 — title `เพิ่มสินทรัพย์ใหม่`/`Add Asset`, primary `Add Asset`, Visibility pick, `Cost details` row เสมอ |
+| My Assets drawer (list) | `portfolio` route · `portfolioHTML()` | head `พอร์ตโฟลิโอ`/`Portfolio` + Total invested (private) + `รายการนาฬิกา`/`Assets` rows + `ประวัติการขาย`/`Sold history` link |
+| Portfolio asset detail | `pfasset:{id}` route · `pfassetHTML()` | hero + status chip + Value card (private) + Listing card (`sale` only) + `Mark as sold` |
+| Sale Record form | `sell:{id}` route · `sellFormHTML()` | title `บันทึกการขาย`/`Mark as sold` — hero + Sale price* + Expected gain live + Sale date* + `Save sale record` |
+| Sold history | `soldhist` route · `soldHistHTML()` | head `ประวัติการขาย`/`Sold history` + desc + rows `Sold {date}` + price |
+| Sold record detail | `sold:{id}` route · `soldDetailHTML()` | title `รายการที่ขายแล้ว`/`Sold item` — Sale price + Realized G/L + Sale record + Return cards |
+| Own-post menu asset rows | `pmOwnMenuHTML()` | `Mark as sold` (`pfkind` ∈ sale/show/hide) / `View sale record` (`sold` แทน Edit) — canonical 02_FEED |
+| Member Sheet | `obGate()` | guest gate `Join TukDaeng` (00_GLOBAL §11) |
 
 ---
 
-# 8. User States
+# 7. User States
 
 ## Guest
 
-ไม่สามารถเข้าถึง Asset Management Module
-
-เมื่อ Guest พยายาม Add Asset หรือใช้ feature ที่ต้อง Login ต้องแสดง Global Login Required Dialog
+- เข้าถึง asset management ไม่ได้เลย — ทุก entry gated: bottom-nav Profile tab, `[data-flow]` composer (ทั้ง post/asset mode), `.pm-btn` post menus, portfolio/ sold history (อยู่ใต้ own profile ซึ่ง member-only)
+- Guest ที่กด entry เหล่านั้นเจอ Member Sheet `Join TukDaeng` (00_GLOBAL §11)
+- Guest เห็น public sale posts ของ seller บน feed/search/profile ตาม visibility matrix ได้ปกติ (read-only) — แต่ไม่มี asset surface ใด ๆ ของตัวเอง
 
 ## Member / Owner
 
-สามารถจัดการ Asset ของตัวเองได้:
+- Add Asset ผ่าน own-profile `+` / empty-state CTA
+- จัดการ drawer assets ของตัวเอง: เปิด `portfolio` list → `pfasset:{id}` detail → `Mark as sold` → `sell:{id}` → `sold:{id}` + `soldhist`
+- เปลี่ยน status ผ่าน Edit info (own-post menu `Edit` → `Profile status` pick เมื่อ drawer ON)
+- Mark as Sold จาก own-post menu (`pfkind` ∈ `sale`/`show`/`hide`) หรือ pfasset button (`pfoEligible`)
+- ดู private data ของตัวเอง (purchase cost, sold history, portfolio value)
 
-- Add Asset
-- Edit Asset
-- Delete Asset เฉพาะสถานะที่ลบได้
-- Change Status ระหว่าง `Sale`, `Show`, `Hide`
-- Mark as Sold
-- View Sold History
+## Non Owner / Viewer
 
-## Non Owner
+- ไม่มี asset management surface ของผู้อื่นเลย — viewer เห็นเฉพาะ posts ตาม visibility matrix (`Sale`+`Show` บน public profile); drawer/portfolio/purchase cost/sold history เป็น owner-private เสมอ
+- ไม่สามารถ Edit / Delete / Change Status / Mark as Sold / เห็น private asset data
 
-ไม่สามารถ:
+## Blocked Relationship
 
-- Edit Asset
-- Delete Asset
-- Change Status
-- Mark as Sold
-- View private asset data
-
-## Admin
-
-Admin จัดการผ่าน Back Office เท่านั้น ไม่ใช่ผ่าน Front Office Asset Management Module
+- Block กระทบ post surfaces ตาม 00_GLOBAL §13 (โพสต์อีกฝ่ายหาย feed/search/WA) — ไม่มี asset-management surface ให้ถูกบล็อกเพราะเป็น owner-only ทั้งโมดูล
 
 ---
 
-# 9. User Flow
+# 8. User Flow
 
-## Add Asset
-
-```text
-Owner Profile / Add Asset Entry
-→ Add Asset
-→ Upload Images
-→ Enter Asset Information
-→ Select Status: Sale / Show / Hide
-→ Next
-→ Select Provenance Type based on Status
-→ Enter required provenance or consignment fields
-→ Save
-→ Uploading / Saving State
-→ Asset Created
-```
-
-## Edit Asset
+## Add Asset Flow (asset mode — 3 visibility paths)
 
 ```text
-Owner Asset Detail
-→ Edit
-→ Update Information
-→ Save
-→ Uploading / Saving State
-→ Asset Updated
+Own profile `+` หรือ `Add asset` (empty state)
+→ composer `create` mode `asset` (title `เพิ่มสินทรัพย์ใหม่`/`Add Asset`)
+→ Step 1 picker เลือก media (≥1 จึงกด Next ได้ — mechanics ตาม 02_FEED)
+→ Step 2: caption + option rows + Visibility pick (default `โชว์`/`Show`)
+→ `Add Asset`
+→ สร้าง drawer record เสมอ (`cfToPortfolio`) + link `assetId`
+→ กลับ own profile grid (record ใหม่อยู่บนสุด) + toast ตาม visibility
 ```
 
-## Change Status
+| Visibility | Result |
+| --- | --- |
+| `โชว์`/`Show` (default) | `PF_MINE` drawer-only post `pfkind:"show"` + drawer record status `show` — โชว์บน profile ไม่เข้า feed/search/WA — toast `บันทึกลงลิ้นชักและแสดงบนโปรไฟล์แล้ว ✓`/`Saved to My Assets · shown on profile ✓` |
+| `ซ่อน`/`Hide` | `PF_MINE` drawer-only post `pfkind:"hide"` + record `hide` — owner-only — toast `บันทึกลงลิ้นชักแบบซ่อนแล้ว ✓`/`Saved to My Assets · private ✓` |
+| `โพสต์ลงฟีด`/`Post to feed` | `insertNewPost` → feed post `pfkind:"sale"` + record `sale` + link `assetId` — toast `บันทึกลงลิ้นชักและโพสต์ลงฟีดแล้ว ✓`/`Saved to My Assets · posted to feed ✓`; WA match → toast `Watch alert matched` หน่วงตามหลัง |
+
+- ไม่มี confirmation dialog, ไม่มี `Adding...` state, ไม่มี required field นอกเหนือ ≥1 media (primary `Add Asset` disabled จนกว่ามี media)
+- Discard draft ตาม 02_FEED (asset mode → กลับ own profile)
+
+## Post → Drawer Save Flow (post mode)
+
+- Post mode `Share` + `Also save to My Assets` toggle ON → `insertNewPost` (`pfkind:"sale"`) + `cfToPortfolio` status `sale` + link — toast `Posted · shared to feed + My Assets ✓` (canonical 02_FEED Publish Rule)
+
+## Status Change Flow (Edit info)
 
 ```text
-Owner Asset Detail / Edit Asset
-→ Change Status
-→ Select Sale / Show / Hide
-→ Save
-→ Visibility Updated
+Own-post menu `Edit` (โพสต์ไม่ใช่ sold)
+→ `openPostEdit` — composer step 2 prefilled
+→ drawer toggle ON → `Profile status` pick ขาย/โชว์/ซ่อน (stt-opt)
+→ `Done` → `applyPostEdit`
+→ pfkind เปลี่ยน + drawer record sync (status/fields) + surfaces refresh
+→ toast `Post updated` + คืน surface เดิม
 ```
 
-## Mark as Sold
+- Drawer toggle OFF → `pfkind:"post"` + ตัด `assetId` + ลบ drawer record (sold link คงไว้)
+- Drawer toggle OFF → ON → materialize `cfToPortfolio` ถ้ายังไม่มี link
+
+## Mark as Sold Flow
 
 ```text
-Owner Asset Detail / Owner Feed Card
-→ Mark as Sold
-→ Sale Record Form
-→ Enter Sale Record
-→ Confirm
-→ Asset Status = Sold
-→ Other Offers Auto Rejected
+Entry A: own-post menu `Mark as sold` (pfkind ∈ sale/show/hide)
+  → materialize `assetFromPost` ถ้ายังไม่มี drawer link → `sell:{id}`
+Entry B: pfasset page `Mark as sold` (pfoEligible)
+  → `sell:{id}`
+→ Sale Record form (prefill Sale price = asking; Sale date = วันนี้)
+→ `Save sale record` (validate price>0 + date ไม่เกินวันนี้)
+→ `markAssetSold` — asset ย้าย PF_ASSETS → PF_SOLD + linked post(s) `pfkind:"sold"`
+→ stack ตัด sell:/pfasset: ทิ้ง → push `sold:{id}` (ghost slide)
+→ toast `บันทึกการขายแล้ว · ย้ายไปประวัติการขาย ✓`/`Sale recorded · moved to Sold history ✓`
 ```
 
-Mark as Sold สามารถเริ่มจาก Owner Asset Detail หรือ Owner Feed more menu ได้ โดยทั้งสอง entry point ต้องเปิด Sale Record Form โดยตรง ไม่ต้องผ่าน Edit Asset
+- ไม่มี confirmation dialog ก่อน save (ตาม prototype — ดู §9 Deviations)
 
-## Delete Asset
+## View Sale Record Flow
 
-```text
-Owner Asset Detail / Owner Feed Card
-→ Delete
-→ Confirmation
-→ Asset ถูกลบโดยเจ้าของ
-→ Asset Removed From Public Surfaces
-```
+- Own-post menu บนโพสต์ `sold` → `View sale record` (`pm-own-soldview` แทน Edit) → `soldFromPost` materialize record ถ้าจำเป็น → `sold:{id}` (stack ทับผ่าน `openSubOver` เหมือน report pages)
+- Portfolio → `Sold history` link → `soldhist` → row → `sold:{id}`
 
-Delete Asset สามารถเริ่มจาก Owner Asset Detail หรือ Owner Feed more menu ได้ แต่ต้องใช้ confirmation เดียวกัน และไม่มี Undo
+## Portfolio Browse Flow
 
-หลัง ลบโดยเจ้าของ สำเร็จ:
+- Own profile → wallet icon (`.pf-pfo`) → `portfolio` → asset rows → `pfasset:{id}` → back ตาม sub stack
+- `soldhist`/`sold:{id}`/`sell:{id}` เป็น pushed pages บน stack เดียวกัน (00_NAV §6.6/§6.7)
 
-- Asset หายจาก owner list ปกติและ public surfaces ทั้งหมด
-- Asset ไม่ถูกนำไปรวมใน Portfolio / Asset Value
-- Chat ที่เกี่ยวข้องยังอยู่ แต่ Reference Asset ต้องใช้ unavailable/deleted state
-- Offer ที่เกี่ยวข้องต้องเป็น Cancelled ตาม offer policy
-- Backend/BO ควรเก็บ record ตาม retention policy เพื่อ audit, report history, dispute หรือ compliance
-- Backend/BO ต้องบันทึก Asset Status History / Audit History ว่าเจ้าของเป็นผู้ลบ พร้อม before/after state และ timestamp
-- การลบนี้ไม่ใช่ hard delete ทันที เว้นแต่นโยบายระบบระบุไว้ต่างหาก
+## Delete Asset Flow
 
-## Non Owner Attempts Edit
-
-```text
-Asset Detail
-→ Edit URL / Action Attempt
-→ Permission Denied
-```
+- ไม่มี delete บน drawer surfaces (`pfasset` ไม่มีปุ่มลบ) — delete เกิดที่ **post level** เสมอ: own-post menu `Delete` → dialog `Delete post?`/`This post will be permanently deleted.`/`Delete`/`Cancel` → โพสต์หายทุก surface + toast `Post deleted` (canonical 02_FEED)
+- Drawer record ของโพสต์ที่ถูกลบ **ไม่** ถูกลบตามใน prototype (assetId กลาย dangling — deviation, ดู §9)
 
 ---
 
-# 10. Business Rules
+# 9. Business Rules
 
-## Asset Ownership Rule
+## Asset Data Model Rule
 
-- User จัดการได้เฉพาะ Asset ของตัวเอง
-- Non Owner ไม่มีสิทธิ์ Edit, Delete, Change Status หรือ Mark as Sold
-- Private Asset Data ต้องตรวจสิทธิ์ทุกครั้ง
-- Owner ไม่มีสิทธิ์ Delete asset ที่ถูก Back Office ซ่อนถาวร เพราะรายการนี้ต้องคงไว้เพื่อ report, moderation history, audit, dispute หรือ compliance
+Asset = drawer record ใน `PF_ASSETS` (session memory) + linked post (ถ้ามี) — สองชั้นที่ mirror กันผ่าน `assetId`:
 
-## Add / Edit Supported Fields
-
-Add / Edit Asset ต้องรองรับข้อมูลต่อไปนี้:
-
-- Gallery สูงสุด 10 รูป
-- Brand
-- Model / Series
-- Reference No.
-- Year
-- Condition
-- Scope of Delivery
-- Case Size
-- Thickness
-- Case Material
-- Movement
-- Dial Color
-- Strap / Bracelet Type
-- Price
-- Description
-- Status: `Sale / Show / Hide`
-- Provenance
-- Consignment
-
-## Market Data Mapping And User-entered Specification Rule
-
-Brand, Model / Series และ Reference No. ต้องใช้ Market Data เป็นแหล่ง autocomplete / structured selection เมื่อมีข้อมูลในระบบ แต่ข้อมูลที่ Owner กรอกจริงใน Add / Edit Asset ต้องถูกเก็บเป็นข้อมูลของ Asset นั้นเอง ไม่เขียนทับ Market Data catalog และไม่ถูก provider sync ทับภายหลัง
-
-กฎการเก็บข้อมูล:
-
-- `brand_id`, `model_id` และ `reference_id` เก็บ relation ไปยัง Market Data เมื่อ Owner เลือก option ที่มีอยู่ในระบบ
-- ต้องเก็บ `brand_name_snapshot`, `model_name_snapshot` และ `reference_no_snapshot` กับ Asset ทุกครั้ง เพื่อให้ Asset เดิมยังแสดงข้อมูลเดิมได้แม้ Market Data sync แล้วชื่อหรือ mapping เปลี่ยน
-- ถ้า Owner กรอก Brand / Model / Reference ที่ไม่มีใน Market Data ให้เก็บเป็น free-text snapshot และปล่อย relation id เป็น `null`
-- Case Size, Thickness, Case Material, Movement, Dial Color, Strap / Bracelet Type, Year, Condition และ Scope of Delivery คือ user-entered asset specifications ของเรือนจริง ต้องเก็บกับ Asset ไม่ใช่แก้ master catalog
-- เมื่อเลือก Reference แล้วระบบสามารถ prefill ค่า specification จาก Market Data ได้ แต่ Owner ต้องแก้ไขได้ เพราะเรือนจริงอาจเปลี่ยนสาย มีอุปกรณ์ไม่ครบ หรือข้อมูล provider ไม่ครบ
-- Provider/API sync ใช้ refresh catalog, autocomplete, search/filter option และ market price เท่านั้น ห้าม overwrite user-entered asset specifications
-
-Recommended backend split:
-
-| Table / Domain | Purpose |
+| Field | ความหมาย |
 | --- | --- |
-| `watch_brands`, `watch_models`, `watch_references` | Market Data catalog จาก provider/backend sync |
-| `watch_assets` | Asset/listing record ของ Owner พร้อม relation id และ snapshot text |
-| `asset_specifications` | Spec จริงที่ Owner กรอกสำหรับ Asset แต่ละชิ้น |
-| `asset_delivery_items` | Scope of Delivery แบบหลายรายการ เฉพาะ Original box และ Original papers; ถ้าไม่มีตามสองตัวเลือกนี้ให้ไม่บันทึก delivery item |
-| `spec_options` | Internal option master สำหรับ dropdown/filter เช่น condition, material, movement, dial color, strap type, delivery item |
+| `id` | `pfa-…` (seed) / `pfa-x{ts}` (สร้างใหม่) — `sold:{id}`/`pfasset:{id}`/`sell:{id}` routes อ้าง id นี้ |
+| `img`/`photos` | media ของ asset — hero แรก + counter `1/N` + dots เมื่อ >1 |
+| `name` | `[brand, model].join(" ")` หรือ caption slice ≤42 หรือ `Untitled asset` |
+| `ref`/`meta`/`brand` | reference / `year · cond` / brand — แสดงบน rows + detail head |
+| `status` | `sale`/`show`/`hide` (`PFO_STATUS` — ไม่มี `sold`: sold ย้ายออกไป `PF_SOLD`) |
+| `market` | market price (seed/mock — contract อยู่ 14_PORTFOLIO; asset ที่สร้างใหม่ = `null`) |
+| `purchase`/`bought` | ราคาซื้อ + วันที่ซื้อ — private cost data (Purchase Cost Rule) |
+| `asking` | ราคาตั้งขาย (จาก `Add price` pane) — ใช้ prefill Sale price + expected profit |
+| `own` | `pfoEligible` ต้อง `own !== false` — assets ของ owner เสมอ |
 
-Minimum asset fields:
+Post-side linkage:
 
-| Field | Rule |
-| --- | --- |
-| `brand_id` | Nullable relation to Market Data |
-| `brand_name_snapshot` | Required after save |
-| `model_id` | Nullable relation to Market Data |
-| `model_name_snapshot` | Required when Model / Series has value |
-| `reference_id` | Nullable relation to Market Data |
-| `reference_no_snapshot` | Required when Reference No. has value |
-| `production_year` | Optional integer; must not be future year |
-| `condition_id` | Required only when status rule requires Condition |
-| `case_size_mm` | Optional decimal/string-normalized value |
-| `thickness_mm` | Optional decimal/string-normalized value |
-| `case_material_id` | Optional option relation |
-| `movement_id` | Optional option relation |
-| `dial_color_id` | Optional option relation |
-| `strap_bracelet_type_id` | Optional option relation |
-| `case_material_snapshot` | Required when Owner uses `ระบุเอง` free-text entry for Case Material |
-| `movement_snapshot` | Required when Owner uses `ระบุเอง` free-text entry for Movement |
-| `dial_color_snapshot` | Required when Owner uses `ระบุเอง` free-text entry for Dial Color |
-| `strap_bracelet_type_snapshot` | Required when Owner uses `ระบุเอง` free-text entry for Strap / Bracelet Type |
-
-Internal option groups ต้องรองรับอย่างน้อย:
-
-- `condition`: New / Unworn, Excellent, Very Good, Good, Fair
-- `delivery`: Original box, Original papers เท่านั้น; ถ้าไม่ตรงสองตัวเลือกนี้ให้ไม่เลือกเลย และห้ามใช้ค่าอื่นแทน
-- `case_material`: Stainless steel, Yellow gold, Rose gold, White gold, Titanium, Ceramic, Platinum, Carbon
-- `movement`: Automatic, Manual winding, Quartz, Spring Drive
-- `dial_color`: Black, Blue, White, Silver, Grey, Green, Champagne, Brown
-- `strap_bracelet_type`: Stainless steel bracelet, Gold bracelet, Leather strap, Rubber strap, Fabric / NATO strap, Ceramic bracelet
-
-Baseline seed files for implementation:
-
-- `../SeedData/asset-spec-options.csv`
-- `../SeedData/asset-spec-options.json`
-- `../SeedData/README.md`
-
-## Spec Option Free-Text Rule ("ระบุเอง")
-
-Case Material, Movement, Dial Color และ Strap / Bracelet Type ใช้ single-select จาก internal option master (`spec_options` ที่ Back Office Option Master เป็น single source of truth) แต่ต้องมีตัวเลือก `ระบุเอง` เมื่อค่าที่ Owner ต้องการไม่มีในตัวเลือก
-
-Interaction pattern (ตามที่ implement ในแอป):
-
-- ใน option list ของ field ต้องมี entry เสริมรูปแบบ `อื่น ๆ / เพิ่ม<ชื่อ field>` พร้อมปุ่ม `+` ท้าย list — เช่น `อื่น ๆ / เพิ่มรุ่น` สำหรับ Model & Series
-- กด `+` เปิด bottom sheet ที่มี text input เดียว (label เป็นชื่อ field นั้น) พร้อมปุ่ม Confirm — Owner พิมพ์ค่าเองแล้วกด Confirm เพื่อใช้ค่านั้นกับ field
-- Entry `อื่น ๆ / เพิ่ม` เป็น control เสริม ไม่ใช่ option ใน master — ค่าที่พิมพ์ต้องผ่าน save rule ด้านล่างและห้ามกลายเป็นตัวเลือกใน list สำหรับ user คนอื่นจนกว่า Back Office promote
-
-Save rule:
-
-- เมื่อ Owner เลือก `ระบุเอง` และพิมพ์ค่า ระบบต้อง normalize ค่าก่อนประมวลผล (trim, collapse whitespace, case-insensitive compare)
-- ถ้าค่าที่ normalize แล้วตรงกับ option label หรือ alias ที่มีอยู่ใน option master ต้องผูก relation id (`*_id`) ของ option นั้นทันที และห้ามเก็บเป็น free-text ซ้ำ
-- ถ้าไม่ตรง option/alias ใด ให้เก็บเป็น free-text snapshot กับ Asset โดย relation id เป็น `null` และเขียนค่านั้นลง suggestion pool พร้อม usage count (ดู `../BackOffice/17_OPTION_MASTER_MODULE.md` สำหรับ data model และ queue)
-- Free-text ต้องไม่กลายเป็น option อัตโนมัติ — ต้องผ่าน Back Office curation (promote / map alias / ignore) เสมอ เพื่อคุมคุณภาพ vocabulary
-- Asset ที่เก็บ spec เป็น free-text (relation `null`) ยังค้นหาได้ผ่าน keyword search บน snapshot text และแสดงค่าเดิมใน Asset Detail ตามปกติ แต่จะไม่ถูก option filter match จนกว่า Back Office promote/map alias แล้ว backfill relation id
-
-## Required Field Matrix
-
-ฟอร์ม Add / Edit Asset ต้อง validate required fields ตาม status ที่ Owner เลือก:
-
-| Field | Sale | Show | Hide |
-|---|---|---|---|
-| Photos | Required, minimum 1 and maximum 10 | Required, minimum 1 and maximum 10 | Required, minimum 1 and maximum 10 |
-| Brand Name | Required | Required | Required |
-| Model / Series | Required | Required | Optional |
-| Condition | Required | Optional | Optional |
-| Asking Price (THB) | Optional; if empty FO shows `Price on request` | Optional; hidden from public FO surfaces | Optional; hidden from public FO surfaces |
-| Description | Required | Optional | Optional |
-| Status | Required: `Sale` | Required: `Show` | Required: `Hide` |
-
-## Add / Edit Field Validation Matrix
-
-หลักการเดียวกันใช้ทั้ง Add Asset และ Edit Asset:
-
-- Required field ต้องไม่ว่าง, ต้อง trim whitespace ก่อน validate และต้องไม่ save ถ้าไม่ผ่าน
-- Optional field สามารถเว้นว่างได้ แต่ถ้า user กรอก เลือก หรืออัปโหลด ต้อง validate เต็มรูปแบบก่อน save
-- Optional field ที่เว้นว่างต้องบันทึกเป็น `null` / empty value ตาม data contract และห้ามสร้าง placeholder เช่น `N/A`
-- Error ต้องแสดงใกล้ field หรือ section ที่ผิด และต้องคงข้อมูลที่ user กรอกไว้หลัง error
-
-| Section | Field | Requirement | Validation When Filled / Selected |
-| --- | --- | --- | --- |
-| Gallery | Photos | Required for `Sale`, `Show`, `Hide` | ต้องมีอย่างน้อย 1 รูปและไม่เกิน 10 รูป; หาก Edit แล้วลบรูปจนเหลือ 0 ต้องห้าม Save; ไฟล์ต้องเป็นรูปภาพชนิดที่ระบบรองรับ เช่น `jpg/png/webp/heic`; ไม่เกิน 10MB ต่อไฟล์; ป้องกัน duplicate upload และรูปที่ไม่ผ่าน validation ต้องไม่ถูกแนบ |
-| Basic Information | Brand Name | Required for `Sale`, `Show`, `Hide` | trim whitespace; ห้ามว่างหรือมีแต่ช่องว่าง; ต้องรองรับ Market Data autocomplete/structured selection; ถ้าไม่มี match ให้เก็บ free-text snapshot; ต้องไม่เกินความยาวที่ระบบกำหนด |
-| Basic Information | Model / Series | Required for `Sale`, `Show`; Optional for `Hide` | เมื่อ required ต้องไม่ว่าง; เมื่อ optional แต่กรอกต้อง trim, ห้าม whitespace-only, รองรับ Market Data mapping/free-text snapshot และไม่เกินความยาวที่ระบบกำหนด |
-| Basic Information | Reference No. | Optional | ถ้ากรอกต้อง trim, ห้าม whitespace-only, รองรับ Market Data mapping/free-text snapshot และไม่เกินความยาวที่ระบบกำหนด |
-| Basic Information | Year | Optional | ถ้ากรอกต้องเป็นปีจริงแบบตัวเลขจำนวนเต็ม และต้องไม่เป็นปีในอนาคต |
-| Condition | Condition | Required for `Sale`; Optional for `Show`, `Hide` | ต้องเลือกได้หนึ่งค่าเท่านั้นเมื่อ required; ถ้า optional แต่เลือก ต้องเป็น option ที่มีอยู่ใน internal option master |
-| Scope of Delivery | Delivery items เฉพาะ Original Box / Original Paper | Optional | ถ้าเลือกต้องเป็น `original_box` หรือ `original_papers` จาก internal option master เท่านั้น; รองรับเลือกได้ 0-2 ค่า; ถ้าไม่มีตามสองตัวเลือกนี้ให้บันทึกเป็นค่าว่าง/null/empty array ตาม data contract; ห้ามบันทึกค่าอื่นหรือสร้าง label/id ปลอม เช่น Watch only, warranty card, receipt, certificate, manual, service paper, hang tag, extra link, extra strap |
-| Specifications | Case Size (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
-| Specifications | Thickness (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
-| Specifications | Case Material | Optional | ต้องเป็น option ที่มีอยู่ใน internal option master หรือค่า `ระบุเอง` ตาม Spec Option Free-Text Rule; ถ้ากรอก free-text ต้อง trim, ห้าม whitespace-only และไม่เกินความยาวที่ระบบกำหนด; ถ้าค่าที่ normalize แล้วตรง option/alias ที่มีอยู่ต้องผูก relation id แทนการเก็บ free-text |
-| Specifications | Movement | Optional | ต้องเป็น option ที่มีอยู่ใน internal option master หรือค่า `ระบุเอง` ตาม Spec Option Free-Text Rule; ถ้ากรอก free-text ต้อง trim, ห้าม whitespace-only และไม่เกินความยาวที่ระบบกำหนด; ถ้าค่าที่ normalize แล้วตรง option/alias ที่มีอยู่ต้องผูก relation id แทนการเก็บ free-text |
-| Specifications | Dial Color | Optional | ต้องเป็น option ที่มีอยู่ใน internal option master หรือค่า `ระบุเอง` ตาม Spec Option Free-Text Rule; ถ้ากรอก free-text ต้อง trim, ห้าม whitespace-only และไม่เกินความยาวที่ระบบกำหนด; ถ้าค่าที่ normalize แล้วตรง option/alias ที่มีอยู่ต้องผูก relation id แทนการเก็บ free-text |
-| Specifications | Strap / Bracelet Type | Optional | ต้องเป็น option ที่มีอยู่ใน internal option master หรือค่า `ระบุเอง` ตาม Spec Option Free-Text Rule; ถ้ากรอก free-text ต้อง trim, ห้าม whitespace-only และไม่เกินความยาวที่ระบบกำหนด; ถ้าค่าที่ normalize แล้วตรง option/alias ที่มีอยู่ต้องผูก relation id แทนการเก็บ free-text |
-| Commerce & Curation | Asking Price (THB) | Optional for `Sale`, `Show`, `Hide` | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0, normalize comma/format, ห้ามค่าติดลบ/ตัวอักษร/ศูนย์ และต้องไม่เกิน max price ที่ระบบกำหนด; ถ้า `Sale` และเว้นว่าง buyer-facing surface ต้องแสดง `Price on request`; ถ้า `Show` หรือ `Hide` ห้ามแสดงราคาใน public FO surfaces |
-| Commerce & Curation | Description | Required for `Sale`; Optional for `Show`, `Hide` | เมื่อ required ต้องไม่ว่างและไม่ใช่ whitespace-only; เมื่อ optional แต่กรอกต้อง trim/sanitize, ห้าม whitespace-only, ห้าม HTML/script ที่ไม่ปลอดภัย และไม่เกินความยาวที่ระบบกำหนด; minimum 20 characters เป็น recommendation/quality hint ไม่ใช่ blocking validation เว้นแต่ product กำหนดเพิ่ม |
-| Status | Status | Required | Add/Edit เลือกได้เฉพาะ `Sale`, `Show`, `Hide`; ห้ามเลือก `Sold` ใน Add/Edit ปกติ; การเปลี่ยน status ต้อง revalidate required fields ตาม status ใหม่ก่อน save |
-
-หลักการของ V1:
-
-- `Sale` เป็น marketplace listing; Owner สามารถกรอก Asking Price หรือเว้นว่างได้ ถ้าเว้นว่าง FO buyer-facing surface ต้องแสดง `Price on request`
-- `Show` เป็น public collection / public vault ไม่ใช่ marketplace listing; Owner สามารถกรอก Asking Price เพื่อเก็บข้อมูลส่วนตัวได้ แต่ public FO surface ต้องไม่แสดงราคา
-- `Hide` เป็น private collection; Owner สามารถกรอก Asking Price เพื่อเก็บข้อมูลส่วนตัวได้ แต่ public FO surface ต้องไม่แสดงราคา
-- `Sold` ไม่ใช่ status ใน Add/Edit แต่ Sold detail / Sold History ต้องเก็บและแสดงราคาที่เคยกรอกได้; ใน FO owner-facing sold view หากมีราคาให้แสดงเป็นราคาขีดฆ่าเพื่อสื่อว่าขายแล้ว
-- BO/Admin view ต้องแสดง field `Price` เสมอ: ถ้ามีราคาที่ Owner กรอกให้แสดงราคา ถ้าไม่มีให้แสดง `-`
-- Reference No., Year, Original Box, Original Paper, Specifications, Purchase Date, Purchase From, Documentation และ Note optional ตาม policy ของ MVP
-- Add Asset flow ต้องมี provenance step ก่อน final save โดยให้เลือก `Owner (Asset)` หรือ `Consignment`
-- หากเลือก `Owner (Asset)` ต้องกรอก Purchase Price
-- หากเลือก `Consignment` ต้องกรอก Full Name, Phone Number และ Asking Price
-- Consignment Asking Price ต้องใช้ source เดียวกับ Commerce / listing Asking Price ของ Asset เพื่อไม่ให้ราคา public listing กับ consignment terms ขัดกัน
-- `Consignment` เลือกได้เฉพาะเมื่อ Asset status = `Sale`
-- หาก Asset status = `Show` หรือ `Hide` provenance step ต้องเป็น `Owner (Asset)` เท่านั้น และไม่แสดงตัวเลือก / tab `Consignment`
-
-### Provenance Type Availability
-
-| Asset Status | Available Provenance Type | UI Behavior |
-| --- | --- | --- |
-| Sale | `Owner (Asset)` หรือ `Consignment` | แสดง segmented control / tab ให้เลือกสองแบบ |
-| Show | `Owner (Asset)` เท่านั้น | ข้ามตัวเลือกประเภทหรือแสดงเฉพาะ Owner (Asset) form |
-| Hide | `Owner (Asset)` เท่านั้น | ข้ามตัวเลือกประเภทหรือแสดงเฉพาะ Owner (Asset) form |
-
-## Add Asset Validation Messages
-
-ฟอร์ม Add Asset ต้องแสดง validation ใกล้ field ที่ผิดพลาด และต้องไม่ไปขั้นตอนถัดไปหรือ Save จนกว่า required fields ครบ
-
-| Field / Case | Message |
-| --- | --- |
-| Photos ว่าง | `กรุณาเพิ่มรูปอย่างน้อย 1 รูป` |
-| Photos เกิน 10 รูป | `อัปโหลดรูปได้สูงสุด 10 รูป` |
-| Brand Name ว่าง | `กรุณากรอกชื่อแบรนด์` |
-| Model / Series ว่างเมื่อ required | `กรุณากรอกรุ่น / ซีรีส์` |
-| Condition ว่างเมื่อ required | `กรุณาเลือกสภาพสินค้า` |
-| Asking Price ว่าง | ไม่ต้องแสดง error; หาก Status = `Sale` ให้ FO buyer-facing surface แสดง `Price on request` |
-| Asking Price <= 0 | `ราคาเสนอขายต้องมากกว่า 0` |
-| Description ว่างเมื่อ required | `กรุณากรอกรายละเอียดสินค้า` |
-| Status ว่าง | `กรุณาเลือกสถานะ` |
-| Year เป็นปีในอนาคต | `ปีต้องไม่เป็นปีในอนาคต` |
-
-Provenance validation messages:
-
-| Field / Case | Message |
-| --- | --- |
-| Owner (Asset) Purchase Price ว่าง | `กรุณากรอกราคาซื้อ` |
-| Owner (Asset) Purchase Price <= 0 | `ราคาซื้อต้องมากกว่า 0` |
-| Purchase Date เป็นวันที่ในอนาคต | `วันที่ซื้อต้องไม่เป็นวันที่ในอนาคต` |
-| Consignment Full Name ว่าง | `กรุณากรอกชื่อผู้ฝากขาย` |
-| Consignment Phone Number ว่าง | `กรุณากรอกเบอร์โทรผู้ฝากขาย` |
-| Consignment Asking Price ว่าง | `กรุณากรอกราคาเสนอขาย` |
-| Consignment Asking Price <= 0 | `ราคาเสนอขายต้องมากกว่า 0` |
-| Consignment Phone Number รูปแบบไม่ถูกต้อง | `กรุณากรอกเบอร์โทรให้ถูกต้อง` |
-| Consignment Email รูปแบบไม่ถูกต้อง | `กรุณากรอกอีเมลให้ถูกต้อง` |
-| Consignment Date เป็นวันที่ในอนาคต | `วันที่ฝากขายต้องไม่เป็นวันที่ในอนาคต` |
-| Consignment Duration <= 0 | `ระยะเวลาฝากขายต้องมากกว่า 0` |
-| Commission ไม่อยู่ในช่วง 0-100 | `ค่าคอมมิชชันต้องอยู่ระหว่าง 0-100%` |
-| Minimum Acceptable Price <= 0 | `ราคาขั้นต่ำต้องมากกว่า 0` |
-| Minimum Acceptable Price > Asking Price | `ราคาขั้นต่ำต้องไม่มากกว่าราคาเสนอขาย` |
-| Text field มีแต่ช่องว่างหรือยาวเกินกำหนด | แสดง validation เฉพาะ field นั้น |
-| Upload file ไม่ใช่ชนิดที่รองรับ / เกินขนาด / เกินจำนวน | แสดง upload validation เฉพาะ section นั้น |
-
-## Provenance / Consignment Field Matrix
-
-Provenance ต้องแยกข้อมูลการเป็นเจ้าของ Asset กับข้อมูลฝากขายให้ชัดเจน:
-
-- `Owner (Asset)` ใช้เมื่อ Owner เป็นเจ้าของ Asset เอง และต้องการบันทึกประวัติการซื้อ/เอกสารส่วนตัว
-- `Consignment` ใช้เมื่อ Owner รับฝากขาย Asset ของผู้อื่น และต้องการบันทึกข้อมูลผู้ฝากขาย เงื่อนไขราคา และเอกสารประกอบ
-- ข้อมูลทั้งสองกลุ่มเป็น private เห็นเฉพาะ Owner หรือ Admin ตามสิทธิ์ และห้ามแสดงใน Viewer/Public mode
-- ใน Add Asset flow ผู้ใช้ต้องเลือก provenance type ก่อน final Save / Upload Asset
-- `Consignment` ใช้ได้เฉพาะ Asset status = `Sale` เพราะเป็นรายการฝากขายบน marketplace
-
-### Owner (Asset) Provenance
-
-| Field | Requirement | Validation / Note |
-| --- | --- | --- |
-| Purchase Price (THB) | Required when saving Owner (Asset) provenance record | ต้องมากกว่า 0; ใช้เป็น asset cost basis, portfolio fallback และ expected profit |
-| Purchase Date | Optional | หากกรอกต้องเป็นวันที่จริงและต้องไม่เป็นวันที่ในอนาคต |
-| Purchase From | Optional | หากกรอกต้อง trim whitespace, ห้ามเป็นค่าว่างล้วน และต้องไม่เกินความยาวที่ระบบกำหนด |
-| All Equipment & Accessories | Optional | หากอัปโหลดต้องเป็น file type ที่รองรับ, ไม่เกินขนาดต่อไฟล์ และไม่เกินจำนวนไฟล์ต่อ section |
-| Proof of Payment | Optional | หากอัปโหลดต้องเป็น file type ที่รองรับ, ไม่เกินขนาดต่อไฟล์ และไม่เกินจำนวนไฟล์ต่อ section; private เฉพาะ Owner/Admin |
-| Note | Optional | หากกรอกต้อง trim whitespace, ห้ามเป็นค่าว่างล้วน และต้องไม่เกินความยาวที่ระบบกำหนด |
-
-### Consignment Provenance
-
-| Field | Requirement | Validation / Note |
-| --- | --- | --- |
-| Full Name | Required when saving Consignment provenance record | ชื่อผู้ฝากขาย ใช้ใน owner/admin private view เท่านั้น |
-| Phone Number | Required when saving Consignment provenance record | เบอร์ผู้ฝากขาย ใช้ใน owner/admin private view เท่านั้น; ต้อง validate phone format และ normalize ก่อนบันทึก |
-| Line / IG / Facebook | Optional | หากกรอกต้อง trim whitespace, ห้ามเป็นค่าว่างล้วน และต้องไม่เกินความยาวที่ระบบกำหนด |
-| Email | Optional | หากกรอกควร validate รูปแบบ email |
-| Payout Method | Optional | หากกรอกต้องเป็น option/value ที่ระบบรองรับ และ validate field ย่อยตาม payout type; ไม่ required ใน FO Add Provenance V1 |
-| Consignment Date | Optional | หากกรอกต้องเป็นวันที่จริงและต้องไม่เป็นวันที่ในอนาคต; ไม่ required ใน FO Add Provenance V1 เพราะทีมงานอาจ confirm ภายหลัง |
-| Consignment Duration | Optional | หากกรอกต้องมากกว่า 0 และต้องไม่เป็นค่าว่างล้วน; ไม่ required ใน FO Add Provenance V1 เพราะเป็น term ที่อาจ confirm ภายหลัง |
-| Asking Price (THB) | Required when saving Consignment provenance record | ราคาเสนอขายของ consignment item; ต้องมากกว่า 0 |
-| Commission (%) | Optional | หากกรอกต้องอยู่ในช่วง 0-100; ไม่ required ใน FO Add Provenance V1 เพราะเป็น commercial term ที่ทีมงานต้องยืนยัน |
-| Minimum Acceptable Price | Optional | หากกรอกต้องมากกว่า 0 และต้องไม่มากกว่า Asking Price |
-| All Equipment & Accessories | Optional | หากอัปโหลดต้องเป็น file type ที่รองรับ, ไม่เกินขนาดต่อไฟล์ และไม่เกินจำนวนไฟล์ต่อ section |
-| Proof of Payment / Documentation | Optional | หากอัปโหลดต้องเป็น file type ที่รองรับ, ไม่เกินขนาดต่อไฟล์ และไม่เกินจำนวนไฟล์ต่อ section; ใช้เก็บเอกสารรับฝาก ใบเสร็จ หรือ certificate |
-| Note | Optional | หากกรอกต้อง trim whitespace, ห้ามเป็นค่าว่างล้วน และต้องไม่เกินความยาวที่ระบบกำหนด |
-
-Provenance save rules:
-
-- Add Asset ต้องเลือก provenance type ก่อน final Save / Upload Asset
-- ถ้า status = `Sale` ต้องให้เลือก `Owner (Asset)` หรือ `Consignment`
-- ถ้า status = `Show` หรือ `Hide` ต้องใช้ `Owner (Asset)` เท่านั้น และต้องไม่ให้เลือก `Consignment`
-- ถ้าเลือก `Owner (Asset)` ต้อง validate Purchase Price ก่อน Save
-- ถ้าเลือก `Consignment` ต้อง validate Full Name, Phone Number และ Asking Price ก่อน Save
-- `Payout Method`, `Consignment Date`, `Consignment Duration` และ `Commission (%)` เป็น optional ใน FO Add Provenance V1 แต่ต้อง validate ทุกครั้งเมื่อ user กรอก
-- Consignment Asking Price ต้อง prefill จาก Commerce / listing Asking Price ที่กรอกใน Asset detail step และหากแก้ใน Consignment step ต้อง sync กลับเป็น listing Asking Price เดียวกัน
-- หากผู้ใช้ย้อนกลับจาก provenance step ไป asset detail ได้ ข้อมูลที่กรอกไว้ต้องคงอยู่
-- Optional field ที่เว้นว่างต้องบันทึกเป็น empty/null และต้องไม่สร้าง placeholder text เช่น `N/A` ในข้อมูลจริง
-- Optional field ที่ user กรอกหรืออัปโหลดต้อง validate ครบก่อน Save และต้องแสดง error เฉพาะ field/section ที่ไม่ถูกต้อง
-- ถ้า Owner สลับจาก `Owner (Asset)` เป็น `Consignment` ต้องไม่ merge field กัน ให้เก็บเป็นคนละ section หรือให้ user confirm ก่อนแทนที่ข้อมูล provenance type เดิม
-
-## Empty Optional Field Display Rule
-
-หลังบันทึกข้อมูลแล้ว ฟิลด์ optional ที่ไม่ได้กรอกต้องไม่แสดงในหน้าบ้านและ public surfaces:
-
-- Viewer/Public Asset Detail, Feed, Search และ Public Profile ต้องไม่เห็น field name ของ private/optional fields ที่ว่าง
-- Owner Asset Detail สามารถซ่อน field ที่ว่างใน private section ได้เช่นกัน เพื่อไม่ให้หน้าเต็มด้วย label เปล่า
-- ถ้า section ทั้ง section ไม่มีข้อมูล เช่นไม่มี Purchase Information หรือไม่มี Documentation ให้ซ่อน section นั้น หรือแสดง owner-only empty prompt แบบ action-oriented เช่น `Add provenance` เฉพาะ Owner
-- ห้ามแสดง label เปล่าเช่น `Purchase From: -`, `Proof of Payment: -` ใน Viewer/Public mode
-- ค่า `—` ใช้ได้เฉพาะ owner-only analytic field ที่ระบบต้องคงตำแหน่งไว้ เช่น Expected Profit หรือ Valuation ไม่ใช่ optional descriptive field ทั่วไป
-
-## Provenance Edit Rule
-
-Owner สามารถแก้ไข Provenance / Consignment ได้เมื่อ Asset ยังไม่ใช่ `Sold`:
-
-- Asset สถานะ `Sale`: Owner แก้ไข `Owner (Asset)` หรือ `Consignment` provenance ได้ตาม type ที่เลือก
-- Asset สถานะ `Show`, `Hide`: Owner แก้ไขได้เฉพาะ `Owner (Asset)` provenance เท่านั้น
-- หาก Asset ที่เคยเป็น `Consignment` ถูกเปลี่ยนจาก `Sale` เป็น `Show` หรือ `Hide` ระบบต้อง require ให้เปลี่ยน provenance type เป็น `Owner (Asset)` หรือยืนยันยกเลิก/ปิด consignment data ก่อนบันทึก status ใหม่
-- Asset สถานะ `Sold`: ห้ามแก้ข้อมูลหลักของ Asset และ Provenance เดิมแบบทับประวัติ แต่ Owner เปิดดูได้แบบ read-only
-- หากต้องแก้ข้อมูลส่วนตัวหลังขาย เช่น note หรือเอกสารหลังการขาย ควรใช้ Sold History / Sale Record correction flow ที่มี audit trail ไม่ใช่ Edit Asset ปกติ
-- การแก้ Provenance / Consignment ควร update `last updated` และเก็บ audit log ฝั่ง backend/admin สำหรับข้อมูลส่วนตัวที่มีผลต่อ portfolio, consignment settlement หรือ realized gain/loss
-
-## Private Data Rule
-
-ข้อมูลต่อไปนี้เป็น private และเห็นเฉพาะ Owner หรือ Admin ตามสิทธิ์:
-
-- Provenance
-- Purchase Price
-- Purchase Date
-- Purchase From
-- Proof of Payment
-- Consignment Owner Contact
-- Consignment Terms
-- Sold History
-- Portfolio Value Detail
-
-ข้อมูล Proof of Payment และเอกสารส่วนตัวต้องไม่ Public
-
-## Image Rule
-
-- Gallery รองรับสูงสุด 10 รูป
-- Add/Edit ต้องให้ Owner เพิ่มรูปใหม่และลบรูปเดิมได้ ตราบใดที่จำนวนรูปหลังแก้ไขยังอยู่ในช่วง 1-10 รูปก่อน Save
-- หาก Edit แล้วลบรูปทั้งหมด ต้องแสดง validation ว่าต้องมีอย่างน้อย 1 รูป และห้าม Save
-- เมื่อมี 10 รูปแล้ว ปุ่มเพิ่มรูปต้องถูก disabled / hidden หรือป้องกันไม่ให้เลือกเพิ่มเกิน limit
-- รูปภาพต้องถูกใช้ใน Asset Detail, Feed/Search card ตาม visibility ของ Asset
-- หากลบรูปทั้งหมดไม่ได้ตาม validation ของ product ให้ต้องแจ้ง error ก่อน save
+- `post.assetId` → `PF_ASSETS.id` (หรือ `PF_SOLD.id` หลังขาย) — `findPost` ค้น `POSTS` + `PF_GFX_REG` + `PF_MINE`
+- `post.pfkind` ∈ `post`/`sale`/`show`/`hide`/`sold` — mirror ของ drawer status + feed eligibility (`pfKind()` fallback: `pfkind || (price ? "sale" : "show")`)
+- `PF_MINE` = drawer-only posts จาก asset mode `Show`/`Hide` — session-only, ไม่เคยเข้า `POSTS` เลยไม่มีทางรั่ว feed/search
 
 ## Status Model Rule
 
-ระบบใช้ status ชุดเดียวเท่านั้น:
+- Canonical statuses: `sale`, `show`, `hide`, `sold` (00_GLOBAL §9) — เก็บบน `PF_ASSETS.status` (sale/show/hide) + `post.pfkind`
+- `post` เป็น kind ของโพสต์ที่ไม่ผูก drawer — ไม่ใช่ asset status (อยู่ feed + profile `ทั้งหมด` tab เท่านั้น)
+- สถานะถูกกำหนด 3 ทางเท่านั้น: (1) Visibility pick ตอน Add Asset, (2) Edit info `Profile status` pick, (3) Mark as Sold → `sold`
+- `sold` เป็น terminal — ไม่มีในทุก status pick, ไม่มี Edit, ไม่มี Mark as sold ซ้ำ; เส้นทางกลับไม่มีใน V1
 
-- Sale
-- Show
-- Hide
-- Sold
-
-Owner สามารถแก้ไข status ผ่าน Add/Edit ระหว่าง:
-
-- Sale
-- Show
-- Hide
-
-`Sold` ต้องเกิดจาก Mark as Sold flow พร้อม Sale Record Form
-
-Mark as Sold จาก Feed หรือ Asset Detail เป็น shortcut ไป Sale Record Form โดยตรง ไม่ใช่การเลือก `Sold` จาก Edit Asset
-
-## Visibility Matrix
+## Visibility Matrix (canonical — 00_GLOBAL §10)
 
 | Status | Owner Profile | Public Profile | Feed | Search | Watch Alert |
-|---|---|---|---|---|---|
-| Sale | แสดง | แสดง | แสดง | แสดง | Match |
-| Show | แสดง | แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
-| Hide | แสดงเฉพาะ Owner | ไม่แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
-| Sold | แสดงเฉพาะ Owner | ไม่แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
+| --- | --- | --- | --- | --- | --- |
+| `sale` | แสดง | แสดง | แสดง | แสดง | Match |
+| `show` | แสดง | แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
+| `hide` | แสดงเฉพาะ Owner | ไม่แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
+| `sold` | แสดงเฉพาะ Owner | ไม่แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
+| `post` (ไม่ผูก asset) | แสดง | ไม่แสดง | แสดง | ไม่แสดง | ไม่ Match |
 
-## Status Change Impact
+- Prototype defects ที่บันทึกไว้ใน 00_GLOBAL (ไม่ใช่ spec — implementation ต้องแก้): `salePosts()` ไม่กรอง `pfkind` → priced `hide`/`sold` post รั่วเข้า search/WA match; public `all` tab รั่ว `post`/`hide`/`sold`
 
-### Sale → Sold
+## Add Asset Entry Rule
 
-เมื่อ Asset เปลี่ยนจาก Sale เป็น Sold:
+- Entry 2 จุดเท่านั้น (member-only): `+` icon บน own-profile head (`data-flow="create" data-mode="asset"`, title `เพิ่มสินทรัพย์ใหม่`/`Add asset`) + `all`-tab empty-state CTA `เพิ่มสินทรัพย์ใหม่`/`Add asset` (`pf-cta`)
+- Guest → Member Sheet (`[data-flow]` ∈ `GUEST_GATE_SEL`; own profile tab เองก็ gated)
+- Feed header `+` เป็น post mode (`data-flow="create"` ไม่มี `data-mode`) — ไม่ใช่ asset entry
+- ไม่มี Add Asset entry ภายใน `portfolio` page (list ไม่มีปุ่มเพิ่ม)
 
-- หายจาก Feed ทันที
-- หายจาก Following ทันที
-- หายจาก Favorites ทันที
-- หายจาก Search ทันที
-- หายจาก Watch Alert ทันที
-- Offer อื่นถูก Auto Reject
-- Chat ยังใช้งานได้
-- Owner ยังเห็นใน Owner Profile และ Sold History
+## Asset Composer Rule (asset mode deltas)
 
-### Sale → Hide
+- Composer เดียวกับ post mode ทุก mechanics (02_FEED canonical) — deltas ของ `mode === "asset"`:
+  - Titles: `เพิ่มสินทรัพย์ใหม่`/`Add Asset` (ทั้ง step 1 + step 2); caption placeholder `เขียนคำอธิบายสินทรัพย์…`/`Describe this asset…`; primary `เพิ่มสินทรัพย์ใหม่`/`Add Asset` (ไม่ใช่ Share)
+  - `Cost details (private)` row แสดงเสมอ (post mode แสดงเฉพาะเมื่อ drawer toggle ON)
+  - **Visibility pick** (`vis-opt`) แทน drawer toggle: `โชว์`/`Show` (default) · `ซ่อน`/`Hide` · `โพสต์ลงฟีด`/`Post to feed` — copy sub:
+    - Show: `แสดงในคอลเลกชันบนโปรไฟล์ให้ผู้ใช้อื่นเข้าชม`/`Shown in your profile collection for others to see`
+    - Hide: `เก็บไว้ในลิ้นชักส่วนตัว — คุณเท่านั้นที่เห็น`/`Kept in your private drawer — only you can see it`
+    - Post to feed: `บันทึกเข้าลิ้นชักแล้วประกาศลงฟีดทันที — สเปกตามไปอัตโนมัติ`/`Save to your drawer and post to feed — specs go along automatically`
+- จบ flow กลับ own profile เสมอ (`openSub profile:{me}`) — ไม่กลับ feed, ไม่ไป asset detail
+- Show/Hide path hardcode `audience:"public"` + `noComments:false` — ทิ้งค่า More options ที่ตั้งไว้ (deviation — ดู §9 Deviations)
+- Draft `cpState` ไม่ persist (ตาม 02_FEED); discard dialog เหมือนกัน (กลับ own profile แทน feed)
 
-เมื่อ Asset เปลี่ยนจาก Sale เป็น Hide:
+## Spec Free-Text Rule (Asset Fields)
 
-- หายจาก Feed ทันที
-- หายจาก Following ทันที
-- หายจาก Favorites ทันที
-- หายจาก Search ทันที
-- หายจาก Watch Alert ทันที
-- Owner ยังเห็นใน Owner Profile
-- Pending Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Cancelled`
-- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Cancelled` โดยไม่มี `Accept` / `Decline`
+- Watch details = `CF_SPECS` 22 fields **free-text ทั้งหมด** — Watch Specifications 20 (Brand, Collection, Model, Reference, Case Diameter, Thickness, Lug-to-Lug, Case Material, Case Color, Bezel Material, Dial Color, Dial Pattern, Movement Type, Calibre, Power Reserve, Functions, Water Resistance, Strap/Bracelet Material, Strap Color, Clasp Type) + Item Details 2 (Year, Service History) + Description textarea
+- ไม่มี option lists / autocomplete / Market Data link / `ระบุเอง` entries / suggestion pool ใน V1 — ค่าที่พิมพ์เก็บตามจริงลง `specGroups` (ค่าว่าง render `N/A` บน detail)
+- เฉพาะ 2 sections ที่เป็น fixed options: `Condition` single-select 5 ค่า (`CF_CONDS`: `Brand New`/`Like New`/`Very Good`/`Good`/`Fair`) + `Box & papers` toggle 4 ค่า (`CF_BOXES`: `Full set — box & papers`/`Box only`/`Papers only`/`Watch only (no set)` — กดซ้ำยกเลิกได้); ทั้งสอง render เป็น `chips` + เพิ่มใน `Item Details`
+- Clip ใช้ได้ใน asset mode เหมือน post mode (ไม่มี video-out-of-scope rule) — `clips[]` duration ต่อ slide
+- Option-master / market-data autocomplete / spec_options relation / `ระบุเอง` promotion = **contract/future เท่านั้น** (ดู §18) — spec เดิมที่อ้าง structured option model + seed files ถูก override ด้วยพฤติกรรม free-text ของ prototype
 
-### Show → Hide
+## Purchase Cost Rule (private)
 
-เมื่อ Asset เปลี่ยนจาก Show เป็น Hide:
+- Fields: `purchase` (ราคาซื้อ THB) + `bought` (วันที่ซื้อ) — owner-private เสมอ (00_GLOBAL §14); ไม่แสดงบน public surfaces ใด ๆ
+- Entry: `Cost details (private)` pane — asset mode แสดงเสมอ; post mode + edit mode แสดงเมื่อ drawer toggle ON เท่านั้น
+- Input behavior: ราคาซื้อ = digits-only strip non-digit เงียบ + auto-comma (`unNum`/`fmtNum`); วันที่ซื้อ = native date input `min="1900-01-01" max={วันนี้}`
+- Validation (live ตอน input + block ตอน Done — ดู §11): date invalid/out-of-range → `is-err` + `pane-err` `วันที่ซื้อไม่ถูกต้อง`/`Invalid purchase date` (future → `วันที่ซื้ออยู่ในอนาคตไม่ได้`/`Purchase date can't be in the future`); `pane-done` บน cost pane ปิดไม่ได้จนกว่า date จะ valid (back `cf-pane-back` ยกเลิกได้เสมอ); ไม่มี validation บังคับกรอก — เว้นว่างได้ทั้งคู่ (optional)
+- Row summary บน step 2: `THB {purchase}` หรือ `{bought date}` (สั้น — ราคามาก่อน)
+- เก็บลง drawer record `purchase`/`bought` ผ่าน `cfToPortfolio` (สร้าง) / `applyPostEdit` (แก้ — sync กลับ `pa.purchase`/`pa.bought`)
+- จุดที่ถูกใช้ต่อ: `portfolio` Total invested + per-row value, `pfasset` Value card (`Purchase price`/`Purchased`), `sell:{id}` Expected gain live preview, `sold:{id}` Return card + Realized G/L — สูตรทั้งหมดอยู่ 14_PORTFOLIO
 
-- หายจาก Public Profile / public detail
-- Owner ยังเห็นใน Owner Profile
-- Pending Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Cancelled`
-- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Cancelled` โดยไม่มี `Accept` / `Decline`
+## Drawer Record Rule
 
-### Hide → Sale
+- ทุก asset-mode save สร้าง `PF_ASSETS` record (`cfToPortfolio`) เสมอ ก่อนผล visibility อื่น — record คือ source ของ drawer/portfolio
+- `cfToPortfolio` mapping: `name` = brand+model หรือ caption ≤42 หรือ `Untitled asset`; `ref`/`meta`/`brand` จาก meta; `purchase`/`bought`/`asking` จาก cost/price fields; `market` = `null` เสมอ (record ใหม่ไม่มี market data); `status` ตาม visibility (`feed` → `sale`)
+- `assetId` link: ฝั่ง post (`POSTS[0]` หรือ `PF_MINE[0]`) ชี้กลับ record — link นี้ทำให้ Edit info ย้าย status ได้ภายหลัง
+- `assetFromPost` = materialize-on-demand: โพสต์ที่มี status-tab kind แต่ไม่มี link (เช่น seeded gfx post) ได้ record เมื่อ `Mark as sold` ถูกกด — seed fields จาก post specs/caption, `status` ตาม `pfkind` (default `sale`)
+- `soldFromPost` = materialize-on-demand เดียวกันสำหรับ `PF_SOLD` เมื่อ `View sale record` (fixture sold posts ไม่มี link; optional fields ว่าง)
+- แก้ไขผ่าน `applyPostEdit` sync กลับ drawer asset (`pa`): `status` (เมื่อ pfkind ∈ PFO_STATUS), `purchase`/`bought`/`asking`/`name`/`ref`/`meta`/`brand`/`img`/`photos`
+- `post` detach (drawer OFF): splice `PF_ASSETS` + `assetId = null` — link ไป `PF_SOLD` คงไว้ (sold ตัดไม่ได้)
 
-เมื่อ Asset เปลี่ยนจาก Hide เป็น Sale:
+## Status Change Rule
 
-- กลับเข้า Feed ทันที
-- กลับเข้า Following ตามเงื่อนไข Follow
-- กลับเข้า Favorites หาก User เคย Like และยังมีสิทธิ์มองเห็น
-- กลับเข้า Search ทันที
-- สามารถ Match Watch Alert ได้ทันที
+- ไม่มี standalone "Change status" sheet ใน V1 — เปลี่ยนสถานะผ่าน **Edit info composer** เท่านั้น (own-post menu `Edit` → `Profile status` pick `stt-opt` เมื่อ drawer toggle ON):
+  - `ขาย`/`Sale` — `แสดงในแท็บขายบนโปรไฟล์ — ใส่ราคาหรือไม่ใส่ก็ได้`/`Listed in your Sale tab — price is optional`
+  - `โชว์`/`Show` — `แสดงในคอลเลกชัน ไม่ได้ลงขาย — หลุดจากฟีด`/`In your collection, not for sale — leaves the feed`
+  - `ซ่อน`/`Hide` — `เก็บไว้ในลิ้นชักส่วนตัว — หลุดจากฟีด คุณเท่านั้นที่เห็น`/`Private drawer — leaves the feed, only you can see it`
+- `sold` ไม่มีใน pick; โพสต์ sold → drawer toggle locked ON disabled + `รายการนี้อยู่ในประวัติการขายแล้ว`/`This item lives in your Sold history` (และ own-post menu ไม่มี Edit — เห็น `View sale record` แทน)
+- `applyPostEdit`: `pfkind` = pick เมื่อ drawer ON, `post` เมื่อ OFF — sold เปลี่ยนไม่ได้ (`pfkind !== "sold"` guard); แล้ว lifecycle impact ตาม §12 ทันที (`refreshPostViews` ดึง card ออก feed เมื่อไป `show`/`hide`/`sold`)
+- เลือกค่าเดิมได้ (ไม่มี same-value disabled rule — ต่างจาก spec เดิม); กด `Done` แล้ว apply เสมอ
 
-### Show → Sale
+## Mark as Sold Rule
 
-เมื่อ Asset เปลี่ยนจาก Show เป็น Sale:
+- Entry 2 จุด (owner เท่านั้น):
+  - Own-post menu `บันทึกการขาย`/`Mark as sold` (`pm-own-sold`) — แสดงเมื่อ `pfKind(post)` ∈ `sale`/`show`/`hide` (sold = final ไม่มี; `post` ไม่มี); โพสต์ที่ไม่มี drawer link ได้ `assetFromPost` materialize ก่อนเปิด form; เปิดจาก viewer → sheet snap ปิด (`pmDropCovered`)
+  - Portfolio asset detail `pfasset:{id}` → `บันทึกการขาย`/`Mark as sold` button (`data-sell`) — แสดงเมื่อ `pfoEligible` (status ∈ sale/show/hide + own)
+- ทั้งสอง entry เปิด `sell:{id}` เดียวกัน (`openSellForm` → `openSubOver` — stack ทับได้ทั้งบน profile/viewer)
 
-- แสดงใน Feed
-- แสดงใน Search
-- Match Watch Alert
-- ยังคงแสดงใน Public Profile
+## Sale Record Form Rule (`sell:{id}`)
 
-### Sale → Show
+- Head: back + title `บันทึกการขาย`/`Mark as sold`
+- Hero: รูป + brand + model text + ref + status chip ปัจจุบัน (`PFO_STATUS`)
+- Note: `ข้อมูลเป็นส่วนตัว — รายการจะย้ายไปประวัติการขายและหลุดจากมูลค่าพอร์ตโฟลิโอโดยอัตโนมัติ`/`Private data — the piece moves to Sold history and drops out of portfolio value automatically.`
+- Fields (เท่าที่ prototype มี — **ไม่มี** Buyer/Contact/Payment Method/Attachment):
+  - `ราคาขาย (บาท)`/`Sale price (THB)` **required** — prefill จาก `asking` เมื่อมี, digits+auto-comma, live update Expected gain ตอนพิมพ์
+  - `Expected gain` row (เฉพาะเมื่อ `purchase > 0`) — `asking/purchase` diff live (`sell-gl`)
+  - `วันที่ขาย`/`Sale date` **required** — native date, default วันนี้, `max={วันนี้}`
+- Primary `บันทึกการขาย`/`Save sale record` — **ไม่มี confirmation dialog** (ต่างจาก spec เดิม — ดู Deviations)
+- Save ผ่าน → `markAssetSold` + stack: splice `sell:{id}`/`pfasset:{id}` ทิ้ง → push `sold:{id}` (ghost clone slide ทับ) + toast `บันทึกการขายแล้ว · ย้ายไปประวัติการขาย ✓`/`Sale recorded · moved to Sold history ✓`
 
-เมื่อ Asset เปลี่ยนจาก Sale เป็น Show:
+## Sold Transition Rule (`markAssetSold`)
 
-- หายจาก Feed
-- หายจาก Search
-- ไม่ Match Watch Alert
-- ยังแสดงใน Public Profile
+- `PF_ASSETS` splice → `PF_SOLD.unshift` — record เก็บ `soldDate`, `price` (ราคาขาย), `purchase`, `bought` (carry จาก asset)
+- ทุก linked post (`POSTS` + `PF_MINE` + `PF_GFX_REG` ที่ `assetId` เดียวกัน) → `pfkind:"sold"` + `refreshPostViews` — หลุด feed ทันที + lifecycle impact ตาม 00_GLOBAL §12
+- Sold record เก็บเฉพาะราคาขาย+วันที่ขาย — G/L/holding คำนวณจาก cost fields ที่ carry มา (14_PORTFOLIO)
 
-## Sold Asset Rule
+## Sold Record Rule (`sold:{id}` + `soldhist`)
 
-- Sold Asset ไม่สามารถ Edit ข้อมูลหลักได้
-- Sold Asset เปิดดู Sale History ได้
-- Sold Asset เห็นเฉพาะ Owner ใน Owner Profile
-- Sold Asset ไม่ Public
-- Sold Asset ไม่ขึ้น Feed, Search, Watch Alert
+- `soldhist`: head `ประวัติการขาย`/`Sold history` + desc `บันทึกข้อมูลนาฬิกาที่ขายแล้วจะเก็บไว้ที่นี่ และไม่นำไปรวมกับมูลค่าพอร์ตโฟลิโอ`/`Sold pieces keep their sale record here — they're never counted in portfolio value.` + rows (img, name, `ขายแล้วเมื่อ {date}`/`Sold {date}`, price หรือ `N/A`) → `sold:{id}`
+- `sold:{id}` (`soldDetailHTML`): head `รายการที่ขายแล้ว`/`Sold item` + hero + name/ref·brand + `Sold` chip + `ราคาขาย`/`Sale price` total (+ `กำไร/ขาดทุนที่เกิดขึ้นจริง`/`Realized gain/loss` เมื่อมี purchase) + `บันทึกการขาย`/`Sale record` card (Sale date, Sale price — private tag) + `ผลตอบแทน`/`Return` card (Purchase price, Holding period — `N/A` เมื่อไม่มี) + note `กำไร/ขาดทุนที่เกิดขึ้นจริงจะแยกออกจากมูลค่าพอร์ตโฟลิโอ`
+- `soldFromPost` materialize ให้โพสต์ sold ที่ไม่มี link — `soldDate` default วันนี้, `price` fallback asking/post price, optional fields ว่าง
 
-## Back Office ซ่อนถาวร Rule
+## Asset List Rule (`portfolio` — My Assets drawer)
 
-- Asset ที่ถูก Back Office ซ่อนถาวรยังให้ Owner เห็นได้ใน Owner Asset Detail แบบ read-only
-- ต้องแสดงสถานะ `ถูกซ่อนถาวรโดยผู้ดูแล`
-- Owner ไม่สามารถ Edit, Change Status, Publish ใหม่, Mark as Sold, Boost หรือ Delete ได้
-- Viewer/User อื่น/Guest ต้องไม่เห็น Asset นี้ใน public surfaces ทั้งหมด
-- Direct link จาก public context ต้องแสดง unavailable state
-- Asset นี้ไม่ถูกนำไปรวมใน Portfolio / Asset Value
-- Pending หรือ Paused Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Invalidated`
-- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Unavailable` โดยไม่มี `Accept` / `Decline`
-- การกู้คืนจากสถานะซ่อนถาวรไม่อยู่ใน Front Office V1 และไม่ใช่ action ปกติของ moderation
+- Entry: own profile actions row → wallet icon (`.pf-pfo`, title `พอร์ตโฟลิโอ`/`Portfolio`) → `portfolio` route
+- Anatomy (`portfolioHTML`): head back + `พอร์ตโฟลิโอ`/`Portfolio` → `pfo-total` card (`ต้นทุนรวม`/`Total invested` + `ส่วนตัว`/`Private` tag — sum เฉพาะ `purchase > 0` + `มูลค่าตลาด`/`Market value` + G/L% เมื่อคำนวณได้ ไม่งั้น `Market value unavailable` + `ต้นทุนซื้อของ N/M รายการ · มีเพียงคุณเท่านั้นที่เห็น`) → `รายการนาฬิกา`/`Assets` section (`N` count + `ประวัติการขาย`/`Sold history` link → `soldhist`) → rows `pfo-row` (img, name, `ref · meta`, purchase value `฿` หรือ `—`) → note `นับเฉพาะนาฬิกาที่คุณเป็นเจ้าของในสถานะ ลงขาย โชว์ และ ซ่อน — ไม่รวมรายการที่ขายแล้ว ลบ ซ่อนถาวร หรือสินค้าฝากขาย`/`Counts Sale, Show & Hide pieces you own — sold, deleted, permanently hidden and consignment items are excluded.`
+- List = `PF_ASSETS.filter(pfoEligible)` — status `sale`/`show`/`hide` เท่านั้น (sold/deleted ไม่รวม); `nomkt` state มี banner `ไม่พบราคาตลาดบางรายการ — ซ่อนการเปรียบเทียบราคาตลาด`/`Some market prices are unavailable — market comparison hidden` (dev sim — contract อยู่ 14)
+- คณิตศาสตร์ทั้งหมด (current value/G-L/market comparison/holding/YTD) → 14_PORTFOLIO canonical; เอกสารนี้ระบุเฉพาะโครง + private positioning
 
-## Back Office ซ่อนชั่วคราว / Auto Hidden Rule
+## Asset Detail Rule (`pfasset:{id}`)
 
-เมื่อ Asset ถูกซ่อนชั่วคราวจาก BO หรือถูกซ่อนชั่วคราวอัตโนมัติจาก report threshold:
-
-- Asset หายจาก public surfaces ระหว่าง review
-- Owner ยังเห็น Asset พร้อมสถานะอยู่ระหว่างตรวจสอบ
-- ห้ามสร้าง Offer ใหม่
-- Pending Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Paused`
-- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Paused` โดยไม่มี `Accept` / `Decline`
-- ถ้า review ผ่านและ Asset กลับเป็น `Sale` หรือ `Show` ให้ Paused Offer กลับเป็น `Pending`
-- ถ้า review ไม่ผ่านและ Asset ถูกซ่อนถาวร ให้ Paused Offer เปลี่ยนเป็น `Invalidated`
-
-## Sale Record Form
-
-ก่อนเปลี่ยนเป็น Sold ต้องกรอก Sale Record Form
-
-Sale Record Form ต้องถูกเปิดก่อนเสมอเมื่อ Owner เลือก Mark as Sold ไม่ว่าจะเริ่มจาก Owner Asset Detail หรือ Owner Feed more menu
-
-Sale Record Form เก็บ:
-
-- Sale Date
-- Buyer
-- Contact
-- Sale Price
-- Payment Method
-- Attachment
+- Head: back + `รายละเอียดนาฬิกา`/`Asset`; id ไม่เจอ → `No data found` empty
+- Anatomy (`pfassetHTML`): hero (img + `1/N` counter + dots) → `pfd-id` (name, `ref · meta · brand`, status chip `PFO_STATUS`) → `มูลค่า`/`Value` card (**private tag** — Current value, Value source, Estimated market ±5%, Last price update, Data source, `ราคาซื้อ`/`Purchase price`, `วันที่ซื้อ`/`Purchased`, Unrealized gain/loss, Holding period — `—` เมื่อไม่มีข้อมูล) → `การลงประกาศ`/`Listing` card (เฉพาะ `sale` — Asking price, Expected profit, Market comparison chip หรือ `ไม่มีราคาตลาด`/`No market price`) → `Mark as sold` button (เฉพาะ `pfoEligible`) → note `ข้อมูลเฉพาะเจ้าของ — จะไม่แสดงบนโปรไฟล์สาธารณะของคุณ`/`Owner-only data — never shown on your public profile.`
+- ไม่มี Edit/Delete/Change-status action บนหน้านี้ — แก้ไขทำผ่าน linked post (`Edit` info composer) เท่านั้น; action เดียวคือ Mark as sold
 
 ## Delete Asset Rule
 
-Owner สามารถ Delete ได้สำหรับ Asset ที่ไม่ใช่ Sold ตาม policy ของ V1
+- Delete ทำที่ post level เสมอ (ไม่มี delete บน drawer surfaces): own-post menu `Delete` → confirm `Delete post?`/`This post will be permanently deleted.`/`Delete`/`Cancel` → permanent (canonical 02_FEED Delete Rule)
+- ผลตาม prototype: โพสต์ออกจาก `POSTS`/`PF_GFX_REG` + ทุก surface element + toast `Post deleted` — **drawer record (`PF_ASSETS`/`PF_SOLD`) ไม่ถูกลบตาม** → sold history ยังครบ, portfolio asset กลาย orphan (assetId dangling — deviation, contract ด้านล่าง)
+- Drawer-only post (`PF_MINE`) delete = no-op ใน prototype (handler หาใน `POSTS`/`PF_GFX_REG` เท่านั้น — ไม่มี effect, ไม่มี toast) — deviation
+- Contract (ตาม master — prototype ไม่ครอบ): ลบ asset ต้องเอาออกจาก owner list + public surfaces ทั้งหมด + ไม่รวม portfolio; backend/BO เก็บ record ตาม retention + audit (owner delete, before/after, timestamp); ไม่ใช่ hard delete ทันทีเว้นแต่ policy
 
-Delete Asset ต้องมี Confirmation
+## Private Data Rule
 
-Delete Asset จาก Owner Feed more menu ต้องใช้ rule เดียวกับ Delete Asset ใน Asset Management: ต้องมี Confirmation, ไม่มี Undo และ Sold Asset ไม่ควรลบผ่าน V1
+- Owner-private เสมอ (00_GLOBAL §14): `purchase`/`bought` (purchase cost), `PF_SOLD` records, portfolio value fields — viewer/guest ไม่เห็นบน public profile/post detail/search ใด ๆ
+- Portfolio surfaces ทั้งชุด tag `ส่วนตัว`/`private`/`Private` + note `มีเพียงคุณเท่านั้นที่เห็น`/`only you can see this` / `ข้อมูลเฉพาะเจ้าของ`/`Owner-only data`
+- Cost pane note: `ข้อมูลต้นทุนเป็นข้อมูลส่วนตัว — ใช้คำนวณมูลค่าและกำไร/ขาดทุนในพอร์ตโฟลิโอ มีเพียงคุณเท่านั้นที่เห็น`/`Cost details are private — they feed portfolio value and gain/loss. Only you can see them.`
+- `pfasset`/`sell`/`sold`/`soldhist`/`portfolio` เป็น owner routes — non-owner ไม่มีทางเข้า (ไม่มี UI entry; deep link ไป owner-only page ต้อง Permission denied — contract, ตาม PFO_SIMS `denied` state)
 
-เมื่อ Asset ถูกลบ:
+## BO Moderation States (contract — prototype ไม่มี)
 
-- Asset หายจาก Feed
-- Asset หายจาก Search
-- Asset หายจาก Watch Alert
-- Asset หายจาก Public Profile
-- Asset Detail ต้องแสดง Deleted Asset state หากเปิดจาก link เก่า
-- Chat ยังอยู่
-- Offer ที่เกี่ยวข้องต้องเป็น Cancelled
+- ซ่อนถาวร/ซ่อนชั่วคราวจาก BO: master contract เดิมยังใช้ (owner เห็น read-only `ถูกซ่อนถาวรโดยผู้ดูแล`, ไม่ public, ไม่รวม portfolio, chat อยู่) — แต่ prototype ไม่มี surface ใด ๆ; implementation ต้อง map เข้า status model โดยไม่แตะ canonical 4 statuses
+- Owner ไม่มีสิทธิ์ delete/edit/sell asset ที่ถูกซ่อนถาวร (contract)
 
-## Offer Impact Rule
+## Lifecycle Impact (post/asset transitions)
 
-| Asset event | Offer impact | FO chat card |
-| --- | --- | --- |
-| Mark as Sold | Pending offer อื่นเป็น `Rejected` | `Offer Declined` / ไม่มี action |
-| Owner Delete Asset | Related offers เป็น `Cancelled` | `Offer Cancelled` / ไม่มี action |
-| Sale/Show → Hide | Pending offers เป็น `Cancelled` | `Offer Cancelled` / ไม่มี action |
-| Auto hidden / ซ่อนชั่วคราว | Pending offers เป็น `Paused` | `Offer Paused` / ไม่มี action |
-| Review passed จากซ่อนชั่วคราว | `Paused` offers กลับเป็น `Pending` | แสดง `Accept` / `Decline` อีกครั้ง |
-| ซ่อนถาวร | Pending/Paused offers เป็น `Invalidated` | `Offer Unavailable` / ไม่มี action |
+ตาม 00_GLOBAL §12 + 03_SEARCH_FILTER lifecycle matrix + prototype effects จริง:
 
-ทุก offer status change ต้องส่ง notification/delivery context ตาม Offer และ Notification Module
+| Transition | Impact |
+| --- | --- |
+| Asset created `Show`/`Hide` (asset mode) | `PF_MINE` + `PF_ASSETS` — profile grid `ทั้งหมด`/`โชว์`/`ซ่อน` tabs; ไม่เข้า feed/search/WA เลย |
+| Asset created `Post to feed` | `POSTS` `pfkind:"sale"` + `PF_ASSETS` — เข้า feed + profile `ขาย` tab + search/WA eligible + WA match toast |
+| Edit info → `show`/`hide` | `pfkind` เปลี่ยน + `pa.status` sync — หลุด feed (`refreshPostViews` ลบ card) + หลุด search/WA matching; ย้าย profile tab |
+| Edit info → `sale` (บน POSTS post) | เข้า feed + `ขาย` tab + search/WA eligible ใหม่ |
+| Edit info drawer OFF | `pfkind:"post"` + ตัด `assetId` + ลบ `PF_ASSETS` record — อยู่ feed + `ทั้งหมด` tab เท่านั้น; หลุด status tabs/search/WA |
+| `sale`/`show`/`hide` → `sold` (Mark as sold) | `PF_ASSETS`→`PF_SOLD` + linked posts `pfkind:"sold"` — หลุด feed/search/WA/profile status tabs ทันที; เข้า `ขายแล้ว` tab + `soldhist` |
+| Post deleted | หายทุก surface — drawer record คงอยู่ (deviation, ดู Delete Rule) |
+| Drawer-only `PF_MINE` → `sale` via Edit | `pfkind:"sale"` แต่ยังอยู่ `PF_MINE` — **ไม่เข้า feed** (PF_MINE ไม่ merge เข้า POSTS — deviation) |
+| Report submitted | ไม่หายจาก surfaces จนกว่า moderation (00_GLOBAL §13) |
+| ni / mute / block | หายจาก surfaces ของ viewer นั้นตาม 02_FEED Relation Flags + 00_GLOBAL §13 |
 
-## Payment Rule
+## Prototype Deviations & Dead-Code Notes (documented, not spec)
 
-Phase 1 ไม่มี Payment ภายในแอป
-
-Payment Method ใน Sale Record เป็นข้อมูลบันทึกการขายเท่านั้น ไม่ใช่ transaction ในแอป
+- **Add Asset ไม่มี confirmation** — spec เดิมบังคับ `Add this asset?` + `Adding...` + `Asset added.` + ไป Owner Asset Detail; prototype save ทันที + toast + กลับ own profile grid — spec เลือก prototype
+- **Sale Record ไม่มี confirmation** — spec เดิมบังคับ `Save sale history?` dialog; prototype save ทันที — spec เลือก prototype
+- **Sale Record fields** — prototype มีแค่ Sale price + Sale date (ไม่มี Buyer/Contact/Payment Method/Attachment ที่ spec เดิม require)
+- **ไม่มี Edit Asset form / Change Status sheet** — spec เดิมมีทั้งคู่; prototype ใช้ shared Edit info composer + `Profile status` pick เท่านั้น
+- **ไม่มี required fields** — media ≥1 เป็นเงื่อนไขเดียว (Next/Add Asset disabled); รูปอย่างเดียวก็ save ได้ (ต่างจาก Required Field Matrix เดิม)
+- **ไม่มี `Price on request`** — โพสต์ไม่มี price = showcase (ไม่มี price tag) ไม่ใช่ label พิเศษ; price optional ทุก status
+- **Spec free-text ล้วน** — ไม่มี option master/`ระบุเอง`/autocomplete (contract §18); spec เดิมที่อ้าง relation id + snapshot + suggestion pool ถูก override
+- **Show/Hide path ทิ้ง More-options** — `audience`/`noComments` hardcode `public`/`false` บน `PF_MINE` record (มี UI ให้ตั้งแต่ไม่ถูกใช้)
+- **Post delete ทิ้ง drawer orphan** — `PF_ASSETS`/`PF_SOLD` ไม่ถูกลบตาม → portfolio ยังโชว์ asset ที่ post ถูกลบไปแล้ว (contract: ลบต้องเอาออกทั้งคู่ — flag)
+- **`PF_MINE` delete no-op** — delete บน drawer-only post ไม่มี effect เลย (handler ค้นแค่ `POSTS`/`PF_GFX_REG` — flag)
+- **`PF_MINE` → `sale` ไม่เข้า feed** — flip status บน drawer-only post ไม่เคย merge เข้า `POSTS` (flag)
+- **`pfKind()` fallback** — post ไม่มี `pfkind` infer จาก price (`price||type==="sale" ? "sale" : "show"`) — gfx/seed posts ไม่มี pfkind จริง
+- **`pfo-more`/`PFO_SIMS`** = dev `?dev` preview tooling เท่านั้น (00_NAV §11) — `nomkt`/`empty`/`failed`/`denied` states เป็น contract ไม่ใช่ reachable UI
+- **`sold` post ยังเข้า search/WA match** — `salePosts()` pfkind leak (00_GLOBAL §10 defect note — canonical คือหลุด)
+- **Session-only** — `PF_ASSETS`/`PF_SOLD`/`PF_MINE`/`WATCH_ALERTS` เป็น memory state (sign-out/reset ล้าง); persistence = contract
+- **EN/TH mixed** — portfolio/sell/sold surfaces มี isTh ครบ; composer toasts `Posted ·…`/`Watch alert matched` EN hardcode (i18n sweep FSP-026)
 
 ---
 
-# 11. Permission Rules
+# 10. Permission Rules
 
 ## Guest
 
-ไม่สามารถ:
-
-- Add Asset
-- Edit Asset
-- Delete Asset
-- Change Status
-- Mark as Sold
+ไม่สามารถ: เข้า own profile (tab gated), Add Asset (`[data-flow]` gated), เปิด post menus (`.pm-btn` gated → ไม่เห็น Mark as sold/Edit/Delete entries), เข้า portfolio/pfasset/sell/soldhist/sold routes (ทั้งหมดอยู่ใต้ own profile — member-only), เห็น private asset data
 
 ## Owner
 
-สามารถ:
-
-- Add Asset
-- Edit Asset ของตัวเอง
-- Delete Asset ของตัวเองตาม policy
-- Change Status ระหว่าง Sale / Show / Hide
-- Mark as Sold
-- View Sold History
-- View private asset data ของตัวเอง
+สามารถ: Add Asset (composer asset mode ทุก visibility), เปิด `portfolio` → `pfasset:{id}` → `sell:{id}` → `sold:{id}` + `soldhist`, Mark as Sold จาก own-post menu (`pfkind` ∈ `sale`/`show`/`hide`) หรือ pfasset (`pfoEligible`), เปลี่ยน status ผ่าน Edit info (`Profile status` pick — ยกเว้น sold), detach drawer (toggle OFF → `post`), Delete post (confirm), ดู private data ของตัวเองทั้งหมด
 
 ## Non Owner
 
-ไม่สามารถ:
+ไม่สามารถ: เข้า asset routes ของผู้อื่น (ไม่มี entry; contract permission denied), Edit/Delete/Change Status/Mark as Sold, เห็น private asset data — เห็นเฉพาะ public post surfaces ตาม Visibility Matrix
 
-- Edit Asset
-- Delete Asset
-- Change Status
-- Mark as Sold
-- View private asset data
+## Admin
+
+Admin จัดการผ่าน Back Office เท่านั้น — ไม่ใช่ผ่าน FO Asset Management Module (ซ่อนถาวร/ชั่วคราว = contract §9)
 
 ---
 
-# 12. Validation Rules
+# 11. Validation Rules
 
-## Add / Edit Asset
+## Composer (asset + edit modes — asset-relevant)
 
-Gallery:
+- **Media**: ≥1 จึง proceed (Next/`Add Asset`/`Done` disabled เมื่อ 0; edit ลบจนเหลือ 0 → toast `Post needs at least 1 photo or clip`); ≤10 (`You can add up to 10 photos or clips`) — canonical 02_FEED
+- **Purchase price** (`purchase`): digits-only — strip non-digit เงียบ + auto-comma; optional (เว้นว่างได้); `>0` implied โดย format (0/ว่าง → `null`)
+- **Purchase date** (`bought`): native date `min="1900-01-01" max={วันนี้}` — live `is-err` + `pane-err`: unparseable/underflow → `วันที่ซื้อไม่ถูกต้อง`/`Invalid purchase date`; future → `วันที่ซื้ออยู่ในอนาคตไม่ได้`/`Purchase date can't be in the future`; **`pane-done` บน cost pane ปิดไม่ได้**จนกว่า date valid (re-paint error + focus; `cf-pane-back` ยกเลิกได้)
+- ไม่มี required validation อื่น — caption/specs/price/condition ทั้งหมด optional (เว้นว่าง = `N/A` บน detail rows; ไม่มี price = showcase)
 
-- Required อย่างน้อย 1 รูป
-- Maximum 10 Images
+## Sale Record (`sell:{id}`)
 
-Brand:
-
-- Required
-
-Model / Series:
-
-- Required เมื่อ Status = Sale หรือ Show
-- Optional เมื่อ Status = Hide
-
-Condition:
-
-- Required เมื่อ Status = Sale
-- Optional เมื่อ Status = Show หรือ Hide
-
-Price:
-
-- Label ใน marketplace listing ต้องใช้ `Asking Price (THB)`
-- Optional เมื่อ Status = Sale, Show หรือ Hide
-- ต้องมากกว่า 0 เมื่อกรอก
-- Status = Sale: ถ้ากรอกราคา FO buyer-facing surface แสดงราคานั้น; ถ้าไม่กรอกให้แสดง `Price on request`
-- Status = Show หรือ Hide: แม้กรอกราคา public FO surface ต้องไม่แสดงราคา; เห็นได้เฉพาะ Owner ในหน้าแก้ไข / owner-private view
-- Status = Sold: หากมีราคาที่บันทึกไว้ ให้ FO owner-facing sold view แสดงราคาแบบขีดฆ่า; BO แสดงราคาปกติ
-
-Description:
-
-- Required เมื่อ Status = Sale
-- Optional เมื่อ Status = Show หรือ Hide
-
-Status:
-
-- Required
-- ต้องเป็น `Sale`, `Show`, `Hide` สำหรับ Add/Edit
-
-Year:
-
-- ต้องไม่เป็นปีในอนาคต เมื่อกรอก
-
-Status / Provenance:
-
-- Add Asset ต้องผ่าน provenance step ก่อน final Save / Upload
-- Status = Sale ต้องให้เลือก `Owner (Asset)` หรือ `Consignment`
-- Status = Show หรือ Hide ต้องใช้ `Owner (Asset)` เท่านั้น และห้ามเลือก `Consignment`
-
-Owner (Asset) Provenance:
-
-- Purchase Price Required
-- Purchase Price ต้องมากกว่า 0
-- Purchase Date ต้องไม่เป็นวันที่ในอนาคต เมื่อกรอก
-
-Consignment Provenance:
-
-- ใช้ได้เฉพาะ Status = Sale
-- Full Name Required
-- Phone Number Required
-- Asking Price Required และต้องมากกว่า 0
-- Payout Method Optional และต้อง validate เมื่อกรอก
-- Email ต้องเป็นรูปแบบ email เมื่อกรอก
-- Consignment Date ต้องไม่เป็นวันที่ในอนาคต เมื่อกรอก
-- Consignment Duration ต้องมากกว่า 0 เมื่อกรอก
-- Commission ต้องอยู่ระหว่าง 0-100 เมื่อกรอก
-- Minimum Acceptable Price ต้องมากกว่า 0 เมื่อกรอก
-- Minimum Acceptable Price ต้องไม่มากกว่า Asking Price เมื่อกรอกทั้งสองค่า
-- Consignment Asking Price ต้อง sync กับ Commerce / listing Asking Price
-- Optional text/upload field ทุก field ต้อง validate เมื่อกรอกหรืออัปโหลด
-
-Purchase Date:
-
-- ต้องไม่เป็นวันที่ในอนาคต เมื่อกรอก
-
-Purchase Price:
-
-- ต้องมากกว่า 0 เมื่อกรอก
-
-## Mark as Sold
-
-Sale Date:
-
-- Required
-- ต้องไม่เป็นวันที่ในอนาคต
-
-Buyer:
-
-- Optional
-
-Sale Price:
-
-- Required
-- ต้องมากกว่า 0
-
-Payment Method:
-
-- Required
-
-## Add Asset Confirmation
-
-หลัง Owner กรอก Asset Detail และ Provenance ครบตาม required fields แล้วกด final action เพื่อสร้าง Asset ระบบต้องแสดง confirmation ก่อนเริ่ม save/upload
-
-Confirmation copy:
-
-| Language | Title | Body | Secondary | Primary |
-|---|---|---|---|---|
-| TH | เพิ่มรายการนี้? | ระบบจะบันทึกรายการนี้ลงในคอลเลกชันของคุณตามสถานะที่เลือก | ยกเลิก | เพิ่มรายการ |
-| EN | Add this asset? | This will save this asset to your collection based on the selected status. | Cancel | Add asset |
-
-Confirmation behavior:
-
-- ใช้กับ Add Asset final step หลัง Provenance ไม่ใช่ Edit Asset
-- กด `Cancel` ต้องปิด popup และคงข้อมูลที่กรอกไว้ทั้งหมด
-- กด `Add asset` แล้วต้อง disable action เพื่อกัน duplicate submit
-- ระหว่างบันทึกให้ใช้ button loading `Adding...`
-- หากมีรูปหรือไฟล์เอกสารที่ต้อง upload ให้แสดง loading message `Uploading files...`
-- หากไม่มีไฟล์ upload หรือ upload เสร็จแล้ว ให้แสดง loading message `Adding asset...`
-- หากสำเร็จให้แสดง toast/snackbar `Asset added.` และ default ไป Owner Asset Detail ของ asset ที่เพิ่งสร้าง
-- หากล้มเหลวต้องคงข้อมูลทั้งหมดใน form, ไม่สร้าง asset ซ้ำ และแสดง `Unable to add asset. Please try again.`
-
-## Change Status Sheet
-
-Owner สามารถเปลี่ยนสถานะ Asset ที่ยังไม่ใช่ `Sold` จาก quick action หรือ Edit Asset ได้ โดย Change Status ควรเป็น bottom sheet / modal sheet สั้น ๆ ไม่ต้องพาเข้า Edit Asset เต็ม
-
-Sheet copy:
-
-- Title: `Change status`
-- Subtitle: `Choose where this asset should appear.`
-- Secondary action: `Cancel`
-- Primary action: `Save`
-- Primary loading: `Saving...`
-- Success toast: `Asset status updated.`
-- Error toast: `Unable to update asset status. Please try again.`
-
-Status options:
-
-| Option | Description | Available From |
-|---|---|---|
-| Sale | `List on Marketplace Feed for buyers` | Show, Hide |
-| Show | `Display in your public profile vault` | Sale, Hide |
-| Hide | `Keep hidden in private collection` | Sale, Show |
-
-Rules:
-
-- สถานะปัจจุบันต้องแสดงเป็น selected
-- หากเลือกสถานะเดิม ปุ่ม `Save` ต้อง disabled
-- `Sold` ต้องไม่อยู่ใน Change Status
-- Asset สถานะ `Sold` ต้องไม่เห็นเมนู `Change status`
-- `Sale -> Sold` ต้องทำผ่าน `Mark as sold` และ Sale Record Form เท่านั้น
-- หลัง save สำเร็จให้ปิด sheet และอัปเดต UI ใน context เดิมทันที
-- หากทำจาก Feed แล้วเปลี่ยน `Sale -> Show` หรือ `Sale -> Hide` card ต้องหายจาก Feed ทันที
-- หากทำจาก Owner Profile และสถานะใหม่ไม่อยู่ใน tab ปัจจุบัน card ต้องหายจาก tab นั้น และ tab count ต้อง update
-- หาก save ล้มเหลวต้องคง selection ใน sheet และไม่เปลี่ยนสถานะจริง
-
-Consignment status conversion:
-
-- หาก Asset เป็น `Consignment` และ Owner เปลี่ยนจาก `Sale` เป็น `Show` หรือ `Hide` ต้องแสดง warning ก่อน เพราะ `Consignment` ใช้ได้เฉพาะ `Sale`
-- Warning title: `Change to owner asset?`
-- Warning body: `Consignment details are only available for assets listed for sale. To change this status, this asset must use owner purchase history instead.`
-- Warning actions: `Cancel` / `Continue`
-- หลัง `Continue` ต้องพาไป Provenance และบังคับใช้ `Owner (Asset)` โดย require `Purchase Price`
-- Consignment data เดิมต้องไม่ถูก merge กับ Owner purchase history; ให้เก็บเป็น historical/private หรือปิด active consignment ตาม backend policy
-
-## Sale Record Confirmation
-
-หลัง Owner กรอก Sale Record / Sale History และกด `Save` ระบบต้องแสดง confirmation ก่อนเปลี่ยน Asset เป็น `Sold`
-
-Confirmation copy:
-
-| Language | Title | Body | Secondary | Primary |
-|---|---|---|---|---|
-| TH | บันทึกการขาย? | เมื่อยืนยัน ระบบจะบันทึกประวัติการขาย เปลี่ยนสถานะรายการเป็นขายแล้ว และนำรายการนี้ออกจากฟีด ค้นหา และ Watch Alert | ยกเลิก | บันทึกการขาย |
-| EN | Save sale history? | This will save the sale history, mark this asset as sold, and remove it from Feed, Search, and Watch Alert results. | Cancel | Save sale |
-
-Confirmation behavior:
-
-- ห้ามใช้ copy `Confirm sold out?` เพราะ `sold out` เหมาะกับสินค้าหลายชิ้น ไม่ใช่ Asset รายการเดียว
-- กด `Cancel` ต้องปิด popup และคงข้อมูลใน Sale Record Form ไว้
-- กด `Save sale` / `บันทึกการขาย` แล้วจึงเปลี่ยน Asset status เป็น `Sold`
-- หลัง confirm สำเร็จ Offer อื่นต้องถูก Auto Reject ตาม Offer Impact Rule
-- หาก save ล้มเหลว ต้องคง Asset status เดิม, คงข้อมูลใน form และแสดง retry/error state
-
-## Edit Asset Confirmation
-
-หลัง Owner แก้ไขข้อมูล Asset และกด `Save` ใน Edit Asset ระบบควรแสดง confirmation ก่อนบันทึกการแก้ไข
-
-Confirmation copy:
-
-| Language | Title | Body | Secondary | Primary |
-|---|---|---|---|---|
-| TH | บันทึกการแก้ไข? | ระบบจะบันทึกข้อมูลที่แก้ไขและอัปเดตรายการนี้ตามสถานะปัจจุบัน | ยกเลิก | บันทึก |
-| EN | Save changes? | This will save your changes and update this asset based on its current status. | Cancel | Save |
-
-Confirmation behavior:
-
-- ห้ามใช้ copy `Save edit asset?` เพราะเป็นภาษาอังกฤษที่ไม่เป็นธรรมชาติ
-- กด `Cancel` ต้องปิด popup และคงข้อมูลที่แก้ไว้ใน Edit Asset Form
-- กด `Save` แล้วจึงเริ่ม saving / uploading state
-- หากมีรูปหรือไฟล์ใหม่ต้องใช้ uploading/saving state ตาม rule เดียวกับ Add Asset
-- หาก save สำเร็จ ให้กลับ Owner Asset Detail หรือ state ที่เหมาะสม และแสดงข้อมูลล่าสุด
-- หาก save ล้มเหลว ต้องคงข้อมูลที่แก้ไว้ใน form, ไม่เปลี่ยนข้อมูลเดิมของ Asset และแสดง retry/error state
-- หากการแก้ไขเปลี่ยน status แล้วกระทบ visibility เช่น Sale -> Show / Hide ต้อง apply lifecycle rule หลัง save สำเร็จเท่านั้น
-
-## Edit Provenance Confirmation
-
-หลัง Owner แก้ไข Provenance / Purchase History หรือ Consignment details และกด `Save` ระบบควรแสดง confirmation ก่อนบันทึก private record
-
-Confirmation copy:
-
-| Context | Language | Title | Body | Secondary | Primary |
-|---|---|---|---|---|---|
-| Owner (Asset) purchase history | TH | บันทึกประวัติการซื้อ? | ระบบจะบันทึกการแก้ไขประวัติการซื้อของรายการนี้ | ยกเลิก | บันทึก |
-| Owner (Asset) purchase history | EN | Save purchase history? | This will save your changes to this asset's purchase history. | Cancel | Save |
-| Consignment details | TH | บันทึกข้อมูลฝากขาย? | ระบบจะบันทึกการแก้ไขข้อมูลฝากขายของรายการนี้ | ยกเลิก | บันทึก |
-| Consignment details | EN | Save consignment details? | This will save your changes to this asset's consignment details. | Cancel | Save |
-
-Confirmation behavior:
-
-- ห้ามใช้ body ของ Edit Asset เช่น `This will save your changes and update this asset based on its current status.` สำหรับ Provenance เพราะการแก้ประวัติการซื้อเป็น private data และไม่ควรกระทบ public visibility
-- กด `Cancel` ต้องปิด popup และคงข้อมูลที่แก้ไว้ใน Provenance form
-- กด `Save` แล้วจึงเริ่ม saving / uploading state
-- หากมีการแก้รูปเอกสารหรือแนบไฟล์ใหม่ ต้องใช้ uploading/saving state ตาม file upload rule
-- หาก save สำเร็จ ให้กลับ Owner Asset Detail / Provenance detail และแสดง private data ล่าสุด
-- หาก save ล้มเหลว ต้องคงข้อมูลที่แก้ไว้ใน form, ไม่ overwrite provenance เดิม และแสดง retry/error state
-- Sold Asset ต้องไม่ให้แก้ Provenance ผ่าน Edit Provenance ปกติ; ต้องใช้ correction/audit flow ตาม Sold Asset rule
+- **Sale price**: required + `>0` — ว่าง/≤0 → `pe-err` `กรุณากรอกราคาขาย`/`Sale price required`
+- **Sale date**: required — ว่าง → `กรุณาเลือกวันที่ขาย`/`Sale date required`; unparseable/เกินวันนี้ (`badInput`/`rangeOverflow`) → `วันที่ขายไม่ถูกต้อง`/`Invalid sale date`
+- Fail → `pe-err` inline + `is-err` + focus field แรกที่ผิด; ไม่ save
+- Success → `markAssetSold` (ไม่มี duplicate guard — tap ต่อเนื่องระหว่าง transition เป็น prototype edge; contract: disable ระหว่าง save)
 
 ---
 
-# 13. Exception Handling
+# 12. Exception Handling
 
-## Asset Not Found
-
-| Language | Message |
-|---|---|
-| TH | ไม่พบรายการ |
-| EN | Asset not found |
-
-## Permission Denied
-
-| Language | Message |
-|---|---|
-| TH | คุณไม่มีสิทธิ์ดำเนินการ |
-| EN | Permission denied |
-
-## Sold Asset Cannot Edit
-
-| Language | Message |
-|---|---|
-| TH | รายการที่ขายแล้วไม่สามารถแก้ไขข้อมูลหลักได้ |
-| EN | Sold items cannot be edited. |
-
-## Delete Confirmation
-
-ต้องแสดง confirmation ก่อนลบ Asset
-
-Confirmation copy ต้องแจ้งชัดว่า delete ไม่มี Undo:
-
-- Title: `Delete this asset?`
-- Body: `This action cannot be undone. This asset will be removed from Feed, Search, Watch Alert results, and your public profile. Related chats will remain, but related offers will be cancelled.`
-- Secondary action: `Cancel`
-- Destructive action: `Delete`
-
-## Save Error
-
-| Language | Message |
-|---|---|
-| TH | เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง |
-| EN | Something went wrong. Please try again. |
-
-## Uploading / Saving State
-
-เมื่อ Owner กรอกข้อมูลครบและกด `Save` ใน Add / Edit Asset ระบบต้องแสดงสถานะกำลังอัปโหลด/กำลังบันทึกทันที หากมีรูปหรือไฟล์ที่ต้อง upload ให้ใช้ข้อความ `กำลังอัปโหลด...` / `Uploading...`
-
-ระหว่างสถานะนี้:
-
-- ต้อง disable ปุ่ม `Save` เพื่อป้องกันการ submit ซ้ำ
-- ต้องป้องกันการแก้ไขข้อมูลที่อาจทำให้ payload เปลี่ยนระหว่าง upload
-- ถ้า upload/save สำเร็จ ให้แสดง success state และไปยัง Asset Created / Asset Updated flow
-- ถ้า upload/save ล้มเหลว ให้แสดง error พร้อม action สำหรับ retry หรือกลับไปแก้ไขรูป/ข้อมูล
+| Case | Prototype / Contract |
+| --- | --- |
+| `pfasset:{id}` / `sell:{id}` / `sold:{id}` id ไม่เจอ | sad icon + `ไม่พบข้อมูล`/`No data found` (head คงอยู่) |
+| `soldhist` ว่าง | history icon + `ไม่พบข้อมูล`/`No data found` |
+| `portfolio` ว่าง / guest | wallet icon + `ไม่พบข้อมูล`/`No data found` + `นาฬิกาที่คุณระบุสถานะ ลงขาย โชว์ หรือ ซ่อน จะแสดงที่นี่`/`Assets you list as Sale, Show or Hide will appear here.` |
+| Portfolio load failed / denied / market unavailable | `PFO_SIMS` states — dev `?dev` preview เท่านั้น; **contract**: `Unable to load data.` + `ลองใหม่อีกครั้ง`/`Try again`, `Permission denied.`/`พอร์ตโฟลิโอเป็นข้อมูลส่วนตัว`, `nomkt` banner (canonical 14_PORTFOLIO) |
+| Linked post detail หลัง delete/sold | post หาย → toast `This post is no longer available` (00_GLOBAL §11 contract: unavailable state) |
+| Sell form asset หายระหว่างเปิด | `sell-save` guard `!a` → no-op (ไม่มี error UI — edge) |
 
 ---
 
-# 14. Empty State
+# 13. Empty State
 
-Asset Management Module ไม่มี Empty State เฉพาะใน Add/Edit form
-
-Owner Profile และ Sold History ใช้ Global Empty State:
-
-| Language | Message |
-|---|---|
-| TH | ไม่พบข้อมูล |
-| EN | No data found |
+| Surface | Copy |
+| --- | --- |
+| `portfolio` ไม่มี eligible assets | `ไม่พบข้อมูล`/`No data found` + `นาฬิกาที่คุณระบุสถานะ ลงขาย โชว์ หรือ ซ่อน จะแสดงที่นี่`/`Assets you list as Sale, Show or Hide will appear here.` |
+| `soldhist` ว่าง | `ไม่พบข้อมูล`/`No data found` |
+| Own profile `all` tab ว่าง | `เพิ่มสินทรัพย์ชิ้นแรกของคุณ`/`Add your first asset` + `สินทรัพย์ที่บันทึกและโพสต์ที่แชร์จะแสดงที่นี่`/`Assets you save and posts you share will show up here.` + `Add asset` CTA (canonical 06_PROFILE) |
+| ใช้ global empty `ไม่พบข้อมูล`/`No data found` (00_GLOBAL §11) ทุกจุดที่ไม่มี copy เฉพาะ | |
 
 ---
 
-# 15. Notification Rules
+# 14. Notification Rules
 
-- Asset Management ไม่สร้าง Notification เมื่อ Add/Edit/Delete ตามปกติ
-- เมื่อ Asset เปลี่ยนเป็น Sold ระบบต้อง Auto Reject Offer อื่น
-- Notification จากการ Auto Reject / Offer status ให้จัดการโดย Offer และ Notification Module
-
----
-
-# 16. Analytics Events
-
-- Add Asset Open
-- Add Asset Success
-- Edit Asset Open
-- Edit Asset Success
-- Delete Asset Success
-- Change Asset Status
-- Mark As Sold Open
-- Mark As Sold Success
-- Sale Record Save
-- Permission Denied Viewed
+- Asset Management ไม่สร้าง notification item เมื่อ Add/Edit/Sell/Delete
+- `Post to feed` ที่ตรง Watch Alert ON ของผู้ใช้เอง → toast `Watch alert matched: {name}` หน่วง ~2 วิ (simulation — canonical 10_WATCH_ALERT; Show/Hide path ไม่มีเพราะไม่เข้า `POSTS`)
 
 ---
 
-# 17. Acceptance Criteria
+# 15. Analytics Events
 
-## Ownership & Permission
+Contract (prototype ไม่มี tracking layer — mark contract เหมือน modules อื่น):
+
+| Event | Trigger |
+| --- | --- |
+| `asset_add_open` | เปิด composer asset mode |
+| `asset_add_success` | `Add Asset` สำเร็จ (tag visibility `show`/`hide`/`feed`) |
+| `asset_status_change` | `applyPostEdit` เปลี่ยน `pfkind` |
+| `asset_mark_sold_open` | `sell:{id}` เปิด (entry: `pm-own-sold` / `data-sell`) |
+| `asset_mark_sold_success` | `markAssetSold` เสร็จ |
+| `asset_sold_view` | `sold:{id}` เปิด |
+| `asset_delete_success` | post delete confirm |
+| `portfolio_view` / `portfolio_asset_view` | `portfolio` / `pfasset:{id}` เปิด |
+
+---
+
+# 16. Acceptance Criteria
+
+## Entry & Guest
 
 | AC ID | Criteria |
 |---|---|
-| AC-ASSET-MGMT-001 | Guest ต้องไม่สามารถเข้า Asset Management Module ได้ |
-| AC-ASSET-MGMT-002 | Owner ต้องสามารถ Add Asset ได้ |
-| AC-ASSET-MGMT-003 | Owner ต้องสามารถ Edit Asset ของตัวเองได้เมื่อ Asset ไม่ใช่ Sold |
-| AC-ASSET-MGMT-004 | Non Owner ต้องไม่สามารถ Edit, Delete, Change Status หรือ Mark as Sold ได้ |
-| AC-ASSET-MGMT-005 | Private Asset Data ต้องแสดงเฉพาะ Owner หรือ Admin ตามสิทธิ์ |
+| AC-ASSET-MGMT-001 | Guest ต้องไม่สามารถเข้าถึง asset management ได้ — `[data-flow]` composer, post menus, own profile tab ทั้งหมด gated → Member Sheet `Join TukDaeng` |
+| AC-ASSET-MGMT-002 | Add Asset entry ต้องมีเฉพาะ own-profile `+` icon + `all`-tab empty-state `Add asset` CTA (`data-mode="asset"`) — feed `+` ต้องเป็น post mode ไม่ใช่ asset |
+| AC-ASSET-MGMT-003 | `portfolio`/`pfasset`/`sell`/`soldhist`/`sold` ต้องเป็น owner routes — non-owner/guest ไม่มี entry และต้อง Permission denied เมื่อเข้าทางอื่น (contract) |
 
-## Add / Edit Asset
+## Add Asset (composer asset mode)
 
 | AC ID | Criteria |
 |---|---|
-| AC-ASSET-MGMT-006 | Add / Edit Asset ต้องรองรับ Gallery สูงสุด 10 รูป |
-| AC-ASSET-MGMT-006A | Add / Edit Asset ต้อง require อย่างน้อย 1 รูปสำหรับ Sale, Show และ Hide |
-| AC-ASSET-MGMT-006B | หลังกรอกข้อมูลครบและกด Save ต้องแสดง uploading/saving state พร้อมข้อความ `กำลังอัปโหลด...` / `Uploading...` เมื่อมีไฟล์ upload และต้อง disable ปุ่ม Save เพื่อป้องกัน duplicate submit |
-| AC-ASSET-MGMT-006C | หลัง Owner กด Save ใน Edit Asset ต้องแสดง confirmation copy `Save changes?` / `บันทึกการแก้ไข?` และห้ามใช้คำว่า `Save edit asset?` |
-| AC-ASSET-MGMT-006D | หลัง Owner กด final action ใน Add Asset Provenance step ต้องแสดง confirmation `Add this asset?` และ primary action `Add asset` ก่อนสร้าง asset จริง |
-| AC-ASSET-MGMT-006E | ระหว่าง Add Asset save/upload ต้อง disable action, แสดง `Adding...` และหากสำเร็จต้องแสดง `Asset added.` ก่อนพาไป Owner Asset Detail ของ asset ที่เพิ่งสร้าง |
-| AC-ASSET-MGMT-007 | Add / Edit Asset ต้องรองรับ Brand, Model / Series, Reference No., Year, Condition, Scope of Delivery, Case Size, Thickness, Case Material, Movement, Dial Color, Strap / Bracelet Type, Price และ Description |
-| AC-ASSET-MGMT-007A | Status = Sale ต้อง require Photos, Brand Name, Model / Series, Condition และ Description; Price เป็น optional |
-| AC-ASSET-MGMT-007B | Status = Sale ถ้ามี Price ต้องแสดงราคาที่ FO buyer-facing surface; ถ้าไม่มี Price ต้องแสดง `Price on request` |
-| AC-ASSET-MGMT-007C | Status = Show ต้อง require Photos, Brand Name และ Model / Series; Price เป็น optional และห้ามแสดงใน public FO surface |
-| AC-ASSET-MGMT-007D | Status = Hide ต้อง require Photos และ Brand Name เท่านั้น ส่วน Model / Series, Condition, Price และ Description เป็น optional; Price ห้ามแสดงใน public FO surface |
-| AC-ASSET-MGMT-007E | BO/Admin view ต้องแสดง field `Price` เสมอ: มีราคาให้แสดงราคา ไม่มีราคาให้แสดง `-` |
-| AC-ASSET-MGMT-007F | Sold owner-facing view หากมี Price ต้องแสดงเป็นราคาขีดฆ่า; BO/Admin view แสดงราคาปกติ |
-| AC-ASSET-MGMT-007G | ฟิลด์ Case Material, Movement, Dial Color และ Strap / Bracelet Type ต้องรองรับตัวเลือก `ระบุเอง` เมื่อค่าที่ Owner ต้องการไม่มีใน internal option master |
-| AC-ASSET-MGMT-007H | ค่า `ระบุเอง` ที่ normalize แล้วตรง option/alias ที่มีอยู่ต้องถูกผูก relation id ทันที ห้ามเก็บเป็น free-text ซ้ำ; ถ้าไม่ตรงต้องเก็บเป็น snapshot โดย relation เป็น `null` และเขียนลง suggestion pool พร้อม usage count |
-| AC-ASSET-MGMT-008 | Add Asset ต้องมี provenance step ก่อน final Save / Upload โดยให้เลือก `Owner (Asset)` หรือ `Consignment` และข้อมูลทั้งสองแบบต้องเป็น private |
-| AC-ASSET-MGMT-008A | Provenance ต้องแยก `Owner (Asset)` purchase information ออกจาก `Consignment` consignor/terms information |
-| AC-ASSET-MGMT-008B | หากเลือก `Owner (Asset)` ต้อง require Purchase Price ก่อน Save และ optional field ที่ว่างต้องบันทึกเป็น empty/null โดยไม่สร้าง `N/A` |
-| AC-ASSET-MGMT-008C | Optional private fields ที่ว่างต้องไม่แสดงใน Viewer/Public surfaces และ Owner private section ควรซ่อน field ว่างหรือแสดง owner-only prompt เฉพาะ section ที่ไม่มีข้อมูล |
-| AC-ASSET-MGMT-008D | Asset สถานะ Sale ต้องให้ Owner แก้ `Owner (Asset)` หรือ `Consignment` provenance ได้ตาม type ที่เลือก; Status = Show หรือ Hide แก้ได้เฉพาะ `Owner (Asset)` provenance; Sold Asset ต้องเป็น read-only |
-| AC-ASSET-MGMT-008E | หากเลือก `Consignment` ต้อง require Full Name, Phone Number และ Asking Price ก่อน Save |
-| AC-ASSET-MGMT-008F | Consignment Asking Price ต้องใช้ source เดียวกับ Commerce / listing Asking Price และต้อง sync กันหาก user แก้ใน step ใด step หนึ่ง |
-| AC-ASSET-MGMT-008G | `Consignment` ต้องเลือกได้เฉพาะ Asset status = Sale เท่านั้น; Status = Show หรือ Hide ต้องแสดงเฉพาะ `Owner (Asset)` provenance form |
-| AC-ASSET-MGMT-008H | หาก Asset ที่มี `Consignment` ถูกเปลี่ยนจาก Sale เป็น Show หรือ Hide ต้องบังคับเปลี่ยน provenance type เป็น `Owner (Asset)` หรือปิด consignment data ก่อนบันทึก |
-| AC-ASSET-MGMT-008I | หลัง Owner กด Save ใน Edit Provenance ต้องแสดง confirmation เฉพาะ context: `Save purchase history?` สำหรับ Owner (Asset) หรือ `Save consignment details?` สำหรับ Consignment และห้ามใช้ Edit Asset body ที่อ้างถึง current status |
-| AC-ASSET-MGMT-008J | Asset ที่เป็น `Consignment` ต้องไม่ถูกนำไปรวมใน Portfolio / Asset Value |
-| AC-ASSET-MGMT-009 | Add / Edit Asset ต้องให้เลือก status ได้เฉพาะ Sale, Show และ Hide |
-| AC-ASSET-MGMT-010 | Add / Edit Asset ต้องไม่ให้เลือก Sold เป็น status ปกติ |
-| AC-ASSET-MGMT-010A | Change Status sheet ต้องให้เลือกเฉพาะ Sale, Show และ Hide โดยไม่มี Sold option และต้อง disable Save เมื่อเลือกสถานะเดิม |
-| AC-ASSET-MGMT-010B | Change Status สำเร็จต้องแสดง toast `Asset status updated.` และอัปเดต card/detail/feed ตาม visibility ของสถานะใหม่ทันที |
-| AC-ASSET-MGMT-010C | Change Status ล้มเหลวต้องแสดง `Unable to update asset status. Please try again.` และต้องไม่เปลี่ยนสถานะจริง |
-| AC-ASSET-MGMT-010D | Asset ที่เป็น Consignment หากเปลี่ยนจาก Sale เป็น Show หรือ Hide ต้องแสดง warning `Change to owner asset?` และบังคับแปลงเป็น `Owner (Asset)` provenance โดย require Purchase Price ก่อนบันทึก |
+| AC-ASSET-MGMT-004 | Asset mode ต้องใช้ composer เดียวกับ post mode — title `เพิ่มสินทรัพย์ใหม่`/`Add Asset`, caption placeholder `เขียนคำอธิบายสินทรัพย์…`/`Describe this asset…`, primary `Add Asset` |
+| AC-ASSET-MGMT-005 | Asset mode ต้องมี Visibility pick `โชว์`/`Show` (default) · `ซ่อน`/`Hide` · `โพสต์ลงฟีด`/`Post to feed` แทน drawer toggle พร้อม sub-copy ตาม prototype |
+| AC-ASSET-MGMT-006 | `Add Asset` ต้องสร้าง `PF_ASSETS` drawer record เสมอ (`cfToPortfolio`) + link `assetId` — ทุก visibility path |
+| AC-ASSET-MGMT-007 | `Show` → drawer-only post `pfkind:"show"` (`PF_MINE`) — ต้องไม่เข้า feed/search/WA; `Hide` → `pfkind:"hide"` owner-only เช่นกัน |
+| AC-ASSET-MGMT-008 | `Post to feed` → `insertNewPost` `pfkind:"sale"` — เข้า feed + `ขาย` tab + search/WA eligible; WA match → toast `Watch alert matched` |
+| AC-ASSET-MGMT-009 | Add Asset ต้องไม่มี confirmation/`Adding...` state — save แล้วกลับ own profile grid + toast ตาม visibility (`Saved to My Assets · posted to feed ✓`/`· shown on profile ✓`/`· private ✓`) |
+| AC-ASSET-MGMT-010 | Add Asset ต้องไม่มี required field นอกเหนือ ≥1 media — primary disabled จนกว่ามี media; รูปอย่างเดียว save ได้ |
 
-## Status & Visibility
+## Fields & Spec Free-Text
 
 | AC ID | Criteria |
 |---|---|
-| AC-ASSET-MGMT-011 | Asset สถานะ Sale ต้องแสดงใน Owner Profile, Public Profile, Feed, Search และ Watch Alert |
-| AC-ASSET-MGMT-012 | Asset สถานะ Show ต้องแสดงใน Owner Profile และ Public Profile เท่านั้น |
-| AC-ASSET-MGMT-013 | Asset สถานะ Hide ต้องเห็นเฉพาะ Owner |
-| AC-ASSET-MGMT-014 | Asset สถานะ Sold ต้องเห็นเฉพาะ Owner |
-| AC-ASSET-MGMT-015 | Hide และ Sold ต้องไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search และไม่เข้า Watch Alert |
+| AC-ASSET-MGMT-011 | Watch details ต้องเป็น `CF_SPECS` 22 fields free-text + Description textarea — ต้องไม่มี option list/autocomplete/Market Data link/`ระบุเอง` |
+| AC-ASSET-MGMT-012 | เฉพาะ `Condition` (5 fixed single-select) + `Box & papers` (4 fixed toggle) ที่เป็น options — กดซ้ำยกเลิก Box ได้; render เป็น `chips` + Item Details |
+| AC-ASSET-MGMT-013 | `Add price` = digits + auto-comma optional — เว้นว่าง = showcase (ไม่มี price tag / ไม่มี `Price on request` label) |
+| AC-ASSET-MGMT-014 | Clip media ต้องใช้ได้ใน asset mode เหมือน post mode (`clips[]` ≤10 รวมกับ photos) |
 
-## Mark as Sold
-
-| AC ID | Criteria |
-|---|---|
-| AC-ASSET-MGMT-016 | Mark as Sold ต้องเปิด Sale Record Form ก่อนเปลี่ยนสถานะเป็น Sold |
-| AC-ASSET-MGMT-016A | Mark as Sold จาก Owner Feed more menu ต้องเปิด Sale Record Form โดยตรง และไม่ต้องผ่าน Edit Asset |
-| AC-ASSET-MGMT-016B | หลังกรอก Sale Record และกด Save ต้องแสดง confirmation copy `Save sale history?` / `บันทึกการขาย?` และห้ามใช้คำว่า `Confirm sold out?` |
-| AC-ASSET-MGMT-017 | Sale Record Form ต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method และ Attachment |
-| AC-ASSET-MGMT-018 | เมื่อ Mark as Sold สำเร็จ Asset ต้องหายจาก Feed, Following, Favorites, Search และ Watch Alert ทันที |
-| AC-ASSET-MGMT-019 | เมื่อ Mark as Sold สำเร็จ Offer อื่นต้องถูก Auto Reject |
-| AC-ASSET-MGMT-020 | Sold Asset ต้องไม่สามารถ Edit ข้อมูลหลักได้ |
-| AC-ASSET-MGMT-021 | Sold Asset ต้องเปิดดู Sold History ได้ |
-
-## Delete Asset
+## Purchase Cost (private)
 
 | AC ID | Criteria |
 |---|---|
-| AC-ASSET-MGMT-022 | Delete Asset ต้องมี Confirmation และ copy ต้องระบุ `This action cannot be undone.` |
-| AC-ASSET-MGMT-022A | Delete Asset จาก Owner Feed more menu ต้องใช้ Confirmation เดียวกับ Asset Management และไม่มี Undo |
-| AC-ASSET-MGMT-023 | Owner ต้องสามารถ Delete Asset ที่ไม่ใช่ Sold ตาม policy ของ V1 ได้ |
-| AC-ASSET-MGMT-024 | Sold Asset ต้องไม่สามารถ Delete ผ่าน Asset Management ได้ |
-| AC-ASSET-MGMT-025 | เมื่อ Delete Asset สำเร็จ Asset ต้องหายจาก Feed, Search, Watch Alert และ Public Profile |
-| AC-ASSET-MGMT-026 | เมื่อ Delete Asset สำเร็จ Chat ที่เกี่ยวข้องต้องยังอยู่ แต่ Reference Asset ต้องใช้ deleted asset state |
-| AC-ASSET-MGMT-027 | เมื่อ Delete Asset สำเร็จ Offer ที่เกี่ยวข้องต้องเป็น Cancelled |
-| AC-ASSET-MGMT-027A | เมื่อ Delete Asset สำเร็จ Asset ต้องไม่แสดงใน owner list ปกติและไม่ถูกนำไปรวมใน Portfolio / Asset Value |
-| AC-ASSET-MGMT-027B | Backend/BO ต้องยังเก็บ record ของ Asset ที่ลบโดยเจ้าของ ตาม retention policy เพื่อ audit/report/dispute/compliance |
-| AC-ASSET-MGMT-027C | Asset ที่ถูก Back Office ซ่อนถาวรต้องไม่สามารถ Delete ผ่าน Front Office ได้ |
-| AC-ASSET-MGMT-027D | Asset ที่ถูก Back Office ซ่อนถาวรต้องแสดงให้ Owner เห็นแบบ read-only พร้อมสถานะ `ถูกซ่อนถาวรโดยผู้ดูแล` |
-| AC-ASSET-MGMT-027E | เมื่อ Owner Delete Asset สำเร็จ BO ต้องมี Asset Status History / Audit History ระบุว่าเจ้าของเป็นผู้ลบ พร้อม before/after state และ timestamp |
+| AC-ASSET-MGMT-015 | `Cost details (private)` pane ต้องแสดงเสมอใน asset mode (post/edit mode เมื่อ drawer ON) — fields: `ราคาซื้อ` (digits+comma) + `วันที่ซื้อ` (date, min 1900-01-01, max วันนี้) + privacy note |
+| AC-ASSET-MGMT-016 | Purchase date invalid → `is-err` + `pane-err` `วันที่ซื้อไม่ถูกต้อง`/`Invalid purchase date`; future → `วันที่ซื้ออยู่ในอนาคตไม่ได้`/`Purchase date can't be in the future`; `Done` บน cost pane ต้องปิดไม่ได้จนกว่า valid |
+| AC-ASSET-MGMT-017 | Cost fields ต้อง optional — เว้นว่างได้; เก็บลง `purchase`/`bought` บน drawer record เท่านั้น |
+| AC-ASSET-MGMT-018 | Purchase cost + sold history + portfolio value ต้อง private — ไม่แสดงบน public surfaces ใด ๆ (00_GLOBAL §14) |
 
-## Lifecycle
+## Status & Transitions
 
 | AC ID | Criteria |
 |---|---|
-| AC-ASSET-MGMT-028 | เมื่อเปลี่ยน Sale → Hide Asset ต้องหายจาก Feed, Following, Favorites, Search และ Watch Alert |
-| AC-ASSET-MGMT-029 | เมื่อเปลี่ยน Hide → Sale Asset ต้องกลับเข้า Feed, Search และ Watch Alert หากตรงเงื่อนไข |
-| AC-ASSET-MGMT-030 | เมื่อเปลี่ยน Show → Sale Asset ต้องแสดงใน Feed, Search และ Match Watch Alert |
-| AC-ASSET-MGMT-031 | เมื่อเปลี่ยน Sale → Show Asset ต้องหายจาก Feed, Search และไม่ Match Watch Alert แต่ยังอยู่ใน Public Profile |
+| AC-ASSET-MGMT-019 | Canonical statuses = `sale`/`show`/`hide`/`sold` เท่านั้น (+ kind `post` สำหรับโพสต์ไม่ผูก drawer) — `sold` ต้องไม่มีในทุก status pick |
+| AC-ASSET-MGMT-020 | Status change ต้องทำผ่าน Edit info `Profile status` pick (`stt-opt` — drawer ON) เท่านั้น — ต้องไม่มี standalone Change Status sheet/Edit Asset form |
+| AC-ASSET-MGMT-021 | `sold` post ต้องเป็น terminal: own-post menu แสดง `View sale record` แทน `Edit`, drawer toggle locked + `This item lives in your Sold history`, `applyPostEdit` ต้องไม่เปลี่ยน `pfkind` |
+| AC-ASSET-MGMT-022 | Edit info → `show`/`hide`/`sold` ต้องดึงโพสต์ออก feed ทันที (`refreshPostViews`) + หลุด search/WA matching; → `sale` (บน feed post) ต้องเข้า feed ใหม่ |
+| AC-ASSET-MGMT-023 | Drawer toggle OFF ต้องตัด `assetId` + splice `PF_ASSETS` + `pfkind:"post"` — โพสต์อยู่ feed แต่หลุด status tabs/search/WA (sold link คงไว้) |
+| AC-ASSET-MGMT-024 | Visibility matrix ต้องตรง canonical 00_GLOBAL §10 ทุกช่อง (Sale/Show/Hide/Sold/post × Owner/Public/Feed/Search/WA) |
+
+## Mark as Sold & Sale Record
+
+| AC ID | Criteria |
+|---|---|
+| AC-ASSET-MGMT-025 | `Mark as sold` บน own-post menu ต้องแสดงเฉพาะ `pfkind` ∈ `sale`/`show`/`hide` — `post`/`sold` ไม่แสดง |
+| AC-ASSET-MGMT-026 | `Mark as sold` ต้องเปิด `sell:{id}` โดยตรงจากทั้ง own-post menu และ pfasset button — โพสต์ไม่มี link ต้อง materialize `assetFromPost` ก่อน |
+| AC-ASSET-MGMT-027 | Sale Record form ต้องมีเฉพาะ `Sale price (THB)` (prefill asking, required >0) + `Sale date` (default/max วันนี้, required) + Expected gain live (เมื่อ `purchase > 0`) — ไม่มี Buyer/Contact/Payment/Attachment |
+| AC-ASSET-MGMT-028 | Save fail ต้อง inline `pe-err` (`Sale price required`/`Sale date required`/`Invalid sale date`) + focus field แรก — ต้องไม่เปลี่ยนสถานะ |
+| AC-ASSET-MGMT-029 | Save ผ่านต้องไม่มี confirmation — `markAssetSold` ย้าย `PF_ASSETS`→`PF_SOLD` + linked posts `pfkind:"sold"` + push `sold:{id}` (ตัด sell/pfasset ทิ้ง) + toast `Sale recorded · moved to Sold history ✓` |
+| AC-ASSET-MGMT-030 | Mark as Sold สำเร็จต้องหลุด Feed/Search/WA/profile status tabs ทันที ตาม 00_GLOBAL §12 (canonical — prototype `salePosts()` leak เป็น documented defect ไม่ใช่ spec) |
+| AC-ASSET-MGMT-031 | `sold:{id}` ต้องแสดง Sale price + Realized G/L + Sale record card + Return card (N/A เมื่อไม่มี cost) + private positioning; `soldFromPost` materialize ให้โพสต์ sold ที่ไม่มี link |
+| AC-ASSET-MGMT-032 | pfasset `Mark as sold` button ต้องแสดงเฉพาะ `pfoEligible` (status ∈ sale/show/hide + own) |
+
+## Asset List & Detail
+
+| AC ID | Criteria |
+|---|---|
+| AC-ASSET-MGMT-033 | `portfolio` ต้องเข้าจาก own-profile wallet icon เท่านั้น — แสดง Total invested (Private tag) + `Assets` rows + `Sold history` link + exclusion note; list = `pfoEligible` เท่านั้น |
+| AC-ASSET-MGMT-034 | `pfasset:{id}` ต้องแสดง hero + status chip + Value card (private) + Listing card (เฉพาะ `sale`) + `Mark as sold` — ต้องไม่มี Edit/Delete action บนหน้านี้ |
+| AC-ASSET-MGMT-035 | `soldhist` ต้องแสดง desc exclusion note + rows `Sold {date}` + price/`N/A` → `sold:{id}`; ว่าง → `No data found` |
+| AC-ASSET-MGMT-036 | Missing id บน `pfasset:`/`sell:`/`sold:` ต้อง `No data found` empty + head คงอยู่ |
+
+## Delete & Lifecycle
+
+| AC ID | Criteria |
+|---|---|
+| AC-ASSET-MGMT-037 | Delete ต้องอยู่ที่ post level เท่านั้น — confirm `Delete post?`/`This post will be permanently deleted.` + permanent + toast `Post deleted`; ไม่มี delete บน drawer surfaces |
+| AC-ASSET-MGMT-038 | Post deleted ต้องหายทุก surface; stale link → `This post is no longer available` (contract: unavailable state) — drawer record behavior ตาม Delete Rule contract (prototype orphan = deviation) |
+| AC-ASSET-MGMT-039 | Private data ต้องไม่หลุด — purchase cost/sold/portfolio value ไม่แสดงบน viewer/public surfaces ใด ๆ |
+| AC-ASSET-MGMT-040 | BO ซ่อนถาวร (contract): owner เห็น read-only + ไม่ public + ไม่รวม portfolio + owner ไม่มี delete/edit/sell rights |
 
 ---
 
-# 18. Related Modules
+# 17. Related Modules
 
-- Profile Module
-- Feed Module
-- Search & Filter Module
-- Watch Alert Module
-- Asset Detail Module
-- Chat Module
-- Offer Module
-- Portfolio Module
-- Notification Module
-- Trust & Safety Module
+- [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) — status model §9, visibility §10, gate §11, lifecycle §12, privacy §14
+- [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) — routes §6.6, back §6.7, entry matrix §7
+- [02_FEED_MODULE.md](02_FEED_MODULE.md) — post model, composer canonical, own-post menu, eligibility, lifecycle
+- [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) — Post Detail (public detail page)
+- [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) — profile shell/grid/status tabs/`+` entry shell
+- [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) — WA matching/notifications
+- [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) — archive/library entries
+- [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) — valuation math, totals, G/L, market comparison, sold history analytics
+- [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) — report/block effects
+- [16_INTEGRATIONS_MODULE.md](16_INTEGRATIONS_MODULE.md) — market data contract
 
 ---
 
-# 19. Future Enhancement
+# 18. Future Enhancement
 
-- Bulk Upload
-- Asset Import
-- Asset Archive
-- QR Asset Verification
-- Video Upload
-- Watch Authentication Service
-
+- Structured spec options: Market Data autocomplete (brand/model/reference), `spec_options` option master + `ระบุเอง` free-text promotion + suggestion pool + seed files — contract เมื่อ market-data model พร้อม (spec เดิมเก็บเป็น reference: relation `*_id` + `*_snapshot` + BO curation flow)
+- Bulk Upload / Asset Import / QR Asset Verification / Watch Authentication Service
+- Provenance / Consignment (ถ้า master เพิ่ม entity)
+- Sale record extended fields (Buyer / Contact / Payment Method / Attachment) — ถ้า product ต้องการ record ละเอียดกว่า price+date
+- Persistence ของ drawer/sold records (ปัจจุบัน session memory)
+- Un-sold / sale record correction flow ที่มี audit trail
+- Delete drawer-record cascade (แก้ orphan deviation) + delete บน `PF_MINE` posts

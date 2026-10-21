@@ -1,6 +1,6 @@
 # 07 Chat Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §9–§10 (status/visibility), §11 (guest gate), §12 (lifecycle — chat อยู่เมื่อ sold/deleted), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.1–§10 (layer model, routes, back, entry matrix, unavailable contract) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (blkSheet/unblockDlg/report stack/`pf-msg` dead canonical — FSP-019 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (Post Detail entry semantics — FSP-018 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
 
 ---
 
@@ -8,722 +8,622 @@
 
 | Item | Detail |
 |---|---|
-| Module Name | Chat |
+| Module Name | Chat (Chat Center — spec เดิมตีความเป็น Offer-centric + Asset Reference model; prototype คือ LINE/IG Direct-style chat ที่ thread ผูก user + listing) |
 | Platform | Mobile Application |
 | Version | V1 |
 | Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD |
-
----
-
-# 1.1 Revision 2026-10 — Chat View (CHAT-001)
-
-ข้อสรุปจากประชุมล่าสุด (พี่คิง) **override กฎเดิมในเอกสารนี้ที่ขัดกัน** โดยเฉพาะเรื่อง Offer Card / Accept-Reject ในห้องแชท และ Pinned Asset Bar
-
-| หัวข้อ | กฎใหม่ |
-|---|---|
-| รูปแบบห้องแชท | แชทซ้าย-ขวาแบบ LINE / IG Direct — ข้อความเรา = ขวา (สีหลัก), คู่สนทนา = ซ้าย (พร้อม avatar), เวลา/สถานะ Read อยู่ข้าง bubble, คั่นวัน |
-| การต่อรองราคา | พิมพ์คุยกันตามธรรมชาติ **ไม่มี Offer Card และไม่มีปุ่ม Accept / Reject ในห้องแชท** |
-| อ้างอิงโพสต์สินค้า (CHAT-004) | เมื่อทักจากฟีด/โพสต์ แสดงการ์ดอ้างอิงโพสต์สินค้า (รูป + ชื่อ + ราคา + เจ้าของโพสต์) **แนบอยู่ในสายแชท (Message Stream) ฝั่งของผู้ส่งข้อความสอบถาม** ตามสไตล์การแชร์โพสต์ใน Instagram Direct (ไม่มีการ์ดลอยคั่นกลางจอ และในแอปไม่มี Story) มีข้อความแชทที่พิมพ์สอบถามต่อท้ายทันที แตะที่การ์ดแล้วเปิด Asset Detail ได้ |
-| Pinned Item Bar | **ยกเลิก** — ไม่มีแถบปักหมุดสินค้าด้านบนห้อง (ข้อความ/สินค้าล่าสุดอยู่ล่างสุดตามธรรมชาติของแชท) |
-| Chat Center | หน้ารวมแชท = ศูนย์กลางประวัติสนทนา สอบถาม และซื้อขายทั้งหมด |
-| View Toggle | ปุ่มสลับมุมมอง 2 แบบในหน้า Chat List: **Chats** (เรียงตามคู่สนทนา + เวลาล่าสุด, unread badge) และ **Items** (จัดกลุ่มตามสินค้า) |
-| Items Filter Dropdown (CHAT-002, CHAT-003) | แท็บ Items มีลูกศรชี้ลง `▼` สไตล์ LINE (แท็บ Chats ไม่มีลูกศร) — กดแล้วกาง Popover Filter มุมมน มีตัวเลือก **All items**, **Your listings**, และ **Items you asked about** พร้อม checkmark `✓` แสดงตัวเลือกปัจจุบัน กรองรายการสินค้าทันที; เมื่อสลับเมนูไปหน้าอื่น (เช่น Feed หรือ Profile) หรือกดไอคอน Chat ที่แถบเมนูล่างเพื่อเข้าแชทใหม่ ระบบจะรีเซ็ตกลับสู่มุมมองเริ่มต้นที่หน้า **Chats** ปกติ พร้อมเคลียร์ตัวกรองกลับเป็นค่าเริ่มต้นเสมอ |
-| Item → ผู้ทัก (CHAT-003) | **Your listings**: แถวสินค้าแสดงชื่อสินค้าคลีน (ไม่มีเลขวงเล็บซ้ำซ้อน) + ราคาและจำนวนแชท (เช่น `THB 380,000 · 14 chats` โดยตัดข้อความ unread ออกไม่ให้ซ้ำกับป้ายตัวเลขสีแดงทางขวา), เมื่อกดสินค้าจะเปิดหน้า Item chats เพื่อเลือกดูรายชื่อผู้ทักทั้งหมด โดยการ์ดหัวเรื่องปรับเป็นดีไซน์แคปซูลลอย (Floating Pill Capsule สไตล์เดียวกับแคปซูล Chats/Items ขอบมนกลม 999px + เงาลอยโปร่งแสง + รูปสินค้าทรงกลม badge 52px) บรรจุอยู่ภายในคอนเทนเนอร์เลื่อน (`ch-scroll`) ทำให้เลื่อนหน้าจอได้ทั้งหมดโดยไม่ฟิกตำแหน่งช่องค้นหา (แถวแชทสูง ~64px, avatar 44×44px เต็มรูป, preview 1 บรรทัด, unread badge, swipe actions) → กดเข้าห้องแชท; เมื่อกดย้อนกลับ `<` มาหน้า Items แล้วแตะสลับแท็บ Chats จะสลับมุมมองทันทีโดยไม่สไลด์หน้าจอซ้ำ<br>**Items you asked about**: แถวสินค้าแสดงราคา + ข้อความล่าสุดที่คุยกับผู้ขาย, เมื่อแตะสินค้าจะเปิดตรงเข้าสู่ห้องแชท (Chat Room) กับผู้ขายรายนั้นทันที โดยไม่ต้องผ่านหน้า Item chats ซ้ำซ้อน เนื่องจากมีคู่สนทนารายเดียวเสมอ |
-| Quick Ask | ปุ่ม Ask บนโพสต์ฟีด/Post viewer/Detail เปิดห้องแชททันทีพร้อมการ์ดอ้างอิงโพสต์และข้อความเริ่มต้นที่แก้ไขได้ (ค่าตั้งใน Chat Config) — ถ้ามีห้องเดิมของ user+สินค้าเดียวกันให้เปิดห้องเดิม, ห้องใหม่จะถูกสร้างในรายการเมื่อส่งข้อความแรก, ทักโพสต์ของตัวเองไม่ได้ |
-| Chat Config | ปุ่มตั้งค่าอยู่ที่หน้า Chat โดยตรง (ไอคอนเฟืองใน header) ไม่อยู่ใน Profile Settings: แจ้งเตือนข้อความ, แสดง preview, เฉพาะคนที่ follow ทักได้, มุมมองเริ่มต้น (People/Items), ข้อความ Quick Ask |
-| Swipe Actions & Modals (LINE Style - CHAT-006) | **Swipe Left (ปัดซ้าย)**: แสดงปุ่มสี่เหลี่ยมโค้งมนสีเทาอ่อน 2 ปุ่ม ได้แก่ `Hide` และ `Delete` (ตัวอักษรสีเข้ม พื้นหลังสีเทาอ่อน `#e9e9eb` ทั้งสองปุ่มตามแบบ LINE)<br>- กด Hide: แสดง Confirmation Modal สไตล์ iOS ตรงกลางจอ *"Hiding chats doesn't delete their messages."* พร้อมปุ่ม Cancel และ Hide (ตัวหนังสือสีแดง `#ff3b30`) กดยืนยันแล้วซ่อนแชทออกจากรายการ<br>- กด Delete: แสดง Confirmation Modal สไตล์ iOS ตรงกลางจอ *"Are you sure you want to delete this chat?"* พร้อมปุ่ม Cancel และ Delete (ตัวหนังสือสีแดง `#ff3b30`) กดยืนยันแล้วลบห้องแชทและข้อความถาวร<br>**Swipe Right (ปัดขวา)**: แสดงปุ่มวงกลมสีเขียวสด (LINE Green `#06c755`) 2 ปุ่ม ได้แก่:<br>1. `Pin / Unpin` (ปุ่มซ้าย): สลับสถานะปักหมุด โดยแสดงไอคอนหมุดเมื่อยังไม่ปัก และไอคอนหมุดขีดเฉียง (Unpin) เมื่อปักหมุดแล้ว — แชทที่ปักหมุดจะถูกจัดลำดับขึ้นไปอยู่ด้านบนสุดของ Chat List เสมอ พร้อม Badge หมุดสีน้ำเงิน (`#2b7fff`) ที่มุมขวาล่างของ Avatar<br>2. `Mute / Unmute` (ปุ่มขวา): สลับสถานะแจ้งเตือน โดยแสดงไอคอนปิดเสียงเมื่อเปิดแจ้งเตือน และไอคอนลำโพงมีเสียง (`chUnmute`) เมื่อปิดเสียงอยู่ — เมื่อปิดแจ้งเตือนจะแสดงไอคอนลำโพงปิดเสียงสีเทาข้างชื่อแชท<br>- ระบบ Auto-close Swipe: เมื่อแตะที่อื่น เลื่อนหน้าจอ (Scroll) หรือกดใช้งานปุ่มใดปุ่มหนึ่ง แถวที่เปิดอยู่จะหุบกลับสู่สถานะปกติทันที |
-
-Prototype: `Prototypes/fo-flow/index.html` — เมนู Chat ใน bottom nav (`data-navgo="chat"`), sub pages `chat`, `chatitem:<itemId>`, `chatroom:<threadId>`, `chatcfg`.
+| Document Type | Functional PRD - Master Aligned |
 
 ---
 
 # 2. Objective
 
-Chat Module ใช้สำหรับการสนทนาระหว่างผู้ซื้อและผู้ขาย โดยผูกบริบทกับ Asset Reference และ Offer Card เพื่อให้ผู้ใช้พูดคุย ต่อรองราคา ติดตาม Offer และดูสถานะ Asset ที่เกี่ยวข้องได้จากห้องสนทนาเดียวกัน
+Chat คือ member-only surface บน bottom-nav `แชท` (route root `chat` + stack ของหน้าย่อย) สำหรับสนทนาระหว่างผู้ซื้อกับเจ้าของ listing — ห้องสนทนาผูกกับคู่ **user + item (listing)** เสมอ: ทัก seller เดิมแต่คนละโพสต์ = ห้องใหม่พร้อม post reference card ของโพสต์นั้น (ไม่มี room merge, ไม่มี user→user chat เปล่า ๆ)
 
-โมดูลนี้ต้องคุม behavior ของ Chat Room, Asset Reference, Offer lifecycle, Block / Report และ Deleted / Sold Asset ให้ตรง master เพื่อไม่ให้ Chat หายผิดเงื่อนไขหรือแสดง Asset ที่ไม่พร้อมใช้งานเหมือนยังใช้งานได้
+Chat Center มี 2 มุมมอง: **Chats** (เรียงตามคู่สนทนา) และ **Items** (จัดกลุ่มตาม listing — `Your listings` ของตัวเอง / `Items you asked about`) ห้องแชทเป็นแบบ LINE/IG Direct: bubble ซ้าย-ขวา, day divider, avatar เฉพาะกลุ่มแรก, เวลาข้าง bubble, `Sent`/`Read` บนข้อความล่าสุดของฝั่งเรา, post reference card ในสายข้อความ, attach photos, search ในห้อง, เมนูห้อง (`≡` → `chmenu:`) พร้อม Mute/Profile/Block/Report, media gallery select-mode, และ Chat Config (`chatcfg`)
+
+โมดูลนี้ต้องคุม thread lifecycle (draft → first send), swipe actions (pin/mute/hide/delete), block/unblock ผ่าน shared `blkSheet`/`unblockDlg` ของ 06_PROFILE (canonical S-13), report flow ที่ข้าม picker ของแชท (`Report and delete` / `Report`), guest gate ด้วย Member Sheet และ reset rules เมื่อสลับ nav — โดยยึดพฤติกรรม prototype เป็นตัวตัดสินเมื่อ spec เดิมขัดกัน
 
 ---
 
 # 3. Prototype Reference
 
-- `Chat.png`
-- `Detail asset viewer.png`
-- `Detail asset owner.png`
-- `Notification.png`
+Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
+
+- Routes (`subHTML` ~17696–17702): `chat` → `chatListHTML`, `chatitem:{itemId}` → `chatItemHTML`, `chatroom:{threadId}` → `chatRoomHTML`, `chmenu:{threadId}` → `chatRoomMenuHTML`, `chsettings:{threadId}` → `chatRoomSettingsHTML` (**dead route** — ไม่มี emit `data-chgo="chsettings"` ที่ไหน), `chmedia:{threadId}` → `chatMediaGalleryHTML`, `chatcfg` → `chatCfgHTML`
+- State: `CHAT` (~17791–17794 — `view`/`itemFilter`/`filterMenuOpen`/`q`/`iq`/`threads`/`draft` + `cfg{notif,preview,followOnly,defView,quick}` default quick `สนใจสินค้าชิ้นนี้ครับ ยังอยู่ไหมครับ?`), `chatInit` seed (~17795–17834 — non-member → `threads=[]`; member seed = own items `M1`/`M2` + `ref(post)` threads; thread fields `id/user/item{id,cap,price,photo,owner,pid}/unread/draft/pinned/pinnedAt/muted/hidden/blocked/msgs[{f,t,at,day,read,img,isVideo}]/media[]/galState/searching/roomQuery`), `chatResetToDefault` (~17835–17842), `chGet` (threads ∪ draft ~17843–17846), `chTimeLbl`/`chUnread`/`chBadgeHTML`/`chBadgeSync` (~17847–17858 — badge cap `99+`), `chPostRender` (~17860–17863), `chEmptyHTML` (~17864), `chatNavHTML` = `botNavHTML("chat")` (~17865–17867 — nav เฉพาะหน้า list)
+- List helpers: `chThreadMatch` (~18474–18476 — match `user + item.cap + msg texts`), `chRowHTML` (~18477–18511 — avatar + pin badge + name + `Blocked` chip/mute icon + `You: ` preview + time + unread pill + swipe wrap), `chItemGroups` (~18512–18521 — group ตาม `item.id`, `mine = item.owner===CP_ME.name`, เก็บ insertion order), `chItemRowHTML` (~18522–18540 — mine → `{price} · N chats`; asked → `{price} · last msg`; `isDirectRoom` = !mine && 1 thread → `data-chgo="room"`), `chListBody` (~18541–18567 — pin-first sort + `pinnedAt` tie-break + filter sections + empties), `chatListHTML` (~18568–18619 — Chats/Items pill + Items caret + filter popover `Filter items by` (All items/Your listings/Items you asked about + checkmark) + gear `data-chgo="cfg"` + `ch-q` search), `chItemBody`/`chatItemHTML` (~18620–18655 — head `Item chats` + floating pill itemcard (`Your listing`/`@{owner}` · N chats) + `ch-iq` `Search people or messages` + rows)
+- Room: `chatRoomHTML` (~18656–18750 — header back + `data-pf-user` name + `room-search` + `more` ≡; searching header (placeholder `Messages` + clear + ✕); `ch-post-card` (`data-chgo="post"` + top scrim avatar/user + bottom scrim cap/price) ใน `.ch-m me` เมื่อ msgs ว่าง หรือแนบ msg แรก; `ch-day` divider; `them` avatar เฉพาะต้นกลุ่ม (`ch-mav-sp`); `Sent`/`Read` เฉพาะ `lastMe`; `formatText` + `<mark class="ch-hl">` + dim `opacity:0.25` (media dim เสมอตอน search); blocked → `ch-blocked-bar` (`You blocked this account` + `You can't message or call them unless you unblock them.` + `Unblock`); composer `+` attach + `ch-input` + `ch-send` disabled จนมี text), `openChatAttachSheet` (~18752–18795 — `Photos & videos` grid ≤8 unique photos จาก POSTS, `isVideo:false`), `openChatMediaViewer` (~18796–18814 — overlay X/backdrop close), `chatRoomMenuHTML` (~18816–18896 — head back + username; 4 ปุ่มวงกลม Mute/Unmute·Profile(`data-pf-user`)·Block/Unblock·Report; rows `Photos & videos` → `chmedia:` + thumb strip/`No photos or videos found.`; `Listings & Items` (cap truncate) → `data-chgo="post"`; footer `This chat is protected with End-to-End Encryption`), `chatMediaGalleryHTML` (~18898–18980 — head ✕/`{n} selected`/`Select`/`Cancel`/`Deselect` + grid + date label hardcode `October 2569 BE` + select badges ลำดับ + bottom bar Trash/Download + empty card), `chatRoomSettingsHTML` (~18981–19036 — **dead page**: Note notifications toggle, Chat wallpaper dead toast, Export chat history → clipboard + `คัดลอกประวัติแชทเรียบร้อยแล้ว`, Encryption keys `Letter Sealing` row, Delete data, Report), `chatCfgHTML` (~19037–19057 — toggles `notif`/`preview`/`followOnly` + defView Chats/Items + `chc-quick` ≤80)
+- Actions: `chSend` (~19058–19072 — blocked guard, `t.hidden=false`, draft → unshift เป็น thread จริง, move-to-top, push `{f:"me",at:"09:41",day:"Today",read:false}`, clear draft, refocus), `chatQuickAsk` (~19073–19092 — own → `This is your own listing`; blocked → `Cannot message a blocked account`; find thread `user+item.id` → un-hide; else `C.draft` prefill `cfg.quick` + item snapshot; remove `pv-open/detail-open/comments-open/pm-open/likes-open/details-open` → `openSub chatroom:{id}`), `openChatHideConfirm` (~19101–19128 — `Hiding chats doesn't delete their messages.` Cancel/Hide → `t.hidden` + `ซ่อนแชทแล้ว`), `openChatDeleteConfirm` (~19130–19167 — `Are you sure you want to delete this chat?` Cancel/Delete → splice + `ลบแชทเรียบร้อยแล้ว` + unwind `chatroom:`/`chmenu:`/`chsettings:` tops), `chatClick` (~19170–19443 — `data-chact` pin/mute/hide/del/block-user/unblock-room/report-chat-user/export-chat/wallpaper/report-chat + filter popover + `data-chview` + `data-chtgl`/`data-chdef` + `data-chgo` room/item/cfg/more/chsettings/chmedia/attach/room-search/post + `data-chsendmedia` + `data-chmedia` + gallery select/trash/download + send + `.ask-pill,.chat-fab`), swipe gestures (~19445–19530 — reveal ±40px, dismiss ±30px, vertical abort, rubber-band cap, suppress click 250ms)
+- Block/report shared: `blkSheetHTML(u, fromChat)` (~16891–16906 — fromChat → `Block` เดียว), `chatReportSheetHTML` (~16908–16919 — `Are you sure you want to report {u}?` + `Report and delete`/`Report`/`Cancel`), `unblockDlgHTML` (~16921–16928), `pfSetBlocked`/`pfIsBlocked` (~16868–16888 — `th.blocked` loop ทุก thread ของ user + `p.blocked` + feed re-render), handlers `ch-rep-del-btn`/`ch-rep-only-btn`/`ch-sheet-cancel-btn` (~21757–21787 — set `rpFromChat`/`rpDelChat` → `rpPush report:user`), report head ไม่มี `<` เมื่อ `rpFromChat` (~17713/~17745), `rp-step` block → `blkSheetHTML(u, rpFromChat)` (~21812–21822), `rp-done` → `rpClose` + `Report submitted · thanks for letting us know` (~21830–21836), `rpClose` delete wiring (~15125–15144 — `hadDone && rpDelChat` → `t.hidden` + ออกจาก `C.threads` + strip `chmenu:`/`chatroom:` + unshift `chat`), `dlg-unblock-go` → `pfSetBlocked(false)` + `Unblocked` (~20888–20896), `blk-go` → `Blocking` toast (~21798–21808)
+- Entries: `askBtnHTML` (~13379–13387 — styles ตาม `state.ask`: ico/txt/outline/solid; `auto`→solid/outline; label `สอบถาม`/`Ask` + title `สอบถามผู้ขาย`/`Ask seller`), feed card action-row + `price-footer` variant (~14255/~14280), pv post actions (~14713 — `p.type==="sale"` เท่านั้น), `data-chgo="post"` → `openPostDetail` หรือ `Listing detail isn't in this prototype yet` (~19325–19334), ask fallback `findPost` ไม่เจอ → `Not in this prototype yet` (~21996–21997), room `.ch-input` draft persist + send-enable (~20223–20227), `ch-room-search-in` live (~20228–20242), `ch-q`/`ch-iq` live (~20243–20254), `chc-quick` live (~20255), Enter → `chSend` (~20138)
+- Nav/session: `data-navgo` → `chatResetToDefault()` + `openSub` (~21484–21501), chat/profile pages slide-back-out-right (~20977 — `topSub.startsWith("chat"/"chmenu:"/"chsettings:"/"profile:")` && stack>1 → `rpBack`), `chmedia:` close = pop + swap (~20965–20976), `applySessionData` reset `CHAT.inited/threads/draft` (~23230), `chatInit` non-member guard (~17798)
+- Gate: `GUEST_GATE_SEL` (~23269–23278 — chat-family gated = `[data-navgo="chat"]`, `.ask-pill`, `.chat-fab`, `.ch-rep-del-btn`, `.ch-rep-only-btn`, `.blk-go`, `.blk-rep`), `obGate` (~23279–23283)
+- Dead/tooling (ห้ามเขียนเป็น feature): `chsettings:{id}` route + หน้าทั้งหน้า (no emit), `chatPopHTML`/`.chat-fab`/`.cp-*`/`sendChat`/`closeChatPop` (~13488–13529 + handlers ~22016–22036 — render เฉพาะ `state.ask==="bubble"` ใน dl2 `igDetailHTML` (~13605) + ถูก `chatQuickAsk` intercept ทุกกรณี → `.chat-pop` unreachable), `state.ask` variant flag (dev artifact), `pfRestrictHint` defined แต่ไม่มี call site (~16930–16938), E2E/`Letter Sealing` copy claims ไม่มี implementation
 
 ---
 
 # 4. Master Alignment Summary
 
-Chat Module ต้องยึด master baseline ต่อไปนี้เป็นหลัก:
-
-- Chat ใช้สำหรับการสนทนาระหว่างผู้ซื้อและผู้ขาย
-- สร้าง Chat Room เมื่อส่งข้อความแรก ไม่ใช่เมื่อกดปุ่ม Chat อย่างเดียว
-- Same Asset ใช้ห้องเดิม
-- Different Asset ใช้ห้องเดิม แต่ Reference Asset เปลี่ยนเป็น Asset ล่าสุด
-- Asset Deleted แล้ว Chat ยังอยู่
-- Asset Deleted ต้องแสดง Reference Asset ว่า `รายการนี้ไม่พร้อมใช้งานแล้ว`
-- Asset Sold แล้ว Chat ยังใช้งานได้
-- Search Chat รองรับ
-- Block User รองรับ
-- Report User รองรับ
-- Chat Room รองรับ Text, Image, File, Asset Card, Offer Card
-- Delete Chat ต้องมี Confirmation
-- Accepted Offer เปิด Chat Room
-- Rejected Offer เปิด Asset Detail
-- Asset Deleted ทำให้ Offer เป็น Cancelled
-- Asset Sold ต้อง Auto Reject Offer อื่น
-- Offer Accepted Notification เปิด Chat Room
-- Offer Rejected Notification เปิด Asset Detail
+| Topic | Master Baseline | Chat Module Rule |
+| --- | --- | --- |
+| Chat ใช้สนทนาผู้ซื้อ–ผู้ขาย | master เดิม | ตรง — แต่ thread ผูก **user + listing** ไม่ใช่ user คนเดียว (per-item rooms ตาม prototype) |
+| Room creation | สร้างเมื่อส่งข้อความแรก | ตรง — `C.draft` สร้างตอนกด Ask; เข้า `C.threads` เมื่อ `chSend` แรกเท่านั้น |
+| Reference Asset | Asset Reference Card + states (spec เดิม) | **post reference card** snapshot (รูป + owner + caption + price) — ไม่มี sold/deleted state บนการ์ด; tap → Post Detail ตาม 05 (missing → toast + unavailable contract) |
+| Lifecycle โพสต์ | 00_GLOBAL §12 — chat อยู่เมื่อ sold/deleted | thread + ประวัติคงอยู่; การ์ดเป็น snapshot นิ่ง; tap post ที่หาย → `Listing detail isn't in this prototype yet` (contract: `รายการนี้ไม่พร้อมใช้งานแล้ว` ตาม 00_GLOBAL §11/00_NAV §10) |
+| Block | 00_GLOBAL §13 + canonical 06 (S-13) | shared `blkSheetHTML(u, fromChat=true)` → `Block` ปุ่มเดียว; effects เดียวกับ profile (PF_BLOCKED + unfollow + `th.blocked` + `p.blocked`); room = read-only + `ch-blocked-bar` + `Unblock` |
+| Report | 00_GLOBAL §13 + report stack 00_NAV §6.1/§6.6 | chat entry ข้าม `report:pick` → `report:user` ตรง (ไม่มี `<`, เฉพาะ ✕) + `Report and delete` path |
+| Guest gate | 00_GLOBAL §11 Member Sheet | ทุก chat entry อยู่ใน `GUEST_GATE_SEL` — guest เห็นแค่ nav icon; session `new`/`guest` → `threads=[]` |
+| Private data | 00_GLOBAL §14 | chat surfaces ไม่แสดง private data (purchase cost/sold history อยู่ 04/14) |
+| Deep link | 00_NAV §10/§12 | contract เท่านั้น — prototype ไม่มี chat deep link |
+| ไม่มีใน V1 | — | Offer ทั้งชุด (ถอดแล้ว), File message, Asset/Offer card types, typing indicator, incoming simulation, real read receipts, E2E encryption, chat wallpaper, export chat, room settings page (`chsettings` dead), chat จาก profile/follower row (`pf-msg` dead — canonical 06), chat entry บน Post Detail (canonical 05), voice/group/edit/reaction/pinned message |
 
 ---
 
-# 5. Figma Gap Checklist For Chat Module
+# 5. Scope
 
-รายการนี้ใช้เป็น checklist สำหรับปรับ Figma เฉพาะ Chat Module ให้ตรงกับ master ก่อนส่งต่อ Dev/QA
+## In Scope
 
-| Priority | Gap | Master Baseline | Figma Action |
-|---|---|---|---|
-| High | ยังไม่เห็น Asset Deleted state ใน Chat ชัดเจน | Chat ยังอยู่ แต่ Reference Asset ต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว` | เพิ่ม deleted asset reference state ใน Chat Room |
-| High | ยังไม่เห็น Asset Sold state / sold continuation ชัดเจน | Asset Sold แล้ว Chat ยังใช้งานได้ | เพิ่ม sold asset reference state และยืนยันว่าส่งข้อความต่อได้ |
-| High | ยังไม่เห็น Block / Report entry ใน Chat | Chat ต้องรองรับ Block User และ Report User | เพิ่ม action menu/state สำหรับ block/report |
-| High | Offer Accepted / Rejected destination ยังไม่ครบ | Accepted Offer เปิด Chat Room; Rejected Offer เปิด Asset Detail | เพิ่ม destination states จาก notification และ offer cards |
-| Medium | Room creation อาจสื่อว่าสร้างเมื่อกด Chat | Chat Room ต้องสร้างเมื่อส่งข้อความแรก | ปรับ empty/pre-chat state ให้ชัดว่า room created หลังส่งข้อความแรก |
-| Medium | Different Asset same user rule ยังไม่ชัด | Different Asset ใช้ห้องเดิม แต่ Reference Asset เปลี่ยนเป็น Asset ล่าสุด | เพิ่ม flow/state ที่ reference asset เปลี่ยนตาม asset ล่าสุด |
-| Medium | Delete Chat behavior ยังไม่ผูก confirmation ชัดเจน | Delete Chat ซ่อนห้องจาก Chat List เฉพาะฝั่งผู้กด ไม่ลบ server history และไม่กระทบคู่สนทนา | เพิ่ม delete confirmation state พร้อม copy ว่าเป็นการซ่อนจากรายการของผู้ใช้คนนี้เท่านั้น |
-| Medium | Attachment type ยังไม่ล็อกใน Figma | Master รองรับ Text, Image, File, Asset Card, Offer Card | ระบุ allowed attachment/content types ตาม master |
-| Medium | Delete Chat restore UI ต้องไม่อยู่ใน V1 | V1 ไม่มี restore UI และยังคง message/archive ฝั่ง server ตาม retention policy | ห้ามเพิ่ม restore UI ใน Figma V1 |
+- Chat Center root `chat` — Chats view (rows, unread, pin/mute/blocked chips, `You:` preview, time, search `ch-q`) + Items view (sections, filter popover, `isDirectRoom`) + gear → `chatcfg`
+- `chatitem:{itemId}` — item chats page (floating pill itemcard, `ch-iq`, rows + swipe)
+- `chatroom:{threadId}` — LINE-style room (header, bubbles, day dividers, `Sent`/`Read`, post ref card, composer, draft persist, blocked bar)
+- Room search mode (`room-search` → header swap, highlight + dim)
+- Attach sheet + media message + `ch-media-viewer` overlay
+- `chmenu:{threadId}` — 4 circular actions + media strip + `Listings & Items` row
+- `chmedia:{threadId}` — gallery + select mode + Trash/Download
+- `chatcfg` — toggles + default view + Quick Ask text
+- Swipe actions (Pin/Mute circular + Hide/Delete rect + iOS confirm modals)
+- Quick Ask entry (`.ask-pill` surfaces) + own/blocked guards + draft room
+- Block/Unblock ผ่าน shared surfaces (`blkSheet` fromChat, `unblockDlg`, `th.blocked` sync)
+- Report จาก chat (`chatReportSheet` → `report:user` → `report:done` + `rpDelChat` unwind)
+- Guest gate + session semantics + nav reset + back behavior
+- Deviations vs spec เดิม + dead code + quirks
 
----
+## Out Of Scope (module อื่นเป็นเจ้าของ)
 
-# 6. Scope
-
-Chat Module ใน V1 ครอบคลุม:
-
-- Chat List
-- Chat Room
-- Start Chat from Asset Detail
-- Text Message
-- Image Message
-- File Message
-- Asset Reference Card
-- Offer Card
-- Incoming Offers view / filter
-- Search Chat
-- Unread Count
-- Delete Chat with Confirmation
-- Block User
-- Report User
-- Asset Deleted Reference State
-- Asset Sold Reference State
-
-ไม่รวมใน V1:
-
-- Voice Message
-- Typing Indicator
-- Message Reaction
-- Pinned Message
-- Message Edit
-- Group Chat
+- Post model / `findPost` / eligibility — canonical [02_FEED_MODULE.md](02_FEED_MODULE.md); เอกสารนี้ระบุเฉพาะ `ask-pill` entry + item snapshot fields
+- Post Detail internals — [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (FSP-018); เอกสารนี้ระบุเฉพาะ `data-chgo="post"` handoff
+- `blkSheetHTML`/`unblockDlgHTML` anatomy + `pfSetBlocked` effects + `pf-msg` dead — canonical [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (FSP-019); เอกสารนี้ระบุเฉพาะ fromChat variant + room effects
+- Report stack mechanics (`rpPush`/`rpBack`/`rpClose`/`PM_REASONS`) + moderation semantics — [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md); เอกสารนี้ระบุเฉพาะ chat entry paths (`rpFromChat`/`rpDelChat`)
+- Member Sheet internals — 00_GLOBAL §11 / 01_AUTH; Bottom nav + layer model — 00_NAV §6
+- Notification center / alerts feed — [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (FSP-021); chat badge = nav pill เท่านั้น
+- Settings `blocked` list (`m-unblock`) — [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md)
+- BO moderation — master contract เท่านั้น
+- External deep-link routing — contract 00_NAV §10/§12
 
 ---
 
-# 7. Screen Mapping
+# 6. Screen Mapping
 
-หน้าจอที่เกี่ยวข้องในโมดูลนี้:
-
-1. Chat List
-2. Chat Room
-3. Pre-Chat / First Message State
-4. Incoming Offers
-5. Asset Reference Card
-6. Offer Card
-7. Deleted Asset Reference State
-8. Sold Asset Reference State
-9. Search Chat
-10. Delete Chat Confirmation
-11. Block User Confirmation
-12. Report User
-13. Empty Chat State
-14. Unable To Send State
-15. Global Login Required Dialog
+| Screen / State | Prototype | Description |
+| --- | --- | --- |
+| Chat List — Chats view | `chat` + `chatListHTML` view `user` | pill tabs + gear + `ch-q` + thread rows + swipe wraps + bottom nav |
+| Chat List — Items view | `chat` view `item` + `chItemGroups` | sections `Your listings`/`Items you asked about` + aggregate rows |
+| Items Filter Popover | `.ch-filter-popover` + `.ch-filter-backdrop` | `Filter items by` + 3 options + checkmark (เปิดเมื่อแตะ Items pill ซ้ำ) |
+| Item Chats | `chatitem:{itemId}` + `chatItemHTML` | head `Item chats` + floating pill itemcard + `ch-iq` + rows + swipe |
+| Chat Room | `chatroom:{threadId}` + `chatRoomHTML` | header + bubbles + post ref card + composer (หรือ blocked bar) |
+| Chat Room — Searching | `chatroom:` `t.searching` | header แทนด้วย search box + highlight/dim |
+| Chat Room — Draft | `C.draft` thread | post card ใน me-column + composer prefill `cfg.quick` |
+| Chat Room — Blocked | `chatroom:` isBlk | `ch-blocked-bar` แทน composer |
+| Attach Sheet | `.ch-attach-sheet` | `Photos & videos` grid ≤8 จาก POSTS (mock picker) |
+| Media Viewer | `.ch-media-viewer` overlay | fullscreen-in-frame photo + X/body close |
+| Chat Menu | `chmenu:{threadId}` | 4 circular actions + `Photos & videos`/`Listings & Items` rows + E2E footer |
+| Media Gallery | `chmedia:{threadId}` | ✕ + username + Select → `{n} selected` + badges + Trash/Download |
+| Chat Config | `chatcfg` | notif/preview/followOnly toggles + defView + Quick Ask input |
+| Room Settings (dead) | `chsettings:{threadId}` | dead route — ไม่มี entry; documented only |
+| Block Sheet | `pm-open` + `blkSheetHTML(u,true)` | avatar + `Block {u}?` + 3 impact rows + `Block` เดียว |
+| Unblock Dialog | `.dlg` + `unblockDlgHTML` | `Unblock {u}?` + Unblock/Cancel |
+| Chat Report Sheet | `pm-open` + `chatReportSheetHTML` | `Report and delete`/`Report`/`Cancel` |
+| Report Stack (chat) | `report:user` → `report:done:{u}` | ไม่มี `<` (rpFromChat); ✕ ปิดทั้งกอง |
+| Hide/Delete Modals | `#chConfirmModal` iOS-style | Cancel + Hide/Delete (แดง) |
+| Member Sheet | `.ob` gate variant | guest gate — canonical 00_GLOBAL §11 |
 
 ---
 
-# 8. User States
+# 7. User States
 
-## Guest
+## Guest (session `guest`)
 
-ไม่สามารถใช้งาน Chat
+- เห็นเฉพาะ icon `แชท` บน bottom nav — ทุก chat entry (`[data-navgo="chat"]`, `.ask-pill`, `.chat-fab`, `.ch-rep-del-btn`, `.ch-rep-only-btn`, `.blk-go`, `.blk-rep`) เปิด Member Sheet `Join TukDaeng`
+- `chatInit` → `threads=[]` (guard ซ้ำ) — guest ไม่มี surface ใดของ chat เลย
 
-เมื่อ Guest กด Chat, Make Offer หรือ feature ที่ต้อง Login ต้องแสดง Global Login Required Dialog
+## New Member (session `new`)
+
+- member powers ครบ แต่ `threads=[]` → Chat List แสดง `No chats yet` + `Tap Ask on a post to start chatting with the seller.`
+- Ask จากโพสต์ใช้ได้ปกติ (สร้าง draft room ของตัวเอง)
 
 ## Member
 
-สามารถ:
-
-- Start Chat จาก Asset Detail
-- Send Message
-- View Chat List
-- Open Chat Room
-- Search Chat
-- View Asset Reference Card
-- View Offer Card
-- Delete Chat ตาม rule
-- Block User
-- Report User
+- ใช้ Chat Center ครบ: list 2 views, search, item chats, room, attach, gallery, chmenu, chatcfg, swipe actions, block/unblock, report
+- เป็นผู้ซื้อ (`Items you asked about`) และผู้ขาย (`Your listings`) ได้ใน account เดียว — `mine` ขับด้วย `item.owner===CP_ME.name`
 
 ## Blocked Relationship
 
-เมื่อ User ถูก Block หรือ Block กัน:
-
-- ต้องไม่สามารถส่งข้อความหากันได้
-- Asset ของผู้ถูก Block ต้องหายจาก Feed, Search และ Watch Alert Result
-- Chat history เดิมยังอ่านได้แบบ read-only
-- การส่งข้อความใหม่และการสร้าง Offer / Chat ใหม่ระหว่างคู่ที่ block กันต้องถูกปิด
+- Room ของ user ที่ถูก block: composer ถูกแทนด้วย `ch-blocked-bar` + `Unblock`; ประวัติอ่านได้ read-only
+- Thread row แสดง `Blocked` chip (แทน mute icon); ห้องยังอยู่ใน list จนกว่าจะ hide/delete
+- Ask ไปยัง seller ที่ block อยู่ → toast `Cannot message a blocked account` (ไม่สร้างห้อง)
+- `chSend` guard ซ้ำ (`pfIsBlocked || t.blocked`) — ส่งไม่ได้แม้ UI หลุด
 
 ---
 
-# 9. User Flow
+# 8. User Flow
 
-## Start Chat
+## Open Chat Center
 
 ```text
-Asset Detail
-→ Chat
-→ Pre-Chat / Empty Room State
-→ Send First Message
-→ Chat Room Created
+Bottom nav แชท (guest → Member Sheet)
+→ chatResetToDefault() — ทุก data-navgo
+→ openSub "chat" (swap ทันทีไม่ slide)
+→ Chat List = view = cfg.defView (default Chats)
 ```
 
-## Continue Chat
+## Start Chat (Quick Ask)
 
 ```text
-Chat List
-→ Chat Room
-→ Send Message
+ask-pill บน feed card / price-footer / pv post (sale เท่านั้น)
+→ guest → Member Sheet
+→ own post → toast `This is your own listing`
+→ blocked seller → toast `Cannot message a blocked account`
+→ thread user+item มีอยู่ → un-hide + openSub chatroom
+→ ไม่มี → C.draft (prefill cfg.quick + item snapshot) → openSub chatroom
+→ send แรก → unshift เข้า threads (ห้องเกิดจริง)
 ```
 
-## Same Asset Chat
+## Continue Chat / List Interactions
 
 ```text
-Asset Detail
-→ Chat
-→ Existing Chat Room
-→ Reference Asset remains same
+Chat List row → rpPush chatroom → back slide-out-right → list
+Search ch-q → live filter (user + cap + msgs)
+Items pill → view=item (เคลียร์ q); แตะซ้ำ → filter popover → pick → กรองทันที
+Item row (asked, 1 thread) → เข้าห้องตรง; (mine หรือหลาย thread) → chatitem:
+chatitem: row → chatroom; back → chatitem: → back → chat list
 ```
 
-## Different Asset Same User Chat
+## Swipe Actions (row ใน list + chatitem)
 
 ```text
-Different Asset Detail
-→ Chat
-→ Existing Chat Room With Same User
-→ Reference Asset updates to latest Asset
+Swipe right >40px → ปุ่มวงกลมเขียว Pin/Unpin + Mute/Unmute
+  Pin → pinnedAt + toast ปักหมุดแชทแล้ว/ยกเลิกการปักหมุดแล้ว → เรียงก่อน + badge บน avatar
+  Mute → toast ปิด/เปิดการแจ้งเตือนแล้ว → mute icon บน row
+Swipe left >40px → ปุ่มสี่เหลี่ยมเทา Hide + Delete
+  Hide → iOS modal → t.hidden + toast ซ่อนแชทแล้ว (un-hide อัตโนมัติเมื่อส่ง/Ask ใหม่)
+  Delete → iOS modal → ออกจาก threads + toast ลบแชทเรียบร้อยแล้ว + unwind stack กลับ list
+แตะ row ที่ reveal อยู่ หรือ swipe ตรงข้าม >30px → ปิด actions
 ```
 
-## Make Offer To Chat
+## Room Interactions
 
 ```text
-Asset Detail
-→ Make Offer
-→ Send Offer
-→ Offer Sent Successfully
-→ Chat Room
-→ Offer Card
+Header: < back · username (→ profile:{u}) · 🔍 room-search · ≡ → chmenu:
+Bubble: แตะ media → ch-media-viewer; แตะ post card / Listings & Items → Post Detail (missing → toast)
+Composer: + → Photos & videos sheet → เลือก → media msg; input → draft persist + send enable; Enter/ปุ่ม send → chSend → bubble + Sent + ห้องขึ้นบนสุด
+🔍 room-search → header swap → ค้นหาใน msgs (highlight + dim) → ✕ กลับ
 ```
 
-## Open Offer Accepted Notification
+## Block / Unblock จาก Chat
 
 ```text
-Notification
-→ Offer Accepted
-→ Chat Room
+chmenu: Block → blkSheet fromChat (Block เดียว, dismiss=backdrop)
+→ pfSetBlocked(true) → th.blocked ทุก thread + toast Blocking + re-render
+→ room = read-only + ch-blocked-bar; row = Blocked chip
+Unblock (bar / chmenu Block↔Unblock / report done step) → unblockDlg → pfSetBlocked(false) → toast Unblocked → composer กลับ
 ```
 
-## Open Offer Rejected Notification
+## Report จาก Chat
 
 ```text
-Notification
-→ Offer Rejected
-→ Asset Detail
+chmenu: Report → chatReportSheet
+  Report → rpPush report:user (ไม่มี <, เฉพาะ ✕) → เลือกเหตุผล → report:done:{u}
+  Report and delete → เหมือนกัน + set rpDelChat
+report:done: steps (Block→blkSheet fromChat / Unblock→unblockDlg / Unfollow / Mute) → Done/✕
+→ rpClose + toast Report submitted · thanks for letting us know
+→ rpDelChat: t.hidden + ออกจาก threads + strip chmenu:/chatroom: + กลับ chat list
+→ Report ธรรมดา: กลับหน้าที่เปิด report (chmenu:/chatroom:)
 ```
 
-## Delete Chat
+## Chat Config
 
 ```text
-Chat Room / Chat List
-→ Delete Chat
-→ Confirmation
-→ Chat Removed From User View
-```
-
-## Block User
-
-```text
-Chat Room
-→ More Menu
-→ Block User
-→ Confirmation `Block this user?`
-→ Block Applied
-```
-
-## Report User
-
-```text
-Chat Room
-→ More Menu
-→ Report User
-→ Submit Report
+gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
+→ defView Chats/Items → set cfg.defView + C.view ทันที + เคลียร์ q
+→ chc-quick ≤80 live save → prefill Ask ครั้งถัดไป
+→ back → chat list
 ```
 
 ---
 
-# 10. Business Rules
+# 9. Business Rules
 
-## Room Creation Rule
+## Thread Model
 
-- Chat Room สร้างเมื่อส่งข้อความแรก
-- การกดปุ่ม Chat เพียงอย่างเดียวเปิด Pre-Chat / Empty Room State ได้ แต่ยังไม่ถือว่าสร้าง room ถ้ายังไม่มีข้อความ
+- Thread key = `{user, item.id}` — `chatQuickAsk` หา `x.user===post.seller && x.item.id===post.id` เจอ → เปิดห้องเดิม (+un-hide); ไม่เจอ → สร้าง `C.draft` ใหม่เสมอ → **same seller คนละ listing = ห้องใหม่ทุกครั้ง** (ขัด spec เดิม Same-User-Merge — เลือก prototype)
+- Draft room: `C.draft` เก็บนอก `C.threads` — `chGet` ค้นทั้งสองที่; เข้า list จริงเมื่อ `chSend` แรก (`unshift` + `C.draft=null`); draft มีได้ทีละ 1 ห้อง (Ask ห้องอื่นทับ)
+- Item snapshot ตอนสร้างห้อง: `{id:post.id, cap:post.caption, price:post.price||"", photo:post.photos[0], owner:post.seller, pid:post.id}` — **snapshot นิ่ง**: โพสต์แก้/ขาย/ลบภายหลังไม่เปลี่ยนการ์ด
+- `t.draft` = draft ข้อความต่อห้อง (persist ระหว่าง navigate — composer เติมกลับ)
+- Session-only: threads/flags/cfg/draft เป็น memory state — `applySessionData` reset ทุก session switch (persistence = contract §18)
 
-## Same Asset Rule
+## Chat Entry Points (Listing-scoped เท่านั้น)
 
-หากเป็นคู่ User เดิมและ Asset เดิม:
+- `.ask-pill` บน sale post surfaces: feed card action-row (`askBtnHTML` ตาม `state.ask`) + `price-footer` variant (`Ask Seller` outline) + post viewer actions (`p.type==="sale"` เท่านั้น) — ทั้งหมด → `chatQuickAsk`
+- Post Detail (dl1) **ไม่มี** chat entry (canonical 05 — `chat-fab`/`.chat-pop` = dead path ต้อง `state.ask==="bubble"` + dl2 เท่านั้น)
+- Profile `pf-msg` + follower-row Chat = **dead toast** `Open a listing to chat with this seller` (canonical 06 — ห้ามเขียน 07 ว่าเข้าแชตจากโปรไฟล์ได้)
+- Guards ตามลำดับ: guest → Member Sheet → own post `This is your own listing` → blocked `Cannot message a blocked account` → findPost fail → `Not in this prototype yet`
+- Ask ปิด overlays เดิม (`pv-open`/`detail-open`/`comments-open`/`pm-open`/`likes-open`/`details-open`) แล้ว `openSub chatroom:{id}` — stack ใหม่ 1 หน้า → back จากห้อง = ปิด layer กลับ surface ข้างล่าง
 
-- ใช้ Chat Room เดิม
-- Reference Asset คงเป็น Asset เดิม
+## Post Reference Card (`ch-post-card`)
 
-## Different Asset Rule
+- anatomy: รูปเต็ม + top scrim (avatar + username ของ `item.owner`) + bottom scrim (caption + price) + `title="View listing"`
+- placement: msgs ว่าง → คอลัมน์ `me` อิสระเหนือ composer; msgs มี → แนบ bubble แรก (i===0 ฝั่งใดก็ตาม)
+- tap (`data-chgo="post"`): `findPost(pid)` → `openPostDetail` (Post Detail ทับ — canonical 05); ไม่เจอ → toast `Listing detail isn't in this prototype yet` (contract: unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว` ตาม 00_GLOBAL §11)
+- เหมือนกันใน `Listings & Items` row ของ `chmenu:` (`data-chgo="post"` เดียวกัน)
+- การ์ดไม่มี sold/deleted/price-change states — deviation จาก spec เดิม (documented §4)
 
-หากเป็นคู่ User เดิมแต่ Asset ใหม่:
+## Chat List — Chats View
 
-- ใช้ Chat Room เดิม
-- Reference Asset เปลี่ยนเป็น Asset ล่าสุดที่เริ่ม conversation
-- ประวัติการอ้างอิง Asset เดิมยังอยู่ใน Chat History ผ่าน message / asset card เดิม
+- Row: avatar 44 (+ `ch-pin-badge` เมื่อ pinned) / username + `Blocked` chip (หรือ mute icon) / preview (prefix `You: ` เมื่อข้อความสุดท้ายของเรา) / time (`HH:MM` วันนี้, day label อื่น) / unread pill
+- Ordering: **pinned-first** (`pinnedAt` desc tie-break) แล้ว insertion order — ไม่มี timestamp sort จริง; `chSend` ย้ายห้องขึ้นบนสุด (`unshift`)
+- `ch-q` live search match `user + item.cap + msg texts` → ว่าง → `No chats found`/`Try another name, item or message.`
+- unread: เปิดห้อง → `t.unread=0` + `chBadgeSync` — nav badge = Σunread cap `99+`
+- `t.hidden` filtered ออกจาก Chats view และ `chatitem:` rows — **แต่ `chItemGroups` ไม่ filter hidden** → hidden thread ยังโผล่ใน Items view groups (preview/unread/N chats นับรวม — deviation); un-hide อัตโนมัติเมื่อ `chSend`/`chatQuickAsk`
+- Gear → `chatcfg`; bottom nav `botNavHTML("chat")` เฉพาะหน้านี้
 
-## Asset Reference Rule
+## Chat List — Items View + Filter
 
-Chat Room ต้องมี Asset Reference Card เพื่อบอกบริบท Asset ล่าสุด
+- `data-chview="item"`: ครั้งแรก → switch view + เคลียร์ `q`; แตะ Items pill ซ้ำขณะอยู่ view นี้ → toggle `filterMenuOpen` (backdrop ปิด)
+- Popover `Filter items by`: `All items` / `Your listings` / `Items you asked about` + checkmark ตัวเลือกปัจจุบัน + icon — เลือก = `C.itemFilter` + ปิด + render ทันที (กลับ Chats → reset `all`)
+- Groups = `chItemGroups` ตาม `item.id` เก็บ insertion order; `mine` (owner=me) → section `Your listings`, อื่น → `Items you asked about`; filter `mine`/`asked` → เหลือ section เดียว
+- Item row: thumb + cap + `{price} · {N chats}` (mine) หรือ `{price} · {last msg}` (asked) + time + Σunread
+- `isDirectRoom` (asked + thread เดียว) → `data-chgo="room"` เข้าห้องตรง; อื่น → `chatitem:{itemId}`
+- Empties: `No item chats yet`/`Chats are grouped by item once people message about a listing.` · `No items found`/`Try another item name.` · filter-empty `No listings found`/`No asked items found` + `No items match your filter.`
 
-Asset Reference Card ต้องรองรับ state:
+## Item Chats Page (`chatitem:{itemId}`)
 
-- Active Asset
-- Sold Asset
-- Deleted Asset / Unavailable Asset
+- Head `Item chats` + back (slide-out-right → list) — ไม่มี bottom nav
+- Floating pill itemcard: รูป + cap + price + `Your listing`/`@{owner}` · `{n} chats` (นับเฉพาะ visible)
+- `ch-iq` `Search people or messages` (EN hardcode — deviation) live filter เหมือน `ch-q`
+- Rows = `chRowHTML` เดิม (swipe/pin/mute/hide/delete ทำงาน) — sorted pin-first
+- group หาย/ไม่มี thread → `Item not found`/`No chats for this item.`; query ว่าง → `No chats found`/`Try another name or message.`
 
-## Asset Deleted Rule
+## Chat Room
 
-เมื่อ Asset ถูกลบ:
+- Header: `<` + username (`data-pf-user` → `profile:{u}` push) + 🔍 `room-search` + `≡` `more` → `chmenu:{tid}` (ไม่มี room element → `Chat options aren't in this prototype yet`)
+- Bubble anatomy: `ch-day` divider ต่อวัน; `them` = ซ้าย + avatar เฉพาะ bubble แรกของกลุ่มต่อเนื่อง (`ch-mav-sp` แทนหลังจากนั้น); `me` = ขวา (สีหลัก); เวลาข้างทุก bubble; `Read`/`Sent` เฉพาะข้อความ `me` ล่าสุด (`lastMe` — send ใหม่ทุกอัน `read:false` → `Sent` เสมอ; seed `read:true` → `Read`)
+- Composer: `+` → attach sheet; `ch-input` → `t.draft` persist + toggle send disabled; `.ch-send`/Enter → `chSend` (blocked guard + un-hide + draft-room→threads + move-to-top + `{f:"me",at:"09:41",day:"Today",read:false}` + refocus)
+- Blocked (`pfIsBlocked || t.blocked`): composer ถูกแทนด้วย `ch-blocked-bar` — `You blocked this account` / `You can't message or call them unless you unblock them.` + `Unblock` → `unblockDlg` (copy มี "call" = LINE leftover — deviation)
+- openSub (Quick Ask) → back ปิด layer; rpPush (จาก list) → back slide-out-right ไป list/chatitem (canonical 00_NAV §6.7)
+- missing thread → `Chat not found`/`This conversation is no longer available.`
 
-- Chat ยังอยู่
-- Reference Asset ต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว`
-- Offer ที่เกี่ยวข้องต้องเป็น Cancelled
-- หากเปิด Asset Detail จาก reference เก่า ต้องใช้ Deleted Asset State ของ Asset Detail Module
+## Room Search
 
-## Asset Sold Rule
+- 🔍 toggle `t.searching` → header ถูกแทนทั้งก้อน: search box (`placeholder="Messages"` + clear `✕` เมื่อมี query) + close `✕`
+- `t.roomQuery` live → match `m.t` → `<mark class="ch-hl">` + non-match dim `opacity:0.25`; media bubbles dim เสมอ (match เฉพาะ text)
+- Close = `searching=false` + clear query + header กลับ; clear = เคลียร์ query + refocus
 
-เมื่อ Asset ถูก Sold:
+## Attach / Media
 
-- Chat ยังใช้งานได้
-- Asset Sold ต้อง Auto Reject Offer อื่น
-- Owner ยังเห็น Asset ใน Owner Profile และ Sold History
-- Reference Asset ต้องไม่ทำให้เข้าใจว่า Asset ยังซื้อขายได้ตามปกติ
+- `+` → `.ch-attach-sheet` `Photos & videos` — grid ≤8 unique photos จาก POSTS ทั้งหมด (mock picker, `isVideo:false` เสมอ) + close/backdrop
+- เลือก → push `{f:"me",img,isVideo,at:"09:41",day:"Today",read:false}` + `t.media.unshift(src)` + re-render — **ไม่** un-hide/ไม่ move-to-top (quirk ต่างจาก `chSend` — deviation)
+- Media bubble = รูป + play overlay เมื่อ `isVideo` → tap → `ch-media-viewer` overlay ใน frame (X/body/backdrop ปิด)
+- `t.media` lazy-init ใน `chmenu:`/`chmedia:` — เฉพาะ seed `t1` เติม item photo + POSTS ≤9 (mock); ห้องอื่นเริ่มว่างจนกว่าจะส่ง media เอง
 
-## Offer Card Rule
+## Chat Menu (`chmenu:{threadId}`)
 
-Chat Room ต้องรองรับ Offer Card
+- Head `<` + username (slide-back) — ไม่มี nav
+- **4 ปุ่มวงกลม**: `Mute`↔`Unmute` (icon bell/bellOff + toggle + toast TH), `Profile` (`data-pf-user` → `profile:{u}`), `Block`↔`Unblock` (`block-user` → blkSheet fromChat หรือ unblockDlg), `Report` (`report-chat-user` → chatReportSheet)
+- Rows: `Photos & videos` → `chmedia:` + thumbnail strip (`data-chmedia` → viewer) หรือ empty card `No photos or videos found.`; `Listings & Items` + cap ตัด ellipsis → `data-chgo="post"`
+- Footer: lock icon + `This chat is protected with End-to-End Encryption` — **copy claim เท่านั้น ไม่มี implementation** (LINE leftover — deviation ห้าม spec เป็น feature)
+- **ไม่มี Delete chat entry ในหน้านี้** — delete อยู่เฉพาะ swipe บน list/chatitem (+ dead `chsettings` `Delete data`)
 
-Offer state และ validation ให้ยึด Offer Module
+## Media Gallery (`chmedia:{threadId}`)
 
-ผลของ Offer:
+- Head `✕` (pop + swap ไม่ slide — canonical back rule) + title username + `Select` (เฉพาะมี media); select mode: `Cancel` / `{n} selected` / `Deselect`
+- Grid + date group label hardcode `October 2569 BE` (mock — deviation); tap item → viewer (non-select) หรือ toggle select (badge ลำดับ 1,2,…)
+- Bottom bar (select mode): Trash → ลบ `t.media` ที่เลือก + `ลบรูปภาพที่เลือกแล้ว`; Download → `บันทึกลงในรูปภาพแล้ว` — **ไม่มี Share**
+- Empty → `No photos or videos found.` card; missing thread → `Chat not found`
+- `t.galState{selecting,selected}` reset เมื่อปิด
 
-- Accepted Offer เปิด Chat Room
-- Rejected Offer เปิด Asset Detail
-- Asset Deleted ทำให้ Offer เป็น Cancelled
-- Asset Sold ต้อง Auto Reject Offer อื่น
+## Chat Config (`chatcfg`)
 
-## Incoming Offers Rule
+- Head `การตั้งค่าแชท`/`Chat settings` + back → list
+- Toggles (`data-chtgl`): `notif` (`การแจ้งเตือนข้อความ`/`Message notifications`), `preview` (`แสดงตัวอย่างข้อความ`/`Show message preview`), `followOnly` (`รับข้อความเฉพาะผู้ที่คุณติดตาม`/`Only people I follow can message me`) — flip ทันที ไม่มี enforcement surface ของ `followOnly` (deviation)
+- `Default chat view` (`data-chdef`): Chats/Items radio — set `cfg.defView` **และ** `C.view` ทันที + เคลียร์ `q` (เลือก Items = สลับมุมมองทันที)
+- Quick Ask `chc-quick` input ≤80 chars live save → prefill composer ของ draft room (`สนใจสินค้าชิ้นนี้ครับ ยังอยู่ไหมครับ?` default)
 
-Incoming Offers แสดงเฉพาะ Offer ที่รอการตัดสินใจ
+## Swipe Actions (LINE-style)
 
-เมื่อ Offer Accepted หรือ Rejected:
+- Pointer gestures บน `.ch-row-wrap`: horizontal lock >8px (vertical abort + ปิด reveal เดิม), reveal ±40px, dismiss ±30px, rubber-band cap (+140/−175), suppress click 250ms หลัง swipe
+- Right → `ch-act-left` วงกลมเขียว LINE: `Pin`↔`Unpin` (`pinnedAt` + toast `ปักหมุดแชทแล้ว`/`ยกเลิกการปักหมุดแล้ว` + pin badge + เรียงก่อน), `Mute`↔`Unmute` (toast `ปิดการแจ้งเตือนแล้ว`/`เปิดการแจ้งเตือนแล้ว` + mute icon)
+- Left → `ch-act-right` สี่เหลี่ยมเทา: `Hide` → iOS modal `Hiding chats doesn't delete their messages.` (Cancel/`Hide` แดง) → `t.hidden` + `ซ่อนแชทแล้ว`; `Delete` → iOS modal `Are you sure you want to delete this chat?` (Cancel/`Delete` แดง) → ลบออกจาก `C.threads` + `ลบแชทเรียบร้อยแล้ว` + unwind `chatroom:`/`chmenu:`/`chsettings:` tops จาก stack
+- ทำงานทั้งหน้า list และ `chatitem:` (rows เดียวกัน); modal dismiss = Cancel/backdrop
 
-- Offer ต้องหายจาก Incoming Offers
-- Chat Room ยังอยู่ใน Chat List / All Chat
+## Block / Unblock (shared surfaces — canonical 06)
 
-Offer ที่อ่านแล้วแต่ยังไม่ action:
+- Entry `block-user` (chmenu) หรือ blocked อยู่แล้ว → `unblockDlgHTML`; ยังไม่ block → `blkSheetHTML(u, fromChat=true)` = sheet เดียวกับ profile แต่ **ตัด `Block and report`** เหลือ `Block` เดียว (ไม่มี Cancel row — dismiss ผ่าน backdrop)
+- `blk-go` → `pfSetBlocked(true)`: `PF_BLOCKED` + `PF_REMOVED_FOL` + unfollow + **`th.blocked=true` ทุก thread ของ user** + `p.blocked` ทุกโพสต์ + feed re-render → transient `Blocking` toast + re-render `chmenu:`/`chatroom:` ถ้าอยู่ top
+- Effects ตาม 00_GLOBAL §13 ครบ (feed/search/WA/following) — canonical 06/15; ที่นี่ระบุเฉพาะ chat surfaces: `Blocked` chip บน row, `ch-blocked-bar`, `chSend` guard, `Cannot message a blocked account`
+- Unblock (`unblock-room` bar / chmenu `Block`↔`Unblock` / report done step) → `unblockDlgHTML` (`Unblock {u}?` + desc + Unblock danger + Cancel) → `pfSetBlocked(false)` → `Unblocked` toast + re-render — ไม่ re-follow; `pfRestrictHint` defined แต่ไม่ถูกเรียก (dead — flag 06)
+- ประวัติแชทคงอ่านได้ read-only ทั้งก่อนและหลัง unblock; block ไม่ลบ thread
 
-- ยังคงอยู่ใน Incoming Offers
+## Report จาก Chat (`chatReportSheet` → `report:user`)
 
-## Message Type Rule
+- Entry `report-chat-user` (chmenu) → `chatReportSheetHTML(u,tid)`: sheet layout เดียวกับ blkSheet — avatar + `Are you sure you want to report {u}?` + desc (`...Selecting "Report and delete" will delete this chat and its associated history.`) + `Report and delete` (แดง) + `Report` + `Cancel` (ปิด sheet อยู่หน้าเดิม)
+- ทั้งสองปุ่ม → `rpFromChat=true` + `rpUser=u` → `rpPush report:user` — **ข้าม `report:pick`** (user-report ตรง); `Report and delete` เพิ่ม `rpDelChat=tid`
+- `report:user` head: **ไม่มี `<`** เมื่อ `rpFromChat` — title `Report` + `✕` เท่านั้น; body `Why are you reporting this account?` + `PM_REASONS` (canonical 15)
+- เลือกเหตุผล → `report:done:{u}` (ก็ไม่มี `<`): `Thanks for your feedback` + `rp-step` rows (Block→`blkSheet` fromChat=Block เดียว / Unblock→unblockDlg / Unfollow→instant `Unfollowed` / Mute↔Unmute→muteDlg/instant) + `Done`
+- `Done`/`✕` → `rpClose` ปิดกองทั้งหมด + toast `Report submitted · thanks for letting us know`:
+  - `rpDelChat` + เคยถึง done → `t.hidden` + splice ออกจาก `C.threads` + stack strip `chmenu:`/`chatroom:` + unshift `chat` → **กลับ Chat List** (ลบจริงใน mock — contract: remove-from-actor-list + retention §18)
+  - ไม่ใช่ → กลับหน้าที่เปิด report เดิม (`chmenu:`/`chatroom:`)
+- Report ไม่ลบ content/ไม่แจ้งฝั่งถูกรายงาน (00_GLOBAL §13); moderation queue = BO contract
 
-Chat Room รองรับ:
+## Session / Nav / Reset
 
-- Text
-- Image
-- File
-- Asset Card
-- Offer Card
+- `chatInit`: `state.session!=="member"` → `threads=[]` + `view=defView` (GUEST-001 — `new`/`guest` ไม่มี seed)
+- `applySessionData` ทุก session switch → `CHAT.inited=false` + `threads=[]` + `draft=null` (flags คงอยู่ใน cfg — quirk: toggles/defView/quick ไม่ reset — deviation)
+- `data-navgo` ทุกครั้ง → `chatResetToDefault()`: `view→cfg.defView`, `itemFilter→"all"`, `filterMenuOpen→false`, `q→""`, `iq→""` → กลับ Chat tab ใหม่เสมอ = default view + เคลียร์ search/filter
+- Back: `chat` root ไม่มี back; `chat*`/`chmenu:`/`chsettings:` บน stack>1 → slide-out-right (`rpBack`); `chmedia:` `✕` → pop + swap ไม่ slide + reset galState; Quick-Ask room (openSub, stack=1) → back ปิด `.page-sub`
+- Nav badge: `chBadgeHTML` Σunread cap `99+` sync ทุกเปิดห้อง
 
-## Search Chat Rule
+## Deviations & Dead-Code Notes (spec เลือก prototype — documented, not spec)
 
-Search Chat ต้องรองรับการค้นหาห้องสนทนา
-
-รายละเอียด search field / searchable content ให้กำหนดใน implementation หรือ Chat sub-spec หากต้องการเพิ่มความละเอียด
-
-## Chat Room Action Menu Rule
-
-Chat Room overflow menu (`...`) must show only room-level and user-safety actions in this order:
-
-1. `View profile`
-2. `Mute notifications` or `Unmute notifications`
-3. `Delete chat`
-4. `Report user`
-5. `Block user`
-
-Menu behavior:
-
-- `View profile` opens the other user's Public Profile.
-- `Search in chat` must not be duplicated in this menu when the header already has a search icon.
-- `Mute notifications` toggles room-level chat notifications immediately and auto-saves.
-- After mute succeeds, show toast `Notifications muted` and change the menu label to `Unmute notifications`.
-- After unmute succeeds, show toast `Notifications unmuted` and change the menu label back to `Mute notifications`.
-- `Delete chat`, `Report user`, and `Block user` are destructive/safety actions and must be visually separated or styled as destructive actions according to design system.
-
-## Chat Sorting Rule
-
-Chat List เรียงตาม:
-
-- Latest Message DESC
-
-## Unread Count Rule
-
-Chat List ต้องรองรับ Unread Count
-
-Unread Count ต้องอัปเดตเมื่อ:
-
-- มีข้อความใหม่
-- User เปิดอ่าน Chat Room
-
-## Delete Chat Rule
-
-- Delete Chat ต้องมี Confirmation
-- Delete Chat V1 = ซ่อนห้องแชทจาก Chat List เฉพาะฝั่งผู้กด
-- Delete Chat ไม่ลบ message/archive ฝั่ง server
-- Delete Chat ไม่กระทบคู่สนทนา
-- Delete Chat ไม่ลบหลักฐาน offer/chat history
-- ไม่มี restore UI ใน V1
-- Confirmation copy ต้องสื่อว่าเป็นการซ่อนจากรายการของผู้ใช้คนนี้เท่านั้น ไม่ใช่การลบประวัติของอีกฝ่าย
-
-Delete Chat confirmation copy:
-
-- Title: `Delete chat?`
-- Body:
-  - `This chat will be removed from your inbox.`
-  - `The other person may still see the conversation.`
-  - `Some records may be retained for safety, fraud prevention, legal, or audit purposes.`
-- Actions: `Cancel`, `Delete chat`
-
-Delete Chat result:
-
-- Success toast: `Chat deleted`
-- API error: `Unable to delete chat. Please try again.`
-- On success, return to Chat List and remove the room from the actor's Chat List only.
-
-## Block User Rule
-
-Chat ต้องรองรับ Block User
-
-Product review สำหรับ V1:
-
-- Chat history เดิมยังอ่านได้แบบ read-only
-- การส่งข้อความใหม่ต้องถูกปิดหลัง block
-- การสร้าง Chat / Offer ใหม่ระหว่างคู่ที่ block กันต้องถูกปิด
-- Block User จาก Chat ต้องเปิด confirmation ก่อน block
-- Confirmation ใน Chat Menu แสดงปุ่ม `Block` เพียงปุ่มเดียว (ตัดปุ่ม `Block and report` ออกเฉพาะในแชท ส่วนจุดอื่นในแอป เช่น Profile ยังคงมีทั้ง `Block` และ `Block and report` ตามเดิม)
-- หากกด `Cancel` หรือ dismiss confirmation ต้องไม่เปลี่ยน block state และต้องยังส่งข้อความได้ตาม permission เดิม
-- Body และ success feedback ให้ใช้ copy กลางจาก Trust & Safety Module
-
-เมื่อ Block แล้ว:
-
-- ส่งข้อความหากันไม่ได้
-- Asset ของผู้ถูก Block ต้องหายจาก Feed, Search และ Watch Alert Result ตาม Trust & Safety
-- ความสัมพันธ์ Follow ระหว่างกันต้องไม่ถูกใช้ใน Following Feed
-
-## Report User Rule
-
-Chat Menu รองรับปุ่ม Quick Action `Report` ควบคู่กับ Mute, Profile, Block
-
-- เมื่อกดปุ่ม Report ใน Chat Menu จะเปิด Bottom Sheet ในรูปแบบและสไตล์เดียวกับ Block Bottom Sheet (Handle ด้านบน, Avatar ผู้ใช้กึ่งกลาง, Title, Description และปุ่มการกระทำ)
-- Title: `Are you sure you want to report [User]?`
-- Description: `If this user appears suspicious, please report them. Selecting "Report and delete" will delete this chat and its associated history.`
-- Actions:
-  - `Report and delete` (ปุ่มหลักสีแดง): เข้าสู่ Flow รายงานผู้ใช้ (หากส่งรายงานสำเร็จจะลบแชทออกจากอุปกรณ์/รายการแชทของผู้ใช้)
-  - `Report` (ปุ่มรอง): เข้าสู่ Flow รายงานผู้ใช้โดยไม่ลบประวัติการสนทนา
-  - `Cancel`: ปิด Bottom Sheet และอยู่บนหน้า Chat Menu ต่อไป
-- Flow การรายงานจาก Chat Menu:
-  - เข้าสู่หน้าเหตุผลการรายงานบัญชี (`Why are you reporting this account?`) โดยตรงทันที ไม่ต้องผ่านหน้าเลือกว่าจะรายงานโพสต์หรือบัญชี
-  - Header ของหน้ารายงานที่เปิดจากแชทจะไม่มีปุ่มย้อนกลับ `<` โดยมีเพียงชื่อหน้า `Report` ตรงกลาง และปุ่มปิด `✕` ด้านขวา
-  - เมื่อกดปุ่มปิด `✕` จะปิดหน้ารายงานและกลับมายังหน้า Chat Menu (การตั้งค่าแชท)
-  - ในหน้ายืนยันผลการรายงาน (`Thanks for your feedback`) หากกดขั้นตอนเพิ่มเติม `Block [User]` แผ่นยืนยันการบล็อกจะแสดงปุ่ม `Block` เพียงปุ่มเดียว (ไม่มีปุ่ม `Block and report` เนื่องจากอยู่ใน Flow รายงานแล้ว เพื่อไม่ให้เกิดความซ้ำซ้อน)
-- การ Report ไม่ทำให้ Asset หรือ Content หายทันที แต่จะเข้าสู่คิวการตรวจสอบของ Admin ตาม Moderation Policy
+1. **Thread key = user+item** — same seller คนละ listing = ห้องใหม่ทุกครั้ง (spec เดิม Same-User+Different-Asset merge + reference เปลี่ยน — ขัดทิศ เลือก per-item rooms)
+2. **Post ref card = snapshot นิ่ง** — ไม่มี Active/Sold/Deleted states; sold/deleted ไม่เปลี่ยนการ์ด (spec เดิม 3 states + `รายการนี้ไม่พร้อมใช้งานแล้ว` — เหลือ unavailable-on-tap contract เท่านั้น)
+3. **ไม่มี File message / Asset Card / Offer Card** — types จริง = text + image/video + post ref card (Offer ถูกถอดทั้ง codebase — FSP-006/007 aligned)
+4. **Menu = `≡` → `chmenu:` page 4 ปุ่มวงกลม รวม Report** — spec เดิม 3 ปุ่ม + overflow `...` 5 items ขัดกันเอง; **ไม่มี Delete chat ในหน้านี้** (swipe เท่านั้น)
+5. **Block confirm = `blkSheet` bottom sheet `Block` เดียว** — ไม่มี `Block this user?` center dlg + Cancel ของ spec เดิม (dismiss=backdrop; canonical S-13 06)
+6. **`ch-blocked-bar` copy พูดถึง "call"** (`You can't message or call them`) — ไม่มี call feature (LINE leftover)
+7. **Report จาก chat ไม่มี `<` back** (`rpFromChat`) — header เหลือ title + `✕`; ข้าม `report:pick` เสมอ
+8. **`Report and delete` ลบ thread จริงใน mock** — spec เดิมบอก "ซ่อนฝั่งผู้กด ไม่ลบ server"; spec ใหม่ = remove-from-actor-list + retention contract (mock simplification)
+9. **Hide มี iOS confirm + auto un-hide on send/Ask** — spec เดิมไม่มี hide เลย; แต่ `chItemGroups` ไม่ filter `t.hidden` → hidden thread ยังนับ/โชว์ใน Items view groups (leak quirk)
+10. **Mute toast TH** `ปิด/เปิดการแจ้งเตือนแล้ว` — spec เดิม EN `Notifications muted/unmuted`
+11. **Sort = insertion order + pin-first** — ไม่มี timestamp DESC จริง; re-order เฉพาะ send (`unshift`)
+12. **Send timestamp mock `09:41`** + ไม่มี incoming simulation → `Sent` ไม่เคยกลาย `Read` ใหม่; `Read`/`Sent` เฉพาะ `lastMe` (visual mock — ไม่ใช่ receipt system)
+13. **`followOnly` toggle ไม่มี enforcement surface** — config มีแต่ไม่มีที่ให้ทดสอบ
+14. **E2E / Letter Sealing = claim copy เท่านั้น** — chmenu footer + chsettings row; ห้าม spec เป็น feature
+15. **`chsettings:{id}` = dead route ทั้งหน้า** — มี render+handler (`data-chgo="chsettings"` ใน chatClick) แต่ไม่มี emit ที่ไหน (Note notifications/wallpaper/export/encryption/Delete data/Report)
+16. **`chatPopHTML`/`.chat-fab`/`.cp-*`/`sendChat` = dead** — render เฉพาะ `state.ask==="bubble"` ใน dl2 `igDetailHTML` + ถูก `chatQuickAsk` intercept เสมอ → `.chat-pop` unreachable
+17. **`state.ask` variants (ico/txt/outline/solid/bubble/auto)** = dev artifact ตาม 00_NAV §11 — production = single Ask style (spec ระบุแค่ pill มี label `สอบถาม`/`Ask` หรือ `Ask Seller`)
+18. **dl2 `igDetailHTML` ask row + `chatPopHTML` mount** = dead detail variant (canonical 05 dead list)
+19. **`t.media` lazy mock เฉพาะ `t1`** + gallery date label hardcode `October 2569 BE` — grouping-by-date ไม่ได้ implement
+20. **media send ไม่ un-hide / ไม่ move-to-top** — quirk ต่างจาก `chSend`
+21. **`cfg` toggles/defView/quick ไม่ reset ตอน session switch** — `applySessionData` เคลียร์แค่ inited/threads/draft
+22. **Ask post lookup fail → `Not in this prototype yet`** — fallback dead toast (`.ask-pill` อยู่ใน dead-handler list หลัง chatClick)
+23. **EN/TH hardcoded strings ~40 copies** → i18n sweep FSP-026 (ดู §13/§19)
+24. **`pfRestrictHint` defined แต่ไม่มี call site** — 06 spec อ้าง banner หลัง unblock; ที่จริงไม่แสดง (flag FSP-030 consistency)
+25. **Session-only state ทั้งโมดูล** — threads/pins/mutes/hidden/cfg/draft/galState memory เท่านั้น (persistence contract)
 
 ---
 
-# 11. Permission Rules
+# 10. Permission Rules
 
 ## Guest
 
-ไม่สามารถ:
+| Action | Result |
+| --- | --- |
+| Bottom nav `แชท` | Member Sheet `Join TukDaeng` (gated `[data-navgo="chat"]`) |
+| `.ask-pill` / `.chat-fab` | Member Sheet |
+| `.ch-rep-del-btn` / `.ch-rep-only-btn` / `.blk-go` / `.blk-rep` | Member Sheet (reachable เฉพาะผ่าน surface ที่ไม่ได้ gate — defense-in-depth) |
+| Chat list/room/menu/cfg/media ทุกหน้า | ไม่มีทางเข้าถึง (tab gated + `threads=[]`) |
 
-- Open Chat
-- Send Message
-- Make Offer
-- View Chat List
+## Member / New Member
 
-## Member
-
-สามารถ:
-
-- Open Chat
-- Send Message
-- View Chat List
-- Search Chat
-- Delete Chat
-- Block User
-- Report User
+ทำได้ทุกอย่างใน §8 — `new` เห็น empty states
 
 ## Blocked User
 
-ไม่สามารถ:
-
-- Send Message ไปยัง User ที่ Block หรือถูก Block
+| Action | Result |
+| --- | --- |
+| Send message ในห้องที่ block กัน | ปิด — composer ถูกแทน `ch-blocked-bar` + `chSend` guard ซ้ำ |
+| Ask seller ที่ block | `Cannot message a blocked account` |
+| อ่าน history ห้องเดิม | read-only ได้ |
+| Unblock | `unblockDlg` → restore composer |
 
 ---
 
-# 12. Validation Rules
+# 11. Validation Rules
 
-## Message
+| Field | Rule |
+| --- | --- |
+| `ch-input` message | ต้องไม่ว่างหลัง trim — `.ch-send` disabled จนมี text; `chSend` re-check `!v` |
+| `chc-quick` | maxlength 80 — live save ทุก keystroke ไม่มี error |
+| `ch-q` / `ch-iq` / `ch-room-search-in` | free text ไม่มี validation — live filter |
+| Attach | mock grid เท่านั้น — ไม่มี file-type/size validation (contract §18) |
+| Report reason | ต้องเลือก 1 เหตุผล → `report:done` (canonical 15 — ไม่มี reason-less submit) |
 
-- Required
-- ต้องไม่เป็นค่าว่าง
+---
 
-## Image / File
+# 12. Exception Handling
 
-- ต้องเป็น file type ที่ระบบอนุญาต
-- รายละเอียด max size / type ให้กำหนดใน implementation หรือ sub-spec
+| Case | Behavior |
+| --- | --- |
+| Ask own post | toast `This is your own listing` |
+| Ask blocked seller | toast `Cannot message a blocked account` |
+| Ask post ที่ `findPost` ไม่เจอ | toast `Not in this prototype yet` (dead fallback) |
+| Post ref card / `Listings & Items` → missing post | toast `Listing detail isn't in this prototype yet` (contract: `รายการนี้ไม่พร้อมใช้งานแล้ว` — 00_GLOBAL §11) |
+| Open `chatroom:`/`chmenu:`/`chmedia:`/`chsettings:` ของ thread ที่ไม่มี | `Chat not found` + `This conversation is no longer available.` |
+| Open `chatitem:` ของ group ที่ไม่มี | `Item not found` + `No chats for this item.` |
+| `data-chgo="more"` โดยไม่มี `.ch-room` | toast `Chat options aren't in this prototype yet` |
+| Send error / incoming / offline | ไม่มี path — mock ส่งสำเร็จเสมอ (contract §18) |
+| Unavailable destination ทั่วไป | canonical 00_NAV §10 — `Go back` pattern |
 
-## Offer
+---
 
-ตรวจสอบใน Offer Module
+# 13. Empty State
+
+| Surface | Copy จริง |
+| --- | --- |
+| Chats (ว่าง) | `No chats yet` + `Tap Ask on a post to start chatting with the seller.` |
+| Chats (search ไม่เจอ) | `No chats found` + `Try another name, item or message.` |
+| Items (ว่าง) | `No item chats yet` + `Chats are grouped by item once people message about a listing.` |
+| Items (search ไม่เจอ) | `No items found` + `Try another item name.` |
+| Items filter `mine`/`asked` ว่าง | `No listings found` / `No asked items found` + `No items match your filter.` |
+| chatitem query ว่าง | `No chats found` + `Try another name or message.` |
+| chmenu media strip ว่าง | `No photos or videos found.` |
+| chmedia ว่าง | `No photos or videos found.` (ใน empty wrap) |
+| room/chmenu/chmedia/chsettings missing thread | `Chat not found` + `This conversation is no longer available.` |
+| chatitem missing group | `Item not found` + `No chats for this item.` |
+
+EN-hardcode ทั้งชุด (i18n sweep — §19 flag)
+
+---
+
+# 14. Notification Rules
+
+- New Message = unread count บน row + nav badge `แชท` (Σunread cap `99+`) เท่านั้น — **ไม่ใช่ Notification Center type** (canonical: alerts feed ไม่มี chat type — 09_NOTIFICATION)
+- Mute per-thread = suppress badge contribution เท่านั้นใน contract (prototype mute ไม่ลด `chUnread` — deviation note: `chUnread` ไม่ filter muted)
+- ไม่มี incoming message simulation → badge ขับด้วย seed unread เท่านั้น
+
+---
+
+# 15. Analytics Events
+
+(contract — prototype ไม่มี tracking layer)
+
+| Event | Trigger |
+| --- | --- |
+| `chat_list_open` | เปิด Chat tab |
+| `chat_view_switch` | `data-chview` user/item |
+| `chat_item_filter` | เลือก filter popover (all/mine/asked) |
+| `chat_item_open` | เปิด `chatitem:` |
+| `chat_room_open` | เปิด `chatroom:` (source: list/item/quick_ask) |
+| `chat_thread_created` | draft → threads บน send แรก |
+| `chat_message_send` | `chSend` text / `chsendmedia` media |
+| `chat_quick_ask` | `.ask-pill`/`.chat-fab` tap |
+| `chat_room_search` | toggle `room-search` |
+| `chat_swipe_action` | pin/mute/hide/delete |
+| `chat_menu_open` | `≡` → `chmenu:` |
+| `chat_media_open` | `chmedia:` / `ch-media-viewer` |
+| `chat_media_select_action` | Trash/Download ใน gallery |
+| `chat_config_change` | `data-chtgl`/`data-chdef`/`chc-quick` |
+| `chat_block` / `chat_unblock` | blkSheet Block / unblockDlg Unblock |
+| `chat_report` | `ch-rep-del-btn`/`ch-rep-only-btn` |
+| `chat_post_ref_open` | `data-chgo="post"` |
+
+---
+
+# 16. Acceptance Criteria
+
+## Entry & Thread Model
+
+| AC ID | Criteria |
+|---|---|
+| AC-CHAT-001 | Chat เข้าได้เฉพาะผ่าน listing — `.ask-pill` บน feed card/price-footer/post viewer (`p.type==="sale"` เท่านั้น); ไม่มี entry บน Post Detail (dl1), profile (`pf-msg` dead), follower row |
+| AC-CHAT-002 | กด Ask บนโพสต์ตัวเอง → `This is your own listing`; seller ที่ block → `Cannot message a blocked account`; post ไม่เจอ → `Not in this prototype yet` |
+| AC-CHAT-003 | Ask seller+item เดิม → เปิดห้องเดิม (+un-hide); seller เดิมคนละ item → **ห้องใหม่** พร้อม post card ของ item นั้น |
+| AC-CHAT-004 | ห้องใหม่ = `C.draft` ไม่เข้า list จนกว่า `chSend` แรก (`unshift`); draft prefill `cfg.quick` และ `t.draft` persist ระหว่าง navigate |
+| AC-CHAT-005 | Item snapshot `{cap,price,photo,owner,pid}` นิ่ง — โพสต์เปลี่ยนภายหลังไม่กระทบการ์ด/กลุ่ม |
+
+## Chat List — Chats View
+
+| AC ID | Criteria |
+|---|---|
+| AC-CHAT-006 | Row ต้องมี avatar (+pin badge), username, `Blocked` chip หรือ mute icon, preview prefix `You:`, time (`HH:MM`/day), unread pill |
+| AC-CHAT-007 | List เรียง pinned-first (`pinnedAt` desc) แล้ว insertion order; `chSend` ย้ายห้องขึ้นบนสุด |
+| AC-CHAT-008 | `ch-q` live match `user + item.cap + msg texts`; ว่าง → `No chats found`/`Try another name, item or message.` |
+| AC-CHAT-009 | Empty → `No chats yet` + `Tap Ask on a post to start chatting with the seller.`; `t.hidden` ถูก filter ออกจาก Chats view + `chatitem:` rows (Items view groups ไม่ filter — documented deviation) |
+| AC-CHAT-010 | เปิดห้อง → `t.unread=0` + badge sync; nav badge = Σunread cap `99+` |
+
+## Items View & Item Chats
+
+| AC ID | Criteria |
+|---|---|
+| AC-CHAT-011 | Items pill แตะครั้งแรก → view=item + เคลียร์ q; แตะซ้ำ → toggle popover `Filter items by` (3 options + checkmark + backdrop close); กลับ Chats → reset filter `all` |
+| AC-CHAT-012 | Groups ตาม `item.id`: `mine` → `Your listings` (`{price} · N chats`), อื่น → `Items you asked about` (`{price} · last msg`); filter mine/asked → เหลือ section เดียว |
+| AC-CHAT-013 | Asked + thread เดียว → เข้าห้องตรง (`isDirectRoom`); mine/หลาย thread → `chatitem:{id}` |
+| AC-CHAT-014 | `chatitem:` ต้องมี head `Item chats` + floating pill itemcard (`Your listing`/`@{owner} · N chats`) + `ch-iq` + rows (swipe ทำงาน); group หาย → `Item not found`/`No chats for this item.` |
+
+## Swipe Actions
+
+| AC ID | Criteria |
+|---|---|
+| AC-CHAT-015 | Swipe right >40px → ปุ่มวงกลมเขียว Pin/Unpin + Mute/Unmute; Pin → `pinnedAt` + toast `ปักหมุดแชทแล้ว`/`ยกเลิกการปักหมุดแล้ว` + badge + เรียงก่อน |
+| AC-CHAT-016 | Mute → toggle + toast `ปิดการแจ้งเตือนแล้ว`/`เปิดการแจ้งเตือนแล้ว` + mute icon บน row |
+| AC-CHAT-017 | Swipe left >40px → ปุ่มเทา Hide/Delete; Hide → modal `Hiding chats doesn't delete their messages.` → `t.hidden` + `ซ่อนแชทแล้ว`; un-hide อัตโนมัติเมื่อ send/Ask |
+| AC-CHAT-018 | Delete → modal `Are you sure you want to delete this chat?` → ออกจาก threads + `ลบแชทเรียบร้อยแล้ว` + strip `chatroom:`/`chmenu:`/`chsettings:` tops จาก stack |
+
+## Chat Room
+
+| AC ID | Criteria |
+|---|---|
+| AC-CHAT-019 | Header = `<` + username → `profile:{u}` + 🔍 room-search + `≡` → `chmenu:{tid}`; missing thread → `Chat not found` |
+| AC-CHAT-020 | Bubbles: `ch-day` divider, `them` avatar เฉพาะต้นกลุ่ม, เวลาข้างทุก bubble, `Read`/`Sent` เฉพาะ `lastMe` |
+| AC-CHAT-021 | Post ref card = `ch-post-card` (scrim owner + cap/price): msgs ว่าง → me-column; มี → แนบ msg แรก; tap → Post Detail หรือ `Listing detail isn't in this prototype yet` |
+| AC-CHAT-022 | Composer: `+` attach, `ch-input` → `t.draft` + send-enable, Enter/send → `chSend` → bubble `{at:"09:41",read:false}` + un-hide + move-top + refocus |
+| AC-CHAT-023 | `+` → `Photos & videos` sheet (≤8 จาก POSTS); เลือก → media bubble (+play overlay `isVideo`) + `t.media.unshift`; tap media → `ch-media-viewer` overlay |
+| AC-CHAT-024 | Blocked room → `ch-blocked-bar` (`You blocked this account` + Unblock) แทน composer; `chSend` guard ซ้ำ; history read-only |
+
+## Room Search & Menu & Gallery
+
+| AC ID | Criteria |
+|---|---|
+| AC-CHAT-025 | 🔍 → header แทนทั้งก้อน (placeholder `Messages` + clear + ✕); query live → `<mark>` + dim non-match (media dim เสมอ); ✕ → restore header |
+| AC-CHAT-026 | `chmenu:` = head `<` + username + 4 ปุ่มวงกลม (Mute/Unmute · Profile·→profile:{u} · Block/Unblock · Report) + `Photos & videos` row + `Listings & Items` row → `data-chgo="post"` + E2E footer; **ไม่มี Delete chat** |
+| AC-CHAT-027 | `Photos & videos` → `chmedia:` + thumb strip หรือ `No photos or videos found.` card |
+| AC-CHAT-028 | `chmedia:` = ✕ pop-swap + `Select` → `{n} selected`/`Cancel`/`Deselect` + badge ลำดับ + Trash (`ลบรูปภาพที่เลือกแล้ว`)/Download (`บันทึกลงในรูปภาพแล้ว`) — ไม่มี Share; date label `October 2569 BE`; tap → viewer |
+
+## Chat Config
+
+| AC ID | Criteria |
+|---|---|
+| AC-CHAT-029 | `chatcfg` = toggles `notif`/`preview`/`followOnly` (flip ทันที) + `Default chat view` Chats/Items (`data-chdef` → set `cfg.defView`+`C.view` ทันที + เคลียร์ q) + Quick Ask `chc-quick` ≤80 live save |
+| AC-CHAT-030 | `followOnly` = toggle อย่างเดียว ไม่มี enforcement surface (documented deviation) |
+
+## Block / Unblock
+
+| AC ID | Criteria |
+|---|---|
+| AC-CHAT-031 | `block-user` → `blkSheetHTML(u, fromChat=true)` = sheet เดียวกับ profile แต่ `Block` เดียว (ไม่มี `Block and report`/Cancel row — backdrop dismiss) |
+| AC-CHAT-032 | `blk-go` → `PF_BLOCKED` + `PF_REMOVED_FOL` + unfollow + `th.blocked` ทุก thread + `p.blocked` + feed re-render + `Blocking` toast + re-render chat pages บน top |
+| AC-CHAT-033 | Unblock (`unblock-room`/chmenu/report step) → `unblockDlgHTML` → `pfSetBlocked(false)` + `Unblocked` + re-render — ไม่ re-follow |
+| AC-CHAT-034 | Blocked room ต้องแสดง `Blocked` chip บน row + `ch-blocked-bar` + read-only history; block ไม่ลบ thread |
 
 ## Report
 
-ตรวจสอบใน Trust & Safety Module
-
----
-
-# 13. Exception Handling
-
-## User Blocked
-
-| Language | Message |
+| AC ID | Criteria |
 |---|---|
-| TH | ไม่สามารถส่งข้อความได้ |
-| EN | Unable to send message. |
+| AC-CHAT-035 | `report-chat-user` → `chatReportSheetHTML` = avatar + `Are you sure you want to report {u}?` + `Report and delete`/`Report`/`Cancel` |
+| AC-CHAT-036 | ทั้งสองปุ่ม → `rpFromChat` + `report:user` ตรง (ข้าม `report:pick`) — head ไม่มี `<` เหลือ `Report` + `✕` |
+| AC-CHAT-037 | เหตุผล → `report:done:{u}` (`Thanks for your feedback` + steps; Block step → blkSheet fromChat `Block` เดียว) → `Done`/`✕` → `rpClose` + `Report submitted · thanks for letting us know` |
+| AC-CHAT-038 | `Report and delete` (`rpDelChat`) → หลัง done ปิด: `t.hidden` + ออกจาก `C.threads` + strip `chmenu:`/`chatroom:` + unshift `chat` → กลับ Chat List; `Report` ธรรมดา → กลับหน้าเดิม |
 
-## Asset Deleted Reference
-
-| Language | Message |
-|---|---|
-| TH | รายการนี้ไม่พร้อมใช้งานแล้ว |
-| EN | This item is no longer available. |
-
-## Send Message Error
-
-| Language | Message |
-|---|---|
-| TH | ส่งข้อความไม่สำเร็จ กรุณาลองใหม่อีกครั้ง |
-| EN | Message could not be sent. Please try again. |
-
-## Delete Chat Confirmation
-
-ต้องแสดง confirmation ก่อน Delete Chat
-
----
-
-# 14. Empty State
-
-## Chat List Empty State
-
-| Language | Message |
-|---|---|
-| TH | ไม่พบข้อมูล |
-| EN | No data found |
-
-## Incoming Offers Empty State
-
-| Language | Message |
-|---|---|
-| TH | ไม่พบข้อมูล |
-| EN | No data found |
-
----
-
-# 15. Notification Rules
-
-- New Message แสดงเป็น unread/badge ภายใน Chat ได้ แต่ไม่ใช่ Notification Center type ใน FO V1 baseline
-- New Offer ส่ง Notification ตาม Offer / Notification Module
-- Offer Accepted ส่ง Notification และเปิด Chat Room
-- Offer Rejected ส่ง Notification และเปิด Asset Detail
-- Offer Paused เปิด Chat Room และ Focus Offer Card โดยไม่มี Accept/Decline
-- Offer Cancelled เปิด Chat Room และ Focus Offer Card ที่เป็น final state
-- Offer Invalidated เปิด Chat Room และ Focus Offer Card ที่เป็น unavailable final state
-
-## Offer Card State In Chat
-
-| Offer state | Chat display | Seller action |
-|---|---|---|
-| `Pending` | แสดง Offer Card พร้อมราคา, asset, message และ timestamp | แสดง `Decline` / `Accept` เฉพาะ Seller |
-| `Paused` | แสดง `Offer Paused` และข้อความ `This asset is under review. The offer cannot be accepted or declined right now.` | ไม่มี action หรือ disabled ทั้งคู่ |
-| `Accepted` | แสดง `Offer Accepted` และข้อความ `The buyer has been notified.` | ไม่มี action |
-| `Rejected` | แสดง `Offer Declined` และข้อความ `The buyer has been notified.` | ไม่มี action |
-| `Cancelled` | แสดง `Offer Cancelled` และข้อความ `This asset is no longer available for offers.` | ไม่มี action |
-| `Invalidated` | แสดง `Offer Unavailable` และข้อความ `This asset was removed after review.` | ไม่มี action |
-
-`Paused` ต้องไม่ถูกนับเป็น active Incoming Offer ระหว่าง asset review; ถ้า review ผ่านและ Offer กลับเป็น `Pending` จึงแสดงใน Incoming Offers อีกครั้ง
-
-Notification destination:
-
-| Notification | Destination |
-|---|---|
-| New Message | In-chat unread/badge only; no FO Notification Center type in V1 |
-| Offer Accepted | Chat Room |
-| Offer Rejected | Asset Detail |
-| Offer Paused | Chat Room + Focus Offer Card |
-| Offer Cancelled | Chat Room + Focus Offer Card |
-| Offer Invalidated | Chat Room + Focus Offer Card |
-
----
-
-# 16. Analytics Events
-
-- Chat List Open
-- Chat Room Open
-- Create Chat Room
-- Send Message
-- Receive Message
-- Search Chat
-- Delete Chat
-- Mute Chat Notifications
-- Block User From Chat
-- Report User From Chat
-- Open Asset Reference
-- Offer Card Viewed
-- Offer Accepted From Chat
-- Offer Rejected From Chat
-
----
-
-# 17. Acceptance Criteria
-
-## Room & Reference
+## Session / Nav / Guest / Guard
 
 | AC ID | Criteria |
 |---|---|
-| AC-CHAT-001 | Chat Room ต้องถูกสร้างเมื่อส่งข้อความแรก ไม่ใช่แค่กดปุ่ม Chat |
-| AC-CHAT-002 | Same User + Same Asset ต้องใช้ Chat Room เดิม |
-| AC-CHAT-003 | Same User + Different Asset ต้องใช้ Chat Room เดิม |
-| AC-CHAT-004 | Same User + Different Asset ต้องเปลี่ยน Reference Asset เป็น Asset ล่าสุด |
-| AC-CHAT-005 | Asset Reference Card ต้องแสดงใน Chat Room |
-
-## Deleted / Sold Asset
-
-| AC ID | Criteria |
-|---|---|
-| AC-CHAT-006 | เมื่อ Asset ถูกลบ Chat ต้องยังอยู่ |
-| AC-CHAT-007 | เมื่อ Asset ถูกลบ Reference Asset ต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว` / `This item is no longer available.` |
-| AC-CHAT-008 | เมื่อ Asset ถูกลบ Offer ที่เกี่ยวข้องต้องเป็น Cancelled |
-| AC-CHAT-009 | เมื่อ Asset Sold Chat ต้องยังใช้งานได้ |
-| AC-CHAT-010 | เมื่อ Asset Sold Offer อื่นต้องถูก Auto Reject ตาม Offer Module |
-
-## Message / Chat List
-
-| AC ID | Criteria |
-|---|---|
-| AC-CHAT-011 | Chat Room ต้องรองรับ Text, Image, File, Asset Card และ Offer Card |
-| AC-CHAT-012 | Message ต้องไม่เป็นค่าว่าง |
-| AC-CHAT-013 | Chat List ต้องเรียงตาม Latest Message DESC |
-| AC-CHAT-014 | Chat List ต้องรองรับ Unread Count |
-| AC-CHAT-015 | Search Chat ต้องใช้งานได้ |
-
-## Offer Integration
-
-| AC ID | Criteria |
-|---|---|
-| AC-CHAT-016 | Incoming Offers ต้องแสดงเฉพาะ Offer ที่รอการตัดสินใจ |
-| AC-CHAT-017 | Offer Accepted ต้องหายจาก Incoming Offers และยังอยู่ใน Chat Room / All Chat |
-| AC-CHAT-018 | Offer Rejected ต้องหายจาก Incoming Offers และยังอยู่ใน Chat Room / All Chat |
-| AC-CHAT-019 | Offer ที่อ่านแล้วแต่ยังไม่ action ต้องยังอยู่ใน Incoming Offers |
-| AC-CHAT-020 | Offer Accepted Notification ต้องเปิด Chat Room |
-| AC-CHAT-021 | Offer Rejected Notification ต้องเปิด Asset Detail |
-| AC-CHAT-021A | Offer Paused ต้องหายจาก Incoming Offers active list และ Offer Card ต้องไม่มี `Accept` / `Decline` |
-| AC-CHAT-021B | Offer Cancelled และ Invalidated ต้องเป็น final Offer Card state และไม่มี `Accept` / `Decline` |
-
-## Permission / Safety
-
-| AC ID | Criteria |
-|---|---|
-| AC-CHAT-022 | Guest ต้องไม่สามารถใช้งาน Chat ได้ |
-| AC-CHAT-023 | เมื่อ Guest กด Chat ต้องแสดง Global Login Required Dialog |
-| AC-CHAT-024 | Blocked User ต้องไม่สามารถส่งข้อความหากันได้ |
-| AC-CHAT-025 | Chat ต้องมี entry สำหรับ Block User |
-| AC-CHAT-026 | Chat ต้องมี entry สำหรับ Report User |
-| AC-CHAT-026A | หลัง Block แล้ว chat history เดิมยังอ่านได้แบบ read-only และไม่สามารถสร้าง Chat / Offer ใหม่ระหว่างคู่ที่ block กัน |
-| AC-CHAT-026B | Block User จาก Chat ต้องเปิด confirmation `Block this user?`; cancel/dismiss ต้องไม่ block user |
-
-## Delete Chat
-
-| AC ID | Criteria |
-|---|---|
-| AC-CHAT-027 | Delete Chat ต้องมี Confirmation |
-| AC-CHAT-028 | Delete Chat ต้องซ่อนห้องแชทจาก Chat List เฉพาะฝั่งผู้กด |
-| AC-CHAT-029 | Delete Chat ต้องไม่ลบ message/archive ฝั่ง server และไม่กระทบคู่สนทนา |
-| AC-CHAT-030 | Delete Chat ต้องไม่ลบหลักฐาน offer/chat history และไม่มี restore UI ใน V1 |
+| AC-CHAT-039 | Guest แตะ chat entry ใด ๆ → Member Sheet `Join TukDaeng`; session `new`/`guest` → `threads=[]` + `No chats yet` |
+| AC-CHAT-040 | `data-navgo` ทุกครั้ง → `chatResetToDefault` (view=defView + filter=all + ปิด popover + เคลียร์ q/iq); `applySessionData` → reset inited/threads/draft |
+| AC-CHAT-041 | Back: stack>1 บน `chat*`/`chmenu:` → slide-out-right; `chmedia:` ✕ → pop+swap + reset galState; Quick-Ask room (stack=1) → back ปิด layer |
+| AC-CHAT-042 | Dead/tooling ต้องไม่เป็น feature: `chsettings:` route+page, `chatPopHTML`/`.cp-*`/`.chat-fab`/`sendChat`, `state.ask` variants, E2E/Letter Sealing claims, `pfRestrictHint` (no call site), dl2 ask row |
 
 ---
 
-## Chat Room Header Search & LINE-Style Menu Criteria
+# 17. Related Modules
 
-| AC ID | Criteria |
-|---|---|
-| AC-CHAT-031 | When tapping search icon in Chat Room header, the search bar replaces the entire header (`placeholder="Messages"`, search icon, clear button, and close `✕` button); typing highlights matching terms and dims non-matching messages; closing returns to normal header |
-| AC-CHAT-032 | When tapping hamburger menu (`≡`) in Chat Room header, opens Chat Menu sub-page with back `<` pinned left and centered partner name, 3 circular action buttons (`Mute/Unmute`, `Profile`, `Block/Unblock` which opens TukDaeng app standard Block confirmation bottom sheet with Block & Report actions, or Unblock dialog), and content rows |
-| AC-CHAT-033 | Chat Menu list rows include `Photos & videos` (showing horizontal thumbnail strip without border and 4px radius when populated, or a light rounded card with "No photos or videos found." when empty), and `Listings & Items` (single-line label, truncated item caption with ellipsis, navigating to post detail screen) |
-| AC-CHAT-034 | Chat Media Gallery sub-page displays in-chat media grouped by date; direct photo grid without unnecessary tabs (no Links/Files tabs); tapping a photo opens the Photo Viewer strictly contained within the mobile device frame |
-| AC-CHAT-035 | In Chat Media Gallery Select Mode, selected items display sequential badges (`1`, `2`, ...); bottom action bar provides Delete (Trash) and Download actions (Share action is excluded); empty gallery displays "No photos or videos found." empty card; closing (`✕`) returns smoothly to Chat Menu without sliding animation |
-
----
-
-# 18. Related Modules
-
-- Asset Detail Module
-- Asset Management Module
-- Offer Module
-- Notification Module
-- Profile Module
-- Trust & Safety Module
+- [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) — session §7, gate §11, lifecycle §12, block §13, private §14
+- [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) — routes §6.6, back §6.7, entry matrix §7, unavailable §10
+- [02_FEED_MODULE.md](02_FEED_MODULE.md) — post model + `ask-pill` surfaces canonical
+- [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) — post viewer `pv-*` (Ask อยู่บน rail)
+- [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) — listing semantics (item snapshot อ้าง post ไม่ใช่ asset record)
+- [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) — `data-chgo="post"` handoff + missing-post fallback (FSP-018 lock)
+- [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) — `blkSheet`/`unblockDlg`/`pfSetBlocked`/`pf-msg` dead/`data-pf-user` canonical (FSP-019 lock)
+- [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) — alerts feed (ไม่มี chat type — FSP-021)
+- [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) — `blocked` list `m-unblock` shared dlg
+- [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) — report stack + `PM_REASONS` + moderation canonical
 
 ---
 
-# 19. Future Enhancement
+# 18. Future Enhancement
 
-- Voice Message
-- Typing Indicator
-- Message Reaction
-- Pinned Message
-- Message Edit
-- Group Chat
+- Voice message / typing indicator / reactions / message edit+delete / pinned message / group chat
+- Real read receipts + incoming simulation (`Sent`→`Read` lifecycle)
+- File message + file-type/size validation
+- `followOnly` enforcement (gate Ask จาก non-followed account)
+- Unavailable post ref state บนการ์ด (canonical `รายการนี้ไม่พร้อมใช้งานแล้ว`) + sold marker
+- Chat persistence (server threads/drafts/pins/mutes/hidden) + sync ข้าม device
+- Room settings page revival หรือลบ `chsettings:` (wallpaper/export/Delete data)
+- Media gallery real date grouping + Share action + video viewer
+- `pfRestrictHint` consistency (call site หรือตัด — รวม 06)
+- `mute` ไม่นับ badge (chUnread filter) + per-thread mute มีผล notification
+- Deep link `chatroom:{id}` / `chat` contract (00_NAV §10/§12)
+- i18n sweep — EN/TH hardcode (~40 copies) → localized pairs
+- Real report reason wiring → moderation queue + ticket id (canonical 15)

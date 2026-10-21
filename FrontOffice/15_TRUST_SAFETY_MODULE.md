@@ -47,35 +47,16 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 | Report SLA | Admin ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา | PRD ต้องระบุ 24h review SLA |
 | Block Impact | Asset ของผู้ถูก Block หายจาก Feed, Search, Watch Alert Result | ต้อง filter content ของ blocked user ทันทีใน surfaces เหล่านี้ |
 | Following Impact | ความสัมพันธ์ Follow ระหว่างกันต้องไม่ถูกใช้ในการแสดง Following Feed | Following Feed ต้องไม่ใช้ relationship ที่ถูก block |
-| Report Types | Asset, User, Comment, Board Content | Figma/PRD ต้องใช้ type ชุดนี้ |
+| Report Types | Asset, User, Comment, Board Content | PRD ต้องใช้ type ชุดนี้ |
 | Report Impact | Report ไม่ทำให้ Asset หายจาก Feed ทันที | ห้ามออกแบบ report submit แล้ว content หายทันที |
 | Moderation Impact | Asset หรือ Content จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น | Content removal เป็น Admin action |
-| Apple Compliance | Report, Block, Terms of Use, Privacy Policy, Moderation Flow | ต้องมีครบใน app/Figma |
+| Apple Compliance | Report, Block, Terms of Use, Privacy Policy, Moderation Flow | ต้องมีครบใน app |
 | Legal Consent | ทุกช่องทางสมัครต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร | Sign Up ทุกช่องทางต้องมี consent |
 | Legal Access | Settings รองรับ Privacy Policy และ Terms of Use | Legal docs ต้องเข้าถึงได้จาก Settings |
 
 ---
 
-# 5. Figma Gap Checklist For Trust & Safety Module
-
-| Priority | Figma Gap | Master Baseline | Action |
-| --- | --- | --- | --- |
-| High | Block / Report entry ใน Chat ยังไม่ชัด | Chat ต้องรองรับ Block User และ Report User | เพิ่ม action menu/state ใน Chat |
-| High | Block impact ต่อ Feed/Search/Watch Alert Result ยังต้องระบุ | Asset ของผู้ถูก Block ต้องหายจาก Feed, Search, Watch Alert Result ทันที | เพิ่ม annotation หรือ state filtering ให้ครบ |
-| High | Block impact ต่อ Following Feed ยังไม่ชัด | ความสัมพันธ์ Follow ระหว่างกันต้องไม่ถูกใช้ในการแสดง Following Feed | เพิ่ม following-feed filtering rule |
-| High | Report type ต้อง lock ให้ตรง master | Report รองรับ Asset, User, Comment, Board Content | ตรวจ Figma report forms/type labels ให้ตรง |
-| High | Report submit อาจสื่อว่า content หายทันที | Report ไม่ทำให้ Asset/Content หายทันที | เพิ่ม success state ที่ไม่ remove content จนกว่า Admin moderation |
-| High | Moderation flow / Admin review SLA ยังไม่ชัด | Admin ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา | เพิ่ม Back Office handoff note และ 24h SLA |
-| High | Apple compliance coverage ต้องครบ | ต้องรองรับ Report, Block, Terms of Use, Privacy Policy, Moderation Flow | ตรวจครบทุก entry/state |
-| Medium | Terms label อาจใช้ capitalization ไม่ตรง | Master ใช้ `Terms of Use` | normalize label เป็น `Terms of Use` |
-| Medium | Legal consent ทุก sign up channel ยังต้องตรวจ | ทุกช่องทางสมัครต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร | ตรวจ Email/Google/Apple sign up consent |
-| Medium | Blocked/unavailable profile state ยังไม่ชัด | Blocked content/user ต้องไม่เข้าถึงตาม Trust & Safety rule | เพิ่ม blocked/unavailable state |
-| High | Block แล้ว chat history / new message behavior ยังไม่ถูกระบุครบใน Figma | Product review แนะนำให้เก็บ chat history เดิมให้อ่านได้ แต่ปิดการส่งข้อความใหม่หลัง block | เพิ่ม blocked chat read-only state และ update master/Chat PRD |
-| Medium | Moderation notification หลัง report/action ยังไม่อยู่ใน Notification baseline | Product review แนะนำให้ moderation/account/system notification ไม่อยู่ใน FO V1 | ย้ายเป็น future หรือ Back Office scope |
-
----
-
-# 6. Scope
+# 5. Scope
 
 ## In Scope
 
@@ -107,7 +88,7 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 
 ---
 
-# 7. Screen Mapping
+# 6. Screen Mapping
 
 | Screen / Component | Description |
 | --- | --- |
@@ -124,7 +105,7 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 
 ---
 
-# 8. User States
+# 7. User States
 
 ## Guest
 
@@ -158,7 +139,7 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 
 ---
 
-# 9. User Flow
+# 8. User Flow
 
 ## Block User Flow
 
@@ -173,7 +154,7 @@ Profile / Asset Detail / Chat
 Block User confirmation:
 
 - Title: `Block this user?`
-- Body: `You will no longer see this user's assets in Feed, Search, Watch Alert results, or related profile surfaces. Existing chat history will remain read-only, but you will not be able to send new messages or create new offers with this user.`
+- Body: `You will no longer see this user's assets in Feed, Search, Watch Alert results, or related profile surfaces. Existing chat history will remain read-only, but you will not be able to send new messages to this user.`
 - Actions: `Cancel`, `Block`
 - `Cancel` closes the confirmation without changing block state
 - `Block` applies the block rule immediately after success
@@ -254,14 +235,14 @@ Sign Up
 
 ---
 
-# 10. Business Rules
+# 9. Business Rules
 
 ## Block User Rule
 
 - Member สามารถ Block User ได้
 - Block entry ควรมีใน Profile, Asset Detail และ Chat ตาม context ที่เกี่ยวข้อง
 - Block User ต้องเปิด confirmation ก่อนเสมอ และต้องไม่ apply block หาก user กด `Cancel` หรือ dismiss confirmation
-- Confirmation ต้องระบุผลกระทบหลัก: asset/content ของ user นั้นจะถูก filter จาก public discovery surfaces, existing chat history จะอ่านได้แบบ read-only, และไม่สามารถส่งข้อความหรือสร้าง offer ใหม่ระหว่างคู่ที่ block กันได้
+- Confirmation ต้องระบุผลกระทบหลัก: asset/content ของ user นั้นจะถูก filter จาก public discovery surfaces, existing chat history จะอ่านได้แบบ read-only, และไม่สามารถส่งข้อความใหม่ระหว่างคู่ที่ block กันได้
 - เมื่อ block แล้ว Asset ของผู้ถูก Block ต้องหายจาก:
   - Feed
   - Search
@@ -327,7 +308,7 @@ Report รองรับ type ต่อไปนี้ตาม master:
 - Master ระบุว่า Chat รองรับ Block User และ Report User
 - Product review แนะนำให้หลัง Block แล้ว chat history เดิมยังอ่านได้
 - หลัง Block ต้องปิดการส่งข้อความใหม่ระหว่างคู่ที่ block กัน
-- หลัง Block ต้องปิดการสร้าง Chat / Offer ใหม่ระหว่างคู่ที่ block กัน
+- หลัง Block ต้องปิดการสร้าง Chat ใหม่ระหว่างคู่ที่ block กัน
 - ต้อง update master และ Chat PRD ให้ explicit ก่อนส่งต่อเป็น final rule
 
 ## Removed Content Rule
@@ -337,7 +318,7 @@ Report รองรับ type ต่อไปนี้ตาม master:
 
 ---
 
-# 11. Permission Rules
+# 10. Permission Rules
 
 | Actor | Permission |
 | --- | --- |
@@ -349,7 +330,7 @@ Report รองรับ type ต่อไปนี้ตาม master:
 
 ---
 
-# 12. Validation Rules
+# 11. Validation Rules
 
 | Field / Condition | Rule |
 | --- | --- |
@@ -364,7 +345,7 @@ Report รองรับ type ต่อไปนี้ตาม master:
 
 ---
 
-# 13. Exception Handling
+# 12. Exception Handling
 
 ## User Already Blocked
 
@@ -375,7 +356,7 @@ Report รองรับ type ต่อไปนี้ตาม master:
 
 - TH title: `บล็อกผู้ใช้งานนี้?`
 - EN title: `Block this user?`
-- EN body: `You will no longer see this user's assets in Feed, Search, Watch Alert results, or related profile surfaces. Existing chat history will remain read-only, but you will not be able to send new messages or create new offers with this user.`
+- EN body: `You will no longer see this user's assets in Feed, Search, Watch Alert results, or related profile surfaces. Existing chat history will remain read-only, but you will not be able to send new messages to this user.`
 - EN actions: `Cancel`, `Block`
 - EN success: `User blocked`
 
@@ -401,7 +382,7 @@ Report รองรับ type ต่อไปนี้ตาม master:
 
 ---
 
-# 14. Empty State
+# 13. Empty State
 
 Trust & Safety Front Office ไม่มี list empty state หลักใน V1
 
@@ -409,7 +390,7 @@ Trust & Safety Front Office ไม่มี list empty state หลักใน 
 
 ---
 
-# 15. Notification Rules
+# 14. Notification Rules
 
 Trust & Safety ไม่อยู่ใน Notification baseline ของ master
 
@@ -419,7 +400,7 @@ Trust & Safety ไม่อยู่ใน Notification baseline ของ maste
 
 ---
 
-# 16. Analytics Events
+# 15. Analytics Events
 
 - `user_block_started`
 - `user_blocked`
@@ -437,7 +418,7 @@ Trust & Safety ไม่อยู่ใน Notification baseline ของ maste
 
 ---
 
-# 17. Acceptance Criteria
+# 16. Acceptance Criteria
 
 ## AC-TS-001: Block User
 
@@ -451,7 +432,7 @@ Given Member เลือก Block User จาก Profile, Asset Detail, Feed �
 When confirmation แสดง  
 Then ต้องเห็น title `Block this user?` และ actions `Cancel`, `Block`  
 When Member กด `Cancel` หรือ dismiss confirmation  
-Then ระบบต้องไม่ block user และ visibility/chat/offer state ต้องไม่เปลี่ยน
+Then ระบบต้องไม่ block user และ visibility/chat state ต้องไม่เปลี่ยน
 
 ## AC-TS-002: Block Removes Assets From Feed
 
@@ -561,7 +542,7 @@ Then app ต้องมี Report, Block, Terms of Use, Privacy Policy แล�
 
 ---
 
-# 18. Related Modules
+# 17. Related Modules
 
 - Authentication Module
 - Feed Module
@@ -577,7 +558,7 @@ Then app ต้องมี Report, Block, Terms of Use, Privacy Policy แล�
 
 ---
 
-# 19. Future Enhancement
+# 18. Future Enhancement
 
 - Appeal Ban
 - Report Tracking

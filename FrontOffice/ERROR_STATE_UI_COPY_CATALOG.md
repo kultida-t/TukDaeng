@@ -3,7 +3,7 @@
 **Baseline Version:** `FO-PRD-v1.2`  
 **Date:** 2026-07-02  
 **Owner:** Product / UX / Dev / QA  
-**Scope:** Final Front Office error, loading, fallback, and retry copy for Figma-to-Dev handoff.
+**Scope:** Final Front Office error, loading, fallback, and retry copy for Dev handoff.
 
 ---
 
@@ -11,7 +11,7 @@
 
 This catalog is the shared reference for Front Office error-state UI copy and behavior. Dev should use it with the module PRDs, especially `02_FEED_MODULE.md`, `00_GLOBAL_RULES_MODULE.md`, and `QA_TEST_SCENARIO_CHECKLIST.md`.
 
-If this file conflicts with an older Figma annotation, use this file for error-state copy and retry scope.
+If this file conflicts with older documentation, use this file for error-state copy and retry scope.
 
 ---
 
@@ -251,7 +251,7 @@ Behavior:
 
 ---
 
-# 7. Search / Result List States
+# 7. Search / Result States
 
 ## Search No Result
 
@@ -268,7 +268,7 @@ Behavior:
 
 Behavior:
 
-- Retry reruns the current search with the same keyword, filters, and sort.
+- Retry reruns the current search with the same keyword and filters.
 - Deleted assets from stale results must route to Asset Unavailable.
 
 ---
