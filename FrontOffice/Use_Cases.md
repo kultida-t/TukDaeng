@@ -8,7 +8,7 @@
 ## หมายเหตุเรื่อง Role ผู้ใช้
 
 > ผู้ใช้ทุกคนในระบบมี **Role เดียวกัน** ไม่มีการแบ่งประเภท Buyer / Seller / Collector  
-> ผู้ใช้คนเดียวสามารถทำได้ทุกอย่าง: ลงขายสินทรัพย์, ซื้อ/เสนอราคาสินทรัพย์ของคนอื่น, แสดงคอลเลกชัน หรือซ่อนไว้ส่วนตัว  
+> ผู้ใช้คนเดียวสามารถทำได้ทุกอย่าง: ลงขายสินทรัพย์, ซื้อสินทรัพย์ของคนอื่น, แสดงคอลเลกชัน หรือซ่อนไว้ส่วนตัว  
 >
 > คำที่ใช้ในเอกสารนี้:  
 > - **"Owner"** = ผู้ใช้ในฐานะเจ้าของสินทรัพย์ชิ้นนั้น ๆ  
@@ -42,7 +42,7 @@
 **Precondition:** ไม่ได้ Login อยู่
 
 #### Happy Path
-1. ผู้ใช้กรอก Email, Password, Confirm Password
+1. ผู้ใช้กรอก Email, Password
 2. ผู้ใช้ติ๊ก "I agree to Terms of Use and Privacy Policy"
 3. กด "Sign up"
 4. ระบบส่ง OTP 6 หลักไปยัง Email
@@ -60,7 +60,7 @@
 | E04 | Password ไม่ตรงกัน | แสดง "Passwords do not match" |
 | E05 | ไม่ติ๊ก Terms | ปุ่ม Sign up ไม่ Active |
 | E06 | OTP ผิด | แสดง "Incorrect code, please try again" |
-| E07 | OTP หมดอายุ | แสดง "Code expired" + ปุ่ม Resend |
+| E07 | OTP หมดอายุ (contract-only error state — FO ไม่ได้กำหนด expiry duration) | แสดง "Code expired" + ปุ่ม Resend |
 | E08 | กด Resend เร็วเกินไป | แสดง Countdown ก่อน Resend ได้อีกครั้ง |
 
 ---
@@ -330,7 +330,7 @@
 3. เห็น Badge สถานะ: Sale หรือ Collection Show
 4. อ่าน Description, Technical Specs
 5. อ่านและ Like Comments
-6. เห็นราคา + ปุ่ม "Make an Offer" และ "Contact seller"
+6. เห็นราคา + ปุ่ม "Contact seller"
 7. เห็นชื่อเจ้าของ + ปุ่ม Follow
 
 #### Error Cases
@@ -368,33 +368,6 @@
 
 ---
 
-### UC-DETAIL-002: ส่ง Offer
-
-**Actor:** ผู้ใช้ที่ Login แล้ว และไม่ใช่เจ้าของ
-
-#### Happy Path
-1. กด "Make an Offer"
-2. กรอกราคา (THB)
-3. กรอก Message (ตัวเลือก, ไม่เกิน 500 characters)
-4. กด "Send offer"
-5. แสดง Popup "Offer Sent Successfully"
-6. กด "Go to chat" → เข้าห้องแชทกับผู้ขาย
-
-#### Error Cases
-| ID | เงื่อนไข | ผลลัพธ์ |
-|---|---|---|
-| E01 | ไม่กรอกราคา | ปุ่ม Send offer ไม่ Active |
-| E02 | ราคาเป็น 0 หรือติดลบ | แสดง "Please enter a valid offer amount" |
-| E03 | ราคาไม่ใช่ตัวเลข หรือ parse เป็นจำนวนเงินไม่ได้ | แสดง "Please enter a valid offer amount" |
-| E04 | Message มีเฉพาะช่องว่าง | Trim แล้วถือว่าไม่กรอก Message |
-| E05 | Message เกิน 500 characters | แสดง field-level validation error |
-| E06 | ส่ง Offer สินทรัพย์ที่ Hide, Sold หรือ Deleted | แสดง "This item is no longer available" |
-| E07 | ส่ง Offer ซ้ำในขณะที่ Offer เดิมยังรอ | แสดง "You already have a pending offer. Go to chat to view it." |
-| E08 | Guest กด Make an Offer | แสดง Global Login Required Dialog |
-| E09 | Owner กด Make an Offer บน Asset ของตัวเอง | ไม่แสดงปุ่ม Make an Offer |
-
----
-
 ### UC-DETAIL-003: Comment บนสินทรัพย์
 
 **Actor:** ผู้ใช้ที่ Login แล้ว
@@ -429,7 +402,7 @@
 6. กรอก Specifications
 7. กรอก Commerce & Curation (ราคา + Description)
 8. เลือก Status (Sale / Show / Hide)
-9. (ตัวเลือก) กรอก Provenance
+9. (ตัวเลือก) กรอก Purchase Information (Purchase Price / Purchase Date — owner-private)
 10. กด "Save"
 11. Confirm Dialog "Are you sure you want to save edit asset?"
 12. กด "Confirm" → สินทรัพย์ปรากฏใน Profile
@@ -497,11 +470,6 @@
 2. กด Save → Confirm
 3. สินทรัพย์หายจาก Feed/Marketplace ของผู้อื่น
 
-#### Error Cases
-| ID | เงื่อนไข | ผลลัพธ์ |
-|---|---|---|
-| E01 | เปลี่ยนเป็น "Sold" แต่ยังมี Pending Offer | แสดง "There are pending offers. Accept or decline them first." |
-
 ---
 
 ### UC-ASSET-004: บันทึก Sale History
@@ -542,71 +510,29 @@
 | E06 | Buyer Phone มีรูปแบบไม่ถูกต้อง | แสดง validation error เฉพาะ field แต่ไม่บังคับให้กรอก Buyer Phone |
 | E07 | Buyer Name / Buyer Contact / Note เกินความยาวที่กำหนด หรือมีเฉพาะช่องว่าง | แสดง validation error เฉพาะ field |
 | E08 | ไฟล์อัปโหลดไม่ใช่รูปภาพที่รองรับ, ขนาดเกิน 10MB ต่อไฟล์, หรือเกิน 3 รูปต่อ section | แสดง upload validation error |
-| E09 | Asset มี Pending Offer ที่ยังไม่ accept/decline | แสดง "There are pending offers. Accept or decline them first." |
 
 ---
 
-### UC-ASSET-005: เพิ่ม Provenance
+### UC-ASSET-005: บันทึก Purchase Information (owner-private)
 
 **Actor:** เจ้าของสินทรัพย์
 
 #### Happy Path
-1. ระหว่าง Add/Edit Asset กด "Provenance"
-2. กรอก Purchase Price (required)
-3. กรอก Purchase Date, Purchase From (optional)
-4. อัปโหลดรูป Equipment & Accessories, Proof of Payment (optional)
-5. กรอก Note (optional)
-6. กด "Save" → Confirm
+1. ระหว่าง Add/Edit Asset เลื่อนไปที่ section "Purchase Information"
+2. (ตัวเลือก) กรอก Purchase Price (THB)
+3. (ตัวเลือก) เลือก Purchase Date
+4. กด "Save" → Confirm
 
 #### Required / Optional Fields
 | Field | Required | Validation |
 |---|---|---|
-| Purchase Price (THB) | Yes | ต้องเป็นตัวเลขและมากกว่า 0 |
-| Purchase Date | No | หากกรอกต้องเป็นวันที่จริงและห้ามเป็นวันที่อนาคต |
-| Purchase From | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
-| All Equipment & Accessories | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
-| Proof of Payment | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
-| Note | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
+| Purchase Price (THB) | No | หากกรอกต้องเป็นตัวเลขและมากกว่า 0 |
+| Purchase Date | No | หากเลือกต้องไม่เป็นวันที่ในอนาคต |
+
+- Purchase Information เป็น owner-private — ไม่แสดงบน public surface และใช้เป็น input ของ Portfolio calculation
+- ไม่มี Provenance / Consignment entity ใน FO V1 (ตาม S-25 — prototype ไม่มี entity, step, หรือ tab เหล่านี้)
 
 ---
-
-### UC-ASSET-006: เพิ่ม Consignment (ฝากขาย)
-
-**Actor:** เจ้าของ/ผู้ดูแล
-
-#### Happy Path
-1. Add Asset → กด Tab "Consignment"
-2. กรอก Full Name, Phone Number, Asking Price (required)
-3. กรอก Line/IG/Facebook, Email, Payout Method, Consignment Date, Consignment Duration, Commission %, Minimum Acceptable Price (optional)
-4. อัปโหลด Equipment & Accessories และ Proof of Payment / Documentation (optional)
-5. กด "Save" → Confirm
-
-#### Required / Optional Fields
-| Field | Required | Validation |
-|---|---|---|
-| Full Name | Yes | ต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
-| Phone Number | Yes | ต้องเป็น phone format ที่ถูกต้อง |
-| Asking Price (THB) | Yes | ต้องเป็นตัวเลขและมากกว่า 0 |
-| Line / IG / Facebook | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
-| Email | No | หากกรอกต้องเป็น email format ที่ถูกต้อง |
-| Payout Method | No | หากกรอกต้องเป็น option/value ที่ระบบรองรับ และ validate field ย่อยตาม payout type |
-| Consignment Date | No | หากกรอกต้องเป็นวันที่จริงและห้ามเป็นวันที่อนาคต |
-| Consignment Duration | No | หากกรอกต้องมากกว่า 0 |
-| Commission (%) | No | หากกรอกต้องอยู่ระหว่าง 0-100 |
-| Minimum Acceptable Price | No | หากกรอกต้องมากกว่า 0 และต้องไม่มากกว่า Asking Price |
-| All Equipment & Accessories | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
-| Proof of Payment / Documentation | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
-| Note | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
-
-#### Error Cases
-| ID | เงื่อนไข | ผลลัพธ์ |
-|---|---|---|
-| E01 | ไม่กรอก Full Name | แสดง "Full name is required" |
-| E02 | ไม่กรอก Phone Number หรือ phone number format ผิด | แสดง "Invalid phone number" |
-| E03 | ไม่กรอก Asking Price หรือ Asking Price <= 0 | แสดง "Asking price must be greater than 0" |
-| E04 | Commission ไม่อยู่ในช่วง 0-100 เมื่อกรอก | แสดง "Commission must be between 0 and 100%" |
-| E05 | Minimum Acceptable Price > Asking Price เมื่อกรอกทั้งสองค่า | แสดง "Minimum acceptable price cannot exceed asking price" |
-| E06 | Optional field ที่กรอกมีแต่ช่องว่าง, format ผิด, เกินความยาว, หรือ upload ไม่ผ่าน type/size/count limit | แสดง validation เฉพาะ field/section นั้น |
 
 ---
 
@@ -621,7 +547,6 @@
 #### Happy Path
 1. กด Tab "Chat"
 2. แสดงรายการแชทล่าสุด (เรียงตามเวลา)
-3. Tab "Incoming Offers" แสดงการเสนอราคาที่รอตอบรับ
 
 ---
 
@@ -660,28 +585,6 @@
 
 ---
 
-### UC-CHAT-004: ตอบรับ/ปฏิเสธ Offer (ผู้ขาย)
-
-**Actor:** เจ้าของสินทรัพย์
-
-#### Happy Path (Accept)
-1. เห็น Offer Card ในห้องแชท
-2. กด "Accept"
-3. แสดงสถานะ "Offer Accepted — The buyer has been notified"
-4. ผู้ซื้อได้รับ Notification
-
-#### Happy Path (Decline)
-1. กด "Decline"
-2. แสดงสถานะ "Offer Declined — The buyer has been notified"
-
-#### Error Cases
-| ID | เงื่อนไข | ผลลัพธ์ |
-|---|---|---|
-| E01 | Offer ถูก Accept/Decline ไปแล้วโดยอุปกรณ์อื่น | แสดง "This offer has already been processed" |
-| E02 | สินทรัพย์ถูก Mark ว่า Sold แล้ว | ปุ่ม Accept/Decline ถูก Disable |
-
----
-
 ### UC-CHAT-005: ลบแชท
 
 **Actor:** ผู้ใช้ที่ Login แล้ว
@@ -695,19 +598,6 @@
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
 | E01 | กด "Cancel" | ยกเลิก ไม่มีการลบ |
-
----
-
-### UC-CHAT-006: Decline Offer จาก Tab Incoming Offers (ผู้ขาย)
-
-**Actor:** เจ้าของสินทรัพย์
-
-#### Happy Path
-1. ไปที่ Chat → Tab "Incoming Offers"
-2. เห็น Offer Card พร้อมราคา, ชื่อผู้เสนอ, วันที่
-3. กด "Decline" บน Offer Card
-4. Offer ถูก Decline → ย้ายออกจาก Tab Incoming Offers
-5. ผู้ซื้อได้รับ Notification "Your offer was declined"
 
 ---
 
@@ -770,18 +660,6 @@
 #### Happy Path
 1. กด Tab "Alerts"
 2. แสดงรายการแจ้งเตือนเรียงตามเวลาล่าสุด
-3. แจ้งเตือน New Offer มีปุ่ม "Review offer" และ "Decline"
-
----
-
-### UC-ALERT-002: ตอบสนองต่อ Notification Offer
-
-**Actor:** เจ้าของสินทรัพย์
-
-#### Happy Path
-1. เห็น Notification "New Offer: THB 1,100,000"
-2. กด "Review offer" → เข้าห้องแชทที่มี Offer นั้น
-3. กด "Decline" → Decline ทันทีจาก Notification
 
 ---
 
@@ -931,7 +809,7 @@
 1. Settings → About → About your account
 2. กด "Delete account"
 3. Confirm (กรอก Password ยืนยัน)
-4. ระบบ soft delete/deactivate account, revoke session และ clear local token ทันที — ยกเลิก offer ที่ Pending และปิดรายงานอัตโนมัติ ซ่อน public profile/assets ทันที (ไม่มี block) แล้วแสดง "Account deletion started" พากลับหน้า Sign In; เริ่มนับ grace period 30 วันก่อนระบบลบบัญชีอัตโนมัติ
+4. ระบบ soft delete/deactivate account, revoke session และ clear local token ทันที — ปิดรายงานอัตโนมัติ ซ่อน public profile/assets ทันที (ไม่มี block) แล้วแสดง "Account deletion started" พากลับหน้า Sign In; เริ่มนับ grace period 30 วันก่อนระบบลบบัญชีอัตโนมัติ
 
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
@@ -950,7 +828,7 @@
 | **Positive Test** | Input ถูกต้อง → ผลลัพธ์ตามที่คาดหวัง |
 | **Negative Test** | Input ผิด → Error Message ที่เหมาะสม |
 | **Boundary Test** | ค่าขอบเขต เช่น Password 8 ตัวพอดี, รูป 10 รูปพอดี |
-| **Concurrency Test** | 2 User ทำงานพร้อมกัน เช่น Accept Offer พร้อมกัน 2 คน |
+| **Concurrency Test** | 2 User ทำงานพร้อมกัน เช่น กด Like Asset เดียวกันพร้อมกัน |
 | **Network Test** | ออฟไลน์, Connection ช้า, Timeout |
 | **Session Test** | Token หมดอายุ, Login หลาย Device |
 | **Permission Test** | ผู้ใช้ที่ไม่มีสิทธิ์ Access ข้อมูลของคนอื่น |

@@ -40,8 +40,8 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 | --- | --- | --- |
 | Privacy | Portfolio เป็น Private และเห็นเฉพาะ Owner | Guest/Public Viewer/User อื่นห้ามเข้าถึง Portfolio |
 | Entry Point | Total Asset Value เป็น entry point สำหรับกดเข้า Portfolio | Portfolio เปิดจาก Owner Profile ผ่าน Total Asset Value |
-| Calculation | Portfolio คำนวณจาก Sale, Show, Hide ที่ยังใช้งานได้ | ใช้เฉพาะ Asset 3 สถานะนี้ที่เป็นทรัพย์สินของ Owner จริง และต้องไม่รวมรายการที่ลบโดยเจ้าของ ถูก Back Office ซ่อนถาวร หรือเป็น Consignment |
-| Exclusion | Portfolio ไม่รวม Sold, ลบโดยเจ้าของ, ซ่อนถาวร และ Consignment | รายการเหล่านี้ไม่ถูกนำไปคำนวณ Total Asset Value |
+| Calculation | Portfolio คำนวณจาก Sale, Show, Hide ที่ยังใช้งานได้ | ใช้เฉพาะ Asset 3 สถานะนี้ที่เป็นทรัพย์สินของ Owner จริง และต้องไม่รวมรายการที่ลบโดยเจ้าของหรือถูก Back Office ซ่อนถาวร |
+| Exclusion | Portfolio ไม่รวม Sold, ลบโดยเจ้าของ และซ่อนถาวร | รายการเหล่านี้ไม่ถูกนำไปคำนวณ Total Asset Value |
 | Market Price | Watch Price API ใช้ดึงราคาตลาด | ใช้เป็นแหล่ง Current Value ลำดับแรก |
 | Fallback Price | หากไม่มีราคาตลาดต้องมี fallback | ใช้ Purchase Price fallback หรือแสดง No Valuation ตามลำดับ |
 | Gain/Loss | คำนวณจาก Current Value เทียบ Purchase Price | คำนวณเฉพาะรายการที่มีข้อมูลพอและไม่ใช้ Purchase Price fallback |
@@ -52,27 +52,7 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 
 ---
 
-# 5. Figma Gap Checklist For Portfolio Module
-
-| Priority | Figma Gap | Master Baseline | Action |
-| --- | --- | --- | --- |
-| High | Portfolio privacy ยังไม่ชัด | Portfolio เห็นเฉพาะ Owner | เพิ่ม Owner-only Portfolio state และห้าม Public Profile เข้าถึง |
-| High | Total Asset Value / Portfolio entry ยังไม่ชัด | Total Asset Value เป็น entry point สำหรับ Portfolio | เพิ่ม interaction จาก Owner Profile ไป Portfolio |
-| High | Portfolio calculation ต้อง lock status และ provenance | Portfolio คำนวณจาก Sale, Show, Hide ที่เป็น `Owner (Asset)` เท่านั้น | annotate calculation source ให้ชัด และไม่รวม Consignment |
-| High | Sold อาจถูกนับรวมใน Portfolio Value | Portfolio ไม่รวม Sold | ระบุว่า Sold excluded และแยกไป Sold History |
-| High | Sold History fields ยังไม่ครบ | Sold History ต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment | เพิ่ม field display/state ให้ครบ |
-| High | Public Profile อาจแสดง Portfolio/private data | Portfolio Value Detail, Sold History, Purchase data เป็น private | ห้ามแสดงใน Public Profile/Viewer mode |
-| Medium | Empty state ของ Portfolio/Sold History ยังไม่ชัด | Empty State ใช้ `ไม่พบข้อมูล` / `No data found` | เพิ่ม empty state ตามข้อความกลาง |
-| Medium | Deleted / ซ่อนถาวร / Consignment treatment ยังไม่ชัด | ลบโดยเจ้าของ, ซ่อนถาวร และ Consignment ไม่ควรคำนวณ Portfolio | ระบุ ลบโดยเจ้าของ, ซ่อนถาวร และ Consignment ไม่ถูกนับใน Portfolio |
-| High | Market Value source / formula ยังไม่ชัด | Current Value ใช้ Watch Price API -> Purchase Price fallback -> No Valuation | Annotate สูตรและ fallback ใน Portfolio dashboard/list |
-| High | Gain/Loss calculation ยังไม่ชัด | Unrealized Gain/Loss = Current Value - Purchase Price เฉพาะรายการที่มีข้อมูลพอ | เพิ่ม Gain/Loss display state และ no-calculation state |
-| High | Realized Gain/Loss ของ Sold History ยังไม่ชัด | Realized Gain/Loss = Sale Price - Purchase Price และแยกจาก Portfolio Value | เพิ่มสูตรและ unavailable state ใน Sold History |
-| High | Expected Profit / Market Comparison ใน Portfolio ยังไม่ชัด | Expected Profit ใช้ Asking Price - Purchase Price, Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price; Figma ออกแบบไว้ใน Portfolio / Assets Value เท่านั้น | เพิ่ม Owner-only expected profit และ public-safe market comparison state ใน Portfolio; Product decision: ไม่เพิ่มใน Asset Detail |
-| Medium | Holding Period / Top Brand / YTD ยังไม่ชัด | V1 รองรับ Holding Period, Top 3 Brand Holdings และ YTD วิธี A | เพิ่มสูตร, fallback และ note เมื่อข้อมูล snapshot ไม่พอ |
-
----
-
-# 6. Scope
+# 5. Scope
 
 ## In Scope
 
@@ -90,7 +70,7 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 - Valuation source label
 - No market price / no valuation fallback
 - Asset ที่ใช้คำนวณ: Sale, Show, Hide ที่ยังใช้งานได้
-- Exclude Sold, ลบโดยเจ้าของ, ซ่อนถาวร และ Consignment จาก Portfolio value
+- Exclude Sold, ลบโดยเจ้าของ และซ่อนถาวร จาก Portfolio value
 - Sold History แยกจาก Portfolio value
 - Sold History fields:
   - Sale Date
@@ -116,7 +96,7 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 
 ---
 
-# 7. Screen Mapping
+# 6. Screen Mapping
 
 | Screen / Component | Description |
 | --- | --- |
@@ -129,7 +109,7 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 
 ---
 
-# 8. User States
+# 7. User States
 
 ## Guest
 
@@ -154,7 +134,7 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 
 ---
 
-# 9. User Flow
+# 8. User Flow
 
 ## Open Portfolio Flow
 
@@ -190,7 +170,7 @@ Other User opens Portfolio deep link
 
 ---
 
-# 10. Business Rules
+# 9. Business Rules
 
 ## Privacy Rule
 
@@ -217,7 +197,6 @@ Portfolio ไม่รวม:
 - Sold
 - ลบโดยเจ้าของ
 - ซ่อนถาวรจาก Back Office
-- Consignment
 - Asset ของ user อื่น
 - Asset ที่ user ไม่มีสิทธิ์เห็น
 
@@ -229,7 +208,6 @@ Eligible Asset คือ Asset ที่ใช้คำนวณ Portfolio ไ�
 
 - Owner เป็นเจ้าของ Asset
 - Status เป็น `Sale`, `Show` หรือ `Hide`
-- Provenance type เป็น `Owner (Asset)` ไม่ใช่ `Consignment`
 - Asset ยังไม่ถูกลบ
 - Asset ไม่อยู่ในสถานะลบโดยเจ้าของ
 - Asset ไม่ถูก Back Office ซ่อนถาวร
@@ -261,8 +239,7 @@ Total Asset Value = SUM(Current Value ของ Eligible Asset ที่มี C
 Rules:
 
 - รวมเฉพาะ Asset สถานะ `Sale`, `Show`, `Hide`
-- รวมเฉพาะ Asset ที่เป็นทรัพย์สินของ Owner จริง (`Owner (Asset)`)
-- ไม่รวม Asset ที่เป็น `Consignment`
+- รวมเฉพาะ Asset ที่เป็นทรัพย์สินของ Owner จริง
 - ไม่รวม `Sold`
 - ไม่รวม Asset ที่ลบโดยเจ้าของ
 - ไม่รวม Asset ที่ถูก Back Office ซ่อนถาวร
@@ -500,8 +477,6 @@ Sold History ต้องเก็บ:
 
 - Purchase Price
 - Purchase Date
-- Purchase From
-- Proof of Payment
 - Sold History
 - Portfolio Value Detail
 
@@ -517,21 +492,14 @@ Sold History ต้องเก็บ:
 - ลบโดยเจ้าของ และซ่อนถาวรต้องหายจาก public surfaces
 - Asset ที่ถูก Back Office ซ่อนถาวรยังอาจแสดงให้ Owner เห็นแบบ read-only ใน owner detail แต่ต้องไม่แสดงใน Portfolio Asset List
 
-## Consignment Portfolio Rule
-
-- Asset ที่เป็น `Consignment` ไม่ถูกนำมาคำนวณ Portfolio, Total Asset Value หรือ Asset Value Summary
-- เหตุผลคือ Consignment เป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ Owner ถือครองเอง
-- ถ้า Asset เปลี่ยนจาก `Consignment` เป็น `Owner (Asset)` ตาม flow ที่ระบบอนุญาต จึงเริ่มเข้าเงื่อนไขคำนวณ Portfolio ได้
-
 ## Analytics Rule
 
 - Total Asset Value, Unrealized Gain/Loss, Realized Gain/Loss, Expected Profit, Market Comparison, Holding Period, Top Brand Holdings และ YTD Performance วิธี A เป็น V1 baseline ตามสูตรในเอกสารนี้
 - Benchmark, allocation chart, brand performance trend, asset appreciation forecast, cash-flow adjusted return และ IRR เป็น future
-- หาก Figma แสดง analytics future เหล่านี้ ต้อง annotate เป็น future
 
 ---
 
-# 11. Permission Rules
+# 10. Permission Rules
 
 | Actor | Permission |
 | --- | --- |
@@ -542,15 +510,15 @@ Sold History ต้องเก็บ:
 
 ---
 
-# 12. Validation Rules
+# 11. Validation Rules
 
 Portfolio Module ไม่มี user input form หลักใน V1
 
 | Condition | Rule |
 | --- | --- |
-| Portfolio calculation | ใช้เฉพาะ Sale, Show, Hide ที่เป็น `Owner (Asset)` และไม่ใช่ `Consignment` |
+| Portfolio calculation | ใช้เฉพาะ Sale, Show, Hide ที่เป็นทรัพย์สินของ Owner จริง |
 | Current Value | ต้องเลือก source ตามลำดับ Watch Price API -> Purchase Price fallback -> No Valuation |
-| Total Asset Value | ต้องไม่รวม Sold, ลบโดยเจ้าของ, ซ่อนถาวร, Consignment หรือ No Valuation |
+| Total Asset Value | ต้องไม่รวม Sold, ลบโดยเจ้าของ, ซ่อนถาวร หรือ No Valuation |
 | Gain/Loss | คำนวณเฉพาะ Asset ที่มี Current Value จาก market price และมี Purchase Price |
 | Sold History fields | ต้องแสดงตาม field ที่ master กำหนด |
 | Permission | ต้องตรวจสิทธิ์ Owner ทุกครั้ง |
@@ -558,7 +526,7 @@ Portfolio Module ไม่มี user input form หลักใน V1
 
 ---
 
-# 13. Exception Handling
+# 12. Exception Handling
 
 ## Permission Denied
 
@@ -597,7 +565,7 @@ Portfolio Module ไม่มี user input form หลักใน V1
 
 ---
 
-# 14. Empty State
+# 13. Empty State
 
 ใช้ข้อความกลางตาม master:
 
@@ -610,7 +578,7 @@ Portfolio Module ไม่มี user input form หลักใน V1
 
 ---
 
-# 15. Notification Rules
+# 14. Notification Rules
 
 Portfolio Module ไม่สร้าง notification ใน master baseline
 
@@ -618,7 +586,7 @@ Market movement, benchmark, valuation alert หรือ portfolio summary notif
 
 ---
 
-# 16. Analytics Events
+# 15. Analytics Events
 
 - `portfolio_opened`
 - `portfolio_asset_list_opened`
@@ -631,7 +599,7 @@ Market movement, benchmark, valuation alert หรือ portfolio summary notif
 
 ---
 
-# 17. Acceptance Criteria
+# 16. Acceptance Criteria
 
 ## AC-PORT-001: Portfolio Is Private
 
@@ -680,11 +648,11 @@ Then ต้องมี Sale Date, Buyer, Contact, Sale Price, Payment Method �
 
 Given Viewer เปิด Public Profile หรือ Public Asset Detail  
 When ข้อมูลแสดง  
-Then ต้องไม่แสดง Purchase Price, Purchase Date, Purchase From, Proof of Payment, Sold History หรือ Portfolio Value Detail
+Then ต้องไม่แสดง Purchase Price, Purchase Date, Sold History หรือ Portfolio Value Detail
 
-## AC-PORT-009: ไม่รวมรายการลบโดยเจ้าของ ซ่อนถาวร และ Consignment
+## AC-PORT-009: ไม่รวมรายการลบโดยเจ้าของและซ่อนถาวร
 
-Given Asset เป็นสถานะลบโดยเจ้าของ ถูก Back Office ซ่อนถาวร หรือเป็น Consignment  
+Given Asset เป็นสถานะลบโดยเจ้าของหรือถูก Back Office ซ่อนถาวร  
 When ระบบคำนวณ Portfolio  
 Then Asset นั้นต้องไม่ถูกนำมาคำนวณ
 
@@ -693,7 +661,7 @@ Then Asset นั้นต้องไม่ถูกนำมาคำนวณ
 Given Owner มี Eligible Asset สถานะ Sale, Show และ Hide  
 When ระบบคำนวณ Total Asset Value  
 Then Total Asset Value ต้องเท่ากับผลรวม Current Value ของ Eligible Asset ที่มี Current Value  
-And ต้องไม่รวม Sold, ลบโดยเจ้าของ, ซ่อนถาวร, Consignment หรือ No Valuation
+And ต้องไม่รวม Sold, ลบโดยเจ้าของ, ซ่อนถาวร หรือ No Valuation
 
 ## AC-PORT-011: Current Value Source Priority
 
@@ -788,7 +756,7 @@ Then Holding Period ต้องเท่ากับ Sale Date - Purchase Date
 Given Owner มี Eligible Asset หลาย brand  
 When ระบบแสดง Top Brand Holdings  
 Then ต้องแสดง Top 3 brand จากจำนวน Asset สถานะ Sale, Show, Hide  
-And ต้องไม่รวม Sold, ลบโดยเจ้าของ, Consignment หรือ Asset ที่ถูก Back Office ซ่อนถาวร
+And ต้องไม่รวม Sold, ลบโดยเจ้าของ หรือ Asset ที่ถูก Back Office ซ่อนถาวร
 
 ## AC-PORT-024: YTD Performance Formula
 
@@ -807,7 +775,7 @@ Then ต้องใช้ snapshot แรกของปีและแสด�
 
 ---
 
-# 18. Related Modules
+# 17. Related Modules
 
 - Profile Module
 - Asset Management Module
@@ -817,7 +785,7 @@ Then ต้องใช้ snapshot แรกของปีและแสด�
 
 ---
 
-# 19. Future Enhancement
+# 18. Future Enhancement
 
 - Portfolio Benchmark
 - Portfolio Allocation Chart
@@ -828,4 +796,3 @@ Then ต้องใช้ snapshot แรกของปีและแสด�
 - Benchmark Comparison
 - Portfolio Export PDF
 - Portfolio Export Excel
-

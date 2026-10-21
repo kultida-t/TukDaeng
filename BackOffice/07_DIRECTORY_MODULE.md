@@ -9,7 +9,7 @@
 
 เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
-เอกสารอ้างอิง: `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/README_MODULE_INDEX.md`, `../FrontOffice/Figma_Gap_Checklist_Against_Master.md`
+เอกสารอ้างอิง: `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/README_MODULE_INDEX.md`
 
 Phase 1 status: Postponed. ห้ามเปิดเมนู BO Directory, route, CRUD, publication controls, map/contact/image fields, import/export หรือ FO sync ใน Phase 1 เพราะ FO directory menu entries เป็น placeholder และ detail routes ยังไม่ได้รับการอนุมัติ
 

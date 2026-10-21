@@ -40,18 +40,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 | Watch Price API | ดึงข้อมูลราคาตลาด | In Scope for Portfolio valuation baseline |
 | Payment Gateway | Phase 2 เท่านั้น | Out Of Scope |
 
-# 5. Figma Gap Checklist For Integrations Module
-
-| Priority | Gap | Master Baseline | Figma Action |
-| --- | --- | --- | --- |
-| Must Fix | Payment Gateway หรือ payment UI อาจถูกมองว่าอยู่ใน V1 | Payment Gateway เป็น Phase 2 เท่านั้น | ซ่อน/ติดป้าย future ให้ทุก payment flow |
-| High | Apple / Google flow ยังไม่แยกจาก Email OTP ชัด | Apple และ Google ใช้ SSO และไม่ต้อง OTP | ระบุ SSO path ที่ข้าม OTP ใน auth flow |
-| High | Push notification permission / destination ยังไม่ชัด | FCM ใช้สำหรับ Push Notifications และ notification destination ต้องตรง master | เพิ่ม permission state และ destination mapping |
-| High | Image upload/display ยังไม่เห็น CDN/error/loading state | Image Storage / CDN ใช้จัดเก็บและแสดงรูปภาพ | เพิ่ม image upload, loading, failure, retry และ placeholder state |
-| Medium | Watch Price API ยังไม่ผูกกับ Portfolio valuation ชัด | Watch Price API ใช้ดึงข้อมูลราคาตลาด | ระบุ valuation source และ fallback เมื่อ API unavailable |
-| Medium | Integration failure states ยังไม่ครบ | External integration ต้องมี safe fallback | เพิ่ม provider error, network error, timeout และ retry state |
-
-# 6. Scope
+# 5. Scope
 
 ## In Scope
 
@@ -73,17 +62,17 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 - Additional OAuth providers
 - Watch authentication service in app
 
-# 7. Integration Mapping
+# 6. Integration Mapping
 
 | Integration | Owning Module | Dependent Modules |
 | --- | --- | --- |
 | Apple Sign In | Authentication | Settings, Global Login Required |
 | Google OAuth | Authentication | Settings, Global Login Required |
-| Firebase Cloud Messaging | Notification | Watch Alert, Offer, Chat, Social |
+| Firebase Cloud Messaging | Notification | Watch Alert, Chat, Social |
 | Image Storage / CDN | Asset Management | Feed, Search, Asset Detail, Profile, Portfolio |
 | Watch Price API | Portfolio | Asset Management, Asset Detail |
 
-# 8. Integration Rules
+# 7. Integration Rules
 
 ## Apple Sign In
 
@@ -103,8 +92,8 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 ## Firebase Cloud Messaging
 
 - ใช้สำหรับ Push Notifications
-- Notification type ใน V1 จำกัดที่ Like, Comment, Follow, Offer, Watch Alert
-- Watch Alert notification ต้องเปิด Watch Alert Result List
+- Notification type ใน V1 จำกัดที่ Like, Comment, Follow, Watch Alert
+- Watch Alert notification ต้องเปิด Asset Detail (post viewer) ของ Asset ที่ match โดยตรง — ไม่มี Watch Alert Result List คั่นใน V1
 - Notification destination ต้อง validate auth, permission, asset status, deletion และ block state
 
 ## Image Storage / CDN
@@ -121,7 +110,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 - ต้องไม่ทำให้ Portfolio ใช้งานไม่ได้ทั้งหมดเมื่อ API unavailable
 - ควรแสดง source/last updated เมื่อใช้ราคาจาก Watch Price API
 
-# 9. Security And Privacy Rules
+# 8. Security And Privacy Rules
 
 - ทุก integration call ต้องใช้ HTTPS
 - Authentication integration ต้องออก token/session ตาม Token-based Authentication rule
@@ -130,7 +119,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 - Push notification payload ต้องไม่ใส่ private data ที่ไม่จำเป็น
 - Admin Action ผ่าน Back Office ต้องมี Audit Trail
 
-# 10. Error Handling
+# 9. Error Handling
 
 | Case | Expected Handling |
 | --- | --- |
@@ -144,7 +133,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 | Watch Price API unavailable | แสดง fallback valuation state |
 | Network timeout | แสดง error และให้ retry เมื่อเหมาะสม |
 
-# 11. Acceptance Criteria
+# 10. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -161,7 +150,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 | AC-INT-011 | Watch Price API unavailable ต้องไม่ทำให้ Portfolio ล่มทั้งหน้า |
 | AC-INT-012 | Payment Gateway ไม่อยู่ใน V1 และต้องถูกระบุเป็น Phase 2 |
 
-# 12. Related Modules
+# 11. Related Modules
 
 - [01_AUTHENTICATION_MODULE.md](01_AUTHENTICATION_MODULE.md)
 - [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md)
@@ -171,7 +160,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 - [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md)
 - [17_NON_FUNCTIONAL_REQUIREMENTS.md](17_NON_FUNCTIONAL_REQUIREMENTS.md)
 
-# 13. Future Enhancement
+# 12. Future Enhancement
 
 - Payment Gateway
 - Escrow

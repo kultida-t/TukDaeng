@@ -14,7 +14,7 @@
 ### 1.2 กลุ่มผู้ใช้เป้าหมาย
 | กลุ่ม | คำอธิบาย |
 |---|---|
-| **ผู้ใช้ (User)** | ทุกคนที่สมัครสมาชิกมี Role เดียวกันหมด สามารถทำได้ทุกอย่างในคนเดียว ทั้งลงขาย, ซื้อ, เสนอราคา, แสดงคอลเลกชัน หรือจะซ่อนคอลเลกชันไว้ส่วนตัว โดยไม่ต้องเปลี่ยน Role |
+| **ผู้ใช้ (User)** | ทุกคนที่สมัครสมาชิกมี Role เดียวกันหมด สามารถทำได้ทุกอย่างในคนเดียว ทั้งลงขาย, ซื้อ, แสดงคอลเลกชัน หรือจะซ่อนคอลเลกชันไว้ส่วนตัว โดยไม่ต้องเปลี่ยน Role |
 | **แอดมิน (Admin)** | ทีมงานตึกแดงที่จัดการระบบผ่าน Back Office เท่านั้น |
 
 > **หมายเหตุ:** คำว่า "Owner" ในเอกสารนี้หมายถึงผู้ใช้ในฐานะเจ้าของสินทรัพย์ชิ้นนั้น ๆ และคำว่า "Viewer" หมายถึงผู้ใช้คนอื่นที่กำลังดูสินทรัพย์ของผู้อื่น ไม่ได้หมายถึง Role ที่แตกต่างกัน
@@ -51,14 +51,13 @@
 
 | ช่องทาง | รายละเอียด |
 |---|---|
-| **Email / Password** | กรอก Email, Password, Confirm Password + ยืนยัน OTP |
+| **Email / Password** | กรอก Email, Password + ยืนยัน OTP |
 | **Sign up with Apple** | ใช้ Apple ID (Sign in with Apple) — รองรับบน iOS |
 | **Sign up with Google** | ใช้ Google Account |
 
 **ความต้องการ (กรณี Email / Password):**
-- ผู้ใช้ต้องกรอก Email, Password, Confirm Password
+- ผู้ใช้ต้องกรอก Email, Password
 - ต้องยืนยัน Email ด้วย OTP 6 หลักที่ส่งไปยัง Email
-- OTP หมดอายุภายใน 30 นาที
 - Password ต้องมีความยาวอย่างน้อย 8 ตัวอักษร พร้อมตัวเลขหรือสัญลักษณ์
 - ผู้ใช้ต้องติ๊ก "I agree to Terms of Use and Privacy Policy" ก่อนสมัคร (ทุกช่องทาง)
 
@@ -89,13 +88,11 @@
 - บัญชีที่สมัครด้วย Apple / Google ไม่สามารถ Sign In ด้วย Email/Password ได้ (และในทางกลับกัน) — ระบบแนะนำช่องทางที่ถูกต้อง
 - บัญชีที่ถูก Suspend จะเห็น error แจ้งเหตุผลและช่องทางติดต่อ Support
 
-#### 3.1.3 Reset Password (รีเซ็ตรหัสผ่าน)
+#### 3.1.3 Forgot Password (ลืมรหัสผ่าน)
 **ความต้องการ:**
 - กรอก Email เพื่อรับลิงก์รีเซ็ต
-- ลิงก์รีเซ็ตหมดอายุใน 30 นาที
-- กรอก New Password และ Confirm New Password
-- Password ใหม่ต้องตรงกันทั้ง 2 ช่อง
-- เมื่อสำเร็จแสดงหน้า "Password updated" พร้อมปุ่ม Sign In
+- แสดงข้อความกลาง `If this email exists, a reset link has been sent.` — ไม่เปิดเผยว่าบัญชีมีอยู่หรือเป็น SSO-only
+- การตั้งรหัสผ่านใหม่ผ่านลิงก์อยู่นอกขอบเขต FO V1 screens — ไม่มีหน้า Reset Password / Password Updated ในแอป (S-20)
 
 ---
 
@@ -105,7 +102,7 @@
 - แสดงรายการนาฬิกาที่ลงขายจากผู้ขายทั้งหมด
 - แบ่ง Tab: All / Following / Favorites
 - แต่ละรายการแสดง: รูปนาฬิกา, ยี่ห้อ, รุ่น, Reference No., ราคา (THB), สภาพ, กล่องและเอกสาร, จำนวน Likes และ Comments
-- แสดงข้อมูลผู้ขาย: Avatar, ชื่อ, ปุ่ม Follow
+- แสดงข้อมูลผู้ขาย: Avatar, ชื่อ — ปุ่ม Follow บน card เป็น contract-only (prototype render เป็น visual เท่านั้น ไม่ sync follow state)
 - รองรับการ Like รายการ (กดหัวใจ)
 - ปุ่ม "Watch Alert" เพื่อตั้งการแจ้งเตือน
 - ปุ่ม "+" เพื่อเพิ่มสินทรัพย์ใหม่
@@ -135,7 +132,7 @@
   - Strap/Bracelet
 - แสดงจำนวน results ที่กรองแล้ว
 - ปุ่ม "Apply Filters" และ "Clear Filters"
-- รองรับ Sort By: Relevance, Price (Low to High), Price (High to Low), Newest, Popularity
+- ไม่มี Sort UI ใน FO V1 (S-24 — prototype ไม่ implement sort controls)
 
 **Watch Alert จาก Search:**
 - บันทึก Criteria การค้นหาปัจจุบันเป็น Watch Alert ได้
@@ -159,15 +156,7 @@
   - Movement, Dial Color, Dial / Strap Type
 - Comments Section: แสดง Comment, Reply, Like Comment
 - ราคา THB
-- ปุ่ม "Make an Offer" และ "Contact seller"
-
-**Make an Offer:**
-- กรอกราคาที่ต้องการเสนอ (required, THB, ต้องเป็นตัวเลขมากกว่า 0)
-- หากไม่กรอกราคา ปุ่ม "Send offer" ต้องไม่ Active
-- หากราคาเป็น 0, ติดลบ หรือไม่ใช่ตัวเลข แสดง "Please enter a valid offer amount"
-- เพิ่ม Message ถึงเจ้าของ (optional, trim ก่อนส่ง, ถ้าเป็นช่องว่างล้วนให้ถือว่าไม่กรอก, ไม่เกิน 500 characters)
-- ส่ง Offer ซ้ำไม่ได้หากมี Pending Offer เดิมของ Asset เดียวกัน โดยแสดง "You already have a pending offer. Go to chat to view it."
-- กด "Send offer" → แสดง popup "Offer Sent Successfully" พร้อมปุ่ม "Go to chat"
+- ปุ่ม "Contact seller"
 
 #### สำหรับเจ้าของ (Owner — ผู้ใช้ที่เป็นเจ้าของสินทรัพย์ชิ้นนั้น)
 **ความต้องการ:**
@@ -214,15 +203,10 @@ Market Data / Specification storage rule:
   - Show: Required = Photos 1-10, Brand, Model & Series, Status; Asking Price, Condition, Description and specifications are optional and price must not be shown on public surfaces
   - Hide: Required = Photos 1-10, Brand, Status; Model & Series, Asking Price, Condition, Description and specifications are optional and price must not be shown on public surfaces
   - Every optional field that the user fills, selects, or uploads must still pass validation before save
-- Provenance (ประวัติสินทรัพย์):
-  - Required: Purchase Price (THB), must be greater than 0
-  - Optional: Purchase Date, Purchase From, All Equipment & Accessories, Proof of Payment, Note
-  - Optional fields ต้อง validate เมื่อ user กรอกหรืออัปโหลด เช่น date ห้ามเป็นอนาคต, text ห้ามเป็นค่าว่างล้วน/เกินความยาว, upload ต้องผ่าน type/size/count limits
-- Consignment (ฝากขาย):
-  - Required: Full Name, Phone Number, Asking Price (THB), must be greater than 0
-  - Optional: Line/IG/Facebook, Email, Payout Method, Consignment Date, Consignment Duration, Commission %, Minimum Acceptable Price, All Equipment & Accessories, Proof of Payment / Documentation, Note
-  - Payout Method, Consignment Date, Consignment Duration และ Commission % ไม่ required ใน FO Add Provenance V1 เพราะทีมงานอาจ confirm ภายหลัง
-  - Optional fields ต้อง validate เมื่อ user กรอกหรืออัปโหลด เช่น phone/email format, date ห้ามเป็นอนาคต, duration > 0, commission 0-100, minimum acceptable price <= asking price, upload ต้องผ่าน type/size/count limits
+- Purchase Information (owner-private — เก็บเฉพาะข้อมูลต้นทุนที่ prototype รองรับ):
+  - Optional: Purchase Price (THB; เมื่อกรอกต้องมากกว่า 0), Purchase Date (ต้องไม่เป็นวันที่ในอนาคต)
+  - เป็น private data เห็นเฉพาะ Owner/Admin ใช้เป็น input ของ Portfolio calculation
+  - ไม่มี Provenance / Consignment entity ใน FO V1 (ตาม S-25 — prototype ไม่มี entity หรือ step นี้)
 - Save: แสดง Confirmation Dialog ก่อน Save
 
 #### 3.5.2 Edit Asset
@@ -236,14 +220,9 @@ Market Data / Specification storage rule:
 ### 3.6 Chat (ระบบแชท)
 
 **ความต้องการ:**
-- รายการแชทแบ่งเป็น "All" และ "Incoming Offers"
 - ค้นหาแชทได้
-- Tab "Incoming Offers" แสดงการเสนอราคาที่ยังรอการตอบรับ พร้อมปุ่ม Decline/Accept
 - ในห้องแชท:
   - แสดง Asset Card ที่เกี่ยวข้องด้านบน (รูป, ชื่อ, ราคา, ปุ่ม "View detail")
-  - Offer Card: แสดงราคาที่เสนอ, ปุ่ม Decline/Accept (สำหรับเจ้าของ) หรือ "Your offer" (สำหรับผู้เสนอ)
-  - กรณี Accept → แสดงสถานะ "Offer Accepted" + "The buyer has been notified"
-  - กรณี Decline → แสดงสถานะ "Offer Declined" + "The buyer has been notified"
   - ส่ง Text, รูปภาพ, ไฟล์
   - Long Press ข้อความ → ลบแชท (Confirm ก่อนลบ)
 - Delete Chat: ยืนยัน dialog ก่อนลบ
@@ -284,7 +263,6 @@ Market Data / Specification storage rule:
 **ประเภทการแจ้งเตือน:**
 | ประเภท | คำอธิบาย | Action |
 |---|---|---|
-| New Offer | มีผู้เสนอราคาสินทรัพย์ | Decline / Review offer |
 | Comment | มีคนคอมเมนต์โพสต์ | ดูโพสต์ |
 | New Follower | มีคนติดตาม | Follow back |
 | Group Follow | หลายคนติดตามพร้อมกัน | - |
@@ -376,8 +354,7 @@ Market Data / Specification storage rule:
 ### 4.2 Security
 - JWT Token Authentication
 - HTTPS ทุก API
-- รูปภาพ Proof of Payment เข้าถึงได้เฉพาะเจ้าของ
-- ข้อมูล Provenance และ Consignment เป็นข้อมูลส่วนตัว
+- Purchase Information (Purchase Price / Purchase Date) และข้อมูล Portfolio เข้าถึงได้เฉพาะเจ้าของ/Admin
 
 ### 4.3 Localization
 - รองรับภาษาไทยและอังกฤษ
@@ -416,8 +393,7 @@ Market Data / Specification storage rule:
 | คำศัพท์ | ความหมาย |
 |---|---|
 | Asset | นาฬิกาแต่ละเรือน |
-| Provenance | ประวัติและหลักฐานการได้มาของนาฬิกา |
-| Consignment | การฝากขายนาฬิกา |
+| Purchase Information | ข้อมูลต้นทุน owner-private (Purchase Price / Purchase Date) ใช้ใน Portfolio |
 | Watch Alert | การตั้งแจ้งเตือนเมื่อมีนาฬิกาตรงตาม Criteria |
 | Collection Show | การแสดงนาฬิกาในคอลเลกชันโดยไม่ขาย |
 | Reference No. | รหัสอ้างอิงรุ่นนาฬิกาของผู้ผลิต |

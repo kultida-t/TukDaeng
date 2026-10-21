@@ -36,18 +36,7 @@ This document clarifies that Admin is a Web Back Office account type, not a mobi
 | Apple compliance | ต้องรองรับ Report, Block, Terms, Privacy, Moderation Flow |
 | Security | Admin Action ต้องมี Audit Trail ใน Back Office |
 
-# 4. Figma Gap Checklist For Admin Scope
-
-| Priority | Gap | Master Baseline | Figma Action |
-| --- | --- | --- | --- |
-| Must Fix | Figma may imply Admin belongs in the mobile app | Admin operates through Web Back Office only | Separate Admin flow from the mobile app and annotate it as Back Office |
-| High | Report flow ยังไม่แสดงผลต่อ Admin moderation | Report ต้องถูกตรวจโดย Admin และ content หายหลัง moderation เท่านั้น | เพิ่ม report submitted state และ admin review note |
-| High | Board content management ยังไม่แยก owner ชัด | บทความสร้างและจัดการโดย Admin ผ่าน Back Office | Annotate Board content as Admin-managed |
-| High | Audit Trail ยังไม่ถูกระบุ | Admin Action ต้องมี Audit Trail ใน Back Office | เพิ่ม audit trail requirement ใน Back Office scope |
-| Medium | 24-hour handling SLA ยังไม่ถูกระบุ | Admin ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report | เพิ่ม SLA note ใน moderation queue |
-| Medium | Sold Asset Admin Review ยังไม่ชัด | Sold Asset เก็บไว้เพื่อ Admin Review | เพิ่ม admin-review availability note |
-
-# 5. Scope Boundary
+# 4. Scope Boundary
 
 ## In Scope For This Note
 
@@ -73,10 +62,10 @@ This document clarifies that Admin is a Web Back Office account type, not a mobi
 Full Back Office PRD timing:
 
 - ยังไม่เริ่ม Full Back Office PRD ระหว่าง FO cleanup
-- ให้จัดการ FO baseline, Figma cleanup, Dev checklist, QA checklist และ FO sign-off ให้ครบ/นิ่งก่อน
+- ให้จัดการ FO baseline, Dev checklist, QA checklist และ FO sign-off ให้ครบ/นิ่งก่อน
 - หลัง FO complete แล้วค่อยเปิด Back Office sprint แยกและทำ Full BO PRD แยกจาก FO mobile scope
 
-# 6. Admin Responsibilities
+# 5. Admin Responsibilities
 
 Admin รับผิดชอบ:
 
@@ -86,7 +75,7 @@ Admin รับผิดชอบ:
 - จัดการ User / Asset ตาม policy
 - ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา
 
-# 7. Mobile App Boundary
+# 6. Mobile App Boundary
 
 Admin is not a mobile app user type in V1
 
@@ -107,7 +96,7 @@ Mobile app ไม่ต้องมี:
 - Asset management controls สำหรับ Admin
 - Audit log viewer
 
-# 8. Report And Moderation Flow
+# 7. Report And Moderation Flow
 
 1. User ส่ง Report จาก supported content type
 2. ระบบบันทึก report และแสดง submitted state
@@ -117,7 +106,7 @@ Mobile app ไม่ต้องมี:
 6. Public surfaces sync ผล moderation เช่น hide/remove/unavailable
 7. Admin action ถูกบันทึกใน Audit Trail
 
-# 9. Admin Review Surfaces
+# 8. Admin Review Surfaces
 
 | Source | Admin Relevance |
 | --- | --- |
@@ -128,7 +117,7 @@ Mobile app ไม่ต้องมี:
 | Sold Asset | เก็บไว้เพื่อ Sales History, Portfolio และ Admin Review |
 | Board Article | สร้างและจัดการโดย Admin ผ่าน Back Office |
 
-# 10. Audit Trail Requirements
+# 9. Audit Trail Requirements
 
 Admin Action ต้องมี Audit Trail ใน Back Office
 
@@ -142,7 +131,7 @@ Admin Action ต้องมี Audit Trail ใน Back Office
 - Reason / note ตาม policy
 - Before / after status เมื่อเกี่ยวข้อง
 
-# 11. Acceptance Criteria
+# 10. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -157,7 +146,7 @@ Admin Action ต้องมี Audit Trail ใน Back Office
 | AC-ADMIN-009 | Admin Action ต้องมี Audit Trail ใน Back Office |
 | AC-ADMIN-010 | Apple compliance ต้องรองรับ Report, Block, Terms, Privacy และ Moderation Flow |
 
-# 12. Related Modules
+# 11. Related Modules
 
 - [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md)
 - [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md)
@@ -166,9 +155,9 @@ Admin Action ต้องมี Audit Trail ใน Back Office
 - [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md)
 - [17_NON_FUNCTIONAL_REQUIREMENTS.md](17_NON_FUNCTIONAL_REQUIREMENTS.md)
 
-# 13. Future Enhancement
+# 12. Future Enhancement
 
-- Full Admin Back Office PRD หลัง FO baseline, Figma cleanup, Dev checklist และ QA checklist ครบ/นิ่งแล้ว
+- Full Admin Back Office PRD หลัง FO baseline, Dev checklist และ QA checklist ครบ/นิ่งแล้ว
 - Admin access policy
 - Moderation policy matrix
 - Report queue dashboard

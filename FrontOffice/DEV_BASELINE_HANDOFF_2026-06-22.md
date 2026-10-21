@@ -17,7 +17,7 @@
 - `View more replies` ใช้สำหรับกาง replies ชั้นเดียวใต้ comment หลัก
 - ไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
 
-Dev / QA / Figma ควรอ้างอิง [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md) และใช้ `FO-PRD-v1.1` เป็น baseline ล่าสุด
+Dev / QA ควรอ้างอิง [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md) และใช้ `FO-PRD-v1.1` เป็น baseline ล่าสุด
 
 ---
 
@@ -27,9 +27,9 @@ Dev / QA / Figma ควรอ้างอิง [DOCUMENT_VERSION.md](DOCUMENT_V
 
 Dev ควรใช้เอกสารชุดนี้เป็น source of truth ใหม่สำหรับการแก้ app ที่ทำไปก่อนหน้าแล้ว เพราะ implementation เดิมอ้างอิงข้อมูลชุดเก่าที่ไม่ตรงกับ decision ล่าสุดหลายจุด
 
-Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `FO-PRD-v1.0` แต่หลัง decision update วันที่ 2026-06-23 ให้ Dev / QA / Figma ใช้ baseline ล่าสุด `FO-PRD-v1.1` หาก Dev ส่ง gap list หรือ status กลับมา ให้ระบุ version ที่ใช้อ้างอิงเพื่อให้ trace กลับมาได้ถูกต้อง
+Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `FO-PRD-v1.0` แต่หลัง decision update วันที่ 2026-06-23 ให้ Dev / QA ใช้ baseline ล่าสุด `FO-PRD-v1.1` หาก Dev ส่ง gap list หรือ status กลับมา ให้ระบุ version ที่ใช้อ้างอิงเพื่อให้ trace กลับมาได้ถูกต้อง
 
-หาก implementation ปัจจุบัน, Figma เดิม หรือเอกสารเก่า conflict กับชุดนี้ ให้ยึดชุดนี้ก่อน
+หาก implementation ปัจจุบัน หรือเอกสารเก่า conflict กับชุดนี้ ให้ยึดชุดนี้ก่อน
 
 ---
 
@@ -44,8 +44,6 @@ Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `F
 | 5 | Module PRD `01-18` | Functional detail by module |
 | 6 | [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md) | Engineering checklist for app update |
 | 7 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | Regression cases Dev should expect QA to verify |
-
-Figma references remain useful for visual alignment, but if Figma conflicts with the PRD baseline, Dev should flag the conflict and wait for Figma to be updated from this baseline.
 
 ---
 
@@ -76,17 +74,15 @@ Figma references remain useful for visual alignment, but if Figma conflicts with
 - `Show` requires Photos, Brand and Model / Series; Price is not required
 - `Hide` requires Photos and Brand only
 - `Hide` must not use listing price or expose price in public/viewer surfaces
-- Provenance, purchase data, proof of payment, consignment data, sold history and portfolio value detail are private
+- Purchase data (Purchase Price / Purchase Date), sale history and portfolio value detail are private — ไม่มี Provenance/Consignment entity ใน V1 (S-25)
 - Mark as Sold opens Sale Record Form before status becomes `Sold`
-- Delete Asset must remove public visibility and cancel related offers while chat remains
+- Delete Asset must remove public visibility while chat remains
 
-## Asset Detail / Offer / Chat
+## Asset Detail / Chat
 
 - Viewer can open only public `Sale` and `Show` details
 - Owner can open own `Sale`, `Show`, `Hide`, `Sold`
-- `Show` can Make Offer / Contact Seller / Chat only from Asset Detail or Public Profile detail entry
-- `Hide`, `Sold`, `Deleted` cannot create new offers
-- Asset Sold auto rejects other pending offers
+- `Show` can Contact Seller / Chat only from Asset Detail or Public Profile detail entry
 - Chat/New Message is not a Front Office Notification Center type
 
 ## Profile / Portfolio
@@ -99,7 +95,7 @@ Figma references remain useful for visual alignment, but if Figma conflicts with
 
 ## Notification / Settings / Board
 
-- Notification Center types are only Like, Comment, Follow, Offer, Watch Alert
+- Notification Center types are only Like, Comment, Follow, Watch Alert
 - Settings includes Theme Mode and Delete Account baseline
 - Board is Article Area; FO users do not create/edit/delete articles in V1
 - Article Share is public; Article Like requires login
@@ -113,27 +109,12 @@ Figma references remain useful for visual alignment, but if Figma conflicts with
 3. Mark each checklist item as Done / Needs Fix / Not Applicable with reason
 4. Split fixes by module to avoid mixing global status/privacy changes with UI-only changes
 5. Run QA regression from [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md)
-6. Send implementation gaps back to Product/UX only when the baseline is unclear or conflicts with current Figma
+6. Send implementation gaps back to Product/UX only when the baseline is unclear or internally conflicting
 
 ---
 
-# 5. Figma Timing
-
-Figma should be updated after this baseline is locked. Dev should not treat older Figma screens as final if they conflict with the PRD baseline.
-
-Recommended sequence:
-
-1. Product locks this baseline
-2. Dev reviews and estimates implementation gaps
-3. UX/Figma updates screens to match this baseline
-4. Dev and QA use the same baseline for implementation and regression
-
----
-
-# 6. Open Follow-Up Items
+# 5. Open Follow-Up Items
 
 These items do not block Dev baseline review but should be clarified before final production sign-off:
 
-- Consignment-specific workflow and validation beyond Add/Edit baseline
 - Full Back Office PRD, which remains separate from Front Office mobile baseline
-- Final Figma status after screens are updated from this baseline

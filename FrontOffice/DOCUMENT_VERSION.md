@@ -3,7 +3,7 @@
 **Current Baseline Version:** `FO-PRD-v1.8`
 **Release Date:** 2026-10-05
 **Branch:** `docs-frontoffice-spec-updates`  
-**Status:** Product-reviewed baseline update for Dev / QA / Figma
+**Status:** Product-reviewed baseline update for Dev / QA
 
 ---
 
@@ -11,7 +11,7 @@
 
 เอกสาร Front Office ทุกไฟล์ใน branch นี้ให้อ้างอิง version กลางเดียวกันจากไฟล์นี้
 
-เมื่อมีการอัปเดต requirement ที่กระทบ Dev / QA / Figma ให้เพิ่ม version ใหม่ใน Version History และอัปเดต `Current Baseline Version`
+เมื่อมีการอัปเดต requirement ที่กระทบ Dev / QA ให้เพิ่ม version ใหม่ใน Version History และอัปเดต `Current Baseline Version`
 
 ## Version Format
 
@@ -115,8 +115,6 @@ Baseline scope หลักยังครอบคลุม:
 - Dev Implementation Checklist
 - Chat-specific Dev Checklist
 - QA Scenario Checklist
-- Figma Gap Checklist
-- Figma UX Cleanup Task Breakdown
 
 ---
 

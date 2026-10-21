@@ -46,7 +46,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 | Owner Like | Owner สามารถ Like Asset ตัวเองได้ | ห้าม block owner-like เว้นแต่ master เปลี่ยน |
 | Feed Comment / Share | Feed ไม่รองรับ Comment โดยตรง แต่ Share ทำได้จาก Feed | Feed แสดง Comment Count ได้ แต่ action ต้องเปิด Asset Detail; Share ทำได้จาก Feed Card |
 | Comment Entry | Comment ต้องทำใน Asset Detail | ห้าม comment จาก Feed |
-| Comment Structure | IG-style one-level replies | Figma รองรับ reply ได้ 1 ชั้นใต้ comment หลัก แต่ไม่มี reply ซ้อนหลายระดับ |
+| Comment Structure | IG-style one-level replies | รองรับ reply ได้ 1 ชั้นใต้ comment หลัก แต่ไม่มี reply ซ้อนหลายระดับ |
 | Comment Edit | ไม่มี Edit Comment ใน V1 | ห้ามแสดง edit comment action |
 | Comment Delete | รองรับ Delete Comment | ต้องมี delete + confirmation ตามสิทธิ์ |
 | Comment Report | รองรับ Report Comment | ต้องเปิด Trust & Safety Report Comment flow และไม่ทำให้ comment หายทันที |
@@ -56,25 +56,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 
 ---
 
-# 5. Figma Gap Checklist For Social Module
-
-| Priority | Figma Gap | Master Baseline | Action |
-| --- | --- | --- | --- |
-| Must Fix | Comment UI ต้องรองรับการตอบโต้แบบ IG โดยไม่กลายเป็น forum thread | Comment รองรับ one-level replies ใต้ comment หลักเท่านั้น และไม่รองรับ reply ซ้อนหลายระดับ | ปรับ comment UI ให้แสดง reply ได้ 1 ชั้นใต้ comment หลัก และป้องกัน reply ต่อจาก reply |
-| Must Fix | Feed อาจสื่อว่า Comment ทำจาก Feed ได้ | Comment ต้องทำผ่าน Asset Detail เท่านั้น แต่ Share ทำได้จาก Feed | ตัด direct comment action จาก Feed หรือให้กดแล้วเปิด Asset Detail และเพิ่ม Share action บน Feed |
-| High | Guest state สำหรับ Like / Comment / Follow ยังไม่ครบ | Guest กด action ที่ต้อง Login ต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state ทุก action |
-| High | Like / Unlike ต้อง sync Favorites | Like สำเร็จต้องเพิ่ม Favorites, Unlike ต้องลบออก | เพิ่ม state note หรือ interaction mapping กับ Favorites |
-| High | Following Feed ต้องแสดงเฉพาะ Sale | Following Feed แสดง Asset Sale ของ user ที่ follow | ตรวจ Figma/annotation ไม่ให้ Show, Hide, Sold โผล่ |
-| Medium | Owner Like Asset ตัวเองอาจถูก block ใน UI | Owner สามารถ Like Asset ตัวเองได้ | ตรวจ owner detail/feed state |
-| Medium | Edit Comment อาจยังโผล่ใน action menu | V1 ไม่มี Edit Comment | ซ่อน edit action หรือย้ายเป็น future |
-| Medium | Delete Comment confirmation ยังไม่ชัด | Comment รองรับ Delete Comment | เพิ่ม delete confirmation และ permission state |
-| Medium | Comment notification destination ยังไม่เห็น focus state | Comment notification เปิด Asset Detail และ Focus Comment | เพิ่ม state ที่ focus comment เป้าหมาย |
-| Medium | Follow notification destination ยังไม่ชัด | Follow notification ควรเปิด Public Profile | เพิ่ม destination state ไป Public Profile |
-| Medium | Share detail behavior ต้องมี channel/fallback state | Master ระบุ system share sheet เป็น primary และ copy public deep link เป็น fallback | เพิ่ม share sheet, copy link success และ unavailable/deleted link state |
-
----
-
-# 6. Scope
+# 5. Scope
 
 ## In Scope
 
@@ -109,7 +91,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 
 ---
 
-# 7. Screen Mapping
+# 6. Screen Mapping
 
 | Screen / Component | Description |
 | --- | --- |
@@ -123,7 +105,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 
 ---
 
-# 8. User States
+# 7. User States
 
 ## Guest
 
@@ -155,7 +137,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 
 ---
 
-# 9. User Flow
+# 8. User Flow
 
 ## Like Flow
 
@@ -253,7 +235,7 @@ Asset Detail
 
 ---
 
-# 10. Business Rules
+# 9. Business Rules
 
 ## Like Rules
 
@@ -334,7 +316,7 @@ Asset Detail
 
 ---
 
-# 11. Permission Rules
+# 10. Permission Rules
 
 | Actor | Permission |
 | --- | --- |
@@ -346,7 +328,7 @@ Asset Detail
 
 ---
 
-# 12. Validation Rules
+# 11. Validation Rules
 
 | Field / Condition | Rule |
 | --- | --- |
@@ -360,7 +342,7 @@ Asset Detail
 
 ---
 
-# 13. Exception Handling
+# 12. Exception Handling
 
 ## Asset Deleted
 
@@ -389,7 +371,7 @@ Asset Detail
 
 ---
 
-# 14. Empty State
+# 13. Empty State
 
 ใช้ข้อความกลางตาม master:
 
@@ -400,7 +382,7 @@ Asset Detail
 
 ---
 
-# 15. Notification Rules
+# 14. Notification Rules
 
 | Trigger | Recipient | Destination | Rule |
 | --- | --- | --- | --- |
@@ -412,7 +394,7 @@ Notification ต้องไม่เปิด content ที่ถูกลบ 
 
 ---
 
-# 16. Analytics Events
+# 15. Analytics Events
 
 - `asset_liked`
 - `asset_unliked`
@@ -429,7 +411,7 @@ Notification ต้องไม่เปิด content ที่ถูกลบ 
 
 ---
 
-# 17. Acceptance Criteria
+# 16. Acceptance Criteria
 
 ## AC-SOCIAL-001: Like From Feed And Detail
 
@@ -552,7 +534,7 @@ And Comment ยังทำได้จาก Asset Detail เท่านั้
 
 ---
 
-# 18. Related Modules
+# 17. Related Modules
 
 - Feed Module
 - Asset Detail Module
@@ -563,7 +545,7 @@ And Comment ยังทำได้จาก Asset Detail เท่านั้
 
 ---
 
-# 19. Future Enhancement
+# 18. Future Enhancement
 
 - Edit Comment
 - Multi-level Nested Comment เกิน 1 reply level

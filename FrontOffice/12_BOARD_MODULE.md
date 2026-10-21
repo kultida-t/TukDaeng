@@ -38,7 +38,7 @@ Phase 1 บทความสร้างและจัดการโดย Ad
 | Topic | Master Baseline | Board Module Rule |
 | --- | --- | --- |
 | Board Type | Community Content / Article Area | Board ไม่ใช่ user-generated discussion board ใน V1 |
-| Content Sections | Feature Article, Trending Now, Journal Board, Watch Brands, Watch 101, Watch Apparel, Watch Events | Figma/PRD ต้องมี section หรือ category mapping ครบ |
+| Content Sections | Feature Article, Trending Now, Journal Board, Watch Brands, Watch 101, Watch Apparel, Watch Events | PRD ต้องมี section หรือ category mapping ครบ |
 | Article Detail | รองรับ Article Detail | User เปิดอ่านรายละเอียดบทความได้ |
 | Article Actions | Article Like, Article Share | User ทั่วไปอ่าน, Like และ Share บทความได้ |
 | Search / Filter | Search Article, Category Filter | Board ต้องรองรับ search และ category filter |
@@ -48,24 +48,7 @@ Phase 1 บทความสร้างและจัดการโดย Ad
 
 ---
 
-# 5. Figma Gap Checklist For Board Module
-
-| Priority | Figma Gap | Master Baseline | Action |
-| --- | --- | --- | --- |
-| Must Fix | Board อาจถูกออกแบบเป็น user-generated post/community discussion | Board เป็น Community Content / Article Area | ปรับ wording และ flow ให้เป็น Article Board ไม่ใช่ forum/post board |
-| Must Fix | Figma/PRD อาจมี Create Post / Edit Post / Delete Post สำหรับ user | บทความสร้างและจัดการโดย Admin ผ่าน Back Office เท่านั้น | ตัด FO create/edit/delete article flow ออกจาก V1 |
-| High | ต้องยืนยัน section/category ครบตาม master | รองรับ Feature Article, Trending Now, Journal Board, Watch Brands, Watch 101, Watch Apparel, Watch Events | map section/category ใน Figma ให้ครบ |
-| High | Search Article และ Category Filter ต้องชัด | Master รองรับ Search Article และ Category Filter | เพิ่ม search state, category filter state และ no-result state |
-| High | Article Detail ต้องรองรับ Like / Share | User ทั่วไปอ่าน, Like และ Share บทความได้ใน Phase 1 | เพิ่ม Like/Share action บน Article Detail |
-| Medium | Infinite Scroll state ยังต้องตรวจ | Board รองรับ Infinite Scroll | เพิ่ม load more/loading/end state สำหรับ article list |
-| Medium | Guest behavior ของ Article Like ยังต้องตัดสินตาม login baseline | Master ระบุ user ทั่วไป Like/Share ได้ แต่ global login rule ระบุ Like ต้อง login | ใช้ Member สำหรับ Article Like จนกว่า master แยก Article Like สำหรับ Guest |
-| Medium | Menu label `Community` อาจไม่ตรงกับ master module name | Master module คือ Board | normalize label หรือ map `Community` เป็น Board ให้ชัด |
-| Medium | Article Share สำหรับ Guest ต้องชัด | Master lock ให้ Article Share เป็น public share action | เพิ่ม Guest share state โดยไม่ต้อง Login |
-| High | Article Comment / Report Article ต้องไม่ขยายเป็น Board V1 interaction | Master ระบุ Article Like / Share และอนุญาต `Report article` ที่ map เข้า Trust & Safety `Report Board Content` | ซ่อน Article Comment และใช้ `Report article` เฉพาะเมื่อผูกกับ Trust & Safety moderation handoff |
-
----
-
-# 6. Scope
+# 5. Scope
 
 ## In Scope
 
@@ -108,7 +91,7 @@ Phase 1 บทความสร้างและจัดการโดย Ad
 
 ---
 
-# 7. Screen Mapping
+# 6. Screen Mapping
 
 | Screen / Component | Description |
 | --- | --- |
@@ -127,7 +110,7 @@ Phase 1 บทความสร้างและจัดการโดย Ad
 
 ---
 
-# 8. User States
+# 7. User States
 
 ## Guest
 
@@ -152,7 +135,7 @@ Phase 1 บทความสร้างและจัดการโดย Ad
 
 ---
 
-# 9. User Flow
+# 8. User Flow
 
 ## Browse Board Flow
 
@@ -211,7 +194,7 @@ Article List
 
 ---
 
-# 10. Business Rules
+# 9. Business Rules
 
 ## Board Content Model
 
@@ -360,19 +343,21 @@ Report article behavior:
 - API error state: `Unable to submit report. Please try again.`
 - Guest report entry must show Global Login Required Dialog.
 
+Prototype dead-code note (fo-flow, documented not implemented): Report Article เป็น contract-only Trust & Safety flow ตาม sign-off — article overflow menu / entry buttons ใน prototype (`data-bdmore`, `data-bdsave`, `a.saved`, `data-bdact`) ไม่มี handler จึงถือเป็น dead code; spec เก็บ Report Article flow ไว้แต่ไม่ spec UI entry ที่ prototype ไม่ได้ implement
+
 ## Sorting / Ranking Rule
 
 - Trending Now ใช้ ranking logic ตาม content/admin configuration หรือ analytics implementation
-- หากยังไม่สรุป algorithm ให้ Figma แสดงเป็น content section โดยไม่ระบุ ranking formula เป็น source of truth
+- หากยังไม่สรุป algorithm ให้แสดงเป็น content section โดยไม่ระบุ ranking formula
 
 ## Menu Label Rule
 
 - Master module name คือ Board
-- หาก Figma ใช้ label `Community` ต้อง map ให้ชัดว่าเป็น Board Article Area ไม่ใช่ discussion community
+- หากใช้ label `Community` ต้อง map ให้ชัดว่าเป็น Board Article Area ไม่ใช่ discussion community
 
 ---
 
-# 11. Permission Rules
+# 10. Permission Rules
 
 | Actor | Permission |
 | --- | --- |
@@ -383,7 +368,7 @@ Report article behavior:
 
 ---
 
-# 12. Validation Rules
+# 11. Validation Rules
 
 Board Front Office ไม่มี create/edit form สำหรับ user ใน V1
 
@@ -397,7 +382,7 @@ Board Front Office ไม่มี create/edit form สำหรับ user ใ�
 
 ---
 
-# 13. Exception Handling
+# 12. Exception Handling
 
 ## Article Not Found / Deleted
 
@@ -422,7 +407,7 @@ Board Front Office ไม่มี create/edit form สำหรับ user ใ�
 
 ---
 
-# 14. Empty State
+# 13. Empty State
 
 ใช้ข้อความกลางตาม master:
 
@@ -433,7 +418,7 @@ Board Front Office ไม่มี create/edit form สำหรับ user ใ�
 
 ---
 
-# 15. Notification Rules
+# 14. Notification Rules
 
 Master ยังไม่ได้ระบุ Board notification type ใน Notification baseline
 
@@ -443,7 +428,7 @@ Master ยังไม่ได้ระบุ Board notification type ใน No
 
 ---
 
-# 16. Analytics Events
+# 15. Analytics Events
 
 - `board_opened`
 - `board_section_opened`
@@ -462,7 +447,7 @@ Master ยังไม่ได้ระบุ Board notification type ใน No
 
 ---
 
-# 17. Acceptance Criteria
+# 16. Acceptance Criteria
 
 ## AC-BOARD-001: Board Is Article Area
 
@@ -632,7 +617,7 @@ Then ระบบต้องแสดง `บทความนี้ไม่�
 
 ---
 
-# 18. Related Modules
+# 17. Related Modules
 
 - Notification Module
 - Social Module
@@ -641,7 +626,7 @@ Then ระบบต้องแสดง `บทความนี้ไม่�
 
 ---
 
-# 19. Future Enhancement
+# 18. Future Enhancement
 
 - Article Comment
 - Article-specific moderation tooling beyond Trust & Safety `Report Board Content`

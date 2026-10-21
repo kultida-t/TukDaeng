@@ -1,38 +1,44 @@
 # 09 Notification Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §11 (guest gate = Member Sheet + empty state), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6 (layer/nav/badge), §7 (entry matrix), §8 (notification destination matrix — canonical), §9 (gate routing), §10 (unavailable fallback) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (follow notif → `profile:{user}` + `pfSetFollow`/`pfIsFollowed` canonical — FSP-019 lock) + [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (chat = badge-only ไม่ใช่ alert type — FSP-020 lock) + [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (`notif_settings` page + library row canonical — FSP-013/014 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
 
 ---
 
 # 1. Document Information
 
-| Field | Detail |
-| --- | --- |
-| Module Name | Notification |
-| Version | 1.0 |
-| Status | Functional PRD - Master Aligned |
-| Owner | Tuk Daeng Project |
-| Document Type | Front Office Functional PRD |
-| Source of Truth | TukDaeng Master Product Definition |
+| Item | Detail |
+|---|---|
+| Module Name | Notification (Alerts feed) — UI ใช้ชื่อ `แจ้งเตือน`/`Alerts`; spec เดิมตีความเป็น flat notification list แบบ asset-centric (Like→Asset Detail, Comment→focus comment, WA→Result List); prototype คือ IG-style activity feed ที่ทุก destination เป็น Post Viewer / Public Profile |
+| Platform | Mobile Application |
+| Version | V1 |
+| Owner | Product / UX / Engineering |
+| Status | Draft |
+| Document Type | Functional PRD - Master Aligned |
 
 ---
 
 # 2. Objective
 
-Notification Module ใช้สำหรับแจ้งเหตุการณ์สำคัญใน Front Office Mobile App และพาผู้ใช้ไปยัง destination ที่ตรงกับ master baseline
+Alerts feed คือ member-only surface บน bottom-nav `แจ้งเตือน`/`Alerts` (route `alerts`) ที่รวมเหตุการณ์ของบัญชีไว้เป็นฟีดกิจกรรมแบบ IG — like (aggregate หลาย user), comment, follow (พร้อม inline `Follow back` + dismiss `x`), watch alert match และ system row — แบ่งกลุ่มตามช่วงเวลา `Today`/`Yesterday`/`Last 7 days`/`Earlier` พร้อม unread state + nav badge และ `Mark all as read`
 
-Notification ใน V1 ต้องไม่ขยาย type เกิน master โดยไม่มี decision เพิ่มเติม
+โมดูลนี้ต้องคุม: ชุด notification type ที่รองรับ, row anatomy ต่อ type, read/unread + badge semantics, row actions (mark read / mark all / dismiss / follow back), destination routing ตาม 00_NAV §8 และ guest gate — โดยยึดพฤติกรรม prototype เป็นตัวตัดสินเมื่อ spec เดิมขัดกัน
 
 ---
 
 # 3. Prototype Reference
 
-| Prototype | Usage |
-| --- | --- |
-| Notification.png | Notification list, unread/read state, destination entry |
-| Detail asset viewer.png | Destination สำหรับ Like, Comment, Offer Rejected |
-| Chat.png | Destination สำหรับ Offer Accepted |
-| Watch Alert.png | Destination สำหรับ Watch Alert Result List |
+Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
+
+- Route + page: `alerts` → `alertsHTML` (~17703); nav item + badge ใน `botNavHTML` (~17006 — `[data-navgo="alerts"]` + `alBadgeHTML()` + label `แจ้งเตือน`/`Alerts`); `data-navgo="alerts"` → `openSub(scr,"alerts",true)` swap-open (~21504)
+- Data model: `ALERTS` (~17882 — `null` จนกว่า init), `alInit` (~17883–17911 — `state.session !== "member"` → `ALERTS = []` เสมอ (guest + new); member seed 13 rows — field `{id:"al{n}", type, users[], more, ago, grp, unread, text?, pid?, thumb?, name?, price?}`; `wa()` helper ผูก watch rows กับ post จริงผ่าน `findPost` + `specOf`)
+- Badge: `alUnread`/`alBadgeHTML`/`alBadgeSync` (~17912–17920 — count = unread rows, cap `99+`, sync ทุก `.nav-item[data-navgo="alerts"]` instance)
+- Row anatomy: `alAvatarHTML` (~17924–17933 — like>1 user → `.al-stack` 2 avatar + heart badge `al-badge`; like เดี่ยว → avatar + heart badge; watch → `.al-watch` bell icon + seller mini avatar `.al-wseller`; system → `.al-sys` circle-`!` icon; comment/follow → single avatar), `alTextHTML` (~17934–17947 — copy ต่อ type + `<span class="al-time">` จาก `formatAlertTime`), `alRowHTML` (~17948–17957 — `.al-row.unread` + `data-alid`; follow → `al-fbtn` (`data-alfollow`) + `al-x` (`data-aldismiss`); like/comment/watch → `al-thumb` ขวา)
+- Page render: `alertsHTML` (~17958–17981 — `.al-scroll` + `.al-head` = `.al-back` `data-navgo="feed"` + title `แจ้งเตือน`/`Alerts`; group sections ตามลำดับ fix `Today`/`Yesterday`/`Last 7 days`/`Earlier` (TH `วันนี้`/`เมื่อวาน`/`7 วันที่ผ่านมา`/`ก่อนหน้า`) render เฉพาะกลุ่มไม่ว่าง; `.al-readall` `Mark all as read`/`อ่านทั้งหมดแล้ว` บน section แรกเมื่อ unread>0; empty = `chEmptyHTML` `No alerts yet` + desc), `alRerender` (~17982–17987 — `_subSwap` re-render คง scrollTop)
+- Click handler: `alertsClick` (~17988–18037 — chain order `data-alreadall` → `data-aldismiss` → `data-alfollow` → `.al-row`; wired ใน global click chain ~21494 ก่อน navgo)
+- Helpers: `formatAlertTime` (~13376–13383 — `ago` string `Nm/Nh/Nd/Nw` → TH `นาที`/`ชม.`/`วัน`/`สัปดาห์`), `chEmptyHTML` (~17876 — shared empty card กับ 07_CHAT), `pfSetFollow`/`pfIsFollowed` (~16849–16858 — canonical 06), `rpPush` → `pushSub` (~15095), `openPostViewer` (~14738 — signature `(scr, posts, pid, phi, feedMode, title, user)`; `user` ≠ me → pfp head + `pf-foll` chip ตอน unfollowed)
+- Notification settings: settings row `data-sub="notif_settings"` (~17390 — canonical 13), page ~17560–17572 (4 toggles 2 groups), toggle handler `[data-notif-tgl]` ~21217–21223 (`state.notif` memory)
+- Gate + session: `GUEST_GATE_SEL` รวม `[data-navgo="alerts"]` + `.al-fbtn` (~23337–23339) → `obGate` Member Sheet; `applySessionData` reset `ALERTS = null` + `alBadgeSync()` (~23294/~23323)
+- WA rows in feed: `type:"watch"` seed ผูก `p1`/`p5`/`p3`; destination + Watch Alert internals canonical = [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md)
 
 ---
 
@@ -40,449 +46,427 @@ Notification ใน V1 ต้องไม่ขยาย type เกิน maste
 
 | Topic | Master Baseline | Notification Module Rule |
 | --- | --- | --- |
-| Supported Types | Like, Comment, Follow, Offer, Watch Alert | V1 Notification list ต้องใช้ type ชุดนี้เป็น baseline |
-| Watch Alert Destination | Watch Alert Result List | ห้ามเปิด Asset Detail ตรงจาก Watch Alert notification |
-| Like Destination | Asset Detail | เปิด Asset Detail ของ Asset ที่ถูก Like |
-| Comment Destination | Asset Detail และ Focus Comment | เปิด Asset Detail พร้อม focus comment |
-| Offer Accepted Destination | Chat Room | เปิด Chat Room |
-| Offer Rejected Destination | Asset Detail | เปิด Asset Detail |
-| Guest Restriction | Guest ใช้ feature ที่ต้อง Login ต้องเห็น Global Login Required Dialog | Guest ไม่เข้าถึง Notification Center |
-| Empty State | `ไม่พบข้อมูล` / `No data found` | ใช้ข้อความกลางตาม master |
+| Supported types | Like, Comment, Follow, Watch Alert | ตรง + **เพิ่ม `system`** — prototype มี security row (`A new device just logged in…`) เป็น type ที่ 5; 00_NAV §8 รับไว้แล้ว (destination = placeholder, contract อยู่เอกสารนี้ §9) |
+| Destinations | Like/Comment → post ของตัวเอง; Follow → profile ผู้ติดตาม; Watch Alert → post ที่ match โดยตรง | ตรง 00_NAV §8 — ทุก content destination = **Post Viewer** (ไม่ใช่ Asset Detail, ไม่มี focus comment, ไม่มี Result List) |
+| Read state | unread → read เมื่อเปิด | ตรง + extras ที่ prototype เพิ่ม: `Mark all as read`, dismiss `x` (follow row), inline `Follow back` |
+| Grouping | — | feed แบ่ง section ตาม age bucket (Today/Yesterday/Last 7 days/Earlier) — ไม่ใช่ flat DESC list |
+| Guest restriction | login-required surfaces → Member Sheet | แท็บ `แจ้งเตือน` อยู่ใน `GUEST_GATE_SEL` — guest เห็นแค่ icon; session `new` เข้าได้แต่ feed ว่าง (`ALERTS=[]`) |
+| Chat notification | New Message = badge เท่านั้น | ตรง canonical 07 §14 — **ไม่มี chat type ใน feed** |
+| Notification settings | — | `notif_settings` 4 toggles อยู่ใน V1 (canonical หน้า = 13_SETTINGS); module นี้คุม mapping toggle ↔ type เท่านั้น |
+| Private data | 00_GLOBAL §14 | feed ไม่แสดง private data (price ใน watch row = asking price public) |
 
 ---
 
-# 5. Figma Gap Checklist For Notification Module
-
-| Priority | Figma Gap | Master Baseline | Action |
-| --- | --- | --- | --- |
-| Must Fix | Figma มี notification type เกิน master เช่น `Like Valuation`, `Market Update`, `Sale Success` | Master รองรับ Like, Comment, Follow, Offer, Watch Alert | ลบ/ซ่อน type นอก scope หรืออัปเดต master ก่อน |
-| Must Fix | Figma อาจมี Chat / New Message / Moderation / Account Action เป็น FO notification baseline | Master ระบุว่า Chat / New Message ไม่เป็น Notification Center type และ FO V1 รองรับเฉพาะ Like, Comment, Follow, Offer, Watch Alert | ซ่อน type นอก baseline หรือแยก Back Office / Future scope |
-| High | Destination state ยังไม่ครบ | Like -> Asset Detail, Comment -> Asset Detail + Focus Comment, Watch Alert -> Result List, New Offer -> Chat Room + Focus Offer Card, Offer Accepted -> Chat Room, Offer Rejected -> Asset Detail, Offer Cancelled -> Chat Room + Focus Offer Card | เพิ่ม destination screens/states ให้ครบ |
-| High | Watch Alert อาจเปิด Asset Detail โดยตรง | Watch Alert Notification ต้องเปิด Watch Alert Result List | เพิ่ม Watch Alert Result List และ route ให้ตรง |
-| High | Comment notification ยังไม่เห็น focus comment state | Comment ต้องเปิด Asset Detail และ Focus Comment | เพิ่ม scroll/focus state ใน Asset Detail |
-| Medium | Read / Unread และ badge count ต้องตรวจให้ชัด | Notification ต้องรองรับ unread state เพื่อใช้งาน list/badge | เพิ่ม unread/read state และ badge count behavior |
-| Medium | Deleted Asset destination ยังไม่ชัด | Deleted Asset detail ต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว` | เพิ่ม unavailable state เมื่อ notification อ้างถึง asset ที่ถูกลบ |
-| Medium | Guest Notification Center state ยังไม่ชัด | Guest ใช้ feature ที่ต้อง Login ต้องเห็น Global Login Required Dialog | เพิ่ม login required state เมื่อเข้า Notification Center |
-| Medium | New Offer destination ต้องชัด | Master ระบุ New Offer -> Chat Room + Focus Offer Card | เพิ่ม offer card focus state |
-| Medium | Offer Cancelled destination ต้องชัด | Master ระบุ Offer Cancelled -> Chat Room + Focus Offer Card | เพิ่ม cancelled offer card state และ unavailable asset reference |
-
----
-
-# 6. Scope
+# 5. Scope
 
 ## In Scope
 
-- Notification List
-- Read / Unread status
-- Badge / Unread count
-- Notification destination routing
-- Notification types ตาม master baseline:
-  - Like
-  - Comment
-  - Follow
-  - Offer
-  - Watch Alert
-- Empty state
-- Deleted / unavailable destination handling
+- Alerts feed page (`alerts`) — header, group sections, row anatomy ทุก type, empty state
+- Notification types: `like` / `comment` / `follow` / `watch` / `system` (+ aggregate `more` บน like)
+- Read / unread state + `.al-readall` Mark all as read + nav badge (cap `99+`)
+- Row actions: open destination, dismiss `x` (follow), inline `Follow back`/`Following` (follow)
+- Destination routing ตาม 00_NAV §8 + fallback เมื่อ post หาย
+- Guest gate (Member Sheet) + session semantics (`member` seed / `new`+`guest` ว่าง / reset ตอน session switch)
+- Notification settings boundary (type toggles — page internals อยู่ 13)
+- Deviations + dead/placeholder surfaces
 
-## Out of Scope For V1 Unless Master Adds Decision
+## Out Of Scope (module อื่นเป็นเจ้าของ)
 
-- Like Valuation
-- Market Update
-- Sale Success
-- Chat / New Message in Notification Center (not supported; Chat menu badge/count only)
-- Moderation Action in Front Office notification list
-- Account Action notification
-- Notification retention period rule
-- Notification preference center
-
-หมายเหตุ: การแจ้งผู้ใช้เรื่อง `Suspended` หรือ `Banned` ไม่ใช่ FO Notification Center type ใน V1. ระบบใช้ email เป็น primary channel ตาม BO policy และแสดง account status state ผ่าน Authentication เมื่อผู้ใช้เปิดแอปหรือพยายาม Sign In
+- Post Viewer internals + modes — [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md); เอกสารนี้ระบุเฉพาะ notification → viewer handoff (single-post, solo header)
+- Public Profile + `pfSetFollow`/`pfIsFollowed` semantics — [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md)
+- Watch Alert engine/sheet/list + `wa*` internals — [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md); เอกสารนี้ระบุเฉพาะ `watch` row anatomy + destination
+- Chat badge — [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (`chBadgeSync`; ไม่ใช่ alert type)
+- `notif_settings` page anatomy + settings entry — [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md)
+- Bottom nav / layer model / Member Sheet internals — 00_NAV §6 / 00_GLOBAL §11
+- Push notification transport (FCM) — contract เท่านั้น (§14/§18)
+- BO-generated notifications (moderation/account action) — ไม่มีใน V1 feed
 
 ---
 
-# 7. Screen Mapping
+# 6. Screen Mapping
 
-| Screen / Component | Description |
-| --- | --- |
-| Notification List | แสดงรายการ Notification ทั้งหมดของ user |
-| Notification Item | แสดง type, message, timestamp, read/unread state |
-| Notification Badge | แสดงจำนวน unread notification |
-| Destination Screen | หน้าที่เปิดหลัง user กด notification |
-| Empty State | แสดงเมื่อไม่มี notification |
-| Error / Unavailable State | แสดงเมื่อ destination ถูกลบหรือเข้าถึงไม่ได้ |
+| Screen / State | Prototype | Description |
+| --- | --- | --- |
+| Alerts feed | `alerts` sub page (`alertsHTML`) | หน้าเดียวของ module — scroll `.al-scroll` + bottom nav ของตัวเอง (active `alerts`) |
+| Feed header | `.al-head` | back `data-navgo="feed"` (กลับ Feed เสมอ ไม่ใช่ pop) + title `แจ้งเตือน`/`Alerts` + spacer ขวา (invisible icon-btn เพื่อความสมมาตร) |
+| Group section | `.al-sec` + `.al-row` | section label + `Mark all as read` บน section แรก + rows |
+| Notification row | `.al-row` | avatar/icon + text + time + side element (thumb หรือ follow button) + dismiss `x` (follow เท่านั้น) |
+| Nav badge | `.nav-badge` ใน `[data-navgo="alerts"]` | unread count cap `99+` — sync ทุก nav instance |
+| Empty state | `chEmptyHTML` | `No alerts yet` + desc (shared component กับ chat) |
+| Member Sheet | `.ob` gate variant | guest gate — canonical 00_GLOBAL §11 |
+| Notification settings | `notif_settings` sub page | type toggles — canonical page อยู่ 13_SETTINGS |
 
 ---
 
-# 8. User States
+# 7. User States
 
-## Guest
+## Guest (session `guest`)
 
-- ไม่สามารถเข้า Notification Center ได้
-- เมื่อพยายามเข้า Notification Center ต้องแสดง Global Login Required Dialog
+- เห็นเฉพาะ nav icon `แจ้งเตือน` — กดแล้วเจอ Member Sheet `Join TukDaeng` (gate `[data-navgo="alerts"]`)
+- ไม่มีทางเข้าถึง feed — `alInit` ให้ `ALERTS = []` เสมอสำหรับ non-member
+- `.al-fbtn` อยู่ใน gate list ด้วย (defense-in-depth — unreachable อยู่แล้วเพราะเข้าหน้าไม่ได้)
+
+## New Member (session `new`)
+
+- เข้าหน้าได้ทันที แต่ feed ว่างเสมอ — `alInit` guard `session !== "member"` → `[]` → empty state `No alerts yet`
 
 ## Member
 
-- เห็น Notification List ของตัวเอง
-- เปิด notification item ได้
-- notification ที่เปิดแล้วเปลี่ยนเป็น Read
-- เห็น unread count / badge count
+- Feed เต็ม: seed rows ทุก type, unread badge, mark read / mark all, dismiss, follow back, destination routing
+- กลับเข้าหน้าใหม่ re-render จาก `ALERTS` state ปัจจุบัน (state คงอยู่ใน session)
 
 ## Blocked / Unavailable Context
 
-- ถ้า notification อ้างถึง content หรือ user ที่เข้าถึงไม่ได้ ระบบต้องแสดง unavailable/error state
-- Notification เดิมไม่จำเป็นต้องถูกลบออกจาก list ทันที เว้นแต่ policy กำหนดเพิ่ม
+- Follow destination เข้า `profile:{user}` ตามปกติ — blocked profile แสดง keep-page ตาม canonical 06/00_NAV §10
+- Post destination (like/comment/watch) ที่โพสต์หาย → fallback ตาม §9 Destination Fallback Rule
 
 ---
 
-# 9. User Flow
+# 8. User Flow
 
-## Open Notification Center
+## Open Alerts Feed
 
 ```text
-Member
--> Open Notification Center
--> View Notification List
--> See Read / Unread states
+Bottom nav แจ้งเตือน
+-> (member) swap-open `alerts` ทับ feed — ไม่มี slide
+-> render groups + rows + badge state ปัจจุบัน
 ```
 
-## Open Notification Item
-
 ```text
-Notification List
--> Tap Notification Item
--> Mark as Read
--> Route to Destination
+Guest กด tab
+-> Member Sheet `Join TukDaeng` (gate) — feed ไม่เปิด
 ```
 
-## Watch Alert Notification Flow
+## Read Notification
 
 ```text
-Watch Alert Notification
--> Open Watch Alert Result List
--> Do not open Asset Detail directly
+Tap .al-row
+-> a.unread = false + ลบ .unread class + alBadgeSync
+-> route ตาม type (ดู §9 Destination Rule)
+-> ถ้า unread หมด -> ลบปุ่ม `Mark all as read`
 ```
 
-## Comment Notification Flow
+## Mark All As Read
 
 ```text
-Comment Notification
--> Open Asset Detail
--> Focus target comment
+Tap `อ่านทั้งหมดแล้ว` / `Mark all as read` (section แรก)
+-> ทุก row unread = false + alBadgeSync + alRerender
+```
+
+## Dismiss Follow Row
+
+```text
+Tap `x` บน follow row
+-> splice row ออกจาก ALERTS + alRerender (badge ไม่เปลี่ยนถ้า row อ่านแล้ว)
+-> row หายถาวรใน session (ไม่มี undo)
+```
+
+## Follow Back Inline
+
+```text
+Tap `ติดตามกลับ`/`Follow back` บน follow row
+-> pfSetFollow(user, !current) — sync follow state จริงทั้งระบบ (canonical 06)
+-> ปุ่มสลับ Following ↔ Follow back
+-> ไม่ mark read / ไม่ navigate (handler ตัดก่อน .al-row)
+```
+
+## Open Destination (per type)
+
+```text
+like/comment -> find โพสต์ตัวเองใน pfTabPosts(me,"all")
+   -> เจอ: openPostViewer [post เดียว] title `Post` + solo header
+   -> ไม่เจอ: toast `This post is no longer available`
+watch -> findPost(pid)
+   -> เจอ: openPostViewer [post] title `Post` + seller name + solo header + inject Follow (ถ้ายังไม่ follow)
+   -> ไม่เจอ: ไม่มี feedback (silent no-op — deviation)
+follow -> rpPush `profile:{follower}`
+system -> toast `Security details aren't in this prototype yet` (placeholder — ไม่มี destination ใน V1)
+```
+
+## Back
+
+```text
+ปุ่ม `<` บน al-head = data-navgo="feed" -> เคลียร์ sub stack กลับ Feed เสมอ (canonical 00_NAV §6.7/§7)
 ```
 
 ---
 
-# 10. Business Rules
+# 9. Business Rules
 
-## Supported Notification Types
+## Data Model Rule (`ALERTS`)
 
-V1 Notification รองรับ type ตาม master baseline เท่านั้น:
+- `ALERTS` = in-memory list per session — init ครั้งแรกที่ render (`alInit` lazy): `member` → seed set, `new`/`guest` → `[]`
+- Row fields: `id`, `type` (`like|comment|follow|watch|system`), `users[]` (actors; index 0 = primary), `more` (aggregate count นอกเหนือ 2 ชื่อแรก), `ago` (label string), `grp` (age bucket), `unread`, `pid`+`thumb` (post ref — like/comment/watch), `text` (comment excerpt / system message), `name`+`price` (watch: `Brand Model` + asking price)
+- ไม่มี generation path — `ALERTS` เป็น seed เท่านั้น (like/comment/follow/watch/system ไม่มี code สร้าง row ใหม่; trigger contract อยู่ §14)
+- `applySessionData` → `ALERTS = null` (re-init ตาม session ใหม่) + `alBadgeSync`
 
-| Type | Description |
+## Group & Order Rule
+
+- กลุ่มเรียงตามลำดับ fix: `Today` → `Yesterday` → `Last 7 days` → `Earlier` (TH `วันนี้`/`เมื่อวาน`/`7 วันที่ผ่านมา`/`ก่อนหน้า`) — render เฉพาะกลุ่มที่มี row
+- ภายในกลุ่มเรียงตามลำดับใน list (prototype = seed order; contract = created DESC ภายใน bucket)
+- `Mark all as read` แสดงเฉพาะบน section header แรก และเฉพาะเมื่อ unread > 0
+
+## Row Anatomy Rule (per type)
+
+| Type | Avatar/icon | Text | Right side | Extras |
+| --- | --- | --- | --- | --- |
+| `like` | 1 user → avatar + heart badge; >1 user → stack 2 avatar + heart badge | `{names} liked your post.` / `ถูกใจโพสต์ของคุณ` (+ `และคนอื่น ๆ อีก N คน` เมื่อ `more`/users>2) | post thumb | — |
+| `comment` | single avatar | `{name} commented: {text}` / `แสดงความคิดเห็น:` | post thumb | — |
+| `follow` | single avatar | `{name} started following you.` / `เริ่มติดตามคุณ` | `Follow back`/`Following` button | dismiss `x` |
+| `watch` | bell icon + seller mini avatar overlay | `Watch alert {name} — new listing from {seller} · {price}` / `การแจ้งเตือนนาฬิกา {name} — รายการใหม่จาก {seller} · {price}` | post thumb | — |
+| `system` | circle-`!` icon | `{text}` (ข้อความดิบ เช่น `A new device just logged in to your account near Bangkok, TH`) | — | — |
+
+- `names` = 2 ชื่อแรก bold join `, ` + `and N others`/`และคนอื่น ๆ อีก N คน` เมื่อมี (`n = more + users.length - 2`)
+- Time label = `ago` string + `formatAlertTime` แปลงหน่วยเป็น TH (`m`→`นาที`, `h`→`ชม.`, `d`→`วัน`, `w`→`สัปดาห์`)
+
+## Read / Unread Rule
+
+- Row ใหม่เริ่ม `unread` → `.al-row.unread` (visual highlight)
+- Tap row → `unread=false` + `alBadgeSync` ทันที ก่อน navigate
+- `Mark all as read` → clear unread ทุก row + badge หมด + re-render
+- หลัง row-tap ถ้า `alUnread() === 0` → ลบปุ่ม mark-all ออก (ป้องกันปุ่มค้าง)
+- `data-alfollow`/`data-aldismiss` ตัดก่อน row handler — tap ปุ่มเหล่านั้น **ไม่ mark read** และไม่ navigate
+
+## Badge Rule
+
+- Badge = Σ unread rows บน nav item `แจ้งเตือน` — cap `99+` เหมือน chat badge
+- `alBadgeSync` re-render ทุก `.nav-item[data-navgo="alerts"]` instance (nav ซ้ำบนหลาย sub page shell)
+- Badge หายเมื่อ unread = 0; ไม่มี badge สำหรับ session `new`/`guest` (list ว่าง)
+
+## Destination Rule (canonical 00_NAV §8)
+
+| Type | Destination | Fallback |
+| --- | --- | --- |
+| `like` | Post Viewer — โพสต์ของตัวเอง 1 ใบ (lookup `pfTabPosts(me,"all")` ด้วย `pid`; title `Post` + `pfp-tt solo`) | post ไม่อยู่ใน own posts → toast `This post is no longer available` |
+| `comment` | เหมือน like — viewer โพสต์ตัวเอง; **ไม่มี focus/deep-scroll comment ใน V1** | เหมือน like |
+| `follow` | Public Profile `profile:{users[0]}` ผ่าน `rpPush` (push ทับ alerts) | blocked → keep-page ตาม canonical 06 |
+| `watch` | Post Viewer — post ที่ match โดยตรง (`findPost(pid)`; title `Post` + seller; `pfp-follow` chip ถูกลบ; inject `Follow` button ก่อน `...` เมื่อ `!p.following`) | **post หาย → silent no-op** (deviation — ไม่มี toast เหมือน like/comment; contract: toast เดียวกัน) |
+| `system` | **placeholder — ไม่มี destination ใน V1** | tap → toast `Security details aren't in this prototype yet` (contract: security/account activity surface — future) |
+
+- ไม่มี destination อื่น: ไม่มี Asset Detail direct, ไม่มี Result List, ไม่มี chat room, ไม่มี settings jump
+
+## `system` Type Rule (decision — FSP-021)
+
+- `system` เป็น notification type ที่รองรับใน V1 feed (prototype มี seed row + icon + copy จริง; 00_NAV §8 ล็อกไว้แล้วโดย hand-off destination contract มาที่เอกสารนี้)
+- V1 destination = **placeholder เท่านั้น** — tap ไม่ navigate; production contract = เปิด security/account activity surface เมื่อมี (§18)
+- Seed row = security event (`A new device just logged in to your account near Bangkok, TH`) — scope `system` ใน V1 = security/session alerts เท่านั้น; ใช้กับ event อื่นต้องมี master decision เพิ่ม
+
+## Follow Row Actions Rule
+
+- `Follow back`/`กำลังติดตาม` (`al-fbtn`, `data-alfollow`) — toggle follow จริงผ่าน `pfSetFollow` (sync POSTS `p.following` หรือ `PF_EXTRA_FOL` ตาม canonical 06); ปุ่มสลับ `.on` + label
+- Dismiss `x` (`data-aldismiss`) — **มีเฉพาะ follow rows**; ลบ row ออกจาก `ALERTS` ทันที (session-level, ไม่มี undo, ไม่มี confirm)
+- Follow row ยังเปิด profile ได้ด้วยการ tap พื้นที่ row (ไม่ใช่ปุ่ม)
+
+## Notification Settings Boundary Rule
+
+- `notif_settings` มี 4 toggles ผูก type ตรง ๆ: `likes`→`like`, `comments`→`comment`, `follows`→`follow`, `walerts`→`watch` — default ON ทั้งหมด; หน้า + row anatomy canonical อยู่ 13_SETTINGS
+- **Prototype: toggles เป็น memory-only (`state.notif`) ไม่มี code path ใดอ่านค่าไปกรอง feed/generation** — spec รับเป็น V1 surface; contract = toggle OFF ต้องหยุดรับ notification ของ type นั้น (§14)
+- `state.notif` ไม่ถูก reset ตอน session switch (deviation — §9 deviations)
+
+## Session Rule
+
+- `member` → seed เต็ม; `new`/`guest` → `ALERTS=[]` (ไม่มี badge, feed ว่าง, tab ของ guest โดน gate อยู่แล้ว)
+- เปลี่ยน session → `ALERTS=null` re-seed ใหม่ (member ได้ชุดเดิมกลับ — state ไม่ persist ข้าม session switch; dismiss/read marks หาย)
+
+## Deviations & Dead-Code Notes (spec เลือก prototype — documented, not spec)
+
+1. **Feed = IG activity list grouped by age** — spec เดิม flat list เรียง Created Date DESC เดียว; prototype ใช้ `grp` bucket + section headers
+2. **Destinations ทั้งหมด = Post Viewer/Public Profile** — spec เดิม Like/Comment→Asset Detail (+focus comment), WA→Result List; ไม่มี focus comment affordance ใน viewer (00_NAV §8 canonical)
+3. **`system` type มีจริง** — spec เดิมจำกัด 4 types; เก็บเป็น V1 type placeholder destination (§9 `system` rule)
+4. **Like aggregate `more` + avatar stack** — spec เดิมไม่มี aggregation model
+5. **`Mark all as read` + dismiss `x` + inline `Follow back`** — extras ที่ spec เดิมไม่มี; dismiss มีเฉพาะ follow rows (like/comment/watch/system ลบไม่ได้)
+6. **`watch` row missing-post = silent no-op** — like/comment มี toast `This post is no longer available` แต่ watch ไม่มี feedback เลย (inconsistency — contract ให้ toast เดียวกัน; flag FSP-030)
+7. **Empty copy `No alerts yet` + desc** — ไม่ใช่ global `ไม่พบข้อมูล`/`No data found` (empty variant ของ module ตาม 00_GLOBAL §11)
+8. **`al-fbtn` toggle → label hardcode EN `Following`/`Follow back`** — render แรกมี isTh (`ติดตามกลับ`/`กำลังติดตาม`) แต่หลัง toggle กลับเป็น EN (i18n quirk — flag sweep)
+9. **`state.notif` toggles ไม่กรองอะไรจริง + ไม่ reset ตอน session switch** — page มีจริงแต่ enforcement = contract เท่านั้น
+10. **ไม่มี notification generation** — `ALERTS` seed ตายตัว; like/comment/follow/WA match ใน session ไม่สร้าง row (WA hit = toast simulation ฝั่ง 10)
+11. **ไม่มี retention/older-than cleanup** — `Earlier` bucket คงที่; dismiss = session-local เท่านั้น
+12. **ไม่มี error/loading/offline state ของ feed** — contract เท่านั้น (§12)
+13. **Read state ไม่ persist** — refresh/session switch → seed ใหม่ unread กลับมา
+
+---
+
+# 10. Permission Rules
+
+## Guest
+
+| Action | Result |
 | --- | --- |
-| Like | มี user like Asset |
-| Comment | มี user comment บน Asset |
-| Follow | มี user follow |
-| Offer | เหตุการณ์เกี่ยวกับ Offer |
-| Watch Alert | มี Asset Sale ที่ match Watch Alert criteria |
+| Bottom nav `แจ้งเตือน` | Member Sheet `Join TukDaeng` (gated `[data-navgo="alerts"]`) |
+| `.al-fbtn` (Follow back) | Member Sheet (defense-in-depth — unreachable) |
+| Alerts feed/rows/settings | ไม่มีทางเข้าถึง |
 
-## Types Not In Master Baseline
+## Member / New Member
 
-type ต่อไปนี้ห้ามใช้เป็น V1 source of truth จนกว่า master จะเพิ่ม scope:
-
-- Like Valuation
-- Market Update
-- Sale Success
-- Moderation Action
-- Account Action
-- Chat / New Message in Notification Center (not supported; Chat menu badge/count only)
-
-New Message สามารถใช้เป็น unread badge/count ภายในเมนู Chat ได้ แต่ไม่ใช่ Notification Center type ของ Front Office V1
-
-## Notification Sorting
-
-- Notification List เรียงตาม Created Date DESC
-- รายการล่าสุดอยู่บนสุด
-
-## Read / Unread
-
-- Notification ใหม่เริ่มต้นเป็น Unread
-- เมื่อ user เปิด notification item ให้เปลี่ยนเป็น Read
-- Badge count คำนวณจาก unread notifications
-
-## Destination Routing
-
-| Notification | Destination |
+| Action | Result |
 | --- | --- |
-| Like | Asset Detail |
-| Comment | Asset Detail และ Focus Comment |
-| Follow | Public Profile |
-| Watch Alert | Watch Alert Result List |
-| New Offer | Chat Room + Focus Offer Card |
-| Offer Accepted | Chat Room |
-| Offer Rejected | Asset Detail |
-| Offer Paused | Chat Room + Focus Offer Card |
-| Offer Cancelled | Chat Room + Focus Offer Card |
-| Offer Invalidated | Chat Room + Focus Offer Card |
+| เปิด feed + tap row ทุก type | ใช้ได้ (member เห็น seed; `new` เห็น empty state) |
+| Mark read / Mark all / dismiss / Follow back | member only (ต้องเข้าถึง feed ก่อน) |
+| Notification settings toggles | ผ่าน Settings (member-only entry — canonical 13) |
 
-## Offer Notification Detail
+## Other User
 
-- New Offer เปิด Chat Room และ Focus Offer Card เพื่อให้ Seller ตอบรับหรือปฏิเสธได้ทันที
-- Offer Accepted เปิด Chat Room
-- Offer Rejected เปิด Asset Detail
-- Offer Paused เปิด Chat Room และ Focus Offer Card ที่เป็น Paused; card ต้องไม่มี `Accept` / `Decline`
-- Offer Cancelled เปิด Chat Room และ Focus Offer Card ที่เป็น Cancelled
-- Offer Invalidated เปิด Chat Room และ Focus Offer Card ที่เป็น Unavailable final state
-- หาก Offer Cancelled เกิดจาก Asset Deleted ให้ Chat asset reference แสดง unavailable state
-- หาก Offer Paused เกิดจาก asset auto hidden หรือซ่อนชั่วคราว ให้ Chat asset reference แสดง `UNDER REVIEW` / temporarily hidden state
-- หาก Offer Invalidated เกิดจากซ่อนถาวร ให้ Chat asset reference แสดง unavailable state
-
-## Watch Alert Rule
-
-- Watch Alert Notification ต้องเปิด Watch Alert Result List
-- ห้ามเปิด Asset Detail โดยตรงจาก notification
-- Watch Alert match เฉพาะ Asset สถานะ Sale
-
-## Deleted Asset Impact
-
-- ถ้า notification อ้างถึง Asset ที่ถูกลบ ให้ destination แสดง unavailable state
-- ข้อความที่ต้องใช้: `รายการนี้ไม่พร้อมใช้งานแล้ว`
-- Notification item เดิมยังอยู่ได้ แต่ต้องไม่เปิด content ที่ไม่มีสิทธิ์หรือไม่มีอยู่แล้ว
-
-## Deleted User Impact
-
-- ถ้า notification อ้างถึง user ที่ถูกลบหรือเข้าถึงไม่ได้ ให้แสดง `ไม่พบผู้ใช้งาน`
-- ห้ามเปิด Public Profile ที่ไม่มีอยู่หรือถูกจำกัดสิทธิ์
-
-## Block User Impact
-
-- ถ้า user ถูก block หรือ block กันอยู่ destination ต้องเคารพ Trust & Safety rule
-- Content ของผู้ถูก block ต้องไม่ถูกเปิดผ่าน notification
+- ไม่มีสิทธิ์เห็น alert feed ของ user อื่น (feed = per-session account scope เสมอ)
 
 ---
 
-# 11. Permission Rules
+# 11. Validation Rules
 
-| Actor | Permission |
-| --- | --- |
-| Guest | เข้า Notification Center ไม่ได้ |
-| Member | เห็น Notification ของตัวเองเท่านั้น |
-| Other User | ไม่มีสิทธิ์เห็น Notification ของ user อื่น |
-| Admin | ใช้งานผ่าน Back Office เท่านั้น ไม่ใช่ Front Office Notification Center |
-
----
-
-# 12. Validation Rules
-
-Notification Module ไม่มี form validation โดยตรง แต่ต้อง validate routing ก่อนเปิด destination:
+ไม่มี form input ในหน้า feed — validation ที่เหลือคือ routing guard:
 
 | Condition | Rule |
 | --- | --- |
-| Missing Destination | แสดง unable to open content |
-| Deleted Asset | แสดง unavailable asset state |
-| Asset Under Review | เปิด Chat Room ได้ แต่ Offer Card ต้องเป็น `Offer Paused` และไม่มี action |
-| Permanently Hidden Asset | เปิด Chat Room ได้ แต่ Offer Card ต้องเป็น `Offer Unavailable` และไม่มี action |
-| Deleted User | แสดง user not found state |
-| Permission Denied | แสดง unable to open content |
-| Unsupported Type | ไม่ควรแสดงใน V1 list |
+| Row `pid` resolve ไม่ได้ (like/comment) | toast `This post is no longer available` — ไม่ navigate |
+| Row `pid` resolve ไม่ได้ (watch) | silent no-op (prototype) — contract: toast เดียวกัน (deviation #6) |
+| `system` tap | placeholder toast — ไม่ navigate |
+| Unknown type | contract: ไม่ render เป็น row (unsupported type ต้องไม่เข้า feed — 00_NAV §16) |
+| Follow target blocked | `profile:{u}` → keep-page ตาม canonical (ไม่ใช่ error) |
 
 ---
 
-# 13. Exception Handling
+# 12. Exception Handling
 
-## Asset Deleted
-
-- TH: `รายการนี้ไม่พร้อมใช้งานแล้ว`
-- EN: `This item is no longer available.`
-
-## User Deleted
-
-- TH: `ไม่พบผู้ใช้งาน`
-- EN: `User not found.`
-
-## Deep Link Failed
-
-- TH: `ไม่สามารถเปิดข้อมูลได้`
-- EN: `Unable to open content.`
-
-## Notification Load Failed
-
-- TH: `ไม่สามารถโหลดข้อมูลได้`
-- EN: `Unable to load data.`
-- Action: แสดงปุ่ม `ลองใหม่`
-
----
-
-# 14. Empty State
-
-ใช้ข้อความกลางตาม master:
-
-| Language | Message |
+| Case | Behavior |
 | --- | --- |
-| TH | `ไม่พบข้อมูล` |
-| EN | `No data found` |
+| Post ของ like/comment row ถูกลบ/หาย | toast `This post is no longer available` (contract: unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว` — 00_GLOBAL §11 / 00_NAV §10) |
+| Post ของ watch row หาย | silent no-op (prototype) — contract: toast + unavailable state เดียวกัน |
+| Follow target ไม่มีจริง | `profileOf` fabricate profile (06 deviation — `user-not-found` ไม่ reachable); contract: `ไม่พบผู้ใช้งาน` |
+| Feed load/render fail | contract: `ไม่สามารถโหลดข้อมูลได้`/`Unable to load data.` + `ลองใหม่` (prototype ไม่มี path) |
+| Push/deep link เข้า alerts โดย guest | Member Sheet ก่อนเสมอ (00_NAV §9/§12 contract) |
+| Account suspended/banned | clear session → account status state (contract — 00_GLOBAL §12) |
 
 ---
 
-# 15. Notification Rules
+# 13. Empty State
+
+| Surface | Copy จริง |
+| --- | --- |
+| Alerts feed ว่าง (`new`/หลัง dismiss หมด) | `No alerts yet` + `Watch alerts, likes, comments and new followers will show up here.` (TH `ยังไม่มีการแจ้งเตือน` + `การแจ้งเตือนนาฬิกา ยอดถูกใจ ความคิดเห็น และผู้ติดตามใหม่จะแสดงที่นี่`) — `chEmptyHTML` shared กับ 07 |
+
+หมายเหตุ: ไม่ใช้ global `ไม่พบข้อมูล`/`No data found` — variant เฉพาะ module ตาม 00_GLOBAL §11
+
+---
+
+# 14. Notification Rules (Trigger Contract)
+
+Prototype ไม่ generate rows (seed เท่านั้น) — ตารางนี้เป็น production contract ว่า event ใดควรสร้าง alert type ใด:
 
 | Trigger | Recipient | Type | Destination |
 | --- | --- | --- | --- |
-| User likes Asset | Asset Owner | Like | Asset Detail |
-| User comments on Asset | Asset Owner / related user | Comment | Asset Detail + Focus Comment |
-| User follows another user | Followed User | Follow | Public Profile |
-| Offer accepted | Buyer | Offer | Chat Room |
-| Offer rejected | Buyer | Offer | Asset Detail |
-| Offer paused | Buyer / Seller | Offer | Chat Room + Focus Offer Card |
-| Offer cancelled | Buyer / Seller | Offer | Chat Room + Focus Offer Card |
-| Offer invalidated | Buyer / Seller | Offer | Chat Room + Focus Offer Card |
-| Watch Alert criteria matched | Alert Owner | Watch Alert | Watch Alert Result List |
+| User likes post ของฉัน | Post owner (me) | `like` (aggregate `more` เมื่อหลาย user) | Post Viewer โพสต์ตัวเอง |
+| User comments บน post ของฉัน | Post owner (me) | `comment` (text excerpt) | Post Viewer โพสต์ตัวเอง |
+| User follows ฉัน | Followed user (me) | `follow` (+ Follow back + dismiss) | `profile:{follower}` |
+| Watch Alert ON match โพสต์ใหม่ | Alert owner | `watch` (name = `waName`-style label + seller + price) | Post Viewer โพสต์ที่ match ตรง — canonical engine อยู่ 10_WATCH_ALERT |
+| Security/session event (new device login ฯลฯ) | Account owner | `system` | placeholder V1 → security surface (future) |
 
-Push Notification รองรับผ่าน Firebase Cloud Messaging ตาม integration baseline แต่ in-app list ต้องยังคงใช้ supported types ตาม master
-
----
-
-# 16. Analytics Events
-
-- `notification_center_opened`
-- `notification_item_opened`
-- `notification_marked_read`
-- `notification_open_asset_detail`
-- `notification_open_comment_focus`
-- `notification_open_public_profile`
-- `notification_open_chat_room`
-- `notification_open_watch_alert_result`
-- `notification_deeplink_failed`
+- **Chat / New Message ไม่ใช่ type** — unread badge ในแท็บ `แชท` เท่านั้น (canonical 07 §14)
+- Toggle `state.notif[k]` OFF (contract) → หยุดสร้าง/แสดง type ที่ map (`likes`/`comments`/`follows`/`walerts`); `system` ไม่มี toggle (security ห้ามปิด — เหมือนไม่มีใน notif_settings)
+- Push notification = transport เสริมเท่านั้น (FCM contract) — in-app feed คือ source of truth
+- `Report`/block/unfollow/remove-follower/mute **ไม่แจ้งอีกฝ่าย** (canonical 06 §14)
+- Delete account → `system`/ทุก alert หยุดตาม erasure contract (13_SETTINGS — copy `Watch Alerts Cancelled` อยู่ del_account term card)
 
 ---
 
-# 17. Acceptance Criteria
+# 15. Analytics Events
 
-## AC-NOTI-001: Guest Cannot Access Notification Center
+(contract — prototype ไม่มี tracking layer; event names เป็นข้อตกลงสำหรับ implement)
 
-Given user เป็น Guest  
-When user เปิด Notification Center  
-Then ระบบต้องแสดง Global Login Required Dialog
-
-## AC-NOTI-002: Supported Types Only
-
-Given Notification List แสดงใน V1  
-When user เห็นรายการ notification  
-Then type ต้องอยู่ในชุด Like, Comment, Follow, Offer, Watch Alert เท่านั้น
-
-## AC-NOTI-003: Unsupported Types Are Not Shown
-
-Given system มี type นอก master เช่น Market Update, Sale Success หรือ Like Valuation  
-When แสดง Notification List ใน V1  
-Then type เหล่านั้นต้องไม่แสดง เว้นแต่ master เพิ่ม scope แล้ว
-
-## AC-NOTI-004: Like Opens Asset Detail
-
-Given user มี Like notification  
-When user กด notification  
-Then ระบบต้องเปิด Asset Detail ของ Asset ที่ถูก Like
-
-## AC-NOTI-005: Comment Opens Asset Detail And Focus Comment
-
-Given user มี Comment notification  
-When user กด notification  
-Then ระบบต้องเปิด Asset Detail  
-And focus comment ที่เกี่ยวข้อง
-
-## AC-NOTI-006: Follow Opens Public Profile
-
-Given user มี Follow notification  
-When user กด notification  
-Then ระบบต้องเปิด Public Profile ของผู้ที่ follow
-
-## AC-NOTI-007: Watch Alert Opens Result List
-
-Given user มี Watch Alert notification  
-When user กด notification  
-Then ระบบต้องเปิด Watch Alert Result List  
-And ต้องไม่เปิด Asset Detail โดยตรง
-
-## AC-NOTI-008: Offer Accepted Opens Chat Room
-
-Given user มี Offer Accepted notification  
-When user กด notification  
-Then ระบบต้องเปิด Chat Room
-
-## AC-NOTI-009: Offer Rejected Opens Asset Detail
-
-Given user มี Offer Rejected notification  
-When user กด notification  
-Then ระบบต้องเปิด Asset Detail
-
-## AC-NOTI-009A: New Offer Opens Chat Room Offer Card
-
-Given Seller มี New Offer notification  
-When Seller กด notification  
-Then ระบบต้องเปิด Chat Room  
-And focus Offer Card ที่เกี่ยวข้อง
-
-## AC-NOTI-009B: Offer Cancelled Opens Chat Room Offer Card
-
-Given user มี Offer Cancelled notification  
-When user กด notification  
-Then ระบบต้องเปิด Chat Room  
-And focus Offer Card ที่มีสถานะ Cancelled  
-And หาก Asset ถูกลบ Chat asset reference ต้องแสดง unavailable state
-
-## AC-NOTI-009C: Offer Paused Opens Chat Room Offer Card
-
-Given user มี Offer Paused notification  
-When user กด notification  
-Then ระบบต้องเปิด Chat Room  
-And focus Offer Card ที่มีสถานะ Paused  
-And Offer Card ต้องไม่มี `Accept` หรือ `Decline`
-
-## AC-NOTI-009D: Offer Invalidated Opens Chat Room Offer Card
-
-Given user มี Offer Invalidated notification  
-When user กด notification  
-Then ระบบต้องเปิด Chat Room  
-And focus Offer Card ที่มีสถานะ Unavailable  
-And Offer Card ต้องไม่มี `Accept` หรือ `Decline`
-
-## AC-NOTI-010: Mark As Read
-
-Given notification อยู่ใน Unread state  
-When user เปิด notification item  
-Then notification ต้องเปลี่ยนเป็น Read  
-And unread badge count ต้องลดลงตามจริง
-
-## AC-NOTI-011: Deleted Asset Destination
-
-Given notification อ้างถึง Asset ที่ถูกลบ  
-When user กด notification  
-Then ระบบต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว`
-
-## AC-NOTI-012: Empty State
-
-Given user ไม่มี notification  
-When user เปิด Notification Center  
-Then ระบบต้องแสดง `ไม่พบข้อมูล` / `No data found`
+| Event | Trigger |
+| --- | --- |
+| `alerts_opened` | เปิด `alerts` ผ่าน nav tab |
+| `alert_opened` | tap `.al-row` (payload: type) |
+| `alert_marked_read` | row unread → read |
+| `alert_marked_all_read` | `data-alreadall` |
+| `alert_dismissed` | `data-aldismiss` (follow rows) |
+| `alert_follow_back` | `data-alfollow` toggle on |
+| `alert_open_post_viewer` | like/comment/watch → viewer |
+| `alert_open_profile` | follow → `profile:{u}` |
+| `alert_destination_unavailable` | post missing / fallback |
+| `alert_system_placeholder` | `system` row tap (placeholder surface) |
+| `alerts_badge_cleared` | unread 0 (mark-all หรือ per-row) |
 
 ---
 
-# 18. Related Modules
+# 16. Acceptance Criteria
 
-- Asset Detail Module
-- Offer Module
-- Watch Alert Module
-- Social Module
-- Chat Module
-- Profile Module
-- Trust & Safety Module
+## Feed & Anatomy
+
+| AC ID | Criteria |
+|---|---|
+| AC-NOTI-001 | `alerts` page = `.al-head` (back `data-navgo="feed"` + title `แจ้งเตือน`/`Alerts`) + group sections `วันนี้`/`เมื่อวาน`/`7 วันที่ผ่านมา`/`ก่อนหน้า` ตามลำดับ fix + bottom nav active `alerts` |
+| AC-NOTI-002 | Row anatomy ตรงตาราง §9: like=avatar stack+heart badge+thumb, comment=avatar+text+thumb, follow=avatar+`Follow back`+`x`, watch=bell+seller mini+`Watch alert {name} — …` +thumb, system=icon+text |
+| AC-NOTI-003 | Like aggregate ต้อง render `{u1}, {u2} และคนอื่น ๆ อีก {n} คน`/`and N others` เมื่อ `more`>0 |
+| AC-NOTI-004 | Time label ใช้ `ago` + `formatAlertTime` (TH suffix `นาที`/`ชม.`/`วัน`/`สัปดาห์`) |
+
+## Read / Badge / Actions
+
+| AC ID | Criteria |
+|---|---|
+| AC-NOTI-005 | Tap row → `unread=false` + `.unread` class หาย + `alBadgeSync` ก่อน navigate เสมอ |
+| AC-NOTI-006 | Nav badge = Σunread cap `99+`; sync ทุก nav instance; หายเมื่อ 0 |
+| AC-NOTI-007 | `Mark all as read`/`อ่านทั้งหมดแล้ว` อยู่บน section แรกเฉพาะเมื่อ unread>0 → clear ทุก unread + ปุ่มหายหลัง unread=0 |
+| AC-NOTI-008 | `x` dismiss (follow row เท่านั้น) → ลบ row ออกจาก list ทันที + re-render — ไม่มี confirm/undo |
+| AC-NOTI-009 | `Follow back`/`กำลังติดตาม` → `pfSetFollow` toggle จริง + ปุ่มสลับ label/.on — ไม่ mark read ไม่ navigate |
+
+## Destinations
+
+| AC ID | Criteria |
+|---|---|
+| AC-NOTI-010 | `like`/`comment` → Post Viewer โพสต์ตัวเอง 1 ใบ (title `Post`, solo header) — ไม่ focus comment; post หาย → toast `This post is no longer available` |
+| AC-NOTI-011 | `follow` → `rpPush profile:{users[0]}` push ทับ alerts page |
+| AC-NOTI-012 | `watch` → Post Viewer โพสต์ที่ match โดยตรง (title `Post` + seller; ไม่มี Result List; inject `Follow` เมื่อยังไม่ follow) |
+| AC-NOTI-013 | `system` → ไม่ navigate (placeholder — prototype toast `Security details aren't in this prototype yet`) |
+| AC-NOTI-014 | ไม่มี type/destination อื่น: ไม่มี chat row, offer row, Asset Detail direct, Result List, comment focus |
+
+## Guest / Session
+
+| AC ID | Criteria |
+|---|---|
+| AC-NOTI-015 | Guest กด tab `แจ้งเตือน` → Member Sheet `Join TukDaeng` — feed ไม่เปิด (tab อยู่ใน `GUEST_GATE_SEL`) |
+| AC-NOTI-016 | Session `new`/`guest` → `ALERTS=[]` → `No alerts yet` + desc (new เข้าหน้าได้, guest โดน gate ก่อน) |
+| AC-NOTI-017 | `applySessionData` → `ALERTS=null` + `alBadgeSync` — member กลับได้ seed ใหม่ (read/dismiss ไม่ persist) |
+| AC-NOTI-018 | Back `<` บน alerts head → กลับ Feed เสมอ (`data-navgo="feed"` — ไม่ใช่ generic pop) |
+
+## Notification Settings Boundary
+
+| AC ID | Criteria |
+|---|---|
+| AC-NOTI-019 | `notif_settings` มี toggle ตรง type `likes`/`comments`/`follows`/`walerts` เท่านั้น — default ON; page anatomy canonical 13_SETTINGS |
+| AC-NOTI-020 | Toggle OFF (contract) ต้องหยุด type ที่ map; `system` ไม่มี toggle; prototype = memory-only `state.notif` ไม่กรองจริง (documented deviation) |
+
+## Guard
+
+| AC ID | Criteria |
+|---|---|
+| AC-NOTI-021 | Type นอกชุด `like/comment/follow/watch/system` ต้องไม่ render เป็น row (Market Update/Sale Success/Moderation/Account Action/Chat = ไม่มีใน V1) |
+| AC-NOTI-022 | Chat ไม่ใช่ alert type — ไม่มี row/chat destination ใน feed (canonical 07 §14 badge-only) |
 
 ---
 
-# 19. Future Enhancement
+# 17. Related Modules
 
-- Notification preference center
-- Retention period rule
-- Chat / New Message notification in Notification Center (not supported; Chat menu badge/count only)
-- Moderation / Account Action notification for Front Office
-- Market Update notification
-- Price / Valuation notification
+- [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) — session §7, gate §11, block §13, private §14
+- [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) — nav/badge §6.3, routes §6.6, entry matrix §7, **destination matrix §8 (canonical)**, gate routing §9, unavailable §10
+- [02_FEED_MODULE.md](02_FEED_MODULE.md) — post model + `pfTabPosts`/`POSTS` canonical
+- [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) — Post Viewer (`openPostViewer`) canonical
+- [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) — `profile:{u}` + `pfSetFollow`/`pfIsFollowed` + follow semantics (FSP-019 lock)
+- [07_CHAT_MODULE.md](07_CHAT_MODULE.md) — chat badge-only canonical (FSP-020 lock)
+- [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) — `watch` alert engine + `_waHits` simulation canonical (FSP-021)
+- [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) — `notif_settings` page + library section + delete-account erasure copy canonical
+- [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) — block/report impact on destinations
+
+---
+
+# 18. Future Enhancement
+
+- `system` destination surface (security/account activity page) + event types เพิ่มเติมตาม master decision
+- Notification generation pipeline (real triggers → rows; server-side feed)
+- Push notification (FCM) + deep link → destination matrix (00_NAV §12 contract)
+- Toggle enforcement จริง (`state.notif` → generation/filtering) + persist + reset ตอน session switch
+- `watch` row missing-post toast parity กับ like/comment (consistency — flag FSP-030)
+- Retention/aging policy จริง (bucket จาก timestamp ไม่ใช่ `grp` field) + pagination/older-than
+- Unread persistence ข้าม session + per-row mark unread (undo read)
+- Dismiss สำหรับ type อื่น + bulk dismiss
+- Follow-back label i18n หลัง toggle (`Following`/`Follow back` EN hardcode)
+- Comment focus/deep-scroll ใน Post Viewer (ถ้าเพิ่ม affordance)
+- Preference center เพิ่มเติม (digest, quiet hours, per-channel)

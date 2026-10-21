@@ -1,0 +1,36 @@
+# Manual Review Checklist Results — Task [716b8972] AUTH-004
+Task: AUTH-004 ปรับเงื่อนไขรหัสผ่านให้เป็นอย่างน้อย 8 ตัวอักษรเหมือนกันทุกจุด (สมัคร / เปลี่ยนรหัส / รีเซ็ตรหัสผ่าน)
+Target File: Prototypes/fo-flow/index.html
+Date: 2026-10-21
+Tested By: User verified (PASS)
+
+---
+
+### รายการเคสและผลการทดสอบ
+
+1. [Sign Up - รหัสผ่านสั้นเกินไป]
+   - ข้อมูลทดสอบ: email: test8char@example.com, password: "abc1234" (7 ตัวอักษร)
+   - ผลการทดสอบ: PASS — แสดง Error แจ้งเตือนสีแดง "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร" / "Password must be at least 8 characters long." และบล็อกไม่ให้ไปต่อ
+
+2. [Sign Up - รหัสผ่านถูกต้อง]
+   - ข้อมูลทดสอบ: email: test8char@example.com, password: "Pass1234" (8 ตัวอักษร)
+   - ผลการทดสอบ: PASS — ผ่านเข้าสู่หน้ายืนยันรหัส OTP (Verify your email) สำเร็จ
+
+3. [Change Password - ข้อความคำอธิบาย]
+   - หน้าจอ: Settings > เปลี่ยนรหัสผ่าน (Change password)
+   - ผลการทดสอบ: PASS — ข้อความแนะนำด้านบนแสดง "รหัสผ่านของคุณต้องมีความยาวอย่างน้อย 8 ตัวอักษร และควรประกอบด้วยตัวเลข ตัวอักษร และอักขระพิเศษ (!$@%)" (TH) / "Your password must be at least 8 characters and should include a combination of numbers, letters and special characters (!$@%)." (EN) ไม่มีข้อความ 6 ตัวอักษรหลงเหลือ
+
+4. [Change Password - รหัสผ่านใหม่สั้นเกินไป]
+   - ข้อมูลทดสอบ: รหัสผ่านปัจจุบัน: "fox1234", รหัสผ่านใหม่: "new123" (6 ตัวอักษร), ยืนยัน: "new123"
+   - ผลการทดสอบ: PASS — แสดง Error แจ้งเตือน "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร" / "Password must be at least 8 characters long." และไม่ทำการเปลี่ยนรหัสผ่าน
+
+5. [Change Password - เปลี่ยนรหัสผ่านสำเร็จ]
+   - ข้อมูลทดสอบ: รหัสผ่านปัจจุบัน: "fox1234", รหัสผ่านใหม่: "NewPassword123" (14 ตัวอักษร), ยืนยัน: "NewPassword123"
+   - ผลการทดสอบ: PASS — บันทึกสำเร็จ ปิดกลับไปหน้าการตั้งค่า และแสดง Toast แจ้งเตือน "เปลี่ยนรหัสผ่านเรียบร้อยแล้ว" / "Password changed successfully"
+
+6. [Forgot Password / Reset Copy]
+   - หน้าจอ: Dialog รีเซ็ตรหัสผ่าน และ Onboarding Forgot Password
+   - ผลการทดสอบ: PASS — แสดงผลถูกต้อง ไม่มีข้อความเงื่อนไข 6 ตัวอักษร
+
+---
+Verdict: PASS ALL (ผ่านการตรวจรับโดยผู้ใช้)
