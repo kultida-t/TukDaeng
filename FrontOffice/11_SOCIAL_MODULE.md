@@ -1,6 +1,6 @@
 # 11 Social Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §11 (guest gate = Member Sheet + empty state), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6 (layer/nav), §7 (entry matrix — routes `saved`/`savedcol`/`wishlist`/`wishcol`/`interested`/`ni`/`pfollow:`/`report:*`), §8 (notification destination matrix), §9 (gate routing), §10 (unavailable fallback), AC-NAV-026 (post viewer entries) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post card anatomy, post menus `pm-*`, ni-card/uncomf-card, feed tabs `following`/`favorites`, `refreshPostViews`, own-post menu — FSP-002 lock) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (post viewer modes + rail actions + `pv-add` + `sr-saved` entry — FSP-016 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (detail action row, `wl-btn`/`mf-btn` entries — FSP-017 lock) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (`pfSetFollow`/`pfIsFollowed`/`pfSetFav`/`pfSetMuted`/`pfSetBlocked` canonical, `pf-foll`/`mfSheet`/`pfollow:`/`pf-rmf`, QR share overlay — FSP-019 lock) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (Alerts feed canonical — alert types/rows/destinations — FSP-021 lock) + [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) (`mf-btn` WA flow — FSP-021 lock) + [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (settings pages `interested`/`ni`/`favorites`/`muted`/`blocked`/`notif_settings` + library rows) + [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) (report type contract — **ยังไม่ sync กับ prototype**, ดู §19) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §11 (guest gate = Member Sheet + empty state), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6 (layer/nav), §7 (entry matrix — routes `saved`/`savedcol`/`wishlist`/`wishcol`/`interested`/`ni`/`pfollow:`/`report:*`), §8 (notification destination matrix), §9 (gate routing), §10 (unavailable fallback), AC-NAV-026 (post viewer entries) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post card anatomy, post menus `pm-*`, ni-card/uncomf-card, feed tabs `following`/`favorites`, `refreshPostViews`, own-post menu — FSP-002 lock) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (post viewer modes + rail actions + `pv-add` + `sr-saved` entry — FSP-016 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (detail action row, `wl-btn`/`mf-btn` entries — FSP-017 lock) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (`pfSetFollow`/`pfIsFollowed`/`pfSetFav`/`pfSetMuted`/`pfSetBlocked` canonical, `pf-foll`/`mfSheet`/`pfollow:`/`pf-rmf`, QR share overlay — FSP-019 lock) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (Alerts feed canonical — alert types/rows/destinations — FSP-021 lock) + [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) (`mf-btn` WA flow — FSP-021 lock) + [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (settings pages `interested`/`ni`/`favorites`/`muted`/`blocked`/`notif_settings` + library rows) + [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) (report type contract — synced FSP-031, ดู §19) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
 
 ---
 
@@ -92,7 +92,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Notification generation จาก social actions (ALERTS seed-only — contract 09 §14)
 - Board article like/save/share (`data-bd*`) — canonical 12 (gate list เดียวกันเท่านั้น)
 - Watch Alert (`mf-btn`/`waSheetHTML`) — canonical 10
-- Report flow internals (reason taxonomy, SLA, admin moderation) — canonical 15 (ยังไม่ sync — §19)
+- Report flow internals (reason taxonomy, SLA, admin moderation) — canonical 15 (synced FSP-031 — §19)
 - Chat (`pf-msg`, `blkSheetHTML(fromChat)`, `report:done` chat teardown) — canonical 07
 
 ---
@@ -336,7 +336,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 # 15. Report & Block (social entries)
 
-## Report entries → `report*` routes (canonical flow internals = 15_TRUST_SAFETY, ยังไม่ sync — §19)
+## Report entries → `report*` routes (canonical flow internals = 15_TRUST_SAFETY, synced FSP-031 — §19)
 
 | Entry | Route | Context |
 | --- | --- | --- |
@@ -438,7 +438,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | D10 | `commentPreview` | ฟีดการ์ดแสดง preview 1 บรรทัด — ไม่ใช่ comment sheet entry | canonical 02 card anatomy |
 | D11 | Board `data-bd*` | Article like/save/share/report แยกระบบ (article objects + toasts เฉพาะ) | canonical 12 — ไม่ใช่ social post state |
 | D12 | `m-unsave` settings | unsave จาก settings list ไม่มี confirm | รับตาม prototype |
-| D13 | 15_TRUST_SAFETY ยังไม่ sync | เอกสารนี้อ้าง report entries ตาม prototype; reason taxonomy/SLA/moderation เดิมอยู่ 15 (legacy) | flag FSP-023+ ให้ 15 sync `report*` routes + pickers + done page |
+| D13 | ~~15_TRUST_SAFETY ยังไม่ sync~~ **RESOLVED FSP-031** | 15_TRUST sync ระดับ prototype แล้ว (report stack `report*` routes/`PM_REASONS`/pickers/done page/shared surfaces — ตรงกับที่เอกสารนี้อ้าง); reason taxonomy/SLA/moderation contract คงอยู่ใน 15 ตามเดิม | resolved — flag เดิม FSP-023+ |
 
 ---
 
@@ -597,7 +597,7 @@ And counts (`likes`/`views`/`comments`) ไม่ reset (post data ไม่ใ�
 - [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) — `mf-btn`/`waSheetHTML` canonical
 - [12_BOARD_MODULE.md](12_BOARD_MODULE.md) — board article `data-bd*` actions (แยกระบบ)
 - [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) — `interested`/`ni`/`favorites`/`muted`/`blocked`/`notif_settings` pages + library rows
-- [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) — report taxonomy/SLA/moderation contract (pending sync — §19 D13)
+- [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) — report taxonomy/SLA/moderation contract (synced FSP-031 — §19 D13 resolved)
 - [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) — routes + sheets inventory + gate routing + viewer entry rule
 - [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) — session §7 / Member Sheet §11 / block §13 / private data §14
 
@@ -611,4 +611,4 @@ And counts (`likes`/`views`/`comments`) ไม่ reset (post data ไม่ใ�
 - Native OS share + share deep links + share counts
 - Notification generation จาก social actions (09 §14 contract)
 - Reset `savedCol`/`savedAt`/`colAt` + counts ใน session switch (D7)
-- Report flow full sync ใน 15 (D13) + report tracking for reporter
+- Report tracking for reporter (report flow full sync ใน 15 ทำแล้ว — D13 resolved FSP-031)
