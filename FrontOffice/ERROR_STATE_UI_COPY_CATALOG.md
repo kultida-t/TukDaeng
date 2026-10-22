@@ -1,9 +1,11 @@
 # Front Office Error State UI Copy Catalog
 
-**Baseline Version:** `FO-PRD-v1.2`  
+**Baseline Version:** `FO-PRD-v1.9`  
 **Date:** 2026-07-02  
 **Owner:** Product / UX / Dev / QA  
 **Scope:** Final Front Office error, loading, fallback, and retry copy for Dev handoff.
+
+> **Sync note (FO-PRD-v1.9, 2026-10-22):** FO V1 ไม่มี infinite scroll / load-more pagination — state ที่อ้าง pagination เป็น contract-only; like count เป็น private (เห็นเฉพาะเจ้าของโพสต์ — S-26)
 
 ---
 
@@ -21,7 +23,7 @@ If this file conflicts with older documentation, use this file for error-state c
 | --- | --- | --- | --- |
 | Full-page error | Initial screen data cannot load and no cached data exists | Centered empty/error screen in content area | Reload the current screen request |
 | Banner / snackbar | Refresh/update fails but existing data is still visible | Short message above affected content or as snackbar | Retry the refresh/update request only |
-| Inline list error | Pagination/load-more fails after existing items are visible | Error block after the last successfully loaded item | Retry the next-page request only |
+| Inline list error | Pagination/load-more fails after existing items are visible (contract-only — ไม่มี load-more ใน FO V1) | Error block after the last successfully loaded item | Retry the next-page request only |
 | Section error | A non-critical section fails inside a loaded screen | Inline error inside that section | Retry that section request only |
 | Image placeholder | Data loads but an image request fails | Placeholder inside the exact image frame | Retry that image request only |
 | Field validation | User input is invalid | Message near the field or form action | No network retry until user fixes input |
@@ -97,6 +99,7 @@ Behavior:
 - Show the inline error after the last successfully loaded Feed card.
 - Retry loads the next page only.
 - Do not refresh or clear the whole Feed.
+- (contract — prototype ไม่ครอบ: ไม่มี load-more/infinite scroll ใน FO V1; state นี้ใช้ได้เฉพาะเมื่อ pagination ถูกเพิ่มในอนาคต)
 
 ## Slow Network
 
@@ -124,7 +127,7 @@ Behavior:
 
 - Show the placeholder inside the image frame only.
 - Preserve the original image frame size so the card layout does not jump.
-- Keep Brand, Model, Price, Owner, Posted Time, Like Count, and Comment Count visible.
+- Keep Brand, Model, Price, Owner, Posted Time, and Comment Count visible (Like Count เห็นเฉพาะเจ้าของโพสต์ — S-26).
 - Retry re-requests only this card image.
 - Do not reload the whole Feed.
 
@@ -298,7 +301,7 @@ Approved exceptions:
 | Feed full-page `Try again` | Current Feed tab initial request |
 | Offline full-page `Try again` | Current Feed tab after connection check |
 | Refresh failed `Retry` | Refresh/update request only |
-| Load more `Try again` | Next-page pagination request only |
+| Load more `Try again` | Next-page pagination request only (contract-only — ไม่มี load-more ใน V1) |
 | Image `Retry image` | Single image request only |
 | Section `Try again` | Failed section request only |
 | Search `Try again` | Current search result request only |

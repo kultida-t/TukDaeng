@@ -659,7 +659,7 @@ Owner fallback rules:
 - Feed ไม่สร้าง notification โดยตรง
 - Like / Comment / Follow notification ถูกกำหนดใน 09_NOTIFICATION + 11_SOCIAL — destination = Post Viewer / Public Profile ตาม 00_NAV §8
 - Watch Alert notification เปิด Post Viewer ของโพสต์ที่ match โดยตรง (S-08 — ไม่มี Result List)
-- Share / Save / Not-interested / Mute / Archive / Pin ไม่สร้าง Notification Center item
+- Share / Save / Not-interested / Mute / Archive / Pin ไม่สร้าง Alerts feed item
 - โพสต์ใหม่จาก composer ที่ตรง Watch Alert ON → toast `Watch alert matched: {name}` (simulation — ไม่ใช่ notification item; 10_WATCH_ALERT)
 
 # 15. Analytics Events

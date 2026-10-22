@@ -353,7 +353,7 @@ Public Profile, Feed, Search, Watch Alert และ Viewer Asset Detail ต้�
 - Owner Profile เห็นทุกสถานะ
 - Hide และ Sold ต้องไม่ Public
 - Comment รองรับ IG-style one-level replies ใต้ comment หลัก และไม่รองรับ multi-level nested thread
-- Notification types ใช้เฉพาะ Like, Comment, Follow, Watch Alert
+- Notification types ใช้เฉพาะ Like, Comment, Follow, Watch Alert + `system` (S-17 — placeholder destination ตาม 09_NOTIFICATION)
 - Guest gate ใช้ Member Sheet `Join TukDaeng` (§11) ไม่ใช่ center dialog
 
 # 16. Validation Rules
