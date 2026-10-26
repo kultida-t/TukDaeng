@@ -911,11 +911,14 @@
     }
     /* ซ่อน tooltip ของปุ่ม icon-only ขณะ modal เปิดอยู่ — mobile tap ทำให้ :hover ติดค้างและ tooltip ซ้อนทับ modal */
     body:has(#user-action-modal.show) .page-actions .btn::after,
+
     body:has(#user-action-modal.show) .page-actions .page-back-btn::after,
+
     body:has(#user-action-modal.show) .report-detail-page .report-back-btn::after,
+
     body:has(#user-action-modal.show) .user-detail-page .user-back-btn::after,
-    body:has(#user-action-modal.show) .user-filter-bar .filter-reset::after,
-    body:has(#user-action-modal.show) .offer-filter-bar .filter-reset::after {
+
+    body:has(#user-action-modal.show) .user-filter-bar .filter-reset::after{
       content: none;
     }
     .crumb {
@@ -1025,37 +1028,6 @@
     .stat-value { font-size: 39px; line-height: .9; margin-bottom: 8px; }
     .stat-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
     .stat-note.chips { margin-top: 7px; }
-    body.offer-list-mode .summary-grid {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-    }
-    .offer-status-card {
-      --offer-status-color: var(--brand);
-      min-width: 0;
-      padding: 14px 12px 12px;
-      min-height: 112px;
-    }
-    .offer-status-card::before {
-      background: var(--offer-status-color);
-    }
-    .offer-status-card .stat-label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 9px;
-      font-size: 19px;
-    }
-    .offer-status-card .stat-value {
-      font-size: 39px;
-      line-height: .9;
-      margin-bottom: 8px;
-    }
-    .offer-status-card .stat-note {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 11px;
-    }
 
     .layout {
       display: grid;
@@ -1372,12 +1344,16 @@
       line-height: 1.35;
     }
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading,
+
     body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading,
+
     body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
+
     body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
+
     body.admin-account-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
-    body.role-detail-mode .role-detail-page .user-detail-head h2.asset-report-heading,
-    body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading {
+
+    body.role-detail-mode .role-detail-page .user-detail-head h2.asset-report-heading{
       font-family: var(--font-main);
       font-size: 24px !important;
       font-weight: 600;
@@ -1393,11 +1369,14 @@
       letter-spacing: inherit;
     }
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading span,
+
     body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading span,
+
     body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span,
+
     body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span,
-    body.role-detail-mode .role-detail-page .user-detail-head h2.asset-report-heading span,
-    body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading span {
+
+    body.role-detail-mode .role-detail-page .user-detail-head h2.asset-report-heading span{
       font: inherit;
       letter-spacing: inherit;
     }
@@ -1559,14 +1538,8 @@
     body.asset-detail-mode .layout {
       grid-template-columns: minmax(0, 1fr);
     }
-    body.offer-list-mode .layout {
-      grid-template-columns: minmax(0, 1fr);
-    }
     body.asset-list-mode .detail,
     body.asset-detail-mode .detail {
-      display: none;
-    }
-    body.offer-list-mode .detail {
       display: none;
     }
     body.asset-list-mode .layout > .panel,
@@ -1661,11 +1634,6 @@
     body.option-master-mode.option-suggestion-mode #table > .footer-range {
       min-width: 1280px;
     }
-    body.offer-list-mode .layout > .panel {
-      border-color: #d7e2f0;
-      box-shadow: none;
-      overflow: visible;
-    }
     body.article-list-mode .layout > .panel,
     body.category-list-mode .layout > .panel,
     body.reported-board-mode .layout > .panel {
@@ -1706,15 +1674,7 @@
     body.asset-detail-mode #primary-action {
       display: none;
     }
-    body.offer-list-mode #primary-action {
-      display: none;
-    }
     body.asset-list-mode .panel-head {
-      min-height: 58px;
-      padding: 17px 20px;
-      background: #fff;
-    }
-    body.offer-list-mode .panel-head {
       min-height: 58px;
       padding: 17px 20px;
       background: #fff;
@@ -1726,47 +1686,8 @@
       text-transform: uppercase;
       white-space: nowrap;
     }
-    body.offer-list-mode .panel-head h2 {
-      color: #071b36;
-      font-size: 24px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
     body.asset-list-mode .panel-head p {
       display: none;
-    }
-    body.offer-list-mode .panel-head p {
-      display: none;
-    }
-    body.offer-detail-mode .layout > .panel > .panel-head {
-      display: none !important;
-      min-height: 0 !important;
-      height: 0 !important;
-      padding: 0 !important;
-      border: 0 !important;
-      overflow: hidden !important;
-    }
-    body.offer-detail-mode .filters {
-      display: none !important;
-      min-height: 0 !important;
-      height: 0 !important;
-      padding: 0 !important;
-      border: 0 !important;
-      overflow: hidden !important;
-    }
-    body.offer-detail-mode .summary-grid,
-    body.offer-detail-mode #cards {
-      display: none;
-    }
-    body.offer-detail-mode #table {
-      padding: 0;
-      background: transparent;
-      overflow: visible;
-    }
-    body.offer-detail-mode .layout {
-      margin-top: 0;
-      padding-top: 0;
     }
     body.asset-list-mode .summary-grid {
       grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
@@ -1898,11 +1819,6 @@
       padding: 12px 16px;
       background: #f8fbff;
     }
-    body.offer-list-mode .filters {
-      display: flex;
-      padding: 12px 16px;
-      background: #f8fbff;
-    }
     body.asset-list-mode .filters .field {
       min-height: 48px;
       border-color: #cfdbea;
@@ -1912,20 +1828,7 @@
       font-size: 13px;
       font-weight: 400;
     }
-    body.offer-list-mode .filters .field {
-      min-height: 48px;
-      border-color: #cfdbea;
-      border-radius: 7px;
-      padding: 10px 14px;
-      color: #061426;
-      font-size: 13px;
-      font-weight: 400;
-    }
     body.asset-list-mode .filters select.field {
-      padding-right: 42px;
-      background-position: right 14px center;
-    }
-    body.offer-list-mode .filters select.field {
       padding-right: 42px;
       background-position: right 14px center;
     }
@@ -1966,10 +1869,6 @@
     .reported-board-table .asset-row {
       grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
     }
-    .offer-list-table .asset-row {
-      grid-template-columns: minmax(88px, .52fr) minmax(132px, .74fr) minmax(230px, .98fr) minmax(166px, .8fr) minmax(190px, 1.04fr) minmax(136px, .7fr) minmax(72px, .34fr);
-      column-gap: 16px;
-    }
     .comment-table .asset-row {
       grid-template-columns: minmax(100px, .48fr) minmax(240px, 1.8fr) minmax(180px, 1fr) minmax(96px, .46fr) minmax(76px, .36fr) minmax(60px, .28fr) minmax(70px, .34fr) minmax(92px, .44fr) minmax(142px, .66fr) minmax(78px, .4fr);
       gap: 12px;
@@ -1987,21 +1886,6 @@
       color: #485b75;
       font-size: 12px;
       font-weight: 700;
-    }
-    body.offer-list-mode #table {
-      overflow-x: auto;
-      overflow-y: visible;
-    }
-    body.offer-list-mode .offer-list-table {
-      min-width: 1150px;
-    }
-    body.offer-list-mode #table > .footer-range {
-      min-width: 1150px;
-    }
-    .offer-list-table .asset-row.head > div:last-child {
-      justify-content: flex-start;
-      justify-self: start;
-      text-align: left;
     }
     .asset-table .asset-row:nth-last-child(-n + 2) .row-menu-list,
     .user-table .user-row:nth-last-child(-n + 2) .row-menu-list {
@@ -2066,74 +1950,70 @@
       text-align: left;
     }
     body.asset-list-mode .asset-list-table .asset-row:not(.head),
-    body.offer-list-mode .offer-list-table .asset-row:not(.head),
+
     body.article-list-mode .article-table .asset-row:not(.head),
+
     body.category-list-mode .category-table .asset-row:not(.head),
+
     body.reported-board-mode .reported-board-table .asset-row:not(.head),
+
     body.market-list-mode .market-table .asset-row:not(.head),
+
     body.option-master-mode .option-group-table .asset-row:not(.head),
+
     body.option-master-mode .option-detail-table .asset-row:not(.head),
+
     body.policy-versioning-mode .policy-list-table .asset-row:not(.head),
+
     body.policy-version-history-mode .policy-version-table .asset-row:not(.head) {
       min-height: 66px;
       padding-top: 10px;
       padding-bottom: 10px;
     }
     body.asset-list-mode .asset-list-table .asset-row:not(.head) .main-text,
+
     body.asset-list-mode .asset-list-table .asset-row:not(.head) .muted,
-    body.offer-list-mode .offer-list-table .asset-row:not(.head) .main-text,
-    body.offer-list-mode .offer-list-table .asset-row:not(.head) .muted,
+
     body.article-list-mode .article-table .asset-row:not(.head) .main-text,
+
     body.article-list-mode .article-table .asset-row:not(.head) .muted,
+
     body.category-list-mode .category-table .asset-row:not(.head) .main-text,
+
     body.category-list-mode .category-table .asset-row:not(.head) .muted,
+
     body.reported-board-mode .reported-board-table .asset-row:not(.head) .main-text,
+
     body.reported-board-mode .reported-board-table .asset-row:not(.head) .muted,
+
     body.market-list-mode .market-table .asset-row:not(.head) .main-text,
+
     body.market-list-mode .market-table .asset-row:not(.head) .muted,
+
     body.option-master-mode .option-group-table .asset-row:not(.head) .main-text,
+
     body.option-master-mode .option-group-table .asset-row:not(.head) .muted,
+
     body.option-master-mode .option-detail-table .asset-row:not(.head) .main-text,
+
     body.option-master-mode .option-detail-table .asset-row:not(.head) .muted,
+
     body.option-master-mode .option-suggestion-table .asset-row:not(.head) .main-text,
+
     body.option-master-mode .option-suggestion-table .asset-row:not(.head) .muted,
+
     body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .main-text,
+
     body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .muted,
+
     body.policy-version-history-mode .policy-version-table .asset-row:not(.head) .main-text,
+
     body.policy-version-history-mode .policy-version-table .asset-row:not(.head) .muted {
       color: #516683;
       font-size: 12px;
       font-weight: 400;
       line-height: 1.5;
       margin-bottom: 0;
-    }
-    body.offer-list-mode .offer-list-table .asset-row:not(.head) > div {
-      color: #516683;
-      font-size: 12px;
-      font-weight: 400;
-      line-height: 1.5;
-    }
-    body.offer-list-mode .offer-list-table .asset-row:not(.head) .asset-cell-primary .main-text,
-    body.offer-list-mode .offer-list-table .asset-row:not(.head) .panel-action {
-      font-size: 12px;
-      font-weight: 400;
-      line-height: 1.5;
-    }
-    body.offer-list-mode .offer-list-table .asset-row:not(.head) > .user-row-actions {
-      justify-self: start;
-    }
-    body.offer-list-mode .offer-list-table .asset-row:not(.head) > .user-row-actions .panel-action {
-      min-height: auto;
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: var(--blue);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    body.offer-list-mode .offer-list-table .asset-row:not(.head) > .user-row-actions .panel-action:hover {
-      background: transparent;
-      color: #0047c7;
     }
 
     /* WA-PTO-002a: Watch Alert List (read-only, no admin action)
@@ -3036,11 +2916,10 @@
       justify-content: flex-start;
       padding-left: 36px;
     }
-
     /* WA-PTO-003a: Watch Alert Detail — Section 1-3 (read-only, no admin action)
        scope เฉพาะ body.watch-alert-detail-mode เพื่อไม่กระทบ protected screens
        โครงสร้าง reuse: .user-detail-page.report-detail-page + shared .detail-section/.detail-grid/.detail-tile
-       เหมือน Offer Detail — ไม่ redefine shared styles เพื่อรักษาความสวยงามเหมือนหน้า detail อื่น */
+       เหมือนหน้า detail อื่น — ไม่ redefine shared styles เพื่อรักษาความสวยงามเหมือนหน้า detail อื่น */
     body.watch-alert-detail-mode .filters { display: none; }
     body.watch-alert-detail-mode .user-panel-filter-actions { display: none; }
     body.watch-alert-detail-mode #primary-action { display: none; }
@@ -3104,9 +2983,13 @@
       margin-top: 1px;
     }
 
-    /* WA-PTO-003b: Alert Detail Section 4-6 — Matched Assets, Trigger & Notification, User Action History
-       scope เฉพาะ body.watch-alert-detail-mode เพื่อไม่กระทบ protected screens
-       reuse .history-table + .history-table-wrap pattern เหมือน Offer Detail */
+    /* WA-PTO-003b: Alert Detail Section 4-6 — Matched Assets,
+ Trigger & Notification{
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
+    }
     body.watch-alert-detail-mode .watch-alert-detail-page .wa-match-count {
       font-size: 12px;
       font-weight: 500;
@@ -3735,8 +3618,7 @@
       color: #43546d; font-size: 10px; font-weight: 700;
       text-align: center; margin-left: 38px;
     }
-
-    /* Search Insights funnel — Search → Result Click → Asset Detail → Watch Alert/Offer */
+    /* Search Insights funnel — Search → Result Click → Asset Detail → Watch Alert */
     .si-funnel-wrap {
       display: grid;
       gap: 8px;
@@ -4325,14 +4207,6 @@
       }
       body.watch-alert-detail-mode .watch-alert-detail-page .detail-grid.four {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      /* WA-PTO-003b: Alert Detail Section 4-6 — table-to-card responsive
-         ใช้ pattern เดียวกับ Offer Detail (body.offer-list-mode .offer-detail-page .history-table)
-         scope เฉพาะ watch-alert-detail-mode เพื่อไม่กระทบ protected screens */
-      body.watch-alert-detail-mode .watch-alert-detail-page .history-table-wrap {
-        overflow: visible;
-        border: 0;
-        background: transparent;
       }
       body.watch-alert-detail-mode .watch-alert-detail-page .history-table,
       body.watch-alert-detail-mode .watch-alert-detail-page .history-table tbody,
@@ -7132,10 +7006,6 @@
       gap: 8px;
       width: 100%;
     }
-    body.offer-list-mode .offer-filter-bar {
-      grid-template-columns: minmax(320px, 1.85fr) minmax(190px, .95fr) minmax(190px, .95fr) 42px;
-      align-items: stretch;
-    }
     /* DEL-PTO-001: Account Deletion Requests — 3 filters + reset */
     body.deletion-list-mode .deletion-filter-bar {
       grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(118px, .62fr)) 42px;
@@ -7345,39 +7215,65 @@
       white-space: nowrap;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search,
+
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
+
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
+
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset,
+
     .user-filter-bar.report-mode .search,
+
     .user-filter-bar.content-mode .search,
+
     .user-filter-bar.category-mode .search,
+
     .user-filter-bar.option-detail-filter-bar .search,
+
     .user-filter-bar.option-group-filter-bar .search,
-    body.offer-list-mode .offer-filter-bar .search,
+
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
+
     .user-filter-bar.asset-mode .search,
+
     .user-filter-bar.report-mode .custom-select,
+
     .user-filter-bar.content-mode .custom-select,
+
     .user-filter-bar.category-mode .custom-select,
+
     .user-filter-bar.option-detail-filter-bar .custom-select,
+
     .user-filter-bar.option-group-filter-bar .custom-select,
-    body.offer-list-mode .offer-filter-bar .custom-select,
+
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
+
     .user-filter-bar.asset-mode .custom-select,
+
     .user-filter-bar.report-mode .custom-select-trigger,
+
     .user-filter-bar.content-mode .custom-select-trigger,
+
     .user-filter-bar.category-mode .custom-select-trigger,
+
     .user-filter-bar.option-detail-filter-bar .custom-select-trigger,
+
     .user-filter-bar.option-group-filter-bar .custom-select-trigger,
-    body.offer-list-mode .offer-filter-bar .custom-select-trigger,
+
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
+
     .user-filter-bar.asset-mode .custom-select-trigger,
+
     .user-filter-bar.report-mode .filter-reset,
+
     .user-filter-bar.content-mode .filter-reset,
+
     .user-filter-bar.category-mode .filter-reset,
+
     .user-filter-bar.option-detail-filter-bar .filter-reset,
+
     .user-filter-bar.option-group-filter-bar .filter-reset,
-    body.offer-list-mode .offer-filter-bar .filter-reset,
+
     .user-filter-bar.asset-mode .filter-reset {
       width: 100%;
       height: 48px;
@@ -7397,62 +7293,83 @@
       height: 48px;
       min-height: 48px;
     }
-    body.offer-list-mode .offer-filter-bar .filter-reset {
-      width: 42px;
-      height: 48px;
-      min-height: 48px;
-    }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search,
+
     .user-filter-bar.report-mode .search,
+
     .user-filter-bar.content-mode .search,
+
     .user-filter-bar.category-mode .search,
-    body.offer-list-mode .offer-filter-bar .search,
+
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
+
     .user-filter-bar.asset-mode .search {
       grid-column: auto;
       min-width: 0;
       line-height: 1.2;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .field,
+
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
+
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
+
     .user-filter-bar.report-mode .field,
+
     .user-filter-bar.content-mode .field,
+
     .user-filter-bar.category-mode .field,
-    body.offer-list-mode .offer-filter-bar .field,
+
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .field,
+
     .user-filter-bar.asset-mode .field,
+
     .user-filter-bar.report-mode .custom-select,
+
     .user-filter-bar.content-mode .custom-select,
+
     .user-filter-bar.category-mode .custom-select,
-    body.offer-list-mode .offer-filter-bar .custom-select,
+
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
+
     .user-filter-bar.asset-mode .custom-select,
+
     .user-filter-bar.report-mode .custom-select-trigger,
+
     .user-filter-bar.content-mode .custom-select-trigger,
+
     .user-filter-bar.category-mode .custom-select-trigger,
-    body.offer-list-mode .offer-filter-bar .custom-select-trigger,
+
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
+
     .user-filter-bar.asset-mode .custom-select-trigger {
       min-width: 0;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
+
     .user-filter-bar.report-mode .custom-select-trigger,
+
     .user-filter-bar.content-mode .custom-select-trigger,
+
     .user-filter-bar.category-mode .custom-select-trigger,
-    body.offer-list-mode .offer-filter-bar .custom-select-trigger,
+
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
+
     .user-filter-bar.asset-mode .custom-select-trigger {
       display: flex;
       align-items: center;
       flex-wrap: nowrap;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger [data-custom-select-label],
+
     .user-filter-bar.report-mode .custom-select-trigger [data-custom-select-label],
+
     .user-filter-bar.content-mode .custom-select-trigger [data-custom-select-label],
+
     .user-filter-bar.category-mode .custom-select-trigger [data-custom-select-label],
-    body.offer-list-mode .offer-filter-bar .custom-select-trigger [data-custom-select-label],
+
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger [data-custom-select-label],
+
     .user-filter-bar.asset-mode .custom-select-trigger [data-custom-select-label] {
       display: block;
       min-width: 0;
@@ -7461,13 +7378,19 @@
       white-space: nowrap;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset,
+
     .user-filter-bar.report-mode .filter-reset,
+
     .user-filter-bar.content-mode .filter-reset,
+
     .user-filter-bar.category-mode .filter-reset,
+
     .user-filter-bar.option-detail-filter-bar .filter-reset,
+
     .user-filter-bar.option-group-filter-bar .filter-reset,
-    body.offer-list-mode .offer-filter-bar .filter-reset,
+
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset,
+
     .user-filter-bar.asset-mode .filter-reset {
       min-width: 42px;
       padding: 0;
@@ -7476,13 +7399,19 @@
       justify-content: center;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset span,
+
     .user-filter-bar.report-mode .filter-reset span,
+
     .user-filter-bar.content-mode .filter-reset span,
+
     .user-filter-bar.category-mode .filter-reset span,
+
     .user-filter-bar.option-detail-filter-bar .filter-reset span,
+
     .user-filter-bar.option-group-filter-bar .filter-reset span,
-    body.offer-list-mode .offer-filter-bar .filter-reset span,
+
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span,
+
     .user-filter-bar.asset-mode .filter-reset span {
       position: absolute;
       width: 1px;
@@ -7492,12 +7421,10 @@
       white-space: nowrap;
     }
     /* Custom tooltip สำหรับ filter-reset ที่เป็น icon-only (แทน native title ที่ชนขอบจอ) */
-    .user-filter-bar .filter-reset,
-    body.offer-list-mode .offer-filter-bar .filter-reset {
+    .user-filter-bar .filter-reset{
       position: relative;
     }
-    .user-filter-bar .filter-reset::after,
-    body.offer-list-mode .offer-filter-bar .filter-reset::after {
+    .user-filter-bar .filter-reset::after{
       content: attr(aria-label);
       position: absolute;
       top: calc(100% + 6px);
@@ -7519,9 +7446,8 @@
       transition: opacity .12s ease, visibility .12s ease;
     }
     .user-filter-bar .filter-reset:hover::after,
-    body.offer-list-mode .offer-filter-bar .filter-reset:hover::after,
-    .user-filter-bar .filter-reset:focus-visible::after,
-    body.offer-list-mode .offer-filter-bar .filter-reset:focus-visible::after {
+
+    .user-filter-bar .filter-reset:focus-visible::after{
       opacity: 1;
       visibility: visible;
     }
@@ -8793,13 +8719,7 @@
         padding-left: 14px;
       }
     }
-
-    /* ============================================================
-       DEL-PTO-002: Account Deletion Request Detail page
-       pattern: Reported Users Report Detail + Offer Detail
-       body class: deletion-detail-mode (ไม่ใช้ user-detail-mode เพื่อไม่กระทบ protected screens)
-       ============================================================ */
-    /* layout: single column full-width (เหมือน offer-detail-mode) — ซ่อน panel-head/filters/summary/cards/detail */
+    /* layout: single column full-width (เหมือนหน้า detail อื่น) — ซ่อน panel-head/filters/summary/cards/detail */
     body.deletion-detail-mode .layout {
       grid-template-columns: minmax(0, 1fr);
       margin-top: 0;
@@ -10418,21 +10338,7 @@
       line-height: 1.2;
       white-space: nowrap;
     }
-    /* BO-UX-002: link button ใน detail-tile ของ Report Detail + Offer Detail (คลิก identifier → เปิด detail ของ entity) — pattern เดียวกับ Deletion Detail */
-    body.user-detail-mode .report-detail-page .detail-tile .link-btn,
-    body.offer-detail-mode .offer-detail-page .detail-tile .link-btn {
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: var(--blue);
-      font-size: 12px;
-      font-weight: 700;
-      text-align: left;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    body.user-detail-mode .report-detail-page .detail-tile .link-btn:hover,
-    body.offer-detail-mode .offer-detail-page .detail-tile .link-btn:hover {
+    body.user-detail-mode .report-detail-page .detail-tile .link-btn:hover{
       text-decoration: underline;
     }
     .report-detail-page .history-table-wrap,
@@ -10673,141 +10579,6 @@
     }
     .report-detail-page .detail-tile strong {
       overflow-wrap: anywhere;
-    }
-    body.offer-list-mode .offer-detail-page {
-      display: grid;
-      gap: 18px;
-    }
-    body.offer-list-mode .offer-detail-page .user-detail-head {
-      margin-bottom: 0;
-    }
-    body.offer-list-mode .offer-detail-page .asset-report-heading {
-      display: block;
-      max-width: 100%;
-      margin-bottom: 5px;
-      font-family: var(--font-main);
-      font-size: 24px !important;
-      font-weight: 600;
-      letter-spacing: 0;
-      line-height: 1.35;
-    }
-    body.offer-list-mode .offer-detail-page .asset-report-id,
-    body.offer-list-mode .offer-detail-page .asset-report-name {
-      font: inherit;
-      letter-spacing: inherit;
-      overflow-wrap: anywhere;
-    }
-    body.offer-list-mode .offer-detail-page .user-detail-separator {
-      font: inherit;
-      letter-spacing: inherit;
-      margin: 0 .22em;
-    }
-    body.offer-list-mode .offer-readonly-note {
-      margin: 0;
-      border-color: #bfd5f4;
-      background: #f4f8ff;
-      color: #24415f;
-    }
-    body.offer-list-mode .offer-party-grid,
-    body.offer-list-mode .offer-context-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-    body.offer-list-mode .offer-party-card,
-    body.offer-list-mode .offer-chat-card,
-    body.offer-list-mode .offer-fo-card {
-      min-width: 0;
-      border: 1px solid #dce6f2;
-      border-radius: 8px;
-      background: #fff;
-      padding: 12px;
-    }
-    body.offer-list-mode .offer-entity-title {
-      margin: 0 0 8px;
-      color: #061426;
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.3;
-      overflow-wrap: anywhere;
-    }
-    body.offer-list-mode .offer-mini-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-    }
-    body.offer-list-mode .offer-mini {
-      min-width: 0;
-      color: #061426;
-      font-size: 12px;
-      line-height: 1.45;
-    }
-    body.offer-list-mode .offer-mini span {
-      display: block;
-      margin-bottom: 2px;
-      color: #66758d;
-      font-size: 11px;
-      font-weight: 800;
-    }
-    body.offer-list-mode .offer-mini strong {
-      font-weight: 400;
-      overflow-wrap: anywhere;
-    }
-    body.offer-list-mode .offer-timeline {
-      display: grid;
-      gap: 10px;
-    }
-    body.offer-list-mode .offer-timeline-event {
-      display: grid;
-      grid-template-columns: 150px minmax(0, 1fr);
-      gap: 12px;
-      padding: 11px 12px;
-      border: 1px solid #dce6f2;
-      border-radius: 8px;
-      background: #fff;
-      color: #10223d;
-      font-size: 12px;
-      line-height: 1.45;
-    }
-    body.offer-list-mode .offer-timeline-event time {
-      color: #66758d;
-      font-weight: 800;
-    }
-    body.offer-list-mode .offer-timeline-event strong {
-      display: block;
-      margin-bottom: 3px;
-      color: #061426;
-      font-size: 13px;
-    }
-    body.offer-list-mode .offer-detail-table {
-      min-width: 900px;
-    }
-    body.offer-list-mode .offer-history-table {
-      table-layout: fixed;
-    }
-    body.offer-list-mode .offer-history-table th:nth-child(1),
-    body.offer-list-mode .offer-history-table td:nth-child(1) {
-      width: 18%;
-    }
-    body.offer-list-mode .offer-history-table th:nth-child(2),
-    body.offer-list-mode .offer-history-table td:nth-child(2) {
-      width: 18%;
-    }
-    body.offer-list-mode .offer-history-table th:nth-child(3),
-    body.offer-list-mode .offer-history-table td:nth-child(3) {
-      width: 18%;
-    }
-    body.offer-list-mode .offer-history-table th:nth-child(4),
-    body.offer-list-mode .offer-history-table td:nth-child(4) {
-      width: 14%;
-    }
-    body.offer-list-mode .offer-history-table th:nth-child(5),
-    body.offer-list-mode .offer-history-table td:nth-child(5) {
-      width: 32%;
-    }
-    body.offer-list-mode .offer-history-table .history-note {
-      min-width: 0;
-      max-width: none;
     }
     .page-actions .page-back-btn .mobile-back-icon,
     .report-detail-page .report-back-btn .mobile-back-icon,
@@ -11940,11 +11711,12 @@
       margin-top: 14px;
     }
     body.dashboard-mode .cards {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 18px;
       margin-top: 24px;
     }
     body.dashboard-mode .summary-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 18px 16px;
       margin-bottom: 22px;
     }
@@ -12303,18 +12075,6 @@
       text-align: right;
       white-space: nowrap;
     }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.pending { border-left-color: #d28a10; background: #fffdf7; }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.paused { border-left-color: #9aa9bb; background: #f8fafc; }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.accepted { border-left-color: #0ea576; background: #f7fffb; }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.rejected { border-left-color: #d60012; background: #fff7f7; }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.cancelled { border-left-color: #66758d; background: #f8fafc; }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.invalidated { border-left-color: #7557d8; background: #fbf9ff; }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.pending .asset-status-value { color: #8a5700; }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.paused .asset-status-value { color: #66758d; }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.accepted .asset-status-value { color: #087853; }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.rejected .asset-status-value { color: #b40010; }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.cancelled .asset-status-value { color: #43546d; }
-    body.dashboard-mode .dashboard-status-card .offer-status-row.invalidated .asset-status-value { color: #5a3abb; }
     .brand-ranking-list {
       display: grid;
       padding: 12px 20px 16px;
@@ -12662,7 +12422,7 @@
       body.user-management-mode .layout { grid-template-columns: 1fr; }
       .detail { position: static; }
       .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      body.dashboard-mode .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      body.dashboard-mode .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       body.market-list-mode .market-dashboard-status-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .user-filter-bar {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -12740,10 +12500,6 @@
       body.market-list-mode .user-filter-bar.market-mode .search {
         grid-column: auto;
       }
-      body.offer-list-mode .offer-filter-bar {
-        grid-template-columns: minmax(220px, 1.2fr) minmax(160px, .8fr) minmax(160px, .8fr) 42px;
-        align-items: stretch;
-      }
       .user-filter-bar .search {
         grid-column: 1 / -1;
       }
@@ -12763,9 +12519,6 @@
       body.option-master-mode .user-filter-bar.option-suggestion-filter-bar .search {
         grid-column: auto;
         min-width: 0;
-      }
-      body.offer-list-mode .offer-filter-bar .search {
-        grid-column: auto;
       }
       .user-row {
         grid-template-columns: minmax(150px, 1.08fr) minmax(136px, .74fr) minmax(148px, .8fr) minmax(76px, .4fr) minmax(86px, .5fr) minmax(118px, .64fr) minmax(124px, .58fr);
@@ -13001,36 +12754,40 @@
         grid-template-columns: minmax(70px, .45fr) minmax(140px, 1.2fr) minmax(120px, .9fr) minmax(80px, .5fr) minmax(60px, .35fr) minmax(50px, .3fr) minmax(60px, .35fr) minmax(70px, .45fr) minmax(100px, .7fr) minmax(60px, .4fr);
         column-gap: 8px;
       }
-      body.offer-list-mode .offer-filter-bar {
-        grid-template-columns: minmax(240px, 1fr) minmax(132px, .52fr) minmax(132px, .52fr) 42px;
-        align-items: center;
-      }
-      body.offer-list-mode .offer-filter-bar .search {
-        grid-column: auto;
-        min-width: 0;
-      }
-      body.offer-list-mode .offer-filter-bar .filter-reset,
       .user-filter-bar.report-mode .filter-reset,
+
       .user-filter-bar.content-mode .filter-reset,
+
       .user-filter-bar.category-mode .filter-reset,
+
       .user-filter-bar.option-detail-filter-bar .filter-reset,
+
       .user-filter-bar.option-group-filter-bar .filter-reset,
+
       body.market-list-mode .user-filter-bar.market-mode .filter-reset,
+
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset,
+
       .user-filter-bar.asset-mode .filter-reset {
         width: 42px;
         min-width: 42px;
         padding: 0;
         justify-content: center;
       }
-      body.offer-list-mode .offer-filter-bar .filter-reset span,
       .user-filter-bar.report-mode .filter-reset span,
+
       .user-filter-bar.content-mode .filter-reset span,
+
       .user-filter-bar.category-mode .filter-reset span,
+
       .user-filter-bar.option-detail-filter-bar .filter-reset span,
+
       .user-filter-bar.option-group-filter-bar .filter-reset span,
+
       body.market-list-mode .user-filter-bar.market-mode .filter-reset span,
+
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span,
+
       .user-filter-bar.asset-mode .filter-reset span {
         position: absolute;
         width: 1px;
@@ -13224,11 +12981,15 @@
         font-size: 18px !important;
       }
       body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading,
+
       body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading,
+
       body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
-      body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading,
+
       body.deletion-detail-mode .deletion-detail-page .user-detail-head h2.asset-report-heading,
+
       body.admin-account-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
+
       body.role-detail-mode .role-detail-page .user-detail-head h2.asset-report-heading {
         font-size: 18px !important;
       }
@@ -13270,11 +13031,6 @@
         border-radius: 12px;
       }
       body.user-detail-mode .user-detail-page:not(.report-detail-page) .profile-image {
-        width: 76px;
-        height: 76px;
-        border-radius: 12px;
-      }
-      body.offer-detail-mode .offer-detail-page .asset-title-image {
         width: 76px;
         height: 76px;
         border-radius: 12px;
@@ -13472,10 +13228,6 @@
       body.asset-list-mode .summary-grid {
         grid-template-columns: 1fr;
       }
-      body.offer-list-mode .summary-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-      }
       body.user-management-mode .summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
@@ -13499,6 +13251,7 @@
         line-height: 1.35;
       }
       body.dashboard-mode .cards { grid-template-columns: 1fr; }
+      body.dashboard-mode .summary-grid { grid-template-columns: 1fr; }
       /* BO-DASH-001: mobile (≤760px) — dashboard 1 คอลัมน์ ยกเลิก stretch
          แสดงตามเนื้อข้อมูลจริง */
       body.dashboard-mode .layout { grid-template-columns: 1fr; }
@@ -13523,12 +13276,6 @@
         gap: 10px;
       }
       body.asset-list-mode .panel-head {
-        align-items: center;
-        flex-direction: row;
-        justify-content: space-between;
-        gap: 10px;
-      }
-      body.offer-list-mode .panel-head {
         align-items: center;
         flex-direction: row;
         justify-content: space-between;
@@ -13578,14 +13325,6 @@
         flex-direction: row;
         justify-content: space-between;
         gap: 10px;
-      }
-      body.offer-detail-mode .layout > .panel > .panel-head {
-        display: none !important;
-        min-height: 0 !important;
-        height: 0 !important;
-        padding: 0 !important;
-        border: 0 !important;
-        overflow: hidden !important;
       }
       body.user-management-mode .panel-head h2 {
         font-size: 24px;
@@ -13671,9 +13410,6 @@
       body.option-master-mode .user-filter-bar.option-suggestion-filter-bar {
         grid-template-columns: 1fr;
       }
-      body.offer-list-mode .offer-filter-bar {
-        grid-template-columns: 1fr;
-      }
       body.asset-list-mode .filters,
       body.market-list-mode .filters {
         display: grid;
@@ -13723,16 +13459,25 @@
         display: none;
       }
       body.user-management-mode .user-panel-filter-actions,
+
       body.asset-list-mode .user-panel-filter-actions,
-      body.offer-list-mode .user-panel-filter-actions,
+
       body.market-list-mode .user-panel-filter-actions,
+
       body.user-accounts-mode .user-panel-filter-actions,
+
       body.option-master-mode .user-panel-filter-actions,
+
       body.watch-alert-mode.watch-alert-list-mode .user-panel-filter-actions,
+
       body.deletion-list-mode .user-panel-filter-actions,
+
       body.delivery-log-list-mode .user-panel-filter-actions,
+
       body.admin-account-list-mode .user-panel-filter-actions,
+
       body.role-list-mode .user-panel-filter-actions,
+
       body.audit-log-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
@@ -14482,9 +14227,6 @@
       body.asset-list-mode .filters {
         grid-template-columns: 1fr;
       }
-      body.offer-list-mode .filters {
-        grid-template-columns: 1fr;
-      }
       body.asset-list-mode .user-filter-bar {
         grid-template-columns: 1fr;
       }
@@ -14534,9 +14276,6 @@
         max-width: none;
         min-width: 0;
         box-sizing: border-box;
-      }
-      body.offer-list-mode .user-filter-bar {
-        grid-template-columns: 1fr;
       }
       body.article-list-mode .filters,
       body.category-list-mode .filters,
@@ -14610,10 +14349,6 @@
         padding: 12px 14px 16px;
         background: #f8fbff;
       }
-      body.offer-list-mode #table {
-        padding: 12px 14px 16px;
-        background: #f8fbff;
-      }
       body.option-master-mode #table {
         padding: 12px 14px 16px;
         background: #f8fbff;
@@ -14623,11 +14358,6 @@
         padding: 12px 14px 16px;
         background: #f8fbff;
         overflow-x: hidden;
-      }
-      body.offer-detail-mode #table {
-        padding: 0;
-        background: transparent;
-        overflow: visible;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table,
       body.policy-version-history-mode #table .policy-version-table {
@@ -14656,31 +14386,40 @@
         min-width: 0;
       }
       body.article-list-mode #table > .footer-range,
+
       body.category-list-mode #table > .footer-range,
+
       body.reported-board-mode #table > .footer-range,
+
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table > .footer-range,
-      body.offer-list-mode #table > .footer-range,
+
       body.option-master-mode.option-group-list-mode #table > .footer-range,
+
       body.option-master-mode.option-detail-mode #table > .footer-range,
+
       body.option-master-mode.option-suggestion-mode #table > .footer-range,
+
       body.policy-versioning-mode #table > .footer-range,
+
       body.policy-version-history-mode #table > .footer-range {
         min-width: 0;
       }
-      body.offer-list-mode .asset-table {
-        grid-template-columns: 1fr;
-        gap: 12px;
-        min-width: 0;
-      }
       body.user-list-mode .footer-range,
+
       body.asset-list-mode .footer-range,
-      body.offer-list-mode .footer-range,
+
       body.article-list-mode .footer-range,
+
       body.category-list-mode .footer-range,
+
       body.reported-board-mode .footer-range,
+
       body.option-master-mode .footer-range,
+
       body.watch-alert-list-mode .footer-range,
+
       body.policy-versioning-mode .footer-range,
+
       body.policy-version-history-mode .footer-range {
         margin-top: 12px;
         padding: 13px 16px;
@@ -15485,22 +15224,6 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      body.offer-list-mode .offer-list-table .user-card-meta-item.comment-field-meta {
-        display: grid;
-        grid-template-columns: max-content minmax(0, 50%);
-        align-items: baseline;
-        gap: 8px;
-      }
-      body.offer-list-mode .offer-list-table .user-card-meta-item.comment-field-meta strong {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        display: block;
-        overflow: hidden;
-        text-align: right;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
       body.article-list-mode .article-table .user-card-meta-item.comment-field-meta {
         display: grid;
         grid-template-columns: max-content minmax(0, 50%);
@@ -15595,61 +15318,6 @@
         text-align: right;
         text-overflow: ellipsis;
         white-space: nowrap;
-      }
-      body.offer-list-mode .asset-row.head {
-        display: none;
-      }
-      body.offer-list-mode .asset-row:not(.head) {
-        grid-template-columns: minmax(0, 1fr);
-        column-gap: 14px;
-        row-gap: 14px;
-        min-height: 0;
-        padding: 18px 18px 16px;
-        border: 1px solid #cfdbd2;
-        border-radius: 10px;
-        background: #fff;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
-        cursor: pointer;
-        overflow: visible;
-      }
-      body.offer-list-mode .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
-        display: none;
-      }
-      body.offer-list-mode .asset-row:not(.head) > .user-row-actions {
-        display: none;
-      }
-      body.offer-list-mode .asset-row:not(.head) > .asset-cell-primary {
-        grid-column: 1;
-        grid-row: 1;
-        min-height: 30px;
-        display: flex;
-        align-items: center;
-        align-self: center;
-        border-bottom: 0;
-        padding-bottom: 0;
-      }
-      body.offer-list-mode .asset-row:not(.head) > .asset-cell-primary .main-text,
-      body.offer-list-mode .offer-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        color: #061426;
-        font-family: var(--font-heading);
-        font-size: 22px;
-        font-weight: 500;
-        letter-spacing: .04em;
-        line-height: 1;
-      }
-      body.offer-list-mode .asset-row:not(.head) .desktop-user-name { display: none; }
-      body.offer-list-mode .asset-row:not(.head) .mobile-user-card-title { display: inline; }
-      body.offer-list-mode .asset-card-tags {
-        grid-column: 1 / -1;
-        grid-row: 2;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 9px;
-        padding-top: 0;
       }
       /* WA-PTO-002a: Watch Alert List — mobile card (≤760px)
          รีเซ็ต min-width ให้ตารางและ footer, แปลง row เป็น card,
@@ -16287,64 +15955,6 @@
         max-width: 100%;
         justify-self: start;
       }
-      body.offer-list-mode .offer-party-grid,
-      body.offer-list-mode .offer-context-grid,
-      body.offer-list-mode .offer-mini-grid,
-      body.offer-list-mode .offer-timeline-event {
-        grid-template-columns: 1fr;
-      }
-      body.offer-list-mode .offer-detail-table {
-        min-width: 0;
-      }
-      body.offer-list-mode .offer-detail-page .history-table-wrap {
-        overflow: visible;
-        border: 0;
-        background: transparent;
-      }
-      body.offer-list-mode .offer-detail-page .history-table,
-      body.offer-list-mode .offer-detail-page .history-table tbody,
-      body.offer-list-mode .offer-detail-page .history-table tr,
-      body.offer-list-mode .offer-detail-page .history-table td {
-        display: block;
-        width: 100%;
-      }
-      body.offer-list-mode .offer-detail-page .history-table thead {
-        display: none;
-      }
-      body.offer-list-mode .offer-detail-page .history-table {
-        border-collapse: separate;
-        border-spacing: 0 8px;
-        background: transparent;
-      }
-      body.offer-list-mode .offer-detail-page .history-table tr {
-        border: 1px solid #dce6f2;
-        border-radius: 8px;
-        background: #fff;
-        padding: 12px 10px;
-      }
-      body.offer-list-mode .offer-detail-page .history-table tr + tr {
-        margin-top: 10px;
-      }
-      body.offer-list-mode .offer-detail-page .history-table td {
-        display: grid;
-        grid-template-columns: 96px minmax(0, 1fr);
-        gap: 10px;
-        border: 0;
-        padding: 7px 0;
-        font-size: 12px;
-        line-height: 1.45;
-        overflow-wrap: anywhere;
-      }
-      body.offer-list-mode .offer-detail-page .history-table td::before {
-        content: attr(data-label);
-        color: #66758d;
-        font-size: 11px;
-        font-weight: 800;
-      }
-      body.offer-list-mode .offer-detail-page .history-table td .pill {
-        width: max-content;
-        max-width: 100%;
-      }
       body.asset-detail-mode .user-detail-page .history-table td .history-delivery-link {
         width: max-content;
         max-width: 100%;
@@ -16367,12 +15977,6 @@
       .search { min-width: 100%; }
     }
     @media (max-width: 560px) {
-      body.offer-list-mode .user-filter-bar {
-        grid-template-columns: 1fr;
-      }
-      body.offer-list-mode .offer-filter-bar .search {
-        grid-column: 1;
-      }
     }
 
     /* ===== Policy & Versioning (HS-PTO-001) ===== */
@@ -18179,7 +17783,6 @@
       edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
       market: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/></svg>',
       audit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11h6M9 15h6"/><path d="M8 3h8l3 3v15H5V6l3-3Z"/><path d="M8 3v4h8V3"/></svg>',
-      offer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 9h8M8 13h5"/></svg>',
       social: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>',
       alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
       support: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 14a8 8 0 1 1 16 0"/><path d="M4 14v3a2 2 0 0 0 2 2h2v-7H6a2 2 0 0 0-2 2Z"/><path d="M20 14v3a2 2 0 0 1-2 2h-2v-7h2a2 2 0 0 1 2 2Z"/><path d="M16 19a4 4 0 0 1-4 2"/></svg>',
@@ -18231,7 +17834,6 @@
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets", "Reported Comments"] },
-        { id: "offers", label: "Offer Management", icon: "offer" },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Market Overview", "Brands & Models", "Sync History"] },
         { id: "option-master", label: "Option Master", icon: "option" },
@@ -18309,17 +17911,17 @@
           item("ART-044", "Board Article Scheduled", "Editorial", "Content", "ปกติ", "Ready", "บทความนาฬิกา vintage ตั้งเวลา publish วันนี้ 19:00", ["Board", "Scheduled"], "ตรวจ preview as FO ก่อน publish")
         ]
       },
-      users: mod("User Management", "การดำเนินงาน / User Management", "User List & Risk Queue", "ดูข้อมูลผู้ใช้, auth method, login history, report context และ action เสี่ยง", "เพิ่ม filter", [["Active Users", "12,847", "Google 42% · Email 39% · Apple 19%"], ["Suspended", "17", "ต้องมี reason และ audit"], ["Deletion Pending", "8", "มี pending offer 3 ราย"], ["Exports", "2", "รอ background job"]], [
+      users: mod("User Management", "การดำเนินงาน / User Management", "User List & Risk Queue", "ดูข้อมูลผู้ใช้, auth method, login history, report context และ action เสี่ยง", "เพิ่ม filter", [["Active Users", "12,847", "Google 42% · Email 39% · Apple 19%"], ["Suspended", "17", "ต้องมี reason และ audit"], ["Deletion Pending", "8", "ต้องตรวจ dependency ก่อนลบ"], ["Exports", "2", "รอ background job"]], [
         item("U-1002", "horology.king", "Google", "Seller", "สูง", "Suspended", "ถูกรายงาน profile ซ้ำและมี asset คล้ายผู้ขายอื่น", ["Reports 5", "Assets 2"], "ดู login history, mask PII เป็น default และบันทึก reason หาก ban"),
         item("U-1017", "Crown Time BKK", "Email", "Seller", "สูง", "Active", "มี duplicate content report เชื่อมกับ asset 4 รายการ", ["Email OTP", "High value"], "ตรวจ ownership และยืนยันว่า login ต้องผ่าน Email OTP"),
-        item("U-1042", "Nattapol P.", "Apple", "Buyer", "ปกติ", "Active", "มี support ticket เรื่อง proof of payment", ["Ticket 1"], "เปิด ticket และดูประวัติ offer ที่เกี่ยวข้อง")
+        item("U-1042", "Nattapol P.", "Apple", "Buyer", "ปกติ", "Active", "มี support ticket เรื่อง proof of payment", ["Ticket 1"], "เปิด ticket และดูประวัติการซื้อขายที่เกี่ยวข้อง")
       ]),
       assets: mod("Asset Management", "การดำเนินงาน / Asset Management", "Asset List & Moderation", "จัดการสถานะ Sale, Show, Hide, Sold และ reported assets", "สร้าง asset note", [["Sale", "2,816", "แสดงใน Feed/Search"], ["Show", "428", "แสดงใน collection"], ["Hidden", "76", "owner-only"], ["Reported", "22", "รอตรวจ 9 รายการ"]], [
         item("AST-8831", "Rolex Submariner 16610", "Crown Time BKK", "Sale", "สูง", "Auto Hidden", "รูปประกาศซ้ำและราคาเบี่ยงจาก market index", ["THB 318,000", "Reports 5", "Auto hidden"], "ครบ 5 reports ระบบซ่อนชั่วคราวเพื่อรอ Admin ตรวจสอบ"),
         item("AST-8802", "Omega Speedmaster", "Vintage Vault BKK", "Sale", "กลาง", "Active", "ราคาสูงกว่าค่ากลาง 18% จากรุ่นเดียวกัน", ["Watch Alert match 12"], "ส่ง warning หรือ force Hide หากข้อมูลหลอกลวง"),
         item("AST-8791", "Seiko 6139", "Archive Collector", "Hide", "ปกติ", "Owner-only", "รอ account deletion dependency check", ["THB 96,000", "Deletion linked"], "คงข้อมูล transaction/audit ตาม retention"),
-        item("AST-8755", "Patek Philippe Calatrava", "The Collector", "Show", "ปกติ", "Active", "แสดงใน portfolio เท่านั้น ไม่มีปุ่มเสนอซื้อ", ["Portfolio"], "ตรวจว่าโพสต์ Show ไม่แสดงราคาเสนอขายบน FO public surface"),
-        item("AST-8720", "Tudor Black Bay 58", "Seiko Corner", "Sold", "ปกติ", "Closed", "ขายแล้วและมี sale record เชื่อมกับ offer", ["THB 118,000", "Sold record", "Offer OFR-488"], "เปิดอ่านได้แบบ read-only และคง audit/sold history"),
+        item("AST-8755", "Patek Philippe Calatrava", "The Collector", "Show", "ปกติ", "Active", "แสดงใน portfolio เท่านั้น ไม่มีราคาขาย", ["Portfolio"], "ตรวจว่าโพสต์ Show ไม่แสดงราคาขายบน FO public surface"),
+        item("AST-8720", "Tudor Black Bay 58", "Seiko Corner", "Sold", "ปกติ", "Closed", "ขายแล้วและมี sale record เก็บไว้ตาม retention", ["THB 118,000", "Sold record"], "เปิดอ่านได้แบบ read-only และคง audit/sold history"),
         item("AST-8694", "Audemars Piguet Royal Oak", "Rolex Rama9", "Sale", "สูง", "Reviewing", "มีรายงาน serial/provenance ไม่ตรงกับรูป", ["Reports 3", "High value"], "ตรวจหลักฐานก่อนซ่อนหรือปิด report"),
         item("AST-8612", "Grand Seiko Snowflake", "Daily Watch Hunter", "Show", "กลาง", "Active", "มี comment report แต่ asset ยังไม่เข้าเกณฑ์ซ่อน", ["Comment report 1"], "ตรวจ social context โดยไม่เปลี่ยนสถานะ asset ทันที"),
         item("AST-8588", "Cartier Santos Medium", "Minimal Dial", "Sale", "กลาง", "Admin Hidden", "ถูกซ่อนจากรายงาน duplicate content ระหว่างตรวจ", ["Hidden by Admin", "Audit linked"], "คืนสถานะได้เมื่อหลักฐานผ่านการตรวจสอบ"),
@@ -18331,9 +17933,9 @@
         item("AST-8559", "Rolex Daytona 116500LN", "Siam Chrono", "Sale", "สูง", "Reviewing", "High value asset with provenance documents under review", ["Reports 1", "High value"], "Review serial proof and receipt before keeping Sale"),
         item("AST-8548", "Omega Seamaster Diver 300M", "Vintage Vault BKK", "Sale", "ปกติ", "Active", "Clean listing with market price in normal range", ["THB 142,000"], "No action needed unless new report arrives"),
         item("AST-8536", "Omega Speedmaster Reduced", "Daily Watch Hunter", "Sale", "กลาง", "Admin Hidden", "Temporarily hidden while duplicate photos are checked", ["Hidden by Admin"], "Restore when duplicate check passes"),
-        item("AST-8524", "Omega Aqua Terra", "Minimal Dial", "Show", "ปกติ", "Active", "Collection-only display for owner profile", ["Portfolio"], "Check that offer button stays hidden"),
+        item("AST-8524", "Omega Aqua Terra", "Minimal Dial", "Show", "ปกติ", "Active", "Collection-only display for owner profile", ["Portfolio"], "Check that no sale price shows on FO surface"),
         item("AST-8518", "Seiko Prospex SPB143", "Seiko Corner", "Sale", "ปกติ", "Active", "Normal listing with complete photos", ["THB 31,500", "No comments"], "Monitor only"),
-        item("AST-8509", "Seiko Presage Cocktail Time", "Archive Collector", "Sold", "ปกติ", "Closed", "Sold listing retained for audit and offer history", ["Sold record"], "Keep read-only history"),
+        item("AST-8509", "Seiko Presage Cocktail Time", "Archive Collector", "Sold", "ปกติ", "Closed", "Sold listing retained for audit and sale history", ["Sold record"], "Keep read-only history"),
         item("AST-8497", "Cartier Tank Must", "Minimal Dial", "Sale", "กลาง", "Active", "New Cartier listing with price close to index", ["THB 118,000"], "Confirm reference before featuring")
       ]),
       content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles", "สร้างบทความ, category, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
@@ -18348,20 +17950,6 @@
         item("AUD-88201", "Force Hide Asset", "Somchai Admin", "Asset", "สูง", "Recorded", "AST-8831 ถูกเปลี่ยน Sale → Hide พร้อม reason", ["Before/After"], "ตรวจ reason และ FO sync event"),
         item("AUD-88172", "Publish Article", "Orn Admin", "Content", "กลาง", "Recorded", "ART-044 schedule ถูกแก้เวลา publish", ["Board"], "ตรวจ timestamp Asia/Bangkok"),
         item("AUD-88120", "Export User CSV", "Somchai Admin", "Users", "สูง", "Recorded", "Export มี sensitive-data masking", ["CSV", "Policy"], "ตรวจ permission และ download expiry")
-      ]),
-      offers: mod("Offer Management", "การดำเนินงาน / Offer Management", "Offer Interest Overview", "ดูรายการ offer แบบ read-only เพื่อเห็นความสนใจต่อ asset, buyer/seller และสถานะ offer", "Export offer report", [["Pending Offers", "3", "รอ owner ตอบ"], ["Paused", "1", "รอตรวจสอบ asset"], ["Accepted", "3", "ตกลงแล้ว"], ["Rejected", "2", "ผู้ขายปฏิเสธ"], ["Cancelled", "2", "asset ถูกลบ/ซ่อนโดย owner"], ["Invalidated", "1", "ใช้ไม่ได้ถาวร"]], [
-        item("OFR-501", "Offer THB 285,000", "AST-8831", "Offer", "กลาง", "Pending", "ผู้ซื้อขอลดราคาและถาม proof เพิ่ม", ["Buyer U-1042", "Owner Crown Time BKK"], "Read-only: เปิด offer detail เพื่อดู asset, buyer, seller และ related chat"),
-        item("OFR-488", "Offer THB 118,000", "AST-8720", "Offer", "ปกติ", "Accepted", "ผู้ขายรับข้อเสนอและ buyer ได้ notification ไป Chat Room", ["Buyer U-1161", "Owner Seiko Corner"], "Read-only: ใช้ดู demand และประวัติการตอบรับของ asset"),
-        item("OFR-472", "Offer THB 2,100,000", "AST-8694", "Offer", "สูง", "Rejected", "ผู้ขายกด Decline จาก Incoming Offers", ["Buyer U-1042", "Owner Rolex Rama9"], "Read-only: ใช้เทียบราคาที่เสนอ เทียบ asking price และสถานะล่าสุด"),
-        item("OFR-459", "Offer THB 575,000", "AST-8579", "Offer", "กลาง", "Cancelled", "owner ลบ asset ระหว่างที่ offer ยัง pending ทำให้ระบบยกเลิก offer อัตโนมัติ", ["Buyer U-1161", "Owner Crown Time BKK"], "Read-only: cancelled จาก Asset Deleted ไม่ใช่ owner decline และยังเก็บ history ไว้ตรวจสอบ"),
-        item("OFR-451", "Offer THB 252,000", "AST-8566", "Offer", "กลาง", "Pending", "ผู้ซื้อเสนอราคาต่ำกว่า asking และรอ owner ยืนยันอุปกรณ์", ["Buyer U-1088", "Owner Crown Time BKK"], "Read-only: pending offer ยังไม่ควรนับเป็นดีลสำเร็จ"),
-        item("OFR-438", "Offer THB 136,000", "AST-8548", "Offer", "ปกติ", "Accepted", "owner รับข้อเสนอหลังตกลงเรื่องตำหนิขอบตัวเรือนใน chat", ["Buyer U-1042", "Owner Vintage Vault BKK"], "Read-only: ใช้ดู accepted offer และ related chat context"),
-        item("OFR-427", "Offer THB 1,090,000", "AST-8559", "Offer", "สูง", "Rejected", "owner ปฏิเสธเพราะราคาต่ำกว่า reserve สำหรับ consignment", ["Buyer U-1144", "Owner Siam Chrono"], "Read-only: rejected offer ช่วยเทียบช่วงราคาที่ buyer สนใจ"),
-        item("OFR-416", "Offer THB 29,000", "AST-8518", "Offer", "ปกติ", "Cancelled", "owner เปลี่ยน asset จาก Sale เป็น Hide ระหว่างที่ offer ยัง pending ทำให้ asset ไม่รับ offer ต่อ", ["Buyer U-1104", "Owner Seiko Corner"], "Read-only: cancelled จาก asset availability change ไม่ใช่ action ของ Admin"),
-        item("OFR-404", "Offer THB 109,000", "AST-8497", "Offer", "กลาง", "Pending", "ผู้ซื้อถามรูปเพิ่มและรอ owner ตอบเรื่องใบรับประกัน", ["Buyer U-1161", "Owner Minimal Dial"], "Read-only: pending offer ยังอยู่ใน incoming offer ของ owner"),
-        item("OFR-392", "Offer THB 158,000", "AST-8802", "Offer", "กลาง", "Accepted", "owner รับข้อเสนอหลัง buyer ยืนยันนัดรับและช่องทางชำระเงิน", ["Buyer U-1017", "Owner Vintage Vault BKK"], "Read-only: accepted ไม่เท่ากับ payment complete"),
-        item("OFR-381", "Offer THB 305,000", "AST-8536", "Offer", "กลาง", "Paused", "asset ถูก auto hidden จาก report ระหว่าง review ทำให้ offer ถูกพักชั่วคราว", ["Buyer U-1088", "Owner Daily Watch Hunter"], "Read-only: paused ระหว่าง asset review; FO ไม่แสดง Accept/Decline จนกว่า review จบ"),
-        item("OFR-366", "Offer THB 1,020,000", "AST-8581", "Offer", "สูง", "Invalidated", "asset ถูกซ่อนถาวรหลัง moderation ทำให้ pending offer ใช้งานไม่ได้ถาวร", ["Buyer U-1161", "Owner Rolex Rama9"], "Read-only: invalidated จาก permanent hide; FO แสดง Offer Unavailable และไม่มี action")
       ]),
       // WA-PTO-001: Watch Alert BO — read-only overview (no admin action).
       // moduleData["watch-alerts"] เก็บเฉพาะ metadata สำหรับ fallback;
@@ -18546,7 +18134,7 @@
 <h2>1. ข้อมูลที่เก็บรวบรวม</h2>
 <ul>
 <li>ข้อมูลบัญชี: ชื่อ อีเมล เบร์โทร และรหัสผ่าน (เข้ารหัส)</li>
-<li>ข้อมูลการใช้งาน: ประวัติการลงประกาศ การเสนอราคา และการแชท</li>
+<li>ข้อมูลการใช้งาน: ประวัติการลงประกาศและการแชท</li>
 <li>ข้อมูลอุปกรณ์: IP address ประเภทอุปกรณ์ และระบบปฏิบัติการ</li>
 <li>คุกกี้และการติดตาม: ใช้คุกกี้เพื่อปรับปรุงประสบการณ์ผู้ใช้และวิเคราะห์การใช้งาน</li>
 </ul>
@@ -18569,7 +18157,7 @@
 <h2>1. Data We Collect</h2>
 <ul>
 <li>Account data: name, email, phone, and password (encrypted)</li>
-<li>Usage data: listing history, offers, and chat records</li>
+<li>Usage data: listing history and chat records</li>
 <li>Device data: IP address, device type, and operating system</li>
 <li>Cookies and tracking: cookies used to improve user experience and analyze usage</li>
 </ul>
@@ -18600,7 +18188,7 @@
 <h2>1. ข้อมูลที่เก็บรวบรวม</h2>
 <ul>
 <li>ข้อมูลบัญชี: ชื่อ อีเมล เบอร์โทร และรหัสผ่าน (เข้ารหัส)</li>
-<li>ข้อมูลการใช้งาน: ประวัติการลงประกาศ การเสนอราคา และการแชท</li>
+<li>ข้อมูลการใช้งาน: ประวัติการลงประกาศและการแชท</li>
 <li>ข้อมูลอุปกรณ์: IP address ประเภทอุปกรณ์ และระบบปฏิบัติการ</li>
 </ul>
 <h2>2. วัตถุประสงค์การใช้ข้อมูล</h2>
@@ -18620,7 +18208,7 @@
 <h2>1. Data We Collect</h2>
 <ul>
 <li>Account data: name, email, phone, and password (encrypted)</li>
-<li>Usage data: listing history, offers, and chat records</li>
+<li>Usage data: listing history and chat records</li>
 <li>Device data: IP address, device type, and operating system</li>
 </ul>
 <h2>2. Purpose of Use</h2>
@@ -19189,58 +18777,58 @@
     // requestedRank/graceEndRank ใช้สำหรับ sort (YYYYMMDD)
     const deletionRequestData = {
       requests: [
-        { id: "DEL-033", userId: "U-1104", displayName: "Archive Collector", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 1, assets: 6, chats: 3, reports: 1, requestedAt: "07 Sep 2026 09:15", requestedRank: 202609070915, graceEnds: "07 Oct 2026", graceEndsRank: 20261007, graceState: "active", daysLeft: 23, processedBy: "System", processedAt: "07 Sep 2026 09:15", updatedAt: "07 Sep 2026 09:15", seriousFlag: true, detail: "มี accepted offer และ serious report (ฉ้อโกง) 1 รายงาน — ระบบยกเลิก offer Pending และปิดรายงานอัตโนมัติแล้ว" },
-        { id: "DEL-034", userId: "U-1130", displayName: "TimeCraft BKK", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 0, assets: 2, chats: 1, reports: 0, requestedAt: "05 Sep 2026 14:22", requestedRank: 202609051422, graceEnds: "05 Oct 2026", graceEndsRank: 20261005, graceState: "active", daysLeft: 21, processedBy: "System", processedAt: "05 Sep 2026 14:22", updatedAt: "05 Sep 2026 14:22", seriousFlag: false, detail: "session revoked แล้ว profile public unavailable" },
-        { id: "DEL-035", userId: "U-1155", displayName: "Vintage Index", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 2, assets: 11, chats: 5, reports: 0, requestedAt: "02 Sep 2026 10:08", requestedRank: 202609021008, graceEnds: "02 Oct 2026", graceEndsRank: 20261002, graceState: "ending", daysLeft: 3, processedBy: "อรนุช แก้วใส", processedAt: "02 Sep 2026 10:08", updatedAt: "06 Sep 2026 11:20", seriousFlag: false, detail: "ใกล้ครบช่วงรอลบบัญชี — มี accepted offer 2 รายการใน retention" },
-        { id: "DEL-036", userId: "U-1170", displayName: "Seiko Corner Rangsit", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 0, assets: 5, chats: 2, reports: 0, requestedAt: "01 Sep 2026 18:30", requestedRank: 202609011830, graceEnds: "01 Oct 2026", graceEndsRank: 20261001, graceState: "ending", daysLeft: 2, processedBy: "System", processedAt: "01 Sep 2026 18:30", updatedAt: "06 Sep 2026 09:00", seriousFlag: false, detail: "ใกล้ครบช่วงรอลบบัญชี" },
-        { id: "DEL-031", userId: "U-1090", displayName: "Omega Society TH", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 9, chats: 4, reports: 0, requestedAt: "20 Aug 2026 11:00", requestedRank: 202608201100, graceEnds: "19 Sep 2026", graceEndsRank: 20260919, graceState: "restored", daysLeft: null, processedBy: "มะลิ จันทร์ดี", processedAt: "25 Aug 2026 16:45", updatedAt: "25 Aug 2026 16:45", seriousFlag: false, detail: "แอดมินคืนบัญชีในช่วงรอลบบัญชี — สถานะบัญชีกลับเป็น Active แล้ว" },
-        { id: "DEL-032", userId: "U-1101", displayName: "Watch Hunter Daily", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", pendingOffers: 0, acceptedOffers: 0, assets: 1, chats: 0, reports: 0, requestedAt: "18 Aug 2026 08:04", requestedRank: 202608180804, graceEnds: "17 Sep 2026", graceEndsRank: 20260917, graceState: "restored", daysLeft: null, processedBy: "กิตติ Content", processedAt: "22 Aug 2026 10:15", updatedAt: "22 Aug 2026 10:15", seriousFlag: false, detail: "ผู้ใช้ติดต่อ support ขอคืนบัญชี — แอดมินคืนในช่วงรอลบบัญชี" },
-        { id: "DEL-028", userId: "U-1121", displayName: "Collector Zone TH", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", pendingOffers: 0, acceptedOffers: 3, assets: 11, chats: 6, reports: 8, requestedAt: "10 Aug 2026 13:12", requestedRank: 202608101312, graceEnds: "09 Sep 2026", graceEndsRank: 20260909, graceState: "ending", daysLeft: 2, processedBy: "อรนุช แก้วใส", processedAt: "28 Aug 2026 14:20", updatedAt: "28 Aug 2026 14:20", seriousFlag: true, detail: "รายงานร้ายแรง 8 รายงาน — แอดมินปฏิเสธคืนบัญชี รอลบบัญชีอัตโนมัติเมื่อครบ 30 วัน" },
-        { id: "DEL-029", userId: "U-1146", displayName: "Seiko Corner Phuket", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", pendingOffers: 0, acceptedOffers: 0, assets: 5, chats: 2, reports: 2, requestedAt: "08 Aug 2026 09:30", requestedRank: 202608080930, graceEnds: "07 Sep 2026", graceEndsRank: 20260907, graceState: "expired", daysLeft: 0, processedBy: "มะลิ จันทร์ดี", processedAt: "30 Aug 2026 11:00", updatedAt: "30 Aug 2026 11:00", seriousFlag: true, detail: "ปฏิเสธคืนบัญชี — ประวัติมีรายงานเสี่ยงสูง 2 รายงาน รอระบบลบบัญชีอัตโนมัติ" },
-        { id: "DEL-025", userId: "U-1075", displayName: "Rolex Rama9 Club", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 2, assets: 14, chats: 8, reports: 3, requestedAt: "15 Jul 2026 12:00", requestedRank: 202607151200, graceEnds: "14 Aug 2026", graceEndsRank: 20260814, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "14 Aug 2026 00:00", updatedAt: "14 Aug 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
-        { id: "DEL-026", userId: "U-1082", displayName: "Crown Time Watch", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 18, chats: 12, reports: 4, requestedAt: "10 Jul 2026 16:44", requestedRank: 202607101644, graceEnds: "09 Aug 2026", graceEndsRank: 20260809, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "09 Aug 2026 00:00", updatedAt: "09 Aug 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
-        { id: "DEL-020", userId: "U-1222", displayName: "old.user", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 0, assets: 0, chats: 0, reports: 0, requestedAt: "17 Jan 2026 07:44", requestedRank: 202601170744, graceEnds: "16 Feb 2026", graceEndsRank: 20260216, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "16 Feb 2026 00:00", updatedAt: "16 Feb 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
-        { id: "DEL-021", userId: "U-1199", displayName: "Minimal Dial Club", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 3, chats: 1, reports: 0, requestedAt: "05 Feb 2026 09:00", requestedRank: 202602050900, graceEnds: "07 Mar 2026", graceEndsRank: 20260307, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "07 Mar 2026 00:00", updatedAt: "07 Mar 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" }
+        { id: "DEL-033", userId: "U-1104", displayName: "Archive Collector", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", assets: 6, chats: 3, reports: 1, requestedAt: "07 Sep 2026 09:15", requestedRank: 202609070915, graceEnds: "07 Oct 2026", graceEndsRank: 20261007, graceState: "active", daysLeft: 23, processedBy: "System", processedAt: "07 Sep 2026 09:15", updatedAt: "07 Sep 2026 09:15", seriousFlag: true, detail: "มี serious report (ฉ้อโกง) 1 รายงาน — ระบบปิดรายงานอัตโนมัติแล้ว" },
+        { id: "DEL-034", userId: "U-1130", displayName: "TimeCraft BKK", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", assets: 2, chats: 1, reports: 0, requestedAt: "05 Sep 2026 14:22", requestedRank: 202609051422, graceEnds: "05 Oct 2026", graceEndsRank: 20261005, graceState: "active", daysLeft: 21, processedBy: "System", processedAt: "05 Sep 2026 14:22", updatedAt: "05 Sep 2026 14:22", seriousFlag: false, detail: "session revoked แล้ว profile public unavailable" },
+        { id: "DEL-035", userId: "U-1155", displayName: "Vintage Index", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", assets: 11, chats: 5, reports: 0, requestedAt: "02 Sep 2026 10:08", requestedRank: 202609021008, graceEnds: "02 Oct 2026", graceEndsRank: 20261002, graceState: "ending", daysLeft: 3, processedBy: "อรนุช แก้วใส", processedAt: "02 Sep 2026 10:08", updatedAt: "06 Sep 2026 11:20", seriousFlag: false, detail: "ใกล้ครบช่วงรอลบบัญชี — มี asset ใน retention 11 รายการ" },
+        { id: "DEL-036", userId: "U-1170", displayName: "Seiko Corner Rangsit", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", assets: 5, chats: 2, reports: 0, requestedAt: "01 Sep 2026 18:30", requestedRank: 202609011830, graceEnds: "01 Oct 2026", graceEndsRank: 20261001, graceState: "ending", daysLeft: 2, processedBy: "System", processedAt: "01 Sep 2026 18:30", updatedAt: "06 Sep 2026 09:00", seriousFlag: false, detail: "ใกล้ครบช่วงรอลบบัญชี" },
+        { id: "DEL-031", userId: "U-1090", displayName: "Omega Society TH", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", assets: 9, chats: 4, reports: 0, requestedAt: "20 Aug 2026 11:00", requestedRank: 202608201100, graceEnds: "19 Sep 2026", graceEndsRank: 20260919, graceState: "restored", daysLeft: null, processedBy: "มะลิ จันทร์ดี", processedAt: "25 Aug 2026 16:45", updatedAt: "25 Aug 2026 16:45", seriousFlag: false, detail: "แอดมินคืนบัญชีในช่วงรอลบบัญชี — สถานะบัญชีกลับเป็น Active แล้ว" },
+        { id: "DEL-032", userId: "U-1101", displayName: "Watch Hunter Daily", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", assets: 1, chats: 0, reports: 0, requestedAt: "18 Aug 2026 08:04", requestedRank: 202608180804, graceEnds: "17 Sep 2026", graceEndsRank: 20260917, graceState: "restored", daysLeft: null, processedBy: "กิตติ Content", processedAt: "22 Aug 2026 10:15", updatedAt: "22 Aug 2026 10:15", seriousFlag: false, detail: "ผู้ใช้ติดต่อ support ขอคืนบัญชี — แอดมินคืนในช่วงรอลบบัญชี" },
+        { id: "DEL-028", userId: "U-1121", displayName: "Collector Zone TH", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", assets: 11, chats: 6, reports: 8, requestedAt: "10 Aug 2026 13:12", requestedRank: 202608101312, graceEnds: "09 Sep 2026", graceEndsRank: 20260909, graceState: "ending", daysLeft: 2, processedBy: "อรนุช แก้วใส", processedAt: "28 Aug 2026 14:20", updatedAt: "28 Aug 2026 14:20", seriousFlag: true, detail: "รายงานร้ายแรง 8 รายงาน — แอดมินปฏิเสธคืนบัญชี รอลบบัญชีอัตโนมัติเมื่อครบ 30 วัน" },
+        { id: "DEL-029", userId: "U-1146", displayName: "Seiko Corner Phuket", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", assets: 5, chats: 2, reports: 2, requestedAt: "08 Aug 2026 09:30", requestedRank: 202608080930, graceEnds: "07 Sep 2026", graceEndsRank: 20260907, graceState: "expired", daysLeft: 0, processedBy: "มะลิ จันทร์ดี", processedAt: "30 Aug 2026 11:00", updatedAt: "30 Aug 2026 11:00", seriousFlag: true, detail: "ปฏิเสธคืนบัญชี — ประวัติมีรายงานเสี่ยงสูง 2 รายงาน รอระบบลบบัญชีอัตโนมัติ" },
+        { id: "DEL-025", userId: "U-1075", displayName: "Rolex Rama9 Club", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", assets: 14, chats: 8, reports: 3, requestedAt: "15 Jul 2026 12:00", requestedRank: 202607151200, graceEnds: "14 Aug 2026", graceEndsRank: 20260814, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "14 Aug 2026 00:00", updatedAt: "14 Aug 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
+        { id: "DEL-026", userId: "U-1082", displayName: "Crown Time Watch", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", assets: 18, chats: 12, reports: 4, requestedAt: "10 Jul 2026 16:44", requestedRank: 202607101644, graceEnds: "09 Aug 2026", graceEndsRank: 20260809, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "09 Aug 2026 00:00", updatedAt: "09 Aug 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
+        { id: "DEL-020", userId: "U-1222", displayName: "old.user", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", assets: 0, chats: 0, reports: 0, requestedAt: "17 Jan 2026 07:44", requestedRank: 202601170744, graceEnds: "16 Feb 2026", graceEndsRank: 20260216, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "16 Feb 2026 00:00", updatedAt: "16 Feb 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
+        { id: "DEL-021", userId: "U-1199", displayName: "Minimal Dial Club", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", assets: 3, chats: 1, reports: 0, requestedAt: "05 Feb 2026 09:00", requestedRank: 202602050900, graceEnds: "07 Mar 2026", graceEndsRank: 20260307, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "07 Mar 2026 00:00", updatedAt: "07 Mar 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" }
       ],
       // DEL-PTO-002: Request Detail mock data — keyed by request id
       // userContext: masked sensitive fields (email/phone/line) + auth/joined/lastActive
       // timeline: deletion lifecycle timestamps (null = ยังไม่ถึงขั้นนั้น)
-      // dependency: offer/asset/chat/report snapshot ตอนเปิด detail
+      // dependency: asset/chat/report snapshot ตอนเปิด detail
       // restoreRequest: ข้อมูลการขอคืนบัญชี (ถ้ามี) — null = ผู้ใช้ยังไม่ได้ขอคืน
       // restoreReject: ข้อมูลการปฏิเสธคืนบัญชี (ถ้ามี) — null = ยังไม่ปฏิเสธ
       detail: {
         "DEL-033": {
           userContext: { username: "@archivecollector", email: "ar***@mail.com", phone: "08x-xxx-x104", line: "archive***", auth: "Email", joined: "15 May 2026", lastActive: "08 Jul 2026 09:15" },
           timeline: { sessionRevokedAt: "07 Sep 2026 09:15", deactivatedAt: "07 Sep 2026 09:15", graceStart: "07 Sep 2026", graceEnd: "07 Oct 2026", lastValidation: "07 Sep 2026 09:15", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 3, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 3, reportsSafetyCases: 1 },
+          dependency: { assetsByStatus: { sale: 3, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 3, reportsSafetyCases: 1 },
           restoreRequest: null,
           restoreReject: null
         },
         "DEL-034": {
           userContext: { username: "@timecraftbkk", email: "ti***@mail.com", phone: "—", line: "—", auth: "Google", joined: "22 Jun 2026", lastActive: "05 Sep 2026 14:22" },
           timeline: { sessionRevokedAt: "05 Sep 2026 14:22", deactivatedAt: "05 Sep 2026 14:22", graceStart: "05 Sep 2026", graceEnd: "05 Oct 2026", lastValidation: "05 Sep 2026 14:22", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 1, show: 1, hide: 0, sold: 0, removed: 0 }, chatRooms: 1, reportsSafetyCases: 0 },
+          dependency: { assetsByStatus: { sale: 1, show: 1, hide: 0, sold: 0, removed: 0 }, chatRooms: 1, reportsSafetyCases: 0 },
           restoreRequest: null,
           restoreReject: null
         },
         "DEL-035": {
           userContext: { username: "@vintageindex", email: "vi***@mail.com", phone: "08x-xxx-x155", line: "—", auth: "Email", joined: "10 Apr 2026", lastActive: "02 Sep 2026 10:08" },
           timeline: { sessionRevokedAt: "02 Sep 2026 10:08", deactivatedAt: "02 Sep 2026 10:08", graceStart: "02 Sep 2026", graceEnd: "02 Oct 2026", lastValidation: "06 Sep 2026 11:20", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 2, assetsByStatus: { sale: 5, show: 4, hide: 1, sold: 1, removed: 0 }, chatRooms: 5, reportsSafetyCases: 0 },
+          dependency: { assetsByStatus: { sale: 5, show: 4, hide: 1, sold: 1, removed: 0 }, chatRooms: 5, reportsSafetyCases: 0 },
           restoreRequest: null,
           restoreReject: null
         },
         "DEL-036": {
           userContext: { username: "@seikorangsit", email: "sr***@rangsitwatch.com", phone: "—", line: "seikorangsit", auth: "Email", joined: "01 Jul 2026", lastActive: "01 Sep 2026 18:30" },
           timeline: { sessionRevokedAt: "01 Sep 2026 18:30", deactivatedAt: "01 Sep 2026 18:30", graceStart: "01 Sep 2026", graceEnd: "01 Oct 2026", lastValidation: "06 Sep 2026 09:00", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 2, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 2, reportsSafetyCases: 0 },
+          dependency: { assetsByStatus: { sale: 2, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 2, reportsSafetyCases: 0 },
           restoreRequest: null,
           restoreReject: null
         },
         "DEL-031": {
           userContext: { username: "@omegasociety", email: "os***@omegasociety.com", phone: "089-345-8820", line: "—", auth: "Email", joined: "22 Jun 2026", lastActive: "20 Aug 2026 11:00" },
           timeline: { sessionRevokedAt: "20 Aug 2026 11:00", deactivatedAt: "20 Aug 2026 11:00", graceStart: "20 Aug 2026", graceEnd: "19 Sep 2026", lastValidation: "25 Aug 2026 16:45", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: "25 Aug 2026 16:45", restoreRejectedAt: null },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 4, show: 3, hide: 0, sold: 2, removed: 0 }, chatRooms: 4, reportsSafetyCases: 0 },
+          dependency: { assetsByStatus: { sale: 4, show: 3, hide: 0, sold: 2, removed: 0 }, chatRooms: 4, reportsSafetyCases: 0 },
           restoreRequest: { requestedAt: "24 Aug 2026 10:30", channel: "Support email", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
           restoreReject: null,
           restoreReason: "ผู้ใช้ติดต่อ support และยืนยันตัวตนแล้ว",
@@ -19249,7 +18837,7 @@
         "DEL-032": {
           userContext: { username: "@watchhunterdaily", email: "wh***@hunterdaily.com", phone: "—", line: "—", auth: "Google", joined: "09 Jul 2026", lastActive: "18 Aug 2026 08:04" },
           timeline: { sessionRevokedAt: "18 Aug 2026 08:04", deactivatedAt: "18 Aug 2026 08:04", graceStart: "18 Aug 2026", graceEnd: "17 Sep 2026", lastValidation: "22 Aug 2026 10:15", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: "22 Aug 2026 10:15", restoreRejectedAt: null },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 1, show: 0, hide: 0, sold: 0, removed: 0 }, chatRooms: 0, reportsSafetyCases: 0 },
+          dependency: { assetsByStatus: { sale: 1, show: 0, hide: 0, sold: 0, removed: 0 }, chatRooms: 0, reportsSafetyCases: 0 },
           restoreRequest: { requestedAt: "21 Aug 2026 09:00", channel: "In-app support", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
           restoreReject: null,
           restoreReason: "ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม",
@@ -19258,7 +18846,7 @@
         "DEL-028": {
           userContext: { username: "@collectorzone", email: "cz***@collectorzone.com", phone: "089-222-3344", line: "—", auth: "Apple", joined: "02 Apr 2026", lastActive: "10 Aug 2026 13:12" },
           timeline: { sessionRevokedAt: "10 Aug 2026 13:12", deactivatedAt: "10 Aug 2026 13:12", graceStart: "10 Aug 2026", graceEnd: "09 Sep 2026", lastValidation: "28 Aug 2026 14:20", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: "28 Aug 2026 14:20" },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 3, assetsByStatus: { sale: 4, show: 3, hide: 2, sold: 2, removed: 0 }, chatRooms: 6, reportsSafetyCases: 8 },
+          dependency: { assetsByStatus: { sale: 4, show: 3, hide: 2, sold: 2, removed: 0 }, chatRooms: 6, reportsSafetyCases: 8 },
           restoreRequest: { requestedAt: "26 Aug 2026 15:00", channel: "Support email", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
           restoreRejects: [{ rejectedAt: "28 Aug 2026 14:20", rejectedBy: "อรนุช แก้วใส", reason: "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี", note: "มีรายงานร้ายแรง 8 รายงาน พฤติกรรมละเมิดซ้ำ" }],
           restoreReject: { rejectedAt: "28 Aug 2026 14:20", rejectedBy: "อรนุช แก้วใส", reason: "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี", note: "มีรายงานร้ายแรง 8 รายงาน พฤติกรรมละเมิดซ้ำ" }
@@ -19266,7 +18854,7 @@
         "DEL-029": {
           userContext: { username: "@seikophuket", email: "sp***@seikophuket.com", phone: "—", line: "seikophuket", auth: "Email", joined: "01 Jul 2026", lastActive: "08 Aug 2026 09:30" },
           timeline: { sessionRevokedAt: "08 Aug 2026 09:30", deactivatedAt: "08 Aug 2026 09:30", graceStart: "08 Aug 2026", graceEnd: "07 Sep 2026", lastValidation: "30 Aug 2026 11:00", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: "30 Aug 2026 11:00" },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 2, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 2, reportsSafetyCases: 2 },
+          dependency: { assetsByStatus: { sale: 2, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 2, reportsSafetyCases: 2 },
           restoreRequest: { requestedAt: "27 Aug 2026 12:00", channel: "In-app support", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
           restoreRejects: [{ rejectedAt: "30 Aug 2026 11:00", rejectedBy: "มะลิ จันทร์ดี", reason: "รายงานร้ายแรงยังไม่ได้รับการแก้ไข", note: "ประวัติรายงานมีความผิดร้ายแรง (2 รายงานเสี่ยงสูง)" }],
           restoreReject: { rejectedAt: "30 Aug 2026 11:00", rejectedBy: "มะลิ จันทร์ดี", reason: "รายงานร้ายแรงยังไม่ได้รับการแก้ไข", note: "ประวัติรายงานมีความผิดร้ายแรง (2 รายงานเสี่ยงสูง)" }
@@ -19274,28 +18862,28 @@
         "DEL-025": {
           userContext: { username: "@rolexrama9club", email: "rc***@rama9club.com", phone: "086-555-4545", line: "—", auth: "Email", joined: "18 Jun 2026", lastActive: "15 Jul 2026 12:00" },
           timeline: { sessionRevokedAt: "15 Jul 2026 12:00", deactivatedAt: "15 Jul 2026 12:00", graceStart: "15 Jul 2026", graceEnd: "14 Aug 2026", lastValidation: "14 Aug 2026 00:00", approvedAt: "14 Aug 2026 00:00", archivedAt: "14 Aug 2026 00:00", anonymizedAt: "14 Aug 2026 00:00", cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 2, assetsByStatus: { sale: 5, show: 4, hide: 2, sold: 3, removed: 0 }, chatRooms: 8, reportsSafetyCases: 3 },
+          dependency: { assetsByStatus: { sale: 5, show: 4, hide: 2, sold: 3, removed: 0 }, chatRooms: 8, reportsSafetyCases: 3 },
           restoreRequest: null,
           restoreReject: null
         },
         "DEL-026": {
           userContext: { username: "@crowntimewatch", email: "cw***@crowntimewatch.com", phone: "081-234-3311", line: "crowntimewatch", auth: "Email", joined: "29 Jun 2026", lastActive: "10 Jul 2026 16:44" },
           timeline: { sessionRevokedAt: "10 Jul 2026 16:44", deactivatedAt: "10 Jul 2026 16:44", graceStart: "10 Jul 2026", graceEnd: "09 Aug 2026", lastValidation: "09 Aug 2026 00:00", approvedAt: "09 Aug 2026 00:00", archivedAt: "09 Aug 2026 00:00", anonymizedAt: "09 Aug 2026 00:00", cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 6, show: 5, hide: 3, sold: 4, removed: 0 }, chatRooms: 12, reportsSafetyCases: 4 },
+          dependency: { assetsByStatus: { sale: 6, show: 5, hide: 3, sold: 4, removed: 0 }, chatRooms: 12, reportsSafetyCases: 4 },
           restoreRequest: null,
           restoreReject: null
         },
         "DEL-020": {
           userContext: { username: "@olduser", email: "ol***@mail.com", phone: "—", line: "—", auth: "Email", joined: "17 Jan 2026", lastActive: "15 May 2026 07:44" },
           timeline: { sessionRevokedAt: "17 Jan 2026 07:44", deactivatedAt: "17 Jan 2026 07:44", graceStart: "17 Jan 2026", graceEnd: "16 Feb 2026", lastValidation: "16 Feb 2026 00:00", approvedAt: "16 Feb 2026 00:00", archivedAt: "16 Feb 2026 00:00", anonymizedAt: "16 Feb 2026 00:00", cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 0, show: 0, hide: 0, sold: 0, removed: 0 }, chatRooms: 0, reportsSafetyCases: 0 },
+          dependency: { assetsByStatus: { sale: 0, show: 0, hide: 0, sold: 0, removed: 0 }, chatRooms: 0, reportsSafetyCases: 0 },
           restoreRequest: null,
           restoreReject: null
         },
         "DEL-021": {
           userContext: { username: "@minimaldialclub", email: "mc***@minimalclub.com", phone: "—", line: "—", auth: "Email", joined: "03 Jan 2026", lastActive: "05 Feb 2026 09:00" },
           timeline: { sessionRevokedAt: "05 Feb 2026 09:00", deactivatedAt: "05 Feb 2026 09:00", graceStart: "05 Feb 2026", graceEnd: "07 Mar 2026", lastValidation: "07 Mar 2026 00:00", approvedAt: "07 Mar 2026 00:00", archivedAt: "07 Mar 2026 00:00", anonymizedAt: "07 Mar 2026 00:00", cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
-          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 1, show: 1, hide: 0, sold: 1, removed: 0 }, chatRooms: 1, reportsSafetyCases: 0 },
+          dependency: { assetsByStatus: { sale: 1, show: 1, hide: 0, sold: 1, removed: 0 }, chatRooms: 1, reportsSafetyCases: 0 },
           restoreRequest: null,
           restoreReject: null
         }
@@ -19303,7 +18891,7 @@
     };
 
     // DEL-PTO-004: Audit Log mock data — รายการ audit events สำคัญของระบบ
-    // ครอบคลุม module ต่าง ๆ: Asset, Content, Users, Account Deletion, Offers, Settings
+    // ครอบคลุม module ต่าง ๆ: Asset, Content, Users, Account Deletion, Settings
     // แต่ละ entry มี before/after diff, reason และ actor (read-only view)
     const auditLogData = {
       // AL-002: audit event schema — เก็บเฉพาะ field ที่ใช้แสดงใน detail drawer
@@ -19601,13 +19189,6 @@
         ]
       },
       {
-        module: "Offer Management", moduleKey: "offers",
-        perms: [
-          { key: "offers.view", sub: "", name: "ดู Offer List และ Offer Detail",
-            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", support_agent: "view", trust_safety_moderator: "view", asset_operations: "view", content_reviewer_th: "view", market_analyst: "view", legacy_support_viewer: "view" } }
-        ]
-      },
-      {
         module: "Content Management", moduleKey: "content",
         perms: [
           { key: "articles.view", sub: "Articles", name: "ดู Article List และ Article Detail",
@@ -19843,10 +19424,8 @@
           { label: "Articles 3", module: "content", sub: "Reported Articles" },
           { label: "Comments 3", module: "assets", sub: "Reported Comments" }
         ], icon: "audit" },
-        { label: "Offer Activity", value: "12", trend: "อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด", chips: ["Pending 3", "Paused 1", "Accepted 3", "Rejected 2", "Cancelled 2", "Invalidated 1"], module: "offers", sub: "Offer Queue", icon: "offer" },
         { label: "Articles", value: "12", trend: "มี 4 บทความรอเผยแพร่", chips: ["Published 8", "Scheduled 4"], module: "content", sub: "Articles", icon: "content" },
-        { label: "Watch Alert", value: "298", trend: "มีการจับคู่รายการขาย 18 ครั้งวันนี้", chips: ["Active 298", "Triggered 18"], module: "watch-alerts", sub: "Demand Overview", icon: "alert" },
-        { label: "Policies", value: "2", trend: "Privacy Policy มี Draft v2.1-draft รอเผยแพร่", chips: ["Published 2", "Draft 1"], module: "settings", sub: "Policy & Versioning", icon: "policy" }
+        { label: "Watch Alert", value: "298", trend: "มีการจับคู่รายการขาย 18 ครั้งวันนี้", chips: ["Active 298", "Triggered 18"], module: "watch-alerts", sub: "Demand Overview", icon: "alert" }
       ],
       queues: [
         { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
@@ -19859,21 +19438,12 @@
       ],
       activities: [
         { category: "Report", title: "มีรายงานสินทรัพย์ใหม่", summary: "Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด", time: "15 นาทีที่แล้ว", action: "ตรวจรูปและข้อมูลประกาศก่อนซ่อนรายการจาก FO", module: "assets", sub: "Reported Assets" },
-        { category: "Offer", title: "ข้อเสนอซื้อถูกปฏิเสธ", summary: "OFR-472 ของ Audemars Piguet Royal Oak ถูก owner ปฏิเสธและยังเก็บ history ไว้ใน Offer Detail", time: "32 นาทีที่แล้ว", action: "เปิด Offer Management เพื่อตรวจ asset, buyer, owner และประวัติ offer", module: "offers", sub: "Offer Queue" },
         { category: "Content", title: "ตั้งเวลาเผยแพร่บทความแล้ว", summary: "บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00", time: "1 ชม.ที่แล้ว", action: "เปิดหน้า Content เพื่อตรวจ preview และ cover image", module: "content", sub: "Articles" },
         { category: "System", title: "ข้อมูลตลาดอัปเดตแล้ว", summary: "Sync History พบ duplicate price points ของ Omega Speedmaster Reduced 3 แถว", time: "2 ชม.ที่แล้ว", action: "เปิด Sync History เพื่อตรวจ batch ก่อนให้ Search และ Watch Alert ใช้ index", module: "market", sub: "Sync History" },
         { category: "System", title: "แจ้งเตือน 2 รายการส่งไม่สำเร็จ", summary: "ระบบพบ mailbox full และ device token expired ใน delivery batch ล่าสุด แยกงาน retry แล้ว", time: "3 ชม.ที่แล้ว", action: "เปิด Delivery Logs เพื่อตรวจรายการ retry", module: "settings", sub: "Delivery Logs" }
       ],
       panels: [
         { title: "Asset Status", meta: "จาก Asset List ทั้งหมด", rows: [] },
-        { title: "Offer Status", meta: "จาก Offer Management ทั้งหมด", rows: [
-          { label: "Pending", value: "3", detail: "รอ owner ตอบตามรายการใน Offer Management", module: "offers", sub: "Offer Queue" },
-          { label: "Paused", value: "1", detail: "offer ถูกพักระหว่าง asset รอตรวจสอบ", module: "offers", sub: "Offer Queue" },
-          { label: "Accepted", value: "3", detail: "owner รับ offer แล้วแต่ยังเป็น read-only history", module: "offers", sub: "Offer Queue" },
-          { label: "Rejected", value: "2", detail: "owner ปฏิเสธและเก็บไว้ใน Offer History", module: "offers", sub: "Offer Queue" },
-          { label: "Cancelled", value: "2", detail: "asset ถูกลบหรือซ่อนโดย owner ระหว่าง offer", module: "offers", sub: "Offer Queue" },
-          { label: "Invalidated", value: "1", detail: "asset ถูกซ่อนถาวรและ offer ใช้งานไม่ได้", module: "offers", sub: "Offer Queue" }
-        ]},
         { title: "Latest Articles", meta: "จาก Articles ล่าสุด", rows: [
           { label: "Vintage Watch Buying Guide", value: "Scheduled", detail: "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", module: "content", sub: "Articles" },
           { label: "How to Check Provenance", value: "Published", detail: "เผยแพร่แล้วและแสดงบน Board", module: "content", sub: "Articles" },
@@ -20826,12 +20396,6 @@
         }
         return { type: "module", module: "assets", sub: activeSub || "Asset List", displaySub: activeSub || "Asset List" };
       }
-      if (activeModule === "offers") {
-        if (document.body.classList.contains("offer-detail-mode") && activeRow?.id) {
-          return { type: "offer-detail", id: activeRow.id };
-        }
-        return { type: "module", module: "offers", sub: "", displaySub: "" };
-      }
       if (activeModule === "content") {
         if (activeSub === "Reported Articles" && document.body.classList.contains("user-detail-mode") && activeRow?.id) {
           return { type: "reported-board-detail", id: activeRow.id };
@@ -20897,10 +20461,6 @@
         renderReportedCommentDetail(reportedCommentCases.find(entry => entry.id === context.id));
         return true;
       }
-      if (context.type === "offer-detail") {
-        renderOfferDetailPage(moduleData.offers.rows.find(entry => entry.id === context.id));
-        return true;
-      }
       if (context.type === "article-detail") {
         renderArticleDetailPage(getArticleById(context.id));
         return true;
@@ -20943,7 +20503,6 @@
     function getDefaultBackContext() {
       if (activeModule === "users") return { type: "module", module: "users", sub: activeSub === "Reported Users" ? "Reported Users" : "User Accounts", displaySub: activeSub === "Reported Users" ? "Reported Users" : "User Accounts" };
       if (activeModule === "assets") return { type: "module", module: "assets", sub: activeSub === "Reported Assets" ? "Reported Assets" : activeSub === "Reported Comments" ? "Reported Comments" : "Asset List", displaySub: activeSub === "Reported Assets" ? "Reported Assets" : activeSub === "Reported Comments" ? "Reported Comments" : "Asset List" };
-      if (activeModule === "offers") return { type: "module", module: "offers", sub: "", displaySub: "" };
       if (activeModule === "content") return { type: "module", module: "content", sub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles", displaySub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles" };
       if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Market Overview", displaySub: activeSub || "Market Overview" };
       if (activeModule === "watch-alerts") return { type: "module", module: "watch-alerts", sub: activeSub || "Demand Overview", displaySub: activeSub || "Demand Overview" };
@@ -21035,8 +20594,6 @@
     let assetListPage = 1;
     let assetFilterOpen = false;
     let assetReportFilterOpen = false;
-    let offerListPage = 1;
-    let offerFilterOpen = false;
     let articleListPage = 1;
     let articleFilterOpen = false;
     let categoryListPage = 1;
@@ -21114,7 +20671,6 @@
       "asset-list": { searchId: "search", filterIds: ["asset-type-filter", "asset-brand-filter", "asset-sort"] },
       "asset-report-list": { searchId: "asset-report-search", filterIds: ["asset-report-status-filter", "asset-report-priority-filter", "asset-report-sort"] },
       "reported-comment-list": { searchId: "reported-comment-search", filterIds: ["reported-comment-status-filter", "reported-comment-priority-filter", "reported-comment-sort"] },
-      "offer-list": { searchId: "offer-search", filterIds: ["offer-status-filter", "offer-sort"] },
       "article-list": { searchId: "article-search", filterIds: ["article-status-filter", "article-category-filter", "article-sort"] },
       "category-list": { searchId: "category-search", filterIds: ["category-status-filter", "category-sort"] },
       "board-report-list": { searchId: "board-report-search", filterIds: ["board-report-status-filter", "board-report-priority-filter", "board-report-sort"] },
@@ -21634,8 +21190,6 @@
       assetListPage = 1;
       assetFilterOpen = false;
       assetReportFilterOpen = false;
-      offerListPage = 1;
-      offerFilterOpen = false;
       articleListPage = 1;
       articleFilterOpen = false;
       categoryListPage = 1;
@@ -21693,7 +21247,6 @@
         if (activeSub === "Reported Comments") return "reported-comment-list";
         return "asset-list";
       }
-      if (activeModule === "offers") return "offer-list";
       if (activeModule === "content") {
         if (activeSub === "Categories") return "category-list";
         if (activeSub === "Reported Articles") return "board-report-list";
@@ -21787,7 +21340,6 @@
       userFilterOpen = false;
       assetFilterOpen = false;
       assetReportFilterOpen = false;
-      offerFilterOpen = false;
       articleFilterOpen = false;
       categoryFilterOpen = false;
       boardReportFilterOpen = false;
@@ -22015,7 +21567,6 @@
         { value: "Users", label: "Users" },
         { value: "Account Deletion", label: "Account Deletion" },
         { value: "Reported Comments", label: "Reported Comments" },
-        { value: "Offers", label: "Offers" },
         { value: "Option Master", label: "Option Master" },
         { value: "Settings", label: "Settings" }
       ],
@@ -22248,7 +21799,7 @@
         ["Sale", countType("Sale"), "ยอดทั้งหมดที่แสดงใน Feed และ Search"],
         ["Show", countType("Show"), "ยอดทั้งหมดที่แสดงใน collection และ profile"],
         ["Hide", countType("Hide"), "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์"],
-        ["Sold", countType("Sold"), "ยอดทั้งหมดที่คงประวัติและปิดรับ offer"]
+        ["Sold", countType("Sold"), "ยอดทั้งหมดที่คงประวัติการขายไว้เป็น read-only"]
       ];
       const brandCounts = assets.reduce((counts, asset) => {
         const brand = getAssetBrand(asset);
@@ -22602,12 +22153,10 @@
         createdAt,
         updatedAt,
         visibility: asset.type === "Sale" ? "Feed, Search, Profile, Watch Alert" : asset.type === "Show" ? "Profile / Collection only" : asset.type === "Hide" ? "Owner-only" : "Read-only sold history",
-        offerEnabled: asset.type === "Sale" && !isTemporarilyHiddenAsset(asset) && !isAssetUnavailableAsset(asset) ? "Enabled" : "Disabled",
         commentEnabled: isAssetUnavailableAsset(asset) ? "Disabled" : "Enabled",
         watchAlert: asset.type === "Sale" ? "Eligible" : "Not eligible",
         reportCount,
         reportReason: reportCount === "0" ? "No active report" : "Duplicate content / provenance / market price review",
-        linkedOffer: asset.tags?.find(tag => /^Offer\s/i.test(tag)) || (asset.type === "Sale" ? `OFR-${idNumber % 900}` : "None"),
         linkedWatchAlert: asset.tags?.find(tag => /Watch Alert/i.test(tag)) || (asset.type === "Sale" ? "Matched watch alerts" : "None")
       };
     }
@@ -22960,7 +22509,7 @@
         ? [{
             type: "Sale History",
             title: `Sold from ${asset.owner} to buyer B***-${idNumber % 90}`,
-            detail: `${detail.linkedOffer !== "None" ? detail.linkedOffer : `OFR-${idNumber % 900}`} · final price masked · payment and delivery evidence summarized for BO review`
+            detail: `Final price masked · payment and delivery evidence summarized for BO review`
           }]
         : [];
       return saleRows.filter(row => row.title && row.detail);
@@ -23093,7 +22642,7 @@
             action: "Sale Record Linked",
             before: { type: "Sale", status: "Active" },
             after: { type: "Sold", status: "Closed" },
-            reference: detail.linkedOffer !== "None" ? detail.linkedOffer : `OFR-${idNumber % 900}`,
+            reference: asset.id,
             note: `Sold from ${asset.owner} to buyer B***-${idNumber % 90}; final price masked and evidence summarized for BO review`
           }]
         : [];
@@ -24153,7 +23702,7 @@
 
     function renderAssetRestoreVisibilityImpactNote(asset) {
       const visibilitySurface = asset.type === "Sale"
-        ? "Feed, Search, Profile, Watch Alert, Offer และ Chat reference"
+        ? "Feed, Search, Profile, Watch Alert และ Chat reference"
         : "Profile / Collection และ public reference ที่เกี่ยวข้อง";
       return `
         <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
@@ -24165,7 +23714,7 @@
 
     function renderAssetDeletePostImpactNote(asset) {
       const visibilitySurface = asset.type === "Sale"
-        ? "Feed, Search, Profile, Watch Alert, Offer และ Chat reference"
+        ? "Feed, Search, Profile, Watch Alert และ Chat reference"
         : "Profile / Collection และ public reference ที่เกี่ยวข้อง";
       return `
         <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
@@ -24200,7 +23749,7 @@
 
     function renderAssetHideImpactNote(asset) {
       const visibilitySurface = asset.type === "Sale"
-        ? "Feed, Search, Profile, Watch Alert, Offer และ Chat reference"
+        ? "Feed, Search, Profile, Watch Alert และ Chat reference"
         : "Profile / Collection และ public reference ที่เกี่ยวข้อง";
       return `
         <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
@@ -24269,12 +23818,12 @@
           `สวัสดี ${asset.owner},`,
           `สินทรัพย์ ${asset.name} (${asset.id}) ได้รับการยกเลิกการซ่อนชั่วคราวหลังการตรวจสอบ`,
           `เหตุผลการดำเนินการ: ${reason || "ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม"}`,
-          "รายการนี้จะกลับมาแสดงบน Feed, Search, Profile, Watch Alert, Offer, Chat reference และพื้นที่สาธารณะที่เกี่ยวข้องตามสถานะของสินทรัพย์",
+          "รายการนี้จะกลับมาแสดงบน Feed, Search, Profile, Watch Alert, Chat reference และพื้นที่สาธารณะที่เกี่ยวข้องตามสถานะของสินทรัพย์",
           "---",
           `Hello ${asset.owner},`,
           `Visibility for your asset ${asset.name} (${asset.id}) has been restored after review.`,
           `Action reason: ${reason || "No further risk found after review"}`,
-          "This asset will appear again on Feed, Search, Profile, Watch Alert, Offer, Chat references, and related public surfaces according to its asset status.",
+          "This asset will appear again on Feed, Search, Profile, Watch Alert, Chat references, and related public surfaces according to its asset status.",
           `Reference: ${asset.id}`,
           "Contact support: support@tukdaeng.example"
         ]
@@ -24312,13 +23861,13 @@
           `สวัสดี ${asset.owner},`,
           `สินทรัพย์ ${asset.name} (${asset.id}) ถูกซ่อนถาวรหลังการตรวจสอบ`,
           `เหตุผลการดำเนินการ: ${reason || "ตรวจสอบตามนโยบายการรายงานสินทรัพย์"}`,
-          "รายการนี้จะไม่แสดงบน Feed, Search, Profile, Watch Alert, Offer, Chat reference และพื้นที่สาธารณะที่เกี่ยวข้อง",
+          "รายการนี้จะไม่แสดงบน Feed, Search, Profile, Watch Alert, Chat reference และพื้นที่สาธารณะที่เกี่ยวข้อง",
           "เจ้าของยังเห็นรายการนี้ได้แบบ read-only แต่ไม่สามารถแก้ไข ยกเลิกซ่อน หรือลบเองได้ และรายการนี้จะไม่ถูกนับใน portfolio value",
           "---",
           `Hello ${asset.owner},`,
           `Your asset ${asset.name} (${asset.id}) has been permanently hidden after review.`,
           `Action reason: ${reason || "Asset report policy review"}`,
-          "This asset will not appear on Feed, Search, Profile, Watch Alert, Offer, Chat references, or related public surfaces.",
+          "This asset will not appear on Feed, Search, Profile, Watch Alert, Chat references, or related public surfaces.",
           "You can still view this asset in read-only mode, but it cannot be edited, restored, or deleted by the owner, and it will not be counted in portfolio value.",
           `Reference: ${asset.id}`,
           "Contact support: support@tukdaeng.example"
@@ -24605,7 +24154,7 @@
               <div class="detail-tile"><span>Owner</span><strong>${asset.owner}</strong></div>
               <div class="detail-tile"><span>Priority</span><strong>${asset.priority}</strong></div>
             </div>
-            <div class="module-note"><strong>FO impact:</strong> Asset actions sync visibility to Feed, Search, Profile, Watch Alert, Offer, Chat reference, and Audit Log. Admin does not edit user-owned asset content from this menu.</div>
+            <div class="module-note"><strong>FO impact:</strong> Asset actions sync visibility to Feed, Search, Profile, Watch Alert, Chat reference, and Audit Log. Admin does not edit user-owned asset content from this menu.</div>
           </div>
           <div class="user-action-footer">
             <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
@@ -24910,7 +24459,6 @@
         "Users": "purple",
         "Account Deletion": "purple",
         "Reported Comments": "amber",
-        "Offers": "blue",
         "Option Master": "teal",
         "Settings": "gray"
       };
@@ -29456,7 +29004,7 @@
     }
 
     // DEL-PTO-002: Account Deletion Request Detail renderer
-    // pattern: Reported Users Report Detail + Offer Detail (full-width, section-based, back nav)
+    // pattern: Reported Users Report Detail (full-width, section-based, back nav)
     // body class: deletion-detail-mode (ไม่ใช้ user-detail-mode เพื่อไม่กระทบ protected screens)
     // 4 sections: User Context / Deletion Timeline / Dependency Summary / Deletion Plan
     // action area: 5 ปุ่ม (คืนบัญชี / ปฏิเสธคืนบัญชี / ดูสถานะล่าสุด / ดูประวัติ / ส่งออกรายงาน)
@@ -29481,7 +29029,7 @@
       syncExpandedNavForModule("deletions");
       activeRow = { id: req.id };
       document.body.classList.add("deletion-detail-mode");
-      document.body.classList.remove("deletion-list-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "watch-alert-detail-mode");
+      document.body.classList.remove("deletion-list-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "watch-alert-detail-mode");
 
       // breadcrumb + page header + back button
       document.querySelector("#crumb").textContent = `งานตรวจสอบและบริการ / Account Deletion / Requests / ${req.id}`;
@@ -29631,9 +29179,6 @@
         <div class="detail-section">
           <h4>Dependency Summary</h4>
           <div class="detail-grid three report-reference-grid">
-            ${depLink("Pending Incoming Offers", dep.pendingIncomingOffers || 0, 'data-deletion-dep="offers-incoming"')}
-            ${depLink("Pending Outgoing Offers", dep.pendingOutgoingOffers || 0, 'data-deletion-dep="offers-outgoing"')}
-            ${depLink("Accepted Offers (Retention)", dep.acceptedOffersInRetention || 0, 'data-deletion-dep="offers-accepted"')}
             ${depLink("Assets (Total)", req.assets, 'data-deletion-dep="assets"')}
             ${depLink("Chat Rooms", dep.chatRooms || 0, 'data-deletion-dep="chats"')}
             ${depLink("Reports / Safety Cases", dep.reportsSafetyCases || 0, 'data-deletion-dep="reports"')}
@@ -29649,7 +29194,6 @@
         { data: "Username / display name", action: "แทนที่ด้วย anonymous value เมื่อครบช่วงรอลบบัญชี" },
         { data: "Email / phone / LINE", action: "แทนที่ด้วย anonymous value เมื่อครบช่วงรอลบบัญชี" },
         { data: "Assets", action: "ซ่อนจาก Feed / ค้นหา / โปรไฟล์สาธารณะ / Watch Alert" },
-        { data: "Offers", action: "เก็บสถานะและ timeline ตาม policy การตรวจสอบ/ข้อพิพาท" },
         { data: "Chats", action: "เก็บเนื้อหาตาม retention แต่มาส์กตัวตนผู้ใช้" },
         { data: "Reports", action: "เก็บตาม policy ด้านความปลอดภัย/กฎหมาย/การตรวจสอบ" },
         { data: "Audit logs", action: "ลบบัญชีแล้วไม่สามารถแก้ไขได้" }
@@ -29710,7 +29254,7 @@
       };
       auditLogs.push({ at: req.requestedAt, actor: req.displayName, action: "ขอลบบัญชี", note: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)", emailDelivery: deletionEmailDelivery("REQ") });
       if (tl.sessionRevokedAt) auditLogs.push({ at: tl.sessionRevokedAt, actor: "System", action: "ยกเลิก session", note: "ระบบยกเลิก session ทั้งหมดของผู้ใช้" });
-      if (tl.deactivatedAt) auditLogs.push({ at: tl.deactivatedAt, actor: "System", action: "ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ", note: "เริ่มช่วงรอลบบัญชี 30 วัน" });
+      if (tl.deactivatedAt) auditLogs.push({ at: tl.deactivatedAt, actor: "System", action: "ระงับบัญชี + ปิดรายงานอัตโนมัติ", note: "เริ่มช่วงรอลบบัญชี 30 วัน" });
       // รับคำขอคืนบัญชี (ผ่าน support): แต่ละ action ของ admin (ปฏิเสธ/คืนบัญชี) ต้องมีผู้ใช้ยื่นขอใหม่ก่อนเสมอ
       // จึงแสดง record นี้นำหน้าทุก action — เวลาที่ support request เข้ามายืนยันไม่ได้ ใช้ "—" ตาม convention
       const restoreRejects = Array.isArray(d.restoreRejects) ? d.restoreRejects : (restoreRej ? [restoreRej] : []);
@@ -30015,7 +29559,7 @@
     }
 
     function getDeletionContext(user) {
-      if (user.status === "Deletion Requested") return "User requested account deletion. Check offers, assets, chats, and reports before deleting.";
+      if (user.status === "Deletion Requested") return "User requested account deletion. Check assets, chats, and reports before deleting.";
       if (user.status === "Deleted") return "Account was deleted after grace period. Login is blocked and personal data has been anonymized.";
       return "No active account deletion request";
     }
@@ -30250,7 +29794,7 @@
     }
 
     function getActivityTimeline(user) {
-      if (user.latest === "New account") return `Account created ${user.joined}; no assets, offers, reports, or support activity yet`;
+      if (user.latest === "New account") return `Account created ${user.joined}; no assets, reports, or support activity yet`;
       if (user.reports > 0) return `${user.latest}; ${user.reportState}`;
       return `${user.latest}; last active ${user.lastActive}`;
     }
@@ -30403,7 +29947,7 @@
       },
       policy_blocked: {
         title: "ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด",
-        detail: "รายการนี้ยังมีเงื่อนไขที่ต้องตรวจสอบก่อนดำเนินการ เช่น รายงานที่ค้างอยู่ ข้อเสนอซื้อที่ยังไม่ปิด หรือข้อมูลอ้างอิงที่ยังไม่ครบ"
+        detail: "รายการนี้ยังมีเงื่อนไขที่ต้องตรวจสอบก่อนดำเนินการ เช่น รายงานที่ค้างอยู่ หรือข้อมูลอ้างอิงที่ยังไม่ครบ"
       },
       delivery_failed: {
         title: "ส่งข้อมูลไม่สำเร็จ",
@@ -32207,10 +31751,6 @@
     }
 
     function renderModule(id, subLabel = "", displaySubLabel = subLabel) {
-      if (id === "offers") {
-        subLabel = "";
-        displaySubLabel = "";
-      }
       // demo tools ของหน้า Role เป็น child ของ .panel นอก #table — ลบตอน render module ใหม่กันค้างบนหน้าอื่น
       // (หน้า Role เองจะเติมกลับผ่าน syncRoleStateTools ใน render ของมัน)
       document.querySelector(".panel > .role-state-tools")?.remove();
@@ -32228,17 +31768,14 @@
       const isArticleList = id === "content" && (subLabel || "Articles") === "Articles";
       const isCategoryList = id === "content" && subLabel === "Categories";
       const isReportedBoard = id === "content" && subLabel === "Reported Articles";
-      const isOfferList = id === "offers";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
       document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
-      document.body.classList.toggle("offer-list-mode", isOfferList);
-      document.body.classList.remove("offer-detail-mode");
       // WA-PTO-003a: remove watch-alert-detail-mode when navigating away from Alert Detail
       document.body.classList.remove("watch-alert-detail-mode");
       // BO-OPT-006a-R1: option-master-mode classes were only ever added, never removed,
       // so they leaked into other modules navigated to via renderModule (e.g. Content
-      // Management, Offer Management). renderOptionGroupList() re-adds them when id is
+      // Management). renderOptionGroupList() re-adds them when id is
       // "option-master" (handled further below), so removing here is safe.
       document.body.classList.remove("option-master-mode", "option-group-list-mode", "option-detail-mode", "option-suggestion-mode");
       // HS-QA-001: Settings mode classes (Policy & Versioning, Support Center) were only ever
@@ -32540,36 +32077,6 @@
         // BO-UX-001: restore saved filter values when returning from Asset Detail
         restoreListFilterState("asset-list");
         renderRows();
-        updateActiveNav();
-        return;
-      }
-      if (isOfferList) {
-        activeRow = null;
-        activeSub = "";
-        document.querySelector("#crumb").textContent = data.crumb;
-        document.querySelector("#page-title").textContent = data.title;
-        document.querySelector("#page-meta").textContent = "";
-        document.querySelector("#panel-title").textContent = "Offer List";
-        document.querySelector("#panel-subtitle").textContent = "";
-        document.querySelector("#primary-action").textContent = data.action;
-        document.querySelector("#user-panel-filter-actions").innerHTML = `
-          <button class="btn user-filter-toggle" type="button" data-offer-filter-toggle aria-expanded="${offerFilterOpen}">${iconSvg.filter}<span>${offerFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-          <button class="btn" type="button" data-offer-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
-        `;
-        document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar offer-filter-bar" data-filter-open="${offerFilterOpen}">
-            <input class="field search" id="offer-search" type="search" placeholder="ค้นหา Offer ID, Asset ID, Asset, Buyer, Owner" />
-            <div class="user-advanced-filter">${customSelect("offer-status-filter", "Filter offer status", getOfferStatusFilterOptions())}</div>
-            <div class="user-advanced-filter">${customSelect("offer-sort", "Sort offers", filterOptions("latestOldestSort"), "latest")}</div>
-            ${resetFilterButton("data-offer-reset")}
-          </div>
-        `;
-        document.querySelector("#summary-grid").innerHTML = renderOfferStatusOverview(data.rows);
-        document.querySelector("#cards").innerHTML = "";
-        document.querySelector("#detail").innerHTML = "";
-        // BO-UX-001: restore saved filter values when returning from Offer Detail
-        restoreListFilterState("offer-list");
-        renderOfferListRows();
         updateActiveNav();
         return;
       }
@@ -36379,7 +35886,7 @@
     }
 
     function renderActivityPanel() {
-      const filters = ["ทั้งหมด", "Report", "Offer", "Content", "System"];
+      const filters = ["ทั้งหมด", "Report", "Content", "System"];
       const activities = activeActivityFilter === "ทั้งหมด"
         ? dashboardData.activities
         : dashboardData.activities.filter(activity => activity.category === activeActivityFilter);
@@ -36409,17 +35916,13 @@
 
     function renderDashboardPanels() {
       const renderPanelRows = panel => {
-        if (panel.title === "Asset Status" || panel.title === "Offer Status") {
-          const isOfferStatus = panel.title === "Offer Status";
-          const rowClass = isOfferStatus ? "asset-status-row offer-status-row" : "asset-status-row";
+        if (panel.title === "Asset Status") {
           return `
             <div class="asset-status-list">
               ${panel.rows.map(row => {
-                const [label, value, detail] = isOfferStatus
-                  ? [row.label, row.value, row.detail]
-                  : row;
+                const [label, value, detail] = row;
                 return `
-                <button class="${rowClass} ${label.toLowerCase()}" type="button" data-module-jump="${isOfferStatus ? "offers" : "assets"}" data-sub-jump="${isOfferStatus ? "Offer Queue" : "Asset List"}">
+                <button class="asset-status-row ${label.toLowerCase()}" type="button" data-module-jump="assets" data-sub-jump="Asset List">
                   <span class="asset-status-copy">
                     <span class="asset-status-name">${label}</span>
                     <span class="asset-status-detail">${detail}</span>
@@ -38935,12 +38438,12 @@
         </div>
       `;
 
-      // Search Funnel — Search → Result Click → Asset Detail → Watch Alert/Offer (mock)
+      // Search Funnel — Search → Result Click → Asset Detail → Watch Alert (mock)
       const funnel = [
         { step: "Step 1", name: "Search Submit", value: 9860, pct: 100, cls: "is-step-1" },
         { step: "Step 2", name: "Result Click", value: 5916, pct: 60, cls: "is-step-2" },
         { step: "Step 3", name: "Asset Detail Open", value: 3648, pct: 37, cls: "is-step-3" },
-        { step: "Step 4", name: "Watch Alert / Offer", value: 78, pct: 8, cls: "is-step-4" }
+        { step: "Step 4", name: "Watch Alert", value: 78, pct: 8, cls: "is-step-4" }
       ];
       const funnelHtml = `
         <div class="si-funnel-wrap">
@@ -38961,7 +38464,7 @@
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
           ${panel("Search Trend", "เฉลี่ย 18.4 ผลลัพธ์/การค้นหา", trendChartHtml, "si-panel-trend", "", "", true, "ปริมาณการค้นหารวมและที่ไม่พบผลลัพธ์ รายวัน 7 วันล่าสุด")}
-          ${panel("Search Funnel", "", funnelHtml, "si-panel-funnel", "", "", true, "อัตราการเปลี่ยนผ่านจากค้นหา สู่คลิกผลลัพธ์ เปิดดูสินค้า และตั้ง Watch Alert หรือ Make Offer (7 วันล่าสุด)")}
+          ${panel("Search Funnel", "", funnelHtml, "si-panel-funnel", "", "", true, "อัตราการเปลี่ยนผ่านจากค้นหา สู่คลิกผลลัพธ์ เปิดดูสินค้า และตั้ง Watch Alert (7 วันล่าสุด)")}
           ${panel("Popular Keywords", "", barListHtml(insights.keywords, 5, siAccent.keywords), "wa-panel-keywords", "View All", `data-si-viewall="keywords"`, true, "คำค้นหาที่ผู้ใช้พิมพ์บ่อย 5 อันดับแรก กด View All ดู 10 รายการ (7 วันล่าสุด)")}
           ${panel("Popular Brands", "", barListHtml(insights.brands, 5, siAccent.brands), "wa-panel-brands", "View All", `data-si-viewall="brands"`, true, "แบรนด์ที่ผู้ใช้เลือกจากการค้นหาและกรองบ่อย 5 อันดับแรก กด View All ดู 10 รายการ (7 วันล่าสุด)")}
           ${panel("Popular Filters", "", barListHtml(insights.filters, 5, siAccent.filters), "wa-panel-filters", "View All", `data-si-viewall="filters"`, true, "ตัวกรองที่ผู้ใช้เลือกบ่อย 5 อันดับแรก กด View All ดู 10 รายการ (7 วันล่าสุด)")}
@@ -39320,7 +38823,7 @@
       // body class: keep watch-alert-mode, add watch-alert-detail-mode, remove list/overview modes
       document.body.classList.add("watch-alert-mode", "watch-alert-detail-mode");
       document.body.classList.remove("watch-alert-list-mode", "watch-alert-overview-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "option-master-mode", "option-group-list-mode", "option-detail-mode", "option-suggestion-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "option-master-mode", "option-group-list-mode", "option-detail-mode", "option-suggestion-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode");
 
       // breadcrumb + page header + back button
       document.querySelector("#crumb").textContent = `งานตรวจสอบและบริการ / Market Demand / Watch Alert List / ${alert.id}`;
@@ -39363,7 +38866,7 @@
         return `<span class="pill gray">${esc(status)}</span>`;
       };
 
-      // Section 1: Alert header — head + summary tiles (เหมือน Offer Detail)
+      // Section 1: Alert header — head + summary tiles (เหมือนหน้า detail อื่น ๆ)
       const section1Head = `
         <div class="user-detail-head">
           <div class="user-detail-title">
@@ -39725,10 +39228,6 @@
       }
       if (activeModule === "content" && activeSub === "Reported Articles") {
         renderReportedBoardRows();
-        return;
-      }
-      if (activeModule === "offers") {
-        renderOfferListRows();
         return;
       }
       if (activeModule === "market") {
@@ -40285,10 +39784,10 @@
       activeOptionGroup = "";
       optionSuggestionQueueActive = false;
       document.body.classList.remove(
-        "dashboard-mode", "user-management-mode", "asset-list-mode", "offer-list-mode",
+        "dashboard-mode", "user-management-mode", "asset-list-mode",
         "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode",
         "market-dashboard-mode", "user-list-mode", "user-accounts-mode", "asset-detail-mode",
-        "offer-detail-mode", "user-detail-mode"
+        "user-detail-mode"
       );
       document.body.classList.add("option-master-mode", "option-group-list-mode");
       document.body.classList.remove("option-detail-mode", "option-suggestion-mode");
@@ -40522,10 +40021,10 @@
       activeOptionGroup = "";
       optionSuggestionQueueActive = true;
       document.body.classList.remove(
-        "dashboard-mode", "user-management-mode", "asset-list-mode", "offer-list-mode",
+        "dashboard-mode", "user-management-mode", "asset-list-mode",
         "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode",
         "market-dashboard-mode", "user-list-mode", "user-accounts-mode", "asset-detail-mode",
-        "offer-detail-mode", "user-detail-mode", "option-detail-mode", "option-group-list-mode"
+        "user-detail-mode", "option-detail-mode", "option-group-list-mode"
       );
       document.body.classList.add("option-master-mode", "option-suggestion-mode");
       const pendingCount = getPendingSuggestionCount();
@@ -40913,10 +40412,10 @@
       activeOptionGroup = groupId;
       optionSuggestionQueueActive = false;
       document.body.classList.remove(
-        "dashboard-mode", "user-management-mode", "asset-list-mode", "offer-list-mode",
+        "dashboard-mode", "user-management-mode", "asset-list-mode",
         "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode",
         "market-dashboard-mode", "user-list-mode", "user-accounts-mode", "asset-detail-mode",
-        "offer-detail-mode", "user-detail-mode", "option-group-list-mode", "option-suggestion-mode"
+        "user-detail-mode", "option-group-list-mode", "option-suggestion-mode"
       );
       document.body.classList.add("option-master-mode", "option-detail-mode");
       const total = getOptionGroupTotalOptions(groupId);
@@ -46648,496 +46147,6 @@
       `;
     }
 
-    function getOfferSearchText(offer) {
-      return [
-        Object.values(offer).flat().join(" "),
-        getOfferPriceDisplay(offer),
-        getOfferAssetName(offer),
-        getOfferParticipantName(offer, "Buyer"),
-        getOfferParticipantName(offer, "Owner")
-      ].join(" ").toLowerCase();
-    }
-
-    function getOfferPriceDisplay(offer) {
-      return String(offer.name || "").replace(/^Offer\s+/i, "");
-    }
-
-    function getOfferAsset(offer) {
-      return (moduleData.assets?.rows || []).find(asset => asset.id === offer.owner);
-    }
-
-    function getOfferAssetName(offer) {
-      return getOfferAsset(offer)?.name || "-";
-    }
-
-    function getOfferParticipantRaw(offer, role) {
-      const label = `${role} `;
-      const tag = (offer.tags || []).find(item => String(item).toLowerCase().startsWith(label.toLowerCase()));
-      return tag ? String(tag).slice(label.length) : "-";
-    }
-
-    function getOfferParticipantName(offer, role) {
-      const raw = getOfferParticipantRaw(offer, role);
-      const userSources = [
-        ...(moduleData.users?.rows || []),
-        ...(userManagementData.users || [])
-      ];
-      const user = userSources.find(row => row.id === raw || row.displayName === raw || row.name === raw);
-      return user?.displayName || user?.name || raw;
-    }
-
-    function getOfferSortRank(offer) {
-      return parseInt(String(offer.id || "").replace(/\D/g, ""), 10) || 0;
-    }
-
-    function renderOfferStatusPill(status) {
-      const meta = getOfferStatusMeta().find(item => item.status === status);
-      return `<span class="pill ${meta?.pillClass || "gray"}">${meta?.label || status}</span>`;
-    }
-
-    function getOfferStatusMeta() {
-      return [
-        { status: "Pending", label: "Pending", note: "รอ owner ตอบ", pillClass: "amber", color: "#f59e0b" },
-        { status: "Paused", label: "Paused", note: "asset รอตรวจสอบ", pillClass: "blue", color: "#1da1f2" },
-        { status: "Accepted", label: "Accepted", note: "owner รับ offer แล้ว", pillClass: "green", color: "#18bd8b" },
-        { status: "Rejected", label: "Rejected", note: "owner ปฏิเสธ", pillClass: "red", color: "#ef4444" },
-        { status: "Cancelled", label: "Cancelled", note: "owner ลบ/ซ่อน asset", pillClass: "purple", color: "#8b5cf6" },
-        { status: "Invalidated", label: "Invalidated", note: "ใช้ไม่ได้ถาวร", pillClass: "charcoal", color: "#111827" }
-      ];
-    }
-
-    function getOfferStatusFilterOptions() {
-      return [
-        { value: "", label: filterCopy.allStatus },
-        ...getOfferStatusMeta().map(meta => ({ value: meta.status, label: meta.label }))
-      ];
-    }
-
-    function renderOfferStatusOverview(rows = moduleData.offers.rows) {
-      const total = rows.length || 0;
-      const statusItems = getOfferStatusMeta().map(meta => ({
-        ...meta,
-        count: rows.filter(row => row.status === meta.status).length
-      }));
-      return statusItems.map(item => {
-        return `
-          <article class="stat offer-status-card" style="--offer-status-color:${item.color}">
-            <div class="stat-label">${item.label}</div>
-            <div class="stat-value">${item.count}</div>
-            <div class="stat-note">${item.note}</div>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function renderOfferListRows() {
-      const data = moduleData.offers;
-      const q = (document.querySelector("#offer-search")?.value || "").trim().toLowerCase();
-      const status = document.querySelector("#offer-status-filter")?.value || "";
-      const sort = document.querySelector("#offer-sort")?.value || "latest";
-      const filtered = data.rows
-        .filter(row => (!q || getOfferSearchText(row).includes(q)) && (!status || row.status === status))
-        .sort((a, b) => sort === "oldest" ? getOfferSortRank(a) - getOfferSortRank(b) : getOfferSortRank(b) - getOfferSortRank(a));
-      const pageSize = assetListPageSize;
-      const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
-      offerListPage = Math.min(offerListPage, pageCount);
-      const start = (offerListPage - 1) * pageSize;
-      const pageRows = filtered.slice(start, start + pageSize);
-      document.querySelector("#table").innerHTML = `
-        <div class="asset-table offer-list-table">
-          <div class="asset-row head"><div>Offer ID</div><div>Offer</div><div>Asset</div><div>Buyer</div><div>Owner</div><div>Status</div><div>Action</div></div>
-          ${pageRows.map(row => `
-            <div class="asset-row" data-offer-card="${row.id}">
-              <div data-label="Offer ID"><div class="main-text">${row.id}</div></div>
-              <div class="asset-cell-primary" data-label="Offer">
-                <div class="main-text"><span class="desktop-user-name">${getOfferPriceDisplay(row)}</span><span class="mobile-user-card-title">${row.id}</span></div>
-              </div>
-              <div class="asset-card-tags">
-                ${renderOfferStatusPill(row.status)}
-                <span class="pill blue">${row.type}</span>
-                <div class="user-card-meta">
-                  <div class="user-card-meta-item comment-field-meta"><span>Offer</span><strong>${getOfferPriceDisplay(row)}</strong></div>
-                  <div class="user-card-meta-item comment-field-meta"><span>Asset</span><strong>${getOfferAssetName(row)}</strong></div>
-                  <div class="user-card-meta-item comment-field-meta"><span>Buyer</span><strong>${getOfferParticipantName(row, "Buyer")}</strong></div>
-                  <div class="user-card-meta-item comment-field-meta"><span>Owner</span><strong>${getOfferParticipantName(row, "Owner")}</strong></div>
-                </div>
-              </div>
-              <div data-label="Asset"><div class="main-text">${getOfferAssetName(row)}</div><div class="muted">${row.owner}</div></div>
-              <div data-label="Buyer"><div class="main-text">${getOfferParticipantName(row, "Buyer")}</div></div>
-              <div data-label="Owner"><div class="main-text">${getOfferParticipantName(row, "Owner")}</div></div>
-              <div data-label="Status">${renderOfferStatusPill(row.status)}</div>
-              <div class="user-row-actions">
-                <button class="panel-action" type="button" data-offer-open="${row.id}">View</button>
-              </div>
-            </div>
-          `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
-        </div>
-        <div class="footer-range">
-          <span>แสดง ${filtered.length ? `${start + 1}-${Math.min(start + pageSize, filtered.length)}` : "0"} จาก ${filtered.length}</span>
-          ${renderPager(offerListPage, pageCount, "data-offer-page")}
-        </div>
-      `;
-    }
-
-    function getOfferUserSummary(offer, role) {
-      const raw = getOfferParticipantRaw(offer, role);
-      const userSources = [
-        ...(userManagementData.users || []),
-        ...(moduleData.users?.rows || [])
-      ];
-      const user = userSources.find(row => row.id === raw || row.displayName === raw || row.name === raw) || {};
-      const status = user.status || "Active";
-      const username = user.username ? String(user.username).replace(/^@/, "") : "-";
-      return {
-        userId: user.id || raw,
-        displayName: user.displayName || user.name || raw,
-        username,
-        accountStatus: status,
-        reportCount: Number.isFinite(user.reports) ? user.reports : 0,
-        suspensionSignal: ["Suspended", "Banned"].includes(status) ? status : "No active restriction",
-        verificationState: user.verification || "Verified profile"
-      };
-    }
-
-    function getOfferAssetSummary(offer) {
-      const asset = getOfferAsset(offer) || {};
-      const askingPrice = asset.id && typeof getAssetConsignmentAskingPrice === "function" ? getAssetConsignmentAskingPrice(asset) : "";
-      const priceTag = (asset.tags || []).find(tag => String(tag).startsWith("THB "));
-      const priceDisplay = askingPrice ? `THB ${askingPrice}` : priceTag || "Price on Request";
-      const nameParts = String(asset.name || getOfferAssetName(offer) || "").split(" ");
-      const brand = asset.name ? getAssetBrand(asset) : nameParts[0] || "-";
-      const model = String(asset.name || "-").replace(brand, "").trim() || asset.name || "-";
-      const moderationStatusLabel = ["Auto Hidden", "Admin Hidden"].includes(asset.status)
-        ? "ซ่อนชั่วคราว"
-        : asset.status;
-      return {
-        assetId: offer.owner,
-        brand,
-        model,
-        reference: asset.name || getOfferAssetName(offer),
-        currentStatus: asset.type && moderationStatusLabel ? `${asset.type} / ${moderationStatusLabel}` : moderationStatusLabel || asset.type || "-",
-        askingPrice: priceDisplay,
-        ownerDisplayName: asset.owner || getOfferParticipantName(offer, "Owner"),
-        thumbnailLabel: String(brand || "TD").slice(0, 2).toUpperCase()
-      };
-    }
-
-    function getOfferDetailRecord(offer) {
-      const buyer = getOfferUserSummary(offer, "Buyer");
-      const owner = getOfferUserSummary(offer, "Owner");
-      const asset = getOfferAssetSummary(offer);
-      const offerRank = getOfferSortRank(offer);
-      const createdAt = offer.createdAt || `10 Jul 2026 ${String(offerRank % 9 + 10).padStart(2, "0")}:15`;
-      const updatedAt = offer.status === "Pending" ? "10 Jul 2026 18:42" : "11 Jul 2026 09:28";
-      const chatRoomId = `CHT-${offerRank}`;
-      const statusNotes = {
-        Pending: {
-          actionAvailable: "Owner response controls are available in FO",
-          cardCopy: "Pending offer is visible in Incoming Offers and related chat.",
-          destination: "Owner incoming offer / Chat Room"
-        },
-        Paused: {
-          actionAvailable: "Owner response controls are hidden while asset review is open",
-          cardCopy: "Offer Paused card remains in chat without action buttons.",
-          destination: "Buyer and owner chat"
-        },
-        Accepted: {
-          actionAvailable: "No BO action; accepted is not payment complete",
-          cardCopy: "Accepted offer card opens related chat.",
-          destination: "Buyer notification to Chat Room"
-        },
-        Rejected: {
-          actionAvailable: "No pending action remains",
-          cardCopy: "Rejected offer is history only.",
-          destination: "Buyer notification to Asset Detail"
-        },
-        Cancelled: {
-          actionAvailable: "No pending action remains",
-          cardCopy: "Offer Cancelled because asset is unavailable.",
-          destination: "Buyer and owner notification"
-        },
-        Invalidated: {
-          actionAvailable: "No pending action remains",
-          cardCopy: "Offer Unavailable final state.",
-          destination: "Buyer and owner notification"
-        }
-      };
-      const statusNote = statusNotes[offer.status] || statusNotes.Pending;
-      const timeline = [
-        {
-          label: "Offer created",
-          timestamp: createdAt,
-          actor: buyer.displayName,
-          source: "FO Asset Detail",
-          fromStatus: "-",
-          toStatus: "Pending",
-          reason: "Buyer submitted an offer for the asset."
-        },
-        {
-          label: offer.status === "Pending" ? "Owner review pending" : `Status changed to ${offer.status}`,
-          timestamp: updatedAt,
-          actor: offer.status === "Pending" ? owner.displayName : "System / FO event",
-          source: offer.status === "Pending" ? "Incoming Offers" : "Offer lifecycle",
-          fromStatus: offer.status === "Pending" ? "Pending" : "Pending",
-          toStatus: offer.status,
-          reason: offer.detail
-        }
-      ];
-      return {
-        offerSummary: {
-          offerId: offer.id,
-          amount: getOfferPriceDisplay(offer),
-          status: offer.status,
-          priority: offer.priority,
-          createdAt,
-          updatedAt,
-          sourceSurface: "FO Asset Detail",
-          lastActionSource: offer.status === "Pending" ? "Buyer offer / Owner pending" : "FO lifecycle event"
-        },
-        assetSummary: asset,
-        buyerSummary: buyer,
-        ownerSummary: owner,
-        relatedChat: {
-          chatRoomId,
-          participants: `${buyer.displayName} / ${owner.displayName}`,
-          lastMessageAt: updatedAt,
-          lastMessagePreviewMasked: offer.detail,
-          hasAttachment: offer.detail.toLowerCase().includes("proof") ? "Yes, proof requested" : "No flagged attachment",
-          permissionState: "Read-only, sensitive content masked"
-        },
-        statusTimeline: timeline,
-        foDisplayState: {
-          actionAvailability: statusNote.actionAvailable,
-          visibleSurface: offer.status === "Pending" ? "Incoming Offers, Chat offer card" : "Chat history / Offer history",
-          offerCardCopy: statusNote.cardCopy,
-          notificationDestination: statusNote.destination
-        },
-        offerHistory: getOfferHistoryRows(offer, buyer, owner, createdAt, updatedAt),
-        notificationDelivery: getOfferNotificationRows(offer, buyer, owner, updatedAt),
-        auditEvents: getOfferAuditRows(offer, chatRoomId, createdAt, updatedAt)
-      };
-    }
-
-    function getOfferHistoryRows(offer, buyer, owner, createdAt, updatedAt) {
-      const amount = getOfferPriceDisplay(offer);
-      const rows = [
-        {
-          action: "Offer Created",
-          status: "Pending",
-          actor: buyer.displayName,
-          dateTime: createdAt,
-          note: `Offer submitted for ${amount}`
-        }
-      ];
-      if (offer.status !== "Pending") {
-        const statusActionLabels = {
-          Accepted: "Offer Accepted",
-          Rejected: "Offer Rejected",
-          Cancelled: "Offer Cancelled",
-          Paused: "Offer Paused",
-          Invalidated: "Offer Invalidated"
-        };
-        const statusNotes = {
-          Accepted: "Owner accepted the offer",
-          Rejected: "Owner rejected the offer",
-          Cancelled: "Offer was cancelled",
-          Paused: "Offer was paused while the asset is under review",
-          Invalidated: "Offer is no longer valid"
-        };
-        rows.push({
-          action: statusActionLabels[offer.status] || `Offer ${offer.status}`,
-          status: offer.status,
-          actor: ["Cancelled", "Paused", "Invalidated"].includes(offer.status) ? "System" : owner.displayName,
-          dateTime: updatedAt,
-          note: statusNotes[offer.status] || "Offer status changed"
-        });
-      }
-      return rows.reverse();
-    }
-
-    function getOfferNotificationRows(offer, buyer, owner, updatedAt) {
-      const rows = [
-        { event: "Offer created", recipient: "Owner", channel: "Push", status: "Sent", sentAt: offer.createdAt || "10 Jul 2026 10:15", destination: "Incoming Offers" }
-      ];
-      if (offer.status !== "Pending") {
-        rows.push({ event: `Offer ${offer.status.toLowerCase()}`, recipient: "Buyer", channel: "Push", status: "Sent", sentAt: updatedAt, destination: offer.status === "Accepted" ? "Chat Room" : "Asset Detail / Chat" });
-      } else {
-        rows.push({ event: "Owner reminder", recipient: "Owner", channel: "Push", status: "Queued", sentAt: "-", destination: "Incoming Offers" });
-      }
-      return rows;
-    }
-
-    function getOfferAuditRows(offer, chatRoomId, createdAt, updatedAt) {
-      return [
-        { eventId: `AUD-${getOfferSortRank(offer)}-01`, action: "OFFER_VIEW", actor: "Admin", target: offer.id, related: `${offer.owner} / ${chatRoomId}`, timestamp: createdAt, note: "Detail view available by module permission." },
-        { eventId: `AUD-${getOfferSortRank(offer)}-02`, action: "OFFER_RELATED_CHAT_VIEW", actor: "Admin", target: chatRoomId, related: `${offer.id} / ${offer.owner}`, timestamp: updatedAt, note: "Chat context is read-only and masked by policy." }
-      ];
-    }
-
-    function renderOfferMini(label, value) {
-      return `<div class="offer-mini"><span>${label}</span><strong>${value || "-"}</strong></div>`;
-    }
-
-    function renderOfferSummaryTiles(summary) {
-      return `
-        <div class="detail-grid two report-reference-grid">
-          <div class="detail-tile"><span>Offer ID</span><strong>${summary.offerId}</strong></div>
-          <div class="detail-tile"><span>Offer Amount</span><strong>${summary.amount}</strong></div>
-          <div class="detail-tile"><span>Created</span><strong>${summary.createdAt}</strong></div>
-          <div class="detail-tile"><span>Updated</span><strong>${summary.updatedAt}</strong></div>
-          <div class="detail-tile"><span>Source Surface</span><strong>${summary.sourceSurface}</strong></div>
-          <div class="detail-tile"><span>Last Action / Source</span><strong>${summary.lastActionSource}</strong></div>
-        </div>
-      `;
-    }
-
-    function renderOfferPartyCard(title, party) {
-      return `
-        <div class="detail-tile"><span>${title} User ID</span><strong>${party.userId}</strong></div>
-        <div class="detail-tile"><span>${title} name</span><strong>${party.displayName}</strong></div>
-      `;
-    }
-
-    function renderOfferHistoryTable(rows) {
-      return `
-        <div class="history-table-wrap">
-          <table class="history-table offer-detail-table offer-history-table">
-            <thead>
-              <tr><th>Date / Time</th><th>Actor</th><th>Action</th><th>Status</th><th>Reason / Note</th></tr>
-            </thead>
-            <tbody>
-              ${rows.map(row => `
-                <tr>
-                  <td data-label="Date / Time">${row.dateTime}</td>
-                  <td data-label="Actor">${row.actor}</td>
-                  <td data-label="Action">${row.action}</td>
-                  <td data-label="Status">${renderOfferStatusPill(row.status)}</td>
-                  <td data-label="Reason / Note" class="history-note">${row.note}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    function renderOfferNotificationTable(rows) {
-      return `
-        <div class="history-table-wrap">
-          <table class="history-table offer-detail-table">
-            <thead>
-              <tr><th>Event</th><th>Recipient</th><th>Channel</th><th>Status</th><th>Sent At</th><th>Destination</th></tr>
-            </thead>
-            <tbody>
-              ${rows.map(row => `
-                <tr>
-                  <td data-label="Event">${row.event}</td>
-                  <td data-label="Recipient">${row.recipient}</td>
-                  <td data-label="Channel">${row.channel}</td>
-                  <td data-label="Status">${row.status}</td>
-                  <td data-label="Sent At">${row.sentAt}</td>
-                  <td data-label="Destination" class="history-note">${row.destination}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    function renderOfferAuditTable(rows) {
-      return `
-        <div class="history-table-wrap">
-          <table class="history-table offer-detail-table">
-            <thead>
-              <tr><th>Event ID</th><th>Action</th><th>Actor</th><th>Target</th><th>Related IDs</th><th>Timestamp</th><th>Reason / Note</th></tr>
-            </thead>
-            <tbody>
-              ${rows.map(row => `
-                <tr>
-                  <td data-label="Event ID">${row.eventId}</td>
-                  <td data-label="Action">${row.action}</td>
-                  <td data-label="Actor">${row.actor}</td>
-                  <td data-label="Target">${row.target}</td>
-                  <td data-label="Related IDs">${row.related}</td>
-                  <td data-label="Timestamp">${row.timestamp}</td>
-                  <td data-label="Reason / Note" class="history-note">${row.note}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    function renderOfferDetailPage(offer) {
-      if (!offer) {
-        renderModule("offers");
-        return;
-      }
-      const detail = getOfferDetailRecord(offer);
-      const offerAsset = getOfferAsset(offer);
-      activeModule = "offers";
-      activeSub = "";
-      activeRow = offer;
-      document.body.classList.add("offer-list-mode", "offer-detail-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode");
-      document.querySelector("#crumb").textContent = `การดำเนินงาน / Offer Management / Offer Detail / ${offer.id}`;
-      document.querySelector("#page-title").textContent = "Offer Detail";
-      document.querySelector("#page-meta").textContent = "";
-      setPageActions(renderPageBackButton("data-back-offer-list", "กลับไป Offer Management", "report-back-btn"));
-      document.querySelector("#panel-title").textContent = offer.id;
-      document.querySelector("#panel-subtitle").textContent = `${detail.offerSummary.amount} / ${offer.owner}`;
-      document.querySelector("#user-panel-filter-actions").innerHTML = "";
-      document.querySelector(".filters").innerHTML = "";
-      document.querySelector("#summary-grid").innerHTML = "";
-      document.querySelector("#cards").innerHTML = "";
-      document.querySelector("#detail").innerHTML = "";
-      document.querySelector("#table").innerHTML = `
-        <div class="user-detail-page report-detail-page asset-report-detail-page offer-detail-page">
-          <div class="user-detail-head">
-            <div class="user-detail-title">
-              ${offerAsset ? renderAssetTitleImage(offerAsset) : ""}
-              <div>
-                <h2 class="asset-report-heading"><span class="asset-report-id">${offer.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${detail.assetSummary.reference}</span></h2>
-                <div class="chips">
-                  ${renderOfferStatusPill(offer.status)}
-                  <span class="pill green">${detail.offerSummary.amount}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <div class="board-report-reference-head">
-              <h4>Offered Asset</h4>
-            </div>
-            <div class="detail-grid two report-reference-grid">
-              <div class="detail-tile"><span>Offer ID</span><strong>${detail.offerSummary.offerId}</strong></div>
-              <div class="detail-tile"><span>Asset ID</span><strong>${offerAsset ? `<button class="link-btn" type="button" data-asset-open="${offerAsset.id}">${detail.assetSummary.assetId}</button>` : detail.assetSummary.assetId}</strong></div>
-              <div class="detail-tile"><span>Asset Name</span><strong>${detail.assetSummary.reference}</strong></div>
-              <div class="detail-tile"><span>Offer Amount</span><strong>${detail.offerSummary.amount}</strong></div>
-              <div class="detail-tile"><span>Asking Price</span><strong>${detail.assetSummary.askingPrice}</strong></div>
-              <div class="detail-tile"><span>Asset Status</span><strong>${detail.assetSummary.currentStatus}</strong></div>
-              <div class="detail-tile"><span>Created</span><strong>${detail.offerSummary.createdAt}</strong></div>
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>Buyer / Owner</h4>
-            <div class="detail-grid two report-reference-grid">
-              ${renderOfferPartyCard("Buyer", detail.buyerSummary)}
-              ${renderOfferPartyCard("Owner", detail.ownerSummary)}
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>Offer History</h4>
-            ${renderOfferHistoryTable(detail.offerHistory)}
-          </div>
-        </div>
-      `;
-      updateActiveNav();
-      scrollMainToTop();
-    }
 
     function statusPill(status, priority) {
       const priorityValue = getReportPriorityValue(priority);
@@ -47550,12 +46559,6 @@
           renderAssetListRows();
           return;
         }
-        if (["offer-status-filter", "offer-sort"].includes(hiddenInput.id) && activeModule === "offers") {
-          offerListPage = 1;
-          saveCurrentListFilterState();
-          renderOfferListRows();
-          return;
-        }
         if (["article-status-filter", "article-category-filter", "article-sort"].includes(hiddenInput.id) && activeModule === "content" && (activeSub || "Articles") === "Articles") {
           articleListPage = 1;
           saveCurrentListFilterState();
@@ -47891,15 +46894,6 @@
         const row = moduleData[activeModule].rows.find(entry => entry.id === id);
         activeRow = row;
         renderDetail(row);
-      }
-      const offerOpenButton = event.target.closest("[data-offer-open], .asset-row[data-offer-card]");
-      if (offerOpenButton && activeModule === "offers") {
-        if (event.target.closest("button") && !event.target.closest("[data-offer-open]")) return;
-        const id = offerOpenButton.dataset.offerOpen || offerOpenButton.dataset.offerCard;
-        const offer = moduleData.offers.rows.find(entry => entry.id === id);
-        pushBackNavigationContext();
-        renderOfferDetailPage(offer);
-        return;
       }
       // WA-PTO-002a: Watch Alert List — row click → Alert Detail (read-only drill-in)
       const waAlertOpen = event.target.closest("[data-wa-alert-open], .asset-row[data-wa-alert-card]");
@@ -49138,13 +48132,6 @@
         renderModule("assets", "Reported Assets", "Reported Assets");
         return;
       }
-      const offerReset = event.target.closest("[data-offer-reset]");
-      if (offerReset) {
-        offerListPage = 1;
-        clearListFilterState("offer-list");
-        renderModule("offers");
-        return;
-      }
       const assetReportFilterToggle = event.target.closest("[data-asset-report-filter-toggle]");
       if (assetReportFilterToggle) {
         assetReportFilterOpen = !assetReportFilterOpen;
@@ -49173,16 +48160,6 @@
         assetFilterToggle.setAttribute("aria-expanded", String(assetFilterOpen));
         const label = assetFilterToggle.querySelector("span");
         if (label) label.textContent = assetFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
-        return;
-      }
-      const offerFilterToggle = event.target.closest("[data-offer-filter-toggle]");
-      if (offerFilterToggle) {
-        offerFilterOpen = !offerFilterOpen;
-        const filterBar = document.querySelector(".user-filter-bar");
-        if (filterBar) filterBar.dataset.filterOpen = String(offerFilterOpen);
-        offerFilterToggle.setAttribute("aria-expanded", String(offerFilterOpen));
-        const label = offerFilterToggle.querySelector("span");
-        if (label) label.textContent = offerFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
       const marketFilterToggle = event.target.closest("[data-market-filter-toggle]");
@@ -49889,16 +48866,6 @@
         renderReportedCommentRows();
         return;
       }
-      const offerPageButton = event.target.closest("[data-offer-page]");
-      if (offerPageButton) {
-        const target = offerPageButton.dataset.offerPage;
-        if (target === "prev") offerListPage = Math.max(1, offerListPage - 1);
-        else if (target === "next") offerListPage += 1;
-        else offerListPage = Number(target) || 1;
-        renderOfferListRows();
-        resetTableScrollPosition();
-        return;
-      }
       // WA-PTO-002a/002b: Watch Alert List pagination
       const waAlertPageButton = event.target.closest("[data-wa-alert-page]");
       if (waAlertPageButton) {
@@ -50029,11 +48996,6 @@
         renderModule("assets", "Asset List", "Asset List");
         return;
       }
-      const backOfferList = event.target.closest("[data-back-offer-list]");
-      if (backOfferList) {
-        renderModule("offers");
-        return;
-      }
       // WA-PTO-003a: Alert Detail back button → Watch Alert List (restore filter state)
       const backWaAlertList = event.target.closest("[data-back-wa-alert-list]");
       if (backWaAlertList) {
@@ -50075,7 +49037,7 @@
         }
         return;
       }
-      // DEL-PTO-004: dependency link (offer/asset/chat/report) — cross-module drill-in (read-only)
+      // DEL-PTO-004: dependency link (asset/chat/report) — cross-module drill-in (read-only)
       // นำทางไป module ต้นทางพร้อมกรองรายการด้วย userId ของ request ปัจจุบัน
       const depLink = event.target.closest("[data-deletion-dep]");
       if (depLink) {
@@ -50084,9 +49046,6 @@
         const req = deletionRequestData.requests.find(r => r.id === reqId);
         const userId = req?.userId || "";
         const labels = {
-          "offers-incoming": "Pending Incoming Offers",
-          "offers-outgoing": "Pending Outgoing Offers",
-          "offers-accepted": "Accepted Offers (Retention)",
           "assets": "Assets",
           "chats": "Chat Rooms",
           "reports": "Reports / Safety Cases"
@@ -50094,15 +49053,6 @@
         // Chat ไม่มี module ใน BO — เนื้อหาเก็บตาม retention policy และ mask ตัวตน (read-only context แสดงใน Dependency Summary แล้ว)
         if (dep === "chats") {
           showSuccessToast(`${labels[dep]} — เนื้อหาแชทเก็บตาม retention policy และ mask ตัวตนผู้ใช้ (ดูใน user context)`, "Account Deletion");
-          return;
-        }
-        // Offers → Offer Management (read-only) กรองด้วย userId
-        if (dep === "offers-incoming" || dep === "offers-outgoing" || dep === "offers-accepted") {
-          resetListFilterPanelsForNavigation("offers");
-          renderModule("offers");
-          const search = document.querySelector("#offer-search");
-          if (search && userId) { search.value = userId; renderOfferListRows(); }
-          showSuccessToast(`${labels[dep]} — กรอง offer ของ ${userId}`, "Account Deletion");
           return;
         }
         // Assets → Asset Management (read-only) กรองด้วย userId
@@ -50576,12 +49526,6 @@
         boardReportListPage = 1;
         saveCurrentListFilterState();
         renderReportedBoardRows();
-        return;
-      }
-      if (event.target.matches("#offer-search")) {
-        offerListPage = 1;
-        saveCurrentListFilterState();
-        renderOfferListRows();
         return;
       }
       // DEL-PTO-001: Account Deletion Requests search
@@ -51061,7 +50005,6 @@
       }
       if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-brand-filter, #asset-sort")) {
         if (activeModule === "assets") assetListPage = 1;
-        if (activeModule === "offers") offerListPage = 1;
         saveCurrentListFilterState();
         renderRows();
       }
