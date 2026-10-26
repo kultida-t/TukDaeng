@@ -1,7 +1,7 @@
 # BO Final Review And Dev Handoff
 
-**Version:** `BO-HANDOFF-v0.1`  
-**Date:** 2026-07-06  
+**Version:** `BO-HANDOFF-v0.2`  
+**Date:** 2026-10-26  
 **Status:** Draft handoff  
 **Scope:** Back Office documentation baseline `00` - `17`
 
@@ -47,7 +47,6 @@
 | 06 | Market Data | 1 | Complete |
 | 07 | Directory | Future | Postponed from Phase 1 |
 | 08 | Audit Log | 1 | Complete |
-| 09 | Offer Management | 1 | Complete |
 | 11 | Market Demand | 1 | Complete |
 | 12 | Help / Support | 1 | Complete |
 | 13 | Account Deletion Requests | 1 | Complete |
@@ -74,21 +73,19 @@
 3. Content / Board
 4. Market Data
 5. Option Master
-6. Offer Management (read-only)
-7. Market Demand (Watch Alert)
-8. Help & Support
-9. Account Deletion Requests
-10. Notifications (Phase 2 / future scope — deferred; Delivery Logs ย้ายไป Settings ใน Phase 1)
-11. Reports & Analytics (Phase 2 / future scope — deferred)
-12. Admin Settings (รวม Delivery Logs)
-13. Audit Log
-14. Dashboard drill-in and queue summary
+6. Market Demand (Watch Alert)
+7. Help & Support
+8. Account Deletion Requests
+9. Notifications (Phase 2 / future scope — deferred; Delivery Logs ย้ายไป Settings ใน Phase 1)
+10. Reports & Analytics (Phase 2 / future scope — deferred)
+11. Admin Settings (รวม Delivery Logs)
+12. Audit Log
+13. Dashboard drill-in and queue summary
 
 ### 4.3 Phase 2 Build
 
 1. Directory (รอ FO directory detail routes และ taxonomy approval)
 2. Chat moderation workflow (remove/hide chat message, reported chat queue)
-3. Offer write actions (force expire, invalidate, accept/decline จาก BO)
 
 ### 4.4 Phase 3 Build
 
@@ -100,13 +97,12 @@
 | Topic | Locked Decision |
 | --- | --- |
 | Asset collection wording | ใช้ `Show` / `Hide` ตาม FO เป็นหลัก; legacy `Collection Show` / `Collection Hide` ต้อง normalize |
-| Offer decline/reject wording | FO action/button ใช้ `Decline`; system/BO/API status ใช้ `Rejected`; legacy `Declined` normalize เป็น `Rejected` |
 | Watch Alert destination | Notification ต้องเปิด `Watch Alert Result List` ห้ามเปิด Asset Detail โดยตรง |
 | Watch Alert matching | Match เฉพาะ asset status `Sale` |
 | Chat / New Message | ไม่เข้า FO Notification Center; ใช้ Chat badge/count เท่านั้น |
-| FO notification types | V1 รองรับ `Like`, `Comment`, `Follow`, `Offer`, `Watch Alert` |
+| FO notification types | V1 รองรับ `Like`, `Comment`, `Follow`, `Watch Alert` |
 | Help / Support V1 | FO Help เป็น contact-only: LINE / Phone / Email; BO Phase 1 เป็น Policy & Versioning + Support Center — ticket queue/assignment/SLA ย้ายไป Phase 2 |
-| Account Deletion | FO soft delete/deactivate, revoke session, auto-cancel pending offers + auto-close reports, 30-day grace period; BO track request, restore/reject restore, auto-delete (เก็บถาวร + ลบตัวตน ในขั้นเดียว) |
+| Account Deletion | FO soft delete/deactivate, revoke session, auto-close reports, 30-day grace period; BO track request, restore/reject restore, auto-delete (เก็บถาวร + ลบตัวตน ในขั้นเดียว) |
 | The Watch API | Backend sync/cache เท่านั้น, เก็บลง TukDaeng database ก่อน BO/FO ใช้งาน, BO CRUD/manual override ได้ตาม permission |
 | Audit | Mutation/export/sensitive reveal/destructive/public-impact actions ต้อง audit |
 
@@ -114,7 +110,7 @@
 
 | Priority | Decision | Source | Why It Matters |
 | --- | --- | --- | --- |
-| P0 | Chat / offer retention period | `BO-OFFER-DEC-001`, `DEL-DEC-002` | กระทบ chat export, dispute, account deletion, anonymization |
+| P0 | Chat retention period | `DEL-DEC-002` | กระทบ chat export, dispute, account deletion, anonymization |
 | P0 | Account deletion anonymization timing หลัง 30-day grace period | `BO-DEC-003`, `DEL-DEC-003` | กระทบ data model, archive job, privacy/compliance |
 | P0 | The Watch API production plan/quota และ FX source USD -> THB | `BO-MARKET-DEC-004`, `BO-MARKET-DEC-002` | กระทบ market data sync, price index, fallback |
 | P0 | Sync timing จาก BO moderation ไป FO surfaces | `00_GLOBAL_RULES_MODULE.md` sync timing section | กระทบ cache invalidation และ user-visible behavior |

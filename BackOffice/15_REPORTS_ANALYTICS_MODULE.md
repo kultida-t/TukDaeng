@@ -1,10 +1,10 @@
 ﻿# 15 BO Reports & Analytics Module
 
-**Version:** `BO-15-v0.1`  
-**Date:** 2026-07-06  
+**Version:** `BO-15-v0.2`  
+**Date:** 2026-10-26  
 **Status:** Draft baseline — **Phase 2 / Future scope (deferred)**  
 **Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/02_FEED_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`, `../FrontOffice/12_BOARD_MODULE.md`, `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`
+**Primary FO Sources:** `../FrontOffice/02_FEED_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`, `../FrontOffice/12_BOARD_MODULE.md`, `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`
 
 > **สถานะ scope:** เลื่อนเป็น Phase 2/future scope — prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor
 > เอกสารนี้เก็บไว้เพื่ออ้างอิงเมื่อกลับมาทำใน Phase 2 ไม่ใช่งานที่ต้องทำใน Phase 1
@@ -21,7 +21,7 @@
 | --- | --- |
 | Module Name | BO Reports & Analytics |
 | Platform | Responsive Web Back Office |
-| Version | `BO-15-v0.1` |
+| Version | `BO-15-v0.2` |
 | Status | Draft baseline |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -110,22 +110,21 @@ Timezone ต้องแสดงเป็น `Asia/Bangkok` และราค�
 
 ## 8. Report Catalog
 
-Reports หลักที่ต้องมี (10 report):
+Reports หลักที่ต้องมี (9 report):
 
 1. User Report
 2. Asset Report
-3. Offer Report
-4. Chat Report
-5. Content / Board Report
-6. Asset Reported Comments Report
-7. Search Report
-8. Watch Alert Report
-9. Notification Report
-10. Account Deletion Report
+3. Chat Report
+4. Content / Board Report
+5. Asset Reported Comments Report
+6. Search Report
+7. Watch Alert Report
+8. Notification Report
+9. Account Deletion Report
 
 นอกจากนี้ต้องมี:
 
-11. Export Job / Report Access History
+10. Export Job / Report Access History
 
 ## 9. User Report
 
@@ -202,36 +201,13 @@ Filters:
 
 Asset report ต้องใช้คำ `Show` / `Hide` ตาม FO เป็นหลัก ไม่ใช้ legacy `Collection Show` / `Collection Hide`
 
-## 11. Offer Report
-
-| Metric / Data | Requirement |
-| --- | --- |
-| Offer made | Count by period |
-| Offer accepted | Count and conversion |
-| Offer rejected | Count using status `Rejected` |
-| Offer cancelled/expired/invalidated | Count and reason |
-| Pending offers | Count and aging |
-| Offer value | THB amount summary |
-| Asset dependency | Offers impacted by removed/sold assets |
-
-Filters:
-
-- Offer status: Pending, Accepted, Rejected, Cancelled, Expired, Invalidated
-- Brand/model
-- Buyer/owner
-- Asset status
-- Date range
-
-Report UI ต้องใช้ `Rejected` เป็น status กลาง ส่วน FO action copy `Decline` เป็น action ที่เปลี่ยน status เป็น `Rejected`
-
-## 12. Chat Report
+## 11. Chat Report
 
 | Metric / Data | Requirement |
 | --- | --- |
 | Chat rooms | Created/active count |
 | Reported chats | Count, reason, status, SLA |
 | Attachment scan | Pending Scan, Clean, Unsafe, Scan Failed, Blocked |
-| Offer-linked chats | Chat rooms with offer card |
 | Removed/hidden messages | Count by reason |
 | Exported conversations | Export history and actor |
 
@@ -239,7 +215,6 @@ Filters:
 
 - Participant
 - Related asset
-- Has offer
 - Has attachment
 - Attachment scan status
 - Reported status
@@ -247,7 +222,7 @@ Filters:
 
 Chat transcript export ต้องจำกัด permission และ audit ทุกครั้ง
 
-## 13. Content / Board Report
+## 12. Content / Board Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -269,7 +244,7 @@ Filters:
 
 Preview as FO ต้องไม่เพิ่ม view count
 
-## 14. Asset Reported Comments Report
+## 13. Asset Reported Comments Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -285,7 +260,7 @@ Filters:
 - Asset/owner
 - Date range
 
-## 15. Search Report
+## 14. Search Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -306,7 +281,7 @@ Filters:
 
 Search report ต้องช่วย Admin ตรวจ gap ของ brand/model/reference/price index ได้
 
-## 16. Watch Alert Report
+## 15. Watch Alert Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -328,7 +303,7 @@ Filters:
 
 Watch Alert match ต้องใช้เฉพาะ asset status `Sale` และ notification destination ต้องเป็น `Watch Alert Result List`
 
-## 17. Notification Report
+## 16. Notification Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -336,7 +311,7 @@ Watch Alert match ต้องใช้เฉพาะ asset status `Sale` แ�
 | Delivery rate | Target tracking coverage > 95% |
 | Failed notifications | Failure reason and retryable count |
 | Broadcast performance | Audience, sent, delivered, opened, failed |
-| System trigger performance | Like, Comment, Follow, Offer, Watch Alert |
+| System trigger performance | Like, Comment, Follow, Watch Alert |
 | Disabled type impact | Count of skipped events due disabled type |
 
 Filters:
@@ -350,14 +325,13 @@ Filters:
 
 Generic Broadcast in FO in-app list ต้องยังถือเป็น open decision ตาม Notifications module
 
-## 18. Account Deletion Report
+## 17. Account Deletion Report
 
 | Metric / Data | Requirement |
 | --- | --- |
 | Requests | Requested count by period |
 | Restored | Count by period (คืนบัญชีในช่วง grace period) |
 | Restore rejected | Count and reason |
-| Auto-cancelled offers | ระบบยกเลิก offer ที่ Pending อัตโนมัติเมื่อ delete request สำเร็จ (count) |
 | Grace period | Active, ending soon, expired |
 | Auto-deleted (Archive + Anonymize) | Completed count and processing time — เก็บถาวร + ลบตัวตน ในขั้นเดียวเมื่อครบ grace period |
 | Cancelled requests | Count and reason |
@@ -372,7 +346,7 @@ Filters:
 
 Sensitive personal data ต้อง mask และ export จำกัดเฉพาะ Admin
 
-## 19. Export Requirements
+## 18. Export Requirements
 
 | Requirement | Rule |
 | --- | --- |
@@ -393,7 +367,7 @@ Export job status:
 - `Expired`
 - `Cancelled`
 
-## 20. Report Access & Audit
+## 19. Report Access & Audit
 
 ต้อง audit อย่างน้อย:
 
@@ -420,7 +394,7 @@ Audit payload:
 - `user_agent`
 - `created_at`
 
-## 21. Data Freshness
+## 20. Data Freshness
 
 | Data | Freshness Expectation |
 | --- | --- |
@@ -432,7 +406,7 @@ Audit payload:
 
 ทุก report ต้องแสดง `Last updated`
 
-## 22. Error, Empty, Loading States
+## 21. Error, Empty, Loading States
 
 | State | Requirement |
 | --- | --- |
@@ -444,11 +418,11 @@ Audit payload:
 | Permission denied | ไม่แสดง report หรือ field ที่ไม่มีสิทธิ์ |
 | Stale data | แสดง warning เมื่อ last updated เก่าเกิน threshold |
 
-## 23. Acceptance Criteria
+## 22. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-REPORT-001 | Reports & Analytics มี report catalog ครบ 10 report หลักและ export history (User, Asset, Offer, Chat, Content/Board, Asset Reported Comments, Search, Watch Alert, Notification, Account Deletion) — ไม่มี Support Report ใน Phase 1 เพราะ module 12 เป็น Policy & Versioning + Support Center |
+| AC-BO-REPORT-001 | Reports & Analytics มี report catalog ครบ 9 report หลักและ export history (User, Asset, Chat, Content/Board, Asset Reported Comments, Search, Watch Alert, Notification, Account Deletion) — ไม่มี Support Report ใน Phase 1 เพราะ module 12 เป็น Policy & Versioning + Support Center |
 | AC-BO-REPORT-002 | ทุก report รองรับ date range, filter, access visibility และ last updated |
 | AC-BO-REPORT-003 | ทุก report ที่ export ได้ต้องรองรับ CSV และ Excel ตาม permission |
 | AC-BO-REPORT-004 | Large export ต้องใช้ background job และมี status tracking |
@@ -457,14 +431,13 @@ Audit payload:
 | AC-BO-REPORT-006A | User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics และไม่ใช้ Guest เป็น account status |
 | AC-BO-REPORT-006B | User Report ต้องรองรับ Guest Visitors, Public Asset Views, Public Article Views, Public Profile Views, Public Shares และ Guest-to-Signup Conversion เมื่อ tracking เปิดใช้ |
 | AC-BO-REPORT-007 | Asset Report ใช้ status `Show` / `Hide` ตาม FO และไม่ใช้ legacy collection wording |
-| AC-BO-REPORT-008 | Offer Report ใช้ status `Rejected` ไม่ใช้ `Declined` |
 | AC-BO-REPORT-009 | Watch Alert Report ต้องยืนยัน Sale-only match และ destination `Watch Alert Result List` |
 | AC-BO-REPORT-010 | Support Report ไม่อยู่ใน Phase 1 เพราะ module 12 เป็น Policy & Versioning + Support Center ไม่มี ticket/SLA metric |
 | AC-BO-REPORT-011 | Notification Report ต้องแสดง delivery status และ failure reason |
 | AC-BO-REPORT-012 | Account Deletion Report ต้องแสดง restore/reject restore reason, grace period และ auto-delete completion (เก็บถาวร + ลบตัวตน ในขั้นเดียว) |
 | AC-BO-REPORT-013 | Reports UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 
-## 24. Open Decisions
+## 23. Open Decisions
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |

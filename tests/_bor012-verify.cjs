@@ -92,7 +92,6 @@ const NAV_DEFINITIONS = [
   { module: "dashboard", label: "Dashboard", section: "การดำเนินงาน", subs: [] },
   { module: "users", label: "User Management", section: "การดำเนินงาน", subs: ["User Accounts", "Reported Users"] },
   { module: "assets", label: "Asset Management", section: "การดำเนินงาน", subs: ["Asset List", "Reported Assets", "Reported Comments"] },
-  { module: "offers", label: "Offer Management", section: "การดำเนินงาน", subs: [] },
   { module: "content", label: "Content Management", section: "การดำเนินงาน", subs: ["Articles", "Categories", "Reported Articles"] },
   { module: "market", label: "Market Data", section: "การดำเนินงาน", subs: ["Market Overview", "Brands & Models", "Sync History"] },
   { module: "option-master", label: "Option Master", section: "การดำเนินงาน", subs: [] },
@@ -578,7 +577,7 @@ const NAV_DEFINITIONS = [
       await page.locator(".wa-panel-frequent [data-wa-alert-row='WAL-1440']").click();
       await page.waitForTimeout(400);
       check(`B.4 Back stack has entry after detail open`, await page.evaluate(() => backNavigationStack.length > 0));
-      await page.locator(".nav-item[data-module='offers']").click();
+      await page.locator(".nav-item[data-module='option-master']").click();
       await page.waitForTimeout(300);
       check(`B.4 Nav click resets back stack (length=0)`, await page.evaluate(() => backNavigationStack.length === 0));
     }
@@ -733,7 +732,6 @@ const NAV_DEFINITIONS = [
       { mod: "dashboard", sub: null, title: "Dashboard" },
       { mod: "users", sub: "User Accounts", title: "User Accounts" },
       { mod: "assets", sub: "Asset List", title: "Assets" },
-      { mod: "offers", sub: null, title: "Offer Management" },
       { mod: "content", sub: "Articles", title: "Articles" },
       { mod: "market", sub: "Market Overview", title: "Market Overview" },
       { mod: "option-master", sub: null, title: "Option Master" },

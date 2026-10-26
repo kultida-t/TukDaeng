@@ -1,8 +1,8 @@
 ﻿# TukDaeng Back Office Master Baseline
 
-**Version:** `BO-PRD-v0.1`  
+**Version:** `BO-PRD-v0.2`  
 **Date:** 2026-07-06<br>
-**Last Updated:** 2026-09-28<br>
+**Last Updated:** 2026-10-26<br>
 **Status:** Current baseline — Admin Identity Lifecycle locked through Mission 3<br>
 **Platform:** Responsive Web Back Office  
 **Audience:** Admin  
@@ -47,7 +47,6 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Dashboard | Key metrics, pending queues, recent activity, last updated snapshot |
 | User Management | User list, search/filter/sort, profile/detail view, login history, suspend/ban/restore, reset password, Account Deletion handoff, no direct User List export |
 | Asset Management | `04_ASSET_MANAGEMENT_MODULE.md` - Asset list/detail, status visibility, reports, flag/unflag, temporary hide/unhide, permanent hide, ลบโดยเจ้าของ retained record, force status change, sensitive-field control |
-| Offer Management | `09_OFFER_CHAT_MODULE.md` - Read-only offer list/detail, buyer/seller and asset interest overview, pending-offer dependency |
 | Content / Board | `05_CONTENT_BOARD_MODULE.md` - Article/category CRUD, preview as FO, draft/publish/schedule/archive, automatic Board Main placement from Published Articles; banner/featured ordering is future scope |
 | Market Data | `06_MARKET_DATA_MODULE.md` - Brand/model/reference/price index management และ active/inactive status |
 | Option Master | `17_OPTION_MASTER_MODULE.md` - Internal option master management สำหรับ FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit; `ระบุเอง` free-text → `spec_option_suggestions` + `spec_option_aliases` + curation queue contract + Suggestion Queue UI ใน prototype (section 23.5 — promote/map alias/ignore + audit, backfill เป็น production contract) |
@@ -80,10 +79,9 @@ Phase 2 คือ modules และ flows ที่ยังไม่ล็อ�
 | Module | Phase 2 Scope |
 | --- | --- |
 | Directory | `07_DIRECTORY_MODULE.md` - รอ FO directory detail routes และ taxonomy approval |
-| Reports & Analytics | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, offer, chat, board, asset reported comments, search, watch alert, notification, account deletion reports, export jobs (prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor) |
+| Reports & Analytics | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, chat, board, asset reported comments, search, watch alert, notification, account deletion reports, export jobs (prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor) |
 | Notifications (Broadcast & System Templates) | `14_NOTIFICATIONS_MODULE.md` - Broadcast notification create/schedule/send, target audience, System Notification Trigger enable/disable, template title/body, notification report metrics (Delivery Logs ย้ายไป Settings ใน Phase 1 แล้ว) |
-| Chat moderation workflow | Remove/hide chat message, reported chat queue (prototype Offer Management เป็น read-only ไม่มี chat moderation) |
-| Offer write actions | Force expire, invalidate, accept/decline จาก BO (prototype Offer Management เป็น read-only) |
+| Chat moderation workflow | Remove/hide chat message, reported chat queue (ไม่มีใน Phase 1 prototype) |
 
 ## 6. Phase 3 Scope
 
@@ -109,7 +107,6 @@ Phase 3 คือ advanced workflow และ external integration ที่ย�
 | Publish article | Article แสดงใน Board, category, search และ detail เมื่อถึง publish time |
 | Archive article | Article หายจาก Board/search/category และ direct link แสดง unavailable behavior |
 | Hide comment | Comment หายจาก Asset Detail |
-| View offer status | Admin ดู offer list/detail แบบ read-only; offer status เปลี่ยนจาก FO user action หรือ system rule ของ Asset/Account workflow |
 | Publish policy | FO แสดงเนื้อหา policy เวอร์ชันใหม่ทันที (Terms of Use, Privacy Policy) |
 | Update Support Center | FO Help screen แสดงช่องทางติดต่อและเวลาทำการล่าสุด |
 
@@ -140,7 +137,7 @@ Phase 3 คือ advanced workflow และ external integration ที่ย�
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
 | BO-DEC-001 | BO language mode | Thai primary สำหรับ V1; English optional ภายหลัง |
-| BO-DEC-002 | Chat and offer retention period | ต้องสรุปร่วมกับ legal/compliance ก่อน Phase 2 build |
+| BO-DEC-002 | Chat retention period | ต้องสรุปร่วมกับ legal/compliance ก่อน Phase 2 build |
 | BO-DEC-003 | Account deletion anonymization timing | ใช้ 30-day grace period ตาม FO decision เว้นแต่ legal เปลี่ยน |
 | BO-DEC-004 | Admin remove asset permission | ให้ remove ได้พร้อม required reason และ audit; high-value dispute อาจต้อง Admin approval |
 | BO-DEC-005 | Board public SEO web requirement | ถือเป็น mobile Board content ก่อน จนกว่าจะเพิ่ม web SEO scope ชัดเจน |

@@ -1,0 +1,51 @@
+ M .agents/skills/bo-screen-design/SKILL.md
+ M AGENTS.md
+ M BackOffice/00_GLOBAL_RULES_MODULE.md
+ M BackOffice/02_DASHBOARD_MODULE.md
+ M BackOffice/03_USER_MANAGEMENT_MODULE.md
+ M BackOffice/04_ASSET_MANAGEMENT_MODULE.md
+ M BackOffice/06_MARKET_DATA_MODULE.md
+ M BackOffice/08_AUDIT_LOG_MODULE.md
+ D BackOffice/09_OFFER_CHAT_MODULE.md
+ M BackOffice/11_WATCH_ALERT_MODULE.md
+ M BackOffice/13_ACCOUNT_DELETION_MODULE.md
+ M BackOffice/14_NOTIFICATIONS_MODULE.md
+ M BackOffice/15_REPORTS_ANALYTICS_MODULE.md
+ M BackOffice/16_ADMIN_SETTINGS_MODULE.md
+ M BackOffice/BO_DEV_IMPLEMENTATION_CHECKLIST.md
+ M BackOffice/BO_FINAL_REVIEW_AND_HANDOFF.md
+ M BackOffice/BO_MASTER_BASELINE.md
+ M BackOffice/BO_PRD.md
+ M BackOffice/BO_Spec.md
+ M BackOffice/BO_Spec_Completion_Addendum.md
+ M BackOffice/BO_UI_UX_STANDARD.md
+ M BackOffice/DOCUMENT_VERSION.md
+ M BackOffice/README_MODULE_INDEX.md
+ M BackOffice/WatchAlert_Prototype_Blueprint.md
+ M PROTECTED_SCREENS.md
+ M README.md
+ M deliverables/label-standard/inventory.json
+ M deliverables/label-standard/inventory.md
+ M docs/bo-canonical-label-table.md
+ M docs/bo-prototype-audit/01-manual-review-checklist.md
+ M docs/bo-prototype-audit/01-system-coverage-audit.md
+ M docs/bo-shared-remediation-coverage.md
+ M docs/money-display-rules.md
+ M docs/responsive-report-lists-testing.md
+ M docs/responsive-table-standard.md
+ M tests/_bor011-verify.cjs
+ M tests/_bor012-verify.cjs
+ M tests/_bor013-verify.cjs
+ M tests/al-005-audit-jump-check.spec.js
+ M tests/qa-bo-001-auth-dashboard.spec.js
+ D tests/qa-bo-007-offer-management.spec.js
+ M tests/qa-bo-009-market-demand.spec.js
+ M tests/qa-bo-012-cross-module-consistency.spec.js
+ M tests/qa-bo-014c-audit-log-filter.spec.js
+?? deliverables/task-45c27755/
+
+Task: 45c27755 — Sync BO docs ให้ตรง bo-prototype ล่าสุดหลังถอด Offer
+Closed: 2026-10-26 (task done, no commit — changes left uncommitted per user workflow)
+Legend: M = modified, D = deleted (BackOffice/09_OFFER_CHAT_MODULE.md, tests/qa-bo-007-offer-management.spec.js)
+Verification: playwright desktop-1440 qa-bo-001(128)/009(~120)/012(133)/014c(14) + al-005(6) ผ่านครบ; _bor011-013 verify scripts 1179+307+259 passed 0 failed
+Note: bo-prototype.html ไม่ถูกแตะ — เป็น source of truth

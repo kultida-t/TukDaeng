@@ -13,8 +13,8 @@
 |---|--------|--------|----------------|-------|
 | 1 | Demand Overview | Dashboard-like | Dashboard (KPI cards + sections) | ภาพรวมความต้องการตลาดจาก Search/Filter และ Watch Alert |
 | 2 | Search Insights | Analytics read-only | Reports / Analytics | ภาพรวม keyword และ filter ที่ผู้ใช้เลือกบ่อย รวมถึง no-result search |
-| 3 | Watch Alert List | List-only (read-only) | User List / Offer List (read-only) | รายการ alert ทั้งหมด รวมที่ user ลบแล้ว |
-| 4 | Alert Detail | Read-only detail + history | Offer Detail (read-only) | รายละเอียด alert + ประวัติ user action |
+| 3 | Watch Alert List | List-only (read-only) | User List / Deletion Requests List (read-only) | รายการ alert ทั้งหมด รวมที่ user ลบแล้ว |
+| 4 | Alert Detail | Read-only detail + history | Request Detail (read-only) | รายละเอียด alert + ประวัติ user action |
 
 **เมนูนำทาง:** Market Demand (parent) > subs: Demand Overview, Search Insights, Watch Alert List
 - Alert Detail เข้าจาก Watch Alert List (drill-in) ไม่มี sub menu ตรง
@@ -94,7 +94,7 @@ Search Volume และ No-result Searches แสดงใน Search Insights �
 - Popular Filter Combinations: เงื่อนไขที่ถูกใช้ร่วมกันบ่อย หากมีข้อมูลเพียงพอ
 - No-result Searches: คำค้นหาหรือเงื่อนไขที่ไม่พบผลลัพธ์ แยกจาก Unmet Watch Alert
 - Search/Filter Trend: แนวโน้มตามช่วงเวลา
-- Search Funnel: Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer พร้อมจำนวนและเปอร์เซ็นต์เทียบกับ Search Submit
+- Search Funnel: Search Submit → Result Click → Asset Detail Open → Watch Alert พร้อมจำนวนและเปอร์เซ็นต์เทียบกับ Search Submit
 
 ### Search Funnel Visual Standard
 - แสดงเป็นรายการแนวตั้งใน card เดียว โดยใช้ composition เดียวกับ Asset Status
@@ -373,7 +373,7 @@ Inactive market data warning แสดงเป็น info icon ใน Criteria 
 
 ## 9. ขอบเขตที่ห้ามแก้ใน task ถัดไป
 
-- ห้ามแก้ protected screens (Login, Dashboard, User/Asset/Content/Market/Offer/Option Master)
+- ห้ามแก้ protected screens (Login, Dashboard, User/Asset/Content/Market/Option Master)
 - ห้ามแก้ shared CSS/helper/route ที่กระทบ protected screens
 - ห้ามเพิ่ม admin action ใด ๆ (disable/enable/bulk/export)
 - ห้ามเปลี่ยน FO rules ที่ยืนยันแล้ว (match rule, destination, criteria schema)

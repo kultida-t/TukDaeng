@@ -45,7 +45,7 @@
 | | `Back to Option Groups` | — | Option Master back | 🔒 **locked exception ถาวร** (contract C.4) |
 | **Back — ขั้นใน flow/modal** | `ย้อนกลับ` | กลับไป step/ฟอร์มก่อนหน้า *ภายใน* modal flow (confirm → edit) — ไม่ใช่ page back | `ย้อนกลับ` (6, Option Master/Roles confirm modals) | ✅ canonical (แยกจาก `กลับไป <dest>` — ใช้เฉพาะ in-modal step back) |
 | **View detail — row/menu** | `ดูรายละเอียด` | row action menu / generic detail open | `ดูรายละเอียด` (13) canonical | ✅ canonical |
-| | | | `View`, `View detail`, `Detail` (6, Categories/Articles/Market) | 🔴 deviation — ✅ Market MKD-003 / Articles CTM-003a / Categories CTM-003b resolved; เหลือ Offer รอ mission เฉพาะจอ |
+| | | | `View`, `View detail`, `Detail` (6, Categories/Articles/Market/Offer) | ✅ resolved ครบ — Market MKD-003 / Articles CTM-003a / Categories CTM-003b; Offer entries หมดไปพร้อมถอด Offer Management 26/10/2026 |
 | **View — entity เฉพาะ** | `ดู <Entity>` | เปิด entity เฉพาะจาก context อื่น | `ดู Audit Log` (4), `ดู Version History` (1), `ดูเวอร์ชัน` (1) | ✅ canonical pattern `ดู <EN entity>` |
 | | | | `View Asset` (4), `View Article` (3), `View all comments` (2), `View sale history`, `View full sale record`, `View Sync History` (10) | 🔴 deviation → `ดู <Entity>` — ✅ board report `View Article`→`ดูบทความ` (+aria) resolved CTM-003b; ที่เหลือ module อื่น รอ mission เฉพาะจอ |
 | **Preview** | `ดูตัวอย่าง` | ดูตัวอย่างก่อน publish/save | `Preview` (3, Policy/Support/Article editor — locked) | ✅ canonical `ดูตัวอย่าง` (confirmed §5.5); EN เดิม = deviation D14 |
@@ -100,7 +100,7 @@
 | Level | Canonical | หมายเหตุ |
 |---|---|---|
 | Section (TH — locked exception) | `การดำเนินงาน` / `งานตรวจสอบและบริการ` / `เครื่องมือ & รายงาน` | contract C.6 คงเดิม |
-| Module (EN) | `Dashboard`, `User Management`, `Asset Management`, `Offer Management`, `Content Management`, `Market Data`, `Option Master`, `Market Demand`, `Account Deletion`, `Settings` | อ้าง `navGroups` เท่านั้น ห้าม hardcode ต่างจาก source |
+| Module (EN) | `Dashboard`, `User Management`, `Asset Management`, `Content Management`, `Market Data`, `Option Master`, `Market Demand`, `Account Deletion`, `Settings` | อ้าง `navGroups` เท่านั้น ห้าม hardcode ต่างจาก source (`Offer Management` ถูกถอด 26/10/2026) |
 | Sub (EN) | `User Accounts`, `Reported Users`, `Asset List`, `Reported Assets`, `Reported Comments`, `Articles`, `Categories`, `Reported Articles`, `Market Overview`, `Brands & Models`, `Sync History`, `Demand Overview`, `Search Insights`, `Watch Alert List`, `Admin Accounts`, `Roles & Permissions`, `Policy & Versioning`, `Support Center`, `Delivery Logs`, `Audit Log` (module `audit`) | display override เดียวที่อนุญาต: `Asset List` → sidebar แสดง `Assets` (`getSubNavDisplayLabel`) |
 | Sidebar logout | `Logout` | locked English convention |
 
@@ -131,7 +131,7 @@ Status pills, risk pills, channel pills, role names, entity ID prefixes (`U-`/`A
 | # | Deviation | Locations (ตัวอย่าง) | เป้าหมาย normalize |
 |---|---|---|---|
 | D1 | `Cancel`/`Close`/`×` English ใน Market Sync modal | 38164–38167 (เดิม 37828–37831) | `ยกเลิก`/`ปิด` — ✅ **Resolved MKD-003 07/10** (`Cancel`→`ยกเลิก`, `Close`→`ปิด` ×2; icon close มี `aria-label="ปิด"` อยู่แล้ว) |
-| D2 | `View`/`View detail`/`Detail` English row actions | 36765/37041/36782 (Market), 39901/43646 | `ดูรายละเอียด` — ✅ **Market resolved MKD-003 07/10** (3 จุด); ✅ **Articles resolved CTM-003a 07/10** (article row menu); ✅ **Categories resolved CTM-003b 07/10** (category row menu); ที่เหลือ (Offer) รอ mission เฉพาะจอ |
+| D2 | `View`/`View detail`/`Detail` English row actions | 36765/37041/36782 (Market), 39901/43646 | `ดูรายละเอียด` — ✅ **Market resolved MKD-003 07/10** (3 จุด); ✅ **Articles resolved CTM-003a 07/10** (article row menu); ✅ **Categories resolved CTM-003b 07/10** (category row menu); ที่เหลือ (Offer) หมดไปพร้อมถอด Offer Management 26/10/2026 — deviation ปิดครบ |
 | D3 | `View Asset`/`View Article`/`View all comments`/`View sale history`/`View full sale record`/`View Sync History`/`Audit trail` | 31814/44477/45593/22503/24380/23185/38166 (Market), 37145 (Audit trail btn) | `ดู <Entity>` — ✅ **Market resolved MKD-003 07/10** (`View Sync History`→`ดู Sync History`, `Audit trail`→`ดู Audit Trail`); ✅ **board report `View Article`→`ดูบทความ` resolved CTM-003b 07/10** (row menu + detail btn + aria `ดูบทความ <id>`); ที่เหลือ module อื่น รอ mission เฉพาะจอ |
 | D4 | `Edit`/`Edit Category`/`Edit article` | 34019/40396/39902/42176/43648/43751 | `แก้ไข`/`แก้ไข <X>` — ✅ **`Edit article` resolved CTM-003a 07/10** → `แก้ไขบทความ` (row menu + detail btn); ✅ **`Edit Category`→`แก้ไข Category` resolved CTM-003b 07/10** (row menu + detail btn); `Edit` ที่เหลือรอ mission เฉพาะจอ |
 | D5 | `Add admin`/`Add Category`/`+ Add block` | 27787/32028/42819 | `เพิ่ม <Entity>` — ✅ **`+ Add block` resolved CTM-003a 07/10** → `+ เพิ่ม block`; ✅ **`Add Category`→`เพิ่ม Category` resolved CTM-003b 07/10** (toolbar btn + aria + `#primary-action` mirror) |

@@ -560,7 +560,6 @@ try {
 | Reported Comments | `assets`   | `Reported Comments`|
 | Reported Users    | `users`    | `Reported Users`   |
 | User List         | `users`    | `User Accounts`    |
-| Offer List        | `offers`   | `Offer List`       |
 
 #### 7.4 ค่าที่ต้องตรวจและค่าที่ถูกต้อง
 
@@ -744,7 +743,7 @@ const pagerHtml = renderPager(currentPage, pageCount, "data-user-page");
 </div>`
 ```
 
-### 10.7 จุดที่ใช้ helper (16 จุด)
+### 10.7 จุดที่ใช้ helper (15 จุด)
 
 | # | หน้า                              | data-attr                       |
 | - | --------------------------------- | ------------------------------- |
@@ -761,9 +760,8 @@ const pagerHtml = renderPager(currentPage, pageCount, "data-user-page");
 | 11 | Reported Comments                | `data-reported-comment-page`    |
 | 12 | Reported Assets                  | `data-asset-page`               |
 | 13 | Asset List                       | `data-asset-page`               |
-| 14 | Offer List                       | `data-offer-page`               |
-| 15 | Option Group List                | `data-option-group-page`        |
-| 16 | Option Detail (option list)      | `data-option-detail-page`       |
+| 14 | Option Group List                | `data-option-group-page`        |
+| 15 | Option Detail (option list)      | `data-option-detail-page`       |
 
 > หมายเหตุ: Market Sync History ใช้ static pager (disabled, 1 หน้า) ไม่ต้องใช้ helper
 

@@ -1,7 +1,7 @@
 # 02 BO Dashboard Module
 
-**Version:** `BO-02-v1.1`  
-**Date:** 2026-09-04  
+**Version:** `BO-02-v1.2`  
+**Date:** 2026-10-26  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Dashboard |
 | Platform | Responsive Web Back Office |
-| Version | `BO-02-v1.1` |
+| Version | `BO-02-v1.2` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -132,7 +132,7 @@ Dashboard header ต้องไม่แสดง:
 
 ## 8. KPI Summary Cards
 
-KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
+KPI Summary ต้องแสดง 6 cards ตามลำดับนี้:
 
 ### 8.1 โครงสร้าง KPI Cards (Spec ล็อคส่วนนี้)
 
@@ -144,10 +144,8 @@ KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 | Active Users Today | จำนวนผู้ใช้ registered ที่ใช้งานวันนี้ | `Today` / `This Week` / `This Month` — จำนวน active users รายช่วงเวลา | เปิด User Management / User Accounts |
 | New Assets | จำนวน asset ที่สร้างวันนี้ แยกตามสถานะ | `Sale` / `Show` / `Hide` / `Sold` — จำนวน asset ใหม่ตามสถานะ | เปิด Asset Management / Asset List |
 | Reported Items | จำนวนรายงานค้างตรวจทั้งหมด | `Assets` / `Users` / `Articles` / `Comments` — จำนวนรายงานตามประเภท (chip เป็น navigation หลัก) | Chip เปิด queue รายงานตามประเภท |
-| Offer Activity | จำนวน offer ที่มี activity ล่าสุด | `Pending` / `Paused` / `Accepted` / `Rejected` / `Cancelled` / `Invalidated` — จำนวน offer ตามสถานะ | เปิด Offer / Offer Queue |
 | Articles | จำนวนบทความทั้งหมด | `Published` / `Scheduled` — จำนวนบทความตามสถานะเผยแพร่ | เปิด Content Management / Articles |
 | Watch Alert | จำนวน watch alert ที่ active | `Active` / `Triggered` — จำนวน alert ตามสถานะ | เปิด Market Demand / Demand Overview |
-| Policies | จำนวน policy ทั้งหมด | `Published` / `Draft` — จำนวน policy ตามสถานะ | เปิด Settings / Policy & Versioning |
 
 ### 8.2 ค่าตัวอย่างจาก prototype (Mock — ไม่ใช่ production value)
 
@@ -159,10 +157,8 @@ KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 | Active Users Today | `8.4K` | `ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน` | `Today 8,420`, `This Week 24,700`, `This Month 38,900` |
 | New Assets | `94` | `สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ` | `Sale 64`, `Show 17`, `Hide 9`, `Sold 4` |
 | Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Articles 3`, `Comments 3` |
-| Offer Activity | `12` | `อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด` | `Pending 3`, `Paused 1`, `Accepted 3`, `Rejected 2`, `Cancelled 2`, `Invalidated 1` |
 | Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` |
 | Watch Alert | `298` | `มีการจับคู่รายการขาย 18 ครั้งวันนี้` | `Active 298`, `Triggered 18` |
-| Policies | `2` | `Privacy Policy มี Draft v2.1-draft รอเผยแพร่` | `Published 2`, `Draft 1` |
 
 > **Note:** Spec ล็อคโครงสร้างและพฤติกรรมของ KPI cards (ชื่อ card, ข้อมูลที่นับ/แสดง, chips, navigation) ตามตาราง 8.1 ไม่ได้ล็อคค่า mock ในตาราง 8.2 ค่า mock อ้างอิงจาก `Prototypes/bo-prototype.html` และเปลี่ยนได้ตาม prototype โดยไม่ต้อง sync spec ถ้า prototype เปลี่ยนเฉพาะค่า mock แต่โครงสร้าง card ไม่เปลี่ยน
 
@@ -220,7 +216,7 @@ Recent Activity แสดงเหตุการณ์ล่าสุดที�
 Header:
 
 - Title: `Recent Activity`
-- Filter buttons: `ทั้งหมด`, `Report`, `Offer`, `Content`, `System`
+- Filter buttons: `ทั้งหมด`, `Report`, `Content`, `System`
 
 Activity row ต้องมี:
 
@@ -235,7 +231,6 @@ Activity row ต้องมี:
 | Category | Event title | Summary | Time | Navigation |
 | --- | --- | --- | --- | --- |
 | Report | มีรายงานสินทรัพย์ใหม่ | `Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด` | `15 นาทีที่แล้ว` | Asset Management / Reported Assets |
-| Offer | ข้อเสนอซื้อถูกปฏิเสธ | `OFR-472 ของ Audemars Piguet Royal Oak ถูก owner ปฏิเสธและยังเก็บ history ไว้ใน Offer Detail` | `32 นาทีที่แล้ว` | Offer / Offer Queue |
 | Content | ตั้งเวลาเผยแพร่บทความแล้ว | `บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00` | `1 ชม.ที่แล้ว` | Content Management / Articles |
 | System | ข้อมูลตลาดอัปเดตแล้ว | `Sync History พบ duplicate price points ของ Omega Speedmaster Reduced 3 แถว` | `2 ชม.ที่แล้ว` | Market Data / Sync History |
 | System | แจ้งเตือนบางรายการส่งไม่สำเร็จ | `ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว` | `3 ชม.ที่แล้ว` | Settings / Delivery Logs |
@@ -244,7 +239,6 @@ Activity row ต้องมี:
 
 - Filter `ทั้งหมด` แสดงทุก category
 - Filter `Report` แสดง report-related events
-- Filter `Offer` แสดง offer-related events
 - Filter `Content` แสดง content publishing events
 - Filter `System` แสดง market data, notification, watch alert และ audit/system events
 - Activity row ต้องไม่เปิด modal กลางบน Dashboard
@@ -261,7 +255,6 @@ Panel ที่ต้องมี:
 | Panel | Header meta | Row content | Navigation |
 | --- | --- | --- | --- |
 | Asset Status | `จาก Asset List ทั้งหมด` | Status label, description, count | เปิด Asset Management ตาม status/context |
-| Offer Status | `จาก Offer Management ทั้งหมด` | Offer status label, description, count | เปิด Offer / Offer Queue |
 | Latest Articles | `จาก Articles ล่าสุด` | Article title, publish status, detail | เปิด Content Management / Articles |
 | Top Searched Brands | `จาก Search Insights สัปดาห์นี้` | Brand, search count, trend, share bar | เปิด Market Demand / Search Insights |
 
@@ -278,24 +271,9 @@ Rows:
 | Sale | `12` | `ยอดทั้งหมดที่แสดงใน Feed และ Search` | Asset Management / Asset List |
 | Show | `4` | `ยอดทั้งหมดที่แสดงใน collection และ profile` | Asset Management / Asset List |
 | Hide | `2` | `ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์` | Asset Management / Asset List พร้อม context Hide |
-| Sold | `2` | `ยอดทั้งหมดที่คงประวัติและปิดรับ offer` | Asset Management / Asset List |
+| Sold | `2` | `ยอดทั้งหมดที่คงประวัติการขาย` | Asset Management / Asset List |
 
-### 11.2 Offer Status
-
-ใช้รูปแบบ status card เดียวกับ Asset Status: แต่ละแถวมีกรอบ แถบสีด้านซ้าย สีพื้นหลังอ่อน และจำนวนด้านขวา โดยเลือกสีตามความหมายของ Offer status; ไม่มีการแสดงยอดรวมที่หัวการ์ด
-
-Rows:
-
-| Label | Value ตัวอย่าง | Detail | Navigation |
-| --- | --- | --- | --- |
-| Pending | `3` | `รอ owner ตอบตามรายการใน Offer Management` | Offer / Offer Queue |
-| Paused | `1` | `offer ถูกพักระหว่าง asset รอตรวจสอบ` | Offer / Offer Queue |
-| Accepted | `3` | `owner รับ offer แล้วแต่ยังเป็น read-only history` | Offer / Offer Queue |
-| Rejected | `2` | `owner ปฏิเสธและเก็บไว้ใน Offer History` | Offer / Offer Queue |
-| Cancelled | `2` | `asset ถูกลบหรือซ่อนโดย owner ระหว่าง offer` | Offer / Offer Queue |
-| Invalidated | `1` | `asset ถูกซ่อนถาวรและ offer ใช้งานไม่ได้` | Offer / Offer Queue |
-
-### 11.3 Latest Articles
+### 11.2 Latest Articles
 
 Rows:
 
@@ -305,7 +283,7 @@ Rows:
 | How to Check Provenance | `Published` | `เผยแพร่แล้วและแสดงบน Board` | Content Management / Articles |
 | Market Notes July | `Draft` | `ยังไม่แสดงบน FO / รอรูป cover` | Content Management / Articles |
 
-### 11.4 Top Searched Brands
+### 11.3 Top Searched Brands
 
 แสดง Top 5 แบรนด์ที่ถูกค้นหา/เลือกบ่อยที่สุดจาก Search Report สัปดาห์นี้ — Share คำนวณจากผลรวมของแบรนด์ทั้งหมดใน Search Insights (10 แบรนด์) ไม่ใช่จากเฉพาะ 5 แบรนด์ที่แสดง เพื่อให้ตรงกับ Popular Brands ใน Search Insights
 
@@ -341,10 +319,8 @@ Rows:
 | Reported Items / Users chip | User Management / Reported Users |
 | Reported Items / Articles chip | Content Management / Reported Articles |
 | Reported Items / Comments chip | Asset Management / Reported Comments |
-| Offer Activity card | Offer / Offer Queue |
 | Articles card | Content Management / Articles |
 | Watch Alert card | Market Demand / Demand Overview |
-| Policies card | Settings / Policy & Versioning |
 | Work Queue row | Module/submodule ตาม queue นั้น |
 | Recent Activity row | Module/submodule ตาม event นั้น |
 | Dashboard Panel row | Module/submodule ตาม row นั้น |
@@ -387,7 +363,7 @@ Dashboard ไม่มี manual refresh control ในสเปกปัจจ�
 Copy rules:
 
 - ใช้ข้อความไทยที่ช่วยตัดสินใจปฏิบัติงาน
-- ห้ามใช้ raw backend label เป็นข้อความหลัก เช่น `Oldest 22h`, `blocked by pending offer`, `Security event`
+- ห้ามใช้ raw backend label เป็นข้อความหลัก เช่น `Oldest 22h`, `blocked by dependency check`, `Security event`
 - ห้ามใช้คำ technical `SLA` บน UI
 - หลีกเลี่ยงตัวย่อที่ไม่มีคำอธิบาย
 - Trend และ queue detail ต้องอ่านรู้เรื่องเมื่ออยู่เดี่ยว ๆ
@@ -423,13 +399,13 @@ Typography:
 | --- | --- |
 | AC-BO-DASH-001 | หลัง login สำเร็จ ระบบเปิด Dashboard เป็นหน้าแรก และเมนู Dashboard แสดง active state |
 | AC-BO-DASH-002 | Header แสดง breadcrumb, title และ `Last updated` โดยไม่มี Date Range, Refresh, Export, global search, notification popup หรือ admin switcher |
-| AC-BO-DASH-003 | Dashboard แสดง KPI Summary ครบ 8 cards ตามลำดับที่กำหนด |
+| AC-BO-DASH-003 | Dashboard แสดง KPI Summary ครบ 6 cards ตามลำดับที่กำหนด |
 | AC-BO-DASH-004 | `Reported Items` แสดง chips แยก `Assets`, `Users`, `Articles`, `Comments` และแต่ละ chip ไป queue ที่ถูกต้อง |
 | AC-BO-DASH-005 | Work Queue แสดงครบ 7 rows ตามลำดับและ priority ที่กำหนด |
 | AC-BO-DASH-006 | Work Queue row ทุก row คลิกไป module/submodule ที่เกี่ยวข้องได้ |
-| AC-BO-DASH-007 | Recent Activity แสดง filter `ทั้งหมด`, `Report`, `Offer`, `Content`, `System` และ filter ทำงานจริง |
+| AC-BO-DASH-007 | Recent Activity แสดง filter `ทั้งหมด`, `Report`, `Content`, `System` และ filter ทำงานจริง |
 | AC-BO-DASH-008 | Recent Activity row คลิกไป module/submodule ที่เกี่ยวข้องโดยตรง และไม่เปิด modal กลางบน Dashboard |
-| AC-BO-DASH-009 | Dashboard Panels แสดงครบ `Asset Status`, `Offer Status`, `Latest Articles`, `Top Searched Brands` |
+| AC-BO-DASH-009 | Dashboard Panels แสดงครบ `Asset Status`, `Latest Articles`, `Top Searched Brands` |
 | AC-BO-DASH-010 | Panel row ทุก row คลิกไป module/submodule ที่เกี่ยวข้องได้ |
 | AC-BO-DASH-011 | Dashboard responsive ถูกต้องที่ 375px, 760px, 1024px, 1366px และ 1440px |
 | AC-BO-DASH-012 | Mobile แสดงลำดับ Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels |

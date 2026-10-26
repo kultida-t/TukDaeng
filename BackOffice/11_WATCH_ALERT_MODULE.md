@@ -1,7 +1,7 @@
 ﻿# 11 BO Market Demand & Watch Alert Module
 
-**Version:** `BO-11-v0.6`
-**Date:** 2026-10-05
+**Version:** `BO-11-v0.7`
+**Date:** 2026-10-26
 **Status:** สเปกปัจจุบัน
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Market Demand & Watch Alert |
 | Platform | Responsive Web Back Office |
-| Version | `BO-11-v0.6` |
+| Version | `BO-11-v0.7` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -122,7 +122,7 @@ Search Insights เป็นข้อมูล aggregate จาก Search & Filt
 
 Search Funnel ในหน้า Search Insights แสดงเป็นการ์ดรายการแนวตั้ง โดยใช้ composition เดียวกับ Asset Status เพื่อให้ Admin สแกนลำดับและค่าของแต่ละขั้นได้เร็ว:
 
-- แสดง 4 ขั้นตามลำดับ `Search Submit` → `Result Click` → `Asset Detail Open` → `Watch Alert / Offer`
+- แสดง 4 ขั้นตามลำดับ `Search Submit` → `Result Click` → `Asset Detail Open` → `Watch Alert`
 - แต่ละแถวแสดง Step, ชื่อขั้น, จำนวนเหตุการณ์ และเปอร์เซ็นต์เมื่อเทียบกับ Search Submit
 - ใช้กรอบอ่อนและแถบสีด้านซ้ายเพื่อแยกแต่ละขั้น โดยสีเป็น visual accent เท่านั้น ไม่ใช่สถานะของข้อมูล
 - จำนวนเหตุการณ์ใช้ตัวเลขขนาดใหญ่ชิดขวา ส่วนชื่อและรายละเอียดอยู่ทางซ้าย
@@ -241,7 +241,7 @@ Alert List ใช้ filter bar สำหรับคัดกรอง ไม�
 
 ## 7.1 Watch Alert Detail
 
-Watch Alert Detail เป็นหน้าจอ read-only สำหรับดูรายละเอียดของ alert แต่ละรายการ เข้าผ่าน row click จาก Watch Alert List ไม่มี admin action ใด ๆ ในหน้า Detail (ไม่มี disable/enable/export) หน้าจอแสดงข้อมูล 6 sections ตามลำดับ โดย reuse โครงสร้าง detail page เดียวกับ Offer Detail และ report pages อื่น ๆ
+Watch Alert Detail เป็นหน้าจอ read-only สำหรับดูรายละเอียดของ alert แต่ละรายการ เข้าผ่าน row click จาก Watch Alert List ไม่มี admin action ใด ๆ ในหน้า Detail (ไม่มี disable/enable/export) หน้าจอแสดงข้อมูล 6 sections ตามลำดับ โดย reuse โครงสร้าง detail page เดียวกับ report pages อื่น ๆ
 
 ### Header
 
@@ -472,7 +472,7 @@ Analytics ขั้นต่ำ:
 - No-result search count และ rate
 - Search-to-result conversion
 - Search trend over time (รายวัน/รายสัปดาห์) สำหรับดู trend ของ search volume และ no-result rate
-- Search funnel: Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer เพื่อวัด conversion จาก search สู่ action
+- Search funnel: Search Submit → Result Click → Asset Detail Open → Watch Alert เพื่อวัด conversion จาก search สู่ action
 - Average results per search เพื่อวัด quality ของ search result
 - Popular Filter tag impression/select สำหรับวัดการใช้งาน quick selection
 - Free-text spec demand signal — popular keyword และ no-result search ที่ตรง spec text เป็นแหล่งวัด demand ของค่าที่ยังไม่มีใน option master ใช้ร่วมกับ `spec_option_suggestions.usage_count` ใน `17_OPTION_MASTER_MODULE.md` section 23 เพื่อช่วย Admin จัดลำดับ curation
@@ -565,7 +565,7 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 | AC-BO-WA-008A | Alert ที่ criteria อ้าง entity/option ที่มี no current listing (จำนวน Asset Sale = 0 ตอนสร้าง) ต้องไม่ถูก flag เป็น inactive market data และต้องนับเป็น unmet demand ปกติ |
 | AC-BO-WA-009 | Block relation ต้องถูกใช้เป็น exclusion context ใน trigger/result review |
 | AC-BO-WA-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop
-| AC-BO-WA-011 | Search Insights แสดง popular keyword/filter, no-result search, search trend over time, search funnel (Search → Result Click → Asset Detail → Watch Alert/Offer) และ average results per search แบบ aggregate โดยไม่เปิดเผยข้อมูลระบุตัว user
+| AC-BO-WA-011 | Search Insights แสดง popular keyword/filter, no-result search, search trend over time, search funnel (Search → Result Click → Asset Detail → Watch Alert) และ average results per search แบบ aggregate โดยไม่เปิดเผยข้อมูลระบุตัว user
 | AC-BO-WA-011A | Search Funnel แสดงเป็นรายการแนวตั้งรูปแบบเดียวกับ Asset Status โดยแต่ละแถวมี Step, ชื่อขั้น, จำนวนเหตุการณ์ และเปอร์เซ็นต์เทียบกับ Search Submit ครบทั้ง 4 ขั้น และไม่มี progress bar ซ้อนในแถว |
 | AC-BO-WA-012 | Demand Overview แยก Search demand, Watch Alert demand, Unmet Search Demand และ Unmet Watch Alert ได้ชัดเจน |
 | AC-BO-WA-013 | Demand Overview Top Criteria ใช้สี `#2b6cb0` เดียวกันสำหรับ indicator dot, progress bar และ percentage ในการ์ดหลัก, View All modal และ drill-down ระดับ Top Brands, Top Models และ Top References โดยใช้ความยาวแถบและค่าตัวเลขเป็นตัวสื่อสัดส่วน |

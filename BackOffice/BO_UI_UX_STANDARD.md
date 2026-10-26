@@ -6,7 +6,6 @@
 - Dashboard
 - User Management
 - Asset Management
-- Offer Management
 - Content Management
 - Market Data
 - Option Master
@@ -26,7 +25,6 @@
 - `04_ASSET_MANAGEMENT_MODULE.md`
 - `05_CONTENT_BOARD_MODULE.md`
 - `06_MARKET_DATA_MODULE.md`
-- `09_OFFER_CHAT_MODULE.md`
 - `17_OPTION_MASTER_MODULE.md`
 - `../docs/bo-modal-empty-state-contract.md` — locked contract: modal action order, close policy, keyboard focus, empty-state copy (implemented ใน remediation mission `1e359966`)
 - `../docs/bo-navigation-naming-contract.md` — locked contract: sidebar active state, deep-link/back context, naming standard (implemented ใน mission เดียวกัน)
@@ -88,7 +86,7 @@ KPI/summary cards เป็นส่วนประกอบ optional ไม่�
 ใช้ KPI cards เมื่อตอบ "ใช่" ได้อย่างน้อย 1 ข้อ:
 
 - หน้านั้นมี operational workload ที่ admin ต้องกำกับ เช่น จำนวน report ที่รอตรวจ, จำนวนงานที่ค้าง
-- มีสถานะหลายประเภทที่ต้องแยกดูพร้อมกันเพื่อตัดสินใจ เช่น offer lifecycle 6 สถานะ
+- มีสถานะหลายประเภทที่ต้องแยกดูพร้อมกันเพื่อตัดสินใจ เช่น asset status หลายสถานะ
 - เป็น dashboard ที่หน้าที่หลักคือภาพรวม ไม่ใช่ list
 - ข้อมูลใน card นำไปสู่ action ได้ เช่น คลิก card เปิด list ที่กรองตามสถานะนั้น
 
@@ -107,7 +105,6 @@ KPI/summary cards เป็นส่วนประกอบ optional ไม่�
 
 - แสดงเป็น grid เหนือ main panel
 - Desktop ใช้ 4 cards ต่อแถวเป็น baseline
-- Offer Management ใช้ status summary แบบ 6 cards ได้ตาม prototype
 - Card ต้องมี label, value, optional icon/accent, trend/detail text และ optional chips
 - Accent สีต้องช่วยแยกสถานะ ไม่ทำให้ทั้งหน้าเป็น palette สีเดียว
 - Empty KPI ให้แสดง `0` หรือข้อความ empty ที่อ่านเข้าใจ ไม่ปล่อยช่องว่าง
@@ -116,7 +113,6 @@ KPI/summary cards เป็นส่วนประกอบ optional ไม่�
 
 - Dashboard ใช้ KPI เป็นภาพรวมระบบและ queue summary
 - User/Asset/Content/Market ใช้ summary cards เพื่อบอกจำนวนตาม status หรือ workload
-- Offer ใช้ status cards เพื่อแยก lifecycle เช่น Pending/Paused/Accepted/Rejected/Cancelled/Invalidated
 - Option Master ไม่มี KPI cards เพราะข้อมูลซ้ำซ้อนกับตาราง
 
 ## Side Panel And List/Detail Split
@@ -140,7 +136,7 @@ Side panel (รายละเอียดข้างตาราง) และ
 - ข้อมูล detail ซ้ำซ้อนกับข้อมูลในตาราง
 - เป็น master data management ที่ detail แสดงในตารางอยู่แล้ว
 
-ตัวอย่าง module ที่ไม่มี side panel: User Management, Asset Management, Offer Management, Content Management, Market Data, Option Master — ทั้งหมดใช้ full-width panel ตาม prototype ที่ล็อกแล้ว มีเฉพาะ Dashboard ที่ใช้ side panel (แสดง activity)
+ตัวอย่าง module ที่ไม่มี side panel: User Management, Asset Management, Content Management, Market Data, Option Master — ทั้งหมดใช้ full-width panel ตาม prototype ที่ล็อกแล้ว มีเฉพาะ Dashboard ที่ใช้ side panel (แสดง activity)
 
 ### Layout Standards (เมื่อตัดสินใจว่ามี side panel)
 
@@ -192,7 +188,6 @@ Option ordering ที่เป็นมาตรฐาน:
 - Article status: ทุกสถานะ, Draft, Scheduled, Published, Archived
 - Category status: ทุกสถานะ, Active, Inactive
 - Market sync status: ทุกสถานะ, กำลังทำงาน, ล้มเหลว, สำเร็จบางส่วน, สำเร็จ
-- Offer status: ทุกสถานะ แล้วเรียงตาม lifecycle ของ offer ใน prototype/module spec
 
 ## List Table And Mobile Cards
 
@@ -264,11 +259,8 @@ Detail section ที่ควรมีตามชนิด module:
 - User: account summary, auth/login context, asset/social summary, status history, action area
 - Asset: asset summary, FO preview, listing/owner context, description/spec, purchase/sale/history, moderation/comments
 - Report: report summary, reporter history, evidence/context, linked entity, audit/result history, status action area
-- Offer: offered asset, buyer/owner summary, offer history, related context, read-only note
 - Content: article metadata, rendered content, preview, publish state, editor entry/action
 - Market: brand/model/reference detail, sync/source metadata, affected FO surfaces, audit/history
-
-Offer Management V1 เป็น read-only ห้ามเพิ่ม write actions เช่น accept, decline, cancel, force-expire, invalidate, edit price หรือ edit message เว้นแต่มี approval แยก
 
 ## Modal Popup
 
@@ -603,7 +595,6 @@ Login form มี:
 - Report detail link เปิด linked user/asset/content ด้วย back context ที่กลับมารายงานเดิมได้
 - Market drilldown ต้องรักษา brand/model/reference context
 - การลิงก์ไปยัง entity อื่นจากหน้า detail ให้วางลิงก์บน identifier ของ entity นั้น (เช่น Display Name, Asset ID) ไม่ใช้ปุ่มแยกใน section head — link ใช้กับการนำทาง, button ใช้กับ action ที่กระทบข้อมูล
-- Offer detail เปิด asset context แบบ read-only/drill-in ผ่านลิงก์ `Asset ID` ตาม prototype
 
 Navigation/active-state/naming contract (ตาม `../docs/bo-navigation-naming-contract.md`):
 
@@ -708,9 +699,8 @@ Manual QA สำหรับ module ที่นำมาตรฐานนี�
 
 ห้ามทำในงานที่อ้างเอกสารนี้:
 
-- เปลี่ยน Login/Dashboard/User/Asset/Offer/Content/Market/Option Master behavior โดยไม่มี explicit approval
+- เปลี่ยน Login/Dashboard/User/Asset/Content/Market/Option Master behavior โดยไม่มี explicit approval
 - เปลี่ยน navigation/menu/route/shared shell ที่กระทบ protected screens
-- เพิ่ม write action ใน Offer Management V1
 - เปลี่ยน status/filter copy ที่ยืนยันแล้วโดยไม่มี requirement ใหม่
 - ใช้ pattern แบบ marketing/landing page กับ BO operational screens
 - สร้าง palette สีเฉพาะ module ที่ไม่เข้ากับ semantic กลาง

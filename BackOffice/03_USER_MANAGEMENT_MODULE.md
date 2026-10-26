@@ -1,7 +1,7 @@
 # 03 BO User Management Module
 
-**Version:** `BO-03-v1.1`  
-**Date:** 2026-09-09  
+**Version:** `BO-03-v1.2`  
+**Date:** 2026-10-26  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO User Management |
 | Platform | Responsive Web Back Office |
-| Version | `BO-03-v1.1` |
+| Version | `BO-03-v1.2` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -502,7 +502,7 @@ Source ของรายงานผู้ใช้มีได้เฉพา�
 - User Profile
 - Chat
 
-Report Detail ต้องไม่อ้าง source ประเภท asset, offer, signup/auth หรือ deletion request
+Report Detail ต้องไม่อ้าง source ประเภท asset, signup/auth หรือ deletion request
 
 ### Report Actions
 

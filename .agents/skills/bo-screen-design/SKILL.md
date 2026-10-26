@@ -52,7 +52,7 @@ Skill นี้เป็น **มาตรฐานกลางสำหรั�
 ก่อนออกแบบ/ปรับแก้ ต้องอ่าน source of truth ต่อไปนี้ตามลำดับ:
 
 1. **`PROTECTED_SCREENS.md`** — นโยบายหน้าจอล็อก ห้ามแก้ protected screens โดยไม่ได้รับ approval
-2. **`Prototypes/bo-prototype.html`** — visual + interaction source of truth ของหน้าจอ BO ที่ล็อกแล้ว (Login, Dashboard, User Management, Asset Management, Offer Management, Content Management, Market Data, Option Master)
+2. **`Prototypes/bo-prototype.html`** — visual + interaction source of truth ของหน้าจอ BO ที่ล็อกแล้ว (Login, Dashboard, User Management, Asset Management, Content Management, Market Data, Option Master)
 3. **`BackOffice/BO_UI_UX_STANDARD.md`** — มาตรฐานกลางที่ถอด pattern จาก prototype (เอกสารหลักที่ skill นี้สรุป)
 4. **`docs/responsive-table-standard.md`** — มาตรฐาน table-to-card responsive (breakpoint 760px, class ที่ใช้, โครงสร้าง HTML)
 5. **`AGENTS.md`** — กฎ protected screens + language conventions (UI copy เป็นไทย, คอมเมนต์ตามภาษาเดิมในไฟล์)
@@ -70,7 +70,6 @@ Skill นี้เป็น **มาตรฐานกลางสำหรั�
 - Asset Management (Asset List, Asset Detail, Reported Assets, Asset Report Detail, Reported Comments, Comment Report Detail)
 - Content Management (Articles, Categories, Reported Board, Board Report Detail)
 - Market Data
-- Offer Management
 - Option Master
 
 **กฎเหล็ก:**
@@ -104,7 +103,7 @@ Skill นี้เป็น **มาตรฐานกลางสำหรั�
 | Master data + reorder + audit | Option Master |
 | Editor + preview + publish | Content Management (Articles) |
 | Category/tree + reorder | Content Management (Categories) |
-| Read-only detail + history | Offer Management |
+| Read-only detail + history | Watch Alert Detail (Market Demand) |
 | Data sync/import + audit | Market Data |
 | Notification list | (ยังไม่มี pattern ที่ล็อก — ใช้ list-only pattern กลาง) |
 | Reports/analytics | (ยังไม่มี pattern ที่ล็อก — ใช้ dashboard-like + filter) |
@@ -162,7 +161,7 @@ KPI/summary cards เป็น **optional ไม่ใช่ default** ของ
 ใช้เมื่อตอบ "ใช่" ได้อย่างน้อย 1 ข้อ:
 
 - หน้านั้นมี operational workload ที่ admin ต้องกำกับ (เช่น จำนวน report ที่รอตรวจ)
-- มีสถานะหลายประเภทที่ต้องแยกดูพร้อมกันเพื่อตัดสินใจ (เช่น offer lifecycle 6 สถานะ)
+- มีสถานะหลายประเภทที่ต้องแยกดูพร้อมกันเพื่อตัดสินใจ (เช่น asset status หลายสถานะ)
 - เป็น dashboard ที่หน้าที่หลักคือภาพรวม ไม่ใช่ list
 - ข้อมูลใน card นำไปสู่ action ได้ (เช่น คลิก card เปิด list ที่กรองตามสถานะนั้น)
 
@@ -181,7 +180,6 @@ KPI/summary cards เป็น **optional ไม่ใช่ default** ของ
 
 - แสดงเป็น grid เหนือ main panel
 - Desktop ใช้ 4 cards ต่อแถวเป็น baseline
-- Offer Management ใช้ status summary แบบ 6 cards ได้ตาม prototype
 - Card ต้องมี label, value, optional icon/accent, trend/detail text และ optional chips
 - Accent สีต้องช่วยแยกสถานะ ไม่ทำให้ทั้งหน้าเป็น palette สีเดียว
 - Empty KPI ให้แสดง `0` หรือข้อความ empty ที่อ่านเข้าใจ ไม่ปล่อยช่องว่าง
@@ -209,7 +207,7 @@ Side panel และ list/detail split เป็น **optional ไม่ใช�
 - ข้อมูล detail ซ้ำซ้อนกับข้อมูลในตาราง
 - เป็น master data management ที่ detail แสดงในตารางอยู่แล้ว
 
-> **ตัวอย่าง module ที่ไม่มี side panel:** User Management, Asset Management, Offer Management, Content Management, Market Data, Option Master, My Account — ทั้งหมดใช้ full-width panel ตาม prototype ที่ล็อกแล้ว มีเฉพาะ Dashboard ที่ใช้ side panel (แสดง activity)
+> **ตัวอย่าง module ที่ไม่มี side panel:** User Management, Asset Management, Content Management, Market Data, Option Master, My Account — ทั้งหมดใช้ full-width panel ตาม prototype ที่ล็อกแล้ว มีเฉพาะ Dashboard ที่ใช้ side panel (แสดง activity)
 
 ### Layout Standards (เมื่อตัดสินใจว่ามี side panel)
 
@@ -262,7 +260,6 @@ Side panel และ list/detail split เป็น **optional ไม่ใช�
 - Article status: ทุกสถานะ, Draft, Scheduled, Published, Archived
 - Category status: ทุกสถานะ, Active, Inactive
 - Market sync status: ทุกสถานะ, กำลังทำงาน, ล้มเหลว, สำเร็จบางส่วน, สำเร็จ
-- Offer status: ทุกสถานะ แล้วเรียงตาม lifecycle ของ offer ใน prototype/module spec
 
 ---
 
@@ -371,12 +368,10 @@ Detail page มาตรฐานต้องมี:
 - User: account summary, auth/login context, asset/social summary, status history, action area
 - Asset: asset summary, FO preview, listing/owner context, description/spec, purchase/sale/history, moderation/comments
 - Report: report summary, reporter history, evidence/context, linked entity, audit/result history, status action area
-- Offer: offered asset, buyer/owner summary, offer history, related context, read-only note
 - Content: article metadata, rendered content, preview, publish state, editor entry/action
 - Market: brand/model/reference detail, sync/source metadata, affected FO surfaces, audit/history
 - Self-service account (My Account): account summary tiles ครบ identity (Admin ID, Name, Email, Role, Status, Last Login) + Edit action เฉพาะฟิลด์ที่แก้ได้ — ไม่มี entity header ซ้ำ ไม่มี back action ไม่มี section placeholder ของงานที่ยังไม่ทำ
 
-> **Offer Management V1 เป็น read-only** ห้ามเพิ่ม write actions (accept, decline, cancel, force-expire, invalidate, edit price, edit message) เว้นแต่มี approval แยก
 
 ### Drill-in From Group List (Option Master pattern)
 
@@ -611,7 +606,6 @@ Login เป็นหน้าจอประเภทพิเศษที่�
 - List row เปิด detail ของ entity นั้น
 - Report detail link เปิด linked user/asset/content ด้วย back context ที่กลับมารายงานเดิมได้
 - Market drilldown ต้องรักษา brand/model/reference context
-- Offer detail `View Asset` ต้องเปิด asset context แบบ read-only/drill-in ตาม prototype
 
 **ห้ามคลิกแล้วไม่เกิดผล** โดยไม่มี disabled state หรือ unavailable explanation ที่ชัดเจน
 
@@ -722,9 +716,8 @@ Manual QA สำหรับ module ที่นำมาตรฐานนี�
 
 **ห้ามทำในงานที่อ้าง skill นี้:**
 
-- เปลี่ยน Login/Dashboard/User/Asset/Offer/Content/Market/Option Master behavior โดยไม่มี explicit approval
+- เปลี่ยน Login/Dashboard/User/Asset/Content/Market/Option Master behavior โดยไม่มี explicit approval
 - เปลี่ยน navigation/menu/route/shared shell ที่กระทบ protected screens
-- เพิ่ม write action ใน Offer Management V1
 - เปลี่ยน status/filter copy ที่ยืนยันแล้วโดยไม่มี requirement ใหม่
 - ใช้ pattern แบบ marketing/landing page กับ BO operational screens
 - สร้าง palette สีเฉพาะ module ที่ไม่เข้ากับ semantic กลาง

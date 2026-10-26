@@ -142,7 +142,7 @@ Precedent ที่มีในโค้ดแล้ว (ใช้ตามน�
 | F6 | Articles | `asset-list-mode`+`article-list-mode` | Content Mgmt |
 | F7 | Categories | `asset-list-mode`+`category-list-mode` | Content Mgmt |
 | F8 | Reported Articles | `reported-board-mode` 1620 (+asset-list/user-list) | Content Mgmt |
-| F9 | Offer List | `offer-list-mode` 1613 | Offer Mgmt |
+| F9 | ~~Offer List~~ — REMOVED 26/10/2026 (ถอด Offer Management ทั้ง module) | — | — |
 | F10 | Sync History | `market-list-mode` non-dashboard 2503/2595 | Market Data |
 | F11 | Watch Alert List | `watch-alert-list-mode` 2113 (2-class rule ชนะ `watch-alert-mode` visible 3100) | Market Demand |
 

@@ -380,7 +380,7 @@ test.describe("Search Insights — rendering", () => {
     await expect(funnelRows.nth(0).locator(".si-funnel-name")).toHaveText("Search Submit");
     await expect(funnelRows.nth(1).locator(".si-funnel-name")).toHaveText("Result Click");
     await expect(funnelRows.nth(2).locator(".si-funnel-name")).toHaveText("Asset Detail Open");
-    await expect(funnelRows.nth(3).locator(".si-funnel-name")).toHaveText("Watch Alert / Offer");
+    await expect(funnelRows.nth(3).locator(".si-funnel-name")).toHaveText("Watch Alert");
   });
 
   test("29. Search Funnel values ถูกต้อง (9860, 5916, 3648, 78)", async ({ page }) => {

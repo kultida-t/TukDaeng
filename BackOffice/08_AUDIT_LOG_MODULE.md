@@ -1,7 +1,7 @@
 # 08 BO Audit Log Module
 
-**Version:** `BO-08-v0.4`<br>
-**Date:** 2026-09-23<br>
+**Version:** `BO-08-v0.5`<br>
+**Date:** 2026-10-26<br>
 **Status:** Screen layer synced with prototype (Audit Log Phase 1 — list/detail drawer/date range filter/cross-module jump) + audit catalog synced กับ BO Login baseline ตาม Change Mission `0a5b2b14`<br>
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Audit Log |
 | Platform | Responsive Web Back Office |
-| Version | `BO-08-v0.4` |
+| Version | `BO-08-v0.5` |
 | Status | Screen layer synced with prototype (Audit Log Phase 1) + Admin invitation lifecycle audit events cataloged + Login OTP audit events removed ตาม BO Login baseline |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -98,7 +98,6 @@ Baseline entity types:
 - AdminInvitation (Mission 1 — Admin invitation lifecycle events)
 - User
 - Asset
-- Offer
 - ChatRoom
 - ChatMessage
 - Comment
@@ -163,9 +162,8 @@ Baseline entity types:
 - Directory item create/update/activate/inactivate/archive (future/postponed; not Phase 1)
 - Directory import/export (future/postponed; not Phase 1)
 
-### Offer Management / Asset Reported Comments Phase 2
+### Chat / Asset Reported Comments Phase 2
 
-- Offer force expire/invalidate
 - Chat message hide/remove/export
 - Comment hide/unhide/delete
 - Watch Alert sensitive reveal / trigger job run (read-only module — no admin disable/enable/export)
@@ -176,7 +174,7 @@ Baseline entity types:
 - Policy publish (archive เวอร์ชัน Published เดิมอัตโนมัติ)
 - Policy restore (Archived → Draft ใหม่)
 - Support Center update (channels, business hours, availability)
-- Account deletion restore / reject restore / auto delete (เก็บถาวร + ลบตัวตน ขั้นเดียว) / dependency check / request create / session revoke / offer cancel auto / report close auto
+- Account deletion restore / reject restore / auto delete (เก็บถาวร + ลบตัวตน ขั้นเดียว) / dependency check / request create / session revoke / report close auto
 - Delivery log retry / export (Phase 1, Settings > Delivery Logs)
 - Admin invitation lifecycle — create / resend / cancel / reissue / link accepted / activated / delivery attempt (`ADMIN_INVITATION_*` ตาม `01_AUTHENTICATION_MODULE.md` section 10.1 และ `16_ADMIN_SETTINGS_MODULE.md` section 8.9)
 - Notification template update (Phase 2/future)
@@ -243,7 +241,7 @@ Admin identity lifecycle ใช้ event, result และ reference เดี�
 Audit Log UI Phase 1 (ตาม prototype `bo-prototype.html` — Settings > Audit Log) รองรับ:
 
 - Search ช่องเดียวครอบคลุม Event ID, Actor, Action, Module, Risk, Reason, Reference และ Note (placeholder: "ค้นหา Event ID, Actor, Action, Reference") — actor/admin และ target entity ID ถูก cover โดยช่อง search นี้ ไม่มี filter แยก
-- Filter by module (Asset, Content, Users, Account Deletion, Reported Comments, Offers, Settings)
+- Filter by module (Asset, Content, Users, Account Deletion, Reported Comments, Option Master, Settings)
 - Filter by risk level (High, Medium, Low)
 - Filter by date range (from/to date picker — picker-only, sync min/max ข้ามกันและ clamp ให้ from ≤ to เสมอ)
 - Sort ล่าสุดก่อน / เก่าสุดก่อน (ตาม timestamp)

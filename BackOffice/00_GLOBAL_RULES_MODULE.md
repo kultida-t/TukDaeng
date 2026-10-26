@@ -1,7 +1,7 @@
 # 00 Back Office Global Rules Module
 
-**Version:** `BO-00-v1.0`  
-**Date:** 2026-08-26  
+**Version:** `BO-00-v1.1`  
+**Date:** 2026-10-26  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -11,7 +11,7 @@
 
 เอกสารอ้างอิง: `BO_UI_UX_STANDARD.md`, `BO_MASTER_BASELINE.md`, `README_MODULE_INDEX.md`, `../FrontOffice/18_ADMIN_SCOPE_NOTE.md`
 
-รูปแบบหน้าจอและพฤติกรรมการใช้งานของ Login, Dashboard, User Management, Asset Management, Content Management, Market Data, Offer Management และ Option Master ที่ยืนยันแล้ว ให้ยึดจาก `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก เมื่อนำเอกสารชุดนี้ไปสร้างระบบใหม่ ต้องทำ app shell, navigation, breakpoint, list toolbar, table/card, pagination, action menu, detail page และ confirmation modal ให้ตรงกับ prototype ยกเว้นโมดูลนั้นระบุ override ที่อนุมัติแล้วไว้อย่างชัดเจน
+รูปแบบหน้าจอและพฤติกรรมการใช้งานของ Login, Dashboard, User Management, Asset Management, Content Management, Market Data และ Option Master ที่ยืนยันแล้ว ให้ยึดจาก `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก เมื่อนำเอกสารชุดนี้ไปสร้างระบบใหม่ ต้องทำ app shell, navigation, breakpoint, list toolbar, table/card, pagination, action menu, detail page และ confirmation modal ให้ตรงกับ prototype ยกเว้นโมดูลนั้นระบุ override ที่อนุมัติแล้วไว้อย่างชัดเจน
 
 Login และ auth-adjacent screens ใช้ layout และ breakpoint ต่างจาก list/detail module ตาม Login Pattern ใน `BO_UI_UX_STANDARD.md` โดย desktop ใช้ split layout และเปลี่ยนเป็น single column เมื่อ viewport ≤ 1180px
 
@@ -21,7 +21,7 @@ Login และ auth-adjacent screens ใช้ layout และ breakpoint ต�
 | --- | --- |
 | Module Name | Back Office Global Rules |
 | Platform | Responsive Web Back Office |
-| Version | `BO-00-v1.0` |
+| Version | `BO-00-v1.1` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Cross-Module Functional PRD |
@@ -79,7 +79,7 @@ BO เป็น responsive web application สำหรับทีมภาย�
 
 ข้อกำหนด responsive:
 
-- Login, Dashboard, User Management, Asset Management, Content Management, Market Data, Offer Management และ Option Master ต้องใช้รูปแบบหน้าจอและ interaction language เดียวกับ `../Prototypes/bo-prototype.html`
+- Login, Dashboard, User Management, Asset Management, Content Management, Market Data และ Option Master ต้องใช้รูปแบบหน้าจอและ interaction language เดียวกับ `../Prototypes/bo-prototype.html`
 - Mobile navigation ใช้ hamburger side drawer ตาม prototype พร้อม backdrop และปุ่มปิด
 - Filter ของหน้า list ต้องใช้ inline collapsible filter bar ตาม prototype ห้ามใช้ drawer หรือ bottom sheet แยกสำหรับโมดูลที่ยืนยันแล้ว
 - Action สำคัญต้องเข้าถึงได้บน mobile, tablet และ desktop
@@ -90,7 +90,7 @@ BO เป็น responsive web application สำหรับทีมภาย�
 
 ## 6. Navigation Rules
 
-Navigation ของ BO prototype ที่ยืนยันแล้วเป็น baseline สำหรับ Dashboard, User Management, Asset Management, Content Management, Market Data, Offer Management และ Option Master (Login ไม่มี navigation เพราะเป็นหน้าจอก่อนเข้าระบบ)
+Navigation ของ BO prototype ที่ยืนยันแล้วเป็น baseline สำหรับ Dashboard, User Management, Asset Management, Content Management, Market Data และ Option Master (Login ไม่มี navigation เพราะเป็นหน้าจอก่อนเข้าระบบ)
 
 Navigation หลักที่ล็อกไว้:
 
@@ -104,7 +104,6 @@ Navigation หลักที่ล็อกไว้:
   - Asset List
   - Reported Assets
   - Reported Comments
-- Offer Management
 - Content Management
   - Articles
   - Categories
@@ -144,7 +143,7 @@ Permission rules:
 
 ## 8. Shared Screen Patterns
 
-Pattern ต่อไปนี้เป็นข้อบังคับสำหรับ Login, Dashboard, User Management, Asset Management, Content Management, Market Data, Offer Management และ Option Master เพราะยืนยันแล้วใน `../Prototypes/bo-prototype.html` (ยกเว้น Login ที่ใช้ pattern เฉพาะตาม Login Pattern ใน `BO_UI_UX_STANDARD.md`)
+Pattern ต่อไปนี้เป็นข้อบังคับสำหรับ Login, Dashboard, User Management, Asset Management, Content Management, Market Data และ Option Master เพราะยืนยันแล้วใน `../Prototypes/bo-prototype.html` (ยกเว้น Login ที่ใช้ pattern เฉพาะตาม Login Pattern ใน `BO_UI_UX_STANDARD.md`)
 
 ### 8.1 App Shell And Page Structure
 
@@ -300,17 +299,6 @@ BO ต้องใช้ state contract เดียวกับเอกสา�
 | Published / Active | Live content/data | แสดงใน FO surfaces ที่เกี่ยวข้อง |
 | Archived / Inactive | ไม่ใช้งานแล้ว | ซ่อนจาก FO list/search/autocomplete ตามประเภทข้อมูล |
 
-### 10.4 Offer Status
-
-| Status | BO Meaning | FO Impact |
-| --- | --- | --- |
-| Pending | รอ owner ตอบ | เป็น active pending offer |
-| Accepted | Owner รับ offer | แสดง accepted state และส่ง notification |
-| Rejected | Owner กด `Decline` แล้ว offer ถูกปฏิเสธ | ไม่เป็น active pending แต่ history ยังอยู่; FO action/copy ใช้ `Decline` ได้ แต่ status/API/BO ใช้ `Rejected`; legacy `Declined` ต้อง normalize เป็น `Rejected` |
-| Cancelled | Buyer ยกเลิกก่อนตอบ | ไม่เป็น active pending |
-| Expired | หมดอายุหรือถูก force expire | accept/decline ไม่ได้ |
-| Invalidated | Asset/user state ทำให้ offer ใช้ไม่ได้ | แสดง unavailable/invalidated state |
-
 ## 11. FO Coverage Rules
 
 ทุกฟังก์ชั่นของ FO ที่สร้างข้อมูล เปลี่ยน state หรือจำเป็นต้องมี operation oversight ต้องมีหนึ่งใน outcome ต่อไปนี้ใน BO:
@@ -329,7 +317,6 @@ FO functions ขั้นต่ำที่ BO ต้องรองรับ:
 - Board article/category/banner publication
 - Brand/model/reference/price index management
 - Directory item publication (future/postponed; not Phase 1)
-- Offer lifecycle และ offer invalidation
 - Chat review สำหรับ reported content
 - Comment moderation
 - Like/favorite/follow analytics
@@ -343,7 +330,7 @@ Guest public access rule:
 
 - FO Guest สามารถดูและแชร์ public surface ที่ระบบอนุญาตได้ เช่น public asset/detail, public profile/detail หรือ published article ตาม status/visibility ของ entity นั้น
 - Guest action ที่เป็น public view/share ไม่สร้าง User Management record และไม่เปิด BO account action
-- Action ที่สร้างข้อมูลหรือเปลี่ยน state ของระบบ เช่น like, follow, comment, report, offer, chat, watch alert, add/edit/delete asset ต้อง login ตาม FO Auth rule ก่อน จึงจะเข้า BO workflow ที่เกี่ยวข้องได้
+- Action ที่สร้างข้อมูลหรือเปลี่ยน state ของระบบ เช่น like, follow, comment, report, chat, watch alert, add/edit/delete asset ต้อง login ตาม FO Auth rule ก่อน จึงจะเข้า BO workflow ที่เกี่ยวข้องได้
 - BO modules ที่ควบคุม public visibility เช่น Asset, Content/Board, Market Data และ Directory ในอนาคต ต้องทำให้ public deep link ที่ Guest เปิดหรือแชร์ไว้สะท้อนสถานะล่าสุด เช่น unavailable, removed, archived หรือ inactive
 
 ## 12. BO-to-FO Sync Rules
@@ -357,7 +344,6 @@ Guest public access rule:
 | Price index updated | FO price index และ asset value surfaces ต้องใช้ active value ล่าสุด |
 | Directory item inactive | Future/postponed; FO directory surfaces ต้องซ่อน item เมื่อ Directory scope ถูกเปิดใช้งาน |
 | Comment hidden/removed | FO Asset Detail ต้องซ่อนหรือแสดง removed state ตาม policy |
-| Offer expired/invalidated | FO offer/chat state ต้องเป็น unavailable หรือ not actionable |
 | Notification type disabled/template changed (Phase 2/future) | Notification ใหม่ใน FO ต้องใช้ enabled template ล่าสุด |
 
 Account suspension baseline:
@@ -439,7 +425,6 @@ Action ที่กระทบ FO visibility, user access หรือ public c
 - Remove chat message
 - Publish/archive article
 - Activate/deactivate brand/model/banner; directory item activation is future/postponed
-- Force expire/invalidate offer
 - Approve account archive
 - Send broadcast notification (Phase 2/future)
 
@@ -485,7 +470,7 @@ Responsive QA ต้องตรวจว่า:
 | AC-BO-GLOBAL-002 | ทุก BO route และ action enforce Admin Permission |
 | AC-BO-GLOBAL-003 | BO navigation เป็น access-aware และ responsive |
 | AC-BO-GLOBAL-004 | List/detail/form pattern ใช้สม่ำเสมอข้าม module |
-| AC-BO-GLOBAL-005 | Canonical user, asset, content, offer status ตรงกับ FO/BO integration map |
+| AC-BO-GLOBAL-005 | Canonical user, asset, content status ตรงกับ FO/BO integration map |
 | AC-BO-GLOBAL-006 | ทุก FO function ที่ต้องมี admin support ถูก map ไป BO module, backlog หรือ no-action decision |
 | AC-BO-GLOBAL-007 | BO action ที่กระทบ FO visibility/access ต้องระบุ FO sync impact |
 | AC-BO-GLOBAL-008 | Sensitive fields ถูก mask ถ้า admin access ไม่มีสิทธิ์ |
