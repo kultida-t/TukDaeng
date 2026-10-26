@@ -254,6 +254,12 @@
       z-index: 20;
       isolation: isolate;
       border-bottom: none;
+      transition: transform .32s cubic-bezier(.32, .72, .24, 1);
+    }
+
+    /* scroll-to-hide — header lifts off while the feed scrolls down */
+    .screen.bars-hidden .feed-scroll>.app-header {
+      transform: translateY(calc(-100% - 16px));
     }
 
     .feed-scroll>.app-header::before {
@@ -550,28 +556,55 @@
       align-self: center;
       gap: 0;
       margin: 4px 12px 6px;
-      padding: 4px;
-      border: 1px solid rgba(255, 255, 255, .14);
+      padding: 3px;
+      border: .5px solid rgba(255, 255, 255, .16);
       background: rgba(120, 124, 134, .26);
-      -webkit-backdrop-filter: blur(24px) saturate(1.6);
-      backdrop-filter: blur(24px) saturate(1.6);
+      -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      backdrop-filter: blur(20px) saturate(1.8);
       border-radius: 999px;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .18);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .3), inset 0 .5px 0 rgba(255, 255, 255, .14);
       flex-shrink: 0;
+      position: relative;
     }
 
     .screen[data-ft="segment"][data-theme="light"] .feed-tabs {
-      background: rgba(255, 255, 255, .34);
-      border-color: rgba(255, 255, 255, .7);
-      box-shadow: 0 10px 28px rgba(0, 0, 0, .18), inset 0 1px 0 rgba(255, 255, 255, .9);
+      background: rgba(255, 255, 255, .5);
+      border-color: rgba(255, 255, 255, .65);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .07), inset 0 .5px 0 rgba(255, 255, 255, .9);
     }
 
     .screen[data-ft="segment"] .feed-tab {
-      padding: 6px 14px;
+      padding: 5px 14px;
       border-radius: 999px;
       font-size: 12.5px;
       font-weight: 600;
       text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* sliding pill behind the active segment — measured in JS */
+    .seg-thumb {
+      display: none;
+    }
+
+    .screen[data-ft="segment"] .seg-thumb {
+      display: block;
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      left: 0;
+      width: 0;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+      transition: transform .28s cubic-bezier(.32, .72, .24, 1), width .28s cubic-bezier(.32, .72, .24, 1);
+      pointer-events: none;
+    }
+
+    .screen[data-ft="segment"]:not([data-theme="light"]) .seg-thumb {
+      background: rgba(0, 0, 0, .3);
+      box-shadow: none;
     }
 
     .screen[data-ft="segment"][data-theme="light"] .feed-tab:not(.active) {
@@ -584,13 +617,13 @@
     }
 
     .screen[data-ft="segment"] .feed-tab.active {
-      background: var(--chip-bg);
+      background: transparent;
       color: var(--red);
       font-weight: 700;
     }
 
     .screen[data-ft="segment"]:not([data-theme="light"]) .feed-tab.active {
-      background: rgba(0, 0, 0, .3);
+      background: transparent;
     }
 
     .screen[data-ft="segment"] .feed-tab.active::after {
@@ -6365,18 +6398,25 @@
       z-index: 20;
       border-top: none;
       background: rgba(120, 124, 134, .26);
-      -webkit-backdrop-filter: blur(24px) saturate(1.6);
-      backdrop-filter: blur(24px) saturate(1.6);
-      border: 1px solid rgba(255, 255, 255, .14);
+      -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      backdrop-filter: blur(20px) saturate(1.8);
+      border: .5px solid rgba(255, 255, 255, .16);
       border-radius: 999px;
       padding: 7px 6px;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, .22), inset 0 1px 0 rgba(255, 255, 255, .18);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .3), inset 0 .5px 0 rgba(255, 255, 255, .14);
+      transition: transform .32s cubic-bezier(.32, .72, .24, 1);
     }
 
     .screen[data-nav="labeled"][data-theme="light"] .bottom-nav {
-      background: rgba(255, 255, 255, .34);
-      border-color: rgba(255, 255, 255, .7);
-      box-shadow: 0 10px 28px rgba(0, 0, 0, .18), inset 0 1px 0 rgba(255, 255, 255, .9);
+      background: rgba(255, 255, 255, .5);
+      border-color: rgba(255, 255, 255, .65);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .07), inset 0 .5px 0 rgba(255, 255, 255, .9);
+    }
+
+    /* scroll-to-hide — floating nav drops away while the feed scrolls down */
+    .screen.bars-hidden[data-nav="labeled"] .bottom-nav {
+      transform: translateY(160%);
+      pointer-events: none;
     }
 
     .screen[data-nav="labeled"][data-theme="light"] .nav-item:not(.active) {
@@ -12401,7 +12441,7 @@
       transform: scale(.92);
     }
 
-    :is(.app-header, .al-head, .bd-head, .ch-menu-head, .sr-head, .ch-gal-head)>button.icon-btn {
+    :is(.al-head, .bd-head, .ch-menu-head, .sr-head, .ch-gal-head)>button.icon-btn {
       width: 38px;
       height: 38px;
       flex-shrink: 0;
@@ -12414,10 +12454,30 @@
       transition: background .15s ease, transform .1s ease;
     }
 
-    .screen[data-theme="dark"] :is(.app-header, .al-head, .bd-head, .ch-menu-head, .sr-head, .ch-gal-head)>button.icon-btn {
+    .screen[data-theme="dark"] :is(.al-head, .bd-head, .ch-menu-head, .sr-head, .ch-gal-head)>button.icon-btn {
       background: rgba(120, 124, 134, .26);
       border-color: rgba(255, 255, 255, .12);
       box-shadow: 0 4px 16px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .22);
+    }
+
+    /* feed header icons stay bare glyphs — no glass circle over the feed's blur backdrop */
+    .app-header>button.icon-btn {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      transition: opacity .15s ease, transform .1s ease;
+    }
+
+    .app-header>button.icon-btn:hover {
+      background: transparent;
+      opacity: .55;
+    }
+
+    .app-header>button.icon-btn svg {
+      width: 24px;
+      height: 24px;
     }
 
     :is(.app-header, .al-head, .bd-head, .sr-head)>button.icon-btn:active {
@@ -12499,13 +12559,13 @@
     }
 
     .screen[data-nav="labeled"] .bottom-nav {
-      border: .5px solid rgba(255, 255, 255, .1);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+      border: .5px solid rgba(255, 255, 255, .16);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .3), inset 0 .5px 0 rgba(255, 255, 255, .14);
     }
 
     .screen[data-nav="labeled"][data-theme="light"] .bottom-nav {
-      border: .5px solid rgba(255, 255, 255, .45);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+      border: .5px solid rgba(255, 255, 255, .65);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .07), inset 0 .5px 0 rgba(255, 255, 255, .9);
     }
 
     .detail-title,
@@ -14332,6 +14392,22 @@
       return posts.length ? posts.map(p => postCard(p, variant)).join("") : feedEmptyHTML(state.feedTab);
     }
 
+    /* segment thumb — measure the active tab and slide the pill under it;
+       a ResizeObserver re-measures when label widths shift (font load, language swap) */
+    function positionSegThumb(root = document) {
+      root.querySelectorAll(".feed-tabs").forEach(bar => {
+        if (bar.closest(".screen")?.dataset.ft !== "segment") return;
+        const th = bar.querySelector(".seg-thumb"), act = bar.querySelector(".feed-tab.active");
+        if (!th || !act) return;
+        th.style.width = act.offsetWidth + "px";
+        th.style.transform = `translateX(${act.offsetLeft}px)`;
+        if (!bar._segRO) {
+          bar._segRO = new ResizeObserver(() => positionSegThumb(bar.parentElement));
+          bar.querySelectorAll(".feed-tab").forEach(t => bar._segRO.observe(t));
+        }
+      });
+    }
+
     function setFeedTab(scr, tab) {
       if (state.feedTab === tab) return;
       state.feedTab = tab;
@@ -14340,6 +14416,7 @@
       const fs = scr.querySelector(".feed-scroll");
       fs.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
       fs.scrollTop = 0;
+      positionSegThumb(scr);
     }
 
     /* follow is account-level — toggle every post of the same seller.
@@ -19596,6 +19673,7 @@
         <button class="icon-btn" data-flow="create">${I.plus()}</button>
       </div>
       <div class="feed-tabs">
+        <i class="seg-thumb" aria-hidden="true"></i>
         <button class="feed-tab${state.feedTab === "all" ? " active" : ""}" data-tab="all">${isTh ? "ทั้งหมด" : "All Posts"}</button>
         <button class="feed-tab${state.feedTab === "following" ? " active" : ""}" data-tab="following">${isTh ? "กำลังติดตาม" : "Following"}</button>
         <button class="feed-tab${state.feedTab === "favorites" ? " active" : ""}" data-tab="favorites">${isTh ? "รายการโปรด" : "Favorites"}</button>
@@ -19637,6 +19715,7 @@
       document.getElementById("stage").innerHTML =
         `<div class="phone-wrap"><div class="phone">${screenHTML(state.theme, state.variant)}</div></div>`;
       if (typeof obMount === "function") obMount();
+      positionSegThumb();
     }
 
     /* ================= FLOW WIRING ================= */
@@ -19960,6 +20039,8 @@
         if (scr.classList.contains("sub-open")) keepScroll(scr, ".page-sub .sub-scroll", () => renderSub(scr));
       });
       i18nApply(document.getElementById("stage"));
+      /* translated tab labels can change widths — re-measure after the observer settles */
+      requestAnimationFrame(() => positionSegThumb());
     }
     function setLang(v) {
       state.lang = v;
@@ -20037,6 +20118,24 @@
       if (stripDrag?.moved) { suppressPhotoClick = true; setTimeout(() => { suppressPhotoClick = false; }, 60); }
       stripDrag = null;
     }));
+
+    /* scroll-to-hide — capture-phase (scroll does not bubble): the sticky header and
+       floating nav tuck away while the feed scrolls down, slide back on any upward
+       flick or whenever the scroll position returns near the top */
+    stageEl.addEventListener("scroll", e => {
+      const fs = e.target;
+      if (!(fs instanceof Element) || !fs.classList.contains("feed-scroll")) return;
+      const scr = fs.closest(".screen");
+      if (!scr) return;
+      const st = fs.scrollTop, dy = st - (fs._barsLastSt ?? 0);
+      fs._barsLastSt = st;
+      if (st <= 8 || dy < -6) scr.classList.remove("bars-hidden");
+      else if (dy > 6 && st > 56) scr.classList.add("bars-hidden");
+    }, true);
+
+    /* re-measure the segment thumb when tab widths can change (fonts, viewport) */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => positionSegThumb());
+    addEventListener("resize", () => positionSegThumb());
 
     /* FEED-024 — caption thumbs: press and hold a thumb to drag it into a new order (IG edit info) */
     let reordDrag = null;

@@ -1,7 +1,7 @@
 # TukDaeng Dev Baseline Handoff
 
 **Date:** 2026-06-22  
-**Baseline Version:** `FO-PRD-v1.0`
+**Baseline Version:** `FO-PRD-v1.0` (superseded — current synced baseline `FO-PRD-v1.9`, 2026-10-22)
 **Purpose:** ส่ง baseline เอกสารล่าสุดทั้งชุดให้ Dev ใช้แทนเอกสารเก่าที่เคย implement ก่อนหน้า  
 **Status:** Product-reviewed and approved as Dev baseline  
 **Primary Source of Truth:** [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
@@ -52,53 +52,51 @@ Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `F
 ## Global
 
 - Canonical Asset status is only `Sale`, `Show`, `Hide`, `Sold`
-- Add/Edit can select only `Sale`, `Show`, `Hide`
+- Composer pick คือ `Show` / `Hide` / `Post to feed` (post mode); `Sale` เข้าผ่าน `Post to feed` + `Add price` (asset mode)
 - `Sold` must come from Mark as Sold / Sale Record flow
-- Guest actions that require login must show Global Login Required Dialog
+- Guest actions that require login must show Member Sheet (`Join TukDaeng` sheet — เดิมเรียก Global Login Required Dialog)
 - Private data must be permission-gated every time
 - Deleted and blocked content must be filtered from all public surfaces and deep links
 
 ## Feed / Search / Watch Alert
 
-- Feed, Search and Watch Alert match only `Sale`
-- `Show`, `Hide`, `Sold`, `Deleted` must not appear in marketplace list surfaces
+- Feed = post-centric (S-09): แสดงโพสต์ `sale` (ผูก asset สถานะ Sale) + `post` (ไม่ผูก asset); Search และ Watch Alert match เฉพาะ `Sale`
+- `Show`, `Hide`, `Sold`, `Deleted` must not appear in Feed/Search marketplace surfaces (asset-linked)
 - Feed card must not show Location in V1
-- Hide this asset is viewer-level preference, not asset status `Hide`
-- Report Asset does not remove the asset immediately
+- `Not interested` is viewer-level preference, not asset status `Hide` (เดิมเรียก Hide this asset)
+- Report post does not remove the post immediately
 - Block User must affect Feed, Search, Watch Alert Result and related profile visibility
 
-## Asset Management
+## Asset Management (composer asset mode)
 
-- Gallery requires minimum 1 image and supports maximum 10 images
-- `Sale` requires Photos, Brand, Model / Series, Condition and Description; Price is optional and empty Price displays as `Price on request`
-- `Show` requires Photos, Brand and Model / Series; Price is not required
-- `Hide` requires Photos and Brand only
+- Media requires minimum 1 image and supports maximum 10 images — required เดียวต่อ status (ไม่มี required matrix)
+- Spec fields เป็น free-text (ไม่มี Market Data autocomplete / option-master — S-25)
+- Asking Price เป็น optional ทุก status — ถ้ากรอกต้อง > 0; **ไม่มี `Price on request` label**
 - `Hide` must not use listing price or expose price in public/viewer surfaces
-- Purchase data (Purchase Price / Purchase Date), sale history and portfolio value detail are private — ไม่มี Provenance/Consignment entity ใน V1 (S-25)
-- Mark as Sold opens Sale Record Form before status becomes `Sold`
-- Delete Asset must remove public visibility while chat remains
+- Cost details (Purchase Price / Purchase Date) และ portfolio value detail are private — ไม่มี Provenance/Consignment entity ใน V1 (S-25)
+- Mark as Sold opens Sale Record (`Sale price` + `Sale date` เท่านั้น — D3) before status becomes `Sold`
+- Delete post must remove public visibility while chat remains
 
-## Asset Detail / Chat
+## Post Detail / Chat
 
-- Viewer can open only public `Sale` and `Show` details
+- Viewer can open only public `Sale` and `Show` post detail
 - Owner can open own `Sale`, `Show`, `Hide`, `Sold`
-- `Show` can Contact Seller / Chat only from Asset Detail or Public Profile detail entry
-- Chat/New Message is not a Front Office Notification Center type
+- Chat entry คือ `Ask Seller` บน sale post เท่านั้น; thread key = user + item (S-07 — seller เดิมคนละโพสต์ = ห้องแยก)
+- Chat/New Message is not a Front Office Alerts feed type
 
 ## Profile / Portfolio
 
-- Owner Profile shows all own statuses: `Sale`, `Show`, `Hide`, `Sold`
-- Public Profile shows only `Sale` and `Show`
-- Public Profile tabs are `All`, `Sale`, `Show`
+- Owner Profile shows all own statuses: `Sale`, `Show`, `Hide`, `Sold` (tabs ทั้งหมด/ขาย/โชว์/ซ่อน/ขายแล้ว)
+- Public Profile shows only `Sale` and `Show` (tabs ขาย/โชว์ — ไม่มี `all` tab สำหรับ public; S-14 leak = documented defect)
 - Public surfaces must never show private asset data
-- Portfolio is owner-only and calculates from `Sale`, `Show`, `Hide`; `Sold` appears in Sold History, not Total Asset Value
+- Portfolio is owner-only (wallet icon `.pf-pfo`) and calculates from `Sale`, `Show`, `Hide`; headline = `Total invested` (D2 — ไม่ใช่ Total Asset Value); `Sold` appears in `ประวัติการขาย` (Sale Record = price+date — D3)
 
-## Notification / Settings / Board
+## Alerts feed / Settings / Board
 
-- Notification Center types are only Like, Comment, Follow, Watch Alert
-- Settings includes Theme Mode and Delete Account baseline
-- Board is Article Area; FO users do not create/edit/delete articles in V1
-- Article Share is public; Article Like requires login
+- Alerts feed types = Like, Comment, Follow, Watch Alert + `system` placeholder (S-17)
+- Settings = IG-style six sections (S-05); Change Password in-app (S-28); Delete Account = two-page flow + login-to-restore (S-02/S-27)
+- Board is editorial magazine (S-01); FO users do not create/edit/delete articles in V1
+- Share (รวม article) เป็น member-only — guest เจอ Member Sheet (S-03); Article Like requires login
 
 ---
 

@@ -2,10 +2,6 @@
 
 Repository นี้จัดเอกสารตามขอบเขตงาน เพื่อให้ Product, UX, Dev และ QA หา source of truth ได้ชัดเจน
 
-Shared FO/BO integration map:
-
-- [ProjectAdmin/FO_BO_INTEGRATION_MAP.md](ProjectAdmin/FO_BO_INTEGRATION_MAP.md)
-
 ## Start Here
 
 สำหรับงาน Front Office ให้เริ่มอ่าน:
@@ -14,7 +10,7 @@ Shared FO/BO integration map:
 2. [FrontOffice/README_MODULE_INDEX.md](FrontOffice/README_MODULE_INDEX.md)
 3. [FrontOffice/TukDaeng_Master_Product_Definition.md](FrontOffice/TukDaeng_Master_Product_Definition.md)
 
-Current Front Office baseline: `FO-PRD-v1.2`
+Current Front Office baseline: `FO-PRD-v1.9`
 
 สำหรับงาน Back Office ให้เริ่มอ่าน:
 
@@ -32,7 +28,6 @@ Current Back Office baseline: `BO-PRD-v0.1`
 | [BackOffice](BackOffice) | BO baseline, legacy specs, module index และ implementation checklist |
 | [DailyLogs](DailyLogs) | Daily work reports |
 | [SourceInputs](SourceInputs) | เอกสาร input ต้นทางที่ใช้เป็น reference |
-| [ProjectAdmin](ProjectAdmin) | เอกสารกลางของโปรเจค policy, workflow, integration map และ admin references |
 | [Prototypes](Prototypes) | HTML/JS preview artifacts และ local prototype server files |
 
 ## Front Office Key Files
@@ -77,17 +72,10 @@ Current Back Office baseline: `BO-PRD-v0.1`
 | Existing BO spec source | [BackOffice/BO_Spec.md](BackOffice/BO_Spec.md) |
 | Existing BO completion addendum | [BackOffice/BO_Spec_Completion_Addendum.md](BackOffice/BO_Spec_Completion_Addendum.md) |
 
-## Shared Project Files
-
-| Need | File |
-| --- | --- |
-| FO/BO cross-system trigger และ action mapping | [ProjectAdmin/FO_BO_INTEGRATION_MAP.md](ProjectAdmin/FO_BO_INTEGRATION_MAP.md) |
-
 ## Notes
 
 - ถ้า Front Office document ขัดกับเอกสารเก่า ให้ใช้ source-of-truth order ใน [FrontOffice/README_MODULE_INDEX.md](FrontOffice/README_MODULE_INDEX.md)
 - ถ้า Back Office document ขัดกับ legacy BO specs ให้ใช้ source-of-truth order ใน [BackOffice/DOCUMENT_VERSION.md](BackOffice/DOCUMENT_VERSION.md)
-- Requirement ที่ข้าม Front Office และ Back Office ให้ใช้ [ProjectAdmin/FO_BO_INTEGRATION_MAP.md](ProjectAdmin/FO_BO_INTEGRATION_MAP.md) เพื่อ trace ทั้งสองฝั่งโดยไม่ปน scope
 - Source input `.docx` เก็บไว้ใน [SourceInputs](SourceInputs) เพื่อ trace requirement กลับไปยังต้นทาง
 - Daily logs เป็นประวัติงาน ไม่ใช่ source of truth
 - edit test

@@ -21,8 +21,6 @@ Admin Scope Note ระบุขอบเขต Admin / Back Office ที่ ma
 
 This document clarifies that Admin is a Web Back Office account type, not a mobile app user type, and defines the user-facing handoff required for moderation, report handling, and audit trail.
 
-แผนที่การเชื่อมงานระหว่าง FO และ BO อยู่ที่ [../ProjectAdmin/FO_BO_INTEGRATION_MAP.md](../ProjectAdmin/FO_BO_INTEGRATION_MAP.md)
-
 # 3. Master Alignment Summary
 
 | Area | Master Baseline |

@@ -1,0 +1,37 @@
+MONEY-001 — Task Evidence
+=========================
+Task: MONEY-001 ถอด FOX Money Display Rules เป็นกติกากลางการแสดงจำนวนเงินของตึกแดง (FO + BO) พร้อม inventory จุดแสดงเงินและแผนปรับ
+Kanban ID: b0a82dae-e333-4cd0-bec9-520ffe376a7f
+Status: done (2026-10-26)
+Category: Documentation
+Mission mapping: none (standalone)
+Git commit: f2288e7 — docs(standards): MONEY-001 add money display rules draft adapted from FOX for FO+BO
+Final hours_spent: 0.4 ชม. (corrected จาก 0.1 system minimum — task ไม่ผ่าน in_progress)
+
+Deliverable หลัก (ไฟล์งานจริง)
+------------------------------
+- docs/money-display-rules.md (สร้างใหม่, ~215 บรรทัด)
+  Version 0.1 — DRAFT FOR REVIEW, Date 26 October 2026
+  ถอดและปรับจาก FOX_Money_Display_Rules.md v0.2 (source: C:\Users\mailt\Downloads\FOX_Money_Display_Rules.md)
+
+เนื้อหาที่ครอบคลุม
+-----------------
+1. กติกา MD-01..MD-10 ฉบับปรับบริบทตึกแดง (หน่วย K/M/B/T, การปัดเศษ, ระดับการแสดง FO-mobile/BO-desktop, ช่องกรอก, ค่าลบ/ศูนย์/ว่าง, วันที่มูลค่า, THB-only, แนวทางใช้ร่วมกัน)
+2. Decision Register เทียบ FOX O-01..09 — แยกข้อใช้ได้ตรง vs ต้องตัดสินใหม่
+3. Inventory จุดแสดงเงินจริงพร้อม line ref:
+   - FO Prototypes/fo-flow/index.html (portfolio helpers ~L16663-16665, post price strings ~L12930/12952, input panes ~L16021-16039, sell form ~L17432, N/A inconsistency ~L17373/17403)
+   - BO Prototypes/bo-prototype.html (asset THB strings ~L18318-18337, offers ~L18353-18364, Median ไม่มีสกุล ~L18344, formatMarketMetric ~L21594)
+4. Gap register: mock เงิน string/number ปนกัน, — vs N/A, ฿ vs THB ตามแพลตฟอร์ม, Median ไม่มีสกุล, views K-suffix ห้ามปน money formatter
+
+Open items (รอพี่คิงตัดสิน)
+--------------------------
+- ทศนิยม: ตัวเลือก A/B/C ในหัวข้อ 3.2 (เสนอ B)
+- Settings เลือกหน่วย: ทำหรือข้าม phase นี้ (เสนอข้าม)
+- Copy มาตรฐาน: — vs N/A, ข้อความ "ไม่มีราคาตลาด" TH/EN
+- Semantics ของ Market Data "Median 305,000"
+- Migration mock data เป็น number + currency ก่อนใช้ formatter ร่วม
+
+ข้อจำกัด
+--------
+- เอกสารเท่านั้น ไม่แก้หน้าจอ/Code/Mock Data
+- จุดแสดงเงิน BO ส่วนใหญ่อยู่ใน protected screens — ต้องขออนุมัติรายจุดก่อนแก้

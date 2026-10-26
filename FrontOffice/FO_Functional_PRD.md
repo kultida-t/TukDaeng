@@ -3,6 +3,8 @@
 **FO Functional PRD v2.0**  
 **Document:** Project Vision & Confirmed Requirements Summary
 
+> **Sync note (FO-PRD-v1.9, 2026-10-22):** เอกสารนี้ sync ตาม `Prototypes/fo-flow/index.html` + master §16 Sync Decision Log — feed post-centric (S-09), Member Sheet แทน Global Login Required Dialog, Alerts feed 5 types (+`system`), thread chat key = user+item (S-07), Sale Record 2 ฟิลด์ (D3) — จุดที่ขัด master/module spec ให้ยึด master/module spec เสมอ
+
 ## 1. เป้าหมายของแอปพลิเคชัน
 
 Tuk Daeng เป็น Marketplace Community สำหรับซื้อขาย สะสม และติดตามนาฬิกาหรู
@@ -55,8 +57,8 @@ Tuk Daeng เป็น Marketplace Community สำหรับซื้อข�
 
 ### Feed
 
-- Marketplace หลัก
-- แสดงเฉพาะ Asset สถานะ Sale
+- Post-centric social feed (S-09)
+- แสดงโพสต์ kind `sale` (ผูก asset สถานะ Sale) + kind `post` (ไม่ผูก asset)
 
 ### Search & Filter
 
@@ -86,7 +88,7 @@ Tuk Daeng เป็น Marketplace Community สำหรับซื้อข�
 
 ### Notification
 
-- ศูนย์กลางการแจ้งเตือน
+- Alerts feed — ศูนย์กลางการแจ้งเตือน (member-only, 5 types)
 
 ### Social
 
@@ -142,7 +144,8 @@ Tuk Daeng เป็น Marketplace Community สำหรับซื้อข�
 
 ## 5. Feed Visibility Rule
 
-- Feed แสดงเฉพาะ Asset สถานะ Sale เท่านั้น
+- Feed = post-centric (S-09): แสดงโพสต์ kind `sale` ที่ผูก asset สถานะ Sale + โพสต์ kind `post` (ไม่ผูก asset)
+- Asset สถานะ Show/Hide/Sold ไม่ขึ้น Feed
 
 ## 6. Search Visibility Rule
 
@@ -198,17 +201,19 @@ Sold Asset:
 | TH | ไม่พบข้อมูล |
 | EN | No data found |
 
-## 11. Global Login Required Dialog
+## 11. Member Sheet (เดิมเรียก Global Login Required Dialog)
 
-Guest กด Feature ที่ต้อง Login ให้ใช้ Dialog เดียวกันทั้งระบบ
+Guest กด Feature ที่ต้อง Login ให้ใช้ sheet `Join TukDaeng` เดียวกันทั้งระบบ (Member Sheet)
 
 ตัวอย่าง Feature ที่ต้อง Login:
 
 - Like
 - Follow
 - Chat
-- Favorites
-- Following
+- Share (member-only ทุก surface — S-03)
+- Favorites / Wishlist / Saved
+- Comment
+- Following / Favorites feed tabs (guest เห็น empty ไม่ gate — S-16)
 
 ## 12. Chat Module
 
@@ -216,14 +221,14 @@ Guest กด Feature ที่ต้อง Login ให้ใช้ Dialog เ�
 
 - สร้างห้องเมื่อส่งข้อความแรก
 
-### Same Asset
+### Same Listing
 
-- ใช้ห้องเดิม
+- ใช้ห้องเดิม (thread key = user + item — S-07)
 
-### Different Asset
+### Different Listing (seller เดียวกัน คนละโพสต์)
 
-- ใช้ห้องเดิม
-- `Reference Asset` เปลี่ยนเป็น Asset ล่าสุด
+- สร้างห้องแยก (ไม่ merge ห้อง — S-07)
+- `Reference Asset` ของแต่ละห้องคงเดิม ไม่เปลี่ยนตาม listing ล่าสุด
 
 ### Asset Deleted
 
@@ -246,22 +251,25 @@ Guest กด Feature ที่ต้อง Login ให้ใช้ Dialog เ�
 
 - รองรับ
 
-## 13. Notification Module
+## 13. Notification Module (Alerts feed)
 
-Notification รองรับ:
+Notification รองรับ 5 types:
 
 - Like
 - Comment
 - Follow
 - Watch Alert
+- `system` (placeholder destination — S-17)
 
 ### Notification Destination
 
 | Notification | Destination |
 | --- | --- |
-| Watch Alert Notification | เปิด Asset Detail (post viewer) ของ Asset ที่ match โดยตรง ไม่มี Result List คั่น |
-| Like Notification | เปิด Asset Detail |
-| Comment Notification | เปิด Asset Detail และ Focus Comment |
+| Watch Alert Notification | เปิด Post Viewer ของ post ที่ match โดยตรง ไม่มี Result List คั่น (S-08) |
+| Like Notification | เปิด Post Viewer |
+| Comment Notification | เปิด Post Viewer และ Focus Comment |
+| Follow Notification | เปิด Public Profile + inline Follow back |
+| `system` | placeholder destination (S-17) |
 
 ## 14. Social Module
 
@@ -282,14 +290,16 @@ Notification รองรับ:
 
 ## 15. Watch Alert
 
-- สร้างจากหน้า Search Filter
-- ไม่มี Required Field
-- Match เฉพาะ Sale
-- เปิด Notification แล้วไป Asset Detail (post viewer) ของ Asset ที่ match โดยตรง
+- สร้างจาก shared `Create watch alert` sheet (entry: search, feed, asset)
+- ชื่อ auto-fill จาก criteria แก้ได้; criteria เป็น snapshot (S-11)
+- Match เฉพาะ Sale post
+- เปิด Notification แล้วไป Post Viewer ของ post ที่ match โดยตรง (S-08)
 
 ## 16. Portfolio
 
-Portfolio เป็น Private และเห็นเฉพาะ Owner
+Portfolio เป็น Private และเห็นเฉพาะ Owner (ผ่าน wallet icon `.pf-pfo` — S-05)
+
+Headline = `Total invested` = Σ Purchase Price (D2 — ไม่ใช่ Total Asset Value) + market value secondary + coverage
 
 คำนวณจาก:
 
@@ -301,26 +311,24 @@ Portfolio เป็น Private และเห็นเฉพาะ Owner
 
 - Sold
 
-### Sold History
+### Sale Record (เดิมเรียก Sold History)
 
-เก็บข้อมูล:
+เก็บข้อมูล 2 ฟิลด์เท่านั้น (D3):
 
 - Sale Date
-- Buyer
-- Contact
 - Sale Price
-- Payment Method
-- Attachment
 
 ## 17. Trust & Safety
 
 ### Block User
 
-เมื่อ Block แล้ว Asset ของผู้ถูก Block หายจากรายการต่อไปนี้ทันที:
+เมื่อ Block แล้ว post ของผู้ถูก Block หายจากรายการต่อไปนี้ทันที:
 
 - Feed
 - Search
 - Watch Alert
+
+Blocked profile page แสดง Instagram-style blocked state (S-13 — ไม่ใช่ unavailable page)
 
 ### Report
 

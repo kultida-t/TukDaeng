@@ -536,7 +536,7 @@ Account-list pages ของ section `What you see` — spec ระดับ set
 - Toggle ต้อง auto-save เมื่อเปิด/ปิด โดยไม่ต้องมี Save button
 - ไม่รวม Chat / New Message เพราะ Chat ใช้ unread badge/count ในเมนู Chat (chat notification prefs อยู่ที่ Chat config — 07_CHAT)
 - ไม่รวม Moderation, Account Action, Market Update, Price / Valuation หรือ Sale Success ใน Front Office V1
-- ถ้าปิด type ใด ต้องไม่สร้าง Front Office Notification Center item สำหรับ type นั้น แต่ backend/admin audit ยังทำงานตามระบบที่เกี่ยวข้องได้
+- ถ้าปิด type ใด ต้องไม่สร้าง Front Office Alerts feed item สำหรับ type นั้น แต่ backend/admin audit ยังทำงานตามระบบที่เกี่ยวข้องได้
 
 ---
 

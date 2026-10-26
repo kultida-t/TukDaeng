@@ -66,8 +66,8 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 
 | Integration | Owning Module | Dependent Modules |
 | --- | --- | --- |
-| Apple Sign In | Authentication | Settings, Global Login Required |
-| Google OAuth | Authentication | Settings, Global Login Required |
+| Apple Sign In | Authentication | Settings, Member Sheet (guest gate) |
+| Google OAuth | Authentication | Settings, Member Sheet (guest gate) |
 | Firebase Cloud Messaging | Notification | Watch Alert, Chat, Social |
 | Image Storage / CDN | Asset Management | Feed, Search, Asset Detail, Profile, Portfolio |
 | Watch Price API | Portfolio | Asset Management, Asset Detail |
@@ -92,8 +92,8 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 ## Firebase Cloud Messaging
 
 - ใช้สำหรับ Push Notifications
-- Notification type ใน V1 จำกัดที่ Like, Comment, Follow, Watch Alert
-- Watch Alert notification ต้องเปิด Asset Detail (post viewer) ของ Asset ที่ match โดยตรง — ไม่มี Watch Alert Result List คั่นใน V1
+- Notification type ใน V1 จำกัดที่ Like, Comment, Follow, Watch Alert + `system` (S-17 — placeholder destination ตาม 09_NOTIFICATION)
+- Watch Alert notification ต้องเปิด Post Viewer ของ post ที่ match โดยตรง — ไม่มี Watch Alert Result List คั่นใน V1 (S-08)
 - Notification destination ต้อง validate auth, permission, asset status, deletion และ block state
 
 ## Image Storage / CDN
