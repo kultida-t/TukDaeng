@@ -5,6 +5,8 @@ Kanban ID: b0a82dae-e333-4cd0-bec9-520ffe376a7f
 Status: done (2026-10-26)
 Category: Documentation
 Mission mapping: none (standalone)
+Git commit: f2288e7 — docs(standards): MONEY-001 add money display rules draft adapted from FOX for FO+BO
+Final hours_spent: 0.4 ชม. (corrected จาก 0.1 system minimum — task ไม่ผ่าน in_progress)
 
 Deliverable หลัก (ไฟล์งานจริง)
 ------------------------------
