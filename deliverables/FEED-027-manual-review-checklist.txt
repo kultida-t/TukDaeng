@@ -1,0 +1,65 @@
+FEED-027 Manual Review Checklist — ผลการตรวจ
+=============================================
+Task: FEED-027 ปรับจูน UI และ Interaction หน้าฟีด fo-flow ให้เป็น Modern iOS Native
+      (เกลาแสงเงากระจกฝ้า + Scroll-to-Hide)
+ไฟล์ที่แก้: Prototypes/fo-flow/index.html
+วิธีเปิดทดสอบ: serve static ที่ http://localhost:8901/index.html (หรือเปิดไฟล์ตรง)
+Viewport หลัก: 440×956 (mobile frame) + 1440×900 / 1920×1080 (desktop)
+ธีมที่ตรวจ: Light Mode + Dark Mode
+ผู้ตรวจ: Matem (ผู้ใช้) — ยืนยันผ่านทุกเคส "โอเคเรียบร้อยทุกเคส"
+ผลรวม: ผ่าน 8/8 เคส
+
+Automated pre-check (Playwright, ก่อนส่งตรวจ manual):
+- Segmented pill ตรงแท็บ active พอดี (แก้จุดเยื้อง ~1px แล้ว) — PASS
+- ไอคอน header ฟีดไร้กรอบวงกลม (border-radius/background ถูกถอด) — PASS
+- scroll-hide/show ทำงานถูกทิศทางทั้ง Light และ Dark — PASS
+- ไม่มี JS error บน console — PASS
+
+Case 01 — เงาและขอบกระจกฝ้า Light Mode
+  ขั้นตอน: เปิดหน้า Feed → สลับ Light Mode → ดู Floating Bottom Nav และแคปซูลแท็บ
+  คาดหวัง: เงาบางนุ่มไม่ฟุ้งหนา, ขอบเส้นบางขาวครึ่งโปร่ง, ภาพนาฬิกาทะลุเบลอหลังกระจก
+  ผล: PASS (ผู้ใช้ยืนยัน)
+
+Case 02 — Scroll-to-Hide (เลื่อนลง)
+  ขั้นตอน: เลื่อนฟีดลงผ่านโพสต์แรก
+  คาดหวัง: Header บนเลื่อนหลบขึ้น + Bottom Nav จมลงล่างอย่างลื่น ภาพเต็มจอ
+  ผล: PASS (ผู้ใช้ยืนยัน)
+
+Case 03 — แสดงคืน (เลื่อนขึ้น)
+  ขั้นตอน: เลื่อนขึ้นเล็กน้อย
+  คาดหวัง: Header + Bottom Nav สไลด์กลับมาทันที
+  ผล: PASS (ผู้ใช้ยืนยัน)
+
+Case 04 — Segmented Control สไลด์
+  ขั้นตอน: กด Following → Favorites → All Posts
+  คาดหวัง: แผ่น pill สไลด์ตามแท็บอย่างนุ่มนวล, แท็บ active สีแดง, เนื้อหาฟีดเปลี่ยน
+  ผล: PASS (ผู้ใช้ยืนยัน)
+
+Case 05 — Dark Mode
+  ขั้นตอน: สลับ Dark Mode ทำ Case 01–04 ซ้ำ
+  คาดหวัง: กระจกฝ้าดำโปร่ง + ขอบขาวบางสวยพอกับ Light, hide/show ทำงานเหมือนกัน
+  ผล: PASS (ผู้ใช้ยืนยัน)
+
+Case 06 — Header Bare Glyphs
+  ขั้นตอน: ดูไอคอน ≡, แว่นขยาย, + บน header
+  คาดหวัง: ไอคอนลอยเพรียว ไม่มีวงกลมกระจกซ้อน
+  ผล: PASS (ผู้ใช้ยืนยัน)
+
+Case 07 — Regression: นำทางหน้าอื่น
+  ขั้นตอน: ซ่อน/แสดงแถบแล้วกดแท็บ Chat / Boards / Alerts / Profile
+  คาดหวัง: เปลี่ยนหน้าปกติ, ปุ่มวงกลมกระจกในหัวหน้าอื่นยังอยู่ครบ
+  ผล: PASS (ผู้ใช้ยืนยัน)
+
+Case 08 — Edge: สลับแท็บฟีดตอนแถบหลบ
+  ขั้นตอน: เลื่อนลงให้แถบหลบ → เลื่อนขึ้นให้แถบกลับ → สลับแท็บฟีด
+  คาดหวัง: ฟีดกลับบนสุด + แถบแสดงคืนเอง
+  ผล: PASS (ผู้ใช้ยืนยัน)
+
+หลักฐานประกอบ:
+- Prototypes/fo-flow/shots/feed027-light-top.png    — Light Mode ฟีดบนสุด (440×956)
+- Prototypes/fo-flow/shots/feed027-dark-top.png     — Dark Mode ฟีดบนสุด (440×956)
+- Prototypes/fo-flow/shots/feed027-dark-hidden.png  — Dark Mode ขณะแถบซ่อนหลัง scroll ลง (440×956)
+
+ข้อจำกัดหลักฐาน (Evidence gap ที่ต้องระบุตรง ๆ):
+- ไม่มีภาพ Before (สภาพก่อนแก้) ตอนทำงานไม่ได้ capture ไว้ — สถานะก่อนแก้เทียบได้จาก git commit ก่อนหน้า 70c978b
+- ภาพ After เป็น viewport 440×956 เท่านั้น ไม่ได้ capture แยก 1440×900/1920×1080 (ตรวจ manual แล้วทั้งสองขนาด)
