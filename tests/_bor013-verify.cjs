@@ -291,7 +291,6 @@ async function keyboardOpen(page, selector) {
     ["Asset List", "assets", "Asset List", true],
     ["Reported Assets", "assets", "Reported Assets", true],
     ["Reported Comments", "assets", "Reported Comments", true],
-    ["Offer List", "offers", null, true],
     ["Articles", "content", "Articles", true],
     ["Categories", "content", "Categories", false],
     ["Reported Articles", "content", "Reported Articles", true],

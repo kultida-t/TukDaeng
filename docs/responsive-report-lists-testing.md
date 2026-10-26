@@ -400,7 +400,7 @@ git status --short  # ควรเห็นเฉพาะ bo-prototype.html
 - User Management > User List, User Detail
 - Asset Management > Asset List, Asset Detail, Report Detail
 - Content Management ทุกหน้า
-- Market Data, Offer Management
+- Market Data (Offer Management ถูกถอดออกจาก prototype แล้ว 26/10/2026)
 
 ### กฎที่ห้ามแก้แบบ global
 

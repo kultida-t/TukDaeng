@@ -11,7 +11,7 @@ Status: ผ่านการตรวจรับ
 - ตรวจ entry point, destination, active menu, breadcrumb และ back path ที่ viewport 390, 768, 1280 และ 1440px
 - Phase 1 entry หลักมีครบ และไม่พบ page-level horizontal overflow
 - Login/Auth และ My Account เป็น entry นอก sidebar โดยตั้งใจ
-- Directory, Reports & Analytics, Broadcast/System Templates, Chat moderation และ Offer write actions เป็นงานที่เลื่อนไป Phase ถัดไป ไม่ใช่ defect
+- Directory, Reports & Analytics, Broadcast/System Templates และ Chat moderation เป็นงานที่เลื่อนไป Phase ถัดไป ไม่ใช่ defect (หมายเหตุ: Offer write actions เคยอยู่ใน deferred list — ถูกถอดออกทั้งระบบพร้อม Offer Management 26/10/2026)
 - พบ defect ที่ยืนยันแล้ว: Frequently Triggered Alerts แถว WAL-1440 ควรเปิด Alert Detail แต่พาไป Watch Alert List
 - พบ documentation inconsistency เรื่อง Market Data, Admin Settings, Audit Log export, Phase 1 summary และ metadata/comment ที่ล้าสมัย
 

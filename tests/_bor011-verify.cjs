@@ -108,7 +108,6 @@ const FILTER_SURFACES = [
   ["F6 Articles", "content", "Articles"],
   ["F7 Categories", "content", "Categories"],
   ["F8 Reported Articles", "content", "Reported Articles"],
-  ["F9 Offer List", "offers", ""],
   ["F10 Sync History", "market", "Sync History"],
   ["F11 Watch Alert List", "watch-alerts", "Watch Alert List"],
   ["AX Audit Log", "settings", "Audit Log"],

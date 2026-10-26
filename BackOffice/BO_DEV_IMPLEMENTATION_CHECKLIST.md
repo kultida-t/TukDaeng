@@ -32,7 +32,7 @@ Recommended note format:
 
 - [ ] ใช้ `00_GLOBAL_RULES_MODULE.md` เป็น baseline กลางเรื่อง responsive layout, admin access control, audit, status, privacy และ FO sync
 - [ ] สร้าง BO web app shell พร้อม authenticated layout, left navigation, top bar และ access-aware menu visibility
-- [ ] กำหนด shared status constants สำหรับ users, assets, articles, offers, comments, policy versions, alerts, notifications และ audit actions
+- [ ] กำหนด shared status constants สำหรับ users, assets, articles, comments, policy versions, alerts, notifications และ audit actions
 - [ ] ห้ามเพิ่ม `Guest / Unauthenticated` เป็น user status constant ของ BO; ให้ถือเป็น FO access state และใช้เฉพาะ public access/analytics context
 - [ ] ทำ shared table pattern: server pagination, search, filters, sort, column visibility ตามความเหมาะสม และ CSV/Excel export hook
 - [ ] ทำ shared confirmation modal สำหรับ destructive actions พร้อม reason input เมื่อจำเป็น
@@ -65,7 +65,6 @@ Recommended note format:
 - [ ] แสดง new users วันนี้/สัปดาห์นี้/เดือนนี้
 - [ ] แสดง Active Users Today เป็น primary Dashboard KPI
 - [ ] แสดง asset count แยกตาม status
-- [ ] แสดง offer made/accepted/rejected counts
 - [ ] แสดง pending report count
 - [ ] แสดง queue summary พร้อม SLA risk สำหรับ pending reports
 - [ ] แสดง policy-based dashboard view ตาม permission ของ admin
@@ -91,7 +90,7 @@ Recommended note format:
 | State Handling | Dev must implement section-level loading, empty, partial error, full error, stale data warning, and unauthorized section hiding. Prototype currently uses mock data only. |
 | Permission / Privacy | Dashboard visibility must be policy-based. Hide module metrics/queues/activities if the Admin has no permission, and enforce permission again at destination routes/APIs. |
 | Responsive QA | Verify 375px, 768px, 1280px, and 1440px. Mobile/tablet navigation uses hamburger drawer; Dashboard order must remain Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels. |
-| FO Sync Impact | Dashboard signals come from FO-triggered data: reports, assets, offers, support, watch alerts, content, notifications, market/search activity, and account deletion. |
+| FO Sync Impact | Dashboard signals come from FO-triggered data: reports, assets, support, watch alerts, content, notifications, market/search activity, and account deletion. |
 | Open Question | Final API shape, cache/freshness interval, and exact route/filter parameter names should be confirmed when Dev starts BO implementation. |
 
 ## 3. User Management
@@ -120,11 +119,11 @@ Recommended note format:
 | Data Needed | Replace mock users with server-paginated API data: user id, display name, username, masked email, auth method, verification state, account status, joined date/rank, last active/rank, asset count, report count, support/deletion reference, latest activity, allowed actions, blocked actions, action note, and FO impact copy. Do not include Guest/Unauthenticated visitor rows because they are not account records. |
 | Route / Drill-in | Left nav route should support `User Management / User Accounts` and `User Management / Reported Users` as sibling routes. Dashboard `New Users`, `Active Users Today`, and reported-user queue cards drill into the correct route with date/status/report context encoded in query params. User row actions open User Detail view, reset-password action view, status-action view, resend-verification context, or Account Deletion route when status is `Deletion Requested`; User List must not archive/delete directly. |
 | Route / Filter | User List filters must map to query params/API fields for search, account status, auth method, sort mode, and page. Search covers display name, username, masked email, auth, verification state, account status, support/latest context, and internal user id/reference; phone/location are not primary searchable columns. Status filter is limited to `Pending Verification`, `Active`, `Suspended`, `Banned`, `Deletion Requested`, and `Deleted`; it must not include Guest/Unauthenticated. Report context is represented by report count/detail and the `Reported Users` submenu, not a separate User List filter in the current prototype. Reset clears search/filter/sort/page to defaults and should update query params. Logout/login must reset view state to Dashboard and must not keep expanded User Management submenu, active subroute, filter toggle state, custom select, query params, or pagination state. |
-| State Handling | Implement loading, empty, no-result, partial-error, unauthorized, stale, and API failure states for summary cards, table, user detail view, reset-password action view, status-action view, and reported-user detail. Pagination is 10 users per page after search/filter/sort. New or sparse accounts must render without broken layout when profile/assets/offers/reports/activity are empty. |
+| State Handling | Implement loading, empty, no-result, partial-error, unauthorized, stale, and API failure states for summary cards, table, user detail view, reset-password action view, status-action view, and reported-user detail. Pagination is 10 users per page after search/filter/sort. New or sparse accounts must render without broken layout when profile/assets/reports/activity are empty. |
 | Permission / Privacy | BO has one `Admin` account type; enforce module/action permission at route, UI, API, and service level. UI hiding is not sufficient. Sensitive fields are masked by default in production, with reveal controlled by permission, business reason where required, and audit. Reset password is available only for Email accounts and blocked for Apple/Google/Pending Verification/Suspended/Banned/Deletion Requested/Deleted cases as specified by the prototype. Suspend, ban, restore, unban, resend verification, Account Deletion routing, sensitive reveal, and export each need separate permission keys. User List does not expose Export in Phase 1; export must route through system export with permission, scope control, expiry/background job, and audit (ก่อนหน้านี้ระบุให้ผ่าน Reports/export แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว). |
 | Account Status Actions | Suspend/ban/restore/unban must use confirmation with reason, `Status before action`, `After confirmation`, FO impact preview, and audit note before mutation. Prototype currently shows reason controls but does not validate them; production/API must reject missing required reason before saving. `Deletion Requested` users can be viewed and routed to Account Deletion/dependency review, but User List must not archive/delete directly. `Deleted` appears in the current prototype list/filter for historical review, but actions are limited to permitted historical detail and sensitive fields must stay masked/anonymized. |
 | Responsive QA | Verify 375px, 768px, 1280px, and 1440px against the prototype behavior. Desktop and wide desktop use the control-center layout: compact summary cards, top filter bar, dense table/list rows, row action menu, and structured detail/action views; do not introduce a persistent split list/detail layout for User Detail. Tablet/mobile use stacked card/list rows, hidden row headers, hamburger navigation, panel-header filter toggle, advanced filters expanding in the list area rather than a drawer/bottom sheet, reachable row action menu, and detail/action content that stacks without clipped Thai text. Also verify auth cycle on mobile: User List -> logout -> login returns to Dashboard with nav closed and no User Management submenu, query params, custom select, filter toggle, or pagination state retained. |
-| FO Sync Impact | Account status changes must update FO login/session behavior, account access, public profile visibility, and any dependent cache/indexes. Suspended and Banned must revoke/block active sessions and block login/action access until restore/unban; users should see the FO account-status state rather than entering the main app. V1 has no `Restricted`/feature-level account state. Pending Verification cannot use authenticated FO features; Deletion flow belongs to Account Deletion and may revoke sessions, hide profile/assets, and anonymize/archive according to dependency/grace-period policy. Suspend/ban must trigger email notification as the primary channel, with optional secondary in-app notification and delivery result traceable through Settings > Delivery Logs/Audit. Profile, Feed, Search, Asset Detail, Board, Notification, Watch Alert, Offer/Chat, Support, and Audit must consume the same account-state result consistently (ก่อนหน้านี้ระบุให้ Reports ด้วย แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว). Sync should define event name/payload, timing, retry behavior, stale-state handling, and admin-visible failure state. |
+| FO Sync Impact | Account status changes must update FO login/session behavior, account access, public profile visibility, and any dependent cache/indexes. Suspended and Banned must revoke/block active sessions and block login/action access until restore/unban; users should see the FO account-status state rather than entering the main app. V1 has no `Restricted`/feature-level account state. Pending Verification cannot use authenticated FO features; Deletion flow belongs to Account Deletion and may revoke sessions, hide profile/assets, and anonymize/archive according to dependency/grace-period policy. Suspend/ban must trigger email notification as the primary channel, with optional secondary in-app notification and delivery result traceable through Settings > Delivery Logs/Audit. Profile, Feed, Search, Asset Detail, Board, Notification, Watch Alert, Chat, Support, and Audit must consume the same account-state result consistently (ก่อนหน้านี้ระบุให้ Reports ด้วย แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว). Sync should define event name/payload, timing, retry behavior, stale-state handling, and admin-visible failure state. |
 | Open Question | Confirm final route names/query params, backend enum-to-Thai label mapping, exact permission keys for sensitive reveal/export/reset/resend-verification/status mutations, final FO sync event contract and cache invalidation timing, and production policy for how broadly `Deleted` historical rows should appear beyond the prototype review state. |
 
 ## 4. Asset Management
@@ -139,7 +138,6 @@ Recommended note format:
 - [ ] Reported asset ต้องเข้า moderation queue และไม่หายจาก FO ทันทีเว้นแต่มี policy ชัดเจน
 - [ ] Flag/unflag, ซ่อนชั่วคราว, ยกเลิกซ่อนชั่วคราว, ซ่อนถาวร และ force status change ต้องมี confirmation, reason และ update FO visibility rules
 - [ ] Status change ต้อง sync ผลไป Feed, Search, Profile, Asset Detail และ Watch Alert ตาม visibility matrix
-- [ ] Asset lifecycle ที่มี pending offers ต้อง sync ไป Offer policy: ซ่อนชั่วคราว/auto hidden -> `Paused`, review passed -> `Pending`, ซ่อนถาวร -> `Invalidated`, ลบโดยเจ้าของหรือ Sale/Show -> Hide -> `Cancelled`, Sold -> `Rejected`
 - [ ] Sold assets ยังใช้สำหรับ owner history และ admin review
 - [ ] Asset mutations ทุกครั้งต้องเขียน audit log พร้อม before/after state
 - [ ] Asset Management UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
@@ -149,7 +147,7 @@ Recommended note format:
 | Field | Detail |
 | --- | --- |
 | Prototype Reference | `Prototypes/bo-prototype.html` > `Asset Management` > `Asset List`, `Asset Detail`, `Reported Assets`, and `Asset Report Detail`. |
-| Spec Reference | `04_ASSET_MANAGEMENT_MODULE.md` sections 3-16; `08_AUDIT_LOG_MODULE.md`; `09_OFFER_CHAT_MODULE.md`; `11_WATCH_ALERT_MODULE.md`; `../FrontOffice/02_FEED_MODULE.md`; `../FrontOffice/03_SEARCH_FILTER_MODULE.md`; `../FrontOffice/05_ASSET_DETAIL_MODULE.md`. |
+| Spec Reference | `04_ASSET_MANAGEMENT_MODULE.md` sections 3-16; `08_AUDIT_LOG_MODULE.md`; `11_WATCH_ALERT_MODULE.md`; `../FrontOffice/02_FEED_MODULE.md`; `../FrontOffice/03_SEARCH_FILTER_MODULE.md`; `../FrontOffice/05_ASSET_DETAIL_MODULE.md`. |
 | Prototype / Spec Alignment | Prototype aligns with the Phase 1 Asset Management baseline for asset list/detail, canonical asset statuses `Sale`, `Show`, `Hide`, `Sold`, moderation states such as `Admin Hidden` / `Auto Hidden`, reported-asset queue, report detail, confirmation flows, before/after audit notes, FO impact messaging, and responsive operational layout. Production must add server/API permission enforcement, full sensitive-field masking/reveal workflow, required reason validation, persistent audit records, and real FO sync/cache invalidation. |
 | Data Needed | Replace mock asset rows with server-paginated API data: asset id, title, brand, model/reference, owner id/name/account status, status, moderation state, report count/report id, reporter count, report reason, priority, price or private-price state, created/updated timestamps, comment/favorite counts, uploaded images, technical specs, description, purchase/provenance proof, sale history, status history, moderation/audit history, allowed actions, blocked actions, and FO impact copy. |
 | Route / Drill-in | Left nav has sibling routes `Asset Management / Asset List` and `Asset Management / Reported Assets`. Asset row click or row action opens `Asset Detail` with breadcrumb `Asset Management / Asset List / {assetId}` and back to Asset List. Reported Assets row/action opens Asset Report Detail; `View Asset` opens the asset detail modal/context from the report. Dashboard asset KPI/status/report queue links should preserve equivalent route/filter context. |
@@ -158,7 +156,7 @@ Recommended note format:
 | Permission / Privacy | BO has one `Admin` account type; enforce module/action permission at route, UI, API, and service layers. Separate permission keys are needed for module view, detail view, reported queue view, sensitive reveal, purchase/provenance proof view, sale history view, force hide, restore temporary hide, permanent hide, close/clear report, export, and audit history. Sensitive purchase price/date/from, proof of payment, consignment contact/terms, owner contact, and sold history must be masked by default in production and reveal only by policy with audit. UI hiding is not sufficient, and direct URL/API access must be rejected server-side. |
 | Asset Actions | Prototype action availability follows current asset type and moderation state: Admin can force-hide public `Sale`/`Show` assets in active/reported/reviewing states, restore only temporarily hidden assets, and permanently hide public or temporarily hidden assets according to policy. `Hide` owner-only and `Sold` history states are not quick force-hide targets in V1. Confirmation flows must require reason/note before mutation in production, persist before/after asset status and report status, and close/clear related pending reports only for valid restore/permanent-hide outcomes. ลบโดยเจ้าของ is shown as retained BO record and has no standard moderation action. |
 | Responsive QA | Verify 375px, 768px, 1280px, and 1440px. Desktop/wide desktop use dense operational rows, summary cards, top filter controls, row action menus, and full Asset Detail layout with FO preview plus BO context. Tablet/mobile use stacked card rows, hidden table headers, hamburger navigation, filter toggle with advanced filters expanding in the list area, reachable row action menus, image galleries/thumbnails that do not overflow, and detail/report/action views that stack without clipped Thai text. |
-| FO Sync Impact | Asset visibility changes must update FO Feed, Search, Asset Detail/public deep links, Profile/Collection, Watch Alert matching/results, Board/comment references where applicable, Offer/Chat references, and Notifications/delivery context. `Sale` returns to Feed/Search/Watch Alert and may accept offers; `Show` stays profile/detail only and must not match Feed/Search/Watch Alert; `Hide`, `Sold`, `ลบโดยเจ้าของ`, `ซ่อนชั่วคราว`, and `ซ่อนถาวร` are not public marketplace results and do not accept new offers. Offer impact is fixed: ซ่อนชั่วคราว/auto hidden -> `Paused`, review passed -> `Pending`, ซ่อนถาวร -> `Invalidated`, ลบโดยเจ้าของ or owner Hide -> `Cancelled`, Sold -> `Rejected`. Sync contract must define event names, payload, timing, retry/idempotency, cache/index invalidation, admin-visible failure state, and audit correlation id. |
+| FO Sync Impact | Asset visibility changes must update FO Feed, Search, Asset Detail/public deep links, Profile/Collection, Watch Alert matching/results, Board/comment references where applicable, Chat references, and Notifications/delivery context. `Sale` returns to Feed/Search/Watch Alert; `Show` stays profile/detail only and must not match Feed/Search/Watch Alert; `Hide`, `Sold`, `ลบโดยเจ้าของ`, `ซ่อนชั่วคราว`, and `ซ่อนถาวร` are not public marketplace results. Sync contract must define event names, payload, timing, retry/idempotency, cache/index invalidation, admin-visible failure state, and audit correlation id. |
 | Open Question | Confirm final route names/query params, exact permission key names, whether spec-only filters become visible in V1 UI or remain API/report filters, sensitive reveal approval level, and final FO sync/cache invalidation SLA for moderation actions. Restore from ซ่อนถาวร is out of standard moderation flow; restore remains available only for temporary hide. |
 
 ## 5. Content / Board
@@ -248,41 +246,6 @@ Recommended note format:
 | Permission / Audit | Full audit visibility and export must be permission controlled. Audit export must create its own audit event and use controlled access/expiry. |
 | FO Sync Impact | Audit rows should trace BO actions that affect FO visibility, notifications, account access, content publication, marketplace/search state, Watch Alert triggers, and exports. |
 
-## 9. Offer Management
-
-- [ ] Offer list ต้องรองรับ search/filter/sort/pagination และ status `Pending`, `Paused`, `Accepted`, `Rejected`, `Cancelled`, `Invalidated`
-- [ ] Implementation ต้องใช้ `Rejected` ตาม FO เป็นหลัก และ normalize legacy `Declined` เป็น `Rejected`
-- [ ] FO button/action copy ต้องใช้ `Decline` ได้ แต่เมื่อกดแล้วต้องเปลี่ยน status เป็น `Rejected`
-- [ ] Offer detail ต้องแสดง asset summary, buyer, owner, offer timeline, related chat room, notification delivery และ audit events
-- [ ] Offer status timeline ต้องเก็บ actor/source, timestamp, before/after state และ reason เมื่อจำเป็น
-- [ ] Offer Management V1 ต้องเป็น read-only ไม่มี accept/decline/cancel/force-expire/invalidate action
-- [ ] Asset ลบโดยเจ้าของต้องทำให้ related offers เป็น `Cancelled` ตาม FO Offer policy
-- [ ] Owner เปลี่ยน asset จาก `Sale`/`Show` เป็น `Hide` ต้องทำให้ pending offers เป็น `Cancelled`
-- [ ] Asset sold ต้อง auto reject other pending offers เป็น `Rejected` ตาม FO Offer policy
-- [ ] Asset ถูก auto hidden จาก report หรือซ่อนชั่วคราวระหว่าง review ต้องทำให้ pending offers เป็น `Paused` และ FO ต้องไม่แสดง Accept/Decline
-- [ ] Review ผ่านและ asset กลับเป็น `Sale`/`Show` ต้องทำให้ `Paused` offers กลับเป็น `Pending`
-- [ ] Asset ถูกซ่อนถาวรจาก moderation ต้องทำให้ pending/paused offers เป็น `Invalidated`
-- [ ] `Show` asset ต้องรองรับ offer/contact เฉพาะ Asset Detail/Public Profile detail ตาม FO rule และไม่ขึ้น Feed/Search/Watch Alert
-- [ ] `Hide`, `Sold`, `ซ่อนถาวร`, `ลบโดยเจ้าของ` ต้องไม่รับ offer ใหม่
-- [ ] Related chat context ต้องเปิดแบบ read-only ตาม permission และ privacy masking
-- [ ] User report จาก chat ต้อง route ไป `User Management > Reported Users` พร้อม `Sources = Chat`
-- [ ] FO Delete Chat ต้องเป็น user-level visibility เท่านั้น ห้าม hard delete server record โดยไม่มี retention/audit policy
-- [ ] Blocked users ต้องส่งข้อความใหม่ไม่ได้ แต่ history เดิมยังอ่านได้ตาม FO read-only rule
-- [ ] Admin ห้าม edit user message หรือ offer price โดยตรง
-- [ ] Offer notification delivery ต้อง trace ได้ แต่ template/retry ดูที่ Settings > Delivery Logs (Phase 1); template/broadcast config เป็น Phase 2/future
-- [ ] Pending offer ต้องเป็น dependency สำหรับ block account deletion
-- [ ] Export offer history ต้องจำกัด permission และ audit export event
-- [ ] Offer Management UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
-
-### Offer Management Prototype Handoff Notes
-
-| Area | Notes |
-| --- | --- |
-| Prototype / Spec Alignment | The prototype exposes `Offer Management` with `Offer List` as a read-only overview for asset interest, buyer/seller, offer price, status, and related chat context. It removes chat-report/dispute queue wording; user reports from chat belong in `User Management > Reported Users`. |
-| Implementation Gap | Production still needs offer detail, buyer/owner/asset summaries, offer timeline, related chat read-only context, notification delivery, permission-gated export, and empty/loading/error states. |
-| Permission / Audit | Offer list/detail is read-only. Sensitive reveal, related-chat view, and offer export must be permission-gated and audit-logged. No V1 write action should appear in this module. |
-| FO Sync Impact | Offer status must reflect FO/system events: seller accept/decline, asset deleted or owner hide -> `Cancelled`, asset sold -> other pending offers `Rejected`, asset auto-hidden/temp-hidden -> `Paused`, review passed -> `Pending`, permanent hide -> `Invalidated`, notification delivery context, and account-deletion dependency checks. |
-
 ## 11. Market Demand (Watch Alert)
 
 ### Demand Overview
@@ -296,7 +259,7 @@ Recommended note format:
 ### Search Insights
 - [ ] Search Insights แสดง Popular Keywords, Popular Filters by Dimension, Popular Filter Combinations
 - [ ] No-result Searches แยกจาก Unmet Watch Alert
-- [ ] Search Funnel แสดง Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer
+- [ ] Search Funnel แสดง Search Submit → Result Click → Asset Detail Open → Watch Alert
 - [ ] Search Insights เป็น aggregate only — ไม่มี user-identifying data
 
 ### Watch Alert List & Detail
@@ -357,13 +320,13 @@ Recommended note format:
 - [ ] Deletion request queue ต้องรองรับ search/filter ตาม Request ID, user, สถานะคำขอ, account status, grace period state และ requested date
 - [ ] Request detail ต้องแสดง user context, deletion timeline, dependency summary, Deletion Plan และ history & actions
 - [ ] หลัง FO Delete Account สำเร็จ account ต้องเข้าสู่ deactivated/login blocked state และ public profile/assets ต้องถูกซ่อนทันที (ไม่รอครบ 30 วัน)
-- [ ] ยกเลิก offer ที่ Pending และปิดรายงานอัตโนมัติเมื่อ FO confirm สำเร็จ พร้อมบันทึก audit — ไม่มี block ที่ต้องรอ Admin
+- [ ] ปิดรายงานที่ยังเปิดอยู่อัตโนมัติเมื่อ FO confirm สำเร็จ พร้อมบันทึก audit — ไม่มี block ที่ต้องรอ Admin
 - [ ] Grace period ต้องใช้ baseline 30 วันและแสดง active / ending soon / expired
-- [ ] Dependency check ระหว่างช่วงรอลบบัญชีต้อง query dependency ล่าสุดจาก Offer Management, Asset และ Report modules เป็น system job พร้อมบันทึก audit
+- [ ] Dependency check ระหว่างช่วงรอลบบัญชีต้อง query dependency ล่าสุดจาก Asset, Chat และ Report modules เป็น system job พร้อมบันทึก audit
 - [ ] คืนบัญชี / ปฏิเสธคืนบัญชี ใช้ได้เฉพาะช่วง grace period 30 วัน ต้องมี confirmation, reason และ audit; คืนบัญชีต้อง sync account status กลับ `Active` และบันทึกใน Account Status History ของ User Management
 - [ ] ครบ grace period ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เป็น system job ไม่ใช่ manual action ของแอดมิน
 - [ ] Deletion Plan ต้องแยก hide, retain และ anonymize ต่อ entity ให้ชัด
-- [ ] Sensitive reveal, restore, reject restore และ export ต้องมี audit log; system actions (request create, session revoke, offer cancel auto, report close auto, dependency check, auto delete) ต้องบันทึก audit โดย system job
+- [ ] Sensitive reveal, restore, reject restore และ export ต้องมี audit log; system actions (request create, session revoke, report close auto, dependency check, auto delete) ต้องบันทึก audit โดย system job
 - [ ] Account Deletion UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
 ### Account Deletion Prototype Handoff Notes
@@ -371,9 +334,9 @@ Recommended note format:
 | Area | Notes |
 | --- | --- |
 | Prototype / Spec Alignment | Prototype ล็อกแล้วตาม `13_ACCOUNT_DELETION_MODULE.md` BO-13-v0.5 — Request List (7 คอลัมน์ + row menu, mobile card), Request Detail 5 sections (User Context / Deletion Timeline / Dependency Summary / Deletion Plan / History & Actions พร้อมคอลัมน์ ส่งอีเมล), modal คืนบัญชี + ปฏิเสธคืนบัญชี (มี email note + email preview), cross-module drill-in, Audit Log view และ Account Status History ของ User Management; lifecycle email 5 จุด sync กับ `14_NOTIFICATIONS_MODULE.md` BO-14-v0.2 section 9.3 |
-| Implementation Gap | Production needs API-backed permission enforcement, real FO sync (session revoke, hide profile/assets, auto-cancel offers, auto-close reports), system job สำหรับลบบัญชีอัตโนมัติเมื่อครบ grace period 30 วัน, audit persistence และ sensitive-data masking ตาม policy |
+| Implementation Gap | Production needs API-backed permission enforcement, real FO sync (session revoke, hide profile/assets, auto-close reports), system job สำหรับลบบัญชีอัตโนมัติเมื่อครบ grace period 30 วัน, audit persistence และ sensitive-data masking ตาม policy |
 | Permission / Audit | Restore, reject restore, sensitive reveal และ export ต้อง permission-gated และ audit-logged พร้อม before/after values และ reason; system actions บันทึก audit อัตโนมัติทุกครั้ง |
-| FO Sync Impact | Successful FO delete-account flow must revoke session/deactivate account, hide public profile/assets immediately, auto-cancel pending offers and auto-close open reports with audit, keep required records for retention, and auto-delete (archive + anonymize in one step) when the 30-day grace period ends; restore by admin syncs account status back to Active within the grace period. |
+| FO Sync Impact | Successful FO delete-account flow must revoke session/deactivate account, hide public profile/assets immediately and auto-close open reports with audit, keep required records for retention, and auto-delete (archive + anonymize in one step) when the 30-day grace period ends; restore by admin syncs account status back to Active within the grace period. |
 
 ## 14. Notifications
 
@@ -400,8 +363,8 @@ Recommended note format:
 - [ ] Broadcast ต้องมี title, body, optional image, channel, target audience, deep link, send now/schedule และ preview
 - [ ] Broadcast ที่ส่งถึงผู้ใช้จริงต้องผ่าน Admin approval
 - [ ] Generic Broadcast ห้ามแสดงใน FO Notification Center จนกว่า master decision เพิ่ม scope หรือ mapping ชัดเจน
-- [ ] System trigger ต้องรองรับ Like, Comment, Follow, New Offer, Offer Accepted, Offer Rejected, Offer Cancelled และ Watch Alert
-- [ ] FO Notification Center ต้องรองรับเฉพาะ Like, Comment, Follow, Offer และ Watch Alert ตาม V1 baseline
+- [ ] System trigger ต้องรองรับ Like, Comment, Follow และ Watch Alert
+- [ ] FO Notification Center ต้องรองรับเฉพาะ Like, Comment, Follow และ Watch Alert ตาม V1 baseline
 - [ ] Chat / New Message ต้องไม่เข้า Notification Center และใช้ Chat badge/count เท่านั้น
 - [ ] Watch Alert notification destination ต้องเป็น Watch Alert Result List เท่านั้น
 - [ ] System template ต้องใช้ allowlist variables และห้ามใส่ sensitive data เช่น phone, email, LINE หรือ internal note
@@ -415,14 +378,14 @@ Recommended note format:
 | Prototype / Spec Alignment | Prototype ตัด Notifications menu entry ออกแล้ว และย้าย Delivery Logs เข้า Settings (NTF-RSTR-001/003); Dashboard links อัปเดตเป็น Settings / Delivery Logs (NTF-RSTR-004); Account Deletion lifecycle email delivery logs (`DLV-DEL-xxx`) แสดงใน Settings > Delivery Logs และ sync กับ History & Actions ของ Request Detail ตาม `14_NOTIFICATIONS_MODULE.md` BO-14-v0.3 section 9.3 |
 | Implementation Gap | Phase 1: production still needs delivery log detail, retry/idempotency, failed/skipped reason handling, and export. Phase 2: broadcast draft/approval/schedule/send/cancel, preview, system trigger template configuration. |
 | Permission / Audit | Phase 1: retry, sensitive reveal, and export require permission checks and audit. Phase 2: template update, type enable/disable, broadcast approve/send/cancel require permission checks and audit. |
-| FO Sync Impact | FO Notification Center V1 must remain limited to Like, Comment, Follow, Offer, and Watch Alert. Generic Broadcast must not appear in the FO in-app list until Product confirms scope. Watch Alert notification destination must remain `Watch Alert Result List`; Chat/New Message uses chat badge/count, not Notification Center. |
+| FO Sync Impact | FO Notification Center V1 must remain limited to Like, Comment, Follow, and Watch Alert. Generic Broadcast must not appear in the FO in-app list until Product confirms scope. Watch Alert notification destination must remain `Watch Alert Result List`; Chat/New Message uses chat badge/count, not Notification Center. |
 
 ## 15. Reports & Analytics (Phase 2 / Future scope — deferred)
 
 > **สถานะ:** เลื่อนเป็น Phase 2/future scope — prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor
 > Checklist ด้านล่างเก็บไว้เพื่ออ้างอิงเมื่อกลับมาทำใน Phase 2 ไม่ใช่งานที่ต้องทำใน Phase 1
 
-- [ ] Report catalog ต้องมี User, Asset, Offer, Chat, Content / Board, Asset Reported Comments, Search, Watch Alert, Notification และ Account Deletion reports (ไม่มี Support Report ใน Phase 1)
+- [ ] Report catalog ต้องมี User, Asset, Chat, Content / Board, Asset Reported Comments, Search, Watch Alert, Notification และ Account Deletion reports (ไม่มี Support Report ใน Phase 1)
 - [ ] ทุก report ต้องรองรับ date range, filter, sort, policy-based visibility และ last updated
 - [ ] ทุก report ที่ export ได้ต้องรองรับ CSV และ Excel ตาม permission
 - [ ] Large export ต้องใช้ background job พร้อม status Queued / Processing / Completed / Failed / Expired / Cancelled
@@ -431,7 +394,6 @@ Recommended note format:
 - [ ] User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics และต้องไม่ใช้ Guest เป็น account status/filter
 - [ ] User Report ต้องรองรับ explicit guest/public metrics ได้แก่ Guest Visitors, Public Asset Views, Public Article Views, Public Profile Views, Public Shares และ Guest-to-Signup Conversion เมื่อ tracking เปิดใช้
 - [ ] Asset Report ต้องใช้ status `Show` / `Hide` ตาม FO และไม่ใช้ legacy collection wording
-- [ ] Offer Report ต้องใช้ status `Rejected` ไม่ใช้ `Declined`
 - [ ] Chat Report ต้องจำกัด transcript export ตาม permission และ audit ทุกครั้ง
 - [ ] Search Report ต้องแสดง top searched keywords/brands/models, no-result searches และ save-as-watch-alert conversion ถ้ามี tracking
 - [ ] Watch Alert Report ต้องยืนยัน Sale-only match และ destination `Watch Alert Result List`
@@ -443,10 +405,10 @@ Recommended note format:
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | Prototype ตัดเมนู Reports ออกชั่วคราว (Phase 2/future scope). ก่อนหน้านี้ prototype เคยมี `User`, `Asset`, `Offer`, `Search`, และ `Export Jobs` เป็น visible shell แต่ spec ต้องการ report catalog เต็ม: User, Asset, Offer, Chat, Content/Board, Asset Reported Comments, Search, Watch Alert, Notification, Account Deletion, และ Export Job/Access History (ไม่มี Support Report ใน Phase 1) — จะทำเมื่อกลับมาเปิด scope ใน Phase 2 |
+| Prototype / Spec Alignment | Prototype ตัดเมนู Reports ออกชั่วคราว (Phase 2/future scope). ก่อนหน้านี้ prototype เคยมี `User`, `Asset`, `Offer`, `Search`, และ `Export Jobs` เป็น visible shell แต่ spec ต้องการ report catalog เต็ม: User, Asset, Chat, Content/Board, Asset Reported Comments, Search, Watch Alert, Notification, Account Deletion, และ Export Job/Access History (ไม่มี Support Report ใน Phase 1) — จะทำเมื่อกลับมาเปิด scope ใน Phase 2 |
 | Implementation Gap | Production still needs report catalog/detail views, date range/filter/sort controls, last-updated timestamps, chart/table fallbacks, CSV/Excel exports, background export job states, and sensitive report-access handling. |
 | Permission / Audit | Report access must be policy-based. Sensitive report views/exports require masking by default, explicit permission, reason where required, and audit events for request/complete/fail/download. |
-| FO Sync Impact | Reports must use canonical FO terms: asset `Show`/`Hide`, offer status `Rejected`, Watch Alert Sale-only matching and `Watch Alert Result List` destination, and guest/public analytics separated from registered-user metrics. ไม่มี Support Report/first-response SLA ใน Phase 1 |
+| FO Sync Impact | Reports must use canonical FO terms: asset `Show`/`Hide`, Watch Alert Sale-only matching and `Watch Alert Result List` destination, and guest/public analytics separated from registered-user metrics. ไม่มี Support Report/first-response SLA ใน Phase 1 |
 
 ## 16. Admin Settings
 

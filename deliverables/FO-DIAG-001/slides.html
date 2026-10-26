@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>FO-DIAG-001 — TukDaeng FO Diagram Slides</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#333; font-family:"IBM Plex Sans Thai","Segoe UI",Tahoma,sans-serif; }
+  .slide { width:1600px; height:900px; background:#eef1f7; position:relative; overflow:hidden;
+           display:flex; flex-direction:column; margin:24px auto; }
+
+  /* ---------- header ---------- */
+  .hd { background:linear-gradient(100deg,#7e0f18 0%,#c8212b 55%,#e0454e 100%);
+        color:#fff; padding:26px 44px; display:flex; align-items:center; gap:22px; flex:none; }
+  .hd .logo { width:64px; height:64px; border-radius:16px; background:rgba(255,255,255,.14);
+              border:1.5px solid rgba(255,255,255,.35); display:flex; align-items:center;
+              justify-content:center; font-size:34px; flex:none; }
+  .hd h1 { font-size:34px; font-weight:700; letter-spacing:.3px; line-height:1.15; }
+  .hd .sub { font-size:17px; opacity:.88; margin-top:4px; font-weight:400; }
+  .hd .purpose { margin-left:auto; background:rgba(255,255,255,.12); border:1.5px solid rgba(255,255,255,.3);
+                 border-radius:14px; padding:12px 20px; font-size:14.5px; line-height:1.55; min-width:340px; }
+  .hd .purpose b { display:block; font-size:15px; margin-bottom:2px; }
+  .hd .purpose li { margin-left:18px; }
+
+  .body { flex:1; padding:22px 44px 12px; display:flex; flex-direction:column; gap:16px; min-height:0; }
+
+  .ft { flex:none; padding:10px 44px 14px; display:flex; justify-content:space-between;
+        font-size:13px; color:#8a93a8; }
+  .ft b { color:#c8212b; }
+
+  /* ---------- shared components ---------- */
+  .card { background:#fff; border:1.5px solid #e2e6f0; border-radius:14px; padding:14px 18px;
+          box-shadow:0 2px 6px rgba(30,40,80,.06); }
+  .card h3 { font-size:17.5px; color:#1d2433; display:flex; align-items:center; gap:8px; }
+  .card .en { font-size:11.5px; color:#9aa3b8; font-weight:600; letter-spacing:.4px; text-transform:uppercase; }
+  .card p, .card li { font-size:14px; color:#4a5568; line-height:1.5; }
+  .card ul { margin:6px 0 0 0; list-style:none; }
+  .card li { padding-left:14px; position:relative; }
+  .card li::before { content:""; position:absolute; left:0; top:9px; width:6px; height:6px;
+                     border-radius:2px; background:#c8212b; }
+  .chip { display:inline-block; background:#f1f3f9; border:1px solid #dde2ee; border-radius:8px;
+          padding:3px 10px; font-size:13px; color:#3d4occ; color:#3d4660; margin:2px 3px 2px 0; }
+  .num { width:34px; height:34px; border-radius:10px; background:#c8212b; color:#fff;
+         display:inline-flex; align-items:center; justify-content:center; font-weight:700;
+         font-size:17px; flex:none; }
+  .sec { border-radius:16px; padding:14px 18px; }
+  .sec-title { display:flex; align-items:center; gap:10px; font-size:18px; font-weight:700; margin-bottom:10px; }
+  .arrow { display:flex; align-items:center; justify-content:center; color:#c8212b;
+           font-size:26px; font-weight:700; flex:none; }
+  .diamond { width:22px; height:22px; background:#f4b400; transform:rotate(45deg); border-radius:5px;
+             display:flex; align-items:center; justify-content:center; flex:none; margin:0 4px; }
+  .diamond span { transform:rotate(-45deg); font-size:11px; font-weight:700; color:#7a5200; }
+
+  .row { display:flex; gap:14px; align-items:stretch; }
+  .col { display:flex; flex-direction:column; gap:12px; }
+  .grow { flex:1; min-width:0; }
+
+  /* ---------- slide 2 sections ---------- */
+  .s-blue   { background:#eaf1fd; } .s-blue   .sec-title { color:#1e4fa3; } .s-blue   .num{ background:#2f6fd8; }
+  .s-red    { background:#fdecec; } .s-red    .sec-title { color:#a31621; } .s-red    .num{ background:#c8212b; }
+  .s-purple { background:#f3ecfd; } .s-purple .sec-title { color:#6b33b8; } .s-purple .num{ background:#8347d6; }
+  .s-teal   { background:#e7f6f2; } .s-teal   .sec-title { color:#0f7a63; } .s-teal   .num{ background:#149a7d; }
+  .s-blue   .card li::before{ background:#2f6fd8; }
+  .s-purple .card li::before{ background:#8347d6; }
+  .s-teal   .card li::before{ background:#149a7d; }
+
+  /* ---------- slide 3 sitemap ---------- */
+  .site-col { flex:1; background:#fff; border:1.5px solid #e2e6f0; border-radius:14px;
+              padding:10px 12px; display:flex; flex-direction:column; gap:6px; }
+  .site-col .cap { text-align:center; font-weight:700; font-size:15.5px; padding:8px;
+                   border-radius:10px; color:#fff; }
+  .node { background:#f6f8fc; border:1px solid #e2e6f0; border-radius:9px; padding:6px 10px;
+          font-size:13px; color:#3d4660; line-height:1.4; }
+  .node b { color:#1d2433; }
+  .node.dim { color:#8a93a8; font-size:12.5px; }
+
+  /* ---------- flow lanes (slide 4/5) ---------- */
+  .lane { display:flex; align-items:center; gap:8px; }
+  .fcard { background:#fff; border:2px solid #c8212b; border-radius:12px; padding:9px 14px;
+           font-size:13.5px; font-weight:600; color:#1d2433; text-align:center;
+           box-shadow:0 2px 5px rgba(30,40,80,.07); min-width:0; }
+  .fcard small { display:block; font-weight:400; font-size:11.5px; color:#7a8599; margin-top:1px; }
+  .fcard.blue { border-color:#2f6fd8; }
+  .fcard.gray { border-color:#c3cad9; color:#6b7488; }
+  .fcard.gate { border-color:#f4b400; background:#fff8e6; border-style:dashed; }
+  .fcard.green { border-color:#149a7d; }
+  .farrow { color:#98a2b8; font-size:20px; font-weight:700; flex:none; }
+  .farrow.red { color:#c8212b; }
+
+  /* ---------- journey (slide 6) ---------- */
+  .chev-row { display:flex; gap:0; }
+  .chev { flex:1; color:#fff; padding:10px 8px 10px 26px; font-size:13.5px; font-weight:600;
+          clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 18px 50%);
+          margin-right:-16px; text-align:center; }
+  .chev:first-child { clip-path:polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%); padding-left:12px; }
+  .j-detail { display:flex; gap:8px; margin-top:10px; flex:1; }
+  .j-cell { flex:1; background:#fff; border:1px solid #e2e6f0; border-radius:10px;
+            padding:8px 10px; font-size:12px; color:#4a5568; line-height:1.45;
+            display:flex; flex-direction:column; justify-content:center; }
+  .j-cell b { display:block; font-size:12.5px; color:#1d2433; margin-bottom:2px; }
+  .score { font-size:12px; color:#c8212b; font-weight:700; }
+
+  .note { background:#fff8e6; border:1.5px dashed #f4b400; border-radius:12px;
+          padding:10px 16px; font-size:13.5px; color:#6b5518; }
+  .note b { color:#a97c00; }
+</style>
+</head>
+<body>
+
+<!-- ============ SLIDE 1 : OVERVIEW ============ -->
+<div class="slide" id="s1">
+  <div class="hd">
+    <div class="logo">🏢</div>
+    <div>
+      <h1>TukDaeng แอปตึกแดง — ภาพรวมระบบ (Overview)</h1>
+      <div class="sub">Marketplace Community นาฬิกาหรู — ซื้อ ขาย โพสต์ สะสม ในที่เดียว • Front Office (iOS / Android)</div>
+    </div>
+    <div class="purpose"><b>ใช้เพื่อ</b>
+      <li>เห็นภาพรวมว่าระบบคืออะไร</li>
+      <li>รู้ว่าใครใช้งาน และเชื่อมกับอะไรบ้าง</li>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow">
+      <!-- actors -->
+      <div class="col" style="width:400px;">
+        <div class="card" style="border-left:6px solid #98a2b8;">
+          <div class="en">Actor 1</div><h3>👻 Guest</h3>
+          <p>ยังไม่ sign in — ดู Feed / Search / Boards / Profile / Legal ได้ฟรี<br>กด action ที่ต้องมีตัวตน → เจอ <b>Member Sheet "Join TukDaeng"</b></p>
+        </div>
+        <div class="card" style="border-left:6px solid #c8212b;">
+          <div class="en">Actor 2</div><h3>🧑 Member (User)</h3>
+          <p>role เดียวทำได้หมด — ซื้อ / ลงขาย / โพสต์โชว์ / สะสม / แชท / follow<br><b>Owner</b> = member ในฐานะเจ้าของ asset (เห็นของตัวเองทุกสถานะ)</p>
+        </div>
+        <div class="card" style="border-left:6px solid #1d2433;">
+          <div class="en">Actor 3</div><h3>🛡️ Admin</h3>
+          <p>ทำงานผ่าน <b>Back Office (Web)</b> เท่านั้น — ตรวจ Report, moderation, จัดการ User / Asset / Board</p>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+      <!-- FO -->
+      <div class="card grow" style="border:2.5px solid #c8212b; display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <div class="en" style="color:#c8212b;">ระบบหลัก</div>
+          <h3 style="font-size:20px;">📱 TukDaeng Front Office <span style="font-weight:400;color:#7a8599;font-size:14px;">(Mobile App — iOS / Android)</span></h3>
+        </div>
+        <div class="row grow">
+          <div class="card grow" style="background:#fdecec;">
+            <h3>📰 Feed + Social</h3>
+            <ul><li>โพสต์นาฬิกา / แชร์คอลเลกชัน</li><li>like • comment • share • save</li><li>follow ร้าน / คนขาย</li></ul>
+          </div>
+          <div class="card grow" style="background:#eaf1fd;">
+            <h3>⌚ Marketplace</h3>
+            <ul><li>ลงขาย asset (Sale/Show/Hide/Sold)</li><li>search + filter / Watch Alert</li><li>portfolio + sale record</li></ul>
+          </div>
+          <div class="card grow" style="background:#f3ecfd;">
+            <h3>💬 Chat + Community</h3>
+            <ul><li>คุยกับผู้ขาย (ผูกกับ listing)</li><li>กระดานข่าว editorial</li><li>alerts + notifications</li></ul>
+          </div>
+        </div>
+      </div>
+      <!-- right -->
+      <div class="col" style="width:360px;">
+        <div class="card" style="border-left:6px solid #1d2433;">
+          <div class="en">ระบบคู่กัน</div><h3>🖥️ Back Office (Web)</h3>
+          <p>Report queue / moderation / audit — FO ส่ง report + moderation handoff มาที่นี่</p>
+        </div>
+        <div class="card" style="border-left:6px solid #149a7d;">
+          <div class="en">Integrations</div><h3>☁️ บริการภายนอก</h3>
+          <p>
+            <span class="chip">Apple / Google Sign-in</span>
+            <span class="chip">FCM Push</span>
+            <span class="chip">CDN รูปภาพ</span>
+            <span class="chip">Watch Price API</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="flex:none;">
+      <div class="card grow" style="background:#1d2433;color:#fff;border:none;text-align:center;font-size:14.5px;padding:10px;">🚫 ไม่มีจ่ายเงินในแอป (V1)</div>
+      <div class="card grow" style="background:#1d2433;color:#fff;border:none;text-align:center;font-size:14.5px;padding:10px;">👤 User role เดียว — ซื้อ ขาย สะสม ได้หมด</div>
+      <div class="card grow" style="background:#1d2433;color:#fff;border:none;text-align:center;font-size:14.5px;padding:10px;">👻 Guest browse ฟรี แต่ action ชน Member Sheet</div>
+      <div class="card grow" style="background:#1d2433;color:#fff;border:none;text-align:center;font-size:14.5px;padding:10px;">⏳ Phase 1 ยังไม่มี Auction / Live / Authentication Center</div>
+    </div>
+  </div>
+  <div class="ft"><span><b>TukDaeng</b> • Front Office • baseline FO-PRD-v1.9 • ถอดจาก fo-flow prototype</span><span>01 / 06 — Overview</span></div>
+</div>
+
+<!-- ============ SLIDE 2 : FEATURE MAP ============ -->
+<div class="slide" id="s2">
+  <div class="hd">
+    <div class="logo">🗂️</div>
+    <div>
+      <h1>Feature Map — ฟีเจอร์ทั้งหมดของแอปตึกแดง</h1>
+      <div class="sub">14 กลุ่มฟีเจอร์ตาม module spec • ถอดจาก baseline FO-PRD-v1.9</div>
+    </div>
+    <div class="purpose"><b>ใช้เพื่อ</b>
+      <li>เห็นขอบเขตฟีเจอร์ครบในใบเดียว</li>
+      <li>เช็ค scope V1 vs future</li>
+    </div>
+  </div>
+  <div class="body">
+    <div class="row grow">
+      <div class="col grow">
+        <div class="sec s-blue grow">
+          <div class="sec-title"><span class="num">1</span>🏠 Core Experience — หัวใจของแอป</div>
+          <div class="row">
+            <div class="card grow"><h3>📰 Feed</h3><ul><li>tabs: All / Following / Favorites</li><li>post card (ขาย + โพสต์ธรรมดา)</li><li>+ Create: post / asset</li><li>menu: archive, pin, edit, sold</li></ul></div>
+            <div class="card grow"><h3>🔍 Search &amp; Filter</h3><ul><li>explore / recents / suggest</li><li>filter: brand, model, ราคา,</li><li>delivery, strap, box&amp;papers</li></ul></div>
+            <div class="card grow"><h3>👁️ Post Viewer / Detail</h3><ul><li>viewer immersive 3 modes</li><li>detail: specs, ราคา, actions</li><li>entry ไป chat / watch alert</li></ul></div>
+          </div>
+        </div>
+        <div class="sec s-red grow">
+          <div class="sec-title"><span class="num">2</span>💼 Commerce — ซื้อขายและบริหารของ</div>
+          <div class="row">
+            <div class="card grow"><h3>⌚ Asset</h3><ul><li>สถานะ Sale / Show / Hide / Sold</li><li>Mark as Sold + Sale Record</li></ul></div>
+            <div class="card grow"><h3>💬 Chat</h3><ul><li>ผูก user+item เสมอ</li><li>Ask Seller / view asset</li><li>block / report ในห้อง</li></ul></div>
+            <div class="card grow"><h3>🔔 Watch Alert</h3><ul><li>ตั้งจาก search / model follow</li><li>notif → Post Viewer ตรง</li></ul></div>
+            <div class="card grow"><h3>💼 Portfolio</h3><ul><li>total invested dashboard</li><li>asset value + sold history</li></ul></div>
+          </div>
+        </div>
+      </div>
+      <div class="col grow">
+        <div class="sec s-purple grow">
+          <div class="sec-title"><span class="num">3</span>❤️ Community &amp; Social</div>
+          <div class="row">
+            <div class="card grow"><h3>❤️ Social</h3><ul><li>like / comment (reply 1 ชั้น)</li><li>share (member-only)</li><li>saved + wishlist collections</li><li>follow / mute / not-interested</li></ul></div>
+            <div class="card grow"><h3>📖 Board</h3><ul><li>นิตยสาร editorial</li><li>hero / latest / categories</li><li>article like / share</li></ul></div>
+            <div class="card grow"><h3>📣 Alerts</h3><ul><li>Like / Comment / Follow</li><li>Watch Alert / System</li><li>badge 99+ / mark all read</li></ul></div>
+            <div class="card grow"><h3>👤 Profile</h3><ul><li>own + public profile</li><li>grid tabs / followers</li><li>QR / edit / message</li></ul></div>
+          </div>
+        </div>
+        <div class="sec s-teal grow">
+          <div class="sec-title"><span class="num">4</span>⚙️ System &amp; Safety</div>
+          <div class="row">
+            <div class="card grow"><h3>🔐 Auth &amp; Session</h3><ul><li>sign up / in, OTP, SSO</li><li>guest / member / new</li><li>ลบบัญชี (grace 30 วัน)</li></ul></div>
+            <div class="card grow"><h3>👻 Guest Mode</h3><ul><li>browse ฟรีทุก public surface</li><li>identity action → Member Sheet</li></ul></div>
+            <div class="card grow"><h3>🛡️ Trust &amp; Safety</h3><ul><li>report flow (user / post)</li><li>block (IG keep-page)</li><li>handoff → Back Office</li></ul></div>
+            <div class="card grow"><h3>⚙️ Settings</h3><ul><li>account / lang / theme / legal</li><li>muted / blocked / sensitive</li><li>help / delete account</li></ul></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ft"><span><b>TukDaeng</b> • Front Office • baseline FO-PRD-v1.9 • ถอดจาก fo-flow prototype</span><span>02 / 06 — Feature Map</span></div>
+</div>
+
+<!-- ============ SLIDE 3 : SITEMAP ============ -->
+<div class="slide" id="s3">
+  <div class="hd">
+    <div class="logo">🗺️</div>
+    <div>
+      <h1>Sitemap — โครงสร้างหน้าและเมนูของแอป</h1>
+      <div class="sub">App shell + 5 bottom tabs + sub pages + overlay layers • ถอดจาก route map จริงใน prototype</div>
+    </div>
+    <div class="purpose"><b>ใช้เพื่อ</b>
+      <li>เห็นว่าแอปมีหน้าอะไร อยู่ตรงไหน</li>
+      <li>อ้างอิง route name ตรงกับ dev</li>
+    </div>
+  </div>
+  <div class="body">
+    <div class="card" style="flex:none;padding:10px 18px;">
+      <b style="font-size:14.5px;">📱 App Shell:</b>
+      <span class="chip">header: burger • search • TUK DAENG • +</span>
+      <span class="chip">feed tabs: All / Following / Favorites</span>
+      <span class="chip">bottom nav 5 แท็บ + badge</span>
+    </div>
+    <div class="row grow">
+      <div class="site-col">
+        <div class="cap" style="background:#c8212b;">① Feed</div>
+        <div class="node"><b>root feed shell</b><br>scroll ฟีดหลัก mount ตลอด</div>
+        <div class="node dim">→ Post Viewer / Post Detail<br>เปิดเป็น overlay เหนือ feed</div>
+      </div>
+      <div class="site-col">
+        <div class="cap" style="background:#2f6fd8;">② Chat 💬</div>
+        <div class="node"><b>chat</b> — chat list</div>
+        <div class="node"><b>chatroom:id</b> — ห้องแชท</div>
+        <div class="node dim">chatitem:id • chmenu:id<br>chmedia:id • chatcfg</div>
+      </div>
+      <div class="site-col">
+        <div class="cap" style="background:#8347d6;">③ Boards 📖</div>
+        <div class="node"><b>board</b> — board home</div>
+        <div class="node"><b>boardart:id</b> — article detail</div>
+        <div class="node dim">boardall • boardsearch</div>
+      </div>
+      <div class="site-col">
+        <div class="cap" style="background:#f4b400;">④ Alerts 🔔</div>
+        <div class="node"><b>alerts</b> — alerts center</div>
+        <div class="node"><b>walerts</b> — watch alerts<br>(เข้าผ่าน Settings/bell)</div>
+      </div>
+      <div class="site-col">
+        <div class="cap" style="background:#149a7d;">⑤ Profile 👤</div>
+        <div class="node"><b>profile:user</b> — own/public</div>
+        <div class="node dim">pedit • portfolio • pfasset:id<br>soldhist • sold:id • sell:id<br>pfollow • about:user</div>
+      </div>
+      <div class="col" style="width:430px;">
+        <div class="card" style="flex:none;">
+          <h3>🔎 Header Entries</h3>
+          <div class="node"><b>search</b> → sfilter • recents</div>
+          <div class="node"><b>create</b> — composer post/asset</div>
+          <div class="node dim">drawer: 9 รายการ future/placeholder<br>(Watch Shops, Auction Center ฯลฯ)</div>
+        </div>
+        <div class="card" style="flex:none;">
+          <h3>🗃️ Saved / Library (ใต้ Profile)</h3>
+          <div class="node dim">saved → savedcol • archive<br>wishlist → wishcol • interested • ni</div>
+        </div>
+        <div class="card grow">
+          <h3>⚙️ Settings &amp; Account</h3>
+          <div class="node dim">settings → about_account • change_pwd •<br>del_account • lang • theme • notif_settings •<br>favorites • muted • blocked • prefs •<br>sensitive • help • privacy • terms • about_app</div>
+        </div>
+      </div>
+      <div class="col" style="width:330px;">
+        <div class="card grow" style="border:2px dashed #c8212b;">
+          <h3>🪟 Overlay Layers</h3>
+          <div class="node"><b>Post Viewer</b> — full-screen 3 modes</div>
+          <div class="node"><b>Post Detail</b> — detail เหนือ viewer</div>
+          <div class="node">Bottom sheets — comments / likes /<br>share / save / wishlist / watch alert</div>
+          <div class="node"><b>Report stack</b> — report → pick → done</div>
+          <div class="node" style="border:1.5px dashed #f4b400;background:#fff8e6;"><b>Member Sheet</b> — Join TukDaeng (guest gate)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ft"><span><b>TukDaeng</b> • Front Office • baseline FO-PRD-v1.9 • ถอดจาก fo-flow prototype</span><span>03 / 06 — Sitemap</span></div>
+</div>
+
+<!-- ============ SLIDE 4 : SCREEN FLOW ============ -->
+<div class="slide" id="s4">
+  <div class="hd">
+    <div class="logo">📲</div>
+    <div>
+      <h1>Screen Flow — หน้าจอไหลไปหากันยังไง</h1>
+      <div class="sub">เลเยอร์ซ้อนกันแบบ Instagram: viewer เหนือ feed • detail เหนือ viewer • sheet/dialog บนสุด</div>
+    </div>
+    <div class="purpose"><b>ใช้เพื่อ</b>
+      <li>เข้าใจ navigation model ทั้งแอป</li>
+      <li>เห็นจุดที่ guest ชน Member Sheet</li>
+    </div>
+  </div>
+  <div class="body">
+    <div class="card" style="flex:none; display:flex; align-items:center; gap:10px; padding:12px 18px;">
+      <span class="fcard gray" style="padding:8px 14px;">Onboarding</span>
+      <span class="farrow">→</span>
+      <span class="fcard gray" style="padding:8px 14px;">Auth<small>sign up / in</small></span>
+      <span class="farrow">→</span>
+      <span class="fcard" style="padding:10px 18px;font-size:15px;">🏠 Feed Shell<small>root — mount ตลอดอยู่ล่างสุด</small></span>
+      <span class="farrow red">→</span>
+      <span style="font-size:13.5px;color:#4a5568;">ทุกเส้นทางหลักเริ่มจากฟีด<br>แท็บอื่น swap ทับแบบไม่ slide</span>
+    </div>
+    <div class="row grow">
+      <div class="col grow" style="gap:12px;">
+        <div class="card" style="flex:none;">
+          <h3 style="font-size:15px;margin-bottom:8px;">🔎 เส้นทางค้นหา → ดูของ → คุยขาย (เส้นทางหลัก)</h3>
+          <div class="lane">
+            <span class="fcard">Feed<small>tap search icon</small></span><span class="farrow">→</span>
+            <span class="fcard blue">Search<small>explore → results</small></span><span class="farrow">→</span>
+            <span class="fcard blue">Post Viewer<small>tap tile</small></span><span class="farrow">→</span>
+            <span class="fcard">Post Detail<small>"View full detail"</small></span><span class="farrow red">→</span>
+            <span class="fcard green">Chat Room<small>Ask Seller</small></span>
+          </div>
+          <div class="lane" style="margin-top:8px;">
+            <span class="fcard gray">Feed card<small>"Tap for details"</small></span><span class="farrow">→</span>
+            <span class="fcard">Post Detail<small>เข้าตรง (ไม่ผ่าน viewer)</small></span>
+            <span style="width:26px;"></span>
+            <span class="fcard blue">Chat Room<small>"View asset card"</small></span><span class="farrow">→</span>
+            <span class="fcard">Post Detail<small>วนกลับ</small></span>
+          </div>
+        </div>
+        <div class="row grow">
+          <div class="card grow">
+            <h3 style="font-size:15px;margin-bottom:8px;">🔔 เส้นทางแจ้งเตือน</h3>
+            <div class="lane">
+              <span class="fcard">Alerts tab</span><span class="farrow">→</span>
+              <span class="fcard blue">Post Viewer<small>like / comment / watch alert</small></span>
+              <span class="farrow">→</span>
+              <span class="fcard">Post Detail</span>
+            </div>
+            <div class="lane" style="margin-top:8px;">
+              <span class="fcard">Alerts tab</span><span class="farrow">→</span>
+              <span class="fcard blue">Public Profile<small>follow notification</small></span>
+            </div>
+          </div>
+          <div class="card grow">
+            <h3 style="font-size:15px;margin-bottom:8px;">👤 เส้นทางโปรไฟล์ / คอลเลกชัน</h3>
+            <div class="lane">
+              <span class="fcard">Profile grid<small>saved / wishlist / archive</small></span><span class="farrow">→</span>
+              <span class="fcard blue">Post Viewer<small>pfp / feed mode</small></span><span class="farrow">→</span>
+              <span class="fcard">Post Detail</span>
+            </div>
+            <div class="lane" style="margin-top:8px;">
+              <span class="fcard">Feed<small>tap avatar</small></span><span class="farrow">→</span>
+              <span class="fcard blue">Public Profile</span><span class="farrow">→</span>
+              <span class="fcard blue">Post Viewer<small>tap tile</small></span>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="flex:none;">
+          <div class="card grow">
+            <h3 style="font-size:15px;margin-bottom:6px;">📖 Board / 🚩 Report / ➕ Create</h3>
+            <div class="lane" style="flex-wrap:wrap;">
+              <span class="fcard">Board tab</span><span class="farrow">→</span>
+              <span class="fcard blue">Article Detail</span>
+              <span style="width:14px;"></span>
+              <span class="fcard">post menu / chat / profile</span><span class="farrow">→</span>
+              <span class="fcard blue">Report Stack<small>X ปิดทั้งกอง</small></span>
+              <span style="width:14px;"></span>
+              <span class="fcard">header +</span><span class="farrow">→</span>
+              <span class="fcard blue">Create composer</span>
+            </div>
+          </div>
+          <div class="card" style="width:430px;border:2px dashed #f4b400;background:#fff8e6;">
+            <h3 style="font-size:15px;margin-bottom:6px;">🚪 Guest Gate</h3>
+            <div class="lane">
+              <span class="fcard gray">action ใด ๆ ที่ต้องมีตัวตน<small>like / share / chat / + / tab Chat-Profile</small></span>
+              <span class="farrow">→</span>
+              <span class="fcard gate">Member Sheet<small>Join TukDaeng</small></span>
+              <span class="farrow">→</span>
+              <span class="fcard green">Auth</span>
+            </div>
+          </div>
+        </div>
+        <div class="note" style="flex:none;"><b>กติกาเลเยอร์:</b> Feed &lt; Sub-page &lt; Post Viewer &lt; Post Detail &lt; Bottom Sheet &lt; Dialog &lt; Member Sheet — feed card กด media ได้แค่ carousel; viewer เปิดเฉพาะจาก grid/notification; detail-back เผย viewer ข้างล่างเสมอ</div>
+      </div>
+    </div>
+  </div>
+  <div class="ft"><span><b>TukDaeng</b> • Front Office • baseline FO-PRD-v1.9 • ถอดจาก fo-flow prototype</span><span>04 / 06 — Screen Flow</span></div>
+</div>
+
+<!-- ============ SLIDE 5 : USER FLOW ============ -->
+<div class="slide" id="s5">
+  <div class="hd">
+    <div class="logo">🚶</div>
+    <div>
+      <h1>User Flow — เส้นทางและการตัดสินใจของผู้ใช้</h1>
+      <div class="sub">2 เส้นทางหลัก: ผู้ซื้อ (ค้นหา→ติดตาม→คุย→ปิดดีล) และผู้ขาย (ลงขาย→เจรจา→mark sold)</div>
+    </div>
+    <div class="purpose"><b>ใช้เพื่อ</b>
+      <li>เห็นจุดตัดสินใจและ gate จริง</li>
+      <li>ออกแบบ copy/onboarding ให้ตรงจุด</li>
+    </div>
+  </div>
+  <div class="body" style="gap:18px;">
+    <div class="sec s-blue" style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:22px 24px;">
+      <div class="sec-title">🛒 เส้นทางผู้ซื้อ (Buyer)</div>
+      <div class="lane" style="flex-wrap:nowrap;">
+        <span class="fcard gray">เปิดแอป<br><small>guest ก็ดูได้</small></span><span class="farrow">→</span>
+        <span class="fcard blue">browse feed / search</span><span class="farrow">→</span>
+        <span class="diamond"><span>เจอ<br>เรือน?</span></span><span class="farrow">→</span>
+        <span class="fcard">Viewer → Detail</span><span class="farrow">→</span>
+        <span class="diamond"><span>สนใจ<br>จริง?</span></span><span class="farrow">→</span>
+        <span class="fcard blue">Ask Seller<br><small>member only</small></span><span class="farrow">→</span>
+        <span class="fcard blue">Chat เจรจา</span><span class="farrow">→</span>
+        <span class="diamond"><span>deal?</span></span><span class="farrow">→</span>
+        <span class="fcard green">ปิดดีล<br><small>นอกแอป ไม่มีจ่ายเงิน</small></span>
+      </div>
+      <div class="lane" style="margin-top:10px;">
+        <span class="fcard" style="border-style:dashed;">ยังไม่เจอ →</span>
+        <span class="fcard blue">ตั้ง Watch Alert</span><span class="farrow">→</span>
+        <span class="fcard blue">notif → Post Viewer</span><span class="farrow">→</span>
+        <span style="font-size:13px;color:#4a5568;">วนกลับเข้าเส้นทางหลัก</span>
+        <span style="width:30px;"></span>
+        <span class="fcard" style="border-style:dashed;">เก็บไว้ก่อน →</span>
+        <span class="fcard blue">Save / Wishlist</span>
+        <span style="width:30px;"></span>
+        <span class="fcard gate" style="border-style:dashed;">guest กด gated action → Member Sheet → Auth</span>
+      </div>
+    </div>
+    <div class="sec s-red" style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:22px 24px;">
+      <div class="sec-title">🏷️ เส้นทางผู้ขาย (Seller)</div>
+      <div class="lane">
+        <span class="fcard">กด + Create</span><span class="farrow red">→</span>
+        <span class="diamond"><span>post /<br>asset?</span></span><span class="farrow red">→</span>
+        <span class="fcard">Asset สถานะ Sale<br><small>หรือ Show โชว์เฉย ๆ</small></span><span class="farrow red">→</span>
+        <span class="fcard">ขึ้น Feed / Search /<br>match Watch Alert</span><span class="farrow red">→</span>
+        <span class="fcard">คนทักมา<br><small>alerts + chat</small></span><span class="farrow red">→</span>
+        <span class="fcard">เจรจาใน Chat</span><span class="farrow red">→</span>
+        <span class="diamond"><span>ขาย<br>ได้?</span></span><span class="farrow red">→</span>
+        <span class="fcard green">Mark as Sold<br>+ Sale Record</span><span class="farrow red">→</span>
+        <span class="fcard green">Portfolio<br><small>sold history / invested</small></span>
+      </div>
+      <div class="lane" style="margin-top:10px;">
+        <span class="fcard" style="border-style:dashed;">ยังไม่ขาย →</span>
+        <span class="fcard">แก้ไข / Hide / archive จาก post menu</span>
+        <span style="width:30px;"></span>
+        <span class="fcard" style="border-style:dashed;">อยาก engagement →</span>
+        <span class="fcard">โพสต์ธรรมดา / ตอบ comment / สะสมผู้ติดตาม</span>
+      </div>
+    </div>
+    <div class="row" style="flex:none;">
+      <div class="note grow"><b>จุดตัดสินใจสำคัญ:</b> ◆ เจอเรือนที่ชอบไหม → ◆ พร้อมคุยไหม (ต้องเป็น member) → ◆ deal หรือไม่ — ทุกจุดที่ต้องมีตัวตน guest จะชน Member Sheet ก่อนเสมอ</div>
+      <div class="note grow" style="border-color:#2f6fd8;background:#eaf1fd;color:#1e3a6e;"><b style="color:#1e4fa3;">จุดที่ต้องเฝ้าระวัง:</b> ช่วง guest→member คือจุด drop-off หลัก — copy ของ Member Sheet และ onboarding มีผลต่อ conversion โดยตรง</div>
+    </div>
+  </div>
+  <div class="ft"><span><b>TukDaeng</b> • Front Office • baseline FO-PRD-v1.9 • ถอดจาก fo-flow prototype</span><span>05 / 06 — User Flow</span></div>
+</div>
+
+<!-- ============ SLIDE 6 : JOURNEY ============ -->
+<div class="slide" id="s6">
+  <div class="hd">
+    <div class="logo">🧭</div>
+    <div>
+      <h1>User Journey — ประสบการณ์ผู้ใช้ตลอดเส้นทาง</h1>
+      <div class="sub">อารมณ์และความราบรื่นในแต่ละช่วง • คะแนนความพึงพอใจ 1–5 (ประเมินจาก flow ใน prototype)</div>
+    </div>
+    <div class="purpose"><b>ใช้เพื่อ</b>
+      <li>เห็นจุดแข็ง–จุดเสี่ยงของ UX</li>
+      <li>เลือกจุดที่ต้องปรับก่อน launch</li>
+    </div>
+  </div>
+  <div class="body">
+    <div class="card grow" style="display:flex;flex-direction:column;">
+      <div class="sec-title" style="color:#1e4fa3;"><span class="num" style="background:#2f6fd8;">A</span>Buyer Journey — จาก Guest ถึงปิดดีล</div>
+      <div class="chev-row" style="margin-top:6px;">
+        <div class="chev" style="background:#6b9be8;">เข้ามาดูเล่น</div>
+        <div class="chev" style="background:#4a7fd4;">ชน Member Sheet</div>
+        <div class="chev" style="background:#2f6fd8;">สมัครสมาชิก</div>
+        <div class="chev" style="background:#255bb5;">ตั้ง Watch Alert</div>
+        <div class="chev" style="background:#1e4fa3;">ได้ notif ดูของ</div>
+        <div class="chev" style="background:#173f80;">คุย &amp; ปิดดีล</div>
+      </div>
+      <div class="j-detail">
+        <div class="j-cell"><b>เปิดแอป เลื่อนฟีดฟรี</b>search + filter หารุ่นที่ชอบ<br><span class="score">😊 4/5</span></div>
+        <div class="j-cell"><b>กด like/save แล้วชน gate</b>จุด drop-off หลักของ funnel<br><span class="score">😕 2/5</span></div>
+        <div class="j-cell"><b>สมัครด้วย SSO</b>Apple/Google กดง่าย<br><span class="score">😐 3/5</span></div>
+        <div class="j-cell"><b>ตั้ง alert รุ่นเป้าหมาย</b>สร้างจาก search bell / follow model<br><span class="score">😄 5/5</span></div>
+        <div class="j-cell"><b>notif → Post Viewer ตรง</b>เห็นของจริงทันที ไม่มี result list คั่น<br><span class="score">😄 5/5</span></div>
+        <div class="j-cell"><b>Ask Seller → chat → deal</b>ตกลงนอกแอป ไม่มีระบบจ่ายเงิน<br><span class="score">😐 3/5</span></div>
+      </div>
+    </div>
+    <div class="card grow" style="display:flex;flex-direction:column;">
+      <div class="sec-title" style="color:#a31621;"><span class="num">B</span>Seller Journey — ลงขายถึงขายได้</div>
+      <div class="chev-row" style="margin-top:6px;">
+        <div class="chev" style="background:#e0656d;">เตรียมของ</div>
+        <div class="chev" style="background:#d9434c;">ลงขาย</div>
+        <div class="chev" style="background:#c8212b;">รอคนเจอ</div>
+        <div class="chev" style="background:#a31621;">เจรจาในแชท</div>
+        <div class="chev" style="background:#86121b;">Mark as Sold</div>
+        <div class="chev" style="background:#6b0e16;">Portfolio อัปเดต</div>
+      </div>
+      <div class="j-detail">
+        <div class="j-cell"><b>ถ่ายรูป กรอก specs</b>ฟอร์มยาวหน่อยแต่ครบ<br><span class="score">😐 3/5</span></div>
+        <div class="j-cell"><b>เลือก Sale หรือ Show</b>Show = โชว์อย่างเดียวไม่ขาย<br><span class="score">😊 4/5</span></div>
+        <div class="j-cell"><b>ขึ้น feed + match alert</b>คนที่เฝ้ารุ่นนี้เห็นทันที<br><span class="score">😊 4/5</span></div>
+        <div class="j-cell"><b>คน like / Ask Seller</b>คุยใน room ผูกกับชิ้นนั้น<br><span class="score">😄 5/5</span></div>
+        <div class="j-cell"><b>กรอก Sale Record</b>บันทึกราคาขายจริง<br><span class="score">😊 4/5</span></div>
+        <div class="j-cell"><b>เห็นสรุปใน portfolio</b>invested / sold history<br><span class="score">😄 5/5</span></div>
+      </div>
+    </div>
+    <div class="note" style="flex:none;"><b>Insight:</b> จุดอารมณ์ต่ำสุดของผู้ซื้อคือ "ชน Member Sheet ครั้งแรก" (2/5) — ถ้า onboarding + copy gate ดี จะพา guest เข้าสู่ช่วง high (alert/notif 5/5) ได้เร็วขึ้น</div>
+  </div>
+  <div class="ft"><span><b>TukDaeng</b> • Front Office • baseline FO-PRD-v1.9 • ถอดจาก fo-flow prototype</span><span>06 / 06 — User Journey</span></div>
+</div>
+
+</body>
+</html>

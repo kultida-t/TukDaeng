@@ -186,20 +186,7 @@ test.describe("QA-BO-012: Drill-in link pattern — identifier link → detail",
     await expect(backBtn).toBeVisible();
   });
 
-  test("12. Offer List: คลิก offer row → เปิด Offer Detail (body offer-detail-mode)", async ({ page }) => {
-    await goToModule(page, "offers");
-    await page.locator(".asset-row[data-offer-card] .asset-cell-primary").first().click();
-    await page.waitForTimeout(500);
-    expect(await page.evaluate(() => document.body.classList.contains("offer-detail-mode"))).toBe(true);
-  });
 
-  test("13. Offer Detail: มี back button กลับ Offer List", async ({ page }) => {
-    await goToModule(page, "offers");
-    await page.locator(".asset-row[data-offer-card] .asset-cell-primary").first().click();
-    await page.waitForTimeout(500);
-    const backBtn = page.locator("[data-back-offer-list]");
-    await expect(backBtn).toBeVisible();
-  });
 
   test("14. Watch Alert List: คลิก alert row → เปิด Watch Alert Detail", async ({ page }) => {
     await goToModule(page, "watch-alerts", "Watch Alert List");
@@ -231,17 +218,6 @@ test.describe("QA-BO-012: Drill-in link pattern — identifier link → detail",
     await expect(backBtn).toBeVisible();
   });
 
-  test("18. Offer Detail: Asset ID link เปิด Asset Detail ได้ (cross-module drill-in)", async ({ page }) => {
-    await goToModule(page, "offers");
-    await page.locator(".asset-row[data-offer-card] .asset-cell-primary").first().click();
-    await page.waitForTimeout(500);
-    const assetLink = page.locator("[data-asset-open]").first();
-    if (await assetLink.isVisible({ timeout: 1000 }).catch(() => false)) {
-      await assetLink.click();
-      await page.waitForTimeout(500);
-      expect(await page.evaluate(() => document.body.classList.contains("asset-detail-mode"))).toBe(true);
-    }
-  });
 
   test("19. Account Deletion Detail: user name link เปิด User Detail ได้ (cross-module drill-in)", async ({ page }) => {
     await goToModule(page, "deletions");
@@ -278,14 +254,6 @@ test.describe("QA-BO-012: Breadcrumb back — detail → list preserves context"
     expect(await page.evaluate(() => document.body.classList.contains("asset-list-mode"))).toBe(true);
   });
 
-  test("22. Offer Detail → back กลับ Offer List (body offer-list-mode)", async ({ page }) => {
-    await goToModule(page, "offers");
-    await page.locator(".asset-row[data-offer-card] .asset-cell-primary").first().click();
-    await page.waitForTimeout(500);
-    await page.locator("[data-back-offer-list]").click();
-    await page.waitForTimeout(500);
-    expect(await page.evaluate(() => document.body.classList.contains("offer-list-mode"))).toBe(true);
-  });
 
   test("23. Watch Alert Detail → back กลับ Watch Alert List", async ({ page }) => {
     await goToModule(page, "watch-alerts", "Watch Alert List");
@@ -322,7 +290,6 @@ test.describe("QA-BO-012: Breadcrumb back — detail → list preserves context"
     const detailPages = [
       { module: "users", sub: "User Accounts", openSel: ".user-row[data-user-card] .user-cell-primary", bodyClass: "user-detail-mode" },
       { module: "assets", sub: "Asset List", openSel: ".asset-row[data-asset-card] .asset-cell-primary", bodyClass: "asset-detail-mode" },
-      { module: "offers", sub: "", openSel: ".asset-row[data-offer-card] .asset-cell-primary", bodyClass: "offer-detail-mode" },
     ];
     for (const dp of detailPages) {
       await goToModule(page, dp.module, dp.sub);
@@ -362,20 +329,6 @@ test.describe("QA-BO-012: Status badge — semantic color consistency", () => {
     }
   });
 
-  test("28. Offer List: ใช้ pill หลายสีตาม lifecycle (amber/blue/green/red/purple/charcoal)", async ({ page }) => {
-    await goToModule(page, "offers");
-    const pills = page.locator(".asset-row:not(.head) .pill");
-    const count = await pills.count();
-    expect(count).toBeGreaterThan(0);
-    const classes = new Set();
-    for (let i = 0; i < Math.min(count, 20); i++) {
-      const cls = await pills.nth(i).getAttribute("class");
-      const colorMatch = cls.match(/\b(red|blue|green|amber|purple|teal|gray|charcoal)\b/);
-      if (colorMatch) classes.add(colorMatch[1]);
-    }
-    // Offer มี 6 status: Pending(amber), Paused(blue), Accepted(green), Rejected(red), Cancelled(purple), Invalidated(charcoal)
-    expect(classes.size).toBeGreaterThanOrEqual(3);
-  });
 
   test("29. User List: ใช้ pill สีตาม status (green/amber/red/gray)", async ({ page }) => {
     await goToModule(page, "users", "User Accounts");
@@ -392,7 +345,7 @@ test.describe("QA-BO-012: Status badge — semantic color consistency", () => {
   });
 
   test("30. pill ทุกตัวมี class จาก semantic set เท่านั้น (ไม่มีสีนอกมาตรฐาน)", async ({ page }) => {
-    await goToModule(page, "offers");
+    await goToModule(page, "users", "User Accounts");
     const allPills = page.locator(".pill");
     const count = await allPills.count();
     const validColors = ["red", "blue", "green", "amber", "purple", "teal", "gray", "charcoal"];
@@ -418,13 +371,6 @@ test.describe("QA-BO-012: Table-to-card — 760px breakpoint consistency", () =>
     await expect(page.locator(".asset-table .asset-cell-primary").first()).toBeVisible();
   });
 
-  test("32. Offer List: ใช้ .asset-table + .asset-row pattern (reuse)", async ({ page }) => {
-    await goToModule(page, "offers");
-    await expect(page.locator(".asset-table")).toBeVisible();
-    const rows = page.locator(".asset-table .asset-row:not(.head)");
-    expect(await rows.count()).toBeGreaterThan(0);
-    await expect(page.locator(".asset-table .asset-cell-primary").first()).toBeVisible();
-  });
 
   test("33. User List: ใช้ table + row pattern", async ({ page }) => {
     await goToModule(page, "users", "User Accounts");
@@ -458,14 +404,6 @@ test.describe("QA-BO-012: Table-to-card — 760px breakpoint consistency", () =>
     expect(cols).toBeLessThanOrEqual(2);
   });
 
-  test("37. mobile (≤760px): Offer List row แปลงเป็น card เช่นกัน", async ({ page }) => {
-    await goToModule(page, "offers");
-    const mobile = await isMobile(page);
-    if (!mobile) { test.skip(); return; }
-    const row = page.locator(".asset-table .asset-row:not(.head)").first();
-    const cols = await row.evaluate(el => getComputedStyle(el).gridTemplateColumns.split(/\s+/).filter(Boolean).length);
-    expect(cols).toBeLessThanOrEqual(2);
-  });
 
   test("38. mobile (≤760px): Asset List card มี .asset-card-tags + .user-card-meta", async ({ page }) => {
     await goToModule(page, "assets", "Asset List");
@@ -509,14 +447,6 @@ test.describe("QA-BO-012: KPI pattern — have/not have per criteria", () => {
     expect(cardsHTML.length).toBeGreaterThan(0);
   });
 
-  test("43. Offer List: มี #summary-grid (6 status cards)", async ({ page }) => {
-    await goToModule(page, "offers");
-    const summaryHTML = await page.locator("#summary-grid").innerHTML();
-    expect(summaryHTML.length).toBeGreaterThan(0);
-    // ตรวจว่ามี offer-status-card class
-    const cards = page.locator("#summary-grid .offer-status-card");
-    expect(await cards.count()).toBeGreaterThanOrEqual(1);
-  });
 
   test("44. Option Master (Group List): ไม่มี #summary-grid (no KPI)", async ({ page }) => {
     await goToModule(page, "option-master");
@@ -589,11 +519,6 @@ test.describe("QA-BO-012: Menu active state — per module route", () => {
     await expect(subBtn).toHaveClass(/active/);
   });
 
-  test("54. Offer Management: nav-item active เมื่ออยู่ใน Offer List", async ({ page }) => {
-    await goToModuleViaMenu(page, "offers");
-    const navItem = page.locator(".nav-item[data-module='offers']");
-    await expect(navItem).toHaveClass(/active/);
-  });
 
   test("55. Option Master: nav-item active เมื่ออยู่ใน Option Master", async ({ page }) => {
     await goToModuleViaMenu(page, "option-master");
@@ -643,11 +568,6 @@ test.describe("QA-BO-012: Reset copy — รีเซ็ตค่าทั้ง
     await expect(resetBtn).toHaveAttribute("aria-label", "รีเซ็ตค่าทั้งหมด");
   });
 
-  test("62. Offer List: reset button มี aria-label 'รีเซ็ตค่าทั้งหมด'", async ({ page }) => {
-    await goToModule(page, "offers");
-    const resetBtn = page.locator("[data-offer-reset]").first();
-    await expect(resetBtn).toHaveAttribute("aria-label", "รีเซ็ตค่าทั้งหมด");
-  });
 
   test("63. Option Master (Group List): reset button มี aria-label 'รีเซ็ตค่าทั้งหมด'", async ({ page }) => {
     await goToModule(page, "option-master");
@@ -820,13 +740,13 @@ test.describe("QA-BO-012: Nav structure — module grouping consistency", () => 
     expect(await sections.count()).toBe(3);
   });
 
-  test("80. nav มี module items ครบ (dashboard, users, assets, offers, content, market, option-master, watch-alerts, deletions, settings)", async ({ page }) => {
+  test("80. nav มี module items ครบ (dashboard, users, assets, content, market, option-master, watch-alerts, deletions, settings)", async ({ page }) => {
     await page.goto(PROTOTYPE_URL);
     await page.waitForLoadState("networkidle");
     await loginIfNeeded(page);
     await ensureNavOpen(page);
     // NTF-RSTR-001: notifications module ถูกตัดออกจาก sidebar (Phase 2) — Delivery Logs ย้ายเข้า Settings
-    const expectedModules = ["dashboard", "users", "assets", "offers", "content", "market", "option-master", "watch-alerts", "deletions", "settings"];
+    const expectedModules = ["dashboard", "users", "assets", "content", "market", "option-master", "watch-alerts", "deletions", "settings"];
     for (const mod of expectedModules) {
       const navItem = page.locator(`.nav-item[data-module='${mod}']`);
       await expect(navItem).toBeVisible();
@@ -846,12 +766,12 @@ test.describe("QA-BO-012: Nav structure — module grouping consistency", () => 
     }
   });
 
-  test("82. nav item ที่ไม่มี submenu ไม่มี data-toggle-menu (dashboard, offers, option-master, deletions)", async ({ page }) => {
+  test("82. nav item ที่ไม่มี submenu ไม่มี data-toggle-menu (dashboard, option-master, deletions)", async ({ page }) => {
     await page.goto(PROTOTYPE_URL);
     await page.waitForLoadState("networkidle");
     await loginIfNeeded(page);
     await ensureNavOpen(page);
-    const modulesWithoutSubs = ["dashboard", "offers", "option-master", "deletions"];
+    const modulesWithoutSubs = ["dashboard", "option-master", "deletions"];
     for (const mod of modulesWithoutSubs) {
       const navItem = page.locator(`.nav-item[data-module='${mod}']`);
       const hasToggle = await navItem.getAttribute("data-toggle-menu");
@@ -869,7 +789,6 @@ test.describe("QA-BO-012: Page header — breadcrumb + title pattern", () => {
       { module: "dashboard", sub: "" },
       { module: "users", sub: "User Accounts" },
       { module: "assets", sub: "Asset List" },
-      { module: "offers", sub: "" },
       { module: "option-master", sub: "" },
       { module: "deletions", sub: "" },
     ];
@@ -885,7 +804,6 @@ test.describe("QA-BO-012: Page header — breadcrumb + title pattern", () => {
       { module: "dashboard", sub: "" },
       { module: "users", sub: "User Accounts" },
       { module: "assets", sub: "Asset List" },
-      { module: "offers", sub: "" },
       { module: "option-master", sub: "" },
       { module: "deletions", sub: "" },
     ];
@@ -914,10 +832,6 @@ test.describe("QA-BO-012: Footer/pagination — consistency across list pages", 
     await expect(page.locator(".footer-range")).toBeVisible();
   });
 
-  test("87. Offer List: มี .footer-range (pagination)", async ({ page }) => {
-    await goToModule(page, "offers");
-    await expect(page.locator(".footer-range")).toBeVisible();
-  });
 
   test("88. User List: มี .footer-range (pagination)", async ({ page }) => {
     await goToModule(page, "users", "User Accounts");
@@ -971,23 +885,6 @@ test.describe("QA-BO-012: Responsive — nav toggle on compact", () => {
 
 test.describe("QA-BO-012: Cross-module drill-in back chain", () => {
 
-  test("93. Offer Detail → Asset Detail → back กลับ Offer Detail", async ({ page }) => {
-    await goToModule(page, "offers");
-    await page.locator(".asset-row[data-offer-card] .asset-cell-primary").first().click();
-    await page.waitForTimeout(500);
-    const assetLink = page.locator("[data-asset-open]").first();
-    if (await assetLink.isVisible({ timeout: 1000 }).catch(() => false)) {
-      await assetLink.click();
-      await page.waitForTimeout(500);
-      expect(await page.evaluate(() => document.body.classList.contains("asset-detail-mode"))).toBe(true);
-      // back กลับ — ใช้ browser back หรือ back button ถ้ามี
-      const backBtn = page.locator("[data-back-asset-list]");
-      if (await backBtn.isVisible({ timeout: 500 }).catch(() => false)) {
-        await backBtn.click();
-        await page.waitForTimeout(500);
-      }
-    }
-  });
 
   test("94. Account Deletion Detail → User Detail → back กลับ Deletion Detail", async ({ page }) => {
     await goToModule(page, "deletions");
@@ -1020,17 +917,4 @@ test.describe("QA-BO-012: Empty state — search no result", () => {
     }
   });
 
-  test("96. Offer List: search ไม่พบ → แสดง empty state", async ({ page }) => {
-    await goToModule(page, "offers");
-    const search = page.locator("#offer-search, [data-offer-search], #search").first();
-    if (await search.isVisible({ timeout: 1000 }).catch(() => false)) {
-      await search.fill("ZZZNONEXISTENTZZZ");
-      await page.waitForTimeout(300);
-      const empty = page.locator(".detail-empty, .user-empty").first();
-      if (await empty.isVisible({ timeout: 1000 }).catch(() => false)) {
-        const text = await empty.textContent();
-        expect(text.trim().length).toBeGreaterThan(0);
-      }
-    }
-  });
 });

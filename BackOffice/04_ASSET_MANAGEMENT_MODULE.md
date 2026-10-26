@@ -1,7 +1,7 @@
 # 04 BO Asset Management Module
 
-**Version:** `BO-04-v1.2`  
-**Date:** 2026-09-04  
+**Version:** `BO-04-v1.3`  
+**Date:** 2026-10-26  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Asset Management |
 | Platform | Responsive Web Back Office |
-| Version | `BO-04-v1.2` |
+| Version | `BO-04-v1.3` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -69,7 +69,7 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - การแก้ไข business data ของ asset แทน owner
 - การเปลี่ยน owner-controlled status โดยตรงจาก Back Office เช่น `Sale`, `Show`, `Hide`, `Sold`
 - การแก้ไขหรือลบความคิดเห็นแทน author
-- Payment operation, escrow, offer negotiation และ chat dispute workflow
+- Payment operation, escrow และ chat dispute workflow
 - AI moderation
 - Bulk action
 - Export
@@ -254,7 +254,6 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 ### Commerce Fields
 
 - Price
-- Offer summary ถ้ามี
 - Sold status ถ้ามี
 - Sold history ถ้ามี
 
@@ -332,23 +331,17 @@ Moderation state เป็น overlay บน owner-controlled status และ�
 
 ## 10. Visibility Matrix
 
-| State | Public Marketplace | Public Profile/Detail | Owner View | Offer Availability |
-| --- | --- | --- | --- | --- |
-| `Sale` | แสดง | แสดง | แสดง | ใช้งานได้ |
-| `Show` | ไม่แสดง | แสดง | แสดง | ใช้ได้เฉพาะกรณีที่ระบบอนุญาตจาก detail/profile |
-| `Hide` | ไม่แสดง | ไม่แสดง | แสดง | ใช้งานไม่ได้ |
-| `Sold` | ไม่แสดง | ไม่แสดง | แสดงใน sold history | ใช้งานไม่ได้ |
-| `Admin Hidden` / `Auto Hidden` (ซ่อนชั่วคราว) | ไม่แสดง | ไม่แสดง | แสดงพร้อมสถานะถูกซ่อนชั่วคราว | Pending offer ต้องถูก pause และห้ามสร้าง offer ใหม่ |
-| `Permanently Hidden` (ซ่อนถาวร) | ไม่แสดง | ไม่แสดง | แสดงแบบ read-only พร้อมสถานะถูกซ่อนถาวร | Pending offer ต้องถูกตั้งเป็น `Invalidated` และห้ามสร้าง offer ใหม่ |
-| `ลบโดยเจ้าของ` | ไม่แสดง | ไม่แสดง | ไม่แสดงใน owner list ปกติ | Pending offer ต้องถูกตั้งเป็น `Cancelled` และห้ามสร้าง offer ใหม่ |
+| State | Public Marketplace | Public Profile/Detail | Owner View |
+| --- | --- | --- | --- |
+| `Sale` | แสดง | แสดง | แสดง |
+| `Show` | ไม่แสดง | แสดง | แสดง |
+| `Hide` | ไม่แสดง | ไม่แสดง | แสดง |
+| `Sold` | ไม่แสดง | ไม่แสดง | แสดงใน sold history |
+| `Admin Hidden` / `Auto Hidden` (ซ่อนชั่วคราว) | ไม่แสดง | ไม่แสดง | แสดงพร้อมสถานะถูกซ่อนชั่วคราว |
+| `Permanently Hidden` (ซ่อนถาวร) | ไม่แสดง | ไม่แสดง | แสดงแบบ read-only พร้อมสถานะถูกซ่อนถาวร |
+| `ลบโดยเจ้าของ` | ไม่แสดง | ไม่แสดง | ไม่แสดงใน owner list ปกติ |
 
 Asset ที่มี state `Permanently Hidden` หรือ `ลบโดยเจ้าของ` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary
-
-Offer impact เพิ่มเติมสำหรับ owner-controlled status:
-
-- ถ้า owner เปลี่ยน asset จาก `Sale` หรือ `Show` เป็น `Hide` ระหว่างมี pending offer ให้ตั้ง related offers เป็น `Cancelled`
-- ถ้า owner mark asset เป็น `Sold` ให้ตั้ง pending offers อื่นเป็น `Rejected`
-- ถ้า asset ถูกซ่อนชั่วคราวหรือ auto hidden จาก report ให้ตั้ง pending offers เป็น `Paused`; เมื่อ review ผ่านและ asset กลับเป็น `Sale`/`Show` ให้กลับเป็น `Pending`
 
 Asset ที่เป็น `Consignment` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ owner ถือครองเอง
 
@@ -378,7 +371,6 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - ทำไม่ได้กับ `Hide`, `Sold`, `Permanently Hidden` หรือ `ลบโดยเจ้าของ`
 - ต้องคง owner-controlled status เดิมไว้
 - ต้องตั้ง moderation state เป็น `Admin Hidden` (Admin ซ่อน) หรือ `Auto Hidden` (ระบบซ่อนจาก report trigger)
-- Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Paused`
 
 ### Restore Visibility
 
@@ -390,7 +382,6 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - ต้อง restore visibility กลับตาม owner-controlled status เดิม
 - ทำไม่ได้กับ `Permanently Hidden`
 - ต้องบันทึก reason และ audit
-- Offer ที่ถูก `Paused` จากการซ่อนชั่วคราวต้องกลับเป็น `Pending` เมื่อ asset กลับเป็น `Sale` หรือ `Show`
 
 ### Hide Permanently
 
@@ -405,7 +396,6 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - Owner ยังเห็น asset แบบ read-only พร้อมสถานะถูกซ่อนถาวร
 - Owner แก้ไข publish ใหม่ ยกเลิกซ่อน boost mark sold หรือลบเองไม่ได้
 - Asset ไม่ถูกนับใน portfolio value หรือ asset value summary
-- Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Invalidated`
 
 ### Asset Deleted By Owner
 
@@ -415,7 +405,6 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - Asset ต้องหายจาก owner list ปกติ
 - Back Office ยังต้องเก็บ record ตาม retention rule ของระบบ
 - ต้องมี history/audit row ระบุ actor เป็น owner, action เป็น `Asset Deleted By Owner`, before state, after state `ลบโดยเจ้าของ` และ timestamp
-- Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Cancelled`
 
 ## 12. Reported Assets
 

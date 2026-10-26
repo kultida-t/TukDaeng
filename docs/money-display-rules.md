@@ -138,7 +138,7 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 2. **Mock Data เก็บจำนวนเงินจริง (number) + สกุล** แล้วให้ formatter จัดรูปแบบ — ⚠️ ปัจจุบันไม่สม่ำเสมอ: `PF_ASSETS` เป็น number แต่ `POSTS[].price` เป็น string `"THB 420,000"` และ BO mock ฝัง `"THB 318,000"` ในข้อความ — ถ้าจะทำ formatter ร่วมต้อง migrate mock ให้เป็น number ก่อน
 3. สร้าง **ตัวจัดรูปแบบร่วมต่อไฟล์ prototype** (`formatTHB`/`formatMoneyCompact`) ไม่พิมพ์จำนวนย่อเป็นข้อความเองในแต่ละหน้า
 4. แต่ละตำแหน่งกำหนด Full / Compact / Exact ตามกติกา
-5. หน้าใหม่ใช้กติกากลาง; หน้าเก่าทยอยปรับเฉพาะที่ได้รับมอบหมาย — **จุดแสดงเงินใน BO เกือบทั้งหมดอยู่ใน protected screens ที่ล็อกแล้ว** (Dashboard, Asset Mgmt, Offer Mgmt, Market Data, Market Demand) ห้ามแก้จนกว่าจะได้รับอนุมัติชื่อหน้าจอและ scope ชัดเจนตาม `../PROTECTED_SCREENS.md` และ `../BackOffice/BO_UI_UX_STANDARD.md`
+5. หน้าใหม่ใช้กติกากลาง; หน้าเก่าทยอยปรับเฉพาะที่ได้รับมอบหมาย — **จุดแสดงเงินใน BO เกือบทั้งหมดอยู่ใน protected screens ที่ล็อกแล้ว** (Dashboard, Asset Mgmt, Market Data, Market Demand) ห้ามแก้จนกว่าจะได้รับอนุมัติชื่อหน้าจอและ scope ชัดเจนตาม `../PROTECTED_SCREENS.md` และ `../BackOffice/BO_UI_UX_STANDARD.md`
 6. FO ฝั่ง `fo-flow` ไม่อยู่ใน protected list แต่ให้ทยอยปรับเฉพาะ scope ที่อนุมัติเช่นกัน
 
 ข้อความกำกับงานหน้าจอสำหรับใช้ภายหลัง (หลังพี่คิงยืนยัน):
@@ -190,9 +190,8 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 
 | จุด | ที่ตั้ง | รูปแบบปัจจุบัน |
 |---|---|---|
-| Asset list/detail meta | ~L18318–18337 | `"THB 318,000"` ฝังในข้อความ mock |
-| Offer list ("Offer THB 285,000") | ~L18353–18364 | `THB` + comma เต็มจำนวน |
-| Market Data median | ~L18344 | `Median 305,000` ⚠️ ไม่มีสกุลเงิน |
+| Asset list/detail meta | ~L17920–17939 | `"THB 318,000"` ฝังในข้อความ mock |
+| Market Data median | ~L17946 | `Median 305,000` ⚠️ ไม่มีสกุลเงิน |
 | Metric/KPI counts | `formatMarketMetric` (~L21594), `toLocaleString()` หลายจุด | จำนวนเต็ม comma (ส่วนใหญ่เป็น count ไม่ใช่เงิน) |
 
 **สรุป gap หลัก:** (1) mock เงินเป็น string/number ปนกัน (2) `—` vs `N/A` ปนกัน (3) `฿` บน FO vs `THB` บน BO — ถือว่าตั้งใจตามแพลตฟอร์มหรือต้อง unify ก็เป็นจุดให้ตัดสิน (4) ไม่มี formatter กลาง แต่ละจุด format เอง
@@ -203,7 +202,7 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 |---|---|
 | ราคาโพสต์ 420,000 THB | `THB 420,000` (เต็มจำนวน ไม่มีทศนิยม) |
 | Compact: 318,000 THB | `318.00K` |
-| Compact: 2,100,000 THB (offer สูงสุดใน mock) | `2.10M` |
+| Compact: 612,000 THB (ราคา asset สูงสุดใน BO mock) | `612.00K` |
 | Portfolio total รวมหลายเรือน 2,400,000 | `THB 2,400,000`; ถ้า Compact `2.40M` + tap ดูเต็ม |
 | Auto: 999,999 THB | `1.00M` (เลื่อนหลังปัดชนเกณฑ์) |
 | Unrealized loss −83,300 | `−฿83,300`; ถ้า Compact `−83.30K` |

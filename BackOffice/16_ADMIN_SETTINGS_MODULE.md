@@ -1,7 +1,7 @@
 # 16 BO Admin Settings Module
 
-**Version:** `BO-16-v1.4`
-**Date:** 2026-09-23
+**Version:** `BO-16-v1.5`
+**Date:** 2026-10-26
 **Status:** Updated — Security Policy/My Account sync กับ BO Login baseline (Email + Password → BO) ตาม Change Mission `0a5b2b14`
 **Platform:** Responsive Web Back Office
 **Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`
@@ -18,7 +18,7 @@
 | --- | --- |
 | Module Name | BO Admin Settings |
 | Platform | Responsive Web Back Office |
-| Version | `BO-16-v1.4` |
+| Version | `BO-16-v1.5` |
 | Status | Updated — Security Policy/My Account synced กับ BO Login baseline (Email + Password → BO) ตาม Change Mission `0a5b2b14`; Admin invitation lifecycle/security contract synced กับ accepted Mission 1 prototype/tests |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -109,7 +109,7 @@ Section เหล่านี้ยังคงเป็น policy/contract base
 | --- | --- | --- | --- |
 | Security Policy (Section 10) | Deferred | Session timeout, lockout, IP whitelist | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-002 |
 | System Defaults (Section 11) | Future | Timezone, currency, language mode, pagination/export defaults | ยังไม่อยู่ใน Phase 1 nav |
-| Retention Policy (Section 12) | Deferred | Audit, chat/offer, report, export file, notification log retention | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-003 |
+| Retention Policy (Section 12) | Deferred | Audit, chat, report, export file, notification log retention | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-003 |
 | Export Policy (Section 13) | Future | CSV/Excel, background job, file expiry, sensitive export controls | ยังไม่อยู่ใน Phase 1 nav |
 | Feature Flags (Section 14) | Future | เปิด/ปิด module/feature ตาม phase/decision | ยังไม่อยู่ใน Phase 1 nav |
 | Integration Settings (Section 15) | Future | Provider status/config metadata แบบ non-secret | ยังไม่อยู่ใน Phase 1 nav |
@@ -410,7 +410,7 @@ Roles & Permissions must start with 8 standard role templates. These templates a
 | --- | --- | --- |
 | Super Admin | ดูแล BO ทั้งระบบ รวม Admin Settings, Audit Log, sensitive reveal/export และ policy changes | ต้องมี last-active-admin protection; ห้ามปิด/ลดสิทธิ์ตัวเองถ้าทำให้ BO ไม่มีผู้ดูแลสูงสุดเหลืออยู่ |
 | Admin Manager | จัดการ Admin Accounts, Roles & Permissions, security/system policy และ high-risk settings ตาม approval | ไม่มีสิทธิ์แก้ Super Admin/master protection, ลบ audit trail, หรือข้าม confirmation/reason/audit |
-| Operations Manager | ดูภาพรวมงานปฏิบัติการข้าม User, Asset, Offer, Account Deletion, Delivery Logs และ Dashboard queue | ทำ mutation ได้เฉพาะ action ที่ permission matrix อนุญาต; export/sensitive reveal ต้องใช้ policy แยก |
+| Operations Manager | ดูภาพรวมงานปฏิบัติการข้าม User, Asset, Account Deletion, Delivery Logs และ Dashboard queue | ทำ mutation ได้เฉพาะ action ที่ permission matrix อนุญาต; export/sensitive reveal ต้องใช้ policy แยก |
 | Support Agent | ช่วยเหลือผู้ใช้จาก Support Center, User context แบบจำกัด, delivery status และประวัติที่จำเป็นต่อการช่วยเหลือ | ไม่มีสิทธิ์เปลี่ยนสถานะบัญชี/สินทรัพย์, ดู sensitive data เต็ม, export หรือแก้ Settings |
 | Trust & Safety Moderator | จัดการ report/moderation queue สำหรับ user, asset, comment และ board content ตามเหตุผล/audit | Sensitive fields ถูก mask เป็นค่าเริ่มต้น; action ที่กระทบ FO ต้องมี reason, impact note และ audit |
 | Asset Operations | ตรวจสอบ Asset List/Asset Detail, reported assets/comments และข้อมูลที่เกี่ยวกับ asset lifecycle | ไม่มีสิทธิ์แก้ Market Data master, Admin Settings, policy, หรือ export sensitive asset/user data เว้นแต่ matrix อนุญาต |
@@ -453,7 +453,6 @@ Role Detail และ Create/Edit Custom Role ใช้ action catalog ที่
 | Dashboard | Dashboard | `dashboard.view` |
 | User Management | User Accounts / Reported Users | `users.accounts.view`, `users.accounts.manage`, `users.reports.view`, `users.reports.manage` |
 | Asset Management | Asset List / Reported Assets / Reported Comments | `assets.list.view`, `assets.list.manage`, `assets.reports.view`, `assets.reports.manage`, `comments.reports.view`, `comments.reports.manage` |
-| Offer Management | Offer List / Detail | `offers.view` |
 | Content Management | Articles / Categories / Reported Articles | `articles.view`, `articles.manage`, `articles.publish`, `categories.view`, `categories.manage`, `board.reports.view`, `board.reports.manage` |
 | Market Data | Dashboard / Brands & Models / Sync History | `market.dashboard.view`, `market.catalog.view`, `market.sync.view`, `market.sync.run` |
 | Option Master | Option Groups / Options | `option.view`, `option.manage` |
@@ -481,7 +480,6 @@ Matrix นี้เป็น baseline กลางสำหรับ 8 standard 
 | Market Data catalog | admin | none | view | none | view | view | none | none |
 | Market Data import/sync/update | admin | none | approve | none | none | none | none | none |
 | Option Master | admin | none | approve | none | none | none | none | none |
-| Offer Management | admin | view | view | view | view | view | none | none |
 | Market Demand / Watch Alerts | admin | view | view | view | view | view | none | none |
 | Policy & Versioning | admin | approve | view | none | view | none | view | approve |
 | Support Center settings | admin | approve | view | manage | view | none | none | none |
@@ -518,7 +516,7 @@ Matrix นี้กำหนด policy baseline ของ 8 System Roles ส่�
 | Content / Board | Admin can create, edit, preview, publish, schedule, archive, and audit content actions. |
 | Market Data / Directory | Admin can manage brand/model/reference/price data with provider-source, inactive/restore, and audit controls; Directory is future/postponed from Phase 1. |
 | Audit Log | Admin can view/export audit data according to audit visibility and sensitive-payload policy. |
-| Offer Management / Asset Reported Comments / Watch Alert | Admin can review permitted records by policy with privacy masking and audit. Offer Management V1 remains read-only. |
+| Asset Reported Comments / Watch Alert | Admin can review permitted records by policy with privacy masking and audit. |
 | Help / Support / Account Deletion | Admin can manage Policy & Versioning, Support Center และ deletion workflows with dependency checks, confirmation, reason, and audit. |
 | Notifications / Reports (Phase 2/future) | Admin can manage templates, broadcasts, and exports according to approval/export/sensitive-data policy. Reports module is deferred to Phase 2/future scope. |
 | Delivery Logs (Phase 1) | Admin อ่าน delivery list/detail และสถานะ Sent/Retry แบบ read-only ใต้ Settings; retry/export action เป็น future/production contract ที่ยังไม่เปิดใน protected UI. Broadcast/System Templates config remains Phase 2/future (ดู `14_NOTIFICATIONS_MODULE.md`). |
@@ -893,7 +891,7 @@ Retention settings ต้องแสดงเป็น policy/config โดย�
 | --- | --- |
 | Audit log | เก็บอย่างน้อย 1 ปี |
 | Security/permission/export events | ควรเก็บนานกว่า 1 ปีถ้า policy อนุญาต |
-| Chat / offer records | Open decision ตาม legal/compliance |
+| Chat records | Open decision ตาม legal/compliance |
 | Account deletion archive | ใช้ 30-day grace period ก่อนระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) ตาม FO baseline เว้นแต่ legal เปลี่ยน |
 | Export files | ต้องมี expiry |
 | Notification delivery logs | ต้องกำหนด retention ตาม report/provider policy |
@@ -1194,5 +1192,5 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | ID | Decision Needed | Impact |
 | --- | --- | --- |
 | SET-DEC-002 | Security policy fields ใดให้ Admin แก้ได้จริงใน production | กระทบ compliance และ operation |
-| SET-DEC-003 | Retention period ราย entity เช่น chat, offer, export file ต้องเก็บกี่วัน/ปี | กระทบ archive/export/report jobs |
+| SET-DEC-003 | Retention period ราย entity เช่น chat, export file ต้องเก็บกี่วัน/ปี | กระทบ archive/export/report jobs |
 | SET-DEC-004 | ต้องมี approval workflow สำหรับ high-risk setting change หรือไม่ | กระทบ admin operation และ audit |

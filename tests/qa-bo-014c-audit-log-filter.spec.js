@@ -141,14 +141,14 @@ test.describe("QA-BO-014c: Settings > Audit Log — filter bar, search, sort & d
     await page.locator("#audit-search").fill("ADM-007");
     await page.waitForTimeout(300);
     expect(await rowIds(page)).toEqual(["AUD-88204", "AUD-88208"]);
-    // ล้าง search แล้วกลับครบ 24 (หน้า 1 แสดง 10)
+    // ล้าง search แล้วกลับครบ 28 (หน้า 1 แสดง 10)
     await page.locator("#audit-search").fill("");
     await page.waitForTimeout(300);
     expect(await rowIds(page)).toHaveLength(10);
-    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-10 จาก 24");
+    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-10 จาก 28");
   });
 
-  test("3. module filter: เลือก Asset/Content/Users/Account Deletion/Reported Comments/Settings → row กรองถูก", async ({ page }) => {
+  test("3. module filter: เลือก Asset/Content/Users/Account Deletion/Reported Comments/Option Master/Settings → row กรองถูก", async ({ page }) => {
     await goToAuditLog(page);
     // Settings → 12 events
     await pickCustomOption(page, "audit-module-filter", "Settings");
@@ -174,41 +174,34 @@ test.describe("QA-BO-014c: Settings > Audit Log — filter bar, search, sort & d
     await pickCustomOption(page, "audit-module-filter", "Reported Comments");
     await page.waitForTimeout(300);
     expect(await rowIds(page)).toEqual(["AUD-88098"]);
-    // กลับเป็น Module ทั้งหมด → 24 events
+    // Option Master → 4 events
+    await pickCustomOption(page, "audit-module-filter", "Option Master");
+    await page.waitForTimeout(300);
+    expect(await rowIds(page)).toHaveLength(4);
+    // กลับเป็น Module ทั้งหมด → 28 events
     await pickCustomOption(page, "audit-module-filter", "");
     await page.waitForTimeout(300);
     expect(await rowIds(page)).toHaveLength(10);
-    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-10 จาก 24");
+    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-10 จาก 28");
   });
 
-  test("4. module filter: Offers ไม่มี event → empty state", async ({ page }) => {
-    await goToAuditLog(page);
-    await pickCustomOption(page, "audit-module-filter", "Offers");
-    await page.waitForTimeout(300);
-    await expect(page.locator(".audit-row")).toHaveCount(0);
-    const empty = page.locator(".audit-log-table .user-row.empty .audit-empty-state");
-    await expect(empty).toBeVisible();
-    await expect(empty.locator(".empty-title")).toHaveText("ไม่พบ audit event");
-    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 0 จาก 0");
-  });
-
-  test("5. risk filter: High=8, Medium=14, Low=2 → row กรองถูก", async ({ page }) => {
+  test("5. risk filter: High=8, Medium=15, Low=5 → row กรองถูก", async ({ page }) => {
     await goToAuditLog(page);
     // High → 8 events
     await pickCustomOption(page, "audit-risk-filter", "High");
     await page.waitForTimeout(300);
     expect(await rowIds(page)).toHaveLength(8);
     await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-8 จาก 8");
-    // Medium → 14 events (หน้า 1 แสดง 10)
+    // Medium → 15 events (หน้า 1 แสดง 10)
     await pickCustomOption(page, "audit-risk-filter", "Medium");
     await page.waitForTimeout(300);
     expect(await rowIds(page)).toHaveLength(10);
-    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-10 จาก 14");
-    // Low → 2 events (latest: 88202 ก่อน 88098)
+    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-10 จาก 15");
+    // Low → 5 events (latest desc: 88300 ก่อน 88298, 88299, 88202, 88098)
     await pickCustomOption(page, "audit-risk-filter", "Low");
     await page.waitForTimeout(300);
-    expect(await rowIds(page)).toEqual(["AUD-88202", "AUD-88098"]);
-    // กลับเป็น Risk ทั้งหมด → 24
+    expect(await rowIds(page)).toEqual(["AUD-88300", "AUD-88298", "AUD-88299", "AUD-88202", "AUD-88098"]);
+    // กลับเป็น Risk ทั้งหมด → 28
     await pickCustomOption(page, "audit-risk-filter", "");
     await page.waitForTimeout(300);
     expect(await rowIds(page)).toHaveLength(10);
@@ -220,7 +213,7 @@ test.describe("QA-BO-014c: Settings > Audit Log — filter bar, search, sort & d
     await pickCustomOption(page, "audit-sort", "latest");
     await page.waitForTimeout(300);
     const latest = await rowIds(page);
-    expect(latest[0]).toBe("AUD-88203"); // 08 Sep 2026 16:00
+    expect(latest[0]).toBe("AUD-88301"); // 30 Sep 2026 14:10
     // oldest — เรียงเก่าสุดก่อน
     await pickCustomOption(page, "audit-sort", "oldest");
     await page.waitForTimeout(300);
@@ -228,16 +221,17 @@ test.describe("QA-BO-014c: Settings > Audit Log — filter bar, search, sort & d
       "AUD-88215", "AUD-88209", "AUD-88210", "AUD-88211", "AUD-88212",
       "AUD-88207", "AUD-88208", "AUD-88206", "AUD-88051", "AUD-88068"
     ]);
-    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-10 จาก 24");
+    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-10 จาก 28");
   });
 
   test("7. date range filter: from / to / ช่วง กรองถูกต้อง (cover AL-004)", async ({ page }) => {
     await goToAuditLog(page);
     await openFilterBar(page);
-    // from = 08 Sep 2026 → 5 events
+    // from = 08 Sep 2026 → 9 events (รวม Option Master events ปลาย Sep)
     await page.locator("#audit-date-from").fill("2026-09-08");
     await page.waitForTimeout(300);
     expect(await rowIds(page)).toEqual([
+      "AUD-88301", "AUD-88300", "AUD-88298", "AUD-88299",
       "AUD-88203", "AUD-88202", "AUD-88201", "AUD-88198", "AUD-88195"
     ]);
     // ล้าง from, ใส่ to = 30 Apr 2026 → 7 events เก่ากว่า/เท่ากับ
@@ -367,9 +361,9 @@ test.describe("QA-BO-014c: Settings > Audit Log — filter bar, search, sort & d
     // date range cleared
     expect(await page.locator("#audit-date-from").inputValue()).toBe("");
     expect(await page.locator("#audit-date-to").inputValue()).toBe("");
-    // page 1 — 10 rows กลับมา + footer จาก 24
+    // page 1 — 10 rows กลับมา + footer จาก 28
     expect(await rowIds(page)).toHaveLength(10);
-    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-10 จาก 24");
+    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-10 จาก 28");
   });
 
   test("14. filter state persistence: re-render list แล้วค่า filter ยังอยู่ (drawer open/close + re-render)", async ({ page }) => {

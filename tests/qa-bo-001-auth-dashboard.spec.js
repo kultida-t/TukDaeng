@@ -332,8 +332,8 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
     });
   });
 
-  test.describe("Dashboard — KPI cards (8 cards ตามลำดับ)", () => {
-    test("25. KPI cards ครบ 8 ตามลำดับที่ spec ล็อก", async ({ page }) => {
+  test.describe("Dashboard — KPI cards (6 cards ตามลำดับ)", () => {
+    test("25. KPI cards ครบ 6 ตามลำดับที่ spec ล็อก", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -343,10 +343,8 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
         "Active Users Today",
         "New Assets",
         "Reported Items",
-        "Offer Activity",
         "Articles",
-        "Watch Alert",
-        "Policies"
+        "Watch Alert"
       ]);
     });
 
@@ -356,7 +354,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await loginIfNeeded(page);
       const stats = page.locator("#summary-grid .stat");
       const count = await stats.count();
-      expect(count).toBe(8);
+      expect(count).toBe(6);
       for (let i = 0; i < count; i++) {
         const stat = stats.nth(i);
         await expect(stat.locator(".stat-value")).not.toBeEmpty();
@@ -456,15 +454,6 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(subText).toContain("Reported Comments");
     });
 
-    test("34. Offer Activity card → Offer Management", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await loginIfNeeded(page);
-      await page.locator("#summary-grid .stat", { hasText: "Offer Activity" }).click();
-      await page.waitForTimeout(500);
-      await expect(page.locator(".nav-item[data-module=\"offers\"]")).toHaveClass(/active/);
-    });
-
     test("35. Articles card → Content Management / Articles", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
@@ -488,17 +477,6 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(subText).toContain("Demand Overview");
     });
 
-    test("37. Policies card → Settings / Policy & Versioning", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await loginIfNeeded(page);
-      await page.locator("#summary-grid .stat", { hasText: "Policies" }).click();
-      await page.waitForTimeout(500);
-      await expect(page.locator(".nav-item[data-module=\"settings\"]")).toHaveClass(/active/);
-      const subActive = page.locator(".submenu button.active");
-      const subText = await subActive.textContent();
-      expect(subText).toContain("Policy & Versioning");
-    });
   });
 
   test.describe("Dashboard — Work Queue (7 rows ตามลำดับ)", () => {
@@ -587,14 +565,14 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   });
 
   test.describe("Dashboard — Recent Activity", () => {
-    test("44. Recent Activity filter 5 ตัว: ทั้งหมด/Report/Offer/Content/System", async ({ page }) => {
+    test("44. Recent Activity filter 4 ตัว: ทั้งหมด/Report/Content/System", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
       const filters = page.locator(".activity-toolbar .segmented");
-      await expect(filters).toHaveCount(5);
+      await expect(filters).toHaveCount(4);
       const labels = await filters.allTextContents();
-      expect(labels).toEqual(["ทั้งหมด", "Report", "Offer", "Content", "System"]);
+      expect(labels).toEqual(["ทั้งหมด", "Report", "Content", "System"]);
     });
 
     test("45. filter ทำงานจริง — Report แสดงเฉพาะ report events", async ({ page }) => {
@@ -630,27 +608,17 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
     });
   });
 
-  test.describe("Dashboard — panels (4 cards)", () => {
-    test("47. Dashboard panels ครบ 4: Asset Status, Offer Status, Latest Articles, Top Searched Brands", async ({ page }) => {
+  test.describe("Dashboard — panels (3 cards)", () => {
+    test("47. Dashboard panels ครบ 3: Asset Status, Latest Articles, Top Searched Brands", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
       const cards = page.locator("#cards .dashboard-status-card");
-      await expect(cards).toHaveCount(4);
+      await expect(cards).toHaveCount(3);
       const titles = await cards.locator("h3").allTextContents();
       expect(titles).toContain("Asset Status");
-      expect(titles).toContain("Offer Status");
       expect(titles).toContain("Latest Articles");
       expect(titles).toContain("Top Searched Brands");
-    });
-
-    test("48. Offer Status panel 6 rows ตามลำดับ status", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await loginIfNeeded(page);
-      const offerCard = page.locator("#cards .dashboard-status-card", { hasText: "Offer Status" });
-      const labels = await offerCard.locator(".asset-status-name").allTextContents();
-      expect(labels).toEqual(["Pending", "Paused", "Accepted", "Rejected", "Cancelled", "Invalidated"]);
     });
 
     test("49. Latest Articles panel 3 rows พร้อม status value", async ({ page }) => {
@@ -676,17 +644,6 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       for (let i = 0; i < 5; i++) {
         await expect(rows.nth(i).locator(".wa-stat-bar-percent")).toContainText("%");
         await expect(rows.nth(i).locator(".wa-stat-bar-fill")).toBeVisible();
-      }
-    });
-
-    test("51. Offer Status rows → Offer Management", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await loginIfNeeded(page);
-      const offerRows = page.locator("#cards .offer-status-row");
-      const count = await offerRows.count();
-      for (let i = 0; i < count; i++) {
-        await expect(offerRows.nth(i)).toHaveAttribute("data-module-jump", "offers");
       }
     });
 
@@ -759,12 +716,12 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   });
 
   test.describe("Dashboard — responsive content completeness", () => {
-    test("57. mobile 390px: KPI 8 cards + Work Queue 7 rows ไม่หาย", async ({ browser }) => {
+    test("57. mobile 390px: KPI 6 cards + Work Queue 7 rows ไม่หาย", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
-      await expect(page.locator("#summary-grid .stat")).toHaveCount(8);
+      await expect(page.locator("#summary-grid .stat")).toHaveCount(6);
       await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(7);
       await page.close();
     });
@@ -774,9 +731,9 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
-      await expect(page.locator("#summary-grid .stat")).toHaveCount(8);
+      await expect(page.locator("#summary-grid .stat")).toHaveCount(6);
       await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(7);
-      await expect(page.locator("#cards .dashboard-status-card")).toHaveCount(4);
+      await expect(page.locator("#cards .dashboard-status-card")).toHaveCount(3);
       await page.close();
     });
 
@@ -785,9 +742,9 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
-      await expect(page.locator("#summary-grid .stat")).toHaveCount(8);
+      await expect(page.locator("#summary-grid .stat")).toHaveCount(6);
       await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(7);
-      await expect(page.locator("#cards .dashboard-status-card")).toHaveCount(4);
+      await expect(page.locator("#cards .dashboard-status-card")).toHaveCount(3);
       await page.close();
     });
 
@@ -796,9 +753,9 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
-      await expect(page.locator("#summary-grid .stat")).toHaveCount(8);
+      await expect(page.locator("#summary-grid .stat")).toHaveCount(6);
       await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(7);
-      await expect(page.locator("#cards .dashboard-status-card")).toHaveCount(4);
+      await expect(page.locator("#cards .dashboard-status-card")).toHaveCount(3);
       await page.close();
     });
   });

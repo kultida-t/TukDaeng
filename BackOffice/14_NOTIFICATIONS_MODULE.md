@@ -1,10 +1,10 @@
 # 14 BO Notifications Module
 
-**Version:** `BO-14-v0.3`  
-**Date:** 2026-09-14  
+**Version:** `BO-14-v0.4`  
+**Date:** 2026-10-26  
 **Status:** Phase 2 deferral — Broadcast & System Templates moved to future; Delivery Logs moved to Settings  
 **Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`
+**Primary FO Sources:** `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`
 
 > **NTF-RSTR-001 (2026-09-14):** Notifications module ถูกแบ่งเป็น 2 phase แล้ว
 > - **Phase 1 (ปัจจุบัน):** Delivery Logs แบบ read-only, provider/outbox retry state, Account Deletion lifecycle email และ audit — ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`) และไม่มี Notifications menu entry ใน sidebar อีก
@@ -22,7 +22,7 @@
 | --- | --- |
 | Module Name | BO Notifications |
 | Platform | Responsive Web Back Office |
-| Version | `BO-14-v0.3` |
+| Version | `BO-14-v0.4` |
 | Status | Phase 2 deferral — Broadcast & System Templates moved to future; Delivery Logs moved to Settings |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -32,9 +32,9 @@
 Notifications Module ใช้ให้ BO จัดการ notification ที่เกี่ยวข้องกับ FO ทั้ง 2 กลุ่ม:
 
 1. Broadcast Notification: ข้อความที่ Admin สร้างและส่งเอง เช่น announcement หรือ campaign
-2. System Notification Trigger: notification ที่เกิดจาก event ของระบบ เช่น Like, Comment, Follow, Offer และ Watch Alert
+2. System Notification Trigger: notification ที่เกิดจาก event ของระบบ เช่น Like, Comment, Follow และ Watch Alert
 
-เอกสารนี้ยึด FO Notification V1 เป็นหลัก: FO Notification Center รองรับเฉพาะ `Like`, `Comment`, `Follow`, `Offer`, `Watch Alert` เท่านั้น จึงห้ามเพิ่ม type ใหม่เข้า FO list โดยไม่มี master decision
+เอกสารนี้ยึด FO Notification V1 เป็นหลัก: FO Notification Center รองรับเฉพาะ `Like`, `Comment`, `Follow`, `Watch Alert` เท่านั้น จึงห้ามเพิ่ม type ใหม่เข้า FO list โดยไม่มี master decision
 
 ## 3. Scope
 
@@ -75,7 +75,6 @@ FO V1 รองรับ Notification Center types:
 | `Like` | Asset Detail |
 | `Comment` | Asset Detail + Focus Comment |
 | `Follow` | Public Profile |
-| `Offer` | Chat Room / Offer context หรือ Asset Detail ตาม subtype |
 | `Watch Alert` | Watch Alert Result List |
 
 FO V1 ไม่รองรับ type ต่อไปนี้ใน Notification Center จนกว่า master จะเพิ่ม scope:
@@ -109,7 +108,7 @@ Account Deletion lifecycle messaging ใช้แนวทางเดียว�
 | Area | Broadcast Notification | System Notification Trigger |
 | --- | --- | --- |
 | Source | Admin สร้างใน BO | Event จาก FO/system |
-| Example | Announcement, campaign, policy notice | Like, Comment, Follow, Offer, Watch Alert |
+| Example | Announcement, campaign, policy notice | Like, Comment, Follow, Watch Alert |
 | Template | Admin เขียนต่อรายการ | Template กลางต่อ notification type |
 | Audience | Target audience ที่ Admin เลือก | Recipient ตาม event |
 | Schedule | Send now / schedule | Trigger ตาม event |
@@ -224,10 +223,6 @@ System trigger ที่ BO จัดการได้สำหรับ FO V1:
 | Like | User likes Asset | Asset owner | Like | Asset Detail |
 | Comment | User comments on Asset | Asset owner / related user | Comment | Asset Detail + Focus Comment |
 | Follow | User follows another user | Followed user | Follow | Public Profile |
-| New Offer | Buyer sends offer | Asset owner | Offer | Chat Room + Focus Offer Card |
-| Offer Accepted | Owner accepts offer | Buyer | Offer | Chat Room |
-| Offer Rejected | Owner declines offer | Buyer | Offer | Asset Detail |
-| Offer Cancelled | System/user cancels offer | Related buyer/owner | Offer | Chat Room + Focus Offer Card |
 | Watch Alert | Sale asset matches alert criteria | Alert owner | Watch Alert | Watch Alert Result List |
 
 ### 9.2 Explicitly Disabled / Future Types
@@ -281,7 +276,7 @@ System template fields:
 
 | Field | Requirement |
 | --- | --- |
-| Notification Type | Like, Comment, Follow, Offer subtype, Watch Alert |
+| Notification Type | Like, Comment, Follow, Watch Alert |
 | Title Template | Required |
 | Body Template | Required |
 | Variables | Allowlist ต่อ type |
@@ -297,7 +292,6 @@ Template variables ต้องใช้ allowlist เท่านั้น เ�
 | Like | actor_display_name, asset_title |
 | Comment | actor_display_name, asset_title, comment_excerpt |
 | Follow | actor_display_name |
-| Offer | actor_display_name, asset_title, offer_price, offer_status |
 | Watch Alert | alert_name, matched_count, brand, model |
 | Account Suspension Email | account_status, public_reason, suspension_end_at, support_contact |
 | Account Ban Email | account_status, public_reason, support_contact |
@@ -318,7 +312,6 @@ Template variables ต้องใช้ allowlist เท่านั้น เ�
 | Asset Detail | Asset ต้องยังเปิด destination ได้ หรือ fallback เป็น unavailable state |
 | Asset Detail + Focus Comment | Asset/comment ต้อง validate permission และ fallback ได้ |
 | Public Profile | ต้องเคารพ block/deleted user rules |
-| Chat Room + Offer Card | User ต้องเป็น participant และ offer context ต้องมีอยู่ |
 | Watch Alert Result List | ต้องเปิด result list ไม่เปิด Asset Detail โดยตรง |
 
 ถ้า destination ถูกลบหรือไม่มีสิทธิ์ FO ต้องแสดง safe unavailable state ตาม FO module
@@ -406,7 +399,6 @@ Provider/outbox retry ต้องมี immutable attempt/result trace แล�
 | Dashboard | Phase 1: failed delivery, delivery rate ของ lifecycle/account-status email; Phase 2/future: scheduled broadcasts, notification report metrics |
 | User Management | Target audience, account status exclusion |
 | Asset Management | Asset detail destination and unavailable fallback |
-| Offer Management | Offer trigger, chat room destination, rejected/accepted/cancelled events |
 | Asset Management (Reported Comments) | Comment, like, follow triggers |
 | Watch Alert | Match trigger, result list destination, notification enabled/off |
 | Help / Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; notification integration เป็น future scope |
@@ -493,7 +485,7 @@ Audit payload ต้องมี:
 | AC-BO-NOTI-001 | BO แสดง notification dashboard, broadcast list, system trigger templates และ delivery logs (ใน Notifications module) ได้ |
 | AC-BO-NOTI-002 | Broadcast รองรับ draft, approval, schedule, send now, cancel และ delivery stats |
 | AC-BO-NOTI-003 | Broadcast in-app list ต้องไม่เพิ่ม generic `Broadcast` type เข้า FO V1 จนกว่า master decision เปิด scope |
-| AC-BO-NOTI-004 | System trigger ต้องรองรับ Like, Comment, Follow, Offer subtypes และ Watch Alert ตาม FO destination rules |
+| AC-BO-NOTI-004 | System trigger ต้องรองรับ Like, Comment, Follow และ Watch Alert ตาม FO destination rules |
 | AC-BO-NOTI-005 | Watch Alert notification ต้องเปิด Watch Alert Result List เท่านั้น ห้ามเปิด Asset Detail โดยตรง |
 | AC-BO-NOTI-006 | Chat / New Message ต้องไม่เข้า Notification Center และใช้ Chat badge/count เท่านั้น |
 | AC-BO-NOTI-007 | Disabled notification type ต้องไม่ส่ง notification ใหม่ |

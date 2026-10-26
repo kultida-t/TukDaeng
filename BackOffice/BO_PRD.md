@@ -1,6 +1,6 @@
 # PRD - Tuk Daeng Back Office System
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Product:** Tuk Daeng Back Office (BO)  
 **Audience:** Admin  
 **Related Documents:** BO_Spec v1.2, BO_Spec_Completion_Addendum v1.3, FO PRD v1.0, Use Cases v1.0
@@ -25,7 +25,7 @@ BO ต้องช่วยให้ทีม Admin สามารถ:
 
 ### 1.2 Problem Statement
 
-FO มีหลาย flow ที่สร้างข้อมูลและ interaction จำนวนมาก เช่น asset listing, offer, chat, comment, follow, watch alert, board article และ support request หากไม่มี BO ที่ครบถ้วน ทีมงานจะไม่สามารถตรวจสอบคุณภาพข้อมูล แก้ปัญหาผู้ใช้ หรือควบคุมความปลอดภัยของระบบได้อย่างเป็นระบบ
+FO มีหลาย flow ที่สร้างข้อมูลและ interaction จำนวนมาก เช่น asset listing, chat, comment, follow, watch alert, board article และ support request หากไม่มี BO ที่ครบถ้วน ทีมงานจะไม่สามารถตรวจสอบคุณภาพข้อมูล แก้ปัญหาผู้ใช้ หรือควบคุมความปลอดภัยของระบบได้อย่างเป็นระบบ
 
 ### 1.3 Product Goals
 
@@ -48,11 +48,11 @@ BO has exactly one admin account type: `Admin`. There are no BO sub-types for co
 
 | Admin Account Type | Primary Responsibility |
 |---|---|
-| Admin | Manage all BO operational areas allowed by product scope and policy: users, assets, content, market data, offers, chat, asset reported comments, watch alerts, support, account deletion, notifications, audit, and settings. Directory is future/postponed from Phase 1. Reports & Analytics is deferred to Phase 2/future scope. |
+| Admin | Manage all BO operational areas allowed by product scope and policy: users, assets, content, market data, chat, asset reported comments, watch alerts, support, account deletion, notifications, audit, and settings. Directory is future/postponed from Phase 1. Reports & Analytics is deferred to Phase 2/future scope. |
 
 ### 2.2 FO Users
 
-FO users have a single account type: `User`. BO must support activity from the same user account across selling, buying, offers, public collection, and private collection states.
+FO users have a single account type: `User`. BO must support activity from the same user account across selling, buying, public collection, and private collection states.
 ## 3. Scope
 
 ### 3.1 In Scope
@@ -61,7 +61,6 @@ FO users have a single account type: `User`. BO must support activity from the s
 - Dashboard
 - User Management
 - Asset Management
-- Offer Management (read-only ใน V1)
 - Content / Board Management
 - Market Data Management
 - Option Master Management
@@ -115,7 +114,6 @@ Dashboard ต้องแสดง:
 - จำนวนผู้ใช้ใหม่ วันนี้ / สัปดาห์นี้ / เดือนนี้
 - Active Users Today
 - จำนวน asset ใหม่ แยกตามสถานะ
-- Offer made / accepted / rejected
 - Pending reports
 - Watch alerts ที่ active
 - บทความล่าสุด
@@ -161,7 +159,7 @@ Admin ต้องสามารถ:
 - Delete/archive user ต้องจัดการผ่าน Account Deletion workflow และต้องเก็บ audit
 - User reports 1-2 ครั้งต้องเข้าคิว review ก่อน ไม่ควรเปลี่ยนสถานะบัญชีอัตโนมัติ
 - User reports ตั้งแต่ 3 ครั้งขึ้นไปภายในช่วงเวลาสั้น หรือมีหลาย reporter ต้องถูกยกระดับเป็น high-risk review เท่านั้น ไม่ suspend อัตโนมัติจากจำนวน report เพียงอย่างเดียว
-- User reports ตั้งแต่ 5 ครั้งขึ้นไป หรือมี evidence เสี่ยงสูง เช่น scam, impersonation, spam offer, duplicate fraud pattern สามารถเข้าสู่ `Suspended` ชั่วคราวตาม policy เพื่อรอ Admin review
+- User reports ตั้งแต่ 5 ครั้งขึ้นไป หรือมี evidence เสี่ยงสูง เช่น scam, impersonation, spam, duplicate fraud pattern สามารถเข้าสู่ `Suspended` ชั่วคราวตาม policy เพื่อรอ Admin review
 - `Banned` ต้องเกิดหลัง Admin review แล้วพบว่าผิดจริงหรือมีความเสี่ยงสูง พร้อม reason และ audit
 - Account deletion ต้องมี lifecycle รวมขั้นเดียว `Deletion Requested` -> `Deactivated` -> ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ = เก็บถาวร + ลบตัวตน ในขั้นเดียว (`Anonymized`) หรือ `คืนบัญชีแล้ว` ถ้าแอดมินคืนในช่วง grace period (ตาม `13_ACCOUNT_DELETION_MODULE.md` DEL-DEC-006)
 - Prototype ปัจจุบันแสดง `Deletion Requested` (รอลบบัญชี) และ `Deleted` (ลบแล้ว) ใน User List/filter เพื่อ review historical summary ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องดูย้อนหลังได้ใน Account Deletion / Audit ตาม retention policy (ก่อนหน้านี้ระบุให้ดูใน Account Deletion / Reports / Audit แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงดูย้อนหลังได้ใน Account Deletion / Audit เท่านั้น)
@@ -208,30 +206,7 @@ Admin ต้องสามารถ:
 
 ---
 
-## 4.5 Offer Management
-
-### Requirements
-
-Admin ต้องสามารถ:
-
-- ดูรายการ offer ทั้งหมด
-- Filter ตาม status: Pending, Accepted, Rejected, Cancelled, Expired, Invalidated
-- ดู offer detail
-
-Offer Management V1 เป็น read-only ไม่มี accept/decline/cancel/force-expire/invalidate/remove-chat-message action ถ้าเพิ่มภายหลังต้องมี Product approval, permission check, confirmation/reason เมื่อกระทบ FO/user และ audit log
-
-Future scope (ยังไม่ render ใน prototype V1): chat room context ที่เกี่ยวข้องกับ offer, notification delivery ของ offer, force expire offer, remove/hide chat message
-
-### Business Rules
-
-- Pending offer ใช้เป็นเงื่อนไข block account deletion
-- Offer ที่ asset ถูก sold/remove ต้อง invalidated
-- Admin ไม่ควรแก้ไขข้อความผู้ใช้โดยตรง
-- Chat deletion ใน FO เป็น user-level deletion ไม่ใช่ hard delete จากระบบ
-
----
-
-## 4.6 Content / Board Management
+## 4.5 Content / Board Management
 
 ### Requirements
 
@@ -269,7 +244,7 @@ Admin ต้องสามารถ:
 
 ---
 
-## 4.7 Market Data
+## 4.6 Market Data
 
 ### Requirements
 
@@ -291,7 +266,7 @@ Phase 1 ไม่ให้ Admin เพิ่ม แก้ไข ลบ ปิ�
 
 ---
 
-## 4.8 Market Demand (Watch Alert)
+## 4.7 Market Demand (Watch Alert)
 
 ### Requirements
 
@@ -317,7 +292,7 @@ Admin ต้องสามารถ:
 
 ---
 
-## 4.9 Directory Management
+## 4.8 Directory Management
 
 **Phase 1 status:** Postponed / future scope only. Keep this section as reference for a later Directory phase; do not implement or expose it in the Phase 1 BO prototype/build.
 
@@ -349,7 +324,7 @@ Fields ที่ต้องรองรับ:
 
 ---
 
-## 4.10 Help & Support
+## 4.9 Help & Support
 
 ### Requirements
 
@@ -373,9 +348,9 @@ Ticket queue, assignment, SLA, reply history, internal notes และ manual ti
 
 ---
 
-## 4.11 Notifications
+## 4.10 Notifications
 
-> **สถานะ:** Phase 2/future scope — Broadcast Notification และ System Notification Trigger (template management) เลื่อนเป็น Phase 2/future (mirror section 4.12 Reports); ใน Phase 1 Delivery Logs ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md` และ `14_NOTIFICATIONS_MODULE.md`) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1
+> **สถานะ:** Phase 2/future scope — Broadcast Notification และ System Notification Trigger (template management) เลื่อนเป็น Phase 2/future (mirror section 4.11 Reports); ใน Phase 1 Delivery Logs ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md` และ `14_NOTIFICATIONS_MODULE.md`) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1
 
 ### Requirements (Phase 2/future)
 
@@ -396,9 +371,6 @@ Broadcast ต้องรองรับ:
 
 System Trigger ต้องรองรับ:
 
-- New Offer
-- Offer Accepted
-- Offer Rejected
 - Comment
 - New Follower
 - Market Update
@@ -407,7 +379,7 @@ System Trigger ต้องรองรับ:
 
 ---
 
-## 4.12 Reports & Analytics (Phase 2 / Future scope)
+## 4.11 Reports & Analytics (Phase 2 / Future scope)
 
 > **สถานะ:** เลื่อนเป็น Phase 2/future scope — prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor
 > รายละเอียด spec เดิมเก็บไว้ใน `15_REPORTS_ANALYTICS_MODULE.md` เพื่ออ้างอิงเมื่อกลับมาทำ
@@ -416,7 +388,6 @@ Reports ที่ต้องมี (เมื่อกลับมาทำใ�
 
 - User Report
 - Asset Report
-- Offer Report
 - Chat Report
 - Content / Board Report
 - Asset Reported Comments Report
@@ -436,7 +407,7 @@ Reports ที่ต้องมี (เมื่อกลับมาทำใ�
 
 ---
 
-## 4.13 Audit Log
+## 4.12 Audit Log
 
 ### Requirements
 
@@ -456,7 +427,6 @@ Reports ที่ต้องมี (เมื่อกลับมาทำใ�
 
 - User
 - Asset
-- Offer
 - ChatRoom
 - ChatMessage
 - Comment
@@ -529,7 +499,6 @@ Reports ที่ต้องมี (เมื่อกลับมาทำใ�
 - Dashboard
 - User Management
 - Asset Management
-- Offer Management (read-only ใน V1)
 - Content / Board Management
 - Market Data
 - Option Master
@@ -545,7 +514,6 @@ Reports ที่ต้องมี (เมื่อกลับมาทำใ�
 
 - Directory (รอ FO directory detail routes และ taxonomy approval)
 - Chat moderation workflow (remove/hide chat message, reported chat queue)
-- Offer write actions (force expire, invalidate, accept/decline จาก BO)
 - Help & Support ticket queue, assignment, SLA, reply/internal note (ย้ายจาก Phase 1 ไป Phase 2 — รายละเอียดอยู่ใน `12_HELP_SUPPORT_MODULE.md` section 3 Out Of Scope)
 
 ### Phase 3
@@ -562,7 +530,7 @@ Reports ที่ต้องมี (เมื่อกลับมาทำใ�
 ## 8. Open Questions
 
 1. ต้องการให้ BO มีภาษาอังกฤษเป็น option หรือใช้ไทยอย่างเดียว
-2. Retention policy ของ chat และ offer ต้องเก็บกี่ปี
+2. Retention policy ของ chat ต้องเก็บกี่ปี
 3. Account deletion ต้อง anonymize ทันทีหรือหลัง retention period
 4. Board article ต้องมี SEO public web หรือใช้เฉพาะใน mobile app
 5. Admin สามารถ remove asset ได้ทันทีหรือควรต้อง approval จาก Admin

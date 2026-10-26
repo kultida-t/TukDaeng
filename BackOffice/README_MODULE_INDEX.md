@@ -20,7 +20,7 @@ BO docs แยกจาก FO docs แต่เชื่อมโยงการ
 | 4 | `BO_DEV_IMPLEMENTATION_CHECKLIST.md` | Checklist สำหรับแตก ticket dev และเก็บ Prototype Handoff Notes ระหว่าง BA/UX ทำ prototype |
 | 5 | `BO_PRD.md` | Existing product requirement source |
 | 6 | `BO_Spec.md` | Existing screen/module specification source |
-| 7 | `BO_Spec_Completion_Addendum.md` | Coverage เพิ่มเติมเรื่อง offer/chat, watch alert, support, deletion, notifications |
+| 7 | `BO_Spec_Completion_Addendum.md` | Coverage เพิ่มเติมเรื่อง chat, watch alert, support, deletion, notifications |
 | 8 | `../FrontOffice/18_ADMIN_SCOPE_NOTE.md` | Boundary ว่า Admin อยู่ฝั่ง Web Back Office เท่านั้น |
 
 ## Prototype Handoff Notes Workflow
@@ -65,12 +65,12 @@ Codex ต้องทำ 3 อย่าง:
 | 06 | `06_MARKET_DATA_MODULE.md` | Read-only API/backend-synced watch brand, model, reference, detail, price index, sync logs, FO autocomplete/search/alert/portfolio sync | 1 |
 | 07 | `07_DIRECTORY_MODULE.md` | Future/postponed Directory reference only; not exposed in Phase 1 BO prototype or Phase 1 build scope until FO directory detail routes are approved | Future |
 | 08 | `08_AUDIT_LOG_MODULE.md` | Immutable audit events, schema, search/filter, export, retention และ canonical Admin Identity Lifecycle event/risk/result/correlation โดยไม่เก็บ secret | 1 |
-| 09 | `09_OFFER_CHAT_MODULE.md` | Read-only offer list/detail, buyer/seller and asset interest overview, related chat context, notification delivery | 1 |
+| 09 | ~~`09_OFFER_CHAT_MODULE.md`~~ — REMOVED 2026-10-26 | FO ตัด Offer (เสนอราคา) feature ออกจาก scope — BO Offer Management ถูกถอดตามทั้ง module (spec file ถูกลบ; ดู `DOCUMENT_VERSION.md`) | — |
 | 11 | `11_WATCH_ALERT_MODULE.md` | Market Demand & Watch Alert: Demand Overview, Search Insights (popular keyword/filter, no-result, trend, funnel), Watch Alert List (read-only) + Alert Detail (6 sections, read-only), trigger history, Sale-only match, notification delivery, inactive market data warning | 1 |
 | 12 | `12_HELP_SUPPORT_MODULE.md` | Settings > Policy & Versioning (Terms of Use, Privacy Policy — Draft/Published/Archived, bilingual TH/EN, version history, restore) และ Settings > Support Center (channels, business hours, availability TH/EN, preview) | 1 |
 | 13 | `13_ACCOUNT_DELETION_MODULE.md` | Delete-account request queue, restore/reject restore ใน grace period, 30-day grace period, ลบบัญชีอัตโนมัติเมื่อครบกำหนด (เก็บถาวร + ลบตัวตน ในขั้นเดียว), lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3 | 1 |
 | 14 | `14_NOTIFICATIONS_MODULE.md` | Phase 1 delivery contract สำหรับ Admin invitation, Forgot/Reset Password และ Account Deletion lifecycle email; Broadcast/System Templates/notification reports เป็น Phase 2/future; Delivery Logs UI อยู่ใต้ Settings | 1 / 2 |
-| 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, offer, chat, content, asset reported comments, search, watch alert, notifications, account deletion (Phase 2 / future scope — deferred) | 2 |
+| 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, chat, content, asset reported comments, search, watch alert, notifications, account deletion (Phase 2 / future scope — deferred) | 2 |
 | 16 | `16_ADMIN_SETTINGS_MODULE.md` | My Account แบบ self-only จาก profile footer, admin account/invitation lifecycle, Roles & Permissions, security/system settings และ **Delivery Logs** แบบ read-only ใน Phase 1 | 1 |
 | 17 | `17_OPTION_MASTER_MODULE.md` | Internal option master management for FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit; `ระบุเอง` free-text → suggestion pool + aliases + curation queue contract + Suggestion Queue UI (section 23.5 — page action + pending badge, promote/map alias/ignore, suggestion audit) | 1 |
 
@@ -108,7 +108,7 @@ Phase 1 ยังไม่รวม real-time admin-user chat, AI moderation, ex
 
 ## BO/FO Boundary
 
-- FO users เป็นคน report, block, create assets, make offers, chat, follow, comment, save watch alerts, read Board content และ request account deletion
+- FO users เป็นคน report, block, create assets, chat, follow, comment, save watch alerts, read Board content และ request account deletion
 - BO admins เป็นคน review, moderate, publish, support, configure, export และ audit records เหล่านั้น
 - BO action results ต้อง sync กลับไปยัง FO public surfaces แบบทันทีหรือผ่าน async state ที่ระบุชัดเจน
 - Cross-system trigger/result ownership อยู่ในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง

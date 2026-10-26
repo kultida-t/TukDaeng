@@ -27,7 +27,6 @@ BO Dashboard
 ├── Dashboard (ภาพรวมระบบ)
 ├── User Management (จัดการผู้ใช้)
 ├── Asset Management (จัดการสินทรัพย์)
-├── Offer Management (การดำเนินงาน / Offer Management — read-only ใน V1)
 ├── Content Management (จัดการเนื้อหา)
 │   ├── Articles (บทความ Board)
 │   ├── Categories (หมวดหมู่บทความ)
@@ -78,13 +77,12 @@ BO Dashboard
 - จำนวนผู้ใช้ใหม่วันนี้ / สัปดาห์นี้ / เดือนนี้ (พร้อม % เทียบช่วงก่อน)
 - จำนวน Active Users Today
 - จำนวนสินทรัพย์ที่เพิ่มใหม่วันนี้ แยกตามสถานะ (Sale / Show / Hide)
-- จำนวน Transactions (Offer Accepted) วันนี้
 - จำนวน Pending Reports (สินทรัพย์ที่ถูก Flag รอ Review)
 - บทความที่เผยแพร่ล่าสุด 3 รายการ
 - Watch Alerts ที่ Active ทั้งหมด (อ้างอิง Market Demand / Demand Overview)
 - กราฟแนวโน้ม User Growth (30 วัน)
 - Top 10 Brand ที่ค้นหามากที่สุด
-- Activity Feed ล่าสุด (User Registered, Asset Added, Offer Accepted, User Suspended)
+- Activity Feed ล่าสุด (User Registered, Asset Added, User Suspended)
 
 ---
 
@@ -371,7 +369,7 @@ Module นี้ครอบคลุม 3 หน้าย่อย:
 - Popular Keywords, Popular Filters by Dimension, Popular Filter Combinations
 - No-result Searches (แยกจาก Unmet Watch Alert)
 - Search/Filter Trend
-- Search Funnel (Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer)
+- Search Funnel (Search Submit → Result Click → Asset Detail Open → Watch Alert)
 - Aggregate only — ไม่มี user-identifying data
 
 #### Watch Alert List & Detail
@@ -394,7 +392,6 @@ Module นี้ครอบคลุม 3 หน้าย่อย:
 |---|---|
 | User Report | User Growth (รายวัน/สัปดาห์/เดือน), Active Users (DAU/MAU), Auth Method Breakdown (Email/Apple/Google), Retention Rate |
 | Asset Report | Assets by Status (Sale/Show/Hide/Sold), Assets by Brand, Avg Price, New Assets per Day |
-| Offer Report | Offers Made, Pending, Accepted, Rejected, Expired, Avg Offer Price, Avg Response Time |
 | Content Report | Article Views, Top 10 Articles, Category Performance, Avg Read Time |
 | Chat Report | Active Chat Rooms, Messages Sent, Attachments Sent, Reported Chats |
 | Asset Reported Comments Report | Total Comments, Reported Comments, Hidden Comments, Top Commented Assets |
@@ -486,13 +483,13 @@ FO ทำหน้าที่รับ confirmation, soft delete/deactivate acc
 |---|---|
 | Request Queue | ตารางคำขอลบบัญชี พร้อม filter ตาม status, grace period, date range |
 | Request Detail | ดู user, deletion timeline, dependency summary, Deletion Plan และ history |
-| System Auto Actions | ยกเลิก offer ที่ Pending + ปิดรายงานอัตโนมัติเมื่อ FO confirm สำเร็จ (ไม่มี block รอ Admin) |
+| System Auto Actions | ปิดรายงานอัตโนมัติเมื่อ FO confirm สำเร็จ (ไม่มี block รอ Admin) |
 | Restore / Reject Restore | แอดมินคืน/ปฏิเสธคืนบัญชีในช่วง grace period 30 วัน (มีเหตุผล + audit) |
 | 30-day Grace Period Tracking | ติดตาม grace period 30 วันก่อนระบบลบบัญชีอัตโนมัติ |
 | Auto Delete (Archive + Anonymize) | ครบ grace period ระบบลบบัญชีอัตโนมัติ — เก็บถาวร + ลบตัวตน ในขั้นเดียว |
 | Export Archive Report | Export รายงานตาม permission (future scope — ไม่แสดงใน prototype Phase 1) |
 
-**Audit actions:** `ACCOUNT_DELETION_REQUEST_CREATE`, `ACCOUNT_DELETION_SESSION_REVOKE`, `ACCOUNT_DELETION_OFFER_CANCEL_AUTO`, `ACCOUNT_DELETION_REPORT_CLOSE_AUTO`, `ACCOUNT_DELETION_DEPENDENCY_CHECK_AUTO`, `ACCOUNT_DELETION_RESTORE`, `ACCOUNT_DELETION_RESTORE_REJECT`, `ACCOUNT_DELETION_AUTO_DELETE`, `ACCOUNT_DELETION_EXPORT`, `ACCOUNT_DELETION_SENSITIVE_REVEAL`
+**Audit actions:** `ACCOUNT_DELETION_REQUEST_CREATE`, `ACCOUNT_DELETION_SESSION_REVOKE`, `ACCOUNT_DELETION_REPORT_CLOSE_AUTO`, `ACCOUNT_DELETION_DEPENDENCY_CHECK_AUTO`, `ACCOUNT_DELETION_RESTORE`, `ACCOUNT_DELETION_RESTORE_REJECT`, `ACCOUNT_DELETION_AUTO_DELETE`, `ACCOUNT_DELETION_EXPORT`, `ACCOUNT_DELETION_SENSITIVE_REVEAL`
 
 ---
 
@@ -568,4 +565,4 @@ BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The 
 | Suspend User | User Login ไม่ได้, เห็น Error Message |
 | Remove Asset | สินทรัพย์หายจาก Feed / Profile ของเจ้าของ |
 | Force Status → Hide | สินทรัพย์หายจาก Feed แต่เจ้าของยังเห็นใน Profile ตัวเอง |
-| Status → Sold | ไม่ใช่ Admin quick action; ต้องมาจาก Owner หรือ transaction/offer flow แล้วสินทรัพย์ย้ายไปแท็บ Sold ในโปรไฟล์เจ้าของ, ปุ่ม Edit หายไป เหลือแค่ Sale History |
+| Status → Sold | ไม่ใช่ Admin quick action; ต้องมาจาก Owner หรือ transaction flow แล้วสินทรัพย์ย้ายไปแท็บ Sold ในโปรไฟล์เจ้าของ, ปุ่ม Edit หายไป เหลือแค่ Sale History |

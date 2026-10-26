@@ -32,7 +32,7 @@ test.describe("AL-005: audit jump จาก Account Deletion → Audit Log", () 
 
   test("2. row ที่ไม่มี audit event แสดง —", async ({ page }) => {
     await openDeletionDetail(page, "DEL-033");
-    // "ยกเลิก session" / "ระงับบัญชี + ยกเลิก offer" ไม่มี event ใน auditLogData → —
+    // "ยกเลิก session" / "ระงับบัญชี + ปิดรายงานอัตโนมัติ" ไม่มี event ใน auditLogData → —
     const auditCells = await page.locator('.deletion-detail-page .history-table td[data-label="Audit"]').allTextContents();
     expect(auditCells).toContain("—");
   });
@@ -98,6 +98,9 @@ test.describe("AL-005: audit jump จาก Account Deletion → Audit Log", () 
     await page.evaluate(() => renderModule("audit"));
     await page.waitForSelector(".audit-log-mode", { timeout: 5000 });
     // AUD-88120 reference = RPT-USER (ไม่มีหน้า entity) → กรอง audit log ด้วย ref
+    // (event อยู่หน้า 2 ของ list — search ก่อนเพื่อให้ row แสดง)
+    await page.locator("#audit-search").fill("AUD-88120");
+    await page.waitForTimeout(300);
     await page.locator('.user-row[data-audit-event="AUD-88120"]').click();
     await page.waitForSelector(".audit-log-detail-modal", { timeout: 5000 });
     await page.locator(".audit-detail-ref-pill").click();

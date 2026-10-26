@@ -1,7 +1,7 @@
 # 06 BO Market Data Module
 
-**Version:** `BO-06-v1.0`  
-**Date:** 2026-08-10  
+**Version:** `BO-06-v1.1`  
+**Date:** 2026-10-26  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -19,7 +19,7 @@ Market Data ใน prototype เป็นเมนูอ่านข้อมู
 | --- | --- |
 | Module Name | BO Market Data |
 | Platform | Responsive Web Back Office |
-| Version | `BO-06-v1.0` |
+| Version | `BO-06-v1.1` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -70,7 +70,7 @@ Market Data เป็นเมนูสำหรับให้ Admin ตรว�
 - AI price prediction
 - Real-time external market feed pass-through ไป FO
 - Portfolio benchmark analytics แบบลึก
-- Payment, offer, escrow หรือ settlement data
+- Payment, escrow หรือ settlement data
 
 ## 4. Menu Structure
 

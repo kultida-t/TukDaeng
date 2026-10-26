@@ -21,7 +21,7 @@ Viewports: 390, 768, 1280, 1440px
 | 5 | Asset Management > Asset List + Asset Detail | destination/active/breadcrumb/back ถูก | PASS |
 | 6 | Asset Management > Reported Assets + Report Detail | destination/active/breadcrumb/back ถูก | PASS |
 | 7 | Asset Management > Reported Comments + Comment Report Detail | destination/active/breadcrumb/back ถูก | PASS |
-| 8 | Offer Management + Offer Detail | destination/active/breadcrumb/back ถูก | PASS |
+| 8 | Offer Management + Offer Detail | destination/active/breadcrumb/back ถูก | PASS — ถูกถอดออกจาก prototype แล้ว (26/10/2026) |
 | 9 | Content Management > Article List/Detail/Add/Edit | destination/active/breadcrumb/back ถูก | PASS |
 | 10 | Content Management > Categories | destination/active/breadcrumb/back ถูก | PASS |
 | 11 | Content Management > Reported Board + Board Report Detail | destination/active/breadcrumb/back ถูก | PASS |
@@ -50,7 +50,7 @@ Viewports: 390, 768, 1280, 1440px
 |---|---|---|---|
 | 1 | Phase 1 entry หลักทุก module | มี entry point ครบตาม baseline | PASS |
 | 2 | Directory / Reports & Analytics / Broadcast / System Templates / Chat moderation | ไม่เปิดใน Phase 1 ตามเอกสาร — ไม่ใช่ defect | PASS (Deferred) |
-| 3 | Offer write actions | ไม่เปิดใน Phase 1 | PASS (Deferred) |
+| 3 | Offer write actions | ไม่เปิดใน Phase 1 | PASS (Deferred) — ถูกถอดออกทั้งระบบพร้อม Offer Management (26/10/2026) |
 | 4 | Future module ไม่ถูกเปิดโดยไม่ตั้งใจ | ไม่มี entry หลุด | PASS |
 | 5 | Market Data scope (baseline เขียน management vs spec/prototype เป็น read-only) | บันทึกเป็น documentation inconsistency | PASS — ส่ง BOA-014/015 |
 | 6 | Admin Settings Phase 1 scope (baseline รวม security/system/retention/export vs spec ระบุ deferred) | บันทึกเป็น documentation inconsistency | PASS — ส่ง BOA-014/015 |
