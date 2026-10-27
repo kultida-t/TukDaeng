@@ -1,0 +1,68 @@
+TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,Note
+SETUP-01,0. Setup,—,"เปิด http://localhost:8901/index.html (หรือเปิดไฟล์ตรง) บน viewport 440×956",หน้าจอ prototype โหลดครบ เห็น bottom nav 5 แท็บ + ปุ่มลอย 1st/v2/theme,—,—,,ทุกเคสต่อไปนี้ใช้เฟรมนี้
+SETUP-02,0. Setup,เปิดแอปแล้ว,กดปุ่มลอย 1st (หรือลบ localStorage key fo_onboarded) เพื่อ reset onboarding,state รีเซ็ตเป็นค่าเริ่มต้น,—,—,,
+SETUP-03,0. Setup,ยังไม่ sign in (GUEST),ผ่าน/ปิด onboarding โดยไม่ sign in,เข้า feed แบบ guest — board browse ฟรี แต่ like/share จะถูก gate,GUEST,—,,ใช้กับเคส [GATE]
+SETUP-04,0. Setup,GUEST,sign in ด้วย demo@tukdaeng.com / Tukdaeng123,session = member (king.mr.fox),MEMBER,—,,actor หลักของ task นี้
+SETUP-05,0. Setup,MEMBER/GUEST ใน feed,แตะแท็บ Board (ไอคอนกระดานข่าว) บน bottom nav,"board home เปิดแบบ swap: bd-head + hero 5 slides + Latest Articles 10 แถว + caught-up note + bottom nav Board active",ANY,—,,entry หลักของทุกเคส
+SETUP-06,0. Setup,board home,"จำ anchors: hero = b1 Featured / b2 Market Watch / b3 Technical / b7 Rolex / b14 Watch Trends (feat 1–5)","latest 10 แถวเริ่ม b4 Patina → b11 Bracelet; รูปทุกใบ ./assets/thumbs/pN-p.jpg มีไฟล์จริง",ANY,—,,seed จาก BOARD L18150
+SETUP-07,0. Setup,board home,"จำ pill counts: All=15 Market Watch=1 Rolex=5 Technical=1 Collector=1 Guides=2 Industry=1; tags: Rolex5/Daytona1/Perpetual1/Titanium1/Patina1/GrandSeiko1","ทุก pill/chip มีผล ≥1 — ไม่มีทางทำให้ list ว่างผ่าน UI",ANY,—,,ใช้ตรวจ BRD-014..016/027
+SETUP-08,0. Setup,MEMBER เปิด board home,ทดสอบ drag บน desktop: กดซ้ายลากบน hero carousel / แถว pills,"carousel snap เข้า slide ถัดไป + suppress click ~120ms; pills scroll แล้วไม่ trigger filter ถ้าลาก >5px",MEMBER,—,,pointer events จริง ไม่ใช่ wheel
+SETUP-09,0. Setup,MEMBER เปิด article b1,devtools แก้ src ของ cover/img ให้ 404 (เช่น pX-p.jpg),"รูปเสียจำลองพร้อมเทส — ไม่มี onerror fallback ในโค้ด",MEMBER,—,,precondition ของ BRD-053
+FO-TC-BRD-001,2.1 Board home,GUEST feed,แตะแท็บ Board → ปิด → sign in แล้วแตะซ้ำ,"guest: board home เปิดฟรี ไม่มี Member Sheet; member: board home swap ไม่สไลด์",GUEST/MEMBER,High,,navgo board ไม่ gate
+FO-TC-BRD-002,2.1 Board home,MEMBER board home,อ่านหน้าทั้งหมด,"bd-head (burger/brand/search) + hero + Latest Articles + View all + 10 แถว + caught-up + Board nav active",MEMBER,High,,boardHomeHTML L18312
+FO-TC-BRD-003,2.1 Board home,MEMBER board home,อ่าน hero slide 1,"tag แดง FEATURED + title 2 บรรทัด + sub 2 บรรทัด + ปุ่ม Read more + dots 5 จุดแรก active",MEMBER,Medium,,tag = cat EN เสมอ
+FO-TC-BRD-004,2.1 Board home,MEMBER board home,แตะตัว slide (ไม่ใช่ปุ่ม),boardart:b1 สไลด์ทับจากขวา,MEMBER,High,,data-bdart บน .bd-slide
+FO-TC-BRD-005,2.1 Board home,MEMBER board home,แตะปุ่ม Read more บน slide 2,article b2 เปิด,MEMBER,Medium,,bubble data-bdart เดียวกัน
+FO-TC-BRD-006,2.1 Board home,MEMBER board home,ลาก hero ซ้าย >6px แล้วปล่อย,"snap ไป slide ถัดไป + dot ย้าย + ไม่เปิด article (drag suppress)",MEMBER,High,,bdDidDrag
+FO-TC-BRD-007,2.1 Board home,MEMBER board home,แตะ dot ที่ 4,carousel scroll ไป slide 4 + dot 4 active,MEMBER,Medium,,data-bddot → bdGoSlide
+FO-TC-BRD-008,2.1 Board home,MEMBER board home,ลากเลยขอบซ้าย/ขวาสุด,snap กลับขอบ — 5 slides ไม่มี loop/autoplay,MEMBER,Low,,BD_FEAT_MAX dead constant
+FO-TC-BRD-009,2.1 Board home,MEMBER board home,scroll ลงผ่าน hero,"bd-head pinned glass (sticky ไม่หลบ) + bottom nav คงที่",MEMBER,Medium,,bdScrollHandler ว่าง
+FO-TC-BRD-010,2.1 Board home,MEMBER board home,อ่านแถวแรกของ Latest,"b4 Patina: thumb + cat COLLECTOR แดง + title clamp 2 + meta 5 min read · 3 hours ago — ไม่มี likes",MEMBER,Medium,,bdRowHTML
+FO-TC-BRD-011,2.1 Board home,MEMBER board home,แตะแถว b9,boardart:b9 เปิดทับ,MEMBER,High,,data-bdart บน .bd-row
+FO-TC-BRD-012,2.1 Board home,MEMBER board home,เลื่อนสุด list,"YOU'RE ALL CAUGHT UP (EN hardcode) — ไม่มี pagination/infinite scroll",MEMBER,Low,,bd-end-note
+FO-TC-BRD-013,2.2 boardall,MEMBER board home,กด View all,"boardall: crumb 🏠›Latest Articles + 7 pills (All active) + 15 แถวรวม featured + end note",MEMBER,High,,bdFilterCat reset All
+FO-TC-BRD-014,2.2 boardall,MEMBER boardall,แตะ pill Rolex,"list เหลือ 5 แถว (b7,b8,b9,b10,b11 — b8 โดน substring cat) + pill active + center",MEMBER,High,,substring cat+title
+FO-TC-BRD-015,2.2 boardall,MEMBER boardall,แตะ pill Guides,"2 แถว: b13 + b15 (Watch Guides substring)",MEMBER,Medium,,partial-cat match
+FO-TC-BRD-016,2.2 boardall,MEMBER boardall,ไล่ pill ที่เหลือ,"Market Watch→1(b2) Technical→1(b3) Collector→1(b4) Industry→1(b12) All→15 — ไม่มี pill ว่าง",MEMBER,Medium,,empty state unreachable
+FO-TC-BRD-017,2.2 boardall,MEMBER boardall,ลากแถว pills แล้วปล่อยบน pill,"แถว scroll ตาม; ลาก >5px ไม่ trigger filter; <5px = คลิก",MEMBER,Low,,bdPillsDidDrag
+FO-TC-BRD-018,2.2 bdmenu sheet,MEMBER board home,กด burger บน bd-head,"Categories sheet (pm): title + 7 rows + การ์ด Close ล่าง + backdrop",MEMBER,High,,burger = categories ไม่ใช่ app drawer
+FO-TC-BRD-019,2.2 bdmenu sheet,Categories sheet เปิด,เลือก Technical,"sheet ปิด + boardall push + pill Technical active + list b3",MEMBER,High,,data-bdmenu-cat
+FO-TC-BRD-020,2.2 bdmenu sheet,Categories sheet เปิด,กด Close / แตะ backdrop,ปิด sheet อยู่ board home ไม่ nav,MEMBER,Medium,,data-bdcancel-sheet
+FO-TC-BRD-021,2.2 bdmenu sheet,GUEST board home,เปิด burger → เลือก Rolex,"ไม่ gate: sheet เปิด + filter ทำงานครบ (browse free)",GUEST,Medium,,data-bdmenu* ไม่อยู่ใน gate sel
+FO-TC-BRD-022,2.2 boardall,MEMBER boardall filter Rolex,เปิด b9 → back,"filter ยัง Rolex + pill active แต่ list scroll รีเซ็ตบนสุด + pills ไม่ re-center",MEMBER,Medium,,GAP-BRD-09 — renderSub rebuild
+FO-TC-BRD-023,2.3 boardsearch,MEMBER board home,กด search icon,"boardsearch push: sbar autofocus + crumb + Popular Topics + 6 chips — ไม่มีปุ่ม X",MEMBER,High,,data-bdsearch
+FO-TC-BRD-024,2.3 boardsearch,MEMBER boardsearch,พิมพ์ rolex ทีละตัว,"live filter → 5 results for “rolex” + cards b7,b8,b9,b10,b11 (case-insensitive)",MEMBER,High,,.bd-q input L20323
+FO-TC-BRD-025,2.3 boardsearch,MEMBER boardsearch มีผล,อ่าน result card,"bd-card: รูป 16:9 + cat + title เต็มไม่ clamp + meta min read · ago • N likes",MEMBER,Medium,,ต่างจาก bd-row
+FO-TC-BRD-026,2.3 boardsearch,MEMBER boardsearch,พิมพ์ zzzz,"0 results + ไอคอนกากบาท + No results found for “zzzz” + hint keywords",MEMBER,High,,bd-none localized
+FO-TC-BRD-027,2.3 boardsearch,MEMBER boardsearch,แตะ chip Patina,"q=Patina + 1 result for “Patina” (singular) + card b4",MEMBER,Medium,,singular/plural
+FO-TC-BRD-028,2.3 boardsearch,MEMBER boardsearch พิมพ์ค้าง,ลบจนหมด,กลับ Popular Topics + chips โดยไม่ต้อง back,MEMBER,Medium,,q ว่าง → bd-sugg
+FO-TC-BRD-029,2.3 boardsearch,MEMBER boardsearch พิมพ์ค้าง,หาปุ่ม X ล้าง,"ไม่มี X เลย — data-bdclear dead UI (bdQ รีเซ็ตทุก entry)",MEMBER,Low,,GAP-BRD-03
+FO-TC-BRD-030,2.3 boardsearch,MEMBER boardsearch พิมพ์ค้าง,กด Enter,ไม่มีอะไรเพิ่ม — ไม่มี submit,MEMBER,Low,,live filter only
+FO-TC-BRD-031,2.3 boardsearch,MEMBER boardsearch,พิมพ์ leap (คำใน body b1),0 results — search ไม่ค้นเนื้อบทความ,MEMBER,Low,,title+cat+sub only
+FO-TC-BRD-032,2.3 boardsearch,MEMBER boardsearch q=rolex,เปิด card b9 → back → เข้า search ใหม่ผ่าน icon,"back: q+ผลยังอยู่ (bdQ persist); re-enter ผ่าน icon: reset เป็น chips",MEMBER,Medium,,bdQ global persist
+FO-TC-BRD-033,2.3 boardsearch,GUEST board home,เข้า search → พิมพ์ + เปิดผล,ใช้ครบฟรีไม่ gate เหมือน member,GUEST,Medium,,browse-free
+FO-TC-BRD-034,2.4 article,MEMBER board home,เปิด b1 อ่านทั้งหน้า,"bd-dnav (back+like/share pills) pinned + cat FEATURED + h1 + author row (Tuk Daeng/Oct 28, 2024/♥12) + cover + callout + 3 ย่อหน้า + 4 tags — ไม่มี bottom nav",MEMBER,High,,boardArticleHTML L18398
+FO-TC-BRD-035,2.4 article,MEMBER,เทียบเนื้อ b1 vs b9,"3 ย่อหน้าเหมือนกันทุกเรื่อง (BD_BODY shared) + Author hardcode Tuk Daeng",MEMBER,Low,,GAP-BRD-10/11
+FO-TC-BRD-036,2.4 article,MEMBER,เปิด b8,"cat FEATURE MORE ROLEX COLLECTIONS ยาว wrap + tag #FeatureMoreRolexCollections",MEMBER,Low,,edge ชื่อ cat ยาว
+FO-TC-BRD-037,2.4 article,MEMBER article,scroll ลงกลางบทความ → กด back pill,"nav pinned glass; back → สไลด์ออกขวากลับหน้าก่อน",MEMBER,Medium,,sticky bd-dnav
+FO-TC-BRD-038,2.4 article,MEMBER,เปิด b14 (15 min read) อ่านเนื้อ,เนื้อยัง 3 ย่อหน้า — meta 15 min ไม่สัมพันธ์ความยาว,MEMBER,Low,,GAP-BRD-12
+FO-TC-BRD-039,2.4 article,MEMBER,ตรวจ boardart:id ไม่มีใน seed (เชิงโค้ด),"Article not found + no longer available — unreachable ผ่าน UI",MEMBER,Low,,chEmptyHTML branch
+FO-TC-BRD-040,2.4 article,MEMBER article,หาปุ่มอื่น (more/save/comment/footer),"มีแค่ back/like/share ลอยบน — ไม่มี more/save/footer; bd-dfoot-sub ไม่ render",MEMBER,Medium,,dead wiring ร่วม
+FO-TC-BRD-041,2.5 like/save,GUEST+MEMBER article b1,กด ♥ (member กดซ้ำ) / guest กด ♥,"member: pill on + count 12→13 / กดซ้ำกลับ 12; guest: Member Sheet ไม่ like",MEMBER/GUEST,High,,[GATE] data-bdlike
+FO-TC-BRD-042,2.5 like/save,MEMBER like b1 แล้ว,back → เปิด b1 ใหม่ → search perpetual,"like ค้าง on+13 + search card ขึ้น 13 likes (a.likes ตัวเดียวกัน)",MEMBER,Medium,,persist session
+FO-TC-BRD-043,2.5 like/save,MEMBER like แล้ว,ดูตำแหน่ง count,"ปุ่ม like ไม่มีตัวเลข — count เห็นเฉพาะ author row + search card meta",MEMBER,Low,,GAP-BRD-14
+FO-TC-BRD-044,2.5 like/save,GUEST+MEMBER article,กด ↗ share,"member: share sheet (search+friends+apps) ขึ้น generic; guest: Member Sheet",MEMBER/GUEST,High,,[GATE] data-bdshare
+FO-TC-BRD-045,2.5 like/save,MEMBER share sheet เปิด,กด Copy link → เพื่อน → ปิด backdrop,"Copy → toast; เพื่อน → Sent toast; backdrop ปิด (mechanics FO-TEST-07)",MEMBER,Medium,,shared handlers
+FO-TC-BRD-046,2.5 like/save,GUEST กด ♥ แล้ว,Sign in สำเร็จ → ดู article,"กลับ article เดิม แต่ like ไม่ resume — ต้องกดใหม่",GUEST→MEMBER,Medium,,obGate ไม่มี pending action
+FO-TC-BRD-047,2.5 like/save,MEMBER ทุก board page,หา entry save article,"ไม่มีปุ่ม save เลย — data-bdsave ไม่ render + bdmore ไม่มี trigger → a.saved เข้าไม่ได้",MEMBER,Medium,,GAP-BRD-02 dead
+FO-TC-BRD-048,2.5 like/save,MEMBER article+list,หา ... more menu,"ไม่มี — sheet bdmore (Share/Copy/Save/Report) wire แต่ไม่มี trigger → Report article ก็ทำไม่ได้",MEMBER,Medium,,GAP-BRD-01 dead wiring
+FO-TC-BRD-049,2.6 nav/edge,MEMBER board home,board → View all → b9 → back → back,"boardall(filter ค้าง) → board home; home ไม่มี back (root) — ออกด้วย bottom nav",MEMBER,High,,rpPush/rpBack chain
+FO-TC-BRD-050,2.6 nav/edge,MEMBER board home scroll กลาง list,เปิด b5 → back,"scroll รีเซ็ตบนสุด + hero กลับ slide 1 + dot reset — ไม่ restore ตำแหน่ง",MEMBER,High,,GAP-BRD-09 คาด fail ถ้า spec ขอ restore
+FO-TC-BRD-051,2.6 nav/edge,MEMBER boardall filter Rolex,แตะแท็บ Board ซ้ำ,"swap กลับ board home (stack reset + bdQ ล้าง) แต่ bdFilterCat ยัง Rolex",MEMBER,Medium,,navgo ล้างเฉพาะ bdQ
+FO-TC-BRD-052,2.6 nav/edge,GUEST board home,เปิด b3 อ่านครบ scroll สุด,ไม่เจอ gate เลยตลอดหน้า (browse free ยกเว้น like/share),GUEST,High,,browse-free rule
+FO-TC-BRD-053,2.6 nav/edge,MEMBER SETUP-09 (รูปเสีย),เปิด article + ดู list + hero,"ไม่มี fallback: img = broken icon; hero bg = พื้นดำ+gradient ยังอ่านได้",MEMBER,Low,,edge รูปเสีย
+FO-TC-BRD-054,2.6 nav/edge,MEMBER,เทียบ title ยาว b7 บน row/hero/search card,"row+hero clamp 2; search card ไม่ clamp แสดงเต็ม (inconsistency)",MEMBER,Low,,clamp diff
+FO-TC-BRD-055,2.6 nav/edge,MEMBER board home,แตะ card/like รัว ๆ,"card → rpPush ซ้อน boardart หลายชั้น (back หลายครั้ง); like → toggle ตามคลิก ไม่ debounce",MEMBER,Low,,edge กดรัว
+FO-TC-BRD-056,2.6 nav/edge,MEMBER TH mode,เปิด board ทุกหน้า,"localized: กระดานข่าว/บทความล่าสุด/ดูทั้งหมด/อ่านต่อ/หัวข้อยอดนิยม/ผลลัพธ์; EN hardcode: cat+pills/min read/likes/caught-up/Author/Date/tags/toast",MEMBER,Medium,,GAP-BRD-13
+FO-TC-BRD-057,2.6 nav/edge,MEMBER dark theme,เปิด board ทุกหน้า + article,"bg #0e1014 + pills/pill-btn dark + glass เปลี่ยน; hero ไม่เปลี่ยน; article อ่านได้",MEMBER,Medium,,dark CSS ครบ
+FO-TC-BRD-058,2.6 nav/edge,MEMBER article,สังเกต bottom nav + วิธีออก,"ไม่มี bottom nav บน article — ออกได้แค่ back pill; หน้าอื่นมีครบ Board active",MEMBER,Medium,,GAP-BRD-15

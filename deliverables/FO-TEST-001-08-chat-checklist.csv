@@ -1,0 +1,117 @@
+TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,Note
+SETUP-01,0. Setup,—,เปิด http://localhost:8901/index.html (หรือเปิดไฟล์ตรง) บน viewport 440×956,หน้าจอ prototype โหลดครบ เห็น bottom nav 5 แท็บ + ปุ่มลอย 1st/v2/theme,—,—,,ทุกเคสต่อไปนี้ใช้เฟรมนี้
+SETUP-02,0. Setup,เปิดแอปแล้ว,กดปุ่มลอย 1st (หรือลบ localStorage key fo_onboarded) เพื่อ reset onboarding,state รีเซ็ตเป็นค่าเริ่มต้น,—,—,,
+SETUP-03,0. Setup,ยังไม่ sign in (GUEST),ผ่าน/ปิด onboarding โดยไม่ sign in,เข้า feed แบบ guest — แท็บ Chat จะถูก gate,GUEST,—,,ใช้กับเคส [GATE]
+SETUP-04,0. Setup,GUEST,sign in ด้วย demo@tukdaeng.com / Tukdaeng123,session = member (king.mr.fox) — chat มี seed threads ~14+ แถว,MEMBER,—,,actor หลักของ task นี้
+SETUP-05,0. Setup,—,สมัครบัญชีใหม่ผ่าน onboarding (session = new) แล้วแตะแท็บ Chat,chat list ว่าง "No chats yet" — ใช้เคส empty state,NEW,—,,guest/สมาชิกใหม่ไม่มี seed chat
+SETUP-06,0. Setup,MEMBER ใน feed,เลื่อนหา sale card แล้วดูปุ่ม Ask (💬 Ask/สอบถาม) ใต้รูป,เห็นปุ่ม Ask บนการ์ด — ใช้เปิดห้อง chat เข้า room โดยตรง,MEMBER,—,,Ask entry หลัก
+SETUP-07,0. Setup,MEMBER เปิด chat list,ทดสอบ swipe บน desktop: กดซ้ายลากบนแถวซ้าย/ขวา >40px,แถวเลื่อน reveal ปุ่ม (pointer events จริง — ไม่ใช่ long-press),MEMBER,—,,threshold ±40px / overdrag rubber-band / suppress click 250ms
+SETUP-08,0. Setup,MEMBER เปิดห้อง t2 (Watch 777),ในห้องกด ☰ → tile Block → กด Block ใน sheet,thread ถูก block — ใช้เป็นพื้นฐานเคส blocked bar/Unblock badge,MEMBER,—,,precondition ของ CHAT-058..060/103
+SETUP-09,0. Setup,MEMBER เปิด chat list,"จำ anchors: M1=Rolex Datejust 36 (own,p4) M2=Breguet (own,p5) asked p1=Watch 777 p2=the watch p6=neng_mua","M1/M2 → chatitem (multi threads); p1/p2/p6 → เข้าห้องตรง; t5 gmt.bkk=muted; t1–t4=pinned",MEMBER,—,,seed จาก chatInit L17917–17945
+FO-TC-CHAT-001,2.1 Entries,GUEST feed,แตะแท็บ Chat บน bottom nav → ปิด Member Sheet → sign in → แตะซ้ำ,"guest: Member Sheet Join TukDaeng (list ไม่เปิด); member: chat list เปิดแบบ swap ไม่สไลด์",GUEST/MEMBER,High,,[GATE] navgo→chat
+FO-TC-CHAT-002,2.1 Entries,GUEST feed,แตะปุ่ม Ask บน sale card → ปิด sheet → member ทำซ้ำ,"guest: Member Sheet; member: chatroom เปิด",GUEST/MEMBER,High,,[GATE] .ask-pill
+FO-TC-CHAT-003,2.1 Entries,MEMBER feed โพสต์ที่ยังไม่เคยคุย,แตะ Ask บน card,"chatroom เปิด: head=seller / item card ปักบน / divider Today / ไม่มี bubble / input prefill quick msg / send enabled",MEMBER,High,,draft thread ใหม่
+FO-TC-CHAT-004,2.1 Entries,MEMBER มี thread Watch 777 (p1) อยู่แล้ว,แตะ Ask บน card p1,เปิดห้องเดิม msgs ครบ ไม่สร้างซ้ำ,MEMBER,High,,item-scoped reuse (user+item.id)
+FO-TC-CHAT-005,2.1 Entries,MEMBER เห็นโพสต์ของตัวเองใน feed,แตะ Ask บน own card,toast "This is your own listing" — ไม่เปิดห้อง,OWNER,Medium,,own-listing guard
+FO-TC-CHAT-006,2.1 Entries,MEMBER block seller X แล้ว + detail ของ X เปิดค้างไว้,แตะ Ask จาก detail นั้น,toast "Cannot message a blocked account",MEMBER,Medium,,blocked-seller guard
+FO-TC-CHAT-007,2.1 Entries,MEMBER detail p1 + detail p2/p5/p6 (ask=bubble),"กด Ask Seller บน p1 / แตะ 💬 chat-fab บน p2",ทั้งคู่เปิด chatroom — chat-pop inline ไม่เปิด (chatClick กิน .chat-fab ก่อน),MEMBER,High,,GAP-CHAT-02
+FO-TC-CHAT-008,2.1 Entries,MEMBER เปิดห้องจาก Ask บน detail,กด back ในห้อง,กลับ feed ไม่ใช่ detail (openSub reset stack),MEMBER,Medium,,GAP-CHAT-07
+FO-TC-CHAT-009,2.1 Entries,MEMBER เปิด public profile คนอื่น,กดปุ่ม Chat (.pf-msg),toast "Open a listing to chat with this seller" — ไม่เปิดห้อง,MEMBER,Medium,,profile Chat = dead-end hint
+FO-TC-CHAT-010,2.1 Entries,MEMBER Ask โพสต์ใหม่แล้วอยู่ในห้อง draft,back ออกโดยไม่ส่ง → เปิด chat list → Ask โพสต์เดิมอีกครั้ง,"ไม่มีแถวใหม่ใน list; Ask ซ้ำ → ห้องเดิมเปิดพร้อม prefill/msgs ค้าง",MEMBER,High,,draft ไม่เข้า list จนกว่าจะส่ง text
+FO-TC-CHAT-011,2.2 User view,MEMBER แตะแท็บ Chat,อ่านหน้า list,"tabs แชท/สินค้า + ⚙ + ช่อง Search + rows + bottom nav ยังอยู่",MEMBER,High,,
+FO-TC-CHAT-012,2.2 User view,MEMBER ใน chat list,อ่านแต่ละแถว,"pinned 4 แถวก่อน + pin badge; preview 'You:' เมื่อส่งเองล่าสุด; เวลา HH:MM(วันนี้)/ชื่อวัน; unread pill; t5 มีไอคอน mute",MEMBER,High,,chRowHTML
+FO-TC-CHAT-013,2.2 User view,MEMBER chat list มี unread รวม ~11,จำ badge → เข้าห้อง t2 (unread 1) → ออกมา,badge ลด 1 ทันที (unread ถูกเคลียร์ + chBadgeSync),MEMBER,High,,
+FO-TC-CHAT-014,2.2 User view,MEMBER chat list,แตะแถว t1 → ดูทางเข้า → กด back,ห้องสไลด์เข้าขวา; back สไลด์ออกขวากลับ list state เดิม,MEMBER,High,,rpPush/rpBack
+FO-TC-CHAT-015,2.2 User view,MEMBER chat list,"พิมพ์ watch → ลบ → พิมพ์ zzz","filter สดครอบ user/item/msg; zzz → 'No chats found' + hint; ล้าง → ครบ",MEMBER,High,,.ch-q live
+FO-TC-CHAT-016,2.2 User view,MEMBER chat list,long-press แถว / right-click,ไม่มีอะไรเกิด — ไม่มี long-press handler (actions = swipe เท่านั้น),MEMBER,Low,,edge: menu ไม่มี
+FO-TC-CHAT-017,2.2 User view,MEMBER chat list,ลากแถวขวา >40px ปล่อย / ลาก <40px,reveal pin📌+mute🔕 วงกลมซ้าย / snap กลับ / overdrag rubber-band,MEMBER,High,,swipe right
+FO-TC-CHAT-018,2.2 User view,MEMBER chat list,ลากแถวซ้าย >40px ปล่อย,reveal ปุ่ม Hide + Delete ขวา,MEMBER,High,,swipe left
+FO-TC-CHAT-019,2.2 User view,MEMBER แถว reveal อยู่,แตะตัวแถว (ไม่ใช่ปุ่ม),reveal หุบ — ไม่เข้าห้อง,MEMBER,Medium,,
+FO-TC-CHAT-020,2.2 User view,MEMBER แถว reveal อยู่,แตะพื้นว่างนอกแถว,reveal หุบกลับ,MEMBER,Medium,,
+FO-TC-CHAT-021,2.2 User view,MEMBER แถว A reveal,เริ่มลากแถว B,A หุบอัตโนมัติ — reveal ได้ทีละแถว,MEMBER,Low,,
+FO-TC-CHAT-022,2.2 User view,MEMBER chat list,ลากซ้ายช้า ๆ ปล่อยที่ <40px แล้วแตะแถวต่อ,snap กลับ + แตะเข้าห้องได้ปกติ (suppress เฉพาะตอน lock),MEMBER,Low,,250ms suppress
+FO-TC-CHAT-023,2.2 User view,MEMBER แถว reveal ขวา,กด 📌 pin,toast 'ปักหมุดแชทแล้ว' + แถวขึ้นกลุ่ม pinned + pin badge บน avatar,MEMBER,High,,chact=pin
+FO-TC-CHAT-024,2.2 User view,MEMBER แถว t1 (pinned) reveal,กด pin ซ้ำ,unpin — toast 'ยกเลิกการปักหมุดแล้ว' + badge หาย,MEMBER,Medium,,
+FO-TC-CHAT-025,2.2 User view,MEMBER แถว reveal ขวา,กด 🔕 mute / กดซ้ำ,toast 'ปิดการแจ้งเตือนแล้ว' + mute icon ข้างชื่อ / unmute กลับ,MEMBER,Medium,,chact=mute
+FO-TC-CHAT-026,2.2 User view,MEMBER แถว reveal ซ้าย,กด Hide → อ่าน modal,"ch-modal กลางจอ EN: 'Hiding chats doesn't delete their messages.' + Cancel/Hide",MEMBER,High,,openChatHideConfirm
+FO-TC-CHAT-027,2.2 User view,modal Hide เปิดอยู่,กด Cancel / แตะ backdrop,modal ปิด + reveal หุบ — แถวยังอยู่ ไม่มี toast,MEMBER,Medium,,
+FO-TC-CHAT-028,2.2 User view,modal Hide เปิดอยู่,กด Hide,toast 'ซ่อนแชทแล้ว' + แถวหายจาก list (thread ยังอยู่ใน data),MEMBER,High,,toast TH vs modal EN — i18n gap
+FO-TC-CHAT-029,2.2 User view,MEMBER แถว reveal ซ้าย,กด Delete → modal → Delete,"modal 'Are you sure you want to delete this chat?' → toast 'ลบแชทเรียบร้อยแล้ว' + thread ถูกลบถาวร",MEMBER,High,,splice + msgs ล้าง
+FO-TC-CHAT-030,2.2 User view,MEMBER ซ่อน thread the watch (p2) แล้ว,กลับ feed → Ask โพสต์ p2 อีกครั้ง,unhide อัตโนมัติ — ห้องเปิด msgs ครบ (delete แล้ว Ask = ห้องใหม่ว่าง),MEMBER,Medium,,chatQuickAsk unhide path
+FO-TC-CHAT-031,2.2 User view,MEMBER chat list,hide แถว chrono.th (unread=1 ของ own item M1) → ดู badge,"badge ยังนับ unread ห้องที่ hidden — เคลียร์ไม่ได้ผ่าน UI (คาด fail)",MEMBER,Low,,GAP-CHAT-06
+FO-TC-CHAT-032,2.3 Item view,MEMBER chat list,แตะแท็บ 'สินค้า/Items',"item view: 'Your listings' (M1,M2) + 'Items you asked about' (p1,p2,p6)",MEMBER,High,,
+FO-TC-CHAT-033,2.3 Item view,MEMBER item view,อ่าน item row,"thumb+cap + 'price · N chats'(mine) หรือ 'price · ข้อความล่าสุด'(asked) + เวลา + unread รวม",MEMBER,Medium,,chItemRowHTML
+FO-TC-CHAT-034,2.3 Item view,MEMBER item view,แตะ item p1 (Watch 777 thread เดียว),เข้าห้องตรงเลย ไม่ผ่าน chatitem,MEMBER,High,,isDirectRoom
+FO-TC-CHAT-035,2.3 Item view,MEMBER item view,แตะ item M1 (own multi threads),"chatitem:mi1: head 'Item chats' + back + item card 'Your listing · N chats' + search + thread rows",OWNER,High,,chatitem:id
+FO-TC-CHAT-036,2.3 Item view,OWNER ใน chatitem:mi1,ลากแถวซ้าย/ขวา + แตะแถว,swipe pin/mute/hide/del ทำงานเหมือน list หลัก; tap → ห้อง,OWNER,Medium,,ch-row-wrap เดียวกัน
+FO-TC-CHAT-037,2.3 Item view,OWNER ใน chatitem:mi1,พิมพ์ chrono ในช่อง search,filter สดเฉพาะ item นี้; ไม่เจอ → 'No chats found',OWNER,Medium,,.ch-iq live
+FO-TC-CHAT-038,2.3 Item view,OWNER ใน chatitem:mi1,กด back,กลับ chat list — iq ค้าง (reset เฉพาะ navgo),MEMBER,Medium,,
+FO-TC-CHAT-039,2.3 Item view,MEMBER item view,แตะแท็บ 'สินค้า/Items' ซ้ำ,"filter popover: 'Filter items by' + 3 แถว (All✓/Your listings/asked) + backdrop",MEMBER,High,,filterMenuOpen
+FO-TC-CHAT-040,2.3 Item view,popover เปิดอยู่,"เลือก 'Your listings' แล้ว 'Items you asked about'","เหลือเฉพาะกลุ่มนั้น + check ย้าย + popover ปิด; กลุ่มว่าง → 'No listings found'/'No asked items found'",MEMBER,High,,data-chitemfilter
+FO-TC-CHAT-041,2.3 Item view,popover เปิดอยู่,แตะ backdrop / แตะใน popover (ไม่ใช่แถว),backdrop ปิด / แตะใน popover ไม่ทำอะไร,MEMBER,Low,,
+FO-TC-CHAT-042,2.3 Item view,MEMBER item view (filter ไว้),แตะแท็บ 'แชท/Chats',กลับ user view + q ล้าง + itemFilter รีเซ็ต all,MEMBER,Medium,,seg handler
+FO-TC-CHAT-043,2.3 Item view,MEMBER อยู่ chat (ค้นค้างไว้),แตะ nav Feed → แตะ Chat กลับ,list กลับ default view + q/iq ว่าง (reset ทุก navgo),MEMBER,Medium,,GAP-CHAT-16
+FO-TC-CHAT-044,2.3 Item view,OWNER ใน chatitem เหลือ thread เดียวของ item,ลบ thread นั้น / ซ่อน thread นั้น,"ลบ → หน้า 'Item not found' (group หาย); ซ่อน → การ์ดอยู่ + 'No chats found' (ผลต่างกัน)",OWNER,Low,,GAP-CHAT-18
+FO-TC-CHAT-045,2.4 Room,MEMBER เปิดห้อง t2,"อ่านโครงสร้าง: head/body/post card","back+ชื่อ+🔍+☰; divider Today; post ref card (รูป+scrim owner+title/price); bubbles them ซ้าย me ขวา",MEMBER,High,,chatRoomHTML
+FO-TC-CHAT-046,2.4 Room,MEMBER ในห้อง t2,อ่าน bubble groups + meta,"them ติดกัน → avatar เฉพาะ bubble แรก; meta time ข้าง bubble; me อันสุดท้ายโชว์ Read/Sent เท่านั้น",MEMBER,Medium,,prev/lastMe
+FO-TC-CHAT-047,2.4 Room,MEMBER ในห้อง input ว่าง,"พิมพ์ → ลบ → พิมพ์ช่องว่างล้วน","พิมพ์ → send enabled; ลบ/ว่าง → send disabled (trim)",MEMBER,High,,.ch-input live
+FO-TC-CHAT-048,2.4 Room,MEMBER ในห้อง,พิมพ์ 'สวัสดีครับ' → กด send,"bubble ใหม่ + meta Sent + เวลา 09:41 (fixed) + input ล้าง + focus กลับ; list: แถวขึ้นบน + 'You:'",MEMBER,High,,chSend unshift
+FO-TC-CHAT-049,2.4 Room,MEMBER ในห้อง,พิมพ์ → กด Enter,ส่งเหมือนกด send,MEMBER,Medium,,keydown handler
+FO-TC-CHAT-050,2.4 Room,MEMBER ในห้องพิมพ์ค้าง,back → เข้าห้องเดิม,input prefill draft เดิม + send enabled,MEMBER,Medium,,t.draft persist
+FO-TC-CHAT-051,2.4 Room,MEMBER ในห้อง,ส่งข้อความยาวมาก/อีโมจิ/ไทยผสม,bubble wrap ไม่ล้น ส่งได้ปกติ,MEMBER,Low,,edge ข้อความยาว
+FO-TC-CHAT-052,2.4 Room,MEMBER ในห้อง,กดการ์ด item ปักหัว → กด detail-back,Post Detail เปิดทับห้อง / back กลับห้องครบ,MEMBER,High,,data-chgo=post
+FO-TC-CHAT-053,2.4 Room,OWNER ลบโพสต์ p4 ไปแล้ว,เปิดห้อง M1 (ผูก p4) → กดการ์ด,toast "Listing detail isn't in this prototype yet",OWNER,Medium,,edge post deleted
+FO-TC-CHAT-054,2.4 Room,MEMBER ในห้อง,แตะชื่อ user ใน head,profile sub สไลด์ทับ; back กลับห้อง,MEMBER,Medium,,data-pf-user
+FO-TC-CHAT-055,2.4 Room,MEMBER ในห้อง,"แตะ 🔍 → พิมพ์ ลด → X ล้าง → X ปิด","head เป็นกล่องค้นหา; match มี mark ไฮไลต์ ไม่ match จาง (media จางเสมอ); ล้าง/ปิด → ปกติ",MEMBER,High,,room search
+FO-TC-CHAT-056,2.4 Room,MEMBER อยู่ใน search mode,ดูด้านล่างห้อง,composer หาย — ส่งข้อความไม่ได้จนออกจาก search,MEMBER,Low,,searching ternary
+FO-TC-CHAT-057,2.4 Room,MEMBER เปิดห้อง t1 (msgs เยอะ),ดูตำแหน่ง scroll,scroll ลงล่างสุดอัตโนมัติ,MEMBER,Low,,chPostRender
+FO-TC-CHAT-058,2.4 Room,MEMBER block Watch 777 แล้ว (SETUP-08),เปิดห้อง t2,"composer กลายเป็น blocked bar: 🚫 'You blocked this account' + 'You can't message or call them unless you unblock them.' + Unblock",MEMBER,High,,isBlk → blocked bar
+FO-TC-CHAT-059,2.4 Room,MEMBER อยู่ในห้อง blocked,กด Unblock → dlg → Unblock,"dlg 'Unblock X?' → toast 'Unblocked' + composer กลับ + badge หาย",MEMBER,High,,unblock-room flow
+FO-TC-CHAT-060,2.4 Room,MEMBER อยู่ในห้อง blocked,หาทางส่งข้อความ/รูป,ไม่มี input/send/ปุ่ม+ ให้กด — ส่งไม่ได้ (chSend กัน blocked ในโค้ดอีกชั้น),MEMBER,Low,,defense-in-depth
+FO-TC-CHAT-061,2.4 Room,— (state เข้าถึงไม่ได้ผ่าน UI),ตรวจเชิงโค้ดว่า chGet=null → render อะไร,"'Chat not found' + 'This conversation is no longer available.' — mark unreachable (delete pop ห้องทิ้งให้)",MEMBER,Low,,code-only state
+FO-TC-CHAT-062,2.5 Attach,MEMBER ในห้อง,กดปุ่ม + ใน composer,"ch-attach-sheet เลื่อนขึ้น: handle + 'Photos & videos' + X + grid รูป ≤8 (overlay แยกจาก .comment-sheet)",MEMBER,High,,openChatAttachSheet
+FO-TC-CHAT-063,2.5 Attach,attach sheet เปิด,แตะรูปหนึ่ง,ส่งทันทีเป็น media bubble + sheet ปิด + thread ขึ้นบนสุด,MEMBER,High,,data-chsendmedia
+FO-TC-CHAT-064,2.5 Attach,ส่งรูปแล้ว,เปิด ☰ menu → ดู Photos & videos,รูปใหม่เข้า t.media → โผล่ใน strip + gallery,MEMBER,Medium,,
+FO-TC-CHAT-065,2.5 Attach,attach sheet เปิด,ปิดด้วย X / แตะ backdrop,ปิดทั้งสองวิธี — ไม่ส่งอะไร,MEMBER,Medium,,
+FO-TC-CHAT-066,2.5 Attach,attach sheet เปิด,หา badge ▶ บน thumb,ไม่มี — sampleMedia ทุกตัว isVideo:false (dead render),MEMBER,Low,,GAP-CHAT-13
+FO-TC-CHAT-067,2.5 Attach,MEMBER ในห้อง draft (Ask ใหม่),ส่งรูปเป็นข้อความแรก → back → ดู list,"รูปขึ้นในห้องแต่แถวไม่เข้า list — media path ไม่ materialize draft (คาด fail)",MEMBER,Medium,,GAP-CHAT-05
+FO-TC-CHAT-068,2.5 Viewer,MEMBER มี media bubble/strip/gallery,แตะ media,ch-media-viewer fullscreen: รูปกลาง + X บนซ้าย เหนือทุก layer,MEMBER,High,,openChatMediaViewer
+FO-TC-CHAT-069,2.5 Viewer,viewer เปิด,ปิดด้วย X / แตะพื้นมืดรอบรูป,ปิดทั้งสองวิธี; แตะตัวรูปไม่ปิด,MEMBER,Medium,,
+FO-TC-CHAT-070,2.5 Viewer,viewer เปิด,ลอง pinch/double-tap zoom + swipe ไปรูปถัดไป,"ไม่มี zoom/swipe — single static image (spec ขอ zoom/swipe → คาด fail)",MEMBER,Low,,missing feature
+FO-TC-CHAT-071,2.6 chmenu,MEMBER ในห้อง,กด ☰,"chmenu: head=username + 4 tiles (Mute/Profile/Block/Report) + Photos & videos + strip หรือ 'No photos or videos found.' + Listings & Items + E2E footer",MEMBER,High,,chatRoomMenuHTML
+FO-TC-CHAT-072,2.6 chmenu,MEMBER ใน chmenu,กด tile Mute,"toast 'ปิดการแจ้งเตือนแล้ว' + tile กลายเป็น Unmute + active; icon ใน list ตรงกัน",MEMBER,Medium,,shared chact=mute
+FO-TC-CHAT-073,2.6 chmenu,MEMBER ใน chmenu,กด tile Profile,profile sub ทับ; back กลับ chmenu,MEMBER,Low,,
+FO-TC-CHAT-074,2.6 chmenu,MEMBER ใน chmenu,กดแถว Photos & videos,เปิด chmedia gallery,MEMBER,Medium,,
+FO-TC-CHAT-075,2.6 chmenu,MEMBER ใน chmenu มี media strip,แตะรูปใน strip,media viewer เปิดตรง,MEMBER,Low,,data-chmedia
+FO-TC-CHAT-076,2.6 chmenu,MEMBER ใน chmenu,กดแถว Listings & Items,Post Detail ของ item เปิดทับ,MEMBER,Medium,,
+FO-TC-CHAT-077,2.6 chmenu,MEMBER ใน chmenu,กด tile Block → อ่าน sheet,"blk sheet: 'Block X?' + 3 impact rows + ปุ่ม Block เดียว — ไม่มี 'Block and report' (fromChat)",MEMBER,High,,"blkSheetHTML u fromChat=true"
+FO-TC-CHAT-078,2.6 chmenu,blk sheet เปิด,กด Block,"sheet ปิด + toast 'Blocking' + tile→Unblock + ห้องมี blocked bar + list badge 'Blocked' + โพสต์/comment หาย",MEMBER,High,,blk-go + pfSetBlocked
+FO-TC-CHAT-079,2.6 chmenu,MEMBER ใน chmenu ของคนที่ block แล้ว,กด tile Unblock → dlg → Unblock,"dlg 'Unblock X?' (center ไม่ใช่ sheet) → toast 'Unblocked' + ทุกอย่างกลับ",MEMBER,High,,
+FO-TC-CHAT-080,2.6 chmenu,MEMBER ใน chmenu,กด tile Report → อ่าน sheet,"chatReport sheet: 'Are you sure you want to report X?' + คำอธิบาย + Report and delete / Report / Cancel",MEMBER,High,,chatReportSheetHTML
+FO-TC-CHAT-081,2.6 chmenu,chatReport sheet เปิด,กด Cancel,sheet ปิด กลับ chmenu — ไม่มีอะไรเกิด,MEMBER,Medium,,
+FO-TC-CHAT-082,2.6 chmenu,chatReport sheet เปิด,"กด Report → เลือกเหตุ → done → Done","report:user ไม่มี back มีแค่ X → …→ กลับ chmenu + toast 'Report submitted…' — thread อยู่",MEMBER,High,,flow ละเอียด=FO-TEST-16
+FO-TC-CHAT-083,2.6 chmenu,chatReport sheet เปิด,"กด Report and delete → ทำจนผ่าน report:done → กด Done/X","thread ถูกลบ + ลง chat list (ห้อง/chmenu pop ทิ้ง)",MEMBER,High,,rpDelChat
+FO-TC-CHAT-084,2.6 chmenu,chatReport → Report and delete แล้วอยู่กลาง flow,กด X ก่อนถึง done,chat ไม่ถูกลบ — กลับ chmenu (hadDone=false),MEMBER,Medium,,edge cancel mid-flow
+FO-TC-CHAT-085,2.6 chmenu,MEMBER อยู่ report:done (จาก chat),ขั้น Other steps → กด Block X,blk sheet ปุ่มเดียว (rpFromChat ทำ fromChat=true),MEMBER,Low,,quirk
+FO-TC-CHAT-086,2.7 chmedia,MEMBER ใน chmenu ของ t1,กด Photos & videos,"gallery: X + ชื่อ user + Select + label 'October 2569 BE' (hardcode) + grid รูป ≤9",MEMBER,Medium,,GAP-CHAT-10
+FO-TC-CHAT-087,2.7 chmedia,MEMBER ใน gallery (ไม่ select),แตะรูป,media viewer เปิด,MEMBER,Low,,
+FO-TC-CHAT-088,2.7 chmedia,MEMBER ใน gallery,กด Select → แตะ 2 รูป,"head เป็น 'Cancel / 2 selected / Deselect' + เลข 1,2 บนรูป + bottom bar 🗑⬇ enabled (Deselect disabled ตอน 0)",MEMBER,High,,galState
+FO-TC-CHAT-089,2.7 chmedia,select mode เลือกไว้,กด 🗑,"รูปหาย + toast 'ลบรูปภาพที่เลือกแล้ว' + ออก select; bubble ในห้องยังโชว์รูปเดิม (desync)",MEMBER,Medium,,GAP-CHAT-17
+FO-TC-CHAT-090,2.7 chmedia,select mode เลือกไว้,กด ⬇,toast 'บันทึกลงในรูปภาพแล้ว' (ไม่มีดาวน์โหลดจริง),MEMBER,Low,,
+FO-TC-CHAT-091,2.7 chmedia,select mode เปิด,กด Deselect / Cancel / X ปิดหน้า,"Deselect→เลือก 0; Cancel→ออก select; X→ปิดหน้า+reset galState",MEMBER,Low,,
+FO-TC-CHAT-092,2.7 chmedia,MEMBER เปิด chmedia ของห้องไม่มี media (t2 ก่อนส่งรูป),ดูหน้า gallery,"'No photos or videos found.' กลางหน้า + ไม่มีปุ่ม Select",MEMBER,Low,,empty branch
+FO-TC-CHAT-093,2.8 chatcfg,MEMBER chat list,กด ⚙ gear,"chatcfg: 'การตั้งค่าแชท/Chat settings' + Notifications(on,on) + Privacy followOnly(off) + Default view(Chats✓/Items) + Quick Ask input + note",MEMBER,High,,chatCfgHTML
+FO-TC-CHAT-094,2.8 chatcfg,MEMBER ใน chatcfg,กด toggle ทั้ง 3 ทีละตัว,"toggle flip + เขียน C.cfg — แต่ไม่มีผลระบบอื่น (display-only)",MEMBER,Medium,,data-chtgl
+FO-TC-CHAT-095,2.8 chatcfg,MEMBER ใน chatcfg,"Default view เลือก Items → back → nav Feed → Chat",เปิด chat = item view (defView มีผลผ่าน reset),MEMBER,Medium,,data-chdef
+FO-TC-CHAT-096,2.8 chatcfg,MEMBER ใน chatcfg,"แก้ Quick Ask เป็น 'ขอรูปเพิ่มครับ' → back → Ask โพสต์ใหม่",draft prefill = ข้อความใหม่ (integration; maxlength 80),MEMBER,High,,chc-quick→cfg.quick
+FO-TC-CHAT-097,2.8 chatcfg,MEMBER เปิด followOnly=on,ตรวจว่ามี gate ใดอ่าน cfg.followOnly ไหม,ไม่มี enforcement — display state ล้วน (บันทึก quirk),MEMBER,Low,,GAP-CHAT-09
+FO-TC-CHAT-098,2.8 chatcfg,MEMBER ใน chatcfg,กด back,"กลับ chat list (stack [chat, chatcfg])",MEMBER,Low,,rpBack
+FO-TC-CHAT-099,2.8 chsettings,MEMBER,"ตรวจทุกจุด: head ห้อง / chmenu / chatcfg","ไม่มี entry point ใด render data-chgo=chsettings — หน้า room settings เข้าถึงไม่ได้ (dead route)",MEMBER,Medium,,GAP-CHAT-01
+FO-TC-CHAT-100,2.9 Guest,GUEST feed,"ลองทีละ entry: แท็บ Chat / Ask pill / chat-fab (p2) / Ask บน detail p1","ทุกอัน → Member Sheet — ไม่มี chat UI เปิดเลย",GUEST,High,,GUEST_GATE_SEL
+FO-TC-CHAT-101,2.9 Guest,GUEST gate เด้งจากแท็บ Chat,ปิด sheet / Sign in แล้วกลับมา,"ปิด → อยู่ feed เดิม (ไม่ resume); sign in → member แต่ต้องแตะ Chat เองอีกครั้ง",GUEST→MEMBER,Medium,,no nav resume
+FO-TC-CHAT-102,2.9 Blocked,MEMBER block user แล้ว,"ตรวจข้ามจุด: list badge / ห้อง bar / feed ไม่มีโพสต์ / comments กรอง / profile มี Unblock",ครบทุกผลของ pfSetBlocked (feed/comment เทสร่วม FO-TEST-16),MEMBER,High,,cross-feature
+FO-TC-CHAT-103,2.9 Blocked,MEMBER ห้อง blocked,"เปิด chmenu + กลับมาดูแถว list","tile = Unblock(active); แถว list มี badge 'Blocked' แทน mute icon",MEMBER,Medium,,
+FO-TC-CHAT-104,2.9 Edge,OWNER mark โพสต์ own เป็น sold,เปิดห้องที่ผูก item นั้น → กดการ์ด,"ห้องใช้ได้ปกติ; การ์ด → detail เปิดได้ (ไม่มี sold badge/ล็อกในห้อง)",OWNER,Medium,,edge: sold asset
+FO-TC-CHAT-105,2.9 Edge,OWNER ซ่อนลิสติ้ง own,เปิดห้องที่ผูก → กดการ์ด,"detail เปิดได้เหมือนเดิม (จับคู่กับ CHAT-053 ลบ=toast)",OWNER,Low,,edge: hidden asset
+FO-TC-CHAT-106,2.9 i18n,MEMBER lang=TH,"สำรวจ list/room/menu/attach/ch-modal","ไทย: tabs/ค้นหา/popover/chatcfg; EN hardcode: 'You:'/Blocked/Hide/Delete/day/Read/Sent/'Message...'/empty/attach/modal/sheets; toast TH hardcode ทั้งชุด",MEMBER,Medium,,GAP-CHAT-04
+FO-TC-CHAT-107,2.9 Theme,MEMBER dark theme,"เปิด list/room/menu → เปิด ch-modal (Hide)","หน้า chat dark ถูก; ch-modal ยัง light (append นอก .screen) + center ทั้ง viewport (คาด fail)",MEMBER,Medium,,GAP-CHAT-03
