@@ -652,6 +652,41 @@
       flex: 1 0 auto;
     }
 
+    /* pull-to-refresh indicator — sits between the tabs and the list, revealed by
+       a downward drag at the top of the feed (FEED-004) */
+    .ptr-ind {
+      height: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ptr-ind i {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      border-top-color: var(--text);
+      opacity: 0;
+      transition: opacity .15s;
+    }
+
+    .ptr-ind.on i {
+      opacity: 1;
+    }
+
+    .ptr-ind.spin i {
+      animation: ptr-rot .7s linear infinite;
+    }
+
+    @keyframes ptr-rot {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     .feed-empty {
       min-height: 100%;
       display: flex;
@@ -3738,11 +3773,47 @@
       overflow: hidden;
     }
 
-    .pv-img {
+    /* FO-TEST-06 — immersive viewer media is the same carousel photo as the feed card:
+       fills the whole section, tap halves / swipe to change slides, counter chip + dots */
+    .pv-post .pv-ph {
+      position: absolute;
+      inset: 0;
+      aspect-ratio: auto;
+    }
+
+    .pv-post .pv-ph img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+
+    .pv-post .pv-ph .photo-counter {
+      top: 80px;
+    }
+
+    .pv-post .pv-ph .clip-badge {
+      top: 80px;
+      bottom: auto;
+      left: 12px;
+      right: auto;
+    }
+
+    .pv-post .pv-dots {
+      position: absolute;
+      top: 90px;
+      left: 0;
+      right: 0;
+      padding: 0;
+      z-index: 3;
+    }
+
+    .pv-post .pv-dots span {
+      background: rgba(255, 255, 255, .45);
+    }
+
+    .pv-post .pv-dots span.on {
+      background: #fff;
     }
 
     .pv-grad {
@@ -6304,11 +6375,33 @@
       color: var(--muted);
     }
 
-    .comment-input .ci-ic {
-      display: flex;
-      gap: 10px;
-      color: var(--muted);
+    .comment-input .ci-field {
+      flex: 1;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-size: 13px;
+      color: var(--text);
+      font-family: var(--font-main);
+      outline: none;
+      min-width: 0;
+    }
+
+    .comment-input .ci-send {
+      background: none;
+      border: none;
+      color: var(--accent, #0095f6);
+      font-family: var(--font-main);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 6px;
       flex-shrink: 0;
+    }
+
+    .comment-sheet.dragging {
+      transition: none;
     }
 
     /* ============ BOTTOM NAV ============ */
@@ -13253,7 +13346,8 @@
       p.specs = (p.specGroups || []).flatMap(g => g.rows);
       p.liked = false;
       p.saved = p.id in SEED_SAVED;
-      p.savedCol = SEED_SAVED[p.id] || null;
+      p.savedCols = p.saved && SEED_SAVED[p.id] !== "Saved" ? [SEED_SAVED[p.id]] : [];
+      p.wlCols = [];
       p.savedAt = p.saved ? 1000 - i : 0;
       p.colAt = p.savedAt;
       /* pre-scaled thumbs (canvas high-quality) for Saved grid/covers — sharper than CSS downscale */
@@ -13265,11 +13359,11 @@
 
     /* per-post Detail variant sets — each feed post opens Detail with its own combo */
     const POST_DETAIL_CFG = {
-      p1: { ask: "outline", ds: "full", pr: "pr1", dh: "dh3", dl: "dl1", tg: "tg1" },
-      p2: { ask: "bubble", ds: "full", pr: "pr4", dh: "dh3", dl: "dl1", tg: "tg2" },
-      p4: { ask: "outline", ds: "full", pr: "pr3", dh: "dh3", dl: "dl1", tg: "tg1" },
-      p5: { ask: "bubble", ds: "full", pr: "pr4", dh: "dh3", dl: "dl1", tg: "tg2" },
-      p6: { ask: "bubble", ds: "full", pr: "pr3", dh: "dh3", dl: "dl1", tg: "tg1" },
+      p1: { ask: "outline", ds: "full", pr: "pr1", dh: "dh3", dl: "dl1" },
+      p2: { ask: "bubble", ds: "full", pr: "pr4", dh: "dh3", dl: "dl1" },
+      p4: { ask: "outline", ds: "full", pr: "pr3", dh: "dh3", dl: "dl1" },
+      p5: { ask: "bubble", ds: "full", pr: "pr4", dh: "dh3", dl: "dl1" },
+      p6: { ask: "bubble", ds: "full", pr: "pr3", dh: "dh3", dl: "dl1" },
     };
 
     const COMMENTS = {
@@ -13526,16 +13620,28 @@
     }
 
     function saleTagHTML(isSale) {
-      if (state.tg === "tg2") return "";
       const isTh = state.lang === "th";
       return `<span class="inline-tag${isSale ? "" : " muted"}">${isSale ? (isTh ? "ลงขาย" : "FOR SALE") : (isTh ? "โชว์" : "SHOWCASE")}</span>`;
+    }
+
+    /* FO-TEST-06 — the detail status tag follows the post's asset status (pfKind), not the
+       price: feed-only posts ("post") carry none; asset posts map sale/show/sold/hide */
+    function statusTagHTML(p) {
+      const isTh = state.lang === "th";
+      const map = {
+        sale: [isTh ? "ลงขาย" : "FOR SALE", ""],
+        show: [isTh ? "โชว์" : "SHOWCASE", " muted"],
+        sold: [isTh ? "ขายแล้ว" : "SOLD", " muted"],
+        hide: [isTh ? "ซ่อน" : "HIDDEN", " muted"],
+      };
+      const t = map[pfKind(p)];
+      return t ? `<span class="inline-tag${t[1]}">${t[0]}</span>` : "";
     }
 
     function detailHTML(p) {
       if (state.dl !== "dl1") return igDetailHTML(p);
       const isTh = state.lang === "th";
       const spec = k => (p.specs.find(s => s[0] === k) || [k, "n/a"])[1];
-      const isSale = !!p.price;
       const dots = p.photos.length > 1;
       /* hide N/A parts in the title ("rolex N/A" → "rolex"); Ref falls back to "Ref. -" */
       const na = v => /^n\/?a$/i.test((v || "").trim());
@@ -13566,7 +13672,15 @@
             <button class="wl-btn${p.wishlisted ? " saved" : ""}" title="Wish List"><span class="wl-ic wl-o">${I.gift(23)}</span><span class="wl-ic wl-f">${I.giftFill(23)}</span></button>
           </span>
         </div>
-        ${saleTagHTML(isSale)}
+        ${p.hideCounts || !p.likes || !p.likedBy ? "" : `<div class="liked-by">
+          <span class="stack">
+            <img src="${p.likedBy.avatar}" alt="">
+            <img src="./assets/user-avatars/u-1088.png" alt="">
+            <img src="./assets/user-avatars/u-1120.png" alt="">
+          </span>
+          <span>${isTh ? `ถูกใจโดย <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> และคนอื่น ๆ` : `Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others`}</span>
+        </div>`}
+        ${statusTagHTML(p)}
         <h2 class="detail-name">${name}</h2>
         ${ref ? `<div class="detail-ref">${ref}</div>` : ""}
         <div class="detail-h">${isTh ? "คำอธิบาย" : "Descriptions"}</div>
@@ -13765,7 +13879,7 @@
         <div class="c-text">${c.text}</div>
         <span class="c-meta">${isTh ? "ตอบกลับ" : "Reply"}</span>
       </div>
-      <span class="c-like">${I.heart(15)}<span>${c.likes || ""}</span></span>
+      <span class="c-like${c.liked ? " liked" : ""}">${I.heart(15)}<span>${c.likes || ""}</span></span>
     </div>
     ${replies.map((r, ri) => {
       const rId = r.id || ("r-" + ci + "-" + ri);
@@ -13777,9 +13891,8 @@
       <div class="c-main">
         <div class="c-head"><span class="n" data-pf-user="${esc(r.name)}">${r.name}</span><span>${r.time}</span></div>
         <div class="c-text">${r.text}</div>
-        <span class="c-meta">${isTh ? "ตอบกลับ" : "Reply"}</span>
       </div>
-      <span class="c-like">${I.heart(15)}<span>${r.likes || ""}</span></span>
+      <span class="c-like${r.liked ? " liked" : ""}">${I.heart(15)}<span>${r.likes || ""}</span></span>
     </div>`;
     }).join("")}`;
       }).join("");
@@ -13896,8 +14009,8 @@
     <div class="emoji-row"><span>❤️</span><span>🙌</span><span>🔥</span><span>👏</span><span>🥲</span><span>😍</span><span>😮</span><span>😂</span></div>
     <div class="comment-input">
       <img src="./assets/user-avatars/default-avatar.jpg" alt="">
-      <span class="field">${isTh ? "เพิ่มความคิดเห็น..." : "Add a comment..."}</span>
-      <span class="ci-ic">${I.img(20)}${I.gif(20)}</span>
+      <input class="ci-field" type="text" maxlength="500" autocomplete="off" placeholder="${isTh ? "เพิ่มความคิดเห็น..." : "Add a comment..."}">
+      <button class="ci-send" hidden>${isTh ? "โพสต์" : "Post"}</button>
     </div>`;
     }
 
@@ -13938,7 +14051,7 @@
     function likesSheetHTML(p) {
       const isTh = state.lang === "th";
       const seen = new Set();
-      const likers = [{ name: p.likedBy.name, avatar: p.likedBy.avatar }, ...LIKER_POOL]
+      const likers = [...(p.likedBy ? [{ name: p.likedBy.name, avatar: p.likedBy.avatar }] : []), ...LIKER_POOL]
         .filter(l => !seen.has(l.name) && seen.add(l.name));
       return `
     <div class="sheet-handle"></div>
@@ -13949,7 +14062,7 @@
       <div class="lk-row" data-pf-user="${esc(l.name)}">
         <img src="${l.avatar}" alt="">
         <div class="lk-who"><div class="u">${l.name}</div><div class="d">${l.disp || dispName(l.name)}</div></div>
-        <button class="lk-follow">${isTh ? "ติดตาม" : "Follow"}</button>
+        <button class="lk-follow${pfIsFollowed(l.name) ? " on" : ""}">${pfIsFollowed(l.name) ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตาม" : "Follow")}</button>
       </div>`).join("")}
     </div>`;
     }
@@ -13993,7 +14106,7 @@
       <button class="sv-pick sv-row" data-col="${c.name}">
         ${thumb(c)}
         <span class="b"><span class="n">${c.name}</span><span class="s">Private</span></span>
-        <span class="plus${p.savedCol === c.name ? " on" : ""}">${p.savedCol === c.name ? I.check(13) : I.plus(14)}</span>
+        <span class="plus${(p.savedCols || []).includes(c.name) ? " on" : ""}">${(p.savedCols || []).includes(c.name) ? I.check(13) : I.plus(14)}</span>
       </button>`).join("")}
     </div>
     <div class="sv-newrow"></div>`;
@@ -14022,7 +14135,7 @@
       <button class="wl-pick sv-row" data-col="${c.name}">
         ${thumb(c)}
         <span class="b"><span class="n">${c.name}</span><span class="s">Private</span></span>
-        <span class="plus${p.wlCol === c.name ? " on" : ""}">${p.wlCol === c.name ? I.check(13) : I.plus(14)}</span>
+        <span class="plus${(p.wlCols || []).includes(c.name) ? " on" : ""}">${(p.wlCols || []).includes(c.name) ? I.check(13) : I.plus(14)}</span>
       </button>`).join("")}
     </div>
     <div class="sv-newrow"></div>`;
@@ -14036,6 +14149,60 @@
       cs.innerHTML = html;
       scr.classList.remove("comments-open", "unfollow-open", "pm-open", "mf-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
       scr.classList.add(openCls);
+    }
+
+    /* layered dismissal — one gesture clears only the topmost layer: an open
+       dialog first, then the unfollow confirm (returning to the caption sheet
+       it covered), then the sheet itself */
+    function closeUfSheet(scr) {
+      scr.classList.remove("unfollow-open");
+      const psPid = scr._ufPs; scr._ufPs = null;
+      const pp = psPid && findPost(psPid);
+      if (pp) openSheet(scr, "ps", "comments-open", pvPostSheetHTML(pp));
+      else scr.classList.remove("comments-open");
+    }
+    function closeTopLayer(scr) {
+      closeCommentPopover(scr);
+      if (scr.classList.contains("dialog-open")) { scr.classList.remove("dialog-open"); return; }
+      if (scr.classList.contains("unfollow-open")) { closeUfSheet(scr); return; }
+      scr.classList.remove("comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
+    }
+
+    /* members really post comments — typed text, Enter, quick emoji and
+       one-level Reply all land in the thread and update the count */
+    function submitComment(scr, text) {
+      const cs = scr && scr.querySelector(".comment-sheet");
+      if (!cs) return;
+      const inp = cs.querySelector(".ci-field");
+      const t = (text !== undefined ? text : (inp ? inp.value : "")).trim();
+      if (!t) return;
+      const row1 = cs.querySelector(".c-row");
+      const pid = row1 ? row1.dataset.pid : scr.dataset.cmtPid;
+      const p = pid && findPost(pid);
+      if (!p || p.noComments) return;
+      const list = commentsFor(p);
+      const myName = (typeof state !== "undefined" && state.user && state.user.username) || CP_ME.name;
+      const newC = {
+        id: "c-own-" + Date.now(),
+        name: myName,
+        avatar: "./assets/user-avatars/mrfox.png",
+        time: state.lang === "th" ? "เมื่อสักครู่" : "Just now",
+        text: t,
+        likes: 0,
+        liked: false
+      };
+      const replyCid = cs.dataset.replyCid;
+      const parent = replyCid && list.find(c => c.id === replyCid);
+      if (parent) (parent.replies = parent.replies || []).push(newC);
+      else list.push(newC);
+      cs.dataset.replyCid = "";
+      p.comments = (p.comments || 0) + 1;
+      cs.innerHTML = cs.classList.contains("ps") ? pvPostSheetHTML(p) : commentsHTML(p);
+      scr.querySelectorAll(`.post[data-pid="${p.id}"] .comment-count, .detail-counts .comment-count`).forEach(el => {
+        el.textContent = p.comments;
+      });
+      const listEl = cs.querySelector(".sheet-list");
+      if (listEl) listEl.scrollTop = listEl.scrollHeight;
     }
 
     /* ===== PROFILE-010 — Share profile = IG QR page (X / COLOR / scan + QR card + Share profile / Copy link / Download) ===== */
@@ -14243,9 +14410,8 @@
       }
       scr.querySelectorAll(`.svf-post[data-pid="${p.id}"]`).forEach(w => { w.innerHTML = postCard(p, state.variant); });
       scr.querySelectorAll(`.pv-post[data-pid="${p.id}"]`).forEach(sec => {
-        const img = sec.querySelector(".pv-img");
-        const phi = Math.max(0, img ? p.photos.indexOf(img.getAttribute("src")) : 0);
-        sec.outerHTML = pvPostHTML(p, phi);
+        const ph = sec.querySelector(".pv-ph");
+        sec.outerHTML = pvPostHTML(p, ph ? +ph.dataset.i || 0 : 0);
       });
       scr.querySelectorAll(`.pfp-post[data-pid="${p.id}"]`).forEach(a => {
         /* a tab-scoped viewer lists only that tab's posts — a status change pulls the card out of it */
@@ -14379,16 +14545,31 @@
     function feedEmptyHTML(tab) {
       const isTh = state.lang === "th";
       const isFollowing = tab === "following";
+      /* FEED-074 — snooze narrows All Posts to followed-only, so an empty snoozed
+         feed carries the same empty state as the Following tab, not the favorites copy */
+      const followedCtx = isFollowing || (tab === "all" && state.snooze);
       return `
   <div class="feed-empty">
-    <span class="fe-ico">${isFollowing ? I.users(56) : I.star(56)}</span>
-    <div class="fe-title">${isFollowing ? (isTh ? "ติดตามผู้อื่นเพื่อดูโพสต์ของพวกเขาที่นี่" : "Follow others to see their posts here") : (isTh ? "ยังไม่มีรายการโปรด" : "No favorites yet")}</div>
+    <span class="fe-ico">${followedCtx ? I.users(56) : I.star(56)}</span>
+    <div class="fe-title">${followedCtx ? (isTh ? "ติดตามผู้อื่นเพื่อดูโพสต์ของพวกเขาที่นี่" : "Follow others to see their posts here") : (isTh ? "ยังไม่มีรายการโปรด" : "No favorites yet")}</div>
   </div>`;
     }
 
+    /* FEED-004 — feed order is newest first; relative post times parse to minutes
+       ("Just now"/เมื่อสักครู่ = 0, unparseable sinks to the bottom) */
+    const postAge = p => {
+      const t = (p.time || "").toLowerCase();
+      if (/just now|เมื่อสักครู่/.test(t)) return 0;
+      const m = t.match(/(\d+)\s*(min|hr|hour|day|week|month)/);
+      if (!m) return Number.MAX_SAFE_INTEGER;
+      const n = +m[1], u = m[2];
+      return n * (u === "min" ? 1 : u === "hr" || u === "hour" ? 60 : u === "day" ? 1440 : u === "week" ? 10080 : 43200);
+    };
+
     function feedContentHTML(variant) {
       const posts = POSTS.filter(p => !p.ni && !p.muted && !p.blocked && !p.archived && !["show", "hide", "sold"].includes(p.pfkind || "post")) /* feed = ขาย + โพสต์ธรรมดา only; โชว์/ซ่อน/ขายแล้ว are drawer statuses — off the feed */
-        .filter(p => state.feedTab === "favorites" ? p.favorite : state.feedTab === "following" ? p.following : (state.snooze ? p.following : true));
+        .filter(p => state.feedTab === "favorites" ? p.favorite : state.feedTab === "following" ? p.following : (state.snooze ? p.following : true))
+        .sort((a, b) => postAge(a) - postAge(b));
       return posts.length ? posts.map(p => postCard(p, variant)).join("") : feedEmptyHTML(state.feedTab);
     }
 
@@ -14514,10 +14695,17 @@
     function blankFilters() {
       return { brand: [], model: [], cond: [], ref: [], year: [], csz: [], move: [], dial: [], strap: [], deliv: [], pmin: "", pmax: "" };
     }
+    /* spec-locked: recents are user data — they persist across restart (localStorage), not just session memory */
+    const loadRecents = () => { try { const r = JSON.parse(localStorage.getItem("fo_srch_recents") || "null"); return Array.isArray(r) ? r : null; } catch { return null; } };
+    const saveRecents = r => { try { localStorage.setItem("fo_srch_recents", JSON.stringify(r)); } catch { } };
+    /* spec-locked: reopening search always lands on the explore landing — query/filters/tab are session state that is cleared on re-entry */
+    function resetSearch(S) {
+      S.mode = "landing"; S.q = ""; S.tab = "foryou"; S.err = false; S.f = blankFilters(); S.fDraft = null;
+    }
     function srchState(scr) {
       if (!scr._search) scr._search = {
         mode: "landing", q: "", tab: "foryou", sort: "new", err: false,
-        recents: [
+        recents: loadRecents() || [
           { t: "seller", v: "Watch 777" }, { t: "seller", v: "chrono.th" },
           { t: "kw", v: "rolex" }, { t: "kw", v: "grand seiko" },
           { t: "kw", v: "126610ln" }, { t: "seller", v: "wrist.story" },
@@ -14545,6 +14733,17 @@
       if (v === "Watch only") return !/box|paper/.test(b);
       return false;
     }
+    /* spec-locked: strap filter matches the listing's actual strap spec family — "Leather" matches "Alligator leather",
+       "Oystersteel bracelet" matches "Oystersteel (Oyster bracelet)" (structured match, not raw case-sensitive substring) */
+    function strapMatch(p, v) {
+      const b = `${specOf(p, "Strap/Bracelet Material")} ${specOf(p, "Strap Material")}`.toLowerCase();
+      if (v === "Oystersteel bracelet") return /oyster/.test(b);
+      if (v === "Jubilee bracelet") return /jubilee/.test(b);
+      if (v === "Titanium bracelet") return /titan/.test(b);
+      if (v === "Leather") return /leather/.test(b);
+      if (v === "Rubber") return /rubber/.test(b);
+      return b.includes(v.toLowerCase());
+    }
     function matchFilters(p, f) {
       if (f.brand.length && !f.brand.includes(specOf(p, "Brand"))) return false;
       if (f.model.length && !f.model.some(m => specOf(p, "Model").includes(m))) return false;
@@ -14554,7 +14753,7 @@
       if (f.csz.length && !f.csz.includes(specOf(p, "Case Diameter"))) return false;
       if (f.move.length && !f.move.some(m => specOf(p, "Movement Type").includes(m))) return false;
       if (f.dial.length && !f.dial.some(d => specOf(p, "Dial Color").includes(d))) return false;
-      if (f.strap.length && !f.strap.some(s => `${specOf(p, "Strap/Bracelet Material")} ${specOf(p, "Strap Material")}`.includes(s))) return false;
+      if (f.strap.length && !f.strap.some(s => strapMatch(p, s))) return false;
       if (f.deliv.length && !f.deliv.some(v => delivMatch(p, v))) return false;
       const pr = priceNum(p) || 0;
       if (f.pmin !== "" && pr < +f.pmin) return false;
@@ -14563,7 +14762,8 @@
     }
     function searchResults(S) {
       const isTag = S.q.trim().startsWith("#");
-      let list = (isTag ? POSTS.filter(p => !p.muted) : salePosts()).filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
+      /* spec-locked: tag mode includes non-sale posts but excludes ni/muted/blocked exactly like normal results */
+      let list = (isTag ? POSTS.filter(p => !p.ni && !p.muted && !p.blocked) : salePosts()).filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
       if (S.sort === "plo") list = [...list].sort((a, b) => priceNum(a) - priceNum(b));
       else if (S.sort === "phi") list = [...list].sort((a, b) => priceNum(b) - priceNum(a));
       else if (S.sort === "pop") list = [...list].sort((a, b) => viewsNum(b) - viewsNum(a));
@@ -14582,7 +14782,7 @@
       return salePosts().filter(p => partial ? specOf(p, k).includes(v) : specOf(p, k) === v).length;
     }
     function strapCount(v) {
-      return salePosts().filter(p => `${specOf(p, "Strap/Bracelet Material")} ${specOf(p, "Strap Material")}`.includes(v)).length;
+      return salePosts().filter(p => strapMatch(p, v)).length;
     }
     function delivCount(v) { return salePosts().filter(p => delivMatch(p, v)).length; }
     function sellerAvatar(name) { const p = POSTS.find(x => x.seller === name); return p ? p.avatar : "./assets/user-avatars/default-avatar.jpg"; }
@@ -14593,6 +14793,7 @@
     }
     function pushRecent(S, kind, v) {
       S.recents = [{ t: kind, v }, ...S.recents.filter(r => !(r.t === kind && r.v.toLowerCase() === v.toLowerCase()))].slice(0, 8);
+      saveRecents(S.recents);
     }
     function suggestRows(S) {
       const q = S.q.trim().toLowerCase();
@@ -14615,11 +14816,11 @@
     function tagRows(S) {
       const q = S.q.trim().replace(/^#+/, "").toLowerCase();
       const set = new Set();
-      POSTS.filter(p => !p.muted).forEach(p => (String(p.captionFull || p.caption || "").match(/#[A-Za-z0-9_ก-๙]+/gi) || []).forEach(t => set.add(t.toLowerCase())));
+      POSTS.filter(p => !p.ni && !p.muted && !p.blocked).forEach(p => (String(p.captionFull || p.caption || "").match(/#[A-Za-z0-9_ก-๙]+/gi) || []).forEach(t => set.add(t.toLowerCase())));
       (typeof CF_TAGS !== "undefined" ? CF_TAGS : []).forEach(t => set.add(t.toLowerCase()));
       return [...set]
         .filter(t => !q || t.slice(1).includes(q))
-        .map(t => ({ tag: t, n: POSTS.filter(p => !p.muted && String(p.captionFull || p.caption || "").toLowerCase().includes(t)).length }))
+        .map(t => ({ tag: t, n: POSTS.filter(p => !p.ni && !p.muted && !p.blocked && String(p.captionFull || p.caption || "").toLowerCase().includes(t)).length }))
         .sort((a, b) => b.n - a.n || a.tag.localeCompare(b.tag));
     }
     function exploreTiles() {
@@ -14731,14 +14932,24 @@
     function pvPostHTML(p, phi = 0) {
       const isTh = state.lang === "th";
       const hasSpecs = (p.specGroups || []).length > 0;
+      const dots = p.photos.length > 1;
+      const startI = Math.min(phi, p.photos.length - 1);
+      const cl = clipState(p);
+      const slideClip = cl.has ? (p.clips || [p.clip])[startI] : null;
+      const durI = slideClip ? cfClipSecs(slideClip) : "";
       return `
   <section class="post pv-post" data-pid="${p.id}">
-    <img class="pv-img" src="${p.photos[Math.min(phi, p.photos.length - 1)]}" alt="">
+    <div class="post-photo pv-ph${cl.has ? " clip-ph" : ""}" data-i="${startI}"${cl.has ? ` data-dur="${durI}"` : ""}>
+      <img src="${p.photos[startI]}" alt="">
+      ${dots ? `<span class="photo-counter">${startI + 1}/${p.photos.length}</span>` : ""}
+      ${cl.has ? `<span class="clip-badge"${durI ? "" : ' style="display:none"'}>${I.play(11)}${durI}</span><span class="prog"><i></i></span>` : ""}
+    </div>
+    ${dots ? `<div class="photo-dots pv-dots">${p.photos.map((_, i) => `<span class="${i === startI ? "on" : ""}"></span>`).join("")}</div>` : ""}
     <div class="pv-grad"></div>
     <div class="pv-rail">
       <div class="pv-grp">
         <button class="pv-act like-btn${p.liked ? " liked" : ""}">${I.heart(26)}</button>
-        <button class="pv-act pv-lbl liked-by">${isTh ? "ถูกใจ" : "Likes"}</button>
+        ${p.likes && p.likedBy ? `<button class="pv-act pv-lbl liked-by">${isTh ? "ถูกใจ" : "Likes"}</button>` : ""}
       </div>
       ${p.noComments ? "" : `<button class="pv-act comment-btn">${I.comment(25)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="pv-act">${I.eye(23)}<span>${p.views}</span></span>`}
@@ -14748,16 +14959,17 @@
     </div>
     <div class="pv-foot">
       <div class="pv-seller"><img src="${p.avatar}" alt="" data-pf-user="${esc(p.seller)}"><span class="n" data-pf-user="${esc(p.seller)}">${p.seller}</span>
-        ${p.following ? "" : `<button class="follow-btn">${isTh ? "ติดตาม" : "Follow"}</button>`}</div>
+        <button class="follow-btn${p.following ? " on" : ""}">${p.following ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตาม" : "Follow")}</button></div>
       ${(p.caption || p.captionFull) ? `<div class="caption pv-cap"><span class="cap-short">${igCaptionHTML(p, p.caption)}${(p.captionFull || "") !== p.caption ? ` <span class="more-link">…</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></div>` : ""}
       ${hasSpecs ? `<button class="details-toggle pv-dt"><span class="dt-label">${isTh ? "แตะเพื่อดูรายละเอียด" : "Tap for details"}</span>${I.chev(12)}</button>` : ""}
     </div>
-    <div class="pv-add">${isTh ? "เพิ่มความคิดเห็น…" : "Add comment…"}</div>
+    ${p.noComments ? "" : `<div class="pv-add">${isTh ? "เพิ่มความคิดเห็น…" : "Add comment…"}</div>`}
   </section>`;
     }
 
     /* IG "…" caption sheet — seller head + full caption + date + comments, scrollable */
     function pvPostSheetHTML(p) {
+      const isTh = state.lang === "th";
       const rows = commentRowsHTML(p);
       return `
     <div class="sheet-handle"></div>
@@ -14765,7 +14977,7 @@
       <div class="ps-head">
         <img src="${p.avatar}" alt="">
         <span class="n">${p.seller}</span>
-        ${p.following ? "" : `<button class="follow-btn">Follow</button>`}
+        <button class="follow-btn${p.following ? " on" : ""}">${p.following ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตาม" : "Follow")}</button>
       </div>
       <div class="ps-cap"><b>${p.seller}</b> ${igCaptionHTML(p)}</div>
       <div class="ps-time">${p.time}</div>
@@ -14773,8 +14985,8 @@
     </div>
     <div class="comment-input">
       <img src="./assets/user-avatars/default-avatar.jpg" alt="">
-      <span class="field">Add a comment for ${p.seller}</span>
-      <span class="ci-ic">${I.img(20)}${I.gif(20)}</span>
+      <input class="ci-field" type="text" maxlength="500" autocomplete="off" placeholder="Add a comment for ${p.seller}">
+      <button class="ci-send" hidden>${state.lang === "th" ? "โพสต์" : "Post"}</button>
     </div>`;
     }
 
@@ -14872,7 +15084,6 @@
         <button class="icon-btn pv-back">${I.back()}</button>
         <span class="detail-title rc-title">${title}</span>
         <span class="spacer"></span>
-        <button class="icon-btn pv-srch">${I.search(21)}</button>
       </div>
       <div class="pv-track svf-track">${posts.map(svfPostHTML).join("")}</div>`;
         scr.classList.add("pv-open");
@@ -15198,6 +15409,7 @@
     function rpPush(scr, name) {
       /* ghost + slide-in restart live in pushSub now — every pushed sub page slides
          over the previous one (a swap-opened root must not suppress that slide) */
+      bdStashScroll(scr); /* BOARD — remember the covered page's scroll so back restores it */
       pushSub(scr, name);
       const el = scr.querySelector(".page-sub");
       if (el) { el.style.animation = "none"; void el.offsetWidth; el.style.animation = ""; }
@@ -15221,6 +15433,7 @@
         setTimeout(() => g.remove(), 340);
         st.pop();
         scr._subSwap = true; renderSub(scr); scr._subSwap = false; /* previous page stays put — no re-slide */
+        bdRestoreScroll(scr); /* BOARD — restore the covered page's scroll/hero/pill position */
         if (scr._rpBase != null && st.length <= scr._rpBase) { scr._rpBase = null; scr.classList.remove("rp-over"); } /* back to the surface under the Posts viewer — let it show again */
       } else {
         st.pop();
@@ -15296,12 +15509,12 @@
     </div>`;
     }
     function savedPosts() { return POSTS.filter(p => p.saved).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0)); }
-    function colPosts(name) { return POSTS.filter(p => p.saved && p.savedCol === name).sort((a, b) => (b.colAt || 0) - (a.colAt || 0)); }
+    function colPosts(name) { return POSTS.filter(p => p.saved && (p.savedCols || []).includes(name)).sort((a, b) => (b.colAt || 0) - (a.colAt || 0)); }
     function colCover(c) { const ps = colPosts(c.name); const p = ps.find(x => x.id === c.coverPid) || ps[ps.length - 1]; return p ? thumbS(p) : ""; }
     function savedList(scr) {
       const V = savedState(scr);
       let list = savedPosts();
-      if ((scr._subStack || []).at(-1) === "savedcol") list = list.filter(p => p.savedCol === V.col);
+      if ((scr._subStack || []).at(-1) === "savedcol") list = list.filter(p => (p.savedCols || []).includes(V.col));
       if (V.q.trim()) list = list.filter(p => matchQuery(p, V.q));
       return list;
     }
@@ -15340,7 +15553,7 @@
       const V = savedState(scr);
       const i = COLLECTIONS.findIndex(c => c.name === V.col);
       if (i >= 0) COLLECTIONS.splice(i, 1);
-      POSTS.forEach(p => { if (p.savedCol === V.col) p.savedCol = "Saved"; });
+      POSTS.forEach(p => { p.savedCols = (p.savedCols || []).filter(x => x !== V.col); });
       V.col = null; V.mode = "";
       subBack(scr);
       scrToast(scr, state.lang === "th" ? "ลบคอลเลกชันแล้ว" : "Collection deleted");
@@ -15494,7 +15707,7 @@
       return scr._wl;
     }
     function wlPosts() { return POSTS.filter(p => p.wishlisted).sort((a, b) => (b.wlAt || 0) - (a.wlAt || 0)); }
-    function wlColPosts(name) { return wlPosts().filter(p => p.wlCol === name).sort((a, b) => (b.wlColAt || 0) - (a.wlColAt || 0)); }
+    function wlColPosts(name) { return wlPosts().filter(p => (p.wlCols || []).includes(name)).sort((a, b) => (b.wlColAt || 0) - (a.wlColAt || 0)); }
     function wlListPosts(scr) {
       const V = wlState(scr);
       let list = inWlCol(scr) ? wlColPosts(V.col) : wlPosts();
@@ -15652,7 +15865,7 @@
     /* "Add to collection" picker — wishlist variant (grid of wishlisted posts not in this collection) */
     function wlAddHTML(scr) {
       const V = wlState(scr);
-      const cands = wlPosts().filter(p => p.wlCol !== V.col);
+      const cands = wlPosts().filter(p => !(p.wlCols || []).includes(V.col));
       const pick = { sel: V.addSel, manage: true };
       return `
   <div class="detail-head svd-head svd-addhead">
@@ -15736,7 +15949,7 @@
       const V = wlState(scr);
       const i = WISHLISTS.findIndex(c => c.name === V.col);
       if (i >= 0) WISHLISTS.splice(i, 1);
-      POSTS.forEach(p => { if (p.wlCol === V.col) p.wlCol = "Wishlist"; });
+      POSTS.forEach(p => { p.wlCols = (p.wlCols || []).filter(x => x !== V.col); });
       V.col = null; V.mode = "";
       subBack(scr);
       scrToast(scr, "Collection deleted");
@@ -15795,7 +16008,7 @@
     /* "Add to collection" picker — full page: Cancel / Saved·Add from / Done, grid of saved posts not in this collection */
     function svdAddHTML(scr) {
       const V = savedState(scr);
-      const cands = savedPosts().filter(p => p.savedCol !== V.col);
+      const cands = savedPosts().filter(p => !(p.savedCols || []).includes(V.col));
       const pick = { sel: V.addSel, manage: true };
       return `
   <div class="detail-head svd-head svd-addhead">
@@ -15955,16 +16168,52 @@
       }
       cfClipSync(scr);
     }
+    /* picker hero clip — the big preview plays/pauses on tap (same countdown as the zoom viewer) */
+    function cfHeroClipStop(scr) {
+      const V = scr._cp;
+      if (!V) return;
+      clearInterval(V._ht); V._ht = null;
+      V.heroPlaying = false; V.heroRem = null;
+    }
+    function cfHeroClipToggle(scr) {
+      const V = cpState(scr);
+      const m = V.order.length ? cfMedia(scr).at(-1) : null;
+      const play = scr.querySelector(".cf [data-hero] .clip-play");
+      if (!m || !m.dur || !play) return;
+      const car = play.closest(".ig-car"), durEl = car && car.querySelector(".dur");
+      const total = cfClipSecs(m.dur);
+      V.heroPlaying = !V.heroPlaying;
+      play.innerHTML = V.heroPlaying ? I.pause(26) : I.play(26);
+      clearInterval(V._ht); V._ht = null;
+      if (V.heroPlaying) {
+        if (V.heroRem == null) V.heroRem = total;
+        V._ht = setInterval(() => {
+          V.heroRem -= 0.1;
+          if (V.heroRem <= 0) { cfHeroClipStop(scr); play.innerHTML = I.play(26); if (durEl) durEl.innerHTML = `${I.play(10)}${m.dur}`; return; }
+          if (durEl) durEl.innerHTML = `${I.play(10)}${cfMmss(V.heroRem)}`;
+        }, 100);
+      }
+    }
     /* FEED-023 — clip posts play by themselves while ≥55% visible in their scroll box (IG-style
        autoplay); scrolling past pauses, scrolling back resumes where it left off, end-of-clip loops */
     function feedClipTick() {
       document.querySelectorAll(".post-photo.clip-ph, .detail-hero.clip-ph").forEach(ph => {
         const scr = ph.closest(".screen");
         if (!scr || !ph.dataset.dur) { ph.classList.remove("playing"); return; }
-        /* media inside a sub page shows only while that sub is open; feed media only while it isn't covered */
-        const inSub = !!ph.closest(".page-sub, .page-pv");
+        /* FO-TEST-06 — clips play on whichever layer is on top; a media box covered by a
+           detail/viewer/sub layer pauses. Detail media always plays while detail is open,
+           no matter which surface it was opened from */
+        const inDetail = !!ph.closest(".page-detail");
+        const inPv = !!ph.closest(".page-pv");
+        const inSub = !!ph.closest(".page-sub");
+        const detailOpen = scr.classList.contains("detail-open");
+        const pvOpen = scr.classList.contains("pv-open");
         const subOpen = scr.classList.contains("sub-open");
-        let on = inSub ? subOpen : !subOpen;
+        let on;
+        if (inDetail) on = detailOpen;
+        else if (inPv) on = pvOpen && !detailOpen;
+        else if (inSub) on = subOpen && !pvOpen && !detailOpen;
+        else on = !subOpen && !pvOpen && !detailOpen;
         if (on) {
           const box = ph.closest(".feed-scroll, .detail-scroll, .sub-scroll, .page-sub, .page-pv") || scr;
           const cr = box.getBoundingClientRect(), r = ph.getBoundingClientRect();
@@ -16064,6 +16313,14 @@
         cost: m.purchase ? "THB " + fmtNum(unNum(m.purchase)) : (m.bought ? pfoDate(m.bought) : ""),
       };
     }
+    /* a draft counts as edited when the user entered anything — media, caption, or any pane field
+       (meta.pane / meta.locQ are transient pane UI state, not draft content) */
+    function cfMetaDirty(m) {
+      if (!m) return false;
+      if (m.loc || m.price || m.purchase || m.bought || m.cond || m.box || m.desc) return true;
+      if (m.noComments || m.audience === "followers") return true;
+      return CF_SPECS.some(([, fields]) => fields.some(([f]) => m[f]));
+    }
     function cfZoomGo(z, i, total) {
       i = Math.max(0, Math.min(total - 1, i));
       z.dataset.i = i;
@@ -16093,16 +16350,17 @@
     function cfPickerHTML(scr) {
       const isTh = state.lang === "th";
       const V = cpState(scr);
+      cfHeroClipStop(scr); /* re-render resets the hero clip to paused */
       const n = V.order.length;
       const cells = CP_MEDIA.map((m, i) => {
         const s = V.order.indexOf(i);
         return `<div class="cell${s >= 0 ? " sel" : ""}" data-i="${i}"><img src="${m.src}">${m.dur ? `<span class="dur">${I.play(9)}${m.dur}</span>` : ""}<span class="radio${s >= 0 ? " on" : ""}">${s >= 0 ? s + 1 : ""}</span></div>`;
       }).join("");
-      const heroM = n ? cfMedia(scr)[0] : null;
+      const heroM = n ? cfMedia(scr).at(-1) : null; /* hero mirrors the live cell-tap — last picked item stays on top */
       const hero = heroM
         ? (heroM.dur
           ? `<div class="ig-car"><img src="${heroM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${heroM.dur}</span></div>`
-          : `<div class="ig-car"><img src="${heroM.src}"><button class="expand">${I.expandIc(15)}</button></div>`)
+          : `<div class="ig-car"><img src="${heroM.src}"></div>`)
         : `<div class="add-tile">${I.camPlain(38)}<span>${isTh ? "เลือกรูปภาพ" : "Select photos"}</span></div>`;
       return `
     <div class="cf-head">
@@ -16297,7 +16555,7 @@
         audience: m.audience || "public",
         noComments: !!m.noComments,
         desc: m.desc || "", /* description is its own field — empty shows "-" on detail */
-        likedBy: { name: "the watch", avatar: "./assets/user-avatars/u-1042.png" },
+        likedBy: null,
       });
       POSTS[0].specs = (POSTS[0].specGroups || []).flatMap(g => g.rows);
       /* watch alerts fire when the new post matches an ON alert — surfaced as a toast by the caller */
@@ -18141,7 +18399,6 @@
     /* ===== BOARD — news board: Home (hero + trending + Journal Board), Journal Board list, Article detail (like/share), Search (results / empty) ===== */
     let bdQ = "";
     const BD_P = "./assets/thumbs/";
-    const BD_FEAT_MAX = 5;
     const BD_BODY = [
       "The perpetual calendar remains one of watchmaking's most romantic and technically daunting complications. Unlike its simpler calendar cousins, a perpetual mechanism accounts for the differing lengths of all 12 months and even the quadrennial leap year anomaly. It is a mechanical computer designed to remain accurate for over a century without manual intervention.",
       "Collectors keep coming back to this subject because the details reward patience. Finishing, movement architecture and the way a case sits on the wrist all tell a story that spec sheets rarely capture.",
@@ -18163,12 +18420,11 @@
       { id: "b9", cat: "Rolex", title: "Submariner vs Explorer: Which Rolex Fits You?", img: BD_P + "p3-p.jpg", min: 6, ago: "1 day ago", date: "Oct 20, 2024", likes: 15 },
       { id: "b10", cat: "Rolex", title: "Rolex Service Intervals Explained", img: BD_P + "p4-p.jpg", min: 5, ago: "2 days ago", date: "Oct 19, 2024", likes: 8 },
       { id: "b11", cat: "Rolex", title: "Spotting a Genuine Rolex Bracelet", img: BD_P + "p1-p.jpg", min: 6, ago: "3 days ago", date: "Oct 18, 2024", likes: 11 },
-    ].map(a => ({ author: "Tuk Daeng Editorial", liked: false, saved: false, ...a }));
+    ].map(a => ({ liked: false, ...a }));
     const bdGet = id => BOARD.find(a => a.id === id);
     const bdMeta = (a, dot = "·") => `${a.min} min read  ${dot}  ${a.ago}`;
     const bdFeatured = () => BOARD.filter(a => a.feat).sort((x, y) => x.feat - y.feat);
     const bdLatest = () => BOARD.filter(a => !a.feat);
-    const bdJournal = () => BOARD;
 
     const BD_CATEGORIES = ["All", "Market Watch", "Rolex", "Technical", "Collector", "Guides", "Industry"];
     let bdFilterCat = "All";
@@ -18187,15 +18443,6 @@
       if (!c) return;
       const w = c.offsetWidth || 1;
       c.scrollTo({ left: idx * w, behavior: "smooth" });
-    }
-    function bdStepSlide(scr, dir) {
-      const c = scr && scr.querySelector(".bd-carousel");
-      if (!c) return;
-      const w = c.offsetWidth || 1;
-      const curIdx = Math.round(c.scrollLeft / w);
-      const maxIdx = bdFeatured().length - 1;
-      const targetIdx = Math.max(0, Math.min(maxIdx, curIdx + dir));
-      c.scrollTo({ left: targetIdx * w, behavior: "smooth" });
     }
 
     function bdCenterPill(pill) {
@@ -18264,10 +18511,34 @@
       }
     });
 
-    let bdLastScrollTop = 0;
-    let bdScrollTimer = null;
-    function bdScrollHandler(el) {
-      // Natural scroll like Feed — header scrolls out of view naturally with content
+    /* BOARD — scroll memory: pushing a page over a board page stashes the covered
+       page's scroll (list rows / hero carousel / pill bar); popping back restores
+       those positions so back lands on the exact spot the user left, like IG */
+    function bdPageScrolls(page) {
+      if (!page) return null;
+      const v = page.querySelector(".bd-scroll"), c = page.querySelector(".bd-carousel"), p = page.querySelector(".bd-pills");
+      return { v: v ? v.scrollTop : 0, c: c ? c.scrollLeft : 0, p: p ? p.scrollLeft : 0 };
+    }
+    function bdApplyScrolls(page, m) {
+      if (!page || !m) return;
+      const v = page.querySelector(".bd-scroll"); if (v) v.scrollTop = m.v;
+      const c = page.querySelector(".bd-carousel");
+      if (c && m.c) { c.style.scrollBehavior = "auto"; c.scrollLeft = m.c; c.style.scrollBehavior = ""; bdCarouselScroll(c); }
+      const p = page.querySelector(".bd-pills");
+      if (p && m.p) { p.style.scrollBehavior = "auto"; p.scrollLeft = m.p; p.style.scrollBehavior = ""; }
+    }
+    function bdStashScroll(scr) {
+      const st = scr._subStack || [], top = st[st.length - 1];
+      if (!top || !top.startsWith("board")) return;
+      (scr._bdScrollMem = scr._bdScrollMem || {})[st.length - 1] = bdPageScrolls(scr.querySelector(".page-sub"));
+    }
+    function bdRestoreScroll(scr) {
+      const st = scr._subStack || [], top = st[st.length - 1];
+      if (!top || !top.startsWith("board")) return;
+      const mem = scr._bdScrollMem || {}, m = mem[st.length - 1];
+      delete mem[st.length - 1];
+      if (!m) return;
+      requestAnimationFrame(() => bdApplyScrolls(scr.querySelector(".page-sub"), m));
     }
 
     function boardNavHTML() {
@@ -18314,7 +18585,7 @@
       const featured = bdFeatured();
       const latest = bdLatest();
       return `
-  <div class="ch-scroll sub-scroll bd-scroll" onscroll="bdScrollHandler(this)">
+  <div class="ch-scroll sub-scroll bd-scroll">
     ${bdHeadHTML()}
     <div class="bd-carousel-wrap">
       <div class="bd-carousel" onscroll="bdCarouselScroll(this)">
@@ -18382,7 +18653,6 @@
     <div class="bd-sbar">
       <span class="bd-sbar-ic">${I.search(18)}</span>
       <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="${isTh ? "ค้นหาบทความ แบรนด์ หรือประเด็นที่สนใจ..." : "Search articles, brands, or topics..."}" autocomplete="off">
-      ${bdQ ? `<button data-bdclear aria-label="Clear">${I.x(18)}</button>` : ""}
     </div>
     <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>${isTh ? "ค้นหา" : "Search"}</span></div>
     <div class="bd-res">${bdResultsHTML()}</div>
@@ -18392,8 +18662,6 @@
     function boardSearchSync(pg) {
       const r = pg && pg.querySelector(".bd-res");
       if (r) r.innerHTML = bdResultsHTML();
-      const clr = pg && pg.querySelector("[data-bdclear]");
-      if (clr && !bdQ) clr.remove();
     }
     function boardArticleHTML(id) {
       const a = bdGet(id);
@@ -18460,12 +18728,6 @@
         setTimeout(() => scr.querySelector(".bd-q")?.focus(), 320);
         return true;
       }
-      if (e.target.closest("[data-bdclear]")) {
-        bdQ = ""; const i = scr.querySelector(".bd-q");
-        if (i) { i.value = ""; i.focus(); }
-        boardSearchSync(scr.querySelector(".page-sub"));
-        return true;
-      }
       const tag = e.target.closest("[data-bdtag]");
       if (tag) {
         bdQ = tag.dataset.bdtag;
@@ -18514,56 +18776,13 @@
         }, 100);
         return true;
       }
-      const more = e.target.closest("[data-bdmore]");
-      if (more) {
-        const a = bdGet(more.dataset.bdmore);
-        if (!a) return true;
-        openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
-      <div class="pm-card pm-rows">
-        <button class="pm-row pm-ctr" data-bdact="share" data-id="${a.id}"><span>Share Article</span></button>
-        <button class="pm-row pm-ctr" data-bdact="copy" data-id="${a.id}"><span>Copy Link</span></button>
-        <button class="pm-row pm-ctr" data-bdact="save" data-id="${a.id}"><span>${a.saved ? "Remove from Saved" : "Save to Favorites"}</span></button>
-        <button class="pm-row pm-ctr danger" data-bdact="report"><span>Report Article</span></button>
-      </div>
-      <div class="pm-card pm-cancel"><button class="pm-row pm-ctr" data-bdcancel-sheet><span>Cancel</span></button></div>`);
-        return true;
-      }
-      const act = e.target.closest("[data-bdact]");
-      if (act) {
-        const action = act.dataset.bdact;
-        scr.classList.remove("pm-open");
-        if (action === "share") {
-          openSheet(scr, "sh", "share-open", shareSheetHTML());
-        } else if (action === "copy") {
-          scrToast(scr, "Link copied");
-        } else if (action === "save") {
-          const a = bdGet(act.dataset.id);
-          if (a) {
-            a.saved = !a.saved;
-            scr.querySelectorAll(`[data-bdsave="${a.id}"]`).forEach(btn => btn.classList.toggle("on", a.saved));
-            scrToast(scr, a.saved ? "Saved to favorites" : "Removed from favorites");
-          }
-        } else if (action === "report") {
-          scrToast(scr, "Report submitted. Thank you for notifying us.");
-        }
-        return true;
-      }
       if (e.target.closest("[data-bdcancel-sheet]")) {
         scr.classList.remove("pm-open");
         return true;
       }
       if (e.target.closest("[data-bdshare]")) {
+        scr.dataset.shKind = "";
         openSheet(scr, "sh", "share-open", shareSheetHTML());
-        return true;
-      }
-      const sv = e.target.closest("[data-bdsave]");
-      if (sv) {
-        const a = bdGet(sv.dataset.bdsave);
-        if (a) {
-          a.saved = !a.saved;
-          scr.querySelectorAll(`[data-bdsave="${a.id}"]`).forEach(btn => btn.classList.toggle("on", a.saved));
-          scrToast(scr, a.saved ? "Saved to favorites" : "Removed from favorites");
-        }
         return true;
       }
       const lk = e.target.closest("[data-bdlike]");
@@ -18573,14 +18792,10 @@
           a.liked = !a.liked; a.likes += a.liked ? 1 : -1;
           scr.querySelectorAll(`[data-bdlike="${a.id}"]`).forEach(btn => {
             btn.classList.toggle("on", a.liked);
-            const cnt = btn.querySelector("span");
-            if (cnt) cnt.textContent = a.likes;
           });
           scr.querySelectorAll(`[data-bdlike-count="${a.id}"]`).forEach(el => {
             el.textContent = a.likes;
           });
-          const footSub = scr.querySelector(".bd-dfoot-sub");
-          if (footSub) footSub.textContent = `${a.likes} ${a.likes === 1 ? "person" : "people"} liked this article`;
         }
         return true;
       }
@@ -18792,6 +19007,22 @@
       </div>
     </button>` : "";
 
+      /* FEED-041 — a shared post lands in the room as a tappable post card message */
+      const msgPostCard = pid => {
+        const sp = findPost(pid);
+        return sp ? `<button class="ch-post-card" data-chgo="post" data-pid="${esc(sp.id)}" title="View post">
+      <img class="ch-post-card-img" src="${sp.photos[0]}" alt="">
+      <div class="ch-post-card-top-scrim">
+        <img class="ch-post-card-av" src="${profileOf(sp.seller).avatar}" alt="">
+        <span class="ch-post-card-user">${esc(sp.seller)}</span>
+      </div>
+      <div class="ch-post-card-bot-scrim">
+        <div class="ch-post-card-title">${esc(sp.caption)}</div>
+        ${sp.price ? `<div class="ch-post-card-price">${esc(sp.price)}</div>` : ""}
+      </div>
+    </button>` : "";
+      };
+
       if (t.msgs.length === 0 && postCardHTML) {
         out.push(`<div class="ch-m me"><div class="ch-m-col">${postCardHTML}</div></div>`);
       }
@@ -18807,13 +19038,14 @@
       let lastDay = day0, prev = null;
       t.msgs.forEach((m, i) => {
         if (m.day !== lastDay) { out.push(`<div class="ch-day">${esc(m.day)}</div>`); lastDay = m.day; prev = null; }
-        const card = (i === 0 && postCardHTML) ? postCardHTML : "";
+        const card = (i === 0 && postCardHTML && !m.pid) ? postCardHTML : "";
         const isMedia = !!m.img;
+        const shareCard = m.pid ? msgPostCard(m.pid) : "";
         const isMatch = !q || (!isMedia && (m.t || "").toLowerCase().includes(q));
         const opacityStyle = (q && !isMatch) ? ' style="opacity:0.25;"' : '';
         const bubbleHTML = isMedia
           ? `<div class="ch-bubble-media" data-chmedia="${esc(m.img)}"><img src="${m.img}" alt="Shared photo">${m.isVideo ? `<div class="ch-media-play">${I.play(18)}</div>` : ""}</div>`
-          : `<span class="ch-b">${formatText(m.t || "")}</span>`;
+          : (shareCard || `<span class="ch-b">${formatText(m.t || "")}</span>`);
 
         if (m.f === "me") {
           const rd = i === lastMe ? (m.read ? "Read" : "Sent") : "";
@@ -19202,8 +19434,29 @@
       } else {
         t.hidden = false;
       }
-      scr.classList.remove("pv-open", "detail-open", "comments-open", "pm-open", "likes-open", "details-open");
+      scr.classList.remove("pv-open", "detail-open", "comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
       openSub(scr, "chatroom:" + t.id);
+    }
+    /* FEED-041 — share sheet "send to friend" drops a post-card message into that
+       friend's room and bumps the thread to the top of Chat Center (IG Direct share) */
+    function chSharePost(friend, p) {
+      const C = chatInit();
+      if (!C.threads) return;
+      let t = C.threads.find(x => x.user === friend);
+      if (!t) {
+        t = {
+          id: "t" + Date.now(), user: friend, unread: 0, draft: "", pinned: false, muted: false, hidden: false,
+          item: { id: p.id, cap: p.caption, price: p.price || "", photo: p.photos[0], owner: p.seller, pid: p.id },
+          msgs: []
+        };
+        C.threads.unshift(t);
+      } else {
+        t.hidden = false;
+        const i = C.threads.indexOf(t);
+        if (i > 0) { C.threads.splice(i, 1); C.threads.unshift(t); }
+      }
+      t.msgs.push({ f: "me", t: state.lang === "th" ? "ส่งโพสต์นี้ให้คุณ" : "Shared a post", pid: p.id, at: "09:41", day: "Today", read: false });
+      return t;
     }
     let suppressChatClick = false;
 
@@ -19678,6 +19931,7 @@
         <button class="feed-tab${state.feedTab === "following" ? " active" : ""}" data-tab="following">${isTh ? "กำลังติดตาม" : "Following"}</button>
         <button class="feed-tab${state.feedTab === "favorites" ? " active" : ""}" data-tab="favorites">${isTh ? "รายการโปรด" : "Favorites"}</button>
       </div>
+      <div class="ptr-ind"><i></i></div>
       <div class="feed-list">${feedContentHTML(variant)}</div>
     </div>
 
@@ -19761,6 +20015,10 @@
       "Movement": "กลไก", "Dial color": "สีหน้าปัด", "Strap / Bracelet": "สาย / สายสร้อย", "Delivery contents": "ของที่ส่งมอบ",
       "Clear all": "ล้างทั้งหมด", "Apply": "ใช้", "Minimum": "ต่ำสุด", "Maximum": "สูงสุด", "Recent searches": "การค้นหาล่าสุด",
       "Following": "กำลังติดตาม", "Follow": "ติดตาม", "No data found": "ไม่พบข้อมูล", "Try again": "ลองอีกครั้ง",
+      "Recent": "ล่าสุด", "See all": "ดูทั้งหมด", "Cancel": "ยกเลิก", "No recent searches": "ไม่มีการค้นหาล่าสุด",
+      "No suggestions": "ไม่มีคำแนะนำ", "Create watch alert": "สร้างการแจ้งเตือนนาฬิกา",
+      "Minimum price must not exceed maximum price": "ราคาต่ำสุดต้องไม่เกินราคาสูงสุด",
+      "Maximum price must not exceed 2,000,000": "ราคาสูงสุดต้องไม่เกิน 2,000,000",
       "Try a different keyword or adjust your filters": "ลองใช้คำค้นอื่นหรือปรับตัวกรอง",
       "Something went wrong. Please try again.": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง",
       "Full set": "ครบชุด", "Watch only": "เฉพาะนาฬิกา", "With box": "มีกล่อง", "With papers": "มีเอกสาร",
@@ -19794,6 +20052,28 @@
       "You're not following anyone yet": "คุณยังไม่ได้ติดตามใคร", "Not following anyone yet": "ยังไม่ได้ติดตามใคร",
       "Latest market price": "ราคาตลาดล่าสุด", "Show": "แสดง", "Bank transfer": "โอนเงิน", "Article not found": "ไม่พบบทความ",
       "This article is no longer available.": "บทความนี้ไม่มีให้บริการแล้ว", "Chat not found": "ไม่พบแชท", "This conversation is no longer available.": "บทสนทนานี้ไม่มีให้บริการแล้ว",
+      /* sheets — save / wish list / new collection / block / report / unfollow */
+      "Private": "ส่วนตัว", "Collections": "คอลเลกชัน", "New collection": "คอลเลกชันใหม่", "Edit collection": "แก้ไขคอลเลกชัน",
+      "Collection name": "ชื่อคอลเลกชัน", "Next": "ถัดไป", "Save": "บันทึก", "Post": "โพสต์",
+      "Add a comment...": "เพิ่มความคิดเห็น...", "Add comment…": "เพิ่มความคิดเห็น…", "Reply": "ตอบกลับ",
+      "Block": "บล็อก", "Block and report": "บล็อกและรายงาน", "Report": "รายงาน", "Report and delete": "รายงานและลบแชท",
+      "Unfollow": "เลิกติดตาม", "Mute": "ปิดเสียงเตือน", "Add to favorites": "เพิ่มในรายการโปรด", "Remove from favorites": "ลบออกจากรายการโปรด",
+      "Copy link": "คัดลอกลิงก์", "Link copied": "คัดลอกลิงก์แล้ว", "Unfollowed": "เลิกติดตามแล้ว",
+      "This will also block any other profiles they may have or create in the future.": "การดำเนินการนี้จะบล็อกโปรไฟล์อื่นที่พวกเขาอาจมีหรือสร้างในอนาคตด้วย",
+      "They won't be able to message you or find your profile or content on TukDaeng.": "พวกเขาจะไม่สามารถส่งข้อความหาคุณหรือค้นหาโปรไฟล์และเนื้อหาของคุณบนตึกแดงได้",
+      "They won't be notified that you blocked or reported them.": "พวกเขาจะไม่ได้รับการแจ้งเตือนว่าคุณบล็อกหรือรายงานพวกเขา",
+      "You can unblock them anytime in Settings.": "คุณสามารถเลิกบล็อกได้ทุกเมื่อในการตั้งค่า",
+      "If this user appears suspicious, please report them. Selecting \"Report and delete\" will delete this chat and its associated history.": "หากผู้ใช้นี้ดูน่าสงสัย โปรดรายงานพวกเขา การเลือก \"รายงานและลบ\" จะลบแชทนี้และประวัติที่เกี่ยวข้อง",
+      "Removed from your saved": "นำออกจากรายการบันทึกแล้ว", "Removed from your wish list": "นำออกจากรายการที่อยากได้แล้ว",
+      "Collection updated": "อัปเดตคอลเลกชันแล้ว", "Collection created": "สร้างคอลเลกชันแล้ว",
+      "Removed from All posts": "นำออกจากโพสต์ทั้งหมดแล้ว", "Removed from Wish List": "นำออกจากรายการที่อยากได้แล้ว",
+      "Select all": "เลือกทั้งหมด", "Deselect all": "ยกเลิกการเลือกทั้งหมด", "Move to collection": "ย้ายไปคอลเลกชัน",
+      "Add to collection": "เพิ่มลงคอลเลกชัน", "Delete collection": "ลบคอลเลกชัน", "Rename": "เปลี่ยนชื่อ",
+      "Are you sure you want to delete this collection?": "ต้องการลบคอลเลกชันนี้หรือไม่?", "Added to Wish List": "เพิ่มลงรายการที่อยากได้แล้ว",
+      "Remove post?": "นำโพสต์ออกหรือไม่?", "Unsave post?": "เลิกบันทึกโพสต์นี้หรือไม่?",
+      "Removing this post will also remove it from any collections.": "การนำโพสต์ออกจะนำออกจากทุกคอลเลกชันด้วย",
+      "Unsaving this post will also remove it from any collections.": "การเลิกบันทึกจะนำโพสต์ออกจากทุกคอลเลกชันด้วย",
+      "Unsave": "เลิกบันทึก", "Remove all favorites": "นำรายการโปรดทั้งหมดออก", "Removed all favorites": "นำรายการโปรดทั้งหมดออกแล้ว",
       "Item not found": "ไม่พบสินค้า", "No chats for this item.": "ไม่มีแชทสำหรับสินค้านี้",
       "Toggle password visibility": "แสดง/ซ่อนรหัสผ่าน", "Toggle password": "แสดง/ซ่อนรหัสผ่าน",
       "Mister Fox Co., Ltd. · Est. 2026": "บริษัท มิสเตอร์ฟอกซ์ จำกัด · ก่อตั้ง พ.ศ. 2569",
@@ -19864,9 +20144,21 @@
       if ((m = t.match(/^(\d+) min read\s*·\s*(.+)$/))) return `อ่าน ${m[1]} นาที  ·  ${formatPostTime(m[2], true)}`;
       if ((m = t.match(/^(\d+) listings?(\s·\sFollowing)?$/))) return `${m[1]} รายการประกาศ${m[2] ? " · กำลังติดตาม" : ""}`;
       if ((m = t.match(/^(\d+) posts?$/))) return `${m[1]} โพสต์`;
+      if ((m = t.match(/^Apply \((\d+)\)$/))) return `ใช้ (${m[1]})`;
+      if ((m = t.match(/^THB ([\d,]+)–Any$/))) return `THB ${m[1]}–ไม่จำกัด`;
       if ((m = t.match(/^Slide (\d+)$/))) return `สไลด์ ${m[1]}`;
       if ((m = t.match(/^e\.g\. (.+)$/))) return `เช่น ${m[1]}`;
       if ((m = t.match(/^Add a comment for (.+)$/))) return `เพิ่มความคิดเห็นให้ ${m[1]}`;
+      if ((m = t.match(/^Block (.+)\?$/))) return `บล็อก ${m[1]}?`;
+      if ((m = t.match(/^Are you sure you want to report (.+)\?$/))) return `ต้องการรายงาน ${m[1]} หรือไม่?`;
+      if ((m = t.match(/^Saved to (.+)$/))) return `บันทึกลง ${m[1]}`;
+      if ((m = t.match(/^Removed from (.+)$/))) return `นำออกจาก ${m[1]}`;
+      if ((m = t.match(/^Added to (.+)$/))) return `เพิ่มลง ${m[1]}`;
+      if ((m = t.match(/^Moved to (.+)$/))) return `ย้ายไป ${m[1]}`;
+      if ((m = t.match(/^Sent to (.+)$/))) return `ส่งให้ ${m[1]}`;
+      if ((m = t.match(/^Shared to (.+)$/))) return `แชร์ไป ${m[1]}`;
+      if ((m = t.match(/^Added (\d+) posts?$/))) return `เพิ่ม ${m[1]} โพสต์แล้ว`;
+      if ((m = t.match(/^(\d+) Selected$/))) return `เลือกแล้ว ${m[1]}`;
       if ((m = t.match(/^Message (.+)\.\.\.$/))) return `ส่งข้อความถึง ${m[1]}...`;
       if ((m = t.match(/^Chat with (.+)$/))) return `แชทกับ ${m[1]}`;
       if ((m = t.match(/^Your listing · (\d+) chats?$/))) return "สินค้าของคุณ · " + m[1] + " แชท";
@@ -20132,6 +20424,47 @@
       if (st <= 8 || dy < -6) scr.classList.remove("bars-hidden");
       else if (dy > 6 && st > 56) scr.classList.add("bars-hidden");
     }, true);
+
+    /* FEED-004 — pull-to-refresh: at the top of the feed a downward drag reveals the
+       indicator between the tabs and the list; releasing past the threshold spins it
+       and reloads the feed (mock rotates the post order so the refresh is visible) */
+    let ptr = null;
+    stageEl.addEventListener("pointerdown", e => {
+      const fs = e.target.closest(".feed-scroll");
+      if (!fs || fs.scrollTop > 0 || ptr) return;
+      const scr = fs.closest(".screen");
+      if (!scr || scr.className.includes("-open")) return; /* a sheet/overlay page is up */
+      const ind = fs.querySelector(".ptr-ind");
+      if (ind) ptr = { fs, ind, y0: e.clientY, h: 0 };
+    });
+    stageEl.addEventListener("pointermove", e => {
+      if (!ptr) return;
+      if (!e.buttons || ptr.fs.scrollTop > 0) { ptr.ind.style.height = "0px"; ptr.ind.classList.remove("on"); ptr = null; return; }
+      const h = Math.min(64, Math.max(0, (e.clientY - ptr.y0) * 0.55));
+      ptr.h = h;
+      if (h > 0) { ptr.ind.style.height = h + "px"; ptr.ind.classList.add("on"); }
+      else { ptr.ind.style.height = "0px"; ptr.ind.classList.remove("on"); }
+    });
+    ["pointerup", "pointercancel"].forEach(ev => stageEl.addEventListener(ev, () => {
+      if (!ptr) return;
+      const { fs, ind, h } = ptr;
+      ptr = null;
+      if (h >= 56) {
+        ind.classList.add("spin");
+        ind.style.height = "36px";
+        setTimeout(() => {
+          const fresh = POSTS.reduce((a, b) => postAge(a) >= postAge(b) ? a : b); /* mock new data — the oldest post "re-arrives" as new and lands on top, order stays newest-first */
+          if (fresh) fresh.time = "Just now";
+          const list = fs.querySelector(".feed-list");
+          if (list) list.innerHTML = feedContentHTML(fs.closest(".screen").dataset.variant);
+          ind.classList.remove("on", "spin");
+          ind.style.height = "0px";
+        }, 700);
+      } else {
+        ind.classList.remove("on");
+        ind.style.height = "0px";
+      }
+    }));
 
     /* re-measure the segment thumb when tab widths can change (fonts, viewport) */
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => positionSegThumb());
@@ -20489,6 +20822,54 @@
       window.addEventListener("pointerup", () => { if (el) { el.classList.remove("dragging"); el = null; setTimeout(() => { moved = false; }, 0); } });
       stage.addEventListener("click", e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
     })();
+    /* bottom sheets dismiss on a downward drag — pull the handle, or pull the
+       sheet body while its scroll area is already at the top; releasing past
+       ~35% of the sheet height closes the topmost layer (same as the scrim) */
+    let shDrag = null, shDragEndedAt = 0;
+    document.addEventListener("pointerdown", e => {
+      const cs = e.target.closest(".comment-sheet");
+      if (!cs) return;
+      const scr = cs.closest(".screen");
+      if (!scr) return;
+      const onHandle = !!e.target.closest(".sheet-handle");
+      const scroller = e.target.closest(".sheet-list, .sv-list, .sh-grid, .sh-apps, .blk-body, .wa-body, .nc-head, .uf-body, .mf-list, .lk-row");
+      if (!onHandle && !(scroller && scroller.scrollTop <= 0)) return;
+      shDrag = { cs, scr, y: e.clientY, dy: 0, active: false };
+    }, true);
+    document.addEventListener("pointermove", e => {
+      if (!shDrag) return;
+      const dy = e.clientY - shDrag.y;
+      if (!shDrag.active) {
+        if (dy < 8) { if (dy < -10) shDrag = null; return; }
+        shDrag.active = true;
+        shDrag.cs.classList.add("dragging");
+      }
+      shDrag.dy = Math.max(0, dy);
+      shDrag.cs.style.transform = `translateY(${shDrag.dy}px)`;
+    });
+    document.addEventListener("pointerup", () => {
+      if (!shDrag) return;
+      const { cs, scr, dy, active } = shDrag;
+      shDrag = null;
+      cs.classList.remove("dragging");
+      cs.style.transform = "";
+      if (active) {
+        shDragEndedAt = Date.now();
+        if (dy > cs.offsetHeight * 0.35) closeTopLayer(scr);
+      }
+    });
+    /* comment composer — Send button appears once the field has text; Enter posts */
+    document.getElementById("stage").addEventListener("input", e => {
+      if (e.target.classList && e.target.classList.contains("ci-field")) {
+        const send = e.target.closest(".comment-input").querySelector(".ci-send");
+        if (send) send.hidden = !e.target.value.trim();
+      }
+    });
+    document.getElementById("stage").addEventListener("keydown", e => {
+      if (e.key === "Enter" && e.target.classList && e.target.classList.contains("ci-field")) {
+        submitComment(e.target.closest(".screen"));
+      }
+    });
     document.getElementById("stage").addEventListener("click", e => {
       /* GUEST-001 — logged-out browsing: identity-required actions open the member sheet instead */
       if (isGuest() && !e.target.closest(".ob, .ob-coach") && e.target.closest(GUEST_GATE_SEL)) { obGate(); return; }
@@ -20506,7 +20887,8 @@
         const V = cpState(scr);
         const cfX = e.target.closest(".cf-x");
         if (cfX) {
-          if (V.order.length || V.caption.trim()) {
+          /* any edit counts — media, caption, or any pane field (spec: meta-only drafts warn too) */
+          if (V.order.length || V.caption.trim() || cfMetaDirty(V.meta)) {
             const isTh = state.lang === "th";
             /* IG-style discard sheet — TH: เริ่มใหม่ใช่ไหม / EN: IG discard wording */
             openDlg(scr, `
@@ -20516,9 +20898,10 @@
           <button class="dlg-btn danger dlg-discard-go">${isTh ? "เริ่มใหม่" : "Discard"}</button>
           <button class="dlg-btn dlg-cancel">${isTh ? "แก้ไขต่อไป" : "Cancel"}</button>`);
           }
-          /* PROFILE-017 — asset composer was opened over the profile; closing returns there */
-          else if (V.mode === "asset" && !V.editPid) openSub(scr, "profile:" + CP_ME.name, true);
-          else { scr._subStack = []; scr.classList.remove("sub-open"); }
+          /* PROFILE-017 — asset composer was opened over the profile; closing returns there.
+             A silent close drops the draft entirely — reopening always starts fresh */
+          else if (V.mode === "asset" && !V.editPid) { scr._cp = null; openSub(scr, "profile:" + CP_ME.name, true); }
+          else { cfClipStop(scr); cfHeroClipStop(scr); scr._cp = null; scr._subStack = []; scr.classList.remove("sub-open"); }
           return;
         }
         const cfNx = e.target.closest(".cf-next");
@@ -20673,6 +21056,7 @@
           const i = +cfCell.dataset.i;
           const grid = cfCell.closest(".ig-grid");
           cfClipStop(scr);
+          cfHeroClipStop(scr);
           if (grid.classList.contains("selmode")) {
             const k = V.order.indexOf(i);
             if (k < 0) {
@@ -20696,7 +21080,7 @@
             ? `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`
             : lastM.dur
               ? `<div class="ig-car"><img src="${lastM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${lastM.dur}</span></div>`
-              : `<div class="ig-car"><img src="${lastM.src}"><button class="expand">${I.expandIc(15)}</button></div>`;
+              : `<div class="ig-car"><img src="${lastM.src}"></div>`;
           if (cfNext) cfNext.classList.toggle("off", !V.order.length);
           return;
         }
@@ -20795,7 +21179,9 @@
           cfPaneSw.classList.toggle("on", V.meta[f]);
           return;
         }
-        const cfDead = e.target.closest(".rc, .expand, .cell.cam");
+        const cfHeroPlay = e.target.closest(".cf .ig-hero .clip-play");
+        if (cfHeroPlay) { cfHeroClipToggle(scr); return; }
+        const cfDead = e.target.closest(".rc, .cell.cam");
         if (cfDead) { toast("Not in this prototype yet"); return; }
         return;
       }
@@ -21431,7 +21817,7 @@
         const scr = mUs.closest(".screen");
         if (p) {
           p.saved = false;
-          p.savedCol = null;
+          p.savedCols = [];
           syncSaveBtns(scr, p);
           renderSub(scr);
         }
@@ -21441,7 +21827,7 @@
       const sBtn = e.target.closest(".search-btn");
       if (sBtn) {
         const scr = sBtn.closest(".screen");
-        srchState(scr);
+        resetSearch(srchState(scr)); /* spec-locked: every fresh open starts on explore landing — prior search state is cleared */
         openSub(scr, "search");
         return;
       }
@@ -21484,6 +21870,7 @@
       if (rcClear) {
         const scr = rcClear.closest(".screen");
         srchState(scr).recents = [];
+        saveRecents([]);
         renderSub(scr);
         return;
       }
@@ -21492,6 +21879,7 @@
         const scr = rcX.closest(".screen");
         const S = srchState(scr);
         S.recents.splice(+rcX.dataset.ri, 1);
+        saveRecents(S.recents);
         if ((scr._subStack || []).at(-1) === "recents") renderSub(scr);
         else {
           const body = scr.querySelector(".page-sub .sr-body");
@@ -21624,17 +22012,51 @@
         const scr = navGo.closest(".screen");
         const go = navGo.dataset.navgo;
         chatResetToDefault();
-        if (go === "profile") openSub(scr, "profile:" + CP_ME.name, true);
-        else if (go === "chat") openSub(scr, "chat", true);
-        else if (go === "alerts") openSub(scr, "alerts", true);
-        else if (go === "board") { bdQ = ""; openSub(scr, "board", true); }
+        /* IG tab model — every tab keeps its own page state (stack + scroll position);
+           leaving a tab stashes it, returning restores it; re-tapping the active tab
+           still pops to that tab's root (root reset) */
+        const TAB_SCROLL_SEL = ":scope > .sub-scroll, :scope > .pf-scroll, :scope > .pm-rp-scroll, :scope > .bd-dscroll";
+        const stashTab = () => {
+          if (!scr.classList.contains("sub-open")) return;
+          const stack = (scr._subStack || []).slice();
+          if (!stack.length) return;
+          const page = scr.querySelector(".page-sub");
+          const pane = page.querySelector(TAB_SCROLL_SEL);
+          const ent = { stack, scroll: pane ? pane.scrollTop : 0 };
+          const top = stack[stack.length - 1];
+          if (top && top.startsWith("board")) ent.bd = bdPageScrolls(page); /* BOARD — hero slide + pill bar are part of tab state too */
+          (scr._tabState = scr._tabState || {})[scr._subTab || "feed"] = ent;
+        };
+        const restoreTab = (go) => {
+          const saved = (scr._tabState || {})[go];
+          if (!saved || !saved.stack.length) return false;
+          delete scr._tabState[go]; /* consumed — a later leave stashes fresh state */
+          scr._subStack = saved.stack.slice();
+          scr._subSwap = true; renderSub(scr); scr._subSwap = false; /* tab switch swaps in place — no slide */
+          scr.classList.add("sub-open");
+          const pane = scr.querySelector(".page-sub").querySelector(TAB_SCROLL_SEL);
+          if (pane && saved.scroll) pane.scrollTop = saved.scroll;
+          if (saved.bd) requestAnimationFrame(() => bdApplyScrolls(scr.querySelector(".page-sub"), saved.bd));
+          return true;
+        };
+        const onTab = scr._subTab || "feed";
+        const sameTab = go === onTab;
+        if (!sameTab) stashTab();
+        else delete (scr._tabState || {})[go]; /* re-tap = root reset — forget saved state */
+        scr._subTab = go;
+        if (go === "profile") { if (sameTab || !restoreTab(go)) openSub(scr, "profile:" + CP_ME.name, true); }
+        else if (go === "chat") { if (sameTab || !restoreTab(go)) openSub(scr, "chat", true); }
+        else if (go === "alerts") { if (sameTab || !restoreTab(go)) openSub(scr, "alerts", true); }
+        else if (go === "board") { if (sameTab || !restoreTab(go)) { bdQ = ""; openSub(scr, "board", true); } }
         else if (go === "feed") {
           const wasFeed = !scr.classList.contains("sub-open");
-          scr._subStack = []; scr.classList.remove("sub-open");
-          if (wasFeed) { /* IG — tapping Feed while on Feed refreshes and returns to top */
-            scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
-            scr.querySelector(".feed-scroll").scrollTo({ top: 0, behavior: "smooth" });
-          }
+          if (sameTab) {
+            scr._subStack = []; scr.classList.remove("sub-open");
+            if (wasFeed) { /* IG — tapping Feed while on Feed refreshes and returns to top */
+              scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
+              scr.querySelector(".feed-scroll").scrollTo({ top: 0, behavior: "smooth" });
+            }
+          } else if (!restoreTab("feed")) { scr._subStack = []; scr.classList.remove("sub-open"); }
         }
         return;
       }
@@ -21820,7 +22242,7 @@
         else if (e.target.closest(".pf-qr-color")) { pfQrEl.dataset.theme = (+pfQrEl.dataset.theme + 1) % PF_QR_THEMES.length; pfQrPaint(scr, pfQrEl); }
         else if (e.target.closest(".pf-cam-x")) pfCloseCam(pfQrEl);
         else if (e.target.closest(".pf-qr-scan")) pfOpenCam(scr, pfQrEl);
-        else if (e.target.closest(".pf-qr-share")) openSheet(scr, "sh", "share-open", shareSheetHTML());
+        else if (e.target.closest(".pf-qr-share")) { scr.dataset.shKind = ""; scr.dataset.shUser = pfQrEl.dataset.u; openSheet(scr, "sh", "share-open", shareSheetHTML()); }
         else if (e.target.closest(".pf-qr-copy")) pfCopyText(pfProfileLink(pfQrEl.dataset.u)).then(() => scrToast(scr, "Link copied"));
         else if (e.target.closest(".pf-qr-dl")) { pfDownloadQr(pfQrEl); scrToast(scr, "QR code saved"); }
         return;
@@ -21861,6 +22283,7 @@
       const pfShShare = e.target.closest(".pf-sh-share");
       if (pfShShare) { /* PROFILE-005 — IG: Share opens the share sheet (Copy stays a toast) */
         const scr = pfShShare.closest(".screen");
+        scr.dataset.shKind = "";
         openSheet(scr, "sh", "share-open", shareSheetHTML());
         return;
       }
@@ -22145,7 +22568,7 @@
         }
         return;
       }
-      const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn), .emoji-row, .comment-input, .c-meta");
+      const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn)");
       if (dead) { toast("Not in this prototype yet"); return; }
       const wm = e.target.closest(".wordmark");
       if (wm) {
@@ -22219,6 +22642,7 @@
           const isTh = state.lang === "th";
           scr.dataset.ufSeller = post.seller;
           const cs = scr.querySelector(".comment-sheet");
+          scr._ufPs = cs.classList.contains("ps") ? (scr.dataset.dtPid || post.id) : null;
           cs.classList.remove("pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps", "mf");
           cs.classList.add("uf");
           cs.innerHTML = `
@@ -22232,6 +22656,11 @@
           scr.classList.add("unfollow-open");
         } else {
           setFollowing(scr, post.seller, true);
+          /* buttons inside sheets (caption sheet head) aren't covered by setFollowing's post scan */
+          if (fbtn.closest(".comment-sheet")) {
+            fbtn.classList.add("on");
+            fbtn.textContent = state.lang === "th" ? "กำลังติดตาม" : "Following";
+          }
         }
         return;
       }
@@ -22239,13 +22668,13 @@
       if (ufGo) {
         const scr = ufGo.closest(".screen");
         setFollowing(scr, scr.dataset.ufSeller, false);
-        scr.classList.remove("unfollow-open");
+        closeUfSheet(scr);
         scrToast(scr, state.lang === "th" ? "เลิกติดตามแล้ว" : "Unfollowed");
         return;
       }
       const ufNo = e.target.closest(".uf-cancel");
       if (ufNo) {
-        ufNo.closest(".screen").classList.remove("unfollow-open");
+        closeUfSheet(ufNo.closest(".screen"));
         return;
       }
       const mfBtn = e.target.closest(".mf-btn");
@@ -22386,14 +22815,20 @@
         const art = lbRow.closest(".post");
         const pid = art ? art.dataset.pid : scr.dataset.detailPid;
         const post = findPost(pid);
-        if (!post) return;
+        if (!post || !post.likes || !post.likedBy) return;
         openSheet(scr, "lk", "likes-open", likesSheetHTML(post));
         return;
       }
       const lkF = e.target.closest(".lk-follow");
       if (lkF) {
-        lkF.classList.toggle("on");
-        lkF.textContent = lkF.classList.contains("on") ? "Following" : "Follow";
+        const scr = lkF.closest(".screen");
+        const row = lkF.closest(".lk-row");
+        const name = row && row.dataset.pfUser;
+        if (!name) return;
+        const on = !pfIsFollowed(name);
+        pfSetFollow(scr, name, on);
+        lkF.classList.toggle("on", on);
+        lkF.textContent = on ? (state.lang === "th" ? "กำลังติดตาม" : "Following") : (state.lang === "th" ? "ติดตาม" : "Follow");
         return;
       }
       const shBtn = e.target.closest(".share-btn");
@@ -22401,6 +22836,7 @@
         const scr = shBtn.closest(".screen");
         const art = shBtn.closest(".post");
         scr.dataset.shPid = art ? art.dataset.pid : scr.dataset.detailPid;
+        scr.dataset.shKind = "post";
         openSheet(scr, "sh", "share-open", shareSheetHTML());
         return;
       }
@@ -22408,14 +22844,25 @@
       if (shFr) {
         const scr = shFr.closest(".screen");
         scr.classList.remove("share-open");
-        scrToast(scr, `Sent to ${shFr.dataset.name}`);
+        const sp = scr.dataset.shKind === "post" ? findPost(scr.dataset.shPid) : null;
+        const th = sp ? chSharePost(shFr.dataset.name, sp) : null; /* FEED-041 — the post really lands in the friend's room */
+        if (th) openSub(scr, "chatroom:" + th.id); /* friend share drops you into that chat */
+        else scrToast(scr, `Sent to ${shFr.dataset.name}`);
         return;
       }
       const shApp = e.target.closest(".sh-app");
       if (shApp) {
         const scr = shApp.closest(".screen");
         scr.classList.remove("share-open");
-        scrToast(scr, shApp.dataset.app === "copy" ? "Link copied" : `Shared to ${shApp.dataset.t}`);
+        const sp = scr.dataset.shKind === "post" ? findPost(scr.dataset.shPid) : null;
+        const link = sp ? `https://tukdaeng.app/p/${sp.id}` : pfProfileLink(scr.dataset.shUser || CP_ME.name);
+        if (shApp.dataset.app === "copy") {
+          pfCopyText(link).then(() => scrToast(scr, state.lang === "th" ? "คัดลอกลิงก์แล้ว" : "Link copied"));
+        } else if (navigator.share) {
+          navigator.share({ title: "TukDaeng", url: link }).catch(() => {});
+        } else {
+          scrToast(scr, `Shared to ${shApp.dataset.t}`);
+        }
         return;
       }
       /* ===== SAVED-001 — Saved hub: tabs / collections / manage / search / new-collection sheet ===== */
@@ -22583,7 +23030,7 @@
         if (newName && newName !== old) {
           const cur = (wl ? WISHLISTS : COLLECTIONS).find(c => c.name === old);
           if (cur) cur.name = newName;
-          POSTS.forEach(p => { if (p[wl ? "wlCol" : "savedCol"] === old) p[wl ? "wlCol" : "savedCol"] = newName; });
+          POSTS.forEach(p => { const k = wl ? "wlCols" : "savedCols"; p[k] = (p[k] || []).map(x => x === old ? newName : x); });
           V.col = newName;
         }
         V.mode = "";
@@ -22597,7 +23044,7 @@
         const V = colState(scr);
         const wl = inWlCol(scr);
         const n = V.addSel.size;
-        V.addSel.forEach(pid => { const p = findPost(pid); if (p) { p[wl ? "wlCol" : "savedCol"] = V.col; p[wl ? "wlColAt" : "colAt"] = Date.now(); } });
+        V.addSel.forEach(pid => { const p = findPost(pid); if (p) { const k = wl ? "wlCols" : "savedCols"; p[k] = p[k] || []; if (!p[k].includes(V.col)) p[k].push(V.col); p[wl ? "wlColAt" : "colAt"] = Date.now(); } });
         V.addSel.clear(); V.mode = "";
         renderSub(scr);
         if (n) scrToast(scr, n === 1 ? "Added 1 post" : `Added ${n} posts`);
@@ -22648,7 +23095,7 @@
         const col = svdMv.dataset.col;
         const inCol = (scr._subStack || []).at(-1) === "savedcol" || inWlCol(scr);
         const firstP = POSTS.find(x => V.sel.has(x.id));
-        V.sel.forEach(pid => { const p = findPost(pid); if (p) { p[wl ? "wlCol" : "savedCol"] = col; p[wl ? "wlColAt" : "colAt"] = Date.now(); } });
+        V.sel.forEach(pid => { const p = findPost(pid); if (!p) return; const k = wl ? "wlCols" : "savedCols"; p[k] = (p[k] || []).filter(x => !(inCol && x === V.col)); if (!p[k].includes(col)) p[k].push(col); p[wl ? "wlColAt" : "colAt"] = Date.now(); });
         V.sel.clear(); V.manage = false;
         scr.classList.remove("save-open");
         renderSub(scr);
@@ -22699,8 +23146,8 @@
         V.sel.forEach(pid => {
           const p = findPost(pid);
           if (!p) return;
-          if (wl) { p.wishlisted = false; p.wlCol = null; p.wlAt = 0; p.wlColAt = 0; syncWlBtns(scr, p); }
-          else { p.saved = false; p.savedCol = null; p.savedAt = 0; syncSaveBtns(scr, p); }
+          if (wl) { p.wishlisted = false; p.wlCols = []; p.wlAt = 0; p.wlColAt = 0; syncWlBtns(scr, p); }
+          else { p.saved = false; p.savedCols = []; p.savedAt = 0; syncSaveBtns(scr, p); }
         });
         V.sel.clear(); V.manage = false;
         scr.classList.remove("dialog-open");
@@ -22715,7 +23162,7 @@
         const wl = isWl(scr);
         const first = POSTS.find(x => V.sel.has(x.id));
         const col = V.col;
-        V.sel.forEach(pid => { const p = findPost(pid); if (p) p[wl ? "wlCol" : "savedCol"] = wl ? "Wishlist" : "Saved"; });
+        V.sel.forEach(pid => { const p = findPost(pid); if (p) { const k = wl ? "wlCols" : "savedCols"; p[k] = (p[k] || []).filter(x => x !== col); } });
         V.sel.clear(); V.manage = false;
         scr.classList.remove("dialog-open");
         renderSub(scr);
@@ -22757,25 +23204,25 @@
         else if (from !== "edit") COLLECTIONS.push({ name, thumb: "" });
         if (from === "save") {
           const post = findPost(scr.dataset.svPid);
-          if (post) { post.savedCol = name; post.colAt = Date.now(); }
+          if (post) { post.savedCols = post.savedCols || []; if (!post.savedCols.includes(name)) post.savedCols.push(name); post.colAt = Date.now(); }
           scrToast(scr, `Saved to ${name}`);
         } else if (from === "wishlist") {
           const post = findPost(scr.dataset.wlPid);
-          if (post) { post.wishlisted = true; post.wlCol = name; post.wlAt = Date.now(); post.wlColAt = post.wlAt; syncWlBtns(scr, post); }
+          if (post) { post.wishlisted = true; post.wlCols = post.wlCols || []; if (!post.wlCols.includes(name)) post.wlCols.push(name); post.wlAt = Date.now(); post.wlColAt = post.wlAt; syncWlBtns(scr, post); }
           scrToast(scr, `Added to ${name}`);
         } else if (from === "move" || from === "wlmove") {
           const V = colState(scr);
           const mvFirst = POSTS.find(x => (scr._ncPids || []).includes(x.id));
           const ncWl = from === "wlmove";
           const ncInCol = (scr._subStack || []).at(-1) === "savedcol" || (ncWl && inWlCol(scr));
-          (scr._ncPids || []).forEach(pid => { const p = findPost(pid); if (p) { p[ncWl ? "wlCol" : "savedCol"] = name; p[ncWl ? "wlColAt" : "colAt"] = Date.now(); } });
+          (scr._ncPids || []).forEach(pid => { const p = findPost(pid); if (p) { const k = ncWl ? "wlCols" : "savedCols"; p[k] = [name]; p[ncWl ? "wlColAt" : "colAt"] = Date.now(); } });
           V.sel.clear(); V.manage = false;
           scrToast(scr, ncInCol ? `Moved to ${name}` : `Added to ${name}`, mvFirst ? thumbS(mvFirst) : "");
         } else if (from === "edit") {
           const old = scr._ncEdit;
           const cur = COLLECTIONS.find(c => c.name === old);
           if (cur) { cur.name = name; }
-          POSTS.forEach(p => { if (p.savedCol === old) p.savedCol = name; });
+          POSTS.forEach(p => { p.savedCols = (p.savedCols || []).map(x => x === old ? name : x); });
           const V = savedState(scr);
           if (V.col === old) V.col = name;
           scrToast(scr, "Collection updated");
@@ -22796,7 +23243,7 @@
         if (!post) return;
         if (!post.wishlisted) {
           post.wishlisted = true;
-          post.wlCol = "Wishlist";
+          post.wlCols = post.wlCols || [];
           post.wlAt = Date.now();
           syncWlBtns(scr, post);
         }
@@ -22810,15 +23257,16 @@
         const post = findPost(scr.dataset.wlPid);
         const col = wlPick.dataset.col;
         if (post && col === "Wishlist" && post.wishlisted) {
-          post.wishlisted = false; post.wlCol = null; post.wlAt = 0; post.wlColAt = 0;
+          post.wishlisted = false; post.wlCols = []; post.wlAt = 0; post.wlColAt = 0;
           syncWlBtns(scr, post);
           scrToast(scr, "Removed from your wish list");
-        } else if (post && post.wlCol === col) {
-          post.wlCol = "Wishlist";
+        } else if (post && (post.wlCols || []).includes(col)) {
+          post.wlCols = post.wlCols.filter(x => x !== col);
           scrToast(scr, `Removed from ${col}`);
         } else if (post) {
-          post.wlCol = col;
-          post.wlColAt = Date.now();
+          post.wlCols = post.wlCols || [];
+          if (col === "Wishlist") { post.wishlisted = true; post.wlAt = Date.now(); syncWlBtns(scr, post); }
+          else { post.wlCols.push(col); post.wlColAt = Date.now(); }
           scrToast(scr, col === "Wishlist" ? "Added to Wish List" : `Added to ${col}`);
         }
         scr.classList.remove("save-open");
@@ -22849,7 +23297,7 @@
         if (!post) return;
         if (!post.saved) {
           post.saved = true;
-          post.savedCol = "Saved";
+          post.savedCols = post.savedCols || [];
           post.savedAt = Date.now();
           syncSaveBtns(scr, post);
         }
@@ -22863,15 +23311,16 @@
         const post = findPost(scr.dataset.svPid);
         const col = svPick.dataset.col;
         if (post && col === "Saved" && post.saved) {
-          post.saved = false; post.savedCol = null; post.savedAt = 0;
+          post.saved = false; post.savedCols = []; post.savedAt = 0;
           syncSaveBtns(scr, post);
           scrToast(scr, "Removed from your saved");
-        } else if (post && post.savedCol === col) {
-          post.savedCol = "Saved";
+        } else if (post && (post.savedCols || []).includes(col)) {
+          post.savedCols = post.savedCols.filter(x => x !== col);
           scrToast(scr, `Removed from ${col}`);
         } else if (post) {
-          post.savedCol = col;
-          if (col !== "Saved") post.colAt = Date.now();
+          post.savedCols = post.savedCols || [];
+          if (col === "Saved") { post.saved = true; post.savedAt = Date.now(); syncSaveBtns(scr, post); }
+          else { post.savedCols.push(col); post.colAt = Date.now(); }
           scrToast(scr, col === "Saved" ? "Saved" : `Saved to ${col}`);
         }
         scr.classList.remove("save-open");
@@ -22966,46 +23415,51 @@
       }
       const emojiSpan = e.target.closest(".emoji-row span");
       if (emojiSpan) {
-        const scr = emojiSpan.closest(".screen");
+        submitComment(emojiSpan.closest(".screen"), emojiSpan.textContent);
+        return;
+      }
+      const ciSend = e.target.closest(".ci-send");
+      if (ciSend) {
+        submitComment(ciSend.closest(".screen"));
+        return;
+      }
+      const cMeta = e.target.closest(".c-meta");
+      if (cMeta && !cMeta.closest(".c-row.reply")) {
+        const scr = cMeta.closest(".screen");
         const cs = scr.querySelector(".comment-sheet");
-        const row1 = cs.querySelector(".c-row");
-        const pid = row1 ? row1.dataset.pid : (scr.dataset.cmtPid || "p1");
-        const p = findPost(pid);
-        if (p) {
-          const list = commentsFor(p);
-          const myName = (typeof state !== "undefined" && state.user && state.user.username) || CP_ME.name;
-          const newC = {
-            id: "c-own-" + Date.now(),
-            name: myName,
-            avatar: "./assets/user-avatars/mrfox.png",
-            time: state.lang === "th" ? "เมื่อสักครู่" : "Just now",
-            text: emojiSpan.textContent,
-            likes: 0
-          };
-          list.push(newC);
-          p.comments = (p.comments || 0) + 1;
-          cs.innerHTML = commentsHTML(p);
-          scr.querySelectorAll(`.post[data-pid="${pid}"] .comment-count, .detail-counts .comment-count`).forEach(el => {
-            el.textContent = p.comments;
-          });
-          const listEl = cs.querySelector(".sheet-list");
-          if (listEl) listEl.scrollTop = listEl.scrollHeight;
+        const row = cMeta.closest(".c-row");
+        const inp = cs && cs.querySelector(".ci-field");
+        if (cs && row && inp) {
+          cs.dataset.replyCid = row.dataset.cid || "";
+          inp.value = "@" + (row.dataset.author || "") + " ";
+          inp.dispatchEvent(new Event("input", { bubbles: true }));
+          inp.focus();
         }
         return;
       }
       const closeSheet = e.target.closest(".sheet-backdrop, .sheet-handle");
       if (closeSheet) {
         const scr = closeSheet.closest(".screen");
-        closeCommentPopover(scr);
-        scr.classList.remove("comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
+        if (Date.now() - shDragEndedAt < 350) return; /* a released drag shouldn't double-close */
+        closeTopLayer(scr);
         return;
       }
       const clike = e.target.closest(".c-like");
       if (clike) {
-        clike.classList.toggle("liked");
-        const n = clike.querySelector("span");
-        if (n.textContent !== "") n.textContent = parseInt(n.textContent) + (clike.classList.contains("liked") ? 1 : -1);
-        else if (clike.classList.contains("liked")) n.textContent = "1";
+        const row = clike.closest(".c-row");
+        const p = row && findPost(row.dataset.pid);
+        const list = p && commentsFor(p);
+        let c = null;
+        if (list) {
+          const top = list.find(x => (x.id || "") === row.dataset.cid);
+          c = row.dataset.rid ? (top && (top.replies || []).find(r => (r.id || "") === row.dataset.rid)) : top;
+        }
+        if (c) {
+          c.liked = !c.liked;
+          c.likes = Math.max(0, (c.likes || 0) + (c.liked ? 1 : -1));
+          clike.classList.toggle("liked", c.liked);
+          clike.querySelector("span").textContent = c.likes || "";
+        }
         return;
       }
       const ft = e.target.closest(".feed-tab");
@@ -23054,6 +23508,7 @@
       if (igdTag) {
         const scr = igdTag.closest(".screen");
         const S = srchState(scr);
+        resetSearch(S);              /* hashtag tap = a fresh search — prior session state is cleared first */
         S.q = igdTag.textContent.trim();
         S.mode = "results"; S.tab = "foryou";
         openSub(scr, "search");
@@ -23393,7 +23848,7 @@
        member sheet instead. New members keep member powers but start with no data of their own. */
     const isGuest = () => state.session === "guest";
     const CP_ME_DEMO = { name: CP_ME.name, avatar: CP_ME.avatar };
-    const POST_FLAG_KEYS = ["liked", "saved", "wishlisted", "wlCol", "wlAt", "wlColAt", "following", "favorite", "muted", "archived", "archivedAt", "ni", "blocked", "pins"];
+    const POST_FLAG_KEYS = ["liked", "saved", "savedCols", "wishlisted", "wlCols", "wlAt", "wlColAt", "following", "favorite", "muted", "archived", "archivedAt", "ni", "blocked", "pins"];
     let POSTS_SNAP = null, COLS_SNAP = null, NEW_USER_KEY = null;
     function snapPosts() {
       if (!POSTS_SNAP) POSTS_SNAP = new Map(POSTS.map(p => [p.id, Object.fromEntries(POST_FLAG_KEYS.map(k => [k, p[k]]))]));
@@ -23401,7 +23856,7 @@
     }
     function clearUserData() {
       COLLECTIONS.length = 0; WISHLISTS.length = 0;
-      POSTS.forEach(p => { p.liked = false; p.saved = false; p.wishlisted = false; p.wlCol = null; p.wlAt = 0; p.wlColAt = 0; p.following = false; p.favorite = false; p.muted = false; p.archived = false; p.archivedAt = 0; p.ni = false; p.blocked = false; p.pins = null; });
+      POSTS.forEach(p => { p.liked = false; p.saved = false; p.savedCols = []; p.wishlisted = false; p.wlCols = []; p.wlAt = 0; p.wlColAt = 0; p.following = false; p.favorite = false; p.muted = false; p.archived = false; p.archivedAt = 0; p.ni = false; p.blocked = false; p.pins = null; });
       PF_EXTRA_FOL.clear(); PF_EXTRA_FAV.clear(); PF_EXTRA_MUT.clear(); PF_REMOVED_FOL.clear(); PF_BLOCKED.clear(); PF_GFX_DEL.clear();
       for (const k in PF_GFX_REG) delete PF_GFX_REG[k];
       WATCH_ALERTS.length = 0;
@@ -23466,7 +23921,7 @@
       ".post-head .more", ".pm-btn", ".pm-go-report", ".pm-fav", ".pm-ni", ".pm-own-archive", ".pm-own-nocomm", ".pm-own-edit", ".pm-own-sold", ".pm-own-soldview", ".pm-own-pin", ".pm-own-del",
       ".rp-opt", ".pm-reason", ".uc-report", ".ni-mute", ".ni-unfollow", ".sr-wa",
       ".pf-more", ".pf-menu", ".pf-edit", ".pf-share", ".pf-sh-report", ".pf-sh-block", ".blk-rep", ".blk-go", ".ch-rep-del-btn", ".ch-rep-only-btn",
-      ".set-btn", ".sh-add", ".sh-fr", ".pf-sh-share", "[data-bdlike]", "[data-bdsave]", "[data-bdshare]", "[data-bdact='share']", "[data-bdact='save']", "[data-bdact='report']"
+      ".set-btn", ".sh-add", ".sh-fr", ".pf-sh-share", "[data-bdlike]", "[data-bdshare]"
     ].join(",");
     function obGate() {
       if (OB.on && !OB.gate) return; /* first-run sheet already up */
@@ -23551,7 +24006,7 @@
     });
     document.getElementById("obReplay").addEventListener("click", () => {
       localStorage.removeItem("fo_onboarded"); localStorage.removeItem("fo_member_hide");
-      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); setSession("member");
+      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); localStorage.removeItem("fo_srch_recents"); setSession("member");
       document.querySelectorAll(".ob-coach").forEach(c => c.remove());
       Object.assign(OB, { on: true, step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", opt: { analytics: false, personalized: false }, f: { name: "", email: "", pw: "", user: "" }, errs: {}, tries: 0, account: null, resend: 30, os: false, sent: false });
       state.feedTab = "all"; obLast = null;
