@@ -16,7 +16,7 @@ Prototype anchors verified (scan บน working copy @ HEAD — line anchors dri
 - **Search input** ~20224: `.bd-q` input event → `bdQ` + `boardSearchSync` (live, no debounce)
 - **Gate** ~20395 + ~23362–23371: `GUEST_GATE_SEL` ครอบ `[data-bdlike]`/`[data-bdsave]`/`[data-bdshare]`/`[data-bdact=share|save|report]` → `obGate()` Member Sheet ก่อน `boardClick` (listener เดียวกัน `#stage` — gate return ก่อน dispatch)
 - **Session** ~23297–23351: `POST_FLAG_KEYS`/`snapPosts`/`clearUserData`/`restoreUserData`/`applySessionData` — **ไม่แตะ `BOARD`** (article flags ค้างข้าม session — D8)
-- **i18n** ~19660–19858 + ~19903–19911: `I18N_TH` board block ~19695 (`Board`/`| Board`/`Categories`/`All`/`Featured`/cat names/`You're all caught up`/`Author`/`Date`/`Close`/`Like`/`Share`/`Article not found`/`This article is no longer available.`→`บทความนี้ไม่มีให้บริการแล้ว`) + `i18nTr` patterns (`{n} min read · {ago}`→`อ่าน {n} นาที`, date→พ.ศ.) + setLang board re-render (`.bd-sec h3`/`.bd-viewall`/`.bd-hero-btn`/`.bd-q` placeholder)
+- **language** ~19660–19858 + ~19903–19911: `I18N_TH` board block ~19695 (`Board`/`| Board`/`Categories`/`All`/`Featured`/cat names/`You're all caught up`/`Author`/`Date`/`Close`/`Like`/`Share`/`Article not found`/`This article is no longer available.`→`บทความนี้ไม่มีให้บริการแล้ว`) + `i18nTr` patterns (`{n} min read · {ago}`→`อ่าน {n} นาที`, date→พ.ศ.) + setLang board re-render (`.bd-sec h3`/`.bd-viewall`/`.bd-hero-btn`/`.bd-q` placeholder)
 
 ## 1. What changed (section map)
 
@@ -25,9 +25,9 @@ Prototype anchors verified (scan บน working copy @ HEAD — line anchors dri
 | Header refs | rewrite — เพิ่ม baseline chain 00_GLOBAL §7/§11/§13 + 00_NAV §6.3/6.6/6.7/§7/§9/§10/§12–13 + 11_SOCIAL §11 + 09 + 15 (unsynced note) |
 | §1 Doc Info | rewrite — module name = editorial magazine; Version 1.9 / Status synced; เพิ่ม rename-trace note (v1.0 = 7-section + infinite scroll + guest-share + stale terms) |
 | §2 Objective | rewrite — magazine surfaces + `data-bd*` board-specific boundary + guest gating |
-| §3 Prototype Reference | **ใหม่ทั้งก้อน** — anchors จัดกลุ่ม routes/data/carousel/anatomy/pages/click-chain/input/gate/session/i18n/shared-deps (function-name + line ปัจจุบัน + drift note) |
+| §3 Prototype Reference | **ใหม่ทั้งก้อน** — anchors จัดกลุ่ม routes/data/carousel/anatomy/pages/click-chain/input/gate/session/language/shared-deps (function-name + line ปัจจุบัน + drift note) |
 | §4 Master Alignment | **rewrite** — 7-section row แก้เป็น magazine (D1); infinite scroll ขัด (D2); guest-share เดิมผิดตาม S-03 (D3); Notification→Alerts feed; guest gate→Member Sheet |
-| §5 Scope | rewrite — In = 4 surfaces + carousel/pills/sheet/search/detail + like/share + gate + i18n + dead boundary; Out = create/edit/delete/comment, infinite scroll, saved-article, report live entry, native share/deep link, trending algo, publish-state sim, BO authoring, content i18n; Report boundary = spec-only contract |
+| §5 Scope | rewrite — In = 4 surfaces + carousel/pills/sheet/search/detail + like/share + gate + language + dead boundary; Out = create/edit/delete/comment, infinite scroll, saved-article, report live entry, native share/deep link, trending algo, publish-state sim, BO authoring, content language; Report boundary = spec-only contract |
 | §6 Route & Surface Mapping | **ใหม่** — 4 routes + entries + bottom-nav presence + nav semantics (swap-open, rpPush/rpBack, suppress-drag) |
 | §7 User States | rewrite — Guest (browse free / like-share gated / liked-state-leak note), Member, New, Admin(BO) |
 | §8 Data Model | **ใหม่** — `BOARD` fields + taxonomy (pills ไม่ใช่ strict enum) + module globals (`bdQ`/`bdFilterCat` reset semantics + session-flag gap) + filter vs search corpus semantics |
@@ -38,14 +38,14 @@ Prototype anchors verified (scan บน working copy @ HEAD — line anchors dri
 | §13 Contract Rules | **ใหม่** — Report Article locked flow + deep-link/display-state matrix + back/main-nav เก็บเป็น contract-only (prototype ไม่ครอบ) + copy-drift note (`บทความนี้ไม่พร้อมใช้งานแล้ว` vs dict `บทความนี้ไม่มีให้บริการแล้ว`) |
 | §14 Guest Gate | **ใหม่** — gated vs not-gated table ตาม `GUEST_GATE_SEL` จริง + gate-before-handler order + no pending-resume |
 | §15 User Flows | rewrite — 4 flows ตามพฤติกรรมจริง (browse/view-all+filter/search/like-share) |
-| §16 i18n & Copy | **ใหม่** — 4-layer coverage table + EN-only leftover inventory |
+| §16 Language & Copy | **ใหม่** — 4-layer coverage table + EN-only leftover inventory |
 | §17 Notifications | **แทน "Notification Rules" เดิม** — board ไม่สร้าง alert; ไม่มี "Notification Center" |
 | §18 Empty/Error/Toasts | **ใหม่** — copy table จริงทุกจุด + dead-path toasts + no-retry note |
 | §19 Deviations | **ใหม่** — D1–D16 (magazine model, no infinite scroll, guest-share gated, report dead entry, save dead, bdmore/bdclear dead, substring filter, session-flag gap, search×filter no-combine, dead queries, unavailable-copy drift, EN leftovers, comment drift, bdFilterCat persist, author hardcode, 15 unsynced) |
 | §20 Analytics | rewrite — contract events ใหม่ตาม surface จริง — ลบ `board_section_opened`/`article_list_load_more`/`article_report_started` เดิม (ไม่มี surface รองรับ) |
 | §21 ACs | **rewrite ทั้งชุด** — AC-BOARD-001–018 sequential (เดิม 001–012 + 010A–F/011A–D suffixes); AC-016/017 mark contract; AC-018 dead-artifact guard |
 | §22 Related | rewrite — เพิ่ม 00_GLOBAL/00_NAV/03/09/11/15/18 links ตาม boundary ใหม่ |
-| §23 Future | rewrite — master mapping, report entry, saved article, infinite scroll, native share/deep link, trending, comment, content i18n, session reset, search×filter |
+| §23 Future | rewrite — master mapping, report entry, saved article, infinite scroll, native share/deep link, trending, comment, content language, session reset, search×filter |
 | README_MODULE_INDEX L67 | "Article board, categories, read/like/share" → "Editorial magazine board — hero featured, Latest list, categories, article search, detail like/share" |
 
 ## 2. Cross-doc ref check (ก่อนปิดงาน)

@@ -42,7 +42,7 @@ Gap files ต้นทาง (7 ไฟล์): `gap-FSP-001a-auth.md`, `gap-FSP-
 | D12 | Notification destinations = post viewer / profile — ไม่มี asset detail, focus comment, result list, unavailable states | 001b A8 · 003b A9/C12/C13/C15 | รวม S-08 + contract-only states |
 | D13 | `system` notification type (security "new device logged in") นอก baseline — dead toast | 001b A7/C2 · 003b C11/A8 | **→ S-17 sign-off** |
 | D14 | Naming drift: Notifications vs Alerts; Board vs Boards | 001b C7 · 003b C19 · 004 C14/B21 | terminology sweep FSP-026 (default) |
-| D15 | Empty/error copy drift + EN-hardcode ทั่ว prototype (search/WA/saved/wl/QR/block/settings) | 002a B17/C21 · 002b B3/B11 · 003a B21 · 003b C10 · 004 B8/C13 | i18n + copy sweep FSP-026 (default) |
+| D15 | Empty/error copy drift + EN-hardcode ทั่ว prototype (search/WA/saved/wl/QR/block/settings) | 002a B17/C21 · 002b B3/B11 · 003a B21 · 003b C10 · 004 B8/C13 | Language + copy sweep FSP-026 (default) |
 | D16 | Deep link ไม่มีเลยทั้งแอป (share=mock toast) | 001b B1 · 002b B8 · 003a B18 · 004 B5 | contract-only keep (default) |
 | D17 | Analytics tables ทุกเล่ม — ไม่มี tracking layer | 001a B10 · 001b B11 · 002a B19 · 002b B10 · 003a B20 · 003b B13 · 004 B18 | contract-only keep (default) |
 | D18 | Suspended/Banned/account-status check ไม่มี | 001a B5/C8 · 001b B10 | contract-only keep (default) |

@@ -23,7 +23,7 @@ This document is the QA execution checklist for Front Office V1. Each scenario m
   - `FOR SALE` tag on detail is driven by `price`, not `pfkind`, so a sold post with a leftover price still shows `FOR SALE` (05 §9 deviation)
   - Hidden chat threads still appear in Items view groups; media send does not un-hide/move-to-top
   - Comment input/`Reply`/`emoji` from Post Detail are dead affordances (`Not in this prototype yet`) while the emoji quick-react inside the comment sheet is live — surface-dependent quirk
-  - EN/TH hardcoded strings across several surfaces (i18n sweep scope)
+  - EN/TH hardcoded strings across several surfaces (language sweep scope)
 
 ---
 

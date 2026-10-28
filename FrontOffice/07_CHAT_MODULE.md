@@ -388,7 +388,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 20. **media send ไม่ un-hide / ไม่ move-to-top** — quirk ต่างจาก `chSend`
 21. **`cfg` toggles/defView/quick ไม่ reset ตอน session switch** — `applySessionData` เคลียร์แค่ inited/threads/draft
 22. **Ask post lookup fail → `Not in this prototype yet`** — fallback dead toast (`.ask-pill` อยู่ใน dead-handler list หลัง chatClick)
-23. **EN/TH hardcoded strings ~40 copies** → i18n sweep FSP-026 (ดู §13/§19)
+23. **EN/TH hardcoded strings ~40 copies** → language sweep FSP-026 (ดู §13/§19)
 24. **`pfRestrictHint` defined แต่ไม่มี call site** — 06 spec อ้าง banner หลัง unblock; ที่จริงไม่แสดง (flag FSP-030 consistency)
 25. **Session-only state ทั้งโมดูล** — threads/pins/mutes/hidden/cfg/draft/galState memory เท่านั้น (persistence contract)
 
@@ -463,7 +463,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 | room/chmenu/chmedia/chsettings missing thread | `Chat not found` + `This conversation is no longer available.` |
 | chatitem missing group | `Item not found` + `No chats for this item.` |
 
-EN-hardcode ทั้งชุด (i18n sweep — §19 flag)
+EN-hardcode ทั้งชุด (language sweep — §19 flag)
 
 ---
 
@@ -625,5 +625,5 @@ EN-hardcode ทั้งชุด (i18n sweep — §19 flag)
 - `pfRestrictHint` consistency (call site หรือตัด — รวม 06)
 - `mute` ไม่นับ badge (chUnread filter) + per-thread mute มีผล notification
 - Deep link `chatroom:{id}` / `chat` contract (00_NAV §10/§12)
-- i18n sweep — EN/TH hardcode (~40 copies) → localized pairs
+- language sweep — EN/TH hardcode (~40 copies) → localized pairs
 - Real report reason wiring → moderation queue + ticket id (canonical 15)

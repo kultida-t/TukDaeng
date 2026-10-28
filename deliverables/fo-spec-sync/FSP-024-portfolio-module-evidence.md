@@ -19,7 +19,7 @@ Prototype anchors verified (scan บน working copy @ HEAD — line anchors dri
 - **Dev sims** `PFO_SIMS`/`pfoSimBar` ~17197 + `pfo-more`/`data-pfosim`/`pfo-retry` ~21907–21936 (`?dev=1` เท่านั้น)
 - **Session** ~23297–23351: `clearUserData`/`POST_FLAG_KEYS` **ไม่แตะ** `PF_ASSETS`/`PF_SOLD`/`pfkind` → mutations ค้างข้าม session (D9)
 - **Gate** ~23362–23371: `GUEST_GATE_SEL` มี `.pm-own-sold`/`.pm-own-soldview` แต่ **ไม่มี** `[data-sub]`/`.pf-pfo` — entry unreachable สำหรับ guest (own profile gated upstream); non-member → `state.session !== "member"` → empty `ไม่พบข้อมูล` ~17225
-- **i18n**: inline `isTh` ทุกจุดหลัก + `I18N_TH` dict (`Latest market price`/`Show`/`Hide`/`No data found`/`TukDaeng Market Data`/`Try again`) + `i18nTr` date pattern → พ.ศ.; EN leftovers: `Sale` chip, `PFO_CMP`, `Purchase price estimate`/`No market price`, `N/A` (นอก spec-row), `y/m` suffixes, dev-sim UI, `THB` headline prefix
+- **language**: inline `isTh` ทุกจุดหลัก + `I18N_TH` dict (`Latest market price`/`Show`/`Hide`/`No data found`/`TukDaeng Market Data`/`Try again`) + `i18nTr` date pattern → พ.ศ.; EN leftovers: `Sale` chip, `PFO_CMP`, `Purchase price estimate`/`No market price`, `N/A` (นอก spec-row), `y/m` suffixes, dev-sim UI, `THB` headline prefix
 
 ## 1. What changed (section map)
 
@@ -28,9 +28,9 @@ Prototype anchors verified (scan บน working copy @ HEAD — line anchors dri
 | Header refs | rewrite — baseline chain 00_GLOBAL §7/§9/§10/§11/§14 + 00_NAV §6.6/§6.7/§12 + 04/05/06/02 delegation + 09 |
 | §1 Doc Info | rewrite — Version 1.9 / synced; rename-trace note (v1.0 = Total-Asset-Value headline + 6-field sold record + Top Brand/YTD + real API + denied/failed production states) |
 | §2 Objective | rewrite — owner-private surface 5 sub pages; module = value-math + privacy owner, lifecycle defer 04 |
-| §3 Prototype Reference | **ใหม่ทั้งก้อน** — anchors จัดกลุ่ม routes/data/math/dashboard/pages/lifecycle/entries/handlers/dev-sims/session/gate/i18n/shared-deps (function-name + drift note) |
+| §3 Prototype Reference | **ใหม่ทั้งก้อน** — anchors จัดกลุ่ม routes/data/math/dashboard/pages/lifecycle/entries/handlers/dev-sims/session/gate/language/shared-deps (function-name + drift note) |
 | §4 Master Alignment | **rewrite** — 14 rows: headline invested (D2), icon entry (D1), sold fields 2 (D3), sellable sale/show/hide (D4), no Top Brand/YTD (D5), denied dev-only (D6/D7), mock market data (D8) |
-| §5 Scope | rewrite — In = 5 surfaces + math contract + privacy + dev sims + i18n; Out = drawer lifecycle (04), own-post menu (02), `.pf-pfo` placement (06), post detail (05), composer cost UI (02/04), real API, BO view, analytics-by-master items |
+| §5 Scope | rewrite — In = 5 surfaces + math contract + privacy + dev sims + language; Out = drawer lifecycle (04), own-post menu (02), `.pf-pfo` placement (06), post detail (05), composer cost UI (02/04), real API, BO view, analytics-by-master items |
 | §6 Route & Surface | **ใหม่** — 5 routes + entries + stack semantics (`openSubOver`/`pmDropCovered`) + `PF_ASSETS`/`PF_SOLD` route-split note |
 | §7 User States | rewrite — Guest (unreachable + empty-guard fallback), New member (empty), Member/Owner, Viewer (no surface — better than active deny), Admin (BO) |
 | §8 Data Model | **ใหม่** — `PF_ASSETS`/`PF_SOLD` field tables + module globals + session-persistence quirk (D9) |
@@ -41,7 +41,7 @@ Prototype anchors verified (scan บน working copy @ HEAD — line anchors dri
 | §13 Mark as Sold | **ใหม่** — entries table + form anatomy + validation table + transition 4 ขั้น + terminal rule |
 | §14 Privacy & Access | **ใหม่** — owner-only + reachability-not-deny model + denied-as-contract + guest gate table + rename-trace |
 | §15 Dev Sims | **ใหม่** — `PFO_SIMS` mechanics + per-sim render table + `?dev=1`-only |
-| §16 i18n & Copy | **ใหม่** — isTh/dict/pattern coverage + EN-leftover inventory (→ FSP-026) |
+| §16 Language & Copy | **ใหม่** — isTh/dict/pattern coverage + EN-leftover inventory (→ FSP-026) |
 | §17 Notifications | rewrite — portfolio ไม่สร้าง alert; Alerts feed canonical 09 |
 | §18 Empty/Error/Toasts | **ใหม่** — copy table จริงทุกจุด (empty/denied/failed/nomkt/validation/toast) TH+EN |
 | §19 Deviations | **ใหม่** — D1–D21 (invested headline, icon entry, 2-field sold, sellable-3, no YTD/brands, empty-not-denied, dev-sim-only, mock market, session persist, market-line quirk, coverage semantics, consignment copy-only, asking-null mislabel, THB/฿ mix, rows=purchase, ex always-up, nomkt detail gap, st-hide sold chip, local-tz hold, no delete, contract analytics) |

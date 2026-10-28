@@ -161,3 +161,9 @@ When the user asks for a fun blog from the day's work (e.g. "เขียน blo
 ## Kanban Workflow Preference
 
 - Do not move a Kanban task to `done` until the user explicitly confirms the result and asks to close it. If more work arrives for an already-closed task, fold it into the same task (keep original start time, update end time) when the user asks.
+
+## Terminology Rule — Plain Language in Documents (no "i18n")
+
+Deliverables and spec documents (test cases, checklists, inventories, summaries, spec docs) must use plain, understandable language. Do NOT write the jargon "i18n"/"I18N" as a word — write **"Language"** / **"language"** / **"ภาษา"** instead (e.g. category `Language/Theme`, title "Language & Theme Sweep", "language TH/EN coverage").
+
+Exceptions — keep literal code identifiers and locked spec IDs as-is: `I18N-001`, `I18N_TH`, `i18nTr`, `i18nApply`, `data-i18n-skip`, `FO-TC-I18N-`, task folder `task-I18N-001`, and file paths that already contain the name. Same principle applies to other insider abbreviations — prefer words a non-developer reviewer can read.

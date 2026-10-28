@@ -392,7 +392,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 20. **`report:posts:` picker = `pfTabPosts "all"`** — leak hide/sold tiles (S-14 class เดียวกัน)
 21. **`pfp-follow` fade-out** ~1.2s หลัง follow (pv head)
 22. **Session-only state**: follow/fav/mute/block/removed/pins/gfx tombstones/QR theme — refresh หาย (persistence = contract §18)
-23. **EN-hardcoded strings** (i18n sweep FSP-026): pfollow labels/empties/`Search username`, QR labels+toasts, `blkSheet`/`unblockDlg`/`Remove follower?`/`Pin limit reached` ทั้งก้อน, `Blocking`/`Unblocked`/`Unfollowed`/`Muted`/`Unmuted`/`Profile shared`/`Profile link copied`/`QR code…`/`Link copied`/`QR code saved`/`Signed in as`/`Camera…`/`Allow camera…`
+23. **EN-hardcoded strings** (language sweep FSP-026): pfollow labels/empties/`Search username`, QR labels+toasts, `blkSheet`/`unblockDlg`/`Remove follower?`/`Pin limit reached` ทั้งก้อน, `Blocking`/`Unblocked`/`Unfollowed`/`Muted`/`Unmuted`/`Profile shared`/`Profile link copied`/`QR code…`/`Link copied`/`QR code saved`/`Signed in as`/`Camera…`/`Allow camera…`
 24. **`pf-sh-share` อยู่ใน gate list แต่ unreachable** (`.pf-more` gated ก่อน) — belt-and-suspenders
 25. **`.pf-menu` → `settings` direct**; `.set-btn` dead (canonical 13)
 26. **`pedit` `o.disp = uname`** — save เปลี่ยน disp ตาม username เสมอ (ไม่มีช่อง display name แยก)
@@ -654,5 +654,5 @@ Contract-level (prototype ไม่มี analytics layer — เก็บ event
 - **IG extras ที่ยัง dead**: `pf-note` note bubble, `pf-sleep` sleep mode, `pf-addchip`/suggested row, `pf-avadd` add avatar, avatar-overlay QR action, `pf-uname` account switcher
 - **Story ring** — `ring` แสดงแต่ไม่มี story surface
 - **Display name แยกจาก username** — ตอนนี้ `disp` = username เสมอ
-- **i18n sweep** — EN-hardcoded strings (§9 Deviation #23) เข้า FSP-026
+- **language sweep** — EN-hardcoded strings (§9 Deviation #23) เข้า FSP-026
 - **Follower/following real data** — mock lists (`pfAllUsers` + slice) → real relationships

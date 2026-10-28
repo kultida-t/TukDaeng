@@ -32,7 +32,7 @@ Prototype anchors verified (scan บน working copy ปัจจุบัน �
 | §15 Analytics | rewrite — contract `alerts_*`/`alert_*` set (11 events) — ลบ `notification_open_chat_room`/`notification_open_asset_detail`/`notification_open_comment_focus` ที่ตายตาม destination เก่า |
 | §16 ACs | **rewrite ทั้งชุด** — AC-NOTI-001–022 sequential จัดกลุ่ม 6 หมวด — เดิม AC-NOTI-001–012 (ข้าม 008/009) renumber; ไม่มี live cross-ref (ดู §2) |
 | §17 Related | +00_GLOBAL/00_NAV/02/03/06/07/10/13/15 links ตาม boundary ใหม่ |
-| §18 Future | +system destination surface, generation pipeline, push+deep link, toggle enforcement, watch-missing toast parity (FSP-030), retention, unread persist, per-type dismiss, comment focus, i18n |
+| §18 Future | +system destination surface, generation pipeline, push+deep link, toggle enforcement, watch-missing toast parity (FSP-030), retention, unread persist, per-type dismiss, comment focus, language |
 
 ### 10_WATCH_ALERT_MODULE.md
 
@@ -53,7 +53,7 @@ Prototype anchors verified (scan บน working copy ปัจจุบัน �
 | §15 Analytics | rewrite — contract `watch_alert_*` set (10 events — align ชื่อกับ 03/05/09 contract sets) |
 | §16 ACs | **rewrite ทั้งชุด** — AC-WA-001–026 sequential จัดกลุ่ม 6 หมวด — เดิม AC-WA-001–018 (มี 004A suffix) renumber; DOCUMENT_VERSION refs AC-WA-016/017/018 ใน v1.8 history = historical (ดู §2) |
 | §17 Related | +00_GLOBAL/00_NAV/02/03/05/09/13/14/15 links |
-| §18 Future | +persistence, real match pipeline, relation-id criteria model, criteria editing, delete confirm (FSP-030), frequency/digest, price alerts, saved search, modelKey ให้ search-source, push/deep link, i18n |
+| §18 Future | +persistence, real match pipeline, relation-id criteria model, criteria editing, delete confirm (FSP-030), frequency/digest, price alerts, saved search, modelKey ให้ search-source, push/deep link, language |
 
 ## 2. Cross-doc ref check (ก่อนปิดงาน)
 
@@ -68,7 +68,7 @@ Prototype anchors verified (scan บน working copy ปัจจุบัน �
 | Stale terms ใน not-yet-synced modules (flag ไม่แก้) | `Notification Center` item claims: 02_FEED L662, 11_SOCIAL L294, 12_BOARD L266/L526, 15_TRUST_SAFETY L270 — ยังตรงเจตนา (ไม่สร้าง item) แต่ชื่อ surface เป็น legacy term → flag FSP-022/023 ตอน sync เอกสารนั้น; `Global Login Required` ที่เหลือ: 11/12/15/16 (pending sync) ✓ |
 | Stale terms ใน legacy/central docs | Master L297/313/581/714/750, README_MODULE_INDEX L94 (**"supported types Like, Comment, Follow, Watch Alert เท่านั้น" — stale หลัง system type decision**), DEV_IMPLEMENTATION_CHECKLIST L214–218, DEV_BASELINE_HANDOFF L86/98, QA_CHECKLIST L1018/1099/1106/1384, DEV_CHAT_CHECKLIST L95/99/136/196, FINAL_HANDOFF L35/36, DOCUMENT_VERSION (v1.3/v1.8 history) — flag FSP-025/026/027/028 ✓ |
 | 07 §14 reference กลับมาที่ 09 | "canonical: alerts feed ไม่มี chat type — 09_NOTIFICATION" — 09 ใหม่ยืนยัน AC-NOTI-022 ✓ |
-| ERROR_STATE_UI_COPY_CATALOG | ไม่มี alerts/WA copies — flag เพิ่มตอน i18n sweep FSP-026 ✓ |
+| ERROR_STATE_UI_COPY_CATALOG | ไม่มี alerts/WA copies — flag เพิ่มตอน language sweep FSP-026 ✓ |
 
 ## 3. Verification
 
@@ -96,7 +96,7 @@ Prototype anchors verified (scan บน working copy ปัจจุบัน �
 | `system` = V1 type placeholder destination | decision ตาม 00_NAV §8 hand-off; tap = dead toast; production = security surface (future) |
 | Follow row extras | `Follow back` (real `pfSetFollow` toggle) + dismiss `x` + `Mark all as read` — extras ที่ spec เดิมไม่มี; dismiss เฉพาะ follow |
 | `watch` row missing post = silent no-op | like/comment มี toast `This post is no longer available` — inconsistency flag FSP-030 |
-| `al-fbtn` post-toggle label EN hardcode | render แรกมี TH (`ติดตามกลับ`/`กำลังติดตาม`) แต่ toggle แล้วเหลือ `Following`/`Follow back` — i18n quirk |
+| `al-fbtn` post-toggle label EN hardcode | render แรกมี TH (`ติดตามกลับ`/`กำลังติดตาม`) แต่ toggle แล้วเหลือ `Following`/`Follow back` — language quirk |
 | `state.notif` toggles ไม่กรองจริง + ไม่ reset ตอน session switch | page มีจริง (13 canonical) — enforcement = contract |
 | `ALERTS` seed-only ไม่มี generation | read/dismiss ไม่ persist ข้าม session |
 | WA: 3 entries shared sheet | spec เดิมบังคับ Search Filter เท่านั้น (C1 resolved) |
@@ -107,14 +107,14 @@ Prototype anchors verified (scan บน working copy ปัจจุบัน �
 | WA: `_waHits` self-match toast | simulation บนโพสต์ตัวเองตอน publish — ไม่ใช่ feed row จริง |
 | WA: `WATCH_ALERTS` ไม่ restore หลัง session switch | `clearUserData` ล้างแต่ `restoreUserData` ไม่คืน — member เสีย alerts ใน demo |
 | WA: `modelKey` เฉพาะ detail-source | search alert criteria เป็น brand+model+ref ล้วนก็ไม่ขับ bell `Following this model` (quirk) |
-| WA/Alerts: EN/TH mixed hardcode | WA toasts EN-only, `al-fbtn` toggle EN — i18n sweep FSP-026 |
+| WA/Alerts: EN/TH mixed hardcode | WA toasts EN-only, `al-fbtn` toggle EN — language sweep FSP-026 |
 | v1.8 contract retained เป็น contract layer | relation-id criteria / keyword-over-free-text / inactive market data / backfill dedup — prototype ไม่ model (string-match engine) — เก็บเป็น Production Contract Rules §9 ชัด ๆ ไม่ลบทิ้ง (DOCUMENT_VERSION v1.8 content preserved) |
 
 ## 5. Flags ส่งต่อ (ไม่แก้นอก scope)
 
 - **FSP-022 (11_SOCIAL)** — `Notification Center` term ที่ L294 + like/follow notif semantics ฝั่ง social (no item created — ตรง 09 §14)
 - **FSP-023 (12_BOARD + 15_TRUST_SAFETY)** — `Notification Center` term ที่ 12 L266/L526 + 15 L270
-- **FSP-025/026/027/028** — legacy docs stale: README_MODULE_INDEX L94 (type list 4 → ต้อง +system หรือระบุ placeholder), Master L750 (`notif settings` baseline), DEV_IMPLEMENTATION_CHECKLIST L214–218 (4-type check + `Login Required Dialog` wording), DEV_BASELINE_HANDOFF L86/98, QA_CHECKLIST L1018/1099/1106/1384 (`Notification Center` + `ไม่พบข้อมูล` empty checks), DEV_CHAT_CHECKLIST, FINAL_HANDOFF L35/36, DOCUMENT_VERSION history (AC-WA-016–018 เดิม = historical ไม่ต้องแก้เนื้อ history) + **i18n sweep copies**: `No alerts yet`/`Mark all as read`/`Follow back`/`Following`/`Watch alert matched:`/`Watch alert on|updated|paused|removed`/`You already saved this alert`/`No details on this post to watch`/`Any new listing`/`Security details aren't in this prototype yet`/`This post is no longer available`
+- **FSP-025/026/027/028** — legacy docs stale: README_MODULE_INDEX L94 (type list 4 → ต้อง +system หรือระบุ placeholder), Master L750 (`notif settings` baseline), DEV_IMPLEMENTATION_CHECKLIST L214–218 (4-type check + `Login Required Dialog` wording), DEV_BASELINE_HANDOFF L86/98, QA_CHECKLIST L1018/1099/1106/1384 (`Notification Center` + `ไม่พบข้อมูล` empty checks), DEV_CHAT_CHECKLIST, FINAL_HANDOFF L35/36, DOCUMENT_VERSION history (AC-WA-016–018 เดิม = historical ไม่ต้องแก้เนื้อ history) + **language sweep copies**: `No alerts yet`/`Mark all as read`/`Follow back`/`Following`/`Watch alert matched:`/`Watch alert on|updated|paused|removed`/`You already saved this alert`/`No details on this post to watch`/`Any new listing`/`Security details aren't in this prototype yet`/`This post is no longer available`
 - **FSP-030 consistency sweep** — `watch` missing-post silent no-op vs like/comment toast parity; WA instant-delete vs destructive-confirm pattern (C3 ยัง flag ไว้); `state.notif` no-enforcement/no-reset; `WATCH_ALERTS` no-restore; `modelKey` ไม่ครอบ search-source alerts; `Earlier` bucket static; `system` type vs 13_SETTINGS §14 "security alert = future/Needs Decision" (09 ตัดสินเก็บเป็น feed row ตาม 00_NAV §8 — reconcile wording ฝั่ง 13)
 - **Prototype drift note** — `index.html` ยังมี uncommitted diff ของ owner (comment long-press popover); anchors ในเอกสารนี้อาจ drift — task ถัดไป verify ด้วย function-name เหมือนเดิม
 - งานทั้งหมดยัง uncommitted รวม FSP-006–021 — รอพี่สั่ง commit แยก

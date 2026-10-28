@@ -99,13 +99,13 @@ Prototype anchors verified (scan บน working copy ปัจจุบัน @ 
 | `m-unsave` ไม่ confirm | settings list unsave ทันที |
 | 15_TRUST_SAFETY ยังไม่ sync | report entries/flow ใน spec นี้อ้างตาม prototype; taxonomy/SLA/moderation เดิมอยู่ 15 — flag FSP-023+ |
 | `comments` synthetic generation | `commentsFor` สร้าง mock comments เมื่อ `p.comments>0` ไม่มี seed — demo-only (production = API) |
-| Saved/Wish List EN+TH mixed | hub copies สองภาษาตาม `state.lang` บางจุด EN-only (collection toasts, menu labels `Add to collection`/`Edit collection`) — i18n sweep FSP-026 |
+| Saved/Wish List EN+TH mixed | hub copies สองภาษาตาม `state.lang` บางจุด EN-only (collection toasts, menu labels `Add to collection`/`Edit collection`) — language sweep FSP-026 |
 
 ## 5. Flags ส่งต่อ (ไม่แก้นอก scope)
 
 - **FSP-023 (12_BOARD)** — `data-bd*` article actions canonical + stale `Global Login Required`/`Notification Center` ใน 12 (L121/266/285/308/344/526/542/562/610); board share ใช้ `shareSheetHTML` ร่วม (entry boundary ระบุไว้ §11)
 - **FSP-023+/15_TRUST_SAFETY** — sync report flow internals: `report`/`report:pick:`/`report:posts:`/`report:user`/`report:post`/`report:comment`/`report:done:` routes, 9 `PM_REASONS`, anonymous copy, Other steps (block/unfollow/mute), `Report submitted · thanks for letting us know`; ปัจจุบัน 15 ยัง legacy (Report Asset bottom sheet/24h SLA forms)
-- **FSP-026 sweep** — `Notification Center` leftovers ใน synced docs: `02_FEED L662`, `13_SETTINGS L539`; + social i18n: collection toasts/menu labels EN-only, `Send to`/`Shared to`/`Link copied`, `Select all`/`Deselect all`, `Add N posts`, report pages mixed
+- **FSP-026 sweep** — `Notification Center` leftovers ใน synced docs: `02_FEED L662`, `13_SETTINGS L539`; + social language: collection toasts/menu labels EN-only, `Send to`/`Shared to`/`Link copied`, `Select all`/`Deselect all`, `Add N posts`, report pages mixed
 - **FSP-030 consistency sweep** — `lk-follow` cosmetic→real; comment composer dead (`Reply`+input) vs contract; `savedCol`/`savedAt`/`colAt`+counts ไม่ reset session; `m-unsave` no-confirm vs destructive pattern; `COLLECTIONS` seed `"Wishlist"` naming collision; `pm-fav` conditional (`following||favorite`) vs favorites-settings add-any
 - **Prototype drift note** — anchors เป็น line ปัจจุบัน @ `02de990`; owner commit `1540195` (comment long-press) เข้า HEAD แล้ว — task ถัดไป verify ด้วย function-name
 - งานทั้งหมดยัง uncommitted รวม FSP-006–021 — รอพี่สั่ง commit แยก

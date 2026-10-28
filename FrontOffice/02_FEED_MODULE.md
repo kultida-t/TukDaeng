@@ -571,7 +571,7 @@ Owner fallback rules:
 - `hideCounts` flag ซ่อน liked-by row + views ทุก surface — มีเฉพาะบน seeded posts; composer ไม่มี setter (More options มีแค่ commenting + audience) — spec เก็บ field + read semantics แต่ไม่มี UI เขียนค่าใน V1
 - `audience:"followers"` ถูกเก็บบนโพสต์แต่ feed ไม่กรองตาม audience (ดู Audience Rule) — enforcement เป็น contract
 - Asset mode `Show`/`Hide` path ทิ้ง audience/noComments ที่ตั้งใน More options (drawer-only record hardcode `public`/false)
-- Composer toasts หลายตัว EN hardcode ไม่มี TH branch: `Posted · shared to feed ✓` / `Posted · shared to feed + My Assets ✓` / `Clip shared to feed ✓` / `Post updated` / `Post needs at least 1 photo or clip` / `You can add up to 10 photos or clips` / `Watch alert matched:` — i18n sweep (FSP-026)
+- Composer toasts หลายตัว EN hardcode ไม่มี TH branch: `Posted · shared to feed ✓` / `Posted · shared to feed + My Assets ✓` / `Clip shared to feed ✓` / `Post updated` / `Post needs at least 1 photo or clip` / `You can add up to 10 photos or clips` / `Watch alert matched:` — language sweep (FSP-026)
 - `Estimated Market Price` band บนโพสต์ใหม่ = mock estimate (±5–6% ปัด 5,000 + `Last Price Update` = วันนี้) — ไม่ใช่ market data จริง
 - โพสต์ใหม่ seed `likedBy` fake (`the watch`) — artifact ไม่มีผล render (likes=0 ไม่แสดง liked-by row)
 - Design variants `a2/b2/c2/a3/b3/c3/mixed` (price overlay / quiet price / footer price / type tag), `ft:"none"` brand-menu dropdown, `POST_DETAIL_CFG` เป็น dead prototype artifacts — ไม่ใช่ spec

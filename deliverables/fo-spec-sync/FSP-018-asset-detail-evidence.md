@@ -70,7 +70,7 @@ Prototype anchors verified: `.page-detail` mount ~19376 + CSS z-index/nav-hide ~
 | `FOR SALE`/`SHOWCASE` tag ขับด้วย `price` ไม่ใช่ `pfkind` | sold post (markAssetSold) ยัง FOR SALE; gfx sold (price:null) ขึ้น SHOWCASE — flag FSP-030 |
 | `Price & Data Source` บน detail แต่ถูก filter ใน feed expander | `detailSpecsHTML` ไม่ filter / `detailsHTML` filter — รับตามจริง |
 | `mf-btn`/`wl-btn` ใช้บนโพสต์ตัวเองได้ | ไม่มี self-guard — contract note §18 |
-| Root comment `Reply` ไม่ localize | hardcode EN บน root; reply rows มี `ตอบกลับ`/`Reply` — i18n sweep FSP-026 |
+| Root comment `Reply` ไม่ localize | hardcode EN บน root; reply rows มี `ตอบกลับ`/`Reply` — language sweep FSP-026 |
 | Comment empty copy เดี่ยว | `No comments yet`/`ยังไม่มีความคิดเห็น` — ไม่มี `Be the first to comment.`/`Write a comment...` ของ spec เดิม |
 | `commentsFor` mock thread | count แต่ไม่มี seed → generate จาก `LIKER_POOL`/`PF_CMT_TEXTS` — contract |
 | `POST_DETAIL_CFG` + variant paths dead | dl2 igDetail (post-head/caption/ask/save/liked-by), dh2/dh4/dh5, ds acc/cards/tabs/seg, pr1–pr4, tg2 — dev artifact ตาม 00_NAV §11 |
@@ -86,6 +86,6 @@ Prototype anchors verified: `.page-detail` mount ~19376 + CSS z-index/nav-hide ~
 - **FSP-021** — `09_NOTIFICATION`/`10_WATCH_ALERT`: like/comment notif → viewer (00_NAV §8); `waCriteriaFromPost`/`waSheetHTML`/`modelKey`/`alertMatch`/`salePosts()` internals — **10 ยังอ้าง `spec_options`/`ระบุเอง` option criteria เดิม → ต้องเขียนตาม free-text reality** (flag เดิมจาก FSP-017 ยืนยันยังจริง)
 - **FSP-022** — `11_SOCIAL_MODULE.md`: comments/likes/share/save sheets canonical + `Liked by` list + S-26 like-count privacy (05 เดิม AC-DETAIL-017A/B claims public like count — ถูกตัดไปแล้ว, 11 ยังมี claims อยู่)
 - **FSP-024** — `14_PORTFOLIO_MODULE.md`: `pfasset:`/`sold:` pages + market data contract (`PFO_SRC`) — 05 ระบุแค่ render spec strings
-- **FSP-025/026/027** — Master §Asset Detail/PRD/Use_Cases/README index (module name "Asset Detail" เดิม)/DEV+QA checklists (`DETAIL-0xx`/`QA-DETAIL` ids เดิม)/ERROR_STATE catalog — sync ตาม 05 ใหม่ + EN-hardcode copies เข้า i18n sweep (เพิ่ม `No details on this post to watch`, `Follow this model`, `Listing detail isn't in this prototype yet`, wishlist/share toasts)
+- **FSP-025/026/027** — Master §Asset Detail/PRD/Use_Cases/README index (module name "Asset Detail" เดิม)/DEV+QA checklists (`DETAIL-0xx`/`QA-DETAIL` ids เดิม)/ERROR_STATE catalog — sync ตาม 05 ใหม่ + EN-hardcode copies เข้า language sweep (เพิ่ม `No details on this post to watch`, `Follow this model`, `Listing detail isn't in this prototype yet`, wishlist/share toasts)
 - **FSP-030** — sold post ยังขึ้น FOR SALE tag (tag อ่านจาก price ไม่ใช่ pfkind) + `pv-add` เปิด comment sheet แม้ `noComments` (flag เดิมจาก FSP-016 — detail path `comment-btn` ซ่อนถูกแล้ว) + self-guard mf/wl บน own post — consistency sweep
 - งานทั้งหมดยัง uncommitted รวม FSP-006–018 — รอพี่สั่ง commit แยก

@@ -288,7 +288,7 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 8. **Edit path บน `sr-wa` cross-source** — sig ตรง alert จาก detail ก็เปิด edit ได้ แต่ bell `on` เฉพาะ `source:"search"` (source-aware quirk)
 9. **Paused alert ยังเป็น dedupe target** — `mf-btn`/`sr-wa` เจอ alert off ที่ตรง → เปิด edit (ไม่สร้างซ้ำ)
 10. **Sheet ไม่มี Cancel/close affordance ชัดเจน** — dismiss ผ่าน backdrop/handle เท่านั้น (sheet pattern ทั่วไป)
-11. **EN/TH mixed hardcode** — sheet/page มี isTh pair ครบ แต่ toasts EN-only (`Watch alert on`/`updated`/`paused`/`removed`/`You already saved this alert`/`No details on this post to watch`) + mode desc EN keys — i18n sweep FSP-026
+11. **EN/TH mixed hardcode** — sheet/page มี isTh pair ครบ แต่ toasts EN-only (`Watch alert on`/`updated`/`paused`/`removed`/`You already saved this alert`/`No details on this post to watch`) + mode desc EN keys — language sweep FSP-026
 12. **`WATCH_ALERTS` ไม่ restore หลัง session switch** — member sign-out/in = alert หายหมด (persistence contract §18)
 13. **`notif_settings` toggle `walerts` ไม่กรองอะไรจริง** — memory flag (canonical 09 §9)
 14. **ไม่มี frequency/digest/quiet-hours** — instant-match concept เท่านั้น
@@ -474,4 +474,4 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 - Saved search เป็น feature แยกจาก alert
 - `modelKey` ให้ search-source alerts ด้วย (bell sync ครบทุก alert ที่เป็น pure brand/model/ref)
 - Push notification payload + deep link `walerts`/matched post
-- i18n sweep — WA toasts EN-hardcode
+- language sweep — WA toasts EN-hardcode

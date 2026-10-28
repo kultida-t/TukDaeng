@@ -24,7 +24,7 @@ Task: ปรับ header หน้า Alerts จากชื่อ username เ
   ผลที่คาด: กลุ่ม Today / Yesterday / Last 7 days + แถวแจ้งเตือน + "Mark all as read" + bottom nav ครบ
   ผล: ผ่าน (render .al-row ครบ)
 
-เคส 6: Title ภาษาไทย + i18n สลับทันที
+เคส 6: Title ภาษาไทย + language สลับทันที
   ขั้นกด: สลับภาษาเป็นไทยผ่าน setLang("th")
   ผลที่คาด: title เปลี่ยนเป็น "แจ้งเตือน" ทันทีโดยไม่ต้องรีเฟรช และยังกึ่งกลาง
   ผล: ผ่าน

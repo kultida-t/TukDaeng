@@ -61,7 +61,7 @@ Prototype anchors verified: `CP_ME`/`CP_ROLL`/`CP_CLIPS`/`CP_MEDIA`/`CF_SPECS`/`
 | `hideCounts` ไม่มี composer setter | More options = commenting + audience เท่านั้น — spec เก็บ read semantics, setter → Future (FSP-015a จด "setter อยู่ composer" ผิด — แก้แล้ว) |
 | `audience:"followers"` stored-only | feed/viewer ไม่กรองตาม audience — Audience Rule mark contract + deviation + Future item |
 | Asset mode `Show`/`Hide` ทิ้ง audience/noComments | drawer-only record hardcode `public`/false — documented |
-| Composer toasts EN hardcode | `Posted · shared to feed ✓`/`Clip shared ✓`/`Post updated`/`Post needs at least 1…`/`You can add up to 10…`/`Watch alert matched:` ไม่มี TH → flag i18n sweep (FSP-026) |
+| Composer toasts EN hardcode | `Posted · shared to feed ✓`/`Clip shared ✓`/`Post updated`/`Post needs at least 1…`/`You can add up to 10…`/`Watch alert matched:` ไม่มี TH → flag language sweep (FSP-026) |
 | `Estimated Market Price` band | mock estimate ±5–6% ปัด 5,000 + `Last Price Update`=วันนี้ — ไม่ใช่ market data จริง (10_WATCH_ALERT/market data ไม่เกี่ยว) |
 | `likedBy` seed fake `the watch` | artifact บนโพสต์ใหม่ — likes=0 ไม่ render |
 | Dead affordances | camera tile / `Recents` dropdown / expand icon → `Not in this prototype yet` — documented ไม่ใช่ feature |
@@ -73,5 +73,5 @@ Prototype anchors verified: `CP_ME`/`CP_ROLL`/`CP_CLIPS`/`CP_MEDIA`/`CF_SPECS`/`
 - **FSP-017** — `04_ASSET_MANAGEMENT_MODULE.md`: asset mode → drawer record interface อ้างไว้แล้ว (02 §5 Out + §9 Asset Mode Rule); `cfToPortfolio`/`assetFromPost`/`soldFromPost`/`PFO_STATUS` เป็น canonical ของ 04
 - **FSP-022** — `11_SOCIAL_MODULE.md` ขัด prototype 2 จุด: (1) "กด Comment Count จาก Feed ต้องเปิด Asset Detail" + AC-SOCIAL-005 — จริงคือ shared comment sheet เปิดจาก feed ตรง ๆ (D8 + 02 §8); (2) "Owner สามารถ Like Asset ตัวเองได้" — จริง own-like → toast `This is your own listing`
 - **FSP-024** — `14_PORTFOLIO_MODULE.md`: `PF_MINE` drawer-only store + `pfkind` show/hide/sold + `assetId` link semantics + Sold history link preservation — 02 อ้าง interface ไว้แล้ว
-- **FSP-025/026/027** — checklists/Master docs: composer scope ใหม่ (AC-FEED-039–052) ต้อง map ใน QA/impl checklist + EN-hardcode toasts เข้า i18n sweep
+- **FSP-025/026/027** — checklists/Master docs: composer scope ใหม่ (AC-FEED-039–052) ต้อง map ใน QA/impl checklist + EN-hardcode toasts เข้า language sweep
 - งานทั้งหมดยัง uncommitted รวม FSP-006–015b — รอพี่สั่ง commit แยก

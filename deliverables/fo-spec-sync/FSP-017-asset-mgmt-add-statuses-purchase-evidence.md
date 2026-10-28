@@ -73,7 +73,7 @@ Prototype anchors verified: `CF_TAGS`/`CF_LOCS`/`CF_CONDS`/`CF_BOXES`/`CF_SPECS`
 | `sold` post เข้า search/WA match | `salePosts()` pfkind leak = defect ตาม 00_GLOBAL §10 note (spec ใช้ canonical ไม่ copy defect) |
 | `pfo-more`/`PFO_SIMS` dev-only | `?dev` preview — nomkt/empty/failed/denied states = contract |
 | Session-only | `PF_ASSETS`/`PF_SOLD`/`PF_MINE` memory state — persistence = contract |
-| EN-hardcode toasts | `Posted · …`/`Watch alert matched`/`Post deleted` EN ล้วน — i18n sweep FSP-026 |
+| EN-hardcode toasts | `Posted · …`/`Watch alert matched`/`Post deleted` EN ล้วน — language sweep FSP-026 |
 
 ## 5. Flags ส่งต่อ (ไม่แก้นอก scope)
 
@@ -81,6 +81,6 @@ Prototype anchors verified: `CF_TAGS`/`CF_LOCS`/`CF_CONDS`/`CF_BOXES`/`CF_SPECS`
 - **FSP-019** — `06_PROFILE_MODULE.md`: `+`/empty-CTA/`pf-pfo` entries + `pfTabPosts`/`pfKind` status tabs + `all` leak (public รั่ว post/hide/sold — 00_GLOBAL §10 note) — 04 ระบุแค่ entry semantics
 - **FSP-021** — `10_WATCH_ALERT_MODULE.md`: `waCriteriaFromPost`/`alertMatch`/`salePosts()` — **spec เดิมใน 10 ยังอ้าง `spec_options` option criteria + `ระบุเอง` model ที่ 04 ใหม่ทิ้ง (free-text ล้วน)** → ต้องเขียน 10 ใหม่ตาม free-text reality
 - **FSP-024** — `14_PORTFOLIO_MODULE.md`: `pfo*` math + `PFO_SIMS`/`nomkt` contract + market data (`PFO_SRC`) — 04 ระบุแค่โครงหน้า + fields ที่ใช้
-- **FSP-025/026/027** — Master §Asset/PRD/FO_PRD/Use_Cases/DEV/QA checklists ยัง spec เดิมหนัก (multi-step form, required matrix, provenance fields, confirmations, option master) — sync ตาม 04 ใหม่ + EN-hardcode copies เข้า i18n sweep
+- **FSP-025/026/027** — Master §Asset/PRD/FO_PRD/Use_Cases/DEV/QA checklists ยัง spec เดิมหนัก (multi-step form, required matrix, provenance fields, confirmations, option master) — sync ตาม 04 ใหม่ + EN-hardcode copies เข้า language sweep
 - **FSP-030** — orphan drawer record หลัง delete + `PF_MINE` delete no-op + `PF_MINE`→`sale` ไม่เข้า feed + Show/Hide ทิ้ง More-options — consistency/bug sweep
 - งานทั้งหมดยัง uncommitted รวม FSP-006–017 — รอพี่สั่ง commit แยก

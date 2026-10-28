@@ -277,7 +277,7 @@ system -> toast `Security details aren't in this prototype yet` (placeholder —
 5. **`Mark all as read` + dismiss `x` + inline `Follow back`** — extras ที่ spec เดิมไม่มี; dismiss มีเฉพาะ follow rows (like/comment/watch/system ลบไม่ได้)
 6. **`watch` row missing-post = silent no-op** — like/comment มี toast `This post is no longer available` แต่ watch ไม่มี feedback เลย (inconsistency — contract ให้ toast เดียวกัน; flag FSP-030)
 7. **Empty copy `No alerts yet` + desc** — ไม่ใช่ global `ไม่พบข้อมูล`/`No data found` (empty variant ของ module ตาม 00_GLOBAL §11)
-8. **`al-fbtn` toggle → label hardcode EN `Following`/`Follow back`** — render แรกมี isTh (`ติดตามกลับ`/`กำลังติดตาม`) แต่หลัง toggle กลับเป็น EN (i18n quirk — flag sweep)
+8. **`al-fbtn` toggle → label hardcode EN `Following`/`Follow back`** — render แรกมี isTh (`ติดตามกลับ`/`กำลังติดตาม`) แต่หลัง toggle กลับเป็น EN (language quirk — flag sweep)
 9. **`state.notif` toggles ไม่กรองอะไรจริง + ไม่ reset ตอน session switch** — page มีจริงแต่ enforcement = contract เท่านั้น
 10. **ไม่มี notification generation** — `ALERTS` seed ตายตัว; like/comment/follow/WA match ใน session ไม่สร้าง row (WA hit = toast simulation ฝั่ง 10)
 11. **ไม่มี retention/older-than cleanup** — `Earlier` bucket คงที่; dismiss = session-local เท่านั้น
@@ -467,6 +467,6 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 - Retention/aging policy จริง (bucket จาก timestamp ไม่ใช่ `grp` field) + pagination/older-than
 - Unread persistence ข้าม session + per-row mark unread (undo read)
 - Dismiss สำหรับ type อื่น + bulk dismiss
-- Follow-back label i18n หลัง toggle (`Following`/`Follow back` EN hardcode)
+- Follow-back label language หลัง toggle (`Following`/`Follow back` EN hardcode)
 - Comment focus/deep-scroll ใน Post Viewer (ถ้าเพิ่ม affordance)
 - Preference center เพิ่มเติม (digest, quiet hours, per-channel)

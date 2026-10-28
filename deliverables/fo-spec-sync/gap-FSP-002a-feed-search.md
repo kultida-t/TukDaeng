@@ -168,7 +168,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — POSTS seed ~1275
 - **FSP-002b (saved/wishlist)**: save-sheet + wl-sheet + collections + archive viewer เชื่อมจาก feed save-btn/wl-btn ที่ task นี้เจอ (A15)
 - **Archive**: `archive` page + archived posts หลุด feed (`archived` + `archivedAt`, pins ถูกล้างตอน archive) — own-post lifecycle ที่ spec ไม่มี; เกี่ยว profile (settings link) + feed
 - **copy consistency**: board end "คุณดูครบทั้งหมดแล้ว" vs spec end-of-list "คุณดูรายการทั้งหมดแล้ว" — terminology sweep ใน FSP-026
-- **search TH gap**: ทุก search surface ไม่มี isTh branch — i18n sweep กว้างกว่า task นี้ (จดไว้ให้ FSP-026)
+- **search TH gap**: ทุก search surface ไม่มี isTh branch — language sweep กว้างกว่า task นี้ (จดไว้ให้ FSP-026)
 - ยืนยัน context ที่ได้รับมา: feed มี social posts (A1/C1), search = header icon (A10), comment เปิดจาก post viewer sheet โดยตรง (A8/C6)
 
 ## E. สรุปจำนวน

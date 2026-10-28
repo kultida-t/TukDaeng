@@ -60,7 +60,7 @@ Prototype anchors verified: `SEARCH_*` consts + `MAX_PRICE` ~14178–14195; help
 | --- | --- |
 | `#` query grid รวม ni/blocked | `searchResults` ใช้ `POSTS` กรองแค่ `!muted` — spec รับตาม prototype + flag FSP-030 |
 | Alert name ไม่ block เมื่อว่าง | ว่าง → `waName()` regenerate เสมอ (spec เดิม AC-SEARCH-031A บังคับชื่อ — แก้แล้ว) |
-| Search surfaces EN-only | เกือบทั้งโมดูลไม่มี isTh branch (ยกเว้น seller card/viewer labels/WA sheet) — i18n sweep FSP-026 |
+| Search surfaces EN-only | เกือบทั้งโมดูลไม่มี isTh branch (ยกเว้น seller card/viewer labels/WA sheet) — language sweep FSP-026 |
 | Recents = session memory + seed mock | ไม่ persist; seed 6 rows เป็น mock — spec ระบุ contract |
 | `S.sort` / `S.err` dead | sort `plo`/`phi`/`pop` ไม่มี UI; error block ไม่มี trigger — mark dead/contract |
 | Explore tall/views badge | decorative index คงที่ (2/3/7) ไม่ใช่ popularity |
@@ -75,6 +75,6 @@ Prototype anchors verified: `SEARCH_*` consts + `MAX_PRICE` ~14178–14195; help
 - **FSP-019** — `06_PROFILE_MODULE.md`: `pfp` viewer shell + `pfTabPosts` list + Follow pill rules — 03 ระบุแค่ entry/mode
 - **FSP-021** — `10_WATCH_ALERT_MODULE.md`: `waSheetHTML` shared sheet + `alertMatch`/`walerts` list + `mf-btn` entry (C19: entry ที่ 2 นอกจาก search — spec เดิมบอก search-only ผิดแล้ว) + notification → viewer (09)
 - **FSP-022** — `11_SOCIAL_MODULE.md`: shared sheets (likes/comments/share/save) + `setFollowing` + `pfp`/`lk-follow` semantics — 03 อ้าง entry-level เหมือน 02
-- **FSP-025/026/027** — Master §Search / PRD §3.3 / FO_PRD / Use_Cases §3 / DEV checklist §3 (lines 79–93) / QA-SEARCH-* (001–003) ยัง marketplace-search หนัก (sale-only, autocomplete entity+counts, slider, result count, `No results found` copy, alert-name required) — ต้อง sync ตาม 03 ใหม่ + EN-hardcode copies เข้า i18n sweep
+- **FSP-025/026/027** — Master §Search / PRD §3.3 / FO_PRD / Use_Cases §3 / DEV checklist §3 (lines 79–93) / QA-SEARCH-* (001–003) ยัง marketplace-search หนัก (sale-only, autocomplete entity+counts, slider, result count, `No results found` copy, alert-name required) — ต้อง sync ตาม 03 ใหม่ + EN-hardcode copies เข้า language sweep
 - **FSP-030** — `#` grid ni/blocked inconsistency + `pv-add` vs `noComments` quirk + `For you` dual-role naming — consistency sweep
 - งานทั้งหมดยัง uncommitted รวม FSP-006–016 — รอพี่สั่ง commit แยก

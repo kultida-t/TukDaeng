@@ -26,7 +26,7 @@ Prototype anchors verified (scan บน working copy ปัจจุบัน �
 | §15 Analytics | rewrite — contract `chat_*` event set (17 events) |
 | §16 ACs | **rewrite ทั้งชุด** — AC-CHAT-001–042 sequential จัดกลุ่ม 9 หมวด (Entry/Thread, Chats view, Items, Swipe, Room, Search/Menu/Gallery, Config, Block, Report, Session/Nav/Guest/Guard) — เดิม Offer-centric set + `Global Login Required` ACs ลบทิ้ง — renumber; ไม่มี live cross-ref ดู §2 |
 | §17 Related | +00_GLOBAL/00_NAV/02/03/04/05/06/09/13/15 links ตาม boundary ใหม่ |
-| §18 Future | +voice/typing/reactions/pinned msg/group, real receipts+incoming, file msg, followOnly enforcement, unavailable card state, persistence, chsettings revive/ตัด, gallery date grouping, pfRestrictHint, mute-badge filter, deep links, i18n sweep, report queue wiring |
+| §18 Future | +voice/typing/reactions/pinned msg/group, real receipts+incoming, file msg, followOnly enforcement, unavailable card state, persistence, chsettings revive/ตัด, gallery date grouping, pfRestrictHint, mute-badge filter, deep links, language sweep, report queue wiring |
 
 ## 2. Cross-doc ref check (ก่อนปิดงาน)
 
@@ -41,7 +41,7 @@ Prototype anchors verified (scan บน working copy ปัจจุบัน �
 | Stale claim ใน baseline ที่เจอระหว่าง check | **05_ASSET_DETAIL L364**: "chat เข้าผ่าน feed card Ask / **profile / notifications**" — profile Chat = dead (FSP-019 lock), ไม่มี chat notif type → **แก้แล้ว 1 บรรทัด** เป็น "feed card Ask / item chat rows" + note canonical ✓ |
 | Stale terms ใน not-yet-synced modules (flag ไม่แก้) | `Global Login Required`: 09(3 hits — FSP-021 rename-note รองรับ), 10/11/12/15/16/17 ยังไม่ได้นับซ้ำ (pending sync ตามลำดับ); 15 block-confirm EN body `You will no longer see…` ≠ blkSheet copy จริง → flag FSP-023; FO_Functional_PRD/PRD/DEV_CHAT_CHECKLIST/QA_CHECKLIST = legacy stale → flag FSP-025/026/027 ✓ |
 | `Chat / New Message` notif claims | 09 §scope ตรง spec ใหม่ §14 (badge-only, ไม่ใช่ type) ✓ |
-| ERROR_STATE_UI_COPY_CATALOG | 0 chat copies — flag เพิ่มตอน i18n sweep FSP-026 ✓ |
+| ERROR_STATE_UI_COPY_CATALOG | 0 chat copies — flag เพิ่มตอน language sweep FSP-026 ✓ |
 | 00_NAV L158 cosmetic | "chat room `...` = room menu" — icon จริงคือ `≡` (hamburger) ไม่ใช่ `...` — flag cosmetic ไม่แก้ baseline ✓ |
 
 ## 3. Verification
@@ -92,7 +92,7 @@ Prototype anchors verified (scan บน working copy ปัจจุบัน �
 | media send ไม่ un-hide/ไม่ move-top | quirk ต่างจาก `chSend` |
 | `cfg` ไม่ reset ตอน session switch | `applySessionData` เคลียร์แค่ inited/threads/draft |
 | Ask post lookup fail → `Not in this prototype yet` | `.ask-pill` อยู่ใน dead-handler list (fallback เมื่อ chatClick ไม่จับ) |
-| EN/TH hardcoded ~40 copies | `Your listings`/`Item chats`/`Filter items by`/`Messages`/gallery labels/section labels ฯลฯ → i18n sweep |
+| EN/TH hardcoded ~40 copies | `Your listings`/`Item chats`/`Filter items by`/`Messages`/gallery labels/section labels ฯลฯ → language sweep |
 | `pfRestrictHint` defined ไม่มี call site | 06 spec อ้าง banner หลัง unblock — ไม่แสดงจริง (flag consistency) |
 | Session-only state ทั้งโมดูล | threads/pins/mutes/hidden/cfg/draft/galState memory เท่านั้น |
 | `chUnread` ไม่ filter muted | mute icon แสดง แต่ badge ยังนับ (§14 deviation note) |
@@ -101,7 +101,7 @@ Prototype anchors verified (scan บน working copy ปัจจุบัน �
 
 - **FSP-021** — `09_NOTIFICATION`/`10_WATCH_ALERT`: stale `Global Login Required` (09: 3 hits, rename-note 00_GLOBAL §11 รองรับ) + chat = badge-only claim ตรงแล้ว ✓ + `system` notif type decision (gap-FSP-003b)
 - **FSP-023** — `15_TRUST_SAFETY`: block-confirm EN body `You will no longer see this user's assets…` ≠ `blkSheet` copy จริง (`Block {u}?` + `This will also block any other profiles…` + 3 impact rows); chat report entry (`rpFromChat`/`rpDelChat`/no-`<` head/`chatReportSheet`) canonical ฝากไว้ที่ 07 §9; `PM_REASONS`/`report:user` internals เป็นของ 15
-- **FSP-025/026/027** — FO_Functional_PRD/PRD/DEV_CHAT_IMPLEMENTATION_CHECKLIST/QA_TEST_SCENARIO_CHECKLIST = stale ทั้งชุด (Offer-centric chat checks, `AC-CHAT` เดิม, `Global Login Required`) — sync ตาม 07 ใหม่ + **EN-hardcode copies เข้า i18n sweep**: `Your listings`/`Items you asked about`/`Item chats`/`Your listing`/`Filter items by`/`All items`/`Search people or messages`/`Messages`/`You:`/`Blocked`/`Sent`/`Read`/`Hiding chats doesn't delete…`/`Are you sure you want to delete this chat?`/`No chats yet`/`Tap Ask on a post…`/`No chats found`/`No item chats yet`/`No items found`/`No listings found`/`No asked items found`/`No items match your filter`/`Chat not found`/`This conversation is no longer available`/`Item not found`/`No photos or videos found.`/`This chat is protected with End-to-End Encryption`/`Select`/`Deselect`/`{n} selected`/`October 2569 BE`/`You blocked this account`/`You can't message or call them…`/`Are you sure you want to report {u}?`/`Report and delete`/`Thanks for your feedback` + ERROR_STATE_UI_COPY_CATALOG ยังไม่มี chat copies
+- **FSP-025/026/027** — FO_Functional_PRD/PRD/DEV_CHAT_IMPLEMENTATION_CHECKLIST/QA_TEST_SCENARIO_CHECKLIST = stale ทั้งชุด (Offer-centric chat checks, `AC-CHAT` เดิม, `Global Login Required`) — sync ตาม 07 ใหม่ + **EN-hardcode copies เข้า language sweep**: `Your listings`/`Items you asked about`/`Item chats`/`Your listing`/`Filter items by`/`All items`/`Search people or messages`/`Messages`/`You:`/`Blocked`/`Sent`/`Read`/`Hiding chats doesn't delete…`/`Are you sure you want to delete this chat?`/`No chats yet`/`Tap Ask on a post…`/`No chats found`/`No item chats yet`/`No items found`/`No listings found`/`No asked items found`/`No items match your filter`/`Chat not found`/`This conversation is no longer available`/`Item not found`/`No photos or videos found.`/`This chat is protected with End-to-End Encryption`/`Select`/`Deselect`/`{n} selected`/`October 2569 BE`/`You blocked this account`/`You can't message or call them…`/`Are you sure you want to report {u}?`/`Report and delete`/`Thanks for your feedback` + ERROR_STATE_UI_COPY_CATALOG ยังไม่มี chat copies
 - **FSP-030 consistency sweep** — `pfRestrictHint` defined-no-callsite (06 spec อ้าง banner — reconcile กับ 06), `chItemGroups` ไม่ filter hidden (leak quirk), `chUnread` ไม่ filter muted, 00_NAV L158 `...` vs `≡` cosmetic, media-send ไม่ un-hide quirk, `cfg` ไม่ reset ตอน session switch, E2E claim copy (revive หรือตัด), `chsettings:` route (revive หรือตัด)
 - **Prototype drift note** — `Prototypes/fo-flow/index.html` มี uncommitted diff ของ owner (comment long-press popover ~360 บรรทัด) — anchors ของ spec ทุกไฟล์อาจ drift; task ถัดไป verify ด้วย function-name search เหมือนเดิม
 - งานทั้งหมดยัง uncommitted รวม FSP-006–020 — รอพี่สั่ง commit แยก

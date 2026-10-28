@@ -412,7 +412,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 ## Prototype Deviations & Dead-Code Notes (documented, not spec)
 
-- Search surfaces เกือบทั้งหมด **EN-only** (tabs `For you`/`Profiles`/`Tags`, placeholder `Search`, `Recent`/`See all`/`Cancel`/`Clear all`, `Filters`/`Apply`/`Clear all`/section titles/validation messages, `No data found`/`Try a different keyword or adjust your filters`/`No suggestions`/`No recent searches`, `Something went wrong…`/`Try again`, toasts `Watch alert on`/`updated`/`removed`/`You already saved this alert`/`This post is no longer available`) — มี isTh เฉพาะ seller card (`N รายการประกาศ`/`กำลังติดตาม`/`ติดตาม`), viewer labels, unfollow sheet และ Watch Alert sheet — i18n gap รวมใน sweep FSP-026
+- Search surfaces เกือบทั้งหมด **EN-only** (tabs `For you`/`Profiles`/`Tags`, placeholder `Search`, `Recent`/`See all`/`Cancel`/`Clear all`, `Filters`/`Apply`/`Clear all`/section titles/validation messages, `No data found`/`Try a different keyword or adjust your filters`/`No suggestions`/`No recent searches`, `Something went wrong…`/`Try again`, toasts `Watch alert on`/`updated`/`removed`/`You already saved this alert`/`This post is no longer available`) — มี isTh เฉพาะ seller card (`N รายการประกาศ`/`กำลังติดตาม`/`ติดตาม`), viewer labels, unfollow sheet และ Watch Alert sheet — language gap รวมใน sweep FSP-026
 - `#` query results grid ใช้ `POSTS` กรองแค่ `!muted` → โพสต์ `ni`/`blocked` ยังขึ้นใน hashtag results (spec ยอมรับตาม prototype — flag ให้ FSP-030 consistency sweep)
 - `S.sort` (`plo`/`phi`/`pop`) + `S.err` = dead state (code มี ไม่มี UI/trigger)
 - Explore `.xp-views` badge + `tall` tile = decorative index คงที่ (2/3/7) ไม่ใช่ popularity logic
@@ -491,7 +491,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 | Recent section / recents page | `No recent searches` |
 | Watch Alerts list (cross-ref) | `No watch alerts yet — tap the bell on a post or save a search to start one` (canonical 10) |
 
-หมายเหตุ: global empty `ไม่พบข้อมูล`/`No data found` ของ 00_GLOBAL §11 ตรงเฉพาะส่วน `No data found`; sub-copy `Try a different keyword or adjust your filters` เป็น variant ของ module นี้; EN-only = deviation (i18n sweep)
+หมายเหตุ: global empty `ไม่พบข้อมูล`/`No data found` ของ 00_GLOBAL §11 ตรงเฉพาะส่วน `No data found`; sub-copy `Try a different keyword or adjust your filters` เป็น variant ของ module นี้; EN-only = deviation (language sweep)
 
 # 14. Notification Rules
 
@@ -578,7 +578,7 @@ Contract (S-29 — prototype ไม่มี tracking layer; event names เป�
 
 - Sort control บน results (`plo`/`phi`/`pop` มี dead code รองรับ)
 - Result count / pull-to-refresh / infinite scroll / end-of-list marker
-- TH localization ของ search surfaces ทั้งหมด (ปัจจุบัน EN-only — i18n sweep FSP-026)
+- TH localization ของ search surfaces ทั้งหมด (ปัจจุบัน EN-only — language sweep FSP-026)
 - Saved Search เป็น feature แยก / recents persist ข้าม session
 - Popular Filter / context-aware Popular Model / trending page
 - Entity/option-master suggestions (Condition/Delivery/Case/Movement/Dial/Strap) + `is_active` gating จริงแทน static catalogs

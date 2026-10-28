@@ -42,7 +42,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Dev sims: `PFO_SIMS` + `pfoSimBar` (~17197–17201 — `?dev` query เท่านั้น; sims `nomkt`/`empty`/`failed`/`denied`)
 - Session: `clearUserData`/`restoreUserData`/`applySessionData`/`POST_FLAG_KEYS` (~23297–23351) — **ไม่แตะ `PF_ASSETS`/`PF_SOLD`/`pfkind`** (sold marks + record mutations ค้างข้าม session — deviation D9); `state.session !== "member"` → portfolio/soldhist empty state (~17225)
 - Guest gate: `GUEST_GATE_SEL` (~23362–23371) รวม `.pm-own-sold`/`.pm-own-soldview`/`.pf-menu` ฯลฯ — **แต่ไม่รวม `[data-sub]`/`.pf-pfo`** (entry อยู่ใต้ own profile ซึ่ง guest เข้าไม่ได้อยู่แล้ว — §14)
-- i18n: `isTh` ternary ใน markup ทุกจุด + `I18N_TH` dict (`Latest market price`→`ราคาตลาดล่าสุด`, `Show`→`แสดง`, `Hide`→`ซ่อน`, `No data found`→`ไม่พบข้อมูล`, `TukDaeng Market Data`→`ข้อมูลตลาดตึกแดง`) + `i18nTr` date pattern (`d Mon yyyy` → พ.ศ.) — leftover EN inventory ใน §16
+- language: `isTh` ternary ใน markup ทุกจุด + `I18N_TH` dict (`Latest market price`→`ราคาตลาดล่าสุด`, `Show`→`แสดง`, `Hide`→`ซ่อน`, `No data found`→`ไม่พบข้อมูล`, `TukDaeng Market Data`→`ข้อมูลตลาดตึกแดง`) + `i18nTr` date pattern (`d Mon yyyy` → พ.ศ.) — leftover EN inventory ใน §16
 - Shared deps: `sub-back`/`pushSub`/`openSub`/`openSubOver` (canonical 00_NAV §6.7), `photoCtx`/`applyPhoto` (`data-pfaid` hero swipe — shared post-hero mechanics), `esc`, `I.*` icon set, `fmtNum`/`unNum` (price input), `pmDropCovered` (sheet snap-shut เมื่อเปิดจาก viewer), `sr-empty-block` empty-state pattern
 
 ---
@@ -80,7 +80,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Value math contract — `pfoCur`/`pfoGL`/`pfoExp`/`pfoCmp`/`pfoHold`/`pfoPct`/totals/coverage (เจ้าของ canonical = เอกสารนี้)
 - Privacy boundary — owner-only ทุก surface; private data fields ตาม 00_GLOBAL §14
 - Dev preview states (`PFO_SIMS` — `?dev` only) + empty/denied/failed render contracts
-- i18n coverage + EN leftovers inventory (§16/§19)
+- language coverage + EN leftovers inventory (§16/§19)
 - Dead/quirk boundary (§19)
 
 ## Out of Scope (module อื่นเป็นเจ้าของ / ไม่มีใน V1)
@@ -488,10 +488,10 @@ display = "กำไร/ขาดทุนที่เกิดขึ้นจ�
 
 ---
 
-# 16. i18n & Copy
+# 16. Language & Copy
 
 - แปลผ่าน `isTh` ternary inline ทุกจุดหลัก (labels/notes/titles/toasts/errors) — ไม่มี dict block เฉพาะ portfolio
-- `I18N_TH` dict ช่วย observer (MutationObserver — canonical i18n contract): `Latest market price`→`ราคาตลาดล่าสุด`, `Show`→`แสดง`, `Hide`→`ซ่อน`, `No data found`→`ไม่พบข้อมูล`, `TukDaeng Market Data`→`ข้อมูลตลาดตึกแดง`, `Try again`→`ลองอีกครั้ง`
+- `I18N_TH` dict ช่วย observer (MutationObserver — canonical language contract): `Latest market price`→`ราคาตลาดล่าสุด`, `Show`→`แสดง`, `Hide`→`ซ่อน`, `No data found`→`ไม่พบข้อมูล`, `TukDaeng Market Data`→`ข้อมูลตลาดตึกแดง`, `Try again`→`ลองอีกครั้ง`
 - `i18nTr` date pattern: `pfoDate` output `d Mon yyyy` → `d มิ.ย. 2566` (พ.ศ.) ใน TH mode
 - **EN-only leftovers** (flag → FSP-026 sweep):
   - `PFO_STATUS` chip `Sale` (ไม่มี dict key — `Show`/`Hide` แปลแต่ `Sale` ค้าง EN → chip ผสมภาษา)
