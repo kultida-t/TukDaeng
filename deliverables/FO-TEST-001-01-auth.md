@@ -1,20 +1,24 @@
-# FO-TEST-01 — Test Cases: Auth & Onboarding (FO prototype)
+# FO-TEST-01 — Test Cases: Auth & Onboarding (สำหรับเทสแอปจริงบนมือถือ)
 
-> Task: FO-TEST-01 ของชุด FO-TEST-001 · วันที่: 2026-10-27
+> Task: FO-TEST-01 ของชุด FO-TEST-001 · ปรับเป็นเวอร์ชันเทสแอปจริง: 2026-10-28
 > กติกาหลัก: `deliverables/FO-TEST-001-testcase-prompt.md` · Task breakdown: `deliverables/FO-TEST-001-task-breakdown.md`
-> Source of Truth: `Prototypes/fo-flow/index.html` (โค้ด onboarding อยู่ช่วง ~L23106–23644; settings auth ~L15041–15095, 17474–17652, handler ~L21082–21333)
+> แหล่งออกแบบเคส: `Prototypes/fo-flow/index.html` (ใช้เป็นแม่แบบแตกเคส/expected เท่านั้น — ทุกเคสเขียนให้ทำบนแอปจริงได้)
 > สัญญาความครอบคลุม: `deliverables/FO-TEST-001-00-inventory.md` §2.1 เท่านั้น — ไม่เดา behavior เพิ่ม
 
-## 0. วิธีใช้เอกสาร + สภาพแวดล้อม
+## 0. สภาพแวดล้อมเทส + วิธีใช้เอกสาร
 
-- เปิด prototype ที่ `http://localhost:8901/index.html` (หรือเปิดไฟล์ตรง) — Viewport 440×956, ทดสอบทั้ง Light/Dark และ TH/EN ตามที่ระบุในเคส
-- **First-run onboarding** จะขึ้นเฉพาะเมื่อ `localStorage.fo_onboarded` ว่าง — รีเซ็ตได้ 2 วิธี: ปุ่ม dev `"1st"` (obReplay — ล้าง fo_onboarded/fo_session/fo_newuser/fo_account/fo_member_hide/fo_toured แล้ว render ใหม่) หรือเคลียร์ localStorage ใน DevTools
-- ปุ่ม dev `"v2"` (obRecon) ใช้จำลอง re-consent — ใช้ได้เฉพาะหลังจบ first-run onboarding แล้ว
-- **Actor**: `GUEST` = session guest (เลือก Skip for now หรือ logout), `MEMBER` = sign in ด้วย demo `demo@tukdaeng.com` / `Tukdaeng123`, `NEW` = สมัครใหม่ (member powers แต่ข้อมูลว่าง — GUEST-001)
+- **อุปกรณ์:** โทรศัพท์มือถือเครื่องจริง ติดตั้งแอป TukDaeng build ทดสอบจาก Google Play (Android) / App Store หรือ TestFlight (iOS) ตามที่ทีมแจก — ห้ามเทสผ่าน browser/prototype
+- รีเซ็ต onboarding ด้วย **การลบแอปแล้วติดตั้งใหม่** หรือ Clear app data (Android: ตั้งค่าระบบ → Apps → TukDaeng → Storage → Clear data)
+- **Actor**: `GUEST` = ยังไม่ล็อกอิน (เดิน onboarding แล้วกด Skip for now หรือ logout), `MEMBER` = ล็อกอินบัญชีทดสอบที่ทีมมอบหมาย, `NEW` = สมัครบัญชีใหม่ผ่าน flow จริง (member powers แต่ข้อมูลว่าง)
+- **ข้อมูลทดสอบที่ต้องได้จากทีมก่อนเริ่ม (SETUP-06):** บัญชีทดสอบ (email+password), อีเมลที่ลงทะเบียนแล้ว (สำหรับเคส duplicate), ช่องทางรับ OTP จริง (อีเมล/SMS ของ tester หรือ test OTP ที่ backend รองรับ)
+- **ตัวเลขเวลา** (เช่น splash ~3 วิ, OTP resend ~30 วิ, lockout ~15 นาที) เป็นค่าอ้างอิงจาก design — บนแอปจริงให้จดค่าที่เห็นจริงลง Note; ถ้าต่างให้ flag ทีมตัดสิน ไม่ FAIL อัตโนมัติ
+- **ข้อความ EN ในคอลัมน์ expected** เป็นค่าอ้างอิงจาก design — ถ้าแอปจริง wording ต่างแต่ความหมายเหมือนกัน ให้จดใน Note แทน FAIL
+- **คอลัมน์ "ทดสอบบน (Device/OS)"** ใน checklist — จดเครื่อง+OS ที่รันเคสนั้นทุกแถวที่เล่นจริง (เช่น `iPhone 15 · iOS 18`, `Galaxy S24 · Android 15`); เคสที่รันคนละเครื่องให้จดค่าที่ใช้
 - **Type**: UI = การแสดงผล · Func = การทำงาน · Int = เชื่อมข้าม module · Edge = negative/boundary
 - **Priority**: High = core flow/กติการะบบ · Medium = feature หลัก · Low = edge/cosmetic
-- **[GATE]**: ทุก action ใน `GUEST_GATE_SEL` ที่ guest แตะ → `obGate()` (Member Sheet) — เคสในชุดนี้เทสต์ "mechanics ของ sheet กับ session" เท่านั้น; เมทริกซ์ gated action ทั้งหมดอยู่ใน task FO-TEST-17 ตามขอบเขต task breakdown
-- localStorage keys ที่เกี่ยว: `fo_onboarded`, `fo_session`, `fo_account`, `fo_newuser`, `fo_member_hide`, `fo_toured`, `fo_consent`, `fo_consent_log`
+- **[GATE]**: action ที่ guest แตะแล้วเด้ง Member Sheet — เคสในชุดนี้เทสต์ mechanics ของ sheet กับ session เท่านั้น; เมทริกซ์ gated action ทั้งหมดอยู่ใน task FO-TEST-17
+- ⚠️ **เคส destructive** (ลบบัญชี AUTH-088–092) ใช้เฉพาะบัญชีทดสอบที่สร้างมาเพื่อลบเท่านั้น
+- ⚠️ **เคสที่ต้องอาศัยฝั่ง backend** (re-consent AUTH-069–072) ทำได้เฉพาะเมื่อทีมออก policy version ใหม่จริง — ถ้าทำไม่ได้ให้ mark BLOCK พร้อมเหตุผล
 
 ## 1. Coverage Map ของ task นี้ (เทียบ inventory §2.1)
 
@@ -34,10 +38,10 @@
 | onboarding `created` | AUTH-042 – 043 |
 | onboarding `signin` | AUTH-044 – 049 |
 | onboarding `forgot` | AUTH-050 – 052 |
-| overlay `ob-legal` | AUTH-053 – 054 |
+| overlay เอกสาร legal (Terms/Privacy) | AUTH-053 – 054 |
 | actions exit/decline/hide/social/resend | AUTH-055 – 060 |
-| `obGate()` + `GUEST_GATE_SEL` [GATE] | AUTH-061 – 068 |
-| re-consent (`OB.recon`) | AUTH-069 – 072 |
+| Guest Gate — Member Sheet จาก gated action [GATE] | AUTH-061 – 068 |
+| re-consent | AUTH-069 – 072 |
 | `settings → about_account` | AUTH-073 – 075 |
 | `change_pwd` | AUTH-076 – 081 |
 | `del_account` step 1–2 | AUTH-082 – 088 |
@@ -51,219 +55,224 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-001 | onboarding `splash` | GUEST | Func | เคลียร์ `fo_onboarded` (หรือกด "1st") | 1. เปิดแอป 2. สังเกต splash 3. รอ ~3.2 วินาที | splash auto-advance ไปหน้า `lang` โดยไม่ต้องแตะ | โลโก้ td-logo + ชื่อ "TukDaeng" + แถบ loading เคลื่อนไหว อยู่กลางจอ | High | |
-| FO-TC-AUTH-002 | onboarding `splash` | GUEST | Edge | เหมือน 001 | 1. ระหว่าง splash แสดง แตะจอหลายครั้ง/รัว ๆ | ไม่มี skip — ต้องรอครบ 3.2s ถึงไป `lang`; ไม่เกิดกระโดดข้ามซ้ำ | หน้าจอนิ่ง ไม่มี error/กระพริบ | Low | |
+| FO-TC-AUTH-001 | onboarding `splash` | GUEST | Func | ติดตั้งแอปใหม่/เคลียร์ data แล้ว | 1. เปิดแอป 2. สังเกต splash โดยไม่แตะอะไร | splash auto-advance ไปหน้าเลือกภาษาเองโดยไม่ต้องแตะ (จดเวลาจริงที่ splash แสดง) | โลโก้ + ชื่อ "TukDaeng" + แถบ loading เคลื่อนไหว อยู่กลางจอ | High | |
+| FO-TC-AUTH-002 | onboarding `splash` | GUEST | Edge | เหมือน 001 | 1. ระหว่าง splash แสดง แตะจอหลายครั้ง/รัว ๆ | splash ไม่ถูกข้าม — แสดงครบเวลาแล้วค่อยไปหน้าภาษา ไม่เกิดกระโดดข้ามซ้ำ | หน้าจอนิ่ง ไม่มี error/กระพริบ | Low | |
 
 ### 2.2 Language select (`lang`)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-003 | onboarding `lang` | GUEST | Func | onboarding ถึง `lang` | 1. แตะแถว "ไทย" 2. แตะ Continue | `state.lang` = th; แถวไทยมีเครื่องหมายถูก ปุ่ม Continue เปลี่ยนเป็น "ต่อไป" ทันที; ไปหน้า welcome ภาษาไทย | แถวที่เลือกมี class on + icon check 17px; แถว English ไม่มีเครื่องหมาย | High | |
-| FO-TC-AUTH-004 | onboarding `lang` | GUEST | Func | onboarding ถึง `lang` | 1. แตะ "ไทย" แล้วแตะ "English" สลับกลับ | การเลือก toggle ได้ทั้งสองทิศทาง — check ย้ายตามแถวล่าสุด ปุ่มกลับเป็น "Continue" | มีเครื่องหมายถูกแค่แถวเดียวเสมอ | Medium | |
-| FO-TC-AUTH-005 | onboarding `lang` | GUEST | UI | onboarding ถึง `lang` | 1. สังเกตหน้าจอโดยไม่แตะ | ค่าเริ่มต้นตรง `state.lang` ปัจจุบัน (default en → แถว English on) | หัวข้อ "Select your language · เลือกภาษา" สองภาษาเสมอ, 2 แถว English/ไทย + ปุ่ม Continue | Medium | |
+| FO-TC-AUTH-003 | onboarding `lang` | GUEST | Func | onboarding ถึงหน้าภาษา | 1. แตะแถว "ไทย" 2. แตะปุ่มต่อไป | เลือกไทยแล้วปุ่มเปลี่ยนเป็น "ต่อไป" ทันที; ไปหน้า welcome ภาษาไทย | แถวที่เลือกมีเครื่องหมายถูก; แถว English ไม่มีเครื่องหมาย | High | |
+| FO-TC-AUTH-004 | onboarding `lang` | GUEST | Func | onboarding ถึงหน้าภาษา | 1. แตะ "ไทย" แล้วแตะ "English" สลับกลับ | การเลือก toggle ได้ทั้งสองทิศทาง — check ย้ายตามแถวล่าสุด ปุ่มสลับ Continue/ต่อไป ตามภาษา | มีเครื่องหมายถูกแค่แถวเดียวเสมอ | Medium | |
+| FO-TC-AUTH-005 | onboarding `lang` | GUEST | UI | onboarding ถึงหน้าภาษา | 1. สังเกตหน้าจอโดยไม่แตะ | มีภาษาถูกเลือกเป็นค่าเริ่มต้น (ตาม design = English) | หัวข้อสองภาษา "Select your language · เลือกภาษา" + แถว English/ไทย + ปุ่ม Continue | Medium | |
 
 ### 2.3 Welcome
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-006 | onboarding `welcome` | GUEST | UI | ผ่าน `lang` แล้ว | 1. ตรวจองค์ประกอบหน้า welcome | — | รูปนาฬิกา (ob-welcome-hand), h1 "Welcome to the TukDaeng app", sub, ลิงก์ Terms of Use / Privacy Policy คั่นจุด, ข้อความ fine print เรื่องยอมรับเงื่อนไข, ปุ่ม Continue ชิดล่าง | Medium | |
-| FO-TC-AUTH-007 | onboarding `welcome` | GUEST | Func | อยู่หน้า welcome | 1. แตะ Continue 2. แตะซ้ำระหว่าง loading 3. รอ ~1.5s | ปุ่ม disable + spinner แสดง กดซ้ำไม่ได้; ~1.5s แล้ว auto ไปหน้า `consent` | class loading บน page + `.ob-spin` ข้างลิงก์ legal; ปุ่มมี attribute disabled | High | |
-| FO-TC-AUTH-008 | onboarding `welcome` | GUEST | Func | อยู่หน้า welcome | 1. แตะ "Terms of Use" 2. กด back/ปิดใน overlay 3. แตะ "Privacy Policy" | เปิด overlay `ob-legal` แสดงเอกสารที่ถูกต้อง; ปิดแล้วกลับมาหน้า welcome สภาพเดิม | overlay มี back + ชื่อเอกสาร + "v1.0 · Effective 19 Oct 2026" + เนื้อหาเป็น section + ปุ่ม Close | Medium | |
+| FO-TC-AUTH-006 | onboarding `welcome` | GUEST | UI | ผ่านหน้าภาษาแล้ว | 1. ตรวจองค์ประกอบหน้า welcome | — | รูปนาฬิกา + หัวข้อ "Welcome to the TukDaeng app" + ข้อความรอง + ลิงก์ Terms of Use / Privacy Policy + ข้อความเล็กเรื่องยอมรับเงื่อนไข + ปุ่ม Continue ชิดล่าง | Medium | |
+| FO-TC-AUTH-007 | onboarding `welcome` | GUEST | Func | อยู่หน้า welcome | 1. แตะ Continue 2. แตะซ้ำระหว่าง loading | ปุ่ม disable/แสดง loading กดซ้ำไม่ได้; ผ่านไปชั่วครู่แล้ว auto ไปหน้า privacy notice | indicator loading แสดงชัด; ปุ่มกดซ้ำไม่ได้ | High | |
+| FO-TC-AUTH-008 | onboarding `welcome` | GUEST | Func | อยู่หน้า welcome | 1. แตะ "Terms of Use" 2. กด back/ปิดใน overlay 3. แตะ "Privacy Policy" | เปิด overlay เอกสารที่ถูกต้อง; ปิดแล้วกลับมาหน้า welcome สภาพเดิม | overlay มี back + ชื่อเอกสาร + เวอร์ชัน/วันที่ประกาศ (จดค่าจริง) + เนื้อหา + ปุ่ม Close | Medium | |
 
 ### 2.4 Consent (first-run page)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-009 | onboarding `consent` | GUEST | UI | ผ่าน welcome | 1. ตรวจหน้า privacy notice | — | h1 "Privacy notice" + เอกสาร bullets 4 ข้อ (essential 2 / optional 2) + ย่อหน้าอธิบาย Accept/Reject + ลิงก์ Privacy Policy + 3 ปุ่ม: Accept all / Reject all (primary คู่) + Cookie settings (outline) | Medium | |
-| FO-TC-AUTH-010 | onboarding `consent` | GUEST | Func | อยู่หน้า consent | 1. แตะ Accept all | `OB.opt` = analytics+personalized เปิดทั้งคู่, บันทึก `fo_consent`/`fo_consent_log`, ไปหน้า `notif` | หน้า notif permission แสดง | High | |
-| FO-TC-AUTH-011 | onboarding `consent` | GUEST | Func | อยู่หน้า consent | 1. แตะ Reject all | `OB.opt` ทั้งคู่ปิด, ยังไปหน้า `notif` ได้ปกติ (ไม่มีบังคับ) | ไม่มี error; flow เดินหน้าต่อเหมือน Accept | High | |
-| FO-TC-AUTH-012 | onboarding `consent` | GUEST | Func | อยู่หน้า consent | 1. แตะ Cookie settings | ไปหน้า `prefs` (Cookie settings page) | page มีปุ่ม back + toggles | Medium | |
-| FO-TC-AUTH-013 | onboarding `consent` | GUEST | Func | อยู่หน้า consent | 1. แตะลิงก์ "Privacy Policy" ในเนื้อความ | เปิด `ob-legal` overlay ของ privacy; ปิดกลับมา consent เดิม | overlay ครอบทับ ไม่ทำลาย state หน้าเดิม | Low | |
+| FO-TC-AUTH-009 | onboarding `consent` | GUEST | UI | ผ่าน welcome | 1. ตรวจหน้า privacy notice | — | หัวข้อ "Privacy notice" + รายการอธิบาย (essential/optional) + ลิงก์ Privacy Policy + 3 ปุ่ม: Accept all / Reject all / Cookie settings | Medium | |
+| FO-TC-AUTH-010 | onboarding `consent` | GUEST | Func | อยู่หน้า consent | 1. แตะ Accept all | ยอมรับทั้งหมดแล้วไปหน้าถาม notification | หน้า "Never miss an update" แสดง | High | |
+| FO-TC-AUTH-011 | onboarding `consent` | GUEST | Func | อยู่หน้า consent | 1. แตะ Reject all | ปฏิเสธทั้งหมดก็ยังไปหน้า notification ได้ปกติ (ไม่บังคับ accept) | ไม่มี error; flow เดินหน้าต่อเหมือน Accept | High | |
+| FO-TC-AUTH-012 | onboarding `consent` | GUEST | Func | อยู่หน้า consent | 1. แตะ Cookie settings | ไปหน้า Cookie settings ที่มีสวิตช์ | หน้ามีปุ่ม back + toggles | Medium | |
+| FO-TC-AUTH-013 | onboarding `consent` | GUEST | Func | อยู่หน้า consent | 1. แตะลิงก์ "Privacy Policy" ในเนื้อความ | เปิด overlay เอกสาร; ปิดกลับมาหน้า consent เดิม | overlay ครอบทับ ไม่ทำลาย state หน้าเดิม | Low | |
 
 ### 2.5 Cookie settings (`prefs`)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-014 | onboarding `prefs` | GUEST | UI | consent → Cookie settings | 1. ตรวจหน้า prefs | — | ปุ่ม back + h1 "Cookie settings" + แถว Essential (ป้าย "Always on" ไม่มี switch) + toggles Analytics/Personalization (default off) + ปุ่ม Save preferences | Medium | |
-| FO-TC-AUTH-015 | onboarding `prefs` | GUEST | Func | อยู่หน้า prefs | 1. เปิด toggle Analytics 2. แตะ Save preferences | `OB.opt.analytics`=true (switch .on); Save → บันทึก consent + ไปหน้า `notif` | switch แถว Analytics เลื่อนเป็น on | High | |
-| FO-TC-AUTH-016 | onboarding `prefs` | GUEST | Func | อยู่หน้า prefs (เคยเปิด toggle) | 1. แตะ back ด้านบน | กลับหน้า `consent`; ค่า toggle ที่ตั้งไว้คงอยู่ใน `OB.opt` | หน้า consent เหมือนเดิม | Medium | |
+| FO-TC-AUTH-014 | onboarding `prefs` | GUEST | UI | consent → Cookie settings | 1. ตรวจหน้า Cookie settings | — | ปุ่ม back + หัวข้อ "Cookie settings" + แถว Essential (ป้าย "Always on" ไม่มีสวิตช์) + สวิตช์ Analytics/Personalization (default ปิด) + ปุ่ม Save preferences | Medium | |
+| FO-TC-AUTH-015 | onboarding `prefs` | GUEST | Func | อยู่หน้า Cookie settings | 1. เปิดสวิตช์ Analytics 2. แตะ Save preferences | สวิตช์ติดได้; Save → ไปหน้าถาม notification | สวิตช์ Analytics เลื่อนเป็น on | High | |
+| FO-TC-AUTH-016 | onboarding `prefs` | GUEST | Func | อยู่หน้า Cookie settings (เคยเลื่อนสวิตช์) | 1. แตะ back ด้านบน | กลับหน้า privacy notice; ค่าสวิตช์ที่ตั้งไว้ไม่หายเมื่อเข้า Cookie settings อีกครั้ง | หน้า consent เหมือนเดิม | Medium | |
 
 ### 2.6 Notification ask (`notif`)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-017 | onboarding `notif` | GUEST | UI | ผ่าน consent | 1. ตรวจหน้า notif | — | ปุ่ม back + รูป ob-notif-phone + h1 "Never miss an update" + sub + ปุ่ม Continue (primary) + Skip (outline) | Medium | |
-| FO-TC-AUTH-018 | onboarding `notif` | GUEST | Func | อยู่หน้า notif | 1. แตะ Continue 2. ใน dialog แตะ Don't Allow 3. (ทำซ้ำ) แตะ Allow | Continue เปิด OS-style dialog; ทั้ง Don't Allow และ Allow → ไปหน้า `track` เหมือนกัน | dialog `ob-os` กลางจอ: "“TukDaeng” Would Like to Send You Notifications" + อธิบาย alerts/sounds/badges + ปุ่ม Don't Allow/Allow แนวนอน | High | |
-| FO-TC-AUTH-019 | onboarding `notif` | GUEST | Func | อยู่หน้า notif | 1. แตะ Skip 2. (ทำซ้ำ) แตะ back | Skip → ไป `track` โดยไม่เปิด OS dialog; back → กลับ `consent` | ไม่มี dialog ปรากฏในเส้นทาง Skip | Medium | |
+| FO-TC-AUTH-017 | onboarding `notif` | GUEST | UI | ผ่าน consent | 1. ตรวจหน้า notification | — | ปุ่ม back + รูป + หัวข้อ "Never miss an update" + ข้อความรอง + ปุ่ม Continue + Skip | Medium | |
+| FO-TC-AUTH-018 | onboarding `notif` | GUEST | Func | อยู่หน้า notif | 1. แตะ Continue 2. ใน dialog ระบบเลือก "ไม่อนุญาต" 3. (ทำซ้ำบนเครื่อง/บัญชีอื่นหรือ reset สิทธิ์) เลือก "อนุญาต" | Continue เปิด dialog ขอสิทธิ์ notification ของ OS จริง (iOS/Android ข้อความต่างกัน); เลือกได้ทั้งอนุญาต/ไม่อนุญาต → ไปหน้า tracking เหมือนกัน | dialog ของ OS แสดงกลางจอ; ถ้าตอบแล้วระบบจำคำตอบ — เทสอีกทางต้อง reset สิทธิ์ใน settings ของเครื่อง | High | |
+| FO-TC-AUTH-019 | onboarding `notif` | GUEST | Func | อยู่หน้า notif | 1. แตะ Skip 2. (ทำซ้ำ) แตะ back | Skip → ไปหน้า tracking โดยไม่เปิด dialog สิทธิ์; back → กลับหน้า consent | ไม่มี dialog ปรากฏในเส้นทาง Skip | Medium | |
 
 ### 2.7 Tracking ask (`track`)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-020 | onboarding `track` | GUEST | UI | ผ่าน notif | 1. ตรวจหน้า track | — | ปุ่ม back + รูป ob-track-phone + h1 "We suggest news that suits you" + sub + ปุ่ม Continue (ไม่มี Skip) | Medium | |
-| FO-TC-AUTH-021 | onboarding `track` | GUEST | Func | อยู่หน้า track | 1. แตะ Continue 2. แตะ "Ask App Not to Track" | dialog tracking เด้ง; เลือกไม่ติดตาม → `OB.opt.personalized`=false → ไป `member` sheet | dialog: "Allow “TukDaeng” to track your activity across other companies’ apps and websites?" + ปุ่มแนวตั้ง Ask App Not to Track / Allow | High | |
-| FO-TC-AUTH-022 | onboarding `track` | GUEST | Func | อยู่หน้า track | 1. แตะ Continue → Allow 2. (ทำซ้ำ) back จาก track | Allow → ไป `member` (ไม่แตะค่า personalized); back → กลับ `notif` | Member Sheet "Join TukDaeng" เด้งทับ | Medium | |
+| FO-TC-AUTH-020 | onboarding `track` | GUEST | UI | ผ่าน notif | 1. ตรวจหน้า tracking | — | ปุ่ม back + รูป + หัวข้อ "We suggest news that suits you" + ข้อความรอง + ปุ่ม Continue (ไม่มี Skip) | Medium | |
+| FO-TC-AUTH-021 | onboarding `track` | GUEST | Func | อยู่หน้า track | 1. แตะ Continue 2. เลือกไม่ให้ติดตาม | เปิด dialog ขอสิทธิ์ติดตามของ OS (iOS: App Tracking Transparency); เลือกไม่ให้ → ไป Member Sheet (หมายเหตุ: Android อาจไม่มี dialog นี้ — จดผลจริง) | dialog สิทธิ์ของ OS แสดง; ตอบแล้วไปต่อ | High | |
+| FO-TC-AUTH-022 | onboarding `track` | GUEST | Func | อยู่หน้า track | 1. แตะ Continue → อนุญาตติดตาม 2. (ทำซ้ำ) back จาก track | อนุญาต → ไป Member Sheet เช่นกัน; back → กลับหน้า notification | Member Sheet "Join TukDaeng" เด้งทับ | Medium | |
 
 ### 2.8 Member Sheet first-run (non-gate)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-023 | onboarding `member` | GUEST | UI | ผ่าน track | 1. ตรวจ sheet | — | bottom sheet + grab handle + icon member + h2 "Join TukDaeng" + sub "Create a free account to follow collectors, chat and list your watches." + checkbox "Don't show this again" + ปุ่ม Sign up (pri) / Sign in (out) / Skip for now (text) + แถว or continue with + ปุ่ม Google/Apple สั้น | High | |
-| FO-TC-AUTH-024 | onboarding `member` | GUEST | Func | อยู่ member sheet | 1. แตะ Sign up 2. (ทำซ้ำ) Sign in | Sign up → หน้า `signup`; Sign in → หน้า `signin` (เต็มจอ มี statusbar) | sheet เปลี่ยนเป็นหน้าเต็ม ob-page | High | |
-| FO-TC-AUTH-025 | onboarding `member` | GUEST | Func | อยู่ member sheet (checkbox ไม่ติ๊ก) | 1. แตะ Skip for now | session = guest เข้า feed browse ได้; sheet ปิดเงียบ (ไม่มี toast); coach marks ชุด guest (OB_TOUR_GUEST) เด้งจุดแรก | feed แสดงปกติ + coach "Sign up to create your first post." ชี้ปุ่ม + | High | |
-| FO-TC-AUTH-026 | onboarding `member` | GUEST | Func | อยู่ member sheet | 1. ติ๊ก "Don't show this again" 2. แตะ Skip for now 3. DevTools ลบ `fo_onboarded` แล้ว reload → เดิน onboarding ซ้ำถึงขั้น member | checkbox เปลี่ยนสถานะทันที; Skip + hide → `fo_member_hide`="1"; เมื่อ onboarding เล่นซ้ำ (ลบเฉพาะ `fo_onboarded`) ขั้น `member` จะถูก `obFinish` ข้ามเงียบ ๆ ไม่แสดง sheet ไป feed เลย | checkbox มี icon check + class on เมื่อติ๊ก; รอบสองไม่เห็น sheet เลย | Medium | |
-| FO-TC-AUTH-027 | onboarding `member` | GUEST | Edge | อยู่ member sheet (first-run, non-gate) | 1. แตะ scrim ด้านหลัง sheet | sheet ไม่ปิด — scrim-tap ปิดได้เฉพาะ gate variant เท่านั้น | sheet ค้างอยู่ ไม่มีอะไรเปลี่ยน | Medium | |
+| FO-TC-AUTH-023 | onboarding `member` | GUEST | UI | ผ่าน track | 1. ตรวจ sheet | — | bottom sheet + grab handle + หัวข้อ "Join TukDaeng" + ข้อความรอง + checkbox "Don't show this again" + ปุ่ม Sign up / Sign in / Skip for now + แถว or continue with Google/Apple | High | |
+| FO-TC-AUTH-024 | onboarding `member` | GUEST | Func | อยู่ member sheet | 1. แตะ Sign up 2. (ทำซ้ำ) Sign in | Sign up → หน้าสมัครเต็มจอ; Sign in → หน้า sign in เต็มจอ (back กลับมา sheet ได้) | sheet เปลี่ยนเป็นหน้าเต็ม | High | |
+| FO-TC-AUTH-025 | onboarding `member` | GUEST | Func | อยู่ member sheet (checkbox ไม่ติ๊ก) | 1. แตะ Skip for now | เป็น guest เข้า feed browse ได้; sheet ปิดเงียบ (ไม่มี toast); coach mark/คำแนะนำจุดแรกเด้ง (ถ้าแอปจริงมี — จดผล) | feed แสดงปกติ | High | |
+| FO-TC-AUTH-026 | onboarding `member` | GUEST | Func | อยู่ member sheet | 1. ติ๊ก "Don't show this again" 2. แตะ Skip for now 3. ปิดแอปแล้วเปิดใหม่ 4. (เพิ่มเติม) ลอง trigger gate เช่นกด like | sheet ไม่ควรเด้งอัตโนมัติตอนเปิดแอปครั้งถัดไป; หมายเหตุ: gate จาก action (เช่น like) ยังเด้งได้ปกติเพราะ checkbox หมายถึงไม่แสดงซ้ำเองเท่านั้น — จดพฤติกรรมจริง | checkbox มีเครื่องหมายถูก; เปิดแอปใหม่ไม่เห็น sheet เด้งเอง | Medium | |
+| FO-TC-AUTH-027 | onboarding `member` | GUEST | Edge | อยู่ member sheet (first-run) | 1. แตะบริเวณมืด (scrim) หลัง sheet | sheet ไม่ปิด — first-run sheet ต้องเลือก action เท่านั้น (scrim tap ปิดได้เฉพาะ sheet จากการ gate) | sheet ค้างอยู่ ไม่มีอะไรเปลี่ยน | Medium | |
 
 ### 2.9 Sign up (`signup`)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-028 | onboarding `signup` | GUEST | UI | member → Sign up | 1. ตรวจฟอร์ม | — | back + h1 "Create your account" + sub + field Email/Password + แถบ strength meter 4 ขีด + hint + social block (Continue with Google/Apple) + ปุ่ม Create account + ลิงก์ Terms/Privacy | Medium | |
-| FO-TC-AUTH-029 | onboarding `signup` | GUEST | Func | อยู่หน้า signup | 1. Create account โดยเว้นว่าง 2. กรอก email "abc" → submit 3. email `taken@example.com` + pw ≥8 → submit 4. email ถูก + pw ว่าง → submit 5. pw "abc1234" (7 ตัว) → submit | เคส 1: error ทั้ง email "Enter a valid email address." + pw "Enter a password."; เคส 2: email invalid error; เคส 3: "This email is already registered. Try signing in."; เคส 4: "Enter a password."; เคส 5: "Password must be at least 8 characters long." | field ที่ผิดมี class err + `.ob-msg` แดงใต้ช่อง; ไม่ไปหน้าถัดไป | High | |
-| FO-TC-AUTH-030 | onboarding `signup` | GUEST | Func | อยู่หน้า signup | 1. กรอก email ถูกต้อง (เช่น `new@test.com`) + pw ≥8 2. แตะ Create account | ผ่าน validation → บันทึก credential ลง `fo_account` → ไปหน้า `otp` แสดง email ที่กรอก | หน้า otp: "We sent a 6-digit code to" + email ตัวหนา | High | |
-| FO-TC-AUTH-031 | onboarding `signup` | GUEST | Edge | อยู่หน้า signup | 1. พิมพ์ pw ทีละแบบ (สั้น/ยาวผสม) ดู meter 2. แตะไอคอนตา (eye) 3. เคอร์เซอร์อยู่ช่องใดช่องหนึ่งกด Enter | meter `data-s` 0–4 ตาม obScore (ว่าง=0, pw มีค่าแรก≥1); eye สลับ type password↔text + ไอคอนเปลี่ยน; Enter = submit เหมือนกด Create account | meter 4 ขีดเปลี่ยนสถานะสด ๆ; eye ↔ eyeOff icon | Medium | |
+| FO-TC-AUTH-028 | onboarding `signup` | GUEST | UI | member sheet → Sign up | 1. ตรวจฟอร์ม | — | ปุ่ม back + หัวข้อ "Create your account" + ช่อง Email/Password + แถบวัดความแข็งรหัส + hint + ปุ่ม social Google/Apple + ปุ่ม Create account + ลิงก์ Terms/Privacy | Medium | |
+| FO-TC-AUTH-029 | onboarding `signup` | GUEST | Func | อยู่หน้า signup | 1. กด Create account เว้นว่าง 2. email "abc" → submit 3. email ที่ลงทะเบียนแล้ว (SETUP-06) + pw ≥8 → submit 4. email ถูก + pw ว่าง → submit 5. pw 7 ตัวอักษร → submit | error ตามข้อ: email invalid / "This email is already registered. Try signing in." / password required / password ≥8 — เช็กทีละข้อ | ข้อความ error สีแดงใต้ช่องที่ผิด; ไม่ไปหน้าถัดไป | High | |
+| FO-TC-AUTH-030 | onboarding `signup` | GUEST | Func | อยู่หน้า signup | 1. กรอก email ใหม่ถูกรูป (อีเมลที่รับ OTP จริงได้) + pw ≥8 2. แตะ Create account | ผ่าน validation → ไปหน้า OTP แสดง email ที่กรอก; ระบบส่งรหัส OTP จริงมาทางช่องทางที่กำหนด | หน้า OTP: "We sent a 6-digit code to" + email | High | |
+| FO-TC-AUTH-031 | onboarding `signup` | GUEST | Edge | อยู่หน้า signup | 1. พิมพ์ pw ทีละแบบ (สั้น→ยาวผสม) ดู meter 2. แตะไอคอนตา 3. กด Enter/ปุ่มยืนยันบนคีย์บอร์ด | meter เปลี่ยนตามความแข็งรหัส; eye สลับ show/hide; กด submit จากคีย์บอร์ด = เหมือนกด Create account | meter เปลี่ยนสด ๆ; ไอคอนตาเปลี่ยน | Medium | |
 
 ### 2.10 OTP (`otp`)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-032 | onboarding `otp` | GUEST | UI | signup ผ่านแล้ว | 1. ตรวจหน้า otp | — | back + h1 "Verify your email" + อีเมลที่ส่ง + ช่อง OTP 6 ช่อง (focus ช่องแรก) + บรรทัด resend + banner info "Demo code: 123456" | Medium | |
-| FO-TC-AUTH-033 | onboarding `otp` | GUEST | Func | อยู่หน้า otp | 1. พิมพ์ `123456` | แต่ละช่องรับเฉพาะตัวเลข + auto-focus ช่องถัดไป; ครบ 6 หลัก auto-verify โดยไม่มีปุ่ม → ไปหน้า `profile` | ช่องเต็มทีละช่อง ไม่ต้องกดยืนยัน | High | |
-| FO-TC-AUTH-034 | onboarding `otp` | GUEST | Func | อยู่หน้า otp | 1. พิมพ์ `000000` | ครบ 6 หลัก → msg "That code is incorrect. Try again." + ช่องทั้งหมดล้างหลัง ~450ms + focus กลับช่อง 1 | `.ob-otp` เพิ่ม class bad (shake/error style), `#obOtpMsg` แสดงข้อความ | High | |
-| FO-TC-AUTH-035 | onboarding `otp` | GUEST | Func | อยู่หน้า otp | 1. รอนับถอยหลัง 30s จนเห็น "Resend code" 2. แตะ Resend code | ช่วงนับแสดง "Resend code in 0:NN" นับลงทีละวิ; เหลือ 0 → ปุ่ม Resend code; กด → reset 30 + toast "New code sent" | ปุ่มไม่แสดงระหว่างนับถอยหลัง; toast ขึ้นบน | High | |
-| FO-TC-AUTH-036 | onboarding `otp` | GUEST | Edge | อยู่หน้า otp | 1. พิมพ์ตัวอักษร/อีโมจิในช่อง 2. ช่อง 3 ว่างแล้วกด Backspace 3. แตะ back | input ถูก strip เหลือเฉพาะเลข; Backspace บนช่องว่าง → focus ช่องก่อนหน้า; back → กลับ `signup` (ค่าฟอร์มยังอยู่ใน OB.f) | ช่องไม่รับ non-digit; ไม่มี error | Medium | |
+| FO-TC-AUTH-032 | onboarding `otp` | GUEST | UI | signup ผ่านแล้ว | 1. ตรวจหน้า OTP | — | ปุ่ม back + หัวข้อ "Verify your email" + อีเมลปลายทาง + ช่อง OTP 6 ช่อง (focus ช่องแรก) + บรรทัด resend พร้อมตัวนับถอยหลัง (จดเวลาจริง) | Medium | |
+| FO-TC-AUTH-033 | onboarding `otp` | GUEST | Func | อยู่หน้า OTP | 1. กรอกรหัส OTP 6 หลักที่ได้รับจริง (SETUP-06) | แต่ละช่องรับเฉพาะตัวเลข + auto-focus ช่องถัดไป; ครบ 6 หลัก verify อัตโนมัติโดยไม่ต้องกดปุ่ม → ไปหน้า profile | ช่องเต็มทีละช่อง ไม่ต้องกดยืนยัน | High | |
+| FO-TC-AUTH-034 | onboarding `otp` | GUEST | Func | อยู่หน้า OTP | 1. กรอกรหัสผิด เช่น 000000 | ครบ 6 หลัก → error "That code is incorrect. Try again." (หรือข้อความเทียบเท่า) + ช่องล้างอัตโนมัติ + focus กลับช่องแรก | ข้อความ error + feedback ผิด (เช่น ช่องสั่น/สีแดง) | High | |
+| FO-TC-AUTH-035 | onboarding `otp` | GUEST | Func | อยู่หน้า OTP | 1. รอตัวนับ resend ถอยหลังจนหมด 2. แตะ Resend code | ระหว่างนับแสดง "Resend code in 0:NN" (ไม่ใช่ปุ่ม); หมดเวลา → ปุ่ม Resend code ใช้ได้; กด → นับใหม่ + มี confirmation (เช่น toast) + รหัสใหม่ถูกส่งจริง | ปุ่มไม่แสดง/กดไม่ได้ระหว่างนับ; รหัสใหม่มาถึงจริง | High | |
+| FO-TC-AUTH-036 | onboarding `otp` | GUEST | Edge | อยู่หน้า OTP | 1. ลองพิมพ์ตัวอักษร/สัญลักษณ์ 2. ช่องว่างกด Backspace 3. แตะ back | ช่องรับเฉพาะตัวเลข; Backspace บนช่องว่าง → focus ช่องก่อนหน้า; back → กลับหน้า signup (ค่าที่กรอกยังอยู่หรือไม่ให้จดผลจริง) | ช่องไม่รับ non-digit | Medium | |
 
 ### 2.11 Profile setup (`profile`)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-037 | onboarding `profile` | GUEST | UI | otp ผ่านแล้ว | 1. ตรวจหน้า profile | — | ปุ่ม "Skip for now" มุมขวาบน (ไม่มี back) + avatar default + ลิงก์ Add photo + field Username (prefill ข้อเสนอแนะ) + ปุ่ม Continue | Medium | |
-| FO-TC-AUTH-038 | onboarding `profile` | GUEST | Func | อยู่หน้า profile (สมัคร `new@test.com`) | 1. ดู username ที่ suggest 2. แตะ Continue | suggest = local-part อีเมล sanitize เป็น a-z0-9_. (fallback `memberNNNN`); Continue ด้วย username valid → บันทึกลง `fo_account` → ไปหน้า `created` (provider email) | หน้า created แสดง "Account created" | High | |
-| FO-TC-AUTH-039 | onboarding `profile` | GUEST | Func | อยู่หน้า profile | 1. ลบ username ใส่ `ab` → Continue 2. ใส่ `ABC!!` → Continue 3. ใส่ `valid_name` → Continue | regex `^[a-z0-9_.]{3,20}$` (lowercase+trim ก่อนเช็ก); ผิด → error "Username required — 3–20 characters: a–z, 0–9, _ or ." + class err; ถูก → ผ่าน | error แดงใต้ช่อง user; field เดิมค้าง | High | |
-| FO-TC-AUTH-040 | onboarding `profile` | GUEST | Edge | อยู่หน้า profile | 1. แตะ "Add photo" | toast "Photo picker opens here (prototype)" — `[DEAD]` placeholder | toast ปรากฏ ~1.8s ไม่มี picker จริง | Low | |
-| FO-TC-AUTH-041 | onboarding `profile` | GUEST | Func | อยู่หน้า profile (username ที่ suggest ว่าง/invalid) | 1. ล้างช่องให้ว่าง/invalid 2. แตะ Skip for now | Skip ไม่บังคับ validation — ถ้า invalid ระบบ gen `obSuggestUser()` ให้แล้วเข้าสู่ `created` | ผ่านไป created เหมือนกรอกถูก | Medium | |
+| FO-TC-AUTH-037 | onboarding `profile` | GUEST | UI | OTP ผ่านแล้ว | 1. ตรวจหน้า | — | ปุ่ม "Skip for now" มุมขวาบน + avatar default + ลิงก์ Add photo + ช่อง Username (เติมข้อเสนอแนะไว้) + ปุ่ม Continue | Medium | |
+| FO-TC-AUTH-038 | onboarding `profile` | GUEST | Func | อยู่หน้า profile | 1. ดู username ที่ระบบ suggest 2. แตะ Continue | username แนะนำถูกเติมจากข้อมูลที่สมัคร (เช่นส่วนหน้าอีเมล); Continue → ไปหน้า Account created | หน้า created แสดง "Account created" | High | |
+| FO-TC-AUTH-039 | onboarding `profile` | GUEST | Func | อยู่หน้า profile | 1. ลบ username ใส่ "ab" → Continue 2. ใส่ "ABC!!" → Continue 3. ใส่ username ถูกกติกา → Continue | กติกา username (ตาม design: 3–20 ตัว, a–z 0–9 _ .); ผิด → error แดงใต้ช่อง; ถูก → ผ่าน | error ชัดเจนบอกกติกา | High | |
+| FO-TC-AUTH-040 | onboarding `profile` | GUEST | Edge | อยู่หน้า profile | 1. แตะ "Add photo" | เปิด photo picker/ตัวเลือกรูปของระบบจริง → เลือกรูปได้แล้ว avatar เปลี่ยน (ถ้าแอปจริงยังไม่มี picker ให้ FAIL/flag) | picker ของ OS เปิด; avatar อัปเดตหลังเลือก | Low | |
+| FO-TC-AUTH-041 | onboarding `profile` | GUEST | Func | อยู่หน้า profile | 1. ล้างช่อง username ให้ว่าง/invalid 2. แตะ Skip for now | Skip ไม่บังคับ validation — ระบบสร้าง username ให้เองแล้วไปหน้า created | ผ่านไป created เหมือนกรอกถูก | Medium | |
 
 ### 2.12 Account created (`created`)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-042 | onboarding `created` | NEW | Func | profile ผ่านแล้ว | 1. ตรวจหน้า 2. แตะ Sign in | ปุ่ม Sign in → หน้า `signin` (ฟิลด์ยังคงค่าที่สมัคร เพราะ OB.f ไม่ว่าง → ไม่ prefill demo) | check icon วงกลม + h1 "Account created" + "Welcome, {username}. Sign in to start exploring." จัดกลาง | High | |
-| FO-TC-AUTH-043 | onboarding `created` | NEW | Int | อยู่หน้า created | 1. แตะ Sign in 2. กด Sign in ด้วย credential ที่เพิ่งสมัคร | เข้าระบบ session `new` → feed (member powers แต่ข้อมูลว่าง: saved/alert/chat ว่าง, CP_ME.name=username); onboarding จบ + coach marks ชุด member เด้ง (ครั้งแรกเท่านั้น) | feed ปกติ + coach จุดแรก "Tap + to create your first post." | High | |
+| FO-TC-AUTH-042 | onboarding `created` | NEW | Func | profile ผ่านแล้ว | 1. ตรวจหน้า 2. แตะ Sign in | ปุ่ม Sign in → หน้า sign in (ช่องเติม credential ที่เพิ่งสมัครไว้หรือไม่ — จดผลจริง) | check icon + "Account created" + "Welcome, {username}..." | High | |
+| FO-TC-AUTH-043 | onboarding `created` | NEW | Int | อยู่หน้า created | 1. แตะ Sign in 2. เข้าสู่ระบบด้วยบัญชีที่เพิ่งสมัคร | เข้าระบบสำเร็จ → feed แบบ member ใหม่ (ข้อมูลว่าง: saved/alert/chat ว่าง, ชื่อ = username ที่ตั้ง) + coach mark ชุด member (ถ้ามี — จดผล) | feed แสดงสถานะ new member | High | |
 
 ### 2.13 Sign in (`signin`)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-044 | onboarding `signin` | GUEST | UI | member → Sign in | 1. ตรวจหน้า | — | back + h1 "Sign in" + sub "Welcome back to TukDaeng." + Email/Password + eye + ลิงก์ "Forgot password?" + ปุ่ม Sign in + social block + "New here? Create account" | Medium | |
-| FO-TC-AUTH-045 | onboarding `signin` | GUEST | Func | เข้าหน้า signin ตรง (ฟิลด์ว่าง) | 1. สังเกตค่า prefill 2. กด Sign in | ฟิลด์ว่าง → prefill demo `demo@tukdaeng.com`/`Tukdaeng123`; กด → credential ตรง OB_DEMO → session `member` เข้า feed เงียบ (ไม่มี toast, ไม่มี coach ถ้าเคยจบ onboarding) | feed mock data เต็ม (member เดิม) | High | |
-| FO-TC-AUTH-046 | onboarding `signin` | GUEST | Func | อยู่หน้า signin | 1. ล้างทั้งสองช่อง → Sign in 2. email `abc` → Sign in 3. email ถูก + pw ว่าง → Sign in | เคส 1: "Enter your email." + "Enter your password."; เคส 2: "Enter a valid email address."; เคส 3: "Enter your password." | error รายฟิลด์ `.ob-msg` + class err; ไม่นับ tries | High | |
-| FO-TC-AUTH-047 | onboarding `signin` | GUEST | Edge | อยู่หน้า signin | 1. กรอก email ถูกรูปแบบ + pw ผิด → Sign in 2. กดซ้ำถึงครั้งที่ 5 | ผิด → form banner "Email or password is incorrect. (N/5)" นับ tries++; ครั้งที่ 5 → banner "Too many attempts. Try again in 15 minutes or reset your password." + ปุ่ม Sign in disabled | banner แดงเหนือฟิลด์ (E.form); ปุ่มมี disabled | High | |
-| FO-TC-AUTH-048 | onboarding `signin` | GUEST | Func | มีบัญชีสมัครใหม่ใน `fo_account` | 1. signin ด้วย email+pw ที่สมัครไว้ | credential ตรง OB.account/fo_account → session `new` (empty member) — ต่างจาก demo ที่เป็น `member` | feed ว่างสไตล์ new member; CP_ME.name = username ที่ตั้ง | High | |
-| FO-TC-AUTH-049 | onboarding `signin` | GUEST | Edge | อยู่หน้า signin | 1. ผิดจนโดนล็อก (≥5) 2. ลองกรอก credential ถูก → กด Sign in | ปุ่ม disabled ตั้งแต่ render — submit ไม่ได้เลย ไม่มีเส้นทางปลดล็อกใน prototype นอกจาก reload หน้า (`OB.tries` เป็น state ใน JS รีเซ็ตเอง) `[OPEN]` cooldown 15 นาทีไม่มี timer จริง | ปุ่มค้าง disabled; banner ยังแสดง | Medium | |
+| FO-TC-AUTH-044 | onboarding `signin` | GUEST | UI | member sheet → Sign in | 1. ตรวจหน้า | — | ปุ่ม back + หัวข้อ "Sign in" + ช่อง Email/Password + ไอคอนตา + ลิงก์ "Forgot password?" + ปุ่ม Sign in + social block + "New here? Create account" | Medium | |
+| FO-TC-AUTH-045 | onboarding `signin` | GUEST | Func | อยู่หน้า sign in (ช่องว่าง) | 1. กรอก email+password บัญชีทดสอบ (SETUP-06) 2. กด Sign in | credential ถูก → เข้าสู่ระบบ session member → feed แสดงข้อมูลสมาชิก | feed ของ member (มีข้อมูลตามบัญชีนั้น) | High | |
+| FO-TC-AUTH-046 | onboarding `signin` | GUEST | Func | อยู่หน้า signin | 1. เว้นว่างทั้งสองช่อง → Sign in 2. email "abc" → Sign in 3. email ถูก + pw ว่าง → Sign in | error รายฟิลด์: email required / email invalid / password required — ไม่นับเป็น failed attempt | error แดงใต้ช่องที่ผิด; ไม่ไปต่อ | High | |
+| FO-TC-AUTH-047 | onboarding `signin` | GUEST | Edge | อยู่หน้า signin | 1. กรอก email ถูกรูปแบบ + pw ผิด → Sign in 2. กดซ้ำจนครบ 5 ครั้ง | ผิด → banner นับความผิด (เช่น "(N/5)"); ครบลิมิต → ล็อกพร้อมข้อความบอกระยะเวลา (design ระบุ 15 นาที — จดค่าจริง) + ปุ่ม Sign in disabled | banner แดงเหนือฟอร์ม; ปุ่มกดไม่ได้เมื่อล็อก | High | |
+| FO-TC-AUTH-048 | onboarding `signin` | GUEST | Func | เคยสมัครบัญชีใหม่ผ่านแอปแล้ว | 1. sign in ด้วย email+pw ที่สมัครไว้ | เข้าระบบได้ → feed แบบ member ของบัญชีนั้น (ข้อมูลตามจริงของบัญชี) | feed ตรงบัญชี; ชื่อ/username ถูก | High | |
+| FO-TC-AUTH-049 | onboarding `signin` | GUEST | Edge | โดนล็อกจากเคส 047 | 1. ตอนล็อก: ใส่ credential ถูก → พยายาม Sign in 2. รอตามเวลาที่แจ้ง (เช่น 15 นาที) → ลองใหม่ | ช่วงล็อก: ปุ่ม disabled/ปฏิเสธ; หลังครบเวลา: ปลดล็อก sign in ได้ (จดว่าปลดจริงไหมและนานเท่าไร — ถ้าไม่มี timer ปลดให้ flag) | สถานะล็อก/ปลดชัดเจน | Medium | |
 
 ### 2.14 Forgot password (`forgot`)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-050 | onboarding `forgot` | MEMBER | UI | signin → Forgot password? | 1. แตะลิงก์ 2. ตรวจหน้า | เข้าหน้า `forgot` | back + h1 "Reset password" + sub + field Email + ปุ่ม Send reset link | Medium | |
-| FO-TC-AUTH-051 | onboarding `forgot` | MEMBER | Func | อยู่หน้า forgot | 1. กรอก email ถูกรูปแบบ → Send reset link 2. แตะ Back to sign in | email valid → `OB.sent`=true → หน้า sent "Check your email / If an account exists for {email}, we sent a reset link."; Back → กลับ `signin` | หน้า sent มี check icon + ปุ่ม Back to sign in | High | |
-| FO-TC-AUTH-052 | onboarding `forgot` | MEMBER | Func | อยู่หน้า forgot | 1. เว้นว่าง/ใส่ email ผิด → Send reset link | error "Enter a valid email address."; ไม่ไปหน้า sent | field err + `.ob-msg` | Medium | |
+| FO-TC-AUTH-050 | onboarding `forgot` | MEMBER | UI | signin → Forgot password? | 1. แตะลิงก์ 2. ตรวจหน้า | เข้าหน้า reset password | back + หัวข้อ "Reset password" + ช่อง Email + ปุ่ม Send reset link | Medium | |
+| FO-TC-AUTH-051 | onboarding `forgot` | MEMBER | Func | อยู่หน้า forgot | 1. กรอก email ที่รับจดหมายจริง → Send reset link 2. แตะ Back to sign in | หน้า sent "Check your email / If an account exists for {email}, we sent a reset link."; ตรวจกล่องจดหมาย — ลิงก์รีเซ็ตมาถึงจริง (เช็ก inbox/spam); Back → กลับ sign in | หน้า sent มี check icon + ปุ่ม Back to sign in | High | |
+| FO-TC-AUTH-052 | onboarding `forgot` | MEMBER | Func | อยู่หน้า forgot | 1. เว้นว่าง/ใส่ email ผิด → Send reset link | error "Enter a valid email address." (หรือเทียบเท่า); ไม่ไปหน้า sent | error แดงใต้ช่อง | Medium | |
 
-### 2.15 Legal overlay (`ob-legal`)
+### 2.15 Legal overlay (เอกสาร Terms/Privacy)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-053 | overlay `ob-legal` | GUEST | Func | อยู่ขั้นใดก็ได้ที่มี legal link (welcome/consent/signup) | 1. แตะ "Terms of Use" 2. แตะ "Privacy Policy" | overlay เปิดทับขั้นเดิม แสดงเอกสารที่เลือก (Terms 3 sections / Privacy 4 sections) | header: back + ชื่อเอกสาร + "v1.0 · Effective 19 Oct 2026" + h3/p แต่ละ section + ปุ่ม Close ล่าง | Medium | |
-| FO-TC-AUTH-054 | overlay `ob-legal` | GUEST | Func | ob-legal เปิดอยู่ | 1. กด back 2. (ทำซ้ำ) กด Close | ทั้งสองวิธีปิด overlay กลับขั้นเดิมพอดี (state ไม่หาย — เช่นฟอร์ม signup ที่กรอกค้าง) | หน้าจอเดิมกลับมาสมบูรณ์ | Medium | |
+| FO-TC-AUTH-053 | overlay legal | GUEST | Func | อยู่ขั้นที่มี legal link (welcome/consent/signup) | 1. แตะ "Terms of Use" 2. แตะ "Privacy Policy" | overlay เอกสารเปิดทับขั้นเดิม แสดงเอกสารที่เลือกถูกต้อง | header: back + ชื่อเอกสาร + เวอร์ชัน/วันที่ (จดค่าจริง) + เนื้อหาแบ่งหัวข้อ + ปุ่ม Close ล่าง | Medium | |
+| FO-TC-AUTH-054 | overlay legal | GUEST | Func | overlay legal เปิดอยู่ | 1. กด back 2. (ทำซ้ำ) กด Close | ทั้งสองวิธีปิด overlay กลับขั้นเดิมพอดี (ค่าที่กรอกค้าง เช่นฟอร์ม signup ไม่หาย) | หน้าจอเดิมกลับมาสมบูรณ์ | Medium | |
 
 ### 2.16 Onboarding actions (hide / eye / resend / social / exit·decline)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-055 | action `hide` | GUEST | Func | member sheet (non-gate) | 1. แตะ checkbox "Don't show this again" ซ้ำหลายครั้ง | toggle `OB.hide` สลับทุกครั้ง ไม่พลิกผิดจังหวะ | icon check ปรากฏ/หาย + aria-checked ตาม | Low | |
-| FO-TC-AUTH-056 | action `eye` | GUEST | Func | signup หรือ signin | 1. แตะปุ่ม eye ข้างช่อง password 2. แตะอีกครั้ง | input type สลับ password↔text; กับช่องอื่นไม่เกี่ยว | icon eye ↔ eyeOff เปลี่ยน; ข้อความโชว์/เป็น • เมื่อ hide | Medium | |
-| FO-TC-AUTH-057 | action `resend` | GUEST | UI | หน้า otp ระหว่างนับถอยหลัง | 1. สังเกตบริเวณ resend ทุก ๆ 5 วิ | ขณะ `resend>0` แสดง text "Resend code in 0:NN" (ไม่ใช่ปุ่ม — กดไม่ได้) | hint อัปเดตทุกวินาที 0:30→0:00 | Medium | |
-| FO-TC-AUTH-058 | action `social` — Google | GUEST | Func | member sheet (non-gate) หรือหน้า signup | 1. แตะ Continue with Google | first-time path → prefill OB_SOCIAL.google (email `matem.watch@gmail.com`, ชื่อ, รูป) → ข้ามไปหน้า `profile` username suggest `matem_watch` | profile step มีรูป social เป็น avatar + username เติมให้ | High | |
-| FO-TC-AUTH-059 | action `social` — Apple | GUEST | Func | เหมือน 058 | 1. แตะ Continue with Apple | เหมือน Google แต่ใช้ OB_SOCIAL.apple (`matem@privaterelay.appleid.com`) → username suggest `matem` | avatar = รูป u-1104 | Medium | |
-| FO-TC-AUTH-060 | action `exit`/`decline` | MEMBER | Edge | — | 1. ไล่หา trigger ของ Decline/Exit ใน first-run consent page | หน้า consent first-run **ไม่มี** Decline/Exit (มีแค่ Accept all/Reject all/Cookie settings) — ปุ่มทั้งสองมีเฉพาะใน re-consent sheet; branch "App closed (demo)" แทบ unreachable `[OPEN]` mark เป็น dead-path | ไม่มีปุ่ม Decline/Exit บน consent page | Low | |
+| FO-TC-AUTH-055 | action `hide` | GUEST | Func | member sheet (first-run) | 1. แตะ checkbox "Don't show this again" ซ้ำหลายครั้ง | checkbox สลับติ๊ก/ไม่ติ๊กทุกครั้ง ไม่ค้าง | เครื่องหมายถูกปรากฏ/หายตาม | Low | |
+| FO-TC-AUTH-056 | action `eye` | GUEST | Func | signup หรือ signin | 1. แตะปุ่ม eye ข้างช่อง password 2. แตะอีกครั้ง | ข้อความสลับ แสดง↔ซ่อน (•••); ไม่กระทบช่องอื่น | ไอคอนเปลี่ยน; ข้อความโชว์/ปิดตาม | Medium | |
+| FO-TC-AUTH-057 | action `resend` | GUEST | UI | หน้า OTP ระหว่างนับถอยหลัง | 1. สังเกตบริเวณ resend ทุก ๆ 5 วิ | ขณะนับแสดง text "Resend code in 0:NN" (ไม่ใช่ปุ่ม — กดไม่ได้) จนหมดเวลา | ตัวนับอัปเดตทุกวินาที | Medium | |
+| FO-TC-AUTH-058 | action `social` — Google | GUEST | Func | member sheet หรือหน้า signup | 1. แตะ Continue with Google 2. เลือกบัญชี Google จริงของ tester | เปิดหน้าเลือกบัญชี Google ของระบบ (OS-level) → เลือกแล้วไปหน้า profile ที่ prefill ชื่อ/username จากบัญชีนั้น | account chooser ของระบบแสดง; avatar/username ตรงบัญชีที่เลือก | High | |
+| FO-TC-AUTH-059 | action `social` — Apple | GUEST | Func | member sheet หรือหน้า signup (iOS) | 1. แตะ Continue with Apple 2. ยืนยันด้วย Apple ID จริง | เหมือน Google — เปิด Sign in with Apple ของระบบ → ไปหน้า profile พร้อมข้อมูลจาก Apple ID (หมายเหตุ: เทสบน iOS เป็นหลัก) | เหมือนเคส 058 | Medium | |
+| FO-TC-AUTH-060 | action `exit`/`decline` | MEMBER | Edge | หน้า consent first-run | 1. ไล่หาปุ่ม Decline/Exit บนหน้า privacy notice | ไม่มีปุ่ม Decline/Exit บน consent รอบแรก — มีแค่ Accept all / Reject all / Cookie settings (ยืนยันว่าออกจาก consent ไม่ได้นอกจากเลือกอย่างใดอย่างหนึ่ง) | ไม่มีปุ่ม Decline/Exit บนหน้านี้ | Low | |
 
-### 2.17 Guest Gate — `obGate()` + `GUEST_GATE_SEL` [GATE]
-
-| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
-|---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-061 | `obGate()` trigger | GUEST | Func | session guest บน feed | 1. แตะ like บน post card (`.like-btn` อยู่ใน GUEST_GATE_SEL) | action ถูกดักก่อนทำงาน — Member Sheet เปิด; โพสต์ **ไม่ถูก like** | sheet "Join TukDaeng" + sub "Sign in or create a free account to use this feature." (gate copy ต่างจาก first-run) | High | |
-| FO-TC-AUTH-062 | `obGate()` dismiss | GUEST | Func | gate sheet เปิดอยู่ | 1. แตะ scrim ด้านหลัง | sheet ปิด (เฉพาะ gate variant) — ยังเป็น guest, หน้าเดิมไม่เปลี่ยน, action เดิมไม่ทำงาน | sheet เลื่อนลงหาย; feed สภาพเดิม | High | |
-| FO-TC-AUTH-063 | `obGate()` skip | GUEST | Func | gate sheet เปิดอยู่ | 1. แตะ "Skip for now" | session ยัง guest, sheet ปิดเงียบ ไม่มี toast/coach | กลับหน้าเดิมเหมือนไม่เคยเปิด | High | |
-| FO-TC-AUTH-064 | `obGate()` UI | GUEST | UI | gate sheet เปิดอยู่ | 1. เทียบกับ first-run member sheet (AUTH-023) | gate variant **ไม่มี** checkbox "Don't show this again" และ sub เป็น gate copy | ปุ่มยัง Sign up / Sign in / Skip for now + social row | Medium | |
-| FO-TC-AUTH-065 | `obGate()` → sign in | GUEST→MEMBER | Int | guest แตะ like → sheet เปิด | 1. แตะ Sign in 2. sign in ด้วย demo creds | เข้าสู่ระบบ session member → กลับ feed หน้าเดิม; **action เดิมไม่ auto-resume** — โพสต์ยังไม่ถูก like ต้องแตะใหม่ | feed เหมือนเดิม + ตอนนี้ member (gate ไม่เด้งอีก) | High | |
-| FO-TC-AUTH-066 | `obGate()` → sign up | GUEST→NEW | Int | gate sheet เปิดอยู่ | 1. Sign up → กรอก email+pw → OTP `123456` → profile → created → Sign in | เดิน signup flow ครบเหมือน non-gate → session `new` → feed | flow เดียวกันกับ first-run sign-up | Medium | |
-| FO-TC-AUTH-067 | `GUEST_GATE_SEL` [GATE] | MEMBER | Func | session member บน feed | 1. แตะ like/save/share/comment/create/follow ฯลฯ | member ไม่เจอ sheet — action ทำงานปกติทุกตัว (คู่ guest ของ 061) | ไม่มี Member Sheet; like toggle/save sheet ฯลฯ เปิดตามปกติ | High | |
-| FO-TC-AUTH-068 | `GUEST_GATE_SEL` nav [GATE] | GUEST vs MEMBER | Func | feed | 1. guest: แตะ bottom nav chat/alerts/profile ทีละแท็บ 2. member: แตะแท็บเดิม | guest → Member Sheet ทุกครั้ง แท็บ**ไม่สลับ** (อยู่ feed); member → สลับแท็บปกติ | guest: sheet ทับอยู่บน feed เสมอ; badge/แท็บไม่เปลี่ยน | High | |
-
-### 2.18 Re-consent (`OB.recon`)
+### 2.17 Guest Gate — Member Sheet จาก action ที่ล็อกไว้ [GATE]
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-069 | re-consent sheet | MEMBER | Func | จบ onboarding แล้ว (member) | 1. กดปุ่ม dev "v2" | sheet consent แบบ recon เด้งทับ feed | sheet: "We've updated our policies" + อธิบาย + แถวเอกสาร Terms/Privacy (ป้าย Required, "v1.1 · Tap to read") + toggles Analytics/Personalized content + Accept & continue + Decline | Medium | |
-| FO-TC-AUTH-070 | re-consent legal | MEMBER | Func | recon sheet เปิด | 1. แตะแถว Terms of Use / Privacy Policy | เปิด `ob-legal` view ภายใน overlay แสดง "v1.1"; ปิดกลับมา sheet เดิม | header back + เอกสาร v1.1 | Medium | |
-| FO-TC-AUTH-071 | re-consent accept | MEMBER | Func | recon sheet เปิด | 1. (ปรับ toggle ตามใจ) แตะ Accept & continue | `obAccept()` → บันทึก `fo_consent` + ปิด sheet + toast "Thanks — updated policies accepted"; session ยัง member | toast ปรากฏบน feed; sheet หาย | High | |
-| FO-TC-AUTH-072 | re-consent decline→exit | MEMBER | Func | recon sheet เปิด | 1. แตะ Decline 2. แตะ "Sign out" (ปุ่มที่เปลี่ยนจาก Decline) | Decline → banner เตือน "You need to accept the required Terms..." + ปุ่มเปลี่ยนเป็น Sign out; Sign out → toast "Signed out (demo)" + onboarding เด้งที่ `member` step ให้ sign in ใหม่ | banner แดงใน sheet; หลัง exit เห็น member sheet | High | |
+| FO-TC-AUTH-061 | gate trigger | GUEST | Func | session guest บน feed | 1. แตะไอคอนหัวใจ (like) ใต้โพสต์ใดก็ได้ | action ถูกดักก่อนทำงาน — Member Sheet เปิด; โพสต์ **ไม่ถูก like** | sheet "Join TukDaeng" + ข้อความประมาณ "Sign in or create a free account to use this feature." | High | |
+| FO-TC-AUTH-062 | gate dismiss | GUEST | Func | gate sheet เปิดอยู่ | 1. แตะ scrim ด้านหลัง | sheet ปิด (เฉพาะ gate variant) — ยังเป็น guest, หน้าเดิมไม่เปลี่ยน, action เดิมไม่ทำงาน | sheet เลื่อนลงหาย; feed สภาพเดิม | High | |
+| FO-TC-AUTH-063 | gate skip | GUEST | Func | gate sheet เปิดอยู่ | 1. แตะ "Skip for now" | session ยัง guest, sheet ปิดเงียบ ไม่มี toast | กลับหน้าเดิมเหมือนไม่เคยเปิด | High | |
+| FO-TC-AUTH-064 | gate UI | GUEST | UI | gate sheet เปิดอยู่ | 1. เทียบกับ first-run member sheet (AUTH-023) | gate variant **ไม่มี** checkbox "Don't show this again" และข้อความรองเป็นฉบับ gate | ปุ่มยัง Sign up / Sign in / Skip for now + social row | Medium | |
+| FO-TC-AUTH-065 | gate → sign in | GUEST→MEMBER | Int | guest แตะ like → sheet เปิด | 1. แตะ Sign in 2. sign in ด้วยบัญชีทดสอบ 3. กลับดูโพสต์เดิม | เข้าสู่ระบบ member → กลับ feed หน้าเดิม; **action เดิมไม่ auto-resume** — โพสต์ยังไม่ถูก like ต้องแตะใหม่เอง | feed เหมือนเดิม + ตอนนี้ member (gate ไม่เด้งอีก) | High | |
+| FO-TC-AUTH-066 | gate → sign up | GUEST→NEW | Int | gate sheet เปิดอยู่ | 1. Sign up → กรอก email+pw → OTP จริง → profile → created → Sign in | เดิน signup flow ครบเหมือน first-run → session member ใหม่ → feed | flow เดียวกันกับ first-run sign-up | Medium | |
+| FO-TC-AUTH-067 | gate bypass [GATE] | MEMBER | Func | session member บน feed | 1. แตะ like/save/share/comment/create ทีละอัน | member ไม่เจอ sheet — action ทำงานปกติทุกตัว (คู่เทียบ guest ของ 061) | ไม่มี Member Sheet; action ทำงานตามปกติ | High | |
+| FO-TC-AUTH-068 | gate nav [GATE] | GUEST vs MEMBER | Func | feed | 1. guest: แตะแท็บ Chat / Alerts / Profile ในแถบล่างทีละแท็บ 2. member: แตะแท็บเดิม | guest → Member Sheet ทุกแท็บ และแท็บ**ไม่สลับ** (อยู่ feed); member → สลับแท็บปกติ | guest: sheet ทับบน feed เสมอ; member: เปลี่ยนหน้าปกติ | High | |
+
+### 2.18 Re-consent (นโยบายเวอร์ชันใหม่)
+
+> ⚠️ กลุ่มนี้เทสได้เฉพาะเมื่อมีการออก Terms/Privacy เวอร์ชันใหม่จริงฝั่ง server (ทีม backend/dev ต้อง trigger) — ถ้าไม่มีทางจำลองบน build ทดสอบให้ mark BLOCK พร้อมเหตุผล
+
+| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
+|---|---|---|---|---|---|---|---|---|---|
+| FO-TC-AUTH-069 | re-consent sheet | MEMBER | Func | member ล็อกอินอยู่ + ทีมออก policy version ใหม่ | 1. เปิดแอป/กลับเข้าแอปหลังเวอร์ชันนโยบายถูก bump | sheet re-consent เด้งทับ feed โดยอัตโนมัติ | sheet: "We've updated our policies" + แถวเอกสาร Terms/Privacy (ป้าย Required + เวอร์ชันใหม่) + toggles + Accept & continue + Decline | Medium | |
+| FO-TC-AUTH-070 | re-consent legal | MEMBER | Func | re-consent sheet เปิด | 1. แตะแถว Terms of Use / Privacy Policy ใน sheet | เปิดเอกสารเวอร์ชันใหม่ภายใน overlay; ปิดกลับมา sheet เดิม | เอกสารแสดงเวอร์ชันล่าสุด (จดค่าจริง) | Medium | |
+| FO-TC-AUTH-071 | re-consent accept | MEMBER | Func | re-consent sheet เปิด | 1. (ปรับ toggle ตามใจ) แตะ Accept & continue | บันทึก consent ใหม่ → ปิด sheet + confirmation (toast) → ยังเป็น member ใช้งานต่อได้ปกติ | sheet หาย; toast/feedback แสดง | High | |
+| FO-TC-AUTH-072 | re-consent decline→sign out | MEMBER | Func | re-consent sheet เปิด | 1. แตะ Decline 2. ทำตามที่ UI เสนอ (เช่น Sign out) | Decline → แจ้งเตือนว่าต้องยอมรับ Terms ที่จำเป็น + ทางเลือก sign out; sign out → ออกจากระบบ → member sheet ให้ sign in ใหม่ (จดข้อความ/flow จริง) | เตือนชัดเจน; หลัง sign out เห็น member sheet | High | |
 
 ### 2.19 Settings → About your account
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-073 | `about_account` | MEMBER | UI | settings → About your account | 1. ตรวจหน้า | — | hero: avatar + display name + @username; section Account information: Date joined + Account based in Thailand; Security: Change password (chev); Account management: Delete account (ตัวแดง) | Medium | |
-| FO-TC-AUTH-074 | `about_account` | MEMBER vs NEW | Func | เปิด about_account | 1. member demo เปิดดู Date joined 2. session `new` (สมัครใหม่) เปิดดูอีกครั้ง | member → "October 2024"; new → "October 2026"; hero name/@ = CP_ME/PROFILES ของ session นั้น (new → username ที่ตั้งเอง) | ข้อมูลตรง session | Medium | |
-| FO-TC-AUTH-075 | `about_account` nav | MEMBER | Func | อยู่หน้า about_account | 1. แตะ Change password 2. back 3. แตะ Delete account | ไป `change_pwd` / `del_account` ถูกต้อง; back กลับ about_account | sub-page slide ตามปกติ | Medium | |
+| FO-TC-AUTH-073 | `about_account` | MEMBER | UI | settings → About your account | 1. ตรวจหน้า | — | ส่วนบน: รูป + ชื่อ + @username; หมวด Account information: Date joined + Account based in {ภูมิภาค}; Security: Change password; Account management: Delete account (ตัวแดง) | Medium | |
+| FO-TC-AUTH-074 | `about_account` | MEMBER vs NEW | Func | เปิด about_account | 1. member (บัญชีทดสอบเก่า) ดู Date joined 2. บัญชีสมัครใหม่ (NEW) เปิดดูอีกครั้ง | ข้อมูลตรงบัญชีจริง: Date joined = เดือน/ปีที่สมัคร; รูป/ชื่อ/@user ตรงบัญชีที่ล็อกอิน — บัญชีเก่า vs ใหม่ต้องแสดงต่างกันถูก | ข้อมูลตรง session จริง | Medium | |
+| FO-TC-AUTH-075 | `about_account` nav | MEMBER | Func | อยู่หน้า about_account | 1. แตะ Change password 2. back 3. แตะ Delete account | ไปหน้าเปลี่ยนรหัส / หน้าลบบัญชีถูกต้อง; back กลับ about_account | หน้าเปลี่ยนตามปกติ | Medium | |
 
 ### 2.20 Change password (`change_pwd`)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-076 | `change_pwd` | MEMBER | UI | about_account → Change password | 1. ตรวจหน้า | — | คำอธิบายกติกา ≥8 ตัว+ตัวเลข+อักขระพิเศษ; 3 ฟิลด์ Current/New/Re-type แต่ละอันมี eye; ลิงก์ "Forgot your password?"; ปุ่ม Change password | Medium | |
-| FO-TC-AUTH-077 | `change_pwd` | MEMBER | Func | อยู่หน้า change_pwd (pwd ปัจจุบัน `fox1234`) | กด Change password ทีละเคส: 1. เว้นหมด 2. current ผิด (`wrong123`) 3. current ถูก + new ว่าง 4. new `abc1234` (<8) 5. new = `fox1234` (=current) 6. new ถูก + confirm ไม่ตรง | error ตามลำดับ: "Please enter your current password." → "Your current password was entered incorrectly..." → "Please enter a new password." → "Password must be at least 8 characters long." → "New password must be different from your current password." → "Passwords do not match..." — เช็กทีละข้อ ข้อก่อนหน้าผ่านก่อนถึงเจอข้อถัดไป | `#cpwd-err` แดง + field ที่ผิด `.is-err` + focus ไปช่องนั้น | High | |
-| FO-TC-AUTH-078 | `change_pwd` | MEMBER | Func | อยู่หน้า change_pwd | 1. current `fox1234` 2. new `Newpass1!` 3. confirm `Newpass1!` 4. กด Change password | ผ่าน → `state.userPwd` อัปเดต → `subBack` กลับ about_account + toast "Password changed successfully" | toast ปรากฏ; กลับหน้าก่อนหน้า | High | |
-| FO-TC-AUTH-079 | `change_pwd` | MEMBER | Edge | เปลี่ยนรหัสผ่านแล้ว (078) | 1. เข้า change_pwd อีกครั้ง 2. current `fox1234` เดิม → submit 3. current `Newpass1!` → submit ต่อให้จบ | pwd เดิมผิดแล้ว → "entered incorrectly"; pwd ใหม่เป็น active แทน — เปลี่ยนรอบสองได้ | error ตามเงื่อนไข | Medium | |
-| FO-TC-AUTH-080 | `change_pwd` forgot | MEMBER | Func | อยู่หน้า change_pwd | 1. แตะ "Forgot your password?" | เปิด dialog `forgotPwd` (ดู 2.22) | dialog เด้งกลางจอ | Medium | |
+| FO-TC-AUTH-076 | `change_pwd` | MEMBER | UI | about_account → Change password | 1. ตรวจหน้า | — | คำอธิบายกติการหัส (≥8 ตัว + เงื่อนไขอื่น); 3 ฟิลด์ Current/New/Re-type แต่ละอันมี eye; ลิงก์ "Forgot your password?"; ปุ่ม Change password | Medium | |
+| FO-TC-AUTH-077 | `change_pwd` | MEMBER | Func | อยู่หน้า change_pwd (รู้รหัสปัจจุบันของบัญชีทดสอบ) | กด Change password ทีละเคส: 1. เว้นหมด 2. current ผิด 3. current ถูก + new ว่าง 4. new <8 ตัว 5. new = current เดิม 6. new ถูก + confirm ไม่ตรง | error ตามลำดับ: กรุณากรอก current → current ไม่ถูกต้อง → กรุณากรอก new → ≥8 ตัวอักษร → new ต้องต่างจากเดิม → รหัสไม่ตรงกัน — เช็กทีละข้อ ข้อก่อนผ่านก่อนถึงข้อถัดไป | error แดง + ช่องที่ผิดมีสถานะผิด + focus ไปช่องนั้น | High | |
+| FO-TC-AUTH-078 | `change_pwd` | MEMBER | Func | อยู่หน้า change_pwd | 1. current = รหัสปัจจุบันจริง 2. new = รหัสใหม่ถูกกติกา 3. confirm ตรงกัน 4. กด Change password | ผ่าน → กลับหน้าก่อน + confirmation (toast ประมาณ "Password changed successfully"); รหัสใหม่มีผลทันที | toast/feedback แสดง; กลับหน้าก่อนหน้า | High | |
+| FO-TC-AUTH-079 | `change_pwd` | MEMBER | Edge | เปลี่ยนรหัสแล้ว (078) | 1. เข้า change_pwd อีกครั้ง 2. current = รหัสเดิม → submit 3. current = รหัสใหม่ → submit ให้จบ | รหัสเดิมถูกปฏิเสธ "entered incorrectly"; รหัสใหม่ active ใช้เปลี่ยนรอบต่อได้ — ยืนยันว่ารหัสถูกเปลี่ยนจริงฝั่งระบบ | error ตามเงื่อนไข | Medium | |
+| FO-TC-AUTH-080 | `change_pwd` forgot | MEMBER | Func | อยู่หน้า change_pwd | 1. แตะ "Forgot your password?" | เปิด dialog รีเซ็ตรหัส (ดู 2.22) | dialog เด้งกลางจอ | Medium | |
 | FO-TC-AUTH-081 | `change_pwd` eye | MEMBER | Edge | อยู่หน้า change_pwd | 1. พิมพ์ทั้ง 3 ช่อง 2. แตะ eye ของแต่ละช่องทีละอัน | แต่ละช่องสลับ show/hide อิสระกัน | icon เปลี่ยนเฉพาะช่องนั้น | Low | |
 
 ### 2.21 Delete account (`del_account` step 1–2)
 
+> ⚠️ เคส 088–092 เป็นการลบบัญชีจริง — ใช้เฉพาะบัญชีทดสอบที่สร้างมาเพื่อลบเท่านั้น ห้ามใช้บัญชีหลัก
+
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-082 | `del_account` step1 | MEMBER | UI | about_account → Delete account | 1. ตรวจหน้า | — | hero icon trash + "We're sorry to see you go" + การ์ดเงื่อนไข 3 ใบ: 30-Day Grace Period / Permanent Deletion after 30 days / Watch Alerts Cancelled + ปุ่ม Continue to delete (primary) + Keep my account (secondary) | Medium | |
-| FO-TC-AUTH-083 | `del_account` step1 | MEMBER | Func | อยู่ step1 | 1. แตะ Keep my account | `sub-back` ออกจาก del_account กลับ about_account | ไม่มี dialog; stack ปกติ | Medium | |
-| FO-TC-AUTH-084 | `del_account` step1→2 | MEMBER | Func | อยู่ step1 | 1. แตะ Continue to delete | `_delStep`=2 → หน้าเหตุผล | h1 "Why are you leaving?" | High | |
-| FO-TC-AUTH-085 | `del_account` step2 | MEMBER | UI | อยู่ step2 | 1. ตรวจหน้า | — | title+sub + radio เหตุผล 6 ตัว (no longer using / privacy concerns / too many notifications / second account / trouble / something else) + textarea Additional feedback (optional) + ปุ่ม Continue + Back | Medium | |
-| FO-TC-AUTH-086 | `del_account` step2 validation | MEMBER | Func | อยู่ step2 | 1. กด Continue โดยไม่เลือกเหตุผล 2. เลือกเหตุผลแล้วดู error | ไม่เลือก → `#del-reason-err` "Please select a reason to continue." แสดง + scroll ไปหา; เลือกเหตุผล → error ซ่อนทันที | radio `.is-selected` เฉพาะตัวที่เลือก (เลือกได้ทีละตัว) | High | |
-| FO-TC-AUTH-087 | `del_account` step2 back | MEMBER | Func | อยู่ step2 | 1. กด Back (ในหน้า) 2. กด header back (`sub-back`) | ทั้งสองกลับ step1 — เฉพาะ del_account ที่ back ถูก intercept ให้ถอย step ไม่ pop ทั้งหน้า | กลับหน้า terms cards | Medium | |
-| FO-TC-AUTH-088 | `del_account` step2 → dialog | MEMBER | Func | เลือกเหตุผลแล้ว | 1. (ไม่กรอก feedback — optional) กด Continue | เปิด `delPasswordConfirm` dialog; feedback ว่างก็ผ่านได้ | dialog อยู่กลางจอ + input focus รหัสผ่าน | High | |
+| FO-TC-AUTH-082 | `del_account` step1 | MEMBER | UI | about_account → Delete account | 1. ตรวจหน้า | — | icon + "We're sorry to see you go" + การ์ดเงื่อนไข (grace period / permanent deletion / watch alerts ถูกยกเลิก) + ปุ่ม Continue to delete + Keep my account | Medium | |
+| FO-TC-AUTH-083 | `del_account` step1 | MEMBER | Func | อยู่ step1 | 1. แตะ Keep my account | ออกจากหน้าลบบัญชี กลับ about_account โดยไม่ลบอะไร | ไม่มี dialog; กลับหน้าเดิม | Medium | |
+| FO-TC-AUTH-084 | `del_account` step1→2 | MEMBER | Func | อยู่ step1 | 1. แตะ Continue to delete | ไปหน้าเลือกเหตุผล | หัวข้อ "Why are you leaving?" | High | |
+| FO-TC-AUTH-085 | `del_account` step2 | MEMBER | UI | อยู่ step2 | 1. ตรวจหน้า | — | title+sub + radio เหตุผลหลายตัวเลือก + textarea Additional feedback (optional) + ปุ่ม Continue + Back | Medium | |
+| FO-TC-AUTH-086 | `del_account` step2 validation | MEMBER | Func | อยู่ step2 | 1. กด Continue โดยไม่เลือกเหตุผล 2. เลือกเหตุผลแล้วดู error | ไม่เลือก → error "Please select a reason to continue." (หรือเทียบเท่า); เลือกเหตุผล → error หายทันที | radio เลือกได้ทีละตัว; error ชัดเจน | High | |
+| FO-TC-AUTH-087 | `del_account` step2 back | MEMBER | Func | อยู่ step2 | 1. กด Back ในหน้า 2. กดลูกศร back ของหน้า | ทั้งสองกลับ step1 — back ถูกดักให้ถอยขั้น ไม่ออกจาก flow ลบบัญชี | กลับหน้าเงื่อนไข | Medium | |
+| FO-TC-AUTH-088 | `del_account` step2 → dialog | MEMBER | Func | เลือกเหตุผลแล้ว | 1. (ไม่กรอก feedback — optional) กด Continue | เปิด dialog ยืนยันรหัสผ่าน; feedback ว่างก็ผ่านได้ | dialog อยู่กลางจอ + focus ช่องรหัสผ่าน | High | |
 
 ### 2.22 Dialogs: delPasswordConfirm / delAccountSuccess / forgotPwd
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-089 | `delPasswordConfirm` | MEMBER | UI | dialog เปิดจาก step2 | 1. ตรวจ dialog | — | "Confirm account deletion" + คำอธิบาย 30-day grace + ช่อง Current password + eye + ปุ่ม Delete account (danger) + Cancel | Medium | |
-| FO-TC-AUTH-090 | `delPasswordConfirm` validation | MEMBER | Func | dialog เปิด | 1. กด Delete account โดยว่าง 2. กรอก `wrong999` → submit | ว่าง → "Please enter your password."; ผิด (`state.mockPassword` หรือ `fox1234`) → "Incorrect password. Please try again." | `#del-acc-pwd-err` แดง + input `.is-err` + focus กลับช่อง | High | |
-| FO-TC-AUTH-091 | `delAccountSuccess` | MEMBER | Func | กรอกรหัส `fox1234` ถูก | 1. submit 2. อ่านเนื้อหา success dialog | ถูก → success dialog; วันที่ลบ = today+30d format ตาม locale (EN `en-US` / TH `th-TH` ปี พ.ศ.) | trash icon + "Account deletion scheduled" + "scheduled for permanent deletion on {date} (30 days)" + ข้อความ login ก่อนกำหนดเพื่อ restore + ปุ่ม Log out เพียงปุ่มเดียว | High | |
-| FO-TC-AUTH-092 | `delAccountSuccess` → logout | MEMBER→GUEST | Int | success dialog เปิด | 1. กด Log out 2. (optional) sign in กลับ | ปิด dialog+stack → session guest + feed scroll top + toast "Account deactivated. 30-day grace period started." + Member Sheet เด้งให้ sign in เพื่อ restore; sign in demo กลับ → member ใช้งานได้ตามปกติ (= restore ใน grace) | toast + sheet "Join TukDaeng" | High | |
-| FO-TC-AUTH-093 | `forgotPwd` dialog | MEMBER | Func | change_pwd → Forgot your password? | 1. ตรวจ dialog 2. กด Send reset link 3. (ทำซ้ำ) Cancel | dialog "Reset password?" + อีเมล mask `k***@tukdaeng.com` (member demo); Send → ปิด + toast "Password reset link sent to k***@tukdaeng.com"; Cancel → ปิดเฉย ๆ | mask = ตัวอักษรตัวแรก + *** + @domain | Medium | |
-| FO-TC-AUTH-094 | `forgotPwd` session new | NEW | Edge | session `new` + เปิด dialog | 1. เปิด forgotPwd | อีเมล mask จาก `fo_account` ของตัวเอง (ตัวแรก + `***@domain`) ไม่ใช่ค่า demo | mask ตรงอีเมลที่สมัคร | Low | |
+| FO-TC-AUTH-089 | `delPasswordConfirm` | MEMBER | UI | dialog เปิดจาก step2 | 1. ตรวจ dialog | — | "Confirm account deletion" + คำอธิบาย grace period + ช่อง Current password + eye + ปุ่ม Delete account (danger) + Cancel | Medium | |
+| FO-TC-AUTH-090 | `delPasswordConfirm` validation | MEMBER | Func | dialog เปิด | 1. กด Delete account โดยว่าง 2. กรอกรหัสผิด → submit | ว่าง → "Please enter your password." (เทียบเท่า); ผิด → "Incorrect password. Please try again." (เทียบเท่า) | error แดง + ช่องสถานะผิด + focus กลับช่อง | High | |
+| FO-TC-AUTH-091 | `delAccountSuccess` | MEMBER | Func | กรอกรหัสถูกของบัญชีทดสอบ | 1. submit 2. อ่านเนื้อหา success dialog | ถูก → success dialog แจ้งวันที่ลบถาวร = วันนี้+30 วัน (ตรวจ format ตาม locale เครื่อง — TH แสดง พ.ศ.) | trash icon + "Account deletion scheduled" + วันที่ + ข้อความ login ก่อนกำหนดเพื่อ restore + ปุ่ม Log out | High | |
+| FO-TC-AUTH-092 | `delAccountSuccess` → logout/restore | MEMBER→GUEST | Int | success dialog เปิด | 1. กด Log out 2. sign in กลับด้วยบัญชีเดิม (ทดสอบ restore ใน grace) | ปิดทุกอย่าง → session guest + confirmation (toast ประมาณ "Account deactivated. 30-day grace period started.") + member sheet เด้ง; sign in กลับ → บัญชีกลับมาใช้ได้ (= restore) — จดพฤติกรรม restore จริง | toast + sheet "Join TukDaeng"; sign in กลับได้ | High | |
+| FO-TC-AUTH-093 | `forgotPwd` dialog | MEMBER | Func | change_pwd → Forgot your password? | 1. ตรวจ dialog 2. กด Send reset link 3. (ทำซ้ำ) Cancel | dialog "Reset password?" แสดงอีเมล mask ของบัญชีที่ล็อกอิน; Send → ปิด + confirmation toast (ลิงก์ส่งจริง — เช็กกล่องจดหมาย); Cancel → ปิดเฉย ๆ | mask = ตัวแรก + *** + @domain (เทียบจริง) | Medium | |
+| FO-TC-AUTH-094 | `forgotPwd` session new | NEW | Edge | session NEW + เปิด dialog | 1. เปิด forgotPwd | อีเมล mask เป็นของบัญชีตัวเองที่สมัคร ไม่ใช่ค่าอื่น | mask ตรงอีเมลที่สมัคร | Low | |
 
 ### 2.23 Log out dialog
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-AUTH-095 | `logout` dialog | MEMBER | UI | settings → Log out | 1. แตะ Log out ที่ท้าย settings | เปิด confirm dialog | "Log out of @{username}?" + "You will need to sign in again to access your account." + ปุ่ม Log out (danger) + Cancel | Medium | |
-| FO-TC-AUTH-096 | `logout` confirm | MEMBER→GUEST | Func | dialog เปิด | 1. กด Log out | ปิด dialog + ล้าง sub-stack + session guest + feed scroll top + toast "Logged out successfully" + Member Sheet เด้ง (sign in กลับได้ทันที) | feed guest + sheet | High | |
+| FO-TC-AUTH-095 | `logout` dialog | MEMBER | UI | settings → Log out (ท้ายรายการ หมวด Login) | 1. แตะ Log out | เปิด confirm dialog | "Log out of @{username}?" + "You will need to sign in again to access your account." + ปุ่ม Log out (danger) + Cancel | Medium | |
+| FO-TC-AUTH-096 | `logout` confirm | MEMBER→GUEST | Func | dialog เปิด | 1. กด Log out | ปิด dialog + กลับ feed แบบ guest + confirmation toast + Member Sheet เด้ง (sign in กลับได้ทันที) | feed guest + sheet | High | |
 | FO-TC-AUTH-097 | `logout` cancel | MEMBER | Func | dialog เปิด | 1. กด Cancel | ปิด dialog เฉย ๆ — ยัง member, อยู่หน้า settings เดิม | ไม่มี toast; state ไม่เปลี่ยน | Medium | |
 
-## 3. หมายเหตุ / OPEN items
+## 3. หมายเหตุ / OPEN items (สำหรับเทสแอปจริง)
 
-- **[OPEN] AUTH-049** — ปุ่ม Sign in disabled ตลอดหลัง tries ≥5 และไม่มี timer ปลดล็อกใน prototype; ข้อความบอก "15 minutes" แต่ไม่มีจับเวลาจริง (recover ด้วย refresh/1st)
-- **[OPEN] AUTH-060** — branch "App closed (demo)" ของ `exit` แทบ unreachable: Decline/Exit มีเฉพาะใน re-consent sheet (recon แสดง "Sign out" → "Signed out (demo)"); first-run consent ไม่มีปุ่ม Decline เลย
-- **[OPEN]** "login-to-restore" ของ delete account — prototype ไม่มีหน้า restore เฉพาะ; sign in กลับปกติ = restore (AUTH-092 step 2 ครอบเท่าที่โค้ดทำได้)
-- **`?dev=1` / ปุ่ม "1st" "v2"** = prototype harness — ใช้เป็น test setup เท่านั้น ไม่ใช่ production behavior
-- ทุก coach mark (OB_TOUR / OB_TOUR_GUEST) แสดงครั้งเดียวต่อ `fo_toured` — เคสที่เกี่ยวอยู่ใน AUTH-025/043; tour mechanics เต็ม (Next/Got it/แตะนอกปิด) จะอยู่ใน task Shell ถ้าต้องการ detail เพิ่ม
-- ขอบเขตที่ตัดออกตาม task breakdown: เคส gated action ทุกตัวของแอป (FO-TEST-17), change_pwd/del_account ในฐานะหน้า settings (FO-TEST-15 ครอบ entry/menu), E2E buyer/seller journey (FO-TEST-18)
+- **[OPEN] AUTH-047/049 lockout** — design ระบุล็อก 15 นาทีหลังผิด 5 ครั้ง; ต้องยืนยันบนแอปจริงว่ามี timer ปลดจริงหรือไม่ และปลดนานเท่าไร — จดผลจริงให้ทีมเทียบ spec
+- **[OPEN] AUTH-060** — first-run consent ไม่มี Decline/Exit (ตาม design) — เคสนี้คือยืนยันว่า "ไม่มีทางออกจาก consent นอกจากตอบ" บนแอปจริง
+- **[OPEN] AUTH-069–072 re-consent** — ต้องอาศัยทีม backend ออก policy version ใหม่บน build ทดสอบ; ถ้าไม่มีช่องทาง trigger ให้ mark BLOCK พร้อมเหตุผล
+- **[OPEN] AUTH-092 restore** — design คือ sign in กลับระหว่าง grace period = กู้บัญชีอัตโนมัติ; ยืนยันบนแอปจริงว่า restore เกิดจริงและข้อมูลกลับครบ (จดสิ่งที่กลับ/ไม่กลับ)
+- **OTP (AUTH-032–036)** — แอปจริงส่งรหัสทางอีเมล/SMS จริง; ถ้า backend มี test OTP คงที่ให้ใช้ตามที่ทีมกำหนดแล้วจดลง SETUP-06
+- **Social sign-in (AUTH-058/059)** — ใช้บัญชี Google/Apple จริงของ tester; expected คือข้อมูลจากบัญชีนั้นถูก prefill (ไม่ใช่ค่าคงที่)
+- ขอบเขตที่ตัดออกตาม task breakdown: เมทริกซ์ gated action ทั้งหมด (FO-TEST-17), change_pwd/del_account ในฐานะหน้า settings (FO-TEST-15 ครอบ entry/menu), E2E journey (FO-TEST-18)

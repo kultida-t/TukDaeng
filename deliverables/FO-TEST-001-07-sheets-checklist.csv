@@ -1,172 +1,203 @@
-TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,Note
-SETUP-01,Setup,-,"1. เปิด Chrome ไปที่ http://localhost:8901/index.html (ถ้าไม่มี server ให้เปิดไฟล์ Prototypes/fo-flow/index.html ตรง ๆ)
-2. กด F12 → ไอคอนมือถือ (Toggle device toolbar) → ตั้ง 440 × 956 px","เห็นแอปในกรอบมือถือ + ปุ่มลอย ""1st"" / ""v2"" / ""☾/☀""",-,High,,
-SETUP-02,Setup,-,"1. แตะปุ่มลอย ""1st"" (มุมล่างจอ) = replay onboarding ล้าง state ทั้งหมด
-หรือ DevTools → Application → Local Storage → ลบ key fo_onboarded แล้ว F5","onboarding เด้งใหม่ตั้งแต่หน้า splash — reset POSTS/collections/session ด้วย",-,High,,
+TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,ทดสอบบน (Device/OS),Note
+SETUP-01,Setup,-,"1. ติดตั้งแอป TukDaeng build ทดสอบบนมือถือจริง — Android จาก Play Store / iOS จาก App Store หรือ TestFlight (ตามที่ทีมแจก)
+2. เปิดแอปขึ้นมา","เห็น splash แล้วไหลเข้า onboarding — ห้ามเทสผ่าน browser หรือ prototype",-,High,,,
+SETUP-02,Setup,-,"วิธีรีเซ็ตสถานะแอป (ทำเมื่อเคสต้องการ first-run):
+• Android: ตั้งค่าระบบ → Apps → TukDaeng → Storage → Clear data → เปิดแอปใหม่
+• iOS: ลบแอปออก → ติดตั้งใหม่ → เปิดแอป",onboarding เด้งใหม่เหมือนใช้ครั้งแรก — ข้อมูลเก่าถูกล้าง,-,High,,,
 SETUP-03,Setup,-,"GUEST (ยังไม่ล็อกอิน):
-1. กด ""1st"" replay onboarding
-2. เดินหน้า (Continue ทุกหน้า) จนถึง sheet ""Join TukDaeng""
-3. กด ""Skip for now""","อยู่หน้า feed แบบ guest",-,High,,
-SETUP-04,Setup,-,"MEMBER (บัญชี demo):
-1. แตะหัวใจใต้โพสต์ → Member Sheet เด้ง → กด ""Sign in""
-2. ช่องเติม demo@tukdaeng.com / Tukdaeng123 ไว้แล้ว → กด ""Sign in""","อยู่ feed แบบ member (ตัวตนในแอป = king.mr.fox)",-,High,,
-SETUP-05,Setup,-,"Own post จาก composer (0 comments / 0 likes สำหรับ empty state + likes sheet edge):
-1. member อยู่ feed → ปุ่ม + → เลือกรูป → Next
-2. ใส่ caption → กด ""Share""","โพสต์ใหม่ seller king.mr.fox ขึ้นบนสุด feed — comments 0 / likes 0 (likedBy ยัง seed ""the watch"")",-,High,,"precondition ของ SHT-039/043/047"
-SETUP-06,Setup,-,"User ที่ถูก block ไว้แล้ว (สำหรับ unblock dlg):
-1. ทำตาม FO-TC-SHT-033 (comment popover → Block → Block) หรือ block ผ่าน settings
-2. ยืนยัน chrono.th อยู่ใน blocked list","comments ของ chrono.th ถูกกรองออกจากทุก sheet; feed ไม่มีโพสต์เขา",-,Medium,,"precondition ของ SHT-035/106"
-SETUP-07,Setup,-,"ทางเข้า sheet แต่ละตัว:
-• comments: 💬 บน feed card / rail pv / detail + ""Add comment…"" (pv-add)
-• likes: rail ""Likes"" (pv) หรือแถว liked-by (card)
-• share: ↗ share-btn (card / pv / detail)
-• save: 🔖 save-btn (card / pv)
-• wishlist: 🎁 wl-btn (detail)
-• watch alert: 🔔 mf-btn (detail) / 🔔 sr-wa (search results) / Edit (alerts → watch alerts)
-• uf: กด ""Following"" บน card/ps-head · mf: กด ""Following ⌄"" บน profile
-• ps: ""…"" more-link บน pv caption · dt: ""Tap for details""
-• blk: long-press comment → Block","sheet เปิดทับ surface เดิม — variant ตาม entry",-,High,,
+1. รีเซ็ตแอป (SETUP-02) หรือออกจากระบบ (Settings → Log out)
+2. เดิน onboarding (Continue ทุกหน้า) จนถึง sheet ""Join TukDaeng""
+3. กด ""Skip for now""",อยู่หน้า feed แบบ guest,-,High,,,
+SETUP-04,Setup,-,"MEMBER (ล็อกอินบัญชีทดสอบจริง):
+1. จาก member sheet กด ""Sign in"" (หรือแตะไอคอนหัวใจใต้โพสต์ให้ sheet เด้งก่อน)
+2. กรอก email + password บัญชีทดสอบ (SETUP-06) → ""Sign in""",อยู่ feed แบบ member เห็นข้อมูลจริงของบัญชีนั้น,-,High,,,
+SETUP-05,Setup,-,"เตรียม own posts (precondition SHT-027..032/038/039/043/047/048):
+• (a) own feed post: + → เลือกรูป 1 ใบ → caption → ""Share"" (0 comment / 0 like)
+• (b) POST-NC = own post ที่ปิดคอมเมนต์: ⋯ → ""Turn off commenting""
+• (c) own comment ≥1 ใต้โพสต์คนอื่น (มี reply ต่อ) + own reply ≥1 ใต้ comment คนอื่น","own post ขึ้น feed · POST-NC ไม่มี 💬/Add comment ทุก surface · มี own comment/reply พร้อมทดสอบลบ",-,High,,,
+SETUP-06,Setup,-,"ข้อมูลอ้างอิงจากข้อมูลจริง (จดลง Note ทุกเคสใช้ชุดนี้):
+• บัญชีทดสอบ email+password: ____________________
+• ACCT-2 = บัญชีที่สองจริง (สำหรับ comment/reply/like/share/block/แชท): ____________________
+• POST-CM = โพสต์ของ user อื่นที่มี ≥2 root comments + ≥1 reply + ≥1 like (ยังไม่มี → ให้ MEMBER+ACCT-2 คุยกันใต้โพสต์): ____________________
+• POST-LK = โพสต์คนอื่นที่มี ≥1 like · POST-SALE = โพสต์ขาย seller อื่นที่มี specs+ราคา: ____________________
+• USER-F = user ที่ MEMBER follow อยู่ · USER-NF = user ที่ยังไม่ follow: ____________________
+• COL-A/COL-B = saved collections 2 ใบ (สร้างผ่าน save sheet) · WL-A = wishlist collection: ____________________
+• จด ""รุ่นเครื่อง + OS"" ลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน","จดข้อมูลครบก่อนเริ่มเทส — ถ้าขาดตัวใด (เช่นไม่มี ACCT-2) mark BLOCK เคสที่เกี่ยว",-,High,,,
+SETUP-07,Setup,-,"ทางเข้า sheet แต่ละตัวบนแอปจริง:
+• comments: 💬 ใต้โพสต์บน feed / rail ใน viewer / บน detail + ""Add comment…"" ท้ายการ์ด viewer
+• likes: ""Likes""/liked-by บนการ์ดหรือ rail viewer (เฉพาะโพสต์ที่มี like)
+• share: ↗ บนการ์ด/viewer/detail · save: 🔖 บนการ์ด/viewer · wishlist: 🎁 บน detail
+• watch alert: 🔔 บน detail / 🔔 บนหน้าผลค้นหา / Edit ใน Alerts → Watch alerts
+• unfollow confirm: กด ""Following"" บนการ์ด/หัว caption sheet · manage following: ""Following ⌄"" บน profile
+• caption sheet: แตะ ""… more"" ใน caption บน viewer · details sheet: ""Tap for details""
+• block: กดค้าง comment → Block · chat report: เมนูในห้องแชท · profile more: ⋯ บน profile คนอื่น
+• chat attach: ""+"" ในห้องแชท · board menu: ⋯ บนโพสต์บอร์ด · Ask pill: ปุ่ม Ask บนการ์ด sale · follow pill: ""Follow"" บน head viewer/profile",sheet แต่ละตัวเปิดทับ surface เดิมถูกต้องตามทางเข้า,-,High,,,
 SETUP-08,Setup,-,"Member Sheet ""Join TukDaeng"" (เด้งเวลา guest แตะ action ที่ gate):
-• ปิดโดยแตะบริเวณมืด (scrim) หรือปุ่ม ""Skip for now""
-• ทุกเคส [GATE] ทำคู่: guest เห็น sheet → ปิด → sign in member → ทำซ้ำเห็น flow จริง","sheet ปิดแล้วกลับหน้าเดิม — ไม่มี action เกิด",-,High,,
-SETUP-09,Setup,-,"เทคนิคเปิด comment popover (desktop):
-• long-press = กดซ้ายค้างบนแถว comment ≥ 450ms (หลีกเลี่ยงปุ่ม ♡ / ""Reply"" / avatar)
-• right-click บนแถว = popover เดียวกัน (contextmenu path)
-• ปิด popover = แตะพื้นมืดรอบมัน","c-popover เปิดที่ตำแหน่งแถว — own comment เห็นแค่ ""Delete"", คนอื่นเห็น ""Block""+""Report""",-,High,,
-FO-TC-SHT-001,Mechanics,"member เปิด viewer ของ p1 แล้ว","1. กด 💬 เปิด comments sheet
-2. inspect DOM ใน .screen",".comment-sheet มี element เดียวต่อ .screen — ทุก variant ใช้ก้อนเดียวกัน (เนื้อหา swap ไม่ใช่ stack)",MEMBER,Medium,,"openSheet ลบ class เก่าก่อนใส่ใหม่"
-FO-TC-SHT-002,Mechanics,"comments sheet เปิดอยู่","1. แตะพื้นหลังมืดเหนือ sheet (backdrop)","sheet เลื่อนลงหาย — feed/pv เบื้องหลังเลื่อนได้ปกติ ไม่มี toast",MEMBER,High,,
-FO-TC-SHT-003,Mechanics,"comments sheet เปิดอยู่","1. แตะแถบจับ (handle) ด้านบน sheet","sheet ปิดเหมือน backdrop",MEMBER,Medium,,
-FO-TC-SHT-004,Mechanics,"comments sheet เปิดอยู่","1. ลากตัว sheet ลงล่าง (พยายาม dismiss ด้วย gesture)","sheet ไม่ปิด — ไม่มี drag-to-dismiss (มีแค่ tap backdrop/handle)",MEMBER,Low,,
-FO-TC-SHT-005,Mechanics,"comments sheet เปิดอยู่","1. กดปุ่ม ESC บนคีย์บอร์ด","ไม่มีอะไรเกิดขึ้น — ไม่มี keydown handler ผูกกับ sheet/dlg",MEMBER,Low,,"quirk — บันทึก GAP ถ้า spec ต้องการ ESC"
-FO-TC-SHT-006,Mechanics,"comments sheet เปิดบน viewer","1. พยายาม swipe รูป/เลื่อน content เบื้องหลัง
-2. เลื่อน list ใน sheet","scroll/swipe เบื้องหลังถูกล็อก; list ใน sheet เลื่อนได้ปกติ",MEMBER,Medium,,
-FO-TC-SHT-007,Mechanics,"member เปิด comments ของ p1","1. long-press comment ของ king.mr.fox (ตัวเอง) → กด ""Delete""
-2. ใน dlg ""Delete this comment?"" กด ""Cancel""","dlg ปิดเฉพาะตัว — comments sheet ยังเปิดอยู่ข้างหลัง ไม่มี toast ไม่มีการลบ",MEMBER,High,,
-FO-TC-SHT-008,Mechanics,"ทำซ้ำถึง dlg ""Delete this comment?"" เปิดอยู่บน sheet","1. แตะพื้นหลังมืด (backdrop) แทนปุ่ม Cancel","backdrop ปิดทั้ง dlg และ sheet พร้อมกัน — ไม่ใช่ทีละชั้น",MEMBER,Medium,,"quirk — backdrop เดียวกันใช้ร่วม"
-FO-TC-SHT-009,Mechanics,"pv เปิดโพสต์ที่ following + caption ยาวมี ""…""","1. แตะ ""…"" เปิด ps sheet
-2. กด Following ใน ps-head → uf sheet ขึ้น
-3. กด ""Cancel"" บน uf","uf swap ทับ ps ใน element เดียว — Cancel ปิด sheet ทั้งก้อน ไม่ย้อนกลับ ps",MEMBER,Medium,,"quirk"
-FO-TC-SHT-010,Mechanics,"member อยู่ feed","1. save โพสต์ลง collection → ดู toast
-2. share ส่งให้เพื่อน → ดู toast","toast ขึ้นหลัง sheet ปิด ข้อความตรง action หายเองภายใน ~2–3 วิ",MEMBER,High,,
-FO-TC-SHT-011,Mechanics,"comments sheet เปิดบน pv","1. long-press comment คนอื่น → กด ""Report""","comments ปิด + report page สไลด์ทับ viewer — sheet ปิด snap ไม่ซ้อน",MEMBER,High,,"entry ของ FO-TEST-15/16"
-FO-TC-SHT-012,Mechanics,"detail เปิดอยู่ → กด 🔔 เปิด wa sheet","1. สังเกต z-order + ปุ่มลอย theme","sheet เหนือ detail → เหนือ pv → เหนือ feed; ปุ่ม theme ถูกซ่อนระหว่าง sheet เปิด",MEMBER,Low,,
-FO-TC-SHT-013,Comments,"member อยู่ feed","1. กด 💬 comment-btn ใต้โพสต์ p1","comments sheet เปิด: หัวข้อ ""Comments"" + list + emoji row + input",MEMBER,High,,
-FO-TC-SHT-014,Comments,"member เปิด pv ของ p1","1. กด 💬 ใน rail → inspect class ของ sheet → ปิด
-2. เปิด detail บน pv → กด 💬 บน detail → inspect class","pv → sheet มี class nt (marker ส่งเข้า pv); detail → ไม่ใช่ nt — หน้าตาเหมือนกัน (nt ไม่มี CSS แยก)",MEMBER,Low,,
-FO-TC-SHT-015,Comments,"member เปิด pv","1. แตะ ""Add comment…"" (pv-add) ล่างสุดของการ์ด","comments sheet เปิดเหมือนกด 💬",MEMBER,Medium,,
-FO-TC-SHT-016,Comments,"comments sheet ของ p1 เปิด","1. อ่านโครงบนล่าง","handle → ""Comments"" → sheet-list → emoji-row 8 ตัว (❤️🙌🔥👏😢😍😮😂) → comment-input (avatar + ""Add a comment…"" + ไอคอนรูป/GIF)",MEMBER,High,,
-FO-TC-SHT-017,Comments,"comments sheet ของ p1 เปิด","1. อ่านแต่ละ row","root: avatar+name+time+text+♡ n+""Reply"" — p1-c1 chrono.th (2 likes) มี 2 reply (Watch 777, king.mr.fox); p1-c2 king.mr.fox มี 1 reply — reply เยื้องเป็น .c-row.reply",MEMBER,High,,
-FO-TC-SHT-018,Comments,"comments sheet ของ p1/p2/p3","1. ตรวจ reply ทุกตัวว่ามีชั้นซ้อนต่อไหม","reply มีแค่ 1 ชั้น — ไม่มี c-row ซ้อนใต้ reply rows เลย",MEMBER,High,,"กติกาบังคับ: reply 1 ชั้นเท่านั้น"
-FO-TC-SHT-019,Comments,"member เปิด comments ของ p1","1. แตะ ""Reply"" บน root comment","toast ""Not in this prototype yet"" — reply input ไม่เปิด",MEMBER,High,,"[DEAD] .c-meta อยู่ใน dead-list"
-FO-TC-SHT-020,Comments,"member เปิด comments ของ p1","1. แตะ ""Reply"" บน reply row (ชั้น 2)","toast ""Not in this prototype yet"" เช่นกัน — ไม่มีทางสร้าง reply ชั้น 2",MEMBER,High,,"เคสบังคับ: reply ชั้น 2 ทำไม่ได้"
-FO-TC-SHT-021,Comments,"member เปิด comments","1. แตะช่อง ""Add a comment…"" / ไอคอนรูป / GIF","toast ""Not in this prototype yet"" — พิมพ์/sent comment ทำไม่ได้",MEMBER,High,,"[DEAD]"
-FO-TC-SHT-022,Comments,"member เปิด comments","1. แตะ emoji ตัวใดตัวหนึ่งใน emoji-row","toast ""Not in this prototype yet"" — handler เพิ่ม comment จริงมีใน code แต่ unreachable",MEMBER,Medium,,"quirk — dead-list บัง emoji handler"
-FO-TC-SHT-023,Comments,"member เปิด comments ของ p1","1. กด ♡ บน chrono.th (likes=2)
-2. กด ♥ อีกครั้ง","♥ แดง + เลข 2→3 → กดซ้ำกลับ 2; comment likes=0 แสดง ""1"" หลังกด",MEMBER,High,,
-FO-TC-SHT-024,Comments,"member like comment แล้ว","1. ปิด sheet → เปิด comments ใหม่","count กลับเป็นค่า seed เดิม — c-like ไม่ persist",MEMBER,Low,,"quirk"
-FO-TC-SHT-025,Comments,"member เปิด comments ของ p1","1. กดค้าง 450ms บน comment ของ chrono.th","c-popover ขึ้นที่แถว: ""Block"" + ""Report"" + พื้นมืดรอบ popover",MEMBER,High,,
-FO-TC-SHT-026,Comments,"member เปิด comments","1. right-click บน comment คนอื่น","popover เดียวกับ long-press ขึ้น",MEMBER,Medium,,
-FO-TC-SHT-027,Comments,"member เปิด comments ของ p1","1. long-press comment ของ king.mr.fox (ตัวเอง)","popover มีแค่ ""Delete"" — ไม่มี Block/Report",MEMBER,High,,
-FO-TC-SHT-028,Comments,"guest เปิด comments","1. long-press comment คนอื่น","Member Sheet ""Join TukDaeng"" ขึ้นแทน popover",GUEST,High,,"[GATE]"
-FO-TC-SHT-029,Comments,"c-popover เปิดอยู่","1. แตะพื้นมืดรอบ popover","popover ปิดเฉพาะตัว — comments sheet ยังเปิด",MEMBER,Medium,,
-FO-TC-SHT-030,Comments,"member เปิด comments ของ p1","1. long-press p1-c1 (chrono.th มี 2 replies) → ""Delete""
-2. อ่าน dlg → กด ""Delete""
-3. ดู count บน feed card","dlg บอก ""...comment and its replies will be removed."" → แถวหายทั้ง root+replies, comments count ลด 3, toast ""This comment was removed.""",MEMBER,High,,
-FO-TC-SHT-031,Comments,"member เปิด comments ของ p1","1. long-press reply p1-r3 → ""Delete"" → confirm","dlg บอก ""...comment will be removed."" (ไม่พูด replies) → ลบ 1 รายการ count -1",MEMBER,Medium,,
-FO-TC-SHT-032,Comments,"dlg ยืนยันลบเปิดอยู่","1. กด ""Cancel""","dlg ปิด — comment ไม่หาย sheet ยังเปิด ไม่มี toast",MEMBER,Medium,,
-FO-TC-SHT-033,Comments,"member เปิด comments ของ p1","1. long-press chrono.th → ""Block""
-2. อ่าน blk sheet → กด ""Block""","comments ปิด → blk sheet (avatar + ""Block chrono.th?"" + 3 impact rows + Block + Block and report) → Block → comments เปิดกลับแสดง list ที่กรอง chrono.th ออก + toast ""Blocked and hidden comments""",MEMBER,High,,
-FO-TC-SHT-034,Comments,"block chrono.th ไว้แล้ว","1. เปิด comments ของ post ที่ chrono.th reply ใต้คนอื่น (p2/p3)","reply ของ chrono.th ถูกกรองออกด้วย — ตัวเลข count บน post ไม่ลด (count vs แถวที่เห็นอาจไม่ตรง)",MEMBER,Medium,,"quirk"
-FO-TC-SHT-035,Comments,"SETUP-06 chrono.th ถูก block อยู่","1. เข้า path block ของ author ที่ถูก block อยู่ → confirm unblock","เห็น unblock dlg (ไม่ใช่ blk sheet) → Unblock → toast ""Unblocked"" + comments กลับมาเห็น — comments sheet ไม่ reopen เอง",MEMBER,Medium,,"quirk"
-FO-TC-SHT-036,Comments,"blk sheet เปิดอยู่","1. กด ""Block and report""","block สำเร็จ + report page เปิดทับ + sheet ปิด snap",MEMBER,Medium,,"report flow = FO-TEST-15/16"
-FO-TC-SHT-037,Comments,"member เปิด comments","1. long-press comment คนอื่น → ""Report""","comments ปิด → report page เปิดเป็น sub (rp-over ถ้าบน pv) — back กลับปกติ",MEMBER,High,,"entry เท่านั้น"
-FO-TC-SHT-038,Comments,"pv เปิดโพสต์ noComments (rail ไม่มี 💬)","1. แตะ ""Add comment…"" (pv-add) ที่ยังโชว์","comments sheet เปิดได้ปกติ มี comments + input dead — pv-add ไม่เช็ก noComments",MEMBER,Medium,,"GAP-07 จาก FO-TEST-06 ต่อเนื่อง"
-FO-TC-SHT-039,Comments,"SETUP-05 own post 0 comment","1. เปิด comments ของโพสต์ตัวเอง","list แสดง ""No comments yet"" — emoji row + input ยัง render",MEMBER,Medium,,
-FO-TC-SHT-040,Comments,"comments sheet เปิด","1. แตะ avatar/ชื่อของ comment","sheet ปิด + profile sub-page ของ author เปิด",MEMBER,Medium,,
-FO-TC-SHT-041,Comments,"guest เปิด comments sheet แล้ว","1. ลองแตะช่อง comment → ปิด Member Sheet
-2. แตะ emoji → ปิด
-3. แตะ ""Reply"" → ปิด
-4. กด ♡ → ปิด","ทุก action เด้ง Member Sheet ""Join TukDaeng"" — อ่านอย่างเดียวได้",GUEST,High,,"[GATE] คู่ SHT-019..028"
-FO-TC-SHT-042,Likes,"member เปิด pv ของ p1","1. แตะ ""Likes"" ใน rail","lk sheet: ""Likes"" + โน้ต ""Only Watch 777 can see the total number of likes on this post."" + rows avatar+username+display+ปุ่ม Follow",MEMBER,High,,
-FO-TC-SHT-043,Likes,"SETUP-05 own post","1. pv เปิด own post → แตะ ""Likes""","ไม่มีบรรทัดโน้ต ""Only ... can see"" (เจ้าของเห็นจำนวนเอง)",MEMBER,Medium,,
-FO-TC-SHT-044,Likes,"likes sheet ของ p1 เปิด","1. นับจำนวนแถว + เลื่อน list","ประมาณ 7 แถว (likedBy + pool หักซ้ำ) — list เลื่อนได้",MEMBER,Medium,,
-FO-TC-SHT-045,Likes,"member เปิด likes sheet","1. กด ""Follow"" บนแถวใด → ปิด → เปิดใหม่ → ไปดู profile คนนั้น","ปุ่มเปลี่ยน ""Following"" ทันที — แต่ reopen กลับ ""Follow"" และ profile ไม่ได้ follow (local toggle เท่านั้น)",MEMBER,Medium,,"quirk"
-FO-TC-SHT-046,Likes,"likes sheet เปิด","1. แตะแถว liker (ไม่ใช่ปุ่ม)
-2. guest เปิด sheet → กด ""Follow""","แถว → profile sub เปิด; guest กด Follow → Member Sheet",GUEST/MEMBER,High,,"[GATE]"
-FO-TC-SHT-047,Likes,"SETUP-05 own post likes=0","1. pv → แตะ ""Likes""","sheet เปิดแสดง liker ""the watch"" ทั้งที่ likes=0 — seed ตายตัว",MEMBER,Low,,"quirk"
-FO-TC-SHT-048,Likes,"pv เปิด post ที่ materialize จาก profile grid (likedBy=null)","1. แตะ ""Likes"" ใน rail","ไม่มีอะไรเกิดขึ้น — sheet ไม่เปิด (handler เข้าถึง likedBy.name โดยไม่ guard)",MEMBER,Medium,,"quirk — edge จาก FO-TEST-06 PV-034"
-FO-TC-SHT-049,Share,"member เปิด pv","1. กด ↗ share-btn","sh sheet: ช่อง ""Search"" + friends grid 13 คน + apps row Messenger/Direct/LINE/Facebook/Copy link",MEMBER,High,,
-FO-TC-SHT-050,Share,"share sheet เปิด","1. พิมพ์ ""watch"" ในช่อง Search → ลบออก","grid filter สดตามชื่อ; ล้าง → กลับครบ 13",MEMBER,Medium,,
-FO-TC-SHT-051,Share,"share sheet เปิด","1. กดเพื่อน ""Watch 777""","sheet ปิด + toast ""Sent to Watch 777""",MEMBER,High,,
-FO-TC-SHT-052,Share,"share sheet เปิด","1. กด ""Copy link""
-2. เปิดใหม่ → กด Messenger","toast ""Link copied"" / ""Shared to Messenger"" ตามปุ่ม + sheet ปิด",MEMBER,High,,
-FO-TC-SHT-053,Share,"guest อยู่ feed","1. guest กด ↗ share-btn → ปิด Member Sheet → sign in → กดซ้ำ","guest → Member Sheet; member → share sheet เปิดปกติ",GUEST/MEMBER,High,,"[GATE]"
-FO-TC-SHT-054,Share,"member อยู่ feed","1. เปิด share จาก 2 โพสต์ต่างกันเปรียบเทียบ","เนื้อหา sheet เหมือนกันหมด — ไม่มี post context ใน sheet",MEMBER,Low,,"quirk"
-FO-TC-SHT-055,Share,"member เปิด detail","1. กด ↗ share-btn บน detail","sheet เปิดเหนือ detail ปกติ + ปิดแล้วกลับ detail ครบ",MEMBER,Medium,,
-FO-TC-SHT-056,Save,"member อยู่ feed โพสต์ p3 (ยังไม่ save)","1. กด 🔖 save-btn","auto-save ลง ""Saved"" ก่อน (icon เติม) แล้ว sv sheet เปิด: ""Saved""/Private (thumb=รูปโพสต์) + ""Collections"" + ""New collection"" + 4 rows plus",MEMBER,High,,
-FO-TC-SHT-057,Save,"member เปิด sv ของ p1 (savedCol=Grail list จาก seed)","1. อ่าน sheet","sv-head bookmark เติม + row ""Grail list"" โชว์ check — แถวอื่น plus",MEMBER,High,,
-FO-TC-SHT-058,Save,"sv sheet เปิด","1. กด ""Vintage picks""","toast ""Saved to Vintage picks"" + sheet ปิด + icon ยังเติม",MEMBER,High,,
-FO-TC-SHT-059,Save,"ย้ายไป Vintage picks แล้ว","1. เปิด sv ซ้ำ","check ย้ายไป ""Vintage picks""; Grail list กลับ plus",MEMBER,Medium,,
-FO-TC-SHT-060,Save,"sv เปิด check อยู่ Vintage picks","1. กด ""Vintage picks"" ซ้ำ","ย้ายกลับ ""Saved"" + toast ""Removed from Vintage picks""",MEMBER,Medium,,
-FO-TC-SHT-061,Save,"sv เปิด post saved อยู่","1. กดแถวหัว ""Saved""","unsave ทั้งโพสต์ + toast ""Removed from your saved"" + icon โล่ง",MEMBER,High,,
-FO-TC-SHT-062,Save,"post อยู่ Grail list","1. sv → กด ""Vintage picks""
-2. เปิด savedcol ทั้งสองดู","post หายจาก Grail list ไปอยู่ Vintage picks — อยู่ได้ collection เดียว (move ไม่ใช่ add)",MEMBER,High,,"เคสบังคับ: asset หลาย collection — model เป็น move"
-FO-TC-SHT-063,Save,"guest อยู่ feed","1. guest กด 🔖 → ปิด Member Sheet → sign in → กดซ้ำ","guest → Member Sheet; member → auto-save + sv sheet",GUEST/MEMBER,High,,"[GATE]"
-FO-TC-SHT-064,Save,"sv sheet เปิด","1. กด ""New collection""
-2. กด ""Cancel"" บน nc sheet","nc swap ทับ sv → Cancel กลับมา sv sheet (ไม่ปิดทิ้ง)",MEMBER,Medium,,
-FO-TC-SHT-065,Save,"sv → New collection","1. พิมพ์ ""Rolex grails"" → กด ""Next""
-2. เปิด sv รอบถัดไป","collection ใหม่ถูกสร้าง + post เข้า collection นั้น + toast ""Saved to Rolex grails""; รอบหน้ามีแถวใหม่",MEMBER,High,,
-FO-TC-SHT-066,Save,"save โพสต์จาก feed แล้ว","1. เปิด pv/detail โพสต์เดียวกัน","icon 🔖 เติมทุก surface",MEMBER,Medium,,
-FO-TC-SHT-067,Wishlist,"member เปิด detail โพสต์ sale","1. กด 🎁 wl-btn","auto-wishlist ลง ""Wishlist"" ก่อน + wl sheet เปิด: ""Wish List""/Private + 2 rows (Next buy, Grail goals) + ""New collection""",MEMBER,High,,
-FO-TC-SHT-068,Wishlist,"wl sheet เปิด","1. กด ""Next buy"" → เปิด wl ซ้ำ","toast ""Added to Next buy"" + ปิด; เปิดใหม่ check อยู่ Next buy",MEMBER,High,,
-FO-TC-SHT-069,Wishlist,"wl เปิด post wishlisted","1. กดแถวหัว ""Wish List""","un-wishlist + toast ""Removed from your wish list"" + icon โล่ง",MEMBER,Medium,,
-FO-TC-SHT-070,Wishlist,"wl เปิด check อยู่ Next buy","1. กด ""Next buy"" ซ้ำ","ย้ายกลับ ""Wishlist"" + toast ""Removed from Next buy""",MEMBER,Medium,,
-FO-TC-SHT-071,Wishlist,"wl → New collection","1. พิมพ์ ""Someday"" → กด ""Next""","เข้า WISHLISTS + wishlisted + toast ""Added to Someday""",MEMBER,Medium,,
-FO-TC-SHT-072,Wishlist,"guest เปิด detail","1. guest กด 🎁 → ปิด Member Sheet → sign in → กดซ้ำ","guest → Member Sheet; member → auto-wishlist + wl sheet",GUEST/MEMBER,High,,"[GATE]"
-FO-TC-SHT-073,New collection,"member เปิด nc จาก sv → New collection","1. อ่าน sheet","หัว ""Cancel / New collection / Next(disabled)"" + input ""Collection name"" + counter ""0 / 40"" — ไม่มี preview",MEMBER,High,,
-FO-TC-SHT-074,New collection,"nc sheet เปิด","1. พิมพ์ ""abc""","counter ""3 / 40"" + ปุ่ม X โผล่ + Next เปิดใช้",MEMBER,High,,
-FO-TC-SHT-075,New collection,"nc sheet เปิด","1. กด X → พิมพ์ยาว 45 ตัว","X ล้าง input + Next disable + focus กลับ; 45 ตัวถูก cap ที่ 40 counter ""40 / 40""",MEMBER,Medium,,
-FO-TC-SHT-076,New collection,"nc พิมพ์ชื่อแล้ว","1. กด Enter (แทน Next)","สร้างเหมือนกด Next",MEMBER,Low,,
-FO-TC-SHT-077,New collection,"nc sheet เปิด","1. พิมพ์แต่ช่องว่าง ""   ""","Next ยัง disabled",MEMBER,Medium,,
-FO-TC-SHT-078,New collection,"member เปิด Saved hub","1. กด ""+"" สร้าง collection ตรง → ใส่ชื่อ → Next","toast ""Collection created"" (ไม่ผูกโพสต์) + แถวใหม่ใน hub",MEMBER,Medium,,
-FO-TC-SHT-079,New collection,"member เปิด savedcol → Manage → เลือกหลายใบ","1. กด Move → ""+ New collection"" → ใส่ชื่อ → Save","nc มี preview thumb โพสต์แรก + ปุ่ม ""Save"" → toast ""Moved to X""",MEMBER,Medium,,"entry-level; manage ละเอียด = FO-TEST-14"
-FO-TC-SHT-080,New collection,"member เปิด nc","1. พิมพ์ ""Grail list"" (ซ้ำ seed) → Next","สร้างซ้ำได้ — ไม่มี dedupe → มี ""Grail list"" สองแถว",MEMBER,Low,,"quirk"
-FO-TC-SHT-081,Watch alert,"member เปิด detail ของ p1 (Rolex sale)","1. กด 🔔 mf-btn","wa sheet create mode: ""Create watch alert"" + ชื่อ autofill (เช่น ""Rolex Submariner · 126610LN"") + 3 mode rows + ""N now"" + ""Create alert"" — ไม่มีปุ่มลบ",MEMBER,High,,
-FO-TC-SHT-082,Watch alert,"post เดิมมี alert ON อยู่แล้ว","1. กด 🔔 อีกครั้ง","edit mode: ""Edit watch alert"" + name/mode prefill + ""Save changes"" + ปุ่ม ""Delete alert""",MEMBER,High,,
-FO-TC-SHT-083,Watch alert,"member เปิด detail โพสต์ showcase (p3 ไม่มี spec)","1. กด 🔔","sheet ไม่เปิด — toast ""No details on this post to watch""",MEMBER,Medium,,
-FO-TC-SHT-084,Watch alert,"member search ""rolex"" + ใส่ filter","1. กด 🔔 sr-wa บนผลลัพธ์","wa sheet create mode criteria จาก search; ถ้า sig เดิมมีอยู่ → เปิด edit ตรง",MEMBER,High,,
-FO-TC-SHT-085,Watch alert,"member เปิด alerts → watch alerts มีรายการ","1. กด ""Edit"" บนแถว alert","wa sheet เปิด edit mode ของ alert นั้น",MEMBER,Medium,,
-FO-TC-SHT-086,Watch alert,"member อยู่หน้า search","1. เปิด search ว่าง + ไม่เลือก filter
-2. กด 🔔 sr-wa → อ่าน mode rows","rows ""Match any criteria""/""Model only"" disabled — เลือกได้แค่ ""Match all criteria""; ""N now"" นับต่อ mode",MEMBER,Medium,,
-FO-TC-SHT-087,Watch alert,"wa sheet เปิด create mode","1. แก้ชื่อใน field → เลือก ""Match any criteria""","radio ย้ายไป any + ชื่อที่แก้ไม่หาย",MEMBER,Medium,,
-FO-TC-SHT-088,Watch alert,"wa sheet เปิด","1. กด ""Create alert""
+• ปิดโดยแตะพื้นมืดหรือ ""Skip for now""
+• ทุกเคส [GATE] ทำคู่: guest เห็น sheet → ปิด → sign in member → ทำซ้ำเห็น flow จริง",sheet ปิดแล้วกลับหน้าเดิม — ไม่มี action เกิด,-,High,,,
+SETUP-09,Setup,-,"เทคนิคกดค้าง (long-press) บนจอสัมผัส:
+• แตะนิ้วค้างบนแถว comment ~1 วินาที (หลีกเลี่ยง ♡ / ""Reply"" / avatar) → popover ขึ้นที่แถว
+• ปิด popover = แตะพื้นมืดรอบมัน","own comment เห็นแค่ ""Delete"" · comment คนอื่นเห็น ""Block""+""Report""",-,High,,,
+FO-TC-SHT-001,Mechanics,member เปิด comments ของ POST-CM,"1. เปิด comments sheet
+2. กดค้าง comment ของคนอื่น → ""Block""",block sheet แทนที่เนื้อหาใน panel เดิม — ไม่มี panel ที่สองเลื่อนทับซ้อน; เห็น sheet เดียวบนจอตลอด,MEMBER,Medium,,,
+FO-TC-SHT-002,Mechanics,comments เปิดอยู่,1. แตะพื้นที่มืดเหนือ sheet (scrim),sheet เลื่อนลงหาย — หน้าเบื้องหลังเลื่อนได้ปกติ (scroll ปลดล็อก) ไม่มี toast,MEMBER,High,,,
+FO-TC-SHT-003,Mechanics,comments เปิดอยู่,1. แตะแถบจับ (handle) — ถ้าแตะไม่ปิดให้ลากมันลง,handle ปิด sheet ได้อย่างน้อยหนึ่งวิธี (แตะหรือลากลง) — จดวิธีที่ใช้ได้ลง Note,MEMBER,Medium,,,
+FO-TC-SHT-004,Mechanics,comments เปิดอยู่,"1. กดตัว sheet ลากลงช้า ๆ ครึ่งทาง → ปล่อย
+2. ลากลงยาวพ้นจุดกึ่งกลาง → ปล่อย
+3. ทำซ้ำบน save/share/likes sheet",ปล่อยกลางทาง → sheet เด้งกลับเปิดเต็ม; ลากพ้น threshold → sheet ไหลลงปิด — ใช้ได้กับ sheet ทุกใบ (spec ล็อก),MEMBER,High,,,
+FO-TC-SHT-005,Mechanics,comments เปิดอยู่,1. กด back ของระบบ (Android),sheet ปิดเหมือนแตะ scrim — เทียบเท่าปุ่ม ←/✕ (spec ล็อก); iOS mark N/A ใช้ scrim/ลากลงแทน,MEMBER,Medium,,,
+FO-TC-SHT-006,Mechanics,comments เปิดบน viewer,"1. พยายาม swipe โพสต์/เลื่อนเนื้อหาเบื้องหลัง
+2. เลื่อน list ใน sheet",เบื้องหลังนิ่งสนิท — เลื่อนได้เฉพาะ list ใน sheet,MEMBER,Medium,,,
+FO-TC-SHT-007,Mechanics,"comments ของ own comment → กดค้าง → Delete → dialog เปิด","1. กด ""Cancel"" ใน dialog",dialog ปิดเฉพาะตัว — comments sheet ยังเปิด ไม่มีการลบ ไม่มี toast,MEMBER,High,,,
+FO-TC-SHT-008,Mechanics,"dialog ""Delete this comment?"" เปิดบน comments sheet","1. แตะพื้นมืดครั้งที่ 1
+2. แตะพื้นมืดครั้งที่ 2",ครั้งแรกปิดเฉพาะ dialog (sheet ยังอยู่); ครั้งสองปิด sheet — ห้ามปิดสองชั้นพร้อมกัน (device back ก็ทีละชั้น),MEMBER,High,,,spec ล็อก
+FO-TC-SHT-009,Mechanics,caption sheet เปิดบนโพสต์ของ USER-F,"1. กด ""Following"" บนหัว sheet → confirm ""Unfollow @X?"" ขึ้น
+2. กด ""Cancel""",confirm แทนที่เนื้อหา panel → Cancel ย้อนกลับ caption sheet เดิม — ไม่ปิดทั้งก้อน,MEMBER,High,,,spec ล็อก
+FO-TC-SHT-010,Mechanics,member อยู่ feed,"1. save โพสต์ลง collection → ดู toast
+2. share ส่งให้เพื่อน → ดู toast","toast ขึ้นหลัง sheet ปิด ข้อความตรง action (""Saved to X""/""Sent to X"") หายเองภายใน ~2 วิ (จดจริงลง Note)",MEMBER,High,,,
+FO-TC-SHT-011,Mechanics,comments sheet เปิด,"1. กดค้าง comment คนอื่น → ""Report""",comments ปิด + หน้า report เลื่อนทับทันที — back กลับ surface เดิม,MEMBER,High,,,entry ของ FO-TEST-15/16
+FO-TC-SHT-012,Mechanics,detail เปิดทับ viewer → กด 🔔 เปิด watch alert sheet,1. สังเกตลำดับชั้น + status bar + nav,sheet เหนือ detail → เหนือ viewer → เหนือ feed; status bar เห็นปกติ ไม่มี element หลุดทับ sheet,MEMBER,Low,,,
+FO-TC-SHT-013,Comments,POST-CM อยู่ feed,1. กด 💬 ใต้โพสต์,"comments sheet เปิดเต็ม: หัวข้อ ""Comments"" (ตามภาษาแอป) + list + emoji row + input",MEMBER,High,,,
+FO-TC-SHT-014,Comments,viewer เปิด POST-CM,"1. กด 💬 ใน rail → ปิด
+2. เปิด detail → กด 💬 บน detail",sheet เปิดเหมือนกันจากทั้งสอง entry; ปิดแล้วกลับ context เดิมถูกต้อง,MEMBER,Low,,,
+FO-TC-SHT-015,Comments,viewer เปิด POST-CM,"1. แตะ ""Add comment…"" ท้ายการ์ด",comments sheet เปิด + input พร้อมพิมพ์,MEMBER,Medium,,,
+FO-TC-SHT-016,Comments,comments ของ POST-CM เปิด,1. อ่านโครงบนล่าง,"handle → ""Comments"" → comment list → emoji row 8 ตัว → input (avatar+placeholder+ปุ่มส่ง) — ไม่มีไอคอนรูปภาพ/GIF (spec ล็อก)",MEMBER,High,,,
+FO-TC-SHT-017,Comments,comments ของ POST-CM เปิด,1. อ่านแต่ละ row,"root row: avatar+ชื่อ+เวลา+text+♡ n+""Reply"" — reply ใต้ root เยื้องเข้าแสดงว่าเป็นตอบ root นั้น",MEMBER,High,,,
+FO-TC-SHT-018,Comments,comments ที่มี reply หลายรายการ,1. ตรวจ reply ทุกตัวว่ามีชั้นซ้อนต่อไหม,"reply row ไม่มีปุ่ม ""Reply"" และไม่มี reply ซ้อนใต้ reply — โครงตื้น 2 ระดับเสมอ (spec ล็อก)",MEMBER,High,,,
+FO-TC-SHT-019,Comments,comments ของ POST-CM,"1. แตะ ""Reply"" บน root comment ของ ACCT-2
+2. พิมพ์ข้อความ → ส่ง","input prefill ""@username "" + keyboard เด้ง; ส่งแล้ว reply ขึ้นใต้ root นั้น + count +1 (spec ล็อก)",MEMBER,High,,,
+FO-TC-SHT-020,Comments,comments ที่มี reply row,1. แตะ/กดค้าง reply row หาทาง reply ต่อ,"ไม่มีปุ่ม ""Reply"" บน reply row — popover ก็ไม่มีตัวเลือก reply (negative เคส)",MEMBER,High,,,
+FO-TC-SHT-021,Comments,comments ของ POST-CM,"1. แตะช่อง comment → พิมพ์ ""Nice piece!"" → กดส่ง
+2. ปิด sheet → เปิดใหม่",comment ใหม่ขึ้นใน list ทันที + count +1; เปิดใหม่ยังอยู่ — persist จริง (spec ล็อก),MEMBER,High,,,
+FO-TC-SHT-022,Comments,comments ของ POST-CM,1. แตะ emoji ตัวใดตัวหนึ่งใน emoji row,emoji นั้นถูกโพสต์เป็น comment ของ member ทันที + count +1 — ไม่ต้องกดส่งซ้ำ,MEMBER,Medium,,,
+FO-TC-SHT-023,Comments,comments ของ POST-CM,"1. กด ♡ บน comment ที่มี n likes
+2. กด ♥ อีกครั้ง","♥ เติม + count +1 → กดซ้ำกลับค่าเดิม; comment 0 like แสดง ""1"" หลังกด",MEMBER,High,,,
+FO-TC-SHT-024,Comments,like comment แล้ว,1. ปิด sheet → เปิด comments ใหม่,ใจ+count ยังคงค่าที่กด — like ถูกบันทึกจริง ไม่ reset เมื่อ sheet ปิด (spec ล็อก),MEMBER,High,,,
+FO-TC-SHT-025,Comments,comments ของ POST-CM,1. กดค้าง ~1 วิ บน comment ของ ACCT-2 (SETUP-09),"popover ขึ้นที่แถว: ""Block"" + ""Report"" + พื้นมืดรอบ popover",MEMBER,High,,,
+FO-TC-SHT-026,Comments,มี reply ของ ACCT-2,1. กดค้าง reply row,"popover เดียวกัน (""Block""+""Report"") ขึ้นที่ reply row",MEMBER,Medium,,,
+FO-TC-SHT-027,Comments,own comment ใน POST-CM (SETUP-05c),1. กดค้าง own comment,"popover มีแค่ ""Delete"" — ไม่มี Block/Report บนของตัวเอง",MEMBER,High,,,
+FO-TC-SHT-028,Comments,guest เปิด comments,1. กดค้าง comment คนอื่น,"Member Sheet ""Join TukDaeng"" ขึ้นแทน popover",GUEST,High,,,[GATE]
+FO-TC-SHT-029,Comments,popover เปิดอยู่,1. แตะพื้นมืดรอบ popover,popover ปิด — comments sheet ยังเปิด,MEMBER,Medium,,,
+FO-TC-SHT-030,Comments,own root comment ที่มี reply (SETUP-05c),"1. กดค้าง → ""Delete""
+2. อ่าน dialog → ยืนยัน
+3. ดู count บนการ์ด","dialog ระบุว่า comment และ replies จะถูกลบ → ยืนยันแล้วหายทั้งกลุ่ม + count -n ตามจำนวนที่หาย + toast ""comment removed""",MEMBER,High,,,
+FO-TC-SHT-031,Comments,own reply ใต้ comment คนอื่น (SETUP-05c),"1. กดค้าง reply → ""Delete"" → ยืนยัน",dialog ไม่พูดถึง replies → ลบ 1 รายการ count -1,MEMBER,Medium,,,
+FO-TC-SHT-032,Comments,dialog ลบเปิดอยู่,"1. กด ""Cancel""",dialog ปิด — comment อยู่ครบ sheet ยังเปิด ไม่มี toast,MEMBER,Medium,,,
+FO-TC-SHT-033,Comments,comment ของ ACCT-2,"1. กดค้าง → ""Block""
+2. อ่าน block sheet → กด ""Block""","comments เปลี่ยนเป็น block sheet (avatar + ""Block {user}?"" + impact rows + ""Block"" + ""Block and report"") → ยืนยัน → กลับ comments ที่กรอง ACCT-2 ออก + toast ""Blocked and hidden comments""",MEMBER,High,,,
+FO-TC-SHT-034,Comments,block ACCT-2 ไว้แล้ว,1. เปิด comments ของโพสต์อื่นที่ ACCT-2 เคย comment/reply,comments+replies ของ ACCT-2 ไม่แสดงเลยทุกที่ (count อาจคำนวณต่าง — จดจริงลง Note),MEMBER,Medium,,,
+FO-TC-SHT-035,Comments,ACCT-2 ถูก block อยู่ (SHT-033),"1. Settings → Blocked → Unblock ACCT-2
+2. เปิด comments เดิม","unblock ผ่าน confirm → toast ""Unblocked"" + comments ของ ACCT-2 กลับมาเห็นครบ",MEMBER,Medium,,,
+FO-TC-SHT-036,Comments,block sheet เปิดอยู่,"1. กด ""Block and report""",block สำเร็จ + หน้า report เปิดทับ (flow ข้างในอยู่ FO-TEST-15/16),MEMBER,Medium,,,
+FO-TC-SHT-037,Comments,popover เปิดอยู่,"1. กด ""Report""",comments ปิด → หน้า report เปิดทับ — back กลับได้ปกติ,MEMBER,High,,,entry เท่านั้น
+FO-TC-SHT-038,Comments,POST-NC (SETUP-05b ปิดคอมเมนต์),"1. ดูการ์ด feed
+2. เปิด viewer
+3. เปิด detail","ไม่มีไอคอน 💬 และไม่มี ""Add comment…"" ทุก surface — verify ผ่าน ⋯ เมนู own post (""Turn off commenting"" ⇄ on)",MEMBER,Medium,,,spec ล็อก
+FO-TC-SHT-039,Comments,own post 0 comment (SETUP-05a),1. เปิด comments,"list แสดง ""No comments yet"" + emoji row + input ยัง render",MEMBER,Medium,,,
+FO-TC-SHT-040,Comments,comments เปิดอยู่,1. แตะ avatar/ชื่อของ comment,sheet ปิด + profile ของ author เปิดทับ,MEMBER,Medium,,,
+FO-TC-SHT-041,Comments,guest เปิด comments sheet,"1. ลองทีละ: แตะช่อง comment / emoji / ""Reply"" / ♡ / กดค้าง comment","ทุก action → Member Sheet ""Join TukDaeng"" — guest อ่าน comments ได้อย่างเดียว",GUEST,High,,,[GATE] คู่ SHT-019..028
+FO-TC-SHT-042,Likes,POST-LK มี ≥1 like (SETUP-06),"1. แตะ ""Likes""/liked-by บน rail หรือการ์ด","likes sheet: ""Likes"" + โน้ต ""Only {seller} can see the total number of likes on this post."" + แถว avatar+username+display+ปุ่ม Follow/Following",MEMBER,High,,,
+FO-TC-SHT-043,Likes,own post มี ≥1 like (ACCT-2 like SETUP-05a),"1. เปิด viewer → แตะ ""Likes""","ไม่มีบรรทัด ""Only ... can see"" — เจ้าของเห็นยอดเองได้",MEMBER,Medium,,,
+FO-TC-SHT-044,Likes,likes sheet เปิด (หลายคน),1. เลื่อน list,แสดงครบทุกคนที่ like — เลื่อนลื่นไม่กระตุก,MEMBER,Medium,,,
+FO-TC-SHT-045,Likes,liker USER-NF ยังไม่ follow,"1. กด ""Follow"" บนแถว
+2. ปิด sheet → เปิด profile คนนั้น → เปิด likes ใหม่","ปุ่มเปลี่ยน ""Following"" ทันที + profile แสดง following จริง + reopen ยัง ""Following"" — sync ทั้งแอป persist (spec ล็อก)",MEMBER,High,,,
+FO-TC-SHT-046,Likes,likes sheet เปิด,"1. (member) แตะแถว liker ที่ไม่ใช่ปุ่ม
+2. (guest) เปิด sheet → กด ""Follow""","แตะแถว → profile ของคนนั้นเปิด (sheet ปิด); guest กด Follow → Member Sheet",GUEST/MEMBER,High,,,[GATE]
+FO-TC-SHT-047,Likes,own post likes=0 (SETUP-05a),"1. หา ""Likes""/liked-by บนการ์ด feed
+2. ใน viewer
+3. บน detail",ไม่มี element likes เลยทุก surface — entry โผล่เฉพาะเมื่อมี like แรก (spec ล็อก),MEMBER,High,,,
+FO-TC-SHT-048,Likes,ACCT-2 กด like โพสต์ SETUP-05a,"1. refresh ดูการ์ด + เปิด viewer"," ""Likes""/liked-by ปรากฏพร้อม count 1 — แตะเปิด sheet ได้",MEMBER,Medium,,,
+FO-TC-SHT-049,Share,viewer เปิด POST-SALE,1. กด ↗ share,"share sheet: ช่อง ""Search"" + เพื่อน grid + แถวแอป (Messenger/Direct/LINE/Facebook/Copy link ตาม design — จดจริงลง Note)",MEMBER,High,,,
+FO-TC-SHT-050,Share,share sheet เปิด,"1. พิมพ์ชื่อบางส่วน → ลบออก",grid filter สดตามชื่อ; ล้างแล้วกลับครบ,MEMBER,Medium,,,
+FO-TC-SHT-051,Share,share sheet เปิดบน POST-SALE,"1. กดเพื่อนคนหนึ่ง
+2. เปิด nav chat → ห้องของเพื่อนนั้น","toast ""Sent to {name}"" + ในห้องแชทมีข้อความ post card ของ POST-SALE จริง — แตะ post card เปิดโพสต์ได้ (spec ล็อก)",MEMBER,High,,,
+FO-TC-SHT-052,Share,share sheet เปิด,"1. กด ""Copy link"" → เปิดแอป Notes/แชท → วาง
+2. เปิด share ใหม่ → กด Messenger/LINE (ที่ติดตั้งอยู่)",copy → ลิงก์โพสต์อยู่ใน clipboard วางได้จริง; เลือกแอป → OS share intent/แอปนั้นเปิดพร้อมลิงก์ (ไม่มีแอป → ลองตัวที่มี จดจริงลง Note),MEMBER,High,,,spec ล็อก
+FO-TC-SHT-053,Share,guest อยู่ feed,"1. guest กด ↗ → ปิด Member Sheet → sign in → กดซ้ำ",guest → Member Sheet; member → share sheet เปิดปกติ,GUEST/MEMBER,High,,,[GATE]
+FO-TC-SHT-054,Share,โพสต์สองใบต่างกัน (POST-CM + POST-SALE),"1. share โพสต์ A ให้เพื่อน
+2. share โพสต์ B ให้เพื่อนเดิม
+3. เปิดแชทดูทั้งสองข้อความ",ข้อความ/ลิงก์/post card ในแชทอ้างถึงโพสต์ที่แตะถูกใบทีละรายการ — ไม่ใช่ข้อความเดียวกันหมด (spec ล็อก),MEMBER,High,,,
+FO-TC-SHT-055,Share,detail เปิดอยู่,1. กด ↗ บน detail,sheet เปิดเหนือ detail ปกติ + ปิดแล้วกลับ detail ครบ,MEMBER,Medium,,,
+FO-TC-SHT-056,Save,โพสต์ที่ยังไม่ save,1. กด 🔖,"โพสต์ถูก save ลง ""Saved"" ทันที (ไอคอนเติม) แล้ว save sheet เปิด: หัว ""Saved""/Private (thumb=รูปโพสต์) + ""Collections"" + ""New collection"" + collection rows",MEMBER,High,,,
+FO-TC-SHT-057,Save,โพสต์อยู่ COL-A (หลายใบดู SHT-062),1. เปิด save sheet,COL-A แสดง check (แถวอื่น plus) — ถ้าโพสต์อยู่หลาย collection check ทุกใบ,MEMBER,High,,,spec ล็อก multi-collection
+FO-TC-SHT-058,Save,save sheet เปิด,1. กด COL-B,"toast ""Saved to COL-B"" + sheet ปิด + โพสต์ยัง saved + อยู่ COL-B",MEMBER,High,,,
+FO-TC-SHT-059,Save,save ลง COL-B แล้ว,1. เปิด save sheet ซ้ำ,check ยังอยู่บน COL-B (+ ใบอื่นที่เคยใส่) — persist จริง,MEMBER,Medium,,,
+FO-TC-SHT-060,Save,โพสต์อยู่ COL-A+COL-B,1. แตะ COL-A (check อยู่),"toast ""Removed from COL-A"" + โพสต์ยัง saved (อยู่ COL-B/""Saved"") — check เหลือเฉพาะ COL-B (spec ล็อก)",MEMBER,High,,,
+FO-TC-SHT-061,Save,save sheet เปิดบนโพสต์ที่ saved,"1. กดแถวหัว ""Saved""","toast ""Removed from your saved"" + โพสต์ออกจากทุก collection + ไอคอน 🔖 โล่ง",MEMBER,High,,,
+FO-TC-SHT-062,Save,โพสต์อยู่ COL-A,"1. เปิด save sheet → เลือก COL-B เพิ่ม
+2. เปิด Saved hub → ดูทั้ง COL-A และ COL-B",โพสต์อยู่ทั้งสอง collection พร้อมกัน (เพิ่ม ไม่ใช่ย้าย) — save sheet check ทั้ง COL-A+COL-B (spec ล็อก),MEMBER,High,,,
+FO-TC-SHT-063,Save,guest อยู่ feed,"1. guest กด 🔖 → ปิด Member Sheet → sign in → กดซ้ำ",guest → Member Sheet; member → auto-save + save sheet,GUEST/MEMBER,High,,,[GATE]
+FO-TC-SHT-064,Save,save sheet เปิด,"1. กด ""New collection""
+2. กด ""Cancel"" บน new-collection sheet",nc แทนที่เนื้อหา panel → Cancel ย้อนกลับ save sheet เดิม ไม่ปิดทิ้ง,MEMBER,Medium,,,
+FO-TC-SHT-065,Save,new-collection sheet เปิดจาก save,"1. พิมพ์ ""Grail picks"" → กด ""Next""
+2. เปิด save sheet รอบถัดไป","collection ใหม่ถูกสร้าง + โพสต์เข้าใบนั้น + toast ""Saved to Grail picks""; รอบหน้ามีแถว ""Grail picks""",MEMBER,High,,,
+FO-TC-SHT-066,Save,save โพสต์จาก feed แล้ว,"1. เปิด viewer + detail ของโพสต์เดียวกัน
+2. เปิด Saved hub",ไอคอน 🔖 เติมทุก surface + โพสต์อยู่ใน Saved hub,MEMBER,Medium,,,
+FO-TC-SHT-067,Wishlist,detail ของ POST-SALE,1. กด 🎁,"โพสต์ถูก wishlist ลง ""Wish List"" ทันที + wl sheet เปิด: หัว ""Wish List""/Private + collection rows + ""New collection""",MEMBER,High,,,
+FO-TC-SHT-068,Wishlist,wl sheet เปิด,"1. กด WL-A → เปิด wl ซ้ำ","toast ""Added to WL-A"" + ปิด; เปิดใหม่ check อยู่ WL-A (persist)",MEMBER,High,,,
+FO-TC-SHT-069,Wishlist,wl เปิดบนโพสต์ที่ wishlisted,"1. กดแถวหัว ""Wish List""","toast ""Removed from your wish list"" + โพสต์ออกจากทุก wishlist collection + ไอคอนโล่ง",MEMBER,Medium,,,
+FO-TC-SHT-070,Wishlist,โพสต์อยู่ WL-A,1. แตะ WL-A ซ้ำ,"toast ""Removed from WL-A"" + โพสต์ยัง wishlisted (อยู่ ""Wish List"") — ไม่ un-wishlist ทั้งโพสต์ (spec ล็อก)",MEMBER,Medium,,,
+FO-TC-SHT-071,Wishlist,"wl → ""New collection""","1. พิมพ์ ""Someday"" → กด ""Next""","collection ใหม่เข้า wishlist + โพสต์เข้าใบนั้น + toast ""Added to Someday""",MEMBER,Medium,,,
+FO-TC-SHT-072,Wishlist,guest เปิด detail,"1. guest กด 🎁 → ปิด Member Sheet → sign in → กดซ้ำ",guest → Member Sheet; member → auto-wishlist + wl sheet,GUEST/MEMBER,High,,,[GATE]
+FO-TC-SHT-073,New collection,"เปิดจาก save → ""New collection""",1. อ่าน sheet,"หัว ""Cancel / New collection / Next (ปิดใช้)"" + input ""Collection name"" + counter ""0 / 40"" — ไม่มี preview",MEMBER,High,,,
+FO-TC-SHT-074,New collection,nc sheet เปิด,"1. พิมพ์ ""abc""","counter ""3 / 40"" + ปุ่ม ✕ ล้างโผล่ + Next เปิดใช้",MEMBER,High,,,
+FO-TC-SHT-075,New collection,nc sheet เปิดมีชื่อ,"1. กด ✕
+2. พิมพ์ยาวกว่า 40 ตัว","✕ ล้าง input + Next ปิดใช้; ชื่อถูกตัดที่ 40 ตัว counter ""40 / 40"" (จด cap จริงลง Note)",MEMBER,Medium,,,
+FO-TC-SHT-076,New collection,nc พิมพ์ชื่อแล้ว,1. กด enter/done บนคีย์บอร์ด,สร้าง collection เหมือนกด Next,MEMBER,Low,,,
+FO-TC-SHT-077,New collection,nc sheet เปิด,"1. พิมพ์แต่ space",Next ยังปิดใช้ (trim ชื่อ),MEMBER,Medium,,,
+FO-TC-SHT-078,New collection,Saved hub เปิด,"1. กด ""+"" สร้าง collection → ตั้งชื่อ → Next","toast ""Collection created"" + แถวใหม่ใน hub — ไม่ผูกโพสต์ใด",MEMBER,Medium,,,
+FO-TC-SHT-079,New collection,Saved hub → เข้า collection → Manage → เลือกหลายใบ,"1. กด Move → ""+ New collection"" → ใส่ชื่อ → Save","nc มี preview thumb โพสต์ที่เลือก + ปุ่ม ""Save"" → toast ""Moved to X""",MEMBER,Medium,,,entry-level; manage ละเอียด = FO-TEST-14
+FO-TC-SHT-080,New collection,nc sheet เปิด,"1. ใช้ชื่อเดียวกับ collection ที่มีอยู่ → Next",สร้างสำเร็จ — ชื่อซ้ำอนุญาต ไม่มี error/block (spec ล็อก),MEMBER,Low,,,
+FO-TC-SHT-081,Watch alert,detail ของ POST-SALE (มี specs),1. กด 🔔,"wa sheet create mode: ""Create watch alert"" + ชื่อ autofill (ยี่ห้อ·รุ่น·ref จาก specs) + 3 mode rows + ""N now"" ใต้แต่ละแถว + ""Create alert"" — ไม่มีปุ่มลบ",MEMBER,High,,,
+FO-TC-SHT-082,Watch alert,โพสต์เดิมมี alert ON (criteria ตรงกัน),1. กด 🔔 อีกครั้ง,"""Edit watch alert"" + name/mode prefill + ""Save changes"" + ปุ่ม ""Delete alert""",MEMBER,High,,,
+FO-TC-SHT-083,Watch alert,detail ของโพสต์ไม่มี specs (POST-Z),1. กด 🔔 (ถ้ามี),"ไม่มี sheet เปล่า — toast ""No details on this post to watch"" หรือไม่มี 🔔 เลย (จดรูปแบบจริงลง Note)",MEMBER,Medium,,,
+FO-TC-SHT-084,Watch alert,search + เลือก filter แล้ว,1. กด 🔔 บนหน้าผลลัพธ์,wa sheet create mode criteria จากคำค้น+filters; ถ้าชุดเดิมมีอยู่ → เปิด edit ตรง,MEMBER,High,,,
+FO-TC-SHT-085,Watch alert,Alerts → watch alerts มีรายการ,"1. กด ""Edit"" บนแถว alert",wa sheet เปิด edit mode ของ alert นั้น,MEMBER,Medium,,,
+FO-TC-SHT-086,Watch alert,หน้า search ว่าง ไม่เลือก filter → กด 🔔,1. อ่าน mode rows,"""Match any criteria""/""Model only"" disabled — เลือกได้แค่ ""Match all criteria""; ""N now"" นับจริงต่อ mode",MEMBER,Medium,,,
+FO-TC-SHT-087,Watch alert,wa sheet create mode,"1. แก้ชื่อในช่อง name → เลือก ""Match any criteria""",radio ย้ายไป any + ชื่อที่แก้คงอยู่,MEMBER,Medium,,,
+FO-TC-SHT-088,Watch alert,wa sheet เปิด,"1. ""Create alert""
 2. เปิด edit → ""Save changes""
-3. เปิด edit → ""Delete alert""","toast ""Watch alert on"" + 🔔 เปลี่ยน on; ""Watch alert updated""; ""Watch alert removed"" — sheet ปิดทุกครั้ง",MEMBER,High,,
-FO-TC-SHT-089,Watch alert,"มี alert criteria+mode เดิมอยู่แล้ว","1. สร้างซ้ำด้วย criteria+mode เดิม","ไม่สร้างซ้ำ — sheet เปิดกลับเป็น edit ของ alert เดิม + toast ""You already saved this alert""",MEMBER,Medium,,
-FO-TC-SHT-090,Watch alert,"guest อยู่ detail / search","1. guest กด 🔔 → ปิด Member Sheet → sign in → กดซ้ำ","guest → Member Sheet; member → wa sheet เปิด",GUEST/MEMBER,High,,"[GATE]"
-FO-TC-SHT-091,uf/mf,"member อยู่ feed เห็นโพสต์ที่ following","1. กด ""Following"" บน card","uf sheet: ""Unfollow @X?"" + avatar + ""Unfollow"" + ""Cancel""",MEMBER,High,,
-FO-TC-SHT-092,uf/mf,"uf sheet เปิด","1. กด ""Cancel""","sheet ปิด — ยัง following",MEMBER,Medium,,
-FO-TC-SHT-093,uf/mf,"uf sheet เปิด","1. กด ""Unfollow""","unfollow + sheet ปิด + toast ""Unfollowed"" + ปุ่มกลับ ""Follow""",MEMBER,High,,
-FO-TC-SHT-094,uf/mf,"ps sheet เปิดบนโพสต์ที่ following","1. กด Following ใน ps-head → uf → action เสร็จ","uf swap ทับ ps — action เสร็จ sheet ปิดหมดไม่ย้อน ps",MEMBER,Medium,,"คู่กับ SHT-009"
-FO-TC-SHT-095,uf/mf,"member เปิด profile คนที่ follow อยู่","1. กด ""Following ⌄""","mf sheet: title=username + 3 แถว (Add to favorites / Mute / Unfollow)",MEMBER,High,,
-FO-TC-SHT-096,uf/mf,"mf sheet เปิด","1. กด ""Add to favorites"" → กดซ้ำ","label สลับ ""Remove from favorites"" ↔ ""Add to favorites"" + icon ดาว inline — sheet ไม่ปิด",MEMBER,Medium,,
-FO-TC-SHT-097,uf/mf,"mf sheet เปิด","1. กด ""Mute"" → อ่าน dlg → Confirm / Cancel","dlg ""Mute X?"" ซ้อนบน sheet → Confirm = toast ""Muted""; Cancel = กลับ mf",MEMBER,Medium,,
-FO-TC-SHT-098,uf/mf,"mf sheet เปิด","1. กด ""Unfollow""","unfollow ทันทีไม่มียืนยัน + sheet ปิด — ต่างจาก follow-btn ที่ถามก่อน",MEMBER,Medium,,"IG parity — บันทึกไว้"
-FO-TC-SHT-099,ps/dt,"member เปิด pv โพสต์ caption ยาว","1. แตะ ""…"" more-link ใน caption","ps sheet เปิด — ต่างจาก feed card ที่ more-link ขยาย inline",MEMBER,High,,
-FO-TC-SHT-100,ps/dt,"ps sheet เปิด","1. อ่านเนื้อหา","ps-head (avatar+seller+Follow เฉพาะตอนไม่ follow) → caption เต็ม → เวลา → comment rows → input ""Add a comment for X"" (EN แม้ UI ไทย)",MEMBER,Medium,,"i18n gap"
-FO-TC-SHT-101,ps/dt,"ps sheet เปิด","1. กด ♡ บน comment ใน ps → long-press row","interactive เหมือน comments sheet — like + popover ทำงานได้",MEMBER,Medium,,
-FO-TC-SHT-102,ps/dt,"member เปิด pv โพสต์ sale","1. แตะ ""Tap for details""","dt sheet: price row + spec groups (ยกเว้น Price & Data Source) + ""View full detail ›"" ท้าย list",MEMBER,High,,
-FO-TC-SHT-103,ps/dt,"dt sheet เปิด","1. แตะ ""View full detail ›""","dt ปิด + detail สไลด์บน pv — back กลับ viewer ไม่ใช่ sheet",MEMBER,Medium,,
-FO-TC-SHT-104,Block,"member เปิด blk sheet (จาก comment popover → Block)","1. อ่านเนื้อหา","avatar+name + ""Block X?"" + คำอธิบาย + 3 impact rows + ""Block"" + ""Block and report""",MEMBER,Medium,,
-FO-TC-SHT-105,Block,"blk sheet เปิด","1. กด ""Block"" → ออกไปดู feed","comments reopen กรอง author + toast ""Blocked and hidden comments""; feed ไม่มีโพสต์ author นั้น",MEMBER,High,,
-FO-TC-SHT-106,Block,"unblock chrono.th ผ่าน settings แล้ว","1. เปิด comments เดิม","comment ของ author กลับมาเห็นครบ",MEMBER,Low,,
-FO-TC-SHT-107,Cross,"guest อยู่ feed/detail","1. ลองทีละอัน: ↗ share-btn / 🔖 save-btn / 🎁 wl-btn / 🔔 mf-btn / Follow ใน likes sheet / ♡ บน comment","ทุกอัน → Member Sheet ""Join TukDaeng"" — sheet ปลายทางไม่เปิดเลย",GUEST,High,,"[GATE] matrix"
-FO-TC-SHT-108,Cross,"Member Sheet ขึ้นอยู่","1. แตะ scrim หรือ ""Skip for now""","กลับ surface เดิม — ไม่มี action เกิด ไม่มี sheet ค้าง",GUEST,Medium,,
-FO-TC-SHT-109,Cross,"member เปลี่ยนภาษาเป็นไทย","1. เปิด comments / likes / uf / mf / wa","""ความคิดเห็น"" / ""ตอบกลับ"" / ""เพิ่มความคิดเห็น…"" / ""ยอดถูกใจ"" / uf·mf·wa localize ครบ",MEMBER,Medium,,
-FO-TC-SHT-110,Cross,"UI ภาษาไทย","1. เปิด save / wishlist / nc / blk / ps input / share apps","hardcode EN หลายจุด: ""Saved""/""Private""/""New collection"", nc ทั้ง sheet, blk ทั้ง sheet, ""Add a comment for X"", app names",MEMBER,Low,,"i18n gap — บันทึก"
-FO-TC-SHT-111,Cross,"member เปิด dark theme","1. เปิด comments + save + wa","sheet bg/foreground ตาม dark tokens; backdrop dim ถูก; toast อ่านได้",MEMBER,Low,,
-FO-TC-SHT-112,Cross,"member save p3 ลง Vintage picks","1. เปิด Saved hub → เข้า savedcol ""Vintage picks"" และ ""Grail list""","post อยู่ Vintage picks (ไม่อยู่ Grail) — single-collection ยืนยันจากฝั่ง collection viewer",MEMBER,Medium,,
-FO-TC-SHT-113,Cross,"member ลบ comment ใน sheet (SHT-030)","1. ออกไปดู feed card + detail โพสต์เดิม","comment count บน card และ detail ลดตาม",MEMBER,Medium,,
-FO-TC-SHT-114,Cross,"member เปิด watch-alert solo viewer (post inject)","1. กด ""Likes"" / 💬 บน injected card","sheet เปิดเหนือ pfp viewer ได้ปกติ; pm ⋯ บน card นี้ยัง reportOnly",MEMBER,Low,,"ต่อจาก FO-TEST-06 PV-039"
-FO-TC-SHT-115,Cross,"member เปิด comments sheet บน pv","1. พยายามกด pv-back ขณะ sheet เปิด → แตะ backdrop ก่อน → กด back","backdrop บังปุ่ม back — ต้องปิด sheet ก่อน (ไม่มี sheet กำพร้าหลัง viewer ปิด)",MEMBER,Low,,
+3. เปิด edit → ""Delete alert""","Create → toast ""Watch alert on"" + 🔔 เปลี่ยน on + alert ทำงานจริง (spec ล็อก; flow เต็ม FO-TEST-11); Save → ""Watch alert updated""; Delete → ""Watch alert removed""",MEMBER,High,,,
+FO-TC-SHT-089,Watch alert,มี alert ที่ criteria+mode เดียวกันอยู่,1. สร้างซ้ำด้วย criteria+mode เดิม,"ไม่สร้างใหม่ — เปิด edit ของ alert เดิม + toast ""You already saved this alert""",MEMBER,Medium,,,
+FO-TC-SHT-090,Watch alert,guest อยู่ detail/search,"1. guest กด 🔔 → ปิด Member Sheet → sign in → กดซ้ำ",guest → Member Sheet; member → wa sheet ตาม SHT-081/084,GUEST/MEMBER,High,,,[GATE]
+FO-TC-SHT-091,Unfollow+Following,feed เห็นโพสต์ของ USER-F,"1. กด ""Following"" บนการ์ด","sheet ""Unfollow @{user}?"" + avatar + ปุ่ม ""Unfollow"" (danger) + ""Cancel""",MEMBER,High,,,
+FO-TC-SHT-092,Unfollow+Following,uf sheet เปิด,"1. กด ""Cancel""",sheet ปิดเฉย ๆ — ยัง following ไม่เปลี่ยน,MEMBER,Medium,,,
+FO-TC-SHT-093,Unfollow+Following,uf sheet เปิด,"1. กด ""Unfollow""","unfollow จริง + sheet ปิด + toast ""Unfollowed"" + ปุ่มกลับ ""Follow"" + Following list ลด",MEMBER,High,,,
+FO-TC-SHT-094,Unfollow+Following,caption sheet เปิดบนโพสต์ของ USER-F,"1. กด ""Following"" บนหัว sheet → uf ขึ้น
+2. รอบแรก ""Cancel"" รอบสอง ""Unfollow""","ทั้งสองทางย้อนกลับ caption sheet เดิม — ปุ่มบนหัว caption อัปเดตตามสถานะ (Following→Follow)",MEMBER,High,,,spec ล็อก คู่ SHT-009
+FO-TC-SHT-095,Unfollow+Following,profile ของ USER-F,"1. กด ""Following ⌄""","sheet เปิด: title=username + 3 แถว (""Add to favorites"" / ""Mute"" / ""Unfollow"")",MEMBER,High,,,
+FO-TC-SHT-096,Unfollow+Following,mf sheet เปิด,"1. กด ""Add to favorites"" → กดซ้ำ","label สลับ ""Remove from favorites"" ↔ ""Add to favorites"" + icon สลับ inline — sheet ไม่ปิด + ผล favorite จริง",MEMBER,Medium,,,
+FO-TC-SHT-097,Unfollow+Following,mf sheet เปิด,"1. กด ""Mute"" → อ่าน dialog → ทำสองรอบ: Confirm / Cancel","dialog ""Mute X?"" ซ้อนบน sheet → Confirm = toast ""Muted""; Cancel = กลับ mf sheet",MEMBER,Medium,,,
+FO-TC-SHT-098,Unfollow+Following,mf sheet เปิด,"1. กด ""Unfollow""","unfollow ทันทีไม่มี confirm + sheet ปิด + ปุ่ม profile กลับ ""Follow"" — ต่างจาก SHT-091 โดย design (IG parity)",MEMBER,Medium,,,spec ล็อก
+FO-TC-SHT-099,Caption+Details,"viewer ของโพสต์ caption ยาว (มี ""… more"")","1. แตะ ""… more""",caption sheet เปิดแสดง caption เต็ม — ต่างจาก feed card ที่ขยาย caption inline (ถูกต้องตาม design ทั้งสองแบบ),MEMBER,High,,,
+FO-TC-SHT-100,Caption+Details,caption sheet เปิด,"1. อ่านเนื้อหา
+2. เปลี่ยน Language เป็นไทยแล้วเปิดใหม่","หัว: avatar+seller+ปุ่ม ""Follow""/""Following"" → caption เต็ม → เวลา → comment rows → input placeholder ""Add a comment for X"" แปลตามภาษาแอป (spec ล็อก)",MEMBER,Medium,,,
+FO-TC-SHT-101,Caption+Details,caption sheet เปิด,"1. กด ♡ บน comment
+2. กดค้าง row → popover
+3. แตะ ""Reply""",like/popover/reply ทำงานเหมือน comments sheet ทุกอย่าง,MEMBER,Medium,,,
+FO-TC-SHT-102,Caption+Details,viewer ของ POST-SALE,"1. แตะ ""Tap for details""","details sheet: spec groups ยกเว้น ""Price & Data Source"" (อยู่แค่หน้า detail) + ลิงก์ ""View full detail ›"" ท้าย list",MEMBER,High,,,
+FO-TC-SHT-103,Caption+Details,details sheet เปิด,"1. แตะ ""View full detail ›""",sheet ปิด + detail เลื่อนทับ viewer — back กลับ viewer ไม่ใช่ sheet,MEMBER,Medium,,,
+FO-TC-SHT-104,Block,"popover → ""Block""",1. อ่านเนื้อหา,"avatar+ชื่อ + ""Block {user}?"" + คำอธิบาย + impact rows + ปุ่ม ""Block"" + ""Block and report""",MEMBER,Medium,,,
+FO-TC-SHT-105,Block,block ACCT-2 จาก comments (SHT-033),"1. กลับ feed + เปิด comments + เปิด profile ของ ACCT-2","comments กรองออก + toast ""Blocked and hidden comments""; feed/profile ไม่มีเนื้อหาของ ACCT-2 — ผลจริงทุก surface",MEMBER,High,,,
+FO-TC-SHT-106,Block,unblock ACCT-2 ผ่าน Settings,1. เปิด comments/feed เดิม,เนื้อหาของ ACCT-2 กลับมาเห็นครบทุกระดับ,MEMBER,Low,,,
+FO-TC-SHT-107,Cross,guest อยู่ feed/detail,"1. ลองทีละอัน: ↗ share / 🔖 save / 🎁 wishlist / 🔔 watch alert / Follow ใน likes sheet / ♡ บน comment","ทุกอัน → Member Sheet ""Join TukDaeng"" ใบเดียวกัน — sheet ปลายทางไม่เปิดเลย",GUEST,High,,,[GATE] matrix
+FO-TC-SHT-108,Cross,Member Sheet เปิดอยู่,"1. แตะพื้นมืด หรือ ""Skip for now""",กลับ surface เดิม — ไม่มี action เกิด ไม่มี sheet ค้าง,GUEST,Medium,,,
+FO-TC-SHT-109,Cross,Language = ไทย (Profile → ≡ → Language),"1. เปิด comments / likes / uf / mf / wa","หัวข้อ+ปุ่ม+placeholder แปลครบ — ""ความคิดเห็น"" / ""ตอบกลับ"" / ""เพิ่มความคิดเห็น…"" / ""ยอดถูกใจ"" และข้อความ uf/mf/wa ครบ",MEMBER,Medium,,,
+FO-TC-SHT-110,Cross,Language = ไทย,1. เปิด save / wishlist / nc / block / caption sheet / share,"ทุกข้อความใน sheet เป็นภาษาไทยครบ — ""Saved""/""Private""/""Collections""/""New collection""/""Collection name""/block ทั้ง sheet/placeholder input — ไม่มี hardcode อังกฤษเหลือ (เว้นชื่อผลิตภัณฑ์ภายนอก)",MEMBER,High,,,spec ล็อก
+FO-TC-SHT-111,Cross,Theme = Dark (Profile → ≡ → Theme),1. เปิด comments + save + wa,sheet bg/foreground ตาม dark tokens + scrim dim ถูก + toast อ่านได้,MEMBER,Low,,,
+FO-TC-SHT-112,Cross,โพสต์อยู่ COL-A+COL-B (SHT-062),"1. เปิด Saved hub → เข้า COL-A → ออก → เข้า COL-B",โพสต์อยู่ทั้งสอง collection + จำนวนนับถูกต้อง — ยืนยัน multi-collection จากฝั่ง collection viewer,MEMBER,High,,,spec ล็อก
+FO-TC-SHT-113,Cross,ลบ comment ตาม SHT-030/031,1. ออกไปดู feed card + detail ของโพสต์เดิม,comment count บนการ์ดและ detail ลดตรงกับจำนวนที่ลบ (รวม replies — จดวิธีนับจริงลง Note ถ้าต่าง),MEMBER,Medium,,,
+FO-TC-SHT-114,Cross,viewer ที่เปิดจาก watch alert row (ต้องมี alert row — ดู FO-TEST-11/06),"1. กด ""Likes"" / 💬 บนการ์ด",sheet เปิดเหนือ viewer ได้ปกติ (ถ้าไม่มี alert row mark BLOCK),MEMBER,Low,,,
+FO-TC-SHT-115,Cross,comments sheet เปิดบน viewer,"1. พยายามกด ← ของ viewer ขณะ sheet เปิด
+2. ปิด sheet → กด ←",← ถูก scrim บังจนกว่าปิด sheet — ไม่มีทางให้ sheet ค้างหลัง viewer ปิด,MEMBER,Low,,,
+FO-TC-SHT-116,Extra sheets,ห้องแชทกับ ACCT-2 เปิด,"1. เมนู/⋯ ในห้องแชท → ""Report""","confirm sheet ""Are you sure you want to report {user}?"" + ปุ่ม ""Report and delete"" + ""Report"" + ""Cancel""",MEMBER,High,,,
+FO-TC-SHT-117,Extra sheets,report sheet เปิด,"1. ""Cancel"" → เปิดใหม่ → ""Report""
+2. (รอบสอง ห้องอื่น) ""Report and delete""","Cancel → ปิดเฉย ๆ; ""Report"" → เข้า report flow (FO-TEST-15/16); ""Report and delete"" → แชทถูกลบออกจากรายการ + เข้า report flow",MEMBER,Medium,,,
+FO-TC-SHT-118,Extra sheets,หน้า board/community มีโพสต์ (ถ้า build ยังไม่มี board mark BLOCK),1. กด ⋯ บนโพสต์,menu sheet เปิดพร้อมแถว action ตาม design (จดรายการจริงลง Note) — แถวแต่ละอันทำงาน/เข้า flow ของมัน,MEMBER,Medium,,,
+FO-TC-SHT-119,Extra sheets,profile ของ ACCT-2,1. กด ⋯ บน profile,"options sheet เปิดตาม design (เช่น Share this profile / About this account / Copy profile URL / Report / Block — จดจริงลง Note)",MEMBER,Medium,,,
+FO-TC-SHT-120,Extra sheets,ห้องแชทเปิด,"1. กด ""+"" ใกล้ช่องพิมพ์",attach sheet เปิดพร้อมตัวเลือกแนบ (รูป/กล้อง/อื่น ๆ ตาม design — จดจริงลง Note) + ปิดด้วย scrim/ลากลงได้,MEMBER,Medium,,,
+FO-TC-SHT-121,Extra sheets,การ์ด/viewer ของโพสต์ sale ของ seller อื่น,"1. กด ""Ask""","เข้าห้องแชทกับ seller นั้นทันที — มีการ์ด/ลิงก์อ้างถึงลิสติ้งที่กด + ช่องพิมพ์พร้อมใช้ (prefilled จดจริงลง Note); กดซ้ำจากโพสต์เดิมใช้ห้องเดิม",MEMBER,High,,,spec ล็อก quick action
+FO-TC-SHT-122,Extra sheets,own sale post,"1. หา/กด ""Ask""",ไม่มีปุ่ม Ask บนลิสติ้งตัวเอง — หรือถ้ามี กดแล้วต้องไม่สร้างห้องคุยกับตัวเอง (จดจริงลง Note),MEMBER,Medium,,,
+FO-TC-SHT-123,Extra sheets,โพสต์ sale,"1. guest กด ""Ask"" → ปิด Member Sheet → sign in → กดซ้ำ",guest → Member Sheet; member → เข้าแชทตาม SHT-121,GUEST/MEMBER,High,,,[GATE]
+FO-TC-SHT-124,Extra sheets,viewer head/profile ของ USER-NF,"1. กด ""Follow""","follow จริง — ปุ่มเปลี่ยน ""Following""/หายตาม design + sync ทั้งแอป (Following list +1)",MEMBER,High,,,
+FO-TC-SHT-125,Extra sheets,viewer head/profile ของ USER-NF,"1. guest กด ""Follow""",Member Sheet — ไม่มีการ follow เกิด,GUEST,High,,,[GATE]

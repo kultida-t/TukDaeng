@@ -1,124 +1,131 @@
-TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,Note
-SETUP-01,Setup,-,"1. เปิด Chrome ไปที่ http://localhost:8901/index.html (ถ้าไม่มี server ให้เปิดไฟล์ Prototypes/fo-flow/index.html ตรง ๆ)
-2. กด F12 เปิด DevTools → กดไอคอนรูปมือถือ (Toggle device toolbar) → ตั้งขนาด 440 × 956 px","เห็นหน้าแอปในกรอบมือถือ ข้างล่างจอมีปุ่มลอย ""1st"" และ ""v2""",-,High,,
-SETUP-02,Setup,-,"1. แตะปุ่มลอย ""1st"" (มุมล่างจอ) — ปุ่มนี้คือ replay onboarding จะล้างสถานะทั้งหมดแล้วเริ่มใหม่
-หรืออีกวิธี: DevTools → Application → Local Storage → ลบ key fo_onboarded แล้วกด F5","onboarding เด้งใหม่ตั้งแต่หน้า splash โลโก้ TukDaeng",-,High,,
+TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,ทดสอบบน (Device/OS),Note
+SETUP-01,Setup,-,"1. ติดตั้งแอป TukDaeng build ทดสอบบนมือถือเครื่องจริง — Android โหลดจาก Google Play / iOS จาก App Store หรือ TestFlight (ตามที่ทีมแจก)
+2. เปิดแอปขึ้นมา",เห็นหน้า splash โลโก้ TukDaeng แล้วไหลเข้า onboarding — ห้ามเทสผ่าน browser หรือ prototype,-,High,,,
+SETUP-02,Setup,-,"วิธีรีเซ็ตสถานะแอปให้เหมือนใช้ครั้งแรก (ทำเมื่อเคสต้องการ first-run state เช่น onboarding/coach marks):
+• Android: ปิดแอป → ตั้งค่าระบบ → Apps → TukDaeng → Storage → Clear data → เปิดแอปใหม่
+• iOS: ลบแอปออกจากเครื่อง → ติดตั้งใหม่ → เปิดแอป",onboarding เด้งใหม่ตั้งแต่หน้า splash/เลือกภาษา เหมือนใช้ครั้งแรก,-,High,,,
 SETUP-03,Setup,-,"ทำให้ตัวเองเป็น GUEST (ยังไม่ล็อกอิน):
-1. กด ""1st"" เพื่อเล่น onboarding ใหม่
-2. เดินหน้าไปเรื่อย ๆ (Continue ทุกหน้า เลือกอะไรก็ได้) จนถึง sheet ""Join TukDaeng""
-3. กด ""Skip for now"" ใน sheet","อยู่หน้า feed (เห็นโพสต์นาฬิกา) แบบ guest — ยังไม่ได้ล็อกอิน",-,High,,
-SETUP-04,Setup,-,"ทำให้ตัวเองเป็น MEMBER (ล็อกอินบัญชี demo):
+1. รีเซ็ตแอป (SETUP-02) หรือออกจากระบบถ้าล็อกอินอยู่ (Settings → Log out)
+2. เดินหน้า onboarding ไปเรื่อย ๆ (Continue ทุกหน้า เลือกอะไรก็ได้) จนถึง sheet ""Join TukDaeng""
+3. กด ""Skip for now"" ใน sheet",อยู่หน้า feed (เห็นโพสต์นาฬิกา) แบบ guest — ยังไม่ได้ล็อกอิน,-,High,,,
+SETUP-04,Setup,-,"ทำให้ตัวเองเป็น MEMBER (ล็อกอินบัญชีทดสอบ):
 1. จาก onboarding member sheet กด ""Sign in""
    (ถ้าอยู่ feed เป็น guest อยู่แล้ว ให้แตะไอคอนหัวใจใต้โพสต์ใดก็ได้ → sheet เด้ง → กด ""Sign in"")
-2. ช่องจะเติม demo@tukdaeng.com / Tukdaeng123 ไว้แล้ว → กด ""Sign in""","อยู่หน้า feed แบบ member — ข้อมูลเต็ม (มีโพสต์/แชท/แจ้งเตือน)",-,High,,
+2. กรอก email + password ของบัญชีทดสอบ (SETUP-06) → กด ""Sign in""",อยู่หน้า feed แบบ member — เห็นข้อมูลของบัญชีนั้น (โพสต์/แชท/แจ้งเตือนตามจริง),-,High,,,
 SETUP-05,Setup,-,"ทำให้ตัวเองเป็น NEW (สมัครใหม่ ข้อมูลว่าง):
 1. จาก member sheet กด ""Sign up""
-2. กรอกอีเมลใหม่ เช่น new@test.com + รหัสผ่านอย่างน้อย 8 ตัว → ""Create account""
-3. ช่อง OTP พิมพ์ 123456
+2. กรอกอีเมลใหม่ที่รับ OTP จริงได้ + รหัสผ่านอย่างน้อย 8 ตัว → ""Create account""
+3. กรอกรหัส OTP ที่ได้รับจริง (SETUP-06)
 4. หน้า Profile กด ""Continue"" (ใช้ username ที่แนะนำ)
-5. หน้า Account created กด ""Sign in"" → กด ""Sign in"" อีกครั้ง","อยู่ feed แบบ member ใหม่ — ข้อมูลว่าง ชื่อเป็น username ที่ตั้ง",-,High,,
-SETUP-06,Setup,-,"ข้อมูลเทสที่ใช้ในเคส:
-• บัญชี demo: demo@tukdaeng.com / Tukdaeng123
-• OTP: 123456
-• ปุ่ม dev: ""1st"" = replay onboarding, ""v2"" = จำลอง re-consent, ""☾/☀"" = สลับธีมเร็ว
-• scroll-to-hide: เลื่อนลงแรง ๆ เกิน 56px = แถบหลบ, เลื่อนขึ้นหรือถึงบนสุด = แถบกลับ","-",-,High,,
+5. หน้า Account created กด ""Sign in"" → sign in ให้จบ",อยู่ feed แบบ member ใหม่ — ข้อมูลว่าง ชื่อเป็น username ที่ตั้ง,-,High,,,
+SETUP-06,Setup,-,"ข้อมูลเทสที่ต้องเตรียมก่อนเริ่ม (ขอจากทีม / เติมเองลงช่องนี้):
+• บัญชีทดสอบ: email + password = ____________________
+• อีเมลที่รับ OTP จริงได้ (สำหรับสมัครใหม่): ____________________
+• บัญชีที่มี unread เยอะ หรือ tooling สร้าง unread >99 (ใช้ SHELL-030): ____________________
+• เครื่องทดสอบ: รุ่น + OS version = ____________________ (จดลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน เช่น iPhone 15 · iOS 18 / Galaxy S24 · Android 15)
+• scroll-to-hide: เลื่อนฟีดลงด้วยนิ้วจนแถบหลบ เลื่อนขึ้น/ถึงบนสุด = แถบกลับ",จดข้อมูลครบก่อนเริ่มเทส — เคสที่ต้องล็อกอิน/สมัครใหม่จะทำไม่ได้ถ้าไม่มีข้อมูลชุดนี้,-,High,,,
 SETUP-07,Setup,-,"เส้นทางเข้า Settings (ใช้เคสเปลี่ยนภาษา/ธีม):
 1. อยู่ feed แบบ member (SETUP-04)
 2. แตะแท็บ ""Profile"" ในแถบนำทางล่าง (ขวาสุด)
-3. แตะไอคอน ≡ มุมขวาบน (ปุ่ม Settings and activity)","หน้า Settings เปิดขึ้น มีแถวตั้งค่าต่าง ๆ รวม ""Language"" / ""Theme""",-,High,,
+3. แตะไอคอน ≡ มุมขวาบน (ปุ่ม Settings and activity)","หน้า Settings เปิดขึ้น มีแถวตั้งค่าต่าง ๆ รวม ""Language"" / ""Theme"" (สลับธีมทำที่นี่หรือตั้งธีมระบบของเครื่อง ถ้าแอปตามระบบ)",-,High,,,
 SETUP-08,Setup,-,"วิธีเลื่อนหน้าจอ + เปิด overlay ที่ใช้ในเคส:
-• เลื่อนฟีด = หมุน mouse wheel หรือลากบนพื้นที่โพสต์ในกรอบมือถือ
+• เลื่อนฟีด = ปัดด้วยนิ้วบนจอจริง บนพื้นที่โพสต์ (ห้ามใช้ mouse wheel/drag — เทสบนเครื่องจริงเท่านั้น)
 • เปิด Post Viewer = แตะ grid tile (เช่นใน profile หรือหน้า saved)
 • เปิด Post Detail = แตะ ""Tap for details"" บนการ์ดใน feed
-• กด media บน feed card เปิด viewer ไม่ได้ตามกติการะบบ","ทราบวิธีเข้าถึง overlay ทุกชนิดที่เคสอ้างถึง",-,High,,
-SETUP-09,Setup,-,"วิธีเล่น coach marks (ทัวร์จุดลอย) ซ้ำ:
-1. DevTools → Application → Local Storage → ลบ key fo_toured
-2. กด ""1st"" replay onboarding แล้วเดินจนจบ (Skip = guest tour / สมัครใหม่ = member tour)","ทัวร์ bubble เล่นใหม่ตอนเข้า feed ครั้งแรกหลัง onboarding",-,High,,
-SHELL-001,App Header,"member อยู่หน้า feed (SETUP-04)","1. มองแถวบนสุดของ feed
-2. มอง statusbar บนสุดจอ + แถบ home indicator ล่างสุดจอ","statusbar ""9:41"" + ไอคอน; header มี burger + search ซ้าย, wordmark ""TUK DAENG"" แดงตรงกลาง, ปุ่ม + ขวา (caret ไม่แสดง); home indicator แถบเล็กล่างสุด",MEMBER,Medium,,
-SHELL-002,App Header,"อยู่ feed","1. แตะไอคอน burger (≡) มุมซ้ายบน","drawer เลื่อนเข้าจากซ้าย + พื้นหลังมืดลง (scrim)",MEMBER,High,,
-SHELL-003,App Header,"อยู่ feed","1. แตะไอคอน search (แว่นขยาย)","หน้า Search landing เด้งเต็มจอ (explore tiles + popular chips + recents)",MEMBER,High,,
-SHELL-004,App Header,"อยู่ feed","1. แตะปุ่ม + มุมขวาบน","หน้า create (media picker) เปิดเต็มจอ",MEMBER,High,,
-SHELL-005,App Header,"guest อยู่ feed (SETUP-03)","1. แตะปุ่ม + มุมขวาบน
-2. แตะบริเวณมืด (scrim) หลัง sheet","Member Sheet ""Join TukDaeng"" เด้ง (create ไม่เปิด); ปิด sheet → กลับ feed เหมือนเดิม ยังเป็น guest",GUEST,High,,
-SHELL-006,App Header,"guest อยู่ feed","1. แตะไอคอน search","หน้า Search เปิดได้ฟรี — ไม่มี Member Sheet คั่น",GUEST,Medium,,
-SHELL-007,App Header,"member อยู่ feed","1. แตะ wordmark ""TUK DAENG"" ตรงกลาง header","ไม่เกิดอะไร — wordmark กดได้เฉพาะ dev variant ft=none (โหมดปกติ caret ถูกซ่อน)",MEMBER,Low,,
-SHELL-008,Drawer,"อยู่ feed → เปิด drawer แล้ว (แตะ burger)","1. ตรวจ panel ที่เลื่อนเข้ามา","panel ชิดซ้ายมี 9 แถว แต่ละแถว = ไอคอน + ชื่อเมนู + chevron ›; scrim มืดคลุม feed ทั้งจอ",MEMBER,Medium,,
-SHELL-009,Drawer,"drawer เปิดอยู่","1. แตะบริเวณมืด (scrim) ข้าง ๆ panel","drawer เลื่อนออกปิด — feed กลับมาใช้ได้ปกติ",MEMBER,High,,
-SHELL-010,Drawer,"drawer เปิดอยู่","1. แตะแถว ""Watch Brands""","toast ลอยล่างจอ ""Not in this prototype yet"" ~2 วิ — ไม่มีหน้าใหม่ drawer ยังเปิดอยู่",MEMBER,Medium,,
-SHELL-011,Drawer,"drawer เปิดอยู่","1. แตะแถว ""Watch Price Index""","toast ""Not in this prototype yet"" เหมือนเดิม drawer ยังเปิด",MEMBER,Medium,,
-SHELL-012,Drawer,"drawer เปิดอยู่","1. แตะแถว ""Watch Shops""","toast ""Not in this prototype yet"" เหมือนเดิม drawer ยังเปิด",MEMBER,Medium,,
-SHELL-013,Drawer,"drawer เปิดอยู่","1. แตะแถว ""Accessories Shop""","toast ""Not in this prototype yet"" เหมือนเดิม drawer ยังเปิด",MEMBER,Medium,,
-SHELL-014,Drawer,"drawer เปิดอยู่","1. แตะแถว ""Repair Shop""","toast ""Not in this prototype yet"" เหมือนเดิม drawer ยังเปิด",MEMBER,Medium,,
-SHELL-015,Drawer,"drawer เปิดอยู่","1. แตะแถว ""Auction Center""","toast ""Not in this prototype yet"" เหมือนเดิม drawer ยังเปิด",MEMBER,Medium,,
-SHELL-016,Drawer,"drawer เปิดอยู่","1. แตะแถว ""Consignment Center""","toast ""Not in this prototype yet"" เหมือนเดิม drawer ยังเปิด",MEMBER,Medium,,
-SHELL-017,Drawer,"drawer เปิดอยู่","1. แตะแถว ""Authentication Center""","toast ""Not in this prototype yet"" เหมือนเดิม drawer ยังเปิด",MEMBER,Medium,,
-SHELL-018,Drawer,"drawer เปิดอยู่","1. แตะแถว ""Community""","toast ""Not in this prototype yet"" เหมือนเดิม drawer ยังเปิด",MEMBER,Medium,,
-SHELL-019,Drawer,"drawer เปิดอยู่","1. แตะพื้นว่างใน panel (ไม่โดนแถวเมนู)
-2. กดปุ่ม ESC บนคีย์บอร์ด
-3. แตะ burger ซ้ำอีกครั้ง","ทั้ง 3 ทางไม่ปิด drawer — ปิดได้เฉพาะการแตะ scrim เท่านั้น (ไม่มีปุ่ม X / ไม่มี ESC handler)",MEMBER,Low,,
-SHELL-020,Drawer,"guest อยู่ feed","1. แตะ burger → drawer เปิด
-2. แตะแถวเมนูใดก็ได้","drawer เปิดได้ฟรีสำหรับ guest (ไม่ถูก gate); แถวเมนู → toast ""Not in this prototype yet"" เหมือน member",GUEST,Medium,,
-SHELL-021,Bottom Nav,"member อยู่ feed","1. มองแถบนำทางล่างจอ","pill ลอยกระจกมี 5 item: Feed / Chat / Boards / Alerts / Profile (ไอคอน+ตัวหนังสือ); pill active อยู่ที่ Feed; badge เลขแดงบน Chat + Alerts",MEMBER,Medium,,
-SHELL-022,Bottom Nav,"member อยู่ feed","แตะทีละแท็บตามลำดับ:
+• กด media บน feed card เปิด viewer ไม่ได้ตามกติการะบบ",ทราบวิธีเข้าถึง overlay ทุกชนิดที่เคสอ้างถึง,-,High,,,
+SETUP-09,Setup,-,"วิธีเล่น coach marks ซ้ำ — ทัวร์เด้งครั้งเดียวต่อการติดตั้ง:
+1. ลบแอปแล้วติดตั้งใหม่ หรือ Clear app data (SETUP-02)
+2. เดิน onboarding จนจบ (กด Skip for now = guest tour / สมัครใหม่ = member tour)
+3. เข้า feed ครั้งแรก → ทัวร์ bubble เล่นใหม่",ทัวร์ bubble เล่นใหม่ตอนเข้า feed ครั้งแรกหลังติดตั้ง/เคลียร์ data,-,High,,,
+SHELL-001,App Header,member อยู่หน้า feed (SETUP-04),"1. มองแถวบนสุดของ feed
+2. มอง status bar ของเครื่องบนสุดจอ + ขอบล่างสุดจอ","status bar ของเครื่องจริงแสดงเวลา/สัญญาณ/แบตจริง (ไม่ตรึงค่า); header มี burger + search ซ้าย, wordmark ""TUK DAENG"" แดงตรงกลาง (ไม่มี caret), ปุ่ม + ขวา; home indicator/ขอบล่างตาม OS",MEMBER,Medium,,,
+SHELL-002,App Header,อยู่ feed,1. แตะไอคอน burger (≡) มุมซ้ายบน,hamburger menu (drawer) เลื่อนเข้าจากซ้าย + พื้นหลังมืดลง (scrim),MEMBER,High,,,
+SHELL-003,App Header,อยู่ feed,1. แตะไอคอน search (แว่นขยาย),หน้า Search landing เด้งเต็มจอ (explore tiles + popular chips + recents); bottom nav ของ feed ถูกซ่อน,MEMBER,High,,,
+SHELL-004,App Header,อยู่ feed,1. แตะปุ่ม + มุมขวาบน,หน้า create (media picker) เปิดเต็มจอ,MEMBER,High,,,
+SHELL-005,App Header,guest อยู่ feed (SETUP-03),"1. แตะปุ่ม + มุมขวาบน
+2. แตะบริเวณมืด (scrim) หลัง sheet","Member Sheet ""Join TukDaeng"" เด้ง (create ไม่เปิด); ปิด sheet → กลับ feed เหมือนเดิม ยังเป็น guest",GUEST,High,,,
+SHELL-006,App Header,guest อยู่ feed,1. แตะไอคอน search,หน้า Search เปิดได้ฟรี — ไม่มี Member Sheet คั่น,GUEST,Medium,,,
+SHELL-007,App Header,member อยู่ feed,"1. แตะ wordmark ""TUK DAENG"" ตรงกลาง header",ไม่เกิดอะไร — wordmark ไม่มี action ในโหมดปกติ (โหมดที่กดได้เป็น dev variant out of scope),MEMBER,Low,,,
+SHELL-008,hamburger menu,อยู่ feed → เปิด drawer แล้ว (แตะ burger),1. ตรวจ panel ที่เลื่อนเข้ามา,panel ชิดซ้ายมี 9 แถว แต่ละแถว = ไอคอน + ชื่อเมนู + chevron ›; scrim มืดคลุม feed ทั้งจอ,MEMBER,Medium,,,
+SHELL-009,hamburger menu,drawer เปิดอยู่,1. แตะบริเวณมืด (scrim) ข้าง ๆ panel,drawer เลื่อนออกปิด — feed กลับมาใช้ได้ปกติ,MEMBER,High,,,
+SHELL-010,hamburger menu,drawer เปิดอยู่,"1. แตะแถว ""Watch Brands""",ตาม design เมนูยังไม่มีหน้าปลายทาง — ควรมี toast/ข้อความแจ้งว่ายังไม่เปิดใช้ ~2 วิ (จดเวลา/ข้อความจริง); ถ้าเปิดหน้าจริงหรือไม่มีแถวนี้ให้จดผล,MEMBER,Medium,,,ถ้าแอปจริงเปิดหน้าให้จดหน้าที่ไปถึง
+SHELL-011,hamburger menu,drawer เปิดอยู่,"1. แตะแถว ""Watch Price Index""",เหมือน SHELL-010 — toast/ข้อความแจ้งยังไม่เปิดใช้ หรือจดพฤติกรรมจริง; drawer ยังเปิด,MEMBER,Medium,,,
+SHELL-012,hamburger menu,drawer เปิดอยู่,"1. แตะแถว ""Watch Shops""",เหมือน SHELL-010; drawer ยังเปิด,MEMBER,Medium,,,
+SHELL-013,hamburger menu,drawer เปิดอยู่,"1. แตะแถว ""Accessories Shop""",เหมือน SHELL-010; drawer ยังเปิด,MEMBER,Medium,,,
+SHELL-014,hamburger menu,drawer เปิดอยู่,"1. แตะแถว ""Repair Shop""",เหมือน SHELL-010; drawer ยังเปิด,MEMBER,Medium,,,
+SHELL-015,hamburger menu,drawer เปิดอยู่,"1. แตะแถว ""Auction Center""",เหมือน SHELL-010; drawer ยังเปิด,MEMBER,Medium,,,
+SHELL-016,hamburger menu,drawer เปิดอยู่,"1. แตะแถว ""Consignment Center""",เหมือน SHELL-010; drawer ยังเปิด,MEMBER,Medium,,,
+SHELL-017,hamburger menu,drawer เปิดอยู่,"1. แตะแถว ""Authentication Center""",เหมือน SHELL-010; drawer ยังเปิด,MEMBER,Medium,,,
+SHELL-018,hamburger menu,drawer เปิดอยู่,"1. แตะแถว ""Community""",เหมือน SHELL-010; drawer ยังเปิด,MEMBER,Medium,,,
+SHELL-019,hamburger menu,drawer เปิดอยู่,"1. แตะพื้นว่างใน panel (ไม่โดนแถวเมนู)
+2. แตะ burger ซ้ำอีกครั้ง
+3. (Android) กดปุ่ม/เจสเจอร์ back ของเครื่อง",แตะพื้นว่าง + burger ซ้ำ ไม่ปิด drawer — ทางปิดหลักคือแตะ scrim; device back ให้จดผลจริง (ปิด/ไม่ปิด),MEMBER,Low,,,จดว่า device back ปิด drawer ไหม
+SHELL-020,hamburger menu,guest อยู่ feed,"1. แตะ burger → drawer เปิด
+2. แตะแถวเมนูใดก็ได้",drawer เปิดได้ฟรีสำหรับ guest (ไม่ถูก gate); แถวเมนู → toast/ข้อความเดียวกับ member,GUEST,Medium,,,
+SHELL-021,Bottom Nav,member อยู่ feed,1. มองแถบนำทางล่างจอ,pill ลอยมี 5 item: Feed / Chat / Boards / Alerts / Profile (ไอคอน+ตัวหนังสือ); pill active อยู่ที่ Feed; badge เลขแดงบน Chat + Alerts (ถ้าบัญชีมี unread),MEMBER,Medium,,,
+SHELL-022,Bottom Nav,member อยู่ feed,"แตะทีละแท็บตามลำดับ:
 1. Chat → หน้า chat list
 2. Board → หน้า board
 3. Alerts → หน้า alerts
 4. Profile → หน้าโปรไฟล์ตัวเอง
-5. Feed → กลับ feed","แต่ละแท็บเปิดหน้าถูกต้อง + active pill ย้ายตาม + เปิดแบบเปลี่ยนทันที (ไม่มี slide จากขวาเหมือนหน้าลึก)",MEMBER,High,,
-SHELL-023,Bottom Nav,"guest อยู่ feed","1. แตะแท็บ Chat → ปิด sheet ที่เด้ง
+5. Feed → กลับ feed",แต่ละแท็บเปิดหน้าถูกต้อง + active pill ย้ายตาม + เปิดแบบสลับทันที (ไม่มี slide จากขวาเหมือนหน้าลึก),MEMBER,High,,,
+SHELL-023,Bottom Nav,guest อยู่ feed,"1. แตะแท็บ Chat → ปิด sheet ที่เด้ง
 2. แตะแท็บ Alerts → ปิด sheet
-3. แตะแท็บ Profile","Member Sheet ""Join TukDaeng"" เด้งทุกครั้ง; ยังอยู่หน้า feed ไม่มีการสลับแท็บ (active ยัง Feed)",GUEST,High,,
-SHELL-024,Bottom Nav,"member อยู่ feed","1. แตะ Chat 2. แตะ Alerts 3. แตะ Profile","ทั้ง 3 แท็บเปิดหน้าปกติ — member ไม่เจอ Member Sheet เลย",MEMBER,High,,
-SHELL-025,Bottom Nav,"guest อยู่ feed","1. แตะแท็บ Feed 2. แตะแท็บ Board","ใช้ได้ฟรีทั้งคู่ — ไม่มี Member Sheet; Board เปิดหน้าบทความปกติ",GUEST,Medium,,
-SHELL-026,Bottom Nav,"member อยู่ feed เลื่อนลงกลาง ๆ","1. เลื่อนฟีดลงลึก ๆ
-2. แตะแท็บ Feed ซ้ำ (แท็บที่ active อยู่แล้ว)","feed render ใหม่ + เลื่อนกลับขึ้นบนสุดแบบ smooth (กติกา re-tap = refresh)",MEMBER,High,,
-SHELL-027,Bottom Nav,"member เข้าห้องแชทอยู่ (feed→Chat→แตะห้องแชทใดก็ได้)","1. อยู่ในห้องแชท แตะแท็บ Chat อีกครั้ง","กลับหน้า chat list เลย (reset ไป root ของแท็บ ไม่ใช่ถอยทีละชั้น) — state ค้นหา/filter ของ list ถูก reset",MEMBER,High,,
-SHELL-028,Bottom Nav,"member อยู่ feed เลื่อนลงกลาง ๆ","1. แตะ Board 2. แตะ Feed กลับมา","feed กลับมาที่ตำแหน่ง scroll เดิมพอดี (ไม่รีเฟรช เพราะไม่ใช่ re-tap)",MEMBER,Medium,,
-SHELL-029,Bottom Nav,"member มีแจ้งเตือน/แชทยังไม่อ่าน","1. ดูตัวเลข badge บน Chat และ Alerts
-2. เข้า Alerts → กด ""Mark all as read"" → ดู badge","badge แสดงเลข unread จริงบนทั้งสองแท็บ; หลังอ่านหมด badge ของ Alerts หายไป",MEMBER,High,,"badge อัปเดตตาม unread จริง"
-SHELL-030,Bottom Nav,"member","1. ดู badge เมื่อ unread เกิน 99 (ถ้าทำให้เกิดไม่ได้ใน prototype ให้ข้ามไปเช็กโค้ด)","unread > 99 ควรแสดง ""99+"" — mock ไม่มีเส้นทางให้ unread ถึง 99 ได้ → verify จากโค้ด (n > 99 ? ""99+"" : n)",MEMBER,Low,,"[OPEN] เช็กจาก logic ในโค้ดแทน"
-SHELL-031,Bottom Nav,"guest หรือ new อยู่ feed","1. ดู nav ทั้งตอน guest และ new session","ไม่มี badge บน Chat/Alerts เลย (guest/new ไม่มีข้อมูล unread)",GUEST,Medium,,
-SHELL-032,Bottom Nav,"member เปิดโปรไฟล์คนอื่น (แตะ avatar/ชื่อบนโพสต์)","1. ดู active pill บน nav ขณะอยู่หน้าโปรไฟล์เขา","pill active อยู่ที่ ""Feed"" ไม่ใช่ ""Profile"" (nav ของหน้าโปรไฟล์คนอื่นไฮไลต์ feed)",MEMBER,Low,,
-SHELL-033,Bottom Nav,"member → เปิด Post Viewer (แตะ grid tile ตาม SETUP-08)","1. ดู nav ตอน viewer เปิด
-2. กด back ปิด viewer → ดูอีกครั้ง","nav หายไปทั้งที่ viewer/Post Detail เปิดอยู่; ปิดแล้ว nav กลับมาเหมือนเดิม",MEMBER,Medium,,
-SHELL-034,Bottom Nav,"member เข้าหน้าลึก เช่น Settings (SETUP-07) หรือห้องแชท","1. ดูด้านล่างจอของหน้าลึก","ไม่มี bottom nav บนหน้าลึก — nav มีเฉพาะหน้า root 5 แท็บ + หน้าโปรไฟล์ (ออกจากหน้าลึกต้องใช้ลูกศร back บนซ้าย)",MEMBER,Medium,,
-SHELL-035,Feed Tabs,"member อยู่ feed","1. ดูแถบแท็บใต้ header","3 ปุ่ม ""All Posts"" / ""Following"" / ""Favorites"" + pill (seg-thumb) อยู่ใต้แท็บที่ active (เริ่มต้น All Posts)",MEMBER,Medium,,
-SHELL-036,Feed Tabs,"member อยู่ feed","1. แตะ ""Following""","pill เลื่อนมาอยู่ใต้ Following + เนื้อหาเปลี่ยนเป็นเฉพาะโพสต์ของคนที่ follow + scroll กลับบนสุด",MEMBER,High,,
-SHELL-037,Feed Tabs,"member อยู่ feed","1. แตะ ""Favorites""","pill ใต้ Favorites + เห็นเฉพาะโพสต์ที่ติด favorite",MEMBER,High,,
-SHELL-038,Feed Tabs,"member อยู่แท็บ All Posts","1. แตะ ""All Posts"" ซ้ำ (แท็บที่ active อยู่แล้ว)","ไม่มีอะไรเปลี่ยน — ไม่ re-render ไม่เลื่อน",MEMBER,Low,,
-SHELL-039,Feed Tabs,"session NEW อยู่ feed (SETUP-05)","1. แตะ ""Following""","หน้าว่างมี icon คน + ข้อความ ""Follow others to see their posts here / ติดตามผู้อื่นเพื่อดูโพสต์ของพวกเขาที่นี่""",NEW,Medium,,
-SHELL-040,Feed Tabs,"guest อยู่ feed","1. แตะ ""Favorites""","หน้าว่างมี icon ดาว + ข้อความ ""No favorites yet / ยังไม่มีรายการโปรด""",GUEST,Medium,,
-SHELL-041,Feed Tabs,"guest อยู่ feed","1. สลับ Following ↔ Favorites ↔ All Posts","สลับแท็บได้ปกติทุกตัว — ไม่เจอ Member Sheet; following/favorites แสดง empty state",GUEST,Medium,,
-SHELL-042,Scroll-hide,"member อยู่ feed บนสุด","1. เลื่อนฟีดลงแรง ๆ (เกินครึ่งจอแรก)","header หลบขึ้นด้านบน + bottom nav จมลงหาย — ลองแตะ nav ตอนนี้กดไม่ได้",MEMBER,High,,
-SHELL-043,Scroll-hide,"bars-hidden อยู่ (แถบหลบไปแล้ว)","1. เลื่อนฟีดขึ้นแรง ๆ","header + nav สไลด์กลับมาครบ",MEMBER,High,,
-SHELL-044,Scroll-hide,"bars-hidden อยู่","1. เลื่อนจนชนบนสุดของฟีด","แถบทั้งคู่กลับมาเองทันทีที่ถึงบนสุด (ไม่ต้องเลื่อนขึ้นแรง)",MEMBER,Medium,,
-SHELL-045,Scroll-hide,"อยู่ feed","1. แกว่งเลื่อนลง-ขึ้นทีละน้อย ๆ","แถบไม่กระพริบ — เลื่อนน้อยไม่ถึงเกณฑ์จะไม่ hide/show",MEMBER,Low,,
-SHELL-046,Scroll-hide,"bars-hidden อยู่","1. แตะ avatar/ชื่อบนโพสต์ → เข้าโปรไฟล์เขา
+3. แตะแท็บ Profile","Member Sheet ""Join TukDaeng"" เด้งทุกครั้ง; ยังอยู่หน้า feed ไม่มีการสลับแท็บ (active ยัง Feed)",GUEST,High,,,
+SHELL-024,Bottom Nav,member อยู่ feed,1. แตะ Chat 2. แตะ Alerts 3. แตะ Profile,ทั้ง 3 แท็บเปิดหน้าปกติ — member ไม่เจอ Member Sheet เลย,MEMBER,High,,,
+SHELL-025,Bottom Nav,guest อยู่ feed,1. แตะแท็บ Feed 2. แตะแท็บ Board,ใช้ได้ฟรีทั้งคู่ — ไม่มี Member Sheet; Board เปิดหน้าบทความปกติ,GUEST,Medium,,,
+SHELL-026,Bottom Nav,member อยู่ feed เลื่อนลงกลาง ๆ,"1. ปัดฟีดลงลึก ๆ ด้วยนิ้ว
+2. แตะแท็บ Feed ซ้ำ (แท็บที่ active อยู่แล้ว)",feed render ใหม่ + เลื่อนกลับขึ้นบนสุดแบบ smooth (กติกา re-tap = refresh),MEMBER,High,,,
+SHELL-027,Bottom Nav,member เข้าห้องแชทอยู่ (feed→Chat→แตะห้องแชทใดก็ได้),1. อยู่ในห้องแชท แตะแท็บ Chat อีกครั้ง,กลับหน้า chat list เลย (reset ไป root ของแท็บ ไม่ใช่ถอยทีละชั้น) — ตัวกรอง/ช่องค้นหาของ list ถูก reset,MEMBER,High,,,
+SHELL-028,Bottom Nav,member อยู่ feed เลื่อนลงกลาง ๆ,1. แตะ Board 2. แตะ Feed กลับมา,feed กลับมาที่ตำแหน่ง scroll เดิมพอดี (ไม่รีเฟรช เพราะไม่ใช่ re-tap),MEMBER,Medium,,,
+SHELL-065,Bottom Nav,member sign in อยู่,"1. Alerts: เลื่อนลงกลาง ๆ → แตะ Feed → แตะ Alerts กลับ
+2. ทำซ้ำกับ Board และ Chat (เลื่อนลงก่อน)
+3. Alerts → แตะแถวแจ้งเตือนเข้าหน้าลึก → แตะ Feed → แตะ Alerts กลับ","ทุกแท็บกลับมาที่ตำแหน่ง scroll เดิม + แท็บที่เข้าหน้าลึกไว้กลับมาเจอหน้าลึกเดิม (สลับแท็บ = จำ state แบบ IG — ถ้าเด้งขึ้นบนสุด/ลืมหน้าลึก = FAIL; ยกเว้น re-tap แท็บเดิม = root reset ตาม 027)",MEMBER,High,,,
+SHELL-029,Bottom Nav,member มีแจ้งเตือน/แชทยังไม่อ่าน,"1. ดูตัวเลข badge บน Chat และ Alerts
+2. เข้า Alerts → กด ""Mark all as read"" → ดู badge",badge แสดงเลข unread จริงบนทั้งสองแท็บ; หลังอ่านหมด badge ของ Alerts หายไป,MEMBER,High,,,badge อัปเดตตาม unread จริง
+SHELL-030,Bottom Nav,member (ต้องมี unread เกิน 99),1. ใช้บัญชีเทสที่มี unread >99 หรือ tooling/seed จากทีม (SETUP-06) แล้วดู badge,"ตาม design badge แสดง ""99+"" — ถ้าไม่มีทางสร้าง unread ถึง 99 บน build นี้ ให้ mark BLOCK พร้อมเหตุผล (ต้องการ test data/tooling)",MEMBER,Low,,,[OPEN] ต้องอาศัย test data/tooling จากทีม
+SHELL-031,Bottom Nav,guest หรือ new อยู่ feed,1. ดู nav ทั้งตอน guest และ new session,ไม่มี badge บน Chat/Alerts เลย (guest/new ไม่มีข้อมูล unread),GUEST,Medium,,,
+SHELL-032,Bottom Nav,member เปิดโปรไฟล์คนอื่น (แตะ avatar/ชื่อบนโพสต์),1. ดู active pill บน nav ขณะอยู่หน้าโปรไฟล์เขา,"ตาม design pill active อยู่ที่ ""Feed"" ไม่ใช่ ""Profile"" — จดผลจริง",MEMBER,Low,,,
+SHELL-033,Bottom Nav,member → เปิด Post Viewer (แตะ grid tile ตาม SETUP-08),"1. ดู nav ตอน viewer เปิด
+2. กด back ปิด viewer → ดูอีกครั้ง",nav หายไปทั้งที่ viewer/Post Detail เปิดอยู่; ปิดแล้ว nav กลับมาเหมือนเดิม,MEMBER,Medium,,,
+SHELL-034,Bottom Nav,member เข้าหน้าลึก เช่น Settings (SETUP-07) หรือห้องแชท,1. ดูด้านล่างจอของหน้าลึก,ไม่มี bottom nav บนหน้าลึก — nav มีเฉพาะหน้า root 5 แท็บ + หน้าโปรไฟล์ (ออกจากหน้าลึกต้องใช้ลูกศร back บนซ้าย),MEMBER,Medium,,,
+SHELL-035,Feed Tabs,member อยู่ feed,1. ดูแถบแท็บใต้ header,"3 ปุ่ม ""All Posts"" / ""Following"" / ""Favorites"" + pill ชี้ตำแหน่งอยู่ใต้แท็บที่ active (เริ่มต้น All Posts)",MEMBER,Medium,,,
+SHELL-036,Feed Tabs,member อยู่ feed,"1. แตะ ""Following""",pill เลื่อนมาอยู่ใต้ Following + เนื้อหาเปลี่ยนเป็นเฉพาะโพสต์ของคนที่ follow + scroll กลับบนสุด,MEMBER,High,,,
+SHELL-037,Feed Tabs,member อยู่ feed,"1. แตะ ""Favorites""",pill ใต้ Favorites + เห็นเฉพาะโพสต์ที่ติด favorite,MEMBER,High,,,
+SHELL-038,Feed Tabs,member อยู่แท็บ All Posts,"1. แตะ ""All Posts"" ซ้ำ (แท็บที่ active อยู่แล้ว)",ไม่มีอะไรเปลี่ยน — ไม่ re-render ไม่เลื่อน,MEMBER,Low,,,
+SHELL-039,Feed Tabs,session NEW อยู่ feed (SETUP-05),"1. แตะ ""Following""","หน้าว่างมี icon คน + ข้อความประมาณ ""Follow others to see their posts here / ติดตามผู้อื่นเพื่อดูโพสต์ของพวกเขาที่นี่""",NEW,Medium,,,
+SHELL-040,Feed Tabs,guest อยู่ feed,"1. แตะ ""Favorites""","หน้าว่างมี icon ดาว + ข้อความประมาณ ""No favorites yet / ยังไม่มีรายการโปรด""",GUEST,Medium,,,
+SHELL-041,Feed Tabs,guest อยู่ feed,1. สลับ Following ↔ Favorites ↔ All Posts,สลับแท็บได้ปกติทุกตัว — ไม่เจอ Member Sheet; following/favorites แสดง empty state,GUEST,Medium,,,
+SHELL-042,Scroll-hide,member อยู่ feed บนสุด,1. ปัดฟีดลงแรง ๆ ด้วยนิ้ว (ผ่านช่วงโพสต์แรกไป),header หลบขึ้นด้านบน + bottom nav จมลงหาย — ลองแตะ nav ตอนนี้กดไม่ได้ (จดระยะเลื่อนจริงที่ทำให้หลบ),MEMBER,High,,,
+SHELL-043,Scroll-hide,แถบหลบอยู่,1. ปัดฟีดขึ้นแรง ๆ ด้วยนิ้ว,header + nav สไลด์กลับมาครบ,MEMBER,High,,,
+SHELL-044,Scroll-hide,แถบหลบอยู่,1. เลื่อนจนชนบนสุดของฟีด,แถบทั้งคู่กลับมาเองทันทีที่ถึงบนสุด (ไม่ต้องเลื่อนขึ้นแรง),MEMBER,Medium,,,
+SHELL-045,Scroll-hide,อยู่ feed,1. แกว่งเลื่อนลง-ขึ้นทีละน้อย ๆ ด้วยนิ้ว,แถบไม่กระพริบ — เลื่อนน้อยไม่ถึงเกณฑ์จะไม่ hide/show,MEMBER,Low,,,
+SHELL-046,Scroll-hide,แถบหลบอยู่,"1. แตะ avatar/ชื่อบนโพสต์ → เข้าโปรไฟล์เขา
 2. ดู nav ของหน้าโปรไฟล์ + ลองเลื่อนหน้านั้น
-3. กด back กลับ feed แล้วเลื่อนขึ้น","nav หน้าโปรไฟล์ก็ถูกซ่อนตาม (สถานะหลบลามข้ามหน้า); เลื่อนหน้าโปรไฟล์ไม่ทำให้ nav กลับ; กลับ feed แล้วเลื่อนขึ้นแถบถึงคืน",MEMBER,Medium,,"[OPEN] ไม่ชัดว่า intended หรือ leak — แจ้งทีมตัดสิน"
-SHELL-047,Scroll-hide,"member เปิดหน้า alerts","1. เลื่อนรายการแจ้งเตือนลงยาว ๆ","nav ของหน้า alerts อยู่นิ่งตลอด — scroll-to-hide ทำงานเฉพาะหน้า feed",MEMBER,Medium,,
-SHELL-048,Scroll-hide,"member เปิด comments sheet บน feed (แตะไอคอนคอมเมนต์)","1. พยายามเลื่อนฟีดใต้ sheet","ฟีดเลื่อนไม่ได้จนกว่าจะปิด sheet (scroll ถูกล็อก)",MEMBER,Low,,
-SHELL-049,Back/Nav,"member เปิดหน้า Search (แตะ search icon)","1. แตะลูกศร back บนซ้ายของหน้า search","หน้าเลื่อนออกขวากลับหน้า feed สภาพเดิม",MEMBER,High,,
-SHELL-050,Back/Nav,"member อยู่หน้าลึกซ้อน (settings→lang เป็นต้น)","1. แตะลูกศร back บนซ้าย","หน้าปัจจุบันเลื่อนออกขวาเหนือหน้าก่อนหน้าที่อยู่นิ่ง — กลับหน้าก่อนหน้าพอดี",MEMBER,High,,
-SHELL-051,Back/Nav,"member เปิด alerts จาก nav","1. แตะลูกศร back บนซ้ายของหัว ""Alerts""","กลับ feed เสมอ — ไม่ใช่ pop กลับหน้าก่อนหน้าใน stack (กติการะบบ)",MEMBER,High,,
-SHELL-052,Back/Nav,"member อยู่ alerts","1. แตะแถว alert แบบ follow → โปรไฟล์ push ขึ้นมา
+3. กด back กลับ feed แล้วเลื่อนขึ้น",nav หน้าโปรไฟล์ต้องแสดงปกติเสมอ — scroll-to-hide ใช้ได้เฉพาะหน้า feed เท่านั้น; ถ้า nav หน้าอื่นหายตาม = FAIL เป็น bug (spec ยืนยันแล้ว),MEMBER,High,,,spec ยืนยัน 2026-10-28: แถบหลบเฉพาะ feed หน้าอื่นต้องแสดง nav เสมอ
+SHELL-047,Scroll-hide,member เปิดหน้า alerts,1. เลื่อนรายการแจ้งเตือนลงยาว ๆ ด้วยนิ้ว,nav ของหน้า alerts อยู่นิ่งตลอด — scroll-to-hide ทำงานเฉพาะหน้า feed,MEMBER,Medium,,,
+SHELL-048,Scroll-hide,member เปิด comments sheet บน feed (แตะไอคอนคอมเมนต์),1. พยายามเลื่อนฟีดใต้ sheet,ฟีดเลื่อนไม่ได้จนกว่าจะปิด sheet (scroll ถูกล็อก),MEMBER,Low,,,
+SHELL-049,Back/Nav,member เปิดหน้า Search (แตะ search icon),1. แตะลูกศร back บนซ้ายของหน้า search,หน้าเลื่อนออกขวากลับหน้า feed สภาพเดิม,MEMBER,High,,,
+SHELL-050,Back/Nav,member อยู่หน้าลึกซ้อน (settings→language เป็นต้น),1. แตะลูกศร back บนซ้าย,หน้าปัจจุบันเลื่อนออกขวาเหนือหน้าก่อนหน้าที่อยู่นิ่ง — กลับหน้าก่อนหน้าพอดี,MEMBER,High,,,
+SHELL-051,Back/Nav,member เปิด alerts จาก nav,"1. แตะลูกศร back บนซ้ายของหัว ""Alerts""",กลับ feed เสมอ — ไม่ใช่ถอยทีละชั้น (กติการะบบ),MEMBER,High,,,
+SHELL-052,Back/Nav,member อยู่ alerts,"1. แตะแถว alert แบบ follow → โปรไฟล์ push ขึ้นมา
 2. แตะ back → กลับมาที่ alerts
-3. แตะ back ของ alerts อีกครั้ง","แถว follow เปิดโปรไฟล์ทับ alerts; back กลับ alerts ก่อน (ไม่กระโดด feed); back ของ alerts → feed เสมอ",MEMBER,High,,
+3. แตะ back ของ alerts อีกครั้ง",แถว follow เปิดโปรไฟล์ทับ alerts; back กลับ alerts ก่อน (ไม่กระโดด feed); back ของ alerts → feed เสมอ,MEMBER,High,,,
 SHELL-053,Back/Nav,"member เปิด Post Viewer จาก tile → เปิด ""View full detail""","1. อยู่หน้า detail กด back
-2. อยู่ viewer กด back อีกครั้ง","detail-back เผย viewer ข้างล่างพอดี (detail อยู่เหนือเสมอ); pv-back กลับหน้าต้นทาง",MEMBER,High,,"เนื้อหา viewer/detail อยู่ FO-TEST-06"
-SHELL-054,Back/Nav,"member อยู่หน้าลึกใดก็ได้","1. กดปุ่ม Back ของเบราว์เซอร์","SPA ไม่มี history — ออกจากหน้าแอป/ไม่มี in-app back ผ่านเบราว์เซอร์ [OPEN]",MEMBER,Low,,"[OPEN] spec ยืนยันในภายหลัง"
-SHELL-055,Back/Nav,"เปิดหน้าลึกหรือ sheet ใดก็ได้","1. กดปุ่ม ESC บนคีย์บอร์ด","ไม่มีอะไรปิด — ไม่มี ESC handler ในโค้ด [OPEN]",MEMBER,Low,,"[OPEN] desktop-only concern"
-SHELL-056,Back/Nav,"member เปิด Post Viewer แบบ immersive (จาก tile)","1. เลื่อน viewer ขึ้นลงช้า ๆ
-2. เทียบกับ viewer จาก saved/search tile (แบบ list)","immersive snap ทีละโพสต์เต็มจอ (ไม่เลื่อนครึ่งใบค้างได้); แบบ list เลื่อนอิสระ",MEMBER,Medium,,
-SHELL-057,Coach marks,"session NEW เข้า feed ครั้งแรกหลัง onboarding","1. ดู bubble แรกที่เด้ง","bubble แดงโปร่ง + ลูกศรชี้ปุ่ม + บน header + ข้อความ ""Tap + to create your first post."" + ปุ่ม ""Next""",NEW,Medium,,"ต้องไม่เคยเล่นทัวร์ (ดู SETUP-09)"
-SHELL-058,Coach marks,"ทัวร์ bubble แรกแสดงอยู่","1. กด ""Next"" 3 ครั้งทีละจุด
-2. จุดสุดท้ายกด ""Got it""","bubble เดิน 4 จุด: + → search → feed tabs → bottom nav; จุดสุดท้ายปุ่มเป็น ""Got it"" กดแล้ว bubble หาย",NEW,Medium,,
-SHELL-059,Coach marks,"ทัวร์ bubble แสดงอยู่","1. แตะจอบริเวณอื่นที่ไม่ใช่ bubble","bubble หายทันที (ทัวร์จบเงียบ)",NEW,Medium,,
-SHELL-060,Coach marks,"guest เพิ่งกด ""Skip for now"" จบ onboarding","1. ดู bubble จุดแรก + กด Next ไปจุดสุดท้าย","copy เป็นเวอร์ชันชวนสมัคร: ""Sign up to create your first post."" และ ""Sign in to use chat, alerts and your profile."" (ต่างจาก member)",GUEST,Medium,,
-SHELL-061,Coach marks,"ทัวร์เคยเล่นไปแล้วในเครื่องนี้","1. sign out → sign in demo → ดู feed
-2. ""1st"" replay → sign in demo อีกครั้ง","ทัวร์ไม่เด้งซ้ำ (เล่นครั้งเดียวต่อเครื่อง — demo sign-in ไม่ trigger tour อยู่แล้ว)",MEMBER,Low,,
-SHELL-062,i18n/Theme,"member + เปลี่ยนภาษาเป็นไทย (SETUP-07 → Language)","1. ดู nav labels + feed tabs
-2. เปิด drawer ดูชื่อเมนู","nav: ฟีด/แชท/กระดานข่าว/แจ้งเตือน/โปรไฟล์; tabs: ทั้งหมด/กำลังติดตาม/รายการโปรด (pill เลื่อนตามความกว้างใหม่); drawer 9 แถวภาษาไทย",MEMBER,Medium,,
-SHELL-063,i18n/Theme,"member + สลับธีม Light (ปุ่ม ☾/☀ ลอย หรือ settings→theme)","1. ดู header/nav/active pill บน feed","nav pill กระจกสว่างอ่านชัด + header blur + active pill + wordmark แดงคอนทราสต์พอดี",MEMBER,Low,,
-SHELL-064,i18n/Theme,"member อยู่ feed เลื่อนลงกลาง ๆ + เคยเข้า settings→lang","1. settings→lang→เลือกไทย→กด back กลับ feed","label ทั้งแอปสลับไทยทันทีโดยไม่ reload + ตำแหน่ง scroll เดิมคงอยู่ + pill แท็บวัดใหม่ตามความกว้าง",MEMBER,Medium,,
+2. อยู่ viewer กด back อีกครั้ง",back ของ detail เผย viewer ข้างล่างพอดี (detail อยู่เหนือเสมอ); back ของ viewer กลับหน้าต้นทาง,MEMBER,High,,,เนื้อหา viewer/detail อยู่ FO-TEST-06
+SHELL-054,Back/Nav,"member อยู่หน้าลึกใดก็ได้ (เช่น settings→language, ห้องแชท, Post Detail)","1. (Android) กดปุ่ม/เจสเจอร์ back ของเครื่อง
+2. กลับมาที่ feed root แล้วกด back อีกครั้ง
+3. (iOS ไม่มีปุ่ม back — ข้ามเคสนี้)",back ของระบบต้องถอยหน้าภายในแอปเทียบเท่าลูกศร back ในแอปเสมอ — ห้ามออกจากแอปตอนอยู่หน้าลึก (อยู่ feed root ถึงออก/minimize ตามมาตรฐาน OS); ถ้าออกกลางทางหรือไม่ถอย = FAIL เป็น bug,MEMBER,High,,,spec ยืนยัน 2026-10-28: มาตรฐาน Android back navigation (เพิ่มลง inventory §2.12 แล้ว)
+SHELL-056,Back/Nav,member เปิด Post Viewer แบบ immersive (จาก tile),"1. เลื่อน viewer ขึ้นลงช้า ๆ ด้วยนิ้ว
+2. เทียบกับ viewer จาก saved/search tile (แบบ list)",immersive snap ทีละโพสต์เต็มจอ (ไม่เลื่อนครึ่งใบค้างได้); แบบ list เลื่อนอิสระ,MEMBER,Medium,,,
+SHELL-057,Coach marks,session NEW เข้า feed ครั้งแรกหลังสมัครใหม่ (SETUP-05/09),1. ดู bubble แรกที่เด้ง,"bubble แดงโปร่ง + ลูกศรชี้ปุ่ม + บน header + ข้อความประมาณ ""Tap + to create your first post."" + ปุ่ม ""Next""",NEW,Medium,,,ทัวร์เด้งครั้งเดียวต่อการติดตั้ง (ดู SETUP-09)
+SHELL-058,Coach marks,ทัวร์ bubble แรกแสดงอยู่,"1. กด ""Next"" 3 ครั้งทีละจุด
+2. จุดสุดท้ายกด ""Got it""","bubble เดิน 4 จุด: + → search → feed tabs → bottom nav; จุดสุดท้ายปุ่มเป็น ""Got it"" กดแล้ว bubble หาย",NEW,Medium,,,
+SHELL-059,Coach marks,ทัวร์ bubble แสดงอยู่,1. แตะจอบริเวณอื่นที่ไม่ใช่ bubble,bubble หายทันที (ทัวร์จบเงียบ),NEW,Medium,,,
+SHELL-060,Coach marks,"guest เพิ่งกด ""Skip for now"" จบ onboarding (SETUP-09)",1. ดู bubble จุดแรก + กด Next ไปจุดสุดท้าย,"copy เป็นเวอร์ชันชวนสมัคร: ประมาณ ""Sign up to create your first post."" และ ""Sign in to use chat, alerts and your profile."" (ต่างจาก member)",GUEST,Medium,,,
+SHELL-061,Coach marks,เครื่องนี้เคยเห็นทัวร์แล้ว,"1. ออกจากระบบ → sign in บัญชีทดสอบ → ดู feed
+2. ลบแอป/เคลียร์ data → ติดตั้งใหม่ → sign in อีกครั้ง",install เดิม: sign in ซ้ำต้องไม่มี bubble (เด้งทุก sign-in = FAIL); หลัง reinstall ถือ first-run ใหม่ → ทัวร์เล่นอีกครั้งถือว่าปกติตามมาตรฐาน (ถ้าไม่เด้งเลยเพราะกันฝั่ง server ก็ไม่ fail — จดผล),MEMBER,Low,,,
+SHELL-062,Language/Theme,member + เปลี่ยนภาษาเป็นไทย (SETUP-07 → Language),"1. ดู nav labels + feed tabs
+2. เปิด drawer ดูชื่อเมนู",nav: ฟีด/แชท/กระดานข่าว/แจ้งเตือน/โปรไฟล์; tabs: ทั้งหมด/กำลังติดตาม/รายการโปรด (pill วัดใหม่ตามความกว้าง); drawer 9 แถวภาษาไทย,MEMBER,Medium,,,
+SHELL-063,Language/Theme,member + สลับธีม Light (Settings → Theme ตาม SETUP-07 หรือตั้งธีมระบบเครื่องเป็น Light ถ้าแอปตามระบบ),1. ดู header/nav/active pill บน feed,nav pill โทนสว่างอ่านชัด + header ชัด + active pill + wordmark แดงคอนทราสต์พอดี,MEMBER,Low,,,ถ้าแอปไม่มีเมนูธีมให้จด Note ว่าสลับผ่านระบบเครื่อง
+SHELL-064,Language/Theme,member อยู่ feed เลื่อนลงกลาง ๆ,1. เข้า Settings → Language → เลือกไทย → กด back กลับ feed,label ทั้งแอปสลับไทยทันทีโดยไม่ reload + ตำแหน่ง scroll เดิมคงอยู่ + pill แท็บวัดใหม่ตามความกว้าง,MEMBER,Medium,,,

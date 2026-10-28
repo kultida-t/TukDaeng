@@ -25,7 +25,7 @@
 - bottom sheet ทุกอันใช้ `.comment-sheet` เดียวกัน สลับด้วย class variant: `pm` `pm-rp` `lk` `sh` `sv` `dt` `nt` `ps` `nc` `wl` `wa` `mf` `uf` (และ class state บน `.screen`: `pm-open`/`likes-open`/`share-open`/`save-open`/`details-open`/`wa-open`/`mf-open`/`unfollow-open`)
 - `sort-open` มีใน CSS เท่านั้น — ไม่มี sheet ที่ใช้ (`S.sort` มี state new/plo/phi/pop แต่ไม่มี UI เปลี่ยน sort) `[OPEN-CODE-ONLY]` (dead CSS/state)
 - guest: `GUEST_GATE_SEL` gate เฉพาะ action ที่ต้องมีตัวตน → `obGate()`; เดินหน้าจอทั่วไปได้ฟรี
-- i18n: `state.lang` en/th + MutationObserver translate (I18N-001) · theme: `data-theme` light/dark (THEME-001) · dev: `?dev=1` preview states + review sidebar variant toggles (`state.variant/dl/dh/pr/ask/ds/ft/nav/tg/tStyle/dStyle`)
+- language: `state.lang` en/th + MutationObserver translate (I18N-001) · theme: `data-theme` light/dark (THEME-001) · dev: `?dev=1` preview states + review sidebar variant toggles (`state.variant/dl/dh/pr/ask/ds/ft/nav/tg/tStyle/dStyle`)
 
 ## 2. ตาราง Master Coverage Map — สัญญาความครอบคลุม
 
@@ -224,7 +224,7 @@
 | Module | Route/Overlay | Feature | Actor ที่เกี่ยว | จำนวน TC ที่ควรมี | หมายเหตุ |
 |---|---|---|---|---|---|
 | Settings | `settings` | hub: About your account · library (saved/wishlist/archive/walerts มี count) · what you see (favorites/muted/blocked/prefs) · app (lang/theme) · notif settings · help/privacy/terms/about · Log out | MEMBER | 8 | |
-| Settings | `lang` | language picker en/th + MutationObserver retranslate | GUEST/MEMBER | 4 | |
+| Settings | `lang` | Language picker en/th + MutationObserver retranslate | GUEST/MEMBER | 4 | |
 | Settings | `theme` | Light/Dark picker | GUEST/MEMBER | 3 | |
 | Settings | `notif_settings` | toggles: likes/comments/follows/watch alerts | MEMBER | 4 | `[OPEN-CODE-ONLY]` |
 | Settings | `favorites` | manage favorites: list+remove+remove all+suggested add+search | MEMBER | 6 | `[OPEN-CODE-ONLY]` |
@@ -245,13 +245,14 @@
 | Global | bottom nav 5 แท็บ | feed/chat/board/alerts/profile + badge บน chat+alerts | GUEST/MEMBER | 5 | guest กด profile/chat → gate |
 | Global | app header | burger drawer + search + wordmark caret + create + | GUEST/MEMBER | 4 | |
 | Global | `hb-open` drawer | 9 เมนู: Watch Brands/Price Index/Watch Shops/Accessories/Repair/Auction/Consignment/Authentication/Community | GUEST/MEMBER | 2 | ทุกอัน `[DEAD]` "Not in this prototype yet" — Phase-1 ตัดออกตาม diagram |
-| Global | i18n EN/TH | `state.lang` + MutationObserver swap ทุก node + เลือกจาก onboarding/settings | GUEST/MEMBER | 6 | sweep ทุกหน้าตอน i18n task |
+| Global | Language EN/TH | `state.lang` + MutationObserver swap ทุก node + เลือกจาก onboarding/settings | GUEST/MEMBER | 6 | sweep ทุกหน้าตอน language task |
 | Global | theme light/dark | `data-theme` + dev toggle + settings picker | GUEST/MEMBER | 4 | sweep ทุกหน้าตอน theme task |
 | Global | scrToast / toast / pin pill+toast | toasts: copied, saved, sent, blocked, pinned, wa on/off, post updated, wa hits… | MEMBER | 4 | `[OPEN-CODE-ONLY]` |
 | Global | dev sidebar + `?dev=1` + POST_DETAIL_CFG | review sidebar variants + portfolio sim + per-post detail override | — | 0 | `[OPEN-CODE-ONLY]` ไม่ต้องเทสต์ใน production scope |
 | Global | scroll/anim mechanics | sub open/push/back, ghost slides, rp-over, pg-swap, pv scroll snap | — | 4 | `[OPEN-CODE-ONLY]` เช็ก regression เท่านั้น |
+| Global | device back (Android system back) | ปุ่ม/เจสเจอร์ back ของระบบ = ถอยหน้าภายในแอปเทียบเท่า in-app back เสมอ (ห้ามออกจากแอปตอนอยู่หน้าลึก); อยู่หน้า root (feed) ถึงออกจากแอป/minimize ตามมาตรฐาน OS | GUEST/MEMBER | 1 | spec เพิ่ม 2026-10-28 — มาตรฐาน Android back navigation (ยืนยันใน FO-TEST-02R) |
 
-**รวมประมาณ TC ที่ควรมีทั้งระบบ: ~470** (ยังไม่รวม i18n/theme sweep ซึ่งคูณตาม matrix แยก)
+**รวมประมาณ TC ที่ควรมีทั้งระบบ: ~470** (ยังไม่รวม language/theme sweep ซึ่งคูณตาม matrix แยก)
 
 ## 3. Inventory แยกตามชนิด (ใช้อ้างใน test cases)
 
@@ -327,7 +328,7 @@
 - Portfolio: market-vs-asking cmp chips · estimated range · unrealized/realized G/L · holding period · `?dev=1` sim states
 - Composer → `insertNewPost` types (`sale`/`showcase`/`pfkind=post`) + chips + specGroups + N/A filling
 - Feed mechanics: snooze suggested · seg-thumb · brand-menu (ft=none) · clip autoplay (FEED-023) · refreshPostViews surfaces (feed/svf/pv/pfp/tile/detail)
-- i18n MutationObserver + dev sidebar + POST_DETAIL_CFG + themeToggle (dev-only)
+- language MutationObserver + dev sidebar + POST_DETAIL_CFG + themeToggle (dev-only)
 - Chat: draft thread materialize on first send · blocked-bar behavior · E2E/wallpaper placeholders `[DEAD]`
 - Alerts: system-type row (toast) · dismiss x · watch-alert row opens PV with "solo" title
 - `sr-saved` bookmark shortcut in search landing head → saved

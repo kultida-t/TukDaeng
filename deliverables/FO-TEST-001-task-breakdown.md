@@ -27,7 +27,7 @@
 | 16 | FO-TEST-16 | Trust & Safety (report/block) | 00 | 35–50 |
 | 17 | FO-TEST-17 | Guest Gate & Member Sheet | 00–16 (ทำหลัง module หลัก) | 30–45 |
 | 18 | FO-TEST-18 | E2E Integration Scenarios | 01–17 | 15–25 เส้น |
-| 19 | FO-TEST-19 | i18n & Theme Sweep | 01–16 | 30–50 |
+| 19 | FO-TEST-19 | Language & Theme Sweep | 01–16 | 30–50 |
 | 20 | FO-TEST-20 | Traceability & Gap Audit | ทั้งหมด (ปิดท้าย) | — |
 
 **ลำดับแนะนำ:** 00 → (01–16 ทำขนานหรือเรียงตามสะดวก) → 17, 18, 19 → 20 ปิดท้าย
@@ -125,7 +125,7 @@ Output: deliverables/FO-TEST-001-02-shell.md
   เมนูของเจ้าของโพสต์ vs ของคนอื่นต้องต่างกัน
 - Feed content: การ์ดแรก/การ์ดสุดท้าย, pull refresh (ถ้ามี), infinite scroll,
   empty feed (ติดตาม 0 คนในแท็บ Following), filter ที่ feed ว่าง
-- i18n/ข้อความยาว: caption ยาว, ชื่อยาว, ราคา (อ้าง docs/money-display-rules.md
+- language/ข้อความยาว: caption ยาว, ชื่อยาว, ราคา (อ้าง docs/money-display-rules.md
   ถ้าครอบการแสดงเงิน)
 
 TC ID: FO-TC-FEED-nnn
@@ -482,7 +482,7 @@ Output: deliverables/FO-TEST-001-18-e2e.md
 
 ---
 
-## TASK FO-TEST-19 — i18n & Theme Sweep
+## TASK FO-TEST-19 — Language & Theme Sweep
 
 ```text
 อ่าน master prompt + inventory
@@ -497,8 +497,8 @@ Output: deliverables/FO-TEST-001-18-e2e.md
 - ข้อความยาวล้น: ภาษาไทยยาวกว่าอังกฤษหลายจุด — เคส truncation/overflow
 - สลับ lang/theme กลาง flow: ค้างฟอร์ม, ค้าง sheet, ค้าง viewer — state หายไหม
 
-TC ID: FO-TC-I18N-nnn / FO-TC-THM-nnn
-Output: deliverables/FO-TEST-001-19-i18n-theme.md
+TC ID: FO-TC-LANG-nnn / FO-TC-THM-nnn
+Output: deliverables/FO-TEST-001-19-language-theme.md
 ```
 
 ---

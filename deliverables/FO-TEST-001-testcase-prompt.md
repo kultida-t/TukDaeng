@@ -125,7 +125,7 @@ TRUST    : report flow (user / post / chat), block (IG keep-page),
 =================================================================
 A. Display/UI   : layout, spacing, font, icon, badge, pill, สถานะปุ่ม
                   (active/disabled/loading), skeleton, empty state,
-                  error state, i18n TH/EN ครบทุก label, theme Light/Dark,
+                  error state, language TH/EN ครบทุก label, theme Light/Dark,
                   safe-area/mobile viewport, truncation ข้อความยาว
 B. Function     : action ทำงานจริง, navigation ถูกปลายทาง, state เปลี่ยนถูก,
                   validation + error message, confirmation modal,
@@ -170,6 +170,13 @@ Integration flows ขั้นต่ำที่ต้องมีเคส (เ
   กติกา TC ID : FO-TC-<MODULE>-<nnn> เช่น FO-TC-AUTH-001, FO-TC-FEED-012
   P0 = core flow/กติการะบบ, P1 = feature หลัก, P2 = edge/cosmetic
 
+  Checklist CSV (ฉบับรันเทส — คอลัมน์ 10 ช่อง ตั้งแต่ 2026-10-28):
+  TC ID, Section, เริ่มจาก (สถานะเริ่มต้น), ขั้นตอนที่ต้องทำ,
+  ผลที่ต้องเห็น, Actor, Priority (High/Medium/Low), Result,
+  ทดสอบบน (Device/OS), Note
+  — คอลัมน์ "ทดสอบบน (Device/OS)" ใช้จดเครื่อง+OS ที่รันเคสจริง
+    (เช่น iPhone 15 · iOS 18 / Galaxy S24 · Android 15)
+
 ส่วนที่ 4 — Integration / End-to-End Scenarios
   เคส E2E แบบเล่าเรื่อง (buyer journey เต็ม, seller journey เต็ม,
   guest→member conversion, deal จนถึง mark as sold) อ้าง TC ID ย่อยที่เกี่ยว
@@ -187,7 +194,7 @@ Integration flows ขั้นต่ำที่ต้องมีเคส (เ
    ใน diagram (หรือกลับกัน) ให้ mark [OPEN] ไว้ ห้ามตัดทิ้งเงียบ ๆ
 3. ระบาย test case ทีละ module ตาม format — ทุก action ต้องมีอย่างน้อย
    happy path + 1 edge/negative + guest variant (ถ้าเป็น gated action)
-   + i18n/theme spot-check สำหรับหน้าที่มี label เยอะ
+   + language/theme spot-check สำหรับหน้าที่มี label เยอะ
 4. เขียน E2E scenarios ข้าม module ตาม list ด้านบน (เพิ่มได้ถ้าเจอในโค้ด)
 5. ทำ Traceability audit ปิดท้าย — ห้ามมี route ไหนว่างจาก test case
 6. ส่งออกเป็นไฟล์ deliverables\FO-TEST-001-testcases.md

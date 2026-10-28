@@ -1,134 +1,152 @@
-TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,Note
-SETUP-01,Setup,-,"1. เปิด Chrome ไปที่ http://localhost:8901/index.html (ถ้าไม่มี server ให้เปิดไฟล์ Prototypes/fo-flow/index.html ตรง ๆ)
-2. กด F12 → ไอคอนมือถือ (Toggle device toolbar) → ตั้ง 440 × 956 px","เห็นแอปในกรอบมือถือ + ปุ่มลอย ""1st"" / ""v2"" / ""☾/☀""",-,High,,
-SETUP-02,Setup,-,"1. แตะปุ่มลอย ""1st"" (มุมล่างจอ) = replay onboarding ล้าง state ทั้งหมด
-หรือ DevTools → Application → Local Storage → ลบ key fo_onboarded แล้ว F5","onboarding เด้งใหม่ตั้งแต่หน้า splash — ชุดนี้ reset search state ด้วย (recents/filters กลับ seed)",-,High,,
-SETUP-03,Setup,-,"GUEST (ยังไม่ล็อกอิน):
-1. กด ""1st"" replay onboarding
-2. เดินหน้า (Continue ทุกหน้า) จนถึง sheet ""Join TukDaeng""
-3. กด ""Skip for now""","อยู่หน้า feed แบบ guest",-,High,,
-SETUP-04,Setup,-,"MEMBER (บัญชี demo):
-1. แตะหัวใจใต้โพสต์ → Member Sheet เด้ง → กด ""Sign in""
-2. ช่องเติม demo@tukdaeng.com / Tukdaeng123 ไว้แล้ว → กด ""Sign in""","อยู่ feed แบบ member",-,High,,
-SETUP-05,Setup,-,"ทางเข้า Search (ใช้กับทุกเคส):
+TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,ทดสอบบน (Device/OS),Note
+SETUP-01,Setup,-,"1. ติดตั้งแอป TukDaeng build ทดสอบบนมือถือเครื่องจริง — Android โหลดจาก Google Play / iOS จาก App Store หรือ TestFlight (ตามที่ทีมแจก)
+2. เปิดแอปขึ้นมา",เห็นหน้า splash โลโก้ TukDaeng แล้วไหลเข้า onboarding — ห้ามเทสผ่าน browser หรือ prototype,-,High,,,
+SETUP-02,Setup,-,"วิธีรีเซ็ตสถานะแอปให้เหมือนใช้ครั้งแรก (ทำเมื่อเคสต้องการ first-run state):
+• Android: ปิดแอป → ตั้งค่าระบบ → Apps → TukDaeng → Storage → Clear data → เปิดแอปใหม่
+• iOS: ลบแอปออกจากเครื่อง → ติดตั้งใหม่ → เปิดแอป",onboarding เด้งใหม่ตั้งแต่หน้า splash เหมือนใช้ครั้งแรก — recents/filter ทุกอย่างถูกล้างด้วย,-,High,,,
+SETUP-03,Setup,-,"ทำให้ตัวเองเป็น GUEST (ยังไม่ล็อกอิน):
+1. รีเซ็ตแอป (SETUP-02) หรือออกจากระบบถ้าล็อกอินอยู่ (Settings → Log out)
+2. เดินหน้า onboarding ไปเรื่อย ๆ (Continue ทุกหน้า) จนถึง sheet ""Join TukDaeng""
+3. กด ""Skip for now"" ใน sheet",อยู่หน้า feed แบบ guest — ยังไม่ได้ล็อกอิน,-,High,,,
+SETUP-04,Setup,-,"ทำให้ตัวเองเป็น MEMBER (ล็อกอินบัญชีทดสอบ):
+1. จาก onboarding member sheet กด ""Sign in""
+   (ถ้าอยู่ feed เป็น guest อยู่แล้ว ให้แตะไอคอนหัวใจใต้โพสต์ใดก็ได้ → sheet เด้ง → กด ""Sign in"")
+2. กรอก email + password ของบัญชีทดสอบ (SETUP-06) → กด ""Sign in""",อยู่หน้า feed แบบ member — เห็นโพสต์/ข้อมูลตามบัญชีนั้นจริง,-,High,,,
+SETUP-05,Setup,-,"ทางเข้า Search (ใช้กับทุกเคส — ไม่อยู่ใน gate):
 1. อยู่ feed (guest หรือ member ก็ได้)
-2. แตะไอคอนแว่นขยาย 🔍 บน header ขวาบน (ข้างปุ่ม +)","หน้า Search เด้งเต็มจอ: ← + ช่อง Search + bookmark; chip For you/Rolex/...; explore grid",-,High,,
-SETUP-06,Setup,-,"ข้อมูลเทสของ search (จำไว้เทียบผล):
-• sale listing มี 5 ใบเท่านั้น: p1 Rolex Submariner 420,000 · p2 Tudor Black Bay 145,000 · p4 Rolex Datejust 380,000 · p5 Breguet Classique 890,000 · p6 Grand Seiko Snowflake 165,000
-• โพสต์ไม่มีราคา (p7,p8,p9,p10,p11,p3) ไม่อยู่ในผลค้นปกติ แต่อยู่ใน tag mode (#...)
-• recents seed 6 แถว: Watch 777, chrono.th, rolex, grand seiko, 126610ln, wrist.story
-• การค้นจับคำจาก seller+caption+specs รวมกัน (q ""watch"" เจอโพสต์ของ Watch 777/the watch/watch.daily)","รู้ว่าควรเจอใบไหนตอนค้น/filter","-",High,,
-SETUP-07,Setup,-,"Member Sheet ""Join TukDaeng"" (เด้งเวลา guest แตะ action ที่ต้องล็อกอิน):
-• ปิดโดยแตะบริเวณมืด (scrim) หรือปุ่ม ""Skip for now""
-• ปุ่ม ""Sign up"" / ""Sign in"" พาไปฟอร์ม","รู้วิธีปิด sheet แล้วทำเคสต่อได้",-,High,,
-SETUP-08,Setup,-,"เข้า Filter page: จาก search landing หรือ results → แตะไอคอน sliders (มุมขวาของ chip row / ขวาสุดของ results head)","หน้า ""Filters"" เด้ง: 11 กลุ่ม + ปุ่ม Clear all / Apply",-,High,,
-SETUP-09,Setup,-,"ทำให้ results แสดง error state (ไม่มีทาง UI — ต้อง console):
-1. เปิด search → ค้นอะไรก็ได้จนเห็น results
-2. DevTools Console พิมพ์: document.querySelector('.screen')._search.err = true
-3. แตะ tab ""Profiles"" (เพื่อให้หน้า re-render)","body เปลี่ยนเป็น ""Something went wrong. Please try again."" + ปุ่ม Try again",-,High,,"ใช้กับ SRCH-027"
-SETUP-10,Setup,-,"บังคับ sort (ไม่มี UI — console):
-1. อยู่ results 5 ใบ (chip ""For you"")
-2. Console: document.querySelector('.screen')._search.sort = 'plo'
-3. แตะ tab ""Profiles"" แล้วกลับ ""For you"" เพื่อ re-render
-(ค่าที่มี: 'new' default / 'plo' ถูก→แพง / 'phi' แพง→ถูก / 'pop' views มาก→น้อย)","ลำดับ grid เปลี่ยนตาม sort ที่ตั้ง",-,Low,,"ใช้กับ SRCH-031 — observation เท่านั้น"
-SETUP-11,Setup,-,"สลับภาษา/ธีมเร็ว:
-• ธีม: ปุ่มลอย ""☾/☀"" ล่างจอ หรือ Settings → ""Theme mode""
-• ภาษา: Settings → ""Language"" → English/ไทย","สลับได้ทันที หน้า search re-render ตาม",-,High,,
+2. แตะไอคอนแว่นขยาย 🔍 บน header ขวาบน","หน้า Search เด้งเต็มจอ: ← + ช่อง Search + bookmark; chip For you + keyword chips; explore grid — เปิดใหม่ทุกครั้งต้องเจอ landing เสมอ (spec ล็อก)",-,High,,,
+SETUP-06,Setup,-,"ข้อมูลเทสที่ต้องเตรียมก่อนเริ่ม (ขอจากทีม / เติมเองลงช่องนี้):
+• บัญชีทดสอบ: email + password = ____________________
+• อีเมลที่รับ OTP จริงได้ (ถ้าต้องสมัครใหม่): ____________________
+• บัญชี seller SA (มี sale listing, member ยังไม่ follow): ____________________
+• บัญชี seller SB (member follow อยู่แล้ว): ____________________
+• บัญชีที่สองสำหรับสร้างโพสต์ตัวอย่าง (ถ้าข้อมูลขาด): ____________________
+• เครื่องทดสอบ: รุ่น + OS version = ____________________ (จดลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน)",จดข้อมูลครบก่อนเริ่มเทส — เคสที่ต้องล็อกอิน/ข้อมูลเฉพาะจะทำไม่ได้ถ้าไม่มีข้อมูลชุดนี้,-,High,,,
+SETUP-07,Setup,-,"Member Sheet ""Join TukDaeng"" + เส้นทาง Settings:
+• Sheet เด้งเวลา guest แตะ action ที่ต้องล็อกอิน — ปิดโดยแตะบริเวณมืด (scrim) หรือปุ่ม ""Skip for now""
+• ภาษา/ธีม: Profile tab → ไอคอน ≡ ขวาบน → ""Language"" / ""Theme"" (สลับในแอปเท่านั้น)",รู้วิธีปิด sheet และสลับภาษา/ธีมแล้วทำเคสต่อได้,-,High,,,
+SETUP-08,Setup,-,"เลือก ""ข้อมูลอ้างอิง"" จากข้อมูลจริง (ค้น/เลื่อนดูบนแอป แล้วจดลง Note — ทุกเคสอ้างชุดนี้แทน mock):
+• BX = แบรนด์ที่มี sale listing ≥2 ใบ (รุ่นต่างกัน)
+• BY = แบรนด์อื่นที่มี sale listing ≥1 ใบ
+• LL = sale listing ที่ spec Strap เป็นกลุ่มหนัง (เช่น Alligator leather)
+• LZ = โพสต์ showcase (ไม่มีราคา) ที่ caption มี hashtag HZ
+• HZ = hashtag ที่โผล่บนโพสต์ ≥2 ใบ
+• KW-SELL = keyword ที่ตรงชื่อ seller ≥1 ราย (เช่น ""watch"")
+• KW-NONE = คำที่ไม่ match อะไรเลย (เช่น ""zzzzz"")
+ถ้าหาข้อมูลตามบทบาทไม่ได้ → สร้างจากบัญชีที่สองผ่าน composer หรือขอ test data; สร้างไม่ได้จริง ๆ mark BLOCK เคสที่เกี่ยว",มีข้อมูลอ้างอิงครบ (หรือเท่าที่หาได้ + จดตัวที่ขาด),-,High,,,
+SETUP-09,Setup,-,"เตรียมเคส error state (ตัดเน็ตจริง — ห้ามใช้ช่องทาง dev):
+1. เปิด search → ค้นอะไรก็ได้ให้เห็น results
+2. เปิด Airplane mode บนเครื่อง (หรือปิด Wi‑Fi+cellular)
+3. ทำการค้นใหม่ / ดึงโหลดผล","ต้องเห็น error state (ไอคอน + ""Something went wrong..."" + ปุ่ม Try again) — ถ้า build ไม่มี error state เลย = FAIL (spec ล็อกว่าต้องมี)",-,High,,,ใช้กับ SRCH-027
+SETUP-10,Setup,-,"สร้าง recents ให้ >4 แถว (เพื่อให้ ""See all"" โผล่ — precondition เคส recents page):
+1. เปิด search → พิมพ์ค้น → Enter ซ้ำ ≥5 คำที่ต่างกัน (เช่น rolex, tudor, seiko, submariner, ชื่อ seller)",typing mode เห็น Recent block มี ""See all"" ข้างหัว ""Recent""; หน้า ""Recent searches"" เข้าถึงได้,-,High,,,ใช้กับ SRCH-012–015
+SETUP-11,Setup,-,"สลับภาษา/ธีมในแอป:
+1. Profile tab → ไอคอน ≡ ขวาบน (Settings and activity)
+2. ""Language"" → English/ไทย · ""Theme"" → Light/Dark (หรือตามระบบถ้าแอปผูกกับระบบ)",สลับได้ทันที หน้า search re-render ตาม,-,High,,,
 SETUP-12,Setup,-,"ทำให้มี watch alert จาก search (precondition เคส bell on-state):
 1. member อยู่ results → แตะกระดิ่ง → sheet ""Create watch alert""
-2. กด ""Create alert"" หนึ่งครั้ง (sheet ปิด)","กระดิ่งบน results head เปลี่ยนเป็นสถานะ on",-,Medium,,"flow สร้างจริงอยู่ FO-TEST-11 — ที่นี่แค่ setup"
+2. กด ""Create alert"" หนึ่งครั้ง (sheet ปิด)",กระดิ่งบน results head เปลี่ยนเป็นสถานะ on,-,Medium,,,flow สร้างจริงอยู่ FO-TEST-11 — ที่นี่แค่ setup
 SETUP-13,Setup,-,"ทำให้โพสต์ถูก mark ""Not interested"" (precondition เคส exclusion):
-1. member อยู่ feed การ์ด p1 (Watch 777) → แตะ ⋯ → ""Not interested""","การ์ด p1 กลายเป็น feedback card — p1 จะหลุดจากผลค้นปกติและ explore grid",-,Medium,,"อ้าง FEED-059"
-SRCH-001,Search Landing,"member อยู่ feed","1. แตะไอคอนแว่นขยายบน header","หน้า search เด้ง: ← + ช่อง ""Search"" + bookmark; chip row = filter icon + For you(on)/Rolex/Submariner/Datejust/Grand Seiko/Tudor/Breguet/Full set; ด้านล่าง explore grid รูปจัตุรัส",MEMBER,High,,
-SRCH-002,Search Landing,"หน้า search landing เปิด","1. เลื่อนดู explore grid ทั้งหมด","grid = ทุกรูปของทุกโพสต์ (การ์ด 3 รูปได้ 3 tile); badge 👁views เฉพาะ tile ลำดับ 3,4,8; ไม่มี tile สูงพิเศษ; ไม่มี tile ว่าง/รูปเสีย",MEMBER,Medium,,
-SRCH-003,Search Landing,"อยู่ landing","1. แตะ chip ""Rolex"" → ดูผล
-2. ← กลับ landing → แตะ chip ""For you""","Rolex → results q=Rolex + เข้า recents; For you → q ว่าง → โผล่ sale post ครบ 5 ใบ และไม่เข้า recents",MEMBER,High,,
-SRCH-004,Search Landing,"อยู่ landing","1. แตะไอคอน bookmark บน head
-2. ← กลับ","หน้า Saved เด้งทับ search; ← กลับมา landing (ไม่ใช่ feed); guest กดได้เหมือนกันแต่เห็น ""No saved posts yet""",MEMBER + GUEST,Medium,,
-SRCH-005,Search Landing,"อยู่ landing","1. แตะ ← บน head","search ปิดกลับ feed ตำแหน่งเดิม",MEMBER,Medium,,
-SRCH-006,Typing & Suggest,"อยู่ landing","1. แตะช่อง ""Search"" (fake)","เข้า typing: input จริง focus + ปุ่ม ""Cancel""; body เป็น Recent block: ""Recent"" + ""See all"" + 4 แถว (Watch 777, chrono.th, rolex, grand seiko) — seller row มี avatar+sub, kw row ไอคอนนาฬิกา, ทุกแถวมี ×",MEMBER,High,,
-SRCH-007,Typing & Suggest,"typing mode, ช่องว่าง","1. พิมพ์ ""rolex""","suggest สด: 6 kw rows — Rolex(2 listings) + Rolex Submariner(1)/Datejust(1)/Daytona(0)/GMT-Master II(0)/Explorer(0); ไอคอนแว่นขยาย + sub ""N listings""",MEMBER,High,,
-SRCH-008,Typing & Suggest,"typing mode","1. ลบช่องแล้วพิมพ์ ""watch""","แถว seller 3 แถว (ไม่มี kw): Watch 777 ""1 listing"" · the watch ""Following"" · watch.daily ""1 listing""",MEMBER,Medium,,
-SRCH-009,Typing & Suggest,"typing mode","1. พิมพ์ ""126""
-2. ลบแล้วพิมพ์ ""xyz123""","126 → kw rows 126610LN + 126334 (ref ไม่มี sub); xyz123 → ""No suggestions""",MEMBER,Medium,,
-SRCH-010,Typing & Suggest,"typing mode มี q","1. แตะปุ่ม × ในช่องค้น","ช่องว่าง + body กลับ Recent block; ปุ่ม × แสดงเฉพาะตอนมีตัวอักษร",MEMBER,Medium,,
-SRCH-011,Typing & Suggest,"typing mode q=rolex","1. แตะ ""Cancel""
-2. แตะช่องอีกครั้ง พิมพ์ ""rolex"" กด Enter","Cancel → landing (grid กลับ); Enter → results + ""rolex"" ขยับขึ้นหัว recents ไม่ซ้ำ (dedupe)",MEMBER,High,,
-SRCH-012,Recents,"typing mode (recents >4)","1. แตะ ""See all"" ข้าง ""Recent""","หน้า ""Recent searches"": ← + title + ""Clear all"" + ลิสต์เต็ม 6 แถว (มี 126610ln, wrist.story ที่ preview ไม่แสดง)",MEMBER,High,,
-SRCH-013,Recents,"recents page เปิด","1. แตะ × แถวแรก","แถวหายทันที เหลือ 5 แถว ไม่มี confirm; ลบจาก preview ใน typing ก็ได้เหมือนกัน",MEMBER,Medium,,
-SRCH-014,Recents,"recents page เปิด","1. แตะ ""Clear all""
-2. ← กลับหน้า typing","recents page แสดง ""No recent searches""; กลับ typing Recent block ก็ ""No recent searches"" + ไม่มี See all",MEMBER,Medium,,
-SRCH-015,Recents,"recents page เปิด (มี recents)","1. แตะแถว ""grand seiko""
-2. จาก results แตะ ←","results q=""grand seiko"" = เฉพาะ p6; ← กลับ landing (stack reset ไม่ใช่ recents page)",MEMBER,High,,
-SRCH-016,Recents,"recents ว่าง (ทำ SRCH-014 ก่อน)","1. ค้น ""rolex"" → กลับ → ค้น ""ROLEX""
-2. ค้นคำต่างกัน 9+ ครั้ง เช่น tudor breguet seiko submariner datejust snowflake 126610ln classique","ROLEX ไม่สร้างแถวซ้ำ (dedupe ไม่สนตัวพิมพ์) แถวเดิมขยับขึ้นหัว; recents เก็บสูงสุด 8 แถว ตัวเก่าสุดหลุด",MEMBER,Low,,
-SRCH-017,Results,"results q=rolex","1. ดู head + tabs + body","head: ← + ช่องแสดง ""rolex"" + กระดิ่ง + filter icon; tabs For you(on)/Profiles/Tags; For you = section ""Accounts""(ถ้ามี) + ""Posts"" + grid 2 คอลัมน์; ไม่มี chips row",MEMBER,High,,
-SRCH-018,Results,"typing mode","1. พิมพ์ ""watch"" กด Enter","Accounts = Watch 777, the watch, watch.daily (3 แถว); Posts = p1, p2, p5 (3 ใบ) — ชื่อ seller เป็นส่วนหนึ่งของการค้น",MEMBER,High,,
-SRCH-019,Results,"typing mode","1. ค้น ""zzzzz""
-2. สลับ tab Profiles / Tags","For you: ไอคอน+""No data found""+""Try a different keyword or adjust your filters"", ไม่มี Accounts; Profiles/Tags = ""No data found"" เท่านั้น",MEMBER,High,,
-SRCH-020,Results,"results 5 ใบ (chip ""For you"")","1. ดู grid","tile = รูปแรกของโพสต์ จัตุรัส 2 คอลัมน์; badge 👁 เฉพาะ tile index 2,3,7; ไม่มีราคา/ชื่อบน tile; เรียงตาม mock",MEMBER,Medium,,
-SRCH-021,Results,"results q=watch","1. แตะ tab ""Profiles""","seller cards: avatar + ชื่อ + ""N listings""/""· Following"" + ปุ่ม Follow/Following ขวาแถว; ถ้า q ว่าง → ""No data found""",MEMBER,Medium,,
-SRCH-022,Results,"Profiles tab q=watch","1. (member) แตะ ""Follow"" ของ Watch 777
-2. (guest SETUP-03) ทำซ้ำ","member: ปุ่ม flip ""Following"" + follow จริง; guest: Member Sheet ""Join TukDaeng"" เด้ง ไม่มีการ follow",MEMBER + GUEST,High,,
-SRCH-023,Results,"Profiles tab q=watch","1. แตะตัวการ์ด Watch 777 (ไม่โดนปุ่ม Follow)","public profile ของ Watch 777 เด้งทับ; ← กลับ results",MEMBER,Medium,,
-SRCH-024,Results,"results q=watch tab For you","1. แตะแถว ""the watch"" ใน section Accounts","ค้นใหม่ด้วย q=""the watch"" → Posts เหลือ p2; ช่อง q เปลี่ยนเป็น the watch; ไม่ได้ไป profile",MEMBER,Medium,,
-SRCH-025,Results,"results เปิดอยู่","1. แตะ tab ""Tags""
-2. แตะแถว ""#rolex""","Tags: แถว hashtag เรียงโพสต์มาก→น้อย (#tukdaeng นำ) + ""N posts""; แตะ #rolex → กลับ For you + tag mode q=#rolex",MEMBER,Medium,,
-SRCH-026,Results,"results เปิดอยู่","1. ค้น ""#tukdaeng""","grid รวมโพสต์ showcase (p7,p8,p9,p10,p11,p3) ด้วย — tag mode ไม่กรองเฉพาะของขาย ต่างจากผลค้นปกติ",MEMBER,High,,
-SRCH-027,Results,"results เปิดอยู่ + SETUP-09","1. console set err=true
-2. แตะ tab Profiles
-3. แตะ ""Try again""","body = ""Something went wrong. Please try again."" + Try again (tabs ยังอยู่); Try again → ผลกลับมาปกติ",MEMBER,Low,,"dev-assisted — ไม่มีทาง trigger ผ่าน UI"
-SRCH-028,Results,"feed การ์ด p1 caption expand แล้ว","1. แตะ ""#Rolex"" ใน caption","หน้า search เด้งตรง results q=""#Rolex"" (tag mode) = p1+p4; hashtag click ไม่เข้า recents",MEMBER,Medium,,"เชื่อม FEED-076"
-SRCH-029,Results,"results q=rolex มี filter ใส่ (ทำ SRCH-040 ก่อน)","1. แตะ ← บน head","กลับ landing (ไม่ใช่ typing); q+filters ยังอยู่ใน state — ค้นใหม่/เปิด filter เห็นค่าเดิม",MEMBER,High,,
-SRCH-030,Results,"เคยค้น rolex แล้วกลับ feed","1. แตะไอคอน search อีกครั้ง","เปิดมาเจอ results ""rolex"" เดิม ไม่ใช่ landing — search state จำตลอด session",MEMBER,Medium,,
-SRCH-031,Results,"results 5 ใบ + SETUP-10","1. หา control sort บนหน้า
-2. console set sort='plo' แล้วสลับ tab","ไม่มี UI sort เลย (observation); บังคับ state แล้ว grid เรียง p2,p6,p4,p1,p5 (ถูก→แพง)",MEMBER,Low,,"[OPEN-NO-CODE]"
-SRCH-032,Results,"ทำ Not interested p1 แล้ว (SETUP-13)","1. ค้น ""rolex"" ดู grid
+1. member อยู่ feed เลือกการ์ดของ BX → แตะ ⋯ → ""Not interested""",การ์ดกลายเป็น feedback card — โพสต์นั้นจะหลุดจากผลค้นปกติ explore grid และ tag mode (spec ล็อก),-,Medium,,,อ้าง FEED-059
+SRCH-001,Search Landing,member อยู่ feed,1. แตะไอคอนแว่นขยายบน header,"หน้า search เด้ง: ← + ช่อง ""Search"" + bookmark; chip row = filter icon + For you(on) + keyword chips; ด้านล่าง explore grid รูปจัตุรัส",MEMBER,High,,,
+SRCH-002,Search Landing,หน้า search landing เปิด,1. เลื่อนดู explore grid จนสุด,"grid = ทุกรูปของทุกโพสต์ที่มองเห็น (โพสต์หลายรูปได้หลาย tile); badge 👁views บาง tile (design ref จดจริง); ไม่มี tile ว่าง/รูปเสีย",MEMBER,Medium,,,
+SRCH-003,Search Landing,อยู่ landing,"1. แตะ chip keyword (เช่น BX)
+2. ← กลับ landing → แตะ chip ""For you""","keyword → results q=keyword + เข้า recents; For you → q ว่าง → โผล่ sale posts ทั้งหมด และไม่เข้า recents",MEMBER,High,,,
+SRCH-004,Search Landing,อยู่ landing,"1. member แตะ bookmark → ←
+2. guest (SETUP-03) ทำซ้ำ","หน้า Saved เด้งทับ; member เห็น Saved hub / guest เห็น ""No saved posts yet"" (ฟรี); ← กลับ landing ไม่ใช่ feed",MEMBER + GUEST,Medium,,,
+SRCH-005,Search Landing,อยู่ landing,1. แตะ ← บน head,search ปิดกลับ feed ตำแหน่ง scroll เดิม,MEMBER,Medium,,,
+SRCH-006,Typing & Suggest,อยู่ landing,"1. แตะช่อง ""Search"" (fake)","เข้า typing: input จริง focus + คีย์บอร์ดเด้ง + ปุ่ม ""Cancel""; body = Recent block: ""Recent"" + preview ≤4 แถว + ""See all"" เฉพาะเมื่อ >4; ไม่เคยค้น → ""No recent searches"" ไม่มี See all",MEMBER,High,,,
+SRCH-007,Typing & Suggest,"typing mode, ช่องว่าง","1. พิมพ์ชื่อ BX (หรือส่วนหนึ่ง)","suggest สด: kw rows ≤6 (design ref) = brand+model ที่ match + sub ""N listings"" ตรงจำนวนจริง; seller rows ต่อท้ายถ้าชื่อ match",MEMBER,High,,,
+SRCH-008,Typing & Suggest,typing mode,"1. ลบช่องแล้วพิมพ์ชื่อ SA หรือ KW-SELL","แถว seller: avatar + ชื่อ + sub ""Following"" (ถ้า follow) หรือ ""N listings"" ตามจริง",MEMBER,Medium,,,
+SRCH-009,Typing & Suggest,typing mode,"1. พิมพ์ ref fragment ของ listing จริง
+2. ลบแล้วพิมพ์ KW-NONE","ref → kw rows เลขรุ่น (ไม่มี sub); KW-NONE → ""No suggestions"" กลางจอ",MEMBER,Medium,,,
+SRCH-010,Typing & Suggest,typing mode มี q,1. แตะปุ่ม × ในช่องค้น,ช่องว่าง + body กลับ Recent block; ปุ่ม × แสดงเฉพาะตอนมีตัวอักษร,MEMBER,Medium,,,
+SRCH-011,Typing & Suggest,typing mode มี q,"1. แตะ ""Cancel""
+2. แตะช่องอีกครั้ง พิมพ์ keyword เดิมกด Enter","Cancel → landing; Enter → results + query เข้า recents — คำเดิมขยับขึ้นหัว ไม่สร้างซ้ำ (dedupe)",MEMBER,High,,,
+SRCH-012,Recents,typing mode มี recents >4 (SETUP-10),"1. แตะ ""See all"" ข้าง ""Recent""","หน้า ""Recent searches"" เต็มจอ: ← + title + ""Clear all"" + ลิสต์เต็มเรียงใหม่สุดบน เห็นแถวที่ preview ไม่แสดง",MEMBER,High,,,
+SRCH-013,Recents,recents page เปิด,"1. แตะ × แถวแรก
+2. back ไป typing ลบอีกแถวจาก preview",แถวหายทันที ไม่มี confirm; ลบได้ทั้งหน้า recents และ preview (ลิสต์เดียวกัน),MEMBER,Medium,,,
+SRCH-014,Recents,recents page เปิด,"1. แตะ ""Clear all""
+2. ← กลับหน้า typing","recents page แสดง ""No recent searches""; กลับ typing Recent block ก็ ""No recent searches"" + ไม่มี See all",MEMBER,Medium,,,
+SRCH-015,Recents,recents page เปิด (มี recents),"1. แตะแถว keyword/seller
+2. จาก results แตะ ←","results q=ค่านั้น + recents ขยับขึ้นหัว; ← กลับ landing (stack reset ไม่ใช่ recents page)",MEMBER,High,,,
+SRCH-016,Recents,recents ว่าง (ทำ SRCH-014) หรือติดตั้งใหม่,"1. ค้น ""rolex"" → กลับ → ค้น ""ROLEX""
+2. ค้นคำต่างกันเพิ่มหลายครั้ง (cap 8 = design ref จดจริง)
+3. kill app → เปิดใหม่ → เข้า search typing",ROLEX ไม่ซ้ำ แถวเดิมขยับขึ้นหัว; ไม่เกิน cap ตัวเก่าสุดหลุด; recents ยังอยู่ครบหลัง kill/restart (spec ล็อก — หาย = FAIL),MEMBER,High,,,
+SRCH-017,Results,results มี q,1. ดู head + tabs + body,"head: ← + ช่องแสดง q + กระดิ่ง + filter icon; tabs For you(on)/Profiles/Tags; For you = ""Accounts""(ถ้ามี) + ""Posts"" + grid 2 คอลัมน์; ไม่มี chips row",MEMBER,High,,,
+SRCH-018,Results,typing mode,"1. พิมพ์ KW-SELL (หรือชื่อ SA) กด Enter","Accounts = seller ที่ชื่อ match; Posts = โพสต์ที่ seller/caption/specs มีคำนั้น (รวมของ seller นั้นด้วย)",MEMBER,High,,,
+SRCH-019,Results,typing mode,"1. ค้น KW-NONE
+2. สลับ tab Profiles / Tags","For you: ไอคอน+""No data found""+""Try a different keyword or adjust your filters"" ไม่มี Accounts; Profiles/Tags = ""No data found"" เท่านั้น",MEMBER,High,,,
+SRCH-020,Results,"results หลายใบ (chip ""For you"")","1. ดู grid
+2. เทียบลำดับกับ timestamp โพสต์จริง","tile = รูปแรก จัตุรัส 2 คอลัมน์; badge 👁 บาง tile (design ref); ไม่มีราคา/ชื่อ; ล็อก: เรียง newest first (ไม่ตรง = FAIL)",MEMBER,High,,,
+SRCH-021,Results,results มี q,"1. แตะ tab ""Profiles""
+2. q ว่าง (chip For you) แล้วสลับ tab","seller cards: avatar + ชื่อ + ""N listings""/""· Following"" + ปุ่ม Follow — เฉพาะชื่อ match q; q ว่าง → ""No data found""",MEMBER,Medium,,,
+SRCH-022,Results,Profiles tab มี card SA,"1. (member) แตะ ""Follow"" ของ SA
+2. (guest SETUP-03) ทำซ้ำ","member: ปุ่ม flip ""Following"" + follow จริง; guest: Member Sheet ""Join TukDaeng"" เด้ง ไม่มีการ follow",MEMBER + GUEST,High,,,
+SRCH-023,Results,Profiles tab มี card,1. แตะตัวการ์ด (ไม่โดนปุ่ม Follow),public profile ของ seller เด้งทับ; ← กลับ results,MEMBER,Medium,,,
+SRCH-024,Results,results q ที่มี Accounts rows,"1. แตะแถว seller ใน section Accounts","ค้นใหม่ด้วย q=ชื่อ seller → Posts เหลือของ seller นั้น + เข้า seller recents — ต้องไม่เปิด profile (spec ล็อก)",MEMBER,Medium,,,
+SRCH-025,Results,results เปิดอยู่,"1. แตะ tab ""Tags""
+2. แตะแถว hashtag (เช่น HZ)","Tags: แถว hashtag เรียงโพสต์มาก→น้อย + ""N posts"" ตรงจริง; แตะ → กลับ For you + tag mode q=#tag",MEMBER,Medium,,,
+SRCH-026,Results,มี LZ (showcase มี hashtag HZ),"1. ค้น ""#HZ"" (พิมพ์หรือกดจาก Tags tab)","grid รวม showcase LZ ด้วย — tag mode ไม่กรองเฉพาะของขาย (ต่างจากผลค้นปกติ)",MEMBER,High,,,
+SRCH-027,Results,results ปกติ + SETUP-09,"1. เปิด airplane mode
+2. ค้นใหม่/ดึงโหลดผล
+3. เห็น error → ปิด airplane mode
+4. แตะ ""Try again""","error block ""Something went wrong. Please try again."" + Try again (tabs อยู่); retry → ผลโหลดปกติ — ไม่มี error state = FAIL",MEMBER,High,,,เทสตัดเน็ตจริงเท่านั้น (spec ล็อก)
+SRCH-028,Results,feed การ์ด caption มี hashtag expand แล้ว,"1. แตะ hashtag ใน caption","หน้า search เด้งตรง results tag mode q=#tag; hashtag click ไม่เข้า recents",MEMBER,Medium,,,เชื่อม FEED-076
+SRCH-029,Results,results มี q + filter ใส่ (ทำ SRCH-040 ก่อน),"1. แตะ ← บน head
+2. เปิด filter page ดูค่า",กลับ landing (ไม่ใช่ typing); ใน session เดียวกัน q+filters ยังอยู่ — filter เห็นค่าที่ apply ล่าสุด,MEMBER,High,,,
+SRCH-030,Results,เคยค้น q+filter แล้วออกไป feed,1. แตะไอคอน search อีกครั้ง,"ล็อก spec: เจอ landing เสมอ state ล้าง — ไม่เจอ results เดิม filter ว่าง q หาย (เจอผลเดิม = FAIL)",MEMBER,High,,,
+SRCH-031,Results,results หลายใบ,"1. หา control sort ทุกจุดบนหน้า
+2. เทียบลำดับกับ timestamp โพสต์","ล็อก spec: ต้องไม่มี UI sort เลย (เจอ = FAIL); ผลเรียง newest first เท่านั้น",MEMBER,High,,,spec ล็อก V1 ไม่มี sort
+SRCH-032,Results,ทำ Not interested การ์ด BX แล้ว (SETUP-13),"1. ค้น BX ดู grid
 2. กลับ landing ดู explore grid
-3. ค้น ""#rolex""","p1 หายจากผลปกติ (เหลือ p4) และหายจาก explore grid; แต่ยังโผล่ใน tag mode #rolex",MEMBER,Medium,,"ni/muted/blocked หลุด; tag mode กรองแค่ muted"
-SRCH-033,Filters,"landing หรือ results","1. แตะไอคอน filter (sliders)","หน้า ""Filters"": 11 กลุ่ม Brand/Model/Price range (THB)/Year/Reference/Condition/Case size/Movement/Dial color/Strap/Delivery + footer Clear all + Apply (ไม่มีเลขตอนว่าง)",MEMBER,High,,
-SRCH-034,Filters,"filter page เปิด","1. อ่านเลข (n) ทุก chip","Brand Rolex(2) Tudor(1) Breguet(1) Grand Seiko(1) Omega(0) Patek(0); Year 2024(1)/2023(3)/2021(1); Cond New(1)/Like New(1)/Very Good(3)/Good(0)/Fair(0); Case 41mm(4) 39mm(1); Movement Automatic(4) Spring Drive(1); Delivery Full set(5)/Watch only(0)/With box(5)/With papers(5) — chip (0) กดได้",MEMBER,Medium,,
-SRCH-035,Filters,"filter page","1. แตะ ""Rolex""
+3. ค้น #tag ของโพสต์นั้น","โพสต์ NI หายจากผลปกติ + explore grid + tag mode (ล็อก: tag mode กรอง ni/muted/blocked ครบ — โผล่ = FAIL)",MEMBER,High,,,
+SRCH-033,Filters,landing หรือ results,1. แตะไอคอน filter (sliders),"หน้า ""Filters"": กลุ่มตาม design — Brand/Model/Price range (THB)/Year of production/Reference/Condition/Case size/Movement/Dial color/Strap / Bracelet/Delivery contents + footer Clear all + Apply (ไม่มีเลขตอนว่าง); ทุก chip มี ""(n)""",MEMBER,High,,,
+SRCH-034,Filters,filter page เปิด,"1. อ่าน (n) ทุกกลุ่ม
+2. เลือกค่า n>0 → Apply → นับผลเทียบ","ทุก chip มี (n) ≥0; เลขตรงจำนวน sale listing จริง (นับเทียบผลที่ apply — ไม่ตรง = FAIL); chip (0) กดเลือกได้",MEMBER,High,,,
+SRCH-035,Filters,filter page (BX มี ≥2 รุ่น),"1. แตะ BX
 2. ดูกลุ่ม Model
-3. แตะ Submariner + Datejust
-4. เอา Rolex ออก","เลือก brand → title ""Model · Rolex"" + เหลือ 5 รุ่น Rolex; เอา brand ออก → model ที่เลือกถูกเอาออกเอง + ลิสต์กลับครบ",MEMBER,High,,
-SRCH-036,Filters,"filter page","1. Brand: Rolex + Tudor
-2. Apply","results = 3 ใบ (p1,p4 Rolex + p2 Tudor) — เลือกหลายค่าใน key เดียว = OR; chips ""Rolex ×"" ""Tudor ×""",MEMBER,High,,
-SRCH-037,Filters,"filter page","1. Brand Rolex + Condition New
-2. Apply","ข้าม key = AND → Rolex ไม่มีใบ New → 0 ผล ""No data found""; chips ยังแสดง Rolex × New",MEMBER,High,,
-SRCH-038,Filters,"filter page เลือก chips ไว้","1. แตะ ← (ไม่กด Apply)
-2. เปิด filter ใหม่","ไม่มีอะไร apply — draft ถูกทิ้ง; เปิดใหม่ chips ที่เล่นไว้หาย เหลือเฉพาะ filter ที่ apply จริง",MEMBER,High,,"back = discard draft"
-SRCH-039,Filters,"filter page มีเลือกไว้","1. แตะ ""Clear all""","ทุก chip off + ช่องราคาว่าง + Apply ไม่มีเลข; ยังไม่แตะ filter จริงจนกว่า Apply",MEMBER,Medium,,
-SRCH-040,Filters,"filter page เลือก Rolex + ราคา","1. แตะ ""Apply (2)""","ไป results พร้อม chips row ใต้ tabs; ← จาก results กลับ landing (stack reset — ไม่กลับ filter page)",MEMBER,High,,
-SRCH-041,Filters,"filter page เลื่อนลงกลาง","1. แตะ chip กลุ่ม Delivery","หน้าไม่กระโดดกลับบนสุด — scroll อยู่ตำแหน่งเดิม",MEMBER,Low,,
-SRCH-042,Filters,"filter page","1. เลือก ""Leather"" → Apply → ดูผล
-2. เปิดใหม่ เลือก ""Oystersteel bracelet"" → Apply","ทั้งสองให้ 0 ผล — Leather ไม่ match ""Alligator leather"" (case), Oystersteel bracelet ไม่ใช่ substring ของ spec p1; Delivery With box/papers นับทับ Full set ทั้ง 5 ใบ",MEMBER,Medium,,"quirk ของการ match ตัวอักษร — เป็นของจริง"
-SRCH-043,Filters,"results tag mode #tukdaeng","1. เปิด filter → เลือก Brand Breguet → Apply","ผลเหลือแค่ p5 (showcase ไม่มี spec Brand หลุดทั้งหมด); chips แสดงบน tag results",MEMBER,Low,,
-SRCH-044,Price,"filter page","1. พิมพ์ 420000 ในช่อง Minimum
-2. พิมพ์ 12a3b","แสดง ""420,000"" ทันที (ระบบใส่ comma); ตัวอักษรถูกตัดเหลือ 123",MEMBER,Medium,,"money-display-rules §4.2"
-SRCH-045,Price,"filter page","1. Minimum 500,000 + Maximum 100,000 → Apply","error ""Minimum price must not exceed maximum price"" ใต้ช่องราคา; อยู่หน้า filter ไม่มีอะไร apply",MEMBER,High,,
-SRCH-046,Price,"filter page","1. Maximum 3,000,000 → Apply
-2. แก้เป็น 2,000,000 → Apply","error ""Maximum price must not exceed 2,000,000""; พอดี 2,000,000 ผ่าน → ไป results",MEMBER,High,,
-SRCH-047,Price,"filter page","1. ใส่แค่ Minimum 200,000 → Apply
-2. เปิดใหม่ ใส่แค่ Maximum 500,000 → Apply","min only → เหลือ p1,p4,p5 + chip ""THB 200,000–Any""; max only → chip ""THB 0–500,000""; ทั้งคู่ → ""THB 200,000–500,000""",MEMBER,High,,"full amount + THB ตาม money rules"
-SRCH-048,Chips,"results apply Rolex + Dial Blue","1. ดูแถวใต้ tabs","chips ""Rolex ×"" + ""Blue ×"" เรียงตาม key; ไม่มี chips ตอน filter ว่าง",MEMBER,High,,
-SRCH-049,Chips,"results มี chips Rolex + 41 mm","1. แตะ × บน chip ""Rolex""","chip หาย + ผลขยายเป็น 4 ใบ (41mm) ทันที ไม่ต้อง Apply ซ้ำ",MEMBER,High,,
-SRCH-050,Chips,"results มี chip ""THB 200,000–500,000""","1. × ทิ้ง → ราคาเคลียร์ทั้งคู่
-2. ← landing → เข้า/ออก filter → ค้นคำใหม่","filter ที่เหลือค้างข้ามหน้า — back/re-open/ค้นใหม่ ผลยังถูกกรอง (persist จน reload)",MEMBER,High,,
-SRCH-051,Watch Alert Bell,"guest อยู่ results","1. แตะกระดิ่งบน head","Member Sheet ""Join TukDaeng"" เด้ง — wa sheet ไม่เปิด",GUEST,High,,
-SRCH-052,Watch Alert Bell,"member results q=rolex ไม่มี filter","1. แตะกระดิ่ง","sheet ""Create watch alert"": ชื่อ autofill ""rolex"" + 3 โหมด Match all/any/model พร้อม ""N now"" + ปุ่ม ""Create alert""; criteria ไม่ลิสต์ใน sheet",MEMBER,High,,"entry only — flow อยู่ FO-TEST-11"
-SRCH-053,Watch Alert Bell,"results apply Rolex + Submariner","1. แตะกระดิ่ง → อ่านชื่อ → ปิด","ชื่อ autofill ""Rolex Submariner""; match count ต่อโหมดจาก criteria จริง (all → 1 now)",MEMBER,Medium,,
-SRCH-054,Watch Alert Bell,"สร้าง alert จากการค้นนี้แล้ว (SETUP-12)","1. ดูกระดิ่ง → แตะอีกครั้ง","กระดิ่งเป็นสถานะ on; เปิดเป็น ""Edit watch alert"" (Save changes + Delete alert) ไม่สร้างซ้ำ",MEMBER,Medium,,
-SRCH-055,Tile → Viewer,"อยู่ landing","1. แตะ tile แรก (รูป p1)
+3. แตะรุ่น 1–2 ตัว
+4. เอา BX ออก","เลือก brand → title ""Model · BX"" + เหลือเฉพาะรุ่นของ BX; เอา brand ออก → model ที่เลือกถูกลบออกเอง + ลิสต์กลับครบ (spec ล็อก)",MEMBER,High,,,
+SRCH-036,Filters,filter page,"1. Brand: BX + BY
+2. Apply","ผล = union ทั้งสองแบรนด์ (เทียบผลรวม (n) ของสอง chip — จดจริง); chips ""BX ×"" ""BY ×""",MEMBER,High,,,
+SRCH-037,Filters,filter page,"1. Brand BX + Condition ที่ BX ไม่มี
+2. Apply","ข้าม key = AND → 0 ผล ""No data found"" + hint; chips ยังแสดง BX × cond",MEMBER,High,,,
+SRCH-038,Filters,filter page เลือก chips ไว้,"1. แตะ ← (ไม่กด Apply)
+2. เปิด filter ใหม่",ไม่มีอะไร apply — draft ถูกทิ้ง (spec ล็อก); เปิดใหม่เหลือเฉพาะ filter ที่ apply ล่าสุด,MEMBER,High,,,
+SRCH-039,Filters,filter page มีเลือกไว้,"1. แตะ ""Clear all""",ทุก chip off + ช่องราคาว่าง + Apply ไม่มีเลข; ยังไม่แตะ filter จริงจนกว่า Apply,MEMBER,Medium,,,
+SRCH-040,Filters,filter page เลือก BX + ค่าอื่น 1 ตัว,"1. ดูปุ่ม Apply
+2. แตะ","ปุ่ม ""Apply (n)"" = จำนวนค่าที่เลือก (design ref); → results + chips row ใต้ tabs; ← กลับ landing",MEMBER,High,,,
+SRCH-041,Filters,filter page เลื่อนลงกลาง,1. แตะ chip กลุ่ม Delivery,หน้าไม่กระโดดกลับบนสุด — scroll อยู่ตำแหน่งเดิม,MEMBER,Low,,,
+SRCH-042,Filters,filter page (มี LL strap หนัง + Oystersteel),"1. เลือก ""Leather"" → Apply → ดูผล
+2. เปิดใหม่ เลือก ""Oystersteel bracelet"" → Apply","ล็อก spec (structured match): ""Leather"" เจอ LL (Alligator leather); ""Oystersteel bracelet"" เจอ spec Oystersteel — match ไม่เจอ = FAIL; chip (0) → 0 ผล",MEMBER,High,,,
+SRCH-043,Filters,results tag mode #HZ,1. เปิด filter → เลือก Brand BY → Apply,ผลเหลือเฉพาะโพสต์มี tag HZ และเป็น BY (showcase ไม่มี spec Brand หลุด); chips แสดงบน tag results,MEMBER,Low,,,
+SRCH-044,Price,filter page,"1. พิมพ์ 420000 ในช่อง Minimum
+2. พิมพ์ 12a3b","แสดง ""420,000"" ทันที (ระบบใส่ comma); ตัวอักษรถูกตัดเหลือตัวเลข",MEMBER,Medium,,,money-display-rules §4.2
+SRCH-045,Price,filter page,"1. Minimum 500,000 + Maximum 100,000 → Apply","error ""Minimum price must not exceed maximum price"" (ตามภาษาแอป) ใต้ช่องราคา; อยู่หน้า filter ไม่มีอะไร apply",MEMBER,High,,,
+SRCH-046,Price,filter page,"1. Maximum 3,000,000 → Apply
+2. แก้เป็น 2,000,000 → Apply","error ""Maximum price must not exceed 2,000,000"" (เพดาน design จดจริง); พอดีเพดานผ่าน → ไป results",MEMBER,High,,,
+SRCH-047,Price,filter page,"1. ใส่แค่ Minimum 200,000 → Apply
+2. เปิดใหม่ ใส่แค่ Maximum → Apply
+3. ใส่ทั้งคู่","min only → chip ""THB 200,000–Any"" (TH=ไม่จำกัด); max only → ""THB 0–max""; ทั้งคู่ → ""THB min–max"" กรองช่วงจริง",MEMBER,High,,,full amount + THB ตาม money rules
+SRCH-048,Chips,results apply ≥2 ค่า,1. ดูแถวใต้ tabs,"chips ""{value} ×"" ทุกค่าที่เลือก เรียงตาม key ของ design; ไม่มี chips ตอน filter ว่าง",MEMBER,High,,,
+SRCH-049,Chips,results มี chips ≥2 ตัว,"1. แตะ × บน chip ตัวหนึ่ง",chip หาย + ผลขยายตาม filter ที่เหลือทันที ไม่ต้อง Apply ซ้ำ,MEMBER,High,,,
+SRCH-050,Chips,"results มี chip ราคา + filter อื่น","1. × chip ราคา → min/max เคลียร์คู่กัน
+2. ← landing → เข้า/ออก filter → ค้นคำใหม่",filter ที่เหลือ persist ใน search session — ผลยังถูกกรองจนกว่า search state reset (SRCH-030),MEMBER,High,,,
+SRCH-051,Watch Alert Bell,guest อยู่ results,1. แตะกระดิ่งบน head,"Member Sheet ""Join TukDaeng"" เด้ง (spec ล็อก) — wa sheet ไม่เปิด",GUEST,High,,,
+SRCH-052,Watch Alert Bell,member results มี q ไม่มี filter,1. แตะกระดิ่ง,"sheet ""Create watch alert"": ชื่อ autofill จาก q + 3 โหมด Match all/any/model พร้อม ""N now"" + ปุ่ม ""Create alert""",MEMBER,High,,,entry only — flow อยู่ FO-TEST-11
+SRCH-053,Watch Alert Bell,results apply BX + รุ่น,1. แตะกระดิ่ง → อ่านชื่อ → ปิด,"ชื่อ autofill จาก criteria (เช่น ""BX รุ่น""); match count ต่อโหมดจาก criteria จริง (จดเทียบ)",MEMBER,Medium,,,
+SRCH-054,Watch Alert Bell,สร้าง alert จากการค้นนี้แล้ว (SETUP-12),1. ดูกระดิ่ง → แตะอีกครั้ง,"กระดิ่งเป็นสถานะ on; เปิดเป็น ""Edit watch alert"" (Save changes + Delete alert) ไม่สร้างซ้ำ",MEMBER,Medium,,,
+SRCH-055,Tile → Viewer,อยู่ landing,"1. แตะ tile ใบแรก
 2. swipe ขึ้น/ลง
-3. แตะ ←","Post Viewer เต็มจอเปิดที่โพสต์/รูปที่แตะ; swipe แนวตั้งเปลี่ยนโพสต์; ← กลับ landing",MEMBER,High,,"viewer internals → FO-TEST-06"
-SRCH-056,Tile → Viewer,"results q=rolex (2 ใบ)","1. แตะ tile ใบที่ 2 (p4)
-2. swipe → ←","viewer มีแค่ p1,p4 เริ่มที่ p4; ← กลับ results เดิม q+chips ครบ",MEMBER,High,,
-SRCH-057,Tile → Viewer,"viewer เปิดจาก tile","1. แตะไอคอนแว่นขยายบน pv-head","viewer ปิด → กลับหน้า search typing (ช่องมี q เดิม)",MEMBER,Medium,,
-SRCH-058,Guest Coverage,"guest เปิด search","1. landing → พิมพ์ rolex → Enter → filter เลือก+Apply → แตะ tile → viewer → ←","ทำได้ครบไม่เจอ Member Sheet — search/filter/viewer ฟรีสำหรับ guest",GUEST,High,,
-SRCH-059,Guest Coverage,"guest อยู่ results q=watch","1. แตะกระดิ่ง → ปิด sheet
+3. แตะ ←",Post Viewer เต็มจอเปิดที่โพสต์/รูปที่แตะ; swipe แนวตั้งเปลี่ยนโพสต์; ← กลับ landing,MEMBER,High,,,viewer internals → FO-TEST-06
+SRCH-056,Tile → Viewer,results มี ≥2 ใบ,"1. แตะ tile ใบที่ 2
+2. swipe → ←","viewer มีแค่โพสต์ในลิสต์ผลค้น เริ่มที่ใบที่แตะ; ← กลับ results เดิม q+chips ครบ",MEMBER,High,,,
+SRCH-057,Tile → Viewer,viewer เปิดจาก tile,1. แตะไอคอนแว่นขยายบน pv-head,viewer ปิด → กลับหน้า search typing (ช่องมี q เดิม),MEMBER,Medium,,,
+SRCH-058,Guest Coverage,guest เปิด search,1. landing → พิมพ์ keyword → Enter → results → filter เลือก+Apply → แตะ tile → viewer → ←,ทำได้ครบไม่เจอ Member Sheet — search/filter/viewer ฟรีสำหรับ guest,GUEST,High,,,
+SRCH-059,Guest Coverage,guest อยู่ results q=KW-SELL,"1. แตะกระดิ่ง → ปิด sheet
 2. tab Profiles → แตะ Follow
-3. ← landing → แตะ bookmark","กระดิ่ง+Follow → Member Sheet ทั้งคู่; bookmark ไม่ gate → Saved page ว่าง ""No saved posts yet""",GUEST,High,,
-SRCH-060,i18n/Theme/Money,"member, lang=TH","1. ไล่ landing → typing → results → filter","label ส่วนใหญ่คง EN (Search/Recent/See all/For you/No data found/Filters/Apply/Recent searches); ที่แปล: sub ของ seller card + ปุ่ม Follow + wa sheet",MEMBER,Medium,,"[OPEN] hardcode EN — เชื่อม FO-TEST-19"
-SRCH-061,i18n/Theme/Money,"apply price range แล้ว","1. ดู chip ราคา + badge views บน tile","chip ""THB 200,000–500,000"" เต็มจำนวนไม่มีทศนิยม; views ""1.2K""/""980"" เป็นตัวนับไม่ใช่เงิน ไม่มี THB",MEMBER,Medium,,
-SRCH-062,i18n/Theme/Money,"theme=dark","1. ไล่ landing/typing/results/filter/chips/empty","ทุกหน้าอ่านได้ปกติ chip on-state ชัด grid ไม่เพี้ยน error text อ่านได้",MEMBER,Low,,
+3. ← landing → แตะ bookmark","กระดิ่ง+Follow → Member Sheet ทั้งคู่; bookmark ไม่ gate → Saved page ""No saved posts yet""",GUEST,High,,,
+SRCH-060,Language/Theme/Money,"member, lang=TH (SETUP-11)",1. ไล่ landing → typing → recents page → results 3 tab → filter → error message,"ล็อก spec: label UI ทุกตัวเป็นไทย (ค้นหา/ยกเลิก/ล่าสุด/ดูทั้งหมด/การค้นหาล่าสุด/สำหรับคุณ/โปรไฟล์/แท็ก/บัญชี/โพสต์/ไม่พบข้อมูล/ตัวกรอง/ใช้/ล้างทั้งหมด/sub/ error ราคา) — เหลือ EN = FAIL; content คงเดิม",MEMBER,High,,,
+SRCH-061,Language/Theme/Money,apply price range แล้ว,1. ดู chip ราคา + badge views บน tile,"chip ""THB x–y"" เต็มจำนวนไม่มีทศนิยม (ขอบเปิด = 0/Any→ไม่จำกัด); views เป็นตัวนับไม่ใช่เงิน ไม่มี THB",MEMBER,Medium,,,
+SRCH-062,Language/Theme/Money,theme=dark (SETUP-11),1. ไล่ landing/typing/results/filter/chips/empty/recents,ทุกหน้าอ่านได้ปกติ chip on-state ชัด grid ไม่เพี้ยน error text อ่านได้,MEMBER,Low,,,

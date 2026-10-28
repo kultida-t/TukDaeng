@@ -1,234 +1,269 @@
-# FO-TEST-06 — Test Cases: Post Viewer & Post Detail (FO prototype)
+# FO-TEST-06 — Test Cases: Post Viewer & Post Detail (แอปมือถือจริง)
 
-> Task: FO-TEST-06 ของชุด FO-TEST-001 · วันที่: 2026-10-27
-> กติกาหลัก: `deliverables/FO-TEST-001-testcase-prompt.md` · Task breakdown: `deliverables/FO-TEST-001-task-breakdown.md` (FO-TEST-06 ~L182–204)
-> Source of Truth: `Prototypes/fo-flow/index.html` (openPostViewer ~L14841–14897 · pvPostHTML ~L14731–14756 · pvPostSheetHTML ~L14760–14779 · pvDetailsSheetHTML ~L14782–14785 · svfPostHTML ~L14788 · pfpPostHTML ~L14796–14839 · openPostDetail + POST_DETAIL_CFG ~L13266–13273 + ~L14997–15016 · detailHTML dl1 ~L13534–13577 · igDetailHTML dl2 ~L13690–13698 · detailSpecsHTML/specGroupsHTML ~L13700–13733 · pmMenuHTML/pmOwnMenuHTML ~L14191–14229 · clip tick ~L15960–15986 · photo carousel ~L20068–20267 · tile/alert handlers ~L21533/21671/22606–22635/18118–18137 · pm handlers ~L20802–20920 · view-full ~L22201–22210 · follow ~L22212–22236 · gate ~L20494 + ~L23461–23470)
-> สัญญาความครอบคลุม: `deliverables/FO-TEST-001-00-inventory.md` §2 — อ้าง route/overlay/feature จากตารางเท่านั้น ไม่เดา behavior เพิ่ม
+> Task: FO-TEST-06 ของชุด FO-TEST-001 · รอบแรก (prototype): 2026-10-27 · แปลงเป็นเวอร์ชันเทสแอปจริง: 2026-10-28
+> กติกาหลัก: `deliverables/FO-TEST-001-testcase-prompt.md` · Task breakdown: `deliverables/FO-TEST-001-task-breakdown.md`
+> Source of Truth: แอป TukDaeng build ทดสอบบนมือถือจริง — ทดสอบผ่านหน้าจอ/ท่าทางนิ้วเท่านั้น (ห้ามใช้ช่องทาง dev ทุกชนิด)
+> สัญญาความครอบคลุม: `deliverables/FO-TEST-001-00-inventory.md` §2 — TC ID เดิม FO-TC-PV-001–053 + FO-TC-DET-001–040 คงไว้ครบเพื่อ traceability
+> Spec ที่ล็อกรอบนี้ (ต่างจากพฤติกรรม prototype เดิม): ดู §3 — `Prototypes/fo-flow/index.html` ถูกอัปเดตให้ตรง spec แล้ว (immersive carousel + clip เล่นได้, เอาปุ่มค้นหาออกจาก Saved/Archive viewer, ซ่อน "Add comment…" บนโพสต์ปิดคอมเมนต์, detail clip เล่นทุกทางเข้า, liked-by row บน detail, status tag ตามสถานะ asset ไม่ใช่ราคา, detail head ติดบน)
 
 ## 0. วิธีใช้เอกสาร + สภาพแวดล้อม
 
-- เปิด prototype ที่ `http://localhost:8901/index.html` (หรือเปิดไฟล์ตรง) — Viewport **440×956**, ทดสอบทั้ง Light/Dark และ TH/EN ตามที่ระบุในเคส
-- **Actor**: `GUEST` = session guest (browse ได้ แต่ action ที่ต้องตัวตนถูก gate) · `MEMBER` = demo `demo@tukdaeng.com` / `Tukdaeng123` (ตัวตนในแอป = `king.mr.fox`) · `NEW` = สมัครใหม่ (profile grid ว่าง) · `OWNER` = member ในฐานะเจ้าของโพสต์ (seller `king.mr.fox`) — โพสต์ของตัวเองได้มาจาก composer (FO-TEST-05) หรือ gfx posts บน own profile
+- **สภาพแวดล้อม**: ติดตั้งแอป TukDaeng build ทดสอบบนมือถือจริง (SETUP-01) — **ห้าม** เทสผ่าน browser/localhost/prototype/emulator/DevTools/localStorage/ปุ่ม dev/demo credentials/OTP จำลอง; ทุกการเตรียมสถานะทำผ่าน flow จริงของแอปเท่านั้น (ล้างข้อมูลแอป/ติดตั้งใหม่ = SETUP-02); scroll/typing/tap = ท่าทางนิ้วบนจอจริง
+- **Actor**: `GUEST` = ยังไม่ล็อกอิน · `MEMBER` = ล็อกอินบัญชีทดสอบจริง · `OWNER` = member ในฐานะเจ้าของโพสต์/asset ที่ตัวเองสร้างผ่าน composer (SETUP-09–13) · `ACCT-2` = บัญชีที่สองจริง ใช้สร้าง like/comment/alert/โพสต์จากคนอื่น (SETUP-17)
 - **Type**: UI = การแสดงผล · Func = การทำงาน · Int = เชื่อมข้าม module · Edge = negative/boundary
 - **Priority**: High = core flow/กติการะบบ · Medium = feature หลัก · Low = edge/cosmetic
-- **[GATE]**: guest แตะ selector ใน `GUEST_GATE_SEL` → `obGate()` = Member Sheet "Join TukDaeng" — ใน scope viewer/detail ที่ถูก gate คือ `.like-btn` `.save-btn` `.share-btn` `.wl-btn` `.mf-btn` `.ask-pill` `.chat-fab` `.follow-btn` `.pf-foll` `.lk-follow` `.comment-input` `.emoji-row` `.c-like` `.c-meta` `.post-head .more` `.pm-btn` และทุก `.pm-*` row — ที่**ไม่**ถูก gate (guest เปิดดูได้): tile/back/photo carousel/`.comment-btn`/`.pv-add`/`.liked-by`/`.details-toggle`/`.pv-dt`/`.view-full`/`.detail-back`/hashtag — เคส [GATE] ต้องทำคู่ guest+member (sheet mechanics อยู่ FO-TEST-01/17)
-- **Layer model**: `.page-pv` (viewer) อยู่เหนือ `.page-sub`; `.page-detail` อยู่เหนือ viewer เสมอ — เปิด detail จาก viewer ผ่าน "View full detail ›" จะคง `pv-open` ไว้ `detail-back` จึงเผย viewer ข้างล่าง; เปิดจาก feed card (ไม่มี sub/pv ข้างล่าง) `detail-back` กลับ feed
-- **Viewer 3 โหมด** ใน `.page-pv` เดียว (เลือกจาก args ของ `openPostViewer`):
-  1. **Immersive** (ไม่มี `.feed`/`.pfp`) — `.pv-head` (back + แว่นขยาย) + `.pv-track` ของ `.post.pv-post` เต็มจอ — เปิดจาก `xp-tile` (explore grid หน้า search landing + grid ผลการค้นหา) เท่านั้น
-  2. **Feed mode** (`.feed`) — `.svd-head` (back + ชื่อ collection + แว่นขยาย) + `.svf-track` ของ `.svf-post` (reused feed card) — เปิดจาก `svd-tile` (Saved/Wish List/Archive grids)
-  3. **Profile mode** (`.pfp`) — head มี back + `<ชื่อ surface>/<user>` + `pfp-follow` pill (เฉพาะ user ≠ ตัวเอง + ยังไม่ follow + ไม่ block) + `.svf-track` ของ `.pfp-post` — เปิดจาก `pf-tile` (profile grid) และ alert rows (solo)
-- **กติกา entry**: viewer เปิดได้เฉพาะ grid tiles / notifications — รูปบน feed card แตะแล้วเป็นแค่ carousel ไม่เปิด viewer (เคสลบ PV-009)
-- **Seed data ที่ใช้อ้างในเคส**: `p1` Rolex 126610LN `THB 420,000` (3 รูป, sale, 3 groups) · `p2` Tudor BB41 `THB 145,000` (sale, cfg tg2 = ไม่มี tag) · `p4` Datejust `THB 380,000` (2 รูป) · `p5` Breguet `THB 890,000` (2 รูป, tg2) · `p6` Snowflake `THB 165,000` (1 รูป) · `p3/p7/p8/p9/p10/p11` = showcase (ไม่มี price/specGroups) · SEED_SAVED: `p7+p10`→"Saved", `p2+p11`→"Wish List", `p1+p9`→"Grail list", `p8`→"Vintage picks" · **seed ไม่มีโพสต์ clip เลย — โพสต์คลิปต้องสร้างจาก composer** (SETUP-06)
-- **เรื่องเงิน** อ้าง `docs/money-display-rules.md` (DRAFT v0.1): ราคาบนหน้า detail แสดงผ่าน spec group "Price & Data Source" เต็มจำนวน `THB x,xxx,xxx` ไม่มีทศนิยม; Estimated = string ตรงใน mock เช่น `THB 400,000 – 445,000` (ดู GAP-06 เรื่องรูปแบบ range)
-- **สิ่งที่อยู่นอก scope** (เคสอยู่ task อื่น — ห้ามซ้ำ): feed card internals + actions บน feed หลัก (FO-TEST-03), composer (FO-TEST-05), **mechanics ภายใน bottom sheets** — comments/likes/share/save/wishlist/watch-alert/details sheets ใน FO-TEST-06 เช็คเฉพาะ "เปิดเข้าได้จาก viewer/detail + state sync ที่มองเห็นบน surface ข้างล่าง" เท่านั้น (FO-TEST-07), profile page/search page/saved hub/alerts list ตัวเอง (FO-TEST-09/10/08/12), report flow ข้างใน (FO-TEST-15), Member Sheet (FO-TEST-01/17), dev sidebar variants (harness ไม่ใช่ production flow — ยกเว้น `POST_DETAIL_CFG` ที่ผูกกับโพสต์จริงและต้องเทสต์)
+- **[GATE]**: guest แตะ action ที่ต้องล็อกอิน → Member Sheet "Join TukDaeng" — ใน scope viewer/detail สิ่งที่ถูก gate คือ like / save / share / 🎁 wishlist / 🔔 follow model / Ask Seller / ช่องพิมพ์คอมเมนต์ + emoji / like คอมเมนต์ / follow ทุกปุ่ม / ⋯ เมนูทุกจุด — ที่**ไม่**ถูก gate (guest ใช้ได้): tile / ← / carousel / ปุ่ม 💬 เปิดอ่าน / "Add comment…" / "Tap for details" / "View full detail ›" / liked-by / hashtag — เคส [GATE] ทำคู่ guest+member (sheet mechanics อยู่ FO-TEST-01, เมทริกซ์ทั้งแอป FO-TEST-17)
+- **Layer model**: viewer เปิดทับหน้าที่มา (search / saved / profile / alerts); **detail อยู่เหนือ viewer เสมอ** — เปิด detail ผ่าน "View full detail ›" แล้วกด ← จะเผยหน้าข้างล่างตำแหน่งเดิม (โพสต์เดิม scroll เดิม)
+- **Viewer 3 โหมด**:
+  1. **Immersive** — โพสต์เต็มจอแบบ photo stream ปัดขึ้นลงเปลี่ยนโพสต์ + rail ขวา + foot ล่าง; โพสต์หลายรูปมี **carousel** (แตะครึ่งซ้าย/ขวา หรือ swipe + counter/dots) และ clip เล่นได้ — เปิดจาก tile ใน Explore หน้า Search landing + grid ผลค้นหาเท่านั้น
+  2. **List mode** — การ์ด feed ใน scroll ปกติ head = ← + ชื่อ collection (**ไม่มีไอคอนค้นหา** — spec ล็อก) — เปิดจาก tile ใน Saved / Wish List / Archive
+  3. **Profile mode (pfp)** — การ์ด feed head = ← + ชื่อ surface/username + pill "Follow" (เฉพาะ user ≠ ตัวเอง + ยังไม่ follow + ไม่ block) — เปิดจาก tile บน profile grid และ alert rows (solo โพสต์เดียว)
+- **กติกา entry**: viewer เปิดได้เฉพาะจาก grid tiles / notification rows — แตะรูปบน feed card หลัก = carousel เท่านั้น ไม่เปิด viewer
+- **Deep/shared link**: ลิงก์โพสต์ที่แชร์มา — guest เปิดอ่าน detail ได้เต็ม แต่ action ที่ gate เด้ง Member Sheet (spec ล็อก)
+- **ปุ่ม back ของระบบ (Android)**: เทียบเท่า ← ในแอป — ปิด viewer/detail กลับหน้าข้างล่างตำแหน่งเดิม (iOS ทดสอบเฉพาะปุ่มในแอป)
+- **ตัวเลขเวลา/จำนวน/ข้อความ** (เวลา fade ของ Follow pill ~1.2s, toast ~2s, clip เล่นเมื่อเห็น >55% ของจอ) เป็นค่าอ้างอิง design — แอปต่างเล็กน้อยให้ **จดค่าจริงลง Note** แต่พฤติกรรมหลักผิด = FAIL
+- **เงื่อนไขผลลัพธ์**: ทุกเคสระบุ expected ชัดเจน — ไม่ตรง = FAIL; ถ้า build ไม่มีคุณสมบัติ/ข้อมูลที่เคสต้องการเลย → mark **BLOCK** พร้อมเหตุผล (ห้ามเขียน "จดพฤติกรรม")
+- **เรื่องเงิน** อ้าง `docs/money-display-rules.md` §4.1–4.2: ราคาใน detail แสดงเต็มจำนวน `THB x,xxx,xxx` ไม่มีทศนิยม; **Estimated Market Price = ราคาประเมินจากข้อมูลตลาดจริงของรุ่นนั้น** (spec ล็อก — ค่าที่เห็นจดจริงลง Note, ถ้าระบบยังแสดง band รอบราคาตั้งขาย → flag ทีม)
+- **คลิป/วิดีโอ**: โพสต์ที่มีวิดีโอ — บน viewer/detail เล่นจริงพร้อมเสียงตามระดับเครื่อง (spec ล็อก) — ไม่ใช่ภาพนิ่งหรือ badge นับเวลาจำลอง; เล่น/หยุดได้ (control ตาม design ของ build — จดวิธีจริงลง Note)
+- **Status tag บน detail**: ตามสถานะ asset ของโพสต์ ไม่ใช่ราคา — โพสต์ feed ธรรมดา (ไม่ผูก My Assets) **ไม่มี tag**; asset: ขาย = "FOR SALE" · โชว์ = "SHOWCASE" · ขายแล้ว = "SOLD" · ซ่อน = "HIDDEN" — คนอื่นเห็นเฉพาะ sale/show (sold/hide เข้าถึงได้เฉพาะเจ้าของอยู่แล้ว) (spec ล็อก)
+- **สิ่งที่อยู่นอก scope** (เคสอยู่ task อื่น — ห้ามซ้ำ): feed card internals + actions บน feed หลัก (FO-TEST-03), composer (FO-TEST-05), mechanics ภายใน bottom sheets — comments/likes/share/save/wishlist/watch-alert/details sheets ที่นี่เช็คเฉพาะ "เปิดเข้าได้จาก viewer/detail + state sync บน surface ข้างล่าง" (FO-TEST-07), profile page/search page/saved hub/alerts list ตัวเอง (FO-TEST-08/09/10/12), watch alert form (FO-TEST-11), report flow ข้างใน (FO-TEST-15), portfolio/sale record (FO-TEST-13), Member Sheet (FO-TEST-01/17)
 
 ## 1. Coverage Map ของ task นี้ (เทียบ inventory §2)
 
 | Route/Feature (inventory §2) | TC ID ที่ครอบ |
 |---|---|
-| `xp-tile` → `pv-open` immersive (search landing + results grid) | PV-001 – 002, PV-011 |
-| `svd-tile` → `pv-open` feedMode (Saved/Wish List/Archive) | PV-003 – 005, PV-026 – 029 |
-| `pf-tile` → `pv-open` profile mode (pin-tab aware) | PV-006, PV-034 – 038 |
-| alert rows (like/comment/watch) → `pv-open` solo | PV-007 – 008, PV-039 |
-| `pv-back` / `pv-srch` / layer ปิด viewer | PV-010 – 012 |
-| `.pv-post` rail/foot (`like-btn`/`liked-by`/`comment-btn`/views/`share-btn`/`save-btn`/`pm-btn`/follow/`pv-add`/`pv-dt`/caption `more-link`) | PV-013 – 025 |
-| photo carousel `.post-photo`/`.detail-hero` (tap/swipe/counter/dots) | PV-026 – 029, DET-007 |
-| clip `.clip-ph` autoplay/badge/progress | PV-030 – 033, DET-020 – 023 |
-| `pfp-follow` pill + watch-alert inject | PV-035 – 039 |
-| `pm` / `pm-own` menus (incl. reportOnly ใน pfp + detail ⋯) | PV-040 – 049, DET-015 |
-| `view-full` → `detail-open` + `detail-back` (detail เหนือ viewer) | DET-001 – 005 |
-| `.page-detail` dl1 (head/hero/tag/name/ref/desc/specs/actions) + `POST_DETAIL_CFG` | DET-006 – 019 |
-| `mf-btn` / `wl-btn` / `share-btn` / `like-btn` / `comment-btn` บน detail `[GATE]` | DET-024 – 029 |
+| explore tile → viewer immersive (search landing + results grid) | PV-001 – 002, PV-011, PV-015, PV-032 |
+| saved/wishlist/archive tile → viewer list mode | PV-003 – 005, PV-010 – 011 |
+| profile grid tile → viewer pfp | PV-006, PV-034 – 038 |
+| alert rows (like/comment/watch) → viewer solo | PV-007 – 008, PV-039 |
+| back / layer ปิด viewer | PV-010 – 012 |
+| pv-post rail/foot (like/Likes/comment/views/share/save/⋯/follow/Add comment/Tap for details/caption …) | PV-013 – 025 |
+| photo carousel tap/swipe/counter/dots (การ์ด + immersive + detail hero) | PV-015, PV-026 – 029, DET-007 |
+| clip เล่น/หยุด/เสียง (การ์ด + immersive + detail hero) | PV-030 – 033, DET-020 – 023 |
+| pfp-follow pill + watch-alert inject | PV-035 – 039 |
+| ⋯ post menus (คนอื่น/เจ้าของ, pin-tab, Ask pill gate) | PV-040 – 049, DET-015 |
+| "View full detail ›" → detail เหนือ viewer + ← | DET-001 – 005 |
+| detail content (head/hero/status tag/name/ref/desc/specs/liked-by/money) | DET-006 – 019, DET-032 |
+| like/comment/share/🔔/🎁/⋯ บน detail `[GATE]` | DET-024 – 029 |
 | comments/likes sheet entry + state sync | DET-030 – 033, PV-017 – 019 |
-| states: `noComments`/`hideCounts`/views 0/showcase/empty specs/missing post | DET-034 – 037, PV-025 |
-| i18n / theme / money spot-check | DET-011, DET-038 – 040 |
-| guest coverage รวมของ viewer/detail | PV-012, PV-020 – 021, PV-036, DET-005, DET-025 – 029, DET-031, DET-040 |
-| เชื่อม FO-TEST-05 (own post จาก composer) | PV-050 – 053 |
+| states: noComments/hideCounts/views 0/no-details/missing post | DET-034 – 037, PV-025 |
+| Language TH/EN + dark theme | DET-038 – 039 |
+| guest coverage รวม viewer/detail + deep link | PV-012, PV-020 – 021, PV-036, DET-005, DET-025 – 029, DET-031, DET-040 |
+| own post จาก composer (sale/feed-only/asset/clip) | PV-050 – 053 |
 
 ## 2. Test Cases
+
+### Setup (ทำก่อนเริ่มเทส)
+
+| TC ID | เริ่มจาก | ขั้นตอน | ผลที่ต้องเห็น |
+|---|---|---|---|
+| SETUP-01 | - | ติดตั้งแอป TukDaeng build ทดสอบบนมือถือจริง (Android Play Store / iOS App Store หรือ TestFlight ตามที่ทีมแจก) → เปิดแอป | splash แล้วไหลเข้า onboarding — ห้ามเทสผ่าน browser/prototype |
+| SETUP-02 | - | รีเซ็ตสถานะแอป: Android = Settings → Apps → TukDaeng → Storage → Clear data · iOS = ลบแอปติดตั้งใหม่ | onboarding เด้งใหม่เหมือนใช้ครั้งแรก ข้อมูลเก่าถูกล้าง |
+| SETUP-03 | - | GUEST: รีเซ็ต (SETUP-02) หรือ Log out → เดิน onboarding ถึง sheet "Join TukDaeng" → "Skip for now" | อยู่ feed แบบ guest |
+| SETUP-04 | - | MEMBER: member sheet → "Sign in" → กรอก email+password บัญชีทดสอบจริง (SETUP-06) | อยู่ feed แบบ member เห็นข้อมูลจริงของบัญชีนั้น |
+| SETUP-05 | - | Member Sheet + Settings: sheet เด้งเวลา guest แตะ action gated — ปิดด้วยแตะบริเวณมืด/"Skip for now" · ภาษา/ธีม: Profile → ≡ → "Language"/"Theme" | รู้วิธีปิด sheet และสลับภาษา/ธีมในแอป |
+| SETUP-06 | - | ข้อมูลอ้างอิงจากข้อมูลจริง (จดลง Note ทุกเคสใช้ชุดนี้): บัญชีทดสอบ email+password · ACCT-2 = บัญชีที่สองจริง (สำหรับ alert/follow/liked-by) · MODEL-X = รุ่นนาฬิกาที่มี market data (สำหรับ Estimated) · POST-X = โพสต์ขายของ seller อื่นที่มี ≥3 รูป + specs + ราคา + comments · POST-Y = โพสต์รูปเดียว · POST-Z = โพสต์ที่ไม่มี specs/ราคาเลย · จด "รุ่นเครื่อง + OS" ลงคอลัมน์ "ทดสอบบน (Device/OS)" ทุกเคสที่รัน | มีข้อมูลครบ — ถ้าขาดตัวใด mark BLOCK เคสที่เกี่ยว |
+| SETUP-07 | - | ทางเข้า viewer แต่ละ entry: Explore = nav Search → landing grid → tile · Results = พิมพ์คำค้น → grid ผล → tile · Saved = own profile → bookmark → collection → tile · Profile = แตะชื่อ seller → grid tile · Alerts = nav ระฆัง → แตะ row (member เท่านั้น) | viewer เด้งทับหน้าเดิม — โหมดตาม entry (immersive/list/pfp) |
+| SETUP-08 | - | เตรียม media บนเครื่อง: gallery ต้องมีวิดีโอ ≥1 คลิป (ถ่าย/โหลดมาเอง) + รูป ≥3 ใบ — จดจำนวนจริงลง Note · อนุญาต Photos/Camera ให้แอป | media พร้อมสำหรับเคส clip/carousel |
+| SETUP-09 | MEMBER | ทำ own sale post: + → เลือกรูป 3 ใบ → Next → caption + เปิด "Add price" ใส่ราคา + "Watch details" ใส่ Brand/Model/Reference (ใช้ MODEL-X) + เปิด "Also save to My Assets" → Share | โพสต์ใหม่ seller = บัญชีตัวเอง (สถานะ Sale) ขึ้นบนสุด feed + own profile grid แท็บ Sale — ใช้กับ PV-050/051, DET-008/010/011/015 |
+| SETUP-10 | MEMBER | ทำ own feed-only post: + → เลือกรูป 1 ใบ → Next → caption อะไรก็ได้ → Share (ไม่ใส่ราคา/specs, ไม่เปิด My Assets) | โพสต์ขึ้น feed + อยู่แท็บ All ของ own profile เท่านั้น (ไม่มีสถานะ asset) — ใช้กับ DET-009/013, PV-053, DET-035 |
+| SETUP-11 | MEMBER | ทำ own asset posts: own profile → ปุ่ม + ซ้ายบน (asset mode) → เลือกรูป + ใส่ specs → Visibility "Show" → Add Asset · ทำซ้ำอีกรายการ Visibility "Hide" | asset Show อยู่แท็บ Show ของ own profile (ไม่ขึ้น feed) · asset Hide อยู่แท็บ Hide (เจ้าของเห็นเท่านั้น) — ใช้กับ DET-009 |
+| SETUP-12 | OWNER | ทำ own sold post: ใช้โพสต์จาก SETUP-09 → ⋯ → "Mark as sold" → กรอก sale record ตาม flow (FO-TEST-13) | โพสต์ย้ายไปแท็บ Sold — เมนู ⋯ แสดง "View sale record" แทน "Edit" — ใช้กับ PV-038/048, DET-009 |
+| SETUP-13 | MEMBER | ทำ own clip post: + → เลือกวิดีโอจากเครื่อง (SETUP-08) → Next → Share | โพสต์คลิปของตัวเองอยู่บน feed + own profile grid — ใช้กับ PV-030–032/052, DET-020–023 |
+| SETUP-14 | OWNER | ทำ archived post: ⋯ บนโพสต์ตัวเอง → "Archive" | โพสต์ย้ายเข้า Archive (Profile → ≡ → Archive) — ใช้กับ PV-005 |
+| SETUP-15 | MEMBER | เตรียม saved collections: 🔖 บนโพสต์คนอื่น ≥2 โพสต์ → เลือก/สร้าง ≥2 collections (เช่น "Saved" + "Grail list") ผ่าน save sheet | collection มีโพสต์พร้อมเปิด viewer — ใช้กับ PV-003/004 |
+| SETUP-16 | MEMBER | ทำ watch alert ที่จะ match: search → ค้นแบรนด์ MODEL-X → 🔔 → "Create alert" ให้ criteria match (flow อยู่ FO-TEST-11) | alert ON — โพสต์ใหม่ที่ match จะเด้ง toast/alert row — ใช้กับ PV-007/039, DET-027 |
+| SETUP-17 | ACCT-2 | บนเครื่อง/บัญชีที่สอง: (a) like + comment โพสต์ของบัญชีหลัก → เกิด like/comment alert rows · (b) publish โพสต์ที่ spec match alert ของ SETUP-16 → เกิด watch alert row · (c) ไม่ follow บัญชีหลัก (สำหรับเคส pill) | หน้า Alerts ของบัญชีหลักมี like/comment/watch rows จริง — ถ้าจัด ACCT-2 ไม่ได้ → mark BLOCK PV-007/008/039, DET-037 |
 
 ### 2.1 Entry — viewer modes & tiles
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-PV-001 | เปิด immersive viewer จาก explore tile | MEMBER | Func | member เปิด nav Search → landing (ยังไม่พิมพ์) เห็น `.xp-grid` | 1. แตะ tile รูปแรกของ `p1` 2. สังเกตหน้าจอ | `xp-tile` → `openPostViewer(feedMode=false)` → `.page-pv` immersive ทับ search sub; เปิดที่โพสต์ `p1` รูป index ที่แตะ | `.pv-head` = ← + แว่นขยาย; `.pv-post` เต็มจอรูป `p1` + rail ขวา + foot ล่าง | High | |
-| FO-TC-PV-002 | เปิดจาก tile ใน grid ผลค้นหา | MEMBER | Func | search "rolex" → results `.xp-grid.two` | 1. แตะ tile ของ `p4` 2. swipe ลงดูโพสต์ถัดไป | viewer list = เฉพาะผลค้นหา (`searchResults`) ไม่ใช่ทุกโพสต์ — โพสต์ถัดไปใน track คือผลค้นหาลำดับถัดไป | เปิดที่ `p4` ทันที (scrollTop = index×ความสูงจอ) | High | |
-| FO-TC-PV-003 | เปิด feedMode viewer จาก Saved tile | MEMBER | Func | Saved hub → collection "Saved" (p7,p10) | 1. แตะ tile ของ `p10` 2. scroll ดูการ์ดอื่น | `svd-tile` → feedMode: `.svd-head` (back + "Saved" + แว่นขยาย) + `.svf-track` การ์ด feed จริง; เปิดเลื่อนไปที่การ์ด `p10` (`offsetTop−86`, การ์ดแรก scrollTop=0) | การ์ด = postCard เต็ม (head/photo/actions/liked-by/caption/Tap for details) ไม่ใช่ immersive | High | |
-| FO-TC-PV-004 | feedMode — title ตาม collection | MEMBER | UI | Saved hub | 1. เปิด tile ใน "Wish List" 2. เปิด tile ใน "Grail list" | title head = ชื่อ collection จริง: "Wish List" / "Grail list" (ไม่ใช่ Saved เสมอ) | title ตรงหน้าที่มา | Medium | |
-| FO-TC-PV-005 | feedMode — Archive tile | MEMBER | Func | มีโพสต์ archived ≥1 (pm-own → "Archive" โพสต์ตัวเองก่อน) | 1. เปิด Archive sub 2. แตะ tile | `.arc-grid` tile → feedMode viewer title "Archive" list = `archivePosts()` เท่านั้น | การ์ดโพสต์ archived แสดงปกติใน track | Medium | |
-| FO-TC-PV-006 | เปิด profile viewer (pfp) จาก grid tile | MEMBER | Func | เปิด profile ของ `Watch 777` (แตะชื่อ seller บนการ์ด p1) → แท็บ Posts | 1. แตะ grid tile ใบกลาง | `pf-tile` → `openPostViewer(user="Watch 777")` → `.pfp` mode; track = `pfTabPosts` ของแท็บนั้น (`scr._pinTab` เก็บ tab ไว้ให้เมนู Pin); เลื่อนไปที่ tile ที่แตะ | head: ← + "Posts" / `Watch 777` + pill "Follow" (เพราะยังไม่ follow); `.pfp-post` = การ์ด feed-parity | High | |
-| FO-TC-PV-007 | เปิด solo viewer จาก alert watch row | MEMBER | Func | Alerts มี watch row (`a.type==="watch"`) | 1. แตะ watch row | `openPostViewer([post], pid, "Post", seller)` + `.pfp-tt.solo` — viewer มีโพสต์เดียว; ถ้ายังไม่ follow seller → `pfp-follow` ถูกเอาออกแล้วใส่ "Follow" ใน `.post-head` ของการ์ดแทน | การ์ดเดียว ไม่มีโพสต์อื่นให้ swipe | High | |
-| FO-TC-PV-008 | solo viewer จาก like/comment alert | MEMBER | Func | Alerts มี like/comment row ชี้โพสต์ตัวเอง | 1. แตะ like row 2. แตะ comment row | `openPostViewer([post],"Post", king.mr.fox)` solo — user = ตัวเองจึงไม่มี follow pill; โพสต์ที่ถูกลบแล้ว → toast "This post is no longer available" ไม่เปิด viewer | title "Post"/`king.mr.fox` | Medium | |
-| FO-TC-PV-009 | กติกา entry — feed photo ไม่เปิด viewer | MEMBER | Edge | อยู่ feed หลัก | 1. แตะรูปกลางการ์ด `p1` บน feed | เป็นแค่ carousel (เปลี่ยนรูป) — `.page-pv` **ไม่เปิด** (viewer เฉพาะ grid tiles/notifications ตามกติกา) | feed นิ่ง ไม่มี overlay | High | |
-| FO-TC-PV-010 | `pv-back` ปิด viewer กลับ sub เดิม | MEMBER | Func | viewer เปิดจากทุก entry | 1. เปิด viewer จาก explore tile 2. แตะ ← 3. ทำซ้ำจาก saved tile + profile tile | `pv-open` ถูกเอาออก → หน้าข้างล่างโผล่ครบ: search landing (ค่า chip/q เดิม) / saved collection / profile grid — state sub ไม่ถูก reset | กลับหน้าเดิมตำแหน่งเดิม | High | |
-| FO-TC-PV-011 | `pv-srch` แว่นขยายบน viewer | MEMBER | Func | immersive viewer จาก search results + feedMode viewer จาก Saved | 1. (search) แตะแว่นขยาย 2. (saved) แตะแว่นขยาย | search: ปิด viewer → กลับ search sub โหมด typing (cursor พร้อมพิมพ์); saved: ปิด viewer → saved sub re-render กลับ grid (quirk — ปุ่มแว่นขยายทำหน้าที่เหมือน back อีกทางใน feedMode) | ไม่ค้างบน viewer | Medium | |
-| FO-TC-PV-012 | guest เปิด viewer ได้ (browse) | GUEST | Func | guest session เปิด explore tile | 1. แตะ tile 2. swipe ดูหลายโพสต์ 3. แตะ ← | guest เปิด/swipe/ปิด viewer ได้ปกติ (tile/back ไม่อยู่ใน gate) — เฉพาะ action ข้างในที่ gate | viewer แสดงเต็มเหมือน member | High | |
+| FO-TC-PV-001 | เปิด immersive viewer จาก explore tile | MEMBER | Func | member เปิด nav Search → landing เห็น explore grid | 1. แตะ tile รูปที่ 2 ของ POST-X (มี ≥3 รูป) 2. สังเกตหน้าจอ | tile → immersive viewer เต็มจอทับหน้า search — เปิดที่โพสต์นั้น **เริ่มที่รูป index ของ tile ที่แตะ** (counter "2/3") | head: ← + 🔍 · โพสต์เต็มจอ + rail ขวา + foot ล่าง + dots บน media | High | |
+| FO-TC-PV-002 | เปิดจาก tile ใน grid ผลค้นหา | MEMBER | Func | search คำที่เจอ POST-X → results grid | 1. แตะ tile ของ POST-X 2. swipe ลงดูโพสต์ถัดไป | viewer list = เฉพาะผลค้นหา ไม่ใช่ทุกโพสต์ — โพสต์ถัดไปใน track คือผลลำดับถัดไป | เปิดที่โพสต์ที่แตะทันที | High | |
+| FO-TC-PV-003 | เปิด list-mode viewer จาก Saved tile | MEMBER | Func | SETUP-15: collection "Saved" มีโพสต์ | 1. แตะ tile ของโพสต์ใบที่ 2 2. scroll ดูการ์ดอื่น | tile → list-mode viewer: head ← + "Saved" (**ไม่มีไอคอนค้นหา** — spec ล็อก) + การ์ด feed เต็ม; เปิดเลื่อนไปที่การ์ดที่แตะ | การ์ด = feed card เต็ม (head/photo/actions/liked-by/caption/"Tap for details") ไม่ใช่ immersive | High | |
+| FO-TC-PV-004 | list mode — title ตาม collection | MEMBER | UI | SETUP-15: ≥2 collections | 1. เปิด tile ใน collection A 2. เปิด tile ใน collection B | title head = ชื่อ collection จริงที่เปิดมา (ไม่ใช่ "Saved" เสมอ) | title ตรงหน้าที่มา | Medium | |
+| FO-TC-PV-005 | list mode — Archive tile | MEMBER | Func | SETUP-14: มี archived post | 1. เปิด Archive (Profile → ≡ → Archive) 2. แตะ tile | tile → list-mode viewer title "Archive" list = เฉพาะโพสต์ archived | การ์ดโพสต์ archived แสดงปกติ | Medium | |
+| FO-TC-PV-006 | เปิด profile viewer (pfp) จาก grid tile | MEMBER | Func | เปิด profile ของ seller POST-X (แตะชื่อ seller บนการ์ด) → แท็บ Posts | 1. แตะ grid tile ใบกลาง | tile → pfp viewer ของ user นั้น; เลื่อนไปที่ tile ที่แตะ; track = โพสต์ของแท็บนั้น | head: ← + "Posts"/username + pill "Follow" (ถ้ายังไม่ follow); การ์ด feed-parity | High | |
+| FO-TC-PV-007 | เปิด solo viewer จาก watch alert row | MEMBER | Func | SETUP-16+17: Alerts มี watch row ของ seller ACCT-2 ที่ยังไม่ follow | 1. แตะ watch row | solo viewer (โพสต์เดียว ไม่มีโพสต์อื่นให้ swipe) — pill "Follow" ไม่อยู่บน head แต่ถูกแทรก **ในหัวการ์ด** แทน (spec ล็อก) | title "Post"/username ของ seller | High | |
+| FO-TC-PV-008 | solo viewer จาก like/comment alert | MEMBER | Func | SETUP-17: Alerts มี like/comment row ชี้โพสต์ตัวเอง | 1. แตะ like row 2. แตะ comment row | solo viewer ของโพสต์นั้น — user = ตัวเองจึงไม่มี follow pill ทั้ง head และหัวการ์ด | title "Post"/ชื่อบัญชีตัวเอง | Medium | |
+| FO-TC-PV-009 | กติกา entry — feed photo ไม่เปิด viewer | MEMBER | Edge | อยู่ feed หลัก เห็นการ์ดหลายรูป | 1. แตะรูปกลางการ์ด 2. แตะครึ่งซ้าย/ขวา | เป็นแค่ carousel (เปลี่ยนรูป) — viewer **ไม่เปิด** (entry เฉพาะ tiles/notifications ตามกติกา) | feed นิ่ง ไม่มี overlay | High | |
+| FO-TC-PV-010 | ← ปิด viewer กลับหน้าเดิม (+ device back) | MEMBER | Func | viewer เปิดจากทุก entry | 1. เปิดจาก explore → ← 2. ทำซ้ำจาก saved + profile tile 3. (Android) กดปุ่ม back ของระบบแทน | viewer ปิด → หน้าข้างล่างโผล่ครบ state เดิม (ค่า search/collection/tab เดิม); device back ทำหน้าที่เดียวกับ ← | กลับหน้าเดิมตำแหน่งเดิม | High | |
+| FO-TC-PV-011 | ไอคอนค้นหาบน viewer head — มีเฉพาะ immersive | MEMBER | Func | immersive viewer จาก search results + list-mode viewer จาก Saved/Archive | 1. (immersive) แตะ 🔍 2. (list mode) ดู head | immersive: 🔍 ปิด viewer → กลับ search พร้อมพิมพ์ต่อ; list mode: head = ← + ชื่อ collection เท่านั้น **ไม่มีไอคอนค้นหา** (spec ล็อก — เอาออกแล้วเพราะทำหน้าที่ซ้ำกับ back) | ไม่มีปุ่มซ้ำซ้อน | Medium | |
+| FO-TC-PV-012 | guest เปิด viewer ได้ (browse) | GUEST | Func | guest session เปิด explore tile | 1. แตะ tile 2. swipe ดูหลายโพสต์ 3. แตะรูปเปลี่ยน slide 4. แตะ ← | guest เปิด/swipe/carousel/ปิด viewer ได้ปกติ — เฉพาะ action ข้างในที่ gate | viewer แสดงเต็มเหมือน member | High | |
 
-### 2.2 Immersive `.pv-post` — rail/foot/actions
-
-| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
-|---|---|---|---|---|---|---|---|---|---|
-| FO-TC-PV-013 | anatomy ของ pv-post | MEMBER | UI | immersive viewer เปิดที่ `p1` | 1. สังเกตทั้งจอ | — | `.pv-img` เต็มจอ + grad มืดล่าง; rail ขวาบนลงล่าง: ♡, "Likes", 💬+2, 👁1.2K, share, 🔖, ⋯; foot: avatar+`Watch 777`+"Follow", caption ย่อ + "…", "Tap for details"; ล่างสุด "Add comment…" | High | |
-| FO-TC-PV-014 | vertical swipe ระหว่างโพสต์ | MEMBER | Func | viewer list มี ≥3 โพสต์ | 1. swipe ขึ้น 2 ครั้ง 2. swipe ลง 1 ครั้ง | `.pv-track` scroll ทีละเต็มจอ (post ต่อไป/ก่อนหน้า) — ขึ้น = โพสต์ถัดไปใน list | แต่ละ pv-post snap เต็ม viewport | High | |
-| FO-TC-PV-015 | โพสต์หลายรูปใน immersive = รูปเดียว (quirk) | MEMBER | Edge | เปิด tile รูปที่ 2 ของ `p4` (มี 2 รูป) | 1. สังเกตรูป + พยายามแตะซ้าย/ขวาบนรูป | `pvPostHTML` แสดง `photos[phi]` รูปเดียว — **ไม่มี carousel/dots/counter** ใน immersive (แตะรูปไม่เกิดอะไร) — บันทึกเป็น quirk ของโหมดนี้ | ไม่มี "1/2" หรือ dots | Medium | |
-| FO-TC-PV-016 | like-btn บน rail | MEMBER | Func | viewer เปิดที่ `p3` (ยังไม่ like) | 1. แตะ ♡ 2. แตะอีกครั้ง | toggle `post.liked` — หัวใจแดง⇄ออก; state sync ไปยังการ์ด feed/detail ของโพสต์เดียวกันด้วย | icon เปลี่ยนสถานะทันที | High | |
-| FO-TC-PV-017 | "Likes" label → likes sheet (entry) | MEMBER | Func | viewer เปิด | 1. แตะ "Likes" บน rail | `likes-open` + lk sheet เด้งคร่อม viewer (owner ของ post เห็น count, คนอื่นเห็น "and others" — mechanics อยู่ FO-TEST-07) | sheet ขึ้นจากล่างเหนือ pv | Medium | |
-| FO-TC-PV-018 | comment-btn → comments sheet (entry) | MEMBER | Func | viewer เปิดที่ `p1` | 1. แตะ 💬 | `comments-open` + comments sheet ของ `p1` เด้ง (จำนวน 2 แสดงบน icon ก่อนแตะ) — sheet internals อยู่ FO-TEST-07 | sheet ทับ viewer | Medium | |
-| FO-TC-PV-019 | "Add comment…" → comments sheet | MEMBER | Func | viewer เปิด | 1. แตะ "Add comment…" | pv-add → `nt` variant comments sheet (ไม่ถูก gate — guest เปิดได้ แต่ช่องพิมพ์ใน sheet gate อยู่) | sheet เปิดโฟกัสช่อง comment | Medium | |
-| FO-TC-PV-020 | share-btn / save-btn — guest `[GATE]` | GUEST + MEMBER | Func | viewer เปิด | 1. (guest) แตะ share 2. (guest) แตะ 🔖 3. (member) แตะทั้งสอง | guest: ทั้งคู่ ∈ `GUEST_GATE_SEL` → Member Sheet เด้ง sheet ไม่เปิด; member: share → sh sheet, 🔖 → sv sheet (entry เท่านั้น mechanics อยู่ FO-TEST-07) | Member Sheet ทับ pv; member เห็น sheet จริง | High | |
-| FO-TC-PV-021 | like-btn — guest `[GATE]` | GUEST + MEMBER | Func | viewer เปิด | 1. (guest) แตะ ♡ 2. (member) แตะ ♡ | guest: `.like-btn` ∈ gate → Member Sheet; member: toggle ปกติ | ตาม gate | High | |
-| FO-TC-PV-022 | follow-btn ใน pv-foot + seller link | MEMBER | Func | viewer เปิด `p8` (seller `dial.dude`, ยังไม่ follow) | 1. แตะ "Follow" ข้างชื่อ 2. แตะ avatar/ชื่อ seller | Follow → `setFollowing` on (ปุ่มเปลี่ยน/หายตาม render; ผลไปทุก surface); แตะชื่อ/avatar → `data-pf-user` เปิด profile sub ของ `dial.dude` ทับ viewer | ปุ่ม "Follow" แสดงเฉพาะโพสต์ที่ยังไม่ follow | Medium | |
-| FO-TC-PV-023 | caption "…" → ps sheet | MEMBER | Func | viewer เปิดโพสต์ที่ captionFull ยาวกว่า caption | 1. แตะ "…" ท้าย caption | `more-link` ใน pv-post → `comments-open` + `ps` variant = caption sheet (seller head + caption เต็ม + time + comments preview) | sheet ไม่ใช่ inline expand (ต่างจาก feed card) | Medium | |
-| FO-TC-PV-024 | "Tap for details" → dt sheet → "View full detail ›" | MEMBER | Func | viewer เปิด `p1` (มี specGroups) | 1. แตะ "Tap for details" 2. แตะ "View full detail ›" | pv-dt → `details-open` + dt sheet (detailsHTML เต็ม + link); "View full detail ›" → `openPostDetail` — detail เลื่อนทับ viewer (`pv-open` ยังอยู่) | sheet มีราคา "THB 420,000" แถวบน + specs ย่อ; detail เต็มจอเหนือ viewer | High | |
-| FO-TC-PV-025 | ไม่มี "Tap for details" บน showcase | MEMBER | UI | viewer เปิด `p3` (specGroups=[]) | 1. ดู foot ของ pv-post | `hasSpecs=false` → ไม่ render ปุ่ม `pv-dt` เลย — ไม่มีทางเข้า detail จากโพสต์ showcase ใน immersive viewer | foot มีแค่ seller+caption | Medium | |
-
-### 2.3 Photo carousel + dots (`.post-photo` ในการ์ด svf/pfp + `.detail-hero`)
+### 2.2 Immersive pv-post — rail/foot/actions
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-PV-026 | tap ซ้าย/ขวาครึ่งรูป (wrap) | MEMBER | Func | feedMode/pfp viewer เปิดการ์ด `p1` (3 รูป) | 1. แตะครึ่งขวา 2 ครั้ง 2. แตะครึ่งขวาอีกครั้ง | `applyPhoto` index+1 ต่อแตะ: 1→2→3→**วนกลับ 1** (tap wrap-around); แตะครึ่งซ้ายที่รูป 1 → วนไปรูปสุดท้าย | counter "2/3"→"3/3"→"1/3"; dot `.on` ตาม index | High | |
-| FO-TC-PV-027 | swipe ซ้าย/ขวา (bounded) | MEMBER | Func | การ์ดหลายรูป | 1. swipe ซ้ายจากรูป 1 2. swipe ซ้ายที่รูปสุดท้าย | threshold `min(64, 20% ความกว้าง)` ผ่าน → เปลี่ยนรูป; ที่ขอบแรก/สุดท้าย swipe = ต้าน (resistance) **ไม่วน** ต่างจาก tap | รูปลากตามนิ้วแล้วเด้งกลับเมื่อเกินขอบ | High | |
-| FO-TC-PV-028 | swipe แนวตั้งไม่กิน carousel | MEMBER | Edge | การ์ดหลายรูปใน svf/pfp track | 1. กดบนรูปแล้วลากแนวตั้ง >แนวนอน | gesture แนวตั้งถูกยกเลิก carousel → track scroll ต่อได้ตามปกติ (scroll ชนะ) | ไม่ติดเปลี่ยนรูประหว่าง scroll หน้า | Medium | |
-| FO-TC-PV-029 | dots + counter เฉพาะหลายรูป | MEMBER | UI | เทียบการ์ด `p1` (3 รูป) กับ `p2` (1 รูป) | 1. ดู photo ของทั้งสองการ์ด | รูปเดียว → ไม่มี counter/dots เลย; หลายรูป → counter "1/3" มุมขวาบน + dots ใต้รูป (เฉพาะ detail/การ์ด — immersive ไม่มี) | dot .on = รูปแรกเสมอตอนเปิด | Medium | |
+| FO-TC-PV-013 | anatomy ของ pv-post | MEMBER | UI | immersive viewer เปิดที่ POST-X | 1. สังเกตทั้งจอ | — | รูปเต็มจอ + grad มืดล่าง + counter/dots (หลายรูป); rail ขวา: ♡ · "Likes" · 💬+count · 👁views · share · 🔖 · ⋯; foot: avatar+username+"Follow" (ถ้ายังไม่ follow) + caption ย่อ "…" + "Tap for details"; ล่างสุด "Add comment…" | High | |
+| FO-TC-PV-014 | vertical swipe ระหว่างโพสต์ | MEMBER | Func | viewer list มี ≥3 โพสต์ | 1. swipe ขึ้น 2 ครั้ง 2. swipe ลง 1 ครั้ง | เลื่อนทีละเต็มจอ — ขึ้น = โพสต์ถัดไป / ลง = ก่อนหน้าใน list เดียวกัน | แต่ละโพสต์ snap เต็มจอ | High | |
+| FO-TC-PV-015 | โพสต์หลายรูปใน immersive = carousel (spec ล็อก) | MEMBER | Func | เปิด tile รูปที่ 2 ของ POST-X | 1. แตะครึ่งขวา 2 ครั้ง 2. แตะครึ่งซ้ายที่รูปแรก 3. swipe ซ้าย/ขวา | carousel เหมือนการ์ด feed: tap ครึ่งขวา 2→3→**วน 1** · tap ครึ่งซ้ายที่รูปแรก → วนไปรูปสุดท้าย · swipe เปลี่ยนรูปแบบไม่วน (ขอบต้าน) | counter "2/3"→"3/3"→"1/3" + dots ตาม index | High | |
+| FO-TC-PV-016 | ♡ like บน rail — sync ข้าม surface | MEMBER | Func | viewer เปิดโพสต์ที่ยังไม่ like | 1. แตะ ♡ 2. แตะอีกครั้ง 3. back ไป feed ดูการ์ดเดียวกัน | toggle like — หัวใจเติมสี⇄ออก; state sync ไปการ์ด feed/detail ของโพสต์เดียวกัน | icon เปลี่ยนสถานะทันที | High | |
+| FO-TC-PV-017 | "Likes" label → likes sheet (entry) | MEMBER | Func | viewer เปิด | 1. แตะ "Likes" บน rail | likes sheet เด้งคร่อม viewer (owner ของโพสต์เห็น count, คนอื่นเห็น "and others" — mechanics อยู่ FO-TEST-07) | sheet ขึ้นจากล่างเหนือ viewer | Medium | |
+| FO-TC-PV-018 | 💬 → comments sheet (entry) | MEMBER | Func | viewer เปิดที่ POST-X (มี comments) | 1. แตะ 💬 | comments sheet เด้ง จำนวนแสดงบน icon ก่อนแตะ — sheet internals อยู่ FO-TEST-07 | sheet ทับ viewer | Medium | |
+| FO-TC-PV-019 | "Add comment…" → comments sheet | MEMBER | Func | viewer เปิดโพสต์ที่เปิดคอมเมนต์ | 1. แตะ "Add comment…" | comments sheet เปิด (ไม่ถูก gate — guest เปิดอ่านได้ แต่ช่องพิมพ์ใน sheet gate อยู่) | sheet เปิดพร้อมช่อง comment | Medium | |
+| FO-TC-PV-020 | share / 🔖 save — guest `[GATE]` | GUEST + MEMBER | Func | viewer เปิด | 1. (guest) แตะ share 2. (guest) แตะ 🔖 3. (member) แตะทั้งสอง | guest: ทั้งคู่ → Member Sheet เด้ง sheet ไม่เปิด; member: share → sh sheet · 🔖 → sv sheet (entry เท่านั้น mechanics อยู่ FO-TEST-07) | Member Sheet ทับ viewer; member เห็น sheet จริง | High | |
+| FO-TC-PV-021 | ♡ like — guest `[GATE]` | GUEST + MEMBER | Func | viewer เปิด | 1. (guest) แตะ ♡ 2. (member) แตะ ♡ | guest → Member Sheet ไม่ toggle; member → toggle ปกติ | ตาม gate | High | |
+| FO-TC-PV-022 | follow-btn ใน foot + seller link | MEMBER | Func | viewer เปิดโพสต์ของ seller ที่ยังไม่ follow | 1. แตะ "Follow" ข้างชื่อ 2. แตะ avatar/ชื่อ seller | Follow → follow จริง (ปุ่มเปลี่ยน/หาย ผล sync ทุก surface); แตะชื่อ/avatar → เปิด profile ของ seller ทับ viewer | ปุ่ม "Follow" แสดงเฉพาะโพสต์ที่ยังไม่ follow | Medium | |
+| FO-TC-PV-023 | caption "…" → caption sheet | MEMBER | Func | viewer เปิดโพสต์ที่ caption ยาว | 1. แตะ "…" ท้าย caption | caption sheet เด้ง (seller head + caption เต็ม + time + comments preview) — ไม่ใช่ inline expand แบบ feed card | sheet ทับ viewer | Medium | |
+| FO-TC-PV-024 | "Tap for details" → sheet → "View full detail ›" | MEMBER | Func | viewer เปิด POST-X (มี specs) | 1. แตะ "Tap for details" 2. แตะ "View full detail ›" | dt sheet เด้ง (specs ย่อ + ราคาแถวบน + link); "View full detail ›" → เปิด detail เต็มจอทับ viewer | sheet มีราคา "THB …" + specs; detail เหนือ viewer | High | |
+| FO-TC-PV-025 | ไม่มี "Tap for details" บนโพสต์ไม่มีรายละเอียด | MEMBER | UI | viewer เปิด POST-Z (ไม่มี specs/ราคา) | 1. ดู foot ของ pv-post | ไม่มีปุ่ม "Tap for details" — detail เข้าได้เฉพาะโพสต์ที่มีรายละเอียด (spec ล็อก: ไม่เกี่ยวกับราคา — asset Show ที่กรอก specs ไว้เข้า detail ได้ตามปกติ) | foot มีแค่ seller+caption | Medium | |
 
-### 2.4 Clip autoplay / badge / progress (`.clip-ph`)
-
-| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
-|---|---|---|---|---|---|---|---|---|---|
-| FO-TC-PV-030 | clip บนการ์ดใน pfp/feedMode viewer | MEMBER | Func | SETUP-06: own clip post บน own profile → pfp viewer | 1. เปิด viewer เลื่อนให้ clip อยู่กลางจอ 2. เลื่อนจน clip หลุดจอ | `feedClipTick` 100ms: เล่นเฉพาะ media เห็น >55% ของความสูง; ใน `.page-pv` เล่นได้เพราะ `sub-open` ยังอยู่; เลื่อนออก → หยุด+reset | badge "▶ 0:xx" นับถอยหลัง + progress bar เดิน; หลุดจอ badge กลับเวลาเต็ม | High | |
-| FO-TC-PV-031 | badge reset เมื่อถึง 0 + reset ต่อ slide | MEMBER | Func | clip post หลาย media (SETUP-06 เลือก clip ไม่ใช่ใบแรก) | 1. รอ badge นับถึง 0 2. เปลี่ยน slide ไปรูปอื่นแล้วกลับ | ถึง 0 → countdown วนใหม่จาก `dur0`; `applyPhoto`→`phClipSet` reset เวลา/progress เฉพาะ slide นั้น | progress bar หดถึง 0 แล้วเต็มใหม่ | Medium | |
-| FO-TC-PV-032 | clip ใน immersive viewer = ไม่มี UI | MEMBER | Edge | own clip post เจอใน search/explore → immersive viewer | 1. เปิด tile ของ clip post | `pvPostHTML` ไม่มี `.clip-ph`/badge เลย — immersive แสดงรูปนิ่งเสมอ (quirk: clip เล่นเฉพาะบนการ์ด + detail hero) | ไม่มี badge/progress บน pv-post | Medium | |
-| FO-TC-PV-033 | ไม่มี mute/volume control | MEMBER | UI | clip กำลัง autoplay บนการ์ด/detail | 1. หา control เสียงบน media | prototype ไม่มีปุ่ม mute/unmute — clip เป็น visual countdown (badge+bar) เท่านั้น ไม่มีเสียงจริง → บันทึก GAP-03 | ไม่มี icon ลำโพง/ปุ่มเสียง | Low | |
-
-### 2.5 pfp viewer + Follow pill + menus
-
-| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
-|---|---|---|---|---|---|---|---|---|---|
-| FO-TC-PV-034 | pfp head anatomy + back | MEMBER | UI | pfp viewer จาก `Watch 777` tile | 1. ดู head 2. แตะ ← | head: ← + `<b>Posts</b>`/`Watch 777` + spacer + "Follow" pill; back → กลับ profile grid แท็บเดิม | ไม่มีแว่นขยายใน pfp head (ต่างจาก immersive/feedMode) | Medium | |
-| FO-TC-PV-035 | `pfp-follow` pill — member | MEMBER | Func | pfp viewer ของ user ที่ยังไม่ follow | 1. แตะ "Follow" บน head 2. รอ ~1.5s | `pfSetFollow` on → pill flip "Following" → fade + ถูก remove หลัง ~1.2s (IG behavior); ผล follow sync ทั้งแอป | pill หายจาก head | High | |
-| FO-TC-PV-036 | `pfp-follow` — guest `[GATE]` | GUEST + MEMBER | Func | pfp viewer ของ user ที่ยังไม่ follow | 1. (guest) แตะ pill 2. (member) แตะ pill | guest: `.pf-foll` ∈ gate → Member Sheet ไม่มีการ follow; member: follow ปกติตาม PV-035 | Member Sheet ทับ viewer | High | |
-| FO-TC-PV-037 | ไม่มี pill เมื่อ follow แล้ว/ตัวเอง/blocked | MEMBER | Edge | เปิด pfp ของ (a) seller ที่ follow แล้ว (b) own profile (c) blocked user | 1. ดู head ทั้ง 3 กรณี | `hf` render เฉพาะ `user≠me && !following && !blocked` — ทั้ง 3 กรณี head ไม่มี pill | head ว่างช่วงขวา | Medium | |
-| FO-TC-PV-038 | tab context (`_pinTab`) กับ grid แท็บอื่น | MEMBER | Func | own profile → แท็บ "Sold" → แตะ tile → ⋯ บนการ์ด | 1. เปิด viewer จากแท็บ Sold 2. เปิด ⋯ | `scr._pinTab="sold"` ถูกส่งเข้า `pmOwnMenuHTML` → แถว Pin อ่านสถานะจากแท็บ sold (โพสต์ในแท็บนี้แสดง "View sale record" แทน "Edit") | เมนู own ตรง context แท็บ | Medium | |
-| FO-TC-PV-039 | watch-alert solo: follow ถูก inject ในการ์ด | MEMBER | Func | watch alert row ของ seller ที่ยังไม่ follow | 1. เปิด solo viewer 2. ดู `.post-head` การ์ด | head pill ถูก remove → มี "Follow" ถูกแทรกหน้า ⋯ ในหัวการ์ดแทน; แตะ → follow ปกติ (guest → gate) | ปุ่มอยู่ใน head การ์ดไม่ใช่ head viewer | Medium | |
-| FO-TC-PV-040 | ⋯ บน pfp card (คนอื่น) = reportOnly | MEMBER | Func | pfp viewer ของ `Watch 777` | 1. แตะ ⋯ บนหัวการ์ด `p1` | art มี `.pfp-post` → `pmMenuHTML(reportOnly)` = sheet แถวเดียว "Report" (ไม่มี Add to favorites / Not interested — ต่างจาก feed/immersive) | pm sheet สั้นแถวเดียว danger | High | |
-| FO-TC-PV-041 | ⋯ บน pv rail / card ของคนอื่น = pm เต็ม | MEMBER | Func | immersive viewer `p1` + feedMode viewer | 1. แตะ ⋯ บน rail (immersive) 2. แตะ ⋯ บนหัวการ์ด (feedMode) | pm เต็ม: กลุ่ม fav (เฉพาะ following หรือเคย fav — `p1` seller ไม่ follow → ไม่มีแถว) + "Not interested" + "Report" | แถวตาม canFav | High | |
-| FO-TC-PV-042 | pm "Add to favorites" ⇄ "Remove from favorites" | MEMBER | Func | viewer ของ `p2` (seller `the watch` follow อยู่ → canFav) | 1. ⋯ → "Add to favorites" 2. ⋯ อีกครั้ง → "Remove from favorites" | `setFavorite` + toast "Added to favorites"/"Removed from favorites"; แถวสลับ label+icon ตาม `post.favorite` | sheet ปิดหลังเลือก + toast | Medium | |
-| FO-TC-PV-043 | pm "Not interested" | MEMBER | Func | immersive/feedMode viewer | 1. ⋯ → "Not interested" | `post.ni=true` → โพสต์หายจาก feed (niCard แทน) — บน viewer การ์ดยังอยู่จน re-render (memory-only) | toast/การ์ด feed หลังเปลี่ยน | Medium | |
-| FO-TC-PV-044 | pm "Report" → report flow entry | MEMBER | Func | viewer เปิด | 1. ⋯ → "Report" | `pmDropCovered` ปิด sheet ทันที + `rpOpenFromPost` → report sub เลื่อนทับ (`rp-over`) — flow ภายในอยู่ FO-TEST-15 | report page ทับ viewer | Medium | |
-| FO-TC-PV-045 | ⋯ บน own post = pm-own ครบ 6 แถว | OWNER | Func | pfp viewer ของตัวเอง หรือ ⋯ บน own card | 1. แตะ ⋯ บนโพสต์ตัวเอง (ไม่ใช่ sold) | `isOwnPost` → pmOwnMenuHTML: "Archive" · "Turn off commenting" · "Edit" · "Mark as sold" · "Pin to top of grid" · "Delete"(danger) | 6 แถวเต็ม ไม่ใช่ reportOnly | High | |
-| FO-TC-PV-046 | pm-own "Archive" ⇄ "Unarchive" | OWNER | Func | pm-own เปิดอยู่ | 1. แตะ "Archive" 2. ⋯ อีกครั้ง 3. แตะ "Unarchive" | toggle `post.archived` (+`archivedAt`, เอา pins ออกตอน archive) + `refreshPostViews` ทุก surface; แถวสลับ label ตามสถานะ | โพสต์หายจาก feed หลัก / กลับมา | Medium | |
-| FO-TC-PV-047 | pm-own "Turn off commenting" ⇄ "Turn on commenting" | OWNER | Func | pm-own เปิดอยู่ | 1. แตะ "Turn off commenting" 2. ดูการ์ด 3. เปิดอีกครั้ง → "Turn on commenting" | toggle `post.noComments` → ปุ่ม 💬 หายจากการ์ด/viewer rail/detail ของโพสต์นั้น + แถวสลับ label | comment icon หาย/กลับ | Medium | |
-| FO-TC-PV-048 | pm-own "Pin to top of grid" + sold post | OWNER | Func | pm-own จากแท็บ Posts (a) โพสต์ปกติ (b) โพสต์ sold | 1. แตะ "Pin to top of grid" 2. บน sold post เปิด ⋯ | pin → `pins[tab]` set + refresh (เกิน limit 3 → dialog เลือกแทนตัวเก่าสุด); sold post: แถว "Edit" กลายเป็น "View sale record" และไม่มี "Mark as sold" | pin ติดขอบบน grid หลังกลับ profile | Medium | |
-| FO-TC-PV-049 | pm-own "Delete" → confirm + ลบจริง | OWNER | Func | pm-own เปิดอยู่ | 1. แตะ "Delete" 2. อ่าน dialog 3. ยืนยัน | `dialog-open` confirm กลางจอ (ลบถาวร) → ยืนยันแล้วโพสต์ถูกลบจาก `PF_MINE`/list + refresh ทุก surface (ยกเลิก = ปิดเฉย ๆ) | โพสต์หายจาก grid/feed | High | |
-
-### 2.6 Detail — entry + layering
+### 2.3 Photo carousel + dots
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-DET-001 | "View full detail ›" จาก viewer → detail เหนือ pv | MEMBER | Func | immersive viewer `p1` → dt sheet เปิด | 1. แตะ "View full detail ›" | `details-open` ถูกเอาออกแต่ **`pv-open` ค้าง** → `.page-detail` เลื่อนทับ viewer; `detailPid=p1` | detail เต็มจอ; เงา viewer ไม่เห็น (ทับสนิท) | High | |
-| FO-TC-DET-002 | `detail-back` เผย viewer ข้างล่าง | MEMBER | Func | detail เปิดอยู่เหนือ viewer (DET-001) | 1. แตะ ← บน detail head | `detail-open` ออก → viewer โผล่ตำแหน่งเดิม (โพสต์เดิม scroll เดิม) — **กติกา: detail อยู่เหนือ viewer เสมอ** | pv-post เดิมกลับมา | High | |
-| FO-TC-DET-003 | "Tap for details" → "View full detail ›" จาก feed card | MEMBER | Func | feed หลักการ์ด `p1` | 1. แตะ "Tap for details" ใต้ caption 2. แตะ "View full detail ›" | `details-toggle` ขยาย specs inline ใต้ caption (ปุ่มกลาย "Hide details"); view-full → `openPostDetail` — ครั้งนี้ **ไม่มี pv/sub ข้างล่าง** → detail-back กลับ feed | inline details + link; detail ทับ feed | High | |
-| FO-TC-DET-004 | detail จาก pfp/svf card | MEMBER | Func | feedMode/pfp viewer การ์ด `p4` | 1. "Tap for details" → "View full detail ›" 2. ← detail-back | card → inline details → view-full → detail ทับ viewer (pv-open ค้าง); back → viewer ตำแหน่งเดิม | เหมือน DET-001/002 บน card mode | Medium | |
-| FO-TC-DET-005 | detail เปิดจาก guest (browse) | GUEST | Func | guest เปิด viewer → dt → view-full | 1. เปิด detail ของ `p1` 2. แตะ ← | guest เปิด/อ่าน detail ได้ครบ (view-full/back ไม่ gate) — เฉพาะ action ที่ gate | detail render เต็มเหมือน member | Medium | |
+| FO-TC-PV-026 | tap ซ้าย/ขวาครึ่งรูป (wrap) | MEMBER | Func | การ์ดหลายรูปใน list/pfp viewer + immersive (ทำทั้งสอง mode) | 1. แตะครึ่งขวาจนครบรอบ 2. แตะครึ่งซ้ายที่รูปแรก | tap = วนรอบ: รูปสุดท้าย → กลับรูป 1 · ครึ่งซ้ายที่รูป 1 → วนไปรูปสุดท้าย | counter "n/m" + dot on ตาม index | High | |
+| FO-TC-PV-027 | swipe ซ้าย/ขวา (bounded) | MEMBER | Func | การ์ด/immersive หลายรูป | 1. swipe ซ้ายจากรูป 1 2. swipe ซ้ายที่รูปสุดท้าย 3. swipe ขวาที่รูปแรก | swipe ผ่าน threshold → เปลี่ยนรูป; ที่ขอบแรก/สุดท้าย = ต้าน (resistance) **ไม่วน** — ต่างจาก tap | รูปลากตามนิ้วแล้วเด้งกลับเมื่อเกินขอบ | High | |
+| FO-TC-PV-028 | swipe แนวตั้งไม่กิน carousel | MEMBER | Edge | การ์ดหลายรูปใน track | 1. กดบนรูปแล้วลากแนวตั้ง >แนวนอน | gesture แนวตั้งถูกยกให้ scroll → track เลื่อนตามปกติ (scroll ชนะ) | ไม่ติดเปลี่ยนรูประหว่าง scroll หน้า | Medium | |
+| FO-TC-PV-029 | dots + counter เฉพาะหลายรูป | MEMBER | UI | เทียบ POST-X (หลายรูป) กับ POST-Y (รูปเดียว) ทั้งการ์ดและ immersive | 1. ดู media ของทั้งสองโพสต์ | รูปเดียว → ไม่มี counter/dots เลย; หลายรูป → counter "1/m" + dots (immersive = counter/dots บน media ตาม design) | dot on = รูปแรกเสมอตอนเปิด (ยกเว้นเปิดจาก tile index อื่น) | Medium | |
 
-### 2.7 Detail — content (dl1)
-
-| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
-|---|---|---|---|---|---|---|---|---|---|
-| FO-TC-DET-006 | detail head + hero anatomy | MEMBER | UI | detail ของ `p1` | 1. ดู head + hero | head (ย้ายเข้าใน `.detail-scroll`): ← + title "Detail" + ⋯ (`pm-btn`); hero: รูป + counter "1/3" มุมขวาบน + dots ใต้รูป | ตรง dl1 layout | High | |
-| FO-TC-DET-007 | hero photo nav + dots | MEMBER | Func | detail `p1` | 1. แตะขวา/ซ้ายครึ่งรูป 2. swipe | `.detail-hero` ใช้ handler เดียวกับการ์ด: tap wrap + swipe bounded + counter/dots update | counter "n/3" + dot .on ตรง | High | |
-| FO-TC-DET-008 | tag FOR SALE + name/ref/desc | MEMBER | UI | detail `p1` | 1. ดูใต้ action row | tag "FOR SALE"; `detail-name` = "Rolex Submariner Date" (Brand+Model จาก specs); `detail-ref` = "Ref. 126610LN"; หัว "Descriptions" + `p.desc` เต็ม | name จาก specs ไม่ใช่ caption ดิบ | High | |
-| FO-TC-DET-009 | tg2 — p2/p5 ไม่มี tag | MEMBER | Edge | detail `p2` และ `p5` | 1. เปิด detail 2. ดูตำแหน่ง tag | `POST_DETAIL_CFG` ทั้งคู่ `tg:"tg2"` → `saleTagHTML` คืนค่าว่าง — **ไม่มี FOR SALE tag** แม้เป็น sale (cfg จริงของโพสต์ ไม่ใช่ dev toggle) | ไม่มี inline-tag | Medium | |
-| FO-TC-DET-010 | spec groups ครบ 3 กลุ่ม + Price & Data Source | MEMBER | Func | detail `p1` | 1. scroll ผ่าน spec sections | `detailSpecsHTML` render **ทุกกลุ่มรวม "Price & Data Source"** (ต่างจาก details sheet ที่ filter ออก): "Watch Specifications" 20 แถว, "Item Details" 4 แถว, "Price & Data Source" 4 แถว — แต่ละกลุ่ม head + rows label/value | โครง ds=full: แถว 2 คอลัมน์ l/v | High | |
-| FO-TC-DET-011 | ราคาใน spec rows ตาม money rules | MEMBER | UI | detail `p1` | 1. อ่าน "Price & Data Source" | Asking Price "THB 420,000" · Estimated Market Price "THB 400,000 – 445,000" (literal ตาม mock — ดู GAP-06) · Last Price Update "2026-10-07" · Data Source "TukDaeng Market Data" — เต็มจำนวน comma ไม่มีทศนิยม | ไม่มี ฿/ทศนิยม | High | |
-| FO-TC-DET-012 | ไม่มี price element แยกใน dl1 | MEMBER | Edge | detail `p1` | 1. หา element ราคาโดด ๆ | dl1 ไม่มี `.detail-price`/price row แยก — ราคามีเฉพาะใน spec group เท่านั้น (pr1–4 มีผลเฉพาะ dl2 harness) | ราคาอยู่ใน spec rows เดียว | Medium | |
-| FO-TC-DET-013 | showcase ไม่มีทางเข้า detail จากการ์ด | MEMBER | Edge | feed/feedMode การ์ด `p3` (specGroups=[], price=null) | 1. ดูใต้ caption การ์ด `p3` 2. ลองหา "Tap for details" | `hasDetails = price‖specGroups‖specs` → showcase ไม่ render trigger/details-toggle เลย → **ไม่มีทางเข้า detail จากการ์ด/viewer** (เข้าได้เฉพาะ path อื่นเช่น chat post card — นอก scope) → บันทึก GAP-04 | ไม่มีปุ่ม "Tap for details" ใต้ caption | Medium | |
-| FO-TC-DET-014 | hashtag ใน desc → search | MEMBER | Func | detail `p1` | 1. แตะ `#Rolex` ใน Descriptions | `.igd-tag` → `openSub("search")` query = `#Rolex` mode results ทับ detail | search sub เปิดผล `#Rolex` | Low | |
-| FO-TC-DET-015 | detail ⋯ = pm ตาม ownership | MEMBER + OWNER | Func | detail `p1` (คนอื่น) + detail own post | 1. แตะ ⋯ บน detail head ทั้งสองกรณี | `pmPid=detailPid` (ไม่มี `.post` ancestor): คนอื่น → pm เต็ม (ไม่ใช่ reportOnly เพราะไม่ใช่ pfp-post); ตัวเอง → pm-own 6 แถว | เมนูตรง owner | High | |
-| FO-TC-DET-016 | detail scroll ลื่น + head ติดบน | MEMBER | UI | detail `p1` | 1. scroll ลงสุด spec 2. scroll กลับ | `.detail-scroll` scroll ภายใน; head อยู่ใน scroller (prepend) → เลื่อนไปพร้อมเนื้อหา (ไม่ fixed) — scrollTop รีเซ็ต 0 ทุกครั้งที่เปิด | เปิดใหม่เริ่มบนสุดเสมอ | Low | |
-| FO-TC-DET-017 | เปิด detail ซ้ำ post อื่น | MEMBER | Edge | detail `p1` เปิด → back → เปิด `p6` | 1. เปิด detail `p6` (1 รูป) | `detailPid` เขียนใหม่ + render ใหม่ทั้งหน้า — `p6` ไม่มี counter/dots (รูปเดียว) | ไม่มีของ `p1` ค้าง | Medium | |
-| FO-TC-DET-018 | owner section / Ask / save / chat-fab ไม่มีใน dl1 | MEMBER | UI | detail `p1` | 1. หา follow-btn/ask-pill/save-btn/chat-fab บนหน้า | dl1 ไม่ render post-head/owner section, ไม่มี "Ask Seller" pill, ไม่มี save-btn, ไม่มี chat-fab — ทั้งหมดอยู่เฉพาะ dl2 (dev sidebar harness ไม่ใช่ flow จริง) → บันทึก GAP-02 | ปุ่มที่มี: like/💬/👁/share + 🔔mf + 🎁wl | Medium | |
-| FO-TC-DET-019 | "related" section ไม่มี | MEMBER | UI | detail `p1` scroll สุด | 1. หาส่วน related posts | ไม่มี related/more-from-seller section ใน detailHTML — ท้ายหน้าคือ spec groups แล้วจบ → บันทึก GAP-05 | ไม่มี grid โพสต์อื่น | Low | |
-
-### 2.8 Detail — clip hero
+### 2.4 Clip — เล่นจริงพร้อมเสียง
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-DET-020 | clip hero autoplay — path ไม่มี sub | MEMBER | Func | SETUP-06 own clip post อยู่ feed หลัก → feed card → "Tap for details" → view-full | 1. เปิด detail จาก feed | `.detail-hero.clip-ph` เล่น เพราะ `subOpen=false` (feed ไม่มี sub) — badge นับ + progress เดิน | badge/progress เหมือนการ์ด | High | |
-| FO-TC-DET-021 | clip hero เงียบเมื่อมี sub/pv ข้างล่าง | MEMBER | Edge | clip post เปิดผ่าน viewer → view-full | 1. เปิด detail เหนือ pv | `inSub=false` → `on=!subOpen=false` → badge แสดงเวลาเต็มแต่ **ไม่นับถอยหลัง** (quirk: hero clip ไม่เล่นเมื่อ sub เปิดอยู่ข้างล่าง) | badge ค้าง ไม่มี progress | Medium | |
-| FO-TC-DET-022 | hero clip reset เมื่อสลับรูป | MEMBER | Func | clip post มีรูปเพิ่ม | 1. เปลี่ยน slide ไปรูปธรรมดาแล้วกลับ | `phClipSet` reset dur/progress ของ slide clip | badge กลับเวลาเต็ม | Low | |
-| FO-TC-DET-023 | clip ปิดเมื่อ detail-back | MEMBER | Func | clip กำลังเล่นบน detail | 1. แตะ ← | detail ออกจาก DOM flow (`detail-open` ออก) → tick ไม่เห็น surface → ไม่มี clip เล่นค้าง | ไม่มี badge ลอย | Low | |
+| FO-TC-PV-030 | clip บนการ์ดใน pfp/list viewer | MEMBER | Func | SETUP-13: own clip post → pfp/list viewer | 1. เลื่อนให้ clip อยู่กลางจอ 2. เลื่อนจน clip หลุดจอ | วิดีโอเล่นอัตโนมัติเมื่อเห็นส่วนใหญ่ของจอ (>55% = design ref) + **เสียงตามระดับเครื่อง**; เลื่อนหลุด → หยุด | badge/progress/control ตาม design — ไม่ใช่ภาพนิ่ง | High | |
+| FO-TC-PV-031 | clip reset เมื่อสลับ slide | MEMBER | Func | clip post มี media อื่นต่อท้าย (SETUP-13 เลือกวิดีโอ+รูป หรือหลายชิ้น) | 1. ให้ clip เล่นสักพัก 2. เปลี่ยน slide ไปรูปอื่นแล้วกลับ | เปลี่ยน slide ออก → clip หยุด; กลับมา → เล่นใหม่ตั้งแต่ต้น (state ของ slide นั้น reset) | badge/ตำแหน่งเล่นกลับจุดเริ่มต้น | Medium | |
+| FO-TC-PV-032 | clip ใน immersive viewer เล่นได้ (spec ล็อก) | MEMBER | Func | own clip post เจอใน search/explore → แตะ tile | 1. เปิด tile ของ clip post ใน immersive viewer | clip slide เล่นวิดีโอจริงพร้อมเสียงตามเครื่อง — เหมือนมาตรฐาน viewer ทั่วไป (prototype เดิมเป็นรูปนิ่ง — spec ล็อกใหม่ให้เล่นได้) | มี badge dur/control ตาม design | High | |
+| FO-TC-PV-033 | เสียงคลิป + หยุด/เล่น | MEMBER | Func | clip กำลังเล่นบน viewer/detail | 1. ฟังเสียง 2. แตะ media/control เพื่อหยุด 3. แตะอีกครั้งเล่นต่อ | เสียงดังตาม volume เครื่อง (ไม่ใช่คลิปเงียบถาวร); มีวิธีหยุด/เล่นต่อตาม design (แตะคลิป/ปุ่ม — จดวิธีจริงลง Note) — ถ้า build ไม่มีทางหยุดหรือเล่นเงียบถาวร → flag ทีม | control เห็น/ใช้ได้ | High | |
 
-### 2.9 Detail — actions + `[GATE]`
+### 2.5 pfp viewer + Follow pill
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-DET-024 | like-btn บน detail (member) | MEMBER | Func | detail `p3` | 1. แตะ ♡ 2. back ไป viewer ดู rail | toggle liked; rail ♡ บน viewer ข้างล่าง sync เพราะอ่าน `post.liked` เดียวกันเมื่อ re-render | icon สลับทันที | High | |
+| FO-TC-PV-034 | pfp head anatomy + back | MEMBER | UI | pfp viewer จาก tile ของ seller POST-X | 1. ดู head 2. แตะ ← | head: ← + "Posts"/username + spacer + pill "Follow" (ถ้ายังไม่ follow); back → กลับ profile grid แท็บเดิม | ไม่มีไอคอนค้นหาใน pfp head | Medium | |
+| FO-TC-PV-035 | pfp-follow pill — member (fade) | MEMBER | Func | pfp viewer ของ ACCT-2 ที่ยังไม่ follow | 1. แตะ "Follow" บน head 2. รอสักครู่ | pill flip เป็น "Following" แล้ว fade หายไปเอง (~1.2s = design ref จดจริงลง Note); ผล follow sync ทั้งแอป | pill หายจาก head | High | |
+| FO-TC-PV-036 | pfp-follow — guest `[GATE]` | GUEST + MEMBER | Func | pfp viewer ของ user ที่ยังไม่ follow | 1. (guest) แตะ pill 2. (member) แตะ pill | guest → Member Sheet ไม่มีการ follow; member → follow ปกติตาม PV-035 | Member Sheet ทับ viewer | High | |
+| FO-TC-PV-037 | ไม่มี pill เมื่อ follow แล้ว/ตัวเอง/blocked | MEMBER | Edge | เปิด pfp ของ (a) seller ที่ follow แล้ว (b) own profile (c) user ที่ block ไว้ (ถ้าแอปมีฟีเจอร์ block — ไม่มี mark N/A) | 1. ดู head ทั้ง 3 กรณี | pill render เฉพาะ user≠ตัวเอง + ยังไม่ follow + ไม่ block — ทั้ง 3 กรณี head ไม่มี pill | head ว่างช่วงขวา | Medium | |
+| FO-TC-PV-038 | tab context บน own profile viewer | OWNER | Func | own profile → แท็บ "Sold" → แตะ tile → ⋯ บนการ์ด | 1. เปิด viewer จากแท็บ Sold 2. เปิด ⋯ | เมนู own อ่าน context ของแท็บ: โพสต์ sold แสดง "View sale record" แทน "Edit" และไม่มี "Mark as sold" (spec ล็อก: sold แก้ไม่ได้) | เมนู own ตรง context แท็บ | Medium | |
+| FO-TC-PV-039 | watch-alert solo: Follow อยู่ในหัวการ์ด | MEMBER | Func | SETUP-16+17: watch row ของ ACCT-2 ที่ยังไม่ follow | 1. เปิด solo viewer 2. ดูหัวการ์ด 3. แตะ "Follow" ในการ์ด | ไม่มี pill บน head — "Follow" ถูกแทรกหน้า ⋯ ในหัวการ์ดแทน (spec ล็อก); แตะ → follow จริง | ปุ่มอยู่ในหัวการ์ดไม่ใช่ head viewer | Medium | |
+
+### 2.6 ⋯ Post menus (คนอื่น / เจ้าของ)
+
+| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
+|---|---|---|---|---|---|---|---|---|---|
+| FO-TC-PV-040 | ⋯ บน pfp card ของคนอื่น = Report เท่านั้น | MEMBER | Func | pfp viewer ของ seller POST-X | 1. แตะ ⋯ บนหัวการ์ด | sheet แถวเดียว "Report" (reportOnly — ต่างจากเมนูเต็มบน feed/immersive) | sheet สั้นแถวเดียว | High | |
+| FO-TC-PV-041 | ⋯ บน rail/card ของคนอื่น = เมนูเต็ม + Ask pill gate | GUEST + MEMBER | Func | immersive viewer POST-X + list-mode viewer | 1. แตะ ⋯ บน rail (immersive) 2. แตะ ⋯ บนหัวการ์ด (list mode) 3. (guest) แตะ "Ask" บนการ์ด sale | ⋯ → เมนูเต็ม: กลุ่ม favorites (เฉพาะ follow/fav แล้ว) + "Not interested" + "Report"; Ask pill บนการ์ด sale — guest แตะ → Member Sheet (gate) · member → เข้า chat seller | แถวตามสถานะ follow/fav | High | |
+| FO-TC-PV-042 | "Add to favorites" ⇄ "Remove from favorites" | MEMBER | Func | viewer ของ seller ที่ follow/fav ได้ | 1. ⋯ → "Add to favorites" 2. ⋯ → "Remove from favorites" | toggle favorite + toast; แถวสลับ label+icon ตามสถานะ | sheet ปิดหลังเลือก + toast | Medium | |
+| FO-TC-PV-043 | "Not interested" | MEMBER | Func | immersive/list viewer | 1. ⋯ → "Not interested" | โพสต์ถูก mark — หายจาก feed หลัก (เห็นผลเมื่อกลับ feed) + feedback toast | feed หลังไม่มีโพสต์นั้น | Medium | |
+| FO-TC-PV-044 | "Report" → report flow entry | MEMBER | Func | viewer เปิด | 1. ⋯ → "Report" | เมนูปิด → หน้า report เลื่อนทับ viewer — flow ข้างในอยู่ FO-TEST-15 | report page ทับ viewer | Medium | |
+| FO-TC-PV-045 | ⋯ บน own post = เมนูเจ้าของครบ | OWNER | Func | own post ใน pfp/list viewer (ไม่ใช่ sold) | 1. แตะ ⋯ บนโพสต์ตัวเอง | เมนูเจ้าของ 6 แถว: "Archive" · "Turn off commenting" · "Edit" · "Mark as sold" · "Pin to top of grid" · "Delete" (danger) | 6 แถวเต็ม ไม่ใช่ reportOnly | High | |
+| FO-TC-PV-046 | "Archive" ⇄ "Unarchive" | OWNER | Func | เมนูเจ้าของเปิดอยู่ | 1. แตะ "Archive" 2. ⋯ อีกครั้ง 3. แตะ "Unarchive" | toggle archive — โพสต์หายจาก feed/grid เข้า Archive / กลับมา; แถวสลับ label ตามสถานะ | โพสต์หาย/กลับทุก surface | Medium | |
+| FO-TC-PV-047 | "Turn off commenting" ⇄ "Turn on commenting" | OWNER | Func | เมนูเจ้าของบนโพสต์ตัวเอง (verify จาก ⋯ เมนูเท่านั้น — spec ล็อก) | 1. แตะ "Turn off commenting" 2. ดูการ์ด/viewer/detail ของโพสต์นั้น 3. เปิดอีกครั้ง → "Turn on commenting" | toggle noComments → ไอคอน 💬 หายจากการ์ด/rail/detail + **"Add comment…" หายด้วย** (spec ล็อก); แถวสลับ label | comment icon + Add comment หาย/กลับ | Medium | |
+| FO-TC-PV-048 | "Pin to top of grid" + เมนู sold post | OWNER | Func | เมนูเจ้าของจากแท็บ Posts (a) โพสต์ปกติ (b) โพสต์ sold (SETUP-12) | 1. แตะ "Pin to top of grid" 2. ⋯ บน sold post | pin → โพสต์ติดบน grid แท็บนั้น (เกิน limit → dialog เลือกแทนตัวเก่าสุด — จด limit จริงลง Note อ้างอิง design 3); sold post: แถว "Edit" → "View sale record" ไม่มี "Mark as sold" | pin ติดขอบบน grid หลังกลับ profile | Medium | |
+| FO-TC-PV-049 | "Delete" → confirm + ลบจริง | OWNER | Func | เมนูเจ้าของเปิดอยู่ | 1. แตะ "Delete" 2. อ่าน dialog 3. ยืนยัน | dialog confirm กลางจอ (ลบถาวร) → ยืนยันแล้วโพสต์ถูกลบจากทุก surface (ยกเลิก = ปิดเฉย ๆ) | โพสต์หายจาก grid/feed | High | |
+
+### 2.7 Detail — entry + layering
+
+| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
+|---|---|---|---|---|---|---|---|---|---|
+| FO-TC-DET-001 | "View full detail ›" จาก viewer → detail เหนือ viewer | MEMBER | Func | immersive viewer POST-X → dt sheet เปิด | 1. แตะ "View full detail ›" | dt sheet ปิด + detail เลื่อนทับเต็มจอ — viewer ยังอยู่ข้างล่าง | detail เต็มจอทับสนิท | High | |
+| FO-TC-DET-002 | ← detail เผย viewer ข้างล่าง (+ device back) | MEMBER | Func | detail เปิดอยู่เหนือ viewer (DET-001) | 1. แตะ ← บน detail head 2. (Android) เปิดอีกครั้งแล้วกด device back | detail ปิด → viewer โผล่ตำแหน่งเดิม (โพสต์เดิม scroll เดิม) — **กติกา: detail อยู่เหนือ viewer เสมอ**; device back เทียบเท่า ← | pv-post เดิมกลับมา | High | |
+| FO-TC-DET-003 | "Tap for details" → "View full detail ›" จาก feed card | MEMBER | Func | feed หลักการ์ด POST-X | 1. แตะ "Tap for details" ใต้ caption 2. แตะ "View full detail ›" | inline details ขยายใต้ caption (ปุ่มกลาย "Hide details"); view-full → detail ทับ feed — back กลับ feed (ไม่มี viewer ข้างล่าง) | inline details + link; detail ทับ feed | High | |
+| FO-TC-DET-004 | detail จาก card-mode viewer | MEMBER | Func | list/pfp viewer การ์ด POST-X | 1. "Tap for details" → "View full detail ›" 2. ← | card → inline details → view-full → detail ทับ viewer; back → viewer ตำแหน่งเดิม | เหมือน DET-001/002 บน card mode | Medium | |
+| FO-TC-DET-005 | detail เปิดจาก guest (browse) | GUEST | Func | guest เปิด viewer → dt → view-full | 1. เปิด detail ของ POST-X 2. แตะ ← | guest เปิด/อ่าน detail ได้ครบ — เฉพาะ action ที่ gate | detail render เต็มเหมือน member | Medium | |
+
+### 2.8 Detail — content
+
+| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
+|---|---|---|---|---|---|---|---|---|---|
+| FO-TC-DET-006 | detail head + hero anatomy | MEMBER | UI | detail ของ POST-X | 1. ดู head + hero 2. scroll ลงดู spec | head: ← + "Detail" + ⋯ **ติดบนตลอดขณะ scroll** (spec ล็อก — fixed); hero: รูป + counter "1/n" มุมขวาบน + dots ใต้รูป | head ไม่เลื่อนหายตามเนื้อหา | High | |
+| FO-TC-DET-007 | hero photo nav + dots | MEMBER | Func | detail POST-X | 1. แตะขวา/ซ้ายครึ่งรูป 2. swipe | hero ใช้กติกาเดียวกับการ์ด: tap wrap + swipe bounded + counter/dots ตาม index | counter "n/m" + dot on ตรง | High | |
+| FO-TC-DET-008 | tag FOR SALE + name/ref/desc | MEMBER | UI | detail ของโพสต์ขาย (POST-X หรือ own sale SETUP-09) | 1. ดูใต้ action row | tag "FOR SALE" (สถานะ Sale); name = Brand+Model จาก specs; "Ref. …"; หัว "Descriptions" + desc เต็ม | name จาก specs ไม่ใช่ caption ดิบ | High | |
+| FO-TC-DET-009 | status tag ตามสถานะ asset (spec ล็อก) | OWNER + MEMBER | Func | own posts จาก SETUP-09/10/11/12 | 1. เปิด detail ของ: feed-only post · asset Sale · asset Show · sold post · asset Hide 2. เปิด detail โพสต์คนอื่นด้วย MEMBER | feed post ธรรมดา (ไม่ผูก assets) → **ไม่มี tag**; Sale → "FOR SALE" · Show → "SHOWCASE" · Sold → "SOLD" · Hide → "HIDDEN" — tag ตามสถานะไม่ใช่ราคา (sale ไม่ใส่ราคาก็ยัง FOR SALE); คนอื่นเห็นเฉพาะ sale/show (sold/hide เข้าถึงได้เฉพาะเจ้าของ) | tag ตรงสถานะทุกแท็บ | High | |
+| FO-TC-DET-010 | spec groups ครบ + "Price & Data Source" | MEMBER | Func | detail ของ own sale post (SETUP-09) | 1. scroll ผ่าน spec sections | spec แสดงทุกกลุ่มรวม "Price & Data Source" (ต่างจาก details sheet ที่ตัดออก) — แต่ละกลุ่ม head + rows label/value | โครงกลุ่มชัดเจน | High | |
+| FO-TC-DET-011 | ราคาใน spec rows ตาม money rules | MEMBER | UI | detail ของโพสต์ที่มีราคา+MODEL-X specs | 1. อ่าน "Price & Data Source" | Asking Price "THB x,xxx,xxx" เต็มจำนวน comma ไม่มีทศนิยม · **Estimated Market Price = ค่าประเมินจาก market data จริงของรุ่นนั้น** (จดค่าจริงลง Note — ถ้าเป็น band −5%/+6% รอบราคาตั้งขาย → flag ทีม) · Last Price Update + Data Source ตาม design | ไม่มี ฿/ทศนิยม | High | |
+| FO-TC-DET-012 | ไม่มี price element แยกนอก spec rows | MEMBER | Edge | detail POST-X | 1. หา element ราคาโดด ๆ | ราคาอยู่ใน spec group "Price & Data Source" เท่านั้น — ไม่มี price row แยก | ราคาอยู่ใน spec rows เดียว | Medium | |
+| FO-TC-DET-013 | โพสต์ไม่มีรายละเอียด = ไม่มีทางเข้า detail | MEMBER | Edge | การ์ด POST-Z (ไม่มี specs/ราคา) + asset Show ที่มี specs (SETUP-11) | 1. ดูใต้ caption การ์ด POST-Z 2. เปิด own Show tab → tile ของ asset Show | POST-Z → ไม่มี "Tap for details"/"View full detail" เลย (เข้า detail ไม่ได้); asset Show ที่มี specs → มี "Tap for details" เข้า detail ได้ปกติ + tag SHOWCASE (spec ล็อก: ทางเข้าขึ้นกับมีรายละเอียด ไม่เกี่ยวราคา/feed) | ปุ่มมี/ไม่มีตามเงื่อนไข | Medium | |
+| FO-TC-DET-014 | hashtag ใน desc → search | MEMBER | Func | detail ของโพสต์ที่มี #tag ใน Descriptions | 1. แตะ hashtag | เปิด search ผลของ tag นั้นทับ detail | search page เหนือ detail | Low | |
+| FO-TC-DET-015 | detail ⋯ = เมนูตาม ownership | MEMBER + OWNER | Func | detail โพสต์คนอื่น + detail own post | 1. แตะ ⋯ บน detail head ทั้งสองกรณี | คนอื่น → เมนูเต็ม (fav/Not interested/Report); ตัวเอง → เมนูเจ้าของ 6 แถว (PV-045) | เมนูตรง owner | High | |
+| FO-TC-DET-016 | detail scroll + head fixed | MEMBER | UI | detail POST-X | 1. scroll ลงสุด spec 2. scroll กลับ 3. ปิดแล้วเปิดใหม่ | scroll ภายในลื่น; **head ติดบนไม่เลื่อนหาย** (spec ล็อก); เปิดใหม่เริ่มบนสุดเสมอ (scrollTop reset) | head ค้างตำแหน่ง | Low | |
+| FO-TC-DET-017 | เปิด detail โพสต์อื่นต่อ | MEMBER | Edge | detail POST-X เปิด → back → เปิด POST-Y | 1. เปิด detail POST-Y (รูปเดียว) | render ใหม่ทั้งหน้า — ไม่มี counter/dots (รูปเดียว) ไม่มีของโพสต์ก่อนค้าง | สะอาดไม่มี state เดิม | Medium | |
+| FO-TC-DET-018 | ไม่มี owner row / Ask / save / chat bubble บน detail | MEMBER | UI | detail POST-X | 1. หา follow-btn/Ask Seller/save-btn/chat-fab บนหน้า | ไม่มีทั้งหมด (spec ล็อก — detail มีเฉพาะ like/💬/👁/share + 🔔 follow model + 🎁 wishlist + ⋯) | ปุ่มที่มีครบตาม list | Medium | |
+| FO-TC-DET-019 | ไม่มี related posts section | MEMBER | UI | detail POST-X scroll สุด | 1. หาส่วน related/more-from-seller | ไม่มี — ท้ายหน้าคือ spec groups แล้วจบ (spec ล็อก: intentionally absent) | ไม่มี grid โพสต์อื่น | Low | |
+
+### 2.9 Detail — clip hero
+
+| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
+|---|---|---|---|---|---|---|---|---|---|
+| FO-TC-DET-020 | clip hero เล่น — เข้าจาก feed ตรง | MEMBER | Func | SETUP-13: clip post อยู่ feed หลัก → "Tap for details" → "View full detail ›" | 1. เปิด detail จาก feed card | hero clip เล่นวิดีโอจริงพร้อมเสียง (autoplay เมื่อเห็นบนจอ) | badge/control ตาม design | High | |
+| FO-TC-DET-021 | clip hero เล่นเหมือนกัน — เข้าผ่าน viewer (spec ล็อก) | MEMBER | Func | clip post เปิดผ่าน viewer → dt → "View full detail ›" | 1. เปิด detail เหนือ viewer | clip **เล่นปกติไม่ต่างจาก DET-020** — ทางเข้าไม่กระทบการเล่น (prototype เดิมเงียบเมื่อมี sub ข้างล่าง — spec ล็อกใหม่ให้เล่นเสมอ) | badge/control เดินจริง | High | |
+| FO-TC-DET-022 | hero clip reset เมื่อสลับรูป | MEMBER | Func | clip post มีรูปเพิ่ม | 1. เปลี่ยน slide ไปรูปธรรมดาแล้วกลับ | clip slide หยุดเมื่อออก + เล่นใหม่ตั้งแต่ต้นเมื่อกลับ | เวลา/progress reset | Low | |
+| FO-TC-DET-023 | clip หยุดเมื่อออกจาก detail | MEMBER | Func | clip กำลังเล่นบน detail | 1. แตะ ← | detail ปิด → เสียง/การเล่นหยุดทันที ไม่มีเสียงค้างเบื้องหลัง | เงียบหลัง back | Medium | |
+
+### 2.10 Detail — actions + `[GATE]`
+
+| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
+|---|---|---|---|---|---|---|---|---|---|
+| FO-TC-DET-024 | like-btn บน detail (member) — sync | MEMBER | Func | detail ของโพสต์ที่ยังไม่ like เปิดเหนือ viewer | 1. แตะ ♡ 2. back ไป viewer ดู rail | toggle liked; rail ♡ บน viewer ข้างล่าง sync (state เดียวกัน) | icon สลับทันทีทั้งสองชั้น | High | |
 | FO-TC-DET-025 | like-btn — guest `[GATE]` | GUEST + MEMBER | Func | detail เปิด | 1. (guest) แตะ ♡ 2. (member) แตะ ♡ | guest → Member Sheet ไม่ toggle; member → toggle ปกติ | ตาม gate | High | |
-| FO-TC-DET-026 | share-btn — guest `[GATE]` | GUEST + MEMBER | Func | detail เปิด | 1. (guest) แตะ share 2. (member) แตะ share | guest → Member Sheet; member → sh sheet เด้งเหนือ detail (entry เท่านั้น — mechanics FO-TEST-07) | sheet ทับ detail | High | |
-| FO-TC-DET-027 | mf-btn 🔔 (follow model → watch alert) — `[GATE]` | GUEST + MEMBER | Func | detail `p1` | 1. (guest) แตะ 🔔 2. (member) แตะ 🔔 3. (member,มี alert อยู่แล้ว) แตะอีกครั้ง | guest → Member Sheet; member → wa sheet เปิด (`_waDraft` ใหม่ หรือโหลด alert ที่มี modelKey เดียวกัน → edit) — icon `.on` เมื่อ `modelFollowing` | title "Follow this model" | High | |
-| FO-TC-DET-028 | wl-btn 🎁 (wishlist) — `[GATE]` | GUEST + MEMBER | Func | detail `p4` | 1. (guest) แตะ 🎁 2. (member) แตะ 🎁 | guest → Member Sheet; member → wl sheet (entry) — icon `.saved` เมื่อ `wishlisted` | wl-o/wl-f icon swap | High | |
-| FO-TC-DET-029 | detail ⋯ — guest `[GATE]` | GUEST + MEMBER | Func | detail `p1` | 1. (guest) แตะ ⋯ 2. (member) แตะ ⋯ | guest → Member Sheet; member → pm sheet (DET-015) | ตาม gate | High | |
+| FO-TC-DET-026 | share-btn — guest `[GATE]` | GUEST + MEMBER | Func | detail เปิด | 1. (guest) แตะ share 2. (member) แตะ share | guest → Member Sheet; member → share sheet เด้งเหนือ detail (mechanics FO-TEST-07) | sheet ทับ detail | High | |
+| FO-TC-DET-027 | 🔔 follow model → watch alert — `[GATE]` + alert จริง | GUEST + MEMBER | Func | detail ของโพสต์ MODEL-X · SETUP-16 alert ON | 1. (guest) แตะ 🔔 2. (member) แตะ 🔔 3. (member) มี ACCT-2 โพสต์ match alert | guest → Member Sheet; member → wa sheet เปิด (สร้างใหม่/แก้ของเดิมตาม model เดียวกัน) → icon on เมื่อ alert ON; match จริง → toast สองจังหวะ (โพสต์เผยแพร่ + "Watch alert matched: …" ~2s = design ref จดจริงลง Note) | icon ตามสถานะ alert | High | |
+| FO-TC-DET-028 | 🎁 wishlist — `[GATE]` | GUEST + MEMBER | Func | detail เปิด | 1. (guest) แตะ 🎁 2. (member) แตะ 🎁 | guest → Member Sheet; member → wl sheet (entry) — icon swap เมื่อ wishlisted | wl outline/filled ตามสถานะ | High | |
+| FO-TC-DET-029 | detail ⋯ — guest `[GATE]` | GUEST + MEMBER | Func | detail เปิด | 1. (guest) แตะ ⋯ 2. (member) แตะ ⋯ | guest → Member Sheet; member → เมนูตาม ownership (DET-015) | ตาม gate | High | |
 
-### 2.10 Comments / likes — entry + state sync (mechanics → FO-TEST-07)
-
-| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
-|---|---|---|---|---|---|---|---|---|---|
-| FO-TC-DET-030 | comment-btn บน detail → comments sheet | MEMBER | Func | detail `p1` (comments=2) | 1. แตะ 💬 | comments sheet เปิดพร้อม comments ของ `p1` (seed COMMENTS มีจริง) — จำนวนบน icon ตรง `post.comments` | sheet ทับ detail | Medium | |
-| FO-TC-DET-031 | comment-btn — guest เปิด sheet ได้ แต่ input gate | GUEST | Func | detail เปิด | 1. แตะ 💬 2. แตะช่อง "Add a comment…" | `.comment-btn` ไม่ gate → sheet เปิดอ่านได้; แตะ `.comment-input`/emoji → Member Sheet | read-only สำหรับ guest | Medium | |
-| FO-TC-DET-032 | lk sheet entry — ไม่มีบน detail dl1 | MEMBER | Func | detail `p1` + viewer `p1` + feedMode card | 1. หา likes row บน detail 2. แตะ "Likes" บน pv rail 3. แตะ liked-by row บนการ์ด | dl1 detail **ไม่มี** likes/liked-by entry (ไม่เหมือน dl2); lk sheet เปิดได้จาก pv rail "Likes" + liked-by row บนการ์ด — liker rows: `likedBy` + pool; owner เห็นจำนวน คนอื่นเห็น "and others" | entry มีเฉพาะ viewer/การ์ด | Medium | |
-| FO-TC-DET-033 | state sync like/comment ข้าม surface | MEMBER | Int | viewer `p1` เปิด + detail `p1` เคยเปิด | 1. like บน detail → back → ดู rail viewer 2. unlike → back | state เดียวกัน (`post.liked`) — surface ที่ re-render สะท้อนค่าล่าสุด; การ์ด feed หลักก็ sync (refreshPostViews เมื่อ own-menu/like) | ไม่มีค้างสถานะเก่า | Medium | |
-
-### 2.11 States + edge + i18n/theme
+### 2.11 Comments / likes — entry + state sync (mechanics → FO-TEST-07)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-DET-034 | `noComments` — ปุ่ม 💬 หายทุก surface | OWNER | Func | own post ตั้ง "Turn off commenting" (PV-047) | 1. เปิด viewer + detail ของโพสต์นั้น | comment-btn ไม่ render บน pv rail/การ์ด/detail แต่ `.pv-add` "Add comment…" **ยังแสดง** และเปิด sheet ได้ (quirk — บันทึก GAP-07) | ไม่มีไอคอน 💬+count | Medium | |
-| FO-TC-DET-035 | `hideCounts` / views=0 — ซ่อน views + liked-by | OWNER | Edge | own post ใหม่จาก composer (views:"0") | 1. ดูการ์ด/detail ของโพสต์ | `views-stat` ไม่ render เมื่อ `hideCounts‖!views‖views==="0"`; `liked-by` row ไม่ render เมื่อ `hideCounts‖!likes‖!likedBy` — โพสต์ใหม่ likes:0 → liked-by หาย | ไม่มี 👁 ไม่มี liked-by | Medium | |
-| FO-TC-DET-036 | likes นับเฉพาะ own post (privacy) | MEMBER | UI | เทียบ own card กับ card คนอื่นใน pfp viewer | 1. ดู action row ทั้งสอง | `.lk-n` ตัวเลข likes แสดงเฉพาะโพสต์ seller=`king.mr.fox`; คนอื่นเห็นแค่ไอคอน + "and others" | ตัวเลขไม่รั่วบนโพสต์คนอื่น | Medium | |
-| FO-TC-DET-037 | missing post — alert like/comment ที่โพสต์ถูกลบ | MEMBER | Edge | ลบ own post ที่ alert ชี้อยู่ (PV-049) แล้วเปิด alerts | 1. แตะ alert row เดิม | `pfTabPosts` ไม่เจอ → toast "This post is no longer available" — viewer ไม่เปิด ไม่ crash | toast ~2s | Medium | |
-| FO-TC-DET-038 | i18n — label TH/EN บน viewer+detail | MEMBER | Func | viewer+detail `p1` | 1. สลับ TH สังเกต 2. สลับ EN | pv: "ถูกใจ"/"แตะเพื่อดูรายละเอียด"/"เพิ่มความคิดเห็น…"/"ติดตาม"; detail: "ลงขาย"/"คำอธิบาย"/spec label ตามข้อมูล; เปลี่ยนภาษาขณะ overlay เปิด → re-render ทั้ง pv (`_pvArgs`) + detail (`detailPid`) คง scroll | ไม่มี label ค้างภาษาเดิม | Medium | |
-| FO-TC-DET-039 | dark theme — viewer+detail | MEMBER | UI | viewer+detail เปิด | 1. toggle dark | viewer เดิม dark เสมอ (immersive); detail/sheets ตามธีม — ตัวอักษร/ไอคอนอ่านได้ | ไม่มี contrast พัง | Low | |
-| FO-TC-DET-040 | guest browse detail ครบ (read-only) | GUEST | Func | guest เปิด detail `p1` | 1. scroll spec ครบ 2. แตะ carousel 3. แตะ hashtag | อ่าน spec/เลื่อนรูป/เปิด search จาก hashtag ได้ปกติ — action ที่ gate เท่านั้นที่เด้ง sheet | read-only เต็ม | Medium | |
+| FO-TC-DET-030 | 💬 บน detail → comments sheet | MEMBER | Func | detail POST-X (มี comments) | 1. แตะ 💬 | comments sheet เปิดพร้อม comments จริงของโพสต์นั้น — count บน icon ตรง | sheet ทับ detail | Medium | |
+| FO-TC-DET-031 | 💬 — guest อ่านได้ input gate | GUEST | Func | detail เปิด | 1. แตะ 💬 2. แตะช่อง "Add a comment…" | ปุ่ม 💬 ไม่ gate → sheet เปิดอ่านได้; แตะช่องพิมพ์/emoji/like คอมเมนต์ → Member Sheet | read-only สำหรับ guest | Medium | |
+| FO-TC-DET-032 | liked-by row บน detail → likes sheet (spec ล็อก) | MEMBER | Func | detail ของโพสต์ที่มี likes (เช่นโพสต์ที่ ACCT-2 like แล้ว) | 1. ดูใต้ action row บน detail 2. แตะ liked-by row 3. เทียบกับ rail "Likes" + liked-by บนการ์ด | detail มี liked-by row (avatar stack + "Liked by X and others") ใต้ action row — แตะ → likes sheet (entry เดียวกับ rail/การ์ด); ตัวเลข likes เฉพาะโพสต์ตัวเอง | row แสดงทุกครั้งที่มี likes | High | |
+| FO-TC-DET-033 | state sync like/comment ข้าม surface | MEMBER | Int | viewer + detail ของโพสต์เดียวกัน | 1. like บน detail → back → ดู rail viewer 2. unlike → back | state เดียวกัน — surface ที่ re-render สะท้อนค่าล่าสุด ไม่มีค้างสถานะเก่า | sync ครบทุก surface | Medium | |
 
-### 2.12 Integration — own post จาก composer (FO-TEST-05)
+### 2.12 States + edge + language/theme
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-PV-050 | own sale post → pfp viewer + pm-own | OWNER | Int | SETUP-05: publish sale post จาก composer (มี price+specs) | 1. own profile → Posts tab → แตะ tile ของโพสต์ใหม่ | โพสต์ใหม่ (seller `king.mr.fox`, type sale) อยู่ใน grid → pfp viewer เปิดการ์ด; ⋯ → pm-own ครบ (DET/PV-045) | การ์ดแสดงราคา "THB …" + "Tap for details" | High | |
-| FO-TC-PV-051 | own post → detail + spec groups จาก composer | OWNER | Int | SETUP-05 | 1. "Tap for details" → "View full detail ›" | detail render specGroups ที่กรอกใน composer: Watch Specifications + Item Details + Price & Data Source (Asking=ราคาที่ใส่, Estimated=คำนวณระบบ, Data Source) | name = Brand Model จาก spec | High | |
-| FO-TC-PV-052 | own clip post → clip autoplay ใน pfp viewer | OWNER | Int | SETUP-06: publish post ที่เลือก clip | 1. own profile → tile ของ clip post | การ์ดใน pfp viewer มี `.clip-ph` + badge เวลา + autoplay (PV-030); ใน immersive (ถ้าเจอใน explore) = รูปนิ่ง (PV-032) | badge นับจริง | Medium | |
-| FO-TC-PV-053 | showcase post จาก composer (ไม่ใส่ราคา) | OWNER | Int | publish โพสต์ไม่ใส่ราคา | 1. own profile → tile | type showcase: การ์ดไม่มี price/ไม่มี "Tap for details" (`hasDetails` อาจยัง true ถ้าใส่ specs — เช็คตาม meta ที่กรอก); tag บน detail = "SHOWCASE" ถ้าเข้า detail ได้ | ไม่มี FOR SALE | Medium | |
+| FO-TC-DET-034 | noComments — 💬 + "Add comment…" หายทุก surface (spec ล็อก) | OWNER | Func | own post ตั้ง "Turn off commenting" (PV-047) | 1. เปิด viewer + detail + การ์ด feed ของโพสต์นั้น | ไอคอน 💬 ไม่แสดงบน rail/การ์ด/detail **และ "Add comment…" บน immersive viewer หายด้วย** (spec ล็อก — prototype เดิมค้างไว้) | ไม่มีช่องทางเปิดคอมเมนต์เหลือ | Medium | |
+| FO-TC-DET-035 | views 0 / โพสต์ใหม่ — ซ่อน views + liked-by | OWNER | Edge | own post ใหม่จาก composer (SETUP-10 views 0, likes 0) | 1. ดูการ์ด/detail ของโพสต์ | ไม่มี 👁views (count 0 ไม่แสดง) + ไม่มี liked-by row (ไม่มี likes) | ไม่มีตัวชี้ว่าง | Medium | |
+| FO-TC-DET-036 | ตัวเลข likes เฉพาะ own post (privacy) | MEMBER | UI | เทียบ own card กับ card คนอื่นใน pfp viewer | 1. ดู action row ทั้งสอง | ตัวเลขจำนวน likes แสดงเฉพาะโพสต์ตัวเอง; โพสต์คนอื่นเห็นแค่ ♡ + "and others" ไม่มีเลข | ตัวเลขไม่รั่วบนโพสต์คนอื่น | Medium | |
+| FO-TC-DET-037 | missing post — alert ชี้โพสต์ที่ถูกลบ | MEMBER | Edge | SETUP-17: ACCT-2 like own post → ลบโพสต์นั้น (PV-049) แล้วเปิด alerts | 1. แตะ alert row เดิม | toast "This post is no longer available" — viewer ไม่เปิด ไม่ crash (ถ้าไม่มี ACCT-2 → BLOCK) | toast ~2s = design ref | Medium | |
+| FO-TC-DET-038 | Language — label TH/EN บน viewer + detail | MEMBER | Func | viewer + detail POST-X | 1. สลับ TH สังเกต 2. สลับ EN | pv: "ถูกใจ"/"แตะเพื่อดูรายละเอียด"/"เพิ่มความคิดเห็น…"/"ติดตาม"; detail: "ลงขาย"/"คำอธิบาย"/spec label; เปลี่ยนภาษาขณะเปิดอยู่ → re-render คงตำแหน่ง | ไม่มี label ค้างภาษาเดิม | Medium | |
+| FO-TC-DET-039 | dark theme — viewer + detail | MEMBER | UI | viewer + detail เปิด | 1. toggle dark 2. toggle light | immersive viewer dark เสมอ (design); detail/sheets ตามธีม — ตัวอักษร/ไอคอนอ่านได้ทั้งสองโหมด | ไม่มี contrast พัง | Low | |
+| FO-TC-DET-040 | guest browse detail ครบ + deep link | GUEST | Func | guest เปิด detail POST-X + guest เปิดลิงก์โพสต์ที่แชร์มา | 1. scroll spec ครบ 2. แตะ carousel 3. แตะ hashtag 4. (แยกรอบ) เปิด shared/deep link โพสต์ | อ่าน spec/เลื่อนรูป/search จาก hashtag ได้ปกติ; deep link → guest เห็น detail เต็ม แต่ action ที่ gate เด้ง Member Sheet (spec ล็อก) | read-only เต็มทั้งสองทางเข้า | Medium | |
 
-## 3. Traceability Audit — inventory §2 ↔ เคส
+### 2.13 Integration — own post จาก composer (FO-TEST-05)
 
-| Inventory item | สถานะครอบคลุม |
-|---|---|
-| `pv-open` ทุก entry (xp-tile ×2 grid, svd-tile ×3 collection, pf-tile, alert ×3 type) | ✅ PV-001–008, 030–039 |
-| viewer 3 mode (immersive/feed/pfp) + solo | ✅ PV-001/003/006/007 |
-| swipe ระหว่างโพสต์ + initial position | ✅ PV-002/014 |
-| photo carousel tap/swipe/wrap/bounds/dots/counter | ✅ PV-026–029 |
-| clip autoplay/badge/progress/reset + quirk | ✅ PV-030–033, DET-020–023 |
-| `pv-head` back/search + `pfp-follow` + inject | ✅ PV-010/011/035–039 |
-| `pm`/`pm-own` ทุกแถว + reportOnly + pin-tab | ✅ PV-040–049 |
-| `detail-open` เหนือ pv + `detail-back` | ✅ DET-001–005 |
-| detail content (head/hero/tag/name/ref/desc/specs/money) | ✅ DET-006–019 |
-| detail actions + ทุก `[GATE]` (guest+member) | ✅ DET-024–029 + PV-020/021/036 |
-| comments/likes entry + sync | ✅ DET-030–033 |
-| states: noComments/hideCounts/views0/showcase/missing/solo | ✅ DET-034–037, PV-007/025/051 |
-| i18n TH/EN + dark | ✅ DET-038/039 |
-| FO-TEST-05 link (own post/clip) | ✅ PV-050–053 |
-| sheets internals (nt/lk/sh/sv/dt/ps/wl/wa/uf/nc) | ➡️ entry เท่านั้น — FO-TEST-07 |
+| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
+|---|---|---|---|---|---|---|---|---|---|
+| FO-TC-PV-050 | own sale post → pfp viewer + เมนูเจ้าของ | OWNER | Int | SETUP-09: own sale post (price+specs+3 รูป) | 1. own profile → Posts/Sale tab → แตะ tile ของโพสต์ใหม่ 2. แตะ ⋯ | โพสต์อยู่ใน grid → pfp viewer เปิดการ์ด (มีราคา + "Tap for details"); ⋯ → เมนูเจ้าของครบ (PV-045) | การ์ดแสดงราคา "THB …" | High | |
+| FO-TC-PV-051 | own post → detail + spec groups จาก composer | OWNER | Int | SETUP-09 | 1. "Tap for details" → "View full detail ›" | detail render specGroups ที่กรอก: Watch Specifications + Item Details + Price & Data Source (Asking=ราคาที่ใส่, Estimated=market data จริงของ MODEL-X, Data Source ตาม design) + tag FOR SALE + name จาก specs | name = Brand Model จาก spec | High | |
+| FO-TC-PV-052 | own clip post → เล่นใน pfp + immersive | OWNER | Int | SETUP-13: own clip post | 1. own profile → tile ของ clip post 2. หาโพสต์นั้นใน explore/search → เปิด immersive | clip เล่นพร้อมเสียงทั้งบนการ์ดใน pfp viewer และใน immersive viewer (spec ล็อก PV-032) | มี badge/control ทั้งสอง mode | High | |
+| FO-TC-PV-053 | feed-only post ไม่ใส่ราคา — ไม่มี status tag | OWNER | Int | SETUP-10: feed post ไม่ใส่ราคา/specs | 1. own profile → tile ของโพสต์ 2. ถ้ากรอก specs ไว้ → เข้า detail | การ์ดไม่มีราคา; โพสต์ feed ธรรมดา (ไม่ผูก My Assets) ไม่มี status tag บน detail แม้เข้า detail ได้ (spec ล็อก: tag เฉพาะ asset) | ไม่มี FOR SALE/SHOWCASE | Medium | |
 
-## 4. Gaps / Quirks / ข้อสังเกต
+## 3. Spec ที่ล็อกรอบนี้ + ข้อจำกัดที่ต้องรีวิว
 
-- **GAP-01** — รูปใน immersive viewer เป็นรูปเดียว (ไม่มี carousel/dots) ทั้งที่ tile ให้ `phi` ได้ — ต่างจาก IG จริง; เป็น behavior ล็อกของ `pvPostHTML`
-- **GAP-02** — ไม่มี owner section / Ask Seller / save-btn / chat-fab / follow-btn บน detail เพราะ production ใช้ dl1 เสมอ (`POST_DETAIL_CFG` ทุก entry = dl1) — ของพวกนี้มีเฉพาะ dl2 ใน dev sidebar (harness) ไม่เขียนเคส production ให้
-- **GAP-03** — ไม่มี mute/volume control บน clip ทั้งแอป — clip autoplay เป็น visual countdown (badge+progress) เท่านั้น; คำว่า "mute" ใน inventory หมายถึง mute user ไม่ใช่เสียงคลิป
-- **GAP-04** — showcase post เข้า detail แทบไม่ได้ใน flow ปกติ (`hasDetails=false` → ไม่มี "Tap for details"/"View full detail") — เข้าได้เฉพาะผ่านจุดอื่น (เช่น detail ถูกเรียกตรง ๆ); ไม่มีเคส UI ที่บังคับเข้าได้จากหน้าจอจริงนอกจาก chat card (นอก scope)
-- **GAP-05** — ไม่มี "related posts"/more-from-seller section บน detail — ไม่อยู่ใน inventory §2 ด้วย ถือว่า intentionally absent
-- **GAP-06** — Estimated Market Price ใน mock คือ `"THB 400,000 – 445,000"` (THB ข้างเดียว) ในขณะที่ money-rules §11 ตัวอย่างเขียน `THB 400,000 – THB 445,000` — mock เป็น string literal จึงแสดงตาม mock; รอตัดสินตาม DRAFT (ไม่ใช่ bug ของ flow)
-- **GAP-07** — `.pv-add` "Add comment…" ยังแสดงบนโพสต์ `noComments` และเปิด sheet ได้ (comment-btn หายแต่ pv-add ไม่หาย) — quirk
-- **GAP-08** — `pv-srch` บน feedMode (Saved/Archive) head ทำหน้าที่เหมือน back อีกปุ่ม (ไม่มี search context ให้กลับ) — quirk เล็ก
-- **GAP-09** — detail clip hero ไม่ autoplay เมื่อมี sub/pv เปิดข้างล่าง (`on=!subOpen`) — เล่นเฉพาะ path feed→detail โดยตรง
-- **NOTE** — detail head ถูก prepend เข้า `.detail-scroll` (scroll ไปกับเนื้อหา ไม่ fixed); `detail-back` ใน dh4 ใช้ hero-fab (harness)
+**Spec ที่ล็อก (ตัดสินแล้วกับผู้ใช้ 2026-10-28) — prototype อัปเดตตามแล้ว:**
+
+1. **Immersive viewer = carousel + clip เล่นได้** — เดิมแสดงรูปเดียวตาม index ของ tile ไม่มี carousel; ล็อกใหม่: tap ครึ่งซ้าย/ขวา (wrap) + swipe (bounded) + counter/dots เหมือนการ์ด + clip เล่นพร้อมเสียง — แก้ prototype แล้ว (PV-001/015/026–029/032)
+2. **เอาไอคอนค้นหาออกจาก Saved/Archive viewer** — เดิม 🔍 ทำหน้าที่เหมือน back ซ้ำซ้อน; ล็อก: head = ← + ชื่อ collection เท่านั้น (immersive ยังมี 🔍 เพราะกลับ search context ได้) — แก้แล้ว (PV-011)
+3. **โพสต์ปิดคอมเมนต์ซ่อน "Add comment…" ด้วย** — เดิม 💬 หายแต่แถบพิมพ์ค้างเปิด sheet ได้; ล็อก: หายตามไอคอน — แก้แล้ว (PV-047/DET-034)
+4. **Detail clip เล่นทุกทางเข้า** — เดิมไม่เล่นเมื่อมี sub/viewer ข้างล่าง; ล็อก: เล่นเสมอไม่ว่าเข้าจาก feed ตรงหรือผ่าน viewer — แก้แล้ว (DET-020/021)
+5. **Detail ต้องมี liked-by row** — เดิมไม่มีทางเข้า likes จาก detail; ล็อก: มี row "Liked by X and others" ใต้ action row แตะ → likes sheet — แก้แล้ว (DET-032)
+6. **Status tag = สถานะ asset ไม่ใช่ราคา** — เดิมผูก `!!price` + มี variant ซ่อน tag; ล็อก: feed post ธรรมดาไม่มี tag · asset: FOR SALE/SHOWCASE/SOLD/HIDDEN · คนอื่นเห็นเฉพาะ sale/show — แก้แล้ว (DET-008/009, PV-053)
+7. **Detail head ติดบน (fixed)** — spec ล็อกตามมาตรฐานแอป (DET-006/016)
+8. **ทางเข้า detail ขึ้นกับมีรายละเอียด** — ไม่เกี่ยวกับราคา: asset Show ที่กรอก specs เข้า detail ได้จาก own Show tab; โพสต์ไม่มี specs/ราคาเลยไม่มีทางเข้า (PV-025/DET-013)
+9. **Clip = วิดีโอจริง + เสียง** — บนแอปเล่นพร้อมเสียงตามระดับเครื่อง + หยุด/เล่นได้; badge countdown ของ prototype เป็น mock เท่านั้น (PV-030–033, DET-020–023)
+10. **Solo viewer จาก watch alert inject "Follow" ในหัวการ์ด** (ไม่ใช่ pill บน head) — คงเป็น spec (PV-007/039)
+11. **pfp-follow pill fade หาย ~1.2s หลัง follow** — design ref จดจริงลง Note (PV-035)
+12. **ตัวเลข likes เฉพาะโพสต์ตัวเอง** (privacy) + feed photo tap = carousel เท่านั้น + ไม่มี related posts บน detail — ล็อกเป็น spec (DET-036, PV-009, DET-019)
+13. **guest deep/shared link → อ่าน detail ได้ + action gate** — spec ล็อก (DET-040)
+14. **Estimated Market Price = market data จริงของรุ่นนั้น** — ค่าที่เห็นจดจริงลง Note; ถ้าเป็น band mock รอบราคาตั้งขาย → flag ทีม (DET-011)
+15. **Alert rows ต้องเป็นของจริง** — like/comment/watch alert ผลิตผ่าน ACCT-2 จริง (SETUP-17) ห้าม seed ผ่าน dev; ไม่มี ACCT-2 → BLOCK เคสที่เกี่ยว (PV-007/008/039, DET-037)
+16. **Ask Seller pill บนการ์ด sale ใน list/pfp viewer อยู่ใน gate** — guest แตะ → Member Sheet (PV-041)
+
+**ข้อจำกัด/พฤติกรรมที่คงไว้ตาม spec เดิม:**
+
+17. **detail ไม่มี owner row / Ask Seller / save / chat-fab** — เป็นส่วนของ dl2 dev harness เท่านั้น (DET-018)
+18. **detail ไม่มี related posts** — intentionally absent (DET-019)
+19. **viewer เปิดได้เฉพาะ tiles/notifications** — รูป feed card ไม่เปิด viewer (PV-009)
+20. **ราคาอยู่ใน spec group เท่านั้น** ไม่มี price element แยก (DET-012)
+21. traceability: sheets internals → FO-TEST-07, report → FO-TEST-15, watch alert form → FO-TEST-11, portfolio/sale record → FO-TEST-13, Member Sheet → FO-TEST-01/17
+
+**จุด BLOCK ที่รู้ล่วงหน้า:**
+
+- เคสที่ต้อง ACCT-2 (PV-007/008/039, DET-037 และขั้นตอน unfollowed seller ใน PV-035/036) — ถ้าจัดบัญชีที่สองไม่ได้ mark BLOCK
+- เคสคลิปทั้งหมด (PV-030–033/052, DET-020–023) ถ้าเครื่องไม่มีวิดีโอ/สร้างโพสต์คลิปไม่ได้ → BLOCK จนเตรียมได้
+- PV-037 กรณี blocked user — ถ้า build ยังไม่มีฟีเจอร์ block → mark N/A เฉพาะข้อย่อยนั้น
