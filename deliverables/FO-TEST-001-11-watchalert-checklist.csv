@@ -1,0 +1,91 @@
+TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,ทดสอบบน (Device/OS),Note
+SETUP-01,Setup,ไม่มีแอป,ติดตั้ง build ทดสอบลงเครื่องจริง → เปิดแอป,แอปเปิดขึ้นหน้า feed หรือ onboarding,-,-,,,
+SETUP-02,Setup,แอปติดตั้งแล้ว,ลบข้อมูลแอป/ติดตั้งใหม่,แอปสะอาด เหมือนผู้ใช้ใหม่,-,-,,,
+SETUP-03,Setup,แอปสะอาด,เปิดแอปโดยไม่ sign in,เข้า feed แบบ guest ได้,GUEST,-,,,
+SETUP-04,Setup,แอปสะอาด,sign in ด้วยบัญชีทดสอบจริง,เข้า feed เป็นสมาชิก,MEMBER,-,,,
+SETUP-05,Setup,แอปสะอาด,สมัครใหม่ด้วยอีเมล/เบอร์จริง → ผ่าน onboarding,สมาชิกใหม่ เข้า feed ได้ walerts ว่าง,NEW,-,,,
+SETUP-06,Setup,sign in แล้ว,"จด ACTOR-MEMBER · ACCT-2 · POST-FULL (spec ครบ) · POST-NOSPEC (spec ว่าง) · CRIT-X · CRIT-CONFLICT · รุ่นเครื่อง/OS",ข้อมูลพร้อมสำหรับเคสทั้งเล่ม,MEMBER,-,,,ขาดตัวไหน mark BLOCK เคสที่เกี่ยว
+SETUP-07,Setup,sign in แล้ว,ทดลอง bell ผลค้นหา · bell หน้า detail POST-FULL · เส้นทาง Settings > Watch Alerts,ทุก entry เปิด sheet/หน้าถูกตำแหน่งตาม spec,MEMBER,-,,,
+SETUP-08,Setup,เป็น guest,กด bell sr-wa บนหัวผลลัพธ์ (gated),Member Sheet เด้ง มี Sign in/Sign up/Skip — sheet WA ไม่เปิด,GUEST,-,,,
+SETUP-09,Setup,มีเครื่องจริงอีกเครื่อง,ติดตั้ง build เดียวกัน → sign in ACCT-2 → เปิด notif permission ทั้งสองเครื่อง → เวลาตรงกัน,บัญชีสองพร้อมสร้าง match จริง,-,-,,,ไม่มีเครื่องสอง = เคส ACCT-2/ACCT-3 เป็น BLOCK
+SETUP-10,Setup,SETUP-06 เสร็จ,สร้าง WA-SEARCH จาก search bell (CRIT-X) + WA-MODEL จาก bell หน้า detail → เปิด walerts,เห็น 2 แถวใน list,MEMBER,-,,,สร้างไม่ได้ = BLOCK เคส create/list ที่เกี่ยว
+SETUP-11,Setup,WA-SEARCH ตั้งไว้ + ACCT-2 พร้อมลงขาย,ACCT-2 ลงลิสติ้ง Sale ตรง CRIT-X → เครื่องหลักเปิด alerts,ภายใน 60 วิมี watch row ใหม่,MEMBER+ACCT-2,-,,,ไม่เด้ง = ไม่มี engine → BLOCK เคส §2.6 ที่ trigger
+WA-001,Entries & Gate,อยู่หน้า search,search → submit → แตะ bell บนหัวผลลัพธ์ — รอบ A GUEST / รอบ B MEMBER,A: Member Sheet เด้ง · B: sheet Create เปิดพร้อม criteria,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
+WA-002,Entries & Gate,POST-FULL เปิด detail ได้,แตะ bell Follow this model — รอบ A GUEST / รอบ B MEMBER,A: Member Sheet เด้ง · B: sheet Create เปิด criteria จาก spec,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
+WA-003,Entries & Gate,SETUP-03/04,รอบ A guest พยายามเข้า Settings · รอบ B member → Settings > Watch Alerts,A: ถูก gate ตั้งแต่ entry · B: หน้า list เปิดได้,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
+WA-004,Entries & Gate,เป็น guest,เปิดผลค้นหา + detail → มองตำแหน่ง bell,bell ทั้งสอง render ปกติไม่ซ่อน — gate เฉพาะตอนแตะ,GUEST,MED,,,
+WA-005,Entries & Gate,อยู่ feed + Post Viewer,หา bell สร้าง watch alert บน feed card/viewer card,ไม่มี — entry เฉพาะ results head + Post Detail เจอ = FAIL,MEMBER,LOW,,,
+WA-006,Entries & Gate,WA-SEARCH สร้างแล้ว,กลับผลค้นหาชุดเดิม → แตะ bell ที่ on,เปิด sheet Edit watch alert ของ alert เดิม — ไม่สร้างใหม่,MEMBER,HIGH,,,
+WA-007,Entries & Gate,WA-MODEL สร้างแล้ว,เปิด detail POST-FULL → แตะ bell Following this model,เปิด sheet Edit watch alert ของ alert เดิม,MEMBER,HIGH,,,
+WA-008,Entries & Gate,sign in แล้ว,หา entry ไป walerts จาก alerts tab/drawer/search/bell,ไม่มีทางเข้าอื่น — เข้าได้ผ่าน Settings เท่านั้น เจอ link อื่น = FAIL,MEMBER,MED,,,
+WA-009,Sheet & Create,อยู่ผลค้นหา,แตะ bell → อ่าน sheet,"title สร้างการแจ้งเตือน + label ตั้งชื่อ + name prefilled + section Notify me when + 3 mode rows + CTA สร้างการแจ้งเตือน — ไม่มีปุ่ม Delete",MEMBER,HIGH,,,
+WA-010,Sheet & Create,อยู่หน้า search,พิมพ์ keyword + เลือก brand/model/ช่วงราคา → แตะ bell → Create → เปิด walerts,"criteria text ครบ keyword+filters+ราคา join ด้วย · รูปแบบ THB {min|0} – {max|Any}",MEMBER,HIGH,,,
+WA-011,Sheet & Create,POST-FULL,แตะ bell → Create → อ่าน criteria text บน row,criteria = spec ที่กรอกจริง — ค่าเว้นว่าง/ไม่ระบุ+ราคา/data source ไม่เข้า criteria,MEMBER,HIGH,,,
+WA-012,Sheet & Create,sheet เปิด criteria ไม่ว่าง,อ่าน mode rows 3 แถว,"title+desc ตามภาษา + {n} รายการในขณะนี้ นับเฉพาะลิสติ้ง Sale ที่ตรง mode นั้น",MEMBER,HIGH,,,
+WA-013,Sheet & Create,เปิดผลลัพธ์ไม่มีเงื่อนไข,แตะ bell → พยายามเลือก mode any/model,any/model disabled — เหลือ all เท่านั้น alert = Any new listing,MEMBER,MED,,,เข้าผลลัพธ์แบบไม่มีเงื่อนไขไม่ได้ = BLOCK
+WA-014,Sheet & Create,sheet create เปิด,พิมพ์ชื่อเอง → แตะเลือก mode any → ดูช่องชื่อ,ชื่อที่พิมพ์ยังอยู่ครบ — หาย/reset = FAIL,MEMBER,MED,,,
+WA-015,Sheet & Create,sheet create เปิดพร้อม criteria,กด Create → เปิด walerts + ดู bell ต้นทาง,toast Watch alert on ตามภาษา + alert ON ใน list + bell on-state,MEMBER,HIGH,,,
+WA-016,Sheet & Create,มีหลาย entry,สร้าง alert จาก detail b+m+ref / search keyword-only / filter ไม่มี brand-model,"auto-name: Brand Model · Reference / ""keyword"" / criteria 2 ค่าแรก join ·",MEMBER,MED,,,
+WA-017,Sheet & Create,sheet create เปิด,ลบชื่อให้ว่าง → กด Create,บันทึกสำเร็จชื่อ auto — ไม่มี validation block,MEMBER,HIGH,,,
+WA-018,Sheet & Create,sheet create เปิด พิมพ์แล้ว,ลากปิด/แตะ backdrop → เปิด walerts,ไม่มี alert ใหม่ — draft ทิ้งทั้งหมด,MEMBER,MED,,,
+WA-019,Dedupe & Bell,WA-SEARCH mode all,สร้าง alert criteria+mode เหมือนเป๊ะผ่าน entry อื่น → กด Create,toast You already saved this alert + เปิด edit เดิม ไม่สร้างซ้ำ,MEMBER,HIGH,,,ทำ criteria ตรงเป๊ะไม่ได้ = BLOCK
+WA-020,Dedupe & Bell,WA-SEARCH mode all,สร้าง criteria เดียวกันแต่เลือก mode any → save,สร้าง alert ใหม่สำเร็จ — dedupe เฉพาะ criteria+mode ตรงคู่,MEMBER,MED,,,ทำ criteria ตรงเป๊ะไม่ได้ = BLOCK
+WA-021,Dedupe & Bell,alert จาก detail criteria เลือกซ้ำได้,ตั้ง search ให้ criteria เหมือน alert detail เป๊ะ → แตะ sr-wa,เปิด Edit เดิม — แต่ bell ไม่ on (source ≠ search),MEMBER,MED,,,ทำ criteria ตรงเป๊ะไม่ได้ = BLOCK
+WA-022,Dedupe & Bell,WA-MODEL paused,เปิด detail โพสต์ modelKey เดียวกัน → แตะ bell,เปิด Edit เดิม (dedupe แม้ paused) + bell แสดง off-state,MEMBER,MED,,,
+WA-023,Dedupe & Bell,POST-NOSPEC,เปิด detail → แตะ bell,toast No details on this post to watch — sheet ไม่เปิด,MEMBER,HIGH,,,
+WA-024,Dedupe & Bell,WA-MODEL ON + โพสต์เรือนอื่น modelKey เดียวกัน,เปิด detail เรือนนั้น → อ่าน bell,bell Following this model ติดไฟด้วย (sync ตาม modelKey),MEMBER,MED,,,ไม่มีโพสต์เรือนสองตรง = BLOCK
+WA-025,Dedupe & Bell,WA-SEARCH criteria ครอบรุ่น POST-FULL,เปิด detail POST-FULL → อ่าน bell,bell ยัง Follow this model — search alert ไม่ติดไฟ (lock พี่คิง),MEMBER,HIGH,,,
+WA-026,Watch Alerts List,มี alert ≥1,Settings → Watch Alerts → อ่านหน้า,"head back< + title การแจ้งเตือนนาฬิกา + desc Get notified... + rows",MEMBER,HIGH,,,
+WA-027,Watch Alerts List,มี alert ≥1,อ่านแถว alert,"bell icon + ชื่อ + criteria join · + badge Edit + mode label + {n} matches now + toggle — ไม่มีปุ่มลบบน row",MEMBER,HIGH,,,
+WA-028,Watch Alerts List,สมัครใหม่ไม่มี alert,เปิด walerts,Empty: ยังไม่มีการแจ้งเตือนนาฬิกา — แตะกระดิ่งบนโพสต์หรือบันทึกการค้นหา — ไม่ใช่ No data found,NEW,HIGH,,,
+WA-029,Watch Alerts List,สร้าง alert ≥2,เปิด walerts เทียบลำดับกับเวลาสร้าง,alert ล่าสุดอยู่บนสุด — lock ใหม่สุดก่อน,MEMBER,HIGH,,,
+WA-030,Watch Alerts List,มี alert paused,เทียบแถว paused กับแถว ON,แถว paused จาง/dim ชัดทั้ง light/dark — ค่ายังครบ,MEMBER,MED,,,
+WA-031,Watch Alerts List,มี alert Any new listing,อ่าน criteria text แถวนั้น,แสดง ทุกรายการใหม่/Any new listing,MEMBER,MED,,,
+WA-032,Watch Alerts List,มี alert N แถว,ดู badge บน row Watch Alerts ใน Settings → สร้าง/ลบแล้วกลับมา,count = จำนวน alerts เป๊ะ อัปเดตทันที,MEMBER,MED,,,
+WA-033,Watch Alerts List,มีชื่อ/criteria ยาวมาก,ดูแถวนั้น,wrap/ตัดตาม design ไม่ทะลุกรอบ ไม่ทับ toggle/badge,MEMBER,MED,,,ไม่มีข้อมูลยาวจริง = BLOCK
+WA-034,Edit Pause Delete,มี alert,แตะ badge Edit บนแถว,"sheet edit: title แก้ไขการแจ้งเตือน + name + modes + Save changes + Delete alert — ไม่มีช่องแก้ criteria",MEMBER,HIGH,,,
+WA-035,Edit Pause Delete,sheet edit เปิด,แก้ชื่อเป็น Rolex hunt 2026 → Save,toast Watch alert updated + row ชื่อใหม่ criteria/mode เดิม,MEMBER,HIGH,,,
+WA-036,Edit Pause Delete,sheet edit เปิด,ลบชื่อให้ว่าง → Save,บันทึกสำเร็จ ชื่อกลาย auto ใหม่ — ไม่ block,MEMBER,MED,,,
+WA-037,Edit Pause Delete,alert mode all criteria หลายตัว,edit → เลือก mode any → Save → ดู count,mode label + count เปลี่ยนตาม mode ใหม่ criteria เดิม,MEMBER,MED,,,
+WA-038,Edit Pause Delete,alert paused,edit → rename → Save,alert ยัง paused — แก้ได้แค่ name+mode,MEMBER,MED,,,
+WA-039,Edit Pause Delete,alert ON,แตะ toggle บนแถว,toast Watch alert paused + toggle off + แถว dim + ไม่ match/นับ + bell หลุด,MEMBER,HIGH,,,
+WA-040,Edit Pause Delete,WA-MODEL paused,แตะ toggle → เปิด detail POST-FULL,toast Watch alert on + แถวปกติ + bell ติดไฟอีกครั้ง,MEMBER,MED,,,
+WA-041,Edit Pause Delete,sheet edit เปิด,แตะ Delete alert → อ่าน dialog → กด Cancel,"confirm dlg เด้งก่อนเสมอ — Cancel กลับ sheet ไม่ลบ · ลบทันทีไม่ถาม = FAIL",MEMBER,HIGH,,,lock ข้อ 2
+WA-042,Edit Pause Delete,confirm dlg เปิดอยู่,กด Delete,toast Watch alert removed + แถวหาย + bell หลุด + count ลด,MEMBER,HIGH,,,
+WA-043,Match & Notify,WA-SEARCH ON + engine พร้อม,ACCT-2 ลงลิสติ้ง Sale ตรง CRIT-X → เครื่องหลัก alerts,ภายใน 60 วิ watch row ใหม่ unread + badge +1 anatomy ตรง,MEMBER+ACCT-2,HIGH,,,engine ไม่เด้ง = BLOCK
+WA-044,Match & Notify,WA-SEARCH ON,ACCT-2 ลงลิสติ้ง spec ต่างจาก CRIT-X → alerts,ไม่มี watch row ใหม่ + badge ไม่เพิ่ม,MEMBER+ACCT-2,HIGH,,,
+WA-045,Match & Notify,alert mode all ≥2 criteria,ACCT-2 ลงใบขาด 1 criterion → ลงใบครบ → alerts,ใบขาด 1 ไม่เด้ง · ใบครบเด้ง,MEMBER+ACCT-2,MED,,,engine ไม่เด้ง = BLOCK
+WA-046,Match & Notify,alert mode any ≥2 criteria,ACCT-2 ลงใบตรงเพียง 1 criterion → alerts,watch row ใหม่เด้ง,MEMBER+ACCT-2,MED,,,engine ไม่เด้ง = BLOCK
+WA-047,Match & Notify,alert mode model มี b+m+r,ACCT-2 ลงใบตรง b+m+r (spec อื่นต่าง) → ลงใบตรงแค่ brand,a เด้งไม่สนฟิลด์อื่น · b ไม่เด้ง,MEMBER+ACCT-2,MED,,,engine ไม่เด้ง = BLOCK
+WA-048,Match & Notify,alert มี price range,ACCT-2 ลงใบราคาใน range → ใบราคาเกิน → alerts,ใบใน range เด้ง · ใบนอกไม่เด้ง,MEMBER+ACCT-2,MED,,,engine ไม่เด้ง = BLOCK
+WA-049,Match & Notify,alert มี keyword หลายคำ,ACCT-2 ลงใบมีครบทุกคำ → ใบขาด 1 คำ,ใบครบเด้ง · ใบขาดคำไม่เด้ง,MEMBER+ACCT-2,MED,,,engine ไม่เด้ง = BLOCK
+WA-050,Match & Notify,WA-SEARCH ON,ACCT-2 ลง spec ตรงแต่ไม่ใช่ Sale → alerts + matches now,ไม่เด้งไม่นับ — contract match เฉพาะ Sale,MEMBER+ACCT-2,HIGH,,,pfkind leak ห้ามในแอปจริง
+WA-051,Match & Notify,WA-SEARCH paused,ACCT-2 ลงตรง CRIT-X → alerts + matches now,ไม่มี row + count ไม่นับ,MEMBER+ACCT-2,HIGH,,,engine ไม่เด้ง = BLOCK
+WA-052,Match & Notify,ลบ WA-SEARCH แล้ว,ACCT-2 ลงตรง CRIT-X เดิม → alerts,ไม่มี watch row — ลบแล้วหยุดถาวร,MEMBER+ACCT-2,HIGH,,,
+WA-053,Match & Notify,≥2 alerts ตรงลิสติ้งเดียวกันได้,ACCT-2 ลงใบตรงทั้งสอง alert → alerts,watch row ราย alert (≥2 rows ชื่อต่างกัน),MEMBER+ACCT-2,MED,,,engine ไม่เด้ง = BLOCK
+WA-054,Match & Notify,WA-SEARCH ON + MEMBER ลงขายได้,MEMBER ลงลิสติ้งตรง CRIT-X ตัวเอง → alerts,มี watch row ใหม่ — ไม่ exclude self-match (lock),MEMBER,MED,,,engine ไม่เด้ง = BLOCK
+WA-055,Match & Notify,WA-SEARCH ON + block ACCT-3,ACCT-3 ลงตรง CRIT-X → alerts + matches now,ไม่มี row + ไม่นับ — คนถูก block/mute/ni ออกจาก pool,MEMBER+ACCT-3,HIGH,,,ไม่มีบัญชีสาม = BLOCK
+WA-056,Match & Notify,มี watch row,แตะ row,Post Viewer โพสต์ match โดยตรง — ไม่มี result list คั่น · back → alerts,MEMBER,HIGH,,,
+WA-057,Match & Notify,มี watch row จาก alert ที่ลบแล้ว,ลบ alert → กลับ alerts → แตะ row เดิม,เปิด PV ลิสติ้งเดิมได้ปกติ — row ไม่ผูก alert id,MEMBER,MED,,,
+WA-058,Match & Notify,มี watch row แล้ว ACCT-2 ลบลิสติ้ง,แตะ row,unavailable state รายการนี้ไม่พร้อมใช้งานแล้ว + ปุ่ม Go back — ห้าม silent no-op,MEMBER+ACCT-2,MED,,,ไม่มีวิธีทำลิสติ้งหาย = BLOCK
+WA-059,Match & Notify,notif ON + แอปเครื่องหลักปิด + WA-SEARCH ON,ACCT-2 ลง match → แตะ push บนเครื่องหลัก,push เด้งนอกแอป → แตะ → PV ลิสติ้ง match ตรง,MEMBER+ACCT-2,MED,,,ไม่มี push = BLOCK
+WA-060,Match & Notify,มี alert เคยเด้ง + ยังไม่เคยเด้ง,เทียบแถวสองแถวใน walerts,anatomy เหมือนกันทุกประการ — V1 ไม่มี triggered marker,MEMBER,LOW,,,
+WA-061,Match & Notify,WA-SEARCH ON,จด count → ACCT-2 ลงตรง → เปิดใหม่ → mark sold → เปิดใหม่,count เพิ่มตอนมีลิสติ้งตรง + ลดตอนออกจาก Sale — นับ server ทุกครั้งเปิดหน้า,MEMBER+ACCT-2,MED,,,
+WA-062,Nav State Lang,อยู่ walerts,แตะ back < บนหัว,กลับหน้า Settings เดิม — ไม่กลับ feed,MEMBER,HIGH,,,
+WA-063,Nav State Lang,อยู่ walerts,กด device back,เทียบเท่าปุ่ม < — กลับ Settings ไม่ออกแอป,MEMBER,HIGH,,,
+WA-064,Nav State Lang,sheet wa เปิดอยู่,กด device back → กดอีกครั้ง,ครั้งแรกปิด sheet เท่านั้น · ครั้งสองย้อนหน้า — ปิดทีละชั้น,MEMBER,HIGH,,,
+WA-065,Nav State Lang,confirm dlg เปิดอยู่,กด device back,ปิด dialog — ไม่ลบ alert เหมือนกด Cancel,MEMBER,MED,,,
+WA-066,Nav State Lang,sheet create เปิด พิมพ์+เลือก mode แล้ว,แตะพื้นหลังนอก sheet → เปิด walerts,sheet ปิด + ไม่มี alert ใหม่ draft ทิ้ง,MEMBER,MED,,,
+WA-067,Nav State Lang,ภาษาไทยแล้วอังกฤษ,ไล่ sheet/rows/empty/toasts/dlg/No details ทั้งสองภาษา,ทุกข้อความ+toast ตามภาษาแอป — ค้าง EN = FAIL,MEMBER,HIGH,,,
+WA-068,Nav State Lang,theme dark,ไล่ sheet + walerts (paused dim) + dlg + toggle,อ่านได้ครบ contrast โอเค paused/ON แยกได้ใน dark,MEMBER,HIGH,,,
+WA-069,Nav State Lang,sheet create เปิด/อยู่ walerts,แตะ Create/toggle/Delete รัว ๆ,ไม่สร้างซ้ำ ไม่ค้าง ไม่เปิด dialog ซ้อน — back ไล่ทีละชั้น,MEMBER,LOW,,,
+WA-070,Real Edge,มี alert ≥1,kill แอป → เปิดใหม่ → walerts,alerts ยังครบ + on-state + bell states เดิม — lock server-backed,MEMBER,HIGH,,,
+WA-071,Real Edge,มี alert ≥1,sign out → sign in เดิม → walerts,alerts ยังครบ — ไม่หายตาม session,MEMBER,HIGH,,,
+WA-072,Real Edge,sign in เดียวกัน 2 เครื่อง,เครื่อง A สร้าง/แก้/pause/ลบ → เครื่อง B เปิด walerts,alerts+สถานะเดียวกันข้ามเครื่อง — lock server-backed,MEMBER,MED,,,จำกัดเครื่องเดียว = BLOCK
+WA-073,Real Edge,MEMBER มี alerts,sign out → sign in ACCT-2 → walerts,เห็นเฉพาะ alerts ของ ACCT-2 — ไม่เห็นของ MEMBER,MEMBER+ACCT-2,HIGH,,,
+WA-074,Real Edge,walerts เคยโหลดไว้,เครื่องบิน → เปิด walerts → เปิดเน็ตกลับ → กด ลองใหม่,error state Unable to load data + ลองใหม่ — ห้าม crash/ข้อมูลเก่าเงียบ · ลองใหม่แล้วโหลดได้,MEMBER,MED,,,
+WA-075,Real Edge,เครื่องบิน + sheet create เปิด,เครื่องบิน → กด Create/edit/pause/delete → เปิดเน็ตกลับ → เปิด walerts ใหม่,แจ้ง error ชัดเจน + ไม่มีการเปลี่ยนแปลงที่ server ไม่รู้จัก — สำเร็จหลอก = FAIL,MEMBER,HIGH,,,lock ข้อ 5
+WA-076,Real Edge,CRIT-CONFLICT พร้อม,สร้าง alert criteria ขัดแย้ง → ดู count + เปิด walerts,สร้างสำเร็จ + matches now = 0 เสมอ + ไม่เด้งกับลิสติ้งใด,MEMBER,MED,,,
+WA-077,Real Edge,alert อ้าง option ที่ BO จะ deactivate,admin deactivate บน BO → เปิด walerts → ACCT-2 ลงใบเคยตรง,alert อยู่แต่หยุด trigger + แสดง dependency warning — ต่างจาก no current listing,MEMBER+BO,MED,,,ไม่มีสิทธิ์ BO = BLOCK
+WA-078,Real Edge,มี watch row จาก match เดิม,admin promote suggestion/map alias บน BO → รอ re-match → alerts,ไม่มี watch row ซ้ำสำหรับ match เดิม — dedup ตาม contract,MEMBER+BO,MED,,,ไม่มีสิทธิ์ BO = BLOCK
+WA-079,Real Edge,บัญชีลบทิ้งได้ + มี alerts,เริ่ม delete account → อ่าน terms → scheduled → login กลับ → walerts,terms มีการ์ด Watch Alerts Cancelled + หลัง restore walerts ว่าง,MEMBER,MED,,,ไม่มีบัญชีลบทิ้งได้ = BLOCK

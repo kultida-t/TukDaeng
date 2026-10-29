@@ -184,17 +184,17 @@
 | Module | Route/Overlay | Feature | Actor ที่เกี่ยว | จำนวน TC ที่ควรมี | หมายเหตุ |
 |---|---|---|---|---|---|
 | Profile | `profile:uname[:tab]` | own profile: + (Add asset) · username · menu → settings · avatar→pf-avov · stats → pfollow · bio/link · Edit/Share/Portfolio buttons | OWNER | 8 | own tabs: All/Sale/Show/Hide/Sold (PRD 06) |
-| Profile | `profile:uname` public | public profile: back · ⋯ menu · follow/unfollow pill (mf sheet) · Chat · fby row · avatar→pf-avov | MEMBER/GUEST | 8 | public tabs: All/Sale/Show เท่านั้น; blocked → Unblock + stats "-" |
+| Profile | `profile:uname` public | public profile: back · ⋯ menu · follow/unfollow pill (mf sheet) · Chat (DM จริง `pfOpenChat` — FO-TEST-12 lock) · fby row · avatar→pf-avov | MEMBER/GUEST | 8 | public tabs: All/Sale/Show เท่านั้น; blocked → Unblock + stats "-"; ไม่มี bottom nav (SHELL-034) |
 | Profile | tabs `pf-tab` | tab switch: swap + keep scroll pos + pin order | MEMBER | 5 | `[OPEN-CODE-ONLY]` scroll-keep |
 | Profile | grid tile → `pv-open` pfp | Posts viewer (profile-scoped) + pinTab-aware menu | MEMBER | 4 | |
-| Profile | overlay `pf-avov` | avatar overlay: Follow/Share/Copy link/QR actions | MEMBER `[GATE]` | 4 | `[OPEN-CODE-ONLY]` |
+| Profile | overlay `pf-avov` | avatar overlay: Follow/Share/Copy link (`qr` act ถูกตัดแล้ว — FO-TEST-12) | MEMBER `[GATE]` | 4 | `[OPEN-CODE-ONLY]` |
 | Profile | overlay `pf-qr` | QR card + color themes + Scan camera + Share/Copy/Download | MEMBER `[GATE]` | 6 | `[OPEN-CODE-ONLY]` (diagram พูด QR แต่ไม่ละเอียด) |
 | Profile | sheet `pf-more` (viewer ⋯) | Report · Block/Unblock · About this account · Copy URL · Share | MEMBER/GUEST | 6 | |
-| Profile | `pedit` | Edit profile: picture `[DEAD]` · username (3–20 a-z0-9_. + taken) · bio ≤150 · link URL/@handle | MEMBER | 7 | `[OPEN-CODE-ONLY]` (validation detail) |
+| Profile | `pedit` | Edit profile: Edit picture (real photo picker — FO-TEST-12) · username (3–20 a-z0-9_. + taken) · bio ≤150 · link URL/@handle | MEMBER | 7 | `[OPEN-CODE-ONLY]` (validation detail) |
 | Profile | `pfollow:uname:tab` | followers/following list + search + Remove (own) + Follow pill | MEMBER | 7 | guest own → ว่าง (GUEST-001) |
 | Profile | `about:uname` | About this account — joined/country/verified + why-note | GUEST/MEMBER | 3 | `[OPEN-CODE-ONLY]` |
 | Profile | `pf-rhint` restrict hint | หลัง unblock → banner restrict 6s | MEMBER | 2 | `[OPEN-CODE-ONLY]` |
-| Profile | `pf-sleep` / `pf-note` | sleep mode / note placeholder | — | 1 | `[DEAD]` `[OPEN-CODE-ONLY]` |
+| Profile | `pf-sleep` / `pf-note` / `pf-addchip` / `pf-avadd` / `pf-addp` / `pf-uname` toast / overlay `qr` act / `Learn more` | code-only controls — **ถูกตัดออกจาก prototype แล้ว (FO-TEST-12)** | — | 0 | `[REMOVED]` |
 | Profile | `pfp-follow` pill | Follow pill ใน Posts viewer head (unfollowed เท่านั้น) | MEMBER `[GATE]` | 3 | `[OPEN-CODE-ONLY]` |
 | Portfolio | `portfolio` | dashboard: Total invested (private) + Market value + G/L + asset rows + link soldhist + pfo-simbar | OWNER | 7 | guest → "No data found"; `?dev=1` → preview states (nomkt/empty/failed/denied) `[DEAD]` |
 | Portfolio | `pfasset:id` | asset detail: hero + counter+dots + status chip + value card (cur/src/est/last-upd/src/purchase/bought/GL/hold) + Listing card (asking/exp profit/mkt cmp) + Mark as sold | OWNER | 8 | `[OPEN-CODE-ONLY]` |
@@ -297,7 +297,7 @@
 - chat list rows: swipe left (Hide/Delete) · swipe right (Pin/Mute) · tap → room · filter popover · cfg gear · search
 - room: back · profile · search · burger menu · attach + · send · media bubble → viewer
 - settings rows: ตาม list ใน 2.11
-- profile: + · uname · menu · stats · edit/share/pfo · follow/msg/more/qr
+- profile: + · uname · menu · stats · edit/share/pfo · follow/msg(DM)/more/qr
 
 ## 4. Gap Analysis เทียบ diagram
 

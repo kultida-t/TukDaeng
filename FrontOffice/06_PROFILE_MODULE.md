@@ -25,6 +25,13 @@ Owner Profile เป็นทางเข้าหลักของ private sur
 
 โมดูลนี้ต้องคุม visibility matrix (public เห็นเฉพาะ `Sale`+`Show` ตาม canonical 00_GLOBAL §10), follow/unfollow/favorite/mute semantics ระดับ account ที่ต่างกันตาม surface, block/unblock keep-page flow, report user flow, QR share overlay, edit profile + username rename migration และ guest gate — โดยยึดพฤติกรรม prototype เป็นตัวตัดสินเมื่อ spec เดิมขัดกัน
 
+> **Contract update 2026-10-29 (FO-TEST-12 — ล็อกโดย PO แล้ว)**
+> 1. ทุก profile relationship + own-profile edit เป็น **server-backed** — follow/unfollow, favorites, mute, block/unblock, remove follower, pin และการแก้โปรไฟล์ (bio/username/link/avatar) ต้องจำข้ามปิดแอป ข้าม sign-out→sign-in และข้ามอุปกรณ์ (prototype mirror ด้วย `fo_pfstate`)
+> 2. `pf-msg` Chat = **IG-style DM จริง** — ห้องคุย user→user เดียวต่อ account ไม่ผูก listing (รายละเอียด canonical 07_CHAT: item card มาเป็นข้อความเฉพาะตอนกด Ask แบบ reply-story) — กฎ "แชทต้องผูกลิสติ้ง" ถูกยกเลิก
+> 3. Dead/code-only controls (`pf-note`, `pf-sleep`, `pf-addchip`, `pf-avadd`, `pf-addp`, avatar-overlay `qr`, `pf-uname` toast, restrict-hint `Learn more`) **ถูกตัดออกจาก prototype แล้ว** — ห้ามเขียนเป็น feature; `pe-pic` Edit picture = photo picker จริงเท่านั้น
+> 4. QR/copy/share/download/scan ทำงานจริง: copy = clipboard จริง, download = PNG จริง, share = share surface จริง, scan = กล้องจริง + TukDaeng profile QR → เปิด `profile:{u}`
+> 5. Viewer profile (push ทับ) **ไม่แสดง bottom nav** ตาม SHELL-034; คนที่ถูก block เห็นโปรไฟล์ฝั่ง blocker เป็นหน้า "ไม่พร้อมใช้งาน" (00_NAV §10 unavailable contract)
+
 ---
 
 # 3. Prototype Reference
@@ -32,24 +39,24 @@ Owner Profile เป็นทางเข้าหลักของ private sur
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
 
 - Routes: `profile:{username}` → `profileHTML` (~17574), `pfollow:{username}:{tab}` → `pfollowHTML` (~17575), `about:{username}` → `aboutHTML` (~17576), `pedit` → `peditHTML` (~17577), `portfolio` → `portfolioHTML` (canonical 04/14)
-- Profile data: `PROFILES` seed (~16287–16312), `profileOf` (~16395–16416 — fabricate profile ให้ทุก name: avatar gen + hash-mock stats `120+h%4800`/`120+h%800`), `pfAllUsers` (~16780–16786 — users จาก POSTS sellers + COMMENTS + CP_ME), `PF_VBADGE` (~16689), session sets `PF_EXTRA_FOL`/`PF_EXTRA_FAV`/`PF_EXTRA_MUT`/`PF_BLOCKED`/`PF_REMOVED_FOL` (~16313–16314); fresh-account seed `PROFILES` zero (~22971)
+- Profile data: `PROFILES` seed (~16287–16312), `profileOf` (~16395–16416 — fabricate profile ให้ทุก name: avatar gen + hash-mock stats `120+h%4800`/`120+h%800`), `pfAllUsers` (~16780–16786 — users จาก POSTS sellers + COMMENTS + CP_ME), `PF_VBADGE` (~16689), persisted sets `PF_EXTRA_FOL`/`PF_EXTRA_FAV`/`PF_EXTRA_MUT`/`PF_BLOCKED`/`PF_REMOVED_FOL`/`PF_POSTS_DEL` + `pfSave`/`pfLoad`/`pfRenameUser` → `fo_pfstate:{member\|new}` (~16313–16380 — server-backed mirror); fresh-account seed `PROFILES` zero (~22971)
 - Grid data: `pfGridPosts` (~16578–16603 — `PF_MINE` drawer-only posts + `userPosts` + gfx mocks), `pfKind` (~16604 — fallback `price || type==="sale" ? "sale" : "show"`), `pfTabPosts` (~16605–16610 — drop `archived`, `all` = ทุก kind, tab อื่น filter kind, pinned-first newest-pin-first), gfx mocks `PF_GFX_KINDS`/`PF_GFX_SALE`/`PF_GFX_SOLD`/`PF_GFX_META`/`PF_GFX_REG`/`PF_GFX_DEL` (~16419–16575), pin state `pinnedIn`/`PIN_MAX`/`applyPin`/`pinFeedback`/`pinSeq` (~16612–16634)
-- Profile page `profileHTML` (~16829–16901): own head (`+` `data-flow="create" data-mode="asset"` / `pf-uname` / `pf-menu` burger) vs viewer head (`sub-back` / `pf-more`), `TABS` own 5 (`all`/`sale`/`show`/`hide`/`sold` icon+label) vs viewer 3 (`all`/`sale`/`show`), avatar `pf-av` `data-pfav` + story ring + `pf-note` bubble, `pf-disp`, `pf-stat` (+`data-pfgo` บน followers/following, disable ตอน blocked), `pf-sleep` chip, `pf-bio` (`pf-cat`/`pf-biot`/link chip `pf-link`/`pf-atch`), viewer `@username` chip + `pf-fby` followed-by row, actions row (own: `pf-edit`/`pf-share`/`pf-pfo` — viewer: `pf-foll`/`pf-msg` — blocked: `pf-unblock`), `pf-tabs`, `pfNavHTML` (~16798–16800)
+- Profile page `profileHTML` (~16829–16901): own head (`+` `data-flow="create" data-mode="asset"` / `pf-uname` label (inert — no account switcher in V1) / `pf-menu` burger) vs viewer head (`sub-back` / `pf-more`), `TABS` own 5 (`all`/`sale`/`show`/`hide`/`sold` icon+label) vs viewer 3 (`all`/`sale`/`show`), avatar `pf-av` `data-pfav` + story ring, `pf-disp`, `pf-stat` (+`data-pfgo` บน followers/following, disable ตอน blocked), `pf-bio` (`pf-cat`/`pf-biot`/link chip `pf-link`/`pf-atch`), viewer `@username` chip + `pf-fby` followed-by row, actions row (own: `pf-edit`/`pf-share`/`pf-pfo` — viewer: `pf-foll`/`pf-msg` — blocked: `pf-unblock`), `pf-tabs`, `pfNavHTML` (own only — viewer profile = deep page ไม่มี nav ตาม SHELL-034)
 - Tiles/empty: `pfTilesHTML` (~16813–16820 — `pf-tile` + stack badge (multi-photo) / clip play icon / `pf-pin` marker), `pfEmptyHTML` (~16821–16828 — `pf-cta` `data-flow="create" data-mode="asset"` เฉพาะ own `all` ว่าง)
 - Entries ไป profile: `[data-pf-user]` handler (~21778–21792 — `pushSub profile:{u}`) บน detail head/caption/comments/likes rows/`pv-seller`/search `sr-scard`/`pfollow` rows/settings mrow/chat item `ch-menu-act-btn`; feed `pfWho` (post-head avatar/who + `caption > b`); own `data-navgo="profile"` → `profile:{CP_ME.name}` (~21289); composer asset save lands `profile:{me}` (~20183, ~20307, ~20670); follow notification `type:"follow"` → `rpPush profile:{u}` (~17805)
 - Tab/grid handlers: `data-pfgo` → `pfollow:` (~21303–21311), `data-pftab` swap-in-place บน `profile:`/`pfollow:` (~21312–21332 — ไม่ re-slide, คง scroll), `pf-tile` → `openPostViewer(list, pid, 0, false, "Posts", u)` mode `pfp` + `scr._pinTab` (~21333–21347), pfollow slide-back-out-right (~20759)
-- Avatar overlay: `data-pfav` → `scr._pfAv` → `pfAvovHTML` (~16801–16812 — acts `foll`(viewer only)/`share`/`copy`/`qr`), handlers ~21348–21366 (tap นอก acts/img ปิด; `share`→`Profile shared`, `copy`→`Profile link copied`, `qr`→`QR code isn't in this prototype yet`)
+- Avatar overlay: `data-pfav` → `scr._pfAv` → `pfAvovHTML` (~16801–16812 — acts `foll`(viewer only)/`share`/`copy`), handlers ~21348–21366 (tap นอก acts/img ปิด; `share`→`Profile shared`, `copy`→`Profile link copied`)
 - Follow/mute/favorite: `pfIsFollowed`/`pfSetFollow` (~16637–16646 — `PF_EXTRA_*` cover users ไม่มี post), `setFollowing` shared (~14114–14139 — unfollow clears `favorite`+`muted` + feed re-render), `pfIsFav`/`pfSetFav`/`pfIsMuted`/`pfSetMuted` (~16647–16664), `pf-foll` handler (~21367–21391 — following → `mfSheet`, fresh → instant; `pfp-follow` pv-head pill instant + fade-out ~1200+240ms ~14540), `pf-flw` instant flip (~21394–21403), `mfSheetHTML` (~16768–16779 — favorites/mute/unfollow), `muteDlgHTML` (~14712), mf rows handlers (~21449–21473)
 - Followers/following: `pfollowHTML` (~16904–16937 — EN labels `{n} followers`/`{n} following`, `pfl-q` live search → `No results found`, own followers = `pf-msg` + `pf-rmf` x-Remove, own following = `pf-dots` → `pfl-pop` popover, viewer = `pf-flw` pill, own non-member → empty lists ~16910, self filtered จาก lists คนอื่น ~16909), `pf-dots`/`pfl-pop` markup+handlers (~21405–21437 — `unf` instant + `เลิกติดตามแล้ว`/`Unfollowed` + row remove / `mute` → muteDlg หรือ `Unmuted`), `pf-rmf` → `Remove follower?` dlg (~21438–21447), `dlg-rmf-go` (~20697), `pfl-q` input (~20069)
-- QR: `pfProfileLink` = `https://tukdaeng.app/u/{encodeURIComponent(u)}` (~13748), `pfQrSvg`/`pfQrPaint` (~13756–13781 — `qrcode` lib → SVG dots + finder patterns), `PF_QR_THEMES` 5 themes, `pfOpenQr`/`pfOpenCam`/`pfCloseCam`/`pfCloseQr`/`pfDownloadQr` (~13782–13854 — `getUserMedia` env cam + `BarcodeDetector` ~600ms poll → `Profile QR scanned`/`QR code scanned`; no API → `Camera isn't available on this device`; denied → `Allow camera access to scan a QR code`; PNG download 1080px → `QR code saved`), handlers `.pf-qr-x`/`.pf-qr-color`/`.pf-cam-x`/`.pf-qr-scan`/`.pf-qr-share`/`.pf-qr-copy`/`.pf-qr-dl` (~21478–21489 — share → `shareSheetHTML`, copy → `pfCopyText` + `Link copied`)
-- Viewer `...` menu: `pf-more` → pm-rows card (~21498–21514 — `pf-sh-report` (danger) / `pf-sh-block` (label flips `Block`↔`Unblock`) / `pf-sh-about` / `pf-sh-copy` / `pf-sh-share` + cancel card `pf-sh-cancel`), handlers ~21516–21557 (`copy` → toast `Profile link copied` toast-only, `share` → `shareSheetHTML`, `about` → `pushSub about:{u}`)
-- Block: `blkSheetHTML` (~16691–16706 — avatar + `Block {u}?` + `This will also block any other profiles they may have or create in the future.` + 3 impact rows + `Block` + `Block and report`; `fromChat` → เฉพาะ `Block`), `unblockDlgHTML` (~16721–16729 — `Unblock {u}?` center dlg), `pfRestrictHint` banner (~16730–16742 — ~6s auto-hide, tap dismiss, `Learn more` dead), `pfIsBlocked`/`pfSetBlocked` (~16668–16688 — PF_BLOCKED + PF_REMOVED_FOL + unfollow + chat `th.blocked` + `p.blocked` + feed re-render; unblock ไม่ re-follow), `pf-sh-block` handler (~21540–21550), `blk-go` (`Blocking` transient toast)/`blk-rep` (~21585–21610), `pf-unblock`/`m-unblock` → unblockDlg (~21639–21653), `pf-rhint` dismiss (~21654), `dlg-unblk-go` (~20690–20696)
+- QR: `pfProfileLink` = `https://tukdaeng.app/u/{encodeURIComponent(u)}` (~13748), `pfQrSvg`/`pfQrPaint` (~13756–13781 — `qrcode` lib → SVG dots + finder patterns), `PF_QR_THEMES` 5 themes, `pfOpenQr`/`pfOpenCam`/`pfCloseCam`/`pfCloseQr`/`pfDownloadQr` (~13782–13854 — `getUserMedia` env cam + `BarcodeDetector` ~600ms poll → TukDaeng profile QR เปิด `profile:{u}` จริง / QR อื่น → `QR code isn't a TukDaeng profile`; no API → `Camera isn't available on this device`; denied → `Allow camera access to scan a QR code`; PNG download 1080px → `QR code saved`), handlers `.pf-qr-x`/`.pf-qr-color`/`.pf-cam-x`/`.pf-qr-scan`/`.pf-qr-share`/`.pf-qr-copy`/`.pf-qr-dl` (~21478–21489 — share → `shareSheetHTML`, copy → `pfCopyText` clipboard จริง + `Link copied`)
+- Viewer `...` menu: `pf-more` → pm-rows card (~21498–21514 — `pf-sh-report` (danger) / `pf-sh-block` (label flips `Block`↔`Unblock`) / `pf-sh-about` / `pf-sh-copy` / `pf-sh-share` + cancel card `pf-sh-cancel`), handlers ~21516–21557 (`copy` → `pfCopyText` ลง clipboard จริง + toast `Link copied`, `share` → `shareSheetHTML` ของ profile นั้น (`dataset.shUser`), `about` → `pushSub about:{u}`)
+- Block: `blkSheetHTML` (~16691–16706 — avatar + `Block {u}?` + `This will also block any other profiles they may have or create in the future.` + 3 impact rows + `Block` + `Block and report`; `fromChat` → เฉพาะ `Block`), `unblockDlgHTML` (~16721–16729 — `Unblock {u}?` center dlg), `pfRestrictHint` banner (~16730–16742 — ~6s auto-hide, tap dismiss), `pfIsBlocked`/`pfSetBlocked` (~16668–16688 — PF_BLOCKED + PF_REMOVED_FOL + unfollow + chat `th.blocked` + `p.blocked` + feed re-render; unblock ไม่ re-follow; persist ผ่าน `pfSave`), `pf-sh-block` handler (~21540–21550), `blk-go` (`Blocking` transient toast)/`blk-rep` (~21585–21610), `pf-unblock`/`m-unblock` → unblockDlg (~21639–21653), `pf-rhint` dismiss (~21654), `dlg-unblk-go` (~20690–20696) — **ฝั่งคนถูก block** เห็นโปรไฟล์ blocker เป็นหน้า unavailable (00_NAV §10 contract)
 - Report user: `pf-sh-report` → `rpPush report:pick:{u}` + `pmDropCovered` (~21531–21538, ~14883–14898 — picker `pg-up` slide-up ~14827), pages `report:pick:`/`report:posts:`/`report:user`/`report:post`/`report:done:` (~17512–17573 — reasons `PM_REASONS`, `rp-tile` picker grid = `pfTabPosts(u,"all")`, `report:done` = `Thanks for your feedback` + `rp-step` rows + `Done`), `rp-step` (~21611–21628 — block→blkSheet/unblock→unblockDlg/unfollow→instant+`Unfollowed`/mute→muteDlg/unmute→instant), `rp-done` → `rpClose` + `Report submitted · thanks for letting us know` (~21629–21634), `rpBack`/`rpClose` (~14899–14945)
 - About: `aboutHTML` (~16743–16765 — hero avatar + username + `PF_VBADGE` + note + `Date joined` (hash-mock month+year, TH +543) + `Account based in Thailand` + `Verified` row + foot note)
 - Edit: `peditHTML` (~16938–16950 — `pe-pic` + `pe-name` (maxlength 20) + `pe-bio` (maxlength 150, rows 5) + `pe-link` + `pe-save`), `peValidLink` (~16951–16956 — `^@[A-Za-z0-9_.]{1,30}$` / bare domain / `new URL` http+https), save handler + validation + rename migration (~21729–21776 — regex `^[a-z0-9_.]{3,20}$` + unique vs `PROFILES`+`POSTS.seller` + `pe-err`/`is-err`/focus first + migrate `PROFILES` key/`POSTS.seller`/`COMMENTS`/`followedBy`/`PF_BLOCKED`/`PF_REMOVED_FOL`/`PF_EXTRA_*`/`NEW_USER_KEY` `fo_newuser`/`obSaveAccount`/`_subStack` `profile:` keys + `o.disp = uname` → `subBack` + `Profile updated`)
 - Guest gate `GUEST_GATE_SEL` + `obGate` (~22997–23012, trigger ~20157): profile-family gated = `[data-flow]` (`+`/`pf-cta`), `[data-navgo="profile"]`, `.pf-foll`, `.pf-flw`, `.pf-msg`, `.pf-avov-act`, `.pf-dots`, `.pf-rmf`, `.pf-unblock`, `.pf-more`, `.pf-menu`, `.pf-edit`, `.pf-share`, `.pf-sh-report`, `.pf-sh-block`, `.pf-sh-share`, `.pm-own-*` (ใน pfp viewer), `.pm-go-report`; **ไม่** gated = `[data-pf-user]`, `[data-pfgo]`, `[data-pftab]`, `.pf-tile`, `[data-pfav]`, `.pfl-q`
-- Dead controls (ห้ามเขียนเป็น feature): `pf-msg` → `Open a listing to chat with this seller` (~21490–21491), `.pf-addp`/`.pf-addchip`/`.pf-avadd`/`.pf-note`/`.pf-sleep` → `Not in this prototype yet` (~21492–21493), avatar-overlay `qr` → `QR code isn't in this prototype yet` (~21359), `pe-pic` → `Photo picker isn't in this prototype yet`, `.set-btn` dead (canonical 13_SETTINGS), `pf-uname` → `Signed in as {me}` toast (~21496–21497 — account-switcher demo)
-- Quirks: `pfNavHTML(false)` → viewer profile ไฮไลต์ **Feed** tab ใน nav ที่ embed (~16798–16800), `pf-fby` ยัง render บน blocked profile ถ้ามี followedBy data (~16884), `report:posts:` picker grid = `pfTabPosts(u,"all")` (leak class เดียวกับ public `all`), `profileOf` fabricate → ไม่มี user-not-found reachability
+- Removed code-only controls (FO-TEST-12 — ตัดออกจาก prototype แล้ว ห้ามเขียนเป็น feature): `pf-note`, `pf-sleep`, `pf-addp`, `pf-addchip`, `pf-avadd`, avatar-overlay `qr` act, `pf-uname` toast, restrict-hint `Learn more` — เหลือ `.set-btn` dead (canonical 13_SETTINGS) เท่านั้น; `pf-msg`/`pe-pic` กลายเป็น real แล้ว (DM + photo picker)
+- Quirks: `pf-fby` ยัง render บน blocked profile ถ้ามี followedBy data (~16884), `report:posts:` picker grid = `pfTabPosts(u,"all")` (leak class เดียวกับ public `all`), `profileOf` fabricate → ไม่มี user-not-found reachability
 
 ---
 
@@ -69,7 +76,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Report | IG-style report stack (00_NAV §6.6 routes `report:*`) | entry `pf-sh-report` → `report:pick`; internals canonical 15_TRUST_SAFETY |
 | Notifications | Follow notification (00_NAV §8) | `type:"follow"` → `profile:{user}` — unfollow/block/remove ไม่แจ้ง |
 | Deep link | 00_NAV §10 contract | external deep link = contract เท่านั้น (prototype ไม่มี mechanism; `profileOf` fabricate → ไม่มี not-found reachability) |
-| ไม่มีใน V1 | — | Total Asset Value headline บน profile, asset-card `...` quick actions บน grid, public asset `...` menu, own `...` head menu, real chat จาก profile, photo picker, user-not-found page (reachability) |
+| ไม่มีใน V1 | — | Total Asset Value headline บน profile, asset-card `...` quick actions บน grid, public asset `...` menu, own `...` head menu, user-not-found page (reachability) |
 
 ---
 
@@ -101,7 +108,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Drawer/`pfkind`/sell/`sold:`/`pfasset:`/`portfolio`/`soldhist` internals — [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (FSP-017) + [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) (FSP-024)
 - Comments/likes/share/save sheet internals — 02_FEED + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) (FSP-022); `shareSheetHTML` reuse แค่ระบุ entry
 - Settings pages (blocked list `m-unblock`, favorites, muted, archive) — [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md); เอกสารนี้ระบุเฉพาะ `pf-menu` entry + shared sets contract
-- Chat room + threads — [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (FSP-020); `pf-msg` dead documented เท่านั้น
+- Chat room + threads internals — [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (FSP-020); `pf-msg` = DM entry จริง (FO-TEST-12 lock — ห้อง user→user เดียวต่อ account ไม่ผูก listing) เอกสารนี้ระบุเฉพาะ entry
 - Report post flow + moderation semantics + `PM_REASONS` — [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md); เอกสารนี้ระบุเฉพาะ user-report path จาก profile
 - Watch Alert — [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) (FSP-021)
 - Notification internals — [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (FSP-021); เอกสารนี้ระบุเฉพาะ profile-related notif types
@@ -147,18 +154,18 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 - Full browse: header + stats (กด followers/following เปิด pfollow ได้) + bio + `@username` chip + followed-by row + 3 tabs + grid→pfp viewer
 - `pf-foll`: `Follow` → instant; `Following ⌄` → mfSheet (favorites/mute/unfollow)
-- `pf-msg` → dead toast `Open a listing to chat with this seller`
+- `pf-msg` → **DM จริง** — `pfOpenChat` เปิดห้อง user→user เดียวของ account นั้น (`chatroom:{tid}` — ไม่ผูก listing; blocked → `Cannot message a blocked account`)
 - `pf-more` → Report/Block/About/Copy/Share/Cancel
 - pfollow lists → `pf-flw` pill flip in place
 - pfp viewer: `pfp-follow` instant + fade; `pm-btn` บนโพสต์คนอื่น = report-only menu
 
 ## Owner
 
-- ทุกอย่างของ viewer-page layout + head `+` (composer asset mode) + `pf-uname` (`Signed in as` toast) + `pf-menu` → settings
+- ทุกอย่างของ viewer-page layout + head `+` (composer asset mode) + `pf-uname` (inert label — V1 ไม่มี account switcher) + `pf-menu` → settings
 - Actions: `pf-edit` → pedit, `pf-share` → QR overlay, `.pf-pfo` → portfolio
 - 5 tabs (`all`/`sale`/`show`/`hide`/`sold`) — `hide`/`sold` = private reachability
 - Grid own posts → pfp viewer + `pmOwnMenuHTML` (Pin/Archive/Edit info/Mark as sold|View sale record/Delete — canonical 02)
-- pfollow own: followers rows `แชท` (dead) + `x` Remove → `Remove follower?` dlg; following rows `...` → Unfollow/Mute popover
+- pfollow own: followers rows `แชท` (DM จริง — ห้องเดียวกับ profile Chat) + `x` Remove → `Remove follower?` dlg; following rows `...` → Unfollow/Mute popover
 - `pedit` save → rename migration + `Profile updated`
 
 ## Blocked Relationship (viewer blocked owner — `PF_BLOCKED`)
@@ -214,7 +221,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Stats `followers`/`following` → `pushSub pfollow:{u}:{tab}` (slides over; back ออกขวา คง scroll profile)
 - Tabs EN labels `{n} followers`/`{n} following`; `pfl-q` live filter → `No results found`
 - Row แตะ → `pushSub profile:{user}` (ยกเว้นกด action button ใน row)
-- Own `followers` rows: `แชท`/`Chat` (dead toast) + `x` → `Remove follower?` dlg (`We won't let {u} know…` + `Remove` danger/`Cancel`) → `PF_REMOVED_FOL` + หายจาก list
+- Own `followers` rows: `แชท`/`Chat` (DM จริง — `pfOpenChat` ห้องเดียวกับปุ่ม Chat บน profile) + `x` → `Remove follower?` dlg (`We won't let {u} know…` + `Remove` danger/`Cancel`) → `PF_REMOVED_FOL` + หายจาก list
 - Own `following` rows: `...` → `pfl-pop` popover (`Unfollow` instant + row remove / `Mute`|`Unmute`)
 - Viewer lists: `pf-flw` pill เท่านั้น; self ไม่ขึ้นใน list คนอื่น; own non-member (session `new`) → lists ว่าง
 
@@ -224,7 +231,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - `Report` → `rpPush report:pick:{u}` (`pg-up` slide-up ทับ sheet; sheet snap shut `pmDropCovered` ~300ms)
 - `Block` → `blkSheetHTML` (หรือ `unblockDlgHTML` ถ้า blocked อยู่แล้ว)
 - `About this account` → `pushSub about:{u}`
-- `Copy profile URL` → toast `Profile link copied` (toast-only — ไม่แตะ clipboard)
+- `Copy profile URL` → `pfCopyText` ลง clipboard จริง + toast `Link copied`
 - `Share this profile` → `shareSheetHTML()` generic (canonical 11_SOCIAL)
 - `Cancel`/backdrop → ปิด
 
@@ -242,7 +249,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - `blkSheetHTML`: avatar + `Block {u}?` + `This will also block any other profiles they may have or create in the future.` + 3 impact rows (won't message/find profile · won't be notified · unblock anytime in Settings) + `Block` + `Block and report` (fromChat → เฉพาะ `Block`)
 - `Block` → `pfSetBlocked(true)` (`PF_BLOCKED` + `PF_REMOVED_FOL` + unfollow + chat `th.blocked` + `p.blocked` ทุกโพสต์ + feed re-render) → re-render `profile:`/`report:done:`/`chmenu:`/`chatroom:` ถ้าอยู่บน top → toast `Blocking`
 - Unblock entries: blocked-profile `pf-unblock` / `pf-sh-block` (label `Unblock`) / settings `m-unblock` / report step → `unblockDlgHTML` (`Unblock {u}?` + desc `…will now be able to request to follow and message you… won't be notified…` + `Unblock`/`Cancel`)
-- `Unblock` → `pfSetBlocked(false)` (ไม่ re-follow) → toast `Unblocked` + `pfRestrictHint` banner ~6s (tap dismiss; `Learn more` dead)
+- `Unblock` → `pfSetBlocked(false)` (ไม่ re-follow) → toast `Unblocked` + `pfRestrictHint` banner ~6s (tap dismiss)
 
 ## QR Share Flow (own profile)
 
@@ -250,21 +257,21 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Head: `X` close (`pfCloseQr` — ลบ share-open ด้วย) · `COLOR` (cycle `PF_QR_THEMES` 5 ชุด สลับ fg/bg repaint) · `Scan QR`
 - Mid: QR card (SVG dots + finder + `@USERNAME` ใต้ QR) — payload = `https://tukdaeng.app/u/{username}`
 - Actions: `Share profile` → `shareSheetHTML()` · `Copy link` → `pfCopyText` + `Link copied` · `Download` → PNG 1080px via canvas + `QR code saved`
-- `Scan QR`: `getUserMedia` env camera + `BarcodeDetector` poll ~600ms → `Profile QR scanned`/`QR code scanned`; ไม่มี API → `Camera isn't available on this device`; denied → `Allow camera access to scan a QR code`; `pf-cam-x` ปิด cam; hint `Point your camera at a QR code`
+- `Scan QR`: `getUserMedia` env camera + `BarcodeDetector` poll ~600ms → TukDaeng profile QR (`https://tukdaeng.app/u/{u}`) ปิด overlay + `pushSub profile:{u}` จริง / QR อื่น → `QR code isn't a TukDaeng profile`; ไม่มี API → `Camera isn't available on this device`; denied → `Allow camera access to scan a QR code`; `pf-cam-x` ปิด cam; hint `Point your camera at a QR code`
 
 ## Avatar Overlay Flow
 
 - `data-pfav` (avatar บน profile) → `scr._pfAv` → `pfAvovHTML` — tap พื้นว่าง/นอก act+img → ปิด
-- Viewer acts: `Follow`/`Following` (toggle จริง) + `Share` (`Profile shared`) + `Copy link` (`Profile link copied`) + `QR code` (dead `QR code isn't in this prototype yet`)
-- Own acts: `Share`/`Copy link`/`QR code` (dead) — **ไม่มี** Follow row
+- Viewer acts: `Follow`/`Following` (toggle จริง) + `Share` (`Profile shared`) + `Copy link` (`Profile link copied`)
+- Own acts: `Share`/`Copy link` — **ไม่มี** Follow row
 - Guest: overlay เปิดได้แต่ทุก `.pf-avov-act` gated → Member Sheet
 
 ## Edit Profile Flow
 
-- `pf-edit` → `pushSub pedit` — head `แก้ไขโปรไฟล์`/`Edit profile` + avatar + `เปลี่ยนรูปโปรไฟล์`/`Edit picture` (dead → `Photo picker isn't in this prototype yet`)
+- `pf-edit` → `pushSub pedit` — head `แก้ไขโปรไฟล์`/`Edit profile` + avatar + `เปลี่ยนรูปโปรไฟล์`/`Edit picture` (**real** — OS photo picker → avatar ใหม่ทันที + persist)
 - Fields: `ชื่อผู้ใช้`/`Username` (maxlength 20) · `ประวัติโดยย่อ`/`Bio` (maxlength 150) · `ลิงก์`/`Link`
 - `pe-save` validate: username `trim().toLowerCase()` + `^[a-z0-9_.]{3,20}$` + unique (vs `PROFILES` keys + `POSTS.seller`) → bio ≤150 → link `peValidLink` (`@handle` / bare domain / http(s) URL) — fail → `pe-err` inline + `is-err` + focus first invalid
-- Save OK → rename migration ครบ (`PROFILES` key, `POSTS.seller`, `COMMENTS` names+replies, `followedBy` arrays, `PF_BLOCKED`/`PF_REMOVED_FOL`/`PF_EXTRA_*`, `fo_newuser` storage, `obSaveAccount`, `_subStack` `profile:` keys) + `o.disp = uname` → `subBack` → `Profile updated`
+- Save OK → rename migration ครบ (`PROFILES` key, `POSTS.seller`, `COMMENTS` names+replies, `followedBy` arrays, `PF_BLOCKED`/`PF_REMOVED_FOL`/`PF_EXTRA_*`, `fo_newuser` storage, `obSaveAccount`, `_subStack` `profile:` keys — shared helper `pfRenameUser`) + `o.disp = uname` + `pfSave` persist → `subBack` → `Profile updated`
 
 ## Owner Entry Flows
 
@@ -288,12 +295,12 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Element | Own | Viewer |
 | --- | --- | --- |
 | Head left | `+` → composer asset mode | `sub-back` |
-| Head center | `pf-uname` → `Signed in as {me}` toast | — |
+| Head center | `pf-uname` label (inert — V1 ไม่มี account switcher) | — |
 | Head right | `pf-menu` burger → `settings` | `pf-more` `...` |
-| Actions | `แก้ไขโปรไฟล์`/`Edit profile` + `แชร์โปรไฟล์`/`Share profile` + `.pf-pfo` wallet | `ติดตาม`/`Follow` ↔ `กำลังติดตาม ⌄`/`Following ⌄` + `แชท`/`Chat` (dead) — blocked: `เลิกบล็อก`/`Unblock` เดียว |
+| Actions | `แก้ไขโปรไฟล์`/`Edit profile` + `แชร์โปรไฟล์`/`Share profile` + `.pf-pfo` wallet | `ติดตาม`/`Follow` ↔ `กำลังติดตาม ⌄`/`Following ⌄` + `แชท`/`Chat` (DM จริง — `pfOpenChat`) — blocked: `เลิกบล็อก`/`Unblock` เดียว |
 | Tabs | `all`/`sale`/`show`/`hide`/`sold` (5) | `all`/`sale`/`show` (3) |
-| Extras | `pf-note` bubble / `pf-sleep` chip (dead toasts) | `pf-atch` @username chip + `pf-fby` followed-by |
-| Bottom nav | Profile active | **Feed active** (`pfNavHTML(false)` quirk) |
+| Extras | — | `pf-atch` @username chip + `pf-fby` followed-by |
+| Bottom nav | Profile active | **ไม่มี** (deep page — SHELL-034) |
 
 ## Grid Content Rule (`pfTabPosts`)
 
@@ -327,7 +334,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ## Block Rule
 
-- `PF_BLOCKED` session set — effects: unfollow + add removed-follower + `th.blocked` ทุก thread + `p.blocked` ทุกโพสต์ (feed eligibility ตัดออก — canonical 02) + blocked-profile keep-page render
+- `PF_BLOCKED` (persist ผ่าน `fo_pfstate`) — effects: unfollow + add removed-follower + `th.blocked` ทุก thread + `p.blocked` ทุกโพสต์ (feed eligibility ตัดออก — canonical 02) + blocked-profile keep-page render; **ฝั่งคนถูก block** เห็นโปรไฟล์ blocker เป็น unavailable page (00_NAV §10 contract)
 - Keep-page contract (S-13/00_NAV): masked stats `0 posts`/`−`/`−`, `data-pfgo` ปิด, grid `ยังไม่มีโพสต์`/`No posts yet`, `Unblock` primary — **ไม่ใช่** generic unavailable page ของ spec เดิม
 - Unblock: ไม่ re-follow + `Unblocked` + `pfRestrictHint` (restrict feature ไม่มีใน V1 — banner เท่านั้น)
 - Shared กับ Settings `blocked` list (`m-unblock` → dlg เดียวกัน) + chat (`th.blocked`)
@@ -342,8 +349,8 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 ## Share & QR Rule
 
 - `pfProfileLink` = `https://tukdaeng.app/u/{encodeURIComponent(username)}` — payload ของ QR + Copy link
-- QR overlay **own profile เท่านั้น** (`.pf-share` gated + own action เท่านั้น) — viewer share path = `pf-sh-share` generic sheet + `pf-sh-copy` toast-only
-- `pf-qr-*` = real behaviors (themes/copy/download/camera); avatar-overlay `qr` action = dead toast (inconsistency — §19)
+- QR overlay **own profile เท่านั้น** (`.pf-share` gated + own action เท่านั้น) — viewer share path = `pf-sh-share` share sheet ของ profile นั้น + `pf-sh-copy` → clipboard จริง
+- `pf-qr-*` = real behaviors ทั้งหมด (themes/copy/download/camera scan → เปิด profile จริง); avatar-overlay `qr` act ถูกตัดออกแล้ว (FO-TEST-12)
 
 ## Edit Profile Rule
 
@@ -377,26 +384,26 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 5. **Blocked = keep-page** (canonical) — spec เดิมบอก unavailable/not-found state; prototype render constrained page
 6. **Block confirm = `blkSheet`** bottom sheet (ไม่มี Cancel row — dismiss ผ่าน backdrop) + `Block and report` — spec เดิม center `Block this user?` + Cancel
 7. **Report done** = `Thanks for your feedback` + steps + `Done` toast — spec เดิม `Report submitted` dialog + "remain visible" copy
-8. **Share own = QR overlay** — spec เดิม share-sheet + preview card; viewer `pf-sh-copy` = toast-only (ไม่ copy จริง — ต่างจาก `pf-qr-copy` ที่ใช้ `pfCopyText`)
+8. **Share own = QR overlay** — spec เดิม share-sheet + preview card; viewer `pf-sh-copy` = `pfCopyText` ลง clipboard จริง + toast `Link copied`
 9. **Guest share gated** — spec เดิม AC บอก guest share ได้; gate list จริงล็อกทุก share path (canonical S-03)
 10. **Edit profile fields** = username/bio/link — spec เดิม username/phone/LINE/email (contact = contract-only 13_SETTINGS)
 11. **Unfollow behaviors หลาย surface** — spec เดิมบังคับ confirm sheet เดียวทุกจุด; prototype แยก feed-confirm vs profile/list instant (documented §8)
-12. **`pf-msg` Chat dead** — toast `Open a listing to chat with this seller` (chat เข้าผ่าน listing เท่านั้น — 07)
+12. **`pf-msg` Chat = real DM** (FO-TEST-12 lock) — `pfOpenChat` เปิดห้อง user→user เดียวต่อ account ไม่ผูก listing (IG-style; canonical 07 อัปเดตตาม) — กฎ "chat เข้าผ่าน listing เท่านั้น" ถูกยกเลิก
 13. **Followers/following pages + Remove follower + manage popover** — ใหม่ทั้งชุด (spec เดิมไม่มี)
 14. **About this account** — ใหม่ (spec เดิมไม่มี)
-15. **Avatar overlay** — ใหม่; `qr` act dead ทั้งที่ `pf-share` เปิด QR จริง (inconsistency)
-16. **IG extras**: verified badge (`PF_VBADGE` — spec เดิม out-of-scope), story ring, category, link chip, `pf-note`, `pf-sleep`, `pf-addchip`, `pf-avadd` — note/sleep/addchip/avadd dead toasts
-17. **Viewer nav ไฮไลต์ Feed** (`pfNavHTML(false)`) — ไม่ใช่ Profile/ไม่ใช่ none
+15. **Avatar overlay** — ใหม่; acts = Follow(viewer)/Share/Copy link (`qr` act ถูกตัดออก — FO-TEST-12)
+16. **IG extras**: verified badge (`PF_VBADGE` — spec เดิม out-of-scope), story ring, category, link chip — `pf-note`/`pf-sleep`/`pf-addchip`/`pf-avadd`/`pf-addp` ถูกตัดออกจาก prototype แล้ว (code-only ที่ไม่เคย render — ห้ามเขียนเป็น feature)
+17. **Viewer profile ไม่มี bottom nav** (SHELL-034 — deep page; เดิม `pfNavHTML(false)` ไฮไลต์ Feed ถูกแก้ตาม FO-TEST-12 lock)
 18. **`pf-fby` render บน blocked page** ถ้ามี followedBy data (quirk)
 19. **Stats hash-mock + string format** (`21.1K`); `profileOf` fabricate → ไม่มี not-found
 20. **`report:posts:` picker = `pfTabPosts "all"`** — leak hide/sold tiles (S-14 class เดียวกัน)
 21. **`pfp-follow` fade-out** ~1.2s หลัง follow (pv head)
-22. **Session-only state**: follow/fav/mute/block/removed/pins/gfx tombstones/QR theme — refresh หาย (persistence = contract §18)
+22. **Server-backed state** (FO-TEST-12 lock): follow/fav/mute/block/removed/pins/archive/delete/profile edits persist ข้าม reload + sign-out→sign-in + ข้าม device — prototype mirror ด้วย `fo_pfstate:{member|new}` (`pfSave`/`pfLoad`) เหลือ session-only เฉพาะ QR theme
 23. **EN-hardcoded strings** (language sweep FSP-026): pfollow labels/empties/`Search username`, QR labels+toasts, `blkSheet`/`unblockDlg`/`Remove follower?`/`Pin limit reached` ทั้งก้อน, `Blocking`/`Unblocked`/`Unfollowed`/`Muted`/`Unmuted`/`Profile shared`/`Profile link copied`/`QR code…`/`Link copied`/`QR code saved`/`Signed in as`/`Camera…`/`Allow camera…`
 24. **`pf-sh-share` อยู่ใน gate list แต่ unreachable** (`.pf-more` gated ก่อน) — belt-and-suspenders
 25. **`.pf-menu` → `settings` direct**; `.set-btn` dead (canonical 13)
 26. **`pedit` `o.disp = uname`** — save เปลี่ยน disp ตาม username เสมอ (ไม่มีช่อง display name แยก)
-27. **own follower rows มี `pf-msg` dead ด้วย** — Chat button ซ้ำซ้อนกับ profile `pf-msg`
+27. **own follower rows มี `pf-msg`** — Chat button เปิดห้อง DM เดียวกับปุ่ม Chat บน profile (user→user เดียวต่อ account)
 28. **`report:done` ใน stack `rp-over` ทับ pv** — block จาก done แล้ว re-render `report:done:{u}` ให้ step กลาย Unblock พร้อมใช้
 
 ---
@@ -419,7 +426,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ## Member / Viewer
 
-- Browse + follow/unfollow/fav/mute/report/block/share/copy/about ครบตาม §8 — Chat button แสดงแต่ dead
+- Browse + follow/unfollow/fav/mute/report/block/share/copy/about ครบตาม §8 — Chat button เปิด DM จริง (`pfOpenChat`)
 - เห็นเฉพาะ `Sale`+`Show` บน viewer grid (canonical; defect §19)
 
 ## Owner
@@ -528,9 +535,9 @@ Contract-level (prototype ไม่มี analytics layer — เก็บ event
 | AC-PROFILE-003 | Profile ต้องเปิดได้จาก `[data-pf-user]` ทุก surface (detail head/caption/comments/likes/pv-seller/search/pfollow/settings/chat) + feed `pfWho` + `data-navgo="profile"` + composer-save landing + follow notification |
 | AC-PROFILE-004 | `+` บน own head และ `pf-cta` บน empty `all` ต้องเปิด composer `data-flow="create" data-mode="asset"` และ save แล้วกลับ `profile:{me}` |
 | AC-PROFILE-005 | `.pf-pfo` ต้อง push `portfolio` route (canonical 04) และต้องไม่มี Total Asset Value บน profile page |
-| AC-PROFILE-006 | `pf-menu` ต้อง push `settings`; `pf-uname` ต้อง toast `Signed in as {me}`; `pf-edit` ต้อง push `pedit`; `pf-share` ต้องเปิด `.pf-qr` overlay |
-| AC-PROFILE-007 | Bottom nav บน own profile ไฮไลต์ Profile; viewer profile ไฮไลต์ Feed (`pfNavHTML`) |
-| AC-PROFILE-008 | Profile page ต้อง render avatar+story ring(เมื่อ `ring`)+disp+stats+bio(cat/text/link chip)+verified badge(เมื่อ `verified`) — `pf-note`/`pf-sleep` render เมื่อมี data และ dead-toast เมื่อแตะ |
+| AC-PROFILE-006 | `pf-menu` ต้อง push `settings`; `pf-uname` ต้องเป็น inert label (ไม่มี account switcher V1); `pf-edit` ต้อง push `pedit`; `pf-share` ต้องเปิด `.pf-qr` overlay |
+| AC-PROFILE-007 | Bottom nav บน own profile ไฮไลต์ Profile; viewer profile ต้อง **ไม่มี** bottom nav (SHELL-034 deep page) |
+| AC-PROFILE-008 | Profile page ต้อง render avatar+story ring(เมื่อ `ring`)+disp+stats+bio(cat/text/link chip)+verified badge(เมื่อ `verified`) — ต้องไม่มี `pf-note`/`pf-sleep`/`pf-addchip`/`pf-avadd` (ถูกตัดแล้ว) |
 
 ## Tabs & Grid
 
@@ -565,7 +572,7 @@ Contract-level (prototype ไม่มี analytics layer — เก็บ event
 | --- | --- |
 | AC-PROFILE-026 | Stats `followers`/`following` (`data-pfgo`) ต้อง push `pfollow:{u}:{tab}`; back ต้อง slide ออกขวา คง scroll profile |
 | AC-PROFILE-027 | pfollow ต้องมี tab labels `{n} followers`/`{n} following` + `pfl-q` live search → `No results found` เมื่อไม่ match |
-| AC-PROFILE-028 | Own followers rows ต้องมี `Chat` (dead toast) + `x` → `Remove follower?` dlg → `PF_REMOVED_FOL` + row หาย (ไม่แจ้งอีกฝ่าย) |
+| AC-PROFILE-028 | Own followers rows ต้องมี `Chat` (`pfOpenChat` → ห้อง DM user→user จริง) + `x` → `Remove follower?` dlg → `PF_REMOVED_FOL` + row หาย (ไม่แจ้งอีกฝ่าย) |
 | AC-PROFILE-029 | Own following rows `...` ต้องเปิด `pfl-pop` — `Unfollow` instant + `Unfollowed` + row remove / `Mute`→`muteDlg` หรือ `Unmuted` |
 | AC-PROFILE-030 | Viewer lists ต้องมี `pf-flw` pill เท่านั้น และ self ต้องไม่ปรากฏใน lists ของคนอื่น; own non-member (session `new`) → lists ว่าง |
 
@@ -575,9 +582,9 @@ Contract-level (prototype ไม่มี analytics layer — เก็บ event
 | --- | --- |
 | AC-PROFILE-031 | QR overlay ต้องมี X / `COLOR` (5 themes cycle) / `Scan QR` + QR card (`https://tukdaeng.app/u/{u}`) + `Share profile`/`Copy link`/`Download` |
 | AC-PROFILE-032 | `pf-qr-copy` ต้อง copy จริงผ่าน `pfCopyText` + `Link copied`; `pf-qr-dl` ต้อง download PNG + `QR code saved`; `pf-qr-share` → `shareSheetHTML` |
-| AC-PROFILE-033 | `Scan QR` ต้อง `getUserMedia`+`BarcodeDetector` — toasts: scanned/`Camera isn't available on this device`/`Allow camera access to scan a QR code`; `pf-cam-x` ปิด cam |
-| AC-PROFILE-034 | Viewer `...` → `Copy profile URL` ต้อง toast `Profile link copied` (toast-only); `Share this profile` → generic share sheet |
-| AC-PROFILE-035 | Avatar overlay ต้องแสดง acts ตาม own/viewer — viewer: Follow toggle จริง + Share/Copy/QR (toasts); own: Share/Copy/QR (QR dead toast `QR code isn't in this prototype yet`) |
+| AC-PROFILE-033 | `Scan QR` ต้อง `getUserMedia`+`BarcodeDetector` — TukDaeng profile QR → ปิด overlay + เปิด `profile:{u}` จริง; QR อื่น → `QR code isn't a TukDaeng profile`; `Camera isn't available on this device`/`Allow camera access to scan a QR code`; `pf-cam-x` ปิด cam |
+| AC-PROFILE-034 | Viewer `...` → `Copy profile URL` ต้อง `pfCopyText` ลง clipboard จริง + toast `Link copied`; `Share this profile` → share sheet ของ profile นั้น (`dataset.shUser`) |
+| AC-PROFILE-035 | Avatar overlay ต้องแสดง acts ตาม own/viewer — viewer: Follow toggle จริง + Share/Copy link; own: Share/Copy link — ต้องไม่มี `qr` act (ถูกตัดแล้ว) |
 
 ## Viewer Menu / About / Report / Block
 
@@ -598,7 +605,7 @@ Contract-level (prototype ไม่มี analytics layer — เก็บ event
 
 | ID | Acceptance Criteria |
 | --- | --- |
-| AC-PROFILE-046 | `pedit` ต้องมี avatar + `Edit picture` (dead toast `Photo picker isn't in this prototype yet`) + Username/Bio/Link + `Save` |
+| AC-PROFILE-046 | `pedit` ต้องมี avatar + `Edit picture` (**real** — OS photo picker → avatar เปลี่ยนทันที + persist `pfSave`) + Username/Bio/Link + `Save` |
 | AC-PROFILE-047 | Username ต้อง validate `^[a-z0-9_.]{3,20}$` (lowercase) + unique vs `PROFILES`+`POSTS.seller` — fail → `pe-err`/`is-err`/focus first |
 | AC-PROFILE-048 | Link ต้อง validate `peValidLink` (`@handle`/bare domain/http(s) URL; ว่าง = ลบ); Bio clamp maxlength 150 |
 | AC-PROFILE-049 | Save ต้อง migrate ทุก reference (PROFILES key/POSTS.seller/COMMENTS/followedBy/PF_BLOCKED/PF_REMOVED_FOL/PF_EXTRA_*/fo_newuser/obSaveAccount/`_subStack` keys) + `disp=uname` → `subBack` + `Profile updated` |
@@ -616,9 +623,9 @@ Contract-level (prototype ไม่มี analytics layer — เก็บ event
 | ID | Acceptance Criteria |
 | --- | --- |
 | AC-PROFILE-053 | Profile ต้องไม่แสดง Purchase Price/Date, Sold History, Portfolio Value หรือ Total Asset Value (00_GLOBAL §14) |
-| AC-PROFILE-054 | `pf-msg`/`pf-note`/`pf-sleep`/`pf-addchip`/`pf-avadd`/overlay-`qr`/`pe-pic`/`pf-uname` ต้องเป็น dead/demo toasts เท่านั้น — ห้าม spec เป็น feature |
+| AC-PROFILE-054 | `pf-msg` ต้องเปิด DM จริง (`pfOpenChat` → `chatroom:{tid}` — ไม่ผูก listing); `pe-pic` ต้องเปิด photo picker จริง; `pf-note`/`pf-sleep`/`pf-addchip`/`pf-avadd`/`pf-addp`/overlay-`qr`/`pf-uname` toast/`Learn more` ต้องไม่มีใน DOM/behavior — ถูกตัดออกแล้ว ห้าม spec เป็น feature |
 | AC-PROFILE-055 | `profileOf` fabricate ทุก username — ต้องไม่มี user-not-found state ใน V1 prototype semantics (contract §18) |
-| AC-PROFILE-056 | State follow/fav/mute/block/removed/pins เป็น session-only — ไม่ persist (contract §18) |
+| AC-PROFILE-056 | State follow/fav/mute/block/removed/pins/archive/delete/profile edits ต้อง persist ข้าม reload + sign-out→sign-in + ข้าม device (server-backed — prototype mirror ผ่าน `fo_pfstate`) |
 
 ---
 
@@ -631,7 +638,7 @@ Contract-level (prototype ไม่มี analytics layer — เก็บ event
 - [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) — Post Viewer `pfp` mode + `pv-seller` head + viewer sheets (FSP-016)
 - [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) — composer asset mode + `pfkind`/drawer + `.pf-pfo`/`+`/CTA entries + sold semantics (FSP-017)
 - [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) — `View full detail`/`pv-dt` reachability จาก pfp (FSP-018)
-- [07_CHAT_MODULE.md](07_CHAT_MODULE.md) — `pf-msg` dead + chat item/menu profile entries + `th.blocked` (FSP-020)
+- [07_CHAT_MODULE.md](07_CHAT_MODULE.md) — `pf-msg` DM entry (`pfOpenChat`) + chat item/menu profile entries + `th.blocked` (FSP-020)
 - [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) — follow notification (FSP-021)
 - [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) — WA (FSP-021)
 - [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) — `shareSheetHTML`/share/save semantics (FSP-022)
@@ -645,13 +652,13 @@ Contract-level (prototype ไม่มี analytics layer — เก็บ event
 # 18. Future Enhancement
 
 - **User-not-found / unavailable contract** — `profileOf` fabricate ทุก name; contract state ต้องมีเมื่อ routing จริง (00_NAV §10)
-- **Persistence** — follow/fav/mute/block/removed/pins/profile edits เป็น session-only; server persistence + sync
-- **Real share links/deep links** — `pf-sh-copy` ควร copy จริง; `https://tukdaeng.app/u/{u}` ต้อง resolve เป็น deep link + block/not-found validation (spec เดิม AC-PROFILE-007F–H เดิม — ย้ายเป็น contract)
+- ~~Persistence~~ — **done** (FO-TEST-12): server-backed `fo_pfstate` mirror
+- **Real share links/deep links** — `https://tukdaeng.app/u/{u}` ต้อง resolve เป็น deep link + block/not-found validation เมื่อ routing จริง (copy/scan path ทำงานจริงแล้วตาม FO-TEST-12)
 - **Public `all` leak fix** — viewer `all` filter ตาม canonical (S-14 defect; `report:posts` picker ด้วย)
-- **Photo picker** — `pe-pic` ปัจจุบัน dead toast
-- **Chat from profile** — `pf-msg` ปัจจุบัน dead; IG มี Message button จริง (07 handoff)
+- ~~Photo picker~~ — **done** (FO-TEST-12): `pe-pic` = OS picker จริง
+- ~~Chat from profile~~ — **done** (FO-TEST-12): `pf-msg` = DM จริง (`pfOpenChat` — user→user room เดียว ไม่ผูก listing)
 - **Restrict feature** — `pfRestrictHint` banner มีแล้วแต่ไม่มี restrict flow
-- **IG extras ที่ยัง dead**: `pf-note` note bubble, `pf-sleep` sleep mode, `pf-addchip`/suggested row, `pf-avadd` add avatar, avatar-overlay QR action, `pf-uname` account switcher
+- **IG extras ที่เคย dead — ถูกตัดออกแล้ว**: `pf-note`/`pf-sleep`/`pf-addchip`/`pf-avadd`/avatar-overlay `qr` act/`pf-uname` toast/`Learn more` (FO-TEST-12 — ถ้าจะทำจริงค่อยเพิ่มใหม่ใน version ถัดไป)
 - **Story ring** — `ring` แสดงแต่ไม่มี story surface
 - **Display name แยกจาก username** — ตอนนี้ `disp` = username เสมอ
 - **language sweep** — EN-hardcoded strings (§9 Deviation #23) เข้า FSP-026

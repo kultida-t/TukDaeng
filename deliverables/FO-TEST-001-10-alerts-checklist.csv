@@ -1,0 +1,91 @@
+TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,ทดสอบบน (Device/OS),Note
+SETUP-01,Setup,ไม่มีแอป,ติดตั้ง build ทดสอบลงเครื่องจริง → เปิดแอป,แอปเปิดขึ้นหน้า feed หรือ onboarding,-,-,,,
+SETUP-02,Setup,แอปติดตั้งแล้ว,ลบข้อมูลแอป/ติดตั้งใหม่,แอปสะอาด เหมือนผู้ใช้ใหม่,-,-,,,
+SETUP-03,Setup,แอปสะอาด,เปิดแอปโดยไม่ sign in,เข้า feed แบบ guest ได้,GUEST,-,,,
+SETUP-04,Setup,แอปสะอาด,sign in ด้วยบัญชีทดสอบจริง,เข้า feed เป็นสมาชิก,MEMBER,-,,,
+SETUP-05,Setup,แอปสะอาด,สมัครใหม่ด้วยอีเมล/เบอร์จริง → ผ่าน onboarding,สมาชิกใหม่ เข้า feed ได้ alerts ว่าง,NEW,-,,,
+SETUP-06,Setup,sign in แล้ว,"จด ACTOR-MEMBER · ACCT-2 · POST-OWN (สร้างผ่าน + ถ้ายังไม่มี) · WATCH-X criteria · ACCT-3+ · รุ่นเครื่อง/OS",ข้อมูลพร้อมสำหรับเคสทั้งเล่ม,MEMBER,-,,,ขาดตัวไหน mark BLOCK เคสที่เกี่ยว
+SETUP-07,Setup,sign in แล้ว,ทดลองแท็บแจ้งเตือน · back บนหัว · Mark all as read · x + Follow back · เส้นทาง notif settings,ทุก entry เปิดถูกตำแหน่งตาม spec,MEMBER,-,,,
+SETUP-08,Setup,เป็น guest,กดแท็บแจ้งเตือน (gated),Member Sheet เด้ง มี Sign in/Sign up/Skip — feed ไม่เปิด,GUEST,-,,,
+SETUP-09,Setup,มีเครื่องจริงอีกเครื่อง,ติดตั้ง build เดียวกัน → sign in ACCT-2 → เปิด notif permission ทั้งสองเครื่อง → เวลาตรงกัน,บัญชีสองพร้อมสร้างแจ้งเตือนจริง,-,-,,,ไม่มีเครื่องสอง = เคส ACCT-2 เป็น BLOCK
+SETUP-10,Setup,POST-OWN มีอยู่ + ACCT-2 sign in,ACCT-2 กด like → comment → follow → เครื่องหลักเปิด alerts,เห็น row like+comment+follow ใหม่ unread + badge เพิ่ม,MEMBER+ACCT-2,-,,,ไม่เด้ง = BLOCK เคส §2.9 ทั้งหมด
+SETUP-11,Setup,sign in แล้ว,สร้าง watch alert ด้วย criteria WATCH-X ที่ ACCT-2 match ได้,watch alert พร้อมสำหรับเคส generation,MEMBER,-,,,สร้างไม่ได้ = BLOCK ALT-014/028/032/053/069
+ALT-001,Alerts Feed,อยู่ feed,แตะแท็บแจ้งเตือน — รอบ A GUEST / รอบ B MEMBER,A: Member Sheet เด้ง feed ไม่เปิด · B: feed เปิด swap + แท็บ active,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
+ALT-002,Alerts Feed,มี alert ≥1 row,เปิด alerts → อ่านหน้า,"head back<+title แจ้งเตือน+พื้นขวาว่าง + group sections + rows + nav active alerts",MEMBER,HIGH,,,
+ALT-003,Alerts Feed,มี alert,อ่านลำดับ section header,เรียง Today→Yesterday→Last 7 days→Earlier · render เฉพาะกลุ่มไม่ว่าง,MEMBER,MED,,,
+ALT-004,Alerts Feed,กลุ่มมี ≥2 rows,เทียบเวลาในกลุ่มเดียวกัน,แถวใหม่กว่าอยู่บนกว่า (created DESC),MEMBER,MED,,,
+ALT-005,Alerts Feed,มี alert หลายอายุ,เทียบ label เวลา TH vs EN,TH: N นาที/N ชม./N วัน/N สัปดาห์ · EN: Nm/Nh/Nd/Nw,MEMBER,MED,,,
+ALT-006,Alerts Feed,มีทั้ง unread+read rows,เทียบแถว read/unread,unread มี highlight ต่างจาก read ชัดทั้ง light/dark,MEMBER,HIGH,,,
+ALT-007,Alerts Feed,สมัครใหม่ ไม่มีกิจกรรม,เปิด alerts,"Empty: ยังไม่มีการแจ้งเตือน/No alerts yet + desc เฉพาะ module — ไม่ใช่ No data found",NEW,HIGH,,,
+ALT-008,Alerts Feed,alert จำนวนมาก,เลื่อนจนสุด list,แสดงครบทุก row ใน list เดียว ไม่มี load more/infinite scroll,MEMBER,MED,,,
+ALT-009,Alerts Feed,อยู่ alerts,มองหา link ไป walerts,ไม่มี entry walerts (ของ FO-TEST-11) — เจอ = FAIL,MEMBER,MED,,,
+ALT-010,Row Anatomy,ACCT-2 like POST-OWN,อ่าน row like,avatar+heart badge+{name} liked your post+เวลา+thumb ขวา,MEMBER,HIGH,,,
+ALT-011,Row Anatomy,≥3 บัญชี like โพสต์เดียว,อ่าน row like รวม,"avatar stack 2 + heart + u1, u2 and N others + thumb",MEMBER,MED,,,บัญชีไม่พอ = BLOCK
+ALT-012,Row Anatomy,ACCT-2 comment,อ่าน row comment,avatar+{name} commented: {excerpt}+thumb · excerpt ยาวตัดตาม design,MEMBER,HIGH,,,
+ALT-013,Row Anatomy,ACCT-2 follow,อ่าน row follow,avatar+started following you+Follow back+x · ไม่มี thumb,MEMBER,HIGH,,,
+ALT-014,Row Anatomy,watch alert match แล้ว,อ่าน row watch,bell icon+seller mini+Watch alert {name} — listing from {seller} · {price}+thumb,MEMBER,MED,,,ไม่มี row = BLOCK
+ALT-015,Row Anatomy,system alert เกิดแล้ว,อ่าน row system,icon วงกลม ! + ข้อความดิบ + เวลา · ไม่มี thumb/x/ปุ่ม,MEMBER,MED,,,ไม่มี row = BLOCK
+ALT-016,Row Anatomy,มีข้อมูลยาว,ดู row ชื่อ/ข้อความยาวมาก,wrap/ตัดตาม design ไม่ทะลุกรอบ ไม่ทับ x/thumb,MEMBER,MED,,,ไม่มีข้อมูลยาวจริง = BLOCK
+ALT-017,Read & Badge,unread ≥1,นับแถว unread เทียบ badge,badge เท่าจำนวน unread เป๊ะ รวมทุก type,MEMBER,HIGH,,,
+ALT-018,Read & Badge,มี unread,จด badge → แตะ row unread → กลับ,highlight หายทันที + badge ลด 1 + navigate ถูก,MEMBER,HIGH,,,
+ALT-019,Read & Badge,row อ่านแล้ว,แตะ row read,badge ไม่เปลี่ยน + navigate ปกติ,MEMBER,MED,,,
+ALT-020,Read & Badge,unread ≥2,แตะ Mark all as read บน section แรก,ทุก row อ่าน + badge หาย + ปุ่มหาย + row ไม่หาย,MEMBER,HIGH,,,
+ALT-021,Read & Badge,unread >0,อ่าน section headers ทุกกลุ่ม,ปุ่มอยู่ section แรกเท่านั้น · feed อ่านครบไม่มีปุ่ม,MEMBER,MED,,,
+ALT-022,Read & Badge,เหลือ unread แถวเดียว,แตะ row unread สุดท้าย → กลับมา,ปุ่ม Mark all as read หายอัตโนมัติ,MEMBER,MED,,,
+ALT-023,Read & Badge,สร้าง unread >99 ได้,ดู badge เมื่อ unread ≥100,แสดง 99+ ไม่ใช่ตัวเลขจริง,MEMBER,MED,,,สร้าง unread เยอะขนาดนั้นไม่ได้ = BLOCK
+ALT-024,Read & Badge,มี unread,เทียบ badge ที่ feed vs alerts,ตัวเลขเท่ากันทุกจุดที่ nav ปรากฏ,MEMBER,MED,,,
+ALT-025,Read & Badge,อ่าน row ไว้แล้ว,kill แอป → เปิดใหม่ → alerts,แถวยังอ่าน + badge นับเฉพาะ unread — lock server-backed,MEMBER,HIGH,,,
+ALT-026,Destinations,มี like row,แตะ row like,Post Viewer โพสต์ตัวเองใบเดียว (title Post) · back → alerts,MEMBER,HIGH,,,
+ALT-027,Destinations,มี comment row,แตะ row comment,Post Viewer โพสต์ตัวเอง — ไม่ focus/deep-scroll comment · focus = FAIL,MEMBER,HIGH,,,
+ALT-028,Destinations,มี watch row,แตะ row watch,Post Viewer ลิสติ้ง match โดยตรง + Follow ถ้ายังไม่ติดตาม seller,MEMBER,HIGH,,,ไม่มี watch row = BLOCK
+ALT-029,Destinations,มี follow row,แตะ row follow → back,push profile ผู้ติดตามทับ alerts · back กลับ alerts stack ค้าง,MEMBER,HIGH,,,
+ALT-030,Destinations,มี system row,แตะ row system,ไม่ navigate ออกจาก alerts — เปิดหน้าใด = FAIL,MEMBER,MED,,,ไม่มี system row = BLOCK
+ALT-031,Destinations,ACCT-2 like/comment โพสต์ที่จะลบ,ACCT-2 like → MEMBER ลบโพสต์ → แตะ row,"unavailable state รายการนี้ไม่พร้อมใช้งานแล้ว + ปุ่ม Go back — ไม่เปิด viewer",MEMBER+ACCT-2,HIGH,,,row ยังถูก mark read
+ALT-032,Destinations,watch row แล้ว ACCT-2 ลบลิสติ้ง,แตะ row watch,unavailable เหมือน ALT-031 — ห้าม silent no-op,MEMBER+ACCT-2,MED,,,ไม่มีวิธีทำลิสติ้งหาย = BLOCK
+ALT-033,Destinations,ACCT-2 follow แล้วถูก block ทีหลัง,แตะ row follow ของ ACCT-2,"profile keep-page: grid ว่าง + ปุ่ม Unblock — ไม่ใช่ unavailable",MEMBER+ACCT-2,MED,,,
+ALT-034,Destinations,เลื่อนค้างกลาง list + อ่านไว้แล้ว,แตะ row → destination → back,กลับ alerts scroll เดิม + read คง + badge ไม่เด้งกลับ,MEMBER,MED,,,
+ALT-035,Follow Actions,มี follow row,แตะ x,row หายทันที ไม่มี confirm/undo · badge ลดถ้า row unread,MEMBER,HIGH,,,
+ALT-036,Follow Actions,dismiss แล้ว,kill แอป → เปิดใหม่ → alerts,row ไม่กลับมา — lock server-backed · กลับมา = FAIL,MEMBER,MED,,,
+ALT-037,Follow Actions,ยังไม่ follow ACCT-2,แตะ Follow back,ปุ่มเป็น Following + follow จริง (ฝั่ง ACCT-2 followers +1),MEMBER+ACCT-2,HIGH,,,
+ALT-038,Follow Actions,follow back แล้ว,แตะ Following,ปุ่มกลับ Follow back + unfollow จริง,MEMBER,MED,,,
+ALT-039,Follow Actions,follow row unread,แตะ Follow back/x,row ยัง unread + ไม่ navigate + badge ไม่เปลี่ยนจากการอ่าน,MEMBER,MED,,,
+ALT-040,Follow Actions,มีหลาย type,มองหา x บน like/comment/watch/system,ไม่มี x บน type อื่น — เฉพาะ follow,MEMBER,MED,,,
+ALT-041,Follow Actions,ภาษาไทย + follow row,แตะ Follow back → label → เปลี่ยน EN → ทำซ้ำ,"label ตามภาษาแอปทุกสถานะ ติดตามกลับ↔กำลังติดตาม / Follow back↔Following",MEMBER,HIGH,,,ค้าง EN = FAIL
+ALT-042,Guest & Gate,เป็น guest + มี deep link,เปิด deep link เข้า alerts เป็น guest,Member Sheet ก่อนเสมอ feed ไม่เปิด,GUEST,MED,,,ไม่มี deep link = BLOCK
+ALT-043,Guest & Gate,sheet เด้งอยู่,Sign in ผ่าน sheet สำเร็จ → แตะแท็บแจ้งเตือน,กลับ surface เดิม (ไม่ auto-open alerts) + alerts เปิดได้แล้ว,GUEST,MED,,,
+ALT-044,Guest & Gate,สมัครใหม่,แตะแท็บแจ้งเตือน,เปิด feed ได้ทันที + empty state + ไม่มี badge,NEW,HIGH,,,
+ALT-045,Guest & Gate,ACCT-2 พร้อมส่งข้อความ,ACCT-2 ส่ง chat → เช็ก alerts + badge Chat,"badge แท็บ Chat เท่านั้น — alerts ไม่มี row ใหม่",MEMBER+ACCT-2,MED,,,
+ALT-046,Guest & Gate,MEMBER+ACCT-2 พร้อม,MEMBER report/block ACCT-2 → เครื่องสองเปิด alerts,feed ACCT-2 ไม่มี row บอกถูก report/block,MEMBER+ACCT-2,MED,,,
+ALT-047,Guest & Gate,เป็น guest,หา entry อื่นนอกแท็บ (search/profile/settings/drawer),ไม่มีทางเข้าอื่น — แท็บเท่านั้น,GUEST,LOW,,,
+ALT-048,Notif Settings,SETUP-07 เส้นทาง,profile → menu → Settings → การตั้งค่าการแจ้งเตือน,"desc + กลุ่ม กิจกรรม (ยอดถูกใจ/ความคิดเห็น/ผู้ติดตามใหม่) + กลุ่ม การซื้อขายและการแจ้งเตือน (การแจ้งเตือนนาฬิกา) · ไม่มี system toggle",MEMBER,HIGH,,,
+ALT-049,Notif Settings,บัญชีใหม่,เปิด notif settings,4 toggles ON ทั้งหมด,NEW,MED,,,
+ALT-050,Notif Settings,likes OFF,ACCT-2 like → alerts,ไม่มี like row ใหม่ + badge ไม่เพิ่ม — ยึด contract,MEMBER+ACCT-2,HIGH,,,lock ข้อ 4
+ALT-051,Notif Settings,comments OFF,ACCT-2 comment → alerts,ไม่มี comment row ใหม่,MEMBER+ACCT-2,MED,,,
+ALT-052,Notif Settings,follows OFF,ACCT-2 unfollow→follow ใหม่ → alerts,ไม่มี follow row ใหม่,MEMBER+ACCT-2,MED,,,
+ALT-053,Notif Settings,walerts OFF + watch alert พร้อม,ACCT-2 ลงลิสติ้ง match → alerts,ไม่มี watch row ใหม่,MEMBER+ACCT-2,MED,,,engine ไม่มี = BLOCK
+ALT-054,Notif Settings,likes OFF ไว้,kill แอป → เปิดใหม่ → notif settings,toggle ยัง OFF,MEMBER,MED,,,
+ALT-055,Notif Settings,likes OFF→ON,ACCT-2 like อีกครั้ง → alerts,like row ใหม่โผล่ + badge นับ,MEMBER+ACCT-2,MED,,,
+ALT-056,Notif Settings,มี like row อยู่,ปิด likes → เปิด alerts,row เก่าอยู่ครบ — toggle หยุดสร้างใหม่ไม่ลบของเดิม,MEMBER,MED,,,
+ALT-057,Nav & State,อยู่ alerts,แตะ back < บนหัว,กลับ Feed เสมอ — ไม่ใช่ pop stack,MEMBER,HIGH,,,
+ALT-058,Nav & State,alerts → profile ซ้อนอยู่,back → back,"back แรก → alerts · back สอง → Feed ทีละชั้น",MEMBER,HIGH,,,
+ALT-059,Nav & State,อยู่ alerts,กด device back,เทียบเท่าปุ่ม < — กลับ Feed ไม่ออกแอป,MEMBER,HIGH,,,
+ALT-060,Nav & State,เลื่อนค้าง + มี unread,แท็บ Feed → แท็บแจ้งเตือนกลับ,กลับมา alerts scroll เดิม + unread คง + badge เดิม,MEMBER,MED,,,
+ALT-061,Nav & State,อยู่ alerts,แตะแท็บแจ้งเตือนซ้ำ,อยู่หน้า alerts เดิม ไม่ซ้อน stack ไม่เปิด page ซ้ำ,MEMBER,LOW,,,
+ALT-062,Nav & State,ตั้งภาษาไทย→อังกฤษ,ไล่ title/groups/mark-all/rows/time/Follow back/empty/notif settings,ทุกข้อความตามภาษาแอป — ค้างอีกภาษา = FAIL,MEMBER,HIGH,,,
+ALT-063,Nav & State,theme dark,ไล่ทุกหน้า + rows ทุก type + unread highlight,อ่านได้ครบ contrast โอเค unread/read แยกได้,MEMBER,HIGH,,,
+ALT-064,Nav & State,อยู่ alerts,แตะ row/mark-all รัว ๆ,ไม่ค้าง ไม่เปิด destination ซ้อน — back ไล่ทีละชั้น,MEMBER,LOW,,,
+ALT-065,Real Generation,SETUP-10,ACCT-2 like POST-OWN → เครื่องหลักเปิด alerts,like row ใหม่ unread + badge +1 + anatomy ตรง,MEMBER+ACCT-2,HIGH,,,
+ALT-066,Real Generation,SETUP-10,"ACCT-2 comment `clean set 🔥` → alerts",comment row ใหม่ excerpt ตรงข้อความ,MEMBER+ACCT-2,HIGH,,,
+ALT-067,Real Generation,ACCT-2 ยังไม่ follow,ACCT-2 follow → alerts,follow row ใหม่ unread + Follow back กดได้,MEMBER+ACCT-2,HIGH,,,
+ALT-068,Real Generation,≥3 บัญชี like โพสต์เดียว,บัญชีเสริม like เพิ่ม → alerts,row รวม u1·u2 and N others — ไม่สร้าง row แยก,MEMBER+ACCT-2+3,MED,,,บัญชีไม่พอ = BLOCK
+ALT-069,Real Generation,watch alert WATCH-X ตั้งไว้,ACCT-2 ลงลิสติ้ง match → alerts,watch row ใหม่ + แตะ → PV ลิสติ้งตรง,MEMBER+ACCT-2,MED,,,engine ไม่เด้ง = BLOCK
+ALT-070,Real Generation,เครื่องที่ไม่เคย sign in,sign in MEMBER บนเครื่องใหม่ → เครื่องหลัก alerts,system row ใหม่ (new device logged in),MEMBER,MED,,,build ไม่ generate = BLOCK
+ALT-071,Real Generation,ACCT-2 like แล้ว,ACCT-2 unlike → like ซ้ำโพสต์เดิม → alerts,ไม่มี row like ซ้ำเหมือนกัน 2 แถว — duplicate = FAIL,MEMBER+ACCT-2,MED,,,
+ALT-072,Real Generation,ACCT-2 พร้อมกด,ACCT-2 like → ภายใน 60 วินาทีเปิด alerts บนเครื่องหลัก,เห็น row like ใหม่ภายใน 60 วินาที — ไม่โผล่เลย = FAIL,MEMBER+ACCT-2,MED,,,
+ALT-073,Real Edge,notif permission ON + แอปเครื่องหลักปิด,ACCT-2 like → ดูเครื่องหลัก → แตะ push,push เด้งนอกแอป → แตะ → เปิด Post Viewer โพสต์ตัวเอง (ตาม matrix),MEMBER+ACCT-2,MED,,,ไม่มี push = BLOCK
+ALT-074,Real Edge,notif permission OFF,ACCT-2 like → เปิดแอป → alerts,ไม่มี push แต่ row+badge ในแอปมาปกติ,MEMBER+ACCT-2,MED,,,
+ALT-075,Real Edge,alerts เคยโหลดไว้,เครื่องบิน → เปิด alerts → เปิดเน็ตกลับ → กด ลองใหม่,error state Unable to load data + ลองใหม่ — ห้าม crash/จอขาว/ข้อมูลเก่าเงียบ · ลองใหม่แล้วโหลดได้,MEMBER,MED,,,
+ALT-076,Real Edge,sign in เดียวกัน 2 เครื่อง,เครื่อง A อ่าน/mark all → เครื่อง B เปิด alerts,read+badge sync ข้ามเครื่อง — lock server-backed,MEMBER,MED,,,session เดียว = BLOCK
+ALT-077,Real Edge,alerts MEMBER มี rows,sign out → sign in ACCT-2 → alerts,เห็นเฉพาะ alerts ของ ACCT-2 เอง,MEMBER+ACCT-2,HIGH,,,
+ALT-078,Real Edge,มี row กลุ่ม Earlier,แตะ row เก่าสุด,เปิด destination ตาม type ปกติ — ไม่ใช่แถวตาย,MEMBER,MED,,,ไม่มี alert เก่าจริง = BLOCK
+ALT-079,Real Edge,ACCT-2 พึ่งกด like,สลับแท็บแล้วกลับ หรือ back ออกเข้าใหม่,feed fetch ข้อมูลล่าสุด — row ACCT-2 โผล่โดยไม่ต้อง kill app — ไม่โผล่ = FAIL,MEMBER+ACCT-2,MED,,,

@@ -29,16 +29,16 @@ Watch Alert ให้ Member บันทึกชุด criteria (snapshot จ�
 
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
 
-- Store + modes: `WATCH_ALERTS` + `waSeq` (~16322–16323 — in-memory; row `{id:"wa{n}", name, source:"search"|"detail", criteria[{l,v,fk?,min?,max?}], matchMode, modelKey|null, on}`), `WA_MODES` (~16324–16328 — `all`/`any`/`model` + title/desc/badge), `naSpec` (~16329 — กรองค่า `N/A`), `WA_FK_LABEL` (~16330–16333 — fk map brand/model/cond/ref/year/csz/move/dial/strap/deliv)
+- Store + modes: `WATCH_ALERTS` + `waSeq` (~16683–16684 — persist ผ่าน `fo_walerts` localStorage ตาม persistence lock 2026-10-29; row `{id:"wa{n}", name, source:"search"|"detail", criteria[{l,v,fk?,min?,max?}], matchMode, modelKey|null, on}`), `WA_MODES` (~16685–16689 — `all`/`any`/`model` + title/desc/badge), `naSpec` (~16690 — กรองค่า `N/A`), `WA_FK_LABEL` (~16691–16694 — fk map brand/model/cond/ref/year/csz/move/dial/strap/deliv)
 - Criteria snapshot: `waCriteriaFromPost` (~16336–16359 — pick spec ที่ map + strap concat + `SEARCH_DELIV` `delivMatch` + unmapped spec rows; ข้าม `N/A` + mapped labels รวม `Asking Price`/`Estimated Market Price`/`Last Price Update`/`Data Source`/`Box & Papers`), `waCriteriaFromSearch` (~16361–16372 — keyword `fk:"q"` + ทุก filter value ตาม `WA_FK_LABEL` + price `fk:"price"` `{min,max}` label `THB {min|0} – {max|Any}`)
 - Match engine: `critMatch` (~16374–16393 — semantics ต่อ fk), `alertMatch` (~16394–16402 — criteria ว่าง = match เฉพาะ mode `all`), `alertMatchCount` (~16403 — บน `salePosts()`), `waSig` (~16404 — criteria signature `fk||l:v` sort join `¦`), `waName` (~16405–16410), `salePosts` (~14426 — `price && !ni && !muted && !blocked` — **ไม่ filter pfkind** → defect note)
 - Model-follow sync: `modelKeyOf` (~16412 — `brand|model|ref` lowercase), `syncModelFlags` (~16413–16416 — ON alert ที่ modelKey ตรง → `p.modelFollowing`; `"||"` ไม่นับ), `refreshMfBtns` (~16417–16425 — `.mf-btn` `.on` + title `Following this model`)
-- Sheet + list: `waModesHTML` (~16427–16445 — mode rows + `N now`/`{n} รายการในขณะนี้` live count + `any`/`model` disabled เมื่อ criteria ว่าง), `waSheetHTML` (~16449–16463 — shared sheet `wa`/`wa-open`; title Create/Edit; `.wa-name` prefilled; `wa-go` CTA; `wa-del` เฉพาะ edit), `waRowHTML` (~16464–16483 — `.wa-row` + `.wa-off` เมื่อ paused; name + criteria text ` · `-join + `Edit` badge + mode label + `{n} matches now` + `wa-tgl` switch), `walertsHTML` (~16484–16491 — head `sub-back` + title `การแจ้งเตือนนาฬิกา`/`Watch Alerts` + desc + rows/empty)
+- Sheet + list: `waModesHTML` (~16427–16445 — mode rows + `N now`/`{n} รายการในขณะนี้` live count + `any`/`model` disabled เมื่อ criteria ว่าง), `waSheetHTML` (~16449–16463 — shared sheet `wa`/`wa-open`; title Create/Edit; `.wa-name` prefilled; `wa-go` CTA; `wa-del` เฉพาะ edit), `waRowHTML` (~16464–16483 — `.wa-row` + `.wa-off` เมื่อ paused; name + criteria text ` · `-join + `Edit` badge + mode label + `{n} matches now` + `wa-tgl` switch), `walertsHTML` (~16484–16491 — head `sub-back` + title `การแจ้งเตือนนาฬิกา`/`Watch Alerts` + desc + rows/empty — **เรียงใหม่สุดก่อน** ตาม ordering lock 2026-10-29)
 - Entries: `sr-wa` บน results head (~14806–14813 — `on` เมื่อ alert `source:"search"` sig ตรง), `mf-btn` บน Post Detail `act-right` (~13479 — canonical entry semantics อยู่ 05 §9), settings row `data-sub="walerts"` + `WATCH_ALERTS.length` count (~17380)
-- Handlers: `mf-btn` (~22126–22144 — modelKey dedupe ทุก source → edit; ใหม่ → `waCriteriaFromPost` draft `source:"detail"` mode `all`; criteria ว่าง → `No details on this post to watch` ไม่เปิด sheet), `wa-mode` (~22147–22158 — เก็บ name input เข้า draft ก่อน re-render sheet), `wa-go` (~22159–22191 — name `trim() || waName(criteria)`; edit → update + `Watch alert updated`; create → dedupe `waSig`+`matchMode` → dupe = เปิด edit เดิม + `You already saved this alert`; push + `Watch alert on`; sync flags + renderSub), `wa-del` (~22192–22205 — **ลบทันทีไม่ confirm** + `Watch alert removed`), `wa-tgl` (~22206–22218 — `a.on` flip + `Watch alert on`/`Watch alert paused`), `.wa-badge` Edit (~22219–22228), `sr-wa` (~22229–22241 — dedupe by sig ทุก source → edit draft; ใหม่ → `source:"search"`)
+- Handlers: `mf-btn` (~22126–22144 — modelKey dedupe ทุก source → edit; ใหม่ → `waCriteriaFromPost` draft `source:"detail"` mode `all`; criteria ว่าง → `No details on this post to watch` ไม่เปิด sheet), `wa-mode` (~22147–22158 — เก็บ name input เข้า draft ก่อน re-render sheet), `wa-go` (~22159–22191 — name `trim() || waName(criteria)`; edit → update + `Watch alert updated`; create → dedupe `waSig`+`matchMode` → dupe = เปิด edit เดิม + `You already saved this alert`; push + `Watch alert on`; sync flags + renderSub), `wa-del` (~22192–22205 — **เปิด confirm dialog ก่อนลบ** + `dlg-wadel-go` ลบจริง + `Watch alert removed` — lock 2026-10-29), `wa-tgl` (~22206–22218 — `a.on` flip + `Watch alert on`/`Watch alert paused`), `.wa-badge` Edit (~22219–22228), `sr-wa` (~22229–22241 — dedupe by sig ทุก source → edit draft; ใหม่ → `source:"search"`)
 - WA hit simulation: `insertNewPost` คำนวณ `POSTS[0]._waHits` (~16201 — ON alerts ที่ match โพสต์ใหม่); toast `Watch alert matched: {name}` `(+N more)` หน่วง ~2.1–2.4s หลัง publish toast (~20525–20527 asset `Post to feed`, ~20541–20543 post share, ~19950–19957 `fo_newpost` carry)
 - Route + wiring: `walerts` → `walertsHTML` (~17715); `notif_settings` toggle `walerts` (~17571 — `When new listings match your criteria`); `data-sub` generic push (canonical 13)
-- Gate + session: `GUEST_GATE_SEL` รวม `.mf-btn` + `.sr-wa` (~23338/~23342); `walerts` page เข้าผ่าน Settings เท่านั้น (member-only — `.pf-menu` gated); `applySessionData`/`clearUserData` → `WATCH_ALERTS.length = 0` (~23282 — **ไม่มี restore** → alert หายทุก session switch)
+- Gate + session: `GUEST_GATE_SEL` รวม `.mf-btn` + `.sr-wa` (~23338/~23342); `walerts` page เข้าผ่าน Settings เท่านั้น (member-only — `.pf-menu` gated); `applySessionData`/`clearUserData` → `WATCH_ALERTS.length = 0` สำหรับ guest/new + `restoreUserData` → `waLoad()` คืน alerts ของ member (~23874–23922 — persistence lock 2026-10-29: member alerts อยู่รอด reload/sign-out-in + `syncModelFlags` re-drive กระดิ่ง)
 - Feed side: `watch` notification rows + badge + destination — canonical [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md)
 
 ---
@@ -51,7 +51,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Alert name | spec เดิม: required ตอน save ว่าง→block | **auto-name เสมอ** — `waName` prefill + save `trim() || waName(criteria)` regen; ไม่มี validation block (prototype wins — canonical entry อยู่ 03 §9) |
 | Match rule | เฉพาะ Asset `Sale` | contract = Sale only (00_GLOBAL §10); prototype `salePosts()` = priced post ทุกสถานะ (`pfkind` leak — defect บันทึกแล้ว S-10, ดู §9 Match Pool Rule) |
 | Criteria editing | spec เดิม: แก้ name/criteria/toggle | **criteria = snapshot ไม่แก้ใน sheet** — edit ได้แค่ name + `matchMode` (+ delete); เปลี่ยน criteria = สร้าง alert ใหม่ (prototype wins) |
-| Delete | spec เดิม: ต้อง confirm | **instant delete** ใน sheet — ไม่มี confirm dialog (prototype wins — deviation flag) |
+| Delete | spec เดิม: ต้อง confirm | **confirm dialog ก่อนลบ** — center dlg ตาม destructive pattern เดียวกันทั้งแอป (post / collection / comment / chat / log out / delete account ล้วน confirm) — lock 2026-10-29, FSP-030 resolved: เลือก confirm เพื่อ consistency |
 | Notification destination | post ที่ match โดยตรง ไม่มี Result List | ตรง 00_NAV §8 — `watch` row → Post Viewer (canonical 09); match feedback ตอน publish = toast simulation `_waHits` |
 | Empty state | `ไม่พบข้อมูล`/`No data found` | copy เฉพาะ `No watch alerts yet — tap the bell on a post or save a search to start one` (module variant ตาม 00_GLOBAL §11) |
 | Guest restriction | login-required → Member Sheet | `.mf-btn`/`.sr-wa` ∈ `GUEST_GATE_SEL`; `walerts` page อยู่หลัง settings (member-only) |
@@ -151,7 +151,7 @@ Post Detail act-right -> tap bell `Follow this model`
 ```text
 Settings > Watch Alerts (`walerts`)
 -> tap `Edit` badge บน .wa-row -> sheet edit mode (name + modes + Save changes + Delete alert)
--> Save changes -> `Watch alert updated` | Delete alert -> ลบทันที `Watch alert removed`
+-> Save changes -> `Watch alert updated` | Delete alert -> confirm dialog -> `Watch alert removed`
 ```
 
 ## Pause / Resume
@@ -241,12 +241,14 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 - Mode pick: เก็บ name input ปัจจุบันเข้า draft ก่อน re-render (ไม่เสียชื่อที่พิมพ์)
 - ปิด sheet โดยไม่ save = ไม่ commit อะไร (`_waDraft` ถูกเขียนทับตอนเปิดใหม่)
 - Save: name = `input.trim() || waName(criteria)`; edit → update `name`+`matchMode` เท่านั้น (`criteria`/`source`/`modelKey`/`on` คงเดิม); create → push `{on:true}` + post-save `syncModelFlags` + `refreshMfBtns` + `renderSub`
+- Delete (`wa-del`, edit เท่านั้น) → **center confirm dialog ก่อนลบเสมอ** (`Delete watch alert?`/`ลบการแจ้งเตือนนี้หรือไม่?` + Delete/Cancel) — lock 2026-10-29: เดิมลบทันที แต่ทุก destructive action อื่นของแอป (post/collection/comment/chat/log out/delete account) ล้วนถามยืนยัน จึงเลือก confirm เพื่อ consistency (FSP-030 resolved); Cancel → กลับ sheet edit เดิม ไม่มีอะไรเปลี่ยน
 
 ## Watch Alerts List Rule (`walerts`)
 
 - Entry: Settings > `การแจ้งเตือนนาฬิกา`/`Watch Alerts` (library row + `WATCH_ALERTS.length` count — canonical 13)
 - Page: `sub-back` pop กลับ Settings + title + desc `Get notified when a new listing matches what you're watching.` + rows
 - Row: bell icon + name + criteria text (values join ` · ` หรือ `Any new listing`) + `Edit` badge + mode label (`Match all`/`Match any`/`Model only`) + `{n} matches now` live count + pause toggle
+- Ordering: **alert ใหม่สุดอยู่บนสุด** (lock 2026-10-29 — spec เดิมเงียบ; ตาม list มาตรฐานแอปที่ของสร้างล่าสุดต้องเจอก่อน)
 - Paused row = `.wa-off` (visual dim) — count/ค่าอื่นยังแสดง
 - Row actions: `Edit` badge → edit sheet; `wa-tgl` → pause/resume; **ไม่มี delete บน row** (delete อยู่ใน sheet edit เท่านั้น)
 
@@ -264,7 +266,7 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 ## Session Rule
 
 - Member-only feature — `new`/`guest` → `WATCH_ALERTS=[]`
-- `applySessionData`/`clearUserData` → `WATCH_ALERTS.length = 0` ทุก session switch และ **`restoreUserData` ไม่ restore** → alerts หายถาวรใน session demo (deviation — persistence contract §18)
+- **Persistence lock 2026-10-29 — server-backed**: alerts ผูกบัญชีบน server — อยู่รอดปิดแอป/เปิดใหม่ + sign-out แล้ว sign-in กลับ + sync ข้ามเครื่องที่ sign in บัญชีเดียวกัน (lock เดียวกับ notification read-state ใน 09); `applySessionData`/`clearUserData` เคลียร์เฉพาะ guest/new; `restoreUserData` → `waLoad()` คืน alerts ของ member + `syncModelFlags` re-drive กระดิ่ง (deviation #12 RESOLVED — prototype demo persist ผ่าน `fo_walerts` localStorage)
 
 ## Production Contract Rules (v1.8 — prototype ไม่ model; เก็บเป็น contract)
 
@@ -280,19 +282,19 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 
 1. **3 entries + shared sheet** — spec เดิมบังคับ Search Filter เท่านั้น (C1 resolved: เลือก multi-entry ตาม prototype; `sr-wa`/`mf-btn` canonical อยู่ 03/05)
 2. **Name auto-regen ไม่ block** — spec เดิม required + inline validation + focus กลับช่อง; prototype `trim() || waName` เสมอ (C2 resolved)
-3. **Delete instant ไม่ confirm** — spec เดิมบังคับ confirmation (C3 resolved — ส่วนอื่นใช้ dlg แต่ WA เลือก instant + toast; flag ให้ FSP-030 ตัดสิน consistency)
+3. **Delete มี confirm dialog** — RESOLVED 2026-10-29 (เดิม instant + toast ตาม prototype; ตัดสินเลือก confirm ให้สอดคล้อง destructive pattern ทั้งแอป — post/collection/comment/chat/log out/delete account ล้วนถามยืนยัน; FSP-030 resolved)
 4. **Criteria ไม่แก้ใน sheet** — spec เดิม Edit flow แก้ criteria/toggle ได้ (C6 resolved: sheet = name + matchMode + delete เท่านั้น)
 5. **`salePosts()` pfkind leak** — priced `show`/`hide`/`sold` นับเข้า `N now` + `_waHits` (S-10 defect — contract = Sale only)
-6. **Match feedback = toast เท่านั้น** — `_waHits` คำนวณตอน **ตัวเอง** publish (self-match simulation — ไม่ใช่ notification item จริง); ไม่มี watch row ใหม่ใน feed จาก event จริง
+6. **Match feedback = toast เท่านั้น** — `_waHits` คำนวณตอน **ตัวเอง** publish (self-match simulation — ไม่ใช่ notification item จริง); ไม่มี watch row ใหม่ใน feed จาก event จริง — contract: real match engine บน server ต้องสร้าง watch row จริงตาม §14 (FO-TEST-11 lock; build ไม่มี engine = เคส match ทั้งหมด BLOCK)
 7. **ไม่มี Result List** — spec เดิมมี result-list screen (resolved — notification เปิด viewer ตรง ตาม 00_NAV §8)
 8. **Edit path บน `sr-wa` cross-source** — sig ตรง alert จาก detail ก็เปิด edit ได้ แต่ bell `on` เฉพาะ `source:"search"` (source-aware quirk)
 9. **Paused alert ยังเป็น dedupe target** — `mf-btn`/`sr-wa` เจอ alert off ที่ตรง → เปิด edit (ไม่สร้างซ้ำ)
 10. **Sheet ไม่มี Cancel/close affordance ชัดเจน** — dismiss ผ่าน backdrop/handle เท่านั้น (sheet pattern ทั่วไป)
-11. **EN/TH mixed hardcode** — sheet/page มี isTh pair ครบ แต่ toasts EN-only (`Watch alert on`/`updated`/`paused`/`removed`/`You already saved this alert`/`No details on this post to watch`) + mode desc EN keys — language sweep FSP-026
-12. **`WATCH_ALERTS` ไม่ restore หลัง session switch** — member sign-out/in = alert หายหมด (persistence contract §18)
+11. **EN/TH mixed hardcode** — sheet/page มี isTh pair ครบ แต่ toasts EN-only (`Watch alert on`/`updated`/`paused`/`removed`/`You already saved this alert`/`No details on this post to watch`) + mode desc EN keys — language sweep FSP-026; contract แอปจริง: toast/ข้อความ UI ทุกตัวต้องตามภาษาแอป — EN ค้างขณะภาษาไทย = FAIL (lock เดียวกับ 09 notification label rule)
+12. **`WATCH_ALERTS` ไม่ restore หลัง session switch** — RESOLVED 2026-10-29: persistence = server-backed ข้ามเปิดแอป/ข้ามเครื่อง (ดู §9 Session Rule); prototype demo persist ผ่าน `fo_walerts` localStorage แล้ว
 13. **`notif_settings` toggle `walerts` ไม่กรองอะไรจริง** — memory flag (canonical 09 §9)
 14. **ไม่มี frequency/digest/quiet-hours** — instant-match concept เท่านั้น
-15. **`modelKey` ต่อ detail-created เท่านั้น** — search alert ที่ criteria เป็น brand+model+ref ล้วนไม่ได้ `modelKey` → ไม่ขับ bell `Following this model` (quirk)
+15. **`modelKey` ต่อ detail-created เท่านั้น** — RESOLVED 2026-10-29: เจตนา — bell `Follow this model` คือ action ติดตามรุ่นโดยตรงบน Post Detail เท่านั้น (พี่คิง); alert ที่สร้างจาก search แม้ criteria ตรง brand+model+ref **ไม่ติดไฟ** bell — ป้องกันผู้ใช้งงว่าตัวเองเคยกดติดตามตอนไหน
 16. **ไม่มี alert-per-alert notification history** — feed rows เป็น seed (09) ไม่ผูก alert id
 
 ---
@@ -338,7 +340,7 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 | Alert ซ้ำ (save) | toast `You already saved this alert` + เปิด edit ของ alert เดิม |
 | Guest กด WA entry | Member Sheet `Join TukDaeng` (ทับทุก layer) |
 | Alert/row missing | contract: ไม่มี path (in-memory list สอดคล้องเสมอใน session) |
-| Save/delete/toggle fail | ไม่มี async fail path — mock success เสมอ (contract §18) |
+| Save/delete/toggle fail (offline/server error) | **แจ้ง error ชัดเจน + ไม่บันทึก** — ห้ามแสดง success หลอกหรือสร้าง alert ปลอมที่ server ไม่รู้จัก (lock 2026-10-29); prototype mock success เสมอ |
 | Matched post หายก่อนเปิดจาก feed row | ตาม 09 destination fallback (watch = silent no-op — deviation) |
 | Delete account | watch alerts ยกเลิกอัตโนมัติ (copy term card `Watch Alerts Cancelled` — canonical 13) |
 
@@ -361,6 +363,7 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 | --- | --- | --- | --- |
 | โพสต์ `Sale` ใหม่ match ON alert | Alert owner | `watch` row ใน alerts feed (canonical 09) | Post Viewer โพสต์ที่ match ตรง — ไม่มี Result List |
 | โพสต์ใหม่ของตัวเอง match ON alert (prototype simulation) | Publisher (me) | delayed toast `Watch alert matched: {name}` `(+N more)` | ไม่มี (toast only) |
+| โพสต์ `Sale` ใหม่ของตัวเอง match ON alert ของตัวเอง (contract) | Alert owner (ตัวเอง) | `watch` row ปกติเหมือน match ของคนอื่น — **ไม่ exclude self-match** (lock 2026-10-29 — ตาม saved-search ของ marketplace จริง เช่น eBay/Chrono24) | Post Viewer โพสต์นั้น |
 
 - Multiple matched alerts → hit ราย alert (`_waHits` = names ทั้งหมดที่ match); toast แสดงชื่อแรก + `+N more`
 - Paused/deleted alert ไม่ match; blocked/muted/ni post ไม่เข้า pool
@@ -414,10 +417,10 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 
 | AC ID | Criteria |
 |---|---|
-| AC-WA-011 | `walerts` page = `sub-back` + title `การแจ้งเตือนนาฬิกา`/`Watch Alerts` + desc + rows (bell icon, name, criteria ` · `-join, `Edit` badge, mode label, `{n} matches now`, `wa-tgl`) |
+| AC-WA-011 | `walerts` page = `sub-back` + title `การแจ้งเตือนนาฬิกา`/`Watch Alerts` + desc + rows (bell icon, name, criteria ` · `-join, `Edit` badge, mode label, `{n} matches now`, `wa-tgl`) — **เรียง alert ใหม่สุดบนสุด** (lock 2026-10-29) |
 | AC-WA-012 | Empty → `No watch alerts yet — tap the bell on a post or save a search to start one`; criteria ว่างบน row → `Any new listing` |
 | AC-WA-013 | `wa-tgl` → `a.on` flip + row `.wa-off` เมื่อ paused + toast `Watch alert on`/`Watch alert paused` + `syncModelFlags`/`refreshMfBtns` |
-| AC-WA-014 | `wa-del` (edit sheet) → ลบ alert ทันที **ไม่มี confirm** + `Watch alert removed` + sync flags + re-render list |
+| AC-WA-014 | `wa-del` (edit sheet) → **confirm dialog ก่อนลบ** (Cancel = ไม่มีอะไรเปลี่ยน) → Delete → `Watch alert removed` + sync flags + re-render list (lock 2026-10-29 — เดิม instant) |
 | AC-WA-015 | Settings row `Watch Alerts` แสดง `WATCH_ALERTS.length` count badge (canonical 13) |
 
 ## Match Engine
@@ -433,7 +436,7 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 
 | AC ID | Criteria |
 |---|---|
-| AC-WA-020 | ON alert ที่ `modelKey` ตรงโพสต์ → `p.modelFollowing` → `.mf-btn` `.on` + title `Following this model` ทุก surface (save/delete/toggle ต้อง sync ทันที); `"||"` ไม่นับ |
+| AC-WA-020 | ON alert ที่ `modelKey` ตรงโพสต์ → `p.modelFollowing` → `.mf-btn` `.on` + title `Following this model` ทุก surface (save/delete/toggle ต้อง sync ทันที); `"||"` ไม่นับ — bell ติดไฟเฉพาะ alert จาก detail เท่านั้น (search-source alert ไม่ขับ bell — lock 2026-10-29 เหตุผลที่ deviation #15) |
 | AC-WA-021 | Publish โพสต์ใหม่ที่ match ON alert → `_waHits` + delayed toast `Watch alert matched: {name}`/`+N more` (simulation — ไม่ใช่ feed row) |
 | AC-WA-022 | (Contract) match จริง → `watch` row ใน alerts feed → tap → Post Viewer โพสต์นั้นตรง ไม่มี Result List (canonical 09/00_NAV §8) |
 
@@ -442,7 +445,7 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 | AC ID | Criteria |
 |---|---|
 | AC-WA-023 | Guest กด `sr-wa`/`mf-btn` → Member Sheet `Join TukDaeng`; `walerts` unreachable (settings gated); `WATCH_ALERTS=[]` สำหรับ non-member |
-| AC-WA-024 | `applySessionData` → `WATCH_ALERTS` เคลียร์ (member ไม่ restore — documented deviation; persistence = contract) |
+| AC-WA-024 | Persistence = server-backed (lock 2026-10-29): alerts อยู่รอดปิดแอป + sign-out/in + sync ข้ามเครื่องบัญชีเดียวกัน; `clearUserData` เคลียร์เฉพาะ guest/new; `restoreUserData` คืน alerts ของ member |
 | AC-WA-025 | (Contract) option criteria match ด้วย relation id เท่านั้น; keyword criteria ครอบ free-text spec; `is_active=false` หยุด trigger + dependency warning; backfill re-match dedup (`alert_id`,`asset_id`) — prototype ไม่ model กฎชุดนี้ |
 | AC-WA-026 | Dead/absent ต้องไม่เป็น feature: ไม่มี Result List screen, ไม่มี criteria editor ใน sheet, ไม่มี delete confirm dlg, ไม่มี frequency/digest settings |
 
@@ -464,14 +467,14 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 
 # 18. Future Enhancement
 
-- Alert persistence + sync ข้าม device (prototype: session-only + หายตอน session switch)
-- Real match pipeline → `watch` notification rows (แทน `_waHits` toast) + notification history ผูก alert id
+- ~~Alert persistence + sync ข้าม device~~ — RESOLVED เป็น contract V1 (lock 2026-10-29: server-backed ข้ามเปิดแอป/ข้ามเครื่อง)
+- ~~Delete confirmation~~ — RESOLVED 2026-10-29: confirm dialog แล้ว (ดู §9 Sheet Rule / AC-WA-014)
+- Real match pipeline → `watch` notification rows (แทน `_waHits` toast) — **contract V1 ตาม §14** (FO-TEST-11 lock: build ที่ยังไม่มี engine = เคส match BLOCK) + notification history ผูก alert id
 - Relation-id criteria model + market-data dependency warnings (v1.8 contract — §9 Production Contract)
 - Criteria editing ใน sheet (ถ้าตัดสินใจเพิ่ม — ตอนนี้ snapshot-only)
-- Delete confirmation (consistency กับ destructive pattern อื่น — flag FSP-030)
 - Alert frequency / digest / quiet hours
 - Price-triggered alerts (price drop) + market price alert
 - Saved search เป็น feature แยกจาก alert
-- `modelKey` ให้ search-source alerts ด้วย (bell sync ครบทุก alert ที่เป็น pure brand/model/ref)
+- ~~`modelKey` ให้ search-source alerts ด้วย~~ — RESOLVED 2026-10-29: ไม่ทำ — bell = action ติดตามรุ่นบน detail เท่านั้น (ดู deviation #15)
 - Push notification payload + deep link `walerts`/matched post
 - language sweep — WA toasts EN-hardcode

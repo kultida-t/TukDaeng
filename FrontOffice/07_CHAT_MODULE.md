@@ -1,6 +1,6 @@
 # 07 Chat Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §9–§10 (status/visibility), §11 (guest gate), §12 (lifecycle — chat อยู่เมื่อ sold/deleted), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.1–§10 (layer model, routes, back, entry matrix, unavailable contract) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (blkSheet/unblockDlg/report stack/`pf-msg` dead canonical — FSP-019 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (Post Detail entry semantics — FSP-018 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §9–§10 (status/visibility), §11 (guest gate), §12 (lifecycle — chat อยู่เมื่อ sold/deleted), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.1–§10 (layer model, routes, back, entry matrix, unavailable contract) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (blkSheet/unblockDlg/report stack/`pf-msg` DM entry canonical — FSP-019 + FO-TEST-12 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (Post Detail entry semantics — FSP-018 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
 
 ---
 
@@ -19,7 +19,7 @@
 
 # 2. Objective
 
-Chat คือ member-only surface บน bottom-nav `แชท` (route root `chat` + stack ของหน้าย่อย) สำหรับสนทนาระหว่างผู้ซื้อกับเจ้าของ listing — ห้องสนทนาผูกกับคู่ **user + item (listing)** เสมอ: ทัก seller เดิมแต่คนละโพสต์ = ห้องใหม่พร้อม post reference card ของโพสต์นั้น (ไม่มี room merge, ไม่มี user→user chat เปล่า ๆ)
+Chat คือ member-only surface บน bottom-nav `แชท` (route root `chat` + stack ของหน้าย่อย) สำหรับสนทนาระหว่างผู้ใช้ด้วยกัน — ห้องสนทนาเป็นแบบ **IG Direct: ห้องเดียวต่อ user** (FO-TEST-12 lock 2026-10-29 — กฎเดิม "ห้องผูก user + item เสมอ" ถูกยกเลิก): กด `Ask` บนลิสติ้งเข้าห้องเดิมของ seller นั้น + การ์ดลิสติ้งแนบเป็น**ข้อความในห้องเฉพาะตอน ask** (reply-story style — ไม่ pin ค้าง); กด `Chat` จาก profile/follower row เปิดห้องเดียวกันแบบไม่มีการ์ด (`pfOpenChat` — canonical 06); `t.item` = ลิสติ้งที่ ask ล่าสุด ใช้จัดกลุ่ม Items view เท่านั้น
 
 Chat Center มี 2 มุมมอง: **Chats** (เรียงตามคู่สนทนา) และ **Items** (จัดกลุ่มตาม listing — `Your listings` ของตัวเอง / `Items you asked about`) ห้องแชทเป็นแบบ LINE/IG Direct: bubble ซ้าย-ขวา, day divider, avatar เฉพาะกลุ่มแรก, เวลาข้าง bubble, `Sent`/`Read` บนข้อความล่าสุดของฝั่งเรา, post reference card ในสายข้อความ, attach photos, search ในห้อง, เมนูห้อง (`≡` → `chmenu:`) พร้อม Mute/Profile/Block/Report, media gallery select-mode, และ Chat Config (`chatcfg`)
 
@@ -32,10 +32,10 @@ Chat Center มี 2 มุมมอง: **Chats** (เรียงตามค�
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
 
 - Routes (`subHTML` ~17696–17702): `chat` → `chatListHTML`, `chatitem:{itemId}` → `chatItemHTML`, `chatroom:{threadId}` → `chatRoomHTML`, `chmenu:{threadId}` → `chatRoomMenuHTML`, `chsettings:{threadId}` → `chatRoomSettingsHTML` (**dead route** — ไม่มี emit `data-chgo="chsettings"` ที่ไหน), `chmedia:{threadId}` → `chatMediaGalleryHTML`, `chatcfg` → `chatCfgHTML`
-- State: `CHAT` (~17791–17794 — `view`/`itemFilter`/`filterMenuOpen`/`q`/`iq`/`threads`/`draft` + `cfg{notif,preview,followOnly,defView,quick}` default quick `สนใจสินค้าชิ้นนี้ครับ ยังอยู่ไหมครับ?`), `chatInit` seed (~17795–17834 — non-member → `threads=[]`; member seed = own items `M1`/`M2` + `ref(post)` threads; thread fields `id/user/item{id,cap,price,photo,owner,pid}/unread/draft/pinned/pinnedAt/muted/hidden/blocked/msgs[{f,t,at,day,read,img,isVideo}]/media[]/galState/searching/roomQuery`), `chatResetToDefault` (~17835–17842), `chGet` (threads ∪ draft ~17843–17846), `chTimeLbl`/`chUnread`/`chBadgeHTML`/`chBadgeSync` (~17847–17858 — badge cap `99+`), `chPostRender` (~17860–17863), `chEmptyHTML` (~17864), `chatNavHTML` = `botNavHTML("chat")` (~17865–17867 — nav เฉพาะหน้า list)
-- List helpers: `chThreadMatch` (~18474–18476 — match `user + item.cap + msg texts`), `chRowHTML` (~18477–18511 — avatar + pin badge + name + `Blocked` chip/mute icon + `You: ` preview + time + unread pill + swipe wrap), `chItemGroups` (~18512–18521 — group ตาม `item.id`, `mine = item.owner===CP_ME.name`, เก็บ insertion order), `chItemRowHTML` (~18522–18540 — mine → `{price} · N chats`; asked → `{price} · last msg`; `isDirectRoom` = !mine && 1 thread → `data-chgo="room"`), `chListBody` (~18541–18567 — pin-first sort + `pinnedAt` tie-break + filter sections + empties), `chatListHTML` (~18568–18619 — Chats/Items pill + Items caret + filter popover `Filter items by` (All items/Your listings/Items you asked about + checkmark) + gear `data-chgo="cfg"` + `ch-q` search), `chItemBody`/`chatItemHTML` (~18620–18655 — head `Item chats` + floating pill itemcard (`Your listing`/`@{owner}` · N chats) + `ch-iq` `Search people or messages` + rows)
-- Room: `chatRoomHTML` (~18656–18750 — header back + `data-pf-user` name + `room-search` + `more` ≡; searching header (placeholder `Messages` + clear + ✕); `ch-post-card` (`data-chgo="post"` + top scrim avatar/user + bottom scrim cap/price) ใน `.ch-m me` เมื่อ msgs ว่าง หรือแนบ msg แรก; `ch-day` divider; `them` avatar เฉพาะต้นกลุ่ม (`ch-mav-sp`); `Sent`/`Read` เฉพาะ `lastMe`; `formatText` + `<mark class="ch-hl">` + dim `opacity:0.25` (media dim เสมอตอน search); blocked → `ch-blocked-bar` (`You blocked this account` + `You can't message or call them unless you unblock them.` + `Unblock`); composer `+` attach + `ch-input` + `ch-send` disabled จนมี text), `openChatAttachSheet` (~18752–18795 — `Photos & videos` grid ≤8 unique photos จาก POSTS, `isVideo:false`), `openChatMediaViewer` (~18796–18814 — overlay X/backdrop close), `chatRoomMenuHTML` (~18816–18896 — head back + username; 4 ปุ่มวงกลม Mute/Unmute·Profile(`data-pf-user`)·Block/Unblock·Report; rows `Photos & videos` → `chmedia:` + thumb strip/`No photos or videos found.`; `Listings & Items` (cap truncate) → `data-chgo="post"`; footer `This chat is protected with End-to-End Encryption`), `chatMediaGalleryHTML` (~18898–18980 — head ✕/`{n} selected`/`Select`/`Cancel`/`Deselect` + grid + date label hardcode `October 2569 BE` + select badges ลำดับ + bottom bar Trash/Download + empty card), `chatRoomSettingsHTML` (~18981–19036 — **dead page**: Note notifications toggle, Chat wallpaper dead toast, Export chat history → clipboard + `คัดลอกประวัติแชทเรียบร้อยแล้ว`, Encryption keys `Letter Sealing` row, Delete data, Report), `chatCfgHTML` (~19037–19057 — toggles `notif`/`preview`/`followOnly` + defView Chats/Items + `chc-quick` ≤80)
-- Actions: `chSend` (~19058–19072 — blocked guard, `t.hidden=false`, draft → unshift เป็น thread จริง, move-to-top, push `{f:"me",at:"09:41",day:"Today",read:false}`, clear draft, refocus), `chatQuickAsk` (~19073–19092 — own → `This is your own listing`; blocked → `Cannot message a blocked account`; find thread `user+item.id` → un-hide; else `C.draft` prefill `cfg.quick` + item snapshot; remove `pv-open/detail-open/comments-open/pm-open/likes-open/details-open` → `openSub chatroom:{id}`), `openChatHideConfirm` (~19101–19128 — `Hiding chats doesn't delete their messages.` Cancel/Hide → `t.hidden` + `ซ่อนแชทแล้ว`), `openChatDeleteConfirm` (~19130–19167 — `Are you sure you want to delete this chat?` Cancel/Delete → splice + `ลบแชทเรียบร้อยแล้ว` + unwind `chatroom:`/`chmenu:`/`chsettings:` tops), `chatClick` (~19170–19443 — `data-chact` pin/mute/hide/del/block-user/unblock-room/report-chat-user/export-chat/wallpaper/report-chat + filter popover + `data-chview` + `data-chtgl`/`data-chdef` + `data-chgo` room/item/cfg/more/chsettings/chmedia/attach/room-search/post + `data-chsendmedia` + `data-chmedia` + gallery select/trash/download + send + `.ask-pill,.chat-fab`), swipe gestures (~19445–19530 — reveal ±40px, dismiss ±30px, vertical abort, rubber-band cap, suppress click 250ms)
+- State: `CHAT` (~17791–17794 — `view`/`itemFilter`/`filterMenuOpen`/`q`/`iq`/`threads`/`draft` + `cfg{notif,preview,followOnly,defView,quick}` default quick `สนใจสินค้าชิ้นนี้ครับ ยังอยู่ไหมครับ?`), `chatInit` seed (~17795–17834 — non-member → `threads=[]`; member seed = own items `M1`/`M2` + `ref(post)` threads; thread fields `id/user/item{id,cap,price,photo,owner,pid}|null (=ลิสติ้งที่ ask ล่าสุด หรือ null สำหรับ DM เปล่า)/unread/draft/pinned/pinnedAt/muted/hidden/blocked/msgs[{f,t,at,day,read,img,isVideo,pid (=การ์ดลิสติ้ง reply-story style)}]/media[]/galState/searching/roomQuery`), `chatResetToDefault` (~17835–17842), `chGet` (threads ∪ draft ~17843–17846), `chTimeLbl`/`chUnread`/`chBadgeHTML`/`chBadgeSync` (~17847–17858 — badge cap `99+`), `chPostRender` (~17860–17863), `chEmptyHTML` (~17864), `chatNavHTML` = `botNavHTML("chat")` (~17865–17867 — nav เฉพาะหน้า list)
+- List helpers: `chThreadMatch` (~18474–18476 — match `user + item?.cap + msg texts`), `chRowHTML` (~18477–18511 — avatar + pin badge + name + `Blocked` chip/mute icon + `You: ` preview + time + unread pill + swipe wrap), `chItemGroups` (~18512–18521 — group ตาม `item.id`, `mine = item.owner===CP_ME.name`, เก็บ insertion order, **DM (`item:null`) ไม่ขึ้น Items view**), `chItemRowHTML` (~18522–18540 — mine → `{price} · N chats`; asked → `{price} · last msg`; `isDirectRoom` = !mine && 1 thread → `data-chgo="room"`), `chListBody` (~18541–18567 — pin-first sort + `pinnedAt` tie-break + filter sections + empties), `chatListHTML` (~18568–18619 — Chats/Items pill + Items caret + filter popover `Filter items by` (All items/Your listings/Items you asked about + checkmark) + gear `data-chgo="cfg"` + `ch-q` search), `chItemBody`/`chatItemHTML` (~18620–18655 — head `Item chats` + floating pill itemcard (`Your listing`/`@{owner}` · N chats) + `ch-iq` `Search people or messages` + rows)
+- Room: `chatRoomHTML` (~18656–18750 — header back + `data-pf-user` name + `room-search` + `more` ≡; searching header (placeholder `Messages` + clear + ✕); `ch-post-card` (`data-chgo="post"` + top scrim avatar/user + bottom scrim cap/price) **render เฉพาะจาก `m.pid` ในสายข้อความ** (reply-story style — ask/share เท่านั้น ไม่มีการ์ด pin ค้าง); `ch-day` divider; `them` avatar เฉพาะต้นกลุ่ม (`ch-mav-sp`); `Sent`/`Read` เฉพาะ `lastMe`; `formatText` + `<mark class="ch-hl">` + dim `opacity:0.25` (media dim เสมอตอน search); blocked → `ch-blocked-bar` (`You blocked this account` + `You can't message or call them unless you unblock them.` + `Unblock`); composer `+` attach + `ch-input` + `ch-send` disabled จนมี text), `openChatAttachSheet` (~18752–18795 — `Photos & videos` grid ≤8 unique photos จาก POSTS, `isVideo:false`), `openChatMediaViewer` (~18796–18814 — overlay X/backdrop close), `chatRoomMenuHTML` (~18816–18896 — head back + username; 4 ปุ่มวงกลม Mute/Unmute·Profile(`data-pf-user`)·Block/Unblock·Report; rows `Photos & videos` → `chmedia:` + thumb strip/`No photos or videos found.`; `Listings & Items` (cap truncate) → `data-chgo="post"`; footer `This chat is protected with End-to-End Encryption`), `chatMediaGalleryHTML` (~18898–18980 — head ✕/`{n} selected`/`Select`/`Cancel`/`Deselect` + grid + date label hardcode `October 2569 BE` + select badges ลำดับ + bottom bar Trash/Download + empty card), `chatRoomSettingsHTML` (~18981–19036 — **dead page**: Note notifications toggle, Chat wallpaper dead toast, Export chat history → clipboard + `คัดลอกประวัติแชทเรียบร้อยแล้ว`, Encryption keys `Letter Sealing` row, Delete data, Report), `chatCfgHTML` (~19037–19057 — toggles `notif`/`preview`/`followOnly` + defView Chats/Items + `chc-quick` ≤80)
+- Actions: `chSend` (~19058–19072 — blocked guard, `t.hidden=false`, draft → unshift เป็น thread จริง, move-to-top, push `{f:"me",at:"09:41",day:"Today",read:false}`, clear draft, refocus), `chatQuickAsk` (~19073–19092 — own → `This is your own listing`; blocked → `Cannot message a blocked account`; `chRoomFor` = ห้อง user เดียว (threads ∪ draft); ไม่มี → `C.draft` prefill `cfg.quick` + `item:null`; `t.item` = ลิสติ้งที่ ask ล่าสุด + push การ์ด `m.pid` 1 ครั้งต่อลิสติ้ง; `chOpenRoom` remove overlay classes → `openSub chatroom:{id}`), `pfOpenChat` (~19093–19104 — profile/follower-row `pf-msg` → DM ห้องเดียวกัน ไม่มีการ์ด; blocked → `Cannot message a blocked account`), `openChatHideConfirm` (~19101–19128 — `Hiding chats doesn't delete their messages.` Cancel/Hide → `t.hidden` + `ซ่อนแชทแล้ว`), `openChatDeleteConfirm` (~19130–19167 — `Are you sure you want to delete this chat?` Cancel/Delete → splice + `ลบแชทเรียบร้อยแล้ว` + unwind `chatroom:`/`chmenu:`/`chsettings:` tops), `chatClick` (~19170–19443 — `data-chact` pin/mute/hide/del/block-user/unblock-room/report-chat-user/export-chat/wallpaper/report-chat + filter popover + `data-chview` + `data-chtgl`/`data-chdef` + `data-chgo` room/item/cfg/more/chsettings/chmedia/attach/room-search/post + `data-chsendmedia` + `data-chmedia` + gallery select/trash/download + send + `.ask-pill,.chat-fab`), swipe gestures (~19445–19530 — reveal ±40px, dismiss ±30px, vertical abort, rubber-band cap, suppress click 250ms)
 - Block/report shared: `blkSheetHTML(u, fromChat)` (~16891–16906 — fromChat → `Block` เดียว), `chatReportSheetHTML` (~16908–16919 — `Are you sure you want to report {u}?` + `Report and delete`/`Report`/`Cancel`), `unblockDlgHTML` (~16921–16928), `pfSetBlocked`/`pfIsBlocked` (~16868–16888 — `th.blocked` loop ทุก thread ของ user + `p.blocked` + feed re-render), handlers `ch-rep-del-btn`/`ch-rep-only-btn`/`ch-sheet-cancel-btn` (~21757–21787 — set `rpFromChat`/`rpDelChat` → `rpPush report:user`), report head ไม่มี `<` เมื่อ `rpFromChat` (~17713/~17745), `rp-step` block → `blkSheetHTML(u, rpFromChat)` (~21812–21822), `rp-done` → `rpClose` + `Report submitted · thanks for letting us know` (~21830–21836), `rpClose` delete wiring (~15125–15144 — `hadDone && rpDelChat` → `t.hidden` + ออกจาก `C.threads` + strip `chmenu:`/`chatroom:` + unshift `chat`), `dlg-unblock-go` → `pfSetBlocked(false)` + `Unblocked` (~20888–20896), `blk-go` → `Blocking` toast (~21798–21808)
 - Entries: `askBtnHTML` (~13379–13387 — styles ตาม `state.ask`: ico/txt/outline/solid; `auto`→solid/outline; label `สอบถาม`/`Ask` + title `สอบถามผู้ขาย`/`Ask seller`), feed card action-row + `price-footer` variant (~14255/~14280), pv post actions (~14713 — `p.type==="sale"` เท่านั้น), `data-chgo="post"` → `openPostDetail` หรือ `Listing detail isn't in this prototype yet` (~19325–19334), ask fallback `findPost` ไม่เจอ → `Not in this prototype yet` (~21996–21997), room `.ch-input` draft persist + send-enable (~20223–20227), `ch-room-search-in` live (~20228–20242), `ch-q`/`ch-iq` live (~20243–20254), `chc-quick` live (~20255), Enter → `chSend` (~20138)
 - Nav/session: `data-navgo` → `chatResetToDefault()` + `openSub` (~21484–21501), chat/profile pages slide-back-out-right (~20977 — `topSub.startsWith("chat"/"chmenu:"/"chsettings:"/"profile:")` && stack>1 → `rpBack`), `chmedia:` close = pop + swap (~20965–20976), `applySessionData` reset `CHAT.inited/threads/draft` (~23230), `chatInit` non-member guard (~17798)
@@ -48,7 +48,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 | Topic | Master Baseline | Chat Module Rule |
 | --- | --- | --- |
-| Chat ใช้สนทนาผู้ซื้อ–ผู้ขาย | master เดิม | ตรง — แต่ thread ผูก **user + listing** ไม่ใช่ user คนเดียว (per-item rooms ตาม prototype) |
+| Chat ใช้สนทนาระหว่างผู้ใช้ | master เดิม | ตรง — thread ผูก **user เดียว** (IG DM; FO-TEST-12 lock) — การ์ดลิสติ้งแนบเป็นข้อความเฉพาะตอน Ask/Share; ไม่มีห้องแยกตามลิสติ้ง |
 | Room creation | สร้างเมื่อส่งข้อความแรก | ตรง — `C.draft` สร้างตอนกด Ask; เข้า `C.threads` เมื่อ `chSend` แรกเท่านั้น |
 | Reference Asset | Asset Reference Card + states (spec เดิม) | **post reference card** snapshot (รูป + owner + caption + price) — ไม่มี sold/deleted state บนการ์ด; tap → Post Detail ตาม 05 (missing → toast + unavailable contract) |
 | Lifecycle โพสต์ | 00_GLOBAL §12 — chat อยู่เมื่อ sold/deleted | thread + ประวัติคงอยู่; การ์ดเป็น snapshot นิ่ง; tap post ที่หาย → `Listing detail isn't in this prototype yet` (contract: `รายการนี้ไม่พร้อมใช้งานแล้ว` ตาม 00_GLOBAL §11/00_NAV §10) |
@@ -57,7 +57,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Guest gate | 00_GLOBAL §11 Member Sheet | ทุก chat entry อยู่ใน `GUEST_GATE_SEL` — guest เห็นแค่ nav icon; session `new`/`guest` → `threads=[]` |
 | Private data | 00_GLOBAL §14 | chat surfaces ไม่แสดง private data (purchase cost/sold history อยู่ 04/14) |
 | Deep link | 00_NAV §10/§12 | contract เท่านั้น — prototype ไม่มี chat deep link |
-| ไม่มีใน V1 | — | Offer ทั้งชุด (ถอดแล้ว), File message, Asset/Offer card types, typing indicator, incoming simulation, real read receipts, E2E encryption, chat wallpaper, export chat, room settings page (`chsettings` dead), chat จาก profile/follower row (`pf-msg` dead — canonical 06), chat entry บน Post Detail (canonical 05), voice/group/edit/reaction/pinned message |
+| ไม่มีใน V1 | — | Offer ทั้งชุด (ถอดแล้ว), File message, Asset/Offer card types, typing indicator, incoming simulation, real read receipts, E2E encryption, chat wallpaper, export chat, room settings page (`chsettings` dead), chat entry บน Post Detail (canonical 05), voice/group/edit/reaction/pinned message |
 
 ---
 
@@ -67,7 +67,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 - Chat Center root `chat` — Chats view (rows, unread, pin/mute/blocked chips, `You:` preview, time, search `ch-q`) + Items view (sections, filter popover, `isDirectRoom`) + gear → `chatcfg`
 - `chatitem:{itemId}` — item chats page (floating pill itemcard, `ch-iq`, rows + swipe)
-- `chatroom:{threadId}` — LINE-style room (header, bubbles, day dividers, `Sent`/`Read`, post ref card, composer, draft persist, blocked bar)
+- `chatroom:{threadId}` — LINE-style room (header, bubbles, day dividers, `Sent`/`Read`, การ์ดลิสติ้งเป็นข้อความ `m.pid`, composer, draft persist, blocked bar)
 - Room search mode (`room-search` → header swap, highlight + dim)
 - Attach sheet + media message + `ch-media-viewer` overlay
 - `chmenu:{threadId}` — 4 circular actions + media strip + `Listings & Items` row
@@ -84,7 +84,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 - Post model / `findPost` / eligibility — canonical [02_FEED_MODULE.md](02_FEED_MODULE.md); เอกสารนี้ระบุเฉพาะ `ask-pill` entry + item snapshot fields
 - Post Detail internals — [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (FSP-018); เอกสารนี้ระบุเฉพาะ `data-chgo="post"` handoff
-- `blkSheetHTML`/`unblockDlgHTML` anatomy + `pfSetBlocked` effects + `pf-msg` dead — canonical [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (FSP-019); เอกสารนี้ระบุเฉพาะ fromChat variant + room effects
+- `blkSheetHTML`/`unblockDlgHTML` anatomy + `pfSetBlocked` effects + `pf-msg` DM entry — canonical [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (FSP-019); เอกสารนี้ระบุเฉพาะ fromChat variant + room effects
 - Report stack mechanics (`rpPush`/`rpBack`/`rpClose`/`PM_REASONS`) + moderation semantics — [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md); เอกสารนี้ระบุเฉพาะ chat entry paths (`rpFromChat`/`rpDelChat`)
 - Member Sheet internals — 00_GLOBAL §11 / 01_AUTH; Bottom nav + layer model — 00_NAV §6
 - Notification center / alerts feed — [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (FSP-021); chat badge = nav pill เท่านั้น
@@ -102,9 +102,9 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Chat List — Items view | `chat` view `item` + `chItemGroups` | sections `Your listings`/`Items you asked about` + aggregate rows |
 | Items Filter Popover | `.ch-filter-popover` + `.ch-filter-backdrop` | `Filter items by` + 3 options + checkmark (เปิดเมื่อแตะ Items pill ซ้ำ) |
 | Item Chats | `chatitem:{itemId}` + `chatItemHTML` | head `Item chats` + floating pill itemcard + `ch-iq` + rows + swipe |
-| Chat Room | `chatroom:{threadId}` + `chatRoomHTML` | header + bubbles + post ref card + composer (หรือ blocked bar) |
+| Chat Room | `chatroom:{threadId}` + `chatRoomHTML` | header + bubbles + การ์ดลิสติ้งในสายข้อความ (`m.pid`) + composer (หรือ blocked bar) |
 | Chat Room — Searching | `chatroom:` `t.searching` | header แทนด้วย search box + highlight/dim |
-| Chat Room — Draft | `C.draft` thread | post card ใน me-column + composer prefill `cfg.quick` |
+| Chat Room — Draft | `C.draft` thread | การ์ดลิสติ้งเป็นข้อความแรก (เมื่อมาจาก Ask) หรือห้องว่าง (DM จาก `pf-msg`) + composer prefill `cfg.quick` (Ask เท่านั้น) |
 | Chat Room — Blocked | `chatroom:` isBlk | `ch-blocked-bar` แทน composer |
 | Attach Sheet | `.ch-attach-sheet` | `Photos & videos` grid ≤8 จาก POSTS (mock picker) |
 | Media Viewer | `.ch-media-viewer` overlay | fullscreen-in-frame photo + X/body close |
@@ -165,8 +165,9 @@ ask-pill บน feed card / price-footer / pv post (sale เท่านั้�
 → guest → Member Sheet
 → own post → toast `This is your own listing`
 → blocked seller → toast `Cannot message a blocked account`
-→ thread user+item มีอยู่ → un-hide + openSub chatroom
-→ ไม่มี → C.draft (prefill cfg.quick + item snapshot) → openSub chatroom
+→ thread ของ user นั้นมีอยู่ (ห้องเดียวต่อคน) → un-hide + openSub chatroom
+→ ไม่มี → C.draft (prefill cfg.quick; item=null) → openSub chatroom
+→ ทุกกรณี: t.item = ลิสติ้งที่ ask (ใช้จัด Items view) + การ์ดลิสติ้งแนบเป็นข้อความ 1 ครั้ง (ไม่ซ้ำถ้าเคย ask ลิสติ้งเดิม)
 → send แรก → unshift เข้า threads (ห้องเกิดจริง)
 ```
 
@@ -247,7 +248,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 
 - `.ask-pill` บน sale post surfaces: feed card action-row (`askBtnHTML` ตาม `state.ask`) + `price-footer` variant (`Ask Seller` outline) + post viewer actions (`p.type==="sale"` เท่านั้น) — ทั้งหมด → `chatQuickAsk`
 - Post Detail (dl1) **ไม่มี** chat entry (canonical 05 — `chat-fab`/`.chat-pop` = dead path ต้อง `state.ask==="bubble"` + dl2 เท่านั้น)
-- Profile `pf-msg` + follower-row Chat = **dead toast** `Open a listing to chat with this seller` (canonical 06 — ห้ามเขียน 07 ว่าเข้าแชตจากโปรไฟล์ได้)
+- Profile `pf-msg` + follower-row Chat = **DM จริง** (`pfOpenChat` → ห้อง user→user เดียว ไม่มีการ์ด — FO-TEST-12 lock; canonical 06)
 - Guards ตามลำดับ: guest → Member Sheet → own post `This is your own listing` → blocked `Cannot message a blocked account` → findPost fail → `Not in this prototype yet`
 - Ask ปิด overlays เดิม (`pv-open`/`detail-open`/`comments-open`/`pm-open`/`likes-open`/`details-open`) แล้ว `openSub chatroom:{id}` — stack ใหม่ 1 หน้า → back จากห้อง = ปิด layer กลับ surface ข้างล่าง
 
@@ -263,7 +264,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 
 - Row: avatar 44 (+ `ch-pin-badge` เมื่อ pinned) / username + `Blocked` chip (หรือ mute icon) / preview (prefix `You: ` เมื่อข้อความสุดท้ายของเรา) / time (`HH:MM` วันนี้, day label อื่น) / unread pill
 - Ordering: **pinned-first** (`pinnedAt` desc tie-break) แล้ว insertion order — ไม่มี timestamp sort จริง; `chSend` ย้ายห้องขึ้นบนสุด (`unshift`)
-- `ch-q` live search match `user + item.cap + msg texts` → ว่าง → `No chats found`/`Try another name, item or message.`
+- `ch-q` live search match `user + item?.cap + msg texts` → ว่าง → `No chats found`/`Try another name, item or message.`
 - unread: เปิดห้อง → `t.unread=0` + `chBadgeSync` — nav badge = Σunread cap `99+`
 - `t.hidden` filtered ออกจาก Chats view และ `chatitem:` rows — **แต่ `chItemGroups` ไม่ filter hidden** → hidden thread ยังโผล่ใน Items view groups (preview/unread/N chats นับรวม — deviation); un-hide อัตโนมัติเมื่อ `chSend`/`chatQuickAsk`
 - Gear → `chatcfg`; bottom nav `botNavHTML("chat")` เฉพาะหน้านี้
@@ -366,7 +367,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 
 ## Deviations & Dead-Code Notes (spec เลือก prototype — documented, not spec)
 
-1. **Thread key = user+item** — same seller คนละ listing = ห้องใหม่ทุกครั้ง (spec เดิม Same-User+Different-Asset merge + reference เปลี่ยน — ขัดทิศ เลือก per-item rooms)
+1. **Thread key = user** (FO-TEST-12 lock) — ห้องเดียวต่อ account ตลอดไป; กด Ask ลิสติ้งต่างชิ้น = การ์ด `m.pid` เพิ่มในห้องเดิม ไม่ใช่ห้องใหม่ (spec เดิม + prototype เดิม per-item rooms — ถูกยกเลิกตาม PO)
 2. **Post ref card = snapshot นิ่ง** — ไม่มี Active/Sold/Deleted states; sold/deleted ไม่เปลี่ยนการ์ด (spec เดิม 3 states + `รายการนี้ไม่พร้อมใช้งานแล้ว` — เหลือ unavailable-on-tap contract เท่านั้น)
 3. **ไม่มี File message / Asset Card / Offer Card** — types จริง = text + image/video + post ref card (Offer ถูกถอดทั้ง codebase — FSP-006/007 aligned)
 4. **Menu = `≡` → `chmenu:` page 4 ปุ่มวงกลม รวม Report** — spec เดิม 3 ปุ่ม + overflow `...` 5 items ขัดกันเอง; **ไม่มี Delete chat ในหน้านี้** (swipe เท่านั้น)
@@ -507,7 +508,7 @@ EN-hardcode ทั้งชุด (language sweep — §19 flag)
 
 | AC ID | Criteria |
 |---|---|
-| AC-CHAT-001 | Chat เข้าได้เฉพาะผ่าน listing — `.ask-pill` บน feed card/price-footer/post viewer (`p.type==="sale"` เท่านั้น); ไม่มี entry บน Post Detail (dl1), profile (`pf-msg` dead), follower row |
+| AC-CHAT-001 | Chat เข้าได้จาก `.ask-pill` บน feed card/price-footer/post viewer (`p.type==="sale"` เท่านั้น) + `pf-msg` บน profile/follower row (DM `pfOpenChat` — FO-TEST-12 lock); ไม่มี entry บน Post Detail (dl1) |
 | AC-CHAT-002 | กด Ask บนโพสต์ตัวเอง → `This is your own listing`; seller ที่ block → `Cannot message a blocked account`; post ไม่เจอ → `Not in this prototype yet` |
 | AC-CHAT-003 | Ask seller+item เดิม → เปิดห้องเดิม (+un-hide); seller เดิมคนละ item → **ห้องใหม่** พร้อม post card ของ item นั้น |
 | AC-CHAT-004 | ห้องใหม่ = `C.draft` ไม่เข้า list จนกว่า `chSend` แรก (`unshift`); draft prefill `cfg.quick` และ `t.draft` persist ระหว่าง navigate |
@@ -519,7 +520,7 @@ EN-hardcode ทั้งชุด (language sweep — §19 flag)
 |---|---|
 | AC-CHAT-006 | Row ต้องมี avatar (+pin badge), username, `Blocked` chip หรือ mute icon, preview prefix `You:`, time (`HH:MM`/day), unread pill |
 | AC-CHAT-007 | List เรียง pinned-first (`pinnedAt` desc) แล้ว insertion order; `chSend` ย้ายห้องขึ้นบนสุด |
-| AC-CHAT-008 | `ch-q` live match `user + item.cap + msg texts`; ว่าง → `No chats found`/`Try another name, item or message.` |
+| AC-CHAT-008 | `ch-q` live match `user + item?.cap + msg texts`; ว่าง → `No chats found`/`Try another name, item or message.` |
 | AC-CHAT-009 | Empty → `No chats yet` + `Tap Ask on a post to start chatting with the seller.`; `t.hidden` ถูก filter ออกจาก Chats view + `chatitem:` rows (Items view groups ไม่ filter — documented deviation) |
 | AC-CHAT-010 | เปิดห้อง → `t.unread=0` + badge sync; nav badge = Σunread cap `99+` |
 
@@ -605,7 +606,7 @@ EN-hardcode ทั้งชุด (language sweep — §19 flag)
 - [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) — post viewer `pv-*` (Ask อยู่บน rail)
 - [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) — listing semantics (item snapshot อ้าง post ไม่ใช่ asset record)
 - [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) — `data-chgo="post"` handoff + missing-post fallback (FSP-018 lock)
-- [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) — `blkSheet`/`unblockDlg`/`pfSetBlocked`/`pf-msg` dead/`data-pf-user` canonical (FSP-019 lock)
+- [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) — `blkSheet`/`unblockDlg`/`pfSetBlocked`/`pf-msg` DM entry/`data-pf-user` canonical (FSP-019 + FO-TEST-12 lock)
 - [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) — alerts feed (ไม่มี chat type — FSP-021)
 - [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) — `blocked` list `m-unblock` shared dlg
 - [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) — report stack + `PM_REASONS` + moderation canonical

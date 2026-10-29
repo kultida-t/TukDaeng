@@ -35,8 +35,10 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Row anatomy: `alAvatarHTML` (~17924–17933 — like>1 user → `.al-stack` 2 avatar + heart badge `al-badge`; like เดี่ยว → avatar + heart badge; watch → `.al-watch` bell icon + seller mini avatar `.al-wseller`; system → `.al-sys` circle-`!` icon; comment/follow → single avatar), `alTextHTML` (~17934–17947 — copy ต่อ type + `<span class="al-time">` จาก `formatAlertTime`), `alRowHTML` (~17948–17957 — `.al-row.unread` + `data-alid`; follow → `al-fbtn` (`data-alfollow`) + `al-x` (`data-aldismiss`); like/comment/watch → `al-thumb` ขวา)
 - Page render: `alertsHTML` (~17958–17981 — `.al-scroll` + `.al-head` = `.al-back` `data-navgo="feed"` + title `แจ้งเตือน`/`Alerts`; group sections ตามลำดับ fix `Today`/`Yesterday`/`Last 7 days`/`Earlier` (TH `วันนี้`/`เมื่อวาน`/`7 วันที่ผ่านมา`/`ก่อนหน้า`) render เฉพาะกลุ่มไม่ว่าง; `.al-readall` `Mark all as read`/`อ่านทั้งหมดแล้ว` บน section แรกเมื่อ unread>0; empty = `chEmptyHTML` `No alerts yet` + desc), `alRerender` (~17982–17987 — `_subSwap` re-render คง scrollTop)
 - Click handler: `alertsClick` (~17988–18037 — chain order `data-alreadall` → `data-aldismiss` → `data-alfollow` → `.al-row`; wired ใน global click chain ~21494 ก่อน navgo)
+- Unavailable state: `al_unavail` sub page (unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว`/`This post is no longer available` + ปุ่ม `Go back` — contract 00_NAV §10; เปิดแทน toast เมื่อ post target หายทุก type)
+- Read/dismiss persistence: `alLoadState`/`alSaveState` (`localStorage: fo_alstate` — `{r:[ids อ่านแล้ว], x:[ids ที่ dismiss]}` — จำลอง server-backed persist: คงอยู่ข้าม reload + session switch ตาม contract)
 - Helpers: `formatAlertTime` (~13376–13383 — `ago` string `Nm/Nh/Nd/Nw` → TH `นาที`/`ชม.`/`วัน`/`สัปดาห์`), `chEmptyHTML` (~17876 — shared empty card กับ 07_CHAT), `pfSetFollow`/`pfIsFollowed` (~16849–16858 — canonical 06), `rpPush` → `pushSub` (~15095), `openPostViewer` (~14738 — signature `(scr, posts, pid, phi, feedMode, title, user)`; `user` ≠ me → pfp head + `pf-foll` chip ตอน unfollowed)
-- Notification settings: settings row `data-sub="notif_settings"` (~17390 — canonical 13), page ~17560–17572 (4 toggles 2 groups), toggle handler `[data-notif-tgl]` ~21217–21223 (`state.notif` memory)
+- Notification settings: settings row `data-sub="notif_settings"` (~17390 — canonical 13), page ~17560–17572 (4 toggles 2 groups), toggle handler `[data-notif-tgl]` ~21217–21223 (`state.notif` persist ผ่าน `localStorage: fo_notif`)
 - Gate + session: `GUEST_GATE_SEL` รวม `[data-navgo="alerts"]` + `.al-fbtn` (~23337–23339) → `obGate` Member Sheet; `applySessionData` reset `ALERTS = null` + `alBadgeSync()` (~23294/~23323)
 - WA rows in feed: `type:"watch"` seed ผูก `p1`/`p5`/`p3`; destination + Watch Alert internals canonical = [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md)
 
@@ -113,7 +115,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 ## Member
 
 - Feed เต็ม: seed rows ทุก type, unread badge, mark read / mark all, dismiss, follow back, destination routing
-- กลับเข้าหน้าใหม่ re-render จาก `ALERTS` state ปัจจุบัน (state คงอยู่ใน session)
+- กลับเข้าหน้าใหม่ re-render จาก `ALERTS` state ปัจจุบัน + read/dismiss persist ข้าม session (server-backed contract)
 
 ## Blocked / Unavailable Context
 
@@ -141,7 +143,7 @@ Guest กด tab
 
 ```text
 Tap .al-row
--> a.unread = false + ลบ .unread class + alBadgeSync
+-> a.unread = false + ลบ .unread class + alBadgeSync + persist id เข้า fo_alstate.r
 -> route ตาม type (ดู §9 Destination Rule)
 -> ถ้า unread หมด -> ลบปุ่ม `Mark all as read`
 ```
@@ -150,15 +152,15 @@ Tap .al-row
 
 ```text
 Tap `อ่านทั้งหมดแล้ว` / `Mark all as read` (section แรก)
--> ทุก row unread = false + alBadgeSync + alRerender
+-> ทุก row unread = false + persist ทุก id เข้า fo_alstate.r + alBadgeSync + alRerender
 ```
 
 ## Dismiss Follow Row
 
 ```text
 Tap `x` บน follow row
--> splice row ออกจาก ALERTS + alRerender (badge ไม่เปลี่ยนถ้า row อ่านแล้ว)
--> row หายถาวรใน session (ไม่มี undo)
+-> splice row ออกจาก ALERTS + persist id เข้า fo_alstate.x + alRerender (badge ไม่เปลี่ยนถ้า row อ่านแล้ว)
+-> row หายถาวร — ไม่กลับมาแม้เปิดแอปใหม่/สลับ session (ไม่มี undo)
 ```
 
 ## Follow Back Inline
@@ -175,10 +177,10 @@ Tap `ติดตามกลับ`/`Follow back` บน follow row
 ```text
 like/comment -> find โพสต์ตัวเองใน pfTabPosts(me,"all")
    -> เจอ: openPostViewer [post เดียว] title `Post` + solo header
-   -> ไม่เจอ: toast `This post is no longer available`
+   -> ไม่เจอ: pushSub `al_unavail` — unavailable state + `Go back` (00_NAV §10)
 watch -> findPost(pid)
    -> เจอ: openPostViewer [post] title `Post` + seller name + solo header + inject Follow (ถ้ายังไม่ follow)
-   -> ไม่เจอ: ไม่มี feedback (silent no-op — deviation)
+   -> ไม่เจอ: pushSub `al_unavail` เช่นเดียวกัน (parity กับ like/comment — resolved FSP-030)
 follow -> rpPush `profile:{follower}`
 system -> toast `Security details aren't in this prototype yet` (placeholder — ไม่มี destination ใน V1)
 ```
@@ -195,10 +197,11 @@ system -> toast `Security details aren't in this prototype yet` (placeholder —
 
 ## Data Model Rule (`ALERTS`)
 
-- `ALERTS` = in-memory list per session — init ครั้งแรกที่ render (`alInit` lazy): `member` → seed set, `new`/`guest` → `[]`
+- `ALERTS` = list ต่อ account — init ครั้งแรกที่ render (`alInit` lazy): `member` → seed set (reconcile กับ persisted read/dismiss state), `new`/`guest` → `[]`
 - Row fields: `id`, `type` (`like|comment|follow|watch|system`), `users[]` (actors; index 0 = primary), `more` (aggregate count นอกเหนือ 2 ชื่อแรก), `ago` (label string), `grp` (age bucket), `unread`, `pid`+`thumb` (post ref — like/comment/watch), `text` (comment excerpt / system message), `name`+`price` (watch: `Brand Model` + asking price)
+- Read state (`unread→read`) + dismiss ต้อง **persist ถาวรต่อ account** — contract: server-backed (คงอยู่ข้ามเปิดแอปใหม่ + ข้ามเครื่อง); prototype จำลองผ่าน `fo_alstate` localStorage
 - ไม่มี generation path — `ALERTS` เป็น seed เท่านั้น (like/comment/follow/watch/system ไม่มี code สร้าง row ใหม่; trigger contract อยู่ §14)
-- `applySessionData` → `ALERTS = null` (re-init ตาม session ใหม่) + `alBadgeSync`
+- `applySessionData` → `ALERTS = null` (re-init ตาม session ใหม่) + `alBadgeSync` — persisted state re-apply ตอน init ถัดไป ไม่ใช่ reset ใหม่ทั้งหมด
 
 ## Group & Order Rule
 
@@ -222,10 +225,11 @@ system -> toast `Security details aren't in this prototype yet` (placeholder —
 ## Read / Unread Rule
 
 - Row ใหม่เริ่ม `unread` → `.al-row.unread` (visual highlight)
-- Tap row → `unread=false` + `alBadgeSync` ทันที ก่อน navigate
-- `Mark all as read` → clear unread ทุก row + badge หมด + re-render
+- Tap row → `unread=false` + `alBadgeSync` ทันที ก่อน navigate + persist id (server-backed contract)
+- `Mark all as read` → clear unread ทุก row + persist ทุก id + badge หมด + re-render
 - หลัง row-tap ถ้า `alUnread() === 0` → ลบปุ่ม mark-all ออก (ป้องกันปุ่มค้าง)
 - `data-alfollow`/`data-aldismiss` ตัดก่อน row handler — tap ปุ่มเหล่านั้น **ไม่ mark read** และไม่ navigate
+- Read state คงอยู่ข้าม kill/reopen app + session switch + เครื่องอื่นบัญชีเดียวกัน (contract — ไม่ใช่ session-local)
 
 ## Badge Rule
 
@@ -237,10 +241,10 @@ system -> toast `Security details aren't in this prototype yet` (placeholder —
 
 | Type | Destination | Fallback |
 | --- | --- | --- |
-| `like` | Post Viewer — โพสต์ของตัวเอง 1 ใบ (lookup `pfTabPosts(me,"all")` ด้วย `pid`; title `Post` + `pfp-tt solo`) | post ไม่อยู่ใน own posts → toast `This post is no longer available` |
+| `like` | Post Viewer — โพสต์ของตัวเอง 1 ใบ (lookup `pfTabPosts(me,"all")` ด้วย `pid`; title `Post` + `pfp-tt solo`) | post ไม่อยู่ใน own posts → unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว` + `Go back` (`al_unavail` — 00_NAV §10) |
 | `comment` | เหมือน like — viewer โพสต์ตัวเอง; **ไม่มี focus/deep-scroll comment ใน V1** | เหมือน like |
 | `follow` | Public Profile `profile:{users[0]}` ผ่าน `rpPush` (push ทับ alerts) | blocked → keep-page ตาม canonical 06 |
-| `watch` | Post Viewer — post ที่ match โดยตรง (`findPost(pid)`; title `Post` + seller; `pfp-follow` chip ถูกลบ; inject `Follow` button ก่อน `...` เมื่อ `!p.following`) | **post หาย → silent no-op** (deviation — ไม่มี toast เหมือน like/comment; contract: toast เดียวกัน) |
+| `watch` | Post Viewer — post ที่ match โดยตรง (`findPost(pid)`; title `Post` + seller; `pfp-follow` chip ถูกลบ; inject `Follow` button ก่อน `...` เมื่อ `!p.following`) | post หาย → unavailable state เดียวกัน (parity กับ like/comment — resolved FSP-030) |
 | `system` | **placeholder — ไม่มี destination ใน V1** | tap → toast `Security details aren't in this prototype yet` (contract: security/account activity surface — future) |
 
 - ไม่มี destination อื่น: ไม่มี Asset Detail direct, ไม่มี Result List, ไม่มี chat room, ไม่มี settings jump
@@ -253,20 +257,21 @@ system -> toast `Security details aren't in this prototype yet` (placeholder —
 
 ## Follow Row Actions Rule
 
-- `Follow back`/`กำลังติดตาม` (`al-fbtn`, `data-alfollow`) — toggle follow จริงผ่าน `pfSetFollow` (sync POSTS `p.following` หรือ `PF_EXTRA_FOL` ตาม canonical 06); ปุ่มสลับ `.on` + label
-- Dismiss `x` (`data-aldismiss`) — **มีเฉพาะ follow rows**; ลบ row ออกจาก `ALERTS` ทันที (session-level, ไม่มี undo, ไม่มี confirm)
+- `Follow back`/`กำลังติดตาม` (`al-fbtn`, `data-alfollow`) — toggle follow จริงผ่าน `pfSetFollow` (sync POSTS `p.following` หรือ `PF_EXTRA_FOL` ตาม canonical 06); ปุ่มสลับ `.on` + label — **label ต้องตามภาษาแอปทุกสถานะ** (resolved: เดิม toggle แล้ว hardcode EN)
+- Dismiss `x` (`data-aldismiss`) — **มีเฉพาะ follow rows**; ลบ row ออกจาก `ALERTS` ทันที + **persist ถาวร** (ไม่กลับมาหลังเปิดแอปใหม่/สลับ session; ไม่มี undo, ไม่มี confirm)
 - Follow row ยังเปิด profile ได้ด้วยการ tap พื้นที่ row (ไม่ใช่ปุ่ม)
 
 ## Notification Settings Boundary Rule
 
 - `notif_settings` มี 4 toggles ผูก type ตรง ๆ: `likes`→`like`, `comments`→`comment`, `follows`→`follow`, `walerts`→`watch` — default ON ทั้งหมด; หน้า + row anatomy canonical อยู่ 13_SETTINGS
-- **Prototype: toggles เป็น memory-only (`state.notif`) ไม่มี code path ใดอ่านค่าไปกรอง feed/generation** — spec รับเป็น V1 surface; contract = toggle OFF ต้องหยุดรับ notification ของ type นั้น (§14)
-- `state.notif` ไม่ถูก reset ตอน session switch (deviation — §9 deviations)
+- Toggle state ต้อง **persist ข้ามเปิดแอปใหม่** (contract; prototype persist ผ่าน `fo_notif`)
+- **Contract: toggle OFF ต้องหยุดรับ notification ของ type นั้นจริง** (§14) — prototype ไม่มี generation เลยไม่มี code path กรอง (acceptance อยู่ฝั่งแอปจริง)
+- Rows เดิมที่มีอยู่แล้วไม่ถูกลบเมื่อปิด toggle — toggle หยุดเฉพาะการสร้างใหม่
 
 ## Session Rule
 
-- `member` → seed เต็ม; `new`/`guest` → `ALERTS=[]` (ไม่มี badge, feed ว่าง, tab ของ guest โดน gate อยู่แล้ว)
-- เปลี่ยน session → `ALERTS=null` re-seed ใหม่ (member ได้ชุดเดิมกลับ — state ไม่ persist ข้าม session switch; dismiss/read marks หาย)
+- `member` → seed เต็ม reconcile กับ persisted state; `new`/`guest` → `ALERTS=[]` (ไม่มี badge, feed ว่าง, tab ของ guest โดน gate อยู่แล้ว)
+- เปลี่ยน session → `ALERTS=null` re-init ใหม่ — read marks/dismiss ที่ persist แล้ว **ยังคงอยู่** (contract server-backed — member กลับมาไม่ได้ unread คืน)
 
 ## Deviations & Dead-Code Notes (spec เลือก prototype — documented, not spec)
 
@@ -275,14 +280,14 @@ system -> toast `Security details aren't in this prototype yet` (placeholder —
 3. **`system` type มีจริง** — spec เดิมจำกัด 4 types; เก็บเป็น V1 type placeholder destination (§9 `system` rule)
 4. **Like aggregate `more` + avatar stack** — spec เดิมไม่มี aggregation model
 5. **`Mark all as read` + dismiss `x` + inline `Follow back`** — extras ที่ spec เดิมไม่มี; dismiss มีเฉพาะ follow rows (like/comment/watch/system ลบไม่ได้)
-6. **`watch` row missing-post = silent no-op** — like/comment มี toast `This post is no longer available` แต่ watch ไม่มี feedback เลย (inconsistency — contract ให้ toast เดียวกัน; flag FSP-030)
+6. ~~**`watch` row missing-post = silent no-op**~~ — RESOLVED (FSP-030): ทุก post destination ที่หายเปิด `al_unavail` unavailable state parity กันแล้ว
 7. **Empty copy `No alerts yet` + desc** — ไม่ใช่ global `ไม่พบข้อมูล`/`No data found` (empty variant ของ module ตาม 00_GLOBAL §11)
-8. **`al-fbtn` toggle → label hardcode EN `Following`/`Follow back`** — render แรกมี isTh (`ติดตามกลับ`/`กำลังติดตาม`) แต่หลัง toggle กลับเป็น EN (language quirk — flag sweep)
-9. **`state.notif` toggles ไม่กรองอะไรจริง + ไม่ reset ตอน session switch** — page มีจริงแต่ enforcement = contract เท่านั้น
+8. ~~**`al-fbtn` toggle → label hardcode EN `Following`/`Follow back`**~~ — RESOLVED: label ตามภาษาแอปทุกสถานะ (`ติดตามกลับ`/`กำลังติดตาม` ↔ `Follow back`/`Following`)
+9. **`state.notif` toggles ไม่กรองอะไรจริง** — page + persist มีจริง (`fo_notif`) แต่ prototype ไม่มี generation เลยไม่มี code path กรอง — enforcement = contract เท่านั้น (§14)
 10. **ไม่มี notification generation** — `ALERTS` seed ตายตัว; like/comment/follow/WA match ใน session ไม่สร้าง row (WA hit = toast simulation ฝั่ง 10)
-11. **ไม่มี retention/older-than cleanup** — `Earlier` bucket คงที่; dismiss = session-local เท่านั้น
+11. **ไม่มี retention/older-than cleanup** — `Earlier` bucket คงที่
 12. **ไม่มี error/loading/offline state ของ feed** — contract เท่านั้น (§12)
-13. **Read state ไม่ persist** — refresh/session switch → seed ใหม่ unread กลับมา
+13. ~~**Read state ไม่ persist**~~ — RESOLVED: read/dismiss persist ถาวร (contract server-backed; prototype จำลองผ่าน `fo_alstate`)
 
 ---
 
@@ -316,8 +321,8 @@ system -> toast `Security details aren't in this prototype yet` (placeholder —
 
 | Condition | Rule |
 | --- | --- |
-| Row `pid` resolve ไม่ได้ (like/comment) | toast `This post is no longer available` — ไม่ navigate |
-| Row `pid` resolve ไม่ได้ (watch) | silent no-op (prototype) — contract: toast เดียวกัน (deviation #6) |
+| Row `pid` resolve ไม่ได้ (like/comment) | `al_unavail` — unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว` + `Go back` (00_NAV §10) |
+| Row `pid` resolve ไม่ได้ (watch) | `al_unavail` เดียวกัน (parity — resolved deviation #6) |
 | `system` tap | placeholder toast — ไม่ navigate |
 | Unknown type | contract: ไม่ render เป็น row (unsupported type ต้องไม่เข้า feed — 00_NAV §16) |
 | Follow target blocked | `profile:{u}` → keep-page ตาม canonical (ไม่ใช่ error) |
@@ -328,8 +333,8 @@ system -> toast `Security details aren't in this prototype yet` (placeholder —
 
 | Case | Behavior |
 | --- | --- |
-| Post ของ like/comment row ถูกลบ/หาย | toast `This post is no longer available` (contract: unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว` — 00_GLOBAL §11 / 00_NAV §10) |
-| Post ของ watch row หาย | silent no-op (prototype) — contract: toast + unavailable state เดียวกัน |
+| Post ของ like/comment row ถูกลบ/หาย | unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว`/`This post is no longer available` + ปุ่ม `Go back` (`al_unavail` — 00_NAV §10 contract) |
+| Post ของ watch row หาย | unavailable state เดียวกัน (`al_unavail` — parity กับ like/comment) |
 | Follow target ไม่มีจริง | `profileOf` fabricate profile (06 deviation — `user-not-found` ไม่ reachable); contract: `ไม่พบผู้ใช้งาน` |
 | Feed load/render fail | contract: `ไม่สามารถโหลดข้อมูลได้`/`Unable to load data.` + `ลองใหม่` (prototype ไม่มี path) |
 | Push/deep link เข้า alerts โดย guest | Member Sheet ก่อนเสมอ (00_NAV §9/§12 contract) |
@@ -412,7 +417,7 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 
 | AC ID | Criteria |
 |---|---|
-| AC-NOTI-010 | `like`/`comment` → Post Viewer โพสต์ตัวเอง 1 ใบ (title `Post`, solo header) — ไม่ focus comment; post หาย → toast `This post is no longer available` |
+| AC-NOTI-010 | `like`/`comment` → Post Viewer โพสต์ตัวเอง 1 ใบ (title `Post`, solo header) — ไม่ focus comment; post หาย → unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว` + `Go back` (`al_unavail`) |
 | AC-NOTI-011 | `follow` → `rpPush profile:{users[0]}` push ทับ alerts page |
 | AC-NOTI-012 | `watch` → Post Viewer โพสต์ที่ match โดยตรง (title `Post` + seller; ไม่มี Result List; inject `Follow` เมื่อยังไม่ follow) |
 | AC-NOTI-013 | `system` → ไม่ navigate (placeholder — prototype toast `Security details aren't in this prototype yet`) |
@@ -424,15 +429,15 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 |---|---|
 | AC-NOTI-015 | Guest กด tab `แจ้งเตือน` → Member Sheet `Join TukDaeng` — feed ไม่เปิด (tab อยู่ใน `GUEST_GATE_SEL`) |
 | AC-NOTI-016 | Session `new`/`guest` → `ALERTS=[]` → `No alerts yet` + desc (new เข้าหน้าได้, guest โดน gate ก่อน) |
-| AC-NOTI-017 | `applySessionData` → `ALERTS=null` + `alBadgeSync` — member กลับได้ seed ใหม่ (read/dismiss ไม่ persist) |
+| AC-NOTI-017 | `applySessionData` → `ALERTS=null` + `alBadgeSync` — re-init reconcile persisted state: read/dismiss คงอยู่ข้าม session switch (contract server-backed) |
 | AC-NOTI-018 | Back `<` บน alerts head → กลับ Feed เสมอ (`data-navgo="feed"` — ไม่ใช่ generic pop) |
 
 ## Notification Settings Boundary
 
 | AC ID | Criteria |
 |---|---|
-| AC-NOTI-019 | `notif_settings` มี toggle ตรง type `likes`/`comments`/`follows`/`walerts` เท่านั้น — default ON; page anatomy canonical 13_SETTINGS |
-| AC-NOTI-020 | Toggle OFF (contract) ต้องหยุด type ที่ map; `system` ไม่มี toggle; prototype = memory-only `state.notif` ไม่กรองจริง (documented deviation) |
+| AC-NOTI-019 | `notif_settings` มี toggle ตรง type `likes`/`comments`/`follows`/`walerts` เท่านั้น — default ON; toggle state persist ข้ามเปิดแอปใหม่; page anatomy canonical 13_SETTINGS |
+| AC-NOTI-020 | Toggle OFF (contract) ต้องหยุด type ที่ map; `system` ไม่มี toggle; rows เดิมไม่ถูกลบเมื่อปิด — prototype ไม่มี generation เลยไม่กรองจริง (documented deviation) |
 
 ## Guard
 
@@ -462,11 +467,9 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 - `system` destination surface (security/account activity page) + event types เพิ่มเติมตาม master decision
 - Notification generation pipeline (real triggers → rows; server-side feed)
 - Push notification (FCM) + deep link → destination matrix (00_NAV §12 contract)
-- Toggle enforcement จริง (`state.notif` → generation/filtering) + persist + reset ตอน session switch
-- `watch` row missing-post toast parity กับ like/comment (consistency — flag FSP-030)
+- Toggle enforcement จริง (`state.notif` → generation/filtering) — persist ทำแล้ว
 - Retention/aging policy จริง (bucket จาก timestamp ไม่ใช่ `grp` field) + pagination/older-than
-- Unread persistence ข้าม session + per-row mark unread (undo read)
+- Per-row mark unread (undo read)
 - Dismiss สำหรับ type อื่น + bulk dismiss
-- Follow-back label language หลัง toggle (`Following`/`Follow back` EN hardcode)
 - Comment focus/deep-scroll ใน Post Viewer (ถ้าเพิ่ม affordance)
 - Preference center เพิ่มเติม (digest, quiet hours, per-channel)

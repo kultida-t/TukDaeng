@@ -1,0 +1,121 @@
+TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,ทดสอบบน (Device/OS),Note
+SETUP-01,Setup,ไม่มีแอป,ติดตั้ง build ทดสอบลงเครื่องจริง → เปิดแอป,แอปเปิดขึ้นหน้า feed หรือ onboarding,-,-,,,
+SETUP-02,Setup,แอปติดตั้งแล้ว,ลบข้อมูลแอป/ติดตั้งใหม่,แอปสะอาด เหมือนผู้ใช้ใหม่,-,-,,,
+SETUP-03,Setup,แอปสะอาด,เปิดแอปโดยไม่ sign in,เข้า feed แบบ guest ได้,GUEST,-,,,
+SETUP-04,Setup,แอปสะอาด,sign in ด้วยบัญชีทดสอบจริง,เข้า feed เป็นสมาชิก,MEMBER,-,,,
+SETUP-05,Setup,แอปสะอาด,สมัครใหม่ผ่าน onboarding จนเข้า feed,member ใหม่ — profile/followers ว่าง,NEW,-,,,
+SETUP-06,Setup,sign in แล้ว,จด U-ME · U-2 (มี ≥1 Sale + ≥1 Show) · U-3 · POST-2A/POST-2B · รุ่นเครื่อง+OS ทุกเครื่อง,ข้อมูลอ้างอิงพร้อม,MEMBER,-,,,ขาดตัวใด = BLOCK เคสที่เกี่ยว
+SETUP-07,Setup,sign in แล้ว,ทดลองทุก entry: nav profile · avatar seller → public · stats → pfollow · edit/share/wallet · ⋯ menu,ทุก entry เปิดหน้า/overlay ถูก,MEMBER,-,,,
+SETUP-08,Setup,เป็น guest บน profile U-2,แตะ ติดตาม/Follow,Member Sheet Join TukDaeng เด้ง follow ไม่เกิด,GUEST,-,,,
+SETUP-09,Setup,มีเครื่องจริงอีกเครื่อง,ติดตั้ง build เดียวกัน → sign in ACCT-2 → เปิด camera+notif permission ทั้งสองเครื่อง,บัญชีสองพร้อม,ACCT-2,-,,,ไม่มีเครื่องสอง = เคส ACCT-2/cross-device เป็น BLOCK
+SETUP-10,Setup,SETUP-09 เสร็จ,ACCT-2 follow U-ME · MEMBER follow U-2,เห็นกันใน followers ทั้งสองฝั่ง count +1,MEMBER+ACCT-2,-,,,follow ไม่ persist = BLOCK เคส §2.4/§2.9
+PROF-001,Own Entry,อยู่ feed,แตะแท็บ Profile บน nav — รอบ A GUEST / รอบ B MEMBER,A: Member Sheet เด้ง · B: own profile เปิด Profile tab active,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
+PROF-002,Own Entry,own profile เปิด,อ่านหน้าบน-ล่าง,head +/uname/burger · avatar+stats+bio · Edit/Share/wallet · tabs 5 + grid + nav,MEMBER,HIGH,,,
+PROF-003,Own Entry,own profile,แตะ + มุมซ้ายบน,เข้า flow create asset (internals FO-TEST-05),MEMBER,MED,,,
+PROF-004,Own Entry,own profile,แตะ username กลาง head หลายครั้ง,ไม่มี sheet/menu/toast ใด ๆ — label inert,MEMBER,LOW,,,
+PROF-005,Own Entry,own profile,แตะ burger ขวาบน → back,push หน้า settings/activity → back กลับ state เดิม,MEMBER,HIGH,,,
+PROF-006,Own Entry,own profile มีข้อมูล,เทียบเลข posts/followers/following กับจำนวนจริง,ตัวเลขตรงจริงบน server,MEMBER,HIGH,,,
+PROF-007,Own Entry,own profile,แตะ avatar → อ่าน overlay → แตะว่างปิด,overlay รูปใหญ่ + Share + Copy link เท่านั้น — ไม่มี Follow/QR,MEMBER,MED,,,
+PROF-008,Own Entry,ตั้ง bio+link ไว้,อ่าน bio block,cat chip + bio text + link chip (@=ไอคอน@ · URL=ไอคอนลิงก์),MEMBER,MED,,,
+PROF-009,Own Entry,บัญชีมี active story,ดู avatar บน own profile,ring รอบ avatar เมื่อมี story; ไม่มี story ไม่มี ring,MEMBER,LOW,,,ไม่มี flow story = BLOCK
+PROF-010,Own Entry,own profile,แตะ แก้ไขโปรไฟล์,push หน้า pedit,MEMBER,HIGH,,,
+PROF-011,Own Entry,own profile,แตะ แชร์โปรไฟล์,overlay QR เต็มจอเปิด ปิดด้วย X ได้,MEMBER,HIGH,,,
+PROF-012,Own Entry,own profile,แตะปุ่ม wallet,push หน้า portfolio (internals FO-TEST-13),MEMBER,MED,,,
+PROF-013,Own Tabs & Grid,own profile,อ่านแถบ tab,All/Sale/Show/Hide/Sold icon+label — Hide/Sold เฉพาะ owner,MEMBER,HIGH,,,
+PROF-014,Own Tabs & Grid,grid All ยาวพอ scroll,scroll ลง → Sale → กลับ All,สลับเฉพาะ grid + scroll All คงเดิม,MEMBER,MED,,,
+PROF-015,Own Tabs & Grid,มีโพสต์หลายชนิด,ไล่แตะทุกแท็บเทียบสถานะจริง,แต่ละแท็บกรองถูกชนิด · All รวมที่ owner เห็น,MEMBER,HIGH,,,สร้างโพสต์หลายชนิดไม่ได้ = BLOCK
+PROF-016,Own Tabs & Grid,account ใหม่ไม่มีโพสต์,ไล่แตะทุกแท็บ,All=Add your first asset+CTA · อื่น=No {tab} posts — ไม่ใช่ ไม่พบข้อมูล,NEW,HIGH,,,
+PROF-017,Own Tabs & Grid,grid มี tile,แตะ tile กลาง ๆ,Post Viewer โหมด profile (Posts) ไหลเฉพาะแท็บเดียวกัน,MEMBER,HIGH,,,
+PROF-018,Own Tabs & Grid,มีโพสต์หลายรูป,ดู tile บน grid,tile หลายรูปมีตัวบ่งชี้ต่างจากรูปเดียว,MEMBER,MED,,,ไม่มีโพสต์หลายรูป = BLOCK
+PROF-019,Own Tabs & Grid,pin โพสต์ผ่าน post menu,pin 2 โพสต์ → เปิด own grid,โพสต์ pin ขึ้นก่อน + pin marker — unpin กลับอันดับเวลา,MEMBER,HIGH,,,
+PROF-020,Own Tabs & Grid,pin แล้ว,ออก profile → กลับ → kill app → เปิดใหม่,ลำดับ pin คงเดิมทุกครั้ง,MEMBER,MED,,,
+PROF-021,Own Tabs & Grid,อยู่แท็บ Sale scroll ลง,เปิด tile → back ของ viewer,กลับแท็บ Sale เดิม scroll เดิม,MEMBER,MED,,,
+PROF-022,Own Tabs & Grid,own profile,archive/ลบโพสต์ตัวเอง 1 ชิ้น → re-open profile,tile หาย + posts count ลดตามจริง,MEMBER,MED,,,
+PROF-023,Own Tabs & Grid,own grid,แตะ tile เดิมซ้ำรัว,viewer เปิดครั้งเดียว ไม่ซ้อน,MEMBER,LOW,,,
+PROF-024,Public Profile,POST-2A อยู่ feed,เปิด profile U-2 จากทุก entry: feed avatar/username · detail seller · commenter · likes row · search · pfollow row · หัวห้อง chat,ทุกจุด push profile:{U-2} เดียวกัน back ย้อนถูก,MEMBER,HIGH,,,จุดใดเข้าไม่ได้ = BLOCK เฉพาะจุด
+PROF-025,Public Profile,profile U-2 เปิด,อ่านหน้าบน-ล่าง,back + ⋯ · avatar+stats+bio+@chip+fby · Follow/แชท · tabs 3 + grid — ไม่มี +/burger/Edit/wallet,MEMBER,HIGH,,,
+PROF-026,Public Profile,profile U-2 เปิด,เลื่อนดูขอบล่างจอ,ไม่มี bottom nav เลย (deep page) — nav เฉพาะ own profile,MEMBER,HIGH,,,SHELL-034 lock
+PROF-027,Public Profile,เข้าจาก feed scroll ลง,เปิด profile → back,กลับ feed ตำแหน่งเดิม,MEMBER,MED,,,
+PROF-028,Public Profile,เป็น guest,เปิด profile U-2 → ดูทุกแท็บ + เปิด tile,ดูได้ปกติ — gate เฉพาะ action ไม่ใช่การดู,GUEST,HIGH,,,
+PROF-029,Public Profile,profile U-2,แตะ ติดตาม/Follow — รอบ A GUEST / รอบ B MEMBER,A: Member Sheet · B: ปุ่มกลาย Following ⌄ + follow บันทึกจริง,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
+PROF-030,Public Profile,profile U-2,แตะ แชท/Chat — รอบ A GUEST / รอบ B MEMBER,A: Member Sheet · B: ห้อง DM เปิด head=U-2,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
+PROF-031,Public Profile,profile U-2,แตะ ⋯ — รอบ A GUEST / รอบ B MEMBER,A: Member Sheet · B: sheet เมนูเปิด,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
+PROF-032,Public Profile,profile U-2 → avatar,แตะ Follow ใน overlay — รอบ A GUEST / รอบ B MEMBER,A: Member Sheet ทุก act · B: Follow→Following + Share/Copy ทำงาน,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
+PROF-033,Public Profile,U-2 มี mutual followers,อ่านแถวใต้ bio,Followed by {names} + avatar ≤3 คน — แสดงเฉพาะมี mutual,MEMBER,MED,,,ไม่มี mutual = BLOCK
+PROF-034,Public Profile,profile U-2,อ่านแถบ tab,All/Sale/Show เท่านั้น — ไม่มี Hide/Sold,MEMBER,HIGH,,,
+PROF-035,Public Profile,profile U-2,แตะ followers + following,push pfollow:{U-2} แท็บตรง,MEMBER,HIGH,,,
+PROF-036,Public Profile,U-2 มีโพสต์ hide/sold,นับ grid All เทียบเครื่อง ACCT-2,viewer ไม่เห็น tile hide/sold เลย,MEMBER,HIGH,,,ACCT-2 ทำ hide/sold ไม่ได้ = BLOCK
+PROF-037,Public Profile,profile U-2,เทียบเลข posts กับ tile ใน All,posts = จำนวนที่ viewer เห็นจริง,MEMBER,MED,,,
+PROF-038,Public Profile,U-2 bio/username ยาว,เปิด profile + เทียบจอแคบ,wrap/ellipsis เรียบร้อย ปุ่ม/stats ไม่ล้น,MEMBER,MED,,,ตั้ง bio ยาวไม่ได้ = BLOCK
+PROF-039,Public Profile,profile U-2 แท็บ Sale,แตะ tile → ปัดโพสต์ถัดไป,viewer ไหลเฉพาะโพสต์ Sale ของ U-2,MEMBER,MED,,,
+PROF-040,Follow & Lists,MEMBER ยังไม่ follow U-2,กด Follow → เช็ก count → เครื่อง ACCT-2 เช็ก followers,followers U-2 +1 ทั้งสองฝั่ง sync ข้ามเครื่อง,MEMBER+ACCT-2,HIGH,,,
+PROF-041,Follow & Lists,follow U-2 แล้ว,แตะ Following ⌄,sheet U-2: Add to favorites · Mute · Unfollow — backdrop ปิดได้,MEMBER,HIGH,,,
+PROF-042,Follow & Lists,sheet Following เปิด,แตะ Unfollow,unfollow ทันที + toast Unfollowed + ปุ่มกลับ Follow + count −1,MEMBER,HIGH,,,
+PROF-043,Follow & Lists,sheet Following เปิด,Add to favorites → Settings > Favorites,toast Added + U-2 อยู่ใน Favorites,MEMBER,MED,,,
+PROF-044,Follow & Lists,U-2 เป็น favorite,sheet → Remove from favorites → เช็ก Favorites,toast Removed + U-2 หายจาก Favorites,MEMBER,MED,,,
+PROF-045,Follow & Lists,sheet Following เปิด,Mute → confirm → กลับ feed,dialog → toast Muted + โพสต์ U-2 หายจาก feed + อยู่ใน Muted list,MEMBER,HIGH,,,
+PROF-046,Follow & Lists,U-2 muted,Unmute → กลับ feed,toast Unmuted + โพสต์กลับเข้า feed + หายจาก Muted,MEMBER,MED,,,
+PROF-047,Follow & Lists,own มี followers+following,own → followers → อ่านหน้า → สลับ tab,back+title+tabs+search+rows · own rows: followers=แชท+✕ · following=แชท+⋯,MEMBER,HIGH,,,
+PROF-048,Follow & Lists,U-2 เป็น follower,✕ แถว U-2 → dialog Remove follower? → Remove → เครื่อง ACCT-2 เช็ก,แถวหาย + count −1 + ACCT-2 หลุด following ไม่มีแจ้งเตือน,MEMBER+ACCT-2,HIGH,,,
+PROF-049,Follow & Lists,own following list,⋯ แถว U-2 → Unfollow,pop: Unfollow(danger)+Mute/Unmute → แถวหาย + toast,MEMBER,MED,,,
+PROF-050,Follow & Lists,pfollow U-2,แตะ Follow แถวที่ยังไม่ follow → แตะอีกครั้ง,pill flip Follow↔Following ในที่เดิม + ไม่มีชื่อตัวเองใน list,MEMBER,MED,,,
+PROF-051,Follow & Lists,list มีหลายแถว,พิมพ์ search + พิมพ์มั่ว,filter live · ไม่ตรง → No results found,MEMBER,MED,,,
+PROF-052,Follow & Lists,pfollow U-2 followers,แตะแถว → profile เขา → back,push profile ซ้อน → back กลับ list tab+scroll เดิม,MEMBER,MED,,,
+PROF-053,Follow & Lists,เป็น guest บน pfollow U-2,เปิด followers → แตะ Follow บนแถว,list เห็นปกติ; แตะ pill → Member Sheet,GUEST,HIGH,,,
+PROF-054,Follow & Lists,NEW ว่าง + MEMBER follow U-2,NEW: เปิด pfollow ทั้งสองแท็บ · MEMBER: กลับ feed แท็บ Following,NEW: No followers yet/You're not following · MEMBER: โพสต์ U-2 เข้า Following feed,MEMBER,HIGH,,,
+PROF-055,DM Contract,ไม่เคยคุยกับ U-2,profile U-2 → แชท,ห้อง chatroom ว่างพร้อม composer — ไม่มีการ์ดลิสติ้ง,MEMBER,HIGH,,,
+PROF-056,DM Contract,ห้อง U-2 เปิด,พิมพ์ข้อความ → ส่ง → เปิดแท็บ แชท,ข้อความขวา + Sent + thread U-2 ใน Chats list,MEMBER,HIGH,,,
+PROF-057,DM Contract,เคยคุยกับ U-2,ออกห้อง → profile U-2 → แชท,เข้าห้องเดิมประวัติครบ — ห้องเดียวต่อ account,MEMBER,HIGH,,,
+PROF-058,DM Contract,POST-2A ของ U-2,เปิดลิสติ้ง → สอบถาม/Ask,ห้องเดียวกัน + การ์ด POST-2A เป็นข้อความฝั่งเรา 1 ใบ + prefill quick-ask — ไม่ pin ค้าง,MEMBER,HIGH,,,
+PROF-059,DM Contract,เคย Ask POST-2A,กด Ask อีกครั้ง → อ่านห้อง,ไม่มีการ์ดใบที่สองของลิสติ้งเดิม,MEMBER,MED,,,
+PROF-060,DM Contract,POST-2B อีกชิ้นของ U-2,กด Ask บน POST-2B,ห้องเดิม + การ์ด POST-2B ต่อท้าย · Items view จัดใต้ลิสติ้งล่าสุด,MEMBER,HIGH,,,
+PROF-061,DM Contract,มีห้อง DM ไม่เคย Ask,เปิด Chat → แท็บ Items,ห้องไม่เคย Ask ไม่มีใน Items view,MEMBER,MED,,,
+PROF-062,DM Contract,MEMBER block U-2 แล้ว,แถว followers → แชท · เปิดห้องเดิมจาก list,แถว→toast Cannot message a blocked account · ห้องเดิม→blocked bar+Unblock,MEMBER,HIGH,,,
+PROF-063,⋯Menu & Block,profile U-2 → ⋯,อ่าน sheet,card: Report(danger) · Block · About this account · Copy profile URL · Share this profile + Cancel แยก,MEMBER,HIGH,,,
+PROF-064,⋯Menu & Block,sheet ⋯ เปิด,Copy profile URL → วางในแอปอื่น,toast Link copied + clipboard=https://tukdaeng.app/u/U-2,MEMBER,HIGH,,,
+PROF-065,⋯Menu & Block,sheet ⋯ เปิด,Share this profile,share sheet เปิดพร้อมลิงก์ profile — ยกเลิกได้,MEMBER,MED,,,
+PROF-066,⋯Menu & Block,sheet ⋯ เปิด,About this account → back,about page: joined+country+verified+why-note,MEMBER,MED,,,
+PROF-067,⋯Menu & Block,sheet ⋯ เปิด,Report → รายงานบัญชี → เหตุผล → done,flow report จบหน้า Thanks + Other steps + Done,MEMBER,HIGH,,,reason internals FO-TEST-16
+PROF-068,⋯Menu & Block,report flow จาก ⋯,รายงานโพสต์ → Select a post → เลือก tile → Next → เหตุผล,grid เลือกทีละชิ้น + Next ปลดล็อก → ส่งสำเร็จ,MEMBER,MED,,,
+PROF-069,⋯Menu & Block,sheet ⋯ เปิด,Block,sheet Block {U-2}? + desc + 3 impact rows + Block + Block and report — Cancel ไม่ block,MEMBER,HIGH,,,
+PROF-070,⋯Menu & Block,block sheet เปิด,Block → รอ toast → ดู profile+feed,keep-page: posts 0 · stats − · grid ว่าง · Unblock เดียว + unfollow+rmf+feed หาย+ห้อง blocked,MEMBER,HIGH,,,
+PROF-071,⋯Menu & Block,block sheet เปิด,Block and report,block เกิด + เข้า report flow ต่อทันที,MEMBER,MED,,,
+PROF-072,⋯Menu & Block,U-2 blocked,profile → Unblock → dialog → Unblock,toast Unblocked + profile กลับเต็ม + restrict-hint ~6s — ไม่ re-follow,MEMBER,HIGH,,,
+PROF-073,⋯Menu & Block,U-2 blocked,Settings → Blocked → ปลดบล็อก → dialog,unblock สำเร็จ + แถวหาย + profile กลับเต็ม,MEMBER,MED,,,
+PROF-074,⋯Menu & Block,เคย follow+fav ก่อน block,unblock → เช็กปุ่ม+Favorites+Muted,ปุ่ม Follow + ไม่อยู่ Favorites/Muted — state ก่อน block ไม่ฟื้น,MEMBER,MED,,,
+PROF-075,⋯Menu & Block,ACCT-2 block U-ME แล้ว,เปิด profile U-2,หน้าไม่พร้อมใช้งาน (00_NAV §10) — ไม่ใช่ keep-page,MEMBER+ACCT-2,HIGH,,,ต้องเครื่องสอง+server sync ช้า=BLOCK
+PROF-076,QR & Avatar,own → แชร์โปรไฟล์,อ่าน overlay,top: X+COLOR+scan · การ์ด @USERNAME · Share profile/Copy link/Download — X ปิดได้,MEMBER,HIGH,,,
+PROF-077,QR & Avatar,QR เปิด,เครื่อง ACCT-2 สแกน QR → เปิดลิงก์,payload=https://tukdaeng.app/u/U-ME → ไป profile U-ME,MEMBER+ACCT-2,HIGH,,,ไม่มี deep link = BLOCK
+PROF-078,QR & Avatar,QR เปิด,แตะ COLOR ไล่ครบ → ปิด → เปิดใหม่,วน 5 themes แล้วกลับแรก · เปิดใหม่กลับ theme 0,MEMBER,LOW,,,
+PROF-079,QR & Avatar,QR เปิด,Copy link → วางที่อื่น,toast Link copied + clipboard=profile URL,MEMBER,MED,,,
+PROF-080,QR & Avatar,QR เปิด,Download → เช็ก gallery/ไฟล์,toast QR code saved + ไฟล์เปิดได้,MEMBER,MED,,,build ไม่มี save = BLOCK
+PROF-081,QR & Avatar,QR เปิด,Share profile,share sheet เปิดพร้อมลิงก์ profile,MEMBER,MED,,,
+PROF-082,QR & Avatar,QR เปิด,แตะ scan → อนุญาตกล้อง → ส่อง QR ของ U-2,allow→มุมมองกล้อง+กรอบ+hint · ส่อง→เปิด profile U-2 · deny→toast ขอสิทธิ์,MEMBER,HIGH,,,build ไม่มี scanner = BLOCK
+PROF-083,QR & Avatar,profile U-2 → avatar,อ่าน acts → Share → Copy link → แตะว่าง,3 acts: Follow+Share+Copy link (ไม่มี QR act) · toast ตาม act · แตะว่างปิด,MEMBER,MED,,,
+PROF-084,Edit Profile,own → แก้ไขโปรไฟล์,อ่านฟอร์ม,back+title+avatar+Edit picture+Username+Bio+Link+Save,MEMBER,HIGH,,,
+PROF-085,Edit Profile,pedit เปิด,เปลี่ยนรูปโปรไฟล์ → OS picker → เลือกรูปจริง,picker เครื่องจริง → avatar ใหม่ทันที + toast Profile picture updated,MEMBER,HIGH,,,ไม่มี picker = BLOCK
+PROF-086,Edit Profile,picker เปิด,ยกเลิกไม่เลือกรูป,avatar เดิม ไม่มี toast ไม่บันทึก,MEMBER,MED,,,
+PROF-087,Edit Profile,pedit เปิด,เปลี่ยน username เป็นชื่อว่าง → บันทึก,toast Profile updated + ชื่อใหม่ทุกจุด + route ใหม่เปิดได้,MEMBER,HIGH,,,เปลี่ยนกลับหลังเทส
+PROF-088,Edit Profile,เปลี่ยนชื่อแล้ว,เช็กโพสต์/follows/chat ตัวเอง + เปิด profile:{ชื่อเก่า},reference migrate ครบ; ชื่อเก่าไม่โชว์ profile สมบูรณ์,MEMBER,HIGH,,,
+PROF-089,Edit Profile,pedit,ใส่ username ผิดรูปแบบทีละแบบ → บันทึก,ไม่บันทึก + inline error กติกา 3–20 a–z 0–9 _ . + focus,MEMBER,HIGH,,,
+PROF-090,Edit Profile,pedit,ลอง 2/3/20/เกิน 20 ตัว + ตัวพิมพ์ใหญ่,2→error · 3/20→ผ่าน · maxlength=20 · uppercase→lowercase,MEMBER,MED,,,
+PROF-091,Edit Profile,pedit,ใส่ username ของคนอื่น → บันทึก,ไม่บันทึก + This username is already taken.,MEMBER,HIGH,,,
+PROF-092,Edit Profile,pedit,bio 150 ตัว → save · พิมพ์เกิน,150 ผ่านแสดงเต็ม · maxlength กันเกิน,MEMBER,MED,,,
+PROF-093,Edit Profile,pedit,ลบ bio ว่าง → save,ผ่าน + ส่วน bio หายจาก profile,MEMBER,MED,,,
+PROF-094,Edit Profile,pedit,save ทีละค่า: https://… · domain · www.… · @handle,ทุกแบบผ่าน — URL→chip ลิงก์ · @→chip @,MEMBER,MED,,,
+PROF-095,Edit Profile,pedit,ใส่ link ผิดรูปแบบ → บันทึก,ไม่บันทึก + inline Invalid link + focus,MEMBER,HIGH,,,
+PROF-096,Edit Profile,มี link เดิม,ลบ link ว่าง → save,ผ่าน + link chip หาย,MEMBER,MED,,,
+PROF-097,Edit Profile,pedit เปิด,แก้ทุกช่อง → back ไม่ Save → เปิดใหม่,ค่ากลับเดิมทั้งหมด ไม่มี draft,MEMBER,MED,,,
+PROF-098,Edit Profile,เปลี่ยน bio/link แล้ว,kill → เปิดใหม่ → เครื่อง ACCT-2 ดู profile U-ME,ค่าใหม่รอด restart + ACCT-2 เห็น (server truth),MEMBER+ACCT-2,HIGH,,,
+PROF-099,Edit Profile,pedit เปิด,scroll ดูทั้งฟอร์ม,เฉพาะ Username/Bio/Link+Edit picture+Save — ไม่มีช่องอื่น,MEMBER,LOW,,,
+PROF-100,Persistence/Device,follow+fav+mute+block+pin+rmf แล้ว,kill app → เปิดใหม่ → เช็กทุก state,ทุกอย่างคงเดิม — server-backed,MEMBER,HIGH,,,
+PROF-101,Persistence/Device,เหมือน PROF-100,sign out → sign in เดิม → เช็กทุก state,state คงเดิมทุกข้อ ไม่มีรีเซ็ต,MEMBER,HIGH,,,
+PROF-102,Persistence/Device,U-ME บนเครื่องสอง,เครื่อง A: follow U-3 + block U-2 → เครื่อง B เช็ก,B เห็น Following + keep-page เหมือน A,MEMBER,HIGH,,,จำกัดเครื่องเดียว = BLOCK
+PROF-103,Persistence/Device,เปลี่ยน bio+avatar+link,เครื่อง ACCT-2 เปิด profile U-ME,ค่าใหม่เห็นจากบัญชีอื่นเครื่องอื่น,MEMBER+ACCT-2,HIGH,,,
+PROF-104,Persistence/Device,guest กด Follow → Member Sheet,sign in จาก sheet → กลับ profile → กด Follow,sign in แล้ว action ได้ทันที follow สำเร็จ,GUEST→MEMBER,MED,,,
+PROF-105,Persistence/Device,ตั้งภาษา TH,ไล่ own/public/pfollow/pedit/QR/avov/sheet ⋯/mf,ทุก label+toast TH ครบ — EN ค้าง = FAIL,MEMBER,HIGH,,,
+PROF-106,Persistence/Device,ตั้งภาษา EN,เหมือน PROF-105,ทุก label+toast EN ครบ — TH ค้าง = FAIL,MEMBER,MED,,,
+PROF-107,Persistence/Device,เปิด dark,ไล่ทุก surface profile,อ่านครบ contrast พอ — ตัวหนังสือจม = FAIL,MEMBER,MED,,,
+PROF-108,Persistence/Device,⋯sheet+block sheet+dialog ซ้อน,กด device back ทีละครั้ง,ปิดชั้นบนสุดก่อน ไม่เด้งหลายชั้น,MEMBER,MED,,,
+PROF-109,Persistence/Device,airplane mode,เปิด profile U-2 + กด Follow + save bio,อ่าน=stale หรือ error ชัด · เขียน=error ชัดไม่บันทึกหลอก,MEMBER,HIGH,,,
+PROF-110,Persistence/Device,เครื่องจอเล็กสุด,own/public/pedit หมุนแนวนอน,layout ไม่พัง state ไม่หาย,MEMBER,LOW,,,ล็อก portrait = BLOCK

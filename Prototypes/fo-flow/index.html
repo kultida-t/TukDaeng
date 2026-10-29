@@ -8202,36 +8202,6 @@
       flex-shrink: 0;
     }
 
-    .pf-note {
-      position: absolute;
-      left: 50%;
-      bottom: calc(100% - 14px);
-      transform: translateX(-46%);
-      background: var(--surface-2);
-      color: var(--muted);
-      border-radius: 12px;
-      padding: 5px 10px;
-      font-size: 11px;
-      line-height: 1.2;
-      white-space: nowrap;
-      max-width: 120px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .18);
-      cursor: pointer;
-      z-index: 2;
-    }
-
-    .pf-note i {
-      position: absolute;
-      left: 22px;
-      top: 100%;
-      width: 8px;
-      height: 8px;
-      background: var(--surface-2);
-      border-radius: 50%;
-    }
-
     .pf-av {
       width: 80px;
       height: 80px;
@@ -8246,22 +8216,6 @@
       border-radius: 50%;
       object-fit: cover;
       display: block;
-    }
-
-    .pf-avadd {
-      position: absolute;
-      right: 0;
-      bottom: 2px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--red);
-      color: #fff;
-      border: 2.5px solid var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
     }
 
     .pf-idcol {
@@ -8310,20 +8264,6 @@
       color: var(--muted);
     }
 
-    .pf-sleep {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin: 8px 16px 0;
-      padding: 6px 12px;
-      background: var(--surface-2);
-      border-radius: 999px;
-      font-size: 12.5px;
-      color: var(--muted);
-      cursor: pointer;
-      align-self: flex-start;
-    }
-
     .pf-bio {
       padding: 8px 16px 0;
       font-size: 13px;
@@ -8351,24 +8291,6 @@
       border-radius: 999px;
       font-size: 12.5px;
       font-weight: 600;
-    }
-
-    .pf-addchip {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      margin: 7px 0 0 6px;
-      padding: 5px 13px;
-      line-height: 1.25;
-      background: var(--chip-bg);
-      color: var(--chip-text);
-      border: none;
-      border-radius: 999px;
-      font: inherit;
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      vertical-align: top;
     }
 
     .pf-fby {
@@ -8412,10 +8334,6 @@
 
     .pf-chrow .pf-link {
       margin-top: 0;
-    }
-
-    .pf-chrow .pf-addchip {
-      margin: 0;
     }
 
     .pf-atch {
@@ -14288,7 +14206,11 @@
         cam._t = setInterval(async () => {
           try {
             const [hit] = await det.detect(v);
-            if (hit) { pfCloseCam(ov); scrToast(scr, hit.rawValue.startsWith("https://tukdaeng.app/u/") ? "Profile QR scanned" : "QR code scanned"); }
+            if (hit) {
+              const m = /^https:\/\/tukdaeng\.app\/u\/(.+)$/.exec(hit.rawValue);
+              if (m) { pfCloseQr(scr); pushSub(scr, "profile:" + decodeURIComponent(m[1])); }
+              else { pfCloseCam(ov); scrToast(scr, "QR code isn't a TukDaeng profile"); }
+            }
           } catch (err) { }
         }, 600);
       }
@@ -16682,6 +16604,17 @@
     /* ===== watch alerts — saved criteria that ping when a matching post lands (memory only) ===== */
     const WATCH_ALERTS = [];
     let waSeq = 1;
+    /* persist per account — demo mirrors the server-backed contract: member alerts
+       survive reload and sign-out/in; guest/new sessions keep an empty list */
+    function waSave() {
+      try { localStorage.setItem("fo_walerts", JSON.stringify({ seq: waSeq, list: WATCH_ALERTS })); } catch { }
+    }
+    function waLoad() {
+      try {
+        const d = JSON.parse(localStorage.getItem("fo_walerts") || "null");
+        if (d && Array.isArray(d.list)) { WATCH_ALERTS.push(...d.list); waSeq = d.seq || WATCH_ALERTS.length + 1; }
+      } catch { }
+    }
     const WA_MODES = {
       all: { t: "Match all criteria", d: "Alert me only when a post matches every field below", badge: "All" },
       any: { t: "Match any criteria", d: "Alert me when a post matches at least one field — can get noisy", badge: "Any" },
@@ -16847,7 +16780,7 @@
       return `<div class="detail-head svd-head"><button class="icon-btn sub-back">${I.back()}</button><span class="detail-title rc-title">${isTh ? "การแจ้งเตือนนาฬิกา" : "Watch Alerts"}</span><span class="spacer"></span></div>
     <div class="sub-scroll">
       <div class="fav-desc">${isTh ? "รับการแจ้งเตือนเมื่อมีรายการใหม่ตรงกับนาฬิกาที่คุณกำลังติดตาม" : "Get notified when a new listing matches what you're watching."}</div>
-      ${WATCH_ALERTS.length ? WATCH_ALERTS.map(waRowHTML).join("") : `<div class="sub-empty">${isTh ? "ยังไม่มีการแจ้งเตือนนาฬิกา — แตะไอคอนกระดิ่งบนโพสต์หรือบันทึกการค้นหาเพื่อเริ่มต้น" : "No watch alerts yet — tap the bell on a post or save a search to start one"}</div>`}
+      ${WATCH_ALERTS.length ? WATCH_ALERTS.slice().reverse().map(waRowHTML).join("") : `<div class="sub-empty">${isTh ? "ยังไม่มีการแจ้งเตือนนาฬิกา — แตะไอคอนกระดิ่งบนโพสต์หรือบันทึกการค้นหาเพื่อเริ่มต้น" : "No watch alerts yet — tap the bell on a post or save a search to start one"}</div>`}
     </div>`;
     }
 
@@ -16880,11 +16813,74 @@
       "bamzilla": { bio: "here for the shine", followers: "640", following: "512", grid: pfGrid(12, 6) },
       "bikwans": { bio: "นึกว่าซื้อนาฬิกา ที่แท้ซื้อความสุข", followers: "1,876", following: "432", grid: pfGrid(15, 6) },
     };
-    const PF_EXTRA_FOL = new Set(); /* follow state for users that have no posts (session only) */
-    const PF_EXTRA_FAV = new Set(); /* favorites for users that have no posts (session only) */
-    const PF_EXTRA_MUT = new Set(); /* muted state for users that have no posts (session only) */
-    const PF_REMOVED_FOL = new Set(); /* PROFILE-004 — own followers removed via Remove button (session only) */
-    const PF_BLOCKED = new Set(); /* PROFILE-005 — accounts you blocked (session only) */
+    const PF_EXTRA_FOL = new Set(); /* follow state for users that have no posts */
+    const PF_EXTRA_FAV = new Set(); /* favorites for users that have no posts */
+    const PF_EXTRA_MUT = new Set(); /* muted state for users that have no posts */
+    const PF_REMOVED_FOL = new Set(); /* PROFILE-004 — own followers removed via Remove button */
+    const PF_BLOCKED = new Set(); /* PROFILE-005 — accounts you blocked */
+    const PF_POSTS_DEL = new Set(); /* real POSTS deleted from own profile — persisted so a reload does not resurrect them */
+    const PF_SAVED_PINS = {}; /* pfstate pins keyed by post id — applied when lazy gfx posts materialise */
+    const PF_SAVED_ARCH = new Set(); /* pfstate archived post ids — same lazy-apply path */
+
+    /* spec-locked (FO-TEST-12): profile relationships + own-profile edits are
+       server-backed in the real app — the demo mirrors that in fo_pfstate so
+       follow/favorite/mute/block/remove/pin/archive/delete and Edit Profile
+       changes survive reload and sign-out → sign-in */
+    const pfKey = () => "fo_pfstate:" + (state.session === "new" ? "new" : "member");
+    const pfStateLoad = () => { try { return JSON.parse(localStorage.getItem(pfKey()) || "null") || {}; } catch { return {}; } };
+    function pfSave() {
+      if (state.session === "guest") return;
+      const pin = {}, arch = [...PF_SAVED_ARCH], del = [...PF_GFX_DEL, ...PF_POSTS_DEL];
+      [...POSTS, ...PF_MINE, ...Object.values(PF_GFX_REG)].forEach(p => { if (p.pins) pin[p.id] = p.pins; if (p.archived && !arch.includes(p.id)) arch.push(p.id); });
+      const me = PROFILES[CP_ME.name] || {};
+      try {
+        localStorage.setItem(pfKey(), JSON.stringify({
+          fol: [...new Set(followedSellers().concat([...PF_EXTRA_FOL]))],
+          fav: [...new Set(favoriteSellers().concat([...PF_EXTRA_FAV]))],
+          mut: [...new Set(mutedSellers().concat([...PF_EXTRA_MUT]))],
+          blk: [...PF_BLOCKED], rmf: [...PF_REMOVED_FOL],
+          pin, del, arch,
+          me: { name: CP_ME.name, bio: me.bio || "", link: me.link || "", avatar: me.avatar || "" }
+        }));
+      } catch { }
+    }
+    /* rename migration shared by Edit Profile save + pfLoad re-apply */
+    function pfRenameUser(scr, oldName, uname) {
+      PROFILES[uname] = PROFILES[oldName] || {};
+      delete PROFILES[oldName];
+      POSTS.forEach(p => { if (p.seller === oldName) p.seller = uname; });
+      Object.values(COMMENTS).forEach(cs => cs.forEach(c => { if (c.name === oldName) c.name = uname; (c.replies || []).forEach(r => { if (r.name === oldName) r.name = uname; }); }));
+      for (const pr of Object.values(PROFILES)) if (pr.followedBy) pr.followedBy = pr.followedBy.map(n => n === oldName ? uname : n);
+      for (const s of [PF_BLOCKED, PF_REMOVED_FOL, PF_EXTRA_FOL, PF_EXTRA_FAV, PF_EXTRA_MUT]) if (s.has(oldName)) { s.delete(oldName); s.add(uname); }
+      if (NEW_USER_KEY === oldName) NEW_USER_KEY = uname;
+      CP_ME.name = uname;
+      if (scr) (scr._subStack || []).forEach((k, i, a) => { if (k === "profile:" + oldName) a[i] = "profile:" + uname; });
+    }
+    function pfLoad() {
+      if (state.session === "guest") return;
+      const s = pfStateLoad(); if (!s || !s.me && !s.fol) return;
+      if (s.me && s.me.name && s.me.name !== CP_ME.name && !PROFILES[s.me.name]) pfRenameUser(null, CP_ME.name, s.me.name);
+      if (s.me) {
+        const me = PROFILES[CP_ME.name] = PROFILES[CP_ME.name] || {};
+        if (s.me.bio !== undefined) me.bio = s.me.bio;
+        if (s.me.link !== undefined) me.link = s.me.link;
+        if (s.me.avatar) { me.avatar = s.me.avatar; CP_ME.avatar = s.me.avatar; POSTS.forEach(p => { if (p.seller === CP_ME.name) p.avatar = s.me.avatar; }); }
+        me.disp = CP_ME.name;
+      }
+      (s.fol || []).forEach(n => { if (POSTS.some(x => x.seller === n)) POSTS.forEach(x => { if (x.seller === n) x.following = true; }); else PF_EXTRA_FOL.add(n); });
+      (s.fav || []).forEach(n => { if (POSTS.some(x => x.seller === n)) POSTS.forEach(x => { if (x.seller === n) x.favorite = true; }); else PF_EXTRA_FAV.add(n); });
+      (s.mut || []).forEach(n => { if (POSTS.some(x => x.seller === n)) POSTS.forEach(x => { if (x.seller === n) x.muted = true; }); else PF_EXTRA_MUT.add(n); });
+      (s.blk || []).forEach(n => { PF_BLOCKED.add(n); PF_REMOVED_FOL.add(n); POSTS.forEach(p => { if (p.seller === n) p.blocked = true; }); });
+      (s.rmf || []).forEach(n => PF_REMOVED_FOL.add(n));
+      (s.del || []).forEach(id => {
+        if (String(id).startsWith("gfx-")) PF_GFX_DEL.add(id);
+        else { const i = POSTS.findIndex(x => x.id === id); if (i > -1) POSTS.splice(i, 1); }
+        PF_POSTS_DEL.add(id);
+      });
+      Object.assign(PF_SAVED_PINS, s.pin || {});
+      [...POSTS, ...PF_MINE, ...Object.values(PF_GFX_REG)].forEach(p => { if (PF_SAVED_PINS[p.id]) p.pins = PF_SAVED_PINS[p.id]; });
+      (s.arch || []).forEach(id => { PF_SAVED_ARCH.add(id); const p = findPost(id); if (p) p.archived = true; });
+    }
 
     /* ===== PORTFOLIO-001 — owner-only portfolio (spec 14_PORTFOLIO_MODULE): dashboard + asset list + sold history ===== */
     /* eligible = status Sale/Show/Hide + own asset (not consignment); sold/deleted/hidden-perm/consignment excluded */
@@ -16979,8 +16975,6 @@
         followers: o.followers || (120 + h % 4800).toLocaleString("en-US"),
         following: o.following || String(120 + h % 800),
         posts: o.posts || "",
-        note: o.note || "",
-        sleep: !!o.sleep,
         followedBy: o.followedBy ? [].concat(o.followedBy)
           : (() => { const s = followedSellers().find(x => x !== name); return s ? [s] : []; })(),
         fbyMore: o.fbyMore || "",
@@ -17165,6 +17159,8 @@
           specs: [], specGroups: [], chips: [], price: null, type: "showcase",
           pfkind: kind,
         };
+        if (PF_SAVED_PINS[p.id]) p.pins = PF_SAVED_PINS[p.id];
+        if (PF_SAVED_ARCH.has(p.id)) p.archived = true;
         /* sale-kind gfx posts carry real-feeling specs → Tap for details / Ask / full detail all work */
         if (kind === "sale") Object.assign(p, PF_GFX_SALE[i % PF_GFX_SALE.length], { type: "sale" });
         /* sold-kind gfx posts carry specs + a sale-record mock → View sale record shows filled fields */
@@ -17204,6 +17200,7 @@
       const top = (scr._subStack || []).at(-1) || "";
       if (top.startsWith("profile:")) { scr._subSwap = true; renderSub(scr); scr._subSwap = false; } /* grid behind the viewer reorders in place */
       pinFeedback(scr, on ? "Pinning..." : "Unpinning...", on ? "Your post has been pinned" : "Your post has been unpinned");
+      pfSave();
     }
     function userClips(name) { return userPosts(name).filter(p => clipState(p).has); }
     function userTagged(name) { return POSTS.filter(p => p.seller !== name && !p.archived && !p.ni && !p.muted && !p.blocked && ((p.likedBy && p.likedBy.name === name) || (p.commentPreview && p.commentPreview.name === name))); }
@@ -17216,6 +17213,7 @@
       if (p) setFollowing(scr, name, on);
       else if (on) PF_EXTRA_FOL.add(name);
       else { PF_EXTRA_FOL.delete(name); PF_EXTRA_FAV.delete(name); PF_EXTRA_MUT.delete(name); }
+      pfSave();
     }
     function pfIsFav(name) {
       const p = POSTS.find(x => x.seller === name);
@@ -17225,6 +17223,7 @@
       const p = POSTS.find(x => x.seller === name);
       if (p) setFavorite(scr, name, on);
       else if (on) PF_EXTRA_FAV.add(name); else PF_EXTRA_FAV.delete(name);
+      pfSave();
     }
     function pfIsMuted(name) {
       const p = POSTS.find(x => x.seller === name);
@@ -17234,6 +17233,7 @@
       const p = POSTS.find(x => x.seller === name);
       if (p) setMuted(scr, name, on);
       else if (on) PF_EXTRA_MUT.add(name); else PF_EXTRA_MUT.delete(name);
+      pfSave();
     }
     /* PROFILE-005 — block is account-level (IG): unfollow both ways, they drop out
        of your followers, their posts leave feed/search — but their profile page
@@ -17258,6 +17258,7 @@
       POSTS.forEach(p => { if (p.seller === name) p.blocked = on; });
       const fs = scr ? scr.querySelector(".feed-scroll") : null;
       if (fs) fs.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
+      pfSave();
     }
     const PF_VBADGE = `<svg class="ab-vb" width="16" height="16" viewBox="0 0 24 24"><path fill="#0095f6" d="M12 2l2.53 2.2 3.35-.29.75 3.27 2.88 1.73-1.31 3.09L21.51 15.1l-2.88 1.72-.75 3.27-3.35-.28L12 22l-2.53-2.19-3.35.28-.75-3.27-2.88-1.72 1.31-3.1L2.49 8.92l2.88-1.73.75-3.27 3.35.3z"/><path fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" d="m8.4 12.4 2.4 2.4 4.8-5.1"/></svg>`;
     /* IG block confirm — bottom sheet: centered avatar + impact rows + two actions (single action if fromChat) */
@@ -17304,7 +17305,7 @@
       scr.querySelector(".pf-rhint")?.remove();
       const el = document.createElement("div");
       el.className = "pf-rhint";
-      el.innerHTML = `${I.userMinus(18)}<span>You can restrict them to hide their comments and messages without blocking them completely.</span><span class="pf-rhint-lm">Learn more</span>`;
+      el.innerHTML = `${I.userMinus(18)}<span>You can restrict them to hide their comments and messages without blocking them completely.</span>`;
       scr.appendChild(el);
       clearTimeout(scr._rhintT);
       scr._rhintT = setTimeout(() => el.remove(), 6000);
@@ -17368,8 +17369,10 @@
     <span class="nav-item${active === "profile" && own ? " active" : ""}" data-navgo="profile">${I.tabProfile()}<span class="nav-label">${isTh ? "โปรไฟล์" : "Profile"}</span></span>
   </nav>`;
     }
+    /* SHELL-034 — pushed viewer profiles are deep pages: no bottom nav;
+       only the own-profile root tab carries it */
     function pfNavHTML(own) {
-      return botNavHTML(own ? "profile" : "feed", own);
+      return own ? botNavHTML("profile", true) : "";
     }
     function pfAvovHTML(u, own, isF) {
       const act = (a, ic, lb) => `<button class="pf-avov-act" data-avact="${a}" data-u="${esc(u.user)}"><span class="pf-avov-ic">${ic}</span><span>${lb}</span></button>`;
@@ -17379,7 +17382,6 @@
       ${!own ? act("foll", isF ? I.personCheck(22) : I.personAdd(22), isF ? "Following" : "Follow") : ""}
       ${act("share", I.navUser(22), "Share")}
       ${act("copy", I.link(20), "Copy link")}
-      ${act("qr", I.qr(22), "QR code")}
     </div>
   </div>`;
     }
@@ -17433,7 +17435,6 @@
     </div>
     <div class="pf-top">
       <div class="pf-avcol">
-        ${u.note ? `<span class="pf-note">${esc(u.note)}<i></i></span>` : ""}
         <span class="${u.ring ? "avatar-ring " : ""}pf-av" data-pfav><img src="${u.avatar}" alt=""></span>
       </div>
       <div class="pf-idcol">
@@ -17445,7 +17446,6 @@
         </div>
       </div>
     </div>
-    ${u.sleep ? `<div class="pf-sleep">${I.moon(14)}<span>${isTh ? "อยู่ในโหมดสลีป" : "In sleep mode"}</span></div>` : ""}
     <div class="pf-bio">
       ${u.cat ? `<div class="pf-cat">${esc(u.cat)}</div>` : ""}
       <div class="pf-biot">${esc(u.bio)}</div>
@@ -17920,7 +17920,7 @@
       }
       if (name === "notif_settings") {
         const isTh = state.lang === "th";
-        state.notif = state.notif || { likes: true, comments: true, follows: true, walerts: true };
+        state.notif = state.notif || (() => { try { return JSON.parse(localStorage.getItem("fo_notif") || "null"); } catch { return null; } })() || { likes: true, comments: true, follows: true, walerts: true };
         const nRow = (k, title, desc) => `<button class="sub-row sub-row-lg" data-notif-tgl="${k}"><span class="lg-b"><span class="lg-t">${title}</span><span class="lg-d">${desc}</span></span><span class="tg-sw${state.notif[k] ? " on" : ""}"></span></button>`;
         return head(isTh ? "การตั้งค่าการแจ้งเตือน" : "Notification settings") + `<div class="sub-scroll">
       <div class="fav-desc">${isTh ? "เลือกประเภทการแจ้งเตือนที่คุณต้องการรับบนอุปกรณ์นี้" : "Choose what notifications you receive on this device."}</div>
@@ -18062,6 +18062,14 @@
       }
       /* CHAT — Chat Center, item chats, chat room, chat settings */
       if (name === "alerts") return alertsHTML();
+      /* ALERTS — unavailable state contract (00_NAV §10): opened when a row's post target no longer exists */
+      if (name === "al_unavail") {
+        const isTh = state.lang === "th";
+        return head(isTh ? "ไม่พร้อมใช้งาน" : "Unavailable") + `<div class="sub-scroll">
+      ${chEmptyHTML(isTh ? "รายการนี้ไม่พร้อมใช้งานแล้ว" : "This post is no longer available", isTh ? "โพสต์นี้อาจถูกลบหรือไม่สามารถดูได้แล้ว" : "The post may have been deleted or is no longer visible.")}
+      <div style="padding:8px 16px"><button type="button" class="del-btn-primary sub-back" style="width:100%">${isTh ? "กลับ" : "Go back"}</button></div>
+    </div>`;
+      }
       if (name === "board") return boardHomeHTML();
       if (name === "boardsearch") return boardSearchHTML();
       if (name === "boardall") return boardAllHTML();
@@ -18239,8 +18247,11 @@
       return botNavHTML("chat");
     }
 
-    /* ===== ALERTS — IG-style activity list: Watch Alert / Like / Comment / Follow (mock, memory only) ===== */
+    /* ===== ALERTS — IG-style activity list: Watch Alert / Like / Comment / Follow (mock data, read/dismiss persisted) ===== */
     let ALERTS = null;
+    /* persisted read/dismiss state — simulates server-backed persistence (spec 09: read/dismiss persist across restart & session switch) */
+    const alLoadState = () => { try { const s = JSON.parse(localStorage.getItem("fo_alstate") || "null"); return s && Array.isArray(s.r) && Array.isArray(s.x) ? s : { r: [], x: [] }; } catch { return { r: [], x: [] }; } };
+    const alSaveState = s => { try { localStorage.setItem("fo_alstate", JSON.stringify(s)); } catch { } };
     function alInit() {
       if (ALERTS) return ALERTS;
       if (state.session !== "member") { ALERTS = []; return ALERTS; } /* GUEST-001 — guests & fresh accounts have no alerts */
@@ -18268,6 +18279,9 @@
         { type: "follow", users: ["neng_mua"], ago: "2w", grp: "Earlier", unread: false },
         { type: "like", users: ["bamzilla"], more: 0, ago: "3w", grp: "Earlier", unread: false, ...mine(5) },
       ].map((a, i) => ({ id: "al" + i, ...a }));
+      const st = alLoadState();
+      ALERTS = ALERTS.filter(a => !st.x.includes(a.id));
+      ALERTS.forEach(a => { if (st.r.includes(a.id)) a.unread = false; });
       return ALERTS;
     }
     const alUnread = () => alInit().filter(a => a.unread).length;
@@ -18351,13 +18365,15 @@
       if (!scr) return false;
       if (e.target.closest("[data-alreadall]")) {
         alInit().forEach(a => { a.unread = false; });
+        const st = alLoadState(); st.r = [...new Set([...st.r, ...alInit().map(a => a.id)])]; alSaveState(st);
         alBadgeSync(); alRerender(scr);
         return true;
       }
       const dx = e.target.closest("[data-aldismiss]");
       if (dx) {
-        const i = alInit().findIndex(x => x.id === dx.dataset.aldismiss);
+        const id = dx.dataset.aldismiss, i = alInit().findIndex(x => x.id === id);
         if (i >= 0) alInit().splice(i, 1);
+        const st = alLoadState(); if (!st.x.includes(id)) { st.x.push(id); alSaveState(st); }
         alBadgeSync(); alRerender(scr);
         return true;
       }
@@ -18365,16 +18381,16 @@
       if (fb) {
         const u = fb.dataset.alfollow;
         pfSetFollow(scr, u, !pfIsFollowed(u));
-        const on = pfIsFollowed(u);
+        const on = pfIsFollowed(u), isTh = state.lang === "th";
         fb.classList.toggle("on", on);
-        fb.textContent = on ? "Following" : "Follow back";
+        fb.textContent = on ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตามกลับ" : "Follow back");
         return true;
       }
       const row = e.target.closest(".al-row");
       if (!row) return false;
       const a = alInit().find(x => x.id === row.dataset.alid);
       if (!a) return true;
-      if (a.unread) { a.unread = false; row.classList.remove("unread"); alBadgeSync(); }
+      if (a.unread) { a.unread = false; const st = alLoadState(); if (!st.r.includes(a.id)) { st.r.push(a.id); alSaveState(st); } row.classList.remove("unread"); alBadgeSync(); }
       if (a.type === "follow") rpPush(scr, "profile:" + a.users[0]);
       else if (a.type === "watch") {
         const p = findPost(a.pid);
@@ -18384,14 +18400,14 @@
           pv.querySelector(".pfp-tt")?.classList.add("solo");
           pv.querySelector(".pfp-follow")?.remove();
           if (!p.following) pv.querySelector(".post-head .more")?.insertAdjacentHTML("beforebegin", `<button class="follow-btn">Follow</button>`);
-        }
+        } else pushSub(scr, "al_unavail"); /* contract: unavailable state parity with like/comment (resolved FSP-030) */
       }
       else if (a.type === "like" || a.type === "comment") {
         const me = CP_ME.name, post = pfTabPosts(me, "all").find(p => p.id === a.pid);
         if (post) {
           openPostViewer(scr, [post], a.pid, 0, false, "Post", me);
           scr.querySelector(".page-pv .pfp-tt")?.classList.add("solo");
-        } else scrToast(scr, "This post is no longer available");
+        } else pushSub(scr, "al_unavail");
       } else scrToast(scr, "Security details aren't in this prototype yet");
       if (alUnread() === 0) { const b = scr.querySelector("[data-alreadall]"); if (b) b.remove(); }
       return true;
@@ -18802,7 +18818,7 @@
       return false;
     }
     function chThreadMatch(t, q) {
-      return !q || (t.user + " " + t.item.cap + " " + t.msgs.map(m => m.t).join(" ")).toLowerCase().includes(q);
+      return !q || (t.user + " " + (t.item ? t.item.cap : "") + " " + t.msgs.map(m => m.t).join(" ")).toLowerCase().includes(q);
     }
     function chRowHTML(t) {
       const last = t.msgs[t.msgs.length - 1], un = t.unread > 0;
@@ -18826,7 +18842,7 @@
           <b class="ch-name">${esc(t.user)}</b>
           ${isBlk ? `<span class="ch-blk-badge">Blocked</span>` : (t.muted ? `<span class="ch-mute-ico" title="ปิดแจ้งเตือน">${I.chMute(13)}</span>` : "")}
         </span>
-        <span class="ch-prev-line"><span class="ch-prev">${last.f === "me" ? "You: " : ""}${esc(last.t)}</span></span>
+        <span class="ch-prev-line"><span class="ch-prev">${last ? (last.f === "me" ? "You: " : "") + esc(last.t || "") : ""}</span></span>
       </span>
       <span class="ch-meta-col">
         <span class="ch-time">${chTimeLbl(t)}</span>
@@ -18840,8 +18856,9 @@
   </div>`;
     }
     function chItemGroups() {
-      const g = new Map();
-      chatInit().threads.forEach(t => {
+      const g = new Map(), C = chatInit();
+      (C.draft && C.draft.item ? C.threads.concat(C.draft) : C.threads).forEach(t => {
+        if (!t.item) return; /* DM rooms have no listing context — Chats view only */
         if (!g.has(t.item.id)) g.set(t.item.id, { item: t.item, threads: [], unread: 0, mine: t.item.owner === CP_ME.name });
         const x = g.get(t.item.id);
         x.threads.push(t);
@@ -18995,17 +19012,8 @@
       const day0 = t.msgs[0] ? t.msgs[0].day : "Today";
       const out = [`<div class="ch-day">${esc(day0)}</div>`];
 
-      const postCardHTML = it ? `<button class="ch-post-card" data-chgo="post" data-pid="${esc(it.pid || it.id || "")}" title="View listing">
-      <img class="ch-post-card-img" src="${it.photo}" alt="">
-      <div class="ch-post-card-top-scrim">
-        <img class="ch-post-card-av" src="${profileOf(it.owner || t.user).avatar}" alt="">
-        <span class="ch-post-card-user">${esc(it.owner || t.user)}</span>
-      </div>
-      <div class="ch-post-card-bot-scrim">
-        <div class="ch-post-card-title">${esc(it.cap)}</div>
-        ${it.price ? `<div class="ch-post-card-price">${esc(it.price)}</div>` : ""}
-      </div>
-    </button>` : "";
+      const postCardHTML = ""; /* FO-TEST-12 lock: item cards live in the message flow only
+         (reply-story style — attached at ask/share time), never pinned to the room */
 
       /* FEED-041 — a shared post lands in the room as a tappable post card message */
       const msgPostCard = pid => {
@@ -19022,10 +19030,6 @@
       </div>
     </button>` : "";
       };
-
-      if (t.msgs.length === 0 && postCardHTML) {
-        out.push(`<div class="ch-m me"><div class="ch-m-col">${postCardHTML}</div></div>`);
-      }
 
       const q = (t.searching && t.roomQuery ? t.roomQuery.trim().toLowerCase() : "");
       const formatText = (text) => {
@@ -19417,25 +19421,45 @@
       const ni = scr.querySelector(".ch-input");
       if (ni) ni.focus();
     }
+    /* FO-TEST-12 lock — IG-style DM: ONE user-to-user room per account.
+       Ask on a listing attaches the item card as a message at ask time only
+       (reply-story model); profile Chat opens the same room with no card.
+       t.item = the most recently asked item → drives the Items view grouping */
+    function chRoomFor(C, user) {
+      let t = C.threads.find(x => x.user === user);
+      if (!t && C.draft && C.draft.user === user) t = C.draft;
+      return t || null;
+    }
+    function chOpenRoom(scr, t) {
+      t.hidden = false;
+      scr.classList.remove("pv-open", "detail-open", "comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
+      openSub(scr, "chatroom:" + t.id);
+    }
+    function pfOpenChat(scr, user) {
+      const C = chatInit();
+      if (user === CP_ME.name) return;
+      if (pfIsBlocked(user)) { scrToast(scr, "Cannot message a blocked account"); return; }
+      let t = chRoomFor(C, user);
+      if (!t) {
+        t = { id: "t" + Date.now(), user, unread: 0, draft: "", pinned: false, muted: false, hidden: false, item: null, msgs: [] };
+        C.draft = t;
+      }
+      chOpenRoom(scr, t);
+    }
     function chatQuickAsk(scr, post) {
       const C = chatInit();
       if (post.seller === CP_ME.name) { scrToast(scr, "This is your own listing"); return; }
       if (pfIsBlocked(post.seller)) { scrToast(scr, "Cannot message a blocked account"); return; }
-      let t = C.threads.find(x => x.user === post.seller && x.item.id === post.id);
+      let t = chRoomFor(C, post.seller);
       if (!t) {
-        if (C.draft && C.draft.user === post.seller && C.draft.item.id === post.id) t = C.draft;
-        else {
-          t = {
-            id: "t" + Date.now(), user: post.seller, unread: 0, draft: C.cfg.quick, msgs: [],
-            item: { id: post.id, cap: post.caption, price: post.price || "", photo: post.photos[0], owner: post.seller, pid: post.id }
-          };
-          C.draft = t;
-        }
-      } else {
-        t.hidden = false;
+        t = { id: "t" + Date.now(), user: post.seller, unread: 0, draft: C.cfg.quick, pinned: false, muted: false, hidden: false, item: null, msgs: [] };
+        C.draft = t;
       }
-      scr.classList.remove("pv-open", "detail-open", "comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
-      openSub(scr, "chatroom:" + t.id);
+      /* the asked listing lands in the room once, as a card message (reply-story style) */
+      t.item = { id: post.id, cap: post.caption, price: post.price || "", photo: post.photos[0], owner: post.seller, pid: post.id };
+      if (!t.msgs.some(m => m.pid === post.id))
+        t.msgs.push({ f: "me", pid: post.id, t: state.lang === "th" ? "ถามเกี่ยวกับลิสติ้งนี้" : "Asked about this listing", at: "09:41", day: "Today", read: false });
+      chOpenRoom(scr, t);
     }
     /* FEED-041 — share sheet "send to friend" drops a post-card message into that
        friend's room and bumps the thread to the top of Chat Center (IG Direct share) */
@@ -19446,7 +19470,7 @@
       if (!t) {
         t = {
           id: "t" + Date.now(), user: friend, unread: 0, draft: "", pinned: false, muted: false, hidden: false,
-          item: { id: p.id, cap: p.caption, price: p.price || "", photo: p.photos[0], owner: p.seller, pid: p.id },
+          item: null,
           msgs: []
         };
         C.threads.unshift(t);
@@ -21415,6 +21439,7 @@
         pfSetBlocked(scr, scr.dataset.unblockU, false);
         scrToast(scr, "Unblocked");
         if (scr.classList.contains("sub-open")) renderSub(scr);
+        pfRestrictHint(scr);
         return;
       }
       const dlgRmf = e.target.closest(".dlg-rmf-go");
@@ -21422,6 +21447,7 @@
         const scr = dlgRmf.closest(".screen");
         scr.classList.remove("dialog-open");
         PF_REMOVED_FOL.add(scr.dataset.rmUser);
+        pfSave();
         renderSub(scr);
         return;
       }
@@ -21457,8 +21483,9 @@
         const i = POSTS.findIndex(x => x.id === pid);
         scr.classList.remove("dialog-open");
         if (i > -1 || PF_GFX_REG[pid]) {
-          if (i > -1) POSTS.splice(i, 1);
+          if (i > -1) { POSTS.splice(i, 1); PF_POSTS_DEL.add(pid); }
           if (PF_GFX_REG[pid]) { delete PF_GFX_REG[pid]; PF_GFX_DEL.add(pid); }
+          pfSave();
           scr.querySelectorAll(`.post[data-pid="${pid}"], .svf-post[data-pid="${pid}"], .pf-tile[data-pid="${pid}"]`).forEach(el => el.remove());
           if (scr.dataset.detailPid === pid) scr.classList.remove("detail-open");
           scrToast(scr, "Post deleted");
@@ -21622,7 +21649,7 @@
         scr._delReason = "";
         scr._delFeedback = "";
         scr.classList.remove("sub-open");
-        if (state.session === "new") localStorage.removeItem("fo_account"); /* AUTH-003 — deleting the account for real drops the persisted credential; ordinary logout keeps it */
+        if (state.session === "new") { localStorage.removeItem("fo_account"); localStorage.removeItem("fo_pfstate:new"); } /* AUTH-003 — deleting the account for real drops the persisted credential + profile state; ordinary logout keeps it */
         setSession("guest"); /* AUTH-002 — a deactivated account falls back to guest browsing on the feed */
         scr.querySelector(".feed-scroll")?.scrollTo({ top: 0 });
         const isTh = state.lang === "th";
@@ -21730,6 +21757,7 @@
         const k = notifTgl.dataset.notifTgl;
         state.notif = state.notif || { likes: true, comments: true, follows: true, walerts: true };
         state.notif[k] = !state.notif[k];
+        try { localStorage.setItem("fo_notif", JSON.stringify(state.notif)); } catch { }
         notifTgl.querySelector(".tg-sw").classList.toggle("on", state.notif[k]);
         return;
       }
@@ -22247,19 +22275,28 @@
         else if (e.target.closest(".pf-qr-dl")) { pfDownloadQr(pfQrEl); scrToast(scr, "QR code saved"); }
         return;
       }
+      /* FO-TEST-12 lock — profile/follower-row Chat = real IG-style DM
+         (one room per account, no listing required) */
       const pfMsg = e.target.closest(".pf-msg");
-      if (pfMsg) { scrToast(pfMsg.closest(".screen"), "Open a listing to chat with this seller"); return; }
-      const pfAddP = e.target.closest(".pf-addp, .pf-addchip, .pf-avadd, .pf-note, .pf-sleep");
-      if (pfAddP) { scrToast(pfAddP.closest(".screen"), "Not in this prototype yet"); return; }
+      if (pfMsg) {
+        const scr = pfMsg.closest(".screen");
+        const row = pfMsg.closest("[data-pf-user]");
+        let u = row ? row.dataset.pfUser : "";
+        if (!u) {
+          const top = (scr._subStack || []).at(-1) || "";
+          if (top.startsWith("profile:")) u = top.slice(8).split(":")[0];
+        }
+        if (u) pfOpenChat(scr, u);
+        return;
+      }
       const pfMenu = e.target.closest(".pf-menu");
       if (pfMenu) { pushSub(pfMenu.closest(".screen"), "settings"); return; }
-      const pfUname = e.target.closest(".pf-uname");
-      if (pfUname) { scrToast(pfUname.closest(".screen"), `Signed in as ${CP_ME.name}`); return; }
       const pfMore = e.target.closest(".pf-more");
       if (pfMore) {
         const scr = pfMore.closest(".screen");
         const top = (scr._subStack || []).at(-1) || "";
-        const uname = top.startsWith("profile:") ? top.slice(8) : "";
+        const uname = top.startsWith("profile:") ? top.slice(8).split(":")[0] : "";
+        scr.dataset.shUser = uname;
         /* PROFILE-005 — IG: one card, all rows separated by hairlines + separate
            Cancel; Restrict/Hide story/QR stay cut */
         openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
@@ -22277,7 +22314,7 @@
       if (pfShCopy) {
         const scr = pfShCopy.closest(".screen");
         scr.classList.remove("pm-open");
-        scrToast(scr, "Profile link copied");
+        pfCopyText(pfProfileLink(scr.dataset.shUser || CP_ME.name)).then(() => scrToast(scr, "Link copied"));
         return;
       }
       const pfShShare = e.target.closest(".pf-sh-share");
@@ -22524,15 +22561,7 @@
         if (bad) { bad.focus(); return; }
         const oldName = CP_ME.name;
         if (uname !== oldName) { /* rename the real username — move every reference that keys on it */
-          PROFILES[uname] = PROFILES[oldName] || {};
-          delete PROFILES[oldName];
-          POSTS.forEach(p => { if (p.seller === oldName) p.seller = uname; });
-          Object.values(COMMENTS).forEach(cs => cs.forEach(c => { if (c.name === oldName) c.name = uname; (c.replies || []).forEach(r => { if (r.name === oldName) r.name = uname; }); }));
-          for (const pr of Object.values(PROFILES)) if (pr.followedBy) pr.followedBy = pr.followedBy.map(n => n === oldName ? uname : n);
-          for (const s of [PF_BLOCKED, PF_REMOVED_FOL, PF_EXTRA_FOL, PF_EXTRA_FAV, PF_EXTRA_MUT]) if (s.has(oldName)) { s.delete(oldName); s.add(uname); }
-          if (NEW_USER_KEY === oldName) NEW_USER_KEY = uname;
-          CP_ME.name = uname;
-          (scr._subStack || []).forEach((k, i, a) => { if (k === "profile:" + oldName) a[i] = "profile:" + uname; });
+          pfRenameUser(scr, oldName, uname);
           if (state.session === "new") {
             const nu = JSON.parse(localStorage.getItem("fo_newuser") || "{}");
             nu.user = uname;
@@ -22544,12 +22573,41 @@
         o.disp = uname; /* ชื่อที่แสดง = ชื่อผู้ใช้ เดียวกัน */
         o.bio = bio;
         o.link = link;
+        pfSave();
         subBack(scr);
         scrToast(scr, "Profile updated");
         return;
       }
+      /* FO-TEST-12 lock — Edit picture is real: OS photo picker → new avatar,
+         saved server-side (mirrored into fo_pfstate) */
       const pePic = e.target.closest(".pe-pic");
-      if (pePic) { scrToast(pePic.closest(".screen"), "Photo picker isn't in this prototype yet"); return; }
+      if (pePic) {
+        const scr = pePic.closest(".screen");
+        let inp = scr.querySelector("input.pe-pic-file");
+        if (!inp) {
+          inp = document.createElement("input");
+          inp.type = "file"; inp.accept = "image/*"; inp.className = "pe-pic-file"; inp.style.display = "none";
+          inp.onchange = () => {
+            const f = inp.files && inp.files[0]; inp.value = "";
+            if (!f) return;
+            const rd = new FileReader();
+            rd.onload = () => {
+              const url = rd.result, me = CP_ME.name;
+              PROFILES[me] = PROFILES[me] || {};
+              PROFILES[me].avatar = url;
+              CP_ME.avatar = url;
+              POSTS.forEach(p => { if (p.seller === me) p.avatar = url; });
+              pfSave();
+              renderSub(scr);
+              scrToast(scr, "Profile picture updated");
+            };
+            rd.readAsDataURL(f);
+          };
+          scr.appendChild(inp);
+        }
+        inp.click();
+        return;
+      }
       const pfUserGo = e.target.closest("[data-pf-user]");
       if (pfUserGo && !e.target.closest(".mact, .pfl-ic, .pfl-pop, .pf-flw, .sc-follow, .c-like, .lk-follow")) {
         const scr = pfUserGo.closest(".screen");
@@ -22740,19 +22798,32 @@
         scr.classList.remove("wa-open");
         syncModelFlags();
         refreshMfBtns(scr);
+        waSave();
         if (scr.classList.contains("sub-open")) renderSub(scr);
         return;
       }
       const waDel = e.target.closest(".wa-del");
       if (waDel) {
         const scr = waDel.closest(".screen");
+        const isTh = state.lang === "th";
+        openDlg(scr, `
+    <div class="dlg-q">${isTh ? "ลบการแจ้งเตือนนี้หรือไม่?" : "Delete watch alert?"}</div>
+    <div class="dlg-desc">${isTh ? "การแจ้งเตือนนี้จะถูกลบออกถาวร" : "This watch alert will be permanently deleted."}</div>
+    <button class="dlg-btn danger dlg-wadel-go">${isTh ? "ลบ" : "Delete"}</button>
+    <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`);
+        return;
+      }
+      const waDelGo = e.target.closest(".dlg-wadel-go");
+      if (waDelGo) {
+        const scr = waDelGo.closest(".screen");
         const d = scr._waDraft;
         const i = WATCH_ALERTS.findIndex(x => x.id === (d && d.id));
         if (i > -1) WATCH_ALERTS.splice(i, 1);
         scr._waDraft = null;
-        scr.classList.remove("wa-open");
+        scr.classList.remove("wa-open", "dialog-open");
         syncModelFlags();
         refreshMfBtns(scr);
+        waSave();
         if (scr.classList.contains("sub-open")) renderSub(scr);
         scrToast(scr, "Watch alert removed");
         return;
@@ -22765,6 +22836,7 @@
           a.on = !a.on;
           syncModelFlags();
           refreshMfBtns(scr);
+          waSave();
           renderSub(scr);
           scrToast(scr, a.on ? "Watch alert on" : "Watch alert paused");
         }
@@ -23857,7 +23929,8 @@
     function clearUserData() {
       COLLECTIONS.length = 0; WISHLISTS.length = 0;
       POSTS.forEach(p => { p.liked = false; p.saved = false; p.savedCols = []; p.wishlisted = false; p.wlCols = []; p.wlAt = 0; p.wlColAt = 0; p.following = false; p.favorite = false; p.muted = false; p.archived = false; p.archivedAt = 0; p.ni = false; p.blocked = false; p.pins = null; });
-      PF_EXTRA_FOL.clear(); PF_EXTRA_FAV.clear(); PF_EXTRA_MUT.clear(); PF_REMOVED_FOL.clear(); PF_BLOCKED.clear(); PF_GFX_DEL.clear();
+      PF_EXTRA_FOL.clear(); PF_EXTRA_FAV.clear(); PF_EXTRA_MUT.clear(); PF_REMOVED_FOL.clear(); PF_BLOCKED.clear(); PF_GFX_DEL.clear(); PF_POSTS_DEL.clear();
+      for (const k in PF_SAVED_PINS) delete PF_SAVED_PINS[k]; PF_SAVED_ARCH.clear();
       for (const k in PF_GFX_REG) delete PF_GFX_REG[k];
       WATCH_ALERTS.length = 0;
     }
@@ -23868,6 +23941,8 @@
         const s = POSTS_SNAP.get(p.id); if (!s) return;
         POST_FLAG_KEYS.forEach(k => { if (s[k] === undefined) delete p[k]; else p[k] = s[k]; });
       });
+      waLoad(); /* watch alerts persist server-side in the real app — member keeps them across sessions */
+      pfLoad(); /* profile relationships + own-profile edits persist server-side too (FO-TEST-12) */
     }
     function applySessionData() {
       snapPosts();
@@ -23887,12 +23962,14 @@
           /* PROFILE-015 — social sign-up photo becomes the account avatar; disp = ชื่อผู้ใช้ (ฟิลด์เดียวกัน) */
           CP_ME.name = uname; CP_ME.avatar = nu.photo || "./assets/user-avatars/default-avatar.jpg";
           PROFILES[uname] = { disp: uname, avatar: nu.photo || "", bio: "", followers: "0", following: "0", posts: "0", grid: [], followedBy: [] };
+          pfLoad(); /* a returning new-member account keeps its own persisted profile state */
         } else {
           NEW_USER_KEY = null;
           CP_ME.name = "__guest__"; CP_ME.avatar = "./assets/user-avatars/default-avatar.jpg";
         }
         state.feedTab = "all";
       }
+      syncModelFlags(); /* restored/cleared alerts re-drive the detail bells */
       /* refresh visible surfaces so badges/feed/follow states match the new session */
       const scr = document.querySelector("#stage .screen");
       if (scr) {
@@ -24006,7 +24083,7 @@
     });
     document.getElementById("obReplay").addEventListener("click", () => {
       localStorage.removeItem("fo_onboarded"); localStorage.removeItem("fo_member_hide");
-      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); localStorage.removeItem("fo_srch_recents"); setSession("member");
+      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); localStorage.removeItem("fo_srch_recents"); localStorage.removeItem("fo_alstate"); localStorage.removeItem("fo_notif"); localStorage.removeItem("fo_walerts"); setSession("member");
       document.querySelectorAll(".ob-coach").forEach(c => c.remove());
       Object.assign(OB, { on: true, step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", opt: { analytics: false, personalized: false }, f: { name: "", email: "", pw: "", user: "" }, errs: {}, tries: 0, account: null, resend: 30, os: false, sent: false });
       state.feedTab = "all"; obLast = null;

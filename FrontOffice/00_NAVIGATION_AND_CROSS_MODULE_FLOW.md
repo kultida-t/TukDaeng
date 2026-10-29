@@ -234,10 +234,10 @@ Alerts tab (`alerts` sub page) — แตะ row แล้ว mark read + sync b
 
 | Notification Type | Destination | Notes |
 | --- | --- | --- |
-| Like | Post Viewer — โพสต์ของตัวเอง 1 ใบ (header `Post` / username) | โพสต์หายแล้ว → toast `This post is no longer available` (contract: unavailable state) |
-| Comment | Post Viewer — โพสต์ของตัวเอง 1 ใบ | เหมือน Like — comment ไม่ focus/deep-scroll ใน V1 |
+| Like | Post Viewer — โพสต์ของตัวเอง 1 ใบ (header `Post` / username) | โพสต์หายแล้ว → unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว` + `Go back` (§10 — ไม่ใช่ toast) |
+| Comment | Post Viewer — โพสต์ของตัวเอง 1 ใบ | เหมือน Like — comment ไม่ focus/deep-scroll ใน V1; โพสต์หาย → unavailable state เดียวกัน |
 | Follow | Public Profile — `rpPush("profile:{user}")` | blocked/unavailable → fallback ตาม §10 |
-| Watch Alert | Post Viewer — โพสต์ที่ match โดยตรง | ไม่มี Result List คั่นใน V1 |
+| Watch Alert | Post Viewer — โพสต์ที่ match โดยตรง | ไม่มี Result List คั่นใน V1; โพสต์หาย → unavailable state parity กับ like/comment (resolved FSP-030) |
 | System | placeholder — ไม่มี destination ใน V1 | security alert type (`A new device just logged in...`); prototype tap = toast `Security details aren't in this prototype yet`; destination contract อยู่ 09_NOTIFICATION |
 
 Follow row เท่านั้นที่มี dismiss (X) + `Follow back` button — รายละเอียด UI อยู่ 09_NOTIFICATION; Mark all as read อยู่บน section header แรก
