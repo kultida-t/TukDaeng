@@ -21,11 +21,11 @@ SETUP-06,Setup,-,"ข้อมูลเทสที่ต้องเตรี�
 • บัญชี seller SA (มี sale listing, member ยังไม่ follow): ____________________
 • บัญชี seller SB (member follow อยู่แล้ว): ____________________
 • บัญชีที่สองสำหรับสร้างโพสต์ตัวอย่าง (ถ้าข้อมูลขาด): ____________________
-• เครื่องทดสอบ: รุ่น + OS version = ____________________ (จดลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน)",จดข้อมูลครบก่อนเริ่มเทส — เคสที่ต้องล็อกอิน/ข้อมูลเฉพาะจะทำไม่ได้ถ้าไม่มีข้อมูลชุดนี้,-,High,,,
+• เครื่องทดสอบ: รุ่น + OS version = ____________________ (บันทึกลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน)",ข้อมูลครบก่อนเริ่มเทส — เคสที่ต้องล็อกอิน/ข้อมูลเฉพาะจะทำไม่ได้ถ้าไม่มีข้อมูลชุดนี้,-,High,,,
 SETUP-07,Setup,-,"Member Sheet ""Join TukDaeng"" + เส้นทาง Settings:
 • Sheet เด้งเวลา guest แตะ action ที่ต้องล็อกอิน — ปิดโดยแตะบริเวณมืด (scrim) หรือปุ่ม ""Skip for now""
 • ภาษา/ธีม: Profile tab → ไอคอน ≡ ขวาบน → ""Language"" / ""Theme"" (สลับในแอปเท่านั้น)",รู้วิธีปิด sheet และสลับภาษา/ธีมแล้วทำเคสต่อได้,-,High,,,
-SETUP-08,Setup,-,"เลือก ""ข้อมูลอ้างอิง"" จากข้อมูลจริง (ค้น/เลื่อนดูบนแอป แล้วจดลง Note — ทุกเคสอ้างชุดนี้แทน mock):
+SETUP-08,Setup,-,"เลือก ""ข้อมูลอ้างอิง"" จากข้อมูลจริง (ค้น/เลื่อนดูบนแอป แล้ว):
 • BX = แบรนด์ที่มี sale listing ≥2 ใบ (รุ่นต่างกัน)
 • BY = แบรนด์อื่นที่มี sale listing ≥1 ใบ
 • LL = sale listing ที่ spec Strap เป็นกลุ่มหนัง (เช่น Alligator leather)
@@ -33,7 +33,7 @@ SETUP-08,Setup,-,"เลือก ""ข้อมูลอ้างอิง"" �
 • HZ = hashtag ที่โผล่บนโพสต์ ≥2 ใบ
 • KW-SELL = keyword ที่ตรงชื่อ seller ≥1 ราย (เช่น ""watch"")
 • KW-NONE = คำที่ไม่ match อะไรเลย (เช่น ""zzzzz"")
-ถ้าหาข้อมูลตามบทบาทไม่ได้ → สร้างจากบัญชีที่สองผ่าน composer หรือขอ test data; สร้างไม่ได้จริง ๆ mark BLOCK เคสที่เกี่ยว",มีข้อมูลอ้างอิงครบ (หรือเท่าที่หาได้ + จดตัวที่ขาด),-,High,,,
+ถ้าหาข้อมูลตามบทบาทไม่ได้ → สร้างจากบัญชีที่สองผ่าน composer หรือขอ test data; สร้างไม่ได้จริง ๆ mark BLOCK เคสที่เกี่ยว",มีข้อมูลอ้างอิงครบ (หรือเท่าที่หาได้ +),-,High,,,
 SETUP-09,Setup,-,"เตรียมเคส error state (ตัดเน็ตจริง — ห้ามใช้ช่องทาง dev):
 1. เปิด search → ค้นอะไรก็ได้ให้เห็น results
 2. เปิด Airplane mode บนเครื่อง (หรือปิด Wi‑Fi+cellular)
@@ -49,7 +49,7 @@ SETUP-12,Setup,-,"ทำให้มี watch alert จาก search (preconditi
 SETUP-13,Setup,-,"ทำให้โพสต์ถูก mark ""Not interested"" (precondition เคส exclusion):
 1. member อยู่ feed เลือกการ์ดของ BX → แตะ ⋯ → ""Not interested""",การ์ดกลายเป็น feedback card — โพสต์นั้นจะหลุดจากผลค้นปกติ explore grid และ tag mode (spec ล็อก),-,Medium,,,อ้าง FEED-059
 SRCH-001,Search Landing,member อยู่ feed,1. แตะไอคอนแว่นขยายบน header,"หน้า search เด้ง: ← + ช่อง ""Search"" + bookmark; chip row = filter icon + For you(on) + keyword chips; ด้านล่าง explore grid รูปจัตุรัส",MEMBER,High,,,
-SRCH-002,Search Landing,หน้า search landing เปิด,1. เลื่อนดู explore grid จนสุด,"grid = ทุกรูปของทุกโพสต์ที่มองเห็น (โพสต์หลายรูปได้หลาย tile); badge 👁views บาง tile (design ref จดจริง); ไม่มี tile ว่าง/รูปเสีย",MEMBER,Medium,,,
+SRCH-002,Search Landing,หน้า search landing เปิด,1. เลื่อนดู explore grid จนสุด,"grid = ทุกรูปของทุกโพสต์ที่มองเห็น (โพสต์หลายรูปได้หลาย tile); badge 👁views บาง tile (design ref); ไม่มี tile ว่าง/รูปเสีย",MEMBER,Medium,,,
 SRCH-003,Search Landing,อยู่ landing,"1. แตะ chip keyword (เช่น BX)
 2. ← กลับ landing → แตะ chip ""For you""","keyword → results q=keyword + เข้า recents; For you → q ว่าง → โผล่ sale posts ทั้งหมด และไม่เข้า recents",MEMBER,High,,,
 SRCH-004,Search Landing,อยู่ landing,"1. member แตะ bookmark → ←
@@ -71,7 +71,7 @@ SRCH-014,Recents,recents page เปิด,"1. แตะ ""Clear all""
 SRCH-015,Recents,recents page เปิด (มี recents),"1. แตะแถว keyword/seller
 2. จาก results แตะ ←","results q=ค่านั้น + recents ขยับขึ้นหัว; ← กลับ landing (stack reset ไม่ใช่ recents page)",MEMBER,High,,,
 SRCH-016,Recents,recents ว่าง (ทำ SRCH-014) หรือติดตั้งใหม่,"1. ค้น ""rolex"" → กลับ → ค้น ""ROLEX""
-2. ค้นคำต่างกันเพิ่มหลายครั้ง (cap 8 = design ref จดจริง)
+2. ค้นคำต่างกันเพิ่มหลายครั้ง (cap 8 = design ref)
 3. kill app → เปิดใหม่ → เข้า search typing",ROLEX ไม่ซ้ำ แถวเดิมขยับขึ้นหัว; ไม่เกิน cap ตัวเก่าสุดหลุด; recents ยังอยู่ครบหลัง kill/restart (spec ล็อก — หาย = FAIL),MEMBER,High,,,
 SRCH-017,Results,results มี q,1. ดู head + tabs + body,"head: ← + ช่องแสดง q + กระดิ่ง + filter icon; tabs For you(on)/Profiles/Tags; For you = ""Accounts""(ถ้ามี) + ""Posts"" + grid 2 คอลัมน์; ไม่มี chips row",MEMBER,High,,,
 SRCH-018,Results,typing mode,"1. พิมพ์ KW-SELL (หรือชื่อ SA) กด Enter","Accounts = seller ที่ชื่อ match; Posts = โพสต์ที่ seller/caption/specs มีคำนั้น (รวมของ seller นั้นด้วย)",MEMBER,High,,,
@@ -109,7 +109,7 @@ SRCH-035,Filters,filter page (BX มี ≥2 รุ่น),"1. แตะ BX
 3. แตะรุ่น 1–2 ตัว
 4. เอา BX ออก","เลือก brand → title ""Model · BX"" + เหลือเฉพาะรุ่นของ BX; เอา brand ออก → model ที่เลือกถูกลบออกเอง + ลิสต์กลับครบ (spec ล็อก)",MEMBER,High,,,
 SRCH-036,Filters,filter page,"1. Brand: BX + BY
-2. Apply","ผล = union ทั้งสองแบรนด์ (เทียบผลรวม (n) ของสอง chip — จดจริง); chips ""BX ×"" ""BY ×""",MEMBER,High,,,
+2. Apply","ผล = union ทั้งสองแบรนด์ (เทียบผลรวม (n) ของสอง chip); chips ""BX ×"" ""BY ×""",MEMBER,High,,,
 SRCH-037,Filters,filter page,"1. Brand BX + Condition ที่ BX ไม่มี
 2. Apply","ข้าม key = AND → 0 ผล ""No data found"" + hint; chips ยังแสดง BX × cond",MEMBER,High,,,
 SRCH-038,Filters,filter page เลือก chips ไว้,"1. แตะ ← (ไม่กด Apply)
@@ -125,7 +125,7 @@ SRCH-044,Price,filter page,"1. พิมพ์ 420000 ในช่อง Minimum
 2. พิมพ์ 12a3b","แสดง ""420,000"" ทันที (ระบบใส่ comma); ตัวอักษรถูกตัดเหลือตัวเลข",MEMBER,Medium,,,money-display-rules §4.2
 SRCH-045,Price,filter page,"1. Minimum 500,000 + Maximum 100,000 → Apply","error ""Minimum price must not exceed maximum price"" (ตามภาษาแอป) ใต้ช่องราคา; อยู่หน้า filter ไม่มีอะไร apply",MEMBER,High,,,
 SRCH-046,Price,filter page,"1. Maximum 3,000,000 → Apply
-2. แก้เป็น 2,000,000 → Apply","error ""Maximum price must not exceed 2,000,000"" (เพดาน design จดจริง); พอดีเพดานผ่าน → ไป results",MEMBER,High,,,
+2. แก้เป็น 2,000,000 → Apply","error ""Maximum price must not exceed 2,000,000"" (เพดาน design); พอดีเพดานผ่าน → ไป results",MEMBER,High,,,
 SRCH-047,Price,filter page,"1. ใส่แค่ Minimum 200,000 → Apply
 2. เปิดใหม่ ใส่แค่ Maximum → Apply
 3. ใส่ทั้งคู่","min only → chip ""THB 200,000–Any"" (TH=ไม่จำกัด); max only → ""THB 0–max""; ทั้งคู่ → ""THB min–max"" กรองช่วงจริง",MEMBER,High,,,full amount + THB ตาม money rules
@@ -135,7 +135,7 @@ SRCH-050,Chips,"results มี chip ราคา + filter อื่น","1. × c
 2. ← landing → เข้า/ออก filter → ค้นคำใหม่",filter ที่เหลือ persist ใน search session — ผลยังถูกกรองจนกว่า search state reset (SRCH-030),MEMBER,High,,,
 SRCH-051,Watch Alert Bell,guest อยู่ results,1. แตะกระดิ่งบน head,"Member Sheet ""Join TukDaeng"" เด้ง (spec ล็อก) — wa sheet ไม่เปิด",GUEST,High,,,
 SRCH-052,Watch Alert Bell,member results มี q ไม่มี filter,1. แตะกระดิ่ง,"sheet ""Create watch alert"": ชื่อ autofill จาก q + 3 โหมด Match all/any/model พร้อม ""N now"" + ปุ่ม ""Create alert""",MEMBER,High,,,entry only — flow อยู่ FO-TEST-11
-SRCH-053,Watch Alert Bell,results apply BX + รุ่น,1. แตะกระดิ่ง → อ่านชื่อ → ปิด,"ชื่อ autofill จาก criteria (เช่น ""BX รุ่น""); match count ต่อโหมดจาก criteria จริง (จดเทียบ)",MEMBER,Medium,,,
+SRCH-053,Watch Alert Bell,results apply BX + รุ่น,1. แตะกระดิ่ง → อ่านชื่อ → ปิด,"ชื่อ autofill จาก criteria (เช่น ""BX รุ่น""); match count ต่อโหมดจาก criteria จริง",MEMBER,Medium,,,
 SRCH-054,Watch Alert Bell,สร้าง alert จากการค้นนี้แล้ว (SETUP-12),1. ดูกระดิ่ง → แตะอีกครั้ง,"กระดิ่งเป็นสถานะ on; เปิดเป็น ""Edit watch alert"" (Save changes + Delete alert) ไม่สร้างซ้ำ",MEMBER,Medium,,,
 SRCH-055,Tile → Viewer,อยู่ landing,"1. แตะ tile ใบแรก
 2. swipe ขึ้น/ลง

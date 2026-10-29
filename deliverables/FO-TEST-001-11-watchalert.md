@@ -48,12 +48,12 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เปิดขึ้น feed หรือ onboarding | splash/หน้าแรกขึ้นตาม build | — | |
+| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เห็นหน้า onboarding (แอปสะอาด) | splash/หน้าแรกของแอป | — | |
 | SETUP-02 | สถานะเริ่มต้น | — | SETUP | แอปติดตั้งแล้ว | ลบข้อมูลแอป/ติดตั้งใหม่ ถ้าเคยใช้เครื่องนี้มาก่อน | แอปสะอาด เหมือนผู้ใช้ใหม่ | — | — | |
 | SETUP-03 | ผู้ใช้ GUEST | — | SETUP | แอปสะอาด | ไม่ sign in → เดินเข้า feed ได้เลย | guest mode | bottom nav ครบ | — | |
 | SETUP-04 | ผู้ใช้ MEMBER | — | SETUP | แอปสะอาด | sign in ด้วยบัญชีทดสอบที่ทีมสร้าง | เข้า feed เป็นสมาชิก | avatar/ชื่อตัวเองในที่ที่ต้องแสดง | — | |
 | SETUP-05 | ผู้ใช้ NEW | — | SETUP | แอปสะอาด | สมัครใหม่ด้วยอีเมล/เบอร์ทดสอบจริง → ผ่าน onboarding จนเข้า feed | member ใหม่ — walerts ว่างเสมอ | — | — | |
-| SETUP-06 | ข้อมูลอ้างอิง | MEMBER | SETUP | sign in แล้ว | จดลง Note ของไฟล์: `ACTOR-MEMBER` · `ACCT-2` · `POST-FULL` = โพสต์ขายที่ spec ครบ (brand/model/reference/year/condition) · `POST-NOSPEC` = โพสต์ที่ spec ว่าง/ไม่ระบุทุกช่อง (หาไม่ได้ให้ ACCT-2 สร้างลิสติ้งที่ไม่กรอก spec) · `CRIT-X` = criteria ที่ ACCT-2 จะลงลิสติ้ง match ได้ (เช่น brand+model+ช่วงราคา) · `CRIT-CONFLICT` = criteria ขัดแย้งกัน (เช่น brand A + model ของ brand B) · จด "รุ่นเครื่อง + OS" ทุกเครื่อง | ข้อมูลจดพร้อม — ขาดตัวใด mark BLOCK เคสที่เกี่ยว | — | — | |
+| SETUP-06 | ข้อมูลอ้างอิง | MEMBER | SETUP | sign in แล้ว | บันทึกลง Note ของไฟล์: `ACTOR-MEMBER` · `ACCT-2` · `POST-FULL` = โพสต์ขายที่ spec ครบ (brand/model/reference/year/condition) · `POST-NOSPEC` = โพสต์ที่ spec ว่าง/ไม่ระบุทุกช่อง (หาไม่ได้ให้ ACCT-2 สร้างลิสติ้งที่ไม่กรอก spec) · `CRIT-X` = criteria ที่ ACCT-2 จะลงลิสติ้ง match ได้ (เช่น brand+model+ช่วงราคา) · `CRIT-CONFLICT` = criteria ขัดแย้งกัน (เช่น brand A + model ของ brand B) · บันทึก "รุ่นเครื่อง + OS" ทุกเครื่อง | ข้อมูลพร้อม — ขาดตัวใด mark BLOCK เคสที่เกี่ยว | — | — | |
 | SETUP-07 | ทางเข้า + ปุ่ม | MEMBER | SETUP | sign in แล้ว | ทดลอง: search → submit → bell `sr-wa` บนหัวผลลัพธ์ · เปิด Post Detail ของ `POST-FULL` → bell `Follow this model` ที่ act-right · profile → menu → Settings → `การแจ้งเตือนนาฬิกา/Watch Alerts` | ทุก entry เปิด sheet/หน้าถูก | ตำแหน่งตาม spec §6 | — | |
 | SETUP-08 | Member Sheet mechanics | GUEST | SETUP | เป็น guest | กด bell `sr-wa` บนหัวผลลัพธ์ (gated) | Member Sheet เด้ง มี Sign in/Sign up/Skip — sheet WA ไม่เปิด | bottom sheet จากขอบล่างเหมือนทุกหน้า | — | |
 | SETUP-09 | เครื่องที่สอง + ACCT-2 | — | SETUP | มีเครื่องจริงอีกเครื่อง | ติดตั้ง build เดียวกันลงเครื่องสอง → sign in `ACCT-2` → เปิด notification permission ทั้งสองเครื่อง → ตั้งเวลาเครื่องตรงกัน | บัญชีสองพร้อม — ถ้าไม่มี → เคส ACCT-2/ACCT-3 เป็น BLOCK | — | — | |
@@ -85,7 +85,7 @@
 | WA-014 | เปลี่ยน mode ไม่เสียชื่อที่พิมพ์ | MEMBER | STATE | sheet create เปิด | พิมพ์ชื่อเอง `My Daytona hunt` → แตะเลือก mode `any` → ดูช่องชื่อ | ชื่อที่พิมพ์ยังอยู่ครบหลัง sheet re-render (draft persist) — ชื่อหาย/reset เป็น auto = FAIL | — | MED | |
 | WA-015 | create → alert ON ทันที | MEMBER | POSITIVE | sheet create เปิดพร้อม criteria | กด `สร้างการแจ้งเตือน/Create alert` → เปิด `walerts` + กลับดู bell ต้นทาง | toast ยืนยันเปิดการแจ้งเตือนตามภาษาแอป (EN: `Watch alert on`) + alert ใหม่สถานะ ON ปรากฏใน list + bell entry เดิมกลาย on-state (`sr-wa` ติดไฟ / `mf-btn` เป็น `Following this model`) | sheet ปิดเอง | HIGH | |
 | WA-016 | auto-name ตามลำดับ `waName` | MEMBER | POSITIVE | มี alert จากหลาย entry | สร้าง alert: (a) จาก detail ที่มี brand+model+ref → (b) จาก search ที่มีแค่ keyword → (c) จาก filter ที่ไม่มี brand/model | ชื่อ auto: (a) `Brand Model · Reference` (ref มีค่อยต่อท้าย) · (b) `"keyword"` ในเครื่องหมายคำพูด · (c) criteria 2 ค่าแรก join ` · ` — prefill ในช่องชื่อทุกครั้ง | — | MED | |
-| WA-017 | เว้นชื่อว่างตอน save → regen ไม่ block | MEMBER | POSITIVE | sheet create เปิด | ลบชื่อในช่องให้ว่าง → กด Create | บันทึกสำเร็จด้วยชื่อ auto ตาม `waName` — **ไม่มี** validation block/ข้อความบังคับกรอก | — | HIGH | |
+| WA-017 | เว้นชื่อว่างตอน save → regen ไม่ block | MEMBER | POSITIVE | sheet create เปิด | ลบชื่อในช่องให้ว่าง → กด Create | บันทึกสำเร็บันทึก้วยชื่อ auto ตาม `waName` — **ไม่มี** validation block/ข้อความบังคับกรอก | — | HIGH | |
 | WA-018 | ปิด sheet ไม่ save → ไม่ commit | MEMBER | NEGATIVE | sheet create เปิด พิมพ์ชื่อ+เลือก mode แล้ว | ลาก sheet ลง/แตะ backdrop ปิด → เปิด `walerts` | **ไม่มี alert ใหม่** — draft ทิ้งทั้งหมด | — | MED | |
 
 ### 2.3 Dedupe & Bell Sync
@@ -149,7 +149,7 @@
 | WA-058 | ลิสติ้งที่ match ถูกลบทีหลัง | MEMBER + ACCT-2 | NEGATIVE | มี watch row แล้ว ACCT-2 ลบลิสติ้งนั้น | แตะ row | **ไม่เปิด viewer** — unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว/This post is no longer available` + ปุ่ม `Go back` (contract 00_NAV §10 — ห้าม silent no-op; ตรง ALT-032) — ไม่มีวิธีทำลิสติ้งหาย → `BLOCK` | — | MED | |
 | WA-059 | push นอกแอป → PV ลิสติ้ง | MEMBER + ACCT-2 | POSITIVE | notif permission ON + แอปเครื่องหลักปิด/background + `WA-SEARCH` ON | ACCT-2 ลงลิสติ้ง match → ดูเครื่องหลัก → แตะ push | push/banner เด้งนอกแอป → แตะ push → เปิด Post Viewer ลิสติ้ง match ตรง (ปลายทางเดียวกับ row tap) — ไม่มี push → `BLOCK` | — | MED | |
 | WA-060 | ไม่มี triggered marker บน alert row | MEMBER | NEGATIVE | มี alert ที่เคยเด้งแล้ว + ที่ยังไม่เคยเด้ง | เทียบแถวสองแถวใน `walerts` | แถวแสดง anatomy เหมือนกันทุกประการ — V1 **ไม่มี** marker/ป้าย "เคยแจ้งเตือน"/last-triggered บน alert row (เด้งเห็นที่ alerts feed เท่านั้น) | — | LOW | |
-| WA-061 | `{n} matches now` นับ pool ลิสติ้ง Sale จริง | MEMBER + ACCT-2 | STATE | `WA-SEARCH` ON | จด count → ACCT-2 ลงลิสติ้งตรง → เปิด walerts ใหม่ → ให้ ACCT-2 mark sold ใบที่ตรง → เปิดใหม่ | count เพิ่มเมื่อมีลิสติ้ง Sale ตรงใหม่ + ลดเมื่อลิสติ้งออกจาก Sale (sold/ลบ/ซ่อน) — นับ server-backed ทุกครั้งที่เปิดหน้า | — | MED | |
+| WA-061 | `{n} matches now` นับ pool ลิสติ้ง Sale จริง | MEMBER + ACCT-2 | STATE | `WA-SEARCH` ON | บันทึก count → ACCT-2 ลงลิสติ้งตรง → เปิด walerts ใหม่ → ให้ ACCT-2 mark sold ใบที่ตรง → เปิดใหม่ | count เพิ่มเมื่อมีลิสติ้ง Sale ตรงใหม่ + ลดเมื่อลิสติ้งออกจาก Sale (sold/ลบ/ซ่อน) — นับ server-backed ทุกครั้งที่เปิดหน้า | — | MED | |
 
 ### 2.7 Nav / State / Language / Theme
 
@@ -186,7 +186,7 @@
 | `WATCH_ALERTS` ไม่ restore หลัง session switch (เดิม deviation #12 — RESOLVED: lock server-backed + prototype persist `fo_walerts`) | alerts อยู่รอดปิดแอป + sign-out/in + sync ข้ามเครื่อง | WA-070..072 |
 | Delete instant ไม่ confirm (เดิม deviation #3 — RESOLVED 2026-10-29: confirm dlg ตาม destructive pattern ทั้งแอป — แก้ spec+prototype แล้ว) | `wa-del` → confirm dialog ก่อนลบเสมอ ลบทันที = FAIL | WA-041, 042, 065 |
 | List ordering spec เดิมเงียบ (RESOLVED: ใหม่สุดบนสุด — แก้ spec+prototype แล้ว) | alert ล่าสุดอยู่บนสุด | WA-029 |
-| `salePosts()` pfkind leak — priced show/hide/sold ถูกนับ (S-10 defect — contract Sale only) | match/count เฉพาะลิสติ้ง Sale — เห็นนับ/เด้งสถานะอื่น = FAIL | WA-050, 061 |
+| `salePosts` pfkind leak — priced show/hide/sold ถูกนับ (S-10 defect — contract Sale only) | match/count เฉพาะลิสติ้ง Sale — เห็นนับ/เด้งสถานะอื่น = FAIL | WA-050, 061 |
 | Match feedback = `_waHits` toast simulation เท่านั้น (deviation #6) | engine จริงบน server สร้าง watch row จริง — ไม่มี engine = BLOCK §2.6 | WA-043..061 |
 | `modelKey` ต่อ detail-created เท่านั้น (deviation #15 — RESOLVED เจตนาโดยพี่คิง) | search alert ไม่ขับ bell แม้ criteria ตรงรุ่น | WA-025 |
 | Paused alert ยังเป็น dedupe target (deviation #9) | bell เจอ alert off ที่ตรง → เปิด edit ไม่สร้างซ้ำ | WA-022 |
@@ -198,6 +198,11 @@
 | `notif_settings` toggle `walerts` = contract-level opt-out | OFF หยุด watch row ใหม่ — covered โดย ALT-053 (FO-TEST-10) | — |
 | Production contract: inactive market data / backfill dedup / relation-id criteria | alert หยุด trigger + warning เมื่อ option deactivated; re-match dedup `(alert_id, asset_id)` | WA-077, 078 |
 | Delete account → Watch Alerts Cancelled (canonical 13) | alerts ยกเลิกอัตโนมัติตอนเริ่มลบ + terms card | WA-079 |
+
+**FO-SYNC-01 sync (2026-10-29):**
+
+- **RESOLVED — Toasts EN-only (deviation #11)**: `Watch alert on`/`updated`/`paused`/`removed` + `You already saved this alert` + `No details on this post to watch` + `Watch alert matched: {n} (+N more)` เพิ่ม `I18N_TH` dict + `i18nTr` pattern แล้ว — spec 10 §293 ปิด deviation ตาม
+- **ต่างโดยเจตนา (คงไว้)**: `_waHits` toast = match simulation (engine จริง = server contract — deviation #6) · `modelKey` เฉพาะ detail-created (เจตนา — พี่คิงล็อก) · paused alert เป็น dedupe target · `sr-wa` bell on เฉพาะ `source:"search"` · ไม่มี per-alert history — ทั้งหมด documented deviations ตาม spec
 
 ## §4 Traceability — inventory §2.6 + actions ครอบ
 
@@ -225,4 +230,6 @@
 - **ข้อมูลจริงบน server เป็นตัวแปรหลัก** — จำนวน match/`{n} now`/จำนวนลิสติ้งขึ้นข้อมูลจริง: expected ทุกข้อตัดสินได้จากข้อมูลที่มีจริง อย่า FAIL เพราะจำนวนน้อยกว่าตัวอย่าง
 - **เคส BLOCK ล่วงหน้าที่คาดว่าอาจเจอ**: WA-013 (เข้าผลลัพธ์ว่างไม่มีเงื่อนไขไม่ได้), WA-019/020/021 (ทำ criteria ตรงเป๊ะผ่าน UI ยาก), WA-024 (ไม่มีโพสต์เรือนสอง modelKey เดียวกัน), WA-033 (ไม่มีข้อมูลยาว), WA-043..055/058/059/061 (match engine + push ยังไม่ implement), WA-055 (ต้องบัญชีสาม), WA-072 (build จำกัดเครื่องเดียว), WA-077/078 (ต้องสิทธิ์ BO), WA-079 (ต้องบัญชีลบทิ้งได้)
 - **ครอบโดยเล่มอื่น ไม่ทำซ้ำ**: watch row anatomy/badge/mark-all/`walerts` toggle enforcement → FO-TEST-10 (ALT-010..056) · Post Viewer internals → FO-TEST-06 · Member Sheet internals → FO-TEST-17 · `notif_settings` anatomy + delete account flow → FO-TEST-15
-- **จุดที่แก้ spec+prototype ในรอบนี้** (align ให้ตรง contract ก่อนเทส): (1) `wa-del` → confirm dialog `Delete watch alert?`/`ลบการแจ้งเตือนนี้หรือไม่?` + `dlg-wadel-go` แทน instant delete (2) `walertsHTML` เรียงใหม่สุดบนสุด (3) persist `WATCH_ALERTS` ผ่าน `fo_walerts` + `waLoad()` ใน `restoreUserData` + `syncModelFlags` หลัง applySessionData + ล้าง key ตอน demo reset (4) spec 10: §3/§4/§8/§9/§12/§14/§16/deviations/§18 อัปเดต RESOLVED + lock notes ตามการตัดสิน 6 ข้อ
+- **จุดที่แก้ spec+prototype ในรอบนี้** (align ให้ตรง contract ก่อนเทส): (1) `wa-del` → confirm dialog `Delete watch alert?`/`ลบการแจ้งเตือนนี้หรือไม่?` + `dlg-wadel-go` แทน instant delete (2) `walertsHTML` เรียงใหม่สุดบนสุด (3) persist `WATCH_ALERTS` ผ่าน `fo_walerts` + `waLoad` ใน `restoreUserData` + `syncModelFlags` หลัง applySessionData + ล้าง key ตอน demo reset (4) spec 10: §3/§4/§8/§9/§12/§14/§16/deviations/§18 อัปเดต RESOLVED + lock notes ตามการตัดสิน 6 ข้อ
+
+- สถิติ: **79 TC** — High 39 / Medium 37 / Low 3 (SETUP rows 11 แถวแยกใน checklist; รวมใน csv 90 แถว)

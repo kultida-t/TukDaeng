@@ -102,7 +102,7 @@ Settings Home ใช้โครง `Settings and activity` แบบ 6 sections
 | Language | `lang` | เลือก English / ภาษาไทย + check + toast |
 | Theme mode | `theme` | เลือก Light / Dark + check — apply ทันทีทั้งแอป |
 | Notification settings | `notif_settings` | 4 toggles ใน 2 groups — auto-save |
-| Privacy & cookies | (contract — ยังไม่มี route) | Essential `Always on` + Analytics / Personalized toggles |
+| Privacy & cookies | `cookies` | Essential `Always on` + Analytics / Personalized toggles |
 | Help | `help` | Support channels + Help topics |
 | Privacy Policy | `privacy` | In-app legal page — 4 sections |
 | Terms of Use | `terms` | In-app legal page — 3 sections |
@@ -473,6 +473,7 @@ About app must not include:
 
 - Soft delete → deactivate ทันที → grace period 30 วัน → hard delete/anonymization ตาม policy (canonical lifecycle 00_GLOBAL §12)
 - ระหว่าง grace period user sign in ด้วยบัญชีเดิมได้ปกติ — sign in สำเร็จ = cancel deletion + restore บัญชี (สอดคล้อง BO Account Deletion restore flow)
+- Watch Alerts ที่ถูกยกเลิกตอน deactivate **ไม่กลับมา** หลัง restore — user ต้องตั้งใหม่เอง (ล็อก 2026-10-29)
 - ไม่มี `Account scheduled for deletion` blocked state ที่ sign in — support state ใช้เฉพาะกรณี restore ล้มเหลวหรือหลัง hard delete (contract — §12)
 
 ### Retention (contract — resolve C11)
@@ -486,7 +487,7 @@ About app must not include:
 
 Prototype dead-code note (fo-flow, documented not implemented): prototype มี legacy delete-account dialog variant ซ้อนอยู่ (`delAccountDlgHTML` / `data-dlg="del-account"` / `.dlg-delaccount-go`) ที่ไม่ถูกเรียกใช้ — canonical flow คือ 2-page flow ที่ spec นี้กำหนด; legacy dialog ถือเป็น dead code ไม่ใช่ spec requirement
 
-Prototype mock-bug note (documented, not implemented): password dialog เช็ก `state.mockPassword` (ไม่เคยถูก set — ค้าง `fox1234` ตลอด) ขณะที่ Change Password เขียน `state.userPwd` — คนละ field → เปลี่ยนรหัสแล้ว delete ยังรับรหัส `fox1234` เดิม; spec ไม่รองรับพฤติกรรมนี้ — implementation ต้องเช็ก credential เดียวกันกับ Change Password
+Prototype mock-bug note (resolved 2026-10-29): password dialog เดิมเช็ก `state.mockPassword` คนละ field กับ Change Password (`state.userPwd`) — แก้แล้วให้เช็ก `state.userPwd` credential เดียวกัน; spec ไม่รองรับพฤติกรรมเดิม — implementation ต้องเช็ก credential เดียวกันกับ Change Password
 
 ## Change Password Rule
 
@@ -494,12 +495,12 @@ Prototype mock-bug note (documented, not implemented): password dialog เช็
 - ต้องแสดงเฉพาะบัญชี Email / Password — SSO-only account ต้องไม่เห็น Change Password หรือเห็น disabled state พร้อมอธิบายว่าใช้บัญชีจาก provider (contract — prototype ไม่มี account-type concept แสดงเสมอ)
 - Page anatomy: head `เปลี่ยนรหัสผ่าน` / `Change password` + password-policy desc + 3 fields พร้อม eye toggle ทุก field + link `ลืมรหัสผ่านใช่ไหม?` / `Forgot your password?` ใต้ Current field + inline error box + submit `เปลี่ยนรหัสผ่าน` / `Change password`
 - Fields: `รหัสผ่านปัจจุบัน` / `Current password`, `รหัสผ่านใหม่` / `New password`, `ยืนยันรหัสผ่านใหม่` / `Re-type new password` (label ตาม prototype)
-- Password policy = canonical 00_GLOBAL §12 (≥8 ตัวอักษร + ตัวเลขหรือสัญลักษณ์อย่างน้อย 1 ตัว — S-21) — helper copy และ check ใช้ rule เดียวกัน; prototype deviation (documented): helper desc อ้าง `combination of numbers, letters and special characters (!$@%)` แต่ code ตรวจเฉพาะความยาว ไม่ enforce num/sym (เดิม `< 6` — อยู่ระหว่างปรับเป็น `< 8` ใน prototype task แยก)
+- Password policy = canonical 00_GLOBAL §12 (≥8 ตัวอักษร + ตัวเลขหรือสัญลักษณ์อย่างน้อย 1 ตัว — S-21) — helper copy และ check ใช้ rule เดียวกัน (RESOLVED FO-SYNC-01: prototype enforce ทั้ง length + num/sym แล้ว — เดิมตรวจเฉพาะความยาว)
 - Validation ไล่ลำดับ (แสดง inline error เดียวใต้ form + field red state + focus field นั้น):
   1. current ว่าง → `กรุณากรอกรหัสผ่านปัจจุบัน` / `Please enter your current password.`
   2. current ผิด → `รหัสผ่านปัจจุบันไม่ถูกต้อง กรุณาตรวจสอบแล้วลองใหม่อีกครั้ง` / `Your current password was entered incorrectly. Please check it and try again.`
   3. new ว่าง → `กรุณากรอกรหัสผ่านใหม่` / `Please enter a new password.`
-  4. new ไม่ผ่าน policy → policy error (canonical ≥8+num/sym; prototype length-only `รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร` / `Password must be at least 8 characters long.` — เดิม 6 ตัว)
+  4. new ไม่ผ่าน policy → `รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร และมีตัวเลขหรืออักขระพิเศษอย่างน้อย 1 ตัว` / `Password must be at least 8 characters and include at least one number or special character.` (canonical ≥8+num/sym — prototype enforce แล้ว FO-SYNC-01)
   5. new ซ้ำ current → `รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านปัจจุบัน` / `New password must be different from your current password.`
   6. re-type ไม่ตรง → `รหัสผ่านใหม่ไม่ตรงกัน กรุณากรอกใหม่อีกครั้ง` / `Passwords do not match. Please re-enter your new password.`
 - `Forgot your password?` → dialog `รีเซ็ตรหัสผ่าน?` / `Reset password?` — desc แสดง masked email ของบัญชีปัจจุบัน (prototype `k***@tukdaeng.com` หรือ email จริงของ account ที่สมัครในเครื่อง) + actions `ส่งลิงก์รีเซ็ต` / `Send reset link` + `ยกเลิก` / `Cancel` → toast `ส่งลิงก์รีเซ็ตรหัสผ่านไปยัง {masked email} แล้ว` / `Password reset link sent to {masked email}` (reset flow semantics canonical อยู่ที่ 01_AUTH Forgot Password)
@@ -512,8 +513,9 @@ Prototype mock-bug note (documented, not implemented): password dialog เช็
 - Snooze toggle auto-save ทันทีไม่มี confirm — เปิดแล้ว feed `All` tab แสดงเฉพาะโพสต์จากบัญชีที่ follow (feed semantics canonical 02_FEED)
 - `Reset suggested content` → confirm dialog `Reset suggested content?` + `Posts you marked as not interested will be shown again.` + `Reset` (danger) + `Cancel` → เคลียร์ not-interested marks ทั้งหมด + ปิด snooze + re-render feed + toast `Suggested content reset` (prototype EN-only — language sweep)
 - `sensitive` page: head `เนื้อหาที่ละเอียดอ่อน` / `Sensitive content` + desc `เลือกระดับของเนื้อหาที่ละเอียดอ่อนที่คุณจะเห็นในฟีด` / `Choose how much sensitive content you see in feed.` + options `น้อยลง` / `Less` (`คุณจะเห็นเนื้อหาที่ละเอียดอ่อนน้อยลง` / `You'll see less sensitive content.`) และ `มาตรฐาน` / `Standard` (`คุณจะเห็นเนื้อหาที่ละเอียดอ่อนบางส่วน` / `You'll see some sensitive content.`) + check บนตัวเลือกปัจจุบัน — apply ทันที auto-save ไม่มี toast (default `standard`)
-- `interested` page: head `รายการที่สนใจ` / `Interested` — list โพสต์ที่ user like (row = post thumb + seller + caption + `ลบออก` / `Remove`); Remove = unlike → ออกจาก list + like count -1 (like semantics canonical 02_FEED/11_SOCIAL); empty `ยังไม่มีข้อมูลที่นี่` / `Nothing here yet`
-- `ni` page: head `ไม่สนใจ` / `Not interested` — list โพสต์ที่ mark Not interested (row เดียวกัน + `คืนค่า` / `Restore`); Restore = คืนโพสต์เข้า feed (not-interested feedback loop canonical 02_FEED); empty เดียวกัน
+- `interested` page: head `รายการที่สนใจ` / `Interested` — list โพสต์ที่ user like (row = post thumb + seller + caption + `ลบออก` / `Remove`); Remove = unlike → ออกจาก list + like count -1 (like semantics canonical 02_FEED/11_SOCIAL); **แตะแถว (ไม่ใช่ปุ่ม Remove) → เปิดโพสต์ตัวนั้นด้วย Post Viewer feed mode เหมือน tile คลังอื่น — ไม่ใช่โปรไฟล์คนขาย** (lock 2026-10-29); empty `ยังไม่มีข้อมูลที่นี่` / `Nothing here yet`
+- `ni` page: head `ไม่สนใจ` / `Not interested` — list โพสต์ที่ mark Not interested (row เดียวกัน + `คืนค่า` / `Restore`); Restore = คืนโพสต์เข้า feed (not-interested feedback loop canonical 02_FEED); **แตะแถว → Post Viewer feed mode เหมือนกัน** (lock เดียวกัน); empty เดียวกัน
+- rows ทั้งสองหน้าแสดงเฉพาะโพสต์ที่ยังมองเห็นได้ (hide/archive/block/delete หลุดตาม library-impact rule canonical 11 §12)
 - ทุกหน้า apply ค่าได้ทันที ไม่มี save button
 
 ## What You See Pages Rule (Favorites / Muted / Blocked)
@@ -858,8 +860,10 @@ When Member เปิด `Sensitive content`
 Then ต้องเห็น options `Less` / `Standard` (default `Standard`) พร้อม check บนตัวเลือกปัจจุบัน และการเลือกต้อง apply ทันทีโดยไม่มี toast  
 When Member เปิด `Interested`  
 Then ต้องเห็น list โพสต์ที่ like พร้อม `Remove` ต่อ row — กดแล้ว unlike และออกจาก list ทันที; empty state `Nothing here yet`  
+And แตะแถว (ไม่ใช่ปุ่ม Remove) ต้องเปิดโพสต์ตัวนั้นด้วย Post Viewer feed mode — ไม่ใช่โปรไฟล์คนขาย (lock 2026-10-29)  
 When Member เปิด `Not interested`  
 Then ต้องเห็น list โพสต์ที่ mark Not interested พร้อม `Restore` ต่อ row — กดแล้วคืนโพสต์เข้า feed; empty state เดียวกัน  
+And แตะแถวต้องเปิด Post Viewer feed mode เช่นกัน  
 When Member เปิด snooze toggle  
 Then feed `All` tab ต้องแสดงเฉพาะโพสต์จากบัญชีที่ follow เป็นเวลา 30 วัน  
 When Member กด `Reset suggested content`  

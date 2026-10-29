@@ -193,10 +193,10 @@ Post Detail
 
 ```text
 `wl-btn` (gift — title `Wish List`)
-→ ครั้งแรก: set `wishlisted` + `wlCol:"Wishlist"` + sync icon → เปิด wlSheet
+→ ครั้งแรก: set `wishlisted` + sync icon → เปิด wlSheet (`"Wishlist"` = pseudo-row ของ flag; `wlCols` = array multi-collection — canonical 11)
 → sheet: `Wish List` head pick + collection rows + `New collection` (→ nc sheet)
-→ pick `Wish List` ขณะ wishlisted → remove → toast `Removed from your wish list`
-→ pick col เดิม → กลับ `Wishlist` → `Removed from {col}`; pick col ใหม่ → `Added to {col}`/`Added to Wish List`
+→ pick `Wish List` ขณะ wishlisted → un-wishlist (`wlCols` ล้าง) → toast `Removed from your wish list`
+→ pick col ที่ check อยู่ → เอาออกเฉพาะ col นั้น → `Removed from {col}`; pick col ใหม่ → `wlCols.push` → `Added to {col}`/`Added to Wish List`
 ```
 
 ## Edit Info From Detail Flow
@@ -306,9 +306,9 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 ## Wishlist Entry Rule (`wl-btn`)
 
 - `wl-btn` (gift icon) อยู่ `act-right` — เป็น wishlist entry หลักของโพสต์ (wishlist **ไม่ใช่** save/bookmark — save-btn ไม่มีบน detail)
-- กดครั้งแรกบนโพสต์ที่ยังไม่ wishlist → set `wishlisted:true` + `wlCol:"Wishlist"` + `wlAt` ทันทีก่อนเปิด sheet (optimistic) แล้วเปิด `wlSheet`
+- กดครั้งแรกบนโพสต์ที่ยังไม่ wishlist → set `wishlisted:true` + `wlAt` ทันทีก่อนเปิด sheet (optimistic) แล้วเปิด `wlSheet` (`wlCols` = multi-collection array — canonical 11; `"Wishlist"` = pseudo-row ของ flag)
 - Sheet anatomy: `Wish List` head pick (thumb = รูปแรกของ post) + `Collections` section + `New collection` + rows (`WISHLISTS` seed: `Next buy`, `Grail goals`)
-- Pick `Wish List` ขณะ wishlisted → un-wishlist (`wishlisted/wlCol/wlAt/wlColAt` reset) → toast `Removed from your wish list`; pick col ซ้ำ → กลับ `Wishlist` (`Removed from {col}`); pick col ใหม่ → `Added to {col}` / `Added to Wish List`
+- Pick `Wish List` ขณะ wishlisted → un-wishlist (`wishlisted/wlCols/wlAt/wlColAt` reset — หลุดทุก collection) → toast `Removed from your wish list`; pick col ที่ check อยู่ → เอาออกเฉพาะ col นั้น (`Removed from {col}`); pick col ใหม่ → `wlCols.push` (`Added to {col}` / `Added to Wish List`) — ติ๊กได้หลาย col
 - `New collection` → `nc` sheet (shared new-collection flow — canonical saved/library surfaces)
 - Guest → Member Sheet (`.wl-btn` ∈ `GUEST_GATE_SEL`)
 
@@ -376,7 +376,7 @@ Spec เลือกตาม prototype — รายการนี้คือ
 | 14 | Detail ไม่ persist/deep-link | ไม่มี route — external deep link contract อยู่ 00_NAV §10 เท่านั้น |
 | 15 | EN-hardcoded strings | `Follow this model`/`Following this model`/`No details on this post to watch`/`Added to Wish List`/`Removed from your wish list`/`Sent to X`/`Link copied`/`Listing detail isn't in this prototype yet` — language sweep FSP-026 |
 | 16 | `pfKind()` fallback | โพสต์ไม่มี `pfkind` infer จาก price (seed/gfx) — canonical อยู่ 04 (documented ที่นั่นแล้ว) |
-| 17 | State session-only | `liked`/`wishlisted`/`wlCol`/`modelFollowing` เป็น memory state — persistence = contract |
+| 17 | State session-only | `liked`/`wishlisted`/`wlCols`/`modelFollowing` เป็น memory state — persistence = contract |
 
 ---
 
@@ -515,7 +515,7 @@ Contract set (prototype ไม่มี tracking layer — เหมือน ba
 
 | AC ID | Criteria |
 |---|---|
-| AC-DETAIL-024 | `wl-btn` ครั้งแรกต้อง set `wishlisted` + `wlCol:"Wishlist"` ก่อนเปิด sheet (optimistic) |
+| AC-DETAIL-024 | `wl-btn` ครั้งแรกต้อง set `wishlisted` (+`wlAt`) ก่อนเปิด sheet (optimistic) — `wlCols` = multi-collection array (canonical 11) |
 | AC-DETAIL-025 | Pick `Wish List` ขณะ wishlisted → un-wishlist + `Removed from your wish list`; pick collection → `Added to {col}` / `Added to Wish List`; `New collection` → nc sheet |
 
 ## States

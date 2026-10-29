@@ -19,7 +19,7 @@
 - **Device back เทียบเท่าปุ่มย้อนในแอป/ปิดทีละชั้น** — sheet/dialog/manage mode/search mode เปิดอยู่ต้องปิดชั้นบนสุดก่อน เคสที่มีขั้น "แตะ back/ปิด" ใช้ device back ของ OS แทนได้ ผลต้องเทียบเท่ากัน
 - **ภาษาตามแอปทั้งหมด** (ล็อก 2026-10-28): ทุกข้อความ UI + toast + dialog + ช่องค้นหา + ตัวนับ เปลี่ยนตามภาษาที่เลือก — เจอ string ค้างอีกภาษา = **FAIL** (prototype hardcode EN หลายจุดในส่วน library เช่น Edit collection, New collection sheet, move sheet, ตัวนับ "N saved posts"/"N items", dialog ลบ/ถอด — ในแอปจริงถือเป็นบั๊ก); ยกเว้นชื่อ user/แบรนด์/รุ่น/ชื่อ collection ที่ user ตั้งเอง
 - **Dark theme**: ทุกหน้า/sheet/dialog อ่านได้ครบใน dark — contrast โอเค ไม่มีตัวอักษรจมพื้นหลัง
-- **Priority**: `HIGH` = กติกาหลัก/flow สำคัญ · `MED` = feature หลัก/edge · `LOW` = quirk; เคส BLOCK-if = MED เว้นกำหนด
+- **Priority**: `HIGH` = กติกาหลัก/flow สำคัญ · `MED` = feature หลัก/edge · `LOW` = quirk; เคส BLOCK ล่วงหน้า = MED เว้นกำหนด
 - **Result column**: เว้นว่าง — tester กรอก `PASS`/`FAIL`/`BLOCK` + ปัญหาใน `Note`
 - **ไม่มีเคสแบบ "จดผล" ไม่มีผลลัพธ์ทางเลือก** — ทุกเคส expected ตรง spec/contract ข้อเดียวเด็ดขาด ไม่ตรง = FAIL
 - **Out of scope**: ตามหัวข้อ ยกเว้น ด้านบน — เคสใดเจอว่า feature ยังไม่ implement ใน build → `BLOCK` พร้อมเหตุผลใน Note (ห้าม workaround)
@@ -46,16 +46,16 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เปิดขึ้น feed หรือ onboarding | splash/หน้าแรกขึ้นตาม build | — | |
+| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เห็นหน้า onboarding (แอปสะอาด) | splash/หน้าแรกของแอป | — | |
 | SETUP-02 | สถานะเริ่มต้น | — | SETUP | แอปติดตั้งแล้ว | ลบข้อมูลแอป/ติดตั้งใหม่ ถ้าเคยใช้เครื่องนี้มาก่อน | แอปสะอาด เหมือนผู้ใช้ใหม่ | — | — | |
 | SETUP-03 | ผู้ใช้ GUEST | — | SETUP | แอปสะอาด | ไม่ sign in → เดินเข้า feed ได้เลย | guest mode | bottom nav ครบ | — | |
 | SETUP-04 | ผู้ใช้ MEMBER | — | SETUP | แอปสะอาด | sign in ด้วยบัญชีทดสอบที่ทีมสร้าง | เข้า feed เป็นสมาชิก | avatar/ชื่อตัวเองในที่ที่ต้องแสดง | — | |
 | SETUP-05 | ผู้ใช้ NEW | — | SETUP | แอปสะอาด | สมัครใหม่ด้วยอีเมล/เบอร์ทดสอบจริง → ผ่าน onboarding จนเข้า feed | member ใหม่ — library ว่างเสมอ (ไม่มี saved/collections/wishlist/archive/interested/ni) | — | — | |
-| SETUP-06 | ชุดข้อมูล library ของ MEMBER | MEMBER | SETUP | sign in แล้ว | ทำผ่านแอปจริงแล้วจดชื่อ/แคปชันลง Note: เซฟ 3 โพสต์ — `P-S1` = sale post · `P-S2` = โพสต์ธรรมดา · `P-S3` = โพสต์หลายรูป · สร้างคอลเลกชัน `C-A`+`C-B` (กด + บนหน้า saved) · ใส่ `P-S1` เข้า `C-A` · ใส่ `P-S2` เข้า `C-A` และ `C-B` (หลายคอลเลกชัน) · เปิด detail โพสต์ → กดของขวัญ ใส่ `P-W1`+`P-W2` ใน wish list + สร้าง wishlist col `W-A` ใส่ `P-W2` · กดถูกใจ `P-L1`+`P-L2` (เข้า Interested) · กดเมนู `ไม่สนใจ` บน `P-NI` 1 โพสต์ · สร้างโพสต์ตัวเอง 1 โพสต์ (`P-OWN`) แล้ว archive เป็น `P-ARC` | ข้อมูลจดพร้อม — สร้างสถานะไม่ได้ = เคสที่เกี่ยว `BLOCK` | — | — | |
+| SETUP-06 | ชุดข้อมูล library ของ MEMBER | MEMBER | SETUP | sign in แล้ว | ทำผ่านแอปจริงแล้วบันทึกชื่อ/แคปชันลง Note: เซฟ 3 โพสต์ — `P-S1` = sale post · `P-S2` = โพสต์ธรรมดา · `P-S3` = โพสต์หลายรูป · สร้างคอลเลกชัน `C-A`+`C-B` (กด + บนหน้า saved) · ใส่ `P-S1` เข้า `C-A` · ใส่ `P-S2` เข้า `C-A` และ `C-B` (หลายคอลเลกชัน) · เปิด detail โพสต์ → กดของขวัญ ใส่ `P-W1`+`P-W2` ใน wish list + สร้าง wishlist col `W-A` ใส่ `P-W2` · กดถูกใจ `P-L1`+`P-L2` (เข้า Interested) · กดเมนู `ไม่สนใจ` บน `P-NI` 1 โพสต์ · สร้างโพสต์ตัวเอง 1 โพสต์ (`P-OWN`) แล้ว archive เป็น `P-ARC` | ข้อมูลพร้อม — สร้างสถานะไม่ได้ = เคสที่เกี่ยว `BLOCK` | — | — | |
 | SETUP-07 | ทางเข้า | MEMBER | SETUP | SETUP-06 เสร็จ | own profile → เมนู → `การตั้งค่าและกิจกรรม` → เห็นกลุ่ม `คลังของคุณ` → เปิด `บันทึกแล้ว`/`สิ่งที่อยากได้`/`คลังข้อมูลที่เก็บถาวร` ทีละ row · กลับ feed → ไอคอนค้นหา → เห็นไอคอน bookmark บนหน้าค้นหา | ทุก entry เปิดหน้าถูก — เข้าไม่ได้ = เคสที่เกี่ยว BLOCK | row ตาม spec 13 | — | |
 | SETUP-08 | เครื่องที่สอง + ACCT-2 | — | SETUP | มีเครื่องจริงอีกเครื่อง | ติดตั้ง build เดียวกันลงเครื่องสอง → sign in `ACCT-2` → เปิด notification permission ทั้งสองเครื่อง | บัญชีสองพร้อม — ถ้าไม่มี → เคส ACCT-2/cross-device เป็น BLOCK | — | — | |
 | SETUP-09 | ACCT-2 เจ้าของโพสต์ต้นทาง | MEMBER+ACCT-2 | SETUP | SETUP-06/08 เสร็จ | เครื่องสอง: ACCT-2 สร้าง `P-X1` (sale post) + `P-X2` (โพสต์ธรรมดา) → เครื่องหลัก: MEMBER เซฟ `P-X1` ใส่ `C-A` + ใส่ `P-X2` เข้า wish list | `P-X1` อยู่ใน `C-A`/all posts · `P-X2` อยู่ wish list — ใช้เทสต้นทางเปลี่ยนสถานะ §2.8 | — | — | |
-| SETUP-10 | baseline library | MEMBER | SETUP | SETUP-06/09 เสร็จ | เปิด `การตั้งค่า` จด count แต่ละ row (Saved ≥3 · Wish List ≥2 · Archive ≥1) → เปิด `saved` จดแท็บ/การ์ด/จำนวน tile → เปิด `สนใจ`/`ไม่สนใจ` จดจำนวนแถว | count/tile/row ตรงข้อมูลที่เตรียม — จุดใดไม่ตรง จดลง Note เป็นบริบทก่อนรัน | — | — | |
+| SETUP-10 | baseline library | MEMBER | SETUP | SETUP-06/09 เสร็จ | เปิด `การตั้งค่า` บันทึก count แต่ละ row (Saved ≥3 · Wish List ≥2 · Archive ≥1) → เปิด `saved` บันทึกแท็บ/การ์ด/จำนวน tile → เปิด `สนใจ`/`ไม่สนใจ` บันทึกจำนวนแถว | count/tile/row ตรงข้อมูลที่เตรียม — จุดใดไม่ตรง บันทึกลง Note เป็นบริบทก่อนรัน | — | — | |
 
 ### 2.1 Entry & Access — ทางเข้า Library + Guest Gate
 
@@ -138,7 +138,7 @@
 | LIB-060 | cover fallback เมื่อโพสต์ออก | MEMBER | EDGE | `C-A` cover = tile แรก | เอาโพสต์ที่เป็น cover ออกจาก `C-A` → กลับ hub ดูการ์ด | cover เปลี่ยนเป็นรูปโพสต์ตัวอื่นใน col อัตโนมัติ (โพสต์ล่าสุดที่เหลือ) · ไม่มีของเหลือ → ไอคอน bookmark | — | MED | |
 | LIB-061 | Unsave ทั้ง col แล้ว col ยังอยู่ | MEMBER | STATE | `C-A` มีของ | select all → `ลบออก` ยืนยัน → กลับ hub แท็บคอลเลกชัน | โพสต์หลุด `C-A` ทั้งหมด แต่ `C-A` ยังเป็น col ว่างอยู่ (ไม่ถูกลบ) | — | MED | |
 | LIB-062 | long-press tile ใน col | MEMBER | EDGE | `savedcol` มีของ | กดค้าง tile 1 ตัว | เข้า select mode + tile นั้นถูกเลือก | — | LOW | |
-| LIB-063 | ชื่อ col ยาว 40 | MEMBER | EDGE | สร้าง col ชื่อยาวสุด | ดูการ์ด + head `savedcol` | ชื่อแสดงครบหรือตัดแบบไม่ล้น layout — ไม่ทับปุ่ม/หลุดจอ | — | LOW | |
+| LIB-063 | ชื่อ col ยาว 40 | MEMBER | EDGE | สร้าง col ชื่อยาวสุด | ดูการ์ด + head `savedcol` | ชื่อแสดงตามกติกาตัดข้อความของ design โดยไม่ล้น layout — ไม่ทับปุ่ม/หลุดจอ | — | LOW | |
 
 ### 2.5 Wish List — `wl` Sheet + `wishlist` Hub + `wishcol`
 
@@ -170,8 +170,8 @@
 | LIB-082 | tile → viewer title Archive | MEMBER | POSITIVE | `archive` มี ≥2 | แตะ tile → ปัด | viewer feed mode หัวข้อ `Archive` swipe ในลิสต์ archived | — | MED | |
 | LIB-083 | unarchive → กลับ feed | MEMBER | POSITIVE | `P-ARC` archived | archive viewer/หน้า archive → เมนูโพสต์ → `Unarchive` → เช็ก feed + profile grid + pins | โพสต์กลับ feed+grid ตาม eligibility + toast `Post unarchived` — **pin ไม่กลับ** (ต้องปักใหม่) | — | HIGH | |
 | LIB-084 | หน้า archive refresh หลัง unarchive | MEMBER | STATE | `archive` เปิดอยู่ | unarchive โพสต์จากเมนูใน viewer → ปิด viewer กลับหน้า archive | tile หายจาก grid เหลือเฉพาะที่ยัง archived | — | MED | |
-| LIB-085 | settings row count ตามจำนวน archived | MEMBER | STATE | SETUP-10 จด count | archive เพิ่ม 1 → กลับ settings ดู row → unarchive → ดูอีกที | count ขึ้น/ลงตามจำนวน archived จริง | — | MED | |
-| LIB-086 | เจ้าของ archive → หลุด library คนเซฟ | MEMBER+ACCT-2 | POSITIVE | SETUP-09: MEMBER เซฟ `P-X1` ของ ACCT-2 | เครื่องสอง: ACCT-2 archive `P-X1` → เครื่องหลัก: เปิด `saved` + `C-A` ใหม่ | tile `P-X1` หายจาก all posts + `C-A` ของ MEMBER (sync ตาม server — ถ้าค้าง ให้ปิด/เปิดหน้าใหม่แล้วต้องหาย) | — | HIGH | |
+| LIB-085 | settings row count ตามจำนวน archived | MEMBER | STATE | SETUP-10 บันทึก count | archive เพิ่ม 1 → กลับ settings ดู row → unarchive → ดูอีกที | count ขึ้น/ลงตามจำนวน archived จริง | — | MED | |
+| LIB-086 | เจ้าของ archive → หลุด library คนเซฟ | MEMBER+ACCT-2 | POSITIVE | SETUP-09: MEMBER เซฟ `P-X1` ของ ACCT-2 | เครื่องสอง: ACCT-2 archive `P-X1` → เครื่องหลัก: เปิด `saved` + `C-A` ใหม่ | tile `P-X1` หายจาก all posts + `C-A` ของ MEMBER (sync ตาม server — หายหลังปิด/เปิดหน้าใหม่ = PASS; ยังค้าง = FAIL) | — | HIGH | |
 | LIB-087 | archive โพสต์ตัวเองที่ตัวเองเซฟ | MEMBER | POSITIVE | โพสต์ตัวเองที่เซฟไว้ (สร้าง+เซฟผ่านแอปจริง) | archive โพสต์นั้น → เปิด `saved` → unarchive → เปิด `saved` อีกครั้ง | ตอน archived: tile หายจาก saved (archive rule — หลุด tiles ที่อ้างถึง) · ตอน unarchive: tile **กลับมา**ใน saved เพราะ archive ไม่ลบสถานะเซฟ (กลับ eligibility เดิม) | — | MED | |
 
 ### 2.7 Interested + Not Interested — `interested` / `ni`
@@ -179,7 +179,7 @@
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | LIB-088 | `interested` anatomy | MEMBER | UI | SETUP-06 มี `P-L1/P-L2` | settings → การตั้งค่าเนื้อหา → `สนใจ` → อ่านหน้า | head back + `รายการที่สนใจ`/`Interested` · แถว = รูปโพสต์ + ชื่อคนขาย + แคปชัน + ปุ่ม `ลบออก`/`Remove` — ไม่มี nav | — | HIGH | |
-| LIB-089 | like → เข้า list · ลบออก → unlike | MEMBER | POSITIVE | `interested` เปิด | จดจำนวน → กลับ feed กดถูกใจโพสต์ใหม่ → เปิด list → `ลบออก` บน `P-L1` → เช็กยอดถูกใจบนการ์ด | โพสต์ที่เพิ่งถูกใจเข้า list · `ลบออก` = เอาถูกใจออก → แถวหาย + ยอดถูกใจโพสต์ลด 1 (ไม่ติดลบ) + หัวใจบนการ์ดว่าง | — | HIGH | |
+| LIB-089 | like → เข้า list · ลบออก → unlike | MEMBER | POSITIVE | `interested` เปิด | บันทึกจำนวน → กลับ feed กดถูกใจโพสต์ใหม่ → เปิด list → `ลบออก` บน `P-L1` → เช็กยอดถูกใจบนการ์ด | โพสต์ที่เพิ่งถูกใจเข้า list · `ลบออก` = เอาถูกใจออก → แถวหาย + ยอดถูกใจโพสต์ลด 1 (ไม่ติดลบ) + หัวใจบนการ์ดว่าง | — | HIGH | |
 | LIB-090 | แตะแถว → เปิดโพสต์ | MEMBER | POSITIVE | `interested` มีแถว | แตะแถว (ไม่ใช่ปุ่ม `ลบออก`) → back | เปิดโพสต์ตัวนั้น (Post Viewer feed mode เหมือน tile คลังอื่น) — **ไม่ใช่**โปรไฟล์คนขาย (ล็อก 2026-10-29) | — | MED | |
 | LIB-091 | `interested` empty | NEW | POSITIVE | account ใหม่ | เปิด `สนใจ` | `ยังไม่มีข้อมูลที่นี่`/`Nothing here yet` | — | MED | |
 | LIB-092 | `ni` anatomy | MEMBER | UI | SETUP-06 มี `P-NI` | `ไม่สนใจ` → อ่านหน้า | head back + `ไม่สนใจ`/`Not interested` · แถวเดียวกับ interested + ปุ่ม `คืนค่า`/`Restore` — ไม่มี nav | — | HIGH | |
@@ -197,7 +197,7 @@
 | LIB-099 | ต้นทางถูกซ่อน (Hide) → tile หาย | MEMBER+ACCT-2 | POSITIVE | SETUP-09 (ACCT-2 เพิ่ม `P-X3` sale → MEMBER เซฟ) | เครื่องสอง: ACCT-2 เปลี่ยน `P-X3` เป็น Hide → เครื่องหลัก: เปิด `saved` ใหม่ | tile `P-X3` หายจาก hub + ทุก col ที่อยู่ (sync ตาม server) | — | HIGH | |
 | LIB-100 | ต้นทางถูกลบ → หาย + เปิดค้างเจอไม่พร้อมใช้งาน | MEMBER+ACCT-2 | POSITIVE | เครื่องหลักเปิด viewer ของ `P-X2` จาก wish list ค้างไว้ | เครื่องสอง: ACCT-2 ลบ `P-X2` → เครื่องหลัก: ปิด/เปิด `wishlist` ใหม่ + บน viewer ที่ค้าง แตะ `View full detail`/รีเฟรช | tile หายจาก wish list · ทางเปิดที่ค้าง (viewer/detail เดิม) แสดง `รายการนี้ไม่พร้อมใช้งานแล้ว`/`This post is no longer available` — ไม่แสดงข้อมูลเก่า | — | HIGH | |
 | LIB-101 | เจ้าของบล็อกเรา → tile หาย | MEMBER+ACCT-2 | POSITIVE | MEMBER เซฟโพสต์ `P-X4` ของ ACCT-2 (เตรียมเพิ่มผ่านแอป) | เครื่องสอง: ACCT-2 block MEMBER → เครื่องหลัก: เปิด `saved` ใหม่ | tile `P-X4` หาย (ของที่มองไม่เห็นแล้วไม่ค้างในคลัง) | — | MED | |
-| LIB-102 | count badge + hub อัปเดตตามจริง | MEMBER | STATE | SETUP-10 จด count | เซฟเพิ่ม 1 / เอาออก 1 → กลับ settings ดู row `Saved` | count ขึ้น/ลงตามจำนวน saved จริงเสมอ | — | MED | |
+| LIB-102 | count badge + hub อัปเดตตามจริง | MEMBER | STATE | SETUP-10 บันทึก count | เซฟเพิ่ม 1 / เอาออก 1 → กลับ settings ดู row `Saved` | count ขึ้น/ลงตามจำนวน saved จริงเสมอ | — | MED | |
 | LIB-103 | unsave จาก viewer ที่เปิดจาก col | MEMBER | STATE | เปิด viewer จาก `savedcol` | viewer → แตะ bookmark → แตะ `Saved` ถอด → ปิด viewer | tile หายจาก col + all posts — grid อัปเดต | — | MED | |
 | LIB-104 | ni/mute ไม่กระทบ library | MEMBER | POSITIVE | เซฟ `P-S1` ไว้ + mark ni โพสต์ `P-N2` ที่เซฟไว้ + mute seller ของ `P-S2` (เตรียมผ่านแอป) | เปิด `saved` | `P-N2`/`P-S2` ยังอยู่ใน saved — ni/mute เป็น exclusion เฉพาะ feed ไม่ลบของในคลัง | — | MED | |
 | LIB-105 | cover col อัปเดตเมื่อต้นทางหาย | MEMBER+ACCT-2 | EDGE | `C-A` มี tile ที่เป็น cover = `P-X1` | ACCT-2 ลบ/ซ่อน `P-X1` → เปิด hub | การ์ด `C-A` เปลี่ยน cover เป็นรูปตัวอื่นใน col (ไม่ค้างรูปของที่หายไป) | — | LOW | |
@@ -230,12 +230,20 @@
 | **library persist = server** (lock เล่ม 12/13) — prototype persist แค่ session flag | kill/sign-out/เครื่อง B ต้องรอด — หลุด = FAIL contract | LIB-110..113 |
 | **guest → saved/wishlist hub เปิดได้เห็น empty** (spec 11 §16 — `sr-saved`/`data-sub` ไม่ gate) vs archive/interested/ni ไม่มีทาง (settings ทั้งชุด gate) | เคส guest ของ saved = "เปิดได้ว่าง" · ของ archive/interested/ni = "ไม่มีทางถึง" | LIB-001, 003 |
 | **EN hardcode จุด library**: Edit collection, nc sheet, move sheet, dlg ลบ/ถอด, `N saved posts`/`N items`, add picker, `Search {col}` — prototype ไม่มีคู่ TH | ล็อกภาษาเหนือกว่า — TH mode เจอ EN ค้าง = FAIL | LIB-117 + เคสที่เกี่ยว |
-| **nc `svd-mv-new` = `p[k]=[name]`** — ย้ายไป col ใหม่ล้าง col เดิมทั้งหมด (ต่างจากย้ายไป col ที่มีอยู่ = เพิ่ม) | expected ตามพฤติกรรมที่ล็อก — ถ้า build เก็บหลาย col หลัง move→new = แจ้งรีวิว | LIB-057 |
-| **ชื่อ col ซ้ำได้** — ไม่มี dedupe ในแบบจำลอง/spec | สร้างชื่อซ้ำสำเร็จ = พฤติกรรมปกติ (ถ้า build block ชื่อซ้ำ = แจ้งรีวิว) | LIB-042 |
-| **`m-unsave` settings surface** — spec เขียน "ถ้ามี surface" | ไม่มี list unsave ใน settings → ไม่มีเคส | — |
+| **nc `svd-mv-new` = `p[k]=[name]`** — ย้ายไป col ใหม่ล้าง col เดิมทั้งหมด (ต่างจากย้ายไป col ที่มีอยู่ = เพิ่ม) | ล้าง col เดิมทั้งหมด = PASS · เก็บหลาย col = FAIL (ตามพฤติกรรมที่ล็อก) | LIB-057 |
+| **ชื่อ col ซ้ำได้** — ไม่มี dedupe ในแบบจำลอง/spec | สร้างชื่อซ้ำสำเร็จ = พฤติกรรมปกติ (ถ้า build block ชื่อซ้ำ = FAIL) | LIB-042 |
+| **`m-unsave` settings surface** — spec ระบุเป็น surface เสริม · ล็อกว่าไม่มี row unsave ใน settings → ไม่มี row = PASS (มี row = FAIL) | — |
 | **archive เคลียร์ pins ไม่คืน** (AC-FEED-027) | unarchive ไม่คืน pin | LIB-079, 083 |
 | **ตัวนับ settings rows ต้องสะท้อนข้อมูลจริง** (AC-SETTING-015) | count ทุก row ตรง session | LIB-002, 085, 102 |
 | **ni ไม่กระทบ library** — exclusion เฉพาะ feed (spec 02 §9 vs 11 §14) | โพสต์ ni/muted ยังอยู่ saved | LIB-104 |
+
+**FO-SYNC-01 sync (2026-10-29) — ปิด deviation ที่ค้างในเล่มนี้:**
+
+- **RESOLVED — multi-collection**: spec `11_SOCIAL_MODULE.md` เขียนใหม่เป็น `savedCols`/`wlCols` array ครบ (§3/§8/§12/§13/§19/§21) — picker ติ๊กหลายอัน · เอาออกทีละอัน · unsave หลุดทุก col · move→existing additive / move→new `p[k]=[name]` ล้างเดิม · ชื่อซ้ำได้ · rename map / delete filter · `POST_FLAG_KEYS` รวม `savedCols`/`wlCols` — sync ต่อ spec 02/05/DEV_IMPLEMENTATION/QA_TEST checklists
+- **RESOLVED — แถว interested/ni → เปิดโพสต์**: prototype เปลี่ยน row เป็น `data-sub-pid` + handler เปิด `openPostViewer` feed mode (title ตามภาษา) — spec 13 §516-517 + AC-SETTING-018 เพิ่ม contract แล้ว
+- **RESOLVED — ต้นทางสถานะ**: spec 11 §12 เพิ่มตาราง library impact (sold=อยู่ / hide·archive·block=หาย / delete=หาย+stale→unavailable / ni·mute=ไม่กระทบ) + prototype เพิ่ม `libVisible` filter ทุก list (saved/wishlist/col/interested/ni + count badge)
+- **RESOLVED — EN hardcode จุด library + viewer titles**: เติม `I18N_TH` dict ~40 คู่ + `i18nTr` patterns (`N saved posts`/`N items`/`Search {col}`/`Add from`/`Mute X?`/`Watch alert matched:`) + isTh branches (search placeholder, dlg `mute`/`reset`, chat modals, restrict hint) — `Archive`→`คลังเก็บ` ใน dict แล้ว
+- **ต่างโดยเจตนา (คงไว้)**: persist = session snapshot/localStorage (contract = server ข้ามเครื่อง — spec 11 §19 D7b) · stale delete path ในแบบจำลองไม่มีทาง trigger (tile หายก่อนเสมอ) · `?dev` sims = dev-only · `m-unsave` surface ไม่มีตาม spec (surface เสริม — ไม่มี row = PASS)
 
 ## §4 Traceability — inventory + actions ครอบ
 
@@ -264,6 +272,8 @@
 
 - **ก่อนส่งงานจริง**: เขียนเสร็จ → รอ PO/หัวหน้ารีวิว → แก้ตาม feedback → ค่อยปิด task (กฎเดียวกับทุกเล่ม)
 - **จุดที่ล็อกในรอบนี้ (ถามผู้ใช้ 2026-10-29)**: (1) multi-collection ตามแบบจำลอง+IG จริง (spec 11 ค้าง `savedCol` เอกพจน์ — แจ้งอัปเดต spec) (2) ต้นทาง sold/hide/archive/block/delete → library impact ตามการแบ่งสถานะ (3) offline = cache ชุดล่าสุด + action เขียนไม่ได้แจ้งชัด (4) แถว interested/ni แตะ → เปิดโพสต์
-- **เคส BLOCK ล่วงหน้าที่คาดว่าอาจเจอ**: LIB-013 (สร้าง col ≥5 ไม่ได้) · LIB-050 (เตรียม saved ครบทุก col ไม่ได้) · LIB-086, 098..101, 105, 112, 113 (ไม่มีเครื่องสอง/ACCT-2 ไม่ได้/สถานะข้ามบัญชี sync ยังไม่ทำ) · LIB-106 (เซฟ ≥15 ช้า/ไม่ได้) · LIB-107 (ทำรูปพังไม่ได้)
+- **เคส BLOCK ล่วงหน้า** (ต้องมีเครื่องที่สองหรือ ACCT-2 — ไม่มี = BLOCK พร้อมเหตุผล): LIB-013 (สร้าง col ≥5 ไม่ได้) · LIB-050 (เตรียม saved ครบทุก col ไม่ได้) · LIB-086, 098..101, 105, 112, 113 (ไม่มีเครื่องสอง/ACCT-2 ไม่ได้/สถานะข้ามบัญชี sync ยังไม่ทำ) · LIB-106 (เซฟ ≥15 ช้า/ไม่ได้) · LIB-107 (ทำรูปพังไม่ได้)
 - **spec gap/จุดเฝ้าระวังรอบรีวิว**: spec 11 ยังเขียน `savedCol` เอกพจน์ (ต้องอัปเดตเป็น multi) · EN hardcode จุด library ต้อง sweep ภาษา · viewer title `Saved`/`Wish List`/`Archive` เป็น EN ในแบบจำลอง (ในแอปจริงต้องตามภาษา) · LIB-087 (archive โพสต์ที่ตัวเองเซฟ → หลุด) อาศัยว่าเซฟโพสต์ตัวเองได้
 - **ครอบโดยเล่มอื่น ไม่ทำซ้ำ**: PV/Detail internals → FO-TEST-06 · sheets mechanics → FO-TEST-07 · feed/own-post menus → FO-TEST-03/13 · walerts หน้าปลายทาง → FO-TEST-11 · prefs/favorites/muted/blocked → FO-TEST-15 · Member Sheet → FO-TEST-17
+
+- สถิติ: **118 TC** — High 57 / Medium 51 / Low 10 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 128 แถว)

@@ -48,12 +48,12 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เปิดขึ้น feed หรือ onboarding | splash/หน้าแรกขึ้นตาม build | — | |
+| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เห็นหน้า onboarding (แอปสะอาด) | splash/หน้าแรกของแอป | — | |
 | SETUP-02 | สถานะเริ่มต้น | — | SETUP | แอปติดตั้งแล้ว | ลบข้อมูลแอป/ติดตั้งใหม่ ถ้าเคยใช้เครื่องนี้มาก่อน | แอปสะอาด เหมือนผู้ใช้ใหม่ | — | — | |
 | SETUP-03 | ผู้ใช้ GUEST | — | SETUP | แอปสะอาด | ไม่ sign in → เดินเข้า feed ได้เลย | guest mode | bottom nav ครบ | — | |
 | SETUP-04 | ผู้ใช้ MEMBER | — | SETUP | แอปสะอาด | sign in ด้วยบัญชีทดสอบที่ทีมสร้าง | เข้า feed เป็นสมาชิก | avatar/ชื่อตัวเองในที่ที่ต้องแสดง | — | |
 | SETUP-05 | ผู้ใช้ NEW | — | SETUP | แอปสะอาด | สมัครใหม่ด้วยอีเมล/เบอร์ทดสอบจริง → ผ่าน onboarding จนเข้า feed | member ใหม่ — alerts feed ว่างเสมอ | — | — | |
-| SETUP-06 | ข้อมูลอ้างอิง | MEMBER | SETUP | sign in แล้ว | จดลง Note ของไฟล์: `ACTOR-MEMBER` · `ACCT-2` · `POST-OWN` = โพสต์ขายของตัวเอง (ถ้ายังไม่มีให้สร้างผ่าน `+` → composer) · `WATCH-X` = criteria ที่ ACCT-2 ลงลิสติ้ง match ได้ · `ACCT-3+` = บัญชีเสริมสำหรับ aggregate (ถ้ามี) · จด "รุ่นเครื่อง + OS" ทุกเครื่อง | ข้อมูลจดพร้อม — ขาดตัวใด mark BLOCK เคสที่เกี่ยว | — | — | |
+| SETUP-06 | ข้อมูลอ้างอิง | MEMBER | SETUP | sign in แล้ว | บันทึกลง Note ของไฟล์: `ACTOR-MEMBER` · `ACCT-2` · `POST-OWN` = โพสต์ขายของตัวเอง (ถ้ายังไม่มีให้สร้างผ่าน `+` → composer) · `WATCH-X` = criteria ที่ ACCT-2 ลงลิสติ้ง match ได้ · `ACCT-3+` = บัญชีเสริมสำหรับ aggregate (ถ้ามี) · บันทึก "รุ่นเครื่อง + OS" ทุกเครื่อง | ข้อมูลพร้อม — ขาดตัวใด mark BLOCK เคสที่เกี่ยว | — | — | |
 | SETUP-07 | ทางเข้า + ปุ่ม | MEMBER | SETUP | sign in แล้ว | ทดลอง: แท็บ `แจ้งเตือน` → alerts feed · back `<` บนหัว → feed · `Mark all as read` บน section แรก · `x` + `Follow back` บน follow row · เส้นทาง notif settings: profile → menu → Settings → `การตั้งค่าการแจ้งเตือน/Notification settings` | ทุก entry เปิดถูก | ตำแหน่งตาม spec §6 | — | |
 | SETUP-08 | Member Sheet mechanics | GUEST | SETUP | เป็น guest | กดแท็บ `แจ้งเตือน` (gated) | Member Sheet เด้ง มี Sign in/Sign up/Skip — feed ไม่เปิด | bottom sheet จากขอบล่างเหมือนทุกหน้า | — | |
 | SETUP-09 | เครื่องที่สอง + ACCT-2 | — | SETUP | มีเครื่องจริงอีกเครื่อง | ติดตั้ง build เดียวกันลงเครื่องสอง → sign in `ACCT-2` → เปิด notification permission ทั้งสองเครื่อง → ตั้งเวลาเครื่องตรงกัน | บัญชีสองพร้อม — ถ้าไม่มี → เคส ACCT-2 เป็น BLOCK | — | — | |
@@ -91,7 +91,7 @@
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | ALT-017 | badge = จำนวน unread พอดี | MEMBER | STATE | มี unread ≥1 (SETUP-10) | นับแถว unread ใน feed เทียบเลขบน badge แท็บ | badge เท่ากับจำนวนแถว unread เป๊ะ (รวมทุก type รวม watch+system) | badge อยู่บนไอคอนแท็บแจ้งเตือน | HIGH | |
-| ALT-018 | แตะ row unread → อ่าน + badge ลด | MEMBER | POSITIVE | มี unread | จด badge → แตะ row unread 1 แถว → กลับ alerts | แถว highlight หายทันทีก่อนเปิด destination + badge ลด 1 + แถวยังคงสถานะอ่านหลังกลับ | — | HIGH | |
+| ALT-018 | แตะ row unread → อ่าน + badge ลด | MEMBER | POSITIVE | มี unread | บันทึก badge → แตะ row unread 1 แถว → กลับ alerts | แถว highlight หายทันทีก่อนเปิด destination + badge ลด 1 + แถวยังคงสถานะอ่านหลังกลับ | — | HIGH | |
 | ALT-019 | แตะ row ที่อ่านแล้ว | MEMBER | POSITIVE | row อ่านแล้ว | แตะ row read | badge ไม่เปลี่ยน + ยัง navigate ไป destination ปกติ | — | MED | |
 | ALT-020 | Mark all as read | MEMBER | POSITIVE | unread ≥2 | แตะ `อ่านทั้งหมดแล้ว/Mark all as read` บน section แรก | ทุก row กลายเป็นอ่าน + badge หาย + ปุ่มหาย + ไม่มี row ไหนหายไปจาก feed | re-render ไม่กระตุก | HIGH | |
 | ALT-021 | ปุ่ม mark-all อยู่เฉพาะ section แรก + เฉพาะเมื่อมี unread | MEMBER | UI | unread >0 | อ่าน section headers ทุกกลุ่ม | ปุ่มอยู่บน section header **แรกเท่านั้น**; feed ที่อ่านครบแล้วไม่มีปุ่มเลย | — | MED | |
@@ -230,3 +230,5 @@
 - **ข้อมูลจริงบน server เป็นตัวแปรหลัก** — จำนวน alert/อายุกลุ่ม/จำนวน like ขึ้นกิจกรรมจริง: expected ทุกข้อตัดสินได้จากข้อมูลที่มีจริง อย่า FAIL เพราะจำนวนน้อยกว่าตัวอย่าง
 - **เคส BLOCK ล่วงหน้าที่คาดว่าอาจเจอ**: ALT-011/068 (ต้อง ≥3 บัญชี), ALT-014/028/032/053/069 (watch engine), ALT-015/070 (system trigger), ALT-023 (unread >99), ALT-042 (deep link), ALT-073 (push ยังไม่ implement)
 - **อยู่นอก scope**: `walerts` list + สร้าง/แก้ watch alert (FO-TEST-11) · anatomy เต็มของ `notif_settings` (FO-TEST-15) · push payload/FCM contract ละเอียด (out of V1)
+
+- สถิติ: **79 TC** — High 31 / Medium 45 / Low 3 (SETUP rows 11 แถวแยกใน checklist; รวมใน csv 90 แถว)

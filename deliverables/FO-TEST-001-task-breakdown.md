@@ -428,8 +428,8 @@ Output: deliverables/FO-TEST-001-15-settings.md
   เช็ค UI/state ฝั่ง FO ที่บ่ง handoff)
 - Edge: report ซ้ำ, report ตัวเอง (ทำได้ไหม), report ของที่ถูกลบแล้ว
 
-TC ID: FO-TC-TRS-nnn
-Output: deliverables/FO-TEST-001-16-trust-safety.md
+TC ID: TRS-nnn
+Output: deliverables/FO-TEST-001-16-report-block.md
 ```
 
 ---
@@ -437,20 +437,39 @@ Output: deliverables/FO-TEST-001-16-trust-safety.md
 ## TASK FO-TEST-17 — Guest Gate & Member Sheet (ทำหลัง module หลัก)
 
 ```text
-อ่าน master prompt + inventory + test case ที่ module อื่นทำแล้ว
+อ่าน master prompt + inventory + spec (00_GLOBAL §11 guest gate + §7 session,
+15_TRUST_SAFETY §13 gate subset, 01_AUTHENTICATION §Member Sheet/onboarding)
++ test case เล่มที่ทำแล้ว (โดยเฉพาะเล่ม 16 — report/block gate subset ครอบไว้แล้ว
+ใน TRS-001/020/055 อย่าซ้ำ internals ให้เช็กเฉพาะว่า entry อยู่ใน gate list)
+
+เขียนเป็นเวอร์ชันเทสแอปมือถือจริงตั้งแต่แรก (spec ล็อกแล้ว) — Prototypes/fo-flow
+เป็นแค่ reference ว่าหน้าตาควรเป็นแบบไหน
 
 ขอบเขต: cross-cutting — guest × ทุก gated action ในแอป
-1. ลิสต์ gated actions ทั้งหมดจาก inventory + โค้ด (guestCanX / member sheet
-   trigger): like, comment, share, save, wishlist, follow, not-interested,
-   create, chat/ask seller, watch alert, report, block, ฯลฯ ที่โค้ด gate จริง
-2. เคสเมทริกซ์: | Action | Entry point | Guest result (Member Sheet?) |
-   Sheet shown | Resume หลัง sign in |
-3. Member Sheet mechanics: เขียน/sign in/SSO/skip/ปิด — กลับมาหน้าเดิม
-   และ action เดิม resume หรือต้องกดใหม่ (ตามโค้ด)
-4. สิ่งที่ guest ทำได้ฟรี — เคสยืนยันว่า "ไม่เจอ" sheet: browse feed,
-   search/filter, board, profile ดู, legal pages
-TC ID: FO-TC-GATE-nnn
-Output: deliverables/FO-TEST-001-17-guest-gate.md
+1. เมทริกซ์ gated actions ทั้งหมดจาก GUEST_GATE_SEL + inventory: like,
+   comment, share, save, wishlist, follow, not-interested, create,
+   chat/ask seller, watch alert, report, block, mute, settings entry,
+   notifications nav, profile nav, ฯลฯ — เคสกลุ่มตาม surface
+   (ไม่ต้องทุก action เป็นแถวแยก ถ้าพฤติกรรมเหมือนกันรวมเป็นแถวเดียวได้)
+2. Member Sheet mechanics: anatomy (Join TukDaeng/เข้าร่วมตึกแดง),
+   เส้นทาง sign in/sign up/SSO, Skip/ปิด/scrim dismiss, Don't show
+   this again → guest เงียบ ๆ run ถัดไปไม่แสดงซ้ำ
+3. Resume contract (ล็อกแล้ว spec 15 §13): หลัง sign-in จาก gate
+   surface คงอยู่แต่ต้องกด action ใหม่ — ไม่มี pending-action resume
+4. Guest ทำได้ฟรี — เคสยืนยัน "ไม่เจอ" sheet: browse feed ทุก tab,
+   search/filter, board, public profile ดู, legal pages (privacy/terms)
+5. persist: gate state + onboarding flags รอด kill/sign-out
+6. TH/EN + dark theme บน Member Sheet
+
+กติกาเดียวกับทุกเล่ม: ผลเดียวต่อเคส = PASS/FAIL/BLOCK · ห้ามคำนิ่ม ·
+BLOCK พร้อมเหตุผลเมื่อ setup ไม่ครบ · [GATE] เทส 2 รอบ (guest/member)
+Actors: GUEST / MEMBER / ACCT-2 (เครื่องสอง ถ้าจำเป็น)
+โครงเล่ม: header (Task/SoT/Scope/ยกเว้น/หมายเหตุ) + §0 กติกา + §1 coverage
+map + §2 เคส (SETUP + sections) + §3 watch points + §4 traceability + stats
+TC ID: GATE-nnn
+Output: deliverables/FO-TEST-001-17-guest-gate.md +
+        deliverables/FO-TEST-001-17-guest-gate-checklist.csv (10 คอลัมน์เดิม)
+Validate: csv 10 คอลัมน์ทุกแถว + ID ไม่ซ้ำ + parity MD=CSV
 ```
 
 ---

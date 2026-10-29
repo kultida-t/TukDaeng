@@ -24,13 +24,13 @@ SETUP-06,Setup,-,"ข้อมูลเทสที่ต้องเตรี�
 • บัญชี seller ที่ follow อยู่แล้ว + seller ที่ยังไม่ follow (ใช้การ์ด D/E): ____________________
 • บัญชี seller สำหรับเทส block (FEED-050): ____________________
 • บัญชีที่สองสำหรับสร้างโพสต์ตัวอย่างบน feed (ถ้า feed ขาดประเภทการ์ด): ____________________
-• เครื่องทดสอบ: รุ่น + OS version = ____________________ (จดลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน เช่น iPhone 15 · iOS 18 / Galaxy S24 · Android 15)",จดข้อมูลครบก่อนเริ่มเทส — เคสที่ต้องล็อกอิน/สมัครใหม่/การ์ดเฉพาะประเภทจะทำไม่ได้ถ้าไม่มีข้อมูลชุดนี้,-,High,,,
+• เครื่องทดสอบ: รุ่น + OS version = ____________________ (บันทึกลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน เช่น iPhone 15 · iOS 18 / Galaxy S24 · Android 15)",ข้อมูลครบก่อนเริ่มเทส — เคสที่ต้องล็อกอิน/สมัครใหม่/การ์ดเฉพาะประเภทจะทำไม่ได้ถ้าไม่มีข้อมูลชุดนี้,-,High,,,
 SETUP-07,Setup,-,"เส้นทางเข้า Settings (ใช้เคส snooze/ภาษา/ธีม):
 1. อยู่ feed แบบ member (SETUP-04)
 2. แตะแท็บ ""Profile"" ในแถบนำทางล่าง (ขวาสุด)
 3. แตะไอคอน ≡ มุมขวาบน (ปุ่ม Settings and activity)
 4. แตะ ""Content preferences"" = หน้าที่มี toggle ""Snooze suggested posts in feed""; ""Language""/""Theme"" อยู่หน้าเดียวกันนี้",เห็นหน้า Content preferences พร้อม toggle Snooze + เมนู Language/Theme,-,High,,,
-SETUP-08,Setup,-,"เลือก ""การ์ดตัวอย่าง"" จาก feed จริง (เลื่อนดูด้วยนิ้ว แล้วจด seller/ลักษณะลง Note — ทุกเคสอ้างตัวอักษรชุดนี้):
+SETUP-08,Setup,-,"เลือก ""การ์ดตัวอย่าง"" จาก feed จริง (เลื่อนดูด้วยนิ้ว แล้ว):
 • A = การ์ดขาย (sale) มีราคา มีรูป ≥2 ใบ
 • B = การ์ด showcase (ไม่มีราคา) รูปเดียว
 • C = การ์ดขายรูปเดียว
@@ -38,11 +38,11 @@ SETUP-08,Setup,-,"เลือก ""การ์ดตัวอย่าง"" �
 • E = การ์ดของ seller ที่ยังไม่ follow (head มีปุ่ม Follow)
 • F = การ์ดที่มีแถว ""Liked by …""
 • G = การ์ดที่ caption มี hashtag
-ถ้าหาการ์ดประเภทไหนไม่ได้เลย → สร้างจากบัญชีที่สองผ่าน composer หรือขอ test data; สร้างไม่ได้จริง ๆ mark BLOCK เคสที่เกี่ยว",มีการ์ดอ้างอิงครบบทบาท A–G (หรือเท่าที่หาได้ + จดตัวที่ขาด),-,High,,,
+ถ้าหาการ์ดประเภทไหนไม่ได้เลย → สร้างจากบัญชีที่สองผ่าน composer หรือขอ test data; สร้างไม่ได้จริง ๆ mark BLOCK เคสที่เกี่ยว",มีการ์ดอ้างอิงครบบทบาท A–G (หรือเท่าที่หาได้ +),-,High,,,
 SETUP-09,Setup,-,"ทำให้มี ""โพสต์ตัวเอง"" บน feed (สำหรับเคส OWNER):
 1. เป็น member (SETUP-04)
 2. แตะปุ่ม ""+"" บน header → เลือกรูปจริงจากเครื่องใน picker → ""Next""
-3. ใส่ caption → กด ""Share"" (โหมด post)",โพสต์ใหม่ของตัวเองโผล่บน feed + toast ยืนยัน (จดข้อความจริง),-,High,,,เคส OWNER ทุกตัวต้องทำขั้นนี้ก่อน; pin limit (FEED-066) ต้องมีโพสต์ตัวเอง ≥4 ใบ
+3. ใส่ caption → กด ""Share"" (โหมด post)",โพสต์ใหม่ของตัวเองโผล่บน feed + toast ยืนยัน,-,High,,,เคส OWNER ทุกตัวต้องทำขั้นนี้ก่อน; pin limit (FEED-066) ต้องมีโพสต์ตัวเอง ≥4 ใบ
 SETUP-10,Setup,-,"ทำให้มี ""โพสต์ clip/วิดีโอ"" บน feed (สำหรับเคส FEED-017–019):
 1. ""+"" → เลือกวิดีโอจากเครื่อง (หรือ media ที่มี badge เวลา) → ""Next"" → ""Share""
 2. ถ้า picker ไม่มีวิดีโอ/ไม่รองรับ clip บน build นี้ → mark BLOCK เคส FEED-017–019 พร้อมเหตุผล",การ์ดใหม่มี badge ▶0:NN มุมรูป + แถบ progress ใต้รูป,-,High,,,ถ้าแอปจริงยังไม่รองรับ clip ให้ BLOCK ทั้งกลุ่ม clip
@@ -63,7 +63,7 @@ FEED-002,Post Card,อยู่ feed + เลือกการ์ด B แล�
 FEED-003,Post Card,อยู่ feed (มีการ์ด D + E),1. เทียบ head ของการ์ด D (follow แล้ว) กับการ์ด E (ยังไม่ follow),"การ์ด D ไม่มีปุ่ม ""Follow"" บน head; การ์ด E มีปุ่ม ""Follow""",MEMBER,Medium,,,
 FEED-004,Post Card,member อยู่ feed บนสุด,"1. จำการ์ดแรกสุด (เทียบเวลาโพสต์)
 2. เลื่อนลงจนสุดลิสต์ แล้วเลื่อนต่ออีก
-3. กลับบนสุดแล้วดึงจอลง (pull) ด้วยนิ้วจนสุดแล้วปล่อย","feed เรียงโพสต์ล่าสุดไว้บนสุดตั้งแต่เปิด (newest first); เลื่อนลงสุด → โพสต์โหลดต่อหรือลิสต์จบสะอาด (ไม่มี spinner ค้าง); ดึงลงที่บนสุดต้องมี pull-to-refresh: indicator หมุนแล้ว feed รีเฟรชข้อมูลใหม่ (โพสต์ใหม่เข้ามาอยู่บน) — ไม่มี PTR = FAIL ตาม spec",MEMBER,Medium,,,spec: newest first + PTR ต้องมีและรีเฟรชจริง (มาตรฐาน feed app)
+3. กลับบนสุดแล้วดึงจอลง (pull) ด้วยนิ้วจนสุดแล้วปล่อย","feed เรียงโพสต์ล่าสุดไว้บนสุดตั้งแต่เปิด (newest first); เลื่อนลงสุด → ถ้ายังมีโพสต์ โหลดต่อ; ถ้าหมดแล้ว ลิสต์จบสะอาด (ไม่มี spinner ค้าง); ดึงลงที่บนสุดต้องมี pull-to-refresh: indicator หมุนแล้ว feed รีเฟรชข้อมูลใหม่ (โพสต์ใหม่เข้ามาอยู่บน) — ไม่มี PTR = FAIL ตาม spec",MEMBER,Medium,,,spec: newest first + PTR ต้องมีและรีเฟรชจริง (มาตรฐาน feed app)
 FEED-005,Post Card,อยู่ feed,1. ดูตัวเลขหลังไอคอนตา (👁) ของการ์ดหลายใบ,"แสดงจำนวน view เช่น ""980"" / ""1.2K"" — เป็นจำนวน view ไม่ใช่เงิน (ไม่มี THB ไม่ format เงิน)",MEMBER,Medium,,,money-display-rules: views ≠ currency
 FEED-006,Post Card,guest อยู่ feed (SETUP-03),1. ดูการ์ด A ทั้งใบเทียบตอนเป็น member,render เหมือน member ทุกส่วน (Follow / Ask / 🔖 ยังแสดง) — gate เกิดตอนแตะเท่านั้น,GUEST,Medium,,,
 FEED-007,Post Card,"member, เปลี่ยนภาษาเป็นไทยแล้ว (SETUP-07)",1. ดูเวลาใต้ caption ของการ์ดหลายใบ,"เวลาเป็นไทยตามอายุโพสต์จริง เช่น ""3 วันที่แล้ว"" / ""11 ชั่วโมงที่แล้ว""",MEMBER,Medium,,,
@@ -76,7 +76,7 @@ FEED-010,Media Carousel,อยู่ feed ที่การ์ด A,"1. แต�
 FEED-011,Media Carousel,อยู่ feed ที่การ์ด A,"1. แตะรูปหลาย ๆ ครั้ง (ทั้งซ้ายขวา)
 2. แตะรูปของการ์ด B (รูปเดียว) ด้วย",กติกาบังคับ: Post Viewer ไม่เปิดเลย — เกิดแค่เปลี่ยนรูปในการ์ด (หลายรูป) หรือไม่เกิดอะไร (รูปเดียว); ถ้า viewer/หน้าใหม่เด้ง = FAIL,MEMBER,High,,,ยืนยัน: กด media ได้แค่ carousel ในการ์ดเดิม
 FEED-012,Media Carousel,อยู่ feed ที่การ์ด A,"1. กดค้างรูปลากซ้ายด้วยนิ้วแล้วปล่อย
-2. ลากซ้ำอีกครั้ง",กติกาบังคับฝั่งลาก: slide เปลี่ยนในการ์ดเดิม; Post Viewer ไม่เปิดหลังปล่อยนิ้ว (เกณฑ์ลาก ~64px/~20% ตาม design — จดสัมผัสจริง),MEMBER,High,,,ลาก = carousel เท่านั้นเช่นกัน
+2. ลากซ้ำอีกครั้ง",กติกาบังคับฝั่งลาก: slide เปลี่ยนในการ์ดเดิม; Post Viewer ไม่เปิดหลังปล่อยนิ้ว (เกณฑ์ลาก ~64px/~20% ตาม design),MEMBER,High,,,ลาก = carousel เท่านั้นเช่นกัน
 FEED-013,Media Carousel,อยู่ feed ที่การ์ด A,1. กดค้างรูปลากซ้ายนิดเดียวแล้วปล่อย,ระหว่างลากรูปขยับตามนิ้ว; พอปล่อยรูปเด้งกลับตำแหน่งเดิม — counter ไม่เปลี่ยน,MEMBER,Medium,,,
 FEED-014,Media Carousel,อยู่ feed ที่การ์ด A slide แรก,"1. ลากรูปไปทางขวา (พยายามออกนอกขอบแรก)
 2. เลื่อนไป slide สุดท้ายแล้วลากซ้ายออกนอกขอบท้าย",รูปขยับตามแบบต้าน ๆ (เหนียว ๆ ไม่ไปสุด); ปล่อยแล้วเด้งกลับ — ไม่ wrap ตอนลาก,MEMBER,Low,,,
@@ -86,12 +86,12 @@ FEED-016,Media Carousel,อยู่ feed ที่การ์ด A,1. กด�
 FEED-017,Clip Posts,member มีโพสต์ clip บน feed (SETUP-10),1. ดูการ์ด clip ที่เพิ่งสร้าง,"badge ▶""0:NN"" มุมรูป + แถบ progress บาง ๆ ใต้รูป; counter/dots ตามจำนวน media",MEMBER,Medium,,,ถ้าสร้าง clip ไม่ได้ → BLOCK ทั้งกลุ่ม
 FEED-018,Clip Posts,การ์ด clip อยู่บน feed,"1. เลื่อนให้การ์ด clip เข้าเฟรมเกินครึ่ง
 2. เลื่อนผ่านจนการ์ดเกือบพ้นจอ
-3. เลื่อนกลับมา","เห็นเกินเกณฑ์ (design ~55%) = clip เล่นเอง (badge นับเวลาถอยหลัง + แถบ progress เดิน); เห็นน้อย = หยุดค้าง; กลับมา = เล่นต่อ; ครบเวลา = วนใหม่ — จดเกณฑ์จริง",MEMBER,Medium,,,
+3. เลื่อนกลับมา","เห็นเกินเกณฑ์ (design ~55%) = clip เล่นเอง (badge นับเวลาถอยหลัง + แถบ progress เดิน); เห็นน้อย = หยุดค้าง; กลับมา = เล่นต่อ; ครบเวลา = วนใหม่",MEMBER,Medium,,,
 FEED-019,Clip Posts,การ์ด clip กำลังเล่นบน feed (มี ≥2 media),"1. แตะ avatar เปิด profile ทับ feed
 2. กด back กลับ
 3. swipe ไป slide รูปถ่าย",ตอนถูกหน้าอื่นบัง clip หยุด; กลับมาเล่นต่อ; slide รูปถ่ายไม่มี badge/progress,MEMBER,Low,,,
 FEED-020,Details Inline,อยู่ feed ที่การ์ด A,"1. แตะ ""more"" ใน caption","caption ขยายเต็ม + ปุ่ม ""Tap for details ⌄"" (เส้นบรรจบซ้ายขวา) โผล่ใต้เวลา — ก่อนกด more ปุ่มนี้ถูกซ่อน",MEMBER,High,,,
-FEED-021,Details Inline,caption ของการ์ด A expand แล้ว,"1. แตะ ""Tap for details""","กล่อง spec เปิดในการ์ด: บนแสดงราคา ""THB ###,###"" แดง + ""View full detail ›""; ตามด้วยตาราง Watch Specifications + Item Details; ตาม design กลุ่ม ""Price & Data Source"" ไม่แสดง (จดผลจริง); ปุ่มเปลี่ยนเป็น ""Hide details""",MEMBER,High,,,ราคาบนการ์ดโผล่เฉพาะในกล่องนี้
+FEED-021,Details Inline,caption ของการ์ด A expand แล้ว,"1. แตะ ""Tap for details""","กล่อง spec เปิดในการ์ด: บนแสดงราคา ""THB ###,###"" แดง + ""View full detail ›""; ตามด้วยตาราง Watch Specifications + Item Details; ตาม design กลุ่ม ""Price & Data Source"" ไม่แสดง — แสดง = FAIL; ปุ่มเปลี่ยนเป็น ""Hide details""",MEMBER,High,,,ราคาบนการ์ดโผล่เฉพาะในกล่องนี้
 FEED-022,Details Inline,details ของการ์ด A เปิดอยู่,"1. แตะ ""Hide details"" → กล่องหุบ
 2. เปิด ""Tap for details"" ของการ์ด A อีกครั้ง แล้วเลื่อนไปเปิดของการ์ดขายอื่น",กดซ้ำ = หุบ; เปิดการ์ดใหม่ → กล่องของการ์ดเก่าปิดอัตโนมัติ (เปิดได้ทีละ 1 การ์ดทั้งฟีด),MEMBER,Medium,,,
 FEED-023,Details Inline,การ์ด A: caption expand + details เปิด,1. แตะบริเวณข้อความ caption (ไม่โดน hashtag),caption ยุบกลับบรรทัดเดียว + กล่อง details ปิดตามไปด้วย,MEMBER,Medium,,,
@@ -125,17 +125,17 @@ FEED-039,Share,guest อยู่ feed,1. แตะ ↗ ใต้รูป,"Memb
 FEED-040,Share,member อยู่ feed ที่การ์ด A,1. แตะ ↗,"share sheet ในแอปตาม design — ช่อง ""Search"", grid เพื่อน, แถวแอป Messenger / Direct / LINE / Facebook / ""Copy link""; ต้องเป็น sheet ในแอปเพื่อรองรับ send-to-friend — ถ้าเปิด OS share sheet = FAIL/gap",MEMBER,Medium,,,spec ล็อก V1: ต้องเป็น in-app sheet
 FEED-041,Share,share sheet เปิดอยู่,"1. แตะเพื่อนคนหนึ่ง → แล้วเปิดแท็บ Chat ดูห้องกับคนนั้น
 2. เปิด share ใหม่ → แตะ ""LINE""
-3. เปิดใหม่ → แตะ ""Copy link"" แล้วลองวางที่อื่น","เพื่อน → ปิด sheet + toast ""Sent to {ชื่อ}"" และโพสต์ต้องโผล่ในห้องแชทกับเพื่อนคนนั้นจริง (การ์ดโพสต์เป็น message ล่าสุด — เปิด Chat เช็ก; toast เฉย ๆ ไม่ส่ง = FAIL); แอป → toast ""Shared to {app}"" หรือ OS share; Copy link → toast ""Link copied"" + ลิงก์วางได้จริง",MEMBER,Medium,,,spec ล็อก V1: send-to-friend ต้องเข้าห้องแชทจริง
+3. เปิดใหม่ → แตะ ""Copy link"" แล้วลองวางที่อื่น","เพื่อน → ปิด sheet + toast ""Sent to {ชื่อ}"" และโพสต์ต้องโผล่ในห้องแชทกับเพื่อนคนนั้นจริง (การ์ดโพสต์เป็น message ล่าสุด — เปิด Chat เช็ก; toast เฉย ๆ ไม่ส่ง = FAIL); แอป → เปิดแอปนั้นพร้อมลิงก์ผ่าน OS share (prototype แสดง toast ""Shared to {app}"" แทน — ข้อจำกัดของ prototype); Copy link → toast ""Link copied"" + ลิงก์วางได้จริง",MEMBER,Medium,,,spec ล็อก V1: send-to-friend ต้องเข้าห้องแชทจริง
 FEED-042,Save,guest อยู่ feed,1. แตะ 🔖 ใต้รูป,"Member Sheet ""Join TukDaeng"" เด้ง",GUEST,High,,,
-FEED-043,Save,member อยู่ feed ที่การ์ดที่ยังไม่ save,1. แตะ 🔖,"icon bookmark เติม + sheet เด้ง: แถว ""Saved / Private"" + ส่วน Collections ของบัญชีจริง + ""New collection"" (ถ้าไม่เคยสร้างอาจไม่มีรายการ collection)",MEMBER,High,,,
+FEED-043,Save,member อยู่ feed ที่การ์ดที่ยังไม่ save,1. แตะ 🔖,"icon bookmark เติม + sheet เด้ง: แถว ""Saved / Private"" + ส่วน Collections ของบัญชีจริง + ""New collection"" (ถ้าไม่เคยสร้าง = ไม่มีรายการ collection เหลือแถว New collection)",MEMBER,High,,,
 FEED-044,Save,save sheet เปิดอยู่ (มี collection ≥1 — สร้างผ่าน ""New collection"" ถ้าไม่มี),"1. แตะ collection ที่ต้องการ","sheet ปิด + toast ""Saved to {ชื่อ collection}""; 🔖 ยังเติม",MEMBER,Medium,,,
 FEED-045,Save,โพสต์อยู่ใน collection แล้ว,"1. แตะ 🔖 (sheet เปิด ไม่ได้ unsave ทันที)
 2. แตะแถว ""Saved"" บนสุดของ sheet","เลือก ""Saved"" → toast ""Removed from your saved"" + 🔖 กลับว่าง",MEMBER,Medium,,,
 FEED-046,Ask Seller,guest อยู่ feed ที่การ์ด A,"1. แตะปุ่ม ""Ask""","Member Sheet ""Join TukDaeng"" เด้ง — ไม่เข้าแชท",GUEST,High,,,
-FEED-047,Ask Seller,member อยู่ feed ที่การ์ด A,"1. แตะ ""Ask""",เข้าห้องแชทกับ seller: การ์ด item (รูป + caption + ราคา) ปักหัวห้อง + ช่องพิมพ์มีข้อความตั้งต้นรอส่ง (จด wording จริง),MEMBER,High,,,chat internals → FO-TEST-08
+FEED-047,Ask Seller,member อยู่ feed ที่การ์ด A,"1. แตะ ""Ask""",เข้าห้องแชทกับ seller: การ์ด item (รูป + caption + ราคา) ปักหัวห้อง + ช่องพิมพ์มีข้อความตั้งต้นรอส่ง,MEMBER,High,,,chat internals → FO-TEST-08
 FEED-048,Ask Seller,member อยู่ feed ที่การ์ด B (showcase ไม่มีราคา),"1. แตะ ""Ask"" ของการ์ด B",เข้าห้องแชทกับ seller เหมือนกัน — การ์ด item ไม่มีบรรทัดราคา,MEMBER,Medium,,,
 FEED-049,Ask Seller,เคย Ask การ์ด A แล้วกลับมาที่ feed,"1. แตะ ""Ask"" ของการ์ด A อีกครั้ง",เปิดห้องเดิมกับ seller เดิม (ไม่สร้างแชทซ้ำใน chat list),MEMBER,Medium,,,
-FEED-050,Ask Seller,block seller การ์ด A ไว้ก่อน (profile → ⋯ → Block),"1. พยายาม Ask seller ที่ block (เข้าโพสต์ผ่าน detail หรือช่องทางที่ถึงได้)","toast ""Cannot message a blocked account"" (หรือเทียบเท่า) — ไม่เปิดห้องแชท",MEMBER,Low,,,precondition ใช้ flow block ของ FO-TEST-16; จด wording จริง
+FEED-050,Ask Seller,block seller การ์ด A ไว้ก่อน (profile → ⋯ → Block),"1. พยายาม Ask seller ที่ block (เข้าโพสต์ผ่าน detail หรือช่องทางที่ถึงได้)","toast ""Cannot message a blocked account"" — ไม่เปิดห้องแชท",MEMBER,Low,,,precondition ใช้ flow block ของ FO-TEST-16; บันทึก wording จริง
 FEED-051,Liked-by,member อยู่ feed ที่การ์ด F (มีแถว Liked by),"1. แตะแถว ""Liked by …""
 2. ใน sheet แตะชื่อ/avatar liker","sheet ""Likes"" เปิด: note ""Only {seller} can see the total number of likes on this post."" + รายชื่อ + ปุ่ม ""Follow"" ท้ายแถว; แตะ liker → เปิด profile ของเขา",MEMBER,Medium,,,
 FEED-052,Liked-by,likes sheet เปิดอยู่ (การ์ด F),"1. แตะ ""Follow"" ของ liker
@@ -153,14 +153,14 @@ FEED-057,Post Menu (Others),เมนู ⋯ ของการ์ด D เป�
 FEED-058,Post Menu (Others),เมนู ⋯ ของการ์ด A เปิดอยู่,"1. แตะ ""Report""",หน้ารายงาน (เลือกเหตุผล) เด้งเต็มจอ — เมนูปิดไปพร้อมกัน (flow รายงานละเอียดอยู่ FO-TEST-16),MEMBER,Medium,,,
 FEED-059,Post Menu (Others),เมนู ⋯ ของการ์ด E เปิดอยู่,"1. แตะ ""Not interested""","การ์ดเปลี่ยนเป็น feedback card: ""Thanks for your feedback"" + ปุ่ม ""Undo"" + ""We'll suggest fewer posts like this."" + แถว ""Manage content preferences"" + ""This post made me uncomfortable""",MEMBER,High,,,
 FEED-060,Post Menu (Own),มีโพสต์ตัวเองบน feed (SETUP-09),"1. ดู head การ์ดตัวเอง
-2. แตะ ⋯","การ์ดตัวเองไม่มี Follow/Ask; เมนู: ""Archive"" / ""Turn off commenting"" / ""Edit"" / ""Pin to top of grid"" / ""Delete"" (แดง) — โพสต์ธรรมดาไม่มี Mark as sold / Report / Not interested (จดผลจริง)",OWNER,High,,,ถ้าโพสต์ขายมีเมนูต่างให้จด
+2. แตะ ⋯","การ์ดตัวเองไม่มี Follow/Ask; เมนู: ""Archive"" / ""Turn off commenting"" / ""Edit"" / ""Pin to top of grid"" / ""Delete"" (แดง) — โพสต์ธรรมดาไม่มี Mark as sold / Report / Not interested (ครบ 5 แถวเท่านั้น — เพิ่ม/ขาด = FAIL)",OWNER,High,,,โพสต์ขายมีเมนูต่างจากโพสต์ธรรมดา = FAIL
 FEED-061,Post Menu (Own),มีทั้งการ์ดตัวเองและการ์ดคนอื่นใน feed,"1. เปิด ⋯ การ์ดตัวเอง จำรายการ → ปิด
 2. เปิด ⋯ การ์ด E เทียบ",กติกาบังคับ: เมนูสองชุดต่างกันชัด — ตัวเอง = Archive/Commenting/Edit/Pin/Delete; คนอื่น = (Add to favorites)/Not interested/Report,OWNER,High,,,
 FEED-062,Post Menu (Own),เมนู ⋯ โพสต์ตัวเองเปิด,"1. แตะ ""Archive""","การ์ดหายจาก feed ทันที + toast ""Post archived"" (กู้ได้จากหน้า Archive — FO-TEST-14)",OWNER,High,,,
 FEED-063,Post Menu (Own),เมนู ⋯ โพสต์ตัวเองเปิด,"1. แตะ ""Turn off commenting"" → ดูการ์ด
 2. เปิด ⋯ ใหม่ → แตะ ""Turn on commenting""","off → 💬 หายจากการ์ด + toast ""Commenting turned off""; on → ปุ่มกลับ + toast ""Commenting turned on""",OWNER,Medium,,,
 FEED-064,Post Menu (Own),เมนู ⋯ โพสต์ตัวเองเปิด,"1. แตะ ""Edit""",หน้า composer โหมดแก้ไขเปิด พร้อมข้อมูลเดิมของโพสต์ (รายละเอียดฟอร์ม → FO-TEST-05),OWNER,Medium,,,
-FEED-065,Post Menu (Own),เมนู ⋯ โพสต์ตัวเองเปิด (ยัง pin ไม่ถึง 3),"1. แตะ ""Pin to top of grid""","pill ""Pinning..."" ขึ้นก่อน แล้ว toast ""Your post has been pinned"" (จดเวลาจริง); เปิด ⋯ ใหม่แถวเป็น ""Unpin from grid""",OWNER,Medium,,,
+FEED-065,Post Menu (Own),เมนู ⋯ โพสต์ตัวเองเปิด (ยัง pin ไม่ถึง 3),"1. แตะ ""Pin to top of grid""","pill ""Pinning..."" ขึ้นก่อน แล้ว toast ""Your post has been pinned""; เปิด ⋯ ใหม่แถวเป็น ""Unpin from grid""",OWNER,Medium,,,
 FEED-066,Post Menu (Own),pin ไว้ครบ 3 โพสต์แล้ว (ต้องมีโพสต์ตัวเอง ≥4),"1. ⋯ โพสต์ที่ 4 → ""Pin to top of grid""
 2. แตะ ""Cancel"" → ทำใหม่แล้วแตะ ""Confirm""","dialog ""Pin limit reached"" (กลางจอ): Confirm → pin แทนตัวเก่าสุด; Cancel → ไม่เปลี่ยน",OWNER,Low,,,PIN_MAX=3; ถ้าสร้างโพสต์ตัวเองไม่ครบ → BLOCK
 FEED-067,Post Menu (Own),เมนู ⋯ โพสต์ตัวเองเปิด,"1. แตะ ""Delete""
@@ -187,4 +187,4 @@ FEED-078,Hashtag/Profile,guest อยู่ feed ที่การ์ด A,1. �
 FEED-079,Language/Theme,"member, ภาษาไทย (SETUP-07)",1. ดูการ์ด A ทั้งใบ,"label UI เป็นไทยครบ: ""ติดตาม"" ""สอบถาม"" ""ถูกใจโดย … และคนอื่น ๆ"" ""เพิ่มเติม"" ""…ที่แล้ว""; expand → ""แตะเพื่อดูรายละเอียด""/""ซ่อนรายละเอียด""; ชื่อ/ราคา/hashtag/caption คงเดิม",MEMBER,Medium,,,
 FEED-080,Language/Theme,"member, ธีม Light (SETUP-07)",1. ดูการ์ด A + เปิด ⋯ เมนู + comments sheet,การ์ด/sheet/dialog อ่านง่ายบนพื้นสว่าง — contrast ปกติทุกจุด,MEMBER,Low,,,
 FEED-081,Language/Theme,"member ที่การ์ด A, details เปิดอยู่",1. ดูบรรทัดราคาในกล่อง details เทียบตัวเลข views,"ราคาแสดง ""THB ###,###"" (ตัวแดงหนา) ตาม format เงิน; views เป็นจำนวนนับไม่ถูก format เป็นเงิน — สองอย่างแยกกันชัด",MEMBER,Medium,,,อ้าง docs/money-display-rules.md
-FEED-082,Language/Theme,ทำเคสอื่น ๆ มาก่อน,1. สังเกต toast/pill ที่เด้งจากเคสก่อน,"toast ล่างจอ ~2 วิ แล้วหายเอง (จดเวลาจริง); pin มี 2 ชั้น: pill ""Pinning..."" → toast ""Your post has been pinned""",MEMBER,Low,,,
+FEED-082,Language/Theme,ทำเคสอื่น ๆ มาก่อน,1. สังเกต toast/pill ที่เด้งจากเคสก่อน,"toast ล่างจอ ~2 วิ แล้วหายเอง; pin มี 2 ชั้น: pill ""Pinning..."" → toast ""Your post has been pinned""",MEMBER,Low,,,

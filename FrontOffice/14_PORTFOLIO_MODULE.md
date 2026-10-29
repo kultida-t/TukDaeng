@@ -757,3 +757,8 @@ And `sold` post ต้องไม่มี `Edit`/`Mark as sold` ใน own-pos
 - Portfolio export (PDF/Excel), benchmark, allocation, brand trend, IRR
 - Market-movement / valuation alerts (09 integration)
 - Denied/failed production states เมื่อมี real load path
+
+
+## Contract updates — canonical lock 2026-10-29 (FO-TEST hardening)
+
+- Empty portfolio state ต้องแสดงลิงก์ "ประวัติการขาย / Sold history" เมื่อมี sold record อยู่ (owner ที่ขาย asset ชิ้นสุดท้ายยังเข้าถึง soldhist ได้เสมอ) — แก้ spec gap เดิมที่ลิงก์หายไปกับ asset list

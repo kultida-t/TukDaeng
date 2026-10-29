@@ -16,8 +16,8 @@
 - **Server sync เป็นตัวแปรใหญ่ของเล่มนี้** — contract บังคับให้ทุก asset/portfolio state อยู่ฝั่ง server; build ที่ state ไม่ persist/ไม่ sync ข้ามเครื่อง → เคส §2.9 ที่เกี่ยว = `BLOCK`/`FAIL` ตามอาการ (persist ไม่รอด = FAIL contract, ไม่ใช่ทางเลือก) — **ห้าม**นับ mirror/localStorage เป็นหลักฐาน persist
 - **Type**: `POSITIVE` · `NEGATIVE` · `EDGE` · `STATE` · `GATE` (บังคับ sign in) · `GATE-inverse` (ยืนยันเปิดเสรี)
 - **[GATE] ทุกเคสเทส 2 รอบ**: รอบ A `GUEST` → expect Member Sheet; รอบ B `MEMBER` → expect feature ทำงาน
-- **[MKT] precondition ราคาตลาด**: เคสที่เขียน "server มีราคาตลาด" ต้องเลือก asset ที่ `แหล่งข้อมูล`/`Data source` แสดงแหล่งราคาจริง (จดจาก SETUP-06) — build/รุ่นที่ไม่มี market data → เคสนั้น `BLOCK` พร้อมเหตุผล ห้ามเดาเลขแทน
-- **ตัวเลขทุกตัวคำนวณจากข้อมูลจริง** — expected เขียนเป็นสูตร (`Σ purchase`, `asking − purchase`, `(asking−market)/market×100`) — tester ใช้ตัวเลขที่จดจาก SETUP-06 คำนวณเทียบ อย่า FAIL เพราะเลขไม่ตรงตัวอย่าง
+- **[MKT] precondition ราคาตลาด**: เคสที่เขียน "server มีราคาตลาด" ต้องเลือก asset ที่ `แหล่งข้อมูล`/`Data source` แสดงแหล่งราคาจริง — build/รุ่นที่ไม่มี market data → เคสนั้น `BLOCK` พร้อมเหตุผล ห้ามเดาเลขแทน
+- **ตัวเลขทุกตัวคำนวณจากข้อมูลจริง** — expected เขียนเป็นสูตร (`Σ purchase`, `asking − purchase`, `(asking−market)/market×100`) — tester ใช้ตัวเลขที่บันทึกจาก SETUP-06 คำนวณเทียบ อย่า FAIL เพราะเลขไม่ตรงตัวอย่าง
 - **Device back เทียบเท่าปุ่มย้อนในแอป/ปิดทีละชั้น** — sheet/dialog/overlay เปิดอยู่ต้องปิดชั้นบนสุดก่อน เคสที่มีขั้น "แตะ back/ปิด" ใช้ device back ของ OS แทนได้ ผลต้องเทียบเท่ากัน
 - **ภาษาตามแอปทั้งหมด** (ล็อก 2026-10-28): ทุกข้อความ UI + toast เปลี่ยนตามภาษาที่เลือก — เจอ string ค้างอีกภาษา = **FAIL** (prototype hardcode EN หลายจุด เช่น chip `Sale/Show/Hide`, `Above/At/Below market`, `No market price` — ในแอปจริงถือเป็นบั๊ก); ยกเว้นชื่อ user/แบรนด์/รุ่น/reference
 - **Dark theme**: ทุกหน้า/sheet/dialog อ่านได้ครบใน dark — contrast โอเค ไม่มีตัวอักษรจมพื้นหลัง
@@ -48,16 +48,16 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เปิดขึ้น feed หรือ onboarding | splash/หน้าแรกขึ้นตาม build | — | |
+| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เห็นหน้า onboarding (แอปสะอาด) | splash/หน้าแรกของแอป | — | |
 | SETUP-02 | สถานะเริ่มต้น | — | SETUP | แอปติดตั้งแล้ว | ลบข้อมูลแอป/ติดตั้งใหม่ ถ้าเคยใช้เครื่องนี้มาก่อน | แอปสะอาด เหมือนผู้ใช้ใหม่ | — | — | |
 | SETUP-03 | ผู้ใช้ GUEST | — | SETUP | แอปสะอาด | ไม่ sign in → เดินเข้า feed ได้เลย | guest mode | bottom nav ครบ | — | |
 | SETUP-04 | ผู้ใช้ MEMBER | — | SETUP | แอปสะอาด | sign in ด้วยบัญชีทดสอบที่ทีมสร้าง | เข้า feed เป็นสมาชิก | avatar/ชื่อตัวเองในที่ที่ต้องแสดง | — | |
 | SETUP-05 | ผู้ใช้ NEW | — | SETUP | แอปสะอาด | สมัครใหม่ด้วยอีเมล/เบอร์ทดสอบจริง → ผ่าน onboarding จนเข้า feed | member ใหม่ — portfolio/โพสต์ว่างเสมอ | — | — | |
-| SETUP-06 | ชุด asset อ้างอิง | MEMBER | SETUP | sign in แล้ว | สร้างผ่านแอปจริง (ปุ่ม `+` / composer) แล้วจดค่าลง Note: `A-SALE` = โพสต์ลงฟีด ≥2 รูป + ราคาซื้อ + วันที่ซื้อ + ราคาตั้งขาย · `A-SHOW` = โชว์ + ราคาซื้อ/วันซื้อ · `A-HIDE` = ซ่อน + ราคาซื้อ/วันซื้อ · `A-NOCOST` = ซ่อน ไม่ใส่ราคาซื้อ/วันซื้อ · เปิด `pfasset` แต่ละชิ้นจด `แหล่งข้อมูล` = มี/ไม่มีราคาตลาด + ค่า market + วันอัปเดต → จด `A-MKT` = ชิ้นที่มี market · `A-NOMKT` = ชิ้นที่ไม่มี · จด รุ่นเครื่อง + OS | ข้อมูลจดพร้อม — สร้าง asset ไม่ได้ = เคสที่เกี่ยว `BLOCK` ทั้งเล่ม; server ไม่มีราคาตลาดเลย = เคส [MKT] `BLOCK` ทั้งชุด | — | — | |
+| SETUP-06 | ชุด asset อ้างอิง | MEMBER | SETUP | sign in แล้ว | สร้างผ่านแอปจริง (ปุ่ม `+` / composer) แล้วบันทึกค่าลง Note: `A-SALE` = โพสต์ลงฟีด ≥2 รูป + ราคาซื้อ + วันที่ซื้อ + ราคาตั้งขาย · `A-SHOW` = โชว์ + ราคาซื้อ/วันซื้อ · `A-HIDE` = ซ่อน + ราคาซื้อ/วันซื้อ · `A-NOCOST` = ซ่อน ไม่ใส่ราคาซื้อ/วันซื้อ · เปิด `pfasset` แต่ละชิ้นบันทึก `แหล่งข้อมูล` = มี/ไม่มีราคาตลาด + ค่า market + วันอัปเดต → บันทึก `A-MKT` = ชิ้นที่มี market · `A-NOMKT` = ชิ้นที่ไม่มี · บันทึก รุ่นเครื่อง + OS | ข้อมูลพร้อม — สร้าง asset ไม่ได้ = เคสที่เกี่ยว `BLOCK` ทั้งเล่ม; server ไม่มีราคาตลาดเลย = เคส [MKT] `BLOCK` ทั้งชุด | — | — | |
 | SETUP-07 | ทางเข้า | MEMBER | SETUP | sign in แล้ว | own profile → แตะ wallet → `portfolio` เปิด → แตะแถว `A-SALE` → `pfasset` เปิด → back → `ประวัติการขาย →` → `soldhist` เปิด | ทุก entry เปิดหน้าถูก — เข้าไม่ได้ = เคสที่เกี่ยว BLOCK | ตำแหน่งปุ่มตาม spec 06/14 | — | |
 | SETUP-08 | เครื่องที่สอง + ACCT-2 | — | SETUP | มีเครื่องจริงอีกเครื่อง | ติดตั้ง build เดียวกันลงเครื่องสอง → sign in `ACCT-2` → เปิด notification permission ทั้งสองเครื่อง | บัญชีสองพร้อม — ถ้าไม่มี → เคส ACCT-2/cross-device เป็น BLOCK | — | — | |
 | SETUP-09 | ACCT-2 ถามลิสติ้งก่อนขาย | ACCT-2 | SETUP | `A-SALE` อยู่บน feed | เครื่องสอง: ACCT-2 เปิด `A-SALE` → `สอบถาม/Ask` → ส่งข้อความ 1 ฉบับ | ห้อง DM กับ MEMBER มีการ์ดลิสติ้ง `A-SALE` เป็นข้อความ + ข้อความขึ้นฝั่งขวา — ใช้เช็กหลังขาย (AST-089) | — | — | |
-| SETUP-10 | baseline visibility | MEMBER | SETUP | SETUP-06 เสร็จ | เปิด: feed (เห็น `A-SALE`) · search รุ่นนั้น (เจอ `A-SALE`) · own profile แท็บ Sale/Show/Hide · `portfolio` (เห็น 4 แถว A-SALE/A-SHOW/A-HIDE/A-NOCOST) | ทุก surface เห็นของถูกที่ตามสถานะ — จุดใดไม่ตรง จดลง Note เป็นบริบทก่อนรัน | — | — | |
+| SETUP-10 | baseline visibility | MEMBER | SETUP | SETUP-06 เสร็จ | เปิด: feed (เห็น `A-SALE`) · search รุ่นนั้น (เจอ `A-SALE`) · own profile แท็บ Sale/Show/Hide · `portfolio` (เห็น 4 แถว A-SALE/A-SHOW/A-HIDE/A-NOCOST) | ทุก surface เห็นของถูกที่ตามสถานะ — จุดใดไม่ตรง บันทึกลง Note เป็นบริบทก่อนรัน | — | — | |
 
 ### 2.1 Entry & Access — เข้า Portfolio
 
@@ -76,7 +76,7 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| AST-009 | headline = Total invested (Σ purchase) | MEMBER | POSITIVE | จด purchase ของทุกชิ้นจาก SETUP-06 | เปิด `portfolio` อ่าน headline → คำนวณ Σ purchase ของทุกชิ้น eligible ที่มีราคาซื้อ เทียบตัวเลขบนจอ | `ต้นทุนรวม`/`Total invested` + `ส่วนตัว`/`Private` tag + `THB {Σ}` = ผลรวมราคาซื้อจริง — ไม่ใช่มูลค่าปัจจุบัน/ตลาด — comma คั่นหลักพัน | — | HIGH | |
+| AST-009 | headline = Total invested (Σ purchase) | MEMBER | POSITIVE | บันทึก purchase ของทุกชิ้นจาก SETUP-06 | เปิด `portfolio` อ่าน headline → คำนวณ Σ purchase ของทุกชิ้น eligible ที่มีราคาซื้อ เทียบตัวเลขบนจอ | `ต้นทุนรวม`/`Total invested` + `ส่วนตัว`/`Private` tag + `THB {Σ}` = ผลรวมราคาซื้อจริง — ไม่ใช่มูลค่าปัจจุบัน/ตลาด — comma คั่นหลักพัน | — | HIGH | |
 | AST-010 | coverage line | MEMBER | POSITIVE | มี asset ทั้งแบบมี/ไม่มีราคาซื้อ | อ่านบรรทัด coverage → นับชิ้นที่มี purchase>0 (X) กับชิ้น eligible ทั้งหมด (Y) | `ต้นทุนซื้อของ {X}/{Y} รายการ · มีเพียงคุณเท่านั้นที่เห็น`/`Purchase cost of {X}/{Y} assets · only you can see this` — X/Y ตรงจำนวนจริง | — | HIGH | |
 | AST-011 | [MKT] market value line | MEMBER | POSITIVE | ≥1 ชิ้นมี market+purchase (SETUP-06: `A-MKT`) — server ไม่มี market เลย → `BLOCK` | อ่านบรรทัดมูลค่าตลาด → คำนวณ Σ market ของชิ้นที่มี market + GL% = Σ(market−purchase ของชิ้นที่คิดได้)/Σpurchase ชิ้นนั้น เทียบ | `มูลค่าตลาด`/`Market value` `฿{Σmarket}` · `±N.N%` ตรงสูตร — ค่าบวก class up/ลบ class dn | — | HIGH | |
 | AST-012 | ไม่มี GL row → บรรทัด unavailable | MEMBER | POSITIVE | account/สถานะที่ชิ้น eligible ทุกชิ้นไม่มี market หรือไม่มี purchase (เช่น NEW + asset ที่ไม่มีราคาตลาด — เตรียมผ่านแอปจริง; เตรียมไม่ได้ → `BLOCK`) | เปิด `portfolio` อ่านบรรทัดมูลค่าตลาด | แสดง `ไม่พบข้อมูลมูลค่าตลาด`/`Market value unavailable` — **ไม่**แสดง `฿0` หรือเว้นว่าง | — | MED | |
@@ -122,12 +122,12 @@
 | AST-042 | ช่องราคา numeric + auto-comma | MEMBER | UI | sell เปิด | ล้างช่อง → พิมพ์ `449000` → ดู keyboard/ผล | keyboard ตัวเลข + ใส่ comma อัตโนมัติ `449,000` — รับเฉพาะตัวเลข | placeholder `เช่น 449,000`/`e.g. 449,000` | MED | |
 | AST-043 | Expected gain live-update | MEMBER | POSITIVE | sell ของชิ้นที่ purchase>0 | แก้ราคาขายทีละค่า → ดูแถว `กำไรที่คาดหวัง`/`Expected gain` → ล้างช่อง | อัปเดตทันที = `price − purchase` `±฿N (±N.N%)`; price ≤0/ว่าง → `—`; ชิ้นที่ไม่มี purchase → **ไม่มี**แถวนี้เลย | — | HIGH | |
 | AST-044 | validate ราคาขาย | MEMBER | NEGATIVE | sell เปิด | ล้างราคา → `บันทึกการขาย` · ใส่ `0` → save · ใส่ลบ → save | ทุกครั้งไม่ save: inline error `กรุณากรอกราคาขาย`/`Sale price required` + field ขอบแดง + focus ช่องราคา — ไม่มี record ใหม่ | — | HIGH | |
-| AST-045 | validate วันที่ขาย | MEMBER | NEGATIVE | sell เปิด | ล้างวันที่ → save · เลือกวันอนาคต (picker ล็อกสูงสุดวันนี้ — เลือกไม่ได้ก็ผ่านเงื่อนไขเดียวกัน) | ว่าง → `กรุณาเลือกวันที่ขาย`/`Sale date required`; อนาคต → `วันที่ขายไม่ถูกต้อง`/`Invalid sale date` (หรือ picker กันไม่ให้เลือกเกินวันนี้) — focus ช่องแรกที่ผิด | — | HIGH | |
+| AST-045 | validate วันที่ขาย | MEMBER | NEGATIVE | sell เปิด | ล้างวันที่ → save · เลือกวันอนาคต (picker ต้องกันไม่ให้เลือกวันอนาคต — เลือกได้ = FAIL) | ว่าง → `กรุณาเลือกวันที่ขาย`/`Sale date required`; อนาคต → picker กันไม่ให้เลือกเกินวันนี้; ค่าเพี้ยนที่หลุดเข้ามา → `วันที่ขายไม่ถูกต้อง`/`Invalid sale date` — focus ช่องแรกที่ผิด | — | HIGH | |
 | AST-046 | ไม่มีฟิลด์ผู้ซื้อ/ติดต่อ/จ่ายเงิน (lock) | MEMBER | NEGATIVE | sell เปิด + sold:{id} | scroll ดูทั้งฟอร์ม + sold detail | **ไม่มี**ช่อง/แถว Buyer/Contact/Payment/Attachment ใด ๆ — record เก็บแค่ sale price + sale date (D3 lock) | — | HIGH | |
 | AST-047 | cancel/back → ไม่บันทึก | MEMBER | NEGATIVE | sell เปิด | กรอกราคา+วันที่ → กด back (ไม่กด save) → เช็ก portfolio + soldhist + โพสต์ | ไม่มี record ใหม่ — asset ยังสถานะเดิม อยู่ portfolio/แท็บเดิม ไม่มี toast | — | HIGH | |
 | AST-048 | save → transition เต็ม | MEMBER | POSITIVE | sell ของ `A-SALE` กรอกถูก | `บันทึกการขาย` → รอ toast | toast `บันทึกการขายแล้ว · ย้ายไปประวัติการขาย ✓`/`Sale recorded · moved to Sold history ✓` + ลงที่ `sold:{id}` แสดงราคา/วันที่ที่กรอก — asset ย้ายออกจาก portfolio list ทันที | — | HIGH | |
 | AST-049 | stack หลัง save — back ถูกจุด | MEMBER | STATE | save สำเร็จจากเส้นทาง portfolio→pfasset→sell (AST-048) | อยู่ `sold:{id}` → กด back ทีละครั้ง | back กลับ `portfolio` (หน้าก่อนเข้า pfasset) — ฟอร์ม sell + pfasset ถูกตัดออกจาก stack ไม่ย้อนกลับมา | — | HIGH | |
-| AST-050 | save → dashboard อัปเดตทันที | MEMBER | STATE | จด Total invested/count ก่อนขาย | หลัง AST-048: เปิด `portfolio` | asset หายจาก list + `รายการนาฬิกา N` −1 + Total invested ลดลงเท่าราคาซื้อชิ้นนั้น + coverage X/Y ลด | — | HIGH | |
+| AST-050 | save → dashboard อัปเดตทันที | MEMBER | STATE | บันทึก Total invested/count ก่อนขาย | หลัง AST-048: เปิด `portfolio` | asset หายจาก list + `รายการนาฬิกา N` −1 + Total invested ลดลงเท่าราคาซื้อชิ้นนั้น + coverage X/Y ลด | — | HIGH | |
 | AST-051 | save → โพสต์กลาย sold ทุก surface | MEMBER | POSITIVE | `A-SALE` มีโพสต์ลิงก์ | หลังขาย: เช็ก feed · own profile แท็บ `ขายแล้ว`/`Sold` · เปิด detail โพสต์ · ⋯ menu | โพสต์หายจาก feed · อยู่แท็บ Sold ของตัวเอง · detail มี tag `ขายแล้ว`/`SOLD` · menu มี `ดูประวัติการขาย`/`View sale record` แทน Edit — ไม่มี Mark as sold | — | HIGH | |
 | AST-052 | save → หลุด search + watch alert | MEMBER | POSITIVE | `A-SALE` เคยค้นเจอ + มี WA ตรงเงื่อนไข (ไม่มี WA → เช็กแค่ search) | หลังขาย: search รุ่นเดิม → ดูผล | ลิสติ้งหายจากผล search ทันที และไม่ชนเงื่อนไข watch alert (ไม่มีแจ้งเตือน match ใหม่จากชิ้นนี้) — canonical visibility | — | HIGH | |
 | AST-053 | sale date ย้อนหลัง → holding ถูก | MEMBER | POSITIVE | sell กรอกวันที่ขายย้อนหลัง (เช่น 30 วันก่อน) | save → เปิด `sold:{id}` อ่าน `ระยะเวลาถือครอง`/`Holding period` | holding คำนวณจาก `bought` → `soldDate` ที่เลือก (ไม่ใช่วันนี้) — จำนวนวัน/ปีเดือนตรง | — | MED | |
@@ -192,7 +192,7 @@
 | AST-092 | ชื่อ/ref ยาว | MEMBER | EDGE | asset ชื่อ/ref ยาวผิดปกติ (สร้างจริง — ทำไม่ได้ → `BLOCK`) | ดูแถว portfolio + pfasset + soldhist | ตัด ellipsis/wrap เรียบร้อย ไม่ทับราคา/chip | — | LOW | |
 | AST-093 | sold post ใน viewer ของเจ้าของ | MEMBER | POSITIVE | แท็บ Sold มี tile | แตะ tile → viewer → ⋯ menu → swipe โพสต์อื่นในแท็บ | detail มี tag `ขายแล้ว`/`SOLD` + menu มี `ดูประวัติการขาย`/`View sale record` (ไม่มี Edit/Mark as sold) + viewer ไหลเฉพาะแท็บ Sold | — | MED | |
 | AST-094 | เปิด/ยกเลิก sell ซ้ำเร็ว | MEMBER | EDGE | `pfasset` เปิด | กด `บันทึกการขาย` → back → กดใหม่ รัว ๆ หลายรอบ → สุดท้าย save | ฟอร์มเปิด/ปิดเรียบ ไม่ค้าง ไม่ซ้อนหน้า — save สำเร็จ record เดียว | — | LOW | |
-| AST-095 | ขายชิ้นสุดท้าย → portfolio ว่าง + soldhist ติดอยู่ | MEMBER | EDGE | ขาย asset ทุกชิ้นจนหมด | เปิด `portfolio` → อ่าน → สร้าง asset ใหม่ผ่าน `+` → เปิด `portfolio` → `ประวัติการขาย →` | `portfolio` → empty state `ไม่พบข้อมูล`/`No data found` + explainer (ไม่มีแถว/section — ตาม spec empty state ไม่มี Sold history link → ช่วงนี้ไม่มีทางเข้า soldhist จากหน้าจอ — flag §3); เพิ่ม asset ใหม่ → list กลับ + soldhist ยังเก็บ record เดิมครบ | — | MED | |
+| AST-095 | ขายชิ้นสุดท้าย → portfolio ว่าง + soldhist ติดอยู่ | MEMBER | EDGE | ขาย asset ทุกชิ้นจนหมด | เปิด `portfolio` → อ่าน → สร้าง asset ใหม่ผ่าน `+` → เปิด `portfolio` → `ประวัติการขาย →` | `portfolio` → empty state `ไม่พบข้อมูล`/`No data found` + explainer + ลิงก์ "ประวัติการขาย →" เข้า soldhist ได้ (canonical lock — ไม่มีลิงก์ = FAIL); เพิ่ม asset ใหม่ → list กลับ + soldhist ยังเก็บ record เดิมครบ | — | MED | |
 
 ### 2.9 Persistence / Language / Theme / Real Device
 
@@ -200,14 +200,14 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | AST-096 | state รอด kill+restart | MEMBER | STATE | มี asset ครบสถานะ + sold ≥1 + pin/แก้ไขล่าสุด | kill app เด็ดขาด → เปิดใหม่ → เปิด portfolio/soldhist/แท็บ | ทุกอย่างคงเดิม: asset rows/sold records/status/ตัวเลข — server-backed | — | HIGH | |
 | AST-097 | state รอด sign-out→in | MEMBER | STATE | เหมือน AST-096 | sign out → sign in บัญชีเดิม → เช็กทุกหน้า | เหมือน AST-096 ทุกข้อ — ไม่มี state หลุด/รีเซ็ต | — | HIGH | |
-| AST-098 | portfolio เหมือนกันข้ามเครื่อง | MEMBER | STATE | sign in บัญชี `U-ME` เดียวกันบนเครื่องสอง (SETUP-08 — อาจใช้เครื่องสามหรือย้าย session) | เครื่อง B: เปิด portfolio/soldhist เทียบเครื่อง A | dashboard/rows/soldhist/ตัวเลขเหมือนกันเป๊ะ — server truth ไม่ใช่ local copy — build จำกัดเครื่องเดียว → `BLOCK` | — | HIGH | |
+| AST-098 | portfolio เหมือนกันข้ามเครื่อง | MEMBER | STATE | sign in บัญชี `U-ME` เดียวกันบนเครื่องสอง (SETUP-08 — ใช้เครื่องที่สองหรือสาม) | เครื่อง B: เปิด portfolio/soldhist เทียบเครื่อง A | dashboard/rows/soldhist/ตัวเลขเหมือนกันเป๊ะ — server truth ไม่ใช่ local copy — build จำกัดเครื่องเดียว → `BLOCK` | — | HIGH | |
 | AST-099 | mark-as-sold sync ข้ามเครื่อง | MEMBER | STATE | ล็อกอินบัญชีเดียวกันสองเครื่อง | เครื่อง A: ขายชิ้นหนึ่งผ่าน sell → เครื่อง B: เปิด portfolio + soldhist + แท็บ Sold | เครื่อง B เห็น asset หลุด list + record ใหม่ใน soldhist + โพสต์ในแท็บ Sold — sync ช้า → `BLOCK` ระบุเวลาที่ลอง | — | HIGH | |
 | AST-100 | เปลี่ยนสถานะ sync ข้ามเครื่อง | MEMBER | STATE | ล็อกอินสองเครื่อง | เครื่อง A: Sale→Hide → เครื่อง B: เช็กแท็บ/portfolio/feed | B สะท้อนสถานะใหม่ครบ (chip/แท็บ/ไม่อยู่ feed) | — | MED | |
 | AST-101 | ภาษาไทยทั้งเล่ม | MEMBER | UI | ตั้งภาษา TH | ไล่ portfolio/pfasset/sell/soldhist/sold/toast/dialog | ทุก label/toast ไทยครบ — string EN ค้างที่ไหน = FAIL (จุดเสี่ยง spec บันทึกไว้: chip `Sale`/`Show`/`Hide`, `Above/At/Below market`, `No market price`, `Latest market price`/`Purchase price estimate`, `N/A`, หน่วย `y`/`m`, `THB`) | — | HIGH | |
 | AST-102 | ภาษาอังกฤษทั้งเล่ม | MEMBER | UI | ตั้งภาษา EN | เหมือน AST-100 | ทุก label/toast EN ครบ — TH ค้าง = FAIL | — | MED | |
 | AST-103 | dark theme | MEMBER | UI | เปิด dark | ไล่ทุกหน้า portfolio รวมฟอร์ม/empty/chip | อ่านครบ contrast พอ — chip up/dn (เขียว/แดง) แยกสีได้ — ตัวหนังสือจม = FAIL | — | MED | |
 | AST-104 | device back ทีละชั้น | MEMBER | STATE | อยู่ own profile | กด device back ไล่: portfolio → pfasset → sell → (cancel) → pfasset → portfolio → profile → back อีกครั้ง | แต่ละกด pop ชั้นบนสุดทีเดียวตาม stack — ไม่เด้งออกหลายชั้น ไม่วนเข้าฟอร์มซ้ำ | — | MED | |
-| AST-105 | offline — อ่านได้ เขียนไม่หลอก | MEMBER | EDGE | เปิด airplane mode | เปิด portfolio → พยายาม mark-as-sold save → กลับ online → เช็ก server | อ่าน: แสดงข้อมูลล่าสุดที่มี หรือ error state ชัดเจน (ตาม build) · **เขียน: save ต้อง error ชัดเจน + ไม่บันทึกหลอก** — reconnect แล้ว state ต้องตรง server ไม่ซ้ำ | — | HIGH | |
+| AST-105 | offline — อ่านได้ เขียนไม่หลอก | MEMBER | EDGE | เปิด airplane mode | เปิด portfolio → พยายาม mark-as-sold save → กลับ online → เช็ก server | อ่าน: แสดงข้อมูลล่าสุดที่ cache ไว้ (stale) พร้อมสถานะ offline ชัดเจน · **เขียน: save ต้อง error ชัดเจน + ไม่บันทึกหลอก** — reconnect แล้ว state ต้องตรง server ไม่ซ้ำ | — | HIGH | |
 | AST-106 | rotate + small screen | MEMBER | EDGE | เครื่องจอเล็กสุดในทีม | portfolio/pfasset/sell/soldhist หมุนแนวนอน + เทียบจอแคบ | layout ไม่พัง: แถวไม่ทับ ราคาไม่ล้น ชิปไม่ตก — เครื่องล็อก portrait → เคสนี้ `BLOCK` | — | LOW | |
 
 ## §3 Spec deviations/contract ที่กระทบเคสเล่มนี้
@@ -217,7 +217,7 @@
 | Market data เป็น mock ใน prototype — แอปจริงผูก server (lock 2026-10-30) | เคส [MKT] เขียนเต็มทุกสูตรแต่ต้องมีราคาตลาดจริง — server ไม่มี = `BLOCK` ทั้งชุด; fallback path ทำได้เสมอ | AST-011, 026, 029, 031, 035 |
 | ลบโพสต์ prototype ทิ้ง asset ค้างในลิ้นชัก (deviation) → canonical = หายทั้งคู่ (lock) | ลบแล้วต้องหายจาก portfolio + `pfasset` → `ไม่พบข้อมูล` — เจอ orphan = FAIL | AST-074, 075, 087 |
 | drawer-only asset → Sale prototype ไม่เข้า feed (deviation) → canonical = เข้า feed+search (lock) | Show/Hide→Sale ต้องขึ้นฟีด+ค้นเจอ — ไม่ขึ้น = FAIL | AST-065, 066 |
-| `salePosts()` ไม่กรอง pfkind (prototype defect) → canonical = sold/show/hide หลุด search+WA (lock) | ของที่ไม่ใช่ลิสติ้งขายต้องไม่โผล่ search/ไม่ชน WA — หลุด = FAIL | AST-052, 067, 068, 085 |
+| `salePosts` ไม่กรอง pfkind (prototype defect) → canonical = sold/show/hide หลุด search+WA (lock) | ของที่ไม่ใช่ลิสติ้งขายต้องไม่โผล่ search/ไม่ชน WA — หลุด = FAIL | AST-052, 067, 068, 085 |
 | Sold record แค่ price+date (D3 — ตัด buyer/contact/payment/attachment, lock 2026-10-30) | เคสเช็กว่าฟิลด์เหล่านั้น**ไม่มี** — เจอเพิ่ม = spec เปลี่ยน แจ้งรีวิว | AST-046, 058 |
 | Headline = `Total invested` Σ purchase (D2 — spec เดิม Total Asset Value) | headline ต้องเป็นต้นทุนรวมไม่ใช่มูลค่าตลาด | AST-009, 011 |
 | Mark as sold ครอบ sale+show+hide (D4 — spec เดิมเฉพาะ sale) | เมนูโพสต์โชว์/ซ่อนต้องมี `บันทึกการขาย` | AST-040 |
@@ -229,8 +229,13 @@
 | no-asking sale → chip `No market price` (quirk D13) | expected ตาม spec — copy เดียวกับไม่มีตลาด | AST-036 |
 | `sold` post ใน viewer: menu `View sale record` แทน Edit (canonical 04 §12) | ไม่มี Edit/Mark-as-sold บนโพสต์ sold | AST-041, 051, 062, 071, 093 |
 | guest/non-member เข้า portfolio → empty state (GUEST-001 pattern — prototype) → แอปจริง: guest ไม่มีทางถึงเลย | เคส guest คือ "ไม่มี entry" ไม่ใช่ "เปิดแล้วเห็นว่าง" | AST-001, 005 |
-| empty portfolio ไม่มี `Sold history` link (early-return ก่อน section — spec gap) | owner ที่ขายหมดจะไม่มีทางเข้า soldhist จากหน้าจอจนกว่าจะมี asset ใหม่ — expected ตาม spec (empty state); build ที่ใส่ link ไว้ = ดีกว่า spec → แจ้งรีวิว | AST-095 |
+| empty portfolio ต้องมี `Sold history` link เมื่อมี sold record (canonical — RESOLVED แก้ spec+proto) | owner ที่ขายหมดจะไม่มีทางเข้า soldhist จากหน้าจอจนกว่าจะมี asset ใหม่ — canonical lock: empty state ต้องมีลิงก์ soldhist (แก้ spec+prototype แล้ว) — ไม่มี = FAIL | AST-095 |
 | chat ค้างหลัง sold/hide/delete — การ์ดลิสติ้งกลาย unavailable (00_NAV §8/§10) | ห้องอยู่ การ์ดตาย — ไม่มีข้อมูลส่วนตัวหลุด | AST-088, 089 |
+
+**FO-SYNC-01 sync (2026-10-29):**
+
+- **RESOLVED — chip/status EN hardcode (FSP-026)**: เติม `I18N_TH` dict `Sale`→`ขาย` · `Above market`→`สูงกว่าตลาด` · `At market`→`เท่าตลาด` · `Below market`→`ต่ำกว่าตลาด` · `No market price`→`ไม่มีราคาตลาด` · `Purchase price estimate`→`ประมาณจากราคาซื้อ` (`Latest market price`/`Show`/`Hide` มีอยู่แล้ว) — TH mode ไม่มี EN ค้างที่จุดเหล่านี้
+- **ต่างโดยเจตนา (คงไว้)**: market data = mock (`?dev`/`PFO_SRC` fallback path) — contract server · persist session (contract server) · `THB` vs `฿` + `N/A` vs `—` = spec-locked quirk รอ money-rules DRAFT · empty portfolio ต้องมี Sold history link เมื่อมี sold record = canonical (แก้ spec+proto แล้ว) · guest เข้าไม่ถึง = contract
 
 ## §4 Traceability — inventory + actions ครอบ
 
@@ -253,8 +258,10 @@
 ## หมายเหตุท้าย
 
 - **ก่อนส่งงานจริง**: เขียนเสร็จ → รอ PO/หัวหน้ารีวิว → แก้ตาม feedback → ค่อยปิด task (กฎเดียวกับทุกเล่ม)
-- **ตัวเลขขึ้นข้อมูลจริงเป็นตัวแปรหลัก** — ทุกเคสคณิตศาสตร์ตัดสินจากค่าที่จดใน SETUP-06 (purchase/bought/asking/market/วัน sync) — อย่า FAIL เพราะจำนวนไม่ตรงตัวอย่าง; สูตรผิดเท่านั้นที่ FAIL
+- **ตัวเลขขึ้นข้อมูลจริงเป็นตัวแปรหลัก** — ทุกเคสคณิตศาสตร์ตัดสินจากค่าที่บันทึกใน SETUP-06 (purchase/bought/asking/market/วัน sync) — อย่า FAIL เพราะจำนวนไม่ตรงตัวอย่าง; สูตรผิดเท่านั้นที่ FAIL
 - **เคส BLOCK ล่วงหน้าที่คาดว่าอาจเจอ**: เคส [MKT] ทั้งชุด (AST-011, 026, 029, 031, 035 — server ไม่มีราคาตลาด) · AST-012 (เตรียมสถานะ no-GL ไม่ได้) · AST-022 (สร้าง asset เยอะไม่ได้) · AST-036 (sale ไม่ใส่ราคาไม่ได้) · AST-086 (ทำรูปพังไม่ได้) · AST-087 (ลบข้ามเครื่องไม่ได้) · AST-088/089 (ไม่มี flow Ask/chat) · AST-092 (ตั้งชื่อยาวไม่ได้) · AST-095 (ขายชิ้นสุดท้ายช้า/ทำไม่ได้) · AST-098..100 (ไม่มีเครื่องสอง/sync ยังไม่ทำ) · AST-106 (ล็อก portrait)
 - **ครอบโดยเล่มอื่น ไม่ทำซ้ำ**: composer internals → FO-TEST-05 · PV/Detail internals → FO-TEST-06 · feed eligibility → FO-TEST-03 · search/WA internals → FO-TEST-04/11 · own-profile anatomy → FO-TEST-12 · Member Sheet → FO-TEST-17
 - **จุดที่ล็อกในรอบนี้ (ถามผู้ใช้ 2026-10-30)**: (1) market cluster = full math + precondition BLOCK + fallback path แยก (2) 3 จุด deviation → expected ตาม canonical (ลบหายทั้งคู่ / Show·Hide→Sale ขึ้น feed / sold·show·hide ไม่โผล่ search+WA) (3) ฟอร์มขาย 2 ฟิลด์ + ไม่มีปุ่มเพิ่มใน Portfolio — เขียนเคสล็อกทั้งคู่
 - **จุดเฝ้าระวังรอบรีวิว**: `N/A` vs `—` (money rules ยัง draft — expected ตาม spec 14); `THB` vs `฿`; chip/status EN hardcode (ภาษาล็อกชนะ); holding-period suffix `y`/`m` เป็นภาษาเดียวกันทั้งสองภาษา
+
+- สถิติ: **106 TC** — High 65 / Medium 37 / Low 4 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 116 แถว)

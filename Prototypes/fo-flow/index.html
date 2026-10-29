@@ -12398,6 +12398,7 @@
     .emoji-row,
     .c-meta,
     [data-pf-user],
+    [data-sub-pid],
     [data-navgo],
     [data-pftab],
     [data-tab],
@@ -13700,7 +13701,7 @@
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
-        ${isSale && state.ask !== "bubble" ? askBtnHTML(false) : ""}
+        ${isSale && state.ask !== "bubble" && !isOwnPost(p) ? askBtnHTML(false) : ""}
         <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
       </span>
     </div>
@@ -13726,7 +13727,7 @@
     <div class="detail-scroll">
       ${igBodyHTML(p, true)}
     </div>
-    ${isSale && state.ask === "bubble" ? chatPopHTML(p) : ""}`;
+    ${isSale && state.ask === "bubble" && !isOwnPost(p) ? chatPopHTML(p) : ""}`;
     }
 
     function detailSpecsHTML(p) {
@@ -14364,14 +14365,15 @@
 
     /* "This post made me uncomfortable" -> card swaps to IG ack state (check + Report + Undo) */
     function uncomfCardHTML(p) {
+      const isTh = state.lang === "th";
       return `
   <article class="post ni-card" data-pid="${p.id}">
     <div class="ni-box">
       <div class="ni-check">${I.circleCheck(34)}</div>
-      <div class="ni-t2">Thanks for letting us know</div>
-      <div class="ni-d2">If you think this post goes against our Community Standards you can report it.</div>
-      <button class="ni-action danger uc-report">Report</button>
-      <button class="ni-action uc-undo">Undo</button>
+      <div class="ni-t2">${isTh ? "ขอบคุณที่แจ้งให้เราทราบ" : "Thanks for letting us know"}</div>
+      <div class="ni-d2">${isTh ? "หากคุณคิดว่าโพสต์นี้ขัดต่อมาตรฐานชุมชนของเรา คุณสามารถรายงานได้" : "If you think this post goes against our Community Standards you can report it."}</div>
+      <button class="ni-action danger uc-report">${isTh ? "รายงาน" : "Report"}</button>
+      <button class="ni-action uc-undo">${isTh ? "เลิกทำ" : "Undo"}</button>
     </div>
   </article>`;
     }
@@ -14459,7 +14461,7 @@
     ${footerPrice ? `
       <div class="price-footer">
         <span class="p">${p.price}</span>
-        <button class="ask-pill outline">${isTh ? "สอบถามผู้ขาย" : "Ask Seller"}</button>
+        ${isOwnPost(p) ? "" : `<button class="ask-pill outline">${isTh ? "สอบถามผู้ขาย" : "Ask Seller"}</button>`}
       </div>` : ""}
   </article>`;
     }
@@ -14955,7 +14957,7 @@
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
-        ${p.type === "sale" ? askBtnHTML(false) : ""}
+        ${p.type === "sale" && !isOwnPost(p) ? askBtnHTML(false) : ""}
         <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
       </span>
     </div>
@@ -15158,18 +15160,20 @@
       if (scr) scr.classList.remove("dialog-open");
     }
     function muteDlgHTML(seller) {
+      const isTh = state.lang === "th";
       return `
-    <div class="dlg-q">Mute ${seller}?</div>
-    <div class="dlg-desc">You can unmute them anytime from their profile. We won't let them know you muted them.</div>
-    <button class="dlg-btn danger dlg-mute-go">Mute posts</button>
-    <button class="dlg-btn dlg-cancel">Cancel</button>`;
+    <div class="dlg-q">${isTh ? `ปิดเสียงโพสต์ของ ${seller} หรือไม่?` : `Mute ${seller}?`}</div>
+    <div class="dlg-desc">${isTh ? "คุณสามารถเปิดเสียงพวกเขาได้ทุกเมื่อจากโปรไฟล์ เราจะไม่แจ้งให้พวกเขาทราบว่าคุณปิดเสียงพวกเขา" : "You can unmute them anytime from their profile. We won't let them know you muted them."}</div>
+    <button class="dlg-btn danger dlg-mute-go">${isTh ? "ปิดเสียงโพสต์" : "Mute posts"}</button>
+    <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
     }
     function resetDlgHTML() {
+      const isTh = state.lang === "th";
       return `
-    <div class="dlg-q">Reset suggested content?</div>
-    <div class="dlg-desc">Posts you marked as not interested will be shown again.</div>
-    <button class="dlg-btn danger dlg-reset-go">Reset</button>
-    <button class="dlg-btn dlg-cancel">Cancel</button>`;
+    <div class="dlg-q">${isTh ? "รีเซ็ตเนื้อหาที่แนะนำหรือไม่?" : "Reset suggested content?"}</div>
+    <div class="dlg-desc">${isTh ? "โพสต์ที่คุณทำเครื่องหมายว่าไม่สนใจจะแสดงอีกครั้ง" : "Posts you marked as not interested will be shown again."}</div>
+    <button class="dlg-btn danger dlg-reset-go">${isTh ? "รีเซ็ต" : "Reset"}</button>
+    <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
     }
     function logoutDlgHTML() {
       const isTh = state.lang === "th";
@@ -15396,12 +15400,15 @@
     function subPostRows(posts, label, cls) {
       const isTh = state.lang === "th";
       return posts.length ? posts.map(p => `
-    <div class="mrow" data-pf-user="${esc(p.seller)}">
+    <div class="mrow" data-sub-pid="${p.id}">
       <img class="msq" src="${p.photos[0]}" alt="">
       <span class="lg-b"><span class="mn">${p.seller}</span><span class="md">${p.caption}</span></span>
       <button class="mact ${cls}" data-pid="${p.id}">${label}</button>
     </div>`).join("") : `<div class="sub-empty">${isTh ? "ยังไม่มีข้อมูลที่นี่" : "Nothing here yet"}</div>`;
     }
+    /* LIBRARY — posts leave every private list when the source can no longer be seen
+       (hide/archive/block/delete → gone; sold/show stay openable; ni/mute are feed-only) */
+    function libVisible(p) { return !p.archived && !p.blocked && pfKind(p) !== "hide"; }
 
     /* ===== SAVED-001 — IG-style Saved hub (tabs + collections grid + manage + new-collection sheet) ===== */
     const SAVED_TABS = [
@@ -15430,8 +15437,8 @@
           : svdEmptyHTML(I.history(46), isTh ? "ไม่มีโพสต์ในคลังเก็บ" : "No archived posts", isTh ? "โพสต์ที่คุณจัดเก็บจะแสดงให้คุณเห็นเท่านั้น" : "Posts you archive will only be visible to you.", true)}
     </div>`;
     }
-    function savedPosts() { return POSTS.filter(p => p.saved).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0)); }
-    function colPosts(name) { return POSTS.filter(p => p.saved && (p.savedCols || []).includes(name)).sort((a, b) => (b.colAt || 0) - (a.colAt || 0)); }
+    function savedPosts() { return POSTS.filter(p => p.saved && libVisible(p)).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0)); }
+    function colPosts(name) { return savedPosts().filter(p => (p.savedCols || []).includes(name)).sort((a, b) => (b.colAt || 0) - (a.colAt || 0)); }
     function colCover(c) { const ps = colPosts(c.name); const p = ps.find(x => x.id === c.coverPid) || ps[ps.length - 1]; return p ? thumbS(p) : ""; }
     function savedList(scr) {
       const V = savedState(scr);
@@ -15596,8 +15603,8 @@
       if (V.mode === "search") {
         return `
     <div class="sr-head svd-head">
-      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="Search ${esc(name)}" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
-      <button class="svd-cancel">Cancel</button>
+      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="${state.lang === "th" ? "ค้นหา" : "Search"} ${esc(name)}" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
+      <button class="svd-cancel">${state.lang === "th" ? "ยกเลิก" : "Cancel"}</button>
     </div>
     <div class="sub-scroll svd-body">${savedSearchBodyHTML(scr)}</div>`;
       }
@@ -15628,7 +15635,7 @@
       if (!scr._wl) scr._wl = { col: null, tab: "all", mode: "", q: "", manage: false, sel: new Set(), addSel: new Set() };
       return scr._wl;
     }
-    function wlPosts() { return POSTS.filter(p => p.wishlisted).sort((a, b) => (b.wlAt || 0) - (a.wlAt || 0)); }
+    function wlPosts() { return POSTS.filter(p => p.wishlisted && libVisible(p)).sort((a, b) => (b.wlAt || 0) - (a.wlAt || 0)); }
     function wlColPosts(name) { return wlPosts().filter(p => (p.wlCols || []).includes(name)).sort((a, b) => (b.wlColAt || 0) - (a.wlColAt || 0)); }
     function wlListPosts(scr) {
       const V = wlState(scr);
@@ -15757,8 +15764,8 @@
       if (V.mode === "search") {
         return `
     <div class="sr-head svd-head">
-      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="Search ${esc(name)}" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
-      <button class="svd-cancel">Cancel</button>
+      <span class="sr-field${V.q ? " has-q" : ""}">${I.search(16)}<input class="svd-q" placeholder="${state.lang === "th" ? "ค้นหา" : "Search"} ${esc(name)}" value="${esc(V.q)}"><button class="svd-x" type="button">${I.circleX(16)}</button></span>
+      <button class="svd-cancel">${state.lang === "th" ? "ยกเลิก" : "Cancel"}</button>
     </div>
     <div class="sub-scroll svd-body">${wlSearchBodyHTML(scr)}</div>`;
       }
@@ -17264,31 +17271,33 @@
     /* IG block confirm — bottom sheet: centered avatar + impact rows + two actions (single action if fromChat) */
     function blkSheetHTML(uname, fromChat = false) {
       const u = profileOf(uname);
+      const isTh = state.lang === "th";
       /* One identical sheet everywhere (profile menu + report flow): same copy,
          3 impact rows, Block + Block and report (Chat menu displays only Block) */
       return `<div class="sheet-handle"></div>
     <div class="blk-body">
       <img class="blk-av" src="${u.avatar}" alt="">
-      <div class="blk-q">Block ${esc(uname)}?</div>
-      <div class="blk-d">This will also block any other profiles they may have or create in the future.</div>
-      <div class="blk-i">${I.prohibit(22)}<span>They won't be able to message you or find your profile or content on TukDaeng.</span></div>
-      <div class="blk-i">${I.bellOff(22)}<span>They won't be notified that you blocked or reported them.</span></div>
-      <div class="blk-i">${I.gear(22)}<span>You can unblock them anytime in Settings.</span></div>
-      <button class="blk-go" data-u="${esc(uname)}">Block</button>
-      ${fromChat ? "" : `<button class="blk-rep" data-u="${esc(uname)}">Block and report</button>`}
+      <div class="blk-q">${isTh ? `บล็อก ${esc(uname)} หรือไม่?` : `Block ${esc(uname)}?`}</div>
+      <div class="blk-d">${isTh ? "การดำเนินการนี้จะบล็อกบัญชีอื่น ๆ ที่พวกเขาอาจมีหรือสร้างในอนาคตด้วย" : "This will also block any other profiles they may have or create in the future."}</div>
+      <div class="blk-i">${I.prohibit(22)}<span>${isTh ? "พวกเขาจะส่งข้อความหาคุณหรือค้นหาโปรไฟล์และเนื้อหาของคุณบนตึกแดงไม่ได้" : "They won't be able to message you or find your profile or content on TukDaeng."}</span></div>
+      <div class="blk-i">${I.bellOff(22)}<span>${isTh ? "พวกเขาจะไม่ได้รับการแจ้งเตือนว่าคุณบล็อกหรือรายงานพวกเขา" : "They won't be notified that you blocked or reported them."}</span></div>
+      <div class="blk-i">${I.gear(22)}<span>${isTh ? "คุณสามารถเลิกบล็อกพวกเขาได้ทุกเมื่อในการตั้งค่า" : "You can unblock them anytime in Settings."}</span></div>
+      <button class="blk-go" data-u="${esc(uname)}">${isTh ? "บล็อก" : "Block"}</button>
+      ${fromChat ? "" : `<button class="blk-rep" data-u="${esc(uname)}">${isTh ? "บล็อกและรายงาน" : "Block and report"}</button>`}
     </div>`;
     }
     /* Chat report confirm — bottom sheet matching Block sheet layout with centered avatar, title, description and actions */
     function chatReportSheetHTML(uname, tid) {
       const u = profileOf(uname);
+      const isTh = state.lang === "th";
       return `<div class="sheet-handle"></div>
     <div class="blk-body">
       <img class="blk-av" src="${u.avatar}" alt="">
-      <div class="blk-q" style="text-align:center; font-size:18px; margin-top:16px;">Are you sure you want to report ${esc(uname)}?</div>
-      <div class="blk-d" style="text-align:center; font-size:13.5px; line-height:1.45; color:var(--muted); margin:10px auto 24px; max-width:280px;">If this user appears suspicious, please report them. Selecting &quot;Report and delete&quot; will delete this chat and its associated history.</div>
-      <button class="blk-go ch-rep-del-btn" style="margin-top:0;" data-u="${esc(uname)}" data-tid="${esc(tid || "")}">Report and delete</button>
-      <button class="blk-rep ch-rep-only-btn" data-u="${esc(uname)}" data-tid="${esc(tid || "")}">Report</button>
-      <button class="ch-sheet-cancel-btn" style="width:100%; margin-top:10px; padding:10px 0; background:none; border:none; font-family:var(--font-main); font-size:14.5px; font-weight:600; color:var(--text); cursor:pointer;">Cancel</button>
+      <div class="blk-q" style="text-align:center; font-size:18px; margin-top:16px;">${isTh ? `ต้องการรายงาน ${esc(uname)} หรือไม่?` : `Are you sure you want to report ${esc(uname)}?`}</div>
+      <div class="blk-d" style="text-align:center; font-size:13.5px; line-height:1.45; color:var(--muted); margin:10px auto 24px; max-width:280px;">${isTh ? "หากผู้ใช้รายนี้ดูน่าสงสัย โปรดรายงานพวกเขา การเลือก &quot;รายงานและลบ&quot; จะลบแชทนี้และประวัติที่เกี่ยวข้อง" : "If this user appears suspicious, please report them. Selecting &quot;Report and delete&quot; will delete this chat and its associated history."}</div>
+      <button class="blk-go ch-rep-del-btn" style="margin-top:0;" data-u="${esc(uname)}" data-tid="${esc(tid || "")}">${isTh ? "รายงานและลบ" : "Report and delete"}</button>
+      <button class="blk-rep ch-rep-only-btn" data-u="${esc(uname)}" data-tid="${esc(tid || "")}">${isTh ? "รายงาน" : "Report"}</button>
+      <button class="ch-sheet-cancel-btn" style="width:100%; margin-top:10px; padding:10px 0; background:none; border:none; font-family:var(--font-main); font-size:14.5px; font-weight:600; color:var(--text); cursor:pointer;">${isTh ? "ยกเลิก" : "Cancel"}</button>
     </div>`;
     }
     /* IG unblock confirm — center dialog like Mute (not a sheet) */
@@ -17305,7 +17314,7 @@
       scr.querySelector(".pf-rhint")?.remove();
       const el = document.createElement("div");
       el.className = "pf-rhint";
-      el.innerHTML = `${I.userMinus(18)}<span>You can restrict them to hide their comments and messages without blocking them completely.</span>`;
+      el.innerHTML = `${I.userMinus(18)}<span>${state.lang === "th" ? "คุณสามารถจำกัดพวกเขาเพื่อซ่อนความคิดเห็นและข้อความโดยไม่ต้องบล็อกทั้งหมด" : "You can restrict them to hide their comments and messages without blocking them completely."}</span>`;
       scr.appendChild(el);
       clearTimeout(scr._rhintT);
       scr._rhintT = setTimeout(() => el.remove(), 6000);
@@ -17558,7 +17567,7 @@
       const mktOff = sim === "nomkt";
       const els = PF_ASSETS.filter(pfoEligible);
       if (state.session !== "member" || sim === "empty" || !els.length) /* GUEST-001 — fresh account has no assets */
-        return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.wallet(40)}<div class="t">${isTh ? "ไม่พบข้อมูล" : "No data found"}</div><div class="pfo-ed">${isTh ? "นาฬิกาที่คุณระบุสถานะ ลงขาย โชว์ หรือ ซ่อน จะแสดงที่นี่" : "Assets you list as Sale, Show or Hide will appear here."}</div></div>${pfoSimBar(scr)}</div>`;
+        return head + `<div class="sub-scroll"><div class="sr-empty-block">${I.wallet(40)}<div class="t">${isTh ? "ไม่พบข้อมูล" : "No data found"}</div><div class="pfo-ed">${isTh ? "นาฬิกาที่คุณระบุสถานะ ลงขาย โชว์ หรือ ซ่อน จะแสดงที่นี่" : "Assets you list as Sale, Show or Hide will appear here."}</div></div>${PF_SOLD.length ? `<div class="sub-sec pfo-sec" style="padding-top:0"><span></span><button class="pfo-soldlink" data-sub="soldhist">${I.history(13)} ${isTh ? "ประวัติการขาย" : "Sold history"} ${I.chevR(12)}</button></div>` : ""}${pfoSimBar(scr)}</div>`;
       const rows = els.map(a => ({ a, cur: pfoCur(a, mktOff), gl: pfoGL(a, mktOff), cmp: pfoCmp(a, mktOff), hold: pfoHold(a.bought), mktOff }));
       const invested = rows.filter(r => r.a.purchase != null && r.a.purchase > 0);
       const total = invested.reduce((s, r) => s + r.a.purchase, 0);
@@ -17735,7 +17744,7 @@
       <div class="sub-sec">${isTh ? "บัญชี" : "Account"}</div>
       ${row(isTh ? "เกี่ยวกับบัญชีของคุณ" : "About your account", `data-sub="about_account"`, "", I.userCir(21))}
       <div class="sub-sec sec-div">${isTh ? "คลังของคุณ" : "Your library"}</div>
-      ${row(isTh ? "โพสต์ที่บันทึกไว้" : "Saved", `data-sub="saved"`, `<span class="sub-count">${POSTS.filter(p => p.saved).length}</span>`, I.bookmark(21))}
+      ${row(isTh ? "โพสต์ที่บันทึกไว้" : "Saved", `data-sub="saved"`, `<span class="sub-count">${savedPosts().length}</span>`, I.bookmark(21))}
       ${row(isTh ? "รายการที่อยากได้" : "Wish List", `data-sub="wishlist"`, `<span class="sub-count">${wlPosts().length}</span>`, I.gift(21))}
       ${row(isTh ? "คลังข้อมูลที่เก็บถาวร" : "Archive", `data-sub="archive"`, `<span class="sub-count">${archivePosts().length}</span>`, I.history(21))}
       ${row(isTh ? "การแจ้งเตือนนาฬิกา" : "Watch Alerts", `data-sub="walerts"`, `<span class="sub-count">${WATCH_ALERTS.length}</span>`, I.navBell(21))}
@@ -17751,6 +17760,7 @@
       ${row(isTh ? "การตั้งค่าการแจ้งเตือน" : "Notification settings", `data-sub="notif_settings"`, "", I.navBell(21))}
       <div class="sub-sec sec-div">${isTh ? "ข้อมูลเพิ่มเติมและการสนับสนุน" : "More info and support"}</div>
       ${row(isTh ? "ศูนย์ช่วยเหลือ" : "Help", `data-sub="help"`, "", I.helpCir(21))}
+      ${row(isTh ? "ความเป็นส่วนตัวและคุกกี้" : "Privacy & cookies", `data-sub="cookies"`, "", I.sliders(21))}
       ${row(isTh ? "นโยบายความเป็นส่วนตัว" : "Privacy Policy", `data-sub="privacy"`, "", I.shield(21))}
       ${row(isTh ? "ข้อกำหนดการใช้งาน" : "Terms of Use", `data-sub="terms"`, "", I.fileText(21))}
       ${row(isTh ? "เกี่ยวกับตึกแดง" : "About", `data-sub="about_app"`, "", I.infoCir(21))}
@@ -18050,6 +18060,21 @@
       ${opt("standard", isTh ? "มาตรฐาน" : "Standard", isTh ? "คุณจะเห็นเนื้อหาที่ละเอียดอ่อนบางส่วน" : "You'll see some sensitive content.")}
     </div>`;
       }
+      /* SETTINGS — Privacy & cookies: consent toggles bound to the same record the
+         onboarding Cookie settings page writes (fo_consent via obLog) — spec 13 §9
+         Privacy & Cookie Preferences Rule (Essential always-on, no toggle) */
+      if (name === "cookies") {
+        const isTh = state.lang === "th";
+        const cSaved = (() => { try { return JSON.parse(localStorage.getItem("fo_consent") || "null"); } catch { return null; } })();
+        if (cSaved) { OB.opt.analytics = !!cSaved.analytics; OB.opt.personalized = !!cSaved.personalized; }
+        const cRow = (k, t, d) => `<button class="sub-row sub-row-lg" data-cookie-tgl="${k}"><span class="lg-b"><span class="lg-t">${t}</span><span class="lg-d">${d}</span></span><span class="tg-sw${OB.opt[k] ? " on" : ""}"></span></button>`;
+        return head(isTh ? "ความเป็นส่วนตัวและคุกกี้" : "Privacy & cookies") + `<div class="sub-scroll">
+      <div class="fav-desc">${isTh ? "จัดการสิทธิ์การใช้ข้อมูลของคุณบนตึกแดง" : "Manage how TukDaeng uses your data."}</div>
+      <div class="sub-row sub-row-lg sub-row-static"><span class="lg-b"><span class="lg-t">${isTh ? "จำเป็น" : "Essential"}</span><span class="lg-d">${isTh ? "จำเป็นต่อการทำงานและความปลอดภัยของแอป" : "Needed to run the app and keep it secure."}</span></span><span class="sub-count">${isTh ? "เปิดตลอด" : "Always on"}</span></div>
+      ${cRow("analytics", isTh ? "การวิเคราะห์การใช้งาน" : "Analytics", isTh ? "ช่วยให้เราปรับปรุงแอป (ไม่บังคับ)" : "Help us improve the app. Optional.")}
+      ${cRow("personalized", isTh ? "การปรับแต่งเฉพาะบุคคล" : "Personalized content", isTh ? "แนะนำนาฬิกาที่คุณอาจสนใจ (ไม่บังคับ)" : "Suggest watches you may like. Optional.")}
+    </div>`;
+      }
       /* THEME-001 — Theme mode picker: Dark / Light (spec 13_SETTINGS_MODULE Theme Mode) */
       if (name === "theme") {
         const isTh = state.lang === "th";
@@ -18087,8 +18112,8 @@
       if (name === "savedcol") return savedColHTML(scr);
       if (name === "wishlist") return wishlistHTML(scr);
       if (name === "wishcol") return wishColHTML(scr);
-      if (name === "interested") return head(isTh ? "รายการที่สนใจ" : "Interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.liked), isTh ? "ลบออก" : "Remove", "m-unlike")}</div>`;
-      if (name === "ni") return head(isTh ? "ไม่สนใจ" : "Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni), isTh ? "คืนค่า" : "Restore", "m-restore")}</div>`;
+      if (name === "interested") return head(isTh ? "รายการที่สนใจ" : "Interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.liked && libVisible(p)), isTh ? "ลบออก" : "Remove", "m-unlike")}</div>`;
+      if (name === "ni") return head(isTh ? "ไม่สนใจ" : "Not interested") + `<div class="sub-scroll">${subPostRows(POSTS.filter(p => p.ni && libVisible(p)), isTh ? "คืนค่า" : "Restore", "m-restore")}</div>`;
       /* full-page report view (IG-style) — opened from "..." menu or the uncomfortable ack card */
       if (name === "report" || name === "report:user" || name === "report:post" || name === "report:comment") {
         const hasBack = name !== "report" && name !== "report:comment" && scr.dataset.rpFromChat !== "true";
@@ -18123,7 +18148,7 @@
         const dn = scr._rpDone || (scr._rpDone = new Set());
         /* IG keeps a completed step in place with a green check instead of a chevron */
         const step = (act, ic, label, done) => `<button class="rp-step" data-act="${act}" data-u="${esc(u)}"${done ? " disabled" : ""}><span class="rp-step-ic">${ic}</span><span class="rp-step-t">${esc(label)}</span>${done ? `<span class="rp-ck">${I.check(15)}</span>` : `<span class="pm-chev">${I.chevR(14)}</span>`}</button>`;
-        const hasBack = scr.dataset.rpFromChat !== "true" && scr.dataset.rpTargetType !== "comment";
+        const hasBack = scr.dataset.rpFromChat !== "true";
         return `
     <div class="detail-head rp-head">${hasBack ? `<button class="icon-btn rp-back sub-back">${I.back(20)}</button>` : ""}<span class="detail-title">${isTh ? "รายงาน" : "Report"}</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="pm-rp-scroll">
@@ -18145,6 +18170,7 @@
         return `
     <div class="detail-head rp-head rp-select-head"><button class="icon-btn rp-back sub-back">${I.back(20)}</button><span class="detail-title">${isTh ? "เลือกโพสต์" : "Select a post"}</span><button class="icon-btn rp-x sub-x">${I.x(18)}</button></div>
     <div class="rp-select-scroll">
+      ${pfTabPosts(u, "all").length === 0 ? `<div class="pm-rp-q" style="padding:48px 24px; text-align:center;">${isTh ? "ยังไม่มีโพสต์" : "No posts yet"}</div>` : ""}
       <div class="pf-grid">${pfTabPosts(u, "all").map(p => `
         <button class="pf-tile rp-tile${sel === p.id ? " on" : ""}" data-pid="${p.id}"><img src="${p.photos[0]}" alt="" loading="lazy"><span class="rp-sel">${sel === p.id ? I.check(12) : ""}</span></button>`).join("")}</div>
     </div>
@@ -18229,7 +18255,7 @@
       const m = t.msgs[t.msgs.length - 1];
       return m ? (m.day === "Today" ? m.at : m.day) : "";
     }
-    function chUnread() { return chatInit().threads.reduce((a, t) => a + (t.unread || 0), 0); }
+    function chUnread() { return chatInit().threads.reduce((a, t) => a + ((t.hidden || t.muted) ? 0 : (t.unread || 0)), 0); }
     function chBadgeHTML() { const n = chUnread(); return n ? `<span class="nav-badge">${n > 99 ? "99+" : n}</span>` : ""; }
     function chBadgeSync() {
       const b = chBadgeHTML();
@@ -18668,7 +18694,7 @@
   <div class="ch-scroll sub-scroll bd-scroll">
     <div class="bd-sbar">
       <span class="bd-sbar-ic">${I.search(18)}</span>
-      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="${isTh ? "ค้นหาบทความ แบรนด์ หรือประเด็นที่สนใจ..." : "Search articles, brands, or topics..."}" autocomplete="off">
+      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="${isTh ? "ค้นหาบทความ แบรนด์ หรือประเด็นที่สนใจ..." : "Search articles, brands, or topics..."}" autocomplete="off"><button class="icon-btn" data-bdqclear aria-label="Clear" style="flex:none;${bdQ ? "" : "visibility:hidden"}">${I.x(16)}</button>
     </div>
     <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>${isTh ? "ค้นหา" : "Search"}</span></div>
     <div class="bd-res">${bdResultsHTML()}</div>
@@ -18742,6 +18768,13 @@
       if (e.target.closest("[data-bdsearch]")) {
         bdQ = ""; rpPush(scr, "boardsearch");
         setTimeout(() => scr.querySelector(".bd-q")?.focus(), 320);
+        return true;
+      }
+      if (e.target.closest("[data-bdqclear]")) {
+        bdQ = "";
+        const qi = scr.querySelector(".bd-q"); if (qi) { qi.value = ""; qi.focus(); }
+        const qx = scr.querySelector("[data-bdqclear]"); if (qx) qx.style.visibility = "hidden";
+        boardSearchSync(scr.querySelector(".page-sub"));
         return true;
       }
       const tag = e.target.closest("[data-bdtag]");
@@ -18821,6 +18854,7 @@
       return !q || (t.user + " " + (t.item ? t.item.cap : "") + " " + t.msgs.map(m => m.t).join(" ")).toLowerCase().includes(q);
     }
     function chRowHTML(t) {
+      const isTh = state.lang === "th";
       const last = t.msgs[t.msgs.length - 1], un = t.unread > 0;
       const isBlk = pfIsBlocked(t.user) || !!t.blocked;
       return `<div class="ch-row-wrap" data-tid="${t.id}">
@@ -18840,7 +18874,7 @@
       <span class="ch-main">
         <span class="ch-name-line">
           <b class="ch-name">${esc(t.user)}</b>
-          ${isBlk ? `<span class="ch-blk-badge">Blocked</span>` : (t.muted ? `<span class="ch-mute-ico" title="ปิดแจ้งเตือน">${I.chMute(13)}</span>` : "")}
+          ${isBlk ? `<span class="ch-blk-badge">${isTh ? "บล็อกแล้ว" : "Blocked"}</span>` : (t.muted ? `<span class="ch-mute-ico" title="ปิดแจ้งเตือน">${I.chMute(13)}</span>` : "")}
         </span>
         <span class="ch-prev-line"><span class="ch-prev">${last ? (last.f === "me" ? "You: " : "") + esc(last.t || "") : ""}</span></span>
       </span>
@@ -19001,6 +19035,7 @@
   </div>`;
     }
     function chatRoomHTML(tid) {
+      const isTh = state.lang === "th";
       const C = chatInit(), t = chGet(tid);
       const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
       if (!t) return `<div class="ch-rhead">${back}<span class="n">Chat</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
@@ -19086,11 +19121,11 @@
       <div class="ch-blocked-info">
         <span class="ch-blocked-icon">${I.prohibit(18)}</span>
         <div class="ch-blocked-text">
-          <div class="ch-blocked-title">You blocked this account</div>
-          <div class="ch-blocked-sub">You can't message or call them unless you unblock them.</div>
+          <div class="ch-blocked-title">${isTh ? "คุณบล็อกบัญชีนี้แล้ว" : "You blocked this account"}</div>
+          <div class="ch-blocked-sub">${isTh ? "คุณไม่สามารถส่งข้อความหรือโทรหาพวกเขาได้จนกว่าจะเลิกบล็อก" : "You can't message or call them unless you unblock them."}</div>
         </div>
       </div>
-      <button class="ch-blocked-unblock-btn" data-chact="unblock-room" data-user="${esc(t.user)}" data-tid="${t.id}">Unblock</button>
+      <button class="ch-blocked-unblock-btn" data-chact="unblock-room" data-user="${esc(t.user)}" data-tid="${t.id}">${isTh ? "เลิกบล็อก" : "Unblock"}</button>
     </div>` : `
     <div class="ch-comp">
       <button class="icon-btn" data-chgo="attach" title="Attach">${I.plus(22)}</button>
@@ -19145,26 +19180,41 @@
       bd.onclick = (e) => { if (e.target === bd) bd.remove(); };
     }
     function openChatMediaViewer(scr, src) {
-      if (!scr) scr = document.querySelector(".screen");
       if (!scr) return;
       const old = scr.querySelector(".ch-media-viewer");
       if (old) old.remove();
+      /* canonical — swipe between the room's media + double-tap zoom */
+      const curSub = scr._subStack ? scr._subStack[scr._subStack.length - 1] : "";
+      const tid = curSub.startsWith("chatroom:") ? curSub.slice(9) : "";
+      const t = tid ? chGet(tid) : null;
+      const media = t ? t.msgs.filter(m => m.img).map(m => m.img) : [src];
+      let idx = Math.max(0, media.indexOf(src));
       const html = `
   <div class="ch-media-viewer" id="chMediaViewer">
-    <div class="ch-media-viewer-head">
+    <div class="ch-media-viewer-head"><span style="flex:1;text-align:center;font-size:13px;opacity:.7" class="ch-media-viewer-count"></span>
       <button class="icon-btn ch-media-viewer-close" title="Close">${I.x(22)}</button>
     </div>
-    <div class="ch-media-viewer-body">
-      <img src="${src}" alt="Chat media">
-    </div>
+    <div class="ch-media-viewer-body"><img src="" alt="Chat media"></div>
   </div>`;
       scr.insertAdjacentHTML("beforeend", html);
-      const v = scr.querySelector(".ch-media-viewer");
+      const v = scr.querySelector(".ch-media-viewer"), img = v.querySelector("img"), cnt = v.querySelector(".ch-media-viewer-count");
+      let zoomed = false;
+      const show = j => { idx = (j + media.length) % media.length; img.src = media[idx]; zoomed = false; img.style.transform = ""; img.style.cursor = "zoom-in"; cnt.textContent = media.length > 1 ? (idx + 1) + "/" + media.length : ""; };
+      show(idx);
       v.querySelector(".ch-media-viewer-close").onclick = () => v.remove();
-      v.onclick = (e) => { if (e.target === v || e.target.classList.contains("ch-media-viewer-body")) v.remove(); };
+      v.onclick = e => { if (e.target === v) v.remove(); };
+      img.ondblclick = () => { zoomed = !zoomed; img.style.transform = zoomed ? "scale(2.2)" : ""; img.style.cursor = zoomed ? "zoom-out" : "zoom-in"; };
+      let tx = null;
+      v.addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, { passive: true });
+      v.addEventListener("touchend", e => {
+        if (tx === null) return;
+        const dx = e.changedTouches[0].clientX - tx; tx = null;
+        if (!zoomed && Math.abs(dx) > 48 && media.length > 1) show(idx + (dx < 0 ? 1 : -1));
+      }, { passive: true });
     }
 
     function chatRoomMenuHTML(tid) {
+      const isTh = state.lang === "th";
       const t = chGet(tid);
       const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
       if (!t) return `<div class="ch-menu-head">${back}<span class="detail-title">Chat</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
@@ -19194,28 +19244,28 @@
   </div>
   <div class="sub-scroll">
     <div class="ch-menu-actions">
-      <button class="ch-menu-act-btn${t.muted ? " active" : ""}" data-chact="mute" data-tid="${t.id}" title="${t.muted ? "Unmute" : "Mute"}">
+      <button class="ch-menu-act-btn${t.muted ? " active" : ""}" data-chact="mute" data-tid="${t.id}" title="${t.muted ? (isTh ? "เปิดเสียงเตือน" : "Unmute") : (isTh ? "ปิดเสียงเตือน" : "Mute")}">
         <div class="ch-menu-act-icon">${t.muted ? I.bellOff(22) : I.navBell(22)}</div>
-        <span class="ch-menu-act-label">${t.muted ? "Unmute" : "Mute"}</span>
+        <span class="ch-menu-act-label">${t.muted ? (isTh ? "เปิดเสียงเตือน" : "Unmute") : (isTh ? "ปิดเสียงเตือน" : "Mute")}</span>
       </button>
-      <button class="ch-menu-act-btn" data-pf-user="${esc(t.user)}" title="ดูโปรไฟล์">
+      <button class="ch-menu-act-btn" data-pf-user="${esc(t.user)}" title="${isTh ? "ดูโปรไฟล์" : "View profile"}">
         <div class="ch-menu-act-icon">${I.users(22)}</div>
-        <span class="ch-menu-act-label">Profile</span>
+        <span class="ch-menu-act-label">${isTh ? "โปรไฟล์" : "Profile"}</span>
       </button>
-      <button class="ch-menu-act-btn${isBlk ? " active" : ""}" data-chact="block-user" data-tid="${t.id}" data-user="${esc(t.user)}" title="${isBlk ? "Unblock" : "Block"}">
+      <button class="ch-menu-act-btn${isBlk ? " active" : ""}" data-chact="block-user" data-tid="${t.id}" data-user="${esc(t.user)}" title="${isBlk ? (isTh ? "เลิกบล็อก" : "Unblock") : (isTh ? "บล็อก" : "Block")}">
         <div class="ch-menu-act-icon">${I.prohibit(22)}</div>
-        <span class="ch-menu-act-label">${isBlk ? "Unblock" : "Block"}</span>
+        <span class="ch-menu-act-label">${isBlk ? (isTh ? "เลิกบล็อก" : "Unblock") : (isTh ? "บล็อก" : "Block")}</span>
       </button>
-      <button class="ch-menu-act-btn" data-chact="report-chat-user" data-tid="${t.id}" data-user="${esc(t.user)}" title="Report">
+      <button class="ch-menu-act-btn" data-chact="report-chat-user" data-tid="${t.id}" data-user="${esc(t.user)}" title="${isTh ? "รายงาน" : "Report"}">
         <div class="ch-menu-act-icon">${I.flag(22)}</div>
-        <span class="ch-menu-act-label">Report</span>
+        <span class="ch-menu-act-label">${isTh ? "รายงาน" : "Report"}</span>
       </button>
     </div>
 
     <div class="ch-menu-list">
       <button class="ch-menu-row ch-menu-row-media" data-chgo="chmedia" data-tid="${t.id}">
         <span class="ch-menu-row-ico">${I.img(18)}</span>
-        <span class="ch-menu-row-label">Photos & videos</span>
+        <span class="ch-menu-row-label">${isTh ? "รูปภาพและวิดีโอ" : "Photos & videos"}</span>
         <span class="ch-menu-row-val">
           <span class="sub-chev">${I.chevR(16)}</span>
         </span>
@@ -19225,13 +19275,13 @@
         ${mediaList.map(src => `<img class="ch-menu-media-thumb" src="${src}" alt="Chat media" data-chmedia="${esc(src)}">`).join("")}
       </div>` : `
       <div class="ch-menu-media-empty">
-        <span>No photos or videos found.</span>
+        <span>${isTh ? "ไม่พบรูปภาพหรือวิดีโอ" : "No photos or videos found."}</span>
       </div>`}
 
       ${it ? `
       <button class="ch-menu-row" data-chgo="post" data-pid="${esc(it.pid || it.id || "")}">
         <span class="ch-menu-row-ico">${I.bag ? I.bag(18) : I.tag(18)}</span>
-        <span class="ch-menu-row-label">Listings & Items</span>
+        <span class="ch-menu-row-label">${isTh ? "ลิสติ้งและรายการ" : "Listings & Items"}</span>
         <span class="ch-menu-row-val">
           <span class="ch-val-text">${esc(it.cap)}</span>
           <span class="sub-chev">${I.chevR(16)}</span>
@@ -19241,7 +19291,7 @@
 
     <div class="ch-menu-footer">
       ${I.lock(13)}
-      <span>This chat is protected with End-to-End Encryption</span>
+      <span>${isTh ? "แชทนี้ได้รับการปกป้องด้วยการเข้ารหัสต้นทางถึงปลายทาง" : "This chat is protected with End-to-End Encryption"}</span>
     </div>
   </div>`;
     }
@@ -19418,6 +19468,7 @@
       t.msgs.push({ f: "me", t: v, at: "09:41", day: "Today", read: false });
       t.draft = "";
       renderSub(scr);
+      chMarkRead(scr, t);
       const ni = scr.querySelector(".ch-input");
       if (ni) ni.focus();
     }
@@ -19461,6 +19512,23 @@
         t.msgs.push({ f: "me", pid: post.id, t: state.lang === "th" ? "ถามเกี่ยวกับลิสติ้งนี้" : "Asked about this listing", at: "09:41", day: "Today", read: false });
       chOpenRoom(scr, t);
     }
+    function chIncomingAsk(user, postId) {
+      const C = chatInit();
+      if (pfIsBlocked(user)) return false;
+      if (C.cfg.followOnly && !pfIsFollowed(user)) return false;
+      let t = chRoomFor(C, user);
+      if (!t) { t = { id: "t" + Date.now(), user, unread: 0, draft: "", pinned: false, muted: false, hidden: false, item: null, msgs: [] }; C.threads.unshift(t); }
+      t.hidden = false;
+      t.msgs.push({ f: "them", t: state.lang === "th" ? "สวัสดีครับ สนใจรายการนี้" : "Hi, I'm interested in this listing", pid: postId, at: "09:41", day: "Today", read: true });
+      t.unread = (t.unread || 0) + 1;
+      return true;
+    }
+    function chMarkRead(scr, t) {
+      setTimeout(() => {
+        t.msgs.forEach(m => { if (m.f === "me") m.read = true; });
+        if (scr.querySelector(".ch-room")?.dataset.tid === t.id) renderSub(scr);
+      }, 3000);
+    }
     /* FEED-041 — share sheet "send to friend" drops a post-card message into that
        friend's room and bumps the thread to the top of Chat Center (IG Direct share) */
     function chSharePost(friend, p) {
@@ -19493,13 +19561,14 @@
     function openChatHideConfirm(t, scr) {
       const old = document.getElementById("chConfirmModal");
       if (old) old.remove();
+      const isTh = state.lang === "th";
       const html = `
   <div class="ch-modal-backdrop" id="chConfirmModal">
     <div class="ch-modal">
-      <div class="ch-modal-title">Hiding chats doesn't delete their messages.</div>
+      <div class="ch-modal-title">${isTh ? "การซ่อนแชทจะไม่ลบข้อความในแชท" : "Hiding chats doesn't delete their messages."}</div>
       <div class="ch-modal-acts">
-        <button class="ch-modal-btn cancel" id="chHideCancel">Cancel</button>
-        <button class="ch-modal-btn confirm-action" id="chHideConfirm">Hide</button>
+        <button class="ch-modal-btn cancel" id="chHideCancel">${isTh ? "ยกเลิก" : "Cancel"}</button>
+        <button class="ch-modal-btn confirm-action" id="chHideConfirm">${isTh ? "ซ่อน" : "Hide"}</button>
       </div>
     </div>
   </div>`;
@@ -19514,7 +19583,7 @@
       m.querySelector("#chHideConfirm").onclick = () => {
         close();
         t.hidden = true;
-        scrToast(scr, "ซ่อนแชทแล้ว");
+        scrToast(scr, state.lang === "th" ? "ซ่อนแชทแล้ว" : "Chat hidden");
         renderSub(scr);
       };
     }
@@ -19522,13 +19591,14 @@
     function openChatDeleteConfirm(t, scr) {
       const old = document.getElementById("chConfirmModal");
       if (old) old.remove();
+      const isTh = state.lang === "th";
       const html = `
   <div class="ch-modal-backdrop" id="chConfirmModal">
     <div class="ch-modal">
-      <div class="ch-modal-title">Are you sure you want to delete this chat?</div>
+      <div class="ch-modal-title">${isTh ? "ต้องการลบแชทนี้หรือไม่?" : "Are you sure you want to delete this chat?"}</div>
       <div class="ch-modal-acts">
-        <button class="ch-modal-btn cancel" id="chDelCancel">Cancel</button>
-        <button class="ch-modal-btn confirm-action" id="chDelConfirm">Delete</button>
+        <button class="ch-modal-btn cancel" id="chDelCancel">${isTh ? "ยกเลิก" : "Cancel"}</button>
+        <button class="ch-modal-btn confirm-action" id="chDelConfirm">${isTh ? "ลบ" : "Delete"}</button>
       </div>
     </div>
   </div>`;
@@ -19548,7 +19618,7 @@
           t.msgs = [];
           C.threads.splice(idx, 1);
         }
-        scrToast(scr, "ลบแชทเรียบร้อยแล้ว");
+        scrToast(scr, state.lang === "th" ? "ลบแชทเรียบร้อยแล้ว" : "Chat deleted");
         if (scr._subStack && scr._subStack.length > 0) {
           while (scr._subStack.length > 0 && (scr._subStack[scr._subStack.length - 1].startsWith("chatroom:") || scr._subStack[scr._subStack.length - 1].startsWith("chmenu:") || scr._subStack[scr._subStack.length - 1].startsWith("chsettings:"))) {
             scr._subStack.pop();
@@ -19599,9 +19669,9 @@
         } else if (a === "export-chat" && t) {
           const txt = t.msgs.map(m => `[${m.day} ${m.at}] ${m.f === 'me' ? 'Me' : t.user}: ${m.t}`).join('\n');
           if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(() => { });
-          scrToast(scr, "คัดลอกประวัติแชทเรียบร้อยแล้ว");
+          scrToast(scr, state.lang === "th" ? "คัดลอกประวัติแชทเรียบร้อยแล้ว" : "Chat history copied");
         } else if (a === "wallpaper") {
-          scrToast(scr, "การเปลี่ยนพื้นหลังแชทจะเปิดให้ใช้งานเร็ว ๆ นี้");
+          scrToast(scr, state.lang === "th" ? "การเปลี่ยนพื้นหลังแชทจะเปิดให้ใช้งานเร็ว ๆ นี้" : "Chat wallpaper is coming soon");
         } else if (a === "report-chat") {
           const u = act.dataset.user || (t ? t.user : "");
           if (u) scr.dataset.rpUser = u;
@@ -19733,12 +19803,17 @@
         const isVideo = cSendMed.dataset.isvideo === "true";
         const t = tid ? chGet(tid) : null;
         if (t) {
+          const C2 = chatInit();
+          t.hidden = false;
+          if (C2.draft === t) { C2.threads.unshift(t); C2.draft = null; }
+          else { const mi = C2.threads.indexOf(t); if (mi > 0) { C2.threads.splice(mi, 1); C2.threads.unshift(t); } }
           t.msgs.push({ f: "me", img: src, isVideo, at: "09:41", day: "Today", read: false });
           if (!t.media) t.media = [];
           if (!t.media.includes(src)) t.media.unshift(src);
           const bd = scr.querySelector("#chAttachBackdrop");
           if (bd) bd.remove();
           renderSub(scr);
+          chMarkRead(scr, t);
         }
         return true;
       }
@@ -19798,12 +19873,13 @@
         const t = tid ? chGet(tid) : null;
         if (act === "trash" && t && t.galState) {
           t.media = t.media.filter(m => !t.galState.selected.includes(m));
+          t.msgs = t.msgs.filter(m => !m.img || !t.galState.selected.includes(m.img));
           t.galState.selected = [];
           t.galState.selecting = false;
-          scrToast(scr, "ลบรูปภาพที่เลือกแล้ว");
+          scrToast(scr, state.lang === "th" ? "ลบรูปภาพที่เลือกแล้ว" : "Selected photos deleted");
           renderSub(scr);
         } else if (act === "download") {
-          scrToast(scr, "บันทึกลงในรูปภาพแล้ว");
+          scrToast(scr, state.lang === "th" ? "บันทึกลงในรูปภาพแล้ว" : "Saved to Photos");
         }
         return true;
       }
@@ -20103,6 +20179,33 @@
       "Mister Fox Co., Ltd. · Est. 2026": "บริษัท มิสเตอร์ฟอกซ์ จำกัด · ก่อตั้ง พ.ศ. 2569",
       "A new device just logged in to your account near Bangkok, TH": "มีอุปกรณ์เครื่องใหม่เพิ่งเข้าสู่ระบบบัญชีของคุณใกล้กรุงเทพฯ ประเทศไทย",
       "Posted · shared to feed ✓": "โพสต์แล้ว · แชร์ไปยังฟีดเรียบร้อย ✓",
+      /* FO-SYNC-01 sweep — library / settings / portfolio / watch-alert / profile leftovers */
+      "Archive": "คลังเก็บ", "Done": "เสร็จ", "Manage": "จัดการ", "Select...": "เลือก...", "Change cover": "เปลี่ยนรูปปก",
+      "Add from": "เพิ่มจาก", "All items": "รายการทั้งหมด", "Interested": "รายการที่สนใจ", "Not interested": "ไม่สนใจ",
+      "Search your wish list": "ค้นหาสิ่งที่อยากได้ของคุณ", "Search your saved": "ค้นหารายการที่บันทึกไว้",
+      "Delete collection?": "ลบคอลเลกชันหรือไม่?",
+      "When you delete this collection, the photos and videos will still be saved.": "เมื่อลบคอลเลกชันนี้ รูปภาพและวิดีโอจะยังคงถูกบันทึกไว้",
+      "When you delete this collection, the photos and videos will still be on your wish list.": "เมื่อลบคอลเลกชันนี้ รูปภาพและวิดีโอจะยังคงอยู่ในสิ่งที่อยากได้ของคุณ",
+      "Remove from this collection?": "นำออกจากคอลเลกชันนี้หรือไม่?", "Remove from wish list?": "นำออกจากสิ่งที่อยากได้หรือไม่?",
+      "Post will still be saved in all posts.": "โพสต์จะยังคงอยู่ในโพสต์ทั้งหมดที่บันทึกไว้", "Post will still be on your wish list.": "โพสต์จะยังคงอยู่ในสิ่งที่อยากได้ของคุณ",
+      "Reset suggested content?": "รีเซ็ตเนื้อหาที่แนะนำหรือไม่?", "Posts you marked as not interested will be shown again.": "โพสต์ที่คุณทำเครื่องหมายว่าไม่สนใจจะแสดงอีกครั้ง",
+      "Reset": "รีเซ็ต", "Mute posts": "ปิดเสียงโพสต์",
+      "You can unmute them anytime from their profile. We won't let them know you muted them.": "คุณสามารถเปิดเสียงพวกเขาได้ทุกเมื่อจากโปรไฟล์ เราจะไม่แจ้งให้พวกเขาทราบว่าคุณปิดเสียงพวกเขา",
+      "Muted": "ปิดเสียงแล้ว", "Unmuted": "เปิดเสียงแล้ว", "Unblocked": "ปลดบล็อกแล้ว", "Posts unmuted": "เปิดเสียงโพสต์แล้ว",
+      "Suggested content reset": "รีเซ็ตเนื้อหาที่แนะนำแล้ว",
+      "Added to favorites": "เพิ่มในรายการโปรดแล้ว", "Removed from favorites": "ลบออกจากรายการโปรดแล้ว",
+      "Post updated": "อัปเดตโพสต์แล้ว", "Post deleted": "ลบโพสต์แล้ว",
+      "Profile shared": "แชร์โปรไฟล์แล้ว", "Profile link copied": "คัดลอกลิงก์โปรไฟล์แล้ว", "QR code saved": "บันทึกคิวอาร์โค้ดแล้ว",
+      "Profile updated": "อัปเดตโปรไฟล์แล้ว", "Profile picture updated": "อัปเดตรูปโปรไฟล์แล้ว",
+      "Watch alert on": "เปิดการแจ้งเตือนแล้ว", "Watch alert updated": "อัปเดตการแจ้งเตือนแล้ว", "Watch alert paused": "พักการแจ้งเตือนแล้ว",
+      "Watch alert removed": "ลบการแจ้งเตือนแล้ว", "You already saved this alert": "คุณบันทึกการแจ้งเตือนนี้ไว้แล้ว",
+      "No details on this post to watch": "ไม่มีรายละเอียดในโพสต์นี้ให้เฝ้าดู", "Post needs at least 1 photo or clip": "โพสต์ต้องมีรูปหรือคลิปอย่างน้อย 1 รายการ",
+      "Cannot message a blocked account": "ไม่สามารถส่งข้อความถึงบัญชีที่ถูกบล็อก", "This is your own listing": "นี่คือลิสติ้งของคุณเอง",
+      "Camera isn't available on this device": "กล้องไม่พร้อมใช้งานบนอุปกรณ์นี้", "Allow camera access to scan a QR code": "อนุญาตการเข้าถึงกล้องเพื่อสแกนคิวอาร์โค้ด",
+      "QR code isn't a TukDaeng profile": "คิวอาร์โค้ดนี้ไม่ใช่โปรไฟล์ตึกแดง",
+      "Report submitted · thanks for letting us know": "ส่งรายงานแล้ว · ขอบคุณที่แจ้งให้เราทราบ", "Blocking": "กำลังบล็อก",
+      "Sale": "ขาย", "Above market": "สูงกว่าตลาด", "At market": "เท่าตลาด", "Below market": "ต่ำกว่าตลาด",
+      "No market price": "ไม่มีราคาตลาด", "Purchase price estimate": "ประมาณจากราคาซื้อ",
       /* legal bodies */
       "1. Information We Collect": "1. ข้อมูลที่เราเก็บรวบรวม",
       "We collect information you provide directly to us when you create an account, update your profile, list watches, or communicate with other collectors on TukDaeng.": "เราเก็บข้อมูลที่คุณให้โดยตรงเมื่อสร้างบัญชี แก้ไขโปรไฟล์ ลงขายนาฬิกา หรือสื่อสารกับนักสะสมท่านอื่นบนตึกแดง",
@@ -20167,6 +20270,12 @@
       let m;
       if ((m = t.match(/^(\d+) min read\s*·\s*(.+)$/))) return `อ่าน ${m[1]} นาที  ·  ${formatPostTime(m[2], true)}`;
       if ((m = t.match(/^(\d+) listings?(\s·\sFollowing)?$/))) return `${m[1]} รายการประกาศ${m[2] ? " · กำลังติดตาม" : ""}`;
+      if ((m = t.match(/^(\d+) saved posts?$/))) return `${m[1]} โพสต์ที่บันทึก`;
+      if ((m = t.match(/^(\d+) items?$/))) return `${m[1]} รายการ`;
+      if ((m = t.match(/^You can add up to (\d+) photos or clips$/))) return `เพิ่มรูปหรือคลิปได้สูงสุด ${m[1]} รายการ`;
+      if ((m = t.match(/^Watch alert matched: (.+?)( \+(\d+) more)?$/))) return `การแจ้งเตือนตรงกับ ${m[1]}${m[3] ? ` (+${m[3]} รายการ)` : ""}`;
+      if ((m = t.match(/^Search (.+)$/))) return `ค้นหา ${m[1]}`;
+      if ((m = t.match(/^Mute (.+)\?$/))) return `ปิดเสียงโพสต์ของ ${m[1]} หรือไม่?`;
       if ((m = t.match(/^(\d+) posts?$/))) return `${m[1]} โพสต์`;
       if ((m = t.match(/^Apply \((\d+)\)$/))) return `ใช้ (${m[1]})`;
       if ((m = t.match(/^THB ([\d,]+)–Any$/))) return `THB ${m[1]}–ไม่จำกัด`;
@@ -21601,7 +21710,7 @@
         const errEl = scr.querySelector("#del-acc-pwd-err");
         const pwd = (inp?.value || "").trim();
         const isTh = state.lang === "th";
-        const correctPwd = state.mockPassword || "fox1234";
+        const correctPwd = state.userPwd || "fox1234"; /* spec: same credential check as Change Password */
 
         if (!pwd) {
           if (inp) inp.classList.add("is-err");
@@ -21726,8 +21835,8 @@
           showErr(isTh ? "กรุณากรอกรหัสผ่านใหม่" : "Please enter a new password.", newInp);
           return;
         }
-        if (newVal.length < 8) {
-          showErr(isTh ? "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร" : "Password must be at least 8 characters long.", newInp);
+        if (newVal.length < 8 || !(/[0-9]/.test(newVal) || /[^A-Za-z0-9\s]/.test(newVal))) {
+          showErr(isTh ? "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร และมีตัวเลขหรืออักขระพิเศษอย่างน้อย 1 ตัว" : "Password must be at least 8 characters and include at least one number or special character.", newInp);
           return;
         }
         if (newVal === curVal) {
@@ -21763,6 +21872,17 @@
       }
       const sens = e.target.closest("[data-sens]");
       if (sens) { state.sensitive = sens.dataset.sens; renderSub(sens.closest(".screen")); return; }
+      /* SETTINGS — consent toggle: write the consent record immediately (obLog →
+         fo_consent) so Privacy & cookies and onboarding Cookie settings share state */
+      const cookieTgl = e.target.closest("[data-cookie-tgl]");
+      if (cookieTgl) {
+        const scr = cookieTgl.closest(".screen");
+        const k = cookieTgl.dataset.cookieTgl;
+        OB.opt[k] = !OB.opt[k];
+        obLog();
+        renderSub(scr);
+        return;
+      }
       /* THEME-001 — theme option: apply instantly to the open screen (data-theme attr
          drives every --var), persist via setTheme, then re-render the picker so the
          check moves. No full render() — the settings stack must stay open. */
@@ -22293,6 +22413,7 @@
       if (pfMenu) { pushSub(pfMenu.closest(".screen"), "settings"); return; }
       const pfMore = e.target.closest(".pf-more");
       if (pfMore) {
+        const isTh = state.lang === "th";
         const scr = pfMore.closest(".screen");
         const top = (scr._subStack || []).at(-1) || "";
         const uname = top.startsWith("profile:") ? top.slice(8).split(":")[0] : "";
@@ -22301,13 +22422,13 @@
            Cancel; Restrict/Hide story/QR stay cut */
         openSheet(scr, "pm", "pm-open", `<div class="sheet-handle"></div>
       <div class="pm-card pm-rows">
-        <button class="pm-row pm-ctr danger pf-sh-report" data-u="${esc(uname)}"><span>Report</span></button>
-        <button class="pm-row pm-ctr pf-sh-block" data-u="${esc(uname)}"><span>${pfIsBlocked(uname) ? "Unblock" : "Block"}</span></button>
-        <button class="pm-row pm-ctr pf-sh-about" data-u="${esc(uname)}"><span>About this account</span></button>
-        <button class="pm-row pm-ctr pf-sh-copy"><span>Copy profile URL</span></button>
-        <button class="pm-row pm-ctr pf-sh-share"><span>Share this profile</span></button>
+        <button class="pm-row pm-ctr danger pf-sh-report" data-u="${esc(uname)}"><span>${isTh ? "รายงาน" : "Report"}</span></button>
+        <button class="pm-row pm-ctr pf-sh-block" data-u="${esc(uname)}"><span>${pfIsBlocked(uname) ? (isTh ? "เลิกบล็อก" : "Unblock") : (isTh ? "บล็อก" : "Block")}</span></button>
+        <button class="pm-row pm-ctr pf-sh-about" data-u="${esc(uname)}"><span>${isTh ? "เกี่ยวกับบัญชีนี้" : "About this account"}</span></button>
+        <button class="pm-row pm-ctr pf-sh-copy"><span>${isTh ? "คัดลอกลิงก์โปรไฟล์" : "Copy profile URL"}</span></button>
+        <button class="pm-row pm-ctr pf-sh-share"><span>${isTh ? "แชร์โปรไฟล์นี้" : "Share this profile"}</span></button>
       </div>
-      <div class="pm-card pm-cancel"><button class="pm-row pm-ctr pf-sh-cancel"><span>Cancel</span></button></div>`);
+      <div class="pm-card pm-cancel"><button class="pm-row pm-ctr pf-sh-cancel"><span>${isTh ? "ยกเลิก" : "Cancel"}</span></button></div>`);
         return;
       }
       const pfShCopy = e.target.closest(".pf-sh-copy");
@@ -22606,6 +22727,15 @@
           scr.appendChild(inp);
         }
         inp.click();
+        return;
+      }
+      const subPost = e.target.closest("[data-sub-pid]");
+      if (subPost && !e.target.closest(".mact")) {
+        const scr = subPost.closest(".screen");
+        const topSub = (scr._subStack || []).at(-1) || "";
+        const isTh = state.lang === "th";
+        const list = topSub === "ni" ? POSTS.filter(p => p.ni && libVisible(p)) : POSTS.filter(p => p.liked && libVisible(p));
+        openPostViewer(scr, list, subPost.dataset.subPid, 0, true, topSub === "ni" ? (isTh ? "ไม่สนใจ" : "Not interested") : (isTh ? "รายการที่สนใจ" : "Interested"));
         return;
       }
       const pfUserGo = e.target.closest("[data-pf-user]");
@@ -23782,9 +23912,9 @@
         case "created": return `<div class="ob-page ob-center"><div class="ob-grow"></div><div class="ob-ico ok">${I.check(40)}</div><h1>${obT("Account created", "สร้างบัญชีสำเร็จ")}</h1>
           <p class="ob-sub">${obT("Welcome, ", "ยินดีต้อนรับ ")}${obEsc(f.name || f.user || "")}. ${obT("Sign in to start exploring.", "เข้าสู่ระบบเพื่อเริ่มใช้งาน")}</p><div class="ob-grow"></div><button class="ob-btn pri" data-ob="go:signin">${obT("Sign in", "เข้าสู่ระบบ")}</button></div>`;
         case "signin": return `<div class="ob-page">${obBack("member")}<h1>${obT("Sign in", "เข้าสู่ระบบ")}</h1><p class="ob-sub">${obT("Welcome back to TukDaeng.", "ยินดีต้อนรับกลับสู่ตึกแดง")}</p>
-          ${E.form ? `<div class="ob-banner">${E.form}</div>` : ""}${obField("email", obT("Email", "อีเมล"), "email", "you@example.com")}${obField("pw", obT("Password", "รหัสผ่าน"), "password", obT("Your password", "รหัสผ่านของคุณ"))}
+          ${obLockLeft() ? `<div class="ob-banner">${obLockMsg()}</div>` : E.form ? `<div class="ob-banner">${E.form}</div>` : ""}${obField("email", obT("Email", "อีเมล"), "email", "you@example.com")}${obField("pw", obT("Password", "รหัสผ่าน"), "password", obT("Your password", "รหัสผ่านของคุณ"))}
           <div style="text-align:right;margin-top:-6px"><button class="ob-link" data-ob="go:forgot">${obT("Forgot password?", "ลืมรหัสผ่าน?")}</button></div>
-          <div class="ob-grow" style="min-height:18px"></div><button class="ob-btn pri" data-ob="signin" ${OB.tries >= 5 ? "disabled" : ""}>${obT("Sign in", "เข้าสู่ระบบ")}</button>${obSocial()}
+          <div class="ob-grow" style="min-height:18px"></div><button class="ob-btn pri" data-ob="signin" ${obLockLeft() ? "disabled" : ""}>${obT("Sign in", "เข้าสู่ระบบ")}</button>${obSocial()}
           <div class="ob-legal">${obT("New here?", "ยังไม่มีบัญชี?")} <button data-ob="go:signup">${obT("Create account", "สร้างบัญชี")}</button></div></div>`;
         case "forgot": return OB.sent ? `<div class="ob-page ob-center"><div class="ob-grow"></div><div class="ob-ico ok">${I.check(40)}</div><h1>${obT("Check your email", "ตรวจสอบอีเมลของคุณ")}</h1>
           <p class="ob-sub">${obT("If an account exists for", "หากมีบัญชีสำหรับ")} <b style="color:var(--text)">${obEsc(f.email)}</b>${obT(", we sent a reset link.", " เราได้ส่งลิงก์รีเซ็ตรหัสผ่านให้แล้ว")}</p><div class="ob-grow"></div>
@@ -23795,6 +23925,42 @@
       return "";
     }
     let obLast = null;
+    function obLockKey() { return (OB.f.email || "").trim().toLowerCase(); }
+    function obLocks() {
+      if (!OB.locks) { try { OB.locks = JSON.parse(localStorage.getItem("fo_locks") || "{}"); } catch { OB.locks = {}; } }
+      return OB.locks;
+    }
+    function obLockSave() { try { localStorage.setItem("fo_locks", JSON.stringify(obLocks())); } catch { } }
+    function obLockLeft() {
+      const L = obLocks()[obLockKey()];
+      if (!L || L.tries < 5) return 0;
+      if (L.until - Date.now() > 0) return L.until - Date.now();
+      delete obLocks()[obLockKey()]; obLockSave();
+      return 0;
+    }
+    function obLockFmt(ms) { const s = Math.ceil(ms / 1000), m = Math.floor(s / 60), r = s % 60; return obT(m + " min " + r + " sec", m + " นาที " + r + " วินาที"); }
+    function obLockMsg() {
+      obLockTick();
+      return obT("Please try again in ", "กรุณาลองใหม่ในอีก ") + '<b id="obLockCd">' + obLockFmt(obLockLeft()) + "</b>" + obT(" or choose Forgot password.", " หรือเลือกลืมรหัสผ่าน");
+    }
+    function obLockSync(page) {
+      if (!page) return;
+      const left = obLockLeft(), btn = page.querySelector('[data-ob="signin"]');
+      if (btn) btn.disabled = !!left;
+      let ban = page.querySelector(".ob-banner");
+      if (left) {
+        if (!ban) { ban = document.createElement("div"); ban.className = "ob-banner"; const sub = page.querySelector(".ob-sub"); if (sub) sub.after(ban); }
+        ban.innerHTML = obLockMsg();
+      } else if (ban) ban.remove();
+    }
+    function obLockTick() {
+      if (OB.lockTimer) return;
+      OB.lockTimer = setInterval(() => {
+        const left = obLockLeft(), cd = document.getElementById("obLockCd");
+        if (!left) { clearInterval(OB.lockTimer); OB.lockTimer = null; if (OB.on && OB.step === "signin") obDraw(); return; }
+        if (cd) cd.textContent = obLockFmt(left);
+      }, 1000);
+    }
     function obDraw() {
       const root = obRoot(); if (!root) return;
       clearInterval(obTimer);
@@ -23899,13 +24065,16 @@
          registered account still signs in after logout/reload, alongside the demo member */
       const saved = obLoadAccount();
       const credOk = a => a && a.email && f.email.trim().toLowerCase() === a.email.toLowerCase() && f.pw === a.pw;
+      if (obLockLeft()) { OB.errs = {}; return obDraw(); }
       const acct = [OB.account, saved].find(credOk);
       if (!acct && !credOk(OB_DEMO)) {
-        OB.tries++;
-        OB.errs = { form: OB.tries >= 5 ? obT("Too many attempts. Try again in 15 minutes or reset your password.", "พยายามหลายครั้งเกินไป ลองใหม่ในอีก 15 นาที หรือรีเซ็ตรหัสผ่าน") : obT("Email or password is incorrect.", "อีเมลหรือรหัสผ่านไม่ถูกต้อง") + ` (${OB.tries}/5)` };
+        const key = obLockKey(), L = obLocks()[key] = obLocks()[key] || { tries: 0, until: 0 };
+        if (++L.tries === 5) { L.until = Date.now() + 15 * 60 * 1000; obLockTick(); }
+        obLockSave();
+        OB.errs = L.tries >= 5 ? {} : { form: obT("Email or password is incorrect.", "อีเมลหรือรหัสผ่านไม่ถูกต้อง") };
         return obDraw();
       }
-      OB.tries = 0;
+      delete obLocks()[obLockKey()]; obLockSave();
       /* GUEST-001 — demo credentials sign in as the existing member (all mock data);
          a registered account comes back as a fresh member (empty states) with its own username */
       const isNew = !!acct;
@@ -24060,6 +24229,7 @@
       const t = e.target; if (!t.closest || !t.closest(".ob")) return;
       if (t.dataset.f) {
         OB.f[t.dataset.f] = t.value;
+        if (t.dataset.f === "email" && OB.step === "signin") obLockSync(t.closest(".ob-page"));
         if (t.dataset.f === "pw") { const m = t.closest(".ob-page").querySelector(".ob-meter"); if (m) m.dataset.s = t.value ? Math.max(1, obScore(t.value)) : 0; }
       } else if (t.dataset.otp !== undefined) {
         const boxes = [...t.closest(".ob-otp").querySelectorAll("input")], i = +t.dataset.otp;

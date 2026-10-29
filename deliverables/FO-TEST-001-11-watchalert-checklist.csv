@@ -4,7 +4,7 @@ SETUP-02,Setup,แอปติดตั้งแล้ว,ลบข้อมู�
 SETUP-03,Setup,แอปสะอาด,เปิดแอปโดยไม่ sign in,เข้า feed แบบ guest ได้,GUEST,-,,,
 SETUP-04,Setup,แอปสะอาด,sign in ด้วยบัญชีทดสอบจริง,เข้า feed เป็นสมาชิก,MEMBER,-,,,
 SETUP-05,Setup,แอปสะอาด,สมัครใหม่ด้วยอีเมล/เบอร์จริง → ผ่าน onboarding,สมาชิกใหม่ เข้า feed ได้ walerts ว่าง,NEW,-,,,
-SETUP-06,Setup,sign in แล้ว,"จด ACTOR-MEMBER · ACCT-2 · POST-FULL (spec ครบ) · POST-NOSPEC (spec ว่าง) · CRIT-X · CRIT-CONFLICT · รุ่นเครื่อง/OS",ข้อมูลพร้อมสำหรับเคสทั้งเล่ม,MEMBER,-,,,ขาดตัวไหน mark BLOCK เคสที่เกี่ยว
+SETUP-06,Setup,sign in แล้ว,"บันทึก ACTOR-MEMBER · ACCT-2 · POST-FULL (spec ครบ) · POST-NOSPEC (spec ว่าง) · CRIT-X · CRIT-CONFLICT · รุ่นเครื่อง/OS",ข้อมูลพร้อมสำหรับเคสทั้งเล่ม,MEMBER,-,,,ขาดตัวไหน mark BLOCK เคสที่เกี่ยว
 SETUP-07,Setup,sign in แล้ว,ทดลอง bell ผลค้นหา · bell หน้า detail POST-FULL · เส้นทาง Settings > Watch Alerts,ทุก entry เปิด sheet/หน้าถูกตำแหน่งตาม spec,MEMBER,-,,,
 SETUP-08,Setup,เป็น guest,กด bell sr-wa บนหัวผลลัพธ์ (gated),Member Sheet เด้ง มี Sign in/Sign up/Skip — sheet WA ไม่เปิด,GUEST,-,,,
 SETUP-09,Setup,มีเครื่องจริงอีกเครื่อง,ติดตั้ง build เดียวกัน → sign in ACCT-2 → เปิด notif permission ทั้งสองเครื่อง → เวลาตรงกัน,บัญชีสองพร้อมสร้าง match จริง,-,-,,,ไม่มีเครื่องสอง = เคส ACCT-2/ACCT-3 เป็น BLOCK
@@ -70,7 +70,7 @@ WA-057,Match & Notify,มี watch row จาก alert ที่ลบแล้�
 WA-058,Match & Notify,มี watch row แล้ว ACCT-2 ลบลิสติ้ง,แตะ row,unavailable state รายการนี้ไม่พร้อมใช้งานแล้ว + ปุ่ม Go back — ห้าม silent no-op,MEMBER+ACCT-2,MED,,,ไม่มีวิธีทำลิสติ้งหาย = BLOCK
 WA-059,Match & Notify,notif ON + แอปเครื่องหลักปิด + WA-SEARCH ON,ACCT-2 ลง match → แตะ push บนเครื่องหลัก,push เด้งนอกแอป → แตะ → PV ลิสติ้ง match ตรง,MEMBER+ACCT-2,MED,,,ไม่มี push = BLOCK
 WA-060,Match & Notify,มี alert เคยเด้ง + ยังไม่เคยเด้ง,เทียบแถวสองแถวใน walerts,anatomy เหมือนกันทุกประการ — V1 ไม่มี triggered marker,MEMBER,LOW,,,
-WA-061,Match & Notify,WA-SEARCH ON,จด count → ACCT-2 ลงตรง → เปิดใหม่ → mark sold → เปิดใหม่,count เพิ่มตอนมีลิสติ้งตรง + ลดตอนออกจาก Sale — นับ server ทุกครั้งเปิดหน้า,MEMBER+ACCT-2,MED,,,
+WA-061,Match & Notify,WA-SEARCH ON,บันทึก count → ACCT-2 ลงตรง → เปิดใหม่ → mark sold → เปิดใหม่,count เพิ่มตอนมีลิสติ้งตรง + ลดตอนออกจาก Sale — นับ server ทุกครั้งเปิดหน้า,MEMBER+ACCT-2,MED,,,
 WA-062,Nav State Lang,อยู่ walerts,แตะ back < บนหัว,กลับหน้า Settings เดิม — ไม่กลับ feed,MEMBER,HIGH,,,
 WA-063,Nav State Lang,อยู่ walerts,กด device back,เทียบเท่าปุ่ม < — กลับ Settings ไม่ออกแอป,MEMBER,HIGH,,,
 WA-064,Nav State Lang,sheet wa เปิดอยู่,กด device back → กดอีกครั้ง,ครั้งแรกปิด sheet เท่านั้น · ครั้งสองย้อนหน้า — ปิดทีละชั้น,MEMBER,HIGH,,,

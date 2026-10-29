@@ -262,6 +262,10 @@ Guest gate sheet copy:
 
 ระบบต้องรองรับการแสดงข้อมูลล่าสุดที่โหลดไว้เมื่ออินเทอร์เน็ตขาดหาย อย่างน้อยสำหรับ Feed (contract — prototype ไม่ครอบ)
 
+กติกาเมื่ออินเทอร์เน็ตขาดหาย (ใช้กับทุกหน้าที่โหลดข้อมูลจากเซิร์ฟเวอร์ เช่น Profile, Portfolio, Library, Settings, Chat): การอ่าน = แสดงข้อมูลล่าสุดที่ cache ไว้ (stale) พร้อมสถานะ offline ชัดเจน; การเขียน/การบันทึก = แสดง error ชัดเจนและไม่บันทึกหลอก; เมื่อกลับออนไลน์ต้องตรงกับเซิร์ฟเวอร์ (contract — prototype ไม่ครอบ)
+
+Bottom sheet ทั่วไป: ปิดได้ด้วยการแตะ scrim, ปุ่มปิดของ sheet, device back (Android) และลากแถบจับ (handle) ลง (contract — prototype: แถบจับเป็นภาพประกอบ ปิดด้วย scrim/ปุ่มเท่านั้น)
+
 # 12. Lifecycle Rules
 
 ## Asset Lifecycle

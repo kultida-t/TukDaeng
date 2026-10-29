@@ -1,0 +1,31 @@
+PASS  wrong x1-4 → generic error (no counter)
+PASS  x5 → lock msg + countdown
+PASS  x5 → signin btn disabled
+PASS  forgot link still clickable
+PASS  countdown ticks down
+PASS  correct pw during lock → still disabled
+PASS  other email → btn enabled, no lock banner
+PASS  back to locked email → disabled + banner
+PASS  lock persists after reload
+PASS  demo sign-in → feed
+PASS  feed: own post has NO Ask
+PASS  feed: other sale post HAS Ask
+PASS  pfp viewer: own post no Ask
+PASS  pfp viewer: other sale post HAS Ask
+PASS  svf viewer: own post no Ask
+PASS  svf viewer: other sale post HAS Ask
+PASS  pv viewer: own no Ask (rail ไม่มี Ask ให้ใคร)
+PASS  detail dl1 (locked): own no Ask
+PASS  detail dl1: other post ไม่มี Ask เช่นกัน (DET-018)
+PASS  igDetail dev path: own no Ask (guard)
+PASS  igDetail dev path: other HAS Ask (guard ไม่ over-block)
+PASS  guard chatQuickAsk own → toast + no room
+PASS  chUnread excludes hidden/muted
+PASS  followOnly blocks non-followed (Watch 777)
+PASS  followOnly allows followed (wrist.story)
+PASS  followOnly off → non-followed allowed
+PASS  message sent with read=false (Sent)
+PASS  Sent -> Read after ~3s while room open
+
+===== 28 PASS / 0 FAIL =====
+NO PAGE ERRORS

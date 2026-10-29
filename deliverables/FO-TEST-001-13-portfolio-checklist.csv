@@ -4,7 +4,7 @@ SETUP-02,Setup,แอปติดตั้งแล้ว,ลบข้อมู�
 SETUP-03,Setup,แอปสะอาด,เปิดแอปโดยไม่ sign in,เข้า feed แบบ guest ได้,GUEST,-,,,
 SETUP-04,Setup,แอปสะอาด,sign in ด้วยบัญชีทดสอบจริง,เข้า feed เป็นสมาชิก,MEMBER,-,,,
 SETUP-05,Setup,แอปสะอาด,สมัครใหม่ผ่าน onboarding จนเข้า feed,member ใหม่ — portfolio/โพสต์ว่าง,NEW,-,,,
-SETUP-06,Setup,sign in แล้ว,สร้างผ่านแอปจริง: A-SALE(ฟีด ≥2 รูป +ต้นทุน+ตั้งขาย) · A-SHOW · A-HIDE · A-NOCOST → จดค่า + เช็กราคาตลาดแต่ละชิ้น (A-MKT/A-NOMKT) · จดรุ่นเครื่อง+OS,ข้อมูลอ้างอิงพร้อม,MEMBER,-,,,สร้างไม่ได้ = BLOCK เคสที่เกี่ยว · ไม่มี market เลย = เคส [MKT] BLOCK
+SETUP-06,Setup,sign in แล้ว,สร้างผ่านแอปจริง: A-SALE(ฟีด ≥2 รูป +ต้นทุน+ตั้งขาย) · A-SHOW · A-HIDE · A-NOCOST → บันทึกค่า + เช็กราคาตลาดแต่ละชิ้น (A-MKT/A-NOMKT) · บันทึกรุ่นเครื่อง+OS,ข้อมูลอ้างอิงพร้อม,MEMBER,-,,,สร้างไม่ได้ = BLOCK เคสที่เกี่ยว · ไม่มี market เลย = เคส [MKT] BLOCK
 SETUP-07,Setup,sign in แล้ว,ทดลอง entry: wallet → portfolio → แถว → pfasset → back → Sold history → soldhist,ทุก entry เปิดหน้าถูก,MEMBER,-,,,
 SETUP-08,Setup,มีเครื่องจริงอีกเครื่อง,ติดตั้ง build เดียวกัน → sign in ACCT-2 → เปิด notif permission ทั้งสองเครื่อง,บัญชีสองพร้อม,ACCT-2,-,,,ไม่มีเครื่องสอง = เคส ACCT-2/cross-device เป็น BLOCK
 SETUP-09,Setup,A-SALE อยู่บน feed,ACCT-2 เปิด A-SALE → สอบถาม/Ask → ส่งข้อความ,ห้อง DM มีการ์ดลิสติ้ง A-SALE + ข้อความ,ACCT-2,-,,,ใช้เช็ก AST-089
@@ -17,7 +17,7 @@ AST-005,Entry & Access,เป็น guest,เดินทุกทาง feed/pu
 AST-006,Entry & Access,profile แท็บ Sale scroll แล้ว,portfolio → back,กลับ profile แท็บ Sale เดิม scroll เดิม,MEMBER,MED,,,
 AST-007,Entry & Access,portfolio เปิด,เช็กขอบล่างบน portfolio/pfasset/sell/soldhist/sold,ทุกหน้าไม่มี bottom nav (หน้าลึก),MEMBER,HIGH,,,
 AST-008,Entry & Access,build production,scroll ดูทั้งหน้า + head,ไม่มี ⋯/Preview banner/ตัวเลือกจำลองสถานะ (dev sims dev-only),MEMBER,MED,,,
-AST-009,Dashboard,portfolio เปิด,อ่าน headline เทียบ Σ purchase ที่จดไว้,ต้นทุนรวม/Total invested + Private tag + THB {Σ purchase} ตรง,MEMBER,HIGH,,,
+AST-009,Dashboard,portfolio เปิด,อ่าน headline เทียบ Σ purchase ที่บันทึกไว้,ต้นทุนรวม/Total invested + Private tag + THB {Σ purchase} ตรง,MEMBER,HIGH,,,
 AST-010,Dashboard,portfolio เปิด,อ่าน coverage เทียบจำนวนจริง,ต้นทุนซื้อของ X/Y รายการ · มีเพียงคุณเท่านั้นที่เห็น — X/Y ตรง,MEMBER,HIGH,,,
 AST-011,Dashboard,มีชิ้นที่มี market+purchase,อ่าน market value เทียบ Σ market + GL% ที่คำนวณ,มูลค่าตลาด ฿{Σmarket} · ±N.N% ตรงสูตร สี up/dn ถูก,MEMBER,HIGH,,,[MKT] ไม่มี market เลย = BLOCK
 AST-012,Dashboard,eligible ทุกชิ้นไม่มี GL row,เปิด portfolio อ่านบรรทัดมูลค่าตลาด,ไม่พบข้อมูลมูลค่าตลาด/Market value unavailable (ไม่ใช่ ฿0),MEMBER,MED,,,เตรียมสถานะไม่ได้ = BLOCK
@@ -53,12 +53,12 @@ AST-041,Sell Form,โพสต์ sold + โพสต์ธรรมดา,⋯ �
 AST-042,Sell Form,sell เปิด,ล้างช่อง → พิมพ์ 449000,"keyboard ตัวเลข + auto comma 449,000",MEMBER,MED,,,
 AST-043,Sell Form,sell ชิ้นที่ purchase>0,แก้ราคาทีละค่า → ล้าง,Expected gain อัปเดต = price−purchase ±฿N (±N.N%) · ≤0/ว่าง → — · ไม่มี purchase ไม่มีแถว,MEMBER,HIGH,,,
 AST-044,Sell Form,sell เปิด,ล้างราคา/ใส่ 0/ใส่ลบ → save,ไม่ save: error กรุณากรอกราคาขาย/Sale price required + ขอบแดง + focus,MEMBER,HIGH,,,
-AST-045,Sell Form,sell เปิด,ล้างวันที่ → save · เลือกวันอนาคต,ว่าง → กรุณาเลือกวันที่ขาย/Sale date required · อนาคต → Invalid sale date (หรือ picker ล็อก),MEMBER,HIGH,,,
+AST-045,Sell Form,sell เปิด,ล้างวันที่ → save · เลือกวันอนาคต,ว่าง → กรุณาเลือกวันที่ขาย/Sale date required · อนาคต → picker กันไม่ให้เลือกเกินวันนี้; ค่าเพี้ยนที่หลุดเข้ามา → Invalid sale date,MEMBER,HIGH,,,
 AST-046,Sell Form,sell เปิด + sold:{id},scroll ดูทั้งฟอร์ม + sold detail,ไม่มีช่อง/แถว Buyer/Contact/Payment/Attachment — ล็อก 2 ฟิลด์,MEMBER,HIGH,,,lock 2026-10-30
 AST-047,Sell Form,sell กรอกแล้ว,กด back ไม่ save → เช็ก portfolio/soldhist/โพสต์,ไม่มี record ใหม่ asset สถานะเดิม,MEMBER,HIGH,,,
 AST-048,Sell Form,sell A-SALE กรอกถูก,บันทึกการขาย,toast บันทึกการขายแล้ว · ย้ายไปประวัติการขาย ✓ + ลง sold:{id} ข้อมูลตรง,MEMBER,HIGH,,,
 AST-049,Sell Form,save จาก portfolio→pfasset→sell,อยู่ sold:{id} → back,กลับ portfolio เดิม — sell+pfasset ถูกตัดจาก stack,MEMBER,HIGH,,,
-AST-050,Sell Form,จด Total invested/count ก่อนขาย,เปิด portfolio หลังขาย,asset หาย + count−1 + Total invested ลดเท่าทุนชิ้นนั้น + coverage ลด,MEMBER,HIGH,,,
+AST-050,Sell Form,บันทึก Total invested/count ก่อนขาย,เปิด portfolio หลังขาย,asset หาย + count−1 + Total invested ลดเท่าทุนชิ้นนั้น + coverage ลด,MEMBER,HIGH,,,
 AST-051,Sell Form,A-SALE มีโพสต์ลิงก์,เช็ก feed/แท็บ Sold/detail/menu หลังขาย,หายจาก feed · อยู่แท็บ Sold · tag ขายแล้ว/SOLD · menu View sale record,MEMBER,HIGH,,,
 AST-052,Sell Form,A-SALE เคยค้นเจอ,search รุ่นเดิม + เช็ก WA match หลังขาย,หลุด search + ไม่ชน watch alert (canonical),MEMBER,HIGH,,,lock 2026-10-30
 AST-053,Sell Form,sell ใส่วันขายย้อนหลัง,save → เปิด sold:{id} ดู Holding period,holding นับ bought → soldDate ที่เลือกตรงจริง,MEMBER,MED,,,
@@ -103,7 +103,7 @@ AST-091,Edge,"ขายด้วยราคา 9,999,999",ดู sold detail + 
 AST-092,Edge,asset ชื่อ/ref ยาวมาก,ดูแถว portfolio/pfasset/soldhist,ellipsis/wrap เรียบร้อย ไม่ทับราคา/chip,MEMBER,LOW,,,ตั้งชื่อยาวไม่ได้ = BLOCK
 AST-093,Edge,แท็บ Sold มี tile,แตะ tile → viewer → ⋯ + swipe,tag ขายแล้ว/SOLD + menu View sale record + viewer ไหลเฉพาะ Sold,MEMBER,MED,,,
 AST-094,Edge,pfasset เปิด,กด บันทึกการขาย → back → กดใหม่ รัว ๆ → save,ฟอร์มไม่ค้างไม่ซ้อน — save สำเร็จ record เดียว,MEMBER,LOW,,,
-AST-095,Edge,ขาย asset ทุกชิ้นจนหมด,เปิด portfolio → สร้าง asset ใหม่ผ่าน + → portfolio → ประวัติการขาย →,portfolio → ไม่พบข้อมูล/No data found + explainer (ไม่มีแถว/section — ไม่มี Sold history link ตาม spec); เพิ่ม asset ใหม่ → list กลับ + soldhist เก็บ record เดิมครบ,MEMBER,MED,,,spec gap — build ใส่ link = ดีกว่า spec แจ้งรีวิว
+AST-095,Edge,ขาย asset ทุกชิ้นจนหมด,เปิด portfolio → สร้าง asset ใหม่ผ่าน + → portfolio → ประวัติการขาย →,portfolio → ไม่พบข้อมูล/No data found + explainer + ลิงก์ ""ประวัติการขาย →"" เข้า soldhist ได้ (canonical lock — ไม่มีลิงก์ = FAIL); เพิ่ม asset ใหม่ → list กลับ + soldhist เก็บ record เดิมครบ,MEMBER,MED,,,canonical lock — empty state ต้องมีลิงก์ soldhist
 AST-096,Persistence,มี asset ครบสถานะ + sold ≥1,kill app → เปิดใหม่ → เช็ก portfolio/soldhist/แท็บ,ทุกอย่างคงเดิม — server-backed,MEMBER,HIGH,,,
 AST-097,Persistence,เหมือน AST-095,sign out → sign in → เช็กทุกหน้า,state ครบเหมือนเดิม,MEMBER,HIGH,,,
 AST-098,Persistence,sign in บัญชีเดียวกันเครื่องสอง,เครื่อง B เปิด portfolio/soldhist เทียบ A,dashboard/rows/soldhist เหมือนกันเป๊ะ — server truth,MEMBER,HIGH,,,จำกัดเครื่องเดียว = BLOCK
@@ -113,5 +113,5 @@ AST-101,Persistence,ภาษา TH,ไล่ทุกหน้า portfolio + t
 AST-102,Persistence,ภาษา EN,เหมือน AST-100,ทุก label/toast EN — TH ค้าง = FAIL,MEMBER,MED,,,
 AST-103,Persistence,เปิด dark,ไล่ทุกหน้ารวมฟอร์ม/empty/chip,อ่านครบ contrast พอ — chip up/dn แยกสีได้,MEMBER,MED,,,
 AST-104,Persistence,อยู่ own profile,device back ไล่ portfolio→pfasset→sell→(cancel)→pfasset→portfolio→profile,pop ชั้นบนสุดทีละชั้น ไม่เด้งหลายชั้น ไม่วนฟอร์ม,MEMBER,MED,,,
-AST-105,Persistence,เปิด airplane,เปิด portfolio → save mark-as-sold → กลับ online,อ่านได้/หรือ error ชัด · save offline error ชัดเจนไม่บันทึกหลอก · reconnect ตรง server,MEMBER,HIGH,,,
+AST-105,Persistence,เปิด airplane,เปิด portfolio → save mark-as-sold → กลับ online,อ่านได้จาก cache (stale) พร้อมสถานะ offline ชัด · save offline error ชัดเจนไม่บันทึกหลอก · reconnect ตรง server,MEMBER,HIGH,,,
 AST-106,Persistence,เครื่องจอเล็ก,หมุนแนวนอนทุกหน้า portfolio + จอแคบ,layout ไม่พัง ราคาไม่ล้น — ล็อก portrait = BLOCK,MEMBER,LOW,,,

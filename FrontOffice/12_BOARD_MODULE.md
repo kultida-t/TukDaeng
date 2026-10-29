@@ -555,3 +555,9 @@ Then ต้องไม่มี reachable entry ไปยัง `data-bdmore` m
 - Article content TH localization (CMS)
 - Session-flag reset สำหรับ `BOARD` (D8)
 - Search+category combined filtering (D9)
+
+
+## Contract updates — canonical lock 2026-10-29 (FO-TEST hardening)
+
+- boardsearch มีปุ่ม X (clear) ทำงานจริงในช่องค้นหา
+- หน้าบทความ V1 มีเฉพาะ back/like/share — ไม่มี save/bookmark/report/pagination (พบเพิ่ม = deviation)

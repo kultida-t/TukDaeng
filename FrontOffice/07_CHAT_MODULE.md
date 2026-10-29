@@ -40,7 +40,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Entries: `askBtnHTML` (~13379–13387 — styles ตาม `state.ask`: ico/txt/outline/solid; `auto`→solid/outline; label `สอบถาม`/`Ask` + title `สอบถามผู้ขาย`/`Ask seller`), feed card action-row + `price-footer` variant (~14255/~14280), pv post actions (~14713 — `p.type==="sale"` เท่านั้น), `data-chgo="post"` → `openPostDetail` หรือ `Listing detail isn't in this prototype yet` (~19325–19334), ask fallback `findPost` ไม่เจอ → `Not in this prototype yet` (~21996–21997), room `.ch-input` draft persist + send-enable (~20223–20227), `ch-room-search-in` live (~20228–20242), `ch-q`/`ch-iq` live (~20243–20254), `chc-quick` live (~20255), Enter → `chSend` (~20138)
 - Nav/session: `data-navgo` → `chatResetToDefault()` + `openSub` (~21484–21501), chat/profile pages slide-back-out-right (~20977 — `topSub.startsWith("chat"/"chmenu:"/"chsettings:"/"profile:")` && stack>1 → `rpBack`), `chmedia:` close = pop + swap (~20965–20976), `applySessionData` reset `CHAT.inited/threads/draft` (~23230), `chatInit` non-member guard (~17798)
 - Gate: `GUEST_GATE_SEL` (~23269–23278 — chat-family gated = `[data-navgo="chat"]`, `.ask-pill`, `.chat-fab`, `.ch-rep-del-btn`, `.ch-rep-only-btn`, `.blk-go`, `.blk-rep`), `obGate` (~23279–23283)
-- Dead/tooling (ห้ามเขียนเป็น feature): `chsettings:{id}` route + หน้าทั้งหน้า (no emit), `chatPopHTML`/`.chat-fab`/`.cp-*`/`sendChat`/`closeChatPop` (~13488–13529 + handlers ~22016–22036 — render เฉพาะ `state.ask==="bubble"` ใน dl2 `igDetailHTML` (~13605) + ถูก `chatQuickAsk` intercept ทุกกรณี → `.chat-pop` unreachable), `state.ask` variant flag (dev artifact), `pfRestrictHint` defined แต่ไม่มี call site (~16930–16938), E2E/`Letter Sealing` copy claims ไม่มี implementation
+- Dead/tooling (ห้ามเขียนเป็น feature): `chsettings:{id}` route + หน้าทั้งหน้า (no emit), `chatPopHTML`/`.chat-fab`/`.cp-*`/`sendChat`/`closeChatPop` (~13488–13529 + handlers ~22016–22036 — render เฉพาะ `state.ask==="bubble"` ใน dl2 `igDetailHTML` (~13605) + ถูก `chatQuickAsk` intercept ทุกกรณี → `.chat-pop` unreachable), `state.ask` variant flag (dev artifact), E2E/`Letter Sealing` copy claims ไม่มี implementation
 
 ---
 
@@ -163,7 +163,7 @@ Bottom nav แชท (guest → Member Sheet)
 ```text
 ask-pill บน feed card / price-footer / pv post (sale เท่านั้น)
 → guest → Member Sheet
-→ own post → toast `This is your own listing`
+→ own post → ไม่มีปุ่ม Ask (guard: toast `This is your own listing` กันเส้นทางอื่น)
 → blocked seller → toast `Cannot message a blocked account`
 → thread ของ user นั้นมีอยู่ (ห้องเดียวต่อคน) → un-hide + openSub chatroom
 → ไม่มี → C.draft (prefill cfg.quick; item=null) → openSub chatroom
@@ -249,7 +249,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 - `.ask-pill` บน sale post surfaces: feed card action-row (`askBtnHTML` ตาม `state.ask`) + `price-footer` variant (`Ask Seller` outline) + post viewer actions (`p.type==="sale"` เท่านั้น) — ทั้งหมด → `chatQuickAsk`
 - Post Detail (dl1) **ไม่มี** chat entry (canonical 05 — `chat-fab`/`.chat-pop` = dead path ต้อง `state.ask==="bubble"` + dl2 เท่านั้น)
 - Profile `pf-msg` + follower-row Chat = **DM จริง** (`pfOpenChat` → ห้อง user→user เดียว ไม่มีการ์ด — FO-TEST-12 lock; canonical 06)
-- Guards ตามลำดับ: guest → Member Sheet → own post `This is your own listing` → blocked `Cannot message a blocked account` → findPost fail → `Not in this prototype yet`
+- Guards ตามลำดับ: guest → Member Sheet → own post (guard) `This is your own listing` → blocked `Cannot message a blocked account` → findPost fail → `Not in this prototype yet`
 - Ask ปิด overlays เดิม (`pv-open`/`detail-open`/`comments-open`/`pm-open`/`likes-open`/`details-open`) แล้ว `openSub chatroom:{id}` — stack ใหม่ 1 หน้า → back จากห้อง = ปิด layer กลับ surface ข้างล่าง
 
 ## Post Reference Card (`ch-post-card`)
@@ -343,7 +343,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 - Entry `block-user` (chmenu) หรือ blocked อยู่แล้ว → `unblockDlgHTML`; ยังไม่ block → `blkSheetHTML(u, fromChat=true)` = sheet เดียวกับ profile แต่ **ตัด `Block and report`** เหลือ `Block` เดียว (ไม่มี Cancel row — dismiss ผ่าน backdrop)
 - `blk-go` → `pfSetBlocked(true)`: `PF_BLOCKED` + `PF_REMOVED_FOL` + unfollow + **`th.blocked=true` ทุก thread ของ user** + `p.blocked` ทุกโพสต์ + feed re-render → transient `Blocking` toast + re-render `chmenu:`/`chatroom:` ถ้าอยู่ top
 - Effects ตาม 00_GLOBAL §13 ครบ (feed/search/WA/following) — canonical 06/15; ที่นี่ระบุเฉพาะ chat surfaces: `Blocked` chip บน row, `ch-blocked-bar`, `chSend` guard, `Cannot message a blocked account`
-- Unblock (`unblock-room` bar / chmenu `Block`↔`Unblock` / report done step) → `unblockDlgHTML` (`Unblock {u}?` + desc + Unblock danger + Cancel) → `pfSetBlocked(false)` → `Unblocked` toast + re-render — ไม่ re-follow; `pfRestrictHint` defined แต่ไม่ถูกเรียก (dead — flag 06)
+- Unblock (`unblock-room` bar / chmenu `Block`↔`Unblock` / report done step) → `unblockDlgHTML` (`Unblock {u}?` + desc + Unblock danger + Cancel) → `pfSetBlocked(false)` → `Unblocked` toast + re-render — ไม่ re-follow; `pfRestrictHint` wire แล้ว — banner ~6s หลัง unblock (resolved 2026-10-29)
 - ประวัติแชทคงอ่านได้ read-only ทั้งก่อนและหลัง unblock; block ไม่ลบ thread
 
 ## Report จาก Chat (`chatReportSheet` → `report:user`)
@@ -379,7 +379,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 10. **Mute toast TH** `ปิด/เปิดการแจ้งเตือนแล้ว` — spec เดิม EN `Notifications muted/unmuted`
 11. **Sort = insertion order + pin-first** — ไม่มี timestamp DESC จริง; re-order เฉพาะ send (`unshift`)
 12. **Send timestamp mock `09:41`** + ไม่มี incoming simulation → `Sent` ไม่เคยกลาย `Read` ใหม่; `Read`/`Sent` เฉพาะ `lastMe` (visual mock — ไม่ใช่ receipt system)
-13. **`followOnly` toggle ไม่มี enforcement surface** — config มีแต่ไม่มีที่ให้ทดสอบ
+13. ~~**`followOnly` toggle ไม่มี enforcement surface**~~ — RESOLVED 2026-10-29: บังคับแล้ว (คนที่ไม่ได้ follow เริ่มแชทไม่ได้)
 14. **E2E / Letter Sealing = claim copy เท่านั้น** — chmenu footer + chsettings row; ห้าม spec เป็น feature
 15. **`chsettings:{id}` = dead route ทั้งหน้า** — มี render+handler (`data-chgo="chsettings"` ใน chatClick) แต่ไม่มี emit ที่ไหน (Note notifications/wallpaper/export/encryption/Delete data/Report)
 16. **`chatPopHTML`/`.chat-fab`/`.cp-*`/`sendChat` = dead** — render เฉพาะ `state.ask==="bubble"` ใน dl2 `igDetailHTML` + ถูก `chatQuickAsk` intercept เสมอ → `.chat-pop` unreachable
@@ -390,7 +390,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 21. **`cfg` toggles/defView/quick ไม่ reset ตอน session switch** — `applySessionData` เคลียร์แค่ inited/threads/draft
 22. **Ask post lookup fail → `Not in this prototype yet`** — fallback dead toast (`.ask-pill` อยู่ใน dead-handler list หลัง chatClick)
 23. **EN/TH hardcoded strings ~40 copies** → language sweep FSP-026 (ดู §13/§19)
-24. **`pfRestrictHint` defined แต่ไม่มี call site** — 06 spec อ้าง banner หลัง unblock; ที่จริงไม่แสดง (flag FSP-030 consistency)
+24. **`pfRestrictHint`** — wire หลัง `dlg-unblock-go` แล้ว + I18N_TH — banner ~6s แสดงจริงตาม canonical 06 (resolved 2026-10-29)
 25. **Session-only state ทั้งโมดูล** — threads/pins/mutes/hidden/cfg/draft/galState memory เท่านั้น (persistence contract)
 
 ---
@@ -437,7 +437,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 
 | Case | Behavior |
 | --- | --- |
-| Ask own post | toast `This is your own listing` |
+| Ask own post | ไม่มีปุ่ม Ask บนโพสต์ตัวเอง (guard: toast `This is your own listing` กันเส้นทางอื่น) |
 | Ask blocked seller | toast `Cannot message a blocked account` |
 | Ask post ที่ `findPost` ไม่เจอ | toast `Not in this prototype yet` (dead fallback) |
 | Post ref card / `Listings & Items` → missing post | toast `Listing detail isn't in this prototype yet` (contract: `รายการนี้ไม่พร้อมใช้งานแล้ว` — 00_GLOBAL §11) |
@@ -509,7 +509,7 @@ EN-hardcode ทั้งชุด (language sweep — §19 flag)
 | AC ID | Criteria |
 |---|---|
 | AC-CHAT-001 | Chat เข้าได้จาก `.ask-pill` บน feed card/price-footer/post viewer (`p.type==="sale"` เท่านั้น) + `pf-msg` บน profile/follower row (DM `pfOpenChat` — FO-TEST-12 lock); ไม่มี entry บน Post Detail (dl1) |
-| AC-CHAT-002 | กด Ask บนโพสต์ตัวเอง → `This is your own listing`; seller ที่ block → `Cannot message a blocked account`; post ไม่เจอ → `Not in this prototype yet` |
+| AC-CHAT-002 | โพสต์ตัวเองไม่มีปุ่ม Ask (guard: `This is your own listing`); seller ที่ block → `Cannot message a blocked account`; post ไม่เจอ → `Not in this prototype yet` |
 | AC-CHAT-003 | Ask seller+item เดิม → เปิดห้องเดิม (+un-hide); seller เดิมคนละ item → **ห้องใหม่** พร้อม post card ของ item นั้น |
 | AC-CHAT-004 | ห้องใหม่ = `C.draft` ไม่เข้า list จนกว่า `chSend` แรก (`unshift`); draft prefill `cfg.quick` และ `t.draft` persist ระหว่าง navigate |
 | AC-CHAT-005 | Item snapshot `{cap,price,photo,owner,pid}` นิ่ง — โพสต์เปลี่ยนภายหลังไม่กระทบการ์ด/กลุ่ม |
@@ -567,7 +567,7 @@ EN-hardcode ทั้งชุด (language sweep — §19 flag)
 | AC ID | Criteria |
 |---|---|
 | AC-CHAT-029 | `chatcfg` = toggles `notif`/`preview`/`followOnly` (flip ทันที) + `Default chat view` Chats/Items (`data-chdef` → set `cfg.defView`+`C.view` ทันที + เคลียร์ q) + Quick Ask `chc-quick` ≤80 live save |
-| AC-CHAT-030 | `followOnly` = toggle อย่างเดียว ไม่มี enforcement surface (documented deviation) |
+| AC-CHAT-030 | `followOnly` บังคับจริง (RESOLVED 2026-10-29 — ไม่ใช่ deviation แล้ว) |
 
 ## Block / Unblock
 
@@ -594,7 +594,7 @@ EN-hardcode ทั้งชุด (language sweep — §19 flag)
 | AC-CHAT-039 | Guest แตะ chat entry ใด ๆ → Member Sheet `Join TukDaeng`; session `new`/`guest` → `threads=[]` + `No chats yet` |
 | AC-CHAT-040 | `data-navgo` ทุกครั้ง → `chatResetToDefault` (view=defView + filter=all + ปิด popover + เคลียร์ q/iq); `applySessionData` → reset inited/threads/draft |
 | AC-CHAT-041 | Back: stack>1 บน `chat*`/`chmenu:` → slide-out-right; `chmedia:` ✕ → pop+swap + reset galState; Quick-Ask room (stack=1) → back ปิด layer |
-| AC-CHAT-042 | Dead/tooling ต้องไม่เป็น feature: `chsettings:` route+page, `chatPopHTML`/`.cp-*`/`.chat-fab`/`sendChat`, `state.ask` variants, E2E/Letter Sealing claims, `pfRestrictHint` (no call site), dl2 ask row |
+| AC-CHAT-042 | Dead/tooling ต้องไม่เป็น feature: `chsettings:` route+page, `chatPopHTML`/`.cp-*`/`.chat-fab`/`sendChat`, `state.ask` variants, E2E/Letter Sealing claims, dl2 ask row |
 
 ---
 
@@ -618,13 +618,24 @@ EN-hardcode ทั้งชุด (language sweep — §19 flag)
 - Voice message / typing indicator / reactions / message edit+delete / pinned message / group chat
 - Real read receipts + incoming simulation (`Sent`→`Read` lifecycle)
 - File message + file-type/size validation
-- `followOnly` enforcement (gate Ask จาก non-followed account)
+- ~~`followOnly` enforcement (gate Ask จาก non-followed account)~~ RESOLVED 2026-10-29
 - Unavailable post ref state บนการ์ด (canonical `รายการนี้ไม่พร้อมใช้งานแล้ว`) + sold marker
 - Chat persistence (server threads/drafts/pins/mutes/hidden) + sync ข้าม device
 - Room settings page revival หรือลบ `chsettings:` (wallpaper/export/Delete data)
 - Media gallery real date grouping + Share action + video viewer
-- `pfRestrictHint` consistency (call site หรือตัด — รวม 06)
-- `mute` ไม่นับ badge (chUnread filter) + per-thread mute มีผล notification
+- `pfRestrictHint` — wire แล้ว (resolved 2026-10-29)
+- ~~`mute` ไม่นับ badge (chUnread filter) + per-thread mute มีผล notification~~ RESOLVED 2026-10-29 (badge ไม่นับห้อง mute/ซ่อน)
 - Deep link `chatroom:{id}` / `chat` contract (00_NAV §10/§12)
 - language sweep — EN/TH hardcode (~40 copies) → localized pairs
 - Real report reason wiring → moderation queue + ticket id (canonical 15)
+
+
+## Contract updates — canonical lock 2026-10-29 (FO-TEST hardening)
+
+- Badge นับเฉพาะห้องที่ยังไม่ซ่อนและไม่ mute — ห้อง hidden/muted ไม่นับ unread และไม่แสดงใน Items view groups
+- Media send (รูป/วิดีโอ) materialize draft เข้า list + move-to-top + unhide เหมือนส่ง text
+- "Only people I follow" บังคับจริง — บัญชีที่ไม่ได้ follow เริ่มการสนทนาไม่ได้
+- Media viewer รองรับ swipe ข้ามรูป (หลายรูป) + zoom (pinch/double-tap)
+- Read receipts จริง: ข้อความขาออกแสดง Sent → Read เมื่ออีกฝั่งอ่าน
+- ลบ media ใน gallery ต้องลบ bubble ในห้องด้วย (ไม่ desync)
+- ปุ่ม Chat/Message บน profile เปิดห้อง DM ห้องเดียวต่อ account (ยืนยัน lock FO-TEST-12 แล้ว)

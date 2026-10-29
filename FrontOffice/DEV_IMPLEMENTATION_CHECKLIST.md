@@ -219,7 +219,7 @@ Purpose:
 - [ ] ไม่มี Edit Comment ใน V1
 - [ ] Follow/Unfollow account-level ทุก post ของ seller; Following Feed ใช้ follow relation ที่ไม่ถูก block
 - [ ] Unfollow ล้าง favorite + muted ของ seller นั้น; uf confirm sheet เมื่อ following
-- [ ] Saved hub (`savedCol` + collections CRUD + select/move/unsave + `nc` sheet) และ Wish List hub (`wlCol`) = ระบบ private collections แยกกันสมบูรณ์
+- [ ] Saved hub (`savedCols` multi-collection + collections CRUD + select/move/unsave + `nc` sheet) และ Wish List hub (`wlCols`) = ระบบ private collections แยกกันสมบูรณ์
 - [ ] Share เป็น member-only ทุก surface (S-03) — guest เจอ Member Sheet
 - [ ] Share ใช้ in-app share sheet (ส่งให้เพื่อน + Messenger/Direct/LINE/Facebook + Copy link)
 - [ ] Share ไม่สร้าง Alerts feed item

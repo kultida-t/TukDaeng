@@ -21,9 +21,9 @@
 - **ภาษาตามแอปทั้งหมด** (ล็อก 2026-10-28): expected = ทุกข้อความ UI ของ board เปลี่ยนตามภาษาที่เลือกในแอป — เจอ UI string ค้างอีกภาษา = **FAIL**; ยกเว้น **เนื้อบทความจริง** (title/sub/body/author จาก CMS — เป็น content ไม่ใช่ UI) และชื่อแบรนด์/รุ่นในเนื้อหา
 - **Dark theme**: ทุกหน้าใน §1 ต้องอ่านได้ครบใน dark theme (contrast โอเค ไม่มีจุดตัวอักษรจมพื้นหลัง) — เทสคู่กับ light ที่ BRD-057
 - **Priority**: `HIGH` = flow ปกติ · `MED` = รอง · `EDGE`/`NEGATIVE`/`STATE`/`GATE` เป็น MED เว้นกำหนด · เคสใหม่ที่ขึ้น "BLOCK if" อยู่แล้ว = MED
-- **ตัวเลข/ภาษาใน expected = ตาม spec/dict ไม่ใช่ข้อมูลจริง** — จำนวนบทความ featured/latest/categories/tags ขึ้นข้อมูลบน server จริง: เจอน้อยกว่า prototype อย่า FAIL — **จดตัวเลขจริงที่เห็นลงคอลัมน์ Note ด้วยทุกเคส** จะได้ตรวจ spec กลับ
+- **ตัวเลข/ภาษาใน expected = ตาม spec/dict ไม่ใช่ข้อมูลจริง** — จำนวนบทความ featured/latest/categories/tags ขึ้นข้อมูลบน server จริง: จำนวนจริงต้องตรงข้อมูลบน server — น้อย/มากกว่าที่ spec ตัวอย่างไว้ไม่ใช่ FAIL ถ้าตรงข้อมูลจริง; ไม่ตรงข้อมูลจริง = FAIL
 - **Result column**: เว้นว่าง — tester กรอก `PASS`/`FAIL`/`BLOCK` + ปัญหาใน `Note`
-- **ไม่มีเคสแบบ "จดผล/จดพฤติกรรม"** — expected ชัด ไม่ตรง = `FAIL` (พฤติกรรมที่ spec ไม่ล็อกระบุชัดไว้ เช่น "จดใน Note" = รายงานให้ทีมตัดสิน ไม่ใช่เคสเปิด)
+- **ไม่มีเคสแบบ "จดผล/จดพฤติกรรม"** — expected ชัด ไม่ตรง = `FAIL` (พฤติกรรมที่ spec ไม่ล็อกระบุชัดไว้ เช่น ")
 - **Out of scope**: โมดูลอื่น (Chat/Alerts/Saved = มีเล่มของตัวเอง) · เวอร์ชัน dev-channel · งานสร้าง/แก้บทความฝั่ง BO · เคส server latency ละเอียด (เจอแค่ตอนนี้ว่า board ไม่มี live state เยอะ)
 
 ## §1 Coverage map
@@ -47,12 +47,12 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เปิดขึ้น feed หรือ onboarding | splash/หน้าแรกขึ้นตาม build | — | |
+| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เห็นหน้า onboarding (แอปสะอาด) | splash/หน้าแรกของแอป | — | |
 | SETUP-02 | สถานะเริ่มต้น | — | SETUP | แอปติดตั้งแล้ว | ลบข้อมูลแอป/ติดตั้งใหม่ ถ้าเคยใช้เครื่องนี้มาก่อน | แอปสะอาด เหมือนผู้ใช้ใหม่ | — | — | |
 | SETUP-03 | ผู้ใช้ GUEST | — | SETUP | แอปสะอาด | ไม่ sign in → เดินเข้า feed ได้เลย | guest mode | bottom nav ครบ (Feed/Board เป็นต้น) | — | |
 | SETUP-04 | ผู้ใช้ MEMBER | — | SETUP | แอปสะอาด | sign in ด้วยบัญชีทดสอบที่ทีมสร้าง | เข้า feed เป็นสมาชิก | avatar/ชื่อตัวเองในที่ที่ต้องแสดง | — | |
 | SETUP-05 | ผู้ใช้ NEW | — | SETUP | แอปสะอาด | สมัครใหม่ด้วยเบอร์/อีเมลทดสอบจริง → ผ่าน onboarding จนเข้า feed | member ใหม่ | เหมือน member (board ไม่แยกสถานะ) | — | |
-| SETUP-06 | ข้อมูลอ้างอิง | MEMBER | SETUP | sign in แล้ว | จดบน Note ของไฟล์: `ACTOR-MEMBER`, `ACCT-2`, `ART-FEAT` = บทความที่เห็นบน hero, `ART-A` = บทความที่อยู่นอก featured, `CAT-X` = หมวดที่มีบทความเยอะ, `Q-HIT` = คำที่ควรเจอใน title, `Q-MISS` = คำที่ไม่ควรเจอ | ข้อมูลจดพร้อม | ไม่มี (เป็นบันทึก) | — | |
+| SETUP-06 | ข้อมูลอ้างอิง | MEMBER | SETUP | sign in แล้ว | บันทึกบน Note ของไฟล์: `ACTOR-MEMBER`, `ACCT-2`, `ART-FEAT` = บทความที่เห็นบน hero, `ART-A` = บทความที่อยู่นอก featured, `CAT-X` = หมวดที่มีบทความเยอะ, `Q-HIT` = คำที่ควรเจอใน title, `Q-MISS` = คำที่ไม่ควรเจอ | ข้อมูลพร้อม | ไม่มี (เป็นบันทึก) | — | |
 | SETUP-07 | ทางเข้า + ปุ่ม | — | SETUP | อยู่หน้าใดก็ได้ | ทดลอง: แท็บ Board บน bottom nav → board home; burger = Categories; แว่น = search; View all = boardall; ใน article: back/like/share เป็น floating pill บนสุด | ทางเข้าทำงาน | ตำแหน่งตาม spec §6 | — | |
 | SETUP-08 | Member Sheet mechanics | GUEST | SETUP | เป็น guest | ลองกด action ที่ gate (เช่น like ใน article) | Member Sheet เด้ง มี Sign in/Sign up/Close | bottom sheet ขึ้นจากขอบล่าง เหมือนทุกหน้า | — | |
 | SETUP-09 | เครื่องที่สอง + ACCT-2 | — | SETUP | มีเครื่องจริงอีกเครื่อง | ติดตั้ง build เดียวกันลงเครื่องที่สอง → sign in `ACCT-2` → อยู่ feed | บัญชีสองพร้อม | — | — | |
@@ -63,17 +63,17 @@
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | BRD-001 | แท็บ Board เปิดเสรี | GUEST | GATE-inverse | อยู่ Feed เป็น guest | แตะแท็บ Board | เปิด board home ได้เสรี (ไม่เด้ง Member Sheet) — รอบ B: ทำซ้ำกับ MEMBER เหมือนกัน | bd-head (burger + `TUK DAENG \| Board`) + hero + Latest Articles + bottom nav เปลี่ยน active มา Board | HIGH | |
-| BRD-002 | โครง board home | MEMBER | POSITIVE | อยู่ board | scroll ลงดู | หน้า render ตามลำดับ: head → hero → Latest → rows → end note → bottom nav | จดจำนวน hero slides + rows ที่เห็นลง Note | HIGH | |
+| BRD-002 | โครง board home | MEMBER | POSITIVE | อยู่ board | scroll ลงดู | หน้า render ตามลำดับ: head → hero → Latest → rows → end note → bottom nav | — | HIGH | |
 | BRD-003 | การ์ดใน hero | MEMBER | POSITIVE | อยู่ board | ดูสไลด์แรกของ carousel | ปกภาพเต็มเฟรม + ขาวเข้มล่าง (อ่านตัวอักษรได้) + หมวด (tag pill) + หัวข้อ + subtitle + `Read more` + จุดเลื่อน (จุดปัจจุบัน active) | tag = หมวดของบทความจริง (ถ้าหมวดว่าง → FEATURED/แนะนำ ตาม dict) | HIGH | |
 | BRD-004 | แตะ hero เปิดบทความ | MEMBER | POSITIVE | อยู่ board | แตะกลางสไลด์ (ไม่โดน Read more) | push ไป Article Detail ของบทความนั้น | transition แบบเลื่อน (ตาม nav ของ app) | HIGH | |
 | BRD-005 | Read more เปิดบทความ | MEMBER | POSITIVE | อยู่ board | แตะปุ่ม Read more บนสไลด์ | เหมือน BRD-004 — เปิดบทความเดียวกัน | — | MED | |
 | BRD-006 | ปัด hero ไปข้างหน้า | MEMBER | POSITIVE | อยู่ board, hero มี ≥2 slides | ปัดซ้าย (ลากแล้วปล่อย) → snap ไปสไลด์ถัดไป | สไลด์ถัดมาเข้าเฟรม จุดเลื่อนเปลี่ยนตาม และ **ไม่เปิดบทความ** (ลาก≠แตะ) | ระหว่างลาก ภาพตามนิ้วไปแล้ว snap เมื่อปล่อย | HIGH | |
 | BRD-007 | แตะจุดเลื่อน | MEMBER | POSITIVE | อยู่ board, hero มี ≥3 slides | แตะจุดที่ไม่ใช่ปัจจุบัน | carousel เลื่อนไปสไลด์นั้น จุดเปลี่ยน active | — | MED | |
-| BRD-008 | ปัดเกินขอบ | MEMBER | EDGE | อยู่สไลด์แรก | ปัดขวาที่สไลด์แรก → ขยับแล้วกลับ; ไปสไลด์สุดท้าย → ปัดซ้าย → เหมือนกัน | ไม่วนลูป, ไม่ autoplay (จดจำนวนสไลด์จริงลง Note) | — | MED | |
+| BRD-008 | ปัดเกินขอบ | MEMBER | EDGE | อยู่สไลด์แรก | ปัดขวาที่สไลด์แรก → ขยับแล้วกลับ; ไปสไลด์สุดท้าย → ปัดซ้าย → เหมือนกัน | ไม่วนลูป, ไม่ autoplay | — | MED | |
 | BRD-009 | bd-head pinned ตอนเลื่อน | MEMBER | POSITIVE | อยู่ board | เลื่อนลงผ่าน hero ไป list | bd-head อยู่ติดบน (sticky + glass) ไม่หลบเหมือน hero | bottom nav คงที่ล่าง | HIGH | |
-| BRD-010 | แถว Latest Articles | MEMBER | POSITIVE | อยู่ board | ดูแถวที่สองของ list | รูป thumb ซ้าย + หมวดเล็ก + หัวข้อ (ตัด ~2 บรรทัด) + meta `N min read · เวลา` — **ไม่มีตัวเลข like บนแถว** | จำนวนแถว = บทความที่ไม่ featured ตอนนี้ (จดลง Note) | HIGH | |
+| BRD-010 | แถว Latest Articles | MEMBER | POSITIVE | อยู่ board | ดูแถวที่สองของ list | รูป thumb ซ้าย + หมวดเล็ก + หัวข้อ (ตัด ~2 บรรทัด) + meta `N min read · เวลา` — **ไม่มีตัวเลข like บนแถว** | จำนวนแถว = จำนวนบทความที่ไม่ featured ตอนนั้น | HIGH | |
 | BRD-011 | แตะแถวเปิดบทความ | MEMBER | POSITIVE | อยู่ board | แตะแถวที่สอง | push ไป Article Detail ของเรื่องนั้น | — | HIGH | |
-| BRD-012 | ปลาย list | MEMBER | EDGE | อยู่ board | เลื่อนจนสุด | เจอ end note เช่น `คุณดูครบทั้งหมดแล้ว/You're all caught up` | ไม่มี pagination ใน V1 — ถ้าเห็น load more/infinite scroll → จดลง Note | MED | |
+| BRD-012 | ปลาย list | MEMBER | EDGE | อยู่ board | เลื่อนจนสุด | เจอ end note เช่น `คุณดูครบทั้งหมดแล้ว/You're all caught up` | ไม่มี pagination ใน V1 — เห็น load more/infinite scroll = FAIL | MED | |
 
 ### 2.2 boardall — View all + หมวด + Categories sheet
 
@@ -81,8 +81,8 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | BRD-013 | เปิด View all | MEMBER | POSITIVE | อยู่ board | แตะ `View all` (หรือเข้าทาง burger) | push ไป `boardall`: crumb บนสุด (icon home + `บทความล่าคล่าว/Latest Articles`) + pill `ทั้งหมด/All` active + list เต็มรวม featured ด้วย + end note | crumb ไม่กลับ bottom nav | HIGH | |
 | BRD-014 | เลือก pill ที่มีบทความ | MEMBER | POSITIVE | อยู่ boardall | แตะ pill `CAT-X` (ที่มีบทความหลายเรื่อง) | pill กลายเป็น active + list เปลี่ยนเฉพาะบทความที่หมวดตรง — อ้างอิง spec D7: match แบบ substring บน cat+title (เจอมากกว่าที่คิดได้) | pill auto-center ตามตำแหน่งใหม่ | HIGH | |
-| BRD-015 | pill = substring ของหมวดอื่น | MEMBER | STATE | อยู่ boardall + ข้อมูลมีคู่หมวดซ้อน เช่น `Guides` ซ้อน `Watch Guides` | แตะ pill `Guides` | list แสดงทั้งเรื่องที่ cat=`Guides` และ `Watch Guides` (ตาม spec D7) — ถ้าไม่มีคู่นี้ในข้อมูล → N/A จดใน Note | — | MED | |
-| BRD-016 | ไล่ pill ที่เหลือ | MEMBER | EDGE | อยู่ boardall | แตะทีละ pill จนหมด | แต่ละหมวดแสดงบทความตัวเอง; หมวดที่ไม่มีบทความ → `ไม่มีบทความในหมวดนี้/No articles in this category` | จดจำนวนต่อ pill ลง Note | MED | |
+| BRD-015 | pill = substring ของหมวดอื่น | MEMBER | STATE | อยู่ boardall + ข้อมูลมีคู่หมวดซ้อน เช่น `Guides` ซ้อน `Watch Guides` | แตะ pill `Guides` | list แสดงทั้งเรื่องที่ cat=`Guides` และ `Watch Guides` (ตาม spec D7) — ถ้าไม่มีคู่นี้ในข้อมูล → BLOCK พร้อมเหตุผล (ไม่มีข้อมูลทดสอบ) | — | MED | |
+| BRD-016 | ไล่ pill ที่เหลือ | MEMBER | EDGE | อยู่ boardall | แตะทีละ pill จนหมด | แต่ละหมวดแสดงบทความตัวเอง; หมวดที่ไม่มีบทความ → `ไม่มีบทความในหมวดนี้/No articles in this category` | — | MED | |
 | BRD-017 | ลากแถว pill | MEMBER | EDGE | อยู่ boardall + pill ล้นจอ | ลากซ้าย/ขวาบนแถว → ปล่อย → แตะ pill ทันที | ลาก = เลื่อน (pill ตามนิ้ว); ปล่อยลาก = ไม่เปลี่ยนหมวด (threshold ~5px); แตะสั้น = เลือก | ลากไม่กระตุก ไม่ค้าง | MED | |
 | BRD-018 | burger เปิด Categories | MEMBER | POSITIVE | อยู่ board | แตะ burger มุมซ้ายบน bd-head | bottom sheet `Categories/หมวดหมู่` + รายการหมวดจากข้อมูลจริง + ปุ่ม `ปิด/Close` + พื้น dim กดปิดได้ | — | HIGH | |
 | BRD-019 | เลือกหมวดจาก sheet | MEMBER | POSITIVE | Categories เปิดอยู่ | แตะ `CAT-X` | sheet ปิด → push `boardall` ที่ filter หมวดนั้นไว้ + pill `CAT-X` active + center | — | HIGH | |
@@ -95,14 +95,14 @@
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | BRD-023 | เปิด boardsearch | MEMBER | POSITIVE | อยู่ board | แตะแว่นมุมขวาบน bd-head | push ไป `boardsearch`: sbar (back + ช่องพิมพ์) autofocus/keyboard ขึ้น + crumb + `หัวข้อยอดนิยม/Popular Topics` + chips + ช่องว่าง | transition ตาม design | HIGH | |
-| BRD-024 | live filter ตามตัวพิมพ์ | MEMBER | POSITIVE | อยู่ boardsearch | พิมพ์ `Q-HIT` ทีละตัว | ผลกรองสดตามตัวอักษร + `N results for 'Q-HIT'` + การ์ด (รูป+หมวด+หัวข้อ+meta รวมไลก์) | จดจำนวนที่เห็นจริง | HIGH | |
+| BRD-024 | live filter ตามตัวพิมพ์ | MEMBER | POSITIVE | อยู่ boardsearch | พิมพ์ `Q-HIT` ทีละตัว | ผลกรองสดตามตัวอักษร + `N results for 'Q-HIT'` + การ์ด (รูป+หมวด+หัวข้อ+meta รวมไลก์) | — | HIGH | |
 | BRD-025 | การ์ดผลการค้น | MEMBER | POSITIVE | search มีผล | ดูการ์ดแรก | thumb + cat + หัวข้อเต็ม (ไม่ clamp) + meta รวม `N likes` (ตาม spec §11) | — | MED | |
 | BRD-026 | ไม่เจอผล | MEMBER | NEGATIVE | อยู่ boardsearch | พิมพ์ `Q-MISS` | `0 results` + icon แว่นขวาง + `No results found for 'Q-MISS'` + hint เช่น `ลองคำอื่น/Try different keyword or browse popular topics` | — | HIGH | |
 | BRD-027 | แตะ Popular Topic chip | MEMBER | POSITIVE | อยู่ boardsearch | แตะ chip (เช่น `Dress Watch`) | เติม `Dress Watch` ลงช่อง + ผลตามนั้น + `1 result` (singular) ถ้าเจอเดียว | — | MED | |
 | BRD-028 | ลบตัวพิมพ์จนว่าง | MEMBER | EDGE | พิมพ์แล้ว | ลบทีละตัวจนช่องว่าง | กลับมาโหมด `Popular Topics` + chips ตอนช่องว่าง | — | MED | |
-| BRD-029 | ไม่มีปุ่ม X ในช่อง | MEMBER | NEGATIVE | อยู่ boardsearch + พิมพ์แล้ว | มองหาปุ่ม X/clear ในช่องพิมพ์ → ลองแตะมุมขวาของช่อง | **ไม่มีปุ่ม X** (spec ล็อก: เคลียร์ด้วยการลบตัวพิมพ์ — dead UI ลบแล้ว) — ถ้า build มี X ทำงานได้ → จดลง Note (ดีกว่า spec ไม่ FAIL) | — | MED | |
-| BRD-030 | Enter ในช่อง | MEMBER | EDGE | พิมพ์แล้ว | กด Enter/Return บนคีย์บอร์ด | ไม่เกิดอะไรพิเศษ (ผลกรองสดอยู่แล้ว — จดใน Note ว่า build ปิด keyboard ไหม) | — | MED | |
-| BRD-031 | ค้นคำที่อยู่เฉพาะในเนื้อบทความ | MEMBER | NEGATIVE | อยู่ boardsearch + จดคำจากเนื้อบทความ | เปิดบทความ → จดคำที่อยู่ใน body เท่านั้น (ไม่อยู่ใน title/sub/cat) → กลับมาพิมพ์คำนั้น | `0 results` — search ไม่ค้น body (corpus = title + cat + sub ตาม spec §11) | — | HIGH | |
+| BRD-029 | ไม่มีปุ่ม X ในช่อง | MEMBER | NEGATIVE | อยู่ boardsearch + พิมพ์แล้ว | มองหาปุ่ม X/clear ในช่องพิมพ์ → ลองแตะมุมขวาของช่อง | **ไม่มีปุ่ม X** (spec ล็อก: เคลียร์ด้วยการลบตัวพิมพ์ — dead UI ลบแล้ว) — canonical lock: ต้องมีปุ่ม X เคลียร์ช่องทำงานจริง — ไม่มี = FAIL | — | MED | |
+| BRD-030 | Enter ในช่อง | MEMBER | EDGE | พิมพ์แล้ว | กด Enter/Return บนคีย์บอร์ด | ไม่เกิดอะไรพิเศษ (ผลกรองสดอยู่แล้ว) | — | MED | |
+| BRD-031 | ค้นคำที่อยู่เฉพาะในเนื้อบทความ | MEMBER | NEGATIVE | อยู่ boardsearch + บันทึกคำจากเนื้อบทความ | เปิดบทความ → บันทึกคำที่อยู่ใน body เท่านั้น (ไม่อยู่ใน title/sub/cat) → กลับมาพิมพ์คำนั้น | `0 results` — search ไม่ค้น body (corpus = title + cat + sub ตาม spec §11) | — | HIGH | |
 | BRD-032 | back แล้ว state คง / เข้าใหม่ reset | MEMBER | STATE | อยู่ boardsearch + พิมพ์ `Q-HIT` มีผล + เลื่อนผลลง | แตะผล → เปิด detail → แตะ back → กลับ board home → แตะแว่นใหม่ | รอบแรก: กลับมา boardsearch **ที่ state เดิม** (ช่องมี `Q-HIT`, ผลตำแหน่งเดิม, scroll ตำแหน่งเดิม); รอบสอง: เข้าใหม่ = ช่องว่าง + chips (reset) | — | HIGH | |
 | BRD-033 | guest ค้นหา + เปิดผล | GUEST | GATE-inverse | เป็น guest, อยู่ board | แตะแว่น → พิมพ์ → แตะผล | ใช้ได้เต็ม ไม่มี gate (เปิดบทความฟรี) | — | HIGH | |
 
@@ -112,11 +112,11 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | BRD-034 | โครง Article Detail | MEMBER | POSITIVE | เปิด `ART-A` แล้ว | เลื่อนลงดูทั้งหน้า | floating nav (back + like + share) pinned บนสุด ตลอด → หมวด → หัวข้อใหญ่ → แถว `avatar + Author + Date + N likes` → ปกภาพ → callout → ย่อหน้า → tag chips ท้ายหน้า → **ไม่มี bottom nav** (spec §6) | — | HIGH | |
 | BRD-035 | เนื้อหาของบทความแต่ละเรื่อง | MEMBER | EDGE | เปิด `ART-A` จำเนื้อ → back → เปิด `ART-FEAT` | เปรียบ body/author/วันที่ | แต่ละเรื่องแสดงเนื้อ/author/วันที่ **ของตัวเอง** — ถ้าเห็นเนื้อ/author เหมือนกันทุกเรื่อง = mock leftover → FAIL | ข้อมูลจริงจาก CMS | HIGH | |
-| BRD-036 | หมวดยาว (cat label + tag chip) | MEMBER | EDGE | เปิดบทความในหมวดที่ชื่อยาว (ถ้ามี) | ดู cat label บนหัวข้อ + tag chip ท้ายหน้า | หมวดยาว wrap/ตัดตาม design ไม่ทะลุกรอบ; tag `#<cat>` ไม่มีช่องว่าง (ลบ whitespace ตาม design) — ถ้าไม่มีหมวดยาว → จด N/A | — | MED | |
+| BRD-036 | หมวดยาว (cat label + tag chip) | MEMBER | EDGE | เปิดบทความในหมวดที่ชื่อยาว (ต้องมีข้อมูลนี้ — ไม่มี → BLOCK) | ดู cat label บนหัวข้อ + tag chip ท้ายหน้า | หมวดยาว wrap/ตัดตาม design ไม่ทะลุกรอบ; tag `#<cat>` ไม่มีช่องว่าง (ลบ whitespace ตาม design) — ถ้าไม่มีหมวดยาว → BLOCK พร้อมเหตุผล (ไม่มีข้อมูลทดสอบ) | — | MED | |
 | BRD-037 | nav pinned + back | MEMBER | POSITIVE | เปิดบทความ + เลื่อนกลาง | เลื่อนลงจนเห็น nav → แตะ back (บน nav) | nav อยู่ pinned (floating pill) ไม่หลบ → back กลับหน้าก่อนหน้า transition ตาม design | — | HIGH | |
-| BRD-038 | `N min read` | MEMBER | EDGE | เปิดบทความสองเรื่อง (สั้น/ยาว) | เทียบ label นาทีอ่าน + ความยาวเนื้อ | label นาทีอ่านสะท้อนความยาวตามที่ CMS กำหนด (ไม่บังคับตัวเลขเฉพาะ — จดตัวเลขที่เห็น) | — | MED | |
-| BRD-039 | ลิงก์ไปบทความที่ไม่มีอยู่ | MEMBER | NEGATIVE | มี deep link หรือวิธีเปิด URL บทความ | เปิดลิงก์ board ที่ id ไม่มีจริง (เช่นแก้ id ในลิงก์) → เข้าในแอป | หน้า `ไม่พบบทความ/Article not found` + `This article is no longer available.` + ปุ่ม back กลับได้ — ถ้าเปิดลิงก์ไม่ได้ → `BLOCK` จดใน Note | — | MED | |
-| BRD-040 | ไม่มี action อื่นบน article | MEMBER | NEGATIVE | เปิดบทความ | มองหาปุ่ม/เมนูอื่นนอกเหนือ back/like/share (overflow · save · comment · footer bar) | **ไม่มี** — V1 มีแค่ 3 ปุ่ม; ถ้า build มี entry อื่น → ตรวจ contract ตาม §13 ของ spec (เช่น report ต้องครบ 6 reasons) → จด flag ใน Note | — | HIGH | |
+| BRD-038 | `N min read` | MEMBER | EDGE | เปิดบทความสองเรื่อง (สั้น/ยาว) | เทียบ label นาทีอ่าน + ความยาวเนื้อ | label นาทีอ่านสะท้อนความยาวตามที่ CMS กำหนด (ไม่บังคับตัวเลขเฉพาะ) | — | MED | |
+| BRD-039 | ลิงก์ไปบทความที่ไม่มีอยู่ | MEMBER | NEGATIVE | มี deep link หรือวิธีเปิด URL บทความ | เปิดลิงก์ board ที่ id ไม่มีจริง (เช่นแก้ id ในลิงก์) → เข้าในแอป | หน้า `ไม่พบบทความ/Article not found` + `This article is no longer available.` + ปุ่ม back กลับได้ — ถ้าเปิดลิงก์ไม่ได้ → `BLOCK` พร้อมเหตุผล | — | MED | |
+| BRD-040 | ไม่มี action อื่นบน article | MEMBER | NEGATIVE | เปิดบทความ | มองหาปุ่ม/เมนูอื่นนอกเหนือ back/like/share (overflow · save · comment · footer bar) | **ไม่มี** — V1 มีแค่ 3 ปุ่ม; ถ้า build มี entry อื่น — entry อื่นนอกเหนือ back/like/share = FAIL (V1 scope) | — | HIGH | |
 
 ### 2.5 boardart — Like/Share + GATE
 
@@ -128,8 +128,8 @@
 | BRD-044 | [GATE] share ทำงาน / guest → Member Sheet | MEMBER/GUEST | GATE | เปิด `ART-A` | **รอบ A (GUEST)**: แตะ share → Member Sheet → ปิด; **รอบ B (MEMBER)**: แตะ share → share sheet เด้ง (friends + apps + `Copy link`) | sheet เดียวกับของ post (shareSheetHTML ตาม spec) | HIGH | |
 | BRD-045 | share sheet actions | MEMBER | POSITIVE | share sheet เปิดอยู่ | แตะ `Copy link` → ดู toast + วางลิงก์ใน note; แตะเพื่อน → `ส่งแล้ว/Sent`; แตะพื้น dim → ปิด | copy → ลิงก์ของบทความนั้นถูกเก็บ (เปิดได้จริงใน BRD-062); เพื่อน → Sent; backdrop ปิด | — | MED | |
 | BRD-046 | guest ลอง like → sign in ผ่าน sheet | GUEST | GATE | guest + เปิด `ART-A` | แตะ like → Member Sheet → แตะ `Sign in` → sign in สำเร็จ → กลับมาที่ article | หน้าอยู่ที่เดิม + like **ยังไม่เปลี่ยน** (guest ต้องแตะใหม่เอง — ไม่ resume ตาม spec §14) | — | HIGH | |
-| BRD-047 | ไม่มี save/bookmark entry | MEMBER | NEGATIVE | เปิดบทความ | มองหาปุ่ม save/bookmark (มุมหน้า / ใน action bar / ใน sheet) | **ไม่มี** (V1 out of scope — dead wiring ลบออกแล้ว); ถ้า build มี save/bookmark → จด flag ใน Note (อยู่นอก spec V1) | — | HIGH | |
-| BRD-048 | ไม่มี report/more entry | MEMBER | NEGATIVE | เปิดบทความ | มองหาปุ่ม `...`/เมนูเพิ่มเติม/report | **ไม่มี** (V1 — report contract §13 เป็นเผื่ออนาคต); ถ้า build มี report → ตรวจตาม contract: reason sheet 6 เหตุ + copy สำเร็จ `ได้รับรายงาน/Thanks — report received` | — | HIGH | |
+| BRD-047 | ไม่มี save/bookmark entry | MEMBER | NEGATIVE | เปิดบทความ | มองหาปุ่ม save/bookmark (มุมหน้า / ใน action bar / ใน sheet) | **ไม่มี** (V1 out of scope — dead wiring ลบออกแล้ว); มี save/bookmark = FAIL (V1 out of scope) | — | HIGH | |
+| BRD-048 | ไม่มี report/more entry | MEMBER | NEGATIVE | เปิดบทความ | มองหาปุ่ม `...`/เมนูเพิ่มเติม/report | **ไม่มี** (V1 — report contract §13 เป็นเผื่ออนาคต); ถ้า build มี report = FAIL (นอก scope V1) | — | HIGH | |
 
 ### 2.6 Navigation / State / Language / Theme
 
@@ -140,7 +140,7 @@
 | BRD-051 | tab-state board + re-tap | MEMBER | STATE | อยู่ `boardall` filter `CAT-X` + เลื่อนกลาง | แท็บ Feed → แท็บ Board กลับ → แท็บ Board อีกครั้ง (re-tap) | รอบแรก: กลับมา `boardall` ตำแหน่งเดิม (filter/scroll คง — tab-state ล็อกทุกแท็บ); รอบสอง: re-tap บน Board = root reset → `board` home + search state ล้าง | — | HIGH | |
 | BRD-052 | guest ใช้งานเต็มนอกจาก gate | GUEST | GATE-inverse | เป็น guest | เปิด board → hero → บทความ → search → เปิดผล → back | ทุกขั้นเปิดได้เสรี **ไม่เด้ง Member Sheet** (gate เฉพาะ like/share) | — | HIGH | |
 | BRD-053 | รูปโหลดไม่ขึ้น/ช้า | MEMBER | NEGATIVE | เปิดบทความที่รูปใหญ่ + เน็ตช้าหรือขาด | เข้า board ตอนเน็ตอ่อน/เปิดบทความที่รูปยังไม่โหลด → ดูพฤติกรรม | แสดง placeholder/fallback ตาม design ไม่ crash/หน้าว่าง — ถ้ารูปโหลดหมดแล้ว จำลองด้วยรูปที่แตก (BLOCK ถ้าไม่มีวิธี) | — | MED | |
-| BRD-054 | หัวข้อยาวข้ามพื้นผิว | MEMBER | EDGE | เปิดบทความที่หัวข้อยาวมาก (ถ้ามี) | เทียบหน้า home row / hero / article head / search card | หัวข้อยาว clamp ตาม design (จดจำนวนบรรทัดที่เห็น) — ไม่ทะลุกรอบ — ถ้าข้อมูลไม่มีหัวข้อยาว → N/A | — | MED | |
+| BRD-054 | หัวข้อยาวข้ามพื้นผิว | MEMBER | EDGE | เปิดบทความที่หัวข้อยาวมาก (ต้องมีข้อมูลนี้ — ไม่มี → BLOCK) | เทียบหน้า home row / hero / article head / search card | หัวข้อยาว clamp ตาม design — ไม่ทะลุกรอบ — ถ้าข้อมูลไม่มีหัวข้อยาว → BLOCK พร้อมเหตุผล (ไม่มีข้อมูลทดสอบ) | — | MED | |
 | BRD-055 | แตะรัว/ซ้อน navigation | MEMBER | EDGE | อยู่ board | แตะบทความรัว ๆ ซ้ำ / แตะ View all รัว ๆ → back | ไม่ค้าง ไม่เด้งหน้าซ้อนแบบผิด — push ตามจำนวนแตะ → back ไล่ทีละชั้น (ตาม lock: ปิดทีละชั้น) | — | MED | |
 | BRD-056 | ภาษาตามแอปทุกหน้า | MEMBER | POSITIVE | ตั้งแอปเป็นภาษาไทย/อังกฤษ ตามลำดับ | ไล่ทุกหน้า (board / boardall / Categories sheet / boardsearch / boardart) → เปลี่ยนภาษา → ไล่ซ้ำ | ทุกข้อความ UI เปลี่ยนตามภาษาแอป — เจอค้างอีกภาษา = FAIL; ยกเว้นเนื้อบทความจริง (title/body/author จาก CMS — content ไม่ใช่ UI) | — | HIGH | |
 | BRD-057 | dark theme อ่านได้ครบ | MEMBER | POSITIVE | ตั้ง theme = dark | ไล่ทุกหน้า board + เปิด article → เลื่อนลงสุด → เช็ก dim/contrast | ทุกตัวอักษรอ่านได้ ไม่มีจุดตัวอักษรจมพื้นหลัง / สีพัง (ดาร์กโทนตาม design) | — | HIGH | |
@@ -151,16 +151,16 @@
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | BRD-059 | like ผูกกับบัญชี (per-user) | ACCT-2 | STATE | เครื่องที่สอง sign in `ACCT-2` | เครื่องหลัก (MEMBER) like `ART-A` → เครื่องที่สองเปิด `ART-A` เดียวกัน | เครื่องที่สองเห็นตัวเลขรวม (รวม like ของ MEMBER) แต่ pill **ไม่ on** สำหรับ ACCT-2 — like เป็นของบัญชี (spec §12) — ไม่มี ACCT-2 → `BLOCK` | — | HIGH | |
-| BRD-060 | like count sync ข้ามเครื่อง | MEMBER + ACCT-2 | STATE | เปิด `ART-A` บนสองเครื่องพร้อมกัน | เครื่องหลักแตะ like → เครื่องที่สองดูตัวเลข (refresh/pull ถ้าต้อง) | ตัวเลขอัปเดตบนเครื่องที่สอง (sync ผ่าน server) — จด latency ถ้าช้า | — | MED | |
+| BRD-060 | like count sync ข้ามเครื่อง | MEMBER + ACCT-2 | STATE | เปิด `ART-A` บนสองเครื่องพร้อมกัน | เครื่องหลักแตะ like → เครื่องที่สองดูตัวเลข (refresh/pull ถ้าต้อง) | ตัวเลขอัปเดตบนเครื่องที่สอง (sync ผ่าน server)| — | MED | |
 | BRD-061 | like persist ข้าม restart | MEMBER | STATE | like `ART-A` ไว้ | ปิดแอปสนิท (kill) → เปิดใหม่ → เข้าบทความเดิม | pill ยัง on + ตัวเลขคง (server-backed) | — | HIGH | |
-| BRD-062 | copy link เปิดลิงก์จริง | MEMBER | POSITIVE | เปิด `ART-A` + share sheet | `Copy link` → วางลิงก์ → เปิด (ในแอป/จาก note/แชร์ไปเครื่องอื่น) | ลิงก์ resolve ไป `ART-A` จริง เปิดได้เต็ม (ไม่ใช่ลิงก์ตาย/ไม่เปิด) — ถ้า build ไม่มี deep link → `BLOCK` จดใน Note | — | HIGH | |
+| BRD-062 | copy link เปิดลิงก์จริง | MEMBER | POSITIVE | เปิด `ART-A` + share sheet | `Copy link` → วางลิงก์ → เปิด (ในแอป/จาก note/แชร์ไปเครื่องอื่น) | ลิงก์ resolve ไป `ART-A` จริง เปิดได้เต็ม (ไม่ใช่ลิงก์ตาย/ไม่เปิด) — ถ้า build ไม่มี deep link → `BLOCK` พร้อมเหตุผล | — | HIGH | |
 | BRD-063 | guest เปิด deep link บทความ | GUEST | POSITIVE | มีลิงก์บทความจริง (จาก BRD-062) | ปิดแอป → เปิดลิงก์ (เครื่อง guest) → เข้าในแอป | เปิด `Article Detail` อ่านได้เต็มโดยไม่ gate (guest browse free ตาม spec) — ถ้าไม่มี deep link → `BLOCK` | — | MED | |
-| BRD-064 | deep link ไปบทความที่ถูกลบ/ปิด | MEMBER | NEGATIVE | มีบทความที่ถูกลบ/unpublish บน BO | เปิดลิงก์บทความนั้น | หน้า `ไม่พบบทความ/Article not found` + `This article is no longer available.` — ถ้าไม่มีวิธีทำบทความหาย → `BLOCK` จดใน Note | — | MED | |
+| BRD-064 | deep link ไปบทความที่ถูกลบ/ปิด | MEMBER | NEGATIVE | มีบทความที่ถูกลบ/unpublish บน BO | เปิดลิงก์บทความนั้น | หน้า `ไม่พบบทความ/Article not found` + `This article is no longer available.` — ถ้าไม่มีวิธีทำบทความหาย → `BLOCK` พร้อมเหตุผล | — | MED | |
 | BRD-065 | deep link เข้ามา — back ตก Feed | MEMBER | STATE | ปิดแอปสนิท → เปิดลิงก์บทความ | เปิดลิงก์จากภายนอก → อยู่ Article Detail → แตะ back | ไม่มี history ในแอป → back ตก `Feed` (ไม่ปิดแอป/ไม่หน้าว่าง) ตาม contract §13 | — | HIGH | |
-| BRD-066 | เน็ตหลุดระหว่างใช้ board | MEMBER | NEGATIVE | เปิด board โหลดเสร็จแล้ว | เปิดโหมดเครื่องบิน → เลื่อน/แตะบทความ → เปิด article → ลองกด like → เปิดเน็ตคืน | หน้าที่โหลดไว้อยู่แล้วอ่านได้ต่อ; การกระทำที่ต้องเน็ต (like/load ใหม่) แสดง error/ล้มเหลวชัด ไม่ silent fail; เน็ตกลับมา → ทำงานต่อได้ — จดพฤติกรรมจริงลง Note | — | MED | |
+| BRD-066 | เน็ตหลุดระหว่างใช้ board | MEMBER | NEGATIVE | เปิด board โหลดเสร็จแล้ว | เปิดโหมดเครื่องบิน → เลื่อน/แตะบทความ → เปิด article → ลองกด like → เปิดเน็ตคืน | หน้าที่โหลดไว้อยู่แล้วอ่านได้ต่อ; การกระทำที่ต้องเน็ต (like/load ใหม่) แสดง error/ล้มเหลวชัด ไม่ silent fail; เน็ตกลับมา → ทำงานต่อได้| — | MED | |
 | BRD-067 | รูปโหลดไม่ขึ้น (real app) | MEMBER | NEGATIVE | มีวิธีทำให้รูปแตก/ไม่โหลด | เปิด board ตอนรูปโหลดไม่สำเร็จ (เน็ตอ่อน/แคชพัง) | แสดง placeholder/fallback ตาม design — layout ไม่พัง — ถ้าทำไม่ได้ → `BLOCK` | — | MED | |
 | BRD-068 | กิจกรรม board ไม่สร้าง Alerts | MEMBER | STATE | มี like/share สำเร็จแล้ว | แตะ like + share บทความ → ไปแท็บ Alerts | **ไม่มี** รายการ alerts เพิ่มจากกิจกรรม board (spec §17 — board ไม่สร้างแจ้งเตือน) | — | MED | |
-| BRD-069 | loading state ตอนเปิด board | MEMBER | POSITIVE | ปิดแอป → เปิดใหม่ | แตะแท็บ Board ทันที | แสดง skeleton/spinner ตาม design ระหว่างโหลดข้อมูล → เนื้อมาเมื่อโหลดเสร็จ (จดพฤติกรรมที่เห็นจริง — ไม่เปิดเคส) | — | MED | |
+| BRD-069 | loading state ตอนเปิด board | MEMBER | POSITIVE | ปิดแอป → เปิดใหม่ | แตะแท็บ Board ทันที | แสดง skeleton/spinner ตาม design ระหว่างโหลดข้อมูล → เนื้อมาเมื่อโหลดเสร็จ | — | MED | |
 
 ## §3 Mapping ของ gap เดิม → spec ล็อก / ผลการแก้
 
@@ -177,12 +177,12 @@
 | GAP-BRD-09 | back จาก article → re-render ใหม่ → scroll/hero/dot รีเซ็ต | **spec lock 2026-10-28: restore ตำแหน่งเดิม** — prototype แก้แล้ว (scroll memory) | BRD-022, 049, 050 |
 | GAP-BRD-10 | ทุกบทความใช้ `BD_BODY` เหมือนกัน | mock — production ใช้เนื้อจริงต่อเรื่อง → FAIL ถ้าเห็นเหมือนกัน | BRD-035 |
 | GAP-BRD-11 | author hardcode `Tuk Daeng Editorial` + date ไม่สะท้อน | mock (D15) — production ใช้ field จริง | BRD-035, 038 |
-| GAP-BRD-12 | ไม่มีบทความยาวใน seed → เคส "N min read" เทสไม่ได้จริง | real data — จดตัวเลขจริง เปรียบสั้น/ยาว | BRD-038 |
+| GAP-BRD-12 | ไม่มีบทความยาวใน seed → เคส "N min read" เทสไม่ได้จริง | ตัวเลขต้องตรงข้อมูลจริงบน build — ไม่ตรง = FAIL | BRD-038 |
 | GAP-BRD-13 | localize ครึ่งเดียว (EN strings hardcode) | **ล็อก 2026-10-28: ทุก UI ตามภาษาแอป** — article content ยกเว้น | BRD-056 |
 | GAP-BRD-14 | like pill ไม่มีตัวเลข — ตัวเลขอยู่ใน author row + search card | spec §12 confirm — pill icon เดียว + count ใน meta | BRD-043 |
 | GAP-BRD-15 | `boardart` ไม่มี bottom nav | spec §6 confirm — ออกทาง back pill | BRD-034, 058 |
 | GAP-BRD-16 | `bdFilterCat` persist ข้าม nav | spec D14 — คงจนกว่า user เปลี่ยนเอง | BRD-022, 051 |
-| GAP-BRD-17 | seed dates มาจาก Date.now() → `today`/`Xd ago` ตามเวลาจริง | real data — จดวันที่จริง | — |
+| GAP-BRD-17 | seed dates มาจาก Date.now → `today`/`Xd ago` ตามเวลาจริง | real data| — |
 
 **สรุปผลการเคลียร์รอบนี้** — ทั้งหมด 17 จุด: ลบ dead code จริง 4 กลุ่ม (01–04), ล็อกเป็น spec/deviation ที่ถูกต้อง 8 จุด (06–08, 14–17 บางส่วน), ตัดสินใหม่ว่าต้องแก้/เพิ่มเคส 5 จุด (05, 09–13)
 
@@ -224,12 +224,14 @@
 | deep link | copy link → เปิดจริง + guest เปิด + บทความหาย + back ตก Feed | BRD-062..065 | BLOCK ถ้าไม่มี |
 | offline/edge | เน็ตหลุด + รูปแตก | BRD-053, 066, 067 | BLOCK ถ้าไม่มีวิธี |
 | alerts | board ไม่สร้างแจ้งเตือน | BRD-068 | spec §17 |
-| loading | skeleton ตอนเปิด board | BRD-069 | จดพฤติกรรมจริง |
+| loading | skeleton ตอนเปิด board | BRD-069 | ตามเคส BRD-069 |
 | ภาษา/ธีม | ทุกหน้า localize + dark อ่านได้ | BRD-056, 057 | ล็อก |
 
 ## หมายเหตุท้าย
 
 - **ก่อนส่งงานจริง**: เขียนเสร็จ → รอ PO/หัวหน้ารีวิว → แก้ตาม feedback → ค่อยปิด task (กฎเดียวกับทุกเล่ม)
-- **ตัวเลขทั้งหมดเป็นตัวอย่างตาม spec** — จดตัวเลขจริงที่เห็นบน build ลง `Note` ทุกเคส (จำนวน slide/row/ผลค้น/จำนวน like) — spec บอก `featured ≤5` แต่ build จริงอาจมีแค่ 3 (ไม่ FAIL)
+- **ตัวเลขทั้งหมดเป็นตัวอย่างตาม spec** — ตัวเลขจริงต้องตรงข้อมูลบน build — contract คือขีดจำกัดของ spec (featured ≤5 ฯลฯ) เกิน = FAIL; จำนวนน้อยกว่าตัวอย่าง spec ถ้าตรงข้อมูลจริง = ผ่าน
 - **เคสที่ต้อง test data แต่ไม่มีวิธีจริง**: BRD-015 (คู่หมวดซ้อน), BRD-036 (หมวดยาว), BRD-039 (ลิงก์บทความตาย), BRD-053/067 (รูปแตก), BRD-064 (บทความถูกลบ) → `BLOCK` พร้อมระบุขาดอะไรใน Note
-- **หน้าที่ขึ้น "ไม่มี"**: ถ้า build แสดง entry ที่ spec บอกไม่มี (save/report/more/X) → ไม่ใช่ FAIL โดยอัตโนมัติ — ตรวจ contract ตาม spec แล้วจด flag ลง Note ให้ทีมตัดสิน
+- **หน้าที่ขึ้น "ไม่มี"**: ถ้า build แสดง entry ที่ spec บอกไม่มี (save/report/more/X) → ไม่ใช่ FAIL โดยอัตโนมัติ — ตรวจ contract ตาม spec แล้วบันทึก flag ลง Note ให้ทีมตัดสิน
+
+- สถิติ: **69 TC** — High 41 / Medium 28 / Low 0 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 79 แถว)

@@ -29,7 +29,7 @@ Social Module คุมพฤติกรรม interaction ทั้งหม�
 
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้; line anchors อาจ drift ให้ค้นด้วย function-name)
 
-- Post flags + fields: `POSTS` seed (~12800–13300) — `liked`, `likes`, `likedBy`, `views`, `comments`, `commentPreview`, `noComments`, `hideCounts`, `saved`, `savedCol`, `savedAt`, `colAt`, `wishlisted`, `wlCol`, `wlAt`, `wlColAt`, `following`, `favorite`, `muted`, `ni`, `blocked`, `archived`, `pins`
+- Post flags + fields: `POSTS` seed (~12800–13300) — `liked`, `likes`, `likedBy`, `views`, `comments`, `commentPreview`, `noComments`, `hideCounts`, `saved`, `savedCols` (multi-collection array — lock 2026-10-29), `savedAt`, `colAt`, `wishlisted`, `wlCols` (multi), `wlAt`, `wlColAt`, `following`, `favorite`, `muted`, `ni`, `blocked`, `archived`, `pins`
 - Comments: `COMMENTS` seed (~13339 — threads ต่อ post id `{id,name,avatar,time,text,likes,replies[]}` 1 ชั้น), `commentsFor` (~13802 — สร้าง synthetic comments จาก `LIKER_POOL`+`PF_CMT_TEXTS` เมื่อ `p.comments>0` แต่ไม่มี seed; auto-assign `c-{i}`/`r-{ci}-{ri}`), `commentRowsHTML` (~13815 — filter `pfIsBlocked` ทั้ง comment+replies; row = avatar/`data-pf-user` + name+time + text + `.c-meta` `Reply` + `.c-like` heart+count), `commentsHTML` (~13953 — `sheet-title` `ความคิดเห็น`/`Comments` + `.sheet-list` + `.emoji-row` 8 emoji + `.comment-input` แบบ dead), `openCommentPopover`/`closeCommentPopover`/`delCommentDlgHTML`/`deleteComment` (~13858–13951), `dlg-delcomment-go` handler (~22971)
 - Sheets: `likesSheetHTML` (~14002 — likers = `p.likedBy` + `LIKER_POOL` dedupe; `lk-note` เฉพาะโพสต์คนอื่น), `shareSheetHTML` (~14021 — `.sh-q` + `FRIENDS` 12 + `SHARE_APPS` 5: Messenger/Direct/LINE/Facebook/Copy link), `saveSheetHTML`/`COLLECTIONS` (~14043), `wlSheetHTML`/`WISHLISTS` (~14072), `openSheet` variants (~14096 — `uf pm pm-rp lk sh sv so dt nt ps nc wl wa mf`), `ncSheetHTML` (~15876 — Cancel/Next|Save + name 40 chars + count + clear-X + optional preview)
 - Saved hub: `SAVED_TABS` (`all`/`collections`/`posts` ~15319), `savedState`/`savedPosts`/`colPosts`/`colCover`/`savedList`/`svdTileHTML`/`colCardHTML`/`colCardBigHTML`/`svdConfirmDelete`/`svdDeleteCol`/`svdEmptyHTML`/`svdSparkIcon`/`svdBarHTML`/`svdSelectHeadHTML`/`savedSearchBodyHTML`/`savedBodyHTML`/`savedHTML`/`savedColHTML` (~15319–15500), `svdAddHTML`/`svdCoverHTML`/`svdEditHTML`/`svdMoveSheetHTML`/`ecCoverHTML` (~15827–15875)
@@ -115,7 +115,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Saved hub | `saved` (settings row + `.sr-saved` + `data-sub="saved"`), `savedcol` | tabs, collections CRUD, select/manage, move sheet, unsave/remove dialogs, search, tile → viewer feed mode |
 | Wish List hub | `wishlist` (`data-sub="wishlist"`), `wishcol` | เหมือน Saved |
 | Report pages | `report*` routes | reason list, pickers, done+Other steps (§15) |
-| Settings social lists | `interested` (liked posts + `m-unlike`), `ni` (`m-restore`), `favorites`/`muted`/`blocked` (`fav-*`/`m-unmute`/`m-unblock`) | canonical 13 — เอกสารนี้คุม semantics ของ flag เท่านั้น |
+| Settings social lists | `interested` (liked posts + `m-unlike`), `ni` (`m-restore`), `favorites`/`muted`/`blocked` (`fav-*`/`m-unmute`/`m-unblock`) | canonical 13 — เอกสารนี้คุม semantics ของ flag เท่านั้น; **แถวโพสต์ (interested/ni) แตะ → Post Viewer feed mode ของโพสต์นั้น** (lock 2026-10-29 — ไม่ใช่โปรไฟล์คนขาย) |
 
 ---
 
@@ -156,8 +156,8 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | `views` / `comments` / `commentPreview` | counts + feed preview | seed; `comments` อัปเดตจาก emoji-react + deleteComment |
 | `noComments` | ซ่อน comment button/sheet entry | own-post menu `pm-own-nocomm` (canonical 02) |
 | `hideCounts` | ซ่อน `liked-by` strip + views | post setting |
-| `saved` / `savedCol` / `savedAt` / `colAt` | Saved state + collection + sort stamps | `.save-btn`/`.sv-pick`/move/unsave |
-| `wishlisted` / `wlCol` / `wlAt` / `wlColAt` | Wish List state + collection + stamps | `.wl-btn`/`.wl-pick`/move/remove |
+| `saved` / `savedCols` / `savedAt` / `colAt` | Saved state + collection memberships (**array — post อยู่ได้หลาย collection พร้อมกัน**) + sort stamps | `.save-btn`/`.sv-pick`/move/unsave |
+| `wishlisted` / `wlCols` / `wlAt` / `wlColAt` | Wish List state + collection memberships (array — multi เหมือนกัน) + stamps | `.wl-btn`/`.wl-pick`/move/remove |
 | `following` / `favorite` / `muted` | account-level แต่เก็บบนทุก post ของ seller | `setFollowing`/`setFavorite`/`setMuted` (ทุก `p.seller===seller`) |
 | `ni` / `blocked` / `archived` | feed exclusion flags | `pm-ni`/`pfSetBlocked`/archive (canonical 02) |
 
@@ -168,15 +168,16 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ## Collections
 
-- `COLLECTIONS` — Saved collections `{name, thumb?, coverPid?}`; `"Saved"` = pseudo-collection เริ่มต้น (ไม่อยู่ใน array)
-- `WISHLISTS` — Wish List collections แยก array (`"Wishlist"` = pseudo-collection เริ่มต้น)
-- ทุก collection = **Private** (label คงที่บน sheet/cards)
+- `COLLECTIONS` — Saved collections `{name, thumb?, coverPid?}`; `"Saved"` = pseudo-row ของ flag `saved` เอง (ไม่ใช่สมาชิกใน `savedCols` — ติ๊ก row นี้ = เซฟ/ถอดเซฟทั้งโพสต์)
+- `WISHLISTS` — Wish List collections แยก array (`"Wishlist"` = pseudo-row ของ flag `wishlisted` เช่นกัน)
+- ทุก collection = **Private** (label คงที่บน sheet/cards); **ชื่อซ้ำได้** — ไม่มี dedupe (lock 2026-10-29, LIB-042)
+- **Multi-collection (lock 2026-10-29)** — post หนึ่งอยู่ได้หลาย collection พร้อมกัน (`savedCols`/`wlCols` เป็น array ของชื่อ); picker ติ๊กได้หลายอัน; เอาออกทีละอันไม่กระทบอันอื่น; ยกเลิกเซฟ (un-save / un-wishlist) หลุดทุก collection เพราะ flag ถูกล้างพร้อม array
 
 ## Session snapshot
 
-- `POST_FLAG_KEYS` = `["liked","saved","wishlisted","wlCol","wlAt","wlColAt","following","favorite","muted","archived","archivedAt","ni","blocked","pins"]`
+- `POST_FLAG_KEYS` = `["liked","saved","savedCols","wishlisted","wlCols","wlAt","wlColAt","following","favorite","muted","archived","archivedAt","ni","blocked","pins"]`
 - `member` → `restoreUserData` (posts flags + `COLLECTIONS`/`WISHLISTS` restore); `guest`/`new` → `clearUserData` (flags ล้าง + PF sets ล้าง + `WATCH_ALERTS` ล้าง + `ALERTS=null`)
-- **ไม่ reset**: `likes`/`views`/`comments` counts, `savedCol`/`savedAt`/`colAt` (ไม่อยู่ใน `POST_FLAG_KEYS` — ดู §19 quirk)
+- **ไม่ reset**: `likes`/`views`/`comments` counts, `savedAt`/`colAt` (sort stamps ไม่อยู่ใน `POST_FLAG_KEYS` — `savedCols`/`wlCols` อยู่ใน keys แล้วจึงล้าง/คืนตาม session ถูกต้อง; ดู §19 quirk)
 
 ---
 
@@ -251,13 +252,14 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ## Save entry (`save-btn` → `sv` sheet)
 
-- `save-btn` (feed card right, pv rail, pfp card): `!p.saved` → `saved=true, savedCol="Saved", savedAt` + `syncSaveBtns` (filled bookmark) แล้ว **เปิด sheet เสมอ** (ทั้งกรณี saved อยู่แล้ว — เพื่อเลือก collection)
-- `saveSheetHTML`: row แรก `sv-head` (`Saved`/`Private` + post thumb + bookmark) + `Collections` section + `sv-new` `New collection` + rows `sv-pick` (`colCover` thumb หรือ bookmark icon; check บน `p.savedCol === c.name`)
-- `.sv-pick` semantics:
-  - `col==="Saved"` && `p.saved` → **unsave** (`saved=false, savedCol=null, savedAt=0`) + toast `Removed from your saved`
-  - `col===p.savedCol` (collection เดิม) → กลับ default (`savedCol="Saved"`) + toast `Removed from {col}` — **ยัง saved อยู่**
-  - อื่น → `savedCol=col` (+`colAt` เมื่อไม่ใช่ Saved) + toast `Saved`/`Saved to {col}`
-- `.sv-new` → `ncSheetHTML` (`_ncFrom="save"`) — Next สร้าง `COLLECTIONS.push({name})` + assign post + toast `Saved to {name}`
+- `save-btn` (feed card right, pv rail, pfp card): `!p.saved` → `saved=true, savedAt` (`savedCols` คง memberships เดิม/ว่าง) + `syncSaveBtns` (filled bookmark) แล้ว **เปิด sheet เสมอ** (ทั้งกรณี saved อยู่แล้ว — เพื่อเลือก collection)
+- `saveSheetHTML`: row แรก `sv-head` (`Saved`/`Private` + post thumb + bookmark — pseudo-row ของ flag `saved`) + `Collections` section + `sv-new` `New collection` + rows `sv-pick` (`colCover` thumb หรือ bookmark icon; check บน `(p.savedCols||[]).includes(c.name)` — **ติ๊กได้หลาย collection**)
+- `.sv-pick` semantics (multi-collection — lock 2026-10-29):
+  - `col==="Saved"` && `p.saved` → **unsave** (`saved=false, savedCols=[], savedAt=0` — หลุดทุก collection) + toast `Removed from your saved`
+  - `col` ที่อยู่ใน `p.savedCols` แล้ว → เอาออก**เฉพาะ collection นั้น** (`savedCols` ลบชื่อ) + toast `Removed from {col}` — **ยัง saved + อยู่ collection อื่นต่อ**
+  - `col` ใหม่ → `savedCols.push(col)` (+`colAt`) + toast `Saved`/`Saved to {col}`
+  - `col==="Saved"` && `!p.saved` → `saved=true, savedAt` + toast `Saved`
+- `.sv-new` → `ncSheetHTML` (`_ncFrom="save"`) — Next สร้าง `COLLECTIONS.push({name})` + `savedCols.push(name)` + toast `Saved to {name}`; ชื่อซ้ำกับ collection เดิมได้ (ไม่ block)
 
 ## Saved hub (`saved` route)
 
@@ -273,7 +275,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 - Head: back + name + `svd-srch` + `svd-more`; title row `{name}` + `{n} item(s)` + grid (เรียง `colAt` desc)
 - `svd-more` → menu (`.svd-mi`): `Add to collection` (mode `add` — grid ของ saved posts ที่ยังไม่อยู่ collection นี้, pick หลายตัว + `Done` → `Added N post(s)`), `Edit collection` (mode `edit` — cover + `Change cover` + name field + `Delete collection` + note `When you delete this collection, the photos and videos will still be saved.`), `Select...` (manage — เฉพาะมี items), `Delete collection` (danger → `svdConfirmDelete` dlg)
-- `svd-editdone` → rename (+ rewrite `savedCol` ทุก post + `V.col`) + toast `Collection updated`; `ec-chgcover` → `cover` mode → `ec-ctile` pick → `coverPid` (fallback cover = latest post ใน collection); `ec-del`/`mi del` → `Delete collection?` dlg → `dlg-delcol-go` → `svdDeleteCol` (posts กลับ `savedCol="Saved"` + `subBack` + `Collection deleted`)
+- `svd-editdone` → rename (+ map ชื่อเดิม→ใหม่ใน `savedCols` ทุก post + `V.col`) + toast `Collection updated`; `ec-chgcover` → `cover` mode → `ec-ctile` pick → `coverPid` (fallback cover = latest post ใน collection); `ec-del`/`mi del` → `Delete collection?` dlg → `dlg-delcol-go` → `svdDeleteCol` (ลบชื่อออกจาก `savedCols` ทุก post — **posts ยัง saved อยู่** + `subBack` + `Collection deleted`)
 - `svdAddHTML` empty: `No saved posts to add` + `Add posts to your saved first, then add them here.` (bookmark icon)
 
 ## All-posts + Select/manage
@@ -281,21 +283,36 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - `Manage`/`svd-more` บน `allposts` → `svdSelectHeadHTML` (Cancel + `All posts`/`โพสต์ทั้งหมด` title + `Select all`/`Deselect all`) + `svdBarHTML`: `Unsave` + `Add to collection` (disabled เมื่อเลือก 0) — ใน collection: `Remove` + `Move to collection`
 - Long-press (`contextmenu`) บน `.svd-tile` → enter manage + select tile นั้นทันที (จาก `saved`/`wishlist` hub → mode `allposts`)
 - `.svd-unsave`:
-  - ใน `savedcol` → `Remove from this collection?` dlg (`Post will still be saved in all posts.` + `Remove`) → `dlg-rmcol-go` → `savedCol="Saved"` + `Removed from {col}`
-  - ใน all-posts → `Unsave post?` dlg (`Unsaving this post will also remove it from any collections.` + `Unsave`) → `dlg-unsave-go` → unsave ทั้งหมดที่เลือก + `Removed from All posts` (toast + thumb)
-- `.svd-move` → `svdMoveSheetHTML` (Collections list — ตัด current col + `New collection`) → `.svd-mv` → assign `savedCol` ทั้งหมดที่เลือก + toast `Moved to {col}` (in-col) / `Added to {col}`; `.svd-mv-new` → `nc` variant `Save` + preview (`_ncFrom="move"`, `_ncPids`)
-- Settings row `m-unsave` (interested-style list — ถ้ามี surface) → `saved=false, savedCol=null` + `syncSaveBtns` + `renderSub` — ไม่มี confirm
+  - ใน `savedcol` → `Remove from this collection?` dlg (`Post will still be saved in all posts.` + `Remove`) → `dlg-rmcol-go` → ลบชื่อ col นั้นออกจาก `savedCols` (membership อื่นคงอยู่) + `Removed from {col}`
+  - ใน all-posts → `Unsave post?` dlg (`Unsaving this post will also remove it from any collections.` + `Unsave`) → `dlg-unsave-go` → `saved=false, savedCols=[]` ทั้งหมดที่เลือก + `Removed from All posts` (toast + thumb)
+- `.svd-move` → `svdMoveSheetHTML` (Collections list — ตัด current col + `New collection`) → `.svd-mv` → ใน `savedcol` context: ลบ current col + เพิ่ม col เป้าหมาย (`Moved to {col}`); จาก hub/all-posts: เพิ่ม col เป้าหมาย โดยเก็บ memberships เดิม (`Added to {col}`) — memberships อื่นไม่ถูกแตะทั้งสองกรณี; `.svd-mv-new` → `nc` variant `Save` + preview (`_ncFrom="move"`, `_ncPids`) → **`savedCols=[name]` — ล้าง memberships เดิมทั้งหมดแล้วเหลือแค่ col ใหม่** (lock 2026-10-29 — ต่างจาก move→existing ที่เป็น additive)
+- Settings row `m-unsave` (interested-style list — ถ้ามี surface) → `saved=false, savedCols=[]` + `syncSaveBtns` + `renderSub` — ไม่มี confirm
+
+## Library surfaces — ผลกระทบจากต้นทางโพสต์ (lock 2026-10-29)
+
+กฎเดียวกันทุก private list (`saved`/`savedcol`/`wishlist`/`wishcol`/`interested`/`ni` — ผ่าน `libVisible`):
+
+| ต้นทางเปลี่ยนสถานะ | ผลต่อ tile/list |
+| --- | --- |
+| `sold` (mark as sold) | tile **อยู่ + เปิด viewer ได้ปกติ** (โพสต์ยังมีตัวตน — เห็นสถานะขายแล้ว) |
+| `hide` (asset status Hide / `pfkind:"hide"`) | tile **หาย**จาก hub + ทุก collection |
+| `archive` (เจ้าของ archive) | tile **หาย**จาก saved ของทุกคน (รวมเจ้าของเอง); unarchive → **กลับมา** เพราะ archive ไม่ลบ flag เซฟ |
+| `block` (เจ้าของโพสต์ถูก block) | tile **หาย** — ของที่มองไม่เห็นแล้วไม่ค้างในคลัง |
+| `delete` (ลบโพสต์) | tile **หาย** + ทางเปิดที่ค้าง (viewer/detail/deep link) → unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว`/`This post is no longer available` — ไม่แสดงข้อมูลเก่า |
+| `ni` / `muted` | **ไม่กระทบ** — exclusion เฉพาะ feed (02 §9); โพสต์ยังอยู่ saved/library ปกติ |
+
+- เมื่อ tile หาย → collection cover อัปเดตเป็นรูปตัวอื่นใน col (ไม่ค้างรูปที่หายไป) และ count badge ของ settings rows สะท้อนจำนวนที่มองเห็นจริง
 
 ---
 
 # 13. Wish List
 
-- `wl-btn` — **เฉพาะ Post Detail** (gift icon `Wish List`): `!p.wishlisted` → `wishlisted=true, wlCol="Wishlist", wlAt` + `syncWlBtns` + เปิด `wl` sheet เสมอ
-- `wlSheetHTML` = save-sheet shape: `wl-head` (`Wish List`/`Private` + gift icon — filled เมื่อ wishlisted) + `WISHLISTS` rows (`wl-pick`, check เมื่อ `p.wlCol === name`) + `wl-new`
-- `.wl-pick`: `col==="Wishlist"` && wishlisted → remove (`wishlisted=false, wlCol=null, wlAt=0, wlColAt=0`) + `Removed from your wish list`; col เดิม → กลับ `"Wishlist"` + `Removed from {col}`; อื่น → `wlCol=col` + `wlColAt` + `Added to Wish List`/`Added to {col}`
-- `wl-new` → `nc` (`_ncFrom="wishlist"`) → `WISHLISTS.push` + `Added to {name}`
+- `wl-btn` — **เฉพาะ Post Detail** (gift icon `Wish List`): `!p.wishlisted` → `wishlisted=true, wlAt` (`wlCols` คงเดิม/ว่าง — `"Wishlist"` เป็น pseudo-row ของ flag ไม่ใช่ collection) + `syncWlBtns` + เปิด `wl` sheet เสมอ
+- `wlSheetHTML` = save-sheet shape: `wl-head` (`Wish List`/`Private` + gift icon — filled เมื่อ wishlisted) + `WISHLISTS` rows (`wl-pick`, check เมื่อ `(p.wlCols||[]).includes(name)` — ติ๊กได้หลายอัน) + `wl-new`
+- `.wl-pick` (multi-collection เหมือน save): `col==="Wishlist"` && wishlisted → un-wishlist (`wishlisted=false, wlCols=[], wlAt=0, wlColAt=0` — หลุดทุก collection) + `Removed from your wish list`; col ที่ check อยู่ → เอาออกเฉพาะ col นั้น + `Removed from {col}`; col ใหม่ → `wlCols.push(col)` + `wlColAt` + `Added to Wish List`/`Added to {col}`
+- `wl-new` → `nc` (`_ncFrom="wishlist"`) → `WISHLISTS.push` + `wlCols.push(name)` + `Added to {name}`; ชื่อซ้ำได้
 - `wishlist` hub — เหมือน Saved: head `สิ่งที่อยากได้`/`Wish List` + `svd-srch`/`svd-plus`, tabs เดียวกัน (`All`/`Collections`/`Posts`), sections `Collections` + `รายการทั้งหมด`/`All items` + `Manage`, settings row `รายการที่อยากได้`/`Wish List` (count = `wlPosts().length`)
-- `wishcol` page — เหมือน savedcol: menu Add/Edit/Select/Delete (`wlDeleteCol` — posts กลับ `wlCol="Wishlist"`), search `Search your wish list`, `Remove`/`Move to collection` bar, unsave dlg `Remove from wish list?` (`Removing this post will also remove it from any collections.`), remove-from-col `Post will still be on your wish list.`
+- `wishcol` page — เหมือน savedcol: menu Add/Edit/Select/Delete (`wlDeleteCol` — ลบชื่อออกจาก `wlCols` ทุก post, posts ยัง wishlisted), search `Search your wish list`, `Remove`/`Move to collection` bar (move→existing = additive เหมือน saved; move→new = `wlCols=[name]` ล้างเดิม), unsave dlg `Remove from wish list?` (`Removing this post will also remove it from any collections.`), remove-from-col `Post will still be on your wish list.`
 - Empty: `Nothing on your wish list yet`/`ยังไม่มีรายการในสิ่งที่อยากได้` + `Tap the gift icon on a model page to add it here.` (gift spark icon); collections empty `No collections yet`/`ยังไม่มีคอลเลกชัน` + `Create a collection to organise your wish list posts.`
 - Wish List กับ Saved แยกระบบสมบูรณ์ (arrays, col fields, icons, entries) — collection ชื่อ `"Wishlist"` ใน `COLLECTIONS` seed เป็น Saved collection ธรรมดา ไม่เกี่ยวกับ Wish List hub (§19 quirk)
 
@@ -432,7 +449,8 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | D4 | `lk-follow` cosmetic | Follow button ใน likes sheet flip label เท่านั้น ไม่ propagate | Contract: `setFollowing` จริง — flag (FSP-030 quirk list) |
 | D5 | `pv-add` กับ `noComments` | `pv-add` bar แสดงเสมอแม้โพสต์ปิด comment — เปิด sheet ได้ | canonical 03 quirk — รับตาม prototype |
 | D6 | `liked-by` strip บาง card | `likedBy` ไม่มี → strip ซ่อน; `p.likedBy.name` ใน lk sheet จะพังถ้าเปิดบนโพสต์ไม่มี likedBy (entry ทั้งหมดซ่อนตามเงื่อนไขเดียวกันจึงไม่เกิดจริง) | note only |
-| D7 | Session flags | `savedCol`/`savedAt`/`colAt`/`likes`/`views`/`comments` ไม่อยู่ใน `POST_FLAG_KEYS` — saved collection assignment ค้างข้าม session (posts `saved=false` แต่ `savedCol` ไม่ถูกล้างตอน guest/new) | cosmetic — `colPosts` filter `saved` ก่อนจึงไม่ leak UI; flag ให้ dev reset เพิ่ม |
+| D7 | Session flags | `savedAt`/`colAt`/`likes`/`views`/`comments` ไม่อยู่ใน `POST_FLAG_KEYS` — sort stamps + counts ค้างข้าม session (`savedCols`/`wlCols` อยู่ใน keys แล้ว — memberships ล้าง/คืนถูกต้อง) | cosmetic — lists filter flag ก่อนจึงไม่ leak UI; dev ให้ reset stamps เพิ่มเทียบท่าเดียวกัน |
+| D7b | Library persistence | prototype persist = `POSTS_SNAP` in-memory + `fo_*` localStorage mirrors ต่อ session — การ์ด/flag อยู่รอด sign-out/in ในเครื่องเดียว | contract: server-backed ข้าม kill/restart + cross-device sync (lock FO-TEST-12/13/14) — prototype จำลองไม่ได้โดยเจตนา |
 | D8 | `COLLECTIONS` seed มีชื่อ `"Wishlist"` | Saved-collection ธรรมดา ชื่อชนกับ Wish List pseudo-collection | แยกระบบสมบูรณ์ — แค่ naming ชน |
 | D9 | Report pages no-back | `report` root + `report:comment` + chat-origin ไม่มี back — X only | รับตาม prototype |
 | D10 | `commentPreview` | ฟีดการ์ดแสดง preview 1 บรรทัด — ไม่ใช่ comment sheet entry | canonical 02 card anatomy |
@@ -515,10 +533,10 @@ And sheet ปิดทันทีหลังเลือก
 ## AC-SOCIAL-009: Save via sheet + collections
 
 Given Member กด `save-btn`
-Then post ถูก mark `saved` + `savedCol="Saved"` + sheet เปิด (Saved + collections + New collection)
-When pick `Saved` ขณะ saved → unsave + `Removed from your saved`
-And pick collection → `savedCol=col` + `Saved to {col}`; pick collection เดิม → กลับ `Saved` + `Removed from {col}`
-And `New collection` → nc sheet → สร้าง + assign + `Saved to {name}`
+Then post ถูก mark `saved` + sheet เปิด (Saved + collections + New collection)
+When pick `Saved` ขณะ saved → unsave (`savedCols` ล้างทั้งหมด) + `Removed from your saved`
+And pick collection → `savedCols` เพิ่มชื่อนั้น + `Saved to {col}`; pick collection ที่ check อยู่ → เอาออกเฉพาะ col นั้น + `Removed from {col}` (ติ๊กได้หลาย col)
+And `New collection` → nc sheet → สร้าง + `savedCols.push(name)` + `Saved to {name}`
 
 ## AC-SOCIAL-010: Saved hub — tabs / search / tile → viewer
 
@@ -532,16 +550,16 @@ And guest เข้าได้แต่เห็น `Nothing saved yet`
 
 Given Member ใน saved/savedcol เลือก `Manage` หรือ long-press tile
 Then select mode: `Select all` + bar `Unsave`/`Add to collection` (in-col: `Remove`/`Move to collection`)
-When Unsave ใน all-posts → confirm `Unsave post?` → unsave ที่เลือก + `Removed from All posts`
-And Remove ใน col → `Remove from this collection?` → `savedCol="Saved"` + `Removed from {col}`
-And Move → move sheet (ไม่มี current col + New collection) → `Moved to {col}`/`Added to {col}`
-And `...` → Delete collection → `Delete collection?` → posts กลับ `Saved` + `Collection deleted`
+When Unsave ใน all-posts → confirm `Unsave post?` → `saved=false, savedCols=[]` ที่เลือก + `Removed from All posts`
+And Remove ใน col → `Remove from this collection?` → ลบเฉพาะ col นั้นออกจาก `savedCols` + `Removed from {col}`
+And Move → move sheet (ไม่มี current col + New collection) → in-col `Moved to {col}` (เปลี่ยน membership) / hub `Added to {col}` (additive); move→new col = `savedCols=[name]` ล้างเดิม
+And `...` → Delete collection → `Delete collection?` → ลบชื่อออกจาก `savedCols` ทุก post (posts ยัง saved) + `Collection deleted`
 
 ## AC-SOCIAL-012: Wish List — detail entry + parallel collections
 
 Given Member กด `wl-btn` บน Post Detail (entry เดียว)
-Then `wishlisted` + `wlCol="Wishlist"` + wl sheet เปิด
-When pick `Wish List` ซ้ำ → `Removed from your wish list`; pick collection → `Added to {col}`
+Then `wishlisted` + wl sheet เปิด (`"Wishlist"` = pseudo-row ของ flag)
+When pick `Wish List` ซ้ำ → un-wishlist (`wlCols` ล้าง) + `Removed from your wish list`; pick collection → `wlCols.push` + `Added to {col}`; pick col ที่ check อยู่ → เอาออกเฉพาะ col นั้น
 And hub `wishlist`/`wishcol` ทำงานขนาน Saved (tabs/search/manage/move/edit/cover/delete)
 And empty → `Nothing on your wish list yet` + `Tap the gift icon on a model page…`
 
@@ -610,5 +628,5 @@ And counts (`likes`/`views`/`comments`) ไม่ reset (post data ไม่ใ�
 - `lk-follow` → `setFollowing` จริง (D4)
 - Native OS share + share deep links + share counts
 - Notification generation จาก social actions (09 §14 contract)
-- Reset `savedCol`/`savedAt`/`colAt` + counts ใน session switch (D7)
+- Reset `savedAt`/`colAt` + counts ใน session switch (D7)
 - Report tracking for reporter (report flow full sync ใน 15 ทำแล้ว — D13 resolved FSP-031)

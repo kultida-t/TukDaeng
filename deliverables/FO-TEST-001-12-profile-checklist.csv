@@ -4,7 +4,7 @@ SETUP-02,Setup,แอปติดตั้งแล้ว,ลบข้อมู�
 SETUP-03,Setup,แอปสะอาด,เปิดแอปโดยไม่ sign in,เข้า feed แบบ guest ได้,GUEST,-,,,
 SETUP-04,Setup,แอปสะอาด,sign in ด้วยบัญชีทดสอบจริง,เข้า feed เป็นสมาชิก,MEMBER,-,,,
 SETUP-05,Setup,แอปสะอาด,สมัครใหม่ผ่าน onboarding จนเข้า feed,member ใหม่ — profile/followers ว่าง,NEW,-,,,
-SETUP-06,Setup,sign in แล้ว,จด U-ME · U-2 (มี ≥1 Sale + ≥1 Show) · U-3 · POST-2A/POST-2B · รุ่นเครื่อง+OS ทุกเครื่อง,ข้อมูลอ้างอิงพร้อม,MEMBER,-,,,ขาดตัวใด = BLOCK เคสที่เกี่ยว
+SETUP-06,Setup,sign in แล้ว,บันทึก U-ME · U-2 (มี ≥1 Sale + ≥1 Show) · U-3 · POST-2A/POST-2B · รุ่นเครื่อง+OS ทุกเครื่อง,ข้อมูลอ้างอิงพร้อม,MEMBER,-,,,ขาดตัวใด = BLOCK เคสที่เกี่ยว
 SETUP-07,Setup,sign in แล้ว,ทดลองทุก entry: nav profile · avatar seller → public · stats → pfollow · edit/share/wallet · ⋯ menu,ทุก entry เปิดหน้า/overlay ถูก,MEMBER,-,,,
 SETUP-08,Setup,เป็น guest บน profile U-2,แตะ ติดตาม/Follow,Member Sheet Join TukDaeng เด้ง follow ไม่เกิด,GUEST,-,,,
 SETUP-09,Setup,มีเครื่องจริงอีกเครื่อง,ติดตั้ง build เดียวกัน → sign in ACCT-2 → เปิด camera+notif permission ทั้งสองเครื่อง,บัญชีสองพร้อม,ACCT-2,-,,,ไม่มีเครื่องสอง = เคส ACCT-2/cross-device เป็น BLOCK
@@ -117,5 +117,5 @@ PROF-105,Persistence/Device,ตั้งภาษา TH,ไล่ own/public/pfo
 PROF-106,Persistence/Device,ตั้งภาษา EN,เหมือน PROF-105,ทุก label+toast EN ครบ — TH ค้าง = FAIL,MEMBER,MED,,,
 PROF-107,Persistence/Device,เปิด dark,ไล่ทุก surface profile,อ่านครบ contrast พอ — ตัวหนังสือจม = FAIL,MEMBER,MED,,,
 PROF-108,Persistence/Device,⋯sheet+block sheet+dialog ซ้อน,กด device back ทีละครั้ง,ปิดชั้นบนสุดก่อน ไม่เด้งหลายชั้น,MEMBER,MED,,,
-PROF-109,Persistence/Device,airplane mode,เปิด profile U-2 + กด Follow + save bio,อ่าน=stale หรือ error ชัด · เขียน=error ชัดไม่บันทึกหลอก,MEMBER,HIGH,,,
+PROF-109,Persistence/Device,airplane mode,เปิด profile U-2 + กด Follow + save bio,อ่าน=แสดงข้อมูลล่าสุดที่ cache ไว้ (stale) พร้อมสถานะ offline ชัด · เขียน=error ชัดไม่บันทึกหลอก,MEMBER,HIGH,,,
 PROF-110,Persistence/Device,เครื่องจอเล็กสุด,own/public/pedit หมุนแนวนอน,layout ไม่พัง state ไม่หาย,MEMBER,LOW,,,ล็อก portrait = BLOCK

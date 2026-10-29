@@ -1,0 +1,48 @@
+FO-TEST-AUDIT — Manual Review Checklist + Automated Verify Results
+=================================================================
+Task: 80fdd3f0 — FO-TEST-AUDIT 3-way alignment FO-TEST-01–15
+Date: 2026-10-29 · Prototype: Prototypes/fo-flow/index.html
+Verify script: tests/_fo-test-audit-verify.cjs (Playwright Chromium, serve Prototypes/)
+Raw output: deliverables/FO-TEST-AUDIT-test-results.txt → 28 PASS / 0 FAIL / NO PAGE ERRORS
+Screenshots: screenshots/fo-test-audit/after/ (1440x900 + 390x844)
+Before captures: ไม่มี (evidence gap — งานแก้กระจายหลาย session ไม่ได้แคป before ไว้; ภาพ after ทุกจุดอยู่ในโฟลเดอร์ข้างต้น)
+
+A. Sign-in lockout (AUTH-041/047/049/098-104)
+-------------------------------------------
+เคส 1: ผิด 1–4 ครั้ง — demo@tukdaeng.com + รหัสผิด "WrongPass!" กด Sign in
+  ผล: banner "Email or password is incorrect." ไม่มีตัวนับ (n/5) → PASS
+เคส 2: ครบ 5 ครั้ง
+  ผล: banner "Please try again in 15 min 0 sec or choose Forgot password." + ปุ่ม disabled
+      + countdown (#obLockCd) นับลดลงจริงทุกวินาที + ลิงก์ Forgot password กดได้ → PASS
+เคส 3: รหัสถูก "Tukdaeng123" ระหว่างล็อก → ปุ่มยัง disabled เข้าไม่ได้ → PASS
+เคส 4: เปลี่ยนอีเมลเป็น other@x.com → ปุ่มกลับมากดได้ banner หาย → PASS
+เคส 5: กลับมาอีเมลเดิม → ปุ่ม disabled + banner ล็อกกลับมา → PASS
+เคส 6: reload หน้า → สถานะล็อกคงอยู่ (fo_locks ใน localStorage) → PASS
+เคส 7: sign in demo@tukdaeng.com / Tukdaeng123 หลังปลดล็อก → เข้าฟีดได้ → PASS
+  หมายเหตุข้อจำกัด prototype (เขียนไว้ใน spec 01 + AUTH-100): ล้างข้อมูลเว็บจะรีเซ็ตล็อก;
+  ระบบจริงต้องเก็บ lock ที่ server ผูกกับอีเมล ล้างแอป/ติดตั้งใหม่ต้องไม่หลุด — เทสเฉพาะบนแอปจริง
+
+B. ปุ่ม Ask บนโพสต์ตัวเอง (SHT-122, CHAT-005, FEED-050, spec 07)
+--------------------------------------------------------------
+เคส 8: feed card โพสต์ตัวเอง (sale) → ไม่มี .ask-pill → PASS
+เคส 9: feed card โพสต์ sale คนอื่น (p1 Watch 777) → มี .ask-pill → PASS
+เคส 10: pfp viewer (profile "Posts" surface) ตัวเอง → ไม่มี Ask / คนอื่น → มี → PASS
+เคส 11: svf viewer (saved viewer, card เดียวกับ feed) ตัวเอง → ไม่มี / คนอื่น → มี → PASS
+เคส 12: pv full-screen viewer → rail ไม่มี Ask ให้ใครเลย (by design) → PASS
+เคส 13: detail dl1 (variant ที่ล็อก, DET-018) → ไม่มี Ask surface ทั้งตัวเองและคนอื่น → PASS
+เคส 14: igDetailHTML dev path → guard isOwnPost ทำงาน (own ไม่มี / other มี) → PASS
+เคส 15: guard chatQuickAsk(โพสต์ตัวเอง) → toast "This is your own listing" ไม่สร้างห้อง → PASS
+
+C. Chat (CHAT-005/046/062/097, GAP-CHAT-09, spec 07)
+--------------------------------------------------
+เคส 16: badge = sum unread เฉพาะห้องที่ไม่ hidden && ไม่ muted → chUnread() = คำนวณเอง → PASS
+เคส 17: followOnly ON → chIncomingAsk(คนที่ไม่ได้ follow) = false (block) → PASS
+เคส 18: followOnly ON → chIncomingAsk(คนที่ follow) = true → PASS
+เคส 19: followOnly OFF → คนไม่ follow เข้าได้ → PASS
+เคส 20: ส่งข้อความ → msgs.read=false (Sent) → หลัง ~3 วินาที read=true (Read) → PASS
+
+Manual review ที่ผู้ใช้ควรทำเองบนแอปจริง (prototype เป็นเพียงต้นแบบ)
+-----------------------------------------------------------------
+- AUTH-100: ติดตั้งใหม่/ล้างข้อมูลแอประหว่างล็อก → ต้องยังล็อก (server-side) — prototype ทำไม่ได้
+- เคสที่ต้องมีเครื่องสอง/ACCT-2 ตามที่ระบุ BLOCK ไว้ใน checklist csv แต่ละเล่ม
+- SET-087 sensitive-content filter: ยังเป็น OPEN ใน spec (ไม่มีข้อมูลทดสอบให้กำหนดผล)

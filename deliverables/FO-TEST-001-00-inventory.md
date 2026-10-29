@@ -235,6 +235,7 @@
 | Settings | `interested` / `ni` | liked list + remove / not-interested list + restore | MEMBER | 5 | `[OPEN-CODE-ONLY]` |
 | Settings | dialog `reset` | Reset suggested content confirm | MEMBER | 2 | `[OPEN-CODE-ONLY]` |
 | Settings | `help` | support channels LINE/tel/email + help topics | GUEST/MEMBER | 4 | external links |
+| Settings | `cookies` | Privacy & cookies: Essential `Always on` + Analytics/Personalized toggles → consent record | MEMBER | 3 | spec 13 contract — เพิ่มในโค้ด 2026-10-29 |
 | Settings | `privacy` / `terms` | legal pages (static) | GUEST/MEMBER | 3 | |
 | Settings | `about_app` | About TukDaeng — version + legal links | GUEST/MEMBER | 2 | `[OPEN-CODE-ONLY]` |
 
@@ -258,7 +259,7 @@
 
 ### 3.1 Route map จาก `subHTML` (ครบทุก branch)
 
-`create` · `search` · `sfilter` · `recents` · `settings` · `about_account` · `change_pwd` · `del_account` · `lang` · `notif_settings` · `help` · `privacy` · `terms` · `about_app` · `favorites` · `muted` · `blocked` · `prefs` · `sensitive` · `theme` · `interested` · `ni` · `saved` · `savedcol` · `archive` · `wishlist` · `wishcol` · `walerts` · `alerts` · `board` · `boardall` · `boardsearch` · `boardart:<id>` · `chat` · `chatitem:<id>` · `chatroom:<id>` · `chmenu:<id>` · `chsettings:<id>` · `chmedia:<id>` · `chatcfg` · `report` · `report:user` · `report:post` · `report:comment` · `report:pick:<u>` · `report:posts:<u>` · `report:done:<u>` · `profile:<uname>[:tab]` · `pfollow:<uname>:<tab>` · `about:<uname>` · `pedit` · `portfolio` · `pfasset:<id>` · `soldhist` · `sold:<id>` · `sell:<id>` — **58 route patterns**
+`create` · `search` · `sfilter` · `recents` · `settings` · `about_account` · `change_pwd` · `del_account` · `lang` · `notif_settings` · `help` · `cookies` · `privacy` · `terms` · `about_app` · `favorites` · `muted` · `blocked` · `prefs` · `sensitive` · `theme` · `interested` · `ni` · `saved` · `savedcol` · `archive` · `wishlist` · `wishcol` · `walerts` · `alerts` · `board` · `boardall` · `boardsearch` · `boardart:<id>` · `chat` · `chatitem:<id>` · `chatroom:<id>` · `chmenu:<id>` · `chsettings:<id>` · `chmedia:<id>` · `chatcfg` · `report` · `report:user` · `report:post` · `report:comment` · `report:pick:<u>` · `report:posts:<u>` · `report:done:<u>` · `profile:<uname>[:tab]` · `pfollow:<uname>:<tab>` · `about:<uname>` · `pedit` · `portfolio` · `pfasset:<id>` · `soldhist` · `sold:<id>` · `sell:<id>` — **58 route patterns**
 
 ### 3.2 Overlays / sheets / dialogs / toasts (ครบ)
 

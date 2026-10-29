@@ -4,7 +4,7 @@ SETUP-02,Setup,แอปติดตั้งแล้ว,ลบข้อมู�
 SETUP-03,Setup,แอปสะอาด,เปิดแอปโดยไม่ sign in,เข้า feed แบบ guest ได้,GUEST,-,,,
 SETUP-04,Setup,แอปสะอาด,sign in ด้วยบัญชีทดสอบจริง,เข้า feed เป็นสมาชิก,MEMBER,-,,,
 SETUP-05,Setup,แอปสะอาด,สมัครใหม่ด้วยอีเมล/เบอร์จริง → ผ่าน onboarding,สมาชิกใหม่ เข้า feed ได้ alerts ว่าง,NEW,-,,,
-SETUP-06,Setup,sign in แล้ว,"จด ACTOR-MEMBER · ACCT-2 · POST-OWN (สร้างผ่าน + ถ้ายังไม่มี) · WATCH-X criteria · ACCT-3+ · รุ่นเครื่อง/OS",ข้อมูลพร้อมสำหรับเคสทั้งเล่ม,MEMBER,-,,,ขาดตัวไหน mark BLOCK เคสที่เกี่ยว
+SETUP-06,Setup,sign in แล้ว,"บันทึก ACTOR-MEMBER · ACCT-2 · POST-OWN (สร้างผ่าน + ถ้ายังไม่มี) · WATCH-X criteria · ACCT-3+ · รุ่นเครื่อง/OS",ข้อมูลพร้อมสำหรับเคสทั้งเล่ม,MEMBER,-,,,ขาดตัวไหน mark BLOCK เคสที่เกี่ยว
 SETUP-07,Setup,sign in แล้ว,ทดลองแท็บแจ้งเตือน · back บนหัว · Mark all as read · x + Follow back · เส้นทาง notif settings,ทุก entry เปิดถูกตำแหน่งตาม spec,MEMBER,-,,,
 SETUP-08,Setup,เป็น guest,กดแท็บแจ้งเตือน (gated),Member Sheet เด้ง มี Sign in/Sign up/Skip — feed ไม่เปิด,GUEST,-,,,
 SETUP-09,Setup,มีเครื่องจริงอีกเครื่อง,ติดตั้ง build เดียวกัน → sign in ACCT-2 → เปิด notif permission ทั้งสองเครื่อง → เวลาตรงกัน,บัญชีสองพร้อมสร้างแจ้งเตือนจริง,-,-,,,ไม่มีเครื่องสอง = เคส ACCT-2 เป็น BLOCK
@@ -27,7 +27,7 @@ ALT-014,Row Anatomy,watch alert match แล้ว,อ่าน row watch,bell i
 ALT-015,Row Anatomy,system alert เกิดแล้ว,อ่าน row system,icon วงกลม ! + ข้อความดิบ + เวลา · ไม่มี thumb/x/ปุ่ม,MEMBER,MED,,,ไม่มี row = BLOCK
 ALT-016,Row Anatomy,มีข้อมูลยาว,ดู row ชื่อ/ข้อความยาวมาก,wrap/ตัดตาม design ไม่ทะลุกรอบ ไม่ทับ x/thumb,MEMBER,MED,,,ไม่มีข้อมูลยาวจริง = BLOCK
 ALT-017,Read & Badge,unread ≥1,นับแถว unread เทียบ badge,badge เท่าจำนวน unread เป๊ะ รวมทุก type,MEMBER,HIGH,,,
-ALT-018,Read & Badge,มี unread,จด badge → แตะ row unread → กลับ,highlight หายทันที + badge ลด 1 + navigate ถูก,MEMBER,HIGH,,,
+ALT-018,Read & Badge,มี unread,บันทึก badge → แตะ row unread → กลับ,highlight หายทันที + badge ลด 1 + navigate ถูก,MEMBER,HIGH,,,
 ALT-019,Read & Badge,row อ่านแล้ว,แตะ row read,badge ไม่เปลี่ยน + navigate ปกติ,MEMBER,MED,,,
 ALT-020,Read & Badge,unread ≥2,แตะ Mark all as read บน section แรก,ทุก row อ่าน + badge หาย + ปุ่มหาย + row ไม่หาย,MEMBER,HIGH,,,
 ALT-021,Read & Badge,unread >0,อ่าน section headers ทุกกลุ่ม,ปุ่มอยู่ section แรกเท่านั้น · feed อ่านครบไม่มีปุ่ม,MEMBER,MED,,,

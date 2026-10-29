@@ -460,8 +460,8 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Maps to:** AC-FEED-018, AC-SOCIAL-009
 **Steps:** Tap save once (unsaved post); re-open the sheet; pick `Saved` again; pick another collection; create `New collection`.
 **Expected result:**
-- First tap sets `saved` + `savedCol="Saved"` + filled bookmark, then always opens the sheet.
-- Picking `Saved` while saved → unsave + `Removed from your saved`; re-picking the current collection returns it to `Saved` + `Removed from {col}` (still saved); a different collection assigns it (`Saved to {col}`); `New collection` creates + assigns (`Saved to {name}`).
+- First tap sets `saved` + filled bookmark, then always opens the sheet (`savedCols` = multi-collection array — post อยู่ได้หลาย col).
+- Picking `Saved` while saved → unsave (`savedCols` ล้างทั้งหมด) + `Removed from your saved`; re-picking a checked collection removes just that membership + `Removed from {col}` (still saved); a different collection adds it (`Saved to {col}`); `New collection` creates + assigns (`Saved to {name}`).
 
 ### QA-FEED-008
 **Objective:** Verify `Ask Seller` is sale-only and scoped (replaces Contact Seller).
@@ -831,7 +831,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify `wl-btn` Wish List entry.
 **Maps to:** AC-DETAIL-024, AC-DETAIL-025
 **Steps:** First tap; pick `Wish List` again; pick/create a collection; try as guest.
-**Expected result:** First tap sets `wishlisted` + `wlCol:"Wishlist"` then opens the `wl` sheet; re-picking `Wish List` removes it (`Removed from your wish list`); re-picking the same collection returns it to `Wishlist` (`Removed from {col}`); `New collection` → `nc` sheet → `Added to {name}`; guest → Member Sheet.
+**Expected result:** First tap sets `wishlisted` then opens the `wl` sheet (`"Wishlist"` = pseudo-row; `wlCols` = multi-collection array); re-picking `Wish List` un-wishlists (`Removed from your wish list`); re-picking a checked collection removes just that membership (`Removed from {col}`); `New collection` → `nc` sheet → `Added to {name}`; guest → Member Sheet.
 
 ### QA-DETAIL-008
 **Objective:** Verify `pm-btn` menus from detail.
@@ -1373,7 +1373,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify session-only state contract.
 **Maps to:** AC-SOCIAL-018
 **Steps:** Like/save/NI/follow/block, then switch session and return (contract check for persistence).
-**Expected result:** Prototype state is session-memory (`liked`, `saved`/`savedCol`, `wishlisted`/`wlCol`, `ni`, `muted`, `favorite`, `PF_*` sets); persistence across sessions is a production contract (§18).
+**Expected result:** Prototype state is session-memory (`liked`, `saved`/`savedCols`, `wishlisted`/`wlCols`, `ni`, `muted`, `favorite`, `PF_*` sets); persistence across sessions is a production contract (§18).
 
 ---
 

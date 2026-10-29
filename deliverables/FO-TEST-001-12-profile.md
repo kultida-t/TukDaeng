@@ -47,12 +47,12 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เปิดขึ้น feed หรือ onboarding | splash/หน้าแรกขึ้นตาม build | — | |
+| SETUP-01 | ติดตั้งแอป | — | SETUP | เครื่องจริงเครื่องหลัก | ติดตั้ง build ทดสอบที่ทีมส่งให้ → เปิดแอป | เห็นหน้า onboarding (แอปสะอาด) | splash/หน้าแรกของแอป | — | |
 | SETUP-02 | สถานะเริ่มต้น | — | SETUP | แอปติดตั้งแล้ว | ลบข้อมูลแอป/ติดตั้งใหม่ ถ้าเคยใช้เครื่องนี้มาก่อน | แอปสะอาด เหมือนผู้ใช้ใหม่ | — | — | |
 | SETUP-03 | ผู้ใช้ GUEST | — | SETUP | แอปสะอาด | ไม่ sign in → เดินเข้า feed ได้เลย | guest mode | bottom nav ครบ | — | |
 | SETUP-04 | ผู้ใช้ MEMBER | — | SETUP | แอปสะอาด | sign in ด้วยบัญชีทดสอบที่ทีมสร้าง | เข้า feed เป็นสมาชิก | avatar/ชื่อตัวเองในที่ที่ต้องแสดง | — | |
 | SETUP-05 | ผู้ใช้ NEW | — | SETUP | แอปสะอาด | สมัครใหม่ด้วยอีเมล/เบอร์ทดสอบจริง → ผ่าน onboarding จนเข้า feed | member ใหม่ — profile/followers ว่างเสมอ | — | — | |
-| SETUP-06 | ข้อมูลอ้างอิง | MEMBER | SETUP | sign in แล้ว | จดลง Note ของไฟล์: `U-ME` = username ตัวเอง · `U-2` = username ของ ACCT-2 (ต้องมี ≥1 ลิสติ้ง Sale + ≥1 โพสต์ Show — ถ้าไม่มีให้ ACCT-2 สร้างผ่านแอปจริง) · `U-3` = username ของ ACCT-3 (ถ้ามี) · `POST-2A`/`POST-2B` = ลิสติ้ง 2 ชิ้นของ ACCT-2 · จด "รุ่นเครื่อง + OS" ทุกเครื่อง | ข้อมูลจดพร้อม — ขาดตัวใด mark BLOCK เคสที่เกี่ยว | — | — | |
+| SETUP-06 | ข้อมูลอ้างอิง | MEMBER | SETUP | sign in แล้ว | บันทึกลง Note ของไฟล์: `U-ME` = username ตัวเอง · `U-2` = username ของ ACCT-2 (ต้องมี ≥1 ลิสติ้ง Sale + ≥1 โพสต์ Show — ถ้าไม่มีให้ ACCT-2 สร้างผ่านแอปจริง) · `U-3` = username ของ ACCT-3 (ถ้ามี) · `POST-2A`/`POST-2B` = ลิสติ้ง 2 ชิ้นของ ACCT-2 · บันทึก "รุ่นเครื่อง + OS" ทุกเครื่อง | ข้อมูลพร้อม — ขาดตัวใด mark BLOCK เคสที่เกี่ยว | — | — | |
 | SETUP-07 | ทางเข้า + ปุ่ม | MEMBER | SETUP | sign in แล้ว | ทดลอง: nav `โปรไฟล์` → own profile · กลับ feed → แตะ avatar seller ของ `POST-2A` → public profile · บน own profile: แตะ followers/following → `pfollow` · `แก้ไขโปรไฟล์` → pedit · `แชร์โปรไฟล์` → QR · wallet → portfolio · บน public profile: ⋯ → sheet | ทุก entry เปิดหน้า/overlay ถูก | ตำแหน่งตาม spec §6 | — | |
 | SETUP-08 | Member Sheet mechanics | GUEST | SETUP | เป็น guest บน public profile ของ `U-2` | แตะ `ติดตาม/Follow` | Member Sheet `Join TukDaeng` เด้ง — follow ไม่เกิด | bottom sheet จากขอบล่างเหมือนทุกหน้า | — | |
 | SETUP-09 | เครื่องที่สอง + ACCT-2 | — | SETUP | มีเครื่องจริงอีกเครื่อง | ติดตั้ง build เดียวกันลงเครื่องสอง → sign in `ACCT-2` → เปิด camera + notification permission ทั้งสองเครื่อง | บัญชีสองพร้อม — ถ้าไม่มี → เคส ACCT-2/cross-device เป็น BLOCK | — | — | |
@@ -168,7 +168,7 @@
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | PROF-076 | QR overlay anatomy | MEMBER | UI | own profile → `แชร์โปรไฟล์` | อ่าน overlay | top: `X` + `COLOR` + scan icon · กลาง: การ์ด QR พร้อม `@{USERNAME}` ตัวเอง · ล่าง: `Share profile` + `Copy link` + `Download` — แตะ X ปิดได้ | bg gradient theme 0 | HIGH | |
-| PROF-077 | QR payload = profile URL | MEMBER + ACCT-2 | POSITIVE | QR เปิดอยู่ | เครื่อง ACCT-2: เปิดกล้อง/สแกน QR บนจอ MEMBER → เปิดลิงก์ที่ได้ | payload คือ `https://tukdaeng.app/u/{U-ME}` — เปิดแล้วไป profile `U-ME` (ในแอป/deep link ตาม build — ไม่มี deep link → `BLOCK`) | — | HIGH | |
+| PROF-077 | QR payload = profile URL | MEMBER + ACCT-2 | POSITIVE | QR เปิดอยู่ | เครื่อง ACCT-2: เปิดกล้อง/สแกน QR บนจอ MEMBER → เปิดลิงก์ที่ได้ | payload คือ `https://tukdaeng.app/u/{U-ME}` — เปิดแล้วไป profile `U-ME` (deep link ต้องเปิดโปรไฟล์ — ไม่มี deep link ใน build = `BLOCK` พร้อมเหตุผล) | — | HIGH | |
 | PROF-078 | COLOR cycle 5 themes | MEMBER | STATE | QR เปิด | แตะ `COLOR` ไล่ทุกครั้ง → ปิด → เปิดใหม่ | กดแต่ละครั้งเปลี่ยน gradient+สี QR วนครบ 5 themes แล้วกลับ theme แรก; ปิด-เปิดใหม่กลับ theme 0 (theme ไม่ persist — spec) | — | LOW | |
 | PROF-079 | QR `Copy link` | MEMBER | POSITIVE | QR เปิด | `Copy link` → วางที่อื่น | toast `Link copied` + clipboard = `https://tukdaeng.app/u/{U-ME}` | — | MED | |
 | PROF-080 | QR `Download` | MEMBER | POSITIVE | QR เปิด | `Download` → เช็ก gallery/ไฟล์ | toast `QR code saved` + ไฟล์รูป QR อยู่ในเครื่องเปิดได้ — build ไม่มี save → `BLOCK` | — | MED | |
@@ -210,7 +210,7 @@
 | PROF-106 | ภาษาอังกฤษทั้งหน้า | MEMBER | UI | ตั้งภาษา EN | เหมือน PROF-105 | ทุก label/toast EN ครบ — TH ค้าง = FAIL | — | MED | |
 | PROF-107 | dark theme | MEMBER | UI | เปิด dark | ไล่ own/public/pfollow/pedit/QR/avov/sheet/dialog/keep-page | ทุก surface อ่านครบ contrast พอ — ตัวหนังสือจม/กริดพัง = FAIL | — | MED | |
 | PROF-108 | device back ทีละชั้น | MEMBER | STATE | profile `U-2` + ⋯ sheet + block sheet + dialog ซ้อน | เปิด ⋯ → Block → ยกเลิก → กด device back ทีละครั้ง | ปิดชั้นบนสุดก่อน (sheet → menu → profile → source) — ไม่มีการเด้งออกหลายชั้นในครั้งเดียว | — | MED | |
-| PROF-109 | offline behavior | MEMBER | EDGE | ตั้งค่า offline (airplane) | เปิด profile `U-2` + กด Follow + แก้ bio save | อ่าน: profile แสดงข้อมูลล่าสุดที่มี หรือ error state ชัดเจน (ตาม build); **เขียน: follow/save ต้อง error ชัดเจน + ไม่บันทึกหลอก** — reconnect แล้ว state ต้องตรง server | — | HIGH | |
+| PROF-109 | offline behavior | MEMBER | EDGE | ตั้งค่า offline (airplane) | เปิด profile `U-2` + กด Follow + แก้ bio save | อ่าน: profile แสดงข้อมูลล่าสุดที่ cache ไว้ (stale) พร้อมสถานะ offline ชัดเจน; **เขียน: follow/save ต้อง error ชัดเจน + ไม่บันทึกหลอก** — reconnect แล้ว state ต้องตรง server | — | HIGH | |
 | PROF-110 | rotate + small screen | MEMBER | EDGE | เครื่องจอเล็กสุดในทีม | own/public/pedit หมุนแนวนอน + เทียบจอแคบ | layout ไม่พัง: stats ไม่ทับ ปุ่มไม่ล้น grid ปรับคอลัมน์ state ไม่หาย — เครื่องล็อก portrait → เคสนี้ `BLOCK` | — | LOW | |
 
 ## §3 Spec deviations/contract ที่กระทบเคสเล่มนี้
@@ -229,6 +229,11 @@
 | `pfp-follow` pill ใน viewer head fade ~1.2s | follow จาก viewer → pill flip แล้วจางหาย | PROF-054 |
 | `profileOf` fabricate ทุกชื่อ (prototype) — แอปจริงต้องมี not-found | username ไม่มีจริง → หน้าไม่พร้อมใช้งาน (00_NAV §10) | PROF-075 contract เดียวกัน |
 | Rename migration (server) | ชื่อเก่าต้องไม่แสดง profile สมบูรณ์; reference ทั้งหมดตามชื่อใหม่ | PROF-088 |
+
+**FO-SYNC-01 sync (2026-10-29):**
+
+- **RESOLVED — Toasts EN hardcode**: `Profile shared`/`Profile link copied`/`QR code saved`/`Profile updated`/`Profile picture updated`/`Blocking`/`Cannot message a blocked account`/`This is your own listing` + camera/QR strings + `pfRestrictHint` banner → เติม `I18N_TH` dict + isTh branches แล้ว
+- **ต่างโดยเจตนา (คงไว้)**: `profileOf` fabricate ชื่อ (real app ต้องมี not-found — contract PROF-075) · persist `fo_pfstate` localStorage (contract server ข้ามเครื่อง) · QR theme session-only · mock joined/country meta · `pf-msg` DM = prototype sim ของ server room
 
 ## §4 Traceability — inventory + actions ครอบ
 
@@ -257,3 +262,5 @@
 - **เคส BLOCK ล่วงหน้าที่คาดว่าอาจเจอ**: PROF-009 (ไม่มี flow story), PROF-015/018 (สร้างโพสต์หลายชนิดไม่ได้), PROF-024 (บาง entry ไม่มีข้อมูล), PROF-033 (ไม่มี mutual), PROF-036 (ACCT-2 ทำ hide/sold ไม่ได้), PROF-038 (ตั้ง bio ยาวไม่ได้), PROF-075/102/103 (ต้องเครื่องสอง + server sync), PROF-077/080/082 (deep link/save/QR scan ยังไม่ implement), PROF-085 (photo picker), PROF-110 (ล็อก portrait)
 - **ครอบโดยเล่มอื่น ไม่ทำซ้ำ**: portfolio/`pfasset`/sold/sell → FO-TEST-13 · Chat Center/room internals → FO-TEST-08 · create flow จาก `+` → FO-TEST-05 · PV/Detail internals → FO-TEST-06 · report reason internals → FO-TEST-16 · Settings lists anatomy (Favorites/Muted/Blocked) + delete account → FO-TEST-15 · Member Sheet internals → FO-TEST-17
 - **จุดที่แก้ spec+prototype ในรอบนี้** (align ให้ตรง contract ก่อนเทส): (1) spec 06/07 + prototype: `pf-msg`/`pfOpenChat` DM จริง + `chRoomFor` ห้องเดียวต่อ account + `chatQuickAsk` แนบการ์ดเป็น `m.pid` + DM ไม่ขึ้น Items view (2) `pfNavHTML(own)` — viewer profile ไม่มี nav (3) ตัด dead controls `pf-note`/`pf-sleep`/`pf-addchip`/`pf-avadd`/`pf-addp`/username toast/`qr` act ออกจาก render (4) `pe-pic` → OS photo picker จริง + `pfSave` (5) `pfRestrictHint` wire หลัง unblock (6) persist layer `pfSave`/`pfLoad` → `fo_pfstate:{member|new}` (7) spec 06 §3/§5/§6/deviations + spec 07 §2/§3/§4/deviations/AC อัปเดต lock notes
+
+- สถิติ: **110 TC** — High 60 / Medium 44 / Low 6 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 120 แถว)

@@ -290,7 +290,7 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 8. **Edit path บน `sr-wa` cross-source** — sig ตรง alert จาก detail ก็เปิด edit ได้ แต่ bell `on` เฉพาะ `source:"search"` (source-aware quirk)
 9. **Paused alert ยังเป็น dedupe target** — `mf-btn`/`sr-wa` เจอ alert off ที่ตรง → เปิด edit (ไม่สร้างซ้ำ)
 10. **Sheet ไม่มี Cancel/close affordance ชัดเจน** — dismiss ผ่าน backdrop/handle เท่านั้น (sheet pattern ทั่วไป)
-11. **EN/TH mixed hardcode** — sheet/page มี isTh pair ครบ แต่ toasts EN-only (`Watch alert on`/`updated`/`paused`/`removed`/`You already saved this alert`/`No details on this post to watch`) + mode desc EN keys — language sweep FSP-026; contract แอปจริง: toast/ข้อความ UI ทุกตัวต้องตามภาษาแอป — EN ค้างขณะภาษาไทย = FAIL (lock เดียวกับ 09 notification label rule)
+11. **EN/TH mixed hardcode** — ~~toasts EN-only~~ **RESOLVED FO-SYNC-01 (2026-10-29)**: `Watch alert on`/`updated`/`paused`/`removed`/`You already saved this alert`/`No details on this post to watch` + `Watch alert matched:` pattern เพิ่มลง `I18N_TH` dict + `i18nTr` แล้ว — contract แอปจริง: toast/ข้อความ UI ทุกตัวต้องตามภาษาแอป — EN ค้างขณะภาษาไทย = FAIL (lock เดียวกับ 09 notification label rule)
 12. **`WATCH_ALERTS` ไม่ restore หลัง session switch** — RESOLVED 2026-10-29: persistence = server-backed ข้ามเปิดแอป/ข้ามเครื่อง (ดู §9 Session Rule); prototype demo persist ผ่าน `fo_walerts` localStorage แล้ว
 13. **`notif_settings` toggle `walerts` ไม่กรองอะไรจริง** — memory flag (canonical 09 §9)
 14. **ไม่มี frequency/digest/quiet-hours** — instant-match concept เท่านั้น

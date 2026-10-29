@@ -15,13 +15,13 @@
 - **status bar ด้านบนจอ** = ของเครื่องจริง (เวลา/สัญญาณ/แบตเตอรี่จริง) — expected เทียบองค์ประกอบเท่านั้น ไม่ตรึงตัวเลขเวลา
 - **สลับธีม/ภาษา** = ผ่านหน้า Settings ในแอป (SETUP-07) หรือธีมระบบของเครื่อง (ถ้าแอปตั้งให้ตามระบบ) — บนแอปจริงไม่มีปุ่มลัดสลับธีมแบบ dev
 - **เล่น coach marks (ทัวร์แนะนำการใช้งาน) ซ้ำ** = ทัวร์เด้งครั้งเดียวต่อการติดตั้ง → ต้อง reinstall/clear app data แล้วเดิน onboarding เข้า feed ใหม่ (SETUP-09)
-- **ตัวเลขเวลา/ระยะตายตัว** (เช่น toast ~2 วิ, ระยะเลื่อนที่ทำให้แถบหลบ, animation) เป็นค่าอ้างอิงจาก design — บนแอปจริงให้จดค่าที่เห็นจริงลง Note; ถ้าต่างให้ flag ทีมตัดสิน ไม่ FAIL อัตโนมัติ
-- **ข้อความ EN ในคอลัมน์ expected** เป็นค่าอ้างอิงจาก design — ถ้าแอปจริง wording ต่างแต่ความหมายเหมือนกัน ให้จดใน Note แทน FAIL
-- **คอลัมน์ "ทดสอบบน (Device/OS)"** ใน checklist — จดเครื่อง+OS ที่รันเคสนั้นทุกแถวที่เล่นจริง (เช่น `iPhone 15 · iOS 18`, `Galaxy S24 · Android 15`); เคสที่รันคนละเครื่องให้จดค่าที่ใช้ ถ้าเคสเฉพาะ OS ใด (เช่น SHELL-054 เฉพาะ Android) ให้ระบุไว้ในช่องนี้
+- **ตัวเลขเวลา/ระยะตายตัว** (เช่น toast ~2 วิ, ระยะเลื่อนที่ทำให้แถบหลบ, animation) — ตัวเลขที่มี ~ คือพฤติกรรมโดยประมาณ (contract = พฤติกรรมนั้นเกิด เช่น toast หายเอง); ตัวเลขเป๊ะ (lockout 15 นาที, cap, เพดาน) ต้องตรง design — ต่าง = FAIL
+- **ข้อความ EN ในคอลัมน์ expected** เป็นค่าอ้างอิงจาก design — wording ต่างจาก spec = FAIL (ข้อความ UI ที่ spec ระบุเป็นค่าล็อก)
+- **คอลัมน์ "ทดสอบบน (Device/OS)"** ใน checklist(เช่น `iPhone 15 · iOS 18`, `Galaxy S24 · Android 15`); เคสที่รันคนละเครื่องให้บันทึกค่าที่ใช้ ถ้าเคสเฉพาะ OS ใด (เช่น SHELL-054 เฉพาะ Android) ให้ระบุไว้ในช่องนี้
 - **Type**: UI = การแสดงผล · Func = การทำงาน · Int = เชื่อมข้าม module · Edge = negative/boundary
 - **Priority**: High = core flow/กติการะบบ · Medium = feature หลัก · Low = edge/cosmetic
 - **[GATE]**: action ที่ guest แตะแล้วเด้ง Member Sheet "Join TukDaeng" — ทุกเคส [GATE] ในไฟล์นี้มีคู่ guest/member ครบ; mechanics ของ sheet อยู่ FO-TEST-01 (AUTH-061–068) และเมทริกซ์ gate ทั้งแอปอยู่ FO-TEST-17
-- **scroll-to-hide** ตาม design ทำงานเฉพาะหน้า Feed: เลื่อนลงพอประมาณ → header ลอยขึ้นหลบ + bottom nav จมลง; เลื่อนขึ้นหรือถึงบนสุด → แถบกลับมา (เคส SHELL-042–048)
+- **scroll-to-hide** ตาม design ทำงานเฉพาะหน้า Feed: เลื่อนลงเกินโพสต์แรก → header ลอยขึ้นหลบ + bottom nav จมลง; เลื่อนขึ้นหรือถึงบนสุด → แถบกลับมา (เคส SHELL-042–048)
 - **Bottom nav** แสดงเฉพาะหน้า root 5 แท็บ + หน้าโปรไฟล์ — หน้าลึกและ overlay (Post Viewer, Post Detail) ไม่มี nav
 - **variant พิเศษของ navigation** (nav แบบไอคอนล้วนไม่มี label, header แบบไม่มี feed tabs, dev sidebar ฯลฯ) เป็น dev harness ของ prototype — out of scope เหมือนเดิม ไม่เขียน TC และไม่ mark BLOCK
 
@@ -50,7 +50,7 @@
 | FO-TC-SHELL-002 | ปุ่ม burger บน header | MEMBER | Func | อยู่ feed | 1. แตะไอคอน burger มุมซ้ายบน | hamburger menu (drawer) เลื่อนเข้าจากซ้าย | panel ทาบซ้าย + scrim มืดคลุม feed | High | |
 | FO-TC-SHELL-003 | ปุ่ม search บน header | MEMBER | Func | อยู่ feed | 1. แตะไอคอน search | หน้า Search landing เด้งเต็มจอ (explore tiles + popular chips + recents) | หน้า search ทับ feed; bottom nav ของ feed ถูกซ่อน (หน้า search ไม่มี nav ของตัวเอง) | High | |
 | FO-TC-SHELL-004 | ปุ่ม + create [GATE] | MEMBER | Func | อยู่ feed | 1. แตะปุ่ม + | หน้า create (media picker) เปิดเต็มจอ | หน้า create ทับ feed | High | |
-| FO-TC-SHELL-005 | ปุ่ม + [GATE] | GUEST | Func | guest อยู่ feed | 1. แตะปุ่ม + 2. แตะ scrim ปิด sheet | + เป็น gated action → Member Sheet เด้ง; create ไม่เปิด; ปิด sheet → ยัง guest บน feed | sheet "Join TukDaeng" + gate copy ประมาณ "Sign in or create a free account to use this feature." | High | |
+| FO-TC-SHELL-005 | ปุ่ม + [GATE] | GUEST | Func | guest อยู่ feed | 1. แตะปุ่ม + 2. แตะ scrim ปิด sheet | + เป็น gated action → Member Sheet เด้ง; create ไม่เปิด; ปิด sheet → ยัง guest บน feed | sheet "Join TukDaeng" + gate copy ต้องตรง "Sign in or create a free account to use this feature." | High | |
 | FO-TC-SHELL-006 | ปุ่ม search | GUEST | Func | guest อยู่ feed | 1. แตะไอคอน search | search **ไม่ถูก gate** → หน้า search เปิดได้ฟรี | เหมือน SHELL-003 | Medium | |
 | FO-TC-SHELL-007 | wordmark | MEMBER | Edge | อยู่ feed (โหมดปกติ) | 1. แตะ wordmark "TUK DAENG" / บริเวณกลาง header | ไม่มี action ในโหมดปกติ → ไม่เกิดอะไร (wordmark ตอบสนองเฉพาะ dev variant ที่ out of scope) | ไม่มี caret แสดง; แตะแล้วนิ่ง | Low | |
 
@@ -60,16 +60,16 @@
 |---|---|---|---|---|---|---|---|---|---|
 | FO-TC-SHELL-008 | drawer UI | MEMBER | UI | อยู่ feed → เปิด drawer | 1. แตะ burger 2. ตรวจ panel | — | panel ชิดซ้ายมี 9 แถวเรียงต่อกัน แต่ละแถว = icon + label + chevron › ขวา; scrim มืดคลุม feed ทั้งจอ | Medium | |
 | FO-TC-SHELL-009 | scrim close | MEMBER | Func | drawer เปิดอยู่ | 1. แตะบริเวณมืด (scrim) ขวาของ panel | drawer เลื่อนออกปิด | feed กลับมาใช้งานได้ตามเดิม | High | |
-| FO-TC-SHELL-010 | drawer item — Watch Brands | MEMBER | Func | drawer เปิดอยู่ | 1. แตะแถว "Watch Brands / แบรนด์นาฬิกา" | ตาม design เมนูยังไม่มีหน้าปลายทาง — ควรมี toast/ข้อความแจ้งว่ายังไม่เปิดใช้ (เช่น "Coming soon") ~2 วิ ไม่มี navigation; **จดพฤติกรรมจริง** — ถ้าเปิดหน้าจริงหรือไม่มีแถวนี้ให้จด Note | toast/ข้อความลอยล่างจอ; drawer ยังเปิดค้าง | Medium | |
-| FO-TC-SHELL-011 | drawer item — Watch Price Index | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Watch Price Index / ดัชนีราคานาฬิกา" | เหมือน SHELL-010 — จดพฤติกรรมจริง | เหมือน SHELL-010 | Medium | |
-| FO-TC-SHELL-012 | drawer item — Watch Shops | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Watch Shops / ร้านนาฬิกา" | เหมือน SHELL-010 — จดพฤติกรรมจริง | เหมือน SHELL-010 | Medium | |
-| FO-TC-SHELL-013 | drawer item — Accessories Shop | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Accessories Shop / ร้านอุปกรณ์เสริม" | เหมือน SHELL-010 — จดพฤติกรรมจริง | เหมือน SHELL-010 | Medium | |
-| FO-TC-SHELL-014 | drawer item — Repair Shop | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Repair Shop / ศูนย์ซ่อมแซม" | เหมือน SHELL-010 — จดพฤติกรรมจริง | เหมือน SHELL-010 | Medium | |
-| FO-TC-SHELL-015 | drawer item — Auction Center | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Auction Center / ศูนย์ประมูล" | เหมือน SHELL-010 — จดพฤติกรรมจริง | เหมือน SHELL-010 | Medium | |
-| FO-TC-SHELL-016 | drawer item — Consignment Center | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Consignment Center / ศูนย์ฝากขาย" | เหมือน SHELL-010 — จดพฤติกรรมจริง | เหมือน SHELL-010 | Medium | |
-| FO-TC-SHELL-017 | drawer item — Authentication Center | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Authentication Center / ศูนย์ตรวจเช็คแท้" | เหมือน SHELL-010 — จดพฤติกรรมจริง | เหมือน SHELL-010 | Medium | |
-| FO-TC-SHELL-018 | drawer item — Community | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Community / ชุมชนคนรักนาฬิกา" | เหมือน SHELL-010 — จดพฤติกรรมจริง | เหมือน SHELL-010 | Medium | |
-| FO-TC-SHELL-019 | drawer dismiss paths | MEMBER | Edge | drawer เปิดอยู่ | 1. แตะพื้นว่างใน panel (ไม่โดนแถว) 2. แตะ burger ซ้ำ 3. (Android) กดปุ่ม/เจสเจอร์ back ของเครื่อง | แตะพื้นว่างไม่ทำอะไร; burger ซ้ำ = ยังเปิดอยู่ — ทางปิดหลักตาม design คือ scrim; device back ให้จดผลจริง (ปิด/ไม่ปิด) | drawer ค้างเปิดจนกว่าจะแตะ scrim (หรือ device back ถ้าแอปรองรับ) | Low | |
+| FO-TC-SHELL-010 | drawer item — Watch Brands | MEMBER | Func | drawer เปิดอยู่ | 1. แตะแถว "Watch Brands / แบรนด์นาฬิกา" | ตาม design เมนูยังไม่มีหน้าปลายทาง — ต้องมี toast/ข้อความแจ้งว่ายังไม่เปิดใช้ (เช่น "Coming soon") ~2 วิ ไม่มี navigation; เปิดหน้าจริงหรือไม่มีแถวนี้ = FAIL | toast/ข้อความลอยล่างจอ; drawer ยังเปิดค้าง | Medium | |
+| FO-TC-SHELL-011 | drawer item — Watch Price Index | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Watch Price Index / ดัชนีราคานาฬิกา" | เหมือน SHELL-010| เหมือน SHELL-010 | Medium | |
+| FO-TC-SHELL-012 | drawer item — Watch Shops | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Watch Shops / ร้านนาฬิกา" | เหมือน SHELL-010| เหมือน SHELL-010 | Medium | |
+| FO-TC-SHELL-013 | drawer item — Accessories Shop | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Accessories Shop / ร้านอุปกรณ์เสริม" | เหมือน SHELL-010| เหมือน SHELL-010 | Medium | |
+| FO-TC-SHELL-014 | drawer item — Repair Shop | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Repair Shop / ศูนย์ซ่อมแซม" | เหมือน SHELL-010| เหมือน SHELL-010 | Medium | |
+| FO-TC-SHELL-015 | drawer item — Auction Center | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Auction Center / ศูนย์ประมูล" | เหมือน SHELL-010| เหมือน SHELL-010 | Medium | |
+| FO-TC-SHELL-016 | drawer item — Consignment Center | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Consignment Center / ศูนย์ฝากขาย" | เหมือน SHELL-010| เหมือน SHELL-010 | Medium | |
+| FO-TC-SHELL-017 | drawer item — Authentication Center | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Authentication Center / ศูนย์ตรวจเช็คแท้" | เหมือน SHELL-010| เหมือน SHELL-010 | Medium | |
+| FO-TC-SHELL-018 | drawer item — Community | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Community / ชุมชนคนรักนาฬิกา" | เหมือน SHELL-010| เหมือน SHELL-010 | Medium | |
+| FO-TC-SHELL-019 | drawer dismiss paths | MEMBER | Edge | drawer เปิดอยู่ | 1. แตะพื้นว่างใน panel (ไม่โดนแถว) 2. แตะ burger ซ้ำ 3. (Android) กดปุ่ม/เจสเจอร์ back ของเครื่อง | แตะพื้นว่างไม่ทำอะไร; burger ซ้ำ = ยังเปิดอยู่ — ทางปิดหลักตาม design คือ scrim; device back ปิด drawer เทียบเท่าแตะ scrim (ไม่ปิด = FAIL) | drawer ค้างเปิดจนกว่าจะแตะ scrim (และ device back) | Low | |
 | FO-TC-SHELL-020 | drawer as guest | GUEST | Func | guest อยู่ feed | 1. แตะ burger 2. แตะแถวใดก็ได้ | drawer **ไม่ถูก gate** → เปิดปกติ; แถวเมนู → toast/ข้อความเดียวกับ member | เหมือน member | Medium | |
 
 ### 2.3 Bottom Nav (5 แท็บ)
@@ -88,7 +88,7 @@
 | FO-TC-SHELL-029 | nav badge — chat + alerts | MEMBER | UI | member มี unread | 1. ดู badge บน Chat + Alerts 2. เข้า Alerts → อ่าน/mark all read → ดู badge อีกครั้ง | badge แสดงเลข unread จริง; อ่านหมดแล้ว badge หาย/ลดตามจริง | badge เลขแดงทับไอคอน | High | |
 | FO-TC-SHELL-030 | nav badge `99+` cap | MEMBER | Edge | ต้องมี unread >99 | 1. ดู badge เมื่อ unread เกิน 99 — ต้องอาศัยบัญชีเทสที่มี unread >99 หรือ tooling/seed จากทีม | ตาม design แสดง "99+"; ถ้าไม่มีทางสร้าง unread ถึง 99 บน build นี้ → mark BLOCK พร้อมเหตุผล (ต้องการ test data/tooling) | ข้อความ "99+" | Low | |
 | FO-TC-SHELL-031 | nav badge — guest/new | GUEST vs NEW | Edge | session guest และ new | 1. ดู nav บน feed ทั้งสอง session | guest/new ไม่มีข้อมูล unread → ไม่มี badge เลย | nav ไม่มีเลขทั้งคู่ | Medium | |
-| FO-TC-SHELL-032 | nav active บน public profile | MEMBER | Edge | เปิด profile คนอื่น (แตะ avatar/ชื่อบนโพสต์) | 1. ดู active pill บน nav ขณะอยู่หน้าโปรไฟล์เขา | ตาม design pill อยู่ที่ **Feed** (ไม่ใช่ Profile) — จดผลจริง | Feed active แม้อยู่หน้า profile | Low | |
+| FO-TC-SHELL-032 | nav active บน public profile | MEMBER | Edge | เปิด profile คนอื่น (แตะ avatar/ชื่อบนโพสต์) | 1. ดู active pill บน nav ขณะอยู่หน้าโปรไฟล์เขา | pill active อยู่ที่ **Feed** (design ล็อก — อยู่ Profile หรือไม่มี pill = FAIL) | Feed active แม้อยู่หน้า profile | Low | |
 | FO-TC-SHELL-033 | nav หายใต้ overlay | MEMBER | Func | เปิด Post Viewer จาก grid tile | 1. แตะ grid tile → viewer เปิด 2. ดู nav 3. กด back ปิด viewer | nav หายระหว่าง viewer/Post Detail เปิด; ปิดแล้ว nav กลับมาเหมือนเดิม | nav หายระหว่าง overlay | Medium | |
 | FO-TC-SHELL-034 | nav บนหน้าลึก | MEMBER | Edge | เข้าหน้าลึก (เช่น settings, saved, ห้องแชท) | 1. เข้าหน้าลึกแล้วดูด้านล่างจอ | หน้าลึก **ไม่มี bottom nav** — ออกได้เฉพาะลูกศร back บนซ้าย (nav มีเฉพาะ root 5 หน้า + หน้าโปรไฟล์) | ไม่มี pill ลอยล่าง | Medium | |
 
@@ -100,15 +100,15 @@
 | FO-TC-SHELL-036 | feed tab — Following | MEMBER | Func | อยู่ feed | 1. แตะ "Following" | สลับเป็นฟีดเฉพาะคนที่ follow + scroll กลับบนสุด + pill เลื่อนมาใต้ Following | pill slide ไปใต้ Following; เนื้อหาเปลี่ยน | High | |
 | FO-TC-SHELL-037 | feed tab — Favorites | MEMBER | Func | อยู่ feed | 1. แตะ "Favorites" | เหมือน 036 แต่กรองเฉพาะโพสต์ favorite | pill ใต้ Favorites; เห็นเฉพาะโพสต์ favorite | High | |
 | FO-TC-SHELL-038 | feed tab — re-tap active | MEMBER | Edge | อยู่แท็บ All Posts | 1. แตะ "All Posts" ซ้ำ | แท็บที่ active อยู่แล้วกดซ้ำ → ไม่ re-render ไม่มีอะไรเปลี่ยน | หน้าจอนิ่ง | Low | |
-| FO-TC-SHELL-039 | feed tab — following empty | NEW | UI | session new (ไม่เคย follow) | 1. แตะ "Following" | แสดง empty state | icon คน + ข้อความประมาณ "Follow others to see their posts here / ติดตามผู้อื่นเพื่อดูโพสต์ของพวกเขาที่นี่" | Medium | |
-| FO-TC-SHELL-040 | feed tab — favorites empty | GUEST | UI | guest อยู่ feed | 1. แตะ "Favorites" | แสดง empty state | icon ดาว + ข้อความประมาณ "No favorites yet / ยังไม่มีรายการโปรด" | Medium | |
+| FO-TC-SHELL-039 | feed tab — following empty | NEW | UI | session new (ไม่เคย follow) | 1. แตะ "Following" | แสดง empty state | icon คน + ข้อความต้องตรง "Follow others to see their posts here / ติดตามผู้อื่นเพื่อดูโพสต์ของพวกเขาที่นี่" | Medium | |
+| FO-TC-SHELL-040 | feed tab — favorites empty | GUEST | UI | guest อยู่ feed | 1. แตะ "Favorites" | แสดง empty state | icon ดาว + ข้อความต้องตรง "No favorites yet / ยังไม่มีรายการโปรด" | Medium | |
 | FO-TC-SHELL-041 | feed tabs as guest | GUEST | Func | guest อยู่ feed | 1. สลับ Following ↔ Favorites ↔ All Posts | feed tabs **ไม่ถูก gate** → สลับได้ปกติ; following/favorites = empty state | tabs ทำงานเหมือน member | Medium | |
 
 ### 2.5 Scroll-to-hide (แถบหลบตอนเลื่อน)
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-SHELL-042 | scroll-to-hide — hide | MEMBER | Func | อยู่ feed บนสุด | 1. ปัดฟีดลงแรง ๆ ด้วยนิ้ว (ผ่านช่วงโพสต์แรกไป) | เลื่อนลงพอประมาณ → header หลบขึ้นด้านบน + bottom nav จมลงหาย; ลองแตะ nav ตอนนี้กดไม่ได้ (ระยะ threshold จริงจด Note) | header หลบขึ้น + nav จมลง | High | |
+| FO-TC-SHELL-042 | scroll-to-hide — hide | MEMBER | Func | อยู่ feed บนสุด | 1. ปัดฟีดลงแรง ๆ ด้วยนิ้ว (ผ่านช่วงโพสต์แรกไป) | เลื่อนลงเกินโพสต์แรก → header หลบขึ้นด้านบน + bottom nav จมลงหาย; ลองแตะ nav ตอนนี้กดไม่ได้ (ระยะ threshold จริง) | header หลบขึ้น + nav จมลง | High | |
 | FO-TC-SHELL-043 | scroll-to-hide — show | MEMBER | Func | แถบหลบอยู่ | 1. ปัดฟีดขึ้นแรง ๆ | header + nav สไลด์กลับมาครบ | ทั้งสองแถบกลับ | High | |
 | FO-TC-SHELL-044 | scroll-to-hide — top force | MEMBER | Func | แถบหลบอยู่ | 1. เลื่อนจนชนบนสุดของฟีด | แถบทั้งคู่กลับมาเองทันทีที่ถึงบนสุด (ไม่ต้องเลื่อนขึ้นแรง) | แถบโผล่ที่จุดบนสุดเสมอ | Medium | |
 | FO-TC-SHELL-045 | scroll-to-hide — small deltas | MEMBER | Edge | อยู่ feed | 1. แกว่งเลื่อนลง-ขึ้นทีละน้อย ๆ ด้วยนิ้ว | เลื่อนน้อยไม่ถึงเกณฑ์ → ไม่ hide/show | แถบนิ่ง ไม่กระพริบ | Low | |
@@ -135,8 +135,8 @@
 | FO-TC-SHELL-057 | tour start (member/new) | NEW | Func | สมัครใหม่จบ onboarding → เข้า feed ครั้งแรก | 1. ดู bubble แรก | bubble แรกชี้ปุ่ม + บน header | bubble แดงโปร่ง + arrow ชี้เป้า + ปุ่ม "Next" | Medium | |
 | FO-TC-SHELL-058 | tour Next → Got it | NEW | Func | bubble 1 แสดง | 1. กด Next ×3 2. กด "Got it" ที่จุดสุดท้าย | bubble เดิน 4 จุด: + → search → feed tabs → bottom nav; จุดสุดท้ายปุ่มเป็น "Got it" กดแล้วจบ | arrow ชี้เป้าแต่ละจุด; bubble flip เหนือ/ใต้ตามตำแหน่ง | Medium | |
 | FO-TC-SHELL-059 | tour dismiss outside | NEW | Func | bubble ใดก็ได้แสดง | 1. แตะจอนอก bubble | bubble หายทันที — จบ tour เงียบ | bubble หาย | Medium | |
-| FO-TC-SHELL-060 | tour guest copy | GUEST | Func | first-run → กด Skip for now (non-gate) | 1. ดู bubble จุดแรก + กด Next ไปจุดสุดท้าย | copy เวอร์ชันชวนสมัคร ต่างจาก member: จุดแรกประมาณ "Sign up to create your first post." + จุดสุดท้ายประมาณ "Sign in to use chat, alerts and your profile." | copy ชวน sign-up แทน how-to | Medium | |
-| FO-TC-SHELL-061 | ทัวร์เล่นครั้งเดียวต่อการติดตั้ง | MEMBER | Edge | เครื่องนี้เคยเห็นทัวร์แล้ว | 1. ออกจากระบบ → sign in บัญชีทดสอบ → ดู feed 2. ลบแอป/เคลียร์ data → ติดตั้งใหม่ → sign in อีกครั้ง | สถานะทัวร์ผูกกับ**การติดตั้งบนเครื่อง** ไม่ใช่ session — install เดิม sign in ซ้ำต้อง **ไม่เด้งซ้ำ** (เด้งทุก sign-in = FAIL น่ารำคาญผู้ใช้); หลัง reinstall ถือ first-run ใหม่ → ทัวร์เล่นอีกครั้งถือว่า**ปกติตามมาตรฐาน** (ถ้าแอปกันไว้ฝั่ง server ไม่เด้งเลยก็ไม่ fail — จดผล) | ไม่มี bubble ซ้ำบน install เดิม | Low | |
+| FO-TC-SHELL-060 | tour guest copy | GUEST | Func | first-run → กด Skip for now (non-gate) | 1. ดู bubble จุดแรก + กด Next ไปจุดสุดท้าย | copy เวอร์ชันชวนสมัคร ต่างจาก member: จุดแรกต้องตรง "Sign up to create your first post." + จุดสุดท้ายต้องตรง "Sign in to use chat, alerts and your profile." | copy ชวน sign-up แทน how-to | Medium | |
+| FO-TC-SHELL-061 | ทัวร์เล่นครั้งเดียวต่อการติดตั้ง | MEMBER | Edge | เครื่องนี้เคยเห็นทัวร์แล้ว | 1. ออกจากระบบ → sign in บัญชีทดสอบ → ดู feed 2. ลบแอป/เคลียร์ data → ติดตั้งใหม่ → sign in อีกครั้ง | สถานะทัวร์ผูกกับ**การติดตั้งบนเครื่อง** ไม่ใช่ session — install เดิม sign in ซ้ำต้อง **ไม่เด้งซ้ำ** (เด้งทุก sign-in = FAIL น่ารำคาญผู้ใช้); หลัง reinstall ถือ first-run ใหม่ → ทัวร์เล่นอีกครั้งถือว่า**ปกติตามมาตรฐาน** (ไม่เด้งหลัง reinstall = FAIL — ทัวร์ผูก install ไม่ใช่ account) | ไม่มี bubble ซ้ำบน install เดิม | Low | |
 
 ### 2.8 Language/Theme Spot-check (EN/TH + light/dark — sweep เต็ม → FO-TEST-19)
 
@@ -153,7 +153,7 @@
 - **SHELL-054 (ยืนยัน spec แล้ว 2026-10-28)** — ปุ่ม/เจสเจอร์ back ของระบบ (Android) ต้องถอยหน้าภายในแอปเทียบเท่า in-app back เสมอ ห้ามออกจากแอปตอนอยู่หน้าลึก (อยู่ feed root ถึงออกได้ตามมาตรฐาน OS) — เงื่อนไขนี้เพิ่มลง inventory §2.12 (แถว device back) แล้ว; iOS ไม่มีปุ่ม back → เคสนี้เทสเฉพาะ Android
 - **SHELL-055 (ตัดออกจากฉบับแอปจริง)** — เคสเดิมเทสปุ่ม ESC บน desktop browser; บนมือถือไม่มีปุ่ม ESC จึงไม่มีวิธีเทส → ตัดเคสออกและ**ปลด ID 055** (ไม่นำเลขนี้กลับมาใช้ เพื่อคงเลขเดิมของเคสอื่นให้ trace กับ inventory ได้ตรง)
 - **SHELL-061** — กติกามาตรฐาน: ทัวร์ผูกกับการติดตั้งไม่ใช่ session → install เดิม sign in ซ้ำห้ามเด้งซ้ำ; reinstall เล่นใหม่ได้ (first-run ใหม่)
-- **SHELL-065 (spec ล็อก 2026-10-28)** — แต่ละแท็บของ bottom nav จำ state ของตัวเองแบบ IG: สลับแท็บแล้วกลับมา = กลับมาที่หน้า+ตำแหน่ง scroll เดิม (รวมหน้าลึกที่เปิดค้างในแท็บนั้น) — **สลับแท็บไม่ใช่รีเฟรช**; ข้อยกเว้นเดียวคือ re-tap แท็บที่ active อยู่ = pop กลับ root ของแท็บนั้น (SHELL-027) — หมายเหตุ: แก้ prototype ให้ alerts/board/chat/profile จำ stack+scroll แยกแท็บแล้ว (เดิม alerts กลับมาเด้งขึ้นบนสุด — ตรวจด้วย Playwright แล้วผ่านทุก path)
+- **SHELL-065 (spec ล็อก 2026-10-28)** — แต่ละแท็บของ bottom nav จำ state ของตัวเองแบบ IG: สลับแท็บแล้วกลับมา = กลับมาที่หน้า+ตำแหน่ง scroll เดิม (รวมหน้าลึกที่เปิดค้างในแท็บนั้น) — **สลับแท็บไม่ใช่รีเฟรช**; ข้อยกเว้นเดียวคือ re-tap แท็บที่ active อยู่ = pop กลับ root ของแท็บนั้น (SHELL-027) — หมายเหตุ: แก้ prototype ให้ alerts/board/chat/profile จำ stack+scroll แยกแท็บแล้ว (เดิม alerts กลับมาเด้งขึ้นบนสุด — ตรว)
 - **ขอบเขตที่ตัดออก**: post card/media/action บน feed (FO-TEST-03), เนื้อหาหน้า search/sfilter (04), viewer/detail internals (06), sheet/dialog mechanics เช่น backdrop (07), alerts list เนื้อหา + mark-all-read ภายในหน้า (10), drawer variant แบบ dev + nav ไอคอนล้วน + dev sidebar = prototype harness (ไม่ใช่ production), snooze/prefs ที่กระทบ All tab (15), language/theme sweep เต็ม (19)
-- toast/pin pill เป็นของ action แต่ละ module — ไฟล์นี้เช็กเฉพาะที่ trigger จาก shell (toast ของเมนู drawer ลอยล่างจอ ~2 วิ ตาม design — จดเวลาจริง)
-- สถิติ: **64 TC** — High 23 / Medium 32 / Low 9 (SETUP rows แยกใน checklist; SHELL-055 ถูกตัด—desktop-only)
+- toast/pin pill เป็นของ action แต่ละ module — ไฟล์นี้เช็กเฉพาะที่ trigger จาก shell (toast ของเมนู drawer ลอยล่างจอ ~2 วิ ตาม design)
+- สถิติ: **64 TC** — High 23 / Medium 32 / Low 9 (SETUP rows 9 แถวแยกใน checklist; รวมใน csv 73 แถว)

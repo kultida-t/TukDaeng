@@ -316,7 +316,7 @@ Member สร้างโพสต์ผ่าน composer ได้ 2 mode: pos
 | `caption` / `captionFull` | short + full caption (hashtags render เป็น tag ที่กดได้) |
 | `location` / `audience` / `noComments` | composer-set flags — location = sub-line ใต้ชื่อ; noComments = ซ่อน comment affordance; audience = เก็บค่าไม่ enforce (ดู Audience Rule) |
 | `hideCounts` | seeded-post flag — ซ่อน liked-by + views ทุก surface; composer ไม่มี setter ใน V1 (deviation) |
-| `liked` / `saved` / `savedCol` / `wishlisted` / `wlCol` | viewer-level flags (collections อยู่ 11_SOCIAL) |
+| `liked` / `saved` / `savedCols` / `wishlisted` / `wlCols` | viewer-level flags (`savedCols`/`wlCols` = multi-collection arrays — canonical 11_SOCIAL) |
 | `ni` / `muted` / `blocked` / `archived` / `archivedAt` / `pins` | feed-exclusion / lifecycle flags |
 | `likes` / `comments` / `views` / `likedBy` / `commentPreview` | social counters — like total เป็น private (S-26) |
 

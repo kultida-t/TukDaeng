@@ -14,14 +14,14 @@ SETUP-04,Setup,-,"MEMBER (ล็อกอินบัญชีทดสอบจ
 SETUP-05,Setup,-,"Member Sheet + Settings:
 • Sheet เด้งเวลา guest แตะ action ที่ต้องล็อกอิน — ปิดโดยแตะบริเวณมืดหรือ ""Skip for now""
 • ภาษา/ธีม: Profile → ≡ → ""Language"" / ""Theme"" (สลับในแอปเท่านั้น)",รู้วิธีปิด sheet และสลับภาษา/ธีมแล้วทำเคสต่อได้,-,High,,,
-SETUP-06,Setup,-,"ข้อมูลอ้างอิงจากข้อมูลจริง (ขอจากทีม/หาบนแอป แล้วจดลง Note — เคสอ้างชุดนี้แทน mock):
+SETUP-06,Setup,-,"ข้อมูลอ้างอิงจากข้อมูลจริง (ขอจากทีม/หาบนแอป แล้ว):
 • บัญชีทดสอบ: email + password = ____________________
 • ACCT-2 = บัญชีที่สองจริง (สำหรับ alert/follow/liked-by): ____________________
 • MODEL-X = รุ่นนาฬิกาที่มี market data (สำหรับ Estimated): ____________________
 • POST-X = โพสต์ขายของ seller อื่นที่มี ≥3 รูป + specs + ราคา + comments: ____________________
 • POST-Y = โพสต์รูปเดียว: ____________________
 • POST-Z = โพสต์ที่ไม่มี specs/ราคาเลย: ____________________
-• จด ""รุ่นเครื่อง + OS"" ลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน","จดข้อมูลครบก่อนเริ่มเทส — ถ้าขาดตัวใด mark BLOCK เคสที่เกี่ยว",-,High,,,
+• บันทึก ""รุ่นเครื่อง + OS"" ลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน","ข้อมูลครบก่อนเริ่มเทส — ถ้าขาดตัวใด mark BLOCK เคสที่เกี่ยว",-,High,,,
 SETUP-07,Setup,-,"ทางเข้า viewer แต่ละ entry:
 • Explore: nav Search → landing grid → tile
 • Results: Search พิมพ์คำ → grid ผล → tile
@@ -29,7 +29,7 @@ SETUP-07,Setup,-,"ทางเข้า viewer แต่ละ entry:
 • Profile: แตะชื่อ seller → grid tile
 • Alerts: nav ระฆัง → แตะ row (member เท่านั้น — nav alerts gate guest)",viewer เด้งทับหน้าเดิม — โหมดตาม entry (immersive/list/pfp),-,High,,,
 SETUP-08,Setup,-,"เตรียม media + สิทธิ์บนเครื่อง (เคส clip/carousel ต้องใช้):
-• gallery เครื่องต้องมีวิดีโอ ≥1 คลิป + รูป ≥3 ใบ (ถ่าย/โหลดมาเอง — จดจำนวนจริงลง Note)
+• gallery เครื่องต้องมีวิดีโอ ≥1 คลิป + รูป ≥3 ใบ (ถ่าย/โหลดมาเอง)
 • อนุญาต Photos / Camera ให้แอป",media พร้อมสำหรับเคสคลิปและ carousel,-,High,,,
 SETUP-09,Setup,-,"ทำ own sale post (precondition PV-050/051, DET-008/010/011/015):
 1. member แตะ + → เลือกรูป 3 ใบ → ""Next""
@@ -116,14 +116,14 @@ FO-TC-PV-031,Clip,clip post มี media อื่นต่อท้าย,"1. �
 FO-TC-PV-032,Clip,own clip post ใน search/explore,1. เปิด tile ของ clip post ใน immersive viewer,"clip slide เล่นวิดีโอจริงพร้อมเสียง (spec ล็อก — เดิมรูปนิ่ง)",MEMBER,High,,,spec ล็อก
 FO-TC-PV-033,Clip,clip กำลังเล่นบน viewer/detail,"1. ฟังเสียง
 2. แตะ media/control เพื่อหยุด
-3. แตะอีกครั้งเล่นต่อ","เสียงตาม volume เครื่อง; หยุด/เล่นได้ตาม design — เงียบถาวร/หยุดไม่ได้ = flag",MEMBER,High,,,
+3. แตะอีกครั้งเล่นต่อ","เสียงตาม volume เครื่อง; หยุด/เล่นได้ตาม design — เงียบถาวร/หยุดไม่ได้ = FAIL",MEMBER,High,,,
 FO-TC-PV-034,PFP,pfp viewer จาก tile ของ seller POST-X,"1. ดู head
 2. แตะ ←",head: ←+""Posts""/username+Follow pill (ไม่มีไอคอนค้นหา); back กลับ grid แท็บเดิม,MEMBER,Medium,,,
 FO-TC-PV-035,PFP,pfp viewer ของ ACCT-2 ที่ยังไม่ follow,"1. แตะ ""Follow"" บน head
-2. รอสักครู่","pill flip ""Following"" แล้ว fade หาย (~1.2s = design ref จดจริง) — follow sync ทั้งแอป",MEMBER,High,,,BLOCK ถ้าไม่มี ACCT-2
+2. รอสักครู่","pill flip ""Following"" แล้ว fade หาย (~1.2s = design ref) — follow sync ทั้งแอป",MEMBER,High,,,BLOCK ถ้าไม่มี ACCT-2
 FO-TC-PV-036,PFP,pfp viewer — guest ก่อน,"1. (guest) แตะ pill
 2. (member) แตะ pill",guest: Member Sheet; member: follow ปกติ,GUEST + MEMBER,High,,,[GATE]
-FO-TC-PV-037,PFP,"pfp ของ seller ที่ follow แล้ว / own profile / blocked",1. ดู head ทั้ง 3 กรณี,"ไม่มี pill ทั้ง 3 กรณี (render เฉพาะยังไม่ follow+ไม่ block) — ไม่มีฟีเจอร์ block = N/A ข้อย่อยนั้น",MEMBER,Medium,,,
+FO-TC-PV-037,PFP,"pfp ของ seller ที่ follow แล้ว / own profile / blocked",1. ดู head ทั้ง 3 กรณี,"ไม่มี pill ทั้ง 3 กรณี (render เฉพาะยังไม่ follow+ไม่ block) — ไม่มีฟีเจอร์ block = BLOCK ข้อย่อยนั้น (พร้อมเหตุผล)",MEMBER,Medium,,,
 FO-TC-PV-038,PFP,own profile → แท็บ Sold → tile → ⋯,"1. เปิด viewer จากแท็บ Sold
 2. เปิด ⋯","เมนู own อ่าน tab context: ""View sale record"" แทน ""Edit"" ไม่มี ""Mark as sold""",OWNER,Medium,,,
 FO-TC-PV-039,PFP,"SETUP-16+17: watch row ของ ACCT-2 ที่ยังไม่ follow","1. เปิด solo viewer
@@ -144,7 +144,7 @@ FO-TC-PV-047,Menus,เมนูเจ้าของบนโพสต์ตั�
 2. ดูการ์ด/viewer/detail
 3. ""Turn on commenting""","💬 หายจากทุก surface + ""Add comment…"" หายด้วย (spec ล็อก); แถวสลับ label",OWNER,Medium,,,verify จาก ⋯ เมนูตัวเอง
 FO-TC-PV-048,Menus,"เมนูเจ้าของจากแท็บ Posts — โพสต์ปกติ + sold","1. ""Pin to top of grid""
-2. ⋯ บน sold post","pin ติดบน grid (เกิน limit → dialog แทน — จด limit จริง); sold: ""View sale record"" แทน Edit",OWNER,Medium,,,limit 3 = design ref
+2. ⋯ บน sold post","pin ติดบน grid (เกิน limit → dialog แทน); sold: ""View sale record"" แทน Edit",OWNER,Medium,,,limit 3 = design ref
 FO-TC-PV-049,Menus,เมนูเจ้าของเปิดอยู่,"1. ""Delete""
 2. อ่าน dialog
 3. ยืนยัน",confirm กลางจอ → ลบจริงจากทุก surface,OWNER,High,,,
@@ -165,7 +165,7 @@ FO-TC-DET-008,Detail content,detail ของโพสต์ขาย (POST-X/SE
 FO-TC-DET-009,Detail content,own posts SETUP-09/10/11/12,"1. เปิด detail: feed-only · Sale · Show · Sold · Hide
 2. เปิด detail โพสต์คนอื่นด้วย MEMBER","feed post ธรรมดาไม่มี tag; Sale→FOR SALE Show→SHOWCASE Sold→SOLD Hide→HIDDEN — คนอื่นเห็นเฉพาะ sale/show (spec ล็อก)",OWNER + MEMBER,High,,,spec ล็อก — ตามสถานะไม่ใช่ราคา
 FO-TC-DET-010,Detail content,detail own sale post (SETUP-09),1. scroll ผ่าน spec sections,"spec ครบทุกกลุ่มรวม ""Price & Data Source"" — แต่ละกลุ่ม head+rows label/value",MEMBER,High,,,
-FO-TC-DET-011,Detail content,detail โพสต์มีราคา+MODEL-X specs,"1. อ่าน ""Price & Data Source""","Asking ""THB x,xxx,xxx"" ไม่มีทศนิยม · Estimated = market data จริงของ MODEL-X (จดค่าจริง — band mock = flag) · Last Update + Source",MEMBER,High,,,money rules §4.1–4.2
+FO-TC-DET-011,Detail content,detail โพสต์มีราคา+MODEL-X specs,"1. อ่าน ""Price & Data Source""","Asking ""THB x,xxx,xxx"" ไม่มีทศนิยม · Estimated = market data จริงของ MODEL-X · Last Update + Source",MEMBER,High,,,money rules §4.1–4.2
 FO-TC-DET-012,Detail content,detail POST-X,1. หา element ราคาโดด ๆ,ไม่มี — ราคาอยู่ใน spec group เท่านั้น,MEMBER,Medium,,,
 FO-TC-DET-013,Detail content,"การ์ด POST-Z + asset Show มี specs (SETUP-11)","1. ดูใต้ caption การ์ด POST-Z
 2. own Show tab → tile ของ asset Show","POST-Z ไม่มี ""Tap for details""; asset Show มี specs เข้า detail ได้ + tag SHOWCASE (spec ล็อก)",MEMBER,Medium,,,
@@ -189,7 +189,7 @@ FO-TC-DET-026,Detail actions,detail เปิด — guest ก่อน,"1. (gue
 2. (member) แตะ share",guest: Member Sheet; member: sh sheet เหนือ detail,GUEST + MEMBER,High,,,[GATE]
 FO-TC-DET-027,Detail actions,"detail โพสต์ MODEL-X · SETUP-16 alert ON — guest ก่อน","1. (guest) แตะ 🔔
 2. (member) แตะ 🔔
-3. ACCT-2 โพสต์ match alert","guest: Member Sheet; member: wa sheet (สร้าง/แก้ตาม model) icon on; match จริง → toast 2 จังหวะ ~2s (design ref จดจริง)",GUEST + MEMBER,High,,,[GATE]
+3. ACCT-2 โพสต์ match alert","guest: Member Sheet; member: wa sheet (สร้าง/แก้ตาม model) icon on; match จริง → toast 2 จังหวะ ~2s (design ref)",GUEST + MEMBER,High,,,[GATE]
 FO-TC-DET-028,Detail actions,detail เปิด — guest ก่อน,"1. (guest) แตะ 🎁
 2. (member) แตะ 🎁",guest: Member Sheet; member: wl sheet; icon swap เมื่อ wishlisted,GUEST + MEMBER,High,,,[GATE]
 FO-TC-DET-029,Detail actions,detail เปิด — guest ก่อน,"1. (guest) แตะ ⋯
