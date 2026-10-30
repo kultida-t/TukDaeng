@@ -167,3 +167,12 @@ When the user asks for a fun blog from the day's work (e.g. "เขียน blo
 Deliverables and spec documents (test cases, checklists, inventories, summaries, spec docs) must use plain, understandable language. Do NOT write the jargon "i18n"/"I18N" as a word — write **"Language"** / **"language"** / **"ภาษา"** instead (e.g. category `Language/Theme`, title "Language & Theme Sweep", "language TH/EN coverage").
 
 Exceptions — keep literal code identifiers and locked spec IDs as-is: `I18N-001`, `I18N_TH`, `i18nTr`, `i18nApply`, `data-i18n-skip`, `FO-TC-I18N-`, task folder `task-I18N-001`, and file paths that already contain the name. Same principle applies to other insider abbreviations — prefer words a non-developer reviewer can read.
+
+## Close-Task Checklist (kanban + work-summary skill) — บังคับทำก่อนปิด task ทุกครั้ง
+
+1. **เปิด output template ใน skill ก่อนเขียนเสมอ** — grep หาหัวข้อ "Final Work Summary Copy Block" / "รูปแบบผลลัพธ์" ใน `.agents/skills/work-summary/SKILL.md` แล้วอ่าน section นั้นตรง ๆ ห้ามเขียนจากความจำหรือเดาจาก workflow section (ไฟล์ 95KB — อ่านเฉพาะส่วนที่จะผลิต output)
+2. `get_board` หา task `in_progress` → ไม่มีให้แจ้งผู้ใช้ก่อน ห้ามสร้างการ์ดเงียบ ๆ
+3. `move_task → done` → `get_task` อ่าน `hours_spent`/Actual Start-End จริง → ห้ามเดาเวลา; ถ้าเวลาถูกตั้งด้วยมือ/ย้อนหลังต้องเขียนว่า "เวลาที่บันทึกในระบบ" พร้อมข้อจำกัด
+4. `save_session_note` = canonical summary ชุดเดียวกับ copy block
+5. Copy Block ต้องตรง template Case A/B/C เด็ดขาด: หมวดหมู่งาน **1 หมวด** จากลิสต์ 9 หมวด · เวลาเริ่ม/เวลาจบ `DD/MM/YYYY HH:MM` · bullet ขึ้นต้น `- ` literal · `รายละเอียดงานที่ทำ` = ภาษาคนหัวหน้าอ่านรู้เรื่อง 3–5 bullet ห้ามใส่ spec jargon/TC ID/verify mechanics
+6. **ห้ามจบ turn ที่ copy block** — ต้องต่อด้วย prompt งานถัดไป หรือเสนอทางเลือกงานต่อไปเสมอ
