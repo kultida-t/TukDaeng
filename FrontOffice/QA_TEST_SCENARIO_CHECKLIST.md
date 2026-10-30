@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | Document | QA Test Scenario Checklist |
-| Version | 2.0 — synced to FO-PRD-v1.9 (FSP-027) |
+| Version | 2.0 — synced to FO-PRD-v1.10 (FSP-027; consent copy + AC-AUTH-031 added in v1.10) |
 | Status | Active |
 | Owner | QA Team |
 | Source of truth | `Prototypes/fo-flow` (locked) + `TukDaeng_Master_Product_Definition.md` §16 Sync Decision Log |
@@ -15,7 +15,7 @@ This document is the QA execution checklist for Front Office V1. Each scenario m
 ## Conventions
 
 - **`Maps to`** — AC IDs that actually exist in the module specs (verified by cross-document grep). Items that assert a rule with no direct AC cite the spec section instead (e.g. `00_GLOBAL §11`).
-- **Prototype** — verifiable on the locked `fo-flow` prototype today.
+- **Prototype** — ใช้เป็น reference ของ UI และ expected เท่านั้น ไม่ใช่เป้าหมายการทดสอบ; ทุกเคสต้องรันบน build stg หรือแอปจริงที่ทีม implement
 - **(contract)** — production contract per S-29: the prototype has no implementation to compare against; verify in production/staging or by code review. Prototype-only mock behavior is noted where relevant.
 - **Known documented defects** (S-10, S-14 and module deviation notes): these are *not* spec. When observed, log them as defects — never write expected results around them:
   - `salePosts()` counts priced `show`/`hide`/`sold` posts into Search results grid, filter `(N)` counts and Watch Alert `N now`/`_waHits` (S-10 — canonical pool is `Sale` only)
@@ -237,7 +237,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Steps:** Inspect every submit action (Welcome `Continue`, `Create account`, social buttons, re-consent `Accept & continue`).
 **Expected result:**
 - Legal text with tappable Terms of Use / Privacy Policy links accompanies every submit action; acceptance is implied by the submit — no checkbox anywhere.
-- Optional consent (Analytics / Personalized) defaults off and is changeable later at Settings > Privacy / Cookie settings.
+- Optional consent (Analytics / Personalized) defaults off and is changeable later at Settings > Privacy.
 
 ### QA-GLOBAL-014
 **Objective:** Verify re-consent on policy version bump.
@@ -264,7 +264,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 
 ### QA-AUTH-001
 **Objective:** Verify first-run onboarding sequence (one time only).
-**Maps to:** AC-AUTH-025, AC-AUTH-026, AC-AUTH-027, AC-AUTH-028, AC-AUTH-029, AC-AUTH-030
+**Maps to:** AC-AUTH-025, AC-AUTH-026, AC-AUTH-027, AC-AUTH-028, AC-AUTH-029, AC-AUTH-030, AC-AUTH-031
 **Precondition:** Fresh install / cleared storage.
 **Steps:**
 1. Open app; step through splash → language → welcome → privacy notice → notification prompt → track prompt → Member Sheet.
@@ -272,7 +272,8 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 3. On Member Sheet tick `Don't show this again` and `Skip for now`; restart the app.
 **Expected result:**
 - Exact order and single presentation; finish persists so relaunch skips the flow.
-- `Continue` on welcome records implied consent; Privacy Notice separates essential (always on) from optional toggles; Accept all / Reject all / Cookie settings each record a consent record.
+- `Continue` on welcome records implied consent; Privacy Notice separates essential (always on) from optional toggles; Accept all / Reject all / Privacy settings each record a consent record.
+- Privacy Notice shows the no-cross-app-tracking sentence; Reject all leaves Analytics off and no analytics event (incl. search) is sent (AC-AUTH-031, stg/app build only).
 - Notification `Skip` never triggers the OS dialog; only `Continue` does. `Ask App Not to Track` forces personalization consent off.
 - Member Sheet shows `Sign up`/`Sign in`/`Skip for now` + social row + `Don't show this again`; hidden + skipped sheet does not reappear.
 

@@ -71,7 +71,7 @@
 | ALT-005 | รูปแบบเวลา | MEMBER | UI | มี alert หลายอายุ | เทียบ label เวลา TH vs EN | TH: `N นาที/N ชม./N วัน/N สัปดาห์` · EN: `Nm/Nh/Nd/Nw` — หน่วยตามภาษาแอปไม่ปะปน | — | MED | |
 | ALT-006 | ความต่าง read/unread | MEMBER | UI | มีทั้ง unread และ read rows | เทียบแถว | unread มีพื้นหลัง/น้ำหนักต่างจาก read ชัดเจน (highlight) — ตรวจทั้ง light/dark | — | HIGH | |
 | ALT-007 | Empty state | NEW | POSITIVE | สมัครใหม่ ยังไม่มีกิจกรรม | เปิด alerts | `ยังไม่มีการแจ้งเตือน/No alerts yet` + desc `การแจ้งเตือนนาฬิกา ยอดถูกใจ ความคิดเห็น และผู้ติดตามใหม่จะแสดงที่นี่` — **ไม่ใช่** `ไม่พบข้อมูล/No data found`; ไม่มี badge บนแท็บ | empty card ตาม design | HIGH | |
-| ALT-008 | ปลาย feed — ไม่มี pagination | MEMBER | EDGE | alert จำนวนมาก | เลื่อนจนสุด list | แสดงครบทุก row ใน list เดียวจนถึง row เก่าสุด — ไม่มีปุ่ม load more/infinite scroll (V1 = list เดียว) | — | MED | |
+| ALT-008 | ปลาย feed — ไม่มี pagination | MEMBER | EDGE | alert จำนวนมาก | เลื่อนจนสุด list | alerts โหลดเป็นหน้า 10 รายการ เลื่อนใกล้ท้าย → โหลดหน้าถัดไปต่อเนื่อง จนถึง row เก่าสุด; pull-to-refresh ที่บนสุดรีโหลดหน้าแรก (DEC-25 A1, A27) | — | MED | |
 | ALT-009 | ไม่มี entry ไป walerts | MEMBER | NEGATIVE | อยู่ alerts | มองหาลิงก์/ปุ่มไป watch alert list ในหน้า alerts | **ไม่มี** — `walerts` เข้าได้จาก Settings เท่านั้น (FO-TEST-11); เจอ link/ปุ่มใน alerts = FAIL | — | MED | |
 
 ### 2.2 Row Anatomy — 5 types
@@ -173,7 +173,6 @@
 | ALT-067 | follow จริง → row + ปุ่ม | MEMBER + ACCT-2 | POSITIVE | ACCT-2 ยังไม่ follow | ACCT-2 follow → alerts | follow row ใหม่ unread + `Follow back` กดได้ (ALT-037) | — | HIGH | |
 | ALT-068 | aggregate หลายคน | MEMBER + ACCT-2+3 | EDGE | ≥3 บัญชี like โพสต์เดียวกัน | ให้บัญชีเสริม like POST-OWN เพิ่ม → alerts | row like รวมเป็น `u1, u2 and N others` ไม่สร้าง row แยกต่อคน — บัญชีไม่พอ → `BLOCK` | — | MED | |
 | ALT-069 | watch alert match → row | MEMBER + ACCT-2 | POSITIVE | watch alert `WATCH-X` ตั้งไว้ (SETUP-11) | ACCT-2 ลงลิสติ้งใหม่ที่ match criteria → alerts | watch row ใหม่โผล่ (anatomy ALT-014) + แตะ → PV ลิสติ้งตรง (ALT-028) — engine ไม่เด้ง → `BLOCK` | — | MED | |
-| ALT-070 | system → new device login | MEMBER | EDGE | มีเครื่องที่ build ไม่เคย sign in | sign in `ACTOR-MEMBER` บนเครื่องใหม่ → เครื่องหลักเปิด alerts | system row ใหม่ (ข้อความ security เช่น new device logged in) — build ไม่ generate → `BLOCK` | — | MED | |
 | ALT-071 | ไม่สร้าง row ซ้ำจาก action เดียวกัน | MEMBER + ACCT-2 | EDGE | ACCT-2 like แล้ว | ACCT-2 unlike → like ซ้ำโพสต์เดิม → alerts | ไม่มี row like ซ้ำซ้อนเหมือนกัน 2 แถว — เห็น duplicate → FAIL | — | MED | |
 | ALT-072 | ความหน่วงการมาถึง | MEMBER + ACCT-2 | EDGE | ACCT-2 พร้อมกด | ACCT-2 like → ภายใน 60 วินาทีเปิด alerts บนเครื่องหลัก | เห็น row like ใหม่ภายใน 60 วินาที — ไม่โผล่เลย → FAIL | — | MED | |
 
@@ -232,3 +231,10 @@
 - **อยู่นอก scope**: `walerts` list + สร้าง/แก้ watch alert (FO-TEST-11) · anatomy เต็มของ `notif_settings` (FO-TEST-15) · push payload/FCM contract ละเอียด (out of V1)
 
 - สถิติ: **79 TC** — High 31 / Medium 45 / Low 3 (SETUP rows 11 แถวแยกใน checklist; รวมใน csv 90 แถว)
+
+
+## DEC-25 Amendments (ผลตามข้อตัดสิน IG — CSV ยังไม่ sync)
+
+- ALT-008: expected = โหลดเป็นหน้า 10 + pull-to-refresh (DEC-25)
+- ALT-070: ยกเลิกเคส (ไม่อยู่ใน V1 — DEC-26)
+- ALT-075: expected = แสดงข้อมูลที่โหลดไว้ + แถบ offline (ERROR_STATE)

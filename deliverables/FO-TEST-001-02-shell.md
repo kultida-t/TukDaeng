@@ -60,7 +60,7 @@
 |---|---|---|---|---|---|---|---|---|---|
 | FO-TC-SHELL-008 | drawer UI | MEMBER | UI | อยู่ feed → เปิด drawer | 1. แตะ burger 2. ตรวจ panel | — | panel ชิดซ้ายมี 9 แถวเรียงต่อกัน แต่ละแถว = icon + label + chevron › ขวา; scrim มืดคลุม feed ทั้งจอ | Medium | |
 | FO-TC-SHELL-009 | scrim close | MEMBER | Func | drawer เปิดอยู่ | 1. แตะบริเวณมืด (scrim) ขวาของ panel | drawer เลื่อนออกปิด | feed กลับมาใช้งานได้ตามเดิม | High | |
-| FO-TC-SHELL-010 | drawer item — Watch Brands | MEMBER | Func | drawer เปิดอยู่ | 1. แตะแถว "Watch Brands / แบรนด์นาฬิกา" | ตาม design เมนูยังไม่มีหน้าปลายทาง — ต้องมี toast/ข้อความแจ้งว่ายังไม่เปิดใช้ (เช่น "Coming soon") ~2 วิ ไม่มี navigation; เปิดหน้าจริงหรือไม่มีแถวนี้ = FAIL | toast/ข้อความลอยล่างจอ; drawer ยังเปิดค้าง | Medium | |
+| FO-TC-SHELL-010 | drawer item — Watch Brands | MEMBER | Func | drawer เปิดอยู่ | 1. แตะแถว "Watch Brands / แบรนด์นาฬิกา" | toast placeholder `เร็ว ๆ นี้` / `Coming soon` ~2 วิ ไม่มี navigation; drawer ยังเปิดค้าง | toast/ข้อความลอยล่างจอ; drawer ยังเปิดค้าง | Medium | |
 | FO-TC-SHELL-011 | drawer item — Watch Price Index | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Watch Price Index / ดัชนีราคานาฬิกา" | เหมือน SHELL-010| เหมือน SHELL-010 | Medium | |
 | FO-TC-SHELL-012 | drawer item — Watch Shops | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Watch Shops / ร้านนาฬิกา" | เหมือน SHELL-010| เหมือน SHELL-010 | Medium | |
 | FO-TC-SHELL-013 | drawer item — Accessories Shop | MEMBER | Func | drawer เปิดอยู่ | 1. แตะ "Accessories Shop / ร้านอุปกรณ์เสริม" | เหมือน SHELL-010| เหมือน SHELL-010 | Medium | |
@@ -88,7 +88,7 @@
 | FO-TC-SHELL-029 | nav badge — chat + alerts | MEMBER | UI | member มี unread | 1. ดู badge บน Chat + Alerts 2. เข้า Alerts → อ่าน/mark all read → ดู badge อีกครั้ง | badge แสดงเลข unread จริง; อ่านหมดแล้ว badge หาย/ลดตามจริง | badge เลขแดงทับไอคอน | High | |
 | FO-TC-SHELL-030 | nav badge `99+` cap | MEMBER | Edge | ต้องมี unread >99 | 1. ดู badge เมื่อ unread เกิน 99 — ต้องอาศัยบัญชีเทสที่มี unread >99 หรือ tooling/seed จากทีม | ตาม design แสดง "99+"; ถ้าไม่มีทางสร้าง unread ถึง 99 บน build นี้ → mark BLOCK พร้อมเหตุผล (ต้องการ test data/tooling) | ข้อความ "99+" | Low | |
 | FO-TC-SHELL-031 | nav badge — guest/new | GUEST vs NEW | Edge | session guest และ new | 1. ดู nav บน feed ทั้งสอง session | guest/new ไม่มีข้อมูล unread → ไม่มี badge เลย | nav ไม่มีเลขทั้งคู่ | Medium | |
-| FO-TC-SHELL-032 | nav active บน public profile | MEMBER | Edge | เปิด profile คนอื่น (แตะ avatar/ชื่อบนโพสต์) | 1. ดู active pill บน nav ขณะอยู่หน้าโปรไฟล์เขา | pill active อยู่ที่ **Feed** (design ล็อก — อยู่ Profile หรือไม่มี pill = FAIL) | Feed active แม้อยู่หน้า profile | Low | |
+| FO-TC-SHELL-032 | nav active บน public profile | MEMBER | Edge | เปิด profile คนอื่น (แตะ avatar/ชื่อบนโพสต์) | 1. ดู active pill บน nav ขณะอยู่หน้าโปรไฟล์เขา | ขณะอยู่ profile คนอื่น ไม่มีแท็บใดไฮไลต์ (ไม่ไฮไลต์ Profile) | Feed active แม้อยู่หน้า profile | Low | |
 | FO-TC-SHELL-033 | nav หายใต้ overlay | MEMBER | Func | เปิด Post Viewer จาก grid tile | 1. แตะ grid tile → viewer เปิด 2. ดู nav 3. กด back ปิด viewer | nav หายระหว่าง viewer/Post Detail เปิด; ปิดแล้ว nav กลับมาเหมือนเดิม | nav หายระหว่าง overlay | Medium | |
 | FO-TC-SHELL-034 | nav บนหน้าลึก | MEMBER | Edge | เข้าหน้าลึก (เช่น settings, saved, ห้องแชท) | 1. เข้าหน้าลึกแล้วดูด้านล่างจอ | หน้าลึก **ไม่มี bottom nav** — ออกได้เฉพาะลูกศร back บนซ้าย (nav มีเฉพาะ root 5 หน้า + หน้าโปรไฟล์) | ไม่มี pill ลอยล่าง | Medium | |
 
@@ -99,7 +99,7 @@
 | FO-TC-SHELL-035 | feed tabs UI | MEMBER | UI | อยู่ feed | 1. ดูแถบใต้ header | — | 3 ปุ่ม All Posts / Following / Favorites + pill ชี้ตำแหน่งอยู่ใต้แท็บ active (ค่าเริ่มต้น "all") | Medium | |
 | FO-TC-SHELL-036 | feed tab — Following | MEMBER | Func | อยู่ feed | 1. แตะ "Following" | สลับเป็นฟีดเฉพาะคนที่ follow + scroll กลับบนสุด + pill เลื่อนมาใต้ Following | pill slide ไปใต้ Following; เนื้อหาเปลี่ยน | High | |
 | FO-TC-SHELL-037 | feed tab — Favorites | MEMBER | Func | อยู่ feed | 1. แตะ "Favorites" | เหมือน 036 แต่กรองเฉพาะโพสต์ favorite | pill ใต้ Favorites; เห็นเฉพาะโพสต์ favorite | High | |
-| FO-TC-SHELL-038 | feed tab — re-tap active | MEMBER | Edge | อยู่แท็บ All Posts | 1. แตะ "All Posts" ซ้ำ | แท็บที่ active อยู่แล้วกดซ้ำ → ไม่ re-render ไม่มีอะไรเปลี่ยน | หน้าจอนิ่ง | Low | |
+| FO-TC-SHELL-038 | feed tab — re-tap active | MEMBER | Edge | อยู่แท็บ All Posts | 1. แตะ "All Posts" ซ้ำ | re-tap แท็บที่ active อยู่บน feed → scroll กลับบนสุด (ไม่เปลี่ยนแท็บ) | หน้าจอนิ่ง | Low | |
 | FO-TC-SHELL-039 | feed tab — following empty | NEW | UI | session new (ไม่เคย follow) | 1. แตะ "Following" | แสดง empty state | icon คน + ข้อความต้องตรง "Follow others to see their posts here / ติดตามผู้อื่นเพื่อดูโพสต์ของพวกเขาที่นี่" | Medium | |
 | FO-TC-SHELL-040 | feed tab — favorites empty | GUEST | UI | guest อยู่ feed | 1. แตะ "Favorites" | แสดง empty state | icon ดาว + ข้อความต้องตรง "No favorites yet / ยังไม่มีรายการโปรด" | Medium | |
 | FO-TC-SHELL-041 | feed tabs as guest | GUEST | Func | guest อยู่ feed | 1. สลับ Following ↔ Favorites ↔ All Posts | feed tabs **ไม่ถูก gate** → สลับได้ปกติ; following/favorites = empty state | tabs ทำงานเหมือน member | Medium | |
@@ -146,9 +146,16 @@
 | FO-TC-SHELL-063 | light theme shell | MEMBER | UI | สลับธีม Light ผ่าน Settings ในแอป (SETUP-07) หรือธีมระบบเครื่อง | 1. ดู header/nav/active pill บน feed | nav pill โทนสว่างอ่านชัด; header ชัด; active pill + badge อ่านชัด; wordmark แดงคอนทราสต์พอ | ไม่มีจุดจางหาย | Low | |
 | FO-TC-SHELL-064 | lang swap mid-shell | MEMBER | Func | อยู่ feed เลื่อนลงกลาง ๆ | 1. เข้า Settings → Language → เลือกไทย → กลับ feed | label ทั้งแอปสลับไทยทันทีโดยไม่ reload + ตำแหน่ง scroll เดิมคงอยู่ + pill แท็บวัดใหม่ | ทุก label สลับทันที | Medium | |
 
+### 2.9 Negative Global Sweeps (V1 Policy)
+
+| TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
+|---|---|---|---|---|---|---|---|---|---|
+| FO-TC-SHELL-066 | negative sweep ไม่มีจ่ายเงินในแอป (V1) | MEMBER | Edge | member ใช้งานแอปปกติ | 1. ตรวจสอบหน้า Feed, Search, Create, Detail, Chat, Board, Alerts, Profile, Settings 2. สำรวจทุกปุ่มและการตั้งค่า | ไม่มีช่องทางชำระเงิน, ไม่มีตะกร้าสินค้า (Cart), ไม่มี Checkout, ไม่มี In-app Wallet/Coin หรือฟอร์มกรอกบัตรเครดิตใดๆ ทั้งสิ้นใน V1 (ดีลจบนอกแอป ตามกติการะบบ 10 / GAP-7) | ทุกหน้าจอไม่มีองค์ประกอบการชำระเงิน | High | |
+
 ## 3. หมายเหตุ / OPEN items
 
-- **[OPEN] SHELL-030** — badge `99+` cap: ต้องมีบัญชีเทสที่ unread >99 หรือ tooling/seed data จากทีม — ถ้าทำไม่ได้บน build นี้ mark BLOCK พร้อมเหตุผล
+- **[CLOSED-DEC-01] SHELL-066** — negative sweep ไม่มีจ่ายเงินในแอป (V1): ครอบคลุม GAP-7 ยืนยันตามกติการะบบข้อ 10
+- **[CLOSED] SHELL-030** — badge `99+` cap: ยืนยันพฤติกรรม cap ที่ 99+ เมื่อ unread > 99
 - **SHELL-046 (ยืนยัน spec แล้ว 2026-10-28)** — scroll-to-hide ใช้ได้เฉพาะหน้า feed เท่านั้น: สถานะ "แถบหลบ" ของ feed **ต้องไม่ลามไปซ่อน nav ของหน้าอื่น** (profile/search/alerts ฯลฯ ต้องแสดง nav ปกติเสมอ) — ถ้าแอปจริงพบ nav หน้าอื่นหายตาม = bug ให้ FAIL (ใน prototype เคยพบสถานะนี้ลามข้ามหน้า)
 - **SHELL-054 (ยืนยัน spec แล้ว 2026-10-28)** — ปุ่ม/เจสเจอร์ back ของระบบ (Android) ต้องถอยหน้าภายในแอปเทียบเท่า in-app back เสมอ ห้ามออกจากแอปตอนอยู่หน้าลึก (อยู่ feed root ถึงออกได้ตามมาตรฐาน OS) — เงื่อนไขนี้เพิ่มลง inventory §2.12 (แถว device back) แล้ว; iOS ไม่มีปุ่ม back → เคสนี้เทสเฉพาะ Android
 - **SHELL-055 (ตัดออกจากฉบับแอปจริง)** — เคสเดิมเทสปุ่ม ESC บน desktop browser; บนมือถือไม่มีปุ่ม ESC จึงไม่มีวิธีเทส → ตัดเคสออกและ**ปลด ID 055** (ไม่นำเลขนี้กลับมาใช้ เพื่อคงเลขเดิมของเคสอื่นให้ trace กับ inventory ได้ตรง)
@@ -156,4 +163,4 @@
 - **SHELL-065 (spec ล็อก 2026-10-28)** — แต่ละแท็บของ bottom nav จำ state ของตัวเองแบบ IG: สลับแท็บแล้วกลับมา = กลับมาที่หน้า+ตำแหน่ง scroll เดิม (รวมหน้าลึกที่เปิดค้างในแท็บนั้น) — **สลับแท็บไม่ใช่รีเฟรช**; ข้อยกเว้นเดียวคือ re-tap แท็บที่ active อยู่ = pop กลับ root ของแท็บนั้น (SHELL-027) — หมายเหตุ: แก้ prototype ให้ alerts/board/chat/profile จำ stack+scroll แยกแท็บแล้ว (เดิม alerts กลับมาเด้งขึ้นบนสุด — ตรว)
 - **ขอบเขตที่ตัดออก**: post card/media/action บน feed (FO-TEST-03), เนื้อหาหน้า search/sfilter (04), viewer/detail internals (06), sheet/dialog mechanics เช่น backdrop (07), alerts list เนื้อหา + mark-all-read ภายในหน้า (10), drawer variant แบบ dev + nav ไอคอนล้วน + dev sidebar = prototype harness (ไม่ใช่ production), snooze/prefs ที่กระทบ All tab (15), language/theme sweep เต็ม (19)
 - toast/pin pill เป็นของ action แต่ละ module — ไฟล์นี้เช็กเฉพาะที่ trigger จาก shell (toast ของเมนู drawer ลอยล่างจอ ~2 วิ ตาม design)
-- สถิติ: **64 TC** — High 23 / Medium 32 / Low 9 (SETUP rows 9 แถวแยกใน checklist; รวมใน csv 73 แถว)
+- สถิติ: **65 TC** — High 24 / Medium 32 / Low 9 (SETUP rows 9 แถวแยกใน checklist; รวมใน csv 74 แถว)

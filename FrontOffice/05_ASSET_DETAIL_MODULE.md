@@ -250,7 +250,7 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 | 1 | `detail-head` (dh3) | back `‹` + title `รายละเอียด`/`Detail` (กึ่งกลาง) + `pm-btn` `…` — sticky ใน scroll |
 | 2 | `detail-hero` | รูปแรกเต็มกว้าง; `photo-counter` `1/N` เมื่อ photos >1; clip badge + duration + progress เมื่อมี clip (`clipUiHTML` — mechanics canonical 02_FEED); `photo-dots` ใต้ hero |
 | 3 | `post-actions` | `like-btn` (heart — **ไม่มีตัวเลข**), `comment-btn` + count (ซ่อนทั้งปุ่มเมื่อ `noComments`), `views-stat` eye + count (ซ่อนเมื่อ `hideCounts` หรือ `views` ว่าง/`"0"`), `share-btn`; `act-right`: `mf-btn` (bell — `Follow this model`/`Following this model`) + `wl-btn` (gift — `Wish List`) |
-| 4 | `inline-tag` | `ลงขาย`/`FOR SALE` เมื่อมี `price`; `โชว์`/`SHOWCASE` (muted) เมื่อไม่มี — tag ขับด้วย price ไม่ใช่ `pfkind` (ดู Sold Post Rule) |
+| 4 | `inline-tag` | ตาม `pfkind` (DEC-21): `sale` → `ลงขาย`/`FOR SALE`; `show` → `โชว์`/`SHOWCASE` (muted); `sold` → `ขายแล้ว`/`SOLD` (muted); `hide` → `ซ่อน`/`HIDDEN` (muted); โพสต์ธรรมดา (`post`) ไม่มี tag |
 | 5 | `detail-name` | `Brand + Model` จาก flat `specs` (ตัดค่า `n/a`/`N/A` ทิ้ง); `specs` ว่าง → fallback = caption ส่วนแรกก่อน `—` (trim) |
 | 6 | `detail-ref` | `Ref. {value}`; `n/a` → `Ref. -`; **ไม่ render เลย** เมื่อ `specs` ว่าง |
 | 7 | `Descriptions`/`คำอธิบาย` + desc | `p.desc` (field ของตัวเอง — **ไม่ copy จาก caption**); ว่าง → `-`; `#tag` ภายใน desc = `.igd-tag` กด → search (เหมือน caption hashtags) |
@@ -321,7 +321,7 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 
 ## Photo Carousel Rule
 
-- Hero tap: ครึ่งขวา next / ครึ่งซ้าย prev (wrap-around), อัปเดต `photo-counter` + `photo-dots` — handler เดียวกับ feed card (`.post-photo, .detail-hero` shared)
+- Hero swipe: เลื่อนทีละ 1 รูป หยุดที่รูปแรกและรูปสุดท้าย (ไม่วน); double-tap = ไลก์ (guest → gate); single tap ไม่ทำอะไร; อัปเดต `photo-counter` + `photo-dots` — handler เดียวกับ feed card (`.post-photo, .detail-hero` shared; ตาม 02 DEC-14)
 - รูปเดียว → tap ไม่ทำอะไร; มี clip → tap = clip play control (`clipUiHTML` mechanics 02_FEED)
 - **ไม่มี** full-screen image viewer / zoom / pinch — ตัดจาก spec เดิม (B1 ใน gap inventory — contract §18)
 
@@ -336,7 +336,7 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 
 - Reachability: own profile `sold`/ `all` tab → pfp viewer → `Tap for details` (hasDetails) → `View full detail` → detail — viewer คนอื่นไม่มีทางถึง (visibility matrix; public profile leak ที่ 00_GLOBAL §10 บันทึกเป็น defect ไม่ใช่ spec)
 - Display: detail render ตามข้อมูลที่โพสต์เหลือ — `pfkind:"sold"` **ไม่**เปลี่ยน anatomy
-  - โพสต์ที่ขายผ่าน `markAssetSold`: price + specGroups คงอยู่ → ยังขึ้น `FOR SALE` tag + spec groups เต็ม (deviation — ไม่มี sold state บน detail tag)
+  - โพสต์ที่ขายผ่าน `markAssetSold`: tag เป็น `SOLD` (DEC-21) และ spec groups คงอยู่
   - gfx sold seeds (`PF_GFX_SOLD`): flat `specs` เท่านั้น + `price:null` → `SHOWCASE` tag + name จาก specs + ไม่มี spec groups (deviation — tag อ่านจาก price ไม่ใช่ pfkind)
 - `pm-btn` บน sold post → `View sale record` แทน `Edit` → `sold:{id}` page (private sale record — canonical 04/14; `soldFromPost` materialize เมื่อไม่มี link)
 - `sold` ไม่มี `Edit`/`Mark as sold` ใน menu; `applyPostEdit` กัน status sold ไว้แล้ว (canonical 02/04)
@@ -483,10 +483,10 @@ Contract set (prototype ไม่มี tracking layer — เหมือน ba
 | AC ID | Criteria |
 |---|---|
 | AC-DETAIL-006 | Detail head ต้องมี back + title `รายละเอียด`/`Detail` + `...` (`pm-btn`) และ sticky ใน scroll |
-| AC-DETAIL-007 | Hero ต้องแสดง `photo-counter` `1/N` + dots เมื่อ photos >1 และ tap ครึ่งซ้าย/ขวาเลื่อนรูป wrap-around; ไม่มี full-screen viewer |
+| AC-DETAIL-007 | Hero ต้องแสดง `photo-counter` `1/N` + dots เมื่อ photos >1 และ swipe เลื่อนรูปทีละ 1 หยุดที่ปลาย (ไม่วน) และ double-tap = ไลก์; ไม่มี full-screen viewer |
 | AC-DETAIL-008 | Action row ต้องมี like / comment(+count) / views / share และ `act-right` = `mf-btn` + `wl-btn` — ต้องไม่มี save-btn, ask-pill, liked-by row หรือ seller block |
 | AC-DETAIL-009 | `comment-btn` ต้องซ่อนทั้งปุ่มเมื่อ `noComments`; `views-stat` ต้องซ่อนเมื่อ `hideCounts` หรือ `views` ว่าง/`"0"` |
-| AC-DETAIL-010 | Tag ต้องเป็น `ลงขาย`/`FOR SALE` เมื่อโพสต์มี `price` และ `โชว์`/`SHOWCASE` (muted) เมื่อไม่มี |
+| AC-DETAIL-010 | Tag ตาม `pfkind` (DEC-21): sale → `FOR SALE`, show → `SHOWCASE`, sold → `SOLD`, hide → `HIDDEN`, โพสต์ธรรมดาไม่มี tag |
 | AC-DETAIL-011 | `detail-name` = Brand+Model จาก specs (ตัด `n/a`), fallback caption ส่วนแรกก่อน `—`; `detail-ref` = `Ref. {v}` (`Ref. -` เมื่อ n/a) และไม่ render เมื่อไม่มี specs |
 | AC-DETAIL-012 | `Descriptions` ต้อง render `p.desc` (ไม่ copy caption); ว่าง → `-`; `#tag` ใน desc ต้องเปิด search results ของ tag นั้น |
 | AC-DETAIL-013 | Spec groups ต้อง render ทุกกลุ่มใน `specGroups` **รวม `Price & Data Source`** (`Asking Price`/`Estimated Market Price`/`Last Price Update`/`Data Source`) — ต่างจาก feed expander ที่ filter กลุ่มนี้ออก |
@@ -576,3 +576,10 @@ Contract set (prototype ไม่มี tracking layer — เหมือน ba
 - Sold state visual บน detail (tag ปัจจุบันอ่านจาก price — deviation #6)
 - Unavailable detail page เต็มรูปแบบ (`รายการนี้ไม่พร้อมใช้งานแล้ว`) แทน toast/entry-level fallback
 - External deep link → Post Detail (contract 00_NAV §10 — ไม่มี route ใน prototype)
+
+
+## Batch A Amendments (2026-10-30)
+
+- Detail มีแถว liked-by (avatar stack + "Liked by {name} and others") ใต้ action row เมื่อมี likes
+- เมื่อปิด commenting: ซ่อนไอคอน 💬 และช่อง "Add comment…" ทุก surface
+- Post ที่ถูกลบ/ไม่พร้อมใช้ → หน้า unavailable `รายการนี้ไม่พร้อมใช้งานแล้ว` พร้อมปุ่มกลับ (ไม่ใช่ toast)

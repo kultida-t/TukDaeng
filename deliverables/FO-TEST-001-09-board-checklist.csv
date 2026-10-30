@@ -4,7 +4,7 @@ SETUP-02,Setup,แอปติดตั้งแล้ว,ลบข้อมู�
 SETUP-03,Setup,แอปสะอาด,ไม่ sign in → เดินเข้า feed ได้เลย,guest mode + bottom nav ครบ,GUEST,—,,,
 SETUP-04,Setup,แอปสะอาด,sign in ด้วยบัญชีทดสอบที่ทีมสร้าง,เข้า feed เป็นสมาชิก + avatar/ชื่อตัวเองในที่ที่ต้องแสดง,MEMBER,—,,,
 SETUP-05,Setup,แอปสะอาด,สมัครใหม่ด้วยเบอร์/อีเมลทดสอบจริง → ผ่าน onboarding จนเข้า feed,member ใหม่ (board ไม่แยกสถานะ),NEW,—,,,
-SETUP-06,Setup,sign in แล้ว,"บันทึกลง Note: ACTOR-MEMBER / ACCT-2 / ART-FEAT = บทความบน hero / ART-A = บทความนอก featured / CAT-X = หมวดที่มีบทความเยอะ / Q-HIT = คำที่ควรเจอใน title / Q-MISS = คำที่ไม่ควรเจอ",ข้อมูลพร้อม,MEMBER,—,,,
+SETUP-06,Setup,sign in แล้ว,บันทึกลง Note: ACTOR-MEMBER / ACCT-2 / ART-FEAT = บทความบน hero / ART-A = บทความนอก featured / CAT-X = หมวดที่มีบทความเยอะ / Q-HIT = คำที่ควรเจอใน title / Q-MISS = คำที่ไม่ควรเจอ,ข้อมูลพร้อม,MEMBER,—,,,
 SETUP-07,Setup,อยู่หน้าใดก็ได้,แท็บ Board → board home; burger = Categories; แว่น = search; View all = boardall; ใน article: back/like/share เป็น floating pill บนสุด,ทางเข้าทำงานตำแหน่งตาม spec §6,—,—,,,
 SETUP-08,Setup,เป็น guest,กด action ที่ gate (เช่น like ใน article),Member Sheet เด้ง (Sign in/Sign up/Close) ขึ้นจากขอบล่างเหมือนทุกหน้า,GUEST,—,,,
 SETUP-09,Setup,มีเครื่องจริงอีกเครื่อง,ติดตั้ง build เดียวกันลงเครื่องสอง → sign in ACCT-2 → อยู่ feed,บัญชีสองพร้อม — ถ้าไม่มี → เคส ACCT-2 เป็น BLOCK,—,—,,,
@@ -67,13 +67,13 @@ FO-TC-BRD-055,Nav & State,อยู่ board,แตะบทความรั�
 FO-TC-BRD-056,Nav & State,ตั้งแอปเป็นไทยแล้วอังกฤษ,ไล่ทุกหน้า (board/boardall/Categories/boardsearch/boardart) → เปลี่ยนภาษา → ไล่ซ้ำ,ทุกข้อความ UI ตามภาษาแอป — ค้างอีกภาษา = FAIL — ยกเว้นเนื้อบทความจริง (content จาก CMS),MEMBER,HIGH,,,
 FO-TC-BRD-057,Nav & State,theme = dark,ไล่ทุกหน้า + เปิด article เลื่อนสุด → เช็ก contrast,ทุกตัวอักษรอ่านได้ไม่มีจุดจมพื้นหลัง/สีพัง,MEMBER,HIGH,,,
 FO-TC-BRD-058,Nav & State,เปิดบทความ,ดูขอบล่าง + ลอง back,ไม่มี bottom nav — ออกทาง back pill (device back เทียบเท่า),MEMBER,HIGH,,,
-FO-TC-BRD-059,Real Device,เครื่องสอง sign in ACCT-2,เครื่องหลัก MEMBER like ART-A → เครื่องสองเปิด ART-A เดียวกัน,เครื่องสองเห็นตัวเลขรวมแต่ pill ไม่ on สำหรับ ACCT-2 (like ผูกบัญชี §12) — ไม่มี ACCT-2 → BLOCK,MEMBER + ACCT-2,HIGH,,,
-FO-TC-BRD-060,Real Device,เปิด ART-A บนสองเครื่องพร้อมกัน,เครื่องหลักแตะ like → เครื่องสองดูตัวเลข,ตัวเลขอัปเดตข้ามเครื่อง (sync ผ่าน server)— ไม่มี ACCT-2 → BLOCK,MEMBER + ACCT-2,MED,,,
-FO-TC-BRD-061,Real Device,like ART-A ไว้,kill แอป → เปิดใหม่ → เข้าบทความเดิม,pill ยัง on + count คง (server-backed),MEMBER,HIGH,,,
-FO-TC-BRD-062,Real Device,เปิด ART-A + share sheet,Copy link → วางลิงก์ → เปิด,ลิงก์ resolve ไป ART-A จริง — ไม่มี deep link → BLOCK,MEMBER,HIGH,,,
-FO-TC-BRD-063,Real Device,มีลิงก์บทความจริง (จาก 062),ปิดแอป → เปิดลิงก์บนเครื่อง guest → เข้าในแอป,เปิด Article Detail อ่านได้เต็มโดยไม่ gate — ไม่มี deep link → BLOCK,GUEST,MED,,,
-FO-TC-BRD-064,Real Device,มีบทความถูกลบ/unpublish บน BO,เปิดลิงก์บทความนั้น,หน้า Article not found + This article is no longer available. — ไม่มีวิธี → BLOCK,MEMBER,MED,,,
-FO-TC-BRD-065,Real Device,ปิดแอปสนิท → เปิดลิงก์บทความ,อยู่ Article Detail → แตะ back,ไม่มี history → back ตก Feed (ไม่ปิดแอป) ตาม contract §13 — ไม่มี deep link → BLOCK,MEMBER,HIGH,,,
+FO-TC-BRD-059,Real Device,เครื่องสอง sign in ACCT-2,เครื่องหลัก MEMBER like ART-A → เครื่องสองเปิด ART-A เดียวกัน,like เป็น per-user: เครื่องสองเห็นตัวเลขรวมจาก server แต่ pill on เฉพาะบัญชีที่กด,MEMBER + ACCT-2,HIGH,,,DEC-25 A2
+FO-TC-BRD-060,Real Device,เปิด ART-A บนสองเครื่องพร้อมกัน,เครื่องหลักแตะ like → เครื่องสองดูตัวเลข,like count sync ข้ามเครื่องผ่าน server,MEMBER + ACCT-2,MED,,,DEC-25 A2
+FO-TC-BRD-061,Real Device,like ART-A ไว้,kill แอป → เปิดใหม่ → เข้าบทความเดิม,pill on และตัวเลขคงอยู่หลัง kill/restart,MEMBER,HIGH,,,DEC-25 A2
+FO-TC-BRD-062,Real Device,เปิด ART-A + share sheet,Copy link → วางลิงก์ → เปิด,Copy link → ลิงก์ deep link เปิดบทความ ART-A ได้จริง,MEMBER,HIGH,,,DEC-25 A3 / DEC-27 C3
+FO-TC-BRD-063,Real Device,มีลิงก์บทความจริง (จาก 062),ปิดแอป → เปิดลิงก์บนเครื่อง guest → เข้าในแอป,deep link เปิด Article Detail อ่านได้โดยไม่ gate,GUEST,MED,,,DEC-25 A3
+FO-TC-BRD-064,Real Device,มีบทความถูกลบ/unpublish บน BO,เปิดลิงก์บทความนั้น,"ไม่พบบทความ: ""Article not found"" + ""This article is no longer available."" + ปุ่มกลับ",MEMBER,MED,,,DEC-25 A3
+FO-TC-BRD-065,Real Device,ปิดแอปสนิท → เปิดลิงก์บทความ,อยู่ Article Detail → แตะ back,deep link ไม่มี history → back ตก Feed,MEMBER,HIGH,,,DEC-25 A3
 FO-TC-BRD-066,Real Device,เปิด board โหลดเสร็จแล้ว,เปิดเครื่องบิน → เลื่อน/แตะบทความ → กด like → เปิดเน็ตคืน,หน้าที่โหลดแล้วอ่านได้ต่อ; action ที่ต้องเน็ต error/ล้มเหลวชัด ไม่ silent; เน็ตกลับ → ทำต่อได้,MEMBER,MED,,,
 FO-TC-BRD-067,Real Device,มีวิธีทำรูปแตก/ไม่โหลด,เปิด board ตอนรูปโหลดไม่สำเร็จ,placeholder/fallback ตาม design — layout ไม่พัง — ทำไม่ได้ → BLOCK,MEMBER,MED,,,
 FO-TC-BRD-068,Real Device,มี like/share สำเร็จแล้ว,แตะ like + share บทความ → ไปแท็บ Alerts,ไม่มีรายการ alerts เพิ่มจาก board (spec §17),MEMBER,MED,,,

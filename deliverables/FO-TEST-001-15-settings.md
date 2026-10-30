@@ -287,6 +287,7 @@
 | SET-118 | offline — เขียนไม่ได้แจ้งชัด | MEMBER | POSITIVE | เคยเปิด `favorites` มีข้อมูล | airplane on → เปิด `favorites`/`muted`/`blocked` → ลอง Remove/Unblock/Snooze → กลับ online | เห็น list ชุดล่าสุด (offline contract) · action เขียนไม่สำเร็จ + แจ้งชัด (ไม่เงียบ/ไม่บันทึกหลอก) · reconnect ตรง server | — | HIGH | |
 | SET-119 | TH/EN sweep ทั้ง settings | MEMBER | POSITIVE | สลับภาษาใน `lang` | เปิดทุกหน้า settings stack ทั้ง TH+EN รวม dialogs (logout/reset/unblock/forgotPwd/del) | ทุก label+toast+dialog+placeholder ตามภาษา — EN ค้างในโหมด TH (หรือกลับกัน) = FAIL (จุดเฝ้าระวัง: toasts favorites/unmute/unblock/reset/mute + dialog reset/mute + restrict hint) | — | HIGH | |
 | SET-120 | dark sweep | MEMBER | POSITIVE | เปิด dark | เปิดทุกหน้า + dialogs + toggles + legal text | อ่านได้ครบ ไม่มีตัวอักษรจมพื้น · สวิตช์/เครื่องหมายถูก/แถวแดงเห็นชัดทั้ง 2 ธีม | — | MED | |
+| SET-121 | ขอบเขตข้อมูลที่กู้คืน (Restore Scope) เมื่อ sign-in ระหว่าง 30d grace | MEMBER | STATE | บัญชีกดลบเข้าสู่ grace period 30 วัน | 1. Sign-in ด้วยอีเมล/รหัสผ่านเดิม 2. ตรวจสอบโพสต์สินค้า, Saved, Wishlist, ประวัติแชท 3. ตรวจสอบหน้า Watch Alerts | โพสต์สินค้า, รายการ Saved, รายการ Wishlist และประวัติแชทกลับมาครบถ้วนตามปกติ **ยกเว้น Watch Alerts** ที่ถูกล้างออกและไม่กู้คืนตามกติกากลาง (GAP-16 / DEC-10) | ข้อมูลหลักคืนครบ + Watch Alerts ว่าง | HIGH | |
 
 ## §3 Spec deviations / contract ที่กระทบเคสเล่มนี้
 
@@ -347,4 +348,4 @@
 - **spec gap/จุดเฝ้าระวังรอบรีวิว**: notif toggle = "on this device" vs rule ไม่สร้าง alert item [OPEN — รอตัดสิน: ระดับเครื่องหรือระดับบัญชี] (เฝ้าดูเครื่อง B) · del-account failure path ยังไม่มีเคสบังคับ · snooze 30d expiry เทสไม่ได้ · ATT→Personalized interplay ทำ contract note · legal content เป็น placeholder-grade ตาม spec (production ต้อง legal จริง+version/effective date — เคสเช็กโครงไม่ล็อก copy)
 - **ครอบโดยเล่มอื่น ไม่ทำซ้ำ**: interested/ni list mechanics → FO-TEST-14 (LIB-088..097) · saved/wishlist/archive/walerts → FO-TEST-14/11 · auth mechanics (sign in/up/OTP/forgot semantics) → FO-TEST-01 · block/mute/report creation → FO-TEST-16 · Member Sheet → FO-TEST-17 · ni-card → FO-TEST-03 · favorites feed tab internals → FO-TEST-03
 
-- สถิติ: **120 TC** — High 71 / Medium 44 / Low 5 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 130 แถว)
+- สถิติ: **121 TC** — High 72 / Medium 44 / Low 5 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 131 แถว)

@@ -212,6 +212,7 @@
 | PROF-108 | device back ทีละชั้น | MEMBER | STATE | profile `U-2` + ⋯ sheet + block sheet + dialog ซ้อน | เปิด ⋯ → Block → ยกเลิก → กด device back ทีละครั้ง | ปิดชั้นบนสุดก่อน (sheet → menu → profile → source) — ไม่มีการเด้งออกหลายชั้นในครั้งเดียว | — | MED | |
 | PROF-109 | offline behavior | MEMBER | EDGE | ตั้งค่า offline (airplane) | เปิด profile `U-2` + กด Follow + แก้ bio save | อ่าน: profile แสดงข้อมูลล่าสุดที่ cache ไว้ (stale) พร้อมสถานะ offline ชัดเจน; **เขียน: follow/save ต้อง error ชัดเจน + ไม่บันทึกหลอก** — reconnect แล้ว state ต้องตรง server | — | HIGH | |
 | PROF-110 | rotate + small screen | MEMBER | EDGE | เครื่องจอเล็กสุดในทีม | own/public/pedit หมุนแนวนอน + เทียบจอแคบ | layout ไม่พัง: stats ไม่ทับ ปุ่มไม่ล้น grid ปรับคอลัมน์ state ไม่หาย — เครื่องล็อก portrait → เคสนี้ `BLOCK` | — | LOW | |
+| PROF-111 | public surface ซ่อนบัญชี deactivated ทันที | MEMBER + ACCT-2 | STATE | ACCT-2 ยืนยัน Delete Account (เข้าสู่ Deactivated/Grace 30 วัน) | 1. MEMBER ค้นหาชื่อ ACCT-2 ใน Search 2. เปิดดูหน้าโปรไฟล์ของ ACCT-2 ผ่าน direct link | ค้นหาไม่พบชื่อ ACCT-2 ในระบบ และหน้าโปรไฟล์ของ ACCT-2 แสดงหน้าว่าง/ข้อความไม่พบผู้ใช้ โพสต์ทั้งหมดของ ACCT-2 ถูกซ่อนจากสาธารณะทันที (GAP-14 / DEC-08) | — | HIGH | |
 
 ## §3 Spec deviations/contract ที่กระทบเคสเล่มนี้
 
@@ -263,4 +264,11 @@
 - **ครอบโดยเล่มอื่น ไม่ทำซ้ำ**: portfolio/`pfasset`/sold/sell → FO-TEST-13 · Chat Center/room internals → FO-TEST-08 · create flow จาก `+` → FO-TEST-05 · PV/Detail internals → FO-TEST-06 · report reason internals → FO-TEST-16 · Settings lists anatomy (Favorites/Muted/Blocked) + delete account → FO-TEST-15 · Member Sheet internals → FO-TEST-17
 - **จุดที่แก้ spec+prototype ในรอบนี้** (align ให้ตรง contract ก่อนเทส): (1) spec 06/07 + prototype: `pf-msg`/`pfOpenChat` DM จริง + `chRoomFor` ห้องเดียวต่อ account + `chatQuickAsk` แนบการ์ดเป็น `m.pid` + DM ไม่ขึ้น Items view (2) `pfNavHTML(own)` — viewer profile ไม่มี nav (3) ตัด dead controls `pf-note`/`pf-sleep`/`pf-addchip`/`pf-avadd`/`pf-addp`/username toast/`qr` act ออกจาก render (4) `pe-pic` → OS photo picker จริง + `pfSave` (5) `pfRestrictHint` wire หลัง unblock (6) persist layer `pfSave`/`pfLoad` → `fo_pfstate:{member|new}` (7) spec 06 §3/§5/§6/deviations + spec 07 §2/§3/§4/deviations/AC อัปเดต lock notes
 
-- สถิติ: **110 TC** — High 60 / Medium 44 / Low 6 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 120 แถว)
+- สถิติ: **111 TC** — High 61 / Medium 44 / Low 6 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 121 แถว)
+
+
+## DEC-25 Amendments (ผลตามข้อตัดสิน IG — CSV ยังไม่ sync)
+
+- PROF-033: expected = "Followed by {name} and others" (DEC-25)
+- PROF-091: expected = "This username is already taken." / TH คู่
+- PROF-095: expected = "Invalid link — enter a URL (https://...) or @username" / TH คู่

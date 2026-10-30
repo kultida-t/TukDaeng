@@ -357,7 +357,7 @@ Output: deliverables/FO-TEST-001-12-profile.md
 - Edge: asset รูปเสีย, ราคา 0/ใหญ่มาก, sold แล้วคนยัง chat ได้ไหม
 
 TC ID: FO-TC-AST-nnn / FO-TC-PF-nnn
-Output: deliverables/FO-TEST-001-13-portfolio-asset.md
+Output: deliverables/FO-TEST-001-13-portfolio.md
 ```
 
 ---
@@ -495,7 +495,7 @@ Validate: csv 10 คอลัมน์ทุกแถว + ID ไม่ซ้ำ
 - E2E-07 Lifecycle asset: show → sale → hide → sale → sold → portfolio
 - เพิ่มเส้นที่เจอจากโค้ดได้ (ระบุเหตุผล)
 แต่ละเส้น: steps เป็นตาราง + expected ต่อขั้น + list TC ย่อยที่ครอบ
-TC ID: FO-TC-E2E-nnn
+TC ID: E2E-nnn
 Output: deliverables/FO-TEST-001-18-e2e.md
 ```
 
@@ -517,7 +517,7 @@ Output: deliverables/FO-TEST-001-18-e2e.md
 - สลับ lang/theme กลาง flow: ค้างฟอร์ม, ค้าง sheet, ค้าง viewer — state หายไหม
 
 TC ID: FO-TC-LANG-nnn / FO-TC-THM-nnn
-Output: deliverables/FO-TEST-001-19-language-theme.md
+Output: deliverables/FO-TEST-001-19-lang-theme.md
 ```
 
 ---

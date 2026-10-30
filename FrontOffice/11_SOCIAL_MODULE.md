@@ -54,8 +54,8 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Like ↔ Favorites | Like เพิ่ม Asset เข้า Favorites, Unlike ลบออก | **ขัด** — `liked` (per-post) กับ `favorite` (per-seller feed filter) เป็นคนละระบบ; liked posts ไป list `interested` (Settings) ไม่ใช่ Favorites |
 | Owner like | Owner like โพสต์ตัวเองได้ | ตรง — และโพสต์ตัวเองเท่านั้นที่แสดง `lk-n` count บนปุ่ม (likes private แบบ IG) |
 | Comment entry | Comment ทำใน Asset Detail เท่านั้น | **ขัด** — `comment-btn` อยู่บนทุก post card (feed/detail/viewer) เปิด shared comment sheet ได้ตรง ไม่ต้องเข้า detail; `pv-add` bar เป็น entry เสริม (canonical 03) |
-| Comment structure | IG-style one-level replies | ตรง — `replies[]` 1 ชั้น ไม่มี nested ซ้อน |
-| Comment composer | — | **ไม่มีใน V1** — `.comment-input` เป็น div read-only (dead); วิธีเดียวที่เพิ่ม comment ได้คือ `.emoji-row` quick-react (push comment `{id:"c-own-…", name:CP_ME, time:"Just now"}`) |
+| Comment structure | IG-style flat thread | replies แสดงต่อท้าย root เดียวกัน (flat ไม่ซ้อนเป็นต้นไม้); reply ของ reply ใส่ `@username` อัตโนมัติ (DEC-17) |
+| Comment composer | — | **อยู่ใน V1** (DEC-17, IG-style) — text input + ส่ง comment ได้; `.emoji-row` quick-react ส่งทันที; reply แบบ flat ใต้ root เดียวกัน (push comment `{id:"c-own-…", name:CP_ME, time:"Just now"}`) |
 | Comment delete/report | Delete + Report via `...` | ตรงแต่เปลี่ยน surface — ไม่มี `...` บน comment; ใช้ **long-press** (450ms) เปิด `.c-popover`: own → `Delete`, คนอื่น → `Block` + `Report` |
 | Comment moderation | Hide comment ไม่ใช้ | ตรง — ไม่มี Hide; report ไม่ทำให้ comment หายทันที |
 | Follow entry | Public Profile + owner info บน detail | ขยาย — `.follow-btn` (post-head/detail/pv foot/ps sheet), `pfp-follow` head pill, `sc-follow` search card, `pf-foll`/`pf-flw`/mfSheet/`pf-rmf` (canonical 06), `al-fbtn` (canonical 09), `lk-follow` (cosmetic — §19) |
@@ -74,7 +74,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 - Like / Unlike post (ทุก surface — feed card, detail, post viewer rail, pfp card) + like count sync
 - Likes sheet (`lk`) — liker list, `lk-note` privacy copy, `lk-follow` rows
-- Comment sheet (`commentsHTML`, `nt` variant บน viewer) — rows, one-level replies, emoji quick-react, comment like (cosmetic), long-press popover (Delete own / Block+Report others), delete confirm + cascade replies
+- Comment sheet (`commentsHTML`, `nt` variant บน viewer) — rows, flat replies ใต้ root เดียวกัน (DEC-17), emoji quick-react, comment like (cosmetic), long-press popover (Delete own / Block+Report others), delete confirm + cascade replies
 - Share sheet (`sh`) — search friends, `sh-fr` friend pick, `sh-app` (Messenger/Direct/LINE/Facebook/Copy link)
 - Save (`sv`) — `save-btn` → sheet (Saved + collections + New collection), Saved hub (`saved`/`savedcol`), collection CRUD (new/edit/cover/delete), select/manage (move, unsave/remove, add to collection), search ใน hub, long-press select
 - Wish List (`wl`) — `wl-btn` (detail only) → sheet, Wish List hub (`wishlist`/`wishcol`), collection ops เหมือน Saved
@@ -86,7 +86,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 ## Out of Scope For V1
 
 - Comment composer จริง (text input + submit) — `.comment-input` dead; Reply `.c-meta` ไม่มี handler
-- Multi-level nested comment เกิน 1 reply level, Edit comment, comment attachment/reaction/mention
+- Nested tree UI (ซ้อนลึกเป็นต้นไม้), Edit comment, comment attachment, mention picker (ยังไม่อยู่ใน V1)
 - Native OS share sheet, share deep-link validation flow
 - Repost, Story, activity feed อื่นนอกจาก Alerts (09)
 - Notification generation จาก social actions (ALERTS seed-only — contract 09 §14)
@@ -211,7 +211,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Sheet anatomy: handle + title `ความคิดเห็น`/`Comments` + `.sheet-list` rows + `.emoji-row` (8 emoji: ❤️🙌🔥👏🥲😍😮😂) + `.comment-input` (avatar + `Add a comment...` field + img/gif icons — **dead**, ไม่มี input/submit handler)
 - Comment source: `COMMENTS[pid]` seed หรือ generated จาก `LIKER_POOL`/`PF_CMT_TEXTS` (`commentsFor` — names ตัด seller ออก, avatar จาก `pfAvatar` เมื่อ `commentPreview` match); replies 1 ชั้นเท่านั้น (ไม่มี nested reply-of-reply UI)
 - `noComments` → ซ่อน `comment-btn` ทุก surface (แต่ `pv-add` ยังเปิด sheet ได้ — quirk canonical 03)
-- `.c-meta` `Reply`/`ตอบกลับ` — **ไม่มี handler** (dead affordance; guest กด → gate ตาม selector)
+- `.c-meta` `Reply`/`ตอบกลับ` — เปิด composer prefill `@{username} ` ส่งแล้วต่อท้าย root เดียวกัน (DEC-17); guest → gate ตาม selector
 
 ## Emoji quick-react (วิธีเดียวที่เขียน comment ได้ใน V1)
 
@@ -242,7 +242,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - `.share-btn` ทุก surface (feed card, detail, pv rail, pfp card) → `openSheet "sh"`; `data-shPid` จำ post (resolve จาก `.post` ancestor → fallback `detailPid`)
 - `pf-sh-share` (profile avatar overlay) → sheet เดียวกัน (canonical 06); board share `data-bdshare`/`data-bdact=share` → sheet เดียวกัน (canonical 12)
 - Sheet anatomy: `.sh-q` search (live filter `.sh-fr` ตาม name) + friends grid (`FRIENDS` 12 — avatar+username) + app row (`SHARE_APPS`: Messenger, Direct, LINE, Facebook, `Copy link` สี gray)
-- Actions: `.sh-fr` → ปิด sheet + toast `Sent to {name}`; `.sh-app` → ปิด + toast `Shared to {app}` หรือ `Link copied` (copy)
+- Actions: `.sh-fr` → ปิด sheet + toast `Sent to {name}` + โพสต์ถูกส่งเป็น post card เข้าห้องแชทกับเพื่อนคนนั้น แล้วเปิดห้องแชทนั้น (DEC-20); `.sh-app` → ปิด + toast `Shared to {app}` หรือ `Link copied` (copy)
 - **ไม่มี** native OS share, share count, share tracking, deep-link validation (contract — §20)
 - Share ไม่สร้าง alert (canonical 09)
 
@@ -493,7 +493,7 @@ And guest เปิด sheet ได้แต่ `lk-follow` gate → Member Shee
 
 Given โพสต์ไม่ `noComments`
 When กด `comment-btn` บน feed card / detail / viewer / `pv-add`
-Then comment sheet เปิด (`nt` variant เมื่อ viewer โดยไม่มี detail-open) แสดง comments + one-level replies
+Then comment sheet เปิด (`nt` variant เมื่อ viewer โดยไม่มี detail-open) แสดง comments + flat replies (DEC-17)
 And guest อ่านได้โดยไม่ gate
 
 ## AC-SOCIAL-004: Emoji quick-react adds own comment
@@ -630,3 +630,17 @@ And counts (`likes`/`views`/`comments`) ไม่ reset (post data ไม่ใ�
 - Notification generation จาก social actions (09 §14 contract)
 - Reset `savedAt`/`colAt` + counts ใน session switch (D7)
 - Report tracking for reporter (report flow full sync ใน 15 ทำแล้ว — D13 resolved FSP-031)
+
+
+## Batch A Amendments (2026-10-30)
+
+- Comment composer: ไม่มีไอคอนแนบรูป/GIF ใน V1 (ถอด dead icons)
+- Like บน comment บันทึกจริงและคงอยู่ (ไม่ใช่ cosmetic)
+- Unfollow confirm ที่ซ้อนบน caption sheet → Cancel/ยืนยันแล้วย้อนกลับ caption sheet เดิม; New collection → Cancel ย้อนกลับ save sheet
+- Share → เลือกแอป: เปิด OS share sheet พร้อมลิงก์ ; Copy link → toast `Link copied`
+- ชื่อ collection สูงสุด 40 ตัว (counter "n / 40")
+- Unfollow จาก manage-following sheet: ทันทีไม่มี confirm
+
+## Batch C Amendment (2026-10-30)
+
+- Collection add-posts picker: head `Cancel` + `Saved · Add from` + `Done`

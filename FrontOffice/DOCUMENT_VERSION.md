@@ -1,7 +1,7 @@
 # TukDaeng Document Version
 
-**Current Baseline Version:** `FO-PRD-v1.9`
-**Release Date:** 2026-10-22
+**Current Baseline Version:** `FO-PRD-v1.10`
+**Release Date:** 2026-10-30
 **Branch:** `docs-frontoffice-spec-updates`  
 **Status:** Product-reviewed baseline update for Dev / QA
 
@@ -27,6 +27,15 @@ FO-PRD-vX.Y
 ---
 
 # 2. Current Baseline Scope
+
+`FO-PRD-v1.10` covers all of `FO-PRD-v1.9` and syncs first-run consent copy + Analytics gating (แนวทางแก้ FO-AUTH consent):
+
+- Privacy Notice: คำอธิบายจาก cookies/SDK เปลี่ยนเป็น "เก็บข้อมูลบางส่วนบนอุปกรณ์และเซิร์ฟเวอร์" และเพิ่มประโยคไม่ติดตามกิจกรรมข้ามแอป/เว็บ และไม่แชร์ข้อมูลให้ผู้ลงโฆษณาหรือ data broker (`01_AUTHENTICATION_MODULE.md` step 4, `00_GLOBAL_RULES_MODULE.md` Consent Model)
+- ปุ่มและหน้า `Cookie settings` เปลี่ยนเป็น `Privacy settings` (TH `ตั้งค่าความเป็นส่วนตัว`) ใน prototype, spec, QA และ test cases — layout และจำนวนปุ่มไม่เปลี่ยน; หน้า Settings > Privacy & cookies ไม่แตะ
+- Track prompt copy เปลี่ยนเป็นการใช้กิจกรรมใน TukDaeng เพื่อแนะนำนาฬิกาและข่าวสารเท่านั้น ไม่ติดตามข้ามแอป/เว็บอื่น
+- เพิ่ม AC-AUTH-031: Analytics = off (Reject all หรือ Privacy settings) ต้องไม่ส่ง analytics event ทุกตัว รวม search event และ `auth_*` event; consent record ยังบันทึกได้ — enforce ที่ build stg/app จริง (prototype ไม่มี analytics pipeline จึงไม่มีพฤติกรรมให้ทดสอบบน prototype)
+- ปรับ test ให้ตรง: `FO-TEST-001-01-auth` / checklist (AUTH-009, 011, 012, 014, 015, 016, 020, 060), `FO-TEST-001-19-lang-theme` (LANG-002), `FO-TEST-001-00-inventory`, `QA_TEST_SCENARIO_CHECKLIST` (QA-AUTH-001 + consent expected)
+- ไม่เปลี่ยน ATT / Info.plist / backend / DB; ไม่เปลี่ยน logic ของปุ่ม Reject all ใน prototype (ยังเก็บ consent record เท่านั้น)
 
 `FO-PRD-v1.9` covers all of `FO-PRD-v1.8` and re-baselines the entire Front Office spec set to the locked `Prototypes/fo-flow/index.html` prototype (mission "Sync FrontOffice Spec ให้ตรง fo-flow Prototype", spec changes FSP-006–027 — canonical decisions อยู่ใน `TukDaeng_Master_Product_Definition.md` §16 Sync Decision Log S-01–S-29 + sign-off `deliverables/fo-spec-sync/FSP-005-consolidated-gap-signoff.md`):
 

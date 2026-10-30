@@ -473,3 +473,9 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 - Dismiss สำหรับ type อื่น + bulk dismiss
 - Comment focus/deep-scroll ใน Post Viewer (ถ้าเพิ่ม affordance)
 - Preference center เพิ่มเติม (digest, quiet hours, per-channel)
+
+
+## DEC-25 Amendments — Alerts (IG)
+
+- Alerts แสดงเป็นหน้า 10 รายการ และโหลดหน้าถัดไปเมื่อเลื่อนใกล้ท้าย (DEC-13); pull-to-refresh รองรับ (DEC-15)
+- ไม่มี system alert "new device login" ใน V1 (DEC-26)

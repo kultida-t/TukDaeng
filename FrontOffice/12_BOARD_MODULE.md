@@ -127,7 +127,7 @@ Entry notes:
 - เปิด tab `กระดานข่าว`/`Boards` + อ่านทุก surface ได้เสรี (Boards tab **ไม่อยู่**ใน gate — 00_GLOBAL §11 guest capabilities)
 - ใช้ hero carousel, View all, category pills, Categories sheet, search page, open article ได้ครบ (read-only browsing)
 - กด `[data-bdlike]` / `[data-bdshare]` (และ dead entries `[data-bdsave]`/`[data-bdact]`) → Member Sheet `Join TukDaeng` gate mode (scrim dismiss ได้ — 00_GLOBAL §11)
-- หมายเหตุ quirk: article `liked` state ค้างข้าม session (D8) — guest อาจเห็นหัวใจ `.on` จาก session member ก่อนหน้าแต่กดไม่ได้
+- like ของบทความเป็น per-user (DEC-25) — guest ไม่เห็นสถานะ like ของ session อื่นแต่กดไม่ได้
 
 ## Member
 
@@ -136,7 +136,7 @@ Entry notes:
 
 ## New Member (session `new`)
 
-- Member powers ทั้งหมด; `BOARD` flags เริ่มจาก seed (`liked:false`/`saved:false`) — แต่ session switch ไม่ reset (D8)
+- Member powers ทั้งหมด; `liked` เก็บต่อบัญชี (DEC-25) session switch ไม่ทำให้ค่าของบัญชีอื่นรั่ว
 
 ## Admin
 
@@ -174,7 +174,7 @@ Entry notes:
 | --- | --- | --- |
 | `bdQ` | search query string | reset `""` เมื่อเปิด board tab (`navgo`) หรือกด `data-bdsearch`; persist ตลอด session |
 | `bdFilterCat` | active category (`"All"` default) | reset `All` เมื่อกด `data-bdall` เท่านั้น — เลือกผ่าน sheet (`data-bdmenu-cat`) จะ persist ไป `boardall`; **ไม่ reset** เมื่อเปิด board ใหม่ |
-| `a.liked`/`a.saved` | per-article viewer flags | **ไม่ reset ข้าม session** — ไม่อยู่ใน `POST_FLAG_KEYS`/`clearUserData` (D8) |
+| `a.liked` | per-user like (DEC-25) | เก็บกับบัญชี sync ข้ามเครื่อง |
 
 ## Filter/search semantics
 
@@ -247,7 +247,7 @@ Anatomy (`.bd-dscroll` — ไม่มี bottom nav):
 - Toggle `a.liked` + `a.likes ±1` — sync ทุก `[data-bdlike]` ใน screen (class `.on` + ลูก `span` count) + ทุก `[data-bdlike-count]` + `.bd-dfoot-sub` (**dead query** — ไม่มี element นี้ใน markup, D10)
 - 1 user = 1 like ต่อบทความ (flag-based toggle — ไม่มี multi-like)
 - ไม่มี liked-by strip, likes sheet, หรือ unlike confirm — article like ไม่ใช่ post like (boundary 11 §5)
-- Guest → Member Sheet (§14); like state persist ข้าม session switch (D8)
+- Guest → Member Sheet (§14); like state เป็น per-user (DEC-25)
 
 ## Article Share (`data-bdshare`)
 
@@ -391,7 +391,7 @@ Article Detail
 | D5 | Save Article | `data-bdsave` handler + `a.saved` + toasts มี แต่ไม่มีปุ่ม render | dead — Saved Article = future; ถ้า implement ต้องไม่ชนกับ post Saved hub (canonical 11 §12) |
 | D6 | `data-bdmore`/`data-bdact`/`data-bdclear` | menu+actions unreachable (no trigger element); clear-X ไม่เคย render เพราะ `bdQ` reset ทุก entry และ sync ไม่ re-add | dead/dead-in-practice — spec ไม่รองรับเส้นเหล่านี้ |
 | D7 | Category filter = substring | pill match `(cat+title).includes(cat)` — `Rolex` จับ `Feature More Rolex Collections` + title-match ด้วย | ไม่ใช่ strict enum — documented quirk (strict-match = future decision) |
-| D8 | Session flags | `clearUserData`/`restoreUserData` ไม่แตะ `BOARD` — `liked`/`saved` ค้างข้าม guest/new/member switch | deviation เดียวกับ 11 D7 — flag ให้ dev reset เพิ่ม |
+| D8 | Session flags (แก้แล้ว DEC-25) | like เป็น per-user ตั้งแต่ DEC-25 — ไม่ค้างข้าม session | — flag ให้ dev reset เพิ่ม |
 | D9 | Search × filter ไม่ combine | search page ครอบทุก `BOARD` เสมอ ไม่สน `bdFilterCat` | spec เดิมบอก "ทำงานร่วมกันได้" — ผิดตาม prototype |
 | D10 | Dead queries/helpers | `.bd-dfoot-sub` (like handler), `bdJournal()`, `bdStepSlide()` — ไม่มี element/caller | dead — ไม่ spec |
 | D11 | Unavailable-state copy | prototype dict `บทความนี้ไม่มีให้บริการแล้ว` + EN title `Article not found`/`ไม่พบบทความ` | contract TH `บทความนี้ไม่พร้อมใช้งานแล้ว` (00_NAV §10) — unify ใน FSP-026 sweep |
@@ -553,7 +553,7 @@ Then ต้องไม่มี reachable entry ไปยัง `data-bdmore` m
 - Trending/ranking algorithm
 - Article comment
 - Article content TH localization (CMS)
-- Session-flag reset สำหรับ `BOARD` (D8)
+- like เป็น per-user (DEC-25) ไม่ต้อง reset เพิ่ม
 - Search+category combined filtering (D9)
 
 
@@ -561,3 +561,12 @@ Then ต้องไม่มี reachable entry ไปยัง `data-bdmore` m
 
 - boardsearch มีปุ่ม X (clear) ทำงานจริงในช่องค้นหา
 - หน้าบทความ V1 มีเฉพาะ back/like/share — ไม่มี save/bookmark/report/pagination (พบเพิ่ม = deviation)
+
+
+## DEC-25 Amendments — Board (IG)
+
+- Like ของบทความเป็น per-user: เก็บกับบัญชี sync ข้ามเครื่อง และคงอยู่ข้าม restart (แทน D8 ที่ค้างข้าม session)
+- Copy link สร้างลิงก์บทความที่เปิดได้จริง (deep link); guest เปิดได้โดยไม่ gate
+- บทความที่ไม่พบ → หน้า "Article not found / This article is no longer available." พร้อมปุ่มกลับ
+- Back จากการเปิดผ่าน deep link ที่ไม่มี history ตกที่ Feed
+- Tab-state และ re-tap ตาม 00_NAV DEC-25

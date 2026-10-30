@@ -478,3 +478,13 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 - ~~`modelKey` ให้ search-source alerts ด้วย~~ — RESOLVED 2026-10-29: ไม่ทำ — bell = action ติดตามรุ่นบน detail เท่านั้น (ดู deviation #15)
 - Push notification payload + deep link `walerts`/matched post
 - language sweep — WA toasts EN-hardcode
+
+
+## DEC-25 Amendments — Watch Alert (IG)
+
+- ไม่สร้าง watch row/notification ให้ตัวเองเมื่อโพสต์ตรงเงื่อนไขของตัวเอง (DEC-26)
+- alert ที่สร้างล่าสุดอยู่บนสุดของ list
+- ชื่อว่าง → ใช้ auto name ไม่ block การบันทึก
+- ลบ alert แล้ว notification ที่เคยได้รับยังคงอยู่
+- Empty state (TH): "ยังไม่มีการแจ้งเตือนนาฬิกา — แตะไอคอนกระดิ่งบนโพสต์หรือบันทึกการค้นหาเพื่อเริ่ม"
+- Copy: Edit = "แก้ไขการแจ้งเตือนนาฬิกา / Edit watch alert", Delete = "ลบการแจ้งเตือน / Delete alert" (confirm ก่อน), Updated = "Watch alert updated", Removed = "Watch alert removed

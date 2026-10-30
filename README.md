@@ -10,7 +10,7 @@ Repository นี้จัดเอกสารตามขอบเขตงา
 2. [FrontOffice/README_MODULE_INDEX.md](FrontOffice/README_MODULE_INDEX.md)
 3. [FrontOffice/TukDaeng_Master_Product_Definition.md](FrontOffice/TukDaeng_Master_Product_Definition.md)
 
-Current Front Office baseline: `FO-PRD-v1.9`
+Current Front Office baseline: `FO-PRD-v1.10`
 
 สำหรับงาน Back Office ให้เริ่มอ่าน:
 

@@ -178,6 +178,7 @@
 | WA-077 | inactive market data → หยุด trigger + warning | MEMBER + BO | NEGATIVE | alert ที่อ้าง entity/option ที่ BO กำลังจะ deactivate | ให้ admin deactivate option นั้นบน BO → เปิด walerts + ให้ ACCT-2 ลงลิสติ้งที่เคยตรง | alert เก็บอยู่ใน list แต่**หยุด trigger ใหม่** + แสดง dependency warning บนแถว/ใน sheet (contract §9 Production Rules — ต่างจาก "no current listing" ที่ alert ยังทำงานปกติ) — ไม่มีสิทธิ์ BO/ทำไม่ได้ → `BLOCK` | warning เห็นชัด | MED | |
 | WA-078 | backfill re-match dedup | MEMBER + BO | EDGE | มี watch row จาก match เดิมอยู่แล้ว | ให้ admin promote suggestion/map alias ที่กระทบ alert เดิมบน BO → รอ re-match → เปิด alerts | ไม่มี watch row ซ้ำสำหรับ `(alert_id, asset_id)` เดิม — มีเฉพาะ row ของ match ใหม่จริง (contract dedup) — ไม่มีสิทธิ์ BO → `BLOCK` | — | MED | |
 | WA-079 | delete account → alerts ยกเลิก | MEMBER | EDGE | บัญชีทดสอบที่ยอมลบทิ้งได้ + มี alerts | เริ่ม delete account → อ่าน terms → ผ่าน flow จน scheduled → login กลับ (restore) → เปิด `walerts` | terms แสดงการ์ด `การแจ้งเตือนนาฬิกาจะถูกยกเลิก`/`Watch Alerts Cancelled` + หลัง restore `walerts` **ว่าง** (alerts ถูกยกเลิกตอนเริ่มลบ) — ไม่มีบัญชีที่ลบทิ้งได้ → `BLOCK` | — | MED | |
+| WA-080 | {n} matches now recount เรียลไทม์หลังลิสติ้ง sold | MEMBER + ACCT-2 | STATE | มี watch alert ตรงกับลิสติ้ง Sale ของ ACCT-2 | 1. ตรวจสอบยอด count ใน `{n} matches now` ของ alert 2. ACCT-2 ทำการ Mark as Sold ลิสติ้งนั้น 3. MEMBER ตรวจสอบยอด count ทันที | ยอดนับ matches now ลดลง 1 ทันที และลิสติ้งที่ถูกขายหลุดออกจาก matches pool ทันที (GAP-9 / DEC-03) | ตัวเลข count ลดลงแบบเรียลไทม์ | HIGH | |
 
 ## §3 Spec deviations/contract ที่กระทบเคสเล่มนี้
 
@@ -232,4 +233,10 @@
 - **ครอบโดยเล่มอื่น ไม่ทำซ้ำ**: watch row anatomy/badge/mark-all/`walerts` toggle enforcement → FO-TEST-10 (ALT-010..056) · Post Viewer internals → FO-TEST-06 · Member Sheet internals → FO-TEST-17 · `notif_settings` anatomy + delete account flow → FO-TEST-15
 - **จุดที่แก้ spec+prototype ในรอบนี้** (align ให้ตรง contract ก่อนเทส): (1) `wa-del` → confirm dialog `Delete watch alert?`/`ลบการแจ้งเตือนนี้หรือไม่?` + `dlg-wadel-go` แทน instant delete (2) `walertsHTML` เรียงใหม่สุดบนสุด (3) persist `WATCH_ALERTS` ผ่าน `fo_walerts` + `waLoad` ใน `restoreUserData` + `syncModelFlags` หลัง applySessionData + ล้าง key ตอน demo reset (4) spec 10: §3/§4/§8/§9/§12/§14/§16/deviations/§18 อัปเดต RESOLVED + lock notes ตามการตัดสิน 6 ข้อ
 
-- สถิติ: **79 TC** — High 39 / Medium 37 / Low 3 (SETUP rows 11 แถวแยกใน checklist; รวมใน csv 90 แถว)
+- สถิติ: **80 TC** — High 40 / Medium 37 / Low 3 (SETUP rows 11 แถวแยกใน checklist; รวมใน csv 91 แถว)
+
+
+## DEC-25 Amendments (ผลตามข้อตัดสิน IG — CSV ยังไม่ sync)
+
+- WA-054: expected ใหม่ = ไม่สร้าง watch row ของตัวเองและไม่มี toast (DEC-26)
+- WA-074: expected = "Unable to load data" + "Try again" (ERROR_STATE)

@@ -169,6 +169,8 @@
 | TRS-063 | block persist ข้าม sign-out + เครื่อง B | MEMBER + ACCT-2 | STATE | `U-BLK` blocked + SETUP-05 — ไม่มี → `BLOCK` เฉพาะขาเครื่อง B | sign out → sign in ใหม่ → เช็ก · sign in MEMBER บนเครื่องสอง → เช็ก | state ติดบัญชี — รอด sign-out + ตามไปเครื่อง B (server persist) | — | HIGH | |
 | TRS-064 | TH/EN sweep | MEMBER | STATE | ผ่านหน้า report/block แล้ว | สลับภาษา TH↔EN ค้างอยู่หน้า report/keep-page → เปิด sheets อีกครั้ง | ทุกข้อความ + เหตุผล + toasts เปลี่ยนตามภาษา — prototype เพิ่ม TH ครบแล้ว (§3) · build ที่ค้าง EN บน surfaces เหล่านี้ = FAIL | — | MED | |
 | TRS-065 | dark readable | MEMBER | UI | ผ่านทุก report page/sheet/dialog แล้ว | สลับ dark → เปิด report stack + blkSheet + unblockDlg + chatReportSheet + blocked profile | อ่านครบ contrast โอเคทุก surface | — | LOW | |
+| TRS-066 | ฝั่งถูก report ไม่ได้รับการแจ้งเตือน (Anonymous Reporting) | MEMBER + ACCT-2 | NEGATIVE | MEMBER ส่ง Report โพสต์หรือผู้ใช้ของ ACCT-2 | 1. MEMBER ทำตามขั้นตอน Report จนถึง done 2. ตรวจสอบเครื่อง ACCT-2 ในหน้า Alerts, Push และ Chat | ACCT-2 ไม่ได้รับ Push Notification หรือ Alerts แจ้งเตือนใดๆ ทั้งสิ้นในขณะที่ถูกรายงาน และไม่มีตัวบ่งชี้ใดๆ ให้ทราบตัวตนผู้รายงาน (GAP-12 / DEC-06) | — | HIGH | |
+| TRS-067 | ผล moderation (remove/hide) จาก BO สะท้อนกลับ FO ทันที | MEMBER | STATE | ลิสติ้งถูก Admin ใน BO มีคำสั่ง Hide หรือ Remove | 1. ตรวจสอบหน้า Feed และผลการค้นหา 2. เปิดดูผ่าน direct link / deep link | ลิสติ้งนั้นหายไปจาก Feed และ Search ทันที และเมื่อเปิดผ่าน direct link จะแสดงหน้าจอ fallback `al_unavail` ("รายการนี้ไม่พร้อมใช้งานแล้ว") พร้อมปุ่มกลับหน้าหลัก (GAP-13 / DEC-07) | — | HIGH | |
 
 ## §3 จุดเฝ้าระวัง spec ↔ prototype ↔ เคส
 
@@ -214,4 +216,4 @@
 - **ครอบโดยเล่มอื่น ไม่ทำซ้ำ**: feed/viewer/detail internals → FO-TEST-03/06 · comment sheet mechanics → FO-TEST-07/11 · chat room internals → FO-TEST-08 · profile anatomy + keep-page surface detail → FO-TEST-12 · Settings blocked/muted list anatomy → FO-TEST-15 · Member Sheet internals + gate matrix เต็ม → FO-TEST-17 · E2E moderation loop → FO-TEST-18
 - **จุดต่างโดยเจตนาจากเล่มเก่า**: เล่ม 12 เช็ก keep-page จากฝั่ง profile (PROF-070..075) — เล่มนี้เช็กจากฝั่ง Trust & Safety contract (block impact ข้าม surface + shared surface ทุก entry) — overlap เจตนา ไม่ใช่ซ้ำ
 
-- สถิติ: **65 TC** — High 41 / Medium 19 / Low 5 (SETUP rows 8 แถวแยกใน checklist; รวมใน csv 73 แถว)
+- สถิติ: **67 TC** — High 43 / Medium 19 / Low 5 (SETUP rows 8 แถวแยกใน checklist; รวมใน csv 75 แถว)

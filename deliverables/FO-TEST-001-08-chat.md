@@ -235,6 +235,9 @@
 | FO-TC-CHAT-122 | log out → ข้อมูล chat ไม่รั่ว + sign in กลับคืน | MEMBER | Func | มี threads | 1. Log out → เปิด chat (เป็น guest) 2. sign in กลับ → เปิด chat | guest ไม่เห็น surface ใดของ chat; sign in กลับ → ห้อง+ประวัติกลับมาครบจาก server | — | Medium | |
 | FO-TC-CHAT-123 | ลบแชท → อีกฝั่งไม่กระทบ | MEMBER + ACCT-2 | Func | ห้องที่คุยกันอยู่ | 1. MEMBER ลบห้อง → ดูเครื่อง 2 | ห้องหายฝั่ง MEMBER เท่านั้น — ACCT-2 ยังเห็นห้อง+ประวัติครบ (delete = ฝั่งตัวเอง) | — | Medium | |
 | FO-TC-CHAT-124 | Report and delete → อีกฝั่งไม่กระทบ | MEMBER + ACCT-2 | Edge | ทำ Report and delete สำเร็จ (CHAT-083) | 1. หลัง flow จบ → ดูเครื่อง 2 | thread หายเฉพาะฝั่งผู้รายงาน — ACCT-2 ยังเห็นห้องปกติ (รายงานไม่ลบข้อมูลฝั่งถูกรายงาน) | — | Low | |
+| FO-TC-CHAT-125 | Chat card → sold post detail ฝั่ง non-owner | MEMBER | Func | ห้องแชทมีการ์ดสินค้าที่ต่อมาถูก Mark as Sold | 1. แตะการ์ดสินค้าในห้องแชท 2. ตรวจสอบหน้า Post Detail ที่เปิดขึ้นมา | เปิด Post Detail ได้ปกติ มี badge หรือแถบสถานะ "Sold" แสดงชัดเจน และไม่มีปุ่ม Ask Seller (GAP-10 / DEC-04) | Post Detail แสดงสถานะ Sold | High | |
+| FO-TC-CHAT-126 | Stale Ask entry บนลิสติ้งที่หลุดสาธารณะ | MEMBER | Edge | เปิดหน้าลิสติ้งค้างไว้ก่อนสินค้าถูกลบหรือซ่อน | 1. แตะปุ่ม Ask บนลิสติ้งที่ stale 2. สังเกตผล | ระบบแจ้งเตือน Toast "รายการนี้ไม่พร้อมใช้งานแล้ว" และคงอยู่ที่หน้าเดิม ไม่สร้างห้องแชทซ้ำ (GAP-11 / DEC-05) | Toast แจ้งเตือนสินค้าไม่พร้อมใช้ | Medium | |
+| FO-TC-CHAT-127 | ห้องแชทฝั่งคู่สนทนาหลังอีกฝ่าย Deactivate | MEMBER + ACCT-2 | Func | เคยแชทคุยกัน ต่อมา ACCT-2 ขอลบบัญชี (Deactivate) | 1. MEMBER เปิดหน้ารายการแชท 2. แตะเข้าห้องแชทของ ACCT-2 | ห้องแชทและประวัติข้อความเดิมยังคงอยู่ หัวห้องระบุชื่อ "ผู้ใช้งานที่ปิดบัญชี" หรือสถานะ Deactivated และกล่องพิมพ์ข้อความถูกปิด (Disabled) (GAP-15 / DEC-09) | กล่องข้อความ disabled + ชื่อปิดบัญชี | Medium | |
 
 ## 3. Spec decisions — findings เดิม GAP-CHAT-01..18 ถูกล็อกเป็นพฤติกรรมจริง (อ้าง `FrontOffice/07_CHAT_MODULE.md`)
 
@@ -286,4 +289,11 @@
 | session/persistence | CHAT-110,122,123 |
 | edge: sold/hide/deleted listing, offline, language, theme | CHAT-053,104,105,106,107,118 |
 
-- สถิติ: **124 TC** — High 49 / Medium 49 / Low 25 (SETUP rows 11 แถวแยกใน checklist; รวมใน csv 135 แถว)
+- สถิติ: **127 TC** — High 51 / Medium 51 / Low 25 (SETUP rows 11 แถวแยกใน checklist; รวมใน csv 138 แถว)
+
+
+## DEC-25 Amendments (ผลตามข้อตัดสิน IG — CSV ยังไม่ sync)
+
+- CHAT-086: ยกเลิก (ไม่มีการจัดกลุ่มตามวันในแกลเลอรี — C1)
+- CHAT-097: ผ่านเมื่อเปิด "Only people I follow" แล้วข้อความจากคนที่ไม่ได้ตามเข้าโฟลเดอร์ Requests (C2)
+- CHAT-110 / CHAT-118 / CHAT-127 / CHAT-031 / CHAT-048 / CHAT-067 / CHAT-070: expected ตาม DEC-25 (ดู 07 Amendments) — สถานะ "ไม่ตรง" ใน batch B เป็น implementation gap ไม่ใช่ expected ผิด

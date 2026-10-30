@@ -702,3 +702,8 @@ And เมื่อ confirm ต้อง `pfSetBlocked(false)` + toast `Unblocke
 - Automated Moderation / AI Content Detection
 - Moderation notification
 - Message-level report (chat message รายข้อความ)
+
+
+## DEC-28 Amendment — Block state (IG)
+- สถานะ block ของบัญชีเก็บบนเซิร์ฟเวอร์ คงอยู่ข้ามเครื่องและหลัง sign-out/sign-in
+- เนื้อหาของผู้ที่ถูกบล็อกถูกซ่อนทุกอุปกรณ์ของผู้บล็อก

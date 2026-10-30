@@ -1,7 +1,7 @@
 # TukDaeng Dev Baseline Handoff
 
 **Date:** 2026-06-22  
-**Baseline Version:** `FO-PRD-v1.0` (superseded — current synced baseline `FO-PRD-v1.9`, 2026-10-22)
+**Baseline Version:** `FO-PRD-v1.0` (superseded — current synced baseline `FO-PRD-v1.10`, 2026-10-30)
 **Purpose:** ส่ง baseline เอกสารล่าสุดทั้งชุดให้ Dev ใช้แทนเอกสารเก่าที่เคย implement ก่อนหน้า  
 **Status:** Product-reviewed and approved as Dev baseline  
 **Primary Source of Truth:** [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)

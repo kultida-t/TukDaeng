@@ -663,3 +663,15 @@ Contract-level (prototype ไม่มี analytics layer — เก็บ event
 - **Display name แยกจาก username** — ตอนนี้ `disp` = username เสมอ
 - **language sweep** — EN-hardcoded strings (§9 Deviation #23) เข้า FSP-026
 - **Follower/following real data** — mock lists (`pfAllUsers` + slice) → real relationships
+
+
+## DEC-25 Amendments — Profile (IG)
+
+- ใต้ profile คนอื่นที่เรายังไม่ได้ตาม แสดง "Followed by {name} and others" เมื่อมีคนที่เราตามร่วมอยู่
+- Username ซ้ำ: "This username is already taken." (TH: "ชื่อผู้ใช้นี้ถูกใช้แล้ว")
+- Link ผิดรูปแบบ: "Invalid link — enter a URL (https://...) or @username" (TH: "ลิงก์ไม่ถูกต้อง — กรอก URL (https://...) หรือ @username")
+
+
+## Batch A Amendments (2026-10-30)
+
+- pfp viewer: pill Following แสดงแล้ว fade หายภายใน ~1.2 วินาที; watch-alert solo: ปุ่ม Follow แทรกหน้า ⋯ ในหัวการ์ด

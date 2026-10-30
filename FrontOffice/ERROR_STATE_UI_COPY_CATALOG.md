@@ -1,6 +1,6 @@
 # Front Office Error State UI Copy Catalog
 
-**Baseline Version:** `FO-PRD-v1.9`  
+**Baseline Version:** `FO-PRD-v1.10`  
 **Date:** 2026-07-02  
 **Owner:** Product / UX / Dev / QA  
 **Scope:** Final Front Office error, loading, fallback, and retry copy for Dev handoff.
@@ -316,3 +316,9 @@ Approved exceptions:
 - Owner fallback must not show owner-dependent actions unless owner id and permission state are known.
 - Retry actions must be idempotent and scoped to the failed request.
 - QA should verify trigger, UI behavior, copy, retry scope, and data preservation for every state in this catalog.
+
+
+## DEC-25 Amendments — Error states (IG)
+
+- โหลดไม่สำเร็จ: "Unable to load data" / "ไม่สามารถโหลดข้อมูลได้" + ปุ่ม "Try again" / "ลองใหม่"
+- ออฟไลน์: แสดงข้อมูลที่โหลดไว้แล้ว + แถบ "You're offline" / "คุณออฟไลน์อยู่" โดยไม่บัง tabs/nav

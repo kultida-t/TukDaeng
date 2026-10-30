@@ -1,6 +1,6 @@
 TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,ทดสอบบน (Device/OS),Note
 SETUP-01,Setup,-,"1. ติดตั้งแอป TukDaeng build ทดสอบบนมือถือจริง — Android จาก Play Store / iOS จาก App Store หรือ TestFlight (ตามที่ทีมแจก)
-2. เปิดแอปขึ้นมา","เห็น splash แล้วไหลเข้า onboarding — ห้ามเทสผ่าน browser หรือ prototype",-,High,,,
+2. เปิดแอปขึ้นมา",เห็น splash แล้วไหลเข้า onboarding — ห้ามเทสผ่าน browser หรือ prototype,-,High,,,
 SETUP-02,Setup,-,"วิธีรีเซ็ตสถานะแอป (ทำเมื่อเคสต้องการ first-run):
 • Android: ตั้งค่าระบบ → Apps → TukDaeng → Storage → Clear data → เปิดแอปใหม่
 • iOS: ลบแอปออก → ติดตั้งใหม่ → เปิดแอป",onboarding เด้งใหม่เหมือนใช้ครั้งแรก — draft/ข้อมูลเก่าถูกล้าง,-,High,,,
@@ -23,7 +23,7 @@ SETUP-07,Setup,-,"Member Sheet + Settings:
 SETUP-08,Setup,-,"เตรียม media + สิทธิ์บนเครื่อง (เคส picker/clip ต้องใช้):
 • gallery เครื่องต้องมีรูป ≥11 ใบ + วิดีโอ ≥1 คลิป (ถ่าย/โหลดมาเอง)
 • อนุญาต Photos / Camera / Location ให้แอป
-• บันทึก ""รุ่นเครื่อง + OS"" ลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน","media พร้อมเทสเพดาน 10 ใบ + เคสคลิป + สถานที่จริง",-,High,,,
+• บันทึก ""รุ่นเครื่อง + OS"" ลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน",media พร้อมเทสเพดาน 10 ใบ + เคสคลิป + สถานที่จริง,-,High,,,
 SETUP-09,Setup,-,"ข้อมูลอ้างอิงจากข้อมูลจริง (ขอจากทีม/หาบนแอป แล้ว):
 • บัญชีทดสอบ: email + password = ____________________
 • อีเมลรับ OTP จริง (ถ้าต้องสมัครใหม่): ____________________
@@ -40,15 +40,15 @@ SETUP-12,Setup,-,"ทำ watch alert ที่ match โพสต์ทดสอ
 1. member เปิด search → ค้นแบรนด์ที่จะใส่ใน spec (เช่น Rolex) → กระดิ่ง → ""Create alert"" ให้ criteria match","alert ON — โพสต์ใหม่ที่ spec match จะเด้ง toast ""Watch alert matched: …""",-,Medium,,,flow สร้าง alert อยู่ FO-TEST-11 — ที่นี่แค่ setup
 SETUP-13,Setup,-,"ทำ own sold post (precondition CRE-062):
 1. สร้างโพสต์ → ⋯ → ""Mark as sold"" → กรอก sale record ตาม flow (FO-TEST-13)",โพสต์ย้ายไปแท็บ Sold,-,Medium,,,
-CRE-001,Entry & Gate,"member อยู่ feed · อนุญาต Photos แล้ว",1. แตะปุ่ม + มุมขวาบนของ header,"composer เลื่อนขึ้นเต็มจอเข้า step1 picker: head ✕ + ""New post"" + ""Next"" (จาง); bar ""Recents ⌄"" + ""Select""; grid ช่องกล้อง + รูป/วิดีโอจริงของเครื่อง; hero ""Select photos"" (ครั้งแรกที่ยังไม่เคยอนุญาตจะขอ Photos permission ก่อน)",MEMBER,High,,,
+CRE-001,Entry & Gate,member อยู่ feed · อนุญาต Photos แล้ว,1. แตะปุ่ม + มุมขวาบนของ header,"composer เลื่อนขึ้นเต็มจอเข้า step1 picker: head ✕ + ""New post"" + ""Next"" (จาง); bar ""Recents ⌄"" + ""Select""; grid ช่องกล้อง + รูป/วิดีโอจริงของเครื่อง; hero ""Select photos"" (ครั้งแรกที่ยังไม่เคยอนุญาตจะขอ Photos permission ก่อน)",MEMBER,High,,,
 CRE-002,Entry & Gate,guest อยู่ feed,"1. (guest) แตะ +
 2. ปิด sheet → sign in member → แตะ +","guest: Member Sheet ""Join TukDaeng"" เด้ง composer ไม่เปิด; member: เปิด picker ปกติ (asset mode: guest เข้า own profile ไม่ได้เลย — nav profile ก็ gate)",GUEST + MEMBER,High,,,[GATE] ทั้งสอง actor
 CRE-003,Entry & Gate,member เปิด own profile,1. แตะไอคอน + ซ้ายบนของ profile head,"composer โหมด asset: head ""Add Asset"" + ✕ + ""Next"" — picker เหมือน post mode แต่ title ต่าง",OWNER,High,,,
-CRE-004,Entry & Gate,"session=new (SETUP-05) เปิด own profile","1. ดู empty state แท็บ All
+CRE-004,Entry & Gate,session=new (SETUP-05) เปิด own profile,"1. ดู empty state แท็บ All
 2. แตะ ""Add your first asset""","empty: ""Add your first asset"" + desc + ปุ่ม; แตะ → composer asset mode",NEW,Medium,,,member ที่มีของแล้วไม่เห็น CTA นี้
 CRE-005,Entry & Gate,composer เปิดใหม่ ไม่ได้เลือก/พิมพ์/ตั้งค่าอะไร,"1. แตะ ✕ บน head
 2. (asset mode ทำซ้ำจาก profile +)
-3. เปิด composer ใหม่อีกครั้ง","ไม่มี dialog — ปิดทันที: post กลับ feed / asset กลับ profile; เปิดใหม่ว่างสะอาด (draft ถูกล้างเมื่อปิด — spec ล็อก)",MEMBER,Medium,,,
+3. เปิด composer ใหม่อีกครั้ง",ไม่มี dialog — ปิดทันที: post กลับ feed / asset กลับ profile; เปิดใหม่ว่างสะอาด (draft ถูกล้างเมื่อปิด — spec ล็อก),MEMBER,Medium,,,
 CRE-006,Picker,picker เปิด (post mode),"1. แตะรูปช่องที่ 1
 2. แตะรูปช่องที่ 3","โหมดเดี่ยว: เลือกทีละใบแทนที่; cell ที่เลือกมี sel highlight; hero แสดงใบล่าสุดที่แตะเสมอ (spec ล็อก); ""Next"" เปลี่ยนเป็นสีปกติ",MEMBER,High,,,
 CRE-007,Picker,picker เปิด,"1. แตะ ""Select""
@@ -56,55 +56,55 @@ CRE-007,Picker,picker เปิด,"1. แตะ ""Select""
 CRE-008,Picker,เลือก 3 รูปใน selmode (CRE-007),"1. แตะรูปที่เลข 2 ออก
 2. แตะรูปใหม่เพิ่ม",เอาออก → เลขที่เหลือ re-sequence ทันที (3→2); เพิ่ม → ได้เลขถัดไปต่อท้าย,MEMBER,Medium,,,
 CRE-009,Picker,เลือก 2 รูปใน selmode,"1. แตะ ""Select"" (off)
-2. แตะรูปใหม่",radio หายทั้ง grid; sel เก่ายัง highlight ค้างจนกว่าแตะ — แตะแล้ว order รีเซ็ตเหลือใบเดียวใหม่,MEMBER,Medium,,,
+2. แตะรูปใหม่",sel ออก → radio หายทั้ง grid และ highlight ถูกล้าง; แตะใหม่เริ่มลำดับใหม่,MEMBER,Medium,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
 CRE-010,Picker,selmode เลือกครบ 10 ช่อง,1. แตะช่องที่ 11,"toast ""You can add up to 10 photos or clips"" (ระยะ toast ~2s = design ref); ไม่ถูกเพิ่ม เลขยัง 1–10",MEMBER,Medium,,,
-CRE-011,Picker,"picker เปิด · เครื่องมีวิดีโอ (SETUP-08)","1. เลื่อนหา cell วิดีโอ
-2. แตะ cell วิดีโอ","cell วิดีโอมี badge ▶+ระยะเวลามุมล่าง; แตะ → hero เป็น clip variant (play กลาง + dur ล่าง)",MEMBER,Medium,,,
+CRE-011,Picker,picker เปิด · เครื่องมีวิดีโอ (SETUP-08),"1. เลื่อนหา cell วิดีโอ
+2. แตะ cell วิดีโอ",cell วิดีโอมี badge ▶+ระยะเวลามุมล่าง; แตะ → hero เป็น clip variant (play กลาง + dur ล่าง),MEMBER,Medium,,,
 CRE-012,Picker,picker เปิด,"1. แตะ ""Recents ⌄""
 2. แตะช่องกล้อง
-3. (แยกรอบ) ปฏิเสธ Photos permission แล้วเปิด picker","Recents → ตัวเลือกอัลบั้มจริงของเครื่อง; ช่องกล้อง → เปิดกล้องจริง (ขอ Camera permission ถ้ายังไม่เคย) ถ่ายแล้วเข้า draft; hero ไม่มีไอคอน expand (spec ล็อก); deny Photos → picker แสดงสถานะขอสิทธิ์/ว่าง ไม่ crash — จุดไหนยัง placeholder = FAIL",MEMBER,High,,,
+3. (แยกรอบ) ปฏิเสธ Photos permission แล้วเปิด picker",Recents → ตัวเลือกอัลบั้มจริงของเครื่อง; ช่องกล้อง → เปิดกล้องจริง (ขอ Camera permission ถ้ายังไม่เคย) ถ่ายแล้วเข้า draft; hero ไม่มีไอคอน expand (spec ล็อก); deny Photos → picker แสดงสถานะขอสิทธิ์/ว่าง ไม่ crash — จุดไหนยัง placeholder = FAIL,MEMBER,High,,,
 CRE-013,Picker,picker เลือกรูป ≥1 หรือพิมพ์ caption,"1. แตะ ✕
 2. อ่าน dialog → แตะ ""Cancel""","dialog confirm discard + ""Discard""(แดง) + ""Cancel""; Cancel → กลับ picker draft เหมือนเดิม",MEMBER,High,,,
 CRE-014,Picker,discard dialog เปิด (CRE-013),"1. แตะ ""Discard""
 2. แตะ + เปิด composer ใหม่",composer ปิดกลับ feed; เปิดใหม่ → picker ว่างสะอาด ไม่มี sel/caption/meta ค้าง,MEMBER,High,,,
 CRE-015,Step 2,picker เลือก 1 รูป,"1. แตะ ""Next""","เข้า step2: head ← + ""New post""; thumb strip; caption placeholder ""Add a caption…""; แถว hashtag chips แนะนำ (ชุด design); rows Add location/Add price/Watch details/Condition/More options (ไม่มี Cost); ปุ่ม ""Share""",MEMBER,High,,,
 CRE-016,Step 2,อยู่ step 2,"1. แตะ ← บน head
-2. (Android) กดปุ่ม back ของระบบ","กลับ step1 picker การเลือกยังครบ; device back เทียบเท่า: step2→step1 · picker มี draft → dialog · picker ว่าง → ปิด",MEMBER,Medium,,,device back = spec ล็อก E5
+2. (Android) กดปุ่ม back ของระบบ",กลับ step1 picker การเลือกยังครบ; device back เทียบเท่า: step2→step1 · picker มี draft → dialog · picker ว่าง → ปิด,MEMBER,Medium,,,device back = spec ล็อก E5
 CRE-017,Step 2,step2 มี 3 รูป,"1. แตะ × มุม thumb ใบที่ 2
-2. × ต่อจนหมด","thumb หายทีละใบ; ลบใบสุดท้าย → เด้งกลับ step1 picker อัตโนมัติ (spec ล็อก: โพสต์ต้องมี media ≥1)",MEMBER,High,,,
+2. × ต่อจนหมด",thumb หายทีละใบ; ลบใบสุดท้าย → เด้งกลับ step1 picker อัตโนมัติ (spec ล็อก: โพสต์ต้องมี media ≥1),MEMBER,High,,,
 CRE-018,Step 2,step2 มี ≥3 รูป,"1. กดค้าง thumb ใบแรก (~0.4s = design ref)
 2. ลากไปท้ายสุด ปล่อย",long-press → drag mode; ปล่อย → ลำดับ thumb เรียงใหม่จริง (ไม่ใช่แค่เลื่อน scroll),MEMBER,Medium,,,
 CRE-019,Step 2,step2 มี ≥2 รูป,"1. แตะ thumb ใบที่ 2
 2. แตะ backdrop มืดรอบรูป",zoom overlay เต็มจอแสดงรูป index ที่แตะ + dots (จุด on ตรง index); แตะ backdrop → ปิด,MEMBER,High,,,
 CRE-020,Step 2,zoom เปิด media 3 ชิ้น,"1. swipe ซ้าย
-2. swipe ขวาสุดขอบ","swipe เปลี่ยน slide ±1 (ระยะขั้นต่ำ ~40px = design ref); ขอบซ้าย/ขวาสุด clamp ไม่วน — dots ตาม",MEMBER,Medium,,,
+2. swipe ขวาสุดขอบ",swipe เปลี่ยน slide ±1 (ระยะขั้นต่ำ ~40px = design ref); ขอบซ้าย/ขวาสุด clamp ไม่วน — dots ตาม,MEMBER,Medium,,,
 CRE-021,Step 2,อยู่ step 2,"1. พิมพ์ caption
 2. ← กลับ picker → Next กลับมา",caption คงอยู่ข้าม step/re-render ภายใน session เดียวกัน,MEMBER,Medium,,,
 CRE-022,Step 2,"step2 caption มี ""#rolex"" อยู่แล้ว","1. แตะ chip ตัวอื่น
 2. แตะ ""#rolex""",chip ต่อท้าย caption เว้นวรรค; tag ที่มีอยู่แล้วไม่เติมซ้ำ (dedupe),MEMBER,Medium,,,
-CRE-023,Step 2,step2 มีรูป ไม่มี caption,1. กด "Share" ทันที,ไม่บังคับ caption — publish ได้ปกติ โพสต์ขึ้น feed ไม่มี caption,MEMBER,Low,,,
+CRE-023,Step 2,step2 มีรูป ไม่มี caption,1. กด Share ทันที,ไม่บังคับ caption — publish ได้ปกติ โพสต์ขึ้น feed ไม่มี caption,MEMBER,Low,,,
 CRE-024,Step 2,selmode เลือก 3 รูปไม่ตามลำดับ grid,"1. ดู hero ตอนแตะสด
-2. ←/Next ให้ re-render ดู hero","hero = ใบล่าสุดของ order เสมอ ทั้งตอนแตะสดและหลัง re-render (spec ล็อก — ไม่มีกรณีกลับไปใบแรก)",MEMBER,Medium,,,
+2. ←/Next ให้ re-render ดู hero",hero = ใบล่าสุดของ order เสมอ ทั้งตอนแตะสดและหลัง re-render (spec ล็อก — ไม่มีกรณีกลับไปใบแรก),MEMBER,Medium,,,
 CRE-025,Panes,อยู่ step 2,"1. แตะ ""Add location""
 2. แตะ ←
 3. เปิดใหม่แตะ ""Done""","pane เลื่อนเข้าจากขวา: head ← + title + ""Done""; ←/Done ปิด pane กลับ step2 (val แถวอัปเดตถ้ามีค่า)",MEMBER,High,,,
-CRE-026,Pane loc,"loc pane เปิด · Location permission อนุญาต","1. ค้น/แตะสถานที่จริง LOC-X (SETUP-09)
+CRE-026,Pane loc,loc pane เปิด · Location permission อนุญาต,"1. ค้น/แตะสถานที่จริง LOC-X (SETUP-09)
 2. ดูแถว
 3. แตะ ✕ ในแถว","เลือก → pane ปิดเอง แถวแสดงชื่อ + sub ระยะทางตามตำแหน่งจริง (format ""N km"" = design ref) + ✕ + note ใต้แถว; ✕ → กลับ ""Add location""; deny Location → แถวยังแสดงชื่อ ระยะหาย/ตาม design — crash/ระยะผิดพลาด = FAIL",MEMBER,Medium,,,ระยะทางจริงไม่ใช่ mock
 CRE-027,Pane loc,loc pane เปิด,"1. พิมพ์ชื่อบางส่วนของ LOC-X
-2. พิมพ์ ""xyz""","filter/ผลสด → เจอ LOC-X; คำไม่ match → empty state ตาม design",MEMBER,Low,,,
+2. พิมพ์ ""xyz""",filter/ผลสด → เจอ LOC-X; คำไม่ match → empty state ตาม design,MEMBER,Low,,,
 CRE-028,Pane price,price pane เปิด,"1. พิมพ์ ""420000""
 2. พิมพ์ต่อ ""12a3""
 3. Done","ช่องแสดง ""420,000"" ทันที (auto comma); ตัวอักษรถูกตัด; แถว ""Add price"" val = ""THB 420,000""",MEMBER,High,,,money-display-rules §4.2/§4.1
 CRE-029,Pane price,อยู่ step 2,"1. เปิด price pane ไม่พิมพ์ → Done
-2. ดูแถว","val ว่าง — hint ใน pane บอกเว้นว่าง = showcase (ไม่มีป้ายราคา); publish จะได้ showcase (เชื่อม CRE-045)",MEMBER,Medium,,,
-CRE-030,Pane spec,spec pane เปิด,1. เลื่อนดูทั้ง pane,"กลุ่ม Watch Specifications (จำนวนช่องตาม design) + Item Details + Description textarea + note ว่า Condition & Box ตั้งใน Condition section",MEMBER,Low,,,
+2. ดูแถว",val ว่าง — hint ใน pane บอกเว้นว่าง = showcase (ไม่มีป้ายราคา); publish จะได้ showcase (เชื่อม CRE-045),MEMBER,Medium,,,
+CRE-030,Pane spec,spec pane เปิด,1. เลื่อนดูทั้ง pane,กลุ่ม Watch Specifications (จำนวนช่องตาม design) + Item Details + Description textarea + note ว่า Condition & Box ตั้งใน Condition section,MEMBER,Low,,,
 CRE-031,Pane spec,spec pane เปิด,"1. Brand=""Rolex"", Model=""Submariner Date"", Reference=""126610LN""
 2. Done","แถว ""Watch details"" val = ""Rolex · Submariner Date""; เปิด pane ซ้ำค่ายังอยู่ครบ",MEMBER,Medium,,,
 CRE-032,Pane cond,cond pane เปิด,"1. แตะ ""Very Good""
 2. แตะ ""Very Good"" ซ้ำ
 3. แตะ ""Full set — box & papers""
-4. แตะซ้ำอีกครั้ง","condition กดซ้ำไม่ยกเลิก (spec ล็อก); box กดซ้ำ toggle off วงกลมหาย — สองกลุ่มพฤติกรรมต่างกันเป็น spec",MEMBER,Medium,,,
+4. แตะซ้ำอีกครั้ง",condition กดซ้ำไม่ยกเลิก (spec ล็อก); box กดซ้ำ toggle off วงกลมหาย — สองกลุ่มพฤติกรรมต่างกันเป็น spec,MEMBER,Medium,,,
 CRE-033,Pane cond,"cond pane เลือก ""Very Good""","1. แตะ ""Good"" → Done","เขียนทับ เหลือ on เดียว ""Good""; แถว val เปลี่ยนเป็น ""Good""",MEMBER,Low,,,
 CRE-034,Pane cost,step2 post mode + step2 asset mode,"1. post mode: ดู rows
 2. เปิด toggle ""Also save to My Assets""
@@ -116,33 +116,33 @@ CRE-037,Pane cost,cost pane เปิด,"1. เลือก/พิมพ์ Pur
 2. แตะ ""Done""
 3. แตะ ←","error ""Purchase date can't be in the future"" + ช่อง error; Done ไม่ปิด pane; ← back ยังปิดได้",MEMBER,High,,,
 CRE-038,Pane cost,cost pane เปิด,"1. ลองเลือกวันที่ก่อน min ของ design (เช่น ก่อน 1900) ผ่าน date picker
-2. ดูว่ามีช่องพิมพ์วันที่ด้วยมือหรือไม่ (spec B1 = ไม่มี)","picker ไม่ให้เลือกนอกช่วง; เป็น picker-only ไม่มีช่องพิมพ์มือ (spec B1)",MEMBER,Low,,,แทนเคส dev-assisted เดิม — spec ล็อก B1
-CRE-039,Pane cost,cost pane เปิด,1. อ่านท้าย pane,"note อธิบายต้นทุนเป็นข้อมูลส่วนตัว ใช้คำนวณ portfolio คนอื่นไม่เห็น (TH แปลครบ)",MEMBER,Low,,,
+2. ดูว่ามีช่องพิมพ์วันที่ด้วยมือหรือไม่ (spec B1 = ไม่มี)",picker ไม่ให้เลือกนอกช่วง; เป็น picker-only ไม่มีช่องพิมพ์มือ (spec B1),MEMBER,Low,,,แทนเคส dev-assisted เดิม — spec ล็อก B1
+CRE-039,Pane cost,cost pane เปิด,1. อ่านท้าย pane,note อธิบายต้นทุนเป็นข้อมูลส่วนตัว ใช้คำนวณ portfolio คนอื่นไม่เห็น (TH แปลครบ),MEMBER,Low,,,
 CRE-040,Pane more,more pane เปิด → Done → Share,"1. toggle ""Turn off commenting"" on → Done → Share
 2. เปิดเมนู ⋯ ของโพสต์ที่เพิ่งสร้าง","toggle on; เมนู ⋯ โพสต์ตัวเองแสดง ""Turn on commenting"" (แทน Turn off) — verify ผลจริงจากเมนู",MEMBER,Medium,,,spec ล็อก E7
-CRE-041,Pane more,"more pane เปิด · มี ACCT-2 ไม่ follow (SETUP-09)","1. แตะ ""Followers only"" → Done → Share
+CRE-041,Pane more,more pane เปิด · มี ACCT-2 ไม่ follow (SETUP-09),"1. แตะ ""Followers only"" → Done → Share
 2. ดูแถว More options
 3. ล็อกอิน ACCT-2 หาโพสต์นี้","แถว val = ""Followers only"" + publish สำเร็จ; ACCT-2 (non-follower) ไม่เห็นโพสต์นี้ใน feed/profile — ไม่มี ACCT-2 → mark BLOCK ขั้นตอน 3",MEMBER,Medium,,,spec ล็อก E6
 CRE-042,Pane more,ตั้ง noComments+followers แล้ว Done,1. เปิด more อีกครั้ง,toggle/radio ยังตรงค่าที่ตั้ง — meta persist ข้ามการเปิดปิด pane,MEMBER,Low,,,
 CRE-043,Publish post,"step2: รูป + caption + price 420,000 + cond Very Good","1. แตะ ""Share""","toast ""Posted · shared to feed ✓"" (มี thumb) → กลับ feed บนสุดเจอการ์ดตัวเอง: ชื่อบัญชีตัวเอง · ""Just now"" · ""THB 420,000"" · chip ""Very Good""",MEMBER,High,,,
-CRE-044,Publish post,เพิ่ง share เสร็จ (CRE-043),1. แตะ ⋯ บนการ์ดตัวเอง,"เมนูเจ้าของ: Archive / Turn off commenting / Edit / Mark as sold / Pin / Delete — ต่างจากการ์ดคนอื่น",OWNER,Medium,,,
+CRE-044,Publish post,เพิ่ง share เสร็จ (CRE-043),1. แตะ ⋯ บนการ์ดตัวเอง,เมนูเจ้าของ: Archive / Turn off commenting / Edit / Mark as sold / Pin / Delete — ต่างจากการ์ดคนอื่น,OWNER,Medium,,,
 CRE-045,Publish post,"step2: รูป + caption ""#tukdaeng"" ไม่ใส่ราคา","1. Share
 2. เปิด search ค้นคำใน caption
-3. ค้น ""#tukdaeng""","showcase ไม่มีราคา: ขึ้น feed แต่ไม่อยู่ผลค้นปกติ; ค้นแบบ tag เจอ (เชื่อม search spec FO-TEST-04)",MEMBER,High,,,
+3. ค้น ""#tukdaeng""",showcase ไม่มีราคา: ขึ้น feed แต่ไม่อยู่ผลค้นปกติ; ค้นแบบ tag เจอ (เชื่อม search spec FO-TEST-04),MEMBER,High,,,
 CRE-046,Publish post,โพสต์จาก CRE-043 (spec กรอก MODEL-X),"1. แตะ ""Tap for details"" หรือเปิด detail
 2. ดูกลุ่ม Price & Data Source","spec table ครบ ค่าว่าง ""N/A""; Price & Data Source: Asking ""THB 420,000"" · Estimated = ค่าประเมินจาก market data ของรุ่นนั้น · Last Price Update · Source ตาม design",MEMBER,Medium,,,spec ล็อก E4 — band −5%/+6% เป็น mock เท่านั้น
 CRE-047,Publish post,"โพสต์ราคา 420,000 ขึ้นแล้ว",1. อ่านราคาบนการ์ด/แถว/detail,"ทุกจุด ""THB 420,000"" เต็มจำนวน comma ไม่มีทศนิยม ไม่มี ฿ ปน",MEMBER,Medium,,,money §4.1
-CRE-048,Publish post,SETUP-12 alert ON ที่ match,"1. สร้างโพสต์ที่ spec match alert → Share","toast แรก ""Posted · shared to feed ✓"" ตามด้วย toast สอง ""Watch alert matched: {ชื่อ alert}"" (+N more ถ้าหลายตัว) — ลำดับถูก; ช่วง ~2s",MEMBER,Medium,,,spec ล็อก E8
+CRE-048,Publish post,SETUP-12 alert ON ที่ match,1. สร้างโพสต์ที่ spec match alert → Share,"toast แรก ""Posted · shared to feed ✓"" ตามด้วย toast สอง ""Watch alert matched: {ชื่อ alert}"" (+N more ถ้าหลายตัว) — ลำดับถูก; ช่วง ~2s",MEMBER,Medium,,,spec ล็อก E8
 CRE-049,My Assets toggle,step2 post mode,"1. เปิด toggle ""Also save to My Assets""","toggle on → แถว ""Cost details (private)"" โผล่ + sub อธิบายเก็บเข้า profile collection",MEMBER,Medium,,,
-CRE-050,My Assets toggle,"step2 post mode toggle on + price+brand","1. Share
+CRE-050,My Assets toggle,step2 post mode toggle on + price+brand,"1. Share
 2. เปิด own profile แท็บ Sale","toast ""Posted · shared to feed + My Assets ✓""; โพสต์โผล่แท็บ Sale + Portfolio มี asset ใหม่ (ลิงก์กัน)",OWNER,High,,,
 CRE-051,Asset mode,asset composer step2,1. ดู head/caption/rows/ส่วนล่าง,"title ""Add Asset""; placeholder ""Describe this asset…""; มีแถว Cost; ส่วน ""Visibility"": Show(เลือกอยู่)/Hide/Post to feed + sub; ปุ่ม ""Add Asset""; ไม่มี toggle",OWNER,High,,,
 CRE-052,Asset mode,"asset step2 รูป+specs, Visibility=Show","1. แตะ ""Add Asset""
 2. ดู feed + profile แท็บ Show","toast ""Saved to My Assets · shown on profile ✓"" → กลับ own profile ของใหม่อยู่กริด/แท็บ Show; ไม่ขึ้น feed/search",OWNER,High,,,
 CRE-053,Asset mode,asset step2 ทำ 2 รอบ,"1. Visibility=Hide → ""Add Asset""
 2. สร้างใหม่ Visibility=""Post to feed"" → ""Add Asset""","Hide → toast ""Saved to My Assets · private ✓"" อยู่แท็บ Hide เท่านั้น; Post to feed → toast ""Saved to My Assets · posted to feed ✓"" + ขึ้น feed + alert match ได้เหมือน post",OWNER,High,,,
-CRE-054,Edit info,"own post บน feed (SETUP-10) → ⋯","1. แตะ ""Edit""","เข้า step2 ตรง (ไม่มี picker): head ""Cancel"" + ""Edit info"" + ""Done""; thumbs=รูปเดิม caption/meta เติมค่าปัจจุบัน; toggle/stt สะท้อนสถานะเดิม",OWNER,High,,,
-CRE-055,Edit info,Edit info เปิด + แก้ caption,"1. แตะ ""Cancel"" → ""Discard""","dialog confirm discard + Discard/Cancel; Discard → ปิด โพสต์ไม่เปลี่ยน",OWNER,High,,,
+CRE-054,Edit info,own post บน feed (SETUP-10) → ⋯,"1. แตะ ""Edit""","เข้า step2 ตรง (ไม่มี picker): head ""Cancel"" + ""Edit info"" + ""Done""; thumbs=รูปเดิม caption/meta เติมค่าปัจจุบัน; toggle/stt สะท้อนสถานะเดิม",OWNER,High,,,
+CRE-055,Edit info,Edit info เปิด + แก้ caption,"1. แตะ ""Cancel"" → ""Discard""",dialog confirm discard + Discard/Cancel; Discard → ปิด โพสต์ไม่เปลี่ยน,OWNER,High,,,
 CRE-056,Edit info,Edit info เปิด,"1. แตะ thumb ""+"" ท้าย strip
 2. เลือกรูปเพิ่ม → ""Done""
 3. เปิดอีก เลือกแล้วกด ←","add picker: head ""Add photos or clips"" selmode ไม่มีปุ่ม Select (โผล่เมื่อ media <10); Done เก็บเพิ่มต่อท้าย; ← ทิ้งที่เพิ่งเลือก คืนชุดเดิม",OWNER,High,,,
@@ -150,27 +150,27 @@ CRE-057,Edit info,Edit info มี 2 รูป,"1. × thumb จนเหลื�
 2. × อีกครั้ง","toast ""Post needs at least 1 photo or clip"" — ลบใบสุดท้ายไม่ได้ (ต่างจาก create ที่เด้งกลับ picker)",OWNER,Medium,,,
 CRE-058,Edit info,Edit info เปิดจาก feed card,"1. แก้ caption + เปลี่ยนราคา → ""Done""","toast ""Post updated"" + thumb; การ์ดใช้ค่าใหม่ทันที (caption/price/chips อัปเดต)",OWNER,High,,,
 CRE-059,Edit info,own post detail เปิด → ⋯ → Edit,"1. ""Done""
-2. (ทำซ้ำ Cancel → Discard)","Done → detail เปิดใหม่เนื้อหาสด; Discard → detail เดิมกลับมา; (จาก Posts viewer: composer เลื่อนทับ viewer อยู่ใต้)",OWNER,Medium,,,
-CRE-060,Edit info,Edit info โพสต์ drawer-on (SETUP-11),"1. ปิด toggle ""Also save to My Assets"" → Done","detach: asset หลุด Portfolio + โพสต์หลุดแท็บ Sale เหลือแค่ feed (แท็บ All)",OWNER,High,,,
+2. (ทำซ้ำ Cancel → Discard)",Done → detail เปิดใหม่เนื้อหาสด; Discard → detail เดิมกลับมา; (จาก Posts viewer: composer เลื่อนทับ viewer อยู่ใต้),OWNER,Medium,,,
+CRE-060,Edit info,Edit info โพสต์ drawer-on (SETUP-11),"1. ปิด toggle ""Also save to My Assets"" → Done",detach: asset หลุด Portfolio + โพสต์หลุดแท็บ Sale เหลือแค่ feed (แท็บ All),OWNER,High,,,
 CRE-061,Edit info,Edit info โพสต์ drawer-on (เห็นส่วน Profile status),"1. เลือก ""Show"" → Done
 2. ดู feed + profile
 3. (กลับ ""Sale"")",โพสต์หลุดจาก feed ไปอยู่แท็บ Show (asset status sync); สลับกลับ Sale → โพสต์กลับ feed; ส่วนนี้มีเฉพาะตอน drawer on,OWNER,Medium,,,
-CRE-062,Edit info,"own profile แท็บ Sold → โพสต์ sold (SETUP-13) → ⋯",1. ดูเมนูเจ้าของของโพสต์ sold,"เมนูแสดง ""View sale record"" แทน ""Edit"" — sold เป็น final ไม่มี Edit ผ่าน UI (spec ล็อก)",OWNER,Medium,,,
-CRE-063,Clip,picker เลือกวิดีโอเพียง 1 คลิป → Next,1. ดู step2,"thumb คลิปมี dur badge; zoom เปิดเป็น clip mode พร้อมปุ่ม play/dur/progress",MEMBER,Medium,,,
+CRE-062,Edit info,own profile แท็บ Sold → โพสต์ sold (SETUP-13) → ⋯,1. ดูเมนูเจ้าของของโพสต์ sold,"เมนูแสดง ""View sale record"" แทน ""Edit"" — sold เป็น final ไม่มี Edit ผ่าน UI (spec ล็อก)",OWNER,Medium,,,
+CRE-063,Clip,picker เลือกวิดีโอเพียง 1 คลิป → Next,1. ดู step2,thumb คลิปมี dur badge; zoom เปิดเป็น clip mode พร้อมปุ่ม play/dur/progress,MEMBER,Medium,,,
 CRE-064,Clip,lone clip step2 → zoom,"1. แตะ thumb เปิด zoom
 2. แตะตรงกลางเล่น → แตะอีกครั้งหยุด
-3. เล่นจนจบ","เปิดมา pause (▶); แตะเล่น → ⏸ + dur นับถอยหลัง + progress เดิน; pause ค้างเวลา; จบ → reset pause",MEMBER,Medium,,,
+3. เล่นจนจบ",เปิดมา pause (▶); แตะเล่น → ⏸ + dur นับถอยหลัง + progress เดิน; pause ค้างเวลา; จบ → reset pause,MEMBER,Medium,,,
 CRE-065,Clip,step2 มีรูป+คลิปปน,"1. แตะ thumb คลิป → zoom
-2. swipe ไปรูปอื่นแล้วกลับ","slide คลิปมี play/dur/prog แตะเล่นได้; slide รูปเป็น viewer ธรรมดา — สลับโหมดตาม item",MEMBER,Low,,,
+2. swipe ไปรูปอื่นแล้วกลับ",slide คลิปมี play/dur/prog แตะเล่นได้; slide รูปเป็น viewer ธรรมดา — สลับโหมดตาม item,MEMBER,Low,,,
 CRE-066,Clip,picker เลือกวิดีโอ 1 คลิป,"1. แตะ ▶ บน hero clip
 2. Next → Share","แตะ ▶ hero → เล่น/หยุดพรีวิวได้ + dur นับถอยหลัง (spec ล็อก — prototype เดิมไม่มี handler); Share → toast ""Clip shared to feed ✓"" + การ์ดคลิปขึ้น feed",MEMBER,Medium,,,
-CRE-067,Draft edge,"step2: กรอกแค่ price/spec (ลบ media จนเด้งกลับ step1 ได้ — ไม่มี media/caption)","1. แตะ ✕
+CRE-067,Draft edge,step2: กรอกแค่ price/spec (ลบ media จนเด้งกลับ step1 ได้ — ไม่มี media/caption),"1. แตะ ✕
 2. ใน dialog กด ""Discard""
-3. เปิด composer ใหม่","dirty นับ meta ด้วย → discard dialog เด้งเหมือน draft ปกติ (spec ล็อก); Discard → ปิด + เปิดใหม่ meta หายหมด; Cancel → กลับมา meta ยังอยู่",MEMBER,High,,,spec ล็อก A2 — ไม่มีเส้นทางปิดเงียบค้าง meta
+3. เปิด composer ใหม่",dirty นับ meta ด้วย → discard dialog เด้งเหมือน draft ปกติ (spec ล็อก); Discard → ปิด + เปิดใหม่ meta หายหมด; Cancel → กลับมา meta ยังอยู่,MEMBER,High,,,spec ล็อก A2 — ไม่มีเส้นทางปิดเงียบค้าง meta
 CRE-068,Draft edge,มี draft ค้าง (เลือกรูป+พิมพ์ caption),"1. สลับออกไปหน้าอื่นโดยไม่ปิด composer
-2. kill แอปจาก recent apps → เปิดใหม่ → แตะ +","draft หาย — picker ว่างใหม่เสมอ (spec ล็อก V1: ไม่มี persistence ข้าม restart)",MEMBER,Medium,,,spec ล็อก D1
-CRE-069,Draft edge,-,-,"BLOCK — dev only: ช่องทาง handoff ของ prototype (localStorage จาก create-post.html) ไม่มีบนแอปจริง — เก็บ TC ID เพื่อ traceability",MEMBER,Low,,,spec ล็อก B2 — out of scope
-CRE-070,Language/Theme/Money,"member, lang=TH",1. ไล่ picker → step2 → ทุก pane → vis/stt → dialogs,"label UI แปลครบทุกจุด (เหลือ EN บน label = FAIL); toast wording ตรงตาม spec",MEMBER,Medium,,,
+2. kill แอปจาก recent apps → เปิดใหม่ → แตะ +",draft หาย — picker ว่างใหม่เสมอ (spec ล็อก V1: ไม่มี persistence ข้าม restart),MEMBER,Medium,,,spec ล็อก D1
+CRE-069,Draft edge,-,-,N/A — dev harness ของ prototype ไม่อยู่ในชุดเทสแอปจริง (ยกเลิก),MEMBER,Low,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+CRE-070,Language/Theme/Money,"member, lang=TH",1. ไล่ picker → step2 → ทุก pane → vis/stt → dialogs,label UI แปลครบทุกจุด (เหลือ EN บน label = FAIL); toast wording ตรงตาม spec,MEMBER,Medium,,,
 CRE-071,Guest,guest อยู่ feed,"1. แตะ + → sheet เด้ง ปิด
 2. ลองเข้า profile (nav)",+ และ profile nav ถูก gate ทั้งคู่ → guest เข้า composer ไม่ได้ทุก entry; หลังปิด sheet อยู่ feed เดิม,GUEST,High,,,
 CRE-072,Language/Theme/Money,"member, theme=dark",1. ไล่ picker/step2/panes/zoom/dialogs,surface ดำอ่านได้ทุกหน้า radio/sel ชัด zoom backdrop เข้ม dialog อ่านได้,MEMBER,Low,,,

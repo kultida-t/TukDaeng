@@ -125,7 +125,7 @@
 | LIB-047 | tile → viewer ภายใน col เท่านั้น | MEMBER | POSITIVE | `C-A` มี ≥2 ตัว | แตะ tile → ปัดขึ้น/ลง | viewer swipe เฉพาะโพสต์ใน `C-A` (ไม่หลุดไปโพสต์ saved อื่น) | — | MED | |
 | LIB-048 | `⋯` menu | MEMBER | POSITIVE | `savedcol` เปิด | แตะ `⋯` → อ่านเมนู → col ว่างเปรียบเทียบ | เมนู: `Add to collection` · `Edit collection` · `Select...` (**เฉพาะ col มีของ**) · `Delete collection` (สีอันตราย) · แตะนอกเมนู → ปิด | — | HIGH | |
 | LIB-049 | Add to collection picker | MEMBER | POSITIVE | `C-A` มีของ + มี saved ตัวอื่นอยู่นอก | `⋯` → `Add to collection` → ติ๊ก 2 tile → `Done` | หน้าเต็ม picker: `Cancel` + `Saved · Add from` + `Done` · grid เฉพาะโพสต์ saved ที่**ยังไม่อยู่** `C-A` · ติ๊ก → title เปลี่ยน `N Selected` · Done → เข้า `C-A` + toast `Added 2 posts` | — | HIGH | |
-| LIB-050 | picker empty | MEMBER | NEGATIVE | saved ทุกตัวอยู่ `C-A` หมดแล้ว (หรือยังไม่เคยเซฟ — เตรียมผ่านแอป) | `⋯` → `Add to collection` | `No saved posts to add` + `Save more posts first, then add them here.` (ตามภาษา) | — | MED | |
+| LIB-050 | picker empty | MEMBER | NEGATIVE | saved ทุกตัวอยู่ `C-A` หมดแล้ว (หรือยังไม่เคยเซฟ — เตรียมผ่านแอป) | `⋯` → `Add to collection` | `No saved posts to add` + `Add posts to your saved first, then add them here.` (ตามภาษา) | — | MED | |
 | LIB-051 | Edit collection anatomy | MEMBER | UI | `⋯` → `Edit collection` | อ่านหน้า | `Cancel` + `Edit collection` + `Done` · cover + `Change cover` · ช่อง `Collection name` (≤40) · `Delete collection` + note `When you delete this collection, the photos and videos will still be saved.` (ตามภาษา) | — | MED | |
 | LIB-052 | rename | MEMBER | POSITIVE | Edit เปิด | แก้ชื่อ `C-A` → `C-A2` → `Done` → กลับ hub ดูการ์ด → เปิด sheet เซฟของโพสต์ใน col | ชื่อเปลี่ยนทุกจุด (head/การ์ด/เช็กบน sheet) + toast `Collection updated` — โพสต์ไม่หลุด | — | MED | |
 | LIB-053 | Change cover | MEMBER | POSITIVE | `C-A` มี ≥2 รูป | Edit → `Change cover` → เลือกโพสต์อื่น → กลับดูการ์ด | picker grid เฉพาะโพสต์ใน col + ติ๊กบน cover ปัจจุบัน → เลือก → กลับ Edit + cover การ์ดเปลี่ยนเป็นรูปที่เลือก | — | MED | |
@@ -219,6 +219,8 @@
 | LIB-116 | offline — เห็นชุดล่าสุด + เขียนไม่ได้ | MEMBER | POSITIVE | เคยเปิด `saved` มีข้อมูล | เปิด airplane → เปิด `saved`/`wishlist` → ลองเซฟ/ลบ col → กลับ online | เห็นรายการชุดล่าสุดที่เคยโหลด (ล็อก 2026-10-29) · action เขียนไม่สำเร็จ + แจ้งชัด (ไม่เงียบ/ไม่บันทึกหลอก) · reconnect ตรง server | — | HIGH | |
 | LIB-117 | TH/EN sweep | MEMBER | POSITIVE | สลับภาษาใน settings | เปิดทุกหน้า library ทั้ง TH+EN รวม sheet/dlg/manage/search/edit col/nc | ทุก label+toast+dialog+placeholder+ตัวนับ ตามภาษาที่เลือก — EN ค้างในโหมด TH (หรือกลับกัน) = FAIL (prototype hardcode EN: Edit collection/nc/move/dlg/count) | — | HIGH | |
 | LIB-118 | dark theme | MEMBER | POSITIVE | เปิด dark | เปิดทุกหน้า + sheet + dialog | อ่านได้ครบ ไม่มีตัวอักษรจมพื้น · ไอคอน/วงกลมเลือก/ป้าย Private เห็นชัด | — | MED | |
+| LIB-119 | saved tile ของโพสต์ sold (contract ฝั่ง saver) | MEMBER + ACCT-2 | STATE | เซฟโพสต์ของ ACCT-2 ไว้ ต่อมา ACCT-2 Mark as Sold | เปิดหน้า Library > Saved ดู tile โพสต์นั้น | การ์ดยังคงปรากฏอยู่ใน Saved แต่มี badge หรือ overlay "Sold" / "ขายแล้ว" ชัดเจน แตะเปิดดู Post Detail ได้โดยแสดงสถานะ Sold และไม่มีปุ่มติดต่อซื้อขาย (GAP-8 / DEC-02) | — | HIGH | |
+| LIB-120 | โพสต์ restore จาก ni คืนสิทธิ์เข้าสู่ feed pool | MEMBER | STATE | มีโพสต์ที่เคยกด Not Interested แล้วต่อมากด Restore/ลบออกจาก NI list ใน Settings | 1. กด Restore/ลบโพสต์ออกจาก NI 2. สลับไปหน้า Feed 3. Pull-to-refresh | โพสต์ไม่แทรกเข้าฟีดทันทีกลางคัน แต่เมื่อ Refresh ฟีด โพสต์นั้นมีสิทธิ์กลับเข้าสู่ Recommendation Pool ของฟีดได้ตามปกติ (GAP-17 / DEC-11) | — | MED | |
 
 ## §3 Spec deviations / contract ที่กระทบเคสเล่มนี้
 
@@ -276,4 +278,4 @@
 - **spec gap/จุดเฝ้าระวังรอบรีวิว**: spec 11 ยังเขียน `savedCol` เอกพจน์ (ต้องอัปเดตเป็น multi) · EN hardcode จุด library ต้อง sweep ภาษา · viewer title `Saved`/`Wish List`/`Archive` เป็น EN ในแบบจำลอง (ในแอปจริงต้องตามภาษา) · LIB-087 (archive โพสต์ที่ตัวเองเซฟ → หลุด) อาศัยว่าเซฟโพสต์ตัวเองได้
 - **ครอบโดยเล่มอื่น ไม่ทำซ้ำ**: PV/Detail internals → FO-TEST-06 · sheets mechanics → FO-TEST-07 · feed/own-post menus → FO-TEST-03/13 · walerts หน้าปลายทาง → FO-TEST-11 · prefs/favorites/muted/blocked → FO-TEST-15 · Member Sheet → FO-TEST-17
 
-- สถิติ: **118 TC** — High 57 / Medium 51 / Low 10 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 128 แถว)
+- สถิติ: **120 TC** — High 58 / Medium 52 / Low 10 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 130 แถว)

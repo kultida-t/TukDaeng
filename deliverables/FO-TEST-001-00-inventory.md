@@ -1,7 +1,7 @@
 # FO-TEST-00 — Master Coverage Map (FO Prototype Inventory)
 
 > Task: FO-TEST-00 ของชุด FO-TEST-001 · วันที่: 2026-10-27
-> Source of Truth (primary): `Prototypes/fo-flow/index.html` (SPA ไฟล์เดียว ~23,6xx บรรทัด)
+> Source of Truth (primary): `Prototypes/fo-flow/index.html` (SPA ไฟล์เดียว ~23,6xx บรรทัด) — ใช้เป็นแหล่งอ้าง route/overlay/state เท่านั้น ไม่ใช่เป้าการทดสอบ (เทสจริงบน stg/แอป) · contract ของพฤติกรรมอยู่ที่ `FrontOffice/` spec
 > Secondary (เช็ก gap): `deliverables/FO-DIAG-001-fo-app-diagrams.md` (Feature Map + Sitemap)
 > ตารางหลักในส่วนที่ 2 คือ **"สัญญาความครอบคลุม"** — task FO-TEST-01…20 ต้องอ้าง route/overlay/state จากตารางนี้เท่านั้น
 
@@ -36,8 +36,8 @@
 | Auth | onboarding `splash` | Splash auto-advance → `lang` (3.2s) | GUEST | 2 | |
 | Auth | onboarding `lang` | เลือกภาษาเริ่มต้น (en/th) + Continue | GUEST | 3 | |
 | Auth | onboarding `welcome` | Welcome page + ปุ่ม Get started → loading 1.5s → consent | GUEST | 3 | loading state จริง |
-| Auth | onboarding `consent` | Privacy notice — Accept all / Essential only (analytics+personalized toggles) | GUEST | 5 | มี `ob-legal` overlay ข้างใน |
-| Auth | onboarding `prefs` | Cookie settings page (consent→prefs) | GUEST | 3 | [OPEN-CODE-ONLY] (diagram ไม่แยกหน้า) |
+| Auth | onboarding `consent` | Privacy notice — Accept all / Reject all / Privacy settings (analytics+personalized toggles) | GUEST | 5 | มี `ob-legal` overlay ข้างใน |
+| Auth | onboarding `prefs` | Privacy settings page (consent→prefs) | GUEST | 3 | [OPEN-CODE-ONLY] (diagram ไม่แยกหน้า) |
 | Auth | onboarding `notif` | Notification permission ask — Allow/Not now | GUEST | 3 | |
 | Auth | onboarding `track` | Tracking/personalisation ask | GUEST | 3 | [OPEN-CODE-ONLY] |
 | Auth | onboarding `member` | Member Sheet "Join TukDaeng" (gate + signup/signin/social/skip) | GUEST | 5 | ใช้กับทั้ง gate, sign-in path, re-consent |
@@ -259,7 +259,7 @@
 
 ### 3.1 Route map จาก `subHTML` (ครบทุก branch)
 
-`create` · `search` · `sfilter` · `recents` · `settings` · `about_account` · `change_pwd` · `del_account` · `lang` · `notif_settings` · `help` · `cookies` · `privacy` · `terms` · `about_app` · `favorites` · `muted` · `blocked` · `prefs` · `sensitive` · `theme` · `interested` · `ni` · `saved` · `savedcol` · `archive` · `wishlist` · `wishcol` · `walerts` · `alerts` · `board` · `boardall` · `boardsearch` · `boardart:<id>` · `chat` · `chatitem:<id>` · `chatroom:<id>` · `chmenu:<id>` · `chsettings:<id>` · `chmedia:<id>` · `chatcfg` · `report` · `report:user` · `report:post` · `report:comment` · `report:pick:<u>` · `report:posts:<u>` · `report:done:<u>` · `profile:<uname>[:tab]` · `pfollow:<uname>:<tab>` · `about:<uname>` · `pedit` · `portfolio` · `pfasset:<id>` · `soldhist` · `sold:<id>` · `sell:<id>` — **58 route patterns**
+`create` · `search` · `sfilter` · `recents` · `settings` · `about_account` · `change_pwd` · `del_account` · `lang` · `notif_settings` · `help` · `cookies` · `privacy` · `terms` · `about_app` · `favorites` · `muted` · `blocked` · `prefs` · `sensitive` · `theme` · `interested` · `ni` · `saved` · `savedcol` · `archive` · `wishlist` · `wishcol` · `walerts` · `alerts` · `al_unavail` · `board` · `boardall` · `boardsearch` · `boardart:<id>` · `chat` · `chatitem:<id>` · `chatroom:<id>` · `chmenu:<id>` · `chsettings:<id>` · `chmedia:<id>` · `chatcfg` · `report` · `report:user` · `report:post` · `report:comment` · `report:pick:<u>` · `report:posts:<u>` · `report:done:<u>` · `profile:<uname>[:tab]` · `pfollow:<uname>:<tab>` · `about:<uname>` · `pedit` · `portfolio` · `pfasset:<id>` · `soldhist` · `sold:<id>` · `sell:<id>` — **58 route patterns**
 
 ### 3.2 Overlays / sheets / dialogs / toasts (ครบ)
 

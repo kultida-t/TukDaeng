@@ -56,7 +56,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Tabs | `ทั้งหมด` (All Posts) / `กำลังติดตาม` (Following) / `รายการโปรด` (Favorites) — segmented control ใต้ app header |
 | Favorites meaning | Favorite = account-level (favorite sellers) — **ไม่ใช่** liked posts; liked posts อยู่ Settings > Content preferences > Interested (D7) |
 | Guest | ดู feed + กดทุก tab ได้ (ไม่ gate — S-16); action ที่ต้องมีตัวตน → Member Sheet `Join TukDaeng` |
-| Card navigation | media tap = in-card carousel เท่านั้น; Post Detail เปิดผ่าน `Tap for details` → `View full detail`; owner area → Public Profile (00_NAV §7) |
+| Card navigation | media swipe = in-card carousel (หยุดที่ปลาย, ไม่วน); double-tap = ไลก์; single tap ไม่ทำอะไร; Post Detail เปิดผ่าน `Tap for details` → `View full detail`; owner area → Public Profile (00_NAV §7) |
 | Comment | shared bottom sheet เปิดได้จาก feed card โดยตรง — ไม่บังคับผ่าน detail (D8) |
 | Create entry | Feed header `+` = post composer; own profile `+`/empty-state CTA = asset composer — guest gated ทั้งคู่ (Member Sheet) |
 | Publish | `insertNewPost` แทรกโพสต์ใหม่บนสุดของ feed — `pfkind:"post"` (feed-only) หรือ `sale` เมื่อ drawer opt-in / Post-to-feed |
@@ -64,7 +64,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Own-post lifecycle | Archive / Turn off commenting / Edit / Mark as sold / Pin to grid / Delete (+ View sale record สำหรับ sold) |
 | Others-post menu | Favorites (conditional) / Not interested / Report — ไม่มี Share/Block/Hide ในเมนู (Share เป็น action button, Block อยู่ใน report flow + profile) |
 | Report | Full-page multi-step report stack ตาม Trust & Safety — entry จาก post menu (D9) |
-| Performance | Feed โหลดเร็ว, รูป lazy load, render ทั้ง list ครั้งเดียว — ไม่มี infinite scroll / pull-to-refresh ใน V1 |
+| Performance | Feed โหลดเร็ว, รูป lazy load, โหลดเป็นหน้าแบบ infinite scroll (IG), รองรับ pull-to-refresh (IG) |
 | Error / Offline | network/image/owner-fallback states = contract (S-29 — prototype ไม่ครอบ feed error path) |
 
 # 5. Scope
@@ -98,7 +98,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Sale Record form + Sold history + portfolio drawer record/tab internals — [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) (FSP-024) / [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (FSP-017); composer ระบุเฉพาะ interface ที่สร้าง/แก้/ตัด link drawer record (`cfToPortfolio`, `assetId`, `pfkind`)
 - Watch Alert sheet — [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) (FSP-021)
 - Content preferences pages internals (`prefs`/`sensitive`/`interested`/`ni`/`favorites`/`muted`/`blocked`) — [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (FSP-014 — feed spec ระบุแค่ผลกระทบต่อ feed)
-- Infinite scroll / pull-to-refresh / end-of-list marker — prototype ไม่มีใน V1
+- end-of-list marker — ไม่มีใน V1 (infinite scroll และ pull-to-refresh เป็น IG behavior ตามกติกาข้างบน)
 - Full Screen Image Viewer — ไม่มีใน V1 (feed media tap = carousel เท่านั้น, AC-NAV-003)
 - Real-time feed refresh จากอุปกรณ์/actor อื่น
 
@@ -182,7 +182,7 @@ Member สร้างโพสต์ผ่าน composer ได้ 2 mode: pos
 
 1. User เปิดแอปหรือกลับ feed shell → feed อยู่ใต้ทุก layer เสมอ (00_NAV §6.2)
 2. Feed tab default = `All Posts` (`state.feedTab:"all"` — ไม่ persist; session change/sign-out reset เป็น `all`; session `new` บังคับ `All` ตาม 00_GLOBAL §7)
-3. ระบบแสดงโพสต์ทั้ง list ครั้งเดียวตาม eligibility rule §9 — ไม่มี pagination/load-more
+3. ระบบโหลดโพสต์เป็นหน้า (pagination) ตาม eligibility rule §9 — เมื่อ user เลื่อนใกล้ท้าย list ระบบโหลดหน้าถัดไปต่อเนื่อง (infinite scroll แบบ IG) ระหว่างโหลดแสดง loading indicator ท้าย list และเมื่อไม่มีโพสต์เพิ่มแล้วไม่แสดง end-of-list marker (10 โพสต์ต่อหน้า และเริ่มโหลดหน้าถัดไปเมื่อเหลือ 3 การ์ดสุดท้าย — DEC-13)
 
 ## Switch Feed Tab
 
@@ -194,12 +194,13 @@ Member สร้างโพสต์ผ่าน composer ได้ 2 mode: pos
 
 1. User กด bottom-nav `Feed` ขณะอยู่ feed อยู่แล้ว (ไม่มี sub page เปิด)
 2. ระบบ re-render feed list + smooth scroll to top (IG behavior — AC-NAV-018)
-3. ไม่มี pull-to-refresh gesture ใน V1
+3. Pull-to-refresh (IG behavior): user ลากลงที่ตำแหน่งบนสุดของ feed → แสดง refresh indicator ระหว่างแถบ tabs กับ list → ปล่อยเกิน threshold = reload feed ตั้งแต่หน้าแรก; ปล่อยก่อน threshold = ยกเลิก
 
 ## Card Photo Interaction
 
-1. User แตะครึ่งซ้าย/ขวาของรูป หรือ swipe → carousel เปลี่ยนรูปแบบวนวน (wrap around) — counter `1/N` + dots sync
-2. แตะรูปไม่เปิด detail/viewer/zoom — ไม่มี Full Screen Image Viewer
+1. User swipe ซ้าย/ขวาบนรูป → carousel เปลี่ยนรูปทีละ 1 และ **หยุดที่รูปแรกและรูปสุดท้าย (ไม่วน)** — ที่ปลายแสดง resistance เล็กน้อยแล้วเด้งกลับ; counter `1/N` + dots sync
+2. Double-tap รูป = ไลก์โพสต์ (IG behavior) แสดง heart animation ตรงจุดที่แตะ; ถ้าโพสต์ถูกไลก์แล้ว double-tap ไม่ยกเลิกไลก์ (ยกเลิกทำได้ที่ปุ่ม ♡) และถ้า guest double-tap → Member Sheet gate
+3. Single tap รูป = ไม่ทำอะไร (ไม่เปิด detail/viewer/zoom) — ไม่มี Full Screen Image Viewer
 3. `View full detail` ใน details-body หรือ tile บน surface อื่นเท่านั้นที่พาไป Post Detail / Post Viewer
 
 ## Card Social Actions
@@ -445,7 +446,7 @@ Card ไม่แสดงใน V1: FOR SALE/SHOWCASE type tag, price/condition
 - `Price & Data Source` band เพิ่มอัตโนมัติเมื่อมี details หรือ price: Asking Price, **Estimated Market Price** (mock estimate ≈ −5%/+6% ปัด 5,000 — prototype-computed ไม่ใช่ market data จริง), Last Price Update = วันนี้, Data Source `TukDaeng Market Data`
 - Clip draft ที่มี media เดียวล้วน → `clip` + `clips[1]` + toast `Clip shared to feed ✓`; mixed/photo draft → `clips[]` duration ต่อ slide (null = photo)
 - `Also save to My Assets` ON → `pfkind:"sale"` + สร้าง drawer asset (`cfToPortfolio` status `sale`) + link `assetId`
-- Toast: `Posted · shared to feed ✓` / `Posted · shared to feed + My Assets ✓` (drawer ON) / `Clip shared to feed ✓` — EN hardcode (deviation); composer ปิด + feed re-render + scroll top
+- Toast: `Posted · shared to feed ✓` / `Posted · shared to feed + My Assets ✓` (drawer ON) / `Clip shared to feed ✓` — ต้องมีคู่ TH ตาม DEC-19; composer ปิด + feed re-render + scroll top
 - โพสต์ใหม่ที่ตรง Watch Alert ON → toast `Watch alert matched: {name}` `(+N more)` หน่วง ~2 วินาทีหลัง toast หลัก (simulation — 10_WATCH_ALERT)
 
 ## Asset Mode Rule (composer → drawer)
@@ -500,8 +501,8 @@ Card ไม่แสดงใน V1: FOR SALE/SHOWCASE type tag, price/condition
 ## Performance And Loading
 
 - Feed ควรโหลดภายใน 2 วินาที; รูปภาพ lazy load (prototype: `loading="lazy"` บน tiles)
-- Render list ทั้งก้อนครั้งเดียว — ไม่มี infinite scroll / load-more / end-of-list marker ใน V1
-- Refresh = tap Feed nav re-tap เท่านั้น — ไม่มี pull-to-refresh / auto real-time refresh
+- โหลดเป็นหน้า + infinite scroll ตาม IG (ดู User Flow → Open Feed ข้อ 3) — ไม่มี end-of-list marker
+- Refresh = tap Feed nav re-tap หรือ pull-to-refresh (IG behavior) — ไม่มี auto real-time refresh
 - V1 ไม่รองรับ real-time feed refresh สำหรับโพสต์ใหม่/like/comment จากอุปกรณ์อื่น
 
 ## Feed Network States (contract — S-29, prototype ไม่ครอบ feed error path)
@@ -571,7 +572,7 @@ Owner fallback rules:
 - `hideCounts` flag ซ่อน liked-by row + views ทุก surface — มีเฉพาะบน seeded posts; composer ไม่มี setter (More options มีแค่ commenting + audience) — spec เก็บ field + read semantics แต่ไม่มี UI เขียนค่าใน V1
 - `audience:"followers"` ถูกเก็บบนโพสต์แต่ feed ไม่กรองตาม audience (ดู Audience Rule) — enforcement เป็น contract
 - Asset mode `Show`/`Hide` path ทิ้ง audience/noComments ที่ตั้งใน More options (drawer-only record hardcode `public`/false)
-- Composer toasts หลายตัว EN hardcode ไม่มี TH branch: `Posted · shared to feed ✓` / `Posted · shared to feed + My Assets ✓` / `Clip shared to feed ✓` / `Post updated` / `Post needs at least 1 photo or clip` / `You can add up to 10 photos or clips` / `Watch alert matched:` — language sweep (FSP-026)
+- Composer toasts ต้องแปลไทยครบตาม DEC-19 (ปัจจุบัน EN hardcode ยังไม่มี TH branch): `Posted · shared to feed ✓` / `Posted · shared to feed + My Assets ✓` / `Clip shared to feed ✓` / `Post updated` / `Post needs at least 1 photo or clip` / `You can add up to 10 photos or clips` / `Watch alert matched:` — language sweep (FSP-026)
 - `Estimated Market Price` band บนโพสต์ใหม่ = mock estimate (±5–6% ปัด 5,000 + `Last Price Update` = วันนี้) — ไม่ใช่ market data จริง
 - โพสต์ใหม่ seed `likedBy` fake (`the watch`) — artifact ไม่มีผล render (likes=0 ไม่แสดง liked-by row)
 - Design variants `a2/b2/c2/a3/b3/c3/mixed` (price overlay / quiet price / footer price / type tag), `ft:"none"` brand-menu dropdown, `POST_DETAIL_CFG` เป็น dead prototype artifacts — ไม่ใช่ spec
@@ -722,7 +723,7 @@ Owner fallback rules:
 | AC-FEED-007 | Guest กดได้ทุก feed tab โดยไม่เจอ Member Sheet — Following/Favorites แสดง empty state |
 | AC-FEED-008 | กด bottom-nav Feed ซ้ำตอนอยู่ feed ต้อง re-render list + scroll to top |
 | AC-FEED-009 | Post card แสดง post head (avatar, seller, location sub-line ถ้ามี, Follow button ถ้ายังไม่ follow, `...`), photo carousel + counter + dots, action row (like/comment+count/views/share + Ask pill + save), liked-by row, caption + `more`, posted time และ details expander เมื่อมี price/spec |
-| AC-FEED-010 | แตะรูปใน card ต้องเป็น carousel ซ้าย/ขวาเท่านั้น — ไม่เปิด detail หรือ full-screen image viewer |
+| AC-FEED-010 | swipe บนรูปใน card ต้องเปลี่ยนรูปทีละ 1 และหยุดที่ปลาย (ไม่วน); double-tap = ไลก์ (gate สำหรับ guest); single tap ไม่เปิด detail หรือ full-screen image viewer |
 | AC-FEED-011 | Member กด Like แล้วปุ่ม toggle + นับ ±1 และ sync ทุก surface ของโพสต์เดียวกัน; like ต้องไม่เพิ่มโพสต์เข้า Favorites tab |
 | AC-FEED-012 | Like count เป็น private — card/others surfaces แสดง `Liked by {name} and others` ไม่มีตัวเลขรวม; Likes sheet ของโพสต์คนอื่นแสดง note `Only {seller} can see the total number of likes on this post.` |
 | AC-FEED-013 | Guest กด like/save/share/follow/ask/`...` menu/comment input ต้องเห็น Member Sheet `Join TukDaeng` |
@@ -747,7 +748,7 @@ Owner fallback rules:
 | AC-FEED-032 | `Delete` ต้องเห็น dialog `Delete post?` / `This post will be permanently deleted.` — Confirm ลบโพสต์จากทุก surface + toast `Post deleted` ไม่มี undo |
 | AC-FEED-033 | Archive page (Settings > Your library > Archive) แสดง archived post grid + note `Only you can see posts you've archived` — owner-only; tile เปิด Post Viewer feed mode |
 | AC-FEED-034 | Report จาก feed เปิด report stack ของ Trust & Safety และไม่ทำให้โพสต์หายจาก feed ทันที |
-| AC-FEED-035 | Feed render ทั้ง list ครั้งเดียว — ไม่มี infinite scroll, load-more state, pull-to-refresh หรือ end-of-list marker ใน V1 |
+| AC-FEED-035 | Feed โหลดเป็นหน้าและ infinite scroll เมื่อเลื่อนใกล้ท้าย list พร้อม loading indicator; รองรับ pull-to-refresh ที่ตำแหน่งบนสุด; ไม่มี end-of-list marker ใน V1 |
 | AC-FEED-036 | โหลด feed ไม่สำเร็จต้องแสดง Error State + `ลองใหม่`; offline ต้องแสดง cached data เมื่อมี (contract) |
 | AC-FEED-037 | Feed image failure ต้องคง card + placeholder + retry เฉพาะรูป (contract); owner fallback ต้องใช้ `Unknown seller`/`Seller unavailable` เฉพาะเมื่อ owner resolve ไม่ได้ (contract) |
 | AC-FEED-038 | V1 ไม่รองรับ real-time feed refresh สำหรับโพสต์ใหม่, like หรือ comment จากอุปกรณ์อื่น |
@@ -784,7 +785,7 @@ Owner fallback rules:
 # 18. Future Enhancement
 
 - Personalized ranking / feed recommendation model
-- Pull-to-refresh + infinite scroll
+- end-of-list marker
 - Real-time feed refresh
 - Saved feed preferences
 - Sponsored listing
@@ -793,3 +794,13 @@ Owner fallback rules:
 - Real camera/upload + media editing (crop/filter) — prototype ใช้ Recents mock
 - Audience `Followers only` enforcement ใน feed/viewer
 - `hideCounts` composer control (hide like/view counts per post)
+
+
+## Batch A Amendments (2026-10-30)
+
+- เมื่อ snooze เปิดและผู้ใช้ติดตาม 0 คน: ใช้ empty state แบบ Following (`Follow others to see their posts here`)
+- re-tap แท็บ feed ที่ active = scroll กลับบนสุด
+- Composer: camera tile เปิดกล้อง และ `Recents` เปิดตัวเลือกอัลบั้ม (production); ใน prototype เป็น dead
+- Composer: draft ถือว่า dirty เมื่อมี media, caption หรือ meta อย่างใดอย่างหนึ่ง → ปิดแล้วแสดง discard dialog
+- Audience `Followers only` ใช้บังคับการมองเห็นใน feed/viewer
+- โพสต์ที่ผูก asset แสดง status tag ตาม pfkind (ดู 05)

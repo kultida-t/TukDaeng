@@ -33,22 +33,22 @@
 
 | E2E | เส้น | Modules ที่ข้าม | TC ย่อยหลักที่ครอบ (เล่ม 01–17) | Priority |
 | --- | --- | --- | --- | --- |
-| E2E-001 | Buyer journey เต็ม (บังคับ) | Auth/Gate · Search · Viewer/Detail · Sheets/WA · Chat | AUTH-028..043,061..068 · GATE-001,033..035,042..048 · SRCH-006..043,055..057 · PV-001..012 · DET-001..019,024..029 · SHT-067..072 · WA-002,009..018 · CHAT-002,003,045..057 · PROF-056,058,060,061 · [GAP-7] | HIGH |
+| E2E-001 | Buyer journey เต็ม (บังคับ) | Auth/Gate · Search · Viewer/Detail · Sheets/WA · Chat | AUTH-028..043,061..068 · GATE-001,033..035,042..048 · SRCH-006..043,055..057 · PV-001..012 · DET-001..019,024..029 · SHT-067..072 · WA-002,009..018 · CHAT-002,003,045..057 · PROF-056,058,060,061 · SHELL-066 [CLOSED: DEC-01] | HIGH |
 | E2E-002 | Seller journey เต็ม (บังคับ) | Create · Feed · Search · WA · Chat · Asset/Portfolio | CRE-001..053 · FEED-001..008 · SRCH-017..032 · WA-043 · CHAT-032..044,108..124 · AST-038..064,076..085 · PROF-013..023 | HIGH |
 | E2E-003 | Watch alert loop (บังคับ) | WA · Alerts · Viewer/Detail · Chat | WA-001,009..015,043,056 · ALT-014,017..034,065..072 · PV-007..008 · DET-001..005 · CHAT-002,003 | HIGH |
 | E2E-004 | Asset lifecycle (บังคับ) | Create · Profile tabs · Feed/Search · Portfolio | AST-038..054,065..085 · PROF-013..023 · FEED-001..008 · SRCH-017..032 · WA-050 | HIGH |
-| E2E-005 | ผลกระทบหลังขาย ข้าม surface (เพิ่ม — เหตุผล §2.5) | Asset · Feed/Search · Library · Chat · WA | AST-038..054,083,085 · LIB-001..105 · CHAT-011..031,053,104 · WA-050 · [GAP-8,9,10,11] | HIGH |
+| E2E-005 | ผลกระทบหลังขาย ข้าม surface (เพิ่ม — เหตุผล §2.5) | Asset · Feed/Search · Library · Chat · WA | AST-038..054,083,085 · LIB-001..105 · CHAT-011..031,053,104 · WA-050 · LIB-119, WA-080, CHAT-125, CHAT-126 [CLOSED: DEC-02..05] | HIGH |
 | E2E-006 | Social loop (บังคับ) | Feed · Sheets · Alerts · Profile | FEED-027..038 · SHT-013..048 · ALT-010..041,065..079 · PROF-040..054 | MED |
-| E2E-007 | Moderation loop (บังคับ) | Report stack · Feed · BO handoff · Fallback | TRS-001..016,026..031,047,049,058..061 · ALT-032 · [GAP-12,13] | MED |
-| E2E-008 | Delete & restore (บังคับ) | Settings/Auth · Profile · Library · Chat · WA | SET-025..035 · AUTH-044..049,082..097 · [GAP-14,15,16] | MED |
+| E2E-007 | Moderation loop (บังคับ) | Report stack · Feed · BO handoff · Fallback | TRS-001..016,026..031,047,049,058..061 · ALT-032 · TRS-066, TRS-067 [CLOSED: DEC-06..07] | MED |
+| E2E-008 | Delete & restore (บังคับ) | Settings/Auth · Profile · Library · Chat · WA | SET-025..035 · AUTH-044..049,082..097 · PROF-111, CHAT-127, SET-121 [CLOSED: DEC-08..10] | MED |
 | E2E-009 | Block → keep-page → unblock (เพิ่ม — เหตุผล §2.9) | Report/Block · Feed/Search · Profile · Chat · Settings | TRS-032..054 · PROF-062,063..075 · SET-072..077 · FEED-027..031 | MED |
 | E2E-010 | Guest → member resume (เพิ่ม — เหตุผล §2.10) | Gate · Auth · Surface state | GATE-024..041 · AUTH-028..049 | MED |
-| E2E-011 | Not-interested loop (เพิ่ม — เหตุผล §2.11) | Feed · Settings/Prefs · Library NI | FEED-054..059,068..072 · SET-078..091 · LIB-088..097 · [GAP-17] | MED |
+| E2E-011 | Not-interested loop (เพิ่ม — เหตุผล §2.11) | Feed · Settings/Prefs · Library NI | FEED-054..059,068..072 · SET-078..091 · LIB-088..097 · LIB-120 [CLOSED: DEC-11] | MED |
 | E2E-012 | Library sync ข้าม surface (เพิ่ม — เหตุผล §2.12) | Feed · Sheets · Detail · Library | FEED-042..045 · SHT-056..080 · DET-024..029 · LIB-001..097 · PV-003..005 | MED |
 | E2E-013 | Follow loop (เพิ่ม — เหตุผล §2.13) | Feed · Profile · Alerts · Feed tabs | FEED-027..031,054..059 · PROF-040..054 · ALT-035..041 · SHELL-035..041 · SHT-091..098 | MED |
 | E2E-014 | Board read loop guest→member (เพิ่ม — เหตุผล §2.14) | Board · Gate · Auth | BRD-001..012,034..048 · GATE-013,036..041 | MED |
 | E2E-015 | Stale/deleted target fallback (เพิ่ม — เหตุผล §2.15) | Library · Chat · WA · Alerts · Detail | LIB-098..105 · CHAT-053 · WA-058 · ALT-032 · DET-034..037 | LOW |
-| E2E-016 | External deep link → gate → destination (เพิ่ม — เหตุผล §2.16) | Share · Gate · Deep link contract | SHT-049..055 · ALT-043 · [GAP-18] | LOW |
+| E2E-016 | External deep link → gate → destination (เพิ่ม — เหตุผล §2.16) | Share · Gate · Deep link contract | SHT-049..055 · ALT-043 · [CLOSED: DEC-12] | LOW |
 
 ## §2 Test cases
 

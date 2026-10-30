@@ -63,30 +63,30 @@ FEED-002,Post Card,อยู่ feed + เลือกการ์ด B แล�
 FEED-003,Post Card,อยู่ feed (มีการ์ด D + E),1. เทียบ head ของการ์ด D (follow แล้ว) กับการ์ด E (ยังไม่ follow),"การ์ด D ไม่มีปุ่ม ""Follow"" บน head; การ์ด E มีปุ่ม ""Follow""",MEMBER,Medium,,,
 FEED-004,Post Card,member อยู่ feed บนสุด,"1. จำการ์ดแรกสุด (เทียบเวลาโพสต์)
 2. เลื่อนลงจนสุดลิสต์ แล้วเลื่อนต่ออีก
-3. กลับบนสุดแล้วดึงจอลง (pull) ด้วยนิ้วจนสุดแล้วปล่อย","feed เรียงโพสต์ล่าสุดไว้บนสุดตั้งแต่เปิด (newest first); เลื่อนลงสุด → ถ้ายังมีโพสต์ โหลดต่อ; ถ้าหมดแล้ว ลิสต์จบสะอาด (ไม่มี spinner ค้าง); ดึงลงที่บนสุดต้องมี pull-to-refresh: indicator หมุนแล้ว feed รีเฟรชข้อมูลใหม่ (โพสต์ใหม่เข้ามาอยู่บน) — ไม่มี PTR = FAIL ตาม spec",MEMBER,Medium,,,spec: newest first + PTR ต้องมีและรีเฟรชจริง (มาตรฐาน feed app)
+3. กลับบนสุดแล้วดึงจอลง (pull) ด้วยนิ้วจนสุดแล้วปล่อย",feed โหลดเป็นหน้า 10 โพสต์; เลื่อนลงใกล้ท้าย (เหลือ 3 การ์ด) → โหลดหน้าถัดไปต่อเนื่อง; pull-to-refresh ที่ตำแหน่งบนสุดรีโหลดจากหน้าแรก,MEMBER,Medium,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30) DEC-13/15
 FEED-005,Post Card,อยู่ feed,1. ดูตัวเลขหลังไอคอนตา (👁) ของการ์ดหลายใบ,"แสดงจำนวน view เช่น ""980"" / ""1.2K"" — เป็นจำนวน view ไม่ใช่เงิน (ไม่มี THB ไม่ format เงิน)",MEMBER,Medium,,,money-display-rules: views ≠ currency
 FEED-006,Post Card,guest อยู่ feed (SETUP-03),1. ดูการ์ด A ทั้งใบเทียบตอนเป็น member,render เหมือน member ทุกส่วน (Follow / Ask / 🔖 ยังแสดง) — gate เกิดตอนแตะเท่านั้น,GUEST,Medium,,,
 FEED-007,Post Card,"member, เปลี่ยนภาษาเป็นไทยแล้ว (SETUP-07)",1. ดูเวลาใต้ caption ของการ์ดหลายใบ,"เวลาเป็นไทยตามอายุโพสต์จริง เช่น ""3 วันที่แล้ว"" / ""11 ชั่วโมงที่แล้ว""",MEMBER,Medium,,,
 FEED-008,Post Card,อยู่ feed ที่การ์ด G,"1. อ่าน caption ก่อนกด
 2. แตะ ""more""","ก่อนกด: แค่บรรทัดแรก + "" more""; หลังกด: caption เต็มหลายบรรทัด + hashtag เป็นสีลิงก์แตะได้",MEMBER,Medium,,,
-FEED-009,Media Carousel,อยู่ feed,"1. ดูการ์ด A (≥2 รูป) เทียบการ์ด B (รูปเดียว)","การ์ด A = counter ""1/N"" + dots N จุด (จุดแรกเข้ม); การ์ด B = ไม่มี counter/dots",MEMBER,High,,,
-FEED-010,Media Carousel,อยู่ feed ที่การ์ด A,"1. แตะครึ่งขวาของรูปด้วยนิ้ว
-2. แตะครึ่งขวาซ้ำจนครบรอบ
-3. แตะครึ่งซ้าย","รูปเปลี่ยนไปทีละใบและวนรอบ (สุดท้าย→แรก, ซ้าย=ถอย); counter/dot ย้ายตาม — เปลี่ยนเฉพาะในการ์ดเดิม",MEMBER,High,,,tap ครึ่งซ้าย/ขวา = prev/next วนรอบ
+FEED-009,Media Carousel,อยู่ feed,1. ดูการ์ด A (≥2 รูป) เทียบการ์ด B (รูปเดียว),"การ์ด A = counter ""1/N"" + dots N จุด (จุดแรกเข้ม); การ์ด B = ไม่มี counter/dots",MEMBER,High,,,
+FEED-010,Media Carousel,อยู่ feed ที่การ์ด A (≥3 รูป) ที่รูปที่ 1,1. swipe ซ้ายจากรูปที่ 1 (ควรหยุด) 2. swipe ขวาทีละรูปจนถึงรูปสุดท้าย 3. swipe ขวาต่อจากรูปสุดท้าย,swipe ทีละ 1 รูป; ที่รูปแรกและรูปสุดท้ายหยุดไม่วน (แสดงแรงต้านเล็กน้อยแล้วเด้งกลับ); counter 1/N→…→N/N ค้างที่ N/N; dot เข้มย้ายตามรูปปัจจุบัน,MEMBER,High,,,"ปรับตาม spec 02 (DEC-14, 2026-10-30) — แตะครึ่งซ้าย/ขวาไม่เปลี่ยนรูปแล้ว"
 FEED-011,Media Carousel,อยู่ feed ที่การ์ด A,"1. แตะรูปหลาย ๆ ครั้ง (ทั้งซ้ายขวา)
 2. แตะรูปของการ์ด B (รูปเดียว) ด้วย",กติกาบังคับ: Post Viewer ไม่เปิดเลย — เกิดแค่เปลี่ยนรูปในการ์ด (หลายรูป) หรือไม่เกิดอะไร (รูปเดียว); ถ้า viewer/หน้าใหม่เด้ง = FAIL,MEMBER,High,,,ยืนยัน: กด media ได้แค่ carousel ในการ์ดเดิม
 FEED-012,Media Carousel,อยู่ feed ที่การ์ด A,"1. กดค้างรูปลากซ้ายด้วยนิ้วแล้วปล่อย
-2. ลากซ้ำอีกครั้ง",กติกาบังคับฝั่งลาก: slide เปลี่ยนในการ์ดเดิม; Post Viewer ไม่เปิดหลังปล่อยนิ้ว (เกณฑ์ลาก ~64px/~20% ตาม design),MEMBER,High,,,ลาก = carousel เท่านั้นเช่นกัน
+2. ลากซ้ำอีกครั้ง",ลากผ่านเกณฑ์ → slide เปลี่ยน; หลังปล่อยนิ้วไม่มี viewer เปิด,MEMBER,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
 FEED-013,Media Carousel,อยู่ feed ที่การ์ด A,1. กดค้างรูปลากซ้ายนิดเดียวแล้วปล่อย,ระหว่างลากรูปขยับตามนิ้ว; พอปล่อยรูปเด้งกลับตำแหน่งเดิม — counter ไม่เปลี่ยน,MEMBER,Medium,,,
 FEED-014,Media Carousel,อยู่ feed ที่การ์ด A slide แรก,"1. ลากรูปไปทางขวา (พยายามออกนอกขอบแรก)
 2. เลื่อนไป slide สุดท้ายแล้วลากซ้ายออกนอกขอบท้าย",รูปขยับตามแบบต้าน ๆ (เหนียว ๆ ไม่ไปสุด); ปล่อยแล้วเด้งกลับ — ไม่ wrap ตอนลาก,MEMBER,Low,,,
 FEED-015,Media Carousel,อยู่ feed ที่การ์ด B (รูปเดียว),"1. แตะซ้าย/ขวาบนรูป
 2. ลากซ้ายขวา",ไม่เปลี่ยนอะไร และไม่เปิด viewer — การ์ดนิ่ง,MEMBER,Medium,,,
+FEED-083,Media Carousel,อยู่ feed ที่การ์ด A (ยังไม่ไลก์ — ผ่านการล็อกอินแล้ว),1. double-tap รูปบนการ์ด A 2. รอ 1 วินาที 3. double-tap รูปเดิมซ้ำ,ครั้งแรก: ไลก์ +1 พร้อม heart animation ตรงจุดที่แตะ และปุ่ม ♡ เติมสี; ครั้งที่สองไม่ยกเลิกไลก์ (ยกเลิกที่ปุ่ม ♡ เท่านั้น); Post Viewer ไม่เปิด,MEMBER,High,, ,ตาม spec 02 (DEC-14)
+FEED-084,Media Carousel,อยู่ feed ที่การ์ด A ในสถานะ guest,1. double-tap รูปบนการ์ด A 2. single tap รูปเดียวกัน,"double-tap → Member Sheet ""Join TukDaeng"" เด้ง ไม่มีการไลก์; single tap ไม่เปิด detail/viewer และไม่เปลี่ยนรูป; หลังปิด sheet การ์ดอยู่ที่เดิม",GUEST,Medium,, ,ตาม spec 02 (DEC-14) + gate AUTH-061
 FEED-016,Media Carousel,อยู่ feed ที่การ์ด A,1. กดค้างบนรูปแล้วลากแนวตั้งลง/ขึ้น,รูปไม่ลากตามนิ้ว — feed เลื่อนตามปกติ (ลากแนวตั้งชนะเสมอ),MEMBER,Medium,,,
 FEED-017,Clip Posts,member มีโพสต์ clip บน feed (SETUP-10),1. ดูการ์ด clip ที่เพิ่งสร้าง,"badge ▶""0:NN"" มุมรูป + แถบ progress บาง ๆ ใต้รูป; counter/dots ตามจำนวน media",MEMBER,Medium,,,ถ้าสร้าง clip ไม่ได้ → BLOCK ทั้งกลุ่ม
 FEED-018,Clip Posts,การ์ด clip อยู่บน feed,"1. เลื่อนให้การ์ด clip เข้าเฟรมเกินครึ่ง
 2. เลื่อนผ่านจนการ์ดเกือบพ้นจอ
-3. เลื่อนกลับมา","เห็นเกินเกณฑ์ (design ~55%) = clip เล่นเอง (badge นับเวลาถอยหลัง + แถบ progress เดิน); เห็นน้อย = หยุดค้าง; กลับมา = เล่นต่อ; ครบเวลา = วนใหม่",MEMBER,Medium,,,
+3. เลื่อนกลับมา",เห็นเกินเกณฑ์ (design ~55%) = clip เล่นเอง (badge นับเวลาถอยหลัง + แถบ progress เดิน); เห็นน้อย = หยุดค้าง; กลับมา = เล่นต่อ; ครบเวลา = วนใหม่,MEMBER,Medium,,,
 FEED-019,Clip Posts,การ์ด clip กำลังเล่นบน feed (มี ≥2 media),"1. แตะ avatar เปิด profile ทับ feed
 2. กด back กลับ
 3. swipe ไป slide รูปถ่าย",ตอนถูกหน้าอื่นบัง clip หยุด; กลับมาเล่นต่อ; slide รูปถ่ายไม่มี badge/progress,MEMBER,Low,,,
@@ -109,7 +109,7 @@ FEED-030,Follow,กำลัง follow seller การ์ด E (ปุ่มแ
 3. (ทำใหม่) เปิด sheet แล้วแตะ ""Cancel""","ยืนยัน → toast ""Unfollowed"" + ปุ่มกลับ ""Follow""; Cancel → sheet ปิดเฉย ๆ ยัง follow อยู่",MEMBER,High,,,
 FEED-031,Follow,follow + Add to favorites seller การ์ด E ไว้แล้ว (ผ่าน ⋯),"1. แตะ ""Following"" → ""Unfollow""
 2. เปิดแท็บ Favorites
-3. เปิด ⋯ ของการ์ด E อีกครั้ง","unfollow ล้าง favorite ด้วย → โพสต์หายจากแท็บ Favorites; เมนู ⋯ ไม่มีแถว favorites อีก",MEMBER,Medium,,,
+3. เปิด ⋯ ของการ์ด E อีกครั้ง",unfollow ล้าง favorite ด้วย → โพสต์หายจากแท็บ Favorites; เมนู ⋯ ไม่มีแถว favorites อีก,MEMBER,Medium,,,
 FEED-032,Like,guest อยู่ feed ที่การ์ด A,1. แตะหัวใจ ♡ ใต้รูป,"Member Sheet ""Join TukDaeng"" เด้ง — หัวใจยังไม่เติม",GUEST,High,,,
 FEED-033,Like,member อยู่ feed ที่การ์ด A,"1. แตะ ♡
 2. แตะ ♡ ซ้ำ",กดแรกหัวใจเติมสี; กดซ้ำกลับโบก — toggle ได้เรื่อย ๆ; การ์ดคนอื่นไม่มีเลขกำกับหัวใจ (มีเฉพาะโพสต์ตัวเองตาม design),MEMBER,High,,,
@@ -128,14 +128,14 @@ FEED-041,Share,share sheet เปิดอยู่,"1. แตะเพื่อ
 3. เปิดใหม่ → แตะ ""Copy link"" แล้วลองวางที่อื่น","เพื่อน → ปิด sheet + toast ""Sent to {ชื่อ}"" และโพสต์ต้องโผล่ในห้องแชทกับเพื่อนคนนั้นจริง (การ์ดโพสต์เป็น message ล่าสุด — เปิด Chat เช็ก; toast เฉย ๆ ไม่ส่ง = FAIL); แอป → เปิดแอปนั้นพร้อมลิงก์ผ่าน OS share (prototype แสดง toast ""Shared to {app}"" แทน — ข้อจำกัดของ prototype); Copy link → toast ""Link copied"" + ลิงก์วางได้จริง",MEMBER,Medium,,,spec ล็อก V1: send-to-friend ต้องเข้าห้องแชทจริง
 FEED-042,Save,guest อยู่ feed,1. แตะ 🔖 ใต้รูป,"Member Sheet ""Join TukDaeng"" เด้ง",GUEST,High,,,
 FEED-043,Save,member อยู่ feed ที่การ์ดที่ยังไม่ save,1. แตะ 🔖,"icon bookmark เติม + sheet เด้ง: แถว ""Saved / Private"" + ส่วน Collections ของบัญชีจริง + ""New collection"" (ถ้าไม่เคยสร้าง = ไม่มีรายการ collection เหลือแถว New collection)",MEMBER,High,,,
-FEED-044,Save,save sheet เปิดอยู่ (มี collection ≥1 — สร้างผ่าน ""New collection"" ถ้าไม่มี),"1. แตะ collection ที่ต้องการ","sheet ปิด + toast ""Saved to {ชื่อ collection}""; 🔖 ยังเติม",MEMBER,Medium,,,
+FEED-044,Save,save sheet เปิดอยู่ (มี collection ≥1 — สร้างผ่าน New collection ถ้าไม่มี),1. แตะ collection ที่ต้องการ,"sheet ปิด + toast ""Saved to {ชื่อ collection}""; 🔖 ยังเติม",MEMBER,Medium,,,
 FEED-045,Save,โพสต์อยู่ใน collection แล้ว,"1. แตะ 🔖 (sheet เปิด ไม่ได้ unsave ทันที)
 2. แตะแถว ""Saved"" บนสุดของ sheet","เลือก ""Saved"" → toast ""Removed from your saved"" + 🔖 กลับว่าง",MEMBER,Medium,,,
 FEED-046,Ask Seller,guest อยู่ feed ที่การ์ด A,"1. แตะปุ่ม ""Ask""","Member Sheet ""Join TukDaeng"" เด้ง — ไม่เข้าแชท",GUEST,High,,,
 FEED-047,Ask Seller,member อยู่ feed ที่การ์ด A,"1. แตะ ""Ask""",เข้าห้องแชทกับ seller: การ์ด item (รูป + caption + ราคา) ปักหัวห้อง + ช่องพิมพ์มีข้อความตั้งต้นรอส่ง,MEMBER,High,,,chat internals → FO-TEST-08
 FEED-048,Ask Seller,member อยู่ feed ที่การ์ด B (showcase ไม่มีราคา),"1. แตะ ""Ask"" ของการ์ด B",เข้าห้องแชทกับ seller เหมือนกัน — การ์ด item ไม่มีบรรทัดราคา,MEMBER,Medium,,,
 FEED-049,Ask Seller,เคย Ask การ์ด A แล้วกลับมาที่ feed,"1. แตะ ""Ask"" ของการ์ด A อีกครั้ง",เปิดห้องเดิมกับ seller เดิม (ไม่สร้างแชทซ้ำใน chat list),MEMBER,Medium,,,
-FEED-050,Ask Seller,block seller การ์ด A ไว้ก่อน (profile → ⋯ → Block),"1. พยายาม Ask seller ที่ block (เข้าโพสต์ผ่าน detail หรือช่องทางที่ถึงได้)","toast ""Cannot message a blocked account"" — ไม่เปิดห้องแชท",MEMBER,Low,,,precondition ใช้ flow block ของ FO-TEST-16; บันทึก wording จริง
+FEED-050,Ask Seller,block seller การ์ด A ไว้ก่อน (profile → ⋯ → Block),1. พยายาม Ask seller ที่ block (เข้าโพสต์ผ่าน detail หรือช่องทางที่ถึงได้),"toast ""Cannot message a blocked account"" — ไม่เปิดห้องแชท",MEMBER,Low,,,precondition ใช้ flow block ของ FO-TEST-16; บันทึก wording จริง
 FEED-051,Liked-by,member อยู่ feed ที่การ์ด F (มีแถว Liked by),"1. แตะแถว ""Liked by …""
 2. ใน sheet แตะชื่อ/avatar liker","sheet ""Likes"" เปิด: note ""Only {seller} can see the total number of likes on this post."" + รายชื่อ + ปุ่ม ""Follow"" ท้ายแถว; แตะ liker → เปิด profile ของเขา",MEMBER,Medium,,,
 FEED-052,Liked-by,likes sheet เปิดอยู่ (การ์ด F),"1. แตะ ""Follow"" ของ liker
@@ -179,7 +179,7 @@ FEED-074,Feed Filter,session NEW (follow 0 คน) — SETUP-05 + SETUP-07,"1. �
 2. back กลับ feed","feed ว่าง — empty state ต้องแสดงข้อความตรงบริบท: icon users + ""Follow others to see their posts here / ติดตามผู้อื่นเพื่อดูโพสต์ของพวกเขาที่นี่"" (ชุดเดียวกับแท็บ Following เพราะ snooze = เหลือเฉพาะคนที่ follow); ถ้าโชว์ ""No favorites yet"" = FAIL copy bug",NEW,Medium,,,spec: copy ต้องตรงบริบท (prototype แก้แล้ว)
 FEED-075,Feed Filter,snooze เปิดอยู่,"1. ปิด toggle Snooze
 2. back กลับ feed",feed กลับแสดงโพสต์ครบเหมือนเดิม,MEMBER,Medium,,,
-FEED-076,Hashtag/Profile,caption ของการ์ด G expand แล้ว (member) — guest ทำซ้ำได้,"1. แตะ hashtag ใน caption",หน้า Search results เด้งเต็มจอ (ค้นหา hashtag นั้น) — ใช้ได้ทั้ง member และ guest ไม่มี gate,MEMBER,Medium,,,
+FEED-076,Hashtag/Profile,caption ของการ์ด G expand แล้ว (member) — guest ทำซ้ำได้,1. แตะ hashtag ใน caption,หน้า Search results เด้งเต็มจอ (ค้นหา hashtag นั้น) — ใช้ได้ทั้ง member และ guest ไม่มี gate,MEMBER,Medium,,,
 FEED-077,Hashtag/Profile,member อยู่ feed ที่การ์ด A,"1. แตะ avatar วงแหวน → กลับ
 2. แตะชื่อ seller → กลับ
 3. แตะชื่อ seller ตัวหน้าหน้า caption → กลับ",ทั้ง 3 จุดเปิด public profile ของ seller เด้งทับ feed,MEMBER,High,,,

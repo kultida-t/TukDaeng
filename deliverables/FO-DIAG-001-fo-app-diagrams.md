@@ -1,7 +1,7 @@
 # FO-DIAG-001 — ชุด Diagram ภาพรวมแอปตึกแดง (Front Office)
 
 > วัตถุประสงค์: ให้พี่คิงและผู้เกี่ยวข้องเห็นภาพแอป TukDaeng ฝั่ง Front Office แบบครบถ้วนใน 6 มุม
-> Source of truth: `Prototypes/fo-flow/index.html` + FrontOffice docs baseline `FO-PRD-v1.9`
+> Source of truth: `Prototypes/fo-flow/index.html` + FrontOffice docs baseline `FO-PRD-v1.10`
 > รูปแบบ: Mermaid (render ได้ใน GitHub / VS Code / mermaid.live)
 > วันที่: 2026-10-26
 

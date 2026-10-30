@@ -41,7 +41,7 @@ PROF-029,Public Profile,profile U-2,แตะ ติดตาม/Follow — ร�
 PROF-030,Public Profile,profile U-2,แตะ แชท/Chat — รอบ A GUEST / รอบ B MEMBER,A: Member Sheet · B: ห้อง DM เปิด head=U-2,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
 PROF-031,Public Profile,profile U-2,แตะ ⋯ — รอบ A GUEST / รอบ B MEMBER,A: Member Sheet · B: sheet เมนูเปิด,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
 PROF-032,Public Profile,profile U-2 → avatar,แตะ Follow ใน overlay — รอบ A GUEST / รอบ B MEMBER,A: Member Sheet ทุก act · B: Follow→Following + Share/Copy ทำงาน,GUEST/MEMBER,HIGH,,,GATE เทส 2 รอบ
-PROF-033,Public Profile,U-2 มี mutual followers,อ่านแถวใต้ bio,Followed by {names} + avatar ≤3 คน — แสดงเฉพาะมี mutual,MEMBER,MED,,,ไม่มี mutual = BLOCK
+PROF-033,Public Profile,U-2 มี mutual followers,อ่านแถวใต้ bio,"แสดง ""Followed by {name} and others"" ใต้ profile คนอื่น",MEMBER,MED,,,DEC-25 A22
 PROF-034,Public Profile,profile U-2,อ่านแถบ tab,All/Sale/Show เท่านั้น — ไม่มี Hide/Sold,MEMBER,HIGH,,,
 PROF-035,Public Profile,profile U-2,แตะ followers + following,push pfollow:{U-2} แท็บตรง,MEMBER,HIGH,,,
 PROF-036,Public Profile,U-2 มีโพสต์ hide/sold,นับ grid All เทียบเครื่อง ACCT-2,viewer ไม่เห็น tile hide/sold เลย,MEMBER,HIGH,,,ACCT-2 ทำ hide/sold ไม่ได้ = BLOCK
@@ -99,11 +99,11 @@ PROF-087,Edit Profile,pedit เปิด,เปลี่ยน username เป�
 PROF-088,Edit Profile,เปลี่ยนชื่อแล้ว,เช็กโพสต์/follows/chat ตัวเอง + เปิด profile:{ชื่อเก่า},reference migrate ครบ; ชื่อเก่าไม่โชว์ profile สมบูรณ์,MEMBER,HIGH,,,
 PROF-089,Edit Profile,pedit,ใส่ username ผิดรูปแบบทีละแบบ → บันทึก,ไม่บันทึก + inline error กติกา 3–20 a–z 0–9 _ . + focus,MEMBER,HIGH,,,
 PROF-090,Edit Profile,pedit,ลอง 2/3/20/เกิน 20 ตัว + ตัวพิมพ์ใหญ่,2→error · 3/20→ผ่าน · maxlength=20 · uppercase→lowercase,MEMBER,MED,,,
-PROF-091,Edit Profile,pedit,ใส่ username ของคนอื่น → บันทึก,ไม่บันทึก + This username is already taken.,MEMBER,HIGH,,,
+PROF-091,Edit Profile,pedit,ใส่ username ของคนอื่น → บันทึก,"ไม่บันทึก + ""This username is already taken."" / ""ชื่อผู้ใช้นี้ถูกใช้แล้ว""",MEMBER,HIGH,,,DEC-25 A23
 PROF-092,Edit Profile,pedit,bio 150 ตัว → save · พิมพ์เกิน,150 ผ่านแสดงเต็ม · maxlength กันเกิน,MEMBER,MED,,,
 PROF-093,Edit Profile,pedit,ลบ bio ว่าง → save,ผ่าน + ส่วน bio หายจาก profile,MEMBER,MED,,,
 PROF-094,Edit Profile,pedit,save ทีละค่า: https://… · domain · www.… · @handle,ทุกแบบผ่าน — URL→chip ลิงก์ · @→chip @,MEMBER,MED,,,
-PROF-095,Edit Profile,pedit,ใส่ link ผิดรูปแบบ → บันทึก,ไม่บันทึก + inline Invalid link + focus,MEMBER,HIGH,,,
+PROF-095,Edit Profile,pedit,ใส่ link ผิดรูปแบบ → บันทึก,"ไม่บันทึก + ""Invalid link — enter a URL (https://...) or @username"" / TH คู่",MEMBER,HIGH,,,DEC-25 A23
 PROF-096,Edit Profile,มี link เดิม,ลบ link ว่าง → save,ผ่าน + link chip หาย,MEMBER,MED,,,
 PROF-097,Edit Profile,pedit เปิด,แก้ทุกช่อง → back ไม่ Save → เปิดใหม่,ค่ากลับเดิมทั้งหมด ไม่มี draft,MEMBER,MED,,,
 PROF-098,Edit Profile,เปลี่ยน bio/link แล้ว,kill → เปิดใหม่ → เครื่อง ACCT-2 ดู profile U-ME,ค่าใหม่รอด restart + ACCT-2 เห็น (server truth),MEMBER+ACCT-2,HIGH,,,
@@ -119,3 +119,4 @@ PROF-107,Persistence/Device,เปิด dark,ไล่ทุก surface profile
 PROF-108,Persistence/Device,⋯sheet+block sheet+dialog ซ้อน,กด device back ทีละครั้ง,ปิดชั้นบนสุดก่อน ไม่เด้งหลายชั้น,MEMBER,MED,,,
 PROF-109,Persistence/Device,airplane mode,เปิด profile U-2 + กด Follow + save bio,อ่าน=แสดงข้อมูลล่าสุดที่ cache ไว้ (stale) พร้อมสถานะ offline ชัด · เขียน=error ชัดไม่บันทึกหลอก,MEMBER,HIGH,,,
 PROF-110,Persistence/Device,เครื่องจอเล็กสุด,own/public/pedit หมุนแนวนอน,layout ไม่พัง state ไม่หาย,MEMBER,LOW,,,ล็อก portrait = BLOCK
+PROF-111,Persistence/Device,ACCT-2 ยืนยัน Delete Account (เข้าสู่ Deactivated/Grace 30 วัน),1. MEMBER ค้นหาชื่อ ACCT-2 ใน Search 2. เปิดดูหน้าโปรไฟล์ของ ACCT-2 ผ่าน direct link,ค้นหาไม่พบชื่อ ACCT-2 ในระบบ และหน้าโปรไฟล์ของ ACCT-2 แสดงหน้าว่าง/ข้อความไม่พบผู้ใช้ โพสต์ทั้งหมดของ ACCT-2 ถูกซ่อนจากสาธารณะทันที (GAP-14 / DEC-08),MEMBER+ACCT-2,HIGH,,,GAP-14 ปิดด้วย DEC-08

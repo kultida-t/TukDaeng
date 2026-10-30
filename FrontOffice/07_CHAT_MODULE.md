@@ -242,7 +242,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 - Draft room: `C.draft` เก็บนอก `C.threads` — `chGet` ค้นทั้งสองที่; เข้า list จริงเมื่อ `chSend` แรก (`unshift` + `C.draft=null`); draft มีได้ทีละ 1 ห้อง (Ask ห้องอื่นทับ)
 - Item snapshot ตอนสร้างห้อง: `{id:post.id, cap:post.caption, price:post.price||"", photo:post.photos[0], owner:post.seller, pid:post.id}` — **snapshot นิ่ง**: โพสต์แก้/ขาย/ลบภายหลังไม่เปลี่ยนการ์ด
 - `t.draft` = draft ข้อความต่อห้อง (persist ระหว่าง navigate — composer เติมกลับ)
-- Session-only: threads/flags/cfg/draft เป็น memory state — `applySessionData` reset ทุก session switch (persistence = contract §18)
+- Server-backed (DEC-25): threads/pins/mutes/hidden/cfg/read คงอยู่ข้ามการ restart และ re-login; draft เป็น memory ต่อห้อง
 
 ## Chat Entry Points (Listing-scoped เท่านั้น)
 
@@ -391,7 +391,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 22. **Ask post lookup fail → `Not in this prototype yet`** — fallback dead toast (`.ask-pill` อยู่ใน dead-handler list หลัง chatClick)
 23. **EN/TH hardcoded strings ~40 copies** → language sweep FSP-026 (ดู §13/§19)
 24. **`pfRestrictHint`** — wire หลัง `dlg-unblock-go` แล้ว + I18N_TH — banner ~6s แสดงจริงตาม canonical 06 (resolved 2026-10-29)
-25. **Session-only state ทั้งโมดูล** — threads/pins/mutes/hidden/cfg/draft/galState memory เท่านั้น (persistence contract)
+25. **State ของ thread เป็น server-backed (DEC-25)** — threads/pins/mutes/hidden/cfg/read; draft/galState เป็น memory
 
 ---
 
@@ -639,3 +639,25 @@ EN-hardcode ทั้งชุด (language sweep — §19 flag)
 - Read receipts จริง: ข้อความขาออกแสดง Sent → Read เมื่ออีกฝั่งอ่าน
 - ลบ media ใน gallery ต้องลบ bubble ในห้องด้วย (ไม่ desync)
 - ปุ่ม Chat/Message บน profile เปิดห้อง DM ห้องเดียวต่อ account (ยืนยัน lock FO-TEST-12 แล้ว)
+
+
+## DEC-25 Amendments — Chat (IG)
+
+- Thread state (threads, pin, mute, hide, draft, read) เป็น server-backed และคงอยู่ข้ามการ restart/re-login (แทน session-only)
+- ห้องที่ hide ต้องไม่แสดงใน Items view (group ต้อง filter hidden)
+- ส่งรูป/media ทำให้ thread ขึ้นบนสุดและ un-hide เหมือนส่งข้อความ
+- ดูรูปในแชท: swipe ข้ามรูปและ pinch zoom ได้
+- เวลาข้อความเป็นเวลาจริงของการส่ง (ไม่ใช่ค่าคงที่)
+- สถานะข้อความ: Sending / Sent / Failed; Failed แตะเพื่อส่งใหม่ (ข้อความไม่หาย)
+- ผู้ใช้ที่ปิดบัญชีแสดงชื่อเป็น "ผู้ใช้งานที่ปิดบัญชี" / "Deactivated user"; composer ปิด
+- Mute ห้อง → ไม่มี push และไม่นับ badge
+- ค้นหาในห้อง: composer ถูกซ่อนระหว่าง search mode
+- report-and-delete ยกเลิกกลาง flow → ห้องไม่ถูกลบ
+- Message request (C2): ข้อความจากผู้ที่ไม่ได้ติดตามไปโฟลเดอร์ "Requests" แยก (IG) เมื่อเปิด "Only people I follow"; ผู้รับ accept/decline ได้
+- ไม่มีการจัดกลุ่มรูปในแกลเลอรีตามวัน (C1)
+
+
+## Batch A Amendments (2026-10-30)
+
+- Attach sheet (+) ในห้องแชท: ตัวเลือกรูป/วิดีโอจากอัลบั้ม และกล้อง
+- Gallery แชท: เรียงตามเวลา ไม่มีป้ายกลุ่มวัน

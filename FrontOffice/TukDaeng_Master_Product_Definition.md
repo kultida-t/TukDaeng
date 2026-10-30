@@ -3,7 +3,7 @@
 **Document Type:** Master Product Definition / PRD Baseline  
 **Source Documents:** `PRD.md`, `FO_Functional_PRD.md`  
 **Purpose:** ใช้เป็นหลักยึดกลางก่อนแตกเป็น Functional PRD รายโมดูล  
-**Status:** Synced to fo-flow prototype baseline (FO-PRD-v1.9) — Draft for Dev & QA Review
+**Status:** Synced to fo-flow prototype baseline (FO-PRD-v1.10) — Draft for Dev & QA Review
 
 > **Sync note (FO-PRD-v1.9, 2026-10-22):** เอกสารนี้ sync ตาม module specs ที่ rewrite ให้ตรง `Prototypes/fo-flow/index.html` (locked prototype — source of truth) ผ่าน mission FSP-006–024 + sign-off S-01–S-29 ใน `deliverables/fo-spec-sync/FSP-005-consolidated-gap-signoff.md` — ทุกจุดที่ master เดิมขัด prototype ให้ยึด prototype (ตัวเลือก default ของ sign-off) ส่วนรายการที่เป็น production contract แต่ prototype ไม่ครอบ ให้ mark เป็น `(contract — prototype ไม่ครอบ)` ตามแบบ module specs — decision log รวมอยู่ที่ §16
 

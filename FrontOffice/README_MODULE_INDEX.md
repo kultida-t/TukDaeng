@@ -2,7 +2,7 @@
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
-**Current Baseline Version:** `FO-PRD-v1.9`
+**Current Baseline Version:** `FO-PRD-v1.10`
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 > **Sync note (FO-PRD-v1.9, 2026-10-22):** index นี้ sync ตาม baseline ใหม่ที่ lock ด้วย `Prototypes/fo-flow/index.html` เป็น source of truth (module specs ที่ rewrite แล้ว + master §16 Sync Decision Log S-01–S-29) — รายการ `หมายเหตุรอบ` ด้านล่างเป็น version history เดิม เก็บไว้เพื่อ traceability เท่านั้น ไม่ใช่ current-state rule
@@ -15,7 +15,7 @@
 
 สำหรับรอบส่งต่อ Dev วันที่ 2026-06-22 ให้ถือว่าชุดเอกสารนี้เป็น baseline ใหม่ทั้งชุดสำหรับแทนเอกสารเก่าที่ Dev เคยใช้ก่อนหน้า ไม่ใช่เฉพาะรายการที่เพิ่งเพิ่มในวันเดียวกัน
 
-เมื่อส่งต่อ Dev / QA ให้อ้างอิง version `FO-PRD-v1.9` คู่กับ branch `docs-frontoffice-spec-updates`
+เมื่อส่งต่อ Dev / QA ให้อ้างอิง version `FO-PRD-v1.10` คู่กับ branch `docs-frontoffice-spec-updates`
 
 หมายเหตุรอบ 2026-07-16: `FO-PRD-v1.3` เพิ่ม clarification เรื่อง account suspension/ban โดย V1 ไม่มี `Restricted` account state, Suspended/Banned ต้องเข้า main app ไม่ได้, session ต้องถูก revoke/block เมื่อ BO เปลี่ยนสถานะ, email เป็น primary channel สำหรับการแจ้ง suspend/ban และ FO Notification Center ไม่เพิ่ม Account Action type
 

@@ -235,3 +235,8 @@
 - **หน้าที่ขึ้น "ไม่มี"**: ถ้า build แสดง entry ที่ spec บอกไม่มี (save/report/more/X) → ไม่ใช่ FAIL โดยอัตโนมัติ — ตรวจ contract ตาม spec แล้วบันทึก flag ลง Note ให้ทีมตัดสิน
 
 - สถิติ: **69 TC** — High 41 / Medium 28 / Low 0 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 79 แถว)
+
+
+## DEC-25 Amendments (ผลตามข้อตัดสิน IG — CSV ยังไม่ sync)
+
+- BRD-059 / 060 / 061 / 062 / 063 / 064 / 065: expected ตาม DEC-25 (per-user like, deep link ใน V1)

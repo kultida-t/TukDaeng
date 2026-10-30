@@ -27,7 +27,7 @@ Session model (`member` / `guest` / `new`), consent model, Member Sheet definiti
 
 Source of truth สำหรับพฤติกรรม auth: `Prototypes/fo-flow/index.html` (first-run onboarding zone `.ob`)
 
-- First-run onboarding chain — splash → language → welcome → privacy notice → cookie settings → notification prompt → track prompt → Member Sheet gateway
+- First-run onboarding chain — splash → language → welcome → privacy notice → privacy settings → notification prompt → track prompt → Member Sheet gateway
 - Sign Up — Email + Password + strength meter + social buttons
 - Email OTP — 6-digit auto-submit boxes + resend cooldown
 - Profile setup — avatar + username suggestion
@@ -200,8 +200,8 @@ Onboarding แสดงครั้งเดียวตอนเปิดแอ
 | 1 | Splash | Logo + name + loading bar | auto-advance ~3.2s → Language |
 | 2 | Language | `Select your language` — rows English/ไทย (check mark บนตัวที่เลือก) | Continue → Welcome (ภาษาเปลี่ยนได้ภายหลังที่ Settings) |
 | 3 | Welcome | `Welcome to the TukDaeng app` + tagline + Terms/Privacy links + fine print `By tapping Continue you agree to the Terms of Use and acknowledge the Privacy Policy.` | Continue → บันทึก `termsAt` (implied required consent) + loading ~1.5s → Privacy Notice |
-| 4 | Privacy Notice | `Privacy notice` — อธิบาย cookies/SDK: essential (จำเป็น) vs optional (analytics, personalization) | `Accept all` (optional on ทั้งคู่) / `Reject all` (optional off ทั้งคู่) / `Cookie settings` → step 5 — ทุกทางบันทึก consent record แล้วไป step 6 |
-| 5 | Cookie Settings | Essential `Always on` + toggles Analytics / Personalization | `Save preferences` → บันทึก consent record → step 6 |
+| 4 | Privacy Notice | `Privacy notice` — อธิบายการเก็บข้อมูลบางส่วนบนอุปกรณ์และเซิร์ฟเวอร์ + ประโยค "เราไม่ติดตามกิจกรรมในแอปหรือเว็บไซต์ของบริษัทอื่น และไม่แชร์ข้อมูลให้ผู้ลงโฆษณาหรือ data broker" + essential (จำเป็น) vs optional (analytics, personalization) | `Accept all` (optional on ทั้งคู่) / `Reject all` (optional off ทั้งคู่) / `Privacy settings` (ตั้งค่าความเป็นส่วนตัว) → step 5 — ทุกทางบันทึก consent record แล้วไป step 6 |
+| 5 | Privacy Settings | Essential `Always on` + toggles Analytics / Personalization | `Save preferences` → บันทึก consent record → step 6 |
 | 6 | Notification Prompt | `Never miss an update` pre-permission | `Continue` → OS dialog `…Would Like to Send You Notifications` (Allow / Don't Allow) → step 7; `Skip` → step 7 โดยไม่ถาม OS |
 | 7 | Track Prompt | `We suggest news that suits you` (ATT-style) | `Continue` → OS dialog `Allow … to track your activity…` — `Ask App Not to Track` ต้องบังคับ personalization = off → step 8 |
 | 8 | Member Sheet (first-run) | `Join TukDaeng` + `Create a free account to follow collectors, chat and list your watches.` + checkbox `Don't show this again` | `Sign up` → Email Registration; `Sign in` → Sign In; `Skip for now` → session `guest` (ถ้าติ๊ก hide → persist `fo_member_hide`, run ถัดไปข้าม sheet); social row → Social Registration |
@@ -543,10 +543,11 @@ Analytics เป็น contract-only (prototype ไม่มี tracking layer �
 | AC-AUTH-024 | V1 ไม่รองรับ 2FA, Passkey, Biometric Login, Account Linking, Account Merge หรือ Device Management |
 | AC-AUTH-025 | First-run onboarding ต้องแสดงครั้งเดียวตามลำดับ splash → language → welcome → privacy notice → notification prompt → track prompt → Member Sheet (persist เมื่อจบ flow) |
 | AC-AUTH-026 | Continue บน Welcome ต้องบันทึก required consent (terms/privacy timestamp) เป็น implied consent — ไม่มี checkbox |
-| AC-AUTH-027 | Privacy Notice ต้องแยก essential (always on) จาก optional (analytics / personalization) และรองรับ Accept all / Reject all / Cookie settings ที่บันทึก consent record ทุกทาง |
+| AC-AUTH-027 | Privacy Notice ต้องแยก essential (always on) จาก optional (analytics / personalization) และรองรับ Accept all / Reject all / Privacy settings ที่บันทึก consent record ทุกทาง |
 | AC-AUTH-028 | Notification pre-permission ต้อง skippable — Skip ข้ามไป track prompt โดยไม่แสดง OS dialog; Continue เท่านั้นที่เปิด OS permission dialog |
 | AC-AUTH-029 | Track prompt ที่เลือก `Ask App Not to Track` ต้องบังคับ personalization consent = off |
 | AC-AUTH-030 | First-run Member Sheet ต้องมี Sign up / Sign in / Skip for now + social row + `Don't show this again`; การติ๊ก hide แล้ว Skip ต้องทำให้ run ถัดไปไม่แสดง sheet อีก |
+| AC-AUTH-031 | Analytics = off (จาก Reject all หรือ Privacy settings) ต้องไม่ส่ง analytics event ทุกตัว รวม search event และ `auth_*` event; consent record ยังบันทึกได้ตาม AC-AUTH-027 (ทดสอบบน build stg/app จริงเท่านั้น — prototype ไม่มี analytics pipeline) · วิธีตรวจค่าเริ่มต้น: (1) ติดตั้ง stg build ที่เปิด proxy หรือ analytics debug view (2) ล้างข้อมูลแล้วเข้า onboarding กด Reject all (3) ใช้งาน feed และค้นหา 1 ครั้ง (4) ตรวจว่าไม่มี request หรือ event ไปยัง analytics endpoint (5) control: ทำซ้ำกับ Accept all ต้องเห็น event จริง ไม่เช่นนั้นวิธีตรวจใช้ไม่ได้ — เดฟยืนยันหรือปรับได้ก่อนรันจริง |
 | AC-AUTH-031 | Sign Up ต้องมีเฉพาะ Email + Password (ไม่มี Confirm Password — S-20), password ต้องมี show/hide toggle + strength meter 4 แถบ และ legal text ใต้ปุ่ม Create account |
 | AC-AUTH-032 | OTP ต้องเป็น 6 ช่องตัวเลข auto-advance, backspace ย้อนช่อง และ auto-submit เมื่อครบ 6 หลัก — ไม่มีปุ่ม Verify |
 | AC-AUTH-033 | OTP ผิดต้อง shake + `That code is incorrect. Try again.` + ล้างช่อง; Resend ต้องมี cooldown 30 วินาที; ไม่มี OTP expired state (S-20) |
@@ -598,3 +599,11 @@ Analytics เป็น contract-only (prototype ไม่มี tracking layer �
 - กลับจากหน้า OTP ค่าที่กรอกยังอยู่ครบ
 - Lockout ใช้ระยะเวลาตาม design (15 นาที) หลังครบต้องปลดจริง
 - สิทธิ์ติดตาม: iOS = ATT dialog; Android = ไม่มี dialog ข้ามขั้นนี้
+
+
+## Batch A Amendments (2026-10-30)
+
+- ภาษาเริ่มต้นของ Language step ตามภาษาของอุปกรณ์ (ไม่ใช่ไทยใช้ English)
+- Track prompt body: "We use your activity in TukDaeng only to recommend watches and news. We do not track you across other companies' apps or websites." (TH: "เราใช้กิจกรรมของคุณในตึกแดงเพื่อแนะนำนาฬิกาและข่าวสารเท่านั้น ไม่ติดตามข้ามแอปหรือเว็บไซต์อื่น")
+- Sign Up validation copy ใช้ชุดเดียวกับ Sign In: `Enter your email.` / `Enter a valid email address.` / `Enter your password.` และ policy `Password must be at least 8 characters and include at least one number or special character.`
+- OTP subtitle: "We sent a 6-digit code to {email}"

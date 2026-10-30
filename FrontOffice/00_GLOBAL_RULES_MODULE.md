@@ -144,7 +144,8 @@ Owner/Viewer เป็น context ต่อ content ส่วน session (`membe
 | Optional | Analytics, Personalized content | Opt-in toggle บน privacy notice / cookie settings / re-consent sheet | Off |
 
 - Essential cookies/SDK = always on ไม่มี toggle (จำเป็นต่อการทำงานและความปลอดภัยของแอป)
-- Optional flags: `Accept all` = on ทั้งคู่, `Reject all` = off ทั้งคู่, `Cookie settings` = เลือกทีละตัวแล้ว Save preferences
+- Optional flags: `Accept all` = on ทั้งคู่, `Reject all` = off ทั้งคู่, `Privacy settings` = เลือกทีละตัวแล้ว Save preferences
+- Analytics = off (จาก `Reject all` หรือ Privacy settings) ต้องไม่ส่ง analytics event ทุกตัว รวม search event และ `auth_*` event; consent record ยังบันทึกได้ตามปกติ (prototype ไม่มี analytics pipeline จึง enforce ที่ build stg/app จริงเท่านั้น)
 - ATT-style tracking prompt: ถ้าผู้ใช้เลือก `Ask App Not to Track` ต้องบังคับ `Personalized = off` (เลือกไม่ติดตามแล้วปรับแต่งเฉพาะบุคคลไม่ได้)
 - Optional consent เปลี่ยนได้ทุกเมื่อหลังใช้งานผ่าน Settings > Privacy (UI รายละเอียดอยู่ที่ 13_SETTINGS)
 - Consent record ต้องเก็บ: policy version (terms + privacy), timestamp ที่ยอมรับ required, optional flags, ภาษา และ timestamp ของ record — prototype persist `fo_consent` (ล่าสุด) + `fo_consent_log` (ประวัติทุกครั้ง) — production เป็น server-side consent log (contract)
@@ -428,3 +429,11 @@ Public Profile, Feed, Search, Watch Alert และ Viewer Asset Detail ต้�
 - Full offline mode beyond Feed
 - Real-time cross-surface invalidation
 - Server-side consent log + policy version API
+
+
+## Batch A Amendments (2026-10-30)
+
+### Coach marks (member): bubble ชี้ 4 จุดตามลำดับ `+` → search → feed tabs → bottom nav; ปุ่ม `Next`; จุดสุดท้าย `Got it`; แตะนอก bubble ปิด tour
+### Coach marks (guest): จุดแรก "Sign up to create your first post." จุดสุดท้าย "Sign in to use chat, alerts and your profile."
+### Legal viewer — ตัวอย่างฉบับไทย (DEC-29, ใช้ชั่วคราว รอเนื้อหาจริง)
+ดู deliverables/FO-TEST-001-LEGAL-TH-draft.md — ข้อความตัวอย่างอนุมัติให้ขึ้นก่อน เจ้าของจะปรับเนื้อหาจริงภายหลัง
