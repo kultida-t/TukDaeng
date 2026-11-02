@@ -59,7 +59,7 @@ BOR-003 (fix coverage list), BOR-005 (modal consistency), BOR-006 (focus managem
 | User action modal (Suspend/Ban/Restore ฯลฯ) | ~30570 |
 | User report status confirm (Reported Users) | ~31245 |
 | Market Sync confirm/error state (Start Sync → Cancel, Retry → Close) | ~37670 |
-| Board report action confirm (Reported Board) | ~44696 |
+| Board report action confirm (Reported Articles) | ~44696 |
 | Reported comment action confirm | ~45315 |
 
 ตัวอย่างจุดที่ canonical แล้ว (ยกเลิก → confirm): asset row action menu (~24203), Admin Invitation resend/cancel/reissue (~25531/25693/25887), Invite Admin (~28379), Role create/edit (~32899), My Account revoke/logout-all (~34604/34749), Policy publish/restore (~35458/35573), article confirm (~43841)

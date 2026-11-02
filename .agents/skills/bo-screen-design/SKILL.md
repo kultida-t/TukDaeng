@@ -68,7 +68,7 @@ Skill นี้เป็น **มาตรฐานกลางสำหรั�
 - Dashboard
 - User Management (User List, Reported Users, Report Detail)
 - Asset Management (Asset List, Asset Detail, Reported Assets, Asset Report Detail, Reported Comments, Comment Report Detail)
-- Content Management (Articles, Categories, Reported Board, Board Report Detail)
+- Content Management (Articles, Categories, Reported Articles, Board Report Detail)
 - Market Data
 - Option Master
 

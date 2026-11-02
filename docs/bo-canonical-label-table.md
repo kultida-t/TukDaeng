@@ -306,7 +306,7 @@ Dead `crumb` config ไทย 3 จุด (~30451/30468/30485) → EN ตาม 
 | D-C24 | preview annotations 43919/43934/43999/44003/43686 | `Preview hero article`/`Preview article detail` + aria EN | `ตัวอย่างบทความ Hero`/`ตัวอย่างรายละเอียดบทความ` + aria mirror ไทย |
 | D-C25 | `getArticleScenarioResult` titles 44058/44074 | `Permission denied`/`Preview failed` | `ไม่มีสิทธิ์ดำเนินการ`/`ดูตัวอย่างไม่สำเร็จ` (error copy ไทย ตาม precedent boardReportErrorSamples) |
 
-### 9.2 Content layer → ไทย — CTM-003b (Categories + Reported Board)
+### 9.2 Content layer → ไทย — CTM-003b (Categories + Reported Articles)
 
 | # | ตำแหน่ง | ปัจจุบัน | Proposed |
 |---|---|---|---|

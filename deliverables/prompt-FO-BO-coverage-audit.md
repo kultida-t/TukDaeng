@@ -99,7 +99,7 @@ R3  Report comment (long-press → `report:comment`) →
     BO Reported Comments + Hide/Restore/Remove/Close no violation +
     View Asset / View all comments modals
 R4  Report Board Content (contract-only S-04 — entry ยัง dead ใน prototype
-    แต่ spec มี) → BO Reported Board + Board Report Detail
+    แต่ spec มี) → BO Reported Articles + Board Report Detail
 R5  Report from chat (`chatReportSheet` → `report:user` ตรง +
     `Report and delete`) → map เข้า BO queue ไหน — BO spec/prototype
     ระบุปลายทางชัดหรือยัง
