@@ -103,7 +103,7 @@
 **ความต้องการ:**
 - แสดงโพสต์ (post-centric — โพสต์ `sale` ที่ผูก asset + โพสต์ `post` ไม่ผูก asset)
 - แบ่ง Tab: ทั้งหมด / กำลังติดตาม / รายการโปรด
-- Post card แสดง: media, seller row (Avatar + ชื่อ), caption/spec, ราคา (THB — เฉพาะ sale post), action rail (like / comment / share / save / `...`)
+- Post card แสดง: media, seller row (Avatar + ชื่อ), caption/spec, ราคา (฿ — เฉพาะ sale post), action rail (like / comment / share / save / `...`)
 - ปุ่ม Follow บน card เป็น contract-only (prototype render เป็น visual เท่านั้น)
 - รองรับการ Like โพสต์ (กดหัวใจ — like count เป็น private เห็นเฉพาะเจ้าของโพสต์, S-26)
 - ปุ่ม "Watch Alert" เพื่อตั้งการแจ้งเตือน (shared sheet)
@@ -159,7 +159,7 @@
   - Case Size, Thickness, Case Material
   - Movement, Dial Color, Dial / Strap Type
 - Comments ผ่าน shared comments sheet (emoji quick-react — ไม่มี inline composer)
-- ราคา THB + ปุ่ม `Ask Seller` (เฉพาะ sale post — chat entry listing-scoped)
+- ราคา ฿ + ปุ่ม `Ask Seller` (เฉพาะ sale post — chat entry listing-scoped)
 - กดชื่อเจ้าของ → Public Profile + Follow
 
 #### สำหรับเจ้าของ (Owner — ผู้ใช้ที่เป็นเจ้าของโพสต์นั้น)
@@ -180,7 +180,7 @@
 - Gallery: เลือกรูปได้สูงสุด 10 รูป — **required เดียวคือ media ≥1 รูป** (`Add Asset` disabled จนกว่ามี media; ไม่มี required matrix ต่อ status)
 - Caption + spec fields เป็น free-text (ไม่มี Market Data autocomplete / option-master dropdown — S-25): Brand, Model, Reference No., Year, Condition, Delivery, Case Size, Thickness, Case Material, Movement, Dial Color, Strap/Bracelet Type
 - Asking Price (`Add price` pane): optional ทุก status — ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; **ไม่มี `Price on request` label**
-- `Cost details (private)` row: Purchase Price (THB; เมื่อกรอกต้องมากกว่า 0), Purchase Date (ต้องไม่เป็นวันอนาคต) — owner-private เห็นเฉพาะ Owner/Admin ใช้เป็น input ของ Portfolio `Total invested`
+- `Cost details (private)` row: Purchase Price (฿; เมื่อกรอกต้องมากกว่า 0), Purchase Date (ต้องไม่เป็นวันอนาคต) — owner-private เห็นเฉพาะ Owner/Admin ใช้เป็น input ของ Portfolio `Total invested`
 - Visibility pick: `Show` (default) / `Hide` / `Post to feed` + `Also save to My Assets` toggle (post mode)
 - Save: กด `Add Asset` แล้วสร้าง drawer record + toast ตาม visibility — **ไม่มี confirmation dialog** (S-25)
 - ไม่มี Provenance / Consignment entity ใน FO V1 (S-25)
@@ -324,7 +324,7 @@
 
 ### 4.3 Localization
 - รองรับภาษาไทยและอังกฤษ
-- ราคาแสดงในรูปแบบ THB (฿)
+- ราคาแสดงในรูปแบบ `฿`
 
 ### 4.4 Accessibility
 - Font size ปรับตามระบบ

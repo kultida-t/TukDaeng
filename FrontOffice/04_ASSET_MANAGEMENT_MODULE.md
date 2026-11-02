@@ -281,7 +281,7 @@ Post-side linkage:
 - Entry: `Cost details (private)` pane — asset mode แสดงเสมอ; post mode + edit mode แสดงเมื่อ drawer toggle ON เท่านั้น
 - Input behavior: ราคาซื้อ = digits-only strip non-digit เงียบ + auto-comma (`unNum`/`fmtNum`); วันที่ซื้อ = native date input `min="1900-01-01" max={วันนี้}`
 - Validation (live ตอน input + block ตอน Done — ดู §11): date invalid/out-of-range → `is-err` + `pane-err` `วันที่ซื้อไม่ถูกต้อง`/`Invalid purchase date` (future → `วันที่ซื้ออยู่ในอนาคตไม่ได้`/`Purchase date can't be in the future`); `pane-done` บน cost pane ปิดไม่ได้จนกว่า date จะ valid (back `cf-pane-back` ยกเลิกได้เสมอ); ไม่มี validation บังคับกรอก — เว้นว่างได้ทั้งคู่ (optional)
-- Row summary บน step 2: `THB {purchase}` หรือ `{bought date}` (สั้น — ราคามาก่อน)
+- Row summary บน step 2: `฿{purchase}` หรือ `{bought date}` (สั้น — ราคามาก่อน)
 - เก็บลง drawer record `purchase`/`bought` ผ่าน `cfToPortfolio` (สร้าง) / `applyPostEdit` (แก้ — sync กลับ `pa.purchase`/`pa.bought`)
 - จุดที่ถูกใช้ต่อ: `portfolio` Total invested + per-row value, `pfasset` Value card (`Purchase price`/`Purchased`), `sell:{id}` Expected gain live preview, `sold:{id}` Return card + Realized G/L — สูตรทั้งหมดอยู่ 14_PORTFOLIO
 
@@ -318,7 +318,7 @@ Post-side linkage:
 - Hero: รูป + brand + model text + ref + status chip ปัจจุบัน (`PFO_STATUS`)
 - Note: `ข้อมูลเป็นส่วนตัว — รายการจะย้ายไปประวัติการขายและหลุดจากมูลค่าพอร์ตโฟลิโอโดยอัตโนมัติ`/`Private data — the piece moves to Sold history and drops out of portfolio value automatically.`
 - Fields (เท่าที่ prototype มี — **ไม่มี** Buyer/Contact/Payment Method/Attachment):
-  - `ราคาขาย (บาท)`/`Sale price (THB)` **required** — prefill จาก `asking` เมื่อมี, digits+auto-comma, live update Expected gain ตอนพิมพ์
+  - `ราคาขาย (฿)`/`Sale price (฿)` **required** — prefill จาก `asking` เมื่อมี, digits+auto-comma, live update Expected gain ตอนพิมพ์
   - `Expected gain` row (เฉพาะเมื่อ `purchase > 0`) — `asking/purchase` diff live (`sell-gl`)
   - `วันที่ขาย`/`Sale date` **required** — native date, default วันนี้, `max={วันนี้}`
 - Primary `บันทึกการขาย`/`Save sale record` — **ไม่มี confirmation dialog** (ต่างจาก spec เดิม — ดู Deviations)
@@ -549,7 +549,7 @@ Contract (prototype ไม่มี tracking layer — mark contract เหม�
 |---|---|
 | AC-ASSET-MGMT-025 | `Mark as sold` บน own-post menu ต้องแสดงเฉพาะ `pfkind` ∈ `sale`/`show`/`hide` — `post`/`sold` ไม่แสดง |
 | AC-ASSET-MGMT-026 | `Mark as sold` ต้องเปิด `sell:{id}` โดยตรงจากทั้ง own-post menu และ pfasset button — โพสต์ไม่มี link ต้อง materialize `assetFromPost` ก่อน |
-| AC-ASSET-MGMT-027 | Sale Record form ต้องมีเฉพาะ `Sale price (THB)` (prefill asking, required >0) + `Sale date` (default/max วันนี้, required) + Expected gain live (เมื่อ `purchase > 0`) — ไม่มี Buyer/Contact/Payment/Attachment |
+| AC-ASSET-MGMT-027 | Sale Record form ต้องมีเฉพาะ `Sale price (฿)` (prefill asking, required >0) + `Sale date` (default/max วันนี้, required) + Expected gain live (เมื่อ `purchase > 0`) — ไม่มี Buyer/Contact/Payment/Attachment |
 | AC-ASSET-MGMT-028 | Save fail ต้อง inline `pe-err` (`Sale price required`/`Sale date required`/`Invalid sale date`) + focus field แรก — ต้องไม่เปลี่ยนสถานะ |
 | AC-ASSET-MGMT-029 | Save ผ่านต้องไม่มี confirmation — `markAssetSold` ย้าย `PF_ASSETS`→`PF_SOLD` + linked posts `pfkind:"sold"` + push `sold:{id}` (ตัด sell/pfasset ทิ้ง) + toast `Sale recorded · moved to Sold history ✓` |
 | AC-ASSET-MGMT-030 | Mark as Sold สำเร็จต้องหลุด Feed/Search/WA/profile status tabs ทันที ตาม 00_GLOBAL §12 (canonical — prototype `salePosts()` leak เป็น documented defect ไม่ใช่ spec) |

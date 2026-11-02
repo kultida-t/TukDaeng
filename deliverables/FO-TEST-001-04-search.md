@@ -26,7 +26,7 @@
 - **Type**: UI = การแสดงผล · Func = การทำงาน · Int = เชื่อมข้าม module · Edge = negative/boundary
 - **Priority**: High = core flow/กติการะบบ · Medium = feature หลัก · Low = edge/cosmetic
 - **[GATE]**: action ที่ guest แตะแล้วเด้ง Member Sheet "Join TukDaeng" — ใน scope นี้สิ่งที่ถูก gate คือ **กระดิ่ง Watch Alert บนหัวผลค้นหา** และ **ปุ่ม Follow บน seller card**; ทุกเคส [GATE] มีคู่ guest/member ครบ (mechanics ของ sheet อยู่ FO-TEST-01 AUTH-061–068, เมทริกซ์ทั้งแอป FO-TEST-17)
-- **เรื่องเงิน** อ้าง `docs/money-display-rules.md`: ช่องราคา filter ใส่ comma ให้อัตโนมัติ (§4.2); chip ราคาแสดงเต็มจำนวน `THB x–y` (§4.1); badge views เช่น `1.2K` คือตัวนับ **ไม่ใช่เงิน**
+- **เรื่องเงิน** อ้าง `docs/money-display-rules.md`: ช่องราคา filter ใส่ comma ให้อัตโนมัติ (§4.2); chip ราคาแสดงเต็มจำนวน `฿x–y` (§4.1); badge views เช่น `1.2K` คือตัวนับ **ไม่ใช่เงิน**
 - **Variant dev harness / ช่องทาง dev ใด ๆ** (console flag, mock toggle) = out of scope — error state เทสด้วยการตัดเน็ตจริงเท่านั้น (SETUP-09)
 - **กติกาที่ล็อกแล้วสำหรับ module นี้ (ใช้เป็น FAIL criteria ได้เลย — ล็อกร่วมกับ PO รอบเดียวกับ 03R):**
   - **ไม่มี sort control ใน V1** — หน้าผลค้นหาต้องไม่มี UI เรียงลำดับใด ๆ (เจอ = FAIL); ผลเรียง default = **newest first** (โพสต์ล่าสุดขึ้นก่อน)
@@ -115,7 +115,7 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-SRCH-033 | filter page anatomy | MEMBER | UI | อยู่ landing หรือ results | 1. แตะไอคอน filter (sliders) | หน้า "Filters" เด้ง: head ← + title; กลุ่มตามลำดับ design — Brand · Model · Price range (THB) · Year of production · Reference · Condition · Case size · Movement · Dial color · Strap / Bracelet · Delivery contents; footer "Clear all" + "Apply" (ไม่มีเลขเมื่อยังไม่เลือก) | chip ทุกตัวมี "(n)" ต่อท้าย | High | |
+| FO-TC-SRCH-033 | filter page anatomy | MEMBER | UI | อยู่ landing หรือ results | 1. แตะไอคอน filter (sliders) | หน้า "Filters" เด้ง: head ← + title; กลุ่มตามลำดับ design — Brand · Model · Price range (฿) · Year of production · Reference · Condition · Case size · Movement · Dial color · Strap / Bracelet · Delivery contents; footer "Clear all" + "Apply" (ไม่มีเลขเมื่อยังไม่เลือก) | chip ทุกตัวมี "(n)" ต่อท้าย | High | |
 | FO-TC-SRCH-034 | counts "(n)" ตรงข้อมูลจริง + (0) กดได้ | MEMBER | Func | filter page เปิด | 1. อ่าน (n) ทุกกลุ่ม 2. spot-check: เลือกค่าที่ n>0 ใน 2 กลุ่ม → Apply → นับผลเทียบ | ทุก chip มี "(n)" ≥0; **เลขต้องตรงจำนวน sale listing จริงที่ match ค่านั้นบน test env** (นับจากผลที่ apply ได้เทียบ — ไม่ตรง = FAIL); **chip (0) ยังกดเลือกได้** (count = รายการปัจจุบัน ไม่ใช่ inactive) | เลขใน สมเหตุสมผลกับข้อมูลจริง | High | |
 | FO-TC-SRCH-035 | brand → model dependency (ล็อก) | MEMBER | Func | filter page; `BX` มี ≥2 รุ่น | 1. แตะ `BX` 2. ดูกลุ่ม Model 3. แตะรุ่น 1–2 ตัว 4. เอา `BX` ออก | เลือก brand → title กลุ่มเปลี่ยน "Model · {brand}" + chips เหลือเฉพาะรุ่นของ brand นั้น; **เอา brand ออก → model ที่เลือกไว้ถูกลบออกเอง** + ลิสต์กลับครบทุกแบรนด์ | chip on = พื้นเข้ม; scroll ไม่เด้งกลับบน | High | |
 | FO-TC-SRCH-036 | multi-select ใน key เดียว = OR | MEMBER | Func | filter page; `BX`/`BY` มี listing | 1. Brand: แตะ `BX` + `BY` 2. Apply | ผล = union ของทั้งสองแบรนด์ — **เทียบกับผลรวมของ (n) สอง chip ที่แสดง** (ต้องเท่ากัน) | chips row บน results แสดง "{BX} ×" "{BY} ×" | High | |
@@ -134,7 +134,7 @@
 | FO-TC-SRCH-044 | ช่องราคา auto-comma / digits-only | MEMBER | Func | filter page | 1. พิมพ์ 420000 ในช่อง Minimum 2. พิมพ์ตัวอักษรปน เช่น "12a3b" | ระบบใส่ comma ให้ทันที → "420,000"; ตัวอักษรถูกตัดเหลือแต่ตัวเลข (อ้าง money-display-rules §4.2) | placeholder "Minimum"/"Maximum" หายเมื่อมีค่า | Medium | |
 | FO-TC-SRCH-045 | min > max | MEMBER | Func | filter page | 1. Minimum 500,000 · Maximum 100,000 → Apply | validation ก่อน apply → error "Minimum price must not exceed maximum price" โผล่ใต้ช่องราคา (ตามภาษาแอป); **อยู่หน้า filter ต่อ ไม่มีอะไร apply** | ข้อความ error แดงใต้ price row | High | |
 | FO-TC-SRCH-046 | max เกินเพดาน | MEMBER | Func | filter page | 1. Maximum เกินเพดาน design (3,000,000) → Apply 2. แก้เป็น 2,000,000 → Apply | > เพดาน (design ref = 2,000,000) → error "Maximum price must not exceed 2,000,000" (ตามภาษาแอป); พอดีเพดานผ่าน (inclusive) → ไป results | error เปลี่ยนตาม rule ที่เจอ | High | |
-| FO-TC-SRCH-047 | chip ราคา + ขอบเปิด | MEMBER | Func | filter page | 1. ใส่แค่ Minimum (เช่น 200,000) → Apply 2. เปิดใหม่ใส่แค่ Maximum → Apply 3. ใส่ทั้งคู่ | min only → ผลเฉพาะ ≥ min + chip "THB {min}–Any" (TH แสดง "ไม่จำกัด"); max only → chip "THB 0–{max}"; ทั้งสอง → "THB {min}–{max}" กรองช่วงจริง | chip ราคาเดียวรวมทั้งช่วง (full amount + THB ตาม money rules) | High | |
+| FO-TC-SRCH-047 | chip ราคา + ขอบเปิด | MEMBER | Func | filter page | 1. ใส่แค่ Minimum (เช่น 200,000) → Apply 2. เปิดใหม่ใส่แค่ Maximum → Apply 3. ใส่ทั้งคู่ | min only → ผลเฉพาะ ≥ min + chip "฿{min}–Any" (TH แสดง "ไม่จำกัด"); max only → chip "฿0–{max}"; ทั้งสอง → "฿{min}–{max}" กรองช่วงจริง | chip ราคาเดียวรวมทั้งช่วง (full amount + ฿ ตาม money rules) | High | |
 
 ### 2.7 Active Filter Chips & Persistence
 
@@ -173,7 +173,7 @@
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
 | FO-TC-SRCH-060 | label หน้า search แปลครบตามภาษาแอป (ล็อก) | MEMBER | UI | lang=TH (Settings → Language → ไทย) | 1. ไล่ landing → typing (Recent/suggest) → recents page → results (ทั้ง 3 tab) → filter page → error message | **ล็อก spec: label UI ทุกตัวเป็นไทย — เหลือ EN = FAIL**: "ค้นหา" · "ยกเลิก" · "ล่าสุด"/"ดูทั้งหมด" · "การค้นหาล่าสุด"/"ล้างทั้งหมด"/"ไม่มีการค้นหาล่าสุด" · "สำหรับคุณ"/"โปรไฟล์"/"แท็ก" · "บัญชี"/"โพสต์" · "ไม่พบข้อมูล" · "ตัวกรอง" + ชื่อกลุ่มทั้ง 11 · "ใช้ (n)"/"ล้างทั้งหมด" · error ราคา · sub "N รายการประกาศ"/"กำลังติดตาม"/"N โพสต์"; เนื้อหา user-gen (ชื่อ seller/keyword/brand/caption) คงเดิม | ไม่มี label เหลือ EN | High | |
-| FO-TC-SRCH-061 | เงินบน search = chip ราคาเท่านั้น | MEMBER | UI | apply price range แล้ว | 1. ดู chip ราคา + badge views บน tile | chip "THB {min}–{max}" = เต็มจำนวน + THB + comma ไม่มีทศนิยม (money rules §4.1); ขอบเปิดแสดง "0"/"Any"(TH=ไม่จำกัด); badge views = ตัวนับ **ไม่ใช่เงิน** ห้ามมี THB/฿ | ไม่มีทศนิยม ไม่มี ฿ ปน | Medium | |
+| FO-TC-SRCH-061 | เงินบน search = chip ราคาเท่านั้น | MEMBER | UI | apply price range แล้ว | 1. ดู chip ราคา + badge views บน tile | chip "฿{min}–{max}" = เต็มจำนวน + ฿ + comma ไม่มีทศนิยม (money rules §4.1); ขอบเปิดแสดง "0"/"Any"(TH=ไม่จำกัด); badge views = ตัวนับ **ไม่ใช่เงิน** ห้ามมี THB/฿ | ไม่มีทศนิยม ไม่มี THB ปน | Medium | |
 | FO-TC-SRCH-062 | dark theme | MEMBER | UI | theme=dark (Settings ในแอป/ระบบ) | 1. ไล่ landing/typing/results/filter/chips/empty/recents page | surface/chip on-state/ตัวอักษรอ่านได้; grid รูปไม่เพี้ยน; error text อ่านได้ | contrast ปกติทุกหน้า | Low | |
 
 ## 3. หมายเหตุ / Spec ที่ล็อกรอบนี้ + ผลกระทบต่อ prototype
@@ -182,7 +182,7 @@
 
 1. **Sort** `[OPEN-NO-CODE]` → **ล็อก: V1 ไม่มี control sort** — หน้าผลค้นหาห้ามมี UI เรียง (เจอ = FAIL); default = newest first เท่านั้น (SRCH-020/031)
 2. **Recents page** `[OPEN-CODE-ONLY]` → **ล็อก: เป็นหน้าจริง** เหมือน prototype (See all → "Recent searches" เต็มจอ — SRCH-012–016)
-3. **Language** `[OPEN]` → **ล็อก: label หน้า search ต้องแปลตามภาษาแอปครบ** — เหลือ EN = FAIL (SRCH-060); prototype เดิม hardcode EN เกือบทั้งหมด → **อัปเดตแล้ว**: เพิ่มคำแปลที่ขาดลงชั้นแปลภาษากลาง ("Recent"/"See all"/"Cancel"/"No recent searches"/"No suggestions"/"Create watch alert"/ข้อความ error ราคา + pattern "Apply (n)" กับ "THB x–Any")
+3. **Language** `[OPEN]` → **ล็อก: label หน้า search ต้องแปลตามภาษาแอปครบ** — เหลือ EN = FAIL (SRCH-060); prototype เดิม hardcode EN เกือบทั้งหมด → **อัปเดตแล้ว**: เพิ่มคำแปลที่ขาดลงชั้นแปลภาษากลาง ("Recent"/"See all"/"Cancel"/"No recent searches"/"No suggestions"/"Create watch alert"/ข้อความ error ราคา + pattern "Apply (n)" กับ "฿x–Any")
 4. **Search state** `[OPEN]` → **ล็อก: เปิดใหม่เจอ landing เสมอ + state ล้าง** (SRCH-030 เปลี่ยนจาก expected เดิม); **recents persist ข้าม restart** (SRCH-016) — prototype เดิมกลับมาเจอ results เดิม + recents อยู่แค่ memory → **อัปเดตแล้ว**: reset เป็น landing ทุกครั้งที่เปิดผ่านไอคอน search/hashtag + recents persist ลง localStorage (และถูกล้างตอน "1st" replay)
 5. **err→retry** → **ล็อก: เทสด้วยตัดเน็ตจริง (airplane mode)** — ไม่ใช้ console flag (SRCH-027); บนแอปจริงต้องมี error state + retry ใช้ได้จริง มาตรฐานแอป
 6. **Strap/Delivery matching** → **ล็อก: structured match ตามตระกูล spec** (SRCH-042) — quirk เดิม (Leather ≠ "Alligator leather") ถือว่าผิด → prototype **อัปเดตแล้ว**: strapMatch ให้ "Leather" เจอ "Alligator leather" และ "Oystersteel bracelet" เจอ "Oystersteel (Oyster bracelet)"

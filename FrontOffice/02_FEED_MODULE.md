@@ -442,7 +442,7 @@ Card ไม่แสดงใน V1: FOR SALE/SHOWCASE type tag, price/condition
 
 - Post mode `Share` → `insertNewPost` แทรกโพสต์ใหม่บนสุดของ `POSTS`: seller = current user, `time:"Just now"`, `following:true`, `favorite:false`, `pfkind:"post"`, likes/comments/views = 0
 - `type` = `sale` เมื่อมี price, `showcase` เมื่อไม่มี — display hint เท่านั้น (`pfkind` เป็นตัวกำหนด eligibility)
-- Fields จาก meta (`cfFieldsFromMeta`): `price` (`THB` + comma), `chips` = [cond, box], `specGroups` = ทุก CF_SPECS row (ค่าว่าง render `N/A`) + `Condition`/`Box & Papers` เพิ่มใน Item Details — สร้างเฉพาะเมื่อมี spec input หรือ cond/box
+- Fields จาก meta (`cfFieldsFromMeta`): `price` (`฿` + comma), `chips` = [cond, box], `specGroups` = ทุก CF_SPECS row (ค่าว่าง render `N/A`) + `Condition`/`Box & Papers` เพิ่มใน Item Details — สร้างเฉพาะเมื่อมี spec input หรือ cond/box
 - `Price & Data Source` band เพิ่มอัตโนมัติเมื่อมี details หรือ price: Asking Price, **Estimated Market Price** (mock estimate ≈ −5%/+6% ปัด 5,000 — prototype-computed ไม่ใช่ market data จริง), Last Price Update = วันนี้, Data Source `TukDaeng Market Data`
 - Clip draft ที่มี media เดียวล้วน → `clip` + `clips[1]` + toast `Clip shared to feed ✓`; mixed/photo draft → `clips[]` duration ต่อ slide (null = photo)
 - `Also save to My Assets` ON → `pfkind:"sale"` + สร้าง drawer asset (`cfToPortfolio` status `sale`) + link `assetId`

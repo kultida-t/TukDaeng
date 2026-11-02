@@ -19,7 +19,7 @@ WA-006,Entries & Gate,WA-SEARCH สร้างแล้ว,กลับผล�
 WA-007,Entries & Gate,WA-MODEL สร้างแล้ว,เปิด detail POST-FULL → แตะ bell Following this model,เปิด sheet Edit watch alert ของ alert เดิม,MEMBER,HIGH,,,
 WA-008,Entries & Gate,sign in แล้ว,หา entry ไป walerts จาก alerts tab/drawer/search/bell,ไม่มีทางเข้าอื่น — เข้าได้ผ่าน Settings เท่านั้น เจอ link อื่น = FAIL,MEMBER,MED,,,
 WA-009,Sheet & Create,อยู่ผลค้นหา,แตะ bell → อ่าน sheet,title สร้างการแจ้งเตือน + label ตั้งชื่อ + name prefilled + section Notify me when + 3 mode rows + CTA สร้างการแจ้งเตือน — ไม่มีปุ่ม Delete,MEMBER,HIGH,,,
-WA-010,Sheet & Create,อยู่หน้า search,พิมพ์ keyword + เลือก brand/model/ช่วงราคา → แตะ bell → Create → เปิด walerts,criteria text ครบ keyword+filters+ราคา join ด้วย · รูปแบบ THB {min|0} – {max|Any},MEMBER,HIGH,,,
+WA-010,Sheet & Create,อยู่หน้า search,พิมพ์ keyword + เลือก brand/model/ช่วงราคา → แตะ bell → Create → เปิด walerts,criteria text ครบ keyword+filters+ราคา join ด้วย · รูปแบบ ฿{min|0} – {max|Any},MEMBER,HIGH,,,
 WA-011,Sheet & Create,POST-FULL,แตะ bell → Create → อ่าน criteria text บน row,criteria = spec ที่กรอกจริง — ค่าเว้นว่าง/ไม่ระบุ+ราคา/data source ไม่เข้า criteria,MEMBER,HIGH,,,
 WA-012,Sheet & Create,sheet เปิด criteria ไม่ว่าง,อ่าน mode rows 3 แถว,title+desc ตามภาษา + {n} รายการในขณะนี้ นับเฉพาะลิสติ้ง Sale ที่ตรง mode นั้น,MEMBER,HIGH,,,
 WA-013,Sheet & Create,เปิดผลลัพธ์ไม่มีเงื่อนไข,แตะ bell → พยายามเลือก mode any/model,any/model disabled — เหลือ all เท่านั้น alert = Any new listing,MEMBER,MED,,,เข้าผลลัพธ์แบบไม่มีเงื่อนไขไม่ได้ = BLOCK

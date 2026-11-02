@@ -95,7 +95,7 @@ CRE-027,Pane loc,loc pane เปิด,"1. พิมพ์ชื่อบาง�
 2. พิมพ์ ""xyz""",filter/ผลสด → เจอ LOC-X; คำไม่ match → empty state ตาม design,MEMBER,Low,,,
 CRE-028,Pane price,price pane เปิด,"1. พิมพ์ ""420000""
 2. พิมพ์ต่อ ""12a3""
-3. Done","ช่องแสดง ""420,000"" ทันที (auto comma); ตัวอักษรถูกตัด; แถว ""Add price"" val = ""THB 420,000""",MEMBER,High,,,money-display-rules §4.2/§4.1
+3. Done","ช่องแสดง ""420,000"" ทันที (auto comma); ตัวอักษรถูกตัด; แถว ""Add price"" val = ""฿420,000""",MEMBER,High,,,money-display-rules §4.2/§4.1
 CRE-029,Pane price,อยู่ step 2,"1. เปิด price pane ไม่พิมพ์ → Done
 2. ดูแถว",val ว่าง — hint ใน pane บอกเว้นว่าง = showcase (ไม่มีป้ายราคา); publish จะได้ showcase (เชื่อม CRE-045),MEMBER,Medium,,,
 CRE-030,Pane spec,spec pane เปิด,1. เลื่อนดูทั้ง pane,กลุ่ม Watch Specifications (จำนวนช่องตาม design) + Item Details + Description textarea + note ว่า Condition & Box ตั้งใน Condition section,MEMBER,Low,,,
@@ -110,7 +110,7 @@ CRE-034,Pane cost,step2 post mode + step2 asset mode,"1. post mode: ดู rows
 2. เปิด toggle ""Also save to My Assets""
 3. asset mode: ดู rows","post+toggle off → ไม่มี Cost; toggle on → ""Cost details (private)"" โผล่ระหว่าง Condition กับ More options; asset mode → มีเสมอ",MEMBER,Medium,,,
 CRE-035,Pane cost,cost pane เปิด (asset mode),"1. พิมพ์ ""398000""
-2. Done","ช่อง ""398,000"" auto comma; แถว cost val = ""THB 398,000""",MEMBER,Medium,,,money §4.2
+2. Done","ช่อง ""398,000"" auto comma; แถว cost val = ""฿398,000""",MEMBER,Medium,,,money §4.2
 CRE-036,Pane cost,cost pane เปิด,1. เลือก Purchase date = วันนี้ → Done,"กรอกแค่วันที่ → แถว val = วันที่ (format = design ref เช่น ""27 Oct 2026""); มีราคาด้วย → แสดงราคาแทน",MEMBER,Low,,,
 CRE-037,Pane cost,cost pane เปิด,"1. เลือก/พิมพ์ Purchase date มากกว่าวันนี้
 2. แตะ ""Done""
@@ -124,14 +124,14 @@ CRE-041,Pane more,more pane เปิด · มี ACCT-2 ไม่ follow (SETU
 2. ดูแถว More options
 3. ล็อกอิน ACCT-2 หาโพสต์นี้","แถว val = ""Followers only"" + publish สำเร็จ; ACCT-2 (non-follower) ไม่เห็นโพสต์นี้ใน feed/profile — ไม่มี ACCT-2 → mark BLOCK ขั้นตอน 3",MEMBER,Medium,,,spec ล็อก E6
 CRE-042,Pane more,ตั้ง noComments+followers แล้ว Done,1. เปิด more อีกครั้ง,toggle/radio ยังตรงค่าที่ตั้ง — meta persist ข้ามการเปิดปิด pane,MEMBER,Low,,,
-CRE-043,Publish post,"step2: รูป + caption + price 420,000 + cond Very Good","1. แตะ ""Share""","toast ""Posted · shared to feed ✓"" (มี thumb) → กลับ feed บนสุดเจอการ์ดตัวเอง: ชื่อบัญชีตัวเอง · ""Just now"" · ""THB 420,000"" · chip ""Very Good""",MEMBER,High,,,
+CRE-043,Publish post,"step2: รูป + caption + price 420,000 + cond Very Good","1. แตะ ""Share""","toast ""Posted · shared to feed ✓"" (มี thumb) → กลับ feed บนสุดเจอการ์ดตัวเอง: ชื่อบัญชีตัวเอง · ""Just now"" · ""฿420,000"" · chip ""Very Good""",MEMBER,High,,,
 CRE-044,Publish post,เพิ่ง share เสร็จ (CRE-043),1. แตะ ⋯ บนการ์ดตัวเอง,เมนูเจ้าของ: Archive / Turn off commenting / Edit / Mark as sold / Pin / Delete — ต่างจากการ์ดคนอื่น,OWNER,Medium,,,
 CRE-045,Publish post,"step2: รูป + caption ""#tukdaeng"" ไม่ใส่ราคา","1. Share
 2. เปิด search ค้นคำใน caption
 3. ค้น ""#tukdaeng""",showcase ไม่มีราคา: ขึ้น feed แต่ไม่อยู่ผลค้นปกติ; ค้นแบบ tag เจอ (เชื่อม search spec FO-TEST-04),MEMBER,High,,,
 CRE-046,Publish post,โพสต์จาก CRE-043 (spec กรอก MODEL-X),"1. แตะ ""Tap for details"" หรือเปิด detail
-2. ดูกลุ่ม Price & Data Source","spec table ครบ ค่าว่าง ""N/A""; Price & Data Source: Asking ""THB 420,000"" · Estimated = ค่าประเมินจาก market data ของรุ่นนั้น · Last Price Update · Source ตาม design",MEMBER,Medium,,,spec ล็อก E4 — band −5%/+6% เป็น mock เท่านั้น
-CRE-047,Publish post,"โพสต์ราคา 420,000 ขึ้นแล้ว",1. อ่านราคาบนการ์ด/แถว/detail,"ทุกจุด ""THB 420,000"" เต็มจำนวน comma ไม่มีทศนิยม ไม่มี ฿ ปน",MEMBER,Medium,,,money §4.1
+2. ดูกลุ่ม Price & Data Source","spec table ครบ ค่าว่าง ""N/A""; Price & Data Source: Asking ""฿420,000"" · Estimated = ค่าประเมินจาก market data ของรุ่นนั้น · Last Price Update · Source ตาม design",MEMBER,Medium,,,spec ล็อก E4 — band −5%/+6% เป็น mock เท่านั้น
+CRE-047,Publish post,"โพสต์ราคา 420,000 ขึ้นแล้ว",1. อ่านราคาบนการ์ด/แถว/detail,"ทุกจุด ""฿420,000"" เต็มจำนวน comma ไม่มีทศนิยม ไม่มี THB ปน",MEMBER,Medium,,,money §4.1
 CRE-048,Publish post,SETUP-12 alert ON ที่ match,1. สร้างโพสต์ที่ spec match alert → Share,"toast แรก ""Posted · shared to feed ✓"" ตามด้วย toast สอง ""Watch alert matched: {ชื่อ alert}"" (+N more ถ้าหลายตัว) — ลำดับถูก; ช่วง ~2s",MEMBER,Medium,,,spec ล็อก E8
 CRE-049,My Assets toggle,step2 post mode,"1. เปิด toggle ""Also save to My Assets""","toggle on → แถว ""Cost details (private)"" โผล่ + sub อธิบายเก็บเข้า profile collection",MEMBER,Medium,,,
 CRE-050,My Assets toggle,step2 post mode toggle on + price+brand,"1. Share
@@ -174,4 +174,4 @@ CRE-070,Language/Theme/Money,"member, lang=TH",1. ไล่ picker → step2 →
 CRE-071,Guest,guest อยู่ feed,"1. แตะ + → sheet เด้ง ปิด
 2. ลองเข้า profile (nav)",+ และ profile nav ถูก gate ทั้งคู่ → guest เข้า composer ไม่ได้ทุก entry; หลังปิด sheet อยู่ feed เดิม,GUEST,High,,,
 CRE-072,Language/Theme/Money,"member, theme=dark",1. ไล่ picker/step2/panes/zoom/dialogs,surface ดำอ่านได้ทุกหน้า radio/sel ชัด zoom backdrop เข้ม dialog อ่านได้,MEMBER,Low,,,
-CRE-073,Language/Theme/Money,เคส price/cost/publish ทำแล้ว,1. เช็ค row price/cost + Estimated + placeholder,"row ""THB 420,000""/""THB 398,000""; placeholder มี comma; Estimated = ค่าจาก market data ของรุ่นนั้น (spec ล็อก E4); ไม่มีทศนิยม/฿ ปน",MEMBER,Medium,,,money-display-rules §4.1–4.2
+CRE-073,Language/Theme/Money,เคส price/cost/publish ทำแล้ว,1. เช็ค row price/cost + Estimated + placeholder,"row ""฿420,000""/""฿398,000""; placeholder มี comma; Estimated = ค่าจาก market data ของรุ่นนั้น (spec ล็อก E4); ไม่มีทศนิยม/THB ปน",MEMBER,Medium,,,money-display-rules §4.1–4.2

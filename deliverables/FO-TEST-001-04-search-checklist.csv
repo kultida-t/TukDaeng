@@ -101,7 +101,7 @@ SRCH-031,Results,results หลายใบ,"1. หา control sort ทุกจ
 SRCH-032,Results,ทำ Not interested การ์ด BX แล้ว (SETUP-13),"1. ค้น BX ดู grid
 2. กลับ landing ดู explore grid
 3. ค้น #tag ของโพสต์นั้น","โพสต์ NI หายจากผลปกติ + explore grid + tag mode (ล็อก: tag mode กรอง ni/muted/blocked ครบ — โผล่ = FAIL)",MEMBER,High,,,
-SRCH-033,Filters,landing หรือ results,1. แตะไอคอน filter (sliders),"หน้า ""Filters"": กลุ่มตาม design — Brand/Model/Price range (THB)/Year of production/Reference/Condition/Case size/Movement/Dial color/Strap / Bracelet/Delivery contents + footer Clear all + Apply (ไม่มีเลขตอนว่าง); ทุก chip มี ""(n)""",MEMBER,High,,,
+SRCH-033,Filters,landing หรือ results,1. แตะไอคอน filter (sliders),"หน้า ""Filters"": กลุ่มตาม design — Brand/Model/Price range (฿)/Year of production/Reference/Condition/Case size/Movement/Dial color/Strap / Bracelet/Delivery contents + footer Clear all + Apply (ไม่มีเลขตอนว่าง); ทุก chip มี ""(n)""",MEMBER,High,,,
 SRCH-034,Filters,filter page เปิด,"1. อ่าน (n) ทุกกลุ่ม
 2. เลือกค่า n>0 → Apply → นับผลเทียบ","ทุก chip มี (n) ≥0; เลขตรงจำนวน sale listing จริง (นับเทียบผลที่ apply — ไม่ตรง = FAIL); chip (0) กดเลือกได้",MEMBER,High,,,
 SRCH-035,Filters,filter page (BX มี ≥2 รุ่น),"1. แตะ BX
@@ -128,7 +128,7 @@ SRCH-046,Price,filter page,"1. Maximum 3,000,000 → Apply
 2. แก้เป็น 2,000,000 → Apply","error ""Maximum price must not exceed 2,000,000"" (เพดาน design); พอดีเพดานผ่าน → ไป results",MEMBER,High,,,
 SRCH-047,Price,filter page,"1. ใส่แค่ Minimum 200,000 → Apply
 2. เปิดใหม่ ใส่แค่ Maximum → Apply
-3. ใส่ทั้งคู่","min only → chip ""THB 200,000–Any"" (TH=ไม่จำกัด); max only → ""THB 0–max""; ทั้งคู่ → ""THB min–max"" กรองช่วงจริง",MEMBER,High,,,full amount + THB ตาม money rules
+3. ใส่ทั้งคู่","min only → chip ""฿200,000–Any"" (TH=ไม่จำกัด); max only → ""฿0–max""; ทั้งคู่ → ""฿min–max"" กรองช่วงจริง",MEMBER,High,,,full amount + ฿ ตาม money rules
 SRCH-048,Chips,results apply ≥2 ค่า,1. ดูแถวใต้ tabs,"chips ""{value} ×"" ทุกค่าที่เลือก เรียงตาม key ของ design; ไม่มี chips ตอน filter ว่าง",MEMBER,High,,,
 SRCH-049,Chips,results มี chips ≥2 ตัว,"1. แตะ × บน chip ตัวหนึ่ง",chip หาย + ผลขยายตาม filter ที่เหลือทันที ไม่ต้อง Apply ซ้ำ,MEMBER,High,,,
 SRCH-050,Chips,"results มี chip ราคา + filter อื่น","1. × chip ราคา → min/max เคลียร์คู่กัน
@@ -148,5 +148,5 @@ SRCH-059,Guest Coverage,guest อยู่ results q=KW-SELL,"1. แตะกร
 2. tab Profiles → แตะ Follow
 3. ← landing → แตะ bookmark","กระดิ่ง+Follow → Member Sheet ทั้งคู่; bookmark ไม่ gate → Saved page ""No saved posts yet""",GUEST,High,,,
 SRCH-060,Language/Theme/Money,"member, lang=TH (SETUP-11)",1. ไล่ landing → typing → recents page → results 3 tab → filter → error message,"ล็อก spec: label UI ทุกตัวเป็นไทย (ค้นหา/ยกเลิก/ล่าสุด/ดูทั้งหมด/การค้นหาล่าสุด/สำหรับคุณ/โปรไฟล์/แท็ก/บัญชี/โพสต์/ไม่พบข้อมูล/ตัวกรอง/ใช้/ล้างทั้งหมด/sub/ error ราคา) — เหลือ EN = FAIL; content คงเดิม",MEMBER,High,,,
-SRCH-061,Language/Theme/Money,apply price range แล้ว,1. ดู chip ราคา + badge views บน tile,"chip ""THB x–y"" เต็มจำนวนไม่มีทศนิยม (ขอบเปิด = 0/Any→ไม่จำกัด); views เป็นตัวนับไม่ใช่เงิน ไม่มี THB",MEMBER,Medium,,,
+SRCH-061,Language/Theme/Money,apply price range แล้ว,1. ดู chip ราคา + badge views บน tile,"chip ""฿x–y"" เต็มจำนวนไม่มีทศนิยม (ขอบเปิด = 0/Any→ไม่จำกัด); views เป็นตัวนับไม่ใช่เงิน ไม่มีสกุลเงินกำกับ",MEMBER,Medium,,,
 SRCH-062,Language/Theme/Money,theme=dark (SETUP-11),1. ไล่ landing/typing/results/filter/chips/empty/recents,ทุกหน้าอ่านได้ปกติ chip on-state ชัด grid ไม่เพี้ยน error text อ่านได้,MEMBER,Low,,,

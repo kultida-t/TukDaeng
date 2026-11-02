@@ -134,7 +134,7 @@
 | 7 | เมนูเปลี่ยนรหัสผ่านสำหรับบัญชี SSO | 15 / SET-024 | **Contract ชัดเจน**: บัญชีที่ล็อกอินด้วย SSO (Google/Apple) ไม่มีรหัสผ่านในระบบ เมนู Change Password จะถูกซ่อนหรือ Disabled พร้อมคำอธิบาย |
 | 8 | Date Joined ในโปรไฟล์และ Settings | 15 / SET-012 | **Contract ชัดเจน**: แสดงเดือนและปีตามวันที่ผู้ใช้สมัครบัญชีจริง (เช่น "เข้าร่วมเมื่อ ตุลาคม 2026") |
 | 9 | Localized Alert Copy จาก Server | 19 / LANG-031 | **Contract ชัดเจน**: ข้อความแจ้งเตือนระบบจากเซิร์ฟเวอร์จะถูกส่งมาเป็น Localization Key หรือแปลข้อความตาม Header ภาษาของแอป (TH/EN) |
-| 10 | มาตรฐานการแสดงหน่วยเงินและระยะเวลาถือครอง | 19 / LANG-035, 047 | **Contract ชัดเจน**: ภาษาไทยใช้สัญลักษณ์ `฿`, ภาษาอังกฤษใช้ `THB`; ระยะเวลาถือครองใช้ `y` (ปี) และ `m` (เดือน) สม่ำเสมอทุกหน้าจอ |
+| 10 | มาตรฐานการแสดงหน่วยเงินและระยะเวลาถือครอง | 19 / LANG-035, 047 | **Contract ชัดเจน**: ภาษาไทยใช้สัญลักษณ์ `฿`, ภาษาอังกฤษใช้ `THB` — **superseded โดย DEC-42** (ทั้งสองภาษาใช้ `฿`); ระยะเวลาถือครองใช้ `y` (ปี) และ `m` (เดือน) สม่ำเสมอทุกหน้าจอ |
 | 11 | การแสดงปี พุทธศักราช (พ.ศ.) ในภาษาไทย | 19 / LANG-005, 012, 037 | **Contract ชัดเจน**: เมื่อแอปตั้งค่าเป็นภาษาไทย (th-TH) การแสดงผลวันที่และปีต้องใช้ระบบ พ.ศ. เสมอ (เช่น 2569) |
 | 12 | Market Data Band และ Estimated Price Fallback | 13 / AST-011..035, 06 / DET-011 | **Contract ชัดเจน**: แสดงแถบช่วงราคาตลาดและราคาประเมินตามที่คำนวณได้; หากไม่มีข้อมูลจะแสดงสถานะ "ไม่มีข้อมูลราคาตลาด" ชัดเจน |
 | 13 | Fallback Screen เมื่อเข้าถึงเนื้อหาที่ถูก Block | 16 / TRS-047..049 | **Contract ชัดเจน**: เมื่อเปิดลิงก์ของผู้ใช้ที่เราบล็อกหรือเขาบล็อกเรา ระบบจะแสดงหน้าจอ Unavailable พร้อมปุ่มนำทางกลับหน้าหลัก |
@@ -281,6 +281,7 @@
 - ตัดสิน: V1 แสดงราคาเป็น `THB {n}` + comma ทั้ง TH/EN สม่ำเสมอทุก surface (ตาม expected LANG-024/035/047 ที่ตรวจผ่านแล้ว) — ข้อความ contract §3 ข้อ 10 (TH→`฿`) ถือว่า superseded; ถ้าอนาคตอยากใช้ `฿` ในโหมด TH ให้ทำ display-layer ทีหลัง
 - ผลต่อ prototype: ไม่มีการเปลี่ยน (ใช้ `THB` อยู่แล้วทุกจุด — audit LANG-045 ยืนยัน)
 - ผลต่องาน: ปิดประเด็น money-format ที่ค้าง draft ใน §3 เล่ม 19
+- อัปเดต (2026-11-02): **superseded โดย DEC-42** — เจ้าของสั่งเปลี่ยนหน่วยเงิน FO เป็น `฿` ทั้งระบบ (TH/EN เหมือนกัน) วันเดียวกัน
 
 ### [DEC-36] Suggestion/Recent rows ไม่แสดง `N listings` (2026-11-02)
 - ตัดสิน: เอาจำนวนรายการประกาศออกจาก live suggestion rows (kw/seller) และ recent-search seller rows — seller sub แสดง `Following` เฉพาะที่ follow; Profiles tab/results ยังคง `N listings` ตาม spec
@@ -319,3 +320,11 @@
 - ผลต่อเคส: ถอน **ALT-015** (system row anatomy) + **ALT-030** (system → ไม่ navigate) — เล่ม 10 MD+CSV sync, สถิติ 78→76 (Medium 44→42, csv rows 89→87); **LANG-031** ปรับ precondition "ครบ 5 types"→"4 types" + ถอน system-row expectation (MD+CSV); book 19 §3 watchpoint "system-type alert text = server copy" → moot; traceability §0/§1/§2.6/§6.3/§6.4/§7.1/§8 sync — TC รวม 1,621→1,619 (Medium 693→691); inventory (row types/`Alert` type list/[OPEN-CODE-ONLY] note) + task-breakdown + FO-DIAG diagram → 4 types
 - ผลต่อ prototype: `Prototypes/fo-flow/index.html` — เอา `system` seed row ออกจาก `ALERTS` (member seed 13→12 rows) + ถอน `.al-sys` avatar branch/CSS block/`system` text branch/toast fallback `Security details aren't in this prototype yet`/i18n dict entry + comment อ้าง DEC-32
 - เอกสาร historical (FSP-*/SPEC-CHECK batch A-B2-C2/CONSOLIDATED-IG/FO-PROTO report/task-* evidence) คงเดิมเป็นบันทึกย้อนหลัง — ไม่แก้ตาม convention (อ้าง `system` ในนั้นให้อ่านเป็นสภาพ ณ เวลาที่เขียน)
+
+### [DEC-42] หน่วยเงิน FO = `฿` สัญลักษณ์เดียวทั้งระบบ (2026-11-02)
+- ตัดสิน (เจ้าของ — task FO-CURRENCY): ราคาเงินบาททุกจุดใน FO แสดง `฿` เหมือนกันทั้งแอป ทั้ง TH/EN — ไม่เหลือตัวย่อ `THB`/`USD` ค้างใน UI; label หน่วย `(THB)`/`(บาท)` → `(฿)`; **supersede DEC-35** (ที่ล็อก `THB`+comma ไว้วันเดียวกัน) — ข้อ `USD`→`$` เป็น no-op เพราะไม่มี USD ใน FO scope เลย (อยู่แต่ฝั่ง BO/contract)
+- ผลต่อ prototype: `Prototypes/fo-flow/index.html` — mock price strings, formatters (filter chip `฿{min|0}–{max|Any}`, cfVal price/cost, Estimated Market Price band, WA criteria label, portfolio headline), labels `Price range/Asking price/Purchase price/Sale price (THB)` → `(฿)`, label TH `(บาท)` → `(฿)`, i18n pattern `THB {n}–Any`→`฿{n}–ไม่จำกัด` + `·`-split guard — เหลือ `THB` เฉพาะชื่อ helper `pfoTHB`/`pfoSignTHB` (identifier โดยเจตนา); satellite files `feed-social-redesign`/`feed-create-post`/`create-post` sync ตาม (อนุมัติแล้ว)
+- ผลต่อ spec: `02_FEED`, `03_SEARCH` (price chip + filter label + WA criteria), `04_ASSET` (row summary + `Sale price (฿)` + AC-ASSET-MGMT-027), `10_WATCH_ALERT` (criteria label), `14_PORTFOLIO` (headline `฿N` — **ปิด quirk D14**: headline/rows ใช้สัญลักษณ์เดียวกันแล้ว), `17_NFR`, `PRD`, `Use_Cases`, `QA_TEST_SCENARIO_CHECKLIST`, `TukDaeng_Master_Product_Definition`, `DEV_UPDATE_PACKAGE_2026-11-02` — semantic mentions คงไว้โดยเจตนา (เช่น `MAX_PRICE` 2,000,000 THB, `purchase` (ราคาซื้อ THB), ชื่อ helper `pfoTHB`)
+- ผลต่อเคส: expected copy เล่ม 03/04/05/06/11/13/19 (MD+CSV คู่กัน) → `฿` ทุกจุด; เคสที่เคย assert "ไม่มี ฿ ปน" flip เป็น "ไม่มี THB ปน"; `20-traceability` annotate แถว contract เงินว่า superseded โดย DEC-35 → DEC-42; `docs/money-display-rules.md` (DRAFT shared FO+BO) ไม่แตะตามที่เจ้าของตัดสิน
+- ขอบเขต: FO เท่านั้น — BO (`bo-prototype` + BackOffice spec) คง `THB` ตาม contract เดิม ห้ามแตะ
+- เอกสาร historical (FSP-*/SPEC-CHECK/mission-*/MONEY-001 evidence) คงเดิมตาม convention — อ้าง `THB` ในนั้นให้อ่านเป็นสภาพ ณ เวลาที่เขียน

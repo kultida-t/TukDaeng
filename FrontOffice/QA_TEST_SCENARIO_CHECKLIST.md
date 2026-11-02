@@ -630,7 +630,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify price range inputs.
 **Maps to:** AC-SEARCH-023, AC-SEARCH-024
 **Steps:** Type letters/negatives/decimals into min/max; paste `20,00,000`; Apply min>max; Apply max>2,000,000; use a single bound and min==max; remove the price chip.
-**Expected result:** Non-digits strip silently + auto-comma (paste normalizes); Apply blocks with `Minimum price must not exceed maximum price` or `Maximum price must not exceed 2,000,000` without committing; single bound and equal bounds are valid; the `THB {min|0}–{max|Any}` chip clears both values on `×` — chip removal commits instantly (no Apply needed).
+**Expected result:** Non-digits strip silently + auto-comma (paste normalizes); Apply blocks with `Minimum price must not exceed maximum price` or `Maximum price must not exceed 2,000,000` without committing; single bound and equal bounds are valid; the `฿{min|0}–{max|Any}` chip clears both values on `×` — chip removal commits instantly (no Apply needed).
 
 ### QA-SEARCH-009
 **Objective:** Verify Post Viewer entry and modes.
@@ -878,7 +878,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify criteria snapshots (S-11).
 **Maps to:** AC-WA-005, AC-SEARCH-032, AC-DETAIL-020
 **Steps:** Create from search with keyword + filters + price range; create from detail; try editing criteria in the sheet.
-**Expected result:** Search snapshot = `q` + every selected filter value + `THB {min|0} – {max|Any}`; detail snapshot = mapped + unmapped specs minus `N/A`/price keys; criteria are never editable in the sheet — changing conditions means creating a new alert.
+**Expected result:** Search snapshot = `q` + every selected filter value + `฿{min|0} – {max|Any}`; detail snapshot = mapped + unmapped specs minus `N/A`/price keys; criteria are never editable in the sheet — changing conditions means creating a new alert.
 
 ### QA-WA-003
 **Objective:** Verify alert naming.
@@ -1022,7 +1022,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify the 2-field Sale Record form.
 **Maps to:** AC-ASSET-MGMT-027, AC-PORT-014
 **Steps:** Open `sell:{id}` for an asset with purchase cost and one without; type in the price field.
-**Expected result:** Fields = `Sale price (THB)` (prefilled asking, required >0) + `Sale date` (default/max today, required) — **no Buyer/Contact/Payment Method/Attachment/Note fields**; `Expected gain` row appears only when `purchase > 0` and live-updates `price − purchase` (`±฿N (±N.N%)`, `—` when ≤0).
+**Expected result:** Fields = `Sale price (฿)` (prefilled asking, required >0) + `Sale date` (default/max today, required) — **no Buyer/Contact/Payment Method/Attachment/Note fields**; `Expected gain` row appears only when `purchase > 0` and live-updates `price − purchase` (`±฿N (±N.N%)`, `—` when ≤0).
 
 ### QA-ASSET-012
 **Objective:** Verify mark-as-sold transition.

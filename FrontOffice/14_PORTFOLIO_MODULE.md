@@ -266,7 +266,7 @@ pfoHold(from, to?):
 ```text
 els      = PF_ASSETS.filter(pfoEligible)
 invested = els.filter(a => a.purchase != null && a.purchase > 0)
-total    = Σ invested.purchase                       // → "THB N" headline
+total    = Σ invested.purchase                       // → "฿N" headline
 mktTotal = mktOff ? null : Σ els.(market || 0)       // รวม asset ที่ไม่มี purchase ด้วย
 glRows   = els.filter(gl != null)                    // market+purchase>0 เท่านั้น
 glSum/glBase = Σ glRows.gl / Σ glRows.purchase
@@ -293,7 +293,7 @@ display = "กำไร/ขาดทุนที่เกิดขึ้นจ�
 | `pfoSignTHB(n)` | `+฿N` / `−฿N` (unicode minus) / `฿N` |
 | `pfoPct(d, b)` | `+N.N%` / `−N.N%` — `abs(d)/b*100` ทศนิยม 1 ตำแหน่ง |
 | `pfoDate(iso)` | `d Mon yyyy` en-GB — observer แปลเป็น พ.ศ. ใน TH mode (§16) |
-| headline total | `THB N` (ตัวหนังสือ THB ไม่ใช่ ฿ — ต่างจาก rows, quirk D14) |
+| headline total | `฿N` (สัญลักษณ์เดียวกับ rows/cards — D14 resolved ตาม DEC-42) |
 | Estimated market band | `market ±5%` ปัดเป็น 500 (`round(m*0.95/500)*500` – `round(m*1.05/500)*500`) |
 
 ---
@@ -307,7 +307,7 @@ display = "กำไร/ขาดทุนที่เกิดขึ้นจ�
 3. `pfo-banner` เมื่อ `nomkt` sim: `ไม่พบราคาตลาดบางรายการ — ซ่อนการเปรียบเทียบราคาตลาด`/`Some market prices are unavailable — market comparison hidden`
 4. `.pfo-total` headline card:
    - `ต้นทุนรวม`/`Total invested` + lock icon `ส่วนตัว`/`Private` tag
-   - `THB {total}` (Σ purchase)
+   - `฿{total}` (Σ purchase)
    - `มูลค่าตลาด`/`Market value` `฿{mktTotal}` · `±N.N%` (up/dn color) **หรือ** `ไม่พบข้อมูลมูลค่าตลาด`/`Market value unavailable`
    - coverage: `ต้นทุนซื้อของ X/Y รายการ · มีเพียงคุณเท่านั้นที่เห็น`/`Purchase cost of X/Y assets · only you can see this`
 5. `.pfo-sec`: `รายการนาฬิกา`/`Assets` + `{els.length}` count + `pfo-soldlink` → `ประวัติการขาย →`/`Sold history →` (history icon)
@@ -408,7 +408,7 @@ display = "กำไร/ขาดทุนที่เกิดขึ้นจ�
 1. `detail-head`: back + title `บันทึกการขาย`/`Mark as sold`
 2. `sell-hero`: img + brand + model (name ตัด prefix brand) + ref + status chip `PFO_STATUS`
 3. Note: `ข้อมูลเป็นส่วนตัว — รายการจะย้ายไปประวัติการขายและหลุดจากมูลค่าพอร์ตโฟลิโอโดยอัตโนมัติ`/`Private data — the piece moves to Sold history and drops out of portfolio value automatically.`
-4. `ราคาขาย (บาท)`/`Sale price (THB)` * — `sell-price` numeric input, auto-comma ผ่าน shared price-input handler (`.flt-pmin,.flt-pmax,.sell-price` — `unNum`/`fmtNum`), prefill `asking` เมื่อมี, placeholder `เช่น 449,000`/`e.g. 449,000`
+4. `ราคาขาย (฿)`/`Sale price (฿)` * — `sell-price` numeric input, auto-comma ผ่าน shared price-input handler (`.flt-pmin,.flt-pmax,.sell-price` — `unNum`/`fmtNum`), prefill `asking` เมื่อมี, placeholder `เช่น 449,000`/`e.g. 449,000`
 5. `กำไรที่คาดหวัง`/`Expected gain` (`sell-gl`, `data-aid`) — เฉพาะเมื่อ `a.purchase > 0`; initial = `asking − purchase`; **live update** ตาม `sell-price` input → `+price − purchase` (`±฿N (±N.N%)` up/dn, `—` เมื่อ price ≤ 0)
 6. `วันที่ขาย`/`Sale date` * — `sell-date` `type="date"`, `value` = วันนี้, `max` = วันนี้ (ขายย้อนหลังได้ ขายอนาคตไม่ได้)
 7. `sell-save` primary button: `บันทึกการขาย`/`Save sale record`
@@ -500,7 +500,7 @@ display = "กำไร/ขาดทุนที่เกิดขึ้นจ�
   - `N/A` fallbacks (sold rows/return card — `N/A` แปลเฉพาะใน spec-row context เท่านั้น)
   - `days`/`y`/`m` suffixes ใน holding period (`{d} วัน · {y}y {m}m`)
   - Dev-sim UI ทั้งก้อน (`Preview states (prototype)`, sim names, `Reset`) — dev-only จึงไม่นับ user-facing
-  - headline `THB` prefix (dashboard) vs `฿` (rows/cards) — format inconsistency (D14)
+  - headline `฿` prefix (dashboard) เหมือน rows/cards — unified ตาม DEC-42 (D14 resolved)
 
 ---
 
@@ -544,7 +544,7 @@ display = "กำไร/ขาดทุนที่เกิดขึ้นจ�
 | D11 | Coverage นับ invested ไม่ใช่ valued | `ต้นทุนซื้อของ X/Y` — X = มี purchase; spec เดิม "คำนวณจาก X/Y" (valued) ผิด (B16 gap) |
 | D12 | Consignment = copy + flag เท่านั้น | foot note กล่าวถึง `สินค้าฝากขาย`/`consignment` + `own` flag รองรับ แต่ไม่มี seed/UI ที่ set `own:false` (B15 gap; Consignment Center dead ใน hb drawer) |
 | D13 | `asking == null` → Market comparison แสดง `No market price` | `pfoCmp` null → label เดียวกับ no-market (misleading — ปัญหาคือไม่มี asking); เกิดได้บน sale asset ที่ไม่ใส่ asking |
-| D14 | `THB` prefix บน headline vs `฿` บน rows/cards | format ไม่ consistent ในหน้าเดียวกัน |
+| D14 | `THB` prefix บน headline vs `฿` บน rows/cards | format ไม่ consistent ในหน้าเดียวกัน — **RESOLVED ตาม DEC-42** (unified `฿` ทั้งแอป) |
 | D15 | Dashboard rows แสดง **purchase** ไม่ใช่ current value | `pfo-val` = `a.purchase` — สอดคล้อง headline invested (list แสดงต้นทุน) |
 | D16 | Expected profit row ใช้ class `up` เมื่อมีค่าเสมอ | `ex != null ? "up" : ""` — ไม่มี `dn` เมื่อขาดทุนคาดหวัง (ตัวเลขยังถูก แค่สี) |
 | D17 | `nomkt` sim ไม่ follow เข้า `pfasset` detail | detail เรียก `pfoCur(a, false)` เสมอ — sim มีผลเฉพาะ dashboard view |
@@ -601,7 +601,7 @@ And `sold` records ต้องอยู่ `PF_SOLD` (ไม่ปรากฏ�
 
 Given eligible assets บางตัวมี `purchase > 0`  
 When dashboard render `.pfo-total`  
-Then headline ต้องแสดง `ต้นทุนรวม`/`Total invested` + lock `ส่วนตัว`/`Private` tag + `THB {Σ purchase}`  
+Then headline ต้องแสดง `ต้นทุนรวม`/`Total invested` + lock `ส่วนตัว`/`Private` tag + `฿{Σ purchase}`  
 And coverage line = `ต้นทุนซื้อของ {invested}/{eligible} รายการ · มีเพียงคุณเท่านั้นที่เห็น`
 
 ## AC-PORT-006: Market Value Line
@@ -664,7 +664,7 @@ And โพสต์ `sold`/`post` kind ต้องไม่มี row นี้
 ## AC-PORT-014: Sell Form Anatomy + Prefill
 
 Given `sell:{id}` เปิด  
-Then ต้องแสดง sell-hero (img + brand + model + ref + status chip) + private note + `Sale price (THB) *` (prefill `asking` เมื่อมี, auto-comma numeric) + `Sale date *` (`type=date`, default+max = วันนี้) + `Save sale record`  
+Then ต้องแสดง sell-hero (img + brand + model + ref + status chip) + private note + `Sale price (฿) *` (prefill `asking` เมื่อมี, auto-comma numeric) + `Sale date *` (`type=date`, default+max = วันนี้) + `Save sale record`  
 And เมื่อ `purchase > 0` ต้องมี `Expected gain` row ที่ live-update ตาม `sell-price` (`price − purchase`, `±฿N (±N.N%)`, `—` เมื่อ ≤0)  
 And ต้องไม่มี buyer/contact/payment/attachment fields
 

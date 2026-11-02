@@ -1,0 +1,42 @@
+FO-CURRENCY — Manual Review Checklist (ผลตรวจจริง)
+Task: d2d4ca04 — เปลี่ยนหน่วยเงิน FO เป็นสัญลักษณ์เดียวทั้งระบบ THB→฿ (USD→$)
+Review date: 2026-11-02 · Reviewer: Matem (ผู้ใช้ตรวจบน prototype เอง) · Verdict: ผ่านทั้งหมด — อนุญาตปิด task
+
+เคสที่ให้ตรวจ (7 เคส — ครบทุกพฤติกรรมใน scope):
+
+1. Feed → การ์ด sale → "Tap for details" → บรรทัดราคา
+   ผลที่คาด: ราคาแสดง "฿…" ตัวแดงหนา ไม่มี "THB"
+   ผลจริง: ผ่าน — ฿890,000 ฯลฯ ตัวแดง ไม่มี THB (เทียบ before: "THB 890,000")
+
+2. Detail โพสต์ → แถว "Asking Price" / "Estimated Market Price" / "Last Price Update" / "Data Source"
+   ผลที่คาด: ค่าเป็น "฿x,xxx,xxx" / "฿x – ฿y" ไม่มี THB
+   ผลจริง: ผ่าน — Asking ฿420,000 / Estimated ฿400,000 – 445,000
+
+3. Search → Filters → label ช่องราคา + apply min/max → chip บนผลลัพธ์
+   ผลที่คาด: EN label "Price range (฿)" · TH label "ช่วงราคา (฿)" · chip "฿{min}–{max}" (TH: "฿{min}–ไม่จำกัด" เมื่อ min only)
+   ผลจริง: ผ่าน — chip ฿200,000–500,000 / ฿200,000–ไม่จำกัด; label แปลถูกทั้งสองภาษา
+
+4. Create post → แถว Add price / Cost หลังกด Done + pane labels
+   ผลที่คาด: แถวแสดง "฿420,000"/"฿398,000" · label "ราคาตั้งขาย (฿)"/"ราคาซื้อ (฿)"/EN "(฿)"
+   ผลจริง: ผ่าน
+
+5. Portfolio → headline + rows + ฟอร์มบันทึกการขาย + Expected gain
+   ผลที่คาด: headline "฿{Σ}" สัญลักษณ์เดียวกับ rows (ปิด quirk D14) · "Sale price (฿)"/"ราคาขาย (฿)" · gain "±฿N (±N.N%)"
+   ผลจริง: ผ่าน — headline ฿1,789,500 ตรง rows ฿119,000 ฯลฯ
+
+6. Watch Alerts → criteria snapshot ที่มีช่วงราคา (รวมสร้าง alert ใหม่จาก search ที่ใส่ราคา)
+   ผลที่คาด: แสดง "฿{min|0} – {max|Any}" ไม่มี THB
+   ผลจริง: ผ่าน
+
+7. สลับภาษา TH/EN ทั้งสองโหมดทุกหน้าที่มีราคา
+   ผลที่คาด: ไม่มี "THB" / "บาท" / "USD" ค้างใน UI เลย
+   ผลจริง: ผ่าน — grep+DOM check: visible THB/บาท = 0, page errors = 0
+
+ปัญหาที่พบระหว่างตรวจเอง (แก้ก่อนส่งผู้ใช้รีวิว):
+- พบ: label ช่องราคาและ chip ราคาที่มีสัญลักษณ์ ฿ ไม่ถูกแปลเป็นไทย (ตัวแปลภาษานับ ฿ เป็นอักษรไทยเลยข้ามบรรทัดไป) → แก้ให้ระบบแปลไม่นับเฉพาะ ฿ เป็นภาษาไทย ผลคือ "ช่วงราคา (฿)" และ "฿200,000–ไม่จำกัด" แปลถูกแล้ว — ผู้ใช้ตรวจผ่านสถานะหลังแก้
+
+หลักฐานประกอบ:
+- ภาพ Before (26) + After (26) · Desktop 1440 + Mobile 390
+  → Prototypes/screenshots/task-FO-CURRENCY/before/ และ …/after/
+- สคริปต์ capture/patch: Prototypes/_patch_currency.mjs, _cap_currency_before*.mjs, _cap_currency_after*.mjs
+- ไฟล์แก้ 31 ไฟล์ (prototype 4 + FrontOffice spec 11 + deliverables FO-TEST-001-* 16) — git diff working tree (ยังไม่ commit)

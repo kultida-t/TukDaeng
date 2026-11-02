@@ -17,7 +17,7 @@ AST-005,Entry & Access,เป็น guest,เดินทุกทาง feed/pu
 AST-006,Entry & Access,profile แท็บ Sale scroll แล้ว,portfolio → back,กลับ profile แท็บ Sale เดิม scroll เดิม,MEMBER,MED,,,
 AST-007,Entry & Access,portfolio เปิด,เช็กขอบล่างบน portfolio/pfasset/sell/soldhist/sold,ทุกหน้าไม่มี bottom nav (หน้าลึก),MEMBER,HIGH,,,
 AST-008,Entry & Access,build production,scroll ดูทั้งหน้า + head,ไม่มี ⋯/Preview banner/ตัวเลือกจำลองสถานะ (dev sims dev-only),MEMBER,MED,,,
-AST-009,Dashboard,portfolio เปิด,อ่าน headline เทียบ Σ purchase ที่บันทึกไว้,ต้นทุนรวม/Total invested + Private tag + THB {Σ purchase} ตรง,MEMBER,HIGH,,,
+AST-009,Dashboard,portfolio เปิด,อ่าน headline เทียบ Σ purchase ที่บันทึกไว้,ต้นทุนรวม/Total invested + Private tag + ฿{Σ purchase} ตรง,MEMBER,HIGH,,,
 AST-010,Dashboard,portfolio เปิด,อ่าน coverage เทียบจำนวนจริง,ต้นทุนซื้อของ X/Y รายการ · มีเพียงคุณเท่านั้นที่เห็น — X/Y ตรง,MEMBER,HIGH,,,
 AST-011,Dashboard,มีชิ้นที่มี market+purchase,อ่าน market value เทียบ Σ market + GL% ที่คำนวณ,มูลค่าตลาด ฿{Σmarket} · ±N.N% ตรงสูตร สี up/dn ถูก,MEMBER,HIGH,,,[MKT] ไม่มี market เลย = BLOCK
 AST-012,Dashboard,eligible ทุกชิ้นไม่มี GL row,เปิด portfolio อ่านบรรทัดมูลค่าตลาด,ไม่พบข้อมูลมูลค่าตลาด/Market value unavailable (ไม่ใช่ ฿0),MEMBER,MED,,,เตรียมสถานะไม่ได้ = BLOCK
@@ -109,7 +109,7 @@ AST-097,Persistence,เหมือน AST-095,sign out → sign in → เช�
 AST-098,Persistence,sign in บัญชีเดียวกันเครื่องสอง,เครื่อง B เปิด portfolio/soldhist เทียบ A,dashboard/rows/soldhist เหมือนกันเป๊ะ — server truth,MEMBER,HIGH,,,จำกัดเครื่องเดียว = BLOCK
 AST-099,Persistence,ล็อกอินสองเครื่อง,A ขายชิ้นหนึ่ง → B เปิด portfolio/soldhist/แท็บ Sold,B เห็นหลุด list + record ใหม่ + แท็บ Sold,MEMBER,HIGH,,,sync ช้า = BLOCK ระบุเวลา
 AST-100,Persistence,ล็อกอินสองเครื่อง,A เปลี่ยน Sale→Hide → B เช็ก,B สะท้อนสถานะใหม่ครบ,MEMBER,MED,,,
-AST-101,Persistence,ภาษา TH,ไล่ทุกหน้า portfolio + toast/dialog,ทุก label/toast ไทย — EN ค้าง = FAIL,MEMBER,HIGH,,,"จุดเสี่ยง: chip Sale/Show/Hide, Above/At/Below market, No market price, N/A, y/m, THB"
+AST-101,Persistence,ภาษา TH,ไล่ทุกหน้า portfolio + toast/dialog,ทุก label/toast ไทย — EN ค้าง = FAIL,MEMBER,HIGH,,,"จุดเสี่ยง: chip Sale/Show/Hide, Above/At/Below market, No market price, N/A, y/m"
 AST-102,Persistence,ภาษา EN,เหมือน AST-100,ทุก label/toast EN — TH ค้าง = FAIL,MEMBER,MED,,,
 AST-103,Persistence,เปิด dark,ไล่ทุกหน้ารวมฟอร์ม/empty/chip,อ่านครบ contrast พอ — chip up/dn แยกสีได้,MEMBER,MED,,,
 AST-104,Persistence,อยู่ own profile,device back ไล่ portfolio→pfasset→sell→(cancel)→pfasset→portfolio→profile,pop ชั้นบนสุดทีละชั้น ไม่เด้งหลายชั้น ไม่วนฟอร์ม,MEMBER,MED,,,

@@ -199,7 +199,7 @@ Member ใช้ครบ: search + recents (ของ session ตัวเอ�
 
 1. พิมพ์ min/max — input handler strip ทุก non-digit เงียบ + auto-format comma ทุก keystroke (`2000000` → `2,000,000`)
 2. `Apply` → validate: min > max → `Minimum price must not exceed maximum price`; max > `2,000,000` → `Maximum price must not exceed 2,000,000` — error แสดงใน `.flt-err` และไม่ commit
-3. ผ่าน → commit เป็น price chip `THB {min|0}–{max|Any}` บน results
+3. ผ่าน → commit เป็น price chip `฿{min|0}–{max|Any}` บน results
 
 ## Active Filter Chips
 
@@ -301,7 +301,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 ## Active Filter Chips Rule
 
-- แสดงเมื่อ `filterCount(S.f) > 0`: chip ต่อ selected value + chip `THB {pmin|0}–{pmax|Any}` อันเดียวสำหรับ price
+- แสดงเมื่อ `filterCount(S.f) > 0`: chip ต่อ selected value + chip `฿{pmin|0}–{pmax|Any}` อันเดียวสำหรับ price
 - `×` ลบ value ทันที (commit ทันทีไม่ใช่ draft) — price chip ล้าง `pmin`+`pmax`
 - Chips row ลาก scroll แนวนอนได้ (drag — desktop pointer)
 
@@ -314,7 +314,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 | --- | --- | --- | --- |
 | Brand | `brand` | `SEARCH_BRANDS` keys | `specOf(p,"Brand")` exact |
 | Model | `model` | models ของ brand ที่เลือก (ไม่เลือก = ทุก brand) | `specOf(p,"Model")` contains |
-| Price range (THB) | `pmin`/`pmax` | typed inputs | `priceNum` ≥min ≤max |
+| Price range (฿) | `pmin`/`pmax` | typed inputs | `priceNum` ≥min ≤max |
 | Year of production | `year` | unique `specOf(p,"Year")` จาก salePosts, sort desc | exact |
 | Reference | `ref` | unique `specOf(p,"Reference")` จาก salePosts | exact |
 | Condition | `cond` | `SEARCH_COND` | `specOf(p,"Condition")` exact |
@@ -382,7 +382,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 ## Watch Alert Search Entry Rule
 
 - `sr-wa` bell แสดงบน results head เสมอ (ทั้ง q ว่าง/ไม่ว่าง); `on` เฉพาะเมื่อมี alert `source:"search"` ที่ `waSig` ตรง criteria ปัจจุบัน (alert จาก detail/settings ที่ sig เดียวกันไม่เปิด `on`)
-- Criteria snapshot (`waCriteriaFromSearch`): keyword `fk:"q"` (ถ้า q ไม่ว่าง) + ทุก filter value ตาม `WA_FK_LABEL` + price range `fk:"price"` (`THB {min|0} – {max|Any}`)
+- Criteria snapshot (`waCriteriaFromSearch`): keyword `fk:"q"` (ถ้า q ไม่ว่าง) + ทุก filter value ตาม `WA_FK_LABEL` + price range `fk:"price"` (`฿{min|0} – {max|Any}`)
 - Criteria ว่างเปล่า = alert "ทุก listing ใหม่" (`Any new listing`) — อนุญาต
 - Dedupe: `waSig` ตรง alert เดิม (ทุก source) → เปิด sheet เป็น edit mode; criteria + matchMode ซ้ำตอน save → toast `You already saved this alert` ไม่สร้างซ้ำ
 - `matchMode` default `all`; `any`/`model` disabled เมื่อ criteria ว่าง (`all` = watch every new listing)
@@ -544,7 +544,7 @@ Contract (S-29 — prototype ไม่มี tracking layer; event names เป�
 | AC-SEARCH-021 | Filter edits ต้องลง `fDraft` เท่านั้น — `Apply` commit เข้า `S.f`; back/ออกทิ้ง draft; `Clear all` reset draft (ไม่ commit) |
 | AC-SEARCH-022 | `Apply` ต้องแสดง `Apply (N)` เมื่อมี selection; commit แล้วกลับ results (`_subStack=["search"]`) พร้อม active filter chips |
 | AC-SEARCH-023 | Price inputs ต้อง strip non-digit + auto-comma ทุก keystroke; Apply ต้อง error `Minimum price must not exceed maximum price` (min>max) และ `Maximum price must not exceed 2,000,000` (เกินเพดาน) โดยไม่ commit |
-| AC-SEARCH-024 | Active filter chips ต้องมี chip ต่อ value + chip `THB {min\|0}–{max\|Any}`; `×` ลบ value ทันที (price chip ล้างทั้งคู่) โดยไม่ต้อง Apply |
+| AC-SEARCH-024 | Active filter chips ต้องมี chip ต่อ value + chip `฿{min\|0}–{max\|Any}`; `×` ลบ value ทันที (price chip ล้างทั้งคู่) โดยไม่ต้อง Apply |
 | AC-SEARCH-025 | Multiple filters ต้องใช้ AND logic (`matchFilters`); filter apply กับ `#` query ด้วย |
 | AC-SEARCH-026 | Post Viewer default ต้องเป็น full-bleed photo snap แนวตั้ง (scroll-snap mandatory) + head (back + search icon) + rail + foot + `pv-add` ตาม Anatomy Rule |
 | AC-SEARCH-027 | Rail ต้องซ่อน comment เมื่อ `noComments` และซ่อน views เมื่อ `hideCounts`/views ว่าง; save แสดง filled เมื่อ saved; `...` เปิด own/others menu ตามเจ้าของโพสต์ |
