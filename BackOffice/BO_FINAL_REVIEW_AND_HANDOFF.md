@@ -101,7 +101,7 @@
 | Watch Alert matching | Match เฉพาะ asset status `Sale` |
 | Chat / New Message | ไม่เข้า FO Notification Center; ใช้ Chat badge/count เท่านั้น |
 | FO notification types | V1 รองรับ `Like`, `Comment`, `Follow`, `Watch Alert` |
-| Help / Support V1 | FO Help เป็น contact-only: LINE / Phone / Email; BO Phase 1 เป็น Policy & Versioning + Support Center — ticket queue/assignment/SLA ย้ายไป Phase 2 |
+| Help / Support V1 | FO Help เป็น contact-only: LINE / Phone / Email; BO Phase 1 เป็น Policy & Versioning + Support Center — ticket queue/assignment ย้ายไป Phase 2 |
 | Account Deletion | FO soft delete/deactivate, revoke session, auto-close reports, 30-day grace period; BO track request, restore/reject restore, auto-delete (เก็บถาวร + ลบตัวตน ในขั้นเดียว) |
 | The Watch API | Backend sync/cache เท่านั้น, เก็บลง TukDaeng database ก่อน BO/FO ใช้งาน, BO CRUD/manual override ได้ตาม permission |
 | Audit | Mutation/export/sensitive reveal/destructive/public-impact actions ต้อง audit |

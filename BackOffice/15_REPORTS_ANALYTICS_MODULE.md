@@ -42,7 +42,6 @@ Dashboard ใช้สำหรับภาพรวมและ queue ที่
 - Background export job สำหรับข้อมูลขนาดใหญ่
 - policy-based visibility
 - Sensitive data masking
-- SLA reports สำหรับ moderation (Trust & Safety baseline)
 - Delivery / trigger / operation metrics
 - Audit log สำหรับ export และ sensitive report access
 - Responsive layout สำหรับ desktop, tablet และ mobile
@@ -184,7 +183,7 @@ Export sensitive fields เช่น email/phone ต้องจำกัดเ�
 | --- | --- |
 | New assets | Count by Sale, Show, Hide, Sold |
 | Visible assets | Assets visible in Feed/Search/Profile |
-| Flagged/reported assets | Count, reason, status, SLA |
+| Flagged/reported assets | Count, reason, status |
 | Asset status transition | Sale -> Sold, Show/Hide, ซ่อนชั่วคราว, ซ่อนถาวร, ลบโดยเจ้าของ |
 | Brand/model breakdown | Aggregate by brand/model/reference |
 | Price range | THB min/max/average by brand/model |
@@ -206,7 +205,7 @@ Asset report ต้องใช้คำ `Show` / `Hide` ตาม FO เป็�
 | Metric / Data | Requirement |
 | --- | --- |
 | Chat rooms | Created/active count |
-| Reported chats | Count, reason, status, SLA |
+| Reported chats | Count, reason, status |
 | Attachment scan | Pending Scan, Clean, Unsafe, Scan Failed, Blocked |
 | Removed/hidden messages | Count by reason |
 | Exported conversations | Export history and actor |
@@ -249,7 +248,7 @@ Preview as FO ต้องไม่เพิ่ม view count
 | Metric / Data | Requirement |
 | --- | --- |
 | Comments/replies | Count by period |
-| Reported comments | Count, reason, status, SLA |
+| Reported comments | Count, reason, status |
 | Hidden/removed comments | Count by actor/reason |
 
 Filters:
@@ -402,7 +401,6 @@ Audit payload:
 | Aggregated reports | อาจ delay ได้ แต่ต้องแสดง last updated |
 | Export datasets | Snapshot ตามเวลาที่สร้าง export job |
 | Delivery logs | ตาม provider/system callback ที่มี |
-| SLA reports | ควรใกล้ real-time สำหรับ breach risk |
 
 ทุก report ต้องแสดง `Last updated`
 

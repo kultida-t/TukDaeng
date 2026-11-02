@@ -27,7 +27,7 @@
   - scroll-to-hide ใช้ได้เฉพาะหน้า feed — nav หน้าอื่นต้องแสดงเสมอ ห้ามหลบตามสถานะ feed
   - (Android) ปุ่ม/เจสเจอร์ back ของเครื่องต้องถอยหน้าภายในแอปเทียบเท่าลูกศร back ในแอป — ห้ามออกจากแอปตอนอยู่หน้าลึก (อยู่ feed root ถึงออกได้ตามมาตรฐาน OS)
   - coach marks เล่นครั้งเดียวต่อการติดตั้ง — install เดิม sign in ซ้ำห้ามเด้งซ้ำ
-- **เรื่องเงิน** อ้าง `docs/money-display-rules.md`: ราคาบนการ์ดแสดงใน details block รูปแบบ "THB ###,###"; ตัวเลขหลังไอคอน 👁 คือ **จำนวน view ไม่ใช่เงิน** ห้ามตีความเป็นสกุลเงิน
+- **เรื่องเงิน** อ้าง `docs/money-display-rules.md`: ราคาบนการ์ดแสดงใน details block รูปแบบ "฿###,###"; ตัวเลขหลังไอคอน 👁 คือ **จำนวน view ไม่ใช่เงิน** ห้ามตีความเป็นสกุลเงิน
 - **Variant dev harness** (รูปแบบการ์ด/ปุ่ม Ask/รายละเอียดทางเลือกของ prototype) = out of scope ไม่เขียน TC — เทสการ์ดรูปแบบ production เท่านั้น
 - **สิ่งที่อยู่นอก scope** (มีเคสใน task อื่น — ห้ามทำซ้ำ): feed tabs/empty ต่อ tab (FO-TEST-02 SHELL-035–041), scroll-to-hide mechanics (SHELL-042–048), Post Viewer ทุก mode + Post Detail internals (FO-TEST-06), internals ของ comments/likes/share/save sheet (FO-TEST-07 — ที่นี่เช็คแค่ entry + เนื้อหาระดับผิว), chatroom internals (FO-TEST-08), report stack internals (FO-TEST-16), composer internals (FO-TEST-05), settings/prefs internals (FO-TEST-15), language/theme sweep เต็ม (FO-TEST-19)
 
@@ -66,7 +66,7 @@
 | FO-TC-FEED-002 | Showcase card anatomy | MEMBER | UI | อยู่ feed; เลือกการ์ด B แล้ว | 1. เลื่อนหาการ์ด B 2. กด "more" ใน caption แล้วดูใต้เวลา | — | head เหมือนการ์ดขาย; มีปุ่ม "Ask" เหมือนกัน; caption ขยายได้ แต่**ไม่มี "Tap for details"** โผล่ (showcase ไม่มี spec/ราคา); ถ้าเป็นรูปเดียวไม่มี counter/dots | High | |
 | FO-TC-FEED-003 | การ์ด seller ที่ follow แล้ว | MEMBER | UI | feed มีการ์ด D (follow) + E (ไม่ follow) | 1. เทียบ head ของการ์ด D กับ E | — | การ์ด D (follow แล้ว) **ไม่มี**ปุ่ม "Follow" บน head; การ์ด E มีปุ่ม "Follow" | Medium | |
 | FO-TC-FEED-004 | Feed ลิสต์ + pull-to-refresh | MEMBER | Func | member อยู่ feed บนสุด | 1. จำการ์ดแรกสุด 2. เลื่อนลงจนสุดลิสต์ 3. กลับบนสุดแล้วดึงจอลง (pull) ด้วยนิ้วจนสุดแล้วปล่อย | feed โหลดเป็นหน้า 10 โพสต์; เลื่อนลงใกล้ท้าย (เหลือ 3 การ์ด) → โหลดหน้าถัดไปต่อเนื่อง; pull-to-refresh ที่ตำแหน่งบนสุดรีโหลดจากหน้าแรก | indicator แสดงระหว่าง refresh; ท้ายลิสต์ไม่มี skeleton/spinner ค้าง ไม่ error | Medium | |
-| FO-TC-FEED-005 | views-stat ≠ เงิน | MEMBER | UI | อยู่ feed | 1. ดูตัวเลขหลังไอคอน 👁 ของการ์ดหลายใบ | — | แสดงจำนวน view (เช่น "980", "1.2K") — ไม่มี "THB" ไม่ format เป็นเงิน (อ้าง money-display-rules §views) | Medium | |
+| FO-TC-FEED-005 | views-stat ≠ เงิน | MEMBER | UI | อยู่ feed | 1. ดูตัวเลขหลังไอคอน 👁 ของการ์ดหลายใบ | — | แสดงจำนวน view (เช่น "980", "1.2K") — ไม่มีสกุลเงินกำกับ (THB/฿) ไม่ format เป็นเงิน (อ้าง money-display-rules §views) | Medium | |
 | FO-TC-FEED-006 | การ์ดบน guest | GUEST | UI | guest อยู่ feed (SETUP-03) | 1. ดูการ์ด A ทั้งใบเทียบตอนเป็น member | render เหมือน member ทุกส่วน (Follow / Ask / 🔖 ยังแสดง) — gate เกิดตอนแตะเท่านั้น ไม่ใช่ตอน render | เหมือน FEED-001 | Medium | |
 | FO-TC-FEED-007 | post-time แปลไทย | MEMBER | UI | lang=TH (Settings → Language → ไทย) | 1. ดูเวลาใต้ caption ของการ์ดหลายใบ | เวลาแสดงภาษาไทยตามอายุโพสต์จริง เช่น "3 วันที่แล้ว" / "11 ชั่วโมงที่แล้ว" | ตัวหนังสือไทย ไม่เหลือ "ago" | Medium | |
 | FO-TC-FEED-008 | caption short + hashtag | MEMBER | UI | อยู่ feed ที่การ์ด G (caption ยาว + hashtag) | 1. อ่าน caption ก่อนกด 2. แตะ "more" | ก่อนกด = บรรทัดแรก + " more"; กด more → caption เต็มหลายบรรทัด + hashtag เป็นสีลิงก์แตะได้ | hashtag เป็นสี accent | Medium | |
@@ -99,7 +99,7 @@
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
 | FO-TC-FEED-020 | more → เผย toggle | MEMBER | Func | อยู่ feed ที่การ์ด A | 1. แตะ "more" ใน caption | caption ขยายเต็ม → ปุ่ม "Tap for details ⌄" โผล่ใต้เวลา (ก่อน expand ปุ่มนี้ถูกซ่อน) | ปุ่มเส้นบรรจบซ้าย-ขวาโผล่ | High | |
-| FO-TC-FEED-021 | เปิด details block | MEMBER | Func | caption การ์ด A expand แล้ว | 1. แตะ "Tap for details" | กล่อง spec เปิดในการ์ด + label เปลี่ยน "Hide details" | บรรทัดแรก = ราคา "THB ###,###" แดง + "View full detail ›"; ตามด้วยกลุ่ม "Watch Specifications" + "Item Details" แบบ label:value; ตาม design กลุ่ม "Price & Data Source" ไม่แสดงในกล่องนี้ — แสดง = FAIL | High | |
+| FO-TC-FEED-021 | เปิด details block | MEMBER | Func | caption การ์ด A expand แล้ว | 1. แตะ "Tap for details" | กล่อง spec เปิดในการ์ด + label เปลี่ยน "Hide details" | บรรทัดแรก = ราคา "฿###,###" แดง + "View full detail ›"; ตามด้วยกลุ่ม "Watch Specifications" + "Item Details" แบบ label:value; ตาม design กลุ่ม "Price & Data Source" ไม่แสดงในกล่องนี้ — แสดง = FAIL | High | |
 | FO-TC-FEED-022 | ปิด details + เปิดได้ทีละการ์ด | MEMBER | Func | details การ์ด A เปิดอยู่ | 1. แตะ "Hide details" 2. เปิด details การ์ด A แล้วไปเปิดของการ์ดขายอื่น | กดซ้ำ = หุบ label กลับ "Tap for details"; เปิดการ์ดใหม่ → กล่องของการ์ดเดิมปิดอัตโนมัติ | details เปิดได้ทีละ 1 การ์ดทั้ง feed | Medium | |
 | FO-TC-FEED-023 | แตะ caption ที่ expand → ยุบทั้งคู่ | MEMBER | Func | การ์ด A: caption expanded + details เปิด | 1. แตะบริเวณข้อความ caption (ไม่โดน hashtag/ปุ่ม) | caption ยุบกลับบรรทัดเดียว + กล่อง details ปิดตาม | cap-full ซ่อน; details หาย | Medium | |
 | FO-TC-FEED-024 | showcase ไม่มี toggle | MEMBER | Func | อยู่ feed ที่การ์ด B | 1. แตะ "more" ของการ์ด B | caption ขยายตามปกติ แต่ไม่มี "Tap for details" โผล่ | ไม่มีปุ่ม details | Medium | |
@@ -224,7 +224,7 @@
 |---|---|---|---|---|---|---|---|---|---|
 | FO-TC-FEED-079 | การ์ดภาษาไทย | MEMBER | UI | lang=TH (SETUP-07) | 1. ดูการ์ด A ครบทุก label | label UI เป็นไทย: "ติดตาม", "สอบถาม", "ถูกใจโดย … และคนอื่น ๆ", "เพิ่มเติม", "…ที่แล้ว", "แตะเพื่อดูรายละเอียด"/"ซ่อนรายละเอียด"; ชื่อ seller/ราคา/hashtag/caption content คงเดิม | ไม่มี label UI เหลือเป็น EN บนการ์ด | Medium | |
 | FO-TC-FEED-080 | การ์ดธีม Light | MEMBER | UI | สลับธีม Light ผ่าน Settings ในแอป (SETUP-07) หรือธีมระบบ | 1. ดูการ์ด A + เปิด ⋯ เมนู + comments sheet | การ์ด/sheet/dialog อ่านง่ายบนพื้นสว่าง — contrast ปกติทุกจุด | ไม่มีจุดจางหาย | Low | |
-| FO-TC-FEED-081 | เงินบนการ์ด vs views | MEMBER | UI | อยู่ feed ที่การ์ด A, details เปิด | 1. ดูบรรทัดราคาในกล่อง details 2. เทียบตัวเลข views | ราคาแสดง "THB ###,###" ตัวแดงหนาตาม format สกุลเงิน; views เป็นจำนวนนับ ไม่ถูก format เป็นเงิน — สองอย่างแยกกันชัด | "THB …" แดงใน details-top | Medium | |
+| FO-TC-FEED-081 | เงินบนการ์ด vs views | MEMBER | UI | อยู่ feed ที่การ์ด A, details เปิด | 1. ดูบรรทัดราคาในกล่อง details 2. เทียบตัวเลข views | ราคาแสดง "฿###,###" ตัวแดงหนาตาม format สกุลเงิน; views เป็นจำนวนนับ ไม่ถูก format เป็นเงิน — สองอย่างแยกกันชัด | "฿…" แดงใน details-top | Medium | |
 | FO-TC-FEED-082 | toast/pill รวมของ module | MEMBER | UI | ทำเคสอื่น ๆ มาก่อน | 1. สังเกต toast/pill ที่เด้งจากเคสก่อน ๆ | toast ล่างจอ ~2 วิ แล้วหายเอง; pin มี 2 ชั้น: pill "Pinning..." → toast "Your post has been pinned" | consistent | Low | |
 
 ## 3. หมายเหตุ / OPEN items (สำหรับเทสแอปจริง)

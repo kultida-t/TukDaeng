@@ -21,7 +21,7 @@ These screens have been confirmed by the user and are locked from incidental cha
 - Content Management > Articles > Add Article, confirmed and locked as of 2026-07-22
 - Content Management > Articles > Edit Article, confirmed and locked as of 2026-07-23
 - Content Management > Categories, confirmed and locked as of 2026-07-31
-- Content Management > Reported Board, confirmed and locked as of 2026-07-31
+- Content Management > Reported Articles, confirmed and locked as of 2026-07-31
 - Content Management > Board Report Detail, confirmed and locked as of 2026-07-31
 - Market Data, including the Market Data menu entry, submenu/active states, routing, market data screens, lists, tables, cards, filters, charts, detail views/panels, import/export or refresh actions, breadcrumbs, mock data, and navigation state, confirmed and locked as of 2026-08-10
 - ~~Offer Management~~ — REMOVED 2026-10-26: FO cut the Offer (เสนอราคา) feature, so BO Offer Management was dismantled from `Prototypes/bo-prototype.html` (menu, routing, renderers, CSS, permissions, dashboard cards, deletion dependencies, audit filters). Do not re-add it unless the user reintroduces Offer in FO.
@@ -145,9 +145,9 @@ The protected Content Management scope includes:
 - The article preview opened from Add Article or Edit Article, including Board card preview, FO phone preview, scroll containment behavior, modal layout, copy, imagery, metadata, and close behavior.
 - Validation, disabled states, upload error states, draft defaults, generated article IDs, timestamp handling, and save/create/update behavior for articles.
 - The Categories list/table/card screen, category summary cards, filters, search, sorting, row/card actions, category detail modal, add/edit category forms, activate/deactivate flows, linked article counts, FO category visibility, and category selector/filter sync.
-- The Reported Board list/table/card screen, report queue, report summary, report filters, search, sorting, pagination, row/card actions, report detail views/panels, reported article preview modal, evidence/context sections, status history, moderation history, and back navigation.
-- Reported Board status actions, article status actions triggered from report context, archive/clear/close flows, reason selectors, validation, disabled states, completed states, audit/result states, confirmation modals, and toast/result messaging.
-- Content Management menu entry, every submenu/active state, breadcrumbs, titles, panel labels, route behavior, navigation state, and back/cancel behavior connected to Articles, Categories, Reported Board, or Board Report Detail.
+- The Reported Articles list/table/card screen, report queue, report summary, report filters, search, sorting, pagination, row/card actions, report detail views/panels, reported article preview modal, evidence/context sections, status history, moderation history, and back navigation.
+- Reported Articles status actions, article status actions triggered from report context, archive/clear/close flows, reason selectors, validation, disabled states, completed states, audit/result states, confirmation modals, and toast/result messaging.
+- Content Management menu entry, every submenu/active state, breadcrumbs, titles, panel labels, route behavior, navigation state, and back/cancel behavior connected to Articles, Categories, Reported Articles, or Board Report Detail.
 - Mock data, state logic, computed values, helper functions, styles, assets, and shared components that directly support Content Management rendering or behavior.
 
 ## Market Data Protected Scope

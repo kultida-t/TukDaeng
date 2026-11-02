@@ -64,7 +64,7 @@ FEED-003,Post Card,อยู่ feed (มีการ์ด D + E),1. เที�
 FEED-004,Post Card,member อยู่ feed บนสุด,"1. จำการ์ดแรกสุด (เทียบเวลาโพสต์)
 2. เลื่อนลงจนสุดลิสต์ แล้วเลื่อนต่ออีก
 3. กลับบนสุดแล้วดึงจอลง (pull) ด้วยนิ้วจนสุดแล้วปล่อย",feed โหลดเป็นหน้า 10 โพสต์; เลื่อนลงใกล้ท้าย (เหลือ 3 การ์ด) → โหลดหน้าถัดไปต่อเนื่อง; pull-to-refresh ที่ตำแหน่งบนสุดรีโหลดจากหน้าแรก,MEMBER,Medium,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30) DEC-13/15
-FEED-005,Post Card,อยู่ feed,1. ดูตัวเลขหลังไอคอนตา (👁) ของการ์ดหลายใบ,"แสดงจำนวน view เช่น ""980"" / ""1.2K"" — เป็นจำนวน view ไม่ใช่เงิน (ไม่มี THB ไม่ format เงิน)",MEMBER,Medium,,,money-display-rules: views ≠ currency
+FEED-005,Post Card,อยู่ feed,1. ดูตัวเลขหลังไอคอนตา (👁) ของการ์ดหลายใบ,"แสดงจำนวน view เช่น ""980"" / ""1.2K"" — เป็นจำนวน view ไม่ใช่เงิน (ไม่มีสกุลเงิน (THB/฿) ไม่ format เงิน)",MEMBER,Medium,,,money-display-rules: views ≠ currency
 FEED-006,Post Card,guest อยู่ feed (SETUP-03),1. ดูการ์ด A ทั้งใบเทียบตอนเป็น member,render เหมือน member ทุกส่วน (Follow / Ask / 🔖 ยังแสดง) — gate เกิดตอนแตะเท่านั้น,GUEST,Medium,,,
 FEED-007,Post Card,"member, เปลี่ยนภาษาเป็นไทยแล้ว (SETUP-07)",1. ดูเวลาใต้ caption ของการ์ดหลายใบ,"เวลาเป็นไทยตามอายุโพสต์จริง เช่น ""3 วันที่แล้ว"" / ""11 ชั่วโมงที่แล้ว""",MEMBER,Medium,,,
 FEED-008,Post Card,อยู่ feed ที่การ์ด G,"1. อ่าน caption ก่อนกด
@@ -91,7 +91,7 @@ FEED-019,Clip Posts,การ์ด clip กำลังเล่นบน feed 
 2. กด back กลับ
 3. swipe ไป slide รูปถ่าย",ตอนถูกหน้าอื่นบัง clip หยุด; กลับมาเล่นต่อ; slide รูปถ่ายไม่มี badge/progress,MEMBER,Low,,,
 FEED-020,Details Inline,อยู่ feed ที่การ์ด A,"1. แตะ ""more"" ใน caption","caption ขยายเต็ม + ปุ่ม ""Tap for details ⌄"" (เส้นบรรจบซ้ายขวา) โผล่ใต้เวลา — ก่อนกด more ปุ่มนี้ถูกซ่อน",MEMBER,High,,,
-FEED-021,Details Inline,caption ของการ์ด A expand แล้ว,"1. แตะ ""Tap for details""","กล่อง spec เปิดในการ์ด: บนแสดงราคา ""THB ###,###"" แดง + ""View full detail ›""; ตามด้วยตาราง Watch Specifications + Item Details; ตาม design กลุ่ม ""Price & Data Source"" ไม่แสดง — แสดง = FAIL; ปุ่มเปลี่ยนเป็น ""Hide details""",MEMBER,High,,,ราคาบนการ์ดโผล่เฉพาะในกล่องนี้
+FEED-021,Details Inline,caption ของการ์ด A expand แล้ว,"1. แตะ ""Tap for details""","กล่อง spec เปิดในการ์ด: บนแสดงราคา ""฿###,###"" แดง + ""View full detail ›""; ตามด้วยตาราง Watch Specifications + Item Details; ตาม design กลุ่ม ""Price & Data Source"" ไม่แสดง — แสดง = FAIL; ปุ่มเปลี่ยนเป็น ""Hide details""",MEMBER,High,,,ราคาบนการ์ดโผล่เฉพาะในกล่องนี้
 FEED-022,Details Inline,details ของการ์ด A เปิดอยู่,"1. แตะ ""Hide details"" → กล่องหุบ
 2. เปิด ""Tap for details"" ของการ์ด A อีกครั้ง แล้วเลื่อนไปเปิดของการ์ดขายอื่น",กดซ้ำ = หุบ; เปิดการ์ดใหม่ → กล่องของการ์ดเก่าปิดอัตโนมัติ (เปิดได้ทีละ 1 การ์ดทั้งฟีด),MEMBER,Medium,,,
 FEED-023,Details Inline,การ์ด A: caption expand + details เปิด,1. แตะบริเวณข้อความ caption (ไม่โดน hashtag),caption ยุบกลับบรรทัดเดียว + กล่อง details ปิดตามไปด้วย,MEMBER,Medium,,,
@@ -186,5 +186,5 @@ FEED-077,Hashtag/Profile,member อยู่ feed ที่การ์ด A,"1.
 FEED-078,Hashtag/Profile,guest อยู่ feed ที่การ์ด A,1. แตะ avatar หรือชื่อ seller,public profile เปิดได้ฟรี — ไม่มี Member Sheet,GUEST,Medium,,,
 FEED-079,Language/Theme,"member, ภาษาไทย (SETUP-07)",1. ดูการ์ด A ทั้งใบ,"label UI เป็นไทยครบ: ""ติดตาม"" ""สอบถาม"" ""ถูกใจโดย … และคนอื่น ๆ"" ""เพิ่มเติม"" ""…ที่แล้ว""; expand → ""แตะเพื่อดูรายละเอียด""/""ซ่อนรายละเอียด""; ชื่อ/ราคา/hashtag/caption คงเดิม",MEMBER,Medium,,,
 FEED-080,Language/Theme,"member, ธีม Light (SETUP-07)",1. ดูการ์ด A + เปิด ⋯ เมนู + comments sheet,การ์ด/sheet/dialog อ่านง่ายบนพื้นสว่าง — contrast ปกติทุกจุด,MEMBER,Low,,,
-FEED-081,Language/Theme,"member ที่การ์ด A, details เปิดอยู่",1. ดูบรรทัดราคาในกล่อง details เทียบตัวเลข views,"ราคาแสดง ""THB ###,###"" (ตัวแดงหนา) ตาม format เงิน; views เป็นจำนวนนับไม่ถูก format เป็นเงิน — สองอย่างแยกกันชัด",MEMBER,Medium,,,อ้าง docs/money-display-rules.md
+FEED-081,Language/Theme,"member ที่การ์ด A, details เปิดอยู่",1. ดูบรรทัดราคาในกล่อง details เทียบตัวเลข views,"ราคาแสดง ""฿###,###"" (ตัวแดงหนา) ตาม format เงิน; views เป็นจำนวนนับไม่ถูก format เป็นเงิน — สองอย่างแยกกันชัด",MEMBER,Medium,,,อ้าง docs/money-display-rules.md
 FEED-082,Language/Theme,ทำเคสอื่น ๆ มาก่อน,1. สังเกต toast/pill ที่เด้งจากเคสก่อน,"toast ล่างจอ ~2 วิ แล้วหายเอง; pin มี 2 ชั้น: pill ""Pinning..."" → toast ""Your post has been pinned""",MEMBER,Low,,,

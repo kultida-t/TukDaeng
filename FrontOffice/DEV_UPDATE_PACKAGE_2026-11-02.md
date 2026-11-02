@@ -43,7 +43,7 @@
 
 - Feed/Viewer แบบ IG: pagination, carousel swipe หยุดปลาย + double-tap like, pull-to-refresh, viewer carousel เหมือน feed, comment flat thread + composer, scroll-to-hide header
 - Search: recents persist ข้ามเปิดแอป, tag/hashtag กรอง ni/muted/blocked, เปิดใหม่ = landing, suggestion/recent rows ไม่แสดง `N listings`
-- ภาษา: แปลไทยเต็มระดับทั้งแอป (ยกเว้น UGC/proper nouns), หน่วยเงิน `THB {n}`+comma ทั้ง TH/EN
+- ภาษา: แปลไทยเต็มระดับทั้งแอป (ยกเว้น UGC/proper nouns), หน่วยเงิน `฿{n}`+comma ทั้ง TH/EN
 - Alerts: เอา system row "new device login" + toast/ไอคอน/code ที่เกี่ยวออก — เหลือ 4 types
 - Profile: following/follower rows มีปุ่ม Chat; status tag SOLD/HIDDEN ตาม pfKind
 - Chat: share โพสต์เข้าห้องแชทจริง, message request folder สำหรับคนที่ไม่ได้ตาม, ไม่จัดกลุ่ม gallery ตามวัน
@@ -57,7 +57,7 @@
 | 15 | Pull-to-refresh | 30 | ชุดแก้ batch A (ดู SPEC-CHECK-batch-A §16) |
 | 16 | Viewer carousel เหมือน feed | 33 | own following/follower rows มีปุ่ม Chat |
 | 17 | Comment flat thread + composer ใน V1 | 34 | ตรวจ batch B2/C2 739 เคสผ่าน (ALT-075 ยึด offline-with-cache) |
-| 18 | Feed scroll-to-hide | 35 | `THB {n}`+comma ทั้ง TH/EN |
+| 18 | Feed scroll-to-hide | 35 | `฿{n}`+comma ทั้ง TH/EN |
 | 19 | แปลไทยเต็มระดับ (ยกเว้น UGC) | 36 | Suggestion/Recent rows ไม่แสดง `N listings` |
 | 20 | Share post เข้าห้องแชทจริง | 37 | `AC-AUTH-031`→`AC-AUTH-001A` |
 | 21 | Status tag ตาม pfKind (SOLD/HIDDEN) | 38 | Change Password canonical = 13_SETTINGS §9 |

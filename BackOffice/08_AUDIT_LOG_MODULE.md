@@ -336,7 +336,7 @@ Before/after JSON diff ต้อง wrap และ scroll ภายใน contai
 | Account Deletion | Request lifecycle audit (ขอลบ/คืน/ปฏิเสธคืน/auto delete/dependency check) — Request Detail > History & Actions มีคอลัมน์ Audit กระโดดมา Audit Log กรองด้วย event id + toast |
 | Directory | Future/postponed; activate/inactivate/import/export audit only when Directory scope is reopened |
 | Help / Support | Policy draft/publish/archive/restore และ Support Center update audit |
-| Dashboard | Recent activity feed และ SLA/queue context — ไม่มี audit jump link จาก Dashboard (ตัดออก 16/09: audit link เหมาะอยู่ใน detail/history context เท่านั้น) |
+| Dashboard | Recent activity feed และ queue context — ไม่มี audit jump link จาก Dashboard (ตัดออก 16/09: audit link เหมาะอยู่ใน detail/history context เท่านั้น) |
 | Reports (Phase 2/future) | Export audit events และ report export history |
 | Admin Settings | Permission/system setting changes audit |
 

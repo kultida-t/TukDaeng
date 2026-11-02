@@ -339,7 +339,7 @@ Blocked profile page แสดง Instagram-style blocked state (S-13 — ไม
 
 ### Admin Moderation
 
-- Admin ต้องตรวจสอบ Report และดำเนินการภายใน 24 ชั่วโมง
+- Admin ต้องตรวจสอบ Report และดำเนินการผ่าน Back Office (ไม่มี deadline tracking)
 
 ## 18. Apple Compliance
 

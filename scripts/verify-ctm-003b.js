@@ -1,4 +1,4 @@
-// CTM-003b smoke check — verify normalized labels (Categories + Reported Board)
+// CTM-003b smoke check — verify normalized labels (Categories + Reported Articles)
 // usage: node scripts/verify-ctm-003b.js  (server ต้องรันอยู่ที่ :4173)
 const { chromium } = require("@playwright/test");
 
@@ -101,7 +101,7 @@ const check = (name, ok, extra = "") => { results.push([name, ok, extra]); conso
   await page.locator("[data-user-action-modal-close]").first().click();
   await page.waitForTimeout(300);
 
-  // ============ Reported Board ============
+  // ============ Reported Articles ============
   await openContentSub("Reported Articles");
 
   // D-C15/C16 — RPC-043 row menu labels

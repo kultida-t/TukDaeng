@@ -68,7 +68,7 @@ BO Market Demand & Watch Alert Module คือพื้นที่สำหร
 
 | Area | FO Rule | BO Requirement |
 | --- | --- | --- |
-| Entry point | Watch Alert สร้างจาก Search Filter เท่านั้น | BO ต้องเก็บ source criteria จาก Search Filter schema |
+| Entry point | Watch Alert สร้างได้ 2 ทาง: Search Filter (`sr-wa` → `source:"search"`) และ Model follow จาก Post Detail (`mf-btn` → `source:"detail"` ตาม FO `10_WATCH_ALERT_MODULE.md` / `05_ASSET_DETAIL_MODULE.md` §9) | BO ต้องเก็บ `source` field ของทุก alert + source criteria ตาม entry ที่สร้าง |
 | Required field | ไม่มี required field | BO ต้องรองรับ alert ที่ criteria ว่างหรือชื่อว่างและมี generated name |
 | Match rule | Match เฉพาะ asset `Sale` | BO trigger/history ต้องไม่ถือ Show/Hide/Sold/Deleted เป็น match |
 | Destination | Notification เปิด Watch Alert Result List | BO delivery trace ต้องระบุ Result List ไม่ใช่ Asset Detail |
@@ -182,6 +182,7 @@ Alert List ใช้ filter bar สำหรับคัดกรอง ไม�
 | Filter | Options |
 | --- | --- |
 | Status | ทุกสถานะ, Active, User Disabled, Deleted |
+| Source | ทุกที่มา, Search, Model follow |
 | Notification | ทุกการแจ้งเตือน, เปิดแจ้งเตือน, ปิดแจ้งเตือน |
 | Trigger history | ทุกประวัติ trigger, เคย trigger, ไม่เคย trigger |
 | Match status | ทุกสถานะ match, ไม่มี match (unmet), มี match |
@@ -202,7 +203,7 @@ Alert List ใช้ filter bar สำหรับคัดกรอง ไม�
 | # | Column | ประเภท | หมายเหตุ |
 | --- | --- | --- | --- |
 | 1 | Alert ID | primary identity | WAL-XXXX |
-| 2 | Alert Name | text | |
+| 2 | Alert Name | text | แสดง source tag กำกับ (Search / Model follow) ตาม `source` field |
 | 3 | Owner | text | display name |
 | 4 | Criteria | structured summary | brand · model · reference · price · N conditions · N case sizes · N dial colors + tooltip แสดง criteria ครบ |
 | 5 | Status | badge | Active=เขียว, User Disabled=เทา, Deleted=charcoal |
@@ -216,7 +217,7 @@ Alert List ใช้ filter bar สำหรับคัดกรอง ไม�
 
 - Title: Alert ID
 - Status badge + Notification badge
-- Metadata ที่ label: Alert Name, Owner, Matches, Triggers, Last Triggered, Updated
+- Metadata ที่ label: Alert Name, Source, Owner, Matches, Triggers, Last Triggered, Updated
 
 ### Row Behavior
 
@@ -255,13 +256,13 @@ Watch Alert Detail เป็นหน้าจอ read-only สำหรับ�
 
 แสดง head เหมือนหน้า detail อื่น ปรากฏเหนือ Section 1:
 
-- `Alert ID : Alert Name` พร้อม Status badge (Active=เขียว, User Disabled=เทา, Deleted=charcoal) และ Notification badge (On=เขียว, Off=เทา)
+- `Alert ID : Alert Name` พร้อม Status badge (Active=เขียว, User Disabled=เทา, Deleted=charcoal), Notification badge (On=เขียว, Off=เทา) และ Source badge (Search=เทา, Model follow=น้ำเงิน)
 
 ### Section 1: Alert Summary
 
-แสดง summary tiles 4 ช่อง:
+แสดง summary tiles 5 ช่อง:
 
-- Created, Updated, Matches (current matched Sale assets), Triggers (total trigger count)
+- Created, Updated, Source (Search / Model follow — origin ของ alert ตาม FO entry point), Matches (current matched Sale assets), Triggers (total trigger count)
 
 ### Section 2: Owner Summary
 

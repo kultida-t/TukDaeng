@@ -32,7 +32,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | Security | Private Asset Data ต้องตรวจสิทธิ์ทุกครั้ง |
 | Security | Admin Action ต้องมี Audit Trail ใน Back Office |
 | Localization | รองรับภาษาไทยและอังกฤษ |
-| Localization | ราคาแสดงเป็น THB |
+| Localization | ราคาแสดงด้วยสัญลักษณ์ `฿` |
 | Localization | Empty State ใช้ข้อความกลางตามที่กำหนด |
 | Accessibility | Font size รองรับการปรับตามระบบ |
 | Accessibility | รองรับ Screen Reader ตามความเหมาะสมของ Mobile Platform |
@@ -63,7 +63,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | Requirement | Acceptance |
 | --- | --- |
 | Languages | รองรับภาษาไทยและอังกฤษ |
-| Price | ราคาแสดงเป็น THB |
+| Price | ราคาแสดงด้วยสัญลักษณ์ `฿` |
 | Empty state | ใช้ข้อความกลาง `ไม่พบข้อมูล` และ `No data found` |
 | Labels | ใช้ canonical terminology ตาม master |
 | Text expansion | UI ต้องรองรับความยาวข้อความต่างกันระหว่าง TH/EN |
@@ -85,7 +85,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | Performance | Feed load, lazy image, paginated list + infinite scroll/pull-to-refresh (DEC-13/15), ไม่มี end-of-list marker, Board end note |
 | Offline | Feed cached data when offline |
 | Security | HTTPS, token, route guard, private data authorization |
-| Localization | TH/EN copy, THB price, empty state |
+| Localization | TH/EN copy, `฿` price, empty state |
 | Accessibility | Dynamic font, screen reader, touch target, error text |
 | Admin | Audit trail requirement exists for Back Office actions |
 
@@ -103,7 +103,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | AC-NFR-008 | Private Asset Data ต้องตรวจสิทธิ์ทุกครั้ง |
 | AC-NFR-009 | Admin Action ต้องมี Audit Trail ใน Back Office |
 | AC-NFR-010 | ระบบรองรับภาษาไทยและอังกฤษ |
-| AC-NFR-011 | ราคาแสดงเป็น THB |
+| AC-NFR-011 | ราคาแสดงด้วยสัญลักษณ์ `฿` |
 | AC-NFR-012 | Empty State ใช้ข้อความกลางตาม master |
 | AC-NFR-013 | Font size รองรับการปรับตามระบบ |
 | AC-NFR-014 | รองรับ Screen Reader ตามความเหมาะสมของ Mobile Platform |

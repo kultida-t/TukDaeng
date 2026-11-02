@@ -1,4 +1,4 @@
-// CTM-003b — Categories + Reported Board label normalization evidence capture
+// CTM-003b — Categories + Reported Articles label normalization evidence capture
 // ครอบคลุม surface ของจุดแก้ตาม CTM-002 plan §A.2/§B + canonical §9.2/9.3
 //   D-C01 row menu View detail · D-C02 Edit Category (row menu + detail btn)
 //   D-C10 Add Category (+ hidden #primary-action) · D-C11 Reorder Categories (+aria → mobile tooltip)

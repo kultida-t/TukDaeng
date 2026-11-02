@@ -1,6 +1,6 @@
 # PRD - Tuk Daeng Back Office System
 
-**Version:** 1.1  
+**Version:** 1.2  
 **Product:** Tuk Daeng Back Office (BO)  
 **Audience:** Admin  
 **Related Documents:** BO_Spec v1.2, BO_Spec_Completion_Addendum v1.3, FO PRD v1.0, Use Cases v1.0
@@ -344,7 +344,7 @@ Admin ต้องสามารถ:
 
 ### Out Of Scope (Phase 1)
 
-Ticket queue, assignment, SLA, reply history, internal notes และ manual ticket creation จาก LINE/Phone/Email ไม่อยู่ใน Phase 1 — รายละเอียดเต็มอยู่ใน `12_HELP_SUPPORT_MODULE.md`
+Ticket queue, assignment, reply history, internal notes และ manual ticket creation จาก LINE/Phone/Email ไม่อยู่ใน Phase 1 — รายละเอียดเต็มอยู่ใน `12_HELP_SUPPORT_MODULE.md` (ไม่มี SLA tracking ใน scope ใด ๆ — FO-BO-001 GAP-03)
 
 ---
 
@@ -483,7 +483,7 @@ Reports ที่ต้องมี (เมื่อกลับมาทำใ�
 
 | Metric | Target |
 |---|---|
-| Pending report response time | < 24 ชั่วโมง |
+| Pending report review coverage | 100% ของ pending reports ถูก review (ไม่มี time-bound SLA — ตัดสิน 2026-11-02 FO-BO-001 GAP-03) |
 | Article publish success | 100% แสดงบน FO ตาม schedule |
 | Asset moderation audit completeness | 100% มี audit log |
 | Notification delivery tracking | > 95% มี delivery status |
@@ -514,12 +514,11 @@ Reports ที่ต้องมี (เมื่อกลับมาทำใ�
 
 - Directory (รอ FO directory detail routes และ taxonomy approval)
 - Chat moderation workflow (remove/hide chat message, reported chat queue)
-- Help & Support ticket queue, assignment, SLA, reply/internal note (ย้ายจาก Phase 1 ไป Phase 2 — รายละเอียดอยู่ใน `12_HELP_SUPPORT_MODULE.md` section 3 Out Of Scope)
+- Help & Support ticket queue, assignment, reply/internal note (ย้ายจาก Phase 1 ไป Phase 2 — รายละเอียดอยู่ใน `12_HELP_SUPPORT_MODULE.md` section 3 Out Of Scope)
 
 ### Phase 3
 
 - Advanced moderation workflow
-- SLA dashboard
 - External integrations
 - Automated compliance tools
 - External CRM integration

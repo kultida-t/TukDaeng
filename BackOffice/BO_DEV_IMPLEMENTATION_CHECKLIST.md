@@ -66,7 +66,7 @@ Recommended note format:
 - [ ] แสดง Active Users Today เป็น primary Dashboard KPI
 - [ ] แสดง asset count แยกตาม status
 - [ ] แสดง pending report count
-- [ ] แสดง queue summary พร้อม SLA risk สำหรับ pending reports
+- [ ] แสดง queue summary พร้อม reporter/priority context สำหรับ pending reports
 - [ ] แสดง policy-based dashboard view ตาม permission ของ admin
 - [ ] Metric/queue card ต้อง drill-in ไป module ที่เกี่ยวข้องพร้อม filter
 - [ ] Dashboard ต้องรองรับ partial load error โดยไม่ล้มทั้งหน้า

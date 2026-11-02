@@ -91,7 +91,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Notification generation จาก social actions (ALERTS seed-only — contract 09 §14)
 - Board article like/save/share (`data-bd*`) — canonical 12 (gate list เดียวกันเท่านั้น)
 - Watch Alert (`mf-btn`/`waSheetHTML`) — canonical 10
-- Report flow internals (reason taxonomy, SLA, admin moderation) — canonical 15 (synced FSP-031 — §19)
+- Report flow internals (reason taxonomy, admin moderation) — canonical 15 (synced FSP-031 — §19)
 - Chat (`pf-msg`, `blkSheetHTML(fromChat)`, `report:done` chat teardown) — canonical 07
 
 ---
@@ -455,7 +455,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | D10 | `commentPreview` | ฟีดการ์ดแสดง preview 1 บรรทัด — ไม่ใช่ comment sheet entry | canonical 02 card anatomy |
 | D11 | Board `data-bd*` | Article like/save/share/report แยกระบบ (article objects + toasts เฉพาะ) | canonical 12 — ไม่ใช่ social post state |
 | D12 | `m-unsave` settings | unsave จาก settings list ไม่มี confirm | รับตาม prototype |
-| D13 | ~~15_TRUST_SAFETY ยังไม่ sync~~ **RESOLVED FSP-031** | 15_TRUST sync ระดับ prototype แล้ว (report stack `report*` routes/`PM_REASONS`/pickers/done page/shared surfaces — ตรงกับที่เอกสารนี้อ้าง); reason taxonomy/SLA/moderation contract คงอยู่ใน 15 ตามเดิม | resolved — flag เดิม FSP-023+ |
+| D13 | ~~15_TRUST_SAFETY ยังไม่ sync~~ **RESOLVED FSP-031** | 15_TRUST sync ระดับ prototype แล้ว (report stack `report*` routes/`PM_REASONS`/pickers/done page/shared surfaces — ตรงกับที่เอกสารนี้อ้าง); reason taxonomy/moderation contract คงอยู่ใน 15 ตามเดิม | resolved — flag เดิม FSP-023+ |
 
 ---
 
@@ -614,7 +614,7 @@ And counts (`likes`/`views`/`comments`) ไม่ reset (post data ไม่ใ�
 - [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) — `mf-btn`/`waSheetHTML` canonical
 - [12_BOARD_MODULE.md](12_BOARD_MODULE.md) — board article `data-bd*` actions (แยกระบบ)
 - [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) — `interested`/`ni`/`favorites`/`muted`/`blocked`/`notif_settings` pages + library rows
-- [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) — report taxonomy/SLA/moderation contract (synced FSP-031 — §19 D13 resolved)
+- [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) — report taxonomy/moderation contract (synced FSP-031 — §19 D13 resolved)
 - [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) — routes + sheets inventory + gate routing + viewer entry rule
 - [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) — session §7 / Member Sheet §11 / block §13 / private data §14
 

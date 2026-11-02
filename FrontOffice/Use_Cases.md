@@ -420,7 +420,7 @@
 #### Happy Path
 1. own-post `...` menu → `View sale record` (หรือ Portfolio > sold history > sold row)
 2. เปิด `sold:{id}` — แสดง Sale Record:
-   - ราคาที่ขาย (Sale Price THB)
+   - ราคาที่ขาย (Sale Price ฿)
    - วันที่ขาย (Sale Date)
    - Realized Gain/Loss + return (คำนวณจาก purchase carry-over)
 3. Sale Record มีแค่ราคา+วันที่เท่านั้น (D3 — ไม่มี Buyer/Contact/Payment Method/Attachment)
@@ -450,14 +450,14 @@
 #### Happy Path
 1. own-post `...` menu → `Mark as sold` (หรือ Portfolio asset detail — eligible `sale`/`show`/`hide`)
 2. เปิด `sell:{id}` Sale Record form — prefill Sale price = asking, Sale date = วันนี้
-3. กรอก Sale Price (THB) — แสดง Expected gain live
+3. กรอก Sale Price (฿) — แสดง Expected gain live
 4. เลือก Sale Date
 5. กด "Save sale record" → status เปลี่ยนเป็น "Sold" + landing `sold:{id}`
 
 #### Required / Optional Fields
 | Field | Required | Validation |
 |---|---:|---|
-| Sale Price (THB) | Yes | ต้องเป็นตัวเลขมากกว่า 0, ไม่รับค่าติดลบ/ตัวอักษร, normalize comma |
+| Sale Price (฿) | Yes | ต้องเป็นตัวเลขมากกว่า 0, ไม่รับค่าติดลบ/ตัวอักษร, normalize comma |
 | Sale Date | Yes | ต้องเป็นวันที่จริง, ห้ามเป็นวันที่อนาคต |
 
 (Sale Record = 2 ฟิลด์เท่านั้นตาม D3 — Buyer/Contact/Payment Method/Attachment/Note เป็น future scope)
@@ -477,14 +477,14 @@
 
 #### Happy Path
 1. ระหว่าง composer asset mode เลือก `Cost details (private)` row (แสดงเสมอใน asset mode)
-2. (ตัวเลือก) กรอก Purchase Price (THB)
+2. (ตัวเลือก) กรอก Purchase Price (฿)
 3. (ตัวเลือก) เลือก Purchase Date
 4. กด "Add Asset" → cost data เก็บใน drawer record
 
 #### Required / Optional Fields
 | Field | Required | Validation |
 |---|---|---|
-| Purchase Price (THB) | No | หากกรอกต้องเป็นตัวเลขและมากกว่า 0 (strip non-digit + auto-comma) |
+| Purchase Price (฿) | No | หากกรอกต้องเป็นตัวเลขและมากกว่า 0 (strip non-digit + auto-comma) |
 | Purchase Date | No | หากเลือกต้องไม่เป็นวันที่ในอนาคต (inline validation) |
 
 - Cost details เป็น owner-private — ไม่แสดงบน public surface และใช้เป็น input ของ Portfolio `Total invested`

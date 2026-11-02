@@ -159,7 +159,7 @@ FO-TC-DET-008,Detail content,detail ของโพสต์ขาย (POST-X/SE
 FO-TC-DET-009,Detail content,own posts SETUP-09/10/11/12,"1. เปิด detail: feed-only · Sale · Show · Sold · Hide
 2. เปิด detail โพสต์คนอื่นด้วย MEMBER",feed post ธรรมดาไม่มี tag; Sale→FOR SALE Show→SHOWCASE Sold→SOLD Hide→HIDDEN — คนอื่นเห็นเฉพาะ sale/show (spec ล็อก),OWNER + MEMBER,High,,,spec ล็อก — ตามสถานะไม่ใช่ราคา
 FO-TC-DET-010,Detail content,detail own sale post (SETUP-09),1. scroll ผ่าน spec sections,"spec ครบทุกกลุ่มรวม ""Price & Data Source"" — แต่ละกลุ่ม head+rows label/value",MEMBER,High,,,
-FO-TC-DET-011,Detail content,detail โพสต์มีราคา+MODEL-X specs,"1. อ่าน ""Price & Data Source""","Asking ""THB x,xxx,xxx"" ไม่มีทศนิยม · Estimated = market data จริงของ MODEL-X · Last Update + Source",MEMBER,High,,,money rules §4.1–4.2
+FO-TC-DET-011,Detail content,detail โพสต์มีราคา+MODEL-X specs,"1. อ่าน ""Price & Data Source""","Asking ""฿x,xxx,xxx"" ไม่มีทศนิยม · Estimated = market data จริงของ MODEL-X · Last Update + Source",MEMBER,High,,,money rules §4.1–4.2
 FO-TC-DET-012,Detail content,detail POST-X,1. หา element ราคาโดด ๆ,ไม่มี — ราคาอยู่ใน spec group เท่านั้น,MEMBER,Medium,,,
 FO-TC-DET-013,Detail content,การ์ด POST-Z + asset Show มี specs (SETUP-11),"1. ดูใต้ caption การ์ด POST-Z
 2. own Show tab → tile ของ asset Show","POST-Z ไม่มี ""Tap for details""; asset Show มี specs เข้า detail ได้ + tag SHOWCASE (spec ล็อก)",MEMBER,Medium,,,

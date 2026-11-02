@@ -127,7 +127,7 @@ Admin รับผิดชอบ:
 - Moderation
 - จัดการ Board Content
 - จัดการ User / Asset ตาม policy
-- ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา
+- ดำเนินการกับ Report ที่เข้ามาทั้งหมด (ไม่มี deadline tracking — FO-BO-001 GAP-03)
 
 Full Back Office PRD ยังไม่เริ่มระหว่าง FO cleanup รอบนี้ ให้ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary ก่อน และเริ่ม Full Back Office PRD หลัง FO baseline, Dev checklist, QA checklist และ FO sign-off ครบ/นิ่งแล้วเท่านั้น
 
@@ -885,7 +885,7 @@ Block confirm = IG bottom sheet `Block {user}?` + impact rows (canonical `06_PRO
 
 Report flow = IG-style full-page multi-step stack (reasons → report:done + other steps) — ไม่ใช่ bottom sheet (D9)
 
-Report ไม่ทำให้ Asset หรือ Content หายจาก public surfaces ทันที — Asset หรือ Content จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น (24h review SLA)
+Report ไม่ทำให้ Asset หรือ Content หายจาก public surfaces ทันที — Asset หรือ Content จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น (ไม่มี review deadline)
 
 ### Apple Compliance
 
@@ -931,7 +931,7 @@ Like count เป็น private แบบ IG — เฉพาะโพสต์�
 ### Localization
 
 - รองรับภาษาไทยและอังกฤษ
-- ราคาแสดงเป็น THB
+- ราคาแสดงด้วยสัญลักษณ์ `฿`
 - Empty State ใช้ข้อความกลางตามที่กำหนด
 
 ### Accessibility

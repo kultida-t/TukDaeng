@@ -58,7 +58,7 @@ Codex ต้องทำ 3 อย่าง:
 | --- | --- | --- | --- |
 | 00 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, admin access, audit, status, privacy, timezone, FO sync และ destructive-action rules | 1 |
 | 01 | `01_AUTHENTICATION_MODULE.md` | Email + Password → BO โดยไม่มี Login OTP/MFA/2FA ใน current phase; invitation/activation, Forgot/Reset Password, Change Password, Active Sessions และ Logout All Devices | 1 |
-| 02 | `02_DASHBOARD_MODULE.md` | Dashboard metrics, pending queues, SLA signals, activity feed และ policy-based overview | 1 |
+| 02 | `02_DASHBOARD_MODULE.md` | Dashboard metrics, pending queues, activity feed และ policy-based overview | 1 |
 | 03 | `03_USER_MANAGEMENT_MODULE.md` | User list/detail, auth method, login history, report context, suspend/ban, reset password, FO impact | 1 |
 | 04 | `04_ASSET_MANAGEMENT_MODULE.md` | Asset list/detail, status visibility, reported assets, moderation, sensitive fields, FO sync | 1 |
 | 05 | `05_CONTENT_BOARD_MODULE.md` | Board articles, editor, publish/schedule/archive, categories, reported Board Content, FO sync | 1 |

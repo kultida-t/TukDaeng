@@ -425,7 +425,7 @@
 | 15 | SSO account → change pwd ต้องไม่ active | SET-024 | **Contract ชัดเจน**: บัญชี SSO ไม่มีรหัสผ่าน เมนู Change Password จะ disabled/ซ่อน | ✅ RESOLVED |
 | 15 | Date joined = mock ใน prototype | SET-012 | **Contract ชัดเจน**: แสดงเดือนและปีที่ผู้ใช้สมัครบัญชีจริง | ✅ RESOLVED |
 | 19 | system-type alert text = server copy | LANG-031 | **Contract ชัดเจน**: แปลภาษาตาม Accept-Language Header ของแอป (TH/EN) — moot หลัง DEC-41 ถอน `system` type ทั้งประเภท | ✅ RESOLVED |
-| 19 | `y`/`m` holding suffix + `N/A` vs `—` + `THB` vs `฿` | LANG-035, 047 | **Contract ชัดเจน**: ภาษาไทยใช้ `฿`, อังกฤษใช้ `THB`; ระยะเวลาใช้ `y`/`m` สม่ำเสมอ | ✅ RESOLVED |
+| 19 | `y`/`m` holding suffix + `N/A` vs `—` + `THB` vs `฿` | LANG-035, 047 | **Contract ชัดเจน**: ภาษาไทยใช้ `฿`, อังกฤษใช้ `THB` — **superseded โดย DEC-35 → DEC-42**: ทั้งสองภาษาใช้ `฿`; ระยะเวลาใช้ `y`/`m` สม่ำเสมอ | ✅ RESOLVED (อัปเดต DEC-42) |
 | 19 | system font scaling (AC-NFR-013) scope | LANG-043 | **Contract ชัดเจน**: รองรับ Dynamic Type / Text Scaling ตามมาตรฐาน accessibility | ✅ RESOLVED |
 | 19 | พุทธศักราชใน TH expected ตาม th-TH | LANG-005, 012, 037 | **Contract ชัดเจน**: th-TH แสดงปี พ.ศ. เสมอ | ✅ RESOLVED |
 | 19 | chat gallery date label = mock ตายตัว | LANG-028 | **Contract ชัดเจน**: แสดงวันที่จริงของ media ตามภาษาแอป | ✅ RESOLVED |
@@ -444,7 +444,7 @@
 ### 6.4 จุดเฝ้าระวังเล่ม 19 §3 (ปิดข้อยุติครบถ้วนใน FO-TEST-22)
 
 - **system alert text = server copy** → RESOLVED: ส่ง localized copy ตาม header ภาษา (DEC Register) — moot หลัง DEC-41 ถอน `system` type ทั้งประเภท
-- **หน่วย `y`/`m` + `THB` vs `฿` (money rules draft)** → RESOLVED: ล็อกมาตรฐาน `฿` สำหรับ TH, `THB` สำหรับ EN (DEC Register)
+- **หน่วย `y`/`m` + `THB` vs `฿` (money rules draft)** → RESOLVED → อัปเดตล่าสุด DEC-42: unified `฿` ทั้งสองภาษา (DEC Register)
 - **พุทธศักราชใน TH expected ตาม th-TH** → RESOLVED: ล็อกปี พ.ศ. สำหรับ th-TH locale เสมอ (DEC Register)
 - **system font scaling scope** → RESOLVED: ล็อก dynamic type text scaling ตามมาตรฐาน accessibility (DEC Register)
 

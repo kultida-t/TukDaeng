@@ -1,7 +1,7 @@
 # 00 Back Office Global Rules Module
 
-**Version:** `BO-00-v1.1`  
-**Date:** 2026-10-26  
+**Version:** `BO-00-v1.2`  
+**Date:** 2026-11-02  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -21,7 +21,7 @@ Login และ auth-adjacent screens ใช้ layout และ breakpoint ต�
 | --- | --- |
 | Module Name | Back Office Global Rules |
 | Platform | Responsive Web Back Office |
-| Version | `BO-00-v1.1` |
+| Version | `BO-00-v1.2` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Cross-Module Functional PRD |
@@ -290,6 +290,8 @@ BO ต้องใช้ state contract เดียวกับเอกสา�
 
 หมายเหตุ: BO implementation ต้องใช้ status ตาม FO คือ `Show` และ `Hide` เป็นหลัก หากพบคำเก่าใน legacy source ให้ normalize เป็น status ชุดนี้ก่อนใช้งาน
 
+หมายเหตุ post entity: โพสต์บน feed ที่ไม่ผูก asset ใช้ kind `post` ตาม `../FrontOffice/00_GLOBAL_RULES_MODULE.md` §9–§10 — `post` ไม่ใช่ asset status และไม่มี asset status ให้ join แต่รายงานได้ตาม Report Entity Model ใน §11
+
 ### 10.3 Content Status
 
 | Status | BO Meaning | FO Impact |
@@ -312,12 +314,12 @@ Source of truth สำหรับ coverage นี้คือเอกสาร
 
 FO functions ขั้นต่ำที่ BO ต้องรองรับ:
 
-- Report Asset / User / Comment / Board Content
+- Report Post (asset-linked และ post-only) / User / Comment / Board Content
 - Asset lifecycle: Sale, Show, Hide, Sold, ซ่อนชั่วคราว, ซ่อนถาวร, ลบโดยเจ้าของ
 - Board article/category/banner publication
 - Brand/model/reference/price index management
 - Directory item publication (future/postponed; not Phase 1)
-- Chat review สำหรับ reported content
+- Report ที่ source มาจาก Chat — account context + thread reference เท่านั้น ไม่แนบ message transcript (ตาม IG model — FO-BO-001 GAP-06 ปิดเป็น by-design)
 - Comment moderation
 - Like/favorite/follow analytics
 - Watch Alert criteria และ trigger history
@@ -332,6 +334,44 @@ Guest public access rule:
 - Guest action ที่เป็น public view/share ไม่สร้าง User Management record และไม่เปิด BO account action
 - Action ที่สร้างข้อมูลหรือเปลี่ยน state ของระบบ เช่น like, follow, comment, report, chat, watch alert, add/edit/delete asset ต้อง login ตาม FO Auth rule ก่อน จึงจะเข้า BO workflow ที่เกี่ยวข้องได้
 - BO modules ที่ควบคุม public visibility เช่น Asset, Content/Board, Market Data และ Directory ในอนาคต ต้องทำให้ public deep link ที่ Guest เปิดหรือแชร์ไว้สะท้อนสถานะล่าสุด เช่น unavailable, removed, archived หรือ inactive
+
+### Canonical Report Reason Taxonomy
+
+FO เป็น source of truth ของ report reason (ตัดสิน 2026-11-02 — FO-BO-001 GAP-01) BO ทุก queue/detail/filter/audit ต้องใช้เหตุผลชุดเดียวกับ FO เท่านั้น ห้ามสร้างหรือแปลเหตุผลชุดอื่น
+
+Report ของ post (asset-linked และ post-only), user และ comment ใช้ `PM_REASONS` ชุดเดียวกัน 9 เหตุผล ตาม `../FrontOffice/15_TRUST_SAFETY_MODULE.md`:
+
+| # | Reason (EN — canonical) | เหตุผล (TH — canonical) |
+| --- | --- | --- |
+| 1 | I just don't like it | ฉันแค่ไม่ชอบ |
+| 2 | Bullying or unwanted contact | การกลั่นแกล้งหรือการติดต่อที่ไม่พึงประสงค์ |
+| 3 | Suicide, self-injury or eating disorders | การฆ่าตัวตาย ทำร้ายตัวเอง หรือพฤติกรรมการกินที่ผิดปกติ |
+| 4 | Violence, hate or exploitation | ความรุนแรง ความเกลียดชัง หรือการแสวงหาประโยชน์ |
+| 5 | Counterfeit or replica item | สินค้าลอกเลียนแบบหรือของปลอม |
+| 6 | Nudity or sexual activity | ภาพเปลือยหรือกิจกรรมทางเพศ |
+| 7 | Scam, fraud or spam | การหลอกลวง การฉ้อโกง หรือสแปม |
+| 8 | False information | ข้อมูลเท็จ |
+| 9 | Intellectual property | ทรัพย์สินทางปัญญา |
+
+Report ของ Board Content (article) ใช้ reason set เฉพาะ 6 เหตุผลตาม `../FrontOffice/12_BOARD_MODULE.md` §13: `Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`
+
+Label เก่าที่เคยใช้ใน BO mock เช่น `Fraud or scam`, `Spam or scam`, `Impersonation`, `Suspected fake or scam` เป็น legacy display alias เท่านั้น ไม่ใช่ canonical reason — mock data/seed ต้อง migrate ไปใช้เหตุผลชุด FO ด้านบน (งาน mock อยู่ใน remediation กลุ่ม d)
+
+### Reporter Submission Schema
+
+Report ของ post, user และ comment เป็น reason-only ตาม FO live stack — ส่งเฉพาะ reason ไม่มี `Additional details` field (มีเฉพาะ Board Content contract ที่ FO กำหนด `Additional details (optional)` จริง ตาม `../FrontOffice/12_BOARD_MODULE.md` §13) — BO report detail ของ user/asset/comment จึงไม่มี field additional details (ตัดสิน 2026-11-02 — FO-BO-001 GAP-05)
+
+Report ที่ source มาจาก Chat (user report จากหน้า chat) เก็บเฉพาะ thread reference สำหรับ support ตามทีหลัง ไม่เก็บและไม่แสดง message transcript ใน report detail (ตาม IG model — FO-BO-001 GAP-06 ปิดเป็น by-design)
+
+### Report Entity Model
+
+Report target ของ feed content = post entity ไม่ใช่ asset entity: ทุกโพสต์ที่ published และผู้ใช้อื่นมองเห็นได้รายงานได้ และเข้า queue `Reported Assets` (Asset Management) เพียงคิวเดียว ไม่แยกคิวตามชนิดโพสต์ (ตัดสิน 2026-11-02 — FO-BO-001 GAP-08)
+
+- Asset-linked post (โพสต์ที่ผูก asset) ใช้ reference `AST-` เหมือนเดิม
+- Post-only (feed post kind `post` ที่ไม่ผูก asset) ใช้ post reference `POST-`
+- Report reference เป็น frozen identifier ที่ออกตอน intake ตาม link state ณ เวลารายงาน — ref ไม่เปลี่ยนย้อนหลังเมื่อโพสต์เปลี่ยนการผูก asset ในภายหลัง
+- Report Detail ต้องแสดง current link state เสมอ: post-only report (`POST-`) ที่โพสต์ถูกผูก asset ภายหลังต้องแสดง `AST-` context เพิ่มได้โดยไม่เปลี่ยน report ref
+- Report case ต้องผูกกับ post current state ล่าสุดเสมอ; post-only report ไม่มี asset status ให้ join แสดงเฉพาะ post context
 
 ## 12. BO-to-FO Sync Rules
 

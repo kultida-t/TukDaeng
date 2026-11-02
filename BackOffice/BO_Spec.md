@@ -1,8 +1,8 @@
 # BO Specification — ตึกแดง Back Office System
-**เวอร์ชัน:** 1.3  
-**วันที่:** กันยายน 2568  
+**เวอร์ชัน:** 1.4  
+**วันที่:** พฤศจิกายน 2568  
 **ผู้ใช้งาน:** Admin ของระบบตึกแดง
-**อัปเดตจาก:** v1.2 → v1.3 (Notifications module restructure — Delivery Logs ย้ายไป Settings, Broadcast/System Templates เลื่อนเป็น Phase 2/future)
+**อัปเดตจาก:** v1.3 → v1.4 (FO-BO-001 remediation กลุ่ม a — article category เปลี่ยนเป็น FO magazine model ตาม GAP-02)
 
 ---
 
@@ -209,7 +209,7 @@ Eligible article conditions: `Status = Published`, `Publish Date <= now` in `Asi
 | Title | Text | ✓ | รองรับภาษาไทยและอังกฤษ |
 | Slug | Auto-generate จาก Title | ✓ | แก้ไขได้ด้วยตนเอง |
 | Cover Image | Image Upload | ✓ | แสดงเป็น Feature Image บน FO |
-| Category | Dropdown | ✓ | Watch Brands, Watch 101, Watch Apparel, Watch Events, Watch Market, Journal Board |
+| Category | Dropdown (active categories) | ✓ | เลือกจาก active category ใน `Content Management > Categories` — map ตรงกับ FO `cat` tag ตาม magazine model (`FrontOffice/12_BOARD_MODULE.md`); fixed 7-category taxonomy เดิมถูก supersede แล้ว (FO D1 — FO-BO-001 GAP-02) |
 | Tags | Multi-select | - | ใช้สำหรับ Search ภายใน Board |
 | Author | Dropdown | ✓ | เลือกจากรายชื่อ Admin ทั้งหมด |
 | Featured Article | Toggle | - | Future scope only; Phase 1 Board Main chooses Main Hero automatically from newest eligible Published Article |
@@ -234,16 +234,13 @@ Eligible article conditions: `Status = Published`, `Publish Date <= now` in `Asi
 - Preview โหมด Mobile (375px) ก่อน Publish เพื่อดูว่าแสดงผลใน FO ถูกต้อง
 
 #### 3.4.4 Article Categories Management
-จัดการ Category ที่ใช้กรองบทความบน FO:
-| Category | แสดงใน FO ที่ |
-|---|---|
-| Watch Brands | เมนู Board > Watch Brands |
-| Watch 101 | เมนู Board > Watch 101 |
-| Watch Apparel | เมนู Board > Watch Apparel |
-| Watch Events | เมนู Board > Watch Events |
-| Watch Market | หมวด Market ใน Board |
-| Journal Board | หมวด Journal Board ใน Board |
-| Trending Now | Section "Trending Now" บนหน้าหลัก Board |
+Category เป็น master data ที่จัดการจาก `Content Management > Categories` และ map ตรงกับ FO `cat` tag ตาม magazine model ของ `FrontOffice/12_BOARD_MODULE.md` — `cat` เป็น curated tag ไม่ใช่ strict enum (`BD_CATEGORIES` เป็น pill/sheet options สำหรับ filter ส่วนบทความจริงมี `cat` กว้างกว่า เช่น `Featured`, `Watch Trends`, `Rolex`, `Collector`, `Industry`, `Guides`, `Market Watch`, `Technical`); fixed 7-category taxonomy เดิม (Watch Brands / Watch 101 / Watch Apparel / Watch Events / Watch Market / Journal Board / Trending Now) ถูก FO magazine model supersede แล้ว (FO deviation D1 — ตัดสิน 2026-11-02 FO-BO-001 GAP-02)
+
+- Active category แสดงใน FO filter/section และเป็นตัวเลือกใน Add/Edit Article
+- Inactive category ไม่แสดงใน FO และไม่เป็นตัวเลือกสำหรับบทความใหม่หรือบทความที่กำลังแก้ไข
+- Category name ที่ BO กำหนดต้องตรงกับ `cat` value ที่ FO render บน article card, filter pill และ category page
+- Trending Now, Main Hero และ Journal Board preview ไม่ใช่ category — เลือกบทความอัตโนมัติจาก eligible article pool ตาม section 3.4
+- รายละเอียด flow เต็ม: `05_CONTENT_BOARD_MODULE.md` section 12
 
 ---
 
