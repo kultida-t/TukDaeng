@@ -13462,6 +13462,7 @@
       commentOff: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.9 4.3A8.4 8.4 0 0 1 12.5 3a8.48 8.48 0 0 1 8 8v.5a8.38 8.38 0 0 1-.9 3.8"/><path d="M15.3 15.3a8.5 8.5 0 0 1-5.8 2.2 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 3-6.4"/><path d="m2 2 20 20"/></svg>`,
       history: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>`,
       pinPost: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16h14v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"/></svg>`,
+      pinPostOff: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16h14v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"/><path d="m2 2 20 20"/></svg>`,
       moon: (s = 21) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>`,
       sun: (s = 21) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>`,
       personCheck: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="m17 11 2 2 4-4"/></svg>`,
@@ -14341,10 +14342,10 @@
     <div class="sheet-handle"></div>
     <div class="pm-card">
       <button class="pm-row pm-own-archive">${I.history(20)}<span>${p.archived ? (isTh ? "ยกเลิกการเก็บถาวร" : "Unarchive") : (isTh ? "จัดเก็บถาวร" : "Archive")}</span></button>
-      <button class="pm-row pm-own-nocomm">${I.commentOff(20)}<span>${p.noComments ? (isTh ? "เปิดความคิดเห็น" : "Turn on commenting") : (isTh ? "ปิดความคิดเห็น" : "Turn off commenting")}</span></button>
+      <button class="pm-row pm-own-nocomm">${p.noComments ? I.comment(20) : I.commentOff(20)}<span>${p.noComments ? (isTh ? "เปิดความคิดเห็น" : "Turn on commenting") : (isTh ? "ปิดความคิดเห็น" : "Turn off commenting")}</span></button>
       ${isSold ? `<button class="pm-row pm-own-soldview">${I.checkCir(20)}<span>${isTh ? "ดูประวัติการขาย" : "View sale record"}</span></button>` : `<button class="pm-row pm-own-edit">${I.pen(20)}<span>${isTh ? "แก้ไข" : "Edit"}</span></button>`}
       ${sellable ? `<button class="pm-row pm-own-sold">${I.checkCir(20)}<span>${isTh ? "บันทึกการขาย" : "Mark as sold"}</span></button>` : ""}
-      <button class="pm-row pm-own-pin">${I.pinPost(20)}<span>${p.pins && p.pins[tab] ? (isTh ? "ถอนหมุดออกจากกริด" : "Unpin from grid") : (isTh ? "ปักหมุดไว้ด้านบนสุดของกริด" : "Pin to top of grid")}</span></button>
+      <button class="pm-row pm-own-pin">${p.pins && p.pins[tab] ? I.pinPostOff(20) : I.pinPost(20)}<span>${p.pins && p.pins[tab] ? (isTh ? "ถอนหมุดออกจากกริด" : "Unpin from grid") : (isTh ? "ปักหมุดไว้ด้านบนสุดของกริด" : "Pin to top of grid")}</span></button>
       <button class="pm-row danger pm-own-del">${I.trash(20)}<span>${isTh ? "ลบ" : "Delete"}</span></button>
     </div>`;
     }
@@ -20304,6 +20305,32 @@
       "Sellers must guarantee the authenticity of luxury watches listed on the platform. Misleading descriptions, counterfeit goods, or falsified papers are strictly prohibited.": "ผู้ขายต้องรับรองความเป็นของแท้ของนาฬิกาหรูที่ลงขายบนแพลตฟอร์ม ห้ามใช้คำอธิบายที่ทำให้เข้าใจผิด สินค้าปลอม หรือเอกสารปลอมโดยเด็ดขาด",
       "3. Termination & Deactivation": "3. การยกเลิกและการปิดใช้งาน",
       "We reserve the right to suspend or terminate accounts that violate safety rules, spam other members, or engage in fraudulent activities.": "เราขอสงวนสิทธิ์ระงับหรือยกเลิกบัญชีที่ละเมิดกฎความปลอดภัย สแปมสมาชิกอื่น หรือมีส่วนร่วมในกิจกรรมหลอกลวง",
+      /* FO-LANG-FINISH — LANG-045 outstanding: leftovers found by the TH-mode sweep.
+         TH wording follows spec 10 (watch-alert modes / Any new listing) and
+         existing inline isTh strings (Items you asked about, My Assets=ลิ้นชัก) */
+      "Switch theme": "สลับธีม", "Scan QR": "สแกนคิวอาร์โค้ด", "Download": "ดาวน์โหลด",
+      "Point your camera at a QR code": "หันกล้องไปที่คิวอาร์โค้ด", "View post": "ดูโพสต์",
+      "No articles in this category": "ไม่มีบทความในหมวดนี้",
+      "No listings found": "ไม่พบรายการประกาศ", "No asked items found": "ไม่พบสินค้าที่เคยสอบถาม",
+      "Items you asked about": "สินค้าที่คุณเคยสอบถาม", "October 2569 BE": "ต.ค. 2569",
+      "Remove follower?": "นำผู้ติดตามคนนี้ออกหรือไม่?",
+      "Clip shared to feed ✓": "แชร์คลิปไปยังฟีดเรียบร้อย ✓",
+      "Posted · shared to feed + My Assets ✓": "โพสต์แล้ว · แชร์ไปยังฟีด + ลิ้นชักเรียบร้อย ✓",
+      "Post archived": "เก็บโพสต์เข้าคลังแล้ว", "Post unarchived": "นำโพสต์ออกจากคลังแล้ว",
+      "Commenting turned off": "ปิดความคิดเห็นแล้ว", "Commenting turned on": "เปิดความคิดเห็นแล้ว",
+      "Pin limit reached": "ถึงขีดจำกัดการปักหมุด",
+      "Are you sure you want to pin this post? You can only pin up to three posts to your grid. Pinning this post will replace your oldest pinned post.": "ต้องการปักหมุดโพสต์นี้หรือไม่? ปักหมุดได้สูงสุด 3 โพสต์บนกริดของคุณ การปักหมุดโพสต์นี้จะแทนที่โพสต์ที่ปักหมุดไว้เก่าสุด",
+      "Delete post?": "ลบโพสต์หรือไม่?", "This post will be permanently deleted.": "โพสต์นี้จะถูกลบถาวร",
+      "Pinning...": "กำลังปักหมุด...", "Unpinning...": "กำลังเลิกปักหมุด...",
+      "Your post has been pinned": "ปักหมุดโพสต์ของคุณแล้ว", "Your post has been unpinned": "เลิกปักหมุดโพสต์ของคุณแล้ว",
+      "Match all criteria": "ตรงทุกเงื่อนไข", "Match any criteria": "ตรงเงื่อนไขใดเงื่อนไขหนึ่ง", "Model only": "เฉพาะรุ่น",
+      "Match all": "ตรงทุกเงื่อนไข", "Match any": "ตรงเงื่อนไขใดเงื่อนไขหนึ่ง",
+      "Alert me only when a post matches every field below": "แจ้งเตือนเฉพาะเมื่อโพสต์ตรงทุกช่องด้านล่าง",
+      "Alert me when a post matches at least one field — can get noisy": "แจ้งเตือนเมื่อโพสต์ตรงอย่างน้อยหนึ่งช่อง — อาจแจ้งเตือนบ่อย",
+      "Just the brand, model and reference — ignore the rest": "เฉพาะแบรนด์ รุ่น และเลขรุ่น — ไม่สนใจช่องอื่น",
+      "Any new listing": "ทุกรายการใหม่", "Untitled asset": "สินค้าไม่มีชื่อ",
+      "Search brands, references or collectors.": "ค้นหาแบรนด์ เลขรุ่น หรือนักสะสม",
+      "Shared photo": "รูปที่แชร์", "Media thumbnail": "รูปย่อสื่อ", "Chat media": "สื่อในแชท",
     };
     /* spec VALUES are translated per word, but only inside rows whose label is in this set
        (so Brand / Model / Reference / Calibre stay exactly as entered) */
@@ -20370,6 +20397,7 @@
       if ((m = t.match(/^Are you sure you want to report (.+)\?$/))) return `ต้องการรายงาน ${m[1]} หรือไม่?`;
       if ((m = t.match(/^Saved to (.+)$/))) return `บันทึกลง ${m[1]}`;
       if ((m = t.match(/^Removed from (.+)$/))) return `นำออกจาก ${m[1]}`;
+      if ((m = t.match(/^We won't let (.+) know you removed them from your followers\.$/))) return `เราจะไม่แจ้งให้ ${m[1]} ทราบว่าคุณนำพวกเขาออกจากผู้ติดตามแล้ว`;
       if ((m = t.match(/^Added to (.+)$/))) return `เพิ่มลง ${m[1]}`;
       if ((m = t.match(/^Moved to (.+)$/))) return `ย้ายไป ${m[1]}`;
       if ((m = t.match(/^Sent to (.+)$/))) return `ส่งให้ ${m[1]}`;
@@ -20398,7 +20426,7 @@
       }
       return null;
     }
-    const I18N_ATTRS = ["placeholder", "title", "aria-label"];
+    const I18N_ATTRS = ["placeholder", "title", "aria-label", "alt"];
     function i18nNode(node, th) {
       if (node.nodeType === 3) {
         const p = node.parentElement;
@@ -20466,6 +20494,9 @@
           if (item) item.textContent = text;
         }
       });
+
+      // theme toggle lives outside #stage — outside the MutationObserver's reach
+      themeToggle.title = isTh ? "สลับธีม" : "Switch theme";
 
       // 2. Feed Tabs & Brand Menu
       document.querySelectorAll(".feed-tab[data-tab='all'], .bm-item[data-tab='all']").forEach(el => {
@@ -20568,6 +20599,7 @@
       render();
     });
     themeToggle.textContent = state.theme === "dark" ? "☾" : "☀";
+    themeToggle.title = state.lang === "th" ? "สลับธีม" : "Switch theme";
 
     try {
       const raw = localStorage.getItem("fo_newpost");
