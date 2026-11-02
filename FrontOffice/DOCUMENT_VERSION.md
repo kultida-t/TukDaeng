@@ -1,7 +1,7 @@
 # TukDaeng Document Version
 
-**Current Baseline Version:** `FO-PRD-v1.9`
-**Release Date:** 2026-10-22
+**Current Baseline Version:** `FO-PRD-v1.10`
+**Release Date:** 2026-10-30
 **Branch:** `docs-frontoffice-spec-updates`  
 **Status:** Product-reviewed baseline update for Dev / QA
 
@@ -28,11 +28,20 @@ FO-PRD-vX.Y
 
 # 2. Current Baseline Scope
 
+`FO-PRD-v1.10` covers all of `FO-PRD-v1.9` and syncs first-run consent copy + Analytics gating (แนวทางแก้ FO-AUTH consent):
+
+- Privacy Notice: คำอธิบายจาก cookies/SDK เปลี่ยนเป็น "เก็บข้อมูลบางส่วนบนอุปกรณ์และเซิร์ฟเวอร์" และเพิ่มประโยคไม่ติดตามกิจกรรมข้ามแอป/เว็บ และไม่แชร์ข้อมูลให้ผู้ลงโฆษณาหรือ data broker (`01_AUTHENTICATION_MODULE.md` step 4, `00_GLOBAL_RULES_MODULE.md` Consent Model)
+- ปุ่มและหน้า `Cookie settings` เปลี่ยนเป็น `Privacy settings` (TH `ตั้งค่าความเป็นส่วนตัว`) ใน prototype, spec, QA และ test cases — layout และจำนวนปุ่มไม่เปลี่ยน; หน้า Settings > Privacy & cookies ไม่แตะ
+- Track prompt copy เปลี่ยนเป็นการใช้กิจกรรมใน TukDaeng เพื่อแนะนำนาฬิกาและข่าวสารเท่านั้น ไม่ติดตามข้ามแอป/เว็บอื่น
+- เพิ่ม AC-AUTH-031: Analytics = off (Reject all หรือ Privacy settings) ต้องไม่ส่ง analytics event ทุกตัว รวม search event และ `auth_*` event; consent record ยังบันทึกได้ — enforce ที่ build stg/app จริง (prototype ไม่มี analytics pipeline จึงไม่มีพฤติกรรมให้ทดสอบบน prototype)
+- ปรับ test ให้ตรง: `FO-TEST-001-01-auth` / checklist (AUTH-009, 011, 012, 014, 015, 016, 020, 060), `FO-TEST-001-19-lang-theme` (LANG-002), `FO-TEST-001-00-inventory`, `QA_TEST_SCENARIO_CHECKLIST` (QA-AUTH-001 + consent expected)
+- ไม่เปลี่ยน ATT / Info.plist / backend / DB; ไม่เปลี่ยน logic ของปุ่ม Reject all ใน prototype (ยังเก็บ consent record เท่านั้น)
+
 `FO-PRD-v1.9` covers all of `FO-PRD-v1.8` and re-baselines the entire Front Office spec set to the locked `Prototypes/fo-flow/index.html` prototype (mission "Sync FrontOffice Spec ให้ตรง fo-flow Prototype", spec changes FSP-006–027 — canonical decisions อยู่ใน `TukDaeng_Master_Product_Definition.md` §16 Sync Decision Log S-01–S-29 + sign-off `deliverables/fo-spec-sync/FSP-005-consolidated-gap-signoff.md`):
 
 - Source-of-truth rule: `Prototypes/fo-flow/index.html` (locked) เป็น source of truth เดียวของพฤติกรรม — module specs ทุกเล่ม cite prototype anchors; พฤติกรรมที่เป็น production contract แต่ prototype ไม่ครอบ mark เป็น `(contract — prototype ไม่ครอบ)`; audit trail = gap files `gap-FSP-001a`–`FSP-004` + consolidated sign-off ใน `deliverables/fo-spec-sync/`
 - Removed scope: ลบ `08_OFFER_MODULE.md` ทั้งไฟล์ + offer refs ทั้งหมดนอก/ใน module specs (`Make Offer`, `Incoming Offers`, `Offer Card`, offer lifecycle/notification, `QA-OFFER-*`, `UC-*` offer cases → live refs เหลือ 0); ลบ `Figma_Gap_Checklist_Against_Master.md` + `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md` + Figma Gap sections/refs ทุกเอกสาร (Figma ไม่ใช่ source of truth); ตัด provenance/consignment entities ทั้งระบบ (S-25 — เก็บเฉพาะ owner-private `Purchase Price`/`Purchase Date`)
-- Canonical replacements: Global Login Required Dialog → Member Sheet `Join TukDaeng` (scrim-dismiss, คง surface); Notification Center → **Alerts feed** 5 types (`like`/`comment`/`follow`/`watch`/`system` — S-17); `Price on request` ตัด (empty price = showcase); `Hide this asset` แยกเป็น owner `Hide` status vs viewer `Not interested`; `Total Asset Value` → `Total invested` (S-15); `Contact Seller`/offer-era → `Ask Seller` บน sale post เท่านั้น; WA Result List → Post Viewer ตรง (S-08)
+- Canonical replacements: Global Login Required Dialog → Member Sheet `Join TukDaeng` (scrim-dismiss, คง surface); Notification Center → **Alerts feed** 4 types (`like`/`comment`/`follow`/`watch` — `system` ถูกถอนออกตาม DEC-41, supersede S-17); `Price on request` ตัด (empty price = showcase); `Hide this asset` แยกเป็น owner `Hide` status vs viewer `Not interested`; `Total Asset Value` → `Total invested` (S-15); `Contact Seller`/offer-era → `Ask Seller` บน sale post เท่านั้น; WA Result List → Post Viewer ตรง (S-08)
 - Feed/composer model: feed post-centric (`sale`+`showcase`+plain post — S-09); composer asset mode required เดียว = media ≥1 (ไม่มี required matrix/multi-step form/autocomplete); Sale Record = ราคา+วันที่ 2 ฟิลด์; ไม่มี infinite scroll/load-more
 - Social/chat: chat thread key = `user+item` (S-07); like/favorites/interested = 3 ระบบแยก; like count private (S-26); share member-only (S-03); comment sheet เปิดได้ทุก surface + emoji quick-react (S-12)
 - Profile/portfolio/settings/board: profile tabs 5 (ทั้งหมด/ขาย/โชว์/ซ่อน/ขายแล้ว) + viewer เห็น sale/show; blocked profile IG keep-page (S-13); portfolio invested-centric + guest unreachable; settings IG 6 sections (S-05) + delete account 2-page login-to-restore (S-02/S-27); board editorial magazine (S-01); hamburger drawer 9 placeholders (S-19)
@@ -157,6 +166,6 @@ Baseline scope หลักยังครอบคลุม:
 When sending documents to Dev, include both:
 
 - Branch: `docs-frontoffice-spec-updates`
-- Version: `FO-PRD-v1.9`
+- Version: `FO-PRD-v1.10`
 
 If Dev reports a gap or builds against this baseline, ask them to cite the version number in their response.

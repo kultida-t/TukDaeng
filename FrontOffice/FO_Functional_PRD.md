@@ -3,7 +3,7 @@
 **FO Functional PRD v2.0**  
 **Document:** Project Vision & Confirmed Requirements Summary
 
-> **Sync note (FO-PRD-v1.9, 2026-10-22):** เอกสารนี้ sync ตาม `Prototypes/fo-flow/index.html` + master §16 Sync Decision Log — feed post-centric (S-09), Member Sheet แทน Global Login Required Dialog, Alerts feed 5 types (+`system`), thread chat key = user+item (S-07), Sale Record 2 ฟิลด์ (D3) — จุดที่ขัด master/module spec ให้ยึด master/module spec เสมอ
+> **Sync note (FO-PRD-v1.9, 2026-10-22):** เอกสารนี้ sync ตาม `Prototypes/fo-flow/index.html` + master §16 Sync Decision Log — feed post-centric (S-09), Member Sheet แทน Global Login Required Dialog, Alerts feed 4 types (`system` ถูกถอนออกตาม DEC-41), thread chat key = user+item (S-07), Sale Record 2 ฟิลด์ (D3) — จุดที่ขัด master/module spec ให้ยึด master/module spec เสมอ
 
 ## 1. เป้าหมายของแอปพลิเคชัน
 
@@ -253,13 +253,12 @@ Guest กด Feature ที่ต้อง Login ให้ใช้ sheet `Join 
 
 ## 13. Notification Module (Alerts feed)
 
-Notification รองรับ 5 types:
+Notification รองรับ 4 types:
 
 - Like
 - Comment
 - Follow
 - Watch Alert
-- `system` (placeholder destination — S-17)
 
 ### Notification Destination
 
@@ -269,7 +268,6 @@ Notification รองรับ 5 types:
 | Like Notification | เปิด Post Viewer |
 | Comment Notification | เปิด Post Viewer และ Focus Comment |
 | Follow Notification | เปิด Public Profile + inline Follow back |
-| `system` | placeholder destination (S-17) |
 
 ## 14. Social Module
 

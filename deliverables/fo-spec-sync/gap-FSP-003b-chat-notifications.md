@@ -53,7 +53,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — chatPopHTML ~134
 
 ### A8. Alerts feed = IG activity list (ไม่ใช่ notification list เรียบ ๆ)
 - Seed `ALERTS`: types = `like` (multi-user aggregate `X, Y และคนอื่น ๆ อีก N คน` + avatar stack + post thumb), `comment` (user + text + thumb), `follow` (+ **inline `Follow back/Following` button** + **dismiss `x` บน row**), `watch` (bell icon + seller avatar mini + name + price + thumb), **`system`** (icon + text `A new device just logged in…` — type นอก master baseline → ดู C11)
-- Group headers `Today / Yesterday / Last 7 days / Earlier` (i18n) + **`Mark all as read`** บน section แรก (spec มีแค่ mark-on-open) — sorting เป็น grouped-by-age ไม่ใช่ flat DESC list
+- Group headers `Today / Yesterday / Last 7 days / Earlier` (language) + **`Mark all as read`** บน section แรก (spec มีแค่ mark-on-open) — sorting เป็น grouped-by-age ไม่ใช่ flat DESC list
 - Read/unread: `.al-row.unread` + tap → unread=false + `alBadgeSync`; badge = nav pill รวม unread; dismiss x ลบ row ออกจาก list (follow เท่านั้น)
 - Empty copy จริง: `No alerts yet` / `Watch alerts, likes, comments and new followers will show up here.` — ไม่ใช่ `ไม่พบข้อมูล` (ดู C14)
 - Head = detail-head back→feed + title `แจ้งเตือน/Alerts`; ชื่อแท็บ nav = Alerts (ซ้ำประเด็น naming จาก 001b)
@@ -108,7 +108,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — chatPopHTML ~134
 | C6 | Block confirm `Block this user?` + Cancel/Block (AC-CHAT-026B + §9 flow) | `Block {user}?` sheet + Block เดียว (fromChat) + dismiss=backdrop | ตาม pattern เดียวกับ 003a C9 — เขียน spec เป็น IG sheet (แนะนำ) |
 | C7 | Guest กด Chat/Notification → Global Login Required Dialog (AC-CHAT-022/023, AC-NOTI-001) | `[data-navgo="chat"/"alerts"]` อยู่ใน GUEST_GATE_SEL → member sheet; guest เห็นแค่ icon (list/feed ว่างอยู่แล้วผ่าน chatInit/alInit guard) | พฤติกรรมตรง (gate ก่อนเข้าหน้า) แต่ dialog เป็น member sheet — ซ้ำประเด็น copy จาก 001a; guest เห็น: nav icon + badge ว่าง + ทุก chat action (ask-pill/chat-fab/report/block/mute) โดน gate |
 | C8 | Message types: Text, Image, File, **Asset Card**, **Offer Card** (AC-CHAT-011) | text + image/video + **post ref card**; ไม่มี File/Offer | File → spec-only contract; Asset Card → rename เป็น post ref card; Offer → removal list |
-| C9 | Mute toast `Notifications muted`/`unmuted` (§10 menu rule) | TH `ปิด/เปิดการแจ้งเตือนแล้ว` + mute state เดียวกันใช้ทั้ง swipe + menu button | copy ไม่ตรง — เขียน i18n pair ลง spec |
+| C9 | Mute toast `Notifications muted`/`unmuted` (§10 menu rule) | TH `ปิด/เปิดการแจ้งเตือนแล้ว` + mute state เดียวกันใช้ทั้ง swipe + menu button | copy ไม่ตรง — เขียน language pair ลง spec |
 | C10 | Empty copy `ไม่พบข้อมูล`/`No data found` (§14 ทั้ง chat + noti) | custom ทุกจุด: `No chats yet`/`Tap Ask…`, `No chats found`, `No item chats yet`, `No alerts yet`+desc, `Item not found` | copy ต่าง — รวมกับ gap เดิมของทุก module (empty copy ไม่เคยตรง spec ใน prototype) |
 | C11 | V1 types เฉพาะ Like/Comment/Follow/Offer/Watch Alert; type นอก baseline ห้ามแสดง (AC-NOTI-002/003) | มี `system` (`A new device just logged in…` → dead toast) + ไม่มี offer | `system` = prototype-only type → ตัดสิน: เก็บเป็น type ใหม่ (security) หรือตัดออก (001b flag ไว้แล้ว); offer → removal |
 | C12 | Watch Alert notif → **Result List เท่านั้น** ห้ามเปิด Asset Detail ตรง (AC-NOTI-007 + §10 WA rule) | เปิด post viewer ตรง (+solo header+Follow inject) | ซ้ำ 001b — model ไม่มี Result List; ต้องตัดสินว่า destination = post viewer (เขียน spec ใหม่) หรือสร้าง result list |

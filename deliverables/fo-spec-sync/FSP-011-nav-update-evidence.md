@@ -4,7 +4,7 @@ Date: 2026-10-21
 Task: `0837d9cc` — "FSP-011 อัปเดต 00_NAV — bottom nav + drawer + headers + deep link"
 Scope: `FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` เท่านั้น (ไฟล์เดียว) — sync ตาม `Prototypes/fo-flow/index.html` (read-only) + sign-off FSP-005 + baseline 00_GLOBAL (FSP-010)
 Gap sources: `gap-FSP-001b-nav.md` (nav/drawer/shell), `gap-FSP-002a-feed-search.md` (feed card → detail/viewer, search header entry), `gap-FSP-003b-chat-notifications.md` (alerts destinations)
-Prototype anchors verified: `botNavHTML` ~16788–16800, feed shell + drawer ~19352–19394, drawer i18n ~19683–19698, `openSub`/`pushSub`/`renderSub`/`subBack`/`rpPush`/`rpBack`/`rpClose` ~14783–14945, `subHTML` route table ~17151–17583, `alertsClick` ~17776–17825, `navGo` wiring ~21284–21302, `sub-back`/`sub-x` handlers ~20750–20782, `pv-back` ~21206, `detail-back` ~21811, `view-full` → detail ~21849–21858, `GUEST_GATE_SEL` ~22997–23011
+Prototype anchors verified: `botNavHTML` ~16788–16800, feed shell + drawer ~19352–19394, drawer language ~19683–19698, `openSub`/`pushSub`/`renderSub`/`subBack`/`rpPush`/`rpBack`/`rpClose` ~14783–14945, `subHTML` route table ~17151–17583, `alertsClick` ~17776–17825, `navGo` wiring ~21284–21302, `sub-back`/`sub-x` handlers ~20750–20782, `pv-back` ~21206, `detail-back` ~21811, `view-full` → detail ~21849–21858, `GUEST_GATE_SEL` ~22997–23011
 
 ## 1. Sign-off decisions applied
 

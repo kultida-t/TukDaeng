@@ -1,6 +1,6 @@
 # 12 Board Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng` + guest capabilities), §13 (report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.3 (bottom nav / `Boards` tab), §6.6 (route map `board`/`boardsearch`/`boardall`/`boardart:{id}`), §6.7 (in-app back), §7 (entry matrix), §9 (gate routing), §10 (unavailable fallback), §12 (deep link contract — S-29), §13 (back + main nav after deep link) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) §11 (`shareSheetHTML` canonical — board share reuse) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (Alerts feed canonical — board actions ไม่สร้าง alert) + [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) (report type `Board Content` contract — synced FSP-031, ดู §19) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng` + guest capabilities), §13 (report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.3 (bottom nav / `Boards` tab), §6.6 (route map `board`/`boardsearch`/`boardall`/`boardart:{id}`), §6.7 (in-app back), §7 (entry matrix), §9 (gate routing), §10 (unavailable fallback), §12 (deep link contract — S-29), §13 (back + main nav after deep link) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) §11 (`shareSheetHTML` canonical — board share reuse) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (Alerts feed canonical — board actions ไม่สร้าง alert) + [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) (report type `Board Content` contract — synced FSP-031, ดู §19) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -9,7 +9,7 @@
 | Field | Detail |
 | --- | --- |
 | Module Name | Board — editorial magazine (hero featured + Latest Articles + category filter + article search + article detail) |
-| Version | 1.9 (FO-PRD-v1.9 spec-sync FSP-023) |
+| Version | 1.10 (baseline FO-PRD-v1.10 · spec-synced FO-PRD-v1.9 FSP-023) |
 | Status | Functional PRD — synced to fo-flow prototype |
 | Owner | Tuk Daeng Project |
 | Document Type | Front Office Functional PRD |
@@ -43,7 +43,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Search input: `.bd-q` `input` event → `bdQ = value` + `boardSearchSync` (~20224 — live filter ไม่มี submit/debounce)
 - Guest gate: `GUEST_GATE_SEL` (~23362–23371) รวม `[data-bdlike]`, `[data-bdsave]`, `[data-bdshare]`, `[data-bdact='share']`, `[data-bdact='save']`, `[data-bdact='report']` → gate check บรรทัดแรกของ stage listener (~20395) → `obGate()` Member Sheet ก่อน `boardClick` ทำงาน
 - Session: `applySessionData`/`clearUserData`/`restoreUserData`/`POST_FLAG_KEYS` (~23297–23351) — **ไม่แตะ `BOARD`** (article `liked`/`saved` ไม่ reset ข้าม session — deviation D8)
-- i18n: `isTh` ternary ใน markup + `I18N_TH` dict (board block ~19695 — `Board`→`กระดานข่าว`, `Categories`→`หมวดหู่`, cat names, `You're all caught up`→`คุณดูครบทั้งหมดแล้ว`, `Article not found`→`ไม่พบบทความ`, `This article is no longer available.`→`บทความนี้ไม่มีให้บริการแล้ว`, `Author`/`Date`/`Close`/`Like`/`Share`) + `i18nTr` patterns (~19785 `{n} min read · {ago}` → `อ่าน {n} นาที · {th-ago}`, date `Oct 28, 2024` → `28 ต.ค. 2567` พ.ศ.) + `setLang` board re-render (~19903–19911 — `.bd-sec h3`/`.bd-viewall`/`.bd-hero-btn`/`.bd-q` placeholder)
+- language: `isTh` ternary ใน markup + `I18N_TH` dict (board block ~19695 — `Board`→`กระดานข่าว`, `Categories`→`หมวดหู่`, cat names, `You're all caught up`→`คุณดูครบทั้งหมดแล้ว`, `Article not found`→`ไม่พบบทความ`, `This article is no longer available.`→`บทความนี้ไม่มีให้บริการแล้ว`, `Author`/`Date`/`Close`/`Like`/`Share`) + `i18nTr` patterns (~19785 `{n} min read · {ago}` → `อ่าน {n} นาที · {th-ago}`, date `Oct 28, 2024` → `28 ต.ค. 2567` พ.ศ.) + `setLang` board re-render (~19903–19911 — `.bd-sec h3`/`.bd-viewall`/`.bd-hero-btn`/`.bd-q` placeholder)
 - Shared deps: `shareSheetHTML` (canonical [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) §11), `openSheet` variants `pm`/`sh`, `scrToast` (1.8s), `chEmptyHTML` (~17902 — shared 07_CHAT), `sub-back`/`rpPush`/`rpBack`/`pushSub` (canonical 00_NAV §6.7), `esc`, `I.*` icon set
 
 ---
@@ -77,7 +77,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Article Detail (`boardart:{id}`) — floating nav pill (back + like/share), author meta, cover, body, tags
 - Article like toggle (`data-bdlike`) + article share (`data-bdshare` → `shareSheetHTML` shared, canonical 11)
 - Guest gating ตาม `GUEST_GATE_SEL` → Member Sheet `Join TukDaeng`
-- i18n coverage (isTh ternary + `I18N_TH` dict + `i18nTr` patterns)
+- language coverage (isTh ternary + `I18N_TH` dict + `i18nTr` patterns)
 - Dead-code boundary (`data-bdmore`/`data-bdsave`/`data-bdact`/`bdJournal`/`bdStepSlide`/`.bd-dfoot-sub`/`data-bdclear`-in-practice — §19)
 
 ## Out of Scope For V1
@@ -91,7 +91,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Trending/ranking algorithm
 - Publish-state / deleted-state simulation (prototype render ทุกบทความเสมอ)
 - BO article authoring detail (canonical 18_ADMIN_SCOPE_NOTE)
-- Article content i18n (BOARD seed เป็น EN editorial content — translation contract อยู่ CMS/BO)
+- Article content language (BOARD seed เป็น EN editorial content — translation contract อยู่ CMS/BO)
 
 ## Report Board Content Boundary
 
@@ -127,7 +127,7 @@ Entry notes:
 - เปิด tab `กระดานข่าว`/`Boards` + อ่านทุก surface ได้เสรี (Boards tab **ไม่อยู่**ใน gate — 00_GLOBAL §11 guest capabilities)
 - ใช้ hero carousel, View all, category pills, Categories sheet, search page, open article ได้ครบ (read-only browsing)
 - กด `[data-bdlike]` / `[data-bdshare]` (และ dead entries `[data-bdsave]`/`[data-bdact]`) → Member Sheet `Join TukDaeng` gate mode (scrim dismiss ได้ — 00_GLOBAL §11)
-- หมายเหตุ quirk: article `liked` state ค้างข้าม session (D8) — guest อาจเห็นหัวใจ `.on` จาก session member ก่อนหน้าแต่กดไม่ได้
+- like ของบทความเป็น per-user (DEC-25) — guest ไม่เห็นสถานะ like ของ session อื่นแต่กดไม่ได้
 
 ## Member
 
@@ -136,7 +136,7 @@ Entry notes:
 
 ## New Member (session `new`)
 
-- Member powers ทั้งหมด; `BOARD` flags เริ่มจาก seed (`liked:false`/`saved:false`) — แต่ session switch ไม่ reset (D8)
+- Member powers ทั้งหมด; `liked` เก็บต่อบัญชี (DEC-25) session switch ไม่ทำให้ค่าของบัญชีอื่นรั่ว
 
 ## Admin
 
@@ -155,9 +155,9 @@ Entry notes:
 | `title` | string (EN) | hero h2, card/row title, detail h1, search corpus |
 | `sub` | string? | hero sub + detail callout (fallback `title`); search corpus |
 | `img` | path | hero bg, card/row thumb, detail cover |
-| `min` | int | meta `{n} min read` (i18n → `อ่าน {n} นาที`) |
-| `ago` | string | meta `{ago}` (i18n `formatPostTime` → TH) |
-| `date` | `Oct 28, 2024` | detail author row `Date` (i18n → พ.ศ.) |
+| `min` | int | meta `{n} min read` (language → `อ่าน {n} นาที`) |
+| `ago` | string | meta `{ago}` (language `formatPostTime` → TH) |
+| `date` | `Oct 28, 2024` | detail author row `Date` (language → พ.ศ.) |
 | `likes` | int | card meta `N likes` + detail `data-bdlike-count` |
 | `feat` | int 1–5? | hero slide order — absent = Latest list |
 | `author` | `"Tuk Daeng Editorial"` (injected) | data only — detail แสดง hardcode `Tuk Daeng` + `td-editorial.png` avatar |
@@ -174,7 +174,7 @@ Entry notes:
 | --- | --- | --- |
 | `bdQ` | search query string | reset `""` เมื่อเปิด board tab (`navgo`) หรือกด `data-bdsearch`; persist ตลอด session |
 | `bdFilterCat` | active category (`"All"` default) | reset `All` เมื่อกด `data-bdall` เท่านั้น — เลือกผ่าน sheet (`data-bdmenu-cat`) จะ persist ไป `boardall`; **ไม่ reset** เมื่อเปิด board ใหม่ |
-| `a.liked`/`a.saved` | per-article viewer flags | **ไม่ reset ข้าม session** — ไม่อยู่ใน `POST_FLAG_KEYS`/`clearUserData` (D8) |
+| `a.liked` | per-user like (DEC-25) | เก็บกับบัญชี sync ข้ามเครื่อง |
 
 ## Filter/search semantics
 
@@ -187,7 +187,7 @@ Entry notes:
 
 Anatomy (บนลงล่างใน `.bd-scroll`):
 
-1. `bd-head` — burger `data-bdmenu` (title `Categories`) + brand `TUK DAENG | Board` (i18n `| กระดานข่าว`) + search icon `data-bdsearch`
+1. `bd-head` — burger `data-bdmenu` (title `Categories`) + brand `TUK DAENG | Board` (language `| กระดานข่าว`) + search icon `data-bdsearch`
 2. Hero carousel `.bd-carousel-wrap` — `.bd-carousel` scroll-snap x mandatory ของ `bdFeatured()` (≤ `BD_FEAT_MAX` = 5 slides, sort `feat`):
    - `.bd-slide` = bg image + `.bd-hero-tag` (`a.cat` — fallback `FEATURED`/`แนะนำ`) + h2 title + p sub (fallback title) + `Read more`/`อ่านต่อ` button — ทั้ง slide และปุ่มเป็น `data-bdart`
    - `.bd-dots` — `data-bddot` ต่อ slide, active = slide ปัจจุบัน (`bdCarouselScroll` sync จาก scrollLeft), tap dot → `bdGoSlide` smooth scroll
@@ -232,7 +232,7 @@ Anatomy:
 
 # 12. Article Detail (`boardart:{id}`)
 
-Lookup `bdGet(id)` — id ไม่เจอ → `chEmptyHTML("Article not found", "This article is no longer available.")` (i18n dict → `ไม่พบบทความ` + `บทความนี้ไม่มีให้บริการแล้ว`; **ไม่แยก** unpublished/deleted/invalid — contract matrix อยู่ §13)
+Lookup `bdGet(id)` — id ไม่เจอ → `chEmptyHTML("Article not found", "This article is no longer available.")` (TH dict → `ไม่พบบทความ` + `บทความนี้ไม่มีให้บริการแล้ว`; **ไม่แยก** unpublished/deleted/invalid — contract matrix อยู่ §13)
 
 Anatomy (`.bd-dscroll` — ไม่มี bottom nav):
 
@@ -247,7 +247,7 @@ Anatomy (`.bd-dscroll` — ไม่มี bottom nav):
 - Toggle `a.liked` + `a.likes ±1` — sync ทุก `[data-bdlike]` ใน screen (class `.on` + ลูก `span` count) + ทุก `[data-bdlike-count]` + `.bd-dfoot-sub` (**dead query** — ไม่มี element นี้ใน markup, D10)
 - 1 user = 1 like ต่อบทความ (flag-based toggle — ไม่มี multi-like)
 - ไม่มี liked-by strip, likes sheet, หรือ unlike confirm — article like ไม่ใช่ post like (boundary 11 §5)
-- Guest → Member Sheet (§14); like state persist ข้าม session switch (D8)
+- Guest → Member Sheet (§14); like state เป็น per-user (DEC-25)
 
 ## Article Share (`data-bdshare`)
 
@@ -268,7 +268,7 @@ Anatomy (`.bd-dscroll` — ไม่มี bottom nav):
 - Submit → Trust & Safety report type `Board Content` + target type `Article` → success `Report submitted` + `Our team will review it. This article will remain visible until moderation is complete.` + `Done`; duplicate `You already reported this article.`; API fail `Unable to submit report. Please try again.`
 - Article ต้องคงแสดงหลัง report จน moderation เสร็จ; ห้ามแสดง `Hide article`/`Hide this asset from feed?` ใน success state
 - Guest report entry → Member Sheet (00_GLOBAL §11 — report ทุกประเภท gated)
-- Prototype ที่มีจริง: เฉพาะ dead-path toast `Report submitted. Thank you for notifying us.` บน `data-bdact='report'` — copy นี้ **ไม่ใช่** contract copy (ต่างจาก social `Report submitted · thanks for letting us know` ด้วย — i18n/copy sweep FSP-026)
+- Prototype ที่มีจริง: เฉพาะ dead-path toast `Report submitted. Thank you for notifying us.` บน `data-bdact='report'` — copy นี้ **ไม่ใช่** contract copy (ต่างจาก social `Report submitted · thanks for letting us know` ด้วย — language/copy sweep FSP-026)
 
 ## Article Deep Link & Availability (contract — 00_NAV §10/§12/§13)
 
@@ -342,7 +342,7 @@ Article Detail
 
 ---
 
-# 16. i18n & Copy Rules
+# 16. Language & Copy Rules
 
 แหล่ง TH สามชั้น (I18N-001 — canonical translator ใน prototype, spec นี้คุมเฉพาะ coverage ของ board):
 
@@ -353,7 +353,7 @@ Article Detail
 | `i18nTr` patterns | `{n} min read · {ago}` → `อ่าน {n} นาที · {th-ago}`; `Oct 28, 2024` → `28 ต.ค. 2567` (พ.ศ.); `{ago}` → TH relative |
 | `setLang` board re-render | `.bd-sec h3`, `.bd-viewall span`, `.bd-hero-btn span`, `.bd-q` placeholder (~19903–19911) |
 
-**EN-only leftovers (deviation D12 — i18n sweep FSP-026):** `No articles in this category`, `{n} likes` บน card meta, tag chips, Categories-sheet row labels (`Save to Favorites`/`Remove from Saved`/`Share Article`/`Copy Link`/`Report Article`/`Cancel` — dead path), toasts `Saved to favorites`/`Removed from favorites`/`Link copied`/`Report submitted. Thank you for notifying us.`, BOARD article content (title/sub/body = EN editorial content)
+**EN-only leftovers (deviation D12 — language sweep FSP-026):** `No articles in this category`, `{n} likes` บน card meta, tag chips, Categories-sheet row labels (`Save to Favorites`/`Remove from Saved`/`Share Article`/`Copy Link`/`Report Article`/`Cancel` — dead path), toasts `Saved to favorites`/`Removed from favorites`/`Link copied`/`Report submitted. Thank you for notifying us.`, BOARD article content (title/sub/body = EN editorial content)
 
 ---
 
@@ -391,11 +391,11 @@ Article Detail
 | D5 | Save Article | `data-bdsave` handler + `a.saved` + toasts มี แต่ไม่มีปุ่ม render | dead — Saved Article = future; ถ้า implement ต้องไม่ชนกับ post Saved hub (canonical 11 §12) |
 | D6 | `data-bdmore`/`data-bdact`/`data-bdclear` | menu+actions unreachable (no trigger element); clear-X ไม่เคย render เพราะ `bdQ` reset ทุก entry และ sync ไม่ re-add | dead/dead-in-practice — spec ไม่รองรับเส้นเหล่านี้ |
 | D7 | Category filter = substring | pill match `(cat+title).includes(cat)` — `Rolex` จับ `Feature More Rolex Collections` + title-match ด้วย | ไม่ใช่ strict enum — documented quirk (strict-match = future decision) |
-| D8 | Session flags | `clearUserData`/`restoreUserData` ไม่แตะ `BOARD` — `liked`/`saved` ค้างข้าม guest/new/member switch | deviation เดียวกับ 11 D7 — flag ให้ dev reset เพิ่ม |
+| D8 | Session flags (แก้แล้ว DEC-25) | like เป็น per-user ตั้งแต่ DEC-25 — ไม่ค้างข้าม session | — flag ให้ dev reset เพิ่ม |
 | D9 | Search × filter ไม่ combine | search page ครอบทุก `BOARD` เสมอ ไม่สน `bdFilterCat` | spec เดิมบอก "ทำงานร่วมกันได้" — ผิดตาม prototype |
 | D10 | Dead queries/helpers | `.bd-dfoot-sub` (like handler), `bdJournal()`, `bdStepSlide()` — ไม่มี element/caller | dead — ไม่ spec |
 | D11 | Unavailable-state copy | prototype dict `บทความนี้ไม่มีให้บริการแล้ว` + EN title `Article not found`/`ไม่พบบทความ` | contract TH `บทความนี้ไม่พร้อมใช้งานแล้ว` (00_NAV §10) — unify ใน FSP-026 sweep |
-| D12 | EN-only leftovers | ดู §16 — หลายสตริงไม่อยู่ใน dict/ternary | i18n sweep FSP-026 |
+| D12 | EN-only leftovers | ดู §16 — หลายสตริงไม่อยู่ใน dict/ternary | Language sweep FSP-026 |
 | D13 | Section-comment drift | code comment `hero + trending + Journal Board` (~18064) แต่ label จริง `Latest Articles` | comment drift เท่านั้น — spec ใช้ label จริง |
 | D14 | `bdFilterCat` persist | reset เฉพาะ `data-bdall`; กลับเข้า board ใหม่ filter ค้าง (home ไม่ใช้ filter อยู่แล้ว — กระทบเฉพาะ `boardall` re-entry ผ่าน sheet) | documented quirk |
 | D15 | Author display | `a.author`=`Tuk Daeng Editorial` แต่ UI hardcode `Tuk Daeng` + `td-editorial.png` | mock simplification — production ใช้ author field จริง |
@@ -495,7 +495,7 @@ And guest ต้อง browse home/list/search/article + ใช้ carousel/pill
 ## AC-BOARD-013: Article Not Found
 
 Given `boardart:{id}` ที่ id ไม่มีใน `BOARD`
-Then ต้องแสดง `Article not found`/`ไม่พบบทความ` + `This article is no longer available.`/`บทความนี้ไม่มีให้บริการแล้ว` (i18n dict) — ไม่ crash ไม่แสดงเนื้อหาค้าง
+Then ต้องแสดง `Article not found`/`ไม่พบบทความ` + `This article is no longer available.`/`บทความนี้ไม่มีให้บริการแล้ว` (TH dict) — ไม่ crash ไม่แสดงเนื้อหาค้าง
 
 ## AC-BOARD-014: Back Navigation
 
@@ -553,5 +553,20 @@ Then ต้องไม่มี reachable entry ไปยัง `data-bdmore` m
 - Trending/ranking algorithm
 - Article comment
 - Article content TH localization (CMS)
-- Session-flag reset สำหรับ `BOARD` (D8)
+- like เป็น per-user (DEC-25) ไม่ต้อง reset เพิ่ม
 - Search+category combined filtering (D9)
+
+
+## Contract updates — canonical lock 2026-10-29 (FO-TEST hardening)
+
+- boardsearch มีปุ่ม X (clear) ทำงานจริงในช่องค้นหา
+- หน้าบทความ V1 มีเฉพาะ back/like/share — ไม่มี save/bookmark/report/pagination (พบเพิ่ม = deviation)
+
+
+## DEC-25 Amendments — Board (IG)
+
+- Like ของบทความเป็น per-user: เก็บกับบัญชี sync ข้ามเครื่อง และคงอยู่ข้าม restart (แทน D8 ที่ค้างข้าม session)
+- Copy link สร้างลิงก์บทความที่เปิดได้จริง (deep link); guest เปิดได้โดยไม่ gate
+- บทความที่ไม่พบ → หน้า "Article not found / This article is no longer available." พร้อมปุ่มกลับ
+- Back จากการเปิดผ่าน deep link ที่ไม่มี history ตกที่ Feed
+- Tab-state และ re-tap ตาม 00_NAV DEC-25

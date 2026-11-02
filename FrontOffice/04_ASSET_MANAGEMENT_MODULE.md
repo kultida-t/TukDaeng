@@ -1,6 +1,6 @@
 ﻿# 04 Asset Management Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§8 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / composer / own-post menu canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§8 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / composer / own-post menu canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -402,7 +402,7 @@ Post-side linkage:
 - **`pfo-more`/`PFO_SIMS`** = dev `?dev` preview tooling เท่านั้น (00_NAV §11) — `nomkt`/`empty`/`failed`/`denied` states เป็น contract ไม่ใช่ reachable UI
 - **`sold` post ยังเข้า search/WA match** — `salePosts()` pfkind leak (00_GLOBAL §10 defect note — canonical คือหลุด)
 - **Session-only** — `PF_ASSETS`/`PF_SOLD`/`PF_MINE`/`WATCH_ALERTS` เป็น memory state (sign-out/reset ล้าง); persistence = contract
-- **EN/TH mixed** — portfolio/sell/sold surfaces มี isTh ครบ; composer toasts `Posted ·…`/`Watch alert matched` EN hardcode (i18n sweep FSP-026)
+- **EN/TH mixed** — portfolio/sell/sold surfaces มี isTh ครบ; composer toasts `Posted ·…`/`Watch alert matched` ต้องแปลไทยตาม DEC-19 (language sweep FSP-026)
 
 ---
 

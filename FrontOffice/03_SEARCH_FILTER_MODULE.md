@@ -1,6 +1,6 @@
 # 03 Search & Filter Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7/§9–§12 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6–§9 — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7/§9–§12 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6–§9 — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -54,7 +54,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Watch Alert | `sr-wa` bell บน results head → shared Watch Alert sheet (criteria = keyword + filters + price); match เฉพาะ `salePosts()`; entry ที่ 2 = `mf-btn` บน Post Detail (canonical อยู่ [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md)) |
 | Guest | Search / explore / results / filter / post viewer browse ได้เสรี (00_GLOBAL §11 guest capabilities) — identity actions → Member Sheet `Join TukDaeng` |
 | Navigation | Post Viewer = `.page-pv` overlay เหนือ sub page; Post Detail เหนือ viewer; back ตาม 00_NAV §6.7 (results → landing, `sfilter` → ทิ้ง draft) |
-| ไม่มีใน V1 | Sort UI, result count, pull-to-refresh / infinite scroll, saved search เป็น feature แยก, Popular Filter context-aware, TH copy ของ search surfaces (prototype เป็น EN-only) |
+| ไม่มีใน V1 | Sort UI, result count, pull-to-refresh / infinite scroll, saved search เป็น feature แยก, Popular Filter context-aware |
 
 # 5. Scope
 
@@ -63,7 +63,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Search entry: `.search-btn` บน app header, hashtag (`igd-tag`) จากทุก caption surface, `pv-srch` jump กลับ search
 - `search` sub page 3 modes: `landing` (popular chips + explore photo grid), `typing` (field + Cancel + X, recents/suggestions), `results` (head + tabs + active filter chips + sections)
 - Recent searches: push อัตโนมัติเมื่อเลือก, dedupe, cap 8, inline 4 แถว + `See all` → `recents` page (`Clear all` + X รายแถว) — session memory เท่านั้น
-- Live suggestions: keyword rows (brand/model พร้อม `N listings`, reference) + seller rows (พร้อม `N listings`/`Following`)
+- Live suggestions (DEC-36): keyword rows (brand/model, reference — ไม่มี count) + seller rows (sub `Following` เฉพาะที่ follow — ไม่มี count)
 - Results tabs: `For you` (Accounts section + Posts grid), `Profiles` (seller cards + Follow button), `Tags` (hashtag rows + `N posts`)
 - Active filter chips + per-chip remove (price chip ลบทั้ง min/max)
 - `sfilter` page: 11 sections, dependent Model ← Brand, price range inputs + validation, draft/commit/discard pattern, `Clear all`, `Apply (N)`
@@ -94,7 +94,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Search typing | `mode:"typing"` | real input `.sr-q` + `.sr-x` + `Cancel`; body = recents (q ว่าง) หรือ suggestions |
 | Recent section | `recentHTML()` | `Recent` + ≤4 rows + `See all`; per-row X |
 | Recent searches page | `recents` route · `recentPageHTML()` | back + title + `Clear all` + full list |
-| Suggestions | `suggestHTML()` | keyword rows (search icon + `N listings`) + seller rows (avatar + `N listings`/`Following`) |
+| Suggestions | `suggestHTML()` | keyword rows (search icon — no count) + seller rows (avatar + `Following` เฉพาะที่ follow — no count) |
 | Search results | `mode:"results"` · `searchResultsHTML()` | head (back/fake field/`sr-wa` bell/filter icon) + tabs + active filter chips + body ตาม tab |
 | Results — For you | `tab:"foryou"` | `Accounts` section + `Posts` `xp-grid two` |
 | Results — Profiles | `tab:"profiles"` | seller cards (`sr-scard`) + Follow button |
@@ -170,13 +170,13 @@ Member ใช้ครบ: search + recents (ของ session ตัวเอ�
 ## Recent Searches
 
 1. Typing (q ว่าง) → `Recent` + ≤4 แถว; >4 → `See all` → `recents` page (back + title + `Clear all` + list เต็ม)
-2. Row มี 2 แบบ: seller (avatar + name + `N listings`/`Following` sub) และ keyword (clock icon + text); X รายแถวลบทันที; `Clear all` ล้างทั้ง list
+2. Row มี 2 แบบ: seller (avatar + name + `Following` sub เฉพาะที่ follow — ไม่มี count ตาม DEC-36) และ keyword (clock icon + text); X รายแถวลบทันที; `Clear all` ล้างทั้ง list
 3. กด row (ทั้ง inline และบน `recents` page) → `pushRecent` + `q` + `mode = "results"` + `tab = "foryou"`; pick จาก `recents` page → `_subStack` เหลือ `["search"]` (back กลับหน้า search)
-4. Recents เป็น session memory ต่อ screen — ไม่ persist ข้าม session (00_GLOBAL §7); seed rows ใน prototype เป็น mock
+4. Recents เก็บบนเครื่องข้ามการเปิดแอป (DEC-22) และล้างเมื่อ sign out / เปลี่ยน session (00_GLOBAL §7); มี Clear all และลบรายแถวได้; seed rows ใน prototype เป็น mock
 
 ## Suggestions
 
-1. พิมพ์ q → ระบบ render keyword rows ก่อน (brand/model ที่ชื่อ contains q พร้อม `N listings` จาก sale listings ปัจจุบัน + reference ที่ contains q — รวม ≤6) ตามด้วย seller rows (name contains q — ≤4, sub `N listings` หรือ `Following`)
+1. พิมพ์ q → ระบบ render keyword rows ก่อน (brand/model ที่ชื่อ contains q + reference ที่ contains q — รวม ≤6, ไม่มี count ตาม DEC-36) ตามด้วย seller rows (name contains q — ≤4, sub `Following` เฉพาะที่ follow)
 2. ไม่มีผล → `No suggestions`
 3. กด row → `pushRecent` (kw หรือ seller ตามชนิด) + `q` + `mode = "results"`
 
@@ -246,6 +246,7 @@ Member ใช้ครบ: search + recents (ของ session ตัวเอ�
 ## Search State Rule
 
 - `srchState` ผูกกับ screen object (`scr._search`) — session memory เท่านั้น; เปลี่ยน session/unmount → state ใหม่ (00_GLOBAL §7/§12)
+- เปิด search ใหม่ทุกครั้ง (fresh open) กลับ landing และล้าง q / filters / tab (DEC-24)
 - Fields: `mode` (`landing`/`typing`/`results`), `q`, `tab` (`foryou`/`profiles`/`tags`), `sort` (`"new"` — dead), `err`, `recents` (≤8), `f` (applied filters), `fDraft` (filter draft)
 - `fDraft` ถูกสร้างเมื่อเปิด `sfilter` และถูกทิ้งเมื่อ back/Apply (null หลัง commit/discard)
 
@@ -262,7 +263,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 | Surface | Eligible set |
 | --- | --- |
 | Results Posts grid (non-`#` query) | `salePosts()` = มี `price` (sale listing) + ไม่ `ni`/`muted`/`blocked` |
-| Results Posts grid (`#` query) | `POSTS` กรองแค่ `!muted` — รวม showcase/post ธรรมดา **และ** ni/blocked (deviation) |
+| Results Posts grid (`#` query) | `POSTS` กรอง `!ni && !muted && !blocked` — รวม showcase/post ธรรมดา (DEC-23) |
 | Explore grid (landing) | ทุก photo ของทุกโพสต์ `!ni && !muted && !blocked` (รวม non-sale) |
 | Tags tab + `tagRows` | ทุกโพสต์ `!muted` |
 | Accounts / Profiles / seller suggestions | seller ที่ชื่อ match q, ไม่ `PF_BLOCKED` (ไม่จำกัด sale posts) |
@@ -281,7 +282,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 - `pushRecent` ทุกครั้งที่เลือก keyword/seller/tag เข้า results — dedupe แบบ case-insensitive ตาม (kind, value), ค่าใหม่ขึ้นหัว, cap 8
 - Kind: `kw` (keyword/hashtag) / `seller` — render row ต่างกัน (clock icon vs avatar)
-- Session memory — ไม่ persist; seed ใน prototype เป็น mock 6 rows (ไม่ใช่ history จริง)
+- Persist บนเครื่องข้ามการเปิดแอป และล้างเมื่อ sign out / เปลี่ยน session (DEC-22); seed ใน prototype เป็น mock 6 rows
 - ลบรายแถวด้วย X; `Clear all` ล้างทั้งหมด; ไม่มี confirm
 
 ## Suggestions Rule
@@ -371,6 +372,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 ## Post Viewer Navigation Rule
 
+- รูปหลายรูปใน pv-post / pfp-post / feed-mode card: swipe ทีละ 1 หยุดที่ปลาย (ไม่วน); double-tap = ไลก์ (guest → gate); single tap ไม่ทำอะไร — ตาม 02 DEC-14
 - `pv-back` → ปิด viewer (`pv-open` + `rp-over` ออก) กลับ surface ที่เปิดมา — ไม่ re-render search state
 - `pv-srch` → ปิด viewer; ถ้ามี `_subStack` → `mode = "typing"` ของหน้า search (กลับไปพิมพ์ต่อ q เดิม); ถ้าไม่มี stack (เช่นเปิดจาก notification) → ปิดเฉย ๆ
 - Post Detail เปิดทับ viewer (`view-full` → `openPostDetail`); `detail-back` กลับ viewer — viewer mount ค้าง (00_NAV §6.7)
@@ -412,7 +414,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 ## Prototype Deviations & Dead-Code Notes (documented, not spec)
 
-- Search surfaces เกือบทั้งหมด **EN-only** (tabs `For you`/`Profiles`/`Tags`, placeholder `Search`, `Recent`/`See all`/`Cancel`/`Clear all`, `Filters`/`Apply`/`Clear all`/section titles/validation messages, `No data found`/`Try a different keyword or adjust your filters`/`No suggestions`/`No recent searches`, `Something went wrong…`/`Try again`, toasts `Watch alert on`/`updated`/`removed`/`You already saved this alert`/`This post is no longer available`) — มี isTh เฉพาะ seller card (`N รายการประกาศ`/`กำลังติดตาม`/`ติดตาม`), viewer labels, unfollow sheet และ Watch Alert sheet — i18n gap รวมใน sweep FSP-026
+- Search surfaces เกือบทั้งหมด **EN-only** (tabs `For you`/`Profiles`/`Tags`, placeholder `Search`, `Recent`/`See all`/`Cancel`/`Clear all`, `Filters`/`Apply`/`Clear all`/section titles/validation messages, `No data found`/`Try a different keyword or adjust your filters`/`No suggestions`/`No recent searches`, `Something went wrong…`/`Try again`, toasts `Watch alert on`/`updated`/`removed`/`You already saved this alert`/`This post is no longer available`) — มี isTh เฉพาะ seller card (`N รายการประกาศ`/`กำลังติดตาม`/`ติดตาม`), viewer labels, unfollow sheet และ Watch Alert sheet — language gap รวมใน sweep FSP-026
 - `#` query results grid ใช้ `POSTS` กรองแค่ `!muted` → โพสต์ `ni`/`blocked` ยังขึ้นใน hashtag results (spec ยอมรับตาม prototype — flag ให้ FSP-030 consistency sweep)
 - `S.sort` (`plo`/`phi`/`pop`) + `S.err` = dead state (code มี ไม่มี UI/trigger)
 - Explore `.xp-views` badge + `tall` tile = decorative index คงที่ (2/3/7) ไม่ใช่ popularity logic
@@ -491,7 +493,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 | Recent section / recents page | `No recent searches` |
 | Watch Alerts list (cross-ref) | `No watch alerts yet — tap the bell on a post or save a search to start one` (canonical 10) |
 
-หมายเหตุ: global empty `ไม่พบข้อมูล`/`No data found` ของ 00_GLOBAL §11 ตรงเฉพาะส่วน `No data found`; sub-copy `Try a different keyword or adjust your filters` เป็น variant ของ module นี้; EN-only = deviation (i18n sweep)
+หมายเหตุ: global empty `ไม่พบข้อมูล`/`No data found` ของ 00_GLOBAL §11 ตรงเฉพาะส่วน `No data found`; sub-copy `Try a different keyword or adjust your filters` เป็น variant ของ module นี้; EN-only = deviation (language sweep)
 
 # 14. Notification Rules
 
@@ -578,10 +580,17 @@ Contract (S-29 — prototype ไม่มี tracking layer; event names เป�
 
 - Sort control บน results (`plo`/`phi`/`pop` มี dead code รองรับ)
 - Result count / pull-to-refresh / infinite scroll / end-of-list marker
-- TH localization ของ search surfaces ทั้งหมด (ปัจจุบัน EN-only — i18n sweep FSP-026)
+- TH localization ของ search surfaces ทั้งหมดต้องครบตาม DEC-19 (ปัจจุบัน EN-only ยังไม่ครบ — language sweep FSP-026)
 - Saved Search เป็น feature แยก / recents persist ข้าม session
 - Popular Filter / context-aware Popular Model / trending page
 - Entity/option-master suggestions (Condition/Delivery/Case/Movement/Dial/Strap) + `is_active` gating จริงแทน static catalogs
 - `#` grid ให้เคารพ ni/blocked เหมือน surfaces อื่น (prototype inconsistency — ติดตาม FSP-030)
 - AI Search Suggestion / Natural Language Search
 - Search Insights event instrumentation (analytics contract ใน §15)
+
+
+## Batch A Amendments (2026-10-30)
+
+- ผลลัพธ์เรียงใหม่→เก่า
+- แตะ hashtag ใน caption ไม่ push เข้า recents; เลือก tag ภายใน search push ตาม Recents Rule
+- Guest เปิด Saved เห็น empty "No saved posts yet" / "ยังไม่มีโพสต์ที่บันทึก"

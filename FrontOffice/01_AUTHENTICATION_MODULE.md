@@ -27,13 +27,13 @@ Session model (`member` / `guest` / `new`), consent model, Member Sheet definiti
 
 Source of truth สำหรับพฤติกรรม auth: `Prototypes/fo-flow/index.html` (first-run onboarding zone `.ob`)
 
-- First-run onboarding chain — splash → language → welcome → privacy notice → cookie settings → notification prompt → track prompt → Member Sheet gateway
+- First-run onboarding chain — splash → language → welcome → privacy notice → privacy settings → notification prompt → track prompt → Member Sheet gateway
 - Sign Up — Email + Password + strength meter + social buttons
 - Email OTP — 6-digit auto-submit boxes + resend cooldown
 - Profile setup — avatar + username suggestion
 - Account created — sign-in handoff (email signup ไม่ auto-login)
 - Member Sheet `Join TukDaeng` — first-run variant + guest gate variant (canonical ที่ 00_GLOBAL §11)
-- Sign In — email/password form + attempt counter `(n/5)` + 5-try lockout + `Forgot password?` / `New here?` links + social row
+- Sign In — email/password form + attempt counter + 5-try lockout + `Forgot password?` / `New here?` links + social row
 - Forgot Password — หน้า `Reset password` (email) → `Check your email` generic sent state
 - Guest gate — action ที่ต้องมีตัวตนเปิด Member Sheet gate variant ทับทุก layer (scrim-dismiss)
 - Re-consent — consent sheet `We've updated our policies` เมื่อ policy version bump (canonical 00_GLOBAL §8; prototype ใช้ dev button จำลอง)
@@ -56,7 +56,7 @@ Source of truth สำหรับพฤติกรรม auth: `Prototypes/fo-
 | Suspended / Banned account | บัญชี Suspended/Banned ต้องเห็น account status state พร้อมเหตุผล ระยะเวลาถ้ามี และช่องทางติดต่อ Support |
 | Terms / Privacy | Implied consent — การกด Continue/Create account พร้อม legal text ถือเป็นยอมรับ (canonical 00_GLOBAL §8) — ไม่มี checkbox |
 | Re-consent | Policy version bump → re-consent sheet `We've updated our policies` บังคับทุก session (canonical 00_GLOBAL §8) |
-| Sign in protection | Attempt counter `(n/5)` + 5-try lockout (contract: server lockout 15 นาที) |
+| Sign in protection | Attempt counter + 5-try lockout (contract: server lockout 15 นาที) |
 | Account persistence | Credential ที่สมัครรอด logout/restart เพื่อ sign in กลับ — Delete Account เท่านั้นที่ล้าง |
 | Login required | Guest ใช้ feature ที่ต้อง Login ต้องเห็น Member Sheet `Join TukDaeng` (canonical 00_GLOBAL §11) |
 | Security | ทุก API ใช้ HTTPS และใช้ Token-based Authentication |
@@ -71,7 +71,7 @@ Source of truth สำหรับพฤติกรรม auth: `Prototypes/fo-
 - OTP Verification สำหรับ Email / Password
 - Profile setup step (avatar + username) หลัง OTP / social sign-up
 - Account created handoff กลับ Sign In (email signup)
-- Sign In ด้วย Email / Password (attempt counter `(n/5)` + 5-try lockout)
+- Sign In ด้วย Email / Password (attempt counter + 5-try lockout)
 - Sign in / Sign up with Apple
 - Sign in / Sign up with Google
 - Forgot Password → generic Reset Link Sent state (ไม่เปิดเผย account existence / auth method)
@@ -118,7 +118,7 @@ Source of truth สำหรับพฤติกรรม auth: `Prototypes/fo-
 | Profile Setup | ตั้ง avatar + username หลัง OTP หรือ social sign-up |
 | Account Created | ยืนยันสร้างบัญชีแล้วพาไป Sign In (email signup เท่านั้น) |
 | Sign In | เข้าระบบด้วย Email / Password, Apple, Google |
-| Sign In Error | Email/password ผิด (attempt counter `(n/5)`), account ไม่ตรง auth method, หรือ account unavailable |
+| Sign In Error | Email/password ผิด (attempt counter), account ไม่ตรง auth method, หรือ account unavailable |
 | Sign In Lockout | ผิดครบ 5 ครั้ง — lockout banner + ปุ่ม Sign in disabled |
 | Suspended Account | แสดงเหตุผล suspension และช่องทางติดต่อ Support |
 | Forgot Password | ขอ reset password ด้วย Email |
@@ -200,8 +200,8 @@ Onboarding แสดงครั้งเดียวตอนเปิดแอ
 | 1 | Splash | Logo + name + loading bar | auto-advance ~3.2s → Language |
 | 2 | Language | `Select your language` — rows English/ไทย (check mark บนตัวที่เลือก) | Continue → Welcome (ภาษาเปลี่ยนได้ภายหลังที่ Settings) |
 | 3 | Welcome | `Welcome to the TukDaeng app` + tagline + Terms/Privacy links + fine print `By tapping Continue you agree to the Terms of Use and acknowledge the Privacy Policy.` | Continue → บันทึก `termsAt` (implied required consent) + loading ~1.5s → Privacy Notice |
-| 4 | Privacy Notice | `Privacy notice` — อธิบาย cookies/SDK: essential (จำเป็น) vs optional (analytics, personalization) | `Accept all` (optional on ทั้งคู่) / `Reject all` (optional off ทั้งคู่) / `Cookie settings` → step 5 — ทุกทางบันทึก consent record แล้วไป step 6 |
-| 5 | Cookie Settings | Essential `Always on` + toggles Analytics / Personalization | `Save preferences` → บันทึก consent record → step 6 |
+| 4 | Privacy Notice | `Privacy notice` — อธิบายการเก็บข้อมูลบางส่วนบนอุปกรณ์และเซิร์ฟเวอร์ + ประโยค "เราไม่ติดตามกิจกรรมในแอปหรือเว็บไซต์ของบริษัทอื่น และไม่แชร์ข้อมูลให้ผู้ลงโฆษณาหรือ data broker" + essential (จำเป็น) vs optional (analytics, personalization) | `Accept all` (optional on ทั้งคู่) / `Reject all` (optional off ทั้งคู่) / `Privacy settings` (ตั้งค่าความเป็นส่วนตัว) → step 5 — ทุกทางบันทึก consent record แล้วไป step 6 |
+| 5 | Privacy Settings | Essential `Always on` + toggles Analytics / Personalization | `Save preferences` → บันทึก consent record → step 6 |
 | 6 | Notification Prompt | `Never miss an update` pre-permission | `Continue` → OS dialog `…Would Like to Send You Notifications` (Allow / Don't Allow) → step 7; `Skip` → step 7 โดยไม่ถาม OS |
 | 7 | Track Prompt | `We suggest news that suits you` (ATT-style) | `Continue` → OS dialog `Allow … to track your activity…` — `Ask App Not to Track` ต้องบังคับ personalization = off → step 8 |
 | 8 | Member Sheet (first-run) | `Join TukDaeng` + `Create a free account to follow collectors, chat and list your watches.` + checkbox `Don't show this again` | `Sign up` → Email Registration; `Sign in` → Sign In; `Skip for now` → session `guest` (ถ้าติ๊ก hide → persist `fo_member_hide`, run ถัดไปข้าม sheet); social row → Social Registration |
@@ -220,7 +220,7 @@ Onboarding แสดงครั้งเดียวตอนเปิดแอ
 6. หน้า `Verify your email` — ช่อง OTP 6 ช่อง auto-advance, backspace ย้อนช่อง, auto-submit เมื่อครบ 6 หลัก (ไม่มีปุ่ม Verify)
 7. OTP ถูก → Profile Setup; OTP ผิด → shake + `That code is incorrect. Try again.` + ล้างช่องให้กรอกใหม่
 8. Profile Setup — `Set up your profile`: avatar + `Add photo`, ช่อง Username (suggest อัตโนมัติ), `Skip for now` (ใช้ suggested username), Continue
-9. หน้า `Account created` — `Welcome, {name}. Sign in to start exploring.` → ปุ่ม `Sign in` → กลับ Sign In (prefill email/password ที่เพิ่งสมัคร — prototype artifact)
+9. หน้า `Account created` — `Welcome, {name}. Sign in to start exploring.` → ปุ่ม `Sign in` → กลับ Sign In (prefill email ที่เพิ่งสมัครเท่านั้น password ว่าง — canonical lock 2026-10-29)
 10. User sign in สำเร็จ → session `new` — email signup **ไม่ auto-login** (S-22)
 
 ## Apple / Google Registration
@@ -238,7 +238,7 @@ Onboarding แสดงครั้งเดียวตอนเปิดแอ
 2. User กรอก Email + Password (password มีปุ่ม show/hide) — submit ด้วยปุ่ม `Sign in` หรือ Enter
 3. ระบบ validate field ก่อน credential check: email ว่าง → `Enter your email.`; email format ผิด → `Enter a valid email address.`; password ว่าง → `Enter your password.`
 4. ระบบตรวจ credential กับบัญชีที่จดจำ (prototype: demo member account — artifact — + credential ที่สมัคร persist ใน `fo_account`; production: server-side credential store)
-5. Credential ไม่ตรง → form-level banner `Email or password is incorrect. (n/5)` — counter นับความพยายามผิดต่อเนื่อง; ครบ 5 ครั้ง → lockout `Too many attempts. Try again in 15 minutes or reset your password.` + ปุ่ม Sign in disabled (contract: lockout 15 นาทีที่ server — prototype disable เฉย ๆ ไม่มี timer)
+5. Credential ไม่ตรง → form-level banner `Email or password is incorrect.` — counter นับความพยายามผิดต่อเนื่อง; ครบ 5 ครั้ง → lockout `Please try again in {X min Y sec} or choose Forgot password.` (TH `กรุณาลองใหม่ในอีก {X นาที Y วินาที} หรือเลือกลืมรหัสผ่าน`; นับแยกตามอีเมล, ข้อความเดียวกันทุกอีเมล, นับถอยหลังทุกวินาที) + ปุ่ม Sign in disabled (contract: lockout 15 นาทีที่ server — prototype มี timer 15 นาทีและปลดเองเมื่อครบ — RESOLVED 2026-10-29)
 6. Credential ตรง → ตรวจ auth method + account status ก่อนออก session (`Active` / `Suspended` / `Banned` / deletion-grace — contract, prototype ไม่ครอบ) — ผ่าน → เข้าแอปเงียบ ๆ ไม่มี welcome-back toast
 7. Session result ตามบัญชี (canonical 00_GLOBAL §7 Session Transitions): returning member ที่มีข้อมูล → `member`; บัญชีที่สมัครใหม่ (ยังไม่มีข้อมูลของตัวเอง) → `new`
 8. บัญชีที่อยู่ช่วง deletion grace period แล้ว sign in สำเร็จ = login-to-restore (ยกเลิก deletion — S-02, flow detail อยู่ที่ 13_SETTINGS)
@@ -274,19 +274,19 @@ Onboarding แสดงครั้งเดียวตอนเปิดแอ
 
 1. Authenticated Member เปิด Change Password
 2. User กรอก current password
-3. User กรอก new password และ confirm password
+3. User กรอก new password และ re-type new password
 4. ระบบ validate current password และ password policy
 5. ระบบเปลี่ยน password สำเร็จ
 
-Change Password form fields:
+Change Password form fields (label + copy canonical ตาม 13_SETTINGS §9 — DEC-38):
 
 - `Current password`
 - `New password`
-- `Confirm new password`
+- `Re-type new password`
 
 Helper text under `New password`:
 
-- `At least 8 characters, with a number or symbol.`
+- `Your password must be at least 8 characters and should include a combination of numbers, letters and special characters (!$@%).`
 
 Submit button:
 
@@ -295,7 +295,7 @@ Submit button:
 
 Change Password success:
 
-- Show `Password changed`
+- Show `Password changed successfully`
 - User may stay signed in
 - After success, route back to Settings or show success feedback and allow user to return to Settings
 
@@ -334,8 +334,15 @@ Change Password success:
 
 - Sign In form มี Email + Password เท่านั้น + ลิงก์ `Forgot password?` + `New here? Create account` + social row; back → Member Sheet
 - Field validation ต้องทำก่อน credential check — `Enter your email.` / `Enter a valid email address.` / `Enter your password.`
-- Credential ผิดต้องแสดง form banner `Email or password is incorrect. (n/5)` — counter นับความพยายามผิดต่อเนื่องและ reset เมื่อ sign in สำเร็จ
-- ผิดครบ 5 ครั้งต้อง lockout `Too many attempts. Try again in 15 minutes or reset your password.` + ปุ่ม Sign in disabled (contract: server-side lockout 15 นาที — prototype disable โดยไม่มี timer)
+- Credential ผิดต้องแสดง form banner `Email or password is incorrect.` — counter นับความพยายามผิดต่อเนื่องและ reset เมื่อ sign in สำเร็จ
+- ผิดครบ 5 ครั้งต้อง lockout `Please try again in {X min Y sec} or choose Forgot password.` (TH `กรุณาลองใหม่ในอีก {X นาที Y วินาที} หรือเลือกลืมรหัสผ่าน`; นับแยกตามอีเมล, ข้อความเดียวกันทุกอีเมล, นับถอยหลังทุกวินาที) + ปุ่ม Sign in disabled (contract: server-side lockout 15 นาที — prototype มี timer 15 นาทีและปลดเองเมื่อครบ — RESOLVED 2026-10-29)
+- Lockout ตามกติกาทั่วไปของแอป (contract ฝั่งเซิร์ฟเวอร์): ตัวนับและเวลาล็อกเก็บที่เซิร์ฟเวอร์ ผูกกับอีเมล (ไม่ผูกกับเครื่อง ไม่นับรวมทุกอีเมล) และอีเมลที่ไม่มีบัญชีใช้กลไกเดียวกัน
+- ระหว่างล็อก ทุกการ Sign in ด้วยอีเมลนั้น รวมถึงรหัสที่ถูกต้อง ถูกปฏิเสธด้วยข้อความล็อก (เหมือนกันทุกอีเมล)
+- การปิดแอป รีเฟรช ติดตั้งใหม่ หรือล้างข้อมูลแอป ต้องไม่รีเซ็ตการล็อก; เวลานับถอยหลังคำนวณจากเวลาที่เซิร์ฟเวอร์ ไม่ใช่เวลาเครื่อง
+- ข้อจำกัดของ prototype (หมายเหตุ ไม่ใช่ข้อกำหนดของแอปจริง): prototype จำลองการล็อกด้วยการเก็บสถานะไว้ในเครื่องแยกตามอีเมล จึงผ่านการปิดแอปแล้วเปิดใหม่ได้ แต่การล้างข้อมูลเว็บจะรีเซ็ตการล็อก ซึ่งแอปจริงต้องไม่เกิด การทดสอบทุกเคสในเล่มนี้ทำบนแอปที่สร้างจริงเท่านั้น ไม่ได้ทดสอบกับ prototype
+- ระหว่างล็อกยังใช้ "ลืมรหัสผ่าน?" ได้ (ไม่ถูกบล็อก) เพื่อกันการล็อกแบบจงใจ
+- ปลดเองเมื่อครบเวลา และตัวนับเริ่มใหม่เมื่อ Sign in สำเร็จ
+- ระดับความปลอดภัยเพิ่มเติม (ฝั่งเซิร์ฟเวอร์ ไม่ใช่ prototype): จำกัดความถี่ตามอุปกรณ์/IP และ CAPTCHA หลังผิดหลายครั้ง
 - Sign in สำเร็จต้องเข้าแอปเงียบ ๆ — ไม่มี welcome-back toast/dialog
 - Session result: returning member ที่มีข้อมูล → `member`; บัญชีที่สมัครใหม่ → `new` (canonical 00_GLOBAL §7 Session Transitions)
 - Social sign-in returning ที่ provider ตรงกับบัญชี persist → session `new` เงียบ ๆ ไม่ผ่าน Profile Setup
@@ -438,15 +445,15 @@ Change Password success:
 | OTP ผิด | shake ช่อง + `That code is incorrect. Try again.` + ล้างช่องให้กรอกใหม่ |
 | Username ไม่ผ่าน rule | แสดง `Username required — 3–20 characters: a–z, 0–9, _ or .` |
 | Resend OTP ถี่เกินไป | cooldown 30 วินาทีต่อครั้ง — แสดง `Resend code in 0:30` แทนปุ่ม |
-| Sign In credential ผิด | แสดง form banner `Email or password is incorrect. (n/5)` — counter นับความพยายามผิดต่อเนื่อง |
-| Sign In ผิดครบ 5 ครั้ง | lockout `Too many attempts. Try again in 15 minutes or reset your password.` + ปุ่ม Sign in disabled (contract: server lockout 15 นาที) |
+| Sign In credential ผิด | แสดง form banner `Email or password is incorrect.` — counter นับความพยายามผิดต่อเนื่อง |
+| Sign In ผิดครบ 5 ครั้ง | lockout `Please try again in {X min Y sec} or choose Forgot password.` (TH `กรุณาลองใหม่ในอีก {X นาที Y วินาที} หรือเลือกลืมรหัสผ่าน`; นับแยกตามอีเมล, ข้อความเดียวกันทุกอีเมล, นับถอยหลังทุกวินาที) + ปุ่ม Sign in disabled (contract: server lockout 15 นาที) |
 | ใช้ auth method ผิด | แจ้งว่าบัญชีนี้ต้อง Sign In ด้วย method เดิม (contract — prototype รวมเป็น generic incorrect) |
 | SSO provider error | แสดง error และให้ลองใหม่ |
 | Forgot Password email เป็นบัญชี Apple / Google SSO หรือไม่มีบัญชี | แสดง generic sent state `If an account exists for {email}, we sent a reset link.` เหมือนกรณีส่งจริง — ไม่เปิดเผย account existence / auth method |
 | Re-consent Decline | inline banner + เหลือเฉพาะ `Sign out` (member/new) หรือ `Exit app` (guest) — ไม่มี path ใช้งานต่อโดยไม่ยอมรับ |
-| Change Password current password ผิด | แสดง field error `Current password is incorrect.` |
-| Change Password new password ซ้ำ current password | แสดง field error `New password must be different from current password.` |
-| Change Password confirm ไม่ตรง | แสดง field error `Passwords do not match.` |
+| Change Password current password ผิด | แสดง field error `Your current password was entered incorrectly. Please check it and try again.` |
+| Change Password new password ซ้ำ current password | แสดง field error `New password must be different from your current password.` |
+| Change Password re-type ไม่ตรง | แสดง field error `Passwords do not match. Please re-enter your new password.` |
 | Change Password API/network error | ไม่ mark field ใด field หนึ่งเป็น error; แสดง banner/toast `Unable to change password. Please try again.` |
 | Suspended / Banned account | แสดง account status state พร้อมเหตุผล ระยะเวลาถ้ามี และช่องทาง Support |
 | Network error | แสดง error พร้อม retry |
@@ -525,10 +532,10 @@ Analytics เป็น contract-only (prototype ไม่มี tracking layer �
 | AC-AUTH-016A | Session ที่ถูก BO revoke เพราะ Suspended/Banned ต้อง clear local session และแสดง account status state |
 | AC-AUTH-017 | Forgot Password ต้องส่ง reset link สำหรับบัญชี Email / Password และแสดง generic confirmation; การตั้งรหัสผ่านใหม่ผ่าน link อยู่นอก FO V1 screens (ไม่มี Reset Password page ในแอป) |
 | AC-AUTH-020 | Authenticated Member สามารถ Change Password ได้เมื่อ current password ถูกต้อง |
-| AC-AUTH-020A | Change Password ต้องมี Current password, New password และ Confirm new password |
-| AC-AUTH-020B | Change Password ต้อง reject current password ที่ไม่ถูกต้องด้วย `Current password is incorrect.` |
-| AC-AUTH-020C | Change Password ต้อง reject new password ที่ซ้ำ current password ด้วย `New password must be different from current password.` |
-| AC-AUTH-020D | Change Password ต้อง reject confirm password ที่ไม่ตรงด้วย `Passwords do not match.` |
+| AC-AUTH-020A | Change Password ต้องมี Current password, New password และ Re-type new password |
+| AC-AUTH-020B | Change Password ต้อง reject current password ที่ไม่ถูกต้องด้วย `Your current password was entered incorrectly. Please check it and try again.` |
+| AC-AUTH-020C | Change Password ต้อง reject new password ที่ซ้ำ current password ด้วย `New password must be different from your current password.` |
+| AC-AUTH-020D | Change Password ต้อง reject re-type password ที่ไม่ตรงด้วย `Passwords do not match. Please re-enter your new password.` |
 | AC-AUTH-020E | Change Password API/network error ต้องแสดง `Unable to change password. Please try again.` โดยไม่ผูก error กับ field เฉพาะ |
 | AC-AUTH-021 | Sign Out ต้อง clear local token/session |
 | AC-AUTH-022 | Guest ใช้ feature ที่ต้อง Login ต้องเห็น Member Sheet `Join TukDaeng` gate variant (canonical 00_GLOBAL §11) |
@@ -536,11 +543,12 @@ Analytics เป็น contract-only (prototype ไม่มี tracking layer �
 | AC-AUTH-024 | V1 ไม่รองรับ 2FA, Passkey, Biometric Login, Account Linking, Account Merge หรือ Device Management |
 | AC-AUTH-025 | First-run onboarding ต้องแสดงครั้งเดียวตามลำดับ splash → language → welcome → privacy notice → notification prompt → track prompt → Member Sheet (persist เมื่อจบ flow) |
 | AC-AUTH-026 | Continue บน Welcome ต้องบันทึก required consent (terms/privacy timestamp) เป็น implied consent — ไม่มี checkbox |
-| AC-AUTH-027 | Privacy Notice ต้องแยก essential (always on) จาก optional (analytics / personalization) และรองรับ Accept all / Reject all / Cookie settings ที่บันทึก consent record ทุกทาง |
+| AC-AUTH-027 | Privacy Notice ต้องแยก essential (always on) จาก optional (analytics / personalization) และรองรับ Accept all / Reject all / Privacy settings ที่บันทึก consent record ทุกทาง |
 | AC-AUTH-028 | Notification pre-permission ต้อง skippable — Skip ข้ามไป track prompt โดยไม่แสดง OS dialog; Continue เท่านั้นที่เปิด OS permission dialog |
 | AC-AUTH-029 | Track prompt ที่เลือก `Ask App Not to Track` ต้องบังคับ personalization consent = off |
 | AC-AUTH-030 | First-run Member Sheet ต้องมี Sign up / Sign in / Skip for now + social row + `Don't show this again`; การติ๊ก hide แล้ว Skip ต้องทำให้ run ถัดไปไม่แสดง sheet อีก |
-| AC-AUTH-031 | Sign Up ต้องมีเฉพาะ Email + Password (ไม่มี Confirm Password — S-20), password ต้องมี show/hide toggle + strength meter 4 แถบ และ legal text ใต้ปุ่ม Create account |
+| AC-AUTH-031 | Analytics = off (จาก Reject all หรือ Privacy settings) ต้องไม่ส่ง analytics event ทุกตัว รวม search event และ `auth_*` event; consent record ยังบันทึกได้ตาม AC-AUTH-027 (ทดสอบบน build stg/app จริงเท่านั้น — prototype ไม่มี analytics pipeline) · วิธีตรวจค่าเริ่มต้น: (1) ติดตั้ง stg build ที่เปิด proxy หรือ analytics debug view (2) ล้างข้อมูลแล้วเข้า onboarding กด Reject all (3) ใช้งาน feed และค้นหา 1 ครั้ง (4) ตรวจว่าไม่มี request หรือ event ไปยัง analytics endpoint (5) control: ทำซ้ำกับ Accept all ต้องเห็น event จริง ไม่เช่นนั้นวิธีตรวจใช้ไม่ได้ — เดฟยืนยันหรือปรับได้ก่อนรันจริง |
+| AC-AUTH-001A | Sign Up ต้องมีเฉพาะ Email + Password (ไม่มี Confirm Password — S-20), password ต้องมี show/hide toggle + strength meter 4 แถบ และ legal text ใต้ปุ่ม Create account (renumber จาก AC-AUTH-031 — DEC-37) |
 | AC-AUTH-032 | OTP ต้องเป็น 6 ช่องตัวเลข auto-advance, backspace ย้อนช่อง และ auto-submit เมื่อครบ 6 หลัก — ไม่มีปุ่ม Verify |
 | AC-AUTH-033 | OTP ผิดต้อง shake + `That code is incorrect. Try again.` + ล้างช่อง; Resend ต้องมี cooldown 30 วินาที; ไม่มี OTP expired state (S-20) |
 | AC-AUTH-034 | Credential ต้อง persist ทันทีที่ signup validation ผ่าน (ก่อน OTP) เพื่อให้บัญชียัง sign in ได้หลังปิดแอปกลาง flow |
@@ -550,8 +558,8 @@ Analytics เป็น contract-only (prototype ไม่มี tracking layer �
 | AC-AUTH-038 | หน้า Account created (email signup เท่านั้น) ต้องแสดง `Welcome, {name}. Sign in to start exploring.` + ปุ่ม Sign in — ไม่ auto-login |
 | AC-AUTH-039 | Sign In ต้องมี Email + Password (password show/hide) + `Forgot password?` + `New here? Create account` + social row — submit ได้ทั้งปุ่ม `Sign in` และ Enter; back → Member Sheet |
 | AC-AUTH-040 | Sign In ต้อง validate field ก่อน credential check — email ว่าง `Enter your email.`, format ผิด `Enter a valid email address.`, password ว่าง `Enter your password.` |
-| AC-AUTH-041 | Sign In credential ผิดต้องแสดง `Email or password is incorrect. (n/5)` ที่นับความพยายามผิดต่อเนื่องและ reset เมื่อสำเร็จ |
-| AC-AUTH-042 | Sign In ผิดครบ 5 ครั้งต้อง lockout `Too many attempts. Try again in 15 minutes or reset your password.` + ปุ่ม Sign in disabled (contract: server lockout 15 นาที) |
+| AC-AUTH-041 | Sign In credential ผิดต้องแสดง `Email or password is incorrect.` ที่นับความพยายามผิดต่อเนื่องและ reset เมื่อสำเร็จ |
+| AC-AUTH-042 | Sign In ผิดครบ 5 ครั้งต้อง lockout `Please try again in {X min Y sec} or choose Forgot password.` (TH `กรุณาลองใหม่ในอีก {X นาที Y วินาที} หรือเลือกลืมรหัสผ่าน`; นับแยกตามอีเมล, ข้อความเดียวกันทุกอีเมล, นับถอยหลังทุกวินาที) + ปุ่ม Sign in disabled (contract: server lockout 15 นาที) |
 | AC-AUTH-043 | Sign In สำเร็จต้องเข้าแอปเงียบ (ไม่มี welcome toast) และ set session `member` (returning member ที่มีข้อมูล) หรือ `new` (บัญชีที่สมัครใหม่) ตาม canonical 00_GLOBAL §7 |
 | AC-AUTH-044 | Social sign-in ที่ provider ตรงบัญชี persist ต้องเข้า session `new` เงียบ ๆ ไม่ผ่าน Profile Setup |
 | AC-AUTH-045 | Sign In ต้องตรวจ auth method + account status ก่อนออก session — SSO-only account ห้าม sign in ด้วย email/password; บัญชีใน deletion grace period sign in = login-to-restore (S-02); Suspended/Banned ต้อง block (contract — prototype ไม่ครอบ) |
@@ -582,3 +590,20 @@ Analytics เป็น contract-only (prototype ไม่มี tracking layer �
 - Device Management
 - Login history
 - Risk-based authentication
+
+
+## Contract updates — canonical lock 2026-10-29 (FO-TEST hardening)
+
+- หลัง "Account created" → หน้า Sign in เติม email ที่เพิ่งสมัครไว้อัตโนมัติ (password ว่าง)
+- Coach marks บังคับแสดงตอนเข้า feed ครั้งแรกของ member และครั้งแรกของ guest
+- กลับจากหน้า OTP ค่าที่กรอกยังอยู่ครบ
+- Lockout ใช้ระยะเวลาตาม design (15 นาที) หลังครบต้องปลดจริง
+- สิทธิ์ติดตาม: iOS = ATT dialog; Android = ไม่มี dialog ข้ามขั้นนี้
+
+
+## Batch A Amendments (2026-10-30)
+
+- ภาษาเริ่มต้นของ Language step ตามภาษาของอุปกรณ์ (ไม่ใช่ไทยใช้ English)
+- Track prompt body: "We use your activity in TukDaeng only to recommend watches and news. We do not track you across other companies' apps or websites." (TH: "เราใช้กิจกรรมของคุณในตึกแดงเพื่อแนะนำนาฬิกาและข่าวสารเท่านั้น ไม่ติดตามข้ามแอปหรือเว็บไซต์อื่น")
+- Sign Up validation copy ใช้ชุดเดียวกับ Sign In: `Enter your email.` / `Enter a valid email address.` / `Enter your password.` และ policy `Password must be at least 8 characters and include at least one number or special character.`
+- OTP subtitle: "We sent a 6-digit code to {email}"

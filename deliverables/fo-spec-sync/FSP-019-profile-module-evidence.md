@@ -26,7 +26,7 @@ Prototype anchors verified: routes `profile:`/`pfollow:`/`about:`/`pedit` ~17574
 | §15 Analytics | rewrite — contract `profile_*` event set (18 events) |
 | §16 ACs | **rewrite ทั้งชุด** — AC-PROFILE-001–056 sequential จัดกลุ่ม 9 หมวด (Entries, Tabs&Grid, Follow, pfollow, Share&QR, Menu/About/Report/Block, Edit, Guest Gate, Guard) — เดิม letter-suffix set (007A–007L, 018A, 020A/B, …) + asset-centric claims ลบทิ้ง — renumber; ไม่มี live cross-ref ดู §2 |
 | §17 Related | +00_GLOBAL/00_NAV/01/02/03/04/05/07/09/10/11/13/14/15/README links ตาม boundary ใหม่ |
-| §18 Future | +not-found contract, persistence, real deep links, S-14 leak fix, photo picker, chat entry, restrict, IG dead extras, story ring, disp แยก username, i18n sweep, real follower data |
+| §18 Future | +not-found contract, persistence, real deep links, S-14 leak fix, photo picker, chat entry, restrict, IG dead extras, story ring, disp แยก username, language sweep, real follower data |
 
 ## 2. Cross-doc ref check (ก่อนปิดงาน)
 
@@ -81,7 +81,7 @@ Prototype anchors verified: routes `profile:`/`pfollow:`/`about:`/`pedit` ~17574
 | `pf-fby` render บน blocked page | quirk — documented |
 | `profileOf` fabricate ทุก name | ไม่มี user-not-found reachability → contract §18 |
 | Session-only state | follow/fav/mute/block/removed/pins/gfx/QR theme → persistence contract |
-| EN-hardcoded strings (~30 copies) | pfollow/QR/blkSheet/dlgs/toasts → i18n sweep FSP-026 |
+| EN-hardcoded strings (~30 copies) | pfollow/QR/blkSheet/dlgs/toasts → language sweep FSP-026 |
 | `disp` = username เสมอ | ไม่มี display name แยก (pedit save `o.disp = uname`) |
 | own follower rows มี `pf-msg` dead | Chat button ซ้ำกับ profile `pf-msg` |
 
@@ -91,6 +91,6 @@ Prototype anchors verified: routes `profile:`/`pfollow:`/`about:`/`pedit` ~17574
 - **FSP-021** — `09_NOTIFICATION`/`10_WATCH_ALERT`: follow notif → `profile:{user}` (00_NAV §8); stale `Global Login Required`(3+3) + `User Not Found`(09)
 - **FSP-022** — `11_SOCIAL_MODULE.md`: `shareSheetHTML` reuse (`pf-sh-share`/`pf-qr-share`) + `pfCopyText` + follow/fav/mute feed semantics — stale `Global Login Required`(5) + `Block this user`(1)
 - **FSP-024** — `14_PORTFOLIO_MODULE.md`: **`Total Asset Value` 30 hits** — portfolio entry คือ `.pf-pfo` เท่านั้น (ไม่มี headline บน profile); `portfolio`/`pfasset:`/`sold:`/`soldhist` internals + `pfoSimBar` dev
-- **FSP-025/026/027** — Master §Profile (18 stale), PRD/FO_PRD/Use_Cases, README_MODULE_INDEX (L92 `Public Profile detail entry` เดิม), DEV+QA checklists (`AC-PROFILE` เดิม/asset-centric checks 36+16+2), DOCUMENT_VERSION (15) — sync ตาม 06 ใหม่ + **EN-hardcode copies เข้า i18n sweep**: pfollow labels/empties/`Search username`, QR labels+toasts, `blkSheet`/`unblockDlg`/`Remove follower?`/`Pin limit reached`, `Blocking`/`Unblocked`/`Unfollowed`/`Muted`/`Unmuted`/`Profile shared`/`Profile link copied`/`QR code…`/`Link copied`/`QR code saved`/`Signed in as`/`Camera…`/`Allow camera…`/`Profile updated`/`Open a listing…`/`Photo picker…`/`Not in this prototype yet`
+- **FSP-025/026/027** — Master §Profile (18 stale), PRD/FO_PRD/Use_Cases, README_MODULE_INDEX (L92 `Public Profile detail entry` เดิม), DEV+QA checklists (`AC-PROFILE` เดิม/asset-centric checks 36+16+2), DOCUMENT_VERSION (15) — sync ตาม 06 ใหม่ + **EN-hardcode copies เข้า language sweep**: pfollow labels/empties/`Search username`, QR labels+toasts, `blkSheet`/`unblockDlg`/`Remove follower?`/`Pin limit reached`, `Blocking`/`Unblocked`/`Unfollowed`/`Muted`/`Unmuted`/`Profile shared`/`Profile link copied`/`QR code…`/`Link copied`/`QR code saved`/`Signed in as`/`Camera…`/`Allow camera…`/`Profile updated`/`Open a listing…`/`Photo picker…`/`Not in this prototype yet`
 - **FSP-030** — public `all` leak (S-14: `pfTabPosts` ไม่ filter visibility; `report:posts:` picker ด้วย) + viewer nav ไฮไลต์ Feed + `pf-fby` บน blocked page + avatar-overlay `qr` dead-vs-real inconsistency + `pf-sh-copy` toast-only — consistency sweep
 - งานทั้งหมดยัง uncommitted รวม FSP-006–019 — รอพี่สั่ง commit แยก

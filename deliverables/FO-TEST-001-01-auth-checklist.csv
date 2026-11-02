@@ -1,0 +1,215 @@
+TC ID,Section,เริ่มจาก (สถานะเริ่มต้น),ขั้นตอนที่ต้องทำ,ผลที่ต้องเห็น,Actor,Priority,Result,ทดสอบบน (Device/OS),Note
+SETUP-01,Setup,-,"1. ติดตั้งแอป TukDaeng build ทดสอบบนมือถือเครื่องจริง — Android โหลดจาก Google Play / iOS จาก App Store หรือ TestFlight (ตามที่ทีมแจก)
+2. เปิดแอปขึ้นมา",เห็นหน้า splash โลโก้ TukDaeng แล้วไหลเข้า onboarding — ห้ามเทสผ่าน browser หรือ prototype,-,High,,,
+SETUP-02,Setup,-,"วิธีรีเซ็ต onboarding ให้เห็นตั้งแต่ต้น (ทำเมื่อเคสต้องการ first-run state):
+• Android: ปิดแอป → ตั้งค่าระบบ → Apps → TukDaeng → Storage → Clear data → เปิดแอปใหม่
+• iOS: ลบแอปออกจากเครื่อง → ติดตั้งใหม่ → เปิดแอป",onboarding เด้งใหม่ตั้งแต่หน้า splash/เลือกภาษา เหมือนใช้ครั้งแรก,-,High,,,
+SETUP-03,Setup,-,"ทำให้ตัวเองเป็น GUEST (ยังไม่ล็อกอิน):
+1. รีเซ็ต onboarding (SETUP-02) หรือออกจากระบบถ้าล็อกอินอยู่
+2. เดินหน้า onboarding ไปเรื่อย ๆ (Continue ทุกหน้า เลือกอะไรก็ได้) จนถึง sheet ""Join TukDaeng""
+3. กด ""Skip for now"" ใน sheet",อยู่หน้า feed (เห็นโพสต์นาฬิกา) แบบ guest — ยังไม่ได้ล็อกอิน,-,High,,,
+SETUP-04,Setup,-,"ทำให้ตัวเองเป็น MEMBER (ล็อกอินบัญชีทดสอบ):
+1. จาก onboarding member sheet กด ""Sign in""
+   (ถ้าอยู่ feed เป็น guest อยู่แล้ว ให้แตะไอคอนหัวใจใต้โพสต์ใดก็ได้ → sheet เด้ง → กด ""Sign in"")
+2. กรอก email + password ของบัญชีทดสอบ (SETUP-06) → กด ""Sign in""",อยู่หน้า feed แบบ member — เห็นข้อมูลของบัญชีนั้น (โพสต์/แชท/แจ้งเตือนตามจริง),-,High,,,
+SETUP-05,Setup,-,"ทำให้ตัวเองเป็น NEW (สมัครใหม่ ข้อมูลว่าง):
+1. จาก member sheet กด ""Sign up""
+2. กรอกอีเมลใหม่ที่รับ OTP จริงได้ + รหัสผ่านอย่างน้อย 8 ตัว → ""Create account""
+3. กรอกรหัส OTP ที่ได้รับจริง (SETUP-06)
+4. หน้า Profile กด ""Continue"" (ใช้ username ที่แนะนำ)
+5. หน้า Account created กด ""Sign in"" → sign in ให้จบ",อยู่ feed แบบ member ใหม่ — ข้อมูลว่าง ชื่อเป็น username ที่ตั้ง,-,High,,,
+SETUP-06,Setup,-,"ข้อมูลเทสที่ต้องเตรียมก่อนเริ่ม (ขอจากทีม / เติมเองลงช่องนี้):
+• บัญชีทดสอบ: email + password = ____________________
+• อีเมลที่ลงทะเบียนไว้แล้ว (ไว้เทส duplicate): ____________________
+• วิธีรับ OTP จริง: อีเมล/SMS ของ tester หรือ test OTP ที่ backend รองรับ = ____________________
+• บัญชี Google / Apple สำหรับเทส social sign-in: ____________________
+• บัญชีสำหรับเทสลบ (สร้างแยก ห้ามใช้บัญชีหลัก): ____________________
+• เครื่องทดสอบ: รุ่น + OS version = ____________________ (บันทึกลงคอลัมน์ ""ทดสอบบน (Device/OS)"" ทุกเคสที่รัน เช่น iPhone 15 · iOS 18 / Galaxy S24 · Android 15)",ข้อมูลครบก่อนเริ่มเทส — ทุกเคสที่ต้องล็อกอิน/OTP จะทำไม่ได้ถ้าไม่มีข้อมูลชุดนี้,-,High,,,
+SETUP-07,Setup,-,"เส้นทางเข้า Settings (ใช้ในหลายเคส):
+1. อยู่ feed แบบ member (SETUP-04)
+2. แตะแท็บ ""Profile"" ในแถบนำทางล่าง (ขวาสุด)
+3. แตะไอคอน ≡ มุมขวาบน (ปุ่ม Settings and activity)","หน้า Settings เปิดขึ้น มีแถว ""About your account"" แถวแรก",-,High,,,
+AUTH-001,Splash,เพิ่งติดตั้งแอปใหม่/เคลียร์ data แล้ว (SETUP-02),"1. เปิดแอป
+2. สังเกตหน้าจอเฉย ๆ ไม่แตะอะไร แล้วจับเวลาจนเปลี่ยนหน้า",หน้า splash โลโก้ TukDaeng + แถบ loading แสดงชั่วครู่ (~3 วิ ตาม design) แล้วข้ามไปหน้าเลือกภาษาเอง,GUEST,High,,,
+AUTH-002,Splash,ระหว่าง splash กำลังแสดง,1. เปิดแอปแล้วรีบแตะจอรัว ๆ หลายจุดตอน splash ยังแสดงอยู่,splash ไม่ถูกข้าม — ยังแสดงครบเวลาถึงไปหน้าภาษา ไม่มี error ไม่กระพริบ,GUEST,Low,,,
+AUTH-003,Language,"หน้า ""Select your language"" (ต่อจาก splash)","1. แตะแถว ""ไทย""
+2. ดูปุ่มล่างสุด แล้วแตะ ""ต่อไป""",เลือกไทยแล้วแตะ Continue ไปหน้า welcome ภาษาไทย; แถวที่เลือกมีเครื่องหมายถูก,GUEST,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-004,Language,"หน้า ""Select your language""","1. แตะ ""ไทย"" 2. แตะ ""English"" 3. แตะ ""ไทย"" อีกครั้ง",การเลือก toggle ได้ทั้งสองทิศทาง — check ย้ายตามแถวล่าสุด มีเครื่องหมายถูกแถวเดียวเสมอ,GUEST,Medium,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-005,Language,"หน้า ""Select your language""",1. สังเกตหน้าจอโดยยังไม่แตะอะไร,ภาษาเริ่มต้นตามภาษาของอุปกรณ์ (ไม่ใช่ไทยใช้ English) พร้อมเครื่องหมายถูก,GUEST,Medium,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30) — default ตามภาษาเครื่อง
+AUTH-006,Welcome,กด Continue จากหน้าภาษามาแล้ว,1. ตรวจองค์ประกอบทั้งหมดบนหน้า Welcome,"รูปนาฬิกาใหญ่ + หัวข้อ ""Welcome to the TukDaeng app"" + ข้อความรอง + ลิงก์ Terms of Use · Privacy Policy + ข้อความเล็กเรื่องยอมรับเงื่อนไข + ปุ่ม Continue ล่างสุด",GUEST,Medium,,,
+AUTH-007,Welcome,อยู่หน้า Welcome,"1. แตะ Continue 1 ครั้ง
+2. รีบแตะซ้ำหลายครั้งตอนปุ่มกำลังโหลด
+3. รอจนเปลี่ยนหน้า","ปุ่มกลายเป็น loading และกดซ้ำไม่ได้ (disable) → ผ่านไปชั่วครู่ข้ามไปหน้า ""Privacy notice"" เอง",GUEST,High,,,
+AUTH-008,Welcome,อยู่หน้า Welcome,"1. แตะลิงก์ ""Terms of Use""
+2. กดลูกศร back บนซ้ายของ overlay
+3. แตะ ""Privacy Policy"" แล้วกดปุ่ม Close ล่างสุด",เปิด overlay เอกสารที่ถูกต้อง; ปิดแล้วกลับหน้า welcome สภาพเดิม,GUEST,Medium,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-009,Consent,"อยู่หน้า ""Privacy notice"" (ต่อจาก Welcome)",1. ตรวจองค์ประกอบทั้งหมดบนหน้า,"หัวข้อ Privacy notice + ย่อหน้าการเก็บข้อมูลบนอุปกรณ์และเซิร์ฟเวอร์ + ประโยคไม่ติดตามข้ามแอป (EN: We do not track your activity in other companies' apps or websites, and we do not share your data with advertisers or data brokers. TH: เราไม่ติดตามกิจกรรมในแอปหรือเว็บไซต์ของบริษัทอื่น และไม่แชร์ข้อมูลให้ผู้ลงโฆษณาหรือ data broker) + รายการอธิบาย + ลิงก์ Privacy Policy ในย่อหน้า + ปุ่ม 3 อัน: ""Accept all"" / ""Reject all"" + ""Privacy settings""",GUEST,Medium,,,
+AUTH-010,Consent,"อยู่หน้า ""Privacy notice""","1. แตะ ""Accept all""","ข้ามไปหน้าถาม notification หัวข้อ ""Never miss an update""",GUEST,High,,,
+AUTH-011,Consent,"อยู่หน้า ""Privacy notice""","1. แตะ ""Reject all""",ข้ามไปหน้าถาม notification เหมือนกัน — ไม่มี error ไม่มีบังคับ accept; Analytics ปิด ไม่มี analytics event (รวม search event) ถูกส่ง (AC-AUTH-031 ตรวจบน build stg/app จริงเท่านั้น; วิธีตรวจดู AC-AUTH-031),GUEST,High,,,
+AUTH-012,Consent,"อยู่หน้า ""Privacy notice""","1. แตะ ""Privacy settings""","ข้ามไปหน้า ""Privacy settings"" ที่มีสวิตช์ toggle",GUEST,Medium,,,
+AUTH-013,Consent,"อยู่หน้า ""Privacy notice""","1. แตะลิงก์ ""Privacy Policy"" ที่อยู่ในย่อหน้า",overlay เอกสารเปิดทับ ปิดแล้วกลับมาเจอหน้า consent เดิม,GUEST,Low,,,
+AUTH-014,Privacy prefs,"หน้า consent → กด ""Privacy settings"" มาแล้ว",1. ตรวจองค์ประกอบหน้า Privacy settings,"ลูกศร back บนซ้าย + หัวข้อ Privacy settings + แถว Essential มีป้าย ""Always on"" (ไม่มีสวิตช์) + สวิตช์ Analytics/Personalization (ปิดอยู่) + ปุ่ม ""Save preferences""",GUEST,Medium,,,
+AUTH-015,Privacy prefs,อยู่หน้า Privacy settings,"1. เลื่อนสวิตช์ Analytics ให้ติด (เลื่อนไปขวา)
+2. แตะ ""Save preferences""",สวิตช์ Analytics ติด → กด Save แล้วข้ามไปหน้าถาม notification,GUEST,High,,,
+AUTH-016,Privacy prefs,อยู่หน้า Privacy settings (เคยเลื่อนสวิตช์แล้ว),"1. แตะลูกศร back มุมซ้ายบน
+2. (เสริม) กลับเข้า Privacy settings อีกครั้งดูค่าสวิตช์","กลับหน้า ""Privacy notice"" ได้; เข้า Privacy settings อีกครั้งค่าที่ตั้งไว้ยังอยู่",GUEST,Medium,,,
+AUTH-017,Notif ask,ผ่านหน้า consent/prefs มาแล้ว,1. ตรวจองค์ประกอบหน้า notification,"ลูกศร back บนซ้าย + รูป + หัวข้อ ""Never miss an update"" + ข้อความรอง + ปุ่ม Continue (เต็ม) + Skip (กรอบ)",GUEST,Medium,,,
+AUTH-018,Notif ask,"อยู่หน้า ""Never miss an update""","1. แตะ Continue
+2. ใน dialog สิทธิ์ของระบบ เลือก ""ไม่อนุญาต/Don't Allow""
+3. (ถ้าจะเทสอีกทาง — reset สิทธิ์ notification ในตั้งค่าเครื่องก่อน หรือใช้อีกเครื่อง) แตะ Continue → เลือก ""อนุญาต/Allow""",dialog ขอสิทธิ์ notification ของ OS จริงเด้ง (ข้อความตาม iOS/Android) — เลือกทางไหนก็ไปหน้า tracking เหมือนกัน,GUEST,High,,,
+AUTH-019,Notif ask,"อยู่หน้า ""Never miss an update""","1. แตะ ""Skip""
+2. จากหน้า tracking ที่ไปถึง แตะลูกศร back","Skip → ไปหน้า tracking ทันทีโดยไม่มี dialog สิทธิ์เด้ง; back จาก notif → กลับหน้า ""Privacy notice""",GUEST,Medium,,,
+AUTH-020,Track ask,ผ่านหน้า notification มาแล้ว,1. ตรวจองค์ประกอบหน้า tracking,"ลูกศร back บนซ้าย + รูป + หัวข้อ ""We suggest news that suits you"" + ข้อความรอง (EN: We use your activity in TukDaeng only to recommend watches and news. We do not track you across other companies' apps or websites. TH: เราใช้กิจกรรมของคุณในตึกแดง เพื่อแนะนำนาฬิกาและข่าวสารเท่านั้น ไม่ติดตามข้ามแอปหรือเว็บไซต์อื่น) + ปุ่ม Continue (ไม่มีปุ่ม Skip)",GUEST,Medium,,,
+AUTH-021,Track ask,"อยู่หน้า ""We suggest news that suits you""","1. แตะ Continue
+2. ใน dialog สิทธิ์ เลือกไม่ให้ติดตาม (iOS: ""Ask App Not to Track"")",dialog ขอสิทธิ์ติดตามของ OS เด้ง (iOS = App Tracking Transparency; Android ไม่มี dialog — ข้ามไป Member Sheet ทันทีถือว่าผ่าน) → เลือกไม่ให้แล้วไปหน้า Member Sheet,GUEST,High,,,
+AUTH-022,Track ask,อยู่หน้า tracking,"1. แตะ Continue → เลือกอนุญาต
+2. (ทำซ้ำ) จากหน้า track แตะลูกศร back",อนุญาต → ไป Member Sheet เหมือนกัน; back จาก track → กลับหน้า notification,GUEST,Medium,,,
+AUTH-023,Member sheet (first-run),"จบขั้น track → sheet ""Join TukDaeng"" เด้งทับ",1. ตรวจองค์ประกอบ sheet โดยยังไม่กดปุ่ม,"sheet เลื่อนขึ้นจากล่าง + แถบจับ + หัวข้อ ""Join TukDaeng"" + ข้อความรอง + checkbox ""Don't show this again"" + ปุ่ม Sign up / Sign in / Skip for now + แถว or continue with Google/Apple",GUEST,High,,,
+AUTH-024,Member sheet (first-run),member sheet เปิดอยู่,"1. แตะ ""Sign up"" → สังเกตแล้วกด back กลับ
+2. แตะ ""Sign in""","Sign up → เปลี่ยนเป็นหน้าเต็ม ""Create your account""; Sign in → หน้าเต็ม ""Sign in"" (back ของทั้งสองหน้ากลับมาที่ member sheet)",GUEST,High,,,
+AUTH-025,Member sheet (first-run),member sheet เปิดอยู่ (ไม่ติ๊ก checkbox),"1. แตะ ""Skip for now""",sheet ปิดเงียบ ๆ → อยู่หน้า feed แบบ guest + coach mark (กล่องอธิบายลอย) ต้องเด้ง — ไม่เด้ง = FAIL — ไม่มี toast,GUEST,High,,,
+AUTH-026,Member sheet (first-run),member sheet เปิดอยู่,"1. ติ๊ก checkbox ""Don't show this again""
+2. แตะ ""Skip for now""
+3. ปิดแอปสนิทแล้วเปิดใหม่
+4. (เสริม) ลองกด like ใต้โพสต์ดูว่า gate sheet ยังเด้งไหม","checkbox มีเครื่องหมายถูก; เปิดแอปรอบถัดไป sheet ไม่เด้งเอง — แต่ gate จาก action (เช่น like) ยังเด้งได้ เพราะ checkbox คือ ""ไม่แสดงซ้ำเอง"" ไม่ใช่ปิด gate",GUEST,Medium,,,
+AUTH-027,Member sheet (first-run),member sheet เปิดอยู่ (first-run),1. แตะบริเวณมืด (scrim) หลัง sheet หลายครั้ง,sheet ไม่ปิด — scrim tap ใช้ได้เฉพาะ sheet ที่เด้งจากการ gate เท่านั้น,GUEST,Medium,,,
+AUTH-028,Sign up,"member sheet → กด ""Sign up""",1. ตรวจองค์ประกอบฟอร์ม Create your account,"ลูกศร back + หัวข้อ + ช่อง Email + ช่อง Password + แถบวัดความแข็งรหัส + ข้อความ hint + ปุ่ม social Google/Apple + ปุ่ม ""Create account"" + ลิงก์ Terms/Privacy",GUEST,Medium,,,
+AUTH-029,Sign up,"อยู่หน้า ""Create your account""","กด ""Create account"" ทีละเคส:
+1. เว้นว่างทั้งสองช่อง → submit
+2. ใส่ email ""abc"" → submit
+3. ใส่อีเมลที่ลงทะเบียนแล้ว (SETUP-06) + รหัส ≥8 ตัว → submit
+4. email ถูกรูป + เว้น password → submit
+5. email ถูก + password 7 ตัวอักษร → submit",email ว่าง `Enter your email.`; รูปแบบผิด `Enter a valid email address.`; ซ้ำ `This email is already registered. Try signing in.`; password ว่าง `Enter your password.`; ไม่ผ่าน policy `Password must be at least 8 characters and include at least one number or special character.`,GUEST,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-030,Sign up,"อยู่หน้า ""Create your account""","1. ใส่ email ใหม่ที่รับ OTP จริงได้ (SETUP-06)
+2. ใส่ password ≥8 ตัว
+3. กด ""Create account""","ข้ามไปหน้า OTP ที่เขียน ""We sent a 6-digit code to"" ตามด้วย email ที่กรอก + ระบบส่งรหัสจริงมาถึงช่องทางที่กำหนด (เช็ก inbox/SMS)",GUEST,High,,,
+AUTH-031,Sign up,"อยู่หน้า ""Create your account""","1. พิมพ์ password ทีละนิด (สั้น → ยาว ผสมตัวเลข/สัญลักษณ์) ดูแถบ meter
+2. แตะไอคอนรูปตาข้างช่อง password สองครั้ง
+3. กดปุ่มยืนยันบนคีย์บอร์ด (เช็ค/ลูกศร/enter)",แถบ meter เปลี่ยนสด ๆ ตามความแข็งรหัส; ไอคอนตาสลับ show/hide ข้อความโชว์/ปิด; ปุ่มบนคีย์บอร์ด = ส่งฟอร์มเหมือนกด Create account,GUEST,Medium,,,
+AUTH-032,OTP,"signup ผ่าน → หน้า ""Verify your email""",1. ตรวจองค์ประกอบหน้า OTP,"ลูกศร back + หัวข้อ + อีเมลปลายทาง + ช่อง OTP 6 ช่อง (ช่องแรก focus) + บรรทัด ""Resend code in 0:NN"" นับถอยหลัง",GUEST,Medium,,,
+AUTH-033,OTP,อยู่หน้า OTP,1. กรอกรหัส OTP 6 หลักที่ได้รับจริงทางอีเมล/SMS (SETUP-06) ทีละช่อง,แต่ละช่องรับเลขแล้ว focus ขยับไปช่องถัดเอง; ครบ 6 หลักระบบ verify เองโดยไม่ต้องกดปุ่ม → ไปหน้า Profile,GUEST,High,,,
+AUTH-034,OTP,อยู่หน้า OTP,1. กรอกรหัสผิด เช่น 000000,ครบ 6 หลัก → `That code is incorrect. Try again.` + ช่องสั่น + ล้างช่องอัตโนมัติ + focus ช่องแรก,GUEST,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-035,OTP,อยู่หน้า OTP,"1. รอตัวนับ ""Resend code in 0:NN"" นับถอยหลังจนเหลือ 0
+2. แตะปุ่ม ""Resend code"" ที่โผล่มา",ระหว่างนับแสดง `Resend code in 0:NN` (ไม่ใช่ปุ่ม); หมดเวลา → ปุ่ม `Resend code`; กด → นับใหม่และรหัสใหม่ถูกส่งจริง,GUEST,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-036,OTP,อยู่หน้า OTP,"1. ลองพิมพ์ตัวอักษร/สัญลักษณ์ในช่อง OTP
+2. ในช่องว่างกด Backspace
+3. แตะลูกศร back",ช่องรับเฉพาะตัวเลข ตัวอื่นถูกตัดทิ้ง; Backspace บนช่องว่าง → focus ย้อนไปช่องก่อน; back → กลับหน้า Create your account,GUEST,Medium,,,
+AUTH-037,Profile setup,OTP ผ่าน → หน้า Profile,1. ตรวจองค์ประกอบหน้า,"ปุ่ม ""Skip for now"" มุมขวาบน + รูป avatar เริ่มต้น + ลิงก์ ""Add photo"" + ช่อง Username ที่เติมคำแนะนำไว้แล้ว + ปุ่ม Continue",GUEST,Medium,,,
+AUTH-038,Profile setup,อยู่หน้า Profile,"1. ดู username ที่เติมไว้ให้ (มาจากข้อมูลที่สมัคร เช่นส่วนหน้าอีเมล)
+2. แตะ Continue","username แนะนำถูกเติมอัตโนมัติ → กด Continue ไปหน้า ""Account created""",GUEST,High,,,
+AUTH-039,Profile setup,อยู่หน้า Profile,"1. ลบ username ใส่ ""ab"" → Continue
+2. ใส่ ""ABC!!"" → Continue
+3. ใส่ username ที่ถูกกติกา → Continue","username 3–20 ตัว a–z 0–9 _ . — ผิดแสดง `Username required — 3–20 characters: a–z, 0–9, _ or .`; ถูกกติกา → ผ่าน",GUEST,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-040,Profile setup,อยู่หน้า Profile,"1. แตะลิงก์ ""Add photo""
+2. เลือกรูปจากตัวเลือกของระบบ",เปิด photo picker/ตัวเลือกรูปของ OS จริง (กล้อง/แกลเลอรี) → เลือกแล้ว avatar เปลี่ยนเป็นรูปที่เลือก (ไม่มี picker จริง = FAIL),GUEST,Low,,,
+AUTH-041,Profile setup,อยู่หน้า Profile,"1. ลบช่อง username ให้ว่าง
+2. แตะ ""Skip for now""","ข้ามไปหน้า ""Account created"" ได้เลย — Skip ไม่บังคับ validation ระบบ gen ชื่อให้เอง",GUEST,Medium,,,
+AUTH-042,Created,"Profile ผ่าน → หน้า ""Account created""","1. ตรวจหน้า 2. แตะ ""Sign in""","check icon + `Account created` + `Welcome, {name}. Sign in to start exploring.`; กด Sign in → หน้า sign in prefill email ที่เพิ่งสมัคร (password ว่าง)",NEW,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-043,Created,"อยู่หน้า ""Account created""","1. แตะ ""Sign in""
+2. sign in ด้วยบัญชีที่เพิ่งสมัครให้จบ",เข้าหน้า feed แบบ member ใหม่ (ข้อมูลว่าง ชื่อ = username ที่ตั้ง) + coach mark ต้องเด้ง — ไม่เด้ง = FAIL,NEW,High,,,
+AUTH-044,Sign in,"member sheet → กด ""Sign in""",1. ตรวจองค์ประกอบหน้า Sign in,"ลูกศร back + หัวข้อ Sign in + ช่อง Email/Password + ไอคอนตา + ลิงก์ ""Forgot password?"" + ปุ่ม Sign in + ปุ่ม social + ลิงก์ ""New here? Create account""",GUEST,Medium,,,
+AUTH-045,Sign in,อยู่หน้า Sign in (ช่องว่างเปล่า),"1. กรอก email + password ของบัญชีทดสอบ (SETUP-06)
+2. กด ""Sign in""",เข้าสู่ระบบสำเร็จ → เข้า feed แบบ member เห็นข้อมูลของบัญชีนั้น (ช่อง email เติมค่าที่เพิ่งสมัคร รหัสผ่านว่าง — ไม่เติม = FAIL),GUEST,High,,,
+AUTH-046,Sign in,อยู่หน้า Sign in,"1. เว้นว่างทั้งสองช่อง → Sign in
+2. ใส่ email ""abc"" → Sign in
+3. email ถูก + password ว่าง → Sign in",error รายฟิลด์: `Enter your email.` / `Enter a valid email address.` / `Enter your password.` — ไม่นับเป็น failed attempt,GUEST,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-047,Sign in,อยู่หน้า Sign in,"1. ใส่ email ถูกรูป + password ผิด → กด Sign in
+2. กดซ้ำไปเรื่อย ๆ นับจนครบ 5 ครั้ง",ผิด → banner `Email or password is incorrect.` (ไม่แสดงตัวนับ); ครบ 5 ครั้ง → `Please try again in {X min Y sec} or choose Forgot password.` นับถอยหลังทุกวินาที ล็อกเฉพาะอีเมลนั้น ปุ่ม Sign in disabled,GUEST,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-048,Sign in,เคยสมัครบัญชีใหม่ไว้แล้ว (SETUP-05),1. กลับมาหน้า Sign in ใส่ email+รหัสที่สมัครไว้ → Sign in,เข้า feed แบบ member ของบัญชีนั้น (ข้อมูลตามจริง ชื่อ = username ที่ตั้ง),GUEST,High,,,
+AUTH-049,Sign in,โดนล็อกแล้ว (ทำ AUTH-047 จนครบลิมิต),"1. ตอนยังล็อก: ใส่ credential ที่ถูกต้อง → พยายามกด Sign in
+2. รอตามเวลาที่แจ้ง (เช่น 15 นาที) แล้วลอง sign in ใหม่",ช่วงล็อก: ปุ่มกดไม่ได้/ปฏิเสธแม้ข้อมูลถูก; หลังครบเวลา: ปลดล็อก sign in ได้ — ปลดเองเมื่อครบ 15 นาที (ไม่ปลด = FAIL),GUEST,Medium,,,
+AUTH-050,Forgot pwd,อยู่หน้า Sign in,"1. แตะลิงก์ ""Forgot password?"" ใต้ช่อง password","ไปหน้า ""Reset password"" มีช่อง email + ปุ่ม ""Send reset link""",MEMBER,Medium,,,
+AUTH-051,Forgot pwd,"อยู่หน้า ""Reset password""","1. ใส่อีเมลที่รับจดหมายจริงได้ → กด ""Send reset link""
+2. เช็กกล่องจดหมาย (inbox + spam) ว่าลิงก์รีเซ็ตมาถึงจริง
+3. แตะ ""Back to sign in""","หน้า ""Check your email"" พร้อมข้อความ ""If an account exists for {email}, we sent a reset link."" + อีเมลรีเซ็ตมาถึงจริง → Back กลับหน้า Sign in",MEMBER,High,,,
+AUTH-052,Forgot pwd,"อยู่หน้า ""Reset password""","1. เว้นช่อง email ว่าง → Send
+2. ใส่ ""abc"" → Send","error ""Enter a valid email address."" ใต้ช่อง ไม่ไปหน้า sent",MEMBER,Medium,,,
+AUTH-053,Legal overlay,อยู่ขั้นที่มีลิงก์ legal (Welcome / Consent / Sign up),"1. แตะ ""Terms of Use""
+2. (ทำซ้ำ) แตะ ""Privacy Policy""",overlay เอกสารเปิดทับขั้นเดิมและแสดงเอกสารที่เลือกถูกต้อง,GUEST,Medium,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-054,Legal overlay,overlay legal เปิดอยู่,"1. กดลูกศร back บนซ้าย
+2. (เปิดใหม่) กดปุ่ม Close ล่างสุด",ทั้งสองวิธีปิด overlay กลับหน้าเดิมพอดี ค่าที่กรอกค้างไว้ (เช่นฟอร์ม signup) ไม่หาย,GUEST,Medium,,,
+AUTH-055,Actions,member sheet แบบ first-run เปิดอยู่,"1. แตะ checkbox ""Don't show this again"" ติด-ดับสลับกันหลายครั้ง",เครื่องหมายถูกขึ้น/หายตามทุกครั้งที่แตะ ไม่ค้าง,GUEST,Low,,,
+AUTH-056,Actions,หน้า Sign up หรือ Sign in,"1. ใส่ password แล้วแตะไอคอนรูปตาข้างช่อง
+2. แตะอีกครั้ง",ข้อความรหัสผ่านสลับ แสดง/ซ่อน (•••) ตาม ไอคอนเปลี่ยนตาเปิด/ปิด,GUEST,Medium,,,
+AUTH-057,Actions,หน้า OTP ช่วงที่ยังนับถอยหลังอยู่,1. ดูบริเวณใต้ช่อง OTP ระหว่างตัวนับลดลงเรื่อย ๆ,"แสดงเป็น text ""Resend code in 0:NN"" เฉย ๆ ไม่ใช่ปุ่ม — แตะไม่ได้ จนหมดเวลา",GUEST,Medium,,,
+AUTH-058,Actions,member sheet first-run หรือหน้า Sign up,"1. แตะ ""Continue with Google""
+2. เลือกบัญชี Google จริงของ tester จากหน้าเลือกของระบบ",เปิด account chooser ของระบบ (Google) → เลือกบัญชีแล้วข้ามไปหน้า Profile พร้อม avatar/username จากบัญชีนั้น,GUEST,High,,,
+AUTH-059,Actions,member sheet first-run หรือหน้า Sign up (เทสบน iOS),"1. แตะ ""Continue with Apple""
+2. ยืนยันด้วย Apple ID จริงของ tester",เปิด Sign in with Apple ของระบบ → ผ่านแล้วไปหน้า Profile พร้อมข้อมูลจาก Apple ID (Android ไม่มีปุ่มนี้ = BLOCK — เคส iOS-only),GUEST,Medium,,,
+AUTH-060,Actions,หน้า consent แบบ first-run,1. ไล่หาปุ่ม Decline หรือ Exit บนหน้า Privacy notice,ไม่มีปุ่ม Decline/Exit บนหน้า consent รอบแรก — มีแค่ Accept all / Reject all / Privacy settings (ยืนยันว่าไม่มีทางออกนอกจากตอบ),MEMBER,Low,,,
+AUTH-061,Guest Gate,guest บนหน้า feed (SETUP-03),1. แตะไอคอนหัวใจ (like) ใต้โพสต์ใดก็ได้บน feed,"Member Sheet ""Join TukDaeng"" เด้งทับ + ข้อความต้องตรง ""Sign in or create a free account to use this feature."" — โพสต์ไม่ถูก like (นับ like ไม่ขึ้น)",GUEST,High,,,
+AUTH-062,Guest Gate,gate sheet เด้งอยู่ (จาก AUTH-061),1. แตะบริเวณมืด (scrim) หลัง sheet,sheet เลื่อนลงปิด — ยังเป็น guest หน้า feed เดิม action เดิมไม่ได้ทำ,GUEST,High,,,
+AUTH-063,Guest Gate,gate sheet เด้งอยู่,"1. แตะ ""Skip for now""",sheet ปิดเงียบ ๆ ยัง guest อยู่ feed เดิม ไม่มี toast,GUEST,High,,,
+AUTH-064,Guest Gate,gate sheet เด้งอยู่,1. เทียบกับ member sheet ตอน first-run (AUTH-023),"gate sheet ไม่มี checkbox ""Don't show this again"" และข้อความรองเป็นฉบับ gate (""...to use this feature."") ต่างจาก first-run",GUEST,Medium,,,
+AUTH-065,Guest Gate,guest แตะ like → gate sheet เด้งอยู่,"1. แตะ ""Sign in"" บน sheet
+2. sign in ด้วยบัญชีทดสอบ (SETUP-06)
+3. กลับดูโพสต์เมื่อกี้ที่จะกด like",เข้าสู่ระบบ member → กลับ feed หน้าเดิม แต่โพสต์ยังไม่ถูก like — action เก่าไม่ทำต่อ ต้องแตะใหม่เอง,GUEST,High,,,
+AUTH-066,Guest Gate,gate sheet เด้งอยู่,"1. แตะ ""Sign up"" บน sheet
+2. เดิน signup ครบ: email+รหัส → OTP จริง → profile → created → Sign in",flow เดินได้ครบเหมือน first-run → จบที่ feed แบบ member ใหม่,GUEST,Medium,,,
+AUTH-067,Guest Gate,member บนหน้า feed (SETUP-04),1. แตะ like / bookmark (save) / share / comment / ปุ่ม + สร้างโพสต์ ทีละอัน,ไม่มี sheet เด้งเลย — ทุก action ทำงานปกติ (เช่น like นับขึ้น) — เป็นคู่เทียบของ guest,MEMBER,High,,,
+AUTH-068,Guest Gate,อยู่หน้า feed,"1. guest: แตะแท็บ Chat / Alerts / Profile ในแถบล่างทีละแท็บ
+2. member: แตะแท็บเดิมอีกรอบ",guest → Member Sheet เด้งทุกแท็บ และแท็บไม่สลับ (ยังอยู่ feed); member → สลับแท็บไปหน้า Chat/Alerts/Profile ปกติ,GUEST,High,,,
+AUTH-069,Re-consent,member ล็อกอินอยู่ + ทีมออก policy version ใหม่บน build ทดสอบแล้ว,"1. ให้ทีม backend bump เวอร์ชัน Terms/Privacy
+2. เปิดแอป/กลับเข้าแอปใหม่
+(ถ้าไม่มีทาง trigger บน build นี้ ให้ mark BLOCK พร้อมเหตุผล)","sheet เด้งทับ feed อัตโนมัติ: ""We've updated our policies"" + แถวเอกสาร Terms/Privacy (ป้าย Required + เวอร์ชันใหม่) + สวิตช์ + ปุ่ม Accept & continue + Decline",MEMBER,Medium,,,
+AUTH-070,Re-consent,re-consent sheet เด้งอยู่,"1. แตะแถว ""Terms of Use"" ใน sheet
+2. ปิด แล้วแตะ ""Privacy Policy""",เปิด overlay เอกสารแสดงเวอร์ชันใหม่ ปิดแล้วกลับมาเจอ sheet เดิม,MEMBER,Medium,,,
+AUTH-071,Re-consent,re-consent sheet เด้งอยู่,"1. (เลื่อนสวิตช์ตามใจก็ได้) แตะ ""Accept & continue""",บันทึก consent ใหม่ → ปิด sheet → ใช้งานต่อเป็น member ได้ปกติ,MEMBER,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-072,Re-consent,re-consent sheet เด้งอยู่,"1. แตะ ""Decline""
+2. ทำตามทางเลือกที่ UI เสนอ (เช่น Sign out)",Decline → banner `You need to accept the required Terms and Privacy Policy to use TukDaeng. You can review them again or exit the app.` + ทางเลือก Sign out; sign out → member sheet ให้ sign in ใหม่,MEMBER,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-073,About account,member → เข้า Settings (SETUP-07),"1. แตะแถว ""About your account"" แถวแรกของ Settings
+2. ตรวจหน้าที่เปิด",ส่วนบน: รูป + ชื่อ + @username; หมวด Account information: Date joined + Account based in {ภูมิภาค}; Security: Change password; Account management: Delete account (ตัวแดง),MEMBER,Medium,,,
+AUTH-074,About account,เปิดหน้า About your account,"1. member (บัญชีทดสอบเก่า) ดูค่า Date joined
+2. session NEW (SETUP-05) เข้าหน้าเดียวกันอีกครั้ง",Date joined ตรงเดือน/ปีที่สมัครจริงของแต่ละบัญชี; รูป/ชื่อ/@user ตรงกับบัญชีนั้น — บัญชีเก่ากับใหม่ต้องแสดงต่างกันถูก,MEMBER,Medium,,,
+AUTH-075,About account,อยู่หน้า About your account,"1. แตะ ""Change password"" → กด back
+2. แตะ ""Delete account""",ไปหน้าเปลี่ยนรหัส / หน้าลบบัญชีตามลำดับ กด back กลับ About account ได้,MEMBER,Medium,,,
+AUTH-076,Change pwd,"About your account → กด ""Change password""",1. ตรวจองค์ประกอบหน้า,"ข้อความกติการหัส (≥8 ตัว + เงื่อนไขอื่น) + ช่อง 3 ช่อง Current/New/Re-type แต่ละช่องมีไอคอนตา + ลิงก์ ""Forgot your password?"" + ปุ่ม ""Change password""",MEMBER,Medium,,,
+AUTH-077,Change pwd,อยู่หน้า Change password (รู้รหัสปัจจุบันของบัญชีทดสอบ),"กด ""Change password"" ทีละเคส:
+1. เว้นว่างทั้ง 3 ช่อง → submit
+2. current ใส่รหัสผิด → submit
+3. current ถูก + new ว่าง → submit
+4. new สั้นกว่า 8 ตัว → submit
+5. new เหมือน current เดิม → submit
+6. new ถูก + confirm ไม่ตรง → submit",ไล่ตามลำดับ: current ว่าง `Please enter your current password.` → current ผิด `Your current password was entered incorrectly. Please check it and try again.` → new ว่าง `Please enter a new password.` → ไม่ผ่าน policy `Password must be at least 8 characters and include at least one number or special character.` → ซ้ำ current `New password must be different from your current password.` → re-type ไม่ตรง `Passwords do not match. Please re-enter your new password.`,MEMBER,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-078,Change pwd,อยู่หน้า Change password,"1. current = รหัสปัจจุบันจริงของบัญชีทดสอบ
+2. new = รหัสใหม่ที่ถูกกติกา
+3. confirm = ตรงกับ new
+4. กด ""Change password""","กลับหน้า About your account + confirmation (toast ต้องตรง ""Password changed successfully"") รหัสใหม่มีผลทันที",MEMBER,High,,,
+AUTH-079,Change pwd,เพิ่งเปลี่ยนรหัสเสร็จ (AUTH-078),"1. เข้าหน้า Change password อีกรอบ
+2. current ใส่รหัสเดิมก่อนเปลี่ยน → submit
+3. current ใส่รหัสใหม่ → กรอก new+confirm ให้จบ",รหัสเดิมถูกปฏิเสธ `Your current password was entered incorrectly. Please check it and try again.`; รหัสใหม่ active ใช้เปลี่ยนรอบต่อได้,MEMBER,Medium,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-080,Change pwd,อยู่หน้า Change password,"1. แตะลิงก์ ""Forgot your password?""","dialog ""Reset password?"" เด้งกลางจอ",MEMBER,Medium,,,
+AUTH-081,Change pwd,อยู่หน้า Change password,"1. พิมพ์ทั้ง 3 ช่อง
+2. แตะไอคอนตาทีละช่อง",แต่ละช่องสลับแสดง/ซ่อนอิสระกัน ไม่กระทบช่องอื่น,MEMBER,Low,,,
+AUTH-082,Del account step1,"About your account → กด ""Delete account"" (แถวแดง)",1. ตรวจองค์ประกอบหน้า,"ไอคอนถังขยะ + ""We're sorry to see you go"" + การ์ดเงื่อนไข (grace period / permanent deletion / watch alerts ถูกยกเลิก) + ปุ่ม ""Continue to delete"" + ปุ่ม ""Keep my account""",MEMBER,Medium,,,
+AUTH-083,Del account step1,อยู่หน้า Delete account step1,"1. แตะ ""Keep my account""",กลับหน้า About your account ไม่ลบอะไร ไม่มี dialog,MEMBER,Medium,,,
+AUTH-084,Del account step1,อยู่หน้า Delete account step1,"1. แตะ ""Continue to delete""","ไปหน้า step2 หัวข้อ ""Why are you leaving?""",MEMBER,High,,,
+AUTH-085,Del account step2,"อยู่หน้า ""Why are you leaving?""",1. ตรวจองค์ประกอบหน้า,radio เหตุผลหลายตัวเลือก + ช่อง Additional feedback (optional) + ปุ่ม Continue + ปุ่ม Back,MEMBER,Medium,,,
+AUTH-086,Del account step2,"อยู่หน้า ""Why are you leaving?""","1. กด ""Continue"" โดยไม่เลือกเหตุผลใด ๆ
+2. แตะเลือกเหตุผลสักข้อแล้วดู error","error แดง ""Please select a reason to continue."" + หน้าเลื่อนไปหาจุด error; พอเลือกเหตุผล error หายทันที (เลือกได้ทีละข้อ)",MEMBER,High,,,
+AUTH-087,Del account step2,"อยู่หน้า ""Why are you leaving?"" (step2)","1. กดปุ่ม ""Back"" ในหน้า
+2. (เข้า step2 ใหม่) กดลูกศร back บนซ้ายของหน้า",ทั้งสองปุ่มกลับไปหน้า step1 (การ์ดเงื่อนไข) — back ถูกดักให้ถอยขั้น ไม่ออกจาก flow ลบบัญชี,MEMBER,Medium,,,
+AUTH-088,Del account step2,อยู่ step2 เลือกเหตุผลแล้ว (ใช้บัญชีเทสที่เตรียมลบเท่านั้น),"1. ไม่พิมพ์ feedback (เว้นว่าง)
+2. กด ""Continue""",dialog ยืนยันรหัสผ่านเด้งกลางจอ — feedback ว่างก็ผ่านได้ (⚠️ ขั้นต่อไปคือลบจริง ใช้บัญชีเทสเท่านั้น),MEMBER,High,,,
+AUTH-089,Del dialogs,password confirm dialog เด้งอยู่ (จาก AUTH-088),1. ตรวจองค์ประกอบ dialog,"หัวข้อ ""Confirm account deletion"" + คำอธิบายเรื่อง grace period + ช่อง Current password + ไอคอนตา + ปุ่ม ""Delete account"" (แดง) + Cancel",MEMBER,Medium,,,
+AUTH-090,Del dialogs,password confirm dialog เด้งอยู่,"1. กด ""Delete account"" โดยช่องว่าง
+2. ใส่รหัสผิด → กดอีกครั้ง",ว่าง `Please enter your password.`; ผิด `Incorrect password. Please try again.`,MEMBER,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-091,Del dialogs,password confirm dialog เด้งอยู่ (บัญชีเทสเท่านั้น),"1. ใส่รหัสจริงของบัญชีเทส → กด ""Delete account""
+2. อ่านเนื้อหา dialog ใหม่","dialog เปลี่ยนเป็น ""Account deletion scheduled"" + ไอคอนถังขยะ + วันที่ลบ = วันนี้+30 วัน (ตรวจ format ตาม locale เครื่อง — TH แสดง พ.ศ.) + ข้อความ login ก่อนกำหนดเพื่อกู้คืน + ปุ่ม ""Log out""",MEMBER,High,,,
+AUTH-092,Del dialogs,success dialog (Account deletion scheduled) เด้งอยู่,"1. กด ""Log out""
+2. (ทดสอบกู้คืน) sign in ด้วยบัญชีเดิมอีกครั้งภายใน grace period","dialog+หน้าต่างย่อยปิดหมด → กลับ feed แบบ guest + confirmation (toast ต้องตรง ""Account deactivated. 30-day grace period started."") + Member Sheet เด้งให้ sign in; sign in กลับ = กู้บัญชี",MEMBER,High,,,
+AUTH-093,Del dialogs,"หน้า Change password → กด ""Forgot your password?""","1. ตรวจ dialog ""Reset password?""
+2. กด ""Send reset link"" → เช็กกล่องจดหมายจริง
+3. (เปิดใหม่) กด Cancel",อีเมลใน dialog ถูก mask (ตัวแรก + ***@domain) ของบัญชีที่ล็อกอิน; Send → dialog ปิด + confirmation toast + ลิงก์ส่งถึงจดหมายจริง; Cancel → ปิดเฉย ๆ,MEMBER,Medium,,,
+AUTH-094,Del dialogs,session NEW (SETUP-05) → เปิด forgotPwd dialog,"1. เข้า Change password → กด ""Forgot your password?""",อีเมล mask เป็นของบัญชีตัวเองที่สมัคร (ตัวแรก + ***@domain) ไม่ใช่ค่าอื่น,NEW,Low,,,
+AUTH-095,Logout,member → หน้า Settings (SETUP-07),"1. เลื่อนลงสุดถึงหมวด ""Login""
+2. แตะแถว ""Log out""","dialog เด้ง ""Log out of @{username}?"" + ข้อความ ""You will need to sign in again..."" + ปุ่ม ""Log out"" (แดง) + Cancel",MEMBER,Medium,,,
+AUTH-096,Logout,logout dialog เด้งอยู่,"1. กด ""Log out"" ใน dialog",ปิด dialog + กลับ feed แบบ guest + toast `Logged out successfully` + Member Sheet เด้ง,MEMBER,High,,,ปรับตาม batch A (ผู้ตรวจตัดสิน 2026-10-30)
+AUTH-097,Logout,logout dialog เด้งอยู่,"1. กด ""Cancel""",dialog ปิดเฉย ๆ ยังเป็น member อยู่หน้า Settings เดิม ไม่มีอะไรเปลี่ยน,MEMBER,Medium,,,
+AUTH-098,Sign in (lockout),ล็อกอีเมล A แล้ว (ผิดครบ 5 ครั้ง) ; มีอีเมล B ที่ถูกต้อง,1. กรอกอีเมล B + รหัสที่ถูกต้อง → Sign in,เข้าได้ปกติ (ตัวนับของ A ไม่กระทบ B) — เข้าไม่ได้ = FAIL,GUEST,High,,,
+AUTH-099,Sign in (lockout),ล็อกอีเมล A แล้ว ระยะเวลาเหลือ > 2 นาที,1. ปิดแอปสนิท (kill) 2. เปิดใหม่ → onboarding signin → กรอก A,ยังล็อก ปุ่ม Sign in กดไม่ได้ เวลาที่เหลือต่อจากเดิม (ไม่รีเซ็ต) — เข้าได้ = FAIL,GUEST,High,,,
+AUTH-100,Sign in (lockout),ล็อกอีเมล A แล้ว ระยะเวลาเหลือ > 2 นาที (ทดสอบบนแอปจริงเท่านั้น — prototype จำลองได้แค่การเก็บในเครื่อง ล้างข้อมูลเว็บจะรีเซ็ต จึงไม่ใช่ผลที่ใช้ตัดสิน),1. ล้างข้อมูลแอปหรือถอนแล้วติดตั้งใหม่ 2. Sign in ด้วย A,ยังล็อก — ตัวนับและเวลาเก็บที่เซิร์ฟเวอร์ เข้าได้ = FAIL,GUEST,High,,,
+AUTH-101,Sign in (lockout),ล็อกอีเมล A แล้ว,1. กรอก A + รหัสที่ถูกต้อง → Sign in,ปฏิเสธด้วยข้อความล็อก (ไม่ใช่ข้อความรหัสผิด) เข้า feed ไม่ได้,GUEST,High,,,
+AUTH-102,Sign in (lockout),ล็อกอีเมล A แล้ว,"1. แตะ ""ลืมรหัสผ่าน?"" 2. กรอก A → ส่ง reset link",เปิดหน้า Forgot ได้และส่งลิงก์ได้ (ไม่ถูกบล็อกตามการล็อก) — ถูกบล็อก = FAIL,GUEST,High,,,
+AUTH-103,Sign in (lockout),อีเมล C ที่ไม่มีบัญชี,1. ผิด 5 ครั้งด้วยอีเมล C 2. ดูข้อความที่ขึ้น 3. เทียบกับ AUTH-047 (อีเมลมีบัญชี),ล็อกเหมือนกัน ข้อความเหมือนกันทุกตัวอักษร — ต่างกัน = FAIL (รั่วว่ามีบัญชีหรือไม่),GUEST,High,,,
+AUTH-104,Sign in (lockout),ล็อกอีเมล A ครบ 15 นาที (ดูเวลาที่เซิร์ฟเวอร์กำหนด),1. รอจนตัวนับถึง 0 2. Sign in ด้วย A + รหัสที่ถูกต้อง,ข้อความล็อกหายและปุ่มกดได้ เข้าได้ ผิดครั้งถัดไปนับจาก 0 — ไม่ปลด = FAIL,GUEST,High,,,

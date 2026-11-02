@@ -130,10 +130,17 @@ Tab behavior:
 - กด Chat / Boards / Alerts / Profile → เปิด sub page ทับ feed **แบบ swap ทันที ไม่มี slide animation** (IG behavior — nav-tab pages replace กัน)
 - กด Feed → เคลียร์ sub stack ทั้งหมดกลับ feed shell
 - กด Feed ซ้ำตอนอยู่ feed อยู่แล้ว → refresh list + smooth scroll to top (IG behavior)
+- (DEC-25) re-tap แท็บใดก็ได้ที่ active อยู่ = pop กลับ root ของแท็บนั้น; สลับแท็บคงหน้าลึกและ scroll ของแท็บ
 - กด Boards → board เปิดใหม่พร้อม search state ว่างเสมอ
 - Active state ไฮไลต์แท็บของ page ที่กำลังแสดง; ดู public profile ของคนอื่นไม่ไฮไลต์ Profile tab
 - Guest gate: แท็บ Chat / Alerts / Profile เป็น login-required — guest กดแล้วเปิด Member Sheet `Join TukDaeng`; Feed / Boards ใช้ได้เสรี
 - แท็บทำงานบน surface ล่างสุดเสมอ — เปิดจาก sub page ที่มี nav ของตัวเองจะ swap root page ใหม่ (ไม่ stack ทับกัน)
+
+## 6.3A Feed Scroll-to-Hide (IG behavior — DEC-18)
+
+- มีเฉพาะหน้า Feed (`.feed-scroll`): เลื่อนลงเกิน 56px และเลื่อนลงต่อเนื่อง (ระยะต่อเฟรม > 6px) → ซ่อน app header และ bottom nav
+- เลื่อนขึ้น (> 6px) หรือกลับถึงใกล้บนสุด (≤ 8px) → แสดง header และ nav กลับทันที
+- ไม่มีผลกับหน้าอื่น (sub-page, chat, alerts, profile, board, viewer/detail) — nav ของหน้านั้นต้องแสดงตลอด
 
 ## 6.4 App Header (Feed Shell)
 
@@ -234,11 +241,10 @@ Alerts tab (`alerts` sub page) — แตะ row แล้ว mark read + sync b
 
 | Notification Type | Destination | Notes |
 | --- | --- | --- |
-| Like | Post Viewer — โพสต์ของตัวเอง 1 ใบ (header `Post` / username) | โพสต์หายแล้ว → toast `This post is no longer available` (contract: unavailable state) |
-| Comment | Post Viewer — โพสต์ของตัวเอง 1 ใบ | เหมือน Like — comment ไม่ focus/deep-scroll ใน V1 |
+| Like | Post Viewer — โพสต์ของตัวเอง 1 ใบ (header `Post` / username) | โพสต์หายแล้ว → unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว` + `Go back` (§10 — ไม่ใช่ toast) |
+| Comment | Post Viewer — โพสต์ของตัวเอง 1 ใบ | เหมือน Like — comment ไม่ focus/deep-scroll ใน V1; โพสต์หาย → unavailable state เดียวกัน |
 | Follow | Public Profile — `rpPush("profile:{user}")` | blocked/unavailable → fallback ตาม §10 |
-| Watch Alert | Post Viewer — โพสต์ที่ match โดยตรง | ไม่มี Result List คั่นใน V1 |
-| System | placeholder — ไม่มี destination ใน V1 | security alert type (`A new device just logged in...`); prototype tap = toast `Security details aren't in this prototype yet`; destination contract อยู่ 09_NOTIFICATION |
+| Watch Alert | Post Viewer — โพสต์ที่ match โดยตรง | ไม่มี Result List คั่นใน V1; โพสต์หาย → unavailable state parity กับ like/comment (resolved FSP-030) |
 
 Follow row เท่านั้นที่มี dismiss (X) + `Follow back` button — รายละเอียด UI อยู่ 09_NOTIFICATION; Mark all as read อยู่บน section header แรก
 
@@ -441,3 +447,21 @@ Prototype-only artifacts (ไม่ใช่ spec feature): design variants ใ�
 - Future service menu taxonomy (drawer destinations)
 - System notification destination surface
 - Back Office navigation map
+
+
+## DEC-25 Amendment — Tab state และ re-tap (IG)
+
+- แท็บล่างทุกแท็บ (Feed/Chat/Boards/Alerts/Profile) จำหน้าลึกและตำแหน่ง scroll ของตัวเอง; สลับแท็บ ≠ รีเฟรช
+- re-tap แท็บที่ active อยู่ = pop กลับ root ของแท็บนั้น และ scroll ขึ้นบนสุด (Feed รีเฟรชรายการด้วย)
+- Feed: pull-to-refresh และ infinite scroll ตาม DEC-13/15
+
+
+## Batch A Amendments (2026-10-30)
+
+- Drawer placeholder toast ใน production: `เร็ว ๆ นี้` / `Coming soon` (ข้อความ `Not in this prototype yet` ใช้เฉพาะ prototype)
+- Drawer TH labels: แบรนด์นาฬิกา, ดัชนีราคานาฬิกา, ร้านนาฬิกา, ร้านอุปกรณ์เสริม, ศูนย์ซ่อมแซม, ศูนย์ประมูล, ศูนย์ฝากขาย, ศูนย์ตรวจเช็คแท้, ชุมชนคนรักนาฬิกา
+- Drawer ปิดได้ด้วย scrim และ device back (Android); แตะ burger ซ้ำไม่ทำอะไร
+- Android back = in-app back เสมอ (ถอยทีละหน้า) ที่ root (Feed) ออกจากแอปตามมาตรฐาน OS
+- ขณะดู profile ของคนอื่น ไม่ไฮไลต์แท็บใด
+- สลับภาษาแล้วคงตำแหน่ง scroll
+- Viewer โหมด feed/pfp เลื่อนอิสระ; โหมด immersive snap ทีละโพสต์

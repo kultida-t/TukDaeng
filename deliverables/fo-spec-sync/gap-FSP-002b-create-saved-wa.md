@@ -129,7 +129,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — save/wl sheets ~
 - **FSP-022 (11_SOCIAL)**: scope ใหญ่สุด — Saved/Wishlist/Collections/Archive ทั้งระบบไม่มีใน spec เลย (เขียน section ใหม่หรือแยก module), like/favorites/interested 3 ระบบ, share sheet mock, comment sheet-everywhere + dead composer, `lk-follow` visual-only, guest share gate conflict
 - **FSP-014 (13_SETTINGS)**: settings page มี section `คลังของคุณ/Your library` (Saved/Wish List/Archive/Watch Alerts + counts) + `สิ่งที่คุณเห็น/What you see` (Favorites/Muted/Blocked/Content preferences) — เอกสาร 13 ต้องรับ library section นี้
 - **FSP-004 (13/delete account)**: delete-account copy กล่าวถึง watch alerts โดยตรง (`watch alerts จะถูกยกเลิกอัตโนมัติเมื่อเริ่มลบบัญชี` ~17275/17283) — เอกสาร lifecycle ต้อง sync
-- **EN-hardcode sweep**: WA toasts + saved/wl dialogs + nc/edit-collection surfaces จำนวนมากไม่มี isTh branch — รวมกับ search EN gap ของ 002a เป็น i18n sweep (FSP-026)
+- **EN-hardcode sweep**: WA toasts + saved/wl dialogs + nc/edit-collection surfaces จำนวนมากไม่มี isTh branch — รวมกับ search EN gap ของ 002a เป็น language sweep (FSP-026)
 - **ยืนยัน context ที่ได้รับมา**: Watch Alert 2 entries ขัด spec search-only (C1), save/wl sheets เปิดจาก feed/detail (A5/A6), composer มี post+asset 2 โหมด (A1–A3 — เดิมเคยเขียนเป็น Add Asset)
 - **`lk-follow` ไม่ sync สถานะจริง**: likes sheet ปุ่ม Follow toggle class อย่างเดียวไม่เรียก `setFollowing` — จดเป็น visual-only inconsistency ให้ FSP-022
 - **`salePosts()` ใช้ร่วมกัน**: search result grid + WA match/count ใช้ฟังก์ชันเดียวกัน → C4 กระทบทั้ง 03 และ 10

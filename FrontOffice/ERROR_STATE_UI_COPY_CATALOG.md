@@ -1,11 +1,11 @@
 # Front Office Error State UI Copy Catalog
 
-**Baseline Version:** `FO-PRD-v1.9`  
+**Baseline Version:** `FO-PRD-v1.10`  
 **Date:** 2026-07-02  
 **Owner:** Product / UX / Dev / QA  
 **Scope:** Final Front Office error, loading, fallback, and retry copy for Dev handoff.
 
-> **Sync note (FO-PRD-v1.9, 2026-10-22):** FO V1 ไม่มี infinite scroll / load-more pagination — state ที่อ้าง pagination เป็น contract-only; like count เป็น private (เห็นเฉพาะเจ้าของโพสต์ — S-26)
+> **Sync note (FO-PRD-v1.9, 2026-10-22):** state ที่อ้าง pagination เป็น contract-only; like count เป็น private (เห็นเฉพาะเจ้าของโพสต์ — S-26) — **update 2026-11-02 (DEC-13/15):** feed มี infinite scroll 10 โพสต์/หน้า + pull-to-refresh แล้วใน V1
 
 ---
 
@@ -316,3 +316,9 @@ Approved exceptions:
 - Owner fallback must not show owner-dependent actions unless owner id and permission state are known.
 - Retry actions must be idempotent and scoped to the failed request.
 - QA should verify trigger, UI behavior, copy, retry scope, and data preservation for every state in this catalog.
+
+
+## DEC-25 Amendments — Error states (IG)
+
+- โหลดไม่สำเร็จ: "Unable to load data" / "ไม่สามารถโหลดข้อมูลได้" + ปุ่ม "Try again" / "ลองใหม่"
+- ออฟไลน์: แสดงข้อมูลที่โหลดไว้แล้ว + แถบ "You're offline" / "คุณออฟไลน์อยู่" โดยไม่บัง tabs/nav

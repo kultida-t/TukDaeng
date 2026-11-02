@@ -108,7 +108,7 @@
 - รองรับการ Like โพสต์ (กดหัวใจ — like count เป็น private เห็นเฉพาะเจ้าของโพสต์, S-26)
 - ปุ่ม "Watch Alert" เพื่อตั้งการแจ้งเตือน (shared sheet)
 - ปุ่ม "+" เพื่อสร้างโพสต์/สินทรัพย์ใหม่ (composer)
-- ไม่มี pull-to-refresh / infinite scroll — render list ครั้งเดียว
+- Infinite scroll (10 โพสต์/หน้า — DEC-13) + pull-to-refresh (DEC-15); ไม่มี end-of-list marker
 
 **Business Rules:**
 - Tab "กำลังติดตาม" แสดงเฉพาะโพสต์จาก seller ที่ผู้ใช้ติดตาม
@@ -241,7 +241,6 @@
 | Comment | มีคนคอมเมนต์โพสต์ | เปิด Post Viewer ของโพสต์ |
 | Follow | มีคนติดตาม | เปิด Public Profile + inline Follow back / dismiss |
 | Watch Alert | พบ post ตรง Watch Alert | เปิด Post Viewer ของ post ที่ match โดยตรง (S-08) |
-| System | system/security row (S-17) | placeholder destination |
 
 - `Mark all as read` + nav badge (cap `99+`)
 - Chat/New Message = badge-only ที่เมนู Chat ไม่เข้า Alerts feed

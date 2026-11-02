@@ -1,7 +1,7 @@
 # TukDaeng Dev Baseline Handoff
 
 **Date:** 2026-06-22  
-**Baseline Version:** `FO-PRD-v1.0` (superseded — current synced baseline `FO-PRD-v1.9`, 2026-10-22)
+**Baseline Version:** `FO-PRD-v1.0` (superseded — current synced baseline `FO-PRD-v1.10`, 2026-10-30)
 **Purpose:** ส่ง baseline เอกสารล่าสุดทั้งชุดให้ Dev ใช้แทนเอกสารเก่าที่เคย implement ก่อนหน้า  
 **Status:** Product-reviewed and approved as Dev baseline  
 **Primary Source of Truth:** [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
@@ -93,7 +93,7 @@ Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `F
 
 ## Alerts feed / Settings / Board
 
-- Alerts feed types = Like, Comment, Follow, Watch Alert + `system` placeholder (S-17)
+- Alerts feed types = Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17)
 - Settings = IG-style six sections (S-05); Change Password in-app (S-28); Delete Account = two-page flow + login-to-restore (S-02/S-27)
 - Board is editorial magazine (S-01); FO users do not create/edit/delete articles in V1
 - Share (รวม article) เป็น member-only — guest เจอ Member Sheet (S-03); Article Like requires login

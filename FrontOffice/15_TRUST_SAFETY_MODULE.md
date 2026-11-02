@@ -1,6 +1,6 @@
 ﻿# 15 Trust & Safety Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng`), §13 (block/report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.1 (canonical destination terms — Report Stack), §6.2 (layer model), §6.6 (sub-page route map `report:*`), §6.7 (in-app back — `sub-x` ปิดทั้งกอง), §9 (gate routing), §10 (unavailable fallback) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (canonical shared surfaces `blkSheetHTML`/`unblockDlgHTML`/`pfSetBlocked`/`pfRestrictHint` + keep-page S-13 — FSP-019 lock) + [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (`chatReportSheet`/`rpFromChat`/`rpDelChat` + `th.blocked` room effects — FSP-020 lock) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) (comment popover + `uc-report` entry + `Blocked and hidden comments`) + [12_BOARD_MODULE.md](12_BOARD_MODULE.md) §13 (Report Board Content contract — S-04) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng`), §13 (block/report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.1 (canonical destination terms — Report Stack), §6.2 (layer model), §6.6 (sub-page route map `report:*`), §6.7 (in-app back — `sub-x` ปิดทั้งกอง), §9 (gate routing), §10 (unavailable fallback) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (canonical shared surfaces `blkSheetHTML`/`unblockDlgHTML`/`pfSetBlocked`/`pfRestrictHint` + keep-page S-13 — FSP-019 lock) + [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (`chatReportSheet`/`rpFromChat`/`rpDelChat` + `th.blocked` room effects — FSP-020 lock) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) (comment popover + `uc-report` entry + `Blocked and hidden comments`) + [12_BOARD_MODULE.md](12_BOARD_MODULE.md) §13 (Report Board Content contract — S-04) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -9,7 +9,7 @@
 | Field | Detail |
 | --- | --- |
 | Module Name | Trust & Safety — report stack + shared block/unblock surfaces + moderation handoff |
-| Version | 1.9 (FO-PRD-v1.9 spec-sync FSP-031) |
+| Version | 1.10 (baseline FO-PRD-v1.10 · spec-synced FO-PRD-v1.9 FSP-031) |
 | Status | Functional PRD — synced to fo-flow prototype |
 | Owner | Tuk Daeng Project |
 | Document Type | Front Office Functional PRD |
@@ -34,7 +34,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Reasons: `PM_REASONS`/`PM_REASONS_TH` (~14108–14129 — 9 เหตุผลชุดเดียวทุก report type/page)
 - Report stack plumbing: `rpOpenFromPost` (~15110 — post `...` entry; pv-open → `rp-over` mode ทับ post viewer), `rpPush` (~15121 — push + slide restart), `pmDropCovered` (~15128 — snap sheet shut เมื่อถูก report page ครอบ), `rpBack` (~15137 — pop ทีละหน้า ghost slide-out-right), `rpClose` (~15155 — ปิดทั้งกอง + `hadDone && rpDelChat` → `t.hidden` + ออกจาก `C.threads` + strip `chmenu:`/`chatroom:` + unshift `chat`)
 - Report pages (`subHTML` ~17749–17809): reason pages `report`/`report:user`/`report:post`/`report:comment` (~17750), picker `report:pick:{u}` (~17763), done page `report:done:{u}` (~17778 — `rp-step` rows + green check), post picker `report:posts:{u}` (~17800 — `rp-tile` grid + `Next`)
-- Shared surfaces: `blkSheetHTML(u, fromChat)` (~16929), `chatReportSheetHTML(u, tid)` (~16946), `unblockDlgHTML` (~16959), `muteDlgHTML` (~14950), `pfRestrictHint` (~16968 — defined แต่ไม่ถูก wire, dead-call flag 06/07)
+- Shared surfaces: `blkSheetHTML(u, fromChat)` (~16929), `chatReportSheetHTML(u, tid)` (~16946), `unblockDlgHTML` (~16959), `muteDlgHTML` (~14950), `pfRestrictHint` (~17310 — wire หลัง `dlg-unblock-go` แล้ว + I18N_TH)
 - Block engine: `pfSetBlocked`/`pfIsBlocked`/`pfSetMuted`/`pfIsMuted` (~16894–16926 — `PF_BLOCKED`+`PF_REMOVED_FOL`+unfollow+`th.blocked` ทุก thread+`p.blocked` ทุกโพสต์+feed re-render)
 - Entries/handlers: post `...` menu `pmMenuHTML` (~14131 — `pm-go-report` row), `pm-go-report` handler (~20813), `uc-report` uncomf card (~14218 + handler ~20863), `pf-sh-report`/`pf-sh-block` (~21746/21770/21780), `blk-rep` Block-and-report (~21827), `blk-go` (~21837 — `Blocking` transient / `Blocked and hidden comments`), `dlg-unblock-go` (~20926 — `Unblocked`), `dlg-mute-go` (~20914 — `Muted` + done-step green check), `rp-step`/`rp-next`/`rp-done` (~21865–21889), `ch-rep-del-btn`/`ch-rep-only-btn` (~21796–21810 — set `rpFromChat`/`rpDelChat`), comment popover (~13746–13772 — own: Delete; others: Block + Report; guest → `obGate` ~22804)
 - Guest gate: `GUEST_GATE_SEL` (~23362–23371) + first-line gate check (~20395 → `obGate()` Member Sheet ก่อน handler ใด ๆ)
@@ -88,7 +88,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Trust score / Reputation score
 - Automated moderation / AI content detection
 - Moderation notifications in Front Office
-- Restrict feature (`pfRestrictHint` banner เป็น helper ที่ defined แต่ไม่ถูก wire — ไม่มี restrict flow; ดู §20 D6)
+- Restrict feature (`pfRestrictHint` banner แสดงจริงหลัง unblock เป็น hint เท่านั้น — ไม่มี restrict flow)
 - Message-level report (report `report:done` ไม่มี message steps — IG มี แต่ TukDaeng ตัด)
 
 ---
@@ -105,7 +105,7 @@ Report stack = `.page-sub` + `rp-over` layer (canonical 00_NAV §6.1/§6.2) — 
 | `report:post` | Post reason page (ผ่าน picker) | `<` + `✕` | `Why are you reporting this post?` + `PM_REASONS` |
 | `report:user` | User reason page | `<` + `✕` — **`rpFromChat` → `✕` เท่านั้น** | `Why are you reporting this account?` + `PM_REASONS` |
 | `report:comment` | Comment reason page | title `Report` + `✕` — **ไม่มี `<`** | `Why are you reporting this comment?` + `PM_REASONS` |
-| `report:done:{u}` | Thanks + other steps | `<` + `✕` — **`rpFromChat` หรือ comment target → `✕` เท่านั้น** | `Thanks for your feedback` + `Other steps you can take` + `rp-step` rows + `Done` |
+| `report:done:{u}` | Thanks + other steps | `<` + `✕` — **`rpFromChat` → `✕` เท่านั้น** | `Thanks for your feedback` + `Other steps you can take` + `rp-step` rows + `Done` |
 
 Anonymous disclaimer เหมือนกันทุก reason/pick page: `Your report is anonymous. If someone is in immediate danger, call the local emergency services - don't wait.` (TH: `การรายงานของคุณจะไม่เปิดเผยตัวตน หากมีคนตกอยู่ในอันตรายทันที โปรดโทรติดต่อบริการฉุกเฉินในพื้นที่`)
 
@@ -198,7 +198,7 @@ Anonymous disclaimer เหมือนกันทุก reason/pick page: `You
 
 - `Unblock {u}?` + `{u} and other profiles they may have or create will now be able to request to follow and message you on TukDaeng. They won't be notified that you unblocked them.` + `Unblock` (danger) + `Cancel`
 - `Unblock` → `pfSetBlocked(false)` → toast `Unblocked` + re-render — **ไม่ re-follow เสมอ**; ฝั่งถูก unblock ไม่ถูกแจ้ง
-- restrict-hint banner (`pfRestrictHint` ~6s, tap dismiss, `Learn more` dead) เป็น canonical 06 contract — helper defined แต่ไม่ถูก wire ใน build ปัจจุบัน (dead-call — flag 06/07; ดู §20 D6)
+- restrict-hint banner (`pfRestrictHint` ~6s, tap dismiss, `Learn more` dead) เป็น canonical 06 contract — wire หลัง `dlg-unblock-go` แล้ว (มี I18N_TH)
 - ประวัติแชทคงอ่านได้ read-only ทั้งก่อนและหลัง unblock; block/unblock ไม่ลบ thread
 
 ## `chatReportSheet` — Chat report confirmation (bottom sheet, canonical 07)
@@ -217,7 +217,7 @@ Anonymous disclaimer เหมือนกันทุก reason/pick page: `You
 | --- | --- |
 | Report (ทุก type) | `report:done` page (`Thanks for your feedback` + steps) → `Done`/`✕` → toast `Report submitted · thanks for letting us know` |
 | Block | transient toast `Blocking` (จาก comment context: `Blocked and hidden comments`) |
-| Unblock | toast `Unblocked` (+ restrict-hint banner contract 06 — dead-call §20 D6) |
+| Unblock | toast `Unblocked` + restrict-hint banner ~6s (contract 06 — wire แล้ว §20 D6) |
 | Mute (done step) | `Muted` toast + step green check |
 | Unfollow (done step) | `Unfollowed` toast + step green check |
 | Unmute (done step) | `Unmuted` toast + step กลับเป็น `Mute` |
@@ -254,7 +254,7 @@ profile "..." -> Report (pf-sh-report)
 ```text
 long-press comment ของคนอื่น -> popover -> Report
 -> report:comment (X only, ไม่มี <)
--> เหตุผล PM_REASONS -> report:done:{u} (X only — comment target)
+-> เหตุผล PM_REASONS -> report:done:{u} (มี `<` ย้อนได้ เหมือน type อื่น)
 -> Done/✕ -> rpClose + toast
 ```
 
@@ -310,7 +310,7 @@ Sign Up -> Accept Terms of Use and Privacy Policy -> Continue registration
 
 - Report ทุก live type ใช้ `.page-sub` report stack เท่านั้น — ห้าม bottom-sheet form / center dialog form (D1/D9 master)
 - `✕` (`sub-x`/`rpClose`) ปิด report stack ทั้งกองในครั้งเดียว คงหน้าที่เปิด report ไว้เสมอ
-- `<` (`rpBack`) pop ทีละหน้า — แสดงเฉพาะหน้าที่มาจากการ push ต่อ (`report:posts`/`report:post`/`report:user`/`report:done` ยกเว้น `rpFromChat` และ comment target)
+- `<` (`rpBack`) pop ทีละหน้า — แสดงเฉพาะหน้าที่มาจากการ push ต่อ (`report:posts`/`report:post`/`report:user`/`report:done` ยกเว้น `rpFromChat`)
 - Mid-flow dismiss (X, `<` จนหมดกอง, backdrop, system back) ต้องไม่สร้าง report
 - Report page ที่เปิดทับ post viewer ต้องใช้ `rp-over` mode — viewer อยู่ข้างล่างและกลับมาเมื่อกองปิด
 - `report` reason page (จาก post `...`/uncomf) ต้อง set `rpUser` = seller ของโพสต์เพื่อให้ `report:done` step rows ผูกกับเจ้าของโพสต์
@@ -475,7 +475,7 @@ Report รองรับ type ต่อไปนี้ตาม master (QA-TS-0
 
 # 17. Empty State
 
-Trust & Safety Front Office ไม่มี list empty state หลักใน V1 — report stack ไม่มี "no reports" surface; `report:posts:{u}` grid ของ user ที่ไม่มีโพสต์ render เป็น grid ว่าง (ไม่มี dedicated empty copy — quirk §20 D7)
+Trust & Safety Front Office ไม่มี list empty state หลักใน V1 — report stack ไม่มี "no reports" surface; `report:posts:{u}` ของ user ที่ไม่มีโพสต์แสดง empty copy `ยังไม่มีโพสต์`/`No posts yet` + `Next` ยัง disabled
 
 หากมี Back Office report list ให้ใช้ empty state ตาม Back Office spec ไม่ใช่ Front Office module นี้
 
@@ -514,11 +514,11 @@ Trust & Safety ไม่อยู่ใน Notification baseline ของ maste
 | D3 | Reason set เดียวทุก type | `PM_REASONS` 9 เหตุผล; reason row = submit (ไม่มี Submit button/Additional details บน live stack) | spec เดิมมีชุดเหตุผลแยกตาม type + optional details + disabled submit — Board Content contract ยังใช้ sheet แยก (12 §13) |
 | D4 | Success = `report:done` + toast | `Thanks for your feedback` + other-steps rows + `Done` → `Report submitted · thanks for letting us know` | spec เดิม `Report submitted`/`Our team will review…` form success ถูกแทนที่ — Board Content contract ยังคง copy เดิม (spec-only) |
 | D5 | Report ไม่เปลี่ยน visibility | post/profile/comment ยังเปิดได้ปกติหลัง report | ตรง master — report ≠ removal |
-| D6 | `pfRestrictHint` dead-call | helper defined (~16968) แต่ไม่มี caller — banner ไม่เคยแสดงใน build จริง | canonical 06/13 spec ระบุ banner หลัง unblock เป็น contract — flag 06/07; restrict feature ไม่มีใน V1 |
-| D7 | `report:posts` empty grid | user ที่ไม่มีโพสต์ → picker render grid ว่างไม่มี empty copy | documented quirk |
+| D6 | `pfRestrictHint` | wire หลัง `dlg-unblock-go` แล้ว + I18N_TH — banner ~6s แสดงจริง | canonical 06 contract ตรง — restrict feature เองไม่มีใน V1 (banner เป็น hint เท่านั้น) — resolved 2026-10-29 |
+| D7 | `report:posts` empty state | user ที่ไม่มีโพสต์ → picker แสดง `ยังไม่มีโพสต์`/`No posts yet` + `Next` disabled | resolved 2026-10-29 — เพิ่ม empty copy ตาม empty standard |
 | D8 | Report routes ไม่มี persistence | `rpFromChat`/`rpDelChat`/`rpTargetType`/`_rpDone`/`_rpSel`/`_rpBase` เป็น screen-dataset/memory state — reload = หาย | mock simplification — production = report draft/records จริง |
 | D9 | Uncomf-card report = post report | `uc-report` เปิด `report` page เดียวกับ post `...` (ไม่มี "uncomfortable" report type) | IG pattern — feedback card เป็น entry เสริม ไม่ใช่ type ใหม่ |
-| D10 | Comment report = X-only | `report:comment` + `report:done` (comment target) ไม่มี `<` — ออกได้ด้วย X เท่านั้น | documented quirk — ปิดทั้งกองกลับ surface เดิม |
+| D10 | Comment reason page = X-only | `report:comment` เป็น stack root ไม่มี `<`; `report:done` มี `<` เหมือน type อื่น (resolved 2026-10-29) | — |
 
 ---
 
@@ -601,7 +601,7 @@ And chat entry ต้องข้าม `report:pick` และไม่มี `
 
 Given Member long-press comment ของ user อื่น  
 When Member เลือก Report จาก popover และเลือกเหตุผล  
-Then ระบบต้องเปิด `report:comment` (X only) → `report:done` → toast `Report submitted · thanks for letting us know`
+Then ระบบต้องเปิด `report:comment` (X only) → `report:done` (มี `<` ย้อนได้เหมือน type อื่น) → toast `Report submitted · thanks for letting us know`
 
 ## AC-TS-009: Report Board Content (contract)
 
@@ -702,3 +702,8 @@ And เมื่อ confirm ต้อง `pfSetBlocked(false)` + toast `Unblocke
 - Automated Moderation / AI Content Detection
 - Moderation notification
 - Message-level report (chat message รายข้อความ)
+
+
+## DEC-28 Amendment — Block state (IG)
+- สถานะ block ของบัญชีเก็บบนเซิร์ฟเวอร์ คงอยู่ข้ามเครื่องและหลัง sign-out/sign-in
+- เนื้อหาของผู้ที่ถูกบล็อกถูกซ่อนทุกอุปกรณ์ของผู้บล็อก

@@ -3,7 +3,7 @@
 **Document Type:** Master Product Definition / PRD Baseline  
 **Source Documents:** `PRD.md`, `FO_Functional_PRD.md`  
 **Purpose:** ใช้เป็นหลักยึดกลางก่อนแตกเป็น Functional PRD รายโมดูล  
-**Status:** Synced to fo-flow prototype baseline (FO-PRD-v1.9) — Draft for Dev & QA Review
+**Status:** Synced to fo-flow prototype baseline (FO-PRD-v1.10) — Draft for Dev & QA Review
 
 > **Sync note (FO-PRD-v1.9, 2026-10-22):** เอกสารนี้ sync ตาม module specs ที่ rewrite ให้ตรง `Prototypes/fo-flow/index.html` (locked prototype — source of truth) ผ่าน mission FSP-006–024 + sign-off S-01–S-29 ใน `deliverables/fo-spec-sync/FSP-005-consolidated-gap-signoff.md` — ทุกจุดที่ master เดิมขัด prototype ให้ยึด prototype (ตัวเลือก default ของ sign-off) ส่วนรายการที่เป็น production contract แต่ prototype ไม่ครอบ ให้ mark เป็น `(contract — prototype ไม่ครอบ)` ตามแบบ module specs — decision log รวมอยู่ที่ §16
 
@@ -149,7 +149,7 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 | Public Profile | โปรไฟล์ของ User อื่น เห็นเฉพาะ Asset สถานะ Sale และ Show |
 | Watch Alert | การตั้งเงื่อนไขแจ้งเตือนเมื่อมี Asset Sale ที่ตรง Criteria |
 | Member Sheet | bottom sheet `Join TukDaeng` — guest gate เดียวของระบบ (เดิมเรียก Global Login Required Dialog) |
-| Alerts feed | หน้าแจ้งเตือนในแอป (เดิมเรียก Notification Center) — like/comment/follow/watch/system rows |
+| Alerts feed | หน้าแจ้งเตือนในแอป (เดิมเรียก Notification Center) — like/comment/follow/watch rows |
 | Liked | flag per-post — โพสต์ที่ user กด like; รายการอยู่ Settings > Content preferences > Interested |
 | Favorites | account-level favorite sellers — ใช้เป็น feed filter tab `Favorites`; **ไม่ใช่** liked posts |
 | Saved / Wish List | private post collections ของ user (hub + collection CRUD) |
@@ -217,7 +217,7 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
   - Following: ทุกโพสต์ eligible ของ sellers ที่ user follow (ไม่จำกัด sale)
   - Favorites: โพสต์ของ favorite sellers (account-level favorite — **ไม่ใช่** liked posts)
 - Guest ดู feed และกดทุก tab ได้โดยไม่ gate (S-16)
-- Feed ไม่มี infinite scroll / pull-to-refresh ใน V1 — render list ครั้งเดียว (contract: performance targets อยู่ §12)
+- Feed มี infinite scroll (10 โพสต์/หน้า โหลดเมื่อเหลือ 3 การ์ด — DEC-13) + pull-to-refresh (DEC-15); ไม่มี end-of-list marker (contract: performance targets อยู่ §12)
 
 ### Search
 
@@ -355,8 +355,9 @@ Create Composer (`create` sub page):
 
 Feed ไม่รองรับใน V1:
 
-- Infinite scroll / pull-to-refresh / end-of-list marker
-- Comment text composer (`.comment-input` dead — เพิ่ม comment ได้เฉพาะ emoji quick-react ใน V1)
+- End-of-list marker (infinite scroll + pull-to-refresh อยู่ใน V1 แล้วตาม DEC-13/DEC-15)
+
+Comment composer อยู่ใน V1 ตาม DEC-17 — `.comment-input` พิมพ์+ส่งได้ (ไม่มี img/gif icons), emoji quick-react ส่งทันที, reply แบบ IG flat thread ใต้ root เดียวกัน
 
 ### Share & Deep Links
 
@@ -601,11 +602,11 @@ Alerts feed รองรับ notification types:
 - Comment
 - Follow
 - Watch Alert
-- System (security — `A new device just logged in...`; placeholder destination ใน V1)
 
 Alerts feed ไม่รองรับใน Front Office V1:
 
 - Chat / New Message ไม่เป็น alert type และแจ้งเตือนเฉพาะในเมนู Chat ด้วย unread badge/count (Σunread cap `99+`)
+- System / Security alert (เช่น `A new device just logged in...`) — ถูกถอนออกจาก V1 ทั้งประเภท (DEC-41 — supersede S-17)
 - Moderation / Account Action
 - Market Update
 - Price / Valuation
@@ -917,7 +918,7 @@ Like count เป็น private แบบ IG — เฉพาะโพสต์�
 
 - Feed ควรโหลดภายใน 2 วินาที
 - รูปภาพต้อง Lazy Load
-- Feed render list ครั้งเดียว — **ไม่มี infinite scroll / pull-to-refresh / end-of-list marker ใน V1** (ตัดตาม prototype; Board ใช้ static list + `You're all caught up` end note)
+- Feed paginate + infinite scroll ตาม DEC-13 (10 โพสต์/หน้า) และ pull-to-refresh ตาม DEC-15 — ไม่มี end-of-list marker (Board ใช้ static list + `You're all caught up` end note)
 
 ### Security
 
@@ -967,11 +968,10 @@ Like count เป็น private แบบ IG — เฉพาะโพสต์�
 - Watch Brands / Watch Price Index / Community (drawer placeholder rows เท่านั้น — กดแล้ว toast)
 - Multi-level Nested Comment เกิน 1 reply level
 - Edit Comment
-- Comment text composer (emoji quick-react เท่านั้น)
 - Verified Badge
 - Status Badge บน Feed Card
 - Real-time Feed Refresh สำหรับ Asset ใหม่, Like จากอุปกรณ์อื่น และ Comment จากอุปกรณ์อื่น
-- Infinite scroll / pull-to-refresh / end-of-list marker บน Feed
+- End-of-list marker บน Feed
 - Search Sort UI, result count, saved search, Popular Filter context-aware
 - Watch Alert Result List destination
 - Native OS share sheet + real deep-link mechanism (contract เท่านั้น)
@@ -1028,7 +1028,7 @@ Sign-off decisions ที่ลงใน master รอบนี้ (อ้าง
 | S-14 | Public `all` tab leak = defect | spec = viewer เห็น Sale+Show เท่านั้น | `06_PROFILE` |
 | S-15 | Portfolio headline = Total invested (Σ purchase) | แทน Total Asset Value (Σ current) — §7 Portfolio | `14_PORTFOLIO` |
 | S-16 | Guest กด feed tabs ได้ไม่ gate | guest browse-only + empty tabs | `02_FEED` |
-| S-17 | `system` notification type อยู่ใน baseline | type ที่ 5 — placeholder destination | `09_NOTIFICATION` |
+| S-17 | `system` notification type (เดิมอยู่ใน baseline — type ที่ 5 placeholder destination) | **ถอนออกจาก V1 ทั้งประเภทตาม DEC-41 (2026-11-02)** | `09_NOTIFICATION` |
 | S-18 | ไม่เขียน E2E/Letter Sealing เป็น feature claim | dead copy เท่านั้น | `07_CHAT` |
 | S-19 | Drawer 9 items = placeholder rows | ไม่ใช่ active routes | `00_NAV` §11 |
 | S-20 | ตัด spec-only auth states | ไม่มี Confirm Password / OTP expiry / Verification Success / Reset Password page | `01_AUTHENTICATION` |

@@ -1,7 +1,7 @@
 # FSP-001b — Gap Inventory: Navigation / Drawer / Global Shell
 
 วันที่สแกน: 21 ต.ค. 2026
-Source of truth: `Prototypes/fo-flow/index.html` (read-only, ~23k บรรทัด — bottom nav ~16788–16800, drawer ~19379–19394 + i18n ~19683–19698, nav wiring ~21274–21302, sub-page stack ~14783–14945 + subHTML route table ~17151–17583, guest gate ~22996–23011, alerts click ~17776–17825)
+Source of truth: `Prototypes/fo-flow/index.html` (read-only, ~23k บรรทัด — bottom nav ~16788–16800, drawer ~19379–19394 + language ~19683–19698, nav wiring ~21274–21302, sub-page stack ~14783–14945 + subHTML route table ~17151–17583, guest gate ~22996–23011, alerts click ~17776–17825)
 เทียบกับ: `FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` + `FrontOffice/00_GLOBAL_RULES_MODULE.md`
 
 ---

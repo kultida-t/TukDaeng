@@ -92,7 +92,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 ## Firebase Cloud Messaging
 
 - ใช้สำหรับ Push Notifications
-- Notification type ใน V1 จำกัดที่ Like, Comment, Follow, Watch Alert + `system` (S-17 — placeholder destination ตาม 09_NOTIFICATION)
+- Notification type ใน V1 จำกัดที่ Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17)
 - Watch Alert notification ต้องเปิด Post Viewer ของ post ที่ match โดยตรง — ไม่มี Watch Alert Result List คั่นใน V1 (S-08)
 - Notification destination ต้อง validate auth, permission, asset status, deletion และ block state
 

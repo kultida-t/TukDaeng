@@ -1,6 +1,6 @@
 # 05 Post Detail Module (Asset Detail)
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§10 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / own-post menu / Edit info canonical) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (post viewer 3 modes + lifecycle matrix canonical — FSP-016 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§10 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / own-post menu / Edit info canonical) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (post viewer 3 modes + lifecycle matrix canonical — FSP-016 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -193,10 +193,10 @@ Post Detail
 
 ```text
 `wl-btn` (gift — title `Wish List`)
-→ ครั้งแรก: set `wishlisted` + `wlCol:"Wishlist"` + sync icon → เปิด wlSheet
+→ ครั้งแรก: set `wishlisted` + sync icon → เปิด wlSheet (`"Wishlist"` = pseudo-row ของ flag; `wlCols` = array multi-collection — canonical 11)
 → sheet: `Wish List` head pick + collection rows + `New collection` (→ nc sheet)
-→ pick `Wish List` ขณะ wishlisted → remove → toast `Removed from your wish list`
-→ pick col เดิม → กลับ `Wishlist` → `Removed from {col}`; pick col ใหม่ → `Added to {col}`/`Added to Wish List`
+→ pick `Wish List` ขณะ wishlisted → un-wishlist (`wlCols` ล้าง) → toast `Removed from your wish list`
+→ pick col ที่ check อยู่ → เอาออกเฉพาะ col นั้น → `Removed from {col}`; pick col ใหม่ → `wlCols.push` → `Added to {col}`/`Added to Wish List`
 ```
 
 ## Edit Info From Detail Flow
@@ -250,7 +250,7 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 | 1 | `detail-head` (dh3) | back `‹` + title `รายละเอียด`/`Detail` (กึ่งกลาง) + `pm-btn` `…` — sticky ใน scroll |
 | 2 | `detail-hero` | รูปแรกเต็มกว้าง; `photo-counter` `1/N` เมื่อ photos >1; clip badge + duration + progress เมื่อมี clip (`clipUiHTML` — mechanics canonical 02_FEED); `photo-dots` ใต้ hero |
 | 3 | `post-actions` | `like-btn` (heart — **ไม่มีตัวเลข**), `comment-btn` + count (ซ่อนทั้งปุ่มเมื่อ `noComments`), `views-stat` eye + count (ซ่อนเมื่อ `hideCounts` หรือ `views` ว่าง/`"0"`), `share-btn`; `act-right`: `mf-btn` (bell — `Follow this model`/`Following this model`) + `wl-btn` (gift — `Wish List`) |
-| 4 | `inline-tag` | `ลงขาย`/`FOR SALE` เมื่อมี `price`; `โชว์`/`SHOWCASE` (muted) เมื่อไม่มี — tag ขับด้วย price ไม่ใช่ `pfkind` (ดู Sold Post Rule) |
+| 4 | `inline-tag` | ตาม `pfkind` (DEC-21): `sale` → `ลงขาย`/`FOR SALE`; `show` → `โชว์`/`SHOWCASE` (muted); `sold` → `ขายแล้ว`/`SOLD` (muted); `hide` → `ซ่อน`/`HIDDEN` (muted); โพสต์ธรรมดา (`post`) ไม่มี tag |
 | 5 | `detail-name` | `Brand + Model` จาก flat `specs` (ตัดค่า `n/a`/`N/A` ทิ้ง); `specs` ว่าง → fallback = caption ส่วนแรกก่อน `—` (trim) |
 | 6 | `detail-ref` | `Ref. {value}`; `n/a` → `Ref. -`; **ไม่ render เลย** เมื่อ `specs` ว่าง |
 | 7 | `Descriptions`/`คำอธิบาย` + desc | `p.desc` (field ของตัวเอง — **ไม่ copy จาก caption**); ว่าง → `-`; `#tag` ภายใน desc = `.igd-tag` กด → search (เหมือน caption hashtags) |
@@ -306,9 +306,9 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 ## Wishlist Entry Rule (`wl-btn`)
 
 - `wl-btn` (gift icon) อยู่ `act-right` — เป็น wishlist entry หลักของโพสต์ (wishlist **ไม่ใช่** save/bookmark — save-btn ไม่มีบน detail)
-- กดครั้งแรกบนโพสต์ที่ยังไม่ wishlist → set `wishlisted:true` + `wlCol:"Wishlist"` + `wlAt` ทันทีก่อนเปิด sheet (optimistic) แล้วเปิด `wlSheet`
+- กดครั้งแรกบนโพสต์ที่ยังไม่ wishlist → set `wishlisted:true` + `wlAt` ทันทีก่อนเปิด sheet (optimistic) แล้วเปิด `wlSheet` (`wlCols` = multi-collection array — canonical 11; `"Wishlist"` = pseudo-row ของ flag)
 - Sheet anatomy: `Wish List` head pick (thumb = รูปแรกของ post) + `Collections` section + `New collection` + rows (`WISHLISTS` seed: `Next buy`, `Grail goals`)
-- Pick `Wish List` ขณะ wishlisted → un-wishlist (`wishlisted/wlCol/wlAt/wlColAt` reset) → toast `Removed from your wish list`; pick col ซ้ำ → กลับ `Wishlist` (`Removed from {col}`); pick col ใหม่ → `Added to {col}` / `Added to Wish List`
+- Pick `Wish List` ขณะ wishlisted → un-wishlist (`wishlisted/wlCols/wlAt/wlColAt` reset — หลุดทุก collection) → toast `Removed from your wish list`; pick col ที่ check อยู่ → เอาออกเฉพาะ col นั้น (`Removed from {col}`); pick col ใหม่ → `wlCols.push` (`Added to {col}` / `Added to Wish List`) — ติ๊กได้หลาย col
 - `New collection` → `nc` sheet (shared new-collection flow — canonical saved/library surfaces)
 - Guest → Member Sheet (`.wl-btn` ∈ `GUEST_GATE_SEL`)
 
@@ -321,7 +321,7 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 
 ## Photo Carousel Rule
 
-- Hero tap: ครึ่งขวา next / ครึ่งซ้าย prev (wrap-around), อัปเดต `photo-counter` + `photo-dots` — handler เดียวกับ feed card (`.post-photo, .detail-hero` shared)
+- Hero swipe: เลื่อนทีละ 1 รูป หยุดที่รูปแรกและรูปสุดท้าย (ไม่วน); double-tap = ไลก์ (guest → gate); single tap ไม่ทำอะไร; อัปเดต `photo-counter` + `photo-dots` — handler เดียวกับ feed card (`.post-photo, .detail-hero` shared; ตาม 02 DEC-14)
 - รูปเดียว → tap ไม่ทำอะไร; มี clip → tap = clip play control (`clipUiHTML` mechanics 02_FEED)
 - **ไม่มี** full-screen image viewer / zoom / pinch — ตัดจาก spec เดิม (B1 ใน gap inventory — contract §18)
 
@@ -336,7 +336,7 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 
 - Reachability: own profile `sold`/ `all` tab → pfp viewer → `Tap for details` (hasDetails) → `View full detail` → detail — viewer คนอื่นไม่มีทางถึง (visibility matrix; public profile leak ที่ 00_GLOBAL §10 บันทึกเป็น defect ไม่ใช่ spec)
 - Display: detail render ตามข้อมูลที่โพสต์เหลือ — `pfkind:"sold"` **ไม่**เปลี่ยน anatomy
-  - โพสต์ที่ขายผ่าน `markAssetSold`: price + specGroups คงอยู่ → ยังขึ้น `FOR SALE` tag + spec groups เต็ม (deviation — ไม่มี sold state บน detail tag)
+  - โพสต์ที่ขายผ่าน `markAssetSold`: tag เป็น `SOLD` (DEC-21) และ spec groups คงอยู่
   - gfx sold seeds (`PF_GFX_SOLD`): flat `specs` เท่านั้น + `price:null` → `SHOWCASE` tag + name จาก specs + ไม่มี spec groups (deviation — tag อ่านจาก price ไม่ใช่ pfkind)
 - `pm-btn` บน sold post → `View sale record` แทน `Edit` → `sold:{id}` page (private sale record — canonical 04/14; `soldFromPost` materialize เมื่อไม่มี link)
 - `sold` ไม่มี `Edit`/`Mark as sold` ใน menu; `applyPostEdit` กัน status sold ไว้แล้ว (canonical 02/04)
@@ -368,15 +368,15 @@ Spec เลือกตาม prototype — รายการนี้คือ
 | 6 | `FOR SALE`/`SHOWCASE` tag ขับด้วย `price` ไม่ใช่ `pfkind` | sold post (markAssetSold) ยังขึ้น FOR SALE; gfx sold (price:null) ขึ้น SHOWCASE — canonical sold ไม่ควรมี sale tag; flag FSP-030 |
 | 7 | `Price & Data Source` บน detail แต่ถูก filter ใน feed expander | `detailsHTML` ตัดกลุ่มนี้ออก — detail เต็มกว่า expander (ตั้งใจตามโค้ด — รับตามจริง) |
 | 8 | `mf-btn`/`wl-btn` ใช้บนโพสต์ตัวเองได้ | ไม่มี self-guard — owner wishlist/watch โพสต์ตัวเองได้ (IG ก็ไม่กัน wishlist; flag เป็น contract note) |
-| 9 | Root comment `Reply` ไม่ localize | `<span class="c-meta">Reply</span>` hardcode EN; reply rows มี `ตอบกลับ`/`Reply` — i18n sweep FSP-026 |
+| 9 | Root comment `Reply` ไม่ localize | `<span class="c-meta">Reply</span>` hardcode EN; reply rows มี `ตอบกลับ`/`Reply` — language sweep FSP-026 |
 | 10 | Comment empty copy เดี่ยว | `No comments yet`/`ยังไม่มีความคิดเห็น` บรรทัดเดียว — ไม่มี `Be the first to comment.`/`Write a comment...` ของ spec เดิม |
 | 11 | `commentsFor` mock thread | โพสต์ที่มี count แต่ไม่มี seed → generate rows จาก `LIKER_POOL`/`PF_CMT_TEXTS` (session) — contract |
 | 12 | `POST_DETAIL_CFG` per-post overrides | dev artifact (เปลี่ยน ask/ds/pr/dh/dl/tg ตาม post id) — ทุก seed posts ใช้ dl1; ไม่เขียนเป็น feature (00_NAV §11 tooling rule) |
 | 13 | dl2/dh2/dh4/dh5/ds variants/pr variants/tg2 dead | `igDetailHTML` (post-head+caption+ask+save+liked-by), accordion/cards/tabs spec layouts, price variants — dead paths ทั้งหมด |
 | 14 | Detail ไม่ persist/deep-link | ไม่มี route — external deep link contract อยู่ 00_NAV §10 เท่านั้น |
-| 15 | EN-hardcoded strings | `Follow this model`/`Following this model`/`No details on this post to watch`/`Added to Wish List`/`Removed from your wish list`/`Sent to X`/`Link copied`/`Listing detail isn't in this prototype yet` — i18n sweep FSP-026 |
+| 15 | EN-hardcoded strings | `Follow this model`/`Following this model`/`No details on this post to watch`/`Added to Wish List`/`Removed from your wish list`/`Sent to X`/`Link copied`/`Listing detail isn't in this prototype yet` — language sweep FSP-026 |
 | 16 | `pfKind()` fallback | โพสต์ไม่มี `pfkind` infer จาก price (seed/gfx) — canonical อยู่ 04 (documented ที่นั่นแล้ว) |
-| 17 | State session-only | `liked`/`wishlisted`/`wlCol`/`modelFollowing` เป็น memory state — persistence = contract |
+| 17 | State session-only | `liked`/`wishlisted`/`wlCols`/`modelFollowing` เป็น memory state — persistence = contract |
 
 ---
 
@@ -483,10 +483,10 @@ Contract set (prototype ไม่มี tracking layer — เหมือน ba
 | AC ID | Criteria |
 |---|---|
 | AC-DETAIL-006 | Detail head ต้องมี back + title `รายละเอียด`/`Detail` + `...` (`pm-btn`) และ sticky ใน scroll |
-| AC-DETAIL-007 | Hero ต้องแสดง `photo-counter` `1/N` + dots เมื่อ photos >1 และ tap ครึ่งซ้าย/ขวาเลื่อนรูป wrap-around; ไม่มี full-screen viewer |
+| AC-DETAIL-007 | Hero ต้องแสดง `photo-counter` `1/N` + dots เมื่อ photos >1 และ swipe เลื่อนรูปทีละ 1 หยุดที่ปลาย (ไม่วน) และ double-tap = ไลก์; ไม่มี full-screen viewer |
 | AC-DETAIL-008 | Action row ต้องมี like / comment(+count) / views / share และ `act-right` = `mf-btn` + `wl-btn` — ต้องไม่มี save-btn, ask-pill, liked-by row หรือ seller block |
 | AC-DETAIL-009 | `comment-btn` ต้องซ่อนทั้งปุ่มเมื่อ `noComments`; `views-stat` ต้องซ่อนเมื่อ `hideCounts` หรือ `views` ว่าง/`"0"` |
-| AC-DETAIL-010 | Tag ต้องเป็น `ลงขาย`/`FOR SALE` เมื่อโพสต์มี `price` และ `โชว์`/`SHOWCASE` (muted) เมื่อไม่มี |
+| AC-DETAIL-010 | Tag ตาม `pfkind` (DEC-21): sale → `FOR SALE`, show → `SHOWCASE`, sold → `SOLD`, hide → `HIDDEN`, โพสต์ธรรมดาไม่มี tag |
 | AC-DETAIL-011 | `detail-name` = Brand+Model จาก specs (ตัด `n/a`), fallback caption ส่วนแรกก่อน `—`; `detail-ref` = `Ref. {v}` (`Ref. -` เมื่อ n/a) และไม่ render เมื่อไม่มี specs |
 | AC-DETAIL-012 | `Descriptions` ต้อง render `p.desc` (ไม่ copy caption); ว่าง → `-`; `#tag` ใน desc ต้องเปิด search results ของ tag นั้น |
 | AC-DETAIL-013 | Spec groups ต้อง render ทุกกลุ่มใน `specGroups` **รวม `Price & Data Source`** (`Asking Price`/`Estimated Market Price`/`Last Price Update`/`Data Source`) — ต่างจาก feed expander ที่ filter กลุ่มนี้ออก |
@@ -515,7 +515,7 @@ Contract set (prototype ไม่มี tracking layer — เหมือน ba
 
 | AC ID | Criteria |
 |---|---|
-| AC-DETAIL-024 | `wl-btn` ครั้งแรกต้อง set `wishlisted` + `wlCol:"Wishlist"` ก่อนเปิด sheet (optimistic) |
+| AC-DETAIL-024 | `wl-btn` ครั้งแรกต้อง set `wishlisted` (+`wlAt`) ก่อนเปิด sheet (optimistic) — `wlCols` = multi-collection array (canonical 11) |
 | AC-DETAIL-025 | Pick `Wish List` ขณะ wishlisted → un-wishlist + `Removed from your wish list`; pick collection → `Added to {col}` / `Added to Wish List`; `New collection` → nc sheet |
 
 ## States
@@ -576,3 +576,10 @@ Contract set (prototype ไม่มี tracking layer — เหมือน ba
 - Sold state visual บน detail (tag ปัจจุบันอ่านจาก price — deviation #6)
 - Unavailable detail page เต็มรูปแบบ (`รายการนี้ไม่พร้อมใช้งานแล้ว`) แทน toast/entry-level fallback
 - External deep link → Post Detail (contract 00_NAV §10 — ไม่มี route ใน prototype)
+
+
+## Batch A Amendments (2026-10-30)
+
+- Detail มีแถว liked-by (avatar stack + "Liked by {name} and others") ใต้ action row เมื่อมี likes
+- เมื่อปิด commenting: ซ่อนไอคอน 💬 และช่อง "Add comment…" ทุก surface
+- Post ที่ถูกลบ/ไม่พร้อมใช้ → หน้า unavailable `รายการนี้ไม่พร้อมใช้งานแล้ว` พร้อมปุ่มกลับ (ไม่ใช่ toast)

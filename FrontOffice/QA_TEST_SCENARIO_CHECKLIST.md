@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | Document | QA Test Scenario Checklist |
-| Version | 2.0 — synced to FO-PRD-v1.9 (FSP-027) |
+| Version | 2.0 — synced to FO-PRD-v1.10 (FSP-027; consent copy + AC-AUTH-031 added in v1.10) |
 | Status | Active |
 | Owner | QA Team |
 | Source of truth | `Prototypes/fo-flow` (locked) + `TukDaeng_Master_Product_Definition.md` §16 Sync Decision Log |
@@ -15,7 +15,7 @@ This document is the QA execution checklist for Front Office V1. Each scenario m
 ## Conventions
 
 - **`Maps to`** — AC IDs that actually exist in the module specs (verified by cross-document grep). Items that assert a rule with no direct AC cite the spec section instead (e.g. `00_GLOBAL §11`).
-- **Prototype** — verifiable on the locked `fo-flow` prototype today.
+- **Prototype** — ใช้เป็น reference ของ UI และ expected เท่านั้น ไม่ใช่เป้าหมายการทดสอบ; ทุกเคสต้องรันบน build stg หรือแอปจริงที่ทีม implement
 - **(contract)** — production contract per S-29: the prototype has no implementation to compare against; verify in production/staging or by code review. Prototype-only mock behavior is noted where relevant.
 - **Known documented defects** (S-10, S-14 and module deviation notes): these are *not* spec. When observed, log them as defects — never write expected results around them:
   - `salePosts()` counts priced `show`/`hide`/`sold` posts into Search results grid, filter `(N)` counts and Watch Alert `N now`/`_waHits` (S-10 — canonical pool is `Sale` only)
@@ -23,7 +23,7 @@ This document is the QA execution checklist for Front Office V1. Each scenario m
   - `FOR SALE` tag on detail is driven by `price`, not `pfkind`, so a sold post with a leftover price still shows `FOR SALE` (05 §9 deviation)
   - Hidden chat threads still appear in Items view groups; media send does not un-hide/move-to-top
   - Comment input/`Reply`/`emoji` from Post Detail are dead affordances (`Not in this prototype yet`) while the emoji quick-react inside the comment sheet is live — surface-dependent quirk
-  - EN/TH hardcoded strings across several surfaces (i18n sweep scope)
+  - EN/TH hardcoded strings across several surfaces (language sweep scope)
 
 ---
 
@@ -44,7 +44,7 @@ This document is the QA execution checklist for Front Office V1. Each scenario m
 
 - Per seller: ≥1 `sale` post (price + specGroups), ≥1 `showcase` post (no price), ≥1 plain `post` (non-asset), ≥1 multi-photo post, ≥1 clip post, ≥1 `noComments` post, ≥1 `hideCounts` post
 - Member B portfolio: ≥1 `show` drawer asset with purchase cost, ≥1 `hide` drawer asset, ≥1 `sale` linked asset, ≥1 `sold` record (sale price + sale date), ≥1 asset with no purchase cost (`N/A` paths)
-- Alerts feed rows covering all 5 types: `like` (aggregated multi-user), `comment`, `follow`, `watch`, `system`
+- Alerts feed rows covering all 4 types: `like` (aggregated multi-user), `comment`, `follow`, `watch`
 - Watch alerts: ≥1 `search`-source (keyword + filters + price), ≥1 `detail`-source (`modelKey`), ≥1 paused
 - Chat: ≥1 thread with messages + media, ≥1 pinned, ≥1 muted, ≥1 hidden, plus draft-room state before first send
 - Collections: ≥1 Saved collection, ≥1 Wish List collection, ≥1 archived post, ≥1 `ni` post
@@ -73,8 +73,8 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 | Center dialog `Block this user?` + Cancel | `blkSheet` bottom sheet `Block {u}?` + `Block` / `Block and report` (fromChat = `Block` only) |
 | Comment free-text input / `Reply` affordance | Emoji quick-react (8 emoji) is the only write path; input/`Reply` are dead |
 | `Favorites` = liked posts | Favorites = account-level seller preference; liked posts land in Settings > Content preferences > Interested |
-| `Likes` notification type name | Alert types = `like`/`comment`/`follow`/`watch`/`system` |
-| Chat notification / offer notification / Market Update / Price Valuation / Sale Success / Moderation / Account Action types | Only the 5 canonical types exist; `system` is a placeholder type |
+| `Likes` notification type name | Alert types = `like`/`comment`/`follow`/`watch` |
+| Chat notification / offer notification / system / Market Update / Price Valuation / Sale Success / Moderation / Account Action types | Only the 4 canonical types exist (`system` removed from V1 — DEC-41) |
 | Edit Profile row in Settings Home | Edit Profile entry = own profile page only (S-05) |
 | Search sort UI / result count / saved search / context-aware popular (S-24) | None in V1 |
 | Provenance / Consignment entity (S-25) | None in V1 |
@@ -237,7 +237,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Steps:** Inspect every submit action (Welcome `Continue`, `Create account`, social buttons, re-consent `Accept & continue`).
 **Expected result:**
 - Legal text with tappable Terms of Use / Privacy Policy links accompanies every submit action; acceptance is implied by the submit — no checkbox anywhere.
-- Optional consent (Analytics / Personalized) defaults off and is changeable later at Settings > Privacy / Cookie settings.
+- Optional consent (Analytics / Personalized) defaults off and is changeable later at Settings > Privacy.
 
 ### QA-GLOBAL-014
 **Objective:** Verify re-consent on policy version bump.
@@ -264,7 +264,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 
 ### QA-AUTH-001
 **Objective:** Verify first-run onboarding sequence (one time only).
-**Maps to:** AC-AUTH-025, AC-AUTH-026, AC-AUTH-027, AC-AUTH-028, AC-AUTH-029, AC-AUTH-030
+**Maps to:** AC-AUTH-025, AC-AUTH-026, AC-AUTH-027, AC-AUTH-028, AC-AUTH-029, AC-AUTH-030, AC-AUTH-031
 **Precondition:** Fresh install / cleared storage.
 **Steps:**
 1. Open app; step through splash → language → welcome → privacy notice → notification prompt → track prompt → Member Sheet.
@@ -272,13 +272,14 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 3. On Member Sheet tick `Don't show this again` and `Skip for now`; restart the app.
 **Expected result:**
 - Exact order and single presentation; finish persists so relaunch skips the flow.
-- `Continue` on welcome records implied consent; Privacy Notice separates essential (always on) from optional toggles; Accept all / Reject all / Cookie settings each record a consent record.
+- `Continue` on welcome records implied consent; Privacy Notice separates essential (always on) from optional toggles; Accept all / Reject all / Privacy settings each record a consent record.
+- Privacy Notice shows the no-cross-app-tracking sentence; Reject all leaves Analytics off and no analytics event (incl. search) is sent (AC-AUTH-031, stg/app build only).
 - Notification `Skip` never triggers the OS dialog; only `Continue` does. `Ask App Not to Track` forces personalization consent off.
 - Member Sheet shows `Sign up`/`Sign in`/`Skip for now` + social row + `Don't show this again`; hidden + skipped sheet does not reappear.
 
 ### QA-AUTH-002
 **Objective:** Verify Email/Password sign-up form (S-20 cleaned).
-**Maps to:** AC-AUTH-001, AC-AUTH-031, AC-AUTH-014, AC-AUTH-005
+**Maps to:** AC-AUTH-001, AC-AUTH-001A, AC-AUTH-014, AC-AUTH-005
 **Steps:**
 1. Open Sign Up from Member Sheet.
 2. Try weak passwords: <8 chars; ≥8 letters-only; ≥8 with a digit or symbol.
@@ -399,7 +400,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 
 ### QA-AUTH-017
 **Objective:** Verify out-of-V1 auth features are absent (S-20, S-24 list).
-**Maps to:** AC-AUTH-024, AC-AUTH-031
+**Maps to:** AC-AUTH-024, AC-AUTH-001A
 **Steps:** Sweep auth surfaces for removed features.
 **Expected result:** No 2FA, Passkey, Biometric login, Account Linking, Account Merge, Device Management; no Confirm Password, no OTP expiry UI, no Verification Success page, no Reset Password page.
 
@@ -460,8 +461,8 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Maps to:** AC-FEED-018, AC-SOCIAL-009
 **Steps:** Tap save once (unsaved post); re-open the sheet; pick `Saved` again; pick another collection; create `New collection`.
 **Expected result:**
-- First tap sets `saved` + `savedCol="Saved"` + filled bookmark, then always opens the sheet.
-- Picking `Saved` while saved → unsave + `Removed from your saved`; re-picking the current collection returns it to `Saved` + `Removed from {col}` (still saved); a different collection assigns it (`Saved to {col}`); `New collection` creates + assigns (`Saved to {name}`).
+- First tap sets `saved` + filled bookmark, then always opens the sheet (`savedCols` = multi-collection array — post อยู่ได้หลาย col).
+- Picking `Saved` while saved → unsave (`savedCols` ล้างทั้งหมด) + `Removed from your saved`; re-picking a checked collection removes just that membership + `Removed from {col}` (still saved); a different collection adds it (`Saved to {col}`); `New collection` creates + assigns (`Saved to {name}`).
 
 ### QA-FEED-008
 **Objective:** Verify `Ask Seller` is sale-only and scoped (replaces Contact Seller).
@@ -559,7 +560,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify feed refresh model.
 **Maps to:** AC-FEED-008, AC-FEED-035, AC-NAV-018
 **Steps:** Re-tap the Feed nav icon while already on feed; scroll a long feed.
-**Expected result:** Re-tap re-renders the list + smooth scroll to top; no pull-to-refresh gesture, no infinite scroll, no pagination, no end-of-list marker — the list renders once.
+**Expected result:** Re-tap re-renders the list (page 1) + smooth scroll to top; pull-to-refresh reloads the first page (DEC-15); infinite scroll loads the next page when 3 cards remain (10/page — DEC-13); no end-of-list marker.
 
 ### QA-FEED-020
 **Objective:** Verify feed failure states.
@@ -831,7 +832,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify `wl-btn` Wish List entry.
 **Maps to:** AC-DETAIL-024, AC-DETAIL-025
 **Steps:** First tap; pick `Wish List` again; pick/create a collection; try as guest.
-**Expected result:** First tap sets `wishlisted` + `wlCol:"Wishlist"` then opens the `wl` sheet; re-picking `Wish List` removes it (`Removed from your wish list`); re-picking the same collection returns it to `Wishlist` (`Removed from {col}`); `New collection` → `nc` sheet → `Added to {name}`; guest → Member Sheet.
+**Expected result:** First tap sets `wishlisted` then opens the `wl` sheet (`"Wishlist"` = pseudo-row; `wlCols` = multi-collection array); re-picking `Wish List` un-wishlists (`Removed from your wish list`); re-picking a checked collection removes just that membership (`Removed from {col}`); `New collection` → `nc` sheet → `Added to {name}`; guest → Member Sheet.
 
 ### QA-DETAIL-008
 **Objective:** Verify `pm-btn` menus from detail.
@@ -1224,18 +1225,18 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Expected result:** Head = back + `แจ้งเตือน`/`Alerts` + grouped sections; back always returns to Feed (`data-navgo="feed"` — not a generic pop); the surface is named Alerts feed — there is no `Notification Center` anywhere.
 
 ### QA-NOTI-002
-**Objective:** Verify exactly 5 alert types (S-17).
-**Maps to:** AC-NOTI-002, AC-NOTI-014, AC-NOTI-021, AC-NOTI-022
+**Objective:** Verify exactly 4 alert types (`system` removed from V1 — DEC-41, supersedes S-17).
+**Maps to:** AC-NOTI-002, AC-NOTI-013, AC-NOTI-014, AC-NOTI-021, AC-NOTI-022
 **Steps:** Inspect seed rows and try to find any other type.
 **Expected result:**
-- Types = `like`, `comment`, `follow`, `watch`, `system` — nothing else: no chat row, no offer row, no Market Update / Price Valuation / Sale Success / Moderation / Account Action types.
-- Anatomy per type: like = avatar stack + heart badge + thumb; comment = avatar + text + thumb; follow = avatar + `Follow back`/`กำลังติดตาม` pill + `x`; watch = post thumb + alert name; system = icon + text (placeholder).
+- Types = `like`, `comment`, `follow`, `watch` — nothing else: no chat row, no offer row, no system/security row, no Market Update / Price Valuation / Sale Success / Moderation / Account Action types.
+- Anatomy per type: like = avatar stack + heart badge + thumb; comment = avatar + text + thumb; follow = avatar + `Follow back`/`กำลังติดตาม` pill + `x`; watch = post thumb + alert name.
 
 ### QA-NOTI-003
 **Objective:** Verify tap destinations.
-**Maps to:** AC-NOTI-010, AC-NOTI-011, AC-NOTI-012, AC-NOTI-013, AC-NAV-006, AC-NAV-007, AC-NAV-008, AC-NAV-010
+**Maps to:** AC-NOTI-010, AC-NOTI-011, AC-NOTI-012, AC-NAV-006, AC-NAV-007, AC-NAV-008, AC-NAV-010
 **Steps:** Tap one row of each type.
-**Expected result:** `like`/`comment` → Post Viewer of the own post (solo `Post` head); `follow` → `profile:{u}` pushed over the feed; `watch` → Post Viewer of the matched post **directly** (no Result List); `system` → no navigation (placeholder toast `Security details aren't in this prototype yet`); every tap marks the row read + syncs the badge before navigating.
+**Expected result:** `like`/`comment` → Post Viewer of the own post (solo `Post` head); `follow` → `profile:{u}` pushed over the feed; `watch` → Post Viewer of the matched post **directly** (no Result List); every tap marks the row read + syncs the badge before navigating.
 
 ### QA-NOTI-004
 **Objective:** Verify unread/badge mechanics.
@@ -1265,7 +1266,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify notification settings mapping.
 **Maps to:** AC-NOTI-019, AC-NOTI-020, AC-SETTING-012
 **Steps:** Open Settings > Notification settings; flip each toggle; check for extra toggles.
-**Expected result:** Exactly 4 toggles — `Likes`, `Comments`, `New followers`, `Watch Alerts`; `system` has no toggle; OFF (contract) stops generating rows of that type (prototype keeps a memory flag only); no Chat/Offer/Moderation/Market/Price/Sale/Account toggles exist.
+**Expected result:** Exactly 4 toggles — `Likes`, `Comments`, `New followers`, `Watch Alerts`; no toggle for any other type (`system` was removed from V1 — DEC-41); OFF (contract) stops generating rows of that type (prototype keeps a memory flag only); no Chat/Offer/Moderation/Market/Price/Sale/Account toggles exist.
 
 ### QA-NOTI-009
 **Objective:** Verify share/board actions create no alerts.
@@ -1373,7 +1374,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify session-only state contract.
 **Maps to:** AC-SOCIAL-018
 **Steps:** Like/save/NI/follow/block, then switch session and return (contract check for persistence).
-**Expected result:** Prototype state is session-memory (`liked`, `saved`/`savedCol`, `wishlisted`/`wlCol`, `ni`, `muted`, `favorite`, `PF_*` sets); persistence across sessions is a production contract (§18).
+**Expected result:** Prototype state is session-memory (`liked`, `saved`/`savedCols`, `wishlisted`/`wlCols`, `ni`, `muted`, `favorite`, `PF_*` sets); persistence across sessions is a production contract (§18).
 
 ---
 
@@ -1435,7 +1436,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify Change Password (S-28).
 **Maps to:** AC-SETTING-013, AC-AUTH-020, AC-AUTH-020A–E
 **Steps:** Wrong current; new = current; mismatched confirm; short/simple new; API failure (contract); valid submit.
-**Expected result:** In-app page with Current / New / Confirm fields; errors in order `Current password is incorrect.` → `New password must be different from current password.` → `Passwords do not match.`; new must satisfy canonical policy (≥8 + number/symbol); API/network error → `Unable to change password. Please try again.` without a field flag.
+**Expected result:** In-app page with Current / New / Re-type fields; errors in order `Your current password was entered incorrectly. Please check it and try again.` → `New password must be different from your current password.` → `Passwords do not match. Please re-enter your new password.`; new must satisfy canonical policy (≥8 + number/symbol); API/network error → `Unable to change password. Please try again.` without a field flag.
 
 ### QA-SETTING-010
 **Objective:** Verify Log out.
