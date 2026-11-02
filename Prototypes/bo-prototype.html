@@ -17901,12 +17901,12 @@
         title: "Dashboard",
         crumb: "การดำเนินงาน / Dashboard",
         panel: "Operational Queue",
-        subtitle: "งานเร่งด่วนจากทุก module ที่ต้องตรวจในวันนี้",
+        subtitle: "งานเร่งด่วนจากทุก module ที่รอการตรวจสอบ",
         action: "เปิดคิวทั้งหมด",
-        stats: [["Pending Reports", "31", "มี 9 รายการใกล้ครบกำหนดตรวจ"], ["New Assets", "94", "Sale 64 · Show 17 · Hide 9 · Sold 4"], ["Support Tickets", "18", "รอตอบกลับ 7 รายการ"], ["Failed Delivery", "2", "Email 1 · Push 1"]],
+        stats: [["Pending Reports", "31", "มี 9 รายงานรอตรวจสอบ"], ["New Assets", "94", "Sale 64 · Show 17 · Hide 9 · Sold 4"], ["Support Tickets", "18", "รอตอบกลับ 7 รายการ"], ["Failed Delivery", "2", "Email 1 · Push 1"]],
         cards: [["FO Sync", "การเปลี่ยนสถานะสินทรัพย์และคอมเมนต์ต้องสะท้อนกลับ Feed, Search, Profile และ Board"], ["Audit Required", "Suspend, remove, publish, export และ permission update ต้องบันทึก audit"], ["Admin Model", "BO ใช้ account type เดียวคือ Admin และควบคุมสิทธิ์ด้วย policy ต่อ action"]],
         rows: [
-          item("RPU-505", "Duplicate Content", "Crown Time BKK", "Asset Report", "สูง", "รอตรวจ", "มีผู้ใช้ 5 คน report รูปประกาศซ้ำกับสินทรัพย์อื่น", ["Asset 4 รายการ", "รอตรวจ 22 ชม."], "ตรวจรูป, เทียบ provenance และซ่อนรายการซ้ำจาก FO หากยืนยัน"),
+          item("RPU-505", "Duplicate Content", "Crown Time BKK", "Asset Report", "สูง", "รอตรวจ", "มีผู้ใช้ 5 คน report รูปประกาศซ้ำกับสินทรัพย์อื่น", ["Asset 4 รายการ", "Reports 5"], "ตรวจรูป, เทียบ provenance และซ่อนรายการซ้ำจาก FO หากยืนยัน"),
           item("SUP-188", "Payment proof question", "Nattapol P.", "Support", "กลาง", "Assigned", "ลูกค้าถามเรื่อง proof of payment และ visibility ใน FO", ["Email", "Owner-only"], "ตอบกลับพร้อมอธิบาย privacy rule และแนบ link policy"),
           item("ART-044", "Board Article Scheduled", "Editorial", "Content", "ปกติ", "Ready", "บทความนาฬิกา vintage ตั้งเวลา publish วันนี้ 19:00", ["Board", "Scheduled"], "ตรวจ preview as FO ก่อน publish")
         ]
@@ -17939,7 +17939,7 @@
         item("AST-8497", "Cartier Tank Must", "Minimal Dial", "Sale", "กลาง", "Active", "New Cartier listing with price close to index", ["THB 118,000"], "Confirm reference before featuring")
       ]),
       content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles", "สร้างบทความ, category, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
-        item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Buying Guide"], "Preview as FO และตรวจ cover image ก่อน publish")
+        item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Guides"], "Preview as FO และตรวจ cover image ก่อน publish")
       ]),
       market: mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "Read brand, model, reference, detail and price index data from API/backend sync", "Sync API", [["Brands", "482", "API active"], ["Models", "8,924", "API catalog"], ["Price Index", "17,200", "Updated this week"], ["Sync Warnings", "6", "Needs review"]], [
         item("BRD-ROLEX", "Rolex", "Brand", "API", "ปกติ", "Active", "ใช้ใน autocomplete และ asset form", ["Models 1,240"], "Phase 1 ดูข้อมูลเท่านั้น ไม่แก้ status จาก BO"),
@@ -18726,28 +18726,28 @@
 
     const reportedCommentCases = [
       {
-        ...item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "High", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"),
+        ...item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "High", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Scam, fraud or spam"], "Hide comment หรือ close no violation ต้องมี confirm + reason"),
         commentId: "COM-711", assetId: "AST-8802", commentExcerpt: "ดูนาฬิกาที่ bit.ly/superdeal ราคาถูกกว่าที่นี่เยอะ สนใจทัก Line @watchdealer", reporters: 3,
         commentType: "Root comment", commentCreatedAt: "18 Jul 2026 08:45", commentStatus: "Visible",
         authorId: "U-1088", authorName: "Omega Club TH",
-        reportReason: "Spam or scam",
+        reportReason: "Scam, fraud or spam",
         reporterHistory: [
-          { reporter: "Nattapol P.", reportedAt: "18 Jul 2026 09:05", source: "Asset Comment", reason: "Spam or scam", additionalDetails: "เห็น link นอกระบบและชวนติดต่อ Line น่าสงสัย", status: "เปิดเคส" },
-          { reporter: "Patchara L.", reportedAt: "18 Jul 2026 09:12", source: "Asset Comment", reason: "Spam or scam", additionalDetails: "comment ชวนไปดูนาฬิกานอกแอป เหมือน spam", status: "รวมเคส" },
-          { reporter: "Krit Watch", reportedAt: "18 Jul 2026 09:18", source: "Asset Comment", reason: "Spam or scam", additionalDetails: "bit.ly link น่าสงสัย กลัวเป็น scam", status: "รวมเคส" }
+          { reporter: "Nattapol P.", reportedAt: "18 Jul 2026 09:05", source: "Asset Comment", reason: "Scam, fraud or spam", status: "เปิดเคส" },
+          { reporter: "Patchara L.", reportedAt: "18 Jul 2026 09:12", source: "Asset Comment", reason: "Scam, fraud or spam", status: "รวมเคส" },
+          { reporter: "Krit Watch", reportedAt: "18 Jul 2026 09:18", source: "Asset Comment", reason: "Scam, fraud or spam", status: "รวมเคส" }
         ],
         auditHistory: [
           { createdAt: "18 Jul 2026 09:05 GMT+7", actor: "System", action: "Report Received", note: "System รับ report แรกและเปิดเคส RCO-711", emailDelivery: { status: "not_required" } }
         ]
       },
       {
-        ...item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "Medium", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"),
+        ...item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "Medium", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Bullying or unwanted contact", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"),
         commentId: "COM-704", assetId: "AST-8831", commentExcerpt: "สนใจเจรจาเพิ่มได้ครับ ติดต่อ 08x-xxx-xxxx หรือ Line: @collector_th", reporters: 1,
         commentType: "Reply", commentCreatedAt: "17 Jul 2026 13:20", commentStatus: "Visible",
         authorId: "U-1017", authorName: "Crown Time BKK",
-        reportReason: "Inappropriate content",
+        reportReason: "Bullying or unwanted contact",
         reporterHistory: [
-          { reporter: "Saran Collector", reportedAt: "17 Jul 2026 14:48", source: "Asset Comment", reason: "Inappropriate content", additionalDetails: "reply เปิดเบอร์และ Line ใน public ไม่เหมาะสม", status: "เปิดเคส" }
+          { reporter: "Saran Collector", reportedAt: "17 Jul 2026 14:48", source: "Asset Comment", reason: "Bullying or unwanted contact", status: "เปิดเคส" }
         ],
         auditHistory: [
           { createdAt: "17 Jul 2026 14:48 GMT+7", actor: "System", action: "Report Received", note: "System รับ report และเปิดเคส RCO-706", emailDelivery: { status: "not_required" } }
@@ -18758,10 +18758,10 @@
         commentId: "COM-690", assetId: "AST-8612", commentExcerpt: "นาฬิการุ่นนี้หายากมาก เคยเห็นที่ร้านเก่าตอนปี 2019 น่าสนใจสำหรับ collector", reporters: 2,
         commentType: "Root comment", commentCreatedAt: "15 Jul 2026 09:30", commentStatus: "User Deleted",
         authorId: "U-1042", authorName: "ณัฐพล พ.",
-        reportReason: "Other",
+        reportReason: "I just don't like it",
         reporterHistory: [
-          { reporter: "Maliwan T.", reportedAt: "15 Jul 2026 11:10", source: "Asset Comment", reason: "Other", additionalDetails: "comment ดูเหมือนโปรโมตร้านนอกระบบ", status: "เปิดเคส" },
-          { reporter: "Vasin K.", reportedAt: "15 Jul 2026 11:30", source: "Asset Comment", reason: "Other", additionalDetails: "ไม่แน่ใจว่าเป็นโฆษณาหรือแชร์ประสบการณ์", status: "รวมเคส" }
+          { reporter: "Maliwan T.", reportedAt: "15 Jul 2026 11:10", source: "Asset Comment", reason: "I just don't like it", status: "เปิดเคส" },
+          { reporter: "Vasin K.", reportedAt: "15 Jul 2026 11:30", source: "Asset Comment", reason: "I just don't like it", status: "รวมเคส" }
         ],
         auditHistory: [
           { createdAt: "15 Jul 2026 11:10 GMT+7", actor: "System", action: "Report Received", note: "System รับ report แรกและเปิดเคส RCO-690", emailDelivery: { status: "not_required" } },
@@ -19418,7 +19418,7 @@
         { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User Accounts", icon: "users" },
         { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420", "This Week 24,700", "This Month 38,900"], module: "users", sub: "User Accounts", icon: "users" },
         { label: "New Assets", value: "94", trend: "สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", sub: "Asset List", icon: "asset" },
-        { label: "Reported Items", value: "33", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: [
+        { label: "Reported Items", value: "33", trend: "มี 9 รายงานรอตรวจสอบ", chips: [
           { label: "Assets 22", module: "assets", sub: "Reported Assets" },
           { label: "Users 5", module: "users", sub: "Reported Users" },
           { label: "Articles 3", module: "content", sub: "Reported Articles" },
@@ -19428,10 +19428,10 @@
         { label: "Watch Alert", value: "298", trend: "มีการจับคู่รายการขาย 18 ครั้งวันนี้", chips: ["Active 298", "Triggered 18"], module: "watch-alerts", sub: "Demand Overview", icon: "alert" }
       ],
       queues: [
-        { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
-        { title: "รายงานผู้ใช้", count: 5, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reported Users" },
+        { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ", chips: ["ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
+        { title: "รายงานผู้ใช้", count: 5, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ตรวจประวัติ login"], module: "users", sub: "Reported Users" },
         { title: "รายงานบทความ", count: 3, priority: "high", detail: "มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive", chips: ["Articles 3", "รอตรวจ"], module: "content", sub: "Reported Articles" },
-        { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอใกล้ครบกำหนดลบบัญชีอัตโนมัติ", chips: ["ใกล้ครบกำหนด 2", "Grace period 4"], module: "deletions", sub: "" },
+        { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอใกล้สิ้นสุดช่วงรอลบบัญชี — ระบบจะลบบัญชีอัตโนมัติเมื่อครบ grace period", chips: ["Grace period 4", "ใกล้ลบอัตโนมัติ 2"], module: "deletions", sub: "" },
         { title: "บทความรอเผยแพร่", count: 4, priority: "normal", detail: "บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา", chips: ["เผยแพร่วันนี้ 2", "ต้อง preview"], module: "content", sub: "Articles" },
         { title: "ข้อมูลตลาดรอตรวจ", count: 6, priority: "normal", detail: "brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert", chips: ["Sync issue 6", "Price index"], module: "market", sub: "Sync History" },
         { title: "แจ้งเตือนส่งไม่สำเร็จ", count: 2, priority: "normal", detail: "mailbox full และ token หมดอายุ / ตรวจ retry queue และ cleanup invalid token", chips: ["Email retry 1", "Push retry 1"], module: "settings", sub: "Delivery Logs" }
@@ -20003,127 +20003,140 @@
 
     const assetReportSubmissions = {
       "RPA-831": [
-        { reporter: "Nattapol P.", reason: "Incorrect information", additionalDetails: "รูปประกาศซ้ำและราคาเบี่ยงจาก market index" },
-        { reporter: "Patchara L.", reason: "Incorrect information" },
-        { reporter: "Krit Watch", reason: "Suspected fake or scam", additionalDetails: "รูปชุดนี้เคยเห็นในประกาศอื่น และเอกสารไม่ชัด" },
-        { reporter: "Saran Collector", reason: "Incorrect information" },
-        { reporter: "Maliwan T.", reason: "Other", additionalDetails: "อยากให้ทีมตรวจสอบราคาและรูปเพิ่มเติม" },
-        { reporter: "Anucha M.", reason: "Incorrect information" },
-        { reporter: "Benjawan S.", reason: "Incorrect information" },
-        { reporter: "Korn Vintage", reason: "Suspected fake or scam" },
-        { reporter: "Pimchanok R.", reason: "Incorrect information" },
-        { reporter: "Worawit C.", reason: "Other" }
+        { reporter: "Nattapol P.", reason: "False information" },
+        { reporter: "Patchara L.", reason: "False information" },
+        { reporter: "Krit Watch", reason: "Counterfeit or replica item" },
+        { reporter: "Saran Collector", reason: "False information" },
+        { reporter: "Maliwan T.", reason: "I just don't like it" },
+        { reporter: "Anucha M.", reason: "False information" },
+        { reporter: "Benjawan S.", reason: "False information" },
+        { reporter: "Korn Vintage", reason: "Counterfeit or replica item" },
+        { reporter: "Pimchanok R.", reason: "False information" },
+        { reporter: "Worawit C.", reason: "I just don't like it" }
       ],
       "RPA-694": [
-        { reporter: "Daily Watch Hunter", reason: "Suspected fake or scam", additionalDetails: "Serial/provenance ในรูปไม่ตรงกับข้อมูลที่ลงไว้" },
-        { reporter: "Saran Collector", reason: "Incorrect information" },
-        { reporter: "Tawan Watch", reason: "Suspected fake or scam" },
-        { reporter: "Nicha S.", reason: "Other", additionalDetails: "ขอให้ตรวจเอกสารเจ้าของก่อนปล่อยขาย" }
+        { reporter: "Daily Watch Hunter", reason: "Counterfeit or replica item" },
+        { reporter: "Saran Collector", reason: "False information" },
+        { reporter: "Tawan Watch", reason: "Counterfeit or replica item" },
+        { reporter: "Nicha S.", reason: "I just don't like it" }
       ],
       "RPA-612": [
-        { reporter: "Thanawat S.", reason: "Inappropriate content", additionalDetails: "คอมเมนต์ใต้ asset มีข้อความไม่เหมาะสม" }
+        { reporter: "Thanawat S.", reason: "Bullying or unwanted contact" }
       ],
       "RPA-588": [
-        { reporter: "Ploy R.", reason: "Incorrect information", additionalDetails: "รูปเหมือนประกาศ Cartier อีกชิ้นที่เคยเห็น" },
-        { reporter: "Minimal Dial Fan", reason: "Incorrect information" },
-        { reporter: "Kanokwan S.", reason: "Other" }
+        { reporter: "Ploy R.", reason: "False information" },
+        { reporter: "Minimal Dial Fan", reason: "False information" },
+        { reporter: "Kanokwan S.", reason: "I just don't like it" }
       ],
       "RPA-581": [
-        { reporter: "Jirayu P.", reason: "Suspected fake or scam", additionalDetails: "รูปและ serial ดูไม่ตรงกับหลักฐานเจ้าของจริง" },
-        { reporter: "Bangkok Watch Lab", reason: "Suspected fake or scam" },
-        { reporter: "Suda Collector", reason: "Incorrect information" },
-        { reporter: "Vasin K.", reason: "Other" },
-        { reporter: "Araya Watch", reason: "Suspected fake or scam", additionalDetails: "ข้อมูลเจ้าของและรูปประกอบดูไม่สอดคล้องกัน" },
-        { reporter: "Panuwat R.", reason: "Incorrect information" }
+        { reporter: "Jirayu P.", reason: "Counterfeit or replica item" },
+        { reporter: "Bangkok Watch Lab", reason: "Counterfeit or replica item" },
+        { reporter: "Suda Collector", reason: "False information" },
+        { reporter: "Vasin K.", reason: "I just don't like it" },
+        { reporter: "Araya Watch", reason: "Counterfeit or replica item" },
+        { reporter: "Panuwat R.", reason: "False information" }
       ],
       "RPA-559": [
-        { reporter: "Watch Finder TH", reason: "Suspected fake or scam", additionalDetails: "เอกสาร provenance ยังไม่พอสำหรับสินค้ามูลค่าสูง" },
-        { reporter: "Arthit K.", reason: "Incorrect information" },
-        { reporter: "Ratchanon S.", reason: "Suspected fake or scam" }
+        { reporter: "Watch Finder TH", reason: "Counterfeit or replica item" },
+        { reporter: "Arthit K.", reason: "False information" },
+        { reporter: "Ratchanon S.", reason: "Counterfeit or replica item" }
       ],
       "RPA-536": [
-        { reporter: "Narin C.", reason: "Incorrect information", additionalDetails: "รูปซ้ำกับประกาศเก่าระหว่างรอตรวจ" },
-        { reporter: "Thanawat S.", reason: "Other" }
+        { reporter: "Narin C.", reason: "False information" },
+        { reporter: "Thanawat S.", reason: "I just don't like it" }
       ],
       "RPA-548": [
-        { reporter: "Vintage Lens", reason: "Incorrect information", additionalDetails: "ราคาดูต่ำกว่ารุ่นเดียวกันมาก อยากให้ตรวจข้อมูลก่อนโปรโมต" },
-        { reporter: "Market Watch TH", reason: "Other" }
+        { reporter: "Vintage Lens", reason: "False information" },
+        { reporter: "Market Watch TH", reason: "I just don't like it" }
       ]
     };
 
+    // Canonical report reasons — FO is source of truth (PM_REASONS ชุดเดียวทุก type:
+    // post/user/comment ตาม FrontOffice/15 §Report Reason Set; Board Content ใช้ชุด 6 เหตุผลของตัวเอง)
     const userReportReasonOptions = [
-      "Fraud or scam",
-      "Impersonation",
-      "Harassment or hate",
-      "Inappropriate content",
-      "Spam",
-      "Other"
+      "I just don't like it",
+      "Bullying or unwanted contact",
+      "Suicide, self-injury or eating disorders",
+      "Violence, hate or exploitation",
+      "Counterfeit or replica item",
+      "Nudity or sexual activity",
+      "Scam, fraud or spam",
+      "False information",
+      "Intellectual property"
     ];
 
     const reportReasonThaiLabels = {
-      "Fraud or scam": "ฉ้อโกงหรือหลอกลวง",
-      "Impersonation": "แอบอ้างตัวตน",
-      "Harassment or hate": "คุกคามหรือแสดงความเกลียดชัง",
+      // PM_REASONS 9 — post/user/comment
+      "I just don't like it": "ฉันแค่ไม่ชอบ",
+      "Bullying or unwanted contact": "การกลั่นแกล้งหรือการติดต่อที่ไม่พึงประสงค์",
+      "Suicide, self-injury or eating disorders": "การฆ่าตัวตาย ทำร้ายตัวเอง หรือพฤติกรรมการกินที่ผิดปกติ",
+      "Violence, hate or exploitation": "ความรุนแรง ความเกลียดชัง หรือการแสวงหาประโยชน์",
+      "Counterfeit or replica item": "สินค้าลอกเลียนแบบหรือของปลอม",
+      "Nudity or sexual activity": "ภาพเปลือยหรือกิจกรรมทางเพศ",
+      "Scam, fraud or spam": "การหลอกลวง การฉ้อโกง หรือสแปม",
+      "False information": "ข้อมูลเท็จ",
+      "Intellectual property": "ทรัพย์สินทางปัญญา",
+      // Board Content 6 — Reported Articles
+      "Spam or misleading": "สแปมหรือเนื้อหาที่ทำให้เข้าใจผิด",
+      "Harassment or hate": "การคุกคามหรือแสดงความเกลียดชัง",
+      "Scam or fraud": "การหลอกลวงหรือฉ้อโกง",
+      "Illegal or restricted item": "สินค้าผิดกฎหมายหรือสินค้าต้องจำกัด",
       "Inappropriate content": "เนื้อหาไม่เหมาะสม",
-      "Spam": "สแปม",
-      "Other": "อื่น ๆ",
-      "Suspected fake or scam": "สงสัยว่าเป็นของปลอมหรือหลอกลวง",
-      "Incorrect information": "ข้อมูลไม่ถูกต้อง",
-      "Prohibited item": "สินค้าต้องห้าม"
+      "Other": "อื่น ๆ"
     };
 
     const userReportSubmissions = {
       "RPU-566": [
-        { source: "User Profile", reason: "Other", additionalDetails: "ข้อความในโปรไฟล์ดูสับสนและใช้คำซ้ำกับหลายบัญชี อยากให้ผู้ดูแลช่วยตรวจสอบ" },
-        { source: "User Profile", reason: "Spam", additionalDetails: "โปรไฟล์ใส่ข้อความเชิญชวนซ้ำ ๆ และเหมือนตั้งใจโปรโมตนอกระบบ" }
+        { source: "User Profile", reason: "I just don't like it" },
+        { source: "User Profile", reason: "Scam, fraud or spam" }
       ],
       "RPU-579": [
-        { source: "Chat", reason: "Fraud or scam", additionalDetails: "ในแชทพยายามให้โอนเงินก่อนและขอคุยนอกแอป ทำให้กังวลว่าจะถูกหลอก" },
-        { source: "User Profile", reason: "Other", additionalDetails: "รายงานโปรไฟล์นี้ไว้ก่อนบัญชีจะขอลบ อยากให้ตรวจสอบให้จบก่อนปิดบัญชี" }
+        { source: "Chat", reason: "Scam, fraud or spam" },
+        { source: "User Profile", reason: "I just don't like it" }
       ],
       "RPU-588": [
-        { source: "User Profile", reason: "Other", additionalDetails: "ไม่แน่ใจว่าข้อมูลในโปรไฟล์ถูกต้องหรือไม่ เลยส่งให้ผู้ดูแลช่วยตรวจสอบ" }
+        { source: "User Profile", reason: "I just don't like it" }
       ],
       "RPU-505": [
-        { source: "User Profile", reason: "Impersonation", additionalDetails: "รูปโปรไฟล์กับข้อความแนะนำตัวเหมือนบัญชีอื่นที่เคยเห็น" },
-        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "ผู้ขายใช้รูปเดิมและชวนให้โอนเงินก่อนคุยรายละเอียด" },
-        { source: "User Profile", reason: "Spam", additionalDetails: "โปรไฟล์ลงข้อความโปรโมตซ้ำและชวนให้ติดต่อช่องทางอื่นหลายจุด" },
-        { source: "User Profile", reason: "Other", additionalDetails: "เห็นข้อความแนะนำตัวซ้ำกับหลายบัญชี เลยคิดว่าน่าสงสัย" },
-        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "มีข้อความเร่งให้โอนเงินก่อนและไม่ให้หลักฐานยืนยันตัวตนเพิ่มเติม" }
+        { source: "User Profile", reason: "False information" },
+        { source: "User Profile", reason: "Scam, fraud or spam" },
+        { source: "User Profile", reason: "Scam, fraud or spam" },
+        { source: "User Profile", reason: "I just don't like it" },
+        { source: "User Profile", reason: "Scam, fraud or spam" }
       ],
       "RPU-512": [
-        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "โปรไฟล์ใช้รูปและคำอธิบายคล้ายร้านอื่นมาก กลัวว่าจะเป็นบัญชีหลอกลวง" },
-        { source: "User Profile", reason: "Other", additionalDetails: "ข้อมูลผู้ขายดูไม่ตรงกันหลายจุด อยากให้ทีมงานช่วยตรวจสอบก่อนมีคนติดต่อซื้อขาย" },
-        { source: "User Profile", reason: "Spam", additionalDetails: "หน้าโปรไฟล์มีข้อความเชิญชวนซ้ำ ๆ และเน้นให้ติดต่อช่องทางอื่น" },
-        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "ผู้ขายดูเร่งให้ตัดสินใจและไม่ให้รายละเอียดที่ตรวจสอบได้" }
+        { source: "User Profile", reason: "Scam, fraud or spam" },
+        { source: "User Profile", reason: "I just don't like it" },
+        { source: "User Profile", reason: "Scam, fraud or spam" },
+        { source: "User Profile", reason: "Scam, fraud or spam" }
       ],
       "RPU-518": [
-        { source: "Chat", reason: "Fraud or scam", additionalDetails: "ในแชทพยายามให้ไปคุยนอกแอปและขอให้โอนเงินก่อนตรวจสอบรายละเอียด" },
-        { source: "Chat", reason: "Other", additionalDetails: "คู่สนทนาตอบเลี่ยงคำถามหลายครั้ง เลยอยากให้ผู้ดูแลช่วยดูบริบทแชท" },
-        { source: "Chat", reason: "Inappropriate content", additionalDetails: "มีข้อความกดดันให้รีบตัดสินใจและใช้ถ้อยคำที่ทำให้รู้สึกไม่ปลอดภัย" }
+        { source: "Chat", reason: "Scam, fraud or spam" },
+        { source: "Chat", reason: "I just don't like it" },
+        { source: "Chat", reason: "Bullying or unwanted contact" }
       ],
       "RPU-541": [
-        { source: "Chat", reason: "Harassment or hate", additionalDetails: "อีกฝ่ายส่งข้อความต่อว่าซ้ำหลายครั้งหลังจากปฏิเสธการคุยต่อ" },
-        { source: "Chat", reason: "Inappropriate content", additionalDetails: "มีข้อความหยาบคายและทำให้รู้สึกถูกคุกคามในแชท" },
-        { source: "Chat", reason: "Harassment or hate", additionalDetails: "ยังส่งข้อความรบกวนต่อเนื่องแม้แจ้งว่าไม่สะดวกคุยแล้ว" },
-        { source: "Chat", reason: "Spam", additionalDetails: "ส่งข้อความเดิมซ้ำหลายครั้งและพยายามดันให้ตอบกลับ" },
-        { source: "Chat", reason: "Other", additionalDetails: "อีกฝ่ายพยายามให้ย้ายไปคุยนอกแอปและไม่ยอมหยุดส่งข้อความ" },
-        { source: "Chat", reason: "Inappropriate content", additionalDetails: "มีถ้อยคำไม่เหมาะสมและกดดันให้ทำตามที่อีกฝ่ายต้องการ" }
+        { source: "Chat", reason: "Bullying or unwanted contact" },
+        { source: "Chat", reason: "Bullying or unwanted contact" },
+        { source: "Chat", reason: "Bullying or unwanted contact" },
+        { source: "Chat", reason: "Scam, fraud or spam" },
+        { source: "Chat", reason: "I just don't like it" },
+        { source: "Chat", reason: "Bullying or unwanted contact" }
       ],
       "RPU-560": [
-        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "โปรไฟล์นี้ใส่ข้อความให้รีบติดต่อช่องทางอื่นและไม่ให้ถามรายละเอียดเพิ่มเติมในแชท" },
-        { source: "Chat", reason: "Fraud or scam", additionalDetails: "ในแชทขอให้โอนเงินมัดจำก่อนและไม่ยอมตอบคำถามเรื่องตัวตน" },
-        { source: "User Profile", reason: "Impersonation", additionalDetails: "ชื่อและรูปโปรไฟล์คล้ายบัญชีร้านอื่นมาก เหมือนพยายามแอบอ้าง" },
-        { source: "Chat", reason: "Spam", additionalDetails: "ส่งข้อความขายซ้ำ ๆ หลายครั้งโดยไม่ได้คุยเรื่องที่ถามไว้" },
-        { source: "User Profile", reason: "Other", additionalDetails: "เคยเห็นบัญชีนี้ใช้รูปเดิมในหลายโพสต์และเปลี่ยนชื่อร้านบ่อย" },
-        { source: "Chat", reason: "Fraud or scam", additionalDetails: "พยายามให้ชำระเงินผ่านบัญชีส่วนตัวและบอกว่าไม่ต้องทำรายการในระบบ" },
-        { source: "Chat", reason: "Inappropriate content", additionalDetails: "มีข้อความข่มขู่และใช้ถ้อยคำไม่เหมาะสมหลังจากขอหลักฐานเพิ่มเติม" },
-        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "โปรไฟล์ให้ข้อมูลติดต่อหลายช่องทางและดูพยายามหลีกเลี่ยงการคุยในแอป" },
-        { source: "Chat", reason: "Spam", additionalDetails: "ส่งข้อความเดิมซ้ำและเร่งให้ตอบกลับหลายรอบ" },
-        { source: "User Profile", reason: "Other", additionalDetails: "รายละเอียดโปรไฟล์เปลี่ยนบ่อยและดูไม่สอดคล้องกับชื่อบัญชี" },
-        { source: "Chat", reason: "Fraud or scam", additionalDetails: "เสนอราคาผิดปกติและเร่งให้โอนเงินทันที" },
-        { source: "User Profile", reason: "Impersonation", additionalDetails: "ใช้รูปและชื่อคล้ายร้านที่รู้จัก แต่ข้อมูลติดต่อไม่ตรงกัน" },
-        { source: "Chat", reason: "Fraud or scam", additionalDetails: "ขอข้อมูลส่วนตัวและชวนทำธุรกรรมนอกระบบ" }
+        { source: "User Profile", reason: "Scam, fraud or spam" },
+        { source: "Chat", reason: "Scam, fraud or spam" },
+        { source: "User Profile", reason: "False information" },
+        { source: "Chat", reason: "Scam, fraud or spam" },
+        { source: "User Profile", reason: "I just don't like it" },
+        { source: "Chat", reason: "Scam, fraud or spam" },
+        { source: "Chat", reason: "Bullying or unwanted contact" },
+        { source: "User Profile", reason: "Scam, fraud or spam" },
+        { source: "Chat", reason: "Scam, fraud or spam" },
+        { source: "User Profile", reason: "I just don't like it" },
+        { source: "Chat", reason: "Scam, fraud or spam" },
+        { source: "User Profile", reason: "False information" },
+        { source: "Chat", reason: "Scam, fraud or spam" }
       ]
     };
 
@@ -20216,7 +20229,6 @@
           reportedAt: formatReporterSubmissionTime(baseTime + minuteOffset * 60 * 1000),
           source: isUserReport ? getUserReportSubmissionSource(report, index, userSubmission) : report.source,
           note: appReason,
-          additionalDetails: assetSubmission?.additionalDetails || userSubmission?.additionalDetails || "",
           status: index === 0 ? "เปิดเคส" : "รวมเคส"
         };
       });
@@ -20268,8 +20280,6 @@
       const isUserReportHistory = isUserReportContext(report);
       const usesReportSubmissionLayout = isAssetReportHistory || isUserReportHistory;
       const noteColumnLabel = usesReportSubmissionLayout ? "Report Reason" : "Reporter note";
-      const showAdditionalDetails = usesReportSubmissionLayout;
-      const additionalDetailsMobileLabel = "Details";
       const showSourceColumn = !usesReportSubmissionLayout || isUserReportHistory;
       const rows = pageRows.map(row => `
         <tr>
@@ -20278,25 +20288,22 @@
           ${showSourceColumn ? `<td data-label="Source">${renderHistoryValue(row.source)}</td>` : ""}
           <td data-label="Status">${row.status}</td>
           <td data-label="${noteColumnLabel}" class="history-note">${renderHistoryValue(usesReportSubmissionLayout ? translateReportReason(row.note) : row.note)}</td>
-          ${showAdditionalDetails ? `<td data-label="${additionalDetailsMobileLabel}" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>` : ""}
         </tr>
       `).join("");
       const tableClass = usesReportSubmissionLayout ? "history-table asset-reporter-history-table" : "history-table";
       const columnLayout = isUserReportHistory ? `
             <colgroup>
+              <col style="width: 16%">
+              <col style="width: 18%">
               <col style="width: 14%">
-              <col style="width: 15%">
               <col style="width: 12%">
-              <col style="width: 10%">
-              <col style="width: 20%">
-              <col style="width: 29%">
+              <col style="width: 40%">
             </colgroup>` : usesReportSubmissionLayout ? `
             <colgroup>
-              <col style="width: 15%">
               <col style="width: 18%">
-              <col style="width: 12%">
-              <col style="width: 25%">
-              <col style="width: 30%">
+              <col style="width: 22%">
+              <col style="width: 15%">
+              <col style="width: 45%">
             </colgroup>` : "";
       return `
         <div class="history-table-wrap">
@@ -20309,7 +20316,6 @@
                 ${showSourceColumn ? "<th>Source</th>" : ""}
                 <th>Status</th>
                 <th>${noteColumnLabel}</th>
-                ${showAdditionalDetails ? "<th>Additional Details</th>" : ""}
               </tr>
             </thead>
             <tbody>${rows}</tbody>
@@ -23322,10 +23328,10 @@
 
     function getAssetFoReportReason(asset) {
       const reasonText = getAssetReportReason(asset).toLowerCase();
-      if (/fake|scam|serial|provenance/.test(reasonText)) return "Suspected fake or scam";
-      if (/inappropriate|abuse|spam/.test(reasonText)) return "Inappropriate content";
-      if (/duplicate|price|market|incorrect|information|รูป|ราคา/.test(reasonText)) return "Incorrect information";
-      return "Other";
+      if (/fake|scam|serial|provenance/.test(reasonText)) return "Counterfeit or replica item";
+      if (/inappropriate|abuse|spam/.test(reasonText)) return "Scam, fraud or spam";
+      if (/duplicate|price|market|incorrect|information|รูป|ราคา/.test(reasonText)) return "False information";
+      return "I just don't like it";
     }
 
     function getAssetReporterNote(asset) {
@@ -23344,9 +23350,9 @@
 
     function getAssetNextCheck(asset) {
       const reason = getAssetFoReportReason(asset);
-      if (reason === "Incorrect information") return "ตรวจข้อมูลประกาศ รูปภาพ ราคา และรายละเอียดที่ user ระบุ เทียบกับข้อมูล asset ก่อนตัดสินใจซ่อนหรือปิด report";
-      if (reason === "Suspected fake or scam") return "ตรวจเอกสาร provenance, serial, รูปประกอบ และประวัติเจ้าของก่อนทำ action กับ asset";
-      if (reason === "Inappropriate content") return "ตรวจรูปและข้อความประกาศว่าผิด policy หรือไม่ ก่อนซ่อนเนื้อหาหรือปิด report";
+      if (reason === "False information") return "ตรวจข้อมูลประกาศ รูปภาพ ราคา และรายละเอียดที่ user ระบุ เทียบกับข้อมูล asset ก่อนตัดสินใจซ่อนหรือปิด report";
+      if (reason === "Counterfeit or replica item") return "ตรวจเอกสาร provenance, serial, รูปประกอบ และประวัติเจ้าของก่อนทำ action กับ asset";
+      if (reason === "Scam, fraud or spam") return "ตรวจรูปและข้อความประกาศว่าผิด policy หรือไม่ ก่อนซ่อนเนื้อหาหรือปิด report";
       return "อ่านรายละเอียดจาก reporter แล้วตรวจ asset context ก่อนเลือก action";
     }
 
@@ -39273,13 +39279,13 @@
         {
           id: "ART-044",
           title: "Vintage Watch Buying Guide",
-          category: "Buying Guide",
+          category: "Guides",
           author: "Editorial",
           status: "Scheduled",
           publishAt: "10 Jul 2026 19:00",
           updatedAt: "10 Jul 2026 15:30",
           readTime: "6 min",
-          tags: ["Board", "Buying Guide"],
+          tags: ["Board", "Guides"],
           slug: "vintage-watch-buying-guide",
           coverImageName: "art-044-vintage-watch-buying-guide.png",
           coverImageSrc: "./assets/article-covers/art-044-vintage-watch-buying-guide.png",
@@ -39297,7 +39303,7 @@
         {
           id: "ART-043",
           title: "How to Check Provenance",
-          category: "Watch 101",
+          category: "Technical",
           author: "Editorial",
           status: "Published",
           publishAt: "09 Jul 2026 10:00",
@@ -39335,7 +39341,7 @@
         {
           id: "ART-042",
           title: "Market Notes July",
-          category: "Watch Market",
+          category: "Market Watch",
           author: "Market Team",
           status: "Draft",
           publishAt: "-",
@@ -39358,7 +39364,7 @@
         {
           id: "ART-041",
           title: "Auction Week Highlights",
-          category: "Watch Events",
+          category: "Industry",
           author: "Marketing",
           status: "Scheduled",
           publishAt: "11 Jul 2026 09:00",
@@ -39382,7 +39388,7 @@
         {
           id: "ART-040",
           title: "Strap Pairing Guide",
-          category: "Watch Apparel",
+          category: "Collector",
           author: "Editorial",
           status: "Published",
           publishAt: "07 Jul 2026 12:00",
@@ -39406,7 +39412,7 @@
         {
           id: "ART-039",
           title: "Collector Interview: Bangkok Vintage",
-          category: "Journal Board",
+          category: "Collector",
           author: "Editorial",
           status: "Archived",
           publishAt: "02 Jul 2026 18:00",
@@ -39434,14 +39440,14 @@
         id: "RPC-043",
         articleId: "ART-043",
         articleTitle: "How to Check Provenance",
-        category: "Watch 101",
+        category: "Technical",
         surface: "Board Article",
         contentStatus: "Published",
         reportStatus: "Pending",
         priority: "high",
         reporters: 2,
         waitingHours: 18,
-        reason: "เนื้อหาไม่เหมาะสม",
+        reason: "Inappropriate content",
         reporterNote: "รูปเอกสารดูเหมือนถูกคัดลอกจากประกาศของดีลเลอร์ และยังเห็นลายน้ำที่ถูกครอปอยู่",
         nextCheck: "Compare the reported image with source evidence, then edit the article to remove or replace the image before closing the report.",
         preview: "Provenance checklist article with a reported body image inside the Board content.",
@@ -39455,14 +39461,14 @@
         id: "RPC-039",
         articleId: "ART-039",
         articleTitle: "Collector Interview: Bangkok Vintage",
-        category: "Journal Board",
+        category: "Collector",
         surface: "Board Article",
         contentStatus: "Archived",
         reportStatus: "Closed",
         priority: "low",
         reporters: 3,
         waitingHours: 0,
-        reason: "อื่น ๆ",
+        reason: "Other",
         reporterNote: "The owner attribution was no longer accurate after the collector requested removal.",
         nextCheck: "No pending action. Article remains archived and the report is closed.",
         preview: "Archived collector interview retained for BO audit only.",
@@ -39478,8 +39484,8 @@
     const categoryRows = [
       {
         id: "CAT-001",
-        name: "Buying Guide",
-        slug: "buying-guide",
+        name: "Guides",
+        slug: "guides",
         description: "คำแนะนำการซื้อและตรวจสอบนาฬิกาก่อนตัดสินใจ",
         status: "Active",
         displayOrder: 10,
@@ -39491,9 +39497,9 @@
       },
       {
         id: "CAT-002",
-        name: "Watch 101",
-        slug: "watch-101",
-        description: "บทความพื้นฐานสำหรับผู้เริ่มต้นและผู้ใช้งานใหม่",
+        name: "Technical",
+        slug: "technical",
+        description: "บทความเชิงเทคนิค กลไกนาฬิกา และความรู้พื้นฐานสำหรับผู้เริ่มต้น",
         status: "Active",
         displayOrder: 20,
         updatedAt: "09 Jul 2026 09:42",
@@ -39503,8 +39509,8 @@
       },
       {
         id: "CAT-003",
-        name: "Watch Market",
-        slug: "watch-market",
+        name: "Market Watch",
+        slug: "market-watch",
         description: "บทวิเคราะห์ตลาด ราคา และสัญญาณความต้องการ",
         status: "Active",
         displayOrder: 30,
@@ -39515,9 +39521,9 @@
       },
       {
         id: "CAT-004",
-        name: "Watch Events",
-        slug: "watch-events",
-        description: "ข่าวสาร event, auction, campaign และกิจกรรมของ community",
+        name: "Industry",
+        slug: "industry",
+        description: "ข่าวอุตสาหกรรม event, auction, campaign และกิจกรรมของ community",
         status: "Active",
         displayOrder: 40,
         updatedAt: "08 Jul 2026 14:10",
@@ -39527,9 +39533,9 @@
       },
       {
         id: "CAT-005",
-        name: "Watch Apparel",
-        slug: "watch-apparel",
-        description: "สาย นาฬิกา เครื่องแต่งกาย และสไตล์ที่เกี่ยวข้อง",
+        name: "Collector",
+        slug: "collector",
+        description: "การสะสม สไตล์ และเรื่องเล่าจากนักสะสม",
         status: "Active",
         displayOrder: 50,
         updatedAt: "07 Jul 2026 11:35",
@@ -39539,9 +39545,9 @@
       },
       {
         id: "CAT-006",
-        name: "Journal Board",
-        slug: "journal-board",
-        description: "บทสัมภาษณ์และเรื่องเล่าจากนักสะสม",
+        name: "Rolex",
+        slug: "rolex",
+        description: "เรื่องราว บทสัมภาษณ์ และบทความเฉพาะ Rolex",
         status: "Active",
         displayOrder: 60,
         updatedAt: "06 Jul 2026 13:05",
@@ -39551,9 +39557,9 @@
       },
       {
         id: "CAT-007",
-        name: "Owner Stories",
-        slug: "owner-stories",
-        description: "หมวดเรื่องเล่าจากเจ้าของนาฬิกาที่ยังไม่เปิดใช้บน Board",
+        name: "Featured",
+        slug: "featured",
+        description: "หมวดบทความพิเศษที่ยังไม่เปิดใช้บน Board",
         status: "Inactive",
         displayOrder: 70,
         updatedAt: "05 Jul 2026 16:20",
@@ -44832,6 +44838,7 @@
         getBoardReportQueueStatus(report),
         getBoardReportPriorityLabel(report),
         report.reason,
+        translateReportReason(report.reason),
         report.reporterNote,
         ...(report.tags || [])
       ].join(" ").toLowerCase();
@@ -45032,7 +45039,7 @@
                   <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
                   <td data-label="Reporter">${row.reporter}</td>
                   <td data-label="Status">${row.status}</td>
-                  <td data-label="Report Reason" class="history-note">${renderHistoryValue(row.reason)}</td>
+                  <td data-label="Report Reason" class="history-note">${renderHistoryValue(translateReportReason(row.reason))}</td>
                   <td data-label="Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>
                 </tr>
               `).join("")}
@@ -45081,14 +45088,14 @@
                   ${boardReportPriorityPill(report)}
                   <div class="user-card-meta">
                     <div class="user-card-meta-item comment-field-meta"><span>Article</span><strong>${report.articleTitle}</strong></div>
-                    <div class="user-card-meta-item report-reason-meta comment-field-meta"><span>Report reason</span><strong>${report.reason}</strong></div>
+                    <div class="user-card-meta-item report-reason-meta comment-field-meta"><span>Report reason</span><strong>${translateReportReason(report.reason)}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Reported at</span><strong>${reportedAt}</strong></div>
                   </div>
                 </div>
                 <div data-label="Article Status">${boardReportContentStatusPill(report.contentStatus)}</div>
                 <div data-label="Status">${boardReportQueueStatusPill(report)}</div>
                 <div data-label="Reported At"><div class="muted">${reportedAt}</div></div>
-                <div data-label="Report Reason"><div class="muted">${report.reason}</div></div>
+                <div data-label="Report Reason"><div class="muted">${translateReportReason(report.reason)}</div></div>
                 <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
                 <div data-label="Priority">${boardReportPriorityPill(report)}</div>
                 <div class="user-row-actions">
@@ -45377,7 +45384,7 @@
             const priorityPillClass = row.priority === "High" ? "red" : row.priority === "Medium" ? "amber" : "blue";
             const asset = moduleData.assets.rows.find(entry => entry.id === row.assetId);
             const assetName = asset ? asset.name : "-";
-            const reportReason = row.reportReason || row.tags.filter(tag => !["SLA 4h", "Reply", "Closed", "Audit"].includes(tag)).join(", ") || "-";
+            const reportReason = translateReportReason(row.reportReason || row.tags.filter(tag => !["Reply", "Closed", "Audit"].includes(tag)).join(", ") || "-");
             return `
               <div class="user-row report-row reported-comment-row" data-reported-comment-card="${row.id}">
                 <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${row.id}</div></div>
@@ -45428,6 +45435,8 @@
 
     function renderReportedCommentReporterHistoryTable(reportCase) {
       const allRows = Array.isArray(reportCase.reporterHistory) ? reportCase.reporterHistory : [];
+      // Additional details = optional contract field — แสดง column เฉพาะเมื่อมี reporter ส่งค่ามาจริง
+      const showDetailsColumn = allRows.some(row => String(row.additionalDetails || "").trim());
       const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
       reporterHistoryPage = Math.min(reporterHistoryPage, pageCount);
       const start = (reporterHistoryPage - 1) * reportHistoryPageSize;
@@ -45438,10 +45447,10 @@
           <td data-label="Reporter">${row.reporter}</td>
           <td data-label="Status">${row.status}</td>
           <td data-label="Report Reason" class="history-note">${renderHistoryValue(translateReportReason(row.reason))}</td>
-          <td data-label="Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>
+          ${showDetailsColumn ? `<td data-label="Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>` : ""}
         </tr>
       `).join("") : `
-        <tr><td colspan="5" class="history-note">No reporter history recorded yet</td></tr>
+        <tr><td colspan="${showDetailsColumn ? 5 : 4}" class="history-note">No reporter history recorded yet</td></tr>
       `;
       return `
         <div class="history-table-wrap">
@@ -45450,8 +45459,8 @@
               <col style="width: 15%">
               <col style="width: 18%">
               <col style="width: 12%">
-              <col style="width: 25%">
-              <col style="width: 30%">
+              <col style="width: ${showDetailsColumn ? 25 : 55}%">
+              ${showDetailsColumn ? '<col style="width: 30%">' : ""}
             </colgroup>
             <thead>
               <tr>
@@ -45459,7 +45468,7 @@
                 <th>Reporter</th>
                 <th>Status</th>
                 <th>Report Reason</th>
-                <th>Additional Details</th>
+                ${showDetailsColumn ? "<th>Additional Details</th>" : ""}
               </tr>
             </thead>
             <tbody>${rows}</tbody>
