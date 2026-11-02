@@ -1,7 +1,7 @@
 # 05 BO Content / Board Module
 
-**Version:** `BO-05-v1.0`  
-**Date:** 2026-07-31  
+**Version:** `BO-05-v1.1`  
+**Date:** 2026-11-02  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Content / Board |
 | Platform | Responsive Web Back Office |
-| Version | `BO-05-v1.0` |
+| Version | `BO-05-v1.1` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -315,6 +315,13 @@ Preview modal ต้องแสดง:
 
 Category เป็น master data ที่จัดการจาก BO และใช้ควบคุมการจัดกลุ่มบทความใน FO Board
 
+### FO Category Contract
+
+Category ของ BO map ตรงกับ FO `cat` tag ตาม magazine model ของ `../FrontOffice/12_BOARD_MODULE.md` — `cat` เป็น curated tag ไม่ใช่ strict enum: `BD_CATEGORIES` เป็น pill/sheet options สำหรับ filter ส่วนบทความจริงมี `cat` กว้างกว่า (เช่น `Featured`, `Watch Trends`, `Rolex`, `Collector`, `Industry`, `Guides`, `Market Watch`, `Technical`) — fixed 7-section category taxonomy เดิม (Watch Brands / Watch 101 / Watch Apparel / Watch Events / Watch Market / Journal Board / Trending Now) ถูก FO magazine model supersede แล้ว (FO deviation D1 — ตัดสิน 2026-11-02 FO-BO-001 GAP-02)
+
+- Category name ที่ BO กำหนดต้องตรงกับ `cat` value ที่ FO render บน article card, filter pill และ category page
+- Trending Now, Main Hero และ Journal Board preview ไม่ใช่ category — เลือกบทความอัตโนมัติจาก eligible article pool ตาม section 13
+
 ### Category Behavior
 
 - Active category แสดงใน FO filter/section และเป็นตัวเลือกใน Add/Edit Article
@@ -470,12 +477,14 @@ Base ordering:
 
 ## 14. Reported Article Content
 
+Canonical name ของ queue นี้คือ `Reported Articles` ตาม nav label และ sibling naming (Articles / Categories / Reported Articles) — queue นี้ครอบ FO report type `Board Content` จึงอธิบายเป็น "(Board Content reports)" ใน spec; ชื่อ `Reported Board` เป็น legacy alias ที่เลิกใช้ (ตัดสิน 2026-11-02 — FO-BO-001 GAP-09)
+
 FO `Report article` ส่ง report type `Board Content` และ target type `Article` เข้า BO ที่ `Content Management > Reported Articles`
 
 ### Report Intake Rules
 
 - FO `Report article` ส่ง report type `Board Content` และ target type `Article` เข้า BO ที่ `Content Management > Reported Articles`
-- Article Report Reason ยึด 6 เหตุผลมาตรฐานตาม `FrontOffice/12_BOARD_MODULE.md` (`Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`)
+- Article Report Reason ยึด 6 เหตุผลมาตรฐานตาม `FrontOffice/12_BOARD_MODULE.md` (`Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`) — canonical taxonomy ตาม `00_GLOBAL_RULES_MODULE.md` §11
 - `Reporter Note` ใน BO แสดงข้อมูลจาก `Additional details (optional)` ที่ผู้รายงานกรอกตอนส่งรายงานจาก FO (สอดคล้องกับ `content_reports.detail` ใน FoDb)
 - ไม่มีฟิลด์ `Reported Part` ใน Product scope (ผู้ใช้รายงานบทความทั้งชิ้นจาก Article Detail)
 - Article ไม่หายจาก FO ทันทีหลังถูก report
@@ -614,6 +623,8 @@ Pagination ของ `Reporter History` และ `Admin Action History` ต้�
 | Deactivate category | Category หายจาก FO filter/section และ Add/Edit Article selector |
 | Close report | Report ถูกปิดใน BO โดย article ยังอยู่ตามสถานะเดิม |
 | Archive article from Reported Articles | Article master เปลี่ยนเป็น Archived, article หายจาก FO Board/Search/Category, direct link แสดง unavailable และ report ถูกปิด |
+
+Direct link ไป article ที่ unavailable (archived/unpublished/deleted) ต้องใช้ canonical copy `บทความนี้ไม่พร้อมใช้งานแล้ว` ตาม `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` §10 และ `../FrontOffice/12_BOARD_MODULE.md` D11 — ใช้ copy เดียวกันทุก surface (ตัดสิน 2026-11-02 — FO-BO-001 GAP-10)
 
 ## 16. Error, Empty, Loading States
 

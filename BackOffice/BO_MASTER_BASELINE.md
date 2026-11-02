@@ -26,7 +26,7 @@ BO ต้องแยกจาก FO mobile app ชัดเจน Admin ไม�
 | Responsive operation | BO รองรับ desktop, tablet และ mobile-width browser โดย optimize workflow หนาแน่นสำหรับหน้าจอใหญ่ |
 | FO continuity | BO action ต้อง sync ผลกลับไป FO surfaces เช่น Feed, Asset Detail, Board, Search, Profile, Watch Alert และ Notification |
 | Traceability | Sensitive action ต้องมี audit trail พร้อม before/after value, admin identity, admin access, timestamp และ reason เมื่อเกี่ยวข้อง |
-| Team efficiency | Workflow ต้องรองรับ filtering, safe bulk review, exports, assignment และ SLA tracking |
+| Team efficiency | Workflow ต้องรองรับ filtering, safe bulk review, exports และ assignment |
 
 ## 3. Admin Access Model
 
@@ -90,7 +90,6 @@ Phase 3 คือ advanced workflow และ external integration ที่ย�
 | Module | Phase 3 Scope |
 | --- | --- |
 | Advanced moderation workflow | Automated compliance tools, AI moderation, advanced dispute workflow |
-| SLA dashboard | Dedicated SLA monitoring dashboard |
 | External integrations | CRM integration, external compliance tools |
 
 ## 7. Core BO/FO Action Mapping

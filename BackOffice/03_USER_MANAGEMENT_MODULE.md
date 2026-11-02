@@ -1,7 +1,7 @@
 # 03 BO User Management Module
 
-**Version:** `BO-03-v1.2`  
-**Date:** 2026-10-26  
+**Version:** `BO-03-v1.3`  
+**Date:** 2026-11-02  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO User Management |
 | Platform | Responsive Web Back Office |
-| Version | `BO-03-v1.2` |
+| Version | `BO-03-v1.3` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -493,7 +493,7 @@ Report Detail แสดงรายละเอียดรายงานหน
 | Section | ข้อมูลที่ต้องแสดง |
 | --- | --- |
 | Reported User | User ID, display name (ลิงก์เปิด User Detail), account status |
-| Reporter History | แหล่งที่มา, เหตุผล, สถานะ report, additional details จากผู้รายงาน |
+| Reporter History | แหล่งที่มา, เหตุผล, สถานะ report |
 | Admin Action History | ประวัติการรับรายงาน, การปิดรายงาน, การเปลี่ยนสถานะบัญชี และ note ที่เกี่ยวข้อง |
 | Actions | Close Report, Manage Account Status ตามเงื่อนไข |
 
@@ -503,6 +503,10 @@ Source ของรายงานผู้ใช้มีได้เฉพา�
 - Chat
 
 Report Detail ต้องไม่อ้าง source ประเภท asset, signup/auth หรือ deletion request
+
+Report reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 (FO = SoT) และ reporter submission เป็น reason-only — ไม่มี `Additional details` field จาก FO live stack (มีเฉพาะ Board Content contract)
+
+Source `Chat` เก็บเฉพาะ thread reference สำหรับ support ตามทีหลัง ไม่เก็บและไม่แสดง message transcript ใน report detail (ตาม IG model — canonical contract ใน `00_GLOBAL_RULES_MODULE.md` §11)
 
 ### Report Actions
 

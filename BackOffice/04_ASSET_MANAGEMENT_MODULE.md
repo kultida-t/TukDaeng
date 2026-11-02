@@ -1,7 +1,7 @@
 # 04 BO Asset Management Module
 
-**Version:** `BO-04-v1.3`  
-**Date:** 2026-10-26  
+**Version:** `BO-04-v1.4`  
+**Date:** 2026-11-02  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Asset Management |
 | Platform | Responsive Web Back Office |
-| Version | `BO-04-v1.3` |
+| Version | `BO-04-v1.4` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -410,6 +410,8 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 
 Reported Assets เป็น queue แยกจาก Asset List สำหรับจัดการ report case
 
+Queue นี้ครอบ report ของ published post ทุกชนิดตาม Report Entity Model ใน `00_GLOBAL_RULES_MODULE.md` §11 — report target = post entity: asset-linked post ใช้ reference `AST-` และ post-only (feed post kind `post` ที่ไม่ผูก asset) ใช้ reference `POST-` โดยไม่แยกคิว
+
 ### Required Fields
 
 - Report ID
@@ -496,7 +498,8 @@ Reporter History ต้องแสดง:
 - Reporter
 - Report status
 - Report reason
-- Additional details
+
+Report reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 และ reporter submission เป็น reason-only — ไม่มี `Additional details` field (มีเฉพาะ Board Content contract)
 
 ### Admin Action History
 
@@ -557,6 +560,7 @@ Reported Assets queue ต้องใช้ report case เป็น source of t
 - Moderation State: None, `Admin Hidden`, `Auto Hidden`, `Permanently Hidden`
 - Report Status: `Pending`, `Closed`
 - Report Case: reportId, assetId, reportStatus, uniqueReporterCount, reporter history, reason summary, priority, created timestamp, closed timestamp, audit references
+- Post Reference: `AST-` สำหรับ asset-linked post หรือ `POST-` สำหรับ post-only report (kind `post` ไม่ผูก asset — post-only report ไม่มี asset status/moderation state ให้ join แสดงเฉพาะ post context); ref เป็น frozen identifier ตาม link state ตอน intake ไม่เปลี่ยนย้อนหลังเมื่อโพสต์เปลี่ยนการผูก asset — detail join current state เสมอ
 
 ห้าม infer รายการใน Reported Assets queue จาก asset status, moderation pill หรือข้อความใน asset row เพียงอย่างเดียว
 
@@ -664,7 +668,8 @@ Reporter History ต้องแสดง:
 - Reporter
 - Status (เช่น `เปิดเคส`, `รวมเคส`)
 - Report Reason
-- Additional Details
+
+Report Reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 และ reporter submission เป็น reason-only — ไม่มี `Additional Details` field (มีเฉพาะ Board Content contract)
 
 ### Admin Action History
 
@@ -780,7 +785,6 @@ Comment status เป็น overlay บน comment record และไม่เ�
 - Report ซ้ำจาก user เดิมต้องไม่เพิ่ม unique reporter count
 - Report ต้องเข้า queue โดยไม่ทำให้ comment หายจาก FO ทันที (comment ยังแสดงตาม status เดิม)
 - Report case ต้องผูกกับ comment current state ล่าสุดเสมอ
-- SLA baseline 24 ชั่วโมงสำหรับ comment report ตาม Trust & Safety baseline
 
 ## 21. FO Sync Rules For Comment Moderation
 

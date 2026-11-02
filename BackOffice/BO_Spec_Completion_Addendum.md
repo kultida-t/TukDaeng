@@ -181,7 +181,7 @@ Phase 1 ครอบคลุม 2 sub-module:
 
 ### 5.3 Out Of Scope (Phase 1)
 
-Ticket queue, ticket detail, ticket assignment, priority, SLA tracking, reply history, internal notes และ manual ticket creation จาก LINE/Phone/Email ไม่อยู่ใน Phase 1
+Ticket queue, ticket detail, ticket assignment, priority, reply history, internal notes และ manual ticket creation จาก LINE/Phone/Email ไม่อยู่ใน Phase 1
 
 ### 5.4 Audit Actions
 
@@ -617,7 +617,7 @@ Baseline role templates include `Super Admin`, `Admin Manager`, `Operations Mana
 |---|---|
 | Asset Management (Reported Comments) | Admin can view aggregate data and moderate reported comments by policy. |
 | Market Demand (Watch Alert) | Admin can view by policy (read-only — no disable/enable/export/bulk action on user alerts). Audit covers sensitive reveal and trigger job run only. |
-| Help & Support | Admin can manage Policy & Versioning (draft/publish/restore) and Support Center (channels, business hours, availability) by policy. Ticket queue/SLA/internal notes เป็น future scope. |
+| Help & Support | Admin can manage Policy & Versioning (draft/publish/restore) and Support Center (channels, business hours, availability) by policy. Ticket queue/internal notes เป็น future scope. |
 | Account Deletion Requests | Admin can view requests and restore/reject restore within the 30-day grace period by policy with confirmation, reason, and audit; auto-delete (archive + anonymize) is a system job, not an admin action. |
 | Notifications (Broadcast & System Templates) | Phase 2/future scope — Admin can manage templates and broadcasts with approval, preview, and audit policy. ไม่มี Notifications menu entry ใน sidebar ใน Phase 1 |
 | Delivery Logs (Phase 1, Settings) | Admin can view delivery logs, retry failed delivery, and export delivery log under Settings with scope/reason/audit. Broadcast/System Templates config remains Phase 2/future (ดู `14_NOTIFICATIONS_MODULE.md`). |

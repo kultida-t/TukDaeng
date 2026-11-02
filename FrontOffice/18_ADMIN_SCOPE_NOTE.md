@@ -28,7 +28,7 @@ This document clarifies that Admin is a Web Back Office account type, not a mobi
 | Platform | Web Back Office สำหรับ Admin |
 | Admin access | Admin ใช้งานผ่าน Back Office เท่านั้น |
 | Responsibilities | ตรวจสอบ Report, Moderation, จัดการ Board Content, จัดการ User / Asset ตาม policy |
-| SLA | ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา |
+| Report Handling | ดำเนินการกับ Report ที่เข้ามาทั้งหมดผ่าน queue — ไม่มี SLA/deadline tracking (ตัดสิน 2026-11-02 — FO-BO-001 GAP-03) |
 | Sold Asset | Sold Asset เก็บไว้เพื่อ Sales History, Portfolio และ Admin Review |
 | Report impact | Asset หรือ Content จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น |
 | Apple compliance | ต้องรองรับ Report, Block, Terms, Privacy, Moderation Flow |
@@ -43,7 +43,7 @@ This document clarifies that Admin is a Web Back Office account type, not a mobi
 - Report review and moderation responsibility
 - Board content management ownership
 - User / Asset management by policy
-- 24-hour report handling SLA
+- Report handling โดยไม่มี SLA/deadline tracking
 - Audit Trail requirement
 - Mobile-to-Back-Office handoff assumptions
 
@@ -71,7 +71,7 @@ Admin รับผิดชอบ:
 - Moderation
 - จัดการ Board Content
 - จัดการ User / Asset ตาม policy
-- ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา
+- ดำเนินการกับ Report ที่เข้ามาทั้งหมด (ไม่มี deadline tracking)
 
 # 6. Mobile App Boundary
 
@@ -138,7 +138,7 @@ Admin Action ต้องมี Audit Trail ใน Back Office
 | AC-ADMIN-003 | Report รองรับ Asset, User, Comment และ Board Content |
 | AC-ADMIN-004 | Report ไม่ทำให้ Asset หรือ Content หายทันทีโดยไม่มี Admin moderation |
 | AC-ADMIN-005 | Admin ต้องสามารถตรวจสอบ Report ผ่าน Back Office ตาม scope master |
-| AC-ADMIN-006 | Admin ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา |
+| AC-ADMIN-006 | Admin ดำเนินการกับ Report ที่เข้ามาทั้งหมดผ่าน Back Office (ไม่มี deadline tracking) |
 | AC-ADMIN-007 | Board content สร้างและจัดการโดย Admin ผ่าน Back Office |
 | AC-ADMIN-008 | Sold Asset เก็บไว้เพื่อ Sales History, Portfolio และ Admin Review |
 | AC-ADMIN-009 | Admin Action ต้องมี Audit Trail ใน Back Office |

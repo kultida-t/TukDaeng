@@ -47,7 +47,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Topic | Master Baseline | Trust & Safety Module Rule (ตาม prototype) |
 | --- | --- | --- |
 | Admin Scope | Admin ใช้งานผ่าน Back Office เท่านั้น | Front Office ส่ง report; Back Office review/moderation — ตรง |
-| Report SLA | Admin ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา | PRD ระบุ 24h review SLA (contract — prototype ไม่ครอบ) |
+| Report SLA | — | ไม่มี — report review ไม่มี deadline/time tracking ทั้งระบบ; 24h review SLA เดิมถูกถอน (ตัดสิน 2026-11-02 — FO-BO-001 GAP-03) |
 | Report UI | Report flow = IG-style full-page multi-step stack (D9) | report ทุก type ใช้ sub-page stack ไม่ใช่ bottom-sheet form ของ spec เดิม (D1) |
 | Block Confirm | Block ผ่าน shared confirmation surface | `blkSheet` bottom sheet `Block {u}?` + `Block`/`Block and report` (fromChat = `Block` เดียว) — **ไม่ใช่** `Block this user?` center dialog + Cancel (D2) |
 | Block Impact | Asset ของผู้ถูก Block หายจาก Feed, Search, Watch Alert Result | `p.blocked` filter ทุกโพสต์ + `th.blocked` ทุก thread + unfollow + `PF_REMOVED_FOL` — ครบตาม §12 |
@@ -77,7 +77,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Guest gate = Member Sheet `Join TukDaeng` ทุก report/block entry
 - Report success state (`report:done` + toast `Report submitted · thanks for letting us know`)
 - Terms of Use / Privacy Policy access + Sign Up consent
-- Back Office moderation handoff + 24-hour report review SLA (contract)
+- Back Office moderation handoff (contract — report review ไม่มี SLA/deadline tracking)
 - Apple compliance coverage
 
 ## Out of Scope For V1 Unless Master Adds Decision
@@ -152,7 +152,6 @@ Anonymous disclaimer เหมือนกันทุก reason/pick page: `You
 ## Admin
 
 - ตรวจสอบ Report และดำเนินการ moderation ผ่าน Back Office
-- ต้องดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา (contract)
 
 ## Suspended / Banned User
 
@@ -380,7 +379,6 @@ Report รองรับ type ต่อไปนี้ตาม master (QA-TS-0
 ## Moderation Rule
 
 - Admin ตรวจสอบ Report ผ่าน Back Office
-- Admin ต้องดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา (contract)
 - Admin สามารถจัดการ User / Asset / Board Content ตาม policy
 - Admin action ต้องมี Audit Trail ใน Back Office ตาม security baseline (contract)
 
@@ -419,7 +417,7 @@ Report รองรับ type ต่อไปนี้ตาม master (QA-TS-0
 | Guest | ดู Terms / Privacy ได้; Block/Report ไม่ได้ (ทุก entry → Member Sheet) |
 | Member | Block/Unblock/Mute และ Report post/user/comment ได้; Report Board Content = contract-only |
 | Reported/Blocked User | ไม่เห็น reporter identity; ไม่ถูกแจ้งเมื่อถูก report/block/unblock |
-| Admin | Review report และ moderation ผ่าน Back Office (24h SLA, audit trail) |
+| Admin | Review report และ moderation ผ่าน Back Office (audit trail; ไม่มี deadline tracking) |
 | Suspended/Banned User | ใช้งานไม่ได้ตาม account state (contract) |
 
 ---
@@ -622,11 +620,11 @@ Given Admin ดำเนินการ moderation ผ่าน Back Office
 When Admin remove Asset หรือ Content  
 Then content จึงถูก remove/ซ่อนตาม policy
 
-## AC-TS-012: Report SLA
+## AC-TS-012: Report Handling
 
 Given Report ถูกส่งเข้า Back Office  
 When Admin review queue ทำงาน  
-Then Report ต้องอยู่ภายใต้ SLA ดำเนินการภายใน 24 ชั่วโมง
+Then Report ต้องคงอยู่ใน queue จนกว่า Admin ตรวจและดำเนินการ (ไม่มี deadline tracking)
 
 ## AC-TS-013: Legal Consent Before Sign Up
 

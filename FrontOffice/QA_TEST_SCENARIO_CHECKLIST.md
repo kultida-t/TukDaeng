@@ -1614,8 +1614,8 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 ### QA-TS-010
 **Objective:** Verify moderation contract.
 **Maps to:** AC-TS-011, AC-TS-012
-**Steps (contract):** Report content; have an Admin act in BO; check FO surfaces and SLA.
-**Expected result:** Admin actions in Back Office within the 24h SLA with audit trail; removed content stops rendering normally in FO.
+**Steps (contract):** Report content; have an Admin act in BO; check FO surfaces.
+**Expected result:** Admin actions in Back Office with audit trail; removed content stops rendering normally in FO.
 
 ### QA-TS-011
 **Objective:** Verify Apple compliance coverage.

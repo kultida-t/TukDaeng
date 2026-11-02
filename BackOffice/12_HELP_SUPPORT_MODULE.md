@@ -1,7 +1,7 @@
 # 12 BO Help / Support Module
 
-**Version:** `BO-12-v0.2`  
-**Date:** 2026-09-03  
+**Version:** `BO-12-v0.3`  
+**Date:** 2026-11-02  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -21,7 +21,7 @@
 | --- | --- |
 | Module Name | BO Help / Support |
 | Platform | Responsive Web Back Office |
-| Version | `BO-12-v0.2` |
+| Version | `BO-12-v0.3` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -52,7 +52,7 @@ Help / Support Module ใช้สำหรับให้ Admin จัดกา
 
 ### Out Of Scope
 
-- Ticket queue, ticket detail, ticket assignment, priority, SLA tracking (ถูกตัดออกจาก Phase 1)
+- Ticket queue, ticket detail, ticket assignment, priority (ถูกตัดออกจาก Phase 1 — ไม่มี SLA tracking ใน scope ใด ๆ ตาม FO-BO-001 GAP-03)
 - Reply history และ internal note (ถูกตัดออกจาก Phase 1)
 - Manual ticket creation จาก LINE / Phone / Email (ถูกตัดออกจาก Phase 1)
 - About App content management (เป็นหน้าที่ของ FO Settings ไม่ใช่ BO module นี้)
@@ -89,6 +89,17 @@ BO มีหน้าที่จัดการข้อมูลทั้ง�
 | --- | --- | --- |
 | Help screen — ช่องทางติดต่อ, เวลาทำการ, ความพร้อมให้บริการ | Admin แก้ไขช่องทางติดต่อ, เปิด/ปิดการแสดงผลแต่ละช่องทาง, แก้ไขเวลาทำการและความพร้อมให้บริการ (TH/EN) พร้อม preview ก่อนบันทึก | Support Center |
 | Settings entry — Privacy Policy, Terms of Use | Admin แก้ไขเนื้อหา 2 ภาษา (TH/EN), สร้าง Draft, preview, publish เวอร์ชันใหม่ และดู version history | Policy & Versioning |
+
+### FO Help Dynamic Contract
+
+BO Support Center เป็นตัวขับช่องทางติดต่อ — FO Help screen ไม่ fix จำนวน row แต่ render rows จาก config ล่าสุดที่ BO บันทึก (ตัดสิน 2026-11-02 — FO-BO-001 GAP-04):
+
+- FO แสดงเฉพาะ channel ที่ `Active` — icon ตาม channelType, value และ description ตามภาษาที่ผู้ใช้เลือก พร้อม business hours และ availability
+- Interaction ตาม channelType: `LINE` → external link, `Phone` → dialer, `Email` → mail composer, `Facebook`/`Website` → external link
+- ถ้าไม่มี channel ที่ Active แสดง empty state `ไม่มีช่องทางที่เปิดใช้งาน`
+- Baseline 3 rows ด้านบน (LINE/Phone/Email) เป็นค่าเริ่มต้นจาก seed เท่านั้น ไม่ใช่ fixed contract
+
+หมายเหตุ FO dependency: FO spec `../FrontOffice/13_SETTINGS_MODULE.md` §9 ต้อง amend ให้รองรับ dynamic channels — เป็น FO decision item (e1) ที่ต้อง approve ก่อนส่ง dev เพราะ FO lock แล้ว
 
 ## 5. Admin Access And Permissions
 
@@ -160,7 +171,7 @@ Support Center เป็นหน้า form เดียว ไม่มี lis
 | Status | Meaning | FO Impact |
 | --- | --- | --- |
 | `Draft` | Admin กำลังแก้ไขเนื้อหาและยังไม่เผยแพร่ | FO ยังแสดงเวอร์ชัน Published เดิม ไม่แสดง Draft |
-| `Published` | เวอร์ชันที่เผยแพร่แล้วและ FO แสดงอยู่ | FO แสดงเนื้อหาเวอร์ชันนี้ทันที |
+| `Published` | เวอร์ชันที่เผยแพร่แล้วและ FO แสดงอยู่ | FO แสดงเนื้อหาเวอร์ชันนี้ทันที และ trigger re-consent ตาม `../FrontOffice/00_GLOBAL_RULES_MODULE.md` §8 |
 | `Archived` | เวอร์ชันเก่าที่เคย Published แล้วถูกแทนที่ | FO ไม่แสดง แต่ Admin ยังดูและ restore ได้ |
 
 กฎการเปลี่ยนสถานะ:
@@ -353,6 +364,8 @@ modal ยืนยันการเผยแพร่ Draft เป็น Publis
 - แสดง success toast `เผยแพร่ {policy type} เวอร์ชัน {version} เรียบร้อย`
 - กลับไป Policy Detail ของ policy นั้น
 
+การเผยแพร่ต้อง bump published version ทำให้ consent record ล่าสุดของผู้ใช้ FO mismatch กับเวอร์ชันที่ใช้งาน → FO แสดง re-consent sheet `We've updated our policies` บังคับทุก session ก่อนใช้งานต่อ ตาม `../FrontOffice/00_GLOBAL_RULES_MODULE.md` §8 (ตัดสิน 2026-11-02 — FO-BO-001 GAP-07)
+
 ### 12.3 Policy Version History
 
 เมนู: `Settings > Policy & Versioning > {policy type} / Version History`
@@ -444,6 +457,8 @@ Support Center เป็นหน้า form เดียวสำหรับ�
 | Email | อีเมล | email | รูปแบบอีเมลมาตรฐาน, สูงสุด 254 ตัวอักษร |
 | Facebook | Facebook URL | text | ชื่อเพจหรือ URL, สูงสุด 200 ตัวอักษร |
 | Website | Website URL | text | URL หรือโดเมน, สูงสุด 200 ตัวอักษร |
+
+BO config เป็น fixed list 5 ประเภท แต่ FO Help render เฉพาะ channel ที่ Active เป็น dynamic rows ตาม FO Help Dynamic Contract ใน section 4 — FO ไม่ fix 3 ช่องทาง (LINE/Phone/Email เป็น seed baseline เท่านั้น)
 
 ### Channel Row Layout
 
@@ -538,9 +553,10 @@ Preview อ่านค่าจาก form แบบ live (รวมค่า�
 | Dashboard | Policies card แสดง policy count (Published/Draft) และเปิดไป Settings / Policy & Versioning |
 | Audit Log | Policy actions (`POLICY_DRAFT_CREATE`, `POLICY_DRAFT_SAVE`, `POLICY_PUBLISH`, `POLICY_ARCHIVE`, `POLICY_RESTORE`) และ Support Center actions (`SUPPORT_CENTER_UPDATE`) บันทึกใน Audit Log module |
 | Reports & Analytics | ไม่มี report เฉพาะสำหรับ Help/Support ใน Phase 1 |
-| FO Help screen | Support Center data ส่งไป FO Settings > Help ผ่าน API — แสดง channels (Active เท่านั้น), business hours, availability ตามภาษาที่ผู้ใช้เลือก |
+| FO Help screen | Support Center data ส่งไป FO Settings > Help ผ่าน API — FO Help render rows แบบ dynamic ตาม channel ที่ Active (icon ตาม channelType + value + description), business hours, availability ตามภาษาที่ผู้ใช้เลือก ตาม FO Help Dynamic Contract ใน section 4 |
 | FO Settings — Privacy Policy / Terms of Use | Policy & Versioning data ส่งไป FO Settings ผ่าน API — แสดงเนื้อหาเวอร์ชัน Published ตามภาษาที่ผู้ใช้เลือก |
-| Notifications | ไม่มี integration ใน Phase 1 (policy publish ไม่ส่ง notification ให้ผู้ใช้โดยอัตโนมัติ) |
+| FO re-consent | `POLICY_PUBLISH` → version bump → consent record ล่าสุดของผู้ใช้ mismatch → re-consent sheet บังคับก่อนใช้งานต่อ ตาม `../FrontOffice/00_GLOBAL_RULES_MODULE.md` §8 (FO-BO-001 GAP-07 — version check trigger ไม่ใช่ notification) |
+| Notifications | ไม่มี integration ใน Phase 1 (policy publish ไม่ส่ง notification ให้ผู้ใช้โดยอัตโนมัติ — re-consent ทำงานผ่าน version check ไม่ใช่ notification) |
 
 ## 16. Audit Requirements
 

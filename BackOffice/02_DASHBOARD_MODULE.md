@@ -1,7 +1,7 @@
 # 02 BO Dashboard Module
 
-**Version:** `BO-02-v1.2`  
-**Date:** 2026-10-26  
+**Version:** `BO-02-v1.3`  
+**Date:** 2026-11-02  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Dashboard |
 | Platform | Responsive Web Back Office |
-| Version | `BO-02-v1.2` |
+| Version | `BO-02-v1.3` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -156,7 +156,7 @@ KPI Summary ต้องแสดง 6 cards ตามลำดับนี้:
 | New Users | `128` | `วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน` | `Today 128`, `This Week 642`, `This Month 2,840` |
 | Active Users Today | `8.4K` | `ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน` | `Today 8,420`, `This Week 24,700`, `This Month 38,900` |
 | New Assets | `94` | `สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ` | `Sale 64`, `Show 17`, `Hide 9`, `Sold 4` |
-| Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Articles 3`, `Comments 3` |
+| Reported Items | `33` | `มี 9 รายงานใหม่วันนี้` | `Assets 22`, `Users 5`, `Articles 3`, `Comments 3` |
 | Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` |
 | Watch Alert | `298` | `มีการจับคู่รายการขาย 18 ครั้งวันนี้` | `Active 298`, `Triggered 18` |
 
@@ -178,7 +178,7 @@ Work Queue เป็นรายการงานที่ Admin ควรจ�
 Header:
 
 - Title: `Work Queue`
-- Subtitle: `งานที่ต้องจัดการก่อน โดยเรียงจากกำหนดงานและผลกระทบผู้ใช้`
+- Subtitle: `งานที่ต้องจัดการก่อน โดยเรียงจากผลกระทบผู้ใช้และจำนวนงานค้าง`
 
 Work Queue ต้องแสดงเป็น action list โดยแต่ละ row มี:
 
@@ -193,21 +193,21 @@ Work Queue ต้องแสดงเป็น action list โดยแต่�
 
 | ลำดับ | Queue title | Count ตัวอย่าง | Priority | Detail text | Chips | Navigation |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | รายงานสินทรัพย์ | `22` | High | `รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้` | `ใกล้ครบกำหนด 6`, `ผู้ใช้กระทบสูง` | Asset Management / Reported Assets |
-| 2 | รายงานผู้ใช้ | `5` | High | `มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน` | `ใกล้ครบกำหนด 3`, `ตรวจประวัติ login` | User Management / Reported Users |
+| 1 | รายงานสินทรัพย์ | `22` | High | `มีรายงานสินทรัพย์รอตรวจ / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจเคสที่มี reporter หลายคนก่อน` | `Reporter 3+ คน 6`, `ผู้ใช้กระทบสูง` | Asset Management / Reported Assets |
+| 2 | รายงานผู้ใช้ | `5` | High | `มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน` | `Reporter 3+ คน 3`, `ตรวจประวัติ login` | User Management / Reported Users |
 | 3 | รายงานบทความ | `3` | High | `มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive` | `Articles 3`, `รอตรวจ` | Content Management / Reported Articles |
-| 4 | คำขอลบบัญชี | `8` | Medium | `มี 2 คำขอใกล้ครบกำหนดลบบัญชีอัตโนมัติ` | `ใกล้ครบกำหนด 2`, `Grace period 4` | Account Deletion / Requests |
+| 4 | คำขอลบบัญชี | `8` | Medium | `มี 2 คำขอใกล้ครบ Grace period — ระบบจะลบบัญชีอัตโนมัติเมื่อครบกำหนด` | `ใกล้ครบ Grace 2`, `Grace period 4` | Account Deletion / Requests |
 | 5 | บทความรอเผยแพร่ | `4` | Normal | `บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา` | `เผยแพร่วันนี้ 2`, `ต้อง preview` | Content Management / Articles |
 | 6 | ข้อมูลตลาดรอตรวจ | `6` | Normal | `brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert` | `Sync issue 6`, `Price index` | Market Data / Sync History |
 | 7 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | `Retryable 81`, `Cleanup 11` | Settings / Delivery Logs |
 
 กฎการจัดลำดับ:
 
-- งานที่ใกล้ครบกำหนดหรือกระทบผู้ใช้สูงต้องอยู่ก่อน
+- งานที่กระทบผู้ใช้สูงหรือมี reporter จำนวนมากต้องอยู่ก่อน
 - Priority high ใช้สีแดง
 - Priority medium ใช้สี amber
 - Priority normal ใช้สี blue หรือ neutral accent
-- ห้ามใช้คำ technical `SLA` ใน UI ให้ใช้คำว่า `ใกล้ครบกำหนด`, `ครบกำหนดตอบ`, `กำหนดตอบครั้งแรก` หรือข้อความที่ผู้ใช้เข้าใจได้
+- BO ไม่มี deadline/time tracking สำหรับงาน admin — ห้ามใช้คำ `SLA`, `ใกล้ครบกำหนด`, `ครบกำหนดตอบ`, `กำหนดตอบครั้งแรก` หรือเวลาที่บ่ง deadline ของ admin บน UI (ตัดสิน 2026-11-02 — FO-BO-001 GAP-03); ยกเว้น Grace period countdown ของ Account Deletion ซึ่งเป็น system lifecycle ไม่ใช่ admin deadline
 
 ## 10. Recent Activity
 
@@ -364,7 +364,7 @@ Copy rules:
 
 - ใช้ข้อความไทยที่ช่วยตัดสินใจปฏิบัติงาน
 - ห้ามใช้ raw backend label เป็นข้อความหลัก เช่น `Oldest 22h`, `blocked by dependency check`, `Security event`
-- ห้ามใช้คำ technical `SLA` บน UI
+- ห้ามใช้ deadline/เวลาติดตามงาน admin บน UI — ไม่มี SLA tracking (ตัดสิน 2026-11-02 — FO-BO-001 GAP-03)
 - หลีกเลี่ยงตัวย่อที่ไม่มีคำอธิบาย
 - Trend และ queue detail ต้องอ่านรู้เรื่องเมื่ออยู่เดี่ยว ๆ
 
