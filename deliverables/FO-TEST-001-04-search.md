@@ -4,6 +4,7 @@
 > กติกาหลัก: `deliverables/FO-TEST-001-testcase-prompt.md` · Task breakdown: `deliverables/FO-TEST-001-task-breakdown.md`
 > แหล่งออกแบบเคส: `Prototypes/fo-flow/index.html` (ใช้เป็นแม่แบบแตกเคส/expected เท่านั้น — ทุกเคสเขียนให้ทำบนแอปจริงได้; prototype ถูกอัปเดตให้ตรง spec ที่ล็อกรอบนี้แล้ว ดู §3)
 > สัญญาความครอบคลุม: `deliverables/FO-TEST-001-00-inventory.md` §2.3 — ไม่เดา behavior เพิ่ม · TC ID เดิมคงไว้ครบทุกตัวเพื่อ traceability
+> **สถานะเอกสาร**: Draft — ยังไม่มีผลการรันเทส (Result ว่างทุกเคส) · "ครบ" ในเอกสารนี้ = มีเคสเขียนแล้ว ไม่ใช่ทดสอบผ่าน — นิยามเต็มที่ `deliverables/FO-TEST-001-20-traceability.md` §0
 
 ## 0. สภาพแวดล้อมเทส + วิธีใช้เอกสาร
 

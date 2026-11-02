@@ -5,7 +5,7 @@
 **Owner:** Product / UX / Dev / QA  
 **Scope:** Final Front Office error, loading, fallback, and retry copy for Dev handoff.
 
-> **Sync note (FO-PRD-v1.9, 2026-10-22):** FO V1 ไม่มี infinite scroll / load-more pagination — state ที่อ้าง pagination เป็น contract-only; like count เป็น private (เห็นเฉพาะเจ้าของโพสต์ — S-26)
+> **Sync note (FO-PRD-v1.9, 2026-10-22):** state ที่อ้าง pagination เป็น contract-only; like count เป็น private (เห็นเฉพาะเจ้าของโพสต์ — S-26) — **update 2026-11-02 (DEC-13/15):** feed มี infinite scroll 10 โพสต์/หน้า + pull-to-refresh แล้วใน V1
 
 ---
 

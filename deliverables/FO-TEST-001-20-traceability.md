@@ -10,7 +10,7 @@
 - **ผลการรันเทส: ยังไม่มี** — ทุกเคสในชุด FO-TEST-001 เป็นเคสที่เขียนไว้ (Draft) สำหรับเดฟนำไปรันบน build stg / แอปจริง คอลัมน์ Result ว่างทุกเคส ห้ามอ้างว่า PASS/FAIL จากเอกสารนี้
 - **"ครบ" ในเอกสารนี้ = มี TC เขียนและชี้กลับ coverage map แล้ว** ไม่ได้หมายความว่าทดสอบแล้วผ่าน
 - **ลำดับความจริงเมื่อเอกสารขัดกัน**: (1) spec ใน `FrontOffice/` = contract (2) `Prototypes/fo-flow/index.html` = reference ของ UI และ expected (3) เคสทดสอบ FO-TEST-001 = ใช้ตรวจ build จริงบน stg/แอป ไม่ใช้ prototype เป็นเป้าการทดสอบ
-- **ตัวเลขยืนยันแล้ว (ตรวจจาก CSV จริง ณ วันที่ 2026-10-30)**: TC รวม 1,620 (High 807 / Medium 693 / Low 120) · SETUP 195 แถว · coverage map 164 แถว (inventory §2) ทุกแถวมีเคสหรือเหตุผลยกเว้น
+- **ตัวเลขยืนยันแล้ว (ตรวจจาก CSV จริง — re-verify ล่าสุด 2026-11-02)**: TC รวม 1,619 (High 808 / Medium 691 / Low 120) · เล่ม 03 = 84 หลังเพิ่ม FEED-083/084 (double-tap ตาม DEC-14/16) · เล่ม 10 = 76 หลังถอน ALT-070 (DEC-26) + ALT-015/030 (DEC-41) · SETUP 195 แถว · coverage map 164 แถว (inventory §2) ทุกแถวมีเคสหรือเหตุผลยกเว้น
 - **ID ที่ปลดแล้ว**: SHELL-055 (ตัดออกจากแอปจริง) — ห้ามนำเลขนี้กลับมาใช้ ช่วง ID ที่เขียนเป็น `..` หมายถึงเฉพาะ ID ที่มีอยู่จริง
 
 ## 0. วิธีอ่าน + สรุปผลก่อนตาราง
@@ -32,14 +32,14 @@
 | 00 | FO-TEST-001-00-inventory.md | — | Master Coverage Map (contract) | — | ต้นทาง audit |
 | 01 | FO-TEST-001-01-auth.md | 01-auth-checklist.csv | Auth & Onboarding | 104 | ✅ ครบ — CSV 104 TC + 7 SETUP และ coverage map signin ตรงกัน |
 | 02 | FO-TEST-001-02-shell.md | 02-shell-checklist.csv | Shell & Navigation | 65 | ✅ ครบ |
-| 03 | FO-TEST-001-03-feed.md | 03-feed-checklist.csv | Feed & Post Cards | 82 | ✅ ครบ |
+| 03 | FO-TEST-001-03-feed.md | 03-feed-checklist.csv | Feed & Post Cards | 84 | ✅ ครบ |
 | 04 | FO-TEST-001-04-search.md | 04-search-checklist.csv | Search & Filter | 62 | ✅ ครบ |
 | 05 | FO-TEST-001-05-create.md | 05-create-checklist.csv | Create Composer | 73 | ✅ ครบ |
 | 06 | FO-TEST-001-06-viewer-detail.md | 06-viewer-detail-checklist.csv | Post Viewer & Detail | 93 (PV 53+DET 40) | ✅ ครบ |
 | 07 | FO-TEST-001-07-sheets.md | 07-sheets-checklist.csv | Bottom Sheets | 125 | ✅ ครบ — priority stats ตรงกับ CSV |
 | 08 | FO-TEST-001-08-chat.md | 08-chat-checklist.csv | Chat | 127 | ✅ ครบ — priority stats และ CSV ตรงกัน |
 | 09 | FO-TEST-001-09-board.md | 09-board-checklist.csv | Board | 69 | ✅ ครบ |
-| 10 | FO-TEST-001-10-alerts.md | 10-alerts-checklist.csv | Alerts & Notifications | 79 | ✅ ครบ |
+| 10 | FO-TEST-001-10-alerts.md | 10-alerts-checklist.csv | Alerts & Notifications | 76 | ✅ ครบ |
 | 11 | FO-TEST-001-11-watchalert.md | 11-watchalert-checklist.csv | Watch Alert | 80 | ✅ ครบ |
 | 12 | FO-TEST-001-12-profile.md | 12-profile-checklist.csv | Profile | 111 | ✅ ครบ |
 | 13 | FO-TEST-001-13-portfolio.md | 13-portfolio-checklist.csv | Portfolio & Asset | 106 | ✅ ครบ |
@@ -96,7 +96,7 @@
 | post card — clip `[OPEN-CODE-ONLY]` | FEED-017..019 + PV-030..033 + DET-020..023 | ⚠️ BLOCK-if (ต้องสร้าง clip จริง) |
 | post card — details inline + View full detail | FEED-020..026 + DET-001..005 | ✅ |
 | action `follow` `[GATE]` | FEED-027..031 + GATE-004 + uf SHT-091..094 | ✅ |
-| action `like` `[GATE]` | FEED-032..034 + GATE-001 | ✅ |
+| action `like` `[GATE]` | FEED-032..034, 083, 084 + GATE-001 | ✅ |
 | action `save` sv `[GATE]` | FEED-042..045 + SHT-056..066 + LIB-030..045 | ✅ |
 | action `share` sh `[GATE]` | FEED-039..041 + SHT-049..055 | ✅ |
 | action `comment` | FEED-035..038 + SHT-013..041 | ✅ |
@@ -173,7 +173,7 @@
 | model follow `mf-btn` `[OPEN-CODE-ONLY]` `[GATE]` | WA-002, 004, 007, 011, 022..025, 040, 042 | ✅ |
 | alert fire `_waHits` `[OPEN-CODE-ONLY]` | CRE-048 + WA-043..055 | ⚠️ BLOCK-if (match engine จริง) |
 | `alerts` (groups/unread/mark-all/dismiss x) | ALT-001..009, 020..022, 035, 036, 057 | ✅ |
-| row types 5 (like/comment/follow/watch/system) | ALT-010..016 + destinations ALT-026..034 | ✅ |
+| row types 4 (like/comment/follow/watch — `system` ถอนแล้วตาม DEC-41) | ALT-010..016 + destinations ALT-026..034 | ✅ |
 | badge `nav-badge` + `99+` cap | ALT-017..025 + SHELL-030 | ⚠️ BLOCK-if (>99 unread ต้อง test data — §6) |
 
 ### 2.7 Chat (15 แถว → เล่ม 08 + 16 + 12)
@@ -424,7 +424,7 @@
 | 15 | legal content placeholder-grade | SET-097..100 | **Contract ชัดเจน**: โครงสร้าง legal ครบถ้วน รองรับ dynamic copy จาก CMS/BO | ✅ RESOLVED |
 | 15 | SSO account → change pwd ต้องไม่ active | SET-024 | **Contract ชัดเจน**: บัญชี SSO ไม่มีรหัสผ่าน เมนู Change Password จะ disabled/ซ่อน | ✅ RESOLVED |
 | 15 | Date joined = mock ใน prototype | SET-012 | **Contract ชัดเจน**: แสดงเดือนและปีที่ผู้ใช้สมัครบัญชีจริง | ✅ RESOLVED |
-| 19 | system-type alert text = server copy | LANG-031 | **Contract ชัดเจน**: แปลภาษาตาม Accept-Language Header ของแอป (TH/EN) | ✅ RESOLVED |
+| 19 | system-type alert text = server copy | LANG-031 | **Contract ชัดเจน**: แปลภาษาตาม Accept-Language Header ของแอป (TH/EN) — moot หลัง DEC-41 ถอน `system` type ทั้งประเภท | ✅ RESOLVED |
 | 19 | `y`/`m` holding suffix + `N/A` vs `—` + `THB` vs `฿` | LANG-035, 047 | **Contract ชัดเจน**: ภาษาไทยใช้ `฿`, อังกฤษใช้ `THB`; ระยะเวลาใช้ `y`/`m` สม่ำเสมอ | ✅ RESOLVED |
 | 19 | system font scaling (AC-NFR-013) scope | LANG-043 | **Contract ชัดเจน**: รองรับ Dynamic Type / Text Scaling ตามมาตรฐาน accessibility | ✅ RESOLVED |
 | 19 | พุทธศักราชใน TH expected ตาม th-TH | LANG-005, 012, 037 | **Contract ชัดเจน**: th-TH แสดงปี พ.ศ. เสมอ | ✅ RESOLVED |
@@ -443,7 +443,7 @@
 
 ### 6.4 จุดเฝ้าระวังเล่ม 19 §3 (ปิดข้อยุติครบถ้วนใน FO-TEST-22)
 
-- **system alert text = server copy** → RESOLVED: ส่ง localized copy ตาม header ภาษา (DEC Register)
+- **system alert text = server copy** → RESOLVED: ส่ง localized copy ตาม header ภาษา (DEC Register) — moot หลัง DEC-41 ถอน `system` type ทั้งประเภท
 - **หน่วย `y`/`m` + `THB` vs `฿` (money rules draft)** → RESOLVED: ล็อกมาตรฐาน `฿` สำหรับ TH, `THB` สำหรับ EN (DEC Register)
 - **พุทธศักราชใน TH expected ตาม th-TH** → RESOLVED: ล็อกปี พ.ศ. สำหรับ th-TH locale เสมอ (DEC Register)
 - **system font scaling scope** → RESOLVED: ล็อก dynamic type text scaling ตามมาตรฐาน accessibility (DEC Register)
@@ -471,14 +471,14 @@
 |-----|--------|-----|-----------|----------|----------|------------------|-------------|
 | 01 | Auth & Onboarding | 104 | 50 | 47 | 7 | 40–60 | 104 TC + 7 SETUP (111 records) |
 | 02 | Shell & Navigation | 65 | 24 | 32 | 9 | 30–45 | 65 |
-| 03 | Feed & Post Cards | 82 | 32 | 41 | 9 | 50–70 | 82 |
+| 03 | Feed & Post Cards | 84 | 33 | 42 | 9 | 50–70 | 84 |
 | 04 | Search & Filter | 62 | 40 | 19 | 3 | 35–50 | 62 |
 | 05 | Create Composer | 73 | 27 | 35 | 11 | 45–65 | 73 |
 | 06 | Viewer & Detail | 93 | 48 | 40 | 5 | 40–60 | 93 |
 | 07 | Bottom Sheets | 125 | 65 | 52 | 8 | 35–50 | 125 |
 | 08 | Chat | 127 | 51 | 51 | 25 | 45–65 | 127 |
 | 09 | Board | 69 | 41 | 28 | 0 | 25–40 | 69 |
-| 10 | Alerts | 79 | 31 | 45 | 3 | 30–45 | 79 |
+| 10 | Alerts | 76 | 31 | 42 | 3 | 30–45 | 76 |
 | 11 | Watch Alert | 80 | 40 | 37 | 3 | 30–45 | 80 |
 | 12 | Profile | 111 | 61 | 44 | 6 | 45–65 | 111 |
 | 13 | Portfolio & Asset | 106 | 65 | 37 | 4 | 45–65 | 106 |
@@ -488,11 +488,11 @@
 | 17 | Guest Gate | 56 | 30 | 23 | 3 | 30–45 | 56 |
 | 18 | E2E Integration | 16 เส้น | 5 | 9 | 2 | 15–25 เส้น | 16 |
 | 19 | Language & Theme | 64 | 24 | 38 | 2 | 30–50 | 64 |
-| **รวม** | | **1,620** | **807 (49.8%)** | **693 (42.8%)** | **120 (7.4%)** | plan 700–1,035 | — |
+| **รวม** | | **1,619** | **808 (49.9%)** | **691 (42.7%)** | **120 (7.4%)** | plan 700–1,035 | — |
 
 - หน่วยนับ: เล่ม 01–17, 19 = unit test cases · เล่ม 18 = เส้น E2E (125 steps รวม — ไม่บวกเข้า unit เพราะเป็นเส้นอ้าง TC ย่อย)
 - SETUP rows ทั้งชุด = 195 แถวใน CSV (ไม่นับเป็น TC)
-- เทียบ inventory estimate "~470 TC" → จริง 1,609 (~3.4×) — เพราะ pivot เป็น "เทสแอปจริง" เพิ่มมิติ real-device/persist/cross-device/offline/ภาษา-ธีม sweep ที่ inventory ไม่ได้คูณ matrix ไว้
+- เทียบ inventory estimate "~470 TC" → จริง 1,619 (~3.4×) — เพราะ pivot เป็น "เทสแอปจริง" เพิ่มมิติ real-device/persist/cross-device/offline/ภาษา-ธีม sweep ที่ inventory ไม่ได้คูณ matrix ไว้
 
 ### 7.2 Coverage %
 
@@ -588,7 +588,7 @@
 ระดับแถวของ Master Coverage Map และ route patterns ทั้ง **58 รายการ** มี TC หรือเหตุผลยกเว้นครบทุกแถว; ทีมยืนยันให้นับ `al_unavail` เป็น route pattern ที่ 58 แล้ว และ inventory/crosswalk ซิงก์ตรงกัน (GAP-25 resolved) ผลการตัดสินในงาน **FO-TEST-22** มีดังนี้:
 
 1. **Decision Register**: ข้อตัดสินของ GAP-7..18, รายการ [OPEN] ใน §6.3 และจุดเฝ้าระวังใน §6.4 บันทึกไว้ใน `deliverables/FO-TEST-001-22-decision-register.md` (สถานะ APPROVED & LOCKED) สถานะ RESOLVED ในตาราง §6 หมายถึง "มีการตัดสินและบันทึกแล้ว" เท่านั้น ยังไม่ได้หมายความว่าเคสที่เกี่ยวข้องถูกรันบนแอปจริงหรือ stg แล้ว
-2. **Test Case Authoring (ยังไม่ได้ตรวจซ้ำ)**: เคสที่เพิ่มในเล่ม 02, 08, 11, 12, 14, 15, 16 รวมเป็น **1,620 TC** (High 807 / Medium 693 / Low 120) รวม E2E 16 เส้น ตรวจซ้ำด้วยการนับแถวจาก CSV ทุกไฟล์แล้วตรงกับตารางด้านบน และ TC ID ของ MD กับ CSV ตรงกันในทุกเล่ม (ยกเว้น SETUP ที่บางเล่มไม่มีแถวใน MD — ดูข้อ 6)
+2. **Test Case Authoring (ยังไม่ได้ตรวจซ้ำ)**: เคสที่เพิ่มในเล่ม 02, 08, 11, 12, 14, 15, 16 รวมเป็น **1,619 TC** (High 808 / Medium 691 / Low 120) รวม E2E 16 เส้น ตรวจซ้ำด้วยการนับแถวจาก CSV ทุกไฟล์แล้วตรงกับตารางด้านบน และ TC ID ของ MD กับ CSV ตรงกันในทุกเล่ม (ยกเว้น SETUP ที่บางเล่มไม่มีแถวใน MD — ดูข้อ 6)
 3. **Test Execution: ยังไม่ได้เริ่ม** เอกสารเทสทั้งชุดยังไม่เคยถูกรันบนแอปจริงหรือ build stg ผลในคอลัมน์ Result ของทุกเคสยังว่าง จึงไม่มีผล PASS/FAIL ใด ๆ ที่ยืนยันได้ ณ วันที่ audit ผลจะเกิดขึ้นเมื่อเดฟรันเคสจริงบน stg
 4. **สถานะ OPEN / BLOCK**: เคสที่ต้องการ fixture, backend, BO หรือ build เฉพาะ ยังเป็นสถานะรอ (BLOCK/รอ build) ตามที่ระบุในเล่มแต่ละไฟล์ ไม่สามารถประกาศว่าไม่มีสถานะค้างได้
 6. **SETUP rows**: CSV มี SETUP รวม 195 แถว (เล่ม 01–04 มี SETUP แถวใน CSV แต่ MD เขียนเป็นข้อความใน §0 แทนตาราง) ส่วนนี้เป็นขั้นเตรียมข้อมูล ไม่นับเป็น TC

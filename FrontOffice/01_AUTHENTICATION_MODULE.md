@@ -274,19 +274,19 @@ Onboarding แสดงครั้งเดียวตอนเปิดแอ
 
 1. Authenticated Member เปิด Change Password
 2. User กรอก current password
-3. User กรอก new password และ confirm password
+3. User กรอก new password และ re-type new password
 4. ระบบ validate current password และ password policy
 5. ระบบเปลี่ยน password สำเร็จ
 
-Change Password form fields:
+Change Password form fields (label + copy canonical ตาม 13_SETTINGS §9 — DEC-38):
 
 - `Current password`
 - `New password`
-- `Confirm new password`
+- `Re-type new password`
 
 Helper text under `New password`:
 
-- `At least 8 characters, with a number or symbol.`
+- `Your password must be at least 8 characters and should include a combination of numbers, letters and special characters (!$@%).`
 
 Submit button:
 
@@ -295,7 +295,7 @@ Submit button:
 
 Change Password success:
 
-- Show `Password changed`
+- Show `Password changed successfully`
 - User may stay signed in
 - After success, route back to Settings or show success feedback and allow user to return to Settings
 
@@ -451,9 +451,9 @@ Change Password success:
 | SSO provider error | แสดง error และให้ลองใหม่ |
 | Forgot Password email เป็นบัญชี Apple / Google SSO หรือไม่มีบัญชี | แสดง generic sent state `If an account exists for {email}, we sent a reset link.` เหมือนกรณีส่งจริง — ไม่เปิดเผย account existence / auth method |
 | Re-consent Decline | inline banner + เหลือเฉพาะ `Sign out` (member/new) หรือ `Exit app` (guest) — ไม่มี path ใช้งานต่อโดยไม่ยอมรับ |
-| Change Password current password ผิด | แสดง field error `Current password is incorrect.` |
-| Change Password new password ซ้ำ current password | แสดง field error `New password must be different from current password.` |
-| Change Password confirm ไม่ตรง | แสดง field error `Passwords do not match.` |
+| Change Password current password ผิด | แสดง field error `Your current password was entered incorrectly. Please check it and try again.` |
+| Change Password new password ซ้ำ current password | แสดง field error `New password must be different from your current password.` |
+| Change Password re-type ไม่ตรง | แสดง field error `Passwords do not match. Please re-enter your new password.` |
 | Change Password API/network error | ไม่ mark field ใด field หนึ่งเป็น error; แสดง banner/toast `Unable to change password. Please try again.` |
 | Suspended / Banned account | แสดง account status state พร้อมเหตุผล ระยะเวลาถ้ามี และช่องทาง Support |
 | Network error | แสดง error พร้อม retry |
@@ -532,10 +532,10 @@ Analytics เป็น contract-only (prototype ไม่มี tracking layer �
 | AC-AUTH-016A | Session ที่ถูก BO revoke เพราะ Suspended/Banned ต้อง clear local session และแสดง account status state |
 | AC-AUTH-017 | Forgot Password ต้องส่ง reset link สำหรับบัญชี Email / Password และแสดง generic confirmation; การตั้งรหัสผ่านใหม่ผ่าน link อยู่นอก FO V1 screens (ไม่มี Reset Password page ในแอป) |
 | AC-AUTH-020 | Authenticated Member สามารถ Change Password ได้เมื่อ current password ถูกต้อง |
-| AC-AUTH-020A | Change Password ต้องมี Current password, New password และ Confirm new password |
-| AC-AUTH-020B | Change Password ต้อง reject current password ที่ไม่ถูกต้องด้วย `Current password is incorrect.` |
-| AC-AUTH-020C | Change Password ต้อง reject new password ที่ซ้ำ current password ด้วย `New password must be different from current password.` |
-| AC-AUTH-020D | Change Password ต้อง reject confirm password ที่ไม่ตรงด้วย `Passwords do not match.` |
+| AC-AUTH-020A | Change Password ต้องมี Current password, New password และ Re-type new password |
+| AC-AUTH-020B | Change Password ต้อง reject current password ที่ไม่ถูกต้องด้วย `Your current password was entered incorrectly. Please check it and try again.` |
+| AC-AUTH-020C | Change Password ต้อง reject new password ที่ซ้ำ current password ด้วย `New password must be different from your current password.` |
+| AC-AUTH-020D | Change Password ต้อง reject re-type password ที่ไม่ตรงด้วย `Passwords do not match. Please re-enter your new password.` |
 | AC-AUTH-020E | Change Password API/network error ต้องแสดง `Unable to change password. Please try again.` โดยไม่ผูก error กับ field เฉพาะ |
 | AC-AUTH-021 | Sign Out ต้อง clear local token/session |
 | AC-AUTH-022 | Guest ใช้ feature ที่ต้อง Login ต้องเห็น Member Sheet `Join TukDaeng` gate variant (canonical 00_GLOBAL §11) |
@@ -548,7 +548,7 @@ Analytics เป็น contract-only (prototype ไม่มี tracking layer �
 | AC-AUTH-029 | Track prompt ที่เลือก `Ask App Not to Track` ต้องบังคับ personalization consent = off |
 | AC-AUTH-030 | First-run Member Sheet ต้องมี Sign up / Sign in / Skip for now + social row + `Don't show this again`; การติ๊ก hide แล้ว Skip ต้องทำให้ run ถัดไปไม่แสดง sheet อีก |
 | AC-AUTH-031 | Analytics = off (จาก Reject all หรือ Privacy settings) ต้องไม่ส่ง analytics event ทุกตัว รวม search event และ `auth_*` event; consent record ยังบันทึกได้ตาม AC-AUTH-027 (ทดสอบบน build stg/app จริงเท่านั้น — prototype ไม่มี analytics pipeline) · วิธีตรวจค่าเริ่มต้น: (1) ติดตั้ง stg build ที่เปิด proxy หรือ analytics debug view (2) ล้างข้อมูลแล้วเข้า onboarding กด Reject all (3) ใช้งาน feed และค้นหา 1 ครั้ง (4) ตรวจว่าไม่มี request หรือ event ไปยัง analytics endpoint (5) control: ทำซ้ำกับ Accept all ต้องเห็น event จริง ไม่เช่นนั้นวิธีตรวจใช้ไม่ได้ — เดฟยืนยันหรือปรับได้ก่อนรันจริง |
-| AC-AUTH-031 | Sign Up ต้องมีเฉพาะ Email + Password (ไม่มี Confirm Password — S-20), password ต้องมี show/hide toggle + strength meter 4 แถบ และ legal text ใต้ปุ่ม Create account |
+| AC-AUTH-001A | Sign Up ต้องมีเฉพาะ Email + Password (ไม่มี Confirm Password — S-20), password ต้องมี show/hide toggle + strength meter 4 แถบ และ legal text ใต้ปุ่ม Create account (renumber จาก AC-AUTH-031 — DEC-37) |
 | AC-AUTH-032 | OTP ต้องเป็น 6 ช่องตัวเลข auto-advance, backspace ย้อนช่อง และ auto-submit เมื่อครบ 6 หลัก — ไม่มีปุ่ม Verify |
 | AC-AUTH-033 | OTP ผิดต้อง shake + `That code is incorrect. Try again.` + ล้างช่อง; Resend ต้องมี cooldown 30 วินาที; ไม่มี OTP expired state (S-20) |
 | AC-AUTH-034 | Credential ต้อง persist ทันทีที่ signup validation ผ่าน (ก่อน OTP) เพื่อให้บัญชียัง sign in ได้หลังปิดแอปกลาง flow |

@@ -1,12 +1,12 @@
 # FO-TEST-001-09 — Test Cases: Board (นิตยสาร) (แอปมือถือจริง)
 
 **Task**: `ec6323af-755b-45b3-bf58-5d3a2bfd4b93` — FO-TEST-09 — Test Cases: Board (นิตยสาร) (FO prototype → real app)
-**SoT**: แอปมือถือ TukDaeng จริงบนอุปกรณ์จริง + expected ตาม `FrontOffice/12_BOARD_MODULE.md` (FO-PRD-v1.9) — `Prototypes/fo-flow` = แค่ reference ว่าหน้าตาควรเป็นแบบไหน
+**SoT**: แอปมือถือ TukDaeng จริงบนอุปกรณ์จริง + expected ตาม `FrontOffice/12_BOARD_MODULE.md` (FO-PRD-v1.10) — `Prototypes/fo-flow` = แค่ reference ว่าหน้าตาควรเป็นแบบไหน
 **Scope**: inventory §2.8 Board Editorial — แท็บ Board + board home + `boardall` + `boardsearch` + Categories sheet + `boardart:<id>` (Article Detail) + like/share + gating + nav/state/language/theme + real-app behaviors (per-account like, deep link, offline)
 **ก่อนเทส**: อ่านกติกาใน `deliverables/FO-TEST-001-testcase-prompt.md` + spec `FrontOffice/12_BOARD_MODULE.md` + หมายเหตุรอบ 2026-10-28 ใน task note
 **ต่อจาก**: FO-TEST-01–08 (รอบนี้ reuse template — เล่มนี้สมมติรู้กติกาบ้านแล้ว)
 **Status**: รอบแรก = เทสบน HTML prototype (54 cases + 17 gaps) — **รอบนี้แปลงมาเทสแอปจริง: เก็บ TC ID เดิม (001–058 ปรับ expected ตาม spec ล็อก) + เพิ่ม real-app cases (059+)** — prototype ถูกปรับให้ตรง spec แล้ว (ลบ dead wiring + เพิ่ม scroll restore)
-**หมายเหตุ**: เขียนเสร็จรอรีวิว — อย่าเพิ่งปิดงาน
+**สถานะเอกสาร**: Draft — ยังไม่มีผลการรันเทส (Result ว่างทุกเคส) · "ครบ" ในเอกสารนี้ = มีเคสเขียนแล้ว ไม่ใช่ทดสอบผ่าน — นิยามเต็มที่ `deliverables/FO-TEST-001-20-traceability.md` §0
 
 ---
 

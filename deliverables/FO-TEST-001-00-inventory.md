@@ -144,7 +144,7 @@
 | Watch | model follow `mf-btn` | bell บน post/detail — สร้าง/แก้ alert จาก spec ของโพสต์ + on-state | MEMBER `[GATE]` | 5 | `[OPEN-CODE-ONLY]` model-following flag |
 | Watch | alert fire `_waHits` | post ใหม่ที่ match → toast แจ้ง | MEMBER | 2 | `[OPEN-CODE-ONLY]` |
 | Alerts | `alerts` | activity list: groups Today/Yesterday/Last7/Earlier + unread badge + mark-all-read + dismiss(x บน follow) | MEMBER | 8 | guest/new → empty; back กลับ feed เสมอ |
-| Alerts | row types | like/comment → PV own post; watch → PV listing; follow → profile; system → toast | MEMBER | 6 | `[OPEN-CODE-ONLY]` (system เป็น toast only) |
+| Alerts | row types | like/comment → PV own post; watch → PV listing; follow → profile | MEMBER | 6 | `system` type ถูกถอนออกจาก V1 ทั้งประเภท (DEC-41) |
 | Alerts | badge `nav-badge` | unread count บน bottom nav + `99+` cap + sync หลังอ่าน | MEMBER | 3 | |
 
 ### 2.7 Chat
@@ -274,7 +274,7 @@
 - **Post `pfkind`**: `post` (feed-only) / `sale` / `show` / `hide` / `sold` — feed render เฉพาะ sale+post
 - **Post flags**: `archived` · `ni` (not interested) · `muted` · `blocked` · `following` · `favorite` · `saved`(+`savedCol`) · `wishlisted`(+`wlCol`) · `pins[tab]` (≤3) · `noComments` · `hideCounts` · `modelFollowing` · `liked`
 - **Asset status (PF_ASSETS)**: `sale` / `show` / `hide` (+`own` flag) — sold ไป `PF_SOLD` แยก; `market`/`purchase`/`bought`/`asking` nullable
-- **Alert**: `type` like/comment/follow/watch/system · `unread` · `grp` Today/Yesterday/Last7/Earlier
+- **Alert**: `type` like/comment/follow/watch · `unread` · `grp` Today/Yesterday/Last7/Earlier
 - **Chat thread**: `unread` · `pinned`(+pinnedAt) · `muted` · `hidden` · `blocked` · `draft` (Quick Ask ยังไม่ส่ง)
 - **Search**: `mode` landing/typing/results · `err` · `fDraft` vs applied `f` · `tab` foryou/profiles/tags · `sort` (no UI)
 - **Saved/wishlist**: `tab` posts/collections · `manage`+`sel` · `mode` search/menu/cover/edit/add/allmenu/allposts · `col` · `addSel`
@@ -331,7 +331,7 @@
 - Feed mechanics: snooze suggested · seg-thumb · brand-menu (ft=none) · clip autoplay (FEED-023) · refreshPostViews surfaces (feed/svf/pv/pfp/tile/detail)
 - language MutationObserver + dev sidebar + POST_DETAIL_CFG + themeToggle (dev-only)
 - Chat: draft thread materialize on first send · blocked-bar behavior · E2E/wallpaper placeholders `[DEAD]`
-- Alerts: system-type row (toast) · dismiss x · watch-alert row opens PV with "solo" title
+- Alerts: dismiss x · watch-alert row opens PV with "solo" title
 - `sr-saved` bookmark shortcut in search landing head → saved
 
 ## 5. หมายเหตุต่อ task ถัดไป

@@ -4,6 +4,7 @@
 > กติกาหลัก: `deliverables/FO-TEST-001-testcase-prompt.md` · Task breakdown: `deliverables/FO-TEST-001-task-breakdown.md`
 > แหล่งออกแบบเคส: `Prototypes/fo-flow/index.html` (ใช้เป็นแม่แบบแตกเคส/expected เท่านั้น — ทุกเคสเขียนให้ทำบนแอปจริงได้)
 > สัญญาความครอบคลุม: `deliverables/FO-TEST-001-00-inventory.md` §2.12 เป็นหลัก + แถว feed tabs ใน §2.2 — ไม่เดา behavior เพิ่ม
+> **สถานะเอกสาร**: Draft — ยังไม่มีผลการรันเทส (Result ว่างทุกเคส) · "ครบ" ในเอกสารนี้ = มีเคสเขียนแล้ว ไม่ใช่ทดสอบผ่าน — นิยามเต็มที่ `deliverables/FO-TEST-001-20-traceability.md` §0
 
 ## 0. สภาพแวดล้อมเทส + วิธีใช้เอกสาร
 
@@ -150,17 +151,17 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 |---|---|---|---|---|---|---|---|---|---|
-| FO-TC-SHELL-066 | negative sweep ไม่มีจ่ายเงินในแอป (V1) | MEMBER | Edge | member ใช้งานแอปปกติ | 1. ตรวจสอบหน้า Feed, Search, Create, Detail, Chat, Board, Alerts, Profile, Settings 2. สำรวจทุกปุ่มและการตั้งค่า | ไม่มีช่องทางชำระเงิน, ไม่มีตะกร้าสินค้า (Cart), ไม่มี Checkout, ไม่มี In-app Wallet/Coin หรือฟอร์มกรอกบัตรเครดิตใดๆ ทั้งสิ้นใน V1 (ดีลจบนอกแอป ตามกติการะบบ 10 / GAP-7) | ทุกหน้าจอไม่มีองค์ประกอบการชำระเงิน | High | |
+| FO-TC-SHELL-066 | negative sweep ไม่มีจ่ายเงินในแอป (V1) | MEMBER | Edge | member ใช้งานแอปปกติ | 1. ตรวจสอบหน้า Feed, Search, Create, Detail, Chat, Board, Alerts, Profile, Settings 2. สำรวจทุกปุ่มและการตั้งค่า | ไม่มีช่องทางชำระเงิน, ไม่มีตะกร้าสินค้า (Cart), ไม่มี Checkout, ไม่มี In-app Wallet/Coin หรือฟอร์มกรอกบัตรเครดิตใดๆ ทั้งสิ้นใน V1 (ดีลจบนอกแอป — DEC-01 / GAP-7; canonical 04 §Phase 1 + 16 AC-INT-012) | ทุกหน้าจอไม่มีองค์ประกอบการชำระเงิน | High | |
 
 ## 3. หมายเหตุ / OPEN items
 
-- **[CLOSED-DEC-01] SHELL-066** — negative sweep ไม่มีจ่ายเงินในแอป (V1): ครอบคลุม GAP-7 ยืนยันตามกติการะบบข้อ 10
+- **[CLOSED-DEC-01] SHELL-066** — negative sweep ไม่มีจ่ายเงินในแอป (V1): ครอบคลุม GAP-7 ยืนยันตาม DEC-01 (canonical 04 §Phase 1 "Payment ในแอป — Phase 1 ไม่มี" + 16 AC-INT-012 Payment Gateway = Phase 2)
 - **[CLOSED] SHELL-030** — badge `99+` cap: ยืนยันพฤติกรรม cap ที่ 99+ เมื่อ unread > 99
-- **SHELL-046 (ยืนยัน spec แล้ว 2026-10-28)** — scroll-to-hide ใช้ได้เฉพาะหน้า feed เท่านั้น: สถานะ "แถบหลบ" ของ feed **ต้องไม่ลามไปซ่อน nav ของหน้าอื่น** (profile/search/alerts ฯลฯ ต้องแสดง nav ปกติเสมอ) — ถ้าแอปจริงพบ nav หน้าอื่นหายตาม = bug ให้ FAIL (ใน prototype เคยพบสถานะนี้ลามข้ามหน้า)
-- **SHELL-054 (ยืนยัน spec แล้ว 2026-10-28)** — ปุ่ม/เจสเจอร์ back ของระบบ (Android) ต้องถอยหน้าภายในแอปเทียบเท่า in-app back เสมอ ห้ามออกจากแอปตอนอยู่หน้าลึก (อยู่ feed root ถึงออกได้ตามมาตรฐาน OS) — เงื่อนไขนี้เพิ่มลง inventory §2.12 (แถว device back) แล้ว; iOS ไม่มีปุ่ม back → เคสนี้เทสเฉพาะ Android
+- **SHELL-046 (DEC-18 / 00_NAV §6.3A)** — scroll-to-hide ใช้ได้เฉพาะหน้า feed เท่านั้น: สถานะ "แถบหลบ" ของ feed **ต้องไม่ลามไปซ่อน nav ของหน้าอื่น** (profile/search/alerts ฯลฯ ต้องแสดง nav ปกติเสมอ) — ถ้าแอปจริงพบ nav หน้าอื่นหายตาม = bug ให้ FAIL (ใน prototype เคยพบสถานะนี้ลามข้ามหน้า)
+- **SHELL-054 (00_NAV Batch A Amendments — device back)** — ปุ่ม/เจสเจอร์ back ของระบบ (Android) ต้องถอยหน้าภายในแอปเทียบเท่า in-app back เสมอ ห้ามออกจากแอปตอนอยู่หน้าลึก (อยู่ feed root ถึงออกได้ตามมาตรฐาน OS) — เงื่อนไขนี้เพิ่มลง inventory §2.12 (แถว device back) แล้ว; iOS ไม่มีปุ่ม back → เคสนี้เทสเฉพาะ Android
 - **SHELL-055 (ตัดออกจากฉบับแอปจริง)** — เคสเดิมเทสปุ่ม ESC บน desktop browser; บนมือถือไม่มีปุ่ม ESC จึงไม่มีวิธีเทส → ตัดเคสออกและ**ปลด ID 055** (ไม่นำเลขนี้กลับมาใช้ เพื่อคงเลขเดิมของเคสอื่นให้ trace กับ inventory ได้ตรง)
 - **SHELL-061** — กติกามาตรฐาน: ทัวร์ผูกกับการติดตั้งไม่ใช่ session → install เดิม sign in ซ้ำห้ามเด้งซ้ำ; reinstall เล่นใหม่ได้ (first-run ใหม่)
-- **SHELL-065 (spec ล็อก 2026-10-28)** — แต่ละแท็บของ bottom nav จำ state ของตัวเองแบบ IG: สลับแท็บแล้วกลับมา = กลับมาที่หน้า+ตำแหน่ง scroll เดิม (รวมหน้าลึกที่เปิดค้างในแท็บนั้น) — **สลับแท็บไม่ใช่รีเฟรช**; ข้อยกเว้นเดียวคือ re-tap แท็บที่ active อยู่ = pop กลับ root ของแท็บนั้น (SHELL-027) — หมายเหตุ: แก้ prototype ให้ alerts/board/chat/profile จำ stack+scroll แยกแท็บแล้ว (เดิม alerts กลับมาเด้งขึ้นบนสุด — ตรว)
+- **SHELL-065 (00_NAV DEC-25 Amendment — tab state/re-tap)** — แต่ละแท็บของ bottom nav จำ state ของตัวเองแบบ IG: สลับแท็บแล้วกลับมา = กลับมาที่หน้า+ตำแหน่ง scroll เดิม (รวมหน้าลึกที่เปิดค้างในแท็บนั้น) — **สลับแท็บไม่ใช่รีเฟรช**; ข้อยกเว้นเดียวคือ re-tap แท็บที่ active อยู่ = pop กลับ root ของแท็บนั้น (SHELL-027) — หมายเหตุ: แก้ prototype ให้ alerts/board/chat/profile จำ stack+scroll แยกแท็บแล้ว (เดิม alerts กลับมาเด้งขึ้นบนสุด — ตรว)
 - **ขอบเขตที่ตัดออก**: post card/media/action บน feed (FO-TEST-03), เนื้อหาหน้า search/sfilter (04), viewer/detail internals (06), sheet/dialog mechanics เช่น backdrop (07), alerts list เนื้อหา + mark-all-read ภายในหน้า (10), drawer variant แบบ dev + nav ไอคอนล้วน + dev sidebar = prototype harness (ไม่ใช่ production), snooze/prefs ที่กระทบ All tab (15), language/theme sweep เต็ม (19)
 - toast/pin pill เป็นของ action แต่ละ module — ไฟล์นี้เช็กเฉพาะที่ trigger จาก shell (toast ของเมนู drawer ลอยล่างจอ ~2 วิ ตาม design)
 - สถิติ: **65 TC** — High 24 / Medium 32 / Low 9 (SETUP rows 9 แถวแยกใน checklist; รวมใน csv 74 แถว)

@@ -1,6 +1,6 @@
 # 12 Board Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng` + guest capabilities), §13 (report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.3 (bottom nav / `Boards` tab), §6.6 (route map `board`/`boardsearch`/`boardall`/`boardart:{id}`), §6.7 (in-app back), §7 (entry matrix), §9 (gate routing), §10 (unavailable fallback), §12 (deep link contract — S-29), §13 (back + main nav after deep link) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) §11 (`shareSheetHTML` canonical — board share reuse) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (Alerts feed canonical — board actions ไม่สร้าง alert) + [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) (report type `Board Content` contract — synced FSP-031, ดู §19) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng` + guest capabilities), §13 (report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.3 (bottom nav / `Boards` tab), §6.6 (route map `board`/`boardsearch`/`boardall`/`boardart:{id}`), §6.7 (in-app back), §7 (entry matrix), §9 (gate routing), §10 (unavailable fallback), §12 (deep link contract — S-29), §13 (back + main nav after deep link) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) §11 (`shareSheetHTML` canonical — board share reuse) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (Alerts feed canonical — board actions ไม่สร้าง alert) + [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) (report type `Board Content` contract — synced FSP-031, ดู §19) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -9,7 +9,7 @@
 | Field | Detail |
 | --- | --- |
 | Module Name | Board — editorial magazine (hero featured + Latest Articles + category filter + article search + article detail) |
-| Version | 1.9 (FO-PRD-v1.9 spec-sync FSP-023) |
+| Version | 1.10 (baseline FO-PRD-v1.10 · spec-synced FO-PRD-v1.9 FSP-023) |
 | Status | Functional PRD — synced to fo-flow prototype |
 | Owner | Tuk Daeng Project |
 | Document Type | Front Office Functional PRD |

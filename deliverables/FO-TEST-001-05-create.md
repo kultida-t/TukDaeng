@@ -5,6 +5,7 @@
 > Source of Truth: แอป TukDaeng build ทดสอบบนมือถือจริง — ทดสอบผ่านหน้าจอ/ท่าทางนิ้วเท่านั้น (ห้ามใช้ช่องทาง dev ทุกชนิด)
 > สัญญาความครอบคลุม: `deliverables/FO-TEST-001-00-inventory.md` §2.4 — TC ID เดิม FO-TC-CRE-001–073 คงไว้ครบเพื่อ traceability
 > Spec ที่ล็อกรอบนี้ (ต่างจากพฤติกรรม prototype เดิม): ดู §3 — `Prototypes/fo-flow/index.html` ถูกอัปเดตให้ตรง spec แล้ว (hero ใบล่าสุด, meta-only dirty → discard dialog + ล้าง draft, hero clip-play, เอาไอคอน expand ออก)
+> **สถานะเอกสาร**: Draft — ยังไม่มีผลการรันเทส (Result ว่างทุกเคส) · "ครบ" ในเอกสารนี้ = มีเคสเขียนแล้ว ไม่ใช่ทดสอบผ่าน — นิยามเต็มที่ `deliverables/FO-TEST-001-20-traceability.md` §0
 
 ## 0. วิธีใช้เอกสาร + สภาพแวดล้อม
 

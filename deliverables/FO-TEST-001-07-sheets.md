@@ -5,7 +5,7 @@
 > Source of Truth: แอป TukDaeng build ทดสอบบนมือถือจริง — ทดสอบผ่านหน้าจอ/ท่าทางนิ้วเท่านั้น (ห้ามใช้ช่องทาง dev ทุกชนิด)
 > สัญญาความครอบคลุม: `deliverables/FO-TEST-001-00-inventory.md` §2.2 + §3.2 — TC ID เดิม FO-TC-SHT-001–115 + SETUP-01–09 คงไว้ครบเพื่อ traceability · เพิ่ม FO-TC-SHT-116–125 เป็น entry-level coverage ของ sheet/quick action ที่ inventory ระบุแต่ยังไม่มีเคส (chat report sheet, board post menu, profile more menu, chat attach sheet, Ask pill, Follow pill)
 > สืบทอดจาก FO-TEST-01/02R/03R/04/05/06: actors (GUEST/MEMBER/OWNER), ขั้นตอน sign in/out, กติกา [GATE] เทส guest+member คู่, entry ของแต่ละ sheet จาก viewer/detail (FO-TEST-06 PV/DET), post menus (FO-TEST-06 §2.6) — ไฟล์นี้เทส **กลไกภายใน sheet/overlay หลังเปิดสำเร็จ** บนอุปกรณ์จริง
-> **เขียนเสร็จรอรีวิว — อย่าเพิ่งปิดงาน**
+> **สถานะเอกสาร**: Draft — ยังไม่มีผลการรันเทส (Result ว่างทุกเคส) · "ครบ" ในเอกสารนี้ = มีเคสเขียนแล้ว ไม่ใช่ทดสอบผ่าน — นิยามเต็มที่ `deliverables/FO-TEST-001-20-traceability.md` §0
 
 ## 0. วิธีใช้ + สภาพแวดล้อม
 

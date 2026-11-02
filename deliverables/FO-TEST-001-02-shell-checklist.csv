@@ -102,7 +102,7 @@ SHELL-044,Scroll-hide,แถบหลบอยู่,1. เลื่อนจน
 SHELL-045,Scroll-hide,อยู่ feed,1. แกว่งเลื่อนลง-ขึ้นทีละน้อย ๆ ด้วยนิ้ว,แถบไม่กระพริบ — เลื่อนน้อยไม่ถึงเกณฑ์จะไม่ hide/show,MEMBER,Low,,,
 SHELL-046,Scroll-hide,แถบหลบอยู่,"1. แตะ avatar/ชื่อบนโพสต์ → เข้าโปรไฟล์เขา
 2. ดู nav ของหน้าโปรไฟล์ + ลองเลื่อนหน้านั้น
-3. กด back กลับ feed แล้วเลื่อนขึ้น",nav หน้าโปรไฟล์ต้องแสดงปกติเสมอ — scroll-to-hide ใช้ได้เฉพาะหน้า feed เท่านั้น; ถ้า nav หน้าอื่นหายตาม = FAIL เป็น bug (spec ยืนยันแล้ว),MEMBER,High,,,spec ยืนยัน 2026-10-28: แถบหลบเฉพาะ feed หน้าอื่นต้องแสดง nav เสมอ
+3. กด back กลับ feed แล้วเลื่อนขึ้น",nav หน้าโปรไฟล์ต้องแสดงปกติเสมอ — scroll-to-hide ใช้ได้เฉพาะหน้า feed เท่านั้น; ถ้า nav หน้าอื่นหายตาม = FAIL เป็น bug,MEMBER,High,,,DEC-18 / 00_NAV §6.3A: แถบหลบเฉพาะ feed หน้าอื่นต้องแสดง nav เสมอ
 SHELL-047,Scroll-hide,member เปิดหน้า alerts,1. เลื่อนรายการแจ้งเตือนลงยาว ๆ ด้วยนิ้ว,nav ของหน้า alerts อยู่นิ่งตลอด — scroll-to-hide ทำงานเฉพาะหน้า feed,MEMBER,Medium,,,
 SHELL-048,Scroll-hide,member เปิด comments sheet บน feed (แตะไอคอนคอมเมนต์),1. พยายามเลื่อนฟีดใต้ sheet,ฟีดเลื่อนไม่ได้จนกว่าจะปิด sheet (scroll ถูกล็อก),MEMBER,Low,,,
 SHELL-049,Back/Nav,member เปิดหน้า Search (แตะ search icon),1. แตะลูกศร back บนซ้ายของหน้า search,หน้าเลื่อนออกขวากลับหน้า feed สภาพเดิม,MEMBER,High,,,
@@ -115,7 +115,7 @@ SHELL-053,Back/Nav,"member เปิด Post Viewer จาก tile → เปิ
 2. อยู่ viewer กด back อีกครั้ง",back ของ detail เผย viewer ข้างล่างพอดี (detail อยู่เหนือเสมอ); back ของ viewer กลับหน้าต้นทาง,MEMBER,High,,,เนื้อหา viewer/detail อยู่ FO-TEST-06
 SHELL-054,Back/Nav,"member อยู่หน้าลึกใดก็ได้ (เช่น settings→language, ห้องแชท, Post Detail)","1. (Android) กดปุ่ม/เจสเจอร์ back ของเครื่อง
 2. กลับมาที่ feed root แล้วกด back อีกครั้ง
-3. (iOS ไม่มีปุ่ม back — ข้ามเคสนี้)",back ของระบบต้องถอยหน้าภายในแอปเทียบเท่าลูกศร back ในแอปเสมอ — ห้ามออกจากแอปตอนอยู่หน้าลึก (อยู่ feed root ถึงออก/minimize ตามมาตรฐาน OS); ถ้าออกกลางทางหรือไม่ถอย = FAIL เป็น bug,MEMBER,High,,,spec ยืนยัน 2026-10-28: มาตรฐาน Android back navigation (เพิ่มลง inventory §2.12 แล้ว)
+3. (iOS ไม่มีปุ่ม back — ข้ามเคสนี้)",back ของระบบต้องถอยหน้าภายในแอปเทียบเท่าลูกศร back ในแอปเสมอ — ห้ามออกจากแอปตอนอยู่หน้าลึก (อยู่ feed root ถึงออก/minimize ตามมาตรฐาน OS); ถ้าออกกลางทางหรือไม่ถอย = FAIL เป็น bug,MEMBER,High,,,00_NAV Batch A Amendments: Android back = in-app back (เพิ่มลง inventory §2.12 แล้ว)
 SHELL-056,Back/Nav,member เปิด Post Viewer แบบ immersive (จาก tile),"1. เลื่อน viewer ขึ้นลงช้า ๆ ด้วยนิ้ว
 2. เทียบกับ viewer จาก saved/search tile (แบบ list)",immersive snap ทีละโพสต์เต็มจอ (ไม่เลื่อนครึ่งใบค้างได้); แบบ list เลื่อนอิสระ,MEMBER,Medium,,,
 SHELL-057,Coach marks,session NEW เข้า feed ครั้งแรกหลังสมัครใหม่ (SETUP-05/09),1. ดู bubble แรกที่เด้ง,"bubble แดงโปร่ง + ลูกศรชี้ปุ่ม + บน header + ข้อความต้องตรง ""Tap + to create your first post."" + ปุ่ม ""Next""",NEW,Medium,,,ทัวร์เด้งครั้งเดียวต่อการติดตั้ง (ดู SETUP-09)
@@ -129,4 +129,4 @@ SHELL-062,Language/Theme,member + เปลี่ยนภาษาเป็น�
 2. เปิด drawer ดูชื่อเมนู",nav: ฟีด/แชท/กระดานข่าว/แจ้งเตือน/โปรไฟล์; tabs: ทั้งหมด/กำลังติดตาม/รายการโปรด (pill วัดใหม่ตามความกว้าง); drawer 9 แถวภาษาไทย,MEMBER,Medium,,,
 SHELL-063,Language/Theme,member + สลับธีม Light (Settings → Theme ตาม SETUP-07 หรือตั้งธีมระบบเครื่องเป็น Light ถ้าแอปตามระบบ),1. ดู header/nav/active pill บน feed,nav pill โทนสว่างอ่านชัด + header ชัด + active pill + wordmark แดงคอนทราสต์พอดี,MEMBER,Low,,,ถ้าแอปไม่มีเมนูธีมให้บันทึก Note ว่าสลับผ่านระบบเครื่อง
 SHELL-064,Language/Theme,member อยู่ feed เลื่อนลงกลาง ๆ,1. เข้า Settings → Language → เลือกไทย → กด back กลับ feed,label ทั้งแอปสลับไทยทันทีโดยไม่ reload + ตำแหน่ง scroll เดิมคงอยู่ + pill แท็บวัดใหม่ตามความกว้าง,MEMBER,Medium,,,
-SHELL-066,Negative Sweeps,member ใช้งานแอปปกติ,"1. ตรวจสอบหน้า Feed, Search, Create, Detail, Chat, Board, Alerts, Profile, Settings 2. สำรวจทุกปุ่มและการตั้งค่า","ไม่มีช่องทางชำระเงิน, ไม่มีตะกร้าสินค้า (Cart), ไม่มี Checkout, ไม่มี In-app Wallet/Coin หรือฟอร์มกรอกบัตรเครดิตใดๆ ทั้งสิ้นใน V1 (ดีลจบนอกแอป ตามกติการะบบ 10 / GAP-7)",MEMBER,High,,,GAP-7 negative sweep ปิดด้วย DEC-01
+SHELL-066,Negative Sweeps,member ใช้งานแอปปกติ,"1. ตรวจสอบหน้า Feed, Search, Create, Detail, Chat, Board, Alerts, Profile, Settings 2. สำรวจทุกปุ่มและการตั้งค่า","ไม่มีช่องทางชำระเงิน, ไม่มีตะกร้าสินค้า (Cart), ไม่มี Checkout, ไม่มี In-app Wallet/Coin หรือฟอร์มกรอกบัตรเครดิตใดๆ ทั้งสิ้นใน V1 (ดีลจบนอกแอป — DEC-01 / GAP-7; canonical 04 §Phase 1 + 16 AC-INT-012)",MEMBER,High,,,GAP-7 negative sweep ปิดด้วย DEC-01

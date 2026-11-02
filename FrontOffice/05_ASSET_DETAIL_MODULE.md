@@ -1,6 +1,6 @@
 # 05 Post Detail Module (Asset Detail)
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§10 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / own-post menu / Edit info canonical) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (post viewer 3 modes + lifecycle matrix canonical — FSP-016 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§10 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / own-post menu / Edit info canonical) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (post viewer 3 modes + lifecycle matrix canonical — FSP-016 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 

@@ -25,7 +25,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | --- | --- |
 | Performance | Feed ควรโหลดภายใน 2 วินาที |
 | Performance | รูปภาพต้อง Lazy Load |
-| Performance | Feed render list ครั้งเดียว — ไม่มี infinite scroll / pull-to-refresh / end-of-list marker ใน V1 |
+| Performance | Feed paginate 10 โพสต์/หน้า + infinite scroll (DEC-13) + pull-to-refresh (DEC-15); ไม่มี end-of-list marker ใน V1 |
 | Performance | Board list ปิดท้ายด้วย end note `You're all caught up`/`คุณดูครบทั้งหมดแล้ว` (Feed ไม่มี end-of-list marker) |
 | Security | ทุก API ใช้ HTTPS |
 | Security | ใช้ Token-based Authentication |
@@ -43,7 +43,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | --- | --- |
 | Feed initial load | ควรโหลดภายใน 2 วินาทีภายใต้ network condition ที่ product/engineering ตกลง |
 | Image loading | รูปภาพต้อง Lazy Load |
-| Feed pagination | Feed render list ครั้งเดียว — ไม่มี infinite scroll / pull-to-refresh / end-of-list marker ใน V1 |
+| Feed pagination | 10 โพสต์ต่อหน้า + โหลดหน้าถัดไปเมื่อเหลือ 3 การ์ดสุดท้าย (infinite scroll — DEC-13); pull-to-refresh reload หน้าแรก (DEC-15); ไม่มี end-of-list marker |
 | End of list | Feed ไม่มี end-of-list marker; Board list ใช้ end note `You're all caught up`/`คุณดูครบทั้งหมดแล้ว` |
 | Offline Feed | Feed ต้องแสดง cached data ได้เมื่อ offline หากมีข้อมูลล่าสุด |
 
@@ -82,7 +82,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 
 | Area | Check |
 | --- | --- |
-| Performance | Feed load, lazy image, single-render list (ไม่มี infinite scroll/end-of-list marker), Board end note |
+| Performance | Feed load, lazy image, paginated list + infinite scroll/pull-to-refresh (DEC-13/15), ไม่มี end-of-list marker, Board end note |
 | Offline | Feed cached data when offline |
 | Security | HTTPS, token, route guard, private data authorization |
 | Localization | TH/EN copy, THB price, empty state |
@@ -95,7 +95,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | --- | --- |
 | AC-NFR-001 | Feed ควรโหลดภายใน 2 วินาทีตาม baseline ที่ทีมตกลง |
 | AC-NFR-002 | รูปภาพต้อง Lazy Load |
-| AC-NFR-003 | Feed render list ครั้งเดียว — ไม่มี infinite scroll, pull-to-refresh หรือ end-of-list marker ใน V1 |
+| AC-NFR-003 | Feed ต้อง paginate 10 โพสต์/หน้า + infinite scroll เมื่อเหลือ 3 การ์ดสุดท้าย (DEC-13) + pull-to-refresh ที่บนสุด (DEC-15) — ไม่มี end-of-list marker ใน V1 |
 | AC-NFR-004 | Board list ต้องแสดง end note `You're all caught up`/`คุณดูครบทั้งหมดแล้ว` (Feed ไม่มี end-of-list marker) |
 | AC-NFR-005 | Feed แสดง cached data ได้เมื่อ offline หากมีข้อมูลล่าสุด |
 | AC-NFR-006 | ทุก API ใช้ HTTPS |

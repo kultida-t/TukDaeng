@@ -3,7 +3,7 @@
 > Task: 53c64847 (FO-TEST: ตรวจ expected ของเคสเทียบ spec ทีละเล่ม) · วันที่: 2026-10-30
 > ขอบเขต: อ่าน expected ใน `deliverables/FO-TEST-001-{01..07}-*.md` แล้วเทียบกับ spec ใน `FrontOffice/` (contract)
 > ไม่ได้รันเทสบนแอป/stg · ไม่ได้แก้เคส, spec, prototype หรือ fo-spec-sync · ไม่ได้เพิ่ม/ลบ TC ID
-> สถานะ: **รอผู้ใช้ตัดสิน** ทุกแถว "ไม่ตรง" ก่อนแก้ไฟล์ใด ๆ
+> สถานะ: **ปิดครบแล้ว (2026-11-02)** — รายการไม่ตรง 102 เคส + ประเด็นระบบ §9 ทั้ง 14 ข้อตัดสินครบ (รอบแรก §13–16 · รอบปิดท้าย §17 → DEC-37–DEC-40)
 
 ## 0. กติกาการตัดสิน
 
@@ -312,3 +312,30 @@
 เคสที่ตรงแล้วจาก DEC ก่อนหน้า (ไม่ต้องแก้เพิ่ม): SHELL-027, 028, 042–048, 065; FEED-014, 041, 074; SRCH-016, 030, 032, 054, 060; CRE-070; PV-027, 053; DET-009; SHT-019, 035, 051, 082, 109, 110, 119; CRE-013 (TH copy ตรง spec 02)
 
 หมายเหตุ: CRE-013 และ SHELL-011–018 อ้างเคสต้นทางในแถวเดียวกัน ไม่แก้แยก
+
+## 17. การตัดสินรอบปิดท้าย (2026-11-02 — task 5d3e37e2)
+
+รอบนี้ปิดประเด็นที่เหลือทั้งหมดของ batch A — ตรวจว่าข้อ "ค้าง" ทุกข้อปิดด้วย DEC-13–DEC-36 แล้ว (carousel/pagination/pull-to-refresh → DEC-13/14/15; viewer/detail → DEC-16; reply → DEC-17; scroll-to-hide → DEC-18; TH scope → DEC-19; share→chat → DEC-20; status tag → DEC-21; recents/tag-filter/search-state → DEC-22/23/24; ค่า pagination → DEC-13 parameters) เหลือเฉพาะประเด็นระบบ §9 + จุดค้าง §14.1 ดังนี้
+
+### 17.1 ตรวจยืนยันปิดแล้ว (ไม่แก้ไฟล์)
+- **PV-026 / DET-007** (§14.1 ค้าง) — แก้ตาม DEC-16 ครบทั้ง MD+CSV แล้ว (swipe หยุดปลาย/double-tap ไลก์/single tap นิ่ง)
+- **SRCH-016/030/032, FEED-041/SHT-051, DET-009, SHT-016, CRE-013** — ปิดด้วย DEC-20–24 + §16 fixes + spec 11 amendment (ถอด img/gif icons)
+- **ค่า pagination** — spec 02 §Open Feed มี "10 โพสต์ต่อหน้า + โหลดเมื่อเหลือ 3 การ์ด" แล้ว
+
+### 17.2 ตัดสิน + แก้ในรอบนี้ (DEC-37–DEC-40)
+
+| ประเด็น (§9/อื่น) | การตัดสิน | แก้ไฟล์ |
+|---|---|---|
+| §9.1 `AC-AUTH-031` ซ้ำ 2 ความหมาย | คง 031 = analytics → rename แถว Sign Up เป็น `AC-AUTH-001A` (suffix convention) — **DEC-37** | spec 01 L551; QA checklist QA-AUTH-002/017 maps |
+| §9.2 Change Password label + copy ขัดกัน | ยึด spec 13 §9 (= prototype verbatim) เป็น canonical — sync spec 01 + checklists — **DEC-38** | spec 01 §Change Password + exception table + AC-AUTH-020A–D; DEV checklist L48–52; QA checklist L1439 |
+| §9.3 spec 13 L569 stale "prototype deviate" | ตัดข้อความ stale — FO-SYNC-01 resolved (DEC-40 ข้อ 1) | spec 13 L569 |
+| §9.4 register §3 ข้อ 1 คลุมเครือกับ Reject all | ตีความ: ข้อ 1 = legal consent เท่านั้น; Privacy Reject all = valid path (analytics off) — **DEC-39** (ไม่แก้ไฟล์) | — |
+| §9.12 SHELL-066 citation "กติการะบบ 10" | ชี้ DEC-01 + canonical 04 §Phase 1 + 16 AC-INT-012 (DEC-40 ข้อ 3) | shell MD L154,158 + CSV L132 |
+| §9.13 phantom "spec ล็อก/ยืนยัน 2026-10-28" | ชี้ anchor จริง: DEC-18/§6.3A (046), 00_NAV Batch A Amendments (054), 00_NAV DEC-25 Amendment (065) (DEC-40 ข้อ 4) | shell MD L160,161,164 + CSV L105,118 |
+| spec 11 stale ขัด DEC-17/amendment ตัวเอง | sync L33/88/211/216/223/446(D2)/626 — composer ใน V1, ไม่มี icons, .c-like persist (DEC-40 ข้อ 2) | spec 11 |
+| stale "ไม่มี infinite scroll/PTR ใน V1" ขัด DEC-13/15 (พบระหว่าง sweep) | sync feed pagination/PTR เข้า V1 — คง search/board static + historical notes (DEC-40 ข้อ 2 เดียวกัน) | master L220/358/921/975, 17_NFR L28/46/85/98, PRD L111, Use_Cases L193, DEV checklist L343/374, QA checklist QA-FEED-019, ERROR_STATE sync note |
+
+### 17.3 ข้อค้างข้ามงาน (ไม่ใช่ batch A)
+- LANG-045 — รอ build/dev แปลครบตาม DEC-19 (prototype = reference สะอาดแล้ว)
+- DEC-29 — legal TH ฉบับจริงรอเจ้าของส่ง (ตอนนี้ใช้ draft เป็นตัวอย่าง)
+- DEC-34 ค้างถาม — ALT-015/030 ถ้าอยากถอน `system` type ทั้ง type ต้องสั่งเพิ่ม (ตอนนี้คงตาม DEC-32)

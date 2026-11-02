@@ -75,7 +75,7 @@ flowchart LR
 
     ROOT --> G["🔔 Watch Alert<br/>สร้างจาก search bell / model follow<br/>list จัดการใน Settings<br/>notif → Post Viewer ตรง"]
 
-    ROOT --> H["📣 Alerts<br/>5 types: Like / Comment /<br/>Follow / Watch Alert / System<br/>badge 99+ / mark all read"]
+    ROOT --> H["📣 Alerts<br/>4 types: Like / Comment /<br/>Follow / Watch Alert<br/>badge 99+ / mark all read"]
 
     ROOT --> I["👤 Profile<br/>Own + Public profile<br/>grid tabs / followers / following<br/>QR / edit / message"]
 

@@ -566,7 +566,7 @@ Account-list pages ของ section `What you see` — spec ระดับ set
 | Notification Settings | ต้องเป็น toggle ของ baseline notification type เท่านั้น (Likes / Comments / New followers / Watch Alerts) |
 | Cookie Preferences | Essential แก้ไม่ได้ (always on) — optional toggles ต้องผูก consent record |
 | Log Out | ต้อง confirm |
-| Change Password | Current ต้องถูกต้อง + New ต้องผ่าน Password Policy canonical (00_GLOBAL §12 — ≥8 + num/sym; prototype deviate — เช็กเฉพาะความยาว) + New ≠ Current + Re-type ต้องตรง — ไม่ผ่านแสดง inline err ตามลำดับ §9 |
+| Change Password | Current ต้องถูกต้อง + New ต้องผ่าน Password Policy canonical (00_GLOBAL §12 — ≥8 + num/sym — RESOLVED FO-SYNC-01: prototype enforce ทั้ง length + num/sym แล้ว) + New ≠ Current + Re-type ต้องตรง — ไม่ผ่านแสดง inline err ตามลำดับ §9 |
 | Delete Account | ต้องเลือก reason ก่อน Continue (required) + ต้องยืนยันด้วย current password ที่ถูกต้อง — ว่าง/ผิดแสดง inline err ใน dialog |
 | Sensitive content | ต้องเป็น `Less` หรือ `Standard` (default `standard`) — apply ทันที |
 | Reset suggested content | ต้อง confirm ผ่าน dialog `Reset suggested content?` |

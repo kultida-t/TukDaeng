@@ -45,11 +45,11 @@ Purpose:
 - [ ] Sign in ผิดมี attempt counter `(n/5)` + lockout ตาม 01 spec
 - [ ] Forgot Password ส่ง reset link และแสดง generic confirmation — ไม่มี Reset Password page ในแอป (S-20)
 - [ ] Change Password รองรับเฉพาะ authenticated Email / Password account — อยู่ใน About your account > Security (S-28)
-- [ ] Change Password ต้องมี Current password, New password และ Confirm new password
-- [ ] Change Password ต้อง validate current password, password policy, new password ต้องต่างจาก current password และ confirm ต้องตรงกับ new password
-- [ ] Change Password field errors ต้องรองรับ `Current password is incorrect.`, `New password must be different from current password.`, `Passwords do not match.`
+- [ ] Change Password ต้องมี Current password, New password และ Re-type new password
+- [ ] Change Password ต้อง validate current password, password policy, new password ต้องต่างจาก current password และ re-type ต้องตรงกับ new password
+- [ ] Change Password field errors ต้องรองรับ `Your current password was entered incorrectly. Please check it and try again.`, `New password must be different from your current password.`, `Passwords do not match. Please re-enter your new password.`
 - [ ] Change Password API/network error ต้องแสดง `Unable to change password. Please try again.` โดยไม่ผูก error กับ field เฉพาะ
-- [ ] Change Password success ต้องแสดง `Password changed` และไม่จำเป็นต้อง sign out
+- [ ] Change Password success ต้องแสดง `Password changed successfully` และไม่จำเป็นต้อง sign out
 - [ ] Suspended Account ต้อง block login พร้อม reason/support path
 - [ ] Sign Out ต้อง clear local session/token และกลับ session `guest`
 
@@ -177,7 +177,7 @@ Purpose:
 # 8. Notification (Alerts feed)
 
 - [ ] Alerts feed (เดิมเรียก Notification Center) เป็น member-only surface — guest เจอ Member Sheet
-- [ ] รองรับ 5 types: Like, Comment, Follow, Watch Alert, `system` (S-17 — placeholder destination ใน V1)
+- [ ] รองรับ 4 types: Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17)
 - [ ] Chat/New Message ไม่เข้า Alerts feed — badge-only ที่ Chat menu
 - [ ] Moderation, Account Action, Market Update, Price/Valuation, Sale Success ไม่เข้า FO V1 Alerts feed
 - [ ] List แสดงเฉพาะของ current user แบ่งกลุ่ม age buckets (`Today`/`Yesterday`/`Last 7 days`/`Earlier`)
@@ -340,7 +340,7 @@ Purpose:
 - [ ] Search/filter response target ต้องเป็นไปตาม NFR baseline
 - [ ] Image loading ต้องใช้ CDN/cache strategy
 - [ ] Offline/cached state อย่างน้อยต้องรองรับ Feed (contract)
-- [ ] ไม่มี infinite scroll / load-more rendering path ใน V1 (feed/board = static list)
+- [ ] Feed มี infinite scroll (10 โพสต์/หน้า โหลดเมื่อเหลือ 3 การ์ด — DEC-13) + pull-to-refresh (DEC-15); board = static list + end note
 - [ ] Sensitive data ต้องไม่ log เป็น plain text
 - [ ] Private data ต้องถูก enforce ทั้ง frontend และ backend/API
 - [ ] API ต้อง validate permission server-side
@@ -371,5 +371,5 @@ Purpose:
 - [ ] QA ต้องมี test cases ครอบคลุม Guest, Member, Owner, Other User, Admin boundary
 - [ ] QA ต้อง test Sale/Show/Hide/Sold/Deleted + post kind lifecycle ครบ
 - [ ] QA ต้อง test Block, Report, Alerts feed routing, Portfolio fallback และ No market price
-- [ ] Retry scope ต้องตรง catalog: image-only, section-only, refresh-only หรือ screen reload ตาม state (ไม่มี pagination retry ใน V1 — ไม่มี load-more)
+- [ ] Retry scope ต้องตรง catalog: image-only, section-only, refresh-only หรือ screen reload ตาม state (feed page-load retry ผูกกับ refresh flow — feed มี pagination ตาม DEC-13)
 - [ ] Existing data ต้องไม่ถูก clear เมื่อ refresh/image/section retry fail

@@ -2,10 +2,10 @@
 
 > Task: FO-TEST-08 ของชุด FO-TEST-001 · รอบแรก (prototype): 2026-10-27 · แปลงเป็นเวอร์ชันเทสแอปจริง: 2026-10-28
 > กติกาหลัก: `deliverables/FO-TEST-001-testcase-prompt.md` · Task breakdown: `deliverables/FO-TEST-001-task-breakdown.md`
-> Source of Truth: แอป TukDaeng build ทดสอบบนมือถือจริง — ทดสอบผ่านหน้าจอ/ท่าทางนิ้วเท่านั้น (ห้ามใช้ช่องทาง dev ทุกชนิด) · expected ล็อกตาม `FrontOffice/07_CHAT_MODULE.md` (FO-PRD-v1.9 — spec เลือกพฤติกรรม prototype + บันทึก deviation เป็น spec; สรุป §3)
+> Source of Truth: แอป TukDaeng build ทดสอบบนมือถือจริง — ทดสอบผ่านหน้าจอ/ท่าทางนิ้วเท่านั้น (ห้ามใช้ช่องทาง dev ทุกชนิด) · expected ล็อกตาม `FrontOffice/07_CHAT_MODULE.md` (FO-PRD-v1.10 — spec เลือกพฤติกรรม prototype + บันทึก deviation เป็น spec; สรุป §3)
 > สัญญาความครอบคลุม: `deliverables/FO-TEST-001-00-inventory.md` §2.7 — TC ID เดิม FO-TC-CHAT-001–107 คงไว้ครบเพื่อ traceability · เพิ่ม FO-TC-CHAT-108–124 ครอบพฤติกรรมที่เทสได้เฉพาะแอปจริง (ข้อความขาเข้า/เรียลไทม์, push notification, persistence, download จริง, offline, ทดสอบ 2 เครื่อง)
 > สืบทอดจาก FO-TEST-01/02R/03R/04/05/06/07: actors + sign in/out, กติกา [GATE] เทส guest+member คู่, sheet mechanics (ปิดทีละชั้น/ลากลง/scrim — SHT-001..012), Ask pill surfaces + viewer/detail (PV/DET), Member Sheet — ไฟล์นี้เทส **Chat ทั้งวงจร** บนแอปจริง
-> **เขียนเสร็จรอรีวิว — อย่าเพิ่งปิดงาน**
+> **สถานะเอกสาร**: Draft — ยังไม่มีผลการรันเทส (Result ว่างทุกเคส) · "ครบ" ในเอกสารนี้ = มีเคสเขียนแล้ว ไม่ใช่ทดสอบผ่าน — นิยามเต็มที่ `deliverables/FO-TEST-001-20-traceability.md` §0
 
 ## 0. วิธีใช้ + สภาพแวดล้อม
 

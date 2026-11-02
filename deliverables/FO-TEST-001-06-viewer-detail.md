@@ -5,6 +5,7 @@
 > Source of Truth: แอป TukDaeng build ทดสอบบนมือถือจริง — ทดสอบผ่านหน้าจอ/ท่าทางนิ้วเท่านั้น (ห้ามใช้ช่องทาง dev ทุกชนิด)
 > สัญญาความครอบคลุม: `deliverables/FO-TEST-001-00-inventory.md` §2 — TC ID เดิม FO-TC-PV-001–053 + FO-TC-DET-001–040 คงไว้ครบเพื่อ traceability
 > Spec ที่ล็อกรอบนี้ (ต่างจากพฤติกรรม prototype เดิม): ดู §3 — `Prototypes/fo-flow/index.html` ถูกอัปเดตให้ตรง spec แล้ว (immersive carousel + clip เล่นได้, เอาปุ่มค้นหาออกจาก Saved/Archive viewer, ซ่อน "Add comment…" บนโพสต์ปิดคอมเมนต์, detail clip เล่นทุกทางเข้า, liked-by row บน detail, status tag ตามสถานะ asset ไม่ใช่ราคา, detail head ติดบน)
+> **สถานะเอกสาร**: Draft — ยังไม่มีผลการรันเทส (Result ว่างทุกเคส) · "ครบ" ในเอกสารนี้ = มีเคสเขียนแล้ว ไม่ใช่ทดสอบผ่าน — นิยามเต็มที่ `deliverables/FO-TEST-001-20-traceability.md` §0
 
 ## 0. วิธีใช้เอกสาร + สภาพแวดล้อม
 

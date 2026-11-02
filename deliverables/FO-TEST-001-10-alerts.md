@@ -1,11 +1,11 @@
 # FO-TEST-001-10 — Test Cases: Alerts & Notifications (แอปมือถือจริง)
 
 **Task**: FO-TEST-10 ของชุด FO-TEST-001 — เขียนเป็นเวอร์ชันเทสแอปมือถือจริงตั้งแต่แรก (ไม่มีรอบ prototype แยก เพราะ spec ล็อกแล้ว)
-**SoT**: แอป TukDaeng build ทดสอบบนมือถือจริง — expected ล็อกตาม `FrontOffice/09_NOTIFICATION_MODULE.md` + `FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` §6.3/§6.7/§8/§10/§12 (FO-PRD-v1.9) — `Prototypes/fo-flow` = แค่ reference ว่าหน้าตาควรเป็นแบบไหน
-**Scope**: inventory §2.6 — แท็บ `แจ้งเตือน/Alerts` (route `alerts`) + 5 alert types (like/comment/follow/watch/system) + row anatomy + read/unread + badge `nav-badge` + Mark all as read + dismiss `x` + inline Follow back + destination routing + guest gate + `notif_settings` boundary (4 toggles) + real-app behaviors (generation จริงผ่านบัญชีที่สอง, push, persistence, offline, cross-device)
+**SoT**: แอป TukDaeng build ทดสอบบนมือถือจริง — expected ล็อกตาม `FrontOffice/09_NOTIFICATION_MODULE.md` + `FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` §6.3/§6.7/§8/§10/§12 (FO-PRD-v1.10) — `Prototypes/fo-flow` = แค่ reference ว่าหน้าตาควรเป็นแบบไหน
+**Scope**: inventory §2.6 — แท็บ `แจ้งเตือน/Alerts` (route `alerts`) + 4 alert types (like/comment/follow/watch) + row anatomy + read/unread + badge `nav-badge` + Mark all as read + dismiss `x` + inline Follow back + destination routing + guest gate + `notif_settings` boundary (4 toggles) + real-app behaviors (generation จริงผ่านบัญชีที่สอง, push, persistence, offline, cross-device)
 **ยกเว้น**: `walerts` (หน้ารายการ watch alert + engine + sheet สร้าง) — ของ FO-TEST-11 · เนื้อในหน้า `notif_settings` (anatomy เต็ม) — ของ FO-TEST-15 · chat badge — ของ FO-TEST-08
 **การตัดสินล็อก 2026-10-29** (ถามผู้ใช้ก่อนเขียน): (1) read state/dismiss = server-backed persist ข้ามเปิดแอปใหม่และข้ามเครื่อง (2) รวมเคส push notification นอกแอป พร้อม BLOCK-if (3) เขียนเคสสร้างแจ้งเตือนจริงครบทุก type พร้อม BLOCK-if build ไม่ generate (4) toggle `notif_settings` ยึด contract — OFF ต้องหยุด type นั้นจริง
-**หมายเหตุ**: เขียนเสร็จรอรีวิว — อย่าเพิ่งปิดงาน
+**สถานะเอกสาร**: Draft — ยังไม่มีผลการรันเทส (Result ว่างทุกเคส) · "ครบ" ในเอกสารนี้ = มีเคสเขียนแล้ว ไม่ใช่ทดสอบผ่าน — นิยามเต็มที่ `deliverables/FO-TEST-001-20-traceability.md` §0
 
 ---
 
@@ -30,9 +30,9 @@
 | Route / Surface (inventory §2.6) | ขอบเขต | TC ที่ครอบ |
 | --- | --- | --- |
 | แท็บ `alerts` (Alerts feed) | gate guest · head (back→feed + title) · group sections Today/Yesterday/Last 7/Earlier · empty state · unread highlight · no walerts entry · end of list | ALT-001..009 |
-| Row types (5) | like เดี่ยว/aggregate `and N others` · comment + excerpt · follow (Follow back + x) · watch (bell+seller mini+price) · system (icon+text ดิบ) · ข้อความยาว | ALT-010..016 |
+| Row types (4) | like เดี่ยว/aggregate `and N others` · comment + excerpt · follow (Follow back + x) · watch (bell+seller mini+price) · ข้อความยาว | ALT-010..016 |
 | Read/unread + badge `nav-badge` | badge = Σunread · tap mark read · mark all · ปุ่มอยู่ section แรก · ปุ่มหายเมื่อ unread=0 · cap `99+` · sync ทุก nav instance · persist ข้ามเปิดแอป | ALT-017..025 |
-| Destinations (§8 matrix) | like/comment → PV โพสต์ตัวเอง · watch → PV ลิสติ้ง · follow → profile · system → no-nav · target หาย → unavailable · blocked → keep-page | ALT-026..034 |
+| Destinations (§8 matrix) | like/comment → PV โพสต์ตัวเอง · watch → PV ลิสติ้ง · follow → profile · target หาย → unavailable · blocked → keep-page | ALT-026..034 |
 | Follow row actions | dismiss `x` (เฉพาะ follow) · persist · Follow back toggle จริง · ไม่ mark read/navigate · label ตามภาษา | ALT-035..041 |
 | Guest / NEW / session | gate · deep link เป็น guest · NEW empty · ไม่มี chat row · report ไม่แจ้งอีกฝ่าย · ไม่มีทางเข้าอื่น | ALT-042..047 |
 | `notif_settings` boundary | entry · 4 toggles 2 groups · default ON · OFF หยุด type (contract) · persist · re-enable · rows เก่าคงอยู่ | ALT-048..056 |
@@ -74,7 +74,7 @@
 | ALT-008 | ปลาย feed — ไม่มี pagination | MEMBER | EDGE | alert จำนวนมาก | เลื่อนจนสุด list | alerts โหลดเป็นหน้า 10 รายการ เลื่อนใกล้ท้าย → โหลดหน้าถัดไปต่อเนื่อง จนถึง row เก่าสุด; pull-to-refresh ที่บนสุดรีโหลดหน้าแรก (DEC-25 A1, A27) | — | MED | |
 | ALT-009 | ไม่มี entry ไป walerts | MEMBER | NEGATIVE | อยู่ alerts | มองหาลิงก์/ปุ่มไป watch alert list ในหน้า alerts | **ไม่มี** — `walerts` เข้าได้จาก Settings เท่านั้น (FO-TEST-11); เจอ link/ปุ่มใน alerts = FAIL | — | MED | |
 
-### 2.2 Row Anatomy — 5 types
+### 2.2 Row Anatomy — 4 types
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -83,14 +83,13 @@
 | ALT-012 | comment row | MEMBER | UI | ACCT-2 comment POST-OWN | อ่าน row comment | avatar คนคอมเมนต์ + `{name} commented: {excerpt}`/`แสดงความคิดเห็น:` + thumb — excerpt ยาวถูกตัดบรรทัดตาม design | — | HIGH | |
 | ALT-013 | follow row | MEMBER | UI | ACCT-2 follow (SETUP-10) | อ่าน row follow | avatar + `{name} started following you.`/`เริ่มติดตามคุณ` + ปุ่ม `Follow back`/`ติดตามกลับ` (หรือ `Following`/`กำลังติดตาม` ถ้าติดตามกลับแล้ว) + `x` มุมขวา — **ไม่มี thumb** | — | HIGH | |
 | ALT-014 | watch row | MEMBER | UI | watch alert match แล้ว (SETUP-11/ALT-069) | อ่าน row watch | bell icon + seller mini avatar ซ้อน + `Watch alert {name} — new listing from {seller} · {price}`/`การแจ้งเตือนนาฬิกา {name} — รายการใหม่จาก {seller} · {price}` + thumb — ไม่มี row → `BLOCK` | name = Brand Model/ชื่อ alert; price = asking ของลิสติ้ง | MED | |
-| ALT-015 | system row | MEMBER | UI | มี system row ใน feed (seed/ข้อมูลจริง) | อ่าน row system | icon วงกลม `!` (ไม่ใช่ avatar) + ข้อความดิบ เช่น `A new device just logged in to your account near Bangkok, TH` + เวลา — ไม่มี thumb/`x`/ปุ่ม — ไม่มี row → `BLOCK` | — | MED | |
-| ALT-016 | ข้อความยาว | MEMBER | EDGE | alert ที่ชื่อ user/ข้อความ/ชื่อ alert ยาวมาก | ดู row ที่ข้อมูลยาว | ชื่อ/comment excerpt/ข้อความ system/ชื่อ watch alert ยาว → wrap/ตัดตาม design ไม่ทะลุกรอบ ไม่ทับ `x`/thumb — ไม่มีข้อมูลยาวจริงให้เทส → `BLOCK` | — | MED | |
+| ALT-016 | ข้อความยาว | MEMBER | EDGE | alert ที่ชื่อ user/ข้อความ/ชื่อ alert ยาวมาก | ดู row ที่ข้อมูลยาว | ชื่อ/comment excerpt/ชื่อ watch alert ยาว → wrap/ตัดตาม design ไม่ทะลุกรอบ ไม่ทับ `x`/thumb — ไม่มีข้อมูลยาวจริงให้เทส → `BLOCK` | — | MED | |
 
 ### 2.3 Read, Badge & Mark All
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ALT-017 | badge = จำนวน unread พอดี | MEMBER | STATE | มี unread ≥1 (SETUP-10) | นับแถว unread ใน feed เทียบเลขบน badge แท็บ | badge เท่ากับจำนวนแถว unread เป๊ะ (รวมทุก type รวม watch+system) | badge อยู่บนไอคอนแท็บแจ้งเตือน | HIGH | |
+| ALT-017 | badge = จำนวน unread พอดี | MEMBER | STATE | มี unread ≥1 (SETUP-10) | นับแถว unread ใน feed เทียบเลขบน badge แท็บ | badge เท่ากับจำนวนแถว unread เป๊ะ (รวมทุก type) | badge อยู่บนไอคอนแท็บแจ้งเตือน | HIGH | |
 | ALT-018 | แตะ row unread → อ่าน + badge ลด | MEMBER | POSITIVE | มี unread | บันทึก badge → แตะ row unread 1 แถว → กลับ alerts | แถว highlight หายทันทีก่อนเปิด destination + badge ลด 1 + แถวยังคงสถานะอ่านหลังกลับ | — | HIGH | |
 | ALT-019 | แตะ row ที่อ่านแล้ว | MEMBER | POSITIVE | row อ่านแล้ว | แตะ row read | badge ไม่เปลี่ยน + ยัง navigate ไป destination ปกติ | — | MED | |
 | ALT-020 | Mark all as read | MEMBER | POSITIVE | unread ≥2 | แตะ `อ่านทั้งหมดแล้ว/Mark all as read` บน section แรก | ทุก row กลายเป็นอ่าน + badge หาย + ปุ่มหาย + ไม่มี row ไหนหายไปจาก feed | re-render ไม่กระตุก | HIGH | |
@@ -108,7 +107,6 @@
 | ALT-027 | comment → Post Viewer โพสต์ตัวเอง (ไม่ focus comment) | MEMBER | POSITIVE | มี comment row | แตะ row comment | เหมือน ALT-026 — **ไม่มี** auto scroll/focus ไปที่ comment (V1 contract) — build focus/deep-scroll = FAIL | — | HIGH | |
 | ALT-028 | watch → Post Viewer ลิสติ้งตรง | MEMBER | POSITIVE | มี watch row (ALT-069) | แตะ row watch | Post Viewer เปิด**โพสต์ที่ match โดยตรง** (title `Post` + ชื่อ seller) — ไม่มี result list คั่น; ถ้ายังไม่ follow seller → เห็นปุ่ม `Follow` ใน viewer head — ไม่มี watch row → `BLOCK` | — | HIGH | |
 | ALT-029 | follow → profile ผู้ติดตาม | MEMBER | POSITIVE | มี follow row | แตะ row follow (ไม่โดนปุ่ม/`x`) | push ไป public profile ของคน follow ทับหน้า alerts; back → กลับ alerts (stack ค้าง) | — | HIGH | |
-| ALT-030 | system → ไม่มี destination (V1) | MEMBER | NEGATIVE | มี system row | แตะ row system | **ไม่ navigate ออกจาก alerts** — system row ไม่มี destination ใน V1 (FSP-021) — แตะแล้วเปิดหน้าใดก็ตาม = FAIL | — | MED | |
 | ALT-031 | โพสต์เป้าหมายถูกลบ (like/comment) | MEMBER + ACCT-2 | NEGATIVE | ACCT-2 like/comment โพสต์ที่ MEMBER **จะลบ** | ACCT-2 like POST-TMP → MEMBER ลบ POST-TMP (post menu → delete) → แตะ row alert นั้น | **ไม่เปิด viewer** — แสดง unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว/This post is no longer available` + ปุ่ม `Go back` (contract ตาม 00_NAV §10 — toast เด้งแล้วอยู่ alerts เฉย ๆ ไม่ถือว่าตรง contract) — row ยังคงถูก mark read | — | HIGH | |
 | ALT-032 | ลิสติ้งของ watch row หาย | MEMBER + ACCT-2 | NEGATIVE | มี watch row แล้ว ACCT-2 ลบลิสติ้ง | แตะ row watch | เหมือน ALT-031 (contract: toast/unavailable parity กับ like/comment — ห้าม silent no-op ในแอปจริง) — ไม่มีวิธีทำลิสติ้งหาย → `BLOCK` | — | MED | |
 | ALT-033 | follow → profile คนที่เรา block | MEMBER + ACCT-2 | EDGE | ACCT-2 follow ก่อน → MEMBER block ACCT-2 ทีหลัง | แตะ row follow ของ ACCT-2 | เปิด profile แบบ **keep-page**: หน้าโปรไฟล์แสดงปกติแต่ grid ว่าง/`No posts yet` + ปุ่ม `Unblock` แทน Follow (S-13) — ไม่ใช่ unavailable state | — | MED | |
@@ -123,7 +121,7 @@
 | ALT-037 | Follow back → กำลังติดตามจริง | MEMBER + ACCT-2 | POSITIVE | มี follow row + ยังไม่ follow ACCT-2 | แตะ `ติดตามกลับ/Follow back` | ปุ่มสลับเป็น `กำลังติดตาม/Following` + follow เกิดจริง: เครื่องสองเห็น follower +1 / โปรไฟล์ MEMBER following +1 — ไม่ใช่แค่เปลี่ยนป้าย | — | HIGH | |
 | ALT-038 | กดซ้ำ → unfollow | MEMBER | POSITIVE | follow back แล้ว | แตะ `กำลังติดตาม/Following` | ปุ่มกลับ `ติดตามกลับ/Follow back` + unfollow จริง (followers ฝั่ง ACCT-2 ลดกลับ) | — | MED | |
 | ALT-039 | ปุ่ม/`x` ไม่ mark read ไม่ navigate | MEMBER | STATE | follow row ยัง unread | แตะ `Follow back` → แตะ `x` (row ใหม่อีกแถวถ้าถูกลบ) | แตะปุ่ม/`x` → row ยัง unread + badge ไม่เปลี่ยนจากการ mark read (dismiss ลดเพราะ row หาย ไม่ใช่เพราะอ่าน) + ไม่เปิด destination | — | MED | |
-| ALT-040 | `x` มีเฉพาะ follow rows | MEMBER | NEGATIVE | มีหลาย type | มองหา `x` บน row like/comment/watch/system | **ไม่มี** บน type อื่น — dismiss ได้เฉพาะ follow | — | MED | |
+| ALT-040 | `x` มีเฉพาะ follow rows | MEMBER | NEGATIVE | มีหลาย type | มองหา `x` บน row like/comment/watch | **ไม่มี** บน type อื่น — dismiss ได้เฉพาะ follow | — | MED | |
 | ALT-041 | label ปุ่มตามภาษาแอป | MEMBER | POSITIVE | ตั้งภาษาไทย + follow row | แตะ Follow back → ดู label → เปลี่ยนเป็น EN → ทำซ้ำ | ทุกสถานะ label ตามภาษาแอป (`ติดตามกลับ`↔`กำลังติดตาม` / `Follow back`↔`Following`) — **ค้าง EN ขณะภาษาไทย = FAIL** (prototype quirk ที่ต้องไม่มีในแอปจริง) | — | HIGH | |
 
 ### 2.6 Guest, Gate & Session
@@ -141,7 +139,7 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ALT-048 | เข้าหน้า notif settings | MEMBER | POSITIVE | SETUP-07 เส้นทาง | profile → menu → Settings → `การตั้งค่าการแจ้งเตือน` | เปิดหน้า: desc `เลือกประเภทการแจ้งเตือนที่คุณต้องการรับบนอุปกรณ์นี้/Choose what notifications you receive on this device.` + กลุ่ม `กิจกรรม/Activity` (`ยอดถูกใจ/Likes`, `ความคิดเห็น/Comments`, `ผู้ติดตามใหม่/New followers`) + กลุ่ม `การซื้อขายและการแจ้งเตือน/Trading & Alerts` (`การแจ้งเตือนนาฬิกา/Watch Alerts`) — **ไม่มี toggle สำหรับ system** | 4 toggle ครบ | HIGH | |
+| ALT-048 | เข้าหน้า notif settings | MEMBER | POSITIVE | SETUP-07 เส้นทาง | profile → menu → Settings → `การตั้งค่าการแจ้งเตือน` | เปิดหน้า: desc `เลือกประเภทการแจ้งเตือนที่คุณต้องการรับบนอุปกรณ์นี้/Choose what notifications you receive on this device.` + กลุ่ม `กิจกรรม/Activity` (`ยอดถูกใจ/Likes`, `ความคิดเห็น/Comments`, `ผู้ติดตามใหม่/New followers`) + กลุ่ม `การซื้อขายและการแจ้งเตือน/Trading & Alerts` (`การแจ้งเตือนนาฬิกา/Watch Alerts`) — **ไม่มี toggle เพิ่มนอก 4 ตัวนี้** | 4 toggle ครบ | HIGH | |
 | ALT-049 | default ON ทุกตัว | NEW | STATE | บัญชีใหม่ | เปิด notif settings | 4 toggles ON ทั้งหมด | — | MED | |
 | ALT-050 | OFF likes → ไม่ได้ like alert (contract — lock) | MEMBER + ACCT-2 | STATE | toggle likes OFF | ACCT-2 like โพสต์ MEMBER → เปิด alerts | **ไม่มี like row ใหม่** + badge ไม่เพิ่มจาก like นั้น — build ยังเด้ง = FAIL (ยึด contract ไม่ใช่ prototype memory-only) | — | HIGH | |
 | ALT-051 | OFF comments → ไม่ได้ comment alert | MEMBER + ACCT-2 | STATE | toggle comments OFF | ACCT-2 comment → alerts | ไม่มี comment row ใหม่ | — | MED | |
@@ -196,7 +194,7 @@
 | `al-fbtn` label hardcode EN หลัง toggle (เดิม deviation #8 — RESOLVED ใน prototype) | ต้องตามภาษาแอปทุกสถานะ — EN ค้าง = FAIL | ALT-041, 062 |
 | `state.notif` toggles ไม่กรอง (deviation #9 — persist ทำแล้วใน prototype) | contract: OFF หยุด generation จริง + toggle persist (lock ข้อ 4) | ALT-050..056 |
 | Read/dismiss session-local (เดิม deviation #13 — RESOLVED: prototype persist `fo_alstate`) | lock ข้อ 1: server-backed persist ข้ามเปิดแอป + ข้ามเครื่อง | ALT-025, 036, 076 |
-| `system` type = placeholder destination V1 (FSP-021) | แตะไม่ navigate — build เปิดหน้าใดก็ตาม = FAIL | ALT-030 |
+| `system` type ถูกถอนออกจาก V1 ทั้งประเภท (DEC-41 — supersede FSP-021/DEC-32) | ต้องไม่มี system/security row ใน feed เลย — เจอ = FAIL | — (เดิม ALT-015/030 ถอนแล้ว) |
 | ไม่มี generation ใน prototype (deviation #10) | แอปจริงต้องสร้าง row จาก trigger จริง §14 — เคส §2.9 ทั้งหมด | ALT-065..072 |
 | Empty copy `No alerts yet` (deviation #7 — ไม่ใช่ No data found) | copy เฉพาะ module | ALT-007 |
 | Chat = badge-only ไม่ใช่ alert type (canonical 07 §14) | ไม่มี chat row ใน feed | ALT-045 |
@@ -211,13 +209,13 @@
 | `alerts` | mark all read + ปุ่มอยู่/หายตาม unread | ALT-020..022 | |
 | `alerts` | dismiss `x` (follow เท่านั้น) + persist | ALT-035, 036, 040 | |
 | `alerts` | inline Follow back/Following | ALT-037..039, 041 | sync follow จริง |
-| row types | like single/aggregate, comment, follow, watch, system anatomy | ALT-010..016 | |
-| row tap → destination | PV ตัวเอง (like/comment) · PV listing (watch) · profile (follow) · no-nav (system) | ALT-026..030 | fallback ALT-031..033 |
+| row types | like single/aggregate, comment, follow, watch anatomy | ALT-010..016 | |
+| row tap → destination | PV ตัวเอง (like/comment) · PV listing (watch) · profile (follow) | ALT-026..029 | fallback ALT-031..033 |
 | badge `nav-badge` | count/cap 99+/sync/clear | ALT-017..019, 023, 024 | |
 | guest gate | tab gated + deep link guest + sign-in resume | ALT-001, 042, 043, 047 | |
 | NEW/session | empty + ไม่มี badge + isolation + persist | ALT-007, 025, 036, 044, 076, 077 | lock server-backed |
 | `notif_settings` | 4 toggles + boundary enforcement | ALT-048..056 | anatomy เต็มอยู่ FO-TEST-15 |
-| ไม่มีใน V1 | chat row / walerts entry / ปลายทางอื่น (Asset Detail/Result List/chat room) | ALT-009, 045, 030 (negative รวม) | AC-NOTI-014/021/022 |
+| ไม่มีใน V1 | chat row / system row / walerts entry / ปลายทางอื่น (Asset Detail/Result List/chat room) | ALT-009, 045 | AC-NOTI-013/014/021/022 |
 | nav/state | back→feed เสมอ · stack · device back · tab-state · re-tap | ALT-057..061, 064 | |
 | lang/theme | TH/EN sweep + dark | ALT-041, 062, 063 | |
 | generation จริง | like/comment/follow/watch rows + aggregate + dedupe + latency | ALT-065..072 | ACCT-2 (BLOCK-if) |
@@ -227,14 +225,15 @@
 
 - **ก่อนส่งงานจริง**: เขียนเสร็จ → รอ PO/หัวหน้ารีวิว → แก้ตาม feedback → ค่อยปิด task (กฎเดียวกับทุกเล่ม)
 - **ข้อมูลจริงบน server เป็นตัวแปรหลัก** — จำนวน alert/อายุกลุ่ม/จำนวน like ขึ้นกิจกรรมจริง: expected ทุกข้อตัดสินได้จากข้อมูลที่มีจริง อย่า FAIL เพราะจำนวนน้อยกว่าตัวอย่าง
-- **เคส BLOCK ล่วงหน้าที่คาดว่าอาจเจอ**: ALT-011/068 (ต้อง ≥3 บัญชี), ALT-014/028/032/053/069 (watch engine), ALT-015 (ต้องมี system row จริง), ALT-023 (unread >99), ALT-042 (deep link), ALT-073 (push ยังไม่ implement)
+- **เคส BLOCK ล่วงหน้าที่คาดว่าอาจเจอ**: ALT-011/068 (ต้อง ≥3 บัญชี), ALT-014/028/032/053/069 (watch engine), ALT-023 (unread >99), ALT-042 (deep link), ALT-073 (push ยังไม่ implement)
 - **อยู่นอก scope**: `walerts` list + สร้าง/แก้ watch alert (FO-TEST-11) · anatomy เต็มของ `notif_settings` (FO-TEST-15) · push payload/FCM contract ละเอียด (out of V1)
 
-- สถิติ: **78 TC** — High 31 / Medium 44 / Low 3 (SETUP rows 11 แถวแยกใน checklist; รวมใน csv 89 แถว)
+- สถิติ: **76 TC** — High 31 / Medium 42 / Low 3 (SETUP rows 11 แถวแยกใน checklist; รวมใน csv 87 แถว)
 
 
 ## DEC-25 Amendments (ผลตามข้อตัดสิน IG — CSV ยังไม่ sync)
 
 - ALT-008: expected = โหลดเป็นหน้า 10 + pull-to-refresh (DEC-25)
 - ALT-070: ยกเลิกเคส (ไม่อยู่ใน V1 — DEC-26)
+- ALT-015/ALT-030: ยกเลิกเคส (`system` type ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41; supersede DEC-32)
 - ALT-075: expected = แสดงข้อมูลที่โหลดไว้ + แถบ offline (ERROR_STATE)

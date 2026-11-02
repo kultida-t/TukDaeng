@@ -1,6 +1,6 @@
 ﻿# 15 Trust & Safety Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng`), §13 (block/report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.1 (canonical destination terms — Report Stack), §6.2 (layer model), §6.6 (sub-page route map `report:*`), §6.7 (in-app back — `sub-x` ปิดทั้งกอง), §9 (gate routing), §10 (unavailable fallback) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (canonical shared surfaces `blkSheetHTML`/`unblockDlgHTML`/`pfSetBlocked`/`pfRestrictHint` + keep-page S-13 — FSP-019 lock) + [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (`chatReportSheet`/`rpFromChat`/`rpDelChat` + `th.blocked` room effects — FSP-020 lock) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) (comment popover + `uc-report` entry + `Blocked and hidden comments`) + [12_BOARD_MODULE.md](12_BOARD_MODULE.md) §13 (Report Board Content contract — S-04) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng`), §13 (block/report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.1 (canonical destination terms — Report Stack), §6.2 (layer model), §6.6 (sub-page route map `report:*`), §6.7 (in-app back — `sub-x` ปิดทั้งกอง), §9 (gate routing), §10 (unavailable fallback) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (canonical shared surfaces `blkSheetHTML`/`unblockDlgHTML`/`pfSetBlocked`/`pfRestrictHint` + keep-page S-13 — FSP-019 lock) + [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (`chatReportSheet`/`rpFromChat`/`rpDelChat` + `th.blocked` room effects — FSP-020 lock) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) (comment popover + `uc-report` entry + `Blocked and hidden comments`) + [12_BOARD_MODULE.md](12_BOARD_MODULE.md) §13 (Report Board Content contract — S-04) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -9,7 +9,7 @@
 | Field | Detail |
 | --- | --- |
 | Module Name | Trust & Safety — report stack + shared block/unblock surfaces + moderation handoff |
-| Version | 1.9 (FO-PRD-v1.9 spec-sync FSP-031) |
+| Version | 1.10 (baseline FO-PRD-v1.10 · spec-synced FO-PRD-v1.9 FSP-031) |
 | Status | Functional PRD — synced to fo-flow prototype |
 | Owner | Tuk Daeng Project |
 | Document Type | Front Office Functional PRD |

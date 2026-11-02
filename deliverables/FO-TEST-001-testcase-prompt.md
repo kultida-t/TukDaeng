@@ -34,7 +34,7 @@ Source of Truth (ต้องอ่านก่อนเริ่มทำเส
    - Prototypes\fo-flow\create-post.html
    - Prototypes\fo-flow\feed-create-post.html
    - Prototypes\fo-flow\feed-social-redesign.html
-4. docs baseline FO-PRD-v1.9 (ถ้าพบใน repo ให้ใช้ยืนยัน spec; ถ้าหาไม่เจอ
+4. docs baseline FO-PRD-v1.10 (ถ้าพบใน repo ให้ใช้ยืนยัน spec; ถ้าหาไม่เจอ
    ให้ยึด prototype เป็นหลักและ mark ข้อสงสัยไว้ท้ายเอกสาร)
 
 วิธีเปิดทดสอบ: serve static ที่ http://localhost:8901/index.html

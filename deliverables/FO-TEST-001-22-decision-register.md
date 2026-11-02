@@ -215,8 +215,8 @@
 - prototype ใช้ `statusTagHTML` ตาม pfKind (sale→FOR SALE, show→SHOWCASE, sold→SOLD, hide→HIDDEN, post ไม่มี tag) spec 05 ระบุ tag ตาม price · เคส DET-009 / PV-053
 - **ผลต่อ spec:** 05 (inline-tag, AC-DETAIL-010, deviation) แก้แล้ว
 
-### [DEC-13] ค่า pagination (อนุมัติ 2026-10-30)
-- 10 โพสต์ต่อหน้า; เริ่มโหลดหน้าถัดไปเมื่อเหลือ 3 การ์ดสุดท้าย
+### [DEC-13 — parameters] ค่า pagination (อนุมัติ 2026-10-30)
+- 10 โพสต์ต่อหน้า; เริ่มโหลดหน้าถัดไปเมื่อเหลือ 3 การ์ดสุดท้าย — annex ของ DEC-13 (ไม่ใช่ DEC ใหม่ เลขซ้ำโดยตั้งใจให้อ่านว่าเป็นพารามิเตอร์ของ decision เดิม)
 
 ### [DEC-22] Recents ค้นหาเก็บบนเครื่องข้ามการเปิดแอป (IG)
 - **ตัดสิน:** เก็บบนเครื่องข้ามการเปิดแอป ล้างเมื่อ sign out/เปลี่ยน session; ลบรายแถวและ Clear all ได้ (อนุมัติ 2026-10-30)
@@ -265,6 +265,7 @@
 ### [DEC-32] ตีความ DEC-26: `system` type คงอยู่ใน V1 (2026-11-02)
 - ตัดสิน: DEC-26 ถอนเฉพาะ **generation** ของ system alert "new device login" (เคส ALT-070) — type `system` + seed row + placeholder destination ยังอยู่ตาม spec 09 §9; เคส ALT-015/030 ยังใช้ได้
 - ผลต่อ spec: แก้ข้อความ amendment ท้าย `09_NOTIFICATION_MODULE.md` ให้ชัด scope
+- อัปเดต (2026-11-02): **superseded โดย DEC-41** — เจ้าของตัดสินถอน `system` type ออกจาก V1 ทั้งประเภท (type + seed row + placeholder destination หมด); เคส ALT-015/030 ถูกถอนตาม
 
 ### [DEC-33] own `following` rows มีปุ่ม `แชท`/`Chat` (2026-11-02)
 - ตัดสิน: ยืนยันตาม prototype (SoT) — pfollow rows ทั้ง followers และ following มี `pf-msg` Chat + ปุ่มที่สอง (`x` Remove / `...` popover ตาม tab)
@@ -285,3 +286,36 @@
 - ตัดสิน: เอาจำนวนรายการประกาศออกจาก live suggestion rows (kw/seller) และ recent-search seller rows — seller sub แสดง `Following` เฉพาะที่ follow; Profiles tab/results ยังคง `N listings` ตาม spec
 - ผลต่อ spec: `03_SEARCH_FILTER_MODULE.md` (Suggestions, Recent searches) แก้แล้ว · ผลต่อเคส: SRCH-007, SRCH-008 (MD+CSV) แก้แล้ว · SRCH-060 คงเดิม (count ยังอยู่บน Profiles results)
 - ผลต่อ prototype: `suggestRows` kw sub = "" + seller sub = `Following`-only; `recentRowHTML` seller sub = `Following`-only (แก้แล้วใน f2f1934f)
+
+### [DEC-37] Renumber `AC-AUTH-031` แถว Sign Up → `AC-AUTH-001A` (2026-11-02)
+- ประเด็น: spec 01 มี `AC-AUTH-031` ซ้ำ 2 ความหมาย — Analytics-off (เพิ่มใน v1.10 ตาม DOCUMENT_VERSION) และ Sign Up email+password form (S-20) — เคส AUTH-011 อ้างความหมาย analytics
+- ตัดสิน: คง `AC-AUTH-031` = analytics (อ้างโดย AUTH-011 MD+CSV, QA-AUTH-001, DOCUMENT_VERSION) แล้วเปลี่ยนแถว Sign Up เป็น `AC-AUTH-001A` — ใช้ suffix convention เดิมของ spec (AC-AUTH-002A/016A/020A–E) เพราะเป็น sub-requirement ของ AC-AUTH-001 registration
+- ผลต่อ spec: `01_AUTHENTICATION_MODULE.md` แถว Sign Up → `AC-AUTH-001A`; `QA_TEST_SCENARIO_CHECKLIST.md` QA-AUTH-002/017 maps → `AC-AUTH-001A`
+- หมายเหตุ: reference เก่าใน evidence รอบก่อน (`fo-spec-sync/FSP-012a`) ที่เขียนว่า `AC-AUTH-031` ในบริบท Sign Up/S-20 ให้อ่านเป็น `AC-AUTH-001A` — ไม่แก้เอกสาร evidence ย้อนหลัง
+
+### [DEC-38] Change Password canonical = 13_SETTINGS §9 (2026-11-02)
+- ประเด็น: spec 01 §Change Password + AC-AUTH-020A–D + exception table + DEV_IMPLEMENTATION_CHECKLIST ใช้ label/copy รุ่นเก่า (`Confirm new password`, `Current password is incorrect.`, `Passwords do not match.`, `Password changed`) ขัดกับ canonical 13_SETTINGS §9 ที่เขียนตาม prototype verbatim (`Re-type new password`, `Your current password was entered incorrectly. Please check it and try again.`, `Passwords do not match. Please re-enter your new password.`, toast `Password changed successfully` ฯลฯ) — เคส AUTH-076–078, SET-021 ยึด spec 13 อยู่แล้ว
+- ตัดสิน: ยึด spec 13 + prototype เป็น SoT — sync spec 01 §Change Password (label, helper, success toast, flow step), AC-AUTH-020A–D copies, exception table 3 แถว ให้ตรง canonical; คง `AC-AUTH-020E` (`Unable to change password. Please try again.`) เป็น API-layer contract ที่ spec 13 ไม่ครอบ (prototype ไม่มี API path — ไม่ขัด)
+- ผลต่อ spec: `01_AUTHENTICATION_MODULE.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `QA_TEST_SCENARIO_CHECKLIST.md` — ไม่มีการแก้เคส (expected เดิมถูกแล้ว)
+
+### [DEC-39] ตีความ locked row §3 ข้อ 1 — legal consent ไม่ใช่ privacy consent (2026-11-02)
+- ประเด็น: register §3 ข้อ 1 (AUTH-060) เขียนว่า "ต้อง Accept จึงเข้าใช้งานได้" — อ่านคลุมเครือได้ว่าขัดกับ `Reject all` บน Privacy Notice ที่เดินหน้าได้ปกติ (AUTH-011)
+- ตัดสิน: ข้อ 1 หมายถึง **legal consent** (Terms/Privacy ผ่าน Welcome `Continue` + implied consent + re-consent) เท่านั้น — ไม่มีปุ่ม Decline/Exit บน consent surfaces; ผู้ใช้ที่ไม่ยอมรับทางเลือกเดียวคือปิดแอป — ส่วน **Privacy Notice** optional toggles (analytics/personalization) เลือกได้ทั้ง `Accept all`/`Reject all`/`Privacy settings` ทุกทางเดินหน้าได้และบันทึก consent record (AC-AUTH-027/031, AUTH-011) — ไม่มี conflict กัน
+- ผลต่อ spec/เคส: ไม่มี (คงพฤติกรรมเดิม ตีความให้ชัดเท่านั้น)
+
+### [DEC-40] ปิด batch A — spec/citation hygiene sweep (2026-11-02)
+- ตัดสินรวมประเด็นค้างของ SPEC-CHECK batch A (ระดับ consistency/citation ไม่เปลี่ยนพฤติกรรม):
+  1. spec 13 validation table ตัดข้อความ stale `prototype deviate — เช็กเฉพาะความยาว` ออก — FO-SYNC-01 resolved แล้ว (prototype enforce ทั้ง length + num/sym)
+  2. spec 11 sync บรรทัด stale ให้ตรง DEC-17 + amendment ตัวเอง: composer อยู่ใน V1 (ลบออกจาก Out of Scope + Future Enhancement + inventory L33 + deviation D2), `.comment-input` ไม่มี img/gif icons แต่มี send จริง, `.c-like` persist (ตาม amendment "ไม่ใช่ cosmetic"), heading emoji ไม่ใช่วิธีเดียวที่เขียน comment อีกต่อไป — sweep เดียวกันปิด stale "ไม่มี infinite scroll/pull-to-refresh ใน V1" ที่ขัด DEC-13/15 ใน `TukDaeng_Master_Product_Definition.md` (L220/358/921/975), `17_NON_FUNCTIONAL_REQUIREMENTS.md` (L28/46/85/98), `PRD.md` (L111), `Use_Cases.md` (L193), `DEV_IMPLEMENTATION_CHECKLIST.md` (L343/374), `QA_TEST_SCENARIO_CHECKLIST.md` (QA-FEED-019), `ERROR_STATE_UI_COPY_CATALOG.md` (sync note) — คงเดิมเฉพาะ Search grid (03 L413), Board static list และ DOCUMENT_VERSION/changelog ที่เป็น historical record
+  3. SHELL-066 citation: `กติการะบบ 10` ไม่มีข้อความ payment ใน 00_GLOBAL §10 (เป็น visibility matrix) — แก้ citation เป็น DEC-01/GAP-7 + canonical `04` §Phase 1 ("Payment ในแอป — Phase 1 ไม่มี") + `16` AC-INT-012 (Payment Gateway = Phase 2)
+  4. citation "spec ล็อก/ยืนยัน spec แล้ว 2026-10-28" ที่อ้างตำแหน่งไม่มีจริงใน notes SHELL-046/054/065 → ชี้ anchor จริง: DEC-18 + 00_NAV §6.3A (scroll-to-hide), 00_NAV Batch A Amendments (Android device back), 00_NAV DEC-25 Amendment (tab state/re-tap)
+  5. PV-026 / DET-007 — ตรวจยืนยันแก้ตาม DEC-16 ครบทั้ง MD+CSV แล้ว (ปิดค้าง §14.1)
+- ผลต่อเคส: แก้เฉพาะ citation/notes ของ SHELL-046/054/065/066 (expected ไม่เปลี่ยน — MD+CSV sync แล้ว)
+- ผลลัพธ์: รายการไม่ตรง batch A ทั้ง 102 เคส + ประเด็นระบบ §9 ทั้ง 14 ข้อปิดครบ — เหลือ backlog ข้ามงานเดิม (LANG-045 รอ build แปลครบตาม DEC-19; DEC-29 รอ legal TH ฉบับจริง)
+
+### [DEC-41] ถอน `system` notification type ออกจาก V1 ทั้งประเภท (2026-11-02)
+- ตัดสิน (เจ้าของ): alerts feed แบบ IG เหลือเฉพาะ social/watch alert — ถอน `system` type ออกจาก V1 ทั้งประเภท: row anatomy, placeholder destination, seed row ใน prototype และ security/session trigger contract หมดทั้งหมด — **supersede DEC-32** (ข้อ "type `system` + seed + placeholder คงอยู่") และ**ขยาย DEC-26** (เดิมถอนเฉพาะ generation "new device login" → คราวนี้ถอนทั้ง type รวม S-17/FSP-021 ที่เคยรับ `system` เข้า baseline)
+- ผลต่อ spec: `09_NOTIFICATION_MODULE.md` — ถอน `system` จาก §2/§3 (seed 13→12 rows, `.al-sys` anatomy)/§4/§5/§8/§9 (data model, row anatomy, destination rule, `system` Type Rule ทั้ง section, deviations #3/#5)/§11/§14 (trigger + no-toggle + erasure)/§15 (`alert_system_placeholder`)/§16 (AC-NOTI-002/020; **AC-NOTI-013 repurpose** เป็น guard "ไม่มี system row ใน feed"; AC-NOTI-021 รวม system เข้าชุด type นอก baseline) + amendment ท้ายไฟล์ — sync ไฟล์ spec ที่อ้าง `system`/S-17 อีก 13 ฉบับ: `00_GLOBAL` (types list), `00_NAV` §8 (destination matrix), `16_INTEGRATIONS`, `PRD.md`, `FO_Functional_PRD.md` (sync note + types + destination table), `TukDaeng_Master_Product_Definition.md` (glossary, supported/unsupported lists, S-17 mark superseded), `Use_Cases.md` (UC-ALERT-001 5→4 types), `README_MODULE_INDEX.md`, `QA_TEST_SCENARIO_CHECKLIST.md` (seed content + diff table + QA-NOTI-002 เปลี่ยนเป็น verify 4 types + QA-NOTI-003 ถอน system tap), `DEV_IMPLEMENTATION_CHECKLIST.md`, `DEV_BASELINE_HANDOFF_2026-06-22.md`, `DOCUMENT_VERSION.md`, `FINAL_HANDOFF_SUMMARY.md` — ทุกฉบับเหลือ 4 types (like/comment/follow/watch)
+- ผลต่อเคส: ถอน **ALT-015** (system row anatomy) + **ALT-030** (system → ไม่ navigate) — เล่ม 10 MD+CSV sync, สถิติ 78→76 (Medium 44→42, csv rows 89→87); **LANG-031** ปรับ precondition "ครบ 5 types"→"4 types" + ถอน system-row expectation (MD+CSV); book 19 §3 watchpoint "system-type alert text = server copy" → moot; traceability §0/§1/§2.6/§6.3/§6.4/§7.1/§8 sync — TC รวม 1,621→1,619 (Medium 693→691); inventory (row types/`Alert` type list/[OPEN-CODE-ONLY] note) + task-breakdown + FO-DIAG diagram → 4 types
+- ผลต่อ prototype: `Prototypes/fo-flow/index.html` — เอา `system` seed row ออกจาก `ALERTS` (member seed 13→12 rows) + ถอน `.al-sys` avatar branch/CSS block/`system` text branch/toast fallback `Security details aren't in this prototype yet`/i18n dict entry + comment อ้าง DEC-32
+- เอกสาร historical (FSP-*/SPEC-CHECK batch A-B2-C2/CONSOLIDATED-IG/FO-PROTO report/task-* evidence) คงเดิมเป็นบันทึกย้อนหลัง — ไม่แก้ตาม convention (อ้าง `system` ในนั้นให้อ่านเป็นสภาพ ณ เวลาที่เขียน)

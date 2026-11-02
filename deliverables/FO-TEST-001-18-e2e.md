@@ -4,7 +4,8 @@
 **SoT**: แอป TukDaeng build ทดสอบบนมือถือจริง — expected ล็อกตาม `FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` §6–§13 (layer/routes/entry matrix/notification destinations/gate routing/unavailable fallback/deep link/back) + `00_GLOBAL_RULES_MODULE.md` §7 (session) §9–§10 (status/visibility matrix) §11 (guest gate) §12 (lifecycle) §13 (block impact) §14 (private data) + `01_AUTHENTICATION_MODULE.md` + `04_ASSET_MANAGEMENT_MODULE.md` (lifecycle + Mark as Sold) + `05_ASSET_DETAIL_MODULE.md` (detail ไม่มี Ask/save/owner block) + `07_CHAT_MODULE.md` (ห้องเดียวต่อ account — FO-TEST-12 lock) + `09_NOTIFICATION_MODULE.md` + `10_WATCH_ALERT_MODULE.md` (match engine/notify) + `13_SETTINGS_MODULE.md` (delete/grace/restore) + `15_TRUST_SAFETY_MODULE.md` — `Prototypes/fo-flow` = แค่ reference ว่าหน้าตา/flow ควรเป็นแบบไหน
 **Scope**: **เฉพาะ "ความต่อเนื่องข้าม module"** — เช็ก handoff/state ต่อเนื่องเท่านั้น (ข้อมูลตามไปถึงหน้าถัดไปไหม · badge/count sync ไหม · state เปลี่ยนฝั่งอีก module ไหม · stack/layer ถูกไหม) — **ห้ามซ้ำ internals** ของแต่ละ feature (อยู่เล่มเจ้าของแล้ว อ้าง TC ID ย่อยแทน)
 **ยกเว้น**: internals ของทุกฟีเจอร์ → เล่ม 01–17 ตามตาราง §1 · guest gate matrix เต็ม → FO-TEST-17 · report/block internals → FO-TEST-16 · BO internals (moderation queue/review/audit) → นอก scope FO ทั้งหมด · language/theme sweep → FO-TEST-19 · route-level gap audit → FO-TEST-20
-**หมายเหตุ**: เขียนเสร็จรอรีวิว — อย่าเพิ่งปิดงาน · ชื่อไฟล์ตาม task-breakdown §18 `FO-TEST-001-18-e2e.md` + TC ID `E2E-nnn` · SETUP ใช้ `SETUP-nn`
+**สถานะเอกสาร**: Draft — ยังไม่มีผลการรันเทส (Result ว่างทุกเคส) · "ครบ" ในเอกสารนี้ = มีเคสเขียนแล้ว ไม่ใช่ทดสอบผ่าน — นิยามเต็มที่ `deliverables/FO-TEST-001-20-traceability.md` §0
+**หมายเหตุ**: ชื่อไฟล์ตาม task-breakdown §18 `FO-TEST-001-18-e2e.md` + TC ID `E2E-nnn` · SETUP ใช้ `SETUP-nn`
 
 ---
 

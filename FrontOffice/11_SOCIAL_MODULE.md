@@ -1,6 +1,6 @@
 # 11 Social Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §11 (guest gate = Member Sheet + empty state), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6 (layer/nav), §7 (entry matrix — routes `saved`/`savedcol`/`wishlist`/`wishcol`/`interested`/`ni`/`pfollow:`/`report:*`), §8 (notification destination matrix), §9 (gate routing), §10 (unavailable fallback), AC-NAV-026 (post viewer entries) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post card anatomy, post menus `pm-*`, ni-card/uncomf-card, feed tabs `following`/`favorites`, `refreshPostViews`, own-post menu — FSP-002 lock) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (post viewer modes + rail actions + `pv-add` + `sr-saved` entry — FSP-016 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (detail action row, `wl-btn`/`mf-btn` entries — FSP-017 lock) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (`pfSetFollow`/`pfIsFollowed`/`pfSetFav`/`pfSetMuted`/`pfSetBlocked` canonical, `pf-foll`/`mfSheet`/`pfollow:`/`pf-rmf`, QR share overlay — FSP-019 lock) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (Alerts feed canonical — alert types/rows/destinations — FSP-021 lock) + [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) (`mf-btn` WA flow — FSP-021 lock) + [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (settings pages `interested`/`ni`/`favorites`/`muted`/`blocked`/`notif_settings` + library rows) + [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) (report type contract — synced FSP-031, ดู §19) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §11 (guest gate = Member Sheet + empty state), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6 (layer/nav), §7 (entry matrix — routes `saved`/`savedcol`/`wishlist`/`wishcol`/`interested`/`ni`/`pfollow:`/`report:*`), §8 (notification destination matrix), §9 (gate routing), §10 (unavailable fallback), AC-NAV-026 (post viewer entries) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post card anatomy, post menus `pm-*`, ni-card/uncomf-card, feed tabs `following`/`favorites`, `refreshPostViews`, own-post menu — FSP-002 lock) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (post viewer modes + rail actions + `pv-add` + `sr-saved` entry — FSP-016 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (detail action row, `wl-btn`/`mf-btn` entries — FSP-017 lock) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (`pfSetFollow`/`pfIsFollowed`/`pfSetFav`/`pfSetMuted`/`pfSetBlocked` canonical, `pf-foll`/`mfSheet`/`pfollow:`/`pf-rmf`, QR share overlay — FSP-019 lock) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (Alerts feed canonical — alert types/rows/destinations — FSP-021 lock) + [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) (`mf-btn` WA flow — FSP-021 lock) + [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (settings pages `interested`/`ni`/`favorites`/`muted`/`blocked`/`notif_settings` + library rows) + [15_TRUST_SAFETY_MODULE.md](15_TRUST_SAFETY_MODULE.md) (report type contract — synced FSP-031, ดู §19) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD — prototype-synced (FO-PRD-v1.9) |
+| Document Type | Functional PRD — prototype-synced (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10) |
 
 ---
 
@@ -30,7 +30,7 @@ Social Module คุมพฤติกรรม interaction ทั้งหม�
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้; line anchors อาจ drift ให้ค้นด้วย function-name)
 
 - Post flags + fields: `POSTS` seed (~12800–13300) — `liked`, `likes`, `likedBy`, `views`, `comments`, `commentPreview`, `noComments`, `hideCounts`, `saved`, `savedCols` (multi-collection array — lock 2026-10-29), `savedAt`, `colAt`, `wishlisted`, `wlCols` (multi), `wlAt`, `wlColAt`, `following`, `favorite`, `muted`, `ni`, `blocked`, `archived`, `pins`
-- Comments: `COMMENTS` seed (~13339 — threads ต่อ post id `{id,name,avatar,time,text,likes,replies[]}` 1 ชั้น), `commentsFor` (~13802 — สร้าง synthetic comments จาก `LIKER_POOL`+`PF_CMT_TEXTS` เมื่อ `p.comments>0` แต่ไม่มี seed; auto-assign `c-{i}`/`r-{ci}-{ri}`), `commentRowsHTML` (~13815 — filter `pfIsBlocked` ทั้ง comment+replies; row = avatar/`data-pf-user` + name+time + text + `.c-meta` `Reply` + `.c-like` heart+count), `commentsHTML` (~13953 — `sheet-title` `ความคิดเห็น`/`Comments` + `.sheet-list` + `.emoji-row` 8 emoji + `.comment-input` แบบ dead), `openCommentPopover`/`closeCommentPopover`/`delCommentDlgHTML`/`deleteComment` (~13858–13951), `dlg-delcomment-go` handler (~22971)
+- Comments: `COMMENTS` seed (~13339 — threads ต่อ post id `{id,name,avatar,time,text,likes,replies[]}` 1 ชั้น), `commentsFor` (~13802 — สร้าง synthetic comments จาก `LIKER_POOL`+`PF_CMT_TEXTS` เมื่อ `p.comments>0` แต่ไม่มี seed; auto-assign `c-{i}`/`r-{ci}-{ri}`), `commentRowsHTML` (~13815 — filter `pfIsBlocked` ทั้ง comment+replies; row = avatar/`data-pf-user` + name+time + text + `.c-meta` `Reply` + `.c-like` heart+count), `commentsHTML` (~13953 — `sheet-title` `ความคิดเห็น`/`Comments` + `.sheet-list` + `.emoji-row` 8 emoji + `.comment-input` composer จริง — field + ปุ่ม `Post`/`โพสต์` แสดงเมื่อมีข้อความ ตาม DEC-17), `openCommentPopover`/`closeCommentPopover`/`delCommentDlgHTML`/`deleteComment` (~13858–13951), `dlg-delcomment-go` handler (~22971)
 - Sheets: `likesSheetHTML` (~14002 — likers = `p.likedBy` + `LIKER_POOL` dedupe; `lk-note` เฉพาะโพสต์คนอื่น), `shareSheetHTML` (~14021 — `.sh-q` + `FRIENDS` 12 + `SHARE_APPS` 5: Messenger/Direct/LINE/Facebook/Copy link), `saveSheetHTML`/`COLLECTIONS` (~14043), `wlSheetHTML`/`WISHLISTS` (~14072), `openSheet` variants (~14096 — `uf pm pm-rp lk sh sv so dt nt ps nc wl wa mf`), `ncSheetHTML` (~15876 — Cancel/Next|Save + name 40 chars + count + clear-X + optional preview)
 - Saved hub: `SAVED_TABS` (`all`/`collections`/`posts` ~15319), `savedState`/`savedPosts`/`colPosts`/`colCover`/`savedList`/`svdTileHTML`/`colCardHTML`/`colCardBigHTML`/`svdConfirmDelete`/`svdDeleteCol`/`svdEmptyHTML`/`svdSparkIcon`/`svdBarHTML`/`svdSelectHeadHTML`/`savedSearchBodyHTML`/`savedBodyHTML`/`savedHTML`/`savedColHTML` (~15319–15500), `svdAddHTML`/`svdCoverHTML`/`svdEditHTML`/`svdMoveSheetHTML`/`ecCoverHTML` (~15827–15875)
 - Wish List hub: `wlState`/`wlPosts`/`wlColPosts`/`wlListPosts`/`wlColCover`/`wlSparkIcon`/`wlColCardHTML`/`wlColCardBigHTML`/`wlBodyHTML`/`wishlistHTML`/`wishColHTML`/`wlAddHTML`/`wlEcCoverHTML`/`wlEditHTML`/`wlCoverHTML`/`wlMoveSheetHTML`/`wlDeleteCol`/`inWlCol`/`isWl`/`colState`/`colList` (~15539–15790)
@@ -85,8 +85,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ## Out of Scope For V1
 
-- Comment composer จริง (text input + submit) — `.comment-input` dead; Reply `.c-meta` ไม่มี handler
-- Nested tree UI (ซ้อนลึกเป็นต้นไม้), Edit comment, comment attachment, mention picker (ยังไม่อยู่ใน V1)
+- Nested tree UI (ซ้อนลึกเป็นต้นไม้ — reply แบบ IG flat thread อยู่ใน V1 ตาม DEC-17), Edit comment, comment attachment, mention picker (ยังไม่อยู่ใน V1)
 - Native OS share sheet, share deep-link validation flow
 - Repost, Story, activity feed อื่นนอกจาก Alerts (09)
 - Notification generation จาก social actions (ALERTS seed-only — contract 09 §14)
@@ -208,19 +207,19 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 ## Entry & sheet
 
 - `.comment-btn` (feed card, detail, viewer rail, pfp card) → `commentsHTML` — บน post viewer (`pv-open` โดยไม่มี `detail-open`) ใช้ variant `nt`; `.pv-add` (`Add comment…`/`เพิ่มความคิดเห็น…`) → sheet เดียวกัน (canonical 03)
-- Sheet anatomy: handle + title `ความคิดเห็น`/`Comments` + `.sheet-list` rows + `.emoji-row` (8 emoji: ❤️🙌🔥👏🥲😍😮😂) + `.comment-input` (avatar + `Add a comment...` field + img/gif icons — **dead**, ไม่มี input/submit handler)
+- Sheet anatomy: handle + title `ความคิดเห็น`/`Comments` + `.sheet-list` rows + `.emoji-row` (8 emoji: ❤️🙌🔥👏🥲😍😮😂) + `.comment-input` (avatar + `Add a comment...`/`เพิ่มความคิดเห็น...` field + ปุ่ม `Post`/`โพสต์` แสดงเมื่อมีข้อความ — composer จริงใน V1 ตาม DEC-17; ไม่มี img/gif icons)
 - Comment source: `COMMENTS[pid]` seed หรือ generated จาก `LIKER_POOL`/`PF_CMT_TEXTS` (`commentsFor` — names ตัด seller ออก, avatar จาก `pfAvatar` เมื่อ `commentPreview` match); replies 1 ชั้นเท่านั้น (ไม่มี nested reply-of-reply UI)
 - `noComments` → ซ่อน `comment-btn` ทุก surface (แต่ `pv-add` ยังเปิด sheet ได้ — quirk canonical 03)
 - `.c-meta` `Reply`/`ตอบกลับ` — เปิด composer prefill `@{username} ` ส่งแล้วต่อท้าย root เดียวกัน (DEC-17); guest → gate ตาม selector
 
-## Emoji quick-react (วิธีเดียวที่เขียน comment ได้ใน V1)
+## Emoji quick-react
 
 - `.emoji-row span` → push `{id:"c-own-"+Date.now(), name:CP_ME, avatar:mrfox, time:"Just now"/"เมื่อสักครู่", text:emoji, likes:0}` เข้า `commentsFor(p)` + `p.comments++` + re-render rows + `.comment-count` sync + scroll ท้าย list
 - Comment ที่สร้าง = own (`data-is-own`) → long-press ลบได้ทันที
 
 ## Row actions
 
-- `.c-like` — cosmetic like (class toggle + ±1 ใน label; **ไม่ persist** — re-render reset; `0` เริ่มแสดงเมื่อ liked → `1`)
+- `.c-like` — persist like บน comment object (`c.liked` toggle + `c.likes` ±1 — บันทึกจริง คงอยู่ข้าม re-render; `0` เริ่มแสดงเมื่อ liked → `1`)
 - Avatar/name → `data-pf-user` → `profile:{u}` (canonical 06)
 
 ## Long-press moderation (`.c-popover`)
@@ -444,7 +443,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | # | Topic | Prototype | Contract / note |
 | --- | --- | --- | --- |
 | D1 | Like ↔ Favorites | `liked` per-post, `favorite` per-seller feed tab — ระบบแยกกัน | Spec เดิมบอก like→Favorites — แก้ตาม prototype; liked posts = `interested` list |
-| D2 | Comment composer | `.comment-input` dead (div), `.c-meta` Reply dead — emoji-row เป็นทางเดียวที่เพิ่ม comment | Contract: composer จริง (text submit + Reply affordance) — future |
+| D2 | Comment composer | composer จริงใน V1 ตาม DEC-17 — `.comment-input` มี field + `Post`/`โพสต์` ส่งได้ (ไม่มี img/gif icons), `.c-meta` Reply เปิด prefill `@{username}` flat ใต้ root เดียวกัน | resolved — เดิมเป็น dead UI (emoji-row เป็นทางเดียว) แก้ตาม prototype แล้ว |
 | D3 | Comment entry | `comment-btn` บน card ทุก surface เปิด sheet ตรง — ไม่บังคับผ่าน detail | Spec เดิมบอก comment เฉพาะ Asset Detail — แก้ตาม prototype (02/03 lock แล้ว) |
 | D4 | `lk-follow` cosmetic | Follow button ใน likes sheet flip label เท่านั้น ไม่ propagate | Contract: `setFollowing` จริง — flag (FSP-030 quirk list) |
 | D5 | `pv-add` กับ `noComments` | `pv-add` bar แสดงเสมอแม้โพสต์ปิด comment — เปิด sheet ได้ | canonical 03 quirk — รับตาม prototype |
@@ -623,8 +622,7 @@ And counts (`likes`/`views`/`comments`) ไม่ reset (post data ไม่ใ�
 
 # 23. Future Enhancement
 
-- Comment composer จริง (text input + submit + Reply target) — dead UI ตอนนี้เป็น placeholder
-- Edit comment, multi-level replies, attachment, reactions, mentions
+- Edit comment, multi-level replies (nested tree — reply flat thread ปัจจุบันอยู่ใน V1 ตาม DEC-17), attachment, reactions, mentions
 - `lk-follow` → `setFollowing` จริง (D4)
 - Native OS share + share deep links + share counts
 - Notification generation จาก social actions (09 §14 contract)

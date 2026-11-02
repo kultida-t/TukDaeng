@@ -278,12 +278,12 @@ Output: deliverables/FO-TEST-001-09-board.md
 อ่าน master prompt + inventory
 
 ขอบเขต: alerts tab + กลไก notification (ไม่รวม walerts — อยู่ FO-TEST-11)
-- Alert list: 5 types (Like / Comment / Follow / Watch Alert / System) —
+- Alert list: 4 types (Like / Comment / Follow / Watch Alert — `system` ถอนแล้วตาม DEC-41) —
   รูปแบบ row แต่ละ type, actor avatar, เวลา, read/unread state
 - Badge: นับถูก, แสดง 99+ เมื่อเกิน (กติกาบังคับ), เคลียร์เมื่ออ่าน
 - mark all read: state ทุก row เปลี่ยน + badge หาย
 - Tap row → Post Viewer ตรง (like/comment/watch alert) —
-  follow alert ไปไหน, system alert ไปไหน — เช็คทุก type
+  follow alert ไปไหน — เช็คทุก type
 - กติกาบังคับ: back button ของ Alerts กลับ Feed เสมอ (ไม่ pop stack)
 - Empty state, alert ที่ target ถูกลบแล้ว (post ลบ/asset sold)
 

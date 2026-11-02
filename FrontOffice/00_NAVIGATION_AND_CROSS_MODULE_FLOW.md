@@ -245,7 +245,6 @@ Alerts tab (`alerts` sub page) — แตะ row แล้ว mark read + sync b
 | Comment | Post Viewer — โพสต์ของตัวเอง 1 ใบ | เหมือน Like — comment ไม่ focus/deep-scroll ใน V1; โพสต์หาย → unavailable state เดียวกัน |
 | Follow | Public Profile — `rpPush("profile:{user}")` | blocked/unavailable → fallback ตาม §10 |
 | Watch Alert | Post Viewer — โพสต์ที่ match โดยตรง | ไม่มี Result List คั่นใน V1; โพสต์หาย → unavailable state parity กับ like/comment (resolved FSP-030) |
-| System | placeholder — ไม่มี destination ใน V1 | security alert type (`A new device just logged in...`); prototype tap = toast `Security details aren't in this prototype yet`; destination contract อยู่ 09_NOTIFICATION |
 
 Follow row เท่านั้นที่มี dismiss (X) + `Follow back` button — รายละเอียด UI อยู่ 09_NOTIFICATION; Mark all as read อยู่บน section header แรก
 

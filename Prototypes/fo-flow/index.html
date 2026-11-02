@@ -11199,11 +11199,6 @@
       border: none;
     }
 
-    .al-ic.al-sys {
-      background: #7a1016;
-      color: #fff;
-    }
-
     .al-txt {
       flex: 1;
       min-width: 0;
@@ -18360,7 +18355,6 @@
         { type: "follow", users: ["watch.daily"], ago: "2d", grp: "Last 7 days", unread: false },
         wa("p3", "3d", "Last 7 days", false),
         { type: "like", users: ["Watch 777", "the watch"], more: 8, ago: "4d", grp: "Last 7 days", unread: false, ...mine(3) },
-        { type: "system", users: [], text: "A new device just logged in to your account near Bangkok, TH", ago: "6d", grp: "Last 7 days", unread: false }, /* DEC-32 — demo seed row only: V1 has no system-alert generation, do not remove */
         { type: "follow", users: ["neng_mua"], ago: "2w", grp: "Earlier", unread: false },
         { type: "like", users: ["bamzilla"], more: 0, ago: "3w", grp: "Earlier", unread: false, ...mine(5) },
       ].map((a, i) => ({ id: "al" + i, ...a }));
@@ -18384,7 +18378,6 @@
     function alAvatarHTML(a) {
       const badge = ic => `<span class="al-badge">${ic}</span>`;
       if (a.type === "watch") return `<span class="al-av al-ic al-watch">${I.navBell(22)}<span class="al-wseller"><img src="${profileOf(a.users[0]).avatar}" alt=""></span></span>`;
-      if (a.type === "system") return `<span class="al-av al-ic al-sys"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg></span>`;
       const img = n => `<img src="${profileOf(n).avatar}" alt="">`;
       const b = a.type === "like" ? badge(I.heart(10)) : "";
       return a.users.length > 1
@@ -18401,7 +18394,6 @@
         comment: isTh ? `${names} แสดงความคิดเห็น: ${esc(a.text || "")}` : `${names} commented: ${esc(a.text || "")}`,
         follow: isTh ? `${names} เริ่มติดตามคุณ` : `${names} started following you.`,
         watch: isTh ? `การแจ้งเตือนนาฬิกา <b>${esc(a.name || "")}</b> — รายการใหม่จาก <b>${esc(a.users[0])}</b> · ${esc(a.price || "")}` : `Watch alert <b>${esc(a.name || "")}</b> — new listing from <b>${esc(a.users[0])}</b> · ${esc(a.price || "")}`,
-        system: esc(a.text || ""),
       }[a.type];
       return `${body} <span class="al-time">${formatAlertTime(a.ago, isTh)}</span>`;
     }
@@ -18500,7 +18492,7 @@
           openPostViewer(scr, [post], a.pid, 0, false, "Post", me);
           scr.querySelector(".page-pv .pfp-tt")?.classList.add("solo");
         } else pushSub(scr, "al_unavail");
-      } else scrToast(scr, "Security details aren't in this prototype yet");
+      }
       if (alUnread() === 0) { const b = scr.querySelector("[data-alreadall]"); if (b) b.remove(); }
       return true;
     }
@@ -20268,7 +20260,6 @@
       "Item not found": "ไม่พบสินค้า", "No chats for this item.": "ไม่มีแชทสำหรับสินค้านี้",
       "Toggle password visibility": "แสดง/ซ่อนรหัสผ่าน", "Toggle password": "แสดง/ซ่อนรหัสผ่าน",
       "Mister Fox Co., Ltd. · Est. 2026": "บริษัท มิสเตอร์ฟอกซ์ จำกัด · ก่อตั้ง พ.ศ. 2569",
-      "A new device just logged in to your account near Bangkok, TH": "มีอุปกรณ์เครื่องใหม่เพิ่งเข้าสู่ระบบบัญชีของคุณใกล้กรุงเทพฯ ประเทศไทย",
       "Posted · shared to feed ✓": "โพสต์แล้ว · แชร์ไปยังฟีดเรียบร้อย ✓",
       /* FO-SYNC-01 sweep — library / settings / portfolio / watch-alert / profile leftovers */
       "Archive": "คลังเก็บ", "Done": "เสร็จ", "Manage": "จัดการ", "Select...": "เลือก...", "Change cover": "เปลี่ยนรูปปก",

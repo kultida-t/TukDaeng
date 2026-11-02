@@ -190,7 +190,7 @@
 #### Happy Path
 1. เปิดแอป → แสดงหน้า Feed Tab "ทั้งหมด"
 2. เห็นโพสต์ (post-centric — โพสต์ `sale` + โพสต์ `post` ไม่ผูก asset) เรียงตาม Newest
-3. Scroll ดู list ทั้งหมด — render ครั้งเดียว ไม่มี infinite scroll / load-more ใน V1
+3. Scroll ดู list — infinite scroll โหลดหน้าถัดไปเมื่อเหลือ 3 การ์ดสุดท้าย (10 โพสต์/หน้า — DEC-13); pull-to-refresh reload หน้าแรก (DEC-15); ไม่มี end-of-list marker
 
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
@@ -623,7 +623,7 @@
 
 #### Happy Path
 1. กด Tab "แจ้งเตือน" (Alerts feed)
-2. แสดงรายการแจ้งเตือน 5 types (like/comment/follow/watch alert/system) แบ่งกลุ่ม `Today`/`Yesterday`/`Last 7 days`/`Earlier`
+2. แสดงรายการแจ้งเตือน 4 types (like/comment/follow/watch alert) แบ่งกลุ่ม `Today`/`Yesterday`/`Last 7 days`/`Earlier`
 3. กด "Mark all as read" หรือกด row → ไป Post Viewer / Public Profile ตาม type
 
 ---

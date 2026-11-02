@@ -1,6 +1,6 @@
 ﻿# 14 Portfolio Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §9 (asset statuses `Sale`/`Show`/`Hide`/`Sold`), §10 (visibility matrix), §11 (guest gate = Member Sheet `Join TukDaeng`), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6 (route map `portfolio`/`pfasset:{id}`/`soldhist`/`sold:{id}`/`sell:{id}`), §6.7 (sub stack back) + [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (drawer record/`assetId`/`pfkind` lifecycle + `markAssetSold` canonical — FSP-017 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (post detail layer — private data boundary) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (`.pf-pfo` entry placement — FSP-019 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (own-post menu anatomy canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (FO-PRD-v1.9)
+อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §9 (asset statuses `Sale`/`Show`/`Hide`/`Sold`), §10 (visibility matrix), §11 (guest gate = Member Sheet `Join TukDaeng`), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6 (route map `portfolio`/`pfasset:{id}`/`soldhist`/`sold:{id}`/`sell:{id}`), §6.7 (sub stack back) + [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (drawer record/`assetId`/`pfkind` lifecycle + `markAssetSold` canonical — FSP-017 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (post detail layer — private data boundary) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (`.pf-pfo` entry placement — FSP-019 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (own-post menu anatomy canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -9,7 +9,7 @@
 | Field | Detail |
 | --- | --- |
 | Module Name | Portfolio — owner-only value dashboard (Total invested headline + market value line + asset list + sold history + mark-as-sold) |
-| Version | 1.9 (FO-PRD-v1.9 spec-sync FSP-024) |
+| Version | 1.10 (baseline FO-PRD-v1.10 · spec-synced FO-PRD-v1.9 FSP-024) |
 | Status | Functional PRD — synced to fo-flow prototype |
 | Owner | Tuk Daeng Project |
 | Document Type | Front Office Functional PRD |

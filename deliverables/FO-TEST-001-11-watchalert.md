@@ -1,11 +1,11 @@
 # FO-TEST-001-11 — Test Cases: Watch Alert (แอปมือถือจริง)
 
 **Task**: FO-TEST-11 ของชุด FO-TEST-001 — เขียนเป็นเวอร์ชันเทสแอปมือถือจริงตั้งแต่แรก (ไม่มีรอบ prototype แยก เพราะ spec ล็อกแล้ว)
-**SoT**: แอป TukDaeng build ทดสอบบนมือถือจริง — expected ล็อกตาม `FrontOffice/10_WATCH_ALERT_MODULE.md` (FO-PRD-v1.9) + canonical entries ใน `03_SEARCH_FILTER_MODULE.md` (`sr-wa`) / `05_ASSET_DETAIL_MODULE.md` (`mf-btn`) / `13_SETTINGS_MODULE.md` (library row + notif toggle + delete-account copy) + `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` §6/§8/§9/§10 — `Prototypes/fo-flow` = แค่ reference ว่าหน้าตาควรเป็นแบบไหน
+**SoT**: แอป TukDaeng build ทดสอบบนมือถือจริง — expected ล็อกตาม `FrontOffice/10_WATCH_ALERT_MODULE.md` (FO-PRD-v1.10) + canonical entries ใน `03_SEARCH_FILTER_MODULE.md` (`sr-wa`) / `05_ASSET_DETAIL_MODULE.md` (`mf-btn`) / `13_SETTINGS_MODULE.md` (library row + notif toggle + delete-account copy) + `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` §6/§8/§9/§10 — `Prototypes/fo-flow` = แค่ reference ว่าหน้าตาควรเป็นแบบไหน
 **Scope**: inventory §2.6 ส่วน Watch — sheet `wa` (create/edit) + 3 entries (`sr-wa` results head / `mf-btn` Post Detail / `Edit` บน list row) + `walerts` list page (ผ่าน Settings) + match engine contract (`watch` row → Post Viewer ตรง) + guest gate + persistence + real-app behaviors (offline, cross-device, market-data dependency)
 **ยกเว้น**: alerts feed anatomy/badge/mark-all/destinations — ของ FO-TEST-10 (เล่มนี้อ้าง ALT-028/031/032/053 เท่านั้น) · `notif_settings` page anatomy เต็ม — ของ FO-TEST-15 · search/filter internals — ของ FO-TEST-04 · Post Detail anatomy — ของ FO-TEST-06 · delete account flow — ของ FO-TEST-15 (เล่มนี้เช็กเฉพาะผลต่อ alerts)
 **การตัดสินล็อก 2026-10-29** (ถามผู้ใช้ก่อนเขียน): (1) alerts = server-backed — อยู่รอดปิดแอป + sign-out/in + sync ข้ามเครื่อง (2) ลบ alert ต้องมี confirm dialog ก่อน — ตาม destructive pattern ทั้งแอป (FSP-030 resolved — แก้ spec+prototype แล้ว) (3) list เรียงใหม่สุดบนสุด (แก้ spec+prototype แล้ว) (4) โพสต์ตัวเองที่ตรง alert ตัวเอง → แจ้งเตือนเหมือนของคนอื่น (5) เขียนข้อมูลตอนเน็ตหลุด → error ชัดเจน + ไม่บันทึกหลอก (6) bell `Follow this model` ติดไฟเฉพาะ alert ที่สร้างจาก detail เท่านั้น (พี่คิง — alert จาก search ไม่ติดไฟ)
-**หมายเหตุ**: เขียนเสร็จรอรีวิว — อย่าเพิ่งปิดงาน
+**สถานะเอกสาร**: Draft — ยังไม่มีผลการรันเทส (Result ว่างทุกเคส) · "ครบ" ในเอกสารนี้ = มีเคสเขียนแล้ว ไม่ใช่ทดสอบผ่าน — นิยามเต็มที่ `deliverables/FO-TEST-001-20-traceability.md` §0
 
 ---
 

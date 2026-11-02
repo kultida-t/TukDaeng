@@ -24,7 +24,6 @@ ALT-011,Row Anatomy,≥3 บัญชี like โพสต์เดียว,อ
 ALT-012,Row Anatomy,ACCT-2 comment,อ่าน row comment,avatar+{name} commented: {excerpt}+thumb · excerpt ยาวตัดตาม design,MEMBER,HIGH,,,
 ALT-013,Row Anatomy,ACCT-2 follow,อ่าน row follow,avatar+started following you+Follow back+x · ไม่มี thumb,MEMBER,HIGH,,,
 ALT-014,Row Anatomy,watch alert match แล้ว,อ่าน row watch,bell icon+seller mini+Watch alert {name} — listing from {seller} · {price}+thumb,MEMBER,MED,,,ไม่มี row = BLOCK
-ALT-015,Row Anatomy,system alert เกิดแล้ว,อ่าน row system,icon วงกลม ! + ข้อความดิบ + เวลา · ไม่มี thumb/x/ปุ่ม,MEMBER,MED,,,ไม่มี row = BLOCK
 ALT-016,Row Anatomy,มีข้อมูลยาว,ดู row ชื่อ/ข้อความยาวมาก,wrap/ตัดตาม design ไม่ทะลุกรอบ ไม่ทับ x/thumb,MEMBER,MED,,,ไม่มีข้อมูลยาวจริง = BLOCK
 ALT-017,Read & Badge,unread ≥1,นับแถว unread เทียบ badge,badge เท่าจำนวน unread เป๊ะ รวมทุก type,MEMBER,HIGH,,,
 ALT-018,Read & Badge,มี unread,บันทึก badge → แตะ row unread → กลับ,highlight หายทันที + badge ลด 1 + navigate ถูก,MEMBER,HIGH,,,
@@ -39,7 +38,6 @@ ALT-026,Destinations,มี like row,แตะ row like,Post Viewer โพสต
 ALT-027,Destinations,มี comment row,แตะ row comment,Post Viewer โพสต์ตัวเอง — ไม่ focus/deep-scroll comment · focus = FAIL,MEMBER,HIGH,,,
 ALT-028,Destinations,มี watch row,แตะ row watch,Post Viewer ลิสติ้ง match โดยตรง + Follow ถ้ายังไม่ติดตาม seller,MEMBER,HIGH,,,ไม่มี watch row = BLOCK
 ALT-029,Destinations,มี follow row,แตะ row follow → back,push profile ผู้ติดตามทับ alerts · back กลับ alerts stack ค้าง,MEMBER,HIGH,,,
-ALT-030,Destinations,มี system row,แตะ row system,ไม่ navigate ออกจาก alerts — เปิดหน้าใด = FAIL,MEMBER,MED,,,ไม่มี system row = BLOCK
 ALT-031,Destinations,ACCT-2 like/comment โพสต์ที่จะลบ,ACCT-2 like → MEMBER ลบโพสต์ → แตะ row,unavailable state รายการนี้ไม่พร้อมใช้งานแล้ว + ปุ่ม Go back — ไม่เปิด viewer,MEMBER+ACCT-2,HIGH,,,row ยังถูก mark read
 ALT-032,Destinations,watch row แล้ว ACCT-2 ลบลิสติ้ง,แตะ row watch,unavailable เหมือน ALT-031 — ห้าม silent no-op,MEMBER+ACCT-2,MED,,,ไม่มีวิธีทำลิสติ้งหาย = BLOCK
 ALT-033,Destinations,ACCT-2 follow แล้วถูก block ทีหลัง,แตะ row follow ของ ACCT-2,profile keep-page: grid ว่าง + ปุ่ม Unblock — ไม่ใช่ unavailable,MEMBER+ACCT-2,MED,,,
@@ -49,7 +47,7 @@ ALT-036,Follow Actions,dismiss แล้ว,kill แอป → เปิดใ�
 ALT-037,Follow Actions,ยังไม่ follow ACCT-2,แตะ Follow back,ปุ่มเป็น Following + follow จริง (ฝั่ง ACCT-2 followers +1),MEMBER+ACCT-2,HIGH,,,
 ALT-038,Follow Actions,follow back แล้ว,แตะ Following,ปุ่มกลับ Follow back + unfollow จริง,MEMBER,MED,,,
 ALT-039,Follow Actions,follow row unread,แตะ Follow back/x,row ยัง unread + ไม่ navigate + badge ไม่เปลี่ยนจากการอ่าน,MEMBER,MED,,,
-ALT-040,Follow Actions,มีหลาย type,มองหา x บน like/comment/watch/system,ไม่มี x บน type อื่น — เฉพาะ follow,MEMBER,MED,,,
+ALT-040,Follow Actions,มีหลาย type,มองหา x บน like/comment/watch,ไม่มี x บน type อื่น — เฉพาะ follow,MEMBER,MED,,,
 ALT-041,Follow Actions,ภาษาไทย + follow row,แตะ Follow back → label → เปลี่ยน EN → ทำซ้ำ,label ตามภาษาแอปทุกสถานะ ติดตามกลับ↔กำลังติดตาม / Follow back↔Following,MEMBER,HIGH,,,ค้าง EN = FAIL
 ALT-042,Guest & Gate,เป็น guest + มี deep link,เปิด deep link เข้า alerts เป็น guest,Member Sheet ก่อนเสมอ feed ไม่เปิด,GUEST,MED,,,ไม่มี deep link = BLOCK
 ALT-043,Guest & Gate,sheet เด้งอยู่,Sign in ผ่าน sheet สำเร็จ → แตะแท็บแจ้งเตือน,กลับ surface เดิม (ไม่ auto-open alerts) + alerts เปิดได้แล้ว,GUEST,MED,,,
@@ -57,7 +55,7 @@ ALT-044,Guest & Gate,สมัครใหม่,แตะแท็บแจ้�
 ALT-045,Guest & Gate,ACCT-2 พร้อมส่งข้อความ,ACCT-2 ส่ง chat → เช็ก alerts + badge Chat,badge แท็บ Chat เท่านั้น — alerts ไม่มี row ใหม่,MEMBER+ACCT-2,MED,,,
 ALT-046,Guest & Gate,MEMBER+ACCT-2 พร้อม,MEMBER report/block ACCT-2 → เครื่องสองเปิด alerts,feed ACCT-2 ไม่มี row บอกถูก report/block,MEMBER+ACCT-2,MED,,,
 ALT-047,Guest & Gate,เป็น guest,หา entry อื่นนอกแท็บ (search/profile/settings/drawer),ไม่มีทางเข้าอื่น — แท็บเท่านั้น,GUEST,LOW,,,
-ALT-048,Notif Settings,SETUP-07 เส้นทาง,profile → menu → Settings → การตั้งค่าการแจ้งเตือน,desc + กลุ่ม กิจกรรม (ยอดถูกใจ/ความคิดเห็น/ผู้ติดตามใหม่) + กลุ่ม การซื้อขายและการแจ้งเตือน (การแจ้งเตือนนาฬิกา) · ไม่มี system toggle,MEMBER,HIGH,,,
+ALT-048,Notif Settings,SETUP-07 เส้นทาง,profile → menu → Settings → การตั้งค่าการแจ้งเตือน,desc + กลุ่ม กิจกรรม (ยอดถูกใจ/ความคิดเห็น/ผู้ติดตามใหม่) + กลุ่ม การซื้อขายและการแจ้งเตือน (การแจ้งเตือนนาฬิกา) · ไม่มี toggle เพิ่มนอก 4 ตัวนี้,MEMBER,HIGH,,,
 ALT-049,Notif Settings,บัญชีใหม่,เปิด notif settings,4 toggles ON ทั้งหมด,NEW,MED,,,
 ALT-050,Notif Settings,likes OFF,ACCT-2 like → alerts,ไม่มี like row ใหม่ + badge ไม่เพิ่ม — ยึด contract,MEMBER+ACCT-2,HIGH,,,lock ข้อ 4
 ALT-051,Notif Settings,comments OFF,ACCT-2 comment → alerts,ไม่มี comment row ใหม่,MEMBER+ACCT-2,MED,,,
