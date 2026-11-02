@@ -213,7 +213,8 @@
 
 - **[OPEN-1]** Board report reporter feedback — ยืนยันแล้วว่า V1 ไม่มี (15 §5 out-of-scope report tracking) — ไม่ใช่ gap
 - **[OPEN-2]** Chat report message context → BO (ดู GAP-06 + e3) — ต้อง product ตัดสิน
-- **[OPEN-3]** WA `source` field ใน BO list (search vs detail origin) — minor verification
+- **[OPEN-3 — resolved 2026-11-02]** WA `source` field (search vs detail origin) — implement แล้วใน prototype: `source` field บน `WAL-*` mocks (`search`/`detail` ตาม FO `10` `sr-wa`/`mf-btn`), source tag บน Alert Name + filter `Source` + Source badge/tile ใน Alert Detail + spec `11_WATCH_ALERT_MODULE.md` sync (entry point 2 ทาง, filter, column, mobile card, Detail Head, Section 1)
+- **[OPEN-5]** Product decision — ควรรวม `Asset Management` เข้ากับ `Content Management` เป็นโดเมน `Posts/Content` เดียวหรือไม่ (จาก GAP-08: report target = post entity รวม published posts ทุกชนิด) — ถ้ารวม: nav/menu structure, module spec 04/05 และ protected screens ทั้งสองฝั่งต้องรวมกัน; ถ้าไม่รวม: ต้องระบุ boundary ชัดว่า post-only report อยู่คิว `Reported Assets` แต่ entity moderation surface ต่างกัน
 - **[CONFLICT]** — ไม่พบ statement ขัดกันตรง ๆ ที่ต้องเลือกข้าง (GAP-02/04 = taxonomy contract ขาด ไม่ใช่ conflicting rules)
 
 ### ข้อสรุปการ audit

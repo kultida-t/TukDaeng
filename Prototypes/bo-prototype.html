@@ -2179,6 +2179,10 @@
     /* Notification badge ใช้ pill green/gray */
     body.watch-alert-list-mode .watch-alert-list-table .wa-notif-on { color: #07734f; }
     body.watch-alert-list-mode .watch-alert-list-table .wa-notif-off { color: #6d7f98; }
+    body.watch-alert-list-mode .watch-alert-list-table .wa-source-tag {
+      display: block; width: fit-content; margin: 4px 0 0; padding: 1px 8px; border-radius: 999px;
+      font-size: 11px; font-weight: 600; background: #eef2f8; color: #4a5872;
+    }
 
     /* WA-PTO-002b: Alert List toolbar — filter bar ใช้ grid เหมือนหน้าอื่น
        5 custom-select + 1 date range + 1 reset = 7 คอลัมน์
@@ -19080,7 +19084,7 @@
         { id: "ROL-005", name: "Trust & Safety Moderator", roleKey: "trust_safety_moderator", type: "system", status: "Active", description: "ตรวจ report queue และทำ action ที่กระทบ FO พร้อม reason, impact note และ audit", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "02 Sep 2026 10:15", updatedRank: 202609021015, updatedBy: "ADM-001" },
         { id: "ROL-006", name: "Asset Operations", roleKey: "asset_operations", type: "system", status: "Active", description: "ตรวจ Asset List/Detail และ reported assets/comments โดยไม่แก้ Market Data master หรือ Settings", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
         { id: "ROL-007", name: "Content Editor", roleKey: "content_editor", type: "system", status: "Active", description: "สร้างและแก้ draft บทความ, category และ metadata ได้ แต่ publish/archive ไม่ได้", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
-        { id: "ROL-008", name: "Content Publisher", roleKey: "content_publisher", type: "system", status: "Active", description: "อนุมัติ publish, schedule, archive และจัดการ reported Board content พร้อม audit reason", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-008", name: "Content Publisher", roleKey: "content_publisher", type: "system", status: "Active", description: "อนุมัติ publish, schedule, archive และจัดการ Reported Articles พร้อม audit reason", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
         { id: "ROL-101", name: "Content Reviewer TH", roleKey: "content_reviewer_th", type: "custom", status: "Active", description: "ตรวจทานบทความ, metadata และ category ก่อนส่งให้ publisher โดยไม่มีสิทธิ์ publish", createdAt: "12 Aug 2026 14:00", createdRank: 202608121400, createdBy: "ADM-001", updatedAt: "05 Sep 2026 11:20", updatedRank: 202609051120, updatedBy: "ADM-001" },
         { id: "ROL-102", name: "Market Analyst", roleKey: "market_analyst", type: "custom", status: "Active", description: "อ่าน market data, demand overview และ delivery log สำหรับทีมวิเคราะห์โดยไม่มี mutation", createdAt: "20 Aug 2026 09:30", createdRank: 202608200930, createdBy: "ADM-002", updatedAt: "20 Aug 2026 09:30", updatedRank: 202608200930, updatedBy: "ADM-002" },
         { id: "ROL-103", name: "Legacy Support Viewer", roleKey: "legacy_support_viewer", type: "custom", status: "Inactive", description: "Role เดิมของทีม support ก่อนปรับโครงสร้าง — ปิดใช้งานแล้วและเลือก assign ให้ผู้ดูแลรายใหม่ไม่ได้", createdAt: "02 Jun 2026 10:00", createdRank: 202606021000, createdBy: "ADM-001", updatedAt: "01 Sep 2026 16:45", updatedRank: 202609011645, updatedBy: "ADM-001" }
@@ -19292,14 +19296,14 @@
         { id: "U-1222", displayName: "old.user", username: "@olduser", email: "ol***@mail.com", auth: "Email", status: "Deleted", joined: "17 Jan 2026", joinedBucket: "older", joinedRank: 20260117, lastActive: "15 May 2026 07:44", lastActiveBucket: "older", lastActiveRank: 202605150744, assets: 0, assetBucket: "0", reports: 0, verification: "Deleted", contact: [], support: "DEL-020", latest: "Anonymized", reportState: "ปิดเคสแล้ว", statusLabel: "Deleted", allowed: ["View deleted summary"], blocked: ["Reset password", "Status mutation"], foImpact: "Deleted account login blocked; profile/assets anonymized.", actionNote: "Deletion details remain sensitive and audited." }
       ],
       reports: [
-        { id: "RPU-505", category: "Profile", user: "horology.king", userId: "U-1002", accountStatus: "Suspended", reason: "พบโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", reporters: 5, priority: "สูง", status: "In Review", reference: "User ID U-1002", source: "User Profile", sources: ["User Profile"], waiting: "22 ชม.", evidence: ["รูปโปรไฟล์คล้ายบัญชีอื่น", "ข้อความแนะนำตัวผู้ขายซ้ำหลายจุด"], recommendation: "ตรวจผู้ใช้ที่ถูกรายงานก่อนทำ action เพิ่มกับบัญชี", actionHistory: "มีรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราวระหว่างรอตรวจสอบ" },
-        { id: "RPU-512", category: "Profile", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "Reported user profile behavior looked suspicious", reporters: 4, priority: "High", status: "Open", reference: "User ID U-1017", source: "User Profile", sources: ["User Profile"], waiting: "20 hr", evidence: ["Report was submitted from the user profile", "Reporter notes describe suspicious seller behavior"], recommendation: "Review reported user profile and reporter notes before account action", actionHistory: "New user report opened; account remains Active until Admin action" },
-        { id: "RPU-518", category: "Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "Reported user behavior from chat", reporters: 3, priority: "High", status: "Open", reference: "User ID U-1088", source: "Chat", sources: ["Chat"], waiting: "18 hr", evidence: ["Report was submitted from chat with this user", "Reporter notes describe pressure or suspicious behavior"], recommendation: "Review chat-origin report notes, then decide whether account action is needed", actionHistory: "New user report opened from chat context" },
-        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "Repeated reports about inappropriate chat behavior", reporters: 6, priority: "High", status: "In Review", reference: "User ID U-1186", source: "Chat", sources: ["Chat"], waiting: "4 hr", evidence: ["Report was submitted from chat with this user", "Multiple reporters describe repeated abusive messages"], recommendation: "Review chat-origin report notes before deciding final account action", actionHistory: "Account was suspended while user report remains in review" },
-        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 13, priority: "สูง", status: "Closed", reference: "User ID U-1120", source: "User Profile / Chat", sources: ["User Profile", "Chat"], waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว", "โปรไฟล์มีรูปแบบหลอกลวงซ้ำ", "พบการชวนซื้อขายนอกระบบ"], recommendation: "คงสถานะรายงานเป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิดรายงานแล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" },
-        { id: "RPU-566", category: "Profile", user: "Seiko Corner", userId: "U-1144", accountStatus: "Active", reason: "Active account with 1-2 profile reports for low-risk review", reporters: 2, priority: "Low", status: "Open", reference: "User ID U-1144", source: "User Profile", sources: ["User Profile"], waiting: "12 hr", evidence: ["Profile wording was reported as confusing", "No high-risk pattern found yet"], recommendation: "Keep account Active while Admin checks the reported user profile context", actionHistory: "New low-volume report; account remains Active because 1-2 reports do not trigger restriction" },
-        { id: "RPU-579", category: "Profile", user: "Archive Collector", userId: "U-1104", accountStatus: "Deletion Requested", reason: "Deletion-requested account has an existing user-profile report", reporters: 2, priority: "High", status: "Open", reference: "User ID U-1104", source: "User Profile", sources: ["User Profile"], waiting: "8 hr", evidence: ["Report was submitted from the user profile before deletion completion", "Deletion workflow should not erase active moderation context"], recommendation: "Review the reported user context before allowing deletion/archive to proceed", actionHistory: "Deletion Requested account must not be archived directly from Reported Users" },
-        { id: "RPU-588", category: "Profile", user: "Daily Watch Hunter", userId: "U-1161", accountStatus: "Active", reason: "False profile report closed without account action", reporters: 1, priority: "Low", status: "Closed", reference: "User ID U-1161", source: "User Profile", sources: ["User Profile"], waiting: "0 hr", evidence: ["Reporter note was not supported by profile evidence", "No duplicate or impersonation signal found"], recommendation: "Keep report Closed and leave account Active", actionHistory: "Admin closed false report without changing account status" }
+        { id: "RPU-505", category: "Profile", user: "horology.king", userId: "U-1002", accountStatus: "Suspended", reason: "พบโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", reporters: 5, priority: "สูง", status: "In Review", reference: "User ID U-1002", source: "User Profile", sources: ["User Profile"], evidence: ["รูปโปรไฟล์คล้ายบัญชีอื่น", "ข้อความแนะนำตัวผู้ขายซ้ำหลายจุด"], recommendation: "ตรวจผู้ใช้ที่ถูกรายงานก่อนทำ action เพิ่มกับบัญชี", actionHistory: "มีรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราวระหว่างรอตรวจสอบ" },
+        { id: "RPU-512", category: "Profile", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "Reported user profile behavior looked suspicious", reporters: 4, priority: "High", status: "Open", reference: "User ID U-1017", source: "User Profile", sources: ["User Profile"], evidence: ["Report was submitted from the user profile", "Reporter notes describe suspicious seller behavior"], recommendation: "Review reported user profile and reporter notes before account action", actionHistory: "New user report opened; account remains Active until Admin action" },
+        { id: "RPU-518", category: "Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "Reported user behavior from chat", reporters: 3, priority: "High", status: "Open", reference: "User ID U-1088", source: "Chat", sources: ["Chat"], evidence: ["Report was submitted from chat with this user", "Reporter notes describe pressure or suspicious behavior"], recommendation: "Review chat-origin report notes, then decide whether account action is needed", actionHistory: "New user report opened from chat context" },
+        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "Repeated reports about inappropriate chat behavior", reporters: 6, priority: "High", status: "In Review", reference: "User ID U-1186", source: "Chat", sources: ["Chat"], evidence: ["Report was submitted from chat with this user", "Multiple reporters describe repeated abusive messages"], recommendation: "Review chat-origin report notes before deciding final account action", actionHistory: "Account was suspended while user report remains in review" },
+        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 13, priority: "สูง", status: "Closed", reference: "User ID U-1120", source: "User Profile / Chat", sources: ["User Profile", "Chat"], evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว", "โปรไฟล์มีรูปแบบหลอกลวงซ้ำ", "พบการชวนซื้อขายนอกระบบ"], recommendation: "คงสถานะรายงานเป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิดรายงานแล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" },
+        { id: "RPU-566", category: "Profile", user: "Seiko Corner", userId: "U-1144", accountStatus: "Active", reason: "Active account with 1-2 profile reports for low-risk review", reporters: 2, priority: "Low", status: "Open", reference: "User ID U-1144", source: "User Profile", sources: ["User Profile"], evidence: ["Profile wording was reported as confusing", "No high-risk pattern found yet"], recommendation: "Keep account Active while Admin checks the reported user profile context", actionHistory: "New low-volume report; account remains Active because 1-2 reports do not trigger restriction" },
+        { id: "RPU-579", category: "Profile", user: "Archive Collector", userId: "U-1104", accountStatus: "Deletion Requested", reason: "Deletion-requested account has an existing user-profile report", reporters: 2, priority: "High", status: "Open", reference: "User ID U-1104", source: "User Profile", sources: ["User Profile"], evidence: ["Report was submitted from the user profile before deletion completion", "Deletion workflow should not erase active moderation context"], recommendation: "Review the reported user context before allowing deletion/archive to proceed", actionHistory: "Deletion Requested account must not be archived directly from Reported Users" },
+        { id: "RPU-588", category: "Profile", user: "Daily Watch Hunter", userId: "U-1161", accountStatus: "Active", reason: "False profile report closed without account action", reporters: 1, priority: "Low", status: "Closed", reference: "User ID U-1161", source: "User Profile", sources: ["User Profile"], evidence: ["Reporter note was not supported by profile evidence", "No duplicate or impersonation signal found"], recommendation: "Keep report Closed and leave account Active", actionHistory: "Admin closed false report without changing account status" }
       ]
     };
 
@@ -19461,18 +19465,18 @@
     const watchAlertData = {
       // 6.1 Alert records (12 รายการ ครอบคลุมทุก status/scenario)
       alerts: [
-        { id: "WAL-1440", name: "Rolex Submariner <= 320k", owner: { id: "U-1042", displayName: "Nattapol P.", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Rolex", model: "Submariner", reference: "16610", priceMin: 0, priceMax: 320000, condition: ["Very Good", "Good"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 3, triggerCount: 3, lastTriggered: "2026-08-25T14:30:00+07:00", created: "2026-06-15T09:00:00+07:00", updated: "2026-08-20T10:00:00+07:00" },
-        { id: "WAL-1228", name: "Omega Speedmaster Bangkok", owner: { id: "U-1017", displayName: "Crown Time BKK", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Omega", model: "Speedmaster", reference: "", priceMin: 100000, priceMax: 250000, condition: ["Like New"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 3, triggerCount: 3, lastTriggered: "2026-08-26T09:12:00+07:00", created: "2026-05-02T11:30:00+07:00", updated: "2026-08-26T09:12:00+07:00" },
-        { id: "WAL-1199", name: "Inactive model alert", owner: { id: "U-1079", displayName: "Archive Collector", accountStatus: "Suspended" }, status: "User Disabled", notificationEnabled: false, criteria: { brand: "Seiko", model: "6139-6000", reference: "6139", priceMin: 0, priceMax: 80000, condition: [], caseSize: [], dialColor: [] }, marketDataInactive: true, inactiveFields: ["model"], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-04-10T08:00:00+07:00", updated: "2026-07-18T16:20:00+07:00" },
-        { id: "WAL-1180", name: "Seiko 6139 vintage", owner: { id: "U-1104", displayName: "Seiko Corner", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Seiko", model: "6139", reference: "6139-6000", priceMin: 0, priceMax: 60000, condition: ["Fair", "Good"], caseSize: ["<36mm"], dialColor: ["Blue"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-07-01T10:00:00+07:00", updated: "2026-07-01T10:00:00+07:00" },
-        { id: "WAL-1150", name: "Patek Calatrava 5227", owner: { id: "U-1144", displayName: "The Collector", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Patek Philippe", model: "Calatrava", reference: "5227", priceMin: 800000, priceMax: 1500000, condition: ["Like New"], caseSize: ["36-39mm"], dialColor: ["White"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 1, lastTriggered: "2026-08-19T11:00:00+07:00", created: "2026-06-28T14:00:00+07:00", updated: "2026-08-19T11:00:00+07:00" },
-        { id: "WAL-1100", name: "Tudor Black Bay 58", owner: { id: "U-1088", displayName: "Daily Watch Hunter", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Tudor", model: "Black Bay 58", reference: "M79030", priceMin: 80000, priceMax: 130000, condition: ["Like New", "Very Good"], caseSize: ["36-39mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 3, lastTriggered: "2026-08-22T16:45:00+07:00", created: "2026-06-10T09:30:00+07:00", updated: "2026-08-22T16:45:00+07:00" },
-        { id: "WAL-1080", name: "Grand Seiko Snowflake", owner: { id: "U-1161", displayName: "Minimal Dial", accountStatus: "Active" }, status: "User Disabled", notificationEnabled: false, criteria: { brand: "Grand Seiko", model: "SBGA211", reference: "SBGA211", priceMin: 150000, priceMax: 250000, condition: ["New"], caseSize: ["40-42mm"], dialColor: ["White"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-05-20T13:00:00+07:00", updated: "2026-07-30T10:00:00+07:00" },
-        { id: "WAL-1050", name: "Old Rolex GMT alert", owner: { id: "U-1042", displayName: "Nattapol P.", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Rolex", model: "GMT-Master II", reference: "126710BLRO", priceMin: 400000, priceMax: 700000, condition: ["Very Good"], caseSize: ["40-42mm"], dialColor: ["Blue", "Red"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 1, lastTriggered: "2026-06-28T10:00:00+07:00", created: "2026-05-29T08:00:00+07:00", updated: "2026-06-28T10:00:00+07:00" },
-        { id: "WAL-1020", name: "Cartier Tank Must", owner: { id: "U-1161", displayName: "Minimal Dial", accountStatus: "Active" }, status: "Deleted", notificationEnabled: false, criteria: { brand: "Cartier", model: "Tank Must", reference: "", priceMin: 60000, priceMax: 100000, condition: ["Very Good"], caseSize: ["<36mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 1, lastTriggered: "2026-07-10T10:00:00+07:00", created: "2026-05-15T09:00:00+07:00", updated: "2026-08-01T18:00:00+07:00" },
-        { id: "WAL-0990", name: "Vintage Seiko 6105", owner: { id: "U-1104", displayName: "Seiko Corner", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Seiko", model: "6105-8110", reference: "6105", priceMin: 30000, priceMax: 70000, condition: ["Fair", "Good", "Very Good"], caseSize: ["40-42mm", "43-45mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 2, lastTriggered: "2026-08-21T13:20:00+07:00", created: "2026-04-25T11:00:00+07:00", updated: "2026-08-21T13:20:00+07:00" },
-        { id: "WAL-0950", name: "IWC Pilot Mark XVIII", owner: { id: "U-1088", displayName: "Daily Watch Hunter", accountStatus: "Active" }, status: "Active", notificationEnabled: false, criteria: { brand: "IWC", model: "Pilot Mark XVIII", reference: "IW3270", priceMin: 90000, priceMax: 140000, condition: ["Like New"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 2, lastTriggered: "2026-08-18T15:00:00+07:00", created: "2026-06-05T10:00:00+07:00", updated: "2026-08-18T15:00:00+07:00" },
-        { id: "WAL-0900", name: "AP Royal Oak 15500", owner: { id: "U-1144", displayName: "The Collector", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Audemars Piguet", model: "Royal Oak", reference: "15500ST", priceMin: 1200000, priceMax: 2000000, condition: ["New", "Like New"], caseSize: ["40-42mm"], dialColor: ["Black", "Blue"] }, marketDataInactive: true, inactiveFields: ["reference"], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-04-20T09:00:00+07:00", updated: "2026-04-20T09:00:00+07:00" }
+        { id: "WAL-1440", name: "Rolex Submariner <= 320k", source: "search", owner: { id: "U-1042", displayName: "Nattapol P.", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Rolex", model: "Submariner", reference: "16610", priceMin: 0, priceMax: 320000, condition: ["Very Good", "Good"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 3, triggerCount: 3, lastTriggered: "2026-08-25T14:30:00+07:00", created: "2026-06-15T09:00:00+07:00", updated: "2026-08-20T10:00:00+07:00" },
+        { id: "WAL-1228", name: "Omega Speedmaster Bangkok", source: "search", owner: { id: "U-1017", displayName: "Crown Time BKK", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Omega", model: "Speedmaster", reference: "", priceMin: 100000, priceMax: 250000, condition: ["Like New"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 3, triggerCount: 3, lastTriggered: "2026-08-26T09:12:00+07:00", created: "2026-05-02T11:30:00+07:00", updated: "2026-08-26T09:12:00+07:00" },
+        { id: "WAL-1199", name: "Inactive model alert", source: "search", owner: { id: "U-1079", displayName: "Archive Collector", accountStatus: "Suspended" }, status: "User Disabled", notificationEnabled: false, criteria: { brand: "Seiko", model: "6139-6000", reference: "6139", priceMin: 0, priceMax: 80000, condition: [], caseSize: [], dialColor: [] }, marketDataInactive: true, inactiveFields: ["model"], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-04-10T08:00:00+07:00", updated: "2026-07-18T16:20:00+07:00" },
+        { id: "WAL-1180", name: "Seiko 6139 vintage", source: "detail", owner: { id: "U-1104", displayName: "Seiko Corner", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Seiko", model: "6139", reference: "6139-6000", priceMin: 0, priceMax: 60000, condition: ["Fair", "Good"], caseSize: ["<36mm"], dialColor: ["Blue"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-07-01T10:00:00+07:00", updated: "2026-07-01T10:00:00+07:00" },
+        { id: "WAL-1150", name: "Patek Calatrava 5227", source: "search", owner: { id: "U-1144", displayName: "The Collector", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Patek Philippe", model: "Calatrava", reference: "5227", priceMin: 800000, priceMax: 1500000, condition: ["Like New"], caseSize: ["36-39mm"], dialColor: ["White"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 1, lastTriggered: "2026-08-19T11:00:00+07:00", created: "2026-06-28T14:00:00+07:00", updated: "2026-08-19T11:00:00+07:00" },
+        { id: "WAL-1100", name: "Tudor Black Bay 58", source: "search", owner: { id: "U-1088", displayName: "Daily Watch Hunter", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Tudor", model: "Black Bay 58", reference: "M79030", priceMin: 80000, priceMax: 130000, condition: ["Like New", "Very Good"], caseSize: ["36-39mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 3, lastTriggered: "2026-08-22T16:45:00+07:00", created: "2026-06-10T09:30:00+07:00", updated: "2026-08-22T16:45:00+07:00" },
+        { id: "WAL-1080", name: "Grand Seiko Snowflake", source: "search", owner: { id: "U-1161", displayName: "Minimal Dial", accountStatus: "Active" }, status: "User Disabled", notificationEnabled: false, criteria: { brand: "Grand Seiko", model: "SBGA211", reference: "SBGA211", priceMin: 150000, priceMax: 250000, condition: ["New"], caseSize: ["40-42mm"], dialColor: ["White"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-05-20T13:00:00+07:00", updated: "2026-07-30T10:00:00+07:00" },
+        { id: "WAL-1050", name: "Old Rolex GMT alert", source: "detail", owner: { id: "U-1042", displayName: "Nattapol P.", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Rolex", model: "GMT-Master II", reference: "126710BLRO", priceMin: 400000, priceMax: 700000, condition: ["Very Good"], caseSize: ["40-42mm"], dialColor: ["Blue", "Red"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 1, lastTriggered: "2026-06-28T10:00:00+07:00", created: "2026-05-29T08:00:00+07:00", updated: "2026-06-28T10:00:00+07:00" },
+        { id: "WAL-1020", name: "Cartier Tank Must", source: "search", owner: { id: "U-1161", displayName: "Minimal Dial", accountStatus: "Active" }, status: "Deleted", notificationEnabled: false, criteria: { brand: "Cartier", model: "Tank Must", reference: "", priceMin: 60000, priceMax: 100000, condition: ["Very Good"], caseSize: ["<36mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 1, lastTriggered: "2026-07-10T10:00:00+07:00", created: "2026-05-15T09:00:00+07:00", updated: "2026-08-01T18:00:00+07:00" },
+        { id: "WAL-0990", name: "Vintage Seiko 6105", source: "search", owner: { id: "U-1104", displayName: "Seiko Corner", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Seiko", model: "6105-8110", reference: "6105", priceMin: 30000, priceMax: 70000, condition: ["Fair", "Good", "Very Good"], caseSize: ["40-42mm", "43-45mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 2, lastTriggered: "2026-08-21T13:20:00+07:00", created: "2026-04-25T11:00:00+07:00", updated: "2026-08-21T13:20:00+07:00" },
+        { id: "WAL-0950", name: "IWC Pilot Mark XVIII", source: "search", owner: { id: "U-1088", displayName: "Daily Watch Hunter", accountStatus: "Active" }, status: "Active", notificationEnabled: false, criteria: { brand: "IWC", model: "Pilot Mark XVIII", reference: "IW3270", priceMin: 90000, priceMax: 140000, condition: ["Like New"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 2, lastTriggered: "2026-08-18T15:00:00+07:00", created: "2026-06-05T10:00:00+07:00", updated: "2026-08-18T15:00:00+07:00" },
+        { id: "WAL-0900", name: "AP Royal Oak 15500", source: "detail", owner: { id: "U-1144", displayName: "The Collector", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Audemars Piguet", model: "Royal Oak", reference: "15500ST", priceMin: 1200000, priceMax: 2000000, condition: ["New", "Like New"], caseSize: ["40-42mm"], dialColor: ["Black", "Blue"] }, marketDataInactive: true, inactiveFields: ["reference"], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-04-20T09:00:00+07:00", updated: "2026-04-20T09:00:00+07:00" }
       ],
       // 5.6 Demand Overview aggregation (คำนวณจาก mock alerts ทั้งระบบ)
       // KPI cards อ้างอิง Family Office UI Rulebook: value + trend + sparkline + color-coded
@@ -19575,14 +19579,14 @@
           return months;
         })(),
         frequentlyTriggered: [
-          { id: "WAL-1228", name: "Omega Speedmaster Bangkok", owner: "Crown Time BKK", triggerCount: 3, lastTriggered: "2026-08-26T09:12:00+07:00" },
-          { id: "WAL-1440", name: "Rolex Submariner <= 320k", owner: "Nattapol P.", triggerCount: 3, lastTriggered: "2026-08-25T14:30:00+07:00" },
-          { id: "WAL-1100", name: "Tudor Black Bay 58", owner: "Daily Watch Hunter", triggerCount: 3, lastTriggered: "2026-08-22T16:45:00+07:00" },
-          { id: "WAL-0990", name: "Vintage Seiko 6105", owner: "Seiko Corner", triggerCount: 2, lastTriggered: "2026-08-21T13:20:00+07:00" },
-          { id: "WAL-0950", name: "IWC Pilot Mark XVIII", owner: "Daily Watch Hunter", triggerCount: 2, lastTriggered: "2026-08-18T15:00:00+07:00" },
-          { id: "WAL-1150", name: "Patek Calatrava 5227", owner: "The Collector", triggerCount: 2, lastTriggered: "2026-08-19T11:00:00+07:00" },
-          { id: "WAL-1050", name: "Old Rolex GMT alert", owner: "Nattapol P.", triggerCount: 1, lastTriggered: "2026-06-28T10:00:00+07:00" },
-          { id: "WAL-1020", name: "Cartier Tank Must", owner: "Minimal Dial", triggerCount: 1, lastTriggered: "2026-07-10T10:00:00+07:00" },
+          { id: "WAL-1228", name: "Omega Speedmaster Bangkok", source: "search", owner: "Crown Time BKK", triggerCount: 3, lastTriggered: "2026-08-26T09:12:00+07:00" },
+          { id: "WAL-1440", name: "Rolex Submariner <= 320k", source: "search", owner: "Nattapol P.", triggerCount: 3, lastTriggered: "2026-08-25T14:30:00+07:00" },
+          { id: "WAL-1100", name: "Tudor Black Bay 58", source: "search", owner: "Daily Watch Hunter", triggerCount: 3, lastTriggered: "2026-08-22T16:45:00+07:00" },
+          { id: "WAL-0990", name: "Vintage Seiko 6105", source: "search", owner: "Seiko Corner", triggerCount: 2, lastTriggered: "2026-08-21T13:20:00+07:00" },
+          { id: "WAL-0950", name: "IWC Pilot Mark XVIII", source: "search", owner: "Daily Watch Hunter", triggerCount: 2, lastTriggered: "2026-08-18T15:00:00+07:00" },
+          { id: "WAL-1150", name: "Patek Calatrava 5227", source: "search", owner: "The Collector", triggerCount: 2, lastTriggered: "2026-08-19T11:00:00+07:00" },
+          { id: "WAL-1050", name: "Old Rolex GMT alert", source: "detail", owner: "Nattapol P.", triggerCount: 1, lastTriggered: "2026-06-28T10:00:00+07:00" },
+          { id: "WAL-1020", name: "Cartier Tank Must", source: "search", owner: "Minimal Dial", triggerCount: 1, lastTriggered: "2026-07-10T10:00:00+07:00" },
           { id: "WAL-1310", name: "Grand Seiko Snowflake", owner: "The Collector", triggerCount: 1, lastTriggered: "2026-08-12T09:30:00+07:00" },
           { id: "WAL-0870", name: "Tudor Pelagos FXD", owner: "Seiko Corner", triggerCount: 1, lastTriggered: "2026-08-05T18:20:00+07:00" }
         ]
@@ -20048,6 +20052,10 @@
       "RPA-548": [
         { reporter: "Vintage Lens", reason: "False information" },
         { reporter: "Market Watch TH", reason: "I just don't like it" }
+      ],
+      "RPA-720": [
+        { reporter: "Korn Vintage", reason: "Scam, fraud or spam" },
+        { reporter: "Suda Collector", reason: "False information" }
       ]
     };
 
@@ -20166,7 +20174,8 @@
       "RPA-612": "13 Jul 2026 10:10",
       "RPA-581": "12 Jul 2026 17:50",
       "RPA-559": "12 Jul 2026 11:35",
-      "RPA-548": "11 Jul 2026 16:20"
+      "RPA-548": "11 Jul 2026 16:20",
+      "RPA-720": "13 Jul 2026 09:15"
     };
 
     const assetReportCases = [
@@ -20175,17 +20184,38 @@
       { id: "RPA-612", assetId: "AST-8612", reportStatus: "Pending", uniqueReporterCount: 1, priority: "Medium", createdAt: assetReportCreatedTimes["RPA-612"] },
       { id: "RPA-581", assetId: "AST-8581", reportStatus: "Closed", uniqueReporterCount: 6, priority: "High", createdAt: assetReportCreatedTimes["RPA-581"] },
       { id: "RPA-559", assetId: "AST-8559", reportStatus: "Pending", uniqueReporterCount: 1, priority: "High", createdAt: assetReportCreatedTimes["RPA-559"] },
-      { id: "RPA-548", assetId: "AST-8548", reportStatus: "Pending", uniqueReporterCount: 2, priority: "Low", createdAt: assetReportCreatedTimes["RPA-548"] }
+      { id: "RPA-548", assetId: "AST-8548", reportStatus: "Pending", uniqueReporterCount: 2, priority: "Low", createdAt: assetReportCreatedTimes["RPA-548"] },
+      { id: "RPA-720", postId: "POST-7720", kind: "post", reportStatus: "Pending", uniqueReporterCount: 2, priority: "Medium", createdAt: assetReportCreatedTimes["RPA-720"] }
     ];
+
+    // Post-only report entity — feed post kind `post` ที่ไม่ผูก asset ตาม Report Entity Model
+    // (ref = POST- frozen ตอน intake ไม่เปลี่ยนย้อนหลังแม้ post จะถูกผูก asset ภายหลัง;
+    // ไม่มี asset status ให้ join — detail แสดงเฉพาะ post context)
+    const postReportEntities = [
+      {
+        id: "POST-7720",
+        kind: "post",
+        name: "โพสต์ชวนซื้อขายนอกระบบ — รับซื้อนาฬิกาเก็บเงินปลายทางทุกรุ่น ทักแชทได้เลย",
+        owner: "Daily Watch Hunter",
+        type: "Post",
+        status: "Published",
+        reportCount: 2,
+        detail: "Feed post ที่ไม่ผูก asset ถูกรายงานว่าชักชวนซื้อขายนอกระบบและให้ข้อมูลเท็จ",
+        tags: ["Reports 2", "post-only", "feed"],
+        uploadedImages: [],
+        createdAt: "10 Jul 2026 09:40"
+      }
+    ];
+    const postReportEntityMap = Object.fromEntries(postReportEntities.map(post => [post.id, post]));
 
     function getAssetReportCase(assetOrReport) {
       if (!assetOrReport) return null;
       const reportId = String(assetOrReport.id || "").startsWith("RPA-") ? assetOrReport.id : getAssetReportId(assetOrReport);
-      return assetReportCases.find(reportCase => reportCase.id === reportId || reportCase.assetId === assetOrReport.id) || null;
+      return assetReportCases.find(reportCase => reportCase.id === reportId || reportCase.assetId === assetOrReport.id || reportCase.postId === assetOrReport.id) || null;
     }
 
     function getAssetForReportCase(reportCase) {
-      return moduleData.assets.rows.find(asset => asset.id === reportCase?.assetId) || null;
+      return moduleData.assets.rows.find(asset => asset.id === reportCase?.assetId) || postReportEntityMap[reportCase?.postId] || null;
     }
 
     function isAssetReportContext(report) {
@@ -20460,7 +20490,7 @@
         return true;
       }
       if (context.type === "reported-asset-detail") {
-        renderReportedAssetDetail(moduleData.assets.rows.find(entry => entry.id === context.id));
+        renderReportedAssetDetail(moduleData.assets.rows.find(entry => entry.id === context.id) || postReportEntityMap[context.id]);
         return true;
       }
       if (context.type === "reported-comment-detail") {
@@ -23293,13 +23323,6 @@
       return 1 + (seed % 3);
     }
 
-    function getAssetReportWaitingHours(asset) {
-      const seed = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
-      if (asset.status === "Auto Hidden") return 0;
-      if (asset.status === "Reported") return 6 + (seed % 18);
-      return 2 + (seed % 8);
-    }
-
     function getAssetReportReceivedSortRank(asset) {
       const reportCase = getAssetReportCase(asset);
       return parseBangkokAuditTime(reportCase?.createdAt) || parseBangkokAuditTime(getAssetReportReceivedTime(asset)) || getAssetSortRank(asset, "latest");
@@ -23376,8 +23399,7 @@
         reportStatus: getAssetReportQueueStatus(asset),
         createdAt: reportCase?.createdAt || "",
         reference: asset.id,
-        source: "Asset Detail",
-        waiting: `${getAssetReportWaitingHours(asset)} ชม.`,
+        source: asset.kind === "post" ? "Feed Post" : "Asset Detail",
         foReason: getAssetFoReportReason(asset),
         reporterNote: getAssetReporterNote(asset),
         reviewSignals: getAssetReviewSignals(asset, detail),
@@ -24921,7 +24943,7 @@
         ["Dashboard", "view", "เห็นเฉพาะ queue ที่ดูแล"],
         ["User Management", "limited", "เฉพาะ Reported Users + action ตาม policy"],
         ["Asset Management", "limited", "เฉพาะ Reported Assets / Reported Comments"],
-        ["Content Management", "limited", "Reported Board และ content context ที่เกี่ยวข้อง"],
+        ["Content Management", "limited", "Reported Articles และ content context ที่เกี่ยวข้อง"],
         ["Market Data", "view", ""],
         ["Option Master", "none", ""],
         ["Market Demand", "view", ""],
@@ -24954,7 +24976,7 @@
         ["Dashboard", "view", "เห็นเฉพาะงาน content"],
         ["User Management", "none", ""],
         ["Asset Management", "none", ""],
-        ["Content Management", "manage", "publish/schedule/archive/banners + Reported Board พร้อม audit reason"],
+        ["Content Management", "manage", "publish/schedule/archive/banners + Reported Articles พร้อม audit reason"],
         ["Market Data", "view", ""],
         ["Option Master", "none", ""],
         ["Market Demand", "view", ""],
@@ -29821,7 +29843,7 @@
         return `
           <strong>${report.id} · ${report.category}</strong><br>
           ${report.reason}<br>
-          <span>${report.status} · ${report.reporters} reporters · ${report.waiting}</span>
+          <span>${report.status} · ${report.reporters} reporters</span>
         `;
       }
       if (user.reports > 0) return `<strong>${user.reportState}</strong>`;
@@ -29844,7 +29866,6 @@
             <p class="report-reason">${report.reason}</p>
             <div class="report-meta">
               <div class="report-meta-item"><span>Reporters</span><strong>${report.reporters}</strong></div>
-              <div class="report-meta-item"><span>Waiting</span><strong>${report.waiting}</strong></div>
               <div class="report-meta-item"><span>Source</span><strong>${report.source}</strong></div>
             </div>
           </div>
@@ -31168,7 +31189,6 @@
       if (!report || !user || getReportQueueStatus(report) === "Closed") return false;
       report.status = "Closed";
       report.accountStatus = user.status;
-      report.waiting = "0 ชม.";
       appendReportAuditLog(report, {
         action: "REPORT_STATUS_UPDATED",
         detail: action === "Restore"
@@ -31339,7 +31359,6 @@
       const closeReason = document.querySelector("#report-close-reason")?.value;
       const closeNote = document.querySelector("#report-close-note")?.value.trim();
       report.status = status;
-      if (status === "Closed") report.waiting = "0 ชม.";
       report.accountStatus = getReportAccountStatus(report);
       appendReportAuditLog(report, {
         action: "REPORT_STATUS_UPDATED",
@@ -31686,6 +31705,7 @@
         return;
       }
       const report = buildAssetReportContext(asset);
+      const isPostReport = asset.kind === "post" || getAssetReportCase(asset)?.kind === "post";
       const detail = getAssetFoDetail(asset);
       document.body.classList.add("user-management-mode");
       document.body.classList.add("user-detail-mode");
@@ -31725,17 +31745,28 @@
 
           <div class="detail-section">
             <div class="board-report-reference-head">
-              <h4>Reported Asset</h4>
-              <button class="btn asset-report-view-btn" type="button" data-asset-report-detail-modal="${asset.id}" aria-label="View asset ${asset.id}"><span class="asset-report-view-label">View Asset</span></button>
+              <h4>${isPostReport ? "Reported Post" : "Reported Asset"}</h4>
+              ${isPostReport ? "" : `<button class="btn asset-report-view-btn" type="button" data-asset-report-detail-modal="${asset.id}" aria-label="View asset ${asset.id}"><span class="asset-report-view-label">View Asset</span></button>`}
             </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
-              <div class="detail-tile"><span>Asset ID</span><strong>${asset.id}</strong></div>
-              <div class="detail-tile"><span>Asset Name</span><strong>${asset.name}</strong></div>
-              <div class="detail-tile"><span>Owner ID</span><strong>${report.ownerId}</strong></div>
-              <div class="detail-tile"><span>Owner</span><strong>${asset.owner}</strong></div>
-              <div class="detail-tile"><span>Asset Status</span><strong>${report.assetStatus}</strong></div>
+              ${isPostReport
+                ? `
+                  <div class="detail-tile"><span>Post ID</span><strong>${asset.id}</strong></div>
+                  <div class="detail-tile"><span>Post Content</span><strong>${asset.name}</strong></div>
+                  <div class="detail-tile"><span>Owner ID</span><strong>${report.ownerId}</strong></div>
+                  <div class="detail-tile"><span>Owner</span><strong>${asset.owner}</strong></div>
+                  <div class="detail-tile"><span>Post Status</span><strong>${asset.status}</strong></div>
+                `
+                : `
+                  <div class="detail-tile"><span>Asset ID</span><strong>${asset.id}</strong></div>
+                  <div class="detail-tile"><span>Asset Name</span><strong>${asset.name}</strong></div>
+                  <div class="detail-tile"><span>Owner ID</span><strong>${report.ownerId}</strong></div>
+                  <div class="detail-tile"><span>Owner</span><strong>${asset.owner}</strong></div>
+                  <div class="detail-tile"><span>Asset Status</span><strong>${report.assetStatus}</strong></div>
+                `}
             </div>
+            ${isPostReport ? `<p class="muted">post-only report (kind <code>post</code>) — โพสต์ไม่ผูก asset; ไม่มี asset status ให้ join — ref <code>POST-</code> คงเดิมแม้โพสต์จะถูกผูก asset ภายหลัง</p>` : ""}
           </div>
 
           <div class="detail-section">
@@ -32051,7 +32082,7 @@
         document.querySelector("#summary-grid").innerHTML = "";
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
-        // BO-UX-001: restore saved filter values when returning from Reported Board Detail
+        // BO-UX-001: restore saved filter values when returning from Reported Article Detail
         restoreListFilterState("board-report-list");
         renderReportedBoardRows();
         updateActiveNav();
@@ -38572,6 +38603,16 @@
         : `<span class="pill gray wa-notif-off">Off</span>`;
     }
 
+    // helper: alert origin — FO source field: `search` = สร้างจาก saved search (sr-wa)
+    // `detail` = model follow จากหน้า post detail (mf-btn)
+    function getWaSourceLabel(alert) {
+      return alert?.source === "detail" ? "Model follow" : "Search";
+    }
+
+    function getWaSourcePill(alert) {
+      return `<span class="pill ${alert?.source === "detail" ? "blue" : "gray"}">${getWaSourceLabel(alert)}</span>`;
+    }
+
     // helper: criteria summary บรรทัดเดียว + data attribute เก็บ criteria ครบ
     // tooltip แสดงผ่าน JS handler (position: fixed) เทียบกับ .comment-hover-tooltip
     // สรุป: brand · model · reference · price · N conditions · N case sizes · N dial colors
@@ -38648,6 +38689,11 @@
             { value: "User Disabled", label: "User Disabled" },
             { value: "Deleted", label: "Deleted" }
           ])}</div>
+          <div class="user-advanced-filter">${customSelect("wa-alert-source-filter", "Filter source", [
+            { value: "", label: "ทุกที่มา" },
+            { value: "search", label: "Search" },
+            { value: "detail", label: "Model follow" }
+          ])}</div>
           <div class="user-advanced-filter">${customSelect("wa-alert-notif-filter", "Filter notification", [
             { value: "", label: "ทุกการแจ้งเตือน" },
             { value: "on", label: "เปิดแจ้งเตือน" },
@@ -38691,6 +38737,7 @@
     function renderWatchAlertListRows() {
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
       const statusFilter = document.querySelector("#wa-alert-status-filter")?.value || "";
+      const sourceFilter = document.querySelector("#wa-alert-source-filter")?.value || "";
       const notifFilter = document.querySelector("#wa-alert-notif-filter")?.value || "";
       const triggerFilter = document.querySelector("#wa-alert-trigger-filter")?.value || "";
       const zeroMatchFilter = document.querySelector("#wa-alert-zero-match-filter")?.value || "";
@@ -38705,6 +38752,7 @@
 
       const filtered = watchAlertData.alerts.filter(alert => {
         if (statusFilter && alert.status !== statusFilter) return false;
+        if (sourceFilter && (alert.source || "search") !== sourceFilter) return false;
         if (notifFilter === "on" && !alert.notificationEnabled) return false;
         if (notifFilter === "off" && alert.notificationEnabled) return false;
         if (triggerFilter === "has" && !(alert.triggerCount > 0)) return false;
@@ -38765,6 +38813,7 @@
               <div class="main-text">
                 <span class="desktop-user-name">${esc(alert.name)}</span>
                 <span class="mobile-user-card-title">${esc(alert.id)}</span>
+                <span class="wa-source-tag">${getWaSourceLabel(alert)}</span>
               </div>
             </div>
             <div class="asset-card-tags">
@@ -38772,6 +38821,7 @@
               ${getWaNotifPill(alert.notificationEnabled)}
               <div class="user-card-meta">
                 <div class="user-card-meta-item comment-field-meta"><span>Alert Name</span><strong>${esc(alert.name)}</strong></div>
+                <div class="user-card-meta-item comment-field-meta"><span>Source</span><strong>${getWaSourceLabel(alert)}</strong></div>
                 <div class="user-card-meta-item comment-field-meta"><span>Owner</span><strong>${esc(ownerName)}</strong></div>
                 <div class="user-card-meta-item comment-field-meta"><span>Matches</span><strong>${alert.matchCount}</strong></div>
                 <div class="user-card-meta-item comment-field-meta"><span>Triggers</span><strong>${alert.triggerCount}</strong></div>
@@ -38881,6 +38931,7 @@
               <div class="chips">
                 ${getWaStatusPill(alert.status)}
                 ${getWaNotifPill(alert.notificationEnabled)}
+                ${getWaSourcePill(alert)}
               </div>
             </div>
           </div>
@@ -38893,6 +38944,7 @@
           <div class="detail-grid four report-reference-grid">
             <div class="detail-tile"><span>Created</span><strong>${formatWaDate(alert.created)}</strong></div>
             <div class="detail-tile"><span>Updated</span><strong>${formatWaDate(alert.updated)}</strong></div>
+            <div class="detail-tile"><span>Source</span><strong>${getWaSourceLabel(alert)}</strong></div>
             <div class="detail-tile"><span>Matches</span><strong>${alert.matchCount}</strong></div>
             <div class="detail-tile"><span>Triggers</span><strong>${alert.triggerCount}</strong></div>
           </div>
@@ -39446,7 +39498,6 @@
         reportStatus: "Pending",
         priority: "high",
         reporters: 2,
-        waitingHours: 18,
         reason: "Inappropriate content",
         reporterNote: "รูปเอกสารดูเหมือนถูกคัดลอกจากประกาศของดีลเลอร์ และยังเห็นลายน้ำที่ถูกครอปอยู่",
         nextCheck: "Compare the reported image with source evidence, then edit the article to remove or replace the image before closing the report.",
@@ -39467,7 +39518,6 @@
         reportStatus: "Closed",
         priority: "low",
         reporters: 3,
-        waitingHours: 0,
         reason: "Other",
         reporterNote: "The owner attribution was no longer accurate after the collector requested removal.",
         nextCheck: "No pending action. Article remains archived and the report is closed.",
@@ -47957,7 +48007,7 @@
       }
       const assetReportOpenButton = event.target.closest("[data-asset-report-open]");
       if (assetReportOpenButton) {
-        const asset = moduleData.assets.rows.find(entry => entry.id === assetReportOpenButton.dataset.assetReportOpen);
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetReportOpenButton.dataset.assetReportOpen) || postReportEntityMap[assetReportOpenButton.dataset.assetReportOpen];
         reporterHistoryPage = 1;
         reportAuditHistoryPage = 1;
         pushBackNavigationContext();
@@ -47967,7 +48017,7 @@
       }
       const assetReportCard = event.target.closest("[data-asset-report-card]");
       if (assetReportCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
-        const asset = moduleData.assets.rows.find(entry => entry.id === assetReportCard.dataset.assetReportCard);
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetReportCard.dataset.assetReportCard) || postReportEntityMap[assetReportCard.dataset.assetReportCard];
         reporterHistoryPage = 1;
         reportAuditHistoryPage = 1;
         pushBackNavigationContext();
