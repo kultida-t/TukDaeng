@@ -56,8 +56,8 @@ SRCH-004,Search Landing,อยู่ landing,"1. member แตะ bookmark → �
 2. guest (SETUP-03) ทำซ้ำ","หน้า Saved เด้งทับ; member เห็น Saved hub / guest เห็น ""No saved posts yet"" (ฟรี); ← กลับ landing ไม่ใช่ feed",MEMBER + GUEST,Medium,,,
 SRCH-005,Search Landing,อยู่ landing,1. แตะ ← บน head,search ปิดกลับ feed ตำแหน่ง scroll เดิม,MEMBER,Medium,,,
 SRCH-006,Typing & Suggest,อยู่ landing,"1. แตะช่อง ""Search"" (fake)","เข้า typing: input จริง focus + คีย์บอร์ดเด้ง + ปุ่ม ""Cancel""; body = Recent block: ""Recent"" + preview ≤4 แถว + ""See all"" เฉพาะเมื่อ >4; ไม่เคยค้น → ""No recent searches"" ไม่มี See all",MEMBER,High,,,
-SRCH-007,Typing & Suggest,"typing mode, ช่องว่าง","1. พิมพ์ชื่อ BX (หรือส่วนหนึ่ง)","suggest สด: kw rows ≤6 (design ref) = brand+model ที่ match + sub ""N listings"" ตรงจำนวนจริง; seller rows ต่อท้ายถ้าชื่อ match",MEMBER,High,,,
-SRCH-008,Typing & Suggest,typing mode,"1. ลบช่องแล้วพิมพ์ชื่อ SA หรือ KW-SELL","แถว seller: avatar + ชื่อ + sub ""Following"" (ถ้า follow) หรือ ""N listings"" ตามจริง",MEMBER,Medium,,,
+SRCH-007,Typing & Suggest,"typing mode, ช่องว่าง","1. พิมพ์ชื่อ BX (หรือส่วนหนึ่ง)","suggest สด: kw rows ≤6 (design ref) = brand+model ที่ match — ไม่มี sub/count (DEC-36); seller rows ต่อท้ายถ้าชื่อ match",MEMBER,High,,,
+SRCH-008,Typing & Suggest,typing mode,"1. ลบช่องแล้วพิมพ์ชื่อ SA หรือ KW-SELL","แถว seller: avatar + ชื่อ + sub ""Following"" เฉพาะที่ follow — ไม่มี ""N listings"" (DEC-36)",MEMBER,Medium,,,
 SRCH-009,Typing & Suggest,typing mode,"1. พิมพ์ ref fragment ของ listing จริง
 2. ลบแล้วพิมพ์ KW-NONE","ref → kw rows เลขรุ่น (ไม่มี sub); KW-NONE → ""No suggestions"" กลางจอ",MEMBER,Medium,,,
 SRCH-010,Typing & Suggest,typing mode มี q,1. แตะปุ่ม × ในช่องค้น,ช่องว่าง + body กลับ Recent block; ปุ่ม × แสดงเฉพาะตอนมีตัวอักษร,MEMBER,Medium,,,

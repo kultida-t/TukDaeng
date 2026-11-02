@@ -261,3 +261,27 @@
 ### [DEC-30] ชุดแก้ batch A (2026-10-30)
 - แก้ expected และ amendment spec ตามตาราง batch A ที่ตัดสินแล้ว (ดู FO-TEST-001-SPEC-CHECK-batch-A.md หัวข้อ 16)
 - DEC-31: batch C ตรวจรายแถวแล้ว (FO-TEST-001-SPEC-CHECK-batch-C.md)
+
+### [DEC-32] ตีความ DEC-26: `system` type คงอยู่ใน V1 (2026-11-02)
+- ตัดสิน: DEC-26 ถอนเฉพาะ **generation** ของ system alert "new device login" (เคส ALT-070) — type `system` + seed row + placeholder destination ยังอยู่ตาม spec 09 §9; เคส ALT-015/030 ยังใช้ได้
+- ผลต่อ spec: แก้ข้อความ amendment ท้าย `09_NOTIFICATION_MODULE.md` ให้ชัด scope
+
+### [DEC-33] own `following` rows มีปุ่ม `แชท`/`Chat` (2026-11-02)
+- ตัดสิน: ยืนยันตาม prototype (SoT) — pfollow rows ทั้ง followers และ following มี `pf-msg` Chat + ปุ่มที่สอง (`x` Remove / `...` popover ตาม tab)
+- ผลต่อ spec: `06_PROFILE_MODULE.md` §8 + deviation #27 แก้แล้ว; เคส PROF-047/062 ตรงอยู่แล้ว
+
+### [DEC-34] ผลตรวจ batch B2/C2 — เล่ม 10,12,13,14–19 รายเคส (2026-11-02)
+- ตรวจทีละเคสเทียบ spec ตาม AC ที่เคสอ้าง ครบ 739 เคส: ตรง 735 · แก้เคส 3 (ALT-015, ALT-075, PROF-069) · แก้ spec 2 (09 DEC-26 wording, 06 following Chat)
+- รายงาน: `deliverables/FO-TEST-001-SPEC-CHECK-batch-B2-C2.md` — ALT-075 ยึด DEC-25 offline-with-cache (ERROR_STATE catalogue)
+- ค้างถาม: ALT-015/030 ถ้าเจ้าของตั้งใจให้ `system` type ออกทั้ง type (ดู DEC-32) — ถ้าจะถอนเคสต้องสั่งเพิ่ม
+- ค้างงาน: LANG-045 รอ prototype/build แปลครบตาม DEC-19 (f2f1934f)
+
+### [DEC-35] หน่วยเงิน `THB`+comma ทั้งสองภาษาใน V1 (2026-11-02)
+- ตัดสิน: V1 แสดงราคาเป็น `THB {n}` + comma ทั้ง TH/EN สม่ำเสมอทุก surface (ตาม expected LANG-024/035/047 ที่ตรวจผ่านแล้ว) — ข้อความ contract §3 ข้อ 10 (TH→`฿`) ถือว่า superseded; ถ้าอนาคตอยากใช้ `฿` ในโหมด TH ให้ทำ display-layer ทีหลัง
+- ผลต่อ prototype: ไม่มีการเปลี่ยน (ใช้ `THB` อยู่แล้วทุกจุด — audit LANG-045 ยืนยัน)
+- ผลต่องาน: ปิดประเด็น money-format ที่ค้าง draft ใน §3 เล่ม 19
+
+### [DEC-36] Suggestion/Recent rows ไม่แสดง `N listings` (2026-11-02)
+- ตัดสิน: เอาจำนวนรายการประกาศออกจาก live suggestion rows (kw/seller) และ recent-search seller rows — seller sub แสดง `Following` เฉพาะที่ follow; Profiles tab/results ยังคง `N listings` ตาม spec
+- ผลต่อ spec: `03_SEARCH_FILTER_MODULE.md` (Suggestions, Recent searches) แก้แล้ว · ผลต่อเคส: SRCH-007, SRCH-008 (MD+CSV) แก้แล้ว · SRCH-060 คงเดิม (count ยังอยู่บน Profiles results)
+- ผลต่อ prototype: `suggestRows` kw sub = "" + seller sub = `Following`-only; `recentRowHTML` seller sub = `Following`-only (แก้แล้วใน f2f1934f)

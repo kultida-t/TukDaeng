@@ -83,7 +83,7 @@ ALT-071,Real Generation,ACCT-2 like แล้ว,ACCT-2 unlike → like ซ้�
 ALT-072,Real Generation,ACCT-2 พร้อมกด,ACCT-2 like → ภายใน 60 วินาทีเปิด alerts บนเครื่องหลัก,เห็น row like ใหม่ภายใน 60 วินาที — ไม่โผล่เลย = FAIL,MEMBER+ACCT-2,MED,,,
 ALT-073,Real Edge,notif permission ON + แอปเครื่องหลักปิด,ACCT-2 like → ดูเครื่องหลัก → แตะ push,push เด้งนอกแอป → แตะ → เปิด Post Viewer โพสต์ตัวเอง (ตาม matrix),MEMBER+ACCT-2,MED,,,ไม่มี push = BLOCK
 ALT-074,Real Edge,notif permission OFF,ACCT-2 like → เปิดแอป → alerts,ไม่มี push แต่ row+badge ในแอปมาปกติ,MEMBER+ACCT-2,MED,,,
-ALT-075,Real Edge,alerts เคยโหลดไว้,เครื่องบิน → เปิด alerts → เปิดเน็ตกลับ → กด ลองใหม่,error state Unable to load data + ลองใหม่ — ห้าม crash/จอขาว/ข้อมูลเก่าเงียบ · ลองใหม่แล้วโหลดได้,MEMBER,MED,,,
+ALT-075,Real Edge,alerts เคยโหลดไว้,เครื่องบิน → เปิด alerts → เปิดเน็ตกลับ,แสดงข้อมูลที่โหลดไว้ + แถบ You're offline/คุณออฟไลน์อยู่ ไม่บัง tabs/nav — เน็ตกลับแล้ว refresh ล่าสุด · ห้าม crash/จอขาว,MEMBER,MED,,,DEC-25 offline-with-cache
 ALT-076,Real Edge,sign in เดียวกัน 2 เครื่อง,เครื่อง A อ่าน/mark all → เครื่อง B เปิด alerts,read+badge sync ข้ามเครื่อง — lock server-backed,MEMBER,MED,,,session เดียว = BLOCK
 ALT-077,Real Edge,alerts MEMBER มี rows,sign out → sign in ACCT-2 → alerts,เห็นเฉพาะ alerts ของ ACCT-2 เอง,MEMBER+ACCT-2,HIGH,,,
 ALT-078,Real Edge,มี row กลุ่ม Earlier,แตะ row เก่าสุด,เปิด destination ตาม type ปกติ — ไม่ใช่แถวตาย,MEMBER,MED,,,ไม่มี alert เก่าจริง = BLOCK

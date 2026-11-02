@@ -1,0 +1,14 @@
+PASS: DEC-13 page 1 renders 10 posts — initial=10 total=11
+PASS: DEC-13 scrolling near tail appends page 2 — after=11 initial=10 total=11
+PASS: DEC-13 no end-of-list marker
+PASS: DEC-14 single tap on photo does nothing — i0=0 i1=0
+PASS: DEC-14 double-tap likes the post — {"liked":true,"likes":18,"likes0":17,"heart":true,"btnLiked":true}
+PASS: DEC-14 double-tap shows heart pop + like-btn syncs
+PASS: DEC-14 swipe at last slide does not wrap — i=1
+PASS: DEC-16 detail hero single tap does nothing — {"hero":true,"i0":0,"i1":0}
+PASS: DEC-14 guest double-tap opens member gate, no like — {"liked":false,"gated":true}
+PASS: DEC-17 reply rows have Reply + prefill @author — "@Watch 777 "
+PASS: DEC-17 reply-of-reply lands flat under root — flat=true text=@Watch 777 test reply
+PASS: DEC-25 A10 sent message stamps real time — at=15:09 want=15:09
+
+ALL PASS

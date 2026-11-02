@@ -6927,6 +6927,33 @@
       -webkit-user-drag: none;
     }
 
+    /* DEC-14/16 — double-tap like: the heart pops centered over the photo (IG),
+       single tap does nothing, swipe is the only way to change slides */
+    .dtap-heart {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .dtap-heart svg {
+      width: 84px;
+      height: 84px;
+      color: #fff;
+      filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .45));
+      opacity: 0;
+      transform: scale(0);
+      animation: dtap-pop .8s ease forwards;
+    }
+    @keyframes dtap-pop {
+      0% { opacity: 0; transform: scale(0); }
+      15% { opacity: .95; transform: scale(1.15); }
+      30% { transform: scale(1); }
+      70% { opacity: .95; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1); }
+    }
+
     .igd-tag {
       color: var(--link);
       cursor: pointer;
@@ -11701,6 +11728,7 @@
       align-items: center;
       justify-content: center;
       padding: 12px;
+      touch-action: pan-y; /* DEC-25 A9 — horizontal swipe/pinch reach the pointer handlers */
     }
 
     .ch-media-viewer-body img {
@@ -11709,6 +11737,8 @@
       object-fit: contain;
       border-radius: 10px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
     /* Chat Media Gallery (Photos & videos sub-page) */
@@ -13810,6 +13840,7 @@
       <div class="c-main">
         <div class="c-head"><span class="n" data-pf-user="${esc(r.name)}">${r.name}</span><span>${r.time}</span></div>
         <div class="c-text">${r.text}</div>
+        <span class="c-meta">${isTh ? "ตอบกลับ" : "Reply"}</span>
       </div>
       <span class="c-like${r.liked ? " liked" : ""}">${I.heart(15)}<span>${r.likes || ""}</span></span>
     </div>`;
@@ -13927,7 +13958,7 @@
     <div class="sheet-list">${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">${isTh ? "ยังไม่มีความคิดเห็น" : "No comments yet"}</div>`}</div>
     <div class="emoji-row"><span>❤️</span><span>🙌</span><span>🔥</span><span>👏</span><span>🥲</span><span>😍</span><span>😮</span><span>😂</span></div>
     <div class="comment-input">
-      <img src="./assets/user-avatars/default-avatar.jpg" alt="">
+      <img src="${myAvatarSrc()}" alt="">
       <input class="ci-field" type="text" maxlength="500" autocomplete="off" placeholder="${isTh ? "เพิ่มความคิดเห็น..." : "Add a comment..."}">
       <button class="ci-send" hidden>${isTh ? "โพสต์" : "Post"}</button>
     </div>`;
@@ -14087,6 +14118,11 @@
       scr.classList.remove("comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
     }
 
+    /* the signed-in identity's avatar — composer icon + comments they post */
+    const myAvatarSrc = () => {
+      const n = (typeof state !== "undefined" && state.user && state.user.username) || CP_ME.name;
+      return (typeof state !== "undefined" && state.user && state.user.photo) || (PROFILES[n] && PROFILES[n].avatar) || CP_ME.avatar;
+    };
     /* members really post comments — typed text, Enter, quick emoji and
        one-level Reply all land in the thread and update the count */
     function submitComment(scr, text) {
@@ -14104,7 +14140,7 @@
       const newC = {
         id: "c-own-" + Date.now(),
         name: myName,
-        avatar: "./assets/user-avatars/mrfox.png",
+        avatar: myAvatarSrc(),
         time: state.lang === "th" ? "เมื่อสักครู่" : "Just now",
         text: t,
         likes: 0,
@@ -14490,11 +14526,30 @@
       return n * (u === "min" ? 1 : u === "hr" || u === "hour" ? 60 : u === "day" ? 1440 : u === "week" ? 10080 : 43200);
     };
 
-    function feedContentHTML(variant) {
-      const posts = POSTS.filter(p => !p.ni && !p.muted && !p.blocked && !p.archived && !["show", "hide", "sold"].includes(p.pfkind || "post")) /* feed = ขาย + โพสต์ธรรมดา only; โชว์/ซ่อน/ขายแล้ว are drawer statuses — off the feed */
+    /* DEC-13 — feed pagination (IG): posts load in pages of 10; the next page starts
+       fetching when only 3 loaded cards remain below the viewport; no end-of-list marker.
+       every full re-render of .feed-list resets back to page 1 (refresh / tab switch) */
+    const FEED_PAGE = 10;
+    function feedPosts(variant) {
+      return POSTS.filter(p => !p.ni && !p.muted && !p.blocked && !p.archived && !["show", "hide", "sold"].includes(p.pfkind || "post")) /* feed = ขาย + โพสต์ธรรมดา only; โชว์/ซ่อน/ขายแล้ว are drawer statuses — off the feed */
         .filter(p => state.feedTab === "favorites" ? p.favorite : state.feedTab === "following" ? p.following : (state.snooze ? p.following : true))
         .sort((a, b) => postAge(a) - postAge(b));
-      return posts.length ? posts.map(p => postCard(p, variant)).join("") : feedEmptyHTML(state.feedTab);
+    }
+    function feedContentHTML(variant) {
+      const posts = feedPosts(variant);
+      return posts.length ? posts.slice(0, FEED_PAGE).map(p => postCard(p, variant)).join("") : feedEmptyHTML(state.feedTab);
+    }
+    /* appends the next page once the 3rd-from-last loaded card scrolls into view */
+    function feedPageMore(scr) {
+      const fs = scr && scr.querySelector(".feed-scroll"), list = fs && fs.querySelector(".feed-list");
+      if (!list) return;
+      const posts = feedPosts(scr.dataset.variant);
+      const shown = list.querySelectorAll(".post").length;
+      if (shown >= posts.length) return;
+      const trigger = list.children[Math.max(0, shown - 3)];
+      if (!trigger || trigger.getBoundingClientRect().top > fs.getBoundingClientRect().bottom) return;
+      list.insertAdjacentHTML("beforeend",
+        posts.slice(shown, shown + FEED_PAGE).map(p => postCard(p, scr.dataset.variant)).join(""));
     }
 
     /* segment thumb — measure the active tab and slide the pill under it;
@@ -14619,10 +14674,10 @@
     function blankFilters() {
       return { brand: [], model: [], cond: [], ref: [], year: [], csz: [], move: [], dial: [], strap: [], deliv: [], pmin: "", pmax: "" };
     }
-    /* spec-locked: recents are user data — they persist across restart (localStorage), not just session memory */
+    /* spec-locked (SRCH-016 → DEC-22): recents are user data — they persist across restart (localStorage), not just session memory */
     const loadRecents = () => { try { const r = JSON.parse(localStorage.getItem("fo_srch_recents") || "null"); return Array.isArray(r) ? r : null; } catch { return null; } };
     const saveRecents = r => { try { localStorage.setItem("fo_srch_recents", JSON.stringify(r)); } catch { } };
-    /* spec-locked: reopening search always lands on the explore landing — query/filters/tab are session state that is cleared on re-entry */
+    /* spec-locked (SRCH-030 → DEC-24): reopening search always lands on the explore landing — query/filters/tab are session state that is cleared on re-entry */
     function resetSearch(S) {
       S.mode = "landing"; S.q = ""; S.tab = "foryou"; S.err = false; S.f = blankFilters(); S.fDraft = null;
     }
@@ -14686,7 +14741,7 @@
     }
     function searchResults(S) {
       const isTag = S.q.trim().startsWith("#");
-      /* spec-locked: tag mode includes non-sale posts but excludes ni/muted/blocked exactly like normal results */
+      /* spec-locked (SRCH-032 → DEC-23): tag mode includes non-sale posts but excludes ni/muted/blocked exactly like normal results */
       let list = (isTag ? POSTS.filter(p => !p.ni && !p.muted && !p.blocked) : salePosts()).filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
       if (S.sort === "plo") list = [...list].sort((a, b) => priceNum(a) - priceNum(b));
       else if (S.sort === "phi") list = [...list].sort((a, b) => priceNum(b) - priceNum(a));
@@ -14723,17 +14778,19 @@
       const q = S.q.trim().toLowerCase();
       if (!q) return [];
       const kw = [];
+      /* DEC-36 — suggestion rows carry no listing counts (IG style): kw rows show no sub;
+         seller rows show "Following" only when followed */
       for (const b in SEARCH_BRANDS) {
-        if (b.toLowerCase().includes(q)) kw.push({ t: "kw", v: b, sub: `${brandCount(b)} listing${brandCount(b) === 1 ? "" : "s"}` });
+        if (b.toLowerCase().includes(q)) kw.push({ t: "kw", v: b, sub: "" });
         SEARCH_BRANDS[b].forEach(m => {
-          const label = `${b} ${m}`, n = modelCount(m, [b]);
-          if (label.toLowerCase().includes(q)) kw.push({ t: "kw", v: label, sub: `${n} listing${n === 1 ? "" : "s"}` });
+          const label = `${b} ${m}`;
+          if (label.toLowerCase().includes(q)) kw.push({ t: "kw", v: label, sub: "" });
         });
       }
       SEARCH_REFS.forEach(r => { if (r.toLowerCase().includes(q)) kw.push({ t: "kw", v: r, sub: "" }); });
       const sellers = [...new Map(POSTS.map(p => [p.seller, p])).values()]
         .filter(p => p.seller.toLowerCase().includes(q))
-        .map(p => ({ t: "seller", v: p.seller, sub: sellerSub(p.seller) }));
+        .map(p => ({ t: "seller", v: p.seller, sub: p.following ? "Following" : "" }));
       return [...kw.slice(0, 6), ...sellers.slice(0, 4)];
     }
     /* Tags tab — every hashtag used in captions + suggested tags, matched against the query, counted per post (IG style) */
@@ -14768,7 +14825,7 @@
     function recentRowHTML(r, i) {
       return r.t === "seller" ? `
     <button class="rc-row" data-kind="seller" data-v="${esc(r.v)}">
-      <img src="${sellerAvatar(r.v)}" alt=""><span class="rc-who"><span class="u">${r.v}</span><span class="d">${sellerSub(r.v)}</span></span>
+      <img src="${sellerAvatar(r.v)}" alt=""><span class="rc-who"><span class="u">${r.v}</span><span class="d">${(POSTS.find(x => x.seller === r.v) || {}).following ? "Following" : ""}</span></span>
       <span class="rc-x" data-ri="${i}">${I.x(15)}</span>
     </button>` : `
     <button class="rc-row" data-kind="kw" data-v="${esc(r.v)}">
@@ -14908,7 +14965,7 @@
       ${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No comments yet</div>`}
     </div>
     <div class="comment-input">
-      <img src="./assets/user-avatars/default-avatar.jpg" alt="">
+      <img src="${myAvatarSrc()}" alt="">
       <input class="ci-field" type="text" maxlength="500" autocomplete="off" placeholder="Add a comment for ${p.seller}">
       <button class="ci-send" hidden>${state.lang === "th" ? "โพสต์" : "Post"}</button>
     </div>`;
@@ -18251,6 +18308,8 @@
       const C = chatInit();
       return C.threads.find(t => t.id === id) || (C.draft && C.draft.id === id ? C.draft : null);
     }
+    /* DEC-25 A10 — outgoing messages stamp the real send time (seed history keeps its mock times) */
+    const chNow = () => { const d = new Date(); return { at: String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"), day: "Today" }; };
     function chTimeLbl(t) {
       const m = t.msgs[t.msgs.length - 1];
       return m ? (m.day === "Today" ? m.at : m.day) : "";
@@ -18301,7 +18360,7 @@
         { type: "follow", users: ["watch.daily"], ago: "2d", grp: "Last 7 days", unread: false },
         wa("p3", "3d", "Last 7 days", false),
         { type: "like", users: ["Watch 777", "the watch"], more: 8, ago: "4d", grp: "Last 7 days", unread: false, ...mine(3) },
-        { type: "system", users: [], text: "A new device just logged in to your account near Bangkok, TH", ago: "6d", grp: "Last 7 days", unread: false },
+        { type: "system", users: [], text: "A new device just logged in to your account near Bangkok, TH", ago: "6d", grp: "Last 7 days", unread: false }, /* DEC-32 — demo seed row only: V1 has no system-alert generation, do not remove */
         { type: "follow", users: ["neng_mua"], ago: "2w", grp: "Earlier", unread: false },
         { type: "like", users: ["bamzilla"], more: 0, ago: "3w", grp: "Earlier", unread: false, ...mine(5) },
       ].map((a, i) => ({ id: "al" + i, ...a }));
@@ -18365,7 +18424,14 @@
         "Last 7 days": isTh ? "7 วันที่ผ่านมา" : "Last 7 days",
         "Earlier": isTh ? "ก่อนหน้า" : "Earlier"
       };
-      const groups = ["Today", "Yesterday", "Last 7 days", "Earlier"].map(g => [g, list.filter(a => a.grp === g)]).filter(([, l]) => l.length);
+      /* DEC-25 A1 — alerts paginate like the feed: 10 rows per page, more load on scroll (scr._alShown) */
+      const scr = document.querySelector("#stage .screen");
+      let left = (scr && scr._alShown) || 10;
+      const groups = ["Today", "Yesterday", "Last 7 days", "Earlier"].map(g => {
+        const l = list.filter(a => a.grp === g);
+        const take = Math.min(left, l.length); left -= take;
+        return take ? [g, l.slice(0, take)] : null;
+      }).filter(Boolean);
       return `
   <div class="ch-scroll sub-scroll al-scroll">
     <div class="detail-head al-head">
@@ -19199,18 +19265,43 @@
       scr.insertAdjacentHTML("beforeend", html);
       const v = scr.querySelector(".ch-media-viewer"), img = v.querySelector("img"), cnt = v.querySelector(".ch-media-viewer-count");
       let zoomed = false;
-      const show = j => { idx = (j + media.length) % media.length; img.src = media[idx]; zoomed = false; img.style.transform = ""; img.style.cursor = "zoom-in"; cnt.textContent = media.length > 1 ? (idx + 1) + "/" + media.length : ""; };
+      const show = j => { idx = (j + media.length) % media.length; img.src = media[idx]; zoomed = false; zoomScale = 1; img.style.transform = ""; img.style.cursor = "zoom-in"; cnt.textContent = media.length > 1 ? (idx + 1) + "/" + media.length : ""; };
+      let zoomScale = 1;
+      const applyZoom = s => { zoomScale = Math.min(4, Math.max(1, s)); zoomed = zoomScale > 1; img.style.transform = zoomed ? `scale(${zoomScale})` : ""; img.style.cursor = zoomed ? "zoom-out" : "zoom-in"; };
       show(idx);
       v.querySelector(".ch-media-viewer-close").onclick = () => v.remove();
       v.onclick = e => { if (e.target === v) v.remove(); };
-      img.ondblclick = () => { zoomed = !zoomed; img.style.transform = zoomed ? "scale(2.2)" : ""; img.style.cursor = zoomed ? "zoom-out" : "zoom-in"; };
-      let tx = null;
-      v.addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, { passive: true });
-      v.addEventListener("touchend", e => {
-        if (tx === null) return;
-        const dx = e.changedTouches[0].clientX - tx; tx = null;
-        if (!zoomed && Math.abs(dx) > 48 && media.length > 1) show(idx + (dx < 0 ? 1 : -1));
-      }, { passive: true });
+      img.ondblclick = () => applyZoom(zoomed ? 1 : 2.2);
+      /* DEC-25 A9 — pointer-based swipe between the room's media (works with mouse drag
+         and touch) + two-pointer pinch zoom; swipe is disabled while zoomed */
+      const pts = new Map();
+      let swipeX = null, pinchD0 = 0, pinchS0 = 1;
+      v.addEventListener("pointerdown", e => {
+        pts.set(e.pointerId, e.clientX);
+        if (pts.size === 1) swipeX = e.clientX;
+        else if (pts.size === 2) {
+          const [a, b] = [...pts.values()];
+          pinchD0 = Math.abs(a - b); pinchS0 = zoomScale; swipeX = null;
+          v.setPointerCapture?.(e.pointerId);
+        }
+      });
+      v.addEventListener("pointermove", e => {
+        if (!pts.has(e.pointerId)) return;
+        pts.set(e.pointerId, e.clientX);
+        if (pts.size === 2 && pinchD0 > 0) {
+          const [a, b] = [...pts.values()];
+          applyZoom(pinchS0 * (Math.abs(a - b) / pinchD0));
+        }
+      });
+      ["pointerup", "pointercancel"].forEach(ev => v.addEventListener(ev, e => {
+        const wasPinch = pts.size === 2;
+        pts.delete(e.pointerId);
+        if (pts.size < 2) pinchD0 = 0;
+        if (swipeX !== null && pts.size === 0) {
+          const dx = e.clientX - swipeX; swipeX = null;
+          if (!wasPinch && !zoomed && Math.abs(dx) > 48 && media.length > 1) show(idx + (dx < 0 ? 1 : -1));
+        }
+      }));
     }
 
     function chatRoomMenuHTML(tid) {
@@ -19382,7 +19473,7 @@
     function chatRoomSettingsHTML(tid) {
       const t = chGet(tid);
       const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
-      if (!t) return `<div class="ch-menu-head">${back}<span class="detail-title">Settings</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
+      if (!t) return `<div class="ch-menu-head">${back}<span class="detail-title">${state.lang === "th" ? "การตั้งค่า" : "Settings"}</span></div>` + chEmptyHTML(state.lang === "th" ? "ไม่พบแชท" : "Chat not found", state.lang === "th" ? "บทสนทนานี้ไม่มีให้บริการแล้ว" : "This conversation is no longer available.");
 
       const isTh = state.lang === "th";
       return `
@@ -19465,7 +19556,7 @@
       t.hidden = false;
       if (C.draft === t) { C.threads.unshift(t); C.draft = null; }
       else { const i = C.threads.indexOf(t); if (i > 0) { C.threads.splice(i, 1); C.threads.unshift(t); } }
-      t.msgs.push({ f: "me", t: v, at: "09:41", day: "Today", read: false });
+      t.msgs.push({ f: "me", t: v, ...chNow(), read: false });
       t.draft = "";
       renderSub(scr);
       chMarkRead(scr, t);
@@ -19509,7 +19600,7 @@
       /* the asked listing lands in the room once, as a card message (reply-story style) */
       t.item = { id: post.id, cap: post.caption, price: post.price || "", photo: post.photos[0], owner: post.seller, pid: post.id };
       if (!t.msgs.some(m => m.pid === post.id))
-        t.msgs.push({ f: "me", pid: post.id, t: state.lang === "th" ? "ถามเกี่ยวกับลิสติ้งนี้" : "Asked about this listing", at: "09:41", day: "Today", read: false });
+        t.msgs.push({ f: "me", pid: post.id, t: state.lang === "th" ? "ถามเกี่ยวกับลิสติ้งนี้" : "Asked about this listing", ...chNow(), read: false });
       chOpenRoom(scr, t);
     }
     function chIncomingAsk(user, postId) {
@@ -19519,7 +19610,7 @@
       let t = chRoomFor(C, user);
       if (!t) { t = { id: "t" + Date.now(), user, unread: 0, draft: "", pinned: false, muted: false, hidden: false, item: null, msgs: [] }; C.threads.unshift(t); }
       t.hidden = false;
-      t.msgs.push({ f: "them", t: state.lang === "th" ? "สวัสดีครับ สนใจรายการนี้" : "Hi, I'm interested in this listing", pid: postId, at: "09:41", day: "Today", read: true });
+      t.msgs.push({ f: "them", t: state.lang === "th" ? "สวัสดีครับ สนใจรายการนี้" : "Hi, I'm interested in this listing", pid: postId, ...chNow(), read: true });
       t.unread = (t.unread || 0) + 1;
       return true;
     }
@@ -19547,7 +19638,7 @@
         const i = C.threads.indexOf(t);
         if (i > 0) { C.threads.splice(i, 1); C.threads.unshift(t); }
       }
-      t.msgs.push({ f: "me", t: state.lang === "th" ? "ส่งโพสต์นี้ให้คุณ" : "Shared a post", pid: p.id, at: "09:41", day: "Today", read: false });
+      t.msgs.push({ f: "me", t: state.lang === "th" ? "ส่งโพสต์นี้ให้คุณ" : "Shared a post", pid: p.id, ...chNow(), read: false });
       return t;
     }
     let suppressChatClick = false;
@@ -19807,7 +19898,7 @@
           t.hidden = false;
           if (C2.draft === t) { C2.threads.unshift(t); C2.draft = null; }
           else { const mi = C2.threads.indexOf(t); if (mi > 0) { C2.threads.splice(mi, 1); C2.threads.unshift(t); } }
-          t.msgs.push({ f: "me", img: src, isVideo, at: "09:41", day: "Today", read: false });
+          t.msgs.push({ f: "me", img: src, isVideo, ...chNow(), read: false });
           if (!t.media) t.media = [];
           if (!t.media.includes(src)) t.media.unshift(src);
           const bd = scr.querySelector("#chAttachBackdrop");
@@ -20204,6 +20295,7 @@
       "Camera isn't available on this device": "กล้องไม่พร้อมใช้งานบนอุปกรณ์นี้", "Allow camera access to scan a QR code": "อนุญาตการเข้าถึงกล้องเพื่อสแกนคิวอาร์โค้ด",
       "QR code isn't a TukDaeng profile": "คิวอาร์โค้ดนี้ไม่ใช่โปรไฟล์ตึกแดง",
       "Report submitted · thanks for letting us know": "ส่งรายงานแล้ว · ขอบคุณที่แจ้งให้เราทราบ", "Blocking": "กำลังบล็อก",
+      "Send photo": "ส่งรูป", "Send video": "ส่งคลิป", "Photos & videos": "รูปภาพและวิดีโอ",
       "Sale": "ขาย", "Above market": "สูงกว่าตลาด", "At market": "เท่าตลาด", "Below market": "ต่ำกว่าตลาด",
       "No market price": "ไม่มีราคาตลาด", "Purchase price estimate": "ประมาณจากราคาซื้อ",
       /* legal bodies */
@@ -20306,6 +20398,12 @@
         if (out.some((x, i) => x !== parts[i])) return txt.replace(t, out.join(" · "));
       }
       if (/(\d+\s*(hours?|mins?|minutes?|days?|weeks?)\s*ago|^just now$)/i.test(t)) { const r = formatPostTime(t, true); if (r !== t) return txt.replace(t, r); }
+      /* DEC-19 — abbreviated relative times ("2 hr", "1 day", "3 w") used by comments/chat lists */
+      if ((m = t.match(/^(\d+)\s*(hrs?|mins?|days?|weeks?|months?|yrs?|y)$/i))) {
+        const u = m[2].toLowerCase();
+        const th = u.startsWith("hr") ? "ชม." : u.startsWith("min") ? "นาที" : u.startsWith("y") ? "ปี" : u.startsWith("mo") ? "เดือน" : u.startsWith("w") ? "สัปดาห์" : "วัน";
+        return `${m[1]} ${th}`;
+      }
       return null;
     }
     const I18N_ATTRS = ["placeholder", "title", "aria-label"];
@@ -20556,18 +20654,46 @@
       fs._barsLastSt = st;
       if (st <= 8 || dy < -6) scr.classList.remove("bars-hidden");
       else if (dy > 6 && st > 56) scr.classList.add("bars-hidden");
+      feedPageMore(scr); /* DEC-13 — infinite scroll near the tail of the loaded list */
     }, true);
+
+    /* DEC-25 A1 — alerts list paginates like the feed: next page when fewer than ~3
+       loaded rows remain below the fold (also fires on pointer move so a page that
+       fits the viewport still appends) */
+    function alPageMore(scr) {
+      const sc = scr && scr.querySelector(".al-scroll");
+      if (!sc) return;
+      const shown = scr._alShown || 10;
+      if (shown >= alInit().length) return;
+      const rows = sc.querySelectorAll(".al-row");
+      if (!rows.length) return;
+      const rowH = rows[rows.length - 1].getBoundingClientRect().height || 72;
+      if (sc.scrollHeight - sc.scrollTop - sc.clientHeight > rowH * 3) return;
+      scr._alShown = shown + 10;
+      alRerender(scr);
+    }
+    stageEl.addEventListener("scroll", e => {
+      const sc = e.target;
+      if (!(sc instanceof Element) || !sc.classList.contains("al-scroll")) return;
+      alPageMore(sc.closest(".screen"));
+    }, true);
+    stageEl.addEventListener("pointermove", e => {
+      const sc = e.target.closest && e.target.closest(".al-scroll");
+      if (sc) alPageMore(sc.closest(".screen"));
+    });
 
     /* FEED-004 — pull-to-refresh: at the top of the feed a downward drag reveals the
        indicator between the tabs and the list; releasing past the threshold spins it
        and reloads the feed (mock rotates the post order so the refresh is visible) */
     let ptr = null;
     stageEl.addEventListener("pointerdown", e => {
-      const fs = e.target.closest(".feed-scroll");
+      /* DEC-25 A27 — pull-to-refresh on every long list: feed, alerts, chat list */
+      const fs = e.target.closest(".feed-scroll, .al-scroll, .ch-scroll.sub-scroll");
       if (!fs || fs.scrollTop > 0 || ptr) return;
       const scr = fs.closest(".screen");
       if (!scr || scr.className.includes("-open")) return; /* a sheet/overlay page is up */
-      const ind = fs.querySelector(".ptr-ind");
+      let ind = fs.querySelector(".ptr-ind");
+      if (!ind) { fs.insertAdjacentHTML("afterbegin", `<div class="ptr-ind"><i></i></div>`); ind = fs.firstElementChild; }
       if (ind) ptr = { fs, ind, y0: e.clientY, h: 0 };
     });
     stageEl.addEventListener("pointermove", e => {
@@ -20586,10 +20712,16 @@
         ind.classList.add("spin");
         ind.style.height = "36px";
         setTimeout(() => {
-          const fresh = POSTS.reduce((a, b) => postAge(a) >= postAge(b) ? a : b); /* mock new data — the oldest post "re-arrives" as new and lands on top, order stays newest-first */
-          if (fresh) fresh.time = "Just now";
-          const list = fs.querySelector(".feed-list");
-          if (list) list.innerHTML = feedContentHTML(fs.closest(".screen").dataset.variant);
+          const scr2 = fs.closest(".screen");
+          if (fs.classList.contains("feed-scroll")) {
+            const fresh = POSTS.reduce((a, b) => postAge(a) >= postAge(b) ? a : b); /* mock new data — the oldest post "re-arrives" as new and lands on top, order stays newest-first */
+            if (fresh) fresh.time = "Just now";
+            const list = fs.querySelector(".feed-list");
+            if (list) list.innerHTML = feedContentHTML(scr2.dataset.variant);
+          } else { /* alerts / chat list — reload from the top like IG */
+            scr2._alShown = 10;
+            scr2._subSwap = true; renderSub(scr2); scr2._subSwap = false;
+          }
           ind.classList.remove("on", "spin");
           ind.style.height = "0px";
         }, 700);
@@ -23625,8 +23757,10 @@
         submitComment(ciSend.closest(".screen"));
         return;
       }
+      /* DEC-17 — replies stay flat under the root comment: replying to a reply targets
+         the same root (data-cid) and prefills @reply-author, never nests deeper */
       const cMeta = e.target.closest(".c-meta");
-      if (cMeta && !cMeta.closest(".c-row.reply")) {
+      if (cMeta) {
         const scr = cMeta.closest(".screen");
         const cs = scr.querySelector(".comment-sheet");
         const row = cMeta.closest(".c-row");
@@ -23669,18 +23803,37 @@
         setFeedTab(ft.closest(".screen"), ft.dataset.tab);
         return;
       }
+      /* DEC-14/16 — photos: single tap does nothing (no more tap-halves navigation);
+         double-tap likes the post (heart pop, guest → member gate, never un-likes);
+         slides change by swipe only and stop at the ends */
       const ph = e.target.closest(".post-photo, .detail-hero");
       if (ph) {
         if (suppressPhotoClick || e.target.closest("button")) return;
-        const { post, dotsEl } = photoCtx(ph);
-        if (post && post.photos.length > 1) {
-          let i = +(ph.dataset.i || 0);
-          const rect = ph.getBoundingClientRect();
-          i = (e.clientX - rect.left > rect.width / 2)
-            ? (i + 1) % post.photos.length
-            : (i - 1 + post.photos.length) % post.photos.length;
-          applyPhoto(ph, post, i, dotsEl);
+        const now = Date.now();
+        const isDbl = now - (ph._tapAt || 0) < 350;
+        ph._tapAt = now;
+        if (!isDbl) return;
+        const scr = ph.closest(".screen");
+        if (isGuest()) { obGate(); return; }
+        const { post } = photoCtx(ph);
+        const fp = post && findPost(post.id); /* portfolio assets share the carousel but have no like */
+        if (fp && !fp.liked) {
+          fp.liked = true;
+          fp.likes = (fp.likes || 0) + 1;
+          scr.querySelectorAll(".like-btn").forEach(b => {
+            const bArt = b.closest(".post");
+            if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === fp.id) {
+              b.classList.add("liked");
+              const ln = b.querySelector(".lk-n");
+              if (ln) ln.textContent = fp.likes || "";
+            }
+          });
         }
+        const hp = document.createElement("span");
+        hp.className = "dtap-heart";
+        hp.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>`;
+        ph.appendChild(hp);
+        setTimeout(() => hp.remove(), 850);
         return;
       }
       const t = e.target.closest(".details-toggle");
@@ -24151,6 +24304,10 @@
       }
     }
     function setSession(s) {
+      if (s !== state.session) { /* DEC-22 — recents belong to the signed-in identity: sign out / session switch clears them */
+        localStorage.removeItem("fo_srch_recents");
+        document.querySelectorAll(".screen").forEach(scr => { if (scr._search) scr._search.recents = []; });
+      }
       state.session = s;
       localStorage.setItem("fo_session", s);
       if (s === "new") {

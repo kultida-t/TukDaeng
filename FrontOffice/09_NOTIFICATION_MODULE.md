@@ -254,6 +254,7 @@ system -> toast `Security details aren't in this prototype yet` (placeholder —
 - `system` เป็น notification type ที่รองรับใน V1 feed (prototype มี seed row + icon + copy จริง; 00_NAV §8 ล็อกไว้แล้วโดย hand-off destination contract มาที่เอกสารนี้)
 - V1 destination = **placeholder เท่านั้น** — tap ไม่ navigate; production contract = เปิด security/account activity surface เมื่อมี (§18)
 - Seed row = security event (`A new device just logged in to your account near Bangkok, TH`) — scope `system` ใน V1 = security/session alerts เท่านั้น; ใช้กับ event อื่นต้องมี master decision เพิ่ม
+- **หมายเหตุ dev**: V1 ไม่มี generation path สำหรับ `system` (DEC-26) — production feed จะไม่แสดง row นี้จนกว่าจะมี trigger เพิ่มใน version ถัดไป; seed row ใน prototype เป็น demo placeholder เท่านั้น ห้าม implement trigger ตาม
 
 ## Follow Row Actions Rule
 
@@ -478,4 +479,4 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 ## DEC-25 Amendments — Alerts (IG)
 
 - Alerts แสดงเป็นหน้า 10 รายการ และโหลดหน้าถัดไปเมื่อเลื่อนใกล้ท้าย (DEC-13); pull-to-refresh รองรับ (DEC-15)
-- ไม่มี system alert "new device login" ใน V1 (DEC-26)
+- ไม่มี generation ของ system alert "new device login" ใน V1 (DEC-26 — ถอนเคส ALT-070 เท่านั้น; type `system` + seed row + placeholder destination ยังอยู่ตาม §9)

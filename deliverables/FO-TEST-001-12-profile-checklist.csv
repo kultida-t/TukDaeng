@@ -77,7 +77,7 @@ PROF-065,⋯Menu & Block,sheet ⋯ เปิด,Share this profile,share sheet �
 PROF-066,⋯Menu & Block,sheet ⋯ เปิด,About this account → back,about page: joined+country+verified+why-note,MEMBER,MED,,,
 PROF-067,⋯Menu & Block,sheet ⋯ เปิด,Report → รายงานบัญชี → เหตุผล → done,flow report จบหน้า Thanks + Other steps + Done,MEMBER,HIGH,,,reason internals FO-TEST-16
 PROF-068,⋯Menu & Block,report flow จาก ⋯,รายงานโพสต์ → Select a post → เลือก tile → Next → เหตุผล,grid เลือกทีละชิ้น + Next ปลดล็อก → ส่งสำเร็จ,MEMBER,MED,,,
-PROF-069,⋯Menu & Block,sheet ⋯ เปิด,Block,sheet Block {U-2}? + desc + 3 impact rows + Block + Block and report — Cancel ไม่ block,MEMBER,HIGH,,,
+PROF-069,⋯Menu & Block,sheet ⋯ เปิด,Block,sheet Block {U-2}? + desc + 3 impact rows + Block + Block and report — ไม่มีปุ่ม Cancel · backdrop ปิด = ไม่ block,MEMBER,HIGH,,,
 PROF-070,⋯Menu & Block,block sheet เปิด,Block → รอ toast → ดู profile+feed,keep-page: posts 0 · stats − · grid ว่าง · Unblock เดียว + unfollow+rmf+feed หาย+ห้อง blocked,MEMBER,HIGH,,,
 PROF-071,⋯Menu & Block,block sheet เปิด,Block and report,block เกิด + เข้า report flow ต่อทันที,MEMBER,MED,,,
 PROF-072,⋯Menu & Block,U-2 blocked,profile → Unblock → dialog → Unblock,toast Unblocked + profile กลับเต็ม + restrict-hint ~6s — ไม่ re-follow,MEMBER,HIGH,,,

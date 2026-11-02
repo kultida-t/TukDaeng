@@ -37,7 +37,7 @@
 | Guest / NEW / session | gate · deep link เป็น guest · NEW empty · ไม่มี chat row · report ไม่แจ้งอีกฝ่าย · ไม่มีทางเข้าอื่น | ALT-042..047 |
 | `notif_settings` boundary | entry · 4 toggles 2 groups · default ON · OFF หยุด type (contract) · persist · re-enable · rows เก่าคงอยู่ | ALT-048..056 |
 | Nav / state / language / theme | back→feed เสมอ · stack ซ้อน · device back · tab-state · re-tap · TH/EN sweep · dark · แตะรัว | ALT-057..064 |
-| Real generation | like/comment/follow/watch/system rows เกิดจริงจากกิจกรรมบน server · aggregate · ไม่ซ้ำ · latency | ALT-065..072 |
+| Real generation | like/comment/follow/watch rows เกิดจริงจากกิจกรรมบน server · aggregate · ไม่ซ้ำ · latency | ALT-065..072 |
 | Real device edge | push นอกแอป · permission off · offline · sync ข้ามเครื่อง · account isolation · alert เก่ากดได้ · refresh | ALT-073..079 |
 
 ## §2 Test cases
@@ -83,7 +83,7 @@
 | ALT-012 | comment row | MEMBER | UI | ACCT-2 comment POST-OWN | อ่าน row comment | avatar คนคอมเมนต์ + `{name} commented: {excerpt}`/`แสดงความคิดเห็น:` + thumb — excerpt ยาวถูกตัดบรรทัดตาม design | — | HIGH | |
 | ALT-013 | follow row | MEMBER | UI | ACCT-2 follow (SETUP-10) | อ่าน row follow | avatar + `{name} started following you.`/`เริ่มติดตามคุณ` + ปุ่ม `Follow back`/`ติดตามกลับ` (หรือ `Following`/`กำลังติดตาม` ถ้าติดตามกลับแล้ว) + `x` มุมขวา — **ไม่มี thumb** | — | HIGH | |
 | ALT-014 | watch row | MEMBER | UI | watch alert match แล้ว (SETUP-11/ALT-069) | อ่าน row watch | bell icon + seller mini avatar ซ้อน + `Watch alert {name} — new listing from {seller} · {price}`/`การแจ้งเตือนนาฬิกา {name} — รายการใหม่จาก {seller} · {price}` + thumb — ไม่มี row → `BLOCK` | name = Brand Model/ชื่อ alert; price = asking ของลิสติ้ง | MED | |
-| ALT-015 | system row | MEMBER | UI | system alert เกิดแล้ว (ALT-070) | อ่าน row system | icon วงกลม `!` (ไม่ใช่ avatar) + ข้อความดิบ เช่น `A new device just logged in to your account near Bangkok, TH` + เวลา — ไม่มี thumb/`x`/ปุ่ม — ไม่มี row → `BLOCK` | — | MED | |
+| ALT-015 | system row | MEMBER | UI | มี system row ใน feed (seed/ข้อมูลจริง) | อ่าน row system | icon วงกลม `!` (ไม่ใช่ avatar) + ข้อความดิบ เช่น `A new device just logged in to your account near Bangkok, TH` + เวลา — ไม่มี thumb/`x`/ปุ่ม — ไม่มี row → `BLOCK` | — | MED | |
 | ALT-016 | ข้อความยาว | MEMBER | EDGE | alert ที่ชื่อ user/ข้อความ/ชื่อ alert ยาวมาก | ดู row ที่ข้อมูลยาว | ชื่อ/comment excerpt/ข้อความ system/ชื่อ watch alert ยาว → wrap/ตัดตาม design ไม่ทะลุกรอบ ไม่ทับ `x`/thumb — ไม่มีข้อมูลยาวจริงให้เทส → `BLOCK` | — | MED | |
 
 ### 2.3 Read, Badge & Mark All
@@ -182,7 +182,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | ALT-073 | push notification นอกแอป | MEMBER + ACCT-2 | POSITIVE | notif permission ON ทั้งคู่ + แอปเครื่องหลักปิด/background | ACCT-2 like POST-OWN → ดูเครื่องหลัก → แตะ push | push/banner เด้งนอกแอป → แตะ push → เปิดแอปเข้า destination เดียวกับ row tap ตาม §8 matrix (like → Post Viewer โพสต์ตัวเอง) — ปลายทางอื่น = FAIL — ไม่มี push → `BLOCK` | — | MED | |
 | ALT-074 | push permission OFF → in-app ยังทำงาน | MEMBER + ACCT-2 | STATE | ปิด notif permission เครื่องหลัก | ACCT-2 like → เปิดแอป → alerts | ไม่มี push (ปิดแล้ว) แต่ row + badge ในแอปยังมาปกติ — feed คือ source of truth | — | MED | |
-| ALT-075 | offline เปิด alerts | MEMBER | NEGATIVE | alerts เคยโหลดไว้ | เครื่องบิน → เปิด alerts → แตะ `ลองใหม่` หลังเปิดเน็ตกลับ | error state `Unable to load data` + ปุ่ม `ลองใหม่/Try again` — ห้าม crash/จอขาว/แสดงข้อมูลเก่าแบบเงียบ ๆ — กด `ลองใหม่` ตอนเน็ตกลับ → feed โหลดได้ | — | MED | |
+| ALT-075 | offline เปิด alerts (มีข้อมูลเก่า) | MEMBER | NEGATIVE | alerts เคยโหลดไว้ | เครื่องบิน → เปิด alerts → เปิดเน็ตกลับ | แสดงข้อมูล alerts ที่โหลดไว้ + แถบ `You're offline`/`คุณออฟไลน์อยู่` ด้านบน (ไม่บัง tabs/nav) — ห้าม crash/จอขาว — เน็ตกลับแล้ว feed refresh ข้อมูลล่าสุดและแถบหาย (ERROR_STATE catalogue · DEC-25) | — | MED | |
 | ALT-076 | read sync ข้ามเครื่อง (lock) | MEMBER (+เครื่องสาม ถ้ามี) | STATE | sign in `ACTOR-MEMBER` สองเครื่องได้ | เครื่อง A อ่าน/mark all → เครื่อง B เปิด alerts | read state + badge sync ข้ามเครื่อง (server-backed ตามการตัดสินใจ) — build จำกัด session เดียว → `BLOCK` | — | MED | |
 | ALT-077 | feed เป็นของบัญชีตัวเองเท่านั้น | MEMBER + ACCT-2 | STATE | alerts ของ MEMBER มี rows | sign out → sign in ACCT-2 → alerts | เห็นเฉพาะ alerts ของ ACCT-2 เอง — ไม่เห็นของ MEMBER (per-account scope) | — | HIGH | |
 | ALT-078 | alert เก่า (Earlier) กดได้ปกติ | MEMBER | POSITIVE | มี row กลุ่ม Earlier (ข้อมูลจริง) | แตะ row เก่าสุดใน feed | เปิด destination ตาม type ปกติ — ไม่ใช่แถวตาย — ไม่มี alert เก่าจริง → `BLOCK` | — | MED | |
@@ -220,17 +220,17 @@
 | ไม่มีใน V1 | chat row / walerts entry / ปลายทางอื่น (Asset Detail/Result List/chat room) | ALT-009, 045, 030 (negative รวม) | AC-NOTI-014/021/022 |
 | nav/state | back→feed เสมอ · stack · device back · tab-state · re-tap | ALT-057..061, 064 | |
 | lang/theme | TH/EN sweep + dark | ALT-041, 062, 063 | |
-| generation จริง | like/comment/follow/watch/system rows + aggregate + dedupe + latency | ALT-065..072 | ACCT-2 (BLOCK-if) |
+| generation จริง | like/comment/follow/watch rows + aggregate + dedupe + latency | ALT-065..072 | ACCT-2 (BLOCK-if) |
 | real device | push (tap → destination) · permission off · offline · cross-device sync · old alert · refresh | ALT-073..079 | BLOCK-if push/engine |
 
 ## หมายเหตุท้าย
 
 - **ก่อนส่งงานจริง**: เขียนเสร็จ → รอ PO/หัวหน้ารีวิว → แก้ตาม feedback → ค่อยปิด task (กฎเดียวกับทุกเล่ม)
 - **ข้อมูลจริงบน server เป็นตัวแปรหลัก** — จำนวน alert/อายุกลุ่ม/จำนวน like ขึ้นกิจกรรมจริง: expected ทุกข้อตัดสินได้จากข้อมูลที่มีจริง อย่า FAIL เพราะจำนวนน้อยกว่าตัวอย่าง
-- **เคส BLOCK ล่วงหน้าที่คาดว่าอาจเจอ**: ALT-011/068 (ต้อง ≥3 บัญชี), ALT-014/028/032/053/069 (watch engine), ALT-015/070 (system trigger), ALT-023 (unread >99), ALT-042 (deep link), ALT-073 (push ยังไม่ implement)
+- **เคส BLOCK ล่วงหน้าที่คาดว่าอาจเจอ**: ALT-011/068 (ต้อง ≥3 บัญชี), ALT-014/028/032/053/069 (watch engine), ALT-015 (ต้องมี system row จริง), ALT-023 (unread >99), ALT-042 (deep link), ALT-073 (push ยังไม่ implement)
 - **อยู่นอก scope**: `walerts` list + สร้าง/แก้ watch alert (FO-TEST-11) · anatomy เต็มของ `notif_settings` (FO-TEST-15) · push payload/FCM contract ละเอียด (out of V1)
 
-- สถิติ: **79 TC** — High 31 / Medium 45 / Low 3 (SETUP rows 11 แถวแยกใน checklist; รวมใน csv 90 แถว)
+- สถิติ: **78 TC** — High 31 / Medium 44 / Low 3 (SETUP rows 11 แถวแยกใน checklist; รวมใน csv 89 แถว)
 
 
 ## DEC-25 Amendments (ผลตามข้อตัดสิน IG — CSV ยังไม่ sync)

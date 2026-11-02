@@ -222,7 +222,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Tabs EN labels `{n} followers`/`{n} following`; `pfl-q` live filter → `No results found`
 - Row แตะ → `pushSub profile:{user}` (ยกเว้นกด action button ใน row)
 - Own `followers` rows: `แชท`/`Chat` (DM จริง — `pfOpenChat` ห้องเดียวกับปุ่ม Chat บน profile) + `x` → `Remove follower?` dlg (`We won't let {u} know…` + `Remove` danger/`Cancel`) → `PF_REMOVED_FOL` + หายจาก list
-- Own `following` rows: `...` → `pfl-pop` popover (`Unfollow` instant + row remove / `Mute`|`Unmute`)
+- Own `following` rows: `แชท`/`Chat` (`pf-msg` — DM ห้องเดียวกัน) + `...` → `pfl-pop` popover (`Unfollow` instant + row remove / `Mute`|`Unmute`)
 - Viewer lists: `pf-flw` pill เท่านั้น; self ไม่ขึ้นใน list คนอื่น; own non-member (session `new`) → lists ว่าง
 
 ## Viewer `...` Menu Flow
@@ -403,7 +403,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 24. **`pf-sh-share` อยู่ใน gate list แต่ unreachable** (`.pf-more` gated ก่อน) — belt-and-suspenders
 25. **`.pf-menu` → `settings` direct**; `.set-btn` dead (canonical 13)
 26. **`pedit` `o.disp = uname`** — save เปลี่ยน disp ตาม username เสมอ (ไม่มีช่อง display name แยก)
-27. **own follower rows มี `pf-msg`** — Chat button เปิดห้อง DM เดียวกับปุ่ม Chat บน profile (user→user เดียวต่อ account)
+27. **own pfollow rows มี `pf-msg` ทั้ง followers และ following** — Chat button เปิดห้อง DM เดียวกับปุ่ม Chat บน profile (user→user เดียวต่อ account); followers = Chat + `x` Remove, following = Chat + `...` popover
 28. **`report:done` ใน stack `rp-over` ทับ pv** — block จาก done แล้ว re-render `report:done:{u}` ให้ step กลาย Unblock พร้อมใช้
 
 ---

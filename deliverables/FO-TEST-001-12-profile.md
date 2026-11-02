@@ -155,7 +155,7 @@
 | PROF-066 | About this account | MEMBER | POSITIVE | sheet ⋯ เปิด | `About this account` → อ่าน → back | push `about:{U-2}`: joined date + country + verified marker + หมายเหตุ why-note — back กลับ profile | — | MED | |
 | PROF-067 | Report → report flow | MEMBER | POSITIVE | sheet ⋯ เปิด | `Report` → เลือกรายงานบัญชี → เลือกเหตุผล → ดูหน้าสุดท้าย | เข้า `report:` flow (pick account/post → reasons → done: `Thanks for your feedback` + `Other steps you can take` Block/Unfollow/Mute + `Done`) — internals เหตุผลของ FO-TEST-16 | — | HIGH | |
 | PROF-068 | Report แล้วเลือกโพสต์ | MEMBER | POSITIVE | flow report จาก ⋯ | เลือกรายงานโพสต์ → `Select a post` grid → เลือก tile → `Next` → เหตุผล → done | grid โพสต์ของ `U-2` เลือกได้ทีละชิ้น + `Next` ปลดล็อกเมื่อเลือก → ส่งสำเร็จเหมือน PROF-067 | tile เลือกมีเครื่องหมาย | MED | |
-| PROF-069 | Block → confirm sheet | MEMBER | UI | sheet ⋯ เปิด | `Block` | sheet `Block {U-2}?` + desc `This will also block any other profiles they may have or create in the future.` + 3 impact rows + `Block` + `Block and report` — Cancel ปิดไม่ block | — | HIGH | |
+| PROF-069 | Block → confirm sheet | MEMBER | UI | sheet ⋯ เปิด | `Block` | sheet `Block {U-2}?` + desc `This will also block any other profiles they may have or create in the future.` + 3 impact rows + `Block` + `Block and report` — ไม่มีปุ่ม Cancel; แตะ backdrop/back ปิด = ไม่ block | — | HIGH | |
 | PROF-070 | Block → keep-page ฝั่งเรา | MEMBER | POSITIVE | block sheet เปิด | `Block` → รอ toast → อยู่บน profile `U-2` → เช็ก feed/list | toast ยืนยัน + profile `U-2` กลาย keep-page: `posts 0` + `followers −` + `following −` + stats กดไม่ได้ + grid `No posts yet` + ปุ่มเดียว `เลิกบล็อก/Unblock` · ผลข้างเคียง: auto-unfollow + `U-2` หลุด followers เรา + โพสต์ `U-2` หายจาก feed + ห้อง chat มี blocked bar | — | HIGH | |
 | PROF-071 | Block and report | MEMBER | POSITIVE | block sheet เปิด (unblock ก่อน) | `Block and report` | block เกิดเหมือน PROF-070 + เข้าสู่ report flow ต่อทันที | — | MED | |
 | PROF-072 | Unblock จาก keep-page | MEMBER | POSITIVE | `U-2` blocked | profile `U-2` → `เลิกบล็อก/Unblock` → dialog `Unblock {U-2}?` → `Unblock` | dialog ยืนยัน → toast `Unblocked` + profile กลับเต็ม (stats/grid จริง) + banner restrict-hint ขึ้น ~6 วิแล้วหายเอง — **ไม่** re-follow อัตโนมัติ (ปุ่มกลับ `ติดตาม/Follow`) | — | HIGH | |
@@ -267,7 +267,7 @@
 - สถิติ: **111 TC** — High 61 / Medium 44 / Low 6 (SETUP rows 10 แถวแยกใน checklist; รวมใน csv 121 แถว)
 
 
-## DEC-25 Amendments (ผลตามข้อตัดสิน IG — CSV ยังไม่ sync)
+## DEC-25 Amendments (ผลตามข้อตัดสิน IG — MD+CSV sync แล้ว)
 
 - PROF-033: expected = "Followed by {name} and others" (DEC-25)
 - PROF-091: expected = "This username is already taken." / TH คู่

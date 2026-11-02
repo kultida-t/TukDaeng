@@ -63,7 +63,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Search entry: `.search-btn` บน app header, hashtag (`igd-tag`) จากทุก caption surface, `pv-srch` jump กลับ search
 - `search` sub page 3 modes: `landing` (popular chips + explore photo grid), `typing` (field + Cancel + X, recents/suggestions), `results` (head + tabs + active filter chips + sections)
 - Recent searches: push อัตโนมัติเมื่อเลือก, dedupe, cap 8, inline 4 แถว + `See all` → `recents` page (`Clear all` + X รายแถว) — session memory เท่านั้น
-- Live suggestions: keyword rows (brand/model พร้อม `N listings`, reference) + seller rows (พร้อม `N listings`/`Following`)
+- Live suggestions (DEC-36): keyword rows (brand/model, reference — ไม่มี count) + seller rows (sub `Following` เฉพาะที่ follow — ไม่มี count)
 - Results tabs: `For you` (Accounts section + Posts grid), `Profiles` (seller cards + Follow button), `Tags` (hashtag rows + `N posts`)
 - Active filter chips + per-chip remove (price chip ลบทั้ง min/max)
 - `sfilter` page: 11 sections, dependent Model ← Brand, price range inputs + validation, draft/commit/discard pattern, `Clear all`, `Apply (N)`
@@ -94,7 +94,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Search typing | `mode:"typing"` | real input `.sr-q` + `.sr-x` + `Cancel`; body = recents (q ว่าง) หรือ suggestions |
 | Recent section | `recentHTML()` | `Recent` + ≤4 rows + `See all`; per-row X |
 | Recent searches page | `recents` route · `recentPageHTML()` | back + title + `Clear all` + full list |
-| Suggestions | `suggestHTML()` | keyword rows (search icon + `N listings`) + seller rows (avatar + `N listings`/`Following`) |
+| Suggestions | `suggestHTML()` | keyword rows (search icon — no count) + seller rows (avatar + `Following` เฉพาะที่ follow — no count) |
 | Search results | `mode:"results"` · `searchResultsHTML()` | head (back/fake field/`sr-wa` bell/filter icon) + tabs + active filter chips + body ตาม tab |
 | Results — For you | `tab:"foryou"` | `Accounts` section + `Posts` `xp-grid two` |
 | Results — Profiles | `tab:"profiles"` | seller cards (`sr-scard`) + Follow button |
@@ -170,13 +170,13 @@ Member ใช้ครบ: search + recents (ของ session ตัวเอ�
 ## Recent Searches
 
 1. Typing (q ว่าง) → `Recent` + ≤4 แถว; >4 → `See all` → `recents` page (back + title + `Clear all` + list เต็ม)
-2. Row มี 2 แบบ: seller (avatar + name + `N listings`/`Following` sub) และ keyword (clock icon + text); X รายแถวลบทันที; `Clear all` ล้างทั้ง list
+2. Row มี 2 แบบ: seller (avatar + name + `Following` sub เฉพาะที่ follow — ไม่มี count ตาม DEC-36) และ keyword (clock icon + text); X รายแถวลบทันที; `Clear all` ล้างทั้ง list
 3. กด row (ทั้ง inline และบน `recents` page) → `pushRecent` + `q` + `mode = "results"` + `tab = "foryou"`; pick จาก `recents` page → `_subStack` เหลือ `["search"]` (back กลับหน้า search)
 4. Recents เก็บบนเครื่องข้ามการเปิดแอป (DEC-22) และล้างเมื่อ sign out / เปลี่ยน session (00_GLOBAL §7); มี Clear all และลบรายแถวได้; seed rows ใน prototype เป็น mock
 
 ## Suggestions
 
-1. พิมพ์ q → ระบบ render keyword rows ก่อน (brand/model ที่ชื่อ contains q พร้อม `N listings` จาก sale listings ปัจจุบัน + reference ที่ contains q — รวม ≤6) ตามด้วย seller rows (name contains q — ≤4, sub `N listings` หรือ `Following`)
+1. พิมพ์ q → ระบบ render keyword rows ก่อน (brand/model ที่ชื่อ contains q + reference ที่ contains q — รวม ≤6, ไม่มี count ตาม DEC-36) ตามด้วย seller rows (name contains q — ≤4, sub `Following` เฉพาะที่ follow)
 2. ไม่มีผล → `No suggestions`
 3. กด row → `pushRecent` (kw หรือ seller ตามชนิด) + `q` + `mode = "results"`
 
