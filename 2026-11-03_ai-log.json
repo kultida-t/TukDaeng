@@ -1863,15 +1863,105 @@
           "summary": "บันทึก Final Session Note ครบทั้ง 6 task แสดงสรุปตามรูปแบบ skill (ทุก task ไม่มี Mission Mapping — Case B, รวม 1.8 ชม.)"
         }
       ]
+    },
+    {
+      "session_id": "session-011",
+      "tool": "Devin",
+      "project": "TukDaeng Back Office",
+      "task_id": null,
+      "mission": null,
+      "objective": null,
+      "feature": null,
+      "objective_id": null,
+      "feature_id": null,
+      "auto_worklog": false,
+      "messages": [
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T20:36:48+07:00",
+          "content": "อยากให้มีสรุปงานต่อวันหลังจากทำงานเสร็จทั้งวันให้ไปดึงข้อมูล session note ทั้งหมดที่บันทึกของแต่ละวันทำเป็นสรุป copy block ออกมาให้หน่อยว่าทำงานอะไรไปบ้างในวันนี้ จุดประสงค์เพื่อตอบคำถามการส่งต่องานให้เดฟ เพราะถ้า commit งานขึ้นไปแล้วต้องบอกได้ว่าแก้ไขอะไรไป อัปเดตเพิ่มเติมหรือทำอะไร ทีมจะได้เอางานไปทำต่อได้ โดยเนื้อหาสรุปให้เป็นข้อความที่อ่านแล้วเข้าใจง่ายเหมือนสรุปส่งงานให้หัวหน้าดูในทุกๆ วันหลังเลิกงาน มีไฟล์ path อ้างอิงบอกได้ว่าปรับแก้ไฟล์ไหนอยู่ที่ไหนเพื่อให้ง่ายต่อการค้นหาและส่งต่อ ถ้าสิ่งที่ต้องการเหล่านี้ควรทำเป็น skill เพิ่มไหม"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T20:36:55+07:00",
+          "summary": "ตรวจเครื่องมือ kanban-tukdaeng และ skill ที่มีอยู่ก่อนแนะนำว่าควรทำเป็น skill ใหม่หรือไม่"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T20:37:00+07:00",
+          "summary": "อ่าน tool list เต็มของ kanban-tukdaeng เพื่อเช็ก summarize_work และเครื่องมือที่เกี่ยวกับ session note"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T20:38:13+07:00",
+          "summary": "วิเคราะห์ช่องว่างของของเดิม (work-summary ต่อ task, mission-planning เทียบแผน, summarize_work เชิงกลจาก server) สรุปว่าควรทำ skill ใหม่ชื่อ daily-summary ที่ .devin/skills/ แล้วลงมือสร้าง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T20:39:00+07:00",
+          "summary": "สร้าง .devin/skills/daily-summary/SKILL.md (ดึง session notes ทั้งวัน + task activity + git log รวมเป็น Daily Summary Copy Block เดียวพร้อม file path สำหรับส่งต่อ dev) เติม cross-reference ใน work-summary SKILL.md เล่า tea payload ตามกฎ MCP และเสนอทดลองสรุปวันนี้"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T20:49:50+07:00",
+          "content": "สรุปงานประจำวันให้หน่อย"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T20:50:07+07:00",
+          "summary": "เรียกใช้ skill daily-summary แล้วเริ่มดึงข้อมูลวันนี้"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T20:50:57+07:00",
+          "summary": "แสดง Daily Summary Copy Block วันที่ 03/11/2026 — รวม session note 15 รายการ + 20 task เสร็จ 7.1 ชม. + git log 14 commits จัดกลุ่มตามเรื่อง (FO-BO-001 audit chain, Mission BO QA Hygiene, เติมเทสต์ตาม coverage gap) พร้อม file path/commit/ผลตรวจ และ flag ว่าระบบแนะนำ log เวลาเพิ่ม +1.97 ชม. โดยไม่แตะ hours_spent"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T20:56:29+07:00",
+          "content": "ที่นี้อัปเดต  ให้นับรวม session ที่ทำสรุปงานประจำวันแบบตัวอย่าง session นี้เข้าไปด้วยนะ ถ้ามีการบอกให้สรุปงานประวันให้ ก็ให้นับรวมไปด้วยแม้จะไม่ได้มี task อ้างอิงก็ตาม"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T20:56:37+07:00",
+          "summary": "อ่าน SKILL.md ของ ai-conversation-daily-log เพื่อหาจุดแก้กฎ scope"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T20:56:56+07:00",
+          "summary": "ชี้จุดแก้ที่กฎ Work-session scope ข้อ 3 (เก็บเฉพาะ session ที่มี task อ้างอิง) เตรียมเพิ่มเงื่อนไขนับ session ขอสรุปงานประจำวัน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T20:57:06+07:00",
+          "summary": "แก้ .agents/skills/ai-conversation-daily-log/SKILL.md เพิ่มเงื่อนไข include คำขอสรุปงาน/รายงานงาน — นับรวมแม้ไม่มี task (task_id เป็น null) และชี้แจงในกฎ exclude ว่าคำขอสรุปงานเป็น work reporting ไม่ใช่ meta request เกี่ยวกับตัว log"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T20:58:48+07:00",
+          "content": "อัปเดต ai log วันนี้ แล้วอยากรู้ว่าถ้าเริ่มต้นพรุ่งนี้จะต้องใช้คำสั่งอะไรบ้างที่จะให้สรุป ai log ของวัน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T20:58:54+07:00",
+          "summary": "รับคำสั่งอัปเดต ai log วันนี้และ invoke skill ai-conversation-daily-log"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T20:59:14+07:00",
+          "summary": "สแกน transcript store ทั้งหมดของวันนี้ (Devin acp-messages .db 18 sessions + Antigravity brain) เพื่อเทียบความครอบคลุมกับ log เก่าและหา session ที่ยังไม่ถูกบันทึก"
+        }
+      ]
     }
   ],
   "limitations": [
     "ข้อความและ timestamp ทั้งหมดดึงจาก transcript store ของ Devin Desktop (%APPDATA%\\Devin\\User\\acp-messages\\*.db) — เป็น Tier 1 exact timestamps จาก _meta[\"cognition.ai/timestamp\"] แปลงเป็น +07:00",
     "เช็ก core-portal MCP (list_my_apps) รอบอัปเดตนี้แล้ว: app ที่ตรงคือ \"TukDaeng Back Office\" (app id 60, project TUKDANG) และ ongoing_missions ของทุก app ว่างเปล่า จึงไม่มี Mission/Objective/Feature จาก Core Portal ให้ผูก (field mission ใช้ชื่อ Mission จาก kanban)",
     "task_id ตั้งตาม kanban task ที่ session นั้นทำงานอยู่โดยตรง (session ที่ครอบหลาย task ระบุเป็นลิสต์, session ที่ไม่ได้ผูก task ตั้งเป็น null)",
-    "รวมเฉพาะ session งานจริงของโปรเจกต์ตาม work-session scope — ตัด 8 sessions ออก: ตั้งค่า/เช็ก MCP core-portal 3 sessions (Devin), session ขอสร้าง/อัปเดตไฟล์ log 3 sessions (Devin — รวม session อัปเดตรอบนี้ d43a458d), session ถาม/ปรับ skill 1 session (Devin) และ session setup/Q&A เกี่ยว MCP + skill 1 session (Antigravity 604cc291) — ข้อความที่มี API key ในแชทตั้งค่าอยู่ใน session ที่ถูกตัด จึงไม่มี redaction เหลือในไฟล์นี้",
+    "รวมเฉพาะ session งานจริงของโปรเจกต์ตาม work-session scope — ตัด 8 sessions ออก: ตั้งค่า/เช็ก MCP core-portal 3 sessions (Devin), session ขอสร้าง/อัปเดตไฟล์ log 3 sessions (Devin — รวม session อัปเดตรอบสาม d43a458d), session ถาม/ปรับ skill 1 session (Devin) และ session setup/Q&A เกี่ยว MCP + skill 1 session (Antigravity 604cc291) — ข้อความที่มี API key ในแชทตั้งค่าอยู่ใน session ที่ถูกตัด จึงไม่มี redaction เหลือในไฟล์นี้",
     "ข้าม agent_thought (private reasoning) และ tool_call ตาม schema — มีเฉพาะ user_message verbatim และ agent_message ที่สรุป",
-    "อัปเดตรอบสาม: เพิ่ม session-009 (เขียน spec qa-bo-027/028 ปิด GAP-BO-TEST-02/03) และ session-010 (ปิด GAP-BO-TEST-04–09 พร้อม spec qa-bo-029–033) — ข้อความท้าย session-008 (17:34+) ที่เป็นคำขออัปเดตไฟล์ log นี้ถูกตัดออกตาม work-session scope เช่นเดียวกับรอบก่อน"
+    "อัปเดตรอบสาม: เพิ่ม session-009 (เขียน spec qa-bo-027/028 ปิด GAP-BO-TEST-02/03) และ session-010 (ปิด GAP-BO-TEST-04–09 พร้อม spec qa-bo-029–033) — ข้อความท้าย session-008 (17:34+) ที่เป็นคำขออัปเดตไฟล์ log นี้ถูกตัดออกตาม work-session scope เช่นเดียวกับรอบก่อน",
+    "อัปเดตรอบสี่: เพิ่ม session-011 (สร้าง skill daily-summary + ขอสรุปงานประจำวัน + ปรับ skill ai-conversation-daily-log) — นับรวมตามกฎใหม่ที่เพิ่งแก้ใน SKILL.md ว่า session ขอสรุปงานประจำวัน/รายงานงานเป็น work reporting ต้องนับแม้ไม่มี task อ้างอิง (task_id null); session นี้ยังดำเนินต่ออยู่ขณะสแกน ข้อความหลัง ~20:59 อาจยังไม่ถูกบันทึกในรอบนี้"
   ],
   "redactions_applied": false
 }
