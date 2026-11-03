@@ -1,7 +1,7 @@
 # 05 BO Content / Board Module
 
-**Version:** `BO-05-v1.1`  
-**Date:** 2026-11-02  
+**Version:** `BO-05-v1.3`  
+**Date:** 2026-11-03  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Content / Board |
 | Platform | Responsive Web Back Office |
-| Version | `BO-05-v1.2` |
+| Version | `BO-05-v1.3` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -46,6 +46,7 @@ FO Board เป็นพื้นที่อ่านบทความ ไม�
 - Bulk action
 - Export
 - AI moderation
+- Feed posts ทุกชนิด (asset-linked และ post-only kind `post`) — feed post entity อยู่ภายใต้ `04_ASSET_MANAGEMENT_MODULE.md` ทั้งหมด (Asset List สำหรับ asset + `Reported Assets` queue สำหรับ reported posts); Content Management ครอบเฉพาะ Board article content ไม่ครอบ feed post
 
 ## 4. Menu Structure
 
