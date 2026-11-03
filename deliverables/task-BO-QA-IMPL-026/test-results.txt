@@ -1,0 +1,438 @@
+
+Running 428 tests using 4 workers
+
+[1/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:179:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A1. เมนู Settings ขยายได้และมี submenu 'Roles & Permissions'
+[2/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:179:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A1. เมนู Settings ขยายได้และมี submenu 'Roles & Permissions'
+[3/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:179:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A1. เมนู Settings ขยายได้และมี submenu 'Roles & Permissions'
+[4/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:179:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A1. เมนู Settings ขยายได้และมี submenu 'Roles & Permissions'
+[5/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:190:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A2. คลิก Settings > Roles & Permissions → body.role-list-mode
+[6/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:190:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A2. คลิก Settings > Roles & Permissions → body.role-list-mode
+[7/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:190:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A2. คลิก Settings > Roles & Permissions → body.role-list-mode
+[8/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:190:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A2. คลิก Settings > Roles & Permissions → body.role-list-mode
+[9/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:195:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A3. breadcrumb = 'เครื่องมือ & รายงาน / Settings / Roles & Permissions'
+[10/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:195:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A3. breadcrumb = 'เครื่องมือ & รายงาน / Settings / Roles & Permissions'
+[11/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:195:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A3. breadcrumb = 'เครื่องมือ & รายงาน / Settings / Roles & Permissions'
+[12/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:195:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A3. breadcrumb = 'เครื่องมือ & รายงาน / Settings / Roles & Permissions'
+[13/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:200:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A4. #page-title = 'Roles & Permissions', #panel-title = 'Role List', #panel-subtitle = ''
+[14/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:200:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A4. #page-title = 'Roles & Permissions', #panel-title = 'Role List', #panel-subtitle = ''
+[15/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:200:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A4. #page-title = 'Roles & Permissions', #panel-title = 'Role List', #panel-subtitle = ''
+[16/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:200:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A4. #page-title = 'Roles & Permissions', #panel-title = 'Role List', #panel-subtitle = ''
+[17/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:207:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A5. #primary-action = '' และซ่อนอยู่ (ปุ่มสร้างอยู่ที่ #page-actions)
+[18/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:207:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A5. #primary-action = '' และซ่อนอยู่ (ปุ่มสร้างอยู่ที่ #page-actions)
+[19/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:207:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A5. #primary-action = '' และซ่อนอยู่ (ปุ่มสร้างอยู่ที่ #page-actions)
+[20/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:207:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A5. #primary-action = '' และซ่อนอยู่ (ปุ่มสร้างอยู่ที่ #page-actions)
+[21/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:213:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A6. ไม่มี KPI cards (#summary-grid, #cards, #detail ว่าง)
+[22/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:213:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A6. ไม่มี KPI cards (#summary-grid, #cards, #detail ว่าง)
+[23/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:213:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A6. ไม่มี KPI cards (#summary-grid, #cards, #detail ว่าง)
+[24/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:220:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A7. ปุ่ม 'สร้าง Custom Role' อยู่ใน #page-actions (data-role-create-open)
+[25/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:220:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A7. ปุ่ม 'สร้าง Custom Role' อยู่ใน #page-actions (data-role-create-open)
+[26/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:213:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A6. ไม่มี KPI cards (#summary-grid, #cards, #detail ว่าง)
+[27/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:220:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A7. ปุ่ม 'สร้าง Custom Role' อยู่ใน #page-actions (data-role-create-open)
+[28/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:227:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A8. nav item settings + submenu Roles & Permissions แสดง active state
+[29/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:227:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A8. nav item settings + submenu Roles & Permissions แสดง active state
+[30/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:220:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A7. ปุ่ม 'สร้าง Custom Role' อยู่ใน #page-actions (data-role-create-open)
+[31/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:227:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A8. nav item settings + submenu Roles & Permissions แสดง active state
+[32/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:233:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A9. Prototype scenario tools อยู่ใน panel + select มี 5 options (ready/loading/error/empty/unauthorized)
+[33/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:233:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A9. Prototype scenario tools อยู่ใน panel + select มี 5 options (ready/loading/error/empty/unauthorized)
+[34/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:227:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A8. nav item settings + submenu Roles & Permissions แสดง active state
+[35/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:233:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A9. Prototype scenario tools อยู่ใน panel + select มี 5 options (ready/loading/error/empty/unauthorized)
+[36/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:248:3 › QA-BO-026-B: Role List — rendering & pagination › B1. ตาราง head 8 คอลัมน์: Role ID/Role/Type/Status/Detail/Admins/Last Updated/Action
+[37/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:248:3 › QA-BO-026-B: Role List — rendering & pagination › B1. ตาราง head 8 คอลัมน์: Role ID/Role/Type/Status/Detail/Admins/Last Updated/Action
+[38/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:248:3 › QA-BO-026-B: Role List — rendering & pagination › B1. ตาราง head 8 คอลัมน์: Role ID/Role/Type/Status/Detail/Admins/Last Updated/Action
+[39/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:233:3 › QA-BO-026-A: Roles & Permissions — navigation & menu › A9. Prototype scenario tools อยู่ใน panel + select มี 5 options (ready/loading/error/empty/unauthorized)
+[40/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:262:3 › QA-BO-026-B: Role List — rendering & pagination › B2. seed 11 roles (8 System + 3 Custom) — หน้า 1 แสดง 10 rows + footer 'แสดง 1-10 จาก 11'
+[41/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:262:3 › QA-BO-026-B: Role List — rendering & pagination › B2. seed 11 roles (8 System + 3 Custom) — หน้า 1 แสดง 10 rows + footer 'แสดง 1-10 จาก 11'
+[42/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:262:3 › QA-BO-026-B: Role List — rendering & pagination › B2. seed 11 roles (8 System + 3 Custom) — หน้า 1 แสดง 10 rows + footer 'แสดง 1-10 จาก 11'
+[43/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:271:3 › QA-BO-026-B: Role List — rendering & pagination › B3. row ROL-001 แสดงชื่อ/pills/detail/Admins=2/Last Updated ถูกต้อง
+[44/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:248:3 › QA-BO-026-B: Role List — rendering & pagination › B1. ตาราง head 8 คอลัมน์: Role ID/Role/Type/Status/Detail/Admins/Last Updated/Action
+[45/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:271:3 › QA-BO-026-B: Role List — rendering & pagination › B3. row ROL-001 แสดงชื่อ/pills/detail/Admins=2/Last Updated ถูกต้อง
+[46/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:282:3 › QA-BO-026-B: Role List — rendering & pagination › B4. Type pill — System Role (purple) 8 rows, Custom Role (teal) 3 rows
+[47/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:271:3 › QA-BO-026-B: Role List — rendering & pagination › B3. row ROL-001 แสดงชื่อ/pills/detail/Admins=2/Last Updated ถูกต้อง
+[48/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:282:3 › QA-BO-026-B: Role List — rendering & pagination › B4. Type pill — System Role (purple) 8 rows, Custom Role (teal) 3 rows
+[49/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:262:3 › QA-BO-026-B: Role List — rendering & pagination › B2. seed 11 roles (8 System + 3 Custom) — หน้า 1 แสดง 10 rows + footer 'แสดง 1-10 จาก 11'
+[50/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:293:3 › QA-BO-026-B: Role List — rendering & pagination › B5. Status pill — ROL-103 = Inactive (gray), ที่เหลือ Active (green)
+[51/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:282:3 › QA-BO-026-B: Role List — rendering & pagination › B4. Type pill — System Role (purple) 8 rows, Custom Role (teal) 3 rows
+[52/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:293:3 › QA-BO-026-B: Role List — rendering & pagination › B5. Status pill — ROL-103 = Inactive (gray), ที่เหลือ Active (green)
+[53/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:271:3 › QA-BO-026-B: Role List — rendering & pagination › B3. row ROL-001 แสดงชื่อ/pills/detail/Admins=2/Last Updated ถูกต้อง
+[54/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:302:3 › QA-BO-026-B: Role List — rendering & pagination › B6. คอลัมน์ Admins = จำนวนผู้ดูแล Active ที่ใช้ role (Super Admin=2, Admin Manager=0, Content Editor=1)
+[55/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:293:3 › QA-BO-026-B: Role List — rendering & pagination › B5. Status pill — ROL-103 = Inactive (gray), ที่เหลือ Active (green)
+[56/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:302:3 › QA-BO-026-B: Role List — rendering & pagination › B6. คอลัมน์ Admins = จำนวนผู้ดูแล Active ที่ใช้ role (Super Admin=2, Admin Manager=0, Content Editor=1)
+[57/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:282:3 › QA-BO-026-B: Role List — rendering & pagination › B4. Type pill — System Role (purple) 8 rows, Custom Role (teal) 3 rows
+[58/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:310:3 › QA-BO-026-B: Role List — rendering & pagination › B7. คอลัมน์ Detail ตัด 1 บรรทัด + เก็บข้อความเต็มใน data-comment-full
+[59/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:310:3 › QA-BO-026-B: Role List — rendering & pagination › B7. คอลัมน์ Detail ตัด 1 บรรทัด + เก็บข้อความเต็มใน data-comment-full
+[60/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:302:3 › QA-BO-026-B: Role List — rendering & pagination › B6. คอลัมน์ Admins = จำนวนผู้ดูแล Active ที่ใช้ role (Super Admin=2, Admin Manager=0, Content Editor=1)
+[61/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:293:3 › QA-BO-026-B: Role List — rendering & pagination › B5. Status pill — ROL-103 = Inactive (gray), ที่เหลือ Active (green)
+[62/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:320:3 › QA-BO-026-B: Role List — rendering & pagination › B8. pagination — กดหน้า 2 เหลือ ROL-103 + 'แสดง 11-11 จาก 11' แล้ว prev/เลขหน้ากลับได้
+[63/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:320:3 › QA-BO-026-B: Role List — rendering & pagination › B8. pagination — กดหน้า 2 เหลือ ROL-103 + 'แสดง 11-11 จาก 11' แล้ว prev/เลขหน้ากลับได้
+[64/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:310:3 › QA-BO-026-B: Role List — rendering & pagination › B7. คอลัมน์ Detail ตัด 1 บรรทัด + เก็บข้อความเต็มใน data-comment-full
+[65/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:302:3 › QA-BO-026-B: Role List — rendering & pagination › B6. คอลัมน์ Admins = จำนวนผู้ดูแล Active ที่ใช้ role (Super Admin=2, Admin Manager=0, Content Editor=1)
+[66/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:335:3 › QA-BO-026-B: Role List — rendering & pagination › B9. row menu มี 'ดูรายละเอียด' ทุก row (details > summary '...')
+[67/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:335:3 › QA-BO-026-B: Role List — rendering & pagination › B9. row menu มี 'ดูรายละเอียด' ทุก row (details > summary '...')
+[68/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:320:3 › QA-BO-026-B: Role List — rendering & pagination › B8. pagination — กดหน้า 2 เหลือ ROL-103 + 'แสดง 11-11 จาก 11' แล้ว prev/เลขหน้ากลับได้
+[69/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:310:3 › QA-BO-026-B: Role List — rendering & pagination › B7. คอลัมน์ Detail ตัด 1 บรรทัด + เก็บข้อความเต็มใน data-comment-full
+[70/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:352:3 › QA-BO-026-C: Role List — search › C1. search input มี placeholder 'ค้นหา Role ID, ชื่อ หรือคำอธิบาย'
+[71/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:335:3 › QA-BO-026-B: Role List — rendering & pagination › B9. row menu มี 'ดูรายละเอียด' ทุก row (details > summary '...')
+[72/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:320:3 › QA-BO-026-B: Role List — rendering & pagination › B8. pagination — กดหน้า 2 เหลือ ROL-103 + 'แสดง 11-11 จาก 11' แล้ว prev/เลขหน้ากลับได้
+[73/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:352:3 › QA-BO-026-C: Role List — search › C1. search input มี placeholder 'ค้นหา Role ID, ชื่อ หรือคำอธิบาย'
+[74/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:358:3 › QA-BO-026-C: Role List — search › C2. ค้นด้วย Role ID — 'ROL-101' → 1 row
+[75/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:358:3 › QA-BO-026-C: Role List — search › C2. ค้นด้วย Role ID — 'ROL-101' → 1 row
+[76/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:335:3 › QA-BO-026-B: Role List — rendering & pagination › B9. row menu มี 'ดูรายละเอียด' ทุก row (details > summary '...')
+[77/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:352:3 › QA-BO-026-C: Role List — search › C1. search input มี placeholder 'ค้นหา Role ID, ชื่อ หรือคำอธิบาย'
+[78/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:367:3 › QA-BO-026-C: Role List — search › C3. ค้นด้วยชื่อ — 'content' → ROL-007, ROL-008, ROL-101
+[79/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:367:3 › QA-BO-026-C: Role List — search › C3. ค้นด้วยชื่อ — 'content' → ROL-007, ROL-008, ROL-101
+[80/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:358:3 › QA-BO-026-C: Role List — search › C2. ค้นด้วย Role ID — 'ROL-101' → 1 row
+[81/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:375:3 › QA-BO-026-C: Role List — search › C4. ค้นด้วย roleKey — 'legacy_support_viewer' → ROL-103
+[82/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:352:3 › QA-BO-026-C: Role List — search › C1. search input มี placeholder 'ค้นหา Role ID, ชื่อ หรือคำอธิบาย'
+[83/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:375:3 › QA-BO-026-C: Role List — search › C4. ค้นด้วย roleKey — 'legacy_support_viewer' → ROL-103
+[84/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:367:3 › QA-BO-026-C: Role List — search › C3. ค้นด้วยชื่อ — 'content' → ROL-007, ROL-008, ROL-101
+[85/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:383:3 › QA-BO-026-C: Role List — search › C5. ค้นด้วยคำอธิบาย — 'เจ้าของระบบ' → ROL-001
+[86/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:358:3 › QA-BO-026-C: Role List — search › C2. ค้นด้วย Role ID — 'ROL-101' → 1 row
+[87/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:383:3 › QA-BO-026-C: Role List — search › C5. ค้นด้วยคำอธิบาย — 'เจ้าของระบบ' → ROL-001
+[88/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:375:3 › QA-BO-026-C: Role List — search › C4. ค้นด้วย roleKey — 'legacy_support_viewer' → ROL-103
+[89/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:391:3 › QA-BO-026-C: Role List — search › C6. ค้นไม่เจอ → empty state 'ไม่พบ Role ตามเงื่อนไขที่เลือก' + ปุ่มล้างตัวกรอง
+[90/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:391:3 › QA-BO-026-C: Role List — search › C6. ค้นไม่เจอ → empty state 'ไม่พบ Role ตามเงื่อนไขที่เลือก' + ปุ่มล้างตัวกรอง
+[91/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:367:3 › QA-BO-026-C: Role List — search › C3. ค้นด้วยชื่อ — 'content' → ROL-007, ROL-008, ROL-101
+[92/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:406:3 › QA-BO-026-C: Role List — search › C7. ล้าง search กลับครบ 11 rows (footer 'แสดง 1-10 จาก 11')
+[93/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:383:3 › QA-BO-026-C: Role List — search › C5. ค้นด้วยคำอธิบาย — 'เจ้าของระบบ' → ROL-001
+[94/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:406:3 › QA-BO-026-C: Role List — search › C7. ล้าง search กลับครบ 11 rows (footer 'แสดง 1-10 จาก 11')
+[95/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:375:3 › QA-BO-026-C: Role List — search › C4. ค้นด้วย roleKey — 'legacy_support_viewer' → ROL-103
+[96/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:424:3 › QA-BO-026-D: Role List — filter, sort & reset › D1. filter bar มี search + type + status + sort + reset
+[97/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:391:3 › QA-BO-026-C: Role List — search › C6. ค้นไม่เจอ → empty state 'ไม่พบ Role ตามเงื่อนไขที่เลือก' + ปุ่มล้างตัวกรอง
+[98/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:424:3 › QA-BO-026-D: Role List — filter, sort & reset › D1. filter bar มี search + type + status + sort + reset
+[99/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:383:3 › QA-BO-026-C: Role List — search › C5. ค้นด้วยคำอธิบาย — 'เจ้าของระบบ' → ROL-001
+[100/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:440:3 › QA-BO-026-D: Role List — filter, sort & reset › D2. filter type=System Role → 8 rows ทุก row เป็น System pill
+[101/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:440:3 › QA-BO-026-D: Role List — filter, sort & reset › D2. filter type=System Role → 8 rows ทุก row เป็น System pill
+[102/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:406:3 › QA-BO-026-C: Role List — search › C7. ล้าง search กลับครบ 11 rows (footer 'แสดง 1-10 จาก 11')
+[103/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:391:3 › QA-BO-026-C: Role List — search › C6. ค้นไม่เจอ → empty state 'ไม่พบ Role ตามเงื่อนไขที่เลือก' + ปุ่มล้างตัวกรอง
+[104/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:450:3 › QA-BO-026-D: Role List — filter, sort & reset › D3. filter type=Custom Role → ROL-101, ROL-102, ROL-103
+[105/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:450:3 › QA-BO-026-D: Role List — filter, sort & reset › D3. filter type=Custom Role → ROL-101, ROL-102, ROL-103
+[106/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:424:3 › QA-BO-026-D: Role List — filter, sort & reset › D1. filter bar มี search + type + status + sort + reset
+[107/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:456:3 › QA-BO-026-D: Role List — filter, sort & reset › D4. filter status=Inactive → เหลือ ROL-103 row เดียว
+[108/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:406:3 › QA-BO-026-C: Role List — search › C7. ล้าง search กลับครบ 11 rows (footer 'แสดง 1-10 จาก 11')
+[109/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:456:3 › QA-BO-026-D: Role List — filter, sort & reset › D4. filter status=Inactive → เหลือ ROL-103 row เดียว
+[110/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:440:3 › QA-BO-026-D: Role List — filter, sort & reset › D2. filter type=System Role → 8 rows ทุก row เป็น System pill
+[111/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:463:3 › QA-BO-026-D: Role List — filter, sort & reset › D5. filter รวม custom + Inactive → ROL-103; custom + Active → ROL-101/102
+[112/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:463:3 › QA-BO-026-D: Role List — filter, sort & reset › D5. filter รวม custom + Inactive → ROL-103; custom + Active → ROL-101/102
+[113/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:424:3 › QA-BO-026-D: Role List — filter, sort & reset › D1. filter bar มี search + type + status + sort + reset
+[114/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:450:3 › QA-BO-026-D: Role List — filter, sort & reset › D3. filter type=Custom Role → ROL-101, ROL-102, ROL-103
+[115/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:472:3 › QA-BO-026-D: Role List — filter, sort & reset › D6. filter + search ร่วมกัน (type=custom + search 'analyst' → ROL-102)
+[116/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:440:3 › QA-BO-026-D: Role List — filter, sort & reset › D2. filter type=System Role → 8 rows ทุก row เป็น System pill
+[117/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:472:3 › QA-BO-026-D: Role List — filter, sort & reset › D6. filter + search ร่วมกัน (type=custom + search 'analyst' → ROL-102)
+[118/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:456:3 › QA-BO-026-D: Role List — filter, sort & reset › D4. filter status=Inactive → เหลือ ROL-103 row เดียว
+[119/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:481:3 › QA-BO-026-D: Role List — filter, sort & reset › D7. sort 'ชื่อ A–Z' → หน้า 1 เรียง Admin Manager → Support Agent
+[120/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:481:3 › QA-BO-026-D: Role List — filter, sort & reset › D7. sort 'ชื่อ A–Z' → หน้า 1 เรียง Admin Manager → Support Agent
+[121/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:463:3 › QA-BO-026-D: Role List — filter, sort & reset › D5. filter รวม custom + Inactive → ROL-103; custom + Active → ROL-101/102
+[122/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:450:3 › QA-BO-026-D: Role List — filter, sort & reset › D3. filter type=Custom Role → ROL-101, ROL-102, ROL-103
+[123/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:490:3 › QA-BO-026-D: Role List — filter, sort & reset › D8. sort 'สร้างล่าสุด' → ROL-102, ROL-101, ROL-103 นำหน้า
+[124/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:490:3 › QA-BO-026-D: Role List — filter, sort & reset › D8. sort 'สร้างล่าสุด' → ROL-102, ROL-101, ROL-103 นำหน้า
+[125/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:456:3 › QA-BO-026-D: Role List — filter, sort & reset › D4. filter status=Inactive → เหลือ ROL-103 row เดียว
+[126/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:472:3 › QA-BO-026-D: Role List — filter, sort & reset › D6. filter + search ร่วมกัน (type=custom + search 'analyst' → ROL-102)
+[127/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:499:3 › QA-BO-026-D: Role List — filter, sort & reset › D9. sort 'แก้ไขล่าสุด' → ROL-101, ROL-005, ROL-103, ROL-102 นำหน้า
+[128/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:499:3 › QA-BO-026-D: Role List — filter, sort & reset › D9. sort 'แก้ไขล่าสุด' → ROL-101, ROL-005, ROL-103, ROL-102 นำหน้า
+[129/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:463:3 › QA-BO-026-D: Role List — filter, sort & reset › D5. filter รวม custom + Inactive → ROL-103; custom + Active → ROL-101/102
+[130/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:481:3 › QA-BO-026-D: Role List — filter, sort & reset › D7. sort 'ชื่อ A–Z' → หน้า 1 เรียง Admin Manager → Support Agent
+[131/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:506:3 › QA-BO-026-D: Role List — filter, sort & reset › D10. sort 'ผู้ดูแลที่ใช้งานมาก–น้อย' → ROL-001 (2) นำ, ตามด้วย roles ที่มี 1 admin เรียงชื่อ
+[132/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:506:3 › QA-BO-026-D: Role List — filter, sort & reset › D10. sort 'ผู้ดูแลที่ใช้งานมาก–น้อย' → ROL-001 (2) นำ, ตามด้วย roles ที่มี 1 admin เรียงชื่อ
+[133/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:490:3 › QA-BO-026-D: Role List — filter, sort & reset › D8. sort 'สร้างล่าสุด' → ROL-102, ROL-101, ROL-103 นำหน้า
+[134/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:515:3 › QA-BO-026-D: Role List — filter, sort & reset › D11. sort กลับ 'Role ID' (default) ทำงานถูก
+[135/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:515:3 › QA-BO-026-D: Role List — filter, sort & reset › D11. sort กลับ 'Role ID' (default) ทำงานถูก
+[136/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:472:3 › QA-BO-026-D: Role List — filter, sort & reset › D6. filter + search ร่วมกัน (type=custom + search 'analyst' → ROL-102)
+[137/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:499:3 › QA-BO-026-D: Role List — filter, sort & reset › D9. sort 'แก้ไขล่าสุด' → ROL-101, ROL-005, ROL-103, ROL-102 นำหน้า
+[138/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:523:3 › QA-BO-026-D: Role List — filter, sort & reset › D12. reset → search + filters + sort กลับค่า default + rows ครบ 11
+[139/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:523:3 › QA-BO-026-D: Role List — filter, sort & reset › D12. reset → search + filters + sort กลับค่า default + rows ครบ 11
+[140/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:481:3 › QA-BO-026-D: Role List — filter, sort & reset › D7. sort 'ชื่อ A–Z' → หน้า 1 เรียง Admin Manager → Support Agent
+[141/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:506:3 › QA-BO-026-D: Role List — filter, sort & reset › D10. sort 'ผู้ดูแลที่ใช้งานมาก–น้อย' → ROL-001 (2) นำ, ตามด้วย roles ที่มี 1 admin เรียงชื่อ
+[142/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:543:3 › QA-BO-026-D: Role List — filter, sort & reset › D13. filter state persist — detail→back คงค่า; สลับ module แล้วกลับมาถูกล้าง
+[143/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:543:3 › QA-BO-026-D: Role List — filter, sort & reset › D13. filter state persist — detail→back คงค่า; สลับ module แล้วกลับมาถูกล้าง
+[144/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:490:3 › QA-BO-026-D: Role List — filter, sort & reset › D8. sort 'สร้างล่าสุด' → ROL-102, ROL-101, ROL-103 นำหน้า
+[145/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:515:3 › QA-BO-026-D: Role List — filter, sort & reset › D11. sort กลับ 'Role ID' (default) ทำงานถูก
+[146/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:581:3 › QA-BO-026-E: Role Detail — sections & navigation › E1. คลิก row → role-detail-mode + crumb '.../ Content Reviewer TH' + page-title 'Role Detail'
+[147/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:499:3 › QA-BO-026-D: Role List — filter, sort & reset › D9. sort 'แก้ไขล่าสุด' → ROL-101, ROL-005, ROL-103, ROL-102 นำหน้า
+[148/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:523:3 › QA-BO-026-D: Role List — filter, sort & reset › D12. reset → search + filters + sort กลับค่า default + rows ครบ 11
+[149/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:581:3 › QA-BO-026-E: Role Detail — sections & navigation › E1. คลิก row → role-detail-mode + crumb '.../ Content Reviewer TH' + page-title 'Role Detail'
+[150/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:590:3 › QA-BO-026-E: Role Detail — sections & navigation › E2. detail head — 'ROL-101 : Content Reviewer TH' + chips Custom Role/Active
+[151/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:590:3 › QA-BO-026-E: Role Detail — sections & navigation › E2. detail head — 'ROL-101 : Content Reviewer TH' + chips Custom Role/Active
+[152/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:506:3 › QA-BO-026-D: Role List — filter, sort & reset › D10. sort 'ผู้ดูแลที่ใช้งานมาก–น้อย' → ROL-001 (2) นำ, ตามด้วย roles ที่มี 1 admin เรียงชื่อ
+[153/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:543:3 › QA-BO-026-D: Role List — filter, sort & reset › D13. filter state persist — detail→back คงค่า; สลับ module แล้วกลับมาถูกล้าง
+[154/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:599:3 › QA-BO-026-E: Role Detail — sections & navigation › E3. Role Summary tiles — Role Key/Created/Last Updated/Active Admins ถูกค่า
+[155/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:599:3 › QA-BO-026-E: Role Detail — sections & navigation › E3. Role Summary tiles — Role Key/Created/Last Updated/Active Admins ถูกค่า
+[156/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:515:3 › QA-BO-026-D: Role List — filter, sort & reset › D11. sort กลับ 'Role ID' (default) ทำงานถูก
+[157/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:615:3 › QA-BO-026-E: Role Detail — sections & navigation › E4. inactive note แสดงเฉพาะ Inactive role (ROL-103 มี, ROL-101 ไม่มี)
+[158/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:615:3 › QA-BO-026-E: Role Detail — sections & navigation › E4. inactive note แสดงเฉพาะ Inactive role (ROL-103 มี, ROL-101 ไม่มี)
+[159/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:581:3 › QA-BO-026-E: Role Detail — sections & navigation › E1. คลิก row → role-detail-mode + crumb '.../ Content Reviewer TH' + page-title 'Role Detail'
+[160/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:523:3 › QA-BO-026-D: Role List — filter, sort & reset › D12. reset → search + filters + sort กลับค่า default + rows ครบ 11
+[161/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:628:3 › QA-BO-026-E: Role Detail — sections & navigation › E5. Permissions section — ROL-101 แสดงเฉพาะ 4 module groups ที่ได้รับสิทธิ์
+[162/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:628:3 › QA-BO-026-E: Role Detail — sections & navigation › E5. Permissions section — ROL-101 แสดงเฉพาะ 4 module groups ที่ได้รับสิทธิ์
+[163/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:590:3 › QA-BO-026-E: Role Detail — sections & navigation › E2. detail head — 'ROL-101 : Content Reviewer TH' + chips Custom Role/Active
+[164/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:638:3 › QA-BO-026-E: Role Detail — sections & navigation › E6. perm items แสดง ✓ + ชื่อสิทธิ์ + sub title ตามเมนูย่อยจริง (ROL-101)
+[165/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:638:3 › QA-BO-026-E: Role Detail — sections & navigation › E6. perm items แสดง ✓ + ชื่อสิทธิ์ + sub title ตามเมนูย่อยจริง (ROL-101)
+[166/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:543:3 › QA-BO-026-D: Role List — filter, sort & reset › D13. filter state persist — detail→back คงค่า; สลับ module แล้วกลับมาถูกล้าง
+[167/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:599:3 › QA-BO-026-E: Role Detail — sections & navigation › E3. Role Summary tiles — Role Key/Created/Last Updated/Active Admins ถูกค่า
+[168/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:654:3 › QA-BO-026-E: Role Detail — sections & navigation › E7. ROL-001 (admin ทุกสิทธิ์) แสดงครบทุก module groups
+[169/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:654:3 › QA-BO-026-E: Role Detail — sections & navigation › E7. ROL-001 (admin ทุกสิทธิ์) แสดงครบทุก module groups
+[170/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:662:3 › QA-BO-026-E: Role Detail — sections & navigation › E8. permission accordion พับ/ขยายได้ต่อ module (aria-expanded + is-collapsed)
+[171/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:615:3 › QA-BO-026-E: Role Detail — sections & navigation › E4. inactive note แสดงเฉพาะ Inactive role (ROL-103 มี, ROL-101 ไม่มี)
+[172/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:662:3 › QA-BO-026-E: Role Detail — sections & navigation › E8. permission accordion พับ/ขยายได้ต่อ module (aria-expanded + is-collapsed)
+[173/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:581:3 › QA-BO-026-E: Role Detail — sections & navigation › E1. คลิก row → role-detail-mode + crumb '.../ Content Reviewer TH' + page-title 'Role Detail'
+[174/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:682:3 › QA-BO-026-E: Role Detail — sections & navigation › E9. Role Audit History — ตาราง 5 คอลัมน์ + entries ของ ROL-101 ถูกลำดับและป้ายผล
+[175/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:628:3 › QA-BO-026-E: Role Detail — sections & navigation › E5. Permissions section — ROL-101 แสดงเฉพาะ 4 module groups ที่ได้รับสิทธิ์
+[176/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:682:3 › QA-BO-026-E: Role Detail — sections & navigation › E9. Role Audit History — ตาราง 5 คอลัมน์ + entries ของ ROL-101 ถูกลำดับและป้ายผล
+[177/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:590:3 › QA-BO-026-E: Role Detail — sections & navigation › E2. detail head — 'ROL-101 : Content Reviewer TH' + chips Custom Role/Active
+[178/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:699:3 › QA-BO-026-E: Role Detail — sections & navigation › E10. Role Audit History — ROL-103 แสดง Deactivate/Reactivate lifecycle
+[179/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:699:3 › QA-BO-026-E: Role Detail — sections & navigation › E10. Role Audit History — ROL-103 แสดง Deactivate/Reactivate lifecycle
+[180/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:638:3 › QA-BO-026-E: Role Detail — sections & navigation › E6. perm items แสดง ✓ + ชื่อสิทธิ์ + sub title ตามเมนูย่อยจริง (ROL-101)
+[181/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:599:3 › QA-BO-026-E: Role Detail — sections & navigation › E3. Role Summary tiles — Role Key/Created/Last Updated/Active Admins ถูกค่า
+[182/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:710:3 › QA-BO-026-E: Role Detail — sections & navigation › E11. System Role (ROL-001) — ไม่มี action section เลย (immutability)
+[183/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:654:3 › QA-BO-026-E: Role Detail — sections & navigation › E7. ROL-001 (admin ทุกสิทธิ์) แสดงครบทุก module groups
+[184/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:710:3 › QA-BO-026-E: Role Detail — sections & navigation › E11. System Role (ROL-001) — ไม่มี action section เลย (immutability)
+[185/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:722:3 › QA-BO-026-E: Role Detail — sections & navigation › E12. Custom Role detail — มีปุ่ม 'แก้ไข' + 'ปิดใช้งาน' ที่ action section
+[186/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:615:3 › QA-BO-026-E: Role Detail — sections & navigation › E4. inactive note แสดงเฉพาะ Inactive role (ROL-103 มี, ROL-101 ไม่มี)
+[187/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:722:3 › QA-BO-026-E: Role Detail — sections & navigation › E12. Custom Role detail — มีปุ่ม 'แก้ไข' + 'ปิดใช้งาน' ที่ action section
+[188/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:662:3 › QA-BO-026-E: Role Detail — sections & navigation › E8. permission accordion พับ/ขยายได้ต่อ module (aria-expanded + is-collapsed)
+[189/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:732:3 › QA-BO-026-E: Role Detail — sections & navigation › E13. Inactive role detail — ปุ่ม 'เปิดใช้งาน' (primary) แทนปิดใช้งาน
+[190/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:732:3 › QA-BO-026-E: Role Detail — sections & navigation › E13. Inactive role detail — ปุ่ม 'เปิดใช้งาน' (primary) แทนปิดใช้งาน
+[191/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:682:3 › QA-BO-026-E: Role Detail — sections & navigation › E9. Role Audit History — ตาราง 5 คอลัมน์ + entries ของ ROL-101 ถูกลำดับและป้ายผล
+[192/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:628:3 › QA-BO-026-E: Role Detail — sections & navigation › E5. Permissions section — ROL-101 แสดงเฉพาะ 4 module groups ที่ได้รับสิทธิ์
+[193/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:743:3 › QA-BO-026-E: Role Detail — sections & navigation › E14. back button → กลับ Role List ครบทุก row
+[194/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:743:3 › QA-BO-026-E: Role Detail — sections & navigation › E14. back button → กลับ Role List ครบทุก row
+[195/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:699:3 › QA-BO-026-E: Role Detail — sections & navigation › E10. Role Audit History — ROL-103 แสดง Deactivate/Reactivate lifecycle
+[196/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:638:3 › QA-BO-026-E: Role Detail — sections & navigation › E6. perm items แสดง ✓ + ชื่อสิทธิ์ + sub title ตามเมนูย่อยจริง (ROL-101)
+[197/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:758:3 › QA-BO-026-F: Role Detail — prototype scenario states › F1. scenario 'loading' → skeleton page (role-skel-page)
+[198/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:758:3 › QA-BO-026-F: Role Detail — prototype scenario states › F1. scenario 'loading' → skeleton page (role-skel-page)
+[199/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:710:3 › QA-BO-026-E: Role Detail — sections & navigation › E11. System Role (ROL-001) — ไม่มี action section เลย (immutability)
+[200/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:654:3 › QA-BO-026-E: Role Detail — sections & navigation › E7. ROL-001 (admin ทุกสิทธิ์) แสดงครบทุก module groups
+[201/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:766:3 › QA-BO-026-F: Role Detail — prototype scenario states › F2. scenario 'error' → 'โหลดรายละเอียด Role ไม่สำเร็จ' + retry กลับ ready
+[202/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:766:3 › QA-BO-026-F: Role Detail — prototype scenario states › F2. scenario 'error' → 'โหลดรายละเอียด Role ไม่สำเร็จ' + retry กลับ ready
+[203/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:722:3 › QA-BO-026-E: Role Detail — sections & navigation › E12. Custom Role detail — มีปุ่ม 'แก้ไข' + 'ปิดใช้งาน' ที่ action section
+[204/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:662:3 › QA-BO-026-E: Role Detail — sections & navigation › E8. permission accordion พับ/ขยายได้ต่อ module (aria-expanded + is-collapsed)
+[205/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:777:3 › QA-BO-026-F: Role Detail — prototype scenario states › F3. scenario 'partial' → error เฉพาะส่วน Permissions + retry เฉพาะส่วนนั้น
+[206/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:732:3 › QA-BO-026-E: Role Detail — sections & navigation › E13. Inactive role detail — ปุ่ม 'เปิดใช้งาน' (primary) แทนปิดใช้งาน
+[207/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:777:3 › QA-BO-026-F: Role Detail — prototype scenario states › F3. scenario 'partial' → error เฉพาะส่วน Permissions + retry เฉพาะส่วนนั้น
+[208/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:682:3 › QA-BO-026-E: Role Detail — sections & navigation › E9. Role Audit History — ตาราง 5 คอลัมน์ + entries ของ ROL-101 ถูกลำดับและป้ายผล
+[209/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:743:3 › QA-BO-026-E: Role Detail — sections & navigation › E14. back button → กลับ Role List ครบทุก row
+[210/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:790:3 › QA-BO-026-F: Role Detail — prototype scenario states › F4. scenario 'unauthorized' → 'ไม่มีสิทธิ์ดู Role นี้' + back button
+[211/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:699:3 › QA-BO-026-E: Role Detail — sections & navigation › E10. Role Audit History — ROL-103 แสดง Deactivate/Reactivate lifecycle
+[212/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:790:3 › QA-BO-026-F: Role Detail — prototype scenario states › F4. scenario 'unauthorized' → 'ไม่มีสิทธิ์ดู Role นี้' + back button
+[213/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:758:3 › QA-BO-026-F: Role Detail — prototype scenario states › F1. scenario 'loading' → skeleton page (role-skel-page)
+[214/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:710:3 › QA-BO-026-E: Role Detail — sections & navigation › E11. System Role (ROL-001) — ไม่มี action section เลย (immutability)
+[215/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:800:3 › QA-BO-026-F: Role Detail — prototype scenario states › F5. scenario 'notfound' → 'ไม่พบ Role' + back button
+[216/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:800:3 › QA-BO-026-F: Role Detail — prototype scenario states › F5. scenario 'notfound' → 'ไม่พบ Role' + back button
+[217/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:766:3 › QA-BO-026-F: Role Detail — prototype scenario states › F2. scenario 'error' → 'โหลดรายละเอียด Role ไม่สำเร็จ' + retry กลับ ready
+[218/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:722:3 › QA-BO-026-E: Role Detail — sections & navigation › E12. Custom Role detail — มีปุ่ม 'แก้ไข' + 'ปิดใช้งาน' ที่ action section
+[219/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:810:3 › QA-BO-026-F: Role Detail — prototype scenario states › F6. scenario 'stale' → 'ข้อมูล Role มีการเปลี่ยนแปลงแล้ว' + ปุ่มโหลดข้อมูลล่าสุด
+[220/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:810:3 › QA-BO-026-F: Role Detail — prototype scenario states › F6. scenario 'stale' → 'ข้อมูล Role มีการเปลี่ยนแปลงแล้ว' + ปุ่มโหลดข้อมูลล่าสุด
+[221/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:732:3 › QA-BO-026-E: Role Detail — sections & navigation › E13. Inactive role detail — ปุ่ม 'เปิดใช้งาน' (primary) แทนปิดใช้งาน
+[222/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:777:3 › QA-BO-026-F: Role Detail — prototype scenario states › F3. scenario 'partial' → error เฉพาะส่วน Permissions + retry เฉพาะส่วนนั้น
+[223/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:825:3 › QA-BO-026-G: Role List — prototype scenario states › G1. scenario 'loading' → head + skeleton rows 6 rows (aria-busy)
+[224/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:825:3 › QA-BO-026-G: Role List — prototype scenario states › G1. scenario 'loading' → head + skeleton rows 6 rows (aria-busy)
+[225/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:743:3 › QA-BO-026-E: Role Detail — sections & navigation › E14. back button → กลับ Role List ครบทุก row
+[226/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:833:3 › QA-BO-026-G: Role List — prototype scenario states › G2. scenario 'error' → 'โหลดรายการ Role ไม่สำเร็จ' + retry กลับ ready (filter ไม่ถูกล้าง)
+[227/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:833:3 › QA-BO-026-G: Role List — prototype scenario states › G2. scenario 'error' → 'โหลดรายการ Role ไม่สำเร็จ' + retry กลับ ready (filter ไม่ถูกล้าง)
+[228/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:790:3 › QA-BO-026-F: Role Detail — prototype scenario states › F4. scenario 'unauthorized' → 'ไม่มีสิทธิ์ดู Role นี้' + back button
+[229/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:758:3 › QA-BO-026-F: Role Detail — prototype scenario states › F1. scenario 'loading' → skeleton page (role-skel-page)
+[230/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:844:3 › QA-BO-026-G: Role List — prototype scenario states › G3. scenario 'unauthorized' → 'ไม่มีสิทธิ์เข้าถึง Roles & Permissions' + ปุ่มกลับ Dashboard
+[231/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:800:3 › QA-BO-026-F: Role Detail — prototype scenario states › F5. scenario 'notfound' → 'ไม่พบ Role' + back button
+[232/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:844:3 › QA-BO-026-G: Role List — prototype scenario states › G3. scenario 'unauthorized' → 'ไม่มีสิทธิ์เข้าถึง Roles & Permissions' + ปุ่มกลับ Dashboard
+[233/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:766:3 › QA-BO-026-F: Role Detail — prototype scenario states › F2. scenario 'error' → 'โหลดรายละเอียด Role ไม่สำเร็จ' + retry กลับ ready
+[234/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:853:3 › QA-BO-026-G: Role List — prototype scenario states › G4. scenario 'empty' → 'ยังไม่มี Custom Role' + ปุ่มสร้างใน state block
+[235/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:853:3 › QA-BO-026-G: Role List — prototype scenario states › G4. scenario 'empty' → 'ยังไม่มี Custom Role' + ปุ่มสร้างใน state block
+[236/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:810:3 › QA-BO-026-F: Role Detail — prototype scenario states › F6. scenario 'stale' → 'ข้อมูล Role มีการเปลี่ยนแปลงแล้ว' + ปุ่มโหลดข้อมูลล่าสุด
+[237/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:777:3 › QA-BO-026-F: Role Detail — prototype scenario states › F3. scenario 'partial' → error เฉพาะส่วน Permissions + retry เฉพาะส่วนนั้น
+[238/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:870:3 › QA-BO-026-H: System Role immutability & permission gating › H1. System Role rows ไม่มี mutation buttons ใน DOM (เฉพาะ ดูรายละเอียด)
+[239/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:870:3 › QA-BO-026-H: System Role immutability & permission gating › H1. System Role rows ไม่มี mutation buttons ใน DOM (เฉพาะ ดูรายละเอียด)
+[240/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:825:3 › QA-BO-026-G: Role List — prototype scenario states › G1. scenario 'loading' → head + skeleton rows 6 rows (aria-busy)
+[241/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:879:3 › QA-BO-026-H: System Role immutability & permission gating › H2. Custom Role rows มี mutation buttons ตามสถานะ (Active: แก้ไข+ปิดใช้งาน, Inactive: แก้ไข+เปิดใช้งาน)
+[242/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:879:3 › QA-BO-026-H: System Role immutability & permission gating › H2. Custom Role rows มี mutation buttons ตามสถานะ (Active: แก้ไข+ปิดใช้งาน, Inactive: แก้ไข+เปิดใช้งาน)
+[243/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:790:3 › QA-BO-026-F: Role Detail — prototype scenario states › F4. scenario 'unauthorized' → 'ไม่มีสิทธิ์ดู Role นี้' + back button
+[244/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:897:3 › QA-BO-026-H: System Role immutability & permission gating › H3. actor=Super Admin มี roles.manage (admin) → ปุ่มสร้าง + mutation actions แสดงครบ
+[245/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:833:3 › QA-BO-026-G: Role List — prototype scenario states › G2. scenario 'error' → 'โหลดรายการ Role ไม่สำเร็จ' + retry กลับ ready (filter ไม่ถูกล้าง)
+[246/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:897:3 › QA-BO-026-H: System Role immutability & permission gating › H3. actor=Super Admin มี roles.manage (admin) → ปุ่มสร้าง + mutation actions แสดงครบ
+[247/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:905:3 › QA-BO-026-H: System Role immutability & permission gating › H4. permission catalog — roles.view/admin เท่านั้นที่ Super Admin เห็น (roles.manage อยู่ใน Settings group)
+[248/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:800:3 › QA-BO-026-F: Role Detail — prototype scenario states › F5. scenario 'notfound' → 'ไม่พบ Role' + back button
+[249/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:905:3 › QA-BO-026-H: System Role immutability & permission gating › H4. permission catalog — roles.view/admin เท่านั้นที่ Super Admin เห็น (roles.manage อยู่ใน Settings group)
+[250/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:844:3 › QA-BO-026-G: Role List — prototype scenario states › G3. scenario 'unauthorized' → 'ไม่มีสิทธิ์เข้าถึง Roles & Permissions' + ปุ่มกลับ Dashboard
+[251/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:919:3 › QA-BO-026-I: Create Custom Role flow › I1. เปิด modal — title/desc/Role ID readonly (ROL-104)/fields ครบ
+[252/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:919:3 › QA-BO-026-I: Create Custom Role flow › I1. เปิด modal — title/desc/Role ID readonly (ROL-104)/fields ครบ
+[253/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:810:3 › QA-BO-026-F: Role Detail — prototype scenario states › F6. scenario 'stale' → 'ข้อมูล Role มีการเปลี่ยนแปลงแล้ว' + ปุ่มโหลดข้อมูลล่าสุด
+[254/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:937:3 › QA-BO-026-I: Create Custom Role flow › I2. พิมพ์ชื่อ → Role Key auto-slug; แก้ key เองแล้วหยุด auto-slug
+[255/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:937:3 › QA-BO-026-I: Create Custom Role flow › I2. พิมพ์ชื่อ → Role Key auto-slug; แก้ key เองแล้วหยุด auto-slug
+[256/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:853:3 › QA-BO-026-G: Role List — prototype scenario states › G4. scenario 'empty' → 'ยังไม่มี Custom Role' + ปุ่มสร้างใน state block
+[257/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:825:3 › QA-BO-026-G: Role List — prototype scenario states › G1. scenario 'loading' → head + skeleton rows 6 rows (aria-busy)
+[258/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:951:3 › QA-BO-026-I: Create Custom Role flow › I3. Role Key input ลบอักขระไม่ถูกต้องอัตโนมัติ + แสดง error
+[259/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:951:3 › QA-BO-026-I: Create Custom Role flow › I3. Role Key input ลบอักขระไม่ถูกต้องอัตโนมัติ + แสดง error
+[260/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:870:3 › QA-BO-026-H: System Role immutability & permission gating › H1. System Role rows ไม่มี mutation buttons ใน DOM (เฉพาะ ดูรายละเอียด)
+[261/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:961:3 › QA-BO-026-I: Create Custom Role flow › I4. permission picker — manage perms ถูกล็อกจนกว่าเลือก view ของกลุ่มเดียวกัน
+[262/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:833:3 › QA-BO-026-G: Role List — prototype scenario states › G2. scenario 'error' → 'โหลดรายการ Role ไม่สำเร็จ' + retry กลับ ready (filter ไม่ถูกล้าง)
+[263/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:961:3 › QA-BO-026-I: Create Custom Role flow › I4. permission picker — manage perms ถูกล็อกจนกว่าเลือก view ของกลุ่มเดียวกัน
+[264/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:879:3 › QA-BO-026-H: System Role immutability & permission gating › H2. Custom Role rows มี mutation buttons ตามสถานะ (Active: แก้ไข+ปิดใช้งาน, Inactive: แก้ไข+เปิดใช้งาน)
+[265/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:981:3 › QA-BO-026-I: Create Custom Role flow › I5. picker group พับ/ขยายได้ (is-collapsed + aria-expanded)
+[266/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:897:3 › QA-BO-026-H: System Role immutability & permission gating › H3. actor=Super Admin มี roles.manage (admin) → ปุ่มสร้าง + mutation actions แสดงครบ
+[267/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:981:3 › QA-BO-026-I: Create Custom Role flow › I5. picker group พับ/ขยายได้ (is-collapsed + aria-expanded)
+[268/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:844:3 › QA-BO-026-G: Role List — prototype scenario states › G3. scenario 'unauthorized' → 'ไม่มีสิทธิ์เข้าถึง Roles & Permissions' + ปุ่มกลับ Dashboard
+[269/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:993:3 › QA-BO-026-I: Create Custom Role flow › I6. validation — ส่งฟอร์มว่าง → error ชื่อ + error picker อย่างน้อย 1 รายการ
+[270/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:905:3 › QA-BO-026-H: System Role immutability & permission gating › H4. permission catalog — roles.view/admin เท่านั้นที่ Super Admin เห็น (roles.manage อยู่ใน Settings group)
+[271/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:993:3 › QA-BO-026-I: Create Custom Role flow › I6. validation — ส่งฟอร์มว่าง → error ชื่อ + error picker อย่างน้อย 1 รายการ
+[272/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:853:3 › QA-BO-026-G: Role List — prototype scenario states › G4. scenario 'empty' → 'ยังไม่มี Custom Role' + ปุ่มสร้างใน state block
+[273/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:919:3 › QA-BO-026-I: Create Custom Role flow › I1. เปิด modal — title/desc/Role ID readonly (ROL-104)/fields ครบ
+[274/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1002:3 › QA-BO-026-I: Create Custom Role flow › I7. validation — ชื่อซ้ำ 'Super Admin' → error
+[275/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1002:3 › QA-BO-026-I: Create Custom Role flow › I7. validation — ชื่อซ้ำ 'Super Admin' → error
+[276/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:870:3 › QA-BO-026-H: System Role immutability & permission gating › H1. System Role rows ไม่มี mutation buttons ใน DOM (เฉพาะ ดูรายละเอียด)
+[277/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:937:3 › QA-BO-026-I: Create Custom Role flow › I2. พิมพ์ชื่อ → Role Key auto-slug; แก้ key เองแล้วหยุด auto-slug
+[278/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1012:3 › QA-BO-026-I: Create Custom Role flow › I8. validation — Role Key ซ้ำ 'super_admin' → error
+[279/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1012:3 › QA-BO-026-I: Create Custom Role flow › I8. validation — Role Key ซ้ำ 'super_admin' → error
+[280/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:879:3 › QA-BO-026-H: System Role immutability & permission gating › H2. Custom Role rows มี mutation buttons ตามสถานะ (Active: แก้ไข+ปิดใช้งาน, Inactive: แก้ไข+เปิดใช้งาน)
+[281/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:951:3 › QA-BO-026-I: Create Custom Role flow › I3. Role Key input ลบอักขระไม่ถูกต้องอัตโนมัติ + แสดง error
+[282/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1024:3 › QA-BO-026-I: Create Custom Role flow › I9. validation — ชื่อยาวเกิน 64 + คำอธิบายเกิน 512 → error ทั้งคู่
+[283/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1024:3 › QA-BO-026-I: Create Custom Role flow › I9. validation — ชื่อยาวเกิน 64 + คำอธิบายเกิน 512 → error ทั้งคู่
+[284/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:897:3 › QA-BO-026-H: System Role immutability & permission gating › H3. actor=Super Admin มี roles.manage (admin) → ปุ่มสร้าง + mutation actions แสดงครบ
+[285/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:961:3 › QA-BO-026-I: Create Custom Role flow › I4. permission picker — manage perms ถูกล็อกจนกว่าเลือก view ของกลุ่มเดียวกัน
+[286/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1038:3 › QA-BO-026-I: Create Custom Role flow › I10. validation — Role Key ว่าง (ไม่พิมพ์อะไรเลย) → error
+[287/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:905:3 › QA-BO-026-H: System Role immutability & permission gating › H4. permission catalog — roles.view/admin เท่านั้นที่ Super Admin เห็น (roles.manage อยู่ใน Settings group)
+[288/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1038:3 › QA-BO-026-I: Create Custom Role flow › I10. validation — Role Key ว่าง (ไม่พิมพ์อะไรเลย) → error
+[289/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:981:3 › QA-BO-026-I: Create Custom Role flow › I5. picker group พับ/ขยายได้ (is-collapsed + aria-expanded)
+[290/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:919:3 › QA-BO-026-I: Create Custom Role flow › I1. เปิด modal — title/desc/Role ID readonly (ROL-104)/fields ครบ
+[291/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1052:3 › QA-BO-026-I: Create Custom Role flow › I11. confirm modal — summary ครบ (Role ID/ชื่อ/Key/คำอธิบาย/Type/Status/Permissions) + perm groups
+[292/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1052:3 › QA-BO-026-I: Create Custom Role flow › I11. confirm modal — summary ครบ (Role ID/ชื่อ/Key/คำอธิบาย/Type/Status/Permissions) + perm groups
+[293/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:993:3 › QA-BO-026-I: Create Custom Role flow › I6. validation — ส่งฟอร์มว่าง → error ชื่อ + error picker อย่างน้อย 1 รายการ
+[294/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:937:3 › QA-BO-026-I: Create Custom Role flow › I2. พิมพ์ชื่อ → Role Key auto-slug; แก้ key เองแล้วหยุด auto-slug
+[295/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1079:3 › QA-BO-026-I: Create Custom Role flow › I12. confirm → ย้อนกลับ คงค่าที่กรอก + กลับไปตรวจสอบและยืนยันได้อีกครั้ง
+[296/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1079:3 › QA-BO-026-I: Create Custom Role flow › I12. confirm → ย้อนกลับ คงค่าที่กรอก + กลับไปตรวจสอบและยืนยันได้อีกครั้ง
+[297/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1002:3 › QA-BO-026-I: Create Custom Role flow › I7. validation — ชื่อซ้ำ 'Super Admin' → error
+[298/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:951:3 › QA-BO-026-I: Create Custom Role flow › I3. Role Key input ลบอักขระไม่ถูกต้องอัตโนมัติ + แสดง error
+[299/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1096:3 › QA-BO-026-I: Create Custom Role flow › I13. confirm → role ถูกสร้าง Active + toast + row ใหม่ใน list + audit event
+[300/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1096:3 › QA-BO-026-I: Create Custom Role flow › I13. confirm → role ถูกสร้าง Active + toast + row ใหม่ใน list + audit event
+[301/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1012:3 › QA-BO-026-I: Create Custom Role flow › I8. validation — Role Key ซ้ำ 'super_admin' → error
+[302/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:961:3 › QA-BO-026-I: Create Custom Role flow › I4. permission picker — manage perms ถูกล็อกจนกว่าเลือก view ของกลุ่มเดียวกัน
+[303/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1126:3 › QA-BO-026-I: Create Custom Role flow › I14. ยกเลิกด้วยปุ่ม/กากบาท → modal ปิด ไม่มีการสร้าง
+[304/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1126:3 › QA-BO-026-I: Create Custom Role flow › I14. ยกเลิกด้วยปุ่ม/กากบาท → modal ปิด ไม่มีการสร้าง
+[305/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1024:3 › QA-BO-026-I: Create Custom Role flow › I9. validation — ชื่อยาวเกิน 64 + คำอธิบายเกิน 512 → error ทั้งคู่
+[306/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:981:3 › QA-BO-026-I: Create Custom Role flow › I5. picker group พับ/ขยายได้ (is-collapsed + aria-expanded)
+[307/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1142:3 › QA-BO-026-J: Edit Custom Role flow › J1. เปิด edit modal จาก row menu — title + Role ID/Key readonly + perms pre-checked
+[308/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1142:3 › QA-BO-026-J: Edit Custom Role flow › J1. เปิด edit modal จาก row menu — title + Role ID/Key readonly + perms pre-checked
+[309/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1038:3 › QA-BO-026-I: Create Custom Role flow › I10. validation — Role Key ว่าง (ไม่พิมพ์อะไรเลย) → error
+[310/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:993:3 › QA-BO-026-I: Create Custom Role flow › I6. validation — ส่งฟอร์มว่าง → error ชื่อ + error picker อย่างน้อย 1 รายการ
+[311/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1160:3 › QA-BO-026-J: Edit Custom Role flow › J2. submit โดยไม่เปลี่ยนอะไร → picker error 'ไม่มีข้อมูลเปลี่ยนแปลง กรุณาแก้ไขข้อมูลก่อนยืนยัน'
+[312/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1160:3 › QA-BO-026-J: Edit Custom Role flow › J2. submit โดยไม่เปลี่ยนอะไร → picker error 'ไม่มีข้อมูลเปลี่ยนแปลง กรุณาแก้ไขข้อมูลก่อนยืนยัน'
+[313/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1002:3 › QA-BO-026-I: Create Custom Role flow › I7. validation — ชื่อซ้ำ 'Super Admin' → error
+[314/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1052:3 › QA-BO-026-I: Create Custom Role flow › I11. confirm modal — summary ครบ (Role ID/ชื่อ/Key/คำอธิบาย/Type/Status/Permissions) + perm groups
+[315/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1169:3 › QA-BO-026-J: Edit Custom Role flow › J3. แก้ชื่อ → confirm แสดง Revision 1→2 + แถวเปลี่ยนไฮไลต์ before→after
+[316/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1169:3 › QA-BO-026-J: Edit Custom Role flow › J3. แก้ชื่อ → confirm แสดง Revision 1→2 + แถวเปลี่ยนไฮไลต์ before→after
+[317/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1012:3 › QA-BO-026-I: Create Custom Role flow › I8. validation — Role Key ซ้ำ 'super_admin' → error
+[318/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1189:3 › QA-BO-026-J: Edit Custom Role flow › J4. เพิ่ม permission → confirm มี 'เพิ่ม' tag; ถอน → block 'สิทธิ์ที่ลด (N)'
+[319/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1079:3 › QA-BO-026-I: Create Custom Role flow › I12. confirm → ย้อนกลับ คงค่าที่กรอก + กลับไปตรวจสอบและยืนยันได้อีกครั้ง
+[320/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1189:3 › QA-BO-026-J: Edit Custom Role flow › J4. เพิ่ม permission → confirm มี 'เพิ่ม' tag; ถอน → block 'สิทธิ์ที่ลด (N)'
+[321/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1024:3 › QA-BO-026-I: Create Custom Role flow › I9. validation — ชื่อยาวเกิน 64 + คำอธิบายเกิน 512 → error ทั้งคู่
+[322/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1206:3 › QA-BO-026-J: Edit Custom Role flow › J5. confirm ต้องกรอกเหตุผล — ว่าง → error 'กรุณาระบุเหตุผลในการแก้ไข'
+[323/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1096:3 › QA-BO-026-I: Create Custom Role flow › I13. confirm → role ถูกสร้าง Active + toast + row ใหม่ใน list + audit event
+[324/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1206:3 › QA-BO-026-J: Edit Custom Role flow › J5. confirm ต้องกรอกเหตุผล — ว่าง → error 'กรุณาระบุเหตุผลในการแก้ไข'
+[325/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1038:3 › QA-BO-026-I: Create Custom Role flow › I10. validation — Role Key ว่าง (ไม่พิมพ์อะไรเลย) → error
+[326/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1217:3 › QA-BO-026-J: Edit Custom Role flow › J6. เหตุผลยาวเกิน 512 → error 'เหตุผลต้องไม่เกิน 512 ตัวอักษร'
+[327/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1217:3 › QA-BO-026-J: Edit Custom Role flow › J6. เหตุผลยาวเกิน 512 → error 'เหตุผลต้องไม่เกิน 512 ตัวอักษร'
+[328/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1126:3 › QA-BO-026-I: Create Custom Role flow › I14. ยกเลิกด้วยปุ่ม/กากบาท → modal ปิด ไม่มีการสร้าง
+[329/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1052:3 › QA-BO-026-I: Create Custom Role flow › I11. confirm modal — summary ครบ (Role ID/ชื่อ/Key/คำอธิบาย/Type/Status/Permissions) + perm groups
+[330/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1230:3 › QA-BO-026-J: Edit Custom Role flow › J7. ยืนยันแก้ไขสำเร็จ → toast + history entry ใหม่ + revision+1 + list อัปเดต
+[331/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1142:3 › QA-BO-026-J: Edit Custom Role flow › J1. เปิด edit modal จาก row menu — title + Role ID/Key readonly + perms pre-checked
+[332/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1230:3 › QA-BO-026-J: Edit Custom Role flow › J7. ยืนยันแก้ไขสำเร็จ → toast + history entry ใหม่ + revision+1 + list อัปเดต
+[333/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1250:3 › QA-BO-026-J: Edit Custom Role flow › J8. ย้อนกลับจาก confirm → ฟอร์มคงค่าที่แก้ไว้
+[334/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1079:3 › QA-BO-026-I: Create Custom Role flow › I12. confirm → ย้อนกลับ คงค่าที่กรอก + กลับไปตรวจสอบและยืนยันได้อีกครั้ง
+[335/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1160:3 › QA-BO-026-J: Edit Custom Role flow › J2. submit โดยไม่เปลี่ยนอะไร → picker error 'ไม่มีข้อมูลเปลี่ยนแปลง กรุณาแก้ไขข้อมูลก่อนยืนยัน'
+[336/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1250:3 › QA-BO-026-J: Edit Custom Role flow › J8. ย้อนกลับจาก confirm → ฟอร์มคงค่าที่แก้ไว้
+[337/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1262:3 › QA-BO-026-J: Edit Custom Role flow › J9. แก้ชื่อซ้ำ role อื่น → form validation error (ไม่เข้า confirm)
+[338/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1169:3 › QA-BO-026-J: Edit Custom Role flow › J3. แก้ชื่อ → confirm แสดง Revision 1→2 + แถวเปลี่ยนไฮไลต์ before→after
+[339/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1096:3 › QA-BO-026-I: Create Custom Role flow › I13. confirm → role ถูกสร้าง Active + toast + row ใหม่ใน list + audit event
+[340/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1262:3 › QA-BO-026-J: Edit Custom Role flow › J9. แก้ชื่อซ้ำ role อื่น → form validation error (ไม่เข้า confirm)
+[341/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1271:3 › QA-BO-026-J: Edit Custom Role flow › J10. edit จาก detail head action → modal เดียวกันเปิด
+[342/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1271:3 › QA-BO-026-J: Edit Custom Role flow › J10. edit จาก detail head action → modal เดียวกันเปิด
+[343/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1189:3 › QA-BO-026-J: Edit Custom Role flow › J4. เพิ่ม permission → confirm มี 'เพิ่ม' tag; ถอน → block 'สิทธิ์ที่ลด (N)'
+[344/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1126:3 › QA-BO-026-I: Create Custom Role flow › I14. ยกเลิกด้วยปุ่ม/กากบาท → modal ปิด ไม่มีการสร้าง
+[345/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1286:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K1. deactivate ROL-101 → modal 'Confirm Deactivate Custom Role' + summary + 'พร้อมปิดใช้งาน'
+[346/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1286:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K1. deactivate ROL-101 → modal 'Confirm Deactivate Custom Role' + summary + 'พร้อมปิดใช้งาน'
+[347/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1206:3 › QA-BO-026-J: Edit Custom Role flow › J5. confirm ต้องกรอกเหตุผล — ว่าง → error 'กรุณาระบุเหตุผลในการแก้ไข'
+[348/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1142:3 › QA-BO-026-J: Edit Custom Role flow › J1. เปิด edit modal จาก row menu — title + Role ID/Key readonly + perms pre-checked
+[349/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1308:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K2. deactivate reason ว่าง → error 'กรุณาระบุเหตุผลในการปิดใช้งาน'
+[350/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1308:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K2. deactivate reason ว่าง → error 'กรุณาระบุเหตุผลในการปิดใช้งาน'
+[351/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1217:3 › QA-BO-026-J: Edit Custom Role flow › J6. เหตุผลยาวเกิน 512 → error 'เหตุผลต้องไม่เกิน 512 ตัวอักษร'
+[352/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1317:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K3. deactivate สำเร็จ → toast + status กลาย Inactive + menu กลาย 'เปิดใช้งาน' + history entry
+[353/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1160:3 › QA-BO-026-J: Edit Custom Role flow › J2. submit โดยไม่เปลี่ยนอะไร → picker error 'ไม่มีข้อมูลเปลี่ยนแปลง กรุณาแก้ไขข้อมูลก่อนยืนยัน'
+[354/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1317:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K3. deactivate สำเร็จ → toast + status กลาย Inactive + menu กลาย 'เปิดใช้งาน' + history entry
+[355/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1334:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K4. deactivate ยกเลิก → modal ปิดไม่เปลี่ยนสถานะ
+[356/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1169:3 › QA-BO-026-J: Edit Custom Role flow › J3. แก้ชื่อ → confirm แสดง Revision 1→2 + แถวเปลี่ยนไฮไลต์ before→after
+[357/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1230:3 › QA-BO-026-J: Edit Custom Role flow › J7. ยืนยันแก้ไขสำเร็จ → toast + history entry ใหม่ + revision+1 + list อัปเดต
+[358/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1334:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K4. deactivate ยกเลิก → modal ปิดไม่เปลี่ยนสถานะ
+[359/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1343:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K5. reactivate ROL-103 → modal 'Confirm Reactivate Custom Role' + summary + 'พร้อมเปิดใช้งาน'
+[360/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1189:3 › QA-BO-026-J: Edit Custom Role flow › J4. เพิ่ม permission → confirm มี 'เพิ่ม' tag; ถอน → block 'สิทธิ์ที่ลด (N)'
+[361/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1343:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K5. reactivate ROL-103 → modal 'Confirm Reactivate Custom Role' + summary + 'พร้อมเปิดใช้งาน'
+[362/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1250:3 › QA-BO-026-J: Edit Custom Role flow › J8. ย้อนกลับจาก confirm → ฟอร์มคงค่าที่แก้ไว้
+[363/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1361:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K6. reactivate reason ว่าง → error 'กรุณาระบุเหตุผลในการเปิดใช้งาน'
+[364/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1361:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K6. reactivate reason ว่าง → error 'กรุณาระบุเหตุผลในการเปิดใช้งาน'
+[365/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1206:3 › QA-BO-026-J: Edit Custom Role flow › J5. confirm ต้องกรอกเหตุผล — ว่าง → error 'กรุณาระบุเหตุผลในการแก้ไข'
+[366/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1262:3 › QA-BO-026-J: Edit Custom Role flow › J9. แก้ชื่อซ้ำ role อื่น → form validation error (ไม่เข้า confirm)
+[367/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1371:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K7. reactivate สำเร็จ → toast + status กลาย Active + inactive note หายจาก detail
+[368/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1371:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K7. reactivate สำเร็จ → toast + status กลาย Active + inactive note หายจาก detail
+[369/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1217:3 › QA-BO-026-J: Edit Custom Role flow › J6. เหตุผลยาวเกิน 512 → error 'เหตุผลต้องไม่เกิน 512 ตัวอักษร'
+[370/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1271:3 › QA-BO-026-J: Edit Custom Role flow › J10. edit จาก detail head action → modal เดียวกันเปิด
+[371/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1389:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K8. deactivate จาก detail head action → modal เดียวกัน
+[372/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1389:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K8. deactivate จาก detail head action → modal เดียวกัน
+[373/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1286:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K1. deactivate ROL-101 → modal 'Confirm Deactivate Custom Role' + summary + 'พร้อมปิดใช้งาน'
+[374/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1230:3 › QA-BO-026-J: Edit Custom Role flow › J7. ยืนยันแก้ไขสำเร็จ → toast + history entry ใหม่ + revision+1 + list อัปเดต
+[375/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1403:3 › QA-BO-026-L: Roles & Permissions — responsive › L1. list responsive — desktop ตาราง 8 คอลัมน์; mobile การ์ด (head ซ่อน, cell หลัก+pill)
+[376/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1403:3 › QA-BO-026-L: Roles & Permissions — responsive › L1. list responsive — desktop ตาราง 8 คอลัมน์; mobile การ์ด (head ซ่อน, cell หลัก+pill)
+[377/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1308:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K2. deactivate reason ว่าง → error 'กรุณาระบุเหตุผลในการปิดใช้งาน'
+[378/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1431:3 › QA-BO-026-L: Roles & Permissions — responsive › L2. mobile card — tags (Type/Status/Admins) + meta (Role ID/Last Updated) + '...' ไม่มีกรอบ
+[379/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1449:3 › QA-BO-026-L: Roles & Permissions — responsive › L3. mobile filter bar — ปิดเป็นค่าเริ่มต้น, toggle เปิด, search เต็มแถว, reset ใน panel actions
+[380/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1465:3 › QA-BO-026-L: Roles & Permissions — responsive › L4. tablet filter bar — บรรทัดเดียว 5 columns (search + 3 filters + reset)
+[381/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1475:3 › QA-BO-026-L: Roles & Permissions — responsive › L5. detail responsive — grid: desktop 4 / tablet 2 / mobile 1 + history card stack บน mobile
+[382/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1431:3 › QA-BO-026-L: Roles & Permissions — responsive › L2. mobile card — tags (Type/Status/Admins) + meta (Role ID/Last Updated) + '...' ไม่มีกรอบ
+[383/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1449:3 › QA-BO-026-L: Roles & Permissions — responsive › L3. mobile filter bar — ปิดเป็นค่าเริ่มต้น, toggle เปิด, search เต็มแถว, reset ใน panel actions
+[384/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1250:3 › QA-BO-026-J: Edit Custom Role flow › J8. ย้อนกลับจาก confirm → ฟอร์มคงค่าที่แก้ไว้
+[385/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1465:3 › QA-BO-026-L: Roles & Permissions — responsive › L4. tablet filter bar — บรรทัดเดียว 5 columns (search + 3 filters + reset)
+[386/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1475:3 › QA-BO-026-L: Roles & Permissions — responsive › L5. detail responsive — grid: desktop 4 / tablet 2 / mobile 1 + history card stack บน mobile
+[387/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1492:3 › QA-BO-026-L: Roles & Permissions — responsive › L6. modal responsive — create modal ใช้งานได้บน mobile ไม่มี horizontal scroll
+[388/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1508:3 › QA-BO-026-M: Roles & Permissions — cross-module › M1. สร้าง role แล้วไป Settings > Audit Log เจอ event 'Create Custom Role' เป็น row ล่าสุด
+[389/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1317:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K3. deactivate สำเร็จ → toast + status กลาย Inactive + menu กลาย 'เปิดใช้งาน' + history entry
+[390/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1492:3 › QA-BO-026-L: Roles & Permissions — responsive › L6. modal responsive — create modal ใช้งานได้บน mobile ไม่มี horizontal scroll
+[391/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1508:3 › QA-BO-026-M: Roles & Permissions — cross-module › M1. สร้าง role แล้วไป Settings > Audit Log เจอ event 'Create Custom Role' เป็น row ล่าสุด
+[392/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1262:3 › QA-BO-026-J: Edit Custom Role flow › J9. แก้ชื่อซ้ำ role อื่น → form validation error (ไม่เข้า confirm)
+[393/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1334:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K4. deactivate ยกเลิก → modal ปิดไม่เปลี่ยนสถานะ
+[394/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1534:3 › QA-BO-026-M: Roles & Permissions — cross-module › M2. จาก Role Detail กลับไป Admin Accounts ผ่าน nav ได้ปกติ
+[395/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1534:3 › QA-BO-026-M: Roles & Permissions — cross-module › M2. จาก Role Detail กลับไป Admin Accounts ผ่าน nav ได้ปกติ
+[396/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1271:3 › QA-BO-026-J: Edit Custom Role flow › J10. edit จาก detail head action → modal เดียวกันเปิด
+[397/428] [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js:1549:3 › QA-BO-026-M: Roles & Permissions — cross-module › M3. edit role (ลดสิทธิ์) → Role Audit History แสดง entry ใหม่หลังกลับเข้า detail
+[398/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1343:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K5. reactivate ROL-103 → modal 'Confirm Reactivate Custom Role' + summary + 'พร้อมเปิดใช้งาน'
+[399/428] [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js:1549:3 › QA-BO-026-M: Roles & Permissions — cross-module › M3. edit role (ลดสิทธิ์) → Role Audit History แสดง entry ใหม่หลังกลับเข้า detail
+[400/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1286:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K1. deactivate ROL-101 → modal 'Confirm Deactivate Custom Role' + summary + 'พร้อมปิดใช้งาน'
+[401/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1361:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K6. reactivate reason ว่าง → error 'กรุณาระบุเหตุผลในการเปิดใช้งาน'
+[402/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1308:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K2. deactivate reason ว่าง → error 'กรุณาระบุเหตุผลในการปิดใช้งาน'
+[403/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1371:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K7. reactivate สำเร็จ → toast + status กลาย Active + inactive note หายจาก detail
+[404/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1317:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K3. deactivate สำเร็จ → toast + status กลาย Inactive + menu กลาย 'เปิดใช้งาน' + history entry
+[405/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1389:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K8. deactivate จาก detail head action → modal เดียวกัน
+[406/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1334:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K4. deactivate ยกเลิก → modal ปิดไม่เปลี่ยนสถานะ
+[407/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1403:3 › QA-BO-026-L: Roles & Permissions — responsive › L1. list responsive — desktop ตาราง 8 คอลัมน์; mobile การ์ด (head ซ่อน, cell หลัก+pill)
+[408/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1343:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K5. reactivate ROL-103 → modal 'Confirm Reactivate Custom Role' + summary + 'พร้อมเปิดใช้งาน'
+[409/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1431:3 › QA-BO-026-L: Roles & Permissions — responsive › L2. mobile card — tags (Type/Status/Admins) + meta (Role ID/Last Updated) + '...' ไม่มีกรอบ
+[410/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1449:3 › QA-BO-026-L: Roles & Permissions — responsive › L3. mobile filter bar — ปิดเป็นค่าเริ่มต้น, toggle เปิด, search เต็มแถว, reset ใน panel actions
+[411/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1465:3 › QA-BO-026-L: Roles & Permissions — responsive › L4. tablet filter bar — บรรทัดเดียว 5 columns (search + 3 filters + reset)
+[412/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1361:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K6. reactivate reason ว่าง → error 'กรุณาระบุเหตุผลในการเปิดใช้งาน'
+[413/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1475:3 › QA-BO-026-L: Roles & Permissions — responsive › L5. detail responsive — grid: desktop 4 / tablet 2 / mobile 1 + history card stack บน mobile
+[414/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1492:3 › QA-BO-026-L: Roles & Permissions — responsive › L6. modal responsive — create modal ใช้งานได้บน mobile ไม่มี horizontal scroll
+[415/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1508:3 › QA-BO-026-M: Roles & Permissions — cross-module › M1. สร้าง role แล้วไป Settings > Audit Log เจอ event 'Create Custom Role' เป็น row ล่าสุด
+[416/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1371:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K7. reactivate สำเร็จ → toast + status กลาย Active + inactive note หายจาก detail
+[417/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1389:3 › QA-BO-026-K: Deactivate / Reactivate Custom Role › K8. deactivate จาก detail head action → modal เดียวกัน
+[418/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1534:3 › QA-BO-026-M: Roles & Permissions — cross-module › M2. จาก Role Detail กลับไป Admin Accounts ผ่าน nav ได้ปกติ
+[419/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1403:3 › QA-BO-026-L: Roles & Permissions — responsive › L1. list responsive — desktop ตาราง 8 คอลัมน์; mobile การ์ด (head ซ่อน, cell หลัก+pill)
+[420/428] [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js:1549:3 › QA-BO-026-M: Roles & Permissions — cross-module › M3. edit role (ลดสิทธิ์) → Role Audit History แสดง entry ใหม่หลังกลับเข้า detail
+[421/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1431:3 › QA-BO-026-L: Roles & Permissions — responsive › L2. mobile card — tags (Type/Status/Admins) + meta (Role ID/Last Updated) + '...' ไม่มีกรอบ
+[422/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1449:3 › QA-BO-026-L: Roles & Permissions — responsive › L3. mobile filter bar — ปิดเป็นค่าเริ่มต้น, toggle เปิด, search เต็มแถว, reset ใน panel actions
+[423/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1465:3 › QA-BO-026-L: Roles & Permissions — responsive › L4. tablet filter bar — บรรทัดเดียว 5 columns (search + 3 filters + reset)
+[424/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1475:3 › QA-BO-026-L: Roles & Permissions — responsive › L5. detail responsive — grid: desktop 4 / tablet 2 / mobile 1 + history card stack บน mobile
+[425/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1492:3 › QA-BO-026-L: Roles & Permissions — responsive › L6. modal responsive — create modal ใช้งานได้บน mobile ไม่มี horizontal scroll
+[426/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1508:3 › QA-BO-026-M: Roles & Permissions — cross-module › M1. สร้าง role แล้วไป Settings > Audit Log เจอ event 'Create Custom Role' เป็น row ล่าสุด
+[427/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1534:3 › QA-BO-026-M: Roles & Permissions — cross-module › M2. จาก Role Detail กลับไป Admin Accounts ผ่าน nav ได้ปกติ
+[428/428] [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js:1549:3 › QA-BO-026-M: Roles & Permissions — cross-module › M3. edit role (ลดสิทธิ์) → Role Audit History แสดง entry ใหม่หลังกลับเข้า detail
+  Slow test file: [mobile-390] › tests\qa-bo-026-roles-permissions.spec.js (7.4m)
+  Slow test file: [tablet-768] › tests\qa-bo-026-roles-permissions.spec.js (7.0m)
+  Slow test file: [desktop-1440] › tests\qa-bo-026-roles-permissions.spec.js (6.4m)
+  Slow test file: [desktop-1280] › tests\qa-bo-026-roles-permissions.spec.js (6.4m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  12 skipped
+  416 passed (7.5m)

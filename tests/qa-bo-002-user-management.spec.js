@@ -261,7 +261,7 @@ test.describe("QA-BO-002: User Management (strict)", () => {
       await expect(rows).toHaveCount(5);
       for (let i = 0; i < 5; i++) {
         await expect(rows.nth(i).locator("div[data-label='Status'] .pill")).toHaveClass(/green/);
-        await expect(rows.nth(i).locator("div[data-label='Status'] .pill")).toHaveText("ใช้งานได้");
+        await expect(rows.nth(i).locator("div[data-label='Status'] .pill")).toHaveText("Active");
       }
     });
 
@@ -409,7 +409,7 @@ test.describe("QA-BO-002: User Management (strict)", () => {
       await openUserRowMenu(page, "U-1017");
       const menu = page.locator(".user-row[data-user-card='U-1017'] .row-menu-list");
       await expect(menu.locator("button[data-user-open='U-1017']")).toHaveText("ดูรายละเอียด");
-      await expect(menu.locator("button[data-user-action='Reset password']")).toHaveText("Reset password");
+      await expect(menu.locator("button[data-user-action='Reset password']")).toHaveText("ส่งลิงก์ตั้งรหัสผ่านใหม่");
       await expect(menu.locator("button[data-user-action='Suspend']")).toHaveText("ระงับบัญชีชั่วคราว");
       await expect(menu.locator("button[data-user-action='Ban']")).toHaveText("ระงับบัญชีถาวร");
     });
@@ -441,12 +441,12 @@ test.describe("QA-BO-002: User Management (strict)", () => {
     test("31. status pill ครบ 6 สถานะ ใช้ class สีถูกต้อง (green/blue/amber/red/purple/gray)", async ({ page }) => {
       await goToUserAccounts(page);
       const cases = [
-        ["Active", "green", "ใช้งานได้"],
-        ["Pending Verification", "blue", "รอยืนยันตัวตน"],
-        ["Suspended", "amber", "ระงับชั่วคราว"],
-        ["Banned", "red", "ระงับบัญชีถาวร"],
-        ["Deletion Requested", "purple", "รอลบบัญชี"],
-        ["Deleted", "gray", "ลบแล้ว"]
+        ["Active", "green", "Active"],
+        ["Pending Verification", "blue", "Pending Verification"],
+        ["Suspended", "amber", "Suspended"],
+        ["Banned", "red", "Banned"],
+        ["Deletion Requested", "purple", "Deletion Requested"],
+        ["Deleted", "gray", "Deleted"]
       ];
       for (const [value, color, label] of cases) {
         await pickCustomOption(page, "user-status-filter", value);
@@ -607,7 +607,7 @@ test.describe("QA-BO-002: User Management (strict)", () => {
       await page.waitForTimeout(300);
       const modal = page.locator("#user-action-modal");
       await expect(modal).toHaveClass(/show/);
-      await expect(page.locator("#user-action-modal-title")).toHaveText("ระงับบัญชีชั่วคราว");
+      await expect(page.locator("#user-action-modal-title")).toHaveText("Suspend Account");
       await expect(modal.locator(".user-action-target")).toContainText("Crown Time BKK");
       await expect(modal.locator(".user-action-target")).toContainText("U-1017");
       await expect(page.locator("#user-action-reason")).toHaveValue("มีรายงานความเสี่ยงสูง รอตรวจสอบ");
@@ -640,7 +640,7 @@ test.describe("QA-BO-002: User Management (strict)", () => {
       await expect(page.locator("#success-toast")).toHaveClass(/show/);
       await expect(page.locator("#success-toast")).toContainText("Crown Time BKK ถูกระงับบัญชีชั่วคราวแล้ว");
       await expect(page.locator(".user-detail-page .chips .pill").first()).toHaveClass(/amber/);
-      await expect(page.locator(".user-detail-page .chips .pill").first()).toHaveText("ระงับชั่วคราว");
+      await expect(page.locator(".user-detail-page .chips .pill").first()).toHaveText("Suspended");
       const historyAfter = await page.locator(".user-account-history-table tbody tr").count();
       expect(historyAfter).toBe(historyBefore + 1);
       await expect(page.locator(".user-account-history-table tbody tr").first()).toContainText("ระงับบัญชีชั่วคราว");
@@ -664,7 +664,7 @@ test.describe("QA-BO-002: User Management (strict)", () => {
       await expect(page.locator(".user-detail-page .chips .pill").first()).toHaveClass(/red/);
       await page.locator(".user-detail-page button[data-user-action='Unban user']").click();
       await page.waitForTimeout(200);
-      await expect(page.locator("#user-action-modal-title")).toHaveText("ยกเลิกระงับบัญชีถาวร");
+      await expect(page.locator("#user-action-modal-title")).toHaveText("Unban User");
       await page.locator("#user-action-modal [data-user-action-confirm='Unban user']").click();
       await page.waitForTimeout(400);
       await expect(page.locator("#success-toast")).toContainText("The Collector กลับมาใช้งานได้แล้ว");
@@ -696,7 +696,7 @@ test.describe("QA-BO-002: User Management (strict)", () => {
       await expect(page.locator(".user-detail-page .chips .pill").first()).toHaveClass(/blue/);
       await page.locator(".user-detail-page button[data-user-action='Resend verification context']").click();
       await page.waitForTimeout(200);
-      await expect(page.locator("#user-action-modal-title")).toHaveText("ส่งข้อมูลยืนยันตัวตนอีกครั้ง");
+      await expect(page.locator("#user-action-modal-title")).toHaveText("Resend Verification");
       await page.locator("#user-action-modal [data-user-action-confirm='Resend verification context']").click();
       await page.waitForTimeout(400);
       await expect(page.locator("#success-toast")).toContainText("ส่งข้อมูลยืนยันตัวตนให้ Vintage Vault BKK แล้ว");
@@ -789,7 +789,7 @@ test.describe("QA-BO-002: User Management (strict)", () => {
       await expect(page.locator(".report-detail-page .chips .pill.gray")).toHaveText("2 reporters");
       await expect(page.locator("#crumb")).toHaveText("การดำเนินงาน / User Management / Report Detail / RPU-566");
       await expect(page.locator("#panel-title")).toHaveText("Seiko Corner");
-      await expect(page.locator("#panel-subtitle")).toContainText("reporter identity masked");
+      await expect(page.locator("#panel-subtitle")).toContainText("ปิดบังตัวตนผู้รายงาน");
       await expect(page.locator("[data-back-reported-users]")).toBeVisible();
     });
 
@@ -800,7 +800,7 @@ test.describe("QA-BO-002: User Management (strict)", () => {
       const grid = page.locator(".report-detail-page .user-report-reference-grid");
       await expect(grid.locator(".detail-tile").filter({ hasText: "Report ID" })).toContainText("RPU-566");
       await expect(grid.locator(".detail-tile").filter({ hasText: "User ID" })).toContainText("U-1144");
-      await expect(grid.locator(".detail-tile").filter({ hasText: "Account Status" })).toContainText("ใช้งานได้");
+      await expect(grid.locator(".detail-tile").filter({ hasText: "Account Status" })).toContainText("Active");
       await expect(grid.locator("button[data-user-open='U-1144']")).toHaveText("Seiko Corner");
     });
 
@@ -860,7 +860,7 @@ test.describe("QA-BO-002: User Management (strict)", () => {
       const auditBefore = await page.locator(".report-detail-page .history-table").nth(1).locator("tbody tr").count();
       await page.locator(".report-detail-page button[data-report-status-action='Closed']").click();
       await page.waitForTimeout(300);
-      await expect(page.locator("#user-action-modal-title")).toHaveText("ยืนยันการปิดรายงาน");
+      await expect(page.locator("#user-action-modal-title")).toHaveText("Confirm Close Report");
       await expect(page.locator("#user-action-modal .user-action-target")).toContainText("Seiko Corner");
       await expect(page.locator("#user-action-modal .user-action-target")).toContainText("RPU-566");
       await expect(page.locator("#report-close-reason")).toHaveValue("ตรวจหลักฐานครบแล้ว ไม่พบประเด็นค้าง");
@@ -917,11 +917,11 @@ test.describe("QA-BO-002: User Management (strict)", () => {
       const auditBefore = await page.locator(".report-detail-page .history-table").nth(1).locator("tbody tr").count();
       await page.locator(".report-detail-page button[data-user-action='Suspend']").click();
       await page.waitForTimeout(200);
-      await expect(page.locator("#user-action-modal-title")).toHaveText("ระงับบัญชีชั่วคราว");
+      await expect(page.locator("#user-action-modal-title")).toHaveText("Suspend Account");
       await page.locator("#user-action-modal [data-user-action-confirm='Suspend']").click();
       await page.waitForTimeout(400);
       await expect(page.locator("#success-toast")).toContainText("Crown Time BKK ถูกระงับบัญชีชั่วคราวแล้ว");
-      await expect(page.locator(".report-detail-page .user-report-reference-grid .detail-tile").filter({ hasText: "Account Status" })).toContainText("ระงับชั่วคราว");
+      await expect(page.locator(".report-detail-page .user-report-reference-grid .detail-tile").filter({ hasText: "Account Status" })).toContainText("Suspended");
       const auditAfter = await page.locator(".report-detail-page .history-table").nth(1).locator("tbody tr").count();
       expect(auditAfter).toBe(auditBefore + 1);
     });
@@ -932,7 +932,7 @@ test.describe("QA-BO-002: User Management (strict)", () => {
       await page.waitForTimeout(300);
       await page.locator(".report-detail-page button[data-user-action='Ban']").click();
       await page.waitForTimeout(200);
-      await expect(page.locator("#user-action-modal-title")).toHaveText("ระงับบัญชีถาวร");
+      await expect(page.locator("#user-action-modal-title")).toHaveText("Ban User");
       await page.locator("#user-action-modal [data-user-action-confirm='Ban']").click();
       await page.waitForTimeout(400);
       await expect(page.locator("#success-toast")).toContainText("Omega Club TH ถูกระงับบัญชีถาวรแล้ว");

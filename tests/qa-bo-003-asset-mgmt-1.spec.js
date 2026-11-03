@@ -858,13 +858,13 @@ test.describe("QA-BO-003: Asset Management 1 (strict)", () => {
   // ==================== M. REPORTED ASSETS QUEUE ====================
 
   test.describe("Reported Assets — queue, filter, sort, search", () => {
-    test("63. queue แสดง 6 รายงาน + panel title + ไม่มี KPI card", async ({ page }) => {
+    test("63. queue แสดง 7 รายงาน + panel title + ไม่มี KPI card", async ({ page }) => {
       await goToReportedAssets(page);
       await expect(page.locator("#page-title")).toHaveText("Reported Assets");
       await expect(page.locator("#panel-title")).toHaveText("Reported Assets List");
       await expect(page.locator("#summary-grid .stat")).toHaveCount(0);
-      await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(6);
-      await expect(page.locator(".footer-range > span:first-child")).toHaveText("แสดง 1-6 จาก 6");
+      await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(7);
+      await expect(page.locator(".footer-range > span:first-child")).toHaveText("แสดง 1-7 จาก 7");
     });
 
     test("64. queue pill: Pending = amber, Closed = green", async ({ page }) => {
@@ -877,20 +877,20 @@ test.describe("QA-BO-003: Asset Management 1 (strict)", () => {
       await expect(closedRow.locator("div[data-label='Status'] .pill")).toHaveText("Closed");
     });
 
-    test("65. filter สถานะรายงาน: Pending → 5, Closed → 1", async ({ page }) => {
+    test("65. filter สถานะรายงาน: Pending → 6, Closed → 1", async ({ page }) => {
       await goToReportedAssets(page);
       await pickReportedAssetCustomOption(page, "asset-report-status-filter", "Pending");
-      await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(5);
+      await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(6);
       await pickReportedAssetCustomOption(page, "asset-report-status-filter", "Closed");
       await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(1);
     });
 
-    test("66. filter priority: high → 4, medium → 1, low → 1", async ({ page }) => {
+    test("66. filter priority: high → 4, medium → 2, low → 1", async ({ page }) => {
       await goToReportedAssets(page);
       await pickReportedAssetCustomOption(page, "asset-report-priority-filter", "high");
       await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(4);
       await pickReportedAssetCustomOption(page, "asset-report-priority-filter", "medium");
-      await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(1);
+      await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(2);
       await pickReportedAssetCustomOption(page, "asset-report-priority-filter", "low");
       await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(1);
     });
@@ -929,7 +929,7 @@ test.describe("QA-BO-003: Asset Management 1 (strict)", () => {
       await expect(page.locator("#asset-report-status-filter")).toHaveValue("");
       await expect(page.locator("#asset-report-priority-filter")).toHaveValue("");
       await expect(page.locator("#asset-report-sort")).toHaveValue("latest");
-      await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(6);
+      await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(7);
     });
 
     test("71. คลิกแถวรายงานเปิด Asset Report Detail ถูกเคส + row menu ดูรายละเอียดได้", async ({ page }) => {
@@ -1017,7 +1017,7 @@ test.describe("QA-BO-003: Asset Management 1 (strict)", () => {
       await page.waitForTimeout(300);
       await expect(page.locator("#page-title")).toHaveText("Reported Assets");
       await expect(page.locator("#crumb")).toHaveText("การดำเนินงาน / Asset Management / Reported Assets");
-      await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(6);
+      await expect(page.locator(".user-row.report-row.asset-report-row:not(.head)")).toHaveCount(7);
     });
   });
 

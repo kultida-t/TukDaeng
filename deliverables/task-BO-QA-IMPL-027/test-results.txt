@@ -1,0 +1,40 @@
+QA-BO-027 — tests/qa-bo-027-account-deletion.spec.js
+===================================================
+
+Date: 2026-11-03
+Command: npx playwright test tests/qa-bo-027-account-deletion.spec.js
+Result: 93 cases x 4 projects (desktop-1440 / desktop-1280 / tablet-768 / mobile-390)
+        354 passed / 18 skipped (viewport-conditional) / 0 failed
+        — 1 flake บน mobile-390 (networkidle timeout ฝั่งโหลดหน้า ไม่ใช่ assertion) rerun ผ่าน
+
+Coverage (อ้างพฤติกรรมจริงใน bo-prototype.html — ไม่แตะ prototype):
+- Navigation (6): nav item section งานตรวจสอบและบริการ, no submenu, list mode + crumb,
+  page/panel title, no KPI cards, filter action buttons (viewport-aware)
+- List rendering & pagination (10): 8-col header, 10/page, footer range, default latest sort,
+  row fields+pills, grace '—' terminal, row menu ดูรายละเอียด, pager prev/next + disabled states
+- Search (7): Request ID / User ID (case-insensitive) / display name / detail text /
+  status text / account status / empty state
+- Filter request status + grace state (10): 4 statuses, 5 grace states, combined filter
+- Sort (4): latest / oldest / graceEnds / status (th locale)
+- Reset + persistence (4): reset restores default, search/filter/page persist after detail→back
+- Detail head & nav (7): crumb/panel/heading/chips, Serious flag grace-gated, back flows
+- Sections 1-2 (9): User Context 6 tiles (sensitive masked), timeline step states per lifecycle,
+  countdown active/ending/expired, restored/anonymized timelines, reject note
+- Sections 3-4 (5): dependency tiles + links (0 = no link), chats toast, Deletion Plan 8 rows
+- History & Actions (9): 6-col table, per-request rows, DLV-DEL-* email jump / pill fallback,
+  AUD-* ref links, expired ยังมีปุ่ม, terminal ไม่มีปุ่ม
+- Action modals (11): title/summary/target, 4 reason options, impact+email notes,
+  email preview subject + live update on reason change, context notes (DEL-028),
+  confirm restore/reject lifecycle + DLV-DEL-034-REJ delivery log created
+- Cross-module (5): user link→User Detail→back, audit ref→Audit Log filtered,
+  delivery jump→Delivery Logs+modal, dep Reports→Reported Users filtered
+- Responsive (6): mobile filter toggle, mobile card (primary+tags, cells hidden, no row menu),
+  card click→detail, mobile pager prev/next, desktop filter always visible
+
+Fixes applied during iteration (expected ปรับตามพฤติกรรมจริง):
+- filter actions zone ซ่อนบน desktop → assert DOM presence + viewport-aware visibility
+- reset บน desktop ใช้ปุ่มใน filter bar (filter-actions zone เฉพาะ mobile)
+- "DEL-03" match 6 requests (รวม DEL-031/032)
+- grace range render ใน .deletion-timeline-date (ไม่ใช่ -sub)
+- target block span strict-mode → scope selector
+- user link ไม่แสดงบน mobile card → skip เฉพาะ mobile (design)

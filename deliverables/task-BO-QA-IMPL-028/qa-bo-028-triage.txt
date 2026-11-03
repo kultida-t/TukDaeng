@@ -1,0 +1,4 @@
+QA-BO-028 skipped tests triage (run 2026-11-03, 4 projects)
+- 16 skipped / 204 — ทั้งหมดเป็น viewport-conditional gating ไม่ใช่ขาดความครอบคลุม
+- เคส 46-50 (mobile filter toggle, mobile card x2, card click, mobile pager): skip บน desktop-1440/1280/tablet-768 (15 รอบ) — เทสเฉพาะ mobile-390
+- เคส 51 (desktop filter selects แสดงเสมอ): skip บน mobile-390 (1 รอบ) — เทสเฉพาะ desktop/tablet

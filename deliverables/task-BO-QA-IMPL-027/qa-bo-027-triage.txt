@@ -1,0 +1,6 @@
+QA-BO-027 skipped tests triage (run 2026-11-03, 4 projects)
+- 18 skipped / 372 — ทั้งหมดเป็น viewport-conditional gating ไม่ใช่ขาดความครอบคลุม
+- เคส 13 (mobile row menu "..." ไม่แสดง): skip บน desktop-1440/1280/tablet-768 (3 รอบ) — เทสเฉพาะ mobile card layout
+- เคส 88-92 (mobile filter toggle, mobile card, card click, mobile pager): skip บน desktop-1440/1280/tablet-768 (15 รอบ) — เทสเฉพาะ mobile-390
+- เคส 93 (desktop filter selects แสดงเสมอ): skip บน mobile-390 (1 รอบ) — เทสเฉพาะ desktop/tablet
+- เคส 83 (user link ใน list): skip บน mobile-390 (1 รอบ) — mobile card ซ่อน data-label cells ตาม design จึงไม่มี link ให้คลิก
