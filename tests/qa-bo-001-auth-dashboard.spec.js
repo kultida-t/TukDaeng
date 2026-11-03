@@ -364,7 +364,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       }
     });
 
-    test("27. Reported Items chips แสดง Assets/Users/Articles/Comments", async ({ page }) => {
+    test("27. Reported Items chips แสดง Assets/Users/Comments", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -373,7 +373,6 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       const joined = chipTexts.join("|");
       expect(joined).toContain("Assets");
       expect(joined).toContain("Users");
-      expect(joined).toContain("Articles");
       expect(joined).toContain("Comments");
     });
   });
@@ -428,17 +427,14 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(subText).toContain("Reported Users");
     });
 
-    test("32. Reported Items / Articles chip → Content Management / Reported Articles", async ({ page }) => {
+    // e4 (FO-BO-001, 2026-11-03): Reported Articles ถูกถอดจาก V1 — chip Articles ต้องไม่มีบน Reported Items stat
+    test("32. Reported Items stat ไม่มี Articles chip (e4 — Reported Articles removed)", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
       const reportedStat = page.locator("#summary-grid .stat", { hasText: "Reported Items" });
-      await reportedStat.locator(".chip", { hasText: "Articles" }).click();
-      await page.waitForTimeout(500);
-      await expect(page.locator(".nav-item[data-module=\"content\"]")).toHaveClass(/active/);
-      const subActive = page.locator(".submenu button.active");
-      const subText = await subActive.textContent();
-      expect(subText).toContain("Reported Articles");
+      await expect(reportedStat.locator(".chip", { hasText: "Articles" })).toHaveCount(0);
+      await expect(reportedStat.locator(".chip")).toHaveCount(3);
     });
 
     test("33. Reported Items / Comments chip → Asset Management / Reported Comments", async ({ page }) => {
@@ -479,18 +475,17 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
 
   });
 
-  test.describe("Dashboard — Work Queue (7 rows ตามลำดับ)", () => {
-    test("38. Work Queue ครบ 7 rows ตามลำดับที่ spec ล็อก", async ({ page }) => {
+  test.describe("Dashboard — Work Queue (6 rows ตามลำดับ)", () => {
+    test("38. Work Queue ครบ 6 rows ตามลำดับที่ spec ล็อก", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
       const rows = page.locator(".dashboard-work-list .work-row");
-      await expect(rows).toHaveCount(7);
+      await expect(rows).toHaveCount(6);
       const titles = await rows.locator(".work-title").allTextContents();
       expect(titles).toEqual([
         "รายงานสินทรัพย์",
         "รายงานผู้ใช้",
-        "รายงานบทความ",
         "คำขอลบบัญชี",
         "บทความรอเผยแพร่",
         "ข้อมูลตลาดรอตรวจ",
@@ -504,18 +499,17 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await loginIfNeeded(page);
       const rows = page.locator(".dashboard-work-list .work-row");
       const priorities = [];
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 6; i++) {
         const cls = await rows.nth(i).getAttribute("class");
         priorities.push(cls);
       }
-      // 3 แรก high, ที่ 4 medium, 3 หลัง normal
+      // 2 แรก high, ที่ 3 medium, 3 หลัง normal
       expect(priorities[0]).toMatch(/priority-high/);
       expect(priorities[1]).toMatch(/priority-high/);
-      expect(priorities[2]).toMatch(/priority-high/);
-      expect(priorities[3]).toMatch(/priority-medium/);
+      expect(priorities[2]).toMatch(/priority-medium/);
+      expect(priorities[3]).toMatch(/priority-normal/);
       expect(priorities[4]).toMatch(/priority-normal/);
       expect(priorities[5]).toMatch(/priority-normal/);
-      expect(priorities[6]).toMatch(/priority-normal/);
     });
 
     test("40. Work Queue rows มี count + module jump", async ({ page }) => {
@@ -523,7 +517,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
       const rows = page.locator(".dashboard-work-list .work-row");
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 6; i++) {
         const row = rows.nth(i);
         await expect(row.locator(".work-count")).not.toBeEmpty();
         await expect(row).toHaveAttribute("data-module-jump", /.+/);
@@ -554,7 +548,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(subText).toContain("Reported Users");
     });
 
-    test("43. คลิก Work Queue row 4 (คำขอลบบัญชี) → Account Deletion", async ({ page }) => {
+    test("43. คลิก Work Queue row 3 (คำขอลบบัญชี) → Account Deletion", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -716,13 +710,13 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   });
 
   test.describe("Dashboard — responsive content completeness", () => {
-    test("57. mobile 390px: KPI 6 cards + Work Queue 7 rows ไม่หาย", async ({ browser }) => {
+    test("57. mobile 390px: KPI 6 cards + Work Queue 6 rows ไม่หาย", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
       await expect(page.locator("#summary-grid .stat")).toHaveCount(6);
-      await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(7);
+      await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(6);
       await page.close();
     });
 
@@ -732,7 +726,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
       await expect(page.locator("#summary-grid .stat")).toHaveCount(6);
-      await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(7);
+      await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(6);
       await expect(page.locator("#cards .dashboard-status-card")).toHaveCount(3);
       await page.close();
     });
@@ -743,7 +737,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
       await expect(page.locator("#summary-grid .stat")).toHaveCount(6);
-      await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(7);
+      await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(6);
       await expect(page.locator("#cards .dashboard-status-card")).toHaveCount(3);
       await page.close();
     });
@@ -754,7 +748,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
       await expect(page.locator("#summary-grid .stat")).toHaveCount(6);
-      await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(7);
+      await expect(page.locator(".dashboard-work-list .work-row")).toHaveCount(6);
       await expect(page.locator("#cards .dashboard-status-card")).toHaveCount(3);
       await page.close();
     });

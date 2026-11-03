@@ -195,6 +195,6 @@ Baseline scope หลักยังครอบคลุม:
 When sending documents to Dev, include both:
 
 - Branch: `docs-frontoffice-spec-updates`
-- Version: `FO-PRD-v1.10`
+- Version: `FO-PRD-v1.13`
 
 If Dev reports a gap or builds against this baseline, ask them to cite the version number in their response.

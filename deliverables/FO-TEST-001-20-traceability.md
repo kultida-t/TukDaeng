@@ -309,7 +309,7 @@
 | camera cell ใน picker | CRE-012 — บนแอปจริงต้องเปิดกล้อง/สิทธิ์จริง |
 | photo picker onboarding `profile` | AUTH-040 — expected = OS picker จริง |
 | chat wallpaper / E2E keys (`chmenu`/`chsettings`) | CHAT-093..099 — chsettings เป็น dead route พิสูจน์แล้ว (ไม่มี entry); wallpaper/E2E = contract-only |
-| `bdmore` article more (handler ไม่มี render) | BRD-040, 047, 048 (ยืนยันไม่มี entry) + TRS-059 (report = contract-only) |
+| `bdmore` article more (handler ไม่มี render) | BRD-040, 047, 048 (ยืนยันไม่มี entry) + TRS-059 (report = REMOVED ตาม e4 / FO-PRD-v1.13) |
 | `pfo` dev sim / `?dev=1` portfolio states | AST-008 — dev-only; production ต้องไม่มี entry (negative) |
 | `fo_newpost` handoff channel | CRE-069 — dev-only, mark BLOCK บนแอปจริง |
 | `[data-bdsave]`/`[data-bdact]` board dead entries | GATE-013 — dead แต่ gate list คุมไว้; build ที่มี entry ต้อง gate |

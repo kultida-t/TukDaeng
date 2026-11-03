@@ -176,7 +176,7 @@
 | Board | `boardsearch` | search bar + popular tags chips + results count + empty state | GUEST/MEMBER | 5 | |
 | Board | `boardart:id` | article detail: cover, author/meta, likes count, tags, like pill, share pill, back | GUEST/MEMBER | 5 | ไม่พบ → "Article not found" |
 | Board | sheet `bdmenu` categories | Categories sheet → เลือก → boardall + focus pill | GUEST/MEMBER | 3 | `[OPEN-CODE-ONLY]` |
-| Board | sheet `bdmore` (article more) | Share / Copy link / Save to favorites / Report article | — | 0 | `[DEAD]` — handler เขียนไว้ (≈L18517) แต่ไม่มี `data-bdmore` ถูก render บนหน้าไหนเลย → dead wiring `[OPEN-CODE-ONLY]` |
+| Board | sheet `bdmore` (article more) | Share / Copy link / Save to favorites / Report article | — | 0 | `[DEAD]` — handler เขียนไว้ (≈L18517) แต่ไม่มี `data-bdmore` ถูก render บนหน้าไหนเลย → dead wiring `[OPEN-CODE-ONLY]` · **อัปเดต e4 (2026-11-03): Report Article ตัดจาก V1 ทั้งระบบ (FO-PRD-v1.13)** |
 | Board | action like/save | article like toggle + count / save toggle (session flag) | MEMBER `[GATE]` | 4 | saved article ไม่มีหน้ารวม — `[OPEN-CODE-ONLY]` |
 
 ### 2.9 Profile & Portfolio

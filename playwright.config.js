@@ -29,9 +29,10 @@ module.exports = defineConfig({
     },
   ],
   webServer: {
-    command: "python -m http.server 8080",
+    command: "node server.mjs",
     port: 8080,
     cwd: "Prototypes",
+    env: { PORT: "8080" },
     reuseExistingServer: true,
     timeout: 30000,
   },
