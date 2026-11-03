@@ -1,7 +1,7 @@
 # TukDaeng Document Version
 
-**Current Baseline Version:** `FO-PRD-v1.11`
-**Release Date:** 2026-11-02
+**Current Baseline Version:** `FO-PRD-v1.12`
+**Release Date:** 2026-11-03
 **Branch:** `docs-frontoffice-spec-updates`  
 **Status:** Product-reviewed baseline update for Dev / QA
 
@@ -27,6 +27,13 @@ FO-PRD-vX.Y
 ---
 
 # 2. Current Baseline Scope
+
+`FO-PRD-v1.12` covers all of `FO-PRD-v1.11` and amends FO Help support channels to a BO-driven dynamic contract (FO decision e1 approved 2026-11-03 — FO-BO-001 coverage audit GAP-04 resolved):
+
+- `13_SETTINGS_MODULE.md` — Help / About Rule เปลี่ยนจาก locked copy 3 rows เป็น data-driven rows จาก BO Support Center config (render เฉพาะ channel `Active`, interaction ตาม channel type, empty state เมื่อไม่มี Active channel; 3 rows เดิมเป็น seed baseline ไม่ใช่ fixed contract) + ปรับ AC-SETTING-007
+- `TukDaeng_Master_Product_Definition.md` — Settings support channels bullet sync dynamic contract
+- `QA_TEST_SCENARIO_CHECKLIST.md` (QA-SETTING-013) + `DEV_IMPLEMENTATION_CHECKLIST.md` — expected/checklist sync dynamic contract
+- spec-only ไม่แตะ prototype (prototype แสดง seed baseline 3 rows — dynamic rendering เป็น production contract); canonical contract อยู่ที่ `../BackOffice/12_HELP_SUPPORT_MODULE.md` §4
 
 `FO-PRD-v1.11` covers all of `FO-PRD-v1.10` and removes report review SLA/deadline tracking ทั้งระบบ (product decision 2026-11-02 — FO-BO-001 coverage audit GAP-03 / OPEN-4 resolved):
 
@@ -157,6 +164,7 @@ Baseline scope หลักยังครอบคลุม:
 
 | Version | Date | Summary | Key Files |
 | --- | --- | --- | --- |
+| `FO-PRD-v1.12` | 2026-11-03 | Amends FO Help support channels เป็น BO-driven dynamic contract (FO decision e1 approved — FO-BO-001 GAP-04 resolved): `13_SETTINGS_MODULE.md` Help / About Rule + AC-SETTING-007, `TukDaeng_Master_Product_Definition.md`, `QA_TEST_SCENARIO_CHECKLIST.md` (QA-SETTING-013), `DEV_IMPLEMENTATION_CHECKLIST.md`; spec-only ไม่แตะ prototype | `13_SETTINGS_MODULE.md`, `TukDaeng_Master_Product_Definition.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `DEV_IMPLEMENTATION_CHECKLIST.md` |
 | `FO-PRD-v1.11` | 2026-11-02 | Removes report review SLA/deadline tracking ทั้งระบบ (product decision 2026-11-02 — FO-BO-001 GAP-03 / OPEN-4 resolved): ถอน 24h SLA จาก `15_TRUST_SAFETY_MODULE.md` (rename AC-TS-012 → Report Handling), `18_ADMIN_SCOPE_NOTE.md` (AC-ADMIN-006 → no-deadline), `TukDaeng_Master_Product_Definition.md`, `11_SOCIAL_MODULE.md` cross-refs, `FO_Functional_PRD.md` และ `QA_TEST_SCENARIO_CHECKLIST.md` (QA-TS-010); spec-only ไม่แตะ prototype — งานคู่ฝั่ง BO ใน task `ef329529` | `15_TRUST_SAFETY_MODULE.md`, `18_ADMIN_SCOPE_NOTE.md`, `TukDaeng_Master_Product_Definition.md`, `11_SOCIAL_MODULE.md`, `FO_Functional_PRD.md`, `QA_TEST_SCENARIO_CHECKLIST.md` |
 | `FO-PRD-v1.9` | 2026-10-22 | Re-baselines the whole Front Office spec set to the locked `Prototypes/fo-flow/index.html` prototype (mission sync FSP-006–027; canonical = master §16 Sync Decision Log S-01–S-29 + FSP-005 consolidated sign-off). Removes `08_OFFER_MODULE.md` + all offer-era scope, `Figma_Gap_Checklist_Against_Master.md` + `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md` + Figma refs, and provenance/consignment entities (S-25). Canonical replacements: Member Sheet `Join TukDaeng` (แทน Global Login Required Dialog), Alerts feed 5 types +`system` (แทน Notification Center — S-17), `Total invested` (แทน Total Asset Value — S-15), `Ask Seller` sale-only (แทน Contact Seller/Offer), Post Viewer direct (แทน WA Result List — S-08), owner `Hide` status vs viewer `Not interested` (แทน Hide this asset), ตัด `Price on request`. Feed post-centric (S-09); composer asset mode media≥1; Sale Record 2 ฟิลด์; chat thread key user+item (S-07); share member-only (S-03); like count private (S-26); like/favorites/interested 3 ระบบ; comment sheet + emoji react (S-12); delete account login-to-restore (S-02/S-27); settings IG 6 sections (S-05); board editorial magazine (S-01); profile tabs 5; blocked profile IG keep-page (S-13); drawer 9 placeholders (S-19); auth onboarding + implied consent + OTP→sign in (S-22) + password policy unify (S-21) + ตัด spec-only auth pages (S-20). Contract-only keeps ตาม S-29 (deep link, analytics, suspended/banned, network/error, file message). Rewrites module PRDs `00`–`14` + `TukDaeng_Master_Product_Definition.md` §16; sync notes on legacy tier; `QA_TEST_SCENARIO_CHECKLIST.md` v2.0 (228 scenarios + Removed-behaviors guard table). Documented prototype defects (ไม่แก้ prototype): `salePosts()` pfkind leak (S-10), public `all` tab leak (S-14), sold-post `FOR SALE` tag. Residual sweep 15_TRUST/16_INTEG/17_NFR/00_GLOBAL → FSP-029/030. Historical entries v1.0–v1.8 เก็บเดิมไม่แก้ย้อน | `DOCUMENT_VERSION.md`, module PRDs `00`–`14`, `TukDaeng_Master_Product_Definition.md`, `README_MODULE_INDEX.md`, `PRD.md`, `Use_Cases.md`, `FO_Functional_PRD.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `DEV_CHAT_IMPLEMENTATION_CHECKLIST.md`, `DEV_BASELINE_HANDOFF_2026-06-22.md`, `ERROR_STATE_UI_COPY_CATALOG.md`, `FINAL_HANDOFF_SUMMARY.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `deliverables/fo-spec-sync/*` |
 | `FO-PRD-v1.8` | 2026-10-05 | Aligns spec fields (Case Material / Movement / Dial Color / Strap) with the Option Master free-text suggestion model: adds Spec Option Free-Text Rule (`ระบุเอง` → normalize + dedup option/alias → relation id หรือ snapshot + suggestion pool พร้อม usage count; ห้าม auto-promote ต้องผ่าน BO curate) in `04_ASSET_MANAGEMENT_MODULE.md` พร้อม snapshot fields, validation matrix และ AC-ASSET-MGMT-007G/007H; expands `03_SEARCH_FILTER_MODULE.md` Search Keyword Rule ให้ครอบ spec snapshot text (รวม free-text) และเขียนชัดว่า free-text/suggested values ไม่ใช่ filter option/autocomplete จนกว่า promote พร้อม AC-SEARCH-008A/009E; adds `10_WATCH_ALERT_MODULE.md` Spec Option And Free-Text Criteria Rule (option criteria match relation id เท่านั้น, keyword criteria ครอบ free-text, backfill → re-match + notify พร้อม dedup (`alert_id`, `asset_id`)) พร้อมแถว free-text ในตาราง no current listing และ AC-WA-016/017/018 | `04_ASSET_MANAGEMENT_MODULE.md`, `03_SEARCH_FILTER_MODULE.md`, `10_WATCH_ALERT_MODULE.md` |

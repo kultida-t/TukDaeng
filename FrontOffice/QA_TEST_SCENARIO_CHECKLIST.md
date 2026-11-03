@@ -1460,7 +1460,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify Help and About.
 **Maps to:** AC-SETTING-007
 **Steps:** Open Help and About; use `Contact support`.
-**Expected result:** Help = `ศูนย์ช่วยเหลือ` + `Support channels` rows with locked copy + `Available daily · 09:00 - 22:00 (GMT+7)` + `Help topics`; About = app/company info (`Version 0.0.1`, `Mister Fox Co., Ltd. · Est. 2026`) + `Legal & Support` links; `Contact support` routes to the same Help page.
+**Expected result:** Help = `ศูนย์ช่วยเหลือ` + `Support channels` rows เฉพาะ channel ที่ `Active` จาก BO Support Center config (prototype = seed LINE/Call/Email) + availability/business hours ตาม config (seed `Available daily · 09:00 - 22:00 (GMT+7)`) + `Help topics`; About = app/company info (`Version 0.0.1`, `Mister Fox Co., Ltd. · Est. 2026`) + `Legal & Support` links; `Contact support` routes to the same Help page.
 
 ### QA-SETTING-014
 **Objective:** Verify cookie preferences (contract).

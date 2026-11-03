@@ -759,7 +759,7 @@ Settings รองรับ:
 - Content preferences — Interested (liked posts), Not interested (restore list), Sensitive, snooze, Reset suggested content
 - What you see pages — Favorites / Muted accounts / Blocked (add/remove/search/unmute/unblock)
 - Privacy & cookies — Essential always-on + Analytics / Personalized toggles (contract — prototype ไม่มีหน้านี้ แต่ required โดย consent model)
-- Help — support channels (LINE `@mrfoxthailand`, Phone `(+66) 80-008-8088`, Email `service@mrfox.com`, เวลาทำการ `09:00 - 22:00 (GMT+7)`) + help topics
+- Help — support channels จาก BO Support Center config (render เฉพาะ channel ที่ `Active`; seed LINE `@mrfoxthailand`, Phone `(+66) 80-008-8088`, Email `service@mrfox.com`, เวลาทำการ `09:00 - 22:00 (GMT+7)`) + help topics
 - About app — `TUK DAENG`, tagline, version, `Mister Fox Co., Ltd.`, `Est. 2026`, Privacy Policy, Terms of Use, Contact support
 - Privacy Policy / Terms of Use — in-app legal viewer (version + effective date)
 - Log out — `Log out of @{user}?` confirm → session `guest` + toast + Member Sheet

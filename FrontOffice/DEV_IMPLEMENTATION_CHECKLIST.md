@@ -263,8 +263,8 @@ Purpose:
 - [ ] Notification Settings default ON และ auto-save toggle โดยไม่มี Save button
 - [ ] Content preferences / what-you-see pages (Interested list, Not interested, Muted, Blocked) ตาม 13 spec
 - [ ] Change Password แสดงเฉพาะ Email / Password account — SSO-only ไม่เห็น active action
-- [ ] Help แสดง Contact support, Available daily, 09:00 - 22:00 (GMT+7), LINE `@mrfoxthailand`, Phone `(+66) 80-008-8088`, Email `service@mrfox.com`
-- [ ] Help contact rows เปิด LINE, dialer และ mail composer ตาม type
+- [ ] Help แสดงช่องทางตาม BO Support Center config เฉพาะ channel ที่ `Active` + availability/business hours ตาม config (seed Contact support, Available daily, 09:00 - 22:00 (GMT+7), LINE `@mrfoxthailand`, Phone `(+66) 80-008-8088`, Email `service@mrfox.com`)
+- [ ] Help contact rows เปิด external link (LINE/Facebook/Website), dialer (Phone) และ mail composer (Email) ตาม channel type
 - [ ] About app แสดง `TUK DAENG`, tagline, `Version 0.0.1`, `Mister Fox Co., Ltd.`, `Est. 2026`, Privacy Policy, Terms of Use และ Contact support
 - [ ] About app ต้องไม่แสดงข้อมูลบัญชี, Date joined, Change Password หรือ Delete Account
 - [ ] Privacy Policy และ Terms of Use เข้าถึงได้ (legal viewer — guest อ่านได้)
