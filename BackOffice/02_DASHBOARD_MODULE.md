@@ -1,6 +1,6 @@
 # 02 BO Dashboard Module
 
-**Version:** `BO-02-v1.3`  
+**Version:** `BO-02-v1.4`  
 **Date:** 2026-11-02  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
@@ -143,7 +143,7 @@ KPI Summary ต้องแสดง 6 cards ตามลำดับนี้:
 | New Users | จำนวนผู้ใช้ใหม่ที่สมัครสมาชิกวันนี้ (registered users เท่านั้น) | `Today` / `This Week` / `This Month` — จำนวนผู้ใช้ใหม่รายช่วงเวลา | เปิด User Management / User Accounts |
 | Active Users Today | จำนวนผู้ใช้ registered ที่ใช้งานวันนี้ | `Today` / `This Week` / `This Month` — จำนวน active users รายช่วงเวลา | เปิด User Management / User Accounts |
 | New Assets | จำนวน asset ที่สร้างวันนี้ แยกตามสถานะ | `Sale` / `Show` / `Hide` / `Sold` — จำนวน asset ใหม่ตามสถานะ | เปิด Asset Management / Asset List |
-| Reported Items | จำนวนรายงานค้างตรวจทั้งหมด | `Assets` / `Users` / `Articles` / `Comments` — จำนวนรายงานตามประเภท (chip เป็น navigation หลัก) | Chip เปิด queue รายงานตามประเภท |
+| Reported Items | จำนวนรายงานค้างตรวจทั้งหมด | `Assets` / `Users` / `Comments` — จำนวนรายงานตามประเภท (chip เป็น navigation หลัก) | Chip เปิด queue รายงานตามประเภท |
 | Articles | จำนวนบทความทั้งหมด | `Published` / `Scheduled` — จำนวนบทความตามสถานะเผยแพร่ | เปิด Content Management / Articles |
 | Watch Alert | จำนวน watch alert ที่ active | `Active` / `Triggered` — จำนวน alert ตามสถานะ | เปิด Market Demand / Demand Overview |
 
@@ -156,7 +156,7 @@ KPI Summary ต้องแสดง 6 cards ตามลำดับนี้:
 | New Users | `128` | `วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน` | `Today 128`, `This Week 642`, `This Month 2,840` |
 | Active Users Today | `8.4K` | `ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน` | `Today 8,420`, `This Week 24,700`, `This Month 38,900` |
 | New Assets | `94` | `สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ` | `Sale 64`, `Show 17`, `Hide 9`, `Sold 4` |
-| Reported Items | `33` | `มี 9 รายงานใหม่วันนี้` | `Assets 22`, `Users 5`, `Articles 3`, `Comments 3` |
+| Reported Items | `30` | `มี 8 รายงานใหม่วันนี้` | `Assets 22`, `Users 5`, `Comments 3` |
 | Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` |
 | Watch Alert | `298` | `มีการจับคู่รายการขาย 18 ครั้งวันนี้` | `Active 298`, `Triggered 18` |
 
@@ -195,11 +195,10 @@ Work Queue ต้องแสดงเป็น action list โดยแต่�
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | รายงานสินทรัพย์ | `22` | High | `มีรายงานสินทรัพย์รอตรวจ / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจเคสที่มี reporter หลายคนก่อน` | `Reporter 3+ คน 6`, `ผู้ใช้กระทบสูง` | Asset Management / Reported Assets |
 | 2 | รายงานผู้ใช้ | `5` | High | `มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน` | `Reporter 3+ คน 3`, `ตรวจประวัติ login` | User Management / Reported Users |
-| 3 | รายงานบทความ | `3` | High | `มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive` | `Articles 3`, `รอตรวจ` | Content Management / Reported Articles |
-| 4 | คำขอลบบัญชี | `8` | Medium | `มี 2 คำขอใกล้ครบ Grace period — ระบบจะลบบัญชีอัตโนมัติเมื่อครบกำหนด` | `ใกล้ครบ Grace 2`, `Grace period 4` | Account Deletion / Requests |
-| 5 | บทความรอเผยแพร่ | `4` | Normal | `บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา` | `เผยแพร่วันนี้ 2`, `ต้อง preview` | Content Management / Articles |
-| 6 | ข้อมูลตลาดรอตรวจ | `6` | Normal | `brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert` | `Sync issue 6`, `Price index` | Market Data / Sync History |
-| 7 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | `Retryable 81`, `Cleanup 11` | Settings / Delivery Logs |
+| 3 | คำขอลบบัญชี | `8` | Medium | `มี 2 คำขอใกล้ครบ Grace period — ระบบจะลบบัญชีอัตโนมัติเมื่อครบกำหนด` | `ใกล้ครบ Grace 2`, `Grace period 4` | Account Deletion / Requests |
+| 4 | บทความรอเผยแพร่ | `4` | Normal | `บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา` | `เผยแพร่วันนี้ 2`, `ต้อง preview` | Content Management / Articles |
+| 5 | ข้อมูลตลาดรอตรวจ | `6` | Normal | `brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert` | `Sync issue 6`, `Price index` | Market Data / Sync History |
+| 6 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | `Retryable 81`, `Cleanup 11` | Settings / Delivery Logs |
 
 กฎการจัดลำดับ:
 
@@ -317,7 +316,6 @@ Rows:
 | New Assets card | Asset Management / Asset List |
 | Reported Items / Assets chip | Asset Management / Reported Assets |
 | Reported Items / Users chip | User Management / Reported Users |
-| Reported Items / Articles chip | Content Management / Reported Articles |
 | Reported Items / Comments chip | Asset Management / Reported Comments |
 | Articles card | Content Management / Articles |
 | Watch Alert card | Market Demand / Demand Overview |
@@ -400,7 +398,7 @@ Typography:
 | AC-BO-DASH-001 | หลัง login สำเร็จ ระบบเปิด Dashboard เป็นหน้าแรก และเมนู Dashboard แสดง active state |
 | AC-BO-DASH-002 | Header แสดง breadcrumb, title และ `Last updated` โดยไม่มี Date Range, Refresh, Export, global search, notification popup หรือ admin switcher |
 | AC-BO-DASH-003 | Dashboard แสดง KPI Summary ครบ 6 cards ตามลำดับที่กำหนด |
-| AC-BO-DASH-004 | `Reported Items` แสดง chips แยก `Assets`, `Users`, `Articles`, `Comments` และแต่ละ chip ไป queue ที่ถูกต้อง |
+| AC-BO-DASH-004 | `Reported Items` แสดง chips แยก `Assets`, `Users`, `Comments` และแต่ละ chip ไป queue ที่ถูกต้อง |
 | AC-BO-DASH-005 | Work Queue แสดงครบ 7 rows ตามลำดับและ priority ที่กำหนด |
 | AC-BO-DASH-006 | Work Queue row ทุก row คลิกไป module/submodule ที่เกี่ยวข้องได้ |
 | AC-BO-DASH-007 | Recent Activity แสดง filter `ทั้งหมด`, `Report`, `Content`, `System` และ filter ทำงานจริง |

@@ -1551,10 +1551,10 @@
     body.asset-list-mode .layout > .panel {
       overflow: visible;
     }
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .main {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .main {
       overflow-x: hidden;
     }
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) #table {
       max-width: 100%;
       overflow-x: auto;
       overflow-y: visible;
@@ -1610,10 +1610,10 @@
       overflow-y: visible;
       scrollbar-width: thin;
     }
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) #table .asset-list-table {
       min-width: 1132px;
     }
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table > .footer-range {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) #table > .footer-range {
       min-width: 1132px;
     }
     body.option-master-mode #table .option-group-table {
@@ -1635,18 +1635,15 @@
       min-width: 1280px;
     }
     body.article-list-mode .layout > .panel,
-    body.category-list-mode .layout > .panel,
-    body.reported-board-mode .layout > .panel {
+    body.category-list-mode .layout > .panel {
       overflow: visible;
     }
     body.article-list-mode .main,
-    body.category-list-mode .main,
-    body.reported-board-mode .main {
+    body.category-list-mode .main {
       overflow-x: hidden;
     }
     body.article-list-mode #table,
-    body.category-list-mode #table,
-    body.reported-board-mode #table {
+    body.category-list-mode #table {
       max-width: 100%;
       overflow-x: auto;
       overflow-y: visible;
@@ -1663,12 +1660,6 @@
     }
     body.category-list-mode #table > .footer-range {
       min-width: 1148px;
-    }
-    body.reported-board-mode #table .reported-board-table {
-      min-width: 1394px;
-    }
-    body.reported-board-mode #table > .footer-range {
-      min-width: 1394px;
     }
     body.asset-list-mode #primary-action,
     body.asset-detail-mode #primary-action {
@@ -1866,9 +1857,6 @@
     .option-suggestion-table .asset-row {
       grid-template-columns: minmax(92px, .44fr) minmax(190px, 1.1fr) minmax(130px, .72fr) minmax(60px, .3fr) minmax(118px, .62fr) minmax(118px, .62fr) minmax(92px, .46fr) minmax(150px, .84fr) minmax(64px, .34fr);
     }
-    .reported-board-table .asset-row {
-      grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
-    }
     .comment-table .asset-row {
       grid-template-columns: minmax(100px, .48fr) minmax(240px, 1.8fr) minmax(180px, 1fr) minmax(96px, .46fr) minmax(76px, .36fr) minmax(60px, .28fr) minmax(70px, .34fr) minmax(92px, .44fr) minmax(142px, .66fr) minmax(78px, .4fr);
       gap: 12px;
@@ -1903,8 +1891,7 @@
       padding-left: 22px;
       padding-right: 22px;
     }
-    body.category-list-mode .category-table .asset-row:not(.head),
-    body.reported-board-mode .reported-board-table .asset-row:not(.head) {
+    body.category-list-mode .category-table .asset-row:not(.head) {
       column-gap: 18px;
       min-height: 82px;
       padding-left: 22px;
@@ -1916,8 +1903,7 @@
       min-height: 44px;
       padding: 12px 22px;
     }
-    body.category-list-mode .category-table .asset-row.head,
-    body.reported-board-mode .reported-board-table .asset-row.head {
+    body.category-list-mode .category-table .asset-row.head {
       column-gap: 18px;
       min-height: 44px;
       padding: 12px 22px;
@@ -1926,27 +1912,18 @@
     body.article-list-mode .article-table .asset-row > div:nth-child(5),
     body.category-list-mode .category-table .asset-row > div:nth-child(4),
     body.category-list-mode .category-table .asset-row > div:nth-child(5),
-    body.category-list-mode .category-table .asset-row > div:nth-child(6),
-    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(4),
-    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(5),
-    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(7),
-    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(8) {
+    body.category-list-mode .category-table .asset-row > div:nth-child(6) {
       justify-self: start;
     }
     body.article-list-mode .article-table .asset-row > div:last-child,
-    body.category-list-mode .category-table .asset-row > div:last-child,
-    body.reported-board-mode .reported-board-table .asset-row > div:last-child {
+    body.category-list-mode .category-table .asset-row > div:last-child {
       justify-self: end;
     }
     body.article-list-mode .article-table .asset-row.head > div:nth-child(4),
     body.article-list-mode .article-table .asset-row.head > div:nth-child(5),
     body.category-list-mode .category-table .asset-row.head > div:nth-child(4),
     body.category-list-mode .category-table .asset-row.head > div:nth-child(5),
-    body.category-list-mode .category-table .asset-row.head > div:nth-child(6),
-    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(4),
-    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(5),
-    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(7),
-    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(8) {
+    body.category-list-mode .category-table .asset-row.head > div:nth-child(6) {
       text-align: left;
     }
     body.asset-list-mode .asset-list-table .asset-row:not(.head),
@@ -1955,7 +1932,6 @@
 
     body.category-list-mode .category-table .asset-row:not(.head),
 
-    body.reported-board-mode .reported-board-table .asset-row:not(.head),
 
     body.market-list-mode .market-table .asset-row:not(.head),
 
@@ -1982,9 +1958,7 @@
 
     body.category-list-mode .category-table .asset-row:not(.head) .muted,
 
-    body.reported-board-mode .reported-board-table .asset-row:not(.head) .main-text,
 
-    body.reported-board-mode .reported-board-table .asset-row:not(.head) .muted,
 
     body.market-list-mode .market-table .asset-row:not(.head) .main-text,
 
@@ -2283,7 +2257,6 @@
 
     body.article-list-mode #primary-action,
     body.category-list-mode #primary-action,
-    body.reported-board-mode #primary-action,
     body.market-list-mode #primary-action,
     body.user-list-mode #primary-action,
     body.option-master-mode #primary-action,
@@ -2292,7 +2265,6 @@
     }
     body.article-list-mode .panel-head,
     body.category-list-mode .panel-head,
-    body.reported-board-mode .panel-head,
     body.market-list-mode .panel-head,
     body.option-master-mode .panel-head {
       min-height: 58px;
@@ -2303,7 +2275,6 @@
     }
     body.article-list-mode .panel-head h2,
     body.category-list-mode .panel-head h2,
-    body.reported-board-mode .panel-head h2,
     body.market-list-mode .panel-head h2,
     body.option-master-mode .panel-head h2 {
       color: #071b36;
@@ -2332,7 +2303,6 @@
     }
     body.article-list-mode .filters,
     body.category-list-mode .filters,
-    body.reported-board-mode .filters,
     body.market-list-mode .filters,
     body.option-master-mode .filters {
       display: flex;
@@ -2342,8 +2312,7 @@
       border-bottom: 1px solid var(--line);
       background: #f8fbff;
     }
-    body.article-list-mode .user-filter-bar,
-    body.reported-board-mode .user-filter-bar {
+    body.article-list-mode .user-filter-bar {
       grid-template-columns: minmax(260px, 1.65fr) repeat(3, minmax(138px, .82fr)) 42px;
     }
     body.category-list-mode .user-filter-bar {
@@ -4736,7 +4705,6 @@
     }
     body.article-list-mode .footer-range,
     body.category-list-mode .footer-range,
-    body.reported-board-mode .footer-range,
     body.market-list-mode .footer-range {
       border-bottom-left-radius: var(--radius);
       border-bottom-right-radius: var(--radius);
@@ -5349,15 +5317,14 @@
     }
     /* row-menu: hide until JS positions it as fixed to avoid clipping by #table overflow.
        BO-OPT-006g: extended from Option Detail/Group List to all modes where #table has
-       overflow-x: auto (reported-board, article-list, category-list, asset-list,
+       overflow-x: auto (article-list, category-list, asset-list,
        user-list including User Accounts, Reported Users/Assets/Comments, Account Deletion). */
     body.option-master-mode.option-detail-mode .row-menu-list,
     body.option-master-mode.option-group-list-mode .row-menu-list,
     body.option-master-mode.option-suggestion-mode .row-menu-list,
-    body.reported-board-mode .row-menu-list,
     body.article-list-mode .row-menu-list,
     body.category-list-mode .row-menu-list,
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .row-menu-list,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .row-menu-list,
     body.user-list-mode .row-menu-list,
     body.deletion-list-mode .row-menu-list {
       visibility: hidden;
@@ -5367,10 +5334,9 @@
     body.option-master-mode.option-detail-mode .row-menu-list.is-fixed,
     body.option-master-mode.option-group-list-mode .row-menu-list.is-fixed,
     body.option-master-mode.option-suggestion-mode .row-menu-list.is-fixed,
-    body.reported-board-mode .row-menu-list.is-fixed,
     body.article-list-mode .row-menu-list.is-fixed,
     body.category-list-mode .row-menu-list.is-fixed,
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .row-menu-list.is-fixed,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .row-menu-list.is-fixed,
     body.user-list-mode .row-menu-list.is-fixed,
     body.deletion-list-mode .row-menu-list.is-fixed {
       visibility: visible;
@@ -5833,93 +5799,7 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: start;
     }
-    .modal.user-action-modal.board-report-phone-preview-modal {
-      width: 528px;
-      max-width: none;
-      max-height: calc(100vh - 28px);
-      overflow: visible;
-      border: 0;
-      background: transparent;
-      box-shadow: none;
-    }
-    .board-report-phone-preview-modal .modal-body {
-      padding: 0;
-      overflow: hidden;
-      scrollbar-width: none;
-    }
-    .board-report-phone-preview-modal .modal-body::-webkit-scrollbar {
-      display: none;
-    }
-    .board-report-phone-preview {
-      position: relative;
-      display: grid;
-      place-items: center;
-      padding: 22px 44px 34px;
-    }
-    .board-report-phone-preview .article-phone-preview {
-      width: min(100%, 460px);
-      height: min(956px, calc(100vh - 78px));
-      margin: 0;
-    }
-    .board-report-phone-preview .article-fo-title,
-    .board-report-phone-preview .article-fo-heading,
-    .board-report-phone-preview .article-fo-subheading {
-      font-family: var(--font-main);
-      letter-spacing: 0;
-      text-transform: none;
-    }
-    .board-report-phone-preview .article-fo-title {
-      font-weight: 700;
-    }
-    .board-report-phone-preview .article-fo-heading,
-    .board-report-phone-preview .article-fo-subheading {
-      font-weight: 800;
-    }
-    .board-report-phone-preview .board-report-phone-preview-close {
-      position: absolute;
-      z-index: 4;
-      top: 6px;
-      right: 6px;
-      width: 40px;
-      height: 40px;
-      border-color: rgba(15, 23, 42, .18);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .96);
-      color: #0f172a;
-      box-shadow: 0 14px 34px rgba(0, 0, 0, .28);
-      backdrop-filter: blur(8px);
-    }
-    .board-report-phone-preview-close svg {
-      width: 18px;
-      height: 18px;
-    }
-    .board-report-phone-preview-title {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip: rect(0 0 0 0);
-      white-space: nowrap;
-    }
-    @media (max-width: 560px) {
-      /* modal ต้องกว้างไม่เกิน viewport ไม่เช่นนั้นปุ่มปิด (right) หลุดออกนอกจอบน mobile */
-      .modal.user-action-modal.board-report-phone-preview-modal {
-        transform: none;
-        width: min(528px, 100%);
-      }
-      .board-report-phone-preview {
-        padding: 22px 16px 34px;
-      }
-      .board-report-phone-preview .board-report-phone-preview-close {
-        top: 12px;
-        right: 16px;
-        border-color: transparent;
-        background: transparent;
-        color: #fff;
-        box-shadow: none;
-        backdrop-filter: none;
-      }
-    }
+    
     .modal.user-action-modal.article-editor-confirm-modal {
       width: min(420px, calc(100vw - 36px));
       border-radius: 22px;
@@ -7157,7 +7037,7 @@
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar,
     .user-filter-bar.report-mode,
     .user-filter-bar.content-mode,
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode,
     .user-filter-bar.asset-mode {
       grid-template-columns: minmax(260px, 1.65fr) repeat(3, minmax(138px, .82fr)) 42px;
       align-items: stretch;
@@ -7236,7 +7116,7 @@
 
     .user-filter-bar.option-group-filter-bar .search,
 
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .search,
 
     .user-filter-bar.asset-mode .search,
 
@@ -7250,7 +7130,7 @@
 
     .user-filter-bar.option-group-filter-bar .custom-select,
 
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .custom-select,
 
     .user-filter-bar.asset-mode .custom-select,
 
@@ -7264,7 +7144,7 @@
 
     .user-filter-bar.option-group-filter-bar .custom-select-trigger,
 
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .custom-select-trigger,
 
     .user-filter-bar.asset-mode .custom-select-trigger,
 
@@ -7292,7 +7172,7 @@
       height: 48px;
       min-height: 48px;
     }
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .filter-reset {
       width: 42px;
       height: 48px;
       min-height: 48px;
@@ -7305,7 +7185,7 @@
 
     .user-filter-bar.category-mode .search,
 
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .search,
 
     .user-filter-bar.asset-mode .search {
       grid-column: auto;
@@ -7324,7 +7204,7 @@
 
     .user-filter-bar.category-mode .field,
 
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .field,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .field,
 
     .user-filter-bar.asset-mode .field,
 
@@ -7334,7 +7214,7 @@
 
     .user-filter-bar.category-mode .custom-select,
 
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .custom-select,
 
     .user-filter-bar.asset-mode .custom-select,
 
@@ -7344,7 +7224,7 @@
 
     .user-filter-bar.category-mode .custom-select-trigger,
 
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .custom-select-trigger,
 
     .user-filter-bar.asset-mode .custom-select-trigger {
       min-width: 0;
@@ -7357,7 +7237,7 @@
 
     .user-filter-bar.category-mode .custom-select-trigger,
 
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .custom-select-trigger,
 
     .user-filter-bar.asset-mode .custom-select-trigger {
       display: flex;
@@ -7372,7 +7252,7 @@
 
     .user-filter-bar.category-mode .custom-select-trigger [data-custom-select-label],
 
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger [data-custom-select-label],
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .custom-select-trigger [data-custom-select-label],
 
     .user-filter-bar.asset-mode .custom-select-trigger [data-custom-select-label] {
       display: block;
@@ -7393,7 +7273,7 @@
 
     .user-filter-bar.option-group-filter-bar .filter-reset,
 
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .filter-reset,
 
     .user-filter-bar.asset-mode .filter-reset {
       min-width: 42px;
@@ -7414,7 +7294,7 @@
 
     .user-filter-bar.option-group-filter-bar .filter-reset span,
 
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .filter-reset span,
 
     .user-filter-bar.asset-mode .filter-reset span {
       position: absolute;
@@ -11502,19 +11382,6 @@
     #user-action-modal .article-preview-modal .article-fo-subheading {
       font-weight: 800;
     }
-    #user-action-modal .board-report-phone-preview,
-    #user-action-modal .board-report-phone-preview * {
-      font-family: var(--font-main) !important;
-      letter-spacing: 0 !important;
-      text-transform: none !important;
-    }
-    #user-action-modal .board-report-phone-preview .article-fo-title {
-      font-weight: 700;
-    }
-    #user-action-modal .board-report-phone-preview .article-fo-heading,
-    #user-action-modal .board-report-phone-preview .article-fo-subheading {
-      font-weight: 800;
-    }
     .asset-purchase-thumbs {
       display: flex;
       gap: 10px;
@@ -12434,8 +12301,7 @@
       .user-filter-bar.report-mode {
         grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(132px, .7fr)) 42px;
       }
-      body.article-list-mode .user-filter-bar.content-mode,
-      body.reported-board-mode .user-filter-bar.content-mode {
+      body.article-list-mode .user-filter-bar.content-mode {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
       }
       /* DEL-PTO-001e: tablet filter bar — search + 3 filters + reset บรรทัดเดียว (เหมือน Articles List) */
@@ -12586,18 +12452,15 @@
         overflow-x: visible;
       }
       body.article-list-mode .main,
-      body.category-list-mode .main,
-      body.reported-board-mode .main {
+      body.category-list-mode .main {
         overflow-x: hidden;
       }
       body.article-list-mode .layout > .panel,
-      body.category-list-mode .layout > .panel,
-      body.reported-board-mode .layout > .panel {
+      body.category-list-mode .layout > .panel {
         overflow: visible;
       }
       body.article-list-mode #table,
-      body.category-list-mode #table,
-      body.reported-board-mode #table {
+      body.category-list-mode #table {
         max-width: 100%;
         overflow-x: auto;
         overflow-y: visible;
@@ -12615,33 +12478,26 @@
       body.category-list-mode #table > .footer-range {
         min-width: 1148px;
       }
-      body.reported-board-mode #table .reported-board-table {
-        min-width: 1394px;
-      }
-      body.reported-board-mode #table > .footer-range {
-        min-width: 1394px;
-      }
       body.article-list-mode #table .article-table .asset-row,
-      body.category-list-mode #table .category-table .asset-row,
-      body.reported-board-mode #table .reported-board-table .asset-row {
+      body.category-list-mode #table .category-table .asset-row {
         overflow-x: visible;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .main {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .main {
         overflow-x: hidden;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .layout > .panel {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .layout > .panel {
         overflow: visible;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) #table {
         max-width: 100%;
         overflow-x: auto;
         overflow-y: visible;
         scrollbar-width: thin;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) #table .asset-list-table {
         min-width: 1132px;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table > .footer-range {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) #table > .footer-range {
         min-width: 1132px;
       }
       body.option-master-mode #table {
@@ -12688,8 +12544,7 @@
       .user-filter-bar.report-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
-      body.article-list-mode .user-filter-bar.content-mode,
-      body.reported-board-mode .user-filter-bar.content-mode {
+      body.article-list-mode .user-filter-bar.content-mode {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
       }
       /* DEL-PTO-001e: small tablet filter bar — search + 3 filters + reset บรรทัดเดียว */
@@ -12736,7 +12591,7 @@
       body.option-master-mode .user-filter-bar.option-suggestion-filter-bar {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(132px, .5fr)) 42px;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode,
       .user-filter-bar.asset-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
@@ -12770,7 +12625,7 @@
 
       body.market-list-mode .user-filter-bar.market-mode .filter-reset,
 
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .filter-reset,
 
       .user-filter-bar.asset-mode .filter-reset {
         width: 42px;
@@ -12790,7 +12645,7 @@
 
       body.market-list-mode .user-filter-bar.market-mode .filter-reset span,
 
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .filter-reset span,
 
       .user-filter-bar.asset-mode .filter-reset span {
         position: absolute;
@@ -13407,7 +13262,6 @@
         grid-template-columns: 1fr;
       }
       body.article-list-mode .user-filter-bar.content-mode,
-      body.reported-board-mode .user-filter-bar.content-mode,
       body.category-list-mode .user-filter-bar.category-mode,
       body.option-master-mode .user-filter-bar.option-detail-filter-bar,
       body.option-master-mode .user-filter-bar.option-group-filter-bar,
@@ -14262,19 +14116,19 @@
         max-width: 100%;
         overflow-x: hidden;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode {
         display: grid;
         width: 100%;
         grid-template-columns: 1fr;
         gap: 8px;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .search,
       .user-filter-bar.asset-mode .search,
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .user-advanced-filter,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .user-advanced-filter,
       .user-filter-bar.asset-mode .user-advanced-filter,
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .custom-select,
       .user-filter-bar.asset-mode .custom-select,
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .user-filter-bar.asset-mode .custom-select-trigger,
       .user-filter-bar.asset-mode .custom-select-trigger {
         width: 100%;
         max-width: none;
@@ -14283,37 +14137,30 @@
       }
       body.article-list-mode .filters,
       body.category-list-mode .filters,
-      body.reported-board-mode .filters,
       body.option-master-mode .filters,
       body.article-list-mode .user-filter-bar,
       body.category-list-mode .user-filter-bar,
-      body.reported-board-mode .user-filter-bar,
       body.option-master-mode .user-filter-bar,
       body.article-list-mode .user-advanced-filter,
       body.category-list-mode .user-advanced-filter,
-      body.reported-board-mode .user-advanced-filter,
       body.option-master-mode .user-advanced-filter,
       body.article-list-mode .custom-select,
       body.category-list-mode .custom-select,
-      body.reported-board-mode .custom-select,
       body.option-master-mode .custom-select {
         min-width: 0;
         max-width: 100%;
       }
       body.article-list-mode .custom-select-menu,
-      body.category-list-mode .custom-select-menu,
-      body.reported-board-mode .custom-select-menu {
+      body.category-list-mode .custom-select-menu {
         max-width: 100%;
         overflow-x: hidden;
       }
       body.article-list-mode .custom-select-trigger,
-      body.category-list-mode .custom-select-trigger,
-      body.reported-board-mode .custom-select-trigger {
+      body.category-list-mode .custom-select-trigger {
         min-width: 0;
       }
       body.article-list-mode .custom-select-trigger [data-custom-select-label],
-      body.category-list-mode .custom-select-trigger [data-custom-select-label],
-      body.reported-board-mode .custom-select-trigger [data-custom-select-label] {
+      body.category-list-mode .custom-select-trigger [data-custom-select-label] {
         display: block;
         min-width: 0;
         overflow: hidden;
@@ -14321,8 +14168,7 @@
         white-space: nowrap;
       }
       body.article-list-mode .custom-select-option,
-      body.category-list-mode .custom-select-option,
-      body.reported-board-mode .custom-select-option {
+      body.category-list-mode .custom-select-option {
         width: 100%;
         min-width: 0;
         white-space: normal;
@@ -14330,26 +14176,23 @@
       }
       body.article-list-mode .user-panel-filter-actions,
       body.category-list-mode .user-panel-filter-actions,
-      body.reported-board-mode .user-panel-filter-actions,
       body.market-list-mode .user-panel-filter-actions {
         min-width: 0;
         flex-wrap: wrap;
       }
       body.article-list-mode .user-panel-filter-actions .btn,
       body.category-list-mode .user-panel-filter-actions .btn,
-      body.reported-board-mode .user-panel-filter-actions .btn,
       body.market-list-mode .user-panel-filter-actions .btn {
         max-width: 100%;
       }
       body.article-list-mode #table,
       body.category-list-mode #table,
-      body.reported-board-mode #table,
       body.policy-version-history-mode #table {
         padding: 12px 14px 16px;
         background: #f8fbff;
         overflow-x: hidden;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) #table {
         padding: 12px 14px 16px;
         background: #f8fbff;
       }
@@ -14363,7 +14206,7 @@
         background: #f8fbff;
         overflow-x: hidden;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) #table .asset-list-table,
       body.policy-version-history-mode #table .policy-version-table {
         grid-template-columns: 1fr;
         gap: 12px;
@@ -14371,7 +14214,6 @@
       }
       body.article-list-mode #table .article-table,
       body.category-list-mode #table .category-table,
-      body.reported-board-mode #table .reported-board-table,
       body.policy-versioning-mode #table .policy-list-table {
         grid-template-columns: 1fr;
         gap: 12px;
@@ -14393,9 +14235,8 @@
 
       body.category-list-mode #table > .footer-range,
 
-      body.reported-board-mode #table > .footer-range,
 
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table > .footer-range,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) #table > .footer-range,
 
       body.option-master-mode.option-group-list-mode #table > .footer-range,
 
@@ -14416,7 +14257,6 @@
 
       body.category-list-mode .footer-range,
 
-      body.reported-board-mode .footer-range,
 
       body.option-master-mode .footer-range,
 
@@ -14429,22 +14269,21 @@
         padding: 13px 16px;
         background: transparent;
       }
-      body.user-list-mode:not(.reported-board-mode) .layout > .panel {
+      body.user-list-mode .layout > .panel {
         overflow: visible;
       }
-      body.user-list-mode:not(.reported-board-mode) #table {
+      body.user-list-mode #table {
         border-radius: 0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px);
         overflow: hidden;
       }
-      body.user-list-mode:not(.reported-board-mode) .footer-range {
+      body.user-list-mode .footer-range {
         background: #f8fbff;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-row.head {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .asset-list-table .asset-row.head {
         display: none;
       }
       body.article-list-mode .article-table .asset-row.head,
       body.category-list-mode .category-table .asset-row.head,
-      body.reported-board-mode .reported-board-table .asset-row.head,
       body.option-master-mode .option-group-table .asset-row.head,
       body.option-master-mode .option-detail-table .asset-row.head,
       body.policy-versioning-mode .policy-list-table .asset-row.head,
@@ -14453,7 +14292,6 @@
       }
       body.article-list-mode .article-table .asset-row:not(.head),
       body.category-list-mode .category-table .asset-row:not(.head),
-      body.reported-board-mode .reported-board-table .asset-row:not(.head),
       body.option-master-mode .option-group-table .asset-row:not(.head),
       body.option-master-mode .option-detail-table .asset-row:not(.head),
       body.policy-versioning-mode .policy-list-table .asset-row:not(.head),
@@ -14472,7 +14310,6 @@
       }
       body.article-list-mode .article-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.category-list-mode .category-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
-      body.reported-board-mode .reported-board-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.option-master-mode .option-group-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.option-master-mode .option-detail-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
@@ -14482,7 +14319,6 @@
       }
       body.article-list-mode .article-table .asset-row:not(.head) > div[data-label]:first-child,
       body.category-list-mode .category-table .asset-row:not(.head) > div[data-label]:first-child,
-      body.reported-board-mode .reported-board-table .asset-row:not(.head) > div[data-label]:first-child,
       body.option-master-mode .option-group-table .asset-row:not(.head) > div[data-label]:first-child,
       body.option-master-mode .option-detail-table .asset-row:not(.head) > div[data-label]:first-child,
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > div[data-label]:first-child {
@@ -14490,7 +14326,6 @@
       }
       body.article-list-mode .article-table .asset-row:not(.head) > .user-row-actions,
       body.category-list-mode .category-table .asset-row:not(.head) > .user-row-actions,
-      body.reported-board-mode .reported-board-table .asset-row:not(.head) > .user-row-actions,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .user-row-actions,
       body.option-master-mode .option-detail-table .asset-row:not(.head) > .user-row-actions,
       body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .user-row-actions,
@@ -14506,7 +14341,6 @@
       }
       body.article-list-mode .article-table .asset-row:not(.head) > .asset-cell-primary,
       body.category-list-mode .category-table .asset-row:not(.head) > .asset-cell-primary,
-      body.reported-board-mode .reported-board-table .asset-row:not(.head) > .asset-cell-primary,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .asset-cell-primary,
       body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary,
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary,
@@ -14523,7 +14357,6 @@
       }
       body.article-list-mode .article-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.category-list-mode .category-table .asset-row:not(.head) > .asset-cell-primary .main-text,
-      body.reported-board-mode .reported-board-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary .main-text,
@@ -14542,12 +14375,10 @@
       }
       body.article-list-mode .article-table .asset-row:not(.head) .desktop-user-name,
       body.category-list-mode .category-table .asset-row:not(.head) .desktop-user-name,
-      body.reported-board-mode .reported-board-table .asset-row:not(.head) .desktop-user-name,
       body.user-accounts-mode .comment-list-table .asset-row:not(.head) .desktop-user-name,
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .desktop-user-name { display: none; }
       body.article-list-mode .article-table .asset-row:not(.head) .mobile-user-card-title,
       body.category-list-mode .category-table .asset-row:not(.head) .mobile-user-card-title,
-      body.reported-board-mode .reported-board-table .asset-row:not(.head) .mobile-user-card-title,
       body.user-accounts-mode .comment-list-table .asset-row:not(.head) .mobile-user-card-title,
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .mobile-user-card-title,
       body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .mobile-user-card-title,
@@ -14564,7 +14395,6 @@
       body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .asset-cell-primary > .pill { display: none; }
       body.article-list-mode .article-table .asset-card-tags,
       body.category-list-mode .category-table .asset-card-tags,
-      body.reported-board-mode .reported-board-table .asset-card-tags,
       body.user-accounts-mode .comment-list-table .asset-card-tags,
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-card-tags,
       body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-card-tags,
@@ -14579,7 +14409,6 @@
       }
       body.article-list-mode .article-table .asset-card-tags .user-card-meta,
       body.category-list-mode .category-table .asset-card-tags .user-card-meta,
-      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta,
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta,
@@ -14596,7 +14425,6 @@
       }
       body.article-list-mode .article-table .asset-card-tags .user-card-meta-item,
       body.category-list-mode .category-table .asset-card-tags .user-card-meta-item,
-      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item,
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item,
@@ -14613,7 +14441,6 @@
       }
       body.article-list-mode .article-table .asset-card-tags .user-card-meta-item span,
       body.category-list-mode .category-table .asset-card-tags .user-card-meta-item span,
-      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item span,
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item span,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item span,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item span,
@@ -14627,7 +14454,6 @@
       }
       body.article-list-mode .article-table .asset-card-tags .user-card-meta-item strong,
       body.category-list-mode .category-table .asset-card-tags .user-card-meta-item strong,
-      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item strong,
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item strong,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item strong,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item strong,
@@ -14668,7 +14494,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-row:not(.head),
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .asset-list-table .asset-row:not(.head),
       body.user-accounts-mode .comment-list-table .asset-row:not(.head) {
         grid-template-columns: minmax(0, 1fr) 34px;
         column-gap: 14px;
@@ -14976,7 +14802,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .asset-list-table .asset-list-card-meta {
         flex: 1 0 100%;
         display: grid;
         gap: 3px;
@@ -14985,7 +14811,7 @@
         padding-top: 11px;
         border-top: 1px solid #edf2f7;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item {
         display: flex;
         align-items: baseline;
         justify-content: space-between;
@@ -14994,26 +14820,26 @@
         font-size: 12px;
         line-height: 1.35;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item span {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item span {
         color: #485b75;
         font-size: 12px;
         font-weight: 700;
         white-space: nowrap;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item strong {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item strong {
         color: #233a5c;
         font-size: 12px;
         font-weight: 400;
         min-width: 0;
         text-align: right;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item.comment-field-meta {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item.comment-field-meta {
         display: grid;
         grid-template-columns: max-content minmax(0, 50%);
         align-items: baseline;
         gap: 8px;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item.comment-field-meta strong {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item.comment-field-meta strong {
         width: 100%;
         max-width: 100%;
         min-width: 0;
@@ -15268,22 +15094,6 @@
         gap: 8px;
       }
       body.delivery-log-list-mode .delivery-log-table .user-card-meta-item.comment-field-meta strong {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        display: block;
-        overflow: hidden;
-        text-align: right;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      body.reported-board-mode .reported-board-table .user-card-meta-item.comment-field-meta {
-        display: grid;
-        grid-template-columns: max-content minmax(0, 50%);
-        align-items: baseline;
-        gap: 8px;
-      }
-      body.reported-board-mode .reported-board-table .user-card-meta-item.comment-field-meta strong {
         width: 100%;
         max-width: 100%;
         min-width: 0;
@@ -15980,8 +15790,7 @@
       }
       .search { min-width: 100%; }
     }
-    @media (max-width: 560px) {
-    }
+    
 
     /* ===== Policy & Versioning (HS-PTO-001) ===== */
     body.policy-versioning-mode .layout {
@@ -17838,7 +17647,7 @@
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets", "Reported Comments"] },
-        { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
+        { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories"] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Market Overview", "Brands & Models", "Sync History"] },
         { id: "option-master", label: "Option Master", icon: "option" },
       ]},
@@ -17942,7 +17751,7 @@
         item("AST-8509", "Seiko Presage Cocktail Time", "Archive Collector", "Sold", "ปกติ", "Closed", "Sold listing retained for audit and sale history", ["Sold record"], "Keep read-only history"),
         item("AST-8497", "Cartier Tank Must", "Minimal Dial", "Sale", "กลาง", "Active", "New Cartier listing with price close to index", ["THB 118,000"], "Confirm reference before featuring")
       ]),
-      content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles", "สร้างบทความ, category, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
+      content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles", "สร้างบทความ, category และ schedule", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"]], [
         item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Guides"], "Preview as FO และตรวจ cover image ก่อน publish")
       ]),
       market: mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "Read brand, model, reference, detail and price index data from API/backend sync", "Sync API", [["Brands", "482", "API active"], ["Models", "8,924", "API catalog"], ["Price Index", "17,200", "Updated this week"], ["Sync Warnings", "6", "Needs review"]], [
@@ -19084,7 +18893,7 @@
         { id: "ROL-005", name: "Trust & Safety Moderator", roleKey: "trust_safety_moderator", type: "system", status: "Active", description: "ตรวจ report queue และทำ action ที่กระทบ FO พร้อม reason, impact note และ audit", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "02 Sep 2026 10:15", updatedRank: 202609021015, updatedBy: "ADM-001" },
         { id: "ROL-006", name: "Asset Operations", roleKey: "asset_operations", type: "system", status: "Active", description: "ตรวจ Asset List/Detail และ reported assets/comments โดยไม่แก้ Market Data master หรือ Settings", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
         { id: "ROL-007", name: "Content Editor", roleKey: "content_editor", type: "system", status: "Active", description: "สร้างและแก้ draft บทความ, category และ metadata ได้ แต่ publish/archive ไม่ได้", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
-        { id: "ROL-008", name: "Content Publisher", roleKey: "content_publisher", type: "system", status: "Active", description: "อนุมัติ publish, schedule, archive และจัดการ Reported Articles พร้อม audit reason", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-008", name: "Content Publisher", roleKey: "content_publisher", type: "system", status: "Active", description: "อนุมัติ publish, schedule และ archive พร้อม audit reason", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
         { id: "ROL-101", name: "Content Reviewer TH", roleKey: "content_reviewer_th", type: "custom", status: "Active", description: "ตรวจทานบทความ, metadata และ category ก่อนส่งให้ publisher โดยไม่มีสิทธิ์ publish", createdAt: "12 Aug 2026 14:00", createdRank: 202608121400, createdBy: "ADM-001", updatedAt: "05 Sep 2026 11:20", updatedRank: 202609051120, updatedBy: "ADM-001" },
         { id: "ROL-102", name: "Market Analyst", roleKey: "market_analyst", type: "custom", status: "Active", description: "อ่าน market data, demand overview และ delivery log สำหรับทีมวิเคราะห์โดยไม่มี mutation", createdAt: "20 Aug 2026 09:30", createdRank: 202608200930, createdBy: "ADM-002", updatedAt: "20 Aug 2026 09:30", updatedRank: 202608200930, updatedBy: "ADM-002" },
         { id: "ROL-103", name: "Legacy Support Viewer", roleKey: "legacy_support_viewer", type: "custom", status: "Inactive", description: "Role เดิมของทีม support ก่อนปรับโครงสร้าง — ปิดใช้งานแล้วและเลือก assign ให้ผู้ดูแลรายใหม่ไม่ได้", createdAt: "02 Jun 2026 10:00", createdRank: 202606021000, createdBy: "ADM-001", updatedAt: "01 Sep 2026 16:45", updatedRank: 202609011645, updatedBy: "ADM-001" }
@@ -19205,10 +19014,6 @@
             levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", content_editor: "view", content_publisher: "view", content_reviewer_th: "view" } },
           { key: "categories.manage", sub: "Categories", name: "จัดการ Categories (เพิ่ม / แก้ไข)",
             levels: { super_admin: "admin", content_editor: "manage", content_publisher: "approve" } },
-          { key: "board.reports.view", sub: "Reported Articles", name: "ดูรายงานและ Report Detail",
-            levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", content_editor: "view", content_publisher: "view", content_reviewer_th: "view" } },
-          { key: "board.reports.manage", sub: "Reported Articles", name: "ตัดสินรายงานและจัดการเนื้อหา",
-            levels: { super_admin: "admin", trust_safety_moderator: "approve", content_publisher: "approve" } }
         ]
       },
       {
@@ -19422,10 +19227,9 @@
         { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User Accounts", icon: "users" },
         { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420", "This Week 24,700", "This Month 38,900"], module: "users", sub: "User Accounts", icon: "users" },
         { label: "New Assets", value: "94", trend: "สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", sub: "Asset List", icon: "asset" },
-        { label: "Reported Items", value: "33", trend: "มี 9 รายงานรอตรวจสอบ", chips: [
+        { label: "Reported Items", value: "30", trend: "มี 8 รายงานรอตรวจสอบ", chips: [
           { label: "Assets 22", module: "assets", sub: "Reported Assets" },
           { label: "Users 5", module: "users", sub: "Reported Users" },
-          { label: "Articles 3", module: "content", sub: "Reported Articles" },
           { label: "Comments 3", module: "assets", sub: "Reported Comments" }
         ], icon: "audit" },
         { label: "Articles", value: "12", trend: "มี 4 บทความรอเผยแพร่", chips: ["Published 8", "Scheduled 4"], module: "content", sub: "Articles", icon: "content" },
@@ -19434,7 +19238,6 @@
       queues: [
         { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ", chips: ["ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
         { title: "รายงานผู้ใช้", count: 5, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ตรวจประวัติ login"], module: "users", sub: "Reported Users" },
-        { title: "รายงานบทความ", count: 3, priority: "high", detail: "มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive", chips: ["Articles 3", "รอตรวจ"], module: "content", sub: "Reported Articles" },
         { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอใกล้สิ้นสุดช่วงรอลบบัญชี — ระบบจะลบบัญชีอัตโนมัติเมื่อครบ grace period", chips: ["Grace period 4", "ใกล้ลบอัตโนมัติ 2"], module: "deletions", sub: "" },
         { title: "บทความรอเผยแพร่", count: 4, priority: "normal", detail: "บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา", chips: ["เผยแพร่วันนี้ 2", "ต้อง preview"], module: "content", sub: "Articles" },
         { title: "ข้อมูลตลาดรอตรวจ", count: 6, priority: "normal", detail: "brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert", chips: ["Sync issue 6", "Price index"], module: "market", sub: "Sync History" },
@@ -20060,7 +19863,7 @@
     };
 
     // Canonical report reasons — FO is source of truth (PM_REASONS ชุดเดียวทุก type:
-    // post/user/comment ตาม FrontOffice/15 §Report Reason Set; Board Content ใช้ชุด 6 เหตุผลของตัวเอง)
+    // post/user/comment ตาม FrontOffice/15 §Report Reason Set)
     const userReportReasonOptions = [
       "I just don't like it",
       "Bullying or unwanted contact",
@@ -20083,14 +19886,7 @@
       "Nudity or sexual activity": "ภาพเปลือยหรือกิจกรรมทางเพศ",
       "Scam, fraud or spam": "การหลอกลวง การฉ้อโกง หรือสแปม",
       "False information": "ข้อมูลเท็จ",
-      "Intellectual property": "ทรัพย์สินทางปัญญา",
-      // Board Content 6 — Reported Articles
-      "Spam or misleading": "สแปมหรือเนื้อหาที่ทำให้เข้าใจผิด",
-      "Harassment or hate": "การคุกคามหรือแสดงความเกลียดชัง",
-      "Scam or fraud": "การหลอกลวงหรือฉ้อโกง",
-      "Illegal or restricted item": "สินค้าผิดกฎหมายหรือสินค้าต้องจำกัด",
-      "Inappropriate content": "เนื้อหาไม่เหมาะสม",
-      "Other": "อื่น ๆ"
+      "Intellectual property": "ทรัพย์สินทางปัญญา"
     };
 
     const userReportSubmissions = {
@@ -20433,9 +20229,6 @@
         return { type: "module", module: "assets", sub: activeSub || "Asset List", displaySub: activeSub || "Asset List" };
       }
       if (activeModule === "content") {
-        if (activeSub === "Reported Articles" && document.body.classList.contains("user-detail-mode") && activeRow?.id) {
-          return { type: "reported-board-detail", id: activeRow.id };
-        }
         if ((activeSub || "Articles") === "Articles" && document.body.classList.contains("asset-detail-mode") && activeRow?.id) {
           return { type: "article-detail", id: activeRow.id };
         }
@@ -20509,10 +20302,6 @@
         renderPolicyVersionHistoryPage(policyVersioningData.policies.find(entry => entry.id === context.id));
         return true;
       }
-      if (context.type === "reported-board-detail") {
-        renderReportedBoardDetail(getBoardReportById(context.id));
-        return true;
-      }
       if (context.type === "market-brand-detail") {
         renderMarketBrandDetailPage(context.brandId);
         return true;
@@ -20539,7 +20328,7 @@
     function getDefaultBackContext() {
       if (activeModule === "users") return { type: "module", module: "users", sub: activeSub === "Reported Users" ? "Reported Users" : "User Accounts", displaySub: activeSub === "Reported Users" ? "Reported Users" : "User Accounts" };
       if (activeModule === "assets") return { type: "module", module: "assets", sub: activeSub === "Reported Assets" ? "Reported Assets" : activeSub === "Reported Comments" ? "Reported Comments" : "Asset List", displaySub: activeSub === "Reported Assets" ? "Reported Assets" : activeSub === "Reported Comments" ? "Reported Comments" : "Asset List" };
-      if (activeModule === "content") return { type: "module", module: "content", sub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles", displaySub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles" };
+      if (activeModule === "content") return { type: "module", module: "content", sub: "Articles", displaySub: "Articles" };
       if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Market Overview", displaySub: activeSub || "Market Overview" };
       if (activeModule === "watch-alerts") return { type: "module", module: "watch-alerts", sub: activeSub || "Demand Overview", displaySub: activeSub || "Demand Overview" };
       if (activeModule === "settings") return { type: "module", module: "settings", sub: activeSub || "Policy & Versioning", displaySub: activeSub || "Policy & Versioning" };
@@ -20634,8 +20423,6 @@
     let articleFilterOpen = false;
     let categoryListPage = 1;
     let categoryFilterOpen = false;
-    let boardReportListPage = 1;
-    let boardReportFilterOpen = false;
     let reportedCommentFilterOpen = false;
     // DEL-PTO-001: Account Deletion Requests list state
     let deletionListPage = 1;
@@ -20709,7 +20496,6 @@
       "reported-comment-list": { searchId: "reported-comment-search", filterIds: ["reported-comment-status-filter", "reported-comment-priority-filter", "reported-comment-sort"] },
       "article-list": { searchId: "article-search", filterIds: ["article-status-filter", "article-category-filter", "article-sort"] },
       "category-list": { searchId: "category-search", filterIds: ["category-status-filter", "category-sort"] },
-      "board-report-list": { searchId: "board-report-search", filterIds: ["board-report-status-filter", "board-report-priority-filter", "board-report-sort"] },
       "option-group-list": { searchId: "option-group-search", filterIds: ["option-group-status-filter"] },
       "option-detail": { searchId: "option-detail-search", filterIds: ["option-status-filter"] },
       "option-suggestion-queue": { searchId: "option-suggestion-search", filterIds: ["option-suggestion-group-filter", "option-suggestion-status-filter", "option-suggestion-sort"] },
@@ -21230,8 +21016,6 @@
       articleFilterOpen = false;
       categoryListPage = 1;
       categoryFilterOpen = false;
-      boardReportListPage = 1;
-      boardReportFilterOpen = false;
       reportedCommentFilterOpen = false;
       optionGroupListPage = 1;
       optionDetailPage = 1;
@@ -21285,7 +21069,6 @@
       }
       if (activeModule === "content") {
         if (activeSub === "Categories") return "category-list";
-        if (activeSub === "Reported Articles") return "board-report-list";
         return "article-list";
       }
       if (activeModule === "option-master") {
@@ -21378,7 +21161,6 @@
       assetReportFilterOpen = false;
       articleFilterOpen = false;
       categoryFilterOpen = false;
-      boardReportFilterOpen = false;
       reportedCommentFilterOpen = false;
       optionDetailFilterOpen = false;
       optionGroupFilterOpen = false;
@@ -24749,7 +24531,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "audit-log-detail-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "audit-log-detail-modal");
       const confirmRow = (label, value) => `
         <div class="option-confirm-row"><span class="option-confirm-label">${label}</span><span class="option-confirm-value">${value}</span></div>
       `;
@@ -24786,7 +24568,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "audit-log-detail-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "audit-log-detail-modal");
       modalCard.classList.add("audit-log-detail-modal");
       const confirmRow = (label, value) => `
         <div class="option-confirm-row"><span class="option-confirm-label">${label}</span><span class="option-confirm-value">${value}</span></div>
@@ -24943,7 +24725,7 @@
         ["Dashboard", "view", "เห็นเฉพาะ queue ที่ดูแล"],
         ["User Management", "limited", "เฉพาะ Reported Users + action ตาม policy"],
         ["Asset Management", "limited", "เฉพาะ Reported Assets / Reported Comments"],
-        ["Content Management", "limited", "Reported Articles และ content context ที่เกี่ยวข้อง"],
+        ["Content Management", "limited", "content context ที่เกี่ยวข้อง"],
         ["Market Data", "view", ""],
         ["Option Master", "none", ""],
         ["Market Demand", "view", ""],
@@ -24976,7 +24758,7 @@
         ["Dashboard", "view", "เห็นเฉพาะงาน content"],
         ["User Management", "none", ""],
         ["Asset Management", "none", ""],
-        ["Content Management", "manage", "publish/schedule/archive/banners + Reported Articles พร้อม audit reason"],
+        ["Content Management", "manage", "publish/schedule/archive/banners พร้อม audit reason"],
         ["Market Data", "view", ""],
         ["Option Master", "none", ""],
         ["Market Demand", "view", ""],
@@ -25480,7 +25262,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal");
       modalCard.classList.add("admin-account-action-modal");
       const confirmRow = (label, value) => `
         <div class="option-confirm-row"><span class="option-confirm-label">${label}</span><span class="option-confirm-value">${value}</span></div>
@@ -25644,7 +25426,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal");
       modalCard.classList.add("admin-account-action-modal");
       const confirmRow = (label, value) => `
         <div class="option-confirm-row"><span class="option-confirm-label">${label}</span><span class="option-confirm-value">${value}</span></div>
@@ -25838,7 +25620,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal");
       modalCard.classList.add("admin-account-action-modal");
       const confirmRow = (label, value) => `
         <div class="option-confirm-row"><span class="option-confirm-label">${label}</span><span class="option-confirm-value">${value}</span></div>
@@ -28163,7 +27945,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "audit-log-detail-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "audit-log-detail-modal");
       modalCard.classList.add("admin-account-action-modal");
       modalBody.innerHTML = `
         <div class="user-action-page admin-account-action-page">
@@ -28224,7 +28006,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal");
       modalCard.classList.add("admin-account-action-modal");
       const roleOptions = Object.keys(roleMenuAccess)
         .filter(role => role !== acc.role)
@@ -28323,7 +28105,7 @@
       adminAccountInviteRoleSnapshot = Object.fromEntries(
         eligibleRoles.map(role => [role.name, getAdminInviteRoleRevision(role)])
       );
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "audit-log-detail-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "audit-log-detail-modal");
       modalCard.classList.add("option-editor-modal", "admin-account-invite-modal");
       modalBody.innerHTML = `
         <div class="user-action-layout">
@@ -30505,7 +30287,7 @@
       }
       modal.classList.remove("show");
       modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing", "audit-log-drawer-open", "audit-log-drawer-closing");
-      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "role-create-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "audit-log-detail-modal", "my-account-name-modal", "my-account-password-modal", "my-account-session-modal");
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "role-create-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "audit-log-detail-modal", "my-account-name-modal", "my-account-password-modal", "my-account-session-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -31804,10 +31586,9 @@
       const isReportedComments = id === "assets" && subLabel === "Reported Comments";
       const isArticleList = id === "content" && (subLabel || "Articles") === "Articles";
       const isCategoryList = id === "content" && subLabel === "Categories";
-      const isReportedBoard = id === "content" && subLabel === "Reported Articles";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
-      document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
-      document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
+      document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedComments);
+      document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList);
       // WA-PTO-003a: remove watch-alert-detail-mode when navigating away from Alert Detail
       document.body.classList.remove("watch-alert-detail-mode");
       // BO-OPT-006a-R1: option-master-mode classes were only ever added, never removed,
@@ -31831,7 +31612,6 @@
       document.body.classList.remove("my-account-mode");
       document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("category-list-mode", isCategoryList);
-      document.body.classList.toggle("reported-board-mode", isReportedBoard);
       document.body.classList.toggle("market-list-mode", id === "market");
       document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Market Overview") === "Market Overview");
       document.body.classList.toggle("watch-alert-mode", id === "watch-alerts");
@@ -31848,11 +31628,11 @@
       // Role List mode (Settings > Roles & Permissions) — detail mode ถูกถอดเมื่อกลับ/เปลี่ยนหน้า
       document.body.classList.remove("role-detail-mode");
       document.body.classList.toggle("role-list-mode", id === "settings" && (subLabel === "Roles & Permissions" || subLabel === "Permissions"));
-      document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
+      document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedComments);
       document.body.classList.toggle("user-accounts-mode", id === "users" && (subLabel || "User Accounts") === "User Accounts");
       document.body.classList.remove("asset-detail-mode");
-      if (isReportedAssets || isReportedBoard || isReportedComments) document.body.classList.remove("user-detail-mode");
-      if (id !== "users" && !isReportedAssets && !isReportedBoard && !isReportedComments) {
+      if (isReportedAssets || isReportedComments) document.body.classList.remove("user-detail-mode");
+      if (id !== "users" && !isReportedAssets && !isReportedComments) {
         document.body.classList.remove("user-list-mode", "user-detail-mode");
         document.querySelector("#user-panel-filter-actions").innerHTML = "";
       }
@@ -32058,36 +31838,6 @@
         updateActiveNav();
         return;
       }
-      if (isReportedBoard) {
-        activeRow = getBoardReportRows()[0] || null;
-        document.querySelector("#crumb").textContent = `${data.crumb} / Reported Articles`;
-        document.querySelector("#page-title").textContent = "Reported Articles";
-        document.querySelector("#page-meta").textContent = "";
-        document.querySelector("#panel-title").textContent = "Reported Article List";
-        document.querySelector("#panel-subtitle").textContent = "";
-        document.querySelector("#primary-action").textContent = "เปิดรายงาน";
-        document.querySelector("#user-panel-filter-actions").innerHTML = `
-          <button class="btn user-filter-toggle" type="button" data-board-report-filter-toggle aria-expanded="${boardReportFilterOpen}">${iconSvg.filter}<span>${boardReportFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-          <button class="btn" type="button" data-board-report-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
-        `;
-        document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar content-mode" data-filter-open="${boardReportFilterOpen}">
-            <input class="field search" id="board-report-search" type="search" placeholder="ค้นหา Report ID, Article, Category, Article ID" />
-            <div class="user-advanced-filter">${customSelect("board-report-status-filter", "Filter report status", filterOptions("reportStatus"))}</div>
-            <div class="user-advanced-filter">${customSelect("board-report-priority-filter", "Filter priority", filterOptions("reportPriorityKeyValues"))}</div>
-            <div class="user-advanced-filter">${customSelect("board-report-sort", "Sort board reports", filterOptions("reportSort"), "latest")}</div>
-            ${resetFilterButton("data-board-report-reset")}
-          </div>
-        `;
-        document.querySelector("#summary-grid").innerHTML = "";
-        document.querySelector("#cards").innerHTML = "";
-        document.querySelector("#detail").innerHTML = "";
-        // BO-UX-001: restore saved filter values when returning from Reported Article Detail
-        restoreListFilterState("board-report-list");
-        renderReportedBoardRows();
-        updateActiveNav();
-        return;
-      }
       if (isAssetList) {
         const assetBrands = Array.from(new Set(data.rows.map(row => getAssetBrand(row)))).sort((a, b) => a.localeCompare(b));
         document.querySelector("#panel-title").textContent = "Assets List";
@@ -32208,7 +31958,7 @@
       setPageActions(roleActorHasPermission("roles.manage") ? `<button class="btn" type="button" data-role-create-open>${iconSvg.plus}<span>สร้าง Custom Role</span></button>` : "");
       syncExpandedNavForModule("settings", "Roles & Permissions");
       document.body.classList.add("role-list-mode");
-      document.body.classList.remove("role-detail-mode", "dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "admin-account-list-mode", "admin-account-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "delivery-log-list-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
+      document.body.classList.remove("role-detail-mode", "dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "asset-detail-mode", "user-detail-mode", "admin-account-list-mode", "admin-account-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "delivery-log-list-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
       document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Roles & Permissions";
       document.querySelector("#page-title").textContent = "Roles & Permissions";
       document.querySelector("#page-meta").textContent = "";
@@ -32601,7 +32351,7 @@
       activeRow = { id: roleId };
       activeRoleId = roleId;
       document.body.classList.add("role-detail-mode");
-      document.body.classList.remove("role-list-mode", "dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "admin-account-list-mode", "admin-account-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "delivery-log-list-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
+      document.body.classList.remove("role-list-mode", "dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "asset-detail-mode", "user-detail-mode", "admin-account-list-mode", "admin-account-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "delivery-log-list-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
       document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Roles & Permissions / ${role ? role.name : "ไม่พบ Role"}`;
       document.querySelector("#page-title").textContent = "Role Detail";
       document.querySelector("#page-meta").textContent = "";
@@ -32922,7 +32672,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal", "option-editor-modal", "role-create-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal", "option-editor-modal", "role-create-modal");
       modalCard.classList.add("option-editor-modal", "role-create-modal");
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
       modalBody.innerHTML = `
@@ -33132,7 +32882,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal", "option-editor-modal", "role-create-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal", "option-editor-modal", "role-create-modal");
       modalCard.classList.add("option-editor-modal", "role-create-modal");
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
       const grantedGroups = rolePermissionCatalog.map(group => ({
@@ -33553,7 +33303,7 @@
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
       const impact = checkRoleDeactivateImpact(role);
       pendingRoleDeactivateData = { id: role.id, revision: role.revision || 1 };
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal", "option-editor-modal", "role-create-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-order-modal", "option-audit-modal", "option-editor-modal", "role-create-modal");
       modalCard.classList.add("option-editor-modal", "role-deactivate-modal");
       body.innerHTML = `<div class="user-action-layout">
         <div class="user-action-head"><div><h2 id="user-action-modal-title">Confirm Deactivate Custom Role</h2>
@@ -33651,7 +33401,7 @@
       const allowed = !blockReasons.length;
       const assignedAdmins = adminAccountData.accounts.filter(account => account.role === role.name).length;
       pendingRoleReactivateData = { id: role.id, revision: role.revision || 1 };
-      card.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal", "option-editor-modal", "role-create-modal");
+      card.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-order-modal", "option-audit-modal", "option-editor-modal", "role-create-modal");
       card.classList.add("option-editor-modal", "role-deactivate-modal");
       body.innerHTML = `<div class="user-action-layout">
         <div class="user-action-head"><div><h2 id="user-action-modal-title">Confirm Reactivate Custom Role</h2>
@@ -33729,7 +33479,7 @@
       activeRow = null;
       setPageActions("");
       syncExpandedNavForModule("settings", "Policy & Versioning");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "asset-detail-mode", "user-detail-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
       document.body.classList.add("policy-versioning-mode");
       document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Policy & Versioning";
       document.querySelector("#page-title").textContent = "Policy & Versioning";
@@ -33938,7 +33688,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal", "my-account-password-modal", "my-account-session-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal", "my-account-password-modal", "my-account-session-modal");
       modalCard.classList.add("my-account-name-modal");
       // esc ปิด " ด้วย — ใช้ใน attribute context (input value) เหมือน pattern esc ของ Role screens
       const esc = v => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -34260,7 +34010,7 @@
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
       // ล้าง variant class ของ modal อื่น (pattern เดียวกับ openMyAccountNameModal)
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal", "my-account-name-modal", "my-account-password-modal", "my-account-session-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal", "my-account-name-modal", "my-account-password-modal", "my-account-session-modal");
       modalCard.classList.add("my-account-password-modal");
       // snapshot revision ตอนเปิด modal — stale guard ตอน commit เดียวกับ edit name
       myAccountPwRevisionSnapshot = acc.revision ?? 0;
@@ -34911,7 +34661,7 @@
       activeRow = null;
       setPageActions("");
       syncExpandedNavForModule("settings", "Support Center");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "asset-detail-mode", "user-detail-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode");
       document.body.classList.add("support-center-mode");
       document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Support Center";
       document.querySelector("#page-title").textContent = "Support Center";
@@ -35747,7 +35497,7 @@
       const modalBody = document.querySelector("#user-action-modal-body");
       const modalCard = document.querySelector("#user-action-modal .user-action-modal");
       if (modalBody) {
-        modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "audit-log-detail-modal");
+        modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "audit-log-detail-modal");
         modalCard?.classList.add("support-center-preview-modal");
         modalBody.innerHTML = renderSupportCenterPreviewModalContent();
         showUserActionModal(true);
@@ -37110,7 +36860,7 @@
       if (!modalBody) return;
       const phaseOneAllowedMarketActions = new Set(["audit"]);
       if (!phaseOneAllowedMarketActions.has(action)) {
-        modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "board-report-phone-preview-modal");
+        modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal");
         modalCard?.classList.add("market-editor-modal");
         modalBody.innerHTML = `
           <div class="user-action-page">
@@ -37127,7 +36877,7 @@
         showUserActionModal(true);
         return;
       }
-      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "board-report-phone-preview-modal");
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal");
       modalCard?.classList.add("market-editor-modal");
       const target = getMarketActionTarget(scope, brandId, modelIndex, referenceIndex);
       modalBody.innerHTML = `
@@ -37419,7 +37169,7 @@
       activeSub = "Brands & Models";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions(renderPageBackButton('data-market-back="catalog"', "กลับไป Brands"));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
@@ -37454,7 +37204,7 @@
       activeSub = "Brands & Models";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions(renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `กลับไป ${brand.name}`));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name} / ${model.name.replace(`${brand.name} `, "")}`;
       document.querySelector("#page-title").textContent = model.name.replace(`${brand.name} `, "");
@@ -37631,7 +37381,7 @@
       activeSub = subLabel;
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions(renderPageBackButton("data-market-back", `กลับไป ${pageLabel}`));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${pageLabel} / ${row.id}`;
       document.querySelector("#page-title").textContent = getMarketSyncTitleLabel(row);
@@ -38879,7 +38629,7 @@
       // body class: keep watch-alert-mode, add watch-alert-detail-mode, remove list/overview modes
       document.body.classList.add("watch-alert-mode", "watch-alert-detail-mode");
       document.body.classList.remove("watch-alert-list-mode", "watch-alert-overview-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "option-master-mode", "option-group-list-mode", "option-detail-mode", "option-suggestion-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "option-master-mode", "option-group-list-mode", "option-detail-mode", "option-suggestion-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode");
 
       // breadcrumb + page header + back button
       document.querySelector("#crumb").textContent = `งานตรวจสอบและบริการ / Market Demand / Watch Alert List / ${alert.id}`;
@@ -39220,7 +38970,7 @@
       activeRow = null;
       document.body.classList.add("market-list-mode");
       document.body.classList.toggle("market-dashboard-mode", activeSub === "Market Overview");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions("");
       document.querySelector("#user-panel-filter-actions").innerHTML = (activeSub === "Market Overview" || activeSub === "Brands & Models") ? "" : `
         <button class="btn user-filter-toggle" type="button" data-market-filter-toggle aria-expanded="${marketFilterOpen}">${iconSvg.filter}<span>${marketFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
@@ -39282,10 +39032,6 @@
       }
       if (activeModule === "content" && activeSub === "Categories") {
         renderCategoryListRows();
-        return;
-      }
-      if (activeModule === "content" && activeSub === "Reported Articles") {
-        renderReportedBoardRows();
         return;
       }
       if (activeModule === "market") {
@@ -39486,50 +39232,6 @@
           ]
         }
       ];
-
-    const boardReportRows = [
-      {
-        id: "RPC-043",
-        articleId: "ART-043",
-        articleTitle: "How to Check Provenance",
-        category: "Technical",
-        surface: "Board Article",
-        contentStatus: "Published",
-        reportStatus: "Pending",
-        priority: "high",
-        reporters: 2,
-        reason: "Inappropriate content",
-        reporterNote: "รูปเอกสารดูเหมือนถูกคัดลอกจากประกาศของดีลเลอร์ และยังเห็นลายน้ำที่ถูกครอปอยู่",
-        nextCheck: "Compare the reported image with source evidence, then edit the article to remove or replace the image before closing the report.",
-        preview: "Provenance checklist article with a reported body image inside the Board content.",
-        reportedAt: "10 Jul 2026 14:20",
-        tags: ["Image rights", "Board", "Reports 2"],
-        actionHistory: [
-          { createdAt: "10 Jul 2026 14:20 GMT+7", actor: "System", action: "Report Received", before: null, after: { reportStatus: "Pending", contentStatus: "Published" }, note: "System opened a Board report after duplicate image reports reached the review threshold." }
-        ]
-      },
-      {
-        id: "RPC-039",
-        articleId: "ART-039",
-        articleTitle: "Collector Interview: Bangkok Vintage",
-        category: "Collector",
-        surface: "Board Article",
-        contentStatus: "Archived",
-        reportStatus: "Closed",
-        priority: "low",
-        reporters: 3,
-        reason: "Other",
-        reporterNote: "The owner attribution was no longer accurate after the collector requested removal.",
-        nextCheck: "No pending action. Article remains archived and the report is closed.",
-        preview: "Archived collector interview retained for BO audit only.",
-        reportedAt: "09 Jul 2026 16:45",
-        tags: ["Attribution", "Archived", "Closed"],
-        actionHistory: [
-          { createdAt: "09 Jul 2026 17:12 GMT+7", actor: "Orn Admin", action: "Archive Article", before: { reportStatus: "Pending", contentStatus: "Published" }, after: { reportStatus: "Closed", contentStatus: "Archived" }, note: "Archived the Board article and closed the report after attribution review." },
-          { createdAt: "09 Jul 2026 16:45 GMT+7", actor: "System", action: "Report Received", before: null, after: { reportStatus: "Pending", contentStatus: "Published" }, note: "System opened a Board report for outdated attribution." }
-        ]
-      }
-    ];
 
     const categoryRows = [
       {
@@ -39841,7 +39543,7 @@
       optionSuggestionQueueActive = false;
       document.body.classList.remove(
         "dashboard-mode", "user-management-mode", "asset-list-mode",
-        "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode",
+        "article-list-mode", "category-list-mode", "market-list-mode",
         "market-dashboard-mode", "user-list-mode", "user-accounts-mode", "asset-detail-mode",
         "user-detail-mode"
       );
@@ -40078,7 +39780,7 @@
       optionSuggestionQueueActive = true;
       document.body.classList.remove(
         "dashboard-mode", "user-management-mode", "asset-list-mode",
-        "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode",
+        "article-list-mode", "category-list-mode", "market-list-mode",
         "market-dashboard-mode", "user-list-mode", "user-accounts-mode", "asset-detail-mode",
         "user-detail-mode", "option-detail-mode", "option-group-list-mode"
       );
@@ -40233,7 +39935,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-editor-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-editor-modal");
       modalCard.classList.add("option-audit-modal");
       const meta = getOptionSuggestionStatusMeta(s.status);
       const statusPill = `<span class="pill ${meta.cls}">${meta.label}</span>`;
@@ -40303,7 +40005,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const targetOptions = [
         { value: "", label: "เลือก option ที่จะ map" },
@@ -40394,7 +40096,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       modalBody.innerHTML = `
         <div class="user-action-layout">
@@ -40469,7 +40171,7 @@
       optionSuggestionQueueActive = false;
       document.body.classList.remove(
         "dashboard-mode", "user-management-mode", "asset-list-mode",
-        "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode",
+        "article-list-mode", "category-list-mode", "market-list-mode",
         "market-dashboard-mode", "user-list-mode", "user-accounts-mode", "asset-detail-mode",
         "user-detail-mode", "option-group-list-mode", "option-suggestion-mode"
       );
@@ -40763,7 +40465,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const statusPill = option.is_active
         ? `<span class="pill green">Active</span>`
@@ -40808,7 +40510,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       modalBody.innerHTML = `
         <div class="user-action-layout">
@@ -40879,7 +40581,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       modalBody.innerHTML = `
         <div class="user-action-layout">
@@ -40961,7 +40663,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       modalBody.innerHTML = `
         <div class="user-action-layout">
@@ -41016,7 +40718,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const isActiveValue = prevData ? String(prevData.is_active) : "true";
       modalBody.innerHTML = `
@@ -41081,7 +40783,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const keyField = `<input name="key" value="${escapeOptionField(src.key || option.key)}" readonly data-option-key />
         <span class="option-identifier-note">Option Key ล็อกไว้ — เป็นรหัสอ้างอิงของระบบที่ข้อมูลทั้งหมดอ้างอิงด้วยค่านี้ ห้ามเปลี่ยน</span>`;
@@ -41226,7 +40928,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const previewId = getNextOptionId();
       modalBody.innerHTML = `
@@ -41266,7 +40968,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const changed = (field) => String(original[field] ?? "") !== String(data[field] ?? "");
       const row = (label, field, displayFn) => {
@@ -41432,7 +41134,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const multiSelectValue = prevData ? prevData.allows_multi_select : false;
       const isActiveValue = prevData ? String(prevData.is_active) : "true";
@@ -41494,7 +41196,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       modalBody.innerHTML = `
         <div class="user-action-layout">
@@ -41652,7 +41354,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const previewId = getNextGroupId();
       modalBody.innerHTML = `
@@ -41692,7 +41394,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const changed = (field) => String(original[field] ?? "") !== String(data[field] ?? "");
       const row = (label, field, displayFn) => {
@@ -41823,7 +41525,7 @@
     function buildOptionGroupActionModalShell(modalCard, titleText, subtitleText) {
       modalCard.classList.remove(
         "article-preview-modal", "article-editor-confirm-modal", "category-editor-modal",
-        "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal",
+        "category-order-modal", "market-editor-modal",
         "option-order-modal", "option-audit-modal"
       );
       modalCard.classList.add("option-editor-modal");
@@ -42101,7 +41803,7 @@
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.remove(
         "article-preview-modal", "article-editor-confirm-modal", "category-editor-modal",
-        "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-editor-modal",
+        "category-order-modal", "market-editor-modal", "option-editor-modal",
         "option-audit-modal"
       );
       modalCard.classList.add("option-order-modal");
@@ -42242,7 +41944,7 @@
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.remove(
         "article-preview-modal", "article-editor-confirm-modal", "category-editor-modal",
-        "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-editor-modal",
+        "category-order-modal", "market-editor-modal", "option-editor-modal",
         "option-order-modal"
       );
       modalCard.classList.add("option-audit-modal");
@@ -42305,7 +42007,7 @@
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.remove(
         "article-preview-modal", "article-editor-confirm-modal", "category-editor-modal",
-        "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-editor-modal"
+        "category-order-modal", "market-editor-modal", "option-editor-modal"
       );
       modalCard.classList.add("option-order-modal");
       const rows = getOrderedActiveOptions(g.group_id);
@@ -42479,7 +42181,7 @@
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.remove(
         "article-preview-modal", "article-editor-confirm-modal", "category-editor-modal",
-        "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-editor-modal",
+        "category-order-modal", "market-editor-modal", "option-editor-modal",
         "option-order-modal"
       );
       modalCard.classList.add("option-audit-modal");
@@ -44399,11 +44101,6 @@
         if (!article) return;
         if (form.dataset.articleReturnTo === "list") {
           renderModule("content", "Articles", "Articles");
-        } else if (form.dataset.articleReturnTo?.startsWith("board-report:")) {
-          const reportId = form.dataset.articleReturnTo.replace("board-report:", "");
-          const report = getBoardReportById(reportId);
-          if (report) renderReportedBoardDetail(report);
-          else renderModule("content", "Reported Articles", "Reported Articles");
         } else {
           renderArticleDetailPage(article);
         }
@@ -44835,574 +44532,6 @@
           ${renderPager(articleListPage, pageCount, "data-article-page")}
         </div>
       `;
-    }
-
-    function getBoardReportRows() {
-      return boardReportRows.filter(isPublishedBoardReportIntake);
-    }
-
-    function isPublishedBoardReportIntake(report) {
-      return (report.actionHistory || []).some(log => (
-        log.action === "Report Received"
-        && log.after?.contentStatus === "Published"
-      ));
-    }
-
-    function getBoardReportById(id) {
-      return getBoardReportRows().find(report => report.id === id);
-    }
-
-    function getBoardReportQueueStatus(report) {
-      return report?.reportStatus === "Closed" ? "Closed" : "Pending";
-    }
-
-    function boardReportQueueStatusPill(report) {
-      const status = getBoardReportQueueStatus(report);
-      return `<span class="pill ${status === "Closed" ? "green" : "amber"}">${status === "Closed" ? "Closed" : "Pending"}</span>`;
-    }
-
-    function boardReportContentStatusPill(status) {
-      const color = status === "Published" ? "green" : status === "Scheduled" ? "blue" : status === "Archived" ? "gray" : "purple";
-      return `<span class="pill ${color}">${status}</span>`;
-    }
-
-    function getBoardReportPriorityLabel(report) {
-      if (report.priority === "high") return "High";
-      if (report.priority === "medium") return "Medium";
-      return "Low";
-    }
-
-    function boardReportPriorityPill(report) {
-      const color = report.priority === "high" ? "red" : report.priority === "medium" ? "amber" : "blue";
-      return `<span class="pill ${color}">${getBoardReportPriorityLabel(report)}</span>`;
-    }
-
-    function getBoardReportSearchText(report) {
-      return [
-        report.id,
-        report.articleId,
-        report.articleTitle,
-        report.category,
-        report.surface,
-        report.contentStatus,
-        getBoardReportQueueStatus(report),
-        getBoardReportPriorityLabel(report),
-        report.reason,
-        translateReportReason(report.reason),
-        report.reporterNote,
-        ...(report.tags || [])
-      ].join(" ").toLowerCase();
-    }
-
-    function getBoardReportActions(report) {
-      if (!report) return [];
-      const actions = [];
-      if (getBoardReportQueueStatus(report) === "Pending") {
-        actions.push({ action: "close-report", label: "ปิดรายงาน" });
-        if (report.contentStatus !== "Archived") {
-          actions.push({ action: "edit-article", label: "แก้ไขบทความ" });
-        }
-        if (report.contentStatus !== "Archived") {
-          actions.push({ action: "archive-article", label: "เก็บบทความเข้าคลัง" });
-        }
-      }
-      return actions;
-    }
-
-    function renderBoardReportStatusActionButtons(report) {
-      return getBoardReportActions(report)
-        .map(action => {
-          if (action.action === "edit-article") {
-            return `<button type="button" data-article-edit="${report.articleId}" data-board-report-edit-article="${report.id}">${action.label}</button>`;
-          }
-          return `<button type="button" data-board-report-action="${action.action}" data-board-report-id="${report.id}">${action.label}</button>`;
-        })
-        .join("");
-    }
-
-    function renderBoardReportDetailActionButtons(report) {
-      return getBoardReportActions(report)
-        .map((action, index) => {
-          if (action.action === "edit-article") {
-            return `<button class="user-detail-action-btn" type="button" data-article-edit="${report.articleId}" data-board-report-edit-article="${report.id}">${action.label}</button>`;
-          }
-          const style = action.action === "close-report" ? "primary" : action.action === "archive-article" ? "danger" : index === 0 ? "primary" : "";
-          return `<button class="user-detail-action-btn ${style}" type="button" data-board-report-action="${action.action}" data-board-report-id="${report.id}">${action.label}</button>`;
-        })
-        .join("");
-    }
-
-    function renderBoardReportRowActionMenu(report) {
-      return `
-        <details class="row-menu">
-          <summary aria-label="Board report actions">...</summary>
-          <div class="row-menu-list">
-            <button type="button" data-board-report-open="${report.id}">ดูรายละเอียด</button>
-            <button type="button" data-board-report-preview="${report.id}">ดูบทความ</button>
-            ${renderBoardReportStatusActionButtons(report)}
-          </div>
-        </details>
-      `;
-    }
-
-    function appendBoardReportAuditHistory(report, log) {
-      if (!report || !log) return;
-      if (!Array.isArray(report.actionHistory)) report.actionHistory = [];
-      report.actionHistory.unshift({
-        createdAt: formatBangkokTimestamp(),
-        actor: "Somchai Admin",
-        ...log
-      });
-    }
-
-    function getBoardReportActionLabel(action) {
-      const labels = {
-        "Report Received": "รับรายงาน Board",
-        "Close Report": "ปิดรายงาน",
-        "Archive Article": "เก็บบทความเข้าคลัง"
-      };
-      return labels[action] || action;
-    }
-
-    function renderBoardReportState(state) {
-      if (!state) return `<span class="muted">-</span>`;
-      return state.contentStatus ? boardReportContentStatusPill(state.contentStatus) : `<span class="muted">-</span>`;
-    }
-
-    function getBoardReportAuditDetail(action) {
-      const details = {
-        "Report Received": "ระบบรับรายงานและเปิดเคสตรวจสอบ",
-        "Close Report": "ตรวจสอบแล้วและปิดรายงาน",
-        "Archive Article": "เก็บบทความออกจากการแสดงผล"
-      };
-      return details[action] || "บันทึกการดำเนินการกับรายงาน Board";
-    }
-
-    function getBoardReportActionRows(report) {
-      const rows = Array.isArray(report?.actionHistory) ? report.actionHistory.map(row => ({ ...row })) : [];
-      rows.forEach((row, index) => {
-        row._sortIndex = index;
-      });
-      const hasCloseReportHistory = rows.some(row => row.action === "Close Report" && row.after?.reportStatus === "Closed");
-      const closingContentRow = rows.find(row => (
-        row.action === "Archive Article"
-        && row.after?.reportStatus === "Closed"
-      ));
-      if (closingContentRow && !hasCloseReportHistory) {
-        rows.push({
-          createdAt: getAssetHistoryOffsetTime(closingContentRow.createdAt, 1),
-          actor: closingContentRow.actor,
-          action: "Close Report",
-          before: { reportStatus: "Pending", contentStatus: closingContentRow.after?.contentStatus || report.contentStatus },
-          after: { reportStatus: "Closed", contentStatus: closingContentRow.after?.contentStatus || report.contentStatus },
-          note: "ผู้ดูแลปิดรายงานหลังดำเนินการกับ Board content เรียบร้อยแล้ว",
-          _sortIndex: rows.length
-        });
-      }
-      return rows.sort((a, b) => {
-        const timeDiff = parseAssetHistoryTime(b.createdAt) - parseAssetHistoryTime(a.createdAt);
-        if (timeDiff) return timeDiff;
-        return getBoardReportActionSortRank(b.action) - getBoardReportActionSortRank(a.action) || a._sortIndex - b._sortIndex;
-      });
-    }
-
-    function getBoardReportActionSortRank(action) {
-      if (action === "Close Report") return 30;
-      if (action === "Archive Article") return 20;
-      return 0;
-    }
-
-    function renderBoardReportAuditHistoryTable(report) {
-      const allRows = getBoardReportActionRows(report);
-      const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
-      reportAuditHistoryPage = Math.min(reportAuditHistoryPage, pageCount);
-      const start = (reportAuditHistoryPage - 1) * reportHistoryPageSize;
-      const pageRows = allRows.slice(start, start + reportHistoryPageSize);
-      const rows = pageRows.length ? pageRows.map(row => `
-        <tr>
-          <td data-label="วันที่ / เวลา">${formatAuditDisplayTime(row.createdAt)}</td>
-          <td data-label="ผู้ดำเนินการ">${row.actor}</td>
-          <td data-label="Action">${getBoardReportActionLabel(row.action)}</td>
-          <td data-label="สถานะ">${renderBoardReportState(row.after)}</td>
-          <td data-label="รายละเอียด" class="history-note">${getBoardReportAuditDetail(row.action)}</td>
-        </tr>
-      `).join("") : `<tr><td colspan="5" class="history-note">ยังไม่มีการดำเนินการจาก Admin</td></tr>`;
-      return `
-        <div class="history-table-wrap">
-          <table class="history-table asset-status-history-table">
-            <thead>
-              <tr>
-                <th>วันที่ / เวลา</th>
-                <th>ผู้ดำเนินการ</th>
-                <th>Action</th>
-                <th>สถานะ</th>
-                <th>รายละเอียด</th>
-              </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
-          ${renderReportHistoryPager("audit", reportAuditHistoryPage, pageCount, allRows.length, start)}
-        </div>
-      `;
-    }
-
-    const boardReportReporterNames = {
-      "RPC-043": ["Daily Board Reader", "Saran Collector"],
-      "RPC-039": ["Bangkok Vintage Fan", "Nicha S.", "Ploy R."]
-    };
-
-    function renderBoardReporterHistoryTable(report) {
-      const reporterNames = boardReportReporterNames[report.id] || [];
-      const allRows = Array.from({ length: report.reporters }, (_, index) => ({
-        reporter: reporterNames[index] || `Board Reporter ${String(index + 1).padStart(2, "0")}`,
-        reportedAt: formatAuditDisplayTime(getAssetHistoryOffsetTime(report.reportedAt, -(index * 17))),
-        status: index === 0 ? "เปิดเคส" : "รวมเคส",
-        reason: report.reason,
-        additionalDetails: index === 0 ? report.reporterNote : "-"
-      }));
-      const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
-      reporterHistoryPage = Math.min(reporterHistoryPage, pageCount);
-      const start = (reporterHistoryPage - 1) * reportHistoryPageSize;
-      const pageRows = allRows.slice(start, start + reportHistoryPageSize);
-      return `
-        <div class="history-table-wrap">
-          <table class="history-table asset-reporter-history-table">
-            <colgroup>
-              <col style="width: 15%">
-              <col style="width: 18%">
-              <col style="width: 12%">
-              <col style="width: 25%">
-              <col style="width: 30%">
-            </colgroup>
-            <thead>
-              <tr>
-                <th>วันที่ / เวลา</th>
-                <th>Reporter</th>
-                <th>Status</th>
-                <th>Report Reason</th>
-                <th>Additional Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${pageRows.map(row => `
-                <tr>
-                  <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
-                  <td data-label="Reporter">${row.reporter}</td>
-                  <td data-label="Status">${row.status}</td>
-                  <td data-label="Report Reason" class="history-note">${renderHistoryValue(translateReportReason(row.reason))}</td>
-                  <td data-label="Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-          ${renderReportHistoryPager("reporter", reporterHistoryPage, pageCount, allRows.length, start)}
-        </div>
-      `;
-    }
-
-    function renderReportedBoardRows() {
-      const q = (document.querySelector("#board-report-search")?.value || "").trim().toLowerCase();
-      const status = document.querySelector("#board-report-status-filter")?.value || "";
-      const priority = document.querySelector("#board-report-priority-filter")?.value || "";
-      const sort = document.querySelector("#board-report-sort")?.value || "latest";
-      const sorted = getBoardReportRows()
-        .filter(report => {
-          return (!q || getBoardReportSearchText(report).includes(q))
-            && (!status || getBoardReportQueueStatus(report) === status)
-            && (!priority || report.priority === priority);
-        })
-        .sort((a, b) => {
-          if (sort === "reporters") return b.reporters - a.reporters;
-          if (sort === "oldest") return parseAssetHistoryTime(`${a.reportedAt} GMT+7`) - parseAssetHistoryTime(`${b.reportedAt} GMT+7`);
-          return parseAssetHistoryTime(`${b.reportedAt} GMT+7`) - parseAssetHistoryTime(`${a.reportedAt} GMT+7`);
-        });
-      const pageCount = Math.max(1, Math.ceil(sorted.length / articleListPageSize));
-      boardReportListPage = Math.min(boardReportListPage, pageCount);
-      const start = (boardReportListPage - 1) * articleListPageSize;
-      const pageRows = sorted.slice(start, start + articleListPageSize);
-      document.querySelector("#table").innerHTML = `
-        <div class="asset-table reported-board-table">
-          <div class="asset-row reported-board-row head"><div>Report ID</div><div>Article</div><div>Article Status</div><div>Status</div><div>Reported At</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
-          ${pageRows.map(report => {
-            const reportedAt = report.reportedAt || "-";
-            return `
-              <div class="asset-row reported-board-row" data-board-report-card="${report.id}">
-                <div data-label="Report ID"><div class="main-text">${report.id}</div></div>
-                <div class="asset-cell-primary" data-label="Article">
-                  <div class="main-text"><span class="desktop-user-name">${report.articleTitle}</span><span class="mobile-user-card-title">${report.id}</span></div>
-                </div>
-                <div class="asset-card-tags">
-                  ${boardReportQueueStatusPill(report)}
-                  ${boardReportContentStatusPill(report.contentStatus)}
-                  <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
-                  ${boardReportPriorityPill(report)}
-                  <div class="user-card-meta">
-                    <div class="user-card-meta-item comment-field-meta"><span>Article</span><strong>${report.articleTitle}</strong></div>
-                    <div class="user-card-meta-item report-reason-meta comment-field-meta"><span>Report reason</span><strong>${translateReportReason(report.reason)}</strong></div>
-                    <div class="user-card-meta-item comment-field-meta"><span>Reported at</span><strong>${reportedAt}</strong></div>
-                  </div>
-                </div>
-                <div data-label="Article Status">${boardReportContentStatusPill(report.contentStatus)}</div>
-                <div data-label="Status">${boardReportQueueStatusPill(report)}</div>
-                <div data-label="Reported At"><div class="muted">${reportedAt}</div></div>
-                <div data-label="Report Reason"><div class="muted">${translateReportReason(report.reason)}</div></div>
-                <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
-                <div data-label="Priority">${boardReportPriorityPill(report)}</div>
-                <div class="user-row-actions">
-                  ${renderBoardReportRowActionMenu(report)}
-                </div>
-              </div>
-            `;
-          }).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
-        </div>
-        <div class="footer-range">
-          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + articleListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
-          ${renderPager(boardReportListPage, pageCount, "data-board-report-page")}
-        </div>
-      `;
-    }
-
-    function renderReportedBoardDetail(report) {
-      if (!report) {
-        renderModule("content", "Reported Articles", "Reported Articles");
-        return;
-      }
-      document.body.classList.add("user-management-mode", "user-detail-mode");
-      document.body.classList.remove("user-list-mode", "asset-list-mode", "asset-detail-mode", "article-list-mode", "category-list-mode", "reported-board-mode");
-      activeModule = "content";
-      activeSub = "Reported Articles";
-      activeRow = report;
-      document.querySelector("#crumb").textContent = `การดำเนินงาน / Content Management / Report Detail / ${report.id}`;
-      document.querySelector("#page-title").textContent = "Report Detail";
-      document.querySelector("#page-meta").textContent = "";
-      setPageActions(renderPageBackButton("data-back-reported-board", "กลับไป Reported Articles", "report-back-btn"));
-      document.querySelector("#panel-title").textContent = report.articleTitle;
-      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.articleId} · ปิดบังตัวตนผู้รายงาน`;
-      document.querySelector("#user-panel-filter-actions").innerHTML = "";
-      document.querySelector(".filters").innerHTML = "";
-      document.querySelector("#summary-grid").innerHTML = "";
-      document.querySelector("#cards").innerHTML = "";
-      const article = getArticleById(report.articleId) || {
-        id: report.articleId,
-        title: report.articleTitle,
-        coverImageSrc: "",
-        coverImageName: ""
-      };
-      const detailActionButtons = renderBoardReportDetailActionButtons(report);
-      document.querySelector("#table").innerHTML = `
-        <div class="user-detail-page report-detail-page asset-report-detail-page">
-          <div class="user-detail-head">
-            <div class="user-detail-title">
-              ${renderArticleTitleImage(article)}
-              <div>
-                <h2 class="asset-report-heading"><span class="asset-report-id">${report.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${report.articleTitle}</span></h2>
-                <div class="chips">
-                  ${boardReportQueueStatusPill(report)}
-                  ${boardReportContentStatusPill(report.contentStatus)}
-                  ${boardReportPriorityPill(report)}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <div class="board-report-reference-head">
-              <h4>Reported Article</h4>
-              <button class="btn asset-report-view-btn" type="button" data-board-report-preview="${report.id}" aria-label="ดูบทความ ${report.id}"><span class="asset-report-view-label">ดูบทความ</span></button>
-            </div>
-            <div class="detail-grid two report-reference-grid">
-              <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
-              <div class="detail-tile"><span>Article ID</span><strong>${report.articleId}</strong></div>
-              <div class="detail-tile"><span>Article Title</span><strong>${report.articleTitle}</strong></div>
-              <div class="detail-tile"><span>Category</span><strong>${report.category}</strong></div>
-              <div class="detail-tile"><span>Article Status</span><strong>${report.contentStatus}</strong></div>
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <h4>Reporter History</h4>
-            ${renderBoardReporterHistoryTable(report)}
-          </div>
-
-          <div class="detail-section">
-            <h4>Admin Action History</h4>
-            ${renderBoardReportAuditHistoryTable(report)}
-          </div>
-
-          ${detailActionButtons ? `<div class="user-detail-actions">${detailActionButtons}</div>` : ""}
-        </div>
-      `;
-      document.querySelector("#detail").innerHTML = "";
-      updateActiveNav();
-      scrollMainToTop();
-    }
-
-    function getBoardReportActionConfig(action) {
-      const configs = {
-        "close-report": {
-          title: "Confirm Close Report",
-          detail: "ปิดรายงานหลังตรวจหลักฐานครบแล้ว โดยไม่เปลี่ยนสถานะ Board content อัตโนมัติ",
-          confirm: "ยืนยัน",
-          historyAction: "Close Report",
-          note: "Admin ปิดรายงาน Board หลังตรวจสอบ",
-          reasonLabel: "เหตุผลการปิดรายงาน",
-          reasons: [
-            "ตรวจสอบแล้วไม่พบการละเมิด",
-            "หลักฐานไม่เพียงพอสำหรับการดำเนินการ",
-            "รายงานซ้ำกับเคสที่ปิดผลแล้ว"
-          ]
-        },
-        "archive-article": {
-          title: "Confirm Archive Article",
-          detail: "นำบทความออกจาก Board public surfaces และปิดรายงานนี้",
-          confirm: "ยืนยัน",
-          historyAction: "Archive Article",
-          note: "Admin เก็บบทความเข้าคลังและปิดรายงาน",
-          reasonLabel: "เหตุผลการเก็บบทความเข้าคลัง",
-          reasons: [
-            "บทความละเมิดนโยบายหรือแนวทางชุมชน",
-            "ข้อมูลบทความไม่ถูกต้องหรือทำให้เข้าใจผิด",
-            "เนื้อหามีความเสี่ยงต่อผู้ใช้หรือแพลตฟอร์ม"
-          ]
-        }
-      };
-      return configs[action] || configs["close-report"];
-    }
-
-    function renderBoardReportActionConfirmModal(report, action, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
-      if (!report) return;
-      const config = getBoardReportActionConfig(action);
-      const hasResult = Boolean(resultMessage);
-      const scenarios = [
-        { value: "success", label: "สำเร็จ" },
-        { value: "invalid_state", label: "สถานะไม่พร้อมดำเนินการ" },
-        { value: "stale_data", label: "ข้อมูลเปลี่ยนระหว่างดำเนินการ" },
-        { value: "save_failed", label: "บันทึกผลไม่สำเร็จ" },
-        { value: "session_expired", label: "เซสชันหมดอายุ" }
-      ];
-      const modal = document.querySelector("#user-action-modal");
-      const modalBody = document.querySelector("#user-action-modal-body");
-      if (!modal || !modalBody) return;
-      modalBody.innerHTML = `
-        <div class="user-action-page">
-          <div class="user-action-head">
-            <div>
-              <h2 id="user-action-modal-title">${config.title}</h2>
-              <p>${config.detail}</p>
-            </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
-          </div>
-          <div class="user-action-target">
-            <div>
-              <strong>${report.articleTitle}</strong>
-              <span>${report.id} · ${report.articleId}</span>
-            </div>
-            ${boardReportQueueStatusPill(report)}
-          </div>
-          <div class="user-action-layout">
-            <div class="detail-section">
-              <div class="user-action-form">
-                <label>
-                  ${config.reasonLabel}
-                  ${customSelect("board-report-action-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent")}
-                </label>
-                <label>
-                  Note / หมายเหตุ
-                  <textarea id="board-report-action-note" placeholder="ระบุหมายเหตุสำหรับ audit log"></textarea>
-                </label>
-                <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
-                  <p><strong>ผลกระทบ:</strong> ${config.detail} และบันทึก audit log ของ Reported Articles${action === "archive-article" ? " พร้อมอัปเดตสถานะบทความหลักเป็น Archived เพื่อไม่ให้แสดงบน FO" : ""}</p>
-                </div>
-                <div class="user-detail-actions">
-                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-board-report-action-confirm="${action}" data-board-report-id="${report.id}">${config.confirm}</button>
-                </div>
-                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
-                  <strong>${resultMessage}</strong><br>
-                  <span>${resultDetail}</span>
-                </div>
-                <details class="prototype-tools user-action-prototype-tools">
-                  <summary>Prototype scenario</summary>
-                  <label>
-                    Test flow
-                    ${customSelect("board-report-action-scenario", "Test flow", scenarios, selectedScenario, "data-custom-select-silent")}
-                  </label>
-                </details>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
-      showUserActionModal(true);
-    }
-
-    function applyBoardReportAction(report, action) {
-      if (!report || !action) return;
-      const before = { reportStatus: getBoardReportQueueStatus(report), contentStatus: report.contentStatus };
-      const note = document.querySelector("#board-report-action-note")?.value.trim() || document.querySelector("#board-report-action-reason")?.value || getBoardReportActionConfig(action).note;
-      if (action === "close-report") report.reportStatus = "Closed";
-      if (action === "archive-article") {
-        const article = getArticleById(report.articleId);
-        const now = formatArticleActionTimestamp();
-        if (article && article.status !== "Archived") {
-          const articleArchiveNote = `${note} / จากรายงาน ${report.id}`;
-          addArticleActionHistory(article, {
-            time: now,
-            action: "Archived",
-            note: articleArchiveNote,
-            result: "Archived"
-          });
-          article.status = "Archived";
-          article.updatedAt = now;
-          article.detail = `Archived from Reported Articles ${report.id}. Removed from FO Board/Search/Category.`;
-        }
-        report.contentStatus = "Archived";
-        report.reportStatus = "Closed";
-      }
-      appendBoardReportAuditHistory(report, {
-        action: getBoardReportActionConfig(action).historyAction,
-        before,
-        after: { reportStatus: getBoardReportQueueStatus(report), contentStatus: report.contentStatus },
-        note
-      });
-      closeUserActionModal();
-      if (document.body.classList.contains("user-detail-mode") && activeModule === "content" && activeSub === "Reported Articles") {
-        renderReportedBoardDetail(report);
-      } else {
-        renderReportedBoardRows();
-      }
-      showSuccessToast(`${report.id}: อัปเดต Reported Articles แล้ว`);
-    }
-
-    function renderBoardReportContentModal(report) {
-      if (!report) return;
-      const modal = document.querySelector("#user-action-modal");
-      const modalCard = modal?.querySelector(".user-action-modal");
-      const modalBody = document.querySelector("#user-action-modal-body");
-      if (!modal || !modalCard || !modalBody) return;
-      const article = getArticleById(report.articleId) || {
-        id: report.articleId,
-        title: report.articleTitle,
-        category: report.category,
-        author: "Editorial",
-        publishAt: "-",
-        deck: report.preview,
-        body: [report.preview],
-        coverCaption: "",
-        coverImageName: "",
-        coverImageSrc: ""
-      };
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-order-modal", "category-editor-modal");
-      modalCard.classList.add("board-report-phone-preview-modal");
-      modalBody.innerHTML = `
-        <div class="board-report-phone-preview" data-modal-dismissible>
-          <h2 class="board-report-phone-preview-title" id="user-action-modal-title">Preview article ${escapeArticleField(report.id)} ${escapeArticleField(report.articleId)}</h2>
-          <button class="btn user-action-close board-report-phone-preview-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
-          ${renderArticleFoPreview(article)}
-        </div>
-      `;
-      showUserActionModal(true);
     }
 
     function renderReportedCommentRows() {
@@ -46003,7 +45132,7 @@
         return;
       }
       document.body.classList.add("user-management-mode", "user-detail-mode");
-      document.body.classList.remove("user-list-mode", "asset-list-mode", "asset-detail-mode", "article-list-mode", "category-list-mode", "reported-board-mode");
+      document.body.classList.remove("user-list-mode", "asset-list-mode", "asset-detail-mode", "article-list-mode", "category-list-mode");
       activeModule = "assets";
       activeSub = "Reported Comments";
       activeRow = reportCase;
@@ -46277,14 +45406,13 @@
     // clipped by the scrollable #table ancestor. Uses the native "toggle" event
     // (capture phase) so positioning runs only after <details> actually opens.
     // BO-OPT-006g: extended from Option Detail/Group List to all modes where #table
-    // has overflow-x: auto (reported-board, article-list, category-list, asset-list).
+    // has overflow-x: auto (article-list, category-list, asset-list).
     function shouldFixRowMenu() {
       const b = document.body;
       if (b.classList.contains("option-master-mode") && (b.classList.contains("option-detail-mode") || b.classList.contains("option-group-list-mode") || b.classList.contains("option-suggestion-mode"))) return true;
-      if (b.classList.contains("reported-board-mode")) return true;
       if (b.classList.contains("article-list-mode")) return true;
       if (b.classList.contains("category-list-mode")) return true;
-      if (b.classList.contains("asset-list-mode") && !b.classList.contains("article-list-mode") && !b.classList.contains("category-list-mode") && !b.classList.contains("reported-board-mode")) return true;
+      if (b.classList.contains("asset-list-mode") && !b.classList.contains("article-list-mode") && !b.classList.contains("category-list-mode")) return true;
       if (b.classList.contains("user-list-mode")) return true;
       if (b.classList.contains("deletion-list-mode")) return true;
       if (b.classList.contains("admin-account-list-mode")) return true;
@@ -46628,12 +45756,6 @@
           categoryListPage = 1;
           saveCurrentListFilterState();
           renderCategoryListRows();
-          return;
-        }
-        if (["board-report-status-filter", "board-report-priority-filter", "board-report-sort"].includes(hiddenInput.id) && activeModule === "content" && activeSub === "Reported Articles") {
-          boardReportListPage = 1;
-          saveCurrentListFilterState();
-          renderReportedBoardRows();
           return;
         }
         if (["market-status-filter", "market-brand-filter"].includes(hiddenInput.id) && activeModule === "market") {
@@ -47051,8 +46173,7 @@
       if (articleEditButton) {
         const article = getArticleById(articleEditButton.dataset.articleEdit);
         if (!article) return;
-        const reportId = articleEditButton.dataset.boardReportEditArticle;
-        const returnTo = reportId ? `board-report:${reportId}` : articleEditButton.closest(".row-menu") ? "list" : "detail";
+        const returnTo = articleEditButton.closest(".row-menu") ? "list" : "detail";
         renderArticleEditorPage(article, "edit", returnTo);
         closeRowMenus();
         return;
@@ -48024,31 +47145,6 @@
         renderReportedAssetDetail(asset);
         return;
       }
-      const boardReportOpenButton = event.target.closest("[data-board-report-open]");
-      if (boardReportOpenButton) {
-        const report = getBoardReportById(boardReportOpenButton.dataset.boardReportOpen);
-        reporterHistoryPage = 1;
-        reportAuditHistoryPage = 1;
-        pushBackNavigationContext();
-        renderReportedBoardDetail(report);
-        closeRowMenus();
-        return;
-      }
-      const boardReportCard = event.target.closest("[data-board-report-card]");
-      if (boardReportCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
-        const report = getBoardReportById(boardReportCard.dataset.boardReportCard);
-        reporterHistoryPage = 1;
-        reportAuditHistoryPage = 1;
-        pushBackNavigationContext();
-        renderReportedBoardDetail(report);
-        return;
-      }
-      const boardReportPreviewButton = event.target.closest("[data-board-report-preview]");
-      if (boardReportPreviewButton) {
-        renderBoardReportContentModal(getBoardReportById(boardReportPreviewButton.dataset.boardReportPreview));
-        closeRowMenus();
-        return;
-      }
       const assetCard = event.target.closest("[data-asset-card]");
       if (assetCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetCard.dataset.assetCard);
@@ -48096,43 +47192,6 @@
       if (assetReportStatusButton) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetReportStatusButton.dataset.assetId);
         renderAssetReportStatusConfirmModal(asset, assetReportStatusButton.dataset.assetReportStatusAction);
-        closeRowMenus();
-        return;
-      }
-      const boardReportActionConfirmButton = event.target.closest("[data-board-report-action-confirm]");
-      if (boardReportActionConfirmButton) {
-        const report = getBoardReportById(boardReportActionConfirmButton.dataset.boardReportId);
-        const scenario = document.querySelector("#board-report-action-scenario")?.value || "success";
-        const boardReportErrorSamples = {
-          invalid_state: {
-            title: "ไม่สามารถดำเนินการกับรายงานได้",
-            detail: "สถานะรายงานหรือสถานะ Board content ไม่ตรงกับเงื่อนไขของ action นี้ กรุณาตรวจสอบข้อมูลล่าสุด"
-          },
-          stale_data: {
-            title: "ข้อมูลรายงานมีการเปลี่ยนแปลงแล้ว",
-            detail: "มีการอัปเดตรายงานนี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง"
-          },
-          save_failed: {
-            title: "บันทึกผลไม่สำเร็จ",
-            detail: "ระบบยังไม่สามารถบันทึกผล action และ audit log ได้ กรุณาลองอีกครั้ง"
-          },
-          session_expired: {
-            title: "เซสชันหมดอายุ",
-            detail: "กรุณาเข้าสู่ระบบใหม่ก่อนยืนยัน action ของ Reported Articles"
-          }
-        };
-        const errorSample = boardReportErrorSamples[scenario] || null;
-        if (errorSample) {
-          renderBoardReportActionConfirmModal(report, boardReportActionConfirmButton.dataset.boardReportActionConfirm, errorSample.title, errorSample.detail, "error", scenario);
-          return;
-        }
-        applyBoardReportAction(report, boardReportActionConfirmButton.dataset.boardReportActionConfirm);
-        return;
-      }
-      const boardReportActionButton = event.target.closest("[data-board-report-action]");
-      if (boardReportActionButton) {
-        const report = getBoardReportById(boardReportActionButton.dataset.boardReportId);
-        renderBoardReportActionConfirmModal(report, boardReportActionButton.dataset.boardReportAction);
         closeRowMenus();
         return;
       }
@@ -48255,13 +47314,6 @@
         renderModule("content", "Categories", "Categories");
         return;
       }
-      const boardReportReset = event.target.closest("[data-board-report-reset]");
-      if (boardReportReset) {
-        boardReportListPage = 1;
-        clearListFilterState("board-report-list");
-        renderModule("content", "Reported Articles", "Reported Articles");
-        return;
-      }
       const articleFilterToggle = event.target.closest("[data-article-filter-toggle]");
       if (articleFilterToggle) {
         articleFilterOpen = !articleFilterOpen;
@@ -48280,16 +47332,6 @@
         categoryFilterToggle.setAttribute("aria-expanded", String(categoryFilterOpen));
         const label = categoryFilterToggle.querySelector("span");
         if (label) label.textContent = categoryFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
-        return;
-      }
-      const boardReportFilterToggle = event.target.closest("[data-board-report-filter-toggle]");
-      if (boardReportFilterToggle) {
-        boardReportFilterOpen = !boardReportFilterOpen;
-        const filterBar = document.querySelector(".user-filter-bar");
-        if (filterBar) filterBar.dataset.filterOpen = String(boardReportFilterOpen);
-        boardReportFilterToggle.setAttribute("aria-expanded", String(boardReportFilterOpen));
-        const label = boardReportFilterToggle.querySelector("span");
-        if (label) label.textContent = boardReportFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
       const reportedCommentFilterToggle = event.target.closest("[data-reported-comment-filter-toggle]");
@@ -48789,16 +47831,6 @@
         resetTableScrollPosition();
         return;
       }
-      const boardReportPageButton = event.target.closest("[data-board-report-page]");
-      if (boardReportPageButton) {
-        const target = boardReportPageButton.dataset.boardReportPage;
-        if (target === "prev") boardReportListPage = Math.max(1, boardReportListPage - 1);
-        else if (target === "next") boardReportListPage += 1;
-        else boardReportListPage = Number(target) || 1;
-        renderReportedBoardRows();
-        resetTableScrollPosition();
-        return;
-      }
       const marketCatalogPageButton = event.target.closest("[data-market-catalog-page]");
       if (marketCatalogPageButton) {
         const target = marketCatalogPageButton.dataset.marketCatalogPage;
@@ -49009,7 +48041,6 @@
         else reporterHistoryPage = Number(target) || 1;
         if (activeModule === "assets" && activeSub === "Reported Assets") renderReportedAssetDetail(activeRow);
         else if (activeModule === "assets" && activeSub === "Reported Comments") renderReportedCommentDetail(activeRow);
-        else if (activeModule === "content" && activeSub === "Reported Articles") renderReportedBoardDetail(activeRow);
         else renderReportedUserDetail(activeRow);
         return;
       }
@@ -49021,7 +48052,6 @@
         else reportAuditHistoryPage = Number(target) || 1;
         if (activeModule === "assets" && activeSub === "Reported Assets") renderReportedAssetDetail(activeRow);
         else if (activeModule === "assets" && activeSub === "Reported Comments") renderReportedCommentDetail(activeRow);
-        else if (activeModule === "content" && activeSub === "Reported Articles") renderReportedBoardDetail(activeRow);
         else renderReportedUserDetail(activeRow);
         return;
       }
@@ -49038,11 +48068,6 @@
       const backReportedUsers = event.target.closest("[data-back-reported-users]");
       if (backReportedUsers) {
         renderModule("users", "Reported Users", "Reported Users");
-        return;
-      }
-      const backReportedBoard = event.target.closest("[data-back-reported-board]");
-      if (backReportedBoard) {
-        renderModule("content", "Reported Articles", "Reported Articles");
         return;
       }
       const backUserList = event.target.closest("[data-back-user-list]");
@@ -49581,12 +48606,6 @@
         renderReportedCommentRows();
         return;
       }
-      if (event.target.matches("#board-report-search")) {
-        boardReportListPage = 1;
-        saveCurrentListFilterState();
-        renderReportedBoardRows();
-        return;
-      }
       // DEL-PTO-001: Account Deletion Requests search
       if (event.target.matches("#deletion-search")) {
         deletionListPage = 1;
@@ -50030,12 +49049,6 @@
         assetListPage = 1;
         saveCurrentListFilterState();
         renderReportedCommentRows();
-        return;
-      }
-      if (event.target.matches("#board-report-status-filter, #board-report-priority-filter, #board-report-sort")) {
-        boardReportListPage = 1;
-        saveCurrentListFilterState();
-        renderReportedBoardRows();
         return;
       }
       if (event.target.matches("#article-status-filter, #article-category-filter, #article-sort")) {

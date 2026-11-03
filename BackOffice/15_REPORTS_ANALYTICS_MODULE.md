@@ -1,6 +1,6 @@
 ﻿# 15 BO Reports & Analytics Module
 
-**Version:** `BO-15-v0.2`  
+**Version:** `BO-15-v0.3`  
 **Date:** 2026-10-26  
 **Status:** Draft baseline — **Phase 2 / Future scope (deferred)**  
 **Platform:** Responsive Web Back Office  
@@ -230,7 +230,6 @@ Chat transcript export ต้องจำกัด permission และ audit �
 | Scheduled publish | Upcoming and failed schedule |
 | Category performance | Article count and engagement by category |
 | Banner performance | Active/expired banner status and clicks if tracking exists |
-| Reported Article content | Count, reason, moderation status |
 
 Filters:
 

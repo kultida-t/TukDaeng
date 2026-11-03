@@ -1,6 +1,6 @@
 # 00 Back Office Global Rules Module
 
-**Version:** `BO-00-v1.2`  
+**Version:** `BO-00-v1.4`  
 **Date:** 2026-11-02  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
@@ -21,7 +21,7 @@ Login และ auth-adjacent screens ใช้ layout และ breakpoint ต�
 | --- | --- |
 | Module Name | Back Office Global Rules |
 | Platform | Responsive Web Back Office |
-| Version | `BO-00-v1.3` |
+| Version | `BO-00-v1.4` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Cross-Module Functional PRD |
@@ -107,7 +107,6 @@ Navigation หลักที่ล็อกไว้:
 - Content Management
   - Articles
   - Categories
-  - Reported Articles
 - Market Data
   - Dashboard
   - Brands & Models
@@ -353,7 +352,7 @@ Report ของ post (asset-linked และ post-only), user และ comment
 | 8 | False information | ข้อมูลเท็จ |
 | 9 | Intellectual property | ทรัพย์สินทางปัญญา |
 
-Report ของ Board Content (article) เคยใช้ reason set เฉพาะ 6 เหตุผล (`Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`) — FO Report Article ถูกตัดออกจาก V1 จึงไม่มี producer สำหรับ type นี้ (ตัดสิน 2026-11-03 — FO-BO-001 e4); queue `Reported Articles` pending removal จาก prototype
+Report ของ Board Content (article) เคยใช้ reason set เฉพาะ 6 เหตุผล (`Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`) — FO Report Article ถูกตัดออกจาก V1 จึงไม่มี producer สำหรับ type นี้ (ตัดสิน 2026-11-03 — FO-BO-001 e4); queue `Reported Articles` ถูกถอดออกจาก prototype แล้ว (FOBO-REM-REPORTED-ARTICLES — 2026-11-03)
 
 Label เก่าที่เคยใช้ใน BO mock เช่น `Fraud or scam`, `Spam or scam`, `Impersonation`, `Suspected fake or scam` เป็น legacy display alias เท่านั้น ไม่ใช่ canonical reason — mock data/seed ต้อง migrate ไปใช้เหตุผลชุด FO ด้านบน (งาน mock อยู่ใน remediation กลุ่ม d)
 

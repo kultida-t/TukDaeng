@@ -1,6 +1,6 @@
 # 05 BO Content / Board Module
 
-**Version:** `BO-05-v1.3`  
+**Version:** `BO-05-v1.4`  
 **Date:** 2026-11-03  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
@@ -35,7 +35,6 @@ FO Board เป็นพื้นที่อ่านบทความ ไม�
 - Articles list, detail, create, edit, preview, publish, schedule, unpublish, and archive flows
 - Category list, detail, create, edit, reorder, activate, deactivate, and delete flows
 - Board main article placement rules
-- Reported Article Content queue, report detail, report actions, confirmations, and audit
 - Search, filter, sort, pagination, empty/loading/error states, and responsive behavior
 
 ### Out Of Scope
@@ -58,7 +57,6 @@ Submenu ภายใต้ Content Management:
 | --- | --- |
 | `Articles` | จัดการบทความทั้งหมดของ Board |
 | `Categories` | จัดการหมวดหมู่บทความ |
-| `Reported Articles` | ตรวจรายงานบทความที่ผู้ใช้แจ้งจาก FO |
 
 พฤติกรรมการนำทาง:
 
@@ -66,9 +64,7 @@ Submenu ภายใต้ Content Management:
 - เมนูที่ถูกเลือกต้องแสดง active state ที่ submenu นั้น
 - `Article Detail`, `Add Article` และ `Edit Article` เปิดจาก `Articles`
 - `Category Detail` และ category action modal เปิดจาก `Categories`
-- `Article Report Detail` เปิดจากรายการใน `Reported Articles`
 - ปุ่มย้อนกลับจาก detail/editor/modal ต้องกลับไป context เดิมที่เปิดมา
-- ปุ่มย้อนกลับจาก `Article Report Detail` ต้องกลับไป `Reported Articles` พร้อมคง search/filter/sort/page เดิม
 
 ## 5. Admin Access And Permissions
 
@@ -87,13 +83,13 @@ Content Management ต้องใช้กฎ responsive กลางจาก 
 
 | Breakpoint | ความกว้าง | ข้อกำหนดของ Content Management |
 | --- | --- | --- |
-| Mobile | `<= 760px` | Articles, Categories, and Reported Articles lists render as stacked cards with primary identity, status/context metadata, and compact action menu. Advanced filters collapse inline behind the filter toggle. Article editor, category modal, report detail, and preview flows keep sectioned layouts that fit the viewport. |
+| Mobile | `<= 760px` | Articles and Categories lists render as stacked cards with primary identity, status/context metadata, and compact action menu. Advanced filters collapse inline behind the filter toggle. Article editor, category modal, and preview flows keep sectioned layouts that fit the viewport. |
 | Tablet | `761px - 1365px` | Uses the same page shell and panels as the prototype. Filter toolbar compacts into a grid. Editor/detail grids collapse when space is limited. |
 | Desktop | `> 1365px` | Shows page header, page actions where defined, filter toolbar, dense table/grid, pagination footer, and compact row action menu. Detail/editor screens use full-width section blocks in the main content panel. |
 
 ข้อกำหนดเพิ่มเติม:
 
-- Articles, Categories, and Reported Articles do not invent separate toolbar, pagination, or mobile card patterns.
+- Articles and Categories do not invent separate toolbar, pagination, or mobile card patterns.
 - ข้อความ, cover preview, form control, เนื้อหา table/card และ modal ต้องไม่ล้นหรือซ้อนกัน
 - Action ที่เปลี่ยน status หรือกระทบ public ต้องเข้าถึงได้บน mobile และ desktop
 - Filter บน mobile ต้องเปิด/ปิดแบบ inline ในพื้นที่ list และห้ามใช้ drawer หรือ bottom sheet แยก
@@ -476,139 +472,6 @@ Base ordering:
 | Category page hero | Eligible article pool filtered by selected active category | เลือก article แรกใน category นั้นตาม base ordering | Reserve article ที่เลือกแล้วจาก category page list หน้าเดียวกัน | ถ้า category ไม่มี eligible article ให้แสดง category empty state |
 | Category article list | Eligible article pool filtered by selected active category | ใช้ base ordering | ไม่แสดงซ้ำกับ category hero ในหน้าเดียวกัน | แสดง available items; empty state เมื่อไม่มีข้อมูล |
 
-## 14. Reported Article Content
-
-Canonical name ของ queue นี้คือ `Reported Articles` ตาม nav label และ sibling naming (Articles / Categories / Reported Articles) — queue นี้ครอบ FO report type `Board Content` จึงอธิบายเป็น "(Board Content reports)" ใน spec; ชื่อ `Reported Board` เป็น legacy alias ที่เลิกใช้ (ตัดสิน 2026-11-02 — FO-BO-001 GAP-09)
-
-**Pending removal** — FO `Report article` ถูกตัดออกจาก V1 ทั้งระบบ (ตัดสิน 2026-11-03 — FO-BO-001 e4): FO ไม่มี producer สำหรับ report type `Board Content` ใน V1 — queue นี้จะถูกถอดออกจาก prototype ในงานแยก; section นี้อธิบาย queue ที่ยังมีอยู่จนกว่าจะถูกถอด
-
-### Report Intake Rules
-
-- FO `Report article` ส่ง report type `Board Content` และ target type `Article` เข้า BO ที่ `Content Management > Reported Articles` (entry ถูกตัดออกจาก FO V1 ตาม e4 — ไม่มี live producer ใน V1)
-- Article Report Reason ยึด 6 เหตุผล (`Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`) — legacy FO report contract ที่ถูกตัดออกจาก V1 ตาม e4; queue pending removal
-- `Reporter Note` ใน BO แสดงข้อมูลจาก `Additional details (optional)` ที่ผู้รายงานกรอกตอนส่งรายงานจาก FO (สอดคล้องกับ `content_reports.detail` ใน FoDb)
-- ไม่มีฟิลด์ `Reported Part` ใน Product scope (ผู้ใช้รายงานบทความทั้งชิ้นจาก Article Detail)
-- Article ไม่หายจาก FO ทันทีหลังถูก report
-- Admin review report ได้ตาม permission
-- Report queue status: Pending หรือ Closed
-- Article status ใน Reported Articles แสดงตามสถานะ article master: Published, Scheduled, Draft หรือ Archived
-- Reporter identity ต้อง mask ใน report detail
-- List/detail แสดงจำนวน reporter และ reporter history ระดับ moderation เท่านั้น
-
-### Reported Article List
-
-Route/header:
-
-- Route/menu: `Content Management > Reported Articles`
-- Breadcrumb: `การดำเนินงาน / Content Management / Reported Articles`
-- Page title: `Reported Articles`
-- Panel title: `Reported Article List`
-- Filter toggle: เปิด/ปิด advanced filters
-- Reset: ล้าง search/filter/sort และกลับไปค่า default
-
-Desktop columns:
-
-- Report ID
-- Article
-- Article Status
-- Status
-- Reported At
-- Report Reason
-- Reporters
-- Priority
-- Action
-
-Mobile/card metadata:
-
-- Report status
-- Article status
-- Reporter count
-- Priority
-- Article title
-- Reported at
-- Report reason
-
-Search/filter/sort:
-
-- Search by Report ID, Article ID, Article title, Category, Surface, Article Status, Report Status, Priority, Report Reason และ Reporter Note (Additional Details)
-- Report status filter: ทุกสถานะ, รอตรวจ/Pending, ปิดแล้ว/Closed
-- Priority filter: ทุก priority, High, Medium, Low
-- Sort options:
-  - ล่าสุดก่อน
-  - เก่าสุดก่อน
-  - จำนวน reporter
-- Pagination:
-  - Page size: 10 reports per page
-  - มี Previous button
-  - มี Next button
-  - มี numbered page buttons
-  - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
-  - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
-
-### Report Detail
-
-เมื่อเปิด report detail:
-
-- Breadcrumb: `การดำเนินงาน / Content Management / Report Detail / {Report ID}`
-- Page title: `Report Detail`
-- Back button: `กลับไป Reported Articles`
-- Panel title ใช้ article title
-- Panel subtitle แสดง `{Report ID} · {Article ID} · reporter identity masked`
-
-Detail sections:
-
-- Header: report id, article title, report status, article status, priority
-- `Reported Article`: Report ID, Article ID, Article Title, Category, Article Status, `View Article`
-- `Reporter History`: reporter, reported time, status, reason, additional details พร้อม pagination
-- `Admin Action History`: Date/Time, Admin, Action, Status, details พร้อม pagination
-
-Pagination ของ `Reporter History` และ `Admin Action History` ต้องใช้มาตรฐานเดียวกัน:
-
-- Page size: 10 rows per page
-- มี Previous button
-- มี Next button
-- มี numbered page buttons
-- ต้องคงค่าลำดับการแสดงผลระหว่างเปลี่ยนหน้า
-- เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
-
-`View Article` เปิด phone-style FO article preview โดยใช้ article data ล่าสุดจาก article master ถ้าพบ article id และใช้ report preview data เป็น fallback เมื่อ article master ไม่พบ
-
-### Report Actions
-
-| Action | Availability | Result / ผลลัพธ์ |
-| --- | --- | --- |
-| View detail | ทุก report | เปิด Report Detail |
-| View Article | ทุก report | เปิด FO article preview modal |
-| ปิดรายงาน | Pending report | เปลี่ยน report เป็น Closed โดยไม่เปลี่ยนสถานะ article |
-| แก้ไขบทความ | Pending report ที่ article ยังไม่ Archived | เปิด Edit Article ของ article ที่ถูกรายงาน |
-| Archive article | Pending report ที่ article ยังไม่ Archived | เปลี่ยน article master เป็น Archived, เปลี่ยน report content status เป็น Archived, เปลี่ยน report เป็น Closed, เพิ่ม Article Change History และเพิ่ม Reported Article Admin Action History |
-
-### Close Report Confirmation
-
-`ปิดรายงาน` ต้องเปิด confirmation modal:
-
-- แสดง target เป็น article title, report id และ article id
-- ต้องเลือก reason หรือกรอก note สำหรับ audit ได้
-- Impact note ระบุว่าเป็นการปิดรายงานหลัง review โดยไม่เปลี่ยนสถานะ Board content
-- เมื่อสำเร็จต้องเพิ่ม Admin Action History เป็น `Close Report`
-
-### Archive From Report Confirmation
-
-`Archive article` ต้องเปิด confirmation modal:
-
-- แสดง target เป็น article title, report id และ article id
-- ต้องเลือก reason หรือกรอก note สำหรับ audit ได้
-- Impact note ระบุว่า action นี้นำบทความออกจาก Board public surfaces, ปิดรายงาน และอัปเดตสถานะบทความหลักเป็น Archived
-- เมื่อสำเร็จต้อง:
-  - เปลี่ยน article master status เป็น `Archived`
-  - เพิ่ม Article Change History เป็น `Archived` พร้อม note ที่อ้างอิง report id
-  - เปลี่ยน report content status เป็น `Archived`
-  - เปลี่ยน report status เป็น `Closed`
-  - เพิ่ม Reported Article Admin Action History เป็น `Archive Article`
-  - เพิ่มหรือแสดง Admin Action History row สำหรับ `Close Report`
-
-หลัง archive สำเร็จ FO ต้องไม่แสดง article นั้นใน Board/Search/Category และ direct link ต้องแสดง unavailable
-
 ## 15. FO Display Rules
 
 | BO Action | FO Result / ผลบน FO |
@@ -622,8 +485,6 @@ Pagination ของ `Reporter History` และ `Admin Action History` ต้�
 | Restore article | Article กลับเป็น Published และแสดงใน Board/Search/Category อีกครั้ง |
 | Activate category | Category แสดงใน FO filter/section และ Add/Edit Article selector |
 | Deactivate category | Category หายจาก FO filter/section และ Add/Edit Article selector |
-| Close report | Report ถูกปิดใน BO โดย article ยังอยู่ตามสถานะเดิม |
-| Archive article from Reported Articles | Article master เปลี่ยนเป็น Archived, article หายจาก FO Board/Search/Category, direct link แสดง unavailable และ report ถูกปิด |
 
 Direct link ไป article ที่ unavailable (archived/unpublished/deleted) ต้องใช้ canonical copy `บทความนี้ไม่พร้อมใช้งานแล้ว` ตาม `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` §10 และ `../FrontOffice/12_BOARD_MODULE.md` D11 — ใช้ copy เดียวกันทุก surface (ตัดสิน 2026-11-02 — FO-BO-001 GAP-10)
 
@@ -649,13 +510,7 @@ Direct link ไป article ที่ unavailable (archived/unpublished/deleted) 
 - Category slug duplicate
 - Blocked category deactivate when linked articles exist
 - Delete category confirmation
-- Loading Reported Article list
-- Empty Reported Article list
-- Reported Article no search result
-- Reported Article action confirmation
-- Reported Article action failure
 - Preview failed
-- Missing article fallback ใน View Article modal
 
 ## 17. Audit Requirements
 
@@ -669,12 +524,6 @@ Direct link ไป article ที่ unavailable (archived/unpublished/deleted) 
 
 - Category create/update/activate/deactivate/reorder/delete บันทึก audit event
 - Category delete ต้องบันทึก audit ก่อนนำ row ออกจาก list
-
-### Reported Article Audit
-
-- Reported Article detail แสดง `Reporter History` และ `Admin Action History`
-- `ปิดรายงาน` เพิ่ม Admin Action History เป็น `Close Report`
-- `Archive article` เพิ่ม Admin Action History เป็น `Archive Article`, เปลี่ยน report เป็น `Closed`, เปลี่ยน report content status เป็น `Archived` และเพิ่ม Article Change History เป็น `Archived` พร้อม reference report id
 
 ### Backend Audit Event Fields
 
@@ -710,10 +559,7 @@ Content Management ต้องใช้ app shell, navigation, breakpoint, list
 | AC-BO-CONTENT-008 | Inactive category ไม่แสดงใน FO filter/section และ Add/Edit Article selector |
 | AC-BO-CONTENT-009 | Deactivate/delete category ถูก block เมื่อยังมี linked articles |
 | AC-BO-CONTENT-010 | Board Main placement เลือก Main Hero, Trending Now และ Journal Board preview อัตโนมัติจาก eligible published articles โดยไม่แสดงบทความซ้ำในหน้าเดียวกัน |
-| AC-BO-CONTENT-011 | ~~Report article เข้า BO Reported Articles~~ — obsolete (e4: FO Report Article ตัดออกจาก V1, queue pending removal) |
-| AC-BO-CONTENT-012 | Admin เปิด Reported Article list/detail, search/filter/sort, paginate, view article preview, close report, edit article และ archive article ได้ |
-| AC-BO-CONTENT-013 | Archive article จาก Reported Articles เปลี่ยน article master เป็น Archived, ปิด report เป็น Closed, เพิ่ม Article Change History และ Reported Article Admin Action History และทำให้ article หายจาก FO Board/Search/Category |
-| AC-BO-CONTENT-014 | Article detail, Category actions และ Reported Article actions มี audit/history ตาม requirement |
-| AC-BO-CONTENT-015 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop โดยไม่มี content overflow หรือ element overlap |
-| AC-BO-CONTENT-016 | Content Management ต้องทำตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` สำหรับ list toolbar, responsive table/card behavior, pagination, reset, detail/editor, preview และ confirmation modal pattern |
+| AC-BO-CONTENT-011 | Article detail และ Category actions มี audit/history ตาม requirement |
+| AC-BO-CONTENT-012 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop โดยไม่มี content overflow หรือ element overlap |
+| AC-BO-CONTENT-013 | Content Management ต้องทำตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` สำหรับ list toolbar, responsive table/card behavior, pagination, reset, detail/editor, preview และ confirmation modal pattern |
 

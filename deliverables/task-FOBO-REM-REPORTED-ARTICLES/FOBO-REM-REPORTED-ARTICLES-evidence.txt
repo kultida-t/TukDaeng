@@ -1,0 +1,39 @@
+FOBO-REM-REPORTED-ARTICLES — Evidence Bundle
+Task: 355d0542 (todo → in_progress 2026-11-03)
+Scope: ถอด Reported Articles + Board Report Detail ออกจาก BO prototype ตาม FO-BO-001 e4 (FO Report Article/Board Content ตัดออกจาก V1 ทั้งระบบ — FO-PRD-v1.13, commit 2e605fd; OPEN-5 post-only เข้า BO เฉพาะคิว Reported Assets, commit 654a61a)
+
+== Files changed ==
+- Prototypes/bo-prototype.html (net -1,250 บรรทัด)
+  · navGroups: Content Management subs ["Articles","Categories","Reported Articles"] → ["Articles","Categories"]
+  · routing/back-context: isReportedBoard flag, reported-board-detail context type, board-report-list filter registry, activeSub branches, resets ทั้งหมด
+  · renderers/helpers: getBoardReportRows/isPublishedBoardReportIntake/getBoardReportById/getBoardReportQueueStatus/pills/search-text/actions/row-menu/audit-history/reporter-names/renderReportedBoardRows/renderReportedBoardDetail/getBoardReportActionConfig/renderBoardReportActionConfirmModal/applyBoardReportAction/renderBoardReportContentModal (block ~L44840–45406)
+  · event handlers: data-board-report-open/card/preview/action/action-confirm/reset/filter-toggle/page/search/status-filter/sort, back-reported-board, article-editor returnTo "board-report:<id>", hidden-input custom-select branch, reporter/audit-history pager branches
+  · mock data: boardReportRows (RPC-043, RPC-039), boardReportReporterNames, Board Content reason set 6 เหตุผลใน reportReasonThaiLabels
+  · permission: catalog keys board.reports.view/manage, ROL-008 description, role module-access text (Trust & Safety, Content Publisher)
+  · dashboard: queue card "รายงานบทความ", metric chip "Articles 3" (Reported Items 33→30, trend 9→8 รายงาน), content card tile "Reported 3" + description
+  · CSS: reported-board-mode selectors/rules + :not(.reported-board-mode) exclusions, .reported-board-table/.reported-board-row rules, board-report-phone-preview* modal CSS, shouldFixRowMenu branch
+  · KEPT: board-report-reference-head — shared class ของ Reported User/Asset/Comment detail + Watch Alert (protected)
+- BackOffice/05_CONTENT_BOARD_MODULE.md v1.3→v1.4 — ลบ §14 Reported Article Content ทั้ง section + refs (scope/submenu/nav behavior/mobile/Audit/AC) + AC renumber 16→13
+- BackOffice/02_DASHBOARD_MODULE.md v1.3→v1.4 — ลบ queue row รายงานบทความ (renumber 3–7→3–6), chip link row, metric spec 33→30/9→8, AC-BO-DASH-004 chips
+- BackOffice/00_GLOBAL_RULES_MODULE.md →v1.4 — nav inventory ลบ Reported Articles, reason note pending removal→removed
+- BackOffice/15_REPORTS_ANALYTICS_MODULE.md v0.2→v0.3 — ลบ metric row "Reported Article content"
+- BackOffice/16_ADMIN_SETTINGS_MODULE.md v1.5→v1.6 — permission catalog (Articles/Categories เท่านั้น), ลบ matrix row Reported Articles moderation, role capability refs (Trust & Safety/Content Editor/Content Publisher)
+- BackOffice/BO_Spec.md v1.4→v1.5 — nav tree ลบ Reported Articles (Categories → └──)
+- BackOffice/BO_Spec_Completion_Addendum.md 1.6→1.7 — nav tree เดียวกัน
+- BackOffice/README_MODULE_INDEX.md — ตัด "reported Board Content (pending removal — e4)"
+- BackOffice/DOCUMENT_VERSION.md — เพิ่ม history row 2026-11-3
+- AGENTS.md — protected list Content Management entry ตัด "Reported Articles, Board Report Detail" + removal note
+
+== Verification ==
+- grep bo-prototype.html: 0 refs ของ boardReport*/Reported Articles/Reported Board/board-report*/reported-board*/RPC-* เหลือเฉพาะ board-report-reference-head (shared, protected) 6 จุด
+- Playwright smoke: login → content subs = ["Articles","Categories"]; dashboard ไม่มี รายงานบทความ/Reported Articles; Articles + Categories render; ROL-008 role detail ไม่มี Reported Articles/board.reports; Reported Assets queue ยังใช้ได้; console/page errors = none
+- grep BackOffice/: เหลือเฉพาะ changelog/version-history mentions
+
+== Screenshots ==
+- before/ (12): w01-w06, m01-m06 (nav expanded, Reported Articles list, Board Report Detail RPC-043, dashboard, role detail ROL-008, article list)
+- after/ (8): w01/w04/w05/w06, m01/m04/m05/m06 (ไม่มี 02/03 — หน้าจอถูกถอดแล้ว)
+- capture script: scripts/capture-fobo-rem-reported-articles.js
+
+== Out of scope honored ==
+- ไม่แตะ queue อื่น (Reported Users/Assets/Comments ใช้ได้ปกติ)
+- ไม่แตะ protected screens นอก scope refs (shared classes/handlers ที่หน้าอื่นใช้ร่วมคงไว้)
