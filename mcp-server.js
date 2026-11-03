@@ -162,6 +162,19 @@ rl.on('line', async (line) => {
                   },
                   required: ['category', 'logs']
                 }
+              },
+              {
+                name: 'list_my_apps',
+                description: 'List the applications authorized for the current Core Portal API key, including each application\'s ongoing missions, objectives, and features. Free to call (no Gold deducted).',
+                inputSchema: {
+                  type: 'object',
+                  properties: {
+                    apiKey: {
+                      type: 'string',
+                      description: 'The Core Portal API key (starts with sk_univ_). Optional when CORE_PORTAL_API_KEY is configured.'
+                    }
+                  }
+                }
               }
             ]
           }
@@ -170,6 +183,84 @@ rl.on('line', async (line) => {
 
       case 'tools/call': {
         const { name, arguments: args } = params;
+
+        if (name === 'list_my_apps') {
+          const effectiveApiKey = args?.apiKey || defaultApiKey;
+
+          if (!effectiveApiKey) {
+            sendResponse({
+              jsonrpc: '2.0',
+              id,
+              result: {
+                content: [
+                  {
+                    type: 'text',
+                    text: 'Missing Core Portal API key. Pass apiKey or set CORE_PORTAL_API_KEY in the MCP server environment.'
+                  }
+                ],
+                isError: true
+              }
+            });
+            return;
+          }
+
+          try {
+            const response = await fetch(`${serverUrl}/api/agent/apps`, {
+              method: 'GET',
+              headers: {
+                'X-API-Key': effectiveApiKey
+              }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+              sendResponse({
+                jsonrpc: '2.0',
+                id,
+                result: {
+                  content: [
+                    {
+                      type: 'text',
+                      text: `Failed to list apps. API returned error: ${data.error || response.statusText}`
+                    }
+                  ],
+                  isError: true
+                }
+              });
+              return;
+            }
+
+            sendResponse({
+              jsonrpc: '2.0',
+              id,
+              result: {
+                content: [
+                  {
+                    type: 'text',
+                    text: typeof data === 'string' ? data : JSON.stringify(data, null, 2)
+                  }
+                ],
+                isError: false
+              }
+            });
+          } catch (apiErr) {
+            sendResponse({
+              jsonrpc: '2.0',
+              id,
+              result: {
+                content: [
+                  {
+                    type: 'text',
+                    text: `Failed to connect to backend server at ${serverUrl}: ${apiErr.message}`
+                  }
+                ],
+                isError: true
+              }
+            });
+          }
+          return;
+        }
 
         if (name !== 'submit_logs') {
           sendResponse({

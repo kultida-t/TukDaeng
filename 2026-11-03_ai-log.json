@@ -2,7 +2,7 @@
   "schema_version": "2.0",
   "date": "2026-11-03",
   "timezone": "Asia/Bangkok",
-  "auto_worklog": true,
+  "auto_worklog": false,
   "sessions": [
     {
       "session_id": "session-001",
@@ -14,34 +14,982 @@
       "feature": null,
       "objective_id": null,
       "feature_id": null,
-      "auto_worklog": true,
+      "auto_worklog": false,
       "messages": [
         {
           "role": "user",
-          "timestamp": "2026-11-03T09:05:00+07:00",
-          "content": "เช็ค mcp core-portal ดึงโปรเจคอะไรมาได้บ้าง"
+          "timestamp": "2026-11-03T09:22:23+07:00",
+          "content": "get context session kanban เช็คว่าเหลืองานคงค้างอะไรบ้าง"
         },
         {
           "role": "assistant",
-          "timestamp": "2026-11-03T09:07:30+07:00",
-          "summary": "ตรวจสอบ MCP server core-portal พบว่าเปิด tool เดียวคือ submit_logs ไม่มี tool สำหรับดึงรายการโปรเจกต์ จึงลองยิง API ตรงที่ https://persona.univerza.co ด้วย API key เดิม พบ endpoint /api/agent/apps ที่ตอบกลับรายการ app ทั้งหมด: TUKDANG (TukDaeng Back Office id 60, Tukdaeng app IOS id 26, Tukdaeng web id 27), MR.FOX (Mrfox Application id 79) และ app ที่ไม่ผูก project (งานทั่วไป id 81, งาน ลา ทั้งหลาย id 80) พร้อมสรุปว่า workspace นี้คือ TukDaeng Back Office appId 60"
+          "timestamp": "2026-11-03T09:22:27+07:00",
+          "summary": "เรียก get_session_context เพื่อเช็กงานค้างบน Kanban"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:22:44+07:00",
+          "summary": "พบบอร์ดว่างทุกคอลัมน์แต่ session note เก่าระบุงานค้าง จึงเช็ก mission และอ่าน note เต็มอีกครั้ง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:23:03+07:00",
+          "summary": "สรุปว่าบอร์ดไม่มี task ค้าง (ทุก mission 100% done) แต่มี 3 เรื่องรอ product/FO decision: OPEN-5 รวม Asset+Content Management, e1 FO Help dynamic channels และ e4 Report Article entry พร้อมหมายเหตุเรื่องการใช้คำว่า 'สินทรัพย์' ใน task name"
         },
         {
           "role": "user",
-          "timestamp": "2026-11-03T09:14:00+07:00",
-          "content": "ช่วยใช้ skill ai-conversation-daily-log เช็กชื่อโปรเจกต์และ Ongoing Mission / Objective จาก list_my_apps แล้วสรุปบทสนทนาของวันนี้เป็นไฟล์ YYYY-MM-DD_ai-log.json แล้วแสดงเป็น copy block ออกมาให้ดูหน่อย"
+          "timestamp": "2026-11-03T09:24:05+07:00",
+          "content": "ควรเริ่มจากงานไหนก่อนดี"
         },
         {
           "role": "assistant",
-          "timestamp": "2026-11-03T09:16:40+07:00",
-          "summary": "ใช้ skill ai-conversation-daily-log ตรวจสอบชื่อโปรเจกต์และ Ongoing Mission/Objective — MCP server ไม่มี tool list_my_apps จึงดึงข้อมูลเดียวกันจาก endpoint /api/agent/apps พบทุก app มี ongoing_missions ว่าง (ไม่มี Mission/Objective/Feature ให้ผูก) จับคู่ workspace กับ app TukDaeng Back Office (id 60, project TUKDANG) แล้วสร้างไฟล์ 2026-11-03_ai-log.json สรุปบทสนทนาวันนี้"
+          "timestamp": "2026-11-03T09:24:20+07:00",
+          "summary": "แนะนำลำดับตัดสินใจ: e1 ก่อนเพราะ block แพ็กเกจส่ง dev, e4 ตัดสินรวมเป็นชุดเดียวกันได้, OPEN-5 ท้ายสุดเพราะ blast radius ใหญ่สุด พร้อมเสนอถามทีละข้อหรือทำ decision memo"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T09:25:29+07:00",
+          "content": "สร้าง prompt สำหรับสร้าง task ในการทำงานตามลำดับ จะไปเริ่มงานที่ session ถัดไป ทำทีละงาน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:25:37+07:00",
+          "summary": "เช็ก format handoff มาตรฐานของโปรเจกต์ก่อนเขียน prompt สร้าง task"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:25:52+07:00",
+          "summary": "เขียน start-task prompt สำหรับ session ถัดไป: สร้าง 3 task todo เรียงลำดับ e1→e4→OPEN-5 พร้อม workflow decision-gated และกติกาห้ามแตะ protected screens"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T09:28:45+07:00",
+          "content": "เวลาสร้าง task อย่าลืมเรื่องเงื่อนไขชื่อ task ด้วยนะอ่าน  ให้ครบถ้วนทุกบรรทัดทุกเงื่อนไขก่อน ไม้ให้คิดเองตัดสินใจเอง ทุกเงื่อนไขต้องผ่านการอ่านให้ครบแล้วถึงทำ ถ้ามีอะไรต้องตัดสินใจให้ถามก่อนเสมอ สร้าง prompt แล้วการทำงานต้องตามกระบวนการ ทำทีละ task แล้วต้องปิด task สรุปได้รับการยืนยันก่อนถึงจะเริ่ม task ถัดไปนะ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:28:48+07:00",
+          "summary": "รับคำสั่งและเริ่มอ่าน work-summary SKILL.md ให้ครบก่อนแก้ prompt"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:28:50+07:00",
+          "summary": "อ่าน SKILL.md ทั้งไฟล์ 1,519 บรรทัดทีละช่วงให้ครบ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:29:26+07:00",
+          "summary": "อ่านครบแล้วสรุปเงื่อนไขสำคัญ (Description ต้องมี Category|Planned|Category Max ห้ามคูณ 1.5, in_progress ทีละ 1 task, ปิด task ต้องได้ยืนยันผลก่อน, ห้าม log_time) แล้วออก prompt ฉบับแก้ใหม่พร้อมชี้จุดที่เปลี่ยน และถามยืนยัน Category/Planned ที่เสนอ"
+        }
+      ]
+    },
+    {
+      "session_id": "session-002",
+      "tool": "Devin",
+      "project": "TukDaeng Back Office",
+      "task_id": "FOBO-DEC-HELP-CHANNELS",
+      "mission": null,
+      "objective": null,
+      "feature": null,
+      "objective_id": null,
+      "feature_id": null,
+      "auto_worklog": false,
+      "messages": [
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T09:31:11+07:00",
+          "content": "ทำงานค้างจาก audit FO-BO-001 ทีละข้อตามลำดับ — ทุกข้อเป็น decision-gated item\nอ้างอิง: deliverables/FO-BO-001-coverage-audit.md §5 (open items) + decision matrix (e1/e4, GAP-04, GAP-08)\nskill ที่ต้องทำตามครบทุกเงื่อนไข: .agents/skills/work-summary/SKILL.md (อ่านก่อนเริ่มงานทุกครั้ง)\n\n═══ ขั้นที่ 1: เตรียม session ═══\n1. เรียก get_session_context (kanban-tukdaeng) + อ่าน AGENTS.md + อ่าน work-summary SKILL.md ทั้งไฟล์\n2. เปิด audit doc อ่าน §5 + decision matrix ให้เข้าใจบริบท e1/e4/OPEN-5\n3. get_board ยืนยันว่าไม่มี task อื่นอยู่ใน in_progress\n\n═══ ขั้นที่ 2: สร้าง tasks (todo เท่านั้น ห้ามเริ่มทำ) ═══\nเสนอรายการ 3 task ด้านล่างให้ผู้ใช้ยืนยันก่อน create_task เสมอ — ชื่อ Task Code,\nCategory และ Planned ที่เสนอเป็น draft ห้ามตัดสินใจเอง ถ้าผู้ใช้ปรับให้ใช้ค่าที่ผู้ใช้กำหนด:\n\nTask 1 (ทำก่อนสุด — block แพ็กเกจส่ง dev):\n- ชื่อเสนอ: FOBO-DEC-HELP-CHANNELS — FO decision e1: FO Help render ตาม channel\n  ที่ BO Support Center เปิด (dynamic) หรือล็อก 3 ช่องทาง (GAP-04)\n- Category เสนอ: Documentation | Planned เสนอ: 1.5 ชม. (Category Max 2 ชม.)\n- ขอบเขต: ถามผู้ใช้ตัดสิน → ถ้า dynamic: amend spec 13 §9 + spec 12_HELP contract\n  + ปรับ Support Center preview contract; ถ้าล็อก: จำกัด BO config + เขียน constraint\n  ใน spec 12_HELP → อัปเดต audit §5 mark resolved\n\nTask 2:\n- ชื่อเสนอ: FOBO-DEC-BOARD-REPORT-V1 — FO decision e4: ยืนยัน Report Article entry\n  (data-bdmore) อยู่ contract-only ใน V1 (BO queue พร้อมแล้ว, S-04)\n- Category เสนอ: Documentation | Planned เสนอ: 0.5 ชม. (Category Max 2 ชม.)\n- ขอบเขต: ถามผู้ใช้ยืนยัน → บันทึกผลใน audit §5/spec ที่เกี่ยว → ถ้าไม่ยืนยัน\n  ให้จด scope follow-up เป็น open item (ห้ามขยายงานเอง)\n\nTask 3:\n- ชื่อเสนอ: FOBO-DEC-DOMAIN-MERGE — Product decision OPEN-5: รวม Asset Management\n  เข้า Content Management เป็นโดเมน Posts/Content เดียวหรือไม่ (GAP-08)\n- Category เสนอ: Requirement | Planned เสนอ: 1.5 ชม. (Category Max 2 ชม.)\n- ขอบเขต: ถามผู้ใช้ตัดสิน → ถ้าไม่รวม: เขียน boundary ชัดใน spec 04/05 (post-only\n  report อยู่คิว Reported Assets แต่ moderation surface ต่างกัน) + mark resolved\n  → ถ้ารวม: task นี้จบที่ decision + เสนอแผน mission แยกสำหรับ restructure\n  (nav/menu + spec 04/05 + protected screens) ห้ามลงมือ restructure ใน task นี้\n\nกติกาการสร้าง task (บังคับจาก work-summary SKILL.md):\n- Description ทุก task ต้องมีบรรทัด: Category: <หมวด> | Planned: <X> ชม. (Category Max <Y> ชม.)\n- Category Max = เป้าหมายหมวดจากตารางโดยตรง (Documentation 2, Requirement 2,\n  Feature 2, Bug Fix 2, Testing 1, Design 1.5, Refactor 1.5, Meeting 2, Deploy/DevOps 1)\n  ห้ามคูณ 1.5 — Planned = เวลาประเมินจริงของ task นั้น ห้ามกดต่ำกว่าความจริง\n- ทุก task เป็น standalone (ไม่มี mission) → หลักฐานเก็บที่\n  screenshots/task-<TASK-CODE>/ และ deliverables/task-<TASK-CODE>/\n- สร้างทั้ง 3 เป็น todo หลังผู้ใช้ยืนยันแล้วเท่านั้น\n\n═══ ขั้นที่ 3: ทำงานทีละ task ตามลำดับ 1→2→3 เท่านั้น ═══\nต่อ 1 task (ทำครบ loop นี้ก่อนขึ้น task ถัดไป ห้ามข้าม):\n1. get_board เช็คไม่มี task อื่นใน in_progress → move_task → in_progress\n   (เริ่ม auto-timer) → แจ้งผู้ใช้ว่าเริ่มจับเวลาแล้ว\n2. นำเสนอคำถาม decision พร้อม options + impact ของแต่ละทางเลือก → รอผู้ใช้ตอบ\n   ห้ามตัดสินใจแทน ห้ามเดาคำตอบ\n3. ได้คำตอบ → implement ตามขอบเขต branch นั้นเท่านั้น\n   - งานเอกสาร/spec: grep cross-reference ก่อนแก้ทุกครั้ง + คง writing rules\n     (ใช้ \"asset\" ไม่ใช่ \"สินทรัพย์\")\n   - ถ้างานใดสะท้อนบนหน้าจอ prototype → capture Before (1440+390) ก่อนแก้\n   - ห้ามแตะ protected screens (AGENTS.md) โดยไม่ขอ approval เฉพาะจุด\n4. Verify งานครบตามขอบเขต → ถ้าเปลี่ยนสิ่งที่เห็นบนจอต้องส่ง Manual Review\n   Checklist (เคส+ข้อมูลทดสอบ+ขั้นกด+ผลที่คาด) ให้ผู้ใช้ตรวจก่อน\n5. ผู้ใช้ยืนยันผลลัพธ์แล้วเท่านั้น → move_task → done → get_task อ่าน\n   Final hours_spent → สร้าง Final Summary → รวม Task Evidence Bundle\n   (ไฟล์ที่แก้ + commit hash / checklist / ภาพ) → save_session_note\n6. แสดงสรุปราย task เต็ม + Final Work Summary Copy Block (text code block,\n   Case B — ไม่มี Objective/Feature เพราะไม่มี mission mapping)\n7. รอผู้ใช้ยืนยันสรุป → แล้วจึงสร้าง prompt/เริ่ม task ถัดไป — ห้ามเริ่มเองอัตโนมัติ\n\n═══ กรณีพิเศษ ═══\n- ผู้ใช้ตอบ \"ยังไม่ตัดสิน/รอทีม\" ข้อใด → pause task นั้นกลับ todo + note สาเหตุ\n  แล้วถามผู้ใช้ว่าจะข้ามไปข้อถัดไปหรือหยุด (ห้ามตัดสินใจเอง)\n- เวลาใกล้/เกิน ~1.2× Planned แต่งานยังไม่จบ → แจ้งผู้ใช้ทบทวน scope ก่อนทำต่อ\n- ห้ามเรียก log_time ทุกกรณี / ห้ามปรับ hours_spent เอง / ค่าผิดปกติให้รายงาน\n  แล้วแยก correction workflow\n- ถ้า scope พ่นจากที่ตัดสินไว้เกิดงานใหญ่ → หยุดถามผู้ใช้ ห้ามขยายขอบเขตเอง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:31:16+07:00",
+          "summary": "เริ่มเตรียม session: อ่าน work-summary SKILL.md, AGENTS.md, audit doc และ list kanban tools พร้อมกัน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:31:21+07:00",
+          "summary": "อ่าน context ส่วนที่เหลือต่อ: session context, AGENTS.md, audit doc, tools schema และ SKILL.md"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:31:26+07:00",
+          "summary": "อ่าน SKILL.md ส่วนที่เหลือ tools schema ตอนท้าย และ session note เต็มของวันก่อนต่อ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:31:31+07:00",
+          "summary": "ยืนยันบอร์ดว่างไม่มี task ค้าง อ่าน SKILL.md และ tools schema ส่วนท้ายให้จบก่อนเสนอ task"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:31:35+07:00",
+          "summary": "อ่าน SKILL.md ช่วงสุดท้ายให้ครบทั้งไฟล์ตามกติกา"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:31:43+07:00",
+          "summary": "อ่านครบทุกไฟล์แล้วเช็กบอร์ดอีกรอบยืนยันไม่มี task ค้างใน in_progress"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:31:49+07:00",
+          "summary": "สรุป context: audit เหลือ 3 open items (e1/e4/OPEN-5) แล้วร่าง 3 task เป็น draft (FOBO-DEC-HELP-CHANNELS, FOBO-DEC-BOARD-REPORT-V1, FOBO-DEC-DOMAIN-MERGE) พร้อมขอบเขต Category/Planned ที่เสนอ ขอยืนยันก่อน create"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T09:33:52+07:00",
+          "content": "ยืนยัน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:34:01+07:00",
+          "summary": "สร้าง 3 task เป็น todo ตาม draft ที่ผู้ใช้ยืนยัน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:34:30+07:00",
+          "summary": "สร้างครบ 3 task standalone (FOBO-DEC-HELP-CHANNELS bdcf9c4b, FOBO-DEC-BOARD-REPORT-V1 86aa0b14, FOBO-DEC-DOMAIN-MERGE 7b7abe53) แล้วเริ่ม Task 1"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:34:40+07:00",
+          "summary": "ย้าย FOBO-DEC-HELP-CHANNELS เข้า in_progress เริ่มจับเวลา พร้อมเล่าบริบท GAP-04 (FO Help ตายตัว 3 ช่องทาง vs BO config 5 แบบ) เตรียมถาม decision e1"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:35:41+07:00",
+          "summary": "บันทึกว่าผู้ใช้เลือก Dynamic ตาม BO config แล้วไปหาจุด amend ใน spec 13 §9, spec 12_HELP และ audit doc"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:35:53+07:00",
+          "summary": "พบว่า BO spec 12_HELP เขียน dynamic contract ไว้แล้ว เหลือ FO spec 13 §9 locked copy, AC-SETTING-007 และ cross-refs ที่ต้องแก้ จึงอ่าน context รอบจุดก่อนลงมือ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:36:21+07:00",
+          "summary": "ยืนยันเหลือแก้ฝั่ง FO, cross-refs และ audit doc พร้อมเช็ก DOCUMENT_VERSION กับ dev package เพิ่มอีก 2 จุด"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:36:39+07:00",
+          "summary": "เข้าใจ version convention: FO ต้อง bump เป็น FO-PRD-v1.12 ส่วน BO ใช้ per-module version จึงเช็ก version field ใน 12_HELP กับ FO 13 ก่อนแก้"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:36:59+07:00",
+          "summary": "สรุปขอบเขตที่เหลือ 4 ส่วน (amend FO spec 13 §9/AC, sync checklists, 12_HELP dependency note, bump versions + mark resolved) แล้วอ่าน context เพิ่มอีก 3 จุด"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:37:34+07:00",
+          "summary": "ลงมือ amend ครบทุกจุด: FO spec 13 §9/AC-SETTING-007, checklist sync, 12_HELP dependency note, DOCUMENT_VERSION ทั้งสองฝั่ง และ mark resolved ใน audit doc"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:37:54+07:00",
+          "summary": "แก้ spec หลักเสร็จ ทำต่อ DOCUMENT_VERSION ทั้งสองฝั่งและ audit doc mark resolved"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:38:20+07:00",
+          "summary": "แก้ audit doc ไม่สำเร็จ 3 จุดเพราะข้อความไม่ match จึงอ่านบรรทัดจริงและแก้ใหม่"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:38:39+07:00",
+          "summary": "เจอบรรทัดจริงแล้วแก้แบบแตะเฉพาะจุดสั้น ๆ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:38:50+07:00",
+          "summary": "แก้ครบทุกจุดแล้ว verify cross-reference ว่าไม่มีจุดขัดกันค้างและเช็ก git status"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:38:57+07:00",
+          "summary": "Verify ผ่านไม่มีจุดขัดกัน (เหลือเฉพาะ citation/historical record ที่ตั้งใจเก็บ) สรุปงาน Task 1: แก้ 8 ไฟล์ docs-only ไม่แตะ prototype/protected screens รอยืนยันเพื่อ commit และปิด task"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T09:40:29+07:00",
+          "content": "โอเค"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:40:39+07:00",
+          "summary": "commit งานก่อนแล้วปิด task ตาม workflow"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:40:44+07:00",
+          "summary": "Commit 7990c73 เรียบร้อย ต่อด้วย evidence bundle และปิด task"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:41:13+07:00",
+          "summary": "ปิด task เรียบร้อย เวลาจริง 0.21 ชม. ต่ำกว่า Planned 1.5 เพราะ decision ชัดและ BO เขียน contract ไว้แล้ว ต่อด้วยบันทึก Final Session Note"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:41:29+07:00",
+          "summary": "บันทึก Final Session Note แล้วแสดงสรุปราย task + Copy Block พร้อมเสนอ blog 3 แบบ และ prompt คำถาม decision Task 2 (e4) รอยืนยันก่อนเริ่ม"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T09:42:45+07:00",
+          "content": "รายละเอียดงานที่ทำอ่าน  ครบถ้วนทุกบรรทัดไม่ขาดตกแล้วใช่ไหมถึงสรุปออกมารูปแบบนี้\n<quoted_artifact kind=\"message\" event_id=\"agent_message:667fd0d9-530e-4e9e-aad5-95b6e1ef0c3f\" author=\"devin\">\n<content>\n- ตัดสินใจ: approve ให้ FO Help render ตาม channel ที่ BO เปิด (dynamic) — ช่องทางตายตัว 3 แถวเดิมกลายเป็น seed baseline- Amend เอกสารฝั่ง FO 4 เล่มให้เป็น dynamic contract (เฉพาะ channel Active, interaction ตาม type, empty state เมื่อไม่มี channel เปิด)- อัปเดตเอกสารฝั่ง BO และ version registry: BO-12-v0.4 + FO-PRD-v1.12- Mark resolved ใน audit doc ครบทุกตำแหน่ง — GAP-04 ปิดแล้ว เหลือ FO decision e4 กับ OPEN-5\n</content>\n</quoted_artifact>"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:43:04+07:00",
+          "summary": "รับทราบข้อผิดพลาด 2 จุด (เนื้อหาสรุปราย task กับ copy block ไม่เหมือนกัน และ bullet เล่าเหตุการณ์แทนสรุปผล) แล้วแก้รายละเอียดงานที่ทำให้เป็นชุดเดียวกันแบบสรุปผลตามกฎข้อ 25"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T09:45:26+07:00",
+          "content": "รายละเอียดงานที่ทำต้องสรุปออกมาให้เป็นรูปแบบนี้ตลอดนะ ย้ำทุกรอบทำผิดบ่อยมากเลย สรุปเป็น copy block มาใหม่แล้วบันทึก final session note ใหม่อีกทีตามล่าสุด พร้อมสร้าง prompt สำหรับ task 2 ไปเริ่มใน session ถัดไป"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:45:36+07:00",
+          "summary": "จดกฎรายละเอียดงานที่ทำ (เขียนแบบสรุปผล 'หัวข้อ: ทำอะไร เพื่ออะไร ได้ผลอะไร' ไม่เล่ากระบวนการ ไม่มีคำเรียกผู้ใช้ เนื้อหาต้องเหมือนกันทั้งสอง block) แล้วออกสรุปราย task + Copy Block ฉบับแก้ใหม่"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:45:52+07:00",
+          "summary": "บันทึก Final Session Note ฉบับแก้ wording แล้วส่ง prompt สำหรับ Task 2 (FOBO-DEC-BOARD-REPORT-V1) พร้อมสรุปสถานะเหลือ Task 2/3 ใน todo"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T09:47:04+07:00",
+          "content": "3"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:47:13+07:00",
+          "summary": "โพสต์ blog เบอร์ 3 (confused) แล้ว พร้อมแจ้งปรับ visibility ได้ทีหลัง และสรุป Task 1 ปิดเรียบร้อย (0.2 ชม., commits 7990c73+3dd2143) เหลือ Task 2/3 รอทำ"
+        }
+      ]
+    },
+    {
+      "session_id": "session-003",
+      "tool": "Devin",
+      "project": "TukDaeng Back Office",
+      "task_id": "FOBO-DEC-BOARD-REPORT-V1",
+      "mission": null,
+      "objective": null,
+      "feature": null,
+      "objective_id": null,
+      "feature_id": null,
+      "auto_worklog": false,
+      "messages": [
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T09:47:12+07:00",
+          "content": "ทำงานต่อจาก audit FO-BO-001 — Task 2 (decision-gated)\nอ้างอิง: deliverables/FO-BO-001-coverage-audit.md §5 (open items) + §4(e)/§6 (e4, R4)\nskill ที่ต้องทำตามครบทุกเงื่อนไข: .agents/skills/work-summary/SKILL.md (อ่านก่อนเริ่มงานทุกครั้ง)\nTask เดิมที่ทำเสร็จแล้ว: FOBO-DEC-HELP-CHANNELS (e1 resolved — FO Help = dynamic ตาม BO config, FO-PRD-v1.12 / BO-12-v0.4, commits 7990c73+3dd2143)\n\n═══ ขั้นที่ 1: เตรียม session ═══\n1. เรียก get_session_context (kanban-tukdaeng) + อ่าน AGENTS.md + อ่าน work-summary SKILL.md ทั้งไฟล์\n2. เปิด audit doc อ่าน §5 + §4(e) ข้อ e4 + R4 (Contract-only) ให้เข้าใจบริบท\n3. get_board → หา task \"FOBO-DEC-BOARD-REPORT-V1\" (id 86aa0b14, todo) + ยืนยันไม่มี task อื่นใน in_progress\n\n═══ ขั้นที่ 2: ทำ task ═══\n1. move_task → in_progress (เริ่ม auto-timer) → แจ้งผู้ใช้ว่าเริ่มจับเวลาแล้ว\n2. นำเสนอคำถาม decision ข้อ e4 พร้อม options + impact → รอผู้ใช้ตอบ ห้ามตัดสินใจแทน:\n   - ยืนยัน: Report Article entry (data-bdmore / data-bdact='report', ~fo-flow L18368–18510)\n     อยู่ contract-only ใน V1 — BO queue (Content Management > Reported Articles + Board Report Detail)\n     พร้อมรับแล้วตาม S-04; FO spec 12 §13 + 15 §12 บันทึก contract ไว้แล้ว\n   - ถ้ายืนยัน → บันทึกผลใน audit doc §5/§6 (mark e4 resolved) + spec ที่เกี่ยว (12_BOARD_MODULE.md §13 / 15 §12 ถ้าจำเป็น) + bump FO-PRD-v1.13 ถ้าแตะเอกสาร FO\n   - ถ้าไม่ยืนยัน → จด scope follow-up เป็น open item ใน audit doc — ห้ามขยายงานเอง\n   - ถ้าตอบ \"ยังไม่ตัดสิน/รอทีม\" → pause task กลับ todo + note สาเหตุ แล้วถามจะข้ามไป Task 3 (FOBO-DEC-DOMAIN-MERGE) หรือหยุด\n3. งานเอกสาร/spec: grep cross-reference ก่อนแก้ทุกครั้ง + คง writing rules\n   (ใช้ \"asset\" ไม่ใช่ \"สินทรัพย์\"; ไม่ใส่ meta-commentary note; เรื่องรอ decision ใส่ Open Decisions)\n4. งานนี้ docs-only — ไม่ต้อง capture Before/ไม่ต้องส่ง Manual Review Checklist\n   เว้นแต่ scope พ่นไปแตะ prototype → หยุดถามผู้ใช้ก่อนเสมอ\n5. ผู้ใช้ยืนยันผลลัพธ์แล้วเท่านั้น → commit → move_task → done → get_task อ่าน Final hours_spent\n   → สร้าง Final Summary → Task Evidence Bundle (deliverables/task-FOBO-DEC-BOARD-REPORT-V1/)\n   → save_session_note → แสดงสรุปราย task เต็ม + Final Work Summary Copy Block (Case B — ไม่มี mission)\n6. กติกาสำคัญ: รายละเอียดงานที่ทำ เขียนแบบสรุปผล \"หัวข้อ: ทำอะไร เพื่ออะไร ได้ผลอะไร\"\n   ไม่เล่ากระบวนการ ไม่มีคำเรียกผู้ใช้ และเนื้อหาต้องเหมือนกันทั้งสรุปราย task + copy block\n7. รอผู้ใช้ยืนยันสรุป → แล้วจึงเสนอ prompt Task 3 — ห้ามเริ่มเองอัตโนมัติ\n\n═══ กรณีพิเศษ ═══\n- เวลาใกล้/เกิน ~1.2× Planned (0.6 ชม.) แต่งานยังไม่จบ → แจ้งผู้ใช้ทบทวน scope ก่อนทำต่อ\n- ห้ามเรียก log_time ทุกกรณี / ห้ามปรับ hours_spent เอง\n- ห้ามแตะ protected screens (AGENTS.md) โดยไม่ขอ approval เฉพาะจุด"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:47:14+07:00",
+          "summary": "เริ่มเตรียม session: เรียก list tools ของ kanban-tukdaeng อ่าน SKILL.md, AGENTS.md และ audit doc พร้อมกัน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:47:17+07:00",
+          "summary": "อ่าน SKILL.md ส่วนที่เหลือ เรียก get_session_context และเปิด audit doc พร้อมกัน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:47:21+07:00",
+          "summary": "อ่าน SKILL.md ส่วนกลางที่ถูกตัด (overflow lines 38–638) และเปิด audit doc ต่อ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:47:26+07:00",
+          "summary": "อ่าน SKILL.md ส่วนที่เหลือต่อให้ครบและเปิด audit doc §4(e)/§5/§6"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:47:30+07:00",
+          "summary": "อ่าน SKILL.md ส่วน Copy Block template (Case A/B/C) ที่ยังขาดและท้ายไฟล์"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:47:33+07:00",
+          "summary": "อ่าน audit doc §6 ค้น R4 และดู task FOBO-DEC-BOARD-REPORT-V1"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:47:37+07:00",
+          "summary": "context ครบแล้ว ยืนยันไม่มี task ค้างใน in_progress เริ่มจับเวลา task FOBO-DEC-BOARD-REPORT-V1 (Planned 0.5 ชม., standalone → Case B)"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:47:42+07:00",
+          "summary": "เริ่มจับเวลาและตรวจข้อเท็จจริงก่อนถาม: grep data-bdmore/data-bdact ใน fo-flow และดู contract ใน spec 12 §13/15 §12"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:47:54+07:00",
+          "summary": "อ่าน context ครบเริ่มจับเวลาแล้ว เล่าบริบท e4: ปุ่ม Report article ใน FO เป็น dead-path แต่ spec เขียน contract-only พร้อม contract ครบ และ BO queue Reported Articles พร้อมรับแล้ว"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:51:20+07:00",
+          "summary": "รับคำตอบผู้ใช้ที่เลือก 'ตัดเรื่อง report article ออกไปก่อน' จึงขอเช็กความหมายให้ชัดเพราะกระทบไฟล์ต่างกัน และย้ำว่า BO queue เป็นจอ lock แตะไม่ได้"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:52:22+07:00",
+          "summary": "ขอโทษที่เรียกชื่อผิดและล็อกว่าเรียก 'พี่มาเต็ม' บันทึก decision e4 = ลบ Report Article ออกจาก FO spec ทั้งหมด (BO queue คงเดิมเพราะ locked) แล้วเริ่ม grep cross-reference ทุกจุดที่อ้าง Board Content/data-bdmore/AC-TS-009/S-04"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:52:49+07:00",
+          "summary": "เช็กสภาพจริงของ prototype และ version baseline — พบ data-bdmore/data-bdact grep ไม่เจอใน fo-flow แล้ว ขอยืนยันอีกรอบพร้อมดู baseline ล่าสุด"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:53:34+07:00",
+          "summary": "ยืนยัน: prototype ไม่มี dead code เหลือแล้ว, baseline FO-PRD-v1.12 ต้อง bump v1.13 ถ้าตัด feature จริง สรุปจุดต้องลบ/ปรับใน FO spec ~10 ไฟล์ พร้อมเช็ก BO spec ว่ามี cross-ref ไปหา FO contract ที่จะลบไหม"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:53:49+07:00",
+          "summary": "พบประเด็นสำคัญ: BO spec อ้าง FO contract ที่จะลบหลายจุด (00 §11 reason set, 03/04 note, 05 queue description) ถ้าลบเฉย ๆ จะเกิด dangling ref"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:55:13+07:00",
+          "summary": "อธิบายผลกระทบ 2 ฝั่งและเสนอ 3 ทางเลือกสำหรับ BO spec (A: ปรับให้ยืนเองเป็น canonical, B: แตะเฉพาะ FO ทิ้ง dangling ref, C: ตัด Board Content ออกจาก BO ด้วย) แนะนำแบบ A"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T09:58:58+07:00",
+          "summary": "เข้าใจว่าผู้ใช้อยากเคลียร์ทั้งระบบ (FO ไม่มี report article → BO ไม่ควรมีคิวค้าง) จึงแจ้ง 2 จุด: Reported Articles เป็น protected screen ต้องขอ approval เฉพาะจุด และ blast radius ใหญ่กว่างาน docs พร้อมเสนอแบ่งเป็นขั้นตอน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:00:36+07:00",
+          "summary": "บันทึกว่าผู้ใช้อนุมัติถอดจอและแยก task: task นี้ docs-only (ลบ FO contract + ปรับ BO spec + audit + bump versions) และสร้าง task ใหม่สำหรับถอดจอ prototype ต่อไป แล้วอ่าน context จุดที่จะแก้"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:00:58+07:00",
+          "summary": "เช็ก GUEST_GATE_SEL ใน prototype และ BO spec ที่จะแก้"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:02:03+07:00",
+          "summary": "เช็กรายละเอียดสุดท้ายก่อนแก้: header version ของ spec 13, gate list เต็ม และ refs ที่ชี้ QA-BOARD-008"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:02:19+07:00",
+          "summary": "context ครบสมบูรณ์ วางแผนงานเป็น todo แล้วลงมือ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:02:39+07:00",
+          "summary": "ลงมือแก้ 12_BOARD_MODULE.md ลบ Report Article contract ทุกจุด"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:02:53+07:00",
+          "summary": "ต่อ §13 contract section, AC-BOARD-016, deviation rows และ refs ที่เหลือของ 12_BOARD_MODULE.md"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:03:09+07:00",
+          "summary": "12_BOARD เสร็จ verify refs ที่เหลือแล้วไป 15_TRUST_SAFETY"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:03:18+07:00",
+          "summary": "12_BOARD สะอาดแล้ว (เหลือ D4 flag ที่ mark REMOVED และ dead-artifact list ที่เป็นข้อเท็จจริงของ prototype) แก้ 15_TRUST_SAFETY ครบทุกจุด"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:03:40+07:00",
+          "summary": "15_TRUST เสร็จ verify แล้วแก้ 00_GLOBAL/11_SOCIAL/18_ADMIN_SCOPE ต่อ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:03:58+07:00",
+          "summary": "แก้ไฟล์ FO ที่เหลือต่อ: Master, PRD, FuncPRD, README, HANDOFF"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:04:12+07:00",
+          "summary": "ต่อ QA checklist และ DEV checklist"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:04:38+07:00",
+          "summary": "ต่อ BO spec — เช็ก version field ใน module files ก่อนแก้"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:04:55+07:00",
+          "summary": "ลงมือแก้ BO spec ครบทุกไฟล์พร้อม bump version fields"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:05:25+07:00",
+          "summary": "แก้จุดที่เหลือ: DEV checklist L179 (ต้องลบจริง) + L432, BO_Spec nav และ version files"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:05:43+07:00",
+          "summary": "DEV checklist ลบบรรทัด L179 ไม่สำเร็จ เช็ก context จริงแล้วลบใหม่"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:05:47+07:00",
+          "summary": "บรรทัดติดกันเพราะ edit ก่อนหน้า แยกคืนและลบ report line"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:06:05+07:00",
+          "summary": "ตรวจ leftover refs รวมทั้ง repo และดู create_task schema"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T10:06:24+07:00",
+          "content": "ทำต่อให้เสร็จ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:06:29+07:00",
+          "summary": "แก้ 2 จุดที่เหลือใน BO 05 (L29 + AC-BO-CONTENT-011) แล้วอัปเดต audit doc"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:06:47+07:00",
+          "summary": "เพิ่ม e4 row ใน §6 decisions table และอัปเดตสถานะหลัง decision"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:06:58+07:00",
+          "summary": "สร้าง follow-up task สำหรับถอดจอ BO prototype"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:07:03+07:00",
+          "summary": "สร้าง task FOBO-REM-REPORTED-ARTICLES (355d0542, todo) แล้ว verify งานแก้ทั้งหมดรอบสุดท้าย"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:07:11+07:00",
+          "summary": "verify ผ่าน 22 ไฟล์ถูกแก้ตามแผน สรุปผลให้ตรวจ: decision e4 = ตัด Report Article/Board Content ออกจาก V1 ทั้งระบบ (FO 13 ไฟล์ baseline FO-PRD-v1.13, BO 8 ไฟล์ bump BO-00-v1.3/03-v1.4/04-v1.5/05-v1.2, audit doc e4 resolved + R4 Removed) พร้อม follow-up task รอยืนยันเพื่อ commit"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T10:08:42+07:00",
+          "content": "โอเคแล้ว"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:08:52+07:00",
+          "summary": "commit 2e605fd แล้วปิด task และอ่านเวลาจริง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:09:34+07:00",
+          "summary": "ปิด task FOBO-DEC-BOARD-REPORT-V1 เวลาจริง 0 ชม. 28 นาที (เทียบ Planned 0.5 ชม.) พร้อมแสดงสรุปราย task + Final Work Summary Copy Block และ evidence bundle แล้วเสนอร่าง prompt Task 3"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T10:10:34+07:00",
+          "content": "โอเคอย่าลืมบันทึก final session note ด้วย"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:10:40+07:00",
+          "summary": "ยืนยันบันทึก Final Session Note แล้วส่ง prompt Task 3 (FOBO-DEC-DOMAIN-MERGE) พร้อมหมายเหตุว่า e4 ตัด Reported Articles ทำให้ Content Management เหลือ Articles/Categories อาจเปลี่ยนแรงจูงใจของการ merge"
+        }
+      ]
+    },
+    {
+      "session_id": "session-004",
+      "tool": "Devin",
+      "project": "TukDaeng Back Office",
+      "task_id": "FOBO-DEC-DOMAIN-MERGE",
+      "mission": null,
+      "objective": null,
+      "feature": null,
+      "objective_id": null,
+      "feature_id": null,
+      "auto_worklog": false,
+      "messages": [
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T10:11:31+07:00",
+          "content": "ทำงานต่อจาก audit FO-BO-001 — Task 3 (decision-gated)\nอ้างอิง: deliverables/FO-BO-001-coverage-audit.md §5 (OPEN-5) + §4(a)/§6 (a6, GAP-08)\nskill ที่ต้องทำตามครบทุกเงื่อนไข: .agents/skills/work-summary/SKILL.md (อ่านก่อนเริ่มงานทุกครั้ง)\nTask ก่อนหน้าที่เสร็จแล้ว: FOBO-DEC-HELP-CHANNELS (e1 resolved — FO-PRD-v1.12) + FOBO-DEC-BOARD-REPORT-V1\n(e4 resolved — ตัด Report Article/Board Content ออกจาก V1 ทั้งระบบ, FO-PRD-v1.13, commit 2e605fd;\nfollow-up task 355d0542 FOBO-REM-REPORTED-ARTICLES ถอด queue จาก BO prototype อยู่ใน todo — protected screen อนุมัติแล้ว)\n\n═══ ขั้นที่ 1: เตรียม session ═══\n1. เรียก get_session_context (kanban-tukdaeng) + อ่าน AGENTS.md + อ่าน work-summary SKILL.md ทั้งไฟล์\n2. เปิด audit doc อ่าน §5 ข้อ OPEN-5 + §4(a) ข้อ a6 + §6 แถว GAP-08 ให้เข้าใจบริบท\n3. get_board → หา task \"FOBO-DEC-DOMAIN-MERGE\" (id 7b7abe53, todo) + ยืนยันไม่มี task อื่นใน in_progress\n\n═══ ขั้นที่ 2: ทำ task ═══\n1. move_task → in_progress (เริ่ม auto-timer) → แจ้งผู้ใช้ว่าเริ่มจับเวลาแล้ว\n2. นำเสนอคำถาม decision ข้อ OPEN-5 พร้อม options + impact → รอผู้ใช้ตอบ ห้ามตัดสินใจแทน:\n   - คำถาม: รวม Asset Management เข้า Content Management เป็นโดเมน Posts/Content เดียวหรือไม่\n     (จาก GAP-08: report target = post entity — ทุกโพสต์ที่ publish/คนอื่นเห็นได้ รายงานได้ อยู่ queue เดียวกัน)\n   - ถ้ารวม: nav/menu structure, module spec 04/05 และ protected screens ทั้งสองฝั่งต้องรวมกัน (ใหญ่มาก — ต้อง scope แยก)\n   - ถ้าไม่รวม: ต้องระบุ boundary ชัดว่า post-only report อยู่คิว Reported Assets แต่ entity moderation surface ต่างกัน\n   - context เพิ่ม: e4 ตัด Reported Articles ออกแล้ว → Content Management เหลือ Articles/Categories เท่านั้น อาจส่งผลต่อทิศทาง merge\n   - ถ้าตอบ \"ยังไม่ตัดสิน/รอทีม\" → pause task กลับ todo + note สาเหตุ แล้วถามจะทำงานอื่นต่อหรือหยุด\n3. งานเอกสาร/spec: grep cross-reference ก่อนแก้ทุกครั้ง + คง writing rules\n   (ใช้ \"asset\" ไม่ใช่ \"สินทรัพย์\"; ไม่ใส่ meta-commentary note; เรื่องรอ decision ใส่ Open Decisions)\n4. งานนี้ docs-only — ไม่ต้อง capture Before/ไม่ต้องส่ง Manual Review Checklist\n   เว้นแต่ scope พ่นไปแตะ prototype → หยุดถามผู้ใช้ก่อนเสมอ (protected screens ห้ามแตะโดยไม่ขอ approval เฉพาะจุด)\n5. ผู้ใช้ยืนยันผลลัพธ์แล้วเท่านั้น → commit → move_task → done → get_task อ่าน Final hours_spent\n   → สร้าง Final Summary → Task Evidence Bundle (deliverables/task-FOBO-DEC-DOMAIN-MERGE/)\n   → save_session_note → แสดงสรุปราย task เต็ม + Final Work Summary Copy Block (Case B — ไม่มี mission)\n6. กติกาสำคัญ: รายละเอียดงานที่ทำ เขียนแบบสรุปผล \"หัวข้อ: ทำอะไร เพื่ออะไร ได้ผลอะไร\"\n   ไม่เล่ากระบวนการ ไม่มีคำเรียกผู้ใช้ และเนื้อหาต้องเหมือนกันทั้งสรุปราย task + copy block\n7. เรียกผู้ใช้ว่า \"พี่มาเต็ม\"\n\n═══ กรณีพิเศษ ═══\n- เวลาใกล้/เกิน ~1.2× Planned แต่งานยังไม่จบ → แจ้งผู้ใช้ทบทวน scope ก่อนทำต่อ\n- ห้ามเรียก log_time ทุกกรณี / ห้ามปรับ hours_spent เอง\n- ห้ามแตะ protected screens (AGENTS.md) โดยไม่ขอ approval เฉพาะจุด\n- ถ้าผล decision กระทบ task 355d0542 (BO dismantle) → แจ้งผู้ใช้ทบทวนลำดับงาน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:11:33+07:00",
+          "summary": "เริ่มเตรียม session ตามขั้นตอน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:11:56+07:00",
+          "summary": "เตรียม session ครบ: ยืนยัน task 7b7abe53 (FOBO-DEC-DOMAIN-MERGE) อยู่ todo ไม่มี task ค้างใน in_progress ดึงรายละเอียด task ก่อนจับเวลา"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:12:04+07:00",
+          "summary": "เริ่มจับเวลา FOBO-DEC-DOMAIN-MERGE พร้อมดูโครงสร้างเมนูจริงใน prototype และ spec 04/05 เพื่อให้ impact ของแต่ละทางเลือกถูกต้อง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:12:12+07:00",
+          "summary": "สรุปบริบท OPEN-5 และเสนอ 3 ทางเลือก: A ไม่รวมคง 2 โดเมนแยก (docs-only เล็ก ไม่กระทบ task 355d0542), B รวมโดเมน Posts/Content (impact ใหญ่ต้อง mission แยก + approval protected screens), C ยังไม่ตัดสิน พร้อมหมายเหตุ e4 ถอด Reported Articles ทำให้ Content Management เหลือ Articles/Categories"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:17:20+07:00",
+          "summary": "เข้าใจว่าคำถามจริงคือ FO มีโพสต์ 2 ประเภท (ทั่วไป/ผูก asset) และ BO Asset Management ที่ออกแบบครอบเฉพาะโพสต์ผูก asset จะจัดการส่วนนี้ยังไง ขอตรวจ FO spec/prototype และ BO spec 04 ก่อนเสนอทางเลือกใหม่"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:17:28+07:00",
+          "summary": "ย้ำความเข้าใจประเด็น (โพสต์ pfkind post ไม่ผูก asset กับโพสต์ผูก asset sale/show/hide/sold) แล้วตรวจ BO spec + prototype ว่าออกแบบครอบคลุมแค่ไหนก่อนเสนอทางเลือกใหม่"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:17:39+07:00",
+          "summary": "เจอ context สำคัญ ขออ่าน spec ที่เกี่ยวเพิ่มเพื่อให้ทางเลือกแม่น"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:17:46+07:00",
+          "summary": "ตอบตรงตามที่ตรวจจริง: BO Asset List = เฉพาะ entity AST-, Reported Assets ครอบทั้ง 2 ประเภทแล้วตาม decision GAP-08 แต่โพสต์ธรรมดาที่ไม่ถูก report ไม่มีจอไหนเห็น — เฟรมคำถาม OPEN-5 ใหม่ว่าต้องมี surface จัดการโพสต์ธรรมดาหรือไม่ พร้อมทางเลือก A/B/C และแนะนำ A เพราะ V1 เน้น moderation coverage"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:22:58+07:00",
+          "summary": "ตรวจเพิ่มว่า post-only report ใน prototype ทำ action อะไรได้บ้าง แล้วเตรียมสรุปคำแนะนำเทียบแบบ IG/ระบบอื่น"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:23:16+07:00",
+          "summary": "สรุป: post-only report detail ทำ moderation ครบแล้ว (hide/restore/remove ผ่าน flow เดียวกับ asset report) Asset List จำเป็นสำหรับคุมสินค้าเชิงพาณิชย์ทั้ง lifecycle เทียบแพตเทิร์น IG (แยก listing management กับ signal-driven moderation) และความต้องการจริงของผู้ใช้คือ analytics — แนะนำ A + บันทึก Post/Content Insights เป็น Phase-2 follow-up"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:27:28+07:00",
+          "summary": "บันทึก decision = A (คง scope เดิม): Asset List = asset entity เท่านั้น โพสต์ธรรมดาเข้า BO เฉพาะคิว Reported Assets และไม่เอา insights — scope งาน: เขียน boundary ใน spec 04/05 + mark OPEN-5 resolved แล้วดูโครงสร้าง spec และ DOCUMENT_VERSION ก่อนแก้"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:27:36+07:00",
+          "summary": "ดู Out of Scope ของ spec 04 และ grep cross-reference OPEN-5 ก่อนแก้"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:27:45+07:00",
+          "summary": "ดู §7 Asset List ต้นย่อหน้าและจุดวาง boundary ใน spec 05"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:27:58+07:00",
+          "summary": "พบ spec 05 ไม่มี feed post reference เลย; spec 04 ต้องเพิ่ม boundary 2 จุด (Out of Scope + §7) และ header version ของทั้ง 2 ไฟล์ค้างเก่าจะแก้พร้อม bump นี้ ดูหัวตาราง DOCUMENT_VERSION ก่อนเขียน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:28:03+07:00",
+          "summary": "เริ่มแก้เอกสารทั้ง 4 จุดตาม decision A"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:28:17+07:00",
+          "summary": "ต่อด้วย mark OPEN-5 resolved ใน audit doc และเพิ่มบรรทัดใน §6 ให้ trace ครบ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:28:31+07:00",
+          "summary": "แก้ครบแล้ว ตรวจผลลัพธ์ทั้งหมดอีกรอบ"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T10:29:51+07:00",
+          "content": "ทำต่อให้เสร็จ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:30:07+07:00",
+          "summary": "เช็ค convention ของ evidence bundle จาก task ก่อนหน้าก่อน commit"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:30:25+07:00",
+          "summary": "format ชัดแล้ว commit งานหลัก"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:30:30+07:00",
+          "summary": "Commit 654a61a แล้วทำ evidence bundle ต่อ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:30:48+07:00",
+          "summary": "Commit ครบ (654a61a + 53bb953) ปิด task"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:30:51+07:00",
+          "summary": "ระบบต้องการ summary ตอนปิด task — retry พร้อมสรุป"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:31:56+07:00",
+          "summary": "Task ปิดแล้ว เวลาจริง 0.42 ชม. บันทึก Final Session Note ต่อ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:32:06+07:00",
+          "summary": "บันทึก Final Session Note แล้วปิด task FOBO-DEC-DOMAIN-MERGE (0.4 ชม.) พร้อมแสดงสรุปราย task + Copy Block หมายเหตุรวมไฟล์ evidence ของ task ก่อนใน commit 53bb953 และ prompt งานถัดไป FOBO-REM-REPORTED-ARTICLES"
+        }
+      ]
+    },
+    {
+      "session_id": "session-005",
+      "tool": "Devin",
+      "project": "TukDaeng Back Office",
+      "task_id": "FOBO-REM-REPORTED-ARTICLES",
+      "mission": null,
+      "objective": null,
+      "feature": null,
+      "objective_id": null,
+      "feature_id": null,
+      "auto_worklog": false,
+      "messages": [
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T10:33:26+07:00",
+          "content": "Prompt งานถัดไป:\n\nทำงานต่อจาก audit FO-BO-001 — task ถอด queue (prototype)\n\nTask: FOBO-REM-REPORTED-ARTICLES (id 355d0542, todo) — ถอด Reported Articles + Board Report Detail ออกจาก BO prototype (e4 follow-up)\n\nอ้างอิง: deliverables/FO-BO-001-coverage-audit.md §6 แถว e4 + spec BO-05 §14 (pending removal mark)\nTask ก่อนหน้าเสร็จแล้ว: FOBO-DEC-BOARD-REPORT-V1 (e4 resolved — ตัด Report Article/Board Content ออกจาก V1 ทั้งระบบ, FO-PRD-v1.13, commit 2e605fd) + FOBO-DEC-DOMAIN-MERGE (OPEN-5 resolved — post-only เข้า BO เฉพาะคิว Reported Assets, commit 654a61a)\n\nขอบเขต: ถอด submenu \"Reported Articles\", route/renderer boardReport*, mock submissions, dashboard refs จาก Prototypes/bo-prototype.html — protected screen อนุมัติแตะแล้วตาม e4 note; capture Before (Desktop 1440 + Mobile 390) ก่อนแก้, ส่ง Manual Review Checklist ก่อนขอปิด\nกติกา: อ่าน work-summary SKILL.md ก่อนเริ่ม; move_task → in_progress เริ่ม auto-timer; ห้าม log_time; ห้ามแตะ protected screens อื่นนอกเหนือ scope นี้\nเรียกผู้ใช้ว่า \"พี่มาเต็ม\""
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:33:48+07:00",
+          "summary": "อ่าน work-summary SKILL.md เช็ค kanban tools และอ่าน audit reference ก่อนเริ่ม"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:34:51+07:00",
+          "summary": "พบ precedent capture script อยู่แล้ว อ่าน context รอบ refs แต่ละจุดเพื่อวางแผนลบให้ครบ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:38:07+07:00",
+          "summary": "inventory ครบแล้ววางแผนงาน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:39:29+07:00",
+          "summary": "capture Before ครบ 12 ภาพ (w01–w06 + m01–m06) แล้วเขียนสคริปต์ถอด boardReport* ทั้ง JS+CSS ในคำสั่งเดียวเพื่อความแม่นยำ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:40:51+07:00",
+          "summary": "ตรวจจำนวน occurrences จริงของ pattern ให้ตรงกับที่คาดก่อนรัน"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T10:41:59+07:00",
+          "content": "ทำต่อให้เสร็จ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:42:16+07:00",
+          "summary": "รันผ่านทุกขั้น 142 จุด + CSS cleanup ตรวจ refs ค้าง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:42:42+07:00",
+          "summary": "พบ isReportedBoard เหลืออีกจุดที่ไม่ได้ลบ หาและแก้"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:43:13+07:00",
+          "summary": "smoke test ผ่านหมด (submenu เหลือ Articles/Categories, dashboard สะอาด, role detail ไม่มี board.reports, queue Reported Assets ยังใช้ได้, ไม่มี error) ต่อด้วย sync spec docs"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:44:51+07:00",
+          "summary": "CHECKLIST ไม่มี ref โดยตรง (e4 ลบไปแล้วรอบก่อน) ดู context ของ 02_DASHBOARD ก่อนแก้ทุกไฟล์พร้อมกัน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:45:02+07:00",
+          "summary": "แก้ spec docs เริ่มจาก 05 (ลบ §14 ทั้ง section + refs กระจาย)"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:45:15+07:00",
+          "summary": "ทำ 05 ต่อ: ลบ §14 ทั้งก้อนด้วย boundary markers + แก้จุดกระจาย"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:45:37+07:00",
+          "summary": "ต่อจุดที่เหลือใน 05: FO Display Rules, error states, audit section, AC rows"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:46:09+07:00",
+          "summary": "ไม่มี external refs ต่อ AC IDs จึง renumber ให้เรียงต่อเนื่อง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:46:33+07:00",
+          "summary": "05 สะอาดแล้ว ต่อไฟล์ที่เหลือ: 00, 02, 15, 16, BO_Spec, Addendum, INDEX, AGENTS"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:47:18+07:00",
+          "summary": "ต่อ 15 + 16 + BO_Spec + Addendum + INDEX + AGENTS"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:47:43+07:00",
+          "summary": "ต่อไฟล์ที่เหลือ: BO_Spec, Addendum, INDEX, AGENTS, DOCUMENT_VERSION"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:48:31+07:00",
+          "summary": "เหลือ DOCUMENT_VERSION entry + ตรวจ refs ค้างใน spec แล้ว capture After"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:49:26+07:00",
+          "summary": "After capture กำลังรัน mobile pass รอให้จบ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:49:59+07:00",
+          "summary": "รัน after capture ใหม่"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:50:44+07:00",
+          "summary": "diff สะอาด prototype ลบสุทธิ ~1,250 บรรทัด เก็บหลักฐานและเขียน Manual Review Checklist ลง deliverables"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:50:54+07:00",
+          "summary": "หลักฐานครบ เขียน evidence file ลง deliverables แล้วส่ง Manual Review Checklist ให้ตรวจก่อนปิด task"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:51:21+07:00",
+          "summary": "ส่ง Manual Review Checklist 10 เคส (nav submenu, dashboard card/metric, chip navigation regression, Articles filter bar, editor return path, Categories, Roles & Permissions, report queues อื่น, mobile 390px, หาทางเข้า queue ที่ลบ) พร้อมสรุป scope ที่ถอดและภาพ before/after ให้ตรวจที่ localhost:4173"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T10:56:41+07:00",
+          "content": "ผ่านครบทุกเคสแล้ว"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:57:05+07:00",
+          "summary": "บันทึกผลรีวิวลงหลักฐานแล้วปิด task ตามลำดับ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:57:28+07:00",
+          "summary": "ปิด task (0.48 ชม. ต่ำกว่าแผน 1.5 ชม.) commit ตาม convention repo แล้วบันทึก session note"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T10:57:45+07:00",
+          "summary": "บันทึก session note แล้วแสดงสรุปราย task + Copy Block (Feature 0.5 ชม., commit c9f6694, manual review ผ่าน 10/10) พร้อมเสนองานต่อ remediation กลุ่ม c/d"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T10:59:58+07:00",
+          "content": "ยังสรุปมาไม่ตรง  อ่าน skill ให้ครบทั้งหมดทุกบรรทัด ทำให้ตรงเงื่อนไข การแสดงผลทุกอย่าง ห้ามคิดไปเอง รายละเอียดงานที่ทำใส่ให้ตรงเงื่อนไขที่เขียนไว้ใน skill เช็คลิสให้ครบทุกข้อแล้วสรุปออกมาใหม่พร้อมบันทึก final session note ส่วนงานนี้ที่เสนอมาไม่ได้ทำไปแล้วหรอ\n<quoted_artifact kind=\"message\" event_id=\"agent_message:3c0660c8-e461-4cbb-b109-ecdc5a078b06\" author=\"devin\">\n<content>\nถ้าจะทำต่อจาก audit เดิม ที่ยังเปิดไว้มี remediation กลุ่ม c (protected-screen edits: ลบ SLA chips/tags จาก Dashboard + comment mock, reason labels, category model, support center — รอ approve ตาม note) และกลุ่ม d (mock/seed alignment ~7 ข้อ) — อยากให้หนู draft task ไหนบอกได้เลยค่ะ\n</content>\n</quoted_artifact>"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T11:00:06+07:00",
+          "summary": "ขอโทษและอ่าน SKILL.md ให้ครบทุกบรรทัดก่อนสรุปใหม่ให้ตรงเงื่อนไข"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T11:00:54+07:00",
+          "summary": "อ่าน SKILL.md ครบแล้ว เช็กว่างานกลุ่ม c/d ที่เสนอทำไปแล้วจริงไหม"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T11:01:31+07:00",
+          "summary": "ยอมรับเสนอมั่ว: เช็ก git log พบกลุ่ม c ทำแล้ว (commit 457bbaa) และกลุ่ม d+open items ทำแล้ว (e27515b) — ที่เหลือจริงคือ OPEN-2/OPEN-4 ซึ่งเป็น product decision รอตัดสิน แก้สรุปและบันทึก note ใหม่ตาม SKILL.md"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T11:01:58+07:00",
+          "summary": "บันทึก session note ใหม่ครบฟิลด์ canonical แล้วสรุปใหม่ตรง SKILL.md (สรุปราย task + Copy Block พร้อม evidence bundle) และเสนอ blog 3 แบบ"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T11:02:59+07:00",
+          "content": "อันนี้ก็ทำไปแล้วเหมือนกันไม่ใช่หรอ\n<quoted_artifact kind=\"message\" event_id=\"agent_message:f5b9c67b-5c8a-4ac1-bd23-f9f3487ffcee\" author=\"devin\">\n<content>\nที่เหลือจริงใน audit มีแค่ OPEN-2 (chat report แนบ message context ไป BO ไหม) กับ OPEN-4 (SLA 24h เป็นข้อผูกพันระดับนโยบายไหม) — ทั้งคู่เป็น product decision รอตัดสิน ไม่ใช่งาน implementation หนูแก้สรุปให้ถูกต้องและบันทึก note ใหม่ตาม SKILL.md ครับ\n</content>\n</quoted_artifact>"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T11:03:06+07:00",
+          "summary": "เช็กให้ชัวร์โดยไล่ OPEN-2/OPEN-4 กับ e-item ที่เกี่ยวใน audit + kanban"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T11:03:29+07:00",
+          "summary": "พบว่าทั้งคู่ตัดสินไปแล้ว (OPEN-2/GAP-06 ปิด by-design: report จาก chat ส่ง account context + thread reference เท่านั้น; OPEN-4 resolved 2026-11-02 ถอน SLA ทั้งระบบ; e2 คง reason-only ตาม GAP-05) เช็ก GAP-05 row ยืนยันอีกรอบ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T11:03:35+07:00",
+          "summary": "ยืนยันทุกอย่างใน audit ปิดครบแล้ว — ยอมรับทายผิด 2 รอบเพราะอ่านแค่ bullet ที่ยังไม่ได้ mark แทนที่จะไล่ §6 decision table — FO-BO-001 audit ปิด 100% ทั้ง decision และ implementation แล้วแก้ session note"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T11:03:48+07:00",
+          "summary": "แก้ session note ให้ถูก (Open Items เขียนว่า FO-BO-001 ปิดครบ 100%) พร้อมสรุปสถานะจริงของ audit (decisions e1–e4 + OPEN-1..5 ครบ, implementation ครบทุกกลุ่ม) และถามเลือก blog ที่ค้างไว้"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T11:04:41+07:00",
+          "content": "3"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T11:04:55+07:00",
+          "summary": "โพสต์ blog d2c8853e (public) แล้ว ปิด session: task FOBO-REM-REPORTED-ARTICLES done 0.5 ชม. + evidence + session note ว่า FO-BO-001 audit ปิด 100% พร้อมรับงานถัดไป"
+        }
+      ]
+    },
+    {
+      "session_id": "session-006",
+      "tool": "Devin",
+      "project": "TukDaeng Back Office",
+      "task_id": "FOBO-DOC-AUDIT-STALE",
+      "mission": null,
+      "objective": null,
+      "feature": null,
+      "objective_id": null,
+      "feature_id": null,
+      "auto_worklog": false,
+      "messages": [
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T14:48:21+07:00",
+          "content": "get context session note kanban มีงานคงค้างอะไรอีกไหม"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:48:36+07:00",
+          "summary": "เช็กบอร์ดและ session note: บอร์ดสะอาดไม่มี task ค้าง มี done วันนี้ 4 task และรายงาน 2 จุดที่อาจค้างตาม note (OPEN-2 chat context, remediation กลุ่ม c/d)"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T14:52:36+07:00",
+          "content": "สองอันนี้เคลียร์หมดแล้วไม่ใช่หรอทำไมเจอโน๊ตว่ามีงานค้างอีก"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:52:40+07:00",
+          "summary": "ไปเช็ก audit doc และ note เก่าว่าสองจุดนั้นปิดจริงหรือยัง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:52:46+07:00",
+          "summary": "เช็กต่อว่า remediation กลุ่ม a–d เคยทำไปบางส่วนหรือยัง เพราะ note เมื่อวานพูดถึง task FOBO-REMEDIATION-OPEN-ITEMS"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:53:33+07:00",
+          "summary": "ยืนยันสองจุดเคลียร์จริงไม่มีงานค้าง: OPEN-2 ตัดสิน by-design 2026-11-02 (a8 ทำแล้วใน commit 59aa201), กลุ่ม c/d ทำแล้ว (457bbaa, e27515b) — เจอสาเหตุที่ note เขียนว่าค้างคือ audit doc มี 3 stale entries เสนอ mark resolved ให้ตรงความจริง"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T14:54:35+07:00",
+          "content": "ทำเลยสร้าง task มารองรับงานนี้ที่จะทำด้วยนะ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:54:43+07:00",
+          "summary": "สร้าง task รองรับงานแก้ stale entries แล้วลุย"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:54:53+07:00",
+          "summary": "สร้าง task 3f4b4ca6 (in_progress) ข้าม Mission suggestion เพราะงาน docs-only เล็ก แล้วแก้ doc 3 จุด"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:55:20+07:00",
+          "summary": "เก็บ cross-ref ของ [OPEN-2] ใน GAP-06 register ไว้ตาม pattern เดิมของ doc แล้ว commit"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:55:27+07:00",
+          "summary": "ลบไฟล์ขยะ nul (เกิดจากคำสั่งของตัวเอง 68 bytes) แล้ว commit"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:55:31+07:00",
+          "summary": "commit b8d9a40 แล้วปิด task และบันทึก note ตาม workflow"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:55:41+07:00",
+          "summary": "สรุปงาน task 3f4b4ca6 (FOBO-DOC-AUDIT-STALE, 0.2 ชม., commit b8d9a40): แก้ stale entries 5 จุดใน audit doc (e3 row, OPEN-2 ใน open items, OPEN-2 หัวข้อส่วนที่ 3, เพดาน severity, สถานะหลัง decision) พร้อม verify ใน prototype ก่อนเขียน — docs-only ไม่แตะ protected screens"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T14:56:57+07:00",
+          "content": "ปิด task แล้วสรุปตาม  โดยต้องอ่านให้ครบถ้วนทุกบรรทัด ห้ามตัดห้ามคิดเอง สรุปออกมาให้ตรงตามรูปแบบที่กำหนดแล้วบันทึก final session note"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:57:21+07:00",
+          "summary": "อ่าน SKILL.md ครบ 1,519 บรรทัด — สถานการณ์ task ปิดไปแล้วต้องดึง Final Task + Activity Timeline ก่อนสร้าง canonical Final Summary"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:57:28+07:00",
+          "summary": "ได้ Final data ครบ (task ปิด 0.3 ชม. auto-timer banked) สร้าง Task Evidence Bundle ตาม step 6"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:57:40+07:00",
+          "summary": "บันทึก Final Session Note ตามขั้น 7"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T14:58:10+07:00",
+          "summary": "ปิด task FOBO-DOC-AUDIT-STALE (0.3 ชม.) บันทึก Final Session Note แล้วแสดงสรุปราย task + Copy Block พร้อม evidence bundle (commits b8d9a40+1c1f290) และเสนอ blog 3 แบบ"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-03T15:00:55+07:00",
+          "content": "2"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-03T15:01:08+07:00",
+          "summary": "โพสต์ blog เบอร์ 2 (victory, public) แล้ว สรุปรอบนี้ครบ: task done 0.3 ชม., audit doc ตรงสถานะจริง, evidence + note + blog ครบ"
         }
       ]
     }
   ],
   "limitations": [
-    "MCP server core-portal ไม่มี tool list_my_apps (มีเฉพาะ submit_logs) จึงดึงข้อมูล app/ongoing missions จาก HTTP endpoint /api/agent/apps โดยตรงด้วย API key เดียวกัน ผลลัพธ์ทุก app มี ongoing_missions ว่างเปล่า จึงไม่มี Mission/Objective/Feature ให้ผูกกับ session นี้",
-    "แพลตฟอร์มแชตไม่เปิดเผยเวลาของแต่ละข้อความย้อนหลัง จึงประมาณการ timestamp ย้อนหลังจากเวลาปัจจุบัน (2026-11-03T09:16:40+07:00) ตามความซับซ้อนของแต่ละรอบสนทนา (Tier 3)"
+    "ข้อความและ timestamp ทั้งหมดดึงจาก transcript store ของ Devin Desktop (%APPDATA%DevinUseracp-messages*.db) — เป็น Tier 1 exact timestamps จาก _meta[\"cognition.ai/timestamp\"] แปลงเป็น +07:00",
+    "core-portal MCP ไม่ได้เชื่อมต่อใน session ที่สร้างไฟล์นี้ — ใช้การจับคู่ project ที่ยืนยันแล้วจาก session ก่อนหน้าของวันเดียวกัน (TukDaeng Back Office, app id 60, project TUKDANG) และทุก app ongoing_missions ว่างเปล่า จึงไม่มี Mission/Objective/Feature ให้ผูก",
+    "task_id ตั้งตาม kanban task ที่ session นั้นทำงานอยู่โดยตรง (session ที่ไม่ได้ผูก task เดียวตั้งเป็น null)",
+    "รวมเฉพาะ session งานจริงของโปรเจกต์ตาม work-session scope — ตัด 6 sessions ออก: ตั้งค่า/เช็ก MCP core-portal 3 sessions, session ขอสร้าง log 2 sessions และ session ถาม/ปรับ skill 1 session (รวมถึงข้อความที่มี API key ในแชทตั้งค่า จึงไม่มี redaction เหลือในไฟล์นี้)",
+    "ข้าม agent_thought (private reasoning) และ tool_call ตาม schema — มีเฉพาะ user_message verbatim และ agent_message ที่สรุป"
   ],
   "redactions_applied": false
 }
