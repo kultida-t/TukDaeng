@@ -27,7 +27,7 @@ This document clarifies that Admin is a Web Back Office account type, not a mobi
 | --- | --- |
 | Platform | Web Back Office สำหรับ Admin |
 | Admin access | Admin ใช้งานผ่าน Back Office เท่านั้น |
-| Responsibilities | ตรวจสอบ Report, Moderation, จัดการ Board Content, จัดการ User / Asset ตาม policy |
+| Responsibilities | ตรวจสอบ Report, Moderation, จัดการ User / Asset ตาม policy |
 | Report Handling | ดำเนินการกับ Report ที่เข้ามาทั้งหมดผ่าน queue — ไม่มี SLA/deadline tracking (ตัดสิน 2026-11-02 — FO-BO-001 GAP-03) |
 | Sold Asset | Sold Asset เก็บไว้เพื่อ Sales History, Portfolio และ Admin Review |
 | Report impact | Asset หรือ Content จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น |
@@ -69,7 +69,6 @@ Admin รับผิดชอบ:
 
 - ตรวจสอบ Report
 - Moderation
-- จัดการ Board Content
 - จัดการ User / Asset ตาม policy
 - ดำเนินการกับ Report ที่เข้ามาทั้งหมด (ไม่มี deadline tracking)
 
@@ -79,7 +78,7 @@ Admin is not a mobile app user type in V1
 
 Mobile app ต้องรองรับ:
 
-- User ส่ง Report จาก Asset, User, Comment, Board Content
+- User ส่ง Report จาก Asset, User, Comment
 - User ใช้ Block ได้ตาม Trust & Safety rule
 - Terms of Use และ Privacy Policy เข้าถึงได้
 - Content ที่ถูก moderation แล้วต้องถูกซ่อน/จัดการตามผลจาก Back Office
@@ -111,7 +110,6 @@ Mobile app ไม่ต้องมี:
 | Reported Asset | Admin review และ moderation |
 | Reported User | Admin review และ policy action |
 | Reported Comment | Admin review และ moderation |
-| Reported Board Content | Admin review และ moderation |
 | Sold Asset | เก็บไว้เพื่อ Sales History, Portfolio และ Admin Review |
 | Board Article | สร้างและจัดการโดย Admin ผ่าน Back Office |
 
@@ -135,7 +133,7 @@ Admin Action ต้องมี Audit Trail ใน Back Office
 | --- | --- |
 | AC-ADMIN-001 | Admin ใช้งานผ่าน Web Back Office เท่านั้น |
 | AC-ADMIN-002 | Mobile app V1 does not show Admin account type or Admin controls |
-| AC-ADMIN-003 | Report รองรับ Asset, User, Comment และ Board Content |
+| AC-ADMIN-003 | Report รองรับ Asset, User และ Comment |
 | AC-ADMIN-004 | Report ไม่ทำให้ Asset หรือ Content หายทันทีโดยไม่มี Admin moderation |
 | AC-ADMIN-005 | Admin ต้องสามารถตรวจสอบ Report ผ่าน Back Office ตาม scope master |
 | AC-ADMIN-006 | Admin ดำเนินการกับ Report ที่เข้ามาทั้งหมดผ่าน Back Office (ไม่มี deadline tracking) |

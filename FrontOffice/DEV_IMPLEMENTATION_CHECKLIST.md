@@ -241,7 +241,6 @@ Purpose:
 - [ ] Static list + end note — ไม่มี Infinite Scroll (D2)
 - [ ] Article Like + Article Share เป็น member-only — guest เจอ Member Sheet (S-03)
 - [ ] Article Share ใช้ in-app share sheet และไม่สร้าง notification
-- [ ] Report Article เป็น contract-only (S-04 — prototype menu dead); spec contract map เข้า Trust & Safety `Board Content` / target `Article`
 - [ ] Article Comment ไม่อยู่ใน V1 baseline
 - [ ] Public Article deep link ต้อง validate publish state, deletion state และ availability เมื่อเปิด (contract)
 - [ ] Shared Article deep link ของ unpublished/deleted/invalid ต้องแสดง Article Unavailable / Not Found state (contract)

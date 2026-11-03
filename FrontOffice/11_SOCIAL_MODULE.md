@@ -239,7 +239,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 # 11. Share
 
 - `.share-btn` ทุก surface (feed card, detail, pv rail, pfp card) → `openSheet "sh"`; `data-shPid` จำ post (resolve จาก `.post` ancestor → fallback `detailPid`)
-- `pf-sh-share` (profile avatar overlay) → sheet เดียวกัน (canonical 06); board share `data-bdshare`/`data-bdact=share` → sheet เดียวกัน (canonical 12)
+- `pf-sh-share` (profile avatar overlay) → sheet เดียวกัน (canonical 06); board share `data-bdshare` → sheet เดียวกัน (canonical 12)
 - Sheet anatomy: `.sh-q` search (live filter `.sh-fr` ตาม name) + friends grid (`FRIENDS` 12 — avatar+username) + app row (`SHARE_APPS`: Messenger, Direct, LINE, Facebook, `Copy link` สี gray)
 - Actions: `.sh-fr` → ปิด sheet + toast `Sent to {name}` + โพสต์ถูกส่งเป็น post card เข้าห้องแชทกับเพื่อนคนนั้น แล้วเปิดห้องแชทนั้น (DEC-20); `.sh-app` → ปิด + toast `Shared to {app}` หรือ `Link copied` (copy)
 - **ไม่มี** native OS share, share count, share tracking, deep-link validation (contract — §20)
@@ -361,8 +361,6 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Comment popover → `Report` | `report:comment` (X only — **ไม่มี back**) | `rpPid`/`rpCid`/`rpTargetType="comment"` |
 | Profile `pf-sh-report` / `pf-more` report | `report:pick:{u}` → `report:posts:{u}` (Select a post grid + `Next`) → `report:post` หรือ `report:user` | canonical 06 |
 | Chat block-and-report | `report:pick:` / `report:done:` (+ chat teardown `rpClose`) | canonical 07 |
-| Board `data-bdact=report` | toast `Report submitted. Thank you for notifying us.` (no route) | canonical 12 |
-
 ## Report pages (prototype behavior — entry-level description)
 
 - Reason page (`report`/`report:user`/`report:post`/`report:comment`): head `รายงาน`/`Report` + back (ยกเว้น root `report`, `report:comment`, chat-origin) + X + `Why are you reporting this {account|post|comment}?` + `Your report is anonymous…` + 9 `pm-reason` rows (`PM_REASONS`/`PM_REASONS_TH`: I just don't like it / Bullying or unwanted contact / Suicide, self-injury or eating disorders / Violence, hate or exploitation / Counterfeit or replica item / Nudity or sexual activity / Scam, fraud or spam / False information / Intellectual property)
@@ -388,7 +386,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | `.follow-btn`, `.lk-follow`, `.sc-follow`, `pf-foll`, `pf-flw`, `pfp-follow`, `al-fbtn` (09), `pm-fav`, `pm-ni`, `pm-go-report`, `pm-own-*` (ผ่าน `.pm-btn`) | |
 | `.comment-input`, `.emoji-row`, `.c-like`, `.c-meta`, `c-pop-item` (in-handler gate) | |
 | `.rp-opt`, `.pm-reason`, `rp-step` (ผ่าน selector ครอบในไฟล์ — guest เข้า report page ไม่ได้อยู่แล้วเพราะ entries ทั้งหมด gated) | |
-| `[data-bdlike]`, `[data-bdsave]`, `[data-bdshare]`, `[data-bdact]` share/save/report (12) | |
+| `[data-bdlike]`, `[data-bdshare]` (12) | |
 
 - Social settings rows (`interested`/`ni`/`favorites`/`muted`/`blocked`) เข้าผ่าน Settings — 00_GLOBAL §11 capabilities (canonical 13)
 - Session switch → `applySessionData` refresh `.feed-list` + `.page-sub` + badges (canonical 00_GLOBAL §7)

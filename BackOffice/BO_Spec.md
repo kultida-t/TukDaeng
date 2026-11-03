@@ -30,7 +30,7 @@ BO Dashboard
 ├── Content Management (จัดการเนื้อหา)
 │   ├── Articles (บทความ Board)
 │   ├── Categories (หมวดหมู่บทความ)
-│   └── Reported Articles (รายงานบทความที่ถูกแจ้ง)
+│   └── Reported Articles (รายงานบทความที่ถูกแจ้ง — pending removal ตาม e4: FO Report Article ตัดออกจาก V1)
 ├── Market Data (ข้อมูลตลาด)
 │   ├── Dashboard
 │   ├── Brands & Models

@@ -18,7 +18,7 @@
 | A3 | Report user (profile `...`) | 15 §6 `report:pick` → `report:user`; entry `pf-sh-report` ~L21746 | — |
 | A4 | Report user via `Block and report` | 15 §9 `blk-rep` ~L21827 | block first → `report:pick` |
 | A5 | Report comment | 15 §6 `report:comment` (X-only); entry long-press popover ~L13746–13772 | `rpTargetType="comment"` + `rpPid`/`rpCid` |
-| A6 | Report Board Content (article) | 12 §13 contract + 15 §12 (S-04); entry `data-bdmore`/`data-bdact='report'` **dead** ~L18368–18510 | contract-only — no live entry; reason sheet 6 items + `Additional details (optional)` |
+| A6 | Report Board Content (article) | ตัดออกจาก V1 ทั้งระบบ (e4 — FO contract ลบแล้ว 2026-11-03) | contract deleted; BO queue pending removal |
 | A7 | Report user from chat | 07 `chatReportSheet` → `report:user` (ข้าม `report:pick`); `Report and delete` ~L21796–21810 | `rpDelChat` = remove-from-actor-list เท่านั้น ไม่ใช่ server delete |
 | A8 | Account deletion request | 13 §9 `del_account` 2-page flow + password confirm + scheduled dialog | soft delete → deactivate + hide public + grace 30 วัน login-to-restore (S-02, 00_GLOBAL §12) |
 | A9 | Sign-in during grace (login-to-restore) | 13 §9 L472–477 + 00_GLOBAL §12 L292 + DEC-10 | cancel deletion + restore; Watch Alerts ไม่กลับ |
@@ -68,7 +68,7 @@
 | R1 | Report post/asset → Reported Assets queue + detail + moderation | 15 §6/§8 | Asset Mgmt > Reported Assets (locked) | 04 + BO_Spec §3.3 | Covered | reason taxonomy mismatch → GAP-01 |
 | R2 | Report user → Reported Users + Report Detail + user actions | 15 §6/§8 | User Mgmt > Reported Users (locked) | 03 §11–12 | Covered | — |
 | R3 | Report comment → Reported Comments + Hide/Restore/Remove/Close + View Asset/comments modals | 15 §6/§8; 11 §popover | Asset Mgmt > Reported Comments (locked 2026-08-19) | 04 §comment report (L783 SLA note) | Covered | additionalDetails mismatch → GAP-05 |
-| R4 | Report Board Content → Reported Articles + Board Report Detail | 12 §13 (contract-only S-04, entry dead) | Content Mgmt > Reported Articles (locked; `boardReport*` code) | 05 | Contract-only | FO entry ไม่มี live path — BO queue พร้อมแล้ว; board reason set → GAP-01 |
+| R4 | Report Board Content → Reported Articles + Board Report Detail | ตัดออกจาก V1 (e4 — FO contract deleted) | Content Mgmt > Reported Articles (locked — pending removal) | 05 | Removed (e4) | ตัดทั้งระบบ 2026-11-03; board reason set ไม่ต้องใช้แล้ว |
 | R5 | Report from chat → map เข้า queue | 07 `chatReportSheet` → `report:user` | Reported Users (source `Chat`) | 03 §12 L500–505 | Covered | `Report and delete` = FO-local teardown เท่านั้น; chat context review → GAP-06/[OPEN] |
 | R6 | PM_REASONS 9 เหตุผล + Board reason set ↔ BO reason taxonomy/labels/filters | 15 §6 L112–129; 12 §13 L267 | `reportReasonThaiLabels` + submission mocks | — | **Gap** | **FOBO-GAP-01** — 3 taxonomy sets ไม่ map กัน |
 | R7 | 24h report SLA (AC-ADMIN-006) → SLA/due/aging indicator | 18 §10; 15 §12 L383 | Dashboard card `ใกล้ครบกำหนด` chips + comment tag `SLA 4h` | 02 §L210/L367; BO_PRD L486 | Partial | **FOBO-GAP-03** — queue columns ไม่มี SLA/due field |
@@ -101,7 +101,7 @@
 | R34 *(inventory เพิ่ม)* | BO suspend duration (default 7 วัน, editable) → FO status state `ระยะเวลาถ้ามี` | 01 L172; modal L30281 | suspend modal end-date | 03 §10 | Covered | — |
 | R35 *(inventory เพิ่ม)* | Deletion-requested user ยังถูก report → queue rules | — | 03 §12 L515–522 (Reports Of Deletion Requested Users) | 03 | Covered | explicit rule มีอยู่ |
 
-**สรุปสถานะ**: Covered 24 · Partial 5 (R7, R12, R13, R26, R27) · Gap 1 (R6) · Contract-only 2 (R4, R32) · N-A 4 (R10, R23, R24, R25, R31) — R14/R28 resolved 2026-11-03 ตาม e1 (R28/R29 ซ้ำกับ touchpoint หลักตามเดิม)
+**สรุปสถานะ**: Covered 24 · Partial 5 (R7, R12, R13, R26, R27) · Gap 1 (R6) · Contract-only 1 (R32) · Removed 1 (R4 — e4) · N-A 4 (R10, R23, R24, R25, R31) — R14/R28 resolved 2026-11-03 ตาม e1 (R28/R29 ซ้ำกับ touchpoint หลักตามเดิม)
 
 ---
 
@@ -180,7 +180,7 @@
 | e1 | FO Help รองรับ channel เพิ่มเติม (Facebook/Website) หรือจำกัด BO config เหลือ 3 ช่องทาง — จาก GAP-04 · **resolved 2026-11-03 — dynamic ตาม BO config (approved)** |
 | e2 | FO `report` stack ไม่มี `Additional details` — ต้องการให้มี (ตาม Board contract) หรือคง reason-only แล้ว BO ตัด field — จาก GAP-05 |
 | e3 | FO chat report แนบ message/thread context ไป BO หรือไม่ (anonymous + retention concern) — จาก GAP-06/[OPEN-2] |
-| e4 | Report Article entry (`data-bdmore`) ยัง dead — confirm ว่า Board report อยู่ contract-only ต่อใน V1 (BO queue พร้อมแล้ว) — S-04 ยืนยันเดิม |
+| e4 | Report Article entry (`data-bdmore`) ยัง dead — confirm ว่า Board report อยู่ contract-only ต่อใน V1 — **resolved 2026-11-03 — ตัดออกจาก V1 ทั้งระบบ (FO contract ลบ; BO queue pending removal — task แยก)** |
 
 ---
 
@@ -216,13 +216,14 @@
 - **[OPEN-3 — resolved 2026-11-02]** WA `source` field (search vs detail origin) — implement แล้วใน prototype: `source` field บน `WAL-*` mocks (`search`/`detail` ตาม FO `10` `sr-wa`/`mf-btn`), source tag บน Alert Name + filter `Source` + Source badge/tile ใน Alert Detail + spec `11_WATCH_ALERT_MODULE.md` sync (entry point 2 ทาง, filter, column, mobile card, Detail Head, Section 1)
 - **[OPEN-5]** Product decision — ควรรวม `Asset Management` เข้ากับ `Content Management` เป็นโดเมน `Posts/Content` เดียวหรือไม่ (จาก GAP-08: report target = post entity รวม published posts ทุกชนิด) — ถ้ารวม: nav/menu structure, module spec 04/05 และ protected screens ทั้งสองฝั่งต้องรวมกัน; ถ้าไม่รวม: ต้องระบุ boundary ชัดว่า post-only report อยู่คิว `Reported Assets` แต่ entity moderation surface ต่างกัน
 - **[e1 — resolved 2026-11-03]** FO decision: FO Help = dynamic rows ตาม BO Support Center config (เฉพาะ channel `Active` + interaction ตาม channel type + empty state เมื่อไม่มี Active channel) — FO spec `13_SETTINGS_MODULE.md` §9 + AC-SETTING-007 + `TukDaeng_Master_Product_Definition.md` + `QA_TEST_SCENARIO_CHECKLIST.md` + `DEV_IMPLEMENTATION_CHECKLIST.md` amended; canonical contract `12_HELP_SUPPORT_MODULE.md` §4 (FO-PRD-v1.12 / BO-12-v0.4) — GAP-04 resolved
+- **[e4 — resolved 2026-11-03]** FO decision: **ตัด Report Article/`Board Content` ออกจาก V1 ทั้งระบบ** (ไม่ใช่ contract-only) — ลบ contract จาก FO spec ครบ (`12_BOARD` §13 report section/AC-BOARD-016/D4→REMOVED, `15_TRUST` type + AC-TS-009, `00_GLOBAL` report types, `11_SOCIAL` dead refs, `18_ADMIN_SCOPE`, Master S-04→superseded, `PRD`/`FO_Functional_PRD`/`README_MODULE_INDEX`/`FINAL_HANDOFF_SUMMARY`, `QA-BOARD-008` + `DEV` checklist) — FO baseline `FO-PRD-v1.13`; BO spec cleanup: `00` §11/03/04 reason refs + `05` §14 mark queue **pending removal** (BO-00-v1.3/BO-03-v1.4/BO-04-v1.5/BO-05-v1.2); ถอด `Reported Articles`/`Board Report Detail` จาก BO prototype = task แยก (protected screen — ผู้ใช้อนุมัติแตะแล้ว) — R4 → Removed; remediation items ที่เกี่ยว Board Content (a1 board reason set, c4, a9, d6 ส่วน board) เป็น moot
 - **[CONFLICT]** — ไม่พบ statement ขัดกันตรง ๆ ที่ต้องเลือกข้าง (GAP-02/04 = taxonomy contract ขาด ไม่ใช่ conflicting rules)
 
 ### ข้อสรุปการ audit
 
 - **ครบแล้ว (Covered)**: report queues ทั้ง 4 type, moderation actions→FO states, suspend/ban 3 ขา, account deletion lifecycle ครบวงจร, board authoring CRUD, policy versioning, option master + suggestion queue, market data, watch alert monitoring, search insights, delivery logs, audit trail, sold retention — โครง BO ครบทุก flow หลักที่ FO lock ไว้
 - **ต้องแก้ก่อน dev handoff**: GAP-01 (reason taxonomy — กระทบทุก report queue), GAP-02 (article category — กระทบ publish→FO mapping), GAP-03 (SLA per-row — enforce AC-ADMIN-006 ไม่ได้ใน queue) — ~~GAP-04~~ resolved 2026-11-03 ตาม e1 (FO Help dynamic ตาม BO config)
-- **FO contract-only ที่ต้องรับทราบ**: R4 board report entry ยัง dead (queue พร้อมแล้ว — เมื่อ FO entry implement ต้องใช้ taxonomy เดียวกัน), R32 analytics Phase 2
+- **FO contract-only ที่ต้องรับทราบ**: R32 analytics Phase 2 (R4 ตัดออกจาก V1 แล้วตาม e4 — 2026-11-03)
 
 ---
 
@@ -242,7 +243,8 @@
 | GAP-08 | **ทุกโพสต์ที่ publish/คนอื่นเห็นได้ รายงานได้ และอยู่ queue เดียวกัน** — report target = post entity (published posts ทุกชนิด ไม่แยก asset/non-asset) | (a6) spec 04/00: queue `Reported Assets` = คิวรายงานโพสต์ที่ published (entity = post ref; asset-linked posts ใช้ `AST-`, post-only ใช้ post ref ตามนิยามใหม่); (d3) seed เพิ่ม post-only case |
 | GAP-09 | **ใช้ `Reported Articles` เป็น canonical** — ตรง nav label + sibling naming (Articles / Categories / Reported Articles) | (a9) spec/code comments เปลี่ยน `Reported Board` → `Reported Articles`; เขียน "(Board Content reports)" กำกับใน spec เพื่อ map กับ FO report type `Board Content` |
 | GAP-10 | **ใช้ contract copy `บทความนี้ไม่พร้อมใช้งานแล้ว` เป็น canonical เดียว** | (a10) BO 05 spec อ้าง canonical copy เดียวกัน; FO prototype ตามไปใน language sweep (deviation D11 — อยู่นอก scope audit นี้) |
+| e4 | **ตัด Report Article/`Board Content` ออกจาก V1 ทั้งระบบ** — ไม่ใช่ contract-only: FO ลบ contract ทั้งหมด และ BO queue `Reported Articles`/`Board Report Detail` ถูกถอดตามเพื่อไม่ให้สับสน (protected — ผู้ใช้อนุมัติแตะแล้ว) | FO spec ลบครบ (FO-PRD-v1.13 — S-04 superseded, AC-BOARD-016/AC-TS-009/QA-BOARD-008 ถูกลบ); BO spec mark queue pending removal (BO-00-v1.3/BO-03-v1.4/BO-04-v1.5/BO-05-v1.2); **follow-up task**: ถอด queue จาก `bo-prototype.html` (menu/routing/renderer/mock `boardReport*`/dashboard refs) + spec cleanup เต็ม |
 
-**สถานะหลัง decision**: Blocker 0 · เหลือ implementation items: spec-only ~10 ข้อ (a1–a10 + SLA cleanup ใน 02/BO_PRD/04), mock data ~7 ข้อ (d1–d6 + ลบ SLA/due tags จาก seeds), protected-screen edits 7 จุด (c1–c6 + **Dashboard/comment-mock ลบเวลา** ตาม GAP-03 — รอ approve), FO decision items เหลือ e4 (e1 approved 2026-11-03 — dynamic Help channels) · GAP-06 ปิดแบบ by-design ตาม IG; GAP-03 = removal task ไม่ใช่ by-design
+**สถานะหลัง decision**: Blocker 0 · เหลือ implementation items: spec-only ~10 ข้อ (a1–a10 + SLA cleanup ใน 02/BO_PRD/04), mock data ~7 ข้อ (d1–d6 + ลบ SLA/due tags จาก seeds), protected-screen edits 7 จุด (c1–c6 + **Dashboard/comment-mock ลบเวลา** ตาม GAP-03 — รอ approve), FO decision items ครบ (e1 + e4 resolved 2026-11-03 — e4 = ตัด Report Article ทั้งระบบ, BO queue pending removal) · GAP-06 ปิดแบบ by-design ตาม IG; GAP-03 = removal task ไม่ใช่ by-design · remediation ที่เกี่ยว Board Content (a1 ส่วน board reasons, c4, a9) เป็น moot ตาม e4
 
 **[OPEN-4 — resolved 2026-11-02]**: ผู้ใช้ตัดสินถอน report review SLA/deadline ออกทั้งระบบ **รวมฝั่ง FO** — เคลียร์ 24h จาก `15_TRUST_SAFETY_MODULE.md` (rename AC-TS-012 → Report Handling), `18_ADMIN_SCOPE_NOTE.md` (AC-ADMIN-006 → no-deadline), `TukDaeng_Master_Product_Definition.md`, `11_SOCIAL_MODULE.md`, `FO_Functional_PRD.md`, `QA_TEST_SCENARIO_CHECKLIST.md` (baseline `FO-PRD-v1.11`) และตัด helpdesk ticket SLA ออกจาก Phase 2 scope notes ฝั่ง BO — FO ไม่มี policy contract 24h แล้ว AC-ADMIN-006 เปลี่ยนเป็น review-coverage contract (ทำใน task `ef329529`)

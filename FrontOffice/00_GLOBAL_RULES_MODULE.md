@@ -316,7 +316,6 @@ Bottom sheet ทั่วไป: ปิดได้ด้วยการแต�
 - Asset
 - User
 - Comment
-- Board Content
 
 Report ไม่ทำให้ Asset หรือ Content หายจาก public surfaces ทันที การซ่อนต้องเกิดจาก Admin moderation
 

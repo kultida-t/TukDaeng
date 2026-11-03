@@ -1,6 +1,6 @@
 # TukDaeng Document Version
 
-**Current Baseline Version:** `FO-PRD-v1.12`
+**Current Baseline Version:** `FO-PRD-v1.13`
 **Release Date:** 2026-11-03
 **Branch:** `docs-frontoffice-spec-updates`  
 **Status:** Product-reviewed baseline update for Dev / QA
@@ -27,6 +27,17 @@ FO-PRD-vX.Y
 ---
 
 # 2. Current Baseline Scope
+
+`FO-PRD-v1.13` covers all of `FO-PRD-v1.12` and removes the Report Article contract entirely (FO decision e4 approved 2026-11-03 — FO-BO-001 coverage audit; Board Content ตัดออกจาก V1 ทั้งระบบ ไม่ใช่แค่ contract-only):
+
+- `12_BOARD_MODULE.md` — ลบ `## Report Article` contract section ใน §13 + `## Report Board Content Boundary` + AC-BOARD-016 + `article_report_submitted` event + refs ทุกจุด (entry matrix, gate list, master alignment, out-of-scope, future enhancement, EN leftovers); D4 flag → REMOVED
+- `15_TRUST_SAFETY_MODULE.md` — ลบ report type `Board Content` ทุก surface (master alignment, Report Type Rule, entry matrix, validation, permission, deviations D3/D4 notes, related modules, future) + ลบ AC-TS-009
+- `00_GLOBAL_RULES_MODULE.md` / `FO_Functional_PRD.md` / `PRD.md` — report types เหลือ Asset/User/Comment
+- `11_SOCIAL_MODULE.md` — ลบ board `data-bdact` dead-path refs
+- `18_ADMIN_SCOPE_NOTE.md` — ลบ Board Content จาก responsibilities/sources/AC-ADMIN-003
+- `TukDaeng_Master_Product_Definition.md` — ลบ Report Article/Board Content bullets; S-04 → superseded
+- `QA_TEST_SCENARIO_CHECKLIST.md` — ลบ QA-BOARD-008 (contract test) + sync QA-BOARD-007/011, QA-TS-008/009; `DEV_IMPLEMENTATION_CHECKLIST.md` — ลบ contract-only checklist line; `README_MODULE_INDEX.md` + `FINAL_HANDOFF_SUMMARY.md` — decision note sync
+- spec-only ไม่แตะ prototype (dead entries `data-bdmore`/`data-bdact` ถูกถอดจาก prototype ไปแล้วก่อนหน้า); BO queue `Reported Articles` pending removal เป็นงานแยก (protected screen — อนุมัติถอดแล้ว)
 
 `FO-PRD-v1.12` covers all of `FO-PRD-v1.11` and amends FO Help support channels to a BO-driven dynamic contract (FO decision e1 approved 2026-11-03 — FO-BO-001 coverage audit GAP-04 resolved):
 

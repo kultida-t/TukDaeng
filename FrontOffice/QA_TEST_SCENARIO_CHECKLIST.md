@@ -1517,14 +1517,8 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 ### QA-BOARD-007
 **Objective:** Verify guest gate map on board.
 **Maps to:** AC-BOARD-012
-**Steps:** As guest: browse home/all/search/detail freely; tap like/share/save/report entries.
-**Expected result:** All browsing free; like/share (+ dead save/report entries) → Member Sheet before any handler runs; post-sign-in the gated action must be tapped again (no pending resume).
-
-### QA-BOARD-008
-**Objective:** Verify report article (contract — S-04).
-**Maps to:** AC-BOARD-016, AC-TS-009
-**Steps (contract):** Find `Report article` on the detail overflow; submit each reason state; submit twice; check the article afterwards.
-**Expected result:** Report sheet = `Report article` + `Why are you reporting this article?` + reasons (`Spam or misleading`/`Harassment or hate`/`Scam or fraud`/`Illegal or restricted item`/`Inappropriate content`/`Other`) + optional details + `Submit report` disabled until a reason; success → `Report submitted` + `Our team will review it. This article will remain visible until moderation is complete.` + `Done`; duplicate → `You already reported this article.`; API fail → `Unable to submit report. Please try again.`; the article stays visible (never a `Hide article`/`Hide this asset` success copy); guest → Member Sheet; prototype has no overflow menu (dead path only — `Report submitted. Thank you for notifying us.` toast is not the contract copy).
+**Steps:** As guest: browse home/all/search/detail freely; tap like/share/save entries.
+**Expected result:** All browsing free; like/share (+ dead save entries) → Member Sheet before any handler runs; post-sign-in the gated action must be tapped again (no pending resume).
 
 ### QA-BOARD-009
 **Objective:** Verify article deep link contract.
@@ -1541,8 +1535,8 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 ### QA-BOARD-011
 **Objective:** Verify dead artifacts are not live.
 **Maps to:** AC-BOARD-018
-**Steps:** Look for the overflow menu (`data-bdmore`), save/report entries, `Saved to favorites` behaviors, `bd-dfoot-sub`.
-**Expected result:** These are dead/mocked paths — no functional article save/report UI ships in V1 prototype; spec-level report is contract-only per QA-BOARD-008.
+**Steps:** Look for the overflow menu (`data-bdmore`), save entries, `Saved to favorites` behaviors, `bd-dfoot-sub`.
+**Expected result:** These are dead/mocked paths — no functional article save UI ships in V1 prototype; Report Article ถูกตัดออกจาก V1 (FO-BO-001 e4).
 
 ### QA-BOARD-012
 **Objective:** Verify no user-content actions (S-01).
@@ -1601,14 +1595,14 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 
 ### QA-TS-008
 **Objective:** Verify report type coverage.
-**Maps to:** AC-TS-006, AC-TS-007, AC-TS-008, AC-TS-009
+**Maps to:** AC-TS-006, AC-TS-007, AC-TS-008
 **Steps:** Inventory report entries across surfaces.
-**Expected result:** Types = Asset (post), User, Comment, Board Content — Board Content is contract-only copy per QA-BOARD-008; nothing else exists.
+**Expected result:** Types = Asset (post), User, Comment — nothing else exists.
 
 ### QA-TS-009
 **Objective:** Verify report guest gate.
-**Maps to:** 00_GLOBAL §11, AC-BOARD-016
-**Steps:** As guest, trigger every report entry (post `...`, profile `...`, comment, article).
+**Maps to:** 00_GLOBAL §11
+**Steps:** As guest, trigger every report entry (post `...`, profile `...`, comment).
 **Expected result:** All report entries are login-required → Member Sheet.
 
 ### QA-TS-010

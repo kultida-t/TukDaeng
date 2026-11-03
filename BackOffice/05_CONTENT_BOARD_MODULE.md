@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Content / Board |
 | Platform | Responsive Web Back Office |
-| Version | `BO-05-v1.1` |
+| Version | `BO-05-v1.2` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -26,7 +26,7 @@
 
 BO Content / Board Module คือเมนูสำหรับ Admin ใช้จัดการบทความบน FO Board ตั้งแต่สร้าง แก้ไข ดูรายละเอียด ดูตัวอย่าง เผยแพร่ ตั้งเวลา นำออกจากการเผยแพร่ จัดการหมวดหมู่ และตรวจรายงานบทความที่ผู้ใช้แจ้งเข้ามา
 
-FO Board เป็นพื้นที่อ่านบทความ ไม่ใช่ forum และไม่ใช่พื้นที่ให้ผู้ใช้สร้างบทความเอง ผู้ใช้ FO สามารถอ่าน ค้นหา กรองหมวด กด Like, Share และ Report article ได้ ส่วนการสร้างและจัดการบทความทั้งหมดทำใน BO เท่านั้น
+FO Board เป็นพื้นที่อ่านบทความ ไม่ใช่ forum และไม่ใช่พื้นที่ให้ผู้ใช้สร้างบทความเอง ผู้ใช้ FO สามารถอ่าน ค้นหา กรองหมวด กด Like และ Share ได้ ส่วนการสร้างและจัดการบทความทั้งหมดทำใน BO เท่านั้น
 
 ## 3. Scope
 
@@ -479,12 +479,12 @@ Base ordering:
 
 Canonical name ของ queue นี้คือ `Reported Articles` ตาม nav label และ sibling naming (Articles / Categories / Reported Articles) — queue นี้ครอบ FO report type `Board Content` จึงอธิบายเป็น "(Board Content reports)" ใน spec; ชื่อ `Reported Board` เป็น legacy alias ที่เลิกใช้ (ตัดสิน 2026-11-02 — FO-BO-001 GAP-09)
 
-FO `Report article` ส่ง report type `Board Content` และ target type `Article` เข้า BO ที่ `Content Management > Reported Articles`
+**Pending removal** — FO `Report article` ถูกตัดออกจาก V1 ทั้งระบบ (ตัดสิน 2026-11-03 — FO-BO-001 e4): FO ไม่มี producer สำหรับ report type `Board Content` ใน V1 — queue นี้จะถูกถอดออกจาก prototype ในงานแยก; section นี้อธิบาย queue ที่ยังมีอยู่จนกว่าจะถูกถอด
 
 ### Report Intake Rules
 
-- FO `Report article` ส่ง report type `Board Content` และ target type `Article` เข้า BO ที่ `Content Management > Reported Articles`
-- Article Report Reason ยึด 6 เหตุผลมาตรฐานตาม `FrontOffice/12_BOARD_MODULE.md` (`Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`) — canonical taxonomy ตาม `00_GLOBAL_RULES_MODULE.md` §11
+- FO `Report article` ส่ง report type `Board Content` และ target type `Article` เข้า BO ที่ `Content Management > Reported Articles` (entry ถูกตัดออกจาก FO V1 ตาม e4 — ไม่มี live producer ใน V1)
+- Article Report Reason ยึด 6 เหตุผล (`Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`) — legacy FO report contract ที่ถูกตัดออกจาก V1 ตาม e4; queue pending removal
 - `Reporter Note` ใน BO แสดงข้อมูลจาก `Additional details (optional)` ที่ผู้รายงานกรอกตอนส่งรายงานจาก FO (สอดคล้องกับ `content_reports.detail` ใน FoDb)
 - ไม่มีฟิลด์ `Reported Part` ใน Product scope (ผู้ใช้รายงานบทความทั้งชิ้นจาก Article Detail)
 - Article ไม่หายจาก FO ทันทีหลังถูก report
@@ -709,7 +709,7 @@ Content Management ต้องใช้ app shell, navigation, breakpoint, list
 | AC-BO-CONTENT-008 | Inactive category ไม่แสดงใน FO filter/section และ Add/Edit Article selector |
 | AC-BO-CONTENT-009 | Deactivate/delete category ถูก block เมื่อยังมี linked articles |
 | AC-BO-CONTENT-010 | Board Main placement เลือก Main Hero, Trending Now และ Journal Board preview อัตโนมัติจาก eligible published articles โดยไม่แสดงบทความซ้ำในหน้าเดียวกัน |
-| AC-BO-CONTENT-011 | Report article เข้า BO Reported Articles โดย article ยังไม่หายจาก FO ทันที |
+| AC-BO-CONTENT-011 | ~~Report article เข้า BO Reported Articles~~ — obsolete (e4: FO Report Article ตัดออกจาก V1, queue pending removal) |
 | AC-BO-CONTENT-012 | Admin เปิด Reported Article list/detail, search/filter/sort, paginate, view article preview, close report, edit article และ archive article ได้ |
 | AC-BO-CONTENT-013 | Archive article จาก Reported Articles เปลี่ยน article master เป็น Archived, ปิด report เป็น Closed, เพิ่ม Article Change History และ Reported Article Admin Action History และทำให้ article หายจาก FO Board/Search/Category |
 | AC-BO-CONTENT-014 | Article detail, Category actions และ Reported Article actions มี audit/history ตาม requirement |

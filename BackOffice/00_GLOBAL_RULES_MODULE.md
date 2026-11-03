@@ -21,7 +21,7 @@ Login และ auth-adjacent screens ใช้ layout และ breakpoint ต�
 | --- | --- |
 | Module Name | Back Office Global Rules |
 | Platform | Responsive Web Back Office |
-| Version | `BO-00-v1.2` |
+| Version | `BO-00-v1.3` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Cross-Module Functional PRD |
@@ -314,7 +314,7 @@ Source of truth สำหรับ coverage นี้คือเอกสาร
 
 FO functions ขั้นต่ำที่ BO ต้องรองรับ:
 
-- Report Post (asset-linked และ post-only) / User / Comment / Board Content
+- Report Post (asset-linked และ post-only) / User / Comment
 - Asset lifecycle: Sale, Show, Hide, Sold, ซ่อนชั่วคราว, ซ่อนถาวร, ลบโดยเจ้าของ
 - Board article/category/banner publication
 - Brand/model/reference/price index management
@@ -353,13 +353,13 @@ Report ของ post (asset-linked และ post-only), user และ comment
 | 8 | False information | ข้อมูลเท็จ |
 | 9 | Intellectual property | ทรัพย์สินทางปัญญา |
 
-Report ของ Board Content (article) ใช้ reason set เฉพาะ 6 เหตุผลตาม `../FrontOffice/12_BOARD_MODULE.md` §13: `Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`
+Report ของ Board Content (article) เคยใช้ reason set เฉพาะ 6 เหตุผล (`Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`) — FO Report Article ถูกตัดออกจาก V1 จึงไม่มี producer สำหรับ type นี้ (ตัดสิน 2026-11-03 — FO-BO-001 e4); queue `Reported Articles` pending removal จาก prototype
 
 Label เก่าที่เคยใช้ใน BO mock เช่น `Fraud or scam`, `Spam or scam`, `Impersonation`, `Suspected fake or scam` เป็น legacy display alias เท่านั้น ไม่ใช่ canonical reason — mock data/seed ต้อง migrate ไปใช้เหตุผลชุด FO ด้านบน (งาน mock อยู่ใน remediation กลุ่ม d)
 
 ### Reporter Submission Schema
 
-Report ของ post, user และ comment เป็น reason-only ตาม FO live stack — ส่งเฉพาะ reason ไม่มี `Additional details` field (มีเฉพาะ Board Content contract ที่ FO กำหนด `Additional details (optional)` จริง ตาม `../FrontOffice/12_BOARD_MODULE.md` §13) — BO report detail ของ user/asset/comment จึงไม่มี field additional details (ตัดสิน 2026-11-02 — FO-BO-001 GAP-05)
+Report ของ post, user และ comment เป็น reason-only ตาม FO live stack — ส่งเฉพาะ reason ไม่มี `Additional details` field — BO report detail จึงไม่มี field additional details (ตัดสิน 2026-11-02 — FO-BO-001 GAP-05; Board Content contract ที่เคยมี `Additional details (optional)` ถูกตัดออกจาก V1 ตาม e4 2026-11-03)
 
 Report ที่ source มาจาก Chat (user report จากหน้า chat) เก็บเฉพาะ thread reference สำหรับ support ตามทีหลัง ไม่เก็บและไม่แสดง message transcript ใน report detail (ตาม IG model — FO-BO-001 GAP-06 ปิดเป็น by-design)
 

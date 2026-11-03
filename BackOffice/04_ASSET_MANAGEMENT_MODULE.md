@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Asset Management |
 | Platform | Responsive Web Back Office |
-| Version | `BO-04-v1.4` |
+| Version | `BO-04-v1.5` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -499,7 +499,7 @@ Reporter History ต้องแสดง:
 - Report status
 - Report reason
 
-Report reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 และ reporter submission เป็น reason-only — ไม่มี `Additional details` field (มีเฉพาะ Board Content contract)
+Report reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 และ reporter submission เป็น reason-only — ไม่มี `Additional details` field
 
 ### Admin Action History
 
@@ -669,7 +669,7 @@ Reporter History ต้องแสดง:
 - Status (เช่น `เปิดเคส`, `รวมเคส`)
 - Report Reason
 
-Report Reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 และ reporter submission เป็น reason-only — ไม่มี `Additional Details` field (มีเฉพาะ Board Content contract)
+Report Reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 และ reporter submission เป็น reason-only — ไม่มี `Additional Details` field
 
 ### Admin Action History
 

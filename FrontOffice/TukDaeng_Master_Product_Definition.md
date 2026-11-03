@@ -125,7 +125,6 @@ Admin รับผิดชอบ:
 
 - ตรวจสอบ Report
 - Moderation
-- จัดการ Board Content
 - จัดการ User / Asset ตาม policy
 - ดำเนินการกับ Report ที่เข้ามาทั้งหมด (ไม่มี deadline tracking — FO-BO-001 GAP-03)
 
@@ -730,8 +729,6 @@ Rules:
 - Article search ครอบทุกบทความเสมอ แยก surface จาก category filter (ไม่ combine)
 - Article Like ต้อง Login ผ่าน Member Sheet
 - Article Comment ไม่อยู่ใน FO V1 baseline
-- Report Article = contract-only — report type `Board Content` + target `Article` เข้า Trust & Safety (prototype menu `data-bdmore` dead ทั้งก้อน — S-04); รายละเอียด flow canonical `15_TRUST_SAFETY` + `12_BOARD` §13
-- Report Board Content ไม่ทำให้บทความหายทันทีจนกว่า Admin moderation
 - Board actions ไม่สร้าง alert — Alerts feed canonical 09
 
 ไม่มีใน V1: user create/edit article, article comment, saved article UI (`data-bdsave` dead), native share/public deep link implementation, trending algorithm, publish/deleted-state simulation
@@ -881,7 +878,6 @@ Block confirm = IG bottom sheet `Block {user}?` + impact rows (canonical `06_PRO
 - Asset (post)
 - User
 - Comment
-- Board Content (contract-only — prototype `data-bdmore` menu dead)
 
 Report flow = IG-style full-page multi-step stack (reasons → report:done + other steps) — ไม่ใช่ bottom sheet (D9)
 
@@ -1015,7 +1011,7 @@ Sign-off decisions ที่ลงใน master รอบนี้ (อ้าง
 | S-01 | Board = editorial magazine model | ตัด 7 master sections → freeform category tags | `12_BOARD` |
 | S-02 | Delete account grace = login-to-restore | แทน login-blocked model — สอดคล้อง BO restore flow | `13_SETTINGS` |
 | S-03 | Share ต้อง login ทุก surface | guest share ถูกตัด — Member Sheet | `00_GLOBAL` §11 |
-| S-04 | Report Article = contract-only | เก็บ Trust & Safety contract; prototype menu dead | `12_BOARD` §13 |
+| S-04 | ~~Report Article = contract-only~~ **superseded** | Report Article ถูกตัดออกจาก V1 ทั้งระบบ (FO-BO-001 e4 — ตัดสิน 2026-11-03) | — |
 | S-05 | Settings = IG 6-section + Edit profile อยู่ own profile | แทน 5-section เดิม | `13_SETTINGS` |
 | S-06 | Notification settings in-scope 4 toggles ไม่มี Offer | resolve ข้อขัดแย้งเดิม | `13_SETTINGS` |
 | S-07 | Chat thread = user+item | ไม่มี room merge | `07_CHAT` |
