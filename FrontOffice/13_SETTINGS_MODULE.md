@@ -348,19 +348,20 @@ Settings Home rules:
 
 ## Help / About Rule
 
-- Help ต้องแสดงช่องทางติดต่อ support ตาม locked copy ด้านล่าง + `Help topics` section
+- Help ต้องแสดงช่องทางติดต่อ support + `Help topics` section
 - About ต้องเป็นข้อมูลแอปและบริษัท ไม่ใช่ข้อมูลบัญชี
 - `Contact support` จาก About ต้อง route ไป Help screen เดิม ไม่ต้องสร้างหน้าใหม่
+- Support channels + availability/business hours เป็น data-driven จาก BO Support Center config — FO render เฉพาะ channel ที่ `Active` ไม่ fix จำนวน row (production contract — prototype แสดง seed baseline; canonical contract อยู่ที่ `../BackOffice/12_HELP_SUPPORT_MODULE.md` §4 FO Help Dynamic Contract, approved FO decision e1 — FO-BO-001 GAP-04 2026-11-03)
 
 Help screen copy:
 
 - Title: `ศูนย์ช่วยเหลือ` / `Help`
 - Section: `ช่องทางการติดต่อ` / `Support channels`
-- Availability: `ให้บริการทุกวัน · 09:00 - 22:00 น. (GMT+7)` / `Available daily · 09:00 - 22:00 (GMT+7)`
-- Contact rows:
-  - `LINE Official` — `@mrfoxthailand` → เปิด external link
-  - `โทรศัพท์ติดต่อ` / `Call support` — `(+66) 80-008-8088` → เปิด dialer
-  - `อีเมลติดต่อ` / `Email support` — `service@mrfox.com` → เปิด mail composer
+- Availability + business hours: ค่าจาก BO Support Center config ตามภาษาที่ผู้ใช้เลือก (seed `ให้บริการทุกวัน · 09:00 - 22:00 น. (GMT+7)` / `Available daily · 09:00 - 22:00 (GMT+7)`)
+- Contact rows: render เฉพาะ channel ที่ `Active` — icon ตาม channel type + value + description ตามภาษา ไม่ fix จำนวน row
+  - Interaction ตาม channel type: `LINE` → เปิด external link, `Phone` → เปิด dialer, `Email` → เปิด mail composer, `Facebook`/`Website` → เปิด external link
+  - ถ้าไม่มี channel ที่ Active แสดง empty state `ไม่มีช่องทางที่เปิดใช้งาน`
+  - Seed baseline เป็นค่าเริ่มต้น ไม่ใช่ fixed contract: `LINE Official` — `@mrfoxthailand`, `โทรศัพท์ติดต่อ` / `Call support` — `(+66) 80-008-8088`, `อีเมลติดต่อ` / `Email support` — `service@mrfox.com`
 - Help topics: `หัวข้อช่วยเหลือ` / `Help topics`
   - `ความเป็นส่วนตัวและความปลอดภัย` / `Privacy & Safety` → Privacy Policy page
   - `ข้อกำหนดและแนวทางปฏิบัติ` / `Terms & Guidelines` → Terms of Use page
@@ -718,7 +719,7 @@ And legal entries เดียวกันต้องเปิดหน้า�
 Given Member เปิด Settings  
 When Member กด Help หรือ About  
 Then ระบบต้องเปิดหน้าที่เกี่ยวข้อง
-And Help ต้องแสดง `Support channels` + `Available daily · 09:00 - 22:00 (GMT+7)` + rows `LINE Official` (`@mrfoxthailand`), `Call support` (`(+66) 80-008-8088`), `Email support` (`service@mrfox.com`) + `Help topics` (`Privacy & Safety` → Privacy Policy, `Terms & Guidelines` → Terms of Use)
+And Help ต้องแสดง `Support channels` + availability/business hours ตาม BO Support Center config + rows เฉพาะ channel ที่ `Active` (seed `LINE Official` (`@mrfoxthailand`), `Call support` (`(+66) 80-008-8088`), `Email support` (`service@mrfox.com`)) + empty state `ไม่มีช่องทางที่เปิดใช้งาน` เมื่อไม่มี Active channel + `Help topics` (`Privacy & Safety` → Privacy Policy, `Terms & Guidelines` → Terms of Use)
 And About ต้องแสดง title `เกี่ยวกับตึกแดง`/`About` + `TUK DAENG` + tagline + `Version 0.0.1` + `Mister Fox Co., Ltd. · Est. 2026` + `Legal & Support` links (Privacy Policy / Terms of Use / Contact support → Help)
 And About ต้องไม่แสดงข้อมูลบัญชีหรือ Delete Account
 

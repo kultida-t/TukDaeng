@@ -1,0 +1,41 @@
+FOBO-DOC-AUDIT-STALE — Task Evidence
+====================================
+Task ID: 3f4b4ca6-19d3-4f59-97cd-3a326fbedede
+Date: 2026-11-03
+Commit: b8d9a40 — docs(deliverables): FO-BO-001 audit — mark stale OPEN-2/e3 entries resolved, refresh status summary
+Type: Documentation / doc hygiene (docs-only, ไม่แตะ prototype/protected screens)
+
+Objective
+---------
+แก้ stale entries ใน deliverables/FO-BO-001-coverage-audit.md ที่ยังบอกว่ามีงานค้าง
+ทั้งที่ FO-BO-001 audit chain ปิดครบ 100% แล้วจริง
+
+Files changed
+-------------
+- deliverables/FO-BO-001-coverage-audit.md — แก้ 4 จุด:
+  1. L123 เพดาน severity — เติม resolved note (OPEN-1 ไม่ใช่ gap, OPEN-2 by-design)
+  2. L126 [OPEN-2] หัวข้อในส่วนที่ 3 — mark resolved 2026-11-02 พร้อม ref
+  3. L182 e3 row ในส่วนที่ 4 (e) — mark resolved 2026-11-02 by-design ตาม IG
+  4. L215 [OPEN-2] ใน Open items (ส่วนที่ 5) — mark resolved พร้อม commit ref
+  5. L248 สถานะหลัง decision (ส่วนที่ 6) — เขียนใหม่เป็นสถานะจริง:
+     implementation ครบทุกกลุ่ม (a=59aa201, c=457bbaa, d=e27515b+ea6b7e0,
+     e4 removal=c9f6694) + OPEN-2/OPEN-5/e1/e4 resolved หมด
+  (5 จุดแก้ — ตอนแรกนับ 4 เพราะเจอ L126 เพิ่มตอน verify)
+
+Verification before writing
+---------------------------
+- git log: ยืนยัน remediation ทำแล้วครบ — 59aa201 (กลุ่ม a spec-only),
+  457bbaa (กลุ่ม c protected screens), e27515b (open items/post-only seed),
+  ea6b7e0 (GAP-09 naming tail), 2e605fd (e4), 654a61a (OPEN-5), c9f6694 (e4 removal)
+- bo-prototype.html grep: reportReasonThaiLabels = PM_REASONS 9 เหตุผลชุด FO แล้ว;
+  additionalDetails ถูกถอดจาก report submissions; SLA chip/tag/รอตรวจ 22 ชม. ถูกลบ
+- 00_GLOBAL_RULES_MODULE.md §11: Reporter Submission Schema มี spec note ว่า
+  chat-sourced report เก็บเฉพาะ thread reference ไม่มี transcript (ครอบ OPEN-2/GAP-06)
+
+Resolution recorded
+-------------------
+OPEN-2/GAP-06 resolved 2026-11-02 — by-design ตาม IG: report จาก chat ส่ง
+account context + thread reference เท่านั้น ไม่แนบ message/transcript
+(message-level report ตัดจาก V1 ตาม FrontOffice/15_TRUST_SAFETY_MODULE.md §5)
+
+Open items: ไม่มี — FO-BO-001 audit chain ปิด 100%

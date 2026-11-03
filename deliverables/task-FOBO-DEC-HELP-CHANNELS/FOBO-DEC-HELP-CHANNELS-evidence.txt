@@ -1,0 +1,32 @@
+FOBO-DEC-HELP-CHANNELS — Task Evidence Bundle
+Date: 2026-11-03
+Type: Docs-only (spec/decision) — no prototype or protected screens touched
+Commit: 7990c73 "docs(fo): FO-BO-001 e1 — FO Help dynamic channels per BO Support Center config (GAP-04 resolved)"
+
+Decision (FO decision e1 — audit FO-BO-001 GAP-04):
+- User approved "Dynamic ตาม BO config" — FO Help renders rows from BO Support Center config
+  (Active channels only + interaction per channel type + empty state when no Active channel);
+  the previous fixed 3 rows (LINE/Phone/Email) become seed baseline, not a fixed contract.
+- Canonical contract: BackOffice/12_HELP_SUPPORT_MODULE.md §4 FO Help Dynamic Contract.
+
+Files changed (8):
+- FrontOffice/13_SETTINGS_MODULE.md — Help / About Rule amended to data-driven contract + AC-SETTING-007 sync
+- FrontOffice/TukDaeng_Master_Product_Definition.md — Settings Help bullet sync dynamic contract
+- FrontOffice/QA_TEST_SCENARIO_CHECKLIST.md — QA-SETTING-013 expected result sync
+- FrontOffice/DEV_IMPLEMENTATION_CHECKLIST.md — Help checklist rows sync dynamic contract
+- BackOffice/12_HELP_SUPPORT_MODULE.md — FO dependency note updated (e1 approved); version BO-12-v0.4
+- FrontOffice/DOCUMENT_VERSION.md — baseline FO-PRD-v1.12 + scope + history row
+- BackOffice/DOCUMENT_VERSION.md — row BO-12-v0.4 + Last Updated 2026-11-03
+- deliverables/FO-BO-001-coverage-audit.md — e1 resolved markers: §4(e) row, §5 open items, R14/R28 → Covered
+  (summary Covered 24 / Partial 5), §6 GAP-04 approved, remaining FO decision = e4, GAP-04 removed from dev-handoff list
+
+Verification:
+- grep cross-reference: no remaining "locked copy"/fixed-3-rows contradictions for Help channels;
+  residual matches are intentional citations/historical records (audit file:line cites, frozen FSP gap file,
+  unrelated Board report sheet locked copy).
+- Protected screens: untouched (docs-only task — no Manual Review Checklist required).
+
+Open items after this task:
+- e4 (Report Article contract-only in V1) — Task 2 FOBO-DEC-BOARD-REPORT-V1
+- OPEN-5 (Asset Mgmt merge into Content Mgmt?) — Task 3 FOBO-DEC-DOMAIN-MERGE
+- OPEN-2 (chat report message context) — still pending product

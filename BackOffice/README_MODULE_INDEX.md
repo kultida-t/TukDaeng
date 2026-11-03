@@ -61,7 +61,7 @@ Codex ต้องทำ 3 อย่าง:
 | 02 | `02_DASHBOARD_MODULE.md` | Dashboard metrics, pending queues, activity feed และ policy-based overview | 1 |
 | 03 | `03_USER_MANAGEMENT_MODULE.md` | User list/detail, auth method, login history, report context, suspend/ban, reset password, FO impact | 1 |
 | 04 | `04_ASSET_MANAGEMENT_MODULE.md` | Asset list/detail, status visibility, reported assets, moderation, sensitive fields, FO sync | 1 |
-| 05 | `05_CONTENT_BOARD_MODULE.md` | Board articles, editor, publish/schedule/archive, categories, reported Board Content, FO sync | 1 |
+| 05 | `05_CONTENT_BOARD_MODULE.md` | Board articles, editor, publish/schedule/archive, categories, FO sync | 1 |
 | 06 | `06_MARKET_DATA_MODULE.md` | Read-only API/backend-synced watch brand, model, reference, detail, price index, sync logs, FO autocomplete/search/alert/portfolio sync | 1 |
 | 07 | `07_DIRECTORY_MODULE.md` | Future/postponed Directory reference only; not exposed in Phase 1 BO prototype or Phase 1 build scope until FO directory detail routes are approved | Future |
 | 08 | `08_AUDIT_LOG_MODULE.md` | Immutable audit events, schema, search/filter, export, retention และ canonical Admin Identity Lifecycle event/risk/result/correlation โดยไม่เก็บ secret | 1 |

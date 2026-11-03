@@ -1,7 +1,7 @@
 # 12 BO Help / Support Module
 
-**Version:** `BO-12-v0.3`  
-**Date:** 2026-11-02  
+**Version:** `BO-12-v0.4`  
+**Date:** 2026-11-03  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -21,7 +21,7 @@
 | --- | --- |
 | Module Name | BO Help / Support |
 | Platform | Responsive Web Back Office |
-| Version | `BO-12-v0.3` |
+| Version | `BO-12-v0.4` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -99,7 +99,7 @@ BO Support Center เป็นตัวขับช่องทางติด�
 - ถ้าไม่มี channel ที่ Active แสดง empty state `ไม่มีช่องทางที่เปิดใช้งาน`
 - Baseline 3 rows ด้านบน (LINE/Phone/Email) เป็นค่าเริ่มต้นจาก seed เท่านั้น ไม่ใช่ fixed contract
 
-หมายเหตุ FO dependency: FO spec `../FrontOffice/13_SETTINGS_MODULE.md` §9 ต้อง amend ให้รองรับ dynamic channels — เป็น FO decision item (e1) ที่ต้อง approve ก่อนส่ง dev เพราะ FO lock แล้ว
+หมายเหตุ FO dependency: FO spec `../FrontOffice/13_SETTINGS_MODULE.md` §9 amended แล้วให้รองรับ dynamic channels — FO decision e1 approved 2026-11-03 (FO-BO-001 GAP-04) จึงปลดบล็อกแพ็กเกจส่ง dev ส่วนนี้
 
 ## 5. Admin Access And Permissions
 

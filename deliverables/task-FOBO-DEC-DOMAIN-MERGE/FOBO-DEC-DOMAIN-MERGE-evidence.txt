@@ -1,0 +1,42 @@
+FOBO-DEC-DOMAIN-MERGE — Task Evidence Bundle
+Date: 2026-11-03
+Type: Docs-only (spec/decision) — no prototype or protected screens touched
+Commit: 654a61a "FO-BO-001 OPEN-5 resolved: post-only enters BO via Reported Assets queue only"
+
+Decision (product decision OPEN-5 — audit FO-BO-001 §5, from GAP-08):
+- Original question (merge Asset Management into Content Management as a single
+  Posts/Content domain) was reframed by the user: Content Management is the Board
+  article domain — a different entity from feed posts. The real question was whether
+  post-only posts (feed post kind `post`, not linked to an asset) need a management
+  surface in BO beyond the Reported Assets queue.
+- Approved: keep current scope — Asset List = asset entities (AST-) only; post-only
+  posts have no list/browse/management surface in V1 and enter BO solely through the
+  Reported Assets queue (Report Entity Model — GAP-08, 00_GLOBAL §11), where
+  moderation actions in Report Detail are already complete (hide/restore/remove post).
+- No Post List (merged or separate submenu) in V1.
+
+Files changed (4):
+- BackOffice/04_ASSET_MANAGEMENT_MODULE.md — Out Of Scope + §7 Asset List boundary
+  paragraph (asset entity only; post-only via Reported Assets queue); version BO-04-v1.6
+  (also fixed stale header v1.4 left unbumped by the e4 commit; Date → 2026-11-03)
+- BackOffice/05_CONTENT_BOARD_MODULE.md — Out Of Scope boundary: all feed posts
+  belong to module 04, Content Management covers Board article content only;
+  version BO-05-v1.3 (header fixed v1.1→v1.3; Date → 2026-11-03)
+- deliverables/FO-BO-001-coverage-audit.md — OPEN-5 → resolved 2026-11-03 in §5 open
+  items; §6 GAP-08 row + post-decision status line updated
+- BackOffice/DOCUMENT_VERSION.md — new row BO-04-v1.6 / BO-05-v1.3
+
+Verification:
+- grep cross-reference before editing: OPEN-5 appears only in the audit doc; spec 05
+  had zero feed/post references so the boundary is additive only; spec 04 §12/§11
+  already document the Report Entity Model (AST-/POST- refs, single queue) and the
+  prototype already renders post-only report detail with full moderation actions
+  (RPA-720/POST-7720 seed).
+- Protected screens: untouched (docs-only — no Before/After capture, no Manual
+  Review Checklist required per task scope).
+
+Open items after this task:
+- OPEN-2 (chat report message context) — still pending product decision
+- Kanban task 355d0542 FOBO-REM-REPORTED-ARTICLES (todo) — ถอด Reported Articles
+  queue จาก BO prototype (e4 follow-up; protected screen — ผู้ใช้อนุมัติแตะแล้ว);
+  ผล OPEN-5 ไม่กระทบลำดับงานนี้ (decision = ไม่ restructure domain)

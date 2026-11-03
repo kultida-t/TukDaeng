@@ -1,7 +1,7 @@
 # 04 BO Asset Management Module
 
-**Version:** `BO-04-v1.4`  
-**Date:** 2026-11-02  
+**Version:** `BO-04-v1.6`  
+**Date:** 2026-11-03  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Asset Management |
 | Platform | Responsive Web Back Office |
-| Version | `BO-04-v1.4` |
+| Version | `BO-04-v1.6` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -79,6 +79,7 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - Restore ความคิดเห็นจากสถานะ `Removed`
 - ลบข้อมูล asset จริงจาก Back Office
 - ลบข้อมูลความคิดเห็นจริงจาก Back Office
+- List/browse/management surface สำหรับ post-only (feed post kind `post` ที่ไม่ผูก asset) — post-only เข้า Back Office เฉพาะผ่าน `Reported Assets` queue ตาม Report Entity Model ใน `00_GLOBAL_RULES_MODULE.md` §11 ไม่มี list แยกหรือ list รวมใน V1
 
 ## 4. Menu Structure
 
@@ -134,6 +135,8 @@ Asset Management ต้องใช้กฎ responsive กลางจาก `0
 ## 7. Asset List
 
 Asset List ใช้สำหรับ scan asset ทั้งหมดและเปิดรายละเอียดหรือ action ที่ทำได้ตาม state
+
+Asset List ครอบเฉพาะ asset entity (record ที่มี `AST-` reference) — feed post ที่ไม่ผูก asset (kind `post`) ไม่แสดงใน list นี้ โพสต์ประเภทนั้นไม่มี asset status/price/sale record ให้จัดการ และเข้า Back Office เฉพาะผ่าน `Reported Assets` queue เมื่อถูก report (Report Entity Model — `00_GLOBAL_RULES_MODULE.md` §11)
 
 ### Required Fields
 
@@ -499,7 +502,7 @@ Reporter History ต้องแสดง:
 - Report status
 - Report reason
 
-Report reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 และ reporter submission เป็น reason-only — ไม่มี `Additional details` field (มีเฉพาะ Board Content contract)
+Report reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 และ reporter submission เป็น reason-only — ไม่มี `Additional details` field
 
 ### Admin Action History
 
@@ -669,7 +672,7 @@ Reporter History ต้องแสดง:
 - Status (เช่น `เปิดเคส`, `รวมเคส`)
 - Report Reason
 
-Report Reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 และ reporter submission เป็น reason-only — ไม่มี `Additional Details` field (มีเฉพาะ Board Content contract)
+Report Reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 และ reporter submission เป็น reason-only — ไม่มี `Additional Details` field
 
 ### Admin Action History
 

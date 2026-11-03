@@ -1,6 +1,6 @@
 # 16 BO Admin Settings Module
 
-**Version:** `BO-16-v1.5`
+**Version:** `BO-16-v1.6`
 **Date:** 2026-10-26
 **Status:** Updated — Security Policy/My Account sync กับ BO Login baseline (Email + Password → BO) ตาม Change Mission `0a5b2b14`
 **Platform:** Responsive Web Back Office
@@ -412,10 +412,10 @@ Roles & Permissions must start with 8 standard role templates. These templates a
 | Admin Manager | จัดการ Admin Accounts, Roles & Permissions, security/system policy และ high-risk settings ตาม approval | ไม่มีสิทธิ์แก้ Super Admin/master protection, ลบ audit trail, หรือข้าม confirmation/reason/audit |
 | Operations Manager | ดูภาพรวมงานปฏิบัติการข้าม User, Asset, Account Deletion, Delivery Logs และ Dashboard queue | ทำ mutation ได้เฉพาะ action ที่ permission matrix อนุญาต; export/sensitive reveal ต้องใช้ policy แยก |
 | Support Agent | ช่วยเหลือผู้ใช้จาก Support Center, User context แบบจำกัด, delivery status และประวัติที่จำเป็นต่อการช่วยเหลือ | ไม่มีสิทธิ์เปลี่ยนสถานะบัญชี/สินทรัพย์, ดู sensitive data เต็ม, export หรือแก้ Settings |
-| Trust & Safety Moderator | จัดการ report/moderation queue สำหรับ user, asset, comment และ board content ตามเหตุผล/audit | Sensitive fields ถูก mask เป็นค่าเริ่มต้น; action ที่กระทบ FO ต้องมี reason, impact note และ audit |
+| Trust & Safety Moderator | จัดการ report/moderation queue สำหรับ user, asset และ comment ตามเหตุผล/audit | Sensitive fields ถูก mask เป็นค่าเริ่มต้น; action ที่กระทบ FO ต้องมี reason, impact note และ audit |
 | Asset Operations | ตรวจสอบ Asset List/Asset Detail, reported assets/comments และข้อมูลที่เกี่ยวกับ asset lifecycle | ไม่มีสิทธิ์แก้ Market Data master, Admin Settings, policy, หรือ export sensitive asset/user data เว้นแต่ matrix อนุญาต |
-| Content Editor | สร้าง/แก้ draft, category, metadata และ preview content ใน Content Management | ไม่มีสิทธิ์ publish, schedule, archive, restore หรือจัดการ Reported Articles แบบปิดเคส |
-| Content Publisher | publish, schedule, archive, restore content และจัดการ Reported Articles ตาม policy | ไม่มีสิทธิ์แก้ Admin Settings, user/account status, asset moderation หรือ sensitive reveal/export นอก content scope |
+| Content Editor | สร้าง/แก้ draft, category, metadata และ preview content ใน Content Management | ไม่มีสิทธิ์ publish, schedule, archive หรือ restore |
+| Content Publisher | publish, schedule, archive และ restore content ตาม policy | ไม่มีสิทธิ์แก้ Admin Settings, user/account status, asset moderation หรือ sensitive reveal/export นอก content scope |
 
 Role templates are presets. Production enforcement must use explicit permission keys at route, navigation, UI action, API, service, export, sensitive-field, and audit layers. Phase ปัจจุบันสร้าง Custom Role แบบ `from_scratch` เท่านั้นและไม่มี action `Copy`, `Clone`, `Duplicate` หรือ source-template selector; หาก standard role ไม่ตรงงาน ให้สร้าง Custom Role ใหม่หรือแก้ Custom Role เดิมด้วย permission set แบบ explicit. ค่า lineage `derived/copied` ใน section 9.11 เป็น schema reservation สำหรับ future/import compatibility เท่านั้น ไม่ใช่ flow ที่เปิดใช้ใน UI ปัจจุบัน. ส่วน 8 standard templates ข้างต้นเป็น System Role ที่ห้ามลบ เปลี่ยนชื่อ เปลี่ยน permission baseline หรือเปลี่ยน system identity จาก UI.
 
@@ -453,7 +453,7 @@ Role Detail และ Create/Edit Custom Role ใช้ action catalog ที่
 | Dashboard | Dashboard | `dashboard.view` |
 | User Management | User Accounts / Reported Users | `users.accounts.view`, `users.accounts.manage`, `users.reports.view`, `users.reports.manage` |
 | Asset Management | Asset List / Reported Assets / Reported Comments | `assets.list.view`, `assets.list.manage`, `assets.reports.view`, `assets.reports.manage`, `comments.reports.view`, `comments.reports.manage` |
-| Content Management | Articles / Categories / Reported Articles | `articles.view`, `articles.manage`, `articles.publish`, `categories.view`, `categories.manage`, `board.reports.view`, `board.reports.manage` |
+| Content Management | Articles / Categories | `articles.view`, `articles.manage`, `articles.publish`, `categories.view`, `categories.manage` |
 | Market Data | Dashboard / Brands & Models / Sync History | `market.dashboard.view`, `market.catalog.view`, `market.sync.view`, `market.sync.run` |
 | Option Master | Option Groups / Options | `option.view`, `option.manage` |
 | Market Demand | Demand Overview / Search Insights / Watch Alert List | `demand.overview.view`, `demand.search.view`, `demand.watch.view` |
@@ -476,7 +476,6 @@ Matrix นี้เป็น baseline กลางสำหรับ 8 standard 
 | Reported comments | admin | none | approve | none | approve | manage | none | none |
 | Content articles/categories draft | admin | none | view | none | manage | none | manage | manage |
 | Content publish/schedule/archive/restore | admin | none | view | none | approve | none | none | approve |
-| Reported Articles moderation | admin | none | view | none | approve | none | view | approve |
 | Market Data catalog | admin | none | view | none | view | view | none | none |
 | Market Data import/sync/update | admin | none | approve | none | none | none | none | none |
 | Option Master | admin | none | approve | none | none | none | none | none |
@@ -500,10 +499,10 @@ Matrix นี้กำหนด policy baseline ของ 8 System Roles ส่�
 - `Admin Manager` can manage admin lifecycle and role/policy changes, but cannot bypass Super Admin/master protection, cannot view audit sensitive payload by default, and cannot delete audit trail.
 - `Operations Manager` can operate across queue-heavy modules but cannot change Admin Settings, Roles & Permissions, security policy, audit payload visibility, or system role identity.
 - `Support Agent` is intentionally read-heavy. Current protected Delivery Logs UI ให้ดูสถานะ retry ได้เท่านั้น; สิทธิ์ delivery-retry ใน matrix เป็น future policy baseline และใช้ได้เมื่อ module ปลายทางเปิด governed action ภายใต้ scope ที่อนุมัติแล้ว โดยยังห้าม mutate user/account/asset status หรือ reveal full sensitive data.
-- `Trust & Safety Moderator` can close moderation cases for user/asset/comment/board reports with required reason, impact note, confirmation, FO-impact handling, and audit.
+- `Trust & Safety Moderator` can close moderation cases for user/asset/comment reports with required reason, impact note, confirmation, FO-impact handling, and audit.
 - `Asset Operations` focuses on asset lifecycle review and asset-related moderation. It cannot publish content, change Market Data master data, or manage settings.
-- `Content Editor` can create/update draft content and preview within content scope only. Publish, schedule, archive, restore, Reported Articles case close, export, and settings are blocked.
-- `Content Publisher` can publish/schedule/archive/restore content and close content/report cases inside content scope, but cannot edit Admin Settings or act on user/account/asset status.
+- `Content Editor` can create/update draft content and preview within content scope only. Publish, schedule, archive, restore, export, and settings are blocked.
+- `Content Publisher` can publish/schedule/archive/restore content inside content scope, but cannot edit Admin Settings or act on user/account/asset status.
 - Any `sensitive.reveal`, `export`, `download`, `case.close`, `status.update`, `publish`, `archive`, `restore`, `settings.roles.manage`, or security/retention policy update must be independently auditable even when the role has the required permission.
 
 ### 9.5 Module / Action Policy Catalog

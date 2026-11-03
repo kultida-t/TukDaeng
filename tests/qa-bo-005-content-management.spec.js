@@ -1,4 +1,5 @@
-// QA-BO-005: Content Management (Articles, Categories, Reported Articles, Board Report Detail) — strict Playwright spec
+// QA-BO-005: Content Management (Articles, Categories) — strict Playwright spec
+// e4 (FO-BO-001, 2026-11-03): Reported Articles + Board Report Detail ถูกถอดจาก V1 ทั้งระบบ — เคสที่เกี่ยวถูกถอดตาม
 // อ้างอิง prototype เป็นหลักสำหรับการแสดงผล, spec docs เป็นหลักสำหรับพฤติกรรม/นำทาง
 // เป้าหมาย: รันเทส เจอปัญหาจริง → ลิสปัญหา + แนวทางแก้ → แก้ใน flow เดียว (ห้ามแก้ prototype)
 const { test, expect } = require("@playwright/test");
@@ -53,30 +54,14 @@ async function goToCategories(page) {
   await page.waitForTimeout(300);
 }
 
-// helper: ไปหน้า Reported Articles ผ่านเมนู
-async function goToReportedArticles(page) {
-  await page.goto(PROTOTYPE_URL);
-  await page.waitForLoadState("networkidle");
-  await loginIfNeeded(page);
-  await ensureNavOpen(page);
-  const parent = page.locator(".nav-item[data-module='content']");
-  const expanded = await parent.evaluate(el => el.classList.contains("expanded")).catch(() => false);
-  if (!expanded) await parent.click();
-  await page.waitForTimeout(200);
-  await page.locator(".submenu[data-submenu='content'] button[data-sub='Reported Articles']").click();
-  await page.waitForTimeout(300);
-}
-
 // helper: เปิด filter bar ถ้ายังปิด (advanced filter ถูกซ่อนเมื่อ data-filter-open="false")
 async function openFilterBar(page, mode) {
   const isMobile = await page.evaluate(() => window.matchMedia("(max-width: 760px)").matches);
   if (!isMobile) return;
   const toggleAttr = mode === "article" ? "[data-article-filter-toggle]"
-    : mode === "category" ? "[data-category-filter-toggle]"
-    : "[data-board-report-filter-toggle]";
+    : "[data-category-filter-toggle]";
   const barClass = mode === "article" ? ".user-filter-bar.content-mode"
-    : mode === "category" ? ".user-filter-bar.category-mode"
-    : ".user-filter-bar.content-mode";
+    : ".user-filter-bar.category-mode";
   const bar = page.locator(barClass);
   const isOpen = await bar.getAttribute("data-filter-open");
   if (isOpen === "false") {
@@ -115,12 +100,6 @@ async function openCategoryRowMenu(page, categoryId) {
   await page.waitForTimeout(200);
 }
 
-// helper: เปิด row menu ของ board report
-async function openBoardReportRowMenu(page, reportId) {
-  await page.locator(`.asset-row[data-board-report-card="${reportId}"] .row-menu > summary`).click();
-  await page.waitForTimeout(200);
-}
-
 // helper: ปิด row menu ที่ค้าง
 async function closeRowMenus(page) {
   await page.locator("body").click({ position: { x: 5, y: 5 } });
@@ -141,12 +120,12 @@ async function setActionScenario(page, selectId, scenario) {
   }, { id: selectId, s: scenario });
 }
 
-test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Articles) (strict)", () => {
+test.describe("QA-BO-005: Content Management (Articles, Categories) (strict)", () => {
 
   // ==================== A. NAVIGATION / MENU / ACTIVE STATE ====================
 
   test.describe("Navigation — menu entry, submenu, active state", () => {
-    test("1. Content Management menu กาง submenu ได้ มี Articles, Categories, Reported Articles", async ({ page }) => {
+    test("1. Content Management menu กาง submenu ได้ มี Articles, Categories", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -157,7 +136,8 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await expect(submenu).toHaveClass(/open/);
       await expect(submenu.locator("button[data-sub='Articles']")).toBeVisible();
       await expect(submenu.locator("button[data-sub='Categories']")).toBeVisible();
-      await expect(submenu.locator("button[data-sub='Reported Articles']")).toBeVisible();
+      // e4: Reported Articles ถูกถอด — submenu ต้องไม่มี entry นี้
+      await expect(submenu.locator("button[data-sub='Reported Articles']")).toHaveCount(0);
     });
 
     test("2. เข้า Articles: page title + breadcrumb + panel title ถูกต้อง", async ({ page }) => {
@@ -174,23 +154,12 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await expect(page.locator("#panel-title")).toHaveText("CATEGORY LIST");
     });
 
-    test("4. เข้า Reported Articles: page title + breadcrumb + panel title ถูกต้อง", async ({ page }) => {
-      await goToReportedArticles(page);
-      await expect(page.locator("#page-title")).toHaveText("Reported Articles");
-      await expect(page.locator("#crumb")).toHaveText("การดำเนินงาน / Content Management / Reported Articles");
-      await expect(page.locator("#panel-title")).toHaveText("Reported Article List");
-    });
-
     test("5. active state สลับถูกต้องเมื่อสลับหน้า", async ({ page }) => {
       await goToArticles(page);
       await ensureNavOpen(page);
       await page.locator(".submenu[data-submenu='content'] button[data-sub='Categories']").click();
       await page.waitForTimeout(300);
       await expect(page.locator(".submenu[data-submenu='content'] button[data-sub='Categories']")).toHaveClass(/active/);
-      await ensureNavOpen(page);
-      await page.locator(".submenu[data-submenu='content'] button[data-sub='Reported Articles']").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator(".submenu[data-submenu='content'] button[data-sub='Reported Articles']")).toHaveClass(/active/);
       await ensureNavOpen(page);
       await page.locator(".submenu[data-submenu='content'] button[data-sub='Articles']").click();
       await page.waitForTimeout(300);
@@ -245,7 +214,7 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
     test("11. คอลัมน์ Category แสดงชื่อหมวดหมู่ถูกต้อง", async ({ page }) => {
       await goToArticles(page);
       const row = page.locator(".asset-row[data-article-card='ART-043']");
-      await expect(row.locator("[data-label='Category'] .main-text")).toHaveText("Watch 101");
+      await expect(row.locator("[data-label='Category'] .main-text")).toHaveText("Technical");
     });
 
     test("12. คอลัมน์ Publish Date แสดงวันที่เผยแพร่", async ({ page }) => {
@@ -281,9 +250,9 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await expect(rows.first().locator("[data-label='Article ID'] .main-text")).toHaveText("ART-043");
     });
 
-    test("16. ค้นหาด้วย category 'Watch 101' เจอ 1 แถว", async ({ page }) => {
+    test("16. ค้นหาด้วย category 'Technical' เจอ 1 แถว", async ({ page }) => {
       await goToArticles(page);
-      await page.locator("#article-search").fill("Watch 101");
+      await page.locator("#article-search").fill("Technical");
       await page.waitForTimeout(300);
       const rows = page.locator(".article-table .asset-row:not(.head)");
       await expect(rows).toHaveCount(1);
@@ -338,10 +307,10 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await expect(rows.first().locator("[data-label='Article ID'] .main-text")).toHaveText("ART-039");
     });
 
-    test("22. filter category = 'Watch 101' เจอ 1 แถว", async ({ page }) => {
+    test("22. filter category = 'Technical' เจอ 1 แถว", async ({ page }) => {
       await goToArticles(page);
       await openFilterBar(page, "article");
-      await pickCustomOption(page, "article-category-filter", "Watch 101");
+      await pickCustomOption(page, "article-category-filter", "Technical");
       await page.waitForTimeout(300);
       const rows = page.locator(".article-table .asset-row:not(.head)");
       await expect(rows).toHaveCount(1);
@@ -373,35 +342,35 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
   // ==================== E. ARTICLES LIST — ROW MENU / ACTIONS ====================
 
   test.describe("Articles List — row menu / actions", () => {
-    test("25. row menu ของ Draft (ART-042) มี View detail, Preview, Edit, Delete draft", async ({ page }) => {
+    test("25. row menu ของ Draft (ART-042) มี ดูรายละเอียด, ดูตัวอย่าง, แก้ไขบทความ, ลบ Draft", async ({ page }) => {
       await goToArticles(page);
       await openArticleRowMenu(page, "ART-042");
       const menu = page.locator(".asset-row[data-article-card='ART-042'] .row-menu-list");
-      await expect(menu.locator("button", { hasText: "View detail" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "Preview as FO" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "Edit article" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "Delete draft" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "ดูรายละเอียด" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "ดูตัวอย่าง" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "แก้ไขบทความ" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "ลบ Draft" })).toBeVisible();
     });
 
-    test("26. row menu ของ Scheduled (ART-044) มี Cancel schedule", async ({ page }) => {
+    test("26. row menu ของ Scheduled (ART-044) มี ยกเลิกกำหนดเผยแพร่", async ({ page }) => {
       await goToArticles(page);
       await openArticleRowMenu(page, "ART-044");
       const menu = page.locator(".asset-row[data-article-card='ART-044'] .row-menu-list");
-      await expect(menu.locator("button", { hasText: "Cancel schedule" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "ยกเลิกกำหนดเผยแพร่" })).toBeVisible();
     });
 
-    test("27. row menu ของ Published (ART-043) มี Archive article", async ({ page }) => {
+    test("27. row menu ของ Published (ART-043) มี เก็บบทความเข้าคลัง", async ({ page }) => {
       await goToArticles(page);
       await openArticleRowMenu(page, "ART-043");
       const menu = page.locator(".asset-row[data-article-card='ART-043'] .row-menu-list");
-      await expect(menu.locator("button", { hasText: "Archive article" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "เก็บบทความเข้าคลัง" })).toBeVisible();
     });
 
-    test("28. row menu ของ Archived (ART-039) มี Restore article", async ({ page }) => {
+    test("28. row menu ของ Archived (ART-039) มี คืนบทความ", async ({ page }) => {
       await goToArticles(page);
       await openArticleRowMenu(page, "ART-039");
       const menu = page.locator(".asset-row[data-article-card='ART-039'] .row-menu-list");
-      await expect(menu.locator("button", { hasText: "Restore article" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "คืนบทความ" })).toBeVisible();
     });
   });
 
@@ -440,7 +409,7 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await goToArticles(page);
       await openArticleDetailByRowClick(page, "ART-043");
       await expect(page.locator("[data-back-article-list]")).toBeVisible();
-      await expect(page.locator("[data-back-article-list]")).toHaveAttribute("aria-label", "Back");
+      await expect(page.locator("[data-back-article-list]")).toHaveAttribute("aria-label", "กลับไป Articles");
     });
 
     test("33. กดย้อนกลับจาก Article Detail กลับไป Articles list", async ({ page }) => {
@@ -583,8 +552,8 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await page.locator("[data-article-preview-open]").click();
       await page.waitForTimeout(300);
       await expect(page.locator(".article-preview-stack")).toBeVisible();
-      await expect(page.locator(".article-preview-label", { hasText: "Preview hero article" })).toBeVisible();
-      await expect(page.locator(".article-preview-label", { hasText: "Preview article detail" })).toBeVisible();
+      await expect(page.locator(".article-preview-label", { hasText: "ตัวอย่างบทความ Hero" })).toBeVisible();
+      await expect(page.locator(".article-preview-label", { hasText: "ตัวอย่างรายละเอียดบทความ" })).toBeVisible();
     });
 
     test("47. ปิด preview modal ได้", async ({ page }) => {
@@ -673,9 +642,9 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await expect(rows).toHaveCount(1);
     });
 
-    test("57. ค้นหาด้วย Name 'Buying' เจอ 1 แถว", async ({ page }) => {
+    test("57. ค้นหาด้วย Name 'Guides' เจอ 1 แถว", async ({ page }) => {
       await goToCategories(page);
-      await page.locator("#category-search").fill("Buying");
+      await page.locator("#category-search").fill("Guides");
       await page.waitForTimeout(300);
       const rows = page.locator(".category-table .asset-row:not(.head)");
       await expect(rows).toHaveCount(1);
@@ -706,7 +675,7 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await pickCustomOption(page, "category-sort", "name");
       await page.waitForTimeout(300);
       const firstRow = page.locator(".category-table .asset-row:not(.head)").first();
-      await expect(firstRow.locator(".desktop-user-name")).toHaveText("Buying Guide");
+      await expect(firstRow.locator(".desktop-user-name")).toHaveText("Collector");
     });
 
     test("61. reset ล้าง search/filter/sort กลับค่า default", async ({ page }) => {
@@ -726,29 +695,29 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
   // ==================== K. CATEGORIES — ROW MENU / DETAIL MODAL ====================
 
   test.describe("Categories — row menu / detail modal", () => {
-    test("62. row menu ของ Active category ที่มี articles (CAT-001) มี View detail, Edit Category (ไม่มี Set inactive/Delete)", async ({ page }) => {
+    test("62. row menu ของ Active category ที่มี articles (CAT-001) มี ดูรายละเอียด, แก้ไข Category (ไม่มี ปิดใช้งาน/ลบ Category)", async ({ page }) => {
       await goToCategories(page);
       await openCategoryRowMenu(page, "CAT-001");
       const menu = page.locator(".asset-row[data-category-card='CAT-001'] .row-menu-list");
-      await expect(menu.locator("button", { hasText: "View detail" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "Edit Category" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "Set inactive" })).toHaveCount(0);
-      await expect(menu.locator("button", { hasText: "Delete category" })).toHaveCount(0);
+      await expect(menu.locator("button", { hasText: "ดูรายละเอียด" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "แก้ไข Category" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "ปิดใช้งาน" })).toHaveCount(0);
+      await expect(menu.locator("button", { hasText: "ลบ Category" })).toHaveCount(0);
     });
 
-    test("63. row menu ของ Inactive category ที่ไม่มี articles (CAT-007) มี Set active และ Delete category", async ({ page }) => {
+    test("63. row menu ของ Inactive category ที่ไม่มี articles (CAT-007) มี เปิดใช้งาน และ ลบ Category", async ({ page }) => {
       await goToCategories(page);
       await openCategoryRowMenu(page, "CAT-007");
       const menu = page.locator(".asset-row[data-category-card='CAT-007'] .row-menu-list");
-      await expect(menu.locator("button", { hasText: "Set active" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "Delete category" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "เปิดใช้งาน" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "ลบ Category" })).toBeVisible();
     });
 
-    test("64. row menu ของ Inactive category (CAT-007) มี Set active", async ({ page }) => {
+    test("64. row menu ของ Inactive category (CAT-007) มี เปิดใช้งาน", async ({ page }) => {
       await goToCategories(page);
       await openCategoryRowMenu(page, "CAT-007");
       const menu = page.locator(".asset-row[data-category-card='CAT-007'] .row-menu-list");
-      await expect(menu.locator("button", { hasText: "Set active" })).toBeVisible();
+      await expect(menu.locator("button", { hasText: "เปิดใช้งาน" })).toBeVisible();
     });
 
     test("65. คลิก View detail เปิด category detail modal", async ({ page }) => {
@@ -766,8 +735,8 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await page.locator(".asset-row[data-category-card='CAT-001'] .row-menu-list [data-category-open='CAT-001']").click();
       await page.waitForTimeout(300);
       const modal = page.locator("#user-action-modal-body");
-      await expect(modal.locator("input").nth(0)).toHaveValue("Buying Guide");
-      await expect(modal.locator("input").nth(1)).toHaveValue("buying-guide");
+      await expect(modal.locator("input").nth(0)).toHaveValue("Guides");
+      await expect(modal.locator("input").nth(1)).toHaveValue("guides");
       await expect(modal.locator("input").nth(2)).toHaveValue("Active");
     });
 
@@ -819,336 +788,8 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await page.waitForTimeout(300);
       await expect(page.locator("#user-action-modal-title")).toHaveText("Edit Category");
       const form = page.locator("[data-category-form]");
-      await expect(form.locator("[name='name']")).toHaveValue("Buying Guide");
-      await expect(form.locator("[name='slug']")).toHaveValue("buying-guide");
-    });
-  });
-
-  // ==================== M. REPORTED ARTICLES LIST — RENDERING ====================
-
-  test.describe("Reported Articles List — rendering", () => {
-    test("72. ไม่มี KPI summary card (reported articles ไม่มี summary)", async ({ page }) => {
-      await goToReportedArticles(page);
-      await expect(page.locator("#summary-grid")).toBeEmpty();
-    });
-
-    test("73. ตาราง head มี 9 คอลัมน์ครบ", async ({ page }) => {
-      await goToReportedArticles(page);
-      const head = page.locator(".reported-board-table .asset-row.head");
-      await expect(head.locator("div").nth(0)).toHaveText("Report ID");
-      await expect(head.locator("div").nth(1)).toHaveText("Article");
-      await expect(head.locator("div").nth(2)).toHaveText("Article Status");
-      await expect(head.locator("div").nth(3)).toHaveText("Status");
-      await expect(head.locator("div").nth(4)).toHaveText("Reported At");
-      await expect(head.locator("div").nth(5)).toHaveText("Report Reason");
-      await expect(head.locator("div").nth(6)).toHaveText("Reporters");
-      await expect(head.locator("div").nth(7)).toHaveText("Priority");
-      await expect(head.locator("div").nth(8)).toHaveText("Action");
-    });
-
-    test("74. แสดง 2 reports + footer range ถูกต้อง", async ({ page }) => {
-      await goToReportedArticles(page);
-      const rows = page.locator(".reported-board-table .asset-row:not(.head)");
-      await expect(rows).toHaveCount(2);
-      await expect(page.locator(".footer-range")).toContainText("1-2 จาก 2");
-    });
-
-    test("75. แถวแรก (sort latest default) คือ RPC-043 (reportedAt ล่าสุด)", async ({ page }) => {
-      await goToReportedArticles(page);
-      const firstRow = page.locator(".reported-board-table .asset-row:not(.head)").first();
-      await expect(firstRow.locator("[data-label='Report ID'] .main-text")).toHaveText("RPC-043");
-    });
-
-    test("76. status pill: Pending = amber, Closed = green", async ({ page }) => {
-      await goToReportedArticles(page);
-      const pendingRow = page.locator(".asset-row[data-board-report-card='RPC-043']");
-      await expect(pendingRow.locator(".pill.amber").first()).toContainText("Pending");
-      const closedRow = page.locator(".asset-row[data-board-report-card='RPC-039']");
-      await expect(closedRow.locator(".pill.green").first()).toContainText("Closed");
-    });
-
-    test("77. priority pill: High = red, Low = blue", async ({ page }) => {
-      await goToReportedArticles(page);
-      const highRow = page.locator(".asset-row[data-board-report-card='RPC-043']");
-      await expect(highRow.locator(".pill.red").first()).toContainText("High");
-      const lowRow = page.locator(".asset-row[data-board-report-card='RPC-039']");
-      await expect(lowRow.locator(".pill.blue").first()).toContainText("Low");
-    });
-
-    test("78. คอลัมน์ Reporters แสดงจำนวน reporters", async ({ page }) => {
-      await goToReportedArticles(page);
-      const row = page.locator(".asset-row[data-board-report-card='RPC-043']");
-      await expect(row.locator("[data-label='Reporters'] .main-text")).toHaveText("2");
-    });
-
-    test("79. คอลัมน์ Report Reason แสดงเหตุผล", async ({ page }) => {
-      await goToReportedArticles(page);
-      const row = page.locator(".asset-row[data-board-report-card='RPC-043']");
-      await expect(row.locator("[data-label='Report Reason'] .muted")).toHaveText("เนื้อหาไม่เหมาะสม");
-    });
-  });
-
-  // ==================== N. REPORTED ARTICLES LIST — SEARCH / FILTER / SORT / RESET ====================
-
-  test.describe("Reported Articles List — search / filter / sort / reset", () => {
-    test("80. ค้นหาด้วย Report ID 'RPC-043' เจอ 1 แถว", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator("#board-report-search").fill("RPC-043");
-      await page.waitForTimeout(300);
-      const rows = page.locator(".reported-board-table .asset-row:not(.head)");
-      await expect(rows).toHaveCount(1);
-    });
-
-    test("81. ค้นหาด้วย Article title 'Provenance' เจอ 1 แถว", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator("#board-report-search").fill("Provenance");
-      await page.waitForTimeout(300);
-      const rows = page.locator(".reported-board-table .asset-row:not(.head)");
-      await expect(rows).toHaveCount(1);
-    });
-
-    test("82. filter status = Pending เจอ 1 แถว (RPC-043)", async ({ page }) => {
-      await goToReportedArticles(page);
-      await openFilterBar(page, "board-report");
-      await pickCustomOption(page, "board-report-status-filter", "Pending");
-      await page.waitForTimeout(300);
-      const rows = page.locator(".reported-board-table .asset-row:not(.head)");
-      await expect(rows).toHaveCount(1);
-      await expect(rows.first().locator("[data-label='Report ID'] .main-text")).toHaveText("RPC-043");
-    });
-
-    test("83. filter status = Closed เจอ 1 แถว (RPC-039)", async ({ page }) => {
-      await goToReportedArticles(page);
-      await openFilterBar(page, "board-report");
-      await pickCustomOption(page, "board-report-status-filter", "Closed");
-      await page.waitForTimeout(300);
-      const rows = page.locator(".reported-board-table .asset-row:not(.head)");
-      await expect(rows).toHaveCount(1);
-      await expect(rows.first().locator("[data-label='Report ID'] .main-text")).toHaveText("RPC-039");
-    });
-
-    test("84. filter priority = High เจอ 1 แถว (RPC-043)", async ({ page }) => {
-      await goToReportedArticles(page);
-      await openFilterBar(page, "board-report");
-      await pickCustomOption(page, "board-report-priority-filter", "high");
-      await page.waitForTimeout(300);
-      const rows = page.locator(".reported-board-table .asset-row:not(.head)");
-      await expect(rows).toHaveCount(1);
-    });
-
-    test("85. sort = reporters → เรียงตามจำนวน reporter มากไปน้อย", async ({ page }) => {
-      await goToReportedArticles(page);
-      await openFilterBar(page, "board-report");
-      await pickCustomOption(page, "board-report-sort", "reporters");
-      await page.waitForTimeout(300);
-      const firstRow = page.locator(".reported-board-table .asset-row:not(.head)").first();
-      await expect(firstRow.locator("[data-label='Reporters'] .main-text")).toHaveText("3");
-    });
-
-    test("86. reset ล้าง search/filter/sort กลับค่า default", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator("#board-report-search").fill("RPC-043");
-      await page.waitForTimeout(200);
-      await openFilterBar(page, "board-report");
-      await pickCustomOption(page, "board-report-status-filter", "Pending");
-      await page.waitForTimeout(200);
-      await clickResetButton(page, "data-board-report-reset");
-      const rows = page.locator(".reported-board-table .asset-row:not(.head)");
-      await expect(rows).toHaveCount(2);
-      await expect(page.locator("#board-report-search")).toHaveValue("");
-    });
-  });
-
-  // ==================== O. REPORTED ARTICLES — ROW MENU ====================
-
-  test.describe("Reported Articles — row menu", () => {
-    test("87. row menu ของ Pending report (RPC-043) มี ดูรายละเอียด, View Article, ปิดรายงาน, แก้ไขบทความ, Archive article", async ({ page }) => {
-      await goToReportedArticles(page);
-      await openBoardReportRowMenu(page, "RPC-043");
-      const menu = page.locator(".asset-row[data-board-report-card='RPC-043'] .row-menu-list");
-      await expect(menu.locator("button", { hasText: "ดูรายละเอียด" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "View Article" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "ปิดรายงาน" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "แก้ไขบทความ" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "Archive article" })).toBeVisible();
-    });
-
-    test("88. row menu ของ Closed report (RPC-039) มีแค่ ดูรายละเอียด, View Article (ไม่มี action)", async ({ page }) => {
-      await goToReportedArticles(page);
-      await openBoardReportRowMenu(page, "RPC-039");
-      const menu = page.locator(".asset-row[data-board-report-card='RPC-039'] .row-menu-list");
-      await expect(menu.locator("button", { hasText: "ดูรายละเอียด" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "View Article" })).toBeVisible();
-      await expect(menu.locator("button", { hasText: "ปิดรายงาน" })).toHaveCount(0);
-      await expect(menu.locator("button", { hasText: "Archive article" })).toHaveCount(0);
-    });
-  });
-
-  // ==================== P. BOARD REPORT DETAIL ====================
-
-  test.describe("Board Report Detail", () => {
-    test("89. คลิกแถวเปิด Report Detail: breadcrumb + title + panel title + subtitle ถูกต้อง", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator("#page-title")).toHaveText("Report Detail");
-      await expect(page.locator("#crumb")).toHaveText("การดำเนินงาน / Content Management / Report Detail / RPC-043");
-      await expect(page.locator("#panel-title")).toHaveText("How to Check Provenance");
-      await expect(page.locator("#panel-subtitle")).toContainText("RPC-043");
-      await expect(page.locator("#panel-subtitle")).toContainText("reporter identity masked");
-    });
-
-    test("90. Report Detail มี section Reported Article, Reporter History, Admin Action History", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      const sections = page.locator(".report-detail-page h4");
-      await expect(sections.filter({ hasText: "Reported Article" })).toBeVisible();
-      await expect(sections.filter({ hasText: "Reporter History" })).toBeVisible();
-      await expect(sections.filter({ hasText: "Admin Action History" })).toBeVisible();
-    });
-
-    test("91. Reported Article section มี Report ID, Article ID, Article Title, Category, Article Status + View Article button", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      const refSection = page.locator(".report-detail-page .detail-section", { hasText: "Reported Article" });
-      await expect(refSection.locator(".detail-tile", { hasText: "Report ID" })).toBeVisible();
-      await expect(refSection.locator(".detail-tile", { hasText: "Article ID" })).toBeVisible();
-      await expect(refSection.locator(".detail-tile", { hasText: "Article Title" })).toBeVisible();
-      await expect(refSection.locator(".detail-tile", { hasText: "Category" })).toBeVisible();
-      await expect(refSection.locator(".detail-tile", { hasText: "Article Status" })).toBeVisible();
-      await expect(refSection.locator("[data-board-report-preview='RPC-043']")).toBeVisible();
-    });
-
-    test("92. Report Detail มีปุ่มย้อนกลับ 'กลับไป Reported Articles' (aria-label)", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator("[data-back-reported-board]")).toBeVisible();
-      await expect(page.locator("[data-back-reported-board]")).toHaveAttribute("aria-label", "Back");
-    });
-
-    test("93. กดย้อนกลับจาก Report Detail กลับไป Reported Articles list", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await page.locator("[data-back-reported-board]").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator("#page-title")).toHaveText("Reported Articles");
-      await expect(page.locator("#panel-title")).toHaveText("Reported Article List");
-    });
-
-    test("94. Pending report detail มีปุ่ม action: ปิดรายงาน, แก้ไขบทความ, Archive article", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator("[data-board-report-action='close-report']")).toBeVisible();
-      await expect(page.locator("[data-article-edit][data-board-report-edit-article='RPC-043']")).toBeVisible();
-      await expect(page.locator("[data-board-report-action='archive-article']")).toBeVisible();
-    });
-
-    test("95. Closed report detail ไม่มีปุ่ม action", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-039'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator("[data-board-report-action='close-report']")).toHaveCount(0);
-      await expect(page.locator("[data-board-report-action='archive-article']")).toHaveCount(0);
-    });
-
-    test("96. Admin Action History ของ RPC-039 แสดง 'เก็บบทความ' (Archive Article) และ 'รับรายงาน Board' (Report Received)", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-039'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      const auditSection = page.locator(".report-detail-page .detail-section", { hasText: "Admin Action History" });
-      await expect(auditSection).toBeVisible();
-      await expect(auditSection.locator("text=เก็บบทความ").first()).toBeVisible();
-      await expect(auditSection.locator("text=รับรายงาน Board").first()).toBeVisible();
-    });
-  });
-
-  // ==================== Q. BOARD REPORT — ACTION MODALS ====================
-
-  test.describe("Board Report — action modals", () => {
-    test("97. กด 'ปิดรายงาน' เปิด confirmation modal พร้อม reason + note + impact", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await page.locator("[data-board-report-action='close-report']").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator("#user-action-modal")).toHaveClass(/show/);
-      await expect(page.locator("#user-action-modal-title")).toHaveText("ยืนยันการปิดรายงาน");
-      await expect(page.locator("#board-report-action-note")).toBeVisible();
-      await expect(page.locator(".user-action-impact")).toBeVisible();
-    });
-
-    test("98. close report modal มีปุ่ม 'ยืนยันปิดรายงาน' และ 'ยกเลิก'", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await page.locator("[data-board-report-action='close-report']").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator("[data-board-report-action-confirm='close-report']")).toBeVisible();
-      const cancelBtn = page.locator("#user-action-modal .user-detail-action-btn", { hasText: "ยกเลิก" });
-      await expect(cancelBtn).toBeVisible();
-    });
-
-    test("99. กด 'Archive article' เปิด confirmation modal พร้อม reason + note + impact", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await page.locator("[data-board-report-action='archive-article']").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator("#user-action-modal")).toHaveClass(/show/);
-      await expect(page.locator("#user-action-modal-title")).toHaveText("ยืนยันการ Archive article");
-      await expect(page.locator("#board-report-action-note")).toBeVisible();
-      await expect(page.locator(".user-action-impact")).toBeVisible();
-    });
-
-    test("100. archive modal มีปุ่ม 'ยืนยัน Archive' และ 'ยกเลิก'", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await page.locator("[data-board-report-action='archive-article']").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator("[data-board-report-action-confirm='archive-article']")).toBeVisible();
-      const cancelBtn = page.locator("#user-action-modal .user-detail-action-btn", { hasText: "ยกเลิก" });
-      await expect(cancelBtn).toBeVisible();
-    });
-
-    test("101. ยืนยัน close report (success scenario) เปลี่ยน report เป็น Closed + เพิ่ม audit history", async ({ page }) => {
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await page.locator("[data-board-report-action='close-report']").click();
-      await page.waitForTimeout(300);
-      await setActionScenario(page, "board-report-action-scenario", "success");
-      await page.locator("[data-board-report-action-confirm='close-report']").click();
-      await page.waitForTimeout(500);
-      // report ควรเปลี่ยนเป็น Closed
-      const statusPill = page.locator(".report-detail-page .chips .pill.green").first();
-      await expect(statusPill).toContainText("Closed");
-      // Admin Action History ควรมี 'ปิดรายงาน' (Close Report)
-      const auditSection = page.locator(".report-detail-page .detail-section", { hasText: "Admin Action History" });
-      await expect(auditSection.locator("text=ปิดรายงาน").first()).toBeVisible();
-    });
-
-    test("102. ยืนยัน archive article (success scenario) เปลี่ยน article เป็น Archived + ปิด report", async ({ page }) => {
-      await goToReportedArticles(page);
-      // ใช้ RPC-043 ที่ยัง Pending
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await page.locator("[data-board-report-action='archive-article']").click();
-      await page.waitForTimeout(300);
-      await setActionScenario(page, "board-report-action-scenario", "success");
-      await page.locator("[data-board-report-action-confirm='archive-article']").click();
-      await page.waitForTimeout(500);
-      // report status ควรเป็น Closed
-      const statusPill = page.locator(".report-detail-page .chips .pill.green").first();
-      await expect(statusPill).toContainText("Closed");
-      // Admin Action History ควรมี 'เก็บบทความ' (Archive Article)
-      const auditSection = page.locator(".report-detail-page .detail-section", { hasText: "Admin Action History" });
-      await expect(auditSection.locator("text=เก็บบทความ").first()).toBeVisible();
+      await expect(form.locator("[name='name']")).toHaveValue("Guides");
+      await expect(form.locator("[name='slug']")).toHaveValue("guides");
     });
   });
 
@@ -1170,15 +811,6 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       const firstRow = page.locator(".category-table .asset-row:not(.head)").first();
       await expect(firstRow.locator(".mobile-user-card-title")).toBeVisible();
       await expect(firstRow.locator(".user-card-tag")).toHaveCount(1);
-      await page.close();
-    });
-
-    test("105. Reported Articles list mobile: แสดง mobile card พร้อม Report ID, status, priority", async ({ browser }) => {
-      const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-      await goToReportedArticles(page);
-      const firstRow = page.locator(".reported-board-table .asset-row:not(.head)").first();
-      await expect(firstRow.locator(".mobile-user-card-title")).toBeVisible();
-      await expect(firstRow.locator(".asset-card-tags .pill")).toHaveCount(3);
       await page.close();
     });
 
@@ -1208,19 +840,6 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await page.close();
     });
 
-    test("108. Reported Articles list mobile: filter bar ซ่อนอยู่ เปิดได้ด้วย toggle", async ({ browser }) => {
-      const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-      await goToReportedArticles(page);
-      const bar = page.locator(".user-filter-bar.content-mode");
-      const isOpen = await bar.getAttribute("data-filter-open");
-      expect(isOpen).toBe("false");
-      await page.locator("[data-board-report-filter-toggle]").click();
-      await page.waitForTimeout(200);
-      const isOpenAfter = await page.locator(".user-filter-bar.content-mode").getAttribute("data-filter-open");
-      expect(isOpenAfter).toBe("true");
-      await page.close();
-    });
-
     test("109. Article Detail mobile: แสดง detail page พร้อม sections", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
       await goToArticles(page);
@@ -1230,15 +849,6 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await page.close();
     });
 
-    test("110. Board Report Detail mobile: แสดง detail page พร้อม sections", async ({ browser }) => {
-      const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-      await goToReportedArticles(page);
-      await page.locator(".asset-row[data-board-report-card='RPC-043'] .asset-cell-primary").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator("#page-title")).toHaveText("Report Detail");
-      await expect(page.locator(".report-detail-page")).toBeVisible();
-      await page.close();
-    });
   });
 
   // ==================== S. VIEWPORT-CONDITIONAL TESTS ====================
@@ -1274,21 +884,6 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await page.close();
     });
 
-    test("113. Desktop (≥1280px): Reported Articles list แสดงตารางแบบ full grid", async ({ browser }) => {
-      const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-      await goToReportedArticles(page);
-      const isMobile = await page.evaluate(() => window.matchMedia("(max-width: 760px)").matches);
-      if (isMobile) {
-        await page.close();
-        return;
-      }
-      const table = page.locator(".reported-board-table");
-      await expect(table).toBeVisible();
-      const head = page.locator(".reported-board-table .asset-row.head");
-      await expect(head).toBeVisible();
-      await page.close();
-    });
-
     test("114. Desktop (≥1280px): Articles filter bar ปิดอยู่ default (ต้องเปิดเอง)", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
       await goToArticles(page);
@@ -1317,19 +912,6 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await page.close();
     });
 
-    test("116. Desktop (≥1280px): Reported Articles filter bar ปิดอยู่ default", async ({ browser }) => {
-      const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-      await goToReportedArticles(page);
-      const isMobile = await page.evaluate(() => window.matchMedia("(max-width: 760px)").matches);
-      if (isMobile) {
-        await page.close();
-        return;
-      }
-      const bar = page.locator(".user-filter-bar.content-mode");
-      const isOpen = await bar.getAttribute("data-filter-open");
-      expect(isOpen).toBe("false");
-      await page.close();
-    });
   });
 
   // ==================== T. CROSS-MODULE CONSISTENCY ====================
@@ -1349,20 +931,11 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await expect(page.locator(".footer-range")).toContainText("จาก");
     });
 
-    test("119. Reported Articles list ใช้ footer-range pattern เดียวกับ module อื่น", async ({ page }) => {
-      await goToReportedArticles(page);
-      await expect(page.locator(".footer-range")).toBeVisible();
-      await expect(page.locator(".footer-range")).toContainText("แสดง");
-      await expect(page.locator(".footer-range")).toContainText("จาก");
-    });
-
     test("120. ทุก list ใช้ row-menu pattern เดียวกัน (details > summary + row-menu-list)", async ({ page }) => {
       await goToArticles(page);
       await expect(page.locator(".article-table .row-menu > summary")).toHaveCount(6);
       await goToCategories(page);
       await expect(page.locator(".category-table .row-menu > summary")).toHaveCount(7);
-      await goToReportedArticles(page);
-      await expect(page.locator(".reported-board-table .row-menu > summary")).toHaveCount(2);
     });
 
     test("121. ทุก list ใช้ empty state 'ไม่พบข้อมูล' เหมือนกัน", async ({ page }) => {
@@ -1372,10 +945,6 @@ test.describe("QA-BO-005: Content Management (Articles, Categories, Reported Art
       await expect(page.locator(".detail-empty.user-empty")).toHaveText("ไม่พบข้อมูล");
       await goToCategories(page);
       await page.locator("#category-search").fill("ZZZNOTFOUND");
-      await page.waitForTimeout(300);
-      await expect(page.locator(".detail-empty.user-empty")).toHaveText("ไม่พบข้อมูล");
-      await goToReportedArticles(page);
-      await page.locator("#board-report-search").fill("ZZZNOTFOUND");
       await page.waitForTimeout(300);
       await expect(page.locator(".detail-empty.user-empty")).toHaveText("ไม่พบข้อมูล");
     });

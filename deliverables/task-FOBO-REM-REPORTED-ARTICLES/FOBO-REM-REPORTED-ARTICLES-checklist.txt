@@ -1,0 +1,18 @@
+FOBO-REM-REPORTED-ARTICLES — Manual Review Checklist (reviewed 2026-11-03)
+Reviewer: พี่มาเต็ม — verdict: ผ่านครบทุกเคส
+
+เคส 1 Nav — Content Management: PASS — submenu เหลือ Articles, Categories ไม่มี Reported Articles
+เคส 2 Dashboard — queue card + metric: PASS — ไม่มี card รายงานบทความ; Reported Items = 30 chips Assets 22/Users 5/Comments 3; content card เหลือ 3 tiles ไม่มี Reported
+เคส 3 Dashboard chip navigation: PASS — chip Assets 22 เปิด Reported Assets ได้ปกติ
+เคส 4 Articles list regression: PASS — filter bar content-mode ทำงานครบ search/filter/sort/page/reset ไม่ layout พัง
+เคส 5 Article editor return path: PASS — แก้ไข→ยกเลิก กลับ context เดิม ไม่มี dead return
+เคส 6 Categories regression: PASS — list + action menu/modal ใช้ได้
+เคส 7 Roles & Permissions ROL-008: PASS — ไม่มี Reported Articles/board.reports.*; description อ่าน "อนุมัติ publish, schedule และ archive พร้อม audit reason"
+เคส 8 Report queues อื่น regression: PASS — Reported Users/Assets/Comments list+detail+modal ใช้ได้เหมือนเดิม (board-report-reference-head shared class คงอยู่)
+เคส 9 Mobile 390px: PASS — nav 2 submenu, dashboard สะอาด, Articles card layout ไม่ล้น
+เคส 10 Dead-route check: PASS — ไม่มีทางเข้า Reported Articles/Board Report Detail เหลือ
+
+Automated checks (ผ่านแล้วก่อนส่งรีวิว):
+- grep bo-prototype.html: 0 refs boardReport*/Reported Articles/RPC-* (เหลือ board-report-reference-head shared)
+- Playwright smoke: content subs=["Articles","Categories"]; dashboard/role detail สะอาด; Reported Assets ใช้ได้; 0 console errors
+- grep BackOffice/: เหลือเฉพาะ changelog/version-history mentions

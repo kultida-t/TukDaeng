@@ -176,7 +176,6 @@ Recommended note format:
 - [ ] Category hero/list ต้องดึงจาก eligible Published Articles ของ active category นั้น โดยใช้ fallback ordering และหลีกเลี่ยงการซ้ำภายในหน้าเดียวกัน
 - [ ] Category active/inactive ต้องส่งผลต่อ FO category sidebar
 - [ ] Banner management เป็น future scope เฉพาะ campaign/promotion/event/sponsor/external link/non-article deep link และไม่อยู่ใน Phase 1 Board Main
-- [ ] Report article จาก FO ต้องเข้า BO Reported Articles handoff และไม่ทำให้ article หายทันที
 - [ ] Publish/archive/category actions ต้อง audit-log พร้อม before/after state
 - [ ] Article editor และ preview ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
@@ -429,7 +428,7 @@ Recommended note format:
 - [ ] Settings submenu ต้องมี `Roles & Permissions` สำหรับ role templates และ module/action policy
 - [ ] Roles & Permissions policy ต้องกำหนด canonical permission taxonomy/level, baseline matrix ตาม 8 System Roles และ Phase 1 action catalog 40 keys; Role Detail แสดงเฉพาะ granted action names โดยไม่แสดง key/level แต่ enforcement ต้องใช้ explicit key ทั้ง UI/API/service
 - [ ] Phase ปัจจุบันสร้าง Custom Role แบบ `from_scratch` เท่านั้น ไม่มี `Copy`/`Clone`/`Duplicate` หรือ source-template selector และต้องเก็บ permission key แบบ explicit; ห้ามผูกสิทธิ์เฉพาะรายบุคคลกับ Admin account โดยตรง
-- [ ] Content role split ต้องรองรับ `Content Editor` สำหรับ draft authoring และ `Content Publisher` สำหรับ publish/schedule/archive/Reported Articles actions
+- [ ] Content role split ต้องรองรับ `Content Editor` สำหรับ draft authoring และ `Content Publisher` สำหรับ publish/schedule/archive actions
 - [ ] Permission change ต้องมี confirmation, reason, before/after diff และ audit log
 - [ ] Production Change Role contract ต้อง enforce critical safeguards ที่ API/service และ UI เมื่อมี surface นั้น: ห้าม self-change, ห้ามเปลี่ยน master admin, ห้ามทำให้ไม่มี active `Super Admin`, ห้ามทำให้ไม่มี account ที่จัดการ role/admin recovery ได้, ห้าม assign Custom Role ที่ inactive/invalid และต้อง block role change ของ account status ที่ไม่อนุญาต; current protected Admin Accounts UI ยังคงเฉพาะ 8 System Roles
 - [ ] ทุกคำขอ Change Role ต้องเขียน `ADMIN_ACCOUNT_ROLE_CHANGE` ใน transaction เดียวกับ role persistence: เก็บ event/reference/correlation, immutable actor/target IDs + account revision, actor Role ID/revision, old/new Role ID/revision + name snapshot + permission diff, reason, safeguard outcome, result และเวลา; ถ้า audit write ไม่สำเร็จต้องไม่ commit role ใหม่ และต้องไม่เก็บ secret/token/password

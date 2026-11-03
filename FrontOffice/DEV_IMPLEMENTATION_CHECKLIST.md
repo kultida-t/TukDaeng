@@ -241,7 +241,6 @@ Purpose:
 - [ ] Static list + end note — ไม่มี Infinite Scroll (D2)
 - [ ] Article Like + Article Share เป็น member-only — guest เจอ Member Sheet (S-03)
 - [ ] Article Share ใช้ in-app share sheet และไม่สร้าง notification
-- [ ] Report Article เป็น contract-only (S-04 — prototype menu dead); spec contract map เข้า Trust & Safety `Board Content` / target `Article`
 - [ ] Article Comment ไม่อยู่ใน V1 baseline
 - [ ] Public Article deep link ต้อง validate publish state, deletion state และ availability เมื่อเปิด (contract)
 - [ ] Shared Article deep link ของ unpublished/deleted/invalid ต้องแสดง Article Unavailable / Not Found state (contract)
@@ -263,8 +262,8 @@ Purpose:
 - [ ] Notification Settings default ON และ auto-save toggle โดยไม่มี Save button
 - [ ] Content preferences / what-you-see pages (Interested list, Not interested, Muted, Blocked) ตาม 13 spec
 - [ ] Change Password แสดงเฉพาะ Email / Password account — SSO-only ไม่เห็น active action
-- [ ] Help แสดง Contact support, Available daily, 09:00 - 22:00 (GMT+7), LINE `@mrfoxthailand`, Phone `(+66) 80-008-8088`, Email `service@mrfox.com`
-- [ ] Help contact rows เปิด LINE, dialer และ mail composer ตาม type
+- [ ] Help แสดงช่องทางตาม BO Support Center config เฉพาะ channel ที่ `Active` + availability/business hours ตาม config (seed Contact support, Available daily, 09:00 - 22:00 (GMT+7), LINE `@mrfoxthailand`, Phone `(+66) 80-008-8088`, Email `service@mrfox.com`)
+- [ ] Help contact rows เปิด external link (LINE/Facebook/Website), dialer (Phone) และ mail composer (Email) ตาม channel type
 - [ ] About app แสดง `TUK DAENG`, tagline, `Version 0.0.1`, `Mister Fox Co., Ltd.`, `Est. 2026`, Privacy Policy, Terms of Use และ Contact support
 - [ ] About app ต้องไม่แสดงข้อมูลบัญชี, Date joined, Change Password หรือ Delete Account
 - [ ] Privacy Policy และ Terms of Use เข้าถึงได้ (legal viewer — guest อ่านได้)

@@ -23,6 +23,7 @@ Workflow สำหรับจับเวลาและสรุปงาน�
 
 **สรุปงานทั่วไป:**
 - User asks: "สรุปงาน", "สรุปงานวันนี้", "บันทึกงาน", "สรุป session", "ทำอะไรบ้างวันนี้"
+- ถ้าผู้ใช้ขอสรุปรวม **ทั้งวันตอนเลิกงาน** เป็น copy block เดียวสำหรับส่งต่อ dev/ตอบหัวหน้า (รวม session note ของทั้งวัน + file path อ้างอิง) ให้ใช้ skill `daily-summary` แทน — skill นี้เน้นสรุปต่อ task/per-session
 
 **สรุป task เดี่ยว (per-task summary):**
 - User asks: "สรุป task นี้", "สรุปงาน task <task id>", "สรุป task <ชื่อ>", "ขอสรุป task ปัจจุบัน"

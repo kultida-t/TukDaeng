@@ -1,6 +1,6 @@
 # BO Specification Addendum - Tuk Daeng Back Office Coverage for FO
 
-**Version:** 1.6 Addendum  
+**Version:** 1.7 Addendum  
 **Purpose:** เติมรายละเอียด Back Office ให้รองรับ Front Office flows จาก PRD และ Use Cases ครบถ้วนขึ้น  
 **Reference:** BO_Spec v1.3, PRD v1.0, Use_Cases v1.0
 
@@ -33,8 +33,7 @@ BO Dashboard
 ├── Asset Management
 ├── Content Management
 │   ├── Articles
-│   ├── Categories
-│   └── Reported Articles
+│   └── Categories
 ├── Market Data
 │   ├── Dashboard
 │   ├── Brands & Models

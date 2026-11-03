@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO User Management |
 | Platform | Responsive Web Back Office |
-| Version | `BO-03-v1.3` |
+| Version | `BO-03-v1.4` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -504,7 +504,7 @@ Source ของรายงานผู้ใช้มีได้เฉพา�
 
 Report Detail ต้องไม่อ้าง source ประเภท asset, signup/auth หรือ deletion request
 
-Report reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 (FO = SoT) และ reporter submission เป็น reason-only — ไม่มี `Additional details` field จาก FO live stack (มีเฉพาะ Board Content contract)
+Report reason ใช้ canonical taxonomy `PM_REASONS` 9 เหตุผลตาม `00_GLOBAL_RULES_MODULE.md` §11 (FO = SoT) และ reporter submission เป็น reason-only — ไม่มี `Additional details` field จาก FO live stack
 
 Source `Chat` เก็บเฉพาะ thread reference สำหรับ support ตามทีหลัง ไม่เก็บและไม่แสดง message transcript ใน report detail (ตาม IG model — canonical contract ใน `00_GLOBAL_RULES_MODULE.md` §11)
 

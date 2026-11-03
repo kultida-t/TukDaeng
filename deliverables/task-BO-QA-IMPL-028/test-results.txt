@@ -1,0 +1,32 @@
+QA-BO-028 — tests/qa-bo-028-delivery-logs.spec.js
+================================================
+
+Date: 2026-11-03
+Command: npx playwright test tests/qa-bo-028-delivery-logs.spec.js
+Result: 51 cases x 4 projects (desktop-1440 / desktop-1280 / tablet-768 / mobile-390)
+        188 passed / 16 skipped (viewport-conditional) / 0 failed
+
+Coverage (อ้างพฤติกรรมจริงใน bo-prototype.html — ไม่แตะ prototype):
+- Navigation (6): Settings > Delivery Logs submenu, list mode + crumb, page/panel title,
+  no KPI cards, submenu active, filter action buttons (viewport-aware)
+- List rendering & pagination (9): 7-col header, 10/page, footer range, default latest sort
+  (id desc → DLV-WA-1050), row fields+split Source/Recipient, pill colors
+  (Sent green/Retry amber/Email blue/Push purple), no row menu (read-only), pager prev/next
+- Search (7): Delivery ID / Event / Source / Recipient / tag+detail / status text / empty state
+- Filter + Sort (7): status Sent=10/Retry=2, channel Email=11/Push=1, combine,
+  sort oldest (DLV-ACCT-008-INV-001) + latest
+- Reset + persistence (3): reset restores default, search/filter persist across modal open/close
+- Read-only detail modal (9): row click → modal title=id + subtitle=event, 8 confirm rows
+  (Source/Recipient/Channel/Status/Priority/Detail/Tags/Admin note), values per seed,
+  Tags chips ไม่รวม Email/Push/FCM, Retry queued chip + note, Push channel + priority กลาง,
+  no action footer, close X, owner edge case ไม่มี " / " → Source '-'
+- Delivery ID patterns + jump links (4): DLV-DEL-*/DLV-ACCT-*/DLV-WA-*,
+  jump จาก Deletion History → list กรอง + modal, jump จาก Admin Detail history,
+  jump id ไม่พบ → กรองแต่ไม่เปิด modal
+- Responsive (6): mobile filter toggle, mobile card (primary+status/channel pills+meta,
+  cells hidden), card click → modal, mobile pager prev/next, desktop filter always visible
+
+Fixes applied during iteration (expected ปรับตามพฤติกรรมจริง):
+- Email channel = 11 rows แต่ page 1 โชว์ 10 → assert footer "จาก 11"
+- modal innerHTML escape & เป็น &amp; → assert substring ที่ไม่มี &
+- splitDeliverySourceRecipient ไม่ expose global → ยัด row ผ่าน moduleData + render จริง

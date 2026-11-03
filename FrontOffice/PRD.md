@@ -226,8 +226,6 @@
 - บทความถูกสร้างและจัดการโดย Admin ผ่าน Back Office
 - ผู้ใช้ทั่วไปอ่านได้เสรี (รวม guest); Share/Like เป็น member-only
 - Article Comment ไม่อยู่ใน FO V1
-- Report article เป็น contract-only (S-04 — prototype menu dead); spec contract ส่งเข้า Trust & Safety เป็น report type `Board Content` และ target type `Article`
-- Report article สำเร็จต้องไม่ทำให้บทความหายทันที
 
 ---
 

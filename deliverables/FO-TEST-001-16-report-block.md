@@ -158,7 +158,7 @@
 | TRS-056 | own post ⋯ ไม่มี Report | MEMBER | NEGATIVE | โพสต์ตัวเอง | เปิด ⋯ บนโพสต์ตัวเอง | เมนูตัวเอง = Archive / Comments on-off / Edit / Mark as sold / Pin / Delete — **ไม่มี** `รายงาน`/`Report` | — | MED | |
 | TRS-057 | ไม่มี path report ตัวเอง | MEMBER | NEGATIVE | sign in | หาทาง report ตัวเอง: own profile menu · own comment popover · own post ⋯ | ไม่มี Report entry ชี้ตัวเองเลย (own profile menu = Settings; own comment popover = Delete เท่านั้น) | — | LOW | |
 | TRS-058 | report ซ้ำ target เดิม | MEMBER | EDGE | report `P-RP` ไปแล้ว | เปิด flow อีกครั้ง → เลือกเหตุผล → done | ทำซ้ำได้ปกติ — ไม่มี "already reported" guard/สถานะเคยรายงาน | — | LOW | |
-| TRS-059 | Report Board Content (contract-only) | MEMBER | NEGATIVE | เปิด board article ใด ๆ | หา report entry บนบทความ/⋯ article | V1 = **ไม่มี live entry** (contract-only — spec 12 §13/§19 D4) — build ที่มี dead-path toast `Report submitted. Thank you for notifying us.` = **FAIL** (copy ผิด contract; live toast ต้อง `Report submitted · thanks for letting us know`) | — | LOW | |
+| TRS-059 | Report Board Content (**REMOVED — e4 ตัดจาก V1 ทั้งระบบ 2026-11-03 / FO-PRD-v1.13**) | MEMBER | NEGATIVE | เปิด board article ใด ๆ | หา report entry บนบทความ/⋯ article | V1 = **ไม่มี entry และไม่มี contract แล้ว** — FO ลบ Report Article contract ทั้งหมดตาม FO-BO-001 e4 (เดิมคาดว่า contract-only) — build ที่มี report entry/toast บนบทความ = **FAIL** | — | LOW | |
 | TRS-060 | ไม่มี FO notification/report status | MEMBER | NEGATIVE | report สำเร็จแล้ว | เปิด Alerts + หา surface สถานะ report ของเรา | report ไม่สร้าง alerts item + ไม่มี "สถานะรายงาน" ฝั่ง FO ใน V1 (report = anonymous + no tracking) | — | MED | |
 | TRS-061 | BO handoff (contract) | MEMBER | NEGATIVE | report สำเร็จแล้ว | ตรวจจากฝั่ง FO ว่ามีอะไรบ่ง handoff | FO มีแค่ `report:done` + toast — review/24h SLA/audit trail อยู่ Back Office ทั้งหมด — ตรวจจาก FO ไม่ได้ → `BLOCK` ระบุ (ต้องเข้า BO) | — | MED | |
 
@@ -182,7 +182,7 @@
 | **task-breakdown §16** — ชื่อ output + TC ID sync แล้ว (`FO-TEST-001-16-report-block.md` + `TRS-nnn`) | resolved 2026-10-29 | — |
 | **`report:posts` empty + `report:done` back — resolved** — picker แสดง `ยังไม่มีโพสต์`/`No posts yet` เมื่อไม่มีโพสต์ (D7 resolved) · `report:done` มี `<` ทุก type ยกเว้น fromChat (D10 resolved) · grid ยังใช้ `pfTabPosts(u,"all")` (quirk 06) | resolved 2026-10-29 | TRS-016/018/026 |
 | **Report state ไม่ persist (D8)** — `rpFromChat`/`rpDelChat`/`rpTargetType`/`_rpDone`/`_rpSel` เป็น memory state — reload หาย — production = report records จริง | mock simplification | TRS-007/025 |
-| **Board report = contract-only** — `data-bdmore` dead wiring · copy `Report submitted. Thank you for notifying us.` ≠ live toast — unify เมื่อ entry implement (12 §13/§19 D4) | contract-only V1 | TRS-059 |
+| **Board report — REMOVED ตาม e4** — Report Article/`Board Content` ถูกตัดจาก V1 ทั้งระบบ (FO-BO-001 e4, FO-PRD-v1.13, 2026-11-03) — contract `12` §13/§19 D4 ถูกลบแล้ว ไม่ต้อง unify; TRS-059 ปรับ expected เป็น "ไม่มี entry/contract" | removed 2026-11-03 | TRS-059 |
 | **BO handoff เทสจาก FO ไม่ได้** — 24h SLA / review queue / audit trail = contract ฝั่ง BO — เคสรับได้แค่ "FO ไม่มีผลข้างเคียงผิด" | BLOCK ล่วงหน้า | TRS-061 |
 | **เขา block เรา ต้องเครื่องสอง** — unavailable page ฝั่งถูก block sync ผ่าน server เท่านั้น (prototype จำลองไม่ได้) — ไม่มี ACCT-2 → BLOCK | BLOCK ล่วงหน้า | TRS-047/048 |
 | **WA matching exclusion** — trigger match จริงต้องมีโพสต์ใหม่จากอีกบัญชี — ไม่มีช่องทาง → BLOCK | BLOCK ล่วงหน้า | TRS-041 |
@@ -204,7 +204,7 @@
 | state `blocked` (chat) | blocked bar + chip + send disabled | TRS-044, 045 | |
 | `pf-more` viewer ⋯ | Report/Block/Unblock/About/Copy/Share | TRS-011, 035, 051 | entries — anatomy → FO-TEST-12 |
 | `blocked` settings list | row + unblock dialog | TRS-051, 062 | list anatomy → FO-TEST-15 |
-| board `data-bdmore`/report | dead entry — contract-only | TRS-059 | |
+| board `data-bdmore`/report | dead entry — **REMOVED ตาม e4 (FO-PRD-v1.13)** | TRS-059 | |
 | guest gate (report/block subset) | Member Sheet ก่อน handler | TRS-001, 020, 055 | matrix เต็ม → FO-TEST-17 |
 | block impact | feed/search/WA/follow/comments/keep-page/unavailable | TRS-039..049 | 00_GLOBAL §13 + S-13 |
 | persist/ภาษา/dark | kill · sign-out · เครื่อง B · TH/EN · dark | TRS-062..065 | |

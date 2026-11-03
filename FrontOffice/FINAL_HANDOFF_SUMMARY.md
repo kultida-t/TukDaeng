@@ -47,7 +47,7 @@
 
 - Delete Chat behavior แบบละเอียด: locked ใน Chat Module แล้ว คือซ่อนจาก Chat List เฉพาะฝั่งผู้กด ไม่ลบ server history ไม่มี restore UI และมี swipe action (pin/mute/hide/delete) ตาม spec ล่าสุด
 - Share channel implementation: recommendation คือ system share sheet พร้อม fallback copy public deep link และไม่สร้าง notification; Share เป็น member-only ทุก surface — guest กด Share เจอ Member Sheet (S-03)
-- Article Comment / Report Article: locked แล้ว คือไม่เปิด Article Comment ใน FO V1; Report Article เป็น contract-only (S-04 — prototype menu dead) map เข้า Trust & Safety `Report Board Content`
+- Article Comment / Report Article: locked แล้ว คือไม่เปิด Article Comment ใน FO V1; Report Article ถูกตัดออกจาก V1 ทั้งระบบ (FO-BO-001 e4 — ตัดสิน 2026-11-03)
 - Delete Account retention / grace period policy: locked V1 rule คือ two-page flow (terms → reason → password → scheduled → guest), soft delete/deactivate หลัง confirm, revoke session ทันที, กลับไป pre-auth และ login-to-restore ภายใน grace period 30 วันก่อน hard delete/anonymization ตาม policy (S-02/S-27)
 - Full Back Office PRD: เริ่มหลัง FO baseline, Dev checklist และ QA checklist ครบ/นิ่งแล้วเท่านั้น
 

@@ -335,7 +335,6 @@ Blocked profile page แสดง Instagram-style blocked state (S-13 — ไม
 - Asset
 - User
 - Comment
-- Board Content
 
 ### Admin Moderation
 

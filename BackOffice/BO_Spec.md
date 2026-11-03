@@ -1,8 +1,8 @@
 # BO Specification — ตึกแดง Back Office System
-**เวอร์ชัน:** 1.4  
+**เวอร์ชัน:** 1.5  
 **วันที่:** พฤศจิกายน 2568  
 **ผู้ใช้งาน:** Admin ของระบบตึกแดง
-**อัปเดตจาก:** v1.3 → v1.4 (FO-BO-001 remediation กลุ่ม a — article category เปลี่ยนเป็น FO magazine model ตาม GAP-02)
+**อัปเดตจาก:** v1.4 → v1.5 (FO-BO-001 e4 follow-up — ถอด Reported Articles queue/Board Report Detail ออกจาก BO prototype และ spec)
 
 ---
 
@@ -29,8 +29,7 @@ BO Dashboard
 ├── Asset Management (จัดการสินทรัพย์)
 ├── Content Management (จัดการเนื้อหา)
 │   ├── Articles (บทความ Board)
-│   ├── Categories (หมวดหมู่บทความ)
-│   └── Reported Articles (รายงานบทความที่ถูกแจ้ง)
+│   └── Categories (หมวดหมู่บทความ)
 ├── Market Data (ข้อมูลตลาด)
 │   ├── Dashboard
 │   ├── Brands & Models
