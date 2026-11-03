@@ -1,0 +1,34 @@
+FOBO-DEC-BOARD-REPORT-V1 — Task Evidence
+========================================
+Task: 86aa0b14 (FOBO-DEC-BOARD-REPORT-V1) — done 2026-11-03
+Decision: e4 approved — ตัด Report Article/Board Content ออกจาก V1 ทั้งระบบ (ไม่ใช่ contract-only)
+Commit: 2e605fd "Cut Report Article/Board Content from V1 (FO-BO-001 e4)" — 22 files, +79/-132
+
+FO spec (baseline FO-PRD-v1.13):
+- FrontOffice/12_BOARD_MODULE.md — ลบ §13 Report contract + Boundary + AC-BOARD-016 + refs; D4→REMOVED
+- FrontOffice/15_TRUST_SAFETY_MODULE.md — ลบ report type Board Content + AC-TS-009
+- FrontOffice/00_GLOBAL_RULES_MODULE.md — report types → Asset/User/Comment
+- FrontOffice/11_SOCIAL_MODULE.md — ลบ board data-bdact dead refs
+- FrontOffice/18_ADMIN_SCOPE_NOTE.md — ลบ Board Content (responsibilities/sources/AC-ADMIN-003)
+- FrontOffice/TukDaeng_Master_Product_Definition.md — S-04 → superseded
+- FrontOffice/PRD.md, FO_Functional_PRD.md, README_MODULE_INDEX.md, FINAL_HANDOFF_SUMMARY.md
+- FrontOffice/QA_TEST_SCENARIO_CHECKLIST.md — ลบ QA-BOARD-008 + sync QA-BOARD-007/011, QA-TS-008/009
+- FrontOffice/DEV_IMPLEMENTATION_CHECKLIST.md — ลบ contract line
+- FrontOffice/DOCUMENT_VERSION.md — v1.12 → v1.13
+
+BO spec (BO-00-v1.3 / BO-03-v1.4 / BO-04-v1.5 / BO-05-v1.2):
+- BackOffice/00_GLOBAL_RULES_MODULE.md — §11: ตัด Board Content + reason set → legacy + schema note
+- BackOffice/03_USER_MANAGEMENT_MODULE.md, 04_ASSET_MANAGEMENT_MODULE.md — ลบ "(มีเฉพาะ Board Content contract)"
+- BackOffice/05_CONTENT_BOARD_MODULE.md — §14 pending removal + AC-011 obsolete + FO Board desc
+- BackOffice/README_MODULE_INDEX.md, BO_Spec.md (nav), BO_DEV_IMPLEMENTATION_CHECKLIST.md
+- BackOffice/DOCUMENT_VERSION.md — new version row
+
+Audit doc:
+- deliverables/FO-BO-001-coverage-audit.md — e4 resolved (§4e/§5/§6), R4→Removed, summary counts, moot remediation notes
+
+Follow-up:
+- Kanban task 355d0542 FOBO-REM-REPORTED-ARTICLES (todo) — ถอด queue จาก BO prototype (protected screen — ผู้ใช้อนุมัติแตะแล้ว)
+
+Notes:
+- docs-only — ไม่แตะ prototype/protected screens
+- verify: grep Board Content/bdmore/bdact/AC-TS-009/AC-BOARD-016/S-04/QA-BOARD-008 ใน FrontOffice+BackOffice → เหลือเฉพาะ ref ตั้งใจ (dead-code AC, historical version log, pending-removal notes)
