@@ -300,13 +300,28 @@
           "role": "assistant",
           "timestamp": "2026-11-04T09:04:07+07:00",
           "summary": "บันทึก final session note PLN-005 เรียบร้อย แจ้ง blog draft 3 แบบที่ยังค้าง"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-04T16:48:58+07:00",
+          "content": "[Snippet identifier=code_block]\nTask: PLN-005 เชื่อม Gemini Notebook MCP เข้า Devin + วิเคราะห์ BA coverage และวางแผน requirement pipeline\n\nหมวดหมู่งาน: Requirement\n\nเวลาเริ่ม: 04/11/2026 07:53\nเวลาจบ: 04/11/2026 09:03\nเวลาทำงาน: 1.2 ชม. (คำนวณจากช่วงเวลา session จริง — ไม่ใช่เวลาจับด้วย timer)\n\nเป้าหมาย/ผลลัพธ์ที่คาดหวัง\n\nเชื่อมแหล่ง requirements จากพี่คิงที่อยู่ใน Gemini Notebook เข้ากับ Devin ให้อ่านและเทียบ spec ได้ พร้อมวางแผนงาน requirement pipeline ลง kanban\n\nภาพรวม\n\nวิเคราะห์ช่องว่างงาน BA/SA ของโปรเจค ติดตั้งและเชื่อม NotebookLM เข้า Devin ผ่าน MCP จน query อ่าน requirement จาก notebook ของพี่คิงได้จริง แล้วต่อยอดวางแผนเป็น Mission 5-6 พร้อม execution tasks\n\nไฟล์ที่แก้ไข\n\n- .devin/mcp_config.local.json — เพิ่ม MCP server gemini-notebook-mcp\n\nรายละเอียดงานที่ทำ\n\n- วิเคราะห์ BA/SA coverage: ไล่เอกสารทั้งโปรเจคเทียบหน้าที่ BA 7+3 ข้อ พบว่าด้านระบบครบ (spec, prototype, test case, implementation checklist) แต่ขาด 6 ด้านธุรกิจ — BRD, As-Is/To-Be process map, prioritization framework, Data Dictionary รวม, UAT sign-off, Release/Change Management\n- วางแผน workflow ทีม 2 คน + AI: สรุปปัญหาจริงคือ fact กระจายหลายเอกสารที่ต้อง sync กัน แนวทางคือ consolidate อำนาจให้ fact อยู่ที่เดียว ไม่ใช่รวมไฟล์เป็นเล่มเดียว\n- ติดตั้ง toolchain: ลง uv + Python 3.12 + notebooklm-mcp-cli 0.15.9 (ต้อง pin 3.12 เพราะเครื่องมี Application Control block Cython build บน 3.15)\n- เชื่อมและพิสูจน์การใช้งานจริง: เพิ่ม gemini-notebook-mcp ใน Devin config, login Google ผ่าน Chrome (รอบแรกค้าง ลอง Edge ผ่านแล้ว retry Chrome สำเร็จ), query notebook \"review app tukdaeng 09/10/2026\" ดึง requirement ภาษาไทยได้ครบ\n- วางแผนงานต่อเนื่อง: สร้าง Mission 5 (requirements intake + gap analysis, 8 ชม.) และ Mission 6 (doc restructure, 4 ชม.) พร้อม 12 execution tasks สถานะ todo\n[/Snippet] สรุปแผนงานใหม่ให้ตรงตาม  โดยอ่านเงื่อนไขข้อมูล skill ให้ครบทุกบรรทัด ห้ามคิดเองตอบเอง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:49:12+07:00",
+          "summary": "แจ้งจะอ่าน skill ทั้งไฟล์ให้ครบก่อนแก้สรุป"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:49:47+07:00",
+          "summary": "แก้สรุป PLN-005 ให้ตรงเงื่อนไข skill — ใช้ Case B (standalone ไม่มี Mission Mapping) เนื้อหาเป้าหมาย/ภาพรวม/รายละเอียดเป็นชุดเดียวกันทั้งสอง block"
         }
       ]
     },
     {
       "session_id": "session-002",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "REQ-001",
       "mission": "Mission 5 — นำ Requirements จาก Gemini Notebook มาเทียบแล้วอัปเดต spec/prototype",
       "objective": null,
@@ -425,7 +440,7 @@
     {
       "session_id": "session-003",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "REQ-002",
       "mission": "Mission 5 — นำ Requirements จาก Gemini Notebook มาเทียบแล้วอัปเดต spec/prototype",
       "objective": null,
@@ -509,7 +524,7 @@
     {
       "session_id": "session-004",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "REQ-010",
       "mission": "Mission 5 — นำ Requirements จาก Gemini Notebook มาเทียบแล้วอัปเดต spec/prototype",
       "objective": null,
@@ -798,7 +813,7 @@
     {
       "session_id": "session-005",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "REQ-011",
       "mission": "Mission 5 — นำ Requirements จาก Gemini Notebook มาเทียบแล้วอัปเดต spec/prototype",
       "objective": null,
@@ -857,7 +872,7 @@
     {
       "session_id": "session-006",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "REQ-012",
       "mission": "Mission 5 — นำ Requirements จาก Gemini Notebook มาเทียบแล้วอัปเดต spec/prototype",
       "objective": null,
@@ -936,7 +951,7 @@
     {
       "session_id": "session-007",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "REQ-020",
       "mission": "Mission 5 — นำ Requirements จาก Gemini Notebook มาเทียบแล้วอัปเดต spec/prototype",
       "objective": null,
@@ -1170,7 +1185,7 @@
     {
       "session_id": "session-008",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "REQ-021",
       "mission": "Mission 5 — นำ Requirements จาก Gemini Notebook มาเทียบแล้วอัปเดต spec/prototype",
       "objective": null,
@@ -1289,7 +1304,7 @@
     {
       "session_id": "session-009",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "FO-TEST-002",
       "mission": "Mission 5 — นำ Requirements จาก Gemini Notebook มาเทียบแล้วอัปเดต spec/prototype",
       "objective": null,
@@ -1498,7 +1513,7 @@
     {
       "session_id": "session-010",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "FO-SPEC",
       "mission": "Mission 5 — นำ Requirements จาก Gemini Notebook มาเทียบแล้วอัปเดต spec/prototype",
       "objective": null,
@@ -1667,7 +1682,7 @@
     {
       "session_id": "session-011",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "DOC-010",
       "mission": "Mission 6: Doc Restructure & Single Source of Truth",
       "objective": null,
@@ -1801,7 +1816,7 @@
     {
       "session_id": "session-012",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "DOC-011",
       "mission": "Mission 6: Doc Restructure & Single Source of Truth",
       "objective": null,
@@ -2621,7 +2636,7 @@
     {
       "session_id": "session-017",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "REQ-030, DOC-031",
       "mission": null,
       "objective": null,
@@ -2689,6 +2704,36 @@
           "role": "assistant",
           "timestamp": "2026-11-04T14:12:39+07:00",
           "summary": "เลือกงานถัดไปจาก DECISION_LOG §10 → DOC-032 triage open decisions พร้อม handoff prompt"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-04T16:52:52+07:00",
+          "content": "[Snippet identifier=code_block]\nTask: REQ-030 ปิด requirement record 20885c46 — verify NB-001–051 landed ครบแล้วอัปเดตสถานะ\n\nหมวดหมู่งาน: Requirement\n\nเวลาเริ่ม: 04/11/2026 14:03\nเวลาจบ: 04/11/2026 14:09\nเวลาทำงาน: 0.2 ชม.\n\nเป้าหมาย/ผลลัพธ์ที่คาดหวัง\n\nยืนยันว่า requirement ชุด 51 ข้อ (NB-001–051) ถูกนำไปใช้ครบทุกขั้นตอน แล้วปิด requirement record ให้สะท้อนสถานะจริง\n\nภาพรวม\n\nตรวจย้อนทั้ง pipeline ว่าผลวิเคราะห์ requirements ลงสู่ spec, prototype และ decision register จริงทุกข้อ พบว่าครบแล้วไม่มีอะไรค้าง จึงปิด record เป็น converted พร้อมปรับ living spec ให้ชี้ไปเอกสาร canonical แทนการเก็บข้อมูลซ้ำ\n\nไฟล์ที่แก้ไข\n\n- deliverables/REQ-030-verification.txt — หลักฐาน checklist ผล verify ทั้ง 6 ข้อพร้อม line refs\n\nรายละเอียดงานที่ทำ\n\n- Verify ผลวิเคราะห์: gap report มี verdict ครบ 7 กลุ่มพร้อม sign-off, spec delta 5 จุดลง spec จริง, prototype sync + lock notes ครบ\n- Verify decisions: DEC-43–48 ลง register + index กลาง; ข้อค้างสุดท้ายปิดตาม DEC-43/48\n- ปิด requirement record: สถานะ converted + living spec ชี้ canonical artifacts ตามหลัก fact อยู่ที่เดียว\n[/Snippet] รายละเอียดงานที่สรุปมา ไม่ตรงตาม  อ่าน skill ให้ครบถ้วนทุกบรรทัดอย่าคิดเองทำเอง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:53:18+07:00",
+          "summary": "รับทราบจะอ่าน skill ให้ครบทุกส่วนที่ยังไม่ได้อ่าน แล้วค่อยแก้ copy block ให้ตรง template"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:53:57+07:00",
+          "summary": "อ่านกฎ copy block ข้อ 1–26 แล้ว เหลือส่วนท้ายไฟล์ ขออ่านให้ครบตามคำสั่งก่อนแก้"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:54:28+07:00",
+          "summary": "อ่าน skill ครบแล้ว ระบุจุดผิด 4 ข้อ (เลขลอยไม่บอกที่มา, อ้าง ID ล้วน, เล่ากระบวนการแทนผล, ใช้ jargon mechanics) แล้วแก้ copy block REQ-030 + DOC-031 ให้ตรง template"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-04T16:56:50+07:00",
+          "content": "นี่คือสรุปตามที่บอกว่าสั้นๆ ส่งให้หัวหน้าอ่านแล้วหรอ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:57:00+07:00",
+          "summary": "ยอมรับว่าฉบับก่อนยาวเกิน ส่ง copy block ฉบับสั้นจริงใหม่ทั้ง REQ-030 และ DOC-031 ตามหลักหัวหน้าอ่านจบในไม่กี่วิ"
         }
       ]
     },
@@ -2889,7 +2934,7 @@
     {
       "session_id": "session-019",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": "DOC-033",
       "mission": null,
       "objective": null,
@@ -3650,7 +3695,7 @@
     {
       "session_id": "session-023",
       "tool": "Devin",
-      "project": "TukDaeng Back Office",
+      "project": "Tukdaeng app IOS",
       "task_id": null,
       "mission": "Mission 5 — นำ Requirements จาก Gemini Notebook มาเทียบแล้วอัปเดต spec/prototype",
       "objective": null,
@@ -3931,17 +3976,116 @@
           "role": "assistant",
           "timestamp": "2026-11-04T16:46:27+07:00",
           "summary": "พบ transcript stores ทั้ง Devin (`.db`) และ Antigravity (1 conversation) — เดี๋ยวหนูรัน extraction script ดึงข้อความของวันนี้ (2026-11-04, Asia/Bangkok) จากทั้งสองแหล่งค่ะ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:46:42+07:00",
+          "summary": "พบ 25 Devin sessions ของวันนี้ (Antigravity ไม่มีข้อความ) กำลังเช็กรูปแบบไฟล์ log เดิมให้ format ตรงกัน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:47:50+07:00",
+          "summary": "ไม่พบ secret จริง เตรียมเขียน summary ของ assistant messages ที่ยาวเกิน threshold"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:50:00+07:00",
+          "summary": "อ่านข้อความยาว 163 ข้อความครบ กำลังเขียน mapping summaries ประกอบเป็น JSON สุดท้าย"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:51:13+07:00",
+          "summary": "ไฟล์ถูกตัดกลางทาง (heredoc ยาวเกิน) แยกเขียน part 2 แล้ว merge เข้าด้วยกัน"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:53:56+07:00",
+          "summary": "ชื่อไฟล์เพี้ยนจาก escape ใน path แก้ชื่อให้ถูกแล้ว verify อีกรอบ"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T16:54:18+07:00",
+          "summary": "สรุปงานประจำวันเสร็จพร้อมสร้าง AI log: วันนี้ 8.15 ชม. 23 task เสร็จ ปิด Mission 5 + Mission 6 + ตั้งค่า AI Orchestration และสร้างไฟล์ 2026-11-04_ai-log.json"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-04T17:08:51+07:00",
+          "content": "upload AI Log ขึ้น Core Portal"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T17:09:01+07:00",
+          "summary": "หา API key กับ endpoint ของ Core Portal — upload_prompt_log ไม่อยู่ใน MCP server เลยเรียก HTTP API ตรง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T17:09:11+07:00",
+          "summary": "เจอ config: Core Portal = persona.univerza.co เตรียม POST ไฟล์ไป /api/agent/prompt-logs ด้วย autoCreateWorklog: false"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T17:09:20+07:00",
+          "summary": "API ตีกลับเพราะมี field พิเศษ source_db เกิน schema — ตัด field ที่ไม่อยู่ใน schema ออกแล้ว upload ใหม่"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T17:09:28+07:00",
+          "summary": "Upload สำเร็จ: 2026-11-04_devin_ai-log.json (upload id 78, ~323 KB, สถานะ PENDING, auto_worklog false, Gold 0) — ตัด field source_db/title ออกจากไฟล์ local ให้ตรง schema 2.0"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-04T18:00:59+07:00",
+          "content": "ai log เลือก project ยังไงวันนี้มีทำ Tukdaeng app IOS ด้วยแต่ทำไมมีแต่TukDaeng Back Office ที่บันทึกไป"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-04T18:12:06+07:00",
+          "content": "ai log เลือก project ยังไงวันนี้มีทำ Tukdaeng app IOS ด้วยแต่ทำไมมีแต่TukDaeng Back Office ที่บันทึกไป"
+        },
+        {
+          "role": "user",
+          "timestamp": "2026-11-04T18:13:08+07:00",
+          "content": "ai log ดึง  list_my_apps ยังไงวันนี้มีทำ Tukdaeng app IOS ด้วยแต่ทำไมมีแต่TukDaeng Back Office ที่บันทึกไป"
+        }
+      ]
+    },
+    {
+      "session_id": "session-026",
+      "tool": "Devin",
+      "project": "Tukdaeng app IOS",
+      "task_id": null,
+      "messages": [
+        {
+          "role": "user",
+          "timestamp": "2026-11-04T17:21:02+07:00",
+          "content": "ขอรายละเอียดเพิ่มเติมที่มีการปรับแก้ prototype fo กับ bo จะส่งให้เดฟหน่อยว่าปรับแก้อะไรไปบ้าง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T17:21:10+07:00",
+          "summary": "แจ้งจะดึง session notes, task activity และ git log ของวันนี้เพื่อสรุปสิ่งที่ปรับแก้ใน prototype FO/BO"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T17:21:18+07:00",
+          "summary": "ตรวจ diff ของ prototype commit ทั้งสองและไฟล์ evidence ที่เกี่ยวข้อง"
+        },
+        {
+          "role": "assistant",
+          "timestamp": "2026-11-04T17:21:43+07:00",
+          "summary": "สรุปการแก้ FO/BO prototype เป็น copy block ส่ง dev: commit 3c0e78d (REQ-021 ฝั่ง FO — WA button บน feed header, view counting ≥55%, system notification 3 subtypes + category filter, settings gear บนโปรไฟล์, CSS/comment sync) และ commit 81f2816 (DOC-035/DEC-51 ตัด consignment ออก BO prototype ~137 บรรทัด + ล้าง FO 8 บรรทัด) พร้อมรายการ spec/doc ที่ sync (BO module specs, FO specs, DECISION_LOG v1.3) และ commit refs 3c0e78d/81f2816/b3da428"
         }
       ]
     }
   ],
   "limitations": [
     "ข้อความและ timestamp ทั้งหมดดึงจาก transcript store ของ Devin Desktop (%APPDATA%DevinUseracp-messages*.db) — Tier 1 exact timestamps จาก _meta[\"cognition.ai/timestamp\"] แปลงเป็น +07:00",
-    "Antigravity transcript store (~/.gemini/antigravity/brain) ไม่มีข้อความของวันนี้ เลยไม่มี session จาก Antigravity",
-    "เช็ก core-portal MCP (list_my_apps) แล้ว: app ที่ตรงคือ \"TukDaeng Back Office\" (app id 60, project TUKDANG) — ongoing_missions ของทุก app ว่างเปล่า จึงใช้ชื่อ mission จาก kanban",
+    "Antigravity transcript store (~/.gemini/antigravity/brain) ไม่มีข้อความของวันนี้ เลยไม่มี session จาก Antigravity — เครื่องนี้ไม่มี transcript store ของ Cursor/Claude Code/Codex/Windsurf ด้วย ถ้ามีงานที่ทำใน IDE/เครื่องอื่นจะไม่ถูกจับใน log นี้",
+    "App mapping (owner ยืนยัน 2026-11-04): session ที่ artifact หลักอยู่ฝั่ง FO (FrontOffice/** specs, Prototypes/fo-flow/**, เล่มเทส FO, requirement NB-001–051 ของแอปลูกค้า, FO doc consolidation) map ไป \"Tukdaeng app IOS\" (app id 26); session ฝั่ง BO spec/prototype และงาน repo-level/meta/summary map ไป \"TukDaeng Back Office\" (app id 60) — ongoing_missions ของทุก app ว่างเปล่า จึงใช้ชื่อ mission จาก kanban",
     "task_id ตั้งตาม kanban task ที่ session นั้นทำงานโดยตรง (business task code ตามชื่อ task; task \"ตั้งค่า AI Orchestration workflow\" ไม่มี business code จึงใช้ kanban id 20be49a3; session ที่เป็นสรุป mission/ท้ายวันที่ไม่ผูก task ตั้งเป็น null)",
-    "รวมครบทั้ง 25 sessions ตาม work-session scope (ทุก session ของวันเป็นงานโปรเจกต์/รายงานงานจริง ไม่มี session ที่ต้องตัดออก)",
-    "session-025 (สรุปงานวันนี้และ AI Log — session ปัจจุบัน) นับรวมตามกฎ work reporting; session ยังดำเนินอยู่ขณะสแกน (~16:46) ข้อความหลังเวลานั้นยังไม่ถูกบันทึกในไฟล์นี้",
+    "รวม 26 sessions ตาม work-session scope — session-026 (17:21 สรุปการแก้ prototype FO+BO ส่ง dev) เพิ่มในรอบอัปเดตที่ 2; session 18:15 (ตรวจเงื่อนไข ai log + re-tag project) ตัดออกตาม work-session scope เพราะเป็น meta conversation เกี่ยวกับตัว log",
+    "อัปเดตรอบ 3 (~18:30): append ข้อความที่มาหลังสแกนแรก — session-001 +3 (user paste สรุป PLN-005 ขอแก้ format 16:48), session-017 +6 (user paste สรุป REQ-030 ขอแก้ตาม skill + ขอฉบับสั้น 16:52–16:57), session-025 +14 (ขั้นตอนสร้าง log, คำสั่ง upload 17:08, ผล upload id 78, และคำถามเรื่อง project mapping 18:00–18:13 ที่ไม่มี response ใน session นั้น)",
+    "สำคัญ: ไฟล์ที่ upload ขึ้น Core Portal ตอน 17:09 (upload id 78, \"2026-11-04_devin_ai-log.json\") เป็นเวอร์ชันก่อน re-tag project — ทุก session ในเวอร์ชันที่ upload ยังเป็น \"TukDaeng Back Office\" ทั้งหมด ต้อง upload ใหม่ถ้าต้องการให้ฝั่ง FO นับเป็น Tukdaeng app IOS",
     "ข้าม agent_thought (private reasoning) และ tool_call ตาม schema — มีเฉพาะ user_message verbatim และ agent_message ที่สรุป",
     "สแกน secrets ในข้อความ user แล้วไม่พบ credential จริง (คำว่า password ที่พบเป็นเนื้อหา spec ใน quoted artifact) — ไม่มี redaction"
   ],
