@@ -239,6 +239,7 @@
 
 ### [DEC-26] ตัดออกจาก V1
 - ALT-070 (system new-device login), WA-054 (self-match เป็น notification)
+- อัปเดต (2026-11-04): **ALT-070 superseded โดย DEC-48** — DEC-43 กลืน carve-out ฝั่งนี้ (new device login คืนเป็น security trigger ตัวหลักตาม spec 09 §14 · เคส ALT-070 restore ในเล่ม 10) — **WA-054 ยัง current** (ไม่สร้าง notification ให้ตัวเองเมื่อโพสต์ตัวเองตรงเงื่อนไข alert ตัวเอง)
 
 ### [DEC-27] คำตอบคำถาม C1–C6 (ตามข้อเสนอแนะ IG)
 - C1 ไม่จัดกลุ่มแกลเลอรีแชทตามวัน (CHAT-086 ยกเลิก)

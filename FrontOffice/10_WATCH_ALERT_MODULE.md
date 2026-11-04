@@ -482,7 +482,7 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 
 ## DEC-25 Amendments — Watch Alert (IG)
 
-- ไม่สร้าง watch row/notification ให้ตัวเองเมื่อโพสต์ตรงเงื่อนไขของตัวเอง (DEC-26)
+- ไม่สร้าง watch row/notification ให้ตัวเองเมื่อโพสต์ตรงเงื่อนไขของตัวเอง (DEC-26 — WA-054 · DEC-26 อีกฝั่ง ALT-070 ถูกยกเลิกโดย DEC-48 แล้ว)
 - alert ที่สร้างล่าสุดอยู่บนสุดของ list
 - ชื่อว่าง → ใช้ auto name ไม่ block การบันทึก
 - ลบ alert แล้ว notification ที่เคยได้รับยังคงอยู่

@@ -509,5 +509,5 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 ## DEC-25 Amendments — Alerts (IG)
 
 - Alerts แสดงเป็นหน้า 10 รายการ และโหลดหน้าถัดไปเมื่อเลื่อนใกล้ท้าย (DEC-13); pull-to-refresh รองรับ (DEC-15)
-- ไม่มี generation ของ system alert "new device login" ใน V1 (DEC-26 — ถอนเคส ALT-070)
+- ไม่มี generation ของ system alert "new device login" ใน V1 (DEC-26 — ถอนเคส ALT-070) — **ยกเลิกโดย DEC-48 (2026-11-04): DEC-43 กลืน DEC-26 carve-out — new device login คือ security alert trigger ตัวหลักตาม §14 (`kind:"security"`) · เคส ALT-070 restore ในเล่ม 10 แล้ว**
 - `system` notification type ถูกถอนออกจาก V1 ทั้งประเภท — type + seed row + placeholder destination หมด (DEC-41 — supersede DEC-32/FSP-021/S-17 · เคส ALT-015/ALT-030 ถอนตาม · seed row ใน prototype ถูกเอาออกแล้ว) — **ยกเลิกโดย DEC-43 (2026-11-04): `system` คืนเข้า V1 ตาม NB-046 ด้วย 3 subtypes + destinations จริง + dismiss `x` + category filter chips**
