@@ -2,7 +2,7 @@
 
 > Manifest เดียวคุมทั้ง archive (ตาม DOC-020 plan §4 — approved 2026-11-04)
 > ทุก entry ย้ายด้วย `git mv` แบบ flat mirror: `deliverables/X` → `deliverables/archive/X` — ไม่มีการลบ, ไม่ rename
-> Archived: 2026-11-04 · Task DOC-021 (`6b1c31cc`, mission `31829e57`) · Commit: `COMMIT_HASH_TBD`
+> Archived: 2026-11-04 · Task DOC-021 (`6b1c31cc`, mission `31829e57`) · Commit: `08e0dc1`
 > รวม 88 entries: 36 task dirs · 13 mission dirs + 4 zips + 3 loose · 5 audit dirs · 11 AIL files · 4 reports · 2 review dirs · 3 prompts · 3 drafts · 4 intermediates
 
 **Stale refs (รับทราบตาม §6 — ไม่แก้ script เพราะงานปิดแล้ว):** `scripts/capture-feed-redesign.js`, `scripts/capture-feed-redesign-sections.js`, `scripts/build-feed-review-sheets.js` ยังชี้ `deliverables/feed-redesign-review/` และ `scripts/video-guides/render_intro_v2.py` L3 (comment) ยังชี้ `deliverables/tukdaeng-intro-video-script.md` — path จริงตอนนี้อยู่ใต้ `deliverables/archive/`
