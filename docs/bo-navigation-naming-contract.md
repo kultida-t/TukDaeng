@@ -187,9 +187,9 @@ BOR-009 (Categories modal title), BOR-010 (Market Overview rename), BOR-012 (nav
   `renderUserDetailPageSpec` (~31475), `renderWatchAlertDetail` (~38782), `getSubNavDisplayLabel` (~21424),
   filter persistence (~21334–21408), Categories modal titles (~39650/41993/42052), market `"Dashboard"` compare points (~17916/20464/20567/21293/31741/36136+/39127+/46774)
 - `docs/bo-modal-empty-state-contract.md` — BOR-001 contract (รูปแบบเอกสาร + close policy/focus rules ที่เกี่ยวกับ nav layer)
-- `deliverables/bo-prototype-audit-objective-1/system-coverage-audit.txt` — WAL-1440 confirmed defect
-- `deliverables/bo-prototype-audit-objective-2/cross-module-ui-consistency.txt` — Categories modal title + modal footer order
-- `deliverables/bo-prototype-audit-objective-3/navigation-information-architecture.txt` — DEL-033 → U-1104 finding, Market Overview, Option B, destination-owned active state, permission visibility
+- `deliverables/archive/bo-prototype-audit-objective-1/system-coverage-audit.txt` — WAL-1440 confirmed defect
+- `deliverables/archive/bo-prototype-audit-objective-2/cross-module-ui-consistency.txt` — Categories modal title + modal footer order
+- `deliverables/archive/bo-prototype-audit-objective-3/navigation-information-architecture.txt` — DEL-033 → U-1104 finding, Market Overview, Option B, destination-owned active state, permission visibility
 - `BackOffice/BO_UI_UX_STANDARD.md`, `PROTECTED_SCREENS.md` — standard/protected scope policy
 - `tests/_bor007-verify.cjs`, `_bor008-verify.cjs`, `_bor009-verify.cjs`, `_bor010-verify.cjs`, `_bor012-verify.cjs` — verification + regression scripts
 - Mission `1e359966` Approved Baseline — Scope, Protected Approval Clause, Acceptance Criteria

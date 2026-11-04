@@ -228,7 +228,7 @@ Status pills, risk pills, channel pills, role names, entity ID prefixes (`U-`/`A
 
 ## 8. Mission 3 — User Management Normalization Plan (**อนุมัติแล้ว 07/10/2026**)
 
-แผน normalize ของ module **User Management** (USR-002) — line refs อ้างไฟล์ ณ audit 07/10/2026; audit เต็ม: `deliverables/mission-3-objective-1/USR-001-label-audit.txt`, แผนเต็ม + decisions: `deliverables/mission-3-objective-1/USR-002-normalization-plan.txt` — **อนุมัติแล้ว 07/10/2026 → ดำเนินการแก้ `bo-prototype.html` ใน USR-003 ตาม scope นี้เท่านั้น**
+แผน normalize ของ module **User Management** (USR-002) — line refs อ้างไฟล์ ณ audit 07/10/2026; audit เต็ม: `deliverables/archive/mission-3-objective-1/USR-001-label-audit.txt`, แผนเต็ม + decisions: `deliverables/archive/mission-3-objective-1/USR-002-normalization-plan.txt` — **อนุมัติแล้ว 07/10/2026 → ดำเนินการแก้ `bo-prototype.html` ใน USR-003 ตาม scope นี้เท่านั้น**
 
 ### 8.1 Content layer → ไทย (D-U01..D-U11)
 
@@ -285,7 +285,7 @@ Dead `crumb` config ไทย 3 จุด (~30451/30468/30485) → EN ตาม 
 
 ## 9. Mission 4 — Content Management Normalization Plan (**อนุมัติแล้ว 07/10/2026**)
 
-แผน normalize ของ module **Content Management** (CTM-002) — line refs อ้างไฟล์ ณ audit 07/10/2026; audit เต็ม: `deliverables/mission-4-objective-1/CTM-001-label-audit.txt`, แผนเต็ม + decisions: `deliverables/mission-4-objective-1/CTM-002-normalization-plan.txt` — **อนุมัติแล้ว 07/10/2026 → ดำเนินการแก้ `bo-prototype.html` ใน CTM-003a/003b ตาม scope นี้เท่านั้น**
+แผน normalize ของ module **Content Management** (CTM-002) — line refs อ้างไฟล์ ณ audit 07/10/2026; audit เต็ม: `deliverables/archive/mission-4-objective-1/CTM-001-label-audit.txt`, แผนเต็ม + decisions: `deliverables/archive/mission-4-objective-1/CTM-002-normalization-plan.txt` — **อนุมัติแล้ว 07/10/2026 → ดำเนินการแก้ `bo-prototype.html` ใน CTM-003a/003b ตาม scope นี้เท่านั้น**
 
 ### 9.1 Content layer → ไทย — CTM-003a (Articles + Article Editor + Block Editor)
 

@@ -258,6 +258,6 @@ Inventory ที่พบ (input ให้ Scope Change ถ้าอนุมั
 - `tests/_bor005-modal-consistency.cjs`, `_bor006-focus.cjs`, `_bor006a-verify.cjs`, `_bor007-verify.cjs`,
   `_bor008-verify.cjs`, `_bor009-verify.cjs`, `_bor010-verify.cjs`, `_bor011-verify.cjs`, `_bor012-verify.cjs`,
   `_bor013-verify.cjs` — per-task verification + regression scripts
-- `deliverables/bo-prototype-audit-objective-2/cross-module-ui-consistency.txt` — clipping/modal/empty-copy findings
+- `deliverables/archive/bo-prototype-audit-objective-2/cross-module-ui-consistency.txt` — clipping/modal/empty-copy findings
 - `AGENTS.md`, `PROTECTED_SCREENS.md` — protected screen policy
 - Mission `1e359966` Approved Baseline — Scope, Protected Approval Clause, Task Creation Policy
