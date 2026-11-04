@@ -1,5 +1,7 @@
 # FO-TEST-001-22 — Decision Register & Contract Closure (Front Office)
 
+> **Canonical index (DOC-030, 2026-11-04):** register นี้คือ record of record ของ `DEC-01`–`DEC-48` — index รวมทุก decision อยู่ที่ `docs/DECISION_LOG.md`; decision ใหม่ต่อ `DEC-49` ลงทะเบียนใน canonical log ไม่แก้เอกสารนี้ (locked)
+
 **Task**: FO-TEST-22 — Decision Closure & Full FO Test Acceptance  
 **Status**: APPROVED & LOCKED  
 **Date**: 2026-10-30  

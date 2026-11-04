@@ -181,6 +181,15 @@ Business requirements live in `SourceInputs/requirements/` as date-prefixed snap
 - เมื่อ task/mission ปิดและไม่มี living doc อ้างถึง (หรืออัปเดต ref แล้ว) → ย้ายลง `archive/` ด้วย `git mv` เท่านั้น (flat mirror คง path เดิม ห้ามลบ ห้าม rename) + เพิ่มแถวใน INDEX.md
 - การค้น reference/audit ปกติให้ข้าม `deliverables/archive/` — fact ปัจจุบันอยู่ที่ living docs เท่านั้น
 
+## Decision Log Rule
+
+`docs/DECISION_LOG.md` = canonical index เดียวของ decision ทั้งระบบ (DOC-030) — S-xx, DEC-xx, DEC-R010-xx, e-x/OPEN-x, BO module `XXX-DEC-xxx`, FOX `O-xx`
+
+- Fact ของแต่ละ decision อยู่ที่ register of record เพียงที่เดียวตาม §1 ของ log (เช่น DEC-xx → `deliverables/FO-TEST-001-22-decision-register.md`, `XXX-DEC-xxx` → `Open Decisions` ของ module spec) — เอกสาร/โค้ดอื่นอ้างด้วย DEC id เท่านั้น **ห้ามคัดลอกเนื้อความ decision ซ้ำ**
+- Decision ใหม่ระดับ product/cross-module → ลงทะเบียนใน §8 ของ `docs/DECISION_LOG.md` ด้วยเลขต่อ `DEC-49` ขึ้นไป
+- Open decision ระดับ module spec → เขียนใน `Open Decisions` ของ spec นั้นตามเดิม แต่ต้องเพิ่ม/อัปเดตแถวใน canonical index ด้วยทุกครั้ง
+- การ supersede ไม่ลบ decision เดิม — mark `superseded` พร้อมชี้ตัวใหม่ใน §7.2 ของ log
+
 ## Terminology Rule — Plain Language in Documents (no "i18n")
 
 Deliverables and spec documents (test cases, checklists, inventories, summaries, spec docs) must use plain, understandable language. Do NOT write the jargon "i18n"/"I18N" as a word — write **"Language"** / **"language"** / **"ภาษา"** instead (e.g. category `Language/Theme`, title "Language & Theme Sweep", "language TH/EN coverage").
@@ -195,3 +204,22 @@ Exceptions — keep literal code identifiers and locked spec IDs as-is: `I18N-00
 4. `save_session_note` = canonical summary ชุดเดียวกับ copy block
 5. Copy Block ต้องตรง template Case A/B/C เด็ดขาด: หมวดหมู่งาน **1 หมวด** จากลิสต์ 9 หมวด · เวลาเริ่ม/เวลาจบ `DD/MM/YYYY HH:MM` · bullet ขึ้นต้น `- ` literal · `รายละเอียดงานที่ทำ` = ภาษาคนหัวหน้าอ่านรู้เรื่อง 3–5 bullet ห้ามใส่ spec jargon/TC ID/verify mechanics
 6. **ห้ามจบ turn ที่ copy block** — ต้องต่อด้วย prompt งานถัดไป หรือเสนอทางเลือกงานต่อไปเสมอ
+
+## AI Orchestration Routing (Conductor Rule)
+
+Session หลักทำตัวเป็น conductor — route งานไปยัง skill/เครื่องมือที่ถูกต้องตามตารางนี้ รายละเอียดเต็ม (parallel subagent rules, Gemini reviewer loop, Requirement → Mission pipeline) อยู่ที่ `.devin/skills/ai-orchestration/SKILL.md`
+
+| Intent | Route ไปที่ |
+|---|---|
+| วางแผนรายวัน / Mission Plan / Handoff / สรุปเทียบแผน | `mission-planning` |
+| สร้าง/แก้หน้าจอ BO module | `bo-screen-design` + เช็ก Protected Screens ก่อนเสมอ |
+| React/Next.js/TS ทั่วไป | `senior-frontend` |
+| UI เชิง creative/landing | `frontend-design` |
+| สรุป/ปิด task เดี่ยว | `work-summary` + Close-Task Checklist ด้านบน |
+| สรุปท้ายวัน | `daily-summary` |
+| หลักฐานส่งตรวจ | `submission-evidence` |
+| ตอบคำถามประเมิน | `eval-qa-assistant` |
+| export log สนทนา | `ai-conversation-daily-log` |
+| requirement ยังไม่พร้อมทำ | kanban `create_requirement` → `convert_requirement_to_mission` เมื่อ final |
+
+กฎเหล็ก: side effects ทั้งหมด (kanban task/note, core-portal `submit_logs`, gemini notebook) ทำผ่าน conductor เท่านั้น ห้าม delegate ให้ subagent; subagent ต้อง file-scope disjoint และ protected screens เป็น read-only เสมอ; งานเดียวเรียบ ๆ ทำเองตรง ๆ อย่า over-orchestrate

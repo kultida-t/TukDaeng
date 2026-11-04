@@ -357,6 +357,8 @@ Public Profile, Feed, Search, Watch Alert และ Viewer Asset Detail ต้�
 4. Module PRD รายโมดูล
 5. Superseded tier (`TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `../PRD/` — archived DOC-010 ไม่ใช่ contract)
 
+การค้น decision: `../docs/DECISION_LOG.md` (canonical index, DOC-030) — fact อยู่ที่ register of record ตาม §1 ของ log เอกสารอื่นอ้าง DEC id เท่านั้น
+
 หลักตัดสินความขัดแย้ง:
 
 - ใช้สถานะ canonical: `Sale`, `Show`, `Hide`, `Sold` (+ kind `post` สำหรับโพสต์ไม่ผูก asset)

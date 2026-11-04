@@ -108,6 +108,8 @@
 
 ## 6. Highest Priority Open Decisions
 
+> Canonical index (DOC-030, 2026-11-04): priority view นี้ indexed แล้วใน `../docs/DECISION_LOG.md` §10 — record of record ของแต่ละ `XXX-DEC-xxx` อยู่ที่ `Open Decisions` section ของ module spec เจ้าของ
+
 | Priority | Decision | Source | Why It Matters |
 | --- | --- | --- | --- |
 | P0 | Chat retention period | `DEL-DEC-002` | กระทบ chat export, dispute, account deletion, anonymization |

@@ -10,7 +10,7 @@
 
 ## Purpose
 
-This document is the QA execution checklist for Front Office V1. Each scenario maps to the canonical module specs (`00`–`18`) — decision history อ้าง archived master §16 Sync Decision Log. Any behavior that conflicts with the locked `fo-flow` prototype + spec baseline has been removed from this checklist — see §1.3 Removed Behaviors for the full guard list.
+This document is the QA execution checklist for Front Office V1. Each scenario maps to the canonical module specs (`00`–`18`) — decision history อ้าง canonical index `../docs/DECISION_LOG.md` (DOC-030; record of record: archived master §16 สำหรับ S-xx, `deliverables/FO-TEST-001-22-decision-register.md` สำหรับ DEC-xx). Any behavior that conflicts with the locked `fo-flow` prototype + spec baseline has been removed from this checklist — see §1.3 Removed Behaviors for the full guard list.
 
 ## Conventions
 

@@ -1,0 +1,75 @@
+DOC-030 — รวม decision log เป็นที่เดียว + index DEC-xx
+Task: d9ae9924 | Mission 6 [31829e57] Objective 3: Decision Log Unification (objective สุดท้ายของ mission)
+Date: 2026-11-04 | Zero requirement/behavior change — document-tier consolidation เท่านั้น
+หลักการ: fact อยู่ที่เดียว ที่อื่นชี้ reference · ห้ามลบเอกสาร — canonical ใหม่ + mark pointer เท่านั้น
+
+== Canonical (สร้างใหม่) ==
+docs/DECISION_LOG.md — canonical index เดียวของ decision ทั้งระบบ:
+  §0 กติกาใช้ (fact อยู่ register of record ที่เดียว, เอกสารอื่นอ้าง DEC id เท่านั้น,
+     decision ใหม่ระดับ product ลง DEC-49+ ใน log นี้, spec open-decision ต้อง index ด้วย)
+  §1 Register-of-record map ต่อ namespace (17 registers)
+  §2 Index S-01–S-29 + portfolio sign-off D1–D12 (record: master §16 + FSP-005)
+  §3 Index DEC-01–DEC-48 (record: deliverables/FO-TEST-001-22-decision-register.md)
+  §4 Index DEC-R010-01–09+05b (record: deliverables/REQ-010-decision-log.md)
+  §5 Index e1–e4 + OPEN-1–5 (record: deliverables/FO-BO-001-coverage-audit.md)
+  §6 Index BO spec Open Decisions 51 rows (BO-MARKET/BO-DIR/BO-AUDIT/BO-WA/SUP/
+     DEL/NOTI/REP/SET/BO-OPT/BO-DEC namespaces)
+  §7 Money O-01–O-09 + open items (docs/money-display-rules.md §9 — ไม่แตะ doc
+     ตาม DEC-42) + supersession chains + dangling ref INT-DEC-005/CLOSED-DEC-01
+  §8 New decisions register (DEC-49+)
+  §9 Deviation registries (spec D-tables 11/12/14/15 — per-spec namespace)
+  §10 Open/pending consolidated view (P0/P1/P2 ตาม BO_FINAL_REVIEW §6)
+
+== Pointer marks (เนื้อหา register คงเดิมทั้งหมด ไม่ลบ) ==
+deliverables/FO-TEST-001-22-decision-register.md — header note: record of record
+  ของ DEC-01–48; DEC-49+ ลง canonical log (เอกสาร locked)
+deliverables/REQ-010-decision-log.md — อัปเดตบรรทัด DOC-030 anticipation →
+  "indexed แล้วใน docs/DECISION_LOG.md §4"
+deliverables/FO-TEST-001-CONSOLIDATED-IG-decisions-and-backlog.md — header note:
+  detail record ของ DEC-25/26/27
+deliverables/FO-BO-001-coverage-audit.md — header note: e1–e4/OPEN-1–5 indexed §5
+FrontOffice/TukDaeng_Master_Product_Definition.md — banner superseded เพิ่ม
+  "canonical index อยู่ที่ ../docs/DECISION_LOG.md" (§16 คง record of record S-xx)
+BackOffice/BO_MASTER_BASELINE.md — §10 Open Decisions เพิ่ม pointer note
+BackOffice/BO_FINAL_REVIEW_AND_HANDOFF.md — §6  เพิ่ม pointer note
+
+== Living-doc reference updates ==
+FrontOffice/PRODUCT_DEFINITION.md — §9 Decision History table: แถว master ชี้
+  canonical index + เพิ่มแถว docs/DECISION_LOG.md
+FrontOffice/DOCUMENT_VERSION.md — bump FO-PRD-v1.15 (baseline + covers §2 +
+  history row) + แก้ note "consolidation เป็นงาน DOC-030" → เสร็จแล้ว v1.15
+FrontOffice/README_MODULE_INDEX.md — §3 note เพิ่ม canonical index pointer
+FrontOffice/QA_TEST_SCENARIO_CHECKLIST.md — purpose line: decision history อ้าง
+  canonical index (เดิมอ้าง master §16 ตรง ๆ)
+FrontOffice/00_GLOBAL_RULES_MODULE.md — §15 SoT Rules เพิ่มบรรทัด "การค้น
+  decision: ../docs/DECISION_LOG.md"
+AGENTS.md — เพิ่ม section "Decision Log Rule" ใต้ Deliverables Archive Rule
+
+== Coverage audit (สำรวจก่อนรวม) ==
+Decision sources ที่พบทั้งหมด index ครบ:
+- FrontOffice/TukDaeng_Master_Product_Definition.md §16 — S-01..29 + D-sign-off
+- deliverables/FO-TEST-001-22-decision-register.md — DEC-01..48 (+DEC-31 ใน DEC-30)
+- deliverables/FO-TEST-001-CONSOLIDATED-IG-decisions-and-backlog.md — A1–27/B1–2/C1–6
+- deliverables/REQ-010-decision-log.md — DEC-R010-01..09+05b
+- deliverables/FO-BO-001-coverage-audit.md — e1–e4, OPEN-1..5
+- BackOffice module specs Open Decisions — 06/07/08/11/12/13/14/15/16/17 +
+  BO_MASTER_BASELINE §10 (รวม 51 rows)
+- docs/money-display-rules.md §9 — FOX O-01..09 + open items (DRAFT ไม่แตะ)
+- Spec deviation tables (D-tables): 11/12/14/15 — indexed ระดับ registry
+- FO-TEST-001-20-traceability อ้าง register — ไม่เก็บ decision เอง (ไม่ต้อง mark)
+
+== ไม่แตะตาม constraints ==
+- deliverables/archive/ (read-only), Prototypes/, DailyLogs/, SourceInputs/
+- docs/money-display-rules.md (owner decision DEC-42: ห้ามแตะ)
+- Superseded docs PRD.md/FO_Functional_PRD.md/Use_Cases.md — sync note เป็น
+  historical provenance (คงเดิมตาม DOC-SWEEP convention)
+
+== Verification ==
+- ไม่มีไฟล์ถูกลบ — ทุก register คงเนื้อหาเดิม มีแต่เพิ่ม pointer note
+- ทุก namespace มีแถวใน index (S/D, DEC-01..48, DEC-R010, e/OPEN, BO 51 rows, O-01..09)
+- Supersession chains บันทึก §7.2: S-04→e4, S-12→DEC-17, S-17→DEC-41→DEC-43,
+  DEC-26→DEC-48 (partial), DEC-32→DEC-41→DEC-43, DEC-35→DEC-42,
+  DEL-DEC-003→DEL-DEC-006, 14 D14→DEC-42, 12 D8→DEC-25, 11 D2→DEC-17,
+  SET-DEC-001 removed
+- Dangling refs flagged §7.3: INT-DEC-005 (register ถูกตัด อ่านร่วม BO-DIR-DEC-001),
+  CLOSED-DEC-01 (= label ชี้ DEC-01)

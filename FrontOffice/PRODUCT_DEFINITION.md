@@ -214,7 +214,8 @@ Acceptance Criteria ต้องเขียนให้ QA ทดสอบไ�
 
 | Document | Role |
 | --- | --- |
-| `TukDaeng_Master_Product_Definition.md` | Archived master — §16 Sync Decision Log (S-01–S-29 + D2–D12) ยังเป็น decision history ของ baseline `FO-PRD-v1.9`; consolidation ของ decision log ทั้งระบบเป็นงาน DOC-030 |
+| `TukDaeng_Master_Product_Definition.md` | Archived master — §16 Sync Decision Log (S-01–S-29 + D2–D12) คงเป็น record of record ของ S-xx; canonical index ของ decision ทั้งระบบอยู่ที่ `../docs/DECISION_LOG.md` (DOC-030) |
+| `../docs/DECISION_LOG.md` | Canonical decision log index ของทั้งระบบ (FO + BO) — S-xx / DEC-xx / DEC-R010-xx / e-x / OPEN-x / BO module `XXX-DEC-xxx` / money `O-xx`; เอกสารอื่นอ้าง DEC id อย่างเดียว ห้าม duplicate decision text |
 | `deliverables/fo-spec-sync/FSP-005-consolidated-gap-signoff.md` | Consolidated sign-off ของ spec sync mission (canonical decision source) |
 | `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md` | Assumption docs ยุคก่อน prototype lock — superseded |
 | `../PRD/` | Original requirement docs (May 2568) — superseded |

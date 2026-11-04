@@ -8,7 +8,7 @@
 - **สถานะ:** proposed — รอพี่มาเต็มรีวิว แล้วไป confirm รวมใน Gap Report (REQ-012) ก่อน REQ-020/021 (gated)
 
 > ตาม intake convention: verdict/decision อยู่เอกสารนี้เท่านั้น — ห้ามเขียนทับ snapshot
-> ID decision ใช้ `DEC-R010-xx` (scope เฉพาะ REQ-010 — DOC-030 จะรวม/index รวมภายหลัง)
+> ID decision ใช้ `DEC-R010-xx` (scope เฉพาะ REQ-010) — **indexed แล้วใน `docs/DECISION_LOG.md` §4 (canonical, DOC-030 2026-11-04)**: เอกสารนี้คงเป็น record of record ของ `DEC-R010-*` เนื้อหาคงเดิมไม่ลบ
 
 ---
 

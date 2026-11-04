@@ -133,6 +133,8 @@ Phase 3 คือ advanced workflow และ external integration ที่ย�
 
 ## 10. Open Decisions
 
+> Canonical index (DOC-030, 2026-11-04): `BO-DEC-001`–`006` ด้านล่าง indexed แล้วใน `../docs/DECISION_LOG.md` §6 — ตารางนี้คงเป็น record of record ของ BO-DEC namespace
+
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
 | BO-DEC-001 | BO language mode | Thai primary สำหรับ V1; English optional ภายหลัง |

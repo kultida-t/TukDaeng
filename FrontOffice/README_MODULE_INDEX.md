@@ -48,7 +48,7 @@
 | 9 | [ERROR_STATE_UI_COPY_CATALOG.md](ERROR_STATE_UI_COPY_CATALOG.md) | Final error-state copy, fallback behavior, and retry scope for Dev handoff |
 | 10 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
 
-หมายเหตุ (DOC-010, 2026-11-04): `TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md` และ `../PRD/` ถูก mark superseded — เก็บเพื่อ traceability เท่านั้น; product-level definition อยู่ที่ `PRODUCT_DEFINITION.md`, behavioral contract อยู่ที่ module specs `00`–`18`; decision history (S-01–S-29) ยังอ่านได้จาก master §16 + `../deliverables/fo-spec-sync/FSP-005-consolidated-gap-signoff.md`
+หมายเหตุ (DOC-010, 2026-11-04): `TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md` และ `../PRD/` ถูก mark superseded — เก็บเพื่อ traceability เท่านั้น; product-level definition อยู่ที่ `PRODUCT_DEFINITION.md`, behavioral contract อยู่ที่ module specs `00`–`18`; decision history (S-01–S-29) ยังอ่านได้จาก master §16 + `../deliverables/fo-spec-sync/FSP-005-consolidated-gap-signoff.md`; **canonical index ของ decision ทั้งระบบ = `../docs/DECISION_LOG.md`** (DOC-030, 2026-11-04 — S-xx/DEC-xx/XXX-DEC-xxx ทุก namespace)
 
 # 4. Module Index
 
