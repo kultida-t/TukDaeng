@@ -3,7 +3,9 @@
 **FO Functional PRD v2.0**  
 **Document:** Project Vision & Confirmed Requirements Summary
 
-> **Sync note (FO-PRD-v1.9, 2026-10-22):** เอกสารนี้ sync ตาม `Prototypes/fo-flow/index.html` + master §16 Sync Decision Log — feed post-centric (S-09), Member Sheet แทน Global Login Required Dialog, Alerts feed 5 types (`system` คืนเข้า V1 ด้วย 3 subtypes + category filter ตาม DEC-43, supersede DEC-41), thread chat key = user+item (S-07), Sale Record 2 ฟิลด์ (D3) — จุดที่ขัด master/module spec ให้ยึด master/module spec เสมอ
+> **⚠️ SUPERSEDED (DOC-010, 2026-11-04):** เอกสารนี้ไม่ใช่ contract อีกต่อไป — canonical contract อยู่ที่ module specs `00`–`18` (`README_MODULE_INDEX.md`) + product-level definition ที่ `PRODUCT_DEFINITION.md` — เก็บไว้เพื่อ traceability เท่านั้น; จุดที่ขัด module spec ให้ยึด module spec เสมอ
+>
+> Sync note เดิม (FO-PRD-v1.9, 2026-10-22): เอกสารนี้ sync ตาม `Prototypes/fo-flow/index.html` + master §16 Sync Decision Log — feed post-centric (S-09), Member Sheet แทน Global Login Required Dialog, Alerts feed 5 types (`system` คืนเข้า V1 ด้วย 3 subtypes + category filter ตาม DEC-43, supersede DEC-41), thread chat key = user+item (S-07), Sale Record 2 ฟิลด์ (D3)
 
 ## 1. เป้าหมายของแอปพลิเคชัน
 

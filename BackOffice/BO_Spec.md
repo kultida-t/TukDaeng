@@ -4,6 +4,8 @@
 **ผู้ใช้งาน:** Admin ของระบบตึกแดง
 **อัปเดตจาก:** v1.4 → v1.5 (FO-BO-001 e4 follow-up — ถอด Reported Articles queue/Board Report Detail ออกจาก BO prototype และ spec)
 
+> **⚠️ SUPERSEDED (DOC-010, 2026-11-04):** เอกสารนี้ไม่ใช่ contract อีกต่อไป — canonical contract อยู่ที่ module specs `00`–`17` (`README_MODULE_INDEX.md`) + scope/phase baseline ที่ `BO_MASTER_BASELINE.md` — เก็บไว้เพื่อ traceability เท่านั้น ห้ามอ้างเป็น source of truth; จุดที่ขัด module spec ให้ยึด module spec เสมอ
+
 ---
 
 ## 1. ภาพรวม Back Office

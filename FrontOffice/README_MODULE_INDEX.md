@@ -1,8 +1,8 @@
 # TukDaeng Module PRD Index
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
-**Current Baseline Version:** `FO-PRD-v1.10`
+**Current Baseline Version:** `FO-PRD-v1.14`
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 > **Sync note (FO-PRD-v1.9, 2026-10-22):** index นี้ sync ตาม baseline ใหม่ที่ lock ด้วย `Prototypes/fo-flow/index.html` เป็น source of truth (module specs ที่ rewrite แล้ว + master §16 Sync Decision Log S-01–S-29) — รายการ `หมายเหตุรอบ` ด้านล่างเป็น version history เดิม เก็บไว้เพื่อ traceability เท่านั้น ไม่ใช่ current-state rule
@@ -15,7 +15,7 @@
 
 สำหรับรอบส่งต่อ Dev วันที่ 2026-06-22 ให้ถือว่าชุดเอกสารนี้เป็น baseline ใหม่ทั้งชุดสำหรับแทนเอกสารเก่าที่ Dev เคยใช้ก่อนหน้า ไม่ใช่เฉพาะรายการที่เพิ่งเพิ่มในวันเดียวกัน
 
-เมื่อส่งต่อ Dev / QA ให้อ้างอิง version `FO-PRD-v1.10` คู่กับ branch `docs-frontoffice-spec-updates`
+เมื่อส่งต่อ Dev / QA ให้อ้างอิง version `FO-PRD-v1.14` คู่กับ branch `docs-frontoffice-spec-updates`
 
 หมายเหตุรอบ 2026-07-16: `FO-PRD-v1.3` เพิ่ม clarification เรื่อง account suspension/ban โดย V1 ไม่มี `Restricted` account state, Suspended/Banned ต้องเข้า main app ไม่ได้, session ต้องถูก revoke/block เมื่อ BO เปลี่ยนสถานะ, email เป็น primary channel สำหรับการแจ้ง suspend/ban และ FO Notification Center ไม่เพิ่ม Account Action type
 
@@ -27,18 +27,18 @@
 
 หากเอกสารมีเงื่อนไขไม่ตรงกัน ให้ตัดสินตามลำดับนี้:
 
-1. [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+1. [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) (product-level framing เท่านั้น — vision, platforms, user model, terminology, phase scope)
 2. [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md)
 3. [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md)
-4. PRD รายโมดูล `01-18`
-5. Legacy documents
+4. Module PRD รายโมดูล `01-18`
+5. Superseded tier — [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md), [PRD.md](PRD.md), [FO_Functional_PRD.md](FO_Functional_PRD.md), [Use_Cases.md](Use_Cases.md), `../PRD/` (archived DOC-010 2026-11-04; เก็บเพื่อ traceability ไม่ใช่ contract)
 
 # 3. Recommended Reading Path
 
 | Step | File | Use For |
 | --- | --- | --- |
 | 1 | [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md) | Baseline version and version history |
-| 2 | [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) | Product source of truth |
+| 2 | [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) | Product-level definition — vision, platforms, user model, terminology, phase scope |
 | 3 | [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) | Global visibility, status, lifecycle, privacy, state rules |
 | 4 | [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) | Cross-module routing, deep link, notification destination |
 | 5 | Module PRD `01-18` | Functional and QA detail by module |
@@ -47,6 +47,8 @@
 | 8 | [DEV_CHAT_IMPLEMENTATION_CHECKLIST.md](DEV_CHAT_IMPLEMENTATION_CHECKLIST.md) | Focused checklist for Dev working only on Chat |
 | 9 | [ERROR_STATE_UI_COPY_CATALOG.md](ERROR_STATE_UI_COPY_CATALOG.md) | Final error-state copy, fallback behavior, and retry scope for Dev handoff |
 | 10 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
+
+หมายเหตุ (DOC-010, 2026-11-04): `TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md` และ `../PRD/` ถูก mark superseded — เก็บเพื่อ traceability เท่านั้น; product-level definition อยู่ที่ `PRODUCT_DEFINITION.md`, behavioral contract อยู่ที่ module specs `00`–`18`; decision history (S-01–S-29) ยังอ่านได้จาก master §16 + `../deliverables/fo-spec-sync/FSP-005-consolidated-gap-signoff.md`
 
 # 4. Module Index
 

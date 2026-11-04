@@ -4,6 +4,8 @@
 **Purpose:** เติมรายละเอียด Back Office ให้รองรับ Front Office flows จาก PRD และ Use Cases ครบถ้วนขึ้น  
 **Reference:** BO_Spec v1.3, PRD v1.0, Use_Cases v1.0
 
+> **⚠️ SUPERSEDED (DOC-010, 2026-11-04):** เอกสารนี้ไม่ใช่ contract อีกต่อไป — canonical contract อยู่ที่ module specs `00`–`17` (`README_MODULE_INDEX.md`) + scope/phase baseline ที่ `BO_MASTER_BASELINE.md` — เก็บไว้เพื่อ traceability เท่านั้น ห้ามอ้างเป็น source of truth; จุดที่ขัด module spec ให้ยึด module spec เสมอ
+
 ---
 
 ## 1. Summary

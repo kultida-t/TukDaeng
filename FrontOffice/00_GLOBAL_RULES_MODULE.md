@@ -351,10 +351,11 @@ Public Profile, Feed, Search, Watch Alert และ Viewer Asset Detail ต้�
 
 หากเอกสารมีเงื่อนไขไม่ตรงกัน ให้ตัดสินตามลำดับ:
 
-1. `TukDaeng_Master_Product_Definition.md`
+1. `PRODUCT_DEFINITION.md` (product-level framing เท่านั้น)
 2. `00_GLOBAL_RULES_MODULE.md`
-3. Module PRD รายโมดูล
-4. Legacy documents
+3. `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`
+4. Module PRD รายโมดูล
+5. Superseded tier (`TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `../PRD/` — archived DOC-010 ไม่ใช่ contract)
 
 หลักตัดสินความขัดแย้ง:
 

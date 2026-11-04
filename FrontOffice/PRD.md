@@ -2,9 +2,11 @@
 **เวอร์ชัน:** 1.0  
 **วันที่:** พฤษภาคม 2568  
 **เจ้าของเอกสาร:** Business Analyst Team  
-**สถานะ:** Draft
+**สถานะ:** SUPERSEDED 2026-11-04 (DOC-010) — เดิม: Draft
 
-> **Sync note (FO-PRD-v1.9, 2026-10-22):** เอกสารนี้เป็น assumption doc เก่า (legacy tier — source ของ master) ที่ sync ตาม `Prototypes/fo-flow/index.html` + master §16 Sync Decision Log — feed post-centric, Member Sheet, Alerts feed 5 types, composer asset mode, Sale Record 2 ฟิลด์, share member-only, ไม่มี `Price on request`/infinite scroll — จุดที่ขัด master/module spec ให้ยึด master/module spec เสมอ
+> **⚠️ SUPERSEDED (DOC-010, 2026-11-04):** เอกสารนี้ไม่ใช่ contract อีกต่อไป — canonical contract อยู่ที่ module specs `00`–`18` (`README_MODULE_INDEX.md`) + product-level definition ที่ `PRODUCT_DEFINITION.md` — เก็บไว้เพื่อ traceability เท่านั้น ห้ามอ้างเป็น source of truth; จุดที่ขัด module spec ให้ยึด module spec เสมอ
+>
+> Sync note เดิม (FO-PRD-v1.9, 2026-10-22): เอกสารนี้เป็น assumption doc เก่า (legacy tier — source ของ master) ที่ sync ตาม `Prototypes/fo-flow/index.html` + master §16 Sync Decision Log — feed post-centric, Member Sheet, Alerts feed 5 types, composer asset mode, Sale Record 2 ฟิลด์, share member-only, ไม่มี `Price on request`/infinite scroll
 
 ---
 

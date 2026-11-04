@@ -1,7 +1,7 @@
 # TukDaeng Document Version
 
-**Current Baseline Version:** `FO-PRD-v1.13`
-**Release Date:** 2026-11-03
+**Current Baseline Version:** `FO-PRD-v1.14`
+**Release Date:** 2026-11-04
 **Branch:** `docs-frontoffice-spec-updates`  
 **Status:** Product-reviewed baseline update for Dev / QA
 
@@ -27,6 +27,13 @@ FO-PRD-vX.Y
 ---
 
 # 2. Current Baseline Scope
+
+`FO-PRD-v1.14` covers all of `FO-PRD-v1.13` and restructures the document tier only — **zero requirement/behavior change** (DOC-010 — doc consolidation):
+
+- เพิ่ม `PRODUCT_DEFINITION.md` — slim product-level doc ใหม่ที่เป็น canonical home เดียวของ product-level facts: vision, platforms, user model summary, canonical terminology + legacy term mapping (ย้ายจาก master §4), feature architecture, Phase 1 exclusions (master §14), source-of-truth order และ module spec authoring checklist (master §17)
+- Mark superseded: `TukDaeng_Master_Product_Definition.md` (เนื้อหาคงเดิมทั้งเล่มเป็น archived — §16 Sync Decision Log S-01–S-29 + D2–D12 ยังเป็น decision history; consolidation ของ decision log เป็นงาน DOC-030), `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `../PRD/PRD.md`, `../PRD/Use_Cases.md` — ทุกเล่มมี banner ชี้ไป module specs + `PRODUCT_DEFINITION.md`
+- Source-of-truth order อัปเดตใน `00_GLOBAL_RULES_MODULE.md` §15 + `README_MODULE_INDEX.md` §2 — master ออกจากอันดับ 1, superseded tier ไม่ใช่ contract
+- Cross-reference sweep ระดับไฟล์ทั้งชุด (อ้างอิงหลักจาก/master refs ใน module specs) เป็นงานต่อเนื่อง DOC-011 — spec-only ไม่แตะ prototype
 
 `FO-PRD-v1.13` covers all of `FO-PRD-v1.12` and removes the Report Article contract entirely (FO decision e4 approved 2026-11-03 — FO-BO-001 coverage audit; Board Content ตัดออกจาก V1 ทั้งระบบ ไม่ใช่แค่ contract-only):
 
@@ -175,6 +182,7 @@ Baseline scope หลักยังครอบคลุม:
 
 | Version | Date | Summary | Key Files |
 | --- | --- | --- | --- |
+| `FO-PRD-v1.14` | 2026-11-04 | Document-tier consolidation only — zero requirement change (DOC-010): adds `PRODUCT_DEFINITION.md` (product-level contract — vision/platforms/user model/terminology/phase scope/spec authoring checklist ยุบจาก master §1–§4/§14/§17); marks `TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `../PRD/` superseded with pointer banners (content preserved as archived — master §16 decision log kept for traceability); updates SoT order in `00_GLOBAL_RULES_MODULE.md` §15 + `README_MODULE_INDEX.md` | `PRODUCT_DEFINITION.md`, `TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `00_GLOBAL_RULES_MODULE.md`, `README_MODULE_INDEX.md`, `../PRD/` |
 | `FO-PRD-v1.12` | 2026-11-03 | Amends FO Help support channels เป็น BO-driven dynamic contract (FO decision e1 approved — FO-BO-001 GAP-04 resolved): `13_SETTINGS_MODULE.md` Help / About Rule + AC-SETTING-007, `TukDaeng_Master_Product_Definition.md`, `QA_TEST_SCENARIO_CHECKLIST.md` (QA-SETTING-013), `DEV_IMPLEMENTATION_CHECKLIST.md`; spec-only ไม่แตะ prototype | `13_SETTINGS_MODULE.md`, `TukDaeng_Master_Product_Definition.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `DEV_IMPLEMENTATION_CHECKLIST.md` |
 | `FO-PRD-v1.11` | 2026-11-02 | Removes report review SLA/deadline tracking ทั้งระบบ (product decision 2026-11-02 — FO-BO-001 GAP-03 / OPEN-4 resolved): ถอน 24h SLA จาก `15_TRUST_SAFETY_MODULE.md` (rename AC-TS-012 → Report Handling), `18_ADMIN_SCOPE_NOTE.md` (AC-ADMIN-006 → no-deadline), `TukDaeng_Master_Product_Definition.md`, `11_SOCIAL_MODULE.md` cross-refs, `FO_Functional_PRD.md` และ `QA_TEST_SCENARIO_CHECKLIST.md` (QA-TS-010); spec-only ไม่แตะ prototype — งานคู่ฝั่ง BO ใน task `ef329529` | `15_TRUST_SAFETY_MODULE.md`, `18_ADMIN_SCOPE_NOTE.md`, `TukDaeng_Master_Product_Definition.md`, `11_SOCIAL_MODULE.md`, `FO_Functional_PRD.md`, `QA_TEST_SCENARIO_CHECKLIST.md` |
 | `FO-PRD-v1.9` | 2026-10-22 | Re-baselines the whole Front Office spec set to the locked `Prototypes/fo-flow/index.html` prototype (mission sync FSP-006–027; canonical = master §16 Sync Decision Log S-01–S-29 + FSP-005 consolidated sign-off). Removes `08_OFFER_MODULE.md` + all offer-era scope, `Figma_Gap_Checklist_Against_Master.md` + `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md` + Figma refs, and provenance/consignment entities (S-25). Canonical replacements: Member Sheet `Join TukDaeng` (แทน Global Login Required Dialog), Alerts feed 5 types +`system` (แทน Notification Center — S-17), `Total invested` (แทน Total Asset Value — S-15), `Ask Seller` sale-only (แทน Contact Seller/Offer), Post Viewer direct (แทน WA Result List — S-08), owner `Hide` status vs viewer `Not interested` (แทน Hide this asset), ตัด `Price on request`. Feed post-centric (S-09); composer asset mode media≥1; Sale Record 2 ฟิลด์; chat thread key user+item (S-07); share member-only (S-03); like count private (S-26); like/favorites/interested 3 ระบบ; comment sheet + emoji react (S-12); delete account login-to-restore (S-02/S-27); settings IG 6 sections (S-05); board editorial magazine (S-01); profile tabs 5; blocked profile IG keep-page (S-13); drawer 9 placeholders (S-19); auth onboarding + implied consent + OTP→sign in (S-22) + password policy unify (S-21) + ตัด spec-only auth pages (S-20). Contract-only keeps ตาม S-29 (deep link, analytics, suspended/banned, network/error, file message). Rewrites module PRDs `00`–`14` + `TukDaeng_Master_Product_Definition.md` §16; sync notes on legacy tier; `QA_TEST_SCENARIO_CHECKLIST.md` v2.0 (228 scenarios + Removed-behaviors guard table). Documented prototype defects (ไม่แก้ prototype): `salePosts()` pfkind leak (S-10), public `all` tab leak (S-14), sold-post `FOR SALE` tag. Residual sweep 15_TRUST/16_INTEG/17_NFR/00_GLOBAL → FSP-029/030. Historical entries v1.0–v1.8 เก็บเดิมไม่แก้ย้อน | `DOCUMENT_VERSION.md`, module PRDs `00`–`14`, `TukDaeng_Master_Product_Definition.md`, `README_MODULE_INDEX.md`, `PRD.md`, `Use_Cases.md`, `FO_Functional_PRD.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `DEV_CHAT_IMPLEMENTATION_CHECKLIST.md`, `DEV_BASELINE_HANDOFF_2026-06-22.md`, `ERROR_STATE_UI_COPY_CATALOG.md`, `FINAL_HANDOFF_SUMMARY.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `deliverables/fo-spec-sync/*` |
@@ -195,6 +203,6 @@ Baseline scope หลักยังครอบคลุม:
 When sending documents to Dev, include both:
 
 - Branch: `docs-frontoffice-spec-updates`
-- Version: `FO-PRD-v1.13`
+- Version: `FO-PRD-v1.14`
 
 If Dev reports a gap or builds against this baseline, ask them to cite the version number in their response.
