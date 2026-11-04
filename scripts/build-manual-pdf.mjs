@@ -1310,7 +1310,6 @@ const htmlContent = `<!DOCTYPE html>
             <ul class="rule-list" style="margin-top: 3px;">
               <li class="rule-item">ราคาต้นทุนที่ซื้อมา (Purchase Price)</li>
               <li class="rule-item">สลิปการชำระเงินและใบเสร็จ</li>
-              <li class="rule-item">ข้อมูลเจ้าของฝากขาย (Consignment)</li>
               <li class="rule-item">มูลค่าพอร์ตทรัพย์สินรวม (Portfolio Value)</li>
             </ul>
           </div>
@@ -1766,7 +1765,7 @@ const htmlContent = `<!DOCTYPE html>
         <div class="header-titles">
           <div class="header-title-en">ASSET REGISTRATION & LIFECYCLE</div>
           <div class="header-title-th">การลงทะเบียนนาฬิกาเข้าสู่ระบบ</div>
-          <div class="header-summary">ขั้นตอนการเพิ่มนาฬิกาเข้าสู่ระบบ การเลือกสถานะ การจัดการสินค้าฝากขาย และการบันทึกปิดการขาย (Mark as Sold)</div>
+          <div class="header-summary">ขั้นตอนการเพิ่มนาฬิกาเข้าสู่ระบบ การเลือกสถานะ และการบันทึกปิดการขาย (Mark as Sold)</div>
         </div>
       </div>
       <div class="header-right">
@@ -1788,16 +1787,6 @@ const htmlContent = `<!DOCTYPE html>
           </div>
           <div class="card-desc">
             ระบบช่วยให้นักสะสมบันทึกนาฬิกาทุกเรือนเข้าสู่ <strong>Digital Vault</strong> ส่วนตัว โดยเลือกได้ว่าจะนำขึ้นขาย (Sale), โชว์ผลงาน (Show) หรือจัดเก็บเงียบๆ (Hide)
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title-row">
-            <div class="card-icon-circle card-icon-blue">🤝</div>
-            <div class="card-title">ฝากขาย (Consignment)</div>
-          </div>
-          <div class="card-desc">
-            หากนาฬิกาเป็นของฝากขาย สามารถระบุข้อมูลเจ้าของเดิมและส่วนแบ่งได้ โดย <strong>Consignment จะไม่ถูกนับในพอร์ตทรัพย์สิน</strong> เพราะไม่ใช่กรรมสิทธิ์ของตนเอง
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 ﻿# 02 Feed Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7/§9–§12 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6–§9 — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7/§9–§12 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6–§9 — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Status | Draft |
 | Owner | Product / UX / Engineering |
-| Document Type | Functional PRD - Master Aligned |
+| Document Type | Functional PRD - Product Definition Aligned |
 
 # 2. Objective
 
@@ -47,9 +47,9 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - `PF_MINE` drawer-only post store (~16574–16577); `pfKind`/`PFO_STATUS` (~16380, ~16604); `refreshPostViews` (~13938–13964)
 - Dead variants/artifacts (ห้ามเขียนเป็น feature — ตาม 00_NAV §6.4): card `a2/b2/c2/a3/b3/c3/mixed`, `ft:"none"` brand-menu dropdown, `chat-fab`/`chatPopHTML` (`ask:"bubble"` unreachable), `POST_DETAIL_CFG`, `lk-follow` visual-only toggle; composer dead affordances: camera tile, `Recents` dropdown, expand icon → toast `Not in this prototype yet`
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
 | Feed model | Post-centric social feed — โพสต์ `Sale` + โพสต์ `post` (ไม่ผูก asset); ไม่ใช่ marketplace Sale-only list (S-09, 00_GLOBAL §9/§10) |
 | Feed eligibility | ไม่แสดงโพสต์ที่ viewer ติด exclusion: not-interested / muted / blocked / archived; โพสต์ที่ผูก asset สถานะ `Show`/`Hide`/`Sold` หลุดจาก feed |
@@ -371,6 +371,15 @@ Card ไม่แสดงใน V1: FOR SALE/SHOWCASE type tag, price/condition
 - `#hashtag` → Search results (mode `results`, query = tag)
 - Feed card ไม่เปิด Post Viewer — viewer เปิดจาก grid tiles/notification เท่านั้น (AC-NAV-026)
 
+## View Counting Rule
+
+- Views stat (eye icon + count บน action row) นับแบบ **scroll-pass** ในช่วงแรก — early-stage rule ตาม NB-033 (`SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md`, DEC-45): card ที่โผล่ในวิวพอร์ต ≥55% (prototype: ส่วนที่เห็น ≥ `min(55% ของ card height, 120px)`) → `views +1`
+- **เลื่อนซ้ำนับซ้ำ** — card หลุดวิวพอร์ตแล้วเลื่อนกลับมาเห็นอีกครั้งนับเพิ่ม (prototype: flag `_vSeen` reset เมื่อ visibility = 0); จุดประสงค์ = ดันตัวเลขช่วงผู้ใช้ยังน้อย
+- Counter อัปเดตในที่ (in-place บน `.views-stat` — ไม่ re-render ทั้ง card); stat เป็น read-only ไม่ใช่ tap target
+- นับเฉพาะบน `.feed-scroll` เท่านั้น — surfaces อื่น (Post Viewer, Post Detail, profile grid, archive) ไม่เพิ่ม view
+- ไม่นับ/ไม่อัปเดตบนโพสต์ `hideCounts` (counter ซ่อนอยู่แล้วตาม Post Card Anatomy)
+- **Contract — planned transition:** เมื่อผู้ใช้มากขึ้นให้เปลี่ยนเป็นนับเฉพาะเมื่อผู้ใช้กดเข้า Post Detail (detail click) — เป็นการเปลี่ยน metric definition ในอนาคต ไม่ใช่พฤติกรรม V1 (DEC-45)
+
 ## Own-Post Menu Rule
 
 - เมนูแยกจาก others-post menu โดย `isOwnPost()` (seller = current user) — ใช้ sheet เดียวกันทุก surface
@@ -686,6 +695,7 @@ Owner fallback rules:
 | `ask_seller_tapped` | กด Ask pill (item-scoped chat) |
 | `post_followed` / `post_unfollowed` | follow/unfollow จาก feed surfaces |
 | `post_menu_opened` | เปิด `...` menu (own/others) |
+| `post_view_counted` | scroll-pass view นับบน feed card (View Counting Rule §9 — อนาคต = detail click) |
 | `favorites_added` / `favorites_removed` | toggle favorites จาก others menu |
 | `not_interested_marked` / `not_interested_undone` | Not interested + Undo |
 | `uncomfortable_marked` | `This post made me uncomfortable` |

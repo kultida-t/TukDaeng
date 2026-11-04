@@ -243,7 +243,7 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      padding: 38px 12px 8px;
+      padding: 38px 12px 16px;
       flex-shrink: 0;
       position: relative;
     }
@@ -11258,6 +11258,72 @@
       display: flex;
     }
 
+    /* system notification subtypes — security / account status / announcements
+       (spec-locked 09_NOTIFICATION · DEC-43 · NB-046 — SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md) */
+    .al-ic.al-sys-security {
+      background: linear-gradient(135deg, #c4222a 0%, #9e161d 100%);
+      color: #fff;
+      box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px rgba(196, 34, 42, .28);
+    }
+
+    .al-ic.al-sys-security>svg,
+    .al-ic.al-sys-account>svg,
+    .al-ic.al-sys-announce>svg {
+      stroke: currentColor;
+    }
+
+    .al-ic.al-sys-security>svg {
+      fill: none;
+      stroke: #fff;
+    }
+
+    .al-ic.al-sys-account {
+      background: var(--chip-bg);
+      color: var(--text);
+    }
+
+    .al-ic.al-sys-announce {
+      background: linear-gradient(135deg, #3b3f46 0%, #23262b 100%);
+      color: #fff;
+    }
+
+    .al-ic.al-sys-announce>svg {
+      stroke: #fff;
+    }
+
+    /* category filter chips (spec-locked 09_NOTIFICATION §9 Category Filter Rule · DEC-43 · NB-046 — SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md) */
+    .al-filters {
+      display: flex;
+      gap: 8px;
+      padding: 10px 16px 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex-shrink: 0;
+    }
+
+    .al-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .al-fchip {
+      flex-shrink: 0;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--chip-bg);
+      border: none;
+      border-radius: 999px;
+      padding: 7px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .al-fchip.on {
+      background: var(--text);
+      color: var(--surface);
+    }
+
     .ch-empty {
       display: flex;
       flex-direction: column;
@@ -12522,7 +12588,7 @@
     }
 
     .app-header {
-      gap: 8px;
+      gap: 2px;
     }
 
     .bd-head {
@@ -13407,6 +13473,7 @@
       home: (s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>`,
       search: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>`,
       clock: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>`,
+      watch: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="6"/><path d="M12 9v3l2 1.5"/><path d="M9.6 6.6 9.8 3h4.4l.2 3.6"/><path d="M14.4 17.4l-.2 3.6H9.8l-.2-3.6"/></svg>`,
       sliders: (s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="15" cy="6" r="2.3" fill="var(--bg)"/><circle cx="9" cy="12" r="2.3" fill="var(--bg)"/><circle cx="17" cy="18" r="2.3" fill="var(--bg)"/></svg>`,
       plus: (s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`,
       dots: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>`,
@@ -16860,7 +16927,7 @@
       "jutatip_sroysomree": { bio: "", followers: "890", following: "412", grid: pfGrid(5, 6) },
       "kunk4i": { bio: "", followers: "1,302", following: "388", grid: pfGrid(9, 6) },
       "the watch": { cat: "Media/news company", bio: "Made For Watch Collectors By Watch Collectors\n#thewatch", link: "www.the-watch.example and 1 more", followers: "211K", following: "1,688", verified: true, followedBy: ["chrono.th", "watch.daily"], fbyMore: "9 others", story: true, grid: pfGrid(0, 12) },
-      "Watch 777": { cat: "Watch shop", bio: "Bangkok · consignment & rare pieces\nDM for viewing 📩", link: "tukdaeng.example/watch777", followers: "38.2K", following: "214", verified: true, followedBy: ["the watch", "dial.dude"], fbyMore: "5 others", story: true, grid: pfGrid(4, 12) },
+      "Watch 777": { cat: "Watch shop", bio: "Bangkok · vintage & rare pieces\nDM for viewing 📩", link: "tukdaeng.example/watch777", followers: "38.2K", following: "214", verified: true, followedBy: ["the watch", "dial.dude"], fbyMore: "5 others", story: true, grid: pfGrid(4, 12) },
       "davikah": { bio: "vintage lover · BKK\nslow mornings, fast watches", followers: "12.4K", following: "301", followedBy: ["the watch"], grid: pfGrid(7, 6) },
       "chrono.th": { bio: "chronographs only", followers: "8,932", following: "412", followedBy: ["the watch", "Watch 777"], grid: pfGrid(10, 9) },
       "neng_mua": { bio: "มาเต็ม's friend · collects colors", followers: "2,108", following: "990", grid: pfGrid(1, 6) },
@@ -16943,7 +17010,7 @@
     }
 
     /* ===== PORTFOLIO-001 — owner-only portfolio (spec 14_PORTFOLIO_MODULE): dashboard + asset list + sold history ===== */
-    /* eligible = status Sale/Show/Hide + own asset (not consignment); sold/deleted/hidden-perm/consignment excluded */
+    /* eligible = status Sale/Show/Hide; sold/deleted/hidden-perm excluded */
     const PF_ASSETS = [
       { id: "pfa-01", img: "./assets/asset-uploads/S__10108939_0.jpg", photos: ["./assets/asset-uploads/S__10108939_0.jpg", "./assets/asset-uploads/purchase-equipment-box.png", "./assets/asset-uploads/purchase-certificate-docs.png"], name: "Cartier Tank Must XL", ref: "WSTA0040", meta: "Full set 2023", brand: "Cartier", status: "show", market: 132000, purchase: 119000, bought: "2023-06-14" },
       { id: "pfa-02", img: "./assets/asset-uploads/S__10108940_0.jpg", photos: ["./assets/asset-uploads/S__10108940_0.jpg", "./assets/asset-uploads/purchase-equipment-box.png"], name: "Cartier Tank Must Large", ref: "WSTA0052", meta: "Box & papers", brand: "Cartier", status: "sale", market: 118500, purchase: 104500, bought: "2022-11-02", asking: 125000 },
@@ -16977,7 +17044,7 @@
     const pfoTHB = n => "฿" + n.toLocaleString("en-US");
     const pfoSignTHB = n => (n > 0 ? "+" : n < 0 ? "−" : "") + "฿" + Math.abs(n).toLocaleString("en-US");
     const pfoPct = (d, b) => (d > 0 ? "+" : "−") + (Math.abs(d) / b * 100).toFixed(1) + "%";
-    const pfoEligible = a => ["sale", "show", "hide"].includes(a.status) && a.own !== false;
+    const pfoEligible = a => ["sale", "show", "hide"].includes(a.status);
     /* current value priority: market price → purchase price fallback → no valuation */
     function pfoCur(a, mktOff) {
       if (!mktOff && a.market != null) return { v: a.market, src: "mkt" };
@@ -17490,7 +17557,7 @@
            <span class="spacer"></span>
            <button class="pf-uname"><span>${esc(u.user)}</span></button>
            <span class="spacer"></span>
-           <button class="icon-btn pf-menu" title="${isTh ? "การตั้งค่าและกิจกรรม" : "Settings and activity"}">${I.burger(22)}</button>`
+           <button class="icon-btn pf-menu" title="${isTh ? "การตั้งค่าและกิจกรรม" : "Settings and activity"}">${I.gear(22)}</button>`
           : `<button class="icon-btn sub-back">${I.back()}</button>
            <span class="spacer"></span>
            <button class="icon-btn pf-more">${I.dots(18)}</button>`}
@@ -17641,7 +17708,7 @@
     </div>
     <div class="sub-sec pfo-sec"><span>${isTh ? "รายการนาฬิกา" : "Assets"} <span class="pfo-count">${els.length}</span></span><button class="pfo-soldlink" data-sub="soldhist">${I.history(13)} ${isTh ? "ประวัติการขาย" : "Sold history"} ${I.chevR(12)}</button></div>
     ${rows.map(pfoRowHTML).join("")}
-    <div class="pfo-note">${isTh ? "นับเฉพาะนาฬิกาที่คุณเป็นเจ้าของในสถานะ ลงขาย โชว์ และ ซ่อน — ไม่รวมรายการที่ขายแล้ว ลบ ซ่อนถาวร หรือสินค้าฝากขาย" : "Counts Sale, Show &amp; Hide pieces you own — sold, deleted, permanently hidden and consignment items are excluded."}</div>
+    <div class="pfo-note">${isTh ? "นับเฉพาะนาฬิกาในสถานะ ลงขาย โชว์ และซ่อน" : "Counts Sale, Show &amp; Hide pieces only."}</div>
   </div>`;
     }
     function pfassetHTML(scr, id) {
@@ -18328,7 +18395,7 @@
       return botNavHTML("chat");
     }
 
-    /* ===== ALERTS — IG-style activity list: Watch Alert / Like / Comment / Follow (mock data, read/dismiss persisted) ===== */
+    /* ===== ALERTS — IG-style activity list: Like / Comment / Follow / Watch Alert / System (mock data, read/dismiss persisted) — 5 types per 09_NOTIFICATION (DEC-43 supersedes DEC-41) ===== */
     let ALERTS = null;
     /* persisted read/dismiss state — simulates server-backed persistence (spec 09: read/dismiss persist across restart & session switch) */
     const alLoadState = () => { try { const s = JSON.parse(localStorage.getItem("fo_alstate") || "null"); return s && Array.isArray(s.r) && Array.isArray(s.x) ? s : { r: [], x: [] }; } catch { return { r: [], x: [] }; } };
@@ -18347,9 +18414,15 @@
       };
       ALERTS = [
         { type: "like", users: ["jutatip_sroysomree", "kunk4i"], more: 1, ago: "23m", grp: "Today", unread: true, ...mine(0) },
+        { type: "system", users: [], kind: "security", ago: "1h", grp: "Today", unread: true, dest: "change_pwd",
+          title: { en: "New sign-in to your account", th: "มีการเข้าสู่ระบบจากอุปกรณ์ใหม่" },
+          body: { en: "iPhone 15 Pro · Bangkok, Thailand — if this wasn't you, change your password right away", th: "iPhone 15 Pro · กรุงเทพฯ — ถ้าไม่ใช่คุณ รีบเปลี่ยนรหัสผ่านทันที" } },
         wa("p1", "2h", "Today", true),
         { type: "follow", users: ["dial.dude"], ago: "5h", grp: "Today", unread: true },
         { type: "comment", users: ["chrono.th"], text: "clean set 🔥", ago: "15h", grp: "Yesterday", unread: true, ...mine(1) },
+        { type: "system", users: [], kind: "account", ago: "16h", grp: "Yesterday", unread: true, dest: "al_unavail",
+          title: { en: "Your post was hidden", th: "โพสต์ของคุณถูกซ่อนแล้ว" },
+          body: { en: "A post didn't meet our Community Standards and was hidden — tap to review", th: "โพสต์หนึ่งไม่ตรงตาม Community Standards จึงถูกซ่อน — แตะเพื่อดูรายละเอียด" } },
         wa("p5", "18h", "Yesterday", true),
         { type: "like", users: ["davikah", "Watch 777", "the watch"], more: 4, ago: "1d", grp: "Yesterday", unread: false, ...mine(2) },
         { type: "comment", users: ["davikah"], text: "love this one", ago: "2d", grp: "Last 7 days", unread: false, ...mine(4) },
@@ -18357,6 +18430,12 @@
         wa("p3", "3d", "Last 7 days", false),
         { type: "like", users: ["Watch 777", "the watch"], more: 8, ago: "4d", grp: "Last 7 days", unread: false, ...mine(3) },
         { type: "follow", users: ["neng_mua"], ago: "2w", grp: "Earlier", unread: false },
+        { type: "system", users: [], kind: "announce", ago: "2w", grp: "Earlier", unread: false, dest: "about_app",
+          title: { en: "New TukDaeng update is live", th: "ตึกแดงอัปเดตเวอร์ชันใหม่แล้ว" },
+          body: { en: "Watch Alert improvements and a smoother feed — update to the latest version", th: "ปรับ Watch Alert ให้แม่นขึ้นและฟีดลื่นขึ้น — อัปเดตแอปเป็นเวอร์ชันล่าสุด" } },
+        { type: "system", users: [], kind: "account", ago: "3w", grp: "Earlier", unread: false, dest: "about_account",
+          title: { en: "Your account is verified", th: "ยืนยันตัวตนสำเร็จแล้ว" },
+          body: { en: "The Verified badge now shows on your profile — keep collecting with confidence", th: "ป้าย Verified แสดงบนโปรไฟล์ของคุณแล้ว — สะสมต่อได้อย่างมั่นใจ" } },
         { type: "like", users: ["bamzilla"], more: 0, ago: "3w", grp: "Earlier", unread: false, ...mine(5) },
       ].map((a, i) => ({ id: "al" + i, ...a }));
       const st = alLoadState();
@@ -18379,6 +18458,10 @@
     function alAvatarHTML(a) {
       const badge = ic => `<span class="al-badge">${ic}</span>`;
       if (a.type === "watch") return `<span class="al-av al-ic al-watch">${I.navBell(22)}<span class="al-wseller"><img src="${profileOf(a.users[0]).avatar}" alt=""></span></span>`;
+      if (a.type === "system") {
+        const ic = a.kind === "security" ? I.shield(20) : a.kind === "account" ? I.award(20) : I.infoCir(20);
+        return `<span class="al-av al-ic al-sys-${a.kind}">${ic}</span>`;
+      }
       const img = n => `<img src="${profileOf(n).avatar}" alt="">`;
       const b = a.type === "like" ? badge(I.heart(10)) : "";
       return a.users.length > 1
@@ -18395,6 +18478,7 @@
         comment: isTh ? `${names} แสดงความคิดเห็น: ${esc(a.text || "")}` : `${names} commented: ${esc(a.text || "")}`,
         follow: isTh ? `${names} เริ่มติดตามคุณ` : `${names} started following you.`,
         watch: isTh ? `การแจ้งเตือนนาฬิกา <b>${esc(a.name || "")}</b> — รายการใหม่จาก <b>${esc(a.users[0])}</b> · ${esc(a.price || "")}` : `Watch alert <b>${esc(a.name || "")}</b> — new listing from <b>${esc(a.users[0])}</b> · ${esc(a.price || "")}`,
+        system: `<b>${esc(a.title?.[isTh ? "th" : "en"] || a.title?.en || "")}</b> — ${esc(a.body?.[isTh ? "th" : "en"] || a.body?.en || "")}`,
       }[a.type];
       return `${body} <span class="al-time">${formatAlertTime(a.ago, isTh)}</span>`;
     }
@@ -18403,7 +18487,7 @@
       const side = a.type === "follow"
         ? `<button class="al-fbtn${pfIsFollowed(a.users[0]) ? " on" : ""}" data-alfollow="${esc(a.users[0])}">${pfIsFollowed(a.users[0]) ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตามกลับ" : "Follow back")}</button>`
         : a.thumb ? `<img class="al-thumb" src="${a.thumb}" alt="">` : "";
-      const x = a.type === "follow" ? `<span class="al-x" data-aldismiss="${a.id}">${I.x(16)}</span>` : "";
+      const x = (a.type === "follow" || a.type === "system") ? `<span class="al-x" data-aldismiss="${a.id}">${I.x(16)}</span>` : "";
       return `<div class="al-row${a.unread ? " unread" : ""}" role="button" data-alid="${a.id}">
     ${alAvatarHTML(a)}<span class="al-txt">${alTextHTML(a)}</span>${side}${x}
   </div>`;
@@ -18419,9 +18503,14 @@
       };
       /* DEC-25 A1 — alerts paginate like the feed: 10 rows per page, more load on scroll (scr._alShown) */
       const scr = document.querySelector("#stage .screen");
+      /* spec-locked (09_NOTIFICATION §9 Category Filter Rule · DEC-43 · NB-046 — SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md): category filter all / system / activity / watch */
+      const f = (scr && scr._alFilter) || "all";
+      const catOf = a => a.type === "system" ? "system" : a.type === "watch" ? "watch" : "activity";
+      const fChips = [["all", isTh ? "ทั้งหมด" : "All"], ["system", isTh ? "ระบบ" : "System"], ["activity", isTh ? "กิจกรรม" : "Activity"], ["watch", isTh ? "Watch Alert" : "Watch Alert"]];
+      const flist = f === "all" ? list : list.filter(a => catOf(a) === f);
       let left = (scr && scr._alShown) || 10;
       const groups = ["Today", "Yesterday", "Last 7 days", "Earlier"].map(g => {
-        const l = list.filter(a => a.grp === g);
+        const l = flist.filter(a => a.grp === g);
         const take = Math.min(left, l.length); left -= take;
         return take ? [g, l.slice(0, take)] : null;
       }).filter(Boolean);
@@ -18434,8 +18523,9 @@
       <span class="spacer"></span>
       <span class="icon-btn" style="visibility:hidden"></span>
     </div>
+    <div class="al-filters">${fChips.map(([k, lbl]) => `<button class="al-fchip${f === k ? " on" : ""}" data-alfilter="${k}">${lbl}</button>`).join("")}</div>
     ${groups.length ? groups.map(([g, l], i) => `<div class="al-sec"><span>${groupLabels[g] || g}</span>${i === 0 && un ? `<button class="al-readall" data-alreadall>${isTh ? "อ่านทั้งหมดแล้ว" : "Mark all as read"}</button>` : ""}</div>${l.map(alRowHTML).join("")}`).join("")
-          : chEmptyHTML(isTh ? "ยังไม่มีการแจ้งเตือน" : "No alerts yet", isTh ? "การแจ้งเตือนนาฬิกา ยอดถูกใจ ความคิดเห็น และผู้ติดตามใหม่จะแสดงที่นี่" : "Watch alerts, likes, comments and new followers will show up here.")}
+          : chEmptyHTML(isTh ? "ยังไม่มีการแจ้งเตือน" : "No alerts yet", f === "all" ? (isTh ? "การแจ้งเตือนนาฬิกา ยอดถูกใจ ความคิดเห็น และผู้ติดตามใหม่จะแสดงที่นี่" : "Watch alerts, likes, comments and new followers will show up here.") : (isTh ? "ยังไม่มีการแจ้งเตือนในหมวดนี้" : "No alerts in this category yet."))}
   </div>
   ${alertsNavHTML()}`;
     }
@@ -18448,6 +18538,13 @@
     function alertsClick(e) {
       const scr = e.target.closest(".screen");
       if (!scr) return false;
+      const fc = e.target.closest("[data-alfilter]");
+      if (fc) {
+        scr._alFilter = fc.dataset.alfilter;
+        scr._alShown = 10;
+        alRerender(scr);
+        return true;
+      }
       if (e.target.closest("[data-alreadall]")) {
         alInit().forEach(a => { a.unread = false; });
         const st = alLoadState(); st.r = [...new Set([...st.r, ...alInit().map(a => a.id)])]; alSaveState(st);
@@ -18486,6 +18583,9 @@
           pv.querySelector(".pfp-follow")?.remove();
           if (!p.following) pv.querySelector(".post-head .more")?.insertAdjacentHTML("beforebegin", `<button class="follow-btn">Follow</button>`);
         } else pushSub(scr, "al_unavail"); /* contract: unavailable state parity with like/comment (resolved FSP-030) */
+      }
+      else if (a.type === "system") {
+        pushSub(scr, a.dest || "settings");
       }
       else if (a.type === "like" || a.type === "comment") {
         const me = CP_ME.name, post = pfTabPosts(me, "all").find(p => p.id === a.pid);
@@ -20107,6 +20207,7 @@
         <button class="icon-btn search-btn">${I.search()}</button>
         <span class="wordmark">TUK DAENG <span class="caret">${I.chev(13)}</span></span>
         <span class="spacer"></span>
+        <button class="icon-btn feed-wa" title="${isTh ? "การแจ้งเตือนนาฬิกา" : "Watch Alerts"}">${I.watch(20)}</button>
         <button class="icon-btn" data-flow="create">${I.plus()}</button>
       </div>
       <div class="feed-tabs">
@@ -20705,6 +20806,32 @@
       const sc = e.target.closest && e.target.closest(".al-scroll");
       if (sc) alPageMore(sc.closest(".screen"));
     });
+
+    /* spec-locked (02_FEED §9 View Counting Rule · DEC-45 · NB-033 — SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md):
+       early-stage rule — every scroll-pass over a feed card counts as a view
+       (≥55% visible, capped 120px); scrolling away and back counts again
+       (_vSeen resets at zero visibility); hideCounts posts are skipped. Views
+       update in place — the counter is a read-only stat (no tap target).
+       Contract: transitions to detail-click counting once the user base grows. */
+    const fmtViews = n => n >= 1000 ? `${(n / 1000).toFixed(1)}K` : `${n}`;
+    stageEl.addEventListener("scroll", e => {
+      const sc = e.target;
+      if (!(sc instanceof Element) || !sc.classList.contains("feed-scroll")) return;
+      const top = sc.getBoundingClientRect().top, bottom = top + sc.clientHeight;
+      sc.querySelectorAll(".post[data-pid]").forEach(art => {
+        const r = art.getBoundingClientRect();
+        const vis = Math.min(r.bottom, bottom) - Math.max(r.top, top);
+        if (vis >= Math.min(r.height * 0.55, 120) && !art._vSeen) {
+          art._vSeen = true;
+          const p = findPost(art.dataset.pid);
+          if (p && !p.hideCounts) {
+            p.views = fmtViews(viewsNum(p) + 1);
+            const el = art.querySelector(".views-stat span:last-child");
+            if (el) el.textContent = p.views;
+          }
+        } else if (vis <= 0) art._vSeen = false;
+      });
+    }, true);
 
     /* FEED-004 — pull-to-refresh: at the top of the feed a downward drag reveals the
        indicator between the tabs and the list; releasing past the threshold spins it
@@ -22128,6 +22255,10 @@
         return;
       }
       /* ===== SEARCH-001 — search page flow ===== */
+      /* spec-locked (00_NAV §6.4 · DEC-44 · NB-014 + NB-036 — SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md):
+         Watch Alert entry on the feed app header (.feed-wa → walerts); member-only — guests hit GUEST_GATE_SEL upstream */
+      const fWa = e.target.closest(".feed-wa");
+      if (fWa) { pushSub(fWa.closest(".screen"), "walerts"); return; }
       const sBtn = e.target.closest(".search-btn");
       if (sBtn) {
         const scr = sBtn.closest(".screen");
@@ -22565,6 +22696,8 @@
         if (u) pfOpenChat(scr, u);
         return;
       }
+      /* spec-locked (06_PROFILE · DEC-46 · NB-048 — SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md):
+         own-profile settings entry renders as a gear icon (.pf-menu → settings) */
       const pfMenu = e.target.closest(".pf-menu");
       if (pfMenu) { pushSub(pfMenu.closest(".screen"), "settings"); return; }
       const pfMore = e.target.closest(".pf-more");
@@ -22912,7 +23045,7 @@
         }
         return;
       }
-      const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn)");
+      const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn):not(.feed-wa)");
       if (dead) { toast("Not in this prototype yet"); return; }
       const wm = e.target.closest(".wordmark");
       if (wm) {
@@ -24347,7 +24480,7 @@
       ".follow-btn", ".pf-foll", ".pf-flw", ".pf-msg", ".lk-follow", ".al-fbtn", ".pf-avov-act", ".pf-dots", ".pf-rmf", ".pf-unblock",
       ".comment-input", ".emoji-row", ".c-like", ".c-meta",
       ".post-head .more", ".pm-btn", ".pm-go-report", ".pm-fav", ".pm-ni", ".pm-own-archive", ".pm-own-nocomm", ".pm-own-edit", ".pm-own-sold", ".pm-own-soldview", ".pm-own-pin", ".pm-own-del",
-      ".rp-opt", ".pm-reason", ".uc-report", ".ni-mute", ".ni-unfollow", ".sr-wa",
+      ".rp-opt", ".pm-reason", ".uc-report", ".ni-mute", ".ni-unfollow", ".sr-wa", ".feed-wa",
       ".pf-more", ".pf-menu", ".pf-edit", ".pf-share", ".pf-sh-report", ".pf-sh-block", ".blk-rep", ".blk-go", ".ch-rep-del-btn", ".ch-rep-only-btn",
       ".set-btn", ".sh-add", ".sh-fr", ".pf-sh-share", "[data-bdlike]", "[data-bdshare]"
     ].join(",");

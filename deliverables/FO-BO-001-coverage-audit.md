@@ -1,5 +1,7 @@
 # FO-BO-001 — FO↔BO Cross-System Coverage Audit
 
+> **Canonical index (DOC-030, 2026-11-04):** decisions `e1`–`e4` + `OPEN-1`–`OPEN-5` ในเอกสารนี้ indexed แล้วใน `docs/DECISION_LOG.md` §5 — เอกสารนี้คงเป็น record of record เนื้อหาคงเดิม
+
 > **Task**: ad22178a (FO-BO-AUDIT) · **Date**: 2026-11-02 · **Type**: Audit-only (no files modified)
 > **Baselines**: FO-PRD-v1.10 (locked — demand side) vs BO-PRD-v0.1 (finalizing — supply side)
 > **Sources**: `Prototypes/fo-flow/index.html` (24,494 lines) · `Prototypes/bo-prototype.html` (50,330 lines) · `FrontOffice/*.md` (00–18) · `BackOffice/*.md` (00–17 + PRD/Spec/Addendum/Handoff) · `AGENTS.md` (protected screens) · `deliverables/FO-TEST-001-00-inventory.md`, `FO-TEST-001-22-decision-register.md`

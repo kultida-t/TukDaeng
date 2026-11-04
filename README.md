@@ -8,9 +8,9 @@ Repository นี้จัดเอกสารตามขอบเขตงา
 
 1. [FrontOffice/DOCUMENT_VERSION.md](FrontOffice/DOCUMENT_VERSION.md)
 2. [FrontOffice/README_MODULE_INDEX.md](FrontOffice/README_MODULE_INDEX.md)
-3. [FrontOffice/TukDaeng_Master_Product_Definition.md](FrontOffice/TukDaeng_Master_Product_Definition.md)
+3. [FrontOffice/PRODUCT_DEFINITION.md](FrontOffice/PRODUCT_DEFINITION.md)
 
-Current Front Office baseline: `FO-PRD-v1.10`
+Current Front Office baseline: `FO-PRD-v1.14`
 
 สำหรับงาน Back Office ให้เริ่มอ่าน:
 
@@ -36,7 +36,7 @@ Current Back Office baseline: `BO-PRD-v0.1`
 | --- | --- |
 | Baseline version และ version history | [FrontOffice/DOCUMENT_VERSION.md](FrontOffice/DOCUMENT_VERSION.md) |
 | Reading order และ module map | [FrontOffice/README_MODULE_INDEX.md](FrontOffice/README_MODULE_INDEX.md) |
-| Product source of truth | [FrontOffice/TukDaeng_Master_Product_Definition.md](FrontOffice/TukDaeng_Master_Product_Definition.md) |
+| Product definition (product-level) | [FrontOffice/PRODUCT_DEFINITION.md](FrontOffice/PRODUCT_DEFINITION.md) |
 | Dev baseline package | [FrontOffice/DEV_BASELINE_HANDOFF_2026-06-22.md](FrontOffice/DEV_BASELINE_HANDOFF_2026-06-22.md) |
 | Dev implementation checklist | [FrontOffice/DEV_IMPLEMENTATION_CHECKLIST.md](FrontOffice/DEV_IMPLEMENTATION_CHECKLIST.md) |
 | Chat-specific Dev checklist | [FrontOffice/DEV_CHAT_IMPLEMENTATION_CHECKLIST.md](FrontOffice/DEV_CHAT_IMPLEMENTATION_CHECKLIST.md) |
@@ -67,9 +67,9 @@ Current Back Office baseline: `BO-PRD-v0.1`
 | BO final review / dev handoff | [BackOffice/BO_FINAL_REVIEW_AND_HANDOFF.md](BackOffice/BO_FINAL_REVIEW_AND_HANDOFF.md) |
 | Dev implementation checklist | [BackOffice/BO_DEV_IMPLEMENTATION_CHECKLIST.md](BackOffice/BO_DEV_IMPLEMENTATION_CHECKLIST.md) |
 | BO clickable prototype | [Prototypes/bo-prototype.html](Prototypes/bo-prototype.html) |
-| Existing BO PRD source | [BackOffice/BO_PRD.md](BackOffice/BO_PRD.md) |
-| Existing BO spec source | [BackOffice/BO_Spec.md](BackOffice/BO_Spec.md) |
-| Existing BO completion addendum | [BackOffice/BO_Spec_Completion_Addendum.md](BackOffice/BO_Spec_Completion_Addendum.md) |
+| Legacy BO PRD source (superseded — traceability) | [BackOffice/BO_PRD.md](BackOffice/BO_PRD.md) |
+| Legacy BO spec source (superseded — traceability) | [BackOffice/BO_Spec.md](BackOffice/BO_Spec.md) |
+| Legacy BO completion addendum (superseded — traceability) | [BackOffice/BO_Spec_Completion_Addendum.md](BackOffice/BO_Spec_Completion_Addendum.md) |
 
 ## Notes
 

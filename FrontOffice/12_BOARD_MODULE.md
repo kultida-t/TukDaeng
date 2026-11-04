@@ -1,6 +1,6 @@
 # 12 Board Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng` + guest capabilities), §13 (report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.3 (bottom nav / `Boards` tab), §6.6 (route map `board`/`boardsearch`/`boardall`/`boardart:{id}`), §6.7 (in-app back), §7 (entry matrix), §9 (gate routing), §10 (unavailable fallback), §12 (deep link contract — S-29), §13 (back + main nav after deep link) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) §11 (`shareSheetHTML` canonical — board share reuse) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (Alerts feed canonical — board actions ไม่สร้าง alert) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng` + guest capabilities), §13 (report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.3 (bottom nav / `Boards` tab), §6.6 (route map `board`/`boardsearch`/`boardall`/`boardart:{id}`), §6.7 (in-app back), §7 (entry matrix), §9 (gate routing), §10 (unavailable fallback), §12 (deep link contract — S-29), §13 (back + main nav after deep link) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) §11 (`shareSheetHTML` canonical — board share reuse) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (Alerts feed canonical — board actions ไม่สร้าง alert) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,9 +13,9 @@
 | Status | Functional PRD — synced to fo-flow prototype |
 | Owner | Tuk Daeng Project |
 | Document Type | Front Office Functional PRD |
-| Source of Truth | `Prototypes/fo-flow/index.html` (พฤติกรรม) + Master Product Definition (business intent) |
+| Source of Truth | `Prototypes/fo-flow/index.html` (พฤติกรรม) + `PRODUCT_DEFINITION.md` (business intent) |
 
-> spec เดิม (v1.0) ตีความ Board เป็น 7-section master model (Feature Article / Trending Now / Journal Board / Watch Brands / Watch 101 / Watch Apparel / Watch Events) + infinite scroll + guest-share-allowed + "Notification Center" + "Global Login Required Dialog" — prototype คือ editorial magazine (hero carousel + Latest list + freeform category tags) ที่ทุก social action ถูก gate ด้วย Member Sheet; เอกสารฉบับนี้เขียนตามพฤติกรรมจริงและ flag ทุก deviation ใน §19
+> spec เดิม (v1.0) ตีความ Board เป็น 7-section model ของ baseline เดิม (Feature Article / Trending Now / Journal Board / Watch Brands / Watch 101 / Watch Apparel / Watch Events) + infinite scroll + guest-share-allowed + "Notification Center" + "Global Login Required Dialog" — prototype คือ editorial magazine (hero carousel + Latest list + freeform category tags) ที่ทุก social action ถูก gate ด้วย Member Sheet; เอกสารฉบับนี้เขียนตามพฤติกรรมจริงและ flag ทุก deviation ใน §19
 
 ---
 
@@ -48,12 +48,12 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Topic | Master Baseline | Board Module Rule (ตาม prototype) |
+| Topic | Product Baseline | Board Module Rule (ตาม prototype) |
 | --- | --- | --- |
 | Board Type | Community Content / Article Area | ตรง — admin-authored articles เท่านั้น ไม่ใช่ user-generated discussion board |
-| Content Sections | Feature Article, Trending Now, Journal Board, Watch Brands, Watch 101, Watch Apparel, Watch Events | **ขัด** — prototype เป็น magazine model: hero featured (≤5) + Latest Articles + freeform category tags ที่ไม่ map 7 sections (deviation D1 — master mapping เป็นงาน FSP-025) |
+| Content Sections | Feature Article, Trending Now, Journal Board, Watch Brands, Watch 101, Watch Apparel, Watch Events | **ขัด** — prototype เป็น magazine model: hero featured (≤5) + Latest Articles + freeform category tags ที่ไม่ map 7 sections (deviation D1 — baseline mapping เป็นงาน FSP-025) |
 | Article Detail | รองรับ Article Detail | ตรง — `boardart:{id}` (§12) |
 | Article Actions | Article Like, Article Share | ตรง — `data-bdlike` toggle + `data-bdshare` → shared share sheet (member-only; guest → Member Sheet ตาม S-03/00_GLOBAL §11) |
 | Search / Filter | Search Article, Category Filter | ตรง แต่**แยก surface** — search page ครอบทุกบทความเสมอ ไม่ทำงานร่วมกับ category filter (D9) |
@@ -368,7 +368,7 @@ Article Detail
 
 | # | Topic | Prototype | Contract / note |
 | --- | --- | --- | --- |
-| D1 | 7 master sections → magazine model | hero featured ≤5 + Latest + freeform `BD_CATEGORIES`/`cat` tags — ไม่มี Trending Now/Journal Board/Watch Brands/Watch 101/Watch Apparel/Watch Events | master taxonomy mapping = FSP-025 sign-off (กระทบ master baseline); spec นี้เขียนตาม prototype |
+| D1 | 7 sections ของ baseline เดิม → magazine model | hero featured ≤5 + Latest + freeform `BD_CATEGORIES`/`cat` tags — ไม่มี Trending Now/Journal Board/Watch Brands/Watch 101/Watch Apparel/Watch Events | baseline taxonomy mapping = FSP-025 sign-off (กระทบ product baseline); spec นี้เขียนตาม prototype |
 | D2 | Infinite Scroll | ไม่มี — list นิ่ง 15 บทความ + `You're all caught up` | pattern เดียวกับ feed (FSP-002 B2); pagination = implementation concern/future |
 | D3 | Guest share | `[data-bdshare]` gated → Member Sheet | spec เดิม "guest share ได้" ผิด — S-03 (00_GLOBAL §11): share ต้อง login ทุก surface |
 | D4 | ~~Report Article entry~~ **REMOVED** | Report Article ถูกตัดออกจาก V1 ทั้งระบบ (FO-BO-001 e4 — ตัดสิน 2026-11-03) | flag ปิด |
@@ -409,7 +409,7 @@ And bottom nav ต้อง active `board`
 
 Given user อยู่ Board home
 Then ต้องแสดง `bd-head` (burger Categories + brand `TUK DAENG | Board` + search icon), hero carousel ของ featured articles (≤5 เรียง `feat`), section `บทความล่าสุด`/`Latest Articles` + `View all`, row list ของ non-featured articles และ end note `You're all caught up`/`คุณดูครบทั้งหมดแล้ว`
-And ต้องไม่แสดง 7 master sections (Feature Article/Trending Now/Journal Board/Watch Brands/Watch 101/Watch Apparel/Watch Events) เป็น UI sections
+And ต้องไม่แสดง 7 sections ของ baseline เดิม (Feature Article/Trending Now/Journal Board/Watch Brands/Watch 101/Watch Apparel/Watch Events) เป็น UI sections
 
 ## AC-BOARD-003: Hero Carousel Interaction
 
@@ -521,7 +521,7 @@ Then ต้องไม่มี reachable entry ไปยัง `data-bdmore` m
 
 # 23. Future Enhancement
 
-- Master 7-section taxonomy mapping (FSP-025 sign-off — D1)
+- 7-section taxonomy mapping ของ baseline เดิม (FSP-025 sign-off — D1)
 - Saved Article surface (`data-bdsave` revival — boundary กับ post Saved ต้องนิยามชัด — D5)
 - Infinite scroll / pagination (D2)
 - Native OS share + public article deep link generation + publish/deleted state simulation

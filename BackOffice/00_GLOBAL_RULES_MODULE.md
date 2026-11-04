@@ -1,7 +1,7 @@
 # 00 Back Office Global Rules Module
 
-**Version:** `BO-00-v1.4`  
-**Date:** 2026-11-02  
+**Version:** `BO-00-v1.6`  
+**Date:** 2026-11-04  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -398,11 +398,14 @@ Public/Guest sync requirement:
 - Public share links ต้องไม่ bypass BO hide/remove/archive/inactive status
 - Guest public view/share event สามารถเข้า analytics/event log ได้ แต่ไม่ถือเป็น BO audit event และไม่ถือเป็น registered user activity เว้นแต่ผู้ใช้ login แล้ว
 
-Sync timing:
+Sync timing (product contract ตาม `DEC-49` — owner approved 2026-11-04):
 
-- Security และ moderation action ควรสะท้อนผลใกล้เคียงทันทีที่สุดเท่าที่ทำได้
-- Cached FO list ต้อง validate entity status ก่อนแสดงหรือเมื่อ refresh
-- รายละเอียด cache invalidation/API timing ให้สรุปอีกครั้งตอนออกแบบ backend
+- **Security actions** (suspend/ban/deletion/session revoke): FO ต้อง enforce ภายใน request ถัดไปของ user — ไม่มี tolerated delay; session/token invalidation เป็นวิธีหลัก ไม่อาศัย cache expiry
+- **Moderation actions** (hide/remove/restore content, comment moderation): visible propagation ภายใน ≤ 60 วินาที; cache invalidate บน mutation + public surfaces validate entity status ก่อน render เสมอ
+- **Reference/master data** (option master, market data, directory, support center, policy): propagation ≤ 24 ชม.ผ่าน scheduled sync/refresh; FO อ่านผ่าน cached read-model ไม่ block user flow
+- **Watch Alert match/notification delivery:** เป็น async job — ไม่ผูก sync timing SLA กับ user action; delivery trace ผ่าน Delivery Logs
+- Cached FO list ต้อง validate entity status ก่อนแสดงหรือเมื่อ refresh (contract เดิม)
+- ตัวเลขนี้เป็น product contract — implementation detail (queue, push vs pull, cache invalidation/API timing) ตัดสินตอนออกแบบ backend ไม่กำหนดใน spec
 
 ## 13. Audit Rules
 
@@ -437,7 +440,6 @@ Sensitive data ต้องถูก mask เป็น default ยกเว้�
 - Provenance
 - Purchase price/date/source
 - Proof of payment
-- Consignment contact และ terms
 - Sale history buyer/payment details
 - Chat exports
 - Account deletion archive data

@@ -1,6 +1,6 @@
 # 10 Watch Alert Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §9–§10 (status/visibility — Sale-only match + `salePosts()` pfkind-leak defect note), §11 (guest gate = Member Sheet), §12 (lifecycle), §13 (block impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6 (layer/routes), §7 (entry matrix), §8 (`watch` notification destination), §9 (gate routing) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (`sr-wa` search entry + `waCriteriaFromSearch`/`waName` canonical — FSP-016 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (`mf-btn` detail entry + `modelKey` canonical — FSP-018 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (composer publish → `_waHits` toast — FSP-015b lock) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (`watch` alert feed row canonical — FSP-021) + [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (library row + `walerts` entry + notif toggle + delete-account copy — FSP-013/014 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §9–§10 (status/visibility — Sale-only match + `salePosts()` pfkind-leak defect note), §11 (guest gate = Member Sheet), §12 (lifecycle), §13 (block impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6 (layer/routes), §7 (entry matrix), §8 (`watch` notification destination), §9 (gate routing) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (`sr-wa` search entry + `waCriteriaFromSearch`/`waName` canonical — FSP-016 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (`mf-btn` detail entry + `modelKey` canonical — FSP-018 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (composer publish → `_waHits` toast — FSP-015b lock) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (`watch` alert feed row canonical — FSP-021) + [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (library row + `walerts` entry + notif toggle + delete-account copy — FSP-013/014 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD - Master Aligned |
+| Document Type | Functional PRD - Product Definition Aligned |
 
 ---
 
@@ -38,14 +38,14 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Handlers: `mf-btn` (~22126–22144 — modelKey dedupe ทุก source → edit; ใหม่ → `waCriteriaFromPost` draft `source:"detail"` mode `all`; criteria ว่าง → `No details on this post to watch` ไม่เปิด sheet), `wa-mode` (~22147–22158 — เก็บ name input เข้า draft ก่อน re-render sheet), `wa-go` (~22159–22191 — name `trim() || waName(criteria)`; edit → update + `Watch alert updated`; create → dedupe `waSig`+`matchMode` → dupe = เปิด edit เดิม + `You already saved this alert`; push + `Watch alert on`; sync flags + renderSub), `wa-del` (~22192–22205 — **เปิด confirm dialog ก่อนลบ** + `dlg-wadel-go` ลบจริง + `Watch alert removed` — lock 2026-10-29), `wa-tgl` (~22206–22218 — `a.on` flip + `Watch alert on`/`Watch alert paused`), `.wa-badge` Edit (~22219–22228), `sr-wa` (~22229–22241 — dedupe by sig ทุก source → edit draft; ใหม่ → `source:"search"`)
 - WA hit simulation: `insertNewPost` คำนวณ `POSTS[0]._waHits` (~16201 — ON alerts ที่ match โพสต์ใหม่); toast `Watch alert matched: {name}` `(+N more)` หน่วง ~2.1–2.4s หลัง publish toast (~20525–20527 asset `Post to feed`, ~20541–20543 post share, ~19950–19957 `fo_newpost` carry)
 - Route + wiring: `walerts` → `walertsHTML` (~17715); `notif_settings` toggle `walerts` (~17571 — `When new listings match your criteria`); `data-sub` generic push (canonical 13)
-- Gate + session: `GUEST_GATE_SEL` รวม `.mf-btn` + `.sr-wa` (~23338/~23342); `walerts` page เข้าผ่าน Settings เท่านั้น (member-only — `.pf-menu` gated); `applySessionData`/`clearUserData` → `WATCH_ALERTS.length = 0` สำหรับ guest/new + `restoreUserData` → `waLoad()` คืน alerts ของ member (~23874–23922 — persistence lock 2026-10-29: member alerts อยู่รอด reload/sign-out-in + `syncModelFlags` re-drive กระดิ่ง)
+- Gate + session: `GUEST_GATE_SEL` รวม `.mf-btn` + `.sr-wa` + `.feed-wa` (~23338/~23342); `walerts` page เข้าผ่าน feed header `.feed-wa` (NB-014/036, DEC-44) + Settings (member-only — `.pf-menu`/`.feed-wa` gated); `applySessionData`/`clearUserData` → `WATCH_ALERTS.length = 0` สำหรับ guest/new + `restoreUserData` → `waLoad()` คืน alerts ของ member (~23874–23922 — persistence lock 2026-10-29: member alerts อยู่รอด reload/sign-out-in + `syncModelFlags` re-drive กระดิ่ง)
 - Feed side: `watch` notification rows + badge + destination — canonical [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md)
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Topic | Master Baseline | Watch Alert Module Rule |
+| Topic | Product Baseline | Watch Alert Module Rule |
 | --- | --- | --- |
 | Entry point | spec เดิม: Search Filter เท่านั้น | **3 entries เปิด shared sheet เดียวกัน**: `sr-wa` (search results head) + `mf-btn` `Follow this model` (Post Detail — canonical 05) + `Edit` บน `walerts` row (edit-only) — prototype wins |
 | Alert name | spec เดิม: required ตอน save ว่าง→block | **auto-name เสมอ** — `waName` prefill + save `trim() || waName(criteria)` regen; ไม่มี validation block (prototype wins — canonical entry อยู่ 03 §9) |
@@ -482,7 +482,7 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 
 ## DEC-25 Amendments — Watch Alert (IG)
 
-- ไม่สร้าง watch row/notification ให้ตัวเองเมื่อโพสต์ตรงเงื่อนไขของตัวเอง (DEC-26)
+- ไม่สร้าง watch row/notification ให้ตัวเองเมื่อโพสต์ตรงเงื่อนไขของตัวเอง (DEC-26 — WA-054 · DEC-26 อีกฝั่ง ALT-070 ถูกยกเลิกโดย DEC-48 แล้ว)
 - alert ที่สร้างล่าสุดอยู่บนสุดของ list
 - ชื่อว่าง → ใช้ auto name ไม่ block การบันทึก
 - ลบ alert แล้ว notification ที่เคยได้รับยังคงอยู่

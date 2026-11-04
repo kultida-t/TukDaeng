@@ -3,7 +3,9 @@
 **Document Type:** Master Product Definition / PRD Baseline  
 **Source Documents:** `PRD.md`, `FO_Functional_PRD.md`  
 **Purpose:** ใช้เป็นหลักยึดกลางก่อนแตกเป็น Functional PRD รายโมดูล  
-**Status:** Synced to fo-flow prototype baseline (FO-PRD-v1.10) — Draft for Dev & QA Review
+**Status:** SUPERSEDED 2026-11-04 (DOC-010) — เดิม: Synced to fo-flow prototype baseline (FO-PRD-v1.10) — Draft for Dev & QA Review
+
+> **⚠️ SUPERSEDED (DOC-010, 2026-11-04):** เอกสารนี้ไม่ใช่ contract อีกต่อไป — product-level facts (vision, platforms, user model, terminology, phase scope) ย้ายไป `PRODUCT_DEFINITION.md` และ behavioral contract ทั้งหมด canonical อยู่ที่ module specs `00`–`18` ตาม `README_MODULE_INDEX.md` — เก็บเล่มนี้ไว้เพื่อ traceability เท่านั้น (โดยเฉพาะ §16 Sync Decision Log S-01–S-29 + D2–D12 — §16 คงเป็น record of record ของ S-xx แต่ **canonical index ของ decision ทั้งระบบอยู่ที่ `../docs/DECISION_LOG.md`** ตั้งแต่ DOC-030 2026-11-04) ห้ามอ้างเป็น source of truth; จุดที่ขัด module spec ให้ยึด module spec เสมอ
 
 > **Sync note (FO-PRD-v1.9, 2026-10-22):** เอกสารนี้ sync ตาม module specs ที่ rewrite ให้ตรง `Prototypes/fo-flow/index.html` (locked prototype — source of truth) ผ่าน mission FSP-006–024 + sign-off S-01–S-29 ใน `deliverables/fo-spec-sync/FSP-005-consolidated-gap-signoff.md` — ทุกจุดที่ master เดิมขัด prototype ให้ยึด prototype (ตัวเลือก default ของ sign-off) ส่วนรายการที่เป็น production contract แต่ prototype ไม่ครอบ ให้ mark เป็น `(contract — prototype ไม่ครอบ)` ตามแบบ module specs — decision log รวมอยู่ที่ §16
 
@@ -601,11 +603,11 @@ Alerts feed รองรับ notification types:
 - Comment
 - Follow
 - Watch Alert
+- System — 3 subtypes: security / account status / announcements (คืนเข้า V1 ตาม DEC-43 · NB-046 — supersede DEC-41)
 
 Alerts feed ไม่รองรับใน Front Office V1:
 
 - Chat / New Message ไม่เป็น alert type และแจ้งเตือนเฉพาะในเมนู Chat ด้วย unread badge/count (Σunread cap `99+`)
-- System / Security alert (เช่น `A new device just logged in...`) — ถูกถอนออกจาก V1 ทั้งประเภท (DEC-41 — supersede S-17)
 - Moderation / Account Action
 - Market Update
 - Price / Valuation
@@ -1024,7 +1026,7 @@ Sign-off decisions ที่ลงใน master รอบนี้ (อ้าง
 | S-14 | Public `all` tab leak = defect | spec = viewer เห็น Sale+Show เท่านั้น | `06_PROFILE` |
 | S-15 | Portfolio headline = Total invested (Σ purchase) | แทน Total Asset Value (Σ current) — §7 Portfolio | `14_PORTFOLIO` |
 | S-16 | Guest กด feed tabs ได้ไม่ gate | guest browse-only + empty tabs | `02_FEED` |
-| S-17 | `system` notification type (เดิมอยู่ใน baseline — type ที่ 5 placeholder destination) | **ถอนออกจาก V1 ทั้งประเภทตาม DEC-41 (2026-11-02)** | `09_NOTIFICATION` |
+| S-17 | `system` notification type (เดิมอยู่ใน baseline — type ที่ 5 placeholder destination) | **คืนเข้า V1 ตาม DEC-43 (2026-11-04)** — 3 subtypes (security / account status / announcements) + destinations จริง + dismiss `x` + category filter (supersede DEC-41 ที่เคยถอน 2026-11-02) | `09_NOTIFICATION` |
 | S-18 | ไม่เขียน E2E/Letter Sealing เป็น feature claim | dead copy เท่านั้น | `07_CHAT` |
 | S-19 | Drawer 9 items = placeholder rows | ไม่ใช่ active routes | `00_NAV` §11 |
 | S-20 | ตัด spec-only auth states | ไม่มี Confirm Password / OTP expiry / Verification Success / Reset Password page | `01_AUTHENTICATION` |

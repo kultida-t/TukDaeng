@@ -1,0 +1,46 @@
+REQ-021 — Manual QA Checklist + ผลตรวจ (Task Evidence Bundle)
+================================================================
+Task: REQ-021 [d7f07956] อัปเดต fo-flow prototype ตาม gap ที่ approve (gated)
+Mission 5 [3d27da7d] / Objective 3 — Approved Spec Updates
+วันตรวจ: 2026-11-04 · ผู้ตรวจ: พี่มาเต็ม (manual QA บน prototype fo-flow) · ผลรวม: ผ่านครบ 6/6 เคส
+ไฟล์เป้าหมาย: Prototypes/fo-flow/index.html (spec anchor: 00_NAV §6.4, 02_FEED §9, 09_NOTIFICATION, 06_PROFILE, 00_GLOBAL §11; DEC-43..47 · NB-014/033/036/046/048 — SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md)
+
+----------------------------------------------------------------
+เคส 1: .feed-wa บน feed header (member)
+ขั้นตอน: login member → เปิดหน้า feed → ดู app header ข้างปุ่ม +
+ผลที่คาด: เห็นไอคอนนาฬิกาข้อมือ (.feed-wa, I.watch(20)) → กด → เปิดหน้า Watch Alert list (pushSub "walerts")
+ผลจริง: ผ่าน ✅ (ตรง 00_NAV §6.4 · DEC-44 · NB-014+NB-036)
+
+เคส 2: .feed-wa guest gate
+ขั้นตอน: logout (guest) → หน้า feed → กดไอคอนนาฬิกาข้อมือ
+ผลที่คาด: เด้ง Member Sheet "Join TukDaeng" (obGate) ไม่เข้าหน้า walerts — .feed-wa ∈ GUEST_GATE_SEL, gate intercept ก่อน handler
+ผลจริง: ผ่าน ✅
+
+เคส 3: View counting rule
+ขั้นตอน: เลื่อน feed ช้า ๆ ดู eye counter → เลื่อนการ์ดหลุดจอแล้วเลื่อนกลับ → เปิด Post Viewer/Detail สลับกลับ
+ผลที่คาด: card โผล่ ≥55% (cap 120px) → views +1 in-place บน .views-stat; หลุดจอแล้วกลับมานับซ้ำ (_vSeen reset); ไม่นับบน surface อื่น; ไม่นับโพสต์ hideCounts
+ผลจริง: ผ่าน ✅ (ตรง 02_FEED §9 · DEC-45 · NB-033)
+
+เคส 4: Alerts category filter (.al-fchip)
+ขั้นตอน: เข้าหน้าแจ้งเตือน (member) → กด chip ระบบ / กิจกรรม / Watch Alert / ทั้งหมด
+ผลที่คาด: ระบบ = เฉพาะ 4 แถว system (icons shield/award/info); กิจกรรม = like/comment/follow; Watch Alert = watch เท่านั้น; หมวดว่าง → "No alerts in this category yet."; pagination reset 10 + คง scrollTop
+ผลจริง: ผ่าน ✅ (ตรง 09_NOTIFICATION §9 Category Filter Rule · DEC-43 · NB-046)
+
+เคส 5: System rows — destination + dismiss persist
+ขั้นตอน: กดแถว system แต่ละ kind → กด x dismiss → รีเฟรช/เปิดแอปใหม่
+ผลที่คาด: security → change_pwd; account(โพสต์ถูกซ่อน) → al_unavail; account(verified) → about_account; announce → about_app; dismiss persist ถาวร (fo_alstate) ไม่กลับมา; ไม่มี system toggle ใน notif_settings
+ผลจริง: ผ่าน ✅ (ตรง 09 §9/§11 · DEC-43 supersede DEC-41)
+
+เคส 6: pf-menu gear บน own profile
+ขั้นตอน: เปิดโปรไฟล์ตัวเอง → ดูมุมขวาบนของ head → กด
+ผลที่คาด: ไอคอนเป็น gear (I.gear(22), title "Settings and activity") ไม่ใช่ burger → pushSub "settings"; guest gated
+ผลจริง: ผ่าน ✅ (ตรง 06_PROFILE · DEC-46 · NB-048)
+
+----------------------------------------------------------------
+หลักฐานเสริม (automated verify ฝั่ง agent):
+- node --check ผ่านทั้ง 2 script blocks ของ index.html
+- git diff ตรวจครบทุก hunk — map กับ demo delta + comment sync เท่านั้น ไม่มี stray change
+- ตรวจ comment/lock note: NB-### ถูก sync เป็น spec-locked anchors ครบ 7 จุด; ไม่มี comment อ้าง DEC-32/DEC-41 ค้างในไฟล์ (banner ALERTS ปรับ 4→5 types พร้อมบันทึก DEC-43 supersedes DEC-41)
+- ไม่มี delta ใหม่ — selective page-config ไม่มีหน้า approve เพิ่มตาม Gap Report §6
+
+Evidence gap (บันทึกตรง ๆ): task นี้เปลี่ยนเฉพาะ comment/lock notes + verify — delta visual ทำไว้ใน session เดโมก่อนหน้า จึงไม่มีภาพ Before/After ของ task นี้; การเปลี่ยนแปลงทั้งหมด (demo delta + comment sync) ยังอยู่ใน working copy ยังไม่ commit

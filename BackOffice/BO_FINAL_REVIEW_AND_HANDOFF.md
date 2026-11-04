@@ -1,7 +1,7 @@
 # BO Final Review And Dev Handoff
 
-**Version:** `BO-HANDOFF-v0.2`  
-**Date:** 2026-10-26  
+**Version:** `BO-HANDOFF-v0.3`  
+**Date:** 2026-11-04  
 **Status:** Draft handoff  
 **Scope:** Back Office documentation baseline `00` - `17`
 
@@ -108,17 +108,19 @@
 
 ## 6. Highest Priority Open Decisions
 
+> Canonical index (DOC-030, 2026-11-04): priority view นี้ indexed แล้วใน `../docs/DECISION_LOG.md` §10 — record of record ของแต่ละ `XXX-DEC-xxx` อยู่ที่ `Open Decisions` section ของ module spec เจ้าของ
+
 | Priority | Decision | Source | Why It Matters |
 | --- | --- | --- | --- |
 | P0 | Chat retention period | `DEL-DEC-002` | กระทบ chat export, dispute, account deletion, anonymization |
-| P0 | Account deletion anonymization timing หลัง 30-day grace period | `BO-DEC-003`, `DEL-DEC-003` | กระทบ data model, archive job, privacy/compliance |
+| ~~P0~~ ✅ resolved | Account deletion anonymization timing หลัง 30-day grace period | `BO-DEC-003`, `DEL-DEC-003` | แถว stale — resolved ผ่าน `DEL-DEC-006` ตั้งแต่ 2026-09-08 (lifecycle ขั้นเดียว: เก็บถาวร + ลบตัวตน พร้อมกันเมื่อครบ grace); baseline annotate แล้ว 2026-11-04 (DOC-033) |
 | P0 | The Watch API production plan/quota และ FX source USD -> THB | `BO-MARKET-DEC-004`, `BO-MARKET-DEC-002` | กระทบ market data sync, price index, fallback |
-| P0 | Sync timing จาก BO moderation ไป FO surfaces | `00_GLOBAL_RULES_MODULE.md` sync timing section | กระทบ cache invalidation และ user-visible behavior |
-| P1 | Directory future activation level | `BO-DIR-DEC-001` | Directory is postponed from Phase 1 while FO menu entries remain placeholder-only without detail routes |
-| P1 | FO support ticket history หรือ contact-only (Phase 1 ยึด Support Center contact-only — ticket queue ย้ายไป Phase 2) | `SUP-DEC-001` | กระทบ Help / Support API, BO reply sync, FO UX |
-| P1 | Broadcast แสดงใน FO Notification Center หรือ push-only | `NOTI-DEC-001` | กระทบ FO notification type list และ payload |
-| P1 | Sensitive export ต้องมี approval เพิ่มหรือไม่ | `REP-DEC-004`, `SET-DEC-004` | กระทบ Admin Settings, Audit (ก่อนหน้านี้ระบุให้กระทบ Reports ด้วย แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงกระทบ Admin Settings และ Audit เท่านั้น) |
-| P2 | Board public SEO web requirement | `BO-DEC-005` | กระทบ Board content delivery และ routing |
+| ~~P0~~ ✅ resolved | Sync timing จาก BO moderation ไป FO surfaces | `00_GLOBAL_RULES_MODULE.md` sync timing section | resolved ตาม `DEC-49` (2026-11-04) — sync timing contract 3 ชั้น: security = enforce request ถัดไป, moderation ≤ 60s, reference data ≤ 24h |
+| ~~P1~~ ✅ resolved | Directory future activation level | `BO-DIR-DEC-001` | resolved 2026-11-04 — placeholder-only ใน V1; activation ภายหลัง = requirement ใหม่ |
+| ~~P1~~ ✅ resolved | FO support ticket history หรือ contact-only (Phase 1 ยึด Support Center contact-only — ticket queue ย้ายไป Phase 2) | `SUP-DEC-001` | resolved 2026-11-04 — ไม่ส่ง policy publish notification ใน Phase 1 |
+| ~~P1~~ ✅ deferred | Broadcast แสดงใน FO Notification Center หรือ push-only | `NOTI-DEC-001` | formal defer to Phase 2 (2026-11-04) — ตัดสินพร้อม Phase 2 scoping |
+| ~~P1~~ ✅ resolved | Sensitive export ต้องมี approval เพิ่มหรือไม่ | `REP-DEC-004`, `SET-DEC-004` | resolved 2026-11-04 — Phase 1 ใช้ permission + confirmation + reason + audit พอ; approval workflow = Phase 2 backlog |
+| ~~P2~~ ✅ resolved | Board public SEO web requirement | `BO-DEC-005` | resolved 2026-11-04 — mobile Board content only; no public web SEO in V1 |
 
 ## 7. QA Focus Areas
 

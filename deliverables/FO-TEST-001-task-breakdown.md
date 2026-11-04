@@ -278,8 +278,12 @@ Output: deliverables/FO-TEST-001-09-board.md
 อ่าน master prompt + inventory
 
 ขอบเขต: alerts tab + กลไก notification (ไม่รวม walerts — อยู่ FO-TEST-11)
-- Alert list: 4 types (Like / Comment / Follow / Watch Alert — `system` ถอนแล้วตาม DEC-41) —
+- Alert list: 5 types (Like / Comment / Follow / Watch Alert / System — `system` คืน V1 ด้วย
+  3 subtypes security/account/announce + `dest` + dismiss `x` ตาม DEC-43 · NB-046 — supersede DEC-41) —
   รูปแบบ row แต่ละ type, actor avatar, เวลา, read/unread state
+- Category filter `.al-fchip`: chips `ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert` + catOf mapping +
+  filtered-empty copy + page-local + pagination reset + badge จาก list เต็ม
+- system boundary: ไม่มี toggle ใน notif_settings; destination ตาม `dest` field (fallback `settings`)
 - Badge: นับถูก, แสดง 99+ เมื่อเกิน (กติกาบังคับ), เคลียร์เมื่ออ่าน
 - mark all read: state ทุก row เปลี่ยน + badge หาย
 - Tap row → Post Viewer ตรง (like/comment/watch alert) —

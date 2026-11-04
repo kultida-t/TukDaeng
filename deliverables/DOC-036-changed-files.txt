@@ -1,0 +1,30 @@
+DOC-036 — changed files evidence
+Captured: 2026-11-04 15:46 Asia/Bangkok
+Task: 4e11c854 (in_progress — superseded docs hygiene, optional ตาม DOC-034 §6)
+
+=== scope ===
+Annotate asset-consignment refs ที่ค้างใน superseded docs 3 เล่มว่าถูกตัดตาม DEC-51 (DOC-035, 2026-11-04) — annotate-only ไม่ลบเนื้อหา (docs เป็น point-in-time, mark superseded แล้วตาม DOC-010)
+OUT OF SCOPE (ไม่แตะ ตาม DOC-034 §2.6/§7): Directory "Consignment Center" venue type — BO_Spec.md L45/L328/L335, BO_PRD.md L309 — re-decide ตอน Directory activation ตาม BO-DIR-DEC-001/003
+
+=== files changed by THIS task ===
+ M BackOffice/BO_Spec.md                            (annotate L138 — "Consignment Info" ในฟีเจอร์ Admin ดูรายละเอียดสินทรัพย์ → ทำเครื่องหมายถูกตัดตาม DEC-51)
+ M BackOffice/BO_PRD.md                             (annotate L186 — "Consignment" ใน admin capability list → เครื่องหมายเดียวกัน)
+ M BackOffice/BO_Spec_Completion_Addendum.md        (annotate 2 จุด — §8.3 Consignment Fields เพิ่ม note block ใต้หัวข้อ; L632 acceptance criterion item 4 inline marker)
+?? deliverables/DOC-036-changed-files.txt           (new — ไฟล์นี้)
+
+=== ไม่แตะ ===
+- spec module ทุกเล่ม (00–17), prototype, protected screens
+- living docs: BO_DEV_IMPLEMENTATION_CHECKLIST.md / BO_UI_UX_STANDARD.md (sync ครบแล้วใน DOC-035)
+- DOCUMENT_VERSION.md — superseded docs ไม่มี version bump ตาม convention (DOC-011: per-doc stamps ไม่ bump สำหรับ annotation/reference edits); DOC-035 row ยังถูกต้อง ("คง consignment refs ไว้ตาม traceability" — refs ยังอยู่ แค่มี marker)
+- Directory venue-type refs ทั้งหมด (BO_Spec L45 tree, L328 §3.9 list, L335 Category dropdown; BO_PRD L309 list)
+
+=== residual consignment refs หลังงานนี้ (ตั้งใจคงไว้) ===
+BO_Spec.md L45/L328/L335 — Directory Consignment Center venue type (out of scope)
+BO_PRD.md L309 — Directory venue list (out of scope)
+Addendum §8.3 table fields — เนื้อหาเดิมคงไว้ มี note block คุมแล้ว
+
+=== diff stat ===
+ BackOffice/BO_PRD.md                      | 2 +-
+ BackOffice/BO_Spec.md                     | 2 +-
+ BackOffice/BO_Spec_Completion_Addendum.md | 4 +++-
+ 3 files changed, 5 insertions(+), 3 deletions(-)

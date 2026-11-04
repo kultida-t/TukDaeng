@@ -1,0 +1,47 @@
+DOC-033 — changed files evidence (uncommitted at capture time)
+Captured: 2026-11-04 15:00 Asia/Bangkok
+Task: ee3c153a (done 0.37h)
+
+ M BackOffice/00_GLOBAL_RULES_MODULE.md
+ M BackOffice/06_MARKET_DATA_MODULE.md
+ M BackOffice/07_DIRECTORY_MODULE.md
+ M BackOffice/08_AUDIT_LOG_MODULE.md
+ M BackOffice/12_HELP_SUPPORT_MODULE.md
+ M BackOffice/14_NOTIFICATIONS_MODULE.md
+ M BackOffice/15_REPORTS_ANALYTICS_MODULE.md
+ M BackOffice/16_ADMIN_SETTINGS_MODULE.md
+ M BackOffice/BO_FINAL_REVIEW_AND_HANDOFF.md
+ M BackOffice/BO_MASTER_BASELINE.md
+ M BackOffice/DOCUMENT_VERSION.md
+ M FrontOffice/04_ASSET_MANAGEMENT_MODULE.md
+ M FrontOffice/14_PORTFOLIO_MODULE.md
+ M FrontOffice/DEV_IMPLEMENTATION_CHECKLIST.md
+ M FrontOffice/DOCUMENT_VERSION.md
+ M FrontOffice/PRODUCT_DEFINITION.md
+ M Prototypes/fo-flow/index.html
+ M docs/DECISION_LOG.md
+ M scripts/build-manual-pdf.mjs
+?? deliverables/DOC-032-decision-briefs.md
+?? deliverables/DOC-033-changed-files.txt
+
+=== diff stat ===
+ BackOffice/00_GLOBAL_RULES_MODULE.md        | 15 +++--
+ BackOffice/06_MARKET_DATA_MODULE.md         |  8 +--
+ BackOffice/07_DIRECTORY_MODULE.md           | 12 ++--
+ BackOffice/08_AUDIT_LOG_MODULE.md           | 12 ++--
+ BackOffice/12_HELP_SUPPORT_MODULE.md        | 12 ++--
+ BackOffice/14_NOTIFICATIONS_MODULE.md       | 14 ++---
+ BackOffice/15_REPORTS_ANALYTICS_MODULE.md   | 12 ++--
+ BackOffice/16_ADMIN_SETTINGS_MODULE.md      | 10 ++--
+ BackOffice/BO_FINAL_REVIEW_AND_HANDOFF.md   | 18 +++---
+ BackOffice/BO_MASTER_BASELINE.md            | 14 ++---
+ BackOffice/DOCUMENT_VERSION.md              |  1 +
+ FrontOffice/04_ASSET_MANAGEMENT_MODULE.md   |  2 +-
+ FrontOffice/14_PORTFOLIO_MODULE.md          | 20 +++----
+ FrontOffice/DEV_IMPLEMENTATION_CHECKLIST.md |  2 +-
+ FrontOffice/DOCUMENT_VERSION.md             | 11 +++-
+ FrontOffice/PRODUCT_DEFINITION.md           |  2 +-
+ Prototypes/fo-flow/index.html               |  8 +--
+ docs/DECISION_LOG.md                        | 93 +++++++++++++++++------------
+ scripts/build-manual-pdf.mjs                | 13 +---
+ 19 files changed, 147 insertions(+), 132 deletions(-)

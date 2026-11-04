@@ -1,7 +1,7 @@
 # 08 BO Audit Log Module
 
-**Version:** `BO-08-v0.5`<br>
-**Date:** 2026-10-26<br>
+**Version:** `BO-08-v0.6`<br>
+**Date:** 2026-11-04<br>
 **Status:** Screen layer synced with prototype (Audit Log Phase 1 — list/detail drawer/date range filter/cross-module jump) + audit catalog synced กับ BO Login baseline ตาม Change Mission `0a5b2b14`<br>
 **Platform:** Responsive Web Back Office
 
@@ -9,7 +9,7 @@
 
 เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
-เอกสารอ้างอิง: `BO_PRD.md`, `BO_Spec.md`
+เอกสารอ้างอิง: `00_GLOBAL_RULES_MODULE.md`, `BO_MASTER_BASELINE.md`; legacy (superseded DOC-010): `BO_PRD.md`, `BO_Spec.md`
 
 ## 1. Document Information
 
@@ -374,7 +374,7 @@ Audit Log ต้องใช้ app shell, navigation, breakpoint, list toolbar,
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| BO-AUDIT-DEC-001 | Retention ระยะยาวเกิน 1 ปีสำหรับ security/export/sensitive events | เก็บนานกว่า 1 ปีถ้า storage/compliance อนุญาต |
-| BO-AUDIT-DEC-002 | Audit write fail ต้อง block action หรือ queue retry | Block high-risk action; queue retry สำหรับ low-risk read/report events |
-| BO-AUDIT-DEC-003 | Redaction policy สำหรับข้อมูลส่วนบุคคลใน audit payload | ใช้ masked payload เป็น default และ redaction event แยกเมื่อจำเป็น |
-| BO-AUDIT-DEC-004 | ส่ง audit log เข้า external SIEM หรือไม่ | Future phase |
+| BO-AUDIT-DEC-001 ✅ | Retention ระยะยาวเกิน 1 ปีสำหรับ security/export/sensitive events | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** เก็บนานกว่า 1 ปีถ้า storage/compliance อนุญาต; ตัวเลข retention จริงผูก retention cluster (`DEL-DEC-002`/`BO-DEC-002`/`SET-DEC-003` — รอ Legal) |
+| BO-AUDIT-DEC-002 ✅ | Audit write fail ต้อง block action หรือ queue retry | **ตัดสินใจ (2026-11-04):** block high-risk action; queue retry สำหรับ low-risk read/report events |
+| BO-AUDIT-DEC-003 ✅ | Redaction policy สำหรับข้อมูลส่วนบุคคลใน audit payload | **ตัดสินใจ (2026-11-04):** ใช้ masked payload เป็น default และ redaction event แยกเมื่อจำเป็น (สอดคล้อง AC-BO-AUDIT-017) |
+| BO-AUDIT-DEC-004 ✅ | ส่ง audit log เข้า external SIEM หรือไม่ | **ตัดสินใจ (2026-11-04):** defer — future phase ไม่มีใน Phase 1/2 scope |

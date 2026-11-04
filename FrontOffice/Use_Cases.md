@@ -3,7 +3,9 @@
 **วันที่:** พฤษภาคม 2568  
 **ครอบคลุม:** FO (Front Office) ทุก Flow พร้อม Happy Path และ Error Cases
 
-> **Sync note (FO-PRD-v1.9, 2026-10-22):** เอกสารนี้เป็น assumption doc เก่า (legacy tier) ที่ sync ตาม `Prototypes/fo-flow/index.html` + master §16 Sync Decision Log — feed post-centric, Member Sheet (เดิม Global Login Required Dialog), Alerts feed 5 types (เดิม Notification Center), composer asset mode, Sale Record = ราคา+วันที่, share member-only, delete account login-to-restore — จุดที่ขัด master/module spec ให้ยึด master/module spec เสมอ
+> **⚠️ SUPERSEDED (DOC-010, 2026-11-04):** เอกสารนี้ไม่ใช่ contract อีกต่อไป — canonical contract อยู่ที่ module specs `00`–`18` (`README_MODULE_INDEX.md`) + product-level definition ที่ `PRODUCT_DEFINITION.md` — เก็บไว้เพื่อ traceability เท่านั้น; จุดที่ขัด module spec ให้ยึด module spec เสมอ
+>
+> Sync note เดิม (FO-PRD-v1.9, 2026-10-22): เอกสารนี้เป็น assumption doc เก่า (legacy tier) ที่ sync ตาม `Prototypes/fo-flow/index.html` + master §16 Sync Decision Log — feed post-centric, Member Sheet (เดิม Global Login Required Dialog), Alerts feed 5 types (เดิม Notification Center), composer asset mode, Sale Record = ราคา+วันที่, share member-only, delete account login-to-restore
 
 ---
 
@@ -623,7 +625,7 @@
 
 #### Happy Path
 1. กด Tab "แจ้งเตือน" (Alerts feed)
-2. แสดงรายการแจ้งเตือน 4 types (like/comment/follow/watch alert) แบ่งกลุ่ม `Today`/`Yesterday`/`Last 7 days`/`Earlier`
+2. แสดงรายการแจ้งเตือน 5 types (like/comment/follow/watch alert/system — `system` 3 subtypes ตาม DEC-43) พร้อม category filter `ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert` แบ่งกลุ่ม `Today`/`Yesterday`/`Last 7 days`/`Earlier`
 3. กด "Mark all as read" หรือกด row → ไป Post Viewer / Public Profile ตาม type
 
 ---

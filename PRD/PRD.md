@@ -2,7 +2,9 @@
 **เวอร์ชัน:** 1.0  
 **วันที่:** พฤษภาคม 2568  
 **เจ้าของเอกสาร:** Business Analyst Team  
-**สถานะ:** Draft
+**สถานะ:** SUPERSEDED 2026-11-04 (DOC-010) — เดิม: Draft
+
+> **⚠️ SUPERSEDED (DOC-010, 2026-11-04):** เอกสารต้นฉบับยุคก่อน prototype lock ไม่ใช่ contract อีกต่อไป — canonical contract อยู่ที่ `FrontOffice/` module specs `00`–`18` (`FrontOffice/README_MODULE_INDEX.md`) + `FrontOffice/PRODUCT_DEFINITION.md` — เก็บไว้เพื่อ traceability เท่านั้น ห้ามอ้างเป็น source of truth; จุดที่ขัด module spec ให้ยึด module spec เสมอ
 
 ---
 

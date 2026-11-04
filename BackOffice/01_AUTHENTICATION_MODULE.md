@@ -9,7 +9,7 @@
 
 เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก โดยเฉพาะ Login screen ที่ล็อกแล้ว รวมถึง layout (split บน desktop, single column บน tablet/mobile), dark theme, brand identity, form pattern ตาม Login Pattern ใน `BO_UI_UX_STANDARD.md`
 
-เอกสารอ้างอิง: `00_GLOBAL_RULES_MODULE.md`, `BO_UI_UX_STANDARD.md`, `BO_MASTER_BASELINE.md`, `BO_PRD.md`, `BO_Spec.md`
+เอกสารอ้างอิง: `00_GLOBAL_RULES_MODULE.md`, `BO_UI_UX_STANDARD.md`, `BO_MASTER_BASELINE.md`; legacy (superseded DOC-010): `BO_PRD.md`, `BO_Spec.md`
 
 ## 1. Document Information
 

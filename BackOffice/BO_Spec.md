@@ -4,6 +4,8 @@
 **ผู้ใช้งาน:** Admin ของระบบตึกแดง
 **อัปเดตจาก:** v1.4 → v1.5 (FO-BO-001 e4 follow-up — ถอด Reported Articles queue/Board Report Detail ออกจาก BO prototype และ spec)
 
+> **⚠️ SUPERSEDED (DOC-010, 2026-11-04):** เอกสารนี้ไม่ใช่ contract อีกต่อไป — canonical contract อยู่ที่ module specs `00`–`17` (`README_MODULE_INDEX.md`) + scope/phase baseline ที่ `BO_MASTER_BASELINE.md` — เก็บไว้เพื่อ traceability เท่านั้น ห้ามอ้างเป็น source of truth; จุดที่ขัด module spec ให้ยึด module spec เสมอ
+
 ---
 
 ## 1. ภาพรวม Back Office
@@ -133,7 +135,7 @@ BO Dashboard
 | ฟีเจอร์ | คำอธิบาย |
 |---|---|
 | ดูรายการสินทรัพย์ทั้งหมด | Filter ตาม Status (Sale/Show/Hide/Sold/Flagged), Brand, ราคา, Owner |
-| ดูรายละเอียดสินทรัพย์ | ข้อมูลครบทุกฟิลด์ รวม Provenance, Consignment Info, Sale History |
+| ดูรายละเอียดสินทรัพย์ | ข้อมูลครบทุกฟิลด์ รวม Provenance, Consignment Info *(ถูกตัดตาม `DEC-51` — 2026-11-04)*, Sale History |
 | Force Hide / Restore Visibility | ซ่อน asset ชั่วคราวเพื่อ moderation เมื่อเข้าเงื่อนไข report/review และคืนสถานะหลังตรวจแล้วไม่ผิด |
 | Remove Asset | ลบสินทรัพย์ที่ละเมิด Policy (Soft Delete) |
 | Edit Asset Info | ไม่ใช่ V1 Admin action สำหรับ user-owned asset; Admin ดูข้อมูลแบบ read-only และแก้ได้เฉพาะ operational/moderation state ที่มี reason + audit |

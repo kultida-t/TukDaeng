@@ -1,0 +1,69 @@
+DOC-021 — execute archive deliverables เก่า + อัปเดต references
+Task: 6b1c31cc | Mission 6 [31829e57] Objective 2: Deliverables Archive
+Commit: 08e0dc1 (branch prototype) — docs(deliverables): DOC-021 archive 88 closed
+  entries (flat mirror) + update 8 refs
+Plan ที่ execute ตาม: deliverables/mission-6-objective-2/DOC-020-deliverables-archive-plan.md
+  (approved 2026-11-04 §9 — option A flat mirror)
+Date: 2026-11-04 | หลักการ: ห้ามลบเอกสาร — git mv เท่านั้น (544 files changed,
+  540 renames 100% similarity, ไม่มี deletion)
+
+== สร้างใหม่ ==
+deliverables/archive/INDEX.md — manifest เดียวคุมทั้ง archive (88 rows:
+  path/type/closed-by/archived/referenced-by + stale-script note + convention ต่อเนื่อง)
+
+== Rule update (งานข้อ 3 ของ task) ==
+AGENTS.md — เพิ่ม section "Deliverables Archive Rule": root = active output
+  เท่านั้น, archive/ = read-only history ไม่ต้องค้น, ย้ายด้วย git mv + เพิ่ม INDEX row
+
+== git mv → deliverables/archive/ (88 root entries, flat mirror คง path เดิม) ==
+- task-*/ ×36 dirs — closed task evidence (NAV-008..017, CHAT-007..009,
+  FEED-025/026, AUTH-002/003, BO-QA-IMPL-026..028, FOBO-* ×5, GUEST-001,
+  FONT-001, I18N-001, MONEY-001, FO-CURRENCY, REPORT-FIX, f2f1934f,
+  28d3b1c9, 3d2b6f50, 45c27755, 716b8972)
+- mission bundles ×13 dirs + 4 zips — mission-1-obj1-contract(+zip),
+  mission-1-obj4-verification(+zip), mission-2-objective-2,
+  mission-2-obj4-verification(+zip), mission-3-objective-1..5,
+  mission-4-objective-1..2, mission-fa6c030e-obj3-acceptance(+zip),
+  mission-umn-review-obj1
+- mission-fa6c030e loose ×3 — checklist.txt, checklist-card.png,
+  intro-acceptance-review.txt
+- bo-prototype-audit-objective-1..5 ×5 dirs — BO audit wave
+- AIL-* ×11 files — Admin Identity Lifecycle evidence
+- reports ×4 — FO-TEST-AUDIT ×2, FEED-027-manual-review-checklist.txt,
+  FO-PROTO-f2f1934f-report.md
+- review dirs ×2 — create-post-review/, feed-redesign-review/
+- prompts ×3 — prompt-FO-BO-coverage-audit.md,
+  prompt-Tukdaeng-Video-Guides.md, prompt-Univerza_Tukdaeng_User_Manual.md
+- drafts ×3 — INTRO-post-caption.md, tukdaeng-intro-video-script.md,
+  tukdaeng-mascot-story-pack.md
+- intermediates ×4 — manual_orig.txt, umn-pdf-compression-checklist.txt,
+  chk2-p1.png, chk2-p28.png
+
+== Reference updates (prepend archive/ — 8 refs ใน 3 ไฟล์) ==
+docs/bo-navigation-naming-contract.md L190-192 — bo-prototype-audit-objective-1/2/3 ×3
+docs/bo-shared-remediation-coverage.md L261 — bo-prototype-audit-objective-2 ×1
+docs/bo-canonical-label-table.md L231 + L288 — mission-3-objective-1 ×2,
+  mission-4-objective-1 ×2
+
+== KEEP — ไม่ย้ายตาม plan §3 (ยืนยันเหลือที่ root ครบ) ==
+FO-TEST-001-* ทั้งชุด (49 files), fo-spec-sync/, FO-BO-001-coverage-audit.md,
+label-standard/, Univerza_Tukdaeng_User_Manual.* ×4, appstore-screenshots/,
+manual-previews/, FO-DIAG-001/ + FO-DIAG-001-fo-app-diagrams.md,
+REQ-010 ×2 / REQ-011 / REQ-012 / REQ-021, FO-SPEC-changed-files.txt,
+mission-6-objective-1/, mission-6-objective-2/, BO-TEST-COVERAGE-AUDIT.md
+
+== Verify ==
+- INDEX rows (88) diff กับ ls archive/ → match 100%
+- grep -roh "deliverables/..." docs/ FrontOffice/ BackOffice/ Prototypes/ scripts/
+  → ไม่มี ref ตายจากการย้าย; refs ที่ยังชี้ path เก่ามีเฉพาะ capture/render
+  scripts (stale ตาม plan §6 — งานปิดแล้ว ไม่แก้ script, บันทึกใน INDEX)
+  + scratch outputs (test-output.txt/test.pdf/times-check.txt/appstore-phones)
+  + pattern refs (FO-TEST-001-*, FSP-*, inventory.md/.json)
+  + Prototypes/deliverables/ (tree แยก — นอก scope DOC-021)
+- git status หลัง commit → clean (ไม่มี deletion ค้าง)
+
+== Stale refs ที่รับทราบ (ไม่แก้ตาม plan §6 + constraint) ==
+scripts/capture-feed-redesign.js, capture-feed-redesign-sections.js,
+build-feed-review-sheets.js → deliverables/feed-redesign-review/
+scripts/video-guides/render_intro_v2.py L3 (comment) →
+  deliverables/tukdaeng-intro-video-script.md

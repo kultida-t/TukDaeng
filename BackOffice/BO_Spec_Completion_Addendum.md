@@ -4,6 +4,8 @@
 **Purpose:** เติมรายละเอียด Back Office ให้รองรับ Front Office flows จาก PRD และ Use Cases ครบถ้วนขึ้น  
 **Reference:** BO_Spec v1.3, PRD v1.0, Use_Cases v1.0
 
+> **⚠️ SUPERSEDED (DOC-010, 2026-11-04):** เอกสารนี้ไม่ใช่ contract อีกต่อไป — canonical contract อยู่ที่ module specs `00`–`17` (`README_MODULE_INDEX.md`) + scope/phase baseline ที่ `BO_MASTER_BASELINE.md` — เก็บไว้เพื่อ traceability เท่านั้น ห้ามอ้างเป็น source of truth; จุดที่ขัด module spec ให้ยึด module spec เสมอ
+
 ---
 
 ## 1. Summary
@@ -485,6 +487,8 @@ Content role split baseline:
 
 ### 8.3 Consignment Fields
 
+> ⚠️ Section นี้ถูกตัดตาม `DEC-51` (2026-11-04) — asset consignment ถูกตัดออกจาก BO data model + prototype ทั้งหมด ไม่มี producer ใน V1; ส่วน Directory `Consignment Center` venue type (BO_Spec §3.9, `BO-DIR-DEC-001`/`003`) อยู่นอก scope — re-decide ตอน Directory activation
+
 | Field | Type | Required |
 |---|---|---|
 | Consignment Center | Text / FK Directory | Optional |
@@ -627,7 +631,7 @@ BO จะถือว่ารองรับ FO ครบถ้วนเมื�
 1. Comment ที่ถูก hide/remove ใน BO หายจาก FO ทันที
 2. Watch Alert ที่ผู้ใช้สร้างจาก Search สามารถดู criteria และ trigger history ใน BO ได้
 3. System notification ทุกประเภทใน PRD มี template, trigger log และ delivery status
-4. Provenance, Consignment และ Proof of Payment ถูกจำกัดสิทธิ์ตาม privacy rule
+4. Provenance, Consignment *(ถูกตัดตาม `DEC-51` — 2026-11-04)* และ Proof of Payment ถูกจำกัดสิทธิ์ตาม privacy rule
 5. Admin สามารถจัดการ Policy & Versioning และ Support Center ได้
 8. Audit Log บันทึกทุก action สำคัญของ admin ครบ target entity และ before/after value
 9. Admin สามารถสร้างบทความพร้อมรูปปก เนื้อหา หมวดหมู่ และ publish/schedule จาก BO ได้

@@ -1,6 +1,6 @@
 # 18 Admin Scope Note
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
 ---
 
@@ -13,17 +13,17 @@
 | Version | V1 |
 | Status | Draft |
 | Owner | Product / UX / Engineering / Operations |
-| Document Type | Scope Boundary Note - Master Aligned |
+| Document Type | Scope Boundary Note - Product Definition Aligned |
 
 # 2. Objective
 
-Admin Scope Note ระบุขอบเขต Admin / Back Office ที่ master กล่าวถึง แต่ยังไม่ได้แตกเป็น Functional PRD เต็มสำหรับ mobile user-facing app
+Admin Scope Note ระบุขอบเขต Admin / Back Office ที่ `PRODUCT_DEFINITION.md` กล่าวถึง แต่ยังไม่ได้แตกเป็น Functional PRD เต็มสำหรับ mobile user-facing app
 
 This document clarifies that Admin is a Web Back Office account type, not a mobile app user type, and defines the user-facing handoff required for moderation, report handling, and audit trail.
 
-# 3. Master Alignment Summary
+# 3. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
 | Platform | Web Back Office สำหรับ Admin |
 | Admin access | Admin ใช้งานผ่าน Back Office เท่านั้น |
@@ -135,7 +135,7 @@ Admin Action ต้องมี Audit Trail ใน Back Office
 | AC-ADMIN-002 | Mobile app V1 does not show Admin account type or Admin controls |
 | AC-ADMIN-003 | Report รองรับ Asset, User และ Comment |
 | AC-ADMIN-004 | Report ไม่ทำให้ Asset หรือ Content หายทันทีโดยไม่มี Admin moderation |
-| AC-ADMIN-005 | Admin ต้องสามารถตรวจสอบ Report ผ่าน Back Office ตาม scope master |
+| AC-ADMIN-005 | Admin ต้องสามารถตรวจสอบ Report ผ่าน Back Office ตาม scope ที่ product baseline กำหนด |
 | AC-ADMIN-006 | Admin ดำเนินการกับ Report ที่เข้ามาทั้งหมดผ่าน Back Office (ไม่มี deadline tracking) |
 | AC-ADMIN-007 | Board content สร้างและจัดการโดย Admin ผ่าน Back Office |
 | AC-ADMIN-008 | Sold Asset เก็บไว้เพื่อ Sales History, Portfolio และ Admin Review |

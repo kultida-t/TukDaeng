@@ -10724,9 +10724,6 @@
     body.asset-detail-mode .detail-grid.two {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-    body.asset-detail-mode .detail-grid.two.asset-consignment-modal-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
     body.asset-detail-mode .detail-grid.two.asset-listing-summary-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -11300,9 +11297,6 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
-    }
-    .asset-consignment-modal-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .asset-purchase-media {
       display: grid;
@@ -15515,9 +15509,6 @@
       body.asset-detail-mode .detail-grid.two {
         grid-template-columns: 1fr;
       }
-      body.asset-detail-mode .detail-grid.two.asset-consignment-modal-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
       body.asset-detail-mode .detail-grid.two.asset-listing-summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -17731,7 +17722,7 @@
       ]),
       assets: mod("Asset Management", "การดำเนินงาน / Asset Management", "Asset List & Moderation", "จัดการสถานะ Sale, Show, Hide, Sold และ reported assets", "สร้าง asset note", [["Sale", "2,816", "แสดงใน Feed/Search"], ["Show", "428", "แสดงใน collection"], ["Hidden", "76", "owner-only"], ["Reported", "22", "รอตรวจ 9 รายการ"]], [
         item("AST-8831", "Rolex Submariner 16610", "Crown Time BKK", "Sale", "สูง", "Auto Hidden", "รูปประกาศซ้ำและราคาเบี่ยงจาก market index", ["THB 318,000", "Reports 5", "Auto hidden"], "ครบ 5 reports ระบบซ่อนชั่วคราวเพื่อรอ Admin ตรวจสอบ"),
-        item("AST-8802", "Omega Speedmaster", "Vintage Vault BKK", "Sale", "กลาง", "Active", "ราคาสูงกว่าค่ากลาง 18% จากรุ่นเดียวกัน", ["Watch Alert match 12"], "ส่ง warning หรือ force Hide หากข้อมูลหลอกลวง"),
+        item("AST-8802", "Omega Speedmaster", "Vintage Vault BKK", "Sale", "กลาง", "Active", "ราคาสูงกว่าค่ากลาง 18% จากรุ่นเดียวกัน", ["THB 186,000", "Watch Alert match 12"], "ส่ง warning หรือ force Hide หากข้อมูลหลอกลวง"),
         item("AST-8791", "Seiko 6139", "Archive Collector", "Hide", "ปกติ", "Owner-only", "รอ account deletion dependency check", ["THB 96,000", "Deletion linked"], "คงข้อมูล transaction/audit ตาม retention"),
         item("AST-8755", "Patek Philippe Calatrava", "The Collector", "Show", "ปกติ", "Active", "แสดงใน portfolio เท่านั้น ไม่มีราคาขาย", ["Portfolio"], "ตรวจว่าโพสต์ Show ไม่แสดงราคาขายบน FO public surface"),
         item("AST-8720", "Tudor Black Bay 58", "Seiko Corner", "Sold", "ปกติ", "Closed", "ขายแล้วและมี sale record เก็บไว้ตาม retention", ["THB 118,000", "Sold record"], "เปิดอ่านได้แบบ read-only และคง audit/sold history"),
@@ -17743,7 +17734,7 @@
         item("AST-8579", "Rolex GMT-Master II Pepsi", "Crown Time BKK", "Sale", "กลาง", "Active", "Price check against recent market index before public boost", ["THB 612,000", "Watch Alert match 8"], "Confirm price evidence and seller ownership before promotion"),
         item("AST-8571", "Rolex Datejust 36", "Bangkok Watch Lab", "Show", "ปกติ", "Active", "Portfolio listing waiting for owner confirmation", ["Portfolio"], "Verify portfolio visibility and profile display"),
         item("AST-8566", "Rolex Explorer 124270", "Crown Time BKK", "Sale", "กลาง", "Active", "New listing with complete provenance but missing wrist shot", ["THB 268,000"], "Request additional photo before featuring"),
-        item("AST-8559", "Rolex Daytona 116500LN", "Siam Chrono", "Sale", "สูง", "Reviewing", "High value asset with provenance documents under review", ["Reports 1", "High value"], "Review serial proof and receipt before keeping Sale"),
+        item("AST-8559", "Rolex Daytona 116500LN", "Siam Chrono", "Sale", "สูง", "Reviewing", "High value asset with provenance documents under review", ["THB 1,185,000", "Reports 1", "High value"], "Review serial proof and receipt before keeping Sale"),
         item("AST-8548", "Omega Seamaster Diver 300M", "Vintage Vault BKK", "Sale", "ปกติ", "Active", "Clean listing with market price in normal range", ["THB 142,000"], "No action needed unless new report arrives"),
         item("AST-8536", "Omega Speedmaster Reduced", "Daily Watch Hunter", "Sale", "กลาง", "Admin Hidden", "Temporarily hidden while duplicate photos are checked", ["Hidden by Admin"], "Restore when duplicate check passes"),
         item("AST-8524", "Omega Aqua Terra", "Minimal Dial", "Show", "ปกติ", "Active", "Collection-only display for owner profile", ["Portfolio"], "Check that no sale price shows on FO surface"),
@@ -21313,7 +21304,6 @@
       assetStatus: [
         { value: "", label: filterCopy.allStatus },
         { value: "Sale", label: "Sale" },
-        { value: "Sale:Consignment", label: "Sale + Consignment" },
         { value: "Show", label: "Show" },
         { value: "Hide", label: "Hide" },
         { value: "Sold", label: "Sold" },
@@ -21732,12 +21722,7 @@
       return `<span class="asset-status-pills">${assetStatusPill(asset.type)}${moderationPill}</span>`;
     }
 
-    function isAssetListConsignment(asset) {
-      return isAssetConsignment(asset);
-    }
-
     function renderAssetListStatusDisplay(asset) {
-      const consignmentPill = isAssetListConsignment(asset) ? `<span class="pill slate">Consignment</span>` : "";
       const moderationPill = isTemporarilyHiddenAsset(asset)
         ? `<span class="pill amber">ซ่อนชั่วคราว</span>`
         : isPermanentlyHiddenAsset(asset)
@@ -21745,12 +21730,11 @@
         : isOwnerDeletedAsset(asset)
           ? `<span class="pill gray">ลบโดยเจ้าของ</span>`
         : "";
-      return `<span class="asset-status-pills">${assetStatusPill(asset.type)}${consignmentPill}${moderationPill}</span>`;
+      return `<span class="asset-status-pills">${assetStatusPill(asset.type)}${moderationPill}</span>`;
     }
 
     function matchesAssetStatusFilter(asset, filterValue) {
       if (!filterValue) return true;
-      if (filterValue === "Sale:Consignment") return isAssetListConsignment(asset);
       if (filterValue === "Temporarily Hidden") return isTemporarilyHiddenAsset(asset);
       if (filterValue === "Permanently Hidden") return isPermanentlyHiddenAsset(asset);
       if (filterValue === "ลบโดยเจ้าของ") return isOwnerDeletedAsset(asset);
@@ -21805,7 +21789,6 @@
     function getAssetEnteredPrice(asset) {
       const priceTag = (asset.tags || []).find(tag => /^THB\s/i.test(tag));
       if (priceTag) return priceTag;
-      if (isAssetConsignment(asset)) return `THB ${getAssetConsignmentAskingPrice(asset)}`;
       return "";
     }
 
@@ -22345,105 +22328,12 @@
       };
     }
 
-    function isAssetConsignment(asset) {
-      return asset.type === "Sale" && ["AST-8831", "AST-8802", "AST-8579", "AST-8559", "AST-8548"].includes(asset.id);
-    }
-
-    function getAssetConsignmentAskingPrice(asset) {
-      const prices = {
-        "AST-8831": "318,000",
-        "AST-8802": "186,000",
-        "AST-8579": "612,000",
-        "AST-8559": "1,185,000",
-        "AST-8548": "142,000"
-      };
-      return prices[asset.id] || "142,000";
-    }
-
     function getAssetProvenanceType(asset) {
-      return isAssetConsignment(asset) ? "Consignment" : "Owner (Asset)";
+      return "Owner (Asset)";
     }
 
     function getAssetProvenanceActionLabel(asset) {
-      return isAssetConsignment(asset) ? "Consignment Details" : "View purchase history";
-    }
-
-    function getAssetConsignmentDetails(asset, detail) {
-      const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
-      const askingPrice = detail.price && /^THB\s/i.test(detail.price) ? detail.price.replace(/^THB\s*/i, "") : getAssetConsignmentAskingPrice(asset);
-      const consignors = {
-        "AST-8831": {
-          fullName: "K. Vichai Prasert",
-          phone: "086-552-8831",
-          contact: "Line: vichai.watch",
-          email: "vichai.prasert@example.com",
-          payoutMethod: "Bank transfer",
-          minimumAcceptablePrice: "305,000"
-        },
-        "AST-8802": {
-          fullName: "K. Narin Chaiyaporn",
-          phone: "082-444-2188",
-          contact: "Line: narin.watch",
-          email: "narin.chaiyaporn@example.com",
-          payoutMethod: "Bank transfer",
-          minimumAcceptablePrice: "176,000"
-        },
-        "AST-8579": {
-          fullName: "K. Sirin Wongwatchara",
-          phone: "089-771-6024",
-          contact: "IG: @sirin.collection",
-          email: "sirin.wongwatchara@example.com",
-          payoutMethod: "Bank transfer",
-          minimumAcceptablePrice: "590,000"
-        },
-        "AST-8559": {
-          fullName: "K. Pattanapong Rattanakul",
-          phone: "081-936-7742",
-          contact: "Line: pattanapong.watch",
-          email: "pattanapong.r@example.com",
-          payoutMethod: "Bank transfer",
-          minimumAcceptablePrice: "1,140,000"
-        },
-        "AST-8548": {
-          fullName: "K. Mayuree Tangsakul",
-          phone: "086-118-4920",
-          contact: "Facebook: Mayuree Watch Sale",
-          email: "mayuree.tangsakul@example.com",
-          payoutMethod: "Bank transfer",
-          minimumAcceptablePrice: "136,000"
-        }
-      };
-      const consignor = consignors[asset.id] || {
-        fullName: `K. ${asset.owner.split(" ")[0]} Chai`,
-        phone: "082-444-2188",
-        contact: "Line: consignor.watch",
-        email: "consignor@example.com",
-        payoutMethod: "Bank transfer",
-        minimumAcceptablePrice: "136,000"
-      };
-      const notes = {
-        "AST-8802": "ฝากขาย Omega Speedmaster เรือนนี้ครับ ใช้งานเองเป็นหลัก มีรอยขนแมวตามปกติแต่เครื่องเดินดี กล่องและเอกสารตามรูป ขอให้ติดต่อก่อนนัดดูของ 1 วัน และถ้าลูกค้าต่อราคา รบกวนเช็คกับผมก่อนยืนยันทุกครั้ง",
-        "AST-8579": "นาฬิกาอยู่ในเซฟ ไม่ได้ใส่บ่อย สภาพตามรูปจริง มีอุปกรณ์ครบตามที่แนบไว้ ถ้ามีผู้ซื้อจริงสามารถนัดดูที่สาขาได้ แต่ขอไม่เปิดราคาต่ำสุดให้ลูกค้าทราบก่อนคุยกับผม",
-        "AST-8559": "ฝากขายตามราคาที่แจ้งไว้ ต้องการปิดดีลกับผู้ซื้อที่โอนมัดจำหรือพร้อมชำระเท่านั้น กรุณาแจ้งล่วงหน้าก่อนนำเรือนออกมาให้ดู และขอรับเงินเข้าบัญชีเดิมหลังหักค่าคอมมิชชัน",
-        "AST-8548": "ตัวเรือนมีตำหนิเล็กน้อยตรงขอบล่างตามรูปเพิ่มเติม อุปกรณ์มีเท่าที่ส่งให้ ไม่มีกล่องนอก ถ้าลูกค้าสนใจจริงสามารถต่อรองได้เล็กน้อย แต่ขอให้ BO โทรยืนยันราคากับผมก่อนปิดการขาย"
-      };
-      return {
-        rows: [
-          ["Full Name", consignor.fullName],
-          ["Phone Number", consignor.phone],
-          ["Line / IG / Facebook", consignor.contact],
-          ["Email", consignor.email],
-          ["Payout Method", consignor.payoutMethod],
-          ["Consignment Date", `${String(Math.max(1, idNumber % 28 || 9)).padStart(2, "0")} Jul 2026`],
-          ["Consignment Duration", "90 days"],
-          ["Asking Price (THB)", askingPrice],
-          ["Commission (%)", "5%"],
-          ["Minimum Acceptable Price", consignor.minimumAcceptablePrice]
-        ],
-        equipmentImages: purchaseEquipmentImages,
-        proofFiles: purchaseProofImages,
-        note: notes[asset.id] || `ฝากขาย ${asset.name} ตามรายละเอียดและรูปที่แนบไว้ หากมีผู้ซื้อสนใจจริง รบกวนติดต่อเจ้าของก่อนยืนยันราคาและเงื่อนไขการชำระเงินทุกครั้ง`
-      };
+      return "View purchase history";
     }
 
     function getAssetStatusHistoryRows(asset, detail) {
@@ -22842,22 +22732,20 @@
       if (!asset) return;
       const detail = getAssetFoDetail(asset);
       const purchase = getAssetPurchaseHistory(asset, detail);
-      const isConsignment = isAssetConsignment(asset);
-      const consignment = isConsignment ? getAssetConsignmentDetails(asset, detail) : null;
-      const modalRows = isConsignment ? consignment.rows : [
+      const modalRows = [
         ["Purchase Price (THB)", purchase.price],
         ["Purchase Date", purchase.date],
         ["Purchase From", purchase.from]
       ];
-      const equipmentImages = isConsignment ? consignment.equipmentImages : purchase.equipmentImages;
-      const proofFiles = isConsignment ? consignment.proofFiles : purchase.proofFiles;
-      const note = isConsignment ? consignment.note : purchase.note;
+      const equipmentImages = purchase.equipmentImages;
+      const proofFiles = purchase.proofFiles;
+      const note = purchase.note;
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
         <div class="user-action-page asset-detail-related-modal" data-modal-dismissible>
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">${isConsignment ? "Consignment Details" : "Purchase History"}</h2>
+              <h2 id="user-action-modal-title">Purchase History</h2>
               <p>${asset.id} · ${asset.name} · ${asset.owner}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
@@ -22865,7 +22753,7 @@
             </button>
           </div>
           <div class="user-action-card">
-            <div class="detail-grid two asset-purchase-modal-grid${isConsignment ? " asset-consignment-modal-grid" : ""}">
+            <div class="detail-grid two asset-purchase-modal-grid">
               ${renderAssetDetailTiles(modalRows)}
             </div>
           </div>
@@ -23006,8 +22894,7 @@
     }
 
     function getAssetListSearchText(asset) {
-      const provenanceText = isAssetListConsignment(asset) ? "consignment sale" : "";
-      return [getAssetSearchText(asset), provenanceText].join(" ").toLowerCase();
+      return getAssetSearchText(asset);
     }
 
     function getAssetSortRank(asset, sort) {

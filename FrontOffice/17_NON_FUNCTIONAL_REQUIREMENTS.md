@@ -1,6 +1,6 @@
 # 17 Non-Functional Requirements
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
 ---
 
@@ -13,15 +13,15 @@
 | Version | V1 |
 | Status | Draft |
 | Owner | Product / UX / Engineering / QA |
-| Document Type | QA Baseline - Master Aligned |
+| Document Type | QA Baseline - Product Definition Aligned |
 
 # 2. Objective
 
 Non-Functional Requirements กำหนด baseline ด้าน Performance, Security, Localization และ Accessibility สำหรับทุกโมดูลของ TukDaeng V1 เพื่อให้ QA ใช้ตรวจระบบได้สม่ำเสมอและไม่ปนกับ functional PRD รายโมดูล
 
-# 3. Master Alignment Summary
+# 3. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
 | Performance | Feed ควรโหลดภายใน 2 วินาที |
 | Performance | รูปภาพต้อง Lazy Load |
@@ -65,7 +65,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | Languages | รองรับภาษาไทยและอังกฤษ |
 | Price | ราคาแสดงด้วยสัญลักษณ์ `฿` |
 | Empty state | ใช้ข้อความกลาง `ไม่พบข้อมูล` และ `No data found` |
-| Labels | ใช้ canonical terminology ตาม master |
+| Labels | ใช้ canonical terminology ตาม `PRODUCT_DEFINITION.md` §5 |
 | Text expansion | UI ต้องรองรับความยาวข้อความต่างกันระหว่าง TH/EN |
 
 # 7. Accessibility Requirements
@@ -104,7 +104,7 @@ Non-Functional Requirements กำหนด baseline ด้าน Performance, S
 | AC-NFR-009 | Admin Action ต้องมี Audit Trail ใน Back Office |
 | AC-NFR-010 | ระบบรองรับภาษาไทยและอังกฤษ |
 | AC-NFR-011 | ราคาแสดงด้วยสัญลักษณ์ `฿` |
-| AC-NFR-012 | Empty State ใช้ข้อความกลางตาม master |
+| AC-NFR-012 | Empty State ใช้ข้อความกลางตาม `00_GLOBAL_RULES_MODULE.md` (empty state) |
 | AC-NFR-013 | Font size รองรับการปรับตามระบบ |
 | AC-NFR-014 | รองรับ Screen Reader ตามความเหมาะสมของ Mobile Platform |
 

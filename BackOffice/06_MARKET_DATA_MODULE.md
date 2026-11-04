@@ -1,7 +1,7 @@
 # 06 BO Market Data Module
 
-**Version:** `BO-06-v1.1`  
-**Date:** 2026-10-26  
+**Version:** `BO-06-v1.2`  
+**Date:** 2026-11-04  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -716,7 +716,7 @@ Market Data ต้องใช้ app shell, navigation, breakpoint, list toolba
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| BO-MARKET-DEC-001 | Production จะเปิด manual sync trigger บน BO หรือไม่ | เปิดเฉพาะ operations permission พร้อม audit และ rate-limit guard |
+| BO-MARKET-DEC-001 ✅ | Production จะเปิด manual sync trigger บน BO หรือไม่ | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** เปิดเฉพาะ operations permission พร้อม audit และ rate-limit guard (เพดานใช้ค่าอนุรักษ์ใน spec) |
 | BO-MARKET-DEC-002 | FX rate source สำหรับ USD -> THB | ต้องเลือก central FX source และเก็บ fx metadata ใน price index |
-| BO-MARKET-DEC-003 | การจัดการ mapping warning จะมี queue แยกหรือไม่ | Phase 1 แสดง warning/read-only; workflow แก้ไขให้เป็น backend/provider process |
+| BO-MARKET-DEC-003 ✅ | การจัดการ mapping warning จะมี queue แยกหรือไม่ | **ตัดสินใจ (2026-11-04):** Phase 1 แสดง warning/read-only เท่านั้น; correction workflow เป็น backend/provider process ไม่ใช่ BO UI |
 | BO-MARKET-DEC-004 | Production plan/usage limit ของ The Watch API | Dev/Ops ต้องยืนยัน plan, quota, endpoint access และ rate limit ก่อน launch |

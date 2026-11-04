@@ -1,6 +1,6 @@
 # 07 Chat Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §9–§10 (status/visibility), §11 (guest gate), §12 (lifecycle — chat อยู่เมื่อ sold/deleted), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.1–§10 (layer model, routes, back, entry matrix, unavailable contract) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (blkSheet/unblockDlg/report stack/`pf-msg` DM entry canonical — FSP-019 + FO-TEST-12 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (Post Detail entry semantics — FSP-018 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §9–§10 (status/visibility), §11 (guest gate), §12 (lifecycle — chat อยู่เมื่อ sold/deleted), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.1–§10 (layer model, routes, back, entry matrix, unavailable contract) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (blkSheet/unblockDlg/report stack/`pf-msg` DM entry canonical — FSP-019 + FO-TEST-12 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (Post Detail entry semantics — FSP-018 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD - Master Aligned |
+| Document Type | Functional PRD - Product Definition Aligned |
 
 ---
 
@@ -44,11 +44,11 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Topic | Master Baseline | Chat Module Rule |
+| Topic | Product Baseline | Chat Module Rule |
 | --- | --- | --- |
-| Chat ใช้สนทนาระหว่างผู้ใช้ | master เดิม | ตรง — thread ผูก **user เดียว** (IG DM; FO-TEST-12 lock) — การ์ดลิสติ้งแนบเป็นข้อความเฉพาะตอน Ask/Share; ไม่มีห้องแยกตามลิสติ้ง |
+| Chat ใช้สนทนาระหว่างผู้ใช้ | baseline เดิม | ตรง — thread ผูก **user เดียว** (IG DM; FO-TEST-12 lock) — การ์ดลิสติ้งแนบเป็นข้อความเฉพาะตอน Ask/Share; ไม่มีห้องแยกตามลิสติ้ง |
 | Room creation | สร้างเมื่อส่งข้อความแรก | ตรง — `C.draft` สร้างตอนกด Ask; เข้า `C.threads` เมื่อ `chSend` แรกเท่านั้น |
 | Reference Asset | Asset Reference Card + states (spec เดิม) | **post reference card** snapshot (รูป + owner + caption + price) — ไม่มี sold/deleted state บนการ์ด; tap → Post Detail ตาม 05 (missing → toast + unavailable contract) |
 | Lifecycle โพสต์ | 00_GLOBAL §12 — chat อยู่เมื่อ sold/deleted | thread + ประวัติคงอยู่; การ์ดเป็น snapshot นิ่ง; tap post ที่หาย → `Listing detail isn't in this prototype yet` (contract: `รายการนี้ไม่พร้อมใช้งานแล้ว` ตาม 00_GLOBAL §11/00_NAV §10) |
@@ -89,7 +89,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Member Sheet internals — 00_GLOBAL §11 / 01_AUTH; Bottom nav + layer model — 00_NAV §6
 - Notification center / alerts feed — [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (FSP-021); chat badge = nav pill เท่านั้น
 - Settings `blocked` list (`m-unblock`) — [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md)
-- BO moderation — master contract เท่านั้น
+- BO moderation — contract เท่านั้น (prototype ไม่ครอบ)
 - External deep-link routing — contract 00_NAV §10/§12
 
 ---

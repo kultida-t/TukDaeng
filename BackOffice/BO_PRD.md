@@ -5,6 +5,8 @@
 **Audience:** Admin  
 **Related Documents:** BO_Spec v1.2, BO_Spec_Completion_Addendum v1.3, FO PRD v1.0, Use Cases v1.0
 
+> **⚠️ SUPERSEDED (DOC-010, 2026-11-04):** เอกสารนี้ไม่ใช่ contract อีกต่อไป — canonical contract อยู่ที่ module specs `00`–`17` (`README_MODULE_INDEX.md`) + scope/phase baseline ที่ `BO_MASTER_BASELINE.md` — เก็บไว้เพื่อ traceability เท่านั้น ห้ามอ้างเป็น source of truth; จุดที่ขัด module spec ให้ยึด module spec เสมอ
+
 ---
 
 ## 1. Product Overview
@@ -181,7 +183,7 @@ Admin ต้องสามารถ:
 - Flag / Unflag asset
 - Remove asset แบบ soft delete
 - Force Hide / Restore Visibility สำหรับ moderation เท่านั้น
-- ดู Provenance, Proof of Payment, Consignment และ Sale History ตามสิทธิ์
+- ดู Provenance, Proof of Payment, Consignment *(ถูกตัดตาม `DEC-51` — 2026-11-04)* และ Sale History ตามสิทธิ์
 - ไม่แก้ข้อมูลประกาศของ user-owned asset โดยตรง และไม่เปลี่ยน `Sold` จาก BO quick action
 
 ### Asset Status Rules

@@ -184,7 +184,7 @@ Option ordering ที่เป็นมาตรฐาน:
 - Report status: ทุกสถานะ, Pending, Closed
 - Priority: ทุก Priority, High, Medium, Low
 - Auth method: ทุกวิธีเข้าสู่ระบบ, Email, Google, Apple
-- Asset status: ทุกสถานะ, Sale, Sale + Consignment, Show, Hide, Sold, ซ่อนชั่วคราว, ซ่อนถาวร, ลบโดยเจ้าของ
+- Asset status: ทุกสถานะ, Sale, Show, Hide, Sold, ซ่อนชั่วคราว, ซ่อนถาวร, ลบโดยเจ้าของ
 - Article status: ทุกสถานะ, Draft, Scheduled, Published, Archived
 - Category status: ทุกสถานะ, Active, Inactive
 - Market sync status: ทุกสถานะ, กำลังทำงาน, ล้มเหลว, สำเร็จบางส่วน, สำเร็จ

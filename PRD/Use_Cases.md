@@ -3,6 +3,8 @@
 **วันที่:** พฤษภาคม 2568  
 **ครอบคลุม:** FO (Front Office) ทุก Flow พร้อม Happy Path และ Error Cases
 
+> **⚠️ SUPERSEDED (DOC-010, 2026-11-04):** เอกสารต้นฉบับยุคก่อน prototype lock ไม่ใช่ contract อีกต่อไป — canonical contract อยู่ที่ `FrontOffice/` module specs `00`–`18` (`FrontOffice/README_MODULE_INDEX.md`) + `FrontOffice/PRODUCT_DEFINITION.md` — เก็บไว้เพื่อ traceability เท่านั้น ห้ามอ้างเป็น source of truth; จุดที่ขัด module spec ให้ยึด module spec เสมอ
+
 ---
 
 ## หมายเหตุเรื่อง Role ผู้ใช้

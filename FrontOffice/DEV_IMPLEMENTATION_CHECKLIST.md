@@ -2,7 +2,7 @@
 
 Reference:
 
-- [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+- [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 - [README_MODULE_INDEX.md](README_MODULE_INDEX.md)
 
 Purpose:
@@ -16,7 +16,7 @@ Purpose:
 # 0. Global Implementation Rules
 
 - [ ] ใช้ canonical asset status ชุดเดียว: `Sale`, `Show`, `Hide`, `Sold` (+ kind `post` ของโพสต์ที่ไม่ผูก asset — ไม่ใช่ asset status)
-- [ ] บังคับ visibility matrix ตาม master ทุก query/list/detail
+- [ ] บังคับ visibility matrix ตาม `00_GLOBAL_RULES_MODULE.md` (visibility matrix) ทุก query/list/detail
 - [ ] Session model 3 สถานะ `member` / `new` / `guest` ตาม 00_GLOBAL §7 — guest browse ได้ แต่ action ที่ต้องมีตัวตน gate ทั้งหมด
 - [ ] Guest action ที่ต้อง Login ต้องเปิด Member Sheet (`Join TukDaeng`) — เดิมเรียก Global Login Required Dialog
 - [ ] Deleted Asset/Post ต้องหายจาก public list และ detail แสดง unavailable state
@@ -177,7 +177,7 @@ Purpose:
 # 8. Notification (Alerts feed)
 
 - [ ] Alerts feed (เดิมเรียก Notification Center) เป็น member-only surface — guest เจอ Member Sheet
-- [ ] รองรับ 4 types: Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17)
+- [ ] รองรับ 5 types: Like, Comment, Follow, Watch Alert, System — `system` 3 subtypes (security / account status / announcements) + `dest` destination + dismiss `x` + category filter chips `ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert` (DEC-43, supersede DEC-41)
 - [ ] Chat/New Message ไม่เข้า Alerts feed — badge-only ที่ Chat menu
 - [ ] Moderation, Account Action, Market Update, Price/Valuation, Sale Success ไม่เข้า FO V1 Alerts feed
 - [ ] List แสดงเฉพาะของ current user แบ่งกลุ่ม age buckets (`Today`/`Yesterday`/`Last 7 days`/`Earlier`)
@@ -233,7 +233,7 @@ Purpose:
 
 # 11. Board
 
-- [ ] Board เป็น editorial magazine (S-01) — hero featured ≤5 + Latest list + freeform category tags; **ตัด** 7 master sections เดิม (Feature Article, Trending Now, Journal Board, Watch Brands, Watch 101, Watch Apparel, Watch Events)
+- [ ] Board เป็น editorial magazine (S-01) — hero featured ≤5 + Latest list + freeform category tags; **ตัด** 7 sections ของ baseline เดิม (Feature Article, Trending Now, Journal Board, Watch Brands, Watch 101, Watch Apparel, Watch Events)
 - [ ] Article สร้าง/แก้/ลบโดย Admin ผ่าน Back Office เท่านั้น
 - [ ] Front Office user สร้าง/แก้/ลบบทความไม่ได้
 - [ ] รองรับ Article List และ Article Detail
@@ -293,7 +293,7 @@ Purpose:
 - [ ] Holding Period ใช้ Today − Purchase Date หรือ Sale Date − Purchase Date (format `Yy Mm`)
 - [ ] Sold History / Sale Record = `Sale price` + `Sale date` เท่านั้น (D3 — ไม่มี Buyer/Contact/Payment/Attachment)
 - [ ] ไม่มี Top Brand Holdings และ YTD Performance ใน V1 (D5)
-- [ ] Consignment เป็น copy-only foot note + `own` flag — ไม่มี implementation/entity (D12)
+- [ ] ไม่มี Consignment implementation/entity/copy/flag เลย — ถูกตัดออกจาก FO ทั้งหมดตาม `DEC-50` (supersede D12)
 - [ ] Permission-denied/load-failed states เป็น dev-sim เท่านั้น ไม่ใช่ production path (contract อยู่ error catalog)
 
 ---
@@ -365,7 +365,7 @@ Purpose:
 
 - [ ] Dev อ่าน source-of-truth order ใน `README_MODULE_INDEX.md`
 - [ ] Dev อ่าน `ERROR_STATE_UI_COPY_CATALOG.md` ก่อน implement error/loading/empty/retry states
-- [ ] Dev ใช้ master เป็น source สูงสุดเมื่อเอกสารขัดกัน
+- [ ] Dev ใช้ source-of-truth order ใน `README_MODULE_INDEX.md` เมื่อเอกสารขัดกัน
 - [ ] API contract ต้องระบุ permission และ visibility filtering ชัดเจน
 - [ ] QA ต้องมี test cases ครอบคลุม Guest, Member, Owner, Other User, Admin boundary
 - [ ] QA ต้อง test Sale/Show/Hide/Sold/Deleted + post kind lifecycle ครบ

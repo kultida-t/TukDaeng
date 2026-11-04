@@ -1,6 +1,6 @@
 ﻿# 16 Integrations Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
 ---
 
@@ -13,13 +13,13 @@
 | Version | V1 |
 | Status | Draft |
 | Owner | Product / UX / Engineering |
-| Document Type | Technical-Functional PRD - Master Aligned |
+| Document Type | Technical-Functional PRD - Product Definition Aligned |
 
 # 2. Objective
 
 Integrations Module กำหนดขอบเขต integration ภายนอกที่ TukDaeng V1 ต้องรองรับ และแยกสิ่งที่เป็น Phase 2 ออกจาก scope ปัจจุบันให้ชัดเจน
 
-เป้าหมายคือให้ Authentication, Notification, Asset Image, Portfolio และ Admin-related flows ใช้ integration เดียวกันตาม master baseline โดยไม่เพิ่ม provider หรือ payment flow นอก scope
+เป้าหมายคือให้ Authentication, Notification, Asset Image, Portfolio และ Admin-related flows ใช้ integration เดียวกันตาม product baseline โดยไม่เพิ่ม provider หรือ payment flow นอก scope
 
 # 3. Prototype Reference
 
@@ -29,9 +29,9 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 - Asset image upload / gallery screens
 - Portfolio / valuation related screens
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Integration | Master Purpose | V1 Scope |
+| Integration | Product Purpose | V1 Scope |
 | --- | --- | --- |
 | Apple Sign In | Sign In / Sign Up ด้วย Apple ID | In Scope |
 | Google OAuth | Sign In / Sign Up ด้วย Google Account | In Scope |
@@ -92,7 +92,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 ## Firebase Cloud Messaging
 
 - ใช้สำหรับ Push Notifications
-- Notification type ใน V1 จำกัดที่ Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17)
+- Notification type ใน V1 จำกัดที่ Like, Comment, Follow, Watch Alert, System (3 subtypes: security / account status / announcements — DEC-43, supersede DEC-41)
 - Watch Alert notification ต้องเปิด Post Viewer ของ post ที่ match โดยตรง — ไม่มี Watch Alert Result List คั่นใน V1 (S-08)
 - Notification destination ต้อง validate auth, permission, asset status, deletion และ block state
 

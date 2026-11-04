@@ -1,0 +1,35 @@
+FO-SPEC [6df5f7e1] — Changed Files (Task Evidence Bundle)
+================================================================
+Task: FO-SPEC annotate DEC-26 stale amendment ใน spec 09 (new device login — DEC-48 follow-up)
+Mission 5 [3d27da7d] / Objective 3 — Approved Spec Updates
+วันทำ: 2026-11-04 · ประเภท: Documentation (annotation-only — ไม่เปลี่ยนพฤติกรรม, spec 09 ล็อกพฤติกรรมอยู่แล้ว)
+สถานะ commit: UNCOMMITTED (working tree) — ค้างรวมกับชุด uncommitted ของ FO-TEST-002 (เล่มเทส 10/19/20, traceability, inventory, breakdown, FO-DIAG) รอ commit รวมหรือแยกตามที่ผู้ใช้สั่ง
+
+----------------------------------------------------------------
+ไฟล์ที่แก้ใน task นี้ (3 ไฟล์):
+
+1. FrontOffice/09_NOTIFICATION_MODULE.md (line 512, section "DEC-25 Amendments — Alerts (IG)")
+   - เดิม: - ไม่มี generation ของ system alert "new device login" ใน V1 (DEC-26 — ถอนเคส ALT-070)
+   - ใหม่: ต่อท้าย "— **ยกเลิกโดย DEC-48 (2026-11-04): DEC-43 กลืน DEC-26 carve-out — new device login คือ security alert trigger ตัวหลักตาม §14 (`kind:"security"`) · เคส ALT-070 restore ในเล่ม 10 แล้ว**"
+   - รูปแบบเดียวกับ annotation ของบรรทัด DEC-41 ถัดไป
+
+2. deliverables/FO-TEST-001-22-decision-register.md (ใต้หัวข้อ [DEC-26])
+   - เพิ่ม update note ตาม convention DEC-32/DEC-41:
+     "- อัปเดต (2026-11-04): **ALT-070 superseded โดย DEC-48** — DEC-43 กลืน carve-out ฝั่งนี้ (new device login คืนเป็น security trigger ตัวหลักตาม spec 09 §14 · เคส ALT-070 restore ในเล่ม 10) — **WA-054 ยัง current** (ไม่สร้าง notification ให้ตัวเองเมื่อโพสต์ตัวเองตรงเงื่อนไข alert ตัวเอง)"
+   - หมายเหตุ: diff ไฟล์นี้รวม DEC-48 entry (+6 บรรทัด) ของ FO-TEST-002 ที่ยัง uncommitted — ของ task นี้คือ update note 1 บรรทัดใต้ DEC-26 เท่านั้น
+
+3. FrontOffice/10_WATCH_ALERT_MODULE.md (line 485, section "DEC-25 Amendments — Watch Alert (IG)")
+   - เดิม: - ไม่สร้าง watch row/notification ให้ตัวเองเมื่อโพสต์ตรงเงื่อนไขของตัวเอง (DEC-26)
+   - ใหม่: (DEC-26 — WA-054 · DEC-26 อีกฝั่ง ALT-070 ถูกยกเลิกโดย DEC-48 แล้ว)
+   - เหตุ: DEC-26 ครอบ 2 เคส (ALT-070 + WA-054) — DEC-48 supersede เฉพาะฝั่ง ALT-070; cite ชัดว่าอ้างฝั่งที่ยัง current กันความสับสน
+
+----------------------------------------------------------------
+Verification (cross-layer consistency — ตรวจแล้วตรงกันทั้งหมด ไม่มีขัดแย้ง):
+- spec 09 §14: "Security event (login อุปกรณ์ใหม่ / password change) → system kind:"security" · dest ตาม event (seed: change_pwd)" — trigger contract ถูกอยู่แล้ว ไม่แตะ
+- Prototypes/fo-flow/index.html: seed row จริง type:"system" kind:"security" dest:"change_pwd" — "New sign-in to your account" / "มีการเข้าสู่ระบบจากอุปกรณ์ใหม่" (member seed 16 rows, 4 system rows) — ไม่แตะ
+- FO-TEST-001-10-alerts.md: ALT-070 restore แบบอัปเดต (kind:"security" + dest ตาม event) อยู่ §2.9 แล้ว; WA-054 ในเล่ม 11 ยัง current
+- QA_TEST_SCENARIO_CHECKLIST: QA-NOTI-002 (5 types + 3 subtypes), QA-NOTI-003 (change_pwd dest), QA-NOTI-008 (system ไม่มี toggle) — sync แล้วตอน DEC-43
+- FrontOffice docs ระดับสูง (FO_Functional_PRD/Use_Cases/PRD/DEV_IMPLEMENTATION/DOCUMENT_VERSION) — "5 types + 3 subtypes" ครบ; "4 types" เหลือเฉพาะ DEV_UPDATE_PACKAGE_2026-11-02 ที่ annotate superseded แล้ว
+- Historical docs (SPEC-CHECK batch B2-C2, DOC-SWEEP-2026-11-02) — คงเดิมตาม convention บันทึกย้อนหลัง
+
+Constraints honored: แก้เฉพาะ annotation · ไม่เปลี่ยนพฤติกรรม (§14 ถูกอยู่แล้ว) · ไม่แตะ prototype / เล่มเทส / protected screens

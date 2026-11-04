@@ -1,7 +1,7 @@
 # 16 BO Admin Settings Module
 
-**Version:** `BO-16-v1.6`
-**Date:** 2026-10-26
+**Version:** `BO-16-v1.7`
+**Date:** 2026-11-04
 **Status:** Updated — Security Policy/My Account sync กับ BO Login baseline (Email + Password → BO) ตาม Change Mission `0a5b2b14`
 **Platform:** Responsive Web Back Office
 **Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`
@@ -1190,6 +1190,6 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |
-| SET-DEC-002 | Security policy fields ใดให้ Admin แก้ได้จริงใน production | กระทบ compliance และ operation |
-| SET-DEC-003 | Retention period ราย entity เช่น chat, export file ต้องเก็บกี่วัน/ปี | กระทบ archive/export/report jobs |
-| SET-DEC-004 | ต้องมี approval workflow สำหรับ high-risk setting change หรือไม่ | กระทบ admin operation และ audit |
+| SET-DEC-002 ✅ | Security policy fields ใดให้ Admin แก้ได้จริงใน production | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** freeze ทั้ง Security Policy section ใน Phase 1 — nav ถูกถอดแล้ว (commit `20d705d`) ไม่มี UI ให้แก้จึงไม่มีช่องทางผิด policy; แก้ผ่าน config/deploy เท่านั้น; reopen Phase 2 พร้อม decision ว่า field ใด editable (แนวทาง: session/lockout fields editable, auth method/IP whitelist = admin-access-gated) |
+| SET-DEC-003 | Retention period ราย entity เช่น chat, export file ต้องเก็บกี่วัน/ปี | กระทบ archive/export/report jobs — รอ Legal (ผูก `DEL-DEC-002`/`BO-DEC-002`) |
+| SET-DEC-004 ✅ | ต้องมี approval workflow สำหรับ high-risk setting change หรือไม่ | **ตัดสินใจ (2026-11-04):** Phase 1 ใช้ permission-gated + confirmation + reason + audit เป็นพอ — ไม่เพิ่ม approval workflow (ยังไม่มี approval engine); 1-step approval เป็น Phase 2 backlog ผูก Roles & Permissions policy; high-value/disputed asset removal ใช้ approval path นี้ด้วย (ผูก `BO-DEC-004`) |

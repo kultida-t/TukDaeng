@@ -3,14 +3,14 @@
 | Field | Value |
 | --- | --- |
 | Document | QA Test Scenario Checklist |
-| Version | 2.0 — synced to FO-PRD-v1.10 (FSP-027; consent copy + AC-AUTH-031 added in v1.10) |
+| Version | 2.0 — synced to FO-PRD-v1.14 (v2.0 เดิม FSP-027 · item syncs ถึง v1.13 · doc-tier refs v1.14) |
 | Status | Active |
 | Owner | QA Team |
-| Source of truth | `Prototypes/fo-flow` (locked) + `TukDaeng_Master_Product_Definition.md` §16 Sync Decision Log |
+| Source of truth | `Prototypes/fo-flow` (locked) + module specs `00`–`18` (decision history: `TukDaeng_Master_Product_Definition.md` §16 — archived) |
 
 ## Purpose
 
-This document is the QA execution checklist for Front Office V1. Each scenario maps to the canonical module specs (`00`–`17`) and the Master §16 Sync Decision Log. Any behavior that conflicts with the locked `fo-flow` prototype + Master §16 has been removed from this checklist — see §1.3 Removed Behaviors for the full guard list.
+This document is the QA execution checklist for Front Office V1. Each scenario maps to the canonical module specs (`00`–`18`) — decision history อ้าง canonical index `../docs/DECISION_LOG.md` (DOC-030; record of record: archived master §16 สำหรับ S-xx, `deliverables/FO-TEST-001-22-decision-register.md` สำหรับ DEC-xx). Any behavior that conflicts with the locked `fo-flow` prototype + spec baseline has been removed from this checklist — see §1.3 Removed Behaviors for the full guard list.
 
 ## Conventions
 
@@ -44,7 +44,7 @@ This document is the QA execution checklist for Front Office V1. Each scenario m
 
 - Per seller: ≥1 `sale` post (price + specGroups), ≥1 `showcase` post (no price), ≥1 plain `post` (non-asset), ≥1 multi-photo post, ≥1 clip post, ≥1 `noComments` post, ≥1 `hideCounts` post
 - Member B portfolio: ≥1 `show` drawer asset with purchase cost, ≥1 `hide` drawer asset, ≥1 `sale` linked asset, ≥1 `sold` record (sale price + sale date), ≥1 asset with no purchase cost (`N/A` paths)
-- Alerts feed rows covering all 4 types: `like` (aggregated multi-user), `comment`, `follow`, `watch`
+- Alerts feed rows covering all 5 types: `like` (aggregated multi-user), `comment`, `follow`, `watch`, `system` (3 subtypes — DEC-43)
 - Watch alerts: ≥1 `search`-source (keyword + filters + price), ≥1 `detail`-source (`modelKey`), ≥1 paused
 - Chat: ≥1 thread with messages + media, ≥1 pinned, ≥1 muted, ≥1 hidden, plus draft-room state before first send
 - Collections: ≥1 Saved collection, ≥1 Wish List collection, ≥1 archived post, ≥1 `ni` post
@@ -74,7 +74,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 | Comment free-text input / `Reply` affordance | Emoji quick-react (8 emoji) is the only write path; input/`Reply` are dead |
 | `Favorites` = liked posts | Favorites = account-level seller preference; liked posts land in Settings > Content preferences > Interested |
 | `Likes` notification type name | Alert types = `like`/`comment`/`follow`/`watch` |
-| Chat notification / offer notification / system / Market Update / Price Valuation / Sale Success / Moderation / Account Action types | Only the 4 canonical types exist (`system` removed from V1 — DEC-41) |
+| Chat notification / offer notification / Market Update / Price Valuation / Sale Success / Moderation / Account Action แยกชนิด types | Only the 5 canonical types exist — `system` restored with 3 subtypes (DEC-43, supersedes DEC-41) |
 | Edit Profile row in Settings Home | Edit Profile entry = own profile page only (S-05) |
 | Search sort UI / result count / saved search / context-aware popular (S-24) | None in V1 |
 | Provenance / Consignment entity (S-25) | None in V1 |
@@ -674,7 +674,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Steps:** Open own profile (bottom nav) and a viewer profile via any `[data-pf-user]` entry; switch tabs.
 **Expected result:**
 - `profile:{u}` slides over the stack; tab embeds in `profile:{u}:{tab}`; `[data-pftab]` swaps the grid in place (no re-slide, keeps scroll); back slides out right.
-- Own head: `+` (composer asset mode) + username (`Signed in as` toast) + burger → settings; viewer head: `sub-back` + `...`.
+- Own head: `+` (composer asset mode) + username (`Signed in as` toast) + gear `pf-menu` → settings; viewer head: `sub-back` + `...`.
 - Bottom nav highlights Profile on own page, Feed on viewer page (quirk — documented).
 
 ### QA-PROFILE-002
@@ -769,7 +769,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 ### QA-PROFILE-015
 **Objective:** Verify guest scope on profile surfaces.
 **Maps to:** AC-PROFILE-050, AC-PROFILE-051, AC-PROFILE-052
-**Steps:** As guest: open a public profile, switch tabs, open tiles → pfp, open pfollow lists, open the avatar overlay; then tap every gated control (`Follow`, `...`, `pf-flw`, `+`, burger, `pf-edit`, `pf-share`, pf-sh rows, pm rows, unblock).
+**Steps:** As guest: open a public profile, switch tabs, open tiles → pfp, open pfollow lists, open the avatar overlay; then tap every gated control (`Follow`, `...`, `pf-flw`, `+`, `pf-menu` gear, `pf-edit`, `pf-share`, pf-sh rows, pm rows, unblock).
 **Expected result:** All browsing works (including fabricated `profileOf` for any name); every gated control opens the Member Sheet — guest can never reach own profile, Edit, QR, portfolio or settings.
 
 ### QA-PROFILE-016
@@ -1225,24 +1225,25 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Expected result:** Head = back + `แจ้งเตือน`/`Alerts` + grouped sections; back always returns to Feed (`data-navgo="feed"` — not a generic pop); the surface is named Alerts feed — there is no `Notification Center` anywhere.
 
 ### QA-NOTI-002
-**Objective:** Verify exactly 4 alert types (`system` removed from V1 — DEC-41, supersedes S-17).
+**Objective:** Verify exactly 5 alert types (`system` restored with 3 subtypes — DEC-43, supersedes DEC-41/S-17).
 **Maps to:** AC-NOTI-002, AC-NOTI-013, AC-NOTI-014, AC-NOTI-021, AC-NOTI-022
 **Steps:** Inspect seed rows and try to find any other type.
 **Expected result:**
-- Types = `like`, `comment`, `follow`, `watch` — nothing else: no chat row, no offer row, no system/security row, no Market Update / Price Valuation / Sale Success / Moderation / Account Action types.
-- Anatomy per type: like = avatar stack + heart badge + thumb; comment = avatar + text + thumb; follow = avatar + `Follow back`/`กำลังติดตาม` pill + `x`; watch = post thumb + alert name.
+- Types = `like`, `comment`, `follow`, `watch`, `system` — nothing else: no chat row, no offer row, no Market Update / Price Valuation / Sale Success / Moderation / Account Action-as-separate-type types.
+- Anatomy per type: like = avatar stack + heart badge + thumb; comment = avatar + text + thumb; follow = avatar + `Follow back`/`กำลังติดตาม` pill + `x`; watch = post thumb + alert name; system = subtype icon circle (shield=security / award=account / info=announce) + `title — body` copy + `x`.
+- Filter chips `ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert` filter the feed by category; an empty category shows `No alerts in this category yet.`
 
 ### QA-NOTI-003
 **Objective:** Verify tap destinations.
 **Maps to:** AC-NOTI-010, AC-NOTI-011, AC-NOTI-012, AC-NAV-006, AC-NAV-007, AC-NAV-008, AC-NAV-010
 **Steps:** Tap one row of each type.
-**Expected result:** `like`/`comment` → Post Viewer of the own post (solo `Post` head); `follow` → `profile:{u}` pushed over the feed; `watch` → Post Viewer of the matched post **directly** (no Result List); every tap marks the row read + syncs the badge before navigating.
+**Expected result:** `like`/`comment` → Post Viewer of the own post (solo `Post` head); `follow` → `profile:{u}` pushed over the feed; `watch` → Post Viewer of the matched post **directly** (no Result List); `system` → the sub page named in `dest` (`change_pwd`/`about_account`/`about_app`/`al_unavail`, fallback `settings`); every tap marks the row read + syncs the badge before navigating.
 
 ### QA-NOTI-004
 **Objective:** Verify unread/badge mechanics.
 **Maps to:** AC-NOTI-005, AC-NOTI-006, AC-NOTI-007, AC-NOTI-008
 **Steps:** Tap unread rows; use `Mark all as read`; use `x` on a follow row; count the badge.
-**Expected result:** Tap → `unread=false` + `.unread` cleared + badge sync; `Mark all as read`/`อ่านทั้งหมดแล้ว` sits on the first section only; `x` exists only on follow rows and removes them instantly; nav badge = Σunread capped `99+` on every nav instance, gone at 0.
+**Expected result:** Tap → `unread=false` + `.unread` cleared + badge sync; `Mark all as read`/`อ่านทั้งหมดแล้ว` sits on the first section only; `x` exists only on follow and system rows and removes them instantly; nav badge = Σunread capped `99+` on every nav instance, gone at 0.
 
 ### QA-NOTI-005
 **Objective:** Verify aggregation and time labels.
@@ -1266,7 +1267,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify notification settings mapping.
 **Maps to:** AC-NOTI-019, AC-NOTI-020, AC-SETTING-012
 **Steps:** Open Settings > Notification settings; flip each toggle; check for extra toggles.
-**Expected result:** Exactly 4 toggles — `Likes`, `Comments`, `New followers`, `Watch Alerts`; no toggle for any other type (`system` was removed from V1 — DEC-41); OFF (contract) stops generating rows of that type (prototype keeps a memory flag only); no Chat/Offer/Moderation/Market/Price/Sale/Account toggles exist.
+**Expected result:** Exactly 4 toggles — `Likes`, `Comments`, `New followers`, `Watch Alerts`; no toggle for any other type (`system` has no toggle in V1 — account/security alerts always send); OFF (contract) stops generating rows of that type (prototype keeps a memory flag only); no Chat/Offer/Moderation/Market/Price/Sale/Account toggles exist.
 
 ### QA-NOTI-009
 **Objective:** Verify share/board actions create no alerts.
@@ -1384,7 +1385,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify settings entry.
 **Maps to:** AC-SETTING-014, AC-SETTING-011
 **Steps:** Find the settings entry on own profile, viewer profile, guest.
-**Expected result:** Only own-profile burger `pf-menu` opens `settings` — no other entry (no drawer row, no viewer menu); guest → Member Sheet.
+**Expected result:** Only own-profile gear `pf-menu` opens `settings` — no other entry (no drawer row, no viewer menu); guest → Member Sheet.
 
 ### QA-SETTING-002
 **Objective:** Verify Settings Home structure (S-05).

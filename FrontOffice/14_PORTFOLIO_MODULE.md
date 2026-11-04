@@ -1,6 +1,6 @@
 ﻿# 14 Portfolio Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §9 (asset statuses `Sale`/`Show`/`Hide`/`Sold`), §10 (visibility matrix), §11 (guest gate = Member Sheet `Join TukDaeng`), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6 (route map `portfolio`/`pfasset:{id}`/`soldhist`/`sold:{id}`/`sell:{id}`), §6.7 (sub stack back) + [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (drawer record/`assetId`/`pfkind` lifecycle + `markAssetSold` canonical — FSP-017 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (post detail layer — private data boundary) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (`.pf-pfo` entry placement — FSP-019 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (own-post menu anatomy canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §9 (asset statuses `Sale`/`Show`/`Hide`/`Sold`), §10 (visibility matrix), §11 (guest gate = Member Sheet `Join TukDaeng`), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6 (route map `portfolio`/`pfasset:{id}`/`soldhist`/`sold:{id}`/`sell:{id}`), §6.7 (sub stack back) + [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (drawer record/`assetId`/`pfkind` lifecycle + `markAssetSold` canonical — FSP-017 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (post detail layer — private data boundary) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (`.pf-pfo` entry placement — FSP-019 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (own-post menu anatomy canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Status | Functional PRD — synced to fo-flow prototype |
 | Owner | Tuk Daeng Project |
 | Document Type | Front Office Functional PRD |
-| Source of Truth | `Prototypes/fo-flow/index.html` (พฤติกรรม) + Master Product Definition (business intent) |
+| Source of Truth | `Prototypes/fo-flow/index.html` (พฤติกรรม) + `PRODUCT_DEFINITION.md` (business intent) |
 
 > spec เดิม (v1.0) ตีความ Portfolio เป็น **Total Asset Value** headline (Σ Current Value) + entry ผ่านตัวเลขมูลค่าบน profile + Sold History 6 ฟิลด์ (Buyer/Contact/Payment Method/Attachment) + Top Brand Holdings + YTD Performance วิธี A + real Watch Price API boundary + permission-denied/load-failed states เป็น production path — prototype คือ **invested-centric dashboard** (headline `ต้นทุนรวม`/`Total invested` = Σ purchase) ที่ entry เป็น wallet icon ล้วน, sold record เก็บแค่ราคา+วันที่, ไม่มี Top Brand/YTD เลย, market data เป็น mock และ denied/failed มีเฉพาะ `?dev` preview — เอกสารฉบับนี้เขียนตามพฤติกรรมจริงและ flag ทุก deviation ใน §19
 
@@ -32,8 +32,8 @@ Portfolio Module คือ owner-private surface ที่ให้ member เ�
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้) — line anchors คือ state ปัจจุบัน @ HEAD อาจ drift ให้ค้นด้วย function-name
 
 - Routes (`subHTML` ~17816–17821): `portfolio` → `portfolioHTML`, `pfasset:{id}` → `pfassetHTML`, `soldhist` → `soldHistHTML`, `sold:{id}` → `soldDetailHTML`, `sell:{id}` → `sellFormHTML` — ทุก route เป็น `.page-sub` stack page (00_NAV §6.6/§6.7)
-- Data: `PF_ASSETS` seed 9 records (~16556–16566 — `{id:"pfa-NN", img, photos[], name, ref, meta, brand, status:sale/show/hide, market, purchase, bought, asking?}` + `own` flag optional), `PF_SOLD` seed 3 records (~16569–16582 — `{id:"pfs-NN", img, photos[], name, ref, brand, soldDate, price, purchase, bought}`), `PF_MKT_UPDATED` mock date (~16584 — comment: last Watch Price API sync), `PFO_STATUS`/`PFO_CMP`/`PFO_SRC` label maps (~16618–16620)
-- Math helpers: `pfoTHB`/`pfoSignTHB`/`pfoPct` (~16586–16588), `pfoEligible` (~16589 — status ∈ sale/show/hide + `own !== false`), `pfoCur` (~16591 — market → purchase fallback → none), `pfoGL` (~16597 — market−purchase เมื่อทั้งคู่จริง), `pfoExp` (~16601 — asking−purchase), `pfoCmp` (~16603 — ±1% dead band; `"none"` เมื่อไม่มี market), `pfoHold` (~16610 — days + `Yy Mm` human form; sold ใช้ `soldDate` เป็นจุดจบ), `pfoDate` (~16617 — en-GB `d Mon yyyy`)
+- Data: `PF_ASSETS` seed 9 records (~16556–16566 — `{id:"pfa-NN", img, photos[], name, ref, meta, brand, status:sale/show/hide, market, purchase, bought, asking?}`), `PF_SOLD` seed 3 records (~16569–16582 — `{id:"pfs-NN", img, photos[], name, ref, brand, soldDate, price, purchase, bought}`), `PF_MKT_UPDATED` mock date (~16584 — comment: last Watch Price API sync), `PFO_STATUS`/`PFO_CMP`/`PFO_SRC` label maps (~16618–16620)
+- Math helpers: `pfoTHB`/`pfoSignTHB`/`pfoPct` (~16586–16588), `pfoEligible` (~16589 — status ∈ sale/show/hide), `pfoCur` (~16591 — market → purchase fallback → none), `pfoGL` (~16597 — market−purchase เมื่อทั้งคู่จริง), `pfoExp` (~16601 — asking−purchase), `pfoCmp` (~16603 — ±1% dead band; `"none"` เมื่อไม่มี market), `pfoHold` (~16610 — days + `Yy Mm` human form; sold ใช้ `soldDate` เป็นจุดจบ), `pfoDate` (~16617 — en-GB `d Mon yyyy`)
 - Dashboard: `pfoRowHTML` (~17202 — row = img + name + `ref · meta` + **purchase** value), `portfolioHTML` (~17214 — head + nomkt banner + `.pfo-total` headline card + `รายการนาฬิกา`/`Assets` section + rows + foot note)
 - Pages: `pfassetHTML` (~17250 — hero `data-pfaid` + status chip + Value card (private tag) + Listing card (`sale` only) + `data-sell` button + owner-only note), `soldHistHTML` (~17290 — desc + rows `Sold {date}` + price → `sold:{id}`), `soldDetailHTML` (~17305 — Sale price headline + Realized G/L + Sale record card + Return card + note), `sellFormHTML` (~17344 — sell-hero + private note + `sell-price` prefill asking + `sell-gl` live Expected gain + `sell-date` (max=today) + `sell-save`)
 - Lifecycle: `markAssetSold` (~17377 — splice `PF_ASSETS` → unshift `PF_SOLD` + linked posts `pfkind:"sold"` + `refreshPostViews`), `openSellForm`/`openSubOver` (~17375/~17362 — stack ทับ viewer เหมือน report pages); canonical narrative อยู่ 04 §10–§12
@@ -47,14 +47,14 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Topic | Master Baseline | Portfolio Module Rule (ตาม prototype) |
+| Topic | Product Baseline | Portfolio Module Rule (ตาม prototype) |
 | --- | --- | --- |
 | Privacy | Portfolio เป็น private เห็นเฉพาะ Owner | ตรง — entry มีเฉพาะ own profile (`.pf-pfo`); ไม่มี viewer surface เลย; non-member session → empty state |
 | Entry Point | Total Asset Value เป็น entry point | **ขัด spec เดิม** — profile ไม่มีตัวเลขมูลค่า; entry = wallet icon `pf-pfo` อย่างเดียว (D1 — placement canonical 06 §4) |
 | Headline metric | Total Asset Value = Σ Current Value | **ขัด spec เดิม** — headline คือ `ต้นทุนรวม`/`Total invested` = Σ `purchase` (cost basis); market value เป็นบรรทัดรอง (D2) |
-| Calculation scope | Sale, Show, Hide ที่ยังใช้งานได้ | ตรง — `pfoEligible` = status sale/show/hide + `own !== false`; ไม่รวม sold/deleted/perm-hidden (consignment = copy-only, D12) |
+| Calculation scope | Sale, Show, Hide ที่ยังใช้งานได้ | ตรง — `pfoEligible` = status sale/show/hide; ไม่รวม sold/deleted/perm-hidden |
 | Current Value | Watch Price API → Purchase fallback → No valuation | ตรงลำดับ — `pfoCur` mkt→fb→none; แต่ "API" คือ `market` field mock + `TukDaeng Market Data` label (D8) |
 | Gain/Loss | Unrealized = Current − Purchase (mkt เท่านั้น) | ตรง — `pfoGL` เฉพาะ market+purchase>0; fallback ไม่นับ |
 | Expected Profit / Market Comparison | asking−purchase / asking vs market ±1% | ตรง — `pfoExp`/`pfoCmp` ±1% dead band (`above`/`at`/`below`/`none`) — เฉพาะ `sale` Listing card |
@@ -163,7 +163,6 @@ Entry notes:
 | `purchase` | ราคาซื้อ (private) — `null`/`0` = ไม่มี cost basis |
 | `bought` | วันที่ซื้อ ISO `YYYY-MM-DD` (`""` = ไม่มี) |
 | `asking` | ราคาตั้งขาย — optional; ใช้ Expected profit + Market comparison + sell-form prefill |
-| `own` | ownership flag — `own === false` = consignment/ไม่ใช่ของตัวเอง → หลุด `pfoEligible` (ไม่มี seed/UI ที่ set — copy-only feature, D12) |
 
 ## 8.2 `PF_SOLD` — sold record
 
@@ -199,10 +198,9 @@ Entry notes:
 ## 9.1 Eligibility
 
 ```text
-pfoEligible(a) = a.status ∈ {sale, show, hide} AND a.own !== false
+pfoEligible(a) = a.status ∈ {sale, show, hide}
 ```
 
-- `own === false` = consignment → excluded (UI/seed ไม่มีจริง — copy+flag เท่านั้น, D12)
 - `sold`/deleted/perm-hidden ไม่อยู่ใน `PF_ASSETS` เลย จึง excluded โดยโครงสร้าง (delete semantics canonical 04)
 
 ## 9.2 Current value (per asset)
@@ -312,7 +310,7 @@ display = "กำไร/ขาดทุนที่เกิดขึ้นจ�
    - coverage: `ต้นทุนซื้อของ X/Y รายการ · มีเพียงคุณเท่านั้นที่เห็น`/`Purchase cost of X/Y assets · only you can see this`
 5. `.pfo-sec`: `รายการนาฬิกา`/`Assets` + `{els.length}` count + `pfo-soldlink` → `ประวัติการขาย →`/`Sold history →` (history icon)
 6. Rows (`pfoRowHTML` — `.mrow.pfo-row` → `pfasset:{id}`): img + name + `ref · meta` + **purchase price** (`฿N` หรือ `—` เมื่อ purchase==null/<=0) — **rows แสดง cost basis ไม่ใช่ current value** (D15)
-7. Foot note: `นับเฉพาะนาฬิกาที่คุณเป็นเจ้าของในสถานะ ลงขาย โชว์ และ ซ่อน — ไม่รวมรายการที่ขายแล้ว ลบ ซ่อนถาวร หรือสินค้าฝากขาย`/`Counts Sale, Show & Hide pieces you own — sold, deleted, permanently hidden and consignment items are excluded.`
+7. Foot note: `นับเฉพาะนาฬิกาในสถานะ ลงขาย โชว์ และซ่อน`/`Counts Sale, Show & Hide pieces only.`
 
 ## Rules
 
@@ -542,7 +540,7 @@ display = "กำไร/ขาดทุนที่เกิดขึ้นจ�
 | D9 | `PF_ASSETS`/`PF_SOLD`/`pfkind` ไม่ reset ข้าม session | `clearUserData`/`POST_FLAG_KEYS` ไม่แตะ — sold marks + mutations ค้าง (class เดียวกับ 12 D8/11 D7) |
 | D10 | Market line ต้องการ ≥1 GL-computable row | `mktTotal != null && glRows.length` — asset ที่มี market แต่ทุกตัวไม่มี purchase → `Market value unavailable` แม้มี market data |
 | D11 | Coverage นับ invested ไม่ใช่ valued | `ต้นทุนซื้อของ X/Y` — X = มี purchase; spec เดิม "คำนวณจาก X/Y" (valued) ผิด (B16 gap) |
-| D12 | Consignment = copy + flag เท่านั้น | foot note กล่าวถึง `สินค้าฝากขาย`/`consignment` + `own` flag รองรับ แต่ไม่มี seed/UI ที่ set `own:false` (B15 gap; Consignment Center dead ใน hb drawer) |
+| D12 | Consignment = copy + flag เท่านั้น | **SUPERSEDED ตาม `DEC-50` (2026-11-04)** — consignment ถูกตัดออกจาก FO surfaces ทั้งหมด: foot note `สินค้าฝากขาย`/`consignment` ถูกลบ + `own` flag ถูกถอดออกจาก data model/`pfoEligible`; เหลือเฉพาะ Consignment Center drawer placeholder row (ตาม BO-DIR-DEC-001) |
 | D13 | `asking == null` → Market comparison แสดง `No market price` | `pfoCmp` null → label เดียวกับ no-market (misleading — ปัญหาคือไม่มี asking); เกิดได้บน sale asset ที่ไม่ใส่ asking |
 | D14 | `THB` prefix บน headline vs `฿` บน rows/cards | format ไม่ consistent ในหน้าเดียวกัน — **RESOLVED ตาม DEC-42** (unified `฿` ทั้งแอป) |
 | D15 | Dashboard rows แสดง **purchase** ไม่ใช่ current value | `pfo-val` = `a.purchase` — สอดคล้อง headline invested (list แสดงต้นทุน) |
@@ -594,7 +592,7 @@ Then ต้องแสดง wallet icon + `ไม่พบข้อมูล`/
 
 Given `PF_ASSETS` มี records หลาย status  
 When dashboard render list  
-Then ต้องแสดงเฉพาะ `pfoEligible` = status ∈ `sale`/`show`/`hide` AND `own !== false`  
+Then ต้องแสดงเฉพาะ `pfoEligible` = status ∈ `sale`/`show`/`hide`  
 And `sold` records ต้องอยู่ `PF_SOLD` (ไม่ปรากฏใน list)
 
 ## AC-PORT-005: Dashboard Headline = Total Invested
@@ -656,7 +654,7 @@ And `market == null` (หรือ `nomkt` sim) → `ไม่มีราคา
 
 ## AC-PORT-013: Mark As Sold Entries
 
-Given eligible asset (`sale`/`show`/`hide` + own)  
+Given eligible asset (`sale`/`show`/`hide`)  
 Then `pfasset:{id}` ต้องแสดง `Mark as sold` (`data-sell`) → `sell:{id}`  
 And own-post menu บนโพสต์ `pfKind` ∈ sale/show/hide ต้องมี `บันทึกการขาย`/`Mark as sold` row — โพสต์ไม่มี `assetId` ต้อง `assetFromPost` materialize ก่อนเปิดฟอร์ม  
 And โพสต์ `sold`/`post` kind ต้องไม่มี row นี้
@@ -752,8 +750,8 @@ And `sold` post ต้องไม่มี `Edit`/`Mark as sold` ใน own-pos
 - Real Watch Price API integration (แทน `market` mock + `PF_MKT_UPDATED`) + real unavailable/retry path
 - Sold record extended fields — Buyer / Contact / Payment Method / Attachment (spec เดิม contract ที่ prototype ตัด — D3; ต้อง product sign-off ว่าจะเพิ่มใน form หรือตัดถาวร)
 - Total Asset Value headline option (Σ current value) — product decision ระหว่าง invested-centric vs value-centric (D2)
-- Top Brand Holdings + YTD Performance (cut per feedback — reopen ถ้า master เพิ่มกลับ)
-- Consignment Center (entry dead ใน hb drawer + `own` flag + foot-note copy พร้อมรองรับ)
+- Top Brand Holdings + YTD Performance (cut per feedback — reopen ถ้า product baseline เพิ่มกลับ)
+- Consignment Center (entry dead ใน hb drawer — placeholder-only ตาม BO-DIR-DEC-001; consignment copy + `own` flag ถูกตัดตาม `DEC-50`)
 - Portfolio export (PDF/Excel), benchmark, allocation, brand trend, IRR
 - Market-movement / valuation alerts (09 integration)
 - Denied/failed production states เมื่อมี real load path

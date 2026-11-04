@@ -1,8 +1,8 @@
 ﻿# TukDaeng Back Office Master Baseline
 
-**Version:** `BO-PRD-v0.2`  
+**Version:** `BO-PRD-v0.3`  
 **Date:** 2026-07-06<br>
-**Last Updated:** 2026-10-26<br>
+**Last Updated:** 2026-11-04<br>
 **Status:** Current baseline — Admin Identity Lifecycle locked through Mission 3<br>
 **Platform:** Responsive Web Back Office  
 **Audience:** Admin  
@@ -133,12 +133,14 @@ Phase 3 คือ advanced workflow และ external integration ที่ย�
 
 ## 10. Open Decisions
 
+> Canonical index (DOC-030, 2026-11-04): `BO-DEC-001`–`006` ด้านล่าง indexed แล้วใน `../docs/DECISION_LOG.md` §6 — ตารางนี้คงเป็น record of record ของ BO-DEC namespace
+
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| BO-DEC-001 | BO language mode | Thai primary สำหรับ V1; English optional ภายหลัง |
+| BO-DEC-001 ✅ | BO language mode | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** Thai primary สำหรับ V1; English deferred — ไม่มี EN toggle ใน V1 (prototype lock แล้วและ FO ฝั่ง user เท่านั้นที่ต้อง bilingual) |
 | BO-DEC-002 | Chat retention period | ต้องสรุปร่วมกับ legal/compliance ก่อน Phase 2 build |
-| BO-DEC-003 | Account deletion anonymization timing | ใช้ 30-day grace period ตาม FO decision เว้นแต่ legal เปลี่ยน |
-| BO-DEC-004 | Admin remove asset permission | ให้ remove ได้พร้อม required reason และ audit; high-value dispute อาจต้อง Admin approval |
-| BO-DEC-005 | Board public SEO web requirement | ถือเป็น mobile Board content ก่อน จนกว่าจะเพิ่ม web SEO scope ชัดเจน |
-| BO-DEC-006 | รูปแบบ integration map ระหว่าง FO และ BO หลังตัดไฟล์เดิม | กระจายข้อมูล trigger/result ไปไว้ในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง จนกว่าจะตัดสินใจว่าจะสร้าง integration map กลางขึ้นใหม่หรือไม่ |
+| BO-DEC-003 ✅ | Account deletion anonymization timing | **ตัดสินใจ (2026-11-04):** ใช้ 30-day grace period ตาม FO decision — resolved ผ่าน `DEL-DEC-006` (lifecycle ขั้นเดียว: เก็บถาวร + ลบตัวตน พร้อมกันเมื่อครบ grace) เว้นแต่ legal เปลี่ยน |
+| BO-DEC-004 ✅ | Admin remove asset permission | **ตัดสินใจ (2026-11-04):** remove = `Permanently Hidden` action ที่มีอยู่แล้ว + required reason + audit; ไม่มี hard delete ใน Phase 1; high-value/disputed asset ใช้ approval path ร่วมกับ high-risk setting (`SET-DEC-004`) |
+| BO-DEC-005 ✅ | Board public SEO web requirement | **ตัดสินใจ (2026-11-04):** mobile Board content only — ไม่มี public web SEO scope ใน V1; ถ้าอนาคตต้องการ web SEO ให้เปิด requirement ใหม่ |
+| BO-DEC-006 ✅ | รูปแบบ integration map ระหว่าง FO และ BO หลังตัดไฟล์เดิม | **ตัดสินใจ (2026-11-04):** คง distributed model — fact integration กระจายในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง + lightweight Integration Reference index ใน `../docs/DECISION_LOG.md` §11; ไม่สร้าง integration map กลางใหม่ |
 

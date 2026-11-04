@@ -18,9 +18,9 @@ BO docs แยกจาก FO docs แต่เชื่อมโยงการ
 | 2 | `BO_MASTER_BASELINE.md` | Scope รวม, admin accesss, modules, phase plan และ open decisions |
 | 3 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, admin access control, status, audit, privacy, FO sync และ pattern กลาง |
 | 4 | `BO_DEV_IMPLEMENTATION_CHECKLIST.md` | Checklist สำหรับแตก ticket dev และเก็บ Prototype Handoff Notes ระหว่าง BA/UX ทำ prototype |
-| 5 | `BO_PRD.md` | Existing product requirement source |
-| 6 | `BO_Spec.md` | Existing screen/module specification source |
-| 7 | `BO_Spec_Completion_Addendum.md` | Coverage เพิ่มเติมเรื่อง chat, watch alert, support, deletion, notifications |
+| 5 | `BO_PRD.md` | Legacy requirement source — superseded (DOC-010, 2026-11-04) เก็บเพื่อ traceability |
+| 6 | `BO_Spec.md` | Legacy screen/module spec source — superseded (DOC-010, 2026-11-04) เก็บเพื่อ traceability |
+| 7 | `BO_Spec_Completion_Addendum.md` | Legacy coverage addendum — superseded (DOC-010, 2026-11-04) เก็บเพื่อ traceability |
 | 8 | `../FrontOffice/18_ADMIN_SCOPE_NOTE.md` | Boundary ว่า Admin อยู่ฝั่ง Web Back Office เท่านั้น |
 
 ## Prototype Handoff Notes Workflow

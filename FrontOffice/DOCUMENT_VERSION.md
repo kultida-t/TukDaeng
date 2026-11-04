@@ -1,7 +1,7 @@
 # TukDaeng Document Version
 
-**Current Baseline Version:** `FO-PRD-v1.13`
-**Release Date:** 2026-11-03
+**Current Baseline Version:** `FO-PRD-v1.16`
+**Release Date:** 2026-11-04
 **Branch:** `docs-frontoffice-spec-updates`  
 **Status:** Product-reviewed baseline update for Dev / QA
 
@@ -27,6 +27,27 @@ FO-PRD-vX.Y
 ---
 
 # 2. Current Baseline Scope
+
+`FO-PRD-v1.16` covers all of `FO-PRD-v1.15` and removes consignment from FO surfaces entirely (product decision `DEC-50` — owner approved 2026-11-04, DOC-033; supersede D12 ส่วน copy+flag):
+
+- `14_PORTFOLIO_MODULE.md` — foot note `สินค้าฝากขาย`/`consignment` TH/EN ถูกตัด (เหลือ `นับเฉพาะนาฬิกาในสถานะ ลงขาย โชว์ และซ่อน`/`Counts Sale, Show & Hide pieces only.`) + `own` flag/เงื่อนไข `own !== false` ถูกถอดออกจาก data model และ `pfoEligible` (AC-PORT-004 sync) — ไม่มี consignment surface เหลือใน V1
+- `Prototypes/fo-flow/index.html` — foot note `.pfo-note` TH/EN sync + `pfoEligible` ตัด `own !== false` + eligibility comment sync (แก้เฉพาะจุด consignment ตาม gate)
+- `PRODUCT_DEFINITION.md` / `04_ASSET_MANAGEMENT_MODULE.md` / `DEV_IMPLEMENTATION_CHECKLIST.md` — consignment refs sync (mirror foot note, exclusion list, checklist line)
+- `../docs/DECISION_LOG.md` v1.2 — `DEC-49` (FO sync timing 3 ชั้น) + `DEC-50` ลง §8, D12 → superseded, เพิ่ม §11 Integration Reference index (resolution ของ BO-DEC-006)
+- Consignment Center drawer row ยังเป็น placeholder ตามเดิม (BO-DIR-DEC-001 — กดแล้ว toast `เร็ว ๆ นี้`); consignment binding ถูกตัดออกทั้งหมดตาม BO-DIR-DEC-003 (re-decide ตอน Directory activation)
+
+`FO-PRD-v1.15` covers all of `FO-PRD-v1.14` and adds the canonical decision log index — **zero requirement/behavior change** (DOC-030 — decision log unification):
+
+- เพิ่ม `../docs/DECISION_LOG.md` — canonical index เดียวของ decision ทั้งระบบ: S-01–S-29 + portfolio D (master §16), DEC-01–DEC-48 (FO-TEST-001-22 register), DEC-R010-01–09 (REQ-010 log), e1–e4/OPEN-1–5 (FO-BO-001 audit), BO module `XXX-DEC-xxx` Open Decisions, FOX `O-01`–`O-09` (money draft) + supersession chains + consolidated open list — เอกสารอื่นอ้าง DEC id เท่านั้น ห้าม duplicate decision text
+- Register of record ของแต่ละ namespace คงเดิม (master §16 / FO-TEST-001-22 / REQ-010 log / spec `Open Decisions` sections / money rules) — มี pointer note ชี้ canonical index ที่หัว register หลัก; decision ใหม่ระดับ product ลง `DEC-49+` ใน canonical log
+- Pointer/reference updates: master banner, `PRODUCT_DEFINITION.md` §9, `README_MODULE_INDEX.md` §3 note, `QA_TEST_SCENARIO_CHECKLIST.md` purpose line — ไม่มีการแก้ spec contract/prototype
+
+`FO-PRD-v1.14` covers all of `FO-PRD-v1.13` and restructures the document tier only — **zero requirement/behavior change** (DOC-010 — doc consolidation):
+
+- เพิ่ม `PRODUCT_DEFINITION.md` — slim product-level doc ใหม่ที่เป็น canonical home เดียวของ product-level facts: vision, platforms, user model summary, canonical terminology + legacy term mapping (ย้ายจาก master §4), feature architecture, Phase 1 exclusions (master §14), source-of-truth order และ module spec authoring checklist (master §17)
+- Mark superseded: `TukDaeng_Master_Product_Definition.md` (เนื้อหาคงเดิมทั้งเล่มเป็น archived — §16 Sync Decision Log S-01–S-29 + D2–D12 ยังเป็น decision history; decision log consolidation เสร็จแล้วใน `FO-PRD-v1.15`/DOC-030 — canonical index `../docs/DECISION_LOG.md`), `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `../PRD/PRD.md`, `../PRD/Use_Cases.md` — ทุกเล่มมี banner ชี้ไป module specs + `PRODUCT_DEFINITION.md`
+- Source-of-truth order อัปเดตใน `00_GLOBAL_RULES_MODULE.md` §15 + `README_MODULE_INDEX.md` §2 — master ออกจากอันดับ 1, superseded tier ไม่ใช่ contract
+- Cross-reference sweep ระดับไฟล์ทั้งชุดเสร็จแล้ว (DOC-011 — อ้างอิงหลักจาก/master refs ใน module specs + index/handoff docs ชี้ `PRODUCT_DEFINITION.md`/product baseline; "Master Alignment Summary" → "Product Alignment Summary", "Master Baseline" → "Product Baseline") — spec-only ไม่แตะ prototype
 
 `FO-PRD-v1.13` covers all of `FO-PRD-v1.12` and removes the Report Article contract entirely (FO decision e4 approved 2026-11-03 — FO-BO-001 coverage audit; Board Content ตัดออกจาก V1 ทั้งระบบ ไม่ใช่แค่ contract-only):
 
@@ -68,7 +89,7 @@ FO-PRD-vX.Y
 
 - Source-of-truth rule: `Prototypes/fo-flow/index.html` (locked) เป็น source of truth เดียวของพฤติกรรม — module specs ทุกเล่ม cite prototype anchors; พฤติกรรมที่เป็น production contract แต่ prototype ไม่ครอบ mark เป็น `(contract — prototype ไม่ครอบ)`; audit trail = gap files `gap-FSP-001a`–`FSP-004` + consolidated sign-off ใน `deliverables/fo-spec-sync/`
 - Removed scope: ลบ `08_OFFER_MODULE.md` ทั้งไฟล์ + offer refs ทั้งหมดนอก/ใน module specs (`Make Offer`, `Incoming Offers`, `Offer Card`, offer lifecycle/notification, `QA-OFFER-*`, `UC-*` offer cases → live refs เหลือ 0); ลบ `Figma_Gap_Checklist_Against_Master.md` + `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md` + Figma Gap sections/refs ทุกเอกสาร (Figma ไม่ใช่ source of truth); ตัด provenance/consignment entities ทั้งระบบ (S-25 — เก็บเฉพาะ owner-private `Purchase Price`/`Purchase Date`)
-- Canonical replacements: Global Login Required Dialog → Member Sheet `Join TukDaeng` (scrim-dismiss, คง surface); Notification Center → **Alerts feed** 4 types (`like`/`comment`/`follow`/`watch` — `system` ถูกถอนออกตาม DEC-41, supersede S-17); `Price on request` ตัด (empty price = showcase); `Hide this asset` แยกเป็น owner `Hide` status vs viewer `Not interested`; `Total Asset Value` → `Total invested` (S-15); `Contact Seller`/offer-era → `Ask Seller` บน sale post เท่านั้น; WA Result List → Post Viewer ตรง (S-08)
+- Canonical replacements: Global Login Required Dialog → Member Sheet `Join TukDaeng` (scrim-dismiss, คง surface); Notification Center → **Alerts feed** 5 types (`like`/`comment`/`follow`/`watch`/`system` — `system` 3 subtypes + category filter คืนเข้า V1 ตาม DEC-43, supersede DEC-41/S-17); `Price on request` ตัด (empty price = showcase); `Hide this asset` แยกเป็น owner `Hide` status vs viewer `Not interested`; `Total Asset Value` → `Total invested` (S-15); `Contact Seller`/offer-era → `Ask Seller` บน sale post เท่านั้น; WA Result List → Post Viewer ตรง (S-08)
 - Feed/composer model: feed post-centric (`sale`+`showcase`+plain post — S-09); composer asset mode required เดียว = media ≥1 (ไม่มี required matrix/multi-step form/autocomplete); Sale Record = ราคา+วันที่ 2 ฟิลด์; ไม่มี infinite scroll/load-more
 - Social/chat: chat thread key = `user+item` (S-07); like/favorites/interested = 3 ระบบแยก; like count private (S-26); share member-only (S-03); comment sheet เปิดได้ทุก surface + emoji quick-react (S-12)
 - Profile/portfolio/settings/board: profile tabs 5 (ทั้งหมด/ขาย/โชว์/ซ่อน/ขายแล้ว) + viewer เห็น sale/show; blocked profile IG keep-page (S-13); portfolio invested-centric + guest unreachable; settings IG 6 sections (S-05) + delete account 2-page login-to-restore (S-02/S-27); board editorial magazine (S-01); hamburger drawer 9 placeholders (S-19)
@@ -167,7 +188,7 @@ Baseline scope หลักยังครอบคลุม:
 - Chat-specific Dev Checklist
 - QA Scenario Checklist
 
-*(หมายเหตุ `FO-PRD-v1.9`: block "Baseline scope" นี้เป็นบันทึก doc set ยุค v1.1 — historical entries ไม่แก้ย้อนจึง annotate แทน; Module PRD ปัจจุบันครอบ `00`–`18` **ยกเว้น** `08_OFFER_MODULE.md` ที่ถูกลบใน v1.9 และไม่มี Figma docs อีกแล้ว — doc set + scope ปัจจุบันดู entry `FO-PRD-v1.9` ด้านบน)*
+*(หมายเหตุ `FO-PRD-v1.9`: block "Baseline scope" นี้เป็นบันทึก doc set ยุค v1.1 — historical entries ไม่แก้ย้อนจึง annotate แทน; Module PRD ปัจจุบันครอบ `00`–`18` **ยกเว้น** `08_OFFER_MODULE.md` ที่ถูกลบใน v1.9 และไม่มี Figma docs อีกแล้ว — doc set + scope ปัจจุบันดู entry ล่าสุดด้านบน)*
 
 ---
 
@@ -175,6 +196,9 @@ Baseline scope หลักยังครอบคลุม:
 
 | Version | Date | Summary | Key Files |
 | --- | --- | --- | --- |
+| `FO-PRD-v1.16` | 2026-11-04 | Removes consignment from FO surfaces entirely (product decision `DEC-50` — owner approved 2026-11-04, DOC-033; supersede D12 ส่วน copy+flag): `14_PORTFOLIO_MODULE.md` ตัด foot note `สินค้าฝากขาย`/`consignment` TH/EN + ถอด `own` flag/`own !== false` จาก data model และ `pfoEligible` (AC-PORT-004 sync); `Prototypes/fo-flow/index.html` sync foot note + eligibility (เฉพาะจุด consignment); `PRODUCT_DEFINITION.md`, `04_ASSET_MANAGEMENT_MODULE.md`, `DEV_IMPLEMENTATION_CHECKLIST.md` sync refs; `../scripts/build-manual-pdf.mjs` ถอด consignment card/private-data item/chapter summary + mock bio fo-flow ปรับคำ; Consignment Center drawer row คง placeholder ตาม BO-DIR-DEC-001 | `14_PORTFOLIO_MODULE.md`, `Prototypes/fo-flow/index.html`, `PRODUCT_DEFINITION.md`, `04_ASSET_MANAGEMENT_MODULE.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `../scripts/build-manual-pdf.mjs`, `../docs/DECISION_LOG.md` |
+| `FO-PRD-v1.15` | 2026-11-04 | Document-tier decision-log unification only — zero requirement change (DOC-030): adds `../docs/DECISION_LOG.md` canonical index of all decision namespaces (S-xx/D-xx sign-off, DEC-01–48, DEC-R010, e/OPEN FO-BO-001, BO module `XXX-DEC-xxx`, FOX `O-xx`, spec deviation registries) with supersession chains + open list; registers of record unchanged (master §16, FO-TEST-001-22, REQ-010 log, spec `Open Decisions`, money rules) — pointer notes added at register heads; new product decisions register as `DEC-49+` in canonical log | `../docs/DECISION_LOG.md`, `TukDaeng_Master_Product_Definition.md`, `PRODUCT_DEFINITION.md`, `README_MODULE_INDEX.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `deliverables/FO-TEST-001-22-decision-register.md`, `deliverables/REQ-010-decision-log.md`, `deliverables/FO-TEST-001-CONSOLIDATED-IG-decisions-and-backlog.md`, `deliverables/FO-BO-001-coverage-audit.md` |
+| `FO-PRD-v1.14` | 2026-11-04 | Document-tier consolidation only — zero requirement change (DOC-010): adds `PRODUCT_DEFINITION.md` (product-level contract — vision/platforms/user model/terminology/phase scope/spec authoring checklist ยุบจาก master §1–§4/§14/§17); marks `TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `../PRD/` superseded with pointer banners (content preserved as archived — master §16 decision log kept for traceability); updates SoT order in `00_GLOBAL_RULES_MODULE.md` §15 + `README_MODULE_INDEX.md` | `PRODUCT_DEFINITION.md`, `TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `00_GLOBAL_RULES_MODULE.md`, `README_MODULE_INDEX.md`, `../PRD/` |
 | `FO-PRD-v1.12` | 2026-11-03 | Amends FO Help support channels เป็น BO-driven dynamic contract (FO decision e1 approved — FO-BO-001 GAP-04 resolved): `13_SETTINGS_MODULE.md` Help / About Rule + AC-SETTING-007, `TukDaeng_Master_Product_Definition.md`, `QA_TEST_SCENARIO_CHECKLIST.md` (QA-SETTING-013), `DEV_IMPLEMENTATION_CHECKLIST.md`; spec-only ไม่แตะ prototype | `13_SETTINGS_MODULE.md`, `TukDaeng_Master_Product_Definition.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `DEV_IMPLEMENTATION_CHECKLIST.md` |
 | `FO-PRD-v1.11` | 2026-11-02 | Removes report review SLA/deadline tracking ทั้งระบบ (product decision 2026-11-02 — FO-BO-001 GAP-03 / OPEN-4 resolved): ถอน 24h SLA จาก `15_TRUST_SAFETY_MODULE.md` (rename AC-TS-012 → Report Handling), `18_ADMIN_SCOPE_NOTE.md` (AC-ADMIN-006 → no-deadline), `TukDaeng_Master_Product_Definition.md`, `11_SOCIAL_MODULE.md` cross-refs, `FO_Functional_PRD.md` และ `QA_TEST_SCENARIO_CHECKLIST.md` (QA-TS-010); spec-only ไม่แตะ prototype — งานคู่ฝั่ง BO ใน task `ef329529` | `15_TRUST_SAFETY_MODULE.md`, `18_ADMIN_SCOPE_NOTE.md`, `TukDaeng_Master_Product_Definition.md`, `11_SOCIAL_MODULE.md`, `FO_Functional_PRD.md`, `QA_TEST_SCENARIO_CHECKLIST.md` |
 | `FO-PRD-v1.9` | 2026-10-22 | Re-baselines the whole Front Office spec set to the locked `Prototypes/fo-flow/index.html` prototype (mission sync FSP-006–027; canonical = master §16 Sync Decision Log S-01–S-29 + FSP-005 consolidated sign-off). Removes `08_OFFER_MODULE.md` + all offer-era scope, `Figma_Gap_Checklist_Against_Master.md` + `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md` + Figma refs, and provenance/consignment entities (S-25). Canonical replacements: Member Sheet `Join TukDaeng` (แทน Global Login Required Dialog), Alerts feed 5 types +`system` (แทน Notification Center — S-17), `Total invested` (แทน Total Asset Value — S-15), `Ask Seller` sale-only (แทน Contact Seller/Offer), Post Viewer direct (แทน WA Result List — S-08), owner `Hide` status vs viewer `Not interested` (แทน Hide this asset), ตัด `Price on request`. Feed post-centric (S-09); composer asset mode media≥1; Sale Record 2 ฟิลด์; chat thread key user+item (S-07); share member-only (S-03); like count private (S-26); like/favorites/interested 3 ระบบ; comment sheet + emoji react (S-12); delete account login-to-restore (S-02/S-27); settings IG 6 sections (S-05); board editorial magazine (S-01); profile tabs 5; blocked profile IG keep-page (S-13); drawer 9 placeholders (S-19); auth onboarding + implied consent + OTP→sign in (S-22) + password policy unify (S-21) + ตัด spec-only auth pages (S-20). Contract-only keeps ตาม S-29 (deep link, analytics, suspended/banned, network/error, file message). Rewrites module PRDs `00`–`14` + `TukDaeng_Master_Product_Definition.md` §16; sync notes on legacy tier; `QA_TEST_SCENARIO_CHECKLIST.md` v2.0 (228 scenarios + Removed-behaviors guard table). Documented prototype defects (ไม่แก้ prototype): `salePosts()` pfkind leak (S-10), public `all` tab leak (S-14), sold-post `FOR SALE` tag. Residual sweep 15_TRUST/16_INTEG/17_NFR/00_GLOBAL → FSP-029/030. Historical entries v1.0–v1.8 เก็บเดิมไม่แก้ย้อน | `DOCUMENT_VERSION.md`, module PRDs `00`–`14`, `TukDaeng_Master_Product_Definition.md`, `README_MODULE_INDEX.md`, `PRD.md`, `Use_Cases.md`, `FO_Functional_PRD.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `DEV_CHAT_IMPLEMENTATION_CHECKLIST.md`, `DEV_BASELINE_HANDOFF_2026-06-22.md`, `ERROR_STATE_UI_COPY_CATALOG.md`, `FINAL_HANDOFF_SUMMARY.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `deliverables/fo-spec-sync/*` |
@@ -195,6 +219,6 @@ Baseline scope หลักยังครอบคลุม:
 When sending documents to Dev, include both:
 
 - Branch: `docs-frontoffice-spec-updates`
-- Version: `FO-PRD-v1.13`
+- Version: `FO-PRD-v1.14`
 
 If Dev reports a gap or builds against this baseline, ask them to cite the version number in their response.

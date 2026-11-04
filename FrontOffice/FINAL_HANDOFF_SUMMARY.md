@@ -1,8 +1,8 @@
 # TukDaeng PRD Final Handoff Summary
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
-**Current Baseline Version:** `FO-PRD-v1.10`
+**Current Baseline Version:** `FO-PRD-v1.14`
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 ---
@@ -13,7 +13,7 @@
 
 - Dev baseline handoff: [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md)
 - Document version: [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
-- Master source of truth: [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+- Product definition (product-level): [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 - Module index: [README_MODULE_INDEX.md](README_MODULE_INDEX.md)
 - Global rules: [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md)
 - Navigation rules: [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md)
@@ -28,6 +28,8 @@
 
 หมายเหตุสำหรับรอบ 2026-10-22: `FO-PRD-v1.9` supersede baseline ชุด `v1.x` ทั้งหมด โดย sync เอกสารตาม `Prototypes/fo-flow/index.html` ที่ locked แล้ว (master §16 Sync Decision Log เป็น canonical) — feed post-centric, Member Sheet, Alerts feed 5 types, composer asset mode, Sale Record 2 ฟิลด์, share member-only, delete account login-to-restore
 
+หมายเหตุสำหรับรอบ 2026-11-04: `FO-PRD-v1.14` ยุบ doc tier (DOC-010/DOC-011 — zero requirement change) — `TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `../PRD/` superseded เก็บเพื่อ traceability เท่านั้น; product-level facts อยู่ที่ [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md), behavioral contract อยู่ที่ module specs `00`–`18`, decision history (S-01–S-29) อ่านได้จาก archived master §16
+
 # 2. Approved Product Decisions
 
 | Decision | Final V1 Rule |
@@ -35,7 +37,7 @@
 | `Show` asset actions | `Show` ไม่ขึ้น Feed/Search/Watch Alert และไม่มี `Ask Seller` (chat entry มีเฉพาะ sale post — S-07/07_CHAT_MODULE) |
 | `Hide` price handling | `Hide` ไม่ใช้ listing price และห้ามแสดงราคาใน public/viewer surfaces |
 | Chat notification | Chat / New Message ไม่เข้า Alerts feed; แจ้งเตือนเฉพาะในเมนู Chat ด้วย unread badge/count |
-| Alerts feed types | รองรับ Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17) |
+| Alerts feed types | รองรับ Like, Comment, Follow, Watch Alert, System — `system` คืนเข้า V1 ด้วย 3 subtypes (security / account status / announcements) + category filter chips (DEC-43, supersede DEC-41) |
 | Comment replies | รองรับ IG-style one-level replies ใต้ comment หลัก; ใช้ `View more replies` สำหรับ collapsed replies ชั้นเดียว; ไม่รองรับ multi-level nested thread |
 | Post-block chat | Chat history เดิมอ่านได้แบบ read-only; ส่งข้อความใหม่ไม่ได้; สร้าง Chat ใหม่ไม่ได้ |
 | Future menu items | รายการ drawer ทั้ง 9 (Watch Brands, Watch Price Index, Watch Shops, Accessories Shop, Repair Shop, Auction Center, Consignment Center, Authentication Center, Community) เป็น placeholder rows ไม่เป็น active route ใน production V1 (S-19) |
@@ -56,7 +58,7 @@
 
 | Check | Status |
 | --- | --- |
-| Master updated with approved decisions | Done |
+| Product baseline updated with approved decisions | Done |
 | Module PRD `00-18` created | Done |
 | README module index created | Done |
 | Dev implementation checklist created | Done |

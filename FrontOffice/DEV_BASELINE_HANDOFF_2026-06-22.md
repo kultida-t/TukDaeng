@@ -1,10 +1,10 @@
 # TukDaeng Dev Baseline Handoff
 
 **Date:** 2026-06-22  
-**Baseline Version:** `FO-PRD-v1.0` (superseded — current synced baseline `FO-PRD-v1.10`, 2026-10-30)
+**Baseline Version:** `FO-PRD-v1.0` (superseded — current baseline `FO-PRD-v1.14`, 2026-11-04)
 **Purpose:** ส่ง baseline เอกสารล่าสุดทั้งชุดให้ Dev ใช้แทนเอกสารเก่าที่เคย implement ก่อนหน้า  
 **Status:** Product-reviewed and approved as Dev baseline  
-**Primary Source of Truth:** [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+**Primary Source of Truth:** [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 ---
@@ -17,7 +17,7 @@
 - `View more replies` ใช้สำหรับกาง replies ชั้นเดียวใต้ comment หลัก
 - ไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
 
-Dev / QA ควรอ้างอิง [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md) และใช้ `FO-PRD-v1.1` เป็น baseline ล่าสุด
+Dev / QA ควรอ้างอิง [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md) และใช้ baseline ล่าสุดตาม registry ในไฟล์นั้น
 
 ---
 
@@ -27,7 +27,7 @@ Dev / QA ควรอ้างอิง [DOCUMENT_VERSION.md](DOCUMENT_VERSION.m
 
 Dev ควรใช้เอกสารชุดนี้เป็น source of truth ใหม่สำหรับการแก้ app ที่ทำไปก่อนหน้าแล้ว เพราะ implementation เดิมอ้างอิงข้อมูลชุดเก่าที่ไม่ตรงกับ decision ล่าสุดหลายจุด
 
-Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `FO-PRD-v1.0` แต่หลัง decision update วันที่ 2026-06-23 ให้ Dev / QA ใช้ baseline ล่าสุด `FO-PRD-v1.1` หาก Dev ส่ง gap list หรือ status กลับมา ให้ระบุ version ที่ใช้อ้างอิงเพื่อให้ trace กลับมาได้ถูกต้อง
+Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `FO-PRD-v1.0` แต่หลัง decision update วันที่ 2026-06-23 ให้ Dev / QA ใช้ baseline ล่าสุดตาม [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md) หาก Dev ส่ง gap list หรือ status กลับมา ให้ระบุ version ที่ใช้อ้างอิงเพื่อให้ trace กลับมาได้ถูกต้อง
 
 หาก implementation ปัจจุบัน หรือเอกสารเก่า conflict กับชุดนี้ ให้ยึดชุดนี้ก่อน
 
@@ -37,7 +37,7 @@ Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `F
 
 | Order | File | Why Dev Must Read |
 | --- | --- | --- |
-| 1 | [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) | Product baseline, canonical terms, status model, global scope |
+| 1 | [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) | Product-level definition — vision, platforms, user model, terminology, phase scope |
 | 2 | [README_MODULE_INDEX.md](README_MODULE_INDEX.md) | Source-of-truth order, module map, reading path |
 | 3 | [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) | Visibility, lifecycle, privacy, login, deleted/block rules |
 | 4 | [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) | Routing, deep link, notification destination, cross-module fallback |
@@ -93,7 +93,7 @@ Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `F
 
 ## Alerts feed / Settings / Board
 
-- Alerts feed types = Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17)
+- Alerts feed types = Like, Comment, Follow, Watch Alert, System (3 subtypes: security / account status / announcements — DEC-43, supersede DEC-41 ที่เคยถอน `system` ออก)
 - Settings = IG-style six sections (S-05); Change Password in-app (S-28); Delete Account = two-page flow + login-to-restore (S-02/S-27)
 - Board is editorial magazine (S-01); FO users do not create/edit/delete articles in V1
 - Share (รวม article) เป็น member-only — guest เจอ Member Sheet (S-03); Article Like requires login
@@ -102,7 +102,7 @@ Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `F
 
 # 4. Recommended Dev Update Flow
 
-1. Read master and module index first
+1. Read product definition and module index first
 2. Compare current app implementation against [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md)
 3. Mark each checklist item as Done / Needs Fix / Not Applicable with reason
 4. Split fixes by module to avoid mixing global status/privacy changes with UI-only changes

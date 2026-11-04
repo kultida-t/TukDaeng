@@ -1,6 +1,6 @@
 # 00 Global Rules Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Status | Draft |
 | Owner | Product / UX / Engineering |
-| Document Type | Cross-Module Functional PRD - Master Aligned |
+| Document Type | Cross-Module Functional PRD - Product Definition Aligned |
 
 # 2. Objective
 
@@ -34,9 +34,9 @@ Global Rules Module เป็นเอกสารกลางสำหรับ
 - Blocked / Unavailable User State
 - Report Entry State
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
 | User model | User มี role เดียวหลังสมัคร ไม่แยก Buyer / Seller / Collector |
 | Context model | ใช้ Owner / Viewer / Guest เป็น context ไม่ใช่ role ถาวร |
@@ -54,7 +54,7 @@ Global Rules Module เป็นเอกสารกลางสำหรับ
 | Block | Asset ของผู้ถูก Block ต้องหายจาก Feed, Search, Watch Alert Result |
 | Report | Report ไม่ทำให้ Asset หายทันที จนกว่า Admin moderation |
 | Privacy | Private asset data เห็นเฉพาะ Owner หรือ Admin ตามสิทธิ์ |
-| Source of truth | ถ้าเอกสารอื่น conflict ให้ยึด master และ global rules นี้ก่อน |
+| Source of truth | ถ้าเอกสารอื่น conflict ให้ยึดลำดับ source of truth ตาม §15 |
 
 # 5. Scope
 
@@ -172,7 +172,7 @@ Owner/Viewer เป็น context ต่อ content ส่วน session (`membe
 - `Hide`
 - `Sold`
 
-ห้ามใช้ status model ซ้ำ เช่น `Available / Sold` แยกอีกชั้น หรือ legacy label ที่ทำให้ data model ขัดกับ master
+ห้ามใช้ status model ซ้ำ เช่น `Available / Sold` แยกอีกชั้น หรือ legacy label ที่ทำให้ data model ขัดกับ canonical baseline
 
 โพสต์บน feed ที่ไม่ผูก asset ใช้ kind `post` (feed-only post ไม่มี asset status) — ไม่นับเป็น asset status เพิ่ม แต่ต้องเข้าใจใน visibility matrix §10
 
@@ -267,6 +267,14 @@ Guest gate sheet copy:
 
 Bottom sheet ทั่วไป: ปิดได้ด้วยการแตะ scrim, ปุ่มปิดของ sheet, device back (Android) และลากแถบจับ (handle) ลง (contract — prototype: แถบจับเป็นภาพประกอบ ปิดด้วย scrim/ปุ่มเท่านั้น)
 
+## Per-Page Config Policy (selective)
+
+หน้าที่มีของให้ตั้งจริงสามารถมีปุ่ม Config ประจำหน้า (per-page config) ได้ — **ไม่บังคับทุกหน้า** (DEC-47 · NB-036/NB-047 — `SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md`):
+
+- เพิ่มเฉพาะหน้าที่มี setting/option ของตัวเองจริง — ตัวอย่างใน V1: Chat list มี `chatcfg` (gear บนหัวหน้า → chat settings ตาม 07_CHAT); Alerts มี category filter chips ซึ่งนับเป็น per-page config (09 §9 Category Filter Rule)
+- หน้าที่ไม่มีของให้ตั้งจริง **ไม่เพิ่ม config ใน V1** — setting ส่วนกลางคงอยู่ที่ Settings จุดเดียว (canonical 13_SETTINGS; entry = `.pf-menu` gear)
+- เมื่อหน้าใดมี setting จริงเกิดขึ้นภายหลัง ให้ประเมินรายหน้าแล้วเปิด per-page config เฉพาะหน้านั้น — ไม่ต้องเพิ่มพร้อมกันทั้งแอป
+
 # 12. Lifecycle Rules
 
 ## Asset Lifecycle
@@ -343,10 +351,13 @@ Public Profile, Feed, Search, Watch Alert และ Viewer Asset Detail ต้�
 
 หากเอกสารมีเงื่อนไขไม่ตรงกัน ให้ตัดสินตามลำดับ:
 
-1. `TukDaeng_Master_Product_Definition.md`
+1. `PRODUCT_DEFINITION.md` (product-level framing เท่านั้น)
 2. `00_GLOBAL_RULES_MODULE.md`
-3. Module PRD รายโมดูล
-4. Legacy documents
+3. `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`
+4. Module PRD รายโมดูล
+5. Superseded tier (`TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `../PRD/` — archived DOC-010 ไม่ใช่ contract)
+
+การค้น decision: `../docs/DECISION_LOG.md` (canonical index, DOC-030) — fact อยู่ที่ register of record ตาม §1 ของ log เอกสารอื่นอ้าง DEC id เท่านั้น
 
 หลักตัดสินความขัดแย้ง:
 
@@ -357,7 +368,7 @@ Public Profile, Feed, Search, Watch Alert และ Viewer Asset Detail ต้�
 - Owner Profile เห็นทุกสถานะ
 - Hide และ Sold ต้องไม่ Public
 - Comment รองรับ IG-style one-level replies ใต้ comment หลัก และไม่รองรับ multi-level nested thread
-- Notification types ใช้เฉพาะ Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17)
+- Notification types ใช้เฉพาะ Like, Comment, Follow, Watch Alert, System (3 subtypes: security / account status / announcements — DEC-43, supersede DEC-41)
 - Guest gate ใช้ Member Sheet `Join TukDaeng` (§11) ไม่ใช่ center dialog
 
 # 16. Validation Rules

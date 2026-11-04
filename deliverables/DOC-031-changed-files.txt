@@ -1,0 +1,31 @@
+DOC-031 — Changed files evidence (INT-DEC-005 re-anchor)
+Date: 2026-11-04 · Task: d2a375f8-f65e-4a24-9f68-2fb75f6cb0d3
+Scope: re-anchor dangling INT-DEC-005 ref ใน 07_DIRECTORY_MODULE.md → BO-DIR-DEC-001
+Commit: (see git log — docs(bo+decision-log): DOC-031 ...)
+
+Files changed (3):
+- BackOffice/07_DIRECTORY_MODULE.md
+    §9 FO Publication Rules L156: `INT-DEC-005` → `BO-DIR-DEC-001` (§18)
+    bump BO-07-v0.1 → BO-07-v0.2 (header + Document Information) · Date → 2026-11-04
+- docs/DECISION_LOG.md
+    Version 1.0 → 1.1
+    §7.3 annotate INT-DEC-005 = re-anchored 2026-11-04 (DOC-031) — kept as audit
+    trail, CLOSED-DEC-01 remains the only alias-style entry
+    §6 BO-DEC-006 row: stale "ดู §7 INT-DEC-005" pointer fixed to reflect re-anchor
+- BackOffice/DOCUMENT_VERSION.md
+    new top Version History row `BO-07-v0.2` (2026-11-04)
+
+Semantics preserved (no requirement change):
+FO Directory placeholder → BO must NOT treat Active item = FO production route
+open — identical constraint, only the pointer moved to the live register entry
+(BO-DIR-DEC-001, spec 07 §18, status open — P1 rec: placeholder-only)
+
+Verification:
+- grep INT-DEC-* repo-wide: zero remaining refs in living docs
+  (residuals only in deliverables/archive + this task's annotated index entries)
+- Acceptance met: no dangling INT-DEC-* reference; index updated
+
+Constraints honored:
+- spec/docs only — no prototype, no protected screens, no DailyLogs,
+  no SourceInputs, deliverables/archive untouched (read-only)
+- DOCUMENT_VERSION bumped per spec contract change convention

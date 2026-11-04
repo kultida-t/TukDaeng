@@ -1,6 +1,6 @@
 # 00 Navigation And Cross-Module Flow
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Status | Draft |
 | Owner | Product / UX / Engineering |
-| Document Type | Cross-Module Functional PRD - Master Aligned |
+| Document Type | Cross-Module Functional PRD - Product Definition Aligned |
 
 # 2. Objective
 
@@ -25,7 +25,7 @@ Navigation And Cross-Module Flow เป็นเอกสารกลางส�
 
 Source of truth สำหรับพฤติกรรม navigation: `Prototypes/fo-flow/index.html`
 
-- App header ของ feed shell — burger (drawer), search icon, wordmark `TUK DAENG`, ปุ่ม `+` create
+- App header ของ feed shell — burger (drawer), search icon, wordmark `TUK DAENG`, Watch Alert icon (`.feed-wa`), ปุ่ม `+` create
 - Feed tabs (All Posts / Following / Favorites) — segmented control ใต้ header (รายละเอียดอยู่ 02_FEED)
 - Bottom navigation 5 แท็บ (Feed / Chat / Boards / Alerts / Profile) + unread badges
 - Hamburger drawer — 9 placeholder rows
@@ -36,17 +36,17 @@ Source of truth สำหรับพฤติกรรม navigation: `Prototyp
 - Member Sheet `Join TukDaeng` — guest gate
 - Report flow — full-page multi-step stack
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
-| App shell | Bottom nav 5 แท็บ (Feed / Chat / Boards / Alerts / Profile); Search และ Create เป็น header entries ไม่ใช่ nav tab |
+| App shell | Bottom nav 5 แท็บ (Feed / Chat / Boards / Alerts / Profile); Search, Watch Alerts และ Create เป็น header entries ไม่ใช่ nav tab |
 | Destination model | Post Detail (`.page-detail`) = asset-detail equivalent; Post Viewer (`.page-pv`) = immersive viewer — ไม่มี "Asset Detail" แยกเป็น page ของตัวเอง |
 | Feed navigation | Feed card tap media = carousel เท่านั้น; เข้า Post Detail ผ่าน `Tap for details` → `View full detail`; owner area เปิด Public Profile |
 | Comment surface | Comment เปิดผ่าน shared bottom sheet จากทุก surface (feed card / viewer / detail) — ไม่บังคับผ่าน detail |
 | Guest restriction | Guest ใช้ action ที่ต้องมีตัวตนต้องเห็น Member Sheet `Join TukDaeng` — รวม Share ทุก surface (S-03: share ต้อง login) |
 | Watch Alert notification | เปิด Notification แล้วไป Post Viewer ของ Asset ที่ match โดยตรง ไม่มี Result List คั่น |
-| Notification types | Like, Comment, Follow, Watch Alert + System (security — placeholder destination) |
+| Notification types | Like, Comment, Follow, Watch Alert + System (3 subtypes: security / account status / announcements — DEC-43) |
 | Chat persistence | Chat ยังอยู่เมื่อ Asset ถูกลบหรือ Sold |
 | Deleted asset | Post Detail แสดง `รายการนี้ไม่พร้อมใช้งานแล้ว` (contract — prototype แสดงเฉพาะ toast/empty state) |
 | Block impact | Block ต้องซ่อน asset จาก Feed/Search/Watch Alert Result ไม่ใช้ Follow relation; blocked profile แสดงหน้าโปรไฟล์ที่ grid ว่าง + ปุ่ม Unblock (IG keep-page) |
@@ -78,7 +78,7 @@ Source of truth สำหรับพฤติกรรม navigation: `Prototyp
 - Native OS routing implementation
 - Push notification technical payload contract
 - Back Office navigation
-- Future services not in master baseline
+- Future services not in product baseline
 - เนื้อหาภายใน sub page แต่ละหน้า (อยู่ใน module spec ของตัวเอง)
 
 # 6. App Shell & Navigation Model
@@ -151,6 +151,7 @@ App header อยู่เฉพาะ feed shell เท่านั้น:
 | Burger | เปิด hamburger drawer (§6.5) | ใช้ได้ |
 | Search icon | เปิด Search sub page (`search`) | ใช้ได้ — Search เป็น header entry ไม่ใช่ nav tab |
 | Wordmark `TUK DAENG` + caret | brand menu (design variant `ft:"none"` เท่านั้น — dead variant ใน prototype, ไม่ใช่ spec feature) | — |
+| Watch Alert icon (`.feed-wa` — ไอคอนนาฬิกาข้อมือ ขนาดเท่า `+`) | `pushSub walerts` — Watch Alert list ของตัวเอง | gated → Member Sheet (`.feed-wa` ∈ `GUEST_GATE_SEL`) |
 | `+` | เปิด Create composer (post / asset modes — รายละเอียด 02_FEED / 04_ASSET_MANAGEMENT) | gated → Member Sheet |
 
 Feed tabs (All Posts / Following / Favorites) เป็น segmented control ใต้ header — scope 02_FEED; guest กดได้ทุก tab เห็น empty state (S-16)
@@ -182,7 +183,7 @@ Route names ของ `.page-sub` stack (prototype `subHTML`) — ใช้เ�
 Entry notes:
 
 - `settings` เข้าผ่าน profile menu (`.pf-menu`) เท่านั้น — ไม่มี settings button อื่นที่ใช้งานได้ (`.set-btn` เป็น dead handler)
-- `alerts` เข้าผ่าน bottom-nav tab เท่านั้น; `walerts` เข้าผ่าน Settings > Watch Alerts / search bell / post detail bell
+- `alerts` เข้าผ่าน bottom-nav tab เท่านั้น; `walerts` เข้าผ่าน feed header `.feed-wa` / Settings > Watch Alerts / search bell / post detail bell
 - Guest gate: routes ที่ผูกกับ gated entries ต้องไม่เข้าถึงได้โดย guest (tab/search/sheet ที่เปิดมันถูก gate ก่อนแล้ว)
 
 ## 6.7 In-App Back Behavior
@@ -214,6 +215,7 @@ Back ในแอปใช้ `.sub-back` ตัวเดียวจัดก�
 | Feed | `...` post menu | own / others post menu sheet | guest → Member Sheet |
 | Feed | Ask Seller pill | Chat room (item-scoped) | guest → Member Sheet; own post / blocked → toast ตาม 07_CHAT |
 | Feed | Search icon (header) | Search sub page | ใช้ได้เสรีรวม guest |
+| Feed | Watch Alert icon `.feed-wa` (header) | Watch Alert list (`walerts` push ทับ feed) | guest → Member Sheet |
 | Feed | `+` (header) | Create composer (post / asset) | guest → Member Sheet |
 | Feed | Burger (header) | Hamburger drawer | ใช้ได้เสรี |
 | Search landing / results | Tap explore / result tile | Post Viewer | tile เป็น photo grid — เปิด viewer โดยตรง |
@@ -245,10 +247,11 @@ Alerts tab (`alerts` sub page) — แตะ row แล้ว mark read + sync b
 | Comment | Post Viewer — โพสต์ของตัวเอง 1 ใบ | เหมือน Like — comment ไม่ focus/deep-scroll ใน V1; โพสต์หาย → unavailable state เดียวกัน |
 | Follow | Public Profile — `rpPush("profile:{user}")` | blocked/unavailable → fallback ตาม §10 |
 | Watch Alert | Post Viewer — โพสต์ที่ match โดยตรง | ไม่มี Result List คั่นใน V1; โพสต์หาย → unavailable state parity กับ like/comment (resolved FSP-030) |
+| System | Settings sub page ตาม `dest` field (`change_pwd` / `about_account` / `about_app`; โพสต์ถูกซ่อน → `al_unavail`; `dest` ว่าง → `settings`) | 3 subtypes: security / account status / announcements (DEC-43) — ไม่มี content destination เพราะไม่อ้าง post/user |
 
-Follow row เท่านั้นที่มี dismiss (X) + `Follow back` button — รายละเอียด UI อยู่ 09_NOTIFICATION; Mark all as read อยู่บน section header แรก
+Follow + System rows เท่านั้นที่มี dismiss (X); `Follow back` button เฉพาะ follow — รายละเอียด UI อยู่ 09_NOTIFICATION; Mark all as read อยู่บน section header แรก
 
-Notification types outside this list are not in V1 unless master is updated
+Notification types outside this list are not in V1 unless product baseline is updated
 
 # 9. Login-Required Gate Routing
 
@@ -261,7 +264,7 @@ Gate triggers ที่เกี่ยวกับ navigation:
 - Share ทุก surface — feed, post viewer, post detail, profile grid, article, share profile/QR (S-03: share ต้อง login ทุกจุด)
 - Social actions ทั้งหมด (like, comment surface actions, save, wishlist, follow, mute, not-interested, post menus, report, block)
 - Chat entries ทุกจุด (Ask Seller, chat item, room actions)
-- Watch Alert create / manage (`sr-wa`, `mf-btn`, walerts settings)
+- Watch Alert create / manage (`.feed-wa`, `sr-wa`, `mf-btn`, walerts settings)
 - Settings entry (profile menu) และ surfaces ภายใต้
 - Profile actions (edit, follower/following rows, unblock)
 
@@ -295,7 +298,7 @@ Unavailable / permission fallback screen CTA:
 
 # 11. Menu Scope Rules
 
-The following menu items are outside current master baseline and must not be treated as implemented V1 modules without product decision:
+The following menu items are outside current product baseline and must not be treated as implemented V1 modules without product decision:
 
 - Watch Brands
 - Watch Price Index
@@ -404,7 +407,7 @@ Prototype-only artifacts (ไม่ใช่ spec feature): design variants ใ�
 | AC-NAV-011 | Deleted Asset deep link shows `รายการนี้ไม่พร้อมใช้งานแล้ว` (contract) |
 | AC-NAV-012 | Chat remains accessible when related Asset is deleted or Sold |
 | AC-NAV-014 | Blocked users/assets do not render in Feed, Search or Watch Alert matching; blocked profile renders keep-page with empty grid + Unblock |
-| AC-NAV-015 | Drawer items outside master baseline render as enabled-looking placeholder rows — tap shows placeholder toast, never an active route |
+| AC-NAV-015 | Drawer items outside product baseline render as enabled-looking placeholder rows — tap shows placeholder toast, never an active route |
 | AC-NAV-016 | Deep links validate auth, permission, asset status, deletion and block state before rendering (contract) |
 | AC-NAV-016A | Deep link ของ Asset `Hide` หรือ `Sold` ที่เปิดโดย non-owner ต้องแสดง Permission Denied / Unavailable state ไม่ใช่เปิด private detail (contract) |
 | AC-NAV-016B | Owner เปิด deep link ของ Asset ตัวเองที่ `Hide` หรือ `Sold` ต้องแสดง Owner-only detail (contract) |

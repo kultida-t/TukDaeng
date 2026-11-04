@@ -143,8 +143,8 @@
 | Watch | `walerts` | list: row มีชื่อ+criteria+mode+match count + pause/resume toggle + Edit | MEMBER | 6 | empty state + note "sitemap alerts→walerts ในโค้ดอยู่ใต้ settings เท่านั้น" `[OPEN-NO-CODE]` (path ไม่ตรง) |
 | Watch | model follow `mf-btn` | bell บน post/detail — สร้าง/แก้ alert จาก spec ของโพสต์ + on-state | MEMBER `[GATE]` | 5 | `[OPEN-CODE-ONLY]` model-following flag |
 | Watch | alert fire `_waHits` | post ใหม่ที่ match → toast แจ้ง | MEMBER | 2 | `[OPEN-CODE-ONLY]` |
-| Alerts | `alerts` | activity list: groups Today/Yesterday/Last7/Earlier + unread badge + mark-all-read + dismiss(x บน follow) | MEMBER | 8 | guest/new → empty; back กลับ feed เสมอ |
-| Alerts | row types | like/comment → PV own post; watch → PV listing; follow → profile | MEMBER | 6 | `system` type ถูกถอนออกจาก V1 ทั้งประเภท (DEC-41) |
+| Alerts | `alerts` | activity list: groups Today/Yesterday/Last7/Earlier + unread badge + mark-all-read + dismiss(x บน follow+system) + category filter `.al-fchip` (`ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert`) | MEMBER | 10 | guest/new → empty; back กลับ feed เสมอ |
+| Alerts | row types | like/comment → PV own post; watch → PV listing; follow → profile; system → `dest` sub-route (fallback `settings`) | MEMBER | 13 | `system` คืน V1 ด้วย 3 subtypes + dismiss `x` (DEC-43 · NB-046 — supersede DEC-41) |
 | Alerts | badge `nav-badge` | unread count บน bottom nav + `99+` cap + sync หลังอ่าน | MEMBER | 3 | |
 
 ### 2.7 Chat

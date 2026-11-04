@@ -1,6 +1,6 @@
 # 05 Post Detail Module (Asset Detail)
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§10 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / own-post menu / Edit info canonical) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (post viewer 3 modes + lifecycle matrix canonical — FSP-016 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§10 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / own-post menu / Edit info canonical) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (post viewer 3 modes + lifecycle matrix canonical — FSP-016 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD - Master Aligned |
+| Document Type | Functional PRD - Product Definition Aligned |
 
 ---
 
@@ -45,9 +45,9 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
 | Destination model | Post Detail (`.page-detail`) = asset-detail equivalent เดียวใน V1 — ไม่มี Asset Detail page แยก (00_NAV §6.1) |
 | Status model | `pfkind` ∈ `post`/`sale`/`show`/`hide`/`sold` mirror กับ canonical `Sale`/`Show`/`Hide`/`Sold` (00_GLOBAL §9) |
@@ -87,7 +87,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Profile grid/tabs/sold tab reachability — [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (FSP-019)
 - Portfolio pages `pfasset:`/`sold:`/`sell:`/`soldhist` + purchase/sale math — [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (FSP-017) + [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) (FSP-024)
 - Deep-link routing/unavailable states — contract เท่านั้น (00_NAV §10; prototype ไม่มี external deep link mechanism)
-- BO moderation — master contract เท่านั้น
+- BO moderation — contract เท่านั้น (prototype ไม่ครอบ)
 
 ---
 
@@ -356,7 +356,7 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 
 ## Deviations & Dead-Code Notes
 
-Spec เลือกตาม prototype — รายการนี้คือจุดที่ spec เดิม/master คาดหวัง แต่ prototype ทำต่างหรือไม่มี (documented, ไม่ใช่ spec):
+Spec เลือกตาม prototype — รายการนี้คือจุดที่ spec เดิม/baseline เดิมคาดหวัง แต่ prototype ทำต่างหรือไม่มี (documented, ไม่ใช่ spec):
 
 | # | Deviation | Note |
 | --- | --- | --- |
