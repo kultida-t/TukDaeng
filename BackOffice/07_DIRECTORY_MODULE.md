@@ -1,6 +1,6 @@
 # 07 BO Directory Module
 
-**Version:** `BO-07-v0.2`  
+**Version:** `BO-07-v0.3`  
 **Date:** 2026-11-04  
 **Status:** Postponed / future reference only  
 **Platform:** Responsive Web Back Office
@@ -231,7 +231,7 @@ Audit event ต้องมี admin ID, admin access, target type, target ID, b
 
 | Module | Integration |
 | --- | --- |
-| Asset Management | Consignment center อาจใช้ FK ไป Directory item ในอนาคต |
+| Asset Management | ~~Consignment center อาจใช้ FK ไป Directory item ในอนาคต~~ — binding ถูกตัดออกทั้งหมดตาม `BO-DIR-DEC-003` (2026-11-04); re-decide ตอน Directory activation |
 | Market Data | Admin ownership และ shared data quality patterns |
 | Dashboard | Directory activated/inactivated activity และ data quality warnings |
 | Audit Log | ทุก mutation ต้อง searchable |
@@ -263,7 +263,7 @@ Directory Module เป็น postponed module ใน Phase 1 ห้ามเป
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| BO-DIR-DEC-001 | FO Directory จะเปิดเป็น production V1 หรือ placeholder-only | ใช้ placeholder-only จนกว่า Product ยืนยัน |
-| BO-DIR-DEC-002 | Community category หมายถึง Board, Social หรือ Directory item จริง | ต้อง map taxonomy ก่อนเปิด FO |
-| BO-DIR-DEC-003 | Consignment Centers จะผูกกับ asset consignment workflow ใน Phase 1 หรือไม่ | เก็บ FK-ready field แต่ยังไม่บังคับ |
-| BO-DIR-DEC-004 | Map provider ที่ใช้ production | ต้องเลือก provider และ quota ก่อน implementation |
+| BO-DIR-DEC-001 ✅ | FO Directory จะเปิดเป็น production V1 หรือ placeholder-only | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** placeholder-only ใน V1 — FO drawer rows กดแล้ว toast `เร็ว ๆ นี้` และ BO ไม่ถือว่า Active = production route เปิด; activation ภายหลัง = requirement ใหม่ |
+| BO-DIR-DEC-002 | Community category หมายถึง Board, Social หรือ Directory item จริง | ต้อง map taxonomy ก่อนเปิด FO — จอดไว้จนกว่า Directory activation (BO-DIR-DEC-001) |
+| BO-DIR-DEC-003 ✅ | Consignment Centers จะผูกกับ asset consignment workflow ใน Phase 1 หรือไม่ | **ตัดสินใจ (2026-11-04 — แก้จาก rec เดิม):** ตัด consignment binding ออกทั้งหมด ไม่ใช่แค่ FK-ready — FO ไม่มี consignment surface จริง (copy + `own` flag ถูกตัดตาม `DEC-50`); ถ้า Directory activation ในอนาคตค่อยตัดสิน binding ใหม่รอบนั้น |
+| BO-DIR-DEC-004 | Map provider ที่ใช้ production | ต้องเลือก provider และ quota ก่อน implementation — ตอบได้เมื่อ Directory เปิด |

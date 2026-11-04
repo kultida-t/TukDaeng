@@ -1,7 +1,7 @@
 # 14 BO Notifications Module
 
-**Version:** `BO-14-v0.4`  
-**Date:** 2026-10-26  
+**Version:** `BO-14-v0.5`  
+**Date:** 2026-11-04  
 **Status:** Phase 2 deferral — Broadcast & System Templates moved to future; Delivery Logs moved to Settings  
 **Platform:** Responsive Web Back Office  
 **Primary FO Sources:** `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`
@@ -498,8 +498,8 @@ Audit payload ต้องมี:
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |
-| NOTI-DEC-001 | Broadcast จะแสดงใน FO Notification Center หรือเป็น push-only (Phase 2) | กระทบ FO type list และ in-app notification UI |
-| NOTI-DEC-002 | ต้องมี broadcast approval workflow กี่ขั้น (Phase 2) | กระทบ permission และ operation process |
-| NOTI-DEC-003 | Notification retention period ต้องเก็บกี่วัน/ปี | กระทบ delivery log และ report (ใช้ได้ทั้ง Phase 1 และ Phase 2) |
-| NOTI-DEC-004 | Provider payload contract ของ FCM/APNs กำหนด schema ใด (Phase 2) | กระทบ backend implementation |
-| NOTI-DEC-005 | Market Update / Sale Success / Account Action จะเข้า FO phase ใด (Phase 2) | กระทบ supported types และ template list |
+| NOTI-DEC-001 ✅ | Broadcast จะแสดงใน FO Notification Center หรือเป็น push-only (Phase 2) | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** formal defer to Phase 2 — ตัดสินพร้อม Phase 2 scoping (คำถาม surface ตอบง่ายขึ้นเมื่อ FO notification types lock ครบ); กระทบ FO type list และ in-app notification UI |
+| NOTI-DEC-002 ✅ | ต้องมี broadcast approval workflow กี่ขั้น (Phase 2) | **ตัดสินใจ (2026-11-04):** formal defer to Phase 2; กระทบ permission และ operation process |
+| NOTI-DEC-003 | Notification retention period ต้องเก็บกี่วัน/ปี | กระทบ delivery log และ report (ใช้ได้ทั้ง Phase 1 และ Phase 2 — ผูก retention cluster `DEL-DEC-002`/`SET-DEC-003`) |
+| NOTI-DEC-004 ✅ | Provider payload contract ของ FCM/APNs กำหนด schema ใด (Phase 2) | **ตัดสินใจ (2026-11-04):** formal defer to Phase 2; กระทบ backend implementation |
+| NOTI-DEC-005 ✅ | Market Update / Sale Success / Account Action จะเข้า FO phase ใด (Phase 2) | **ตัดสินใจ (2026-11-04):** formal defer to Phase 2; กระทบ supported types และ template list |

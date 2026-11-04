@@ -2,9 +2,9 @@
 
 | รายการ | ข้อมูล |
 |---|---|
-| Version | 1.1 |
+| Version | 1.3 |
 | Date | 2026-11-04 · Asia/Bangkok |
-| Task | DOC-030 [`d9ae9924`] — Mission 6 [`31829e57`] Objective 3 (Decision Log Unification) |
+| Task | DOC-030 [`d9ae9924`] — Mission 6 [`31829e57`] Objective 3 (Decision Log Unification) · v1.2 = DOC-033 [`ee3c153a`] implement approved decisions (DEC-49/50 + spec row closures) · v1.3 = DOC-035 [`b8a33f8b`] implement DEC-51 (ตัด BO consignment data model + prototype surface) |
 | Status | **CANONICAL** — index เดียวของ decision ทั้งระบบ (FO + BO + product) |
 
 ## 0. วิธีใช้เอกสารนี้
@@ -77,7 +77,7 @@ Record: master §16 (archived) + `FSP-005` sign-off · ทุกแถว = sign
 | D2 | Headline = Total invested (Σ purchase) | active | record: `14_PORTFOLIO` D2 |
 | D3 | Sale Record = price + date เท่านั้น | active | record: `14_PORTFOLIO` D3 |
 | D5 | ตัด Top Brand Holdings + YTD | active (reopen ได้ใน future) | record: `14_PORTFOLIO` D5 |
-| D12 | Consignment = copy + flag เท่านั้น | active | record: `14_PORTFOLIO` D12 |
+| D12 | Consignment = copy + flag เท่านั้น | **superseded** → `DEC-50` | consignment ถูกตัดออกจาก FO ทั้งหมด 2026-11-04 (BO data model ตัดตาม `DEC-51`) |
 
 ## 3. Index — FO product decisions (`DEC-01`–`DEC-48`)
 
@@ -173,43 +173,43 @@ Record: section `Open Decisions` ของ module spec แต่ละเล่�
 
 | ID | Decision | Status |
 |---|---|---|
-| BO-MARKET-DEC-001 | เปิด manual sync trigger บน BO หรือไม่ | open (rec: operations-only + audit + rate-limit) |
+| BO-MARKET-DEC-001 | เปิด manual sync trigger บน BO หรือไม่ | ✅ resolved 2026-11-04 — operations permission only + audit + rate-limit guard |
 | BO-MARKET-DEC-002 | FX rate source USD→THB | **open — P0** (BO_FINAL_REVIEW §6) |
-| BO-MARKET-DEC-003 | Mapping warning queue แยกหรือไม่ | open (rec: Phase 1 read-only) |
+| BO-MARKET-DEC-003 | Mapping warning queue แยกหรือไม่ | ✅ resolved 2026-11-04 — Phase 1 read-only warning; correction = backend/provider process |
 | BO-MARKET-DEC-004 | The Watch API plan/quota production | **open — P0** |
-| BO-DIR-DEC-001 | FO Directory production V1 หรือ placeholder-only | open — P1 (rec: placeholder-only) |
-| BO-DIR-DEC-002 | Community category taxonomy | open |
-| BO-DIR-DEC-003 | Consignment Centers ผูก workflow Phase 1 | open (rec: FK-ready ไม่บังคับ) |
-| BO-DIR-DEC-004 | Map provider production | open |
-| BO-AUDIT-DEC-001 | Audit retention >1 ปี | open (rec: เก็บนานถ้า storage อนุญาต) |
-| BO-AUDIT-DEC-002 | Audit write fail: block หรือ queue retry | open (rec: block high-risk / queue low-risk) |
-| BO-AUDIT-DEC-003 | Redaction policy PII ใน audit payload | open (rec: masked default) |
-| BO-AUDIT-DEC-004 | ส่ง audit เข้า external SIEM | open (future phase) |
+| BO-DIR-DEC-001 | FO Directory production V1 หรือ placeholder-only | ✅ resolved 2026-11-04 — placeholder-only V1 (กดแล้ว toast `เร็ว ๆ นี้`); activation = requirement ใหม่ |
+| BO-DIR-DEC-002 | Community category taxonomy | open (รอ Product — จอดจนกว่า Directory activation) |
+| BO-DIR-DEC-003 | Consignment Centers ผูก workflow Phase 1 | ✅ resolved 2026-11-04 — ตัด consignment binding ทั้งหมด (ไม่ใช่แค่ FK-ready); binding ตัดสินใหม่ตอน Directory activation |
+| BO-DIR-DEC-004 | Map provider production | open (ตอบเมื่อ Directory เปิด) |
+| BO-AUDIT-DEC-001 | Audit retention >1 ปี | ✅ resolved 2026-11-04 — เก็บนานกว่า 1 ปีสำหรับ security/export/sensitive events ถ้า storage/compliance อนุญาต (ตัวเลขจริงผูก retention cluster รอ Legal) |
+| BO-AUDIT-DEC-002 | Audit write fail: block หรือ queue retry | ✅ resolved 2026-11-04 — block high-risk; queue retry สำหรับ low-risk read/report events |
+| BO-AUDIT-DEC-003 | Redaction policy PII ใน audit payload | ✅ resolved 2026-11-04 — masked payload default + redaction event แยก (ตาม AC-BO-AUDIT-017) |
+| BO-AUDIT-DEC-004 | ส่ง audit เข้า external SIEM | ✅ resolved 2026-11-04 — defer future phase (ไม่มีใน Phase 1/2 scope) |
 | BO-WA-DEC-001 | FO แสดง Admin Disabled alert | ✅ resolved — ไม่มี Admin Disabled (read-only) |
 | BO-WA-DEC-002 | Inactive market data → alert disabled หรือหยุด trigger | ✅ resolved — หยุด trigger ใหม่ เก็บ alert ไว้ |
 | BO-WA-DEC-003 | Bulk disable alert | ✅ resolved — ไม่เปิด (read-only) |
-| SUP-DEC-001 | Policy publish ส่ง notification หรือไม่ | open — P1 (rec: ไม่ส่ง Phase 1) |
-| SUP-DEC-002 | Channel type นอก 5 ประเภท | open (rec: fixed list Phase 1) |
-| SUP-DEC-003 | Policy HTML tag นอก allowed list | open (rec: allowed list) |
-| SUP-DEC-004 | Policy version retention | open (rec: เก็บตลอด Phase 1) |
+| SUP-DEC-001 | Policy publish ส่ง notification หรือไม่ | ✅ resolved 2026-11-04 — ไม่ส่งใน Phase 1 (broadcast infra Phase 2); ถ้าต้องการ = task ใหม่ใน module 14 Phase 2 |
+| SUP-DEC-002 | Channel type นอก 5 ประเภท | ✅ resolved 2026-11-04 — fixed list 5 ประเภทใน Phase 1 |
+| SUP-DEC-003 | Policy HTML tag นอก allowed list | ✅ resolved 2026-11-04 — allowed list เท่านั้น; เพิ่ม tag = task ใหม่ + ปรับ sanitizer |
+| SUP-DEC-004 | Policy version retention | ✅ resolved 2026-11-04 — เก็บ Archived ตลอดใน Phase 1 |
 | DEL-DEC-001 | Restore policy | ✅ resolved — แอดมินคืนใน grace 30 วัน |
 | DEL-DEC-002 | Retention period chat/report/audit ก่อน purge | **open — P0** (รอ Legal; ผูก BO-DEC-002) |
 | DEL-DEC-003 | Anonymization timing | ✅ resolved — superseded โดย DEL-DEC-006 (ขั้นเดียว) |
 | DEL-DEC-004 | Sensitive reveal policy | ✅ resolved — masked + reveal on-demand + audit |
 | DEL-DEC-005 | แฮชอีเมลกันสมัครซ้ำ | open (รอ Legal) |
 | DEL-DEC-006 | Lifecycle รวมขั้นเดียว (archive+anonymize พร้อมกันที่ครบ grace) | ✅ resolved 2026-09-08 (supersede DEL-DEC-003 เดิม) |
-| NOTI-DEC-001 | Broadcast ใน FO Notification Center หรือ push-only | open — Phase 2 deferred (NTF-RSTR-001) · P1 |
-| NOTI-DEC-002 | Broadcast approval workflow | open — Phase 2 deferred |
-| NOTI-DEC-003 | Notification retention period | open (ใช้ได้ทั้ง Phase 1/2) |
-| NOTI-DEC-004 | FCM/APNs provider payload schema | open — Phase 2 deferred |
-| NOTI-DEC-005 | Market Update/Sale Success/Account Action เข้า FO phase ใด | open — Phase 2 deferred |
-| REP-DEC-001 | Retention period report/export files | open (Phase 2) |
-| REP-DEC-002 | Scheduled report email/export | open (Phase 2) |
-| REP-DEC-003 | Report aggregation: live query vs snapshot | open (Phase 2) |
-| REP-DEC-004 | Sensitive export ต้อง approval เพิ่มหรือไม่ | open — P1 (ผูก SET-DEC-004) |
-| SET-DEC-002 | Security policy fields ใดแก้ได้จริง | open |
+| NOTI-DEC-001 | Broadcast ใน FO Notification Center หรือ push-only | ✅ resolved 2026-11-04 — formal defer to Phase 2 (ตัดสินพร้อม Phase 2 scoping) |
+| NOTI-DEC-002 | Broadcast approval workflow | ✅ resolved 2026-11-04 — formal defer to Phase 2 |
+| NOTI-DEC-003 | Notification retention period | open (ใช้ได้ทั้ง Phase 1/2 — ผูก retention cluster) |
+| NOTI-DEC-004 | FCM/APNs provider payload schema | ✅ resolved 2026-11-04 — formal defer to Phase 2 |
+| NOTI-DEC-005 | Market Update/Sale Success/Account Action เข้า FO phase ใด | ✅ resolved 2026-11-04 — formal defer to Phase 2 |
+| REP-DEC-001 | Retention period report/export files | ✅ resolved 2026-11-04 — formal defer to Phase 2 (อาจต้องคำตอบก่อนถ้า Phase 1 มี export → ผูก retention cluster) |
+| REP-DEC-002 | Scheduled report email/export | ✅ resolved 2026-11-04 — formal defer to Phase 2 |
+| REP-DEC-003 | Report aggregation: live query vs snapshot | ✅ resolved 2026-11-04 — formal defer to Phase 2 |
+| REP-DEC-004 | Sensitive export ต้อง approval เพิ่มหรือไม่ | ✅ resolved 2026-11-04 — permission + reason + audit พอ Phase 1; approval workflow = Phase 2 backlog (ผูก SET-DEC-004) |
+| SET-DEC-002 | Security policy fields ใดแก้ได้จริง | ✅ resolved 2026-11-04 — freeze ทั้ง section Phase 1 (แก้ผ่าน config/deploy); reopen Phase 2 พร้อม decision field editable |
 | SET-DEC-003 | Retention period ราย entity (chat/export) | open (ผูก DEL-DEC-002) |
-| SET-DEC-004 | Approval workflow สำหรับ high-risk setting change | open (ผูก REP-DEC-004) |
+| SET-DEC-004 | Approval workflow สำหรับ high-risk setting change | ✅ resolved 2026-11-04 — permission + reason + audit พอ Phase 1; approval = Phase 2 backlog ผูก Roles & Permissions policy |
 | BO-OPT-001 | Option Master phase | ✅ resolved — Phase 1 |
 | BO-OPT-002 | Prototype screen | ✅ resolved — สร้างครบแล้ว |
 | BO-OPT-003 | System option deactivate policy | ✅ resolved — Controlled Deactivation |
@@ -217,12 +217,12 @@ Record: section `Open Decisions` ของ module spec แต่ละเล่�
 | BO-OPT-005 | Group-level actions policy | ✅ resolved — 4 actions บน Option Group List |
 | BO-OPT-009 | Option key lock policy | ✅ resolved — ล็อกตั้งแต่สร้าง |
 | BO-OPT-010 | Delete option policy | ✅ resolved — รองรับใน Phase 1 (type-to-confirm) |
-| BO-DEC-001 | BO language mode | open (rec: Thai primary V1) |
+| BO-DEC-001 | BO language mode | ✅ resolved 2026-11-04 — Thai primary V1; English deferred (ไม่มี EN toggle ใน V1) |
 | BO-DEC-002 | Chat retention period | **open — P0** (ผูก DEL-DEC-002) |
-| BO-DEC-003 | Account deletion anonymization timing | resolved ผ่าน DEL-DEC-003/006 (30-day grace) — แถว baseline ยังไม่ได้ annotate |
-| BO-DEC-004 | Admin remove asset permission | open (rec: remove + reason + audit) |
-| BO-DEC-005 | Board public SEO web requirement | open — P2 |
-| BO-DEC-006 | Integration map FO↔BO รูปแบบใหม่ | open (ตอนนี้กระจาย trigger/result ไว้ใน module docs — ref เดิม `INT-DEC-005` re-anchor เป็น `BO-DIR-DEC-001` แล้วใน DOC-031) |
+| BO-DEC-003 | Account deletion anonymization timing | ✅ resolved — 30-day grace ตาม DEL-DEC-006 (lifecycle ขั้นเดียว); แถว baseline annotate แล้ว 2026-11-04 |
+| BO-DEC-004 | Admin remove asset permission | ✅ resolved 2026-11-04 — remove = `Permanently Hidden` + required reason + audit; ไม่มี hard delete Phase 1; high-value/disputed ใช้ approval path ร่วม SET-DEC-004 |
+| BO-DEC-005 | Board public SEO web requirement | ✅ resolved 2026-11-04 — mobile Board content only; no public web SEO in V1 |
+| BO-DEC-006 | Integration map FO↔BO รูปแบบใหม่ | ✅ resolved 2026-11-04 — distributed model + lightweight Integration Reference index (§11) |
 
 ## 7. Money display (`O-xx`, draft) + supersession chains + dangling refs
 
@@ -253,6 +253,7 @@ DEC-32 ──superseded──▶ DEC-41 ──superseded──▶ DEC-43        
 DEC-35 ──superseded──▶ DEC-42                               [THB+comma → ฿ unified]
 DEL-DEC-003 ──superseded──▶ DEL-DEC-006                     [anonymization แยกจังหวะ → ขั้นเดียว]
 14_PORTFOLIO D14 ──resolved──▶ DEC-42                       [THB vs ฿ headline]
+14_PORTFOLIO D12 ──superseded──▶ DEC-50                     [consignment copy+flag ตัดออก FO ทั้งหมด; BO data model ตัดตาม DEC-51]
 12_BOARD D8 ──resolved──▶ DEC-25 (A2)                       [board like per-user]
 11_SOCIAL D2 ──resolved──▶ DEC-17                           [comment composer]
 SET-DEC-001 ──removed──▶ (BO-16-v1.0, 2026-09-19 — แถวถูกลบออกจาก spec)
@@ -269,7 +270,9 @@ SET-DEC-001 ──removed──▶ (BO-16-v1.0, 2026-09-19 — แถวถู�
 
 | ID | Date | Decision | Status | Ref |
 |---|---|---|---|---|
-| _(ว่าง — ถัดไป DEC-49)_ | | | | |
+| DEC-49 | 2026-11-04 | FO sync timing 3 ชั้น (product contract — implementation detail ตัดสินตอน backend design): **security actions** (suspend/ban/deletion/session revoke) FO enforce ภายใน request ถัดไปของ user — ไม่มี tolerated delay, session/token invalidation เป็นวิธีหลักไม่อาศัย cache expiry · **moderation actions** (hide/remove/restore content, comment moderation) visible propagation ≤ 60 วินาที + public surfaces validate entity status ก่อน render · **reference/master data** (option master, market data, directory, support center, policy) propagation ≤ 24 ชม.ผ่าน scheduled sync/refresh, FO อ่านผ่าน cached read-model · Watch Alert match/notification delivery = async job ไม่ผูก SLA | active | `BackOffice/00_GLOBAL_RULES_MODULE.md` §12 sync timing |
+| DEC-50 | 2026-11-04 | ลบ consignment ออกจาก FO surfaces ทั้งหมด (supersede D12 ส่วน copy+flag): ตัด foot note `สินค้าฝากขาย`/`consignment` TH/EN บน portfolio dashboard + ลบ `own` flag/เงื่อนไข `own !== false` ออกจาก data model และ `pfoEligible` — Consignment Center ยังเป็น drawer placeholder row ตาม BO-DIR-DEC-001 และ consignment binding ถูกตัดตาม BO-DIR-DEC-003 (re-decide ตอน Directory activation) | active | `FrontOffice/14_PORTFOLIO_MODULE.md`, `Prototypes/fo-flow/index.html`, `FrontOffice/PRODUCT_DEFINITION.md`, `FrontOffice/04_ASSET_MANAGEMENT_MODULE.md` |
+| DEC-51 | 2026-11-04 | ตัด consignment ออกจาก BO data model + protected prototype surface พร้อมกัน bundle เดียว (ต่อ `DEC-50` ที่ตัดฝั่ง FO — DOC-034 sign-off Option 2): ถอด `Consignment` pill / `Sale + Consignment` filter + semantics / consignment sensitive fields / portfolio rule / masked rows (`04_ASSET_MANAGEMENT_MODULE.md` + `00_GLOBAL_RULES_MODULE.md` §14) · ถอด consignment surface ทั้งหมดใน `Prototypes/bo-prototype.html` (filter option, list pill, filter matcher, flag 5 assets, asking price path, provenance branches, Consignment Details modal, search text, CSS) — 5 mock assets (AST-8831/8802/8579/8559/8548) กลายเป็น `Sale` ธรรมดา · ไม่มี production consignment data → ไม่มี data migration · Directory "Consignment Center" taxonomy + FO drawer placeholder อยู่นอก scope (re-decide ตอน Directory activation ตาม `BO-DIR-DEC-001`/`003`) | active | `BackOffice/04_ASSET_MANAGEMENT_MODULE.md`, `BackOffice/00_GLOBAL_RULES_MODULE.md`, `Prototypes/bo-prototype.html`, `BackOffice/BO_DEV_IMPLEMENTATION_CHECKLIST.md`, `BackOffice/BO_UI_UX_STANDARD.md`, `deliverables/DOC-034-consignment-brief.md` |
 
 ## 9. Deviation registries (ไม่ใช่ product decision — documented prototype deviations)
 
@@ -284,9 +287,22 @@ Per-spec `D` tables (namespace แยกตามเล่ม — D1 ของ�
 
 ## 10. Open/pending decisions — consolidated view
 
-ที่ยังต้องตัดสิน (ไม่รวม draft O-xx ใน §7.1):
+ที่ยังต้องตัดสิน (ไม่รวม draft O-xx ใน §7.1) — อัปเดตหลัง DOC-035 (2026-11-04): กลุ่ม A ของ DOC-032 resolved/deferred ครบแล้ว เหลือเฉพาะกลุ่ม B ที่รอ input ภายนอก
 
-- **P0 (BO_FINAL_REVIEW §6):** `DEL-DEC-002`/`BO-DEC-002`/`SET-DEC-003` (retention — รอ Legal) · `BO-MARKET-DEC-002`/`004` (FX + Watch API plan) · FO sync timing (contract note — ไม่มี DEC id)
-- **P1:** `BO-DIR-DEC-001` (Directory activation) · `SUP-DEC-001` (policy publish noti) · `NOTI-DEC-001` (broadcast surface) · `REP-DEC-004`/`SET-DEC-004` (sensitive export approval)
-- **P2/other open:** `BO-MARKET-DEC-001/003` · `BO-DIR-DEC-002–004` · `BO-AUDIT-DEC-001–004` · `SUP-DEC-002–004` · `DEL-DEC-005` (email hash — รอ Legal) · `NOTI-DEC-002–005` (Phase 2) · `REP-DEC-001–003` (Phase 2) · `SET-DEC-002` · `BO-DEC-001/004–006`
-- **Conditional/pending content:** `DEC-29` (legal TH ฉบับจริงรอเจ้าของ) · `DEC-19` follow-up (`LANG-045` รอ build แปลครบ)
+- **P0 (BO_FINAL_REVIEW §6):** `DEL-DEC-002`/`BO-DEC-002`/`SET-DEC-003` (+`NOTI-DEC-003`, +`REP-DEC-001` ถ้า Phase 1 มี export — retention cluster, defaults approved รอ Legal confirm) · `BO-MARKET-DEC-002`/`004` (FX + Watch API plan — รอข้อมูล external team)
+- **P1:** — (กลุ่ม P1 เดิม resolved ครบใน DOC-033: `BO-DIR-DEC-001`, `SUP-DEC-001`, `NOTI-DEC-001`, `REP-DEC-004`/`SET-DEC-004`)
+- **P2/other open:** `BO-DIR-DEC-002` (Community taxonomy — รอ Product, จอดจนกว่า Directory activation) · `BO-DIR-DEC-004` (map provider — ตอบเมื่อ Directory เปิด) · `DEL-DEC-005` (email hash — รอ Legal)
+- **Deferred (formal — ตัดสินแล้วให้เลื่อน Phase 2):** `NOTI-DEC-001/002/004/005` · `REP-DEC-001/002/003` · `BO-AUDIT-DEC-004` (future phase)
+- **Conditional/pending content:** `DEC-29` (legal TH ฉบับจริงรอเจ้าของ) · `DEC-19` follow-up (`LANG-045` รอ build แปลครบ) · `O-01`–`O-09` (money display draft — รอพี่คิง)
+
+## 11. Integration Reference Index (lightweight — resolution ของ `BO-DEC-006`)
+
+ตัดสินใจ 2026-11-04 (DOC-033, owner sign-off DOC-032/A5): คง **distributed model** — fact integration FO↔BO อยู่ในเอกสารเจ้าของแต่ละตัว ไม่สร้าง integration map กลางใหม่และไม่ duplicate fact; section นี้เป็น index เบา ๆ ที่ชี้ไปจุดที่ fact อยู่จริงเท่านั้น
+
+| Integration area | Register of record (fact อยู่ที่นี่) |
+|---|---|
+| BO→FO sync rules + sync timing contract | `BackOffice/00_GLOBAL_RULES_MODULE.md` §12 BO-to-FO Sync Rules (timing 3 ชั้นตาม `DEC-49`) |
+| Cross-module integration ต่อ module | section `Integration With Other Modules` / `FO Integration Guidelines` / `Cross-Module Integration` ใน spec แต่ละเล่ม (เช่น `BackOffice/17_OPTION_MASTER_MODULE.md` §22) |
+| FO↔BO coverage map เชิง decision | `deliverables/FO-BO-001-coverage-audit.md` §6 (decisions `e1`–`e4`, `OPEN-1`–`OPEN-5`) |
+| FO continuity baseline | `BackOffice/BO_MASTER_BASELINE.md` §1–§2 (FO continuity goal) |
+| FO navigation/route contract | `FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` §6–§10 |

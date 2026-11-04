@@ -293,7 +293,7 @@ Purpose:
 - [ ] Holding Period ใช้ Today − Purchase Date หรือ Sale Date − Purchase Date (format `Yy Mm`)
 - [ ] Sold History / Sale Record = `Sale price` + `Sale date` เท่านั้น (D3 — ไม่มี Buyer/Contact/Payment/Attachment)
 - [ ] ไม่มี Top Brand Holdings และ YTD Performance ใน V1 (D5)
-- [ ] Consignment เป็น copy-only foot note + `own` flag — ไม่มี implementation/entity (D12)
+- [ ] ไม่มี Consignment implementation/entity/copy/flag เลย — ถูกตัดออกจาก FO ทั้งหมดตาม `DEC-50` (supersede D12)
 - [ ] Permission-denied/load-failed states เป็น dev-sim เท่านั้น ไม่ใช่ production path (contract อยู่ error catalog)
 
 ---

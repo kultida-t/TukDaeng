@@ -145,7 +145,7 @@ Module spec mapping อยู่ที่ `README_MODULE_INDEX.md` §4
 - Accessories Shop
 - Repair Shop
 - Auction Center
-- Consignment Center (มีเฉพาะ copy + `own` flag ใน portfolio — ไม่มี entity/flow)
+- Consignment Center (ไม่มี entity/flow/copy/flag — เหลือเฉพาะ drawer placeholder row; consignment ถูกตัดออกจาก FO ทั้งหมดตาม `DEC-50`)
 - Authentication Center
 - Watch Brands / Watch Price Index / Community (drawer placeholder rows เท่านั้น — กดแล้ว toast)
 - Multi-level Nested Comment เกิน 1 reply level

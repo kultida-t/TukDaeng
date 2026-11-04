@@ -1,7 +1,7 @@
 ﻿# 15 BO Reports & Analytics Module
 
-**Version:** `BO-15-v0.3`  
-**Date:** 2026-10-26  
+**Version:** `BO-15-v0.4`  
+**Date:** 2026-11-04  
 **Status:** Draft baseline — **Phase 2 / Future scope (deferred)**  
 **Platform:** Responsive Web Back Office  
 **Primary FO Sources:** `../FrontOffice/02_FEED_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`, `../FrontOffice/12_BOARD_MODULE.md`, `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`
@@ -438,8 +438,8 @@ Audit payload:
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |
-| REP-DEC-001 | Retention period ของ report/export files ต้องเก็บกี่วัน | กระทบ storage และ compliance |
-| REP-DEC-002 | Scheduled report email/export ต้องเปิดใน Phase ใด | กระทบ background jobs และ notification/email integration |
-| REP-DEC-003 | Report aggregation ใช้ live query หรือ snapshot table | กระทบ performance และ data freshness |
-| REP-DEC-004 | Sensitive export ต้อง require approval เพิ่มหรือไม่ | กระทบ permission และ operation workflow |
+| REP-DEC-001 ✅ | Retention period ของ report/export files ต้องเก็บกี่วัน | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** formal defer to Phase 2 — ตัดสินพร้อม Phase 2 scoping; อาจต้องคำตอบก่อนถ้า Phase 1 มี export feature ใด ๆ → ผูก retention cluster (`DEL-DEC-002`/`SET-DEC-003`) |
+| REP-DEC-002 ✅ | Scheduled report email/export ต้องเปิดใน Phase ใด | **ตัดสินใจ (2026-11-04):** formal defer to Phase 2 |
+| REP-DEC-003 ✅ | Report aggregation ใช้ live query หรือ snapshot table | **ตัดสินใจ (2026-11-04):** formal defer to Phase 2 |
+| REP-DEC-004 ✅ | Sensitive export ต้อง require approval เพิ่มหรือไม่ | **ตัดสินใจ (2026-11-04):** Phase 1 ใช้ permission-gated + confirmation + reason + audit เป็นพอ — ไม่เพิ่ม approval workflow (ยังไม่มี approval engine); 1-step approval เป็น Phase 2 backlog ผูก `SET-DEC-004` และ Roles & Permissions policy |
 

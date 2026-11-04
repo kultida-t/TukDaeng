@@ -1,0 +1,69 @@
+DOC-035 — changed files evidence (uncommitted at capture time)
+Captured: 2026-11-04 15:29 Asia/Bangkok
+Task: b8a33f8b (in_progress — implement DEC-51 ตาม DOC-034 sign-off Option 2)
+
+=== files changed by THIS task ===
+ M .agents/skills/bo-screen-design/SKILL.md                (filter list sync — ถอด Sale + Consignment)
+ M BackOffice/00_GLOBAL_RULES_MODULE.md                    (ถอด Consignment contact/terms จาก §14 + header bump BO-00-v1.6; ไฟล์นี้มี diff ค้างจาก DOC-033 รวมอยู่ด้วย)
+ M BackOffice/04_ASSET_MANAGEMENT_MODULE.md                (ถอด consignment 7 จุด + header bump BO-04-v1.7)
+ M BackOffice/BO_DEV_IMPLEMENTATION_CHECKLIST.md           (sync refs 4 จุด L134/136/154/156)
+ M BackOffice/BO_UI_UX_STANDARD.md                         (filter list sync L187)
+ M BackOffice/DOCUMENT_VERSION.md                          (เพิ่มแถว BO-04-v1.7/BO-00-v1.6; มี diff ค้างจาก DOC-033 รวมอยู่ด้วย)
+ M Prototypes/bo-prototype.html                            (ถอด consignment surface ~137 บรรทัด + เติม THB tag AST-8802/AST-8559)
+ M deliverables/label-standard/inventory.md                (re-generate ด้วย scan-labels.mjs — Consignment Details/Sale + Consignment ออกแล้ว)
+ M deliverables/label-standard/inventory.json              (re-generate เดียวกัน)
+ M docs/DECISION_LOG.md                                    (v1.3 — DEC-51 ใน §8 + D12/§7.2 note + §10 intro; มี diff ค้างจาก DOC-033 รวมอยู่ด้วย)
+?? screenshots/task-DOC-035/                               (new — before/after captures 1440x900 + 390x844, 6 surfaces)
+?? scripts/capture-doc-035-consignment.js                  (new — capture script)
+?? deliverables/DOC-035-changed-files.txt                  (new — ไฟล์นี้)
+
+=== git status --short at capture (includes uncommitted files carried over from DOC-032/033/034 sessions — NOT part of DOC-035) ===
+ M BackOffice/06_MARKET_DATA_MODULE.md
+ M BackOffice/07_DIRECTORY_MODULE.md
+ M BackOffice/08_AUDIT_LOG_MODULE.md
+ M BackOffice/12_HELP_SUPPORT_MODULE.md
+ M BackOffice/14_NOTIFICATIONS_MODULE.md
+ M BackOffice/15_REPORTS_ANALYTICS_MODULE.md
+ M BackOffice/16_ADMIN_SETTINGS_MODULE.md
+ M BackOffice/BO_FINAL_REVIEW_AND_HANDOFF.md
+ M BackOffice/BO_MASTER_BASELINE.md
+ M FrontOffice/04_ASSET_MANAGEMENT_MODULE.md
+ M FrontOffice/14_PORTFOLIO_MODULE.md
+ M FrontOffice/DEV_IMPLEMENTATION_CHECKLIST.md
+ M FrontOffice/DOCUMENT_VERSION.md
+ M FrontOffice/PRODUCT_DEFINITION.md
+ M Prototypes/fo-flow/index.html
+ M scripts/build-manual-pdf.mjs
+?? deliverables/DOC-032-decision-briefs.md
+?? deliverables/DOC-033-changed-files.txt
+?? deliverables/DOC-034-changed-files.txt
+?? deliverables/DOC-034-consignment-brief.md
+
+=== diff stat (total working tree — includes carry-over) ===
+ .agents/skills/bo-screen-design/SKILL.md      |    2 +-
+ BackOffice/00_GLOBAL_RULES_MODULE.md          |   16 +-
+ BackOffice/04_ASSET_MANAGEMENT_MODULE.md      |   19 +-
+ BackOffice/06_MARKET_DATA_MODULE.md           |    8 +-
+ BackOffice/07_DIRECTORY_MODULE.md             |   12 +-
+ BackOffice/08_AUDIT_LOG_MODULE.md             |   12 +-
+ BackOffice/12_HELP_SUPPORT_MODULE.md          |   12 +-
+ BackOffice/14_NOTIFICATIONS_MODULE.md         |   14 +-
+ BackOffice/15_REPORTS_ANALYTICS_MODULE.md     |   12 +-
+ BackOffice/16_ADMIN_SETTINGS_MODULE.md        |   10 +-
+ BackOffice/BO_DEV_IMPLEMENTATION_CHECKLIST.md |    8 +-
+ BackOffice/BO_FINAL_REVIEW_AND_HANDOFF.md     |   18 +-
+ BackOffice/BO_MASTER_BASELINE.md              |   14 +-
+ BackOffice/BO_UI_UX_STANDARD.md               |    2 +-
+ BackOffice/DOCUMENT_VERSION.md                |    2 +
+ FrontOffice/04_ASSET_MANAGEMENT_MODULE.md     |    2 +-
+ FrontOffice/14_PORTFOLIO_MODULE.md            |   20 +-
+ FrontOffice/DEV_IMPLEMENTATION_CHECKLIST.md   |    2 +-
+ FrontOffice/DOCUMENT_VERSION.md               |   11 +-
+ FrontOffice/PRODUCT_DEFINITION.md             |    2 +-
+ Prototypes/bo-prototype.html                  |  137 +-
+ Prototypes/fo-flow/index.html                 |    8 +-
+ deliverables/label-standard/inventory.json    | 4265 +++++++++++--------------
+ deliverables/label-standard/inventory.md      | 1963 ++++++------
+ docs/DECISION_LOG.md                          |   94 +-
+ scripts/build-manual-pdf.mjs                  |   13 +-
+ 26 files changed, 3041 insertions(+), 3637 deletions(-)

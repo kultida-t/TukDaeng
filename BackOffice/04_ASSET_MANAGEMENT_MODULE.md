@@ -1,7 +1,7 @@
 # 04 BO Asset Management Module
 
-**Version:** `BO-04-v1.6`  
-**Date:** 2026-11-03  
+**Version:** `BO-04-v1.7`  
+**Date:** 2026-11-04  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -145,7 +145,7 @@ Asset List ครอบเฉพาะ asset entity (record ที่มี `AST
 - Brand
 - Owner
 - Created At
-- Asset Status (รวม Moderation/Context pill เมื่อมี เช่น `Consignment`, `Admin Hidden` (ซ่อนชั่วคราว), `Auto Hidden` (ซ่อนชั่วคราว), `Permanently Hidden` (ซ่อนถาวร), `ลบโดยเจ้าของ`)
+- Asset Status (รวม Moderation/Context pill เมื่อมี เช่น `Admin Hidden` (ซ่อนชั่วคราว), `Auto Hidden` (ซ่อนชั่วคราว), `Permanently Hidden` (ซ่อนถาวร), `ลบโดยเจ้าของ`)
 - Row action menu
 
 ### Row Actions
@@ -174,12 +174,10 @@ Asset List ต้องค้นหาได้จาก:
 
 Asset List ต้องมี filter ขั้นต่ำ:
 
-- Status: `Sale`, `Sale + Consignment`, `Show`, `Hide`, `Sold`, `Temporarily Hidden` (label: ซ่อนชั่วคราว — ครอบ `Admin Hidden` + `Auto Hidden`), `Permanently Hidden` (label: ซ่อนถาวร), `ลบโดยเจ้าของ`
+- Status: `Sale`, `Show`, `Hide`, `Sold`, `Temporarily Hidden` (label: ซ่อนชั่วคราว — ครอบ `Admin Hidden` + `Auto Hidden`), `Permanently Hidden` (label: ซ่อนถาวร), `ลบโดยเจ้าของ`
 - Brand
 - Sort: newest first, oldest first
 - Reset filter
-
-`Sale + Consignment` เป็นตัวเลือกย่อยใน Status filter สำหรับกรอง asset ประเภท consignment ที่เป็น `Sale`
 
 ### Pagination
 
@@ -278,9 +276,6 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 - Purchase Date
 - Purchase From
 - Proof of Payment
-- Consignment owner contact
-- Consignment terms
-- Consignment asking price
 - Sold history
 
 Sensitive context ต้องเปิดผ่าน modal หรือ section ที่แยกจากข้อมูลหลัก และต้องไม่แสดงข้อมูลเต็มแบบเปิดโล่ง
@@ -345,8 +340,6 @@ Moderation state เป็น overlay บน owner-controlled status และ�
 | `ลบโดยเจ้าของ` | ไม่แสดง | ไม่แสดง | ไม่แสดงใน owner list ปกติ |
 
 Asset ที่มี state `Permanently Hidden` หรือ `ลบโดยเจ้าของ` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary
-
-Asset ที่เป็น `Consignment` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ owner ถือครองเอง
 
 ## 11. Asset Action Rules
 
@@ -808,8 +801,6 @@ Comment count ที่แสดงใน FO ต้องสะท้อนจ�
 | Purchase Date | Masked หรือ partial |
 | Purchase From | Masked หรือ partial |
 | Proof of Payment | Hidden หรือ preview blocked |
-| Consignment Owner Contact | Masked |
-| Consignment Terms | Masked หรือ summarized |
 | Sold History | Limited summary |
 
 Sensitive data ต้องเป็น read-only เสมอในเมนูนี้
@@ -894,7 +885,7 @@ Asset Management ต้องใช้ app shell, navigation, breakpoint, list t
 | AC-BO-ASSET-005 | ซ่อนชั่วคราวได้เฉพาะ asset ที่เป็น `Sale` หรือ `Show` และต้องคง owner-controlled status เดิมไว้ |
 | AC-BO-ASSET-006 | ยกเลิกซ่อนชั่วคราวได้เฉพาะ asset ที่อยู่ใน moderation state `Admin Hidden` หรือ `Auto Hidden` |
 | AC-BO-ASSET-007 | ซ่อนถาวรทำให้ asset ถูกซ่อนจาก public surfaces ถาวร และ owner เห็นได้เฉพาะ read-only |
-| AC-BO-ASSET-008 | Asset ที่ `Permanently Hidden`, `ลบโดยเจ้าของ` หรือเป็น `Consignment` ไม่ถูกนับใน portfolio value หรือ asset value summary |
+| AC-BO-ASSET-008 | Asset ที่ `Permanently Hidden` หรือ `ลบโดยเจ้าของ` ไม่ถูกนับใน portfolio value หรือ asset value summary |
 | AC-BO-ASSET-009 | Asset ที่ลบโดยเจ้าของต้องมี history/audit row พร้อม actor, before state, after state และ timestamp |
 | AC-BO-ASSET-010 | Reported Assets queue แสดง report case จาก report source of truth ไม่ infer จาก asset row |
 | AC-BO-ASSET-011 | Report threshold 1/3/5 unique reporters ทำงานตาม rule ที่กำหนด |

@@ -1,6 +1,6 @@
 # TukDaeng Document Version
 
-**Current Baseline Version:** `FO-PRD-v1.15`
+**Current Baseline Version:** `FO-PRD-v1.16`
 **Release Date:** 2026-11-04
 **Branch:** `docs-frontoffice-spec-updates`  
 **Status:** Product-reviewed baseline update for Dev / QA
@@ -27,6 +27,14 @@ FO-PRD-vX.Y
 ---
 
 # 2. Current Baseline Scope
+
+`FO-PRD-v1.16` covers all of `FO-PRD-v1.15` and removes consignment from FO surfaces entirely (product decision `DEC-50` — owner approved 2026-11-04, DOC-033; supersede D12 ส่วน copy+flag):
+
+- `14_PORTFOLIO_MODULE.md` — foot note `สินค้าฝากขาย`/`consignment` TH/EN ถูกตัด (เหลือ `นับเฉพาะนาฬิกาในสถานะ ลงขาย โชว์ และซ่อน`/`Counts Sale, Show & Hide pieces only.`) + `own` flag/เงื่อนไข `own !== false` ถูกถอดออกจาก data model และ `pfoEligible` (AC-PORT-004 sync) — ไม่มี consignment surface เหลือใน V1
+- `Prototypes/fo-flow/index.html` — foot note `.pfo-note` TH/EN sync + `pfoEligible` ตัด `own !== false` + eligibility comment sync (แก้เฉพาะจุด consignment ตาม gate)
+- `PRODUCT_DEFINITION.md` / `04_ASSET_MANAGEMENT_MODULE.md` / `DEV_IMPLEMENTATION_CHECKLIST.md` — consignment refs sync (mirror foot note, exclusion list, checklist line)
+- `../docs/DECISION_LOG.md` v1.2 — `DEC-49` (FO sync timing 3 ชั้น) + `DEC-50` ลง §8, D12 → superseded, เพิ่ม §11 Integration Reference index (resolution ของ BO-DEC-006)
+- Consignment Center drawer row ยังเป็น placeholder ตามเดิม (BO-DIR-DEC-001 — กดแล้ว toast `เร็ว ๆ นี้`); consignment binding ถูกตัดออกทั้งหมดตาม BO-DIR-DEC-003 (re-decide ตอน Directory activation)
 
 `FO-PRD-v1.15` covers all of `FO-PRD-v1.14` and adds the canonical decision log index — **zero requirement/behavior change** (DOC-030 — decision log unification):
 
@@ -188,6 +196,7 @@ Baseline scope หลักยังครอบคลุม:
 
 | Version | Date | Summary | Key Files |
 | --- | --- | --- | --- |
+| `FO-PRD-v1.16` | 2026-11-04 | Removes consignment from FO surfaces entirely (product decision `DEC-50` — owner approved 2026-11-04, DOC-033; supersede D12 ส่วน copy+flag): `14_PORTFOLIO_MODULE.md` ตัด foot note `สินค้าฝากขาย`/`consignment` TH/EN + ถอด `own` flag/`own !== false` จาก data model และ `pfoEligible` (AC-PORT-004 sync); `Prototypes/fo-flow/index.html` sync foot note + eligibility (เฉพาะจุด consignment); `PRODUCT_DEFINITION.md`, `04_ASSET_MANAGEMENT_MODULE.md`, `DEV_IMPLEMENTATION_CHECKLIST.md` sync refs; `../scripts/build-manual-pdf.mjs` ถอด consignment card/private-data item/chapter summary + mock bio fo-flow ปรับคำ; Consignment Center drawer row คง placeholder ตาม BO-DIR-DEC-001 | `14_PORTFOLIO_MODULE.md`, `Prototypes/fo-flow/index.html`, `PRODUCT_DEFINITION.md`, `04_ASSET_MANAGEMENT_MODULE.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `../scripts/build-manual-pdf.mjs`, `../docs/DECISION_LOG.md` |
 | `FO-PRD-v1.15` | 2026-11-04 | Document-tier decision-log unification only — zero requirement change (DOC-030): adds `../docs/DECISION_LOG.md` canonical index of all decision namespaces (S-xx/D-xx sign-off, DEC-01–48, DEC-R010, e/OPEN FO-BO-001, BO module `XXX-DEC-xxx`, FOX `O-xx`, spec deviation registries) with supersession chains + open list; registers of record unchanged (master §16, FO-TEST-001-22, REQ-010 log, spec `Open Decisions`, money rules) — pointer notes added at register heads; new product decisions register as `DEC-49+` in canonical log | `../docs/DECISION_LOG.md`, `TukDaeng_Master_Product_Definition.md`, `PRODUCT_DEFINITION.md`, `README_MODULE_INDEX.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `deliverables/FO-TEST-001-22-decision-register.md`, `deliverables/REQ-010-decision-log.md`, `deliverables/FO-TEST-001-CONSOLIDATED-IG-decisions-and-backlog.md`, `deliverables/FO-BO-001-coverage-audit.md` |
 | `FO-PRD-v1.14` | 2026-11-04 | Document-tier consolidation only — zero requirement change (DOC-010): adds `PRODUCT_DEFINITION.md` (product-level contract — vision/platforms/user model/terminology/phase scope/spec authoring checklist ยุบจาก master §1–§4/§14/§17); marks `TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `../PRD/` superseded with pointer banners (content preserved as archived — master §16 decision log kept for traceability); updates SoT order in `00_GLOBAL_RULES_MODULE.md` §15 + `README_MODULE_INDEX.md` | `PRODUCT_DEFINITION.md`, `TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `00_GLOBAL_RULES_MODULE.md`, `README_MODULE_INDEX.md`, `../PRD/` |
 | `FO-PRD-v1.12` | 2026-11-03 | Amends FO Help support channels เป็น BO-driven dynamic contract (FO decision e1 approved — FO-BO-001 GAP-04 resolved): `13_SETTINGS_MODULE.md` Help / About Rule + AC-SETTING-007, `TukDaeng_Master_Product_Definition.md`, `QA_TEST_SCENARIO_CHECKLIST.md` (QA-SETTING-013), `DEV_IMPLEMENTATION_CHECKLIST.md`; spec-only ไม่แตะ prototype | `13_SETTINGS_MODULE.md`, `TukDaeng_Master_Product_Definition.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `DEV_IMPLEMENTATION_CHECKLIST.md` |
