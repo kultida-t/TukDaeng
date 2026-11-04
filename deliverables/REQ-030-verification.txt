@@ -1,0 +1,38 @@
+REQ-030 — Verification evidence (requirement record 20885c46 closure)
+Date: 2026-11-04 · Task: 22313788-a45a-47b9-9ccc-c5b9ff242a0f
+Scope: verify NB-001–051 pipeline landed ครบแล้วอัปเดตสถานะ record → converted
+
+Checklist (all PASS):
+1. Gap report verdict — deliverables/REQ-012-gap-report.md
+   - 7 verdict groups (aligned 31 / prototype-ahead 5 / design-principle 2 /
+     partial-selective 1 / defer 2 / process 3 / design-ref 7)
+   - sign-off พี่มาเต็ม 2026-11-04 (§13) — gate REQ-020/021 opened + closed
+2. Spec deltas REQ-020 landed in spec:
+   - FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md §6.4 — .feed-wa → walerts,
+     guest gated (L145–218; DEC-44 · NB-014/036)
+   - FrontOffice/02_FEED_MODULE.md §9 — View Counting Rule scroll-pass ≥55%
+     (L374–381; DEC-45 · NB-033)
+   - FrontOffice/09_NOTIFICATION_MODULE.md — system 3 subtypes + .al-fchip
+     category filter (L22/51–52/299/446/512–513; DEC-43/48 · NB-046)
+   - FrontOffice/06_PROFILE_MODULE.md + 13_SETTINGS_MODULE.md — .pf-menu gear
+     I.gear(22) (L280/382/533 + L307; DEC-46 · NB-048)
+   - FrontOffice/00_GLOBAL_RULES_MODULE.md §11 — Per-Page Config Policy selective
+     (L270–272; DEC-47 · NB-036/047)
+3. Prototype sync REQ-021 — spec-locked comments in
+   Prototypes/fo-flow/index.html (DEC-43/44/45/46 + NB-### snapshot refs)
+4. Decisions registered + indexed:
+   - DEC-43–48 in deliverables/FO-TEST-001-22-decision-register.md (L336–364)
+   - DEC-R010-01–09 in deliverables/REQ-010-decision-log.md
+   - canonical index docs/DECISION_LOG.md §3 (L130–135) + §4
+5. NB-046 closure — DEC-43 (system type + category filter restored) + DEC-48
+   (ALT-070/new-device-login restored); spec 09 annotated L512–513
+   → last pending item (เดิม "ค้างไปหาพี่คิง") closed — NO open items remain
+6. Record update — kanban requirement 20885c46 → status `converted` +
+   living spec §สถานะ rewritten to point at canonical artifacts
+   (fact-in-one-place; no duplicated verdict content)
+
+Deferred by intent (not open items): NB-024 (Family Office phase 2),
+NB-039 (posting quota future)
+Design-ref only: NB-015–021 (DEC-R010-02) · Process: NB-049–051 (DEC-R010-08)
+
+No repo files changed by this task (kanban record update only).

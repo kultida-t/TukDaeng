@@ -1,7 +1,7 @@
 # 07 BO Directory Module
 
-**Version:** `BO-07-v0.1`  
-**Date:** 2026-07-06  
+**Version:** `BO-07-v0.2`  
+**Date:** 2026-11-04  
 **Status:** Postponed / future reference only  
 **Platform:** Responsive Web Back Office
 
@@ -19,7 +19,7 @@ Phase 1 status: Postponed. ห้ามเปิดเมนู BO Directory, ro
 | --- | --- |
 | Module Name | BO Directory |
 | Platform | Responsive Web Back Office |
-| Version | `BO-07-v0.1` |
+| Version | `BO-07-v0.2` |
 | Status | Postponed / future reference only |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -153,7 +153,7 @@ Category fields:
 | Activate category | Category แสดงใน FO filter/menu เมื่อ FO route เปิดใช้งาน |
 | Inactivate category | Category หายจาก FO filter/menu; item ภายใต้ category ต้องมี fallback rule |
 
-ถ้า FO Directory ยังเป็น placeholder, BO ต้องไม่ถือว่า Active item แปลว่า FO production route เปิดแล้ว ให้ตรวจ `INT-DEC-005` ก่อน implementation
+ถ้า FO Directory ยังเป็น placeholder, BO ต้องไม่ถือว่า Active item แปลว่า FO production route เปิดแล้ว ให้ตรวจ `BO-DIR-DEC-001` (§18) ก่อน implementation
 
 ## 10. Map And Contact Rules
 

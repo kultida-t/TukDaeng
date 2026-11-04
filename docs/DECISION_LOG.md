@@ -2,7 +2,7 @@
 
 | รายการ | ข้อมูล |
 |---|---|
-| Version | 1.0 |
+| Version | 1.1 |
 | Date | 2026-11-04 · Asia/Bangkok |
 | Task | DOC-030 [`d9ae9924`] — Mission 6 [`31829e57`] Objective 3 (Decision Log Unification) |
 | Status | **CANONICAL** — index เดียวของ decision ทั้งระบบ (FO + BO + product) |
@@ -222,7 +222,7 @@ Record: section `Open Decisions` ของ module spec แต่ละเล่�
 | BO-DEC-003 | Account deletion anonymization timing | resolved ผ่าน DEL-DEC-003/006 (30-day grace) — แถว baseline ยังไม่ได้ annotate |
 | BO-DEC-004 | Admin remove asset permission | open (rec: remove + reason + audit) |
 | BO-DEC-005 | Board public SEO web requirement | open — P2 |
-| BO-DEC-006 | Integration map FO↔BO รูปแบบใหม่ | open (ตอนนี้กระจาย trigger/result ไว้ใน module docs — ดู §7 INT-DEC-005) |
+| BO-DEC-006 | Integration map FO↔BO รูปแบบใหม่ | open (ตอนนี้กระจาย trigger/result ไว้ใน module docs — ref เดิม `INT-DEC-005` re-anchor เป็น `BO-DIR-DEC-001` แล้วใน DOC-031) |
 
 ## 7. Money display (`O-xx`, draft) + supersession chains + dangling refs
 
@@ -258,9 +258,9 @@ DEL-DEC-003 ──superseded──▶ DEL-DEC-006                     [anonymiza
 SET-DEC-001 ──removed──▶ (BO-16-v1.0, 2026-09-19 — แถวถูกลบออกจาก spec)
 ```
 
-### 7.3 Dangling / legacy references (ต้อง re-anchor — ยังไม่แก้เอกสารต้นทางในงานนี้)
+### 7.3 Dangling / legacy references
 
-- **`INT-DEC-005`** — อ้างใน `BackOffice/07_DIRECTORY_MODULE.md` (§15, L156): integration map file เดิมที่เก็บ `INT-DEC-*` ถูกตัดไปแล้ว (ดู BO-DEC-006) — register หาย ให้อ่านร่วมกับ `BO-DIR-DEC-001` จนกว่าจะ re-anchor; ไม่ลบ reference เพราะ constraint ยังใช้ได้ (FO Directory placeholder)
+- **`INT-DEC-005`** — ✅ **re-anchored 2026-11-04 (DOC-031):** เดิมอ้างใน `BackOffice/07_DIRECTORY_MODULE.md` (§9, L156) ชี้ไป integration map file ที่เก็บ `INT-DEC-*` ซึ่งถูกตัดไปแล้ว (ดู BO-DEC-006) — re-anchor ไป `BO-DIR-DEC-001` (`07_DIRECTORY_MODULE.md` §18) โดยคง constraint เดิม: FO Directory ยังเป็น placeholder → BO ไม่ถือว่า Active = production route เปิด
 - **`CLOSED-DEC-01`** — label ใน `deliverables/FO-TEST-001-02-shell.md` L158 ชี้ไป `DEC-01` (ไม่ใช่ decision ใหม่)
 
 ## 8. New decisions (`DEC-49+`)
