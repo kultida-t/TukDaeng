@@ -355,3 +355,9 @@
 - ตัดสิน (เจ้าของ — sign-off Gap Report + DEC-R010-05): NB-036 ครึ่งหลัง + NB-047 (`SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md`) — ปุ่ม Config ประจำหน้า **เพิ่มเฉพาะหน้าที่มีของให้ตั้งจริง** ไม่บังคับทุกหน้า; V1 มีที่ Chat (`chatcfg`) + Alerts (category filter นับเป็น per-page config); หน้าอื่นที่ไม่มี setting จริงไม่เพิ่ม — setting ส่วนกลางคงที่ Settings จุดเดียว
 - ผลต่อ spec: `00_GLOBAL_RULES_MODULE.md` — §11 **Per-Page Config Policy (selective)** (ใหม่)
 - ผลต่อ prototype: ไม่มี delta (policy ระดับ spec) — หน้าใหม่ที่มี setting จริงค่อยประเมินรายตัว
+
+### [DEC-48] ตีความ DEC-26 carve-out — `new device login` generation คืนตามทิศทาง DEC-43 (2026-11-04)
+- ประเด็น (เจอตอน FO-TEST-002 sync เล่มเทส): spec `09_NOTIFICATION_MODULE.md` มี 2 จุดที่ขัดกันในตัวเอง — §14 trigger contract (เพิ่มตาม DEC-43) ระบุ `Security event (login อุปกรณ์ใหม่ / password change) → system kind:"security"` แต่ DEC-25 Amendments ท้ายไฟล์ยังเขียน "ไม่มี generation ของ system alert 'new device login' ใน V1 (DEC-26 — ถอนเคส ALT-070)"
+- ตัดสิน (เจ้าของ — FO-TEST-002 review): ยึดทิศทาง DEC-43 + มาตรฐานแอปจริง — new-device-login คือ security alert ที่มีมูลค่าสูงสุดของ subtype `security` และเป็น trigger ตัวหลักของ §14 อยู่แล้ว; ถือว่า DEC-26 carve-out ถูกกลืนโดย DEC-43 — เคส **ALT-070 restore** แบบอัปเดต (anatomy/`dest` ใหม่) อยู่ใน §2.9 เล่ม 10 แล้ว
+- ผลต่อเคส: ALT-070 restore (FO-TEST-002) — เสร็จแล้วในเล่ม 10 MD+CSV
+- ผลต่อ spec: **ค้าง annotate** — บรรทัด "ไม่มี generation ของ system alert 'new device login' ใน V1 (DEC-26)" ในส่วน DEC-25 Amendments ของ `09_NOTIFICATION_MODULE.md` เป็น stale ต้อง annotate ว่า superseded ใน spec sync รอบถัดไป (spec ล็อก — ไม่แก้ในงานนี้, ติดตามเป็น task แยก)
