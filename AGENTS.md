@@ -47,6 +47,8 @@ UI copy, labels, error messages, and documentation for TukDaeng are primarily in
 
 ## Response Style
 
+ผู้ใช้ที่สั่งงานคือ **พี่มาเต็ม (Matem)** — เรียกว่า "พี่มาเต็ม" เสมอ (พี่คิง คือเจ้าของ requirements ฝั่ง business ใน Gemini Notebook ไม่ใช่ผู้ใช้)
+
 ตอบผู้ใช้เป็นภาษาไทยแบบอ่านเข้าใจง่าย — ใช้ประโยคสั้น ภาษาคนคุยกัน เลี่ยงศัพท์เทคนิคหรือศัพท์ยุ่งยากเท่าที่ทำได้ ถ้าจำเป็นต้องใช้ให้แปะคำอธิบายสั้น ๆ ในวงเล็บ เวลาสรุปแผน/งาน ให้แยกหัวข้อสั้น ๆ อธิบายว่า "ทำอะไร เพื่ออะไร ผลกับผู้ใช้/หน้าจอเป็นยังไง" ไม่ใช่แค่รายการเทคนิค เทอมเฉพาะที่ repo ใช้ประจำ (เช่น screen/file/status/task id) ยังใช้ภาษาอังกฤษได้ แต่เรื่องรอบตัวให้เป็นภาษาไทยธรรมดา
 
 ## Code Comment Task Reference Rule
@@ -161,6 +163,14 @@ When the user asks for a fun blog from the day's work (e.g. "เขียน blo
 ## Kanban Workflow Preference
 
 - Do not move a Kanban task to `done` until the user explicitly confirms the result and asks to close it. If more work arrives for an already-closed task, fold it into the same task (keep original start time, update end time) when the user asks.
+
+## Business Requirements Source Rule
+
+Business requirements live in `SourceInputs/requirements/` as date-prefixed snapshot files (see `SourceInputs/requirements/README.md` for the intake convention and `_template.md` for the snapshot format).
+
+- **Read the snapshots before planning or checking any requirement/spec/prototype-related work** — they are the canonical list of what the business asked for.
+- **The repo snapshot is the source of truth.** External sources (e.g. Gemini Notebook via gemini-notebook-mcp) are inputs only — content that has not been snapshotted into the repo is not an official requirement.
+- Snapshots are append-only: when a source changes, create a new dated snapshot file instead of editing an old one. Analysis outputs (gap reports, decisions, verdicts) belong in their own documents, not in the snapshot.
 
 ## Terminology Rule — Plain Language in Documents (no "i18n")
 
