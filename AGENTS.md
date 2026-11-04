@@ -222,4 +222,4 @@ Session หลักทำตัวเป็น conductor — route งานไ
 | export log สนทนา | `ai-conversation-daily-log` |
 | requirement ยังไม่พร้อมทำ | kanban `create_requirement` → `convert_requirement_to_mission` เมื่อ final |
 
-กฎเหล็ก: side effects ทั้งหมด (kanban task/note, core-portal `submit_logs`, gemini notebook) ทำผ่าน conductor เท่านั้น ห้าม delegate ให้ subagent; subagent ต้อง file-scope disjoint และ protected screens เป็น read-only เสมอ; งานเดียวเรียบ ๆ ทำเองตรง ๆ อย่า over-orchestrate
+กฎเหล็ก: side effects ทั้งหมด (kanban task/note, core-portal `submit_logs`, gemini notebook) ทำผ่าน conductor เท่านั้น ห้าม delegate ให้ subagent; subagent ต้อง file-scope disjoint, protected screens เป็น read-only และทำงานภายในขอบเขตงานก้อนเดียวเท่านั้น — task ที่ `in_progress` หรือคำสั่ง ad-hoc เดียว (kanban "ทีละ task" ยังบังคับ — งานครอบหลาย task ให้ไล่ทีละใบแล้วแตกภายใน); งานเดียวเรียบ ๆ ทำเองตรง ๆ อย่า over-orchestrate
