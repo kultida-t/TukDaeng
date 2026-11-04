@@ -33,7 +33,7 @@
 แก้ทั้งชุด `FrontOffice/` ให้ตรง prototype + decisions:
 
 - ทุก module spec `00`–`17` (GLOBAL, NAV, AUTH, FEED, SEARCH, ASSET x2, PROFILE, CHAT, NOTIFICATION, WATCH ALERT, SOCIAL, BOARD, SETTINGS, PORTFOLIO, TRUST, INTEGRATIONS, NFR) — sync เนื้อหา + bump stamp v1.10
-- `09_NOTIFICATION_MODULE.md` — **ถอน `system` type ออกทั้งประเภท** (เหลือ like/comment/follow/watch); AC-NOTI-013 เปลี่ยนเป็น guard "ห้ามมี system row"
+- `09_NOTIFICATION_MODULE.md` — **ถอน `system` type ออกทั้งประเภท** (เหลือ like/comment/follow/watch); AC-NOTI-013 เปลี่ยนเป็น guard "ห้ามมี system row" *(superseded โดย DEC-43, 2026-11-04 — `system` คืนเข้า V1 + AC-NOTI-013 กลับเป็น positive assertion)*
 - `06_PROFILE_MODULE.md` — contract lock: state server-backed + DM/QR/picker จริง; following/follower rows มีปุ่ม Chat
 - `13_SETTINGS_MODULE.md` §9 — canonical Change Password (re-auth ด้วย current password)
 - `00_GLOBAL/01_AUTH` — consent copy + analytics gating (v1.10), legal consent ≠ privacy consent, renumber `AC-AUTH-031`→`AC-AUTH-001A`
@@ -44,7 +44,7 @@
 - Feed/Viewer แบบ IG: pagination, carousel swipe หยุดปลาย + double-tap like, pull-to-refresh, viewer carousel เหมือน feed, comment flat thread + composer, scroll-to-hide header
 - Search: recents persist ข้ามเปิดแอป, tag/hashtag กรอง ni/muted/blocked, เปิดใหม่ = landing, suggestion/recent rows ไม่แสดง `N listings`
 - ภาษา: แปลไทยเต็มระดับทั้งแอป (ยกเว้น UGC/proper nouns), หน่วยเงิน `฿{n}`+comma ทั้ง TH/EN
-- Alerts: เอา system row "new device login" + toast/ไอคอน/code ที่เกี่ยวออก — เหลือ 4 types
+- Alerts: เอา system row "new device login" + toast/ไอคอน/code ที่เกี่ยวออก — เหลือ 4 types *(superseded โดย DEC-43, 2026-11-04 — `system` คืนเข้า V1 3 subtypes + filter)*
 - Profile: following/follower rows มีปุ่ม Chat; status tag SOLD/HIDDEN ตาม pfKind
 - Chat: share โพสต์เข้าห้องแชทจริง, message request folder สำหรับคนที่ไม่ได้ตาม, ไม่จัดกลุ่ม gallery ตามวัน
 
@@ -63,14 +63,14 @@
 | 21 | Status tag ตาม pfKind (SOLD/HIDDEN) | 38 | Change Password canonical = 13_SETTINGS §9 |
 | 22 | Search recents persist บนเครื่อง | 39 | legal consent ≠ privacy consent |
 | 23 | Tag/hashtag กรอง ni/muted/blocked | 40 | ปิด batch A + citation sweep |
-| 24 | เปิด search ใหม่ = landing ล้าง state | 41 | **ถอน `system` notification type ออกจาก V1 ทั้งประเภท** (supersede DEC-32) |
+| 24 | เปิด search ใหม่ = landing ล้าง state | 41 | **ถอน `system` notification type ออกจาก V1 ทั้งประเภท** (supersede DEC-32 — superseded โดย DEC-43, 2026-11-04) |
 | 25 | ชุด IG-standard A1–A27 (alerts/board tabs/chat/profile/errors) | | |
 | 26 | ตัดออกจาก V1: system new-device login (ALT-070), self-match notify (WA-054) | | |
 | 27 | C1–C6: ไม่ group gallery ตามวัน · msg request folder · board deep link+native share · batch C scope | | |
 
 ## 6. สิ่งที่เปลี่ยนจากชุดเดิม — dev อย่าทำตามของเก่า
 
-- **Alerts เหลือ 4 types เท่านั้น** (like/comment/follow/watch) — ไม่มี system/security row, ไม่มี placeholder destination
+- **Alerts เหลือ 4 types เท่านั้น** (like/comment/follow/watch) — ไม่มี system/security row, ไม่มี placeholder destination *(superseded โดย DEC-43, 2026-11-04 — กลับเป็น 5 types พร้อม category filter)*
 - ไม่มี system new-device login generation, ไม่มี WA self-match notification
 - Chat gallery ไม่จัดกลุ่มตามวัน; ข้อความจาก non-follower เข้า message Requests folder
 - `system` type มีบทบาทเดียวในสเปคคือ negative guard (ห้ามปรากฏใน feed)

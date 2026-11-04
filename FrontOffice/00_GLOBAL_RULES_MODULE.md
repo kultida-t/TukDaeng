@@ -267,6 +267,14 @@ Guest gate sheet copy:
 
 Bottom sheet ทั่วไป: ปิดได้ด้วยการแตะ scrim, ปุ่มปิดของ sheet, device back (Android) และลากแถบจับ (handle) ลง (contract — prototype: แถบจับเป็นภาพประกอบ ปิดด้วย scrim/ปุ่มเท่านั้น)
 
+## Per-Page Config Policy (selective)
+
+หน้าที่มีของให้ตั้งจริงสามารถมีปุ่ม Config ประจำหน้า (per-page config) ได้ — **ไม่บังคับทุกหน้า** (DEC-47 · NB-036/NB-047 — `SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md`):
+
+- เพิ่มเฉพาะหน้าที่มี setting/option ของตัวเองจริง — ตัวอย่างใน V1: Chat list มี `chatcfg` (gear บนหัวหน้า → chat settings ตาม 07_CHAT); Alerts มี category filter chips ซึ่งนับเป็น per-page config (09 §9 Category Filter Rule)
+- หน้าที่ไม่มีของให้ตั้งจริง **ไม่เพิ่ม config ใน V1** — setting ส่วนกลางคงอยู่ที่ Settings จุดเดียว (canonical 13_SETTINGS; entry = `.pf-menu` gear)
+- เมื่อหน้าใดมี setting จริงเกิดขึ้นภายหลัง ให้ประเมินรายหน้าแล้วเปิด per-page config เฉพาะหน้านั้น — ไม่ต้องเพิ่มพร้อมกันทั้งแอป
+
 # 12. Lifecycle Rules
 
 ## Asset Lifecycle
@@ -357,7 +365,7 @@ Public Profile, Feed, Search, Watch Alert และ Viewer Asset Detail ต้�
 - Owner Profile เห็นทุกสถานะ
 - Hide และ Sold ต้องไม่ Public
 - Comment รองรับ IG-style one-level replies ใต้ comment หลัก และไม่รองรับ multi-level nested thread
-- Notification types ใช้เฉพาะ Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17)
+- Notification types ใช้เฉพาะ Like, Comment, Follow, Watch Alert, System (3 subtypes: security / account status / announcements — DEC-43, supersede DEC-41)
 - Guest gate ใช้ Member Sheet `Join TukDaeng` (§11) ไม่ใช่ center dialog
 
 # 16. Validation Rules

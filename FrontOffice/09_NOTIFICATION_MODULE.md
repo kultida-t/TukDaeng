@@ -19,7 +19,7 @@
 
 # 2. Objective
 
-Alerts feed คือ member-only surface บน bottom-nav `แจ้งเตือน`/`Alerts` (route `alerts`) ที่รวมเหตุการณ์ของบัญชีไว้เป็นฟีดกิจกรรมแบบ IG — like (aggregate หลาย user), comment, follow (พร้อม inline `Follow back` + dismiss `x`) และ watch alert match — แบ่งกลุ่มตามช่วงเวลา `Today`/`Yesterday`/`Last 7 days`/`Earlier` พร้อม unread state + nav badge และ `Mark all as read`
+Alerts feed คือ member-only surface บน bottom-nav `แจ้งเตือน`/`Alerts` (route `alerts`) ที่รวมเหตุการณ์ของบัญชีไว้เป็นศูนย์แจ้งเตือนจุดเดียวแบบ IG — like (aggregate หลาย user), comment, follow (พร้อม inline `Follow back` + dismiss `x`), watch alert match และ system (3 subtypes: security / account status / announcements — DEC-43 · NB-046) — แบ่งกลุ่มตามช่วงเวลา `Today`/`Yesterday`/`Last 7 days`/`Earlier` พร้อม category filter chips (`ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert`), unread state + nav badge และ `Mark all as read`
 
 โมดูลนี้ต้องคุม: ชุด notification type ที่รองรับ, row anatomy ต่อ type, read/unread + badge semantics, row actions (mark read / mark all / dismiss / follow back), destination routing ตาม 00_NAV §8 และ guest gate — โดยยึดพฤติกรรม prototype เป็นตัวตัดสินเมื่อ spec เดิมขัดกัน
 
@@ -30,11 +30,11 @@ Alerts feed คือ member-only surface บน bottom-nav `แจ้งเต�
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
 
 - Route + page: `alerts` → `alertsHTML` (~17703); nav item + badge ใน `botNavHTML` (~17006 — `[data-navgo="alerts"]` + `alBadgeHTML()` + label `แจ้งเตือน`/`Alerts`); `data-navgo="alerts"` → `openSub(scr,"alerts",true)` swap-open (~21504)
-- Data model: `ALERTS` (~17882 — `null` จนกว่า init), `alInit` (~17883–17911 — `state.session !== "member"` → `ALERTS = []` เสมอ (guest + new); member seed 12 rows — field `{id:"al{n}", type, users[], more, ago, grp, unread, text?, pid?, thumb?, name?, price?}`; `wa()` helper ผูก watch rows กับ post จริงผ่าน `findPost` + `specOf`)
+- Data model: `ALERTS` (~17882 — `null` จนกว่า init), `alInit` (~17883–17911 — `state.session !== "member"` → `ALERTS = []` เสมอ (guest + new); member seed 16 rows — field `{id:"al{n}", type, users[], more, ago, grp, unread, text?, pid?, thumb?, name?, price?}`; system rows เพิ่ม `{kind:"security"|"account"|"announce", dest, title:{en,th}, body:{en,th}}`; `wa()` helper ผูก watch rows กับ post จริงผ่าน `findPost` + `specOf`)
 - Badge: `alUnread`/`alBadgeHTML`/`alBadgeSync` (~17912–17920 — count = unread rows, cap `99+`, sync ทุก `.nav-item[data-navgo="alerts"]` instance)
-- Row anatomy: `alAvatarHTML` (~17924–17933 — like>1 user → `.al-stack` 2 avatar + heart badge `al-badge`; like เดี่ยว → avatar + heart badge; watch → `.al-watch` bell icon + seller mini avatar `.al-wseller`; comment/follow → single avatar), `alTextHTML` (~17934–17947 — copy ต่อ type + `<span class="al-time">` จาก `formatAlertTime`), `alRowHTML` (~17948–17957 — `.al-row.unread` + `data-alid`; follow → `al-fbtn` (`data-alfollow`) + `al-x` (`data-aldismiss`); like/comment/watch → `al-thumb` ขวา)
-- Page render: `alertsHTML` (~17958–17981 — `.al-scroll` + `.al-head` = `.al-back` `data-navgo="feed"` + title `แจ้งเตือน`/`Alerts`; group sections ตามลำดับ fix `Today`/`Yesterday`/`Last 7 days`/`Earlier` (TH `วันนี้`/`เมื่อวาน`/`7 วันที่ผ่านมา`/`ก่อนหน้า`) render เฉพาะกลุ่มไม่ว่าง; `.al-readall` `Mark all as read`/`อ่านทั้งหมดแล้ว` บน section แรกเมื่อ unread>0; empty = `chEmptyHTML` `No alerts yet` + desc), `alRerender` (~17982–17987 — `_subSwap` re-render คง scrollTop)
-- Click handler: `alertsClick` (~17988–18037 — chain order `data-alreadall` → `data-aldismiss` → `data-alfollow` → `.al-row`; wired ใน global click chain ~21494 ก่อน navgo)
+- Row anatomy: `alAvatarHTML` (~17924–17933 — like>1 user → `.al-stack` 2 avatar + heart badge `al-badge`; like เดี่ยว → avatar + heart badge; watch → `.al-watch` bell icon + seller mini avatar `.al-wseller`; comment/follow → single avatar; system → `.al-av.al-ic.al-sys-{kind}` icon circle: shield=security / award=account / info=announce), `alTextHTML` (~17934–17947 — copy ต่อ type + `<span class="al-time">` จาก `formatAlertTime`; system → `<b>{title[lang]}</b> — {body[lang]}`), `alRowHTML` (~17948–17957 — `.al-row.unread` + `data-alid`; follow → `al-fbtn` (`data-alfollow`) + `al-x` (`data-aldismiss`); like/comment/watch → `al-thumb` ขวา; system → ไม่มี thumb แต่มี `al-x` dismiss)
+- Page render: `alertsHTML` (~17958–17981 — `.al-scroll` + `.al-head` = `.al-back` `data-navgo="feed"` + title `แจ้งเตือน`/`Alerts`; `.al-filters` chip row ใต้ head = `.al-fchip` `ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert` (`data-alfilter` — page-local `scr._alFilter` default `all`, `catOf`: system→ระบบ, watch→Watch Alert, like/comment/follow→กิจกรรม); group sections ตามลำดับ fix `Today`/`Yesterday`/`Last 7 days`/`Earlier` (TH `วันนี้`/`เมื่อวาน`/`7 วันที่ผ่านมา`/`ก่อนหน้า`) render เฉพาะกลุ่มไม่ว่าง; `.al-readall` `Mark all as read`/`อ่านทั้งหมดแล้ว` บน section แรกเมื่อ unread>0; empty = `chEmptyHTML` `No alerts yet` + desc — filter ≠ all ที่ว่าง = `No alerts in this category yet.`), `alRerender` (~17982–17987 — `_subSwap` re-render คง scrollTop)
+- Click handler: `alertsClick` (~17988–18037 — chain order `data-alfilter` → `data-alreadall` → `data-aldismiss` → `data-alfollow` → `.al-row`; system row tap → `pushSub(a.dest || "settings")`; wired ใน global click chain ~21494 ก่อน navgo)
 - Unavailable state: `al_unavail` sub page (unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว`/`This post is no longer available` + ปุ่ม `Go back` — contract 00_NAV §10; เปิดแทน toast เมื่อ post target หายทุก type)
 - Read/dismiss persistence: `alLoadState`/`alSaveState` (`localStorage: fo_alstate` — `{r:[ids อ่านแล้ว], x:[ids ที่ dismiss]}` — จำลอง server-backed persist: คงอยู่ข้าม reload + session switch ตาม contract)
 - Helpers: `formatAlertTime` (~13376–13383 — `ago` string `Nm/Nh/Nd/Nw` → TH `นาที`/`ชม.`/`วัน`/`สัปดาห์`), `chEmptyHTML` (~17876 — shared empty card กับ 07_CHAT), `pfSetFollow`/`pfIsFollowed` (~16849–16858 — canonical 06), `rpPush` → `pushSub` (~15095), `openPostViewer` (~14738 — signature `(scr, posts, pid, phi, feedMode, title, user)`; `user` ≠ me → pfp head + `pf-foll` chip ตอน unfollowed)
@@ -48,7 +48,8 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 | Topic | Master Baseline | Notification Module Rule |
 | --- | --- | --- |
-| Supported types | Like, Comment, Follow, Watch Alert | ตรง — 4 types (`system` เคยเป็น type ที่ 5 แบบ placeholder แต่ถูกถอนออกจาก V1 ทั้งประเภทตาม DEC-41) |
+| Supported types | Like, Comment, Follow, Watch Alert + System | 5 types — `system` คืนเข้า V1 ตาม requirement NB-046 ด้วย 3 subtypes (security / account status / announcements) + destinations จริง + dismiss `x` (DEC-43 — supersede DEC-41) |
+| Category filter | — | filter chips `ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert` บน Alerts feed ตาม NB-046 (DEC-43) — page-local filter |
 | Destinations | Like/Comment → post ของตัวเอง; Follow → profile ผู้ติดตาม; Watch Alert → post ที่ match โดยตรง | ตรง 00_NAV §8 — ทุก content destination = **Post Viewer** (ไม่ใช่ Asset Detail, ไม่มี focus comment, ไม่มี Result List) |
 | Read state | unread → read เมื่อเปิด | ตรง + extras ที่ prototype เพิ่ม: `Mark all as read`, dismiss `x` (follow row), inline `Follow back` |
 | Grouping | — | feed แบ่ง section ตาม age bucket (Today/Yesterday/Last 7 days/Earlier) — ไม่ใช่ flat DESC list |
@@ -63,10 +64,11 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ## In Scope
 
-- Alerts feed page (`alerts`) — header, group sections, row anatomy ทุก type, empty state
-- Notification types: `like` / `comment` / `follow` / `watch` (+ aggregate `more` บน like)
+- Alerts feed page (`alerts`) — header, category filter chips, group sections, row anatomy ทุก type, empty state
+- Notification types: `like` / `comment` / `follow` / `watch` / `system` (+ aggregate `more` บน like; system = 3 subtypes `security`/`account`/`announce`)
+- Category filter (`.al-fchip` — `ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert`)
 - Read / unread state + `.al-readall` Mark all as read + nav badge (cap `99+`)
-- Row actions: open destination, dismiss `x` (follow), inline `Follow back`/`Following` (follow)
+- Row actions: open destination, dismiss `x` (follow + system), inline `Follow back`/`Following` (follow)
 - Destination routing ตาม 00_NAV §8 + fallback เมื่อ post หาย
 - Guest gate (Member Sheet) + session semantics (`member` seed / `new`+`guest` ว่าง / reset ตอน session switch)
 - Notification settings boundary (type toggles — page internals อยู่ 13)
@@ -91,6 +93,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | --- | --- | --- |
 | Alerts feed | `alerts` sub page (`alertsHTML`) | หน้าเดียวของ module — scroll `.al-scroll` + bottom nav ของตัวเอง (active `alerts`) |
 | Feed header | `.al-head` | back `data-navgo="feed"` (กลับ Feed เสมอ ไม่ใช่ pop) + title `แจ้งเตือน`/`Alerts` + spacer ขวา (invisible icon-btn เพื่อความสมมาตร) |
+| Category filter | `.al-filters` + `.al-fchip` (`data-alfilter`) | chip row ใต้ `.al-head` — `ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert`, active `.on` |
 | Group section | `.al-sec` + `.al-row` | section label + `Mark all as read` บน section แรก + rows |
 | Notification row | `.al-row` | avatar/icon + text + time + side element (thumb หรือ follow button) + dismiss `x` (follow เท่านั้น) |
 | Nav badge | `.nav-badge` ใน `[data-navgo="alerts"]` | unread count cap `99+` — sync ทุก nav instance |
@@ -172,6 +175,15 @@ Tap `ติดตามกลับ`/`Follow back` บน follow row
 -> ไม่ mark read / ไม่ navigate (handler ตัดก่อน .al-row)
 ```
 
+## Filter Category
+
+```text
+Tap .al-fchip (ทั้งหมด/ระบบ/กิจกรรม/Watch Alert)
+-> scr._alFilter = key + _alShown reset 10 + alRerender
+-> list เหลือเฉพาะ rows ที่ catOf ตรง (system→ระบบ, watch→Watch Alert, like/comment/follow→กิจกรรม)
+-> หมวดว่าง -> `No alerts in this category yet.` (ต่างจาก empty เต็ม)
+```
+
 ## Open Destination (per type)
 
 ```text
@@ -182,6 +194,8 @@ watch -> findPost(pid)
    -> เจอ: openPostViewer [post] title `Post` + seller name + solo header + inject Follow (ถ้ายังไม่ follow)
    -> ไม่เจอ: pushSub `al_unavail` เช่นเดียวกัน (parity กับ like/comment — resolved FSP-030)
 follow -> rpPush `profile:{follower}`
+system -> pushSub(a.dest || "settings")
+   -> dest: `change_pwd` (security) / `about_account` (account verified) / `about_app` (announce) / `al_unavail` (post hidden)
 ```
 
 ## Back
@@ -197,7 +211,8 @@ follow -> rpPush `profile:{follower}`
 ## Data Model Rule (`ALERTS`)
 
 - `ALERTS` = list ต่อ account — init ครั้งแรกที่ render (`alInit` lazy): `member` → seed set (reconcile กับ persisted read/dismiss state), `new`/`guest` → `[]`
-- Row fields: `id`, `type` (`like|comment|follow|watch`), `users[]` (actors; index 0 = primary), `more` (aggregate count นอกเหนือ 2 ชื่อแรก), `ago` (label string), `grp` (age bucket), `unread`, `pid`+`thumb` (post ref — like/comment/watch), `text` (comment excerpt), `name`+`price` (watch: `Brand Model` + asking price)
+- Row fields: `id`, `type` (`like|comment|follow|watch|system`), `users[]` (actors; index 0 = primary), `more` (aggregate count นอกเหนือ 2 ชื่อแรก), `ago` (label string), `grp` (age bucket), `unread`, `pid`+`thumb` (post ref — like/comment/watch), `text` (comment excerpt), `name`+`price` (watch: `Brand Model` + asking price)
+- System rows เพิ่ม fields: `kind` (`security|account|announce` — 3 subtypes), `dest` (sub-route ปลายทางเช่น `change_pwd`/`about_account`/`about_app`/`al_unavail`), `title`+`body` (`{en,th}` localized pair) — `users[]` ว่าง ไม่มี `pid`/`thumb`/`more`/`text`
 - Read state (`unread→read`) + dismiss ต้อง **persist ถาวรต่อ account** — contract: server-backed (คงอยู่ข้ามเปิดแอปใหม่ + ข้ามเครื่อง); prototype จำลองผ่าน `fo_alstate` localStorage
 - ไม่มี generation path — `ALERTS` เป็น seed เท่านั้น (like/comment/follow/watch ไม่มี code สร้าง row ใหม่; trigger contract อยู่ §14)
 - `applySessionData` → `ALERTS = null` (re-init ตาม session ใหม่) + `alBadgeSync` — persisted state re-apply ตอน init ถัดไป ไม่ใช่ reset ใหม่ทั้งหมด
@@ -207,6 +222,7 @@ follow -> rpPush `profile:{follower}`
 - กลุ่มเรียงตามลำดับ fix: `Today` → `Yesterday` → `Last 7 days` → `Earlier` (TH `วันนี้`/`เมื่อวาน`/`7 วันที่ผ่านมา`/`ก่อนหน้า`) — render เฉพาะกลุ่มที่มี row
 - ภายในกลุ่มเรียงตามลำดับใน list (prototype = seed order; contract = created DESC ภายใน bucket)
 - `Mark all as read` แสดงเฉพาะบน section header แรก และเฉพาะเมื่อ unread > 0
+- เมื่อ category filter ≠ `ทั้งหมด` → กรอง rows ตามหมวดก่อนแบ่งกลุ่ม (กลุ่มว่างไม่ render) + pagination `_alShown` reset 10 ทุกครั้งที่เปลี่ยน filter
 
 ## Row Anatomy Rule (per type)
 
@@ -216,6 +232,7 @@ follow -> rpPush `profile:{follower}`
 | `comment` | single avatar | `{name} commented: {text}` / `แสดงความคิดเห็น:` | post thumb | — |
 | `follow` | single avatar | `{name} started following you.` / `เริ่มติดตามคุณ` | `Follow back`/`Following` button | dismiss `x` |
 | `watch` | bell icon + seller mini avatar overlay | `Watch alert {name} — new listing from {seller} · {price}` / `การแจ้งเตือนนาฬิกา {name} — รายการใหม่จาก {seller} · {price}` | post thumb | — |
+| `system` | icon circle ตาม subtype (`al-sys-{kind}`): shield=security, award=account, info=announce | `<b>{title[lang]}</b> — {body[lang]}` | — (ไม่มี thumb/ปุ่ม) | dismiss `x` |
 
 - `names` = 2 ชื่อแรก bold join `, ` + `and N others`/`และคนอื่น ๆ อีก N คน` เมื่อมี (`n = more + users.length - 2`)
 - Time label = `ago` string + `formatAlertTime` แปลงหน่วยเป็น TH (`m`→`นาที`, `h`→`ชม.`, `d`→`วัน`, `w`→`สัปดาห์`)
@@ -243,18 +260,29 @@ follow -> rpPush `profile:{follower}`
 | `comment` | เหมือน like — viewer โพสต์ตัวเอง; **ไม่มี focus/deep-scroll comment ใน V1** | เหมือน like |
 | `follow` | Public Profile `profile:{users[0]}` ผ่าน `rpPush` (push ทับ alerts) | blocked → keep-page ตาม canonical 06 |
 | `watch` | Post Viewer — post ที่ match โดยตรง (`findPost(pid)`; title `Post` + seller; `pfp-follow` chip ถูกลบ; inject `Follow` button ก่อน `...` เมื่อ `!p.following`) | post หาย → unavailable state เดียวกัน (parity กับ like/comment — resolved FSP-030) |
+| `system` | `pushSub(a.dest || "settings")` — เหตุการณ์ account/security ไม่อ้าง post/user: `change_pwd` (security), `about_account` (account verified), `about_app` (announce), `al_unavail` (post hidden) | `dest` ว่าง/unknown → `settings` |
 
-- ไม่มี destination อื่น: ไม่มี Asset Detail direct, ไม่มี Result List, ไม่มี chat room, ไม่มี settings jump
+- ไม่มี destination อื่น: ไม่มี Asset Detail direct, ไม่มี Result List, ไม่มี chat room; settings jump มีเฉพาะผ่าน `dest` ของ system rows เท่านั้น
 
 ## Follow Row Actions Rule
 
 - `Follow back`/`กำลังติดตาม` (`al-fbtn`, `data-alfollow`) — toggle follow จริงผ่าน `pfSetFollow` (sync POSTS `p.following` หรือ `PF_EXTRA_FOL` ตาม canonical 06); ปุ่มสลับ `.on` + label — **label ต้องตามภาษาแอปทุกสถานะ** (resolved: เดิม toggle แล้ว hardcode EN)
-- Dismiss `x` (`data-aldismiss`) — **มีเฉพาะ follow rows**; ลบ row ออกจาก `ALERTS` ทันที + **persist ถาวร** (ไม่กลับมาหลังเปิดแอปใหม่/สลับ session; ไม่มี undo, ไม่มี confirm)
+- Dismiss `x` (`data-aldismiss`) — **มีเฉพาะ follow + system rows**; ลบ row ออกจาก `ALERTS` ทันที + **persist ถาวร** (ไม่กลับมาหลังเปิดแอปใหม่/สลับ session; ไม่มี undo, ไม่มี confirm)
 - Follow row ยังเปิด profile ได้ด้วยการ tap พื้นที่ row (ไม่ใช่ปุ่ม)
+
+## Category Filter Rule
+
+- `.al-filters` chip row ใต้ `.al-head` — 4 chips ตามลำดับ: `ทั้งหมด`/`All` (`all`), `ระบบ`/`System` (`system`), `กิจกรรม`/`Activity` (`activity`), `Watch Alert` (`watch`); active chip มี `.on`
+- `catOf` mapping: `type:"system"` → `system`, `type:"watch"` → `watch`, type อื่น (`like`/`comment`/`follow`) → `activity`
+- Tap chip → เก็บ `scr._alFilter` (page-local — เปิดหน้าใหม่กลับ `all`) + reset pagination `_alShown=10` + `alRerender` (คง scrollTop)
+- หมวดที่เลือกว่าง → `No alerts in this category yet.` / `ยังไม่มีการแจ้งเตือนในหมวดนี้` — ต่างจาก empty เต็ม `No alerts yet` (§13)
+- Filter ไม่กระทบ badge/read state — `alUnread` นับจาก `ALERTS` เต็มเสมอ ไม่ใช่ filtered list
+- NB-046 (`SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md`, DEC-43) — "ฟิลเตอร์กรองหมวดหมู่" บนหน้าแจ้งเตือน
 
 ## Notification Settings Boundary Rule
 
 - `notif_settings` มี 4 toggles ผูก type ตรง ๆ: `likes`→`like`, `comments`→`comment`, `follows`→`follow`, `walerts`→`watch` — default ON ทั้งหมด; หน้า + row anatomy canonical อยู่ 13_SETTINGS
+- `system` type **ไม่มี toggle** — system alerts เป็น account/security events ที่ส่งเสมอใน V1 (ไม่ map เข้า `notif_settings`)
 - Toggle state ต้อง **persist ข้ามเปิดแอปใหม่** (contract; prototype persist ผ่าน `fo_notif`)
 - **Contract: toggle OFF ต้องหยุดรับ notification ของ type นั้นจริง** (§14) — prototype ไม่มี generation เลยไม่มี code path กรอง (acceptance อยู่ฝั่งแอปจริง)
 - Rows เดิมที่มีอยู่แล้วไม่ถูกลบเมื่อปิด toggle — toggle หยุดเฉพาะการสร้างใหม่
@@ -268,9 +296,9 @@ follow -> rpPush `profile:{follower}`
 
 1. **Feed = IG activity list grouped by age** — spec เดิม flat list เรียง Created Date DESC เดียว; prototype ใช้ `grp` bucket + section headers
 2. **Destinations ทั้งหมด = Post Viewer/Public Profile** — spec เดิม Like/Comment→Asset Detail (+focus comment), WA→Result List; ไม่มี focus comment affordance ใน viewer (00_NAV §8 canonical)
-3. ~~**`system` type มีจริง**~~ — REMOVED (DEC-41): `system` type ถูกถอนออกจาก V1 ทั้งประเภท (row/seed/placeholder destination) — กลับมาเป็น 4 types เหมือน spec เดิม
+3. ~~**`system` type ถูกถอนออกจาก V1**~~ — SUPERSEDED (DEC-43): DEC-41 ถอน `system` ไปตอนอิง IG เกินไป แต่ requirement NB-046 ยืนยันต้องรวมการแจ้งเตือนทุกประเภทจุดเดียว — `system` คืนเข้า V1 พร้อม 3 subtypes (`security`/`account`/`announce`), destinations จริงผ่าน `dest` field, dismiss `x` และ category filter chips — seed กลับมาเป็น 16 rows (12 activity/watch + 4 system)
 4. **Like aggregate `more` + avatar stack** — spec เดิมไม่มี aggregation model
-5. **`Mark all as read` + dismiss `x` + inline `Follow back`** — extras ที่ spec เดิมไม่มี; dismiss มีเฉพาะ follow rows (like/comment/watch ลบไม่ได้)
+5. **`Mark all as read` + dismiss `x` + inline `Follow back`** — extras ที่ spec เดิมไม่มี; dismiss มีเฉพาะ follow + system rows (like/comment/watch ลบไม่ได้)
 6. ~~**`watch` row missing-post = silent no-op**~~ — RESOLVED (FSP-030): ทุก post destination ที่หายเปิด `al_unavail` unavailable state parity กันแล้ว
 7. **Empty copy `No alerts yet` + desc** — ไม่ใช่ global `ไม่พบข้อมูล`/`No data found` (empty variant ของ module ตาม 00_GLOBAL §11)
 8. ~~**`al-fbtn` toggle → label hardcode EN `Following`/`Follow back`**~~ — RESOLVED: label ตามภาษาแอปทุกสถานะ (`ติดตามกลับ`/`กำลังติดตาม` ↔ `Follow back`/`Following`)
@@ -314,6 +342,7 @@ follow -> rpPush `profile:{follower}`
 | --- | --- |
 | Row `pid` resolve ไม่ได้ (like/comment) | `al_unavail` — unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว` + `Go back` (00_NAV §10) |
 | Row `pid` resolve ไม่ได้ (watch) | `al_unavail` เดียวกัน (parity — resolved deviation #6) |
+| System `dest` ว่าง/unknown | `pushSub` fallback ไป `settings` |
 | Unknown type | contract: ไม่ render เป็น row (unsupported type ต้องไม่เข้า feed — 00_NAV §16) |
 | Follow target blocked | `profile:{u}` → keep-page ตาม canonical (ไม่ใช่ error) |
 
@@ -336,7 +365,8 @@ follow -> rpPush `profile:{follower}`
 
 | Surface | Copy จริง |
 | --- | --- |
-| Alerts feed ว่าง (`new`/หลัง dismiss หมด) | `No alerts yet` + `Watch alerts, likes, comments and new followers will show up here.` (TH `ยังไม่มีการแจ้งเตือน` + `การแจ้งเตือนนาฬิกา ยอดถูกใจ ความคิดเห็น และผู้ติดตามใหม่จะแสดงที่นี่`) — `chEmptyHTML` shared กับ 07 |
+| Alerts feed ว่าง (`new`/หลัง dismiss หมด — filter `all`) | `No alerts yet` + `Watch alerts, likes, comments and new followers will show up here.` (TH `ยังไม่มีการแจ้งเตือน` + `การแจ้งเตือนนาฬิกา ยอดถูกใจ ความคิดเห็น และผู้ติดตามใหม่จะแสดงที่นี่`) — `chEmptyHTML` shared กับ 07 |
+| Category filter ≠ `all` แล้วหมวดว่าง | `No alerts in this category yet.` (TH `ยังไม่มีการแจ้งเตือนในหมวดนี้`) — `chEmptyHTML` เดียวกัน copy ต่าง |
 
 หมายเหตุ: ไม่ใช้ global `ไม่พบข้อมูล`/`No data found` — variant เฉพาะ module ตาม 00_GLOBAL §11
 
@@ -352,6 +382,9 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 | User comments บน post ของฉัน | Post owner (me) | `comment` (text excerpt) | Post Viewer โพสต์ตัวเอง |
 | User follows ฉัน | Followed user (me) | `follow` (+ Follow back + dismiss) | `profile:{follower}` |
 | Watch Alert ON match โพสต์ใหม่ | Alert owner | `watch` (name = `waName`-style label + seller + price) | Post Viewer โพสต์ที่ match ตรง — canonical engine อยู่ 10_WATCH_ALERT |
+| Security event (login อุปกรณ์ใหม่ / password change) | Account owner | `system` `kind:"security"` | `dest` ตาม event (seed: `change_pwd`) |
+| Account status change (verified / post hidden โดย moderation) | Account owner | `system` `kind:"account"` | `dest` ตาม event (seed: `about_account` / `al_unavail`) |
+| Product announcement (app update / กิจกรรม / นโยบาย) | Members ทั้งหมด | `system` `kind:"announce"` | `dest` ตาม event (seed: `about_app`) |
 
 - **Chat / New Message ไม่ใช่ type** — unread badge ในแท็บ `แชท` เท่านั้น (canonical 07 §14)
 - Toggle `state.notif[k]` OFF (contract) → หยุดสร้าง/แสดง type ที่ map (`likes`/`comments`/`follows`/`walerts`)
@@ -368,7 +401,8 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 | Event | Trigger |
 | --- | --- |
 | `alerts_opened` | เปิด `alerts` ผ่าน nav tab |
-| `alert_opened` | tap `.al-row` (payload: type) |
+| `alerts_filter_changed` | tap `.al-fchip` (payload: category `all/system/activity/watch`) |
+| `alert_opened` | tap `.al-row` (payload: type; system rows เพิ่ม `kind`) |
 | `alert_marked_read` | row unread → read |
 | `alert_marked_all_read` | `data-alreadall` |
 | `alert_dismissed` | `data-aldismiss` (follow rows) |
@@ -387,7 +421,7 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 | AC ID | Criteria |
 |---|---|
 | AC-NOTI-001 | `alerts` page = `.al-head` (back `data-navgo="feed"` + title `แจ้งเตือน`/`Alerts`) + group sections `วันนี้`/`เมื่อวาน`/`7 วันที่ผ่านมา`/`ก่อนหน้า` ตามลำดับ fix + bottom nav active `alerts` |
-| AC-NOTI-002 | Row anatomy ตรงตาราง §9: like=avatar stack+heart badge+thumb, comment=avatar+text+thumb, follow=avatar+`Follow back`+`x`, watch=bell+seller mini+`Watch alert {name} — …` +thumb |
+| AC-NOTI-002 | Row anatomy ตรงตาราง §9: like=avatar stack+heart badge+thumb, comment=avatar+text+thumb, follow=avatar+`Follow back`+`x`, watch=bell+seller mini+`Watch alert {name} — …` +thumb, system=icon circle ตาม subtype+`<b>{title}</b> — {body}`+`x` |
 | AC-NOTI-003 | Like aggregate ต้อง render `{u1}, {u2} และคนอื่น ๆ อีก {n} คน`/`and N others` เมื่อ `more`>0 |
 | AC-NOTI-004 | Time label ใช้ `ago` + `formatAlertTime` (TH suffix `นาที`/`ชม.`/`วัน`/`สัปดาห์`) |
 
@@ -398,7 +432,7 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 | AC-NOTI-005 | Tap row → `unread=false` + `.unread` class หาย + `alBadgeSync` ก่อน navigate เสมอ |
 | AC-NOTI-006 | Nav badge = Σunread cap `99+`; sync ทุก nav instance; หายเมื่อ 0 |
 | AC-NOTI-007 | `Mark all as read`/`อ่านทั้งหมดแล้ว` อยู่บน section แรกเฉพาะเมื่อ unread>0 → clear ทุก unread + ปุ่มหายหลัง unread=0 |
-| AC-NOTI-008 | `x` dismiss (follow row เท่านั้น) → ลบ row ออกจาก list ทันที + re-render — ไม่มี confirm/undo |
+| AC-NOTI-008 | `x` dismiss (follow + system rows เท่านั้น) → ลบ row ออกจาก list ทันที + re-render + persist ถาวร — ไม่มี confirm/undo |
 | AC-NOTI-009 | `Follow back`/`กำลังติดตาม` → `pfSetFollow` toggle จริง + ปุ่มสลับ label/.on — ไม่ mark read ไม่ navigate |
 
 ## Destinations
@@ -408,7 +442,8 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 | AC-NOTI-010 | `like`/`comment` → Post Viewer โพสต์ตัวเอง 1 ใบ (title `Post`, solo header) — ไม่ focus comment; post หาย → unavailable state `รายการนี้ไม่พร้อมใช้งานแล้ว` + `Go back` (`al_unavail`) |
 | AC-NOTI-011 | `follow` → `rpPush profile:{users[0]}` push ทับ alerts page |
 | AC-NOTI-012 | `watch` → Post Viewer โพสต์ที่ match โดยตรง (title `Post` + seller; ไม่มี Result List; inject `Follow` เมื่อยังไม่ follow) |
-| AC-NOTI-013 | ไม่มี `system`/security alert row ใน feed — type ถูกถอนออกจาก V1 ทั้งประเภท (DEC-41 — supersede FSP-021/S-17/DEC-32); เจอ row/destination ของ system = FAIL |
+| AC-NOTI-012A | `system` → `pushSub(a.dest || "settings")` — `change_pwd`/`about_account`/`about_app`/`al_unavail` ตาม `dest` field; `dest` ว่าง → `settings` fallback |
+| AC-NOTI-013 | `system` rows ต้องอยู่ใน feed ด้วย 3 subtypes (`security`/`account`/`announce`): avatar = icon circle ตาม `kind` (shield/award/info), text = `<b>{title}</b> — {body}` ตามภาษา, มี dismiss `x` ที่ persist ถาวร, ไม่มี thumb/`Follow back` (DEC-43 — supersede DEC-41/FSP-021/S-17) |
 | AC-NOTI-014 | ไม่มี type/destination อื่น: ไม่มี chat row, offer row, Asset Detail direct, Result List, comment focus |
 
 ## Guest / Session
@@ -431,8 +466,16 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 
 | AC ID | Criteria |
 |---|---|
-| AC-NOTI-021 | Type นอกชุด `like/comment/follow/watch` ต้องไม่ render เป็น row (System/Security, Market Update/Sale Success/Moderation/Account Action/Chat = ไม่มีใน V1) |
+| AC-NOTI-021 | Type นอกชุด `like/comment/follow/watch/system` ต้องไม่ render เป็น row (Market Update/Sale Success/Moderation/Account Action แยกชนิด/Chat = ไม่มีใน V1 — account status อยู่ใต้ `system` subtype `account` ไม่ใช่ type แยก) |
 | AC-NOTI-022 | Chat ไม่ใช่ alert type — ไม่มี row/chat destination ใน feed (canonical 07 §14 badge-only) |
+
+## Category Filter
+
+| AC ID | Criteria |
+|---|---|
+| AC-NOTI-023 | `.al-filters` แสดง 4 chips ตามลำดับ `ทั้งหมด`/`All` · `ระบบ`/`System` · `กิจกรรม`/`Activity` · `Watch Alert` ใต้ `.al-head`; active chip `.on`; tap → filter ตาม `catOf` (system→ระบบ, watch→Watch Alert, like/comment/follow→กิจกรรม) + pagination reset 10 + คง scrollTop |
+| AC-NOTI-024 | filter ≠ `all` ที่หมวดว่าง → `No alerts in this category yet.`/`ยังไม่มีการแจ้งเตือนในหมวดนี้` (ต่างจาก empty เต็ม); filter เป็น page-local — เปิดหน้าใหม่กลับ `all` |
+| AC-NOTI-025 | filter ไม่กระทบ unread badge — badge = Σunread ของ `ALERTS` เต็มเสมอ ไม่ใช่ filtered list |
 
 ---
 
@@ -452,7 +495,7 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 
 # 18. Future Enhancement
 
-- `system` destination surface (security/account activity page) + event types เพิ่มเติมตาม master decision
+- `system` subtype coverage เพิ่มเติม (security/account activity pages ใหม่, `dest` ใหม่ ๆ) + `system` toggle ใน `notif_settings` ถ้าต้องการ opt-out — ตาม master decision
 - Notification generation pipeline (real triggers → rows; server-side feed)
 - Push notification (FCM) + deep link → destination matrix (00_NAV §12 contract)
 - Toggle enforcement จริง (`state.notif` → generation/filtering) — persist ทำแล้ว
@@ -467,4 +510,4 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 
 - Alerts แสดงเป็นหน้า 10 รายการ และโหลดหน้าถัดไปเมื่อเลื่อนใกล้ท้าย (DEC-13); pull-to-refresh รองรับ (DEC-15)
 - ไม่มี generation ของ system alert "new device login" ใน V1 (DEC-26 — ถอนเคส ALT-070)
-- `system` notification type ถูกถอนออกจาก V1 ทั้งประเภท — type + seed row + placeholder destination หมด (DEC-41 — supersede DEC-32/FSP-021/S-17 · เคส ALT-015/ALT-030 ถอนตาม · seed row ใน prototype ถูกเอาออกแล้ว)
+- `system` notification type ถูกถอนออกจาก V1 ทั้งประเภท — type + seed row + placeholder destination หมด (DEC-41 — supersede DEC-32/FSP-021/S-17 · เคส ALT-015/ALT-030 ถอนตาม · seed row ใน prototype ถูกเอาออกแล้ว) — **ยกเลิกโดย DEC-43 (2026-11-04): `system` คืนเข้า V1 ตาม NB-046 ด้วย 3 subtypes + destinations จริง + dismiss `x` + category filter chips**

@@ -304,7 +304,7 @@ Settings Home ใช้หัวข้อ `การตั้งค่าแล�
 
 Settings Home rules:
 
-- Settings เข้าได้จาก own profile menu (`.pf-menu` burger) เท่านั้น — ไม่มี settings button อื่นที่ใช้งานได้ (`.set-btn` = dead handler ใน prototype ไม่ใช่ spec feature)
+- Settings เข้าได้จาก own profile menu (`.pf-menu` gear icon — NB-048, DEC-46) เท่านั้น — ไม่มี settings button อื่นที่ใช้งานได้ (`.set-btn` = dead handler ใน prototype ไม่ใช่ spec feature)
 - Edit profile ไม่มี row บน Settings Home — entry เดียวคือ own profile page (06_PROFILE; S-05)
 - Change password และ Delete account อยู่ใน `About your account` ไม่ใช่บน home โดยตรง
 - Count badges บน library/what-you-see rows ต้องสะท้อนข้อมูลจริงของ session ปัจจุบัน
@@ -823,7 +823,7 @@ Then ต้องไม่แสดง Change Password เป็น active actio
 ## AC-SETTING-014: Settings Entry Point
 
 Given Member อยู่ที่ own profile  
-When Member กด `pf-menu` (burger `Settings and activity`)  
+When Member กด `pf-menu` (gear `Settings and activity`)  
 Then ระบบต้องเปิด Settings Home เป็น sub page ทับ profile  
 And ไม่มี settings entry อื่นที่ใช้งานได้ (`.set-btn` เป็น dead handler ใน prototype ไม่ใช่ spec feature)
 

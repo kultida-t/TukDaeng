@@ -623,7 +623,7 @@
 
 #### Happy Path
 1. กด Tab "แจ้งเตือน" (Alerts feed)
-2. แสดงรายการแจ้งเตือน 4 types (like/comment/follow/watch alert) แบ่งกลุ่ม `Today`/`Yesterday`/`Last 7 days`/`Earlier`
+2. แสดงรายการแจ้งเตือน 5 types (like/comment/follow/watch alert/system — `system` 3 subtypes ตาม DEC-43) พร้อม category filter `ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert` แบ่งกลุ่ม `Today`/`Yesterday`/`Last 7 days`/`Earlier`
 3. กด "Mark all as read" หรือกด row → ไป Post Viewer / Public Profile ตาม type
 
 ---

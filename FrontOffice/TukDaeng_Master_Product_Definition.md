@@ -601,11 +601,11 @@ Alerts feed รองรับ notification types:
 - Comment
 - Follow
 - Watch Alert
+- System — 3 subtypes: security / account status / announcements (คืนเข้า V1 ตาม DEC-43 · NB-046 — supersede DEC-41)
 
 Alerts feed ไม่รองรับใน Front Office V1:
 
 - Chat / New Message ไม่เป็น alert type และแจ้งเตือนเฉพาะในเมนู Chat ด้วย unread badge/count (Σunread cap `99+`)
-- System / Security alert (เช่น `A new device just logged in...`) — ถูกถอนออกจาก V1 ทั้งประเภท (DEC-41 — supersede S-17)
 - Moderation / Account Action
 - Market Update
 - Price / Valuation
@@ -1024,7 +1024,7 @@ Sign-off decisions ที่ลงใน master รอบนี้ (อ้าง
 | S-14 | Public `all` tab leak = defect | spec = viewer เห็น Sale+Show เท่านั้น | `06_PROFILE` |
 | S-15 | Portfolio headline = Total invested (Σ purchase) | แทน Total Asset Value (Σ current) — §7 Portfolio | `14_PORTFOLIO` |
 | S-16 | Guest กด feed tabs ได้ไม่ gate | guest browse-only + empty tabs | `02_FEED` |
-| S-17 | `system` notification type (เดิมอยู่ใน baseline — type ที่ 5 placeholder destination) | **ถอนออกจาก V1 ทั้งประเภทตาม DEC-41 (2026-11-02)** | `09_NOTIFICATION` |
+| S-17 | `system` notification type (เดิมอยู่ใน baseline — type ที่ 5 placeholder destination) | **คืนเข้า V1 ตาม DEC-43 (2026-11-04)** — 3 subtypes (security / account status / announcements) + destinations จริง + dismiss `x` + category filter (supersede DEC-41 ที่เคยถอน 2026-11-02) | `09_NOTIFICATION` |
 | S-18 | ไม่เขียน E2E/Letter Sealing เป็น feature claim | dead copy เท่านั้น | `07_CHAT` |
 | S-19 | Drawer 9 items = placeholder rows | ไม่ใช่ active routes | `00_NAV` §11 |
 | S-20 | ตัด spec-only auth states | ไม่มี Confirm Password / OTP expiry / Verification Success / Reset Password page | `01_AUTHENTICATION` |

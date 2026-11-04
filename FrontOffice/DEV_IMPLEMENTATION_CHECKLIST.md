@@ -177,7 +177,7 @@ Purpose:
 # 8. Notification (Alerts feed)
 
 - [ ] Alerts feed (เดิมเรียก Notification Center) เป็น member-only surface — guest เจอ Member Sheet
-- [ ] รองรับ 4 types: Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17)
+- [ ] รองรับ 5 types: Like, Comment, Follow, Watch Alert, System — `system` 3 subtypes (security / account status / announcements) + `dest` destination + dismiss `x` + category filter chips `ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert` (DEC-43, supersede DEC-41)
 - [ ] Chat/New Message ไม่เข้า Alerts feed — badge-only ที่ Chat menu
 - [ ] Moderation, Account Action, Market Update, Price/Valuation, Sale Success ไม่เข้า FO V1 Alerts feed
 - [ ] List แสดงเฉพาะของ current user แบ่งกลุ่ม age buckets (`Today`/`Yesterday`/`Last 7 days`/`Earlier`)

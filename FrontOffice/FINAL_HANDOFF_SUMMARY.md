@@ -35,7 +35,7 @@
 | `Show` asset actions | `Show` ไม่ขึ้น Feed/Search/Watch Alert และไม่มี `Ask Seller` (chat entry มีเฉพาะ sale post — S-07/07_CHAT_MODULE) |
 | `Hide` price handling | `Hide` ไม่ใช้ listing price และห้ามแสดงราคาใน public/viewer surfaces |
 | Chat notification | Chat / New Message ไม่เข้า Alerts feed; แจ้งเตือนเฉพาะในเมนู Chat ด้วย unread badge/count |
-| Alerts feed types | รองรับ Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17) |
+| Alerts feed types | รองรับ Like, Comment, Follow, Watch Alert, System — `system` คืนเข้า V1 ด้วย 3 subtypes (security / account status / announcements) + category filter chips (DEC-43, supersede DEC-41) |
 | Comment replies | รองรับ IG-style one-level replies ใต้ comment หลัก; ใช้ `View more replies` สำหรับ collapsed replies ชั้นเดียว; ไม่รองรับ multi-level nested thread |
 | Post-block chat | Chat history เดิมอ่านได้แบบ read-only; ส่งข้อความใหม่ไม่ได้; สร้าง Chat ใหม่ไม่ได้ |
 | Future menu items | รายการ drawer ทั้ง 9 (Watch Brands, Watch Price Index, Watch Shops, Accessories Shop, Repair Shop, Auction Center, Consignment Center, Authentication Center, Community) เป็น placeholder rows ไม่เป็น active route ใน production V1 (S-19) |

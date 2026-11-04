@@ -41,7 +41,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Routes: `profile:{username}` → `profileHTML` (~17574), `pfollow:{username}:{tab}` → `pfollowHTML` (~17575), `about:{username}` → `aboutHTML` (~17576), `pedit` → `peditHTML` (~17577), `portfolio` → `portfolioHTML` (canonical 04/14)
 - Profile data: `PROFILES` seed (~16287–16312), `profileOf` (~16395–16416 — fabricate profile ให้ทุก name: avatar gen + hash-mock stats `120+h%4800`/`120+h%800`), `pfAllUsers` (~16780–16786 — users จาก POSTS sellers + COMMENTS + CP_ME), `PF_VBADGE` (~16689), persisted sets `PF_EXTRA_FOL`/`PF_EXTRA_FAV`/`PF_EXTRA_MUT`/`PF_BLOCKED`/`PF_REMOVED_FOL`/`PF_POSTS_DEL` + `pfSave`/`pfLoad`/`pfRenameUser` → `fo_pfstate:{member\|new}` (~16313–16380 — server-backed mirror); fresh-account seed `PROFILES` zero (~22971)
 - Grid data: `pfGridPosts` (~16578–16603 — `PF_MINE` drawer-only posts + `userPosts` + gfx mocks), `pfKind` (~16604 — fallback `price || type==="sale" ? "sale" : "show"`), `pfTabPosts` (~16605–16610 — drop `archived`, `all` = ทุก kind, tab อื่น filter kind, pinned-first newest-pin-first), gfx mocks `PF_GFX_KINDS`/`PF_GFX_SALE`/`PF_GFX_SOLD`/`PF_GFX_META`/`PF_GFX_REG`/`PF_GFX_DEL` (~16419–16575), pin state `pinnedIn`/`PIN_MAX`/`applyPin`/`pinFeedback`/`pinSeq` (~16612–16634)
-- Profile page `profileHTML` (~16829–16901): own head (`+` `data-flow="create" data-mode="asset"` / `pf-uname` label (inert — no account switcher in V1) / `pf-menu` burger) vs viewer head (`sub-back` / `pf-more`), `TABS` own 5 (`all`/`sale`/`show`/`hide`/`sold` icon+label) vs viewer 3 (`all`/`sale`/`show`), avatar `pf-av` `data-pfav` + story ring, `pf-disp`, `pf-stat` (+`data-pfgo` บน followers/following, disable ตอน blocked), `pf-bio` (`pf-cat`/`pf-biot`/link chip `pf-link`/`pf-atch`), viewer `@username` chip + `pf-fby` followed-by row, actions row (own: `pf-edit`/`pf-share`/`pf-pfo` — viewer: `pf-foll`/`pf-msg` — blocked: `pf-unblock`), `pf-tabs`, `pfNavHTML` (own only — viewer profile = deep page ไม่มี nav ตาม SHELL-034)
+- Profile page `profileHTML` (~16829–16901): own head (`+` `data-flow="create" data-mode="asset"` / `pf-uname` label (inert — no account switcher in V1) / `pf-menu` gear icon) vs viewer head (`sub-back` / `pf-more`), `TABS` own 5 (`all`/`sale`/`show`/`hide`/`sold` icon+label) vs viewer 3 (`all`/`sale`/`show`), avatar `pf-av` `data-pfav` + story ring, `pf-disp`, `pf-stat` (+`data-pfgo` บน followers/following, disable ตอน blocked), `pf-bio` (`pf-cat`/`pf-biot`/link chip `pf-link`/`pf-atch`), viewer `@username` chip + `pf-fby` followed-by row, actions row (own: `pf-edit`/`pf-share`/`pf-pfo` — viewer: `pf-foll`/`pf-msg` — blocked: `pf-unblock`), `pf-tabs`, `pfNavHTML` (own only — viewer profile = deep page ไม่มี nav ตาม SHELL-034)
 - Tiles/empty: `pfTilesHTML` (~16813–16820 — `pf-tile` + stack badge (multi-photo) / clip play icon / `pf-pin` marker), `pfEmptyHTML` (~16821–16828 — `pf-cta` `data-flow="create" data-mode="asset"` เฉพาะ own `all` ว่าง)
 - Entries ไป profile: `[data-pf-user]` handler (~21778–21792 — `pushSub profile:{u}`) บน detail head/caption/comments/likes rows/`pv-seller`/search `sr-scard`/`pfollow` rows/settings mrow/chat item `ch-menu-act-btn`; feed `pfWho` (post-head avatar/who + `caption > b`); own `data-navgo="profile"` → `profile:{CP_ME.name}` (~21289); composer asset save lands `profile:{me}` (~20183, ~20307, ~20670); follow notification `type:"follow"` → `rpPush profile:{u}` (~17805)
 - Tab/grid handlers: `data-pfgo` → `pfollow:` (~21303–21311), `data-pftab` swap-in-place บน `profile:`/`pfollow:` (~21312–21332 — ไม่ re-slide, คง scroll), `pf-tile` → `openPostViewer(list, pid, 0, false, "Posts", u)` mode `pfp` + `scr._pinTab` (~21333–21347), pfollow slide-back-out-right (~20759)
@@ -122,7 +122,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 | Screen / State | Prototype | Description |
 | --- | --- | --- |
-| Owner Profile | `profile:{CP_ME.name}` + `profileHTML` own | head `+`/username/burger + Edit profile/Share profile/`.pf-pfo` + 5 tabs + grid |
+| Owner Profile | `profile:{CP_ME.name}` + `profileHTML` own | head `+`/username/gear + Edit profile/Share profile/`.pf-pfo` + 5 tabs + grid |
 | Public Profile | `profile:{username}` + `profileHTML` !own | head back/`...` + Follow|Following⌄/Chat + `@username` chip + followed-by + 3 tabs + grid |
 | Blocked Profile | `profile:{u}` isB | masked stats (`0`/`−`/`−`) + empty grid + single `Unblock` |
 | Followers / Following | `pfollow:{u}:{followers\|following}` + `pfollowHTML` | EN tab labels + live search + rows (Remove/… pill ตาม own/viewer) |
@@ -277,7 +277,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 - `+` (head) / `pf-cta` (empty all tab) → `data-flow="create" data-mode="asset"` → composer asset mode (canonical 04) → save กลับ `profile:{me}` + asset บนหัวกริด
 - `.pf-pfo` (wallet icon) → `portfolio` (canonical 04/14 — member-only; non-member เห็น `ไม่พบข้อมูล`)
-- `.pf-menu` (burger) → `settings` (entry เดียวของ Settings — canonical 00_NAV §7/13)
+- `.pf-menu` (gear icon `I.gear(22)` — NB-048, DEC-46) → `settings` (entry เดียวของ Settings — canonical 00_NAV §7/13)
 
 ---
 
@@ -296,7 +296,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | --- | --- | --- |
 | Head left | `+` → composer asset mode | `sub-back` |
 | Head center | `pf-uname` label (inert — V1 ไม่มี account switcher) | — |
-| Head right | `pf-menu` burger → `settings` | `pf-more` `...` |
+| Head right | `pf-menu` gear → `settings` | `pf-more` `...` |
 | Actions | `แก้ไขโปรไฟล์`/`Edit profile` + `แชร์โปรไฟล์`/`Share profile` + `.pf-pfo` wallet | `ติดตาม`/`Follow` ↔ `กำลังติดตาม ⌄`/`Following ⌄` + `แชท`/`Chat` (DM จริง — `pfOpenChat`) — blocked: `เลิกบล็อก`/`Unblock` เดียว |
 | Tabs | `all`/`sale`/`show`/`hide`/`sold` (5) | `all`/`sale`/`show` (3) |
 | Extras | — | `pf-atch` @username chip + `pf-fby` followed-by |
@@ -379,7 +379,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 1. **Post-centric grid** — spec เดิม asset cards + quick actions; prototype `pf-tile` = โพสต์ (photos[0] + stack/clip/pin เท่านั้น)
 2. **ไม่มี Total Asset Value** บน profile — portfolio entry = `.pf-pfo` icon เท่านั้น (canonical 04)
-3. **Owner head** = `+`/username/burger→settings — ไม่มี `...` own menu / share-sheet เดิม (share = `pf-share` QR แยก)
+3. **Owner head** = `+`/username/gear→settings (`.pf-menu` = `I.gear(22)` — NB-048, DEC-46) — ไม่มี `...` own menu / share-sheet เดิม (share = `pf-share` QR แยก)
 4. **Public `all` leak** (S-14 canonical defect) — spec ใช้ canonical sale+show, flag defect ที่ §19
 5. **Blocked = keep-page** (canonical) — spec เดิมบอก unavailable/not-found state; prototype render constrained page
 6. **Block confirm = `blkSheet`** bottom sheet (ไม่มี Cancel row — dismiss ผ่าน backdrop) + `Block and report` — spec เดิม center `Block this user?` + Cancel
@@ -530,7 +530,7 @@ Contract-level (prototype ไม่มี analytics layer — เก็บ event
 
 | ID | Acceptance Criteria |
 | --- | --- |
-| AC-PROFILE-001 | Owner profile ต้องแสดง head `+` (composer asset) + username button + burger→settings และ actions `Edit profile`/`Share profile`/`.pf-pfo` |
+| AC-PROFILE-001 | Owner profile ต้องแสดง head `+` (composer asset) + username button + gear→settings (`.pf-menu` = `I.gear(22)` — NB-048, DEC-46) และ actions `Edit profile`/`Share profile`/`.pf-pfo` |
 | AC-PROFILE-002 | Viewer profile ต้องแสดง head `sub-back` + `pf-more` `...` และ actions `Follow`↔`Following ⌄` + `Chat` พร้อม `@username` chip และ `pf-fby` เมื่อมี followedBy |
 | AC-PROFILE-003 | Profile ต้องเปิดได้จาก `[data-pf-user]` ทุก surface (detail head/caption/comments/likes/pv-seller/search/pfollow/settings/chat) + feed `pfWho` + `data-navgo="profile"` + composer-save landing + follow notification |
 | AC-PROFILE-004 | `+` บน own head และ `pf-cta` บน empty `all` ต้องเปิด composer `data-flow="create" data-mode="asset"` และ save แล้วกลับ `profile:{me}` |

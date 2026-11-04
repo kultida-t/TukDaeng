@@ -93,7 +93,7 @@ Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `F
 
 ## Alerts feed / Settings / Board
 
-- Alerts feed types = Like, Comment, Follow, Watch Alert (`system` ถูกถอนออกจาก V1 ทั้งประเภท — DEC-41, supersede S-17)
+- Alerts feed types = Like, Comment, Follow, Watch Alert, System (3 subtypes: security / account status / announcements — DEC-43, supersede DEC-41 ที่เคยถอน `system` ออก)
 - Settings = IG-style six sections (S-05); Change Password in-app (S-28); Delete Account = two-page flow + login-to-restore (S-02/S-27)
 - Board is editorial magazine (S-01); FO users do not create/edit/delete articles in V1
 - Share (รวม article) เป็น member-only — guest เจอ Member Sheet (S-03); Article Like requires login

@@ -371,6 +371,15 @@ Card ไม่แสดงใน V1: FOR SALE/SHOWCASE type tag, price/condition
 - `#hashtag` → Search results (mode `results`, query = tag)
 - Feed card ไม่เปิด Post Viewer — viewer เปิดจาก grid tiles/notification เท่านั้น (AC-NAV-026)
 
+## View Counting Rule
+
+- Views stat (eye icon + count บน action row) นับแบบ **scroll-pass** ในช่วงแรก — early-stage rule ตาม NB-033 (`SourceInputs/requirements/2026-11-04-notebook-review-app-tukdaeng-09-10-2026.md`, DEC-45): card ที่โผล่ในวิวพอร์ต ≥55% (prototype: ส่วนที่เห็น ≥ `min(55% ของ card height, 120px)`) → `views +1`
+- **เลื่อนซ้ำนับซ้ำ** — card หลุดวิวพอร์ตแล้วเลื่อนกลับมาเห็นอีกครั้งนับเพิ่ม (prototype: flag `_vSeen` reset เมื่อ visibility = 0); จุดประสงค์ = ดันตัวเลขช่วงผู้ใช้ยังน้อย
+- Counter อัปเดตในที่ (in-place บน `.views-stat` — ไม่ re-render ทั้ง card); stat เป็น read-only ไม่ใช่ tap target
+- นับเฉพาะบน `.feed-scroll` เท่านั้น — surfaces อื่น (Post Viewer, Post Detail, profile grid, archive) ไม่เพิ่ม view
+- ไม่นับ/ไม่อัปเดตบนโพสต์ `hideCounts` (counter ซ่อนอยู่แล้วตาม Post Card Anatomy)
+- **Contract — planned transition:** เมื่อผู้ใช้มากขึ้นให้เปลี่ยนเป็นนับเฉพาะเมื่อผู้ใช้กดเข้า Post Detail (detail click) — เป็นการเปลี่ยน metric definition ในอนาคต ไม่ใช่พฤติกรรม V1 (DEC-45)
+
 ## Own-Post Menu Rule
 
 - เมนูแยกจาก others-post menu โดย `isOwnPost()` (seller = current user) — ใช้ sheet เดียวกันทุก surface
@@ -686,6 +695,7 @@ Owner fallback rules:
 | `ask_seller_tapped` | กด Ask pill (item-scoped chat) |
 | `post_followed` / `post_unfollowed` | follow/unfollow จาก feed surfaces |
 | `post_menu_opened` | เปิด `...` menu (own/others) |
+| `post_view_counted` | scroll-pass view นับบน feed card (View Counting Rule §9 — อนาคต = detail click) |
 | `favorites_added` / `favorites_removed` | toggle favorites จาก others menu |
 | `not_interested_marked` / `not_interested_undone` | Not interested + Undo |
 | `uncomfortable_marked` | `This post made me uncomfortable` |
