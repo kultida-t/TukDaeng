@@ -135,7 +135,7 @@ BO Dashboard
 | ฟีเจอร์ | คำอธิบาย |
 |---|---|
 | ดูรายการสินทรัพย์ทั้งหมด | Filter ตาม Status (Sale/Show/Hide/Sold/Flagged), Brand, ราคา, Owner |
-| ดูรายละเอียดสินทรัพย์ | ข้อมูลครบทุกฟิลด์ รวม Provenance, Consignment Info, Sale History |
+| ดูรายละเอียดสินทรัพย์ | ข้อมูลครบทุกฟิลด์ รวม Provenance, Consignment Info *(ถูกตัดตาม `DEC-51` — 2026-11-04)*, Sale History |
 | Force Hide / Restore Visibility | ซ่อน asset ชั่วคราวเพื่อ moderation เมื่อเข้าเงื่อนไข report/review และคืนสถานะหลังตรวจแล้วไม่ผิด |
 | Remove Asset | ลบสินทรัพย์ที่ละเมิด Policy (Soft Delete) |
 | Edit Asset Info | ไม่ใช่ V1 Admin action สำหรับ user-owned asset; Admin ดูข้อมูลแบบ read-only และแก้ได้เฉพาะ operational/moderation state ที่มี reason + audit |

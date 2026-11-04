@@ -183,7 +183,7 @@ Admin ต้องสามารถ:
 - Flag / Unflag asset
 - Remove asset แบบ soft delete
 - Force Hide / Restore Visibility สำหรับ moderation เท่านั้น
-- ดู Provenance, Proof of Payment, Consignment และ Sale History ตามสิทธิ์
+- ดู Provenance, Proof of Payment, Consignment *(ถูกตัดตาม `DEC-51` — 2026-11-04)* และ Sale History ตามสิทธิ์
 - ไม่แก้ข้อมูลประกาศของ user-owned asset โดยตรง และไม่เปลี่ยน `Sold` จาก BO quick action
 
 ### Asset Status Rules
