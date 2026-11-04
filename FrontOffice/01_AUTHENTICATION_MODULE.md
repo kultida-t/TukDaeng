@@ -1,6 +1,6 @@
 ﻿# 01 Authentication Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
 ---
 
@@ -13,11 +13,11 @@
 | Version | V1 |
 | Status | Draft |
 | Owner | Product / UX / Engineering |
-| Document Type | Functional PRD - Master Aligned |
+| Document Type | Functional PRD - Product Definition Aligned |
 
 # 2. Objective
 
-Authentication Module ใช้สำหรับ first-run onboarding, สมัครสมาชิก, เข้าสู่ระบบ, ยืนยัน OTP, ตั้งค่า profile เริ่มต้น, กู้รหัสผ่าน, เปลี่ยนรหัสผ่าน, ออกจากระบบ และ re-consent เมื่อ Terms of Use / Privacy Policy เปลี่ยน version โดยต้องรองรับ Email / Password, Sign in / Sign up with Apple และ Sign in / Sign up with Google ตาม master baseline
+Authentication Module ใช้สำหรับ first-run onboarding, สมัครสมาชิก, เข้าสู่ระบบ, ยืนยัน OTP, ตั้งค่า profile เริ่มต้น, กู้รหัสผ่าน, เปลี่ยนรหัสผ่าน, ออกจากระบบ และ re-consent เมื่อ Terms of Use / Privacy Policy เปลี่ยน version โดยต้องรองรับ Email / Password, Sign in / Sign up with Apple และ Sign in / Sign up with Google ตาม product baseline
 
 โมดูลนี้ต้องทำให้ Guest เปลี่ยนเป็น Member ได้อย่างถูกต้องผ่าน Member Sheet `Join TukDaeng` เป็น gateway เดียว ป้องกัน account duplication, ใช้ implied consent กับ Terms of Use และ Privacy Policy (legal text กำกับ action ไม่มี checkbox), จำกัดความพยายาม Sign In ผิดพลาดด้วย attempt counter + lockout, รักษา credential ที่สมัครให้ sign in กลับได้หลัง logout และจัดการบัญชี Suspended/Banned ให้เห็นเหตุผลพร้อมช่องทางติดต่อ Support
 
@@ -40,9 +40,9 @@ Source of truth สำหรับพฤติกรรม auth: `Prototypes/fo-
 - Sign out → session `guest` + Member Sheet gate ทันที — credential `fo_account` persist สำหรับ sign in กลับ
 - Prototype artifacts (demo account, demo OTP `123456`, dev replay/re-consent buttons, photo-picker toast) — demo-only ไม่ใช่ production requirement
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
 | Supported auth methods | Sign Up, Email OTP Verification, Profile setup, Sign In, Forgot Password, Change Password, Sign Out, Apple, Google |
 | First-run onboarding | แสดงครั้งเดียวก่อนเข้าแอป: splash → language → welcome → privacy notice → notification/track prompts → Member Sheet `Join TukDaeng` gateway |

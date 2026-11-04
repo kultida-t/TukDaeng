@@ -1,6 +1,6 @@
 # 10 Watch Alert Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §9–§10 (status/visibility — Sale-only match + `salePosts()` pfkind-leak defect note), §11 (guest gate = Member Sheet), §12 (lifecycle), §13 (block impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6 (layer/routes), §7 (entry matrix), §8 (`watch` notification destination), §9 (gate routing) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (`sr-wa` search entry + `waCriteriaFromSearch`/`waName` canonical — FSP-016 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (`mf-btn` detail entry + `modelKey` canonical — FSP-018 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (composer publish → `_waHits` toast — FSP-015b lock) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (`watch` alert feed row canonical — FSP-021) + [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (library row + `walerts` entry + notif toggle + delete-account copy — FSP-013/014 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §9–§10 (status/visibility — Sale-only match + `salePosts()` pfkind-leak defect note), §11 (guest gate = Member Sheet), §12 (lifecycle), §13 (block impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6 (layer/routes), §7 (entry matrix), §8 (`watch` notification destination), §9 (gate routing) + [03_SEARCH_FILTER_MODULE.md](03_SEARCH_FILTER_MODULE.md) (`sr-wa` search entry + `waCriteriaFromSearch`/`waName` canonical — FSP-016 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (`mf-btn` detail entry + `modelKey` canonical — FSP-018 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (composer publish → `_waHits` toast — FSP-015b lock) + [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (`watch` alert feed row canonical — FSP-021) + [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (library row + `walerts` entry + notif toggle + delete-account copy — FSP-013/014 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD - Master Aligned |
+| Document Type | Functional PRD - Product Definition Aligned |
 
 ---
 
@@ -43,9 +43,9 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Topic | Master Baseline | Watch Alert Module Rule |
+| Topic | Product Baseline | Watch Alert Module Rule |
 | --- | --- | --- |
 | Entry point | spec เดิม: Search Filter เท่านั้น | **3 entries เปิด shared sheet เดียวกัน**: `sr-wa` (search results head) + `mf-btn` `Follow this model` (Post Detail — canonical 05) + `Edit` บน `walerts` row (edit-only) — prototype wins |
 | Alert name | spec เดิม: required ตอน save ว่าง→block | **auto-name เสมอ** — `waName` prefill + save `trim() || waName(criteria)` regen; ไม่มี validation block (prototype wins — canonical entry อยู่ 03 §9) |

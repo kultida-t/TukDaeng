@@ -1,6 +1,6 @@
 # 00 Global Rules Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Status | Draft |
 | Owner | Product / UX / Engineering |
-| Document Type | Cross-Module Functional PRD - Master Aligned |
+| Document Type | Cross-Module Functional PRD - Product Definition Aligned |
 
 # 2. Objective
 
@@ -34,9 +34,9 @@ Global Rules Module เป็นเอกสารกลางสำหรับ
 - Blocked / Unavailable User State
 - Report Entry State
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
 | User model | User มี role เดียวหลังสมัคร ไม่แยก Buyer / Seller / Collector |
 | Context model | ใช้ Owner / Viewer / Guest เป็น context ไม่ใช่ role ถาวร |
@@ -54,7 +54,7 @@ Global Rules Module เป็นเอกสารกลางสำหรับ
 | Block | Asset ของผู้ถูก Block ต้องหายจาก Feed, Search, Watch Alert Result |
 | Report | Report ไม่ทำให้ Asset หายทันที จนกว่า Admin moderation |
 | Privacy | Private asset data เห็นเฉพาะ Owner หรือ Admin ตามสิทธิ์ |
-| Source of truth | ถ้าเอกสารอื่น conflict ให้ยึด master และ global rules นี้ก่อน |
+| Source of truth | ถ้าเอกสารอื่น conflict ให้ยึดลำดับ source of truth ตาม §15 |
 
 # 5. Scope
 
@@ -172,7 +172,7 @@ Owner/Viewer เป็น context ต่อ content ส่วน session (`membe
 - `Hide`
 - `Sold`
 
-ห้ามใช้ status model ซ้ำ เช่น `Available / Sold` แยกอีกชั้น หรือ legacy label ที่ทำให้ data model ขัดกับ master
+ห้ามใช้ status model ซ้ำ เช่น `Available / Sold` แยกอีกชั้น หรือ legacy label ที่ทำให้ data model ขัดกับ canonical baseline
 
 โพสต์บน feed ที่ไม่ผูก asset ใช้ kind `post` (feed-only post ไม่มี asset status) — ไม่นับเป็น asset status เพิ่ม แต่ต้องเข้าใจใน visibility matrix §10
 

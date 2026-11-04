@@ -1,6 +1,6 @@
 ﻿# 06 Profile Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§10 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (own-post menu + pin + follow canonical) + [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (drawer/`pfkind`/sold semantics + portfolio entry — FSP-017 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§10 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (own-post menu + pin + follow canonical) + [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (drawer/`pfkind`/sold semantics + portfolio entry — FSP-017 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD - Master Aligned |
+| Document Type | Functional PRD - Product Definition Aligned |
 
 ---
 
@@ -60,12 +60,12 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Topic | Master Baseline | Profile Module Rule |
+| Topic | Product Baseline | Profile Module Rule |
 | --- | --- | --- |
 | Profile type | Owner Profile + Public Profile | route `profile:{username}` sub-page (00_NAV §6.6) — own/viewer render จาก `profileHTML` เดียวกัน ต่าง head/actions/tabs |
-| Grid model | Asset tabs บน profile (master เดิม) | **post-centric**: grid = โพสต์ (`pfkind`) ไม่ใช่ asset entity — asset management/values อยู่ 04/14 เท่านั้น |
+| Grid model | Asset tabs บน profile (baseline เดิม) | **post-centric**: grid = โพสต์ (`pfkind`) ไม่ใช่ asset entity — asset management/values อยู่ 04/14 เท่านั้น |
 | Status model | `Sale`/`Show`/`Hide`/`Sold` (00_GLOBAL §9) | `pfkind` mirror ตาม canonical 04; `post` = โพสต์ทั่วไปไม่ผูก asset |
 | Visibility | 00_GLOBAL §10 + AC-GLOBAL-003 | public profile = เฉพาะ `Sale`+`Show`; owner = ทุก kind รวม `post`/`hide`/`sold` — prototype `all` leak ถือเป็น defect (S-14, §9/§19) |
 | Guest | 00_GLOBAL §11 | เปิด/browse public profile + grid→viewer + lists ได้ฟรี; identity actions → Member Sheet |
@@ -114,7 +114,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Notification internals — [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md) (FSP-021); เอกสารนี้ระบุเฉพาะ profile-related notif types
 - External deep-link routing/unavailable states — contract 00_NAV §10
 - Member Sheet internals — 00_GLOBAL §11 / 01_AUTH
-- BO moderation — master contract เท่านั้น
+- BO moderation — contract เท่านั้น (prototype ไม่ครอบ)
 
 ---
 

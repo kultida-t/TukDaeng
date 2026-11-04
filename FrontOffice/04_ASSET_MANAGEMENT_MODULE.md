@@ -1,6 +1,6 @@
 ﻿# 04 Asset Management Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§8 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / composer / own-post menu canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §9–§12/§14 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6–§8 + [02_FEED_MODULE.md](02_FEED_MODULE.md) (post model / composer / own-post menu canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD - Master Aligned |
+| Document Type | Functional PRD - Product Definition Aligned |
 
 ---
 
@@ -42,9 +42,9 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
 | Status model | canonical `Sale`/`Show`/`Hide`/`Sold` เท่านั้น (00_GLOBAL §9); โพสต์ feed-only ใช้ kind `post` ไม่นับเป็น asset status |
 | Visibility | ตาม 00_GLOBAL §10 — Feed = `sale` + `post`; Search/Watch Alert = `Sale` เท่านั้น; Public Profile = `Sale`+`Show`; Owner เห็นทุกสถานะ |
@@ -84,7 +84,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Market Data / option-master spec options / `ระบุเอง` free-text promotion flow — ไม่มีใน V1 prototype (fields เป็น free-text ล้วน) — contract/future เท่านั้น (§9 Spec Free-Text Rule, §18)
 - Provenance / Consignment entity — ไม่มีใน V1 (sign-off เดิม)
 - Payment ในแอป / transaction — Phase 1 ไม่มี
-- BO moderation surfaces (ซ่อนถาวร / ซ่อนชั่วคราว) — master contract เท่านั้น prototype ไม่มี (§9 Contract Notes)
+- BO moderation surfaces (ซ่อนถาวร / ซ่อนชั่วคราว) — contract เท่านั้น (prototype ไม่ครอบ) (§9 Contract Notes)
 
 ---
 
@@ -354,7 +354,7 @@ Post-side linkage:
 - Delete ทำที่ post level เสมอ (ไม่มี delete บน drawer surfaces): own-post menu `Delete` → confirm `Delete post?`/`This post will be permanently deleted.`/`Delete`/`Cancel` → permanent (canonical 02_FEED Delete Rule)
 - ผลตาม prototype: โพสต์ออกจาก `POSTS`/`PF_GFX_REG` + ทุก surface element + toast `Post deleted` — **drawer record (`PF_ASSETS`/`PF_SOLD`) ไม่ถูกลบตาม** → sold history ยังครบ, portfolio asset กลาย orphan (assetId dangling — deviation, contract ด้านล่าง)
 - Drawer-only post (`PF_MINE`) delete = no-op ใน prototype (handler หาใน `POSTS`/`PF_GFX_REG` เท่านั้น — ไม่มี effect, ไม่มี toast) — deviation
-- Contract (ตาม master — prototype ไม่ครอบ): ลบ asset ต้องเอาออกจาก owner list + public surfaces ทั้งหมด + ไม่รวม portfolio; backend/BO เก็บ record ตาม retention + audit (owner delete, before/after, timestamp); ไม่ใช่ hard delete ทันทีเว้นแต่ policy
+- Contract (prototype ไม่ครอบ): ลบ asset ต้องเอาออกจาก owner list + public surfaces ทั้งหมด + ไม่รวม portfolio; backend/BO เก็บ record ตาม retention + audit (owner delete, before/after, timestamp); ไม่ใช่ hard delete ทันทีเว้นแต่ policy
 
 ## Private Data Rule
 
@@ -365,7 +365,7 @@ Post-side linkage:
 
 ## BO Moderation States (contract — prototype ไม่มี)
 
-- ซ่อนถาวร/ซ่อนชั่วคราวจาก BO: master contract เดิมยังใช้ (owner เห็น read-only `ถูกซ่อนถาวรโดยผู้ดูแล`, ไม่ public, ไม่รวม portfolio, chat อยู่) — แต่ prototype ไม่มี surface ใด ๆ; implementation ต้อง map เข้า status model โดยไม่แตะ canonical 4 statuses
+- ซ่อนถาวร/ซ่อนชั่วคราวจาก BO: contract เดิมยังใช้ (owner เห็น read-only `ถูกซ่อนถาวรโดยผู้ดูแล`, ไม่ public, ไม่รวม portfolio, chat อยู่) — แต่ prototype ไม่มี surface ใด ๆ; implementation ต้อง map เข้า status model โดยไม่แตะ canonical 4 statuses
 - Owner ไม่มีสิทธิ์ delete/edit/sell asset ที่ถูกซ่อนถาวร (contract)
 
 ## Lifecycle Impact (post/asset transitions)
@@ -595,7 +595,7 @@ Contract (prototype ไม่มี tracking layer — mark contract เหม�
 
 - Structured spec options: Market Data autocomplete (brand/model/reference), `spec_options` option master + `ระบุเอง` free-text promotion + suggestion pool + seed files — contract เมื่อ market-data model พร้อม (spec เดิมเก็บเป็น reference: relation `*_id` + `*_snapshot` + BO curation flow)
 - Bulk Upload / Asset Import / QR Asset Verification / Watch Authentication Service
-- Provenance / Consignment (ถ้า master เพิ่ม entity)
+- Provenance / Consignment (ถ้า product baseline เพิ่ม entity)
 - Sale record extended fields (Buyer / Contact / Payment Method / Attachment) — ถ้า product ต้องการ record ละเอียดกว่า price+date
 - Persistence ของ drawer/sold records (ปัจจุบัน session memory)
 - Un-sold / sale record correction flow ที่มี audit trail

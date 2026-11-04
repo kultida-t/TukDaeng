@@ -1,6 +1,6 @@
 ﻿# 13 Settings Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
 ---
 
@@ -10,10 +10,10 @@
 | --- | --- |
 | Module Name | Settings |
 | Version | 1.0 |
-| Status | Functional PRD - Master Aligned |
+| Status | Functional PRD - Product Definition Aligned |
 | Owner | Tuk Daeng Project |
 | Document Type | Front Office Functional PRD |
-| Source of Truth | TukDaeng Master Product Definition |
+| Source of Truth | `PRODUCT_DEFINITION.md` |
 
 ---
 
@@ -33,9 +33,9 @@ Settings Home ใช้โครง `Settings and activity` แบบ 6 sections
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Topic | Master Baseline | Settings Module Rule |
+| Topic | Product Baseline | Settings Module Rule |
 | --- | --- | --- |
 | Profile Edit | Edit Profile, Username, Phone, Line | Edit profile entry = own profile page เท่านั้น (06_PROFILE — S-05); contact fields Username/Phone/Line = contract-only (prototype ไม่มี contact rows — gap 004 B10) |
 | Email | Email Display | contract-only — prototype ไม่มี email row ใน Settings; email ที่ verify แล้วเปลี่ยนไม่ได้ตาม Auth rule |
@@ -48,7 +48,7 @@ Settings Home ใช้โครง `Settings and activity` แบบ 6 sections
 | Consent | Required + optional consent | Optional consent (Analytics / Personalized) เปลี่ยนได้ที่ Settings > Privacy & cookies — contract (canonical consent model 00_GLOBAL §8) |
 | Session | Sign Out | Row `Log out` + confirmation → session `guest` + toast + Member Sheet (canonical flow 01_AUTH §8 Sign Out) |
 | Account | About your account, Delete Account | About your account = hero + account info + Security (Change password) + Account management (Delete account = 2-page flow + password confirm + scheduled dialog → session `guest` — S-27) |
-| Source of Truth Conflict | เอกสารเดิมบอก Language/Dark Mode/Delete Account ยังไม่มี | ให้ยึด master ล่าสุดเป็นหลัก |
+| Source of Truth Conflict | เอกสารเดิมบอก Language/Dark Mode/Delete Account ยังไม่มี | ให้ยึด baseline ล่าสุดเป็นหลัก |
 
 ---
 
@@ -80,7 +80,7 @@ Settings Home ใช้โครง `Settings and activity` แบบ 6 sections
 - Delete Account failure path / network error states / restore-failed support state (prototype: รหัสผ่านถูก = success เสมอ ไม่มี failure path และไม่มี deleted-state check ที่ sign in — login-to-restore เป็น spec contract ตาม S-02)
 - Analytics events ทั้งเล่ม (ไม่มี tracking layer ใน prototype)
 
-## Out of Scope For V1 Unless Master Adds Decision
+## Out of Scope For V1 Unless Product Baseline Adds Decision
 
 - Device Management
 - Login History
@@ -389,7 +389,7 @@ About app must not include:
 ## Legal Rule
 
 - Privacy Policy และ Terms of Use เปิดเป็น in-app legal pages (scrollable sections) จาก Settings > More info and support — ไม่ใช่ external link
-- Label ต้องใช้ `Privacy Policy` และ `Terms of Use` ตาม master (TH `นโยบายความเป็นส่วนตัว` / `ข้อกำหนดการใช้งาน`)
+- Label ต้องใช้ `Privacy Policy` และ `Terms of Use` ตาม `PRODUCT_DEFINITION.md` §5 (TH `นโยบายความเป็นส่วนตัว` / `ข้อกำหนดการใช้งาน`)
 - Prototype content (placeholder-grade — production ต้องเป็น legal text จริงพร้อม version + effective date ตาม canonical legal viewer 00_GLOBAL §8):
   - Privacy Policy = 4 sections: `1. Information We Collect` / `2. How We Use Information` / `3. Data Protection & Retention` / `4. Your Rights`
   - Terms of Use = 3 sections: `1. Agreement to Terms` / `2. Listing Authenticity` / `3. Termination & Deactivation`
@@ -419,7 +419,7 @@ About app must not include:
 
 ## Delete Account Rule
 
-- Delete Account อยู่ใน V1 master baseline; entry = `About your account` > `การจัดการบัญชี` / `Account management` > `ลบบัญชีผู้ใช้` / `Delete account` danger row เท่านั้น — ไม่มีบน Settings Home โดยตรง
+- Delete Account อยู่ใน V1 product baseline; entry = `About your account` > `การจัดการบัญชี` / `Account management` > `ลบบัญชีผู้ใช้` / `Delete account` danger row เท่านั้น — ไม่มีบน Settings Home โดยตรง
 - Flow = 2-page flow + password confirmation dialog + scheduled dialog (S-27 — adopt prototype structure)
 
 ### Step 1 — Terms page (`del_account` step 1)
@@ -616,9 +616,9 @@ Settings Module ไม่มี empty state เฉพาะสำหรับ V1
 
 # 14. Notification Rules
 
-Settings Module ไม่สร้าง notification ใน master baseline
+Settings Module ไม่สร้าง notification ใน product baseline
 
-Security alert, password changed notification หรือ delete account notification เป็น future / Needs Decision เว้นแต่ master เพิ่ม scope
+Security alert, password changed notification หรือ delete account notification เป็น future / Needs Decision เว้นแต่ product baseline เพิ่ม scope
 
 ---
 

@@ -11,7 +11,7 @@
 
 # 1. Purpose
 
-ไฟล์นี้เป็น index สำหรับชุดเอกสาร PRD ของ TukDaeng App หลังแตก master เป็นรายโมดูลแล้ว ใช้บอกทีม Product, UX, Dev และ QA ว่าแต่ละไฟล์ควรใช้เมื่อไร และควรอ่านลำดับไหนก่อนส่งต่อ implementation หรือ design sign-off
+ไฟล์นี้เป็น index สำหรับชุดเอกสาร PRD ของ TukDaeng App ที่ยุบเอกสาร product-level เข้า `PRODUCT_DEFINITION.md` และแตกเป็น module specs รายโมดูล ใช้บอกทีม Product, UX, Dev และ QA ว่าแต่ละไฟล์ควรใช้เมื่อไร และควรอ่านลำดับไหนก่อนส่งต่อ implementation หรือ design sign-off
 
 สำหรับรอบส่งต่อ Dev วันที่ 2026-06-22 ให้ถือว่าชุดเอกสารนี้เป็น baseline ใหม่ทั้งชุดสำหรับแทนเอกสารเก่าที่ Dev เคยใช้ก่อนหน้า ไม่ใช่เฉพาะรายการที่เพิ่งเพิ่มในวันเดียวกัน
 
@@ -78,8 +78,8 @@
 
 ชุดเอกสารถือว่าพร้อมส่งต่อเมื่อ:
 
-- ทุก module มี Master Alignment Summary
-- Acceptance Criteria ครบตาม master baseline
+- ทุก module มี Product Alignment Summary
+- Acceptance Criteria ครบตาม product baseline
 - Checklist รวมไม่มี section legacy ที่ซ้ำกับ module-level checklist
 - Dev / QA รับทราบ source-of-truth order ในไฟล์นี้
 - Dev ใช้ [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md) เป็น checklist ก่อนแตก ticket implementation
@@ -87,15 +87,15 @@
 
 # 6. Product Decision Review
 
-รายการนี้เป็นข้อสรุปรีวิวเชิง product สำหรับประเด็นที่ยังค้างจาก PRD ชุด `00-18` ใช้เป็น recommendation สำหรับ V1 ก่อนนำไป approve และ update master / PRD ที่เกี่ยวข้อง
+รายการนี้เป็นข้อสรุปรีวิวเชิง product สำหรับประเด็นที่ยังค้างจาก PRD ชุด `00-18` ใช้เป็น recommendation สำหรับ V1 ก่อนนำไป approve และ update `PRODUCT_DEFINITION.md` / module spec ที่เกี่ยวข้อง
 
 | Decision Item | Recommended V1 Decision | Rationale | Required Follow-up |
 | --- | --- | --- | --- |
-| Asset สถานะ `Show` จะให้ Chat / Contact Seller ได้ไหม | ไม่ให้ใน baseline ปัจจุบัน — Chat เป็น listing-scoped เข้าได้ผ่าน `Ask Seller` บน sale post เท่านั้น (S-07/07_CHAT); `Show` ยังไม่ขึ้น Feed, Search หรือ Watch Alert | prototype ไม่มี chat entry บน `Show`; Chat ผูก user+item (listing) เสมอ จึงไม่มี user→user chat เปล่า ๆ — decision เดิมที่ให้ `Show` contact ได้ถูก supersede ตอน sync FO-PRD-v1.9 | Master และ module PRD อัปเดตแล้ว |
-| Post-block chat behavior | เก็บ chat history เดิมให้อ่านได้ แต่ปิดการส่งข้อความใหม่และปิดการสร้าง chat ใหม่ระหว่างคู่ที่ block กัน | Block ต้องซ่อน asset จาก public surfaces; การเก็บ history ช่วย preserve record ส่วนการปิดข้อความใหม่ลด abuse risk | Master และ Chat / Trust Safety PRD อัปเดตแล้ว |
-| Notification type นอก baseline เช่น chat/new message/moderation แยกชนิด/market/price | ไม่อยู่ใน Front Office V1 Alerts feed (เดิมเรียก Notification Center); supported types = Like, Comment, Follow, Watch Alert, System — `system` คืนเข้า V1 ด้วย 3 subtypes security/account status/announcements (DEC-43, supersede DEC-41; account status อยู่ใต้ system subtype ไม่ใช่ type แยก) | Master lock notification baseline ไว้ชัด และ Chat/New Message แจ้งเตือนเฉพาะในเมนู Chat ด้วย unread badge/count | ย้ายเป็น Chat badge / Future / Back Office / master decision |
-| Future menu items เช่น Watch Shops, Repair Shop, Auction Center, Consignment Center, Authentication Center | ไม่เปิดเป็น active menu ใน production V1; ถ้าต้องแสดงใน prototype ให้ mark เป็น Future / Placeholder ชัดเจน | Master ยังไม่สรุปเป็น functional scope หลัก และบางรายการอยู่ใน Phase 1 exclusions เช่น Auction / Live Selling / Watch Authentication | ห้าม Dev implement เป็น active route จนกว่า master เพิ่ม scope |
-| Full Back Office PRD | ยังไม่เริ่มจนกว่า FO baseline จะครบและ sign-off พร้อม; ตอนนี้ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary ก่อน | Master ระบุ Admin ผ่าน Web Back Office เท่านั้น แต่ mobile app ต้องรู้ handoff เช่น Report, Moderation, Audit Trail; ไม่ควรปนกับ FO mobile PRD | หลัง FO master/module PRD, Dev checklist และ QA checklist นิ่งแล้ว ค่อยเปิด Back Office sprint และจัดทำ Full BO PRD แยก |
+| Asset สถานะ `Show` จะให้ Chat / Contact Seller ได้ไหม | ไม่ให้ใน baseline ปัจจุบัน — Chat เป็น listing-scoped เข้าได้ผ่าน `Ask Seller` บน sale post เท่านั้น (S-07/07_CHAT); `Show` ยังไม่ขึ้น Feed, Search หรือ Watch Alert | prototype ไม่มี chat entry บน `Show`; Chat ผูก user+item (listing) เสมอ จึงไม่มี user→user chat เปล่า ๆ — decision เดิมที่ให้ `Show` contact ได้ถูก supersede ตอน sync FO-PRD-v1.9 | Product baseline และ module PRD อัปเดตแล้ว |
+| Post-block chat behavior | เก็บ chat history เดิมให้อ่านได้ แต่ปิดการส่งข้อความใหม่และปิดการสร้าง chat ใหม่ระหว่างคู่ที่ block กัน | Block ต้องซ่อน asset จาก public surfaces; การเก็บ history ช่วย preserve record ส่วนการปิดข้อความใหม่ลด abuse risk | Product baseline และ Chat / Trust Safety PRD อัปเดตแล้ว |
+| Notification type นอก baseline เช่น chat/new message/moderation แยกชนิด/market/price | ไม่อยู่ใน Front Office V1 Alerts feed (เดิมเรียก Notification Center); supported types = Like, Comment, Follow, Watch Alert, System — `system` คืนเข้า V1 ด้วย 3 subtypes security/account status/announcements (DEC-43, supersede DEC-41; account status อยู่ใต้ system subtype ไม่ใช่ type แยก) | Product baseline lock notification types ไว้ชัด และ Chat/New Message แจ้งเตือนเฉพาะในเมนู Chat ด้วย unread badge/count | ย้ายเป็น Chat badge / Future / Back Office / product decision |
+| Future menu items เช่น Watch Shops, Repair Shop, Auction Center, Consignment Center, Authentication Center | ไม่เปิดเป็น active menu ใน production V1; ถ้าต้องแสดงใน prototype ให้ mark เป็น Future / Placeholder ชัดเจน | Product baseline ยังไม่สรุปเป็น functional scope หลัก และบางรายการอยู่ใน Phase 1 exclusions เช่น Auction / Live Selling / Watch Authentication | ห้าม Dev implement เป็น active route จนกว่า product baseline เพิ่ม scope |
+| Full Back Office PRD | ยังไม่เริ่มจนกว่า FO baseline จะครบและ sign-off พร้อม; ตอนนี้ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary ก่อน | `PRODUCT_DEFINITION.md` ระบุ Admin ผ่าน Web Back Office เท่านั้น แต่ mobile app ต้องรู้ handoff เช่น Report, Moderation, Audit Trail; ไม่ควรปนกับ FO mobile PRD | หลัง FO `PRODUCT_DEFINITION.md`/module PRD, Dev checklist และ QA checklist นิ่งแล้ว ค่อยเปิด Back Office sprint และจัดทำ Full BO PRD แยก |
 
 # 7. Remaining Decision Items
 

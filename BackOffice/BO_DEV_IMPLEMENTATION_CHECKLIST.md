@@ -84,7 +84,7 @@ Recommended note format:
 | Field | Detail |
 | --- | --- |
 | Prototype Reference | `Prototypes/bo-prototype.html` > Dashboard default screen |
-| Spec Reference | `02_DASHBOARD_MODULE.md`, `BO_PRD.md` section 4.2, `PRD/DASHBOARD_UX_TEST_CASES.md` |
+| Spec Reference | `02_DASHBOARD_MODULE.md` (canonical); legacy (superseded): `BO_PRD.md` §4.2, `../PRD/DASHBOARD_UX_TEST_CASES.md` |
 | Data Needed | Dashboard snapshot API should provide `lastUpdated`, KPI metrics, KPI chips, work queues, recent activities, status panels, top searched brands, and drill-in metadata. |
 | Route / Drill-in | KPI cards, metric chips, Work Queue rows, Recent Activity rows, and Dashboard Panel rows must navigate to the related BO module/submodule with the equivalent filter context. |
 | State Handling | Dev must implement section-level loading, empty, partial error, full error, stale data warning, and unauthorized section hiding. Prototype currently uses mock data only. |
@@ -361,7 +361,7 @@ Recommended note format:
 - [ ] Broadcast ต้องรองรับ Draft, Pending Approval, Scheduled, Sending, Sent, Cancelled และ Failed
 - [ ] Broadcast ต้องมี title, body, optional image, channel, target audience, deep link, send now/schedule และ preview
 - [ ] Broadcast ที่ส่งถึงผู้ใช้จริงต้องผ่าน Admin approval
-- [ ] Generic Broadcast ห้ามแสดงใน FO Notification Center จนกว่า master decision เพิ่ม scope หรือ mapping ชัดเจน
+- [ ] Generic Broadcast ห้ามแสดงใน FO Notification Center จนกว่า product decision เพิ่ม scope หรือ mapping ชัดเจน
 - [ ] System trigger ต้องรองรับ Like, Comment, Follow และ Watch Alert
 - [ ] FO Notification Center ต้องรองรับเฉพาะ Like, Comment, Follow และ Watch Alert ตาม V1 baseline
 - [ ] Chat / New Message ต้องไม่เข้า Notification Center และใช้ Chat badge/count เท่านั้น

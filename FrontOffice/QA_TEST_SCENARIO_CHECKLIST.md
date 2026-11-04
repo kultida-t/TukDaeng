@@ -3,14 +3,14 @@
 | Field | Value |
 | --- | --- |
 | Document | QA Test Scenario Checklist |
-| Version | 2.0 — synced to FO-PRD-v1.10 (FSP-027; consent copy + AC-AUTH-031 added in v1.10) |
+| Version | 2.0 — synced to FO-PRD-v1.14 (v2.0 เดิม FSP-027 · item syncs ถึง v1.13 · doc-tier refs v1.14) |
 | Status | Active |
 | Owner | QA Team |
-| Source of truth | `Prototypes/fo-flow` (locked) + `TukDaeng_Master_Product_Definition.md` §16 Sync Decision Log |
+| Source of truth | `Prototypes/fo-flow` (locked) + module specs `00`–`18` (decision history: `TukDaeng_Master_Product_Definition.md` §16 — archived) |
 
 ## Purpose
 
-This document is the QA execution checklist for Front Office V1. Each scenario maps to the canonical module specs (`00`–`17`) and the Master §16 Sync Decision Log. Any behavior that conflicts with the locked `fo-flow` prototype + Master §16 has been removed from this checklist — see §1.3 Removed Behaviors for the full guard list.
+This document is the QA execution checklist for Front Office V1. Each scenario maps to the canonical module specs (`00`–`18`) — decision history อ้าง archived master §16 Sync Decision Log. Any behavior that conflicts with the locked `fo-flow` prototype + spec baseline has been removed from this checklist — see §1.3 Removed Behaviors for the full guard list.
 
 ## Conventions
 

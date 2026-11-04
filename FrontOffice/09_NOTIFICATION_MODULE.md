@@ -1,6 +1,6 @@
 # 09 Notification Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §11 (guest gate = Member Sheet + empty state), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6 (layer/nav/badge), §7 (entry matrix), §8 (notification destination matrix — canonical), §9 (gate routing), §10 (unavailable fallback) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (follow notif → `profile:{user}` + `pfSetFollow`/`pfIsFollowed` canonical — FSP-019 lock) + [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (chat = badge-only ไม่ใช่ alert type — FSP-020 lock) + [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (`notif_settings` page + library row canonical — FSP-013/014 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session), §11 (guest gate = Member Sheet + empty state), §13 (block/report impact), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6 (layer/nav/badge), §7 (entry matrix), §8 (notification destination matrix — canonical), §9 (gate routing), §10 (unavailable fallback) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (follow notif → `profile:{user}` + `pfSetFollow`/`pfIsFollowed` canonical — FSP-019 lock) + [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (chat = badge-only ไม่ใช่ alert type — FSP-020 lock) + [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (`notif_settings` page + library row canonical — FSP-013/014 lock) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Owner | Product / UX / Engineering |
 | Status | Draft |
-| Document Type | Functional PRD - Master Aligned |
+| Document Type | Functional PRD - Product Definition Aligned |
 
 ---
 
@@ -44,9 +44,9 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Topic | Master Baseline | Notification Module Rule |
+| Topic | Product Baseline | Notification Module Rule |
 | --- | --- | --- |
 | Supported types | Like, Comment, Follow, Watch Alert + System | 5 types — `system` คืนเข้า V1 ตาม requirement NB-046 ด้วย 3 subtypes (security / account status / announcements) + destinations จริง + dismiss `x` (DEC-43 — supersede DEC-41) |
 | Category filter | — | filter chips `ทั้งหมด`/`ระบบ`/`กิจกรรม`/`Watch Alert` บน Alerts feed ตาม NB-046 (DEC-43) — page-local filter |
@@ -495,7 +495,7 @@ Prototype ไม่ generate rows (seed เท่านั้น) — ตาร�
 
 # 18. Future Enhancement
 
-- `system` subtype coverage เพิ่มเติม (security/account activity pages ใหม่, `dest` ใหม่ ๆ) + `system` toggle ใน `notif_settings` ถ้าต้องการ opt-out — ตาม master decision
+- `system` subtype coverage เพิ่มเติม (security/account activity pages ใหม่, `dest` ใหม่ ๆ) + `system` toggle ใน `notif_settings` ถ้าต้องการ opt-out — ตาม product decision
 - Notification generation pipeline (real triggers → rows; server-side feed)
 - Push notification (FCM) + deep link → destination matrix (00_NAV §12 contract)
 - Toggle enforcement จริง (`state.notif` → generation/filtering) — persist ทำแล้ว

@@ -1,6 +1,6 @@
 # 03 Search & Filter Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7/§9–§12 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6–§9 — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7/§9–§12 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6–§9 — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Status | Draft |
 | Owner | Product / UX / Engineering |
-| Document Type | Functional PRD - Master Aligned |
+| Document Type | Functional PRD - Product Definition Aligned |
 
 # 2. Objective
 
@@ -42,9 +42,9 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Language re-render รักษา scroll ของ viewer/sub page (~19700–19723)
 - Dead/untriggered (ห้ามเขียนเป็น feature): `S.sort` (`plo`/`phi`/`pop` ไม่มี control), `S.err` (error block + `sr-retry` render ได้แต่ไม่มี code path ใด set `err = true`), `POST_DETAIL_CFG`, explore tall-tile/views badge (decorative index 2/3/7), recents seed rows (mock ไม่ใช่ history จริง), coach-mark copy `.search-btn` (onboarding artifact)
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
 | Search entry | Search icon บน app header ของ feed shell → `search` sub page (root ของ `_subStack`) — ไม่ใช่ bottom-nav tab (00_NAV §6.4/§6.6) |
 | Result model | Photo grid (`xp-tile`) → Post Viewer — **ไม่ใช่** feed card / asset card (post-centric, S-09) |

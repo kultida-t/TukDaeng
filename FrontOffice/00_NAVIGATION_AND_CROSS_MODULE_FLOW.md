@@ -1,6 +1,6 @@
 # 00 Navigation And Cross-Module Flow
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Status | Draft |
 | Owner | Product / UX / Engineering |
-| Document Type | Cross-Module Functional PRD - Master Aligned |
+| Document Type | Cross-Module Functional PRD - Product Definition Aligned |
 
 # 2. Objective
 
@@ -36,9 +36,9 @@ Source of truth สำหรับพฤติกรรม navigation: `Prototyp
 - Member Sheet `Join TukDaeng` — guest gate
 - Report flow — full-page multi-step stack
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
 | App shell | Bottom nav 5 แท็บ (Feed / Chat / Boards / Alerts / Profile); Search, Watch Alerts และ Create เป็น header entries ไม่ใช่ nav tab |
 | Destination model | Post Detail (`.page-detail`) = asset-detail equivalent; Post Viewer (`.page-pv`) = immersive viewer — ไม่มี "Asset Detail" แยกเป็น page ของตัวเอง |
@@ -78,7 +78,7 @@ Source of truth สำหรับพฤติกรรม navigation: `Prototyp
 - Native OS routing implementation
 - Push notification technical payload contract
 - Back Office navigation
-- Future services not in master baseline
+- Future services not in product baseline
 - เนื้อหาภายใน sub page แต่ละหน้า (อยู่ใน module spec ของตัวเอง)
 
 # 6. App Shell & Navigation Model
@@ -251,7 +251,7 @@ Alerts tab (`alerts` sub page) — แตะ row แล้ว mark read + sync b
 
 Follow + System rows เท่านั้นที่มี dismiss (X); `Follow back` button เฉพาะ follow — รายละเอียด UI อยู่ 09_NOTIFICATION; Mark all as read อยู่บน section header แรก
 
-Notification types outside this list are not in V1 unless master is updated
+Notification types outside this list are not in V1 unless product baseline is updated
 
 # 9. Login-Required Gate Routing
 
@@ -298,7 +298,7 @@ Unavailable / permission fallback screen CTA:
 
 # 11. Menu Scope Rules
 
-The following menu items are outside current master baseline and must not be treated as implemented V1 modules without product decision:
+The following menu items are outside current product baseline and must not be treated as implemented V1 modules without product decision:
 
 - Watch Brands
 - Watch Price Index
@@ -407,7 +407,7 @@ Prototype-only artifacts (ไม่ใช่ spec feature): design variants ใ�
 | AC-NAV-011 | Deleted Asset deep link shows `รายการนี้ไม่พร้อมใช้งานแล้ว` (contract) |
 | AC-NAV-012 | Chat remains accessible when related Asset is deleted or Sold |
 | AC-NAV-014 | Blocked users/assets do not render in Feed, Search or Watch Alert matching; blocked profile renders keep-page with empty grid + Unblock |
-| AC-NAV-015 | Drawer items outside master baseline render as enabled-looking placeholder rows — tap shows placeholder toast, never an active route |
+| AC-NAV-015 | Drawer items outside product baseline render as enabled-looking placeholder rows — tap shows placeholder toast, never an active route |
 | AC-NAV-016 | Deep links validate auth, permission, asset status, deletion and block state before rendering (contract) |
 | AC-NAV-016A | Deep link ของ Asset `Hide` หรือ `Sold` ที่เปิดโดย non-owner ต้องแสดง Permission Denied / Unavailable state ไม่ใช่เปิด private detail (contract) |
 | AC-NAV-016B | Owner เปิด deep link ของ Asset ตัวเองที่ `Hide` หรือ `Sold` ต้องแสดง Owner-only detail (contract) |

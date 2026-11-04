@@ -9,7 +9,7 @@
 
 เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
-เอกสารอ้างอิง: `BO_PRD.md`, `BO_Spec.md`
+เอกสารอ้างอิง: `00_GLOBAL_RULES_MODULE.md`, `BO_MASTER_BASELINE.md`; legacy (superseded DOC-010): `BO_PRD.md`, `BO_Spec.md`
 
 ## 1. Document Information
 

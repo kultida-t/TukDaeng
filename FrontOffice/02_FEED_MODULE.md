@@ -1,6 +1,6 @@
 ﻿# 02 Feed Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7/§9–§12 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6–§9 — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7/§9–§12 + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6–§9 — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Version | V1 |
 | Status | Draft |
 | Owner | Product / UX / Engineering |
-| Document Type | Functional PRD - Master Aligned |
+| Document Type | Functional PRD - Product Definition Aligned |
 
 # 2. Objective
 
@@ -47,9 +47,9 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - `PF_MINE` drawer-only post store (~16574–16577); `pfKind`/`PFO_STATUS` (~16380, ~16604); `refreshPostViews` (~13938–13964)
 - Dead variants/artifacts (ห้ามเขียนเป็น feature — ตาม 00_NAV §6.4): card `a2/b2/c2/a3/b3/c3/mixed`, `ft:"none"` brand-menu dropdown, `chat-fab`/`chatPopHTML` (`ask:"bubble"` unreachable), `POST_DETAIL_CFG`, `lk-follow` visual-only toggle; composer dead affordances: camera tile, `Recents` dropdown, expand icon → toast `Not in this prototype yet`
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Area | Master Baseline |
+| Area | Product Baseline |
 | --- | --- |
 | Feed model | Post-centric social feed — โพสต์ `Sale` + โพสต์ `post` (ไม่ผูก asset); ไม่ใช่ marketplace Sale-only list (S-09, 00_GLOBAL §9/§10) |
 | Feed eligibility | ไม่แสดงโพสต์ที่ viewer ติด exclusion: not-interested / muted / blocked / archived; โพสต์ที่ผูก asset สถานะ `Show`/`Hide`/`Sold` หลุดจาก feed |

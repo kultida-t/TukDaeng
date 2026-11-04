@@ -1,6 +1,6 @@
 ﻿# 15 Trust & Safety Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng`), §13 (block/report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.1 (canonical destination terms — Report Stack), §6.2 (layer model), §6.6 (sub-page route map `report:*`), §6.7 (in-app back — `sub-x` ปิดทั้งกอง), §9 (gate routing), §10 (unavailable fallback) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (canonical shared surfaces `blkSheetHTML`/`unblockDlgHTML`/`pfSetBlocked`/`pfRestrictHint` + keep-page S-13 — FSP-019 lock) + [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (`chatReportSheet`/`rpFromChat`/`rpDelChat` + `th.blocked` room effects — FSP-020 lock) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) (comment popover + `uc-report` entry + `Blocked and hidden comments`) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §11 (guest gate = Member Sheet `Join TukDaeng`), §13 (block/report impact) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.1 (canonical destination terms — Report Stack), §6.2 (layer model), §6.6 (sub-page route map `report:*`), §6.7 (in-app back — `sub-x` ปิดทั้งกอง), §9 (gate routing), §10 (unavailable fallback) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (canonical shared surfaces `blkSheetHTML`/`unblockDlgHTML`/`pfSetBlocked`/`pfRestrictHint` + keep-page S-13 — FSP-019 lock) + [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (`chatReportSheet`/`rpFromChat`/`rpDelChat` + `th.blocked` room effects — FSP-020 lock) + [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) (comment popover + `uc-report` entry + `Blocked and hidden comments`) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Status | Functional PRD — synced to fo-flow prototype |
 | Owner | Tuk Daeng Project |
 | Document Type | Front Office Functional PRD |
-| Source of Truth | `Prototypes/fo-flow/index.html` (พฤติกรรม) + Master Product Definition (business intent) |
+| Source of Truth | `Prototypes/fo-flow/index.html` (พฤติกรรม) + `PRODUCT_DEFINITION.md` (business intent) |
 
 > spec เดิม (v1.0) เป็น contract-level: report = per-type forms/bottom sheet + ชุดเหตุผลแยกตาม type + confirmation `Block this user?` center dialog + success copy `Report submitted` / `Our team will review…` — prototype คือ IG-style full-page report stack (`report:pick` → `PM_REASONS` → `report:done` + step rows) + shared `blkSheet`/`unblockDlg`/`chatReportSheet` ที่ใช้ร่วมหลายจอ; เอกสารฉบับนี้เขียนตามพฤติกรรมจริงและ flag ทุก deviation ใน §20
 
@@ -42,9 +42,9 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Topic | Master Baseline | Trust & Safety Module Rule (ตาม prototype) |
+| Topic | Product Baseline | Trust & Safety Module Rule (ตาม prototype) |
 | --- | --- | --- |
 | Admin Scope | Admin ใช้งานผ่าน Back Office เท่านั้น | Front Office ส่ง report; Back Office review/moderation — ตรง |
 | Report SLA | — | ไม่มี — report review ไม่มี deadline/time tracking ทั้งระบบ; 24h review SLA เดิมถูกถอน (ตัดสิน 2026-11-02 — FO-BO-001 GAP-03) |
@@ -80,7 +80,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Back Office moderation handoff (contract — report review ไม่มี SLA/deadline tracking)
 - Apple compliance coverage
 
-## Out of Scope For V1 Unless Master Adds Decision
+## Out of Scope For V1 Unless Product Baseline Adds Decision
 
 - Appeal Ban
 - Report tracking for reporter
@@ -324,7 +324,7 @@ Sign Up -> Accept Terms of Use and Privacy Policy -> Continue registration
 
 ## Report Type Rule
 
-Report รองรับ type ต่อไปนี้ตาม master (QA-TS-008):
+Report รองรับ type ต่อไปนี้ (QA-TS-008):
 
 | Type | Live route | สถานะ |
 | --- | --- | --- |
@@ -362,8 +362,8 @@ Report รองรับ type ต่อไปนี้ตาม master (QA-TS-0
 
 ## Chat Block Rule
 
-- Master ระบุว่า Chat รองรับ Block User และ Report User — chat entry ใช้ `blkSheet` fromChat variant (`Block` เดียว) และ `chatReportSheet` → `report:user` ตรง (canonical 07)
-- หลัง Block ต้องปิดการส่งข้อความใหม่และการสร้าง Chat ใหม่ระหว่างคู่ที่ block กัน; chat history อ่านได้แบบ read-only — Master §Block User + 07_CHAT explicit แล้วเป็น canonical
+- 07_CHAT ระบุว่า Chat รองรับ Block User และ Report User — chat entry ใช้ `blkSheet` fromChat variant (`Block` เดียว) และ `chatReportSheet` → `report:user` ตรง (canonical 07)
+- หลัง Block ต้องปิดการส่งข้อความใหม่และการสร้าง Chat ใหม่ระหว่างคู่ที่ block กัน; chat history อ่านได้แบบ read-only — 07_CHAT explicit แล้วเป็น canonical
 
 ## Removed Content Rule
 
@@ -468,7 +468,7 @@ Trust & Safety Front Office ไม่มี list empty state หลักใน 
 
 # 18. Notification Rules
 
-Trust & Safety ไม่อยู่ใน Notification baseline ของ master
+Trust & Safety ไม่อยู่ใน Notification baseline ของ product baseline
 
 - Report Submitted ไม่ต้องส่ง notification ใน V1 baseline
 - ผู้ถูก report/block/unblock ต้องไม่ได้รับ notification (`They won't be notified…` — `blkSheet`/`unblockDlg` copy)
@@ -498,7 +498,7 @@ Trust & Safety ไม่อยู่ใน Notification baseline ของ maste
 | D2 | Block confirm = `blkSheet` | bottom sheet `Block {u}?` + impact rows + `Block`/`Block and report` (fromChat = `Block` เดียว) — dismiss=backdrop | spec เดิม `Block this user?` center dialog + Cancel ถูกแทนที่ (QA-TS-001; canonical S-13/06) |
 | D3 | Reason set เดียวทุก type | `PM_REASONS` 9 เหตุผล; reason row = submit (ไม่มี Submit button/Additional details บน live stack) | spec เดิมมีชุดเหตุผลแยกตาม type + optional details + disabled submit |
 | D4 | Success = `report:done` + toast | `Thanks for your feedback` + other-steps rows + `Done` → `Report submitted · thanks for letting us know` | spec เดิม `Report submitted`/`Our team will review…` form success ถูกแทนที่ |
-| D5 | Report ไม่เปลี่ยน visibility | post/profile/comment ยังเปิดได้ปกติหลัง report | ตรง master — report ≠ removal |
+| D5 | Report ไม่เปลี่ยน visibility | post/profile/comment ยังเปิดได้ปกติหลัง report | ตรง product baseline — report ≠ removal |
 | D6 | `pfRestrictHint` | wire หลัง `dlg-unblock-go` แล้ว + I18N_TH — banner ~6s แสดงจริง | canonical 06 contract ตรง — restrict feature เองไม่มีใน V1 (banner เป็น hint เท่านั้น) — resolved 2026-10-29 |
 | D7 | `report:posts` empty state | user ที่ไม่มีโพสต์ → picker แสดง `ยังไม่มีโพสต์`/`No posts yet` + `Next` disabled | resolved 2026-10-29 — เพิ่ม empty copy ตาม empty standard |
 | D8 | Report routes ไม่มี persistence | `rpFromChat`/`rpDelChat`/`rpTargetType`/`_rpDone`/`_rpSel`/`_rpBase` เป็น screen-dataset/memory state — reload = หาย | mock simplification — production = report draft/records จริง |

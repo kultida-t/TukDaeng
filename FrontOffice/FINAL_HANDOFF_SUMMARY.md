@@ -1,8 +1,8 @@
 # TukDaeng PRD Final Handoff Summary
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 
-**Current Baseline Version:** `FO-PRD-v1.10`
+**Current Baseline Version:** `FO-PRD-v1.14`
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 ---
@@ -13,7 +13,7 @@
 
 - Dev baseline handoff: [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md)
 - Document version: [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
-- Master source of truth: [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+- Product definition (product-level): [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md)
 - Module index: [README_MODULE_INDEX.md](README_MODULE_INDEX.md)
 - Global rules: [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md)
 - Navigation rules: [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md)
@@ -27,6 +27,8 @@
 หมายเหตุสำหรับรอบ 2026-07-16: `FO-PRD-v1.3` supersede `FO-PRD-v1.2` สำหรับ clarification เรื่อง account suspension/ban โดย V1 ไม่มี `Restricted` account state, Suspended/Banned ต้องเข้า main app ไม่ได้, BO status change ต้อง revoke/block session, email เป็น primary notification channel และ FO Alerts feed ไม่เพิ่ม Account Action type
 
 หมายเหตุสำหรับรอบ 2026-10-22: `FO-PRD-v1.9` supersede baseline ชุด `v1.x` ทั้งหมด โดย sync เอกสารตาม `Prototypes/fo-flow/index.html` ที่ locked แล้ว (master §16 Sync Decision Log เป็น canonical) — feed post-centric, Member Sheet, Alerts feed 5 types, composer asset mode, Sale Record 2 ฟิลด์, share member-only, delete account login-to-restore
+
+หมายเหตุสำหรับรอบ 2026-11-04: `FO-PRD-v1.14` ยุบ doc tier (DOC-010/DOC-011 — zero requirement change) — `TukDaeng_Master_Product_Definition.md`, `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `../PRD/` superseded เก็บเพื่อ traceability เท่านั้น; product-level facts อยู่ที่ [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md), behavioral contract อยู่ที่ module specs `00`–`18`, decision history (S-01–S-29) อ่านได้จาก archived master §16
 
 # 2. Approved Product Decisions
 
@@ -56,7 +58,7 @@
 
 | Check | Status |
 | --- | --- |
-| Master updated with approved decisions | Done |
+| Product baseline updated with approved decisions | Done |
 | Module PRD `00-18` created | Done |
 | README module index created | Done |
 | Dev implementation checklist created | Done |

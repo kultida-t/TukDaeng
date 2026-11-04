@@ -1,6 +1,6 @@
 ﻿# 14 Portfolio Module
 
-อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §9 (asset statuses `Sale`/`Show`/`Hide`/`Sold`), §10 (visibility matrix), §11 (guest gate = Member Sheet `Join TukDaeng`), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6 (route map `portfolio`/`pfasset:{id}`/`soldhist`/`sold:{id}`/`sell:{id}`), §6.7 (sub stack back) + [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (drawer record/`assetId`/`pfkind` lifecycle + `markAssetSold` canonical — FSP-017 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (post detail layer — private data boundary) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (`.pf-pfo` entry placement — FSP-019 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (own-post menu anatomy canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
+อ้างอิงหลักจาก [PRODUCT_DEFINITION.md](PRODUCT_DEFINITION.md) + baseline [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) §7 (session model), §9 (asset statuses `Sale`/`Show`/`Hide`/`Sold`), §10 (visibility matrix), §11 (guest gate = Member Sheet `Join TukDaeng`), §14 (private data) + [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) §6.6 (route map `portfolio`/`pfasset:{id}`/`soldhist`/`sold:{id}`/`sell:{id}`), §6.7 (sub stack back) + [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (drawer record/`assetId`/`pfkind` lifecycle + `markAssetSold` canonical — FSP-017 lock) + [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) (post detail layer — private data boundary) + [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md) (`.pf-pfo` entry placement — FSP-019 lock) + [02_FEED_MODULE.md](02_FEED_MODULE.md) (own-post menu anatomy canonical) — prototype `Prototypes/fo-flow/index.html` เป็น source of truth เดียวของพฤติกรรม (spec-sync FO-PRD-v1.9 · baseline FO-PRD-v1.10)
 
 ---
 
@@ -13,7 +13,7 @@
 | Status | Functional PRD — synced to fo-flow prototype |
 | Owner | Tuk Daeng Project |
 | Document Type | Front Office Functional PRD |
-| Source of Truth | `Prototypes/fo-flow/index.html` (พฤติกรรม) + Master Product Definition (business intent) |
+| Source of Truth | `Prototypes/fo-flow/index.html` (พฤติกรรม) + `PRODUCT_DEFINITION.md` (business intent) |
 
 > spec เดิม (v1.0) ตีความ Portfolio เป็น **Total Asset Value** headline (Σ Current Value) + entry ผ่านตัวเลขมูลค่าบน profile + Sold History 6 ฟิลด์ (Buyer/Contact/Payment Method/Attachment) + Top Brand Holdings + YTD Performance วิธี A + real Watch Price API boundary + permission-denied/load-failed states เป็น production path — prototype คือ **invested-centric dashboard** (headline `ต้นทุนรวม`/`Total invested` = Σ purchase) ที่ entry เป็น wallet icon ล้วน, sold record เก็บแค่ราคา+วันที่, ไม่มี Top Brand/YTD เลย, market data เป็น mock และ denied/failed มีเฉพาะ `?dev` preview — เอกสารฉบับนี้เขียนตามพฤติกรรมจริงและ flag ทุก deviation ใน §19
 
@@ -47,9 +47,9 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ---
 
-# 4. Master Alignment Summary
+# 4. Product Alignment Summary
 
-| Topic | Master Baseline | Portfolio Module Rule (ตาม prototype) |
+| Topic | Product Baseline | Portfolio Module Rule (ตาม prototype) |
 | --- | --- | --- |
 | Privacy | Portfolio เป็น private เห็นเฉพาะ Owner | ตรง — entry มีเฉพาะ own profile (`.pf-pfo`); ไม่มี viewer surface เลย; non-member session → empty state |
 | Entry Point | Total Asset Value เป็น entry point | **ขัด spec เดิม** — profile ไม่มีตัวเลขมูลค่า; entry = wallet icon `pf-pfo` อย่างเดียว (D1 — placement canonical 06 §4) |
@@ -752,7 +752,7 @@ And `sold` post ต้องไม่มี `Edit`/`Mark as sold` ใน own-pos
 - Real Watch Price API integration (แทน `market` mock + `PF_MKT_UPDATED`) + real unavailable/retry path
 - Sold record extended fields — Buyer / Contact / Payment Method / Attachment (spec เดิม contract ที่ prototype ตัด — D3; ต้อง product sign-off ว่าจะเพิ่มใน form หรือตัดถาวร)
 - Total Asset Value headline option (Σ current value) — product decision ระหว่าง invested-centric vs value-centric (D2)
-- Top Brand Holdings + YTD Performance (cut per feedback — reopen ถ้า master เพิ่มกลับ)
+- Top Brand Holdings + YTD Performance (cut per feedback — reopen ถ้า product baseline เพิ่มกลับ)
 - Consignment Center (entry dead ใน hb drawer + `own` flag + foot-note copy พร้อมรองรับ)
 - Portfolio export (PDF/Excel), benchmark, allocation, brand trend, IRR
 - Market-movement / valuation alerts (09 integration)

@@ -33,7 +33,7 @@ FO-PRD-vX.Y
 - เพิ่ม `PRODUCT_DEFINITION.md` — slim product-level doc ใหม่ที่เป็น canonical home เดียวของ product-level facts: vision, platforms, user model summary, canonical terminology + legacy term mapping (ย้ายจาก master §4), feature architecture, Phase 1 exclusions (master §14), source-of-truth order และ module spec authoring checklist (master §17)
 - Mark superseded: `TukDaeng_Master_Product_Definition.md` (เนื้อหาคงเดิมทั้งเล่มเป็น archived — §16 Sync Decision Log S-01–S-29 + D2–D12 ยังเป็น decision history; consolidation ของ decision log เป็นงาน DOC-030), `PRD.md`, `FO_Functional_PRD.md`, `Use_Cases.md`, `../PRD/PRD.md`, `../PRD/Use_Cases.md` — ทุกเล่มมี banner ชี้ไป module specs + `PRODUCT_DEFINITION.md`
 - Source-of-truth order อัปเดตใน `00_GLOBAL_RULES_MODULE.md` §15 + `README_MODULE_INDEX.md` §2 — master ออกจากอันดับ 1, superseded tier ไม่ใช่ contract
-- Cross-reference sweep ระดับไฟล์ทั้งชุด (อ้างอิงหลักจาก/master refs ใน module specs) เป็นงานต่อเนื่อง DOC-011 — spec-only ไม่แตะ prototype
+- Cross-reference sweep ระดับไฟล์ทั้งชุดเสร็จแล้ว (DOC-011 — อ้างอิงหลักจาก/master refs ใน module specs + index/handoff docs ชี้ `PRODUCT_DEFINITION.md`/product baseline; "Master Alignment Summary" → "Product Alignment Summary", "Master Baseline" → "Product Baseline") — spec-only ไม่แตะ prototype
 
 `FO-PRD-v1.13` covers all of `FO-PRD-v1.12` and removes the Report Article contract entirely (FO decision e4 approved 2026-11-03 — FO-BO-001 coverage audit; Board Content ตัดออกจาก V1 ทั้งระบบ ไม่ใช่แค่ contract-only):
 
@@ -174,7 +174,7 @@ Baseline scope หลักยังครอบคลุม:
 - Chat-specific Dev Checklist
 - QA Scenario Checklist
 
-*(หมายเหตุ `FO-PRD-v1.9`: block "Baseline scope" นี้เป็นบันทึก doc set ยุค v1.1 — historical entries ไม่แก้ย้อนจึง annotate แทน; Module PRD ปัจจุบันครอบ `00`–`18` **ยกเว้น** `08_OFFER_MODULE.md` ที่ถูกลบใน v1.9 และไม่มี Figma docs อีกแล้ว — doc set + scope ปัจจุบันดู entry `FO-PRD-v1.9` ด้านบน)*
+*(หมายเหตุ `FO-PRD-v1.9`: block "Baseline scope" นี้เป็นบันทึก doc set ยุค v1.1 — historical entries ไม่แก้ย้อนจึง annotate แทน; Module PRD ปัจจุบันครอบ `00`–`18` **ยกเว้น** `08_OFFER_MODULE.md` ที่ถูกลบใน v1.9 และไม่มี Figma docs อีกแล้ว — doc set + scope ปัจจุบันดู entry ล่าสุดด้านบน)*
 
 ---
 
