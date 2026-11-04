@@ -172,6 +172,15 @@ Business requirements live in `SourceInputs/requirements/` as date-prefixed snap
 - **The repo snapshot is the source of truth.** External sources (e.g. Gemini Notebook via gemini-notebook-mcp) are inputs only — content that has not been snapshotted into the repo is not an official requirement.
 - Snapshots are append-only: when a source changes, create a new dated snapshot file instead of editing an old one. Analysis outputs (gap reports, decisions, verdicts) belong in their own documents, not in the snapshot.
 
+## Deliverables Archive Rule
+
+`deliverables/` root = active output เท่านั้น — หลักฐานใหม่ตกที่ root ตาม convention เดิม (`mission-<N>-objective-<M>/`, `task-<TASK-CODE>/`)
+
+`deliverables/archive/` = read-only history ของงานที่ปิดแล้ว — **ไม่ต้องค้น ไม่แก้ ไม่อ้างอิงเป็นค่าปัจจุบัน** เว้นแต่ task สั่งชัดเจน; manifest ทั้งหมดอยู่ที่ `deliverables/archive/INDEX.md`
+
+- เมื่อ task/mission ปิดและไม่มี living doc อ้างถึง (หรืออัปเดต ref แล้ว) → ย้ายลง `archive/` ด้วย `git mv` เท่านั้น (flat mirror คง path เดิม ห้ามลบ ห้าม rename) + เพิ่มแถวใน INDEX.md
+- การค้น reference/audit ปกติให้ข้าม `deliverables/archive/` — fact ปัจจุบันอยู่ที่ living docs เท่านั้น
+
 ## Terminology Rule — Plain Language in Documents (no "i18n")
 
 Deliverables and spec documents (test cases, checklists, inventories, summaries, spec docs) must use plain, understandable language. Do NOT write the jargon "i18n"/"I18N" as a word — write **"Language"** / **"language"** / **"ภาษา"** instead (e.g. category `Language/Theme`, title "Language & Theme Sweep", "language TH/EN coverage").

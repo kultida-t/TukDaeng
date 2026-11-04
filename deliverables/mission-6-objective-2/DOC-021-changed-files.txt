@@ -11,6 +11,10 @@ Date: 2026-11-04 | หลักการ: ห้ามลบเอกสาร �
 deliverables/archive/INDEX.md — manifest เดียวคุมทั้ง archive (88 rows:
   path/type/closed-by/archived/referenced-by + stale-script note + convention ต่อเนื่อง)
 
+== Rule update (งานข้อ 3 ของ task) ==
+AGENTS.md — เพิ่ม section "Deliverables Archive Rule": root = active output
+  เท่านั้น, archive/ = read-only history ไม่ต้องค้น, ย้ายด้วย git mv + เพิ่ม INDEX row
+
 == git mv → deliverables/archive/ (88 root entries, flat mirror คง path เดิม) ==
 - task-*/ ×36 dirs — closed task evidence (NAV-008..017, CHAT-007..009,
   FEED-025/026, AUTH-002/003, BO-QA-IMPL-026..028, FOBO-* ×5, GUEST-001,
