@@ -1,0 +1,34 @@
+DOC-010 — ยุบ PRD.md + Master Product Definition เข้า module specs + mark superseded
+Task: b122df05 | Mission 6 [31829e57] Objective 1: Legacy Doc Consolidation
+Commit: 326ba7b (branch prototype) — docs(fo+bo): DOC-010 consolidate legacy doc tier
+Date: 2026-11-04 | Final hours_spent: 0.2 ชม. | Zero requirement/behavior change
+
+== Files created ==
+FrontOffice/PRODUCT_DEFINITION.md — slim product-level contract ใหม่: vision, platforms,
+  user model, canonical terminology + legacy term mapping (ย้ายจาก master §4),
+  feature architecture, Phase 1 exclusions (master §14), SoT order,
+  module spec authoring checklist (master §17), decision-history pointer (§9)
+
+== Files marked superseded (banner + status — เนื้อหาคงเดิมทั้งหมด ไม่ลบ) ==
+FrontOffice/TukDaeng_Master_Product_Definition.md — archived; §16 decision log kept
+FrontOffice/PRD.md
+FrontOffice/FO_Functional_PRD.md
+FrontOffice/Use_Cases.md
+PRD/PRD.md
+PRD/Use_Cases.md
+BackOffice/BO_PRD.md
+BackOffice/BO_Spec.md
+BackOffice/BO_Spec_Completion_Addendum.md
+
+== Contract/index updates ==
+FrontOffice/00_GLOBAL_RULES_MODULE.md — §15 SoT order (master ออกจากอันดับ 1)
+FrontOffice/README_MODULE_INDEX.md — ref line, SoT §2, reading path §3, baseline v1.14
+FrontOffice/DOCUMENT_VERSION.md — bump FO-PRD-v1.14 + scope entry + history row
+BackOffice/README_MODULE_INDEX.md — reading path rows 5-7 → legacy (superseded)
+BackOffice/DOCUMENT_VERSION.md — Primary Source + history row BO-DOC-TIER-v0.1
+
+== Audit result ==
+- master §3/§5–§13 ซ้ำ module specs ทั้งหมด (00_GLOBAL §6–§15, 17_NFR, 16_INTEG, module specs)
+- unique content ย้ายเข้า PRODUCT_DEFINITION.md ครบ — ไม่มี content หาย
+- master §16 Sync Decision Log (S-01–S-29, D2–D12) คงไว้ใน archived master — consolidation เป็นงาน DOC-030
+- 44 ไฟล์ยังอ้าง TukDaeng_Master_Product_Definition — cross-ref sweep เป็นงาน DOC-011
