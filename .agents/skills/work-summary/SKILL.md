@@ -44,6 +44,7 @@ Workflow สำหรับจับเวลาและสรุปงาน�
 - ตัวจับเวลาอัตโนมัติ (Auto Timer)
 - ตัวอย่างผลลัพธ์
 - Checklist
+- สรุปแผนเทียบผลจริง (Mission Plan vs Actual Summary)
 
 ---
 
@@ -1518,3 +1519,50 @@ Task ID: TK-102
 - [ ] **bullet เขียนแบบสรุปผล ไม่เล่ากระบวนการ** — ห้ามเล่าเหตุการณ์/ลำดับตัดสินใจ ("เสนอผู้ใช้เลือก → ผู้ใช้เลือก X"), ห้ามใส่ตัวเลขเวลาแผน/น้ำหนัก, ห้ามเอ่ยชื่อเครื่องมือภายใน (Kanban); แต่งานที่พบบั๊ก/เทสล้มต้องเล่ารายละเอียดเต็มตามเดิม (เจออะไร/สาเหตุ/แก้อย่างไร/กระทบอะไร)
 - [ ] **ใช้ชื่อ label จริงบนหน้าจอ** — ส่วนของจอ/ปุ่ม/เมนูที่มีชื่อแสดงจริงให้ใช้ชื่อนั้นตรง ๆ (เช่น "Test flow", "Change History", "Preview as FO") ห้ามบรรยายเองเป็นคำไทยลอย ๆ ที่ไม่มีบนจอ
 - [ ] **task ที่ยัง `in_progress`** ต้องระบุ "ปัจจุบัน: <now>" แทน "เวลาจบ" และใช้ "เวลาที่ผ่านไป" แทน "เวลาทำงาน" พร้อมระบุ "(ยังจับเวลาอยู่)"
+
+---
+
+## สรุปแผนเทียบผลจริง (Mission Plan vs Actual Summary)
+
+ใช้เมื่อผู้ใช้ขอสรุปทั้ง Mission แบบเทียบแผนกับผลจริง (เช่น "สรุป mission X", "สรุปแผนเทียบผลจริง", "plan vs actual", "สรุปทุก task ใน mission") — เป็น copy block เดียวที่แสดง Objective → Feature → Task พร้อมเวลาแผนและเวลาจริงเคียงกัน
+
+### เงื่อนไขก่อนสร้าง (บังคับ)
+
+- **ต้องมี approved baseline ที่เรียกย้อนได้** — เรียก `get_mission` เพื่ออ่าน Objective/Feature/Task mapping แล้วหา Feature labels จาก mission description หรือ session note ที่ persist baseline ไว้ (ตาม Baseline Persistence ใน mission-planning) — Objective/Feature labels ต้อง copy verbatim เท่านั้น ห้ามเดาเอง
+- **ถ้าดึง baseline ไม่ได้** (mission description ไม่มี Feature labels และไม่มี plan note) → ถามผู้ใช้ขอ approved Mission Plan Summary แล้ว **บันทึกลง `save_session_note` ทันที** (บน planning task หรือ task แรกของ mission) ก่อนสรุป — ห้ามสรุปโดยเดา Feature แล้วค่อยแก้ทีหลัง
+- เวลาจริงราย task ใช้ `hours_spent` จาก `get_task` (ตามกฎเดิม ห้ามปรับเอง); เวลาแผนใช้ `Planned` จาก task description และ Baseline จาก mission
+- Task ที่ถูกสร้างเพิ่มระหว่าง execution (ไม่มีในแผนเดิม) ต้องแสดงแยกในส่วน "งานที่เพิ่มระหว่าง execution" พร้อม mapping Objective/Feature ที่บันทึกไว้ ห้ามยัดเข้า task list ของแผนเดิมเงียบ ๆ
+- ถ้ามีการ rename Objective/Feature ให้ใช้ชื่อล่าสุดใน mission description และบันทึก correction note ลง task ที่เกี่ยว (ตามกฎ label ใน mission-planning)
+
+### รูปแบบ (template)
+
+```text
+Mission <N> — <Mission Name>
+
+สถานะ: ปิดครบ <X>/<Y> task (<Z>%) — <ระยะเวลาที่ทำจริง>
+เวลาตามแผนทั้งหมด: <baseline> ชม. | เวลาที่ทำจริงรวม: <D.D> ชม.
+
+เป้าหมาย 1: <Objective Name> — แผน <X> ชม. (น้ำหนัก <W>%) | จริง <D.D> ชม.
+
+Feature: <Feature Name>
+
+- <TASK-CODE> <Task Name> — แผน <P> ชม. | จริง <D.D> ชม.
+- <TASK-CODE> <Task Name> — แผน <P> ชม. | จริง <D.D> ชม.
+
+เป้าหมาย 2: ... (ใช้ structure เดียวกันต่อจนครบทุก Objective)
+
+ลำดับทำงาน: <TASK> → <TASK> → <TASK>
+
+งานที่เพิ่มระหว่าง execution (ไม่อยู่ในแผนเดิม — ผูก Objective <N> / Feature: <Feature Name>):
+- <TASK-CODE> <Task Name> — แผน <P> ชม. | จริง <D.D> ชม.
+- <TASK-CODE> <Task Name> — ไม่มีเวลาแผน | จริง <D.D> ชม.
+
+หมายเหตุเวลา: <ชี้แจงต่างระหว่างแผนกับจริงเฉพาะที่มีข้อมูลรองรับ — ห้ามเดา>
+```
+
+### กฎการเขียน
+
+- แสดงเวลาทั้งสองชุดเคียงกันทุกระดับ: Mission (Baseline | จริงรวม), Objective (แผน+น้ำหนัก | จริงรวม), Task (แผน | จริง) — เวลาจริงรูปแบบ `D.D ชม.` ตามกฎเดิม
+- Objective/Feature labels ต้อง verbatim จาก approved baseline ล่าสุดเท่านั้น (ตาม Mission Mapping Rule) — ถ้า rename แล้วให้ใช้ชื่อใหม่ที่บันทึกในระบบ ไม่ใช่ชื่อเก่าจากแผนเดิม
+- `หมายเหตุเวลา` ชี้แจงส่วนต่างแผน-จริงเฉพาะที่มีหลักฐาน (เช่น delta implement ล่วงหน้าใน task อื่น, scope เพิ่ม); ถ้าไม่มีข้อมูลรองรับให้ข้ามหรือระบุว่าเวลาจริงต่ำกว่าแผนตามงานจริง
+- block นี้แสดงควบคู่กับสรุปราย task/copy block ราย task ตามปกติ — ไม่แทนที่กัน (plan-vs-actual = มุมมอง mission, copy block = มุมมอง task สำหรับ work log)

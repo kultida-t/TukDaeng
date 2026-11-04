@@ -932,6 +932,15 @@ Feature: <Feature Name>
 
 Summary ต้องเป็น forward-looking Approved Plan เท่านั้น ห้ามใส่ actual hours, Activity timeline, Evidence, ผล QA หรือรายละเอียด implementation ที่เกิดขึ้นภายหลัง
 
+##### 13.1.1 Baseline Persistence — บันทึก Approved Plan ให้เรียกย้อนได้ (บังคับ)
+
+ปัญหาที่กฎนี้แก้: ถ้า Objective/Feature labels ของ approved plan อยู่แค่ใน chat (copy block ที่แสดงให้ผู้ใช้) เวลาสรุปงานทีหลังจะดึงชื่อ label ที่ถูกต้องจากระบบไม่ได้ ทำให้ work log ต้องเดา Feature เองจนข้อมูลเพี้ยน — ทุก Mission ที่ได้รับ approval ต้อง persist baseline ทั้ง 2 ชั้นนี้เสมอ:
+
+1. **Mission description ต้องมี Objective → Feature → Task labels ครบ** — ห้ามเขียน description ที่มีแค่ `Objective — TASK-CODE` ล้วน ๆ ให้ใส่ Feature name ใต้แต่ละ Objective ด้วย เพราะ `get_mission` คือแหล่ง verbatim สุดท้ายที่ work-summary ใช้อ้าง (เช่น `1. Requirements Intake Pipeline (19% | 1.5 ชม.) — Features: Requirements Snapshot & Register → REQ-001, REQ-002`)
+2. **`save_session_note` เก็บ Mission Plan Summary verbatim ลง Planning Task หรือ task แรกของ mission** — note ต้องมี Mission Name, Objectives, Feature labels และ Task mapping ตามที่ approve ตรง ๆ เพื่อให้ session ใด ๆ ดึง `get_task` แล้วเห็น baseline เดิม
+
+**กฎการแก้ label หลัง approve:** ถ้ามีการ rename Objective/Feature หลัง plan เริ่มแล้ว (เช่น ตัดเงื่อนไขกระบวนการออกจาก label) ให้อัปเดต mission description ด้วย `update_mission` และบันทึก correction note ลงทุก task ที่ได้รับผลกระทบ — ห้ามปล่อยให้ label ในระบบกับ label ที่ใช้ลง work log คนละชุด
+
 ##### 13.2 Session Handoff — สำหรับ Agent / Session ถัดไป
 
 Session Handoff เป็น execution context หลักสำหรับทำงานข้าม session และต้อง self-contained พอให้ Agent เริ่มจาก current state ได้อย่างปลอดภัย
