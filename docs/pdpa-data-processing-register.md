@@ -74,10 +74,10 @@
 |---|---|---|---|---|
 | Q-01 | Required consent ใช้ implied consent พอไหม? | **คง implied consent — ไม่เพิ่ม checkbox** | core processing ใช้ lawful basis `สัญญา` (§24) ไม่ใช่ consent อยู่แล้ว — การกดผ่าน legal text คือการยอมรับเงื่อนไข/รับทราบ notice ไม่ใช่ PDPA consent; consent จริงมีแค่ optional (analytics/personalization) ซึ่ง opt-in ชัดเจนอยู่แล้ว | **DEC-52** |
 | Q-02 | ถอน required consent = Delete Account เท่านั้น พอไหม? | **พอ — ไม่ต้องมี granular consent** | ไม่มี required consent ให้ถอนอยู่แล้ว (ไม่ได้ใช้ consent basis); optional consent ถอนได้ตลอดที่ Settings > Privacy & cookies; หยุดรับบริการ = Delete Account | **DEC-52** |
-| Q-03 | แต่งตั้ง DPO ไหม / ช่องทาง privacy request? | **ไม่ตั้ง DPO เต็มตำแหน่งใน V1 — ใช้ support email channel เดิมรับ privacy request** | ขนาด processing ยังไม่ถึงเกณฑ์บังคับ DPO; Privacy Policy draft ชี้ช่องทาง Help & Support อยู่แล้ว — ไม่ต้องแก้ protected screen; owner = privacy contact (PO) | **DEC-54** |
+| Q-03 | แต่งตั้ง DPO ไหม / ช่องทาง privacy request? | **ไม่ตั้ง DPO เต็มตำแหน่งใน V1 — ใช้ support email channel เดิมรับ privacy request** | ขนาด processing ยังไม่ถึงเกณฑ์บังคับ DPO; Privacy Policy draft ชี้ช่องทาง Help & Support อยู่แล้ว — ไม่ต้องแก้ protected screen; **owner = PO (ถือบท privacy contact) · intake = Support channel** — role ยืนยัน 2026-11-05 | **DEC-54** |
 | Q-04 | DSR ตอบยังไงใน V1? | **manual SOP — `docs/pdpa-dsr-sop.md`** | รับผ่าน support channel → verify → ตอบ ≤30 วัน; self-service export = Phase 2 | **DEC-54** |
 | Q-05 | ตัวเลข retention? | **ตามตาราง §3 (R-01..R-08)** | เทียบอายุความละเมิด/แพ่งของไทย — ปิด `DEL-DEC-002`/`SET-DEC-003`/`BO-DEC-002`/`NOTI-DEC-003` ใน spec registers | **DEC-53** |
-| Q-06 | breach process adopt ไหม? | **adopt `docs/pdpa-breach-runbook.md`** | owner = role-level (PO/dev lead/privacy contact); เติมชื่อจริงใน launch checklist | **DEC-55** |
+| Q-06 | breach process adopt ไหม? | **adopt `docs/pdpa-breach-runbook.md`** | owner role set ยืนยันแล้ว 2026-11-05 ตาม runbook §2 (PO [privacy contact] / Dev lead [=Security owner V1] / Support / Legal counsel ภายนอก / BO admin on-duty); เหลือชื่อจริงใน launch checklist (B-01) | **DEC-55** |
 | Q-07 | DEL-DEC-005 แฮชอีเมลกันสมัครซ้ำ? | **ไม่ทำใน V1** | spec §10.3 อนุญาตสมัครใหม่อีเมลเดิมอยู่แล้ว; hash guard เพิ่ม privacy surface โดยไม่มี abuse case จริง — revisit เมื่อมีเหตุ | ปิด DEL-DEC-005 |
 
 ## 5. เอกสารที่เกี่ยวข้อง

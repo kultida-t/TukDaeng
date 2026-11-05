@@ -149,7 +149,7 @@ Entity ที่เก็บข้อมูลส่วนบุคคล/ระ
 |---|---|---|---|---|
 | **G-01** | ตัวเลข retention period ราย data type ยังไม่มี (`DEL-DEC-002`/`SET-DEC-003`/`BO-DEC-002` รอ Legal ทั้งกลุ่ม) | **High** | anonymize/purge job build ไม่ได้; "เก็บตาม retention policy" ใน BO-13 ไม่มีตัวเลขจริงให้อ้าง | ✅ **RESOLVED — DEC-53** ตัวเลขครบ R-01..R-08 ใน register §3; spec open decisions ปิดแล้ว (DEL-DEC-002/SET-DEC-003/BO-DEC-002/NOTI-DEC-003) |
 | **G-02** | ไม่มี purpose ↔ data category ↔ lawful basis register | **High** | Privacy Policy section `How We Use Information` ไม่มีเนื้อหา canonical; audit/compliance เช็คไม่ได้ว่า data ใช้ตรงวัตถุประสงค์ | ✅ **register ร่างแล้ว** — `pdpa-data-processing-register.md` §1 (15 data categories) + privacy policy draft ใช้เป็น input แล้ว |
-| **G-03** | ไม่มี data breach response spec | **High** | PDPA §37(4) บังคับแจ้ง PDPC ≤72 ชม. + แจ้งผู้ใช้เมื่อ high risk — ตอนนี้ไม่มี process, owner, template | ✅ **RESOLVED — DEC-55** adopt `pdpa-breach-runbook.md` เป็น process อย่างเป็นทางการ; เหลือเติมชื่อ owner จริงใน launch checklist (B-01..B-05) |
+| **G-03** | ไม่มี data breach response spec | **High** | PDPA §37(4) บังคับแจ้ง PDPC ≤72 ชม. + แจ้งผู้ใช้เมื่อ high risk — ตอนนี้ไม่มี process, owner, template | ✅ **RESOLVED — DEC-55** adopt `pdpa-breach-runbook.md` เป็น process อย่างเป็นทางการ; owner role set ยืนยันแล้ว 2026-11-05 — เหลือชื่อจริง + tabletop ใน launch checklist (B-01..B-05) |
 | **G-04** | ไม่มี data subject access/portability channel | **Medium** | user ขอสำเนาข้อมูลตัวเองไม่ได้ในระบบ; ต้อง handle manual นอกระบบโดยไม่มี spec | ✅ **RESOLVED — DEC-54** adopt `docs/pdpa-dsr-sop.md` (manual intake ผ่าน support channel + verify + ตอบ ≤30 วัน); self-service export คง Phase 2 |
 | **G-05** | ไม่มี third-party processor register + cross-border clause | **Medium** | FCM/CDN/OAuth = transfer ต่างประเทศแต่ไม่มี spec/privacy notice กล่าวถึง | ✅ **processor register ร่างแล้ว** — `pdpa-data-processing-register.md` §2 (7 providers + location/basis) + cross-border clause ใน privacy draft §2 |
 | **G-06** | ไม่มี DPO/privacy contact spec | **Medium** | data subject exercise rights ไม่มีช่องทาง canonical | ✅ **RESOLVED — DEC-54** ไม่ตั้ง DPO (ไม่ถึงเกณฑ์); privacy requests ผ่าน support channel เดิม ไม่ต้องแก้ protected screen |
@@ -191,5 +191,5 @@ Entity ที่เก็บข้อมูลส่วนบุคคล/ระ
 
 **เหลือ — งาน launch checklist ไม่ใช่งาน spec/doc:**
 9. Legal review `docs/privacy-policy-draft.md` + EN translation + ชื่อนิติบุคคล/contact จริง → กรอก `POL-PP` ผ่าน `BO-12` Policy & Versioning
-10. Breach runbook: เติมชื่อ owner จริง (B-01/B-02) + template confirm (B-03) + tabletop ซ้อม 1 รอบ (B-05) ก่อน launch
+10. Breach runbook: เติมชื่อ owner จริง (B-01 — role set confirmed 2026-11-05) + internal channel (B-02) + template confirm (B-03) + tabletop ซ้อม 1 รอบ (B-05) ก่อน launch
 11. DSR SOP: สื่อสารช่องทาง intake ให้ support รู้ก่อน launch
