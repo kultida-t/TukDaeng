@@ -3800,20 +3800,7 @@
     }
 
     .pv-post .pv-dots {
-      position: absolute;
-      top: 90px;
-      left: 0;
-      right: 0;
-      padding: 0;
-      z-index: 3;
-    }
-
-    .pv-post .pv-dots span {
-      background: rgba(255, 255, 255, .45);
-    }
-
-    .pv-post .pv-dots span.on {
-      background: #fff;
+      display: none;
     }
 
     .pv-grad {
@@ -13665,7 +13652,7 @@
       <div class="detail-pad">
         <div class="post-actions" style="padding:6px 0 2px;margin:0 -5px 0 -7px">
           <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
-          ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+          ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
           ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
           <button class="act share-btn">${I.share(22)}</button>
           <span class="act-right">
@@ -13779,7 +13766,7 @@
     ${dots ? `<div class="photo-dots">${p.photos.map((_, i) => `<span class="${i === 0 ? 'on' : ''}"></span>`).join("")}</div>` : ""}
     <div class="post-actions">
       <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
-      ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+      ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
@@ -14143,10 +14130,12 @@
     <div class="sv-newrow"></div>`;
     }
 
-    /* shared sheet opener — comment-sheet is a singleton, swap variant class + content */
+    /* shared sheet opener — comment-sheet is a singleton, swap variant class + content;
+       manual open paths must strip this same list or stale variant classes leak through */
+    const SHEET_VARIANTS = ["uf", "pm", "pm-rp", "lk", "sh", "sv", "so", "dt", "nt", "ps", "nc", "wl", "wa", "mf"];
     function openSheet(scr, variantCls, openCls, html) {
       const cs = scr.querySelector(".comment-sheet");
-      cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "so", "dt", "nt", "ps", "nc", "wl", "wa", "mf");
+      cs.classList.remove(...SHEET_VARIANTS);
       cs.classList.add(variantCls);
       cs.innerHTML = html;
       scr.classList.remove("comments-open", "unfollow-open", "pm-open", "mf-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
@@ -14175,6 +14164,20 @@
       const n = (typeof state !== "undefined" && state.user && state.user.username) || CP_ME.name;
       return (typeof state !== "undefined" && state.user && state.user.photo) || (PROFILES[n] && PROFILES[n].avatar) || CP_ME.avatar;
     };
+    /* the count badge lives inside .comment-btn on feed cards, preview rails and the
+       open detail page — markup only emits it above zero, so sync recreates the span
+       on 0→1 and removes it again at 0 instead of only writing text */
+    function syncCommentCounts(scr, p) {
+      const btns = [...scr.querySelectorAll(`[data-pid="${p.id}"] .comment-btn`)];
+      if (scr.dataset.detailPid === p.id) btns.push(...scr.querySelectorAll(".page-detail .comment-btn"));
+      btns.forEach(btn => {
+        let el = btn.querySelector(".comment-count");
+        if (p.comments > 0) {
+          if (!el) { el = document.createElement("span"); el.className = "comment-count"; btn.appendChild(el); }
+          el.textContent = p.comments;
+        } else if (el) el.remove();
+      });
+    }
     /* members really post comments — typed text, Enter, quick emoji and
        one-level Reply all land in the thread and update the count */
     function submitComment(scr, text) {
@@ -14205,9 +14208,7 @@
       cs.dataset.replyCid = "";
       p.comments = (p.comments || 0) + 1;
       cs.innerHTML = cs.classList.contains("ps") ? pvPostSheetHTML(p) : commentsHTML(p);
-      scr.querySelectorAll(`.post[data-pid="${p.id}"] .comment-count, .detail-counts .comment-count`).forEach(el => {
-        el.textContent = p.comments;
-      });
+      syncCommentCounts(scr, p);
       const listEl = cs.querySelector(".sheet-list");
       if (listEl) listEl.scrollTop = listEl.scrollHeight;
     }
@@ -14520,7 +14521,7 @@
 
     <div class="post-actions">
       <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
-      ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+      ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
@@ -14980,14 +14981,13 @@
       ${dots ? `<span class="photo-counter">${startI + 1}/${p.photos.length}</span>` : ""}
       ${cl.has ? `<span class="clip-badge"${durI ? "" : ' style="display:none"'}>${I.play(11)}${durI}</span><span class="prog"><i></i></span>` : ""}
     </div>
-    ${dots ? `<div class="photo-dots pv-dots">${p.photos.map((_, i) => `<span class="${i === startI ? "on" : ""}"></span>`).join("")}</div>` : ""}
     <div class="pv-grad"></div>
     <div class="pv-rail">
       <div class="pv-grp">
         <button class="pv-act like-btn${p.liked ? " liked" : ""}">${I.heart(26)}</button>
         ${p.likes && p.likedBy ? `<button class="pv-act pv-lbl liked-by">${isTh ? "ถูกใจ" : "Likes"}</button>` : ""}
       </div>
-      ${p.noComments ? "" : `<button class="pv-act comment-btn">${I.comment(25)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+      ${p.noComments ? "" : `<button class="pv-act comment-btn">${I.comment(25)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="pv-act">${I.eye(23)}<span>${p.views}</span></span>`}
       <button class="pv-act share-btn">${I.share(24)}</button>
       <button class="pv-act save-btn${p.saved ? " saved" : ""}">${I.bookmark(24)}</button>
@@ -15065,7 +15065,7 @@
     ${dots ? `<div class="photo-dots">${p.photos.map((_, i) => `<span class="${i === 0 ? "on" : ""}"></span>`).join("")}</div>` : ""}
     <div class="post-actions">
       <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}${p.seller === CP_ME.name && p.likes ? `<span class="lk-n">${p.likes}</span>` : ""}</button>
-      ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span>${p.comments}</span>` : ""}</button>`}
+      ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
@@ -16738,7 +16738,7 @@
     function waLoad() {
       try {
         const d = JSON.parse(localStorage.getItem("fo_walerts") || "null");
-        if (d && Array.isArray(d.list)) { WATCH_ALERTS.push(...d.list); waSeq = d.seq || WATCH_ALERTS.length + 1; }
+        if (d && Array.isArray(d.list)) { WATCH_ALERTS.length = 0; WATCH_ALERTS.push(...d.list); waSeq = d.seq || WATCH_ALERTS.length + 1; }
       } catch { }
     }
     const WA_MODES = {
@@ -21538,7 +21538,7 @@
         scr.dataset.pmPid = art ? art.dataset.pid : scr.dataset.detailPid;
         const post = findPost(scr.dataset.pmPid);
         const cs = scr.querySelector(".comment-sheet");
-        cs.classList.remove("uf", "pm-rp", "lk", "sh", "sv", "nt", "ps");
+        cs.classList.remove(...SHEET_VARIANTS);
         cs.classList.add("pm");
         scr._pmPinTab = art && art.classList.contains("pfp-post") ? (scr._pinTab || "all") : "all";
         cs.innerHTML = isOwnPost(post) ? pmOwnMenuHTML(post, scr._pmPinTab) : pmMenuHTML(post, !!(art && art.classList.contains("pfp-post")));
@@ -22299,7 +22299,7 @@
         const post = findPost(pvAdd.closest(".post").dataset.pid);
         if (post) {
           const cs = scr.querySelector(".comment-sheet");
-          cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps", "nc");
+          cs.classList.remove(...SHEET_VARIANTS);
           cs.classList.add("nt");
           scr.dataset.cmtPid = post.id;
           cs.innerHTML = commentsHTML(post);
@@ -23041,7 +23041,7 @@
           scr.dataset.ufSeller = post.seller;
           const cs = scr.querySelector(".comment-sheet");
           scr._ufPs = cs.classList.contains("ps") ? (scr.dataset.dtPid || post.id) : null;
-          cs.classList.remove("pm", "pm-rp", "lk", "sh", "sv", "dt", "nt", "ps", "mf");
+          cs.classList.remove(...SHEET_VARIANTS);
           cs.classList.add("uf");
           cs.innerHTML = `
         <div class="sheet-handle"></div>
@@ -23213,7 +23213,7 @@
         const post = findPost(pid);
         if (!post) return;
         const cs = scr.querySelector(".comment-sheet");
-        cs.classList.remove("uf", "pm", "pm-rp", "lk", "sh", "sv", "nt");
+        cs.classList.remove(...SHEET_VARIANTS);
         cs.classList.toggle("nt", scr.classList.contains("pv-open") && !scr.classList.contains("detail-open"));
         scr.dataset.cmtPid = post.id;
         cs.innerHTML = commentsHTML(post);
@@ -23818,9 +23818,7 @@
           if (p && cs) {
             cs.innerHTML = commentsHTML(p);
           }
-          scr.querySelectorAll(`.post[data-pid="${pid}"] .comment-count, .detail-counts .comment-count`).forEach(el => {
-            el.textContent = p.comments;
-          });
+          syncCommentCounts(scr, p);
           toast(state.lang === "th" ? "ลบความคิดเห็นแล้ว" : "This comment was removed.");
         }
         return;
