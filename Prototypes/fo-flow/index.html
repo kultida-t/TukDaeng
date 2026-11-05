@@ -13449,7 +13449,6 @@
       home: (s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>`,
       search: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>`,
       clock: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>`,
-      watch: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="6"/><path d="M12 9v3l2 1.5"/><path d="M9.6 6.6 9.8 3h4.4l.2 3.6"/><path d="M14.4 17.4l-.2 3.6H9.8l-.2-3.6"/></svg>`,
       sliders: (s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="15" cy="6" r="2.3" fill="var(--bg)"/><circle cx="9" cy="12" r="2.3" fill="var(--bg)"/><circle cx="17" cy="18" r="2.3" fill="var(--bg)"/></svg>`,
       plus: (s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`,
       dots: (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>`,
@@ -13584,7 +13583,7 @@
     <div class="details-body">
       <div class="details-inner">
         <div class="details-top">
-          ${showPriceRow ? `<div class="details-price">${p.price}</div>` : `<span></span>`}
+          ${showPriceRow && p.price ? `<div class="details-price">${esc(p.price)}</div>` : `<span></span>`}
           <span class="view-full">${isTh ? "ดูรายละเอียดทั้งหมด" : "View full detail"} ${I.chevR()}</span>
         </div>
         ${content}
@@ -13603,7 +13602,7 @@
         return `<div class="detail-head">${back}<span class="spacer"></span><span class="detail-title">${title}</span><span class="spacer"></span>${dots}</div>`;
       if (state.dh === "dh4") return "";
       if (state.dh === "dh5")
-        return `<div class="detail-head">${back}<span class="head-av" data-pf-user="${esc(p.seller)}"><img src="${p.avatar}" alt=""></span><span class="detail-title" style="font-size:14px" data-pf-user="${esc(p.seller)}">${p.seller}</span><span class="spacer"></span>${dots}</div>`;
+        return `<div class="detail-head">${back}<span class="head-av" data-pf-user="${esc(p.seller)}"><img src="${p.avatar}" alt=""></span><span class="detail-title" style="font-size:14px" data-pf-user="${esc(p.seller)}">${esc(p.seller)}</span><span class="spacer"></span>${dots}</div>`;
       return `<div class="detail-head">${back}<span class="spacer"></span><span class="detail-title">${title}</span><span class="spacer"></span>${dots}</div>`;
     }
 
@@ -13682,11 +13681,11 @@
     function chatPopHTML(p) {
       return `
     <div class="cp-backdrop"></div>
-    <button class="chat-fab" title="Chat with ${p.seller}">${I.chat(22)}</button>
+    <button class="chat-fab" title="Chat with ${esc(p.seller)}">${I.chat(22)}</button>
     <div class="chat-pop">
       <div class="cp-head">
         <img class="cp-av" src="${p.avatar}" alt="" data-pf-user="${esc(p.seller)}">
-        <div class="cp-who"><div class="n" data-pf-user="${esc(p.seller)}">${p.seller}</div></div>
+        <div class="cp-who"><div class="n" data-pf-user="${esc(p.seller)}">${esc(p.seller)}</div></div>
         <button class="icon-btn cp-close">${I.x(16)}</button>
       </div>
       <div class="cp-body">
@@ -13697,7 +13696,7 @@
         <div class="cp-thread"></div>
       </div>
       <div class="cp-input">
-        <input placeholder="Message ${p.seller}...">
+        <input placeholder="Message ${esc(p.seller)}...">
         <button class="cp-send" disabled>${I.send(16)}</button>
       </div>
     </div>`;
@@ -13752,7 +13751,7 @@
     ${withPostHead ? `<header class="post-head">
       <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
       <div class="who">
-        <div class="name">${p.seller}</div>
+        <div class="name">${esc(p.seller)}</div>
         <div class="sub-line">${formatPostTime(p.time, state.lang === "th")}</div>
       </div>
       ${p.following ? "" : `<button class="follow-btn">${state.lang === "th" ? "ติดตาม" : "Follow"}</button>`}
@@ -13782,7 +13781,7 @@
       </span>
       <span>${state.lang === "th" ? `ถูกใจโดย <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> และคนอื่น ๆ` : `Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others`}</span>
     </div>`}
-    <p class="caption"><b>${p.seller}</b> ${igCaptionHTML(p)}</p>
+    <p class="caption"><b>${esc(p.seller)}</b> ${igCaptionHTML(p)}</p>
     <div class="detail-pad">
       ${priceRow}
       ${detailSpecsHTML(p)}
@@ -14045,7 +14044,7 @@
       return `
     <div class="sheet-handle"></div>
     <div class="sheet-title">${isTh ? "ยอดถูกใจ" : "Likes"}</div>
-    ${isOwnPost(p) ? "" : `<div class="lk-note">${isTh ? `มีเพียง ${p.seller} เท่านั้นที่สามารถดูจำนวนผู้กดถูกใจทั้งหมดในโพสต์นี้ได้` : `Only ${p.seller} can see the total number of likes on this post.`}</div>`}
+    ${isOwnPost(p) ? "" : `<div class="lk-note">${isTh ? `มีเพียง ${esc(p.seller)} เท่านั้นที่สามารถดูจำนวนผู้กดถูกใจทั้งหมดในโพสต์นี้ได้` : `Only ${esc(p.seller)} can see the total number of likes on this post.`}</div>`}
     <div class="sheet-list">
       ${likers.map(l => `
       <div class="lk-row" data-pf-user="${esc(l.name)}">
@@ -14149,7 +14148,11 @@
       scr.classList.remove("unfollow-open");
       const psPid = scr._ufPs; scr._ufPs = null;
       const pp = psPid && findPost(psPid);
-      if (pp) openSheet(scr, "ps", "comments-open", pvPostSheetHTML(pp));
+      if (pp) {
+        scr.dataset.cmtPid = pp.id;
+        const cs = scr.querySelector(".comment-sheet"); if (cs) cs.dataset.replyCid = "";
+        openSheet(scr, "ps", "comments-open", pvPostSheetHTML(pp));
+      }
       else scr.classList.remove("comments-open");
     }
     function closeTopLayer(scr) {
@@ -14438,8 +14441,8 @@
     function niCardHTML(p) {
       const isTh = state.lang === "th";
       const rows = p.following
-        ? `<button class="ni-item ni-mute">${I.bellOff(20)}<span class="ni-txt">${isTh ? `ปิดเสียงเตือน ${p.seller}` : `Mute ${p.seller}`}<span class="ni-desc">${isTh ? "หยุดเห็นโพสต์ใหม่จากผู้ใช้นี้ในฟีด" : "Stop seeing new posts from them in feed"}</span></span></button>
-       <button class="ni-item ni-unfollow">${I.userMinus(20)}<span>${isTh ? `เลิกติดตาม ${p.seller}` : `Unfollow ${p.seller}`}</span></button>`
+        ? `<button class="ni-item ni-mute">${I.bellOff(20)}<span class="ni-txt">${isTh ? `ปิดเสียงเตือน ${esc(p.seller)}` : `Mute ${esc(p.seller)}`}<span class="ni-desc">${isTh ? "หยุดเห็นโพสต์ใหม่จากผู้ใช้นี้ในฟีด" : "Stop seeing new posts from them in feed"}</span></span></button>
+       <button class="ni-item ni-unfollow">${I.userMinus(20)}<span>${isTh ? `เลิกติดตาม ${esc(p.seller)}` : `Unfollow ${esc(p.seller)}`}</span></button>`
         : `<button class="ni-item ni-pref">${I.sliders(20)}<span>${isTh ? "จัดการความต้องการเนื้อหา" : "Manage content preferences"}</span></button>`;
       return `
   <article class="post ni-card" data-pid="${p.id}">
@@ -14500,7 +14503,7 @@
     <header class="post-head">
       <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
       <div class="who">
-        <div class="name">${p.seller}</div>
+        <div class="name">${esc(p.seller)}</div>
         ${p.location ? `<div class="sub-line">${p.location}</div>` : ""}
       </div>
       ${p.following ? "" : `<button class="follow-btn">${isTh ? "ติดตาม" : "Follow"}</button>`}
@@ -14539,7 +14542,7 @@
       <span>${isTh ? `ถูกใจโดย <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> และคนอื่น ๆ` : `Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others`}</span>
     </div>`}
 
-    ${(p.caption || p.captionFull) ? `<p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">${isTh ? "เพิ่มเติม" : "more"}</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
+    ${(p.caption || p.captionFull) ? `<p class="caption"><b>${esc(p.seller)}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">${isTh ? "เพิ่มเติม" : "more"}</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
 
     <div class="post-time">${formatPostTime(p.time, isTh)}</div>
 
@@ -14682,11 +14685,12 @@
       POSTS.forEach(p => { if (p.seller === seller) p.muted = on; });
       scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
     }
+    /* post-less accounts live in PF_EXTRA_* — fold them in so Settings lists don't hide them */
     function mutedSellers() {
-      return [...new Set(POSTS.filter(p => p.muted).map(p => p.seller))];
+      return [...new Set(POSTS.filter(p => p.muted).map(p => p.seller).concat([...PF_EXTRA_MUT]))];
     }
     function favoriteSellers() {
-      return [...new Set(POSTS.filter(p => p.favorite).map(p => p.seller))];
+      return [...new Set(POSTS.filter(p => p.favorite).map(p => p.seller).concat([...PF_EXTRA_FAV]))];
     }
     function followedSellers() {
       return [...new Set(POSTS.filter(p => p.following).map(p => p.seller))];
@@ -14957,7 +14961,7 @@
       return `
     <div class="sr-scard" data-pf-user="${esc(p.seller)}">
       <img src="${p.avatar}" alt="">
-      <div class="b"><div class="u">${p.seller}</div><div class="d">${countStr}${flwStr}</div></div>
+      <div class="b"><div class="u">${esc(p.seller)}</div><div class="d">${countStr}${flwStr}</div></div>
       <button class="follow-btn sc-follow${p.following ? " on" : ""}" data-seller="${esc(p.seller)}">${p.following ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตาม" : "Follow")}</button>
     </div>`;
     }
@@ -14994,7 +14998,7 @@
       <button class="pv-act pm-btn">${I.dots(22)}</button>
     </div>
     <div class="pv-foot">
-      <div class="pv-seller"><img src="${p.avatar}" alt="" data-pf-user="${esc(p.seller)}"><span class="n" data-pf-user="${esc(p.seller)}">${p.seller}</span>
+      <div class="pv-seller"><img src="${p.avatar}" alt="" data-pf-user="${esc(p.seller)}"><span class="n" data-pf-user="${esc(p.seller)}">${esc(p.seller)}</span>
         <button class="follow-btn${p.following ? " on" : ""}">${p.following ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตาม" : "Follow")}</button></div>
       ${(p.caption || p.captionFull) ? `<div class="caption pv-cap"><span class="cap-short">${igCaptionHTML(p, p.caption)}${(p.captionFull || "") !== p.caption ? ` <span class="more-link">…</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></div>` : ""}
       ${hasSpecs ? `<button class="details-toggle pv-dt"><span class="dt-label">${isTh ? "แตะเพื่อดูรายละเอียด" : "Tap for details"}</span>${I.chev(12)}</button>` : ""}
@@ -15012,16 +15016,16 @@
     <div class="sheet-list">
       <div class="ps-head">
         <img src="${p.avatar}" alt="">
-        <span class="n">${p.seller}</span>
+        <span class="n">${esc(p.seller)}</span>
         <button class="follow-btn${p.following ? " on" : ""}">${p.following ? (isTh ? "กำลังติดตาม" : "Following") : (isTh ? "ติดตาม" : "Follow")}</button>
       </div>
-      <div class="ps-cap"><b>${p.seller}</b> ${igCaptionHTML(p)}</div>
+      <div class="ps-cap"><b>${esc(p.seller)}</b> ${igCaptionHTML(p)}</div>
       <div class="ps-time">${p.time}</div>
       ${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No comments yet</div>`}
     </div>
     <div class="comment-input">
       <img src="${myAvatarSrc()}" alt="">
-      <input class="ci-field" type="text" maxlength="500" autocomplete="off" placeholder="Add a comment for ${p.seller}">
+      <input class="ci-field" type="text" maxlength="500" autocomplete="off" placeholder="Add a comment for ${esc(p.seller)}">
       <button class="ci-send" hidden>${state.lang === "th" ? "โพสต์" : "Post"}</button>
     </div>`;
     }
@@ -15052,7 +15056,7 @@
     <header class="post-head">
       <span class="avatar-ring"><img src="${p.avatar}" alt=""></span>
       <div class="who">
-        <div class="name">${p.seller}</div>
+        <div class="name">${esc(p.seller)}</div>
         ${p.location ? `<div class="sub-line">${p.location}</div>` : ""}
       </div>
       <button class="more">${I.dots(19)}</button>
@@ -15081,7 +15085,7 @@
       </span>
       <span>${isTh ? `ถูกใจโดย <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> และคนอื่น ๆ` : `Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others`}</span>
     </div>`}
-    ${(p.caption || p.captionFull) ? `<p class="caption"><b>${p.seller}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">${isTh ? "เพิ่มเติม" : "more"}</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
+    ${(p.caption || p.captionFull) ? `<p class="caption"><b>${esc(p.seller)}</b> <span class="cap-short">${igCaptionHTML(p, p.caption)}${showMore ? ` <span class="more-link">${isTh ? "เพิ่มเติม" : "more"}</span>` : ""}</span><span class="cap-full">${igCaptionHTML(p)}</span></p>` : ""}
     ${p.time ? `<div class="post-time">${formatPostTime(p.time, isTh)}</div>` : ""}
     ${hasDetails ? triggerHTML() + detailsHTML(p, !!p.price) : ""}
   </article>`;
@@ -15147,7 +15151,7 @@
       return `
     <button class="ac-row" data-kind="seller" data-v="${esc(p.seller)}">
       <img src="${p.avatar}" alt="">
-      <span class="ac-who"><span class="u">${p.seller}</span><span class="d">${n} listing${n === 1 ? "" : "s"}${p.following ? " · Following" : ""}</span></span>
+      <span class="ac-who"><span class="u">${esc(p.seller)}</span><span class="d">${n} listing${n === 1 ? "" : "s"}${p.following ? " · Following" : ""}</span></span>
     </button>`;
     }
     function searchResultsHTML(scr, S) {
@@ -15274,7 +15278,7 @@
     function muteDlgHTML(seller) {
       const isTh = state.lang === "th";
       return `
-    <div class="dlg-q">${isTh ? `ปิดเสียงโพสต์ของ ${seller} หรือไม่?` : `Mute ${seller}?`}</div>
+    <div class="dlg-q">${isTh ? `ปิดเสียงโพสต์ของ ${esc(seller)} หรือไม่?` : `Mute ${esc(seller)}?`}</div>
     <div class="dlg-desc">${isTh ? "คุณสามารถเปิดเสียงพวกเขาได้ทุกเมื่อจากโปรไฟล์ เราจะไม่แจ้งให้พวกเขาทราบว่าคุณปิดเสียงพวกเขา" : "You can unmute them anytime from their profile. We won't let them know you muted them."}</div>
     <button class="dlg-btn danger dlg-mute-go">${isTh ? "ปิดเสียงโพสต์" : "Mute posts"}</button>
     <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
@@ -15511,7 +15515,7 @@
       return posts.length ? posts.map(p => `
     <div class="mrow" data-sub-pid="${p.id}">
       <img class="msq" src="${p.photos[0]}" alt="">
-      <span class="lg-b"><span class="mn">${p.seller}</span><span class="md">${esc(p.caption)}</span></span>
+      <span class="lg-b"><span class="mn">${esc(p.seller)}</span><span class="md">${esc(p.caption)}</span></span>
       <button class="mact ${cls}" data-pid="${p.id}">${label}</button>
     </div>`).join("") : `<div class="sub-empty">${isTh ? "ยังไม่มีข้อมูลที่นี่" : "Nothing here yet"}</div>`;
     }
@@ -15546,7 +15550,9 @@
           : svdEmptyHTML(I.history(46), isTh ? "ไม่มีโพสต์ในคลังเก็บ" : "No archived posts", isTh ? "โพสต์ที่คุณจัดเก็บจะแสดงให้คุณเห็นเท่านั้น" : "Posts you archive will only be visible to you.", true)}
     </div>`;
     }
-    function savedPosts() { return POSTS.filter(p => p.saved && libVisible(p)).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0)); }
+    /* the Saved hub is private — own drawer-only/hidden posts count too, so the list
+       reads every post store (feed + PF_MINE + gfx) instead of just POSTS/libVisible */
+    function savedPosts() { return [...POSTS, ...PF_MINE, ...Object.values(PF_GFX_REG)].filter(p => p.saved && !p.archived && !p.blocked).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0)); }
     function colPosts(name) { return savedPosts().filter(p => (p.savedCols || []).includes(name)).sort((a, b) => (b.colAt || 0) - (a.colAt || 0)); }
     function colCover(c) { const ps = colPosts(c.name); const p = ps.find(x => x.id === c.coverPid) || ps[ps.length - 1]; return p ? thumbS(p) : ""; }
     function savedList(scr) {
@@ -15558,7 +15564,7 @@
     }
     function svdTileHTML(V, p) {
       return `<button class="svd-tile${V.sel.has(p.id) ? " on" : ""}" data-pid="${p.id}">
-    <img src="${thumbP(p)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${p.photos[0]}'">
+    <img src="${thumbP(p)}" alt="" loading="lazy" data-fb="${esc(p.photos[0])}" onerror="this.onerror=null;this.src=this.dataset.fb">
     ${!V.manage && p.photos.length > 1 ? `<span class="svd-stack">${I.stack(18)}</span>` : ""}
     ${V.manage ? `<span class="svd-sel">${V.sel.has(p.id) ? I.check(12) : ""}</span>` : ""}
   </button>`;
@@ -15929,7 +15935,7 @@
         const first = posts[posts.length - 1];
         if (first) { src = thumbS(first); orig = first.photos[0]; }
       }
-      return src ? `<span class="ecv one"><img src="${src}" alt="" onerror="this.onerror=null;this.src='${orig}'"></span>` : "";
+      return src ? `<span class="ecv one"><img src="${src}" alt="" data-fb="${esc(orig)}" onerror="this.onerror=null;this.src=this.dataset.fb"></span>` : "";
     }
     function wlEditHTML(scr) {
       const V = wlState(scr);
@@ -15963,7 +15969,7 @@
     <span class="spacer"></span>
   </div>
   <div class="sub-scroll svd-body">${list.length
-          ? `<div class="ec-grid">${list.map(p => `<button class="ec-ctile${c && c.coverPid === p.id ? " on" : ""}" data-pid="${p.id}"><img src="${thumbS(p)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${p.photos[0]}'"><span class="svd-sel">${c && c.coverPid === p.id ? I.check(12) : ""}</span></button>`).join("")}</div>`
+          ? `<div class="ec-grid">${list.map(p => `<button class="ec-ctile${c && c.coverPid === p.id ? " on" : ""}" data-pid="${p.id}"><img src="${thumbS(p)}" alt="" loading="lazy" data-fb="${esc(p.photos[0])}" onerror="this.onerror=null;this.src=this.dataset.fb"><span class="svd-sel">${c && c.coverPid === p.id ? I.check(12) : ""}</span></button>`).join("")}</div>`
           : svdEmptyHTML(I.img(30), "No posts yet", "Add posts to this collection first.")}</div>`;
     }
     /* move-to-collection picker — wishlist variant (WISHLISTS rows, no Wish List row) */
@@ -16006,7 +16012,7 @@
         const first = posts[posts.length - 1];
         if (first) { src = thumbS(first); orig = first.photos[0]; }
       }
-      return src ? `<span class="ecv one"><img src="${src}" alt="" onerror="this.onerror=null;this.src='${orig}'"></span>` : "";
+      return src ? `<span class="ecv one"><img src="${src}" alt="" data-fb="${esc(orig)}" onerror="this.onerror=null;this.src=this.dataset.fb"></span>` : "";
     }
     function svdEditHTML(scr) {
       const V = savedState(scr);
@@ -16040,7 +16046,7 @@
     <span class="spacer"></span>
   </div>
   <div class="sub-scroll svd-body">${list.length
-          ? `<div class="ec-grid">${list.map(p => `<button class="ec-ctile${c && c.coverPid === p.id ? " on" : ""}" data-pid="${p.id}"><img src="${thumbS(p)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${p.photos[0]}'"><span class="svd-sel">${c && c.coverPid === p.id ? I.check(12) : ""}</span></button>`).join("")}</div>`
+          ? `<div class="ec-grid">${list.map(p => `<button class="ec-ctile${c && c.coverPid === p.id ? " on" : ""}" data-pid="${p.id}"><img src="${thumbS(p)}" alt="" loading="lazy" data-fb="${esc(p.photos[0])}" onerror="this.onerror=null;this.src=this.dataset.fb"><span class="svd-sel">${c && c.coverPid === p.id ? I.check(12) : ""}</span></button>`).join("")}</div>`
           : svdEmptyHTML(I.img(30), "No posts yet", "Save posts to this collection first.")}</div>`;
     }
     /* "Add to collection" picker — full page: Cancel / Saved·Add from / Done, grid of saved posts not in this collection */
@@ -16158,6 +16164,19 @@
     /* order entries are CP_MEDIA indices in create mode, or {src,dur} objects in edit mode */
     function cfMedia(scr) { return cpState(scr).order.map(i => typeof i === "object" ? i : CP_MEDIA[i]); }
     function cfPhotos(scr) { return cfMedia(scr).map(m => m.src); }
+    /* contenteditable .ta stores line breaks as <div>/<br> — textContent flattens them,
+       so walk the nodes and rebuild real newlines for the caption */
+    function cfCapText(ta) {
+      let out = "";
+      const walk = n => {
+        if (n.nodeType === 3) { out += n.nodeValue; return; }
+        if (n.nodeName === "BR") { out += "\n"; return; }
+        if (/^(DIV|P)$/.test(n.nodeName) && out && !out.endsWith("\n")) out += "\n";
+        n.childNodes.forEach(walk);
+      };
+      ta.childNodes.forEach(walk);
+      return out;
+    }
     /* the one playable clip in the composer — a lone video in the draft */
     function cfActiveClip(scr) {
       const V = cpState(scr);
@@ -16975,6 +16994,8 @@
       PROFILES[uname] = PROFILES[oldName] || {};
       delete PROFILES[oldName];
       POSTS.forEach(p => { if (p.seller === oldName) p.seller = uname; });
+      PF_MINE.forEach(p => { if (p.seller === oldName) p.seller = uname; });
+      Object.values(PF_GFX_REG).forEach(p => { if (p.seller === oldName) p.seller = uname; });
       Object.values(COMMENTS).forEach(cs => cs.forEach(c => { if (c.name === oldName) c.name = uname; (c.replies || []).forEach(r => { if (r.name === oldName) r.name = uname; }); }));
       for (const pr of Object.values(PROFILES)) if (pr.followedBy) pr.followedBy = pr.followedBy.map(n => n === oldName ? uname : n);
       for (const s of [PF_BLOCKED, PF_REMOVED_FOL, PF_EXTRA_FOL, PF_EXTRA_FAV, PF_EXTRA_MUT]) if (s.has(oldName)) { s.delete(oldName); s.add(uname); }
@@ -18133,8 +18154,8 @@
         const favs = favoriteSellers();
         const sugg = followedSellers().filter(s => !favs.includes(s));
         const fRow = (s, label, cls, desc) => {
-          const p = POSTS.find(x => x.seller === s);
-          return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">${desc}</span></span><button class="mact ${cls}" data-seller="${s}">${label}</button></div>`;
+          const p = profileOf(s);
+          return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${esc(s)}</span><span class="md">${desc}</span></span><button class="mact ${cls}" data-seller="${esc(s)}">${label}</button></div>`;
         };
         return head(isTh ? "รายการโปรด" : "Favorites") + `<div class="sub-scroll">
       <div class="fav-desc">${isTh ? "โพสต์ใหม่จากรายการโปรดของคุณจะแสดงสูงขึ้นในฟีด มีเพียงคุณเท่านั้นที่เห็นว่าคุณเพิ่มหรือลบใคร" : "New posts from your favorites will appear higher in feed. Only you can see who you add or remove."}</div>
@@ -18147,8 +18168,8 @@
       if (name === "muted") {
         const isTh = state.lang === "th";
         return head(isTh ? "บัญชีที่ปิดเสียง" : "Muted accounts") + `<div class="sub-scroll">${mutedSellers().map(s => {
-          const p = POSTS.find(x => x.seller === s);
-          return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${s}</span><span class="md">${isTh ? "ปิดเสียงโพสต์แล้ว" : "Posts muted"}</span></span><button class="mact m-unmute" data-seller="${s}">${isTh ? "เปิดเสียง" : "Unmute"}</button></div>`;
+          const p = profileOf(s);
+          return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${esc(s)}</span><span class="md">${isTh ? "ปิดเสียงโพสต์แล้ว" : "Posts muted"}</span></span><button class="mact m-unmute" data-seller="${esc(s)}">${isTh ? "เปิดเสียง" : "Unmute"}</button></div>`;
         }).join("") || `<div class="sub-empty">${isTh ? "ไม่มีบัญชีที่ปิดเสียง" : "No muted accounts"}</div>`
           }</div>`;
       }
@@ -18404,7 +18425,7 @@
       if (ALERTS) return ALERTS;
       if (state.session !== "member") { ALERTS = []; return ALERTS; } /* GUEST-001 — guests & fresh accounts have no alerts */
       const me = CP_ME.name;
-      const mine = i => ({ pid: `gfx-${me}-${i}`, thumb: (PROFILES[me].grid || [])[i] });
+      const mine = i => ({ pid: `gfx-${me}-${i}`, thumb: ((PROFILES[me] || {}).grid || [])[i] });
       const wa = (pid, ago, grp, unread) => {
         const p = findPost(pid);
         return {
@@ -19607,7 +19628,9 @@
     function chOpenRoom(scr, t) {
       t.hidden = false;
       scr.classList.remove("pv-open", "detail-open", "comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "share-open", "save-open", "sort-open", "details-open", "wa-open");
-      openSub(scr, "chatroom:" + t.id);
+      /* push over an open sub (chat list / profile) so back returns there — openSub would wipe the stack */
+      if ((scr._subStack || []).length) pushSub(scr, "chatroom:" + t.id);
+      else openSub(scr, "chatroom:" + t.id);
     }
     function pfOpenChat(scr, user) {
       const C = chatInit();
@@ -19767,12 +19790,12 @@
           if (t.pinned) t.pinnedAt = Date.now();
           else delete t.pinnedAt;
           chCloseRevealedRows();
-          scrToast(scr, t.pinned ? "ปักหมุดแชทแล้ว" : "ยกเลิกการปักหมุดแล้ว");
+          scrToast(scr, t.pinned ? (state.lang === "th" ? "ปักหมุดแชทแล้ว" : "Chat pinned") : (state.lang === "th" ? "ยกเลิกการปักหมุดแล้ว" : "Chat unpinned"));
           renderSub(scr);
         } else if (a === "mute" && t) {
           t.muted = !t.muted;
           chCloseRevealedRows();
-          scrToast(scr, t.muted ? "ปิดการแจ้งเตือนแล้ว" : "เปิดการแจ้งเตือนแล้ว");
+          scrToast(scr, t.muted ? (state.lang === "th" ? "ปิดการแจ้งเตือนแล้ว" : "Notifications muted") : (state.lang === "th" ? "เปิดการแจ้งเตือนแล้ว" : "Notifications unmuted"));
           renderSub(scr);
         } else if (a === "hide" && t) {
           openChatHideConfirm(t, scr);
@@ -20203,7 +20226,8 @@
     const flowToast = document.getElementById("flowToast");
     let toastTimer;
     function toast(msg) {
-      flowToast.textContent = msg;
+      /* flowToast lives outside #stage — the i18n observer can't reach it, translate at write */
+      flowToast.textContent = state.lang === "th" ? (i18nTr(msg, null) || msg) : msg;
       flowToast.classList.add("show");
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => flowToast.classList.remove("show"), 1800);
@@ -21281,7 +21305,7 @@
         if (cfDone) {
           const post = findPost(V.editPid);
           const wasDetail = V.editFromDetail;
-          V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() ?? V.caption;
+          { const taEl = scr.querySelector(".cf .ig-cap-line .ta"); if (taEl) V.caption = cfCapText(taEl).trim(); }
           if (post) applyPostEdit(scr, post, V); /* before _cp reset — cfMedia reads V.order */
           closePostEdit(scr, V);
           if (post) {
@@ -21342,7 +21366,7 @@
         const cfShare = e.target.closest(".cf-share");
         if (cfShare) {
           if (cfShare.classList.contains("off")) return;
-          V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() || V.caption;
+          { const taEl = scr.querySelector(".cf .ig-cap-line .ta"); if (taEl) V.caption = cfCapText(taEl).trim() || V.caption; }
           const clip = cfActiveClip(scr);
           const photos = clip ? [clip.src] : cfPhotos(scr);
           const clips = clip ? [clip.dur] : cfMedia(scr).map(m => m.dur || null);
@@ -21434,7 +21458,7 @@
         if (cfSw && !cfSw.disabled && !cfSw.classList.contains("pane-sw")) {
           V.asset = !V.asset;
           /* the ขาย/โชว์ status picker (edit) + cost row (any drawer save) only live behind an ON drawer toggle — re-render to reveal them */
-          V.caption = scr.querySelector(".cf .ig-cap-line .ta")?.textContent.trim() || V.caption;
+          { const taEl = scr.querySelector(".cf .ig-cap-line .ta"); if (taEl) V.caption = cfCapText(taEl).trim() || V.caption; }
           cf.querySelector(".cf-step2").outerHTML = cfStep2HTML(scr);
           cfClipSync(scr);
           return;
@@ -21443,9 +21467,10 @@
         if (cfChip && !suppressPhotoClick) {
           const tag = cfChip.dataset.tag;
           const ta = cf.querySelector(".ig-cap-line .ta");
-          if (ta && !ta.textContent.includes(tag)) {
-            ta.textContent = (ta.textContent.trimEnd() ? ta.textContent.trimEnd() + " " : "") + tag;
-            V.caption = ta.textContent;
+          if (ta && !cfCapText(ta).includes(tag)) {
+            const cur = cfCapText(ta).trimEnd();
+            ta.appendChild(document.createTextNode((cur ? " " : "") + tag));
+            V.caption = cfCapText(ta);
           }
           return;
         }
@@ -22280,7 +22305,7 @@
         const S = srchState(scr);
         const list = xpTile.closest(".xp-grid").classList.contains("two")
           ? searchResults(S)
-          : POSTS.filter(p => !p.ni && !p.muted && !p.blocked);
+          : discoverablePosts(); /* same set the explore grid shows — archived/drawer posts never sneak into the viewer */
         openPostViewer(scr, list, xpTile.dataset.pid, +xpTile.dataset.phi || 0);
         return;
       }
@@ -22302,6 +22327,7 @@
           cs.classList.remove(...SHEET_VARIANTS);
           cs.classList.add("nt");
           scr.dataset.cmtPid = post.id;
+          cs.dataset.replyCid = "";
           cs.innerHTML = commentsHTML(post);
           scr.classList.add("comments-open");
         }
@@ -22739,6 +22765,8 @@
             const cs = scr.querySelector(".comment-sheet");
             if (cs) {
               cs.className = "comment-sheet";
+              scr.dataset.cmtPid = cp.id;
+              cs.dataset.replyCid = "";
               cs.innerHTML = commentsHTML(cp);
               scr.classList.add("comments-open");
             }
@@ -23047,7 +23075,7 @@
         <div class="sheet-handle"></div>
         <div class="uf-body">
           <img class="uf-av" src="${post.avatar}" alt="">
-          <div class="uf-q">${isTh ? `เลิกติดตาม <b>@${post.seller}</b> หรือไม่?` : `Unfollow <b>@${post.seller}</b>?`}</div>
+          <div class="uf-q">${isTh ? `เลิกติดตาม <b>@${esc(post.seller)}</b> หรือไม่?` : `Unfollow <b>@${esc(post.seller)}</b>?`}</div>
           <button class="uf-confirm">${isTh ? "เลิกติดตาม" : "Unfollow"}</button>
           <button class="uf-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>
         </div>`;
@@ -23216,6 +23244,7 @@
         cs.classList.remove(...SHEET_VARIANTS);
         cs.classList.toggle("nt", scr.classList.contains("pv-open") && !scr.classList.contains("detail-open"));
         scr.dataset.cmtPid = post.id;
+        cs.dataset.replyCid = "";
         cs.innerHTML = commentsHTML(post);
         scr.classList.add("comments-open");
         return;
@@ -23258,7 +23287,10 @@
         scr.classList.remove("share-open");
         const sp = scr.dataset.shKind === "post" ? findPost(scr.dataset.shPid) : null;
         const th = sp ? chSharePost(shFr.dataset.name, sp) : null; /* FEED-041 — the post really lands in the friend's room */
-        if (th) openSub(scr, "chatroom:" + th.id); /* friend share drops you into that chat */
+        if (th) { /* friend share drops you into that chat — keep any open sub under it for back */
+          if ((scr._subStack || []).length) pushSub(scr, "chatroom:" + th.id);
+          else openSub(scr, "chatroom:" + th.id);
+        }
         else scrToast(scr, `Sent to ${shFr.dataset.name}`);
         return;
       }
@@ -23630,14 +23662,6 @@
           (scr._ncPids || []).forEach(pid => { const p = findPost(pid); if (p) { const k = ncWl ? "wlCols" : "savedCols"; p[k] = [name]; p[ncWl ? "wlColAt" : "colAt"] = Date.now(); } });
           V.sel.clear(); V.manage = false;
           scrToast(scr, ncInCol ? `Moved to ${name}` : `Added to ${name}`, mvFirst ? thumbS(mvFirst) : "");
-        } else if (from === "edit") {
-          const old = scr._ncEdit;
-          const cur = COLLECTIONS.find(c => c.name === old);
-          if (cur) { cur.name = name; }
-          POSTS.forEach(p => { p.savedCols = (p.savedCols || []).map(x => x === old ? name : x); });
-          const V = savedState(scr);
-          if (V.col === old) V.col = name;
-          scrToast(scr, "Collection updated");
         } else {
           scrToast(scr, "Collection created");
         }
@@ -23951,7 +23975,12 @@
         if (pvPost) {
           const scr = more.closest(".screen");
           const post = findPost(pvPost.dataset.pid);
-          if (post) { scr.dataset.dtPid = post.id; openSheet(scr, "ps", "comments-open", pvPostSheetHTML(post)); }
+          if (post) {
+            scr.dataset.dtPid = post.id;
+            scr.dataset.cmtPid = post.id;
+            const cs = scr.querySelector(".comment-sheet"); if (cs) cs.dataset.replyCid = "";
+            openSheet(scr, "ps", "comments-open", pvPostSheetHTML(post));
+          }
           return;
         }
         more.closest(".caption").classList.add("expanded");
@@ -24015,6 +24044,36 @@
     /* AUTH-003 — an account registered in this browser lives in fo_account (credentials + profile)
        so it survives logout/page reload; fo_newuser stays the lightweight profile of the active
        "new" session while fo_account is the credential store */
+    /* credentials persist as a SHA-256 hash (pwH), never the typed password — signing up
+       with a real password during a demo shouldn't leave it readable in localStorage */
+    function obHash(str) {
+      function rr(v, a) { return (v >>> a) | (v << (32 - a)); }
+      const maxWord = Math.pow(2, 32), words = [], asciil = (str = unescape(encodeURIComponent(str))).length * 8;
+      let result = "", hash = obHash.h = obHash.h || [], k = obHash.k = obHash.k || [], primeCounter = k.length, isComposite = {};
+      for (let candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+          for (let i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+          hash[primeCounter] = (Math.pow(candidate, .5) * maxWord) | 0;
+          k[primeCounter++] = (Math.pow(candidate, 1 / 3) * maxWord) | 0;
+        }
+      }
+      str += "\x80"; while (str.length % 64 - 56) str += "\x00";
+      for (let i = 0; i < str.length; i++) words[i >> 2] |= str.charCodeAt(i) << ((3 - i % 4) * 8);
+      words[words.length] = (asciil / maxWord) | 0; words[words.length] = asciil;
+      for (let j = 0; j < words.length;) {
+        const w = words.slice(j, j += 16), oldHash = hash; hash = hash.slice(0, 8);
+        for (let i = 0; i < 64; i++) {
+          const w15 = w[i - 15], w2 = w[i - 2], a = hash[0], e = hash[4];
+          const t1 = hash[7] + (rr(e, 6) ^ rr(e, 11) ^ rr(e, 25)) + ((e & hash[5]) ^ (~e & hash[6])) + k[i]
+            + (w[i] = i < 16 ? w[i] : (w[i - 16] + (rr(w15, 7) ^ rr(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rr(w2, 17) ^ rr(w2, 19) ^ (w2 >>> 10))) | 0);
+          const t2 = (rr(a, 2) ^ rr(a, 13) ^ rr(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(t1 + t2) | 0].concat(hash); hash[4] = (hash[4] + t1) | 0;
+        }
+        for (let i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+      }
+      for (let i = 0; i < 8; i++) for (let j = 3; j + 1; j--) { const b = (hash[i] >> (j * 8)) & 255; result += (b < 16 ? "0" : "") + b.toString(16); }
+      return result;
+    }
     const obLoadAccount = () => { try { return JSON.parse(localStorage.getItem("fo_account") || "null"); } catch (e) { return null; } };
     const obSaveAccount = patch => { const a = { ...(obLoadAccount() || {}), ...patch }; localStorage.setItem("fo_account", JSON.stringify(a)); return a; };
     const obBack = (to, right = "") => `<div class="ob-top"><button class="ob-ghost" data-ob="go:${to}" aria-label="${obT("Back", "ย้อนกลับ")}">${I.back(22)}</button>${right}</div>`;
@@ -24033,7 +24092,7 @@
       return /^[a-z0-9_.]{3,20}$/.test(base) ? base : obSuggestUser();
     }
     function obEnterAfterProfile() {
-      obSaveAccount({ email: (OB.account && OB.account.email) || OB.f.email || "", pw: OB.account ? OB.account.pw : "", user: OB.f.user, name: OB.f.name.trim(), provider: OB.provider || "email", photo: OB.f.photo || "" }); /* AUTH-003 — profile step completes the persisted account */
+      obSaveAccount({ email: (OB.account && OB.account.email) || OB.f.email || "", pwH: OB.account && OB.account.pw ? obHash(OB.account.pw) : "", pw: undefined, user: OB.f.user, name: OB.f.name.trim(), provider: OB.provider || "email", photo: OB.f.photo || "" }); /* AUTH-003 — profile step completes the persisted account */
       if (OB.provider && OB.provider !== "email") { /* social sign-up has no password — enter the app right after picking a username */
         localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user, name: OB.f.name.trim(), photo: OB.f.photo || "" }));
         setSession("new"); obFinish("", !OB.gate); /* AUTH-003 — enter silently like a real app, no welcome toast */
@@ -24281,7 +24340,7 @@
       OB.errs = E;
       if (Object.keys(E).length) return obDraw();
       f.email = f.email.trim(); f.name = f.name.trim(); OB.account = { email: f.email, pw: f.pw }; OB.provider = "email"; OB.resend = 30;
-      obSaveAccount({ email: f.email, pw: f.pw, name: f.name, user: "", provider: "email" }); /* AUTH-003 — persist the credential now, username joins after the profile step */
+      obSaveAccount({ email: f.email, pwH: obHash(f.pw), pw: undefined, name: f.name, user: "", provider: "email" }); /* AUTH-003 — persist the credential now, username joins after the profile step */
       obGo("otp");
     }
     function obSignin() {
@@ -24294,7 +24353,9 @@
       /* AUTH-003 — match against this run's OB.account plus the persisted fo_account so a
          registered account still signs in after logout/reload, alongside the demo member */
       const saved = obLoadAccount();
-      const credOk = a => a && a.email && f.email.trim().toLowerCase() === a.email.toLowerCase() && f.pw === a.pw;
+      /* hashed records match on pwH; legacy plaintext pw + OB_DEMO still compare raw */
+      const credOk = a => a && a.email && f.email.trim().toLowerCase() === a.email.toLowerCase()
+        && (a.pwH ? !!f.pw && a.pwH === obHash(f.pw) : f.pw === a.pw);
       if (obLockLeft()) { OB.errs = {}; return obDraw(); }
       const acct = [OB.account, saved].find(credOk);
       if (!acct && !credOk(OB_DEMO)) {
@@ -24321,9 +24382,11 @@
     const CP_ME_DEMO = { name: CP_ME.name, avatar: CP_ME.avatar };
     const POST_FLAG_KEYS = ["liked", "saved", "savedCols", "wishlisted", "wlCols", "wlAt", "wlColAt", "following", "favorite", "muted", "archived", "archivedAt", "ni", "blocked", "pins"];
     let POSTS_SNAP = null, COLS_SNAP = null, NEW_USER_KEY = null;
-    function snapPosts() {
-      if (!POSTS_SNAP) POSTS_SNAP = new Map(POSTS.map(p => [p.id, Object.fromEntries(POST_FLAG_KEYS.map(k => [k, p[k]]))]));
-      if (!COLS_SNAP) COLS_SNAP = { c: COLLECTIONS.map(x => ({ ...x })), w: WISHLISTS.map(x => ({ ...x })) };
+    /* re-bank every time the member session is left — a once-ever snapshot would drop
+       likes/saves made during the session on the next re-login */
+    function snapPosts(force) {
+      if (force || !POSTS_SNAP) POSTS_SNAP = new Map(POSTS.map(p => [p.id, Object.fromEntries(POST_FLAG_KEYS.map(k => [k, p[k]]))]));
+      if (force || !COLS_SNAP) COLS_SNAP = { c: COLLECTIONS.map(x => ({ ...x })), w: WISHLISTS.map(x => ({ ...x })) };
     }
     function clearUserData() {
       COLLECTIONS.length = 0; WISHLISTS.length = 0;
@@ -24349,9 +24412,11 @@
       CHAT.inited = false; CHAT.threads = []; CHAT.draft = null;
       for (const k in PF_GFX_REG) delete PF_GFX_REG[k]; PF_GFX_DEL.clear();
       if (state.session === "member") {
-        restoreUserData();
+        /* identity first — pfLoad inside restoreUserData may rename it from the
+           persisted profile; resetting after would orphan PROFILES[CP_ME.name] */
         CP_ME.name = CP_ME_DEMO.name; CP_ME.avatar = CP_ME_DEMO.avatar;
         if (NEW_USER_KEY) { delete PROFILES[NEW_USER_KEY]; NEW_USER_KEY = null; }
+        restoreUserData();
       } else {
         clearUserData();
         if (state.session === "new") {
@@ -24384,6 +24449,7 @@
         localStorage.removeItem("fo_srch_recents");
         document.querySelectorAll(".screen").forEach(scr => { if (scr._search) scr._search.recents = []; });
       }
+      if (state.session === "member") snapPosts(true); /* bank member flags before switching out — restore on re-login */
       state.session = s;
       localStorage.setItem("fo_session", s);
       if (s === "new") {
