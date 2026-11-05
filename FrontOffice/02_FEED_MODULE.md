@@ -499,7 +499,7 @@ Card ไม่แสดงใน V1: FOR SALE/SHOWCASE type tag, price/condition
 | Asset composer `Post to feed` | post `pfkind:"sale"` + drawer record — เข้า feed + profile Sale tab |
 | Asset composer `Show`/`Hide` | drawer-only record — ไม่เข้า feed/search/WA เลย |
 | Edit info → `โชว์`/`ซ่อน` | `pfkind` → `show`/`hide` — หลุด feed ทันที + หลุด search/WA matching |
-| Edit info → drawer OFF | `pfkind` → `post` — ตัด drawer link + ลบ drawer asset; อยู่ feed แต่หลุด profile status tabs + search/WA |
+| Edit info → drawer OFF | `pfkind` → `post` — ตัด drawer link + ลบ drawer asset; อยู่ feed + results grid (`discoverablePosts()` ครอบ `post` — 03 §9) แต่หลุด profile status tabs + filter `(N)` counts/WA match (`salePosts()` price pool เท่านั้น) |
 | Post `sale` → `sold` (Mark as sold สำเร็จ) | หลุด feed ทันที + ทุก tab; own-post menu เปลี่ยน Edit → View sale record |
 | Post `sale` ↔ `show`/`hide` (drawer status change) | `show`/`hide` หลุด feed; กลับ `sale` เข้า feed ใหม่ |
 | Post archived ↔ unarchived | หลุด/กลับ feed ตาม eligibility; pins ล้างตอน archive |

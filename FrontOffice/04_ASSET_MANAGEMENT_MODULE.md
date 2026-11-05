@@ -378,7 +378,7 @@ Post-side linkage:
 | Asset created `Post to feed` | `POSTS` `pfkind:"sale"` + `PF_ASSETS` — เข้า feed + profile `ขาย` tab + search/WA eligible + WA match toast |
 | Edit info → `show`/`hide` | `pfkind` เปลี่ยน + `pa.status` sync — หลุด feed (`refreshPostViews` ลบ card) + หลุด search/WA matching; ย้าย profile tab |
 | Edit info → `sale` (บน POSTS post) | เข้า feed + `ขาย` tab + search/WA eligible ใหม่ |
-| Edit info drawer OFF | `pfkind:"post"` + ตัด `assetId` + ลบ `PF_ASSETS` record — อยู่ feed + `ทั้งหมด` tab เท่านั้น; หลุด status tabs/search/WA |
+| Edit info drawer OFF | `pfkind:"post"` + ตัด `assetId` + ลบ `PF_ASSETS` record — อยู่ feed + `ทั้งหมด` tab + results grid (`discoverablePosts()` ครอบ `post` — 03 §9); หลุด status tabs/`(N)` counts/WA match (`salePosts()` price pool เท่านั้น) |
 | `sale`/`show`/`hide` → `sold` (Mark as sold) | `PF_ASSETS`→`PF_SOLD` + linked posts `pfkind:"sold"` — หลุด feed/search/WA/profile status tabs ทันที; เข้า `ขายแล้ว` tab + `soldhist` |
 | Post deleted | หายทุก surface — drawer record คงอยู่ (deviation, ดู Delete Rule) |
 | Drawer-only `PF_MINE` → `sale` via Edit | `pfkind:"sale"` แต่ยังอยู่ `PF_MINE` — **ไม่เข้า feed** (PF_MINE ไม่ merge เข้า POSTS — deviation) |
@@ -540,7 +540,7 @@ Contract (prototype ไม่มี tracking layer — mark contract เหม�
 | AC-ASSET-MGMT-020 | Status change ต้องทำผ่าน Edit info `Profile status` pick (`stt-opt` — drawer ON) เท่านั้น — ต้องไม่มี standalone Change Status sheet/Edit Asset form |
 | AC-ASSET-MGMT-021 | `sold` post ต้องเป็น terminal: own-post menu แสดง `View sale record` แทน `Edit`, drawer toggle locked + `This item lives in your Sold history`, `applyPostEdit` ต้องไม่เปลี่ยน `pfkind` |
 | AC-ASSET-MGMT-022 | Edit info → `show`/`hide`/`sold` ต้องดึงโพสต์ออก feed ทันที (`refreshPostViews`) + หลุด search/WA matching; → `sale` (บน feed post) ต้องเข้า feed ใหม่ |
-| AC-ASSET-MGMT-023 | Drawer toggle OFF ต้องตัด `assetId` + splice `PF_ASSETS` + `pfkind:"post"` — โพสต์อยู่ feed แต่หลุด status tabs/search/WA (sold link คงไว้) |
+| AC-ASSET-MGMT-023 | Drawer toggle OFF ต้องตัด `assetId` + splice `PF_ASSETS` + `pfkind:"post"` — โพสต์อยู่ feed + results grid (`discoverablePosts()` ครอบ `post` — 03 §9) แต่หลุด status tabs/`(N)` counts/WA match (sold link คงไว้) |
 | AC-ASSET-MGMT-024 | Visibility matrix ต้องตรง canonical 00_GLOBAL §10 ทุกช่อง (Sale/Show/Hide/Sold/post × Owner/Public/Feed/Search/WA) |
 
 ## Mark as Sold & Sale Record

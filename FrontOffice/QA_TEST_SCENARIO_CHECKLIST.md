@@ -662,7 +662,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify lifecycle impact on search.
 **Maps to:** AC-SEARCH-036, AC-SEARCH-037
 **Steps:** Transition a `sale` post → `show`/`hide`/`sold`; transition back; remove a post's price; delete a post; block/mute/NI a seller.
-**Expected result:** `sale`→non-sale drops the post from results grid + filter counts + WA match; reverse returns it; unpriced post leaves the grid but stays on explore/tags surfaces; deleted post leaves everywhere + stale open → toast; blocked drops from all search surfaces; muted drops everywhere; `ni` drops from results + explore.
+**Expected result:** `sale`→non-sale (`show`/`hide`) drops the post from feed + results grid + filter counts + WA match; reverse returns it; unpriced `post` kind **stays** on feed + results grid + explore/tags (`discoverablePosts()` covers `post`) but leaves filter `(N)` counts + WA match (`salePosts()` price pool only); deleted post leaves everywhere + stale open → toast; blocked drops from all search surfaces; muted drops everywhere; `ni` drops from results + explore.
 
 ---
 
@@ -1004,7 +1004,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Steps:** Open a post's Edit info with drawer ON; change `Profile status` through `ขาย`/`โชว์`/`ซ่อน`; toggle the drawer OFF.
 **Expected result:**
 - Status changes exist **only** inside Edit info `Profile status` pick (`stt-opt`) — no standalone Change Status sheet or Edit Asset form exists; `sold` is never an option.
-- `→show`/`hide` pulls the post from feed + search/WA immediately; `→sale` returns it; drawer OFF cuts `assetId` + splices `PF_ASSETS` + `pfkind:"post"` (post stays on feed, leaves status tabs/search/WA; existing sold link survives).
+- `→show`/`hide` pulls the post from feed + results grid/search counts/WA immediately; `→sale` returns it; drawer OFF cuts `assetId` + splices `PF_ASSETS` + `pfkind:"post"` (post stays on feed + results grid + explore/tags — `discoverablePosts()` covers `post` kind; leaves only `sale`-kind status tab, `(N)` counts and WA match which are `salePosts()` price pool; existing sold link survives).
 
 ### QA-ASSET-009
 **Objective:** Verify sold is terminal.
