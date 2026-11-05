@@ -25,9 +25,9 @@
 
 | ฝั่ง | Scope units | Test basis |
 |---|---|---|
-| Front Office | 14 feature modules (`01`–`07`, `09`–`15`; เลข `08` ถูกถอดพร้อม Offer) + doc-tier `16`/`17`/`18` (review ระดับ contract) | J-01..J-13 (`business-process-flows.md` §4–15) |
-| Back Office | 15 modules (`01`–`08`, `11`–`17`; เลข `09`/`10` ไม่มีไฟล์) + `00G` เป็น cross-cutting ทุก unit | B-01..B-14 (`business-process-flows.md` §17.4–17.15) |
-| Cross-side FO↔BO | 9 sync/moderation contracts | X-01..X-09 (`business-process-flows.md` §17.16) |
+| Front Office | **15 sign-off units** — 14 feature modules (`01`–`07`, `09`–`15`; เลข `08` ถูกถอดพร้อม Offer) + doc-tier bundle หน่วยเดียว (`16`+`17`+`18` contract review); `00G`/`00NAV` เป็น cross-cutting ทุก unit | J-01..J-13 (`business-process-flows.md` §4–15) |
+| Back Office | **15 sign-off units** — module specs `01`–`17` ที่มีไฟล์จริง 15 ไฟล์ (`09` ถูกถอดพร้อม Offer · เลข `10` ไม่มีมาตั้งแต่ต้น — "17" ที่พูดกันคือเลขซีรีส์สเปคสูงสุด ไม่ใช่จำนวนไฟล์) + `00G` เป็น cross-cutting ทุก unit | B-01..B-14 (`business-process-flows.md` §17.4–17.15) |
+| Cross-side FO↔BO | 4 sign-off groups ครอบ 9 sync/moderation contracts | X-01..X-09 (`business-process-flows.md` §17.16) |
 
 ### 1.3 Out of Scope (Phase 1 UAT)
 
@@ -141,7 +141,7 @@
 
 ### 6.4 Spec-conflict Path (สำคัญ — กฎเดิมของโปรเจค)
 
-พบ spec ขัดกันเอง / spec ขัด prototype → **ห้ามแก้เอง** — บันทึกเป็น Finding (`UF-##` ใน §11 หรือ defect ชนิด Spec-conflict) แล้วส่งให้ผู้มีสิทธิ์ตัดสินตาม RACI แถว "spec-conflict decision" — เมื่ออนุมัติแล้วค่อย implement + ลง DECISION_LOG ถ้าระดับ product/cross-module
+พบ spec ขัดกันเอง / spec ขัด prototype → **ห้ามแก้เอง** — วงจรตัดสินคือ: (1) BA บันทึกเป็น Finding (`UF-##` ใน §11 หรือ defect ชนิด Spec-conflict) **พร้อม draft recommendation** (แนวทางที่ควรเป็น + เหตุผลอ้าง spec/prototype), (2) **เจ้าของ requirement ของ domain นั้นตัดสิน** (default = PO ถ้าไม่มี owner เฉพาะ — เช่น money display = พี่คิง ตาม DEC-42), (3) BA ปรับตาม feedback ที่ได้รับ หรืออธิบายเหตุผลกลับถ้าเสนอทางเลือกอื่น — เมื่ออนุมัติแล้วค่อย implement + ลง DECISION_LOG ถ้าระดับ product/cross-module
 
 ## 7. UAT Scope Register (ครอบ sign-off)
 
@@ -165,9 +165,7 @@
 | FO-13 Settings | `13` | J-12, J-01 (delete account) | settings, legal, delete flow | รอ execute |
 | FO-14 Portfolio | `14` | J-04, J-10 | portfolio, sold history | รอ execute |
 | FO-15 Trust & Safety | `15` | J-07 | report flow, block | รอ execute |
-| FO-16 Integrations (doc-tier) | `16` | — (contract review) | — | contract sign-off |
-| FO-17 NFR (doc-tier) | `17` | — (contract review) | — | contract sign-off |
-| FO-18 Admin Scope (doc-tier) | `18` | — (boundary check) | — | contract sign-off |
+| FO-DOC Doc-tier bundle | `16`+`17`+`18` | — (contract review: integrations boundary, NFR, admin scope) | — | contract sign-off |
 | FO-00G/00NAV cross-cutting | `00G`, `00NAV` | ทุก J (session/gate/visibility/nav) | ทุกจอ | ผูกกับทุก FO unit — ไม่ sign แยก |
 
 ### 7.2 Back Office (15 modules + 00G cross-cutting)
@@ -214,6 +212,8 @@
 | Business Users (TBD) | end-user representative | acceptance จากมุมผู้ใช้จริง | execute วง A/B ร่วม, ให้ verdict เชิง usability | — (recommend เท่านั้น) |
 
 > ช่อง QA Executor / Dev / Business Users = **placeholder** — repo ไม่มีชื่อจริง ให้ PO เติมตอนอนุมัติ plan (ดู UF-02)
+>
+> สิทธิ์ตัดสิน (A) อยู่กับ **เจ้าของ requirement ของ domain นั้นเสมอ** — default = PO เมื่อไม่มี owner เฉพาะ; BA (หนู) มีหน้าที่เตรียม + แนะนำแนวทาง + ปรับตาม feedback หรืออธิบายเหตุผลกลับ (วงจรใน §6.4)
 
 ### 8.2 RACI Matrix (R=ทำ, A=รับผิดชอบสุดท้าย — แถวละ 1 ตัว, C=ปรึกษา, I=แจ้ง)
 
@@ -227,7 +227,7 @@
 | Execute — วง C (cross-side) | I | I | C | **A**/R | R | C |
 | Defect triage + severity | I | C | R | **A**/R | C | I |
 | Defect disposition (fix/defer/accept) | **A** | C (money เท่านั้น) | R | C | C | I |
-| Spec-conflict decision | **A** | C (domain ของตน) | R | C | I | I |
+| Spec-conflict decision | **A** (requirement owner ของ domain) | C (domain ของตน) | R (draft recommendation + apply feedback) | C | I | I |
 | Fix prototype defect | I | I | I | C | **A**/R | I |
 | Regression / retest | I | I | I | **A**/R | C | I |
 | Sign-off ต่อ scope unit | **A** | C (money units) | R | C | I | C |
@@ -266,7 +266,7 @@
 | Field | ค่า |
 |---|---|
 | รอบ UAT | <ช่วงวันที่ + environment ref> |
-| Scope | FO <n>/14 modules · BO <n>/13 modules · XS 4/4 groups (deferred: BO-07, BO-15, contract items) |
+| Scope | FO <n>/15 units · BO <n>/13 executable + 2 deferred · XS 4/4 groups (contract items defer → production UAT) |
 | Exit criteria | <ทีละข้อ §4.2 ผ่าน/ไม่ผ่าน + เหตุ> |
 | Defect summary | total <n> — open <n> (dispositions ครบ) |
 | Findings pending | <UF-## ที่ยังรอ decision — ห้ามมีตัว block> |
@@ -289,8 +289,9 @@
 
 | ID | Finding | สถานะ | Refs |
 |---|---|---|---|
-| UF-01 | `FrontOffice/QA_TEST_SCENARIO_CHECKLIST.md` v2.0 (synced FO-PRD-v1.14) ยัง list "known documented defects" (`salePosts()` นับ show/hide/sold, viewer `all` tab รั่ว post/hide/sold, `FOR SALE` tag by price) แต่ F-02/F-06 บันทึกว่า **แก้ prototype + spec แล้ว 2026-11-05** — checklist อาจ stale ก่อน execute ต้อง sweep อัปเดตมิฉะนั้นเคสจะ assert ผลผิด | **บันทึก — รอพี่มาเต็มตัดสิน** (แนะนำ: sweep checklist ในงาน QA ก่อน UAT จริง ไม่ใช่ scope BAC-006) | `QA_TEST_SCENARIO_CHECKLIST.md` §Conventions, `business-process-flows.md` F-02/F-06 |
+| UF-01 | `FrontOffice/QA_TEST_SCENARIO_CHECKLIST.md` v2.0 (synced FO-PRD-v1.14) ยัง list "known documented defects" (`salePosts()` นับ show/hide/sold, viewer `all` tab รั่ว post/hide/sold) แต่ F-02/F-06 บันทึกว่า **แก้ prototype + spec แล้ว 2026-11-05** — checklist stale จะทำให้เคส assert ผลผิด | **RESOLVED 2026-11-05 — อนุมัติพี่มาเต็ม:** sweep checklist แล้วทีเดียว — S-10/S-14 mark resolved + rewrite expected ตาม canonical ใหม่ (`discoverablePosts`, viewer `post`+`Sale`+`Show`, counts/match = `salePosts()` Sale-pool) ครบ 7 จุด + version note | `QA_TEST_SCENARIO_CHECKLIST.md` §Conventions/QA-GLOBAL-009/QA-GLOBAL-015/QA-SEARCH-004/QA-PROFILE-003/QA-WA-009/sign-off rules, `business-process-flows.md` F-02/F-06 |
 | UF-02 | ไม่มีชื่อจริงของ QA executor / Dev maintainer / Business users ใน repo — RACI §8 ใช้ placeholder | open — รอ PO เติมตอน approve plan | §8.1 |
-| UF-03 | BO domain reviewer นอกเหนือ PO ที่มีหลักฐานในเอกสารคือพี่คิงเฉพาะ money display — ไม่มี owner รองสำหรับ domain อื่น (เช่น market data, moderation policy) → ตอนนี้ spec-conflict ทุก domain วิ่งเข้า PO จุดเดียว | open — ทำงานได้แต่ bottleneck เดี่ยว | §8.1/§8.2 |
-| UF-04 | Module count drift: FO spec files = `01`–`18` ไม่มี `08` (17 ไฟล์ แบ่ง 14 feature + 3 doc-tier) ส่วน BO = `01`–`17` ไม่มี `09`/`10` (15 ไฟล์) + `00G` — brief เดิมนับ "FO 15 / BO 17" ซึ่งไม่ตรงไฟล์จริงเป๊ะ ๆ plan นี้ยึดไฟล์จริงใน repo | documented — scope register §7 คือ canonical | `FrontOffice/`, `BackOffice/` README_MODULE_INDEX |
-| UF-05 | `Prototypes/` root มีไฟล์ scratch/test/diag จำนวนมาก (`test-*.mjs`, `diag-*.mjs`, `scratch/`, `feed-*.html`) — UAT environment ต้องล็อกว่าใช้เฉพาะ `fo-flow/index.html` + `bo-prototype.html` ไม่ให้เคสไปแตะไฟล์ทดลอง | documented — เขียนไว้ใน §3.1 แล้ว | `Prototypes/` |
+| UF-03 | BO domain reviewer นอกเหนือ PO ที่มีหลักฐานในเอกสารคือพี่คิงเฉพาะ money display — ไม่มี owner รองสำหรับ domain อื่น (เช่น market data, moderation policy) → spec-conflict ทุก domain วิ่งเข้า PO จุดเดียว | **RESOLVED — by design ตามทิศทางพี่มาเต็ม:** decision authority = เจ้าของ requirement ของ domain นั้น (default PO) อยู่แล้วถูกต้อง; เพิ่ม BA advisory duty (draft recommendation + apply feedback/อธิบายเหตุผล) ใน §6.4 + §8.1/§8.2 — พี่คิงคง owner เฉพาะ money domain | §6.4/§8.1/§8.2 |
+| UF-04 | Module count drift: FO spec files = `01`–`18` ไม่มี `08` (17 ไฟล์ แบ่ง 14 feature + 3 doc-tier) ส่วน BO = `01`–`17` ไม่มี `09`/`10` (15 ไฟล์) + `00G` — brief เดิมนับ "FO 15 / BO 17" ซึ่งไม่ตรงไฟล์จริงเป๊ะ ๆ | **RESOLVED — convention locked ตามทิศทางพี่มาเต็ม:** FO = **15 sign-off units** (14 feature + doc-tier bundle `16`/`17`/`18` หน่วยเดียว); BO = **15 sign-off units** (15 ไฟล์จริง — "BO 17" คือเลขซีรีส์สเปค 01–17 ไม่ใช่จำนวนไฟล์) — เขียนไว้ชัดใน §1.2 แล้ว ทุกตัวเลขในเอกสารนับตาม convention เดียวกัน | `FrontOffice/`, `BackOffice/` README_MODULE_INDEX |
+| UF-05 | `Prototypes/` root มีไฟล์ scratch/test/diag จำนวนมาก (`test-*.mjs`, `diag-*.mjs`, `feed-*.html` ฯลฯ) — เสี่ยงคนเทสเผลอเปิดไฟล์ experiment แล้ว report ผิด | **RESOLVED 2026-11-05 — อนุมัติพี่มาเต็ม:** `git mv` ไฟล์ dev/test/diag/experiment 23 ไฟล์เข้า `Prototypes/scratch/` — คง `scan-labels.mjs` + `server.mjs` ไว้ root เพราะ living docs อ้าง path (`docs/bo-canonical-label-table.md`, `docs/responsive-*.md`); entry files `fo-flow/` + `bo-prototype.html` ไม่ถูกแตะ | `Prototypes/` |
+| UF-06 | **Spec-internal conflict (เจอระหว่าง sweep UF-01):** `FrontOffice/03_SEARCH_FILTER_MODULE.md` §4 Product Alignment Summary แถว "Result eligibility" ยังเขียน `salePosts()` (priced only) แต่ §9 Results Eligibility Rule ของเล่มเดียวกันอัปเดตเป็น `discoverablePosts()` แล้ว (อนุมัติ 2026-11-05) — ตารางสรุป stale กว่ากฎจริง | **บันทึก — รอพี่มาเต็มตัดสิน** (แนะนำ: sync แถว §4 ตาม §9) | `FrontOffice/03_SEARCH_FILTER_MODULE.md` §4 vs §9 |
