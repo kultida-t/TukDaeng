@@ -198,7 +198,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 - Entry: `.liked-by` strip บน card/detail หรือ pv rail `Likes`/`ถูกใจ` label
 - เนื้อหา: `sheet-title` `ยอดถูกใจ`/`Likes` + `lk-note` (ตามกฎด้านบน) + rows = `[p.likedBy] + LIKER_POOL` dedupe (username + display name + avatar + `data-pf-user` → profile + `lk-follow` button)
-- `lk-follow` — cosmetic toggle in-place (`Follow` ↔ `Following`) **ไม่** เรียก `setFollowing` — state ไม่ propagate (§19 quirk)
+- `lk-follow` — `pfSetFollow` จริง (delegate → `setFollowing` หรือ `PF_EXTRA_FOL` สำหรับ user ไม่มี post) + flip `Follow` ↔ `Following` in-place — RESOLVED 2026-11-05 (เดิม spec บันทึกเป็น cosmetic quirk แต่โค้ดเรียก follow จริงอยู่แล้ว)
 
 ---
 

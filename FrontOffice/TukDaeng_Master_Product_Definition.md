@@ -593,7 +593,7 @@ Management (`walerts` page — เข้าผ่าน Settings > Your library 
 Notification:
 
 - `watch` row ใน Alerts feed → Post Viewer ของ post ที่ match โดยตรง ไม่มี Result List
-- Match feedback ตอน publish โพสต์ใหม่ = toast simulation `Watch alert matched: {name}`
+- Match feedback ตอน publish โพสต์ใหม่ = `watch` row ใน alerts feed ของ watcher (2026-11-05 — เดิมเคยเป็น toast simulation)
 
 ### Notification (Alerts feed)
 

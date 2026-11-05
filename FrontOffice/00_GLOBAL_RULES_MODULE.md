@@ -184,13 +184,13 @@ Owner/Viewer เป็น context ต่อ content ส่วน session (`membe
 | Show | แสดง | แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
 | Hide | แสดงเฉพาะ Owner | ไม่แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
 | Sold | แสดงเฉพาะ Owner | ไม่แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
-| `post` (ไม่ผูก asset) | แสดง | ไม่แสดง | แสดง | ไม่แสดง | ไม่ Match |
+| `post` (ไม่ผูก asset) | แสดง | แสดง | แสดง | แสดง | ไม่ Match |
 
 หมายเหตุ feed post-centric (S-09/S-10/S-14):
 
 - Feed = social post feed — แสดงทุกโพสต์ที่ไม่ติด viewer-level exclusion (not-interested / muted / blocked / archived) โดยโพสต์ที่ผูก asset ต้องอยู่ `Sale` เท่านั้นที่เข้า feed (`Show`, `Hide`, `Sold` หลุดจาก feed) และโพสต์ธรรมดา `post` ที่ไม่ผูก asset เข้า feed เสมอ
-- Search และ Watch Alert เป็น asset surfaces — match เฉพาะ `Sale`; prototype `salePosts()` นับ priced post ทุกสถานะรวม `Hide`/`Sold` (pfkind leak) ถือเป็น defect ที่บันทึกไว้ ไม่ใช่ spec
-- Public Profile แสดงเฉพาะ `Sale` + `Show` — prototype `All` tab รั่ว `post`/`Hide`/`Sold` ถือเป็น defect (S-14); viewer ต้องไม่เห็น post/sold/hide บน public profile
+- Search results แสดงทุกโพสต์ที่มองเห็นบน feed (`post` + `Sale` — IG parity, อนุมัติ 2026-11-05); Watch Alert match เฉพาะ `Sale` เท่านั้น — `salePosts()` ใน prototype = feed-visible priced posts (pfkind leak เดิมแก้แล้ว 2026-11-05)
+- Public Profile แสดง `post` + `Sale` + `Show` — เฉพาะ `Hide`/`Sold` ที่ viewer ต้องไม่เห็น (อนุมัติ 2026-11-05 — เดิมจำกัดเฉพาะ Sale+Show และเคยรั่ว Hide/Sold เป็น S-14 defect ซึ่งแก้แล้วใน prototype)
 
 # 11. Global State Rules
 

@@ -163,7 +163,7 @@ Member ใช้ครบ: search + recents (ของ session ตัวเอ�
 
 ## Popular Chip
 
-1. User กด chip บน landing (`For you` = q ว่าง — เท่ากับ browse ทุก sale listing; อื่น = keyword)
+1. User กด chip บน landing (`For you` = q ว่าง — เท่ากับ browse ทุกโพสต์ที่มองเห็นบน feed; อื่น = keyword)
 2. Chip ที่ไม่ใช่ `For you` → `pushRecent(kw)` อัตโนมัติ
 3. `mode = "results"`, `tab = "foryou"` — ไม่มี transition พิเศษ
 
@@ -253,7 +253,7 @@ Member ใช้ครบ: search + recents (ของ session ตัวเอ�
 ## Search Keyword Rule
 
 - `matchQuery`: ทุกคำที่แยกด้วย whitespace ของ query ต้องปรากฏใน haystack (case-insensitive) = `seller + caption + captionFull + chips + specs (label + value)` — spec snapshot text ครอบค่า free-text ที่ Owner save ไว้ด้วย (ค้นเจอผ่าน keyword เสมอ)
-- Query ว่าง (หลัง trim) = match ทุกโพสต์ใน eligible set (chip `For you` / Enter ด้วย q ว่าง → ทุก sale listing)
+- Query ว่าง (หลัง trim) = match ทุกโพสต์ใน eligible set (chip `For you` / Enter ด้วย q ว่าง → ทุกโพสต์ที่มองเห็นบน feed)
 - Query ขึ้นต้น `#` = hashtag mode — ดู Results Eligibility Rule
 
 ## Results Eligibility Rule
@@ -262,10 +262,9 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 | Surface | Eligible set |
 | --- | --- |
-| Results Posts grid (non-`#` query) | `salePosts()` = มี `price` (sale listing) + ไม่ `ni`/`muted`/`blocked` |
-| Results Posts grid (`#` query) | `POSTS` กรอง `!ni && !muted && !blocked` — รวม showcase/post ธรรมดา (DEC-23) |
-| Explore grid (landing) | ทุก photo ของทุกโพสต์ `!ni && !muted && !blocked` (รวม non-sale) |
-| Tags tab + `tagRows` | ทุกโพสต์ `!muted` |
+| Results Posts grid (ทุก query mode — keyword + `#` เหมือนกัน) | `discoverablePosts()` = ทุกโพสต์ที่มองเห็นบน feed (kind `post` + `sale`; ไม่ `ni`/`muted`/`blocked`/`archived`; ไม่ `show`/`hide`/`sold` — IG parity อนุมัติ 2026-11-05) |
+| Explore grid (landing) | ทุก photo ของ `discoverablePosts()` |
+| Tags tab + `tagRows` | `discoverablePosts()` — ไม่นับ tag จากโพสต์ที่มองไม่เห็น |
 | Accounts / Profiles / seller suggestions | seller ที่ชื่อ match q, ไม่ `PF_BLOCKED` (ไม่จำกัด sale posts) |
 | Filter option counts `(N)` + WA match | `salePosts()` เท่านั้น |
 
@@ -499,7 +498,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 - Search module ไม่สร้าง notification โดยตรง
 - Watch Alert notification → Post Viewer โพสต์ที่ match โดยตรง (`pfp` mode 1 โพสต์) — ไม่มี Result List คั่นใน V1 (00_NAV §8; canonical 10_WATCH_ALERT)
-- `Watch alert matched:` toast ตอน publish โพสต์ใหม่ = simulation, ไม่ใช่ notification item (02_FEED §14)
+- WA match ตอน publish โพสต์ใหม่ → `watch` row ใน alerts feed ของ watcher (notification item จริง — 10_WATCH_ALERT · 2026-11-05)
 
 # 15. Analytics Events
 

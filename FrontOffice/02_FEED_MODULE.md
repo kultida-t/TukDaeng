@@ -281,7 +281,7 @@ Member สร้างโพสต์ผ่าน composer ได้ 2 mode: pos
 2. Step 1 picker: เลือก media จาก Recents grid (photos + clips ผสม) — single-select default; `เลือกหลายรายการ`/`Select` เปิด multi-pick เลขลำดับ (≤10); hero preview แสดง media ล่าสุดที่เลือก; camera tile / `Recents` dropdown / expand icon = dead → toast `Not in this prototype yet`
 3. `Next` (active เมื่อมี ≥1 media) → step 2: media strip, caption, hashtag chips, option rows
 4. (optional) กรอก fields ผ่าน option panes — location / price / watch details / condition / cost details (เฉพาะ drawer toggle ON) / more options (commenting + audience); toggle `Also save to My Assets` (default OFF)
-5. `แชร์`/`Share` → `insertNewPost` แทรกโพสต์ใหม่บนสุด feed — ดู Publish Rule §9; composer ปิด, feed re-render + scroll to top + toast; โพสต์ตรง Watch Alert ON → toast `Watch alert matched` หน่วงตามหลัง
+5. `แชร์`/`Share` → `insertNewPost` แทรกโพสต์ใหม่บนสุด feed — ดู Publish Rule §9; composer ปิด, feed re-render + scroll to top + toast; โพสต์ตรง Watch Alert ON → `watch` row เข้า alerts feed ของ watcher (10_WATCH_ALERT — publisher ไม่เห็น feedback)
 6. กด `×` กลางทาง → Discard Draft Rule (draft ว่างปิดเงียบ / มีของเจอ dialog)
 
 ## Create Asset Flow (asset mode)
@@ -456,7 +456,7 @@ Card ไม่แสดงใน V1: FOR SALE/SHOWCASE type tag, price/condition
 - Clip draft ที่มี media เดียวล้วน → `clip` + `clips[1]` + toast `Clip shared to feed ✓`; mixed/photo draft → `clips[]` duration ต่อ slide (null = photo)
 - `Also save to My Assets` ON → `pfkind:"sale"` + สร้าง drawer asset (`cfToPortfolio` status `sale`) + link `assetId`
 - Toast: `Posted · shared to feed ✓` / `Posted · shared to feed + My Assets ✓` (drawer ON) / `Clip shared to feed ✓` — ต้องมีคู่ TH ตาม DEC-19; composer ปิด + feed re-render + scroll top
-- โพสต์ใหม่ที่ตรง Watch Alert ON → toast `Watch alert matched: {name}` `(+N more)` หน่วง ~2 วินาทีหลัง toast หลัก (simulation — 10_WATCH_ALERT)
+- โพสต์ใหม่ที่ตรง Watch Alert ON → `watch` row ใน alerts feed ของ watcher — publisher ไม่เห็น feedback (contract — 10_WATCH_ALERT · 2026-11-05)
 
 ## Asset Mode Rule (composer → drawer)
 
@@ -581,7 +581,7 @@ Owner fallback rules:
 - `hideCounts` flag ซ่อน liked-by row + views ทุก surface — มีเฉพาะบน seeded posts; composer ไม่มี setter (More options มีแค่ commenting + audience) — spec เก็บ field + read semantics แต่ไม่มี UI เขียนค่าใน V1
 - `audience:"followers"` ถูกเก็บบนโพสต์แต่ feed ไม่กรองตาม audience (ดู Audience Rule) — enforcement เป็น contract
 - Asset mode `Show`/`Hide` path ทิ้ง audience/noComments ที่ตั้งใน More options (drawer-only record hardcode `public`/false)
-- Composer toasts ต้องแปลไทยครบตาม DEC-19 (ปัจจุบัน EN hardcode ยังไม่มี TH branch): `Posted · shared to feed ✓` / `Posted · shared to feed + My Assets ✓` / `Clip shared to feed ✓` / `Post updated` / `Post needs at least 1 photo or clip` / `You can add up to 10 photos or clips` / `Watch alert matched:` — language sweep (FSP-026)
+- Composer toasts ต้องแปลไทยครบตาม DEC-19 (ปัจจุบัน EN hardcode ยังไม่มี TH branch): `Posted · shared to feed ✓` / `Posted · shared to feed + My Assets ✓` / `Clip shared to feed ✓` / `Post updated` / `Post needs at least 1 photo or clip` / `You can add up to 10 photos or clips` / `Watch alert matched:` (toast ถูกถอดแล้ว 2026-11-05 — เหลือแค่ dict entry) — language sweep (FSP-026)
 - `Estimated Market Price` band บนโพสต์ใหม่ = mock estimate (±5–6% ปัด 5,000 + `Last Price Update` = วันนี้) — ไม่ใช่ market data จริง
 - โพสต์ใหม่ seed `likedBy` fake (`the watch`) — artifact ไม่มีผล render (likes=0 ไม่แสดง liked-by row)
 - Design variants `a2/b2/c2/a3/b3/c3/mixed` (price overlay / quiet price / footer price / type tag), `ft:"none"` brand-menu dropdown, `POST_DETAIL_CFG` เป็น dead prototype artifacts — ไม่ใช่ spec
@@ -649,7 +649,7 @@ Owner fallback rules:
 | เลือก media เกิน 10 ชิ้น | toast `You can add up to 10 photos or clips` — ไม่เพิ่ม |
 | Purchase date invalid/future | inline error ใน cost pane + block `Done` (back ยกเลิกได้เสมอ) |
 | ปิด composer ระหว่างมี draft | discard dialog ตาม Discard Draft Flow — draft ว่างปิดเงียบ |
-| โพสต์ใหม่ตรง Watch Alert ON | toast `Watch alert matched: {name}` หน่วงหลัง toast หลัก ~2 วินาที |
+| โพสต์ใหม่ตรง Watch Alert ON | `watch` row ใน alerts feed ของ watcher (ไม่ใช่ toast — 2026-11-05) |
 | กด camera tile / `Recents` / expand ใน composer | toast `Not in this prototype yet` (dead affordances) |
 | Location pane ไม่เจอสถานที่ | แสดง `ไม่พบสถานที่ที่ค้นหา`/`No matching places` |
 
@@ -670,7 +670,7 @@ Owner fallback rules:
 - Like / Comment / Follow notification ถูกกำหนดใน 09_NOTIFICATION + 11_SOCIAL — destination = Post Viewer / Public Profile ตาม 00_NAV §8
 - Watch Alert notification เปิด Post Viewer ของโพสต์ที่ match โดยตรง (S-08 — ไม่มี Result List)
 - Share / Save / Not-interested / Mute / Archive / Pin ไม่สร้าง Alerts feed item
-- โพสต์ใหม่จาก composer ที่ตรง Watch Alert ON → toast `Watch alert matched: {name}` (simulation — ไม่ใช่ notification item; 10_WATCH_ALERT)
+- โพสต์ใหม่จาก composer ที่ตรง Watch Alert ON → `watch` row ใน alerts feed ของ watcher (notification item จริง — 10_WATCH_ALERT · 2026-11-05)
 
 # 15. Analytics Events
 
@@ -768,7 +768,7 @@ Owner fallback rules:
 | AC-FEED-042 | `Next`/`Share`/`Add Asset` disabled จนกว่ามี ≥1 media — media เป็น required เดียว; field อื่นว่างได้หมด |
 | AC-FEED-043 | Step 2 = media strip + caption + hashtag chips + option rows; `×` บน thumb ลบ media (create ลบหมดกลับ step 1); แตะ thumb เปิด zoom viewer (clip = playable); chips แทรก tag ลง caption เฉพาะเมื่อยังไม่มี |
 | AC-FEED-044 | Option panes ทำงานตาม Composer Fields Rule: location (list+km+search+`×` ลบ), price (digits+comma, ว่าง=showcase), watch details (22 free-text + description), condition (5+4 pick), cost (เฉพาะ asset/drawer ON + date validation), more options (commenting toggle + audience pick) |
-| AC-FEED-045 | Post mode `Share` → `insertNewPost` แทรกโพสต์ใหม่บนสุด feed: `pfkind:"post"` (drawer OFF) / `sale` (ON + materialize asset), `type` ตาม price, specGroups ตาม fields + `Price & Data Source` band; feed re-render + scroll top + toast `Posted · shared to feed ✓`/`Clip shared to feed ✓`/`Posted · shared to feed + My Assets ✓`; WA match → toast `Watch alert matched` หน่วง ~2 วินาที |
+| AC-FEED-045 | Post mode `Share` → `insertNewPost` แทรกโพสต์ใหม่บนสุด feed: `pfkind:"post"` (drawer OFF) / `sale` (ON + materialize asset), `type` ตาม price, specGroups ตาม fields + `Price & Data Source` band; feed re-render + scroll top + toast `Posted · shared to feed ✓`/`Clip shared to feed ✓`/`Posted · shared to feed + My Assets ✓`; WA match → `watch` row ใน alerts feed ของ watcher (2026-11-05) |
 | AC-FEED-046 | Asset mode `Add Asset` สร้าง drawer record เสมอ: `Show`/`Hide` = drawer-only post ไม่เข้า feed/search (`PF_MINE`); `Post to feed` = feed post `pfkind:"sale"`; ทุก path กลับ own profile grid + toast ตาม visibility |
 | AC-FEED-047 | `Edit` เปิด Edit info composer prefilled ที่ step 2 (Cancel/Done ไม่มี Share): media + caption + meta ย้อนจาก post fields, cost จาก linked asset; `+` tile เพิ่ม media ≤10; ลบชิ้นสุดท้าย → toast `Post needs at least 1 photo or clip` |
 | AC-FEED-048 | Edit `Done` → `applyPostEdit` อัปเดต post fields + `pfkind` + drawer link (เชื่อมใหม่/ตัด/materialize) + toast `Post updated` + sync ทุก surface + คืน surface เดิม (detail เปิดคืน / viewer คงอยู่) |

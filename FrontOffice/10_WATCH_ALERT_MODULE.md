@@ -36,7 +36,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Sheet + list: `waModesHTML` (~16427–16445 — mode rows + `N now`/`{n} รายการในขณะนี้` live count + `any`/`model` disabled เมื่อ criteria ว่าง), `waSheetHTML` (~16449–16463 — shared sheet `wa`/`wa-open`; title Create/Edit; `.wa-name` prefilled; `wa-go` CTA; `wa-del` เฉพาะ edit), `waRowHTML` (~16464–16483 — `.wa-row` + `.wa-off` เมื่อ paused; name + criteria text ` · `-join + `Edit` badge + mode label + `{n} matches now` + `wa-tgl` switch), `walertsHTML` (~16484–16491 — head `sub-back` + title `การแจ้งเตือนนาฬิกา`/`Watch Alerts` + desc + rows/empty — **เรียงใหม่สุดก่อน** ตาม ordering lock 2026-10-29)
 - Entries: `sr-wa` บน results head (~14806–14813 — `on` เมื่อ alert `source:"search"` sig ตรง), `mf-btn` บน Post Detail `act-right` (~13479 — canonical entry semantics อยู่ 05 §9), settings row `data-sub="walerts"` + `WATCH_ALERTS.length` count (~17380)
 - Handlers: `mf-btn` (~22126–22144 — modelKey dedupe ทุก source → edit; ใหม่ → `waCriteriaFromPost` draft `source:"detail"` mode `all`; criteria ว่าง → `No details on this post to watch` ไม่เปิด sheet), `wa-mode` (~22147–22158 — เก็บ name input เข้า draft ก่อน re-render sheet), `wa-go` (~22159–22191 — name `trim() || waName(criteria)`; edit → update + `Watch alert updated`; create → dedupe `waSig`+`matchMode` → dupe = เปิด edit เดิม + `You already saved this alert`; push + `Watch alert on`; sync flags + renderSub), `wa-del` (~22192–22205 — **เปิด confirm dialog ก่อนลบ** + `dlg-wadel-go` ลบจริง + `Watch alert removed` — lock 2026-10-29), `wa-tgl` (~22206–22218 — `a.on` flip + `Watch alert on`/`Watch alert paused`), `.wa-badge` Edit (~22219–22228), `sr-wa` (~22229–22241 — dedupe by sig ทุก source → edit draft; ใหม่ → `source:"search"`)
-- WA hit simulation: `insertNewPost` คำนวณ `POSTS[0]._waHits` (~16201 — ON alerts ที่ match โพสต์ใหม่); toast `Watch alert matched: {name}` `(+N more)` หน่วง ~2.1–2.4s หลัง publish toast (~20525–20527 asset `Post to feed`, ~20541–20543 post share, ~19950–19957 `fo_newpost` carry)
+- WA hit → watch row: `insertNewPost` คำนวณ `POSTS[0]._waHits` (ON alerts ที่ match โพสต์ใหม่) แล้ว push `watch` row เข้า alerts feed ของ watcher โดยตรง — เจ้าของโพสต์ไม่เห็น toast/feedback ใด ๆ (แก้ไข 2026-11-05 — เดิมเคยเป็น delayed toast ฝั่ง publisher)
 - Route + wiring: `walerts` → `walertsHTML` (~17715); `notif_settings` toggle `walerts` (~17571 — `When new listings match your criteria`); `data-sub` generic push (canonical 13)
 - Gate + session: `GUEST_GATE_SEL` รวม `.mf-btn` + `.sr-wa` + `.feed-wa` (~23338/~23342); `walerts` page เข้าผ่าน feed header `.feed-wa` (NB-014/036, DEC-44) + Settings (member-only — `.pf-menu`/`.feed-wa` gated); `applySessionData`/`clearUserData` → `WATCH_ALERTS.length = 0` สำหรับ guest/new + `restoreUserData` → `waLoad()` คืน alerts ของ member (~23874–23922 — persistence lock 2026-10-29: member alerts อยู่รอด reload/sign-out-in + `syncModelFlags` re-drive กระดิ่ง)
 - Feed side: `watch` notification rows + badge + destination — canonical [09_NOTIFICATION_MODULE.md](09_NOTIFICATION_MODULE.md)
@@ -166,8 +166,8 @@ Settings > Watch Alerts (`walerts`)
 ```text
 publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 -> insertNewPost คำนวณ _waHits = ON alerts ที่ alertMatch โพสต์ใหม่
--> มี hit -> toast `Watch alert matched: {name}` (+ `+N more`) หน่วง ~2 วิ หลัง toast หลัก
-(contract: match จริง -> `watch` row ใน alerts feed -> tap -> Post Viewer โพสต์นั้น — 09 canonical)
+-> มี hit -> push `watch` row เข้า alerts feed ของ watcher (session member) — เจ้าของโพสต์ไม่ได้รับ feedback ใด ๆ (2026-11-05 — เดิมเคยเป็น delayed toast ฝั่ง publisher; ทิศทาง = แจ้งเฉพาะฝั่งคนตั้ง alert)
+-> tap `watch` row -> Post Viewer โพสต์นั้นโดยตรง (09 canonical · 00_NAV §8)
 ```
 
 ---
@@ -362,7 +362,7 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 | Trigger | Recipient | Channel | Destination |
 | --- | --- | --- | --- |
 | โพสต์ `Sale` ใหม่ match ON alert | Alert owner | `watch` row ใน alerts feed (canonical 09) | Post Viewer โพสต์ที่ match ตรง — ไม่มี Result List |
-| โพสต์ใหม่ของตัวเอง match ON alert (prototype simulation) | Publisher (me) | delayed toast `Watch alert matched: {name}` `(+N more)` | ไม่มี (toast only) |
+| โพสต์ใหม่ match ON alert | Watcher (ผู้ตั้ง alert — ใน prototype คือ session member) | `watch` row ใน alerts feed (unread + badge) | `watch` row — tap → Post Viewer โพสต์นั้น |
 | โพสต์ `Sale` ใหม่ของตัวเอง match ON alert ของตัวเอง (contract) | Alert owner (ตัวเอง) | `watch` row ปกติเหมือน match ของคนอื่น — **ไม่ exclude self-match** (lock 2026-10-29 — ตาม saved-search ของ marketplace จริง เช่น eBay/Chrono24) | Post Viewer โพสต์นั้น |
 
 - Multiple matched alerts → hit ราย alert (`_waHits` = names ทั้งหมดที่ match); toast แสดงชื่อแรก + `+N more`
@@ -437,7 +437,7 @@ publish โพสต์ feed (share / Post to feed / fo_newpost carry)
 | AC ID | Criteria |
 |---|---|
 | AC-WA-020 | ON alert ที่ `modelKey` ตรงโพสต์ → `p.modelFollowing` → `.mf-btn` `.on` + title `Following this model` ทุก surface (save/delete/toggle ต้อง sync ทันที); `"||"` ไม่นับ — bell ติดไฟเฉพาะ alert จาก detail เท่านั้น (search-source alert ไม่ขับ bell — lock 2026-10-29 เหตุผลที่ deviation #15) |
-| AC-WA-021 | Publish โพสต์ใหม่ที่ match ON alert → `_waHits` + delayed toast `Watch alert matched: {name}`/`+N more` (simulation — ไม่ใช่ feed row) |
+| AC-WA-021 | Publish โพสต์ใหม่ที่ match ON alert → `_waHits` + `watch` row เข้า alerts feed ของ watcher (unread + badge; tap → Post Viewer โพสต์นั้น) — publisher ไม่เห็น feedback (2026-11-05) |
 | AC-WA-022 | (Contract) match จริง → `watch` row ใน alerts feed → tap → Post Viewer โพสต์นั้นตรง ไม่มี Result List (canonical 09/00_NAV §8) |
 
 ## Guest / Session / Contract

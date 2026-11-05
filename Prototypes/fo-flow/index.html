@@ -14756,7 +14756,10 @@
       };
       return scr._search;
     }
-    function salePosts() { return POSTS.filter(p => p.price && !p.ni && !p.muted && !p.blocked); }
+    /* posts a viewer can actually reach — same surface as the feed: post + sale only
+       (show/hide/sold are drawer statuses), no ni/muted/blocked/archived */
+    function discoverablePosts() { return POSTS.filter(p => !p.ni && !p.muted && !p.blocked && !p.archived && !["show", "hide", "sold"].includes(p.pfkind || "post")); }
+    function salePosts() { return discoverablePosts().filter(p => p.price); }
     function haystack(p) {
       return [p.seller, p.caption, p.captionFull, ...(p.chips || []), ...(p.specs || []).flatMap(s => s)].join(" ").toLowerCase();
     }
@@ -14804,8 +14807,8 @@
     }
     function searchResults(S) {
       const isTag = S.q.trim().startsWith("#");
-      /* spec-locked (SRCH-032 → DEC-23): tag mode includes non-sale posts but excludes ni/muted/blocked exactly like normal results */
-      let list = (isTag ? POSTS.filter(p => !p.ni && !p.muted && !p.blocked) : salePosts()).filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
+      /* results = every post visible on the feed (post + sale) — same set for keyword and #tag queries */
+      let list = discoverablePosts().filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
       if (S.sort === "plo") list = [...list].sort((a, b) => priceNum(a) - priceNum(b));
       else if (S.sort === "phi") list = [...list].sort((a, b) => priceNum(b) - priceNum(a));
       else if (S.sort === "pop") list = [...list].sort((a, b) => viewsNum(b) - viewsNum(a));
@@ -14860,7 +14863,7 @@
     function tagRows(S) {
       const q = S.q.trim().replace(/^#+/, "").toLowerCase();
       const set = new Set();
-      POSTS.filter(p => !p.ni && !p.muted && !p.blocked).forEach(p => (String(p.captionFull || p.caption || "").match(/#[A-Za-z0-9_ก-๙]+/gi) || []).forEach(t => set.add(t.toLowerCase())));
+      discoverablePosts().forEach(p => (String(p.captionFull || p.caption || "").match(/#[A-Za-z0-9_ก-๙]+/gi) || []).forEach(t => set.add(t.toLowerCase())));
       (typeof CF_TAGS !== "undefined" ? CF_TAGS : []).forEach(t => set.add(t.toLowerCase()));
       return [...set]
         .filter(t => !q || t.slice(1).includes(q))
@@ -14869,7 +14872,7 @@
     }
     function exploreTiles() {
       const T = [];
-      POSTS.filter(p => !p.ni && !p.muted && !p.blocked).forEach(p => p.photos.forEach((src, i) => T.push({ pid: p.id, i, src })));
+      discoverablePosts().forEach(p => p.photos.forEach((src, i) => T.push({ pid: p.id, i, src })));
       const tall = new Set(), views = new Set([2, 3, 7]);
       return T.map((t, i) => ({ ...t, tall: tall.has(i), views: views.has(i) ? POSTS.find(x => x.id === t.pid).views : "" }));
     }
@@ -15315,9 +15318,6 @@
     <div class="dlg-pwd-err" id="del-acc-pwd-err" style="display:none;"></div>
     <button class="dlg-btn danger dlg-del-pwd-submit">${isTh ? "ยืนยันลบบัญชี" : "Delete account"}</button>
     <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
-    }
-    function delAccountDlgHTML() {
-      return delPasswordConfirmDlgHTML();
     }
     function delAccountSuccessDlgHTML(dateFormatted) {
       const isTh = state.lang === "th";
@@ -16607,8 +16607,18 @@
         likedBy: null,
       });
       POSTS[0].specs = (POSTS[0].specGroups || []).flatMap(g => g.rows);
-      /* watch alerts fire when the new post matches an ON alert — surfaced as a toast by the caller */
+      /* watch alerts fire when the new post matches an ON alert — the match lands in the
+         watcher's alerts feed (contract), never as a toast on the publisher's screen */
       POSTS[0]._waHits = WATCH_ALERTS.filter(a => a.on && alertMatch(POSTS[0], a.matchMode, a.criteria)).map(a => a.name);
+      if (POSTS[0]._waHits.length && state.session === "member") {
+        alInit();
+        POSTS[0]._waHits.forEach((an, i) => ALERTS.unshift({
+          id: "alw" + Date.now() + i, type: "watch", users: [POSTS[0].seller], ago: "Just now", grp: "Today", unread: true,
+          pid: POSTS[0].id, thumb: POSTS[0].photos[0], alert: an,
+          name: [specOf(POSTS[0], "Brand"), specOf(POSTS[0], "Model")].filter(Boolean).join(" ") || POSTS[0].caption, price: POSTS[0].price,
+        }));
+        alBadgeSync();
+      }
     }
 
     /* ===== FEED-024 — Edit info: same composer prefilled with the post's data ===== */
@@ -17299,7 +17309,8 @@
     /* PRD 06: profile grid filters — All / Sale / Show / Hide / Sold */
     function pfKind(p) { return p.pfkind || (p.price || p.type === "sale" ? "sale" : "show"); }
     function pfTabPosts(uname, tab) {
-      const all = pfGridPosts(uname).filter(p => !p.archived); /* mirror userPosts — archived drops out of the grid */
+      const viewer = uname !== CP_ME.name; /* public profile shows post/sale/show only — hide+sold stay owner-only */
+      const all = pfGridPosts(uname).filter(p => !p.archived && (!viewer || !["hide", "sold"].includes(pfKind(p)))); /* mirror userPosts — archived drops out of the grid */
       const list = tab === "all" ? all : all.filter(p => pfKind(p) === tab);
       const pinned = list.filter(p => p.pins && p.pins[tab]).sort((a, b) => b.pins[tab] - a.pins[tab]); /* newest pin first; unpinned posts keep natural order */
       return pinned.concat(list.filter(p => !(p.pins && p.pins[tab])));
@@ -18223,7 +18234,7 @@
       if (name.startsWith("chatitem:")) return chatItemHTML(name.slice(9));
       if (name.startsWith("chatroom:")) return chatRoomHTML(name.slice(9));
       if (name.startsWith("chmenu:")) return chatRoomMenuHTML(name.slice(7));
-      if (name.startsWith("chsettings:")) return chatRoomSettingsHTML(name.slice(11));
+      if (name.startsWith("chsettings:")) return ""; /* dead route — no entry point (removed 2026-11-05) */
       if (name.startsWith("chmedia:")) return chatMediaGalleryHTML(name.slice(8), scr);
       if (name === "chatcfg") return chatCfgHTML();
       if (name === "walerts") return walertsHTML();
@@ -19563,62 +19574,6 @@
   </div>
   ${botBarHTML}`;
     }
-    function chatRoomSettingsHTML(tid) {
-      const t = chGet(tid);
-      const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
-      if (!t) return `<div class="ch-menu-head">${back}<span class="detail-title">${state.lang === "th" ? "การตั้งค่า" : "Settings"}</span></div>` + chEmptyHTML(state.lang === "th" ? "ไม่พบแชท" : "Chat not found", state.lang === "th" ? "บทสนทนานี้ไม่มีให้บริการแล้ว" : "This conversation is no longer available.");
-
-      const isTh = state.lang === "th";
-      return `
-  <div class="ch-menu-head">
-    ${back}
-    <span class="detail-title">${isTh ? "การตั้งค่า" : "Settings"}</span>
-  </div>
-  <div class="sub-scroll">
-    <button class="ch-set" data-chact="mute" data-tid="${t.id}">
-      <span class="t">
-        <b>${isTh ? "การแจ้งเตือนโน้ต" : "Note notifications"}</b>
-        <span>${isTh ? "รับการแจ้งเตือนเมื่อมีคนแสดงความคิดเห็นบนโน้ตของคุณ" : "Get notified when someone leaves a comment or reaction on your notes."}</span>
-      </span>
-      <span class="ch-tgl${t.muted ? "" : " on"}"><i></i></span>
-    </button>
-
-    <div class="ch-set-h">${isTh ? "การตั้งค่าแชท" : "Chat settings"}</div>
-    <button class="ch-set" data-chact="wallpaper">
-      <span class="t"><b>${isTh ? "วอลเปเปอร์แชท" : "Chat wallpaper"}</b></span>
-      <span class="sub-chev">${I.chevR(16)}</span>
-    </button>
-
-    <button class="ch-set" data-chact="export-chat" data-tid="${t.id}">
-      <span class="t">
-        <b>${isTh ? "ส่งออกประวัติการแชท" : "Export chat history"}</b>
-        <span>${isTh ? "ส่งออกประวัติการแชทนี้เป็นไฟล์ข้อความ" : "Export this chat's history as a text file."}</span>
-      </span>
-      <span class="sub-chev">${I.chevR(16)}</span>
-    </button>
-
-    <div class="ch-set" style="cursor:default;">
-      <span class="t">
-        <b>${isTh ? "คีย์การเข้ารหัส" : "Encryption keys"}</b>
-        <span style="display:flex; align-items:center; gap:4px; margin-top:3px;">
-          ${I.lock(12)} ${isTh ? "การแชทนี้ได้รับการปกป้องด้วยการเข้ารหัสความปลอดภัย" : "This chat is protected with Letter Sealing."}
-        </span>
-      </span>
-      <span class="sub-chev">${I.chevR(16)}</span>
-    </div>
-
-    <div style="height:14px;"></div>
-    <button class="ch-set" data-chact="del" data-tid="${t.id}">
-      <span class="t"><b style="color:var(--text);">${isTh ? "ลบข้อมูลแชท" : "Delete data"}</b></span>
-      <span class="sub-chev">${I.chevR(16)}</span>
-    </button>
-
-    <button class="ch-set" data-chact="report-chat" data-user="${esc(t.user)}">
-      <span class="t"><b style="color:var(--text);">${isTh ? "รายงาน" : "Report"}</b></span>
-      <span class="sub-chev">${I.chevR(16)}</span>
-    </button>
-  </div>`;
-    }
     function chatCfgHTML() {
       const isTh = state.lang === "th";
       const c = chatInit().cfg;
@@ -19944,8 +19899,7 @@
           return true;
         }
         else if (a === "chsettings") {
-          rpPush(scr, "chsettings:" + go.dataset.tid);
-          return true;
+          return true; /* dead route — no entry (removed 2026-11-05) */
         }
         else if (a === "chmedia") {
           rpPush(scr, "chmedia:" + go.dataset.tid);
@@ -20485,7 +20439,7 @@
       if ((m = t.match(/^(\d+) saved posts?$/))) return `${m[1]} โพสต์ที่บันทึก`;
       if ((m = t.match(/^(\d+) items?$/))) return `${m[1]} รายการ`;
       if ((m = t.match(/^You can add up to (\d+) photos or clips$/))) return `เพิ่มรูปหรือคลิปได้สูงสุด ${m[1]} รายการ`;
-      if ((m = t.match(/^Watch alert matched: (.+?)( \+(\d+) more)?$/))) return `การแจ้งเตือนตรงกับ ${m[1]}${m[3] ? ` (+${m[3]} รายการ)` : ""}`;
+      if ((m = t.match(/^Watch alert matched: (.+?)( \+(\d+) more)?$/))) return `การแจ้งเตือนตรงกับ ${m[1]}${m[3] ? ` (+${m[3]} รายการ)` : ""}`; /* pattern kept for old toasts — toast removed 2026-11-05 */
       if ((m = t.match(/^Search (.+)$/))) return `ค้นหา ${m[1]}`;
       if ((m = t.match(/^Mute (.+)\?$/))) return `ปิดเสียงโพสต์ของ ${m[1]} หรือไม่?`;
       if ((m = t.match(/^(\d+) posts?$/))) return `${m[1]} โพสต์`;
@@ -20708,8 +20662,6 @@
         localStorage.removeItem("fo_newpost");
         insertNewPost(JSON.parse(raw));
         setTimeout(() => toast("Posted · shared to feed ✓"), 500);
-        if (POSTS[0]._waHits && POSTS[0]._waHits.length)
-          setTimeout(() => toast(`Watch alert matched: ${POSTS[0]._waHits[0]}`), 2400);
       }
     } catch { }
 
@@ -21446,9 +21398,6 @@
               : vis === "hide"
                 ? (isTh ? "บันทึกลงลิ้นชักแบบซ่อนแล้ว ✓" : "Saved to My Assets · private ✓")
                 : (isTh ? "บันทึกลงลิ้นชักและแสดงบนโปรไฟล์แล้ว ✓" : "Saved to My Assets · shown on profile ✓"), photos[0] || "");
-            const waHits = vis === "feed" ? (POSTS[0]._waHits || []) : [];
-            if (waHits.length)
-              setTimeout(() => scrToast(scr, `Watch alert matched: ${waHits[0]}${waHits.length > 1 ? ` +${waHits.length - 1} more` : ""}`), 2100);
             return;
           }
           insertNewPost({ photos, caption: V.caption, meta: V.meta, clip: clip ? clip.dur : null, clips });
@@ -21462,9 +21411,6 @@
           fs.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
           fs.scrollTop = 0;
           scrToast(scr, clip ? "Clip shared to feed ✓" : V.asset ? "Posted · shared to feed + My Assets ✓" : "Posted · shared to feed ✓", photos[0] || "");
-          const waHits = POSTS[0]._waHits || [];
-          if (waHits.length)
-            setTimeout(() => scrToast(scr, `Watch alert matched: ${waHits[0]}${waHits.length > 1 ? ` +${waHits.length - 1} more` : ""}`), 2100);
           return;
         }
         const cfCell = e.target.closest(".ig-grid .cell");
@@ -21873,10 +21819,14 @@
         const scr = dlgDel.closest(".screen");
         const pid = scr.dataset.pmPid;
         const i = POSTS.findIndex(x => x.id === pid);
+        const mi = PF_MINE.findIndex(x => x.id === pid);
         scr.classList.remove("dialog-open");
-        if (i > -1 || PF_GFX_REG[pid]) {
+        if (i > -1 || mi > -1 || PF_GFX_REG[pid]) {
+          const post = (i > -1 ? POSTS[i] : null) || PF_GFX_REG[pid] || (mi > -1 ? PF_MINE[mi] : null);
           if (i > -1) { POSTS.splice(i, 1); PF_POSTS_DEL.add(pid); }
+          if (mi > -1) PF_MINE.splice(mi, 1);
           if (PF_GFX_REG[pid]) { delete PF_GFX_REG[pid]; PF_GFX_DEL.add(pid); }
+          if (post && post.assetId) { const ai = PF_ASSETS.findIndex(a => a.id === post.assetId); if (ai > -1) PF_ASSETS.splice(ai, 1); } /* linked drawer record goes with its post — sold history (PF_SOLD) stays */
           pfSave();
           scr.querySelectorAll(`.post[data-pid="${pid}"], .svf-post[data-pid="${pid}"], .pf-tile[data-pid="${pid}"]`).forEach(el => el.remove());
           if (scr.dataset.detailPid === pid) scr.classList.remove("detail-open");
@@ -22017,19 +21967,6 @@
         const futureDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
         const dateFormatted = futureDate.toLocaleDateString(isTh ? "th-TH" : "en-US", { day: "numeric", month: "long", year: "numeric" });
         openDlg(scr, delAccountSuccessDlgHTML(dateFormatted));
-        return;
-      }
-      const delAccBtn = e.target.closest('[data-dlg="del-account"]');
-      if (delAccBtn) {
-        const scr = delAccBtn.closest(".screen");
-        scr._delStep = 1;
-        pushSub(scr, "del_account");
-        return;
-      }
-      const dlgDelGo = e.target.closest(".dlg-delaccount-go");
-      if (dlgDelGo) {
-        const scr = dlgDelGo.closest(".screen");
-        openDlg(scr, delAccountSuccessDlgHTML());
         return;
       }
       const dlgDelDone = e.target.closest(".dlg-delaccount-done");
@@ -24358,7 +24295,7 @@
       if (!obEmailOk(f.email.trim())) E.email = obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง");
       else if (f.email.trim().toLowerCase() === "taken@example.com") E.email = obT("This email is already registered. Try signing in.", "อีเมลนี้ถูกใช้สมัครแล้ว ลองเข้าสู่ระบบ");
       if (!f.pw) E.pw = obT("Enter a password.", "กรอกรหัสผ่าน");
-      else if (f.pw.length < 8) E.pw = obT("Password must be at least 8 characters long.", "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร");
+      else if (f.pw.length < 8 || !(/[0-9]/.test(f.pw) || /[^A-Za-z0-9\s]/.test(f.pw))) E.pw = obT("Password must be at least 8 characters and include at least one number or special character.", "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร และมีตัวเลขหรืออักขระพิเศษอย่างน้อย 1 ตัว");
       OB.errs = E;
       if (Object.keys(E).length) return obDraw();
       f.email = f.email.trim(); f.name = f.name.trim(); OB.account = { email: f.email, pw: f.pw }; OB.provider = "email"; OB.resend = 30;

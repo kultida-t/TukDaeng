@@ -552,7 +552,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 3. `Share`; then reopen composer, add a draft, `×` to leave.
 **Expected result:**
 - Title `สร้างโพสต์ใหม่`/`New post`; media is the only required input.
-- Share → `insertNewPost` lands the new post at top of feed + re-render + scroll-to-top + toast; matching an ON Watch Alert also toasts `Watch alert matched`.
+- Share → `insertNewPost` lands the new post at top of feed + re-render + scroll-to-top + toast; matching an ON Watch Alert pushes a `watch` row into the watcher's alerts feed (publisher sees nothing — 2026-11-05).
 - `×` mid-draft → discard dialog (`เริ่มใหม่`/`แก้ไขต่อไป`); empty draft closes silently; back on step 2 returns to step 1 keeping the draft.
 - Clip-only post previews playable + `Clip shared to feed ✓`.
 
@@ -926,7 +926,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify match feedback and notification destination (S-08, S-11).
 **Maps to:** AC-WA-021, AC-WA-022, AC-NOTI-012, AC-NAV-010
 **Steps:** Publish a post matching an ON alert (prototype); simulate a real match (contract).
-**Expected result:** Prototype = delayed toast `Watch alert matched: {name}` (`+N more`) after the publisher's own post — a self-match simulation, not a feed row; contract = a `watch` row appears in the Alerts feed → tap → **Post Viewer of the matched post directly** — there is no Result List screen in V1.
+**Expected result:** Prototype = a `watch` row appears in the watcher's Alerts feed (unread + badge; publisher sees no feedback — 2026-11-05); contract = same `watch` row in the Alerts feed → tap → **Post Viewer of the matched post directly** — there is no Result List screen in V1.
 
 ### QA-WA-011
 **Objective:** Verify bell sync (`modelFollowing`).
@@ -972,7 +972,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify Add Asset save outcomes per visibility.
 **Maps to:** AC-ASSET-MGMT-006, AC-ASSET-MGMT-007, AC-ASSET-MGMT-008, AC-ASSET-MGMT-009
 **Steps:** Save one asset per visibility option; check surfaces + toasts.
-**Expected result:** Every path creates a `PF_ASSETS` drawer record (`cfToPortfolio` + `assetId` link); `Show` → drawer-only post `pfkind:"show"` (never feed/search/WA); `Hide` → `pfkind:"hide"`; `Post to feed` → `pfkind:"sale"` entering feed + `ขาย` tab + search/WA (+ possible `Watch alert matched` toast); save lands back on the own profile grid (never feed) + visibility-specific toast (`Saved to My Assets · posted to feed ✓` / `· shown on profile ✓` / `· private ✓`) — no confirmation/`Adding...` state.
+**Expected result:** Every path creates a `PF_ASSETS` drawer record (`cfToPortfolio` + `assetId` link); `Show` → drawer-only post `pfkind:"show"` (never feed/search/WA); `Hide` → `pfkind:"hide"`; `Post to feed` → `pfkind:"sale"` entering feed + `ขาย` tab + search/WA (+ possible `watch` row in the watcher's alerts feed); save lands back on the own profile grid (never feed) + visibility-specific toast (`Saved to My Assets · posted to feed ✓` / `· shown on profile ✓` / `· private ✓`) — no confirmation/`Adding...` state.
 
 ### QA-ASSET-004
 **Objective:** Verify spec fields are free-text.

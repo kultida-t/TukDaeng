@@ -444,7 +444,7 @@ Spec เลือกตาม prototype — รายการนี้คือ
 
 - Post Detail ไม่สร้าง notification เอง
 - Like/comment notifications เปิด Post Viewer (ไม่ใช่ detail) ตาม 00_NAV §8 — canonical 09_NOTIFICATION
-- WA match toast (`Watch alert matched`) เกิดฝั่ง publish — canonical 10_WATCH_ALERT/02_FEED
+- WA match → `watch` row ใน alerts feed ของ watcher ตอน publish (ไม่ใช่ toast — canonical 10_WATCH_ALERT · 2026-11-05)
 - `mf-btn` save/delete ให้ toast feedback เท่านั้น (`Watch alert on`/`updated`/`removed`) — ไม่มี notification item
 
 ---
