@@ -1167,10 +1167,10 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 ### QA-CHAT-011
 **Objective:** Verify the chat menu page (S-18 guard included).
 **Maps to:** AC-CHAT-026, AC-CHAT-027, AC-CHAT-042
-**Steps:** `≡` → press each circle button and each row; check the footer copy.
+**Steps:** `≡` → press each circle button and each row; confirm no footer is shown at the bottom.
 **Expected result:**
 - Head `<` + username; 4 circles: `Mute`↔`Unmute`, `Profile` → `profile:{u}`, `Block`↔`Unblock`, `Report` → `chatReportSheet`; rows: `Photos & videos` → `chmedia:` (+ thumb strip or `No photos or videos found.`) and `Listings & Items` → post detail.
-- Footer `This chat is protected with End-to-End Encryption` is a **copy claim only** — there is no E2E/Letter Sealing feature and none may be spec'd (S-18); **no Delete chat entry** on this page (swipe only); `chsettings:` is a dead route.
+- **No footer** — the `This chat is protected with End-to-End Encryption` copy claim was removed (no E2E/Letter Sealing feature exists; none may be spec'd, S-18); **no Delete chat entry** on this page (swipe only); `chsettings:` is a dead route.
 
 ### QA-CHAT-012
 **Objective:** Verify the media gallery.

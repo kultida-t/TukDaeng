@@ -194,7 +194,7 @@ UI / Reporting rules:
 - หลังลบตัวตน (anonymize) แล้ว ผู้ใช้สามารถสมัครใหม่ด้วยอีเมลเดิมได้ โดยบัญชีใหม่เป็นคนละบัญชี (คนละรหัส) ไม่เชื่อมประวัติเดิม
 - เก็บ audit log ของบัญชีเดิมไว้ตาม retention policy
 - สอดคล้อง GDPR
-- ถ้าอนาคตต้องการกันคนไม่ดีสมัครใหม่ด้วยอีเมลเดิม ใช้แฮชอีเมลเช็คซ้ำ — เก็บเป็น Open Decision DEL-DEC-005 รอ Legal
+- ถ้าอนาคตต้องการกันคนไม่ดีสมัครใหม่ด้วยอีเมลเดิม ใช้แฮชอีเมลเช็คซ้ำ — ตัดสินแล้วตาม DEL-DEC-005 (ไม่ใช้ใน V1; revisit เมื่อมี abuse)
 
 ### 10.4 Sensitive Reveal Policy
 
@@ -352,7 +352,7 @@ Confirmation modal ตาม pattern ของ Reported Users action flow (conte
 - Public profile/assets ต้องถูกซ่อนทันที ไม่ต้องรอครบ 30 วัน
 - ระหว่าง grace period แอดมินเห็นปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` ตลอด กดได้เมื่อรับเรื่องจาก support
 - เมื่อครบ grace period ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) — ไม่ใช่ manual action ของแอดมิน
-- Retention period ของข้อมูล (chat, report, audit log) แยกจาก account lifecycle ตาม DEL-DEC-002 รอ Legal/Product
+- Retention period ของข้อมูล (chat, report, audit log) แยกจาก account lifecycle ตาม DEL-DEC-002 (ตัวเลขตัดสินแล้วตาม DEC-53)
 - ถ้าแอดมินปฏิเสธคืนบัญชี ไม่เริ่มนับ grace period ใหม่ ให้รอครบ 30 วันตามเดิมแล้วระบบลบบัญชีอัตโนมัติ
 - ถ้าแอดมินคืนบัญชีในช่วง grace period account กลับเป็น `Active` และคำขอเปลี่ยนเป็น `คืนบัญชีแล้ว`
 - ระบบส่งอีเมลเตือนใกล้ครบ grace period อัตโนมัติเมื่อเหลือ 7 วัน และ 3 วันก่อนครบกำหนด (ไปยัง registered email) — ตาม lifecycle email ใน `14_NOTIFICATIONS_MODULE.md` section 9.3; ไม่ส่งถ้าคำขอจบแล้ว (คืนบัญชี/ลบตัวตน)
@@ -458,8 +458,8 @@ Account Deletion Requests ต้องใช้ app shell, navigation, breakpoin
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
 | DEL-DEC-001 ✅ | Restore policy | **แก้ไข 2026-11-05 (owner approved — แก้ F-07 cross-side conflict):** restore มี 2 ช่องทาง — user self-service ผ่าน sign-in (login-to-restore ตาม FO contract S-02) และแอดมินกู้คืนด้วยเหตุผล + audit; การปฏิเสธคืนบัญชี block ช่องทาง self-restore (sign-in เจอ support state); รายละเอียดใน section 10.2 (เดิม: admin-only ไม่มี self-service) |
-| DEL-DEC-002 | Retention period ของ chat, report และ audit log ต้องเก็บกี่ปีก่อนลบข้อมูล (purge) | รอ Legal/Product; แยกจาก account lifecycle (ลบบัญชีอัตโนมัติเกิดที่ grace period ตาม DEL-DEC-006); กระทบ data purge job และ data model |
+| DEL-DEC-002 ✅ | Retention period ของ chat, report และ audit log ต้องเก็บกี่ปีก่อนลบข้อมูล (purge) | **ตัดสินใจ (2026-11-05 — DEC-53, `docs/pdpa-data-processing-register.md` §3):** chat = mask ตัวตนที่ anonymization + purge เนื้อความ 1 ปี; report/moderation = 2 ปีหลังปิดเคส; audit log = 1 ปี baseline + security/sensitive 2 ปี; deletion archive (anonymized refs) = 5 ปี; consent record = อายุบัญชี + 2 ปีหลังลบ — แยกจาก account lifecycle เดิม (ลบบัญชีอัตโนมัติเกิดที่ grace period ตาม DEL-DEC-006) |
 | DEL-DEC-003 ✅ | Anonymization timing | **ปรับใหม่ตาม prototype (supersede คำตัดสินเดิม "แยก 2 จังหวะ")** — ลบบัญชีอัตโนมัติ = เก็บถาวร + ลบตัวตน ในขั้นเดียวเมื่อครบ grace period 30 วัน; รายละเอียดใน section 10.1 และ 14; ดู DEL-DEC-006 |
 | DEL-DEC-004 ✅ | Sensitive reveal policy | **ยืนยัน: masked default + ปุ่ม reveal on-demand + permission + audit**; รายละเอียดใน section 10.4 |
-| DEL-DEC-005 | ถ้าอนาคตต้องการกันคนไม่ดีสมัครใหม่ด้วยอีเมลเดิม ใช้แฮชอีเมลเช็คซ้ำหรือไม่ | รอ Legal; กระทบ re-registration policy และ privacy/compliance; Phase 1 สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ตาม section 10.3 |
+| DEL-DEC-005 ✅ | ถ้าอนาคตต้องการกันคนไม่ดีสมัครใหม่ด้วยอีเมลเดิม ใช้แฮชอีเมลเช็คซ้ำหรือไม่ | **ตัดสินใจ (2026-11-05):** ไม่ใช้ hashed-email check ใน V1 — สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ตาม section 10.3 (hash guard เพิ่ม privacy surface โดยไม่มี abuse case จริง); revisit เมื่อพบ re-registration abuse |
 | DEL-DEC-006 ✅ | Lifecycle รวมขั้นเดียว — ลบบัญชีอัตโนมัติ = เก็บถาวร + ลบตัวตน เกิดพร้อมกันเมื่อครบ grace period (สถานะคำขอ 4 ค่า ไม่มี `เก็บถาวรแล้ว`; สถานะบัญชี 3 ค่า ไม่มี `Archived`) | **ยืนยันตาม prototype (2026-09-08)** — supersede DEL-DEC-003 เดิม (แยก 2 จังหวะ); section 9/10/10.1/14/15/17 และ AC-BO-DEL-008 ปรับตามแล้ว; retention period ของข้อมูลยังอ้าง DEL-DEC-002 |
