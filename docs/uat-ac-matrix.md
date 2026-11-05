@@ -5,7 +5,7 @@
 | Version | 0.1 (draft) |
 | Date | 2026-11-05 · Asia/Bangkok |
 | Task | BAC-007 [`f02caac5`] — Mission `0e19c244` Objective: UAT Readiness / Feature: AC Traceability Matrix |
-| Status | **DRAFT — รอ review** (รอพี่มาเต็มตรวจ) |
+| Status | **v0.1 — APPROVED** (พี่มาเต็ม 2026-11-05; findings AM-01–AM-05 ปิดครบ, spec `BO-17-v0.16`) |
 | Source of truth | `FrontOffice/` + `BackOffice/` module specs (Acceptance Criteria sections) · `docs/uat-plan.md` v0.1 §7 (scope register) · `docs/business-process-flows.md` v0.2 (journeys) |
 
 ## 0. วิธีอ่านเอกสารนี้
