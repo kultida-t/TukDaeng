@@ -2,9 +2,9 @@
 
 | รายการ | ข้อมูล |
 |---|---|
-| Version | 1.3 |
-| Date | 2026-11-04 · Asia/Bangkok |
-| Task | DOC-030 [`d9ae9924`] — Mission 6 [`31829e57`] Objective 3 (Decision Log Unification) · v1.2 = DOC-033 [`ee3c153a`] implement approved decisions (DEC-49/50 + spec row closures) · v1.3 = DOC-035 [`b8a33f8b`] implement DEC-51 (ตัด BO consignment data model + prototype surface) |
+| Version | 1.4 |
+| Date | 2026-11-05 · Asia/Bangkok |
+| Task | DOC-030 [`d9ae9924`] — Mission 6 [`31829e57`] Objective 3 (Decision Log Unification) · v1.2 = DOC-033 [`ee3c153a`] implement approved decisions (DEC-49/50 + spec row closures) · v1.3 = DOC-035 [`b8a33f8b`] implement DEC-51 (ตัด BO consignment data model + prototype surface) · v1.4 = BAC-010 [`7e4ee919`] record DEC-57 (grace-period restore path — amend DEL-DEC-001) + DEC-58 (success-metrics v0.1 = draft ไม่ใช่ spec contract) |
 | Status | **CANONICAL** — index เดียวของ decision ทั้งระบบ (FO + BO + product) |
 
 ## 0. วิธีใช้เอกสารนี้
@@ -192,7 +192,7 @@ Record: section `Open Decisions` ของ module spec แต่ละเล่�
 | SUP-DEC-002 | Channel type นอก 5 ประเภท | ✅ resolved 2026-11-04 — fixed list 5 ประเภทใน Phase 1 |
 | SUP-DEC-003 | Policy HTML tag นอก allowed list | ✅ resolved 2026-11-04 — allowed list เท่านั้น; เพิ่ม tag = task ใหม่ + ปรับ sanitizer |
 | SUP-DEC-004 | Policy version retention | ✅ resolved 2026-11-04 — เก็บ Archived ตลอดใน Phase 1 |
-| DEL-DEC-001 | Restore policy | ✅ resolved — แอดมินคืนใน grace 30 วัน |
+| DEL-DEC-001 | Restore policy | ✅ resolved — amended 2026-11-05 → `DEC-57`: restore 2 ช่องทาง (login-to-restore default + admin support path); reject blocks self-restore |
 | DEL-DEC-002 | Retention period chat/report/audit ก่อน purge | ✅ resolved 2026-11-05 — DEC-53 (chat mask+purge 1 ปี, report 2 ปี, audit 1 ปี+sensitive 2 ปี, archive 5 ปี, consent +2 ปี) |
 | DEL-DEC-003 | Anonymization timing | ✅ resolved — superseded โดย DEL-DEC-006 (ขั้นเดียว) |
 | DEL-DEC-004 | Sensitive reveal policy | ✅ resolved — masked + reveal on-demand + audit |
@@ -278,6 +278,8 @@ SET-DEC-001 ──removed──▶ (BO-16-v1.0, 2026-09-19 — แถวถู�
 | DEC-54 | 2026-11-05 | Privacy contact + DSR process สำหรับ V1 (BAC-008): ไม่แต่งตั้ง DPO เต็มตำแหน่ง (ขนาด processing ยังไม่ถึงเกณฑ์บังคับ) — privacy owner = PO · DSR intake ผ่าน support email channel เดิม (Help & Support — ไม่ต้องเพิ่ม channel/แก้ protected Support Center) · manual SOP: intake → verify → ตอบ ≤30 วัน (PDPA §31); self-service export = Phase 2 | active | `docs/pdpa-dsr-sop.md`, `docs/pdpa-data-processing-register.md` §4 Q-03/Q-04 |
 | DEC-55 | 2026-11-05 | Adopt `docs/pdpa-breach-runbook.md` v0.1 เป็น breach response process อย่างเป็นทางการ (BAC-008): severity S1–S3, 8 steps + SLA (PDPC ≤72 ชม.เมื่อ S1/เสี่ยงสูง, แจ้งผู้ใช้เมื่อ high risk), breach register, template — owner ระดับ role (PO/dev lead/privacy contact); เติมชื่อจริง + tabletop ใน launch checklist | active | `docs/pdpa-breach-runbook.md` |
 | DEC-56 | 2026-11-05 | Third-party processor contract rule (BAC-008 — ตอบ F-05): data providers ต้องไม่รับ user identifier — Watch Price API และ provider อนาคตส่งเฉพาะ query (brand/model/reference) ไม่ผูก user; push payload ห้ามใส่ private data (คง spec `16 §8` เดิม); processor register = living doc `docs/pdpa-data-processing-register.md` §2 | active | `FrontOffice/16_INTEGRATIONS_MODULE.md` §8, `docs/pdpa-data-processing-register.md` §2 |
+| DEC-57 | 2026-11-05 | Restore path ช่วง grace period 30 วัน (BAC-002 — แก้ cross-side conflict F-07): **login-to-restore เป็น default** — user sign-in ด้วยบัญชีเดิมระหว่าง grace = cancel deletion + restore ทันที (FO contract `S-02`); **admin restore = support path** (reason + audit) สำหรับผู้ใช้ที่ติดต่อ support หรือกู้เองไม่ได้; **ปฏิเสธคืนบัญชี = block self-restore** — sign-in เจอ account-deleted support state ไม่ restore · amend `DEL-DEC-001` (เดิม admin-only ไม่มี self-service) + audit event ใหม่ `ACCOUNT_DELETION_SELF_RESTORE` | active | `BackOffice/13_ACCOUNT_DELETION_MODULE.md` §10.2/§20, `FrontOffice/13_SETTINGS_MODULE.md` §9, `docs/business-process-flows.md` F-07 |
+| DEC-58 | 2026-11-05 | `docs/success-metrics.md` v0.1 มีสถานะ metrics framework draft — **ไม่ใช่ spec contract** (BAC-010): KPI ที่ mark `DRAFT` ทุกตัว (รวม draft North Star = Weekly Successful Listings §1 + rejected alternates) เป็น proposal รอ PO sign-off (§9) ไม่ก่อข้อผูกพันกับ spec/prototype/QA; metric ที่ `SPEC` ยึด spec/PRD เดิมต่อไป | active (DRAFT items รอ PO sign-off) | `docs/success-metrics.md` §0/§9 |
 
 ## 9. Deviation registries (ไม่ใช่ product decision — documented prototype deviations)
 
@@ -298,7 +300,7 @@ Per-spec `D` tables (namespace แยกตามเล่ม — D1 ของ�
 - **P1:** — (กลุ่ม P1 เดิม resolved ครบใน DOC-033: `BO-DIR-DEC-001`, `SUP-DEC-001`, `NOTI-DEC-001`, `REP-DEC-004`/`SET-DEC-004`)
 - **P2/other open:** `BO-DIR-DEC-002` (Community taxonomy — รอ Product, จอดจนกว่า Directory activation) · `BO-DIR-DEC-004` (map provider — ตอบเมื่อ Directory เปิด) · ~~`DEL-DEC-005`~~ ✅ resolved 2026-11-05
 - **Deferred (formal — ตัดสินแล้วให้เลื่อน Phase 2):** `NOTI-DEC-001/002/004/005` · `REP-DEC-001/002/003` · `BO-AUDIT-DEC-004` (future phase)
-- **Conditional/pending content:** `DEC-29` (legal TH ฉบับจริงรอเจ้าของ) · `DEC-19` follow-up (`LANG-045` รอ build แปลครบ) · `O-01`–`O-09` (money display draft — รอพี่คิง)
+- **Conditional/pending content:** `DEC-29` (legal TH ฉบับจริงรอเจ้าของ) · `DEC-19` follow-up (`LANG-045` รอ build แปลครบ) · `O-01`–`O-09` (money display draft — รอพี่คิง) · `DEC-58` (success-metrics DRAFT KPIs รอ PO sign-off)
 
 ## 11. Integration Reference Index (lightweight — resolution ของ `BO-DEC-006`)
 
