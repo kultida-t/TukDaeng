@@ -175,7 +175,7 @@ UI / Reporting rules:
 
 - ใน Account Deletion module แสดง `ลบตัวตนแล้ว` เป็นสถานะปลายทางของ deletion (เก็บถาวร + ลบตัวตน เกิดพร้อมกันเมื่อครบ grace period)
 - ใน backend/audit บันทึก event ลบบัญชีอัตโนมัติเป็นขั้นเดียว; retention ของข้อมูลแต่ละประเภท (chat, report, audit log) ยังอ้าง DEL-DEC-002
-- Prototype ปัจจุบันแสดงสถานะ `Deletion Requested` (รอลบบัญชี) และ `Deleted` ใน User List/filter เพื่อ historical review ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องค้นย้อนหลังได้ใน Account Deletion และ Audit ตาม permission (ก่อนหน้านี้ระบุให้ดูใน Account Deletion, Reports และ Audit แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงดูย้อนหลังได้ใน Account Deletion และ Audit เท่านั้น)
+- Prototype ปัจจุบันแสดงสถานะ `Deletion Requested` (รอลบบัญชี) และ `Deleted` ใน User Accounts/filter เพื่อ historical review ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องค้นย้อนหลังได้ใน Account Deletion และ Audit ตาม permission (ก่อนหน้านี้ระบุให้ดูใน Account Deletion, Reports และ Audit แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงดูย้อนหลังได้ใน Account Deletion และ Audit เท่านั้น)
 - ข้อมูลย้อนหลังที่เรียกดูได้ต้องเป็นข้อมูลที่จำเป็น เช่น user ID, deletion request ID, dates, processed by, retained chat/report references และ audit event
 - Personal data หลัง deletion ต้องถูก mask/anonymize ตาม retention policy และ Admin Permission
 - Restore เปิดได้เฉพาะในช่วง grace period 30 วัน — ผู้ใช้กู้เองผ่าน sign-in (login-to-restore) หรือแอดมินกู้คืนพร้อม reason และ audit; คำขอที่ถูกปฏิเสธคืนบัญชีแล้ว self-restore ถูก block; หลังลบบัญชีอัตโนมัติแล้วไม่สามารถ restore ได้
@@ -372,7 +372,7 @@ Confirmation modal ตาม pattern ของ Reported Users action flow (conte
 
 | Module | Integration |
 | --- | --- |
-| User Management | Account status sync (`Active`/`Deactivated`/`Anonymized`), profile/contact masking, login block; drill-in จาก User List > action `Open Account Deletion` เปิด Request Detail ของคำขอนั้นตรง (ถ้าไม่พบคำขอในระบบ fallback เป็น list กรองด้วย deletion id); User List แสดงสถานะ `Deletion Requested` พร้อม block action ที่ไม่อนุญาต (เช่น Archive from User List, Reset after deletion starts); บัญชีที่ลบแล้วปุ่ม `View deleted summary` เปิด deletion request detail; เพิ่ม row ใน Account Status History ของ User Management ครบ lifecycle 4 ประเภท — ขอลบบัญชี / คืนบัญชี / ปฏิเสธคืนบัญชี / ลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตนรวมเป็นขั้นเดียว); การคืนบัญชี sync สถานะกลับ `Active` ทั้ง list, detail และรายงานที่ผูกกับผู้ใช้ |
+| User Management | Account status sync (`Active`/`Deactivated`/`Anonymized`), profile/contact masking, login block; drill-in จาก User Accounts > action `Open Account Deletion` เปิด Request Detail ของคำขอนั้นตรง (ถ้าไม่พบคำขอในระบบ fallback เป็น list กรองด้วย deletion id); User Accounts แสดงสถานะ `Deletion Requested` พร้อม block action ที่ไม่อนุญาต (เช่น Archive from User Accounts, Reset after deletion starts); บัญชีที่ลบแล้วปุ่ม `View deleted summary` เปิด deletion request detail; เพิ่ม row ใน Account Status History ของ User Management ครบ lifecycle 4 ประเภท — ขอลบบัญชี / คืนบัญชี / ปฏิเสธคืนบัญชี / ลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตนรวมเป็นขั้นเดียว); การคืนบัญชี sync สถานะกลับ `Active` ทั้ง list, detail และรายงานที่ผูกกับผู้ใช้ |
 | Asset Management | ระบบซ่อน assets จาก FO surfaces (Feed/Search/Watch Alert/Public Profile) ทันทีเมื่อ delete request สำเร็จ; dependency link จาก Dependency Summary เปิด Asset List แบบ read-only กรองด้วย userId |
 | Chat | เก็บ chat history ตาม retention policy และ mask personal profile fields เมื่อถึงขั้น anonymization; ไม่มีโมดูลแชทใน BO — tile Chat Rooms ใน Dependency Summary เป็น read-only context (แสดงข้อความว่าเนื้อหาแชทเก็บตาม retention policy และ mask ตัวตนผู้ใช้) |
 | Report (User/Asset) | ระบบปิดรายงานที่ยังเปิดอยู่อัตโนมัติเมื่อ delete request สำเร็จ; เก็บ record ตาม legal/safety/audit policy; dependency link จาก Dependency Summary เปิด Reported Users กรองด้วย userId; report context ของ user ที่ `Deletion Requested` แสดง warning ให้ review รายงานก่อนแล้วจัดการ Account Deletion แยก ห้าม delete/archive ทันทีจากคิวรายงาน |
@@ -444,7 +444,7 @@ Account Deletion Requests ต้องใช้ app shell, navigation, breakpoin
 | AC-BO-DEL-003 | เมื่อผู้ใช้ confirm delete สำเร็จ ระบบปิดรายงานที่ยังเปิดอยู่อัตโนมัติ พร้อมบันทึก audit (ไม่มี block) |
 | AC-BO-DEL-004 | ปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` แสดงตลอดช่วง grace period 30 วัน และต้องมี reason + audit |
 | AC-BO-DEL-005 | คืนบัญชีต้อง sync account status กลับ `Active` และบันทึกใน Account Status History ของ User Management |
-| AC-BO-DEL-006 | หลัง FO delete สำเร็จ account ต้อง login ไม่ได้และ public profile/assets ต้องถูกซ่อนทันทีตาม contract |
+| AC-BO-DEL-006 | หลัง FO delete สำเร็จ session เดิมต้องถูก revoke และ public profile/assets ต้องถูกซ่อนทันทีตาม contract — sign-in ใหม่เป็น login-to-restore เว้นแต่คำขอถูกปฏิเสธคืนบัญชี |
 | AC-BO-DEL-007 | Grace period 30 วันต้องแสดงใน queue/detail และมี state active/ending soon/expired |
 | AC-BO-DEL-008 | ครบ grace period ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) พร้อม audit |
 | AC-BO-DEL-009 | Sensitive reveal, restore, reject restore และ export ต้องมี audit log |
