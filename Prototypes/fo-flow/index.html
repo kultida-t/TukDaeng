@@ -13588,11 +13588,11 @@
       const groups = ((p.specGroups && p.specGroups.length) ? p.specGroups : [{ title: "", rows: p.specs }])
         .filter(g => g.title !== "Price & Data Source");
       const renderRows = {
-        d1: rows => `<div class="spec-grid">${rows.map(s => `<div class="spec-tile"><div class="l">${s[0]}</div><div class="v">${s[1]}</div></div>`).join("")}</div>`,
-        d2: rows => `<div class="spec-rows">${rows.map(s => `<div class="spec-row"><span class="l">${s[0]}</span><span class="v">${s[1]}</span></div>`).join("")}</div>`,
-        d3: rows => `<div class="chip-row">${rows.map(s => `<span class="chip"><b>${s[0]}:</b>&nbsp;${s[1]}</span>`).join("")}</div>`,
+        d1: rows => `<div class="spec-grid">${rows.map(s => `<div class="spec-tile"><div class="l">${esc(s[0])}</div><div class="v">${esc(s[1])}</div></div>`).join("")}</div>`,
+        d2: rows => `<div class="spec-rows">${rows.map(s => `<div class="spec-row"><span class="l">${esc(s[0])}</span><span class="v">${esc(s[1])}</span></div>`).join("")}</div>`,
+        d3: rows => `<div class="chip-row">${rows.map(s => `<span class="chip"><b>${esc(s[0])}:</b>&nbsp;${esc(s[1])}</span>`).join("")}</div>`,
       }[state.dStyle];
-      const content = specGroupsHTML(groups, renderRows, t => `<div class="spec-sec">${t}</div>`);
+      const content = specGroupsHTML(groups, renderRows, t => `<div class="spec-sec">${esc(t)}</div>`);
       return `
     <div class="details-body">
       <div class="details-inner">
@@ -13682,8 +13682,8 @@
           <span>${isTh ? `ถูกใจโดย <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> และคนอื่น ๆ` : `Liked by <b data-pf-user="${esc(p.likedBy.name)}">${p.likedBy.name}</b> and others`}</span>
         </div>`}
         ${statusTagHTML(p)}
-        <h2 class="detail-name">${name}</h2>
-        ${ref ? `<div class="detail-ref">${ref}</div>` : ""}
+        <h2 class="detail-name">${esc(name)}</h2>
+        ${ref ? `<div class="detail-ref">${esc(ref)}</div>` : ""}
         <div class="detail-h">${isTh ? "คำอธิบาย" : "Descriptions"}</div>
         <p class="detail-desc">${igCaptionHTML(p, p.desc || "-")}</p>
         ${detailSpecsHTML(p)}
@@ -13705,7 +13705,7 @@
       <div class="cp-body">
         <div class="cp-post">
           <img src="${p.photos[0]}" alt="">
-          <div><div class="t">${p.caption}</div><div class="s">${p.price || "Showcase"}</div></div>
+          <div><div class="t">${esc(p.caption)}</div><div class="s">${esc(p.price || "Showcase")}</div></div>
         </div>
         <div class="cp-thread"></div>
       </div>
@@ -13744,7 +13744,7 @@
     }
 
     function igCaptionHTML(p, raw) {
-      const txt = (raw ?? p.captionFull ?? p.caption).replace(/\n/g, "<br>");
+      const txt = esc(raw ?? p.captionFull ?? p.caption).replace(/\n/g, "<br>");
       return txt.replace(/(#[A-Za-z0-9_ก-๙]+)/g, `<span class="igd-tag">$1</span>`);
     }
 
@@ -13814,26 +13814,26 @@
 
     function detailSpecsHTML(p) {
       const groups = p.specGroups || [];
-      const rows = r => `<div class="spec-rows">${r.map(s => `<div class="spec-row"><span class="l">${s[0]}</span><span class="v">${s[1]}</span></div>`).join("")}</div>`;
-      return specGroupsHTML(groups, rows, t => `<div class="detail-h">${t}</div>`);
+      const rows = r => `<div class="spec-rows">${r.map(s => `<div class="spec-row"><span class="l">${esc(s[0])}</span><span class="v">${esc(s[1])}</span></div>`).join("")}</div>`;
+      return specGroupsHTML(groups, rows, t => `<div class="detail-h">${esc(t)}</div>`);
     }
 
     /* shared group-layout renderer — DS1 full / DS2 accordion / DS3 cards / DS4 tabs */
     function specGroupsHTML(groups, rowsFn, headFn) {
       if (!groups.length) return "";
       const rows = g => rowsFn(g.rows);
-      const head = t => headFn ? headFn(t) : `<div class="spec-sec">${t}</div>`;
+      const head = t => headFn ? headFn(t) : `<div class="spec-sec">${esc(t)}</div>`;
       if (state.ds === "acc") {
         return groups.map((g, i) => `
       <div class="ds-acc open">
-        <button class="ds-acc-head"><span>${g.title}</span>${I.chev(14)}</button>
+        <button class="ds-acc-head"><span>${esc(g.title)}</span>${I.chev(14)}</button>
         <div class="ds-acc-body">${rows(g)}</div>
       </div>`).join("");
       }
       if (state.ds === "cards") {
         return `<div class="ds-cards">${groups.map(g => `
       <div class="ds-card">
-        <div class="ds-card-h">${g.title}</div>
+        <div class="ds-card-h">${esc(g.title)}</div>
         ${rows(g)}
       </div>`).join("")}</div>`;
       }
@@ -13841,7 +13841,7 @@
         const SHORT = { "Watch Specifications": "Watch Specs", "Item Details": "Item Details", "Price & Data Source": "Pricing" };
         const seg = state.ds === "seg";
         return `
-      <div class="ds-tabs${seg ? " ds-seg" : ""}">${groups.map((g, i) => `<button class="ds-tab${i === 0 ? " active" : ""}" data-gi="${i}">${SHORT[g.title] || g.title}</button>`).join("")}</div>
+      <div class="ds-tabs${seg ? " ds-seg" : ""}">${groups.map((g, i) => `<button class="ds-tab${i === 0 ? " active" : ""}" data-gi="${i}">${SHORT[g.title] || esc(g.title)}</button>`).join("")}</div>
       ${groups.map((g, i) => `<div class="ds-panel${i === 0 ? "" : " hidden"}" data-gi="${i}">${rows(g)}</div>`).join("")}`;
       }
       return groups.map(g => `${g.title ? head(g.title) : ""}${rows(g)}`).join("");
@@ -13876,8 +13876,8 @@
     <div class="c-row" data-pid="${esc(p.id)}" data-cid="${esc(cId)}" data-author="${esc(c.name)}" data-is-own="${isOwn}">
       <img src="${c.avatar}" alt="" data-pf-user="${esc(c.name)}">
       <div class="c-main">
-        <div class="c-head"><span class="n" data-pf-user="${esc(c.name)}">${c.name}</span><span>${c.time}</span></div>
-        <div class="c-text">${c.text}</div>
+        <div class="c-head"><span class="n" data-pf-user="${esc(c.name)}">${esc(c.name)}</span><span>${c.time}</span></div>
+        <div class="c-text">${esc(c.text)}</div>
         <span class="c-meta">${isTh ? "ตอบกลับ" : "Reply"}</span>
       </div>
       <span class="c-like${c.liked ? " liked" : ""}">${I.heart(15)}<span>${c.likes || ""}</span></span>
@@ -13890,8 +13890,8 @@
     <div class="c-row reply" data-pid="${esc(p.id)}" data-cid="${esc(cId)}" data-rid="${esc(rId)}" data-author="${esc(r.name)}" data-is-own="${rIsOwn}">
       <img src="${r.avatar}" alt="" data-pf-user="${esc(r.name)}">
       <div class="c-main">
-        <div class="c-head"><span class="n" data-pf-user="${esc(r.name)}">${r.name}</span><span>${r.time}</span></div>
-        <div class="c-text">${r.text}</div>
+        <div class="c-head"><span class="n" data-pf-user="${esc(r.name)}">${esc(r.name)}</span><span>${r.time}</span></div>
+        <div class="c-text">${esc(r.text)}</div>
         <span class="c-meta">${isTh ? "ตอบกลับ" : "Reply"}</span>
       </div>
       <span class="c-like${r.liked ? " liked" : ""}">${I.heart(15)}<span>${r.likes || ""}</span></span>
@@ -14105,9 +14105,9 @@
     <div class="sv-sec"><span class="l">Collections</span><button class="sv-new">New collection</button></div>
     <div class="sv-list">
       ${COLLECTIONS.map(c => `
-      <button class="sv-pick sv-row" data-col="${c.name}">
+      <button class="sv-pick sv-row" data-col="${esc(c.name)}">
         ${thumb(c)}
-        <span class="b"><span class="n">${c.name}</span><span class="s">Private</span></span>
+        <span class="b"><span class="n">${esc(c.name)}</span><span class="s">Private</span></span>
         <span class="plus${(p.savedCols || []).includes(c.name) ? " on" : ""}">${(p.savedCols || []).includes(c.name) ? I.check(13) : I.plus(14)}</span>
       </button>`).join("")}
     </div>
@@ -14134,9 +14134,9 @@
     <div class="sv-sec"><span class="l">Collections</span><button class="wl-new">New collection</button></div>
     <div class="sv-list">
       ${WISHLISTS.map(c => `
-      <button class="wl-pick sv-row" data-col="${c.name}">
+      <button class="wl-pick sv-row" data-col="${esc(c.name)}">
         ${thumb(c)}
-        <span class="b"><span class="n">${c.name}</span><span class="s">Private</span></span>
+        <span class="b"><span class="n">${esc(c.name)}</span><span class="s">Private</span></span>
         <span class="plus${(p.wlCols || []).includes(c.name) ? " on" : ""}">${(p.wlCols || []).includes(c.name) ? I.check(13) : I.plus(14)}</span>
       </button>`).join("")}
     </div>
@@ -14668,7 +14668,7 @@
     let scrToastTimer;
     function scrToast(scr, msg, thumb = "") {
       const el = scr.querySelector(".sc-toast");
-      el.innerHTML = thumb ? `<img class="st-img" src="${thumb}" alt=""><span>${msg}</span>` : "";
+      el.innerHTML = thumb ? `<img class="st-img" src="${esc(thumb)}" alt=""><span>${esc(msg)}</span>` : "";
       if (!thumb) el.textContent = msg;
       el.classList.toggle("st-top", !!thumb);
       el.classList.add("show");
@@ -15511,7 +15511,7 @@
       return posts.length ? posts.map(p => `
     <div class="mrow" data-sub-pid="${p.id}">
       <img class="msq" src="${p.photos[0]}" alt="">
-      <span class="lg-b"><span class="mn">${p.seller}</span><span class="md">${p.caption}</span></span>
+      <span class="lg-b"><span class="mn">${p.seller}</span><span class="md">${esc(p.caption)}</span></span>
       <button class="mact ${cls}" data-pid="${p.id}">${label}</button>
     </div>`).join("") : `<div class="sub-empty">${isTh ? "ยังไม่มีข้อมูลที่นี่" : "Nothing here yet"}</div>`;
     }
@@ -16435,7 +16435,7 @@
       const m = V.meta;
       const mv = cfVal(m);
       const row = (ic, label, pane, val = "", cls = "") => `
-    <button class="ig-row" data-pane="${pane}"><span class="ic">${ic}</span>${label}<span class="val${val ? " set" : ""}${cls}">${val}</span>${I.chevR(15)}</button>`;
+    <button class="ig-row" data-pane="${pane}"><span class="ic">${ic}</span>${label}<span class="val${val ? " set" : ""}${cls}">${esc(val)}</span>${I.chevR(15)}</button>`;
       return `<div class="cf-step2">
     <div class="cf-head">
       ${V.editPid
@@ -16450,7 +16450,7 @@
       </div>
       <div class="ig-rows">
         ${m.loc
-          ? `<button class="ig-row" data-pane="loc"><span class="ic">${I.pin(19)}</span><span class="lab2">${m.loc}<span class="sub">${CF_LOC_KM[m.loc] || ""}</span></span><span class="loc-x">${I.x(12)}</span></button>
+          ? `<button class="ig-row" data-pane="loc"><span class="ic">${I.pin(19)}</span><span class="lab2">${esc(m.loc)}<span class="sub">${esc(CF_LOC_KM[m.loc] || "")}</span></span><span class="loc-x">${I.x(12)}</span></button>
              <div class="row-note">${isTh ? "ผู้ใช้ที่คุณแชร์โพสต์นี้ด้วยจะเห็นตำแหน่งที่คุณระบุบนแผนที่" : "People you share this content with can see the location you tag and view your content on the map."}</div>`
           : row(I.pin(19), isTh ? "เพิ่มตำแหน่งที่อยู่" : "Add location", "loc")}
         ${row(I.tag(19), isTh ? "ระบุราคา" : "Add price", "price", mv.price, mv.price ? " price" : "")}
