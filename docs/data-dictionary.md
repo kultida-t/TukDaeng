@@ -574,7 +574,7 @@ BoardArticle (standalone — own liked/saved flags; share sheet เดียว�
 | # | Finding | Spec refs | ผลกระทบ dictionary |
 |---|---|---|---|
 | F-01 | ~~AC-SEARCH-011 ระบุ results grid = `salePosts()` (มี price เท่านั้น) ขัดกับ §9 Results Eligibility Rule + 00G §10 ที่อนุมัติ `discoverablePosts()`~~ **RESOLVED 2026-11-05** — แก้ AC text ให้ตรง `discoverablePosts()` (post+sale) ตามอนุมัติพี่มาเต็ม | 03 §16 vs 03 §9, 00G §10 | Dictionary ยึด §9 canonical; match/count ยัง `salePosts()` |
-| F-02 | ~~AC-GLOBAL-003 ระบุ Public Profile เห็น `Sale`+`Show` (ไม่แสดง `post`) ขัดกับ 00G §10 matrix~~ **RESOLVED 2026-11-05** — แก้ AC text เป็น `post`+`Sale`+`Show` ตามอนุมัติพี่มาเต็ม | 00G §18 vs 00G §10, 06 §9 | Dictionary ยึด §10 matrix |
+| F-02 | ~~AC-GLOBAL-002/003 ระบุ Search+Public Profile แสดงเฉพาะ `Sale`(+`Show`) ไม่แสดง `post` ขัดกับ 00G §10 matrix~~ **RESOLVED 2026-11-05** — แก้ทั้งสอง AC ให้ตรง matrix ตามอนุมัติพี่มาเต็ม | 00G §18 vs 00G §10, 06 §9 | Dictionary ยึด §10 matrix |
 | F-03 | Post delete ทิ้ง drawer record orphan (`assetId` dangling; `PF_MINE` delete no-op; `PF_MINE`→`sale` ไม่เข้า feed) — deviation ที่ spec บันทึก; contract = ลบออกทั้งคู่ | 04 §9 Delete Rule | E-06/E-07 relation note; implementation ต้องตาม contract |
 | F-04 | `salePosts()` ไม่ filter `pfkind` → priced `hide`/`sold` รั่วเข้า search/WA match count (S-10 defect) — documented defect ทุกเล่ม | 03 §9, 04 §9, 10 §9, 00G §10 | E-18 match pool note — canonical = Sale เท่านั้น |
 | F-05 | `pfKind()` fallback infer `sale`/`show` จาก price เมื่อ post ไม่มี `pfkind` (seed/gfx) — field ไม่ครบใน seed data | 04 §9, 05 §9 | E-06 `pfkind` จำเป็นต้องมีบน production data |
