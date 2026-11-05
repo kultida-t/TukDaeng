@@ -304,6 +304,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 ## Attach / Media
 
 - `+` → `.ch-attach-sheet` `Photos & videos` — grid ≤8 unique photos จาก POSTS ทั้งหมด (mock picker, `isVideo:false` เสมอ) + close/backdrop
+- Video message (`isVideo`) ใช้ constraint เดียวกับ clip upload — MP4/MOV, ≤100 MB, 3–60 วินาที (canonical 02 §9 Clip Media Rule)
 - เลือก → push `{f:"me",img,isVideo,at:"09:41",day:"Today",read:false}` + `t.media.unshift(src)` + re-render — **ไม่** un-hide/ไม่ move-to-top (quirk ต่างจาก `chSend` — deviation)
 - Media bubble = รูป + play overlay เมื่อ `isVideo` → tap → `ch-media-viewer` overlay ใน frame (X/body/backdrop ปิด)
 - `t.media` lazy-init ใน `chmenu:`/`chmedia:` — เฉพาะ seed `t1` เติม item photo + POSTS ≤9 (mock); ห้องอื่นเริ่มว่างจนกว่าจะส่ง media เอง

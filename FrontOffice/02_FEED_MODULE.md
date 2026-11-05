@@ -429,6 +429,7 @@ Card ไม่แสดงใน V1: FOR SALE/SHOWCASE type tag, price/condition
 - Recents grid (`CP_MEDIA`) ผสม photos + clips — clip cell แสดง duration badge
 - Default = **single-select** (เลือกใหม่แทนที่ selection เดิม); `เลือกหลายรายการ`/`Select` toggle → **multi-select** (badge ตัวเลขตามลำดับที่เลือก); picker ใน edit mode เป็น multi-select เสมอ
 - สูงสุด 10 media ต่อโพสต์ (`CF_MAX_MEDIA`) — เลือกเกิน → toast `You can add up to 10 photos or clips`
+- Clip upload constraints (production contract — IG feed video standard): video รองรับ **MP4/MOV** (H.264/HEVC video + AAC audio), ขนาด **≤100 MB** ต่อคลิป, ความยาว **3–60 วินาที** — ไม่ผ่านเงื่อนไข → reject ไฟล์ + error toast; prototype picker = mock Recents ไม่ validate ไฟล์จริง
 - Hero preview = media ล่าสุดที่เลือก (clip → play overlay + duration); selection ว่าง → `เลือกรูปภาพ`/`Select photos` tile
 - `Next` disabled จนกว่าจะมี ≥1 media — media เป็น required field เดียวของ composer
 - Dead affordances → toast `Not in this prototype yet`: camera tile, `Recents` dropdown, expand icon
@@ -486,6 +487,7 @@ Card ไม่แสดงใน V1: FOR SALE/SHOWCASE type tag, price/condition
 - `clips[i]` = duration ของ slide ที่เป็น video (`null` = photo); `clip` singular = โพสต์ที่มี clip เดียว
 - Feed/detail clip autoplay เองเมื่อ card มองเห็น ≥55% — เลื่อนผ่าน pause เลื่อนกลับเล่นต่อ, จบแล้ววน, badge นับเวลาถอยหลัง + progress bar (`feedClipTick`)
 - Composer: draft clip เดียวล้วน = playable preview + play/pause + countdown; clip ใน mixed draft เล่นผ่าน zoom viewer เท่านั้น
+- Upload constraint (production): clip = video MP4/MOV (H.264/HEVC + AAC) ≤100 MB, ความยาว 3–60 วินาที — IG feed video standard; prototype ใช้ mock `CP_CLIPS` (duration ทุกคลิป ≤60 วิ) ไม่ validate ไฟล์จริง
 
 ## Audience Rule (stored, not enforced — deviation)
 

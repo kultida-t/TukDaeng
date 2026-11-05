@@ -191,7 +191,7 @@ Source: `02 §9 Post Model` (canonical), `04 §9` (pfkind), `05 §9` (detail fie
 | `pfkind` | enum | `post`/`sale`/`show`/`hide`/`sold` — **ตัวกำหนด eligibility** + drawer status mirror; fallback `price ? "sale" : "show"` (deviation) | 02 §9, 04 §9 |
 | `assetId` | ref→Asset? | link ไป drawer record; null เมื่อ detach | 04 §9 |
 | `photos[]` | array<image> | 1–10 media slides รวม clips (`CF_MAX_MEDIA`); carousel ไม่วน | 02 §9/§11 |
-| `clips[]` | array<int?> | duration ต่อ slide (`null` = photo); `clip` = โพสต์ clip เดียวล้วน | 02 §9 |
+| `clips[]` | array<int?> | duration ต่อ slide (`null` = photo); `clip` = โพสต์ clip เดียวล้วน — clip upload ≤100 MB, 3–60 วินาที, MP4/MOV | 02 §9 |
 | `caption` / `captionFull` | string | short + full; hashtags `#tag` render กดได้ → search; ไม่ required | 02 §9 |
 | `desc` | string | field Description แยกจาก caption — detail `Descriptions`; ว่าง → `-` | 05 §9 |
 | `price` | money? | `Add price` pane — ว่าง = showcase; auto `Price & Data Source` band | 02 §9 |

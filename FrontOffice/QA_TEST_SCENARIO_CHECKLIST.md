@@ -550,11 +550,13 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 1. `+` on feed header → step 1 Recents grid (single → `Select` multi-pick ≤10, clips show duration); camera tile/expand → dead toast.
 2. `Next` (disabled until ≥1 media) → step 2: media strip, caption, hashtag chips, option panes (location, price, watch details, condition, cost details when drawer ON, more options).
 3. `Share`; then reopen composer, add a draft, `×` to leave.
+4. Try selecting clips that violate the upload constraint (>100 MB, <3 or >60 s, non-MP4/MOV) alongside a compliant clip.
 **Expected result:**
 - Title `สร้างโพสต์ใหม่`/`New post`; media is the only required input.
 - Share → `insertNewPost` lands the new post at top of feed + re-render + scroll-to-top + toast; matching an ON Watch Alert pushes a `watch` row into the watcher's alerts feed (publisher sees nothing — 2026-11-05).
 - `×` mid-draft → discard dialog (`เริ่มใหม่`/`แก้ไขต่อไป`); empty draft closes silently; back on step 2 returns to step 1 keeping the draft.
 - Clip-only post previews playable + `Clip shared to feed ✓`.
+- Clips must pass the upload constraint — MP4/MOV ≤100 MB, 3–60 s (canonical 02 §9 Clip Media Rule); violating files are rejected with an error toast and never enter the draft.
 
 ### QA-FEED-019
 **Objective:** Verify feed refresh model.
@@ -989,8 +991,8 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 ### QA-ASSET-006
 **Objective:** Verify media rules.
 **Maps to:** AC-ASSET-MGMT-010, AC-ASSET-MGMT-014
-**Steps:** Try saving with 0 media; add photos + clips up to 10 combined.
-**Expected result:** ≥1 media required; clips accepted in asset mode (≤10 combined with photos).
+**Steps:** Try saving with 0 media; add photos + clips up to 10 combined; try clips that violate the upload constraint (>100 MB, <3 or >60 s, non-MP4/MOV).
+**Expected result:** ≥1 media required; clips accepted in asset mode (≤10 combined with photos); violating clips are rejected with an error message (MP4/MOV ≤100 MB, 3–60 s — canonical 02 §9).
 
 ### QA-ASSET-007
 **Objective:** Verify private cost details.

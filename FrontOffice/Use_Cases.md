@@ -396,6 +396,7 @@
 | E02 | Asking Price = 0 หรือไม่ใช่ตัวเลข | validation — ต้องเป็นตัวเลขมากกว่า 0 เมื่อกรอก |
 | E03 | อัปโหลดรูปเกิน 10 รูป | limit สูงสุด 10 รูป |
 | E04 | Purchase Date เป็นวันอนาคต | inline validation บน cost block |
+| E05 | คลิปไม่ผ่าน constraint (ไม่ใช่ MP4/MOV, >100 MB, หรือยาวนอก 3–60 วินาที) | reject ไฟล์ + error message |
 
 ---
 

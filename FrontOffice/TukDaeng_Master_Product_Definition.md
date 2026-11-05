@@ -954,7 +954,6 @@ Like count เป็น private แบบ IG — เฉพาะโพสต์�
 
 - ระบบชำระเงินออนไลน์ในแอป
 - Offer / price negotiation system (ถอดออกจาก baseline แล้ว — ไม่มี Offer entity, card, notification หรือ Accept/Reject flow)
-- Video Upload (composer รองรับ clip playback เท่านั้น — ไม่มี video upload pipeline)
 - Live Streaming
 - Watch Authentication Service ในแอป
 - Watch Shops

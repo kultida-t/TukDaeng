@@ -40,7 +40,7 @@
 | visibility `stt/vis` + "Also save to My Assets" toggle | CRE-049 – 053, CRE-060 – 062 |
 | publish `cf-share` → post ใหม่ + watch-alert toast `[OPEN-CODE-ONLY]` | CRE-043 – 048 |
 | edit `V.editPid` (เข้าแก้ไข/เพิ่มรูป/Done-Cancel/restore) `[OPEN-CODE-ONLY]` | CRE-054 – 062 |
-| clip preview `[OPEN-CODE-ONLY]` | CRE-063 – 066 |
+| clip preview + upload constraint (MP4/MOV ≤100MB 3–60วิ) `[OPEN-CODE-ONLY]` | CRE-063 – 066, CRE-074 |
 | discard dialog + draft edge (handoff `fo_newpost` = dev-only นอก scope — CRE-069) | CRE-013, CRE-067 – 069 |
 | guest coverage รวมของ composer | CRE-002, CRE-071 |
 | Language / theme / money spot-check | CRE-028, CRE-035, CRE-047, CRE-070, CRE-072 – 073 |
@@ -175,6 +175,7 @@
 | FO-TC-CRE-064 | clip zoom — play/pause/countdown | MEMBER | Func | lone clip step2 | 1. แตะ thumb → zoom เปิด 2. แตะตรงกลางเล่น 3. แตะอีกครั้งหยุด 4. เล่นจนจบ | เปิดมา pause (▶); แตะเล่น → ⏸ + dur นับถอยหลัง + progress เดิน; pause ค้างเวลา; จบ → กลับ pause+reset | countdown ฟอร์แมต m:ss | Medium | |
 | FO-TC-CRE-065 | mixed draft คลิปใน zoom | MEMBER | Edge | step2 มีรูป+คลิปปน | 1. แตะ thumb คลิป → zoom 2. swipe ไปรูปอื่นแล้วกลับ | slide คลิปมี play/dur/prog แตะเล่นได้; slide รูปเป็น viewer ธรรมดา — สลับโหมดตาม item | play โผล่เฉพาะ slide คลิป | Low | |
 | FO-TC-CRE-066 | hero clip play + share clip → feed | MEMBER | Int | picker เลือกวิดีโอ 1 คลิป | 1. แตะ ▶ บน hero clip 2. Next → Share | **แตะ ▶ บน hero → เล่น/หยุดพรีวิวได้ + dur นับถอยหลัง** (spec ล็อก — prototype เดิมไม่มี handler ถูกแก้แล้ว); Share → toast "**Clip shared to feed ✓**" (ข้อความเฉพาะคลิป) + การ์ดคลิปขึ้น feed | toast ต่างจาก photo post | Medium | |
+| FO-TC-CRE-074 | clip upload constraint (MP4/MOV ≤100MB 3–60วิ) | MEMBER | Func | picker เปิด · เครื่องมีวิดีโอหลายไฟล์ (SETUP-08) | 1. แตะคลิปที่ >100 MB หรือยาว >60 วิ หรือสั้น <3 วิ หรือไม่ใช่ MP4/MOV 2. แตะคลิปที่ผ่านเงื่อนไข | ไฟล์ไม่ผ่าน constraint → reject + error toast ไม่ถูกเพิ่มเข้า draft; ไฟล์ผ่าน → เลือกได้ปกติ (constraint = IG feed video standard — 02 §9) | toast บอกเหตุผลชัดเจน | High | |
 
 ### 2.10 Discard / Draft — Edge
 

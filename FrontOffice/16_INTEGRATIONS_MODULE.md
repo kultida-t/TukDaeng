@@ -128,7 +128,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 | SSO email conflict | แจ้งว่า account ต้องใช้ auth method เดิม |
 | FCM permission denied | ยังใช้แอปได้ แต่ไม่รับ push notification |
 | Notification target unavailable | เปิด fallback state ตาม navigation rules |
-| Image upload failed | แสดง retry / remove / replace image |
+| Media upload failed (image/video clip) | แสดง retry / remove / replace |
 | Image CDN unavailable | แสดง placeholder และ retry/load fallback |
 | Watch Price API unavailable | แสดง fallback valuation state |
 | Network timeout | แสดง error และให้ retry เมื่อเหมาะสม |
@@ -145,7 +145,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 | AC-INT-006 | Notification destination ต้องตรงกับ module/navigation rules |
 | AC-INT-007 | Image Storage / CDN ใช้จัดเก็บและแสดง Asset image |
 | AC-INT-008 | Feed/list image ต้อง Lazy Load |
-| AC-INT-009 | Image upload/display failure ต้องมี fallback หรือ retry |
+| AC-INT-009 | Image/video upload/display failure ต้องมี fallback หรือ retry |
 | AC-INT-010 | Watch Price API ใช้สำหรับ market price / Portfolio valuation support |
 | AC-INT-011 | Watch Price API unavailable ต้องไม่ทำให้ Portfolio ล่มทั้งหน้า |
 | AC-INT-012 | Payment Gateway ไม่อยู่ใน V1 และต้องถูกระบุเป็น Phase 2 |
