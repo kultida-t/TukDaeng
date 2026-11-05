@@ -510,7 +510,7 @@ EN-hardcode ทั้งชุด (language sweep — §19 flag)
 |---|---|
 | AC-CHAT-001 | Chat เข้าได้จาก `.ask-pill` บน feed card/price-footer/post viewer (`p.type==="sale"` เท่านั้น) + `pf-msg` บน profile/follower row (DM `pfOpenChat` — FO-TEST-12 lock); ไม่มี entry บน Post Detail (dl1) |
 | AC-CHAT-002 | โพสต์ตัวเองไม่มีปุ่ม Ask (guard: `This is your own listing`); seller ที่ block → `Cannot message a blocked account`; post ไม่เจอ → `Not in this prototype yet` |
-| AC-CHAT-003 | Ask seller+item เดิม → เปิดห้องเดิม (+un-hide); seller เดิมคนละ item → **ห้องใหม่** พร้อม post card ของ item นั้น |
+| AC-CHAT-003 | Ask seller+item เดิม → เปิดห้องเดิม (+un-hide); seller เดิมคนละ item → **ห้องเดิม** เพิ่ม post card `m.pid` ของ item ใหม่ (thread key = user — FO-TEST-12 lock) |
 | AC-CHAT-004 | ห้องใหม่ = `C.draft` ไม่เข้า list จนกว่า `chSend` แรก (`unshift`); draft prefill `cfg.quick` และ `t.draft` persist ระหว่าง navigate |
 | AC-CHAT-005 | Item snapshot `{cap,price,photo,owner,pid}` นิ่ง — โพสต์เปลี่ยนภายหลังไม่กระทบการ์ด/กลุ่ม |
 

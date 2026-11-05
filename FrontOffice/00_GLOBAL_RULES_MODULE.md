@@ -398,7 +398,7 @@ Public Profile, Feed, Search, Watch Alert และ Viewer Asset Detail ต้�
 | ID | Criteria |
 | --- | --- |
 | AC-GLOBAL-001 | ทุกโมดูลใช้ status เฉพาะ `Sale`, `Show`, `Hide`, `Sold` (+ `post` สำหรับโพสต์ไม่ผูก asset) |
-| AC-GLOBAL-002 | Feed แสดงเฉพาะโพสต์ `Sale` และ `post` ที่ไม่ติด viewer-level exclusion; Search และ Watch Alert แสดงหรือ match เฉพาะ Asset `Sale` |
+| AC-GLOBAL-002 | Feed แสดงเฉพาะโพสต์ `Sale` และ `post` ที่ไม่ติด viewer-level exclusion; Search แสดง `post` + `Sale` (discoverablePosts ตาม §10 matrix อนุมัติ 2026-11-05); Watch Alert match เฉพาะ Asset `Sale` |
 | AC-GLOBAL-003 | Public Profile แสดง `post` + Asset `Sale` และ `Show` (ไม่แสดง `Hide`, `Sold` ต่อ viewer) — ตาม §10 Visibility Matrix (อนุมัติ 2026-11-05) |
 | AC-GLOBAL-004 | Owner Profile แสดง Asset ของ Owner ได้ทุกสถานะ |
 | AC-GLOBAL-005 | Hide และ Sold ไม่แสดงใน public surfaces |
