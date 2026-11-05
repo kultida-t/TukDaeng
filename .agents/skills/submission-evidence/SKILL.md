@@ -25,6 +25,22 @@ description: เตรียมหลักฐานส่งตรวจรั�
 
 Workflow สำหรับจัด **ชุดหลักฐานส่งตรวจรับงานด้วย AI** ของแต่ละ **เป้าหมาย (Objective)** ใน Mission — มุ่งเพิ่มโอกาสให้หลักฐานครบและตรวจสอบย้อนกลับได้ตามเกณฑ์ **AI Worklog QA Auditor (Gemini Multimodal)**; คะแนน 9.8–10.0 หรือสถานะ APPROVED เป็นเป้าหมาย ไม่ใช่ผลที่รับประกัน ผลลัพธ์คือ "ของที่ต้องแนบ + คำอธิบายที่ต้องวาง + ช่อง external_url ที่ถูกต้อง" พร้อม copy block ให้ก๊อปลงฟอร์มส่งตรวจได้ทันที **ไม่ส่งข้อมูลไปยังระบบภายนอกใด ๆ อัตโนมัติ**
 
+## Checklist บังคับ (อ่านก่อนเสมอ — ทำครบทุกข้อก่อนส่งชุดหลักฐาน)
+
+**0. Machine Guard ก่อนทุกอย่าง** — ตรวจเครื่องตามบล็อกด้านบน; เครื่องผิด = หยุดทันที
+
+**ลำดับบังคับ:**
+
+1. ยืนยันเป้าหมายเสร็จจริง — ทุก task ของเป้าหมายเป็น `done` แล้ว อ่าน task notes/description เพื่อรู้ artifact จริง **ห้ามเดา**
+2. จำแนกประเภทผลงาน (6 รูปแบบ) — แยก **Work Artifact** (ไฟล์ที่เป้าหมายผลิต) ออกจาก **Preview Packaging** (ไฟล์ที่สร้างเพื่อทำหลักฐาน)
+3. จัด artifact ตาม convention repo — งานที่มี test ต้อง**รันจริง + raw runner output ดิบ**, flow dynamic ต้องมี screencast/ภาพลำดับ, scope accessibility ต้องมี direct assertion จริง
+4. คัดชุดไฟล์แนบ — เฉพาะหลักฐานงานจริงราย task; **ห้ามแนบ packaging ลอย / ไฟล์ภาพรวมเป้าหมาย / เนื้อเดียวกัน 2 รูปแบบ**
+5. **Evidence Reconciliation Gate** — `.spec.js` ทุกไฟล์ที่รันจริงต้องมี raw output ตรงกัน; เคส skipped/blocked ทุกเคสต้องมี triage note; ห้ามสร้าง raw output ย้อนหลัง; ห้าม claim zero issues ในส่วนที่ไม่มีหลักฐาน
+6. `external_url` — เฉพาะงานจริงที่ commit; **blacklist เด็ดขาด: `deliverables/`, `screenshots/`, commit เดียวกันซ้ำทุกเป้าหมาย, commit ที่สร้างไฟล์หลักฐาน** — trace ไม่ได้ให้เว้นว่าง + ชี้แจงในคำอธิบาย
+7. ส่งออก: copy block ฟอร์มส่งตรวจ + compact Mission Objective–Feature–Task + คำอธิบายที่เปิดเผย gap/limitation จริง
+
+**Self-check ก่อนส่ง:** เทียบชุดหลักฐานกับ checklist นี้ — ถ้าขาดข้อไหนห้ามส่ง ให้ย้อนทำให้ครบก่อน
+
 ---
 
 ## เกณฑ์การประเมินของ AI Worklog QA Auditor (Gemini Multimodal)

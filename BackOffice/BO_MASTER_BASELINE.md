@@ -138,7 +138,7 @@ Phase 3 คือ advanced workflow และ external integration ที่ย�
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
 | BO-DEC-001 ✅ | BO language mode | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** Thai primary สำหรับ V1; English deferred — ไม่มี EN toggle ใน V1 (prototype lock แล้วและ FO ฝั่ง user เท่านั้นที่ต้อง bilingual) |
-| BO-DEC-002 | Chat retention period | ต้องสรุปร่วมกับ legal/compliance ก่อน Phase 2 build |
+| BO-DEC-002 ✅ | Chat retention period | **ตัดสินใจ (2026-11-05 — DEC-53, `docs/pdpa-data-processing-register.md` §3):** mask ตัวตนที่ anonymization + purge เนื้อความ 1 ปี (ปิด cluster `DEL-DEC-002`/`SET-DEC-003`/`NOTI-DEC-003` พร้อมกัน) |
 | BO-DEC-003 ✅ | Account deletion anonymization timing | **ตัดสินใจ (2026-11-04):** ใช้ 30-day grace period ตาม FO decision — resolved ผ่าน `DEL-DEC-006` (lifecycle ขั้นเดียว: เก็บถาวร + ลบตัวตน พร้อมกันเมื่อครบ grace) เว้นแต่ legal เปลี่ยน |
 | BO-DEC-004 ✅ | Admin remove asset permission | **ตัดสินใจ (2026-11-04):** remove = `Permanently Hidden` action ที่มีอยู่แล้ว + required reason + audit; ไม่มี hard delete ใน Phase 1; high-value/disputed asset ใช้ approval path ร่วมกับ high-risk setting (`SET-DEC-004`) |
 | BO-DEC-005 ✅ | Board public SEO web requirement | **ตัดสินใจ (2026-11-04):** mobile Board content only — ไม่มี public web SEO scope ใน V1; ถ้าอนาคตต้องการ web SEO ให้เปิด requirement ใหม่ |

@@ -374,7 +374,7 @@ Audit Log ต้องใช้ app shell, navigation, breakpoint, list toolbar,
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| BO-AUDIT-DEC-001 ✅ | Retention ระยะยาวเกิน 1 ปีสำหรับ security/export/sensitive events | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** เก็บนานกว่า 1 ปีถ้า storage/compliance อนุญาต; ตัวเลข retention จริงผูก retention cluster (`DEL-DEC-002`/`BO-DEC-002`/`SET-DEC-003` — รอ Legal) |
+| BO-AUDIT-DEC-001 ✅ | Retention ระยะยาวเกิน 1 ปีสำหรับ security/export/sensitive events | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** เก็บนานกว่า 1 ปีถ้า storage/compliance อนุญาต; ตัวเลข retention จริงตัดสินแล้วตาม DEC-53 (2026-11-05): audit 1 ปี baseline + security/sensitive 2 ปี (ปิด cluster `DEL-DEC-002`/`BO-DEC-002`/`SET-DEC-003`) |
 | BO-AUDIT-DEC-002 ✅ | Audit write fail ต้อง block action หรือ queue retry | **ตัดสินใจ (2026-11-04):** block high-risk action; queue retry สำหรับ low-risk read/report events |
 | BO-AUDIT-DEC-003 ✅ | Redaction policy สำหรับข้อมูลส่วนบุคคลใน audit payload | **ตัดสินใจ (2026-11-04):** ใช้ masked payload เป็น default และ redaction event แยกเมื่อจำเป็น (สอดคล้อง AC-BO-AUDIT-017) |
 | BO-AUDIT-DEC-004 ✅ | ส่ง audit log เข้า external SIEM หรือไม่ | **ตัดสินใจ (2026-11-04):** defer — future phase ไม่มีใน Phase 1/2 scope |

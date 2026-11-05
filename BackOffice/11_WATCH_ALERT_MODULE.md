@@ -260,9 +260,9 @@ Watch Alert Detail เป็นหน้าจอ read-only สำหรับ�
 
 ### Section 1: Alert Summary
 
-แสดง summary tiles 5 ช่อง:
+แสดง summary tiles 4 ช่อง:
 
-- Created, Updated, Source (Search / Model follow — origin ของ alert ตาม FO entry point), Matches (current matched Sale assets), Triggers (total trigger count)
+- Created, Updated, Matches (current matched Sale assets), Triggers (total trigger count) — Source (`Search` / `Model follow` — origin ของ alert ตาม FO entry point) แสดงเป็น Source badge ที่ Detail Head แล้ว ไม่ใช่ tile (ตรงกับ AC-BO-WA-002D)
 
 ### Section 2: Owner Summary
 

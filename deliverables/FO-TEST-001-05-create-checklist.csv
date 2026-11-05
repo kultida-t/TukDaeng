@@ -175,3 +175,4 @@ CRE-071,Guest,guest อยู่ feed,"1. แตะ + → sheet เด้ง ป
 2. ลองเข้า profile (nav)",+ และ profile nav ถูก gate ทั้งคู่ → guest เข้า composer ไม่ได้ทุก entry; หลังปิด sheet อยู่ feed เดิม,GUEST,High,,,
 CRE-072,Language/Theme/Money,"member, theme=dark",1. ไล่ picker/step2/panes/zoom/dialogs,surface ดำอ่านได้ทุกหน้า radio/sel ชัด zoom backdrop เข้ม dialog อ่านได้,MEMBER,Low,,,
 CRE-073,Language/Theme/Money,เคส price/cost/publish ทำแล้ว,1. เช็ค row price/cost + Estimated + placeholder,"row ""฿420,000""/""฿398,000""; placeholder มี comma; Estimated = ค่าจาก market data ของรุ่นนั้น (spec ล็อก E4); ไม่มีทศนิยม/THB ปน",MEMBER,Medium,,,money-display-rules §4.1–4.2
+CRE-074,Clip,"picker เปิด · เครื่องมีวิดีโอหลายไฟล์ (SETUP-08)","1. แตะคลิปที่ >100 MB หรือยาว >60 วิ หรือสั้น <3 วิ หรือไม่ใช่ MP4/MOV 2. แตะคลิปที่ผ่านเงื่อนไข","ไฟล์ไม่ผ่าน constraint → reject + error toast ไม่เข้า draft; ไฟล์ผ่าน → เลือกได้ปกติ (IG feed video standard — 02 §9)",MEMBER,High,,,

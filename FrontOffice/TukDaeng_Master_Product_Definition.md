@@ -593,7 +593,7 @@ Management (`walerts` page — เข้าผ่าน Settings > Your library 
 Notification:
 
 - `watch` row ใน Alerts feed → Post Viewer ของ post ที่ match โดยตรง ไม่มี Result List
-- Match feedback ตอน publish โพสต์ใหม่ = toast simulation `Watch alert matched: {name}`
+- Match feedback ตอน publish โพสต์ใหม่ = `watch` row ใน alerts feed ของ watcher (2026-11-05 — เดิมเคยเป็น toast simulation)
 
 ### Notification (Alerts feed)
 
@@ -954,7 +954,6 @@ Like count เป็น private แบบ IG — เฉพาะโพสต์�
 
 - ระบบชำระเงินออนไลน์ในแอป
 - Offer / price negotiation system (ถอดออกจาก baseline แล้ว — ไม่มี Offer entity, card, notification หรือ Accept/Reject flow)
-- Video Upload (composer รองรับ clip playback เท่านั้น — ไม่มี video upload pipeline)
 - Live Streaming
 - Watch Authentication Service ในแอป
 - Watch Shops

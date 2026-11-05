@@ -26,7 +26,7 @@ Search & Filter Module คือ discovery surface แบบ IG (post-centric �
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
 
 - Search constants + state (~14178–14217): `SEARCH_BRANDS`, `SEARCH_POPULAR` (8 chips), `SEARCH_REFS`, `SEARCH_COND`, `SEARCH_DELIV`, `SEARCH_MOVE`, `SEARCH_DIAL`, `SEARCH_CASE`, `SEARCH_STRAP`, `MAX_PRICE` = `2,000,000`; helpers `esc`/`specOf`/`priceNum`/`viewsNum`/`fmtNum`/`unNum` (~14196–14201); `blankFilters`/`srchState` (~14203–14217) — state ผูกกับ screen object (session memory), `recents` seed เป็น mock 6 rows
-- Eligibility + matching (~14218–14260): `salePosts()` (`price && !ni && !muted && !blocked`), `haystack`/`matchQuery` (ทุกคำต้องเจอใน haystack), `delivMatch`/`matchFilters`, `searchResults` (`#` query → `POSTS` กรองแค่ `!muted`; ปกติ → `salePosts()`), `S.sort` dead (`"new"` เสมอ — `plo`/`phi`/`pop` มี code แต่ไม่มี UI)
+- Eligibility + matching (~14218–14260): `discoverablePosts()` (kind `post`+`sale` — ไม่ `ni`/`muted`/`blocked`/`archived`/`show`/`hide`/`sold` — canonical §9), `salePosts()` (`price && !ni && !muted && !blocked`), `haystack`/`matchQuery` (ทุกคำต้องเจอใน haystack), `delivMatch`/`matchFilters`, `searchResults` (`discoverablePosts()` ทุก query mode — keyword + `#` เหมือนกัน), `S.sort` dead (`"new"` เสมอ — `plo`/`phi`/`pop` มี code แต่ไม่มี UI)
 - Count + suggestion helpers (~14261–14302): `filterCount`, `brandCount`/`modelCount`/`optCount`/`strapCount`/`delivCount` (นับจาก `salePosts()`), `sellerAvatar`/`sellerSub`, `pushRecent` (dedupe แบบ case-insensitive + cap 8), `suggestRows` (keyword ≤6 + sellers ≤4)
 - Tags + explore (~14303–14319): `tagRows` (hashtag จาก caption ทุกโพสต์ `!muted` + `CF_TAGS` seed), `exploreTiles` (ทุก photo ของทุกโพสต์ `!ni && !muted && !blocked`; tall/views badge = decorative index คงที่)
 - Search UI (~14320–14633): `landingHTML` (chips + `xp-grid`), `recentRowHTML`/`recentHTML`/`recentPageHTML`, `suggestHTML`, `activeFilterChips`, `searchHTML` (modes `landing`/`typing`/`results`), `resultSellers`, `accountRowHTML`, `sellerCardHTML` (มี isTh branch บางส่วน), `resultGridHTML`, `searchResultsHTML` (head/tabs/sections/empty/error blocks)
@@ -48,7 +48,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | --- | --- |
 | Search entry | Search icon บน app header ของ feed shell → `search` sub page (root ของ `_subStack`) — ไม่ใช่ bottom-nav tab (00_NAV §6.4/§6.6) |
 | Result model | Photo grid (`xp-tile`) → Post Viewer — **ไม่ใช่** feed card / asset card (post-centric, S-09) |
-| Result eligibility | Posts grid บน results = `salePosts()` — โพสต์ที่มีราคา (sale listing) + ไม่ `ni`/`muted`/`blocked`; explore/tags/hashtag surfaces ใช้ post eligibility ของตัวเอง (§9) |
+| Result eligibility | Posts grid บน results = `discoverablePosts()` — ทุกโพสต์ที่มองเห็นบน feed (kind `post`+`sale`, ไม่ `ni`/`muted`/`blocked`/`archived`, ไม่ `show`/`hide`/`sold`) ทุก query mode รวม `#`; filter `(N)` counts + WA match = `salePosts()` เท่านั้น (§9) |
 | Filter | Chip multi-select draft pattern — edits ไปที่ `fDraft`, `Apply` commit เข้า `S.f` เท่านั้น; price = typed inputs (ไม่มี slider); ทุก option แสดง `(N)` = จำนวน sale listing ที่เห็น — `(0)` เลือกได้ (no current listing ≠ inactive) |
 | Recent searches | อยู่ใน scope V1 — session-memory list ≤8 รายการ (inline 4 แถว + `See all` → `recents` page + `Clear all` + X รายแถว) |
 | Watch Alert | `sr-wa` bell บน results head → shared Watch Alert sheet (criteria = keyword + filters + price); match เฉพาะ `salePosts()`; entry ที่ 2 = `mf-btn` บน Post Detail (canonical อยู่ [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md)) |
@@ -163,7 +163,7 @@ Member ใช้ครบ: search + recents (ของ session ตัวเอ�
 
 ## Popular Chip
 
-1. User กด chip บน landing (`For you` = q ว่าง — เท่ากับ browse ทุก sale listing; อื่น = keyword)
+1. User กด chip บน landing (`For you` = q ว่าง — เท่ากับ browse ทุกโพสต์ที่มองเห็นบน feed; อื่น = keyword)
 2. Chip ที่ไม่ใช่ `For you` → `pushRecent(kw)` อัตโนมัติ
 3. `mode = "results"`, `tab = "foryou"` — ไม่มี transition พิเศษ
 
@@ -253,7 +253,7 @@ Member ใช้ครบ: search + recents (ของ session ตัวเอ�
 ## Search Keyword Rule
 
 - `matchQuery`: ทุกคำที่แยกด้วย whitespace ของ query ต้องปรากฏใน haystack (case-insensitive) = `seller + caption + captionFull + chips + specs (label + value)` — spec snapshot text ครอบค่า free-text ที่ Owner save ไว้ด้วย (ค้นเจอผ่าน keyword เสมอ)
-- Query ว่าง (หลัง trim) = match ทุกโพสต์ใน eligible set (chip `For you` / Enter ด้วย q ว่าง → ทุก sale listing)
+- Query ว่าง (หลัง trim) = match ทุกโพสต์ใน eligible set (chip `For you` / Enter ด้วย q ว่าง → ทุกโพสต์ที่มองเห็นบน feed)
 - Query ขึ้นต้น `#` = hashtag mode — ดู Results Eligibility Rule
 
 ## Results Eligibility Rule
@@ -262,10 +262,9 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 | Surface | Eligible set |
 | --- | --- |
-| Results Posts grid (non-`#` query) | `salePosts()` = มี `price` (sale listing) + ไม่ `ni`/`muted`/`blocked` |
-| Results Posts grid (`#` query) | `POSTS` กรอง `!ni && !muted && !blocked` — รวม showcase/post ธรรมดา (DEC-23) |
-| Explore grid (landing) | ทุก photo ของทุกโพสต์ `!ni && !muted && !blocked` (รวม non-sale) |
-| Tags tab + `tagRows` | ทุกโพสต์ `!muted` |
+| Results Posts grid (ทุก query mode — keyword + `#` เหมือนกัน) | `discoverablePosts()` = ทุกโพสต์ที่มองเห็นบน feed (kind `post` + `sale`; ไม่ `ni`/`muted`/`blocked`/`archived`; ไม่ `show`/`hide`/`sold` — IG parity อนุมัติ 2026-11-05) |
+| Explore grid (landing) | ทุก photo ของ `discoverablePosts()` |
+| Tags tab + `tagRows` | `discoverablePosts()` — ไม่นับ tag จากโพสต์ที่มองไม่เห็น |
 | Accounts / Profiles / seller suggestions | seller ที่ชื่อ match q, ไม่ `PF_BLOCKED` (ไม่จำกัด sale posts) |
 | Filter option counts `(N)` + WA match | `salePosts()` เท่านั้น |
 
@@ -399,9 +398,9 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 | Transition | Search impact |
 | --- | --- |
-| `Sale` → `Sold` / `Hide` / `Show` | โพสต์หลุด results Posts grid (ไม่มี price-eligibility เมื่อ `pfkind` เปลี่ยน — canonical `salePosts` ตาม price + flags), filter counts, WA match — ตาม 00_GLOBAL §12 |
+| `Sale` → `Sold` / `Hide` / `Show` | โพสต์หลุด results Posts grid (kind ใหม่ไม่อยู่ใน `discoverablePosts()` — canonical §9), filter counts, WA match — ตาม 00_GLOBAL §12 |
 | `Hide`/`Show` → `Sale` | กลับเข้า results grid + WA matching ถ้าตรง criteria |
-| Asset-linked → `post` (ไม่มี price) | หลุด results Posts grid + filter counts + WA match — ยังอยู่ explore/tags surfaces |
+| Asset-linked → `post` (ไม่มี price) | **ยังอยู่** results Posts grid + explore/tags (`discoverablePosts()` ครอบ `post` kind — §9) แต่หลุด filter `(N)` counts + WA match (`salePosts()` = price pool เท่านั้น) |
 | Post deleted | หลุดทุก surface; เปิดจาก notification/list เก่า → toast `This post is no longer available` (contract: unavailable state ของ Post Detail อยู่ 05/00_GLOBAL §11) |
 | Block / unblock | block → หลุดทันที (posts grid, explore, accounts); unblock → กลับตาม eligibility |
 | Mute / unmute / not-interested | muted → หลุดทุก search surface รวม `#tag`/tags; ni → หลุด results grid + explore (hashtag grid ยังขึ้น — deviation) |
@@ -499,7 +498,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 - Search module ไม่สร้าง notification โดยตรง
 - Watch Alert notification → Post Viewer โพสต์ที่ match โดยตรง (`pfp` mode 1 โพสต์) — ไม่มี Result List คั่นใน V1 (00_NAV §8; canonical 10_WATCH_ALERT)
-- `Watch alert matched:` toast ตอน publish โพสต์ใหม่ = simulation, ไม่ใช่ notification item (02_FEED §14)
+- WA match ตอน publish โพสต์ใหม่ → `watch` row ใน alerts feed ของ watcher (notification item จริง — 10_WATCH_ALERT · 2026-11-05)
 
 # 15. Analytics Events
 
@@ -531,7 +530,7 @@ Contract (S-29 — prototype ไม่มี tracking layer; event names เป�
 | AC-SEARCH-008 | `See all` ต้องเปิด `recents` page (back + `Clear all` + full list); กด row จาก page ต้องเข้า results และ `_subStack` เหลือ `["search"]` |
 | AC-SEARCH-009 | Suggestions ต้องแสดง keyword rows ≤6 (brand/`brand model` พร้อม `N listings`, reference) ตามด้วย seller rows ≤4 (พร้อม `N listings`/`Following`); ไม่มีผล → `No suggestions` |
 | AC-SEARCH-010 | Query matching ต้องเป็น AND ของทุกคำบน haystack (seller + caption + chips + specs) case-insensitive |
-| AC-SEARCH-011 | Results Posts grid (non-`#` query) ต้องแสดงเฉพาะ `salePosts()` — โพสต์มี price + ไม่ `ni`/`muted`/`blocked`; ต้องไม่แสดง showcase/post ที่ไม่มี price |
+| AC-SEARCH-011 | Results Posts grid (ทุก query mode — keyword + `#`) ต้องแสดง `discoverablePosts()` — โพสต์ที่มองเห็นบน feed (kind `post` + `sale`; ไม่ `ni`/`muted`/`blocked`/`archived`; ไม่ `show`/`hide`/`sold`) ตาม §9 Results Eligibility Rule (IG parity — อนุมัติ 2026-11-05) |
 | AC-SEARCH-012 | `#` query ต้องค้นทุกโพสต์ `!muted` (รวม non-sale, ni, blocked — deviation documented) |
 | AC-SEARCH-013 | Results head ต้องมี back + fake field (แสดง q, แตะกลับ typing คง q) + `sr-wa` bell + filter icon; back จาก results ต้องกลับ landing ไม่ pop page |
 | AC-SEARCH-014 | Results ต้องมี tabs `For you`/`Profiles`/`Tags`; tab default `foryou` ทุกครั้งที่เข้า results |

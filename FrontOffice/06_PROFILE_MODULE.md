@@ -312,9 +312,9 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 ## Tab Visibility Rule (canonical)
 
-- Public profile: viewer เห็นเฉพาะ `Sale`+`Show` posts (00_GLOBAL §10 + AC-GLOBAL-003) — `post`/`hide`/`sold` kinds ต้องไม่ขึ้นบน viewer grid/tab ใด ๆ
+- Public profile: viewer เห็น `post` + `Sale` + `Show` (00_GLOBAL §10 — IG parity: โพสต์ธรรมดาขึ้นกริดโปรไฟล์เหมือนกัน, อนุมัติ 2026-11-05) — `hide`/`sold` kinds ต้องไม่ขึ้นบน viewer grid/tab ใด ๆ
 - Owner profile: `all` = ทุก kind ของตัวเอง (incl. `post`/`hide`/`sold`); `hide`/`sold` tabs = private reachability (owner เท่านั้น)
-- **Prototype defect (S-14 — 00_GLOBAL §10 note)**: viewer `all` render `pfTabPosts` ทั้ง pool — leak `post`/`hide`/`sold` ของผู้อื่นขึ้น grid → **ถือเป็น defect ไม่ copy เป็น spec**; canonical = filter ตาม matrix ข้างบน (`report:posts:` picker ใช้ `pfTabPosts "all"` — leak class เดียวกัน)
+- **RESOLVED 2026-11-05**: viewer `all` เคยรั่ว `hide`/`sold` ขึ้น grid (S-14) — แก้แล้วใน prototype: viewer เห็น `post`/`sale`/`show` เท่านั้น (`report:posts:` picker ใช้ filter เดียวกัน — leak class เดิมปิดแล้ว)
 
 ## Profile-Grid Reachability Rule
 

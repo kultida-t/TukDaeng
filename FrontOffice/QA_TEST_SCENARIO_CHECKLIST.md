@@ -3,7 +3,7 @@
 | Field | Value |
 | --- | --- |
 | Document | QA Test Scenario Checklist |
-| Version | 2.0 — synced to FO-PRD-v1.14 (v2.0 เดิม FSP-027 · item syncs ถึง v1.13 · doc-tier refs v1.14) |
+| Version | 2.0 — synced to FO-PRD-v1.14 (v2.0 เดิม FSP-027 · item syncs ถึง v1.13 · doc-tier refs v1.14 · S-10/S-14 resolved-sync 2026-11-05 per business-process-flows F-02/F-06) |
 | Status | Active |
 | Owner | QA Team |
 | Source of truth | `Prototypes/fo-flow` (locked) + module specs `00`–`18` (decision history: `TukDaeng_Master_Product_Definition.md` §16 — archived) |
@@ -17,9 +17,9 @@ This document is the QA execution checklist for Front Office V1. Each scenario m
 - **`Maps to`** — AC IDs that actually exist in the module specs (verified by cross-document grep). Items that assert a rule with no direct AC cite the spec section instead (e.g. `00_GLOBAL §11`).
 - **Prototype** — ใช้เป็น reference ของ UI และ expected เท่านั้น ไม่ใช่เป้าหมายการทดสอบ; ทุกเคสต้องรันบน build stg หรือแอปจริงที่ทีม implement
 - **(contract)** — production contract per S-29: the prototype has no implementation to compare against; verify in production/staging or by code review. Prototype-only mock behavior is noted where relevant.
-- **Known documented defects** (S-10, S-14 and module deviation notes): these are *not* spec. When observed, log them as defects — never write expected results around them:
-  - `salePosts()` counts priced `show`/`hide`/`sold` posts into Search results grid, filter `(N)` counts and Watch Alert `N now`/`_waHits` (S-10 — canonical pool is `Sale` only)
-  - Viewer profile `all` tab leaks `post`/`hide`/`sold` posts onto the public grid (S-14 — canonical public profile is `Sale`+`Show` only)
+- **Known documented defects** (module deviation notes + resolved-defect regression guards): these are *not* spec. When observed, log them as defects — never write expected results around them:
+  - **RESOLVED 2026-11-05** (S-10): `salePosts()` used to count priced `show`/`hide`/`sold` posts into Search results/WA counts — fixed in prototype + spec (`03 §9` Results Eligibility: results/explore/tags = `discoverablePosts()`; `(N)` counts + WA match = `salePosts()` Sale-pool เท่านั้น) — ถ้า leak กลับมาให้ log defect ตามเดิม
+  - **RESOLVED 2026-11-05** (S-14): viewer profile `all` tab used to leak `hide`/`sold` posts — fixed; canonical viewer grid = `post`+`Sale`+`Show` (`06 §Tab Visibility`, IG parity) — `post` kind บน viewer grid ไม่ใช่ defect อีกต่อไป; ถ้า `hide`/`sold` รั่วกลับมาให้ log defect
   - `FOR SALE` tag on detail is driven by `price`, not `pfkind`, so a sold post with a leftover price still shows `FOR SALE` (05 §9 deviation)
   - Hidden chat threads still appear in Items view groups; media send does not un-hide/move-to-top
   - Comment input/`Reply`/`emoji` from Post Detail are dead affordances (`Not in this prototype yet`) while the emoji quick-react inside the comment sheet is live — surface-dependent quirk
@@ -206,7 +206,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 | Owner profile `all` tab | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Owner status tabs | – | ✓ | ✓ | ✓ | ✓ |
 
-- Priced `show`/`hide`/`sold` leaking into search/WA counts is the documented S-10 defect — log it, do not accept it.
+- Search/WA counts: filter `(N)` + WA match = `salePosts()` Sale-pool เท่านั้น (canonical `03 §9`); results grid = `discoverablePosts()` — `show`/`hide`/`sold` ต้องไม่ถูกนับหรือแสดง ถ้า leak = defect (S-10 regression) — log it, do not accept it.
 
 ### QA-GLOBAL-010
 **Objective:** Verify empty-state copy rule.
@@ -256,7 +256,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Steps:** On Member B's `sale` post: Edit info → `Profile status` → `Show`, then `Hide`, then back `Sale`; then `Mark as sold`.
 **Expected result:**
 - `sale`→`show`/`hide`: post leaves feed immediately (`refreshPostViews`) and drops from search results grid, filter counts and WA matching; reverse transition returns it.
-- `Mark as sold`: linked posts become `pfkind:"sold"`, leave feed/status tabs/search/WA (canonical — `salePosts()` leak is the S-10 defect), and land under owner `sold` tab + `soldhist`.
+- `Mark as sold`: linked posts become `pfkind:"sold"`, leave feed/status tabs/search results/WA pool (canonical — results = `discoverablePosts()`, counts/match = `salePosts()` — ทั้งคู่ไม่รวม `sold`), and land under owner `sold` tab + `soldhist`.
 
 ---
 
@@ -550,11 +550,13 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 1. `+` on feed header → step 1 Recents grid (single → `Select` multi-pick ≤10, clips show duration); camera tile/expand → dead toast.
 2. `Next` (disabled until ≥1 media) → step 2: media strip, caption, hashtag chips, option panes (location, price, watch details, condition, cost details when drawer ON, more options).
 3. `Share`; then reopen composer, add a draft, `×` to leave.
+4. Try selecting clips that violate the upload constraint (>100 MB, <3 or >60 s, non-MP4/MOV) alongside a compliant clip.
 **Expected result:**
 - Title `สร้างโพสต์ใหม่`/`New post`; media is the only required input.
-- Share → `insertNewPost` lands the new post at top of feed + re-render + scroll-to-top + toast; matching an ON Watch Alert also toasts `Watch alert matched`.
+- Share → `insertNewPost` lands the new post at top of feed + re-render + scroll-to-top + toast; matching an ON Watch Alert pushes a `watch` row into the watcher's alerts feed (publisher sees nothing — 2026-11-05).
 - `×` mid-draft → discard dialog (`เริ่มใหม่`/`แก้ไขต่อไป`); empty draft closes silently; back on step 2 returns to step 1 keeping the draft.
 - Clip-only post previews playable + `Clip shared to feed ✓`.
+- Clips must pass the upload constraint — MP4/MOV ≤100 MB, 3–60 s (canonical 02 §9 Clip Media Rule); violating files are rejected with an error toast and never enter the draft.
 
 ### QA-FEED-019
 **Objective:** Verify feed refresh model.
@@ -595,11 +597,11 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Expected result:** Every whitespace-separated word must appear (case-insensitive) in seller + caption + captionFull + chips + spec labels/values — free-text spec values are always searchable; `#` queries search every `!muted` post (includes non-sale — documented deviation); empty query matches the whole eligible set.
 
 ### QA-SEARCH-004
-**Objective:** Verify results eligibility (Sale-only pool, S-09/S-10).
+**Objective:** Verify results eligibility (`discoverablePosts`, post-S-10 canonical).
 **Maps to:** AC-SEARCH-011, AC-GLOBAL-002
 **Precondition:** Seed: `sale` post, showcase post (no price), plain `post`, plus priced `show`/`hide`/`sold` posts, `ni`/muted/blocked posts.
 **Steps:** Search a keyword matching all of them.
-**Expected result:** Canonical: results Posts grid shows `salePosts()` only — priced, not `ni`/`muted`/`blocked`; showcase/plain posts never appear in the results grid (they remain reachable via explore/tags). Priced `show`/`hide`/`sold` leaking in is the documented S-10 defect — log it.
+**Expected result:** Canonical (`03 §9` Results Eligibility, S-10 resolved 2026-11-05): results Posts grid shows `discoverablePosts()` — `post`+`sale` kinds, not `ni`/`muted`/`blocked`/`archived`, not `show`/`hide`/`sold` (ทุก query mode รวม `#`); filter `(N)` counts + WA match pool remain `salePosts()` Sale-only. Any `show`/`hide`/`sold`/`archived` leaking into any results surface, or a visible `post` kind missing from the grid, is a defect — log it.
 
 ### QA-SEARCH-005
 **Objective:** Verify results tabs.
@@ -662,7 +664,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify lifecycle impact on search.
 **Maps to:** AC-SEARCH-036, AC-SEARCH-037
 **Steps:** Transition a `sale` post → `show`/`hide`/`sold`; transition back; remove a post's price; delete a post; block/mute/NI a seller.
-**Expected result:** `sale`→non-sale drops the post from results grid + filter counts + WA match; reverse returns it; unpriced post leaves the grid but stays on explore/tags surfaces; deleted post leaves everywhere + stale open → toast; blocked drops from all search surfaces; muted drops everywhere; `ni` drops from results + explore.
+**Expected result:** `sale`→non-sale (`show`/`hide`) drops the post from feed + results grid + filter counts + WA match; reverse returns it; unpriced `post` kind **stays** on feed + results grid + explore/tags (`discoverablePosts()` covers `post`) but leaves filter `(N)` counts + WA match (`salePosts()` price pool only); deleted post leaves everywhere + stale open → toast; blocked drops from all search surfaces; muted drops everywhere; `ni` drops from results + explore.
 
 ---
 
@@ -690,7 +692,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify tab model and public visibility (S-14).
 **Maps to:** AC-PROFILE-009, AC-PROFILE-010, AC-PROFILE-011, AC-PROFILE-012, AC-PROFILE-017, AC-GLOBAL-003
 **Steps:** Compare own tabs vs viewer tabs; populate one post per `pfkind`.
-**Expected result:** Owner: 5 tabs `all`/`sale`/`show`/`hide`/`sold`; viewer: 3 tabs `all`/`sale`/`show`; `all` = every unarchived own kind for owner, Sale+Show only for viewer (a viewer `all`-tab leak of `post`/`hide`/`sold` is the S-14 defect — log it); other tabs filter `pfKind === tab` (fallback infers from price).
+**Expected result:** Owner: 5 tabs `all`/`sale`/`show`/`hide`/`sold`; viewer: 3 tabs `all`/`sale`/`show`; `all` = every unarchived own kind for owner, `post`+`Sale`+`Show` for viewer (canonical `06 §Tab Visibility`, S-14 resolved 2026-11-05); `hide`/`sold` appearing on any viewer tab/grid is a defect (S-14 regression) — log it; other tabs filter `pfKind === tab` (fallback infers from price).
 
 ### QA-PROFILE-004
 **Objective:** Verify grid tiles and pinned ordering.
@@ -920,13 +922,13 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify the match pool (S-10 boundary).
 **Maps to:** AC-WA-017, AC-WA-018
 **Steps:** Compare `N now` against a hand-counted set containing `sale`, priced `show`/`hide`/`sold`, blocked/muted/`ni` posts.
-**Expected result:** Canonical contract = `Sale` posts only; blocked/muted/not-interested excluded always; priced non-sale kinds counted by `salePosts()` are the documented S-10 defect.
+**Expected result:** Canonical contract = `Sale` posts only (`salePosts()` post-S-10 fix นับเฉพาะ Sale pool — ไม่นับ priced non-sale kinds แล้ว); blocked/muted/not-interested excluded always; any non-sale/`sold` kind counted is a defect (S-10 regression) — log it.
 
 ### QA-WA-010
 **Objective:** Verify match feedback and notification destination (S-08, S-11).
 **Maps to:** AC-WA-021, AC-WA-022, AC-NOTI-012, AC-NAV-010
 **Steps:** Publish a post matching an ON alert (prototype); simulate a real match (contract).
-**Expected result:** Prototype = delayed toast `Watch alert matched: {name}` (`+N more`) after the publisher's own post — a self-match simulation, not a feed row; contract = a `watch` row appears in the Alerts feed → tap → **Post Viewer of the matched post directly** — there is no Result List screen in V1.
+**Expected result:** Prototype = a `watch` row appears in the watcher's Alerts feed (unread + badge; publisher sees no feedback — 2026-11-05); contract = same `watch` row in the Alerts feed → tap → **Post Viewer of the matched post directly** — there is no Result List screen in V1.
 
 ### QA-WA-011
 **Objective:** Verify bell sync (`modelFollowing`).
@@ -972,7 +974,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Objective:** Verify Add Asset save outcomes per visibility.
 **Maps to:** AC-ASSET-MGMT-006, AC-ASSET-MGMT-007, AC-ASSET-MGMT-008, AC-ASSET-MGMT-009
 **Steps:** Save one asset per visibility option; check surfaces + toasts.
-**Expected result:** Every path creates a `PF_ASSETS` drawer record (`cfToPortfolio` + `assetId` link); `Show` → drawer-only post `pfkind:"show"` (never feed/search/WA); `Hide` → `pfkind:"hide"`; `Post to feed` → `pfkind:"sale"` entering feed + `ขาย` tab + search/WA (+ possible `Watch alert matched` toast); save lands back on the own profile grid (never feed) + visibility-specific toast (`Saved to My Assets · posted to feed ✓` / `· shown on profile ✓` / `· private ✓`) — no confirmation/`Adding...` state.
+**Expected result:** Every path creates a `PF_ASSETS` drawer record (`cfToPortfolio` + `assetId` link); `Show` → drawer-only post `pfkind:"show"` (never feed/search/WA); `Hide` → `pfkind:"hide"`; `Post to feed` → `pfkind:"sale"` entering feed + `ขาย` tab + search/WA (+ possible `watch` row in the watcher's alerts feed); save lands back on the own profile grid (never feed) + visibility-specific toast (`Saved to My Assets · posted to feed ✓` / `· shown on profile ✓` / `· private ✓`) — no confirmation/`Adding...` state.
 
 ### QA-ASSET-004
 **Objective:** Verify spec fields are free-text.
@@ -989,8 +991,8 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 ### QA-ASSET-006
 **Objective:** Verify media rules.
 **Maps to:** AC-ASSET-MGMT-010, AC-ASSET-MGMT-014
-**Steps:** Try saving with 0 media; add photos + clips up to 10 combined.
-**Expected result:** ≥1 media required; clips accepted in asset mode (≤10 combined with photos).
+**Steps:** Try saving with 0 media; add photos + clips up to 10 combined; try clips that violate the upload constraint (>100 MB, <3 or >60 s, non-MP4/MOV).
+**Expected result:** ≥1 media required; clips accepted in asset mode (≤10 combined with photos); violating clips are rejected with an error message (MP4/MOV ≤100 MB, 3–60 s — canonical 02 §9).
 
 ### QA-ASSET-007
 **Objective:** Verify private cost details.
@@ -1004,7 +1006,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Steps:** Open a post's Edit info with drawer ON; change `Profile status` through `ขาย`/`โชว์`/`ซ่อน`; toggle the drawer OFF.
 **Expected result:**
 - Status changes exist **only** inside Edit info `Profile status` pick (`stt-opt`) — no standalone Change Status sheet or Edit Asset form exists; `sold` is never an option.
-- `→show`/`hide` pulls the post from feed + search/WA immediately; `→sale` returns it; drawer OFF cuts `assetId` + splices `PF_ASSETS` + `pfkind:"post"` (post stays on feed, leaves status tabs/search/WA; existing sold link survives).
+- `→show`/`hide` pulls the post from feed + results grid/search counts/WA immediately; `→sale` returns it; drawer OFF cuts `assetId` + splices `PF_ASSETS` + `pfkind:"post"` (post stays on feed + results grid + explore/tags — `discoverablePosts()` covers `post` kind; leaves only `sale`-kind status tab, `(N)` counts and WA match which are `salePosts()` price pool; existing sold link survives).
 
 ### QA-ASSET-009
 **Objective:** Verify sold is terminal.
@@ -1167,10 +1169,10 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 ### QA-CHAT-011
 **Objective:** Verify the chat menu page (S-18 guard included).
 **Maps to:** AC-CHAT-026, AC-CHAT-027, AC-CHAT-042
-**Steps:** `≡` → press each circle button and each row; check the footer copy.
+**Steps:** `≡` → press each circle button and each row; confirm no footer is shown at the bottom.
 **Expected result:**
 - Head `<` + username; 4 circles: `Mute`↔`Unmute`, `Profile` → `profile:{u}`, `Block`↔`Unblock`, `Report` → `chatReportSheet`; rows: `Photos & videos` → `chmedia:` (+ thumb strip or `No photos or videos found.`) and `Listings & Items` → post detail.
-- Footer `This chat is protected with End-to-End Encryption` is a **copy claim only** — there is no E2E/Letter Sealing feature and none may be spec'd (S-18); **no Delete chat entry** on this page (swipe only); `chsettings:` is a dead route.
+- **No footer** — the `This chat is protected with End-to-End Encryption` copy claim was removed (no E2E/Letter Sealing feature exists; none may be spec'd, S-18); **no Delete chat entry** on this page (swipe only); `chsettings:` is a dead route.
 
 ### QA-CHAT-012
 **Objective:** Verify the media gallery.
@@ -1760,4 +1762,4 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Sign-off rules:**
 - Every scenario must be run in a session state matching its precondition (`member`/`new`/`guest` and ownership).
 - `(contract)` items close on production/staging verification or code-review evidence — the prototype cannot satisfy them alone.
-- Documented defects (S-10, S-14, and module deviation notes) are logged as defects — never waived as expected behavior.
+- Documented deviations and fixed-defect regressions are logged as defects — never waived as expected behavior (S-10/S-14 fixed 2026-11-05 — reappearance = defect).

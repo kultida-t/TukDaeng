@@ -109,7 +109,7 @@ Section เหล่านี้ยังคงเป็น policy/contract base
 | --- | --- | --- | --- |
 | Security Policy (Section 10) | Deferred | Session timeout, lockout, IP whitelist | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-002 |
 | System Defaults (Section 11) | Future | Timezone, currency, language mode, pagination/export defaults | ยังไม่อยู่ใน Phase 1 nav |
-| Retention Policy (Section 12) | Deferred | Audit, chat, report, export file, notification log retention | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-003 |
+| Retention Policy (Section 12) | Deferred | Audit, chat, report, export file, notification log retention | เอาออกจาก nav ตาม commit `20d705d`; ตัวเลข retention ตัดสินแล้วตาม SET-DEC-003 (DEC-53) — คง deferred สำหรับ settings UI |
 | Export Policy (Section 13) | Future | CSV/Excel, background job, file expiry, sensitive export controls | ยังไม่อยู่ใน Phase 1 nav |
 | Feature Flags (Section 14) | Future | เปิด/ปิด module/feature ตาม phase/decision | ยังไม่อยู่ใน Phase 1 nav |
 | Integration Settings (Section 15) | Future | Provider status/config metadata แบบ non-secret | ยังไม่อยู่ใน Phase 1 nav |
@@ -1191,5 +1191,5 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | ID | Decision Needed | Impact |
 | --- | --- | --- |
 | SET-DEC-002 ✅ | Security policy fields ใดให้ Admin แก้ได้จริงใน production | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** freeze ทั้ง Security Policy section ใน Phase 1 — nav ถูกถอดแล้ว (commit `20d705d`) ไม่มี UI ให้แก้จึงไม่มีช่องทางผิด policy; แก้ผ่าน config/deploy เท่านั้น; reopen Phase 2 พร้อม decision ว่า field ใด editable (แนวทาง: session/lockout fields editable, auth method/IP whitelist = admin-access-gated) |
-| SET-DEC-003 | Retention period ราย entity เช่น chat, export file ต้องเก็บกี่วัน/ปี | กระทบ archive/export/report jobs — รอ Legal (ผูก `DEL-DEC-002`/`BO-DEC-002`) |
+| SET-DEC-003 ✅ | Retention period ราย entity เช่น chat, export file ต้องเก็บกี่วัน/ปี | **ตัดสินใจ (2026-11-05 — DEC-53, `docs/pdpa-data-processing-register.md` §3):** session/login metadata 90 วัน; audit 1 ปี + security/sensitive 2 ปี; delivery/notification logs 1 ปี; export file ลบ 7 วันหลังสร้าง; chat/report/deletion archive ตาม DEL-DEC-002 (ผูก `DEL-DEC-002`/`BO-DEC-002` เดิม ปิดครบ cluster) |
 | SET-DEC-004 ✅ | ต้องมี approval workflow สำหรับ high-risk setting change หรือไม่ | **ตัดสินใจ (2026-11-04):** Phase 1 ใช้ permission-gated + confirmation + reason + audit เป็นพอ — ไม่เพิ่ม approval workflow (ยังไม่มี approval engine); 1-step approval เป็น Phase 2 backlog ผูก Roles & Permissions policy; high-value/disputed asset removal ใช้ approval path นี้ด้วย (ผูก `BO-DEC-004`) |

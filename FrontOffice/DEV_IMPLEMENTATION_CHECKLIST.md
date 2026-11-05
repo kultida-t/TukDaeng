@@ -96,6 +96,7 @@ Purpose:
 - [ ] Add Asset = composer asset mode (drawer-first) ตาม canonical 02 — ไม่ใช่ multi-step listing form (ตัดแล้ว)
 - [ ] Required field เดียวคือ media ≥1 รูป (primary `Add Asset` disabled จนกว่ามี media) — ไม่มี required matrix ต่อ status, ไม่มี confirmation dialog (S-25)
 - [ ] Gallery รองรับสูงสุด 10 รูป
+- [ ] Composer รองรับ video clip upload: MP4/MOV (H.264/HEVC + AAC), ≤100 MB ต่อคลิป, ความยาว 3–60 วินาที — canonical 02 §9 Clip Media Rule
 - [ ] Visibility pick ตอน Add Asset: `Show` (default) / `Hide` / `Post to feed` + `Also save to My Assets` toggle (post mode)
 - [ ] ทุกเส้นทางสร้าง drawer record (`PF_ASSETS`) ก่อน + link `assetId`; `Post to feed` เพิ่ม post เข้า feed ด้วย
 - [ ] Asking Price (Add price pane) เป็น optional ทุก status — **ไม่มี `Price on request` label**; ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0

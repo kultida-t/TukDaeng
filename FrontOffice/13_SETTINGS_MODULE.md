@@ -473,7 +473,7 @@ About app must not include:
 ### Grace period semantics (S-02 — login-to-restore)
 
 - Soft delete → deactivate ทันที → grace period 30 วัน → hard delete/anonymization ตาม policy (canonical lifecycle 00_GLOBAL §12)
-- ระหว่าง grace period user sign in ด้วยบัญชีเดิมได้ปกติ — sign in สำเร็จ = cancel deletion + restore บัญชี (สอดคล้อง BO Account Deletion restore flow)
+- ระหว่าง grace period user sign in ด้วยบัญชีเดิมได้ปกติ — sign in สำเร็จ = cancel deletion + restore บัญชี (สอดคล้อง BO Account Deletion restore flow) เว้นแต่คำขอถูกแอดมินปฏิเสธคืนบัญชีแล้ว → self-restore ถูก block เจอ support state (BO-13 §10.2)
 - Watch Alerts ที่ถูกยกเลิกตอน deactivate **ไม่กลับมา** หลัง restore — user ต้องตั้งใหม่เอง (ล็อก 2026-10-29)
 - ไม่มี `Account scheduled for deletion` blocked state ที่ sign in — support state ใช้เฉพาะกรณี restore ล้มเหลวหรือหลัง hard delete (contract — §12)
 
@@ -594,8 +594,8 @@ Account-list pages ของ section `What you see` — spec ระดับ set
 
 ## Grace-Period Sign In (login-to-restore — S-02)
 
-- ระหว่าง grace period 30 วัน user sign in ด้วยบัญชีเดิมได้ปกติ — sign in สำเร็จ = cancel deletion + restore บัญชี (canonical 00_GLOBAL §12; prototype ไม่มี deleted-state check ที่ sign in)
-- Support state ใช้เฉพาะกรณี restore ล้มเหลวหรือบัญชีผ่าน hard delete แล้ว (contract — prototype ไม่มี state นี้):
+- ระหว่าง grace period 30 วัน user sign in ด้วยบัญชีเดิมได้ปกติ — sign in สำเร็จ = cancel deletion + restore บัญชี (canonical 00_GLOBAL §12; prototype ไม่มี deleted-state check ที่ sign in) เว้นแต่คำขอถูกแอดมินปฏิเสธคืนบัญชีแล้ว — self-restore ถูก block (BO-13 §10.2)
+- Support state ใช้เฉพาะกรณี restore ล้มเหลว, คำขอที่แอดมินปฏิเสธคืนบัญชีแล้ว หรือบัญชีผ่าน hard delete แล้ว (contract — prototype ไม่มี state นี้):
 - TH: `บัญชีนี้อยู่ระหว่างดำเนินการลบ กรุณาติดต่อ Support หากเป็นความผิดพลาด`
 - EN: `This account is scheduled for deletion. Please contact support if this was a mistake.`
 

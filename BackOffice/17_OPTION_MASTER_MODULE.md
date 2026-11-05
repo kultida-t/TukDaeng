@@ -1,7 +1,7 @@
 # 17 BO Option Master Module
 
-**Version:** `BO-17-v0.15`  
-**Date:** 2026-10-05  
+**Version:** `BO-17-v0.16`  
+**Date:** 2026-11-05  
 **Status:** สเปกปัจจุบัน — Suggestion Queue UI implemented ใน prototype (§23.5, task `3d2b6f50`)  
 **Platform:** Responsive Web Back Office
 
@@ -19,7 +19,7 @@
 | --- | --- |
 | Module Name | BO Option Master |
 | Platform | Responsive Web Back Office |
-| Version | `BO-17-v0.13` |
+| Version | `BO-17-v0.16` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -791,6 +791,7 @@ CREATE TABLE spec_option_groups (
   description TEXT NULL,
   allows_multi_select BOOLEAN NOT NULL DEFAULT FALSE,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  is_system BOOLEAN NOT NULL DEFAULT FALSE,
   sort_order INTEGER NOT NULL DEFAULT 10,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -806,6 +807,7 @@ CREATE TABLE spec_option_groups (
 | `description` | TEXT | คำอธิบายกลุ่ม (optional) |
 | `allows_multi_select` | BOOLEAN | `true` สำหรับ `delivery`; `false` สำหรับกลุ่มอื่น; เปลี่ยนแปลงได้ผ่าน Edit Group |
 | `is_active` | BOOLEAN | default `true`; **ใช้งานได้ใน Phase 1** — รองรับ group-level Deactivate/Reactivate ตาม section 6.1; seed group เริ่มต้นเป็น `true` ทั้งหมด แต่ Admin สามารถ deactivate ได้ผ่าน BO UI เมื่อไม่มี asset ใช้ option ใน group นั้น |
+| `is_system` | BOOLEAN | default `false`; `true` เฉพาะ 6 seed baseline groups (seed insert ระบุ `true` explicit); group ที่สร้างผ่าน Add Group Modal เป็น `false` เสมอ; ใช้กับ column `System` ใน Option Group List และ System Option Deactivate Policy ตาม section 10.1 |
 | `sort_order` | INTEGER | ลำดับการแสดงผลของ group ใน BO list และ FO form/filter; ค่าน้อยกว่าแสดงก่อน; default 10; ปรับผ่าน Reorder Groups Modal (section 6.1.7) แบบ sequential (10, 20, 30, ...); tie-break ด้วย `group_id` |
 | `created_at` | TIMESTAMPTZ | auto |
 | `updated_at` | TIMESTAMPTZ | auto |
@@ -1116,49 +1118,51 @@ Visual rules:
 
 ## 20. Acceptance Criteria
 
-- [ ] เอกสารมี scope ชัดเจน แยกจาก Market Data module
-- [ ] มีหน้าจอ Option Group List และ Option Detail ครบ
-- [ ] Action Rules ครอบคลุม Add, Edit, Deactivate, Reactivate, Delete, Reorder
-- [ ] Impact ต่อ FO และ existing assets ระบุชัด
-- [ ] Audit requirements ครบทุก action type
-- [ ] Acceptance Criteria ทดสอบได้
-- [ ] Confirmation modal ระบุผลกระทบต่อ FO ชัดเจน
-- [ ] Key lock rule หลังสร้าง ระบุชัด (key ล็อกตั้งแต่สร้าง ไม่ใช่หลังถูกใช้ใน asset)
-- [ ] System option policy ระบุชัด
-- [ ] System Option Deactivate Policy (section 10.1) ระบุชัด: อนุญาตพร้อม reason + safeguard ทุกกลุ่ม (≥1 active option เหลือในกลุ่ม)
-- [ ] Reorder UX ระบุชัด: Reorder Modal (drag-and-drop + up/down fallback) เป็นวิธีหลัก, Edit Option modal เป็นวิธีรอง
-- [ ] Reorder Modal ใช้ pattern เดียวกับ Category Display Order ใน prototype
-- [ ] Touch device มี up/down arrow buttons เป็น fallback สำหรับ drag-and-drop
-- [ ] Integration กับ module อื่น ระบุชัด
-- [ ] Empty/Loading/Error states ครบ
-- [ ] Responsive layout ตาม `00_GLOBAL_RULES_MODULE.md`
-- [ ] ตาราง `spec_option_groups`, `spec_options` และ `spec_option_audit` มี field ครบ
-- [ ] ความสัมพันธ์กับ `watch_assets` และ `asset_delivery_items` ระบุชัด พร้อม nullable rule
-- [ ] Audit table มี action_type ครบ 15 ตัว (6 option-level: ADD/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER + 6 group-level: CREATE/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER + 3 suggestion-level: OPTION_SUGGESTION_PROMOTE/MAP_ALIAS/IGNORE)
-- [ ] **Delete option (section 11.1) ระบุชัด: destructive, type-to-confirm ด้วย Option Key, safeguard ห้าม delete ถ้ามี asset ใช้ (`used_in_assets=false`), audit `OPTION_DELETE` ก่อน hard delete, ไม่สามารถย้อนกลับได้**
-- [ ] **Audit action ใหม่ `OPTION_DELETE` ระบุใน section 13, 16, 17.3**
-- [ ] Seed file schema ตรงกับ data model
-- [ ] Migration strategy ครอบคลุม add/edit/deactivate/reactivate
-- [ ] Versioning strategy ชัดเจน (bump version ทุก migration)
-- [ ] Impact ต่อ existing assets เมื่อ deactivate ระบุชัด (คง relation, คง snapshot, ห้าม cascade delete)
-- [ ] Sync strategy ระหว่าง seed file และ database ชัดเจน (system vs custom option)
-- [ ] **Group-level actions (section 6.1) ระบุชัด: Edit, Deactivate, Reactivate, Delete group พร้อมเงื่อนไข การ confirm และ audit**
-- [ ] **Edit group แก้ได้เฉพาะ `display_name_th`, `display_name_en`, `description`, `allows_multi_select`; ห้ามแก้ `group` identifier (Group Key) และ `group_id`**
-- [ ] **Deactivate group มี safeguard: ห้าม deactivate ถ้ามี asset ใช้ option ใน group นั้น; service layer enforce safeguard**
-- [ ] **Delete group เป็น destructive action: ต้อง confirm 2 ครั้ง (type-to-confirm); เงื่อนไข group Inactive + ไม่มี asset ใช้; ไม่สามารถย้อนกลับได้**
-- [ ] **Option Group List มี Status column (Active/Inactive badge) และ status filter (ทั้งหมด/Active/Inactive)**
-- [ ] **Option Group List มี action menu: View, Edit, Deactivate/Reactivate (ตามสถานะ), Delete (เฉพาะ Inactive + ไม่มี asset ใช้)**
-- [ ] **Audit actions ใหม่ 4 ตัว: `GROUP_EDIT`, `GROUP_DEACTIVATE`, `GROUP_REACTIVATE`, `GROUP_DELETE` ระบุใน section 16**
-- [ ] **`spec_option_audit.option_id` เป็น nullable เพื่อรองรับ group-level actions ที่ไม่มี option เฉพาะ**
-- [ ] **`is_active` ของ group ใช้งานได้ใน Phase 1 (ไม่ใช่ default true เท่านั้น) — รองรับ group-level Deactivate/Reactivate**
-- [ ] **Add Group (section 6.1.6) ระบุชัด: ฟอร์ม fields, validation (Group Key lowercase snake_case unique ≤64, label EN/TH unique ≤128, description ≤512), confirmation modal, audit `GROUP_CREATE`**
-- [ ] **Add Group สร้าง group ว่าง (ไม่มี option) และ group ใหม่ปรากฏใน FO form/filter ทันทีเมื่อ active**
-- [ ] **Reorder Groups (section 6.1.7) ระบุชัด: drag-and-drop + up/down fallback, เฉพาะ active groups ≥2, sort_order sequential (10, 20, 30, ...), audit `GROUP_REORDER` ครั้งเดียวต่อ save เมื่อลำดับเปลี่ยน**
-- [ ] **Group Audit Log view (section 6.1.8) ระบุชัด: action types 6 ตัว (GROUP_CREATE/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER), fields ที่แสดง (action, timestamp, actor, reason, before/after diff), read-only**
-- [ ] **Option Group List มีปุ่ม `เพิ่ม Group` และ `จัดเรียง` (Reorder Groups) ใน page actions; ปุ่ม `จัดเรียง` แสดงเฉพาะ active group ≥2**
-- [ ] **Option Group List action menu มี `ดู Audit Log` สำหรับเปิด Group Audit Log view**
-- [ ] **`spec_option_groups` มี field `sort_order` สำหรับรองรับ Reorder Groups**
-- [ ] **Audit actions ใหม่ 2 ตัว: `GROUP_CREATE`, `GROUP_REORDER` ระบุใน section 13 และ section 16**
+| ID | Criteria |
+| --- | --- |
+| AC-BO-OM-001 | เอกสารมี scope ชัดเจน แยกจาก Market Data module |
+| AC-BO-OM-002 | มีหน้าจอ Option Group List และ Option Detail ครบ |
+| AC-BO-OM-003 | Action Rules ครอบคลุม Add, Edit, Deactivate, Reactivate, Delete, Reorder |
+| AC-BO-OM-004 | Impact ต่อ FO และ existing assets ระบุชัด |
+| AC-BO-OM-005 | Audit requirements ครบทุก action type |
+| AC-BO-OM-006 | Acceptance Criteria ทดสอบได้ |
+| AC-BO-OM-007 | Confirmation modal ระบุผลกระทบต่อ FO ชัดเจน |
+| AC-BO-OM-008 | Key lock rule หลังสร้าง ระบุชัด (key ล็อกตั้งแต่สร้าง ไม่ใช่หลังถูกใช้ใน asset) |
+| AC-BO-OM-009 | System option policy ระบุชัด |
+| AC-BO-OM-010 | System Option Deactivate Policy (section 10.1) ระบุชัด: อนุญาตพร้อม reason + safeguard ทุกกลุ่ม (≥1 active option เหลือในกลุ่ม) |
+| AC-BO-OM-011 | Reorder UX ระบุชัด: Reorder Modal (drag-and-drop + up/down fallback) เป็นวิธีหลัก, Edit Option modal เป็นวิธีรอง |
+| AC-BO-OM-012 | Reorder Modal ใช้ pattern เดียวกับ Category Display Order ใน prototype |
+| AC-BO-OM-013 | Touch device มี up/down arrow buttons เป็น fallback สำหรับ drag-and-drop |
+| AC-BO-OM-014 | Integration กับ module อื่น ระบุชัด |
+| AC-BO-OM-015 | Empty/Loading/Error states ครบ |
+| AC-BO-OM-016 | Responsive layout ตาม `00_GLOBAL_RULES_MODULE.md` |
+| AC-BO-OM-017 | ตาราง `spec_option_groups`, `spec_options` และ `spec_option_audit` มี field ครบ |
+| AC-BO-OM-018 | ความสัมพันธ์กับ `watch_assets` และ `asset_delivery_items` ระบุชัด พร้อม nullable rule |
+| AC-BO-OM-019 | Audit table มี action_type ครบ 15 ตัว (6 option-level: ADD/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER + 6 group-level: CREATE/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER + 3 suggestion-level: OPTION_SUGGESTION_PROMOTE/MAP_ALIAS/IGNORE) |
+| AC-BO-OM-020 | Delete option (section 11.1) ระบุชัด: destructive, type-to-confirm ด้วย Option Key, safeguard ห้าม delete ถ้ามี asset ใช้ (`used_in_assets=false`), audit `OPTION_DELETE` ก่อน hard delete, ไม่สามารถย้อนกลับได้ |
+| AC-BO-OM-021 | Audit action ใหม่ `OPTION_DELETE` ระบุใน section 13, 16, 17.3 |
+| AC-BO-OM-022 | Seed file schema ตรงกับ data model |
+| AC-BO-OM-023 | Migration strategy ครอบคลุม add/edit/deactivate/reactivate |
+| AC-BO-OM-024 | Versioning strategy ชัดเจน (bump version ทุก migration) |
+| AC-BO-OM-025 | Impact ต่อ existing assets เมื่อ deactivate ระบุชัด (คง relation, คง snapshot, ห้าม cascade delete) |
+| AC-BO-OM-026 | Sync strategy ระหว่าง seed file และ database ชัดเจน (system vs custom option) |
+| AC-BO-OM-027 | Group-level actions (section 6.1) ระบุชัด: Edit, Deactivate, Reactivate, Delete group พร้อมเงื่อนไข การ confirm และ audit |
+| AC-BO-OM-028 | Edit group แก้ได้เฉพาะ `display_name_th`, `display_name_en`, `description`, `allows_multi_select`; ห้ามแก้ `group` identifier (Group Key) และ `group_id` |
+| AC-BO-OM-029 | Deactivate group มี safeguard: ห้าม deactivate ถ้ามี asset ใช้ option ใน group นั้น; service layer enforce safeguard |
+| AC-BO-OM-030 | Delete group เป็น destructive action: ต้อง confirm 2 ครั้ง (type-to-confirm); เงื่อนไข group Inactive + ไม่มี asset ใช้; ไม่สามารถย้อนกลับได้ |
+| AC-BO-OM-031 | Option Group List มี Status column (Active/Inactive badge) และ status filter (ทั้งหมด/Active/Inactive) |
+| AC-BO-OM-032 | Option Group List มี action menu: View, Edit, Deactivate/Reactivate (ตามสถานะ), Delete (เฉพาะ Inactive + ไม่มี asset ใช้) |
+| AC-BO-OM-033 | Audit actions ใหม่ 4 ตัว: `GROUP_EDIT`, `GROUP_DEACTIVATE`, `GROUP_REACTIVATE`, `GROUP_DELETE` ระบุใน section 16 |
+| AC-BO-OM-034 | `spec_option_audit.option_id` เป็น nullable เพื่อรองรับ group-level actions ที่ไม่มี option เฉพาะ |
+| AC-BO-OM-035 | `is_active` ของ group ใช้งานได้ใน Phase 1 (ไม่ใช่ default true เท่านั้น) — รองรับ group-level Deactivate/Reactivate |
+| AC-BO-OM-036 | Add Group (section 6.1.6) ระบุชัด: ฟอร์ม fields, validation (Group Key lowercase snake_case unique ≤64, label EN/TH unique ≤128, description ≤512), confirmation modal, audit `GROUP_CREATE` |
+| AC-BO-OM-037 | Add Group สร้าง group ว่าง (ไม่มี option) และ group ใหม่ปรากฏใน FO form/filter ทันทีเมื่อ active |
+| AC-BO-OM-038 | Reorder Groups (section 6.1.7) ระบุชัด: drag-and-drop + up/down fallback, เฉพาะ active groups ≥2, sort_order sequential (10, 20, 30, ...), audit `GROUP_REORDER` ครั้งเดียวต่อ save เมื่อลำดับเปลี่ยน |
+| AC-BO-OM-039 | Group Audit Log view (section 6.1.8) ระบุชัด: action types 6 ตัว (GROUP_CREATE/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER), fields ที่แสดง (action, timestamp, actor, reason, before/after diff), read-only |
+| AC-BO-OM-040 | Option Group List มีปุ่ม `เพิ่ม Group` และ `จัดเรียง` (Reorder Groups) ใน page actions; ปุ่ม `จัดเรียง` แสดงเฉพาะ active group ≥2 |
+| AC-BO-OM-041 | Option Group List action menu มี `ดู Audit Log` สำหรับเปิด Group Audit Log view |
+| AC-BO-OM-042 | `spec_option_groups` มี field `sort_order` สำหรับรองรับ Reorder Groups |
+| AC-BO-OM-043 | Audit actions ใหม่ 2 ตัว: `GROUP_CREATE`, `GROUP_REORDER` ระบุใน section 13 และ section 16 |
 
 ## 21. Open Decisions
 
@@ -1442,20 +1446,22 @@ Market Data และ Option Master เป็นสองระบบแยก�
 
 เพิ่มเติมจาก section 20:
 
-- [ ] วิธีดึง option ไปใช้ใน FO Add/Edit Asset form ระบุชัดสำหรับแต่ละ group (control type, required rule, sort order)
-- [ ] FO Search Filter ระบุชัด รวม Filter Visibility Rule (แสดงทุก active option พร้อมจำนวน listing แม้เป็น 0) และ Filter Dependency Rule
-- [ ] FO Watch Alert criteria ระบุชัด รวม schema เดียวกับ Search Filter, รองรับ no current listing criteria และ warning สำหรับ inactive option
-- [ ] Caching strategy มี storage, cache key, TTL, refresh trigger และ fallback
-- [ ] Fallback behavior สำหรับ deactivate option ครบทุก surface (FO form, FO Edit asset เดิม, FO Asset Detail, FO Search Filter, FO Watch Alert, BO Asset Detail, BO Asset List filter)
-- [ ] API contract มี endpoint, parameter, response format, error response และ caching header
-- [ ] Prefill behavior จาก Market Data reference ระบุชัด รวม Owner แก้ไขได้และไม่ถูก provider sync overwrite
-- [ ] Interaction ระหว่าง Market Data และ Option Master ระบุชัด รวม mapping rule และไม่ match handling
-- [ ] FO Integration ครอบคลุม Add/Edit Asset, Search Filter และ Watch Alert ครบทั้งสาม surface
-- [ ] `ระบุเอง` save rule ระบุชัด: normalize → dedup กับ option label/alias → match ผูก relation id / ไม่ match เก็บ relation `null` + snapshot text
-- [ ] Suggestion pool write path ระบุชัด: upsert `spec_option_suggestions`, dedup ด้วย `(group_id, normalized_text)`, `usage_count` + timestamps และห้าม auto-promote
-- [ ] Curation queue actions ระบุชัด: promote / map alias / ignore พร้อมผล backfill relation id, alert re-evaluation และ audit event `OPTION_SUGGESTION_*` ของแต่ละ action
-- [ ] Free-text spec ไม่แสดงใน filter option, autocomplete หรือ Watch Alert criteria จนกว่า promote แต่ search keyword ต้องเจอจาก snapshot text
-- [ ] Provider text ที่ไม่ match option ต้องเว้นว่างเท่านั้น ห้าม auto-save เป็น free-text หรือเขียนลง suggestion pool
+| ID | Criteria |
+| --- | --- |
+| AC-BO-OM-044 | วิธีดึง option ไปใช้ใน FO Add/Edit Asset form ระบุชัดสำหรับแต่ละ group (control type, required rule, sort order) |
+| AC-BO-OM-045 | FO Search Filter ระบุชัด รวม Filter Visibility Rule (แสดงทุก active option พร้อมจำนวน listing แม้เป็น 0) และ Filter Dependency Rule |
+| AC-BO-OM-046 | FO Watch Alert criteria ระบุชัด รวม schema เดียวกับ Search Filter, รองรับ no current listing criteria และ warning สำหรับ inactive option |
+| AC-BO-OM-047 | Caching strategy มี storage, cache key, TTL, refresh trigger และ fallback |
+| AC-BO-OM-048 | Fallback behavior สำหรับ deactivate option ครบทุก surface (FO form, FO Edit asset เดิม, FO Asset Detail, FO Search Filter, FO Watch Alert, BO Asset Detail, BO Asset List filter) |
+| AC-BO-OM-049 | API contract มี endpoint, parameter, response format, error response และ caching header |
+| AC-BO-OM-050 | Prefill behavior จาก Market Data reference ระบุชัด รวม Owner แก้ไขได้และไม่ถูก provider sync overwrite |
+| AC-BO-OM-051 | Interaction ระหว่าง Market Data และ Option Master ระบุชัด รวม mapping rule และไม่ match handling |
+| AC-BO-OM-052 | FO Integration ครอบคลุม Add/Edit Asset, Search Filter และ Watch Alert ครบทั้งสาม surface |
+| AC-BO-OM-053 | `ระบุเอง` save rule ระบุชัด: normalize → dedup กับ option label/alias → match ผูก relation id / ไม่ match เก็บ relation `null` + snapshot text |
+| AC-BO-OM-054 | Suggestion pool write path ระบุชัด: upsert `spec_option_suggestions`, dedup ด้วย `(group_id, normalized_text)`, `usage_count` + timestamps และห้าม auto-promote |
+| AC-BO-OM-055 | Curation queue actions ระบุชัด: promote / map alias / ignore พร้อมผล backfill relation id, alert re-evaluation และ audit event `OPTION_SUGGESTION_*` ของแต่ละ action |
+| AC-BO-OM-056 | Free-text spec ไม่แสดงใน filter option, autocomplete หรือ Watch Alert criteria จนกว่า promote แต่ search keyword ต้องเจอจาก snapshot text |
+| AC-BO-OM-057 | Provider text ที่ไม่ match option ต้องเว้นว่างเท่านั้น ห้าม auto-save เป็น free-text หรือเขียนลง suggestion pool |
 
 ## 23. Spec Option Suggestion Pool And Curation Queue
 

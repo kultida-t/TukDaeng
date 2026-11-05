@@ -148,7 +148,7 @@ Own profile `+` หรือ `Add asset` (empty state)
 | --- | --- |
 | `โชว์`/`Show` (default) | `PF_MINE` drawer-only post `pfkind:"show"` + drawer record status `show` — โชว์บน profile ไม่เข้า feed/search/WA — toast `บันทึกลงลิ้นชักและแสดงบนโปรไฟล์แล้ว ✓`/`Saved to My Assets · shown on profile ✓` |
 | `ซ่อน`/`Hide` | `PF_MINE` drawer-only post `pfkind:"hide"` + record `hide` — owner-only — toast `บันทึกลงลิ้นชักแบบซ่อนแล้ว ✓`/`Saved to My Assets · private ✓` |
-| `โพสต์ลงฟีด`/`Post to feed` | `insertNewPost` → feed post `pfkind:"sale"` + record `sale` + link `assetId` — toast `บันทึกลงลิ้นชักและโพสต์ลงฟีดแล้ว ✓`/`Saved to My Assets · posted to feed ✓`; WA match → toast `Watch alert matched` หน่วงตามหลัง |
+| `โพสต์ลงฟีด`/`Post to feed` | `insertNewPost` → feed post `pfkind:"sale"` + record `sale` + link `assetId` — toast `บันทึกลงลิ้นชักและโพสต์ลงฟีดแล้ว ✓`/`Saved to My Assets · posted to feed ✓`; WA match → `watch` row ใน alerts feed ของ watcher (10_WATCH_ALERT · 2026-11-05) |
 
 - ไม่มี confirmation dialog, ไม่มี `Adding...` state, ไม่มี required field นอกเหนือ ≥1 media (primary `Add Asset` disabled จนกว่ามี media)
 - Discard draft ตาม 02_FEED (asset mode → กลับ own profile)
@@ -378,7 +378,7 @@ Post-side linkage:
 | Asset created `Post to feed` | `POSTS` `pfkind:"sale"` + `PF_ASSETS` — เข้า feed + profile `ขาย` tab + search/WA eligible + WA match toast |
 | Edit info → `show`/`hide` | `pfkind` เปลี่ยน + `pa.status` sync — หลุด feed (`refreshPostViews` ลบ card) + หลุด search/WA matching; ย้าย profile tab |
 | Edit info → `sale` (บน POSTS post) | เข้า feed + `ขาย` tab + search/WA eligible ใหม่ |
-| Edit info drawer OFF | `pfkind:"post"` + ตัด `assetId` + ลบ `PF_ASSETS` record — อยู่ feed + `ทั้งหมด` tab เท่านั้น; หลุด status tabs/search/WA |
+| Edit info drawer OFF | `pfkind:"post"` + ตัด `assetId` + ลบ `PF_ASSETS` record — อยู่ feed + `ทั้งหมด` tab + results grid (`discoverablePosts()` ครอบ `post` — 03 §9); หลุด status tabs/`(N)` counts/WA match (`salePosts()` price pool เท่านั้น) |
 | `sale`/`show`/`hide` → `sold` (Mark as sold) | `PF_ASSETS`→`PF_SOLD` + linked posts `pfkind:"sold"` — หลุด feed/search/WA/profile status tabs ทันที; เข้า `ขายแล้ว` tab + `soldhist` |
 | Post deleted | หายทุก surface — drawer record คงอยู่ (deviation, ดู Delete Rule) |
 | Drawer-only `PF_MINE` → `sale` via Edit | `pfkind:"sale"` แต่ยังอยู่ `PF_MINE` — **ไม่เข้า feed** (PF_MINE ไม่ merge เข้า POSTS — deviation) |
@@ -402,7 +402,7 @@ Post-side linkage:
 - **`pfo-more`/`PFO_SIMS`** = dev `?dev` preview tooling เท่านั้น (00_NAV §11) — `nomkt`/`empty`/`failed`/`denied` states เป็น contract ไม่ใช่ reachable UI
 - **`sold` post ยังเข้า search/WA match** — `salePosts()` pfkind leak (00_GLOBAL §10 defect note — canonical คือหลุด)
 - **Session-only** — `PF_ASSETS`/`PF_SOLD`/`PF_MINE`/`WATCH_ALERTS` เป็น memory state (sign-out/reset ล้าง); persistence = contract
-- **EN/TH mixed** — portfolio/sell/sold surfaces มี isTh ครบ; composer toasts `Posted ·…`/`Watch alert matched` ต้องแปลไทยตาม DEC-19 (language sweep FSP-026)
+- **EN/TH mixed** — portfolio/sell/sold surfaces มี isTh ครบ; composer toasts `Posted ·…` ต้องแปลไทยตาม DEC-19 (`Watch alert matched` ถูกถอดแล้ว 2026-11-05) (language sweep FSP-026)
 
 ---
 
@@ -471,7 +471,7 @@ Admin จัดการผ่าน Back Office เท่านั้น — �
 # 14. Notification Rules
 
 - Asset Management ไม่สร้าง notification item เมื่อ Add/Edit/Sell/Delete
-- `Post to feed` ที่ตรง Watch Alert ON ของผู้ใช้เอง → toast `Watch alert matched: {name}` หน่วง ~2 วิ (simulation — canonical 10_WATCH_ALERT; Show/Hide path ไม่มีเพราะไม่เข้า `POSTS`)
+- `Post to feed` ที่ตรง Watch Alert ON → `watch` row ใน alerts feed ของ watcher (contract — canonical 10_WATCH_ALERT · 2026-11-05; Show/Hide path ไม่มีเพราะไม่เข้า `POSTS`)
 
 ---
 
@@ -510,7 +510,7 @@ Contract (prototype ไม่มี tracking layer — mark contract เหม�
 | AC-ASSET-MGMT-005 | Asset mode ต้องมี Visibility pick `โชว์`/`Show` (default) · `ซ่อน`/`Hide` · `โพสต์ลงฟีด`/`Post to feed` แทน drawer toggle พร้อม sub-copy ตาม prototype |
 | AC-ASSET-MGMT-006 | `Add Asset` ต้องสร้าง `PF_ASSETS` drawer record เสมอ (`cfToPortfolio`) + link `assetId` — ทุก visibility path |
 | AC-ASSET-MGMT-007 | `Show` → drawer-only post `pfkind:"show"` (`PF_MINE`) — ต้องไม่เข้า feed/search/WA; `Hide` → `pfkind:"hide"` owner-only เช่นกัน |
-| AC-ASSET-MGMT-008 | `Post to feed` → `insertNewPost` `pfkind:"sale"` — เข้า feed + `ขาย` tab + search/WA eligible; WA match → toast `Watch alert matched` |
+| AC-ASSET-MGMT-008 | `Post to feed` → `insertNewPost` `pfkind:"sale"` — เข้า feed + `ขาย` tab + search/WA eligible; WA match → `watch` row ใน alerts feed ของ watcher (2026-11-05) |
 | AC-ASSET-MGMT-009 | Add Asset ต้องไม่มี confirmation/`Adding...` state — save แล้วกลับ own profile grid + toast ตาม visibility (`Saved to My Assets · posted to feed ✓`/`· shown on profile ✓`/`· private ✓`) |
 | AC-ASSET-MGMT-010 | Add Asset ต้องไม่มี required field นอกเหนือ ≥1 media — primary disabled จนกว่ามี media; รูปอย่างเดียว save ได้ |
 
@@ -540,7 +540,7 @@ Contract (prototype ไม่มี tracking layer — mark contract เหม�
 | AC-ASSET-MGMT-020 | Status change ต้องทำผ่าน Edit info `Profile status` pick (`stt-opt` — drawer ON) เท่านั้น — ต้องไม่มี standalone Change Status sheet/Edit Asset form |
 | AC-ASSET-MGMT-021 | `sold` post ต้องเป็น terminal: own-post menu แสดง `View sale record` แทน `Edit`, drawer toggle locked + `This item lives in your Sold history`, `applyPostEdit` ต้องไม่เปลี่ยน `pfkind` |
 | AC-ASSET-MGMT-022 | Edit info → `show`/`hide`/`sold` ต้องดึงโพสต์ออก feed ทันที (`refreshPostViews`) + หลุด search/WA matching; → `sale` (บน feed post) ต้องเข้า feed ใหม่ |
-| AC-ASSET-MGMT-023 | Drawer toggle OFF ต้องตัด `assetId` + splice `PF_ASSETS` + `pfkind:"post"` — โพสต์อยู่ feed แต่หลุด status tabs/search/WA (sold link คงไว้) |
+| AC-ASSET-MGMT-023 | Drawer toggle OFF ต้องตัด `assetId` + splice `PF_ASSETS` + `pfkind:"post"` — โพสต์อยู่ feed + results grid (`discoverablePosts()` ครอบ `post` — 03 §9) แต่หลุด status tabs/`(N)` counts/WA match (sold link คงไว้) |
 | AC-ASSET-MGMT-024 | Visibility matrix ต้องตรง canonical 00_GLOBAL §10 ทุกช่อง (Sale/Show/Hide/Sold/post × Owner/Public/Feed/Search/WA) |
 
 ## Mark as Sold & Sale Record

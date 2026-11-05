@@ -318,7 +318,7 @@ Template variables ต้องใช้ allowlist เท่านั้น เ�
 
 ## 12. Delivery Log
 
-> **Phase 1 scope** — delivery log UI ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1; delivery log ของ Phase 1 ครอบอีเมล Admin invitation, Forgot/Reset Password, Account Deletion lifecycle และ account-status email ส่วน delivery log ของ broadcast/system trigger จะใช้ schema เดียวกันใน Phase 2. Protected Phase 1 UI เป็น read-only list/detail; retry เป็น provider/outbox state ไม่ใช่ action ใน Delivery Logs UI
+> **Phase 1 scope** — delivery log UI ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1; delivery log ของ Phase 1 ครอบอีเมล Admin invitation, Forgot/Reset Password, Account Deletion lifecycle, account-status email และ Watch Alert delivery (`DLV-WA-*` ตาม `11_WATCH_ALERT_MODULE.md` section 12 และ `16_ADMIN_SETTINGS_MODULE.md` section 16) ส่วน delivery log ของ broadcast/system trigger อื่น (เช่น like/comment/follow) จะใช้ schema เดียวกันใน Phase 2. Protected Phase 1 UI เป็น read-only list/detail; retry เป็น provider/outbox state ไม่ใช่ action ใน Delivery Logs UI
 
 Delivery log ต้องเก็บ:
 
@@ -500,6 +500,6 @@ Audit payload ต้องมี:
 | --- | --- | --- |
 | NOTI-DEC-001 ✅ | Broadcast จะแสดงใน FO Notification Center หรือเป็น push-only (Phase 2) | **ตัดสินใจ (2026-11-04 — owner sign-off DOC-032):** formal defer to Phase 2 — ตัดสินพร้อม Phase 2 scoping (คำถาม surface ตอบง่ายขึ้นเมื่อ FO notification types lock ครบ); กระทบ FO type list และ in-app notification UI |
 | NOTI-DEC-002 ✅ | ต้องมี broadcast approval workflow กี่ขั้น (Phase 2) | **ตัดสินใจ (2026-11-04):** formal defer to Phase 2; กระทบ permission และ operation process |
-| NOTI-DEC-003 | Notification retention period ต้องเก็บกี่วัน/ปี | กระทบ delivery log และ report (ใช้ได้ทั้ง Phase 1 และ Phase 2 — ผูก retention cluster `DEL-DEC-002`/`SET-DEC-003`) |
+| NOTI-DEC-003 ✅ | Notification retention period ต้องเก็บกี่วัน/ปี | **ตัดสินใจ (2026-11-05 — DEC-53, `docs/pdpa-data-processing-register.md` §3):** delivery/notification logs เก็บ 1 ปี (ผูก retention cluster `DEL-DEC-002`/`SET-DEC-003` ปิดครบแล้ว) |
 | NOTI-DEC-004 ✅ | Provider payload contract ของ FCM/APNs กำหนด schema ใด (Phase 2) | **ตัดสินใจ (2026-11-04):** formal defer to Phase 2; กระทบ backend implementation |
 | NOTI-DEC-005 ✅ | Market Update / Sale Success / Account Action จะเข้า FO phase ใด (Phase 2) | **ตัดสินใจ (2026-11-04):** formal defer to Phase 2; กระทบ supported types และ template list |

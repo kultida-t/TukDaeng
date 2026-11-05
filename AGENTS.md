@@ -7,7 +7,7 @@ The following prototype screens are confirmed and locked as of 2026-07-19. They 
 - Login
 - Admin Identity Lifecycle, including Admin Invitation/Activation, Login, Forgot/Reset Password, My Account/Edit Name, Change Password, Active Sessions, individual session revoke, Logout All Devices, session-expired handling, and Audit/Delivery trace, confirmed and locked as of 2026-09-28. The current Login phase is Email + Password → BO with no Login OTP/MFA/2FA. `ADMIN_SESSION_REVOKE_ALL` is one aggregate risk `Medium` event; Logout All Devices returns to an empty Login form; wrong-current Change Password attempts are not audited individually and create one `RATE_LIMITED` event at the limit; production cooldown is 15 minutes while the protected prototype simulation is 60 seconds.
 - Dashboard, including the Dashboard menu entry, active state, routing, cards, metrics, and links from Dashboard content
-- User Management > User List, including the User Management menu entry, User List submenu/active state, user detail views/panels, and every confirmation modal, lock/confirm state, or action flow opened from the User List screen
+- User Management > User Accounts, including the User Management menu entry, User Accounts submenu/active state, user detail views/panels, and every confirmation modal, lock/confirm state, or action flow opened from the User Accounts screen
 - User Management > Reported Users and Report Detail, including report lists/queues, report detail views/panels, report status actions, user actions opened from report context, confirmation modals, lock/confirm states, audit/result states, breadcrumbs, routing, and navigation state
 - Asset Management > Asset List and Asset Detail, including the Asset Management menu entry, Asset List submenu/active state, asset detail views/panels, asset status/action buttons, confirmation modals, lock/confirm states, audit/result states, breadcrumbs, routing, and navigation state
 - Asset Management > Reported Assets and Asset Report Detail, including report lists/queues, asset report detail views/panels, every detail modal opened from these screens, report status actions, asset/user actions opened from asset report context, confirmation modals, lock/confirm states, audit/result states, breadcrumbs, routing, and navigation state
@@ -205,6 +205,12 @@ Exceptions — keep literal code identifiers and locked spec IDs as-is: `I18N-00
 5. Copy Block ต้องตรง template Case A/B/C เด็ดขาด: หมวดหมู่งาน **1 หมวด** จากลิสต์ 9 หมวด · เวลาเริ่ม/เวลาจบ `DD/MM/YYYY HH:MM` · bullet ขึ้นต้น `- ` literal · `รายละเอียดงานที่ทำ` = ภาษาคนหัวหน้าอ่านรู้เรื่อง 3–5 bullet ห้ามใส่ spec jargon/TC ID/verify mechanics
 6. **ห้ามจบ turn ที่ copy block** — ต้องต่อด้วย prompt งานถัดไป หรือเสนอทางเลือกงานต่อไปเสมอ
 
+## Create-Task Checklist (kanban) — บังคับทำก่อนสร้าง task ทุกครั้ง
+
+1. เลือก Task-Code prefix ให้ตรงซีรีส์งาน (เช่น PLN-, BAC-, AIL-, DOC-, REQ-, MKD-)
+2. **เช็ครหัสที่ใช้ไปแล้วก่อนตั้งชื่อเสมอ** — ดึงรายการ task ผ่าน `get_time_summary` (`status: "all"`, `from_date` ย้อนหลัง เช่น 2026-06-01) แล้วหา prefix เดียวกัน เลือกเลขถัดไปที่ว่าง ห้ามใช้ code ซ้ำกับ task เดิม (รวม done/backlog — เคยชน `PLN-005` ซ้ำ task เดิม 2026-11-05)
+3. Task Description ต้องมีบรรทัด `Category: <หมวด> | Planned: <X> ชม. (Category Max <Y> ชม.)` เสมอทุกหมวด
+
 ## AI Orchestration Routing (Conductor Rule)
 
 Session หลักทำตัวเป็น conductor — route งานไปยัง skill/เครื่องมือที่ถูกต้องตามตารางนี้ รายละเอียดเต็ม (parallel subagent rules, Gemini reviewer loop, Requirement → Mission pipeline) อยู่ที่ `.devin/skills/ai-orchestration/SKILL.md`
@@ -223,3 +229,9 @@ Session หลักทำตัวเป็น conductor — route งานไ
 | requirement ยังไม่พร้อมทำ | kanban `create_requirement` → `convert_requirement_to_mission` เมื่อ final |
 
 กฎเหล็ก: side effects ทั้งหมด (kanban task/note, core-portal `submit_logs`, gemini notebook) ทำผ่าน conductor เท่านั้น ห้าม delegate ให้ subagent; subagent ต้อง file-scope disjoint, protected screens เป็น read-only และทำงานภายในขอบเขตงานก้อนเดียวเท่านั้น — task ที่ `in_progress` หรือคำสั่ง ad-hoc เดียว (kanban "ทีละ task" ยังบังคับ — งานครอบหลาย task ให้ไล่ทีละใบแล้วแตกภายใน); งานเดียวเรียบ ๆ ทำเองตรง ๆ อย่า over-orchestrate
+
+## Skill/Instruction Discipline (บังคับ)
+
+- เมื่อสั่งให้อ่าน skill/doc ใด ๆ "ให้ครบ" — ต้องอ่านครบทั้งไฟล์ก่อนทำงาน ห้ามอ่านบางส่วนแล้วคิดรูปแบบเอง; ถ้าไฟล์ใหญ่ให้แบ่งอ่านเป็นช่วงจนครบ
+- ถ้า skill มี template/รูปแบบผลลัพธ์ — ต้องใช้ template เดิมเป๊ะ ๆ (field, ลำดับ, format) ห้ามประยุกต์หรือคิดเอง; ก่อนส่ง output ต้องเทียบกับ template อีกครั้ง
+- เหตุผลที่ตั้งกฎ: เคยอ่าน `.agents/skills/work-summary/SKILL.md` ไม่ครบแล้วคิด template เอง ทำให้ summary ไม่ตรงรูปแบบ (2026-11-05)

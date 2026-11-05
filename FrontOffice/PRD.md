@@ -348,7 +348,6 @@
 ## 6. ขอบเขตที่ไม่รวมใน Phase 1
 
 - ระบบชำระเงินออนไลน์ในแอป
-- Video upload
 - Live streaming
 - Watch Authentication Service ในแอป
 

@@ -90,7 +90,7 @@ BO เป็น responsive web application สำหรับทีมภาย�
 
 ## 6. Navigation Rules
 
-Navigation ของ BO prototype ที่ยืนยันแล้วเป็น baseline สำหรับ Dashboard, User Management, Asset Management, Content Management, Market Data และ Option Master (Login ไม่มี navigation เพราะเป็นหน้าจอก่อนเข้าระบบ)
+Navigation ของ BO prototype ที่ยืนยันแล้วเป็น baseline สำหรับทุก module ใน Phase 1 — Dashboard, User Management, Asset Management, Content Management, Market Data, Option Master, Market Demand, Account Deletion และ Settings (Login ไม่มี navigation เพราะเป็นหน้าจอก่อนเข้าระบบ)
 
 Navigation หลักที่ล็อกไว้:
 
@@ -108,10 +108,26 @@ Navigation หลักที่ล็อกไว้:
   - Articles
   - Categories
 - Market Data
-  - Dashboard
+  - Market Overview
   - Brands & Models
   - Sync History
 - Option Master
+
+งานตรวจสอบและบริการ
+- Market Demand
+  - Demand Overview
+  - Search Insights
+  - Watch Alert List
+- Account Deletion
+
+เครื่องมือ & รายงาน
+- Settings
+  - Admin Accounts
+  - Roles & Permissions
+  - Policy & Versioning
+  - Support Center
+  - Delivery Logs
+  - Audit Log
 ```
 
 กฎ navigation กลาง:
@@ -271,6 +287,7 @@ BO ต้องใช้ state contract เดียวกับเอกสา�
 
 | Status | BO Meaning | FO Impact |
 | --- | --- | --- |
+| Pending Verification | สมัครด้วย email แล้วรอยืนยัน OTP — record มีอยู่แล้วแต่ยังไม่ activate เต็ม | Sign-up flow ตาม FO Auth; action จำกัดจนกว่า verify สำเร็จ |
 | Active | User ใช้ FO ได้ปกติ | Login และ action ปกติทำได้ |
 | Suspended | ระงับบัญชีชั่วคราวโดย Admin หรือ policy ที่มี guardrail ชัดเจน | Session ปัจจุบันต้องถูก revoke/block, login blocked และแสดง account status state ตาม FO Auth rule |
 | Banned | ระงับบัญชีถาวรจนกว่า Admin จะปลด | Session ปัจจุบันต้องถูก revoke/block, login blocked และสร้าง activity ใหม่ใน FO ไม่ได้ |
@@ -369,6 +386,7 @@ Report target ของ feed content = post entity ไม่ใช่ asset enti
 - Asset-linked post (โพสต์ที่ผูก asset) ใช้ reference `AST-` เหมือนเดิม
 - Post-only (feed post kind `post` ที่ไม่ผูก asset) ใช้ post reference `POST-`
 - Report reference เป็น frozen identifier ที่ออกตอน intake ตาม link state ณ เวลารายงาน — ref ไม่เปลี่ยนย้อนหลังเมื่อโพสต์เปลี่ยนการผูก asset ในภายหลัง
+- Report case ID ใช้ prefix ตาม target type — `RPU-` (reported user), `RPO-` (reported post), `RCO-` (reported comment); immutable และห้าม reuse
 - Report Detail ต้องแสดง current link state เสมอ: post-only report (`POST-`) ที่โพสต์ถูกผูก asset ภายหลังต้องแสดง `AST-` context เพิ่มได้โดยไม่เปลี่ยน report ref
 - Report case ต้องผูกกับ post current state ล่าสุดเสมอ; post-only report ไม่มี asset status ให้ join แสดงเฉพาะ post context
 
