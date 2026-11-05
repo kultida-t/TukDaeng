@@ -1,0 +1,28 @@
+FSP-035 Fix Medium bugs + triage Low (fo-flow) — test evidence
+Date: 2026-11-05 · Commit: 062f047 · File: Prototypes/fo-flow/index.html
+
+=== tests/_fsp-035-verify.cjs (17/17 PASS) ===
+T1  more-link ps sheet: cmtPid ชี้โพสต์ B + comment ลง B ไม่ใช่ A ค้าง — PASS (M1)
+T2  เปิด comments ผ่าน comment-btn → replyCid ถูกเคลียร์ — PASS (M2)
+T3  details sheet: ไม่มี 'null' เมื่อไม่มีราคา — PASS (M3)
+T4  savedPosts(): PF_MINE + hide post ที่ save แล้วเข้า hub — PASS (M4)
+T5  archived post ไม่โผล่ใน explore grid/viewer — PASS (M5)
+T6  rename → PF_MINE seller อัปเดตตาม — PASS (M6)
+T7  settings: post-less muted/faved โชว์ใน list — PASS (M7)
+T8  chatroom push ทับ chat list stack — PASS (M8)
+T9  flowToast TH→ไทย EN→อังกฤษ — PASS (M9)
+T10 member→guest→member: like/save กลับมาครบ — PASS (M10)
+T11 tile onerror อ่าน data-fb — PASS (M11)
+T12 seller อักขระ HTML ถูก esc — PASS (M12)
+T13 contenteditable div/br → newline จริง — PASS (caption)
+T14 fo_account: มี pwH ไม่มี plaintext pw — PASS (M13)
+T15a I.watch นิยามเดียว — PASS (Low)
+T15b ncNext ไม่มี dead edit branch — PASS (Low)
+GLOBAL ไม่มี page error — PASS
+
+=== Regression ===
+tests/_fsp-033-xss-verify.cjs — 21/21 PASS
+tests/_fsp-034-verify.cjs — 14/14 PASS
+
+=== Manual QA ===
+ผู้ใช้ (พี่มาเต็ม) กดเทสตาม checklist 14 เคส — ยืนยัน "ผ่านทุกเคส" (2026-11-05)
