@@ -318,7 +318,7 @@ Template variables ต้องใช้ allowlist เท่านั้น เ�
 
 ## 12. Delivery Log
 
-> **Phase 1 scope** — delivery log UI ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1; delivery log ของ Phase 1 ครอบอีเมล Admin invitation, Forgot/Reset Password, Account Deletion lifecycle และ account-status email ส่วน delivery log ของ broadcast/system trigger จะใช้ schema เดียวกันใน Phase 2. Protected Phase 1 UI เป็น read-only list/detail; retry เป็น provider/outbox state ไม่ใช่ action ใน Delivery Logs UI
+> **Phase 1 scope** — delivery log UI ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1; delivery log ของ Phase 1 ครอบอีเมล Admin invitation, Forgot/Reset Password, Account Deletion lifecycle, account-status email และ Watch Alert delivery (`DLV-WA-*` ตาม `11_WATCH_ALERT_MODULE.md` section 12 และ `16_ADMIN_SETTINGS_MODULE.md` section 16) ส่วน delivery log ของ broadcast/system trigger อื่น (เช่น like/comment/follow) จะใช้ schema เดียวกันใน Phase 2. Protected Phase 1 UI เป็น read-only list/detail; retry เป็น provider/outbox state ไม่ใช่ action ใน Delivery Logs UI
 
 Delivery log ต้องเก็บ:
 

@@ -90,7 +90,7 @@ BO เป็น responsive web application สำหรับทีมภาย�
 
 ## 6. Navigation Rules
 
-Navigation ของ BO prototype ที่ยืนยันแล้วเป็น baseline สำหรับ Dashboard, User Management, Asset Management, Content Management, Market Data และ Option Master (Login ไม่มี navigation เพราะเป็นหน้าจอก่อนเข้าระบบ)
+Navigation ของ BO prototype ที่ยืนยันแล้วเป็น baseline สำหรับทุก module ใน Phase 1 — Dashboard, User Management, Asset Management, Content Management, Market Data, Option Master, Market Demand, Account Deletion และ Settings (Login ไม่มี navigation เพราะเป็นหน้าจอก่อนเข้าระบบ)
 
 Navigation หลักที่ล็อกไว้:
 
@@ -108,10 +108,26 @@ Navigation หลักที่ล็อกไว้:
   - Articles
   - Categories
 - Market Data
-  - Dashboard
+  - Market Overview
   - Brands & Models
   - Sync History
 - Option Master
+
+งานตรวจสอบและบริการ
+- Market Demand
+  - Demand Overview
+  - Search Insights
+  - Watch Alert List
+- Account Deletion
+
+เครื่องมือ & รายงาน
+- Settings
+  - Admin Accounts
+  - Roles & Permissions
+  - Policy & Versioning
+  - Support Center
+  - Delivery Logs
+  - Audit Log
 ```
 
 กฎ navigation กลาง:

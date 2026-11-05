@@ -293,6 +293,7 @@ Sign Up -> Accept Terms of Use and Privacy Policy -> Continue registration
 # 11. User Flow State After Report/Block
 
 - Report สำเร็จ **ไม่เปลี่ยน visibility อะไรเลย** — post/profile/comment ที่ถูก report เปิดได้ปกติทั้งฝั่ง reporter และ reported party (D5)
+- **ยกเว้น auto-hide threshold (BO-side system moderation):** post ที่ถูก report โดย unique reporters ครบ 5 และมี asset status `Sale`/`Show` อาจถูกระบบซ่อนชั่วคราวรอ admin review (`Auto Hidden`) ตาม `BackOffice/04_ASSET_MANAGEMENT_MODULE.md` §9/§14 — ไม่ใช่ผลของ report แต่ละครั้ง แต่เป็น system moderation; FO display: owner เห็น post พร้อมสถานะ `ถูกซ่อนชั่วคราว` (owner-view เท่านั้น), viewer อื่นเห็น post หายจาก surface ทั้งหมด และ direct link แสดง unavailable behavior
 - Block สำเร็จ apply effects ทันทีตาม §12 Block User Rule ทุก surface ที่ render อยู่ (feed re-render + sub-stack top re-render)
 - `report:done` steps เป็น optional follow-up — กด/ไม่กดก็ไม่เปลี่ยนสถานะ report ที่ submit ไปแล้ว (submit เกิดตอนเลือกเหตุผล)
 

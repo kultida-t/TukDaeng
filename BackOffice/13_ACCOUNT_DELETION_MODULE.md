@@ -36,7 +36,7 @@ FO ทำหน้าที่รับ confirmation, soft delete/deactivate acc
 - Request detail พร้อม user, asset, chat และ retention context
 - System action อัตโนมัติ: ปิดรายงาน + ซ่อน public surfaces
 - ดูสถานะล่าสุด (dependency snapshot) และดูประวัติ
-- คืนบัญชี / ปฏิเสธคืนบัญชี โดยแอดมินในช่วง grace period 30 วัน
+- คืนบัญชี / ปฏิเสธคืนบัญชี โดยแอดมิน + ติดตาม self-restore ผ่าน user sign-in (login-to-restore) ในช่วง grace period 30 วัน
 - Track 30-day grace period
 - ลบบัญชีอัตโนมัติเมื่อครบ grace period 30 วัน (เก็บถาวร + ลบตัวตน ในขั้นเดียว); retention ของข้อมูลแยกตาม policy
 - Export archive report ตาม permission (ไม่แสดงเป็นปุ่มใน prototype Phase 1 — future scope)
@@ -49,7 +49,7 @@ FO ทำหน้าที่รับ confirmation, soft delete/deactivate acc
 - Legal policy drafting
 - Payment/transaction settlement workflow
 - Fully automated hard delete โดยไม่มี policy approval
-- User self-service restore ถ้า Product ยังไม่เปิด scope
+- User self-service restore ผ่าน BO surface แยก — self-restore ของผู้ใช้เกิดที่ FO sign-in (login-to-restore) ไม่ใช่ feature ของ module นี้
 - External compliance tool integration
 
 ## 4. FO Deletion Contract
@@ -64,7 +64,7 @@ FO Settings module กำหนด behavior หลักดังนี้:
 - ต้องแสดง `Account deletion started` success modal
 - ปุ่ม `Back to sign in` พาไปหน้า Sign In / pre-auth
 - ใช้ grace period 30 วัน ก่อนระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เมื่อครบกำหนด
-- ระหว่าง grace period user login ไม่ได้ หรือเห็น account-deleted support state
+- ระหว่าง grace period user sign in ด้วยบัญชีเดิมได้ — sign in สำเร็จ = cancel deletion + restore บัญชี (login-to-restore); ยกเว้นคำขอที่แอดมินปฏิเสธคืนบัญชีแล้ว — sign-in จะเจอ account-deleted support state แทน (ไม่ restore)
 - ถ้า API fail ต้องไม่ revoke session, ไม่ sign out และแสดง retry/error state
 
 เมื่อ FO ส่ง Delete Account request สำเร็จ ระบบต้องทำการอัตโนมัติพร้อมกัน (atomic) ดังนี้ก่อนคำขอเข้าคิว BO:
@@ -137,16 +137,16 @@ Filter bar ใช้รูปแบบเดียวกับหน้า list 
 | Status | Meaning | FO Impact |
 | --- | --- | --- |
 | `รอดำเนินการ` | ผู้ใช้ confirm Delete Account สำเร็จ ระบบระงับ+ไล่ออก+ซ่อน+ปิดรายงานอัตโนมัติ และคำขอเข้าคิว | FO revoke session แล้วและ user กลับ Sign In; public profile/assets ถูกซ่อนทันที |
-| `คืนบัญชีแล้ว` | แอดมินกู้คืนบัญชีให้ผู้ใช้ในช่วง grace period 30 วัน ตาม policy (มีเหตุผล + audit) | บัญชีกลับใช้งานได้ (Active) ต้อง sync account status กลับ + log ใน User Management |
-| `ปฏิเสธคืนบัญชี` | แอดมินปฏิเสธคำขอคืนบัญชี (เช่น รายงานร้ายแรง) รอครบ 30 วันแล้วระบบลบบัญชีอัตโนมัติ (ไม่เริ่มนับใหม่) | User ยัง login ไม่ได้; รอระบบลบบัญชีอัตโนมัติเมื่อครบ grace period |
+| `คืนบัญชีแล้ว` | บัญชีถูกกู้คืนในช่วง grace period 30 วัน — ผ่าน user sign-in (login-to-restore) หรือแอดมินกู้คืนตาม policy (admin path มีเหตุผล + audit) | บัญชีกลับใช้งานได้ (Active) ต้อง sync account status กลับ + log ใน User Management |
+| `ปฏิเสธคืนบัญชี` | แอดมินปฏิเสธคำขอคืนบัญชี (เช่น รายงานร้ายแรง) รอครบ 30 วันแล้วระบบลบบัญชีอัตโนมัติ (ไม่เริ่มนับใหม่) | Self-restore ถูก block — user sign-in ได้แต่เจอ support state ไม่ restore; รอระบบลบบัญชีอัตโนมัติเมื่อครบ grace period |
 | `ลบตัวตนแล้ว` | ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ — เก็บถาวร + ลบตัวตน ในขั้นเดียว personal fields ถูกแทนที่ด้วย anonymous value | ไม่มี FO access; public surfaces ยังซ่อน; สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ |
 
 หมายเหตุ:
 
 - ไม่มี status `Blocked` หรือ `Approved` เพราะ validation เป็น system action อัตโนมัติ (ปิดรายงาน) ไม่มี block ที่ต้องรอ Admin ตรวจสอบ
 - การลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เป็น system job เมื่อครบ grace period 30 วัน ไม่ใช่ action ที่แอดมินกดทำเอง
-- `คืนบัญชีแล้ว` และ `ปฏิเสธคืนบัญชี` เป็น action ของแอดมินในช่วง grace period เท่านั้น หลังลบบัญชีอัตโนมัติแล้วไม่สามารถคืนบัญชีได้
-- ปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` แสดงตลอดช่วง 30 วัน เพราะผู้ใช้ติดต่อขอคืนผ่านช่องทางภายนอก (support) ระบบ BO ไม่มีทางรู้อัตโนมัติว่าผู้ใช้ขอคืนแล้ว
+- `คืนบัญชีแล้ว` เกิดได้ทั้งจาก user sign-in (login-to-restore — system/user actor) และแอดมิน ส่วน `ปฏิเสธคืนบัญชี` เป็น action ของแอดมินเท่านั้น ทั้งสองอยู่ในช่วง grace period เท่านั้น หลังลบบัญชีอัตโนมัติแล้วไม่สามารถคืนบัญชีได้
+- ปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` แสดงตลอดช่วง 30 วัน — แอดมินใช้เมื่อผู้ใช้ติดต่อขอคืนผ่านช่องทางภายนอก (support) หรือกู้เองไม่ได้ ระบบ BO ไม่มีทางรู้อัตโนมัติว่าผู้ใช้ขอคืนแล้ว; self-restore ผ่าน sign-in เป็นเส้นทางแยกที่ปิด request เองอัตโนมัติ (ดู section 10.2)
 
 ## 10. Account Status Contract
 
@@ -155,10 +155,10 @@ BO ต้องแยก request status ออกจาก account status:
 | Account Status | Meaning |
 | --- | --- |
 | `Active` | ใช้งาน FO ได้ตามปกติ |
-| `Deactivated` | Login/session ถูก block ระหว่าง grace period หลังผู้ใช้กดลบบัญชี |
+| `Deactivated` | session เดิมถูก revoke ระหว่าง grace period หลังผู้ใช้กดลบบัญชี; sign-in ใหม่ได้เพื่อ restore (login-to-restore) เว้นแต่คำขอถูกปฏิเสธคืนบัญชี |
 | `Anonymized` | ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) personal fields ถูก anonymize ตาม policy |
 
-ใน flow ปกติหลัง FO confirm สำเร็จ account เข้าสู่ `Deactivated` ทันทีพร้อมปิดรายงานอัตโนมัติ ถ้าแอดมินคืนบัญชีในช่วง grace period account ต้อง sync กลับเป็น `Active` พร้อมบันทึกใน Account Status History ของ User Management
+ใน flow ปกติหลัง FO confirm สำเร็จ account เข้าสู่ `Deactivated` ทันทีพร้อมปิดรายงานอัตโนมัติ ถ้าบัญชีถูกกู้คืนในช่วง grace period (ผ่าน user sign-in หรือแอดมิน) account ต้อง sync กลับเป็น `Active` พร้อมบันทึกใน Account Status History ของ User Management
 
 ### 10.1 Deleted / Restore / Retention Policy
 
@@ -168,7 +168,7 @@ Recommended lifecycle:
 
 | Account State | When It Happens | Data Handling | Can Restore? |
 | --- | --- | --- | --- |
-| `Deactivated` | User confirm delete account จาก FO และระบบระงับ+ไล่ออก+ซ่อน+ปิดรายงานอัตโนมัติ | ซ่อน public profile/assets ทันที; retain data สำหรับ dependency, support และ audit | กู้คืนได้ภายใน grace period 30 วัน โดยแอดมินตาม policy (มีเหตุผล + audit) |
+| `Deactivated` | User confirm delete account จาก FO และระบบระงับ+ไล่ออก+ซ่อน+ปิดรายงานอัตโนมัติ | ซ่อน public profile/assets ทันที; retain data สำหรับ dependency, support และ audit | กู้คืนได้ภายใน grace period 30 วัน ผ่าน user sign-in (login-to-restore) หรือแอดมินตาม policy (reason + audit); ยกเว้นคำขอที่ถูกปฏิเสธคืนบัญชี |
 | `Anonymized` | ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ — เก็บถาวร + ลบตัวตน ในขั้นเดียว | เก็บเฉพาะข้อมูลที่จำเป็น เช่น transaction, chat, report, audit reference; personal fields ถูกแทนที่ด้วย anonymous value ตาม policy | กู้คืนไม่ได้ |
 
 UI / Reporting rules:
@@ -178,12 +178,12 @@ UI / Reporting rules:
 - Prototype ปัจจุบันแสดงสถานะ `Deletion Requested` (รอลบบัญชี) และ `Deleted` ใน User List/filter เพื่อ historical review ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องค้นย้อนหลังได้ใน Account Deletion และ Audit ตาม permission (ก่อนหน้านี้ระบุให้ดูใน Account Deletion, Reports และ Audit แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงดูย้อนหลังได้ใน Account Deletion และ Audit เท่านั้น)
 - ข้อมูลย้อนหลังที่เรียกดูได้ต้องเป็นข้อมูลที่จำเป็น เช่น user ID, deletion request ID, dates, processed by, retained chat/report references และ audit event
 - Personal data หลัง deletion ต้องถูก mask/anonymize ตาม retention policy และ Admin Permission
-- Restore เปิดได้เฉพาะในช่วง grace period 30 วัน โดยแอดมิน พร้อม reason และ audit; หลังลบบัญชีอัตโนมัติแล้วไม่สามารถ restore ได้
+- Restore เปิดได้เฉพาะในช่วง grace period 30 วัน — ผู้ใช้กู้เองผ่าน sign-in (login-to-restore) หรือแอดมินกู้คืนพร้อม reason และ audit; คำขอที่ถูกปฏิเสธคืนบัญชีแล้ว self-restore ถูก block; หลังลบบัญชีอัตโนมัติแล้วไม่สามารถ restore ได้
 - หลังลบบัญชีอัตโนมัติ (anonymize รวมในขั้นเดียว) แล้วไม่ควร restore เพราะข้อมูลส่วนตัวที่ใช้สร้าง account กลับมาอย่างถูกต้องไม่ควรมีอยู่แล้ว
 
 ### 10.2 Restore Policy
 
-- Phase 1 เปิดให้แอดมินกู้คืน/ยกเลิกคำขอให้ผู้ใช้ในช่วง grace period 30 วัน โดยมีเหตุผล + บันทึก audit; ไม่มี user self-service (อนาคตเปิดทีหลังได้)
+- Phase 1 มี restore 2 ช่องทางในช่วง grace period 30 วัน: (1) user self-service — sign-in ด้วยบัญชีเดิม = cancel deletion + restore ทันที (login-to-restore ตาม FO contract S-02) และ (2) แอดมินกู้คืน/ยกเลิกคำขอด้วยเหตุผล + บันทึก audit สำหรับผู้ใช้ที่ติดต่อ support หรือกู้เองไม่ได้; การปฏิเสธคืนบัญชีจะ block ช่องทาง self-restore (sign-in เจอ support state แทนการ restore)
 - ปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` แสดงตลอดช่วง 30 วัน เพราะผู้ใช้ติดต่อขอคืนผ่านช่องทางภายนอก (support) ระบบ BO ไม่มีทางรู้อัตโนมัติว่าผู้ใช้ขอคืนแล้ว
 - กรณีรายงานร้ายแรง (serious safety/legal report) แอดมินควรปฏิเสธคืนบัญชี และให้ระบบลบบัญชีอัตโนมัติเมื่อครบ grace period
 - การคืนบัญชีต้อง sync account status กลับเป็น `Active` และบันทึก row ใน Account Status History ของ User Management (ขอลบบัญชี / คืนบัญชี / ปฏิเสธคืนบัญชี / ลบบัญชีอัตโนมัติ)
@@ -244,7 +244,7 @@ Vertical timeline ตามลำดับขั้น lifecycle แต่ละ
 | คำขอลบบัญชี | มีวันที่ requested at |
 | ระงับบัญชี + เริ่มช่วงรอลบบัญชี | ระบบ deactivate + revoke session แล้ว (รวม session revoked = deactivated = grace start ไว้ในขั้นเดียว) |
 | ช่วงรอลบบัญชี (30 วัน) | แสดงช่วง `grace start → grace end`; ครบกำหนดแล้วเป็น `เสร็จสิ้น` |
-| คืนบัญชี | เฉพาะคำขอที่แอดมินคืนบัญชี (restored at) |
+| คืนบัญชี | เมื่อคำขอถูกกู้คืน (restored at) — ผ่าน user sign-in หรือแอดมิน |
 | รอลบบัญชีอัตโนมัติ | เฉพาะเมื่อครบ 30 วันแล้วรอ system job รอบถัดไป |
 | ลบบัญชีอัตโนมัติ | ครบ grace period — ลบบัญชี + ลบตัวตนเกิดพร้อมกันในขั้นเดียว |
 
@@ -348,7 +348,7 @@ Confirmation modal ตาม pattern ของ Reported Users action flow (conte
 - Grace period baseline: 30 วัน
 - Start: เมื่อ Delete Account API สำเร็จและ account ถูก deactivated (พร้อมปิดรายงานอัตโนมัติ)
 - End: `deactivated_at + 30 days`
-- ระหว่าง grace period user login ไม่ได้
+- ระหว่าง grace period user sign-in ได้เพื่อ restore (login-to-restore) เว้นแต่คำขอถูกแอดมินปฏิเสธคืนบัญชี — sign-in จะเจอ support state ไม่ restore
 - Public profile/assets ต้องถูกซ่อนทันที ไม่ต้องรอครบ 30 วัน
 - ระหว่าง grace period แอดมินเห็นปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` ตลอด กดได้เมื่อรับเรื่องจาก support
 - เมื่อครบ grace period ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) — ไม่ใช่ manual action ของแอดมิน
@@ -362,10 +362,10 @@ Confirmation modal ตาม pattern ของ Reported Users action flow (conte
 | BO / System State | FO Expected Behavior |
 | --- | --- |
 | Deletion request succeeded | User ถูก sign out และกลับ Sign In; รายงานที่ยังเปิดอยู่ถูกปิดอัตโนมัติ |
-| Account in grace period | Login ไม่ได้หรือเห็น `Account scheduled for deletion` support state |
+| Account in grace period | Sign-in ได้ = login-to-restore (cancel deletion + restore ทันที); ถ้าคำขอถูกปฏิเสธคืนบัญชี sign-in เห็น `Account scheduled for deletion` support state แทน |
 | Public profile hidden | Public Profile ต้องไม่แสดงข้อมูลผู้ใช้ปกติ |
 | Assets hidden | Asset ไม่ขึ้น Feed, Search, Watch Alert results, Public Profile |
-| Account restored by admin | Account status ต้อง sync กลับ `Active` ก่อนอนุญาต login |
+| Account restored (user sign-in หรือ admin) | Account status ต้อง sync กลับ `Active` ก่อนอนุญาต login |
 | Account auto-deleted (auto) | ไม่มี FO access; public surfaces ยังซ่อน/anonymized ตาม policy; สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ |
 
 ## 16. Cross-Module Integration
@@ -388,6 +388,7 @@ Audit log ต้องบันทึกอย่างน้อย:
 Admin actions:
 - `ACCOUNT_DELETION_RESTORE` — แอดมินคืนบัญชีในช่วง grace period
 - `ACCOUNT_DELETION_RESTORE_REJECT` — แอดมินปฏิเสธคืนบัญชี
+- `ACCOUNT_DELETION_SELF_RESTORE` — ผู้ใช้ sign-in กู้คืนบัญชีเองในช่วง grace period (login-to-restore; actor = user ผ่าน FO auth ไม่ใช่ admin)
 - `ACCOUNT_DELETION_EXPORT` — ส่งออกรายงาน
 - `ACCOUNT_DELETION_SENSITIVE_REVEAL` — เปิดเผยข้อมูลส่วนตัวแบบ on-demand
 
@@ -456,7 +457,7 @@ Account Deletion Requests ต้องใช้ app shell, navigation, breakpoin
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| DEL-DEC-001 ✅ | Restore policy | **ยืนยัน Phase 1** — แอดมินยกเลิก/กู้คืนให้ผู้ใช้ในช่วง grace period 30 วัน โดยมีเหตุผล + audit; ไม่มี user self-service (อนาคตเปิดทีหลังได้); รายละเอียดใน section 10.2 |
+| DEL-DEC-001 ✅ | Restore policy | **แก้ไข 2026-11-05 (owner approved — แก้ F-07 cross-side conflict):** restore มี 2 ช่องทาง — user self-service ผ่าน sign-in (login-to-restore ตาม FO contract S-02) และแอดมินกู้คืนด้วยเหตุผล + audit; การปฏิเสธคืนบัญชี block ช่องทาง self-restore (sign-in เจอ support state); รายละเอียดใน section 10.2 (เดิม: admin-only ไม่มี self-service) |
 | DEL-DEC-002 | Retention period ของ chat, report และ audit log ต้องเก็บกี่ปีก่อนลบข้อมูล (purge) | รอ Legal/Product; แยกจาก account lifecycle (ลบบัญชีอัตโนมัติเกิดที่ grace period ตาม DEL-DEC-006); กระทบ data purge job และ data model |
 | DEL-DEC-003 ✅ | Anonymization timing | **ปรับใหม่ตาม prototype (supersede คำตัดสินเดิม "แยก 2 จังหวะ")** — ลบบัญชีอัตโนมัติ = เก็บถาวร + ลบตัวตน ในขั้นเดียวเมื่อครบ grace period 30 วัน; รายละเอียดใน section 10.1 และ 14; ดู DEL-DEC-006 |
 | DEL-DEC-004 ✅ | Sensitive reveal policy | **ยืนยัน: masked default + ปุ่ม reveal on-demand + permission + audit**; รายละเอียดใน section 10.4 |
