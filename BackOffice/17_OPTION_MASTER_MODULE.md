@@ -791,6 +791,7 @@ CREATE TABLE spec_option_groups (
   description TEXT NULL,
   allows_multi_select BOOLEAN NOT NULL DEFAULT FALSE,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  is_system BOOLEAN NOT NULL DEFAULT FALSE,
   sort_order INTEGER NOT NULL DEFAULT 10,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -806,6 +807,7 @@ CREATE TABLE spec_option_groups (
 | `description` | TEXT | คำอธิบายกลุ่ม (optional) |
 | `allows_multi_select` | BOOLEAN | `true` สำหรับ `delivery`; `false` สำหรับกลุ่มอื่น; เปลี่ยนแปลงได้ผ่าน Edit Group |
 | `is_active` | BOOLEAN | default `true`; **ใช้งานได้ใน Phase 1** — รองรับ group-level Deactivate/Reactivate ตาม section 6.1; seed group เริ่มต้นเป็น `true` ทั้งหมด แต่ Admin สามารถ deactivate ได้ผ่าน BO UI เมื่อไม่มี asset ใช้ option ใน group นั้น |
+| `is_system` | BOOLEAN | default `false`; `true` เฉพาะ 6 seed baseline groups (seed insert ระบุ `true` explicit); group ที่สร้างผ่าน Add Group Modal เป็น `false` เสมอ; ใช้กับ column `System` ใน Option Group List และ System Option Deactivate Policy ตาม section 10.1 |
 | `sort_order` | INTEGER | ลำดับการแสดงผลของ group ใน BO list และ FO form/filter; ค่าน้อยกว่าแสดงก่อน; default 10; ปรับผ่าน Reorder Groups Modal (section 6.1.7) แบบ sequential (10, 20, 30, ...); tie-break ด้วย `group_id` |
 | `created_at` | TIMESTAMPTZ | auto |
 | `updated_at` | TIMESTAMPTZ | auto |

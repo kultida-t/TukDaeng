@@ -2,11 +2,11 @@
 
 | รายการ | ข้อมูล |
 |---|---|
-| Version | 0.1 (Part A FO draft) |
+| Version | 0.2 (Part A FO + Part B BO draft) |
 | Date | 2026-11-05 · Asia/Bangkok |
-| Task | BAC-003 [`f79ccc40`] — Mission `0e19c244` Objective: Data Dictionary & ERD / Feature: Data Dictionary |
-| Status | **DRAFT — รอ review** (entity inventory + field dictionary ฝั่ง FO เสร็จ — รอพี่มาเต็มตรวจ) |
-| Source of truth | `FrontOffice/` module specs (00 pair + 01–16, 18) — ทุกจุดในเอกสารนี้อ้าง spec section |
+| Task | BAC-003 [`f79ccc40`] + BAC-004 [`3d96c18c`] — Mission `0e19c244` Objective: Data Dictionary & ERD / Feature: Data Dictionary |
+| Status | **DRAFT — รอ review** (entity inventory + field dictionary ครบ FO+BO — รอพี่มาเต็มตรวจ) |
+| Source of truth | `FrontOffice/` + `BackOffice/` module specs — ทุกจุดในเอกสารนี้อ้าง spec section |
 
 ## 0. วิธีอ่านเอกสารนี้
 
@@ -14,7 +14,7 @@
 - ป้าย `(contract)` = spec contract สำหรับ production ที่ prototype ไม่ครอบ — spec เจ้าของ mark ไว้เอง
 - ป้าย `(deviation)` = พฤติกรรม prototype ที่ spec บันทึกเป็น deviation — documented, ไม่ใช่ canonical
 - Type ที่ใช้: `string`, `int`, `money` (THB จำนวนเต็ม แสดง `฿` + comma), `bool`, `enum`, `date` (ISO `YYYY-MM-DD`), `datetime`, `ref` (pointer ไป entity อื่น), `array<T>`, `localized` (`{en,th}` pair)
-- Part A = entities ที่ FO spec เป็นเจ้าของเท่านั้น; BO entities (audit, delivery log, admin, market data master, option master ฯลฯ) อยู่ Part B (BAC-004)
+- Part A = entities ที่ FO spec เป็นเจ้าของเท่านั้น (E-01..E-25); Part B = entities ที่ BO spec เป็นเจ้าของ (BE-01..BE-27, §8–13) — entity ที่ต่อกันอ้างข้าม Part (เช่น report record ต่อ E-15, watch alert ต่อ E-18) แทนเขียนซ้ำ
 - เอกสารนี้รวบรวมจาก spec จริง — ถ้าพบจุดที่ spec ขัดกันเองให้ดู §6 Findings (บันทึกเท่านั้น ไม่แก้ spec)
 
 ## 1. Entity Inventory (FO)
@@ -598,3 +598,517 @@ BoardArticle (standalone — own liked/saved flags; share sheet เดียว�
 | Comment multi-level nesting | IG one-level เท่านั้น | 00G §15 |
 | Notification retention/cleanup + real-time push model | contract | 09 §9/§14 |
 | Restrict feature | banner hint เท่านั้น ไม่มีใน V1 | 06 §9 |
+
+---
+
+# Part B — Back Office (BO)
+
+## 8. Entity Inventory (BO)
+
+| ID | Entity | โมดูลเจ้าของ (BO-) | Kind | Detail |
+|---|---|---|---|---|
+| BE-01 | Admin Account | 01, 16 | core | §B10.1 |
+| BE-02 | Admin Invitation | 01, 16 | core (sensitive) | §B10.2 |
+| BE-03 | Admin Session & Lockout | 01, 16 | system | §B10.3 |
+| BE-04 | Role / Permission | 16 | reference | §B10.4 |
+| BE-05 | User (BO admin view) | 03 | core — ต่อ E-01 | §B10.5 |
+| BE-06 | Report Case | 00G, 03, 04 | core — ต่อ E-15 | §B10.6 |
+| BE-07 | Asset (BO view + option relations) | 04, 17 | core — ต่อ E-07 | §B10.7 |
+| BE-08 | Comment (BO moderation view) | 04 | core — ต่อ E-10 | §B10.8 |
+| BE-09 | Article | 05 | core (CMS) — ต่อ E-20 | §B10.9 |
+| BE-10 | Category | 05 | reference | §B10.10 |
+| BE-11 | Market Data: Brand / Model / Reference | 06 | reference | §B10.11 |
+| BE-12 | Price Index | 06 | reference — ต่อ E-25 | §B10.12 |
+| BE-13 | Provider Sync Job | 06 | system | §B10.13 |
+| BE-14 | Directory Item / Category | 07 | reference (postponed) | §B10.14 |
+| BE-15 | Audit Event | 08, 00G | system | §B10.15 |
+| BE-16 | Watch Alert (BO view) + Trigger | 11 | core — ต่อ E-18 | §B10.16 |
+| BE-17 | Policy / Policy Version | 12 | reference — ต่อ E-24 | §B10.17 |
+| BE-18 | Support Center | 12 | reference — ต่อ E-23 | §B10.18 |
+| BE-19 | Account Deletion Request (BO lifecycle) | 13 | core — ต่อ E-21 | §B10.19 |
+| BE-20 | Delivery Log | 14, 16 | system | §B10.20 |
+| BE-21 | Broadcast Notification | 14 | core (Phase 2/future) | §B10.21 |
+| BE-22 | Notification Template | 14 | reference (Phase 2/future) | §B10.22 |
+| BE-23 | Option Group (`spec_option_groups`) | 17 | reference | §B10.23 |
+| BE-24 | Option (`spec_options`) | 17 | reference | §B10.24 |
+| BE-25 | Spec Option Audit (`spec_option_audit`) | 17 | system | §B10.25 |
+| BE-26 | Spec Option Suggestion | 17 | core | §B10.26 |
+| BE-27 | Spec Option Alias | 17 | reference | §B10.27 |
+
+Sub-records ที่ไม่แยกเป็น BE: Account Status History row (อยู่ใน BE-05), Asset Status History row (อยู่ใน BE-07), Admin Action History row (อยู่ใน BE-06/BE-19/BE-01 detail), User Action History row (อยู่ใน BE-16), Matched Asset row + Trigger record (อยู่ใน BE-16), Deletion Timeline step (อยู่ใน BE-19) — เป็น read-model ของ audit/lifecycle ไม่ใช่ entity อิสระ
+
+## 9. BO Shared Conventions
+
+### 9.1 ID / Ref patterns (BO-owned)
+
+| Pattern | ใช้กับ | Ref |
+|---|---|---|
+| `ADM-xxx` | Admin Account id (list `ADM-001..010`, master `ADM-010`) | BO-16 §8.2 |
+| `INV-xxxxx` | Admin Invitation id — immutable, ห้าม reuse | BO-01 §10.1 |
+| `ROL-xxx` | Role id (System + Custom) | BO-16 §9.9/§9.11 |
+| `U-xxxx` | User id (recipient/target reference) | BO-16 §16.1 |
+| `AST-` | Asset reference — asset-linked post report ใช้ ref เดียวกัน | BO-00G §11, BO-04 §15 |
+| `POST-` | post-only report reference (kind `post` ไม่ผูก asset) | BO-00G §11 |
+| `RPU-` / `RPO-` / `RCO-` | report case prefix ตาม target type — `RPU-` reported user, `RPO-` reported post, `RCO-` reported comment (decided FB-03; `RPU-560`/`RCO-` มีตัวอย่างใน spec อยู่แล้ว) | BO-16 §16.1, BO-08 §10 |
+| `DEL-xxx` | Account Deletion Request id (`DEL-033`) | BO-13 §7 |
+| `AUD-xxxxx` | Audit Event id — jump link จาก History & Actions | BO-08 §10, BO-16 §8.3 |
+| `WAL-XXXX` | Watch Alert id ฝั่ง BO (ต่อ `wa{n}` ของ FO) | BO-11 §7 |
+| `DLV-ACCT-<admin-seq>-INV-<attempt-seq>` | invitation email delivery id — attempt seq เพิ่มต่อ target, ห้าม reuse | BO-01 §10.1, BO-16 §16.3 |
+| `DLV-DEL-<req>-<event>` | deletion lifecycle email (`REQ`/`GR7`/`GR3`/`RES`/`REJ`/`DEL`) | BO-14 §9.3 |
+| `DLV-WA-xxx` | Watch Alert delivery id | BO-11 §12, BO-16 §16.1 |
+| `DLV-ACCT-xxx` | account-status email (suspend/ban/reset) | BO-14 §9.3, BO-16 §16.6 |
+| `POL-TOU` / `POL-PP` | Policy id — stable, ห้ามเปลี่ยน, fixed 2 types Phase 1 | BO-12 §10 |
+| `CAT-###` | Category id (auto-generated) | BO-05 §12 |
+| `ART-` | Article reference (audit jump → Article Detail) | BO-08 §10 |
+| `JOB-*` | Sync Job id (`JOB-BRAND-LIST` ฯลฯ) | BO-06 §12 |
+| `OG-xxx` | Option Group id (`group_id` sequence) | BO-17 §6/§17.1 |
+| `OPT-xxx` | Option id (`spec_options.id`) | BO-17 §7/§17.2 |
+| `ROLE-HIST-*` | prototype Role history reference เท่านั้น — production resolve ไป immutable audit event/correlation | BO-16 §9.8 |
+
+Report ref เป็น **frozen identifier ตอน intake** ตาม link state ณ เวลารายงาน — `POST-` ไม่เปลี่ยนเป็น `AST-` ย้อนหลังเมื่อโพสต์ถูกผูก asset ภายหลัง; detail join current state เสมอ (BO-00G §11, BO-04 §15)
+
+### 9.2 Status contracts (canonical)
+
+- User status: `Pending Verification` / `Active` / `Suspended` / `Banned` / `Deletion Requested` / `Deleted` — `Deleted` เป็น read-back state ไม่มี direct delete action; `Guest` ไม่ใช่ status (BO-03 §9, BO-00G §10.1)
+- Admin status: `Invited` / `Active` / `Locked` / `Suspended` / `Archived` (BO-01 §10, BO-16 §8.1)
+- Invitation status: `Pending` / `Used` / `Expired` / `Cancelled` / `Superseded` — `Pending` ได้สูงสุด 1 record/account; terminal records ไม่ hard delete (BO-01 §10.1)
+- Asset: owner status `Sale`/`Show`/`Hide`/`Sold` + **moderation overlay** `None`/`Admin Hidden`/`Auto Hidden`/`Permanently Hidden` + system retention `ลบโดยเจ้าของ` — overlay ไม่เปลี่ยน owner status (BO-04 §9, BO-00G §10.2)
+- Comment status: `Visible` / `Hidden` / `Removed` / `User Deleted` (BO-04 §18)
+- Report status: `Pending` / `Closed` — Closed final ไม่ reopen (BO-03 §11, BO-04 §12/§16)
+- Content status: `Draft` / `Scheduled` / `Published` / `Archived` (BO-05 §10, BO-00G §10.3); Policy version `Draft`/`Published`/`Archived` — ≤1 Published + ≤1 Draft ต่อ policy type (BO-12 §9)
+- Deletion request: `รอดำเนินการ` / `คืนบัญชีแล้ว` / `ปฏิเสธคืนบัญชี` / `ลบตัวตนแล้ว` + account `Active`/`Deactivated`/`Anonymized` (BO-13 §9/§10)
+- Delivery status: record `Queued`/`Sent`/`Delivered`/`Opened`/`Failed`/`Skipped`; Phase-1 UI แสดง `Sent`/`Retry` (retryable failure → Retry) (BO-14 §12, BO-16 §16.1)
+- Broadcast status (Phase 2): `Draft`/`Pending Approval`/`Scheduled`/`Sending`/`Sent`/`Cancelled`/`Failed` (BO-14 §8.2)
+- Role status: `active`/`inactive`; Role type `system`/`custom`; Option/Group `is_active` bool; Suggestion `pending`/`promoted`/`mapped`/`ignored`; Sync job `Completed`/`Running`/`Failed` (BO-16 §9.11, BO-17, BO-06 §12)
+
+### 9.3 Time, masking, permission
+
+- Timestamp store UTC, display `Asia/Bangkok` (BO-08 §5, BO-16 §11); publish/schedule เวลา `Asia/Bangkok` (BO-05 §9)
+- Sensitive = masked default; reveal ต้องมี business reason + permission + audit (BO-00G §14, BO-13 §10.4) — sensitive list: user email/phone/auth id/IP/login history, provenance, purchase price/date/source, proof of payment, sale history, chat exports, deletion archive, audience exports (Phase 2)
+- Permission enforcement ที่ route + API + service เสมอ — UI hiding ไม่ใช่ authorization; API permission เป็นตัวตัดสิน (BO-01 §12, BO-16 §9.6)
+
+## 10. BO Entity Detail
+
+### §B10.1 BE-01 Admin Account
+Source: `BO-01 §10`, `BO-16 §8`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `admin_id` | string | `ADM-xxx` system generated, immutable | BO-01 §10, BO-16 §8.2 |
+| `full_name` | string | required, 1–100 chars; self-edit no-op ไม่ audit | BO-01 §10, BO-16 §7 |
+| `email` | string | unique login identifier; read-only self-service | BO-01 §10, BO-16 §8.6 |
+| `role_id` | ref→Role | **required FK** RESTRICT; ไม่เก็บชื่อ Role/permission payload ซ้ำ (prototype เก็บชื่อ = mock) | BO-01 §10, BO-16 §9.11 |
+| `status` | enum | `Invited`/`Active`/`Locked`/`Suspended`/`Archived` | BO-01 §10, BO-16 §8.1 |
+| `account_revision` | int ≥1 | เพิ่มเมื่อ identity/status/Role/activation state เปลี่ยน; optimistic concurrency | BO-01 §10, BO-16 §8.9 |
+| `is_master` | bool | master (`ADM-010`) — ห้าม suspend/archive/change role; Master badge | BO-16 §8.2/§8.7 |
+| `last_login_at` | datetime? | `—` ถ้ายังไม่เคย login | BO-01 §10, BO-16 §8.2 |
+| `created_by`/`updated_by`/`created_at`/`updated_at` | ref/datetime | audit fields | BO-01 §10 |
+| invitation context (เมื่อ `Invited`) | object | `invitation_id/status`, `issued_at`, `expires_at`, `last_delivery_*`, `resend_available_at`, `resend_count_rolling_24h`, `can_resend/cancel/reissue` — server-calculated | BO-16 §8.9 |
+
+Relationships: Admin N—1 Role; Admin 1—N Invitation (≤1 Pending); 1—N Session; 1—N AuditEvent (actor); 1—N DeliveryLog (recipient)
+
+### §B10.2 BE-02 Admin Invitation
+Source: `BO-01 §10.1` (canonical — `admin_invitations` + `admin_invitation_operations` + `delivery_outbox`)
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `invitation_id` | string | `INV-xxxxx` PK immutable, ห้าม reuse | BO-01 §10.1 |
+| `target_admin_id` | ref→Admin | account `Invited` ตอน issue/consume; unique partial บน `Pending` | BO-01 §10.1 |
+| `target_email_normalized` | string | snapshot ตอน issue; activation ต้องตรง email ปัจจุบัน | BO-01 §10.1 |
+| `role_id` + `role_revision` | ref→Role + int | snapshot ตอน issue; activation revalidate Role | BO-01 §10.1, BO-16 §9.11 |
+| `token_hash` | string | keyed HMAC-SHA-256 ของ CSPRNG ≥256-bit; unique; **ห้ามเก็บ raw token** | BO-01 §10.1 |
+| `token_revision` | int ≥1 | เพิ่มทุก issuance; reject stale/superseded | BO-01 §10.1 |
+| `status` | enum | `Pending`→`Used`/`Expired`/`Cancelled`/`Superseded`; derive `Expired` จาก `expires_at <= now` | BO-01 §10.1 |
+| `expires_at` | datetime | `issued_at + 72h` | BO-01 §10.1 |
+| `issued_at`/`created_at`/`updated_at`, `issued_by_admin_id` | datetime / ref | canonical | BO-01 §10.1 |
+| `cancelled_at`/`used_at`/`superseded_at` | datetime? | เฉพาะ terminal transition | BO-01 §10.1 |
+| `cancelled_by_admin_id` / `superseded_by_invitation_id` | ref | required เมื่อ `Cancelled`/`Superseded` | BO-01 §10.1 |
+| `issuance_idempotency_key` / `correlation_id` | string | ledger + correlation account/invitation/audit/delivery | BO-01 §10.1 |
+
+- Resend: cooldown 60s, ≤5 successful issuances/rolling 24h; provider failure ไม่ rollback; audit/delivery ห้ามมี raw/hashed token, password, OTP, secret (BO-01 §10.1, BO-08 §7)
+
+### §B10.3 BE-03 Admin Session & Lockout
+Source: `BO-01 §8/§9/§9.1`, `BO-16 §7`
+
+| Field / Rule | Type | Constraints | Ref |
+|---|---|---|---|
+| `session_id` | opaque | masked display | BO-16 §7.1 |
+| `idle_timeout` / `max_session` | const | 8 ชม. / 24 ชม. | BO-01 §8 |
+| `metadata` | object | browser/OS, masked IP, created/last activity, current marker | BO-01 §8.1 |
+| `revoked` | bool | individual revoke = session อื่นเท่านั้น; Logout All = all-or-nothing | BO-01 §8.1 |
+| `failed_attempts` | int | 5 ครั้งติด → lock 15 นาที + audit | BO-01 §9 |
+| `reset_token` | opaque | 30 นาที, one-time, supersede atomic; eligible `Active`+failed-login `Locked`; reset → revoke ทุก session | BO-01 §9.1 |
+| `pwd_change_attempts` | int | 5 ครั้ง → `RATE_LIMITED` audit เดียว + block 15 นาที (prototype 60s) | BO-01 §8.1, BO-16 §7.2 |
+| `password` | secret | ≥12 chars + 4 char classes (BO policy ≠ FO ≥8); hash only | BO-01 §8.1, BO-16 §7.2 |
+
+### §B10.4 BE-04 Role / Permission
+Source: `BO-16 §9.11` (canonical), `§9.1–9.3`, `§9.7–9.10`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `role_id` | string | `ROL-xxx` PK immutable | BO-16 §9.11 |
+| `role_key` | string | `^[a-z0-9_]+$` 1–64 unique immutable; ไม่ใช้เป็น FK | BO-16 §9.11 |
+| `display_name` | string | 1–64, case-insensitive unique | BO-16 §9.11 |
+| `description` | string? | ≤512, blank→null | BO-16 §9.11 |
+| `role_type` | enum | `system` (8 baseline — ห้าม rename/delete/แก้/deactivate) / `custom` | BO-16 §9.1/§9.11 |
+| `status` | enum | `active`/`inactive`; System ต้อง `active`; inactive → ไม่ eligible assign | BO-16 §9.11 |
+| `revision` | int ≥1 | `expected_revision` guard | BO-16 §9.11 |
+| `permission_set` | array<{key,level}> | ≥1 granted; level `view`/`manage`/`approve`/`admin`; Custom ห้าม `admin`; Phase-1 catalog 40 keys; absence=`none` | BO-16 §9.2/§9.11 |
+| `creation_mode` | enum | `system_baseline`/`from_scratch`/`derived`/`copied`/`legacy` — UI = `from_scratch` เท่านั้น | BO-16 §9.11 |
+| `source_role_id`+`source_revision` | ref→Role + int? | required เมื่อ `derived`/`copied`; pair-or-null; ห้าม cycle | BO-16 §9.11 |
+| `source_provenance_status` | enum | `verified`/`not_applicable`/`legacy_unknown` | BO-16 §9.11 |
+| `created/updated_*` | datetime/ref | | BO-16 §9.11 |
+
+- Permission level 5: `none`/`view`/`manage`/`approve`/`admin`; safeguards: self/master/last-super-admin/last-role-manager/last-admin-capable/status guard/session freshness (BO-16 §9.7); audit `ADMIN_ACCOUNT_ROLE_CHANGE` full record (BO-16 §9.8)
+
+### §B10.5 BE-05 User (BO view — ต่อ E-01)
+Source: `BO-03 §7–§10`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `user_id` | string | `U-xxxx` | BO-03 §7, BO-16 §16.1 |
+| `status` | enum | `Pending Verification`/`Active`/`Suspended`/`Banned`/`Deletion Requested`/`Deleted` — เปลี่ยนผ่าน action เท่านั้น | BO-03 §9, BO-00G §10.1 |
+| `auth_method` | enum | `email`/`apple`/`google` — ขับ `Send Password Reset` eligibility | BO-03 §7/§10 |
+| `email`/contact | string | masked default; แสดงเฉพาะที่มีจริง | BO-03 §8 |
+| `last_active`/`date_joined`/`verification_state` | misc | sort/search fields | BO-03 §7 |
+| `assets_count` by status / `report_count` | int | summary + latest reason/status | BO-03 §8 |
+| `followers`/`following`/`profile_url` | misc | | BO-03 §8 |
+| `account_status_history[]` | array | {action, timestamp, actor, reason, before/after} — รวม deletion lifecycle 4 ประเภท | BO-03 §8, BO-13 §16 |
+
+- Actions: Send Password Reset (email+Active), Suspend, Ban, Unsuspend, Unban, Resend verification, Open Account Deletion, View deleted summary — reason+confirm+audit (BO-03 §7/§10); Suspend/Ban → revoke session + email primary (BO-00G §12)
+
+### §B10.6 BE-06 Report Case — ต่อ E-15 (stored record)
+Source: `BO-00G §11`, `BO-03 §11–12`, `BO-04 §12–20`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `report_id` | string | `RPU-`(user)/`RPO-`(post)/`RCO-`(comment) ตาม target type — decided FB-03 | BO-03 §11, BO-16 §16.1 |
+| `target_type` | enum | `post`/`user`/`comment` — **post = feed post**; asset-linked→`AST-`, post-only→`POST-`; ไม่มี `article` (ตัด V1) | BO-00G §11, BO-04 §15 |
+| `target_ref` | ref | frozen ณ intake; detail join current state | BO-00G §11 |
+| `reason` | enum | `PM_REASONS` 9 เหตุผลชุดเดียวทุก type; reason-only ไม่มี details | BO-00G §11 |
+| `reporter_count` | int | **unique reporter**; history {timestamp, reporter, status, reason} | BO-03 §11, BO-04 §14/§20 |
+| `priority` | enum | `Low` 1–2 / `Medium` 3–4 / `High` ≥5 หรือ severe | BO-03 §11 |
+| `status` | enum | `Pending`/`Closed` — final | BO-03 §11, BO-04 §12/§16 |
+| `source` | enum | user report: `User Profile`/`Chat` (chat = thread ref เท่านั้น) | BO-03 §12, BO-00G §11 |
+| `created_at`/`closed_at`/`audit_refs` | datetime/ref | | BO-04 §15 |
+
+- Auto-hide ≥5 unique reporters บน `Sale`/`Show` → `Auto Hidden` (owner status คง + audit); `Hide`/`Sold` → ไม่ซ่อน (BO-04 §14); close ใช้ได้เฉพาะ `Pending` + asset ไม่อยู่ Admin/Auto Hidden (BO-04 §13); comment actions ตาม §19
+- Post-only (`POST-`) detail แสดง post context (เนื้อหา/ผู้โพสต์/สถานะโพสต์) + **spec fields จาก Watch Spec Set ของโพสต์เมื่อมี (E-09)** — ไม่มี asset status/moderation fields เพราะไม่มี asset record ให้ join (decided FB-06)
+
+### §B10.7 BE-07 Asset (BO view — ต่อ E-07)
+Source: `BO-04 §7–§11`, `BO-17 §17.4`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `asset_id` | string | `AST-`; list เฉพาะ asset entity (ไม่รวม post-only) | BO-04 §7 |
+| `owner_id`/`owner` | ref→User | + owner account status | BO-04 §8 |
+| spec fields | string/ref | brand/model/ref/year/condition/delivery/case/movement/dial/strap — แสดงเฉพาะที่มีข้อมูล | BO-04 §8 |
+| `owner_status` | enum | `Sale`/`Show`/`Hide`/`Sold` — **admin ห้ามเปลี่ยนโดยตรง** | BO-04 §9, BO-00G §10.2 |
+| `moderation_state` | enum | `None`/`Admin Hidden`/`Auto Hidden`/`Permanently Hidden` — overlay | BO-04 §9 |
+| `system_state` | enum? | `ลบโดยเจ้าของ` retention record | BO-04 §9/§11 |
+| `price` | money? | read-only; `-` เมื่อไม่มี | BO-04 §8 |
+| sensitive block | object | provenance, purchase price/date/from, proof, sold history — masked/readonly | BO-04 §8/§22 |
+| option FKs | ref→Option? | `condition_id`(req เมื่อ `Sale`)/`case_material_id`/`movement_id`/`dial_color_id`/`strap_bracelet_type_id` + `asset_delivery_items.option_id` (group `delivery`) — deactivate ห้าม cascade | BO-17 §17.4 |
+| `*_snapshot` | string | คู่ relation id; free-text → relation `null` | BO-17 §17.4, BO-06 §16 |
+| `status_history[]` | array | {date/time, actor, action, status, ref(Report ID), reason/note} | BO-04 §8 |
+| `comment_count`/`favorite_count`, `created_at`/`updated_at` | misc | | BO-04 §8 |
+
+### §B10.8 BE-08 Comment (BO view — ต่อ E-10)
+Source: `BO-04 §16–§21`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `comment_id` | string | `RCO-` ref | BO-04 §17, BO-08 §10 |
+| `asset_id` | ref→Asset | | BO-04 §17 |
+| `type` | enum | `Root comment`/`Reply` | BO-04 §17 |
+| `author`/`text` | ref/string | | BO-04 §17 |
+| `status` | enum | `Visible`/`Hidden`/`Removed`/`User Deleted` — overlay ไม่แก้ต้นฉบับ | BO-04 §18 |
+
+- Hide (Visible→Hidden, report คง Pending, อีเมล) / Restore (Hidden→Visible + auto Close) / Remove (Visible|Hidden→Removed + auto Close, irreversible) / Close no violation (report→Closed เท่านั้น, ไม่ส่งอีเมล) (BO-04 §19); comment count นับเฉพาะที่เห็น (BO-04 §21)
+
+### §B10.9 BE-09 Article — ต่อ E-20
+Source: `BO-05 §7–§13` — BO เจ้าของ record (FO `BOARD` = read model)
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `article_id` | string | `ART-` | BO-05 §7, BO-08 §10 |
+| `title`/`slug`/`category_id`/`author` | string/ref | required; slug unique auto-gen+editable; category active only; author = admin ปัจจุบัน | BO-05 §9 |
+| `status` | enum | `Draft`/`Scheduled`/`Published`/`Archived`; Scheduled ต้องไม่ย้อนหลัง | BO-05 §9/§10 |
+| `publish_at` | datetime? | required เมื่อ Scheduled; `Asia/Bangkok` | BO-05 §9 |
+| `cover_image`+`cover_alt`/`deck` | image/string | required cover; JPG/PNG/WebP ≤5MB, ratio 1:1–16:9 | BO-05 §9 |
+| `blocks[]` | array<Block> | ≥1 non-divider; 10 types; safe-URL links | BO-05 §9 |
+| `likes`/`read_time` | int | | BO-05 §8/§13 |
+| `change_history[]` | array | {date/time, admin, action, detail, result} | BO-05 §8 |
+
+### §B10.10 BE-10 Category
+Source: `BO-05 §12`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `category_id` | string | `CAT-###` auto | BO-05 §12 |
+| `name`/`slug` | string | required, unique; slug lowercase-hyphen auto-fill; name map FO `cat` tag | BO-05 §12 |
+| `description` | string? | | BO-05 §12 |
+| `status` | enum | `Active`/`Inactive`; deactivate block เมื่อมี linked articles | BO-05 §12 |
+| `display_order`/`article_count`/`updated_at` | int/datetime | reorder modal active only; count guard >0 | BO-05 §12 |
+
+### §B10.11 BE-11 Market Data: Brand / Model / Reference
+Source: `BO-06 §14–§16`
+
+| Entity | Required fields | Ref |
+|---|---|---|
+| Watch Brand | brand_id, name, aliases?, provider key, is_active, model_count, reference_count, last_sync, quality/mapping status | BO-06 §15.1 |
+| Watch Model | model_id, brand ref, name, reference_count, movement summary, case summary?, provider key, is_active, last_sync | BO-06 §15.2 |
+| Reference | reference_id, brand ref, model ref **nullable**, ref no., prod year/range, case material/size, movement, description, est. price, last updated, provider key, mapping status | BO-06 §14/§15.3 |
+
+- Provider = The Watch API; FO อ่าน internal cache เท่านั้น; provider trace (name/key/endpoint/params/synced_at) (BO-06 §14); `is_active=false` → หาย FO selector คง relation; `no current listing` ≠ inactive (BO-06 §16, BO-11 §10.1); asset เลือก match → relation id + snapshot, free-text → `null` (BO-06 §16)
+
+### §B10.12 BE-12 Price Index — ต่อ E-25
+Source: `BO-06 §14/§15.4`
+
+| Field | Type | Constraints | Ref |
+|---|---|---|---|
+| `price_index_id`/`source_level` | string/enum | PK; level Brand/Model/Reference + ref | BO-06 §15.4 |
+| `source_currency`/`source_price` | enum/money | provider currency | BO-06 §14 |
+| `converted_price_thb`/`fx_rate`/`fx_rate_date` | money/decimal/date | non-THB ต้องมี conversion metadata | BO-06 §14/§17 |
+| `provider_updated_at`/`synced_at`/`effective_at`/`quality_status` | datetime/enum | | BO-06 §14/§15.4 |
+
+### §B10.13 BE-13 Provider Sync Job
+Source: `BO-06 §12–13/§18`
+
+| Field | Type | Constraints | Ref |
+|---|---|---|---|
+| `job_id`/`name`/`endpoint`/`params`/`scope` | string/enum | `JOB-*`; scope: brand/model/ref lists, price, enrich | BO-06 §12/§18 |
+| `status` | enum | `Completed`/`Running`/`Failed` — failed ไม่ replace cache | BO-06 §12/§13 |
+| `started_at`/`duration`/`result_count`/`error_code`/`retry_count`/`cache_impact` | misc | error เช่น `too_many_results` | BO-06 §13/§18 |
+| `timeline[]` | array | fetch→normalize→cache→refresh dependent | BO-06 §13 |
+
+### §B10.14 BE-14 Directory Item / Category (postponed)
+Source: `BO-07 §6–§8` — **postponed Phase 1**
+
+| Entity | Fields | Ref |
+|---|---|---|
+| Directory Category | category_id, name_th/en, slug, description, active, display_order — baseline 7 | BO-07 §6 |
+| Directory Item | name_th(req), category(req), status `Draft`/`Active`/`Inactive`/`Archived`(req) + optional: name_en, address/province/district/postal, phone, line_id, email, website, facebook, instagram, logo, cover ≤5, description, opening_hours, lat/long, tags, display_order, internal_note | BO-07 §7/§8 |
+
+- ห้าม hard delete record ที่เคยเป็น FK — Inactive/Archived (BO-07 §8); consignment binding ตัดออก (BO-DIR-DEC-003)
+
+### §B10.15 BE-15 Audit Event
+Source: `BO-08 §5–§8`, `BO-00G §13`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `audit_id` | string | `AUD-xxxxx` unique immutable | BO-08 §5 |
+| `timestamp` | datetime | store UTC, display Asia/Bangkok | BO-08 §5 |
+| `actor_type`/`actor_id`/`actor_access` | enum/ref | `Admin`/`System`/`ProviderJob` + access ณ เวลา action | BO-08 §5 |
+| `action_type` | enum | `ADMIN_*`/`ASSET_*`/`COMMENT_*`/`REPORT_*`/`POLICY_*`/`ACCOUNT_DELETION_*`/`ROLE_*`/`GROUP_*`/`OPTION_*`/`WATCH_ALERT_*`/`SUPPORT_CENTER_UPDATE` | BO-08 §7 |
+| `target_entity_type`/`target_entity_id` | enum/string | ตาม §6 baseline types | BO-08 §5/§6 |
+| `module`/`risk` | enum | module badge; `High`/`Medium`/`Low` | BO-08 §9 |
+| `before_value`/`after_value` | JSON | snapshot/diff; sensitive mask | BO-08 §5 |
+| `reason`/`note` | string? | required เมื่อ destructive/public-impact | BO-08 §5, BO-00G §13 |
+| `result`/`error_code` | enum/string? | `Success`/`Failed`/`Partial`/`Skipped` | BO-08 §5 |
+| `ip_address`/`session_id`/`request_id`/`user_agent` | string? | request context | BO-08 §5 |
+| `fo_impact`/`correlation_id`/`reference` | string | correlation เชื่อม workflow + delivery; reference jump ตาม prefix | BO-08 §5/§10 |
+
+- Immutable + retention ≥1ปี + audit write ต้องสำเร็จพร้อม mutation; ห้าม secret ใน audit (BO-08 §7/§8/§11); canonical identity events: `ADMIN_INVITATION_*`, `ADMIN_PROFILE_UPDATE` Low, `ADMIN_PASSWORD_CHANGE` High, `ADMIN_SESSION_REVOKE(_ALL)` Medium (BO-08 §7, BO-01 §10.1)
+
+### §B10.16 BE-16 Watch Alert (BO view) + Trigger — ต่อ E-18
+Source: `BO-11 §7–§12` — read-only (ไม่มี admin action)
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `alert_id`/`name`/`owner` | string/ref | `WAL-XXXX`; owner = user id+name+account status read-only | BO-11 §7/§7.1 |
+| `status` | enum | `Active`/`User Disabled`/`Deleted` (soft delete ยังเห็น) — ไม่มี Admin Disabled | BO-11 §8 |
+| `notification` | enum | `On`/`Off` | BO-11 §7 |
+| `criteria[]` | array | schema = Search Filter — option criteria match ด้วย **relation id เท่านั้น**; free-text match ได้เฉพาะ keyword บน snapshot | BO-11 §9 |
+| `matches`/`triggers`/`last_triggered` | int/datetime? | `—` ถ้าไม่เคย | BO-11 §7 |
+| `inactive_dependency` | bool | criteria อ้าง `is_active=false` → warning + หยุด trigger ใหม่ | BO-11 §10.1 |
+| `created_at`/`updated_at`/`deleted_at` | datetime | soft delete → ไม่มี trigger ใหม่หลังลบ | BO-11 §7.1 |
+
+Trigger record: `trigger_id`, `alert_id`, `matched_asset_id`, `asset_status` ตอน trigger, `criteria_snapshot`, `match_timestamp`, `notification_event_id?`, `delivery_status` (`Delivered`/`Skipped`/`Failed`/`Pending`), `exclusion_reason?` — แสดงเฉพาะ new matches >0 (BO-11 §11); match pool = `Sale` + visibility + block (BO-11 §10); destination = Watch Alert Result List (BO-11 §12); User Action History {timestamp, actor, action, changes, note} (BO-11 §7.1)
+
+### §B10.17 BE-17 Policy / Policy Version — ต่อ E-24
+Source: `BO-12 §7–§12.5`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `policy_id` | enum | `POL-TOU`/`POL-PP` fixed 2 types, stable id | BO-12 §10 |
+| `version`/`status` | string/enum | `v{x.y}(-draft)`; `Draft`/`Published`/`Archived` — ≤1 Published + ≤1 Draft ต่อ type; publish → เดิม → Archived auto; bump → FO re-consent | BO-12 §9/§12.2 |
+| `content_th`/`content_en` | HTML | ครบ 2 ภาษาก่อน publish; allowed tags `P H2 H3 UL OL LI A STRONG EM BR` | BO-12 §10/§12 |
+| `change_summary` | string | required | BO-12 §12 |
+| `updated_by`/`updated_at`/`published_at` | ref/datetime | | BO-12 §11/§12.3 |
+
+### §B10.18 BE-18 Support Center — ต่อ E-23
+Source: `BO-12 §13` — single form
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `channels[]` | fixed array(5) | LINE/Phone/Email/Facebook/Website fixed; ต่อ channel: `active`, `value` (req เมื่อ active + format ตาม type), `description_th`/`description_en` ≤200 | BO-12 §13 |
+| `business_hours` | string | required ≤80 + `HH:MM - HH:MM` | BO-12 §13 |
+| `availability_th`/`availability_en` | string | required ≤120 | BO-12 §13 |
+| `last_updated`/`last_editor` | datetime/ref | | BO-12 §13 |
+
+### §B10.19 BE-19 Account Deletion Request — ต่อ E-21
+Source: `BO-13 §4–§16` — FO intake สร้าง atomic (deactivate+revoke+hide+close-reports)
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `request_id`/`user_id` | string/ref | `DEL-xxx`; user link ไป User Detail | BO-13 §7 |
+| `request_status` | enum | `รอดำเนินการ`/`คืนบัญชีแล้ว`/`ปฏิเสธคืนบัญชี`/`ลบตัวตนแล้ว` | BO-13 §9 |
+| `account_status` | enum | `Active`/`Deactivated`/`Anonymized` — แยกจาก request status | BO-13 §10 |
+| `requested_at`/`grace_end` | datetime/date | `deactivated_at + 30d`; reject **ไม่เริ่มนับใหม่** | BO-13 §14 |
+| `serious_flag`/`restore_blocked` | bool | reject → self-restore (sign-in) block → support state (ต่อ E-21) | BO-13 §10.2/§12 |
+| `dependency`/`deletion_plan`/`timeline[]` | object | 3 tiles drill-in; Data→Action plan; timeline steps | BO-13 §12.2–12.4 |
+| `history[]` | array | {วันที่เวลา, ผู้ดำเนินการ, action, ส่งอีเมล(DLV), audit(AUD), รายละเอียด} | BO-13 §12.5 |
+| `cancelled_at` | datetime? | | BO-13 §12.2 |
+
+- Restore 2 ช่องทาง (sign-in login-to-restore + admin modal); reject ซ้ำได้; `ลบตัวตนแล้ว` = system job คืนไม่ได้; re-registration อีเมลเดิม = บัญชีใหม่ (BO-13 §10.1–10.3); reason enums 4+4 (BO-13 §13.1–13.2); อีเมล lifecycle 5 จุด + reminder 7/3 วัน → BE-20 (BO-14 §9.3)
+
+### §B10.20 BE-20 Delivery Log
+Source: `BO-14 §12–13`, `BO-16 §16` — Phase 1 host = Settings > Delivery Logs (read-only)
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `delivery_id` | string | `DLV-ACCT-<seq>-INV-<seq>`/`DLV-DEL-<req>-<event>`/`DLV-WA-*`/`DLV-ACCT-xxx` — immutable | BO-16 §16.1/§16.3 |
+| `notification_id`/`source` | ref | source entity — **ไม่ใช้ raw token** | BO-14 §12 |
+| `event`/`notification_type` | enum | invitation/account-status/deletion lifecycle/watch alert | BO-16 §16.1/§16.3 |
+| `recipient` | ref | email/address mask | BO-14 §12 |
+| `channel` | enum | `Email`/`Push`/`In-app`/`Push + In-app` | BO-14 §12 |
+| `status` | enum | `Queued`/`Sent`/`Delivered`/`Opened`/`Failed`/`Skipped`; UI map `Sent`/`Retry` | BO-14 §12, BO-16 §16.1 |
+| `failure_reason`/`retryable`/`provider` | misc | | BO-14 §12, BO-16 §16.3 |
+| `destination`/`created_at`/`sent_at`/`delivered_at`/`opened_at` | misc | | BO-14 §12 |
+| `priority`/`tags`/`admin_note`/`detail`/`correlation_id` | misc | correlation เชื่อม mutation+audit+outbox+delivery | BO-14 §12, BO-16 §16.2 |
+
+- Retry = provider/outbox idempotent ไม่ใช่ admin action Phase 1; provider failure ไม่ rollback; ห้าม secret ใน record (BO-14 §12.1/§13)
+
+### §B10.21 BE-21 Broadcast Notification (Phase 2/future)
+Source: `BO-14 §8`
+
+| Field | Type | Notes | Ref |
+|---|---|---|---|
+| `broadcast_id`/`title`/`body`/`image?` | string | | BO-14 §8.1/§8.3 |
+| `status` | enum | `Draft`/`Pending Approval`/`Scheduled`/`Sending`/`Sent`/`Cancelled`/`Failed` | BO-14 §8.2 |
+| `channel`/`target_audience`/`deep_link`/`scheduled_at` | misc | audience ห้าม Banned/Deleted/Anonymized/Deletion Requested | BO-14 §8.1/§8.4 |
+| `created_by`/`approved_by`/`delivery_stats` | ref/object | | BO-14 §8.1 |
+
+- In-app center ต้องมี master decision (BO-14 §8.5)
+
+### §B10.22 BE-22 Notification Template (Phase 2/future)
+Source: `BO-14 §10`
+
+| Field | Type | Notes | Ref |
+|---|---|---|---|
+| `notification_type` | enum | Like/Comment/Follow/Watch Alert (+ lifecycle emails) | BO-14 §10 |
+| `title_template`/`body_template`/`destination_pattern`/`enabled` | misc | variables allowlist ต่อ type; **ห้าม sensitive data** | BO-14 §10 |
+| `updated_by`/`updated_at` | ref/datetime | | BO-14 §10 |
+
+### §B10.23 BE-23 Option Group (`spec_option_groups`)
+Source: `BO-17 §6/§17.1`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `group_id` | int | `OG-xxx` PK sequence | BO-17 §17.1 |
+| `group` (key) | string | snake_case ≤64 unique, **ห้าม rename หลังใช้งาน** | BO-17 §17.1/§6.1.1 |
+| `display_name_en`/`display_name_th` | string | required ≤128 unique; EN ASCII only | BO-17 §17.1/§6.1.6 |
+| `description` | string? | ≤512 | BO-17 §17.1 |
+| `allows_multi_select` | bool | `true` เฉพาะ `delivery`; true→false warning ไม่ตัดค่าเดิม | BO-17 §17.1/§6.1.1 |
+| `is_active` | bool | deactivate block เมื่อมี asset usage; inactive → ทั้ง group หาย FO form/filter/WA ใหม่ | BO-17 §17.1/§6.1.2 |
+| `is_system` | bool | `System`/`Custom` — System Option Deactivate Policy | BO-17 §6/§10.1 |
+| `sort_order` | int | sequential 10,20,…; reorder active only | BO-17 §17.1/§6.1.7 |
+| `created_at`/`updated_at` | datetime | | BO-17 §17.1 |
+
+- Delete group: Inactive + no asset usage + type-to-confirm; hard delete พร้อม `GROUP_DELETE` audit (BO-17 §6.1.4); seed groups 6: condition, delivery(multi), case_material, movement, dial_color, strap_bracelet_type (BO-17 §17.1)
+
+### §B10.24 BE-24 Option (`spec_options`)
+Source: `BO-17 §7/§17.2`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `id` | int | `OPT-xxx` PK — FK target `watch_assets`/`asset_delivery_items` | BO-17 §17.2 |
+| `group_id`/`option_key` | ref/string | `UNIQUE(group_id, option_key)`; snake_case ห้าม rename | BO-17 §17.2 |
+| `label_en`/`label_th`/`description_en` | string | editable | BO-17 §17.2 |
+| `sort_order`/`is_active`/`is_system`/`deactivated_at` | misc | `is_active=false` → หาย FO selector คง relation | BO-17 §17.2 |
+| `created_by_admin_id`/`updated_by_admin_id` | ref? | NULL เมื่อ seed | BO-17 §17.2 |
+
+### §B10.25 BE-25 Spec Option Audit (`spec_option_audit`)
+Source: `BO-17 §17.3` — sync เข้า audit กลางด้วย
+
+| Field | Type | Constraints | Ref |
+|---|---|---|---|
+| `id`/`actor_admin_id`/`created_at` | int/ref | | BO-17 §17.3 |
+| `action_type` | enum | `OPTION_*`(6) + `GROUP_*`(6) + `OPTION_SUGGESTION_*`(3) | BO-17 §17.3 |
+| `option_id`/`group_id`/`suggestion_id` | ref | option nullable (group-level); suggestion เฉพาะ SUGGESTION_* | BO-17 §17.3 |
+| `before_value`/`after_value`/`reason`/`ip_address`/`session_context` | misc | GROUP_DELETE เก็บ snapshot ทั้งชุด | BO-17 §17.3 |
+
+### §B10.26 BE-26 Spec Option Suggestion (`spec_option_suggestions`)
+Source: `BO-17 §23.1/§23.3/§23.4`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `id`/`group_id` | int/ref | เฉพาะ 4 กลุ่ม `ระบุเอง` (case_material/movement/dial_color/strap) | BO-17 §23.1 |
+| `submitted_text`/`normalized_text` | string | `UNIQUE(group_id, normalized_text)` dedup | BO-17 §23.1 |
+| `usage_count` | int | +1 ทุก save ค่าเดิม; demand signal; **ห้าม auto-promote** | BO-17 §23.1/§23.4 |
+| `status` | enum | `pending`/`promoted`/`mapped`/`ignored` — ignored ไม่ block ถาวร | BO-17 §23.1/§23.4 |
+| `resolved_option_id`/`resolved_by_admin_id`/`resolved_at`/`resolution_note` | ref/datetime/string? | | BO-17 §23.1 |
+| `first_submitted_at`/`last_submitted_at` | datetime | | BO-17 §23.1 |
+
+- Write path `ระบุเอง` → match option/alias → relation id; ไม่ match → relation `null` + snapshot + upsert pool; pool ไม่แสดง FO selector จนกว่า `promoted` (BO-17 §23.3); promote/map alias → backfill relation id + re-run WA match dedup `(alert_id,asset_id)` (BO-17 §23.4)
+
+### §B10.27 BE-27 Spec Option Alias (`spec_option_aliases`)
+Source: `BO-17 §23.2`
+
+| Field | Type | Constraints / Notes | Ref |
+|---|---|---|---|
+| `id`/`option_id` | int/ref | `UNIQUE(option_id, normalized_alias)` | BO-17 §23.2 |
+| `alias_text`/`normalized_alias` | string | normalized unique ภายใน group | BO-17 §23.2 |
+| `source` | enum | `suggestion_map`/`admin`/`seed` | BO-17 §23.2 |
+| `created_by_admin_id`/`created_at` | ref?/datetime | | BO-17 §23.2 |
+
+- Alias ไม่ใช่ option — auto-link relation id เมื่อ `ระบุเอง` ตรง; ลบ alias ไม่แก้ asset เดิม (BO-17 §23.2)
+
+## 11. BO Cross-module Relationship Summary
+
+```text
+Role 1──< Admin Account (role_id RESTRICT) ──< Admin Invitation (≤1 Pending)
+                  ├──< Admin Session ── lockout/revoke
+                  └──< Audit Event (actor) / Delivery Log (recipient)
+User (E-01/BE-05) ──< Asset (BE-07) ── moderation overlay + option FKs → Option (BE-24)
+      │                │                    snapshot text ⊥ relation id
+      │                └──< Report Case (BE-06: AST-/POST-/user/RCO-)
+      │                       └── unique reporters ≥5 → Auto Hidden
+      ├──< Watch Alert (BE-16) ── criteria → Option/MarketData (relation id)
+      │         └──< Trigger ── match Sale assets ──> Delivery DLV-WA-*
+      ├──< Deletion Request (BE-19 DEL-) ── auto close reports
+      │         lifecycle emails → DLV-DEL-* ── audit ACCOUNT_DELETION_*
+      └──< Audit Event (ref: U-/AST-/DEL-/ADM-/ART-/POL-/RPU-/RCO-)
+Article (BE-09) ── Category (BE-10); Policy (BE-17) bump → FO re-consent (E-05)
+Option Group (BE-23) 1──< Option (BE-24) ──< Alias (BE-27); Group ──< Suggestion (BE-26)
+Market Data (BE-11) ──< Price Index (BE-12) ── Sync Job (BE-13)
+Directory (BE-14) postponed; Broadcast (BE-21) + Template (BE-22) Phase 2
+Audit Event (BE-15) ←─ ทุก write action; Delivery Log (BE-20) ←─ email/push attempts
+```
+
+## 12. BO Findings (บันทึกเท่านั้น — ไม่แก้ spec)
+
+| # | Finding | Spec refs | ผลกระทบ dictionary |
+|---|---|---|---|
+| FB-01 | WA Detail §7.1 เขียน "summary tiles 5 ช่อง" (รวม Source) แต่ AC-BO-WA-002D ระบุ 4 tiles — field list กับ AC ไม่ตรง | BO-11 §7.1 vs AC-BO-WA-002D | **DECIDED + spec แก้แล้ว:** 4 tiles ตาม AC; Source (`Search`/`Model follow`) เป็น Source badge ที่ Detail Head — BO-11 §7.1 ปรับแล้ว |
+| FB-02 | `spec_option_groups` DDL (§17.1) ไม่มี `is_system` column แต่ List column "System" + §10.1 policy ใช้งานอยู่ | BO-17 §17.1 vs §6/§10.1 | **DECIDED + spec แก้แล้ว:** เพิ่ม `is_system` (default `false`; seed 6 groups = `true`, group จาก Add Group = `false`) — BO-17 §17.1 แก้แล้ว |
+| FB-03 | Report ID ไม่มี canonical pattern (`RPU-`/`RCO-` ปรากฏใน delivery/audit เท่านั้น) | BO-16 §16.1, BO-08 §10, BO-03 §11 | **DECIDED + spec แก้แล้ว:** per-type prefix `RPU-`(user)/`RPO-`(post)/`RCO-`(comment) — เพิ่มนิยามใน BO-00G §11 + sync §9.1/BE-06 |
+| FB-04 | `Deleted` user status อยู่ใน BO-03 §9 แต่ตอนแรกเข้าใจว่าไม่อยู่ใน canonical table | BO-00G §10.1 vs BO-03 §9 | **RESOLVED — ไม่มี gap:** `Deleted` อยู่ใน §10.1 table อยู่แล้ว; เพิ่ม `Pending Verification` ลง table ให้ครบ 6 สถานะ (เดิมมีแต่ใน paragraph) |
+| FB-05 | Audit target types `Banner`/`ChatRoom`/`ChatMessage`/`ExportJob`/`ImportJob`/`SystemSetting` ไม่มี module spec นิยาม entity | BO-08 §6 | **DECIDED:** คง enum เผื่อไว้เป็น audit vocabulary reservation (ห้ามตัด — append-only + future modules) — entities คง out-of-scope V1 |
+| FB-06 | `POST-` report ไม่มี asset status/moderation ให้ join แต่ Report Data Model §15 กำหนด separation required — spec มี exception เองสำหรับ post-only | BO-04 §15 | **DECIDED:** post-only detail = post context + spec fields จาก Watch Spec Set เมื่อมี (E-09) — ไม่มี asset status/moderation |
+| FB-07 | Delivery status UI (`Sent`/`Retry`) เป็น mapper บน provider status 6 ค่า — record ต้องเก็บ provider status จริง | BO-16 §16.1 | **DECIDED:** record เก็บ provider status 6 ค่า; UI map `Sent`/`Retry` ตอนแสดงเท่านั้น — contract note BE-20 |
+
+## 13. BO Out-of-scope / Deferred entities
+
+| Entity | สถานะ | Ref |
+|---|---|---|
+| Directory Item/Category (BE-14) | postponed Phase 1 — ห้ามเปิดเมนู/route | BO-07 exceptions, BO-DIR-DEC-001 |
+| Broadcast (BE-21) + Template (BE-22) | Phase 2/future | BO-14 §8–§10 |
+| Banner | audit target type เท่านั้น ไม่มี entity spec V1 | BO-08 §6 |
+| ChatRoom/ChatMessage (BO) | audit type + report context เท่านั้น — ไม่มี BO chat module | BO-08 §6, BO-13 §12.3 |
+| ExportJob/ImportJob/SystemSetting | audit type + policy เท่านั้น ไม่มี schema | BO-08 §6, BO-16 §12–13 |
+| Support ticket | future scope — module 12 Phase 1 = Policy + Support Center | BO-13 §11 |
+| Delivery retry/export actions | provider/outbox state; governed action = future | BO-14 §13, BO-16 §16.4–16.5 |
+| Reported Article queue | **ถอดจาก V1** (FO-BO-001 e4); reason set 6 เหตุผลไม่มี producer | BO-00G §11 |
+| Search Insights / Demand Overview / Reports-Analytics | aggregate views ไม่ใช่ entity | BO-11 §6.1/§15, BO-15 |
