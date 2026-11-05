@@ -238,7 +238,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 
 ## Thread Model
 
-- Thread key = `{user, item.id}` — `chatQuickAsk` หา `x.user===post.seller && x.item.id===post.id` เจอ → เปิดห้องเดิม (+un-hide); ไม่เจอ → สร้าง `C.draft` ใหม่เสมอ → **same seller คนละ listing = ห้องใหม่ทุกครั้ง** (ขัด spec เดิม Same-User-Merge — เลือก prototype)
+- Thread key = `user` — **ห้องเดียวต่อ account** (FO-TEST-12 lock): `chatQuickAsk` หา thread ของ seller นั้นเจอ → เปิดห้องเดิม (+un-hide); ไม่เจอ → สร้าง `C.draft` ใหม่; Ask ลิสติ้งต่างชิ้นของ seller เดิม = เพิ่มการ์ด `m.pid` ในห้องเดิม ไม่ใช่ห้องใหม่
 - Draft room: `C.draft` เก็บนอก `C.threads` — `chGet` ค้นทั้งสองที่; เข้า list จริงเมื่อ `chSend` แรก (`unshift` + `C.draft=null`); draft มีได้ทีละ 1 ห้อง (Ask ห้องอื่นทับ)
 - Item snapshot ตอนสร้างห้อง: `{id:post.id, cap:post.caption, price:post.price||"", photo:post.photos[0], owner:post.seller, pid:post.id}` — **snapshot นิ่ง**: โพสต์แก้/ขาย/ลบภายหลังไม่เปลี่ยนการ์ด
 - `t.draft` = draft ข้อความต่อห้อง (persist ระหว่าง navigate — composer เติมกลับ)

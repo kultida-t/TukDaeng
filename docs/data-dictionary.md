@@ -60,7 +60,7 @@ Entities ที่อยู่ใน post model แต่ไม่แยกเ�
 | `wa{n}` | Watch Alert id | 10 §9 |
 | `b{n}` | Board article id (`boardart:{id}`) | 12 §8 |
 | `c-{…}` / `c-own-{ts}` | Comment id (own = emoji/quick composer) | 11 §10 |
-| `{user, item.id}` → per-user | Chat thread key — **ห้องเดียวต่อ account** (FO-TEST-12 lock); Ask ลิสติ้งอื่น = เพิ่ม `m.pid` card ในห้องเดิม | 07 §9 + deviations |
+| `user` | Chat thread key — **ห้องเดียวต่อ account** (FO-TEST-12 lock); Ask ลิสติ้งอื่น = เพิ่ม `m.pid` card ในห้องเดิม | 07 §9 |
 | `brand\|model\|ref` (lowercase) | WA `modelKey` — join ของ spec Brand/Model/Reference | 05 §9, 10 §9 |
 | `AST-` `POST-` `DEL-` `U-` `DLV-` | cross-side entity ref prefixes (ใช้ฝั่ง BO/audit/delivery เป็นหลัก — รายละเอียด Part B) | BAC-002 contract notes |
 
@@ -573,14 +573,14 @@ BoardArticle (standalone — own liked/saved flags; share sheet เดียว�
 
 | # | Finding | Spec refs | ผลกระทบ dictionary |
 |---|---|---|---|
-| F-01 | AC-SEARCH-011 ระบุ results grid = `salePosts()` (มี price เท่านั้น) ขัดกับ §9 Results Eligibility Rule + 00G §10 ที่อนุมัติ `discoverablePosts()` (post+sale, IG parity 2026-11-05) — AC เก่าค้างก่อน resolve | 03 §16 vs 03 §9, 00G §10 | Dictionary ยึด §9 canonical (grid = feed-visible posts); match/count ยัง `salePosts()` |
-| F-02 | AC-GLOBAL-003 ระบุ Public Profile เห็น `Sale`+`Show` (ไม่แสดง `post`) ขัดกับ 00G §10 matrix + 06 §9 ที่อนุมัติ viewer เห็น `post`+`Sale`+`Show` (2026-11-05) | 00G §18 vs 00G §10, 06 §9 | Dictionary ยึด §10 matrix |
+| F-01 | ~~AC-SEARCH-011 ระบุ results grid = `salePosts()` (มี price เท่านั้น) ขัดกับ §9 Results Eligibility Rule + 00G §10 ที่อนุมัติ `discoverablePosts()`~~ **RESOLVED 2026-11-05** — แก้ AC text ให้ตรง `discoverablePosts()` (post+sale) ตามอนุมัติพี่มาเต็ม | 03 §16 vs 03 §9, 00G §10 | Dictionary ยึด §9 canonical; match/count ยัง `salePosts()` |
+| F-02 | ~~AC-GLOBAL-003 ระบุ Public Profile เห็น `Sale`+`Show` (ไม่แสดง `post`) ขัดกับ 00G §10 matrix~~ **RESOLVED 2026-11-05** — แก้ AC text เป็น `post`+`Sale`+`Show` ตามอนุมัติพี่มาเต็ม | 00G §18 vs 00G §10, 06 §9 | Dictionary ยึด §10 matrix |
 | F-03 | Post delete ทิ้ง drawer record orphan (`assetId` dangling; `PF_MINE` delete no-op; `PF_MINE`→`sale` ไม่เข้า feed) — deviation ที่ spec บันทึก; contract = ลบออกทั้งคู่ | 04 §9 Delete Rule | E-06/E-07 relation note; implementation ต้องตาม contract |
 | F-04 | `salePosts()` ไม่ filter `pfkind` → priced `hide`/`sold` รั่วเข้า search/WA match count (S-10 defect) — documented defect ทุกเล่ม | 03 §9, 04 §9, 10 §9, 00G §10 | E-18 match pool note — canonical = Sale เท่านั้น |
 | F-05 | `pfKind()` fallback infer `sale`/`show` จาก price เมื่อ post ไม่มี `pfkind` (seed/gfx) — field ไม่ครบใน seed data | 04 §9, 05 §9 | E-06 `pfkind` จำเป็นต้องมีบน production data |
 | F-06 | `PF_FLAG_KEYS` ไม่ครอบ `pfkind`/`savedAt`/`colAt`/`likes`/`views`/`comments` + `PF_ASSETS`/`PF_SOLD`/`PF_MINE` ไม่อยู่ใน session clear — values ค้างข้าม session (deviation class เดียวกัน 11 D7 / 14 D9) | 11 §8, 14 §8.4 | §4 matrix note — production ต้องกำหนด reset semantics ชัด |
 | F-07 | Board article `saved` flag เป็น injected dead-path (ไม่มี save entry) แต่ `[data-bdsave]` ยังอยู่ใน gate list — model มี field แต่ไม่มี flow | 12 §8/§19 D11 | E-20 mark dead-path — production ตัดสินใจทิ้งหรือเปิด |
-| F-08 | Chat thread key: §9 model text เดิมเขียน `{user, item.id}` แต่ deviation #1 (FO-TEST-12 lock) ยกเลิกเป็น per-user ห้องเดียว — text หลักยังอ่านคนละแบบ | 07 §9 vs deviations #1 | Dictionary ยึด per-user (FO-TEST-12 lock) |
+| F-08 | ~~Chat thread key: §9 model text เดิมเขียน `{user, item.id}` แต่ deviation #1 (FO-TEST-12 lock) ยกเลิกเป็น per-user ห้องเดียว~~ **RESOLVED 2026-11-05** — แก้ §9 Thread Model เป็น `user` ห้องเดียวต่อ account ตามอนุมัติพี่มาเต็ม | 07 §9 vs deviations #1 | Dictionary ยึด per-user (FO-TEST-12 lock) |
 | F-09 | `audience` field เก็บแต่ไม่ enforce + asset mode `Show`/`Hide` hardcode `public`/`false` — flag มี UI แต่ไม่มี effect | 02 §9, 04 §9 | E-06 mark stored-not-enforced (contract) |
 | F-10 | Report ไม่มี entity record structure ใน FO spec (reason-only + anonymous; queue/moderation = BO) — FO ไม่มี report id/status/history model | 15 §6, 00G §13 | E-15 เป็น action model ไม่ใช่ stored record — record structure อยู่ Part B |
 

@@ -530,7 +530,7 @@ Contract (S-29 — prototype ไม่มี tracking layer; event names เป�
 | AC-SEARCH-008 | `See all` ต้องเปิด `recents` page (back + `Clear all` + full list); กด row จาก page ต้องเข้า results และ `_subStack` เหลือ `["search"]` |
 | AC-SEARCH-009 | Suggestions ต้องแสดง keyword rows ≤6 (brand/`brand model` พร้อม `N listings`, reference) ตามด้วย seller rows ≤4 (พร้อม `N listings`/`Following`); ไม่มีผล → `No suggestions` |
 | AC-SEARCH-010 | Query matching ต้องเป็น AND ของทุกคำบน haystack (seller + caption + chips + specs) case-insensitive |
-| AC-SEARCH-011 | Results Posts grid (non-`#` query) ต้องแสดงเฉพาะ `salePosts()` — โพสต์มี price + ไม่ `ni`/`muted`/`blocked`; ต้องไม่แสดง showcase/post ที่ไม่มี price |
+| AC-SEARCH-011 | Results Posts grid (ทุก query mode — keyword + `#`) ต้องแสดง `discoverablePosts()` — โพสต์ที่มองเห็นบน feed (kind `post` + `sale`; ไม่ `ni`/`muted`/`blocked`/`archived`; ไม่ `show`/`hide`/`sold`) ตาม §9 Results Eligibility Rule (IG parity — อนุมัติ 2026-11-05) |
 | AC-SEARCH-012 | `#` query ต้องค้นทุกโพสต์ `!muted` (รวม non-sale, ni, blocked — deviation documented) |
 | AC-SEARCH-013 | Results head ต้องมี back + fake field (แสดง q, แตะกลับ typing คง q) + `sr-wa` bell + filter icon; back จาก results ต้องกลับ landing ไม่ pop page |
 | AC-SEARCH-014 | Results ต้องมี tabs `For you`/`Profiles`/`Tags`; tab default `foryou` ทุกครั้งที่เข้า results |
