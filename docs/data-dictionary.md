@@ -389,6 +389,7 @@ Source: `09 §9` (canonical)
 | `text` | string? | comment excerpt | 09 §9 |
 | `name` / `price` | string / money | watch rows: alert name + seller + asking | 09 §9 |
 | `kind` | enum | system subtype: `security` / `account` / `announce` (DEC-43) | 09 §9 |
+| `alert_id` | ref→WatchAlert | **contract** — `watch` rows ต้อง trace กลับ source alert (`wa{n}`/`WAL-XXXX`); prototype ไม่มี field นี้ | 09 §9 |
 | `dest` | string | system destination route (`change_pwd`/`about_account`/`about_app`/`al_unavail`; ว่าง → `settings`) | 09 §9 |
 | `title` / `body` | localized | `{en,th}` — system rows | 09 §9 |
 
@@ -819,7 +820,8 @@ Source: `BO-04 §16–§21`
 | Field | Type | Constraints / Notes | Ref |
 |---|---|---|---|
 | `comment_id` | string | `RCO-` ref | BO-04 §17, BO-08 §10 |
-| `asset_id` | ref→Asset | | BO-04 §17 |
+| `post_id` | ref→Post | **anchor canonical** — comment ทุกอันผูก post (รองรับ post-only kind `post`) | BO-04 §17, 11 §10 |
+| `asset_id` | ref→Asset? | derived ผ่าน `post.assetId` — `null` เมื่อ post-only | BO-04 §17 |
 | `type` | enum | `Root comment`/`Reply` | BO-04 §17 |
 | `author`/`text` | ref/string | | BO-04 §17 |
 | `status` | enum | `Visible`/`Hidden`/`Removed`/`User Deleted` — overlay ไม่แก้ต้นฉบับ | BO-04 §18 |

@@ -38,7 +38,7 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - ยกเลิกการซ่อนชั่วคราวเมื่อ review แล้วไม่พบปัญหา
 - ซ่อน asset ถาวรตามเงื่อนไข moderation
 - ปิด report case พร้อมบันทึกผลการตรวจสอบ
-- ดูรายงานความคิดเห็น (comment) บน asset ที่ user ส่งเข้ามา
+- ดูรายงานความคิดเห็น (comment) บน asset หรือ post-only post ที่ user ส่งเข้ามา
 - ตรวจสอบรายงานความคิดเห็นและดำเนินการ moderation ตามสถานะที่อนุญาต
 - ซ่อนความคิดเห็นชั่วคราว, ยกเลิกการซ่อนชั่วคราว, ซ่อนความคิดเห็นถาวร หรือปิดรายงานความคิดเห็น
 - บันทึก audit log สำหรับทุก action ที่เปลี่ยน state หรือ visibility
@@ -91,7 +91,7 @@ Submenu ภายใต้ Asset Management:
 | --- | --- |
 | `Asset List` | แสดงรายการ asset ทั้งหมด, ค้นหา/filter/sort, เปิดรายละเอียด asset และทำ moderation action ที่อนุญาต |
 | `Reported Assets` | แสดงคิวรายงาน asset จาก FO, ค้นหา/filter/sort, เปิดรายละเอียดรายงาน และปิดรายงานหรือจัดการ visibility เมื่อจำเป็น |
-| `Reported Comments` | แสดงคิวรายงานความคิดเห็นบน asset จาก FO, ค้นหา/filter/sort, เปิดรายละเอียดรายงาน และดำเนินการ moderation ความคิดเห็นหรือปิดรายงานเมื่อจำเป็น |
+| `Reported Comments` | แสดงคิวรายงานความคิดเห็นบน asset/post จาก FO, ค้นหา/filter/sort, เปิดรายละเอียดรายงาน และดำเนินการ moderation ความคิดเห็นหรือปิดรายงานเมื่อจำเป็น |
 
 พฤติกรรมการนำทาง:
 
@@ -562,7 +562,7 @@ Reported Assets queue ต้องใช้ report case เป็น source of t
 
 ## 16. Reported Comments
 
-Reported Comments เป็น queue แยกจาก Asset List และ Reported Assets สำหรับจัดการ report case ของความคิดเห็น (comment และ reply) บน asset
+Reported Comments เป็น queue แยกจาก Asset List และ Reported Assets สำหรับจัดการ report case ของความคิดเห็น (comment และ reply) บน asset หรือ post-only post (kind `post` ไม่ผูก asset) — comment record anchor ที่ post เป็น canonical (`post_id`); `asset_id` เป็น derived join ผ่าน `post.assetId` และเป็น `null` เมื่อ post-only (หลักเดียวกับ §15 post-only exception)
 
 ### Required Fields
 
@@ -570,7 +570,7 @@ Desktop table columns:
 
 - Report ID
 - Comment excerpt
-- Asset ID และ Asset name
+- Asset ID และ Asset name (post-only report แสดง Post Reference `POST-` + ผู้โพสต์แทน — ตาม §15 exception)
 - Report Status (`Pending`, `Closed`)
 - Report Reason
 - Priority
@@ -637,13 +637,14 @@ Comment Report Detail ใช้สำหรับตรวจสอบ report ca
 
 - Report ID
 - Comment ID
-- Asset ID
+- Post ID (anchor canonical — comment ทุกอันผูก post)
+- Asset ID (derived ผ่าน `post.assetId` — ว่างเมื่อ post-only)
 - Asset Name
-- Asset Status รวม owner-controlled status และ moderation/context state
+- Asset Status รวม owner-controlled status และ moderation/context state (post-only ไม่มี asset status/moderation ให้ join — แสดง post context: เนื้อหาโพสต์, ผู้โพสต์, สถานะโพสต์)
 - Created At
 - View Asset action
 
-View Asset action ต้องเปิดรายละเอียด asset แบบ read-only ผ่าน modal และต้องแสดงข้อมูล asset ที่เกี่ยวข้องกับ report context เช่น Price, description, specifications, provenance summary, image gallery และ asset context อื่นที่จำเป็นต่อการตรวจสอบ
+View Asset action ต้องเปิดรายละเอียด asset แบบ read-only ผ่าน modal และต้องแสดงข้อมูล asset ที่เกี่ยวข้องกับ report context เช่น Price, description, specifications, provenance summary, image gallery และ asset context อื่นที่จำเป็นต่อการตรวจสอบ — สำหรับ post-only ให้แสดง post context modal แทน
 
 ### Comment Detail
 
@@ -654,7 +655,7 @@ Comment Detail ต้องแสดง:
 - Comment Text (full)
 - View all comments action
 
-View all comments action ต้องเปิด modal แสดงความคิดเห็นทั้งหมดของ asset ที่เกี่ยวข้อง เพื่อให้ Admin เห็น context รอบด้านของความคิดเห็นที่ถูกรายงาน
+View all comments action ต้องเปิด modal แสดงความคิดเห็นทั้งหมดของ post/asset ที่เกี่ยวข้อง เพื่อให้ Admin เห็น context รอบด้านของความคิดเห็นที่ถูกรายงาน
 
 ### Reporter History
 

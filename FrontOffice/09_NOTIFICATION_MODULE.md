@@ -212,6 +212,7 @@ system -> pushSub(a.dest || "settings")
 
 - `ALERTS` = list ต่อ account — init ครั้งแรกที่ render (`alInit` lazy): `member` → seed set (reconcile กับ persisted read/dismiss state), `new`/`guest` → `[]`
 - Row fields: `id`, `type` (`like|comment|follow|watch|system`), `users[]` (actors; index 0 = primary), `more` (aggregate count นอกเหนือ 2 ชื่อแรก), `ago` (label string), `grp` (age bucket), `unread`, `pid`+`thumb` (post ref — like/comment/watch), `text` (comment excerpt), `name`+`price` (watch: `Brand Model` + asking price)
+- `watch` rows ต้องเก็บ `alert_id` (ref ไป Watch Alert `wa{n}`/`WAL-XXXX`) ใน production schema — notification เป็น delivery artifact ของ alert subsystem ต้อง trace กลับ source alert ได้ (audit/support correlation เดียวกับ `DLV-WA-*`); prototype ไม่มี field นี้ — contract-only
 - System rows เพิ่ม fields: `kind` (`security|account|announce` — 3 subtypes), `dest` (sub-route ปลายทางเช่น `change_pwd`/`about_account`/`about_app`/`al_unavail`), `title`+`body` (`{en,th}` localized pair) — `users[]` ว่าง ไม่มี `pid`/`thumb`/`more`/`text`
 - Read state (`unread→read`) + dismiss ต้อง **persist ถาวรต่อ account** — contract: server-backed (คงอยู่ข้ามเปิดแอปใหม่ + ข้ามเครื่อง); prototype จำลองผ่าน `fo_alstate` localStorage
 - ไม่มี generation path — `ALERTS` เป็น seed เท่านั้น (like/comment/follow/watch ไม่มี code สร้าง row ใหม่; trigger contract อยู่ §14)
