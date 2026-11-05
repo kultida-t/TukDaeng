@@ -41,7 +41,7 @@
 | FO-15 Trust & Safety | AC-TS | 22 | J-07 | |
 | FO-DOC Doc-tier bundle | AC-INT + AC-NFR + AC-ADMIN | 36 | contract review | `contract` |
 | FO-00G/00NAV cross-cutting | AC-GLOBAL + AC-NAV | 50 | ทุก J | ผูกทุก FO unit |
-| **BO feature units** | — | **267 executable + 33 deferred** | B-01..B-14 | |
+| **BO feature units** | — | **324 executable + 33 deferred** | B-01..B-14 | |
 | BO-01 Authentication | AC-BO-AUTH | 24 | B-01, B-12 | |
 | BO-02 Dashboard | AC-BO-DASH | 16 | B-02 | |
 | BO-03 User Management | AC-BO-USER | 28 | B-03, B-04 | |
@@ -56,10 +56,10 @@
 | BO-14 Notifications | AC-BO-NOTI | 9 (+9 deferred) | B-14 | `deferred` บางส่วน |
 | BO-15 Reports & Analytics | AC-BO-REPORT | 14 | — | `deferred` |
 | BO-16 Admin Settings | AC-BO-SET | 41 | B-12, B-01, B-14 | |
-| BO-17 Option Master | — | 0 | B-13 | **no AC IDs — AM-01** |
+| BO-17 Option Master | AC-BO-OM | 57 | B-13 | |
 | BO-00G cross-cutting | AC-BO-GLOBAL | 13 | ทุก B | ผูกทุก BO unit |
 
-รวม AC ที่ spec นิยาม: **FO 561 + BO 300 = 861 IDs** (FO-05 ตัด cross-ref AC-NAV-001 ที่อยู่ในตัวอักษรของ AC-DETAIL-003; BO-16 ตัด AC-BO-AUDIT-015 ที่เป็นอ้างอิงใน AC-BO-SET-018 — ดู AM-03)
+รวม AC ที่ spec นิยาม: **FO 561 + BO 357 = 918 IDs** (FO-05 ตัด cross-ref AC-NAV-001 ที่อยู่ในตัวอักษรของ AC-DETAIL-003; BO-16 ตัด AC-BO-AUDIT-015 ที่เป็นอ้างอิงใน AC-BO-SET-018 — ดู AM-03)
 
 ## 2. Front Office Matrix
 
@@ -412,11 +412,15 @@
 | Invitation lifecycle (production account creation, server capabilities, resend cooldown/quota, DLV-ACCT trace, canonical audit, INV reference) | 032, 034–037 (5) | B-01, B-12 | 032 `contract` |
 | Delivery Logs surface (under Settings, Sent/Retry status, no export Phase 1, DLV-DEL trace) | 011–014 (4) | B-14 | 013 `contract` |
 
-### BO-17 Option Master — `BO-17 §20 + §22.10` — **no AC IDs (AM-01)**
+### BO-17 Option Master — `BO-17 §20 + §22.10`
 
 | Feature หลัก | AC IDs (n) | Journey | Flag |
 |---|---|---|---|
-| Groups & options CRUD, reorder, deactivate policy, FO integration, suggestion pool — AC ถูกเขียนเป็น checklist ไม่มี ID (§20 13 items + §22.10 14 items) | — (0) | B-13, X-08 | **AM-01** — map ผ่าน section ref ชั่วคราวจนกว่า assign `AC-BO-OM-###` (รออนุมัติ) |
+| Spec completeness checks (doc-review — ตรวจเนื้อ spec ไม่ใช่จอ: scope/action rules/impact/audit/data model/seed/migration coverage) | 001–007, 014, 015, 017–019, 021–024, 026, 033, 034, 042, 043 (21) | B-13 | doc-review ไม่ใช่ prototype execute |
+| Option-level rules & policies (key lock, deactivate policy, reorder UX + touch fallback, delete option type-to-confirm, deactivate impact) | 008–013, 020, 025 (8) | B-13 | |
+| Group-level actions & safeguards (edit/deactivate/delete group, `is_active` Phase 1) | 027–030, 035 (5) | B-13 | |
+| Option Group List & group management screens (status/filter/action menu, add group, reorder groups, audit log view, page actions, responsive) | 016, 031, 032, 036–041 (9) | B-13 | |
+| FO integration & suggestion pool contract (form/filter/WA criteria, caching/fallback/API, prefill, `ระบุเอง`, curation) | 044–057 (14) | B-13, X-08 | `contract` (บางส่วน) |
 
 ## 4. Cross-Side Matrix (XS sign-off groups)
 
@@ -427,14 +431,14 @@
 | XS-1 Moderation loop | X-01, X-09 | AC-TS-006–012, 016, 017; AC-GLOBAL-011; AC-NOTI (destinations) | AC-BO-USER-017–024; AC-BO-ASSET-010–015, 018–030 | timing ≤60s = `contract` |
 | XS-2 Account lifecycle | X-02, X-04 | AC-SETTING-009, 010–010D; AC-AUTH-015, 016, 016A, 045, 050; AC-GLOBAL-020 | AC-BO-DEL-001–013; AC-BO-USER-013, 014, 024 | suspend enforcement = `contract` |
 | XS-3 Content & reference | X-05, X-06, X-07 | AC-BOARD-001–018; AC-SETTING-006, 007, 017; AC-AUTH-051, 052; AC-TS-013, 014 | AC-BO-CONTENT-001–010; AC-BO-SUPPORT-001–013 | reference ≤24h = `contract` |
-| XS-4 Data & alerts | X-03, X-08 | AC-WA-016–022; AC-SEARCH-019–025; AC-ASSET-MGMT-011–014; AC-PORT-008, 009 | AC-BO-WA-003–005, 008, 014–017; AC-BO-MARKET-017–020; BO-17 §20/§22.10 (AM-01) | WA async = `contract` |
+| XS-4 Data & alerts | X-03, X-08 | AC-WA-016–022; AC-SEARCH-019–025; AC-ASSET-MGMT-011–014; AC-PORT-008, 009 | AC-BO-WA-003–005, 008, 014–017; AC-BO-MARKET-017–020; AC-BO-OM-044–057 | WA async = `contract` |
 
 ## 5. Findings — จุดที่พบระหว่างสร้าง matrix (บันทึกเท่านั้น ไม่แก้ spec/prototype)
 
 | ID | Finding | สถานะ | Refs |
 |---|---|---|---|
-| AM-01 | **BO-17 Option Master ไม่มี AC IDs** — spec เขียน AC เป็น checklist (`## 20` 13 items + `### 22.10` 14 items) ไม่มี `AC-BO-*-###` เหมือน module อื่นทั้งหมด → matrix ผูก unit ผ่าน section ref ชั่วคราว; แนะนำ assign `AC-BO-OM-###` ก่อนรอบ UAT execute (แก้ spec ต้องอนุมัติ — บันทึกรอ decision) | **OPEN — รอพี่มาเต็ม** | `BackOffice/17 §20, §22.10` |
+| AM-01 | **BO-17 Option Master ไม่มี AC IDs** — spec เขียน AC เป็น checklist (§20 43 items + §22.10 14 items) ไม่มี `AC-BO-*-###` เหมือน module อื่นทั้งหมด | **CLOSED — พี่มาเต็มอนุมัติ 2026-11-05**: assign `AC-BO-OM-001`–`057` ใน spec แล้ว (`BO-17-v0.16` — §20 → 001–043, §22.10 → 044–057; แปลง checklist → canonical table, เนื้อ criteria คงเดิม) | `BackOffice/17 §20, §22.10` |
 | AM-02 | **AC ID numbering gaps เป็น intentional removals** — AC-AUTH-003/004/006/018/019, AC-NAV-009/013, AC-BOARD-016 (ถอดพร้อม Report Article), AC-BO-WA-006/007 (ถอดพร้อม admin WA actions), AC-BO-REPORT-008, AC-TS-009 — ตรวจ `DOCUMENT_VERSION.md` ยืนยันแล้วว่าเป็นผล removal/renumber ไม่ใช่ missing AC; matrix ใช้เลขที่ยังมีอยู่จริงเท่านั้น | CLOSED (informational) | `FO/BO DOCUMENT_VERSION.md` |
 | AM-03 | **Cross-referenced ACs ไม่นับซ้ำ** — AC-NAV-001 ถูก quote ในเนื้อ AC-DETAIL-003; AC-BO-AUDIT-015 ถูก quote ในเนื้อ AC-BO-SET-018 — matrix นับเฉพาะจุดนิยาม (owning module) ทำให้ FO-05 = 36, BO-16 = 41 | CLOSED (informational) | `05 §16`, `BO-16 §21` |
 | AM-04 | **Contract-flagged ACs ตรวจบน prototype ได้บางส่วน** — 47 ACs มี marker `contract`/`deviation` (§0 legend): UI surface/state ตรวจได้ตาม spec copy แต่ behavior ลึก (deep link, email จริง, ≤60s/≤24h timing, stg analytics, backend token) defer ไป production UAT — matrix flag ไว้ที่ระดับแถว; executor ต้องอ่าน AC text ต่อแถวเพื่อแยก prototype-checkable vs contract-only | CLOSED (convention locked ใน UF-04 style — แจ้งไว้ใน §0) | `uat-plan.md` §3.4 |
-| AM-05 | **Deferred ACs (33 IDs)** — BO-07 (10) + BO-15 (14) + BO-14 Phase 2 (9) มี AC นิยามแล้วแต่อยู่นอก Phase 1 scope; matrix เก็บแถว flag `deferred` ไว้เพื่อไม่ให้หลุด traceability ตอน Phase 2 แต่ไม่นับเข้า exit criteria รอบนี้ — ถ้าพี่อยากให้ตัดออกจากไฟล์นี้บอกได้ | **OPEN — confirm convention** | `uat-plan.md` §1.3 |
+| AM-05 | **Deferred ACs (33 IDs)** — BO-07 (10) + BO-15 (14) + BO-14 Phase 2 (9) มี AC นิยามแล้วแต่อยู่นอก Phase 1 scope; matrix เก็บแถว flag `deferred` ไว้เพื่อไม่ให้หลุด traceability ตอน Phase 2 แต่ไม่นับเข้า exit criteria รอบนี้ | **CLOSED — พี่มาเต็มยืนยัน convention 2026-11-05** (เก็บ deferred rows ในไฟล์) | `uat-plan.md` §1.3 |
