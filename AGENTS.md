@@ -229,3 +229,9 @@ Session หลักทำตัวเป็น conductor — route งานไ
 | requirement ยังไม่พร้อมทำ | kanban `create_requirement` → `convert_requirement_to_mission` เมื่อ final |
 
 กฎเหล็ก: side effects ทั้งหมด (kanban task/note, core-portal `submit_logs`, gemini notebook) ทำผ่าน conductor เท่านั้น ห้าม delegate ให้ subagent; subagent ต้อง file-scope disjoint, protected screens เป็น read-only และทำงานภายในขอบเขตงานก้อนเดียวเท่านั้น — task ที่ `in_progress` หรือคำสั่ง ad-hoc เดียว (kanban "ทีละ task" ยังบังคับ — งานครอบหลาย task ให้ไล่ทีละใบแล้วแตกภายใน); งานเดียวเรียบ ๆ ทำเองตรง ๆ อย่า over-orchestrate
+
+## Skill/Instruction Discipline (บังคับ)
+
+- เมื่อสั่งให้อ่าน skill/doc ใด ๆ "ให้ครบ" — ต้องอ่านครบทั้งไฟล์ก่อนทำงาน ห้ามอ่านบางส่วนแล้วคิดรูปแบบเอง; ถ้าไฟล์ใหญ่ให้แบ่งอ่านเป็นช่วงจนครบ
+- ถ้า skill มี template/รูปแบบผลลัพธ์ — ต้องใช้ template เดิมเป๊ะ ๆ (field, ลำดับ, format) ห้ามประยุกต์หรือคิดเอง; ก่อนส่ง output ต้องเทียบกับ template อีกครั้ง
+- เหตุผลที่ตั้งกฎ: เคยอ่าน `.agents/skills/work-summary/SKILL.md` ไม่ครบแล้วคิด template เอง ทำให้ summary ไม่ตรงรูปแบบ (2026-11-05)
