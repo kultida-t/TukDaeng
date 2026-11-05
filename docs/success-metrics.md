@@ -18,9 +18,9 @@
 - **Deferred scope ไม่ตั้ง KPI ใช้งาน** — Reports & Analytics (`BO-15`), Directory (`BO-07`), Broadcast/template (`BO-14` ส่วน Phase 2) เป็น Phase 2/postponed; KPI ของ module เหล่านี้เป็น *catalog เตรียมพร้อม* เท่านั้น
 - KPI ใหม่ทุกตัวระบุ **owner ที่เสนอ** (PO ตัดสินจริง) และ **แหล่งวัด** — ตัวที่วัดไม่ได้ใน Phase 1 (ต้องมี tracking/analytics pipeline) ระบุ Phase `P2` ชัดเจน
 
-## 1. North Star Metric (เสนอ — รอ PO ตัดสิน)
+## 1. North Star Metric
 
-**เสนอ: Weekly Successful Listings** = จำนวน asset ที่เข้าสู่สถานะ `Sold` ต่อสัปดาห์ (นับเฉพาะ mark-as-sold ที่ผ่าน sale record ตาม `FO-04 §16` — ไม่นับ Show/Hide ที่หายไปเฉย ๆ)
+**North Star (draft decision): Weekly Successful Listings** = จำนวน asset ที่เข้าสู่สถานะ `Sold` ต่อสัปดาห์ (นับเฉพาะ mark-as-sold ที่ผ่าน sale record ตาม `FO-04 §16` — ไม่นับ Show/Hide ที่หายไปเฉย ๆ)
 
 เหตุผล:
 
@@ -28,10 +28,12 @@
 - วัดได้ด้วยข้อมูลที่ระบบมีอยู่แล้วใน Phase 1 (asset status transition + sold history) ไม่ต้องรอ tracking Phase 2
 - เป็น output metric — input metrics ของ funnel (activation → listing → discovery → contact) แยกอยู่ใน §4 และขับตัวนี้ได้ทุกตัว
 
-ตัวเลือกสำรอง (ถ้า PO เห็นต่าง — บันทึกไว้ให้ตัดสิน):
+ตัวเลือกที่ไม่เลือก (rejected alternates — บันทึกเหตุผลไว้):
 
 - **Weekly Transacting Members** = member ที่มี ≥1 listing activity หรือ ≥1 buyer contact ต่อสัปดาห์ — กว้างกว่า แต่ "transact" ใน TukDaeng ไม่มี payment (ไม่ใช่ e-commerce ตาม PRD) นิยามคลุมเครือกว่า
 - **Watch Alert Match Rate** = สัดส่วน active alerts ที่มี match ต่อสัปดาห์ — แข็งแรงฝั่ง demand แต่ครอบเฉพาะผู้ซื้อที่ตั้ง alert ไม่ครอบตลาดทั้งหมด
+
+> Draft decision นี้ยังต้องผ่าน PO sign-off ตาม §9 — แต่ภายใน framework ใช้ตัวนี้เป็นฐาน ไม่ใช่ open question ค้างไว้
 
 **Guardrail metrics** (ห้ามแลก north star ด้วยค่าเหล่านี้):
 
@@ -86,6 +88,8 @@ Demand Overview tiles: `Active Alerts` · `Alerts with Matches` · `Unmet Demand
 
 ## 4. FO KPI ต่อ Module (J-01..J-13)
 
+> Coverage note: `FO-DOC` (doc-tier bundle — Integrations/NFR/Admin scope) ไม่มี product surface ของตัวเอง จึงไม่มี KPI แยก — ข้อผูกพัน NFR/contract ของมันถูกวัดผ่าน §6 platform health และ DQ metrics ของ module ที่เกี่ยว
+
 ### FO-01 Authentication — J-01 (Account Lifecycle)
 
 | KPI | นิยาม/การวัด | Cat | Owner (เสนอ) | แหล่งวัด | Phase | Status |
@@ -96,6 +100,7 @@ Demand Overview tiles: `Active Alerts` · `Alerts with Matches` · `Unmet Demand
 | Sign-in success / lockout rate | login สำเร็จต่อพยายาม · lockout ต่อวัน | DQ | Platform | auth events | P1 | DRAFT |
 | Deletion request rate | คำขอลบบัญชีต่อ active users/เดือน (churn signal) | ACT | PO | Deletion Requests list | P1 | DRAFT |
 | Grace-period restore rate | restored / completed deletion requests | ACT | PO | Account Deletion Report | P2 | SPEC (metric ใน `BO-15 §17`) |
+| Returning member rate (D30 retention) | member ที่กลับมา active ภายใน 30 วัน นับจาก signup หรือ active window ก่อนหน้า | ACT | PO | tracking | P2 | DRAFT |
 
 ### FO-02 Feed — J-02 (Discovery)
 
@@ -341,6 +346,7 @@ Demand Overview tiles: `Active Alerts` · `Alerts with Matches` · `Unmet Demand
 | Moderation propagation | BO visibility action → FO surfaces ≤60s | DQ | Platform | monitoring | P1 | SPEC (contract) |
 | Reference sync freshness | option master/market data/policy/support → FO ≤24h | DQ | Platform+Market | scheduled sync logs | P1 | SPEC (contract) |
 | WA notification trace | trigger → delivery trace ครบใน Delivery Logs (async ไม่ผูก SLA) | DQ | Platform | Delivery Logs | P1 | DRAFT |
+| NFR performance adherence | feed load ≤2s (NFR-001), BO dashboard ≤3s (`BO_PRD §5.1`), pagination/offline ตาม NFR contract | DQ | Platform | monitoring | P1 | SPEC (NFR-001..005) |
 
 ## 7. Measurement & Instrumentation Notes
 
@@ -351,15 +357,15 @@ Demand Overview tiles: `Active Alerts` · `Alerts with Matches` · `Unmet Demand
 - **Onboarding analytics** — spec มี stg-only analytics hook บางจุด (`AC-AUTH-031`) — ยืนยันว่าเป็น foundation ของ tracking Phase 2 ไม่ใช่ production metric
 - **Queue aging ≠ SLA** — ตัวเลข pending >N วันใช้เฝ้าระวังเท่านั้น ห้ามผูกเป้าหมายเวลาแบบ SLA (GAP-03)
 
-## 8. Findings — รอพี่มาเต็ม/PO ตัดสิน
+## 8. Findings — ตัดสินแล้วใน draft (พี่มาเต็มอนุมัติให้ BA ตัดสินตามมาตรฐาน, 2026-11-05)
 
-| ID | ประเด็น | เสนอ |
+| ID | ประเด็น | การตัดสิน |
 |---|---|---|
-| SM-01 | North Star ต้องเลือก 1 ตัว — เสนอ Weekly Successful Listings (§1) แต่เป็น BA draft ไม่ใช่ product decision | PO ตัดสินระหว่าง 3 ตัวเลือก §1 |
-| SM-02 | KPI P2 จำนวนมากพึ่ง tracking pipeline ที่ยังไม่มีใน spec — Phase 1 วัดได้เฉพาะที่ dashboard/queue/report มีอยู่ | PO ตัดสินว่า tracking/analytics เข้า scope Phase 2 หรือไม่ |
-| SM-03 | Chat response rate/time วัดได้จาก message data (P1) แต่ spec ไม่ได้กำหนด metric — เสนอเป็น LIQ สำคัญของ marketplace | รอ sign-off |
-| SM-04 | Retention (D7/D30) และ churn ไม่มีนิยามใน spec เลย — เสนอผ่าน Deletion request rate + DAU/MAU trend แทนก่อน | PO พิจารณาเพิ่ม retention metric ตอน Reports Phase 2 |
-| SM-05 | Owner ทั้งหมดเป็น role ที่เสนอ — ไม่มีทีมจริงยืนยัน | PO assign owner จริงตอน sign-off |
+| SM-01 | North Star ต้องเลือก 1 ตัว | **DECIDED** — Weekly Successful Listings (§1); ตัวเลือกอื่นเก็บเป็น rejected alternates พร้อมเหตุผล |
+| SM-02 | KPI P2 พึ่ง tracking pipeline ที่ยังไม่มีใน spec | **DECIDED** — KPI นิยามไว้ก่อนแบบ phase-tagged; Phase column (`P1`/`P2`) คือ measurement readiness ไม่ใช่ blocker — tracking pipeline เป็น prerequisite ของ Reports & Analytics Phase 2 อยู่แล้ว ไม่ต้องมี decision แยก |
+| SM-03 | Chat response rate/time spec ไม่ได้กำหนด metric | **DECIDED** — ใส่เป็น LIQ KPI (P1, วัดจาก message data ที่มีอยู่) เพราะ response เชื่อมตรงกับ marketplace liquidity ตามจุดประสงค์ "หาของเจอ/ขายได้" |
+| SM-04 | Retention/churn ไม่มีนิยามใน spec เลย | **DECIDED** — เพิ่ม `Returning member rate (D30 retention)` เข้า FO-01 เป็น ACT/P2 — ครบ taxonomy (activation+retention คู่กันตาม funnel มาตรฐาน) ไม่พึ่ง proxy |
+| SM-05 | Owner เป็น role ที่เสนอ | **DECIDED** — convention ล็อก: owner = draft role assignment ตาม taxonomy (`PO` growth/engagement, `Ops` moderation/support, `Market` demand/reference data, `Content` publishing, `Platform` infra/contract) — PO confirm mapping ทีมจริงตอน sign-off §9 |
 
 ## 9. Sign-off
 
