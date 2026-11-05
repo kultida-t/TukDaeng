@@ -1015,6 +1015,7 @@ Session Handoff
   - **ชื่อ Task ต้องอยู่ในรูปแบบ `<Task-Code> <Task Name>` เสมอ** เช่น `AIL-019 Design forgot/reset contract`, `RP-014 สร้าง flow ปิด Custom Role` โดยมีรหัส Task ที่คนอ่านเข้าใจง่ายนำหน้า ตามด้วยชื่อเนื้อหางานที่กระชับ
   - **ห้ามใช้เฉพาะ UUID / Internal ID ของระบบเป็นชื่อ Task เด็ดขาด** เพราะอ่านยากและไม่สื่อความหมาย
   - เขียนเนื้อหา Task เป็น complete execution brief ตามรูปแบบใน `AGENTS.md` (ภาษาไทย เก็บศัพท์เทคนิคภาษาอังกฤษ) และใช้ Kanban Completion Rule: ห้ามย้าย task ไป `done` จนกว่าผู้ใช้ยืนยันว่าผลลัพธ์ OK
+  - **ก่อนออกเลข Task-Code ต้องเช็ครหัสที่ใช้ไปแล้วบนบอร์ดเสมอ (บังคับ)** — ดึงรายการ task ผ่าน `get_time_summary` (`status: "all"`, `from_date` ย้อนหลัง) แล้วหา prefix เดียวกัน เลือกเลขถัดไปที่ว่าง ห้ามใช้ code ซ้ำกับ task เดิมรวมถึงที่ done/backlog แล้ว (เหตุการณ์จริง: `PLN-005` ถูกสร้างซ้ำกับ planning task เดิมเมื่อ 2026-11-05)
   - **Task Description ต้องมีบรรทัด Planned เสมอทุกหมวด:** `Category: <หมวด> | Planned: <X> ชม. (Category Max <Y> ชม.)` โดย `Y` = เป้าหมายหมวดตามตารางมาตรฐาน ซึ่งเป็นเกณฑ์ Review โดยตรง; ห้ามใส่เฉพาะบางหมวด — `Planned` ใช้ประเมินแผน task และต้องสมจริง ห้ามตั้งต่ำกว่าความเป็นจริงหรือคูณ Category Max ด้วย 1.5
 - **Objective และ Feature ไม่ใช่ Task:** Objective เป็นผลลัพธ์หลัก, Feature เป็นผลลัพธ์ย่อย และ Task เป็นงานที่ใช้ลงมือทำ/ลง log — 1 Objective map กับหลาย Feature ได้ และ 1 Feature map กับหลาย Task ได้
 - **การตรวจสอบและแก้ไขอยู่ใน Feature:** วางแผนไว้ใน Feature เดียวกับงานหลัก ไม่ต้องสร้าง Task ตรวจสอบ/แก้ไขแยก เว้นแต่มีขนาดใหญ่หรือจำเป็นต้องติดตามเป็นงานอิสระ

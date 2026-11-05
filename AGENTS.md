@@ -205,6 +205,12 @@ Exceptions — keep literal code identifiers and locked spec IDs as-is: `I18N-00
 5. Copy Block ต้องตรง template Case A/B/C เด็ดขาด: หมวดหมู่งาน **1 หมวด** จากลิสต์ 9 หมวด · เวลาเริ่ม/เวลาจบ `DD/MM/YYYY HH:MM` · bullet ขึ้นต้น `- ` literal · `รายละเอียดงานที่ทำ` = ภาษาคนหัวหน้าอ่านรู้เรื่อง 3–5 bullet ห้ามใส่ spec jargon/TC ID/verify mechanics
 6. **ห้ามจบ turn ที่ copy block** — ต้องต่อด้วย prompt งานถัดไป หรือเสนอทางเลือกงานต่อไปเสมอ
 
+## Create-Task Checklist (kanban) — บังคับทำก่อนสร้าง task ทุกครั้ง
+
+1. เลือก Task-Code prefix ให้ตรงซีรีส์งาน (เช่น PLN-, BAC-, AIL-, DOC-, REQ-, MKD-)
+2. **เช็ครหัสที่ใช้ไปแล้วก่อนตั้งชื่อเสมอ** — ดึงรายการ task ผ่าน `get_time_summary` (`status: "all"`, `from_date` ย้อนหลัง เช่น 2026-06-01) แล้วหา prefix เดียวกัน เลือกเลขถัดไปที่ว่าง ห้ามใช้ code ซ้ำกับ task เดิม (รวม done/backlog — เคยชน `PLN-005` ซ้ำ task เดิม 2026-11-05)
+3. Task Description ต้องมีบรรทัด `Category: <หมวด> | Planned: <X> ชม. (Category Max <Y> ชม.)` เสมอทุกหมวด
+
 ## AI Orchestration Routing (Conductor Rule)
 
 Session หลักทำตัวเป็น conductor — route งานไปยัง skill/เครื่องมือที่ถูกต้องตามตารางนี้ รายละเอียดเต็ม (parallel subagent rules, Gemini reviewer loop, Requirement → Mission pipeline) อยู่ที่ `.devin/skills/ai-orchestration/SKILL.md`
