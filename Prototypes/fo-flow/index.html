@@ -4357,6 +4357,10 @@
       transform: translateX(18px);
     }
 
+    .tg-sw.dis {
+      opacity: .4;
+    }
+
     .sens-check {
       color: var(--text);
     }
@@ -18208,12 +18212,23 @@
         const isTh = state.lang === "th";
         const cSaved = (() => { try { return JSON.parse(localStorage.getItem("fo_consent") || "null"); } catch { return null; } })();
         if (cSaved) { OB.opt.analytics = !!cSaved.analytics; OB.opt.personalized = !!cSaved.personalized; }
+        /* 00_GLOBAL §8 — an "Ask App Not to Track" answer forces Personalized off:
+           the toggle renders disabled with an explanation until the OS-level
+           permission changes */
+        const attDenied = localStorage.getItem("fo_att") === "denied";
+        if (attDenied) OB.opt.personalized = false;
         const cRow = (k, t, d) => `<button class="sub-row sub-row-lg" data-cookie-tgl="${k}"><span class="lg-b"><span class="lg-t">${t}</span><span class="lg-d">${d}</span></span><span class="tg-sw${OB.opt[k] ? " on" : ""}"></span></button>`;
+        const pTitle = isTh ? "การปรับแต่งเฉพาะบุคคล" : "Personalized content";
+        const pDesc = isTh ? "แนะนำนาฬิกาที่คุณอาจสนใจ (ไม่บังคับ)" : "Suggest watches you may like. Optional.";
+        const pRow = attDenied
+          ? `<div class="sub-row sub-row-lg sub-row-static"><span class="lg-b"><span class="lg-t">${pTitle}</span><span class="lg-d">${pDesc}</span></span><span class="tg-sw dis"></span></div>
+      <div class="sub-hint">${isTh ? "ปิดอยู่เพราะคุณเลือก “ขอให้แอปไม่ติดตาม” — เปลี่ยนได้ในการตั้งค่าระบบของอุปกรณ์" : "Off because you chose “Ask App Not to Track” — change it in your device Settings."}</div>`
+          : cRow("personalized", pTitle, pDesc);
         return head(isTh ? "ความเป็นส่วนตัวและคุกกี้" : "Privacy & cookies") + `<div class="sub-scroll">
       <div class="fav-desc">${isTh ? "จัดการสิทธิ์การใช้ข้อมูลของคุณบนตึกแดง" : "Manage how TukDaeng uses your data."}</div>
       <div class="sub-row sub-row-lg sub-row-static"><span class="lg-b"><span class="lg-t">${isTh ? "จำเป็น" : "Essential"}</span><span class="lg-d">${isTh ? "จำเป็นต่อการทำงานและความปลอดภัยของแอป" : "Needed to run the app and keep it secure."}</span></span><span class="sub-count">${isTh ? "เปิดตลอด" : "Always on"}</span></div>
       ${cRow("analytics", isTh ? "การวิเคราะห์การใช้งาน" : "Analytics", isTh ? "ช่วยให้เราปรับปรุงแอป (ไม่บังคับ)" : "Help us improve the app. Optional.")}
-      ${cRow("personalized", isTh ? "การปรับแต่งเฉพาะบุคคล" : "Personalized content", isTh ? "แนะนำนาฬิกาที่คุณอาจสนใจ (ไม่บังคับ)" : "Suggest watches you may like. Optional.")}
+      ${pRow}
     </div>`;
       }
       /* THEME-001 — Theme mode picker: Dark / Light (spec 13_SETTINGS_MODULE Theme Mode) */
@@ -18394,6 +18409,9 @@
     }
     /* DEC-25 A10 — outgoing messages stamp the real send time (seed history keeps its mock times) */
     const chNow = () => { const d = new Date(); return { at: String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"), day: "Today" }; };
+    /* post reference card = snapshot taken at send time (spec 07 §9): the card keeps
+       the listing as it looked — edits/sale/deletion afterwards don't change it */
+    const chPostSnap = p => p ? { id: p.id, pid: p.id, photo: p.photos[0], owner: p.seller, avatar: profileOf(p.seller).avatar, cap: p.caption, price: p.price || "" } : null;
     function chTimeLbl(t) {
       const m = t.msgs[t.msgs.length - 1];
       return m ? (m.day === "Today" ? m.at : m.day) : "";
@@ -18884,6 +18902,8 @@
     function boardSearchSync(pg) {
       const r = pg && pg.querySelector(".bd-res");
       if (r) r.innerHTML = bdResultsHTML();
+      const x = pg && pg.querySelector("[data-bdqclear]");
+      if (x) x.style.visibility = bdQ ? "" : "hidden";
     }
     function boardArticleHTML(id) {
       const a = bdGet(id);
@@ -18953,7 +18973,6 @@
       if (e.target.closest("[data-bdqclear]")) {
         bdQ = "";
         const qi = scr.querySelector(".bd-q"); if (qi) { qi.value = ""; qi.focus(); }
-        const qx = scr.querySelector("[data-bdqclear]"); if (qx) qx.style.visibility = "hidden";
         boardSearchSync(scr.querySelector(".page-sub"));
         return true;
       }
@@ -19230,17 +19249,18 @@
       const postCardHTML = ""; /* FO-TEST-12 lock: item cards live in the message flow only
          (reply-story style — attached at ask/share time), never pinned to the room */
 
-      /* FEED-041 — a shared post lands in the room as a tappable post card message */
-      const msgPostCard = pid => {
-        const sp = findPost(pid);
-        return sp ? `<button class="ch-post-card" data-chgo="post" data-pid="${esc(sp.id)}" title="View post">
-      <img class="ch-post-card-img" src="${sp.photos[0]}" alt="">
+      /* FEED-041 — a shared post lands in the room as a tappable post card message
+         (snapshot-first: m.snap from send time; findPost only backfills legacy msgs) */
+      const msgPostCard = m => {
+        const sp = m.snap || chPostSnap(findPost(m.pid));
+        return sp ? `<button class="ch-post-card" data-chgo="post" data-pid="${esc(sp.pid)}" title="View post">
+      <img class="ch-post-card-img" src="${sp.photo}" alt="">
       <div class="ch-post-card-top-scrim">
-        <img class="ch-post-card-av" src="${profileOf(sp.seller).avatar}" alt="">
-        <span class="ch-post-card-user">${esc(sp.seller)}</span>
+        <img class="ch-post-card-av" src="${sp.avatar}" alt="">
+        <span class="ch-post-card-user">${esc(sp.owner)}</span>
       </div>
       <div class="ch-post-card-bot-scrim">
-        <div class="ch-post-card-title">${esc(sp.caption)}</div>
+        <div class="ch-post-card-title">${esc(sp.cap)}</div>
         ${sp.price ? `<div class="ch-post-card-price">${esc(sp.price)}</div>` : ""}
       </div>
     </button>` : "";
@@ -19259,7 +19279,7 @@
         if (m.day !== lastDay) { out.push(`<div class="ch-day">${esc(m.day)}</div>`); lastDay = m.day; prev = null; }
         const card = (i === 0 && postCardHTML && !m.pid) ? postCardHTML : "";
         const isMedia = !!m.img;
-        const shareCard = m.pid ? msgPostCard(m.pid) : "";
+        const shareCard = m.pid ? msgPostCard(m) : "";
         const isMatch = !q || (!isMedia && (m.t || "").toLowerCase().includes(q));
         const opacityStyle = (q && !isMatch) ? ' style="opacity:0.25;"' : '';
         const bubbleHTML = isMedia
@@ -19655,7 +19675,7 @@
       /* the asked listing lands in the room once, as a card message (reply-story style) */
       t.item = { id: post.id, cap: post.caption, price: post.price || "", photo: post.photos[0], owner: post.seller, pid: post.id };
       if (!t.msgs.some(m => m.pid === post.id))
-        t.msgs.push({ f: "me", pid: post.id, t: state.lang === "th" ? "ถามเกี่ยวกับลิสติ้งนี้" : "Asked about this listing", ...chNow(), read: false });
+        t.msgs.push({ f: "me", pid: post.id, snap: chPostSnap(post), t: state.lang === "th" ? "ถามเกี่ยวกับลิสติ้งนี้" : "Asked about this listing", ...chNow(), read: false });
       chOpenRoom(scr, t);
     }
     function chIncomingAsk(user, postId) {
@@ -19665,7 +19685,7 @@
       let t = chRoomFor(C, user);
       if (!t) { t = { id: "t" + Date.now(), user, unread: 0, draft: "", pinned: false, muted: false, hidden: false, item: null, msgs: [] }; C.threads.unshift(t); }
       t.hidden = false;
-      t.msgs.push({ f: "them", t: state.lang === "th" ? "สวัสดีครับ สนใจรายการนี้" : "Hi, I'm interested in this listing", pid: postId, ...chNow(), read: true });
+      t.msgs.push({ f: "them", t: state.lang === "th" ? "สวัสดีครับ สนใจรายการนี้" : "Hi, I'm interested in this listing", pid: postId, snap: chPostSnap(findPost(postId)), ...chNow(), read: true });
       t.unread = (t.unread || 0) + 1;
       return true;
     }
@@ -19693,7 +19713,7 @@
         const i = C.threads.indexOf(t);
         if (i > 0) { C.threads.splice(i, 1); C.threads.unshift(t); }
       }
-      t.msgs.push({ f: "me", t: state.lang === "th" ? "ส่งโพสต์นี้ให้คุณ" : "Shared a post", pid: p.id, ...chNow(), read: false });
+      t.msgs.push({ f: "me", t: state.lang === "th" ? "ส่งโพสต์นี้ให้คุณ" : "Shared a post", pid: p.id, snap: chPostSnap(p), ...chNow(), read: false });
       return t;
     }
     let suppressChatClick = false;
@@ -22107,6 +22127,7 @@
       if (cookieTgl) {
         const scr = cookieTgl.closest(".screen");
         const k = cookieTgl.dataset.cookieTgl;
+        if (k === "personalized" && localStorage.getItem("fo_att") === "denied") return; /* ATT deny keeps Personalized locked off (00G §8) */
         OB.opt[k] = !OB.opt[k];
         obLog();
         renderSub(scr);
@@ -23288,6 +23309,7 @@
         const sp = scr.dataset.shKind === "post" ? findPost(scr.dataset.shPid) : null;
         const th = sp ? chSharePost(shFr.dataset.name, sp) : null; /* FEED-041 — the post really lands in the friend's room */
         if (th) { /* friend share drops you into that chat — keep any open sub under it for back */
+          scr.classList.remove("pv-open", "detail-open", "comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "save-open", "sort-open", "details-open", "wa-open"); /* a still-open viewer/sheet must not cover the room — same set chOpenRoom clears */
           if ((scr._subStack || []).length) pushSub(scr, "chatroom:" + th.id);
           else openSub(scr, "chatroom:" + th.id);
         }
@@ -24465,7 +24487,7 @@
       ".follow-btn", ".pf-foll", ".pf-flw", ".pf-msg", ".lk-follow", ".al-fbtn", ".pf-avov-act", ".pf-dots", ".pf-rmf", ".pf-unblock",
       ".comment-input", ".emoji-row", ".c-like", ".c-meta",
       ".post-head .more", ".pm-btn", ".pm-go-report", ".pm-fav", ".pm-ni", ".pm-own-archive", ".pm-own-nocomm", ".pm-own-edit", ".pm-own-sold", ".pm-own-soldview", ".pm-own-pin", ".pm-own-del",
-      ".rp-opt", ".pm-reason", ".uc-report", ".ni-mute", ".ni-unfollow", ".sr-wa", ".feed-wa",
+      ".rp-opt", ".pm-reason", ".uc-report", ".ni-mute", ".ni-unfollow", ".sr-wa", ".sr-saved", ".feed-wa",
       ".pf-more", ".pf-menu", ".pf-edit", ".pf-share", ".pf-sh-report", ".pf-sh-block", ".blk-rep", ".blk-go", ".ch-rep-del-btn", ".ch-rep-only-btn",
       ".set-btn", ".sh-add", ".sh-fr", ".pf-sh-share", "[data-bdlike]", "[data-bdshare]"
     ].join(",");
@@ -24514,7 +24536,7 @@
           case "guest": { const wasGate = OB.gate; if (OB.hide && !wasGate) localStorage.setItem("fo_member_hide", "1"); setSession("guest"); obFinish("", !wasGate); break; } /* GUEST-001 — real apps just enter silently, no "browsing as guest" toast */
           case "signin": obSignin(); break;
           case "forgot": if (!obEmailOk(OB.f.email.trim())) { OB.errs = { email: obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง") }; obDraw(); } else { OB.sent = true; obDraw(); } break;
-                    case "os": if (arg === "open") { OB.os = OB.step; obDraw(); } else { const was = OB.os; if (was === "track" && arg === "no") OB.opt.personalized = false; obGo(was === "track" ? "member" : "track"); } break;
+                    case "os": if (arg === "open") { OB.os = OB.step; obDraw(); } else { const was = OB.os; if (was === "track") { /* Ask App Not to Track forces Personalized off (00G §8) — persist the answer so Settings can't silently flip it back */ localStorage.setItem("fo_att", arg === "no" ? "denied" : "granted"); if (arg === "no") { OB.opt.personalized = false; obLog(); } } obGo(was === "track" ? "member" : "track"); } break;
           case "finish": obFinish(""); break;
         }
         return;
@@ -24553,7 +24575,7 @@
     });
     document.getElementById("obReplay").addEventListener("click", () => {
       localStorage.removeItem("fo_onboarded"); localStorage.removeItem("fo_member_hide");
-      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); localStorage.removeItem("fo_srch_recents"); localStorage.removeItem("fo_alstate"); localStorage.removeItem("fo_notif"); localStorage.removeItem("fo_walerts"); setSession("member");
+      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); localStorage.removeItem("fo_srch_recents"); localStorage.removeItem("fo_alstate"); localStorage.removeItem("fo_notif"); localStorage.removeItem("fo_walerts"); localStorage.removeItem("fo_att"); setSession("member");
       document.querySelectorAll(".ob-coach").forEach(c => c.remove());
       Object.assign(OB, { on: true, step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", opt: { analytics: false, personalized: false }, f: { name: "", email: "", pw: "", user: "" }, errs: {}, tries: 0, account: null, resend: 30, os: false, sent: false });
       state.feedTab = "all"; obLast = null;
