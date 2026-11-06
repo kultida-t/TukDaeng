@@ -12963,6 +12963,7 @@
     .ob-osbtn button:last-child { color: #fff; font-weight: 600; }
     #obReplay { bottom: 72px; }
     #obRecon { bottom: 126px; }
+    #obReset { bottom: 180px; }
     /* social sign-in buttons (Google / Apple) */
     .ob-or { display: flex; align-items: center; gap: 12px; margin: 16px 0 14px; color: rgba(255, 255, 255, .45); font-size: 12px; font-weight: 500; }
     .ob-or::before, .ob-or::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, .14); }
@@ -12985,6 +12986,7 @@
   <div id="flowToast"></div>
   <button class="ob-dev" id="obReplay" title="Replay first-run onboarding">1st</button>
   <button class="ob-dev" id="obRecon" title="Simulate new Terms/Privacy version (re-consent)">v2</button>
+  <button class="ob-dev" id="obReset" title="Reset all demo data back to the initial mock state">rst</button>
 
   <script>
     /* qrcode-generator 1.4.4 (MIT, Kazuhiko Arase) — used by PROFILE-010 profile QR */
@@ -24585,6 +24587,13 @@
       if (OB.on && !OB.recon) return toast("Finish first-run onboarding before simulating re-consent");
       Object.assign(OB, { on: true, recon: true, step: "consent", ver: "1.1", legal: null, declined: false, os: false });
       obMount();
+    });
+    /* dev reset — wipe every fo_* persisted key (mock posts/profile state, consent,
+       onboarding, session) then reload so the demo comes back to the initial mock data */
+    document.getElementById("obReset").addEventListener("click", () => {
+      if (!confirm("Reset all demo data to the initial mock state?")) return;
+      Object.keys(localStorage).filter(k => k.startsWith("fo_")).forEach(k => localStorage.removeItem(k));
+      location.reload();
     });
 
     /* Comment long-press context menu (IG-style) */
