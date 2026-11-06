@@ -197,7 +197,7 @@ Anatomy:
 
 1. `.bd-crumb` — home icon `data-bdhome` (aria `Board`) + chevron + `บทความล่าสุด`/`Latest Articles`
 2. `.bd-pills` — `BD_CATEGORIES` pill row, horizontal scroll + mouse-drag (5px threshold — drag แล้ว tap ถูก suppress), `.bd-pill.active` = `bdFilterCat`
-3. `.bd-all-list` — `bdListHTML(bdFilteredJournal())` rows + end note; empty → `No articles in this category` (**EN-only** — ไม่อยู่ใน `I18N_TH`, ดู §17)
+3. `.bd-all-list` — `bdListHTML(bdFilteredJournal())` rows + end note; empty → `No articles in this category` (แปลแล้วผ่าน `I18N_TH` — resolved FSP-041)
 
 Pill tap (`data-bdcat`): set `bdFilterCat` → toggle `.active` ทุก pill → re-render `.bd-all-list` → `bdCenterPill` scroll pill ที่เลือกเข้ากลาง (smooth)
 
@@ -337,7 +337,7 @@ Article Detail
 | `i18nTr` patterns | `{n} min read · {ago}` → `อ่าน {n} นาที · {th-ago}`; `Oct 28, 2024` → `28 ต.ค. 2567` (พ.ศ.); `{ago}` → TH relative |
 | `setLang` board re-render | `.bd-sec h3`, `.bd-viewall span`, `.bd-hero-btn span`, `.bd-q` placeholder (~21075–21083) |
 
-**EN-only leftovers (deviation D12 — language sweep FSP-026):** `No articles in this category`, `{n} likes` บน card meta, tag chips, Categories-sheet row labels (`Save to Favorites`/`Remove from Saved`/`Share Article`/`Copy Link`/`Cancel` — dead path), toasts `Saved to favorites`/`Removed from favorites`/`Link copied`, BOARD article content (title/sub/body = EN editorial content)
+**EN-only leftovers (deviation D12 — RESOLVED FSP-041 2026-11-06):** `No articles in this category` + `{n} likes` บน card meta แปลแล้วผ่าน `I18N_TH`/`i18nTr` pattern (`{n} ถูกใจ`), share toasts (`Sent to {name}`/`Shared to {app}`/`Link copied`) แปลแล้ว; tag chips + BOARD article content (title/sub/body) = editorial/sample content ไม่แปล; Categories-sheet row labels + `Saved to favorites`/`Removed from favorites` = dead path (ไม่มี entry point)
 
 ---
 
@@ -353,12 +353,12 @@ Article Detail
 
 | Case | Copy (EN / TH) |
 | --- | --- |
-| Category list empty | `No articles in this category` — **EN-only** (D12) |
+| Category list empty | `No articles in this category` — แปลแล้ว (resolved D12, FSP-041) |
 | Search no results | `No results found for "{q}"` / `ไม่พบบทความสำหรับ "{q}"` + `Try searching with different keywords like Rolex, Daytona, or Titanium` / `ลองค้นหาด้วยคำอื่น เช่น Rolex, Daytona หรือ Titanium` |
 | Article invalid id | `Article not found`/`ไม่พบบทความ` + `This article is no longer available.`/`บทความนี้ไม่มีให้บริการแล้ว` (dict) — contract TH `บทความนี้ไม่พร้อมใช้งานแล้ว` (D11) |
 | End of list | `You're all caught up`/`คุณดูครบทั้งหมดแล้ว` |
-| Share toasts | `Sent to {name}` / `Shared to {app}` / `Link copied` — EN-only |
-| Dead-path toasts (no live entry) | `Saved to favorites` / `Removed from favorites` / `Report submitted. Thank you for notifying us.` — EN-only |
+| Share toasts | `Sent to {name}` / `Shared to {app}` / `Link copied` — แปลแล้วผ่าน dict/pattern (FSP-041) |
+| Dead-path toasts (no live entry) | `Saved to favorites` / `Removed from favorites` / `Report submitted. Thank you for notifying us.` — EN-only (dead path ไม่มี entry point — ไม่นับ user-facing) |
 
 - ไม่มี board-specific error/retry state ใน prototype (contract load-fail pattern = global `ลองใหม่` — ไม่มี trigger จริง)
 
@@ -378,8 +378,8 @@ Article Detail
 | D8 | Session flags (แก้แล้ว DEC-25) | like เป็น per-user ตั้งแต่ DEC-25 — ไม่ค้างข้าม session | — flag ให้ dev reset เพิ่ม |
 | D9 | Search × filter ไม่ combine | search page ครอบทุก `BOARD` เสมอ ไม่สน `bdFilterCat` | spec เดิมบอก "ทำงานร่วมกันได้" — ผิดตาม prototype |
 | D10 | Dead queries/helpers | `.bd-dfoot-sub` (like handler), `bdJournal()`, `bdStepSlide()` — ไม่มี element/caller | dead — ไม่ spec |
-| D11 | Unavailable-state copy | prototype dict `บทความนี้ไม่มีให้บริการแล้ว` + EN title `Article not found`/`ไม่พบบทความ` | contract TH `บทความนี้ไม่พร้อมใช้งานแล้ว` (00_NAV §10) — unify ใน FSP-026 sweep |
-| D12 | EN-only leftovers | ดู §16 — หลายสตริงไม่อยู่ใน dict/ternary | Language sweep FSP-026 |
+| D11 | ~~Unavailable-state copy~~ | dict ใช้ canonical `บทความนี้ไม่พร้อมใช้งานแล้ว` แล้ว (FSP-040) | RESOLVED |
+| D12 | ~~EN-only leftovers~~ | ดู §16 — แปลครบแล้วผ่าน dict/ternary/pattern | RESOLVED FSP-041 |
 | D13 | Section-comment drift | code comment `hero + trending + Journal Board` (~18655) แต่ label จริง `Latest Articles` | comment drift เท่านั้น — spec ใช้ label จริง |
 | D14 | `bdFilterCat` persist | reset เฉพาะ `data-bdall`; กลับเข้า board ใหม่ filter ค้าง (home ไม่ใช้ filter อยู่แล้ว — กระทบเฉพาะ `boardall` re-entry ผ่าน sheet) | documented quirk |
 | D15 | Author display | `a.author`=`Tuk Daeng Editorial` แต่ UI hardcode `Tuk Daeng` + `td-editorial.png` | mock simplification — production ใช้ author field จริง |

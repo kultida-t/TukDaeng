@@ -399,7 +399,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 20. **`report:posts:` picker = `pfTabPosts "all"`** — leak hide/sold tiles (S-14 class เดียวกัน)
 21. **`pfp-follow` fade-out** ~1.2s หลัง follow (pv head)
 22. **Server-backed state** (FO-TEST-12 lock): follow/fav/mute/block/removed/pins/archive/delete/profile edits persist ข้าม reload + sign-out→sign-in + ข้าม device — prototype mirror ด้วย `fo_pfstate:{member|new}` (`pfSave`/`pfLoad`) เหลือ session-only เฉพาะ QR theme
-23. **EN-hardcoded strings** (language sweep FSP-026): pfollow labels/empties/`Search username`, QR labels+toasts, `blkSheet`/`unblockDlg`/`Remove follower?`/`Pin limit reached` ทั้งก้อน, `Blocking`/`Unblocked`/`Unfollowed`/`Muted`/`Unmuted`/`Profile shared`/`Profile link copied`/`QR code…`/`Link copied`/`QR code saved`/`Signed in as`/`Camera…`/`Allow camera…`
+23. ~~**EN-hardcoded strings**~~ RESOLVED FSP-041: pfollow labels/empties/`Search username`, QR labels+toasts, `blkSheet`/`unblockDlg`/`Remove follower?`/`Pin limit reached` ทั้งก้อน, `Blocking`/`Unblocked`/`Unfollowed`/`Muted`/`Unmuted`/`Profile shared`/`Profile link copied`/`QR code…`/`Link copied`/`QR code saved`/`Camera…`/`Allow camera…` — แปลครบผ่าน I18N_TH + isTh ternary (`Signed in as` ไม่มีในโค้ดแล้ว)
 24. **`pf-sh-share` อยู่ใน gate list แต่ unreachable** (`.pf-more` gated ก่อน) — belt-and-suspenders
 25. **`.pf-menu` → `settings` direct**; `.set-btn` dead (canonical 13)
 26. **`pedit` `o.disp = uname`** — save เปลี่ยน disp ตาม username เสมอ (ไม่มีช่อง display name แยก)
@@ -480,7 +480,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Own tab อื่นว่าง | `ยังไม่มีโพสต์ในแท็บ{label}`/`No {label} posts` (label = ชื่อ tab localized) |
 | Viewer `all` ว่าง / blocked | `ยังไม่มีโพสต์`/`No posts yet` (icon camPlain) |
 | Viewer tab อื่นว่าง | `No {label} posts`/`ยังไม่มีโพสต์ในแท็บ{label}` |
-| pfollow followers ว่าง | `No followers yet` (EN hardcode) |
+| pfollow followers ว่าง | `No followers yet` (แปลแล้วผ่าน I18N_TH — FSP-041) |
 | pfollow following ว่าง (own) | `You're not following anyone yet` (EN) |
 | pfollow following ว่าง (viewer) | `Not following anyone yet` (EN) |
 | pfollow search ไม่เจอ | `No results found` (EN) |
@@ -661,7 +661,7 @@ Contract-level (prototype ไม่มี analytics layer — เก็บ event
 - **IG extras ที่เคย dead — ถูกตัดออกแล้ว**: `pf-note`/`pf-sleep`/`pf-addchip`/`pf-avadd`/avatar-overlay `qr` act/`pf-uname` toast/`Learn more` (FO-TEST-12 — ถ้าจะทำจริงค่อยเพิ่มใหม่ใน version ถัดไป)
 - **Story ring** — `ring` แสดงแต่ไม่มี story surface
 - **Display name แยกจาก username** — ตอนนี้ `disp` = username เสมอ
-- **language sweep** — EN-hardcoded strings (§9 Deviation #23) เข้า FSP-026
+- ~~**language sweep** — EN-hardcoded strings (§9 Deviation #23)~~ RESOLVED FSP-041
 - **Follower/following real data** — mock lists (`pfAllUsers` + slice) → real relationships
 
 

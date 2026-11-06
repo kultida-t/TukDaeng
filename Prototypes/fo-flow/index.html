@@ -17110,9 +17110,14 @@
       const a = new Date(from + "T00:00:00"), b = to ? new Date(to + "T00:00:00") : new Date();
       if (b < a) return null;
       const d = Math.round((b - a) / 864e5), y = Math.floor(d / 365), m = Math.floor(d % 365 / 30.4);
-      return { d, txt: y ? `${y}y ${m}m` : m ? `${m}m` : `${d}d` };
+      return { d, txt: y ? `${y}y ${m}m` : m ? `${m}m` : `${d}d`, txtTh: y ? `${y} ปี ${m} เดือน` : m ? `${m} เดือน` : `${d} วัน` };
     }
-    const pfoDate = iso => new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    const pfoDate = iso => {
+      const s = new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+      if (state.lang !== "th") return s;
+      const [dd, mon, yy] = s.split(" ");
+      return `${dd} ${I18N_MON[mon]} ${+yy + 543}`;
+    };
     const PFO_STATUS = { sale: ["Sale", "st-sale"], show: ["Show", "st-show"], hide: ["Hide", "st-hide"] };
     const PFO_CMP = { above: ["Above market", "cmp-above"], at: ["At market", "cmp-at"], below: ["Below market", "cmp-below"] };
     const PFO_SRC = { mkt: "Latest market price", fb: "Purchase price estimate", none: "No market price" };
@@ -17780,7 +17785,7 @@
       ${kv(isTh ? "ราคาซื้อ" : "Purchase price", a.purchase ? pfoTHB(a.purchase) : "—")}
       ${kv(isTh ? "วันที่ซื้อ" : "Purchased", a.bought ? pfoDate(a.bought) : "—")}
       ${kv(isTh ? "กำไร/ขาดทุนที่ยังไม่เกิดขึ้น" : "Unrealized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, a.purchase)})` : "—", gl != null ? (gl >= 0 ? "up" : "dn") : "")}
-      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txt}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "—")}
+      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txtTh}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "—")}
     </div>
     ${a.status === "sale" ? `<div class="pfo-card">
       <div class="pfo-card-t">${isTh ? "การลงประกาศ" : "Listing"}</div>
@@ -17798,7 +17803,7 @@
         return `<button class="mrow pfo-row" data-sub="sold:${x.id}">
       <img class="pfo-img" src="${x.img}" alt="">
       <span class="lg-b"><span class="mn">${esc(x.name)}</span><span class="md">${isTh ? `ขายแล้วเมื่อ ${pfoDate(x.soldDate)}` : `Sold ${pfoDate(x.soldDate)}`}</span></span>
-      <span class="pfo-r"><span class="pfo-val">${x.price != null ? pfoTHB(x.price) : "N/A"}</span></span>
+      <span class="pfo-r"><span class="pfo-val">${x.price != null ? pfoTHB(x.price) : (isTh ? "ไม่ระบุ" : "N/A")}</span></span>
     </button>`;
       }).join("");
       return `<div class="detail-head"><button class="icon-btn sub-back">${I.back()}</button><span class="spacer"></span><span class="detail-title">${isTh ? "ประวัติการขาย" : "Sold history"}</span><span class="spacer"></span><span class="icon-btn" style="visibility:hidden"></span></div>
@@ -17823,23 +17828,23 @@
     ${x.photos.length > 1 ? `<div class="photo-dots">${x.photos.map((_, i) => `<span class="${i === 0 ? "on" : ""}"></span>`).join("")}</div>` : ""}
     <div class="pfd-id">
       <div class="pfd-name">${esc(x.name)}</div>
-      <div class="pfd-meta">${[x.ref, x.brand].filter(Boolean).map(s => esc(s)).join(" · ") || "N/A"}</div>
+      <div class="pfd-meta">${[x.ref, x.brand].filter(Boolean).map(s => esc(s)).join(" · ") || (isTh ? "ไม่ระบุ" : "N/A")}</div>
       <span class="pfo-chip st-hide">${isTh ? "ขายแล้ว" : "Sold"}</span>
     </div>
     <div class="pfo-total">
       <span class="pfo-lb pfo-tt"><span>${isTh ? "ราคาขาย" : "Sale price"}</span></span>
-      <b>${x.price != null ? pfoTHB(x.price) : "N/A"}</b>
+      <b>${x.price != null ? pfoTHB(x.price) : (isTh ? "ไม่ระบุ" : "N/A")}</b>
       ${gl != null ? `<span class="pfo-lb">${isTh ? "กำไร/ขาดทุนที่เกิดขึ้นจริง" : "Realized gain/loss"} <i class="pfo-mktd ${gl >= 0 ? "up" : "dn"}">${pfoSignTHB(gl)} (${pfoPct(gl, x.purchase)})</i></span>` : ""}
     </div>
     <div class="pfo-card">
       <div class="pfo-card-t">${isTh ? "บันทึกการขาย" : "Sale record"} <span class="pfo-privtag">${I.lock(10)} ${isTh ? "ส่วนตัว" : "private"}</span></div>
       ${kv(isTh ? "วันที่ขาย" : "Sale date", pfoDate(x.soldDate))}
-      ${kv(isTh ? "ราคาขาย" : "Sale price", x.price != null ? pfoTHB(x.price) : "N/A")}
+      ${kv(isTh ? "ราคาขาย" : "Sale price", x.price != null ? pfoTHB(x.price) : (isTh ? "ไม่ระบุ" : "N/A"))}
     </div>
     <div class="pfo-card">
       <div class="pfo-card-t">${isTh ? "ผลตอบแทน" : "Return"}</div>
-      ${kv(isTh ? "ราคาซื้อ" : "Purchase price", x.purchase ? pfoTHB(x.purchase) : "N/A")}
-      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txt}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "N/A")}
+      ${kv(isTh ? "ราคาซื้อ" : "Purchase price", x.purchase ? pfoTHB(x.purchase) : (isTh ? "ไม่ระบุ" : "N/A"))}
+      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txtTh}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : (isTh ? "ไม่ระบุ" : "N/A"))}
     </div>
     <div class="pfo-note">${isTh ? "กำไร/ขาดทุนที่เกิดขึ้นจริงจะแยกออกจาก<br>มูลค่าพอร์ตโฟลิโอ" : "Realized gain/loss is separate<br>from portfolio value."}</div>
   </div>`;
@@ -19123,11 +19128,12 @@
       return [...g.values()];
     }
     function chItemRowHTML(g) {
+      const isTh = state.lang === "th";
       const n = g.threads.length;
       const isDirectRoom = !g.mine && g.threads.length === 1;
       const navAttr = isDirectRoom ? `data-chgo="room" data-tid="${esc(g.threads[0].id)}"` : `data-chgo="item" data-iid="${esc(g.item.id)}"`;
       const lastMsg = g.threads[0]?.msgs.at(-1)?.t || "";
-      const subText = g.mine ? `${n} chat${n > 1 ? "s" : ""}` : esc(lastMsg);
+      const subText = g.mine ? (isTh ? `${n} แชท` : `${n} chat${n > 1 ? "s" : ""}`) : esc(lastMsg);
       const pricePrefix = g.item.price ? esc(g.item.price) + " · " : "";
       return `<button class="ch-row${g.unread ? " unread" : ""}" ${navAttr}>
     <img class="ch-thumb" src="${g.item.photo}" alt="">
@@ -19231,6 +19237,7 @@
       return sorted.length ? sorted.map(t => chRowHTML(t)).join("") : chEmptyHTML("No chats found", "Try another name or message.");
     }
     function chatItemHTML(iid) {
+      const isTh = state.lang === "th";
       const g = chItemGroups().find(x => x.item.id === iid);
       const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
       if (!g) return `<div class="detail-head">${back}<span class="detail-title">Item chats</span></div>` + chEmptyHTML("Item not found", "No chats for this item.");
@@ -19246,7 +19253,7 @@
         <div class="ch-itemcard-info">
           <b>${esc(g.item.cap)}</b>
           ${g.item.price ? `<span>${esc(g.item.price)}</span>` : ""}
-          <em>${g.mine ? "Your listing" : "@" + esc(g.item.owner)} · ${n} chat${n > 1 ? "s" : ""}</em>
+          <em>${g.mine ? (isTh ? "สินค้าของคุณ" : "Your listing") : "@" + esc(g.item.owner)} · ${isTh ? `${n} แชท` : `${n} chat${n > 1 ? "s" : ""}`}</em>
         </div>
       </div>
     </div>
@@ -19540,6 +19547,7 @@
     }
 
     function chatMediaGalleryHTML(tid, scr) {
+      const isTh = state.lang === "th";
       const t = chGet(tid);
       const back = `<button class="icon-btn sub-back" data-chgalclose="true" title="Close">${I.x(20)}</button>`;
       if (!t) return `<div class="ch-gal-head">${back}<span class="ch-gal-title">Photos & videos</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
@@ -19571,7 +19579,7 @@
         headerHTML = `
     <div class="ch-gal-head">
       <button class="ch-gal-top-btn" data-chgal="cancel">Cancel</button>
-      <span class="ch-gal-title">${selCount} selected</span>
+      <span class="ch-gal-title">${isTh ? "เลือกแล้ว " + selCount : selCount + " selected"}</span>
       <button class="ch-gal-top-btn" data-chgal="deselect"${selCount === 0 ? " disabled style='opacity:0.4;'" : ""}>Deselect</button>
     </div>`;
       } else {
@@ -20437,6 +20445,7 @@
       "Not in this prototype yet": "ยังไม่เปิดใช้งานในเดโมนี้",
       "Chat options aren't in this prototype yet": "ตัวเลือกแชทยังไม่เปิดใช้งานในเดโมนี้",
       "Listing detail isn't in this prototype yet": "รายละเอียดสินค้ายังไม่เปิดใช้งานในเดโมนี้",
+      "Deselect": "ยกเลิกการเลือก", "Media": "สื่อ", "Name": "ชื่อ",
     };
     /* spec VALUES are translated per word, but only inside rows whose label is in this set
        (so Brand / Model / Reference / Calibre stay exactly as entered) */
@@ -20517,6 +20526,7 @@
       if ((m = t.match(/^(.+) and (\d+) more$/))) return m[1] + " และอีก " + m[2];
       if ((m = t.match(/^([\d.,]+[KM]?) followers$/))) return m[1] + " ผู้ติดตาม";
       if ((m = t.match(/^([\d.,]+[KM]?) following$/))) return m[1] + " กำลังติดตาม";
+      if ((m = t.match(/^([\d.,]+[KM]?) likes$/))) return m[1] + " ถูกใจ";
       if ((m = t.match(/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* (\d{1,2}), (\d{4})$/))) return m[2] + " " + I18N_MON[m[1]] + " " + (+m[3] + 543);
       if ((m = t.match(/^(\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{4})$/))) return m[1] + " " + I18N_MON[m[2]] + " " + (+m[3] + 543);
       if (t.includes(" · ") && !/^(THB|฿|Ref)/.test(t)) {
@@ -21490,7 +21500,7 @@
           const cfNext = cf.querySelector(".cf-next");
           const lastM = V.order.length ? cfMedia(scr).at(-1) : null;
           cf.querySelector("[data-hero]").innerHTML = !lastM
-            ? `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`
+            ? `<div class="add-tile">${I.camPlain(38)}<span>${state.lang === "th" ? "เลือกรูปภาพ" : "Select photos"}</span></div>`
             : lastM.dur
               ? `<div class="ig-car"><img src="${lastM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${lastM.dur}</span></div>`
               : `<div class="ig-car"><img src="${lastM.src}"></div>`;

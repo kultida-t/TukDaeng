@@ -491,10 +491,10 @@ display = "กำไร/ขาดทุนที่เกิดขึ้นจ�
 - แปลผ่าน `isTh` ternary inline ทุกจุดหลัก (labels/notes/titles/toasts/errors) — ไม่มี dict block เฉพาะ portfolio
 - `I18N_TH` dict ช่วย observer (MutationObserver — canonical language contract): `Latest market price`→`ราคาตลาดล่าสุด`, `Show`→`แสดง`, `Hide`→`ซ่อน`, `No data found`→`ไม่พบข้อมูล`, `TukDaeng Market Data`→`ข้อมูลตลาดตึกแดง`, `Try again`→`ลองอีกครั้ง`
 - `i18nTr` date pattern: `pfoDate` output `d Mon yyyy` → `d มิ.ย. 2566` (พ.ศ.) ใน TH mode
-- **EN-only leftovers** (re-sync 2026-11-06 — `Sale`/`Above market`/`At market`/`Below market`/`No market price` แปลแล้วผ่าน I18N_TH):
-  - `PFO_SRC` `Purchase price estimate`
-  - `N/A` fallbacks (sold rows/return card — `N/A` แปลเฉพาะใน spec-row context เท่านั้น)
-  - `days`/`y`/`m` suffixes ใน holding period (`{d} วัน · {y}y {m}m`)
+- **EN-only leftovers** (re-sync 2026-11-06 — `Sale`/`Above market`/`At market`/`Below market`/`No market price`/`Purchase price estimate` แปลแล้วผ่าน I18N_TH; resolved FSP-041):
+  - ~~`PFO_SRC` `Purchase price estimate`~~ — แปลแล้วผ่าน I18N_TH (`ประมาณจากราคาซื้อ`)
+  - ~~`N/A` fallbacks~~ — แปล `ไม่ระบุ` ครบทุกจุด (sold rows/return card/asset meta — FSP-041)
+  - ~~`days`/`y`/`m` suffixes~~ — แปลแล้ว (`{d} วัน · {y} ปี {m} เดือน` ผ่าน `hold.txtTh` — FSP-041)
   - Dev-sim UI ทั้งก้อน (`Preview states (prototype)`, sim names, `Reset`) — dev-only จึงไม่นับ user-facing
   - headline `฿` prefix (dashboard) เหมือน rows/cards — unified ตาม DEC-42 (D14 resolved)
 

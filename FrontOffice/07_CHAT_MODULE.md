@@ -282,7 +282,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 
 - Head `Item chats` + back (slide-out-right → list) — ไม่มี bottom nav
 - Floating pill itemcard: รูป + cap + price + `Your listing`/`@{owner}` · `{n} chats` (นับเฉพาะ visible)
-- `ch-iq` `Search people or messages` (EN hardcode — deviation) live filter เหมือน `ch-q`
+- `ch-iq` `Search people or messages` (แปลแล้วผ่าน I18N_TH — resolved FSP-041) live filter เหมือน `ch-q`
 - Rows = `chRowHTML` เดิม (swipe/pin/mute/hide/delete ทำงาน) — sorted pin-first
 - group หาย/ไม่มี thread → `Item not found`/`No chats for this item.`; query ว่าง → `No chats found`/`Try another name or message.`
 
@@ -320,7 +320,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 ## Media Gallery (`chmedia:{threadId}`)
 
 - Head `✕` (pop + swap ไม่ slide — canonical back rule) + title username + `Select` (เฉพาะมี media); select mode: `Cancel` / `{n} selected` / `Deselect`
-- Grid + date group label hardcode `October 2569 BE` (mock — deviation); tap item → viewer (non-select) หรือ toggle select (badge ลำดับ 1,2,…)
+- Grid + date group label `October 2569 BE` (mock — แปล `ต.ค. 2569` ผ่าน I18N_TH แล้ว FSP-041; ที่เหลือคือ grouping-by-date ยังไม่ได้ implement — deviation); tap item → viewer (non-select) หรือ toggle select (badge ลำดับ 1,2,…)
 - Bottom bar (select mode): Trash → ลบ `t.media` ที่เลือก + `ลบรูปภาพที่เลือกแล้ว`; Download → `บันทึกลงในรูปภาพแล้ว` — **ไม่มี Share**
 - Empty → `No photos or videos found.` card; missing thread → `Chat not found`
 - `t.galState{selecting,selected}` reset เมื่อปิด
@@ -390,7 +390,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 20. **media send ไม่ un-hide / ไม่ move-to-top** — quirk ต่างจาก `chSend`
 21. **`cfg` toggles/defView/quick ไม่ reset ตอน session switch** — `applySessionData` เคลียร์แค่ inited/threads/draft
 22. **Ask post lookup fail → `Not in this prototype yet`** — fallback dead toast (`.ask-pill` อยู่ใน dead-handler list หลัง chatClick)
-23. **EN/TH hardcoded strings ~40 copies** → language sweep FSP-026 (ดู §13/§19)
+23. ~~**EN/TH hardcoded strings ~40 copies**~~ — **RESOLVED FSP-041 (2026-11-06)**: ครอบ I18N_TH dict + isTh ternary ทุกจุด (§13 empties, gallery `{n} selected`/`Deselect`, `{n} chats`, `Your listing · …`, `alt="Media"` — ดู §13/§19)
 24. **`pfRestrictHint`** — wire หลัง `dlg-unblock-go` แล้ว + I18N_TH — banner ~6s แสดงจริงตาม canonical 06 (resolved 2026-10-29)
 25. **State ของ thread เป็น server-backed (DEC-25)** — threads/pins/mutes/hidden/cfg/read; draft/galState เป็น memory
 
@@ -465,7 +465,7 @@ gear → chatcfg → toggles (notif/preview/followOnly) flip ทันที
 | room/chmenu/chmedia/chsettings missing thread | `Chat not found` + `This conversation is no longer available.` |
 | chatitem missing group | `Item not found` + `No chats for this item.` |
 
-EN-hardcode ทั้งชุด (language sweep — §19 flag)
+แปลผ่าน I18N_TH dict ครบทั้งชุดแล้ว (resolved FSP-041)
 
 ---
 
@@ -627,7 +627,7 @@ EN-hardcode ทั้งชุด (language sweep — §19 flag)
 - `pfRestrictHint` — wire แล้ว (resolved 2026-10-29)
 - ~~`mute` ไม่นับ badge (chUnread filter) + per-thread mute มีผล notification~~ RESOLVED 2026-10-29 (badge ไม่นับห้อง mute/ซ่อน)
 - Deep link `chatroom:{id}` / `chat` contract (00_NAV §10/§12)
-- language sweep — EN/TH hardcode (~40 copies) → localized pairs
+- ~~language sweep — EN/TH hardcode (~40 copies) → localized pairs~~ RESOLVED FSP-041
 - Real report reason wiring → moderation queue + ticket id (canonical 15)
 
 

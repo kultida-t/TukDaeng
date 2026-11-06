@@ -70,7 +70,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Post Viewer: 3 modes (`default` scroll-snap / `feed` / `pfp`), rail + foot + `pv-add` actions, sheets (`ps`/`dt`/`nt`/`lk`/`sh`/`sv`/post menus), back + search-icon semantics, detail-over-viewer
 - Watch Alert entry จาก results (`sr-wa` → criteria snapshot + bell `on` state)
 - Guest gate behavior (browse vs gated actions → Member Sheet)
-- Empty/error states ตามที่ prototype render จริง (รวม EN-only copies)
+- Empty/error states ตามที่ prototype render จริง (EN source — แปลผ่าน I18N_TH แล้ว FSP-041)
 - Contract-only: search error path (`S.err` ไม่มี trigger ใน prototype), analytics events
 
 ## Out Of Scope (module อื่นเป็นเจ้าของ)
@@ -337,7 +337,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 - Inputs 2 ช่อง (`Minimum`/`Maximum`) ไม่มี slider; `inputmode="numeric"`
 - ระหว่างพิมพ์: strip ทุก non-digit เงียบ (ตัวอักษร/ทศนิยม/ติดลบ/สัญลักษณ์หายทันที ไม่มี error) + auto-comma; paste `2,000,000` หรือ `20,00,000` → normalize เป็น `2,000,000`
-- Validate เฉพาะตอน `Apply`: `min > max` → `Minimum price must not exceed maximum price`; `max > 2,000,000` → `Maximum price must not exceed 2,000,000` (EN hardcode — deviation)
+- Validate เฉพาะตอน `Apply`: `min > max` → `Minimum price must not exceed maximum price`; `max > 2,000,000` → `Maximum price must not exceed 2,000,000` (แปลแล้วผ่าน I18N_TH — resolved FSP-041)
 - ว่างทั้งคู่ = ไม่ใช้เงื่อนไข; กรอกข้างเดียวใช้ข้างนั้น; min == max = ราคาเท่ากัน; `MAX_PRICE` = 2,000,000 THB
 
 ## Sort Rule
@@ -413,7 +413,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 ## Prototype Deviations & Dead-Code Notes (documented, not spec)
 
-- Search surfaces เกือบทั้งหมด **EN-only** (tabs `For you`/`Profiles`/`Tags`, placeholder `Search`, `Recent`/`See all`/`Cancel`/`Clear all`, `Filters`/`Apply`/`Clear all`/section titles/validation messages, `No data found`/`Try a different keyword or adjust your filters`/`No suggestions`/`No recent searches`, `Something went wrong…`/`Try again`, toasts `Watch alert on`/`updated`/`removed`/`You already saved this alert`/`This post is no longer available`) — มี isTh เฉพาะ seller card (`N รายการประกาศ`/`กำลังติดตาม`/`ติดตาม`), viewer labels, unfollow sheet และ Watch Alert sheet — language gap รวมใน sweep FSP-026
+- Search surfaces เกือบทั้งหมด **EN-only** (tabs `For you`/`Profiles`/`Tags`, placeholder `Search`, `Recent`/`See all`/`Cancel`/`Clear all`, `Filters`/`Apply`/`Clear all`/section titles/validation messages, `No data found`/`Try a different keyword or adjust your filters`/`No suggestions`/`No recent searches`, `Something went wrong…`/`Try again`, toasts `Watch alert on`/`updated`/`removed`/`You already saved this alert`/`This post is no longer available`) — มี isTh เฉพาะ seller card (`N รายการประกาศ`/`กำลังติดตาม`/`ติดตาม`), viewer labels, unfollow sheet และ Watch Alert sheet — แปลครบแล้วผ่าน I18N_TH dict + patterns (resolved FSP-041)
 - `#` query results grid ใช้ `POSTS` กรองแค่ `!muted` → โพสต์ `ni`/`blocked` ยังขึ้นใน hashtag results (spec ยอมรับตาม prototype — flag ให้ FSP-030 consistency sweep)
 - `S.sort` (`plo`/`phi`/`pop`) + `S.err` = dead state (code มี ไม่มี UI/trigger)
 - Explore `.xp-views` badge + `tall` tile = decorative index คงที่ (2/3/7) ไม่ใช่ popularity logic
@@ -484,7 +484,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 # 13. Empty State
 
-| Surface | Copy (prototype — EN only) |
+| Surface | Copy (prototype — EN source; แปลผ่าน I18N_TH แล้ว FSP-041) |
 | --- | --- |
 | Results For you | `No data found` + `Try a different keyword or adjust your filters` |
 | Results Profiles / Tags | `No data found` |
@@ -492,7 +492,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 | Recent section / recents page | `No recent searches` |
 | Watch Alerts list (cross-ref) | `No watch alerts yet — tap the bell on a post or save a search to start one` (canonical 10) |
 
-หมายเหตุ: global empty `ไม่พบข้อมูล`/`No data found` ของ 00_GLOBAL §11 ตรงเฉพาะส่วน `No data found`; sub-copy `Try a different keyword or adjust your filters` เป็น variant ของ module นี้; EN-only = deviation (language sweep)
+หมายเหตุ: global empty `ไม่พบข้อมูล`/`No data found` ของ 00_GLOBAL §11 ตรงเฉพาะส่วน `No data found`; sub-copy `Try a different keyword or adjust your filters` เป็น variant ของ module นี้; แปลครบแล้วผ่าน I18N_TH (resolved FSP-041)
 
 # 14. Notification Rules
 
@@ -558,7 +558,7 @@ Contract (S-29 — prototype ไม่มี tracking layer; event names เป�
 | AC-SEARCH-036 | Asset `Sale`→`Sold`/`Hide`/`Show` หรือ post ที่หลุด price ต้องหายจาก results Posts grid + filter counts + WA match; `Hide`/`Show`→`Sale` ต้องกลับเข้า |
 | AC-SEARCH-037 | Blocked seller ต้องหายจาก results grid/explore/accounts/profiles/suggestions (ยกเว้น `#` grid — deviation); muted ต้องหายทุก search surface |
 | AC-SEARCH-038 | Report จาก `...` ใน viewer ต้องเปิด report stack `rp-over` ทับ viewer และไม่ทำให้โพสต์หายจาก results ทันที |
-| AC-SEARCH-039 | Results ว่างต้องแสดง `No data found` (+ `Try a different keyword or adjust your filters` บน For you); error state (contract) = `Something went wrong. Please try again.` + `Try again` — ทุก copy EN-only (deviation) |
+| AC-SEARCH-039 | Results ว่างต้องแสดง `No data found` (+ `Try a different keyword or adjust your filters` บน For you); error state (contract) = `Something went wrong. Please try again.` + `Try again` — ทุก copy แปลผ่าน I18N_TH แล้ว (resolved FSP-041) |
 | AC-SEARCH-040 | V1 ต้องไม่มี sort UI / result count / pull-to-refresh / infinite scroll / end-of-list marker บน search results — grid render ครั้งเดียว |
 
 # 17. Related Modules
@@ -579,7 +579,7 @@ Contract (S-29 — prototype ไม่มี tracking layer; event names เป�
 
 - Sort control บน results (`plo`/`phi`/`pop` มี dead code รองรับ)
 - Result count / pull-to-refresh / infinite scroll / end-of-list marker
-- TH localization ของ search surfaces ทั้งหมดต้องครบตาม DEC-19 (ปัจจุบัน EN-only ยังไม่ครบ — language sweep FSP-026)
+- ~~TH localization ของ search surfaces ทั้งหมดต้องครบตาม DEC-19~~ RESOLVED FSP-041 — แปลครบผ่าน I18N_TH dict + `i18nTr` patterns แล้ว
 - Saved Search เป็น feature แยก / recents persist ข้าม session
 - Popular Filter / context-aware Popular Model / trending page
 - Entity/option-master suggestions (Condition/Delivery/Case/Movement/Dial/Strap) + `is_active` gating จริงแทน static catalogs

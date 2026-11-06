@@ -402,7 +402,7 @@ Post-side linkage:
 - **`pfo-more`/`PFO_SIMS`** = dev `?dev` preview tooling เท่านั้น (00_NAV §11) — `nomkt`/`empty`/`failed`/`denied` states เป็น contract ไม่ใช่ reachable UI
 - **`sold` post หลุด search/WA match แล้ว** — `salePosts()` = `discoverablePosts()` + `price` (pfkind leak แก้แล้ว); priced `post` match WA ได้ตาม DEC-59
 - **Session-only** — `PF_ASSETS`/`PF_SOLD`/`PF_MINE`/`WATCH_ALERTS` เป็น memory state (sign-out/reset ล้าง); persistence = contract
-- **EN/TH mixed** — portfolio/sell/sold surfaces มี isTh ครบ; composer toasts `Posted ·…` ต้องแปลไทยตาม DEC-19 (`Watch alert matched` ถูกถอดแล้ว 2026-11-05) (language sweep FSP-026)
+- **EN/TH mixed** — portfolio/sell/sold surfaces มี isTh ครบ; composer toasts `Posted ·…` แปลไทยแล้วตาม DEC-19 (`Watch alert matched` ถูกถอดแล้ว 2026-11-05) (resolved FSP-041)
 
 ---
 

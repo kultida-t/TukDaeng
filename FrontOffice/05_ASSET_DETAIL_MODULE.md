@@ -374,7 +374,7 @@ Spec เลือกตาม prototype — รายการนี้คือ
 | 12 | `POST_DETAIL_CFG` per-post overrides | dev artifact (เปลี่ยน ask/ds/pr/dh/dl/tg ตาม post id) — ทุก seed posts ใช้ dl1; ไม่เขียนเป็น feature (00_NAV §11 tooling rule) |
 | 13 | dl2/dh2/dh4/dh5/ds variants/pr variants/tg2 dead | `igDetailHTML` (post-head+caption+ask+save+liked-by), accordion/cards/tabs spec layouts, price variants — dead paths ทั้งหมด |
 | 14 | Detail ไม่ persist/deep-link | ไม่มี route — external deep link contract อยู่ 00_NAV §10 เท่านั้น |
-| 15 | EN-hardcoded strings | `Follow this model`/`Following this model`/`No details on this post to watch`/`Added to Wish List`/`Removed from your wish list`/`Sent to X`/`Link copied`/`Listing detail isn't in this prototype yet` — language sweep FSP-026 |
+| 15 | ~~EN-hardcoded strings~~ | `Follow this model`/`Following this model`/`No details on this post to watch`/`Added to Wish List`/`Removed from your wish list`/`Sent to X`/`Link copied`/`Listing detail isn't in this prototype yet` — แปลครบผ่าน I18N_TH/`i18nTr` (RESOLVED FSP-041) |
 | 16 | `pfKind()` fallback | โพสต์ไม่มี `pfkind` infer จาก price (seed/gfx) — canonical อยู่ 04 (documented ที่นั่นแล้ว) |
 | 17 | State session-only | `liked`/`wishlisted`/`wlCols`/`modelFollowing` เป็น memory state — persistence = contract |
 
