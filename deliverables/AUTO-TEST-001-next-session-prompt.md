@@ -5,8 +5,9 @@
 - PoC suite = 6 flows เขียวครบ: A feed-browse / B guest-gate / C sign-in /
   D guest-gate-deep / E search-guest / F member+sign-out (+ 2 subflows)
 - Triage matrix ครบ 19 เล่ม 1,832 TC (auto 389 / semi 1,346 / manual 97)
-- Findings เปิดอยู่ F-002..F-011: F-007/008/009/010/011 = spec deviations รอ
-  dev/PO ruling (ดู deliverables/AUTO-TEST-001-findings.md)
+- Findings เปิดอยู่ F-002..F-011: ruling อนุมัติแล้ว — F-007/F-011 = บั๊ก dev
+  (copy block + bug-list file AUTO-TEST-001-bug-report-F007-F011.md พร้อมส่ง)
+  F-008/009/010 = ปรับ spec ฝั่ง QA (งานแรก session นี้)
 - member session ตอนนี้ถูก sign-out แล้ว (flow-f จบด้วย logout) — emulator = guest
 
 == setup (ทำเสร็จแล้ว ห้ามทำซ้ำ) ==
