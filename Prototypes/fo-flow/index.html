@@ -24311,6 +24311,11 @@
         if (obLast === "created") OB.f.pw = ""; /* post-signup prefill is email only — the password is never carried over */
         else if (!OB.f.email && !OB.f.pw) { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; }
       }
+      /* a fresh sign-up always starts clean — fields typed on the sign-in page (incl.
+         the demo prefill) must not leak into a new-account form; values are kept only
+         when stepping back inside the same signup flow (otp/profile/created → signup) */
+      if (s === "signup" && !["signup", "otp", "profile", "created"].includes(obLast))
+        OB.f = { name: "", email: "", pw: "", user: "", photo: OB.f.photo || "" };
       if (s === "member" && !OB.gate && localStorage.getItem("fo_member_hide") === "1") return obFinish("");
       const r = obRoot(), clear = OB.recon || s === "member";
       if (r && r.classList.contains("recon") !== clear) return obMount();

@@ -338,6 +338,25 @@ function check(name, ok, extra = "") {
       r.signQ && r.signBtn && r.noLog && r.row === "Sign out", JSON.stringify(r));
   }
 
+  // ===== T17: QA find — sign-in creds ต้องไม่รั่วเข้าฟอร์ม sign up (member sheet → Sign up ว่าง) =====
+  {
+    const r = await page.evaluate(`(() => {
+      OB.on = true; OB.gate = false; obMount();
+      obGo("signin"); /* sign-in prefill ใส่ demo creds ลง OB.f */
+      const filled = OB.f.email + "|" + OB.f.pw;
+      obGo("member"); obGo("signup");
+      const afterGo = { email: OB.f.email, pw: OB.f.pw, input: document.querySelector('.ob [data-f="email"]').value };
+      /* back-nav ภายใน flow เดียวกันต้องเก็บค่าที่พิมพ์ไว้ */
+      OB.f.email = "keep@x.com"; OB.step = "otp"; obDraw();
+      obGo("signup");
+      const kept = OB.f.email;
+      OB.on = false; obMount();
+      return { filled, afterGo, kept };
+    })()`);
+    check("T17 member→signup: ฟิลด์ว่าง (ไม่รั่ว demo creds) + otp→signup เก็บ email",
+      r.afterGo.email === "" && r.afterGo.pw === "" && r.afterGo.input === "" && r.kept === "keep@x.com", JSON.stringify(r));
+  }
+
   // ===== GLOBAL =====
   check("GLOBAL ไม่มี page error", errors.length === 0, errors.join(";"));
 
