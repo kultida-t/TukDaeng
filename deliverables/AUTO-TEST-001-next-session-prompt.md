@@ -34,14 +34,23 @@
   typing state จำ query เดิม → clear-X ก่อนพิมพ์เสมอ
 - price ceiling ฿2,000,000 · sign-out: profile tab → burger 93%,8% → ออกจากระบบ → dialog
 
-== งาน session ถัดไป (เรียงลำดับ) ==
-1. ส่ง findings F-007..F-011 ให้ Dev แก้วทาง LINE (เป็น spec deviations
-   ต้อง ruling: แก้แอปหรือแก้ spec) — ตารางพร้อมก๊อปใน findings.md
+== งาน session ถัดไป (เรียงลำดับ — พี่อนุมัติ ruling แล้ว 2026-11-06) ==
+1. ปรับ spec/prototype test case ตาม QA ruling ที่พี่อนุมัติ:
+   - F-008: แก้ GATE-042 → Following/Favorites = gated entry (expected = Member Sheet)
+     · อัปเดต checklist FO-TEST-001-17 + triage-17 + flow-d comment (เอา F-008 marker ออก)
+   - F-009: แก้ GATE-033 tail → action gate หลัง Don't-show = sheet หรือ full sign-in page ก็ได้
+     · อัปเดต checklist/triage/flow-d comment
+   - F-010: แก้ GATE-015 → bookmark shortcut = gated entry (ไม่เปิด saved hub ว่าง)
+     · อัปเดต checklist/triage/flow-e comment
+   - F-007 + F-011 = บั๊ก dev ต้องแก้ — copy block ส่ง Dev แก้วทาง LINE อยู่ใน
+     session ก่อน (chat 2026-11-06 เย็น) · เปลี่ยนสถานะเป็น REPORTED เมื่อพี่ส่งแล้ว
+   - flow asserts ที่เขียนตาม actual เดี๋ยวนี้ถูกแล้วกับ spec ใหม่ → ปรับ comment
+     เลิกอ้าง F-008/009/010; F-007/F-011 คง assert actual ไว้เป็น signal จน dev fix
 2. ขยาย coverage ต่อ: board/article read (GATE-044), viewer/detail read (045),
    public profile read (046), legal viewer (047), free-browse sweep (048),
    เล่มอื่นที่ auto ได้บน guest (feed detail/viewer เล่ม 06/07)
 3. รอ staging APK จาก Dev แก้ว → report/block/delete บน staging เท่านั้น
-4. ติดตามผล fix: F-005 (reset validator), F-006 (profile spinner), F-007..F-011
+4. ติดตามผล fix: F-005 (reset validator), F-006 (profile spinner), F-007/F-011
 5. verify F-002/F-003/F-004 + TalkBack บนเครื่องจริงเมื่อมี
 6. Blocker ที่ต้องขอ: บัญชี ACCT-2 (social/chat/alerts/e2e), media gallery
 
