@@ -13554,7 +13554,8 @@
         .replace(/(\d+)m/g, "$1 นาที")
         .replace(/(\d+)h/g, "$1 ชม.")
         .replace(/(\d+)d/g, "$1 วัน")
-        .replace(/(\d+)w/g, "$1 สัปดาห์");
+        .replace(/(\d+)w/g, "$1 สัปดาห์")
+        .replace(/just now/i, "เมื่อสักครู่");
     }
 
     function askBtnHTML(defaultSolid) {
@@ -13658,7 +13659,7 @@
       ${dots ? `<div class="photo-dots">${p.photos.map((_, i) => `<span class="${i === 0 ? 'on' : ''}"></span>`).join("")}</div>` : ""}
       <div class="detail-pad">
         <div class="post-actions" style="padding:6px 0 2px;margin:0 -5px 0 -7px">
-          <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
+          <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}${isOwnPost(p) && p.likes ? `<span class="lk-n">${p.likes}</span>` : ""}</button>
           ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
           ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
           <button class="act share-btn">${I.share(22)}</button>
@@ -13772,7 +13773,7 @@
     </div>
     ${dots ? `<div class="photo-dots">${p.photos.map((_, i) => `<span class="${i === 0 ? 'on' : ''}"></span>`).join("")}</div>` : ""}
     <div class="post-actions">
-      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
+      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}${isOwnPost(p) && p.likes ? `<span class="lk-n">${p.likes}</span>` : ""}</button>
       ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
@@ -14531,7 +14532,7 @@
     ${dots ? `<div class="photo-dots">${p.photos.map((_, i) => `<span class="${i === 0 ? 'on' : ''}"></span>`).join("")}</div>` : ""}
 
     <div class="post-actions">
-      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
+      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}${isOwnPost(p) && p.likes ? `<span class="lk-n">${p.likes}</span>` : ""}</button>
       ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
@@ -14684,7 +14685,7 @@
       return false;
     };
     state.snooze = false; /* real value lands in applySessionData — CP_ME isn't initialized yet here */
-    state.sensitive = "standard";
+    state.sensitive = "standard"; /* visual parity only — no post carries a sensitive flag to filter yet */
 
     let scrToastTimer;
     function scrToast(scr, msg, thumb = "") {
@@ -14811,13 +14812,14 @@
       if (f.dial.length && !f.dial.some(d => specOf(p, "Dial Color").includes(d))) return false;
       if (f.strap.length && !f.strap.some(s => strapMatch(p, s))) return false;
       if (f.deliv.length && !f.deliv.some(v => delivMatch(p, v))) return false;
-      const pr = priceNum(p) || 0;
+      /* a post with no price never satisfies an active price bound — same rule as the filter-chip re-check */
+      const pr = priceNum(p);
+      if ((f.pmin !== "" || f.pmax !== "") && pr == null) return false;
       if (f.pmin !== "" && pr < +f.pmin) return false;
       if (f.pmax !== "" && pr > +f.pmax) return false;
       return true;
     }
     function searchResults(S) {
-      const isTag = S.q.trim().startsWith("#");
       /* results = every post visible on the feed (post + sale) — same set for keyword and #tag queries */
       let list = discoverablePosts().filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
       if (S.sort === "plo") list = [...list].sort((a, b) => priceNum(a) - priceNum(b));
@@ -14962,12 +14964,13 @@
     </div>`;
       return head + `<div class="sub-scroll sr-body">${typing ? (S.q.trim() ? suggestHTML(S) : recentHTML(S)) : landingHTML()}</div>`;
     }
-    /* Accounts/Profiles lists only sellers whose NAME matches the query — like IG, post sellers don't count */
+    /* Accounts/Profiles lists only sellers whose NAME matches the query — like IG, post sellers
+       don't count and your own account never shows up (no self-follow path) */
     function resultSellers(S) {
       const q = S.q.trim().toLowerCase();
       if (!q) return [];
       const seen = new Map();
-      POSTS.forEach(p => { if (p.seller.toLowerCase().includes(q) && !PF_BLOCKED.has(p.seller) && !seen.has(p.seller)) seen.set(p.seller, p); });
+      POSTS.forEach(p => { if (p.seller !== CP_ME.name && p.seller.toLowerCase().includes(q) && !PF_BLOCKED.has(p.seller) && !seen.has(p.seller)) seen.set(p.seller, p); });
       return [...seen.values()];
     }
     function sellerCardHTML(p) {
@@ -15005,8 +15008,8 @@
     <div class="pv-grad"></div>
     <div class="pv-rail">
       <div class="pv-grp">
-        <button class="pv-act like-btn${p.liked ? " liked" : ""}">${I.heart(26)}</button>
-        ${p.likes && p.likedBy ? `<button class="pv-act pv-lbl liked-by">${isTh ? "ถูกใจ" : "Likes"}</button>` : ""}
+        <button class="pv-act like-btn${p.liked ? " liked" : ""}">${I.heart(26)}${isOwnPost(p) && p.likes ? `<span class="lk-n">${p.likes}</span>` : ""}</button>
+        ${p.hideCounts || !p.likes || !p.likedBy ? "" : `<button class="pv-act pv-lbl liked-by">${isTh ? "ถูกใจ" : "Likes"}</button>`}
       </div>
       ${p.noComments ? "" : `<button class="pv-act comment-btn">${I.comment(25)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="pv-act">${I.eye(23)}<span>${p.views}</span></span>`}
@@ -15038,11 +15041,11 @@
       </div>
       <div class="ps-cap"><b>${esc(p.seller)}</b> ${igCaptionHTML(p)}</div>
       <div class="ps-time">${p.time}</div>
-      ${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No comments yet</div>`}
+      ${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">${isTh ? "ยังไม่มีความคิดเห็น" : "No comments yet"}</div>`}
     </div>
     <div class="comment-input">
       <img src="${myAvatarSrc()}" alt="">
-      <input class="ci-field" type="text" maxlength="500" autocomplete="off" placeholder="Add a comment for ${esc(p.seller)}">
+      <input class="ci-field" type="text" maxlength="500" autocomplete="off" placeholder="${isTh ? `เพิ่มความคิดเห็นสำหรับ ${esc(p.seller)}` : `Add a comment for ${esc(p.seller)}`}">
       <button class="ci-send" hidden>${state.lang === "th" ? "โพสต์" : "Post"}</button>
     </div>`;
     }
@@ -17621,7 +17624,7 @@
       </div>` : ""}
       ${!own ? `<div class="pf-chrow"><span class="pf-link"><b class="pf-atch">@</b>${esc(u.user)}</span></div>` : ""}
     </div>
-    ${!own && u.followedBy.length ? `<div class="pf-fby"><span class="pf-fbavs">${u.followedBy.slice(0, 3).map(n => `<img src="${pfAvatar(n)}" alt="">`).join("")}</span><span>${isTh ? `ติดตามโดย ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` และ <b>${esc(u.fbyMore)}</b>` : ""}` : `Followed by ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` and <b>${esc(u.fbyMore)}</b>` : ""}`}</span></div>` : ""}
+    ${!own && !isF && u.followedBy.length ? `<div class="pf-fby"><span class="pf-fbavs">${u.followedBy.slice(0, 3).map(n => `<img src="${pfAvatar(n)}" alt="">`).join("")}</span><span>${isTh ? `ติดตามโดย ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` และ <b>${esc(u.fbyMore)}</b>` : ""}` : `Followed by ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` and <b>${esc(u.fbyMore)}</b>` : ""}`}</span></div>` : ""}
     <div class="pf-actions">
       ${own
           ? `<button class="pf-btn pf-edit">${isTh ? "แก้ไขโปรไฟล์" : "Edit profile"}</button><button class="pf-btn pf-share">${isTh ? "แชร์โปรไฟล์" : "Share profile"}</button><button class="pf-btn pf-iconbtn pf-pfo" data-sub="portfolio" title="${isTh ? "พอร์ตโฟลิโอ" : "Portfolio"}">${I.wallet(16)}</button>`
@@ -17658,7 +17661,7 @@
       <img src="${p.avatar}" alt="">
       <span class="lg-b"><span class="mn">${esc(n)}</span></span>
       ${own
-            ? `<button class="mact pf-msg">${state.lang === "th" ? "แชท" : "Chat"}</button><button class="pfl-ic ${tab === "followers" ? "pf-rmf" : "pf-dots"}" data-u="${esc(n)}" title="${tab === "followers" ? "Remove" : "More"}">${tab === "followers" ? I.x(18) : I.dots(20)}</button>`
+            ? `<button class="mact pf-msg">${state.lang === "th" ? "แชท" : "Chat"}</button><button class="pfl-ic ${tab === "followers" ? "pf-rmf" : "pf-dots"}" data-u="${esc(n)}" title="${tab === "followers" ? (state.lang === "th" ? "นำออก" : "Remove") : (state.lang === "th" ? "เพิ่มเติม" : "More")}">${tab === "followers" ? I.x(18) : I.dots(20)}</button>`
             : `<button class="mact pf-flw${isF ? " on" : ""}" data-u="${esc(n)}">${isF ? "Following" : "Follow"}</button>`}
     </div>`;
       }).join("");
@@ -18633,7 +18636,7 @@
           const pv = scr.querySelector(".page-pv");
           pv.querySelector(".pfp-tt")?.classList.add("solo");
           pv.querySelector(".pfp-follow")?.remove();
-          if (!p.following) pv.querySelector(".post-head .more")?.insertAdjacentHTML("beforebegin", `<button class="follow-btn">Follow</button>`);
+          if (!p.following) pv.querySelector(".post-head .more")?.insertAdjacentHTML("beforebegin", `<button class="follow-btn">${state.lang === "th" ? "ติดตาม" : "Follow"}</button>`);
         } else pushSub(scr, "al_unavail"); /* contract: unavailable state parity with like/comment (resolved FSP-030) */
       }
       else if (a.type === "system") {
@@ -18676,6 +18679,11 @@
     ].map(a => ({ liked: false, ...a }));
     const bdGet = id => BOARD.find(a => a.id === id);
     const bdMeta = (a, dot = "·") => `${a.min} min read  ${dot}  ${a.ago}`;
+    /* DEC-25 — article likes are per-account: keep the mock baseline counts aside so a
+       session switch can re-derive liked/likes from the account's own store (fo_bdlike:{user},
+       same convention as fo_snooze:{user}) instead of letting one session leak into the next */
+    const BD_LIKES0 = new Map(BOARD.map(a => [a.id, a.likes]));
+    const bdLikesKey = () => `fo_bdlike:${CP_ME.name}`;
     const bdFeatured = () => BOARD.filter(a => a.feat).sort((x, y) => x.feat - y.feat);
     const bdLatest = () => BOARD.filter(a => !a.feat);
 
@@ -18905,7 +18913,7 @@
   <div class="ch-scroll sub-scroll bd-scroll">
     <div class="bd-sbar">
       <span class="bd-sbar-ic">${I.search(18)}</span>
-      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="${isTh ? "ค้นหาบทความ แบรนด์ หรือประเด็นที่สนใจ..." : "Search articles, brands, or topics..."}" autocomplete="off"><button class="icon-btn" data-bdqclear aria-label="Clear" style="flex:none;${bdQ ? "" : "visibility:hidden"}">${I.x(16)}</button>
+      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="${isTh ? "ค้นหาบทความ แบรนด์ หรือประเด็นที่สนใจ..." : "Search articles, brands, or topics..."}" autocomplete="off"><button class="icon-btn" data-bdqclear aria-label="${isTh ? "ล้าง" : "Clear"}" style="flex:none;${bdQ ? "" : "visibility:hidden"}">${I.x(16)}</button>
     </div>
     <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>${isTh ? "ค้นหา" : "Search"}</span></div>
     <div class="bd-res">${bdResultsHTML()}</div>
@@ -19058,6 +19066,7 @@
           scr.querySelectorAll(`[data-bdlike-count="${a.id}"]`).forEach(el => {
             el.textContent = a.likes;
           });
+          localStorage.setItem(bdLikesKey(), JSON.stringify(BOARD.filter(x => x.liked).map(x => x.id)));
         }
         return true;
       }
@@ -19072,10 +19081,10 @@
       const isBlk = pfIsBlocked(t.user) || !!t.blocked;
       return `<div class="ch-row-wrap" data-tid="${t.id}">
     <div class="ch-act-left">
-      <button class="ch-act-cir ch-act-pin" data-chact="pin" data-tid="${t.id}" title="${t.pinned ? "ยกเลิกปักหมุด" : "ปักหมุด"}">
+      <button class="ch-act-cir ch-act-pin" data-chact="pin" data-tid="${t.id}" title="${t.pinned ? (isTh ? "ยกเลิกปักหมุด" : "Unpin") : (isTh ? "ปักหมุด" : "Pin")}">
         ${t.pinned ? I.chUnpin(20) : I.chPin(20)}
       </button>
-      <button class="ch-act-cir ch-act-mute" data-chact="mute" data-tid="${t.id}" title="${t.muted ? "เปิดการแจ้งเตือน" : "ปิดการแจ้งเตือน"}">
+      <button class="ch-act-cir ch-act-mute" data-chact="mute" data-tid="${t.id}" title="${t.muted ? (isTh ? "เปิดการแจ้งเตือน" : "Unmute") : (isTh ? "ปิดการแจ้งเตือน" : "Mute")}">
         ${t.muted ? I.chUnmute(22) : I.chMute(22)}
       </button>
     </div>
@@ -19087,7 +19096,7 @@
       <span class="ch-main">
         <span class="ch-name-line">
           <b class="ch-name">${esc(t.user)}</b>
-          ${isBlk ? `<span class="ch-blk-badge">${isTh ? "บล็อกแล้ว" : "Blocked"}</span>` : (t.muted ? `<span class="ch-mute-ico" title="ปิดแจ้งเตือน">${I.chMute(13)}</span>` : "")}
+          ${isBlk ? `<span class="ch-blk-badge">${isTh ? "บล็อกแล้ว" : "Blocked"}</span>` : (t.muted ? `<span class="ch-mute-ico" title="${isTh ? "ปิดแจ้งเตือน" : "Muted"}">${I.chMute(13)}</span>` : "")}
         </span>
         <span class="ch-prev-line"><span class="ch-prev">${last ? (last.f === "me" ? (isTh ? "คุณ: " : "You: ") : "") + esc(last.t || "") : ""}</span></span>
       </span>
@@ -19314,16 +19323,16 @@
     <div class="ch-rsearch-box">
       <span class="ch-rsearch-ico">${I.search(16)}</span>
       <input class="ch-room-search-in" placeholder="Messages" value="${esc(t.roomQuery || "")}" autofocus>
-      ${t.roomQuery ? `<button class="ch-room-search-clear" title="ล้างข้อความ">${I.x(14)}</button>` : ""}
+      ${t.roomQuery ? `<button class="ch-room-search-clear" title="${isTh ? "ล้างข้อความ" : "Clear"}">${I.x(14)}</button>` : ""}
     </div>
-    <button class="ch-room-search-close" title="ยกเลิก">${I.x(20)}</button>
+    <button class="ch-room-search-close" title="${isTh ? "ยกเลิก" : "Cancel"}">${I.x(20)}</button>
   </div>` : `
   <div class="ch-rhead">
     ${back}
     <span class="n" data-pf-user="${esc(t.user)}">${esc(t.user)}</span>
     <span class="spacer"></span>
-    <button class="icon-btn${t.searching ? " active" : ""}" data-chgo="room-search" title="ค้นหาในแชท">${I.search(20)}</button>
-    <button class="icon-btn" data-chgo="more" title="เมนู">${I.burger(21)}</button>
+    <button class="icon-btn${t.searching ? " active" : ""}" data-chgo="room-search" title="${isTh ? "ค้นหาในแชท" : "Search in chat"}">${I.search(20)}</button>
+    <button class="icon-btn" data-chgo="more" title="${isTh ? "เมนู" : "Menu"}">${I.burger(21)}</button>
   </div>`;
 
       return `
@@ -19852,12 +19861,6 @@
           scrToast(scr, state.lang === "th" ? "คัดลอกประวัติแชทเรียบร้อยแล้ว" : "Chat history copied");
         } else if (a === "wallpaper") {
           scrToast(scr, state.lang === "th" ? "การเปลี่ยนพื้นหลังแชทจะเปิดให้ใช้งานเร็ว ๆ นี้" : "Chat wallpaper is coming soon");
-        } else if (a === "report-chat") {
-          const u = act.dataset.user || (t ? t.user : "");
-          if (u) scr.dataset.rpUser = u;
-          scr.dataset.rpFromChat = "true";
-          delete scr.dataset.rpDelChat;
-          rpPush(scr, "report:user");
         }
         return true;
       }
@@ -20431,6 +20434,9 @@
       /* TH-mode leftovers — chat/sheets/QR/create-post strings that only existed in English */
       "Collection deleted": "ลบคอลเลกชันแล้ว", "Messages": "ข้อความ", "Sent": "ส่งแล้ว",
       "Confirm": "ยืนยัน", "COLOR": "สี", "Share profile": "แชร์โปรไฟล์", "Add location": "เพิ่มตำแหน่งที่อยู่",
+      "Not in this prototype yet": "ยังไม่เปิดใช้งานในเดโมนี้",
+      "Chat options aren't in this prototype yet": "ตัวเลือกแชทยังไม่เปิดใช้งานในเดโมนี้",
+      "Listing detail isn't in this prototype yet": "รายละเอียดสินค้ายังไม่เปิดใช้งานในเดโมนี้",
     };
     /* spec VALUES are translated per word, but only inside rows whose label is in this set
        (so Brand / Model / Reference / Calibre stay exactly as entered) */
@@ -20449,7 +20455,6 @@
       ["New", "ใหม่"], ["N/A", "ไม่ระบุ"], ["n/a", "ไม่ระบุ"],
     ];
     const I18N_MON = { Jan: "ม.ค.", Feb: "ก.พ.", Mar: "มี.ค.", Apr: "เม.ย.", May: "พ.ค.", Jun: "มิ.ย.", Jul: "ก.ค.", Aug: "ส.ค.", Sep: "ก.ย.", Oct: "ต.ค.", Nov: "พ.ย.", Dec: "ธ.ค." };
-    const I18N_WD = { Mon: "จ.", Tue: "อ.", Wed: "พ.", Thu: "พฤ.", Fri: "ศ.", Sat: "ส.", Sun: "อา." };
     const I18N_LABEL_REV = {};
     ["Brand", "Collection", "Model", "Reference", "Case Diameter", "Thickness", "Lug-to-Lug", "Case Material", "Case Color", "Bezel Material", "Dial Color", "Dial Pattern",
       "Movement Type", "Calibre", "Power Reserve", "Functions", "Water Resistance", "Strap/Bracelet Material", "Strap Material", "Strap Color", "Clasp Type", "Year",
@@ -20503,6 +20508,7 @@
       if ((m = t.match(/^Sent to (.+)$/))) return `ส่งให้ ${m[1]}`;
       if ((m = t.match(/^Shared to (.+)$/))) return `แชร์ไป ${m[1]}`;
       if ((m = t.match(/^Added (\d+) posts?$/))) return `เพิ่ม ${m[1]} โพสต์แล้ว`;
+      if ((m = t.match(/^You can add up to (\d+) photos or clips$/))) return `เพิ่มรูปหรือคลิปได้สูงสุด ${m[1]} รายการ`;
       if ((m = t.match(/^(\d+) Selected$/))) return `เลือกแล้ว ${m[1]}`;
       if ((m = t.match(/^Message (.+)\.\.\.$/))) return `ส่งข้อความถึง ${m[1]}...`;
       if ((m = t.match(/^Chat with (.+)$/))) return `แชทกับ ${m[1]}`;
@@ -20530,12 +20536,12 @@
     function i18nNode(node, th) {
       if (node.nodeType === 3) {
         const p = node.parentElement;
-        if (!p || p.closest("script,style,textarea,[contenteditable],[data-i18n-skip]")) return;
+        if (!p || p.closest("script,style,textarea,[contenteditable]")) return;
         if (!th) return;
         const r = i18nTr(node.nodeValue, p);
         if (r != null && r !== node.nodeValue) { if (!i18nTextOrig.has(node)) i18nTextOrig.set(node, node.nodeValue); node.nodeValue = r; }
       } else if (node.nodeType === 1) {
-        if (node.matches("script,style,[data-i18n-skip]")) return;
+        if (node.matches("script,style")) return;
         if (th) for (const a of I18N_ATTRS) {
           const v = node.getAttribute(a);
           if (!v) continue;
@@ -21881,8 +21887,6 @@
         return;
       }
       /* settings + content-preferences pages */
-      const setBtn = e.target.closest(".set-btn");
-      if (setBtn) { openSub(setBtn.closest(".screen"), "settings"); return; }
       const subNav = e.target.closest("[data-sub]");
       if (subNav) { pushSub(subNav.closest(".screen"), subNav.dataset.sub); return; }
       const subBk = e.target.closest(".sub-back");
@@ -22539,7 +22543,6 @@
         renderSub(scr);
         if (a === "share") scrToast(scr, "Profile shared");
         else if (a === "copy") scrToast(scr, "Profile link copied");
-        else if (a === "qr") scrToast(scr, "QR code isn't in this prototype yet");
         return;
       }
       const pfOv = e.target.closest(".pf-avov");
@@ -23035,7 +23038,7 @@
         }
         return;
       }
-      const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn):not(.feed-wa)");
+      const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.search-btn):not(.feed-wa)");
       if (dead) { toast("Not in this prototype yet"); return; }
       const wm = e.target.closest(".wordmark");
       if (wm) {
@@ -23966,7 +23969,9 @@
             const bArt = b.closest(".post");
             if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === fp.id) {
               b.classList.add("liked");
-              const ln = b.querySelector(".lk-n");
+              /* own posts render lk-n only when likes>0 — create it on the 0→1 transition */
+              let ln = b.querySelector(".lk-n");
+              if (!ln && isOwnPost(fp)) { ln = document.createElement("span"); ln.className = "lk-n"; b.appendChild(ln); }
               if (ln) ln.textContent = fp.likes || "";
             }
           });
@@ -24053,7 +24058,9 @@
           const bArt = b.closest(".post");
           if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === pid) {
             b.classList.toggle("liked", post.liked);
-            const ln = b.querySelector(".lk-n");
+            /* own posts render lk-n only when likes>0 — create it on the 0→1 transition */
+            let ln = b.querySelector(".lk-n");
+            if (!ln && isOwnPost(post)) { ln = document.createElement("span"); ln.className = "lk-n"; b.appendChild(ln); }
             if (ln) ln.textContent = post.likes || "";
           }
         });
@@ -24488,6 +24495,15 @@
       }
       state.feedTab = "all"; /* every session switch lands back on All Posts */
       state.snooze = snoozeLoad(); /* snooze is per account — CP_ME.name is resolved above */
+      const bdLiked = new Set(JSON.parse(localStorage.getItem(bdLikesKey()) || "[]"));
+      /* the count is the article's, not the viewer's — every account's stored like adds on
+         top of the baseline for everyone; only the filled heart is per-account */
+      const bdAllLikes = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith("fo_bdlike:")) JSON.parse(localStorage.getItem(k) || "[]").forEach(id => { bdAllLikes[id] = (bdAllLikes[id] || 0) + 1; });
+      }
+      BOARD.forEach(a => { a.liked = bdLiked.has(a.id); a.likes = BD_LIKES0.get(a.id) + (bdAllLikes[a.id] || 0); });
       syncModelFlags(); /* restored/cleared alerts re-drive the detail bells */
       /* refresh visible surfaces so badges/feed/follow states match the new session */
       const scr = document.querySelector("#stage .screen");
@@ -24522,7 +24538,7 @@
       ".post-head .more", ".pm-btn", ".pm-go-report", ".pm-fav", ".pm-ni", ".pm-own-archive", ".pm-own-nocomm", ".pm-own-edit", ".pm-own-sold", ".pm-own-soldview", ".pm-own-pin", ".pm-own-del",
       ".rp-opt", ".pm-reason", ".uc-report", ".ni-mute", ".ni-unfollow", ".sr-wa", ".sr-saved", ".feed-wa",
       ".pf-more", ".pf-menu", ".pf-edit", ".pf-share", ".pf-sh-report", ".pf-sh-block", ".blk-rep", ".blk-go", ".ch-rep-del-btn", ".ch-rep-only-btn",
-      ".set-btn", ".sh-add", ".sh-fr", ".pf-sh-share", "[data-bdlike]", "[data-bdshare]"
+      ".sh-add", ".sh-fr", ".pf-sh-share", "[data-bdlike]", "[data-bdshare]"
     ].join(",");
     function obGate() {
       if (OB.on && !OB.gate) return; /* first-run sheet already up */
