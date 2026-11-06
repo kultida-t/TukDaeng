@@ -19,7 +19,10 @@
 | Update 2026-11-06 (รอบ 2) | อาการเดิมเกิดซ้ำกับ flow C: credential `worktest1234` (user ยืนยันว่าเป็นรหัสที่ตั้งตอนสมัครจริง) โดนปฏิเสธรวม 7+ ครั้งข้าม 2 page instances (instance แรก counter ไต่ 1/5→3/5 แล้ว lock 15 นาทีที่ 5/5 — banner 'พยายามหลายครั้งเกินไป ลองใหม่ในอีก 15 นาที' หายเมื่อเปิดหน้าใหม่ตรงกับ dev answers 'นับใหม่เมื่อเปิดหน้าใหม่'; instance ใหม่ลองอีก 2 ครั้ง counter ค้างที่ 1/5 ไม่ขยับ — ตรงกับการสังเกต '1/5 ซ้ำ' ในรอบแรก) — ทุกครั้ง verify field ผ่าน dump ว่าค่าถูก |
 | สาเหตุที่สงสัย (อัปเดต) | ไม่ใช่ delay ชั่วคราวแล้ว — rejection ค้างข้ามชั่วโมง+หลาย instance → น่าจะ credential record ของบัญชีนี้เขียนไม่สำเร็จ/เขียนผิดตอน signup (session ที่ active เองในรอบแรกน่าจะมาจาก token ฝั่ง signup flow ไม่ใช่ password path) → sign-in ด้วย password อาจไม่มีทางสำเร็จจนกว่า backend fix หรือ reset password ใหม่ |
 | ทางออกที่เสนอ | (1) รายงาน Dev แก้วทาง LINE — bug backend: sign-in ปฏิเสธ credential ที่ถูก (2) unblock ตัวเองด้วย 'ลืมรหัสผ่าน' → reset link เข้า Gmail บัญชีเทส → ตั้งรหัสใหม่ (ทดสอบ credential write รอบสองด้วยในตัว) |
-| RESOLVED 2026-11-06 | reset password เป็น `Worktest1234*` (ผ่าน policy) → sign-in สำเร็จทันทีรอบแรก (flow-c เขียว) → root cause เกือบชัวร์: **signup รับ password ที่ไม่ผ่าน policy (worktest1234 ไม่มีตัวพิมพ์ใหญ่+อักขระพิเศษ) แต่ backend ไม่เก็บ credential → บัญชีมีอยู่แต่ไม่มี password ที่ใช้ได้** — ดู F-005 เรื่อง validation หายที่ signup |
+| RESOLVED 2026-11-06 | reset password เป็น `Worktest1234*` (ผ่าน policy) → sign-in สำเร็จทันทีรอบแรก (flow-c เขียว) → root cause เดิมที่คาด: signup รับรหัสไม่ผ่าน policy แต่ backend ไม่เก็บ credential — **ถูก dev แย้งแล้ว ดูบรรทัดถัดไป** |
+| Dev reply 2026-11-06 | (deliverables/AUTO-TEST-001-reply-F001-F005.md) dev ตรวจโค้ดแล้ว: (1) `worktest1234` **ผ่าน policy** — กฎจริงคือ ≥8 ตัว + ตัวเลข/อักขระพิเศษ ≥1 ไม่บังคับตัวพิมพ์ใหญ่ (2) credential น่าจะถูกสร้างแล้ว เพราะ forgot-password reset สำเร็จ → สาเหตุที่ dev สงสัย: รหัสที่บันทึกตอนสมัครอาจไม่ใช่ `worktest1234` (automation พิมพ์เพี้ยน) — ตรวจย้อนไม่ได้เพราะ reset ทับแล้ว |
+| ข้อมูลตอบ dev (จากฝั่งเรา) | automation พิมพ์รหัสผ่าน `inputText` ของ Maestro ลง EditText ที่จับด้วย hint text — ไม่ได้กดรูปตายืนยันก่อนสมัคร (ช่องว่างที่ dev เดาได้ถูก) — รอบ reset ใช้วิธีเดียวกันและผ่าน ดังนั้นโอกาสพิมพ์เพี้ยนรอบแรกมีอยู่จริงแต่ยังไม่ฟันธง |
+| สถานะล่าสุด | PENDING-REVERIFY — dev ขอ manual re-test บนเครื่องจริง (ไม่ใช้ automation): สมัครอีเมลใหม่ + `worktest1234` + กดตาดูรหัสก่อนสมัคร → sign in/out → ส่งผล+เวลา+version+รุ่นเครื่องกลับ — ถ้า sign in ได้ = ปิด Bug 2 (ปัญหาอยู่ขั้นพิมพ์ของ automation); ถ้าไม่ได้ = bug จริง dev ตรวจ prod ต่อ |
 
 ## F-002 — tap "ถูกใจ" บน post card (guest) ครั้งแรกไม่เด้ง gate sheet
 
@@ -44,6 +47,10 @@
 | Expected | form ปฏิเสธตอนกรอก/submit พร้อมแจ้งเงื่อนไขรหัสผ่าน — ไม่ควรสร้างบัญชีถ้า credential ไม่ผ่าน policy |
 | Actual | signup ผ่านเงียบ ๆ → credential record ไม่ถูกสร้าง (หรือถูกปฏิเสธฝั่ง server เงียบ ๆ) → sign-in ด้วยรหัสเดิมโดนปฏิเสธถาวร (F-001) — user มองไม่เห็นสาเหตุเลย |
 | หมายเหตุเพิ่ม | verify แล้ว: reset เป็น `Worktest1234*` (ครบเงื่อนไข) → sign-in ผ่านทันที — ถ้า backend บังคับ policy ฝั่ง server อยู่แล้ว ควรส่ง error ชัดกลับมาให้ signup แสดง แทนปล่อยสำเร็จครึ่งเดียว |
+| Dev reply 2026-11-06 | dev ยืนยัน Bug 1: ฟอร์มสมัครตรวจกฎตัวเลข/อักขระพิเศษแล้วในโค้ดล่าสุด (รอเวอร์ชันใหม่บน Store) — **แต่แย้ง premise ของเรา: `worktest1234` ผ่าน policy ตั้งแต่แรก** (กฎ = ≥8 + เลข/อักขระ ≥1 ไม่บังคับพิมพ์ใหญ่) → root cause ของ F-001 เปลี่ยนเป็น "รหัสที่บันทึกอาจพิมพ์เพี้ยน" ไม่ใช่ "รหัสถูกปฏิเสธฝั่ง server" |
+| สถานะล่าสุด | PARTIAL-FIXED — validation ฝั่งฟอร์มถูกแก้ใน build ถัดไปแล้ว (รอ Store อัปเดต verify ซ้ำ); ส่วนสาเหตุ F-001 รอ manual re-verify ตามที่ dev ขอ |
+| Counter-evidence 2026-11-06 | **ข้อขัดแย้งกับคำตอบ dev:** reset form บน build ปัจจุบันไม่ยอมรับ `worktest1234` — ต้อง `Worktest1234*` (เล็ก+ใหญ่+เลข+อักขระ) ถึงผ่าน → reset form เข้มกว่า signup/backend |
+| Verified 2026-11-06 | manual test: signup `tukdaengworktest@gmail.com` + `worktest1234` → OTP → sign in สำเร็จ → **canonical rule = ≥8 + เลข/อักขระ ตรง spec/prototype** (เช็ก `fo-flow/index.html` :24397 signup + :22108 change_pwd — regex เดียวกัน `!(digit‖special)`); dev ยืนยันยึด prototype เป็น source of truth → **ตัวผิด = reset form (ลิงก์อีเมล) ที่บังคับเข้มกว่า prototype** — เสนอแก้: ผ่อน reset validator ให้ตรง canonical; spec เพิ่มบันทึกครอบ reset แล้ว (FO-TEST-001-01-auth.md) |
 
 ## F-003 — bottom nav hitbox ล้ำขึ้นไปทับแถว "แตะเพื่อดูรายละเอียด" — กดแล้วไปกระดานข่าวแทน
 
@@ -80,3 +87,19 @@
 - เจออะไรระหว่างเทส/probe → เพิ่มรายการตาม template เดียวกัน
 - เมื่อจะแจ้ง dev → ก๊อปตารางของ F-xxx ส่งทาง LINE แล้วเปลี่ยนสถานะเป็น REPORTED
 - เชื่อมกับ TC: ถ้า finding ทำให้ TC fail ให้ note TC ID ไว้ในตารางด้วย
+
+## F-006 — Own profile ของบัญชีใหม่โหลดค้าง (spinner ไม่จบ)
+
+| ฟิลด์ | รายละเอียด |
+|---|---|
+| สถานะ | CONFIRMED — เปิดซ้ำยังหมุนค้าง (user verify 2026-11-06 ~15:50) รอรายงาน dev |
+| พบเมื่อ | 2026-11-06 ~15:40 (emulator tukdaeng_api34, Store build, พิมพ์มือไม่ใช้ automation) |
+| Severity | Medium — member ใหม่เปิดโปรไฟล์ตัวเองไม่ได้ (กริดค้าง spinner) |
+| Steps | signup `tukdaengworktest@gmail.com` + `worktest1234` → OTP → profile → sign in สำเร็จ → แตะแท็บ โปรไฟล์ |
+| Expected | own profile โหลดเสร็จ เห็นกริดว่าง/empty state |
+| Actual | head/avatar/stats (0/0/0) + แท็บ โหลดมาแล้ว แต่พื้นที่กริดเป็น spinner แดงหมุนค้างไม่จบ |
+
+## สรุปผล manual re-verify F-001/F-005 (2026-11-06)
+
+- **F-001 → CLOSED (root cause = input รอบแรก):** manual signup `tukdaengworktest@gmail.com` + `worktest1234` บน emulator พิมพ์มือ → OTP → profile → **sign in สำเร็จทันที** → credential ถูกสร้างปกติ สอดคล้องสมมติฐาน dev (รหัสที่บันทึกรอบแรกไม่ใช่ worktest1234 — automation พิมพ์เพี้ยน) — บัญชีเดิม three3.work.test ใช้ Worktest1234* ต่อได้ปกติ
+- **F-005 → แก้คำอธิบาย:** spec (FO-TC-AUTH-029/077) = `≥8 + เลข/อักขระ ≥1` — signup ตรง spec (รับ worktest1234) แต่ **reset form บังคับเล็ก+ใหญ่+เลข+อักขระ เข้มกว่า spec → บั๊กจริงที่เหลือคือ reset form deviate จาก spec** (ไม่ใช่ signup ที่หละ validation) — แนะนำ dev: ปรับ reset validator ให้ตรง spec หรือเปลี่ยน spec เป็นชุดเดียวกัน

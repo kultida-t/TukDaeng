@@ -286,3 +286,12 @@
 - ขอบเขตที่ตัดออกตาม task breakdown: เมทริกซ์ gated action ทั้งหมด (FO-TEST-17), change_pwd/del_account ในฐานะหน้า settings (FO-TEST-15 ครอบ entry/menu), E2E journey (FO-TEST-18)
 
 - สถิติ: **104 TC** — High 50 / Medium 47 / Low 7 (SETUP rows 7 แถวแยกใน checklist; รวมใน csv 111 แถว)
+
+---
+## บันทึกเพิ่มเติม 2026-11-06 — Password policy canonical
+
+ยึดตาม prototype `Prototypes/fo-flow/index.html` (dev ยืนยัน prototype เป็น source of truth):
+- signup (:24397) และ change_pwd (:22108) ใช้ rule เดียวกัน: `ความยาว ≥8` **และ** `มีตัวเลขหรืออักขระพิเศษอย่างน้อย 1 ตัว` — **ไม่บังคับตัวพิมพ์ใหญ่**
+- error copy: `Password must be at least 8 characters and include at least one number or special character.` / `รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร และมีตัวเลขหรืออักขระพิเศษอย่างน้อย 1 ตัว`
+- **rule นี้ครอบทุกจุดที่ตั้งรหัสผ่าน รวมหน้า reset ผ่านลิงก์อีเมล** — reset form ปัจจุบัน (build Store) บังคับ เล็ก+ใหญ่+เลข+อักขระ เข้มกว่า prototype = deviation (ดู F-005 ใน AUTO-TEST-001-findings.md)
+- ตัวอย่าง: `worktest1234` (12 ตัว มีเลข) = **ผ่าน** ตาม canonical rule — verify แล้ว signup รับจริงและ sign in ได้ (manual test 2026-11-06)

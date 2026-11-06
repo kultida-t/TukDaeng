@@ -110,3 +110,4 @@ AUTH-101,Sign in (lockout),High,semi,"ต้อง lockout state — สร้�
 AUTH-102,Sign in (lockout),High,semi,"ต้อง lockout + ส่ง reset link จริง"
 AUTH-103,Sign in (lockout),High,auto,"ใช้อีเมลที่ไม่มีบัญชีล้วน ไม่ต้องพึ่ง test data — enumeration check อยู่ใน app ทั้งหมด"
 AUTH-104,Sign in (lockout),High,semi,"รอ 15 นาทีจริง + ต้อง sign in สำเร็จ (บัญชีจริง) — long-running"
+AUTH-105,Forgot pwd,High,semi,"ต้องส่ง reset link จริง + เปิดหน้าตั้งรหัสผ่านใหม่จากอีเมล (นอกแอป) — assert policy ตรง canonical; ปัจจุบันรู้ว่า deviate (F-005) รอ fix"
