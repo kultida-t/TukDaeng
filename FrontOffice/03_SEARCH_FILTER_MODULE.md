@@ -25,21 +25,21 @@ Search & Filter Module คือ discovery surface แบบ IG (post-centric �
 
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
 
-- Search constants + state (~14178–14217): `SEARCH_BRANDS`, `SEARCH_POPULAR` (8 chips), `SEARCH_REFS`, `SEARCH_COND`, `SEARCH_DELIV`, `SEARCH_MOVE`, `SEARCH_DIAL`, `SEARCH_CASE`, `SEARCH_STRAP`, `MAX_PRICE` = `2,000,000`; helpers `esc`/`specOf`/`priceNum`/`viewsNum`/`fmtNum`/`unNum` (~14196–14201); `blankFilters`/`srchState` (~14203–14217) — state ผูกกับ screen object (session memory), `recents` seed เป็น mock 6 rows
-- Eligibility + matching (~14218–14260): `discoverablePosts()` (kind `post`+`sale` — ไม่ `ni`/`muted`/`blocked`/`archived`/`show`/`hide`/`sold` — canonical §9), `salePosts()` (`price && !ni && !muted && !blocked`), `haystack`/`matchQuery` (ทุกคำต้องเจอใน haystack), `delivMatch`/`matchFilters`, `searchResults` (`discoverablePosts()` ทุก query mode — keyword + `#` เหมือนกัน), `S.sort` dead (`"new"` เสมอ — `plo`/`phi`/`pop` มี code แต่ไม่มี UI)
-- Count + suggestion helpers (~14261–14302): `filterCount`, `brandCount`/`modelCount`/`optCount`/`strapCount`/`delivCount` (นับจาก `salePosts()`), `sellerAvatar`/`sellerSub`, `pushRecent` (dedupe แบบ case-insensitive + cap 8), `suggestRows` (keyword ≤6 + sellers ≤4)
-- Tags + explore (~14303–14319): `tagRows` (hashtag จาก caption ทุกโพสต์ `!muted` + `CF_TAGS` seed), `exploreTiles` (ทุก photo ของทุกโพสต์ `!ni && !muted && !blocked`; tall/views badge = decorative index คงที่)
-- Search UI (~14320–14633): `landingHTML` (chips + `xp-grid`), `recentRowHTML`/`recentHTML`/`recentPageHTML`, `suggestHTML`, `activeFilterChips`, `searchHTML` (modes `landing`/`typing`/`results`), `resultSellers`, `accountRowHTML`, `sellerCardHTML` (มี isTh branch บางส่วน), `resultGridHTML`, `searchResultsHTML` (head/tabs/sections/empty/error blocks)
-- Filter page (~14634–14685): `filterHTML` (sections + `fDraft` clone + `Apply (N)` + `Clear all`), `applyFilters` (validate → `.flt-err` หรือ commit + `_subStack = ["search"]`)
-- Post viewer (~14419–14586 + CSS ~3686–3760): `pvPostHTML` (rail/foot/`pv-add`), `pvPostSheetHTML` (`ps` sheet), `pvDetailsSheetHTML` (`dt` sheet), `svfPostHTML`/`pfpPostHTML`, `openPostViewer` (default / `feed` / `pfp` modes); `.pv-track` `scroll-snap-type: y mandatory` + `.pv-post` `scroll-snap-align: start` / `snap-stop: always`
-- Entries: `.search-btn` บน feed app-header (~19355); `.igd-tag` hashtag ใน caption → `openSub("search")` + preset q (~22590–22597); `.sr-saved` → `pushSub("saved")` (~21132–21133); `.sr-chip ico` / `.flt-open` → `sfilter`
-- Search handlers (~21103–21273): `.search-btn`/`.sr-x`/`.sr-cancel`/`.sr-fake`/`.sr-saved`/`.sr-pick`/`.rc-all`/`.rc-clear`/`.rc-x`/`.rc-row`+`.ac-row`/`.sr-tab`/`.sc-follow`/`.xp-tile`/`.pv-back`/`.pv-srch`/`.pv-add`/`[data-rm]`/`.sr-retry`/`.flt-chip`/`.flt-clear`/`.flt-apply`; Enter submit (~19939–19946); live suggestion input (~20082–20089); price auto-comma + digits-only (~20107–20120); chips-row drag scroll (~20137–20154)
-- Back semantics (~14842–14868 + ~20750–20780): `subBack` — `sfilter` → `fDraft = null` ทิ้ง draft; `search` mode `results` → `mode = "landing"`; pick จาก `recents` page → `_subStack = ["search"]`
-- Sheets + actions บน viewer: `.liked-by` → likes sheet (~22030–22038), share (~22046–22067), save (~22490–22520), comment (`pv-add` → `nt` variant ~21215–21227, `.comment-btn` ~22015–22028), `more-link` → `ps` + `details-toggle.pv-dt` → `dt` (~22567–22610), `.view-full` → `openPostDetail` ทับ viewer (~21849–21857), `follow-btn` → unfollow sheet (~21859–21898), `.pm-btn` → own/others post menu + `rpOpenFromPost` report stack ทับ viewer (`rp-over`, ~14872–14882)
-- Watch Alert: `WA_FK_LABEL` (~16117–16121), `waCriteriaFromSearch`/`waCriteriaFromPost` (~16124–16160), `critMatch`/`alertMatch`/`alertMatchCount`/`waSig`/`waName`/`modelKeyOf`/`syncModelFlags`/`refreshMfBtns` (~16161–16213), `waModesHTML`/`waSheetHTML`/`waRowHTML`/`walertsHTML` (~16215–16279); handlers `.sr-wa`/`.wa-mode`/`.wa-go`/`.wa-del`/`.wa-tgl` (~21899–22013); entry ที่ 2 `mf-btn` บน Post Detail (~21899–21917)
-- Guest gate `GUEST_GATE_SEL` + `obGate` (~22997–23012): `.sr-wa`/`.follow-btn`/`.sc-follow`/`.like-btn`/`.save-btn`/`.share-btn`/`.pm-btn`/`.comment-input`/`.lk-follow` gated; search/explore/filter/viewer surfaces ไม่ gated
-- Notification → viewer (~17806–17821): watch alert row → `pfp` viewer 1 โพสต์; like/comment row → own post `pfp` viewer; post หาย → toast `This post is no longer available`
-- Language re-render รักษา scroll ของ viewer/sub page (~19700–19723)
+- Search constants + state (~14724–14770): `SEARCH_BRANDS`, `SEARCH_POPULAR` (8 chips), `SEARCH_REFS`, `SEARCH_COND`, `SEARCH_DELIV`, `SEARCH_MOVE`, `SEARCH_DIAL`, `SEARCH_CASE`, `SEARCH_STRAP`, `MAX_PRICE` = `2,000,000`; helpers `esc`/`specOf`/`priceNum`/`viewsNum`/`fmtNum`/`unNum` (~14742–14747); `blankFilters`/`srchState` (~14749–14770) — state ผูกกับ screen object (session memory), `recents` seed เป็น mock 6 rows
+- Eligibility + matching (~15324–15366): `discoverablePosts()` (kind `post`+`sale` — ไม่ `ni`/`muted`/`blocked`/`archived`/`show`/`hide`/`sold` — canonical §9), `salePosts()` (`price && !ni && !muted && !blocked`), `haystack`/`matchQuery` (ทุกคำต้องเจอใน haystack), `delivMatch`/`matchFilters`, `searchResults` (`discoverablePosts()` ทุก query mode — keyword + `#` เหมือนกัน), `S.sort` dead (`"new"` เสมอ — `plo`/`phi`/`pop` มี code แต่ไม่มี UI)
+- Count + suggestion helpers (~14830–14874): `filterCount`, `brandCount`/`modelCount`/`optCount`/`strapCount`/`delivCount` (นับจาก `salePosts()`), `sellerAvatar`/`sellerSub`, `pushRecent` (dedupe แบบ case-insensitive + cap 8), `suggestRows` (keyword ≤6 + sellers ≤4)
+- Tags + explore (~14875–14891): `tagRows` (hashtag จาก caption ทุกโพสต์ `!muted` + `CF_TAGS` seed), `exploreTiles` (ทุก photo ของทุกโพสต์ `!ni && !muted && !blocked`; tall/views badge = decorative index คงที่)
+- Search UI (~14892–15215): `landingHTML` (chips + `xp-grid`), `recentRowHTML`/`recentHTML`/`recentPageHTML`, `suggestHTML`, `activeFilterChips`, `searchHTML` (modes `landing`/`typing`/`results`), `resultSellers`, `accountRowHTML`, `sellerCardHTML` (มี isTh branch บางส่วน), `resultGridHTML`, `searchResultsHTML` (head/tabs/sections/empty/error blocks)
+- Filter page (~15216–15267): `filterHTML` (sections + `fDraft` clone + `Apply (N)` + `Clear all`), `applyFilters` (validate → `.flt-err` หรือ commit + `_subStack = ["search"]`)
+- Post viewer (~14992–15168 + CSS ~3754–3851): `pvPostHTML` (rail/foot/`pv-add`), `pvPostSheetHTML` (`ps` sheet), `pvDetailsSheetHTML` (`dt` sheet), `svfPostHTML`/`pfpPostHTML`, `openPostViewer` (default / `feed` / `pfp` modes); `.pv-track` `scroll-snap-type: y mandatory` + `.pv-post` `scroll-snap-align: start` / `snap-stop: always`
+- Entries: `.search-btn` บน feed app-header (~20205); `.igd-tag` hashtag ใน caption → `openSub("search")` + preset q (~24009–24017); `.sr-saved` → `pushSub("saved")` (~22281–22282); `.sr-chip ico` / `.flt-open` → `sfilter`
+- Search handlers (~22252–22426): `.search-btn`/`.sr-x`/`.sr-cancel`/`.sr-fake`/`.sr-saved`/`.sr-pick`/`.rc-all`/`.rc-clear`/`.rc-x`/`.rc-row`+`.ac-row`/`.sr-tab`/`.sc-follow`/`.xp-tile`/`.pv-back`/`.pv-srch`/`.pv-add`/`[data-rm]`/`.sr-retry`/`.flt-chip`/`.flt-clear`/`.flt-apply`; Enter submit (~21028–21035); live suggestion input (~21171–21178); price auto-comma + digits-only (~21196–21209); chips-row drag scroll (~21226–21291)
+- Back semantics (~15427–15453 + ~21892–21922): `subBack` — `sfilter` → `fDraft = null` ทิ้ง draft; `search` mode `results` → `mode = "landing"`; pick จาก `recents` page → `_subStack = ["search"]`
+- Sheets + actions บน viewer: `.liked-by` → likes sheet (~23297–23305), share (~23319–23356), save (~23772–23802), comment (`pv-add` → `nt` variant ~22366–22380, `.comment-btn` ~23280–23295), `more-link` → `ps` + `details-toggle.pv-dt` → `dt` (~23988–24037), `.view-full` → `openPostDetail` ทับ viewer (~23094–23102), `follow-btn` → unfollow sheet (~23104–23149), `.pm-btn` → own/others post menu + `rpOpenFromPost` report stack ทับ viewer (`rp-over`, ~15457–15467)
+- Watch Alert: `WA_FK_LABEL` (~16789–16793), `waCriteriaFromSearch`/`waCriteriaFromPost` (~16795–16831), `critMatch`/`alertMatch`/`alertMatchCount`/`waSig`/`waName`/`modelKeyOf`/`syncModelFlags`/`refreshMfBtns` (~16833–16885), `waModesHTML`/`waSheetHTML`/`waRowHTML`/`walertsHTML` (~16886–16950); handlers `.sr-wa`/`.wa-mode`/`.wa-go`/`.wa-del`/`.wa-tgl` (~23171–23299); entry ที่ 2 `mf-btn` บน Post Detail (~23150–23168)
+- Guest gate `GUEST_GATE_SEL` + `obGate` (~24533–24548): `.sr-wa`/`.follow-btn`/`.sc-follow`/`.like-btn`/`.save-btn`/`.share-btn`/`.pm-btn`/`.comment-input`/`.lk-follow` gated; search/explore/filter/viewer surfaces ไม่ gated
+- Notification → viewer (~18632–18647): watch alert row → `pfp` viewer 1 โพสต์; like/comment row → own post `pfp` viewer; post หาย → toast `This post is no longer available`
+- Language re-render รักษา scroll ของ viewer/sub page (~20669–20692)
 - Dead/untriggered (ห้ามเขียนเป็น feature): `S.sort` (`plo`/`phi`/`pop` ไม่มี control), `S.err` (error block + `sr-retry` render ได้แต่ไม่มี code path ใด set `err = true`), `POST_DETAIL_CFG`, explore tall-tile/views badge (decorative index 2/3/7), recents seed rows (mock ไม่ใช่ history จริง), coach-mark copy `.search-btn` (onboarding artifact)
 
 # 4. Product Alignment Summary
@@ -70,7 +70,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Post Viewer: 3 modes (`default` scroll-snap / `feed` / `pfp`), rail + foot + `pv-add` actions, sheets (`ps`/`dt`/`nt`/`lk`/`sh`/`sv`/post menus), back + search-icon semantics, detail-over-viewer
 - Watch Alert entry จาก results (`sr-wa` → criteria snapshot + bell `on` state)
 - Guest gate behavior (browse vs gated actions → Member Sheet)
-- Empty/error states ตามที่ prototype render จริง (รวม EN-only copies)
+- Empty/error states ตามที่ prototype render จริง (EN source — แปลผ่าน I18N_TH แล้ว FSP-041)
 - Contract-only: search error path (`S.err` ไม่มี trigger ใน prototype), analytics events
 
 ## Out Of Scope (module อื่นเป็นเจ้าของ)
@@ -337,7 +337,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 - Inputs 2 ช่อง (`Minimum`/`Maximum`) ไม่มี slider; `inputmode="numeric"`
 - ระหว่างพิมพ์: strip ทุก non-digit เงียบ (ตัวอักษร/ทศนิยม/ติดลบ/สัญลักษณ์หายทันที ไม่มี error) + auto-comma; paste `2,000,000` หรือ `20,00,000` → normalize เป็น `2,000,000`
-- Validate เฉพาะตอน `Apply`: `min > max` → `Minimum price must not exceed maximum price`; `max > 2,000,000` → `Maximum price must not exceed 2,000,000` (EN hardcode — deviation)
+- Validate เฉพาะตอน `Apply`: `min > max` → `Minimum price must not exceed maximum price`; `max > 2,000,000` → `Maximum price must not exceed 2,000,000` (แปลแล้วผ่าน I18N_TH — resolved FSP-041)
 - ว่างทั้งคู่ = ไม่ใช้เงื่อนไข; กรอกข้างเดียวใช้ข้างนั้น; min == max = ราคาเท่ากัน; `MAX_PRICE` = 2,000,000 THB
 
 ## Sort Rule
@@ -413,7 +413,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 ## Prototype Deviations & Dead-Code Notes (documented, not spec)
 
-- Search surfaces เกือบทั้งหมด **EN-only** (tabs `For you`/`Profiles`/`Tags`, placeholder `Search`, `Recent`/`See all`/`Cancel`/`Clear all`, `Filters`/`Apply`/`Clear all`/section titles/validation messages, `No data found`/`Try a different keyword or adjust your filters`/`No suggestions`/`No recent searches`, `Something went wrong…`/`Try again`, toasts `Watch alert on`/`updated`/`removed`/`You already saved this alert`/`This post is no longer available`) — มี isTh เฉพาะ seller card (`N รายการประกาศ`/`กำลังติดตาม`/`ติดตาม`), viewer labels, unfollow sheet และ Watch Alert sheet — language gap รวมใน sweep FSP-026
+- Search surfaces เกือบทั้งหมด **EN-only** (tabs `For you`/`Profiles`/`Tags`, placeholder `Search`, `Recent`/`See all`/`Cancel`/`Clear all`, `Filters`/`Apply`/`Clear all`/section titles/validation messages, `No data found`/`Try a different keyword or adjust your filters`/`No suggestions`/`No recent searches`, `Something went wrong…`/`Try again`, toasts `Watch alert on`/`updated`/`removed`/`You already saved this alert`/`This post is no longer available`) — มี isTh เฉพาะ seller card (`N รายการประกาศ`/`กำลังติดตาม`/`ติดตาม`), viewer labels, unfollow sheet และ Watch Alert sheet — แปลครบแล้วผ่าน I18N_TH dict + patterns (resolved FSP-041)
 - `#` query results grid ใช้ `POSTS` กรองแค่ `!muted` → โพสต์ `ni`/`blocked` ยังขึ้นใน hashtag results (spec ยอมรับตาม prototype — flag ให้ FSP-030 consistency sweep)
 - `S.sort` (`plo`/`phi`/`pop`) + `S.err` = dead state (code มี ไม่มี UI/trigger)
 - Explore `.xp-views` badge + `tall` tile = decorative index คงที่ (2/3/7) ไม่ใช่ popularity logic
@@ -484,7 +484,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 
 # 13. Empty State
 
-| Surface | Copy (prototype — EN only) |
+| Surface | Copy (prototype — EN source; แปลผ่าน I18N_TH แล้ว FSP-041) |
 | --- | --- |
 | Results For you | `No data found` + `Try a different keyword or adjust your filters` |
 | Results Profiles / Tags | `No data found` |
@@ -492,7 +492,7 @@ Surface eligibility แยกตาม surface — **ไม่ใช่** "searc
 | Recent section / recents page | `No recent searches` |
 | Watch Alerts list (cross-ref) | `No watch alerts yet — tap the bell on a post or save a search to start one` (canonical 10) |
 
-หมายเหตุ: global empty `ไม่พบข้อมูล`/`No data found` ของ 00_GLOBAL §11 ตรงเฉพาะส่วน `No data found`; sub-copy `Try a different keyword or adjust your filters` เป็น variant ของ module นี้; EN-only = deviation (language sweep)
+หมายเหตุ: global empty `ไม่พบข้อมูล`/`No data found` ของ 00_GLOBAL §11 ตรงเฉพาะส่วน `No data found`; sub-copy `Try a different keyword or adjust your filters` เป็น variant ของ module นี้; แปลครบแล้วผ่าน I18N_TH (resolved FSP-041)
 
 # 14. Notification Rules
 
@@ -558,7 +558,7 @@ Contract (S-29 — prototype ไม่มี tracking layer; event names เป�
 | AC-SEARCH-036 | Asset `Sale`→`Sold`/`Hide`/`Show` หรือ post ที่หลุด price ต้องหายจาก results Posts grid + filter counts + WA match; `Hide`/`Show`→`Sale` ต้องกลับเข้า |
 | AC-SEARCH-037 | Blocked seller ต้องหายจาก results grid/explore/accounts/profiles/suggestions (ยกเว้น `#` grid — deviation); muted ต้องหายทุก search surface |
 | AC-SEARCH-038 | Report จาก `...` ใน viewer ต้องเปิด report stack `rp-over` ทับ viewer และไม่ทำให้โพสต์หายจาก results ทันที |
-| AC-SEARCH-039 | Results ว่างต้องแสดง `No data found` (+ `Try a different keyword or adjust your filters` บน For you); error state (contract) = `Something went wrong. Please try again.` + `Try again` — ทุก copy EN-only (deviation) |
+| AC-SEARCH-039 | Results ว่างต้องแสดง `No data found` (+ `Try a different keyword or adjust your filters` บน For you); error state (contract) = `Something went wrong. Please try again.` + `Try again` — ทุก copy แปลผ่าน I18N_TH แล้ว (resolved FSP-041) |
 | AC-SEARCH-040 | V1 ต้องไม่มี sort UI / result count / pull-to-refresh / infinite scroll / end-of-list marker บน search results — grid render ครั้งเดียว |
 
 # 17. Related Modules
@@ -579,7 +579,7 @@ Contract (S-29 — prototype ไม่มี tracking layer; event names เป�
 
 - Sort control บน results (`plo`/`phi`/`pop` มี dead code รองรับ)
 - Result count / pull-to-refresh / infinite scroll / end-of-list marker
-- TH localization ของ search surfaces ทั้งหมดต้องครบตาม DEC-19 (ปัจจุบัน EN-only ยังไม่ครบ — language sweep FSP-026)
+- ~~TH localization ของ search surfaces ทั้งหมดต้องครบตาม DEC-19~~ RESOLVED FSP-041 — แปลครบผ่าน I18N_TH dict + `i18nTr` patterns แล้ว
 - Saved Search เป็น feature แยก / recents persist ข้าม session
 - Popular Filter / context-aware Popular Model / trending page
 - Entity/option-master suggestions (Condition/Delivery/Case/Movement/Dial/Strap) + `is_active` gating จริงแทน static catalogs

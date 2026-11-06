@@ -29,19 +29,19 @@ Post Detail คือ read-facing detail layer ของโพสต์ (`.page-
 
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
 
-- Detail layer: `.page-detail` mount ทุก screen (~19376) + CSS z-index เหนือ `.page-pv` + bottom nav ซ่อนเมื่อ `detail-open` (~1308–1333, ~6331); `openPostDetail` (~14686–14705 — render + `detailPid` + scroll reset + head เข้า scroller); `detail-back` (~21811–21814 — ปิดเฉพาะ `detail-open`); `keepScroll` re-render ตอนสลับภาษา (~19712–19714); `refreshPostViews` re-render detail ที่เปิดอยู่ (~13963)
-- Detail anatomy `detailHTML` dl1 (~13355–13398): `detailHeadHTML` dh3 (~13334–13347 — back + title `รายละเอียด`/`Detail` + `pm-btn`), hero + `photo-counter`/`photo-dots`/`clipUiHTML` (~13370–13378), actions row like/comment/views/share + `mf-btn` + `wl-btn` (~13380–13389), `saleTagHTML` (~13349–13353), `detail-name`/`detail-ref` fallback rules (~13358–13365), `Descriptions`/`คำอธิบาย` + `p.desc` (~13393–13394), `detailSpecsHTML` (~13521–13525 — **ไม่** filter `Price & Data Source`)
-- Spec groups: `specGroupsHTML` shared renderer (~13528–13554); `p.specs` = flattened `specGroups` rows (~13092); `specOf` (~14197); `naSpec` (~16117); seed `specGroups` 3 กลุ่ม (Watch Specifications / Item Details / Price & Data Source ~12771–12796)
-- Entries: `.view-full` handler (~21849–21857 — คง `pv-open` ไว้ detail ทับ viewer); `detailsHTML`/`triggerHTML` (`Tap for details` expander, filter `Price & Data Source` ~13302–13332); `pvDetailsSheetHTML` (`dt` sheet ~14470–14474); chat item `[data-chgo="post"]` (~19125–19134)
-- `hasDetails` gating: feed card ~14021, `pfp`/`svf` card ~14487 (`price || specGroups.length || specs.length`); `pv-dt` เฉพาะ `specGroups.length` (~14442)
-- Comments: `commentsFor`/`commentRowsHTML`/`commentsHTML` (~13556–13608), `COMMENT` seed threads (~13114–13156), `.comment-btn` handler (~22015–22028), `.c-like` local toggle (~22540–22546)
-- Watch Alert from detail: `.mf-btn` handler (~21899–21917), `modelKeyOf`/`syncModelFlags`/`refreshMfBtns` (~16199–16213), `waCriteriaFromPost` (~16124–16147 — field map + `mapped` exclusion list), `waSheetHTML` shared sheet (~16234–16279), WA handlers `wa-mode`/`wa-go`/`wa-del` (~21920–21978)
-- Wish List: `wlSheetHTML`/`WISHLISTS` (~13708–13733), handlers `.wl-btn`/`.wl-pick`/`.wl-new`/`syncWlBtns` (~22437–22482)
-- Shared sheets ที่ detail ใช้: `likesSheetHTML`/`shareSheetHTML`/`saveSheetHTML` (~13644–13706), share/save handlers (~22030–22067, ~22490–22526)
-- Own/viewer: `isOwnPost` → `pmOwnMenuHTML`/`pmMenuHTML` (canonical 02_FEED); edit-from-detail `V.editFromDetail` (~16024–16064); delete closes open detail (~20740)
-- `findPost` (~16577 — `POSTS` + `PF_GFX_REG` + `PF_MINE`); `pfTabPosts`/`pfKind` (~16604–16610 — sold/hide reachable ผ่าน own profile tabs); `PF_GFX_SOLD` (~16550–16559); `soldFromPost`/`markAssetSold` (~15942–15958, ~17139–17149)
-- Guest gate `GUEST_GATE_SEL` + `obGate` (~22997–23012): `.like-btn`/`.share-btn`/`.wl-btn`/`.mf-btn`/`.pm-btn`/`.comment-input`/`.emoji-row`/`.c-like`/`.c-meta` gated — `.comment-btn` และ `.view-full` ไม่ gate
-- Dead/tooling (ห้ามเขียนเป็น feature): `POST_DETAIL_CFG` per-post variant overrides (~13106–13112 — dev artifact), `igDetailHTML`/`igBodyHTML`/`igDetailHeadHTML` dl2 (~13444–13519 — มี post-head/caption/ask/save/liked-by ที่ dl1 ไม่มี), `chatPopHTML`/`chat-fab`/`sendChat`/`closeChatPop` (~13400–13442, ~21816–21836), header variants `dh2`/`dh4`/`dh5`, spec layouts `ds` acc/cards/tabs/seg + `dStyle` d1/d3, price variants `pr` pr1–pr4, `tg` tg2 — ดู 00_NAV §11 prototype-tooling rule
+- Detail layer: `.page-detail` mount ทุก screen (~20229) + CSS z-index เหนือ `.page-pv` + bottom nav ซ่อนเมื่อ `detail-open` (~1386–1411, ~6556); `openPostDetail` (~15268–15287 — render + `detailPid` + scroll reset + head เข้า scroller); `detail-back` (~23056–23059 — ปิดเฉพาะ `detail-open`); `keepScroll` re-render ตอนสลับภาษา (~20672–20674); `refreshPostViews` re-render detail ที่เปิดอยู่ (~14423)
+- Detail anatomy `detailHTML` dl1 (~13637–13687): `detailHeadHTML` dh3 (~13603–13616 — back + title `รายละเอียด`/`Detail` + `pm-btn`), hero + `photo-counter`/`photo-dots`/`clipUiHTML` (~13653–13661), actions row like/comment/views/share + `mf-btn` + `wl-btn` (~13667–13676), `saleTagHTML` (~13618–13621), `detail-name`/`detail-ref` fallback rules (~13680–13686), `Descriptions`/`คำอธิบาย` + `p.desc` (~13682–13683), `detailSpecsHTML` (~13810–13814 — **ไม่** filter `Price & Data Source`)
+- Spec groups: `specGroupsHTML` shared renderer (~13817–13843); `p.specs` = flattened `specGroups` rows (~13340); `specOf` (~14743); `naSpec` (~16788); seed `specGroups` 3 กลุ่ม (Watch Specifications / Item Details / Price & Data Source ~13019–13044)
+- Entries: `.view-full` handler (~23094–23102 — คง `pv-open` ไว้ detail ทับ viewer); `detailsHTML`/`triggerHTML` (`Tap for details` expander, filter `Price & Data Source` ~13584–13614); `pvDetailsSheetHTML` (`dt` sheet ~15054–15058); chat item `[data-chgo="post"]` (~19530–19539)
+- `hasDetails` gating: feed card ~14506, `pfp`/`svf` card ~15068 (`price || specGroups.length || specs.length`); `pv-dt` เฉพาะ `specGroups.length` (~15024)
+- Comments: `commentsFor`/`commentRowsHTML`/`commentsHTML`/`submitComment`/`deleteComment`/`delCommentDlgHTML`/`openCommentPopover`/`closeCommentPopover` (write/reply/delete/report จริง — sync 2026-11-06) — ref เดิม: (~13848–14015), `COMMENT` seed threads (~13363–13422), `.comment-btn` handler (~23280–23295), `.c-like` local toggle (~23928–23944)
+- Watch Alert from detail: `.mf-btn` handler (~23150–23168), `modelKeyOf`/`syncModelFlags`/`refreshMfBtns` (~16871–16885), `waCriteriaFromPost` (~16795–16818 — field map + `mapped` exclusion list), `waSheetHTML` shared sheet (~16908–16953), WA handlers `wa-mode`/`wa-go`/`wa-del` (~23171–23242)
+- Wish List: `wlSheetHTML`/`WISHLISTS` (~14113–14138), handlers `.wl-btn`/`.wl-pick`/`.wl-new`/`syncWlBtns` (~23718–23764)
+- Shared sheets ที่ detail ใช้: `likesSheetHTML`/`shareSheetHTML`/`saveSheetHTML` (~14048–14110), share/save handlers (~23297–23356, ~23772–23809)
+- Own/viewer: `isOwnPost` → `pmOwnMenuHTML`/`pmMenuHTML` (canonical 02_FEED); edit-from-detail `V.editFromDetail` (~16684–16724); delete closes open detail (~21884)
+- `findPost` (~17311 — `POSTS` + `PF_GFX_REG` + `PF_MINE`); `pfTabPosts`/`pfKind` (~17340–17347 — sold/hide reachable ผ่าน own profile tabs); `PF_GFX_SOLD` (~17284–17293); `soldFromPost`/`markAssetSold` (~16592–16608, ~17882–17892)
+- Guest gate `GUEST_GATE_SEL` + `obGate` (~24533–24548): `.like-btn`/`.share-btn`/`.wl-btn`/`.mf-btn`/`.pm-btn`/`.comment-input`/`.emoji-row`/`.c-like`/`.c-meta` gated — `.comment-btn` และ `.view-full` ไม่ gate
+- Dead/tooling (ห้ามเขียนเป็น feature): `POST_DETAIL_CFG` per-post variant overrides (~13355–13361 — dev artifact), `igDetailHTML`/`igBodyHTML`/`igDetailHeadHTML` dl2 (~13734–13809 — มี post-head/caption/ask/save/liked-by ที่ dl1 ไม่มี), `chatPopHTML`/`chat-fab`/`sendChat`/`closeChatPop` (~13720–13762, ~23061–23081), header variants `dh2`/`dh4`/`dh5`, spec layouts `ds` acc/cards/tabs/seg + `dStyle` d1/d3, price variants `pr` pr1–pr4, `tg` tg2 — ดู 00_NAV §11 prototype-tooling rule
 
 ---
 
@@ -57,7 +57,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Navigation | `.page-detail` เป็น layer ไม่ใช่ route — entries ตาม 00_NAV §7 matrix; `.detail-back` ตาม §6.7; unavailable fallbacks ตาม §10 (contract) |
 | Comments | shared comment bottom sheet เดียวกับทุก surface (00_NAV §6.1 comment surface rule) — detail ไม่มี inline comment section |
 | Watch Alert | `mf-btn` = WA entry ที่ 2 นอกจาก `sr-wa` search bell (03_SEARCH §9 + 10_WATCH_ALERT canonical) |
-| ไม่มีใน V1 | Owner/contact block บน detail, Follow จาก detail, Ask Seller บน detail, Save (bookmark) บน detail, Full Screen Image Viewer, inline comments + per-comment `...` actions, comment write/delete/report จริง |
+| ไม่มีใน V1 | Owner/contact block บน detail, Follow จาก detail, Ask Seller บน detail, Save (bookmark) บน detail, Full Screen Image Viewer, inline comment section บน detail (comments อยู่ shared sheet เสมอ) |
 
 ---
 
@@ -114,7 +114,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 - เปิด Post Detail ผ่านทุก public entry (`View full detail` จาก feed card / `dt` sheet / viewer cards)
 - ดู content ทั้งหมด: hero carousel, action row, tag, name/ref, Descriptions, spec groups + `Price & Data Source`
-- เปิด comment sheet อ่าน comments + replies (`comment-btn` ไม่ gate)
+- เปิด comment sheet อ่าน comments + replies (`comment-btn` ไม่ gate); long-press comment เห็น popover ได้ (item ภายใน gate)
 - กด `#tag` ใน Descriptions → search; กดรูป → carousel
 
 ต้อง login (Member Sheet `Join TukDaeng` — gated selectors บน detail):
@@ -126,7 +126,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 
 - ทุกอย่างของ guest + like, share, `mf-btn` (WA จาก spec โพสต์), `wl-btn` (wishlist), `...` → others menu (Add/Remove favorites · Not interested · Report — canonical 02_FEED)
 - เห็น detail เฉพาะโพสต์ที่ eligible ผ่าน entry นั้น (`sale`/`post` ทาง feed; `sale`/`show` ทาง public profile; ไม่มีทางถึง `hide`/`sold` ของคนอื่น — 00_GLOBAL §10)
-- Comment input/reply = contract (prototype dead → toast `Not in this prototype yet`)
+- Comment ทำงานจริงใน shared sheet — input `Post` + emoji row, `Reply` prefill `@author` (flat one-level — DEC-17), long-press/contextmenu popover (own=Delete cascade, others=Block/Report → `report:comment`)
 
 ## Owner
 
@@ -252,8 +252,8 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 | 3 | `post-actions` | `like-btn` (heart — **ไม่มีตัวเลข**), `comment-btn` + count (ซ่อนทั้งปุ่มเมื่อ `noComments`), `views-stat` eye + count (ซ่อนเมื่อ `hideCounts` หรือ `views` ว่าง/`"0"`), `share-btn`; `act-right`: `mf-btn` (bell — `Follow this model`/`Following this model`) + `wl-btn` (gift — `Wish List`) |
 | 4 | `inline-tag` | ตาม `pfkind` (DEC-21): `sale` → `ลงขาย`/`FOR SALE`; `show` → `โชว์`/`SHOWCASE` (muted); `sold` → `ขายแล้ว`/`SOLD` (muted); `hide` → `ซ่อน`/`HIDDEN` (muted); โพสต์ธรรมดา (`post`) ไม่มี tag |
 | 5 | `detail-name` | `Brand + Model` จาก flat `specs` (ตัดค่า `n/a`/`N/A` ทิ้ง); `specs` ว่าง → fallback = caption ส่วนแรกก่อน `—` (trim) |
-| 6 | `detail-ref` | `Ref. {value}`; `n/a` → `Ref. -`; **ไม่ render เลย** เมื่อ `specs` ว่าง |
-| 7 | `Descriptions`/`คำอธิบาย` + desc | `p.desc` (field ของตัวเอง — **ไม่ copy จาก caption**); ว่าง → `-`; `#tag` ภายใน desc = `.igd-tag` กด → search (เหมือน caption hashtags) |
+| 6 | `detail-ref` | `Ref. {value}`; `n/a` → `Ref. N/A`; **ไม่ render เลย** เมื่อ `specs` ว่าง |
+| 7 | `Descriptions`/`คำอธิบาย` + desc | `p.desc` (field ของตัวเอง — **ไม่ copy จาก caption**); ว่าง → `N/A`; `#tag` ภายใน desc = `.igd-tag` กด → search (เหมือน caption hashtags) |
 | 8 | Spec groups | `detailSpecsHTML` render `specGroups` ทุกกลุ่มเป็น `spec-row` label–value — **รวม `Price & Data Source`** (ต่างจาก `detailsHTML` ของ feed card/feed-viewer expander ที่ filter กลุ่มนี้ออก) |
 
 สิ่งที่ **ไม่มี** บน dl1 (ขัด spec เดิม — เป็น deviations ด้านล่าง): seller/owner block, Follow button, Ask Seller pill, save/bookmark button, liked-by row, caption, comment list inline, timestamp
@@ -286,7 +286,7 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 - Replies = one-level เท่านั้น (nested ไม่เกิน 1 ชั้น — data model `c.replies[]` ไม่มีชั้นซ้อน)
 - Empty thread → บรรทัดเดียว `ยังไม่มีความคิดเห็น`/`No comments yet` (ไม่มี `Be the first to comment.` / `Write a comment...` ของ spec เดิม — deviation)
 - โพสต์ที่มี comment count แต่ไม่มี seeded thread → `commentsFor` สร้าง mock rows ให้ครบตาม count (session-generated — contract)
-- Comment interactions ใน prototype เป็น read/like-only: `c-like` toggle local (member), `Reply`/`emoji`/`input` → toast `Not in this prototype yet` (member) หรือ Member Sheet (guest); **ไม่มี** per-comment `...` menu, **ไม่มี** delete/report comment, **ไม่มี** `View all comments` (sheet คือ list เต็มแล้ว) — write/delete/report เป็น contract (§18)
+- Comment interactions ทำงานจริง (sync 2026-11-06): input + `Post` เพิ่มคอมเมนต์เป็น own comment, emoji row ส่ง emoji เป็นคอมเมนต์, `Reply` (`c-meta`) → prefill `@author ` + reply ติด root เดิม (flat one-level — DEC-17), long-press 450ms/contextmenu → `c-popover` per-comment actions — own = `Delete` (confirm dlg, root ที่มี replies ลบ cascade พร้อมเตือน), others = `Block`/`Report` (`report:comment` page); guest เห็น popover ได้แต่ item กระโดด gate (FSP-037); `c-like` toggle local (member) หรือ Member Sheet (guest); **ไม่มี** `View all comments` (sheet คือ list เต็มแล้ว)
 - Root comment meta เป็น hardcode `Reply` (EN ล้วน) ส่วน reply rows เป็น `ตอบกลับ`/`Reply` ตามภาษา — prototype quirk (deviation)
 
 ## Watch Alert Entry Rule (`mf-btn`)
@@ -315,8 +315,8 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 ## Post Menu Rule (`pm-btn`)
 
 - `pm-btn` บน detail head → `isOwnPost` (`seller === CP_ME`) → `pmOwnMenuHTML` / อื่น → `pmMenuHTML` — canonical 02_FEED §9 (entries: Archive/commenting/Edit/Mark as sold/Pin/Delete หรือ `View sale record` บน sold · favorites/Not interested/Report)
-- `scr.dataset.pmPid` resolve จาก `detailPid` เมื่อไม่มี `.post` ancestor (~20469)
-- Edit → edit-from-detail (§8); Delete → confirm `Delete post?` → ลบ + ปิด detail อัตโนมัติ (~20740); Mark as sold/`View sale record` → `sell:`/`sold:` sub pages (04_ASSET_MANAGEMENT)
+- `scr.dataset.pmPid` resolve จาก `detailPid` เมื่อไม่มี `.post` ancestor (~21606)
+- Edit → edit-from-detail (§8); Delete → confirm `Delete post?` → ลบ + ปิด detail อัตโนมัติ (~21658); Mark as sold/`View sale record` → `sell:`/`sold:` sub pages (04_ASSET_MANAGEMENT)
 - Guest → Member Sheet (`.pm-btn` gated — guest ไม่เปิด post menu จาก detail ได้)
 
 ## Photo Carousel Rule
@@ -364,17 +364,17 @@ Spec เลือกตาม prototype — รายการนี้คือ
 | 2 | ไม่มี Ask Seller / Contact / Chat entry บน detail | `chat-fab`+`chatPop` เป็น dead path (ต้อง `ask:"bubble"`+dl2); dl1 ไม่มี `ask-pill` — chat เข้าผ่าน feed card Ask / item chat rows เท่านั้น (profile Chat เป็น dead toast ตาม canonical 06; ไม่มี chat notification type) |
 | 3 | ไม่มี Save (bookmark) บน detail | action row ใช้ `mf-btn`+`wl-btn` แทน `save-btn`; wishlist คือ save-family ของ detail |
 | 4 | ไม่มี Full Screen Image Viewer | tap hero = carousel เท่านั้น (ขัด spec เดิม AC-DETAIL-007 + AC-FEED-016 เดิม) — contract §18 |
-| 5 | ไม่มี inline comments + comment actions | ไม่มี `View all comments`/per-comment `...`/delete/report comment; comment sheet read+like-only; input/Reply/emoji dead → `Not in this prototype yet` |
+| 5 | ไม่มี inline comments บน detail | comments อยู่ shared sheet เท่านั้น — write/reply/delete/report ทำงานจริงแล้ว (popover own=Delete cascade / others=Block+Report, input `Post`, `Reply` prefill flat — DEC-17); per-comment menu ใช้ long-press/contextmenu แทน `...` (re-sync 2026-11-06) |
 | 6 | `FOR SALE`/`SHOWCASE` tag ขับด้วย `price` ไม่ใช่ `pfkind` | sold post (markAssetSold) ยังขึ้น FOR SALE; gfx sold (price:null) ขึ้น SHOWCASE — canonical sold ไม่ควรมี sale tag; flag FSP-030 |
 | 7 | `Price & Data Source` บน detail แต่ถูก filter ใน feed expander | `detailsHTML` ตัดกลุ่มนี้ออก — detail เต็มกว่า expander (ตั้งใจตามโค้ด — รับตามจริง) |
 | 8 | `mf-btn`/`wl-btn` ใช้บนโพสต์ตัวเองได้ | ไม่มี self-guard — owner wishlist/watch โพสต์ตัวเองได้ (IG ก็ไม่กัน wishlist; flag เป็น contract note) |
-| 9 | Root comment `Reply` ไม่ localize | `<span class="c-meta">Reply</span>` hardcode EN; reply rows มี `ตอบกลับ`/`Reply` — language sweep FSP-026 |
+| 9 | ~~Root comment `Reply` ไม่ localize~~ | (resolved) `c-meta` localize แล้ว `ตอบกลับ`/`Reply` ทั้ง root + reply rows |
 | 10 | Comment empty copy เดี่ยว | `No comments yet`/`ยังไม่มีความคิดเห็น` บรรทัดเดียว — ไม่มี `Be the first to comment.`/`Write a comment...` ของ spec เดิม |
 | 11 | `commentsFor` mock thread | โพสต์ที่มี count แต่ไม่มี seed → generate rows จาก `LIKER_POOL`/`PF_CMT_TEXTS` (session) — contract |
 | 12 | `POST_DETAIL_CFG` per-post overrides | dev artifact (เปลี่ยน ask/ds/pr/dh/dl/tg ตาม post id) — ทุก seed posts ใช้ dl1; ไม่เขียนเป็น feature (00_NAV §11 tooling rule) |
 | 13 | dl2/dh2/dh4/dh5/ds variants/pr variants/tg2 dead | `igDetailHTML` (post-head+caption+ask+save+liked-by), accordion/cards/tabs spec layouts, price variants — dead paths ทั้งหมด |
 | 14 | Detail ไม่ persist/deep-link | ไม่มี route — external deep link contract อยู่ 00_NAV §10 เท่านั้น |
-| 15 | EN-hardcoded strings | `Follow this model`/`Following this model`/`No details on this post to watch`/`Added to Wish List`/`Removed from your wish list`/`Sent to X`/`Link copied`/`Listing detail isn't in this prototype yet` — language sweep FSP-026 |
+| 15 | ~~EN-hardcoded strings~~ | `Follow this model`/`Following this model`/`No details on this post to watch`/`Added to Wish List`/`Removed from your wish list`/`Sent to X`/`Link copied`/`Listing detail isn't in this prototype yet` — แปลครบผ่าน I18N_TH/`i18nTr` (RESOLVED FSP-041) |
 | 16 | `pfKind()` fallback | โพสต์ไม่มี `pfkind` infer จาก price (seed/gfx) — canonical อยู่ 04 (documented ที่นั่นแล้ว) |
 | 17 | State session-only | `liked`/`wishlisted`/`wlCols`/`modelFollowing` เป็น memory state — persistence = contract |
 
@@ -487,8 +487,8 @@ Contract set (prototype ไม่มี tracking layer — เหมือน ba
 | AC-DETAIL-008 | Action row ต้องมี like / comment(+count) / views / share และ `act-right` = `mf-btn` + `wl-btn` — ต้องไม่มี save-btn, ask-pill, liked-by row หรือ seller block |
 | AC-DETAIL-009 | `comment-btn` ต้องซ่อนทั้งปุ่มเมื่อ `noComments`; `views-stat` ต้องซ่อนเมื่อ `hideCounts` หรือ `views` ว่าง/`"0"` |
 | AC-DETAIL-010 | Tag ตาม `pfkind` (DEC-21): sale → `FOR SALE`, show → `SHOWCASE`, sold → `SOLD`, hide → `HIDDEN`, โพสต์ธรรมดาไม่มี tag |
-| AC-DETAIL-011 | `detail-name` = Brand+Model จาก specs (ตัด `n/a`), fallback caption ส่วนแรกก่อน `—`; `detail-ref` = `Ref. {v}` (`Ref. -` เมื่อ n/a) และไม่ render เมื่อไม่มี specs |
-| AC-DETAIL-012 | `Descriptions` ต้อง render `p.desc` (ไม่ copy caption); ว่าง → `-`; `#tag` ใน desc ต้องเปิด search results ของ tag นั้น |
+| AC-DETAIL-011 | `detail-name` = Brand+Model จาก specs (ตัด `n/a`), fallback caption ส่วนแรกก่อน `—`; `detail-ref` = `Ref. {v}` (`Ref. N/A` เมื่อ n/a) และไม่ render เมื่อไม่มี specs |
+| AC-DETAIL-012 | `Descriptions` ต้อง render `p.desc` (ไม่ copy caption); ว่าง → `N/A`; `#tag` ใน desc ต้องเปิด search results ของ tag นั้น |
 | AC-DETAIL-013 | Spec groups ต้อง render ทุกกลุ่มใน `specGroups` **รวม `Price & Data Source`** (`Asking Price`/`Estimated Market Price`/`Last Price Update`/`Data Source`) — ต่างจาก feed expander ที่ filter กลุ่มนี้ออก |
 
 ## Actions
@@ -497,8 +497,8 @@ Contract set (prototype ไม่มี tracking layer — เหมือน ba
 |---|---|
 | AC-DETAIL-014 | `like-btn` ต้อง toggle `liked` + `likes ±1` และ sync `.liked` ทุก `.like-btn` ของ pid เดียวกันข้าม feed/viewer/detail |
 | AC-DETAIL-015 | `comment-btn` ต้องเปิด shared comments sheet (title `ความคิดเห็น`/`Comments` + rows + one-level replies + emoji row + input); จาก detail ต้องไม่ใช่ `nt` variant |
-| AC-DETAIL-016 | Comment rows ต้องมี avatar/name → Public Profile, time, text, `Reply` meta, like heart + count (`c-like` toggle local); ไม่มี per-comment `...`, delete หรือ report action ใน V1 prototype |
-| AC-DETAIL-017 | Comment input/emoji/`Reply` (member) → toast `Not in this prototype yet`; guest → Member Sheet; `c-like` เป็น local toggle เท่านั้น (contract: write/delete/report) |
+| AC-DETAIL-016 | Comment rows ต้องมี avatar/name → Public Profile, time, text, `Reply` meta (localize `ตอบกลับ`/`Reply`), like heart + count (`c-like` toggle local); per-comment actions ผ่าน long-press/contextmenu popover — own=Delete (confirm + cascade replies), others=Block/Report → `report:comment` |
+| AC-DETAIL-017 | Comment input/`Post`/emoji/`Reply` ต้องทำงานจริง (reply prefill `@author` flat one-level — DEC-17); guest กด item → Member Sheet; `c-like` เป็น local toggle |
 | AC-DETAIL-018 | `share-btn` ต้องเปิด shared share sheet — friends grid → `Sent to {name}`, app row → `Shared to {app}`, `Copy link` → `Link copied` (mock ไม่มี link จริง — canonical 02/11) |
 
 ## Watch Alert (`mf-btn`)
@@ -565,7 +565,7 @@ Contract set (prototype ไม่มี tracking layer — เหมือน ba
 
 # 18. Future Enhancement
 
-- Comment write/reply/delete/report จริง (prototype read+like-only) — per-comment `...` actions + delete cascade root→replies + report comment sheet (spec เดิม §8/§9 เก็บเป็น contract)
+- ~~Comment write/reply/delete/report จริง~~ — ทำแล้ว (popover + cascade + `report:comment`, sync 2026-11-06); ที่เหลือคือ per-comment `...` affordance แบบอื่นถ้าต้องการ
 - Full Screen Image Viewer (zoom/pinch/swipe ข้ามรูป) — spec เดิม AC-DETAIL-007 contract
 - Seller block + Follow บน detail (spec เดิม owner row) — ถ้าตัดสินเพิ่มต้อง resolve กับ dl1 minimal-head design
 - Ask Seller / chat entry บน detail (`chat-fab` dead path → revive หรือยืนยันตัด)

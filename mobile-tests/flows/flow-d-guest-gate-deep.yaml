@@ -1,0 +1,357 @@
+# Flow D — Guest gate deep: first-run sheet anatomy, dismiss paths, re-trigger,
+#           auth navigation + back, Don't-show flag, re-prompt persistence
+# TC refs: SETUP-02/03, GATE-019 (chat tab gate), GATE-024 (action-sheet anatomy,
+#          NO checkbox), GATE-025 (first-run variant HAS checkbox + first-run copy),
+#          GATE-026 (scrim dismiss), GATE-027 (Skip dismiss), GATE-028 (device back),
+#          GATE-029 (re-trigger N times, no remembered choice), GATE-030 (rapid taps,
+#          no stacking), GATE-031 (Sign up/Sign in → page → back returns to SHEET),
+#          GATE-033 (tick Don't show → no re-prompt), GATE-034 (no tick → re-prompt
+#          every launch), GATE-041 (cancel everywhere → still guest), GATE-042
+#          (All tab free + scroll/pull; Following/Favorites = gated entry —
+#          ruling F-008), GATE-049 (kill/
+#          relaunch → gate still works), GATE-055 (TH copy on sheet — EN side is
+#          semi: needs EN locale via onboarding)
+appId: com.univerza.tukdaeng
+name: "Flow D — Guest gate deep"
+tags: [guest-gate, regression]
+---
+- launchApp:
+    clearState: true   # = adb pm clear — fresh install
+
+# --- Onboarding up to the first-run member sheet (do NOT dismiss it yet) ---
+- extendedWaitUntil:
+    visible:
+      text: ".*เลือกภาษา.*|.*[Ss]elect your language.*"
+    timeout: 30000
+- tapOn:
+    text: "^ไทย$|^ภาษาไทย$|^Thai$"
+- tapOn:
+    text: "^ต่อไป$|^Continue$|^Next$"
+
+# Tap through onboarding pages until the auto member sheet appears.
+# once the sheet is up, every `when` no-ops and we drop out of the loop.
+- repeat:
+    times: 10
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+          commands:
+            - runFlow:
+                when:
+                  visible:
+                    text: ".*ยอมรับ.*|.*Accept.*"
+                commands:
+                  - tapOn:
+                      text: ".*ยอมรับ.*|.*Accept.*"
+            - runFlow:
+                when:
+                  visible:
+                    id: "com.android.permissioncontroller:id/permission_deny_button"
+                commands:
+                  - tapOn:
+                      id: "com.android.permissioncontroller:id/permission_deny_button"
+            - runFlow:
+                when:
+                  visible:
+                    text: "^ข้าม$|^Skip$|^ไม่ใช่ตอนนี้$|^Maybe later$|^Not now$"
+                commands:
+                  - tapOn:
+                      text: "^ข้าม$|^Skip$|^ไม่ใช่ตอนนี้$|^Maybe later$|^Not now$"
+            - runFlow:
+                when:
+                  visible:
+                    text: "^ต่อไป$|^Continue$|^Next$"
+                commands:
+                  - tapOn:
+                      text: "^ต่อไป$|^Continue$|^Next$"
+
+# GATE-025: first-run variant — full anatomy + Don't-show checkbox present
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 15000
+- assertVisible:
+    text: ".*สมัครสมาชิก.*|.*Sign up.*"
+- assertVisible:
+    text: "^เข้าสู่ระบบ$|^Sign in$"
+- assertVisible:
+    text: ".*ข้ามไปก่อน.*|.*Skip for now.*"
+- assertVisible:
+    text: ".*Google.*"
+- assertVisible:
+    text: ".*ไม่ต้องแสดง.*|.*[Dd]on.?t show.*"
+
+# GATE-034 part 1: do NOT tick — Skip for now → guest feed
+- tapOn:
+    text: ".*ข้ามไปก่อน.*|.*Skip for now.*"
+
+# finish remaining onboarding → guest feed (member sheet may re-appear in flow)
+- repeat:
+    times: 8
+    commands:
+      - runFlow:
+          when:
+            visible:
+              text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+          commands:
+            - tapOn:
+                text: ".*ข้ามไปก่อน.*|.*Skip for now.*"
+      - runFlow:
+          when:
+            visible:
+              text: ".*ยอมรับ.*|.*Accept.*"
+          commands:
+            - tapOn:
+                text: ".*ยอมรับ.*|.*Accept.*"
+      - runFlow:
+          when:
+            visible:
+              id: "com.android.permissioncontroller:id/permission_deny_button"
+          commands:
+            - tapOn:
+                id: "com.android.permissioncontroller:id/permission_deny_button"
+      - runFlow:
+          when:
+            visible:
+              text: "^ข้าม$|^Skip$|^ไม่ใช่ตอนนี้$|^Maybe later$|^Not now$"
+          commands:
+            - tapOn:
+                text: "^ข้าม$|^Skip$|^ไม่ใช่ตอนนี้$|^Maybe later$|^Not now$"
+      - runFlow:
+          when:
+            visible:
+              text: "^ต่อไป$|^Continue$|^Next$"
+          commands:
+            - tapOn:
+                text: "^ต่อไป$|^Continue$|^Next$"
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 20000
+# clear guest coach-mark tour (eats first tap)
+- tapOn:
+    text: ".*ทั้งหมด.*|.*All Posts.*"
+- waitForAnimationToEnd
+
+# GATE-019 + GATE-024: action-triggered gate sheet — same anatomy, NO checkbox
+- tapOn:
+    point: "32%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+- assertVisible:
+    text: ".*สมัครสมาชิก.*|.*Sign up.*"
+- assertVisible:
+    text: "^เข้าสู่ระบบ$|^Sign in$"
+- assertVisible:
+    text: ".*ข้ามไปก่อน.*|.*Skip for now.*"
+- assertVisible:
+    text: ".*Google.*"
+- assertNotVisible:
+    text: ".*ไม่ต้องแสดง.*|.*[Dd]on.?t show.*"
+
+# GATE-026: tap scrim → dismiss silently, still guest
+- tapOn:
+    point: "50%,15%"
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- assertVisible:
+    text: ".*ทั้งหมด.*|.*All Posts.*"
+
+# GATE-029 (cycle 1): re-trigger via alerts tab → dismiss via Skip
+- waitForAnimationToEnd
+- tapOn:
+    point: "68%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+- tapOn:
+    text: ".*ข้ามไปก่อน.*|.*Skip for now.*"
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# GATE-029 (cycle 2): re-trigger via profile tab → dismiss via device back
+- waitForAnimationToEnd
+- tapOn:
+    point: "86%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+- pressKey: back
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- assertVisible:
+    text: ".*ทั้งหมด.*|.*All Posts.*"
+
+# GATE-031 + GATE-041: sheet → สมัครสมาชิก → page → back
+# ⚠ F-007 (DEV BUG — ruling approved, pending send to dev): spec expects back
+#    → Member Sheet; actual = back lands on FEED. Asserts encode ACTUAL on
+#    purpose — when dev fixes it this turns red = the fix signal.
+- waitForAnimationToEnd
+- tapOn:
+    point: "32%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+- tapOn:
+    text: ".*สมัครสมาชิก.*|.*Sign up.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*สร้างบัญชี.*|.*Create.*[Aa]ccount.*|.*ยืนยันอีเมล.*"
+    timeout: 15000
+- pressKey: back
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 10000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# GATE-031: เข้าสู่ระบบ → Sign in page → back — same F-007 bug expected
+- waitForAnimationToEnd
+- tapOn:
+    point: "32%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+- tapOn:
+    text: "^เข้าสู่ระบบ$|^Sign in$"
+- extendedWaitUntil:
+    visible:
+      text: ".*ลืมรหัสผ่าน.*|.*Forgot password.*"
+    timeout: 15000
+- pressKey: back
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 10000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# GATE-030 (reframed) + GATE-032 cancel leg: the open sheet is MODAL — a second
+# nav-zone tap lands on sheet controls (verified: 68%,93% hits the Google
+# button). Sheets therefore cannot stack from rapid re-taps.
+# Extra coverage: tap Google → OS provider UI → back cancels → still guest.
+- waitForAnimationToEnd
+- tapOn:
+    point: "68%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+- tapOn:
+    text: ".*Google.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*Choose an account.*|.*continue to Tukdaeng.*|.*[Ss]ign in with Google.*"
+    timeout: 15000
+- pressKey: back
+# provider cancelled → lands back on gate sheet or feed; never creates session
+- runFlow:
+    when:
+      visible:
+        text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    commands:
+      - pressKey: back
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 10000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# GATE-042: All tab = free browse; Following/Favorites = gated entry (spec
+#    adjusted per approved ruling F-008 — relationship surfaces gate like
+#    chat/alerts/profile). Sheet pops on each gated tab, All stays free.
+- tapOn:
+    text: ".*กำลังติดตาม.*|.*Following.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+- tapOn:
+    text: ".*ข้ามไปก่อน.*|.*Skip for now.*"
+- tapOn:
+    text: ".*รายการโปรด.*|.*Favorites.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+- tapOn:
+    text: ".*ข้ามไปก่อน.*|.*Skip for now.*"
+- tapOn:
+    text: ".*ทั้งหมด.*|.*All Posts.*"
+- swipe:
+    direction: UP
+- swipe:
+    direction: UP
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- swipe:
+    direction: DOWN   # pull-to-refresh territory — must not trigger sheet
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# GATE-034: no Don't-show tick → relaunch auto re-prompts the member sheet
+- launchApp
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 15000
+# GATE-049: gate survives relaunch — dismiss prompt then trigger gate again
+- pressKey: back
+- assertVisible:
+    text: ".*ทั้งหมด.*|.*All Posts.*"
+- waitForAnimationToEnd
+- tapOn:
+    point: "32%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+- pressKey: back
+
+# GATE-033: relaunch → re-prompt sheet → tick Don't show → Skip → relaunch ×2
+# → no auto sheet ever again (action-triggered gate still works)
+- launchApp
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 15000
+- tapOn:
+    text: ".*ไม่ต้องแสดง.*|.*[Dd]on.?t show.*"
+- tapOn:
+    text: ".*ข้ามไปก่อน.*|.*Skip for now.*"
+- launchApp
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 20000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- launchApp
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 20000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# GATE-033 tail: action gate still fires with Don't-show set — spec accepts
+#    EITHER the member sheet OR a full sign-in page (ruling F-009: honoring
+#    the opt-out, both block the action). Assert a gate prompt appears.
+- waitForAnimationToEnd
+- tapOn:
+    point: "32%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*|.*ยินดีต้อนรับกลับ.*|.*Welcome back.*"
+    timeout: 10000
+- pressKey: back

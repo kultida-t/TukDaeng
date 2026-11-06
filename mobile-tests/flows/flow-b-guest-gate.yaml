@@ -1,0 +1,59 @@
+# Flow B — Guest gate: fresh install → onboarding → guest feed → gated tab
+# TC refs: SETUP-02/03 (fresh install → guest), GATE-019 + SHELL-023 (chat tab
+#          → Member Sheet, tab does NOT switch), GATE-024 (sheet anatomy),
+#          GATE-027 (dismiss via "ข้ามไปก่อน"), GATE-028 (dismiss via device back),
+#          GATE-029 (gate re-triggers after dismiss)
+appId: com.univerza.tukdaeng
+name: "Flow B — Guest gate"
+tags: [smoke, guest-gate]
+---
+- launchApp:
+    clearState: true   # = adb pm clear — wipes stored member session
+- runFlow:
+    file: subflows/onboarding-to-guest.yaml
+    label: "SETUP-02/03 — onboarding → guest feed"
+
+# GATE-019 / SHELL-023: chat tab → Member Sheet, feed stays active underneath
+# ⚠ bottom nav items have no a11y click handler — semantic tapOn is a no-op;
+# must tap raw coordinates (verified 2026-11-06, see findings AT-002)
+- waitForAnimationToEnd
+- tapOn:
+    point: "32%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+
+# GATE-024: sheet anatomy (bottom sheet — feed tab row still visible behind scrim)
+- assertVisible:
+    text: ".*สมัครสมาชิก.*|.*Sign up.*"
+- assertVisible:
+    text: "^เข้าสู่ระบบ$|^Sign in$"
+- assertVisible:
+    text: ".*ข้ามไปก่อน.*|.*Skip for now.*"
+- assertVisible:
+    text: ".*Google.*"
+# NOTE: feed semantics leave the a11y tree while the sheet is open — "tab stays
+# on feed" is verified indirectly by feed tabs re-appearing after dismiss.
+
+# GATE-027: dismiss via "ข้ามไปก่อน" — silent return to guest browse
+- tapOn:
+    text: ".*ข้ามไปก่อน.*|.*Skip for now.*"
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- assertVisible:
+    text: ".*ทั้งหมด.*|.*All Posts.*"
+
+# GATE-029 + GATE-028: gate re-triggers on alerts tab; device back dismisses
+- waitForAnimationToEnd
+- tapOn:
+    point: "68%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+- pressKey: back
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- assertVisible:
+    text: ".*ทั้งหมด.*|.*All Posts.*"

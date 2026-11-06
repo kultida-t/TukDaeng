@@ -1,0 +1,28 @@
+# Flow C — Sign in: fresh install → onboarding → guest → gate sheet → sign in → member feed
+# TC refs: SETUP-04 (become member), AUTH-044 (form anatomy), AUTH-045 (sign in success),
+#          GATE-019 (gate trigger used as entry), GATE-031 (sheet → Sign in page)
+# Credentials: passed via -e TEST_EMAIL=... -e TEST_PASSWORD=... (see ../.env.example)
+# NOTE: auth rate limit = 50 req / 15 min / IP — run sparingly; prefer reusing
+#       the stored session (flow A) over re-signing every run.
+appId: com.univerza.tukdaeng
+name: "Flow C — Sign in"
+tags: [smoke, auth]
+# NOTE: no env: defaults here — an empty default overrides `-e` CLI params
+# (verified 2026-11-06). Always pass -e TEST_EMAIL=... -e TEST_PASSWORD=...
+---
+- launchApp:
+    clearState: true   # = adb pm clear — required so member sheet/sign-in is reachable
+- runFlow:
+    file: subflows/onboarding-to-guest.yaml
+    label: "SETUP-02/03 — onboarding → guest feed"
+
+# GATE-019: trigger gate via chat tab — nav has no a11y click; raw point tap
+- waitForAnimationToEnd
+- tapOn:
+    point: "32%,93%"
+- runFlow:
+    file: subflows/gate-sheet-sign-in.yaml
+    label: "AUTH-044/045 — sheet → Sign in → member feed"
+    env:
+      TEST_EMAIL: ${TEST_EMAIL}
+      TEST_PASSWORD: ${TEST_PASSWORD}

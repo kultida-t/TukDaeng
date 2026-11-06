@@ -31,17 +31,17 @@ Portfolio Module คือ owner-private surface ที่ให้ member เ�
 
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้) — line anchors คือ state ปัจจุบัน @ HEAD อาจ drift ให้ค้นด้วย function-name
 
-- Routes (`subHTML` ~17816–17821): `portfolio` → `portfolioHTML`, `pfasset:{id}` → `pfassetHTML`, `soldhist` → `soldHistHTML`, `sold:{id}` → `soldDetailHTML`, `sell:{id}` → `sellFormHTML` — ทุก route เป็น `.page-sub` stack page (00_NAV §6.6/§6.7)
-- Data: `PF_ASSETS` seed 9 records (~16556–16566 — `{id:"pfa-NN", img, photos[], name, ref, meta, brand, status:sale/show/hide, market, purchase, bought, asking?}`), `PF_SOLD` seed 3 records (~16569–16582 — `{id:"pfs-NN", img, photos[], name, ref, brand, soldDate, price, purchase, bought}`), `PF_MKT_UPDATED` mock date (~16584 — comment: last Watch Price API sync), `PFO_STATUS`/`PFO_CMP`/`PFO_SRC` label maps (~16618–16620)
-- Math helpers: `pfoTHB`/`pfoSignTHB`/`pfoPct` (~16586–16588), `pfoEligible` (~16589 — status ∈ sale/show/hide), `pfoCur` (~16591 — market → purchase fallback → none), `pfoGL` (~16597 — market−purchase เมื่อทั้งคู่จริง), `pfoExp` (~16601 — asking−purchase), `pfoCmp` (~16603 — ±1% dead band; `"none"` เมื่อไม่มี market), `pfoHold` (~16610 — days + `Yy Mm` human form; sold ใช้ `soldDate` เป็นจุดจบ), `pfoDate` (~16617 — en-GB `d Mon yyyy`)
-- Dashboard: `pfoRowHTML` (~17202 — row = img + name + `ref · meta` + **purchase** value), `portfolioHTML` (~17214 — head + nomkt banner + `.pfo-total` headline card + `รายการนาฬิกา`/`Assets` section + rows + foot note)
-- Pages: `pfassetHTML` (~17250 — hero `data-pfaid` + status chip + Value card (private tag) + Listing card (`sale` only) + `data-sell` button + owner-only note), `soldHistHTML` (~17290 — desc + rows `Sold {date}` + price → `sold:{id}`), `soldDetailHTML` (~17305 — Sale price headline + Realized G/L + Sale record card + Return card + note), `sellFormHTML` (~17344 — sell-hero + private note + `sell-price` prefill asking + `sell-gl` live Expected gain + `sell-date` (max=today) + `sell-save`)
-- Lifecycle: `markAssetSold` (~17377 — splice `PF_ASSETS` → unshift `PF_SOLD` + linked posts `pfkind:"sold"` + `refreshPostViews`), `openSellForm`/`openSubOver` (~17375/~17362 — stack ทับ viewer เหมือน report pages); canonical narrative อยู่ 04 §10–§12
-- Entries: `.pf-pfo` wallet icon บน own profile actions row (~17125 — `data-sub="portfolio"`, title `พอร์ตโฟลิโอ`/`Portfolio`), `pfo-soldlink` → `soldhist` (~17245), `pfo-row` → `pfasset:{id}` (~17203), sold row → `sold:{id}` (~17293), `data-sell` → `sell:{id}` (~17286/21938), own-post menu `pm-own-sold`/`pm-own-soldview` (~14164–14165 + handlers ~20739–20745 — canonical 02_FEED)
-- Handlers: `pfo-more` dev sheet + `data-pfosim` + `pfo-retry` (~21907–21936), `data-sell` → `openSellForm` (~21938), `sell-save` validation + `markAssetSold` + stack splice → `sold:{id}` + ghost clone + toast (~21940–21980), `sell-price` input → auto-comma + live `sell-gl` update (~20346–20357)
-- Dev sims: `PFO_SIMS` + `pfoSimBar` (~17197–17201 — `?dev` query เท่านั้น; sims `nomkt`/`empty`/`failed`/`denied`)
-- Session: `clearUserData`/`restoreUserData`/`applySessionData`/`POST_FLAG_KEYS` (~23297–23351) — **ไม่แตะ `PF_ASSETS`/`PF_SOLD`/`pfkind`** (sold marks + record mutations ค้างข้าม session — deviation D9); `state.session !== "member"` → portfolio/soldhist empty state (~17225)
-- Guest gate: `GUEST_GATE_SEL` (~23362–23371) รวม `.pm-own-sold`/`.pm-own-soldview`/`.pf-menu` ฯลฯ — **แต่ไม่รวม `[data-sub]`/`.pf-pfo`** (entry อยู่ใต้ own profile ซึ่ง guest เข้าไม่ได้อยู่แล้ว — §14)
+- Routes (`subHTML` ~17894–17899): `portfolio` → `portfolioHTML`, `pfasset:{id}` → `pfassetHTML`, `soldhist` → `soldHistHTML`, `sold:{id}` → `soldDetailHTML`, `sell:{id}` → `sellFormHTML` — ทุก route เป็น `.page-sub` stack page (00_NAV §6.6/§6.7)
+- Data: `PF_ASSETS` seed 9 records (~17054–17064 — `{id:"pfa-NN", img, photos[], name, ref, meta, brand, status:sale/show/hide, market, purchase, bought, asking?}`), `PF_SOLD` seed 3 records (~17067–17080 — `{id:"pfs-NN", img, photos[], name, ref, brand, soldDate, price, purchase, bought}`), `PF_MKT_UPDATED` mock date (~17082 — comment: last Watch Price API sync), `PFO_STATUS`/`PFO_CMP`/`PFO_SRC` label maps (~17118–17120)
+- Math helpers: `pfoTHB`/`pfoSignTHB`/`pfoPct` (~17086–17088), `pfoEligible` (~17087 — status ∈ sale/show/hide), `pfoCur` (~17089 — market → purchase fallback → none), `pfoGL` (~17095 — market−purchase เมื่อทั้งคู่จริง), `pfoExp` (~17099 — asking−purchase), `pfoCmp` (~17101 — ±1% dead band; `"none"` เมื่อไม่มี market), `pfoHold` (~17108 — days + `Yy Mm` human form; sold ใช้ `soldDate` เป็นจุดจบ), `pfoDate` (~17115 — en-GB `d Mon yyyy`)
+- Dashboard: `pfoRowHTML` (~17707 — row = img + name + `ref · meta` + **purchase** value), `portfolioHTML` (~17719 — head + nomkt banner + `.pfo-total` headline card + `รายการนาฬิกา`/`Assets` section + rows + foot note)
+- Pages: `pfassetHTML` (~17755 — hero `data-pfaid` + status chip + Value card (private tag) + Listing card (`sale` only) + `data-sell` button + owner-only note), `soldHistHTML` (~17795 — desc + rows `Sold {date}` + price → `sold:{id}`), `soldDetailHTML` (~17810 — Sale price headline + Realized G/L + Sale record card + Return card + note), `sellFormHTML` (~17849 — sell-hero + private note + `sell-price` prefill asking + `sell-gl` live Expected gain + `sell-date` (max=today) + `sell-save`)
+- Lifecycle: `markAssetSold` (~17882 — splice `PF_ASSETS` → unshift `PF_SOLD` + linked posts `pfkind:"sold"` + `refreshPostViews`), `openSellForm`/`openSubOver` (~17880/~17867 — stack ทับ viewer เหมือน report pages); canonical narrative อยู่ 04 §10–§12
+- Entries: `.pf-pfo` wallet icon บน own profile actions row (~17630 — `data-sub="portfolio"`, title `พอร์ตโฟลิโอ`/`Portfolio`), `pfo-soldlink` → `soldhist` (~17750), `pfo-row` → `pfasset:{id}` (~17798), sold row → `sold:{id}` (~18361), `data-sell` → `sell:{id}` (~18178/21938), own-post menu `pm-own-sold`/`pm-own-soldview` (~14416–14417 + handlers ~21642–21648 — canonical 02_FEED)
+- Handlers: `pfo-more` dev sheet + `data-pfosim` + `pfo-retry` (~22892–22921), `data-sell` → `openSellForm` (~22900), `sell-save` validation + `markAssetSold` + stack splice → `sold:{id}` + ghost clone + toast (~22928–22981), `sell-price` input → auto-comma + live `sell-gl` update (~21201–21212)
+- Dev sims: `PFO_SIMS` + `pfoSimBar` (~17703–17707 — `?dev` query เท่านั้น; sims `nomkt`/`empty`/`failed`/`denied`)
+- Session: `clearUserData`/`restoreUserData`/`applySessionData`/`POST_FLAG_KEYS` (~24470–24524) — **ไม่แตะ `PF_ASSETS`/`PF_SOLD`/`pfkind`** (sold marks + record mutations ค้างข้าม session — deviation D9); `state.session !== "member"` → portfolio/soldhist empty state (~17730)
+- Guest gate: `GUEST_GATE_SEL` (~24533–24542) รวม `.pm-own-sold`/`.pm-own-soldview`/`.pf-menu` ฯลฯ — **แต่ไม่รวม `[data-sub]`/`.pf-pfo`** (entry อยู่ใต้ own profile ซึ่ง guest เข้าไม่ได้อยู่แล้ว — §14)
 - language: `isTh` ternary ใน markup ทุกจุด + `I18N_TH` dict (`Latest market price`→`ราคาตลาดล่าสุด`, `Show`→`แสดง`, `Hide`→`ซ่อน`, `No data found`→`ไม่พบข้อมูล`, `TukDaeng Market Data`→`ข้อมูลตลาดตึกแดง`) + `i18nTr` date pattern (`d Mon yyyy` → พ.ศ.) — leftover EN inventory ใน §16
 - Shared deps: `sub-back`/`pushSub`/`openSub`/`openSubOver` (canonical 00_NAV §6.7), `photoCtx`/`applyPhoto` (`data-pfaid` hero swipe — shared post-hero mechanics), `esc`, `I.*` icon set, `fmtNum`/`unNum` (price input), `pmDropCovered` (sheet snap-shut เมื่อเปิดจาก viewer), `sr-empty-block` empty-state pattern
 
@@ -172,7 +172,7 @@ Entry notes:
 | `img` / `photos[]` / `name` / `ref` / `brand` | carry จาก asset/post |
 | `soldDate` | วันที่ขาย ISO — จาก sell form |
 | `price` | ราคาขาย — จาก sell form (`null` → แสดง `N/A`) |
-| `purchase` / `bought` | cost basis carry-over — ใช้ Realized G/L + Holding period (`null`/`""` → `—`/`N/A`) |
+| `purchase` / `bought` | cost basis carry-over — ใช้ Realized G/L + Holding period (`null`/`""` → `N/A` — DEC-62) |
 
 > **ไม่มี** Buyer / Contact / Payment Method / Attachment ใน record model — spec เดิมกำหนด 6 ฟิลด์ (D3)
 
@@ -182,7 +182,7 @@ Entry notes:
 | --- | --- |
 | `PF_MKT_UPDATED` | mock "last market sync" date (fixed `2026-10-07`) — แสดง `Last price update` เมื่อ asset มี `market` |
 | `PFO_STATUS` | `sale`→`Sale`/`st-sale`, `show`→`Show`/`st-show`, `hide`→`Hide`/`st-hide` — status chip labels (EN constants; `Show`/`Hide` ถูก observer แปล — §16) |
-| `PFO_CMP` | `above`→`Above market`/`cmp-above`, `at`→`At market`, `below`→`Below market` (EN-only — leftover) |
+| `PFO_CMP` | `above`→`Above market`/`cmp-above`, `at`→`At market`, `below`→`Below market` — แปลแล้วผ่าน I18N_TH (re-sync 2026-11-06) |
 | `PFO_SRC` | `mkt`→`Latest market price`, `fb`→`Purchase price estimate`, `none`→`No market price` |
 | `scr._pfoSim` | per-screen dev sim state (`""`/`nomkt`/`empty`/`failed`/`denied`) — `?dev` only (§15) |
 
@@ -256,7 +256,7 @@ pfoHold(from, to?):
 ```
 
 - ยังไม่ขาย: `pfoHold(a.bought)` — จบที่วันนี้; sold: `pfoHold(x.bought, x.soldDate)`
-- แสดง `{d} วัน · {txt}` (TH) / `{d} days · {txt}` (EN) — `—`/`N/A` เมื่อ null
+- แสดง `{d} วัน · {txt}` (TH) / `{d} days · {txt}` (EN) — `N/A` เมื่อ null (DEC-62)
 - timezone = device-local `new Date()` — ไม่มี `Asia/Bangkok` explicit (quirk — spec เดิมระบุ BKK)
 
 ## 9.7 Dashboard totals
@@ -491,12 +491,10 @@ display = "กำไร/ขาดทุนที่เกิดขึ้นจ�
 - แปลผ่าน `isTh` ternary inline ทุกจุดหลัก (labels/notes/titles/toasts/errors) — ไม่มี dict block เฉพาะ portfolio
 - `I18N_TH` dict ช่วย observer (MutationObserver — canonical language contract): `Latest market price`→`ราคาตลาดล่าสุด`, `Show`→`แสดง`, `Hide`→`ซ่อน`, `No data found`→`ไม่พบข้อมูล`, `TukDaeng Market Data`→`ข้อมูลตลาดตึกแดง`, `Try again`→`ลองอีกครั้ง`
 - `i18nTr` date pattern: `pfoDate` output `d Mon yyyy` → `d มิ.ย. 2566` (พ.ศ.) ใน TH mode
-- **EN-only leftovers** (flag → FSP-026 sweep):
-  - `PFO_STATUS` chip `Sale` (ไม่มี dict key — `Show`/`Hide` แปลแต่ `Sale` ค้าง EN → chip ผสมภาษา)
-  - `PFO_CMP` chips `Above market`/`At market`/`Below market`
-  - `PFO_SRC` `Purchase price estimate`/`No market price`
-  - `N/A` fallbacks (sold rows/return card — `N/A` แปลเฉพาะใน spec-row context เท่านั้น)
-  - `days`/`y`/`m` suffixes ใน holding period (`{d} วัน · {y}y {m}m`)
+- **EN-only leftovers** (re-sync 2026-11-06 — `Sale`/`Above market`/`At market`/`Below market`/`No market price`/`Purchase price estimate` แปลแล้วผ่าน I18N_TH; resolved FSP-041):
+  - ~~`PFO_SRC` `Purchase price estimate`~~ — แปลแล้วผ่าน I18N_TH (`ประมาณจากราคาซื้อ`)
+  - `N/A` fallbacks — canonical = `N/A` literal ทั้งสองภาษา ไม่แปล (DEC-62 — supersede การแปล `ไม่ระบุ` ของ FSP-041)
+  - ~~`days`/`y`/`m` suffixes~~ — แปลแล้ว (`{d} วัน · {y} ปี {m} เดือน` ผ่าน `hold.txtTh` — FSP-041)
   - Dev-sim UI ทั้งก้อน (`Preview states (prototype)`, sim names, `Reset`) — dev-only จึงไม่นับ user-facing
   - headline `฿` prefix (dashboard) เหมือน rows/cards — unified ตาม DEC-42 (D14 resolved)
 

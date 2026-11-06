@@ -7,7 +7,7 @@
 **Use with:** [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md)
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
-> **Sync note (FO-PRD-v1.9, 2026-10-22):** checklist นี้ sync ตาม `Prototypes/fo-flow/index.html` (source of truth) + 07_CHAT_MODULE — thread ผูก user+item, draft room + Quick Ask, media message เท่านั้น, swipe actions, Member Sheet gate, badge-only notification
+> **Sync note (FO-PRD-v1.9, 2026-10-22):** checklist นี้ sync ตาม `Prototypes/fo-flow/index.html` (source of truth) + 07_CHAT_MODULE — thread ผูก user เท่านั้น (FO-TEST-12 lock — ห้องเดียวต่อ account), draft room + Quick Ask, post ref card = send-time snapshot, share→chat + followOnly dev sim, `chsettings` render ถูกถอด, media message เท่านั้น, swipe actions, Member Sheet gate, badge-only notification
 
 ---
 
@@ -44,6 +44,8 @@
 - [ ] Sold post reference state
 - [ ] Member Sheet for Guest Chat action
 - [ ] Chat Config `chatcfg` (notif / preview / followOnly / default view / quick-ask text)
+- [ ] Share post → chat (`chSharePost` — share sheet `Sent to {name}` ส่งการ์ดเข้าห้องของ friend)
+- [ ] `followOnly` enforcement — dev sim `msg` button (`chIncomingAsk` จาก non-followed ถูกกัน)
 
 Out of scope for V1:
 
@@ -57,21 +59,21 @@ Out of scope for V1:
 - Group chat
 - Delete Chat restore UI
 - E2E encryption / Letter Sealing (S-18 — footer copy เป็น dead copy)
-- Chat wallpaper / Export chat / Room settings page (`chsettings` dead route)
+- Chat wallpaper / Export chat / Room settings page (`chsettings` route ยังอยู่แต่ render ถูกถอด — `chatRoomSettingsHTML` ไม่มีในโค้ดแล้ว)
 - Chat entry จาก profile / follower row (`pf-msg` dead — canonical 06)
 
 ---
 
 # 3. Room Creation And Thread Rules
 
-- [ ] Thread key = `{user, item.id}` — seller เดิมคนละ listing = ห้องใหม่เสมอ ไม่มี room merge (S-07)
-- [ ] Tapping `Ask Seller` บน sale post เปิด draft room หรือ existing room ของ user+item นั้น
+- [ ] Thread key = `{user}` — ห้องเดียวต่อ account ตลอดไป (FO-TEST-12 lock — แทน S-07); กด Ask ลิสติ้งต่างชิ้น = การ์ด post เพิ่มในห้องเดิม ไม่ใช่ห้องใหม่
+- [ ] Tapping `Ask Seller` บน sale post เปิด draft room หรือ existing room ของ user นั้น
 - [ ] Draft room `C.draft` เก็บนอก threads — เข้า list จริงเมื่อ `chSend` แรกเท่านั้น (unshift + clear draft)
 - [ ] Draft room prefill composer ด้วย `cfg.quick` (Quick Ask text, default `สนใจสินค้าชิ้นนี้ครับ ยังอยู่ไหมครับ?`)
 - [ ] Ask บน post ของตัวเองแสดง `This is your own listing` — ไม่สร้างห้อง
 - [ ] Ask ห้องที่ hidden → un-hide แล้วเปิด
-- [ ] Post reference card แสดง snapshot ของ listing ในห้อง และ route ไป Post Detail เมื่อกด
-- [ ] Post reference card supports Active, Sold และ Deleted/Unavailable states
+- [ ] Post reference card แสดง send-time snapshot (`m.snap`/`chPostSnap`) — กด → Post Detail ถ้าโพสต์ยังอยู่; ถ้าถูกลบ → toast `This post is no longer available` การ์ดยังอยู่
+- [ ] Post reference card = snapshot นิ่ง — ไม่มี Active/Sold/Deleted states บนการ์ด (unavailable-on-tap เท่านั้น)
 - [ ] ไม่มี user→user chat เปล่า ๆ — ทุกห้องผูก listing
 
 ---
@@ -94,8 +96,8 @@ Out of scope for V1:
 # 5. Deleted / Sold Post Behavior
 
 - [ ] If post is Deleted, Chat remains available
-- [ ] Deleted post reference displays `รายการนี้ไม่พร้อมใช้งานแล้ว` / `This item is no longer available.`
-- [ ] Opening deleted post reference routes to unavailable state
+- [ ] Deleted post reference = snapshot ยังแสดงปกติ (ไม่ถูกแทนด้วย unavailable card) — tap → toast `This post is no longer available`
+- [ ] Opening deleted post reference → toast unavailable (ไม่ route ไป unavailable page)
 - [ ] If post is Sold, Chat remains usable
 - [ ] Sold post reference must not imply normal active sale availability
 

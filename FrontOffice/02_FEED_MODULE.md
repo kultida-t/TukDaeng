@@ -25,27 +25,27 @@ Feed Module เป็น social post feed หลักของ TukDaeng (post-c
 
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
 
-- `POSTS` seed + post fields (~12751–13100): `type:"sale"/"showcase"`, `pfkind` (drawer link), `photos`/`clips`, `price`/`specGroups`/`chips`, `caption`/`captionFull`, `location`, `audience`, `noComments`, `hideCounts`, `ni`/`muted`/`blocked`/`archived`/`pins`, `likedBy`/`commentPreview`
-- `postCard()` (~14008–14083) + `feedContentHTML()`/`feedEmptyHTML()`/`setFeedTab()` (~14085–14109) — variant `a1` เท่านั้นที่ใช้งาน
-- Feed shell + segmented tabs (~19345–19366); active state `state = { variant:"a1", ft:"segment", ask:"outline", dl:"dl1", dh:"dh1", ds:"full", pr:"pr1", tg:"tg1", tStyle:"t3", dStyle:"d2", nav:"labeled", feedTab:"all" }` (~13270)
-- Post menus: `pmMenuHTML()` others (~13897–13915), `pmOwnMenuHTML()` own (~13920–13935), openers `isOwnPost()` (~20465–20478)
-- Feedback cards: `niCardHTML()` (~13966–13981), `uncomfCardHTML()` (~13984–13995), `muteDlgHTML()` (~14712–14718)
-- Own-post handlers: archive / noComments / edit / sold / soldview / pin / del (~20480–20527), `dlg-delpost-go` (~20730–20744), `dlg-pin-go` (~20646–20657), `applyPin`/`pinnedIn`/`PIN_MAX`/`pinFeedback` (~16604–16634)
-- Others-menu handlers: `pm-fav` / `pm-ni` / `pm-undo` / `pm-go-report` / `ni-mute` / `ni-pref` / `ni-uncomf` / `ni-unfollow` / `uc-report` / `uc-undo` / `dlg-mute-go` (~20528–20645, ~20676–20687)
-- Relation helpers: `setFollowing`/`setMuted`/`setFavorite`/`followedSellers`/`mutedSellers`/`favoriteSellers` (~14111–14176), `pfSetMuted` (~16660–16664)
-- Sheets: `commentsHTML` (~13595–13608), `likesSheetHTML` (~13644–13661), `shareSheetHTML` (~13663–13683), `saveSheetHTML`/`wlSheetHTML` (~13685–13735), unfollow sheet (~21859–21898)
-- Card action handlers: photo tap carousel + `more-link`/`details-toggle`/`igd-tag`/like (~22553–22640), comment/save/share/wl/likes (~22015–22067, ~22437–22539), ask → `chatQuickAsk` (~18873–18892, ~19236–19241)
-- Feed nav re-tap refresh (~21293–21300); `formatPostTime` (~13272–13282)
-- Archive: `archivePosts()`/`archiveHTML()` (~14965–14982), tile → post viewer (~22253–22260), Settings entry row (~17167), `data-sub="archive"` route (~17505)
-- Guest gate `GUEST_GATE_SEL` + `obGate` (~22997–23012); `state.feedTab` reset (~22976, ~23094)
-- Create composer (sub page `create` — CREATE-001/FEED-024/PROFILE-017): `CP_ME`/`CP_ROLL`/`CP_CLIPS`/`CP_MEDIA` (~15530–15585), `cpState`/`cfMedia`/`cfActiveClip`/`cfPlayClip`/clip playback helpers (~15586–15642), feed clip autoplay `feedClipTick` (~15643–15671)
-- Composer constants: `CF_TAGS`/`CF_LOCS`/`CF_LOC_KM`/`CF_CONDS`/`CF_BOXES`/`CF_SPECS` (~15672–15695), `CF_MAX_MEDIA` = 10 (~15993)
-- Composer UI: `cfPaneHTML` option panes loc/price/spec/cost/cond/more (~15696–15741), `cfVal` row summaries (~15742–15751), `cfZoomGo` media zoom (~15752–15777), `cfPickerHTML` step 1 (~15778–15809), `cfStep2HTML` step 2 (~15810–15878), `createHTML` (~15879–15882)
-- Publish/edit helpers: `cfFieldsFromMeta` (~15885–15912), `cfToPortfolio` (~15915–15926), `assetFromPost`/`soldFromPost` (~15929–15958), `insertNewPost` (~15959–15990), `metaFromPost` (~15995–16006), `openPostEdit`/`closePostEdit`/`applyPostEdit` (~16007–16108)
-- Create entries: feed header `+` `data-flow="create"` (~19358), own profile `+` + empty-state CTA `data-mode="asset"` (~16826, ~16852), `[data-flow]` dispatcher (~20158–20164); guest gate — `[data-flow]` ∈ `GUEST_GATE_SEL` (~22999)
-- Composer handlers: discard/next/back/cells/remove/zoom/panes/toggles/share (~20155–20463), `dlg-discard-go` (~20660–20675), `pm-own-edit` → `openPostEdit` (~20499–20500)
-- `PF_MINE` drawer-only post store (~16574–16577); `pfKind`/`PFO_STATUS` (~16380, ~16604); `refreshPostViews` (~13938–13964)
-- Dead variants/artifacts (ห้ามเขียนเป็น feature — ตาม 00_NAV §6.4): card `a2/b2/c2/a3/b3/c3/mixed`, `ft:"none"` brand-menu dropdown, `chat-fab`/`chatPopHTML` (`ask:"bubble"` unreachable), `POST_DETAIL_CFG`, `lk-follow` visual-only toggle; composer dead affordances: camera tile, `Recents` dropdown, expand icon → toast `Not in this prototype yet`
+- `POSTS` seed + post fields (~12999–13349): `type:"sale"/"showcase"`, `pfkind` (drawer link), `photos`/`clips`, `price`/`specGroups`/`chips`, `caption`/`captionFull`, `location`, `audience`, `noComments`, `hideCounts`, `ni`/`muted`/`blocked`/`archived`/`pins`, `likedBy`/`commentPreview`
+- `postCard()` (~14493–14568) + `feedContentHTML()`/`feedEmptyHTML()`/`setFeedTab()` (~14570–14645) — variant `a1` เท่านั้นที่ใช้งาน
+- Feed shell + segmented tabs (~20195–20219); active state `state = { variant:"a1", ft:"segment", ask:"outline", dl:"dl1", dh:"dh1", ds:"full", pr:"pr1", tg:"tg1", tStyle:"t3", dStyle:"d2", nav:"labeled", feedTab:"all" }` (~13538)
+- Post menus: `pmMenuHTML()` others (~14382–14400), `pmOwnMenuHTML()` own (~14405–14420), openers `isOwnPost()` (~21602–21615)
+- Feedback cards: `niCardHTML()` (~14450–14465), `uncomfCardHTML()` (~14469–14480), `muteDlgHTML()` (~15299–15305)
+- Own-post handlers: archive / noComments / edit / sold / soldview / pin / del (~21617–21664), `dlg-delpost-go` (~21869–21888), `dlg-pin-go` (~21783–21794), `applyPin`/`pinnedIn`/`PIN_MAX`/`pinFeedback` (~17349–17381)
+- Others-menu handlers: `pm-fav` / `pm-ni` / `pm-undo` / `pm-go-report` / `ni-mute` / `ni-pref` / `ni-uncomf` / `ni-unfollow` / `uc-report` / `uc-undo` / `dlg-mute-go` (~21772–21889, ~21813–21824)
+- Relation helpers: `setFollowing`/`setMuted`/`setFavorite`/`followedSellers`/`mutedSellers`/`favoriteSellers` (~14650–14725), `pfSetMuted` (~17400–17405)
+- Sheets: `commentsHTML` (~13999–14012), `likesSheetHTML` (~14048–14065), `shareSheetHTML` (~14067–14087), `saveSheetHTML`/`wlSheetHTML` (~14089–14139), unfollow sheet (~23104–23149)
+- Card action handlers: photo tap carousel + `more-link`/`details-toggle`/`igd-tag`/like (~23986–24099), comment/save/share/wl/likes (~23280–23356, ~23718–23927), ask → `chatQuickAsk` (~19689–19741, ~20086–20091)
+- Feed nav re-tap refresh (~22478–22487); `formatPostTime` (~13540–13550)
+- Archive: `archivePosts()`/`archiveHTML()` (~15555–15572), tile → post viewer (~23542–23549), Settings entry row (~18283), `data-sub="archive"` route (~17910)
+- Guest gate `GUEST_GATE_SEL` + `obGate` (~24533–24548); `state.feedTab` reset (~24496, ~24631)
+- Create composer (sub page `create` — CREATE-001/FEED-024/PROFILE-017): `CP_ME`/`CP_ROLL`/`CP_CLIPS`/`CP_MEDIA` (~16122–16177), `cpState`/`cfMedia`/`cfActiveClip`/`cfPlayClip`/clip playback helpers (~16178–16273), feed clip autoplay `feedClipTick` (~16276–16314)
+- Composer constants: `CF_TAGS`/`CF_LOCS`/`CF_LOC_KM`/`CF_CONDS`/`CF_BOXES`/`CF_SPECS` (~16313–16336), `CF_MAX_MEDIA` = 10 (~16653)
+- Composer UI: `cfPaneHTML` option panes loc/price/spec/cost/cond/more (~16337–16382), `cfVal` row summaries (~16383–16400), `cfZoomGo` media zoom (~16401–16426), `cfPickerHTML` step 1 (~16427–16459), `cfStep2HTML` step 2 (~16460–16528), `createHTML` (~16529–16532)
+- Publish/edit helpers: `cfFieldsFromMeta` (~16535–16562), `cfToPortfolio` (~16565–16576), `assetFromPost`/`soldFromPost` (~16579–16608), `insertNewPost` (~16609–16650), `metaFromPost` (~16655–16666), `openPostEdit`/`closePostEdit`/`applyPostEdit` (~16667–16768)
+- Create entries: feed header `+` `data-flow="create"` (~20209), own profile `+` + empty-state CTA `data-mode="asset"` (~17571, ~17597), `[data-flow]` dispatcher (~21295–21301); guest gate — `[data-flow]` ∈ `GUEST_GATE_SEL` (~24534)
+- Composer handlers: discard/next/back/cells/remove/zoom/panes/toggles/share (~21292–21600), `dlg-discard-go` (~21797–21812), `pm-own-edit` → `openPostEdit` (~21636–21637)
+- `PF_MINE` drawer-only post store (~17310–17313); `pfKind`/`PFO_STATUS` (~17340, ~17340); `refreshPostViews` (~14423–14448)
+- Dead variants/artifacts (ห้ามเขียนเป็น feature — ตาม 00_NAV §6.4): card `a2/b2/c2/a3/b3/c3/mixed`, `ft:"none"` brand-menu dropdown, `chat-fab`/`chatPopHTML` (`ask:"bubble"` unreachable), `POST_DETAIL_CFG`, `lk-follow` toggle จริง (FSP-039 — `pfIsFollowed` + localized `ติดตาม`/`กำลังติดตาม`); composer dead affordances: camera tile, `Recents` dropdown, expand icon → toast `Not in this prototype yet`
 
 # 4. Product Alignment Summary
 
@@ -97,7 +97,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Chat room + quick-ask flow internals — [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (FSP-020)
 - Sale Record form + Sold history + portfolio drawer record/tab internals — [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) (FSP-024) / [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (FSP-017); composer ระบุเฉพาะ interface ที่สร้าง/แก้/ตัด link drawer record (`cfToPortfolio`, `assetId`, `pfkind`)
 - Watch Alert sheet — [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) (FSP-021)
-- Content preferences pages internals (`prefs`/`sensitive`/`interested`/`ni`/`favorites`/`muted`/`blocked`) — [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (FSP-014 — feed spec ระบุแค่ผลกระทบต่อ feed)
+- Content preferences pages internals (`prefs`/`interested`/`ni`/`favorites`/`muted`/`blocked`) — [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (FSP-014 — feed spec ระบุแค่ผลกระทบต่อ feed)
 - end-of-list marker — ไม่มีใน V1 (infinite scroll และ pull-to-refresh เป็น IG behavior ตามกติกาข้างบน)
 - Full Screen Image Viewer — ไม่มีใน V1 (feed media tap = carousel เท่านั้น, AC-NAV-003)
 - Real-time feed refresh จากอุปกรณ์/actor อื่น
@@ -578,12 +578,12 @@ Owner fallback rules:
 ## Prototype Deviations & Dead-Code Notes (documented, not spec)
 
 - `feedEmptyHTML("all")` fallback ใช้ copy `No favorites yet` + star icon — edge case เมื่อโพสต์ทุกใบติด exclusion; spec กำหนด All-empty copy ให้ถูก context (ดู §13)
-- `lk-follow` บน Likes sheet เป็น visual-only toggle ใน prototype (ไม่ sync follow state — dead artifact); spec ถือ Follow จาก likes sheet เป็น action จริงตาม 11_SOCIAL
+- `lk-follow` บน Likes sheet เป็น follow toggle จริง (sync `pfIsFollowed` + label `ติดตาม`/`กำลังติดตาม` — re-sync 2026-11-06; เดิมเคยบันทึกเป็น visual-only dead artifact)
 - `pfp-post` (Posts viewer) ของคนอื่นเปิด report-only menu — spec รับตาม prototype
 - `hideCounts` flag ซ่อน liked-by row + views ทุก surface — มีเฉพาะบน seeded posts; composer ไม่มี setter (More options มีแค่ commenting + audience) — spec เก็บ field + read semantics แต่ไม่มี UI เขียนค่าใน V1
 - `audience:"followers"` ถูกเก็บบนโพสต์แต่ feed ไม่กรองตาม audience (ดู Audience Rule) — enforcement เป็น contract
 - Asset mode `Show`/`Hide` path ทิ้ง audience/noComments ที่ตั้งใน More options (drawer-only record hardcode `public`/false)
-- Composer toasts ต้องแปลไทยครบตาม DEC-19 (ปัจจุบัน EN hardcode ยังไม่มี TH branch): `Posted · shared to feed ✓` / `Posted · shared to feed + My Assets ✓` / `Clip shared to feed ✓` / `Post updated` / `Post needs at least 1 photo or clip` / `You can add up to 10 photos or clips` / `Watch alert matched:` (toast ถูกถอดแล้ว 2026-11-05 — เหลือแค่ dict entry) — language sweep (FSP-026)
+- ~~Composer toasts ต้องแปลไทยครบตาม DEC-19~~ RESOLVED FSP-041: `Posted · shared to feed ✓` / `Posted · shared to feed + My Assets ✓` / `Clip shared to feed ✓` / `Post updated` / `Post needs at least 1 photo or clip` / `You can add up to N photos or clips` แปลแล้วผ่าน I18N_TH/`i18nTr` (`Watch alert matched:` toast ถูกถอดแล้ว 2026-11-05 — เหลือแค่ dict entry)
 - `Estimated Market Price` band บนโพสต์ใหม่ = mock estimate (±5–6% ปัด 5,000 + `Last Price Update` = วันนี้) — ไม่ใช่ market data จริง
 - โพสต์ใหม่ seed `likedBy` fake (`the watch`) — artifact ไม่มีผล render (likes=0 ไม่แสดง liked-by row)
 - Design variants `a2/b2/c2/a3/b3/c3/mixed` (price overlay / quiet price / footer price / type tag), `ft:"none"` brand-menu dropdown, `POST_DETAIL_CFG` เป็น dead prototype artifacts — ไม่ใช่ spec

@@ -121,7 +121,7 @@
 
 | Route/Feature (inventory §2.3) | TC ID ที่ครอบ | ครบ? |
 |---|---|---|
-| `search` landing (explore/chips/filter/`sr-saved`) | SRCH-001..005 + GATE-015 (ไม่ gate) + LIB-001..010 | ✅ |
+| `search` landing (explore/chips/filter/`sr-saved`) | SRCH-001..005 + GATE-015 (gated entry — ruling F-010) + LIB-001..010 | ✅ |
 | `search` typing (suggest/recents preview) | SRCH-006..011 | ✅ |
 | `recents` `[OPEN-CODE-ONLY]` (ล็อก: หน้าจริง) | SRCH-012..016 | ✅ |
 | `search` results (tabs/chips/grid/sellers/empty/err) | SRCH-017..032 | ✅ |
@@ -348,7 +348,7 @@
 | report/block entries | GATE-006 + TRS-001, 020, 055 | TRS-001..061 | ✅ |
 | Member Sheet mechanics (anatomy/dismiss/SSO/hide flag) | GATE-024..035 + AUTH-023..027, 061..068 | — | ✅ |
 | resume contract (ไม่มี pending-action resume) | GATE-036..041 + AUTH-065, 066 | — | ✅ |
-| guest free-browse inverse (feed/search/board/viewer/detail/public profile/legal) | GATE-042..048 (ยืนยัน*ไม่เจอ* sheet) | — | ✅ |
+| guest free-browse inverse (feed ทั้งหมด/search/board/viewer/detail/public profile/legal) | GATE-042..048 (ยืนยัน*ไม่เจอ* sheet — ยกเว้น GATE-042 Following/Favorites = gated ตาม ruling F-008) | — | ✅ |
 
 **สรุป:** ทุก gated action มีเคสฝั่ง guest (sheet) + member (flow) ครบคู่ — ไม่มี selector ใน GUEST_GATE_SEL ที่ไม่มีเคส
 

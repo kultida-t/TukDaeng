@@ -33,18 +33,18 @@ Phase 1 บทความสร้างและจัดการโดย Ad
 
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้) — line anchors คือ state ปัจจุบัน @ HEAD อาจ drift ให้ค้นด้วย function-name
 
-- Routes (`subHTML` ~17729): `board` → `boardHomeHTML`, `boardsearch` → `boardSearchHTML`, `boardall` → `boardAllHTML`, `boardart:{id}` → `boardArticleHTML`; nav tab `data-navgo="board"` → `bdQ = ""` + `openSub(scr,"board",true)` swap-open (~21531 — reset search state เสมอ, canonical 00_NAV §6.3)
-- Data: `BD_P`/`BD_FEAT_MAX=5`/`BD_BODY[3]` (~18066–18072 — shared body paragraphs ทุกบทความ), `BOARD` 15 บทความ mock (~18073–18089 — field `{id:"b{n}", cat, title, sub?, img, min, ago, date, likes, feat?}` + `.map` inject `author:"Tuk Daeng Editorial"`, `liked:false`, `saved:false`; `feat` 1–5 = hero), `bdGet`/`bdMeta` (`{min} min read · {ago}`)/`bdFeatured` (sort `feat`)/`bdLatest` (`!feat`)/`bdJournal` (**dead helper** — ไม่มี caller)/`bdFilteredJournal` (~18090–18098)
-- Taxonomy: `BD_CATEGORIES` = `All / Market Watch / Rolex / Technical / Collector / Guides / Industry` + `bdFilterCat` global (~18096–97); `BD_POPULAR_TAGS` = `Rolex / Daytona / Perpetual Calendar / Titanium / Patina / Grand Seiko` (~18100)
-- Carousel + pills: `bdCarouselScroll` (dots sync จาก scrollLeft), `bdGoSlide`, `bdStepSlide` (**dead helper** — ไม่มี caller/arrow), `bdCenterPill`, mouse-drag handlers บน document (`bdIsDragging`/`bdPillsDragging`, threshold 6px/5px, snap-back on mouseup), `bdScrollHandler` (no-op — header scroll ตาม content ตาม feed pattern) ~18102–18194
-- Anatomy builders: `boardNavHTML` = `botNavHTML("board")`, `bdHeadHTML` (burger `data-bdmenu` + brand `TUK DAENG | Board` + search `data-bdsearch`), `bdCardHTML` (search-result card — img + cat + title + meta + `N likes`), `bdRowHTML` (list row — img + cat + title + meta, **ไม่มี likes**), `bdListHTML` (rows + end note `You're all caught up`; empty → `No articles in this category`) ~18196–18234
-- Pages: `boardHomeHTML` (~18235 — `.bd-scroll` + head + `.bd-carousel-wrap` hero slides + `.bd-dots` + `บทความล่าสุด`/`Latest Articles` head + `data-bdall` `View all` + row list + bottom nav), `boardAllHTML` (~18272 — crumb `data-bdhome` home icon + `Latest Articles` + `.bd-pills` + `.bd-all-list` + bottom nav), `bdResultsHTML` (~18286 — empty query → Popular Topics chips; query → `N results for "q"` + card grid หรือ no-results state), `boardSearchHTML` (~18301 — `.bd-sbar` icon + `.bd-q` autofocus input + `data-bdclear` X + crumb + `.bd-res`), `boardSearchSync` (~18315 — re-render `.bd-res` เท่านั้น; ลบ clear-X เมื่อ query ว่าง), `boardArticleHTML` (~18321 — `.bd-dscroll`, invalid id → `chEmptyHTML("Article not found", "This article is no longer available.")`)
-- Click chain: `boardClick` (~18368–18510 — ลำดับ `data-bddot` → `data-bdart` → `data-bdsearch` → `data-bdclear` → `data-bdtag` → `data-bdcat` → `data-bdhome` → `data-bdall` → `data-bdmenu` → `data-bdmenu-cat` → `data-bdcancel-sheet` → `data-bdshare` → `data-bdsave`(**dead**) → `data-bdlike`); wired ใน stage click listener (~21521 — หลัง gate check)
-- Search input: `.bd-q` `input` event → `bdQ = value` + `boardSearchSync` (~20224 — live filter ไม่มี submit/debounce)
-- Guest gate: `GUEST_GATE_SEL` (~23362–23371) รวม `[data-bdlike]`, `[data-bdshare]` → gate check บรรทัดแรกของ stage listener (~20395) → `obGate()` Member Sheet ก่อน `boardClick` ทำงาน
-- Session: `applySessionData`/`clearUserData`/`restoreUserData`/`POST_FLAG_KEYS` (~23297–23351) — **ไม่แตะ `BOARD`** (article `liked`/`saved` ไม่ reset ข้าม session — deviation D8)
-- language: `isTh` ternary ใน markup + `I18N_TH` dict (board block ~19695 — `Board`→`กระดานข่าว`, `Categories`→`หมวดหู่`, cat names, `You're all caught up`→`คุณดูครบทั้งหมดแล้ว`, `Article not found`→`ไม่พบบทความ`, `This article is no longer available.`→`บทความนี้ไม่มีให้บริการแล้ว`, `Author`/`Date`/`Close`/`Like`/`Share`) + `i18nTr` patterns (~19785 `{n} min read · {ago}` → `อ่าน {n} นาที · {th-ago}`, date `Oct 28, 2024` → `28 ต.ค. 2567` พ.ศ.) + `setLang` board re-render (~19903–19911 — `.bd-sec h3`/`.bd-viewall`/`.bd-hero-btn`/`.bd-q` placeholder)
-- Shared deps: `shareSheetHTML` (canonical [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) §11), `openSheet` variants `pm`/`sh`, `scrToast` (1.8s), `chEmptyHTML` (~17902 — shared 07_CHAT), `sub-back`/`rpPush`/`rpBack`/`pushSub` (canonical 00_NAV §6.7), `esc`, `I.*` icon set
+- Routes (`subHTML` ~17894): `board` → `boardHomeHTML`, `boardsearch` → `boardSearchHTML`, `boardall` → `boardAllHTML`, `boardart:{id}` → `boardArticleHTML`; nav tab `data-navgo="board"` → `bdQ = ""` + `openSub(scr,"board",true)` swap-open (~22730 — reset search state เสมอ, canonical 00_NAV §6.3)
+- Data: `BD_P`/`BD_FEAT_MAX=5`/`BD_BODY[3]` (~18657–18662 — shared body paragraphs ทุกบทความ), `BOARD` 15 บทความ mock (~18663–18679 — field `{id:"b{n}", cat, title, sub?, img, min, ago, date, likes, feat?}` + `.map` inject `author:"Tuk Daeng Editorial"`, `liked:false`, `saved:false`; `feat` 1–5 = hero), `bdGet`/`bdMeta` (`{min} min read · {ago}`)/`bdFeatured` (sort `feat`)/`bdLatest` (`!feat`)/`bdJournal` (ถูกถอดแล้ว — AC-BOARD-018)/`bdFilteredJournal` (~18692–18700)
+- Taxonomy: `BD_CATEGORIES` = `All / Market Watch / Rolex / Technical / Collector / Guides / Industry` + `bdFilterCat` global (~18691–692); `BD_POPULAR_TAGS` = `Rolex / Daytona / Perpetual Calendar / Titanium / Patina / Grand Seiko` (~18694)
+- Carousel + pills: `bdCarouselScroll` (dots sync จาก scrollLeft), `bdGoSlide`, `bdStepSlide` (ถูกถอดแล้ว — AC-BOARD-018), `bdCenterPill`, mouse-drag handlers บน document (`bdIsDragging`/`bdPillsDragging`, threshold 6px/5px, snap-back on mouseup), `bdScrollHandler` (no-op — header scroll ตาม content ตาม feed pattern) ~18948–19040
+- Anatomy builders: `boardNavHTML` = `botNavHTML("board")`, `bdHeadHTML` (burger `data-bdmenu` + brand `TUK DAENG | Board` + search `data-bdsearch`), `bdCardHTML` (search-result card — img + cat + title + meta + `N likes`), `bdRowHTML` (list row — img + cat + title + meta, **ไม่มี likes**), `bdListHTML` (rows + end note `You're all caught up`; empty → `No articles in this category`) ~19042–19080
+- Pages: `boardHomeHTML` (~18844 — `.bd-scroll` + head + `.bd-carousel-wrap` hero slides + `.bd-dots` + `บทความล่าสุด`/`Latest Articles` head + `data-bdall` `View all` + row list + bottom nav), `boardAllHTML` (~18881 — crumb `data-bdhome` home icon + `Latest Articles` + `.bd-pills` + `.bd-all-list` + bottom nav), `bdResultsHTML` (~18895 — empty query → Popular Topics chips; query → `N results for "q"` + card grid หรือ no-results state), `boardSearchHTML` (~18910 — `.bd-sbar` icon + `.bd-q` autofocus input + `data-bdclear` X + crumb + `.bd-res`), `boardSearchSync` (~18923 — re-render `.bd-res` เท่านั้น; ลบ clear-X เมื่อ query ว่าง), `boardArticleHTML` (~18929 — `.bd-dscroll`, invalid id → `chEmptyHTML("Article not found", "This article is no longer available.")`)
+- Click chain: `boardClick` (~18976–19124 — ลำดับ `data-bddot` → `data-bdart` → `data-bdsearch` → `data-bdclear` → `data-bdtag` → `data-bdcat` → `data-bdhome` → `data-bdall` → `data-bdmenu` → `data-bdmenu-cat` → `data-bdcancel-sheet` → `data-bdshare` → `data-bdlike`); wired ใน stage click listener (~22719 — หลัง gate check)
+- Search input: `.bd-q` `input` event → `bdQ = value` + `boardSearchSync` (~21283 — live filter ไม่มี submit/debounce)
+- Guest gate: `GUEST_GATE_SEL` (~24533–24542) รวม `[data-bdlike]`, `[data-bdshare]` → gate check บรรทัดแรกของ stage listener (~21294) → `obGate()` Member Sheet ก่อน `boardClick` ทำงาน
+- Session: `applySessionData`/`clearUserData`/`restoreUserData`/`POST_FLAG_KEYS` (~24470–24524) — **ไม่แตะ `BOARD`** (article `liked`/`saved` ไม่ reset ข้าม session — deviation D8)
+- language: `isTh` ternary ใน markup + `I18N_TH` dict (board block ~20588 — `Board`→`กระดานข่าว`, `Categories`→`หมวดหู่`, cat names, `You're all caught up`→`คุณดูครบทั้งหมดแล้ว`, `Article not found`→`ไม่พบบทความ`, `This article is no longer available.`→`บทความนี้ไม่มีให้บริการแล้ว`, `Author`/`Date`/`Close`/`Like`/`Share`) + `i18nTr` patterns (~20475 `{n} min read · {ago}` → `อ่าน {n} นาที · {th-ago}`, date `Oct 28, 2024` → `28 ต.ค. 2567` พ.ศ.) + `setLang` board re-render (~20697–20705 — `.bd-sec h3`/`.bd-viewall`/`.bd-hero-btn`/`.bd-q` placeholder)
+- Shared deps: `shareSheetHTML` (canonical [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) §11), `openSheet` variants `pm`/`sh`, `scrToast` (1.8s), `chEmptyHTML` (~18448 — shared 07_CHAT), `sub-back`/`rpPush`/`rpBack`/`pushSub` (canonical 00_NAV §6.7), `esc`, `I.*` icon set
 
 ---
 
@@ -55,7 +55,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 | Board Type | Community Content / Article Area | ตรง — admin-authored articles เท่านั้น ไม่ใช่ user-generated discussion board |
 | Content Sections | Feature Article, Trending Now, Journal Board, Watch Brands, Watch 101, Watch Apparel, Watch Events | **ขัด** — prototype เป็น magazine model: hero featured (≤5) + Latest Articles + freeform category tags ที่ไม่ map 7 sections (deviation D1 — baseline mapping เป็นงาน FSP-025) |
 | Article Detail | รองรับ Article Detail | ตรง — `boardart:{id}` (§12) |
-| Article Actions | Article Like, Article Share | ตรง — `data-bdlike` toggle + `data-bdshare` → shared share sheet (member-only; guest → Member Sheet ตาม S-03/00_GLOBAL §11) |
+| Article Actions | Article Like, Article Share | ตรง — `data-bdlike` toggle (persist per-account `fo_bdlike:{user}`; ยอดรวม = baseline + like ทุก account — member กดแล้ว guest เห็นยอดจริงแต่หัวใจไม่ติด, FSP-039) + `data-bdshare` → shared share sheet (`Copy link` = ลิงก์จริง `https://tukdaeng.app/a/{id}` คู่ `/p/` post, `/u/` user; member-only; guest → Member Sheet ตาม S-03/00_GLOBAL §11) |
 | Search / Filter | Search Article, Category Filter | ตรง แต่**แยก surface** — search page ครอบทุกบทความเสมอ ไม่ทำงานร่วมกับ category filter (D9) |
 | Pagination | Infinite Scroll | **ขัด** — list นิ่ง + end note `You're all caught up`/`คุณดูครบทั้งหมดแล้ว` ไม่มี load-more (D2) |
 | Content Management | บทความสร้างและจัดการโดย Admin ผ่าน Back Office | ตรง — FO ไม่มี create/edit/delete/comment entry |
@@ -85,7 +85,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - User Create/Edit/Delete Article (Back Office scope)
 - Article Comment
 - Infinite scroll / pagination (list นิ่ง — D2)
-- Saved Article UI (`data-bdsave`/`a.saved` = dead artifact — D5)
+- ~~Saved Article UI (`data-bdsave`/`a.saved`)~~ — ถอดออกจากโค้ดแล้ว (AC-BOARD-018)
 - Article-specific share flow / native OS share / public deep link implementation (contract 00_NAV §12 — S-29)
 - Trending/ranking algorithm
 - Publish-state / deleted-state simulation (prototype render ทุกบทความเสมอ)
@@ -154,7 +154,7 @@ Entry notes:
 | `likes` | int | card meta `N likes` + detail `data-bdlike-count` |
 | `feat` | int 1–5? | hero slide order — absent = Latest list |
 | `author` | `"Tuk Daeng Editorial"` (injected) | data only — detail แสดง hardcode `Tuk Daeng` + `td-editorial.png` avatar |
-| `liked`/`saved` | bool (injected) | viewer flags — `liked` live (like pill), `saved` dead-path เท่านั้น |
+| `liked` | bool (injected) | viewer flag — persist `fo_bdlike:{user}` per-account (ยอดแสดง = baseline + like ทุก account); `saved` field ถูกถอดแล้ว (AC-BOARD-018) |
 
 ## Taxonomy
 
@@ -184,7 +184,7 @@ Anatomy (บนลงล่างใน `.bd-scroll`):
 2. Hero carousel `.bd-carousel-wrap` — `.bd-carousel` scroll-snap x mandatory ของ `bdFeatured()` (≤ `BD_FEAT_MAX` = 5 slides, sort `feat`):
    - `.bd-slide` = bg image + `.bd-hero-tag` (`a.cat` — fallback `FEATURED`/`แนะนำ`) + h2 title + p sub (fallback title) + `Read more`/`อ่านต่อ` button — ทั้ง slide และปุ่มเป็น `data-bdart`
    - `.bd-dots` — `data-bddot` ต่อ slide, active = slide ปัจจุบัน (`bdCarouselScroll` sync จาก scrollLeft), tap dot → `bdGoSlide` smooth scroll
-   - รองรับ native touch swipe + desktop mouse-drag (drag แล้ว snap กลับ slide ที่ใกล้สุด, threshold 6px, suppress tap หลัง drag); **ไม่มี** arrows/autoplay — `bdStepSlide` เป็น dead helper
+   - รองรับ native touch swipe + desktop mouse-drag (drag แล้ว snap กลับ slide ที่ใกล้สุด, threshold 6px, suppress tap หลัง drag); **ไม่มี** arrows/autoplay (`bdStepSlide` ถูกถอดแล้ว)
 3. Section head — `บทความล่าสุด`/`Latest Articles` + `View all`/`ดูทั้งหมด` (`data-bdall` → reset filter + push `boardall`)
 4. `bdListHTML(bdLatest())` — row list เฉพาะ non-featured (10 บทความ) + end note `You're all caught up`/`คุณดูครบทั้งหมดแล้ว`
 5. `boardNavHTML` — bottom nav active `board`
@@ -197,7 +197,7 @@ Anatomy:
 
 1. `.bd-crumb` — home icon `data-bdhome` (aria `Board`) + chevron + `บทความล่าสุด`/`Latest Articles`
 2. `.bd-pills` — `BD_CATEGORIES` pill row, horizontal scroll + mouse-drag (5px threshold — drag แล้ว tap ถูก suppress), `.bd-pill.active` = `bdFilterCat`
-3. `.bd-all-list` — `bdListHTML(bdFilteredJournal())` rows + end note; empty → `No articles in this category` (**EN-only** — ไม่อยู่ใน `I18N_TH`, ดู §17)
+3. `.bd-all-list` — `bdListHTML(bdFilteredJournal())` rows + end note; empty → `No articles in this category` (แปลแล้วผ่าน `I18N_TH` — resolved FSP-041)
 
 Pill tap (`data-bdcat`): set `bdFilterCat` → toggle `.active` ทุก pill → re-render `.bd-all-list` → `bdCenterPill` scroll pill ที่เลือกเข้ากลาง (smooth)
 
@@ -225,7 +225,7 @@ Anatomy:
 
 # 12. Article Detail (`boardart:{id}`)
 
-Lookup `bdGet(id)` — id ไม่เจอ → `chEmptyHTML("Article not found", "This article is no longer available.")` (TH dict → `ไม่พบบทความ` + `บทความนี้ไม่มีให้บริการแล้ว`; **ไม่แยก** unpublished/deleted/invalid — contract matrix อยู่ §13)
+Lookup `bdGet(id)` — id ไม่เจอ → `chEmptyHTML("Article not found", "This article is no longer available.")` (TH dict → `ไม่พบบทความ` + `บทความนี้ไม่มีให้บริการแล้ว`; **ไม่แยก** unpublished/deleted/invalid — contract matrix อยู่ §13; (D11 resolved 2026-11-06 — proto copy แก้เป็น canonical `ไม่พร้อมใช้งานแล้ว` ตาม 00_GLOBAL §11))
 
 Anatomy (`.bd-dscroll` — ไม่มี bottom nav):
 
@@ -335,9 +335,9 @@ Article Detail
 | `isTh` ternary ใน markup | hero tag fallback, `Read more`, `Latest Articles`, `View all`, crumb labels, search placeholder, `Popular Topics`, results heading, no-results + suggestion |
 | `I18N_TH` exact-match dict | `Board`→`กระดานข่าว`, `| Board`→`| กระดานข่าว`, `Categories`→`หมวดหมู่`, `All`→`ทั้งหมด`, `Featured`→`แนะนำ`, cat names ทั้งชุด, `You're all caught up`→`คุณดูครบทั้งหมดแล้ว`, `Author`→`ผู้เขียน`, `Date`→`วันที่`, `Close`→`ปิด`, `Like`→`ถูกใจ`, `Share`→`แชร์`, `Article not found`→`ไม่พบบทความ`, `This article is no longer available.`→`บทความนี้ไม่มีให้บริการแล้ว` |
 | `i18nTr` patterns | `{n} min read · {ago}` → `อ่าน {n} นาที · {th-ago}`; `Oct 28, 2024` → `28 ต.ค. 2567` (พ.ศ.); `{ago}` → TH relative |
-| `setLang` board re-render | `.bd-sec h3`, `.bd-viewall span`, `.bd-hero-btn span`, `.bd-q` placeholder (~19903–19911) |
+| `setLang` board re-render | `.bd-sec h3`, `.bd-viewall span`, `.bd-hero-btn span`, `.bd-q` placeholder (~21075–21083) |
 
-**EN-only leftovers (deviation D12 — language sweep FSP-026):** `No articles in this category`, `{n} likes` บน card meta, tag chips, Categories-sheet row labels (`Save to Favorites`/`Remove from Saved`/`Share Article`/`Copy Link`/`Cancel` — dead path), toasts `Saved to favorites`/`Removed from favorites`/`Link copied`, BOARD article content (title/sub/body = EN editorial content)
+**EN-only leftovers (deviation D12 — RESOLVED FSP-041 2026-11-06):** `No articles in this category` + `{n} likes` บน card meta แปลแล้วผ่าน `I18N_TH`/`i18nTr` pattern (`{n} ถูกใจ`), share toasts (`Sent to {name}`/`Shared to {app}`/`Link copied`) แปลแล้ว; tag chips + BOARD article content (title/sub/body) = editorial/sample content ไม่แปล; Categories-sheet row labels + `Saved to favorites`/`Removed from favorites` = dead path (ไม่มี entry point)
 
 ---
 
@@ -353,12 +353,12 @@ Article Detail
 
 | Case | Copy (EN / TH) |
 | --- | --- |
-| Category list empty | `No articles in this category` — **EN-only** (D12) |
+| Category list empty | `No articles in this category` — แปลแล้ว (resolved D12, FSP-041) |
 | Search no results | `No results found for "{q}"` / `ไม่พบบทความสำหรับ "{q}"` + `Try searching with different keywords like Rolex, Daytona, or Titanium` / `ลองค้นหาด้วยคำอื่น เช่น Rolex, Daytona หรือ Titanium` |
 | Article invalid id | `Article not found`/`ไม่พบบทความ` + `This article is no longer available.`/`บทความนี้ไม่มีให้บริการแล้ว` (dict) — contract TH `บทความนี้ไม่พร้อมใช้งานแล้ว` (D11) |
 | End of list | `You're all caught up`/`คุณดูครบทั้งหมดแล้ว` |
-| Share toasts | `Sent to {name}` / `Shared to {app}` / `Link copied` — EN-only |
-| Dead-path toasts (no live entry) | `Saved to favorites` / `Removed from favorites` / `Report submitted. Thank you for notifying us.` — EN-only |
+| Share toasts | `Sent to {name}` / `Shared to {app}` / `Link copied` — แปลแล้วผ่าน dict/pattern (FSP-041) |
+| Dead-path toasts (no live entry) | `Saved to favorites` / `Removed from favorites` / `Report submitted. Thank you for notifying us.` — EN-only (dead path ไม่มี entry point — ไม่นับ user-facing) |
 
 - ไม่มี board-specific error/retry state ใน prototype (contract load-fail pattern = global `ลองใหม่` — ไม่มี trigger จริง)
 
@@ -378,9 +378,9 @@ Article Detail
 | D8 | Session flags (แก้แล้ว DEC-25) | like เป็น per-user ตั้งแต่ DEC-25 — ไม่ค้างข้าม session | — flag ให้ dev reset เพิ่ม |
 | D9 | Search × filter ไม่ combine | search page ครอบทุก `BOARD` เสมอ ไม่สน `bdFilterCat` | spec เดิมบอก "ทำงานร่วมกันได้" — ผิดตาม prototype |
 | D10 | Dead queries/helpers | `.bd-dfoot-sub` (like handler), `bdJournal()`, `bdStepSlide()` — ไม่มี element/caller | dead — ไม่ spec |
-| D11 | Unavailable-state copy | prototype dict `บทความนี้ไม่มีให้บริการแล้ว` + EN title `Article not found`/`ไม่พบบทความ` | contract TH `บทความนี้ไม่พร้อมใช้งานแล้ว` (00_NAV §10) — unify ใน FSP-026 sweep |
-| D12 | EN-only leftovers | ดู §16 — หลายสตริงไม่อยู่ใน dict/ternary | Language sweep FSP-026 |
-| D13 | Section-comment drift | code comment `hero + trending + Journal Board` (~18064) แต่ label จริง `Latest Articles` | comment drift เท่านั้น — spec ใช้ label จริง |
+| D11 | ~~Unavailable-state copy~~ | dict ใช้ canonical `บทความนี้ไม่พร้อมใช้งานแล้ว` แล้ว (FSP-040) | RESOLVED |
+| D12 | ~~EN-only leftovers~~ | ดู §16 — แปลครบแล้วผ่าน dict/ternary/pattern | RESOLVED FSP-041 |
+| D13 | Section-comment drift | code comment `hero + trending + Journal Board` (~18655) แต่ label จริง `Latest Articles` | comment drift เท่านั้น — spec ใช้ label จริง |
 | D14 | `bdFilterCat` persist | reset เฉพาะ `data-bdall`; กลับเข้า board ใหม่ filter ค้าง (home ไม่ใช้ filter อยู่แล้ว — กระทบเฉพาะ `boardall` re-entry ผ่าน sheet) | documented quirk |
 | D15 | Author display | `a.author`=`Tuk Daeng Editorial` แต่ UI hardcode `Tuk Daeng` + `td-editorial.png` | mock simplification — production ใช้ author field จริง |
 | D16 | ~~15_TRUST_SAFETY ยังไม่ sync~~ **RESOLVED FSP-031** | 15_TRUST sync ระดับ prototype แล้ว (report stack/PM_REASONS/shared surfaces) — flag ปิด | resolved — flag เดิม FSP-025/030 |

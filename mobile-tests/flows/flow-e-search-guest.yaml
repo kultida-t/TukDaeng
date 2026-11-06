@@ -1,0 +1,262 @@
+# Flow E — Guest search: landing → typing/suggest → results → filters → recents
+#            → bell gate → saved hub — full chain must stay sheet-free (read-only)
+# TC refs: SETUP-02/03/05, SRCH-001/002 (landing), SRCH-005/011 (back/cancel),
+#          SRCH-006/007/010 (typing/suggest/clear-X), SRCH-012..016 (recents),
+#          SRCH-017/019 (results anatomy/empty), SRCH-029/030 (state reset),
+#          SRCH-033/039/040/045/048/049 (filters), SRCH-051 + GATE-011 (bell gate),
+#          SRCH-055/056 (tile→viewer), SRCH-058/059 + GATE-015/043 (guest chain),
+#          SRCH-060 (TH labels present)
+# NOTE: header icons have NO content-desc — search = point 17%,8%; results head
+#       bell ~80%,8% and filter ~92%,8%; typing-state clear-X ~76%,8%
+appId: com.univerza.tukdaeng
+name: "Flow E — Search guest"
+tags: [search, guest-gate, regression]
+---
+- launchApp:
+    clearState: true   # = adb pm clear
+- runFlow:
+    file: subflows/onboarding-to-guest.yaml
+    label: "SETUP-02/03 — onboarding → guest feed"
+
+# SETUP-05 + SRCH-001: magnifier → search landing anatomy
+- tapOn:
+    point: "17%,8%"
+- extendedWaitUntil:
+    visible:
+      text: "^ค้นหา$|^[Ss]earch.*"
+    timeout: 15000
+- assertVisible:
+    text: ".*สำหรับคุณ.*|.*For you.*"
+
+# SRCH-006: tap field → typing state — Recent block empty on fresh install
+- tapOn:
+    text: "^ค้นหา$|^[Ss]earch.*"
+- assertVisible:
+    text: ".*ยกเลิก.*|.*Cancel.*"
+- assertVisible:
+    text: ".*ล่าสุด.*|.*Recent.*"
+- assertVisible:
+    text: ".*ยังไม่มีการค้นหาล่าสุด.*|.*No recent searches.*"
+
+# SRCH-007: type → suggest block (this keyword has no suggestions)
+- inputText: "rolex"
+- extendedWaitUntil:
+    visible:
+      text: ".*ไม่มีคำแนะนำ.*|.*No suggestions.*"
+    timeout: 10000
+
+# SRCH-010: clear-X empties the field → Recent block returns
+- tapOn:
+    point: "76%,8%"
+- assertVisible:
+    text: ".*ล่าสุด.*|.*Recent.*"
+
+# SRCH-011a: Cancel → back to landing
+- tapOn:
+    text: ".*ยกเลิก.*|.*Cancel.*"
+- assertVisible:
+    text: ".*สำหรับคุณ.*|.*For you.*"
+
+# Search "rolex" → results (SRCH-017: query head + 3 tabs + grid)
+# typing state RETAINS the last query — always clear-X before typing
+- tapOn:
+    text: "^ค้นหา$|^[Ss]earch.*"
+- tapOn:
+    point: "76%,8%"
+- tapOn:
+    point: "40%,8%"
+- inputText: "rolex"
+- pressKey: enter
+- extendedWaitUntil:
+    visible:
+      text: "^rolex$"
+    timeout: 15000
+- assertVisible:
+    text: ".*สำหรับคุณ.*|.*For you.*"
+- assertVisible:
+    text: ".*โปรไฟล์.*|.*[Pp]rofile.*"
+- assertVisible:
+    text: ".*แท็ก.*|.*[Tt]ag.*"
+
+# SRCH-051 + GATE-011: guest taps watch-alert bell → Member Sheet (gate)
+- tapOn:
+    point: "80%,8%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*|.*ยินดีต้อนรับกลับ.*|.*Welcome back.*"
+    timeout: 10000
+- pressKey: back
+- assertVisible:
+    text: "^rolex$"
+
+# SRCH-055/056: result tile → fullscreen viewer → back restores results
+- tapOn:
+    point: "17%,30%"
+- extendedWaitUntil:
+    visible:
+      text: ".*ถูกใจ.*|.*[Ll]ike.*|.*ความคิดเห็น.*|.*[Cc]omment.*"
+    timeout: 15000
+- pressKey: back
+- extendedWaitUntil:
+    visible:
+      text: "^rolex$"
+    timeout: 10000
+
+# SRCH-033: filter sheet anatomy — title, groups, footer
+- tapOn:
+    point: "92%,8%"
+- extendedWaitUntil:
+    visible:
+      text: ".*ตัวกรอง.*|.*[Ff]ilter.*"
+    timeout: 10000
+- assertVisible:
+    text: ".*ชื่อแบรนด์.*|.*[Bb]rand.*"
+- assertVisible:
+    text: ".*ช่วงราคา.*|.*[Pp]rice.*"
+- assertVisible:
+    text: ".*ล้างทั้งหมด.*|.*Clear all.*"
+- assertVisible:
+    text: ".*ใช้งาน.*|.*Apply.*"
+
+# SRCH-045: min > max → inline error, Apply does not proceed
+- tapOn:
+    point: "25%,63%"
+- inputText: "5000000"
+- hideKeyboard
+- tapOn:
+    point: "75%,63%"
+- inputText: "100"
+- hideKeyboard
+- tapOn:
+    text: ".*ใช้งาน.*|.*Apply.*"
+- assertVisible:
+    text: ".*ราคาต่ำสุดต้องไม่มากกว่าราคาสูงสุด.*|.*[Mm]in.*must not.*|.*[Mm]in.*[Mm]ax.*"
+
+# SRCH-046: valid min + over-cap max → ceiling error (cap = ฿2,000,000)
+- tapOn:
+    point: "25%,63%"
+- eraseText
+- inputText: "100"
+- hideKeyboard
+- tapOn:
+    point: "75%,63%"
+- eraseText
+- inputText: "5000000"
+- hideKeyboard
+- tapOn:
+    text: ".*ใช้งาน.*|.*Apply.*"
+- assertVisible:
+    text: ".*ราคาสูงสุดต้องไม่เกิน.*|.*[Mm]ax.*[Ee]xceed.*|.*2,000,000.*"
+
+# fix max → Apply (n) → back on results (SRCH-040/048)
+- tapOn:
+    point: "75%,63%"
+- eraseText
+- inputText: "2000000"
+- hideKeyboard
+- tapOn:
+    text: ".*ใช้งาน.*|.*Apply.*"
+- extendedWaitUntil:
+    visible:
+      text: "^rolex$"
+    timeout: 10000
+
+# SRCH-050/029: reopen filter → draft values retained (in-session persist)
+- tapOn:
+    point: "92%,8%"
+- extendedWaitUntil:
+    visible:
+      text: ".*ตัวกรอง.*|.*[Ff]ilter.*"
+    timeout: 10000
+
+# SRCH-038: back discards nothing already applied — just leave sheet via back
+- pressKey: back
+- assertVisible:
+    text: "^rolex$"
+
+# SRCH-019: nonsense query → empty state on results
+# (results head has no magnifier — back to landing, then typing + clear-X)
+- pressKey: back
+- assertVisible:
+    text: ".*สำหรับคุณ.*|.*For you.*"
+- tapOn:
+    text: "^ค้นหา$|^[Ss]earch.*"
+- tapOn:
+    point: "76%,8%"
+- tapOn:
+    point: "40%,8%"
+- inputText: "zzqqxx"
+- pressKey: enter
+- extendedWaitUntil:
+    visible:
+      text: ".*ไม่พบข้อมูล.*|.*No data found.*|.*No results.*"
+    timeout: 15000
+- assertVisible:
+    text: ".*ลองใช้คำค้นอื่น.*|.*[Tt]ry.*"
+
+# back → landing (SRCH-011b)
+- pressKey: back
+- assertVisible:
+    text: ".*สำหรับคุณ.*|.*For you.*"
+
+# --- Recents (SETUP-10 covered by the searches above) ---
+# SRCH-012: open typing → recents populated → See all
+- tapOn:
+    text: "^ค้นหา$|^[Ss]earch.*"
+- assertVisible:
+    text: ".*ล่าสุด.*|.*Recent.*"
+- assertNotVisible:
+    text: ".*ยังไม่มีการค้นหาล่าสุด.*|.*No recent searches.*"
+- assertVisible:
+    text: ".*rolex.*"
+- tapOn:
+    text: ".*ยกเลิก.*|.*Cancel.*"
+
+# SRCH-016: kill/relaunch → recents persist.
+# Re-prompt sheet is EXPECTED every launch (no Don't-show tick — GATE-034 again):
+# wait for it deterministically, dismiss, then land on feed.
+- launchApp
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 15000
+- pressKey: back
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 20000
+- tapOn:
+    point: "17%,8%"
+- tapOn:
+    text: "^ค้นหา$|^[Ss]earch.*"
+- assertVisible:
+    text: ".*rolex.*"
+- tapOn:
+    text: ".*ยกเลิก.*|.*Cancel.*"
+
+# GATE-015 + SRCH-059: bookmark shortcut on search head = gated entry (spec
+#    adjusted per approved ruling F-010 — saved hub is account-bound; guest
+#    must get a gate prompt, hub must NOT open). Tolerant regex accepts the
+#    sheet or a full sign-in page per ruling F-009.
+- tapOn:
+    point: "92%,8%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*|.*ยินดีต้อนรับกลับ.*|.*Welcome back.*"
+    timeout: 10000
+- pressKey: back
+
+# SRCH-030: back out to feed, reopen search → always lands on landing
+- pressKey: back
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 10000
+- tapOn:
+    point: "17%,8%"
+- extendedWaitUntil:
+    visible:
+      text: ".*สำหรับคุณ.*|.*For you.*"
+    timeout: 10000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"

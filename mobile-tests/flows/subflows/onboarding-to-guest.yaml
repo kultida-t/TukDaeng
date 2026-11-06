@@ -1,0 +1,69 @@
+# Subflow: first-run onboarding → member sheet → "ข้ามไปก่อน" → guest feed
+# Caller must launchApp with clearState: true (fresh install) before runFlow.
+# TC refs: SETUP-02, SETUP-03 (FO-TEST-001-02-shell-checklist.csv / -17-guest-gate-checklist.csv)
+appId: com.univerza.tukdaeng
+---
+# Language screen (desc verified: "Select your language · เลือกภาษา")
+- extendedWaitUntil:
+    visible:
+      text: ".*เลือกภาษา.*|.*[Ss]elect your language.*"
+    timeout: 30000
+# Lock to TH — descs verified on TH locale; assertions stay bilingual anyway
+- tapOn:
+    text: "^ไทย$|^ภาษาไทย$|^Thai$"
+- tapOn:
+    text: "^ต่อไป$|^Continue$|^Next$"
+
+# Onboarding page count varies (welcome → consent → notif ask → track ask).
+# Each pass taps whatever CTA is on the current page; no-ops when absent.
+# Order matters: member sheet first (its "ข้ามไปก่อน" also matches a generic skip).
+- repeat:
+    times: 8
+    commands:
+      - runFlow:
+          when:
+            visible:
+              text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+          commands:
+            - tapOn:
+                text: ".*ข้ามไปก่อน.*|.*Skip for now.*"
+      - runFlow:
+          when:
+            visible:
+              text: ".*ยอมรับ.*|.*Accept.*"
+          commands:
+            - tapOn:
+                text: ".*ยอมรับ.*|.*Accept.*"
+      - runFlow:
+          when:
+            visible:
+              id: "com.android.permissioncontroller:id/permission_deny_button"
+          commands:
+            - tapOn:
+                id: "com.android.permissioncontroller:id/permission_deny_button"
+      - runFlow:
+          when:
+            visible:
+              text: "^ข้าม$|^Skip$|^ไม่ใช่ตอนนี้$|^Maybe later$|^Not now$"
+          commands:
+            - tapOn:
+                text: "^ข้าม$|^Skip$|^ไม่ใช่ตอนนี้$|^Maybe later$|^Not now$"
+      - runFlow:
+          when:
+            visible:
+              text: "^ต่อไป$|^Continue$|^Next$"
+          commands:
+            - tapOn:
+                text: "^ต่อไป$|^Continue$|^Next$"
+
+# Landed on guest feed — feed tabs row visible
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 20000
+# Guest coach-mark tour (SHELL-060) overlays the screen as a canvas layer and
+# eats the next tap (any tap = dismiss tour). Tap the active tab once to clear
+# it — also covers SHELL-038 re-tap behaviour harmlessly.
+- tapOn:
+    text: ".*ทั้งหมด.*|.*All Posts.*"
+- waitForAnimationToEnd

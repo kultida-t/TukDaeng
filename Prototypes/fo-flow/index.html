@@ -4357,6 +4357,10 @@
       transform: translateX(18px);
     }
 
+    .tg-sw.dis {
+      opacity: .4;
+    }
+
     .sens-check {
       color: var(--text);
     }
@@ -12959,6 +12963,8 @@
     .ob-osbtn button:last-child { color: #fff; font-weight: 600; }
     #obReplay { bottom: 72px; }
     #obRecon { bottom: 126px; }
+    #obReset { bottom: 180px; }
+    #obMsg { bottom: 234px; }
     /* social sign-in buttons (Google / Apple) */
     .ob-or { display: flex; align-items: center; gap: 12px; margin: 16px 0 14px; color: rgba(255, 255, 255, .45); font-size: 12px; font-weight: 500; }
     .ob-or::before, .ob-or::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, .14); }
@@ -12981,6 +12987,8 @@
   <div id="flowToast"></div>
   <button class="ob-dev" id="obReplay" title="Replay first-run onboarding">1st</button>
   <button class="ob-dev" id="obRecon" title="Simulate new Terms/Privacy version (re-consent)">v2</button>
+  <button class="ob-dev" id="obReset" title="Reset all demo data back to the initial mock state">rst</button>
+  <button class="ob-dev" id="obMsg" title="Simulate an incoming listing ask (tests the 'Only people I follow' chat toggle)">msg</button>
 
   <script>
     /* qrcode-generator 1.4.4 (MIT, Kazuhiko Arase) — used by PROFILE-010 profile QR */
@@ -13546,7 +13554,8 @@
         .replace(/(\d+)m/g, "$1 นาที")
         .replace(/(\d+)h/g, "$1 ชม.")
         .replace(/(\d+)d/g, "$1 วัน")
-        .replace(/(\d+)w/g, "$1 สัปดาห์");
+        .replace(/(\d+)w/g, "$1 สัปดาห์")
+        .replace(/just now/i, "เมื่อสักครู่");
     }
 
     function askBtnHTML(defaultSolid) {
@@ -13628,13 +13637,13 @@
     function detailHTML(p) {
       if (state.dl !== "dl1") return igDetailHTML(p);
       const isTh = state.lang === "th";
-      const spec = k => (p.specs.find(s => s[0] === k) || [k, "n/a"])[1];
+      const spec = k => (p.specs.find(s => s[0] === k) || [k, "N/A"])[1];
       const dots = p.photos.length > 1;
-      /* hide N/A parts in the title ("rolex N/A" → "rolex"); Ref falls back to "Ref. -" */
+      /* hide N/A parts in the title ("rolex N/A" → "rolex"); Ref falls back to "Ref. N/A" */
       const na = v => /^n\/?a$/i.test((v || "").trim());
       const nm = p.specs.length ? [spec("Brand"), spec("Model")].filter(v => !na(v)).join(" ") : "";
       const name = nm || p.caption.split("—")[0].trim();
-      const ref = p.specs.length ? `Ref. ${na(spec("Reference")) ? "-" : spec("Reference")}` : "";
+      const ref = p.specs.length ? `Ref. ${na(spec("Reference")) ? "N/A" : spec("Reference")}` : "";
       const cl = clipState(p);
       return `
     ${detailHeadHTML(p)}
@@ -13650,13 +13659,13 @@
       ${dots ? `<div class="photo-dots">${p.photos.map((_, i) => `<span class="${i === 0 ? 'on' : ''}"></span>`).join("")}</div>` : ""}
       <div class="detail-pad">
         <div class="post-actions" style="padding:6px 0 2px;margin:0 -5px 0 -7px">
-          <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
+          <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}${isOwnPost(p) && p.likes ? `<span class="lk-n">${p.likes}</span>` : ""}</button>
           ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
           ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
           <button class="act share-btn">${I.share(22)}</button>
           <span class="act-right">
-            <button class="mf-btn${p.modelFollowing ? " on" : ""}" title="${p.modelFollowing ? "Following this model" : "Follow this model"}">${I.navBell(23)}</button>
-            <button class="wl-btn${p.wishlisted ? " saved" : ""}" title="Wish List"><span class="wl-ic wl-o">${I.gift(23)}</span><span class="wl-ic wl-f">${I.giftFill(23)}</span></button>
+            <button class="mf-btn${p.modelFollowing ? " on" : ""}" title="${p.modelFollowing ? (state.lang === "th" ? "ติดตามรุ่นนี้แล้ว" : "Following this model") : (state.lang === "th" ? "ติดตามรุ่นนี้" : "Follow this model")}">${I.navBell(23)}</button>
+            <button class="wl-btn${p.wishlisted ? " saved" : ""}" title="${state.lang === "th" ? "รายการอยากได้" : "Wish List"}"><span class="wl-ic wl-o">${I.gift(23)}</span><span class="wl-ic wl-f">${I.giftFill(23)}</span></button>
           </span>
         </div>
         ${p.hideCounts || !p.likes || !p.likedBy ? "" : `<div class="liked-by">
@@ -13671,7 +13680,7 @@
         <h2 class="detail-name">${esc(name)}</h2>
         ${ref ? `<div class="detail-ref">${esc(ref)}</div>` : ""}
         <div class="detail-h">${isTh ? "คำอธิบาย" : "Descriptions"}</div>
-        <p class="detail-desc">${igCaptionHTML(p, p.desc || "-")}</p>
+        <p class="detail-desc">${igCaptionHTML(p, p.desc || "N/A")}</p>
         ${detailSpecsHTML(p)}
       </div>
     </div>`;
@@ -13681,7 +13690,7 @@
     function chatPopHTML(p) {
       return `
     <div class="cp-backdrop"></div>
-    <button class="chat-fab" title="Chat with ${esc(p.seller)}">${I.chat(22)}</button>
+    <button class="chat-fab" title="${state.lang === "th" ? "แชทกับ " : "Chat with "}${esc(p.seller)}">${I.chat(22)}</button>
     <div class="chat-pop">
       <div class="cp-head">
         <img class="cp-av" src="${p.avatar}" alt="" data-pf-user="${esc(p.seller)}">
@@ -13764,7 +13773,7 @@
     </div>
     ${dots ? `<div class="photo-dots">${p.photos.map((_, i) => `<span class="${i === 0 ? 'on' : ''}"></span>`).join("")}</div>` : ""}
     <div class="post-actions">
-      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
+      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}${isOwnPost(p) && p.likes ? `<span class="lk-n">${p.likes}</span>` : ""}</button>
       ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
@@ -14258,9 +14267,9 @@
       const ico = d => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
       ov.innerHTML = `
     <div class="pf-qr-top">
-      <button class="pf-qr-x" title="Close">${I.x(26)}</button>
+      <button class="pf-qr-x" title="${state.lang === "th" ? "ปิด" : "Close"}">${I.x(26)}</button>
       <button class="pf-qr-color">COLOR</button>
-      <button class="pf-qr-scan" title="Scan QR">${ico('<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.2"/>')}</button>
+      <button class="pf-qr-scan" title="${state.lang === "th" ? "สแกน QR" : "Scan QR"}">${ico('<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.2"/>')}</button>
     </div>
     <div class="pf-qr-mid">
       <div class="pf-qr-card"></div>
@@ -14290,7 +14299,7 @@
       if (!ov.isConnected) { stream.getTracks().forEach(t => t.stop()); return; }
       const cam = document.createElement("div");
       cam.className = "pf-cam";
-      cam.innerHTML = `<video playsinline muted autoplay></video><button class="pf-cam-x" title="Close">${I.x(26)}</button><div class="pf-cam-frame"></div><div class="pf-cam-hint">Point your camera at a QR code</div>`;
+      cam.innerHTML = `<video playsinline muted autoplay></video><button class="pf-cam-x" title="${state.lang === "th" ? "ปิด" : "Close"}">${I.x(26)}</button><div class="pf-cam-frame"></div><div class="pf-cam-hint">${state.lang === "th" ? "ชี้กล้องไปที่คิวอาร์โค้ด" : "Point your camera at a QR code"}</div>`;
       const v = cam.querySelector("video");
       v.srcObject = stream;
       ov.appendChild(cam);
@@ -14523,7 +14532,7 @@
     ${dots ? `<div class="photo-dots">${p.photos.map((_, i) => `<span class="${i === 0 ? 'on' : ''}"></span>`).join("")}</div>` : ""}
 
     <div class="post-actions">
-      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}</button>
+      <button class="act like-btn${p.liked ? " liked" : ""}">${I.heart(23)}${isOwnPost(p) && p.likes ? `<span class="lk-n">${p.likes}</span>` : ""}</button>
       ${p.noComments ? "" : `<button class="act comment-btn">${I.comment(23)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
@@ -14665,9 +14674,17 @@
         scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
     }
 
-    /* ===== FEED-010 — feedback-card actions: mute / settings+content prefs / uncomfortable (memory only) ===== */
-    state.snooze = false;
-    state.sensitive = "standard";
+    /* ===== FEED-010 — feedback-card actions: mute / settings+content prefs / uncomfortable ===== */
+    /* snooze persists per account with a 30-day expiry — the Settings copy promises
+       "for 30 days"; a fresh account must never inherit another account's snooze */
+    const snoozeKey = () => `fo_snooze:${CP_ME.name}`;
+    const snoozeLoad = () => {
+      const at = +localStorage.getItem(snoozeKey());
+      if (at && Date.now() - at < 30 * 864e5) return true;
+      if (at) localStorage.removeItem(snoozeKey());
+      return false;
+    };
+    state.snooze = false; /* real value lands in applySessionData — CP_ME isn't initialized yet here */
 
     let scrToastTimer;
     function scrToast(scr, msg, thumb = "") {
@@ -14794,13 +14811,14 @@
       if (f.dial.length && !f.dial.some(d => specOf(p, "Dial Color").includes(d))) return false;
       if (f.strap.length && !f.strap.some(s => strapMatch(p, s))) return false;
       if (f.deliv.length && !f.deliv.some(v => delivMatch(p, v))) return false;
-      const pr = priceNum(p) || 0;
+      /* a post with no price never satisfies an active price bound — same rule as the filter-chip re-check */
+      const pr = priceNum(p);
+      if ((f.pmin !== "" || f.pmax !== "") && pr == null) return false;
       if (f.pmin !== "" && pr < +f.pmin) return false;
       if (f.pmax !== "" && pr > +f.pmax) return false;
       return true;
     }
     function searchResults(S) {
-      const isTag = S.q.trim().startsWith("#");
       /* results = every post visible on the feed (post + sale) — same set for keyword and #tag queries */
       let list = discoverablePosts().filter(p => matchQuery(p, S.q) && matchFilters(p, S.f));
       if (S.sort === "plo") list = [...list].sort((a, b) => priceNum(a) - priceNum(b));
@@ -14873,7 +14891,7 @@
     function landingHTML() {
       return `
     <div class="sr-chips">
-      <button class="sr-chip ico" data-sub="sfilter" title="Filters">${I.sliders(16)}</button>
+      <button class="sr-chip ico" data-sub="sfilter" title="${state.lang === "th" ? "ตัวกรอง" : "Filters"}">${I.sliders(16)}</button>
       ${SEARCH_POPULAR.slice(0, 10).map(c => `<button class="sr-chip sr-pick${c === "For you" ? " on" : ""}" data-q="${esc(c === "For you" ? "" : c)}">${c}</button>`).join("")}
     </div>
     <div class="xp-grid">
@@ -14945,12 +14963,13 @@
     </div>`;
       return head + `<div class="sub-scroll sr-body">${typing ? (S.q.trim() ? suggestHTML(S) : recentHTML(S)) : landingHTML()}</div>`;
     }
-    /* Accounts/Profiles lists only sellers whose NAME matches the query — like IG, post sellers don't count */
+    /* Accounts/Profiles lists only sellers whose NAME matches the query — like IG, post sellers
+       don't count and your own account never shows up (no self-follow path) */
     function resultSellers(S) {
       const q = S.q.trim().toLowerCase();
       if (!q) return [];
       const seen = new Map();
-      POSTS.forEach(p => { if (p.seller.toLowerCase().includes(q) && !PF_BLOCKED.has(p.seller) && !seen.has(p.seller)) seen.set(p.seller, p); });
+      POSTS.forEach(p => { if (p.seller !== CP_ME.name && p.seller.toLowerCase().includes(q) && !PF_BLOCKED.has(p.seller) && !seen.has(p.seller)) seen.set(p.seller, p); });
       return [...seen.values()];
     }
     function sellerCardHTML(p) {
@@ -14988,8 +15007,8 @@
     <div class="pv-grad"></div>
     <div class="pv-rail">
       <div class="pv-grp">
-        <button class="pv-act like-btn${p.liked ? " liked" : ""}">${I.heart(26)}</button>
-        ${p.likes && p.likedBy ? `<button class="pv-act pv-lbl liked-by">${isTh ? "ถูกใจ" : "Likes"}</button>` : ""}
+        <button class="pv-act like-btn${p.liked ? " liked" : ""}">${I.heart(26)}${isOwnPost(p) && p.likes ? `<span class="lk-n">${p.likes}</span>` : ""}</button>
+        ${p.hideCounts || !p.likes || !p.likedBy ? "" : `<button class="pv-act pv-lbl liked-by">${isTh ? "ถูกใจ" : "Likes"}</button>`}
       </div>
       ${p.noComments ? "" : `<button class="pv-act comment-btn">${I.comment(25)}${p.comments ? `<span class="comment-count">${p.comments}</span>` : ""}</button>`}
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="pv-act">${I.eye(23)}<span>${p.views}</span></span>`}
@@ -15021,11 +15040,11 @@
       </div>
       <div class="ps-cap"><b>${esc(p.seller)}</b> ${igCaptionHTML(p)}</div>
       <div class="ps-time">${p.time}</div>
-      ${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No comments yet</div>`}
+      ${rows || `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">${isTh ? "ยังไม่มีความคิดเห็น" : "No comments yet"}</div>`}
     </div>
     <div class="comment-input">
       <img src="${myAvatarSrc()}" alt="">
-      <input class="ci-field" type="text" maxlength="500" autocomplete="off" placeholder="Add a comment for ${esc(p.seller)}">
+      <input class="ci-field" type="text" maxlength="500" autocomplete="off" placeholder="${isTh ? `เพิ่มความคิดเห็นสำหรับ ${esc(p.seller)}` : `Add a comment for ${esc(p.seller)}`}">
       <button class="ci-send" hidden>${state.lang === "th" ? "โพสต์" : "Post"}</button>
     </div>`;
     }
@@ -15073,7 +15092,7 @@
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
-        ${p.type === "sale" && !isOwnPost(p) ? askBtnHTML(false) : ""}
+        ${!isOwnPost(p) ? askBtnHTML(false) : ""}
         <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
       </span>
     </div>
@@ -15162,8 +15181,8 @@
     <div class="sr-head">
       <button class="icon-btn sub-back">${I.back()}</button>
       <span class="sr-field sr-fake">${I.search(16)}<span class="sr-qv">${esc(S.q) || "Search"}</span></span>
-      <button class="icon-btn sr-wa${waSaved ? " on" : ""}" title="Create watch alert">${I.navBell(20)}</button>
-      <button class="icon-btn flt-open" data-sub="sfilter" title="Filters">${I.sliders(20)}</button>
+      <button class="icon-btn sr-wa${waSaved ? " on" : ""}" title="${state.lang === "th" ? "สร้างการแจ้งเตือน" : "Create watch alert"}">${I.navBell(20)}</button>
+      <button class="icon-btn flt-open" data-sub="sfilter" title="${state.lang === "th" ? "ตัวกรอง" : "Filters"}">${I.sliders(20)}</button>
     </div>`;
       const tabs = `
     <div class="sr-tabs">
@@ -15294,9 +15313,9 @@
     function logoutDlgHTML() {
       const isTh = state.lang === "th";
       return `
-    <div class="dlg-q">${isTh ? `ออกจากระบบ @${CP_ME.name} หรือไม่?` : `Log out of @${CP_ME.name}?`}</div>
+    <div class="dlg-q">${isTh ? `ออกจากระบบ @${CP_ME.name} หรือไม่?` : `Sign out of @${CP_ME.name}?`}</div>
     <div class="dlg-desc">${isTh ? "คุณจะต้องเข้าสู่ระบบอีกครั้งเพื่อเข้าถึงบัญชีของคุณ" : "You will need to sign in again to access your account."}</div>
-    <button class="dlg-btn danger dlg-logout-go">${isTh ? "ออกจากระบบ" : "Log out"}</button>
+    <button class="dlg-btn danger dlg-logout-go">${isTh ? "ออกจากระบบ" : "Sign out"}</button>
     <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
     }
     function delPasswordConfirmDlgHTML() {
@@ -15325,9 +15344,9 @@
     <div class="dlg-desc" style="text-align:center;">
       ${isTh
           ? `บัญชี @${CP_ME.name} ถูกปิดการใช้งานเรียบร้อยแล้ว และมีกำหนดลบถาวรในวันที่ <b>${finalDate}</b> (30 วัน)<br><br>หากคุณเปลี่ยนใจ สามารถเข้าสู่ระบบก่อนวันที่ดังกล่าวเพื่อยกเลิกคำขอและกู้คืนบัญชีได้ตลอดเวลา`
-          : `Your account @${CP_ME.name} has been deactivated and is scheduled for permanent deletion on <b>${finalDate}</b> (30 days).<br><br>If you change your mind, simply log back in before this date to cancel deletion and restore your account.`}
+          : `Your account @${CP_ME.name} has been deactivated and is scheduled for permanent deletion on <b>${finalDate}</b> (30 days).<br><br>If you change your mind, simply sign back in before this date to cancel deletion and restore your account.`}
     </div>
-    <button class="dlg-btn dlg-delaccount-done" style="font-weight:600;color:var(--text);">${isTh ? "ออกจากระบบ" : "Log out"}</button>`;
+    <button class="dlg-btn dlg-delaccount-done" style="font-weight:600;color:var(--text);">${isTh ? "ออกจากระบบ" : "Sign out"}</button>`;
     }
     /* AUTH-003 — mask the signed-in account's own email instead of the fixed demo one */
     const obMaskedEmail = () => {
@@ -17090,9 +17109,14 @@
       const a = new Date(from + "T00:00:00"), b = to ? new Date(to + "T00:00:00") : new Date();
       if (b < a) return null;
       const d = Math.round((b - a) / 864e5), y = Math.floor(d / 365), m = Math.floor(d % 365 / 30.4);
-      return { d, txt: y ? `${y}y ${m}m` : m ? `${m}m` : `${d}d` };
+      return { d, txt: y ? `${y}y ${m}m` : m ? `${m}m` : `${d}d`, txtTh: y ? `${y} ปี ${m} เดือน` : m ? `${m} เดือน` : `${d} วัน` };
     }
-    const pfoDate = iso => new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    const pfoDate = iso => {
+      const s = new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+      if (state.lang !== "th") return s;
+      const [dd, mon, yy] = s.split(" ");
+      return `${dd} ${I18N_MON[mon]} ${+yy + 543}`;
+    };
     const PFO_STATUS = { sale: ["Sale", "st-sale"], show: ["Show", "st-show"], hide: ["Hide", "st-hide"] };
     const PFO_CMP = { above: ["Above market", "cmp-above"], at: ["At market", "cmp-at"], below: ["Below market", "cmp-below"] };
     const PFO_SRC = { mkt: "Latest market price", fb: "Purchase price estimate", none: "No market price" };
@@ -17604,7 +17628,7 @@
       </div>` : ""}
       ${!own ? `<div class="pf-chrow"><span class="pf-link"><b class="pf-atch">@</b>${esc(u.user)}</span></div>` : ""}
     </div>
-    ${!own && u.followedBy.length ? `<div class="pf-fby"><span class="pf-fbavs">${u.followedBy.slice(0, 3).map(n => `<img src="${pfAvatar(n)}" alt="">`).join("")}</span><span>${isTh ? `ติดตามโดย ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` และ <b>${esc(u.fbyMore)}</b>` : ""}` : `Followed by ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` and <b>${esc(u.fbyMore)}</b>` : ""}`}</span></div>` : ""}
+    ${!own && !isF && u.followedBy.length ? `<div class="pf-fby"><span class="pf-fbavs">${u.followedBy.slice(0, 3).map(n => `<img src="${pfAvatar(n)}" alt="">`).join("")}</span><span>${isTh ? `ติดตามโดย ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` และ <b>${esc(u.fbyMore)}</b>` : ""}` : `Followed by ${u.followedBy.map(n => `<b>${esc(n)}</b>`).join(", ")}${u.fbyMore ? ` and <b>${esc(u.fbyMore)}</b>` : ""}`}</span></div>` : ""}
     <div class="pf-actions">
       ${own
           ? `<button class="pf-btn pf-edit">${isTh ? "แก้ไขโปรไฟล์" : "Edit profile"}</button><button class="pf-btn pf-share">${isTh ? "แชร์โปรไฟล์" : "Share profile"}</button><button class="pf-btn pf-iconbtn pf-pfo" data-sub="portfolio" title="${isTh ? "พอร์ตโฟลิโอ" : "Portfolio"}">${I.wallet(16)}</button>`
@@ -17641,7 +17665,7 @@
       <img src="${p.avatar}" alt="">
       <span class="lg-b"><span class="mn">${esc(n)}</span></span>
       ${own
-            ? `<button class="mact pf-msg">${state.lang === "th" ? "แชท" : "Chat"}</button><button class="pfl-ic ${tab === "followers" ? "pf-rmf" : "pf-dots"}" data-u="${esc(n)}" title="${tab === "followers" ? "Remove" : "More"}">${tab === "followers" ? I.x(18) : I.dots(20)}</button>`
+            ? `<button class="mact pf-msg">${state.lang === "th" ? "แชท" : "Chat"}</button><button class="pfl-ic ${tab === "followers" ? "pf-rmf" : "pf-dots"}" data-u="${esc(n)}" title="${tab === "followers" ? (state.lang === "th" ? "นำออก" : "Remove") : (state.lang === "th" ? "เพิ่มเติม" : "More")}">${tab === "followers" ? I.x(18) : I.dots(20)}</button>`
             : `<button class="mact pf-flw${isF ? " on" : ""}" data-u="${esc(n)}">${isF ? "Following" : "Follow"}</button>`}
     </div>`;
       }).join("");
@@ -17692,7 +17716,7 @@
       <span class="md">${esc(a.ref)}${a.meta ? " · " + esc(a.meta) : ""}</span>
     </span>
     <span class="pfo-r">
-      <span class="pfo-val">${a.purchase != null && a.purchase > 0 ? pfoTHB(a.purchase) : "—"}</span>
+      <span class="pfo-val">${a.purchase != null && a.purchase > 0 ? pfoTHB(a.purchase) : "N/A"}</span>
     </span>
   </button>`;
     }
@@ -17752,20 +17776,20 @@
     </div>
     <div class="pfo-card">
       <div class="pfo-card-t">${isTh ? "มูลค่า" : "Value"} <span class="pfo-privtag">${I.lock(10)} ${isTh ? "ส่วนตัว" : "private"}</span></div>
-      ${kv(isTh ? "มูลค่าปัจจุบัน" : "Current value", cur.v != null ? pfoTHB(cur.v) : "—")}
+      ${kv(isTh ? "มูลค่าปัจจุบัน" : "Current value", cur.v != null ? pfoTHB(cur.v) : "N/A")}
       ${kv(isTh ? "ที่มาของมูลค่า" : "Value source", PFO_SRC[cur.src])}
-      ${kv(isTh ? "ราคาประเมินตลาด" : "Estimated market", a.market != null ? `${pfoTHB(Math.round(a.market * 0.95 / 500) * 500)} – ${pfoTHB(Math.round(a.market * 1.05 / 500) * 500)}` : "—")}
-      ${kv(isTh ? "อัปเดตราคาล่าสุด" : "Last price update", a.market != null ? pfoDate(PF_MKT_UPDATED) : "—")}
-      ${kv(isTh ? "แหล่งข้อมูล" : "Data source", a.market != null ? "TukDaeng Market Data" : "—")}
-      ${kv(isTh ? "ราคาซื้อ" : "Purchase price", a.purchase ? pfoTHB(a.purchase) : "—")}
-      ${kv(isTh ? "วันที่ซื้อ" : "Purchased", a.bought ? pfoDate(a.bought) : "—")}
-      ${kv(isTh ? "กำไร/ขาดทุนที่ยังไม่เกิดขึ้น" : "Unrealized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, a.purchase)})` : "—", gl != null ? (gl >= 0 ? "up" : "dn") : "")}
-      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txt}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "—")}
+      ${kv(isTh ? "ราคาประเมินตลาด" : "Estimated market", a.market != null ? `${pfoTHB(Math.round(a.market * 0.95 / 500) * 500)} – ${pfoTHB(Math.round(a.market * 1.05 / 500) * 500)}` : "N/A")}
+      ${kv(isTh ? "อัปเดตราคาล่าสุด" : "Last price update", a.market != null ? pfoDate(PF_MKT_UPDATED) : "N/A")}
+      ${kv(isTh ? "แหล่งข้อมูล" : "Data source", a.market != null ? "TukDaeng Market Data" : "N/A")}
+      ${kv(isTh ? "ราคาซื้อ" : "Purchase price", a.purchase ? pfoTHB(a.purchase) : "N/A")}
+      ${kv(isTh ? "วันที่ซื้อ" : "Purchased", a.bought ? pfoDate(a.bought) : "N/A")}
+      ${kv(isTh ? "กำไร/ขาดทุนที่ยังไม่เกิดขึ้น" : "Unrealized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, a.purchase)})` : "N/A", gl != null ? (gl >= 0 ? "up" : "dn") : "")}
+      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txtTh}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "N/A")}
     </div>
     ${a.status === "sale" ? `<div class="pfo-card">
       <div class="pfo-card-t">${isTh ? "การลงประกาศ" : "Listing"}</div>
-      ${kv(isTh ? "ราคาตั้งขาย" : "Asking price", a.asking != null ? pfoTHB(a.asking) : "—")}
-      ${kv(isTh ? "กำไรที่คาดหวัง" : "Expected profit", ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : "—", ex != null ? "up" : "")}
+      ${kv(isTh ? "ราคาตั้งขาย" : "Asking price", a.asking != null ? pfoTHB(a.asking) : "N/A")}
+      ${kv(isTh ? "กำไรที่คาดหวัง" : "Expected profit", ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : "N/A", ex != null ? "up" : "")}
       ${kv(isTh ? "เปรียบเทียบตลาด" : "Market comparison", cmp && cmp !== "none" ? `<i class="pfo-chip ${PFO_CMP[cmp][1]}">${PFO_CMP[cmp][0]}</i>` : (isTh ? "ไม่มีราคาตลาด" : "No market price"))}
     </div>` : ""}
     ${pfoEligible(a) ? `<div class="pfd-acts"><button class="pf-btn primary" data-sell="${a.id}">${I.checkCir(15)} ${isTh ? "บันทึกการขาย" : "Mark as sold"}</button></div>` : ""}
@@ -17819,7 +17843,7 @@
     <div class="pfo-card">
       <div class="pfo-card-t">${isTh ? "ผลตอบแทน" : "Return"}</div>
       ${kv(isTh ? "ราคาซื้อ" : "Purchase price", x.purchase ? pfoTHB(x.purchase) : "N/A")}
-      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txt}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "N/A")}
+      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txtTh}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "N/A")}
     </div>
     <div class="pfo-note">${isTh ? "กำไร/ขาดทุนที่เกิดขึ้นจริงจะแยกออกจาก<br>มูลค่าพอร์ตโฟลิโอ" : "Realized gain/loss is separate<br>from portfolio value."}</div>
   </div>`;
@@ -17838,7 +17862,7 @@
     <div class="sell-hero"><img src="${a.img}" alt=""><span class="lg-b">${a.brand ? `<span class="sell-brand">${esc(a.brand)}</span>` : ""}<span class="mn">${esc(modelTxt)}</span>${a.ref ? `<span class="md">${esc(a.ref)}</span>` : ""}</span><span class="pfo-chip sell-st ${PFO_STATUS[a.status][1]}">${PFO_STATUS[a.status][0]}</span></div>
     <div class="fav-desc">${isTh ? "ข้อมูลเป็นส่วนตัว — รายการจะย้ายไปประวัติการขายและหลุดจากมูลค่าพอร์ตโฟลิโอโดยอัตโนมัติ" : "Private data — the piece moves to Sold history and drops out of portfolio value automatically."}</div>
     <label class="pe-f"><span>${isTh ? "ราคาขาย (฿)" : "Sale price (฿)"} *</span><input class="pe-in sell-price" inputmode="numeric" placeholder="${isTh ? "เช่น 449,000" : "e.g. 449,000"}" value="${a.asking != null ? fmtNum(a.asking) : ""}"><span class="pe-err" hidden></span></label>
-    ${a.purchase > 0 ? `<div class="pfd-kv sell-gl" data-aid="${a.id}"><span>${isTh ? "กำไรที่คาดหวัง" : "Expected gain"}</span><b class="${ex != null ? (ex >= 0 ? "up" : "dn") : ""}">${ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : "—"}</b></div>` : ""}
+    ${a.purchase > 0 ? `<div class="pfd-kv sell-gl" data-aid="${a.id}"><span>${isTh ? "กำไรที่คาดหวัง" : "Expected gain"}</span><b class="${ex != null ? (ex >= 0 ? "up" : "dn") : ""}">${ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : "N/A"}</b></div>` : ""}
     <label class="pe-f"><span>${isTh ? "วันที่ขาย" : "Sale date"} *</span><input class="pe-in sell-date" type="date" value="${today}" max="${today}"><span class="pe-err" hidden></span></label>
     <div class="pe-savewrap"><button class="pf-btn primary sell-save">${I.checkCir(16)} ${isTh ? "บันทึกการขาย" : "Save sale record"}</button></div>
   </div>`;
@@ -17906,7 +17930,7 @@
       ${row(isTh ? "ข้อกำหนดการใช้งาน" : "Terms of Use", `data-sub="terms"`, "", I.fileText(21))}
       ${row(isTh ? "เกี่ยวกับตึกแดง" : "About", `data-sub="about_app"`, "", I.infoCir(21))}
       <div class="sub-sec sec-div">${isTh ? "การเข้าสู่ระบบ" : "Login"}</div>
-      <button class="sub-row sub-row-logout" data-act="logout"><span>${isTh ? "ออกจากระบบ" : "Log out"}</span></button>
+      <button class="sub-row sub-row-logout" data-act="logout"><span>${isTh ? "ออกจากระบบ" : "Sign out"}</span></button>
     </div>`;
       }
       if (name === "about_account") {
@@ -17988,7 +18012,7 @@
               <div class="del-term-ic cal">${I.cal(22)}</div>
               <div class="del-term-body">
                 <div class="del-term-title">${isTh ? "ระยะเวลาผ่อนผัน 30 วัน (30-Day Grace Period)" : "30-Day Grace Period"}</div>
-                <div class="del-term-desc">${isTh ? "บัญชีของคุณจะถูกปิดการใช้งาน (Deactivated) ทันที โดยโปรไฟล์ โพสต์นาฬิกา และกิจกรรมทั้งหมดจะถูกซ่อนจากสาธารณะ หากเปลี่ยนใจ คุณสามารถเข้าสู่ระบบเพื่อกู้คืนบัญชีได้ตลอดเวลาภายใน 30 วัน" : "Your account will be deactivated immediately, and your profile and listings will be hidden. If you change your mind, you can log back in anytime within 30 days to cancel deletion."}</div>
+                <div class="del-term-desc">${isTh ? "บัญชีของคุณจะถูกปิดการใช้งาน (Deactivated) ทันที โดยโปรไฟล์ โพสต์นาฬิกา และกิจกรรมทั้งหมดจะถูกซ่อนจากสาธารณะ หากเปลี่ยนใจ คุณสามารถเข้าสู่ระบบเพื่อกู้คืนบัญชีได้ตลอดเวลาภายใน 30 วัน" : "Your account will be deactivated immediately, and your profile and listings will be hidden. If you change your mind, you can sign back in anytime within 30 days to cancel deletion."}</div>
               </div>
             </div>
 
@@ -18152,7 +18176,7 @@
       if (name === "favorites") {
         const isTh = state.lang === "th";
         const favs = favoriteSellers();
-        const sugg = followedSellers().filter(s => !favs.includes(s));
+        const sugg = followedSellers().concat([...PF_EXTRA_FOL]).filter(s => !favs.includes(s)); /* post-less follows (PF_EXTRA_FOL) can be favorited too */
         const fRow = (s, label, cls, desc) => {
           const p = profileOf(s);
           return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${esc(s)}</span><span class="md">${desc}</span></span><button class="mact ${cls}" data-seller="${esc(s)}">${label}</button></div>`;
@@ -18185,21 +18209,11 @@
       if (name === "prefs") {
         const isTh = state.lang === "th";
         return head(isTh ? "การตั้งค่าเนื้อหา" : "Content preferences") + `<div class="sub-scroll">
-    ${row(isTh ? "เนื้อหาที่ละเอียดอ่อน" : "Sensitive content", `data-sub="sensitive"`)}
     ${row(isTh ? "สนใจ" : "Interested", `data-sub="interested"`)}
     ${row(isTh ? "ไม่สนใจ" : "Not interested", `data-sub="ni"`)}
     <button class="sub-row sub-row-lg" data-tgl="snooze"><span class="lg-b"><span class="lg-t">${isTh ? "หยุดพักโพสต์แนะนำในฟีดชั่วคราว" : "Snooze suggested posts in feed"}</span><span class="lg-d">${isTh ? "ซ่อนโพสต์จากบัญชีที่คุณไม่ได้ติดตามเป็นเวลา 30 วัน" : "Hide posts from accounts you don't follow for 30 days."}</span></span><span class="tg-sw${state.snooze ? " on" : ""}"></span></button>
     ${row(isTh ? "รีเซ็ตเนื้อหาที่แนะนำ" : "Reset suggested content", `data-dlg="reset"`)}
   </div>`;
-      }
-      if (name === "sensitive") {
-        const isTh = state.lang === "th";
-        const opt = (v, t, d) => `<button class="sub-row sub-row-lg" data-sens="${v}"><span class="lg-b"><span class="lg-t">${t}</span><span class="lg-d">${d}</span></span><span class="sub-chev sens-check">${state.sensitive === v ? I.check(17) : ""}</span></button>`;
-        return head(isTh ? "เนื้อหาที่ละเอียดอ่อน" : "Sensitive content") + `<div class="sub-scroll">
-      <div class="sub-sec">${isTh ? "เลือกระดับของเนื้อหาที่ละเอียดอ่อนที่คุณจะเห็นในฟีด" : "Choose how much sensitive content you see in feed."}</div>
-      ${opt("less", isTh ? "น้อยลง" : "Less", isTh ? "คุณจะเห็นเนื้อหาที่ละเอียดอ่อนน้อยลง" : "You'll see less sensitive content.")}
-      ${opt("standard", isTh ? "มาตรฐาน" : "Standard", isTh ? "คุณจะเห็นเนื้อหาที่ละเอียดอ่อนบางส่วน" : "You'll see some sensitive content.")}
-    </div>`;
       }
       /* SETTINGS — Privacy & cookies: consent toggles bound to the same record the
          onboarding Cookie settings page writes (fo_consent via obLog) — spec 13 §9
@@ -18208,12 +18222,23 @@
         const isTh = state.lang === "th";
         const cSaved = (() => { try { return JSON.parse(localStorage.getItem("fo_consent") || "null"); } catch { return null; } })();
         if (cSaved) { OB.opt.analytics = !!cSaved.analytics; OB.opt.personalized = !!cSaved.personalized; }
+        /* 00_GLOBAL §8 — an "Ask App Not to Track" answer forces Personalized off:
+           the toggle renders disabled with an explanation until the OS-level
+           permission changes */
+        const attDenied = localStorage.getItem("fo_att") === "denied";
+        if (attDenied) OB.opt.personalized = false;
         const cRow = (k, t, d) => `<button class="sub-row sub-row-lg" data-cookie-tgl="${k}"><span class="lg-b"><span class="lg-t">${t}</span><span class="lg-d">${d}</span></span><span class="tg-sw${OB.opt[k] ? " on" : ""}"></span></button>`;
+        const pTitle = isTh ? "การปรับแต่งเฉพาะบุคคล" : "Personalized content";
+        const pDesc = isTh ? "แนะนำนาฬิกาที่คุณอาจสนใจ (ไม่บังคับ)" : "Suggest watches you may like. Optional.";
+        const pRow = attDenied
+          ? `<div class="sub-row sub-row-lg sub-row-static"><span class="lg-b"><span class="lg-t">${pTitle}</span><span class="lg-d">${pDesc}</span></span><span class="tg-sw dis"></span></div>
+      <div class="sub-hint">${isTh ? "ปิดอยู่เพราะคุณเลือก “ขอให้แอปไม่ติดตาม” — เปลี่ยนได้ในการตั้งค่าระบบของอุปกรณ์" : "Off because you chose “Ask App Not to Track” — change it in your device Settings."}</div>`
+          : cRow("personalized", pTitle, pDesc);
         return head(isTh ? "ความเป็นส่วนตัวและคุกกี้" : "Privacy & cookies") + `<div class="sub-scroll">
       <div class="fav-desc">${isTh ? "จัดการสิทธิ์การใช้ข้อมูลของคุณบนตึกแดง" : "Manage how TukDaeng uses your data."}</div>
       <div class="sub-row sub-row-lg sub-row-static"><span class="lg-b"><span class="lg-t">${isTh ? "จำเป็น" : "Essential"}</span><span class="lg-d">${isTh ? "จำเป็นต่อการทำงานและความปลอดภัยของแอป" : "Needed to run the app and keep it secure."}</span></span><span class="sub-count">${isTh ? "เปิดตลอด" : "Always on"}</span></div>
       ${cRow("analytics", isTh ? "การวิเคราะห์การใช้งาน" : "Analytics", isTh ? "ช่วยให้เราปรับปรุงแอป (ไม่บังคับ)" : "Help us improve the app. Optional.")}
-      ${cRow("personalized", isTh ? "การปรับแต่งเฉพาะบุคคล" : "Personalized content", isTh ? "แนะนำนาฬิกาที่คุณอาจสนใจ (ไม่บังคับ)" : "Suggest watches you may like. Optional.")}
+      ${pRow}
     </div>`;
       }
       /* THEME-001 — Theme mode picker: Dark / Light (spec 13_SETTINGS_MODULE Theme Mode) */
@@ -18394,6 +18419,9 @@
     }
     /* DEC-25 A10 — outgoing messages stamp the real send time (seed history keeps its mock times) */
     const chNow = () => { const d = new Date(); return { at: String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"), day: "Today" }; };
+    /* post reference card = snapshot taken at send time (spec 07 §9): the card keeps
+       the listing as it looked — edits/sale/deletion afterwards don't change it */
+    const chPostSnap = p => p ? { id: p.id, pid: p.id, photo: p.photos[0], owner: p.seller, avatar: profileOf(p.seller).avatar, cap: p.caption, price: p.price || "" } : null;
     function chTimeLbl(t) {
       const m = t.msgs[t.msgs.length - 1];
       return m ? (m.day === "Today" ? m.at : m.day) : "";
@@ -18602,7 +18630,7 @@
           const pv = scr.querySelector(".page-pv");
           pv.querySelector(".pfp-tt")?.classList.add("solo");
           pv.querySelector(".pfp-follow")?.remove();
-          if (!p.following) pv.querySelector(".post-head .more")?.insertAdjacentHTML("beforebegin", `<button class="follow-btn">Follow</button>`);
+          if (!p.following) pv.querySelector(".post-head .more")?.insertAdjacentHTML("beforebegin", `<button class="follow-btn">${state.lang === "th" ? "ติดตาม" : "Follow"}</button>`);
         } else pushSub(scr, "al_unavail"); /* contract: unavailable state parity with like/comment (resolved FSP-030) */
       }
       else if (a.type === "system") {
@@ -18645,6 +18673,11 @@
     ].map(a => ({ liked: false, ...a }));
     const bdGet = id => BOARD.find(a => a.id === id);
     const bdMeta = (a, dot = "·") => `${a.min} min read  ${dot}  ${a.ago}`;
+    /* DEC-25 — article likes are per-account: keep the mock baseline counts aside so a
+       session switch can re-derive liked/likes from the account's own store (fo_bdlike:{user},
+       same convention as fo_snooze:{user}) instead of letting one session leak into the next */
+    const BD_LIKES0 = new Map(BOARD.map(a => [a.id, a.likes]));
+    const bdLikesKey = () => `fo_bdlike:${CP_ME.name}`;
     const bdFeatured = () => BOARD.filter(a => a.feat).sort((x, y) => x.feat - y.feat);
     const bdLatest = () => BOARD.filter(a => !a.feat);
 
@@ -18768,9 +18801,9 @@
     }
     function bdHeadHTML() {
       return `<div class="bd-head">
-      <button class="icon-btn" data-bdmenu title="Categories">${I.burger(22)}</button>
+      <button class="icon-btn" data-bdmenu title="${state.lang === "th" ? "หมวดหู่" : "Categories"}">${I.burger(22)}</button>
       <span class="bd-brand"><b>TUK DAENG</b> | Board</span>
-      <button class="icon-btn" data-bdsearch title="Search">${I.search(22)}</button>
+      <button class="icon-btn" data-bdsearch title="${state.lang === "th" ? "ค้นหา" : "Search"}">${I.search(22)}</button>
     </div>`;
     }
     function bdCardHTML(a) {
@@ -18874,7 +18907,7 @@
   <div class="ch-scroll sub-scroll bd-scroll">
     <div class="bd-sbar">
       <span class="bd-sbar-ic">${I.search(18)}</span>
-      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="${isTh ? "ค้นหาบทความ แบรนด์ หรือประเด็นที่สนใจ..." : "Search articles, brands, or topics..."}" autocomplete="off"><button class="icon-btn" data-bdqclear aria-label="Clear" style="flex:none;${bdQ ? "" : "visibility:hidden"}">${I.x(16)}</button>
+      <input class="bd-q" type="text" value="${esc(bdQ)}" placeholder="${isTh ? "ค้นหาบทความ แบรนด์ หรือประเด็นที่สนใจ..." : "Search articles, brands, or topics..."}" autocomplete="off"><button class="icon-btn" data-bdqclear aria-label="${isTh ? "ล้าง" : "Clear"}" style="flex:none;${bdQ ? "" : "visibility:hidden"}">${I.x(16)}</button>
     </div>
     <div class="bd-crumb"><button data-bdhome aria-label="Board">${I.home(18)}</button>${I.chevR(12)}<span>${isTh ? "ค้นหา" : "Search"}</span></div>
     <div class="bd-res">${bdResultsHTML()}</div>
@@ -18884,6 +18917,8 @@
     function boardSearchSync(pg) {
       const r = pg && pg.querySelector(".bd-res");
       if (r) r.innerHTML = bdResultsHTML();
+      const x = pg && pg.querySelector("[data-bdqclear]");
+      if (x) x.style.visibility = bdQ ? "" : "hidden";
     }
     function boardArticleHTML(id) {
       const a = bdGet(id);
@@ -18891,12 +18926,12 @@
       return `
   <div class="bd-dscroll">
     <div class="bd-dnav">
-      <button class="bd-pill-btn sub-back" title="Back" aria-label="Back">${I.back(20)}</button>
+      <button class="bd-pill-btn sub-back" title="${state.lang === "th" ? "กลับ" : "Back"}" aria-label="${state.lang === "th" ? "กลับ" : "Back"}">${I.back(20)}</button>
       <div class="bd-pill-group">
-        <button class="bd-pill-act bd-pill-like${a.liked ? " on" : ""}" data-bdlike="${a.id}" title="Like" aria-label="Like">
+        <button class="bd-pill-act bd-pill-like${a.liked ? " on" : ""}" data-bdlike="${a.id}" title="${state.lang === "th" ? "ถูกใจ" : "Like"}" aria-label="${state.lang === "th" ? "ถูกใจ" : "Like"}">
           ${I.heart(17)}
         </button>
-        <button class="bd-pill-act bd-pill-sh" data-bdshare="${a.id}" title="Share" aria-label="Share">
+        <button class="bd-pill-act bd-pill-sh" data-bdshare="${a.id}" title="${state.lang === "th" ? "แชร์" : "Share"}" aria-label="${state.lang === "th" ? "แชร์" : "Share"}">
           ${I.share(17)}
         </button>
       </div>
@@ -18953,7 +18988,6 @@
       if (e.target.closest("[data-bdqclear]")) {
         bdQ = "";
         const qi = scr.querySelector(".bd-q"); if (qi) { qi.value = ""; qi.focus(); }
-        const qx = scr.querySelector("[data-bdqclear]"); if (qx) qx.style.visibility = "hidden";
         boardSearchSync(scr.querySelector(".page-sub"));
         return true;
       }
@@ -19010,7 +19044,8 @@
         return true;
       }
       if (e.target.closest("[data-bdshare]")) {
-        scr.dataset.shKind = "";
+        scr.dataset.shKind = "article";
+        scr.dataset.shAid = e.target.closest("[data-bdshare]").dataset.bdshare;
         openSheet(scr, "sh", "share-open", shareSheetHTML());
         return true;
       }
@@ -19025,6 +19060,7 @@
           scr.querySelectorAll(`[data-bdlike-count="${a.id}"]`).forEach(el => {
             el.textContent = a.likes;
           });
+          localStorage.setItem(bdLikesKey(), JSON.stringify(BOARD.filter(x => x.liked).map(x => x.id)));
         }
         return true;
       }
@@ -19039,10 +19075,10 @@
       const isBlk = pfIsBlocked(t.user) || !!t.blocked;
       return `<div class="ch-row-wrap" data-tid="${t.id}">
     <div class="ch-act-left">
-      <button class="ch-act-cir ch-act-pin" data-chact="pin" data-tid="${t.id}" title="${t.pinned ? "ยกเลิกปักหมุด" : "ปักหมุด"}">
+      <button class="ch-act-cir ch-act-pin" data-chact="pin" data-tid="${t.id}" title="${t.pinned ? (isTh ? "ยกเลิกปักหมุด" : "Unpin") : (isTh ? "ปักหมุด" : "Pin")}">
         ${t.pinned ? I.chUnpin(20) : I.chPin(20)}
       </button>
-      <button class="ch-act-cir ch-act-mute" data-chact="mute" data-tid="${t.id}" title="${t.muted ? "เปิดการแจ้งเตือน" : "ปิดการแจ้งเตือน"}">
+      <button class="ch-act-cir ch-act-mute" data-chact="mute" data-tid="${t.id}" title="${t.muted ? (isTh ? "เปิดการแจ้งเตือน" : "Unmute") : (isTh ? "ปิดการแจ้งเตือน" : "Mute")}">
         ${t.muted ? I.chUnmute(22) : I.chMute(22)}
       </button>
     </div>
@@ -19054,9 +19090,9 @@
       <span class="ch-main">
         <span class="ch-name-line">
           <b class="ch-name">${esc(t.user)}</b>
-          ${isBlk ? `<span class="ch-blk-badge">${isTh ? "บล็อกแล้ว" : "Blocked"}</span>` : (t.muted ? `<span class="ch-mute-ico" title="ปิดแจ้งเตือน">${I.chMute(13)}</span>` : "")}
+          ${isBlk ? `<span class="ch-blk-badge">${isTh ? "บล็อกแล้ว" : "Blocked"}</span>` : (t.muted ? `<span class="ch-mute-ico" title="${isTh ? "ปิดแจ้งเตือน" : "Muted"}">${I.chMute(13)}</span>` : "")}
         </span>
-        <span class="ch-prev-line"><span class="ch-prev">${last ? (last.f === "me" ? "You: " : "") + esc(last.t || "") : ""}</span></span>
+        <span class="ch-prev-line"><span class="ch-prev">${last ? (last.f === "me" ? (isTh ? "คุณ: " : "You: ") : "") + esc(last.t || "") : ""}</span></span>
       </span>
       <span class="ch-meta-col">
         <span class="ch-time">${chTimeLbl(t)}</span>
@@ -19081,11 +19117,12 @@
       return [...g.values()];
     }
     function chItemRowHTML(g) {
+      const isTh = state.lang === "th";
       const n = g.threads.length;
       const isDirectRoom = !g.mine && g.threads.length === 1;
       const navAttr = isDirectRoom ? `data-chgo="room" data-tid="${esc(g.threads[0].id)}"` : `data-chgo="item" data-iid="${esc(g.item.id)}"`;
       const lastMsg = g.threads[0]?.msgs.at(-1)?.t || "";
-      const subText = g.mine ? `${n} chat${n > 1 ? "s" : ""}` : esc(lastMsg);
+      const subText = g.mine ? (isTh ? `${n} แชท` : `${n} chat${n > 1 ? "s" : ""}`) : esc(lastMsg);
       const pricePrefix = g.item.price ? esc(g.item.price) + " · " : "";
       return `<button class="ch-row${g.unread ? " unread" : ""}" ${navAttr}>
     <img class="ch-thumb" src="${g.item.photo}" alt="">
@@ -19189,6 +19226,7 @@
       return sorted.length ? sorted.map(t => chRowHTML(t)).join("") : chEmptyHTML("No chats found", "Try another name or message.");
     }
     function chatItemHTML(iid) {
+      const isTh = state.lang === "th";
       const g = chItemGroups().find(x => x.item.id === iid);
       const back = `<button class="icon-btn sub-back">${I.back()}</button>`;
       if (!g) return `<div class="detail-head">${back}<span class="detail-title">Item chats</span></div>` + chEmptyHTML("Item not found", "No chats for this item.");
@@ -19204,7 +19242,7 @@
         <div class="ch-itemcard-info">
           <b>${esc(g.item.cap)}</b>
           ${g.item.price ? `<span>${esc(g.item.price)}</span>` : ""}
-          <em>${g.mine ? "Your listing" : "@" + esc(g.item.owner)} · ${n} chat${n > 1 ? "s" : ""}</em>
+          <em>${g.mine ? (isTh ? "สินค้าของคุณ" : "Your listing") : "@" + esc(g.item.owner)} · ${isTh ? `${n} แชท` : `${n} chat${n > 1 ? "s" : ""}`}</em>
         </div>
       </div>
     </div>
@@ -19230,17 +19268,18 @@
       const postCardHTML = ""; /* FO-TEST-12 lock: item cards live in the message flow only
          (reply-story style — attached at ask/share time), never pinned to the room */
 
-      /* FEED-041 — a shared post lands in the room as a tappable post card message */
-      const msgPostCard = pid => {
-        const sp = findPost(pid);
-        return sp ? `<button class="ch-post-card" data-chgo="post" data-pid="${esc(sp.id)}" title="View post">
-      <img class="ch-post-card-img" src="${sp.photos[0]}" alt="">
+      /* FEED-041 — a shared post lands in the room as a tappable post card message
+         (snapshot-first: m.snap from send time; findPost only backfills legacy msgs) */
+      const msgPostCard = m => {
+        const sp = m.snap || chPostSnap(findPost(m.pid));
+        return sp ? `<button class="ch-post-card" data-chgo="post" data-pid="${esc(sp.pid)}" title="${state.lang === "th" ? "ดูโพสต์" : "View post"}">
+      <img class="ch-post-card-img" src="${sp.photo}" alt="">
       <div class="ch-post-card-top-scrim">
-        <img class="ch-post-card-av" src="${profileOf(sp.seller).avatar}" alt="">
-        <span class="ch-post-card-user">${esc(sp.seller)}</span>
+        <img class="ch-post-card-av" src="${sp.avatar}" alt="">
+        <span class="ch-post-card-user">${esc(sp.owner)}</span>
       </div>
       <div class="ch-post-card-bot-scrim">
-        <div class="ch-post-card-title">${esc(sp.caption)}</div>
+        <div class="ch-post-card-title">${esc(sp.cap)}</div>
         ${sp.price ? `<div class="ch-post-card-price">${esc(sp.price)}</div>` : ""}
       </div>
     </button>` : "";
@@ -19259,7 +19298,7 @@
         if (m.day !== lastDay) { out.push(`<div class="ch-day">${esc(m.day)}</div>`); lastDay = m.day; prev = null; }
         const card = (i === 0 && postCardHTML && !m.pid) ? postCardHTML : "";
         const isMedia = !!m.img;
-        const shareCard = m.pid ? msgPostCard(m.pid) : "";
+        const shareCard = m.pid ? msgPostCard(m) : "";
         const isMatch = !q || (!isMedia && (m.t || "").toLowerCase().includes(q));
         const opacityStyle = (q && !isMatch) ? ' style="opacity:0.25;"' : '';
         const bubbleHTML = isMedia
@@ -19280,16 +19319,16 @@
     <div class="ch-rsearch-box">
       <span class="ch-rsearch-ico">${I.search(16)}</span>
       <input class="ch-room-search-in" placeholder="Messages" value="${esc(t.roomQuery || "")}" autofocus>
-      ${t.roomQuery ? `<button class="ch-room-search-clear" title="ล้างข้อความ">${I.x(14)}</button>` : ""}
+      ${t.roomQuery ? `<button class="ch-room-search-clear" title="${isTh ? "ล้างข้อความ" : "Clear"}">${I.x(14)}</button>` : ""}
     </div>
-    <button class="ch-room-search-close" title="ยกเลิก">${I.x(20)}</button>
+    <button class="ch-room-search-close" title="${isTh ? "ยกเลิก" : "Cancel"}">${I.x(20)}</button>
   </div>` : `
   <div class="ch-rhead">
     ${back}
     <span class="n" data-pf-user="${esc(t.user)}">${esc(t.user)}</span>
     <span class="spacer"></span>
-    <button class="icon-btn${t.searching ? " active" : ""}" data-chgo="room-search" title="ค้นหาในแชท">${I.search(20)}</button>
-    <button class="icon-btn" data-chgo="more" title="เมนู">${I.burger(21)}</button>
+    <button class="icon-btn${t.searching ? " active" : ""}" data-chgo="room-search" title="${isTh ? "ค้นหาในแชท" : "Search in chat"}">${I.search(20)}</button>
+    <button class="icon-btn" data-chgo="more" title="${isTh ? "เมนู" : "Menu"}">${I.burger(21)}</button>
   </div>`;
 
       return `
@@ -19308,9 +19347,9 @@
       <button class="ch-blocked-unblock-btn" data-chact="unblock-room" data-user="${esc(t.user)}" data-tid="${t.id}">${isTh ? "เลิกบล็อก" : "Unblock"}</button>
     </div>` : `
     <div class="ch-comp">
-      <button class="icon-btn" data-chgo="attach" title="Attach">${I.plus(22)}</button>
+      <button class="icon-btn" data-chgo="attach" title="${state.lang === "th" ? "แนบไฟล์" : "Attach"}">${I.plus(22)}</button>
       <input class="ch-input" placeholder="Message..." value="${esc(t.draft || "")}">
-      <button class="ch-send"${(t.draft || "").trim() ? "" : " disabled"} title="Send">${I.send(16)}</button>
+      <button class="ch-send"${(t.draft || "").trim() ? "" : " disabled"} title="${state.lang === "th" ? "ส่ง" : "Send"}">${I.send(16)}</button>
     </div>`)}
   </div>`;
     }
@@ -19341,11 +19380,11 @@
       <div class="ch-attach-handle"></div>
       <div class="ch-attach-head">
         <span class="ch-attach-title">Photos & videos</span>
-        <button class="icon-btn ch-attach-close" title="Close">${I.x(18)}</button>
+        <button class="icon-btn ch-attach-close" title="${state.lang === "th" ? "ปิด" : "Close"}">${I.x(18)}</button>
       </div>
       <div class="ch-attach-grid">
         ${sampleMedia.map(m => `
-          <div class="ch-attach-item" data-chsendmedia="${esc(m.src)}" data-tid="${t.id}" data-isvideo="${m.isVideo ? 'true' : 'false'}" title="Send photo">
+          <div class="ch-attach-item" data-chsendmedia="${esc(m.src)}" data-tid="${t.id}" data-isvideo="${m.isVideo ? 'true' : 'false'}" title="${state.lang === "th" ? "ส่งรูป" : "Send photo"}">
             <img src="${m.src}" alt="Media thumbnail">
             ${m.isVideo ? `<div class="ch-media-play">${I.play(16)}</div>` : ""}
           </div>
@@ -19372,7 +19411,7 @@
       const html = `
   <div class="ch-media-viewer" id="chMediaViewer">
     <div class="ch-media-viewer-head"><span style="flex:1;text-align:center;font-size:13px;opacity:.7" class="ch-media-viewer-count"></span>
-      <button class="icon-btn ch-media-viewer-close" title="Close">${I.x(22)}</button>
+      <button class="icon-btn ch-media-viewer-close" title="${state.lang === "th" ? "ปิด" : "Close"}">${I.x(22)}</button>
     </div>
     <div class="ch-media-viewer-body"><img src="" alt="Chat media"></div>
   </div>`;
@@ -19497,8 +19536,9 @@
     }
 
     function chatMediaGalleryHTML(tid, scr) {
+      const isTh = state.lang === "th";
       const t = chGet(tid);
-      const back = `<button class="icon-btn sub-back" data-chgalclose="true" title="Close">${I.x(20)}</button>`;
+      const back = `<button class="icon-btn sub-back" data-chgalclose="true" title="${isTh ? "ปิด" : "Close"}">${I.x(20)}</button>`;
       if (!t) return `<div class="ch-gal-head">${back}<span class="ch-gal-title">Photos & videos</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
 
       if (!t.media) {
@@ -19528,13 +19568,13 @@
         headerHTML = `
     <div class="ch-gal-head">
       <button class="ch-gal-top-btn" data-chgal="cancel">Cancel</button>
-      <span class="ch-gal-title">${selCount} selected</span>
+      <span class="ch-gal-title">${isTh ? "เลือกแล้ว " + selCount : selCount + " selected"}</span>
       <button class="ch-gal-top-btn" data-chgal="deselect"${selCount === 0 ? " disabled style='opacity:0.4;'" : ""}>Deselect</button>
     </div>`;
       } else {
         headerHTML = `
     <div class="ch-gal-head">
-      <button class="icon-btn sub-back" data-chgalclose="true" title="Close">${I.x(20)}</button>
+      <button class="icon-btn sub-back" data-chgalclose="true" title="${isTh ? "ปิด" : "Close"}">${I.x(20)}</button>
       <span class="ch-gal-title">${esc(t.user)}</span>
       ${hasMedia ? `<button class="ch-gal-top-btn" data-chgal="select">Select</button>` : `<div style="width:48px;"></div>`}
     </div>`;
@@ -19566,8 +19606,8 @@
 
       const botBarHTML = isSel ? `
   <div class="ch-gal-bot-bar">
-    <button class="ch-gal-bot-btn" data-chgalact="trash" data-tid="${t.id}" title="Delete"${selCount === 0 ? " disabled" : ""}>${I.trash(22)}</button>
-    <button class="ch-gal-bot-btn" data-chgalact="download" title="Download"${selCount === 0 ? " disabled" : ""}>
+    <button class="ch-gal-bot-btn" data-chgalact="trash" data-tid="${t.id}" title="${isTh ? "ลบ" : "Delete"}"${selCount === 0 ? " disabled" : ""}>${I.trash(22)}</button>
+    <button class="ch-gal-bot-btn" data-chgalact="download" title="${isTh ? "ดาวน์โหลด" : "Download"}"${selCount === 0 ? " disabled" : ""}>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
     </button>
   </div>` : "";
@@ -19655,7 +19695,7 @@
       /* the asked listing lands in the room once, as a card message (reply-story style) */
       t.item = { id: post.id, cap: post.caption, price: post.price || "", photo: post.photos[0], owner: post.seller, pid: post.id };
       if (!t.msgs.some(m => m.pid === post.id))
-        t.msgs.push({ f: "me", pid: post.id, t: state.lang === "th" ? "ถามเกี่ยวกับลิสติ้งนี้" : "Asked about this listing", ...chNow(), read: false });
+        t.msgs.push({ f: "me", pid: post.id, snap: chPostSnap(post), t: state.lang === "th" ? "ถามเกี่ยวกับลิสติ้งนี้" : "Asked about this listing", ...chNow(), read: false });
       chOpenRoom(scr, t);
     }
     function chIncomingAsk(user, postId) {
@@ -19665,7 +19705,7 @@
       let t = chRoomFor(C, user);
       if (!t) { t = { id: "t" + Date.now(), user, unread: 0, draft: "", pinned: false, muted: false, hidden: false, item: null, msgs: [] }; C.threads.unshift(t); }
       t.hidden = false;
-      t.msgs.push({ f: "them", t: state.lang === "th" ? "สวัสดีครับ สนใจรายการนี้" : "Hi, I'm interested in this listing", pid: postId, ...chNow(), read: true });
+      t.msgs.push({ f: "them", t: state.lang === "th" ? "สวัสดีครับ สนใจรายการนี้" : "Hi, I'm interested in this listing", pid: postId, snap: chPostSnap(findPost(postId)), ...chNow(), read: true });
       t.unread = (t.unread || 0) + 1;
       return true;
     }
@@ -19693,7 +19733,7 @@
         const i = C.threads.indexOf(t);
         if (i > 0) { C.threads.splice(i, 1); C.threads.unshift(t); }
       }
-      t.msgs.push({ f: "me", t: state.lang === "th" ? "ส่งโพสต์นี้ให้คุณ" : "Shared a post", pid: p.id, ...chNow(), read: false });
+      t.msgs.push({ f: "me", t: state.lang === "th" ? "ส่งโพสต์นี้ให้คุณ" : "Shared a post", pid: p.id, snap: chPostSnap(p), ...chNow(), read: false });
       return t;
     }
     let suppressChatClick = false;
@@ -19818,12 +19858,6 @@
           scrToast(scr, state.lang === "th" ? "คัดลอกประวัติแชทเรียบร้อยแล้ว" : "Chat history copied");
         } else if (a === "wallpaper") {
           scrToast(scr, state.lang === "th" ? "การเปลี่ยนพื้นหลังแชทจะเปิดให้ใช้งานเร็ว ๆ นี้" : "Chat wallpaper is coming soon");
-        } else if (a === "report-chat") {
-          const u = act.dataset.user || (t ? t.user : "");
-          if (u) scr.dataset.rpUser = u;
-          scr.dataset.rpFromChat = "true";
-          delete scr.dataset.rpDelChat;
-          rpPush(scr, "report:user");
         }
         return true;
       }
@@ -20220,7 +20254,7 @@
 
     /* ================= FLOW WIRING ================= */
     state.theme = localStorage.getItem("fo_theme") || "dark";
-    state.lang = localStorage.getItem("fo_lang") || "en";
+    state.lang = localStorage.getItem("fo_lang") || ((navigator.language || "").toLowerCase().startsWith("th") ? "th" : "en"); /* device language wins until the user picks one */
     state.session = localStorage.getItem("fo_session") || "member"; /* GUEST-001 — member | guest | new */
     const themeToggle = document.getElementById("themeToggle");
     const flowToast = document.getElementById("flowToast");
@@ -20298,7 +20332,7 @@
       "Photos & videos": "รูปภาพและวิดีโอ", "Chat": "แชท",
       "You're not following anyone yet": "คุณยังไม่ได้ติดตามใคร", "Not following anyone yet": "ยังไม่ได้ติดตามใคร",
       "Latest market price": "ราคาตลาดล่าสุด", "Show": "แสดง", "Bank transfer": "โอนเงิน", "Article not found": "ไม่พบบทความ",
-      "This article is no longer available.": "บทความนี้ไม่มีให้บริการแล้ว", "Chat not found": "ไม่พบแชท", "This conversation is no longer available.": "บทสนทนานี้ไม่มีให้บริการแล้ว",
+      "This article is no longer available.": "บทความนี้ไม่พร้อมใช้งานแล้ว", "Chat not found": "ไม่พบแชท", "This conversation is no longer available.": "บทสนทนานี้ไม่พร้อมใช้งานแล้ว",
       /* sheets — save / wish list / new collection / block / report / unfollow */
       "Private": "ส่วนตัว", "Collections": "คอลเลกชัน", "New collection": "คอลเลกชันใหม่", "Edit collection": "แก้ไขคอลเลกชัน",
       "Collection name": "ชื่อคอลเลกชัน", "Next": "ถัดไป", "Save": "บันทึก", "Post": "โพสต์",
@@ -20394,6 +20428,13 @@
       "Any new listing": "ทุกรายการใหม่", "Untitled asset": "สินค้าไม่มีชื่อ",
       "Search brands, references or collectors.": "ค้นหาแบรนด์ เลขรุ่น หรือนักสะสม",
       "Shared photo": "รูปที่แชร์", "Media thumbnail": "รูปย่อสื่อ", "Chat media": "สื่อในแชท",
+      /* TH-mode leftovers — chat/sheets/QR/create-post strings that only existed in English */
+      "Collection deleted": "ลบคอลเลกชันแล้ว", "Messages": "ข้อความ", "Sent": "ส่งแล้ว",
+      "Confirm": "ยืนยัน", "COLOR": "สี", "Share profile": "แชร์โปรไฟล์", "Add location": "เพิ่มตำแหน่งที่อยู่",
+      "Not in this prototype yet": "ยังไม่เปิดใช้งานในเดโมนี้",
+      "Chat options aren't in this prototype yet": "ตัวเลือกแชทยังไม่เปิดใช้งานในเดโมนี้",
+      "Listing detail isn't in this prototype yet": "รายละเอียดสินค้ายังไม่เปิดใช้งานในเดโมนี้",
+      "Deselect": "ยกเลิกการเลือก", "Media": "สื่อ", "Name": "ชื่อ",
     };
     /* spec VALUES are translated per word, but only inside rows whose label is in this set
        (so Brand / Model / Reference / Calibre stay exactly as entered) */
@@ -20409,10 +20450,9 @@
       ["Full set", "ครบชุด"], ["Automatic", "อัตโนมัติ"], ["Alligator leather", "หนังจระเข้"], ["Titanium", "ไทเทเนียม"], ["bracelet", "สายสร้อย"],
       ["folding clasp", "ตะขอพับ"], ["pin buckle", "หัวเข็มขัด"], ["Index", "ขีด"], ["Black", "ดำ"], ["Blue", "น้ำเงิน"], ["White", "ขาว"], ["Silver", "เงิน"],
       ["Green", "เขียว"], ["Steel", "สตีล"], ["Brand New", "ใหม่แกะกล่อง"], ["Like New", "สภาพเหมือนใหม่"], ["Very Good", "ดีมาก"], ["Good", "ดี"], ["Fair", "พอใช้"],
-      ["New", "ใหม่"], ["N/A", "ไม่ระบุ"], ["n/a", "ไม่ระบุ"],
+      ["New", "ใหม่"],
     ];
     const I18N_MON = { Jan: "ม.ค.", Feb: "ก.พ.", Mar: "มี.ค.", Apr: "เม.ย.", May: "พ.ค.", Jun: "มิ.ย.", Jul: "ก.ค.", Aug: "ส.ค.", Sep: "ก.ย.", Oct: "ต.ค.", Nov: "พ.ย.", Dec: "ธ.ค." };
-    const I18N_WD = { Mon: "จ.", Tue: "อ.", Wed: "พ.", Thu: "พฤ.", Fri: "ศ.", Sat: "ส.", Sun: "อา." };
     const I18N_LABEL_REV = {};
     ["Brand", "Collection", "Model", "Reference", "Case Diameter", "Thickness", "Lug-to-Lug", "Case Material", "Case Color", "Bezel Material", "Dial Color", "Dial Pattern",
       "Movement Type", "Calibre", "Power Reserve", "Functions", "Water Resistance", "Strap/Bracelet Material", "Strap Material", "Strap Color", "Clasp Type", "Year",
@@ -20466,6 +20506,7 @@
       if ((m = t.match(/^Sent to (.+)$/))) return `ส่งให้ ${m[1]}`;
       if ((m = t.match(/^Shared to (.+)$/))) return `แชร์ไป ${m[1]}`;
       if ((m = t.match(/^Added (\d+) posts?$/))) return `เพิ่ม ${m[1]} โพสต์แล้ว`;
+      if ((m = t.match(/^You can add up to (\d+) photos or clips$/))) return `เพิ่มรูปหรือคลิปได้สูงสุด ${m[1]} รายการ`;
       if ((m = t.match(/^(\d+) Selected$/))) return `เลือกแล้ว ${m[1]}`;
       if ((m = t.match(/^Message (.+)\.\.\.$/))) return `ส่งข้อความถึง ${m[1]}...`;
       if ((m = t.match(/^Chat with (.+)$/))) return `แชทกับ ${m[1]}`;
@@ -20474,6 +20515,7 @@
       if ((m = t.match(/^(.+) and (\d+) more$/))) return m[1] + " และอีก " + m[2];
       if ((m = t.match(/^([\d.,]+[KM]?) followers$/))) return m[1] + " ผู้ติดตาม";
       if ((m = t.match(/^([\d.,]+[KM]?) following$/))) return m[1] + " กำลังติดตาม";
+      if ((m = t.match(/^([\d.,]+[KM]?) likes$/))) return m[1] + " ถูกใจ";
       if ((m = t.match(/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* (\d{1,2}), (\d{4})$/))) return m[2] + " " + I18N_MON[m[1]] + " " + (+m[3] + 543);
       if ((m = t.match(/^(\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{4})$/))) return m[1] + " " + I18N_MON[m[2]] + " " + (+m[3] + 543);
       if (t.includes(" · ") && !/^(THB|฿|Ref)/.test(t)) {
@@ -20493,12 +20535,12 @@
     function i18nNode(node, th) {
       if (node.nodeType === 3) {
         const p = node.parentElement;
-        if (!p || p.closest("script,style,textarea,[contenteditable],[data-i18n-skip]")) return;
+        if (!p || p.closest("script,style,textarea,[contenteditable]")) return;
         if (!th) return;
         const r = i18nTr(node.nodeValue, p);
         if (r != null && r !== node.nodeValue) { if (!i18nTextOrig.has(node)) i18nTextOrig.set(node, node.nodeValue); node.nodeValue = r; }
       } else if (node.nodeType === 1) {
-        if (node.matches("script,style,[data-i18n-skip]")) return;
+        if (node.matches("script,style")) return;
         if (th) for (const a of I18N_ATTRS) {
           const v = node.getAttribute(a);
           if (!v) continue;
@@ -21161,7 +21203,7 @@
           const gl = ga && ga.purchase > 0 && +v > 0 ? +v - ga.purchase : null;
           const gb = glRow.querySelector("b");
           gb.className = gl != null ? (gl >= 0 ? "up" : "dn") : "";
-          gb.textContent = gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, ga.purchase)})` : "—";
+          gb.textContent = gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, ga.purchase)})` : "N/A";
         }
       }
     });
@@ -21447,7 +21489,7 @@
           const cfNext = cf.querySelector(".cf-next");
           const lastM = V.order.length ? cfMedia(scr).at(-1) : null;
           cf.querySelector("[data-hero]").innerHTML = !lastM
-            ? `<div class="add-tile">${I.camPlain(38)}<span>Select photos</span></div>`
+            ? `<div class="add-tile">${I.camPlain(38)}<span>${state.lang === "th" ? "เลือกรูปภาพ" : "Select photos"}</span></div>`
             : lastM.dur
               ? `<div class="ig-car"><img src="${lastM.src}"><span class="clip-play">${I.play(26)}</span><span class="dur">${I.play(10)}${lastM.dur}</span></div>`
               : `<div class="ig-car"><img src="${lastM.src}"></div>`;
@@ -21803,7 +21845,7 @@
         const scr = dlgReset.closest(".screen");
         scr.classList.remove("dialog-open");
         POSTS.forEach(p => { p.ni = false; });
-        state.snooze = false;
+        state.snooze = false; localStorage.removeItem(snoozeKey());
         scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
         renderSub(scr);
         scrToast(scr, "Suggested content reset");
@@ -21844,8 +21886,6 @@
         return;
       }
       /* settings + content-preferences pages */
-      const setBtn = e.target.closest(".set-btn");
-      if (setBtn) { openSub(setBtn.closest(".screen"), "settings"); return; }
       const subNav = e.target.closest("[data-sub]");
       if (subNav) { pushSub(subNav.closest(".screen"), subNav.dataset.sub); return; }
       const subBk = e.target.closest(".sub-back");
@@ -21893,7 +21933,7 @@
         setSession("guest"); /* GUEST-001 — logging out drops into guest browsing on the feed */
         scr.querySelector(".feed-scroll")?.scrollTo({ top: 0 });
         const isTh = state.lang === "th";
-        scrToast(scr, isTh ? "ออกจากระบบแล้ว" : "Logged out successfully");
+        scrToast(scr, isTh ? "ออกจากระบบแล้ว" : "Signed out");
         obGate(); /* AUTH-002 — surface the member sheet so signing back in is one tap (scrim/ข้ามไปก่อน keeps browsing as guest) */
         return;
       }
@@ -22099,14 +22139,13 @@
         notifTgl.querySelector(".tg-sw").classList.toggle("on", state.notif[k]);
         return;
       }
-      const sens = e.target.closest("[data-sens]");
-      if (sens) { state.sensitive = sens.dataset.sens; renderSub(sens.closest(".screen")); return; }
       /* SETTINGS — consent toggle: write the consent record immediately (obLog →
          fo_consent) so Privacy & cookies and onboarding Cookie settings share state */
       const cookieTgl = e.target.closest("[data-cookie-tgl]");
       if (cookieTgl) {
         const scr = cookieTgl.closest(".screen");
         const k = cookieTgl.dataset.cookieTgl;
+        if (k === "personalized" && localStorage.getItem("fo_att") === "denied") return; /* ATT deny keeps Personalized locked off (00G §8) */
         OB.opt[k] = !OB.opt[k];
         obLog();
         renderSub(scr);
@@ -22127,6 +22166,8 @@
       if (tgl) {
         const scr = tgl.closest(".screen");
         state.snooze = !state.snooze;
+        if (state.snooze) localStorage.setItem(snoozeKey(), String(Date.now())); /* 30-day window starts now */
+        else localStorage.removeItem(snoozeKey());
         tgl.querySelector(".tg-sw").classList.toggle("on", state.snooze);
         scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
         return;
@@ -22134,7 +22175,7 @@
       const mUn = e.target.closest(".m-unmute");
       if (mUn) {
         const scr = mUn.closest(".screen");
-        setMuted(scr, mUn.dataset.seller, false);
+        pfSetMuted(scr, mUn.dataset.seller, false); /* post-less accounts live in PF_EXTRA_MUT — setMuted alone can't reach them */
         renderSub(scr);
         scrToast(scr, "Posts unmuted");
         return;
@@ -22165,7 +22206,7 @@
       const favR = e.target.closest(".fav-remove");
       if (favR) {
         const scr = favR.closest(".screen");
-        setFavorite(scr, favR.dataset.seller, false);
+        pfSetFav(scr, favR.dataset.seller, false); /* post-less accounts live in PF_EXTRA_FAV — setFavorite alone can't reach them */
         renderSub(scr);
         scrToast(scr, "Removed from favorites");
         return;
@@ -22173,7 +22214,7 @@
       const favA = e.target.closest(".fav-add");
       if (favA) {
         const scr = favA.closest(".screen");
-        setFavorite(scr, favA.dataset.seller, true);
+        pfSetFav(scr, favA.dataset.seller, true);
         renderSub(scr);
         scrToast(scr, "Added to favorites");
         return;
@@ -22182,6 +22223,7 @@
       if (favAll) {
         const scr = favAll.closest(".screen");
         POSTS.forEach(p => p.favorite = false);
+        PF_EXTRA_FAV.clear(); pfSave();
         if (state.feedTab === "favorites")
           scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
         renderSub(scr);
@@ -22498,7 +22540,6 @@
         renderSub(scr);
         if (a === "share") scrToast(scr, "Profile shared");
         else if (a === "copy") scrToast(scr, "Profile link copied");
-        else if (a === "qr") scrToast(scr, "QR code isn't in this prototype yet");
         return;
       }
       const pfOv = e.target.closest(".pf-avov");
@@ -22994,7 +23035,7 @@
         }
         return;
       }
-      const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.set-btn):not(.search-btn):not(.feed-wa)");
+      const dead = e.target.closest(".nav-item, .sh-add, .act:not(.like-btn):not(.comment-btn):not(.share-btn), .ask-pill, .app-header .icon-btn:not([data-flow]):not(.search-btn):not(.feed-wa)");
       if (dead) { toast("Not in this prototype yet"); return; }
       const wm = e.target.closest(".wordmark");
       if (wm) {
@@ -23288,6 +23329,7 @@
         const sp = scr.dataset.shKind === "post" ? findPost(scr.dataset.shPid) : null;
         const th = sp ? chSharePost(shFr.dataset.name, sp) : null; /* FEED-041 — the post really lands in the friend's room */
         if (th) { /* friend share drops you into that chat — keep any open sub under it for back */
+          scr.classList.remove("pv-open", "detail-open", "comments-open", "unfollow-open", "pm-open", "mf-open", "dialog-open", "likes-open", "save-open", "sort-open", "details-open", "wa-open"); /* a still-open viewer/sheet must not cover the room — same set chOpenRoom clears */
           if ((scr._subStack || []).length) pushSub(scr, "chatroom:" + th.id);
           else openSub(scr, "chatroom:" + th.id);
         }
@@ -23299,7 +23341,7 @@
         const scr = shApp.closest(".screen");
         scr.classList.remove("share-open");
         const sp = scr.dataset.shKind === "post" ? findPost(scr.dataset.shPid) : null;
-        const link = sp ? `https://tukdaeng.app/p/${sp.id}` : pfProfileLink(scr.dataset.shUser || CP_ME.name);
+        const link = sp ? `https://tukdaeng.app/p/${sp.id}` : scr.dataset.shKind === "article" ? `https://tukdaeng.app/a/${scr.dataset.shAid}` : pfProfileLink(scr.dataset.shUser || CP_ME.name);
         if (shApp.dataset.app === "copy") {
           pfCopyText(link).then(() => scrToast(scr, state.lang === "th" ? "คัดลอกลิงก์แล้ว" : "Link copied"));
         } else if (navigator.share) {
@@ -23924,7 +23966,9 @@
             const bArt = b.closest(".post");
             if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === fp.id) {
               b.classList.add("liked");
-              const ln = b.querySelector(".lk-n");
+              /* own posts render lk-n only when likes>0 — create it on the 0→1 transition */
+              let ln = b.querySelector(".lk-n");
+              if (!ln && isOwnPost(fp)) { ln = document.createElement("span"); ln.className = "lk-n"; b.appendChild(ln); }
               if (ln) ln.textContent = fp.likes || "";
             }
           });
@@ -24011,7 +24055,9 @@
           const bArt = b.closest(".post");
           if ((bArt ? bArt.dataset.pid : scr.dataset.detailPid) === pid) {
             b.classList.toggle("liked", post.liked);
-            const ln = b.querySelector(".lk-n");
+            /* own posts render lk-n only when likes>0 — create it on the 0→1 transition */
+            let ln = b.querySelector(".lk-n");
+            if (!ln && isOwnPost(post)) { ln = document.createElement("span"); ln.className = "lk-n"; b.appendChild(ln); }
             if (ln) ln.textContent = post.likes || "";
           }
         });
@@ -24020,7 +24066,7 @@
 
     /* ================= FIRST-RUN ONBOARDING =================
        Splash -> Language -> Consent (auto-popup sheet) -> Intro -> Gateway -> Sign up -> Email OTP -> Profile
-       -> Account created -> Sign in (Forgot password) -> Notification pre-permission -> Home (coach mark).
+       -> Home (coach mark). Sign in (Forgot password) lives on the member gateway.
        Re-consent: the "v2" dev button simulates a new Terms/Privacy version popping up over the feed. */
     const OB = {
       on: !localStorage.getItem("fo_onboarded"), step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", gate: false,
@@ -24093,10 +24139,10 @@
     }
     function obEnterAfterProfile() {
       obSaveAccount({ email: (OB.account && OB.account.email) || OB.f.email || "", pwH: OB.account && OB.account.pw ? obHash(OB.account.pw) : "", pw: undefined, user: OB.f.user, name: OB.f.name.trim(), provider: OB.provider || "email", photo: OB.f.photo || "" }); /* AUTH-003 — profile step completes the persisted account */
-      if (OB.provider && OB.provider !== "email") { /* social sign-up has no password — enter the app right after picking a username */
-        localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user, name: OB.f.name.trim(), photo: OB.f.photo || "" }));
-        setSession("new"); obFinish("", !OB.gate); /* AUTH-003 — enter silently like a real app, no welcome toast */
-      } else obGo("created");
+      /* every sign-up enters the app right after profile setup (IG-style) — email and
+         social share one path now, no Account created interstitial */
+      localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user, name: OB.f.name.trim(), photo: OB.f.photo || "" }));
+      setSession("new"); obFinish("", !OB.gate); /* AUTH-003 — enter silently like a real app, no welcome toast */
     }
 
     const obSvg = body => `<svg width="168" height="156" viewBox="0 0 160 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
@@ -24132,7 +24178,7 @@
         ${OB.declined ? `<div class="ob-banner" style="margin-top:12px">${obT("You need to accept the required Terms and Privacy Policy to use TukDaeng. You can review them again or exit the app.", "ต้องยอมรับข้อกำหนดและนโยบายความเป็นส่วนตัวที่จำเป็นจึงจะใช้ตึกแดงได้ คุณสามารถอ่านอีกครั้งหรือออกจากแอป")}</div>` : ""}
         <div class="ob-stack" style="margin-top:14px">
           <button class="ob-btn pri" data-ob="accept">${obT("Accept & continue", "ยอมรับและดำเนินการต่อ")}</button>
-          ${OB.declined ? `<button class="ob-btn out" data-ob="exit">${obT(re ? "Sign out" : "Exit app", re ? "ออกจากระบบ" : "ออกจากแอป")}</button>` : `<button class="ob-textbtn" data-ob="decline" style="padding:6px">${obT("Decline", "ไม่ยอมรับ")}</button>`}
+          ${OB.declined ? `<button class="ob-btn out" data-ob="exit">${obT(re && state.session !== "guest" ? "Sign out" : "Exit app", re && state.session !== "guest" ? "ออกจากระบบ" : "ออกจากแอป")}</button>` : `<button class="ob-textbtn" data-ob="decline" style="padding:6px">${obT("Decline", "ไม่ยอมรับ")}</button>`}
         </div>
         <div class="ob-legal">${obT("Tapping Accept confirms you have read the required documents. Optional items stay off unless you turn them on.", "การแตะยอมรับหมายถึงคุณได้อ่านเอกสารที่จำเป็นแล้ว ส่วนที่เลือกได้จะปิดไว้จนกว่าคุณจะเปิดเอง")}</div>
       </div>`;
@@ -24198,8 +24244,6 @@
           <h1>${obT("Set up your profile", "ตั้งค่าโปรไฟล์")}</h1><p class="ob-sub">${obT("Pick your username — a photo can be added later.", "ตั้งชื่อผู้ใช้ของคุณ — รูปใส่ภายหลังได้")}</p>
           <div class="ob-avatar"><img src="${obEsc(OB.f.photo || "./assets/user-avatars/default-avatar.jpg")}" alt=""></div><button class="ob-link" style="align-self:center;margin:-8px 0 16px" data-ob="photo">${obT("Add photo", "เพิ่มรูปภาพ")}</button>
           ${obField("user", obT("Username", "ชื่อผู้ใช้"), "text", "username")}<div class="ob-grow"></div><button class="ob-btn pri" data-ob="profile">${obT("Continue", "ต่อไป")}</button></div>`;
-        case "created": return `<div class="ob-page ob-center"><div class="ob-grow"></div><div class="ob-ico ok">${I.check(40)}</div><h1>${obT("Account created", "สร้างบัญชีสำเร็จ")}</h1>
-          <p class="ob-sub">${obT("Welcome, ", "ยินดีต้อนรับ ")}${obEsc(f.name || f.user || "")}. ${obT("Sign in to start exploring.", "เข้าสู่ระบบเพื่อเริ่มใช้งาน")}</p><div class="ob-grow"></div><button class="ob-btn pri" data-ob="go:signin">${obT("Sign in", "เข้าสู่ระบบ")}</button></div>`;
         case "signin": return `<div class="ob-page">${obBack("member")}<h1>${obT("Sign in", "เข้าสู่ระบบ")}</h1><p class="ob-sub">${obT("Welcome back to TukDaeng.", "ยินดีต้อนรับกลับสู่ตึกแดง")}</p>
           ${obLockLeft() ? `<div class="ob-banner">${obLockMsg()}</div>` : E.form ? `<div class="ob-banner">${E.form}</div>` : ""}${obField("email", obT("Email", "อีเมล"), "email", "you@example.com")}${obField("pw", obT("Password", "รหัสผ่าน"), "password", obT("Your password", "รหัสผ่านของคุณ"))}
           <div style="text-align:right;margin-top:-6px"><button class="ob-link" data-ob="go:forgot">${obT("Forgot password?", "ลืมรหัสผ่าน?")}</button></div>
@@ -24266,6 +24310,11 @@
       OB.step = s; OB.loading = false; OB.errs = {}; OB.sent = false; OB.declined = false; OB.legal = null; OB.os = false;
       if (s === "profile" && !OB.f.user && OB.f.email) OB.f.user = obSuggestUser();
       if (s === "signin" && !OB.f.email && !OB.f.pw) { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; }
+      /* a fresh sign-up always starts clean — fields typed on the sign-in page (incl.
+         the demo prefill) must not leak into a new-account form; values are kept only
+         when stepping back inside the same signup flow (otp/profile → signup) */
+      if (s === "signup" && !["signup", "otp", "profile"].includes(obLast))
+        OB.f = { name: "", email: "", pw: "", user: "", photo: OB.f.photo || "" };
       if (s === "member" && !OB.gate && localStorage.getItem("fo_member_hide") === "1") return obFinish("");
       const r = obRoot(), clear = OB.recon || s === "member";
       if (r && r.classList.contains("recon") !== clear) return obMount();
@@ -24319,7 +24368,11 @@
     }
     function obFinish(msg, tour = true) {
       localStorage.setItem("fo_onboarded", "1"); OB.on = false; OB.os = false; OB.gate = false; obMount();
-      if (tour && !localStorage.getItem("fo_toured")) { localStorage.setItem("fo_toured", "1"); obTour(0); } /* AUTH-003 — coach marks are a first-run thing, not an every-sign-in thing */
+      OB.f.pw = ""; /* drop the password once the user is in — it must never prefill anywhere */
+      /* coach marks are once per session type — a member who already saw the guest tour
+         still gets the member tour on their first signed-in feed (and vice versa) */
+      const tKey = isGuest() ? "fo_toured_guest" : "fo_toured";
+      if (tour && !localStorage.getItem(tKey)) { localStorage.setItem(tKey, "1"); obTour(0); }
       if (msg) toast(msg);
     }
     function obLog() {
@@ -24333,9 +24386,14 @@
     }
     function obSignup() {
       const f = OB.f, E = {};
-      if (!obEmailOk(f.email.trim())) E.email = obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง");
-      else if (f.email.trim().toLowerCase() === "taken@example.com") E.email = obT("This email is already registered. Try signing in.", "อีเมลนี้ถูกใช้สมัครแล้ว ลองเข้าสู่ระบบ");
-      if (!f.pw) E.pw = obT("Enter a password.", "กรอกรหัสผ่าน");
+      const em = f.email.trim().toLowerCase();
+      /* uniqueness covers the persisted account + this run's signup + demo member —
+         taken@example.com stays as the demo fixture for the error itself */
+      const taken = em === "taken@example.com" || em === OB_DEMO.email.toLowerCase() || em === ((obLoadAccount() || {}).email || "").toLowerCase() || em === ((OB.account || {}).email || "").toLowerCase();
+      if (!em) E.email = obT("Enter your email.", "กรอกอีเมล");
+      else if (!obEmailOk(em)) E.email = obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง");
+      else if (taken) E.email = obT("This email is already registered. Try signing in.", "อีเมลนี้ถูกใช้สมัครแล้ว ลองเข้าสู่ระบบ");
+      if (!f.pw) E.pw = obT("Enter your password.", "กรอกรหัสผ่าน");
       else if (f.pw.length < 8 || !(/[0-9]/.test(f.pw) || /[^A-Za-z0-9\s]/.test(f.pw))) E.pw = obT("Password must be at least 8 characters and include at least one number or special character.", "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร และมีตัวเลขหรืออักขระพิเศษอย่างน้อย 1 ตัว");
       OB.errs = E;
       if (Object.keys(E).length) return obDraw();
@@ -24372,7 +24430,7 @@
       if (acct) { f.user = acct.user || f.user; f.name = acct.name || f.name || f.user || f.email.split("@")[0]; }
       else f.name = OB_DEMO.name;
       setSession(isNew ? "new" : "member");
-      obFinish("", isNew); /* AUTH-003 — real apps drop you straight in, no welcome-back toast on sign-in */
+      obFinish("", true); /* AUTH-003 — real apps drop you straight in, no welcome-back toast on sign-in */
     }
 
     /* ===== GUEST-001 — session model: member (demo data) / guest (logged-out) / new (fresh account) =====
@@ -24431,8 +24489,18 @@
           NEW_USER_KEY = null;
           CP_ME.name = "__guest__"; CP_ME.avatar = "./assets/user-avatars/default-avatar.jpg";
         }
-        state.feedTab = "all";
       }
+      state.feedTab = "all"; /* every session switch lands back on All Posts */
+      state.snooze = snoozeLoad(); /* snooze is per account — CP_ME.name is resolved above */
+      const bdLiked = new Set(JSON.parse(localStorage.getItem(bdLikesKey()) || "[]"));
+      /* the count is the article's, not the viewer's — every account's stored like adds on
+         top of the baseline for everyone; only the filled heart is per-account */
+      const bdAllLikes = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith("fo_bdlike:")) JSON.parse(localStorage.getItem(k) || "[]").forEach(id => { bdAllLikes[id] = (bdAllLikes[id] || 0) + 1; });
+      }
+      BOARD.forEach(a => { a.liked = bdLiked.has(a.id); a.likes = BD_LIKES0.get(a.id) + (bdAllLikes[a.id] || 0); });
       syncModelFlags(); /* restored/cleared alerts re-drive the detail bells */
       /* refresh visible surfaces so badges/feed/follow states match the new session */
       const scr = document.querySelector("#stage .screen");
@@ -24465,9 +24533,9 @@
       ".follow-btn", ".pf-foll", ".pf-flw", ".pf-msg", ".lk-follow", ".al-fbtn", ".pf-avov-act", ".pf-dots", ".pf-rmf", ".pf-unblock",
       ".comment-input", ".emoji-row", ".c-like", ".c-meta",
       ".post-head .more", ".pm-btn", ".pm-go-report", ".pm-fav", ".pm-ni", ".pm-own-archive", ".pm-own-nocomm", ".pm-own-edit", ".pm-own-sold", ".pm-own-soldview", ".pm-own-pin", ".pm-own-del",
-      ".rp-opt", ".pm-reason", ".uc-report", ".ni-mute", ".ni-unfollow", ".sr-wa", ".feed-wa",
+      ".rp-opt", ".pm-reason", ".uc-report", ".ni-mute", ".ni-unfollow", ".sr-wa", ".sr-saved", ".feed-wa",
       ".pf-more", ".pf-menu", ".pf-edit", ".pf-share", ".pf-sh-report", ".pf-sh-block", ".blk-rep", ".blk-go", ".ch-rep-del-btn", ".ch-rep-only-btn",
-      ".set-btn", ".sh-add", ".sh-fr", ".pf-sh-share", "[data-bdlike]", "[data-bdshare]"
+      ".sh-add", ".sh-fr", ".pf-sh-share", "[data-bdlike]", "[data-bdshare]"
     ].join(",");
     function obGate() {
       if (OB.on && !OB.gate) return; /* first-run sheet already up */
@@ -24487,7 +24555,7 @@
           case "tog": OB.opt[arg] = !OB.opt[arg]; obDraw(); break;
           case "accept": obAccept(); break;
           case "decline": OB.declined = true; obDraw(); break;
-          case "exit": if (OB.recon) { OB.recon = false; OB.declined = false; OB.on = false; localStorage.removeItem("fo_onboarded"); toast(obT("Signed out (demo)", "ออกจากระบบแล้ว (เดโม)")); OB.on = true; OB.step = "member"; obMount(); } else { OB.declined = false; toast(obT("App closed (demo)", "ปิดแอปแล้ว (เดโม)")); obDraw(); } break;
+          case "exit": if (OB.recon && state.session !== "guest") { OB.recon = false; OB.declined = false; OB.on = false; localStorage.removeItem("fo_onboarded"); setSession("guest"); toast(obT("Signed out (demo)", "ออกจากระบบแล้ว (เดโม)")); OB.on = true; OB.step = "member"; obMount(); } else { OB.declined = false; toast(obT("App closed (demo)", "ปิดแอปแล้ว (เดโม)")); obDraw(); } break;
           case "legal": OB.legal = arg; obDraw(); break;
           case "closelegal": OB.legal = null; obDraw(); break;
           case "eye": { const i = b.parentElement.querySelector("input"); i.type = i.type === "password" ? "text" : "password"; b.innerHTML = i.type === "password" ? I.eye(20) : I.eyeOff(20); break; }
@@ -24514,7 +24582,7 @@
           case "guest": { const wasGate = OB.gate; if (OB.hide && !wasGate) localStorage.setItem("fo_member_hide", "1"); setSession("guest"); obFinish("", !wasGate); break; } /* GUEST-001 — real apps just enter silently, no "browsing as guest" toast */
           case "signin": obSignin(); break;
           case "forgot": if (!obEmailOk(OB.f.email.trim())) { OB.errs = { email: obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง") }; obDraw(); } else { OB.sent = true; obDraw(); } break;
-                    case "os": if (arg === "open") { OB.os = OB.step; obDraw(); } else { const was = OB.os; if (was === "track" && arg === "no") OB.opt.personalized = false; obGo(was === "track" ? "member" : "track"); } break;
+                    case "os": if (arg === "open") { OB.os = OB.step; obDraw(); } else { const was = OB.os; if (was === "track") { /* Ask App Not to Track forces Personalized off (00G §8) — persist the answer so Settings can't silently flip it back */ localStorage.setItem("fo_att", arg === "no" ? "denied" : "granted"); if (arg === "no") { OB.opt.personalized = false; obLog(); } } obGo(was === "track" ? "member" : "track"); } break;
           case "finish": obFinish(""); break;
         }
         return;
@@ -24553,7 +24621,7 @@
     });
     document.getElementById("obReplay").addEventListener("click", () => {
       localStorage.removeItem("fo_onboarded"); localStorage.removeItem("fo_member_hide");
-      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); localStorage.removeItem("fo_srch_recents"); localStorage.removeItem("fo_alstate"); localStorage.removeItem("fo_notif"); localStorage.removeItem("fo_walerts"); setSession("member");
+      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); localStorage.removeItem("fo_toured_guest"); localStorage.removeItem("fo_srch_recents"); localStorage.removeItem("fo_alstate"); localStorage.removeItem("fo_notif"); localStorage.removeItem("fo_walerts"); localStorage.removeItem("fo_att"); setSession("member");
       document.querySelectorAll(".ob-coach").forEach(c => c.remove());
       Object.assign(OB, { on: true, step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", opt: { analytics: false, personalized: false }, f: { name: "", email: "", pw: "", user: "" }, errs: {}, tries: 0, account: null, resend: 30, os: false, sent: false });
       state.feedTab = "all"; obLast = null;
@@ -24563,6 +24631,26 @@
       if (OB.on && !OB.recon) return toast("Finish first-run onboarding before simulating re-consent");
       Object.assign(OB, { on: true, recon: true, step: "consent", ver: "1.1", legal: null, declined: false, os: false });
       obMount();
+    });
+    /* dev reset — wipe every fo_* persisted key (mock posts/profile state, consent,
+       onboarding, session) then reload so the demo comes back to the initial mock data */
+    document.getElementById("obReset").addEventListener("click", () => {
+      if (!confirm("Reset all demo data to the initial mock state?")) return;
+      Object.keys(localStorage).filter(k => k.startsWith("fo_")).forEach(k => localStorage.removeItem(k));
+      location.reload();
+    });
+    /* dev sim — the only incoming-message path the prototype has; exists so the
+       chatcfg "Only people I follow" toggle has a reachable enforcement surface.
+       prefers a non-followed seller so the block branch is one click away */
+    document.getElementById("obMsg").addEventListener("click", () => {
+      const pool = POSTS.filter(p => p.seller !== CP_ME.name && !pfIsBlocked(p.seller));
+      const post = pool.find(p => !pfIsFollowed(p.seller)) || pool[0];
+      if (!post) return;
+      const isTh = state.lang === "th";
+      const scr = document.querySelector("#stage .screen");
+      const ok = chIncomingAsk(post.seller, post.id);
+      if (ok) { chBadgeSync(); scrToast(scr, isTh ? `ข้อความใหม่จาก ${post.seller} (เดโม)` : `New message from ${post.seller} (demo)`); }
+      else scrToast(scr, isTh ? `${post.seller} ส่งข้อความไม่ได้ — เปิดรับเฉพาะคนที่ติดตาม (เดโม)` : `${post.seller} can't message you — Only people I follow (demo)`);
     });
 
     /* Comment long-press context menu (IG-style) */
@@ -24583,10 +24671,7 @@
       cHoldTimer = setTimeout(() => {
         row.classList.remove("c-holding");
         const scr = row.closest(".screen");
-        if (scr) {
-          if (state.session === "guest") { obGate(); return; }
-          openCommentPopover(scr, row, cHoldStartX, cHoldStartY);
-        }
+        if (scr) openCommentPopover(scr, row, cHoldStartX, cHoldStartY); /* guests see the popover too — the gate lives on the items */
       }, 450);
     }, { passive: true });
     document.addEventListener("touchmove", e => {
@@ -24611,10 +24696,7 @@
       cHoldTimer = setTimeout(() => {
         row.classList.remove("c-holding");
         const scr = row.closest(".screen");
-        if (scr) {
-          if (state.session === "guest") { obGate(); return; }
-          openCommentPopover(scr, row, cHoldStartX, cHoldStartY);
-        }
+        if (scr) openCommentPopover(scr, row, cHoldStartX, cHoldStartY); /* guests see the popover too — the gate lives on the items */
       }, 450);
     });
     document.addEventListener("mousemove", e => {
@@ -24630,10 +24712,7 @@
       e.preventDefault();
       clearCHold();
       const scr = row.closest(".screen");
-      if (scr) {
-        if (state.session === "guest") { obGate(); return; }
-        openCommentPopover(scr, row, e.clientX, e.clientY);
-      }
+      if (scr) openCommentPopover(scr, row, e.clientX, e.clientY); /* guests see the popover too — the gate lives on the items */
     });
 
     document.documentElement.lang = state.lang;
