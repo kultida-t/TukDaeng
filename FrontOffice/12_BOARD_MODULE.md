@@ -225,7 +225,7 @@ Anatomy:
 
 # 12. Article Detail (`boardart:{id}`)
 
-Lookup `bdGet(id)` — id ไม่เจอ → `chEmptyHTML("Article not found", "This article is no longer available.")` (TH dict → `ไม่พบบทความ` + `บทความนี้ไม่มีให้บริการแล้ว`; **ไม่แยก** unpublished/deleted/invalid — contract matrix อยู่ §13; **flag (D11):** TH copy `ไม่มีให้บริการแล้ว` ขัด canonical `ไม่พร้อมใช้งานแล้ว` (00_GLOBAL §11) — รอ decision แก้ proto หรือ amend contract)
+Lookup `bdGet(id)` — id ไม่เจอ → `chEmptyHTML("Article not found", "This article is no longer available.")` (TH dict → `ไม่พบบทความ` + `บทความนี้ไม่มีให้บริการแล้ว`; **ไม่แยก** unpublished/deleted/invalid — contract matrix อยู่ §13; (D11 resolved 2026-11-06 — proto copy แก้เป็น canonical `ไม่พร้อมใช้งานแล้ว` ตาม 00_GLOBAL §11))
 
 Anatomy (`.bd-dscroll` — ไม่มี bottom nav):
 
