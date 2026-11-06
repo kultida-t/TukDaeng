@@ -139,34 +139,50 @@ function check(name, ok, extra = "") {
     check("T6 post-less followed account โผล่ใน Suggested + ปุ่ม Add", r.row, JSON.stringify(r));
   }
 
-  // ===== T7: A11 — snooze toggle persist + toggle-off ลบ key =====
+  // ===== T7: A11 — snooze toggle persist (per account) + toggle-off ลบ key =====
   {
     const r = await page.evaluate(`(() => {
       const scr = document.querySelector("#stage .screen");
-      localStorage.removeItem("fo_snooze"); state.snooze = false;
+      const key = "fo_snooze:" + CP_ME.name;
+      localStorage.removeItem(key); state.snooze = false;
       openSub(scr, "prefs");
       scr.querySelector('[data-tgl="snooze"]').click();
-      const onAt = +localStorage.getItem("fo_snooze");
+      const onAt = +localStorage.getItem(key);
       scr.querySelector('[data-tgl="snooze"]').click();
-      const off = localStorage.getItem("fo_snooze");
-      return { onAt: onAt > 0, stateOn: true, off };
+      const off = localStorage.getItem(key);
+      return { onAt: onAt > 0, off };
     })()`);
-    check("T7 snooze on → fo_snooze timestamp, off → key removed",
+    check("T7 snooze on → fo_snooze:{user} timestamp, off → key removed",
       r.onAt && r.off === null, JSON.stringify(r));
   }
 
   // ===== T7b: A11 — reload: snooze รอดจาก refresh, เกิน 30 วันหมดอายุ =====
   {
-    await page.evaluate(() => localStorage.setItem("fo_snooze", String(Date.now())));
+    await page.evaluate(() => localStorage.setItem("fo_snooze:" + CP_ME.name, String(Date.now())));
     await page.goto("http://localhost:8141/fo-flow/index.html");
     await page.waitForTimeout(600);
     const keep = await page.evaluate(() => state.snooze);
-    await page.evaluate(() => localStorage.setItem("fo_snooze", String(Date.now() - 31 * 864e5)));
+    await page.evaluate(() => localStorage.setItem("fo_snooze:" + CP_ME.name, String(Date.now() - 31 * 864e5)));
     await page.goto("http://localhost:8141/fo-flow/index.html");
     await page.waitForTimeout(600);
-    const exp = await page.evaluate(() => ({ snooze: state.snooze, key: localStorage.getItem("fo_snooze") }));
+    const exp = await page.evaluate(() => ({ snooze: state.snooze, key: localStorage.getItem("fo_snooze:" + CP_ME.name) }));
     check("T7b snooze รอดจาก reload + เกิน 30 วันหมดอายุเอง",
       keep === true && exp.snooze === false && exp.key === null, JSON.stringify({ keep, exp }));
+  }
+
+  // ===== T7c: A11 — บัญชีใหม่ไม่สืบทอด snooze ของบัญชีเก่า (QA find) =====
+  {
+    const r = await page.evaluate(`(() => {
+      localStorage.setItem("fo_snooze:" + CP_ME.name, String(Date.now()));
+      state.snooze = true;
+      setSession("new");   /* สลับเป็นบัญชีใหม่ — key ผูกกับ username อื่น */
+      const newSnooze = state.snooze;
+      setSession("member"); /* กลับ member → snooze ของ member ยังอยู่ */
+      const memberSnooze = state.snooze;
+      return { newSnooze, memberSnooze };
+    })()`);
+    check("T7c new account ไม่สืบทอด snooze + member กลับมาได้ค่าเดิม",
+      r.newSnooze === false && r.memberSnooze === true, JSON.stringify(r));
   }
 
   // ===== T8: A12 — re-consent decline: guest เห็น Exit app / member เห็น Sign out + sign out จริง =====

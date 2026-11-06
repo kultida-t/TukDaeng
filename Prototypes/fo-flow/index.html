@@ -14674,13 +14674,16 @@
     }
 
     /* ===== FEED-010 — feedback-card actions: mute / settings+content prefs / uncomfortable ===== */
-    /* snooze persists with a 30-day expiry — the Settings copy promises "for 30 days" */
-    state.snooze = (() => {
-      const at = +localStorage.getItem("fo_snooze");
+    /* snooze persists per account with a 30-day expiry — the Settings copy promises
+       "for 30 days"; a fresh account must never inherit another account's snooze */
+    const snoozeKey = () => `fo_snooze:${CP_ME.name}`;
+    const snoozeLoad = () => {
+      const at = +localStorage.getItem(snoozeKey());
       if (at && Date.now() - at < 30 * 864e5) return true;
-      if (at) localStorage.removeItem("fo_snooze");
+      if (at) localStorage.removeItem(snoozeKey());
       return false;
-    })();
+    };
+    state.snooze = false; /* real value lands in applySessionData — CP_ME isn't initialized yet here */
     state.sensitive = "standard";
 
     let scrToastTimer;
@@ -21837,7 +21840,7 @@
         const scr = dlgReset.closest(".screen");
         scr.classList.remove("dialog-open");
         POSTS.forEach(p => { p.ni = false; });
-        state.snooze = false; localStorage.removeItem("fo_snooze");
+        state.snooze = false; localStorage.removeItem(snoozeKey());
         scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
         renderSub(scr);
         scrToast(scr, "Suggested content reset");
@@ -22162,8 +22165,8 @@
       if (tgl) {
         const scr = tgl.closest(".screen");
         state.snooze = !state.snooze;
-        if (state.snooze) localStorage.setItem("fo_snooze", String(Date.now())); /* 30-day window starts now */
-        else localStorage.removeItem("fo_snooze");
+        if (state.snooze) localStorage.setItem(snoozeKey(), String(Date.now())); /* 30-day window starts now */
+        else localStorage.removeItem(snoozeKey());
         tgl.querySelector(".tg-sw").classList.toggle("on", state.snooze);
         scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
         return;
@@ -24483,6 +24486,7 @@
         }
       }
       state.feedTab = "all"; /* every session switch lands back on All Posts */
+      state.snooze = snoozeLoad(); /* snooze is per account — CP_ME.name is resolved above */
       syncModelFlags(); /* restored/cleared alerts re-drive the detail bells */
       /* refresh visible surfaces so badges/feed/follow states match the new session */
       const scr = document.querySelector("#stage .screen");
@@ -24629,9 +24633,10 @@
       const post = pool.find(p => !pfIsFollowed(p.seller)) || pool[0];
       if (!post) return;
       const isTh = state.lang === "th";
+      const scr = document.querySelector("#stage .screen");
       const ok = chIncomingAsk(post.seller, post.id);
-      if (ok) { chBadgeSync(); toast(isTh ? `ข้อความใหม่จาก ${post.seller} (เดโม)` : `New message from ${post.seller} (demo)`); }
-      else toast(isTh ? `${post.seller} ส่งข้อความไม่ได้ — เปิดรับเฉพาะคนที่ติดตาม (เดโม)` : `${post.seller} can't message you — Only people I follow (demo)`);
+      if (ok) { chBadgeSync(); scrToast(scr, isTh ? `ข้อความใหม่จาก ${post.seller} (เดโม)` : `New message from ${post.seller} (demo)`); }
+      else scrToast(scr, isTh ? `${post.seller} ส่งข้อความไม่ได้ — เปิดรับเฉพาะคนที่ติดตาม (เดโม)` : `${post.seller} can't message you — Only people I follow (demo)`);
     });
 
     /* Comment long-press context menu (IG-style) */
