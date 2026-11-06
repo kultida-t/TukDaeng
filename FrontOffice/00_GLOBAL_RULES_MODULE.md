@@ -45,7 +45,7 @@ Global Rules Module เป็นเอกสารกลางสำหรับ
 | Asset statuses | ใช้เฉพาะ `Sale`, `Show`, `Hide`, `Sold` |
 | Public visibility | Viewer เห็นเฉพาะ `Sale` และ `Show` ตาม surface ที่อนุญาต |
 | Feed visibility | Feed เป็น post-centric — แสดงโพสต์ `Sale` และโพสต์ธรรมดา `post`; `Show`, `Hide`, `Sold` ไม่เข้า feed |
-| Marketplace matching | Search และ Watch Alert match เฉพาะ `Sale` |
+| Marketplace matching | Search แสดง `post` + `Sale`; Watch Alert match = priced posts ทุก kind (`Sale` + priced `post` — DEC-59) |
 | Owner visibility | Owner Profile เห็น Asset ของตัวเองทุกสถานะ |
 | Empty state | ทุกหน้าที่ไม่มีข้อมูลใช้ข้อความ `ไม่พบข้อมูล` |
 | Login required | Guest ใช้ action ที่ต้องมีตัวตนต้องเห็น Member Sheet `Join TukDaeng` (guest gate) |
@@ -184,12 +184,12 @@ Owner/Viewer เป็น context ต่อ content ส่วน session (`membe
 | Show | แสดง | แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
 | Hide | แสดงเฉพาะ Owner | ไม่แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
 | Sold | แสดงเฉพาะ Owner | ไม่แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
-| `post` (ไม่ผูก asset) | แสดง | แสดง | แสดง | แสดง | ไม่ Match |
+| `post` (ไม่ผูก asset) | แสดง | แสดง | แสดง | แสดง | Match เมื่อมี `price` (DEC-59) |
 
 หมายเหตุ feed post-centric (S-09/S-10/S-14):
 
 - Feed = social post feed — แสดงทุกโพสต์ที่ไม่ติด viewer-level exclusion (not-interested / muted / blocked / archived) โดยโพสต์ที่ผูก asset ต้องอยู่ `Sale` เท่านั้นที่เข้า feed (`Show`, `Hide`, `Sold` หลุดจาก feed) และโพสต์ธรรมดา `post` ที่ไม่ผูก asset เข้า feed เสมอ
-- Search results แสดงทุกโพสต์ที่มองเห็นบน feed (`post` + `Sale` — IG parity, อนุมัติ 2026-11-05); Watch Alert match เฉพาะ `Sale` เท่านั้น — `salePosts()` ใน prototype = feed-visible priced posts (pfkind leak เดิมแก้แล้ว 2026-11-05)
+- Search results แสดงทุกโพสต์ที่มองเห็นบน feed (`post` + `Sale` — IG parity, อนุมัติ 2026-11-05); Watch Alert match = feed-visible priced posts ทุก kind (`Sale` + priced `post` — DEC-59 ruling 2026-11-05: ผู้ขายอาจลงขายโดยไม่ผูก asset ตัวเอง) — `salePosts()` ใน prototype = `discoverablePosts()` ที่มี `price` ตรง ruling แล้ว
 - Public Profile แสดง `post` + `Sale` + `Show` — เฉพาะ `Hide`/`Sold` ที่ viewer ต้องไม่เห็น (อนุมัติ 2026-11-05 — เดิมจำกัดเฉพาะ Sale+Show และเคยรั่ว Hide/Sold เป็น S-14 defect ซึ่งแก้แล้วใน prototype)
 
 # 11. Global State Rules
@@ -228,6 +228,7 @@ Guest gate sheet copy:
 - ใช้ Search (explore, results, filters)
 - ดู Boards และ Article Detail (read-only)
 - เปิด post detail / post viewer และดู public profile (read-only)
+- เปิด follower/following lists ของ profile อื่น (list = read surface เปิดอ่านได้ — DEC-60; row actions ภายใน list อยู่ใน Login-Required ด้านล่าง)
 - เปิด legal viewer และผ่าน onboarding surfaces
 
 ### Login-Required Actions (guest กดแล้วเปิด gate sheet)
@@ -398,7 +399,7 @@ Public Profile, Feed, Search, Watch Alert และ Viewer Asset Detail ต้�
 | ID | Criteria |
 | --- | --- |
 | AC-GLOBAL-001 | ทุกโมดูลใช้ status เฉพาะ `Sale`, `Show`, `Hide`, `Sold` (+ `post` สำหรับโพสต์ไม่ผูก asset) |
-| AC-GLOBAL-002 | Feed แสดงเฉพาะโพสต์ `Sale` และ `post` ที่ไม่ติด viewer-level exclusion; Search แสดง `post` + `Sale` (discoverablePosts ตาม §10 matrix อนุมัติ 2026-11-05); Watch Alert match เฉพาะ Asset `Sale` |
+| AC-GLOBAL-002 | Feed แสดงเฉพาะโพสต์ `Sale` และ `post` ที่ไม่ติด viewer-level exclusion; Search แสดง `post` + `Sale` (discoverablePosts ตาม §10 matrix อนุมัติ 2026-11-05); Watch Alert match = feed-visible priced posts (`Sale` + priced `post` — DEC-59) |
 | AC-GLOBAL-003 | Public Profile แสดง `post` + Asset `Sale` และ `Show` (ไม่แสดง `Hide`, `Sold` ต่อ viewer) — ตาม §10 Visibility Matrix (อนุมัติ 2026-11-05) |
 | AC-GLOBAL-004 | Owner Profile แสดง Asset ของ Owner ได้ทุกสถานะ |
 | AC-GLOBAL-005 | Hide และ Sold ไม่แสดงใน public surfaces |

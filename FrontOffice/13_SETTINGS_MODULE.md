@@ -21,7 +21,7 @@
 
 Settings Module ใช้สำหรับให้ Member จัดการบริบทบัญชี คลังเนื้อหา การควบคุมสิ่งที่เห็น การแสดงผล ภาษา การแจ้งเตือน ความเป็นส่วนตัว/cookie เอกสารช่วยเหลือ/กฎหมาย การออกจากระบบ และการลบบัญชี
 
-Settings Home ใช้โครง `Settings and activity` แบบ 6 sections (Account, Your library, What you see, Your app and media, Notifications, More info and support) + Login/Log out ตาม prototype — Edit profile ไม่มี row บน Settings Home (entry อยู่ที่ own profile page เท่านั้น — S-05), Change Password อยู่ใน `About your account > Security` (S-28) และ Delete Account อยู่ใน `About your account > Account management`
+Settings Home ใช้โครง `Settings and activity` แบบ 6 sections (Account, Your library, What you see, Your app and media, Notifications, More info and support) + Login/Sign out ตาม prototype (DEC-61) — Edit profile ไม่มี row บน Settings Home (entry อยู่ที่ own profile page เท่านั้น — S-05), Change Password อยู่ใน `About your account > Security` (S-28) และ Delete Account อยู่ใน `About your account > Account management`
 
 ---
 
@@ -29,7 +29,7 @@ Settings Home ใช้โครง `Settings and activity` แบบ 6 sections
 
 | Prototype | Usage |
 | --- | --- |
-| `Prototypes/fo-flow/index.html` | Settings home `settings` ~17159–17187; `about_account` ~17188–17207; `change_pwd` ~17208–17246 + submit/forgot handlers ~20910–20996; `del_account` ~17247–17337 + del-flow handlers ~20799–20909; `lang` ~17338–17347 + handler ~20997–21003; `notif_settings` ~17348–17361 + handler ~21005–21011; `help` ~17362–17374; `privacy` ~17375–17395; `terms` ~17396–17412; `about_app` ~17413–17427; `favorites`/`muted`/`blocked` ~17428–17460 + handlers ~21034–21102/~21644–21649; `prefs`/`sensitive` ~17461–17479 + `interested`/`ni` ~17509–17510 + sens/snooze/reset/unlike/restore handlers ~20705–20716/~21013–21014/~21026–21102; `theme` ~17481–17489 + handler ~21018–21024; reset dialog ~14719–14725; del-password dialog ~14734–14746; del-success dialog ~14750–14766; forgot-password dialog ~14772–14780; logout dialog ~14726–14733 + handler ~20785–20798; settings entry `.pf-menu` ~16856/~21494 (`.set-btn` ~20746 = dead handler); legal language map ~19485–19500; persist keys `fo_lang`/`fo_theme`/`fo_account` ~19405–19419/~20902; guest gate `obGate` member sheet ~22996–23009; sub-page route names 00_NAV §6.6 |
+| `Prototypes/fo-flow/index.html` | Settings home `settings` ~17902–17931; `about_account` ~17932–17951; `change_pwd` ~17952–17990 + submit/forgot handlers ~22039–22125; `del_account` ~17991–18081 + del-flow handlers ~21896–21993; `lang` ~18083–18092 + handler ~22131–22137; `notif_settings` ~18092–18105 + handler ~22134–22141; `help` ~18106–18118; `privacy` ~18119–18139; `terms` ~18140–18156; `about_app` ~18157–18171; `favorites`/`muted`/`blocked` ~18172–18204 + handlers ~22214–22283/~22641–22646; `prefs`/`sensitive` ~18205–18249 + `interested`/`ni` ~19065–19065 + sens/snooze/reset/unlike/restore handlers ~21754–21765/~22144–22157/~22168–22247; `theme` ~18253–18261 + handler ~22164–22170; reset dialog ~15307–15313; del-password dialog ~15322–15334; del-success dialog ~15335–15351; forgot-password dialog ~15357–15365; logout dialog ~15314–15321 + handler ~21927–21940; settings entry `.pf-menu` ~17601/~22692 (`.set-btn` ถูกถอดแล้วใน dead-code cull); legal language map ~20393–20440; persist keys `fo_lang`/`fo_theme`/`fo_account` ~20259–20274/~24093; guest gate `obGate` member sheet ~24543–24556; sub-page route names 00_NAV §6.6 |
 
 ---
 
@@ -46,7 +46,7 @@ Settings Home ใช้โครง `Settings and activity` แบบ 6 sections
 | Help / About | Help, About app | Help = support channels + help topics; About = brand/app info + Legal & Support links; ไม่แสดงข้อมูลบัญชี |
 | Legal | Privacy Policy, Terms of Use | In-app legal pages + entry จากหลาย surfaces; canonical legal viewer + policy versioning อยู่ที่ 00_GLOBAL §8 |
 | Consent | Required + optional consent | Optional consent (Analytics / Personalized) เปลี่ยนได้ที่ Settings > Privacy & cookies — contract (canonical consent model 00_GLOBAL §8) |
-| Session | Sign Out | Row `Log out` + confirmation → session `guest` + toast + Member Sheet (canonical flow 01_AUTH §8 Sign Out) |
+| Session | Sign Out | Row `Sign out` + confirmation → session `guest` + toast `Signed out` + Member Sheet `sign back in` (DEC-61 — unify verb Sign in/Sign out; TH `ออกจากระบบ` คงเดิม; canonical flow 01_AUTH §8 Sign Out) |
 | Account | About your account, Delete Account | About your account = hero + account info + Security (Change password) + Account management (Delete account = 2-page flow + password confirm + scheduled dialog → session `guest` — S-27) |
 | Source of Truth Conflict | เอกสารเดิมบอก Language/Dark Mode/Delete Account ยังไม่มี | ให้ยึด baseline ล่าสุดเป็นหลัก |
 
@@ -63,15 +63,15 @@ Settings Home ใช้โครง `Settings and activity` แบบ 6 sections
 - Language: English / Thai
 - Theme Mode: Dark Mode / Light Mode
 - Notification Settings สำหรับ Likes, Comments, New followers, Watch Alerts
-- Privacy & cookie preferences — Essential always-on + Analytics / Personalized toggles (contract — prototype ไม่มีหน้านี้; required โดย 00_GLOBAL §8)
+- Privacy & cookie preferences — Essential always-on + Analytics / Personalized toggles (มีจริงแล้ว — sub page `cookies` ~18119–18139; required โดย 00_GLOBAL §8)
 - Help
 - About app
 - Privacy Policy
 - Terms of Use
-- Log out
+- Sign out
 - Delete Account — 2-page flow (terms → reason required) + password confirmation + scheduled dialog + 30-day grace period (login-to-restore, S-02)
 - Change Password — in-app page mechanics + Forgot password link
-- Confirmation states สำหรับ Log out, Delete Account, Reset suggested content และ Unblock
+- Confirmation states สำหรับ Sign out, Delete Account, Reset suggested content และ Unblock
 
 ## Contract-Only Keep (S-29 — prototype ไม่ครอบ แต่คงเป็น spec contract)
 
@@ -97,7 +97,7 @@ Settings Home ใช้โครง `Settings and activity` แบบ 6 sections
 
 | Screen / Component | Route | Description |
 | --- | --- | --- |
-| Settings Home | `settings` | หัวข้อ `Settings and activity` — 6 sections + Login/Log out (รายละเอียด §9 Settings Menu Rule) |
+| Settings Home | `settings` | หัวข้อ `Settings and activity` — 6 sections + Login/Sign out (รายละเอียด §9 Settings Menu Rule) |
 | About your account | `about_account` | hero + account information + Security (Change password) + Account management (Delete account) |
 | Language | `lang` | เลือก English / ภาษาไทย + check + toast |
 | Theme mode | `theme` | เลือก Light / Dark + check — apply ทันทีทั้งแอป |
@@ -113,7 +113,7 @@ Settings Home ใช้โครง `Settings and activity` แบบ 6 sections
 | Content preferences | `prefs`, `sensitive`, `interested`, `ni` | `prefs` = hub (sensitive/interested/not-interested rows + snooze toggle + reset); `sensitive`/`interested`/`ni` = sub pages — §9 Content Preferences Rule |
 | Change Password | `change_pwd` | In-app page ใน About your account > Security — 3 fields + eye toggles + Forgot your password? link — §9 Change Password Rule |
 | Delete Account | `del_account` | 2-page flow (`_delStep` 1 terms → 2 reason) + `Confirm account deletion` password dialog + `Account deletion scheduled` dialog — §9 Delete Account Rule |
-| Log Out Confirmation | dialog | `Log out of @{user}?` + Log out / Cancel |
+| Sign Out Confirmation | dialog | `Sign out of @{user}?` + Sign out / Cancel |
 
 ---
 
@@ -130,7 +130,7 @@ Settings Home ใช้โครง `Settings and activity` แบบ 6 sections
 - เปิด About your account, Your library, What you see, Language, Theme mode, Notification settings, Privacy & cookies, Help, Privacy Policy, Terms of Use, About ได้
 - เปิด What you see pages (Favorites / Muted accounts / Blocked) และจัดการรายการได้ — เพิ่ม/ลบ favorite, unmute, unblock (unblock ต้องผ่าน confirm dialog)
 - เปิด Content preferences และปรับ sensitive level / ลบ interested / restore not-interested / snooze suggested posts / reset suggested content ได้
-- Log out ได้
+- Sign out ได้
 - เริ่ม Delete Account flow ได้จาก About your account — ต้องเลือกเหตุผลและยืนยันด้วย current password ก่อน schedule deletion
 - แก้ profile ได้จาก own profile page (Edit profile — 06_PROFILE; ไม่มี row ใน Settings)
 - เห็น Email Display (contract-only — prototype ไม่มี email row)
@@ -228,7 +228,7 @@ Settings
 -> Sensitive content -> `sensitive` (Less / Standard + check — apply ทันที)
 -> Interested -> `interested` (liked posts + Remove = unlike)
 -> Not interested -> `ni` (marked posts + Restore)
--> Snooze suggested posts toggle -> feed `All` tab เหลือเฉพาะ followed accounts 30 วัน
+-> Snooze suggested posts toggle -> feed `All` tab เหลือเฉพาะ followed accounts 30 วัน — persist `fo_snooze:{user}` per-account + 30-day expiry (account ใหม่ไม่สืบทอด — FSP-038)
 -> Reset suggested content -> confirm `Reset suggested content?`
    -> เคลียร์ not-interested marks ทั้งหมด + ปิด snooze + toast `Suggested content reset`
 ```
@@ -244,11 +244,11 @@ Settings
 -> แตะ row -> public profile ของบัญชีนั้น
 ```
 
-## Log Out Flow
+## Sign Out Flow
 
 ```text
 Settings
--> Log out (Login section)
+-> Sign out (Login section)
 -> Confirm dialog `Log out of @{user}?`
 -> session `guest` บน feed + toast `Logged out successfully`
 -> Member Sheet `Join TukDaeng` (scrim/Skip = browse ต่อเป็น guest)

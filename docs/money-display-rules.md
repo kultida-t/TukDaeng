@@ -212,3 +212,10 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 | views 1.2K | `1.2K` — ตัวนับ ไม่ผ่าน money formatter ไม่ได้ `1.20K` |
 
 **สถานะส่งมอบ:** DRAFT 0.1 เตรียมความพร้อม — รอพี่คิงตรวจและตัดสิน decision points ในหัวข้อ 9 (โดยเฉพาะทศนิยม §3.2 และ Settings หน่วย §5) ก่อนเขียน formatter หรือแก้หน้าจอใด ๆ ไม่มีการแก้ Figma / Code / Screens / Mock Data ในรอบนี้
+
+
+---
+
+## Open question (FSP-040 flag — ยังไม่ตัดสิน)
+
+- §6/§10: การแสดงค่าว่างของเงินใช้ `—` บ้าง `N/A` บ้างไม่ตรงกันระหว่าง surfaces (เช่น sold rows/return card ใช้ `N/A`, portfolio value ใช้ `—`) — บันทึกเป็น open question รอ decision ไม่ใช่ contract

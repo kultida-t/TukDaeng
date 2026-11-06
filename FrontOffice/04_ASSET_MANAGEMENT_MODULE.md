@@ -29,15 +29,15 @@ Asset Management Module คือ owner-private domain ของ "My Assets draw
 
 Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแก้)
 
-- Composer constants (~15672–15695): `CF_TAGS` (10 hashtag chips), `CF_LOCS`/`CF_LOC_KM`, `CF_CONDS` (5 ตัวเลือก), `CF_BOXES` (4 ตัวเลือก), `CF_SPECS` (Watch Specifications 20 fields + Item Details 2 fields — free-text ทั้งหมด), `cfToday()`; `CF_MAX_MEDIA` = 10 (~15993)
-- Composer UI (~15529–15879): `createHTML`/`cfPickerHTML` (step 1 — title `เพิ่มสินทรัพย์ใหม่`/`Add Asset` เมื่อ `V.mode === "asset"`), `cfStep2HTML` (step 2 — rows + **Visibility pick** `vis-opt` ~15855–15859 เฉพาะ asset mode, **Profile status pick** `stt-opt` ~15850–15854 เฉพาะ edit mode + drawer ON, `Also save to My Assets` toggle ~15860–15867, primary button `Add Asset` ~15871), `cfPaneHTML` (panes loc/price/spec/**cost** ~15718–15725/cond/more), `cfVal` (row summaries ~15742–15751)
-- Drawer data (~15913–16108 + ~16318–16576): `cfToPortfolio` (draft → `PF_ASSETS` record ~15915–15926), `assetFromPost` (materialize record จาก post ~15929–15939), `soldFromPost` (materialize sold record ~15942–15958), `insertNewPost` (~15959–15990), `metaFromPost`/`openPostEdit`/`applyPostEdit` (~15992–16108 — edit sync กลับ drawer asset ~16095–16107); `PF_ASSETS` seed (~16318–16328), `PF_SOLD` (~16329–16344), `PF_MINE` (drawer-only posts ~16574–16576), `findPost`/`pfGridPosts`/`pfKind`/`pfTabPosts` (~16577–16609)
-- Portfolio helpers (~16348–16382): `pfoTHB`/`pfoSignTHB`/`pfoPct`, `pfoEligible` (`status ∈ sale/show/hide && own !== false`), `pfoCur`/`pfoGL`/`pfoExp`/`pfoCmp`/`pfoHold`/`pfoDate`, `PFO_STATUS`/`PFO_CMP`/`PFO_SRC`
-- Pages (~16958–17149): `pfoSimBar`/`PFO_SIMS` (dev `?dev` preview เท่านั้น), `pfoRowHTML` (~16964–16975), `portfolioHTML` (~16976–17011), `pfassetHTML` (~17012–17051), `soldHistHTML` (~17052–17066), `soldDetailHTML` (~17067–17103), `sellFormHTML` (~17106–17121), `openSubOver`/`openSellForm`/`markAssetSold` (~17124–17149)
-- Entries: own-profile `+` icon (`data-flow="create" data-mode="asset"` ~16852) + `all`-tab empty-state CTA `เพิ่มสินทรัพย์ใหม่`/`Add asset` (~16826); `.pf-pfo` portfolio button บน own-profile actions row (~16887); own-post menu rows `pm-own-sold`/`pm-own-soldview` (~13920–13935) + handlers (~20501–20507)
-- Handlers: composer `cf-share` asset mode (~20277–20317) + post mode (~20318–20332); `vis-opt`/`stt-opt` (~20426–20433); `.cf-f` input — `price`/`purchase` strip non-digit + auto-comma, `bought` live validation (~19990–20010); `pane-done` cost block เมื่อ date invalid (~20404–20414); `data-sell`/`sell-save` + inline `pe-err` validation + stack splice → `sold:{id}` (~21684–21728); `sell-price` → Expected gain live update (~20108–20120); `dlg-delpost-go` post delete (~20730–20744)
-- Guest gate `GUEST_GATE_SEL` + `obGate` (~22997–23012): `[data-flow]` (composer entries) + `.pm-btn` (post menus) + profile tab gated → Member Sheet `Join TukDaeng`
-- Feed/status effects: `refreshPostViews` (`show`/`hide`/`sold` ดึง card ออก feed ~13938–13949); feed eligibility filter (~14096)
+- Composer constants (~16313–16336): `CF_TAGS` (10 hashtag chips), `CF_LOCS`/`CF_LOC_KM`, `CF_CONDS` (5 ตัวเลือก), `CF_BOXES` (4 ตัวเลือก), `CF_SPECS` (Watch Specifications 20 fields + Item Details 2 fields — free-text ทั้งหมด), `cfToday()`; `CF_MAX_MEDIA` = 10 (~16653)
+- Composer UI (~16121–16529): `createHTML`/`cfPickerHTML` (step 1 — title `เพิ่มสินทรัพย์ใหม่`/`Add Asset` เมื่อ `V.mode === "asset"`), `cfStep2HTML` (step 2 — rows + **Visibility pick** `vis-opt` ~16460–16464 เฉพาะ asset mode, **Profile status pick** `stt-opt` ~16500–16504 เฉพาะ edit mode + drawer ON, `Also save to My Assets` toggle ~16510–16517, primary button `Add Asset` ~16521), `cfPaneHTML` (panes loc/price/spec/**cost** ~16337–16344/cond/more), `cfVal` (row summaries ~16383–16400)
+- Drawer data (~16563–16768 + ~17054–17310): `cfToPortfolio` (draft → `PF_ASSETS` record ~16565–16576), `assetFromPost` (materialize record จาก post ~16579–16589), `soldFromPost` (materialize sold record ~16592–16608), `insertNewPost` (~16609–16650), `metaFromPost`/`openPostEdit`/`applyPostEdit` (~16667–16783 — edit sync กลับ drawer asset ~16726–16738); `PF_ASSETS` seed (~17054–17064), `PF_SOLD` (~17067–17082), `PF_MINE` (drawer-only posts ~17310–17312), `findPost`/`pfGridPosts`/`pfKind`/`pfTabPosts` (~17311–17346)
+- Portfolio helpers (~17084–17118): `pfoTHB`/`pfoSignTHB`/`pfoPct`, `pfoEligible` (`status ∈ sale/show/hide && own !== false`), `pfoCur`/`pfoGL`/`pfoExp`/`pfoCmp`/`pfoHold`/`pfoDate`, `PFO_STATUS`/`PFO_CMP`/`PFO_SRC`
+- Pages (~17701–17892): `pfoSimBar`/`PFO_SIMS` (dev `?dev` preview เท่านั้น), `pfoRowHTML` (~17707–17718), `portfolioHTML` (~17719–17754), `pfassetHTML` (~17755–17794), `soldHistHTML` (~17795–17809), `soldDetailHTML` (~17810–17846), `sellFormHTML` (~17849–17864), `openSubOver`/`openSellForm`/`markAssetSold` (~17867–17892)
+- Entries: own-profile `+` icon (`data-flow="create" data-mode="asset"` ~17597) + `all`-tab empty-state CTA `เพิ่มสินทรัพย์ใหม่`/`Add asset` (~17571); `.pf-pfo` portfolio button บน own-profile actions row (~17630); own-post menu rows `pm-own-sold`/`pm-own-soldview` (~14415–14430) + handlers (~21638–21644)
+- Handlers: composer `cf-share` asset mode (~21409–21446) + post mode (~21454–21465); `vis-opt`/`stt-opt` (~21561–21568); `.cf-f` input — `price`/`purchase` strip non-digit + auto-comma, `bought` live validation (~21079–21099); `pane-done` cost block เมื่อ date invalid (~21539–21549); `data-sell`/`sell-save` + inline `pe-err` validation + stack splice → `sold:{id}` (~22900–22944); `sell-price` → Expected gain live update (~21197–21209); `dlg-delpost-go` post delete (~21869–21888)
+- Guest gate `GUEST_GATE_SEL` + `obGate` (~24533–24548): `[data-flow]` (composer entries) + `.pm-btn` (post menus) + profile tab gated → Member Sheet `Join TukDaeng`
+- Feed/status effects: `refreshPostViews` (`show`/`hide`/`sold` ดึง card ออก feed ~14423–14434); feed eligibility filter (~15112)
 - Dead/tooling (ห้ามเขียนเป็น feature): `pfo-more` dev sim bar + `PFO_SIMS` (`?dev` preview states), `POST_DETAIL_CFG`, `PF_GFX_*` registry (mock grid posts), `chsettings:{id}` dead route — ดู 00_NAV §11 prototype-tooling rule
 
 ---
@@ -243,9 +243,9 @@ Post-side linkage:
 | `show` | แสดง | แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
 | `hide` | แสดงเฉพาะ Owner | ไม่แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
 | `sold` | แสดงเฉพาะ Owner | ไม่แสดง | ไม่แสดง | ไม่แสดง | ไม่ Match |
-| `post` (ไม่ผูก asset) | แสดง | ไม่แสดง | แสดง | ไม่แสดง | ไม่ Match |
+| `post` (ไม่ผูก asset) | แสดง | แสดง | แสดง | แสดง | Match เมื่อมี `price` (DEC-59) |
 
-- Prototype defects ที่บันทึกไว้ใน 00_GLOBAL (ไม่ใช่ spec — implementation ต้องแก้): `salePosts()` ไม่กรอง `pfkind` → priced `hide`/`sold` post รั่วเข้า search/WA match; public `all` tab รั่ว `post`/`hide`/`sold`
+- Prototype defects ที่เคยบันทึกไว้ (แก้แล้ว 2026-11-05): `salePosts()` = `discoverablePosts()` + `price` — `hide`/`sold` ไม่รั่วแล้ว; public `all` tab กรองถูกแล้ว; WA match pool รวม priced `post` ตาม DEC-59
 
 ## Add Asset Entry Rule
 
@@ -378,7 +378,7 @@ Post-side linkage:
 | Asset created `Post to feed` | `POSTS` `pfkind:"sale"` + `PF_ASSETS` — เข้า feed + profile `ขาย` tab + search/WA eligible + WA match toast |
 | Edit info → `show`/`hide` | `pfkind` เปลี่ยน + `pa.status` sync — หลุด feed (`refreshPostViews` ลบ card) + หลุด search/WA matching; ย้าย profile tab |
 | Edit info → `sale` (บน POSTS post) | เข้า feed + `ขาย` tab + search/WA eligible ใหม่ |
-| Edit info drawer OFF | `pfkind:"post"` + ตัด `assetId` + ลบ `PF_ASSETS` record — อยู่ feed + `ทั้งหมด` tab + results grid (`discoverablePosts()` ครอบ `post` — 03 §9); หลุด status tabs/`(N)` counts/WA match (`salePosts()` price pool เท่านั้น) |
+| Edit info drawer OFF | `pfkind:"post"` + ตัด `assetId` + ลบ `PF_ASSETS` record — อยู่ feed + `ทั้งหมด` tab + results grid (`discoverablePosts()` ครอบ `post` — 03 §9); หลุด status tabs/`(N)` counts; WA match ยังได้ถ้ามี `price` (priced `post` อยู่ใน pool ตาม DEC-59) |
 | `sale`/`show`/`hide` → `sold` (Mark as sold) | `PF_ASSETS`→`PF_SOLD` + linked posts `pfkind:"sold"` — หลุด feed/search/WA/profile status tabs ทันที; เข้า `ขายแล้ว` tab + `soldhist` |
 | Post deleted | หายทุก surface — drawer record คงอยู่ (deviation, ดู Delete Rule) |
 | Drawer-only `PF_MINE` → `sale` via Edit | `pfkind:"sale"` แต่ยังอยู่ `PF_MINE` — **ไม่เข้า feed** (PF_MINE ไม่ merge เข้า POSTS — deviation) |
@@ -400,7 +400,7 @@ Post-side linkage:
 - **`PF_MINE` → `sale` ไม่เข้า feed** — flip status บน drawer-only post ไม่เคย merge เข้า `POSTS` (flag)
 - **`pfKind()` fallback** — post ไม่มี `pfkind` infer จาก price (`price||type==="sale" ? "sale" : "show"`) — gfx/seed posts ไม่มี pfkind จริง
 - **`pfo-more`/`PFO_SIMS`** = dev `?dev` preview tooling เท่านั้น (00_NAV §11) — `nomkt`/`empty`/`failed`/`denied` states เป็น contract ไม่ใช่ reachable UI
-- **`sold` post ยังเข้า search/WA match** — `salePosts()` pfkind leak (00_GLOBAL §10 defect note — canonical คือหลุด)
+- **`sold` post หลุด search/WA match แล้ว** — `salePosts()` = `discoverablePosts()` + `price` (pfkind leak แก้แล้ว); priced `post` match WA ได้ตาม DEC-59
 - **Session-only** — `PF_ASSETS`/`PF_SOLD`/`PF_MINE`/`WATCH_ALERTS` เป็น memory state (sign-out/reset ล้าง); persistence = contract
 - **EN/TH mixed** — portfolio/sell/sold surfaces มี isTh ครบ; composer toasts `Posted ·…` ต้องแปลไทยตาม DEC-19 (`Watch alert matched` ถูกถอดแล้ว 2026-11-05) (language sweep FSP-026)
 

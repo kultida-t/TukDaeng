@@ -31,7 +31,8 @@ Source of truth สำหรับพฤติกรรม auth: `Prototypes/fo-
 - Sign Up — Email + Password + strength meter + social buttons
 - Email OTP — 6-digit auto-submit boxes + resend cooldown
 - Profile setup — avatar + username suggestion
-- Account created — sign-in handoff (email signup ไม่ auto-login)
+- Email + Social signup เข้าแอปทันทีหลัง profile setup (session `new`) — ruling 2026-11-06 ถอด `Account created` + sign-in handoff (override S-22/AC-AUTH-038)
+- Sign-up form เริ่มว่างเสมอเมื่อเข้าจากนอก flow (demo prefill ไม่รั่ว), tour keys แยก `fo_toured`/`fo_toured_guest`, device language เป็น default ของ onboarding, uniqueness เช็ค `fo_account` + `OB_DEMO`
 - Member Sheet `Join TukDaeng` — first-run variant + guest gate variant (canonical ที่ 00_GLOBAL §11)
 - Sign In — email/password form + attempt counter + 5-try lockout + `Forgot password?` / `New here?` links + social row
 - Forgot Password — หน้า `Reset password` (email) → `Check your email` generic sent state
@@ -47,7 +48,7 @@ Source of truth สำหรับพฤติกรรม auth: `Prototypes/fo-
 | Supported auth methods | Sign Up, Email OTP Verification, Profile setup, Sign In, Forgot Password, Change Password, Sign Out, Apple, Google |
 | First-run onboarding | แสดงครั้งเดียวก่อนเข้าแอป: splash → language → welcome → privacy notice → notification/track prompts → Member Sheet `Join TukDaeng` gateway |
 | Email / Password verification | Email / Password ต้องยืนยัน OTP 6 หลัก (auto-submit) |
-| Registration tail | Email signup ไม่ auto-login — OTP → profile setup → `Account created` → Sign in เอง (S-22); Social signup เข้าแอปทันทีหลัง profile step |
+| Registration tail | ทุก provider เข้าแอปทันทีหลัง profile step เป็น session `new` — ruling 2026-11-06 email เหมือน social (override S-22/AC-AUTH-038); ไม่มีหน้า `Account created` |
 | Password policy | Password อย่างน้อย 8 ตัวอักษร และต้องมีตัวเลขหรือสัญลักษณ์ (canonical S-21 — 00_GLOBAL §12) |
 | Email uniqueness | 1 Email สมัครได้ 1 บัญชีเท่านั้น |
 | SSO verification | SSO Email ไม่ต้องยืนยัน OTP และไม่มี password step — provider auto-fill name/email/photo |
@@ -70,7 +71,7 @@ Source of truth สำหรับพฤติกรรม auth: `Prototypes/fo-
 - Sign Up ด้วย Email / Password
 - OTP Verification สำหรับ Email / Password
 - Profile setup step (avatar + username) หลัง OTP / social sign-up
-- Account created handoff กลับ Sign In (email signup)
+- ~~Account created handoff กลับ Sign In~~ — ถอดแล้ว (ruling 2026-11-06)
 - Sign In ด้วย Email / Password (attempt counter + 5-try lockout)
 - Sign in / Sign up with Apple
 - Sign in / Sign up with Google
@@ -220,8 +221,7 @@ Onboarding แสดงครั้งเดียวตอนเปิดแอ
 6. หน้า `Verify your email` — ช่อง OTP 6 ช่อง auto-advance, backspace ย้อนช่อง, auto-submit เมื่อครบ 6 หลัก (ไม่มีปุ่ม Verify)
 7. OTP ถูก → Profile Setup; OTP ผิด → shake + `That code is incorrect. Try again.` + ล้างช่องให้กรอกใหม่
 8. Profile Setup — `Set up your profile`: avatar + `Add photo`, ช่อง Username (suggest อัตโนมัติ), `Skip for now` (ใช้ suggested username), Continue
-9. หน้า `Account created` — `Welcome, {name}. Sign in to start exploring.` → ปุ่ม `Sign in` → กลับ Sign In (prefill email ที่เพิ่งสมัครเท่านั้น password ว่าง — canonical lock 2026-10-29)
-10. User sign in สำเร็จ → session `new` — email signup **ไม่ auto-login** (S-22)
+9. เข้าใช้งานทันทีเป็น session `new` — ไม่มีหน้า `Account created` และไม่ต้อง sign in ซ้ำ (ruling 2026-11-06 — override S-22, IG parity)
 
 ## Apple / Google Registration
 
@@ -234,7 +234,7 @@ Onboarding แสดงครั้งเดียวตอนเปิดแอ
 
 ## Sign In
 
-1. User เปิด Sign In (จาก Member Sheet `Sign in` หรือหน้า Account created) — หน้า `Sign in` + `Welcome back to TukDaeng.` (back → Member Sheet)
+1. User เปิด Sign In (จาก Member Sheet `Sign in`) — หน้า `Sign in` + `Welcome back to TukDaeng.` (back → Member Sheet)
 2. User กรอก Email + Password (password มีปุ่ม show/hide) — submit ด้วยปุ่ม `Sign in` หรือ Enter
 3. ระบบ validate field ก่อน credential check: email ว่าง → `Enter your email.`; email format ผิด → `Enter a valid email address.`; password ว่าง → `Enter your password.`
 4. ระบบตรวจ credential กับบัญชีที่จดจำ (prototype: demo member account — artifact — + credential ที่สมัคร persist ใน `fo_account`; production: server-side credential store)
@@ -494,7 +494,7 @@ Analytics เป็น contract-only (prototype ไม่มี tracking layer �
 | `auth_otp_submitted` | OTP auto-submit ครบ 6 หลัก |
 | `auth_otp_resend_tapped` | User ขอ OTP ใหม่ |
 | `auth_profile_setup_completed` | User ผ่าน Profile Setup (Continue หรือ Skip for now) |
-| `auth_account_created_shown` | หน้า Account created แสดง (email signup) |
+| ~~`auth_account_created_shown`~~ | ถอดแล้ว — ไม่มีหน้า Account created (ruling 2026-11-06) |
 | `auth_sign_in_submitted` | User submit Sign In |
 | `auth_sign_in_succeeded` | Sign In สำเร็จ (ส่ง session result `member`/`new` เป็น property) |
 | `auth_sign_in_failed` | Sign In credential ผิด (ส่ง attempt count เป็น property) |

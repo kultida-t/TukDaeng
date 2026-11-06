@@ -13664,8 +13664,8 @@
           ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
           <button class="act share-btn">${I.share(22)}</button>
           <span class="act-right">
-            <button class="mf-btn${p.modelFollowing ? " on" : ""}" title="${p.modelFollowing ? "Following this model" : "Follow this model"}">${I.navBell(23)}</button>
-            <button class="wl-btn${p.wishlisted ? " saved" : ""}" title="Wish List"><span class="wl-ic wl-o">${I.gift(23)}</span><span class="wl-ic wl-f">${I.giftFill(23)}</span></button>
+            <button class="mf-btn${p.modelFollowing ? " on" : ""}" title="${p.modelFollowing ? (state.lang === "th" ? "ติดตามรุ่นนี้แล้ว" : "Following this model") : (state.lang === "th" ? "ติดตามรุ่นนี้" : "Follow this model")}">${I.navBell(23)}</button>
+            <button class="wl-btn${p.wishlisted ? " saved" : ""}" title="${state.lang === "th" ? "รายการอยากได้" : "Wish List"}"><span class="wl-ic wl-o">${I.gift(23)}</span><span class="wl-ic wl-f">${I.giftFill(23)}</span></button>
           </span>
         </div>
         ${p.hideCounts || !p.likes || !p.likedBy ? "" : `<div class="liked-by">
@@ -13690,7 +13690,7 @@
     function chatPopHTML(p) {
       return `
     <div class="cp-backdrop"></div>
-    <button class="chat-fab" title="Chat with ${esc(p.seller)}">${I.chat(22)}</button>
+    <button class="chat-fab" title="${state.lang === "th" ? "แชทกับ " : "Chat with "}${esc(p.seller)}">${I.chat(22)}</button>
     <div class="chat-pop">
       <div class="cp-head">
         <img class="cp-av" src="${p.avatar}" alt="" data-pf-user="${esc(p.seller)}">
@@ -14267,9 +14267,9 @@
       const ico = d => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
       ov.innerHTML = `
     <div class="pf-qr-top">
-      <button class="pf-qr-x" title="Close">${I.x(26)}</button>
+      <button class="pf-qr-x" title="${state.lang === "th" ? "ปิด" : "Close"}">${I.x(26)}</button>
       <button class="pf-qr-color">COLOR</button>
-      <button class="pf-qr-scan" title="Scan QR">${ico('<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.2"/>')}</button>
+      <button class="pf-qr-scan" title="${state.lang === "th" ? "สแกน QR" : "Scan QR"}">${ico('<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.2"/>')}</button>
     </div>
     <div class="pf-qr-mid">
       <div class="pf-qr-card"></div>
@@ -14299,7 +14299,7 @@
       if (!ov.isConnected) { stream.getTracks().forEach(t => t.stop()); return; }
       const cam = document.createElement("div");
       cam.className = "pf-cam";
-      cam.innerHTML = `<video playsinline muted autoplay></video><button class="pf-cam-x" title="Close">${I.x(26)}</button><div class="pf-cam-frame"></div><div class="pf-cam-hint">Point your camera at a QR code</div>`;
+      cam.innerHTML = `<video playsinline muted autoplay></video><button class="pf-cam-x" title="${state.lang === "th" ? "ปิด" : "Close"}">${I.x(26)}</button><div class="pf-cam-frame"></div><div class="pf-cam-hint">${state.lang === "th" ? "ชี้กล้องไปที่คิวอาร์โค้ด" : "Point your camera at a QR code"}</div>`;
       const v = cam.querySelector("video");
       v.srcObject = stream;
       ov.appendChild(cam);
@@ -14892,7 +14892,7 @@
     function landingHTML() {
       return `
     <div class="sr-chips">
-      <button class="sr-chip ico" data-sub="sfilter" title="Filters">${I.sliders(16)}</button>
+      <button class="sr-chip ico" data-sub="sfilter" title="${state.lang === "th" ? "ตัวกรอง" : "Filters"}">${I.sliders(16)}</button>
       ${SEARCH_POPULAR.slice(0, 10).map(c => `<button class="sr-chip sr-pick${c === "For you" ? " on" : ""}" data-q="${esc(c === "For you" ? "" : c)}">${c}</button>`).join("")}
     </div>
     <div class="xp-grid">
@@ -15182,8 +15182,8 @@
     <div class="sr-head">
       <button class="icon-btn sub-back">${I.back()}</button>
       <span class="sr-field sr-fake">${I.search(16)}<span class="sr-qv">${esc(S.q) || "Search"}</span></span>
-      <button class="icon-btn sr-wa${waSaved ? " on" : ""}" title="Create watch alert">${I.navBell(20)}</button>
-      <button class="icon-btn flt-open" data-sub="sfilter" title="Filters">${I.sliders(20)}</button>
+      <button class="icon-btn sr-wa${waSaved ? " on" : ""}" title="${state.lang === "th" ? "สร้างการแจ้งเตือน" : "Create watch alert"}">${I.navBell(20)}</button>
+      <button class="icon-btn flt-open" data-sub="sfilter" title="${state.lang === "th" ? "ตัวกรอง" : "Filters"}">${I.sliders(20)}</button>
     </div>`;
       const tabs = `
     <div class="sr-tabs">
@@ -18807,9 +18807,9 @@
     }
     function bdHeadHTML() {
       return `<div class="bd-head">
-      <button class="icon-btn" data-bdmenu title="Categories">${I.burger(22)}</button>
+      <button class="icon-btn" data-bdmenu title="${state.lang === "th" ? "หมวดหู่" : "Categories"}">${I.burger(22)}</button>
       <span class="bd-brand"><b>TUK DAENG</b> | Board</span>
-      <button class="icon-btn" data-bdsearch title="Search">${I.search(22)}</button>
+      <button class="icon-btn" data-bdsearch title="${state.lang === "th" ? "ค้นหา" : "Search"}">${I.search(22)}</button>
     </div>`;
     }
     function bdCardHTML(a) {
@@ -18932,12 +18932,12 @@
       return `
   <div class="bd-dscroll">
     <div class="bd-dnav">
-      <button class="bd-pill-btn sub-back" title="Back" aria-label="Back">${I.back(20)}</button>
+      <button class="bd-pill-btn sub-back" title="${state.lang === "th" ? "กลับ" : "Back"}" aria-label="${state.lang === "th" ? "กลับ" : "Back"}">${I.back(20)}</button>
       <div class="bd-pill-group">
-        <button class="bd-pill-act bd-pill-like${a.liked ? " on" : ""}" data-bdlike="${a.id}" title="Like" aria-label="Like">
+        <button class="bd-pill-act bd-pill-like${a.liked ? " on" : ""}" data-bdlike="${a.id}" title="${state.lang === "th" ? "ถูกใจ" : "Like"}" aria-label="${state.lang === "th" ? "ถูกใจ" : "Like"}">
           ${I.heart(17)}
         </button>
-        <button class="bd-pill-act bd-pill-sh" data-bdshare="${a.id}" title="Share" aria-label="Share">
+        <button class="bd-pill-act bd-pill-sh" data-bdshare="${a.id}" title="${state.lang === "th" ? "แชร์" : "Share"}" aria-label="${state.lang === "th" ? "แชร์" : "Share"}">
           ${I.share(17)}
         </button>
       </div>
@@ -19351,9 +19351,9 @@
       <button class="ch-blocked-unblock-btn" data-chact="unblock-room" data-user="${esc(t.user)}" data-tid="${t.id}">${isTh ? "เลิกบล็อก" : "Unblock"}</button>
     </div>` : `
     <div class="ch-comp">
-      <button class="icon-btn" data-chgo="attach" title="Attach">${I.plus(22)}</button>
+      <button class="icon-btn" data-chgo="attach" title="${state.lang === "th" ? "แนบไฟล์" : "Attach"}">${I.plus(22)}</button>
       <input class="ch-input" placeholder="Message..." value="${esc(t.draft || "")}">
-      <button class="ch-send"${(t.draft || "").trim() ? "" : " disabled"} title="Send">${I.send(16)}</button>
+      <button class="ch-send"${(t.draft || "").trim() ? "" : " disabled"} title="${state.lang === "th" ? "ส่ง" : "Send"}">${I.send(16)}</button>
     </div>`)}
   </div>`;
     }
@@ -19384,11 +19384,11 @@
       <div class="ch-attach-handle"></div>
       <div class="ch-attach-head">
         <span class="ch-attach-title">Photos & videos</span>
-        <button class="icon-btn ch-attach-close" title="Close">${I.x(18)}</button>
+        <button class="icon-btn ch-attach-close" title="${state.lang === "th" ? "ปิด" : "Close"}">${I.x(18)}</button>
       </div>
       <div class="ch-attach-grid">
         ${sampleMedia.map(m => `
-          <div class="ch-attach-item" data-chsendmedia="${esc(m.src)}" data-tid="${t.id}" data-isvideo="${m.isVideo ? 'true' : 'false'}" title="Send photo">
+          <div class="ch-attach-item" data-chsendmedia="${esc(m.src)}" data-tid="${t.id}" data-isvideo="${m.isVideo ? 'true' : 'false'}" title="${state.lang === "th" ? "ส่งรูป" : "Send photo"}">
             <img src="${m.src}" alt="Media thumbnail">
             ${m.isVideo ? `<div class="ch-media-play">${I.play(16)}</div>` : ""}
           </div>
@@ -19415,7 +19415,7 @@
       const html = `
   <div class="ch-media-viewer" id="chMediaViewer">
     <div class="ch-media-viewer-head"><span style="flex:1;text-align:center;font-size:13px;opacity:.7" class="ch-media-viewer-count"></span>
-      <button class="icon-btn ch-media-viewer-close" title="Close">${I.x(22)}</button>
+      <button class="icon-btn ch-media-viewer-close" title="${state.lang === "th" ? "ปิด" : "Close"}">${I.x(22)}</button>
     </div>
     <div class="ch-media-viewer-body"><img src="" alt="Chat media"></div>
   </div>`;

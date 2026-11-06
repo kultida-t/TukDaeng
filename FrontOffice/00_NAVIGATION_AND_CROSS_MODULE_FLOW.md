@@ -266,7 +266,7 @@ Gate triggers ที่เกี่ยวกับ navigation:
 - Chat entries ทุกจุด (Ask Seller, chat item, room actions)
 - Watch Alert create / manage (`.feed-wa`, `sr-wa`, `mf-btn`, walerts settings)
 - Settings entry (profile menu) และ surfaces ภายใต้
-- Profile actions (edit, follower/following rows, unblock)
+- Profile actions (edit, follower/following **row actions** — Follow/Remove/Chat ภายใน list, unblock) — ตัว follower/following list เปิดอ่านได้โดยไม่ gate (DEC-60)
 
 Gate actions:
 
