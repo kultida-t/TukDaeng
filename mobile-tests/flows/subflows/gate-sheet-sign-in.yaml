@@ -1,0 +1,39 @@
+# Subflow: from an OPEN member/gate sheet → "เข้าสู่ระบบ" → fill credentials → member feed
+# Requires env: TEST_EMAIL, TEST_PASSWORD (pass via `maestro test -e ...` or runFlow env)
+# TC refs: AUTH-044 (form anatomy), AUTH-045 (sign in success), SETUP-04
+# NOTE: auth rate limit = 50 req / 15 min / IP — do NOT loop this subflow.
+appId: com.univerza.tukdaeng
+---
+- assertVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- tapOn:
+    text: "^เข้าสู่ระบบ$|^Sign in$"
+
+# AUTH-044: sign-in form anatomy
+- assertVisible:
+    text: ".*อีเมล.*|.*[Ee]mail.*"
+- assertVisible:
+    text: ".*รหัสผ่าน.*|.*[Pp]assword.*"
+- assertVisible:
+    text: ".*ลืมรหัสผ่าน.*|.*Forgot password.*"
+
+# Fill credentials — tap the EditText via its hintText (labels are separate
+# static elements; tapping them doesn't focus the field)
+- tapOn:
+    text: "you@example.com"
+- inputText: ${TEST_EMAIL}
+- tapOn:
+    text: "รหัสผ่านของคุณ|Your password"
+- inputText: ${TEST_PASSWORD}
+- hideKeyboard
+
+# Submit — last match wins because page title also reads "เข้าสู่ระบบ"
+- tapOn:
+    text: "^เข้าสู่ระบบ$|^Sign in$"
+    index: -1
+
+# AUTH-045: member feed
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 30000

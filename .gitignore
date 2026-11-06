@@ -9,3 +9,7 @@ __MACOSX/
 test-results/
 playwright-report/
 .last-run.json
+
+# Mobile test secrets (never commit)
+mobile-tests/.env
+mobile-tests/.env.d/

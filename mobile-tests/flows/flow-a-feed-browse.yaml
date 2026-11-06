@@ -1,0 +1,68 @@
+# Flow A — Feed browse (reuses stored member session, noReset)
+# Read-only surface — safe on prod: no writes performed.
+# TC refs: SHELL-021/022 (bottom nav), SHELL-035/036/037/038 (feed tabs),
+#          FEED-020 (caption "more"), FEED-021 (Tap-for-details spec box),
+#          FEED-025 (View full detail → Post Detail + back to feed)
+appId: com.univerza.tukdaeng
+name: "Flow A — Feed browse"
+tags: [smoke, feed]
+---
+- launchApp
+
+# SHELL-035: 3 feed tabs visible
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 30000
+- assertVisible:
+    text: ".*กำลังติดตาม.*|.*Following.*"
+- assertVisible:
+    text: ".*รายการโปรด.*|.*Favorites.*"
+
+# SHELL-036/037: switch tabs
+- tapOn:
+    text: ".*กำลังติดตาม.*|.*Following.*"
+- tapOn:
+    text: ".*รายการโปรด.*|.*Favorites.*"
+- tapOn:
+    text: ".*ทั้งหมด.*|.*All Posts.*"
+
+# FEED-020: expand a caption ("เพิ่มเติม"/"more" is appended inside the caption
+# element — pattern requires a preceding space so it can't hit "ตัวเลือกเพิ่มเติม")
+- scrollUntilVisible:
+    element:
+      text: ".*\\sเพิ่มเติม$|.*\\s[Mm]ore$"
+    direction: DOWN
+- tapOn:
+    text: ".*\\sเพิ่มเติม$|.*\\s[Mm]ore$"
+
+# FEED-021: reveal spec box via "Tap for details" (unique desc; bottom-nav hit
+# area extends ~30px above its bounds — centerElement keeps the row mid-screen
+# so the tap can't land on the nav pill)
+- scrollUntilVisible:
+    element:
+      text: ".*แตะเพื่อดูรายละเอียด.*|.*Tap for details.*"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    text: ".*แตะเพื่อดูรายละเอียด.*|.*Tap for details.*"
+
+# FEED-025: open Post Detail (verified TH desc = "ดูรายละเอียดทั้งหมด")
+- scrollUntilVisible:
+    element:
+      text: ".*ดูรายละเอียดทั้งหมด.*|.*View full detail.*"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    text: ".*ดูรายละเอียดทั้งหมด.*|.*View full detail.*"
+
+# Post Detail opened — "รายละเอียด/Details" header is unique to this page
+- extendedWaitUntil:
+    visible:
+      text: "^รายละเอียด$|^Details$"
+    timeout: 15000
+
+# back → feed with tab row restored
+- pressKey: back
+- assertVisible:
+    text: ".*ทั้งหมด.*|.*All Posts.*"
