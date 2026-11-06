@@ -176,7 +176,7 @@ Route names ของ `.page-sub` stack (prototype `subHTML`) — ใช้เ�
 | Alerts | `alerts`, `walerts` |
 | Chat | `chat`, `chatitem:{id}`, `chatroom:{id}`, `chmenu:{id}`, `chmedia:{id}`, `chatcfg`; `chsettings:{id}` = dead route ไม่มี entry (prototype artifact) |
 | Saved / Library | `saved`, `savedcol`, `archive`, `wishlist`, `wishcol`, `interested`, `ni` |
-| Settings & Account | `settings`, `about_account`, `change_pwd`, `del_account`, `lang`, `theme`, `notif_settings`, `favorites`, `muted`, `blocked`, `prefs`, `sensitive`, `help`, `privacy`, `terms`, `about_app` |
+| Settings & Account | `settings`, `about_account`, `change_pwd`, `del_account`, `lang`, `theme`, `notif_settings`, `favorites`, `muted`, `blocked`, `prefs`, `help`, `privacy`, `terms`, `about_app` |
 | Report | `report`, `report:user`, `report:post`, `report:pick:{user}`, `report:posts:{user}`, `report:done:{user}` |
 | Profile | `profile:{user}`, `pfollow:{user}:{tab}`, `about:{user}`, `pedit`, `portfolio`, `pfasset:{id}`, `soldhist`, `sold:{id}`, `sell:{id}` |
 

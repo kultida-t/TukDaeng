@@ -13639,11 +13639,11 @@
       const isTh = state.lang === "th";
       const spec = k => (p.specs.find(s => s[0] === k) || [k, "N/A"])[1];
       const dots = p.photos.length > 1;
-      /* hide N/A parts in the title ("rolex N/A" → "rolex"); Ref falls back to "Ref. -" */
+      /* hide N/A parts in the title ("rolex N/A" → "rolex"); Ref falls back to "Ref. N/A" */
       const na = v => /^n\/?a$/i.test((v || "").trim());
       const nm = p.specs.length ? [spec("Brand"), spec("Model")].filter(v => !na(v)).join(" ") : "";
       const name = nm || p.caption.split("—")[0].trim();
-      const ref = p.specs.length ? `Ref. ${na(spec("Reference")) ? "-" : spec("Reference")}` : "";
+      const ref = p.specs.length ? `Ref. ${na(spec("Reference")) ? "N/A" : spec("Reference")}` : "";
       const cl = clipState(p);
       return `
     ${detailHeadHTML(p)}
@@ -13680,7 +13680,7 @@
         <h2 class="detail-name">${esc(name)}</h2>
         ${ref ? `<div class="detail-ref">${esc(ref)}</div>` : ""}
         <div class="detail-h">${isTh ? "คำอธิบาย" : "Descriptions"}</div>
-        <p class="detail-desc">${igCaptionHTML(p, p.desc || "-")}</p>
+        <p class="detail-desc">${igCaptionHTML(p, p.desc || "N/A")}</p>
         ${detailSpecsHTML(p)}
       </div>
     </div>`;
@@ -14685,7 +14685,6 @@
       return false;
     };
     state.snooze = false; /* real value lands in applySessionData — CP_ME isn't initialized yet here */
-    state.sensitive = "standard"; /* visual parity only — no post carries a sensitive flag to filter yet */
 
     let scrToastTimer;
     function scrToast(scr, msg, thumb = "") {
@@ -18210,21 +18209,11 @@
       if (name === "prefs") {
         const isTh = state.lang === "th";
         return head(isTh ? "การตั้งค่าเนื้อหา" : "Content preferences") + `<div class="sub-scroll">
-    ${row(isTh ? "เนื้อหาที่ละเอียดอ่อน" : "Sensitive content", `data-sub="sensitive"`)}
     ${row(isTh ? "สนใจ" : "Interested", `data-sub="interested"`)}
     ${row(isTh ? "ไม่สนใจ" : "Not interested", `data-sub="ni"`)}
     <button class="sub-row sub-row-lg" data-tgl="snooze"><span class="lg-b"><span class="lg-t">${isTh ? "หยุดพักโพสต์แนะนำในฟีดชั่วคราว" : "Snooze suggested posts in feed"}</span><span class="lg-d">${isTh ? "ซ่อนโพสต์จากบัญชีที่คุณไม่ได้ติดตามเป็นเวลา 30 วัน" : "Hide posts from accounts you don't follow for 30 days."}</span></span><span class="tg-sw${state.snooze ? " on" : ""}"></span></button>
     ${row(isTh ? "รีเซ็ตเนื้อหาที่แนะนำ" : "Reset suggested content", `data-dlg="reset"`)}
   </div>`;
-      }
-      if (name === "sensitive") {
-        const isTh = state.lang === "th";
-        const opt = (v, t, d) => `<button class="sub-row sub-row-lg" data-sens="${v}"><span class="lg-b"><span class="lg-t">${t}</span><span class="lg-d">${d}</span></span><span class="sub-chev sens-check">${state.sensitive === v ? I.check(17) : ""}</span></button>`;
-        return head(isTh ? "เนื้อหาที่ละเอียดอ่อน" : "Sensitive content") + `<div class="sub-scroll">
-      <div class="sub-sec">${isTh ? "เลือกระดับของเนื้อหาที่ละเอียดอ่อนที่คุณจะเห็นในฟีด" : "Choose how much sensitive content you see in feed."}</div>
-      ${opt("less", isTh ? "น้อยลง" : "Less", isTh ? "คุณจะเห็นเนื้อหาที่ละเอียดอ่อนน้อยลง" : "You'll see less sensitive content.")}
-      ${opt("standard", isTh ? "มาตรฐาน" : "Standard", isTh ? "คุณจะเห็นเนื้อหาที่ละเอียดอ่อนบางส่วน" : "You'll see some sensitive content.")}
-    </div>`;
       }
       /* SETTINGS — Privacy & cookies: consent toggles bound to the same record the
          onboarding Cookie settings page writes (fo_consent via obLog) — spec 13 §9
@@ -19283,7 +19272,7 @@
          (snapshot-first: m.snap from send time; findPost only backfills legacy msgs) */
       const msgPostCard = m => {
         const sp = m.snap || chPostSnap(findPost(m.pid));
-        return sp ? `<button class="ch-post-card" data-chgo="post" data-pid="${esc(sp.pid)}" title="View post">
+        return sp ? `<button class="ch-post-card" data-chgo="post" data-pid="${esc(sp.pid)}" title="${state.lang === "th" ? "ดูโพสต์" : "View post"}">
       <img class="ch-post-card-img" src="${sp.photo}" alt="">
       <div class="ch-post-card-top-scrim">
         <img class="ch-post-card-av" src="${sp.avatar}" alt="">
@@ -19549,7 +19538,7 @@
     function chatMediaGalleryHTML(tid, scr) {
       const isTh = state.lang === "th";
       const t = chGet(tid);
-      const back = `<button class="icon-btn sub-back" data-chgalclose="true" title="Close">${I.x(20)}</button>`;
+      const back = `<button class="icon-btn sub-back" data-chgalclose="true" title="${isTh ? "ปิด" : "Close"}">${I.x(20)}</button>`;
       if (!t) return `<div class="ch-gal-head">${back}<span class="ch-gal-title">Photos & videos</span></div>` + chEmptyHTML("Chat not found", "This conversation is no longer available.");
 
       if (!t.media) {
@@ -19585,7 +19574,7 @@
       } else {
         headerHTML = `
     <div class="ch-gal-head">
-      <button class="icon-btn sub-back" data-chgalclose="true" title="Close">${I.x(20)}</button>
+      <button class="icon-btn sub-back" data-chgalclose="true" title="${isTh ? "ปิด" : "Close"}">${I.x(20)}</button>
       <span class="ch-gal-title">${esc(t.user)}</span>
       ${hasMedia ? `<button class="ch-gal-top-btn" data-chgal="select">Select</button>` : `<div style="width:48px;"></div>`}
     </div>`;
@@ -19617,8 +19606,8 @@
 
       const botBarHTML = isSel ? `
   <div class="ch-gal-bot-bar">
-    <button class="ch-gal-bot-btn" data-chgalact="trash" data-tid="${t.id}" title="Delete"${selCount === 0 ? " disabled" : ""}>${I.trash(22)}</button>
-    <button class="ch-gal-bot-btn" data-chgalact="download" title="Download"${selCount === 0 ? " disabled" : ""}>
+    <button class="ch-gal-bot-btn" data-chgalact="trash" data-tid="${t.id}" title="${isTh ? "ลบ" : "Delete"}"${selCount === 0 ? " disabled" : ""}>${I.trash(22)}</button>
+    <button class="ch-gal-bot-btn" data-chgalact="download" title="${isTh ? "ดาวน์โหลด" : "Download"}"${selCount === 0 ? " disabled" : ""}>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
     </button>
   </div>` : "";
@@ -22150,8 +22139,6 @@
         notifTgl.querySelector(".tg-sw").classList.toggle("on", state.notif[k]);
         return;
       }
-      const sens = e.target.closest("[data-sens]");
-      if (sens) { state.sensitive = sens.dataset.sens; renderSub(sens.closest(".screen")); return; }
       /* SETTINGS — consent toggle: write the consent record immediately (obLog →
          fo_consent) so Privacy & cookies and onboarding Cookie settings share state */
       const cookieTgl = e.target.closest("[data-cookie-tgl]");

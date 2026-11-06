@@ -1432,8 +1432,8 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 ### QA-SETTING-008
 **Objective:** Verify Content preferences.
 **Maps to:** AC-SETTING-018, 11 §14
-**Steps:** Open Content preferences; toggle Sensitive content, Snooze suggested; open Not interested + Interested lists; Reset suggested content.
-**Expected result:** `Sensitive content` = `Less`/`Standard` (default, applies instantly); `Snooze suggested posts` toggle affects All-tab suggested filtering; `Reset suggested content?` confirm clears every `ni`; Not interested rows `Restore` per item; Interested rows remove (unlike); no `ni`-affected post returns to feed until restored.
+**Steps:** Open Content preferences; toggle Snooze suggested; open Not interested + Interested lists; Reset suggested content.
+**Expected result:** `Snooze suggested posts` toggle affects All-tab suggested filtering; `Reset suggested content?` confirm clears every `ni`; Not interested rows `Restore` per item; Interested rows remove (unlike); no `ni`-affected post returns to feed until restored.
 
 ### QA-SETTING-009
 **Objective:** Verify Change Password (S-28).

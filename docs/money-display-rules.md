@@ -219,4 +219,4 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 
 ## Open question (FSP-040 flag — ตัดสินแล้ว)
 
-- ~~§6/§10: การแสดงค่าว่างของเงินใช้ `—` บ้าง `N/A` บ้างไม่ตรงกันระหว่าง surfaces~~ — **ตัดสินแล้วตาม ruling พี่คิง (NB-030, ประชุม 09/10/2026 → DEC-62):** canonical = `N/A` literal ทั้งสองภาษา (ไม่แปลไทย) ทุก surface โดยฟิลด์คงตำแหน่งเดิม ไม่ซ่อนบรรทัด — implement แล้วใน `Prototypes/fo-flow/index.html`; ขีด `-` เดี่ยวที่ใช้เป็น placeholder (`Ref. -`, desc ว่าง, blocked stats) ไม่อยู่ใน ruling นี้
+- ~~§6/§10: การแสดงค่าว่างของเงินใช้ `—` บ้าง `N/A` บ้างไม่ตรงกันระหว่าง surfaces~~ — **ตัดสินแล้วตาม ruling พี่คิง (NB-030, ประชุม 09/10/2026 → DEC-62):** canonical = `N/A` literal ทั้งสองภาษา (ไม่แปลไทย) ทุก surface โดยฟิลด์คงตำแหน่งเดิม ไม่ซ่อนบรรทัด — implement แล้วใน `Prototypes/fo-flow/index.html`; ขีด `-` บนฟิลด์ว่าง unify เข้า ruling แล้ว (`Ref. -`, desc ว่าง → `N/A` — FSP-043); `-` เหลือเฉพาะข้อมูลที่ถูกปิดบัง (masked/hidden — เช่น blocked profile stats) ซึ่งคนละ semantics กับค่าว่าง

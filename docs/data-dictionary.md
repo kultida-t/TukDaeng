@@ -324,8 +324,7 @@ Source: `02 §9`, `11 §14`, `13 §9`
 |---|---|---|---|
 | `ni` (not interested) | `p.ni` per post | card → ni-card (`Undo`/`Mute`/`Unfollow`/`Manage prefs`/`uncomfortable`); หลุด feed หลัง re-render; restore ที่ Settings `ni` หรือ `Reset suggested content` (ล้างทั้งหมด + ปิด snooze) | 02 §8/§9, 13 §9 |
 | Snooze suggested | settings toggle | ON → feed `All` เหลือเฉพาะ following (concept: ซ่อน suggested 30 วัน) | 02 §9, 13 §9 |
-| Sensitive content | enum `less`/`standard` | default `standard`; auto-save | 13 §9 |
-| `interested` list | `p.liked` filter | liked posts — Remove = unlike | 13 §9 |
+| `interested` list | `p.liked` filter | liked posts — Remove = unlike | 13 §9 || `interested` list | `p.liked` filter | liked posts — Remove = unlike | 13 §9 |
 
 ### 3.15 E-15 Report
 
@@ -489,7 +488,6 @@ Source: `13 §9` (canonical)
 | `language` | enum | `en`/`th` — persist device (`fo_lang`, default `en`); display-layer swap ไม่แปล user text | 13 §9 |
 | `theme` | enum | `light`/`dark` — persist device (`fo_theme`, default `dark`) | 13 §9 |
 | `notif.likes` / `notif.comments` / `notif.follows` / `notif.walerts` | bool | default ON; auto-save; map 1:1 alert types (E-17) | 13 §9, 09 §9 |
-| `prefs.sensitive` | enum | `less`/`standard` (default `standard`) | 13 §9 |
 | `prefs.snooze` | bool | snooze suggested posts (ดู E-14) | 13 §9, 02 §9 |
 | `favorites` / `muted` / `blocked` lists | array<ref→User> | What-you-see pages + counts; semantics E-12/E-13 | 13 §9 |
 | `interested` / `ni` lists | array<ref→Post> | liked posts / not-interested posts + Restore | 13 §9 |

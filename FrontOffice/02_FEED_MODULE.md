@@ -97,7 +97,7 @@ Source of truth: `Prototypes/fo-flow/index.html` (read-only — ห้ามแ�
 - Chat room + quick-ask flow internals — [07_CHAT_MODULE.md](07_CHAT_MODULE.md) (FSP-020)
 - Sale Record form + Sold history + portfolio drawer record/tab internals — [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) (FSP-024) / [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md) (FSP-017); composer ระบุเฉพาะ interface ที่สร้าง/แก้/ตัด link drawer record (`cfToPortfolio`, `assetId`, `pfkind`)
 - Watch Alert sheet — [10_WATCH_ALERT_MODULE.md](10_WATCH_ALERT_MODULE.md) (FSP-021)
-- Content preferences pages internals (`prefs`/`sensitive`/`interested`/`ni`/`favorites`/`muted`/`blocked`) — [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (FSP-014 — feed spec ระบุแค่ผลกระทบต่อ feed)
+- Content preferences pages internals (`prefs`/`interested`/`ni`/`favorites`/`muted`/`blocked`) — [13_SETTINGS_MODULE.md](13_SETTINGS_MODULE.md) (FSP-014 — feed spec ระบุแค่ผลกระทบต่อ feed)
 - end-of-list marker — ไม่มีใน V1 (infinite scroll และ pull-to-refresh เป็น IG behavior ตามกติกาข้างบน)
 - Full Screen Image Viewer — ไม่มีใน V1 (feed media tap = carousel เท่านั้น, AC-NAV-003)
 - Real-time feed refresh จากอุปกรณ์/actor อื่น
