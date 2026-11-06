@@ -252,8 +252,8 @@ Own profile → Sold/all tab tile → viewer (pfp mode) → `Tap for details` �
 | 3 | `post-actions` | `like-btn` (heart — **ไม่มีตัวเลข**), `comment-btn` + count (ซ่อนทั้งปุ่มเมื่อ `noComments`), `views-stat` eye + count (ซ่อนเมื่อ `hideCounts` หรือ `views` ว่าง/`"0"`), `share-btn`; `act-right`: `mf-btn` (bell — `Follow this model`/`Following this model`) + `wl-btn` (gift — `Wish List`) |
 | 4 | `inline-tag` | ตาม `pfkind` (DEC-21): `sale` → `ลงขาย`/`FOR SALE`; `show` → `โชว์`/`SHOWCASE` (muted); `sold` → `ขายแล้ว`/`SOLD` (muted); `hide` → `ซ่อน`/`HIDDEN` (muted); โพสต์ธรรมดา (`post`) ไม่มี tag |
 | 5 | `detail-name` | `Brand + Model` จาก flat `specs` (ตัดค่า `n/a`/`N/A` ทิ้ง); `specs` ว่าง → fallback = caption ส่วนแรกก่อน `—` (trim) |
-| 6 | `detail-ref` | `Ref. {value}`; `n/a` → `Ref. -`; **ไม่ render เลย** เมื่อ `specs` ว่าง |
-| 7 | `Descriptions`/`คำอธิบาย` + desc | `p.desc` (field ของตัวเอง — **ไม่ copy จาก caption**); ว่าง → `-`; `#tag` ภายใน desc = `.igd-tag` กด → search (เหมือน caption hashtags) |
+| 6 | `detail-ref` | `Ref. {value}`; `n/a` → `Ref. N/A`; **ไม่ render เลย** เมื่อ `specs` ว่าง |
+| 7 | `Descriptions`/`คำอธิบาย` + desc | `p.desc` (field ของตัวเอง — **ไม่ copy จาก caption**); ว่าง → `N/A`; `#tag` ภายใน desc = `.igd-tag` กด → search (เหมือน caption hashtags) |
 | 8 | Spec groups | `detailSpecsHTML` render `specGroups` ทุกกลุ่มเป็น `spec-row` label–value — **รวม `Price & Data Source`** (ต่างจาก `detailsHTML` ของ feed card/feed-viewer expander ที่ filter กลุ่มนี้ออก) |
 
 สิ่งที่ **ไม่มี** บน dl1 (ขัด spec เดิม — เป็น deviations ด้านล่าง): seller/owner block, Follow button, Ask Seller pill, save/bookmark button, liked-by row, caption, comment list inline, timestamp
@@ -487,8 +487,8 @@ Contract set (prototype ไม่มี tracking layer — เหมือน ba
 | AC-DETAIL-008 | Action row ต้องมี like / comment(+count) / views / share และ `act-right` = `mf-btn` + `wl-btn` — ต้องไม่มี save-btn, ask-pill, liked-by row หรือ seller block |
 | AC-DETAIL-009 | `comment-btn` ต้องซ่อนทั้งปุ่มเมื่อ `noComments`; `views-stat` ต้องซ่อนเมื่อ `hideCounts` หรือ `views` ว่าง/`"0"` |
 | AC-DETAIL-010 | Tag ตาม `pfkind` (DEC-21): sale → `FOR SALE`, show → `SHOWCASE`, sold → `SOLD`, hide → `HIDDEN`, โพสต์ธรรมดาไม่มี tag |
-| AC-DETAIL-011 | `detail-name` = Brand+Model จาก specs (ตัด `n/a`), fallback caption ส่วนแรกก่อน `—`; `detail-ref` = `Ref. {v}` (`Ref. -` เมื่อ n/a) และไม่ render เมื่อไม่มี specs |
-| AC-DETAIL-012 | `Descriptions` ต้อง render `p.desc` (ไม่ copy caption); ว่าง → `-`; `#tag` ใน desc ต้องเปิด search results ของ tag นั้น |
+| AC-DETAIL-011 | `detail-name` = Brand+Model จาก specs (ตัด `n/a`), fallback caption ส่วนแรกก่อน `—`; `detail-ref` = `Ref. {v}` (`Ref. N/A` เมื่อ n/a) และไม่ render เมื่อไม่มี specs |
+| AC-DETAIL-012 | `Descriptions` ต้อง render `p.desc` (ไม่ copy caption); ว่าง → `N/A`; `#tag` ใน desc ต้องเปิด search results ของ tag นั้น |
 | AC-DETAIL-013 | Spec groups ต้อง render ทุกกลุ่มใน `specGroups` **รวม `Price & Data Source`** (`Asking Price`/`Estimated Market Price`/`Last Price Update`/`Data Source`) — ต่างจาก feed expander ที่ filter กลุ่มนี้ออก |
 
 ## Actions

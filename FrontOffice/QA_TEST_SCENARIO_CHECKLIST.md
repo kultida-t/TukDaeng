@@ -808,7 +808,7 @@ These legacy behaviors were deleted or renamed in FO-PRD-v1.9. If any of them ap
 **Steps:** Inspect a full-spec sale post, a no-spec showcase post, a clip post, a `noComments`/`hideCounts` post.
 **Expected result:**
 - Sticky head: back `‹` + `รายละเอียด`/`Detail` + `pm-btn`; hero: first photo full-bleed + `1/N` counter + dots + clip badge/progress; action row: like (no number), comment + count (fully hidden when `noComments`), views eye + count, share; `act-right`: `mf-btn` + `wl-btn`.
-- `ลงขาย`/`FOR SALE` when priced, `โชว์`/`SHOWCASE` when not; name = Brand + Model from specs (`n/a` dropped; fallback = caption head); `Ref. {value}`/`Ref. -` (absent entirely when no specs); `Descriptions` renders `p.desc` (`-` when empty; `#tag` → search); all `specGroups` render **including `Price & Data Source`** (`Asking Price`/`Estimated Market Price`/`Last Price Update`/`Data Source` — public market data).
+- `ลงขาย`/`FOR SALE` when priced, `โชว์`/`SHOWCASE` when not; name = Brand + Model from specs (`n/a` dropped; fallback = caption head); `Ref. {value}`/`Ref. N/A` (absent entirely when no specs); `Descriptions` renders `p.desc` (`N/A` when empty; `#tag` → search); all `specGroups` render **including `Price & Data Source`** (`Asking Price`/`Estimated Market Price`/`Last Price Update`/`Data Source` — public market data).
 
 ### QA-DETAIL-004
 **Objective:** Verify absent elements on detail (negative guard).

@@ -193,7 +193,7 @@ Source: `02 §9 Post Model` (canonical), `04 §9` (pfkind), `05 §9` (detail fie
 | `photos[]` | array<image> | 1–10 media slides รวม clips (`CF_MAX_MEDIA`); carousel ไม่วน | 02 §9/§11 |
 | `clips[]` | array<int?> | duration ต่อ slide (`null` = photo); `clip` = โพสต์ clip เดียวล้วน — clip upload ≤100 MB, 3–60 วินาที, MP4/MOV | 02 §9 |
 | `caption` / `captionFull` | string | short + full; hashtags `#tag` render กดได้ → search; ไม่ required | 02 §9 |
-| `desc` | string | field Description แยกจาก caption — detail `Descriptions`; ว่าง → `-` | 05 §9 |
+| `desc` | string | field Description แยกจาก caption — detail `Descriptions`; ว่าง → `N/A` | 05 §9 |
 | `price` | money? | `Add price` pane — ว่าง = showcase; auto `Price & Data Source` band | 02 §9 |
 | `specGroups[]` | array<SpecGroup> | ดู E-09; ค่าว่าง render `N/A` | 02 §9, 04 §9 |
 | `chips[]` | array<enum> | [Condition, Box & papers] — fixed options | 02 §9, 04 §9 |
