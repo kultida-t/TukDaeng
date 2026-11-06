@@ -24062,7 +24062,7 @@
 
     /* ================= FIRST-RUN ONBOARDING =================
        Splash -> Language -> Consent (auto-popup sheet) -> Intro -> Gateway -> Sign up -> Email OTP -> Profile
-       -> Account created -> Sign in (Forgot password) -> Notification pre-permission -> Home (coach mark).
+       -> Home (coach mark). Sign in (Forgot password) lives on the member gateway.
        Re-consent: the "v2" dev button simulates a new Terms/Privacy version popping up over the feed. */
     const OB = {
       on: !localStorage.getItem("fo_onboarded"), step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", gate: false,
@@ -24135,10 +24135,10 @@
     }
     function obEnterAfterProfile() {
       obSaveAccount({ email: (OB.account && OB.account.email) || OB.f.email || "", pwH: OB.account && OB.account.pw ? obHash(OB.account.pw) : "", pw: undefined, user: OB.f.user, name: OB.f.name.trim(), provider: OB.provider || "email", photo: OB.f.photo || "" }); /* AUTH-003 — profile step completes the persisted account */
-      if (OB.provider && OB.provider !== "email") { /* social sign-up has no password — enter the app right after picking a username */
-        localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user, name: OB.f.name.trim(), photo: OB.f.photo || "" }));
-        setSession("new"); obFinish("", !OB.gate); /* AUTH-003 — enter silently like a real app, no welcome toast */
-      } else obGo("created");
+      /* every sign-up enters the app right after profile setup (IG-style) — email and
+         social share one path now, no Account created interstitial */
+      localStorage.setItem("fo_newuser", JSON.stringify({ user: OB.f.user, name: OB.f.name.trim(), photo: OB.f.photo || "" }));
+      setSession("new"); obFinish("", !OB.gate); /* AUTH-003 — enter silently like a real app, no welcome toast */
     }
 
     const obSvg = body => `<svg width="168" height="156" viewBox="0 0 160 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
@@ -24240,8 +24240,6 @@
           <h1>${obT("Set up your profile", "ตั้งค่าโปรไฟล์")}</h1><p class="ob-sub">${obT("Pick your username — a photo can be added later.", "ตั้งชื่อผู้ใช้ของคุณ — รูปใส่ภายหลังได้")}</p>
           <div class="ob-avatar"><img src="${obEsc(OB.f.photo || "./assets/user-avatars/default-avatar.jpg")}" alt=""></div><button class="ob-link" style="align-self:center;margin:-8px 0 16px" data-ob="photo">${obT("Add photo", "เพิ่มรูปภาพ")}</button>
           ${obField("user", obT("Username", "ชื่อผู้ใช้"), "text", "username")}<div class="ob-grow"></div><button class="ob-btn pri" data-ob="profile">${obT("Continue", "ต่อไป")}</button></div>`;
-        case "created": return `<div class="ob-page ob-center"><div class="ob-grow"></div><div class="ob-ico ok">${I.check(40)}</div><h1>${obT("Account created", "สร้างบัญชีสำเร็จ")}</h1>
-          <p class="ob-sub">${obT("Welcome, ", "ยินดีต้อนรับ ")}${obEsc(f.name || f.user || "")}. ${obT("Sign in to start exploring.", "เข้าสู่ระบบเพื่อเริ่มใช้งาน")}</p><div class="ob-grow"></div><button class="ob-btn pri" data-ob="go:signin">${obT("Sign in", "เข้าสู่ระบบ")}</button></div>`;
         case "signin": return `<div class="ob-page">${obBack("member")}<h1>${obT("Sign in", "เข้าสู่ระบบ")}</h1><p class="ob-sub">${obT("Welcome back to TukDaeng.", "ยินดีต้อนรับกลับสู่ตึกแดง")}</p>
           ${obLockLeft() ? `<div class="ob-banner">${obLockMsg()}</div>` : E.form ? `<div class="ob-banner">${E.form}</div>` : ""}${obField("email", obT("Email", "อีเมล"), "email", "you@example.com")}${obField("pw", obT("Password", "รหัสผ่าน"), "password", obT("Your password", "รหัสผ่านของคุณ"))}
           <div style="text-align:right;margin-top:-6px"><button class="ob-link" data-ob="go:forgot">${obT("Forgot password?", "ลืมรหัสผ่าน?")}</button></div>
@@ -24307,14 +24305,11 @@
     function obGo(s) {
       OB.step = s; OB.loading = false; OB.errs = {}; OB.sent = false; OB.declined = false; OB.legal = null; OB.os = false;
       if (s === "profile" && !OB.f.user && OB.f.email) OB.f.user = obSuggestUser();
-      if (s === "signin") {
-        if (obLast === "created") OB.f.pw = ""; /* post-signup prefill is email only — the password is never carried over */
-        else if (!OB.f.email && !OB.f.pw) { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; }
-      }
+      if (s === "signin" && !OB.f.email && !OB.f.pw) { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; }
       /* a fresh sign-up always starts clean — fields typed on the sign-in page (incl.
          the demo prefill) must not leak into a new-account form; values are kept only
-         when stepping back inside the same signup flow (otp/profile/created → signup) */
-      if (s === "signup" && !["signup", "otp", "profile", "created"].includes(obLast))
+         when stepping back inside the same signup flow (otp/profile → signup) */
+      if (s === "signup" && !["signup", "otp", "profile"].includes(obLast))
         OB.f = { name: "", email: "", pw: "", user: "", photo: OB.f.photo || "" };
       if (s === "member" && !OB.gate && localStorage.getItem("fo_member_hide") === "1") return obFinish("");
       const r = obRoot(), clear = OB.recon || s === "member";
@@ -24369,6 +24364,7 @@
     }
     function obFinish(msg, tour = true) {
       localStorage.setItem("fo_onboarded", "1"); OB.on = false; OB.os = false; OB.gate = false; obMount();
+      OB.f.pw = ""; /* drop the password once the user is in — it must never prefill anywhere */
       /* coach marks are once per session type — a member who already saw the guest tour
          still gets the member tour on their first signed-in feed (and vice versa) */
       const tKey = isGuest() ? "fo_toured_guest" : "fo_toured";

@@ -224,16 +224,19 @@ function check(name, ok, extra = "") {
       r.e1.email === "Enter your email." && r.e1.pw === "Enter your password." && r.e2 === "Enter a valid email address.", JSON.stringify(r));
   }
 
-  // ===== T10: A14 — created → signin: email ค้าง, password ไม่ prefill =====
+  // ===== T10: A14+flow — email signup เข้าแอปทันที (IG-style) ไม่มี created step =====
   {
-    const r = await page.evaluate(`(() => {
-      OB.f = { name: "N", email: "new@x.com", pw: "secret123", user: "u", photo: "" };
-      OB.step = "created"; obDraw(); /* obLast = created */
-      obGo("signin");
-      return { email: OB.f.email, pw: OB.f.pw, input: document.querySelector('.ob [data-f="pw"]').value };
+    const r = await page.evaluate(`(async () => {
+      OB.on = true; obMount();
+      OB.provider = "email"; OB.account = { email: "new2@x.com", pw: "pass1234" };
+      OB.f = { name: "N2", email: "new2@x.com", pw: "pass1234", user: "newuser2", photo: "" };
+      obEnterAfterProfile();
+      await new Promise(r => setTimeout(r, 30));
+      const nu = JSON.parse(localStorage.getItem("fo_newuser") || "null");
+      return { session: state.session, obOn: OB.on, nu: nu && nu.user, pwCleared: OB.f.pw === "" };
     })()`);
-    check("T10 created→signin: email คงอยู่, pw ว่าง (form ก็ว่าง)",
-      r.email === "new@x.com" && r.pw === "" && r.input === "", JSON.stringify(r));
+    check("T10 email signup → session new ทันที + pw เคลียร์ + fo_newuser เขียน",
+      r.session === "new" && r.obOn === false && r.nu === "newuser2" && r.pwCleared, JSON.stringify(r));
   }
 
   // ===== T11: A15 — email uniqueness vs fo_account + demo =====
