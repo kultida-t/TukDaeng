@@ -12964,6 +12964,7 @@
     #obReplay { bottom: 72px; }
     #obRecon { bottom: 126px; }
     #obReset { bottom: 180px; }
+    #obMsg { bottom: 234px; }
     /* social sign-in buttons (Google / Apple) */
     .ob-or { display: flex; align-items: center; gap: 12px; margin: 16px 0 14px; color: rgba(255, 255, 255, .45); font-size: 12px; font-weight: 500; }
     .ob-or::before, .ob-or::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, .14); }
@@ -12987,6 +12988,7 @@
   <button class="ob-dev" id="obReplay" title="Replay first-run onboarding">1st</button>
   <button class="ob-dev" id="obRecon" title="Simulate new Terms/Privacy version (re-consent)">v2</button>
   <button class="ob-dev" id="obReset" title="Reset all demo data back to the initial mock state">rst</button>
+  <button class="ob-dev" id="obMsg" title="Simulate an incoming listing ask (tests the 'Only people I follow' chat toggle)">msg</button>
 
   <script>
     /* qrcode-generator 1.4.4 (MIT, Kazuhiko Arase) — used by PROFILE-010 profile QR */
@@ -14671,8 +14673,14 @@
         scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
     }
 
-    /* ===== FEED-010 — feedback-card actions: mute / settings+content prefs / uncomfortable (memory only) ===== */
-    state.snooze = false;
+    /* ===== FEED-010 — feedback-card actions: mute / settings+content prefs / uncomfortable ===== */
+    /* snooze persists with a 30-day expiry — the Settings copy promises "for 30 days" */
+    state.snooze = (() => {
+      const at = +localStorage.getItem("fo_snooze");
+      if (at && Date.now() - at < 30 * 864e5) return true;
+      if (at) localStorage.removeItem("fo_snooze");
+      return false;
+    })();
     state.sensitive = "standard";
 
     let scrToastTimer;
@@ -15079,7 +15087,7 @@
       ${p.hideCounts || !p.views || p.views === "0" ? "" : `<span class="views-stat">${I.eyeFill(20)}<span>${p.views}</span></span>`}
       <button class="act share-btn">${I.share(22)}</button>
       <span class="act-right">
-        ${p.type === "sale" && !isOwnPost(p) ? askBtnHTML(false) : ""}
+        ${!isOwnPost(p) ? askBtnHTML(false) : ""}
         <button class="save-btn${p.saved ? " saved" : ""}">${I.bookmark(23)}</button>
       </span>
     </div>
@@ -15300,9 +15308,9 @@
     function logoutDlgHTML() {
       const isTh = state.lang === "th";
       return `
-    <div class="dlg-q">${isTh ? `ออกจากระบบ @${CP_ME.name} หรือไม่?` : `Log out of @${CP_ME.name}?`}</div>
+    <div class="dlg-q">${isTh ? `ออกจากระบบ @${CP_ME.name} หรือไม่?` : `Sign out of @${CP_ME.name}?`}</div>
     <div class="dlg-desc">${isTh ? "คุณจะต้องเข้าสู่ระบบอีกครั้งเพื่อเข้าถึงบัญชีของคุณ" : "You will need to sign in again to access your account."}</div>
-    <button class="dlg-btn danger dlg-logout-go">${isTh ? "ออกจากระบบ" : "Log out"}</button>
+    <button class="dlg-btn danger dlg-logout-go">${isTh ? "ออกจากระบบ" : "Sign out"}</button>
     <button class="dlg-btn dlg-cancel">${isTh ? "ยกเลิก" : "Cancel"}</button>`;
     }
     function delPasswordConfirmDlgHTML() {
@@ -15331,9 +15339,9 @@
     <div class="dlg-desc" style="text-align:center;">
       ${isTh
           ? `บัญชี @${CP_ME.name} ถูกปิดการใช้งานเรียบร้อยแล้ว และมีกำหนดลบถาวรในวันที่ <b>${finalDate}</b> (30 วัน)<br><br>หากคุณเปลี่ยนใจ สามารถเข้าสู่ระบบก่อนวันที่ดังกล่าวเพื่อยกเลิกคำขอและกู้คืนบัญชีได้ตลอดเวลา`
-          : `Your account @${CP_ME.name} has been deactivated and is scheduled for permanent deletion on <b>${finalDate}</b> (30 days).<br><br>If you change your mind, simply log back in before this date to cancel deletion and restore your account.`}
+          : `Your account @${CP_ME.name} has been deactivated and is scheduled for permanent deletion on <b>${finalDate}</b> (30 days).<br><br>If you change your mind, simply sign back in before this date to cancel deletion and restore your account.`}
     </div>
-    <button class="dlg-btn dlg-delaccount-done" style="font-weight:600;color:var(--text);">${isTh ? "ออกจากระบบ" : "Log out"}</button>`;
+    <button class="dlg-btn dlg-delaccount-done" style="font-weight:600;color:var(--text);">${isTh ? "ออกจากระบบ" : "Sign out"}</button>`;
     }
     /* AUTH-003 — mask the signed-in account's own email instead of the fixed demo one */
     const obMaskedEmail = () => {
@@ -17912,7 +17920,7 @@
       ${row(isTh ? "ข้อกำหนดการใช้งาน" : "Terms of Use", `data-sub="terms"`, "", I.fileText(21))}
       ${row(isTh ? "เกี่ยวกับตึกแดง" : "About", `data-sub="about_app"`, "", I.infoCir(21))}
       <div class="sub-sec sec-div">${isTh ? "การเข้าสู่ระบบ" : "Login"}</div>
-      <button class="sub-row sub-row-logout" data-act="logout"><span>${isTh ? "ออกจากระบบ" : "Log out"}</span></button>
+      <button class="sub-row sub-row-logout" data-act="logout"><span>${isTh ? "ออกจากระบบ" : "Sign out"}</span></button>
     </div>`;
       }
       if (name === "about_account") {
@@ -17994,7 +18002,7 @@
               <div class="del-term-ic cal">${I.cal(22)}</div>
               <div class="del-term-body">
                 <div class="del-term-title">${isTh ? "ระยะเวลาผ่อนผัน 30 วัน (30-Day Grace Period)" : "30-Day Grace Period"}</div>
-                <div class="del-term-desc">${isTh ? "บัญชีของคุณจะถูกปิดการใช้งาน (Deactivated) ทันที โดยโปรไฟล์ โพสต์นาฬิกา และกิจกรรมทั้งหมดจะถูกซ่อนจากสาธารณะ หากเปลี่ยนใจ คุณสามารถเข้าสู่ระบบเพื่อกู้คืนบัญชีได้ตลอดเวลาภายใน 30 วัน" : "Your account will be deactivated immediately, and your profile and listings will be hidden. If you change your mind, you can log back in anytime within 30 days to cancel deletion."}</div>
+                <div class="del-term-desc">${isTh ? "บัญชีของคุณจะถูกปิดการใช้งาน (Deactivated) ทันที โดยโปรไฟล์ โพสต์นาฬิกา และกิจกรรมทั้งหมดจะถูกซ่อนจากสาธารณะ หากเปลี่ยนใจ คุณสามารถเข้าสู่ระบบเพื่อกู้คืนบัญชีได้ตลอดเวลาภายใน 30 วัน" : "Your account will be deactivated immediately, and your profile and listings will be hidden. If you change your mind, you can sign back in anytime within 30 days to cancel deletion."}</div>
               </div>
             </div>
 
@@ -18158,7 +18166,7 @@
       if (name === "favorites") {
         const isTh = state.lang === "th";
         const favs = favoriteSellers();
-        const sugg = followedSellers().filter(s => !favs.includes(s));
+        const sugg = followedSellers().concat([...PF_EXTRA_FOL]).filter(s => !favs.includes(s)); /* post-less follows (PF_EXTRA_FOL) can be favorited too */
         const fRow = (s, label, cls, desc) => {
           const p = profileOf(s);
           return `<div class="mrow" data-pf-user="${esc(s)}"><img src="${p.avatar}" alt=""><span class="lg-b"><span class="mn">${esc(s)}</span><span class="md">${desc}</span></span><button class="mact ${cls}" data-seller="${esc(s)}">${label}</button></div>`;
@@ -19031,7 +19039,8 @@
         return true;
       }
       if (e.target.closest("[data-bdshare]")) {
-        scr.dataset.shKind = "";
+        scr.dataset.shKind = "article";
+        scr.dataset.shAid = e.target.closest("[data-bdshare]").dataset.bdshare;
         openSheet(scr, "sh", "share-open", shareSheetHTML());
         return true;
       }
@@ -19077,7 +19086,7 @@
           <b class="ch-name">${esc(t.user)}</b>
           ${isBlk ? `<span class="ch-blk-badge">${isTh ? "บล็อกแล้ว" : "Blocked"}</span>` : (t.muted ? `<span class="ch-mute-ico" title="ปิดแจ้งเตือน">${I.chMute(13)}</span>` : "")}
         </span>
-        <span class="ch-prev-line"><span class="ch-prev">${last ? (last.f === "me" ? "You: " : "") + esc(last.t || "") : ""}</span></span>
+        <span class="ch-prev-line"><span class="ch-prev">${last ? (last.f === "me" ? (isTh ? "คุณ: " : "You: ") : "") + esc(last.t || "") : ""}</span></span>
       </span>
       <span class="ch-meta-col">
         <span class="ch-time">${chTimeLbl(t)}</span>
@@ -20242,7 +20251,7 @@
 
     /* ================= FLOW WIRING ================= */
     state.theme = localStorage.getItem("fo_theme") || "dark";
-    state.lang = localStorage.getItem("fo_lang") || "en";
+    state.lang = localStorage.getItem("fo_lang") || ((navigator.language || "").toLowerCase().startsWith("th") ? "th" : "en"); /* device language wins until the user picks one */
     state.session = localStorage.getItem("fo_session") || "member"; /* GUEST-001 — member | guest | new */
     const themeToggle = document.getElementById("themeToggle");
     const flowToast = document.getElementById("flowToast");
@@ -20416,6 +20425,9 @@
       "Any new listing": "ทุกรายการใหม่", "Untitled asset": "สินค้าไม่มีชื่อ",
       "Search brands, references or collectors.": "ค้นหาแบรนด์ เลขรุ่น หรือนักสะสม",
       "Shared photo": "รูปที่แชร์", "Media thumbnail": "รูปย่อสื่อ", "Chat media": "สื่อในแชท",
+      /* TH-mode leftovers — chat/sheets/QR/create-post strings that only existed in English */
+      "Collection deleted": "ลบคอลเลกชันแล้ว", "Messages": "ข้อความ", "Sent": "ส่งแล้ว",
+      "Confirm": "ยืนยัน", "COLOR": "สี", "Share profile": "แชร์โปรไฟล์", "Add location": "เพิ่มตำแหน่งที่อยู่",
     };
     /* spec VALUES are translated per word, but only inside rows whose label is in this set
        (so Brand / Model / Reference / Calibre stay exactly as entered) */
@@ -21825,7 +21837,7 @@
         const scr = dlgReset.closest(".screen");
         scr.classList.remove("dialog-open");
         POSTS.forEach(p => { p.ni = false; });
-        state.snooze = false;
+        state.snooze = false; localStorage.removeItem("fo_snooze");
         scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
         renderSub(scr);
         scrToast(scr, "Suggested content reset");
@@ -21915,7 +21927,7 @@
         setSession("guest"); /* GUEST-001 — logging out drops into guest browsing on the feed */
         scr.querySelector(".feed-scroll")?.scrollTo({ top: 0 });
         const isTh = state.lang === "th";
-        scrToast(scr, isTh ? "ออกจากระบบแล้ว" : "Logged out successfully");
+        scrToast(scr, isTh ? "ออกจากระบบแล้ว" : "Signed out");
         obGate(); /* AUTH-002 — surface the member sheet so signing back in is one tap (scrim/ข้ามไปก่อน keeps browsing as guest) */
         return;
       }
@@ -22150,6 +22162,8 @@
       if (tgl) {
         const scr = tgl.closest(".screen");
         state.snooze = !state.snooze;
+        if (state.snooze) localStorage.setItem("fo_snooze", String(Date.now())); /* 30-day window starts now */
+        else localStorage.removeItem("fo_snooze");
         tgl.querySelector(".tg-sw").classList.toggle("on", state.snooze);
         scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
         return;
@@ -22157,7 +22171,7 @@
       const mUn = e.target.closest(".m-unmute");
       if (mUn) {
         const scr = mUn.closest(".screen");
-        setMuted(scr, mUn.dataset.seller, false);
+        pfSetMuted(scr, mUn.dataset.seller, false); /* post-less accounts live in PF_EXTRA_MUT — setMuted alone can't reach them */
         renderSub(scr);
         scrToast(scr, "Posts unmuted");
         return;
@@ -22188,7 +22202,7 @@
       const favR = e.target.closest(".fav-remove");
       if (favR) {
         const scr = favR.closest(".screen");
-        setFavorite(scr, favR.dataset.seller, false);
+        pfSetFav(scr, favR.dataset.seller, false); /* post-less accounts live in PF_EXTRA_FAV — setFavorite alone can't reach them */
         renderSub(scr);
         scrToast(scr, "Removed from favorites");
         return;
@@ -22196,7 +22210,7 @@
       const favA = e.target.closest(".fav-add");
       if (favA) {
         const scr = favA.closest(".screen");
-        setFavorite(scr, favA.dataset.seller, true);
+        pfSetFav(scr, favA.dataset.seller, true);
         renderSub(scr);
         scrToast(scr, "Added to favorites");
         return;
@@ -22205,6 +22219,7 @@
       if (favAll) {
         const scr = favAll.closest(".screen");
         POSTS.forEach(p => p.favorite = false);
+        PF_EXTRA_FAV.clear(); pfSave();
         if (state.feedTab === "favorites")
           scr.querySelector(".feed-list").innerHTML = feedContentHTML(scr.dataset.variant);
         renderSub(scr);
@@ -23323,7 +23338,7 @@
         const scr = shApp.closest(".screen");
         scr.classList.remove("share-open");
         const sp = scr.dataset.shKind === "post" ? findPost(scr.dataset.shPid) : null;
-        const link = sp ? `https://tukdaeng.app/p/${sp.id}` : pfProfileLink(scr.dataset.shUser || CP_ME.name);
+        const link = sp ? `https://tukdaeng.app/p/${sp.id}` : scr.dataset.shKind === "article" ? `https://tukdaeng.app/a/${scr.dataset.shAid}` : pfProfileLink(scr.dataset.shUser || CP_ME.name);
         if (shApp.dataset.app === "copy") {
           pfCopyText(link).then(() => scrToast(scr, state.lang === "th" ? "คัดลอกลิงก์แล้ว" : "Link copied"));
         } else if (navigator.share) {
@@ -24156,7 +24171,7 @@
         ${OB.declined ? `<div class="ob-banner" style="margin-top:12px">${obT("You need to accept the required Terms and Privacy Policy to use TukDaeng. You can review them again or exit the app.", "ต้องยอมรับข้อกำหนดและนโยบายความเป็นส่วนตัวที่จำเป็นจึงจะใช้ตึกแดงได้ คุณสามารถอ่านอีกครั้งหรือออกจากแอป")}</div>` : ""}
         <div class="ob-stack" style="margin-top:14px">
           <button class="ob-btn pri" data-ob="accept">${obT("Accept & continue", "ยอมรับและดำเนินการต่อ")}</button>
-          ${OB.declined ? `<button class="ob-btn out" data-ob="exit">${obT(re ? "Sign out" : "Exit app", re ? "ออกจากระบบ" : "ออกจากแอป")}</button>` : `<button class="ob-textbtn" data-ob="decline" style="padding:6px">${obT("Decline", "ไม่ยอมรับ")}</button>`}
+          ${OB.declined ? `<button class="ob-btn out" data-ob="exit">${obT(re && state.session !== "guest" ? "Sign out" : "Exit app", re && state.session !== "guest" ? "ออกจากระบบ" : "ออกจากแอป")}</button>` : `<button class="ob-textbtn" data-ob="decline" style="padding:6px">${obT("Decline", "ไม่ยอมรับ")}</button>`}
         </div>
         <div class="ob-legal">${obT("Tapping Accept confirms you have read the required documents. Optional items stay off unless you turn them on.", "การแตะยอมรับหมายถึงคุณได้อ่านเอกสารที่จำเป็นแล้ว ส่วนที่เลือกได้จะปิดไว้จนกว่าคุณจะเปิดเอง")}</div>
       </div>`;
@@ -24289,7 +24304,10 @@
     function obGo(s) {
       OB.step = s; OB.loading = false; OB.errs = {}; OB.sent = false; OB.declined = false; OB.legal = null; OB.os = false;
       if (s === "profile" && !OB.f.user && OB.f.email) OB.f.user = obSuggestUser();
-      if (s === "signin" && !OB.f.email && !OB.f.pw) { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; }
+      if (s === "signin") {
+        if (obLast === "created") OB.f.pw = ""; /* post-signup prefill is email only — the password is never carried over */
+        else if (!OB.f.email && !OB.f.pw) { OB.f.email = OB_DEMO.email; OB.f.pw = OB_DEMO.pw; }
+      }
       if (s === "member" && !OB.gate && localStorage.getItem("fo_member_hide") === "1") return obFinish("");
       const r = obRoot(), clear = OB.recon || s === "member";
       if (r && r.classList.contains("recon") !== clear) return obMount();
@@ -24343,7 +24361,10 @@
     }
     function obFinish(msg, tour = true) {
       localStorage.setItem("fo_onboarded", "1"); OB.on = false; OB.os = false; OB.gate = false; obMount();
-      if (tour && !localStorage.getItem("fo_toured")) { localStorage.setItem("fo_toured", "1"); obTour(0); } /* AUTH-003 — coach marks are a first-run thing, not an every-sign-in thing */
+      /* coach marks are once per session type — a member who already saw the guest tour
+         still gets the member tour on their first signed-in feed (and vice versa) */
+      const tKey = isGuest() ? "fo_toured_guest" : "fo_toured";
+      if (tour && !localStorage.getItem(tKey)) { localStorage.setItem(tKey, "1"); obTour(0); }
       if (msg) toast(msg);
     }
     function obLog() {
@@ -24357,9 +24378,14 @@
     }
     function obSignup() {
       const f = OB.f, E = {};
-      if (!obEmailOk(f.email.trim())) E.email = obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง");
-      else if (f.email.trim().toLowerCase() === "taken@example.com") E.email = obT("This email is already registered. Try signing in.", "อีเมลนี้ถูกใช้สมัครแล้ว ลองเข้าสู่ระบบ");
-      if (!f.pw) E.pw = obT("Enter a password.", "กรอกรหัสผ่าน");
+      const em = f.email.trim().toLowerCase();
+      /* uniqueness covers the persisted account + this run's signup + demo member —
+         taken@example.com stays as the demo fixture for the error itself */
+      const taken = em === "taken@example.com" || em === OB_DEMO.email.toLowerCase() || em === ((obLoadAccount() || {}).email || "").toLowerCase() || em === ((OB.account || {}).email || "").toLowerCase();
+      if (!em) E.email = obT("Enter your email.", "กรอกอีเมล");
+      else if (!obEmailOk(em)) E.email = obT("Enter a valid email address.", "กรอกอีเมลให้ถูกต้อง");
+      else if (taken) E.email = obT("This email is already registered. Try signing in.", "อีเมลนี้ถูกใช้สมัครแล้ว ลองเข้าสู่ระบบ");
+      if (!f.pw) E.pw = obT("Enter your password.", "กรอกรหัสผ่าน");
       else if (f.pw.length < 8 || !(/[0-9]/.test(f.pw) || /[^A-Za-z0-9\s]/.test(f.pw))) E.pw = obT("Password must be at least 8 characters and include at least one number or special character.", "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร และมีตัวเลขหรืออักขระพิเศษอย่างน้อย 1 ตัว");
       OB.errs = E;
       if (Object.keys(E).length) return obDraw();
@@ -24396,7 +24422,7 @@
       if (acct) { f.user = acct.user || f.user; f.name = acct.name || f.name || f.user || f.email.split("@")[0]; }
       else f.name = OB_DEMO.name;
       setSession(isNew ? "new" : "member");
-      obFinish("", isNew); /* AUTH-003 — real apps drop you straight in, no welcome-back toast on sign-in */
+      obFinish("", true); /* AUTH-003 — real apps drop you straight in, no welcome-back toast on sign-in */
     }
 
     /* ===== GUEST-001 — session model: member (demo data) / guest (logged-out) / new (fresh account) =====
@@ -24455,8 +24481,8 @@
           NEW_USER_KEY = null;
           CP_ME.name = "__guest__"; CP_ME.avatar = "./assets/user-avatars/default-avatar.jpg";
         }
-        state.feedTab = "all";
       }
+      state.feedTab = "all"; /* every session switch lands back on All Posts */
       syncModelFlags(); /* restored/cleared alerts re-drive the detail bells */
       /* refresh visible surfaces so badges/feed/follow states match the new session */
       const scr = document.querySelector("#stage .screen");
@@ -24511,7 +24537,7 @@
           case "tog": OB.opt[arg] = !OB.opt[arg]; obDraw(); break;
           case "accept": obAccept(); break;
           case "decline": OB.declined = true; obDraw(); break;
-          case "exit": if (OB.recon) { OB.recon = false; OB.declined = false; OB.on = false; localStorage.removeItem("fo_onboarded"); toast(obT("Signed out (demo)", "ออกจากระบบแล้ว (เดโม)")); OB.on = true; OB.step = "member"; obMount(); } else { OB.declined = false; toast(obT("App closed (demo)", "ปิดแอปแล้ว (เดโม)")); obDraw(); } break;
+          case "exit": if (OB.recon && state.session !== "guest") { OB.recon = false; OB.declined = false; OB.on = false; localStorage.removeItem("fo_onboarded"); setSession("guest"); toast(obT("Signed out (demo)", "ออกจากระบบแล้ว (เดโม)")); OB.on = true; OB.step = "member"; obMount(); } else { OB.declined = false; toast(obT("App closed (demo)", "ปิดแอปแล้ว (เดโม)")); obDraw(); } break;
           case "legal": OB.legal = arg; obDraw(); break;
           case "closelegal": OB.legal = null; obDraw(); break;
           case "eye": { const i = b.parentElement.querySelector("input"); i.type = i.type === "password" ? "text" : "password"; b.innerHTML = i.type === "password" ? I.eye(20) : I.eyeOff(20); break; }
@@ -24577,7 +24603,7 @@
     });
     document.getElementById("obReplay").addEventListener("click", () => {
       localStorage.removeItem("fo_onboarded"); localStorage.removeItem("fo_member_hide");
-      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); localStorage.removeItem("fo_srch_recents"); localStorage.removeItem("fo_alstate"); localStorage.removeItem("fo_notif"); localStorage.removeItem("fo_walerts"); localStorage.removeItem("fo_att"); setSession("member");
+      localStorage.removeItem("fo_session"); localStorage.removeItem("fo_newuser"); localStorage.removeItem("fo_account"); localStorage.removeItem("fo_toured"); localStorage.removeItem("fo_toured_guest"); localStorage.removeItem("fo_srch_recents"); localStorage.removeItem("fo_alstate"); localStorage.removeItem("fo_notif"); localStorage.removeItem("fo_walerts"); localStorage.removeItem("fo_att"); setSession("member");
       document.querySelectorAll(".ob-coach").forEach(c => c.remove());
       Object.assign(OB, { on: true, step: "splash", hide: false, termsAt: null, recon: false, legal: null, declined: false, ver: "1.0", opt: { analytics: false, personalized: false }, f: { name: "", email: "", pw: "", user: "" }, errs: {}, tries: 0, account: null, resend: 30, os: false, sent: false });
       state.feedTab = "all"; obLast = null;
@@ -24594,6 +24620,18 @@
       if (!confirm("Reset all demo data to the initial mock state?")) return;
       Object.keys(localStorage).filter(k => k.startsWith("fo_")).forEach(k => localStorage.removeItem(k));
       location.reload();
+    });
+    /* dev sim — the only incoming-message path the prototype has; exists so the
+       chatcfg "Only people I follow" toggle has a reachable enforcement surface.
+       prefers a non-followed seller so the block branch is one click away */
+    document.getElementById("obMsg").addEventListener("click", () => {
+      const pool = POSTS.filter(p => p.seller !== CP_ME.name && !pfIsBlocked(p.seller));
+      const post = pool.find(p => !pfIsFollowed(p.seller)) || pool[0];
+      if (!post) return;
+      const isTh = state.lang === "th";
+      const ok = chIncomingAsk(post.seller, post.id);
+      if (ok) { chBadgeSync(); toast(isTh ? `ข้อความใหม่จาก ${post.seller} (เดโม)` : `New message from ${post.seller} (demo)`); }
+      else toast(isTh ? `${post.seller} ส่งข้อความไม่ได้ — เปิดรับเฉพาะคนที่ติดตาม (เดโม)` : `${post.seller} can't message you — Only people I follow (demo)`);
     });
 
     /* Comment long-press context menu (IG-style) */
@@ -24614,10 +24652,7 @@
       cHoldTimer = setTimeout(() => {
         row.classList.remove("c-holding");
         const scr = row.closest(".screen");
-        if (scr) {
-          if (state.session === "guest") { obGate(); return; }
-          openCommentPopover(scr, row, cHoldStartX, cHoldStartY);
-        }
+        if (scr) openCommentPopover(scr, row, cHoldStartX, cHoldStartY); /* guests see the popover too — the gate lives on the items */
       }, 450);
     }, { passive: true });
     document.addEventListener("touchmove", e => {
@@ -24642,10 +24677,7 @@
       cHoldTimer = setTimeout(() => {
         row.classList.remove("c-holding");
         const scr = row.closest(".screen");
-        if (scr) {
-          if (state.session === "guest") { obGate(); return; }
-          openCommentPopover(scr, row, cHoldStartX, cHoldStartY);
-        }
+        if (scr) openCommentPopover(scr, row, cHoldStartX, cHoldStartY); /* guests see the popover too — the gate lives on the items */
       }, 450);
     });
     document.addEventListener("mousemove", e => {
@@ -24661,10 +24693,7 @@
       e.preventDefault();
       clearCHold();
       const scr = row.closest(".screen");
-      if (scr) {
-        if (state.session === "guest") { obGate(); return; }
-        openCommentPopover(scr, row, e.clientX, e.clientY);
-      }
+      if (scr) openCommentPopover(scr, row, e.clientX, e.clientY); /* guests see the popover too — the gate lives on the items */
     });
 
     document.documentElement.lang = state.lang;
