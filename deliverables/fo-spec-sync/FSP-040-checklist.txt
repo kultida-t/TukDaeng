@@ -1,0 +1,7 @@
+FSP-040 Manual Review Checklist — ผลตรวจ (ผู้ใช้ยืนยัน 2026-11-06)
+1. hover gift (Wish List) บน feed card/detail → tooltip รายการอยากได้ — ผ่าน
+2. Search: funnel (Filters) → ตัวกรอง, bell → สร้างการแจ้งเตือน — ผ่าน
+3. Board: ☰/🔍/Back/Like/Share → หมวดหู่/ค้นหา/กลับ/ถูกใจ/แชร์ — ผ่าน
+4. Chat room: + (Attach)/Send → แนบไฟล์/ส่ง, X → ปิด, รูป → ส่งรูป — ผ่าน
+5. Profile: QR X → ปิด, Scan QR → สแกน QR, camera hint ไทย — ผ่าน
+6. Regression: tooltip เดิมที่แปลแล้วยังขึ้นปกติ — ผ่าน
