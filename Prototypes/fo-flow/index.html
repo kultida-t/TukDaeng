@@ -17710,6 +17710,7 @@
       return sim ? `<div class="pfo-simbar"><span>Preview: ${PFO_SIMS[sim]}</span><button data-pfosim="">Reset</button></div>` : "";
     }
     function pfoRowHTML({ a }) {
+      const isTh = state.lang === "th";
       return `<button class="mrow pfo-row" data-sub="pfasset:${a.id}">
     <img class="pfo-img" src="${a.img}" alt="">
     <span class="lg-b">
@@ -17717,7 +17718,7 @@
       <span class="md">${esc(a.ref)}${a.meta ? " · " + esc(a.meta) : ""}</span>
     </span>
     <span class="pfo-r">
-      <span class="pfo-val">${a.purchase != null && a.purchase > 0 ? pfoTHB(a.purchase) : "—"}</span>
+      <span class="pfo-val">${a.purchase != null && a.purchase > 0 ? pfoTHB(a.purchase) : (isTh ? "ไม่ระบุ" : "N/A")}</span>
     </span>
   </button>`;
     }
@@ -17777,20 +17778,20 @@
     </div>
     <div class="pfo-card">
       <div class="pfo-card-t">${isTh ? "มูลค่า" : "Value"} <span class="pfo-privtag">${I.lock(10)} ${isTh ? "ส่วนตัว" : "private"}</span></div>
-      ${kv(isTh ? "มูลค่าปัจจุบัน" : "Current value", cur.v != null ? pfoTHB(cur.v) : "—")}
+      ${kv(isTh ? "มูลค่าปัจจุบัน" : "Current value", cur.v != null ? pfoTHB(cur.v) : (isTh ? "ไม่ระบุ" : "N/A"))}
       ${kv(isTh ? "ที่มาของมูลค่า" : "Value source", PFO_SRC[cur.src])}
-      ${kv(isTh ? "ราคาประเมินตลาด" : "Estimated market", a.market != null ? `${pfoTHB(Math.round(a.market * 0.95 / 500) * 500)} – ${pfoTHB(Math.round(a.market * 1.05 / 500) * 500)}` : "—")}
-      ${kv(isTh ? "อัปเดตราคาล่าสุด" : "Last price update", a.market != null ? pfoDate(PF_MKT_UPDATED) : "—")}
-      ${kv(isTh ? "แหล่งข้อมูล" : "Data source", a.market != null ? "TukDaeng Market Data" : "—")}
-      ${kv(isTh ? "ราคาซื้อ" : "Purchase price", a.purchase ? pfoTHB(a.purchase) : "—")}
-      ${kv(isTh ? "วันที่ซื้อ" : "Purchased", a.bought ? pfoDate(a.bought) : "—")}
-      ${kv(isTh ? "กำไร/ขาดทุนที่ยังไม่เกิดขึ้น" : "Unrealized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, a.purchase)})` : "—", gl != null ? (gl >= 0 ? "up" : "dn") : "")}
-      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txtTh}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : "—")}
+      ${kv(isTh ? "ราคาประเมินตลาด" : "Estimated market", a.market != null ? `${pfoTHB(Math.round(a.market * 0.95 / 500) * 500)} – ${pfoTHB(Math.round(a.market * 1.05 / 500) * 500)}` : (isTh ? "ไม่ระบุ" : "N/A"))}
+      ${kv(isTh ? "อัปเดตราคาล่าสุด" : "Last price update", a.market != null ? pfoDate(PF_MKT_UPDATED) : (isTh ? "ไม่ระบุ" : "N/A"))}
+      ${kv(isTh ? "แหล่งข้อมูล" : "Data source", a.market != null ? "TukDaeng Market Data" : (isTh ? "ไม่ระบุ" : "N/A"))}
+      ${kv(isTh ? "ราคาซื้อ" : "Purchase price", a.purchase ? pfoTHB(a.purchase) : (isTh ? "ไม่ระบุ" : "N/A"))}
+      ${kv(isTh ? "วันที่ซื้อ" : "Purchased", a.bought ? pfoDate(a.bought) : (isTh ? "ไม่ระบุ" : "N/A"))}
+      ${kv(isTh ? "กำไร/ขาดทุนที่ยังไม่เกิดขึ้น" : "Unrealized gain/loss", gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, a.purchase)})` : (isTh ? "ไม่ระบุ" : "N/A"), gl != null ? (gl >= 0 ? "up" : "dn") : "")}
+      ${kv(isTh ? "ระยะเวลาถือครอง" : "Holding period", hold ? (isTh ? `${hold.d.toLocaleString("en-US")} วัน · ${hold.txtTh}` : `${hold.d.toLocaleString("en-US")} days · ${hold.txt}`) : (isTh ? "ไม่ระบุ" : "N/A"))}
     </div>
     ${a.status === "sale" ? `<div class="pfo-card">
       <div class="pfo-card-t">${isTh ? "การลงประกาศ" : "Listing"}</div>
-      ${kv(isTh ? "ราคาตั้งขาย" : "Asking price", a.asking != null ? pfoTHB(a.asking) : "—")}
-      ${kv(isTh ? "กำไรที่คาดหวัง" : "Expected profit", ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : "—", ex != null ? "up" : "")}
+      ${kv(isTh ? "ราคาตั้งขาย" : "Asking price", a.asking != null ? pfoTHB(a.asking) : (isTh ? "ไม่ระบุ" : "N/A"))}
+      ${kv(isTh ? "กำไรที่คาดหวัง" : "Expected profit", ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : (isTh ? "ไม่ระบุ" : "N/A"), ex != null ? "up" : "")}
       ${kv(isTh ? "เปรียบเทียบตลาด" : "Market comparison", cmp && cmp !== "none" ? `<i class="pfo-chip ${PFO_CMP[cmp][1]}">${PFO_CMP[cmp][0]}</i>` : (isTh ? "ไม่มีราคาตลาด" : "No market price"))}
     </div>` : ""}
     ${pfoEligible(a) ? `<div class="pfd-acts"><button class="pf-btn primary" data-sell="${a.id}">${I.checkCir(15)} ${isTh ? "บันทึกการขาย" : "Mark as sold"}</button></div>` : ""}
@@ -17863,7 +17864,7 @@
     <div class="sell-hero"><img src="${a.img}" alt=""><span class="lg-b">${a.brand ? `<span class="sell-brand">${esc(a.brand)}</span>` : ""}<span class="mn">${esc(modelTxt)}</span>${a.ref ? `<span class="md">${esc(a.ref)}</span>` : ""}</span><span class="pfo-chip sell-st ${PFO_STATUS[a.status][1]}">${PFO_STATUS[a.status][0]}</span></div>
     <div class="fav-desc">${isTh ? "ข้อมูลเป็นส่วนตัว — รายการจะย้ายไปประวัติการขายและหลุดจากมูลค่าพอร์ตโฟลิโอโดยอัตโนมัติ" : "Private data — the piece moves to Sold history and drops out of portfolio value automatically."}</div>
     <label class="pe-f"><span>${isTh ? "ราคาขาย (฿)" : "Sale price (฿)"} *</span><input class="pe-in sell-price" inputmode="numeric" placeholder="${isTh ? "เช่น 449,000" : "e.g. 449,000"}" value="${a.asking != null ? fmtNum(a.asking) : ""}"><span class="pe-err" hidden></span></label>
-    ${a.purchase > 0 ? `<div class="pfd-kv sell-gl" data-aid="${a.id}"><span>${isTh ? "กำไรที่คาดหวัง" : "Expected gain"}</span><b class="${ex != null ? (ex >= 0 ? "up" : "dn") : ""}">${ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : "—"}</b></div>` : ""}
+    ${a.purchase > 0 ? `<div class="pfd-kv sell-gl" data-aid="${a.id}"><span>${isTh ? "กำไรที่คาดหวัง" : "Expected gain"}</span><b class="${ex != null ? (ex >= 0 ? "up" : "dn") : ""}">${ex != null ? `${pfoSignTHB(ex)} (${pfoPct(ex, a.purchase)})` : (isTh ? "ไม่ระบุ" : "N/A")}</b></div>` : ""}
     <label class="pe-f"><span>${isTh ? "วันที่ขาย" : "Sale date"} *</span><input class="pe-in sell-date" type="date" value="${today}" max="${today}"><span class="pe-err" hidden></span></label>
     <div class="pe-savewrap"><button class="pf-btn primary sell-save">${I.checkCir(16)} ${isTh ? "บันทึกการขาย" : "Save sale record"}</button></div>
   </div>`;
@@ -21214,7 +21215,7 @@
           const gl = ga && ga.purchase > 0 && +v > 0 ? +v - ga.purchase : null;
           const gb = glRow.querySelector("b");
           gb.className = gl != null ? (gl >= 0 ? "up" : "dn") : "";
-          gb.textContent = gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, ga.purchase)})` : "—";
+          gb.textContent = gl != null ? `${pfoSignTHB(gl)} (${pfoPct(gl, ga.purchase)})` : (state.lang === "th" ? "ไม่ระบุ" : "N/A");
         }
       }
     });

@@ -14,6 +14,7 @@
 | Version | Date | รายละเอียด |
 |---|---|---|
 | 0.1 Draft | 26 Oct 2026 | ถอดกติกา FOX มาเป็นฉบับตึกแดง เก็บเฉพาะส่วนที่ใช้ได้ แยก decision points ที่ขัดกับของเดิม และทำ inventory จุดแสดงเงินจริงทั้ง FO/BO |
+| 0.2 Draft | 06 Nov 2026 | ล็อกค่าว่างของฟิลด์ = `ไม่ระบุ` (TH) / `N/A` (EN) ทุก surface โดยฟิลด์คงตำแหน่งเดิม — ตาม ruling พี่คิง (NB-030, ประชุม 09/10/2026; DEC-62) ยกเลิก draft `—` เดิม; open items อื่นคงรอ decision |
 
 ## สารบัญ
 
@@ -114,7 +115,7 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 |---|---|---|
 | ค่าติดลบ | เลือกหน่วย/ปัดจากขนาด แล้วเติม `−` (Unicode minus) | ✅ ทำแล้ว: `pfoSignTHB` ใช้ `+`/`−` |
 | ศูนย์จริง | `0` หรือ `0.00` ตาม decision หัวข้อ 3.2 พร้อมสกุล/หน่วยตามบริบท | ยังไม่เคยเจอเคสจริงใน mock |
-| ไม่มีข้อมูล | **`—` เท่านั้น** | ⚠️ ไม่สม่ำเสมอ: asset detail ใช้ `—` แต่ sold history/sold detail ใช้ `N/A` ปนกัน ต้องล็อก `—` |
+| ไม่มีข้อมูล | **`ไม่ระบุ` (TH) / `N/A` (EN) — ฟิลด์คงตำแหน่งเดิม ห้ามซ่อนบรรทัด** | ✅ ตัดสินแล้วตาม NB-030 (พี่คิง, DEC-62): ฟิลด์ที่ไม่ได้กรอกแสดง `N/A` ค้างในตำแหน่งนั้น ไม่ซ่อนฟิลด์ — unify ทุก surface แล้ว |
 | จำนวนบวกเล็กจนปัดเป็นศูนย์ | `<0.01 THB` (หรือ `<1 THB` ตาม decision 3.2) ไม่แสดงเป็นศูนย์จริง | เผื่อ market delta เล็กมาก; ค่าลบเล็กมากต้องไม่แสดง `−0` |
 
 ## 7. วันที่มูลค่าและสกุลเงิน
@@ -123,7 +124,7 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 
 - Dashboard/Portfolio แสดงวันที่ของยอดสรุป **จากข้อมูลยอดสรุปนั้น** ไม่ใช้วันที่เปิดหน้า — ตรงกับ `PF_MKT_UPDATED` ("last Watch Price API sync") ที่ใช้อยู่
 - รายละเอียดรายทรัพย์สินแสดงวันประเมินจริง — ตรงกับ "Last Price Update" per-asset ใน specGroups "Price & Data Source"
-- ไม่ทราบวันประเมิน → แสดงข้อความบอกว่าไม่มี ไม่เติมวันนี้แทน — copy ปัจจุบันคือ `No market price` / `—`; **ต้องล็อก copy เดียว** (เสนอ `Price update unavailable` หรือเก็บ `No market price` ให้สื่อตรงตึกแดง)
+- ไม่ทราบวันประเมิน → แสดงข้อความบอกว่าไม่มี ไม่เติมวันนี้แทน — copy ปัจจุบันคือ `No market price` / `ไม่มีราคาตลาด` (แถว Market comparison) ส่วนค่าว่างของฟิลด์ใช้ `N/A`/`ไม่ระบุ` ตาม §6 ไม่ใช้ `—`; **ต้องล็อก copy เดียว** (เสนอ `Price update unavailable` หรือเก็บ `No market price` ให้สื่อตรงตึกแดง)
 - วันที่ยอดรวมไม่ได้แปลว่าทุกชิ้นประเมินใหม่วันนั้น — mock `PF_MKT_UPDATED` เป็นวันเดียวทั้งชุด ถ้าอนาคตทำ per-asset date ต้องแสดงแยก
 
 ### 7.2 สกุลเงิน (FOX MD-09 — ตรงกัน)
@@ -165,7 +166,7 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 
 - **ทศนิยม**: เลือก A/B/C ในหัวข้อ 3.2 (ส่งผลทั้งเอกสารและ expected display ทุกตัวอย่าง)
 - **Settings หน่วย**: จะทำหรือข้ามใน phase นี้; ถ้าทำ → ขอบเขตทั้งแอป/รายหน้า
-- **Copy ไม่มีข้อมูล/ไม่มีราคาตลาด**: `—` เทียบ `No market price` / `Price update unavailable` ให้ล็อกชุดเดียวทั้ง TH/EN
+- **Copy ไม่มีราคาตลาด**: `No market price` / `Price update unavailable` ให้ล็อกชุดเดียวทั้ง TH/EN (ค่าว่างของฟิลด์ตัดสินแล้ว = `N/A`/`ไม่ระบุ` ตาม NB-030/DEC-62)
 - **Market Data "Median 305,000"** ไม่มีหน่วย — ต้องตรวจ semantics ก่อนเติม THB
 - **ขนาดตัวนับที่ไม่ใช่เงิน** (views `1.2K`, counts): อยู่นอก scope กติกาเงิน แต่ถ้าจะทำ number formatter เดียวกันครอบต้องกำกับแยก
 - **การ migrate mock data** เป็น number + currency ก่อนใช้ formatter ร่วม
@@ -178,8 +179,8 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 |---|---|---|
 | Portfolio — Total invested / Market value | `pfoTHB` (~L16663), `THB ${total.toLocaleString}` (~L17316) | `฿x,xxx,xxx` / `THB x,xxx,xxx` เต็มจำนวน ไม่มีทศนิยม |
 | กำไร/ขาดทุน (unrealized, expected, realized) | `pfoSignTHB` (~L16664), `pfoPct` (~L16665) | `+/−` + `฿` + จำนวนเต็ม + `(±x.x%)` |
-| ไม่มีข้อมูลใน detail rows | `kv(...)` fallback (~L17347–L17361) | `—` |
-| ไม่มีข้อมูลใน sold history/detail | (~L17373, L17403–L17414) | `N/A` ⚠️ ปนกับ `—` |
+| ไม่มีข้อมูลใน detail rows | `kv(...)` fallback (~L17780–L17793), sell-gl (~L17866), live expected-gain update (~L21217) | `ไม่ระบุ`/`N/A` (TH/EN — DEC-62) |
+| ไม่มีข้อมูลใน sold history/detail | (~L17806–L17847) | `ไม่ระบุ`/`N/A` ✅ canonical |
 | ราคาประเมินช่วง (Estimated market) | (~L17349) | `฿a – ฿b` range ปัดเป็น step 500 |
 | Feed post price + spec "Price & Data Source" | `POSTS[].price` (~L12930), specGroups (~L12952) | **string `"THB 420,000"` ใน mock ตรง ๆ** + range `"THB 400,000 – 445,000"` |
 | วันที่ราคา | `PF_MKT_UPDATED` (~L16661), `pfoDate` (~L16694), per-asset Last Price Update | ISO → `en-GB` (7 Oct 2026) |
@@ -194,7 +195,7 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 | Market Data median | ~L17946 | `Median 305,000` ⚠️ ไม่มีสกุลเงิน |
 | Metric/KPI counts | `formatMarketMetric` (~L21594), `toLocaleString()` หลายจุด | จำนวนเต็ม comma (ส่วนใหญ่เป็น count ไม่ใช่เงิน) |
 
-**สรุป gap หลัก:** (1) mock เงินเป็น string/number ปนกัน (2) `—` vs `N/A` ปนกัน (3) `฿` บน FO vs `THB` บน BO — ถือว่าตั้งใจตามแพลตฟอร์มหรือต้อง unify ก็เป็นจุดให้ตัดสิน (4) ไม่มี formatter กลาง แต่ละจุด format เอง
+**สรุป gap หลัก:** (1) mock เงินเป็น string/number ปนกัน (2) ~~`—` vs `N/A` ปนกัน~~ — resolved: canonical `ไม่ระบุ`/`N/A` ตาม NB-030/DEC-62 (3) `฿` บน FO vs `THB` บน BO — ถือว่าตั้งใจตามแพลตฟอร์มหรือต้อง unify ก็เป็นจุดให้ตัดสิน (4) ไม่มี formatter กลาง แต่ละจุด format เอง
 
 ## 11. ตัวอย่างสำหรับตรวจรับภายหลัง (สมมติเลือก 3.2 ตัวเลือก B)
 
@@ -206,7 +207,7 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 | Portfolio total รวมหลายเรือน 2,400,000 | `THB 2,400,000`; ถ้า Compact `2.40M` + tap ดูเต็ม |
 | Auto: 999,999 THB | `1.00M` (เลื่อนหลังปัดชนเกณฑ์) |
 | Unrealized loss −83,300 | `−฿83,300`; ถ้า Compact `−83.30K` |
-| ไม่มีข้อมูล | `—` เท่านั้น (ไม่ใช้ `N/A`) |
+| ไม่มีข้อมูล | `ไม่ระบุ` (TH) / `N/A` (EN) — ฟิลด์คงตำแหน่งเดิม ไม่ซ่อน (NB-030/DEC-62) |
 | ไม่มีราคาตลาด/วันประเมิน | copy เดียวทั้งระบบ (รอล็อก) ไม่เติมวันนี้แทน |
 | Estimated market range | `฿400,000 – ฿445,000` (range แสดงเต็มทั้งสองข้าง) |
 | views 1.2K | `1.2K` — ตัวนับ ไม่ผ่าน money formatter ไม่ได้ `1.20K` |
@@ -216,6 +217,6 @@ FOX MD-06 ให้มี Settings เลือกหน่วย (Auto/THB/K/M/
 
 ---
 
-## Open question (FSP-040 flag — ยังไม่ตัดสิน)
+## Open question (FSP-040 flag — ตัดสินแล้ว)
 
-- §6/§10: การแสดงค่าว่างของเงินใช้ `—` บ้าง `N/A` บ้างไม่ตรงกันระหว่าง surfaces (เช่น sold rows/return card ใช้ `N/A`, portfolio value ใช้ `—`) — บันทึกเป็น open question รอ decision ไม่ใช่ contract
+- ~~§6/§10: การแสดงค่าว่างของเงินใช้ `—` บ้าง `N/A` บ้างไม่ตรงกันระหว่าง surfaces~~ — **ตัดสินแล้วตาม ruling พี่คิง (NB-030, ประชุม 09/10/2026 → DEC-62):** canonical = `N/A` (EN) / `ไม่ระบุ` (TH) ทุก surface โดยฟิลด์คงตำแหน่งเดิม ไม่ซ่อนบรรทัด — implement แล้วใน `Prototypes/fo-flow/index.html`; ขีด `-` เดี่ยวที่ใช้เป็น placeholder (`Ref. -`, desc ว่าง, blocked stats) ไม่อยู่ใน ruling นี้
