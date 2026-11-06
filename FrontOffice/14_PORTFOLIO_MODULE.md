@@ -172,7 +172,7 @@ Entry notes:
 | `img` / `photos[]` / `name` / `ref` / `brand` | carry จาก asset/post |
 | `soldDate` | วันที่ขาย ISO — จาก sell form |
 | `price` | ราคาขาย — จาก sell form (`null` → แสดง `N/A`) |
-| `purchase` / `bought` | cost basis carry-over — ใช้ Realized G/L + Holding period (`null`/`""` → `—`/`N/A`) |
+| `purchase` / `bought` | cost basis carry-over — ใช้ Realized G/L + Holding period (`null`/`""` → `N/A` — DEC-62) |
 
 > **ไม่มี** Buyer / Contact / Payment Method / Attachment ใน record model — spec เดิมกำหนด 6 ฟิลด์ (D3)
 
@@ -256,7 +256,7 @@ pfoHold(from, to?):
 ```
 
 - ยังไม่ขาย: `pfoHold(a.bought)` — จบที่วันนี้; sold: `pfoHold(x.bought, x.soldDate)`
-- แสดง `{d} วัน · {txt}` (TH) / `{d} days · {txt}` (EN) — `—`/`N/A` เมื่อ null
+- แสดง `{d} วัน · {txt}` (TH) / `{d} days · {txt}` (EN) — `N/A` เมื่อ null (DEC-62)
 - timezone = device-local `new Date()` — ไม่มี `Asia/Bangkok` explicit (quirk — spec เดิมระบุ BKK)
 
 ## 9.7 Dashboard totals
@@ -493,7 +493,7 @@ display = "กำไร/ขาดทุนที่เกิดขึ้นจ�
 - `i18nTr` date pattern: `pfoDate` output `d Mon yyyy` → `d มิ.ย. 2566` (พ.ศ.) ใน TH mode
 - **EN-only leftovers** (re-sync 2026-11-06 — `Sale`/`Above market`/`At market`/`Below market`/`No market price`/`Purchase price estimate` แปลแล้วผ่าน I18N_TH; resolved FSP-041):
   - ~~`PFO_SRC` `Purchase price estimate`~~ — แปลแล้วผ่าน I18N_TH (`ประมาณจากราคาซื้อ`)
-  - ~~`N/A` fallbacks~~ — แปล `ไม่ระบุ` ครบทุกจุด (sold rows/return card/asset meta — FSP-041)
+  - `N/A` fallbacks — canonical = `N/A` literal ทั้งสองภาษา ไม่แปล (DEC-62 — supersede การแปล `ไม่ระบุ` ของ FSP-041)
   - ~~`days`/`y`/`m` suffixes~~ — แปลแล้ว (`{d} วัน · {y} ปี {m} เดือน` ผ่าน `hold.txtTh` — FSP-041)
   - Dev-sim UI ทั้งก้อน (`Preview states (prototype)`, sim names, `Reset`) — dev-only จึงไม่นับ user-facing
   - headline `฿` prefix (dashboard) เหมือน rows/cards — unified ตาม DEC-42 (D14 resolved)
