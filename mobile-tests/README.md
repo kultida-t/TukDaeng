@@ -51,8 +51,31 @@ set -a; source mobile-tests/.env; set +a
 | A Feed browse | `flows/flow-a-feed-browse.yaml` | SHELL-021/022/035–038, FEED-020/021/025 | member session ค้าง (noReset) |
 | B Guest gate | `flows/flow-b-guest-gate.yaml` | SETUP-02/03, GATE-019/024/027/028/029, SHELL-023 | fresh (clearState) |
 | C Sign in | `flows/flow-c-sign-in.yaml` | SETUP-04, AUTH-044/045, GATE-019/031 | fresh + .env credentials |
+| D Guest gate deep | `flows/flow-d-guest-gate-deep.yaml` | GATE-019/024/025/026/027/028/029/030/031/032(cancel)/033/034/041/042/049/055(TH) | fresh (clearState) |
+| E Search guest | `flows/flow-e-search-guest.yaml` | SETUP-05, SRCH-001/002/005/006/007/010/011/016/017/019/029/030/033/040/045/046/048/050/051/055/056/058/059/060, GATE-011/015/043 | fresh (clearState) |
+| F Member + sign out | `flows/flow-f-member-signout.yaml` | SETUP-04, GATE-001B/005B/035/050(บางส่วน) | fresh + .env credentials |
 | subflow onboarding | `flows/subflows/onboarding-to-guest.yaml` | SETUP-02/03 | fresh |
 | subflow sign in | `flows/subflows/gate-sheet-sign-in.yaml` | AUTH-044/045 | member sheet เปิดอยู่ |
+
+## ข้อเท็จจริงใหม่จาก session 2026-11-06 (รอบ 2)
+
+- **action row ของโพสต์ขยับตาม scroll** — ห้าม point tap ถูกใจ/แชร์/บันทึก/⋯
+  ใช้ `scrollUntilVisible` + `tapOn text` เสมอ (nav ยัง point tap เหมือนเดิม)
+- **like toggle assert ได้** — desc เปลี่ยน `ถูกใจ` ↔ `เลิกถูกใจ`
+- **member ⋯ menu** = `ไม่สนใจ` + `รายงาน` · **save** = collection picker
+  (`คอลเลกชัน`/`คอลเลกชันใหม่`/`บันทึกแล้ว·ส่วนตัว`) · **share** = in-app sheet
+  (`Direct`/`Facebook`/`LINE`/`Messenger`/`คัดลอกลิ้ง`)
+- **sign out path**: profile tab (86%,93%) → burger (93%,8%) → scroll ลง →
+  `ออกจากระบบ` → dialog `ออกจากระบบหรือไม่?` → ยืนยัน `^ออกจากระบบ$`
+- **typing state ของ search จำ query เดิม** — ต้อง clear-X (76%,8%) + refocus
+  (40%,8%) ก่อนพิมพ์ทุกครั้ง · search icon = 17%,8% · bell = 80%,8% ·
+  filter = 92%,8% (header icons ไม่มี desc)
+- **price ceiling = ฿2,000,000** (SRCH-046 error `ราคาสูงสุดต้องไม่เกิน`)
+- **launchApp ไม่ guarantee landing** — re-prompt sheet เด้งทุกครั้งที่ยังไม่
+  tick Don't show → ต้อง `extendedWaitUntil` sheet ก่อนเสมอ อย่าใช้
+  `when: visible` เช็คทันที (race: sheet ขึ้นช้ากว่า check)
+- **member sheet modal** — point tap โซน nav ขณะ sheet เปิดโดนปุ่ม sheet
+  (68%,93% = ปุ่ม Google → เปิด provider UI)
 
 ## กติกาที่ล็อกแล้ว (อ้าง deliverables/AUTO-TEST-001-*)
 

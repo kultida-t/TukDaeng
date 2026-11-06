@@ -1,0 +1,147 @@
+# Flow F — Member post actions (own-scope writes) + sign out → guest
+# TC refs: SETUP-04 (member), GATE-001B (member like/save/share work, no gate),
+#          GATE-005B (⋯ menu sheet opens), AUTH sign-out,
+#          GATE-035 (logout → guest feed; ⚠ F-011: spec expects member sheet to
+#          pop immediately — actual: NO auto sheet, gate fires on action only),
+#          GATE-050 partial (guest state clean — feed visible, gate works)
+# Credentials: -e TEST_EMAIL=... -e TEST_PASSWORD=... (see ../.env.example)
+# NOTE: like/Unlike desc toggles "ถูกใจ" ↔ "เลิกถูกใจ" — assertable state signal.
+#       Post action positions vary with scroll → always tapOn text, never point.
+appId: com.univerza.tukdaeng
+name: "Flow F — Member actions + sign out"
+tags: [member, auth, regression]
+---
+- launchApp:
+    clearState: true   # = adb pm clear
+- runFlow:
+    file: subflows/onboarding-to-guest.yaml
+    label: "SETUP-02/03 — onboarding → guest feed"
+
+# SETUP-04: gate → sign in → member feed
+- waitForAnimationToEnd
+- tapOn:
+    point: "32%,93%"
+- runFlow:
+    file: subflows/gate-sheet-sign-in.yaml
+    label: "AUTH-044/045 — sign in → member feed"
+    env:
+      TEST_EMAIL: ${TEST_EMAIL}
+      TEST_PASSWORD: ${TEST_PASSWORD}
+
+# GATE-001B: member like toggles (no gate, desc flips to เลิกถูกใจ)
+- scrollUntilVisible:
+    element:
+      text: "^ถูกใจ$|^[Ll]ike$"
+    direction: DOWN
+- tapOn:
+    text: "^ถูกใจ$|^[Ll]ike$"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: ".*เลิกถูกใจ.*|.*Unlike.*"
+    timeout: 10000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# restore: unlike again → desc back to ถูกใจ (keep feed clean for GATE-050)
+- tapOn:
+    text: ".*เลิกถูกใจ.*|.*Unlike.*"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: "^ถูกใจ$|^[Ll]ike$"
+    timeout: 10000
+
+# GATE-005B: member ⋯ opens the post menu sheet (guest gets gate instead)
+- scrollUntilVisible:
+    element:
+      text: ".*ตัวเลือกเพิ่มเติม.*|.*[Mm]ore options.*"
+    direction: DOWN
+- tapOn:
+    text: ".*ตัวเลือกเพิ่มเติม.*|.*[Mm]ore options.*"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: ".*ไม่สนใจ.*|.*Not interested.*"
+    timeout: 10000
+- assertVisible:
+    text: ".*รายงาน.*|.*Report.*"
+- pressKey: back
+
+# GATE-001B: member save → collection picker sheet (คอลเลกชัน)
+- scrollUntilVisible:
+    element:
+      text: "^บันทึก$|^[Ss]ave$"
+    direction: DOWN
+- tapOn:
+    text: "^บันทึก$|^[Ss]ave$"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: ".*คอลเลกชัน.*|.*[Cc]ollection.*"
+    timeout: 10000
+- assertVisible:
+    text: ".*บันทึกแล้ว.*|.*[Ss]aved.*"
+- pressKey: back
+
+# GATE-001B: member share → in-app share sheet (Direct/FB/LINE/Messenger/copy)
+- scrollUntilVisible:
+    element:
+      text: "^แชร์$|^[Ss]hare$"
+    direction: DOWN
+- tapOn:
+    text: "^แชร์$|^[Ss]hare$"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: ".*คัดลอกลิ้ง.*|.*Copy link.*"
+    timeout: 10000
+- pressKey: back
+
+# --- Sign out (GATE-035) ---
+# profile tab → own profile → burger menu → settings → ออกจากระบบ
+- waitForAnimationToEnd
+- tapOn:
+    point: "86%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*แก้ไขโปรไฟล์.*|.*Edit profile.*"
+    timeout: 15000
+- tapOn:
+    point: "93%,8%"
+- extendedWaitUntil:
+    visible:
+      text: ".*การตั้งค่า.*|.*[Ss]ettings.*"
+    timeout: 15000
+- scrollUntilVisible:
+    element:
+      text: "^ออกจากระบบ$|^[Ll]og ?[Oo]ut.*|.*[Ss]ign out.*"
+    direction: DOWN
+- tapOn:
+    text: "^ออกจากระบบ$|^[Ll]og ?[Oo]ut.*|.*[Ss]ign out.*"
+# confirm dialog
+- extendedWaitUntil:
+    visible:
+      text: ".*ออกจากระบบหรือไม่.*|.*[Ll]og out.*[?].*|.*ยกเลิก.*|.*Cancel.*"
+    timeout: 10000
+- tapOn:
+    text: "^ออกจากระบบ$|^[Ll]og out$|^[Ss]ign out$"
+
+# GATE-035: lands on GUEST feed — ⚠ F-011: no auto member sheet (spec expects
+# immediate prompt); verify guest by triggering gate via chat tab
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 20000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# GATE-050 partial: guest confirmed — gated action fires the member sheet
+- waitForAnimationToEnd
+- tapOn:
+    point: "32%,93%"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*|.*ยินดีต้อนรับกลับ.*|.*Welcome back.*"
+    timeout: 10000
+- pressKey: back

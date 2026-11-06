@@ -103,3 +103,69 @@
 
 - **F-001 → CLOSED (root cause = input รอบแรก):** manual signup `tukdaengworktest@gmail.com` + `worktest1234` บน emulator พิมพ์มือ → OTP → profile → **sign in สำเร็จทันที** → credential ถูกสร้างปกติ สอดคล้องสมมติฐาน dev (รหัสที่บันทึกรอบแรกไม่ใช่ worktest1234 — automation พิมพ์เพี้ยน) — บัญชีเดิม three3.work.test ใช้ Worktest1234* ต่อได้ปกติ
 - **F-005 → แก้คำอธิบาย:** spec (FO-TC-AUTH-029/077) = `≥8 + เลข/อักขระ ≥1` — signup ตรง spec (รับ worktest1234) แต่ **reset form บังคับเล็ก+ใหญ่+เลข+อักขระ เข้มกว่า spec → บั๊กจริงที่เหลือคือ reset form deviate จาก spec** (ไม่ใช่ signup ที่หละ validation) — แนะนำ dev: ปรับ reset validator ให้ตรง spec หรือเปลี่ยน spec เป็นชุดเดียวกัน
+
+## F-007 — back จากหน้า Sign up/Sign in กลับ feed ไม่ใช่ Member Sheet (GATE-031)
+
+| ฟิลด์ | รายละเอียด |
+|---|---|
+| สถานะ | NEW — ยืนยันด้วย automation + screenshot |
+| พบเมื่อ | 2026-11-06 (flow-d-guest-gate-deep, emulator API 34, Store build) |
+| Severity | Low — ผู้ใช้กด back ออกจาก auth page หลุดไป feed แทนที่จะกลับมาตัดสินใจบน sheet อีกครั้ง |
+| Steps | guest → แตะแท็บ แชท → Member Sheet → แตะ สมัครสมาชิก (เข้าหน้า Create account) → กด device back — ทำซ้ำกับ เข้าสู่ระบบ → Sign in page → back |
+| Expected | back กลับ Member Sheet (GATE-031: "back กลับ Member Sheet ไม่ใช่ feed") |
+| Actual | back ทั้งสองจุดกลับ guest feed ตรง ๆ — sheet ถูก pop ไปพร้อมกัน ไม่มี gate ค้าง (session ไม่ถูกสร้าง ผิดเฉพาะปลายทาง back) |
+| หมายเหตุเพิ่ม | flow-d assert พฤติกรรมจริงไว้ — ถ้า dev แก้ให้ตรง spec flow จะแดงเป็น signal |
+
+## F-008 — feed tabs กำลังติดตาม/รายการโปรด gate guest (spec ว่า free browse)
+
+| ฟิลด์ | รายละเอียด |
+|---|---|
+| สถานะ | NEW — ยืนยันด้วย automation + screenshot (sheet เด้งเหนือ feed ชัดเจน) |
+| พบเมื่อ | 2026-11-06 (flow-d-guest-gate-deep) |
+| Severity | Low-Medium — guest อ่าน empty state ของ Following/Favorites ไม่ได้ ขัด spec free-browse |
+| Steps | guest บน feed แท็บ ทั้งหมด → แตะ กำลังติดตาม → Member Sheet เด้ง → dismiss → แตะ รายการโปรด → เด้งอีก |
+| Expected | สลับได้ทุกแท็บไม่มี sheet — Following/Favorites แสดง empty เพราะไม่มีความสัมพันธ์ (GATE-042) |
+| Actual | ทั้งสองแท็บ → Member Sheet ทันที แท็บ ทั้งหมด เท่านั้นที่ free |
+| หมายเหตุเพิ่ม | เข้าใจได้ในเชิงออกแบบ (Following ไม่มีความหมายกับ guest) แต่เบี่ยงจาก spec — ให้ dev/PO ตัดสินว่าจะแก้แอปหรือแก้ spec |
+
+## F-009 — ติ๊ก Don't-show แล้ว action gate เปลี่ยนเป็นหน้า Sign in เต็มจอ (ไม่ใช่ sheet)
+
+| ฟิลด์ | รายละเอียด |
+|---|---|
+| สถานะ | NEW — ยืนยันด้วย automation + hierarchy dump |
+| พบเมื่อ | 2026-11-06 (flow-d-guest-gate-deep, GATE-033 tail) |
+| Severity | Low — gate ยังบล็อก action ได้ปกติ ต่างแค่รูปแบบ prompt |
+| Steps | first-run sheet → ติ๊ก ไม่ต้องแสดงข้อความนี้อีก → ข้ามไปก่อน (relaunch เงียบถูกต้องตาม GATE-033) → แตะแท็บ แชท |
+| Expected | Member Sheet เด้งจาก action ตามปกติ (GATE-033: "gate จาก action ยังเด้ง") |
+| Actual | เปลี่ยนเป็นหน้า Sign in เต็มจอ (ยินดีต้อนรับกลับสู่ตึกแดง + ฟอร์มอีเมล/รหัสผ่าน + Google) แทน bottom sheet — เข้าท่าในเชิง UX (user บอกแล้วว่าไม่อยากเห็น sheet) แต่ deviate จาก spec literal |
+| หมายเหตุเพิ่ม | flow-d assert แบบ tolerant (`เข้าร่วมตึกแดง‖ยินดีต้อนรับกลับ‖Welcome back`) — ขอ dev confirm ว่า by design; ถ้าใช่ spec 17 ควรอัปเดตคำว่า gate ให้ครอบ page variant |
+
+## F-010 — bookmark shortcut บน search head gate guest (spec ว่าเปิด Saved hub ว่าง)
+
+| ฟิลด์ | รายละเอียด |
+|---|---|
+| สถานะ | NEW — ยืนยันด้วย automation + screenshot (ไอคอน bookmark ชัด + sheet เด้ง) |
+| พบเมื่อ | 2026-11-06 (flow-e-search-guest) |
+| Severity | Low — guest เปิดหน้า Saved ว่างไม่ได้ ขัด spec; เข้าใจได้ในเชิงออกแบบ (saved ผูกบัญชี) |
+| Steps | guest → search landing → แตะไอคอน bookmark มุมขวาบนของ search head |
+| Expected | เปิด Saved hub empty "Nothing saved yet" โดยไม่มี sheet (GATE-015: "sr-saved ไม่ gate") |
+| Actual | Member Sheet เด้งทันที (body variant "เข้าสู่ระบบหรือสมัครสมาชิกฟรีเพื่อใช้ฟีเจอร์นี้") |
+| หมายเหตุเพิ่ม | ให้ dev/PO ตัดสินแก้แอปหรือแก้ spec — ถ้า by design ให้ spec 17 ปรับ GATE-015 |
+
+## F-011 — sign out แล้ว gate sheet ไม่เด้งทันที (spec ว่าเด้งหลัง logout)
+
+| ฟิลด์ | รายละเอียด |
+|---|---|
+| สถานะ | NEW — ยืนยันด้วย automation + manual probe |
+| พบเมื่อ | 2026-11-06 (flow-f-member-signout + manual adb verify) |
+| Severity | Low — guest browse ต่อได้ปกติ gate ทำงานเมื่อแตะ action |
+| Steps | member → profile → burger → ออกจากระบบ → ยืนยัน → จบบน feed → รอ ~4 วิ สังเกต |
+| Expected | feed guest + Member Sheet เด้งทันที + toast "Logged out" (GATE-035 / spec 01 §8) |
+| Actual | กลับ guest feed เงียบ ๆ ไม่มี sheet auto-pop (guest ยืนยันแล้ว — แตะแท็บแชทเจอ sheet ปกติ) · toast ไม่อยู่ใน a11y tree verify ไม่ได้ |
+| หมายเหตุเพิ่ม | re-prompt เด้งเฉพาะตอน launchApp (GATE-034) — logout transition ไม่ trigger; ให้ dev confirm by design หรือ bug |
+
+## ข้อเท็จจริง selector เพิ่ม (จาก flow-d run)
+
+- **Member sheet เป็น modal จริง** — tap โซน nav ขณะ sheet เปิดโดนปุ่มบน sheet แทน: พิกัด 68%,93% ตรงปุ่ม Google (เปิด OS provider UI ได้) — ห้ามใช้พิกัด nav ซ้ำตอน sheet เปิด จะลั่นเข้า social sign-in
+- **Google SSO provider UI เปิดจาก sheet ได้** — emulator มี Google account (Kultida Tangtrakulsang) → "Choose an account" เด้ง → device back ยกเลิกกลับ feed/sheet ไม่มี session (ครอบ GATE-032 cancel leg บางส่วน)
+- **Sign-up page assert text** — หน้า create account จับได้ด้วย `สร้างบัญชี` (หรือ `ยืนยันอีเมล`)
