@@ -115,6 +115,7 @@
 | Expected | back กลับ Member Sheet (GATE-031: "back กลับ Member Sheet ไม่ใช่ feed") |
 | Actual | back ทั้งสองจุดกลับ guest feed ตรง ๆ — sheet ถูก pop ไปพร้อมกัน ไม่มี gate ค้าง (session ไม่ถูกสร้าง ผิดเฉพาะปลายทาง back) |
 | หมายเหตุเพิ่ม | flow-d assert พฤติกรรมจริงไว้ — ถ้า dev แก้ให้ตรง spec flow จะแดงเป็น signal |
+| QA recommendation | **บั๊ก — dev แก้ตาม spec:** spec สมเหตุสมผล (sheet = จุดตัดสินใจ user ยังไม่เลือก back ต้องเจอทางเลือกเดิม) ไม่มีเหตุผลให้เบี่ยง |
 
 ## F-008 — feed tabs กำลังติดตาม/รายการโปรด gate guest (spec ว่า free browse)
 
@@ -127,6 +128,7 @@
 | Expected | สลับได้ทุกแท็บไม่มี sheet — Following/Favorites แสดง empty เพราะไม่มีความสัมพันธ์ (GATE-042) |
 | Actual | ทั้งสองแท็บ → Member Sheet ทันที แท็บ ทั้งหมด เท่านั้นที่ free |
 | หมายเหตุเพิ่ม | เข้าใจได้ในเชิงออกแบบ (Following ไม่มีความหมายกับ guest) แต่เบี่ยงจาก spec — ให้ dev/PO ตัดสินว่าจะแก้แอปหรือแก้ spec |
+| QA recommendation | **เสนอปรับ spec = gated entry:** spec ตั้งใจเขียนแต่ไม่ consistent กับ gate model เดียวกัน (chat/alerts/profile ที่ผูก relationship gate หมด) — empty state Following/Favorites ไม่มีคุณค่าจริงสำหรับ guest แอปทำตาม pattern ตัวเองสม่ำเสมออยู่แล้ว |
 
 ## F-009 — ติ๊ก Don't-show แล้ว action gate เปลี่ยนเป็นหน้า Sign in เต็มจอ (ไม่ใช่ sheet)
 
@@ -139,6 +141,7 @@
 | Expected | Member Sheet เด้งจาก action ตามปกติ (GATE-033: "gate จาก action ยังเด้ง") |
 | Actual | เปลี่ยนเป็นหน้า Sign in เต็มจอ (ยินดีต้อนรับกลับสู่ตึกแดง + ฟอร์มอีเมล/รหัสผ่าน + Google) แทน bottom sheet — เข้าท่าในเชิง UX (user บอกแล้วว่าไม่อยากเห็น sheet) แต่ deviate จาก spec literal |
 | หมายเหตุเพิ่ม | flow-d assert แบบ tolerant (`เข้าร่วมตึกแดง‖ยินดีต้อนรับกลับ‖Welcome back`) — ขอ dev confirm ว่า by design; ถ้าใช่ spec 17 ควรอัปเดตคำว่า gate ให้ครอบ page variant |
+| QA recommendation | **เสนอปรับ spec ชัด ๆ:** spec เป็นฝั่งไม่สมเหตุสมผล — user ติ๊ก opt-out แล้ว spec จะให้ sheet เดิมเด้งทับ ขัดเจตนา user; แอปเปิดหน้า sign-in เต็มจอ = ให้เกียรติ opt-out และยังบล็อก action เหมือนเดิม → action gate = sheet หรือ page ก็ได้ |
 
 ## F-010 — bookmark shortcut บน search head gate guest (spec ว่าเปิด Saved hub ว่าง)
 
@@ -151,6 +154,7 @@
 | Expected | เปิด Saved hub empty "Nothing saved yet" โดยไม่มี sheet (GATE-015: "sr-saved ไม่ gate") |
 | Actual | Member Sheet เด้งทันที (body variant "เข้าสู่ระบบหรือสมัครสมาชิกฟรีเพื่อใช้ฟีเจอร์นี้") |
 | หมายเหตุเพิ่ม | ให้ dev/PO ตัดสินแก้แอปหรือแก้ spec — ถ้า by design ให้ spec 17 ปรับ GATE-015 |
+| QA recommendation | **เสนอ ruling 2 ทาง — หนูเอนปรับ spec = gate:** (ก) ตาม spec = dev เปิด saved hub ว่างให้ guest (ข) ปรับ spec = gate เหมือน feature ผูกบัญชีอื่น — saved คือข้อมูลผูกบัญชี หน้าว่างตลอดสำหรับ guest เป็น dead-end |
 
 ## F-011 — sign out แล้ว gate sheet ไม่เด้งทันที (spec ว่าเด้งหลัง logout)
 
@@ -163,6 +167,7 @@
 | Expected | feed guest + Member Sheet เด้งทันที + toast "Logged out" (GATE-035 / spec 01 §8) |
 | Actual | กลับ guest feed เงียบ ๆ ไม่มี sheet auto-pop (guest ยืนยันแล้ว — แตะแท็บแชทเจอ sheet ปกติ) · toast ไม่อยู่ใน a11y tree verify ไม่ได้ |
 | หมายเหตุเพิ่ม | re-prompt เด้งเฉพาะตอน launchApp (GATE-034) — logout transition ไม่ trigger; ให้ dev confirm by design หรือ bug |
+| QA recommendation | **บั๊ก — dev แก้ตาม spec:** re-prompt หลัง logout คือจุด re-engage ตั้งใจไว้ชัด (01 §8) แอปทำครึ่งเดียว — เด้งตอน launch แต่ไม่เด้งตอน logout transition |
 
 ## ข้อเท็จจริง selector เพิ่ม (จาก flow-d run)
 
