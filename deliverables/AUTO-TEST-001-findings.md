@@ -108,7 +108,7 @@
 
 | ฟิลด์ | รายละเอียด |
 |---|---|
-| สถานะ | NEW — ยืนยันด้วย automation + screenshot |
+| สถานะ | NEW → รอส่ง — ruling อนุมัติ = **บั๊ก dev** (2026-11-06) · copy block อยู่ใน `AUTO-TEST-001-bug-report-F007-F011.md` · เปลี่ยนเป็น REPORTED เมื่อพี่ส่ง LINE แล้ว |
 | พบเมื่อ | 2026-11-06 (flow-d-guest-gate-deep, emulator API 34, Store build) |
 | Severity | Low — ผู้ใช้กด back ออกจาก auth page หลุดไป feed แทนที่จะกลับมาตัดสินใจบน sheet อีกครั้ง |
 | Steps | guest → แตะแท็บ แชท → Member Sheet → แตะ สมัครสมาชิก (เข้าหน้า Create account) → กด device back — ทำซ้ำกับ เข้าสู่ระบบ → Sign in page → back |
@@ -121,7 +121,7 @@
 
 | ฟิลด์ | รายละเอียด |
 |---|---|
-| สถานะ | NEW — ยืนยันด้วย automation + screenshot (sheet เด้งเหนือ feed ชัดเจน) |
+| สถานะ | RESOLVED — ปรับ spec ตาม ruling ที่อนุมัติ (2026-11-06): GATE-042 → Following/Favorites = gated entry · checklist/md/triage-17/flow-d อัปเดตแล้ว |
 | พบเมื่อ | 2026-11-06 (flow-d-guest-gate-deep) |
 | Severity | Low-Medium — guest อ่าน empty state ของ Following/Favorites ไม่ได้ ขัด spec free-browse |
 | Steps | guest บน feed แท็บ ทั้งหมด → แตะ กำลังติดตาม → Member Sheet เด้ง → dismiss → แตะ รายการโปรด → เด้งอีก |
@@ -134,7 +134,7 @@
 
 | ฟิลด์ | รายละเอียด |
 |---|---|
-| สถานะ | NEW — ยืนยันด้วย automation + hierarchy dump |
+| สถานะ | RESOLVED — ปรับ spec ตาม ruling ที่อนุมัติ (2026-11-06): GATE-033 tail → action gate เป็น Member Sheet หรือหน้า sign-in เต็มจอก็ได้ · checklist/md/triage-17/flow-d อัปเดตแล้ว |
 | พบเมื่อ | 2026-11-06 (flow-d-guest-gate-deep, GATE-033 tail) |
 | Severity | Low — gate ยังบล็อก action ได้ปกติ ต่างแค่รูปแบบ prompt |
 | Steps | first-run sheet → ติ๊ก ไม่ต้องแสดงข้อความนี้อีก → ข้ามไปก่อน (relaunch เงียบถูกต้องตาม GATE-033) → แตะแท็บ แชท |
@@ -147,7 +147,7 @@
 
 | ฟิลด์ | รายละเอียด |
 |---|---|
-| สถานะ | NEW — ยืนยันด้วย automation + screenshot (ไอคอน bookmark ชัด + sheet เด้ง) |
+| สถานะ | RESOLVED — ปรับ spec ตาม ruling ที่อนุมัติ (2026-11-06): GATE-015 → bookmark shortcut = gated entry (saved ผูกบัญชี) · checklist/md/triage-17/traceability/flow-e อัปเดตแล้ว |
 | พบเมื่อ | 2026-11-06 (flow-e-search-guest) |
 | Severity | Low — guest เปิดหน้า Saved ว่างไม่ได้ ขัด spec; เข้าใจได้ในเชิงออกแบบ (saved ผูกบัญชี) |
 | Steps | guest → search landing → แตะไอคอน bookmark มุมขวาบนของ search head |
@@ -160,7 +160,7 @@
 
 | ฟิลด์ | รายละเอียด |
 |---|---|
-| สถานะ | NEW — ยืนยันด้วย automation + manual probe |
+| สถานะ | NEW → รอส่ง — ruling อนุมัติ = **บั๊ก dev** (2026-11-06) · copy block อยู่ใน `AUTO-TEST-001-bug-report-F007-F011.md` · เปลี่ยนเป็น REPORTED เมื่อพี่ส่ง LINE แล้ว |
 | พบเมื่อ | 2026-11-06 (flow-f-member-signout + manual adb verify) |
 | Severity | Low — guest browse ต่อได้ปกติ gate ทำงานเมื่อแตะ action |
 | Steps | member → profile → burger → ออกจากระบบ → ยืนยัน → จบบน feed → รอ ~4 วิ สังเกต |
@@ -174,3 +174,42 @@
 - **Member sheet เป็น modal จริง** — tap โซน nav ขณะ sheet เปิดโดนปุ่มบน sheet แทน: พิกัด 68%,93% ตรงปุ่ม Google (เปิด OS provider UI ได้) — ห้ามใช้พิกัด nav ซ้ำตอน sheet เปิด จะลั่นเข้า social sign-in
 - **Google SSO provider UI เปิดจาก sheet ได้** — emulator มี Google account (Kultida Tangtrakulsang) → "Choose an account" เด้ง → device back ยกเลิกกลับ feed/sheet ไม่มี session (ครอบ GATE-032 cancel leg บางส่วน)
 - **Sign-up page assert text** — หน้า create account จับได้ด้วย `สร้างบัญชี` (หรือ `ยืนยันอีเมล`)
+
+## F-012 — article detail: like ทำงานผ่าน gate (optimistic) + share ตายเงียบ (GATE-013)
+
+| ฟิลด์ | รายละเอียด |
+|---|---|
+| สถานะ | NEW — ยืนยันด้วย manual probe + uiautomator dump + screenshot (guest ยืนยันแล้วด้วยแท็บแชท → sheet) |
+| พบเมื่อ | 2026-11-06 (adb probe บน board/article, emulator API 34, Store build) |
+| Severity | Medium — gate ไม่ยิงก่อน handler ขัดกติกาแกนของเล่ม 17; ไม่มี server write จริง (like revert) แต่ UX หลอก user |
+| Steps | guest → board → เปิดบทความ → แตะหัวใจ (floating pill ~75.5%,8%) → สังเกต count → back → เปิดใหม่ → แตะไอคอน share (~82.7%,8%) |
+| Expected | like/share ทั้งคู่ → Member Sheet ก่อน handler — like count ไม่ขยับ ไม่มี share sheet (GATE-013; S-03 share ต้อง login ทุก surface) |
+| Actual | **like:** หัวใจแดง + count 12→13 ทันที ไม่มี sheet — แต่ reopen บทความ count กลับ 12 (optimistic UI ล้วน ไม่ persist) · **share:** แตะแล้วไม่เกิดอะไรเลย — ไม่มี sheet ไม่มี share UI ไม่มี feedback (dead no-op) |
+| หมายเหตุเพิ่ม | floating pill icons ไม่มี content-desc — พิกัด: back ~9.5%,8% · like ~75.5%,8% · share ~82.7%,8% · ⋯ ~90%,8% |
+| QA recommendation | **บั๊ก — dev แก้ตาม spec:** like ที่ "ดูเหมือนสำเร็จแล้วเงียบ ๆ revert" แย่กว่า gate ตรง ๆ; share ตายเงียบก็แย่สุด — ทั้งคู่ควรเด้ง Member Sheet เหมือน post บน feed (guest เห็น upsell path เดียวกัน) |
+
+## F-013 — article ⋯ เมนูมี `รายงานบทความ` เปิด report sheet เต็มให้ guest (spec ว่า contract-only + ต้อง gate)
+
+| ฟิลด์ | รายละเอียด |
+|---|---|
+| สถานะ | NEW — ยืนยันด้วย manual probe (ไม่ได้กดส่ง — report submit = staging only ตามกติกา) |
+| พบเมื่อ | 2026-11-06 (adb probe บน article detail เดียวกับ F-012) |
+| Severity | Medium-High — เป็น gate hole สองชั้น: (1) entry ที่ spec บอกว่า dead/contract-only V1 มีจริงบน build (2) เปิด report sheet เต็มได้โดยไม่ผ่าน Member Sheet |
+| Steps | guest → article detail → แตะ ⋯ (floating pill ~90%,8%) → เมนู `รายงานบทความ` → แตะ |
+| Expected | (ก) V1 ไม่ควรมี ⋯/report entry บนบทความ (spec 12 §14: `[data-bdsave]`/`[data-bdact]` dead entries, report article = contract-only → TRS-059) หรือ (ข) ถ้ามี entry ต้อง → Member Sheet ก่อนเปิด report flow (report อยู่ใน login-required ตาม 15 §13) |
+| Actual | เมนู `รายงานบทความ` เปิดได้ → report sheet เต็ม `ทำไมคุณจึงรายงานบทความนี้` + เหตุผล 6 ตัว (คุกคามหรือความเกลียดชัง / สินค้าผิดกฎหมายหรือถูกจำกัด / สแปมหรือทำให้เข้าใจผิด / หลอกลวงหรือฉ้อโกง / เนื้อหาไม่เหมาะสม / อื่นๆ) + `ส่งรายงาน` + เหลือ 300 อักขระ — **ไม่มี Member Sheet คั่นเลย** |
+| หมายเหตุเพิ่ม | ไม่ได้ทดสอบปุ่มส่งรายงาน (staging-only) — ถ้า submit ทำงาน = guest สเปม report ได้ทั้งระบบ; FO Report Article ถูกตัดออกจาก V1 ตาม FO-BO-001 e4 ฝั่ง BO แต่ entry ฝั่ง FO ยังหลงเหลือ |
+| QA recommendation | **บั๊ก — dev แก้:** เลือก 1 ใน 2 — (ก) ถอด ⋯/report entry ออกจาก article V1 ตาม spec (ข) ถ้าจงใจเก็บ report ต้องใส่ gate ก่อนเปิด sheet เหมือน report post/comment; รอ ruling ว่า entry นี้คือของที่ตั้งใจเหลือไว้หรือหลุด scope |
+
+## F-014 — ลิงก์ legal บนหน้า auth เปิด Chrome ภายนอก ไม่ใช่ legal viewer ในแอป (GATE-047)
+
+| ฟิลด์ | รายละเอียด |
+|---|---|
+| สถานะ | NEW — ยืนยันด้วย manual probe (tap `ข้อกำหนดการใช้งาน` → Chrome first-run) |
+| พบเมื่อ | 2026-11-06 (adb probe บนหน้า สร้างบัญชีของคุณ) |
+| Severity | Low — legal อ่านได้จริงแค่ออกนอกแอป; spec อยากได้ in-app viewer ที่มี version + effective date |
+| Steps | guest → gate sheet → สมัครสมาชิก → หน้า สร้างบัญชีของคุณ → แตะลิงก์ `ข้อกำหนดการใช้งาน` (ในประโยค "การดำเนินการต่อถือว่าคุณยอมรับ …") |
+| Expected | legal viewer ในแอปเปิด (ไม่ gate) — แสดง version + effective date + เนื้อหา Terms/Privacy (GATE-047) |
+| Actual | สลับไปเปิด Chrome (external browser intent) — หน้า legal เป็นเว็บภายนอก ไม่มี in-app viewer; device back จาก Chrome ไม่กลับแอปตรง ๆ (ไป Google app/launcher ในเคสนี้) |
+| หมายเหตุเพิ่ม | ลิงก์ `ข้อกำหนดการใช้งาน` พบบนหน้า sign-up — ยังไม่ได้ spot-check ลิงก์ Privacy/จุดอื่นว่าพฤติกรรมเดียวกันหมดไหม; automation ควรเช็คแค่ "ลิงก์มีอยู่" แล้วไม่แตะ (ออกนอกแอปทำ flow พัง) |
+| QA recommendation | **ขอ ruling:** ถ้า legal hosted เว็บตั้งใจ → ปรับ GATE-047 เป็น "legal เปิดได้ผ่าน external browser + version/date แสดงบนหน้าเว็บ"; ถ้า spec ตั้งใจให้อ่านในแอป → dev bug (ต้องมี in-app viewer) — หนูเอนไปทาง by-design เพราะทีมเว็บน่าจะ maintain ที่เดียว |

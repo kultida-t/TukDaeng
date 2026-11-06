@@ -35,13 +35,13 @@
 | overlay layers (viewer/detail/comments sheet) | gate ลอยเหนือ + dismiss แล้ว surface intact · pfp-follow pill | GATE-009..010 |
 | Search | sr-wa watch alert bell · sc-follow seller card | GATE-011..012 |
 | Board | article like · article share (bdlike/bdshare) | GATE-013 |
-| Create + saved hub | [data-flow] `+` ทุกจุด · sr-saved → hub ว่าง (free) | GATE-014..015 |
+| Create + saved hub | [data-flow] `+` ทุกจุด · sr-saved → gated entry (ruling F-010) | GATE-014..015 |
 | Public profile | pf-foll · pf-msg · pf-more · pf-avov-act · pf-flw ใน lists | GATE-016..018 |
 | Bottom nav | chat / alerts / profile tabs — tab ไม่สลับ | GATE-019..021 |
 | Settings + own-profile surfaces | ทุกทางตัน — ไม่มีทางถึง guest | GATE-022..023 |
 | Member Sheet mechanics | anatomy 2 variants · dismiss ทุกวิธี · no-persist · auth routes · SSO · hide flag · sign out | GATE-024..035 |
 | Resume contract | sign in/up/SSO จาก gate → surface คงอยู่ ต้องกดใหม่ · abandon | GATE-036..041 |
-| Guest free-browse | feed tabs · search · board · viewer/detail/sheets read · public profile · legal | GATE-042..048 |
+| Guest free-browse | feed tab ทั้งหมด (Following/Favorites = gated — ruling F-008) · search · board · viewer/detail/sheets read · public profile · legal | GATE-042..048 |
 | Persist / session | kill · sign-out clear · onboarding flags · per-device · guest coach marks · session expiry | GATE-049..054 |
 | TH/EN + light/dark | sheet copy 2 ภาษา 2 variants · gate sheet ตรวจในธีมสว่างและมืด | GATE-055..056 |
 
@@ -85,7 +85,7 @@
 | GATE-012 | [GATE] follow บน seller card ใน results | GUEST/MEMBER | GATE | results มี seller cards | **รอบ A**: scroll ถึง seller card → แตะ `ติดตาม` · **รอบ B** | A: → Member Sheet ปุ่มไม่เปลี่ยน; B: follow toggle | — | MED | |
 | GATE-013 | [GATE] board article like + share | GUEST/MEMBER | GATE | `ART-1` เปิดได้จาก board | **รอบ A**: เปิดบทความ → แตะ like pill → dismiss → แตะ share pill · **รอบ B** | A: ทั้งคู่ → Member Sheet — like count ไม่ขยับ ไม่มี share sheet (S-03: share ต้อง login ทุก surface); B: like toggle + share ทำงาน | — | HIGH | |
 | GATE-014 | [GATE] create `+` ทุก entry | GUEST/MEMBER | GATE | guest บน feed | **รอบ A**: แตะ `+` บน app header → dismiss → หา `+`/ปุ่มสร้างอื่นที่ guest เห็นได้ แตะทีละจุด · **รอบ B**: แตะ `+` | A: ทุก create entry (`[data-flow]`) → Member Sheet — composer ไม่เปิด; B: composer picker เปิด | — | HIGH | |
-| GATE-015 | saved hub เข้าได้แต่ว่าง (ไม่ gate) | GUEST/MEMBER | GATE-inverse | guest บน search landing | **รอบ A**: แตะ bookmark shortcut บน search head → ดูหน้า saved · **รอบ B**: member เข้า saved | A: **ไม่เจอ sheet** — hub เปิดแสดง empty `Nothing saved yet`/`ยังไม่มีรายการที่บันทึก` (sr-saved ไม่อยู่ใน gate list — hub ว่างอยู่แล้ว); B: เห็นรายการที่ save ไว้ | — | MED | |
+| GATE-015 | saved hub = gated entry | GUEST/MEMBER | GATE | guest บน search landing | **รอบ A**: แตะ bookmark shortcut บน search head · **รอบ B**: member เข้า saved | A: → Member Sheet `เข้าร่วมตึกแดง`/`Join TukDaeng` ก่อน handler — hub **ไม่เปิด** (saved ผูกบัญชี — ruling F-010 อนุมัติ 2026-11-06 แก้จาก spec 11 §16 เดิมที่ให้ guest เข้า hub ว่าง); B: เห็นรายการที่ save ไว้ | — | MED | |
 
 ### 2.3 Gate Matrix — Profile / Nav / Settings
 
@@ -113,7 +113,7 @@
 | GATE-030 | กดรัว → sheet ใบเดียว | GUEST | EDGE | guest บน feed | แตะ gated action รัว ๆ หลายครั้งก่อน sheet ขึ้นเต็ม | เปิด sheet เดียวไม่ stack ซ้ำ ไม่กระพริบหลายใบ | — | LOW | |
 | GATE-031 | เส้นทาง Sign up / Sign in จาก sheet | GUEST | POSITIVE | gate sheet เปิด | (1) `สมัครสมาชิก` → ดูหน้า → back (2) `เข้าสู่ระบบ` → ดูหน้า → back | `Sign up` → หน้า `Create your account` · `Sign in` → หน้า `Sign in` — back จากทั้งสองหน้า**กลับ Member Sheet** ไม่ใช่ออกไป feed | sheet กลายเป็นหน้า auth เต็มจอ | HIGH | |
 | GATE-032 | SSO row จาก sheet | GUEST | POSITIVE | gate sheet เปิด + มีบัญชี Apple/Google ทดสอบ — ไม่มี → `BLOCK` | `Google`/`Apple` → ดู flow → (ทำซ้ำ) ยกเลิกกลาง provider sheet | เลือก → เปิด provider sign-in ของ OS จริง (ไม่มี toast placeholder) — ยกเลิกกลาง flow → กลับ Member Sheet/session guest เดิม | — | MED | |
-| GATE-033 | hide + Skip → run ถัดไปเงียบ | GUEST | STATE | first-run member sheet บนแอปสะอาด | ติ๊ก `Don't show this again` → `Skip for now` → kill app → เปิดใหม่ → kill อีกครั้ง → เปิดใหม่ | ทุก run ถัดไปเข้า feed เงียบ ๆ **ไม่แสดง sheet อัตโนมัติอีก** (persist `fo_member_hide` — AC-AUTH-030) — แต่ gate จาก action ยังเด้งปกติ | checkbox ติดจริงก่อน Skip | HIGH | |
+| GATE-033 | hide + Skip → run ถัดไปเงียบ | GUEST | STATE | first-run member sheet บนแอปสะอาด | ติ๊ก `Don't show this again` → `Skip for now` → kill app → เปิดใหม่ → kill อีกครั้ง → เปิดใหม่ → แตะ gated action (เช่น แท็บแชท) | ทุก run ถัดไปเข้า feed เงียบ ๆ **ไม่แสดง sheet อัตโนมัติอีก** (persist `fo_member_hide` — AC-AUTH-030) — แต่ gate จาก action ยังเด้งปกติ **เป็น Member Sheet หรือหน้า sign-in เต็มจอก็ได้** (ruling F-009 อนุมัติ 2026-11-06: ทั้งสอง variant ให้เกียรติ opt-out และบล็อก action เหมือนกัน) | checkbox ติดจริงก่อน Skip | HIGH | |
 | GATE-034 | ไม่ hide + Skip → sheet เด้งใหม่ run ถัดไป | GUEST | STATE | ต้อง reset แอปสะอาดอีกรอบ (หลัง GATE-033) | onboarding ใหม่ → member sheet **ไม่ติ๊ก** hide → `Skip for now` → kill → เปิดใหม่ | run ถัดไป member sheet **เด้งอัตโนมัติอีก** เป็น re-prompt (flag `fo_member_hide` ไม่ถูกตั้ง — spec เงื่อนไข "เข้าเงียบ" ผูกกับการติ๊กเท่านั้น) | — | MED | |
 | GATE-035 | sign out → gate sheet ทันที | MEMBER→GUEST | STATE | sign in อยู่ | Settings → `ออกจากระบบ` → ยืนยัน → สังเกต → แตะ scrim/Skip | หลัง logout เข้า feed เป็น guest + Member Sheet gate variant เด้งทันทีให้ sign in กลับ (spec 01 §8 step 3) — dismiss แล้ว browse ต่อเป็น guest | toast `ออกจากระบบสำเร็จ`/`Logged out successfully` + sheet ทับ feed | HIGH | |
 
@@ -132,7 +132,7 @@
 
 | TC ID | Feature | Actor | Type | Precondition | Test Steps | Expected — การทำงาน | Expected — การแสดงผล | Priority | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| GATE-042 | feed ทั้ง 3 tabs ใช้ได้เสรี | GUEST | GATE-inverse | guest บน feed | สลับ `ทั้งหมด`/`กำลังติดตาม`/`รายการโปรด` กลับไปมา + scroll + pull | สลับได้ทุกแท็บไม่มี sheet — Following/Favorites แสดง empty state เพราะ guest ไม่มีความสัมพันธ์ (§11) | tab สลับจริง ไม่ใช่ค้าง All | HIGH | |
+| GATE-042 | feed tabs — All free / Following·Favorites gated | GUEST | GATE | guest บน feed | แท็บ `ทั้งหมด`/`All` + scroll + pull → แตะ `กำลังติดตาม`/`Following` → dismiss → แตะ `รายการโปรด`/`Favorites` → dismiss | `ทั้งหมด` free — scroll/pull ไม่มี sheet · `กำลังติดตาม`/`รายการโปรด` → Member Sheet ก่อน handler (gated entry — relationship surfaces ผูกบัญชีตาม gate model เดียวกับ chat/alerts/profile — ruling F-008 อนุมัติ 2026-11-06 แก้จาก free-browse เดิม) | แท็บ active ค้าง All ระหว่าง gate | HIGH | |
 | GATE-043 | search + filter + recents เสรี | GUEST | GATE-inverse | guest | explore tiles → พิมพ์ suggest → submit results → เปิด sfilter → ใส่ brand/price → Apply → เปิด recents → ลบแถว/Clear all | ทุกขั้นทำได้ไม่มี sheet — filter apply จริง chips ขึ้น recents จัดการได้ | — | HIGH | |
 | GATE-044 | board read เสรี | GUEST | GATE-inverse | guest | แท็บ `กระดานข่าว` → เลื่อน hero/dots → View all → เลือก category → search → เปิด `ART-1` อ่าน | browse/read ได้ครบไม่มี sheet — กระทั่งแตะ like/share เท่านั้นที่ gate (GATE-013) | — | MED | |
 | GATE-045 | viewer/detail/comments/likes read เสรี | GUEST | GATE-inverse | guest | เปิด viewer จาก tile → เลื่อนโพสต์ → เปิด caption/details sheets → View full detail → เปิด comments อ่าน → เปิด likes sheet อ่าน | read surfaces ทั้งหมดเปิดได้ไม่มี sheet — gate เฉพาะ write/action เท่านั้น | — | HIGH | |
@@ -165,7 +165,9 @@
 | **gate list ครอบ selector ลูกผ่านพ่อ** — `.sc-follow` (seller card) มี class `.follow-btn` และ `pfp-follow` มี class `.pf-foll` อยู่แล้ว — gate ทำงานแม้ selector ย่อยไม่อยู่ใน list ตรง ๆ — build ต้องเช็กผลจริง ไม่ใช่ชื่อ class | observed in prototype | GATE-010/012 |
 | **`[data-bdsave]`/`[data-bdact]` = dead entries** — spec 12 §14 บอก gate list ยังคุมไว้ แต่ V1 ไม่มี entry จริงบนบทความ (report article = contract-only → TRS-059) — build ที่มี entry เหล่านี้ต้อง gate ด้วยเช่นกัน | contract-only V1 | GATE-013 |
 | **hide flag มีผลเฉพาะ first-run sheet** — `fo_member_hide` ไม่ปิด gate variant — guest ที่ติ๊ก hide แล้วยังเจอ sheet ทุกครั้งที่แตะ gated action (spec §11: gate mode ไม่จำ choice) — ส่วน re-prompt ตอน launch (GATE-034) อิงเงื่อนไข spec: "เข้าเงียบ" ผูกกับการติ๊กเท่านั้น | spec-implied | GATE-029/033/034 |
-| **saved hub guest → เข้าได้แต่ empty** — `sr-saved` ไม่อยู่ใน gate list (spec 11 §16 not-gated column) — wishlist/settings path ตันเพราะ pf-menu gated — ถ้า build gate bookmark shortcut = FAIL เพราะ spec ให้เข้า | spec 11 §16 | GATE-015 |
+| **saved hub guest → gated entry** — ruling F-010 (2026-11-06): saved ผูกบัญชี หน้าว่างสำหรับ guest เป็น dead-end → spec ปรับจาก "เข้าได้แต่ empty" (spec 11 §16 เดิม) เป็น gate เหมือน feature ผูกบัญชีอื่น — build ที่เปิด hub ว่างให้ guest = FAIL | ruling F-010 | GATE-015 |
+| **feed tabs Following/Favorites = gated entry** — ruling F-008 (2026-11-06): app gate consistent กับ relationship surfaces (chat/alerts/profile gate หมด) — spec ปรับจาก free-browse เป็น gated; แท็บ `ทั้งหมด` ยัง free + scroll/pull ไม่มี sheet | ruling F-008 | GATE-042 |
+| **action gate หลังติ๊ก Don't-show = sheet หรือ sign-in page** — ruling F-009 (2026-11-06): opt-out มีผลเฉพาะ first-run re-prompt — gate จาก action ยังเด้งทุกครั้ง แต่ build เลือก variant ได้ทั้ง Member Sheet/หน้า sign-in เต็มจอ | ruling F-009 | GATE-033 |
 | **second-layer = defense-in-depth** — `.pm-*`/`.rp-*`/`.blk-*`/`.ch-rep-*`/`.ni-*`/`.pf-sh-*`/`.sh-add`/`.sh-fr`/`.al-fbtn`/`.set-btn`/`.pf-rmf`/`.pf-dots`/`.pf-unblock` อยู่ใน gate list แต่ guest ถึงไม่ได้เพราะ parent gate — เคสเช็ก "ไม่มีทางหลุด" แทนการเทสทีละตัว (internals อยู่เล่มเจ้าของ feature) | by design | GATE-006/023 |
 | **SSO จาก gate ต้องมีบัญชี provider ทดสอบ** — returning = silent `new`; first-time = social registration — ไม่มีบัญชี Apple/Google ผูกเครื่อง → BLOCK | BLOCK ล่วงหน้า | GATE-032/040 |
 | **guest ไม่มีทางเปลี่ยนภาษา/ธีมในแอป** — settings ทั้งชุด gated (§11) — ภาษาของ guest = ที่เลือกตอน onboarding หรือค่า persist บนเครื่องจาก member ก่อน sign out — ถ้า build ให้ guest เข้า lang/theme ได้ผ่านทางอื่น = FAIL GATE-022 | spec §11 | GATE-022/055/056 |
@@ -189,14 +191,14 @@
 | `[data-bdlike]` `[data-bdshare]` (+ dead `[data-bdsave]`/`[data-bdact]`) | GATE-013 | dead entries → §3 watch |
 | `.sr-wa` | GATE-011 | |
 | `[data-flow]` (feed `+` / profile `+` / CTA) | GATE-014 | own-profile entries ถึงไม่ได้เพิ่มเติมที่ GATE-023 |
-| `sr-saved` saved hub (NOT gated) | GATE-015 | เช็กว่า*ไม่* gate |
+| `sr-saved` saved hub (gated — ruling F-010) | GATE-015 | เช็กว่า gate เหมือน feature ผูกบัญชี |
 | `[data-navgo="chat"/"alerts"/"profile"]` | GATE-019..021 | |
 | `.pf-menu` `.pf-edit` `.pf-share` `.pf-rmf` `.pf-dots` `.pf-unblock` `.pf-sh-*` + settings/portfolio/walerts/about | GATE-022, 023 | settings ทั้งชุด + own surfaces ตัน |
 | Member Sheet gate variant (`.ob` `obGate`) | GATE-024..030, 035 | canonical 00_GLOBAL §11 |
 | Member Sheet first-run + `Don't show this again` (`fo_member_hide`) | GATE-025, 033, 034 | AC-AUTH-030 |
 | auth routes sign up / sign in / SSO จาก sheet | GATE-031, 032, 040 | flow internals → FO-TEST-01 |
 | resume contract (surface คงอยู่ ไม่มี pending-action resume) | GATE-036..041 | lock 15 §13 / 01 §8 |
-| Guest Capabilities (feed tabs/search/board/viewer/detail/public profile/legal/comments-likes read) | GATE-042..048 | AC-GLOBAL-017 |
+| Guest Capabilities (feed tab ทั้งหมด/search/board/viewer/detail/public profile/legal/comments-likes read — Following/Favorites gated ตาม ruling F-008) | GATE-042..048 | AC-GLOBAL-017 |
 | Session model + data rules (guest persist/clear/new powers) | GATE-049..052, 039 | GUEST-001, 00_GLOBAL §7 |
 | onboarding flags (onboarded/member_hide/toured/coach marks) | GATE-051..053 | 00_GLOBAL §7 |
 | token expiry/revoke (contract) | GATE-054 | |

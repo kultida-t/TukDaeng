@@ -1,0 +1,438 @@
+# Flow G — Guest free-browse: board read / viewer+detail read / public profile /
+#          legal presence / sweep — every read surface must stay sheet-free
+# TC refs: GATE-044 (board home → boardall → categories sheet → board search →
+#          article read), GATE-045 (comments sheet read + input gate + caption/
+#          spec/detail read + likes sheet read), GATE-046 (public profile read:
+#          stats/followers list/avatar overlay/grid → viewer), GATE-010/017/018
+#          spot gates, GATE-002 input gate + GATE-009 layer restore, GATE-047
+#          (legal link presence — NEVER tap: opens external Chrome, F-014),
+#          GATE-048 (sweep: scroll/pull/tap free surfaces, no gate holes)
+# ⚠ Findings encoded as ACTUAL (red = dev fixed it): F-012 article like =
+#    optimistic +1 no gate + share = dead no-op; F-013 ⋯ → report sheet opens
+#    ungated (never submit — report is staging-only); F-014 legal → Chrome.
+# Facts: nav items HAVE text descs (ฟีด/แชท/กระดานข่าว/แจ้งเตือน/โปรไฟล์) but the
+#        bar auto-hides on scroll-down — tap right after landing or reveal with
+#        a short DOWN swipe first. Member-sheet scrim = top ~40% (y<914/2337);
+#        sheet buttons occupy the bottom ~60% — never point-tap the nav zone
+#        while a sheet is open. Article floating pills have NO desc (whole-%):
+#        back ~9%,8% · like ~75%,8% · share ~83%,8% · ⋯ ~90%,8%.
+appId: com.univerza.tukdaeng
+name: "Flow G — Guest free-browse"
+tags: [guest, free-browse, regression]
+---
+- launchApp:
+    clearState: true   # = adb pm clear — fresh install, guest only
+- runFlow:
+    file: subflows/onboarding-to-guest.yaml
+    label: "SETUP-02/03 — onboarding → guest feed"
+
+# ================= GATE-044 — board read free =================
+- tapOn:
+    text: "^กระดานข่าว$|^[Bb]oard$"
+- extendedWaitUntil:
+    visible:
+      text: ".*TUK DAENG.*กระดานข่าว.*|.*TUK DAENG.*[Bb]oard.*"
+    timeout: 15000
+- assertVisible:
+    text: ".*อ่านต่อ.*|.*[Rr]ead more.*"        # hero CTA
+- assertVisible:
+    text: ".*บทความล่าสุด.*|.*[Ll]atest.*"      # Latest Articles section
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# hero carousel drag (BRD-006 spirit: swipe moves slide, does not open)
+- swipe:
+    start: "80%,45%"
+    end: "20%,45%"
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# View all → boardall: crumb + category pills
+# NOTE: the Latest header is ONE merged desc ("บทความล่าสุด\nดูทั้งหมด")
+#       whose actionable zone is the right side — text tap hits center and
+#       dead-ends, so use a point tap at ~86%,67% (verified 930,1617).
+- tapOn:
+    point: "86%,67%"
+- extendedWaitUntil:
+    visible:
+      text: ".*บทความล่าสุด.*|.*[Ll]atest.*"
+    timeout: 10000
+- assertVisible:
+    text: "^ทั้งหมด$|^All$"
+
+# category pill → filtered list (+ end note when the cat has 1 article)
+- tapOn:
+    text: "^ตลาดนาฬิกา$|^[Mm]arket.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*Daytona.*|.*คุณดูครบทั้งหมดแล้ว.*|.*all caught up.*"
+    timeout: 10000
+- pressKey: back   # boardall → board home
+
+# categories burger (≡, no desc — ~8%,8%) → sheet → pick a category
+- extendedWaitUntil:
+    visible:
+      text: ".*อ่านต่อ.*|.*[Rr]ead more.*"
+    timeout: 10000
+- tapOn:
+    point: "8%,8%"
+- extendedWaitUntil:
+    visible:
+      text: ".*หมวดหมู่.*|.*[Cc]ategor.*"
+    timeout: 10000
+- tapOn:
+    text: "^ตลาดนาฬิกา$|^[Mm]arket.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*บทความล่าสุด.*|.*[Ll]atest.*"
+    timeout: 10000
+- pressKey: back   # → board home
+
+# board search (magnifier, no desc — ~92%,8%) → popular chips → result
+- tapOn:
+    point: "92%,8%"
+- extendedWaitUntil:
+    visible:
+      text: ".*หัวข้อยอดนิยม.*|.*[Pp]opular.*|.*[Tt]rending.*"
+    timeout: 10000
+- tapOn:
+    text: "^Daytona$"
+- extendedWaitUntil:
+    visible:
+      text: ".*ผลลัพธ์.*|.*[Rr]esult.*"
+    timeout: 10000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- pressKey: back   # results → search page OR board home (stack varies)
+- runFlow:
+    when:
+      visible:
+        text: ".*หัวข้อยอดนิยม.*|.*[Pp]opular.*|.*[Tt]rending.*"
+    commands:
+      - pressKey: back   # still on search input page → board home
+# never press back a third time — board home is root-level here and extra
+# backs exit the app (verified: overshoot lands on launcher/Google app)
+- extendedWaitUntil:
+    visible:
+      text: ".*อ่านต่อ.*|.*[Rr]ead more.*"
+    timeout: 10000
+
+# open the hero article via อ่านต่อ → read free
+- tapOn:
+    text: ".*อ่านต่อ.*|.*[Rr]ead more.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*ผู้เขียน.*|.*[Aa]uthor.*"
+    timeout: 15000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- swipe:
+    direction: UP
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# GATE-013 legs — ⚠ F-012 (DEV BUG candidates, pending ruling): like fills
+# optimistically +1 with NO gate (reverts on reopen — verified); share is a
+# dead no-op. Asserts encode ACTUAL: no sheet may appear.
+- tapOn:
+    point: "75%,8%"          # article like pill (bounds [775,160][854,238])
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*|.*ยินดีต้อนรับกลับ.*|.*Welcome back.*"
+- tapOn:
+    point: "83%,8%"          # article share pill — dead no-op for guest
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*|.*ยินดีต้อนรับกลับ.*|.*Welcome back.*"
+
+# ⚠ F-013: ⋯ → รายงานบทความ opens the FULL report sheet with NO gate.
+# NEVER tap ส่งรายงาน — report submit is staging-only.
+- tapOn:
+    point: "90%,8%"
+- extendedWaitUntil:
+    visible:
+      text: ".*รายงานบทความ.*|.*[Rr]eport.*"
+    timeout: 10000
+- tapOn:
+    text: ".*รายงานบทความ.*|.*[Rr]eport.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*ทำไมคุณจึงรายงาน.*|.*[Ww]hy.*report.*"
+    timeout: 10000
+- assertVisible:
+    text: ".*ส่งรายงาน.*|.*[Ss]ubmit.*|.*[Ss]end.*"
+- pressKey: back   # dismiss report sheet — do not submit
+- pressKey: back   # article → board home
+
+# ================= GATE-045 — feed read surfaces =================
+- extendedWaitUntil:
+    visible:
+      text: ".*TUK DAENG.*กระดานข่าว.*|.*TUK DAENG.*[Bb]oard.*"
+    timeout: 10000
+- tapOn:
+    text: "^ฟีด$|^[Ff]eed$"
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 15000
+
+# comments sheet — opens free for guest (GATE-002 first half)
+- scrollUntilVisible:
+    element:
+      text: ".*ความคิดเห็น.*|.*[Cc]omment.*"
+    direction: DOWN
+- tapOn:
+    text: "^ความคิดเห็น$|^[Cc]omment.*"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: ".*เพิ่มความคิดเห็น.*|.*[Aa]dd a comment.*|.*ยังไม่มีความคิดเห็น.*|.*[Nn]o comments.*"
+    timeout: 10000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# GATE-002 second half: comment input → Member Sheet
+- tapOn:
+    text: ".*เพิ่มความคิดเห็น.*|.*[Aa]dd a comment.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*|.*ยินดีต้อนรับกลับ.*|.*Welcome back.*"
+    timeout: 10000
+- pressKey: back
+
+# GATE-009: gate dismiss → comments sheet underneath stays intact
+- extendedWaitUntil:
+    visible:
+      text: ".*เพิ่มความคิดเห็น.*|.*[Aa]dd a comment.*|.*ยังไม่มีความคิดเห็น.*|.*[Nn]o comments.*"
+    timeout: 10000
+- pressKey: back   # comments sheet → feed
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 10000
+
+# caption expand → spec box → Post Detail (read free, flow-a verified descs)
+- scrollUntilVisible:
+    element:
+      text: ".*\\sเพิ่มเติม$|.*\\s[Mm]ore$"
+    direction: DOWN
+- tapOn:
+    text: ".*\\sเพิ่มเติม$|.*\\s[Mm]ore$"
+- scrollUntilVisible:
+    element:
+      text: ".*แตะเพื่อดูรายละเอียด.*|.*Tap for details.*"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    text: ".*แตะเพื่อดูรายละเอียด.*|.*Tap for details.*"
+- scrollUntilVisible:
+    element:
+      text: ".*ดูรายละเอียดทั้งหมด.*|.*View full detail.*"
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    text: ".*ดูรายละเอียดทั้งหมด.*|.*View full detail.*"
+- extendedWaitUntil:
+    visible:
+      text: "^รายละเอียด$|^Details$"
+    timeout: 15000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- pressKey: back
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 10000
+
+# likes row → likes sheet (free read + per-row ติดตาม)
+- scrollUntilVisible:
+    element:
+      text: ".*ถูกใจโดย.*|.*[Ll]iked by.*"
+    direction: DOWN
+- tapOn:
+    text: ".*ถูกใจโดย.*|.*[Ll]iked by.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*ยอดถูกใจ.*|.*[Ll]ikes.*"
+    timeout: 10000
+- assertVisible:
+    text: ".*มีเพียง.*สามารถดูจำนวน.*|.*[Oo]nly.*can see.*"
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- pressKey: back   # likes sheet → feed
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 10000
+
+# ================= GATE-046 — public profile read =================
+# (feed may be scrolled deep after the likes row — scroll back up to the
+#  author row first)
+- scrollUntilVisible:
+    element:
+      text: "^the watch$"
+    direction: UP
+    timeout: 30000
+- tapOn:
+    text: "^the watch$"   # author name on first post card → public profile
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: ".*ผู้ติดตาม.*|.*[Ff]ollowers.*"
+    timeout: 15000
+- assertVisible:
+    text: ".*กำลังติดตาม.*|.*[Ff]ollowing.*"
+- assertVisible:
+    text: ".*โพสต์.*|.*[Pp]osts.*"
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+
+# profile tabs switch free
+- tapOn:
+    text: "^ขาย$|^[Ss]elling.*"
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- tapOn:
+    text: "^ทั้งหมด$|^All$"
+
+# followers stat → list opens free (DEC-60 guest-viewable)
+- tapOn:
+    text: ".*ผู้ติดตาม.*|.*[Ff]ollowers.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*ผู้ติดตาม.*|.*[Ff]ollowers.*"
+    timeout: 10000
+- assertVisible:
+    text: ".*กำลังติดตาม.*|.*[Ff]ollowing.*"
+
+# GATE-018: per-row ติดตาม → Member Sheet
+- tapOn:
+    text: "^ติดตาม$|^[Ff]ollow$"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*|.*ยินดีต้อนรับกลับ.*|.*Welcome back.*"
+    timeout: 10000
+- pressKey: back   # dismiss gate
+- pressKey: back   # followers list → profile
+
+# avatar → overlay shell free; actions gate (GATE-017)
+- extendedWaitUntil:
+    visible:
+      text: ".*ผู้ติดตาม.*|.*[Ff]ollowers.*"
+    timeout: 10000
+- tapOn:
+    point: "14%,17%"    # avatar bounds verified ~[42,307][252,517]
+- extendedWaitUntil:
+    visible:
+      text: ".*คัดลอกลิงก์.*|.*[Cc]opy link.*|.*คิวอาร์โค้ด.*|.*QR.*"
+    timeout: 10000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- tapOn:
+    text: "^ติดตาม$|^[Ff]ollow$"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*|.*ยินดีต้อนรับกลับ.*|.*Welcome back.*"
+    timeout: 10000
+- pressKey: back   # dismiss gate — actual: may collapse overlay+profile too
+- runFlow:
+    when:
+      visible:
+        text: ".*คัดลอกลิงก์.*|.*[Cc]opy link.*|.*คิวอาร์โค้ด.*|.*QR.*"
+    commands:
+      - pressKey: back   # overlay still open → close it
+# we land on profile OR feed depending on collapse — re-open profile if needed
+- runFlow:
+    when:
+      notVisible:
+        text: ".*ผู้ติดตาม.*|.*[Ff]ollowers.*"
+    commands:
+      - scrollUntilVisible:
+          element:
+            text: "^the watch$"
+          direction: UP
+          timeout: 30000
+      - tapOn:
+          text: "^the watch$"
+          index: 0
+- extendedWaitUntil:
+    visible:
+      text: ".*ผู้ติดตาม.*|.*[Ff]ollowers.*"
+    timeout: 15000
+
+# grid tile → โพสต์ viewer; follow pill on viewer head gates (GATE-010)
+- extendedWaitUntil:
+    visible:
+      text: ".*ผู้ติดตาม.*|.*[Ff]ollowers.*"
+    timeout: 10000
+- tapOn:
+    point: "17%,49%"    # first grid tile (verified ~(180,1170))
+- extendedWaitUntil:
+    visible:
+      text: ".*โพสต์.*|.*[Pp]osts.*"
+    timeout: 15000
+- tapOn:
+    text: "^ติดตาม$|^[Ff]ollow$"
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*|.*ยินดีต้อนรับกลับ.*|.*Welcome back.*"
+    timeout: 10000
+- pressKey: back   # dismiss gate
+- pressKey: back   # viewer → profile
+- pressKey: back   # profile → feed
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 10000
+
+# ================= GATE-047 — legal link presence (NEVER tap) =================
+# Legal links on auth pages open EXTERNAL Chrome (F-014 — spec expects an
+# in-app viewer w/ version+effective date; ruling pending). Tap = flow leaves
+# the app → assert presence only, do not tap.
+- tapOn:
+    point: "32%,93%"    # chat tab → Member Sheet
+- extendedWaitUntil:
+    visible:
+      text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+    timeout: 10000
+- tapOn:
+    text: ".*สมัครสมาชิก.*|.*Sign up.*"
+- extendedWaitUntil:
+    visible:
+      text: ".*สร้างบัญชี.*|.*Create.*[Aa]ccount.*"
+    timeout: 15000
+- assertVisible:
+    text: ".*ข้อกำหนดการใช้งาน.*|.*Terms.*"
+- pressKey: back   # ⚠ F-007: back lands on feed (not the sheet) — actual
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 10000
+
+# ================= GATE-048 — free-surface sweep, no gate holes =================
+- swipe:
+    direction: UP
+- swipe:
+    direction: UP
+- swipe:
+    direction: DOWN     # pull-to-refresh territory
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- scrollUntilVisible:
+    element:
+      text: "^the watch$"
+    direction: UP
+    timeout: 30000
+- tapOn:
+    text: "^the watch$"   # avatar/author → public profile (free) → back
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: ".*ผู้ติดตาม.*|.*[Ff]ollowers.*"
+    timeout: 15000
+- assertNotVisible:
+    text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
+- pressKey: back
+- extendedWaitUntil:
+    visible:
+      text: ".*ทั้งหมด.*|.*All Posts.*"
+    timeout: 10000

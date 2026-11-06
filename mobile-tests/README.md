@@ -54,6 +54,7 @@ set -a; source mobile-tests/.env; set +a
 | D Guest gate deep | `flows/flow-d-guest-gate-deep.yaml` | GATE-019/024/025/026/027/028/029/030/031/032(cancel)/033/034/041/042/049/055(TH) | fresh (clearState) |
 | E Search guest | `flows/flow-e-search-guest.yaml` | SETUP-05, SRCH-001/002/005/006/007/010/011/016/017/019/029/030/033/040/045/046/048/050/051/055/056/058/059/060, GATE-011/015/043 | fresh (clearState) |
 | F Member + sign out | `flows/flow-f-member-signout.yaml` | SETUP-04, GATE-001B/005B/035/050(บางส่วน) | fresh + .env credentials |
+| G Guest free-browse | `flows/flow-g-guest-browse.yaml` | GATE-044/045/046/047/048 + GATE-002/009/010/013/017/018 spot legs (F-012/013/014 encode actual) | fresh (clearState) |
 | subflow onboarding | `flows/subflows/onboarding-to-guest.yaml` | SETUP-02/03 | fresh |
 | subflow sign in | `flows/subflows/gate-sheet-sign-in.yaml` | AUTH-044/045 | member sheet เปิดอยู่ |
 
@@ -75,7 +76,32 @@ set -a; source mobile-tests/.env; set +a
   tick Don't show → ต้อง `extendedWaitUntil` sheet ก่อนเสมอ อย่าใช้
   `when: visible` เช็คทันที (race: sheet ขึ้นช้ากว่า check)
 - **member sheet modal** — point tap โซน nav ขณะ sheet เปิดโดนปุ่ม sheet
-  (68%,93% = ปุ่ม Google → เปิด provider UI)
+  (68%,93% = ปุ่ม Google → เปิด provider UI); scrim = โซนบน ~40%
+  (y<914/2337) ปุ่ม sheet อยู่ล่าง ~60% (ย≈1943+) — ห้าม point tap ขณะเปิด
+- **nav items มี text desc** (`ฟีด` `แชท` `กระดานข่าว` `แจ้งเตือน` `โปรไฟล์`)
+  `tapOn text` ได้ — แต่ bar auto-hide ตอน scroll ลง → tap ตอนเพิ่ง land
+  หรือ swipe DOWN สั้นให้ bar กลับมาก่อน · feed=11% chat=32% board=50%
+  alerts=68% profile=86% (y~93%)
+- **back จาก feed ออกแอปเลย** (feed = root) — ห้าม pressKey back เกินบน feed;
+  back จาก external app (Chrome) ไม่กลับ TukDaeng ตรง ๆ ด้วย
+- **board verified labels**: head `TUK DAENG | กระดานข่าว` · burger ~8%,8%
+  (categories sheet `หมวดหมู่`+`ปิด`) · magnifier ~92%,8% (`ค้นหา` + chips
+  `หัวข้อยอดนิยม` → `N ผลลัพธ์ สำหรับ "q"`) · `อ่านต่อ` ·
+  `บทความล่าสุด\nดูทั้งหมด` (desc เดียว) · rows `cat\ntitle\nอ่าน N นาที`
+  · end note `คุณดูครบทั้งหมดแล้ว` · pills `ทั้งหมด/ตลาดนาฬิกา/Rolex/...`
+- **article detail**: floating pills ไม่มี desc — back ~9%,8% · like
+  ~75%,8% · share ~83%,8% · ⋯ ~90%,8% (Maestro point = whole % เท่านั้น)
+  · author `ผู้เขียน\nTuk Daeng` · like/share ตอน guest = F-012 actual
+  (optimistic +1 revert / dead no-op) · ⋯ → report sheet เปิดไม่ gate
+  (F-013 — ห้ามกด ส่งรายงาน)
+- **post viewer จาก grid tile**: head `โพสต์` + `ติดตาม` pill · comments
+  sheet guest: `เพิ่มความคิดเห็น...` input → gate · likes sheet guest:
+  `ยอดถูกใจ` + rows `name\nติดตาม` + hideCounts note `มีเพียง…สามารถดูจำนวน`
+- **public profile read**: stats `N ผู้ติดตาม`/`N กำลังติดตาม` tap ได้ →
+  followers list free (rows + ติดตาม ต่อแถว) · avatar → overlay
+  `ติดตาม/แชร์/คัดลอกลิงก์/คิวอาร์โค้ด` (shell ฟรี actions gate)
+- **legal links บนหน้า auth → Chrome ภายนอก** (F-014) — ห้าม tap ใน flow
+  (ออกนอกแอป flow พัง) assert แค่ presence
 
 ## กติกาที่ล็อกแล้ว (อ้าง deliverables/AUTO-TEST-001-*)
 

@@ -1,8 +1,8 @@
 # Flow F — Member post actions (own-scope writes) + sign out → guest
 # TC refs: SETUP-04 (member), GATE-001B (member like/save/share work, no gate),
 #          GATE-005B (⋯ menu sheet opens), AUTH sign-out,
-#          GATE-035 (logout → guest feed; ⚠ F-011: spec expects member sheet to
-#          pop immediately — actual: NO auto sheet, gate fires on action only),
+#          GATE-035 (logout → guest feed; ⚠ F-011 DEV BUG — ruling approved:
+#          spec expects immediate sheet; actual = none, gate fires on action),
 #          GATE-050 partial (guest state clean — feed visible, gate works)
 # Credentials: -e TEST_EMAIL=... -e TEST_PASSWORD=... (see ../.env.example)
 # NOTE: like/Unlike desc toggles "ถูกใจ" ↔ "เลิกถูกใจ" — assertable state signal.
@@ -127,8 +127,9 @@ tags: [member, auth, regression]
 - tapOn:
     text: "^ออกจากระบบ$|^[Ll]og out$|^[Ss]ign out$"
 
-# GATE-035: lands on GUEST feed — ⚠ F-011: no auto member sheet (spec expects
-# immediate prompt); verify guest by triggering gate via chat tab
+# GATE-035: lands on GUEST feed — ⚠ F-011 (DEV BUG, ruling approved, pending
+# send): no auto member sheet though spec expects an immediate prompt; asserts
+# encode ACTUAL until dev fix. Verify guest by triggering gate via chat tab
 - extendedWaitUntil:
     visible:
       text: ".*ทั้งหมด.*|.*All Posts.*"

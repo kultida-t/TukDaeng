@@ -234,9 +234,10 @@ tags: [search, guest-gate, regression]
 - tapOn:
     text: ".*ยกเลิก.*|.*Cancel.*"
 
-# GATE-015 + SRCH-059: bookmark shortcut on search head
-# ⚠ F-010: spec expects Saved hub to open EMPTY without gate (sr-saved ไม่ gate);
-#    actual = guest gets Member Sheet — saved hub unreachable for guest.
+# GATE-015 + SRCH-059: bookmark shortcut on search head = gated entry (spec
+#    adjusted per approved ruling F-010 — saved hub is account-bound; guest
+#    must get a gate prompt, hub must NOT open). Tolerant regex accepts the
+#    sheet or a full sign-in page per ruling F-009.
 - tapOn:
     point: "92%,8%"
 - extendedWaitUntil:

@@ -7,7 +7,8 @@
 #          no stacking), GATE-031 (Sign up/Sign in → page → back returns to SHEET),
 #          GATE-033 (tick Don't show → no re-prompt), GATE-034 (no tick → re-prompt
 #          every launch), GATE-041 (cancel everywhere → still guest), GATE-042
-#          (feed tabs + scroll + pull — free browse, no sheet), GATE-049 (kill/
+#          (All tab free + scroll/pull; Following/Favorites = gated entry —
+#          ruling F-008), GATE-049 (kill/
 #          relaunch → gate still works), GATE-055 (TH copy on sheet — EN side is
 #          semi: needs EN locale via onboarding)
 appId: com.univerza.tukdaeng
@@ -188,8 +189,9 @@ tags: [guest-gate, regression]
     text: ".*ทั้งหมด.*|.*All Posts.*"
 
 # GATE-031 + GATE-041: sheet → สมัครสมาชิก → page → back
-# ⚠ F-007: spec says back returns to Member Sheet; actual = back lands on FEED
-#    (asserts encode ACTUAL behaviour — deviation logged in findings)
+# ⚠ F-007 (DEV BUG — ruling approved, pending send to dev): spec expects back
+#    → Member Sheet; actual = back lands on FEED. Asserts encode ACTUAL on
+#    purpose — when dev fixes it this turns red = the fix signal.
 - waitForAnimationToEnd
 - tapOn:
     point: "32%,93%"
@@ -211,7 +213,7 @@ tags: [guest-gate, regression]
 - assertNotVisible:
     text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
 
-# GATE-031: เข้าสู่ระบบ → Sign in page → back — same F-007 deviation expected
+# GATE-031: เข้าสู่ระบบ → Sign in page → back — same F-007 bug expected
 - waitForAnimationToEnd
 - tapOn:
     point: "32%,93%"
@@ -265,9 +267,9 @@ tags: [guest-gate, regression]
 - assertNotVisible:
     text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
 
-# GATE-042: guest feed tabs + scroll + pull — free browse
-# ⚠ F-008: spec expects ALL feed tabs free for guest; actual = Following (and
-#    likely Favorites) trigger the member sheet — only ทั้งหมด is free.
+# GATE-042: All tab = free browse; Following/Favorites = gated entry (spec
+#    adjusted per approved ruling F-008 — relationship surfaces gate like
+#    chat/alerts/profile). Sheet pops on each gated tab, All stays free.
 - tapOn:
     text: ".*กำลังติดตาม.*|.*Following.*"
 - extendedWaitUntil:
@@ -342,9 +344,9 @@ tags: [guest-gate, regression]
 - assertNotVisible:
     text: ".*เข้าร่วมตึกแดง.*|.*Join TukDaeng.*"
 
-# GATE-033 tail: action gate still fires with Don't-show set — ⚠ but as a
-# full SIGN-IN PAGE, not the member sheet (F-009 deviation: spec says sheet
-# still pops). Assert the gate still blocks the action either way.
+# GATE-033 tail: action gate still fires with Don't-show set — spec accepts
+#    EITHER the member sheet OR a full sign-in page (ruling F-009: honoring
+#    the opt-out, both block the action). Assert a gate prompt appears.
 - waitForAnimationToEnd
 - tapOn:
     point: "32%,93%"
