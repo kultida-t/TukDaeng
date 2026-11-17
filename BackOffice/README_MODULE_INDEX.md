@@ -23,6 +23,16 @@ BO docs แยกจาก FO docs แต่เชื่อมโยงการ
 | 7 | `BO_Spec_Completion_Addendum.md` | Legacy coverage addendum — superseded (DOC-010, 2026-11-04) เก็บเพื่อ traceability |
 | 8 | `../FrontOffice/18_ADMIN_SCOPE_NOTE.md` | Boundary ว่า Admin อยู่ฝั่ง Web Back Office เท่านั้น |
 
+## Standard Deliverable Docs (เกณฑ์มิติ 1–9)
+
+ชุดเอกสารส่งมอบตามรูบริกประเมิน 9 มิติ ของบริษัท — สรุปรวมจาก module specs `00`–`17` + `BO_MASTER_BASELINE.md` ไม่ใช่ source of truth ใหม่
+
+| File | Use For |
+| --- | --- |
+| `BO_PRD_Requirements.md` | Product overview, business logic/rules (มิติ 2), security/RBAC/compliance (มิติ 6), reliability/SLA (มิติ 7) |
+| `BO_Feature_Specification.md` | Master feature matrix + acceptance checklist, state machines (มิติ 2), integrations (มิติ 4), UI intricacy (มิติ 9) |
+| `BO_System_Architecture.md` | Production target architecture (มิติ 1), data/ERD (มิติ 3), async/concurrency (มิติ 5), security/caching/SLA (มิติ 6–7), infra/ops (มิติ 8) |
+
 ## Prototype Handoff Notes Workflow
 
 ระหว่าง BA/UX ทำ BO prototype ให้ครบทุก module ยังไม่ต้องทำ Dev Handoff Sheet เต็มทีละหน้า ให้เก็บ note สั้น ๆ ไว้ใน `BO_DEV_IMPLEMENTATION_CHECKLIST.md` ก่อน

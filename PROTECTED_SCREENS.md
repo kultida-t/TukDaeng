@@ -24,7 +24,6 @@ These screens have been confirmed by the user and are locked from incidental cha
 - Content Management > Reported Articles, confirmed and locked as of 2026-07-31
 - Content Management > Board Report Detail, confirmed and locked as of 2026-07-31
 - Market Data, including the Market Data menu entry, submenu/active states, routing, market data screens, lists, tables, cards, filters, charts, detail views/panels, import/export or refresh actions, breadcrumbs, mock data, and navigation state, confirmed and locked as of 2026-08-10
-- ~~Offer Management~~ — REMOVED 2026-10-26: FO cut the Offer (เสนอราคา) feature, so BO Offer Management was dismantled from `Prototypes/bo-prototype.html` (menu, routing, renderers, CSS, permissions, dashboard cards, deletion dependencies, audit filters). Do not re-add it unless the user reintroduces Offer in FO.
 - Option Master, including the Option Master menu entry, active state, routing, Option Group List (table, summary, filters, search, sorting, pagination, row actions, action menu), Option Detail (header, breadcrumb, option list table, panel title/subtitle, Add Option entry, action menu with Delete option), Add/Edit Option modal (form fields, Group Key/Option Key lock, validation, confirmation), Deactivate/Reactivate Option modal (reason selector, safeguard, System Option Deactivate Policy state), Delete Option modal (destructive, type-to-confirm with Option Key, used_in_assets safeguard, irreversible warning), Reorder Option modal (drag-and-drop + up/down fallback), Add/Edit Group modal (form fields, group identifier lock, validation, confirmation), Deactivate/Reactivate/Delete Group modal (reason selector, type-to-confirm for delete, safeguard), Group Audit Log view (read-only, action/timestamp/actor/reason/before-after diff), Reorder Groups (drag-and-drop + up/down fallback), breadcrumbs, back navigation, mock data, helper/data/CSS paths, and navigation state, confirmed and locked as of 2026-08-25
 - Market Demand, including the Market Demand menu entry, every submenu/active state, Demand Overview, Search Insights, Watch Alert List, Watch Alert Detail, breadcrumbs, mock data, helper/data/CSS paths, and navigation state, confirmed and locked as of 2026-09-01
 - Settings > Policy & Versioning, including the Settings menu entry, Policy & Versioning submenu/active state, routing, Policy & Versioning List, Policy Detail, Policy Editor, Policy Publish confirmation modal, Policy Version History, Policy Version View modal, Policy Restore confirmation modal, Policy Preview modal, breadcrumbs, back navigation, mock data, helper/data/CSS paths, and navigation state, confirmed and locked as of 2026-09-03
@@ -159,10 +158,6 @@ The protected Market Data scope includes:
 - Detail views, detail panels, drilldowns, preview panels, history panels, and any modal or drawer opened from Market Data screens.
 - Import/export, refresh, sync, publish, archive, activate/deactivate, or status actions connected to Market Data, including confirmation modals, validation, disabled states, completed states, audit/result messages, and toast/result messaging.
 - Mock data, fixtures, state logic, route parameters, computed values, helper functions, styles, assets, and shared components that directly support Market Data rendering or behavior.
-
-## Offer Management Protected Scope
-
-REMOVED 2026-10-26 — FO cut the Offer (เสนอราคา) feature, so BO Offer Management was dismantled from `Prototypes/bo-prototype.html` entirely. This scope no longer exists; do not re-add it unless the user reintroduces Offer in FO.
 
 ## Option Master Protected Scope
 

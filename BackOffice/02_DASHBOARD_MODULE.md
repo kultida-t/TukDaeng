@@ -1,7 +1,7 @@
 # 02 BO Dashboard Module
 
-**Version:** `BO-02-v1.4`  
-**Date:** 2026-11-02  
+**Version:** `BO-02-v1.5`  
+**Date:** 2026-11-17  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -399,7 +399,7 @@ Typography:
 | AC-BO-DASH-002 | Header แสดง breadcrumb, title และ `Last updated` โดยไม่มี Date Range, Refresh, Export, global search, notification popup หรือ admin switcher |
 | AC-BO-DASH-003 | Dashboard แสดง KPI Summary ครบ 6 cards ตามลำดับที่กำหนด |
 | AC-BO-DASH-004 | `Reported Items` แสดง chips แยก `Assets`, `Users`, `Comments` และแต่ละ chip ไป queue ที่ถูกต้อง |
-| AC-BO-DASH-005 | Work Queue แสดงครบ 7 rows ตามลำดับและ priority ที่กำหนด |
+| AC-BO-DASH-005 | Work Queue แสดงครบ 6 rows ตามลำดับและ priority ที่กำหนด |
 | AC-BO-DASH-006 | Work Queue row ทุก row คลิกไป module/submodule ที่เกี่ยวข้องได้ |
 | AC-BO-DASH-007 | Recent Activity แสดง filter `ทั้งหมด`, `Report`, `Content`, `System` และ filter ทำงานจริง |
 | AC-BO-DASH-008 | Recent Activity row คลิกไป module/submodule ที่เกี่ยวข้องโดยตรง และไม่เปิด modal กลางบน Dashboard |
